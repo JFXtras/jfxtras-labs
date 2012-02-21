@@ -1416,7 +1416,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         }
 
         final Font LCD_UNIT_FONT = Font.font(control.getLcdUnitFont(), FontWeight.NORMAL, (0.4 * LCD_FRAME.getLayoutBounds().getHeight()));
-        final Font LCD_VALUE_FONT = control.isLcdDigitalFontEnabled() ? Font.loadFont(getClass().getResourceAsStream("/eu/hansolo/steelseriesfx/resources/digital.ttf"), (0.75 * LCD_FRAME.getLayoutBounds().getHeight())) : Font.font("Verdana", FontWeight.NORMAL, (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
+        final Font LCD_VALUE_FONT = control.isLcdDigitalFontEnabled() ? Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/resources/digital.ttf"), (0.75 * LCD_FRAME.getLayoutBounds().getHeight())) : Font.font("Verdana", FontWeight.NORMAL, (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
 
         lcdValueString.setFont(LCD_VALUE_FONT);
         lcdUnitString.setFont(LCD_UNIT_FONT);

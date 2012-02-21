@@ -1280,7 +1280,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
         final Font LCD_VALUE_FONT;
         final double UNIT_Y_OFFSET;
         if (control.isLcdDigitalFontEnabled()) {
-            LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/eu/hansolo/steelseriesfx/resources/digital.ttf"), (0.75 * LCD_FRAME.getLayoutBounds().getHeight()));
+            LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/resources/digital.ttf"), (0.75 * LCD_FRAME.getLayoutBounds().getHeight()));
             UNIT_Y_OFFSET = 1.5;
         } else {
             LCD_VALUE_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));

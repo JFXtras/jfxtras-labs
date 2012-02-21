@@ -46,6 +46,7 @@ public class Lcd extends Gauge {
     private BooleanProperty     lcdFormerValueVisible;
     private IntegerProperty     lcdMinMeasuredValueDecimals;
     private IntegerProperty     lcdMaxMeasuredValueDecimals;
+    private BooleanProperty     bargraphVisible;
 
 
     // ******************** Constructors **************************************
@@ -68,6 +69,7 @@ public class Lcd extends Gauge {
         lcdFormerValueVisible       = new SimpleBooleanProperty(true);
         lcdMinMeasuredValueDecimals = new SimpleIntegerProperty(VIEW_MODEL.getLcdDecimals());
         lcdMaxMeasuredValueDecimals = new SimpleIntegerProperty(VIEW_MODEL.getLcdDecimals());
+        bargraphVisible             = new SimpleBooleanProperty(false);
         init();
     }
 
@@ -143,5 +145,17 @@ public class Lcd extends Gauge {
 
     public final IntegerProperty lcdMaxMeasuredValueDecimalsProperty() {
         return lcdMaxMeasuredValueDecimals;
+    }
+
+    public final boolean isBargraphVisible() {
+        return bargraphVisible.get();
+    }
+
+    public final void setBargraphVisible(final boolean BARGRAPH_VISIBLE) {
+        bargraphVisible.set(BARGRAPH_VISIBLE);
+    }
+
+    public final BooleanProperty bargraphVisibleProperty() {
+        return bargraphVisible;
     }
 }
