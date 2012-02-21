@@ -265,12 +265,18 @@ public class RadialQuarterWSkin extends GaugeSkinBase<RadialQuarterW, RadialQuar
             updateAreas();
         }
 
-        addBindings();
-        addListeners();
+        if (gaugeValue.get() < control.getMinValue()) {
+            gaugeValue.set(control.getMinValue());
+        } else if (gaugeValue.get() > control.getMaxValue()) {
+            gaugeValue.set(control.getMaxValue());
+        }
 
         control.recalcRange();
         control.setMinMeasuredValue(control.getMaxValue());
         control.setMaxMeasuredValue(control.getMinValue());
+
+        addBindings();
+        addListeners();
 
         initialized = true;
         paint();

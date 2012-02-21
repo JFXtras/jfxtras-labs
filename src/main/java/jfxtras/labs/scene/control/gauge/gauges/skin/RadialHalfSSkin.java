@@ -276,12 +276,12 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
         double value = Double.compare(control.getValue(), control.getMinValue()) < 0 ? control.getMinValue() : (Double.compare(control.getValue(), control.getMaxValue()) > 0 ? control.getMaxValue() : control.getValue());
         pointer.setRotate(-(value - control.getMinValue()) * control.getAngleStep());
 
-        addBindings();
-        addListeners();
-
         control.recalcRange();
         control.setMinMeasuredValue(control.getMaxValue());
         control.setMaxMeasuredValue(control.getMinValue());
+
+        addBindings();
+        addListeners();
 
         initialized = true;
         paint();
@@ -389,12 +389,12 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
 
         control.valueProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                formerValue.setValue(oldValue.doubleValue());
+                formerValue.set(oldValue.doubleValue() < control.getMinValue() ? control.getMinValue() : oldValue.doubleValue());
                 if (pointerRotation.getStatus() != Animation.Status.STOPPED) {
                     pointerRotation.stop();
                 }
                 if (control.isValueAnimationEnabled()) {
-                    pointerRotation.setFromAngle(-(oldValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
+                    pointerRotation.setFromAngle(-(formerValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
                     pointerRotation.setToAngle(-(newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
                     pointerRotation.setInterpolator(Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
                     pointerRotation.play();
@@ -1336,13 +1336,15 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
         indicators.getChildren().add(IBOUNDS);
 
         for (final Indicator indicator : control.getIndicators()) {
-            final Group ARROW_GROUP = createIndicator(WIDTH, indicator, new Point2D(WIDTH * 0.4813084112, WIDTH * 0.0841121495));
-            ARROW_GROUP.getTransforms().clear();
-            ARROW_GROUP.setTranslateY(-WIDTH * 0.35);
-            ARROW_GROUP.getTransforms().add(Transform.rotate(-control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getX()));
-            final double ZERO_OFFSET = -90 + control.getRadialRange().ROTATION_OFFSET;
-            ARROW_GROUP.getTransforms().add(Transform.rotate(ZERO_OFFSET - (indicator.getIndicatorValue() - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getX()));
-            indicators.getChildren().add(ARROW_GROUP);
+            if (Double.compare(indicator.getIndicatorValue(), control.getMinValue()) >= 0 && Double.compare(indicator.getIndicatorValue(), control.getMaxValue()) <= 0) {
+                final Group ARROW_GROUP = createIndicator(WIDTH, indicator, new Point2D(WIDTH * 0.4813084112, WIDTH * 0.0841121495));
+                ARROW_GROUP.getTransforms().clear();
+                ARROW_GROUP.setTranslateY(-WIDTH * 0.35);
+                ARROW_GROUP.getTransforms().add(Transform.rotate(-control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getX()));
+                final double ZERO_OFFSET = -90 + control.getRadialRange().ROTATION_OFFSET;
+                ARROW_GROUP.getTransforms().add(Transform.rotate(ZERO_OFFSET - (indicator.getIndicatorValue() - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getX()));
+                indicators.getChildren().add(ARROW_GROUP);
+            }
         }
     }
 

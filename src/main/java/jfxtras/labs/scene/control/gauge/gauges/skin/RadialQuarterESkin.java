@@ -267,12 +267,18 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
             updateAreas();
         }
 
-        addBindings();
-        addListeners();
+        if (gaugeValue.get() < control.getMinValue()) {
+            gaugeValue.set(control.getMinValue());
+        } else if (gaugeValue.get() > control.getMaxValue()) {
+            gaugeValue.set(control.getMaxValue());
+        }
 
         control.recalcRange();
         control.setMinMeasuredValue(control.getMaxValue());
         control.setMaxMeasuredValue(control.getMinValue());
+
+        addBindings();
+        addListeners();
 
         initialized = true;
         paint();
@@ -384,7 +390,7 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
                     pointerRotation.setPivotX(center.getX());
                     pointerRotation.setPivotY(center.getY());
                     pointerRotation.setAngle((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
-                    pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
+                    pointer.getTransforms().add(Transform.rotate(-control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
                     pointer.getTransforms().add(pointerRotation);
                 }
 
@@ -441,7 +447,7 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
                 pointerRotation.setPivotX(rotationCenter.getX());
                 pointerRotation.setPivotY(rotationCenter.getY());
                 pointerRotation.setAngle(-(newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
-                pointer.getTransforms().add(Transform.rotate(-control.getRadialRange().ANGLE_RANGE+ control.getRadialRange().ROTATION_OFFSET, rotationCenter.getX(), rotationCenter.getY()));
+                pointer.getTransforms().add(Transform.rotate(-control.getRadialRange().ANGLE_RANGE + control.getRadialRange().ROTATION_OFFSET, rotationCenter.getX(), rotationCenter.getY()));
                 pointer.getTransforms().add(pointerRotation);
 
                 currentValue.set(newValue.doubleValue());

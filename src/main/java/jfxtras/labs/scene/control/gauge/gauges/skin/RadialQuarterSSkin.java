@@ -276,12 +276,18 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
             updateAreas();
         }
 
-        addBindings();
-        addListeners();
+        if (gaugeValue.get() < control.getMinValue()) {
+            gaugeValue.set(control.getMinValue());
+        } else if (gaugeValue.get() > control.getMaxValue()) {
+            gaugeValue.set(control.getMaxValue());
+        }
 
         control.recalcRange();
         control.setMinMeasuredValue(control.getMaxValue());
         control.setMaxMeasuredValue(control.getMinValue());
+
+        addBindings();
+        addListeners();
 
         initialized = true;
         paint();
@@ -1256,7 +1262,7 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
         }
 
         pointer.getTransforms().clear();
-        pointer.getTransforms().add(Transform.rotate(-control.getRadialRange().ROTATION_OFFSET + (control.getValue() - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getY()));
+        pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
     }
 
     public void drawLcdContent() {

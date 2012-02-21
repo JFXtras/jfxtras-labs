@@ -645,9 +645,11 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         INDICATORS.getTransforms().add(Transform.rotate(-CONTROL.getMinValue() * CONTROL.getAngleStep(), CENTER.getX(), CENTER.getY()));
 
         for (final Indicator indicator : CONTROL.getIndicators()) {
-            final Group ARROW = createIndicator(SIZE, indicator, new Point2D(SIZE * 0.4813084112, SIZE * 0.0841121495));
-            ARROW.getTransforms().add(Transform.rotate(indicator.getIndicatorValue() * CONTROL.getAngleStep(), CENTER.getX(), CENTER.getY()));
-            INDICATORS.getChildren().add(ARROW);
+            if (Double.compare(indicator.getIndicatorValue(), CONTROL.getMinValue()) >= 0 && Double.compare(indicator.getIndicatorValue(), CONTROL.getMaxValue()) <= 0) {
+                final Group ARROW = createIndicator(SIZE, indicator, new Point2D(SIZE * 0.4813084112, SIZE * 0.0841121495));
+                ARROW.getTransforms().add(Transform.rotate(indicator.getIndicatorValue() * CONTROL.getAngleStep(), CENTER.getX(), CENTER.getY()));
+                INDICATORS.getChildren().add(ARROW);
+            }
         }
     }
 

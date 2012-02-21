@@ -123,6 +123,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     private Group            foreground;
     private Timeline         rotationAngleTimeline;
     private DoubleProperty   gaugeValue;
+    private double           negativeOffset;
     private Point2D          center;
     private int              noOfLeds;
     private ArrayList<Shape> leds;
@@ -179,6 +180,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         foreground             = new Group();
         rotationAngleTimeline  = new Timeline();
         gaugeValue             = new SimpleDoubleProperty(0);
+        negativeOffset         = 0;
         noOfLeds               = 60;
         leds                   = new ArrayList<>(60);
         currentValue           = new SimpleDoubleProperty(0);
@@ -296,13 +298,24 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         double value = Double.compare(control.getValue(), control.getMinValue()) < 0 ? control.getMinValue() : (Double.compare(control.getValue(), control.getMaxValue()) > 0 ? control.getMaxValue() : control.getValue());
         pointer.setRotate((value - control.getMinValue()) * control.getAngleStep());
 
-        addBindings();
-
-        addListeners();
+        if (gaugeValue.get() < control.getMinValue()) {
+            gaugeValue.set(control.getMinValue());
+        } else if (gaugeValue.get() > control.getMaxValue()) {
+            gaugeValue.set(control.getMaxValue());
+        }
 
         control.recalcRange();
         control.setMinMeasuredValue(control.getMaxValue());
         control.setMaxMeasuredValue(control.getMinValue());
+
+        if (control.getMinValue() < 0) {
+            negativeOffset = control.getMinValue() * control.getAngleStep();
+        } else {
+            negativeOffset = 0;
+        }
+
+        addBindings();
+        addListeners();
 
         initialized = true;
         paint();
@@ -442,7 +455,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                     pointerRotation.setPivotX(center.getX());
                     pointerRotation.setPivotY(center.getY());
                     pointerRotation.setAngle((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
-                    pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
+                    pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET + (control.getMinValue() * control.getAngleStep()), center.getX(), center.getY()));
                     pointer.getTransforms().add(pointerRotation);
                 }
 
@@ -495,9 +508,10 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
                 if (bargraph.isVisible()) {
-                    final int CURRENT_LED_INDEX = noOfLeds - 1 - (int) (newValue.doubleValue() * control.getAngleStep() / 5.0);
-                    final int FORMER_LED_INDEX = noOfLeds - 1 - (int) (oldValue.doubleValue() * control.getAngleStep() / 5.0);
-                    final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int)(control.getThreshold() * control.getAngleStep() / 5.0);
+                    int CURRENT_LED_INDEX = noOfLeds - 1 - (int) ((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
+                    int FORMER_LED_INDEX = noOfLeds - 1 - (int) ((oldValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
+                    final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int)((control.getThreshold() - control.getMinValue()) * control.getAngleStep() / 5.0);
+
                     if (Double.compare(control.getValue(), formerValue.doubleValue()) >= 0) {
                         for (int i = CURRENT_LED_INDEX ; i <= FORMER_LED_INDEX ; i++) {
                             leds.get(i).setId("bargraph-on");
@@ -515,7 +529,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                     pointerRotation.setPivotX(center.getX());
                     pointerRotation.setPivotY(center.getY());
                     pointerRotation.setAngle((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
-                    pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
+                    pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET + negativeOffset, center.getX(), center.getY()));
                     pointer.getTransforms().add(pointerRotation);
                 }
 
@@ -623,6 +637,11 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 glowOn.setOpacity(0.0);
             }
         } else if (PROPERTY == "RANGE") {
+            if (control.getMinValue() < 0) {
+                negativeOffset = control.getMinValue() * control.getAngleStep();
+            } else {
+                negativeOffset = 0;
+            }
             drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
         } else if (PROPERTY.equals("MIN_MEASURED_VALUE")) {
             minMeasured.getTransforms().clear();

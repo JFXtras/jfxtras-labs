@@ -389,12 +389,12 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
 
         control.valueProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                formerValue.set(oldValue.doubleValue());
+                formerValue.set(oldValue.doubleValue() < control.getMinValue() ? control.getMinValue() : oldValue.doubleValue());
                 if (pointerRotation.getStatus() != Animation.Status.STOPPED) {
                     pointerRotation.stop();
                 }
                 if (control.isValueAnimationEnabled()) {
-                    pointerRotation.setFromAngle((oldValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
+                    pointerRotation.setFromAngle((formerValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
                     pointerRotation.setToAngle((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
                     pointerRotation.setInterpolator(Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
                     pointerRotation.play();
@@ -1309,25 +1309,27 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
 
     public void drawIndicators() {
         final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
-                final double WIDTH = gaugeBounds.getWidth();
-                final double HEIGHT = gaugeBounds.getHeight();
+        final double WIDTH = gaugeBounds.getWidth();
+        final double HEIGHT = gaugeBounds.getHeight();
 
-                indicators.getChildren().clear();
+        indicators.getChildren().clear();
 
-                final Rectangle IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
-                IBOUNDS.setOpacity(0.0);
-                IBOUNDS.setStroke(null);
-                indicators.getChildren().add(IBOUNDS);
+        final Rectangle IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
+        IBOUNDS.setOpacity(0.0);
+        IBOUNDS.setStroke(null);
+        indicators.getChildren().add(IBOUNDS);
 
-                indicators.getTransforms().clear();
-                indicators.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
-                indicators.getTransforms().add(Transform.rotate(-control.getMinValue() * control.getAngleStep(), center.getX(), center.getY()));
+        indicators.getTransforms().clear();
+        indicators.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
+        indicators.getTransforms().add(Transform.rotate(-control.getMinValue() * control.getAngleStep(), center.getX(), center.getY()));
 
-                for (final Indicator indicator : control.getIndicators()) {
-                    final Group ARROW = createIndicator(WIDTH, indicator, new Point2D(WIDTH * 0.4813084112, WIDTH * 0.0841121495));
-                    ARROW.getTransforms().add(Transform.rotate(indicator.getIndicatorValue() * control.getAngleStep(), center.getX(), center.getY()));
-                    indicators.getChildren().add(ARROW);
-                }
+        for (final Indicator indicator : control.getIndicators()) {
+            if (Double.compare(indicator.getIndicatorValue(), control.getMinValue()) >= 0 && Double.compare(indicator.getIndicatorValue(), control.getMaxValue()) <= 0) {
+                final Group ARROW = createIndicator(WIDTH, indicator, new Point2D(WIDTH * 0.4813084112, WIDTH * 0.0841121495));
+                ARROW.getTransforms().add(Transform.rotate(indicator.getIndicatorValue() * control.getAngleStep(), center.getX(), center.getY()));
+                indicators.getChildren().add(ARROW);
+            }
+        }
     }
 
     public void drawThreshold() {
