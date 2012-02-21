@@ -1,2 +1,9 @@
 .gradle
 build
+
+src/main/Main.iml
+src/main/java/jfxtras/labs/scene/control/gauge/Gauge.iml
+JFXtras-Labs.iml
+out/
+.idea/
+src/main/java/jfxtras/labs/scene/control/gauge/Demo.java
