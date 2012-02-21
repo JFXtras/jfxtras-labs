@@ -1416,7 +1416,15 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         }
 
         final Font LCD_UNIT_FONT = Font.font(control.getLcdUnitFont(), FontWeight.NORMAL, (0.4 * LCD_FRAME.getLayoutBounds().getHeight()));
-        final Font LCD_VALUE_FONT = control.isLcdDigitalFontEnabled() ? Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/resources/digital.ttf"), (0.75 * LCD_FRAME.getLayoutBounds().getHeight())) : Font.font("Verdana", FontWeight.NORMAL, (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
+        final Font LCD_VALUE_FONT;
+        final double UNIT_Y_OFFSET;
+        if (control.isLcdDigitalFontEnabled()) {
+            LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/resources/digital.ttf"), (0.75 * LCD_FRAME.getLayoutBounds().getHeight()));
+            UNIT_Y_OFFSET = 1.5;
+        } else {
+            LCD_VALUE_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
+            UNIT_Y_OFFSET = 2.0;
+        }
 
         lcdValueString.setFont(LCD_VALUE_FONT);
         lcdUnitString.setFont(LCD_UNIT_FONT);
@@ -1430,7 +1438,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         }
         if (control.isLcdUnitVisible()) {
             lcdUnitString.setX(LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdUnitString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0625);
-            lcdUnitString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / 2.0 - (lcdValueString.getLayoutBounds().getHeight() * 0.05));
+            lcdUnitString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / UNIT_Y_OFFSET - (lcdValueString.getLayoutBounds().getHeight() * 0.05));
         }
         lcdUnitString.getStyleClass().add("lcd");
         lcdUnitString.setStyle(control.getLcdDesign().CSS);
