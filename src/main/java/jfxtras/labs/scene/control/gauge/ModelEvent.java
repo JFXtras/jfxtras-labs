@@ -40,6 +40,7 @@ import javafx.event.EventType;
  */
 public class ModelEvent extends Event {
 
+    // ******************** Constructors **************************************
     public ModelEvent() {
         super(new EventType<ModelEvent>());
     }

@@ -40,6 +40,7 @@ import javafx.event.EventType;
  */
 public class ViewModelEvent extends Event {
 
+    // ******************** Constructors **************************************
     public ViewModelEvent() {
         super(new EventType<ViewModelEvent>());
     }

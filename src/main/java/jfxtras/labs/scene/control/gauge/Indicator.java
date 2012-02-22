@@ -68,7 +68,7 @@ public class Indicator {
     }
 
 
-    // ******************** Constructors **************************************
+    // ******************** Methods *******************************************
     public final double getIndicatorValue() {
         return indicatorValue.get();
     }
