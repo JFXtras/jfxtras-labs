@@ -1,6 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'signing'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
 
 /***************************************
  * Set Maven coordinates and build vars

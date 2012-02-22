@@ -25,20 +25,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control.gauge.behavior;
+package jfxtras.labs.internal.scene.control.behavior;
 
-import jfxtras.labs.scene.control.gauge.RadialQuarterE;
+import jfxtras.labs.scene.control.gauge.Lcd;
 
 
 /**
  * Created by
  * User: hansolo
- * Date: 08.02.12
- * Time: 09:42
+ * Date: 24.01.12
+ * Time: 07:49
  */
-public class RadialQuarterEBehavior extends GaugeBehaviorBase<RadialQuarterE> {
+public class LcdBehavior extends GaugeBehaviorBase<Lcd> {
 
-    public RadialQuarterEBehavior(final RadialQuarterE CONTROL) {
+    public LcdBehavior(final Lcd CONTROL) {
         super(CONTROL);
     }
 }

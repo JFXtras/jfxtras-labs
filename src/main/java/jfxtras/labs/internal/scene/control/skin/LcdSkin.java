@@ -25,13 +25,13 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control.gauge.skin;
+package jfxtras.labs.internal.scene.control.skin;
 
+import jfxtras.labs.internal.scene.control.behavior.LcdBehavior;
 import jfxtras.labs.scene.control.gauge.Lcd;
 import jfxtras.labs.scene.control.gauge.ModelEvent;
 import jfxtras.labs.scene.control.gauge.Section;
 import jfxtras.labs.scene.control.gauge.ViewModelEvent;
-import jfxtras.labs.scene.control.gauge.behavior.LcdBehavior;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
@@ -687,6 +687,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         LCD_FRAME.effectProperty().set(GLOW_EFFECT);
 
         glowOn.getChildren().addAll(LCD_FRAME);
+        glowOn.setCache(true);
     }
 
     public void drawLcd() {
@@ -1083,6 +1084,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         if (control.isLcdThresholdVisible()) {
             lcd.getChildren().add(lcdThresholdIndicator);
         }
+        lcd.setCache(true);
     }
 
     public void drawLcdContent() {

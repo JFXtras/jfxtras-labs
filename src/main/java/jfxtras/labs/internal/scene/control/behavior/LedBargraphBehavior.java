@@ -25,20 +25,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control.gauge.behavior;
+package jfxtras.labs.internal.scene.control.behavior;
 
-import jfxtras.labs.scene.control.gauge.Lcd;
+import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import jfxtras.labs.scene.control.gauge.LedBargraph;
 
 
 /**
  * Created by
  * User: hansolo
- * Date: 24.01.12
- * Time: 07:49
+ * Date: 16.02.12
+ * Time: 11:30
  */
-public class LcdBehavior extends GaugeBehaviorBase<Lcd> {
-
-    public LcdBehavior(final Lcd CONTROL) {
+public class LedBargraphBehavior extends BehaviorBase<LedBargraph> {
+    public LedBargraphBehavior(final LedBargraph CONTROL) {
         super(CONTROL);
     }
 }

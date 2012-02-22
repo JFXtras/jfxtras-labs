@@ -25,20 +25,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control.gauge.behavior;
+package jfxtras.labs.internal.scene.control.behavior;
 
-import jfxtras.labs.scene.control.gauge.RadialQuarterW;
+import jfxtras.labs.scene.control.gauge.RadialHalfN;
 
 
 /**
  * Created by
  * User: hansolo
- * Date: 03.02.12
- * Time: 08:01
+ * Date: 25.01.12
+ * Time: 09:54
  */
-public class RadialQuarterWBehavior extends GaugeBehaviorBase<RadialQuarterW> {
+public class RadialHalfNBehavior extends GaugeBehaviorBase<RadialHalfN> {
 
-    public RadialQuarterWBehavior(final RadialQuarterW CONTROL) {
+    public RadialHalfNBehavior(final RadialHalfN CONTROL) {
         super(CONTROL);
     }
 }

@@ -25,11 +25,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control.gauge.skin;
+package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
+import jfxtras.labs.internal.scene.control.behavior.LedBehavior;
 import jfxtras.labs.scene.control.gauge.Led;
-import jfxtras.labs.scene.control.gauge.behavior.LedBehavior;
 import jfxtras.labs.scene.control.gauge.Util;
 import javafx.animation.AnimationTimer;
 import javafx.beans.value.ChangeListener;
@@ -261,6 +261,7 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
                                  LED_OFF,
                                  ledOn,
                                  HIGHLIGHT);
+        led.setCache(true);
     }
 }
 

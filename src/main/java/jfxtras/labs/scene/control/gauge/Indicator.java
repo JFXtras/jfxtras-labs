@@ -50,6 +50,8 @@ public class Indicator {
     private StringProperty        indicatorText;
     private BooleanProperty       visible;
 
+
+    // ******************** Constructors **************************************
     public Indicator(final double VALUE, final Color COLOR) {
         this(VALUE, COLOR, Double.toString(VALUE));
     }
@@ -66,6 +68,7 @@ public class Indicator {
     }
 
 
+    // ******************** Methods *******************************************
     public final double getIndicatorValue() {
         return indicatorValue.get();
     }

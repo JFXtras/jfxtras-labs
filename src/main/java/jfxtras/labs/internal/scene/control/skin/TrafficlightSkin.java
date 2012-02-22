@@ -25,11 +25,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control.gauge.skin;
+package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
+import jfxtras.labs.internal.scene.control.behavior.TrafficlightBehavior;
 import jfxtras.labs.scene.control.gauge.Trafficlight;
-import jfxtras.labs.scene.control.gauge.behavior.TrafficlightBehavior;
 import javafx.animation.AnimationTimer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

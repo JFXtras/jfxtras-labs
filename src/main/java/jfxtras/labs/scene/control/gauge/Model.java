@@ -27,7 +27,6 @@
 
 package jfxtras.labs.scene.control.gauge;
 
-
 import jfxtras.labs.scene.control.gauge.Gauge.NumberSystem;
 import jfxtras.labs.scene.control.gauge.Gauge.Trend;
 import javafx.beans.property.BooleanProperty;

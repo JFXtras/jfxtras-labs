@@ -25,14 +25,14 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control.gauge.skin;
+package jfxtras.labs.internal.scene.control.skin;
 
+import jfxtras.labs.internal.scene.control.behavior.RadialQuarterEBehavior;
 import jfxtras.labs.scene.control.gauge.Gauge;
 import jfxtras.labs.scene.control.gauge.ModelEvent;
-import jfxtras.labs.scene.control.gauge.RadialQuarterS;
+import jfxtras.labs.scene.control.gauge.RadialQuarterE;
 import jfxtras.labs.scene.control.gauge.Section;
 import jfxtras.labs.scene.control.gauge.ViewModelEvent;
-import jfxtras.labs.scene.control.gauge.behavior.RadialQuarterSBehavior;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
@@ -69,7 +69,6 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.util.Duration;
@@ -80,12 +79,12 @@ import java.util.ArrayList;
 /**
  * Created by
  * User: hansolo
- * Date: 07.02.12
- * Time: 14:18
+ * Date: 08.02.12
+ * Time: 09:42
  */
-public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuarterSBehavior> {
+public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuarterEBehavior> {
     private static final Rectangle PREF_SIZE = new Rectangle(200, 200);
-    private RadialQuarterS   control;
+    private RadialQuarterE   control;
     private Rectangle        gaugeBounds;
     private Point2D          framelessOffset;
     private Group            frame;
@@ -99,11 +98,6 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
     private Group            glowOff;
     private Group            glowOn;
     private ArrayList<Color> glowColors;
-    private Group            lcd;
-    private Group            lcdContent;
-    private Text             lcdValueString;
-    private Text             lcdUnitString;
-    private Group            lcdThresholdIndicator;
     private Group            knobs;
     private Group            threshold;
     private Group            minMeasured;
@@ -115,11 +109,11 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
     private Group            userLedOn;
     private Group            foreground;
     private Point2D          center;
+    private Point2D          rotationCenter;
     private Timeline         rotationAngleTimeline;
     private DoubleProperty   gaugeValue;
     private DoubleProperty   currentValue;
     private DoubleProperty   lcdValue;
-    private DoubleProperty   currentLcdValue;
     private FadeTransition   glowPulse;
     private Rotate           pointerRotation;
     private AnimationTimer   ledTimer;
@@ -133,12 +127,13 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
 
 
     // ******************** Constructors **************************************
-    public RadialQuarterSSkin(final RadialQuarterS CONTROL) {
-        super(CONTROL, new RadialQuarterSBehavior(CONTROL));
+    public RadialQuarterESkin(final RadialQuarterE CONTROL) {
+        super(CONTROL, new RadialQuarterEBehavior(CONTROL));
         control                = CONTROL;
         gaugeBounds            = new Rectangle(200, 200);
         framelessOffset        = new Point2D(0, 0);
         center                 = new Point2D(0, 0);
+        rotationCenter         = new Point2D(0, 0);
         frame                  = new Group();
         background             = new Group();
         trend                  = new Group();
@@ -150,11 +145,6 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
         glowOff                = new Group();
         glowOn                 = new Group();
         glowColors             = new ArrayList<>(4);
-        lcd                    = new Group();
-        lcdContent             = new Group();
-        lcdValueString         = new Text();
-        lcdUnitString          = new Text();
-        lcdThresholdIndicator  = new Group();
         knobs                  = new Group();
         threshold              = new Group();
         minMeasured            = new Group();
@@ -169,7 +159,6 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
         gaugeValue             = new SimpleDoubleProperty(0);
         currentValue           = new SimpleDoubleProperty(0);
         lcdValue               = new SimpleDoubleProperty(0);
-        currentLcdValue        = new SimpleDoubleProperty(0);
         glowPulse              = new FadeTransition(Duration.millis(800), glowOn);
         pointerRotation        = new Rotate();
         isDirty                = false;
@@ -345,20 +334,6 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
             lcdValue.bind(control.valueProperty());
         }
 
-        if (!lcd.visibleProperty().isBound()) {
-            lcd.visibleProperty().bind(control.lcdVisibleProperty());
-        }
-
-        if (!lcdContent.visibleProperty().isBound()) {
-            lcdContent.visibleProperty().bind(control.lcdVisibleProperty());
-        }
-
-        if (!lcdThresholdIndicator.visibleProperty().isBound()) {
-            if (control.isLcdThresholdVisible() && control.isLcdValueCoupled()) {
-                lcdThresholdIndicator.visibleProperty().bind(control.thresholdExceededProperty());
-            }
-        }
-
         if (!foreground.visibleProperty().isBound()) {
             foreground.visibleProperty().bind(control.foregroundVisibleProperty());
         }
@@ -412,7 +387,7 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
                     pointerRotation.setPivotX(center.getX());
                     pointerRotation.setPivotY(center.getY());
                     pointerRotation.setAngle((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
-                    pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
+                    pointer.getTransforms().add(Transform.rotate(-control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
                     pointer.getTransforms().add(pointerRotation);
                 }
 
@@ -465,14 +440,14 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
                 pointer.getTransforms().clear();
-                pointerRotation.setPivotX(center.getX());
-                pointerRotation.setPivotY(center.getY());
+                pointer.setRotate(control.getRadialRange().ANGLE_RANGE);
+                pointerRotation.setPivotX(rotationCenter.getX());
+                pointerRotation.setPivotY(rotationCenter.getY());
                 pointerRotation.setAngle(-(newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
-                pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
+                pointer.getTransforms().add(Transform.rotate(-control.getRadialRange().ANGLE_RANGE + control.getRadialRange().ROTATION_OFFSET, rotationCenter.getX(), rotationCenter.getY()));
                 pointer.getTransforms().add(pointerRotation);
 
                 currentValue.set(newValue.doubleValue());
-                currentLcdValue.set(control.isLcdValueCoupled() ? currentValue.get() : control.getLcdValue());
                 if (Double.compare(currentValue.get(), control.getMinMeasuredValue()) < 0) {
                     control.setMinMeasuredValue(currentValue.get());
                 } else if (Double.compare(currentValue.get(), control.getMaxMeasuredValue()) > 0) {
@@ -485,9 +460,6 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
                 }
                 if (!control.isThresholdExceeded()) {
                     ledOn.setOpacity(0.0);
-                }
-                if (control.isLcdVisible()) {
-                    drawLcdContent();
                 }
             }
         });
@@ -515,11 +487,6 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
             drawPointer();
         } else if (PROPERTY == "FOREGROUND_TYPE") {
             drawCircularForeground(control, foreground, gaugeBounds);
-        } else if (PROPERTY == "LCD_DESIGN") {
-            drawCircularLcd(control, lcd, gaugeBounds);
-            drawLcdContent();
-        } else if (PROPERTY == "LCD_NUMBER_SYSTEM") {
-            drawLcdContent();
         } else if (PROPERTY == "USER_LED_BLINKING") {
             if (userLedOff.isVisible() && userLedOn.isVisible()) {
                 if (control.isUserLedBlinking()) {
@@ -572,18 +539,18 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
                 glowPulse.stop();
                 glowOn.setOpacity(0.0);
             }
-
         } else if (PROPERTY == "RANGE") {
             drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
         } else if (PROPERTY.equals("MIN_MEASURED_VALUE")) {
-            final double ZERO_OFFSET = 180 + control.getRadialRange().ROTATION_OFFSET;
+            final double ZERO_OFFSET = -45 - control.getMinValue() * control.getAngleStep();
+            minMeasured.setRotate(control.getRadialRange().ANGLE_RANGE);
             minMeasured.getTransforms().clear();
-            minMeasured.getTransforms().add(Transform.rotate(ZERO_OFFSET - (control.getMinMeasuredValue() - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getY()));
-
+            minMeasured.getTransforms().add(Transform.rotate(-ZERO_OFFSET - control.getMinMeasuredValue() * control.getAngleStep(), rotationCenter.getX(), rotationCenter.getY()));
         } else if (PROPERTY == "MAX_MEASURED_VALUE") {
-            final double ZERO_OFFSET = 180 + control.getRadialRange().ROTATION_OFFSET;
+            final double ZERO_OFFSET = -45 - control.getMinValue() * control.getAngleStep();
+            maxMeasured.setRotate(control.getRadialRange().ANGLE_RANGE);
             maxMeasured.getTransforms().clear();
-            maxMeasured.getTransforms().add(Transform.rotate(ZERO_OFFSET - (control.getMaxMeasuredValue() - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getY()));
+            maxMeasured.getTransforms().add(Transform.rotate(-ZERO_OFFSET - control.getMaxMeasuredValue() * control.getAngleStep(), rotationCenter.getX(), rotationCenter.getY()));
         } else if (PROPERTY == "TREND") {
             drawCircularTrend(control, trend, gaugeBounds);
         }
@@ -598,7 +565,8 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
         calcGaugeBounds();
         setTranslateX(framelessOffset.getX());
         setTranslateY(framelessOffset.getY());
-        center = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getHeight() * 0.265);
+        center         = new Point2D(gaugeBounds.getWidth() * 0.265, gaugeBounds.getHeight() * 0.5);
+        rotationCenter = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getHeight() * 0.735);
         getChildren().clear();
         drawCircularFrame(control, frame, gaugeBounds);
         drawCircularBackground(control, background, gaugeBounds);
@@ -616,8 +584,6 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
         drawCircularGlowOn(control, glowOn, glowColors, gaugeBounds);
         drawMinMeasuredIndicator();
         drawMaxMeasuredIndicator();
-        drawCircularLcd(control, lcd, gaugeBounds);
-        drawLcdContent();
         drawPointer();
         drawCircularKnobs(control, knobs, center, gaugeBounds);
         drawCircularForeground(control, foreground, gaugeBounds);
@@ -639,8 +605,6 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
                              minMeasured,
                              maxMeasured,
                              indicators,
-                             lcd,
-                             lcdContent,
                              pointer,
                              knobs,
                              foreground);
@@ -654,7 +618,7 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
         super.layoutChildren();
     }
 
-    @Override public RadialQuarterS getSkinnable() {
+    @Override public RadialQuarterE getSkinnable() {
         return control;
     }
 
@@ -678,30 +642,6 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
         return super.computePrefWidth(prefHeight);
     }
 
-    private String formatLcdValue(final double VALUE) {
-        final StringBuilder DEC_BUFFER = new StringBuilder(16);
-        DEC_BUFFER.append("0");
-        final int lcdDecimals = control.getLcdDecimals();
-        final boolean lcdScientificFormatEnabled = false;
-
-        if (lcdDecimals > 0) {
-            DEC_BUFFER.append(".");
-        }
-
-        for (int i = 0; i < lcdDecimals; i++) {
-            DEC_BUFFER.append("0");
-        }
-
-        if (lcdScientificFormatEnabled) {
-            DEC_BUFFER.append("E0");
-        }
-
-        DEC_BUFFER.trimToSize();
-        final java.text.DecimalFormat DEC_FORMAT = new java.text.DecimalFormat(DEC_BUFFER.toString(), new java.text.DecimalFormatSymbols(java.util.Locale.US));
-
-        return DEC_FORMAT.format(VALUE);
-    }
-
     private void calcGaugeBounds() {
         if (control.isFrameVisible()) {
             gaugeBounds.setWidth(control.getPrefWidth());
@@ -719,7 +659,9 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
         final double INNER_RADIUS = control.isExpandedSections() ? OUTER_RADIUS - control.getPrefWidth() * 0.12 : OUTER_RADIUS - control.getPrefWidth() * 0.04;
         final Shape INNER = new Circle(center.getX(), center.getY(), INNER_RADIUS);
         final double ANGLE_OFFSET = control.getMinValue() * control.getAngleStep() + control.getRadialRange().ROTATION_OFFSET;
+
         final double ZERO_OFFSET = -45 - control.getMinValue() * control.getAngleStep();
+
         for (final Section section : control.getSections()) {
             final double SECTION_START = section.getStart() < control.getMinValue() ? control.getMinValue() : section.getStart();
             final double SECTION_STOP = section.getStop() > control.getMaxValue() ? control.getMaxValue() : section.getStop();
@@ -745,9 +687,9 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
         final double INNER_RADIUS = control.isExpandedSections() ? control.getPrefWidth() * 0.12 : control.getPrefWidth() * 0.04;
         final double RADIUS = OUTER_RADIUS - INNER_RADIUS;
         final double ANGLE_OFFSET = control.getMinValue() * control.getAngleStep() + control.getRadialRange().ROTATION_OFFSET;
-        final Rectangle SUBTRACT = new Rectangle(0, 0,
-                                                 control.getPrefWidth(), control.getPrefHeight() / 2.2);
+
         final double ZERO_OFFSET = -45 - control.getMinValue() * control.getAngleStep();
+
         for (final Section area : control.getAreas()) {
             final double AREA_START = area.getStart() < control.getMinValue() ? control.getMinValue() : area.getStart();
             final double AREA_STOP = area.getStop() > control.getMaxValue() ? control.getMaxValue() : area.getStop();
@@ -762,9 +704,8 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
             ARC.setRadiusY(RADIUS);
             ARC.setStartAngle(ANGLE_OFFSET + ANGLE_START);
             ARC.setLength(ANGLE_EXTEND);
-            final Shape AREA = Shape.subtract(ARC, SUBTRACT);
 
-            area.setFilledArea(AREA);
+            area.setFilledArea(ARC);
         }
     }
 
@@ -776,7 +717,6 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
 
         final Rectangle IBOUNDS = new Rectangle(0, 0, SIZE, SIZE);
         IBOUNDS.setOpacity(0.0);
-        IBOUNDS.setStroke(null);
         titleAndUnit.getChildren().add(IBOUNDS);
 
         final Font TITLE_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.046728972 * SIZE));
@@ -784,8 +724,8 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
         title.setTextOrigin(VPos.BOTTOM);
         title.setFont(TITLE_FONT);
         title.setText(control.getTitle());
-        title.setX(((SIZE - title.getLayoutBounds().getWidth()) / 2.0));
-        title.setY(0.84 * SIZE);
+        title.setX(((SIZE * (0.75) - title.getLayoutBounds().getWidth()) / 2.0));
+        title.setY(0.3 * SIZE + title.getLayoutBounds().getHeight());
         title.setId(control.getBackgroundDesign().CSS_TEXT);
 
         final Font UNIT_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.046728972 * SIZE));
@@ -793,8 +733,8 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
         unit.setTextOrigin(VPos.BOTTOM);
         unit.setFont(UNIT_FONT);
         unit.setText(control.getUnit());
-        unit.setX((SIZE - unit.getLayoutBounds().getWidth()) / 2.0);
-        unit.setY(0.635 * SIZE);
+        unit.setX(((SIZE * 0.75) - unit.getLayoutBounds().getWidth()) / 2.0);
+        unit.setY(0.365 * SIZE + unit.getLayoutBounds().getHeight());
         unit.setId(control.getBackgroundDesign().CSS_TEXT);
 
         titleAndUnit.getChildren().addAll(title, unit);
@@ -809,10 +749,9 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
 
         final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
-        IBOUNDS.setStroke(null);
         threshold.getChildren().add(IBOUNDS);
 
-        final Path THRESHOLD = createTriangleShape(0.03 * WIDTH, 0.03 * HEIGHT, true);
+        final Path THRESHOLD = createTriangleShape(0.03 * WIDTH, 0.03 * HEIGHT, false);
         THRESHOLD.setStrokeType(StrokeType.CENTERED);
         THRESHOLD.setStrokeLineCap(StrokeLineCap.ROUND);
         THRESHOLD.setStrokeLineJoin(StrokeLineJoin.ROUND);
@@ -823,13 +762,14 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
         THRESHOLD.setId("threshold-gradient");
 
         THRESHOLD.setTranslateX(0.485 * WIDTH);
-        THRESHOLD.setTranslateY(0.72 * HEIGHT);
+        THRESHOLD.setTranslateY(0.25 * HEIGHT);
 
         threshold.getChildren().addAll(THRESHOLD);
 
-        final double ZERO_OFFSET = 180 + control.getRadialRange().ROTATION_OFFSET;
+        final double ZERO_OFFSET = -45 - control.getMinValue() * control.getAngleStep();
+        threshold.setRotate(control.getRadialRange().ANGLE_RANGE);
         threshold.getTransforms().clear();
-        threshold.getTransforms().add(Transform.rotate(ZERO_OFFSET - (control.getThreshold() - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getY()));
+        threshold.getTransforms().add(Transform.rotate(-ZERO_OFFSET - control.getThreshold() * control.getAngleStep(), rotationCenter.getX(), rotationCenter.getY()));
     }
 
     public void drawMinMeasuredIndicator() {
@@ -844,18 +784,19 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
         IBOUNDS.setStroke(null);
         minMeasured.getChildren().add(IBOUNDS);
 
-        final Path MIN_MEASURED = createTriangleShape(0.03 * WIDTH, 0.035 * HEIGHT, false);
+        final Path MIN_MEASURED = createTriangleShape(0.03 * WIDTH, 0.035 * HEIGHT, true);
         MIN_MEASURED.setFill(Color.color(0.0, 0.0, 0.8));
         MIN_MEASURED.setStroke(null);
 
         MIN_MEASURED.setTranslateX(0.485 * WIDTH);
-        MIN_MEASURED.setTranslateY(0.75 * HEIGHT);
+        MIN_MEASURED.setTranslateY(0.21 * HEIGHT);
 
         minMeasured.getChildren().add(MIN_MEASURED);
 
-        final double ZERO_OFFSET = 180 + control.getRadialRange().ROTATION_OFFSET;
+        final double ZERO_OFFSET = -45 - control.getMinValue() * control.getAngleStep();
+        minMeasured.setRotate(control.getRadialRange().ANGLE_RANGE);
         minMeasured.getTransforms().clear();
-        minMeasured.getTransforms().add(Transform.rotate(ZERO_OFFSET - (control.getMinMeasuredValue() - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getY()));
+        minMeasured.getTransforms().add(Transform.rotate(-ZERO_OFFSET - control.getMinMeasuredValue() * control.getAngleStep(), rotationCenter.getX(), rotationCenter.getY()));
     }
 
     public void drawMaxMeasuredIndicator() {
@@ -867,21 +808,21 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
 
         final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
-        IBOUNDS.setStroke(null);
         maxMeasured.getChildren().add(IBOUNDS);
 
-        final Path MAX_MEASURED = createTriangleShape(0.03 * WIDTH, 0.035 * HEIGHT, false);
+        final Path MAX_MEASURED = createTriangleShape(0.03 * WIDTH, 0.035 * HEIGHT, true);
         MAX_MEASURED.setFill(Color.color(0.8, 0.0, 0.0));
         MAX_MEASURED.setStroke(null);
 
         MAX_MEASURED.setTranslateX(0.485 * WIDTH);
-        MAX_MEASURED.setTranslateY(0.75 * HEIGHT);
+        MAX_MEASURED.setTranslateY(0.21 * HEIGHT);
 
         maxMeasured.getChildren().add(MAX_MEASURED);
 
-        final double ZERO_OFFSET = 180 + control.getRadialRange().ROTATION_OFFSET;
+        final double ZERO_OFFSET = -45 - control.getMinValue() * control.getAngleStep();
+        maxMeasured.setRotate(control.getRadialRange().ANGLE_RANGE);
         maxMeasured.getTransforms().clear();
-        maxMeasured.getTransforms().add(Transform.rotate(ZERO_OFFSET - (control.getMaxMeasuredValue() - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getY()));
+        maxMeasured.getTransforms().add(Transform.rotate(-ZERO_OFFSET - control.getMaxMeasuredValue() * control.getAngleStep(), rotationCenter.getX(), rotationCenter.getY()));
     }
 
     public void drawPointer() {
@@ -893,13 +834,10 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
 
         final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
-        IBOUNDS.setStroke(null);
         pointer.getChildren().addAll(IBOUNDS);
 
         final Path POINTER = new Path();
         final Path POINTER_FRONT = new Path();
-        POINTER.setTranslateY(-SIZE * 0.465);
-        POINTER_FRONT.setTranslateY(-SIZE * 0.465);
         POINTER.setSmooth(true);
         POINTER.getStyleClass().add("root");
         POINTER.setStyle("-fx-value: " + control.getValueColor().CSS);
@@ -1260,81 +1198,6 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
             pointer.getChildren().add(POINTER_FRONT);
         }
 
-        pointer.getTransforms().clear();
-        pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
-    }
-
-    public void drawLcdContent() {
-        final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
-        lcdContent.getChildren().clear();
-
-        final Rectangle IBOUNDS = new Rectangle(0, 0, SIZE, SIZE);
-        IBOUNDS.setOpacity(0.0);
-        IBOUNDS.setStroke(null);
-        lcdContent.getChildren().add(IBOUNDS);
-
-        final Rectangle LCD_FRAME = new Rectangle(((SIZE - SIZE * control.getRadialRange().LCD_FACTORS.getX()) / 2.0), (SIZE * control.getRadialRange().LCD_FACTORS.getY()), (SIZE * control.getRadialRange().LCD_FACTORS.getWidth()), (SIZE * control.getRadialRange().LCD_FACTORS.getHeight()));
-
-        final Font LCD_UNIT_FONT = Font.font(control.getLcdUnitFont(), FontWeight.NORMAL, (0.4 * LCD_FRAME.getLayoutBounds().getHeight()));
-
-        final Font LCD_VALUE_FONT;
-        final double UNIT_Y_OFFSET;
-        if (control.isLcdDigitalFontEnabled()) {
-            LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/digital.ttf"), (0.75 * LCD_FRAME.getLayoutBounds().getHeight()));
-            UNIT_Y_OFFSET = 1.5;
-        } else {
-            LCD_VALUE_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
-            UNIT_Y_OFFSET = 2.0;
-        }
-
-        lcdValueString.setFont(LCD_VALUE_FONT);
-        lcdUnitString.setFont(LCD_UNIT_FONT);
-
-        // Unit
-        lcdUnitString.setText(control.isLcdValueCoupled() ? control.getUnit() : control.getLcdUnit());
-        lcdUnitString.setTextOrigin(VPos.BOTTOM);
-        lcdUnitString.setTextAlignment(TextAlignment.RIGHT);
-        if (!lcdUnitString.visibleProperty().isBound()) {
-            lcdUnitString.visibleProperty().bind(control.lcdUnitVisibleProperty());
-        }
-        if (control.isLcdUnitVisible()) {
-            lcdUnitString.setX(LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdUnitString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0625);
-            lcdUnitString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / UNIT_Y_OFFSET - (lcdValueString.getLayoutBounds().getHeight() * 0.05));
-        }
-        lcdUnitString.getStyleClass().add("lcd");
-        lcdUnitString.setStyle(control.getLcdDesign().CSS);
-        lcdUnitString.setId("lcd-text");
-        lcdUnitString.setStroke(null);
-
-        // Value
-        switch (control.getLcdNumberSystem()) {
-            case HEXADECIMAL:
-                lcdValueString.setText(Integer.toHexString((int) currentLcdValue.get()).toUpperCase());
-                break;
-
-            case OCTAL:
-                lcdValueString.setText(Integer.toOctalString((int) currentLcdValue.get()).toUpperCase());
-                break;
-
-            case DECIMAL:
-
-            default:
-                lcdValueString.setText(formatLcdValue(currentLcdValue.get()));
-                break;
-        }
-        if (control.isLcdUnitVisible()) {
-            lcdValueString.setX((LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdUnitString.getLayoutBounds().getWidth() - lcdValueString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0833333333));
-        } else {
-            lcdValueString.setX((LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdValueString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0625));
-        }
-        lcdValueString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / 2.0);
-        lcdValueString.setTextOrigin(VPos.BOTTOM);
-        lcdValueString.setTextAlignment(TextAlignment.RIGHT);
-        lcdValueString.getStyleClass().add("lcd");
-        lcdValueString.setStyle(control.getLcdDesign().CSS);
-        lcdValueString.setId("lcd-text");
-        lcdValueString.setStroke(null);
-
-        lcdContent.getChildren().addAll(lcdUnitString, lcdValueString);
+        pointer.setRotate(control.getRadialRange().ANGLE_RANGE);
     }
 }

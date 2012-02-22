@@ -25,15 +25,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control.gauge.skin;
+package jfxtras.labs.internal.scene.control.skin;
 
+import jfxtras.labs.internal.scene.control.behavior.LinearBehavior;
 import jfxtras.labs.scene.control.gauge.Gauge.NumberFormat;
 import jfxtras.labs.scene.control.gauge.Indicator;
 import jfxtras.labs.scene.control.gauge.Linear;
 import jfxtras.labs.scene.control.gauge.ModelEvent;
 import jfxtras.labs.scene.control.gauge.Section;
 import jfxtras.labs.scene.control.gauge.ViewModelEvent;
-import jfxtras.labs.scene.control.gauge.behavior.LinearBehavior;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
@@ -790,6 +790,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
                 frame.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
                 break;
         }
+        frame.setCache(true);
     }
 
     public void drawBackground() {
@@ -905,6 +906,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             BAR_RIGHT_BORDER.setStroke(null);
             background.getChildren().addAll(BAR_BACKGROUND, BAR_LEFT_BORDER, BAR_RIGHT_BORDER);
         }
+        background.setCache(true);
     }
 
     public void drawTitleAndUnit() {
@@ -951,6 +953,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         unit.setId(control.getBackgroundDesign().CSS_TEXT);
 
         titleAndUnit.getChildren().addAll(IBOUNDS, title, unit);
+        titleAndUnit.setCache(true);
     }
 
     public void drawGlowOff() {
@@ -988,6 +991,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         GLOW_RING.setFill(GLOW_OFF_PAINT);
         GLOW_RING.setStroke(null);
         glowOff.getChildren().addAll(GLOW_RING);
+        glowOff.setCache(true);
     }
 
     public void drawGlowOn() {
@@ -1022,6 +1026,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         GLOW_RING.effectProperty().set(GLOW_EFFECT);
 
         glowOn.getChildren().addAll(GLOW_RING);
+        glowOn.setCache(true);
     }
 
     public void drawIndicators() {
@@ -1274,6 +1279,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             LED_OFF.setLayoutY(HEIGHT * 0.5 - (LED_OFF.getLayoutBounds().getHeight()));
         }
         ledOff.getChildren().addAll(IBOUNDS_OFF, LED_OFF);
+        ledOff.setCache(true);
 
         // ON
         ledOn.getChildren().clear();
@@ -1291,6 +1297,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             LED_ON.setLayoutY(HEIGHT * 0.5 - (LED_OFF.getLayoutBounds().getHeight()));
         }
         ledOn.getChildren().addAll(IBOUNDS_ON, LED_ON);
+        ledOn.setCache(true);
     }
 
     public void drawUserLed() {
@@ -1391,6 +1398,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         LCD_MAIN.setEffect(INNER_SHADOW);
 
         lcd.getChildren().addAll(LCD_FRAME, LCD_MAIN);
+        lcd.setCache(true);
     }
 
     public void drawLcdContent() {
@@ -1646,6 +1654,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
 
         tickmarks.getChildren().addAll(MAJOR_TICKMARKS_PATH, MEDIUM_TICKMARKS_PATH, MINOR_TICKMARKS_PATH);
         tickmarks.getChildren().addAll(tickmarkLabel);
+        tickmarks.setCache(true);
     }
 
     public void drawForeground() {
@@ -1731,5 +1740,6 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         FOREGROUND.setStroke(null);
 
         foreground.getChildren().addAll(FOREGROUND);
+        foreground.setCache(true);
     }
 }
