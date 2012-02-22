@@ -25,16 +25,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control.gauge.skin;
+package jfxtras.labs.internal.scene.control.skin;
 
+import jfxtras.labs.internal.scene.control.behavior.RadialHalfSBehavior;
 import jfxtras.labs.scene.control.gauge.Gauge;
 import jfxtras.labs.scene.control.gauge.Indicator;
 import jfxtras.labs.scene.control.gauge.ModelEvent;
-import jfxtras.labs.scene.control.gauge.Radial;
-import jfxtras.labs.scene.control.gauge.RadialHalfN;
+import jfxtras.labs.scene.control.gauge.RadialHalfS;
 import jfxtras.labs.scene.control.gauge.Section;
 import jfxtras.labs.scene.control.gauge.ViewModelEvent;
-import jfxtras.labs.scene.control.gauge.behavior.RadialHalfNBehavior;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
@@ -85,12 +84,12 @@ import java.util.ArrayList;
 /**
  * Created by
  * User: hansolo
- * Date: 25.01.12
- * Time: 09:54
+ * Date: 26.01.12
+ * Time: 17:32
  */
-public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehavior> {
+public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehavior> {
     private static final Rectangle PREF_SIZE = new Rectangle(200, 130);
-    private RadialHalfN      control;
+    private RadialHalfS      control;
     private Rectangle        gaugeBounds;
     private Point2D          framelessOffset;
     private Group            frame;
@@ -133,8 +132,8 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
 
 
     // ******************** Constructors **************************************
-    public RadialHalfNSkin(final RadialHalfN CONTROL) {
-        super(CONTROL, new RadialHalfNBehavior(CONTROL));
+    public RadialHalfSSkin(final RadialHalfS CONTROL) {
+        super(CONTROL, new RadialHalfSBehavior(CONTROL));
         control                = CONTROL;
         gaugeBounds            = new Rectangle(200, 130);
         framelessOffset        = new Point2D(0, 0);
@@ -274,14 +273,14 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         noOfLeds = (int) (control.getRadialRange().ANGLE_RANGE / 5.0);
 
         double value = Double.compare(control.getValue(), control.getMinValue()) < 0 ? control.getMinValue() : (Double.compare(control.getValue(), control.getMaxValue()) > 0 ? control.getMaxValue() : control.getValue());
-        pointer.setRotate((value - control.getMinValue()) * control.getAngleStep());
-
-        addBindings();
-        addListeners();
+        pointer.setRotate(-(value - control.getMinValue()) * control.getAngleStep());
 
         control.recalcRange();
         control.setMinMeasuredValue(control.getMaxValue());
         control.setMaxMeasuredValue(control.getMinValue());
+
+        addBindings();
+        addListeners();
 
         initialized = true;
         paint();
@@ -394,12 +393,12 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                     pointerRotation.stop();
                 }
                 if (control.isValueAnimationEnabled()) {
-                    pointerRotation.setFromAngle((formerValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
-                    pointerRotation.setToAngle((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
+                    pointerRotation.setFromAngle(-(formerValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
+                    pointerRotation.setToAngle(-(newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
                     pointerRotation.setInterpolator(Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
                     pointerRotation.play();
                 } else {
-                    pointer.setRotate((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
+                    pointer.setRotate(-(newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
                 }
 
                 // Highlight sections
@@ -449,18 +448,18 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
 
         pointer.rotateProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                currentValue.set(newValue.doubleValue() / control.getAngleStep() + control.getMinValue());
+                currentValue.set(-newValue.doubleValue() / control.getAngleStep() + control.getMinValue());
 
                 if (bargraph.isVisible()) {
-                    final int CURRENT_LED_INDEX = noOfLeds - 1 - (newValue.intValue() / 5);
-                    final int FORMER_LED_INDEX = noOfLeds - 1 - (oldValue.intValue() / 5);
-                    final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int)(control.getThreshold() * control.getAngleStep() / 5.0);
+                    final int CURRENT_LED_INDEX =(newValue.intValue() / 5) * (-1);
+                    final int FORMER_LED_INDEX = (oldValue.intValue() / 5)* (-1);
+                    final int THRESHOLD_LED_INDEX = (int)(control.getThreshold() * control.getAngleStep() / 5.0);
                     if (Double.compare(control.getValue(), formerValue.doubleValue()) >= 0) {
-                        for (int i = CURRENT_LED_INDEX ; i <= FORMER_LED_INDEX ; i++) {
+                        for (int i = FORMER_LED_INDEX ; i <= CURRENT_LED_INDEX ; i++) {
                             leds.get(i).setId("bargraph-on");
                         }
                     } else {
-                        for (int i = CURRENT_LED_INDEX ; i >= FORMER_LED_INDEX ; i--) {
+                        for (int i = FORMER_LED_INDEX ; i >= CURRENT_LED_INDEX ; i--) {
                             leds.get(i).setId("bargraph-off");
                         }
                     }
@@ -563,16 +562,12 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
             }
         } else if (PROPERTY == "RANGE") {
             drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
-        } else if (PROPERTY.equals("MIN_MEASURED_VALUE")) {
-            minMeasured.getTransforms().clear();
-            minMeasured.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
-            minMeasured.getTransforms().add(Transform.rotate(-control.getMinValue() * control.getAngleStep(), center.getX(), center.getY()));
-            minMeasured.getTransforms().add(Transform.rotate(control.getMinMeasuredValue() * control.getAngleStep(), center.getX(), center.getY()));
+        }  else if (PROPERTY.equals("MIN_MEASURED_VALUE")) {
+            final double ZERO_OFFSET = -90 + control.getRadialRange().ROTATION_OFFSET;
+            minMeasured.setRotate(ZERO_OFFSET - (control.getMinMeasuredValue() - control.getMinValue()) * control.getAngleStep());
         } else if (PROPERTY == "MAX_MEASURED_VALUE") {
-            maxMeasured.getTransforms().clear();
-            maxMeasured.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
-            maxMeasured.getTransforms().add(Transform.rotate(-control.getMinValue() * control.getAngleStep(), center.getX(), center.getY()));
-            maxMeasured.getTransforms().add(Transform.rotate(control.getMaxMeasuredValue() * control.getAngleStep(), center.getX(), center.getY()));
+            final double ZERO_OFFSET = -90 + control.getRadialRange().ROTATION_OFFSET;
+            maxMeasured.setRotate(ZERO_OFFSET - (control.getMaxMeasuredValue() - control.getMinValue()) * control.getAngleStep());
         } else if (PROPERTY == "TREND") {
             drawCircularTrend(control, trend, gaugeBounds);
         } else if (PROPERTY == "SIMPLE_GRADIENT_BASE") {
@@ -589,7 +584,7 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         calcGaugeBounds();
         setTranslateX(framelessOffset.getX());
         setTranslateY(framelessOffset.getY());
-        center = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getHeight() / 1.3);
+        center = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getWidth() * 0.15);
         getChildren().clear();
         drawFrame();
         drawBackground();
@@ -609,7 +604,9 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         drawMaxMeasuredIndicator();
         drawIndicators();
         drawPointer();
-        drawCircularBargraph(control, bargraph, noOfLeds, leds, false, center, gaugeBounds);
+        bargraph.getTransforms().clear();
+        bargraph.setTranslateY(-gaugeBounds.getWidth() * 0.35);
+        drawCircularBargraph(control, bargraph, noOfLeds, leds, false, new Point2D(center.getX(), gaugeBounds.getWidth() * 0.5), gaugeBounds);
         drawCircularKnobs(control, knobs, center, gaugeBounds);
         drawForeground();
 
@@ -644,7 +641,7 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         super.layoutChildren();
     }
 
-    @Override public RadialHalfN getSkinnable() {
+    @Override public RadialHalfS getSkinnable() {
         return control;
     }
 
@@ -688,8 +685,8 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         for (final Section section : control.getSections()) {
             final double SECTION_START = section.getStart() < control.getMinValue() ? control.getMinValue() : section.getStart();
             final double SECTION_STOP = section.getStop() > control.getMaxValue() ? control.getMaxValue() : section.getStop();
-            final double ANGLE_START = Gauge.RadialRange.RADIAL_180N.SECTIONS_OFFSET - (SECTION_START * control.getAngleStep()) + (control.getMinValue() * control.getAngleStep());
-            final double ANGLE_EXTEND = -(SECTION_STOP - SECTION_START) * control.getAngleStep();
+            final double ANGLE_START = control.getRadialRange().SECTIONS_OFFSET + (SECTION_START * control.getAngleStep()) - (control.getMinValue() * control.getAngleStep());
+            final double ANGLE_EXTEND = (SECTION_STOP - SECTION_START) * control.getAngleStep();
 
             final Arc OUTER_ARC = new Arc();
             OUTER_ARC.setType(ArcType.ROUND);
@@ -713,8 +710,8 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         for (final Section area : control.getAreas()) {
             final double AREA_START = area.getStart() < control.getMinValue() ? control.getMinValue() : area.getStart();
             final double AREA_STOP = area.getStop() > control.getMaxValue() ? control.getMaxValue() : area.getStop();
-            final double ANGLE_START = Gauge.RadialRange.RADIAL_180N.SECTIONS_OFFSET - (AREA_START * control.getAngleStep()) + (control.getMinValue() * control.getAngleStep());
-            final double ANGLE_EXTEND = -(AREA_STOP - AREA_START) * control.getAngleStep();
+            final double ANGLE_START = control.getRadialRange().SECTIONS_OFFSET + (AREA_START * control.getAngleStep()) - (control.getMinValue() * control.getAngleStep());
+            final double ANGLE_EXTEND = (AREA_STOP - AREA_START) * control.getAngleStep();
 
             final Arc ARC = new Arc();
             ARC.setType(ArcType.ROUND);
@@ -744,20 +741,20 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
 
         final Path OUTER_FRAME = new Path();
         OUTER_FRAME.setFillRule(FillRule.EVEN_ODD);
-        OUTER_FRAME.getElements().add(new MoveTo(WIDTH, 0.7692307692307693 * HEIGHT));
-        OUTER_FRAME.getElements().add(new CubicCurveTo(WIDTH, 0.34615384615384615 * HEIGHT,
-                                                       0.775 * WIDTH, 0.0,
-                                                       0.5 * WIDTH, 0.0));
-        OUTER_FRAME.getElements().add(new CubicCurveTo(0.225 * WIDTH, 0.0,
-                                                       0.0, 0.34615384615384615 * HEIGHT,
-                                                       0.0, 0.7692307692307693 * HEIGHT));
-        OUTER_FRAME.getElements().add(new CubicCurveTo(0.0, 0.7692307692307693 * HEIGHT,
-                                                       0.0, HEIGHT,
-                                                       0.0, HEIGHT));
-        OUTER_FRAME.getElements().add(new LineTo(WIDTH, HEIGHT));
-        OUTER_FRAME.getElements().add(new CubicCurveTo(WIDTH, HEIGHT,
-                                                       WIDTH, 0.7692307692307693 * HEIGHT,
-                                                       WIDTH, 0.7692307692307693 * HEIGHT));
+        OUTER_FRAME.getElements().add(new MoveTo(WIDTH, 0.23076923076923078 * HEIGHT));
+        OUTER_FRAME.getElements().add(new CubicCurveTo(WIDTH, 0.6538461538461539 * HEIGHT,
+                                                       0.775 * WIDTH, HEIGHT,
+                                                       0.5 * WIDTH, HEIGHT));
+        OUTER_FRAME.getElements().add(new CubicCurveTo(0.225 * WIDTH, HEIGHT,
+                                                       0.0, 0.6538461538461539 * HEIGHT,
+            0.0, 0.23076923076923078 * HEIGHT));
+        OUTER_FRAME.getElements().add(new CubicCurveTo(0.0, 0.23076923076923078 * HEIGHT,
+                                                       0.0, 0.0,
+                                                       0.0, 0.0));
+        OUTER_FRAME.getElements().add(new LineTo(WIDTH, 0.0));
+        OUTER_FRAME.getElements().add(new CubicCurveTo(WIDTH, 0.0,
+                                                       WIDTH, 0.23076923076923078 * HEIGHT,
+                                                       WIDTH, 0.23076923076923078 * HEIGHT));
         OUTER_FRAME.getElements().add(new ClosePath());
         OUTER_FRAME.setFill(new Color(0.5176470588, 0.5176470588, 0.5176470588, 1));
         OUTER_FRAME.setStroke(null);
@@ -766,20 +763,20 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         //final Shape INNER_FRAME = Shape.subtract(new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4205607476635514 * WIDTH), SUBTRACT);
         final Path INNER_FRAME = new Path();
         INNER_FRAME.setFillRule(FillRule.EVEN_ODD);
-        INNER_FRAME.getElements().add(new MoveTo(0.07 * WIDTH, 0.7615384615384615 * HEIGHT));
-        INNER_FRAME.getElements().add(new CubicCurveTo(0.07 * WIDTH, 0.7615384615384615 * HEIGHT,
-                                                       0.07 * WIDTH, 0.8923076923076924 * HEIGHT,
-                                                       0.07 * WIDTH, 0.8923076923076924 * HEIGHT));
-        INNER_FRAME.getElements().add(new LineTo(0.92 * WIDTH, 0.8923076923076924 * HEIGHT));
-        INNER_FRAME.getElements().add(new CubicCurveTo(0.92 * WIDTH, 0.8923076923076924 * HEIGHT,
-                                                       0.92 * WIDTH, 0.7615384615384615 * HEIGHT,
-                                                       0.92 * WIDTH, 0.7615384615384615 * HEIGHT));
-        INNER_FRAME.getElements().add(new CubicCurveTo(0.92 * WIDTH, 0.4 * HEIGHT,
-                                                       0.73 * WIDTH, 0.1076923076923077 * HEIGHT,
-                                                       0.495 * WIDTH, 0.1076923076923077 * HEIGHT));
-        INNER_FRAME.getElements().add(new CubicCurveTo(0.26 * WIDTH, 0.1076923076923077 * HEIGHT,
-                                                       0.07 * WIDTH, 0.4 * HEIGHT,
-                                                       0.07 * WIDTH, 0.7615384615384615 * HEIGHT));
+        INNER_FRAME.getElements().add(new MoveTo(0.07 * WIDTH, 0.23846153846153847 * HEIGHT));
+        INNER_FRAME.getElements().add(new CubicCurveTo(0.07 * WIDTH, 0.23846153846153847 * HEIGHT,
+                                                       0.07 * WIDTH, 0.1076923076923077 * HEIGHT,
+                                                       0.07 * WIDTH, 0.1076923076923077 * HEIGHT));
+        INNER_FRAME.getElements().add(new LineTo(0.92 * WIDTH, 0.1076923076923077 * HEIGHT));
+        INNER_FRAME.getElements().add(new CubicCurveTo(0.92 * WIDTH, 0.1076923076923077 * HEIGHT,
+                                                       0.92 * WIDTH, 0.23846153846153847 * HEIGHT,
+                                                       0.92 * WIDTH, 0.23846153846153847 * HEIGHT));
+        INNER_FRAME.getElements().add(new CubicCurveTo(0.92 * WIDTH, 0.6 * HEIGHT,
+                                                       0.73 * WIDTH, 0.8923076923076924 * HEIGHT,
+                                                       0.495 * WIDTH, 0.8923076923076924 * HEIGHT));
+        INNER_FRAME.getElements().add(new CubicCurveTo(0.26 * WIDTH, 0.8923076923076924 * HEIGHT,
+                                                       0.07 * WIDTH, 0.6 * HEIGHT,
+                                                       0.07 * WIDTH, 0.23846153846153847 * HEIGHT));
         INNER_FRAME.getElements().add(new ClosePath());
         INNER_FRAME.setFill(new Color(0.6, 0.6, 0.6, 0.8));
         INNER_FRAME.setStroke(null);
@@ -787,20 +784,20 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         //final Shape MAIN_FRAME = Shape.subtract(new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4953271028037383 * WIDTH), SUBTRACT);
         final Path MAIN_FRAME = new Path();
         MAIN_FRAME.setFillRule(FillRule.EVEN_ODD);
-        MAIN_FRAME.getElements().add(new MoveTo(0.995 * WIDTH, 0.7692307692307693 * HEIGHT));
-        MAIN_FRAME.getElements().add(new CubicCurveTo(0.995 * WIDTH, 0.34615384615384615 * HEIGHT,
-                                                      0.775 * WIDTH, 0.007692307692307693 * HEIGHT,
-                                                      0.5 * WIDTH, 0.007692307692307693 * HEIGHT));
-        MAIN_FRAME.getElements().add(new CubicCurveTo(0.225 * WIDTH, 0.007692307692307693 * HEIGHT,
-                                                      0.0050 * WIDTH, 0.34615384615384615 * HEIGHT,
-                                                      0.0050 * WIDTH, 0.7692307692307693 * HEIGHT));
-        MAIN_FRAME.getElements().add(new CubicCurveTo(0.0050 * WIDTH, 0.7692307692307693 * HEIGHT,
-                                                      0.0050 * WIDTH, 0.9923076923076923 * HEIGHT,
-                                                      0.0050 * WIDTH, 0.9923076923076923 * HEIGHT));
-        MAIN_FRAME.getElements().add(new LineTo(0.995 * WIDTH, 0.9923076923076923 * HEIGHT));
-        MAIN_FRAME.getElements().add(new CubicCurveTo(0.995 * WIDTH, 0.9923076923076923 * HEIGHT,
-                                                      0.995 * WIDTH, 0.7692307692307693 * HEIGHT,
-                                                      0.995 * WIDTH, 0.7692307692307693 * HEIGHT));
+        MAIN_FRAME.getElements().add(new MoveTo(0.995 * WIDTH, 0.23076923076923078 * HEIGHT));
+        MAIN_FRAME.getElements().add(new CubicCurveTo(0.995 * WIDTH, 0.6538461538461539 * HEIGHT,
+                                                      0.775 * WIDTH, 0.9923076923076923 * HEIGHT,
+                                                      0.5 * WIDTH, 0.9923076923076923 * HEIGHT));
+        MAIN_FRAME.getElements().add(new CubicCurveTo(0.225 * WIDTH, 0.9923076923076923 * HEIGHT,
+                                                      0.0050 * WIDTH, 0.6538461538461539 * HEIGHT,
+            0.0050 * WIDTH, 0.23076923076923078 * HEIGHT));
+        MAIN_FRAME.getElements().add(new CubicCurveTo(0.0050 * WIDTH, 0.23076923076923078 * HEIGHT,
+                                                      0.0050 * WIDTH, 0.007692307692307693 * HEIGHT,
+                                                      0.0050 * WIDTH, 0.007692307692307693 * HEIGHT));
+        MAIN_FRAME.getElements().add(new LineTo(0.995 * WIDTH, 0.007692307692307693 * HEIGHT));
+        MAIN_FRAME.getElements().add(new CubicCurveTo(0.995 * WIDTH, 0.007692307692307693 * HEIGHT,
+                                                      0.995 * WIDTH, 0.23076923076923078 * HEIGHT,
+                                                      0.995 * WIDTH, 0.23076923076923078 * HEIGHT));
         MAIN_FRAME.getElements().add(new ClosePath());
         final ImageView IMAGE_VIEW;
         switch (control.getFrameDesign()) {
@@ -817,20 +814,20 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
 
                 final Path GLOSSY2 = new Path();
                 GLOSSY2.setFillRule(FillRule.EVEN_ODD);
-                GLOSSY2.getElements().add(new MoveTo(0.985 * WIDTH, 0.7692307692307693 * HEIGHT));
-                GLOSSY2.getElements().add(new CubicCurveTo(0.985 * WIDTH, 0.38461538461538464 * HEIGHT,
-                                                           0.775 * WIDTH, 0.023076923076923078 * HEIGHT,
-                                                           0.5 * WIDTH, 0.023076923076923078 * HEIGHT));
-                GLOSSY2.getElements().add(new CubicCurveTo(0.225 * WIDTH, 0.023076923076923078 * HEIGHT,
-                                                           0.015 * WIDTH, 0.38461538461538464 * HEIGHT,
-                                                           0.015 * WIDTH, 0.7692307692307693 * HEIGHT));
-                GLOSSY2.getElements().add(new CubicCurveTo(0.015 * WIDTH, 0.7692307692307693 * HEIGHT,
-                                                           0.015 * WIDTH, 0.9769230769230769 * HEIGHT,
-                                                           0.015 * WIDTH, 0.9769230769230769 * HEIGHT));
-                GLOSSY2.getElements().add(new LineTo(0.985 * WIDTH, 0.9769230769230769 * HEIGHT));
-                GLOSSY2.getElements().add(new CubicCurveTo(0.985 * WIDTH, 0.9769230769230769 * HEIGHT,
-                                                           0.985 * WIDTH, 0.7692307692307693 * HEIGHT,
-                                                           0.985 * WIDTH, 0.7692307692307693 * HEIGHT));
+                GLOSSY2.getElements().add(new MoveTo(0.985 * WIDTH, 0.23076923076923078 * HEIGHT));
+                GLOSSY2.getElements().add(new CubicCurveTo(0.985 * WIDTH, 0.6153846153846154 * HEIGHT,
+                                                           0.775 * WIDTH, 0.9769230769230769 * HEIGHT,
+                                                           0.5 * WIDTH, 0.9769230769230769 * HEIGHT));
+                GLOSSY2.getElements().add(new CubicCurveTo(0.225 * WIDTH, 0.9769230769230769 * HEIGHT,
+                                                           0.015 * WIDTH, 0.6153846153846154 * HEIGHT,
+                                                           0.015 * WIDTH, 0.23076923076923078 * HEIGHT));
+                GLOSSY2.getElements().add(new CubicCurveTo(0.015 * WIDTH, 0.23076923076923078 * HEIGHT,
+                                                           0.015 * WIDTH, 0.023076923076923078 * HEIGHT,
+                                                           0.015 * WIDTH, 0.023076923076923078 * HEIGHT));
+                GLOSSY2.getElements().add(new LineTo(0.985 * WIDTH, 0.023076923076923078 * HEIGHT));
+                GLOSSY2.getElements().add(new CubicCurveTo(0.985 * WIDTH, 0.023076923076923078 * HEIGHT,
+                                                           0.985 * WIDTH, 0.23076923076923078 * HEIGHT,
+                                                           0.985 * WIDTH, 0.23076923076923078 * HEIGHT));
                 GLOSSY2.getElements().add(new ClosePath());
                 final Paint GLOSSY2_FILL = new LinearGradient(0.5 * WIDTH, 0.03076923076923077 * HEIGHT,
                                                               0.50 * WIDTH, 0.9692307692307692 * HEIGHT,
@@ -846,20 +843,20 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
 
                 final Path GLOSSY3 = new Path();
                 GLOSSY3.setFillRule(FillRule.EVEN_ODD);
-                GLOSSY3.getElements().add(new MoveTo(0.935 * WIDTH, 0.7692307692307693 * HEIGHT));
-                GLOSSY3.getElements().add(new CubicCurveTo(0.935 * WIDTH, 0.43846153846153846 * HEIGHT,
-                                                           0.77 * WIDTH, 0.08461538461538462 * HEIGHT,
-                                                           0.495 * WIDTH, 0.08461538461538462 * HEIGHT));
-                GLOSSY3.getElements().add(new CubicCurveTo(0.22 * WIDTH, 0.08461538461538462 * HEIGHT,
-                                                           0.055 * WIDTH, 0.43846153846153846 * HEIGHT,
-                                                           0.055 * WIDTH, 0.7692307692307693 * HEIGHT));
-                GLOSSY3.getElements().add(new CubicCurveTo(0.055 * WIDTH, 0.7692307692307693 * HEIGHT,
-                                                           0.055 * WIDTH, 0.9153846153846154 * HEIGHT,
-                                                           0.055 * WIDTH, 0.9153846153846154 * HEIGHT));
-                GLOSSY3.getElements().add(new LineTo(0.935 * WIDTH, 0.9153846153846154 * HEIGHT));
-                GLOSSY3.getElements().add(new CubicCurveTo(0.935 * WIDTH, 0.9153846153846154 * HEIGHT,
-                                                           0.935 * WIDTH, 0.7692307692307693 * HEIGHT,
-                                                           0.935 * WIDTH, 0.7692307692307693 * HEIGHT));
+                GLOSSY3.getElements().add(new MoveTo(0.935 * WIDTH, 0.23076923076923078 * HEIGHT));
+                GLOSSY3.getElements().add(new CubicCurveTo(0.935 * WIDTH, 0.5692307692307692 * HEIGHT,
+                                                           0.77 * WIDTH, 0.9153846153846154 * HEIGHT,
+                                                           0.495 * WIDTH, 0.9153846153846154 * HEIGHT));
+                GLOSSY3.getElements().add(new CubicCurveTo(0.22 * WIDTH, 0.9153846153846154 * HEIGHT,
+                                                           0.055 * WIDTH, 0.5615384615384615 * HEIGHT,
+                                                           0.055 * WIDTH, 0.23076923076923078 * HEIGHT));
+                GLOSSY3.getElements().add(new CubicCurveTo(0.055 * WIDTH, 0.23076923076923078 * HEIGHT,
+                                                           0.055 * WIDTH, 0.08461538461538462 * HEIGHT,
+                                                           0.055 * WIDTH, 0.08461538461538462 * HEIGHT));
+                GLOSSY3.getElements().add(new LineTo(0.935 * WIDTH, 0.08461538461538462 * HEIGHT));
+                GLOSSY3.getElements().add(new CubicCurveTo(0.935 * WIDTH, 0.08461538461538462 * HEIGHT,
+                                                           0.935 * WIDTH, 0.23076923076923078 * HEIGHT,
+                                                           0.935 * WIDTH, 0.23076923076923078 * HEIGHT));
                 GLOSSY3.getElements().add(new ClosePath());
                 final Paint GLOSSY3_FILL = Color.color(0.9647058824, 0.9647058824, 0.9647058824, 1);
                 GLOSSY3.setFill(GLOSSY3_FILL);
@@ -867,20 +864,20 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
 
                 final Path GLOSSY4 = new Path();
                 GLOSSY4.setFillRule(FillRule.EVEN_ODD);
-                GLOSSY4.getElements().add(new MoveTo(0.065 * WIDTH, 0.7615384615384615 * HEIGHT));
-                GLOSSY4.getElements().add(new CubicCurveTo(0.065 * WIDTH, 0.7615384615384615 * HEIGHT,
-                                                           0.065 * WIDTH, 0.9 * HEIGHT,
-                                                           0.065 * WIDTH, 0.9 * HEIGHT));
-                GLOSSY4.getElements().add(new LineTo(0.925 * WIDTH, 0.9 * HEIGHT));
-                GLOSSY4.getElements().add(new CubicCurveTo(0.925 * WIDTH, 0.9 * HEIGHT,
-                                                           0.925 * WIDTH, 0.7615384615384615 * HEIGHT,
-                                                           0.925 * WIDTH, 0.7615384615384615 * HEIGHT));
-                GLOSSY4.getElements().add(new CubicCurveTo(0.925 * WIDTH, 0.3923076923076923 * HEIGHT,
-                                                           0.73 * WIDTH, 0.1 * HEIGHT,
-                                                           0.495 * WIDTH, 0.1 * HEIGHT));
-                GLOSSY4.getElements().add(new CubicCurveTo(0.26 * WIDTH, 0.1 * HEIGHT,
-                                                           0.065 * WIDTH, 0.3923076923076923 * HEIGHT,
-                                                           0.065 * WIDTH, 0.7615384615384615 * HEIGHT));
+                GLOSSY4.getElements().add(new MoveTo(0.065 * WIDTH, 0.23846153846153847 * HEIGHT));
+                GLOSSY4.getElements().add(new CubicCurveTo(0.065 * WIDTH, 0.23846153846153847 * HEIGHT,
+                                                           0.065 * WIDTH, 0.1 * HEIGHT,
+                                                           0.065 * WIDTH, 0.1 * HEIGHT));
+                GLOSSY4.getElements().add(new LineTo(0.925 * WIDTH, 0.1 * HEIGHT));
+                GLOSSY4.getElements().add(new CubicCurveTo(0.925 * WIDTH, 0.1 * HEIGHT,
+                                                           0.925 * WIDTH, 0.23846153846153847 * HEIGHT,
+                                                           0.925 * WIDTH, 0.23846153846153847 * HEIGHT));
+                GLOSSY4.getElements().add(new CubicCurveTo(0.925 * WIDTH, 0.6076923076923076 * HEIGHT,
+                                                           0.73 * WIDTH, 0.9 * HEIGHT,
+                                                           0.495 * WIDTH, 0.9 * HEIGHT));
+                GLOSSY4.getElements().add(new CubicCurveTo(0.26 * WIDTH, 0.9 * HEIGHT,
+                                                           0.065 * WIDTH, 0.6076923076923076 * HEIGHT,
+                                                           0.065 * WIDTH, 0.23846153846153847 * HEIGHT));
                 GLOSSY4.getElements().add(new ClosePath());
                 final Paint GLOSSY4_FILL = Color.color(0.2, 0.2, 0.2, 1);
                 GLOSSY4.setFill(GLOSSY4_FILL);
@@ -888,8 +885,8 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                 frame.getChildren().addAll(MAIN_FRAME, GLOSSY2, GLOSSY3, GLOSSY4);
                 break;
             case DARK_GLOSSY:
-                final Paint DARK_GLOSSY1_FILL = new LinearGradient(0.805 * WIDTH, 0.16923076923076924 * HEIGHT,
-                                                                   0.14031962568464537 * WIDTH, 1.1918159604851613 * HEIGHT,
+                final Paint DARK_GLOSSY1_FILL = new LinearGradient(0.855 * WIDTH, 0.0,
+                                                                   0.1691064222490489 * WIDTH, 1.0552208888476171 * HEIGHT,
                                                                    false, CycleMethod.NO_CYCLE,
                                                                    new Stop(0.0, Color.color(0.6745098039, 0.6745098039, 0.6784313725, 1)),
                                                                    new Stop(0.08, Color.color(0.9960784314, 0.9960784314, 1, 1)),
@@ -903,50 +900,58 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
 
                 final Path DARK_GLOSSY2 = new Path();
                 DARK_GLOSSY2.setFillRule(FillRule.EVEN_ODD);
-                DARK_GLOSSY2.getElements().add(new MoveTo(0.985 * WIDTH, 0.7692307692307693 * HEIGHT));
-                DARK_GLOSSY2.getElements().add(new CubicCurveTo(0.985 * WIDTH, 0.38461538461538464 * HEIGHT,
-                                                                0.775 * WIDTH, 0.023076923076923078 * HEIGHT,
-                                                                0.5 * WIDTH, 0.023076923076923078 * HEIGHT));
-                DARK_GLOSSY2.getElements().add(new CubicCurveTo(0.225 * WIDTH, 0.023076923076923078 * HEIGHT,
-                                                                0.015 * WIDTH, 0.38461538461538464 * HEIGHT,
-                                                                0.015 * WIDTH, 0.7692307692307693 * HEIGHT));
-                DARK_GLOSSY2.getElements().add(new CubicCurveTo(0.015 * WIDTH, 0.7692307692307693 * HEIGHT,
-                                                                0.015 * WIDTH, 0.9769230769230769 * HEIGHT,
-                                                                0.015 * WIDTH, 0.9769230769230769 * HEIGHT));
-                DARK_GLOSSY2.getElements().add(new LineTo(0.985 * WIDTH, 0.9769230769230769 * HEIGHT));
-                DARK_GLOSSY2.getElements().add(new CubicCurveTo(0.985 * WIDTH, 0.9769230769230769 * HEIGHT,
-                                                                0.985 * WIDTH, 0.7692307692307693 * HEIGHT,
-                                                                0.985 * WIDTH, 0.7692307692307693 * HEIGHT));
+                DARK_GLOSSY2.getElements().add(new MoveTo(0.985 * WIDTH, 0.23076923076923078 * HEIGHT));
+                DARK_GLOSSY2.getElements().add(new CubicCurveTo(0.985 * WIDTH, 0.6153846153846154 * HEIGHT,
+                                                                0.775 * WIDTH, 0.9769230769230769 * HEIGHT,
+                                                                0.5 * WIDTH, 0.9769230769230769 * HEIGHT));
+                DARK_GLOSSY2.getElements().add(new CubicCurveTo(0.225 * WIDTH, 0.9769230769230769 * HEIGHT,
+                                                                0.015 * WIDTH, 0.6153846153846154 * HEIGHT,
+                                                                0.015 * WIDTH, 0.23076923076923078 * HEIGHT));
+                DARK_GLOSSY2.getElements().add(new CubicCurveTo(0.015 * WIDTH, 0.23076923076923078 * HEIGHT,
+                                                                0.015 * WIDTH, 0.023076923076923078 * HEIGHT,
+                                                                0.015 * WIDTH, 0.023076923076923078 * HEIGHT));
+                DARK_GLOSSY2.getElements().add(new LineTo(0.985 * WIDTH, 0.023076923076923078 * HEIGHT));
+                DARK_GLOSSY2.getElements().add(new CubicCurveTo(0.985 * WIDTH, 0.023076923076923078 * HEIGHT,
+                                                                0.985 * WIDTH, 0.23076923076923078 * HEIGHT,
+                                                                0.985 * WIDTH, 0.23076923076923078 * HEIGHT));
                 DARK_GLOSSY2.getElements().add(new ClosePath());
-                final Paint DARK_GLOSSY2_FILL = new LinearGradient(0.5 * WIDTH, 0.03076923076923077 * HEIGHT,
-                                                                   0.50 * WIDTH, 0.9692307692307692 * HEIGHT,
+                final Paint DARK_GLOSSY2_FILL = new LinearGradient(0.505 * WIDTH, 0.023076923076923078 * HEIGHT,
+                                                                   0.5050 * WIDTH, 0.9769230769230769 * HEIGHT,
                                                                    false, CycleMethod.NO_CYCLE,
-                                                                   new Stop(0.0, Color.color(0.2588235294, 0.2588235294, 0.2588235294, 1)),
+                                                                   new Stop(0.0, Color.color(0.9764705882, 0.9764705882, 0.9764705882, 1)),
+                                                                   new Stop(1.0E-4, Color.BLACK),
                                                                    new Stop(0.41, Color.color(0.2588235294, 0.2588235294, 0.2588235294, 1)),
-                                                                   new Stop(1.0, Color.BLACK));
+                                                                   new Stop(1.0, Color.color(0.0509803922, 0.0509803922, 0.0509803922, 1)));
                 DARK_GLOSSY2.setFill(DARK_GLOSSY2_FILL);
                 DARK_GLOSSY2.setStroke(null);
 
                 final Path DARK_GLOSSY3 = new Path();
                 DARK_GLOSSY3.setFillRule(FillRule.EVEN_ODD);
-                DARK_GLOSSY3.getElements().add(new MoveTo(0.985 * WIDTH, 0.7692307692307693 * HEIGHT));
-                DARK_GLOSSY3.getElements().add(new CubicCurveTo(0.985 * WIDTH, 0.38461538461538464 * HEIGHT,
-                                                                0.775 * WIDTH, 0.023076923076923078 * HEIGHT,
-                                                                0.5 * WIDTH, 0.023076923076923078 * HEIGHT));
-                DARK_GLOSSY3.getElements().add(new CubicCurveTo(0.225 * WIDTH, 0.023076923076923078 * HEIGHT,
-                                                                0.015 * WIDTH, 0.38461538461538464 * HEIGHT,
-                                                                0.015 * WIDTH, 0.7692307692307693 * HEIGHT));
-                DARK_GLOSSY3.getElements().add(new CubicCurveTo(0.07 * WIDTH, 0.5769230769230769 * HEIGHT,
-                                                                0.285 * WIDTH, 0.3923076923076923 * HEIGHT,
-                                                                0.5 * WIDTH, 0.3923076923076923 * HEIGHT));
-                DARK_GLOSSY3.getElements().add(new CubicCurveTo(0.735 * WIDTH, 0.3923076923076923 * HEIGHT,
-                                                                0.93 * WIDTH, 0.5769230769230769 * HEIGHT,
-                                                                0.985 * WIDTH, 0.7692307692307693 * HEIGHT));
+                DARK_GLOSSY3.getElements().add(new MoveTo(0.985 * WIDTH, 0.26153846153846155 * HEIGHT));
+                DARK_GLOSSY3.getElements().add(new CubicCurveTo(0.985 * WIDTH, 0.26153846153846155 * HEIGHT,
+                                                                0.985 * WIDTH, 0.023076923076923078 * HEIGHT,
+                                                                0.985 * WIDTH, 0.023076923076923078 * HEIGHT));
+                DARK_GLOSSY3.getElements().add(new LineTo(0.015 * WIDTH, 0.023076923076923078 * HEIGHT));
+                DARK_GLOSSY3.getElements().add(new CubicCurveTo(0.015 * WIDTH, 0.023076923076923078 * HEIGHT,
+                                                                0.015 * WIDTH, 0.23076923076923078 * HEIGHT,
+                                                                0.015 * WIDTH, 0.23076923076923078 * HEIGHT));
+                DARK_GLOSSY3.getElements().add(new CubicCurveTo(0.015 * WIDTH, 0.36153846153846153 * HEIGHT,
+                                                                0.04 * WIDTH, 0.49230769230769234 * HEIGHT,
+                                                                0.08 * WIDTH, 0.6 * HEIGHT));
+                DARK_GLOSSY3.getElements().add(new CubicCurveTo(0.175 * WIDTH, 0.4153846153846154 * HEIGHT,
+                                                                0.35 * WIDTH, 0.1076923076923077 * HEIGHT,
+                                                                0.5 * WIDTH, 0.1076923076923077 * HEIGHT));
+                DARK_GLOSSY3.getElements().add(new CubicCurveTo(0.66 * WIDTH, 0.1076923076923077 * HEIGHT,
+                                                                0.83 * WIDTH, 0.4076923076923077 * HEIGHT,
+                                                                0.92 * WIDTH, 0.6 * HEIGHT));
+                DARK_GLOSSY3.getElements().add(new CubicCurveTo(0.96 * WIDTH, 0.49230769230769234 * HEIGHT,
+                                                                0.98 * WIDTH, 0.3769230769230769 * HEIGHT,
+                                                                0.985 * WIDTH, 0.26153846153846155 * HEIGHT));
                 DARK_GLOSSY3.getElements().add(new ClosePath());
                 final Paint DARK_GLOSSY3_FILL = new LinearGradient(0.5 * WIDTH, 0.03076923076923077 * HEIGHT,
-                                                                   0.5 * WIDTH, 0.7461538461538462 * HEIGHT,
+                                                                   0.5 * WIDTH, 0.6 * HEIGHT,
                                                                    false, CycleMethod.NO_CYCLE,
-                                                                   new Stop(0.0, Color.color(1, 1, 1, 1)),
+                                                                   new Stop(0.0, Color.color(0.9764705882, 0.9764705882, 0.9764705882, 1)),
                                                                    new Stop(0.26, Color.color(1, 1, 1, 0.7372549020)),
                                                                    new Stop(1.0, Color.color(1, 1, 1, 0)));
                 DARK_GLOSSY3.setFill(DARK_GLOSSY3_FILL);
@@ -954,33 +959,38 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
 
                 final Path DARK_GLOSSY4 = new Path();
                 DARK_GLOSSY4.setFillRule(FillRule.EVEN_ODD);
-                DARK_GLOSSY4.getElements().add(new MoveTo(0.065 * WIDTH, 0.7615384615384615 * HEIGHT));
-                DARK_GLOSSY4.getElements().add(new CubicCurveTo(0.065 * WIDTH, 0.7615384615384615 * HEIGHT,
-                                                                0.065 * WIDTH, 0.9 * HEIGHT,
-                                                                0.065 * WIDTH, 0.9 * HEIGHT));
-                DARK_GLOSSY4.getElements().add(new LineTo(0.925 * WIDTH, 0.9 * HEIGHT));
-                DARK_GLOSSY4.getElements().add(new CubicCurveTo(0.925 * WIDTH, 0.9 * HEIGHT,
-                                                                0.925 * WIDTH, 0.7615384615384615 * HEIGHT,
-                                                                0.925 * WIDTH, 0.7615384615384615 * HEIGHT));
-                DARK_GLOSSY4.getElements().add(new CubicCurveTo(0.925 * WIDTH, 0.3923076923076923 * HEIGHT,
-                                                                0.73 * WIDTH, 0.1 * HEIGHT,
-                                                                0.495 * WIDTH, 0.1 * HEIGHT));
-                DARK_GLOSSY4.getElements().add(new CubicCurveTo(0.26 * WIDTH, 0.1 * HEIGHT,
-                                                                0.065 * WIDTH, 0.3923076923076923 * HEIGHT,
-                                                                0.065 * WIDTH, 0.7615384615384615 * HEIGHT));
+                DARK_GLOSSY4.getElements().add(new MoveTo(0.065 * WIDTH, 0.23846153846153847 * HEIGHT));
+                DARK_GLOSSY4.getElements().add(new CubicCurveTo(0.065 * WIDTH, 0.23846153846153847 * HEIGHT,
+                                                                0.065 * WIDTH, 0.1 * HEIGHT,
+                                                                0.065 * WIDTH, 0.1 * HEIGHT));
+                DARK_GLOSSY4.getElements().add(new LineTo(0.925 * WIDTH, 0.1 * HEIGHT));
+                DARK_GLOSSY4.getElements().add(new CubicCurveTo(0.925 * WIDTH, 0.1 * HEIGHT,
+                                                                0.925 * WIDTH, 0.23846153846153847 * HEIGHT,
+                                                                0.925 * WIDTH, 0.23846153846153847 * HEIGHT));
+                DARK_GLOSSY4.getElements().add(new CubicCurveTo(0.925 * WIDTH, 0.6076923076923076 * HEIGHT,
+                                                                0.73 * WIDTH, 0.9 * HEIGHT,
+                                                                0.495 * WIDTH, 0.9 * HEIGHT));
+                DARK_GLOSSY4.getElements().add(new CubicCurveTo(0.26 * WIDTH, 0.9 * HEIGHT,
+                                                                0.065 * WIDTH, 0.6076923076923076 * HEIGHT,
+                                                                0.065 * WIDTH, 0.23846153846153847 * HEIGHT));
                 DARK_GLOSSY4.getElements().add(new ClosePath());
-                final Paint DARK_GLOSSY4_FILL = new LinearGradient(0.775 * WIDTH, 0.26153846153846155 * HEIGHT,
-                                                                   0.17435126671722642 * WIDTH, 1.1539072912819428 * HEIGHT,
+                final Paint DARK_GLOSSY4_FILL = new LinearGradient(0.805 * WIDTH, 0.1 * HEIGHT,
+                                                                   0.1755776747036804 * WIDTH, 1.035117037156343 * HEIGHT,
                                                                    false, CycleMethod.NO_CYCLE,
                                                                    new Stop(0.0, Color.color(0.6745098039, 0.6745098039, 0.6784313725, 1)),
                                                                    new Stop(0.07, Color.color(0.9568627451, 0.9568627451, 0.9607843137, 1)),
+                                                                   new Stop(0.08, Color.color(0.9960784314, 0.9960784314, 1, 1)),
                                                                    new Stop(0.52, Color.BLACK),
+                                                                   new Stop(0.5201, Color.BLACK),
                                                                    new Stop(0.55, Color.color(0.0196078431, 0.0235294118, 0.0196078431, 1)),
+                                                                   new Stop(0.56, Color.color(0.0352941176, 0.0392156863, 0.0352941176, 1)),
                                                                    new Stop(0.9, Color.color(0.9725490196, 0.9803921569, 0.9764705882, 1)),
                                                                    new Stop(0.92, Color.color(0.9058823529, 0.9137254902, 0.9098039216, 1)),
                                                                    new Stop(1.0, Color.color(0.6980392157, 0.6980392157, 0.6980392157, 1)));
                 DARK_GLOSSY4.setFill(DARK_GLOSSY4_FILL);
                 DARK_GLOSSY4.setStroke(null);
+
+
                 frame.getChildren().addAll(MAIN_FRAME, DARK_GLOSSY2, DARK_GLOSSY3, DARK_GLOSSY4);
                 break;
             default:
@@ -1019,39 +1029,39 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
 
         final Path BACKGROUND = new Path();
         BACKGROUND.setFillRule(FillRule.EVEN_ODD);
-        BACKGROUND.getElements().add(new MoveTo(0.075 * WIDTH, 0.7615384615384615 * HEIGHT));
-        BACKGROUND.getElements().add(new CubicCurveTo(0.075 * WIDTH, 0.7615384615384615 * HEIGHT,
-                                                      0.075 * WIDTH, 0.8846153846153846 * HEIGHT,
-                                                      0.075 * WIDTH, 0.8846153846153846 * HEIGHT));
-        BACKGROUND.getElements().add(new LineTo(0.915 * WIDTH, 0.8846153846153846 * HEIGHT));
-        BACKGROUND.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.8846153846153846 * HEIGHT,
-                                                      0.915 * WIDTH, 0.7615384615384615 * HEIGHT,
-                                                      0.915 * WIDTH, 0.7615384615384615 * HEIGHT));
-        BACKGROUND.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.4076923076923077 * HEIGHT,
-                                                      0.725 * WIDTH, 0.11538461538461539 * HEIGHT,
-                                                      0.495 * WIDTH, 0.11538461538461539 * HEIGHT));
-        BACKGROUND.getElements().add(new CubicCurveTo(0.265 * WIDTH, 0.11538461538461539 * HEIGHT,
-                                                      0.075 * WIDTH, 0.4076923076923077 * HEIGHT,
-                                                      0.075 * WIDTH, 0.7615384615384615 * HEIGHT));
+        BACKGROUND.getElements().add(new MoveTo(0.075 * WIDTH, 0.23846153846153847 * HEIGHT));
+        BACKGROUND.getElements().add(new CubicCurveTo(0.075 * WIDTH, 0.23846153846153847 * HEIGHT,
+                                                      0.075 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                      0.075 * WIDTH, 0.11538461538461539 * HEIGHT));
+        BACKGROUND.getElements().add(new LineTo(0.915 * WIDTH, 0.11538461538461539 * HEIGHT));
+        BACKGROUND.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                      0.915 * WIDTH, 0.23846153846153847 * HEIGHT,
+                                                      0.915 * WIDTH, 0.23846153846153847 * HEIGHT));
+        BACKGROUND.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.5923076923076923 * HEIGHT,
+                                                      0.725 * WIDTH, 0.8846153846153846 * HEIGHT,
+                                                      0.495 * WIDTH, 0.8846153846153846 * HEIGHT));
+        BACKGROUND.getElements().add(new CubicCurveTo(0.265 * WIDTH, 0.8846153846153846 * HEIGHT,
+                                                      0.075 * WIDTH, 0.5923076923076923 * HEIGHT,
+                                                      0.075 * WIDTH, 0.23846153846153847 * HEIGHT));
         BACKGROUND.getElements().add(new ClosePath());
         BACKGROUND.setStroke(null);
 
         final Path CLIP = new Path();
         CLIP.setFillRule(FillRule.EVEN_ODD);
-        CLIP.getElements().add(new MoveTo(0.075 * WIDTH, 0.7615384615384615 * HEIGHT));
-        CLIP.getElements().add(new CubicCurveTo(0.075 * WIDTH, 0.7615384615384615 * HEIGHT,
-                                                0.075 * WIDTH, 0.8846153846153846 * HEIGHT,
-                                                0.075 * WIDTH, 0.8846153846153846 * HEIGHT));
-        CLIP.getElements().add(new LineTo(0.915 * WIDTH, 0.8846153846153846 * HEIGHT));
-        CLIP.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.8846153846153846 * HEIGHT,
-                                                0.915 * WIDTH, 0.7615384615384615 * HEIGHT,
-                                                0.915 * WIDTH, 0.7615384615384615 * HEIGHT));
-        CLIP.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.4076923076923077 * HEIGHT,
-                                                0.725 * WIDTH, 0.11538461538461539 * HEIGHT,
-                                                0.495 * WIDTH, 0.11538461538461539 * HEIGHT));
-        CLIP.getElements().add(new CubicCurveTo(0.265 * WIDTH, 0.11538461538461539 * HEIGHT,
-                                                0.075 * WIDTH, 0.4076923076923077 * HEIGHT,
-                                                0.075 * WIDTH, 0.7615384615384615 * HEIGHT));
+        CLIP.getElements().add(new MoveTo(0.075 * WIDTH, 0.23846153846153847 * HEIGHT));
+        CLIP.getElements().add(new CubicCurveTo(0.075 * WIDTH, 0.23846153846153847 * HEIGHT,
+                                                0.075 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                0.075 * WIDTH, 0.11538461538461539 * HEIGHT));
+        CLIP.getElements().add(new LineTo(0.915 * WIDTH, 0.11538461538461539 * HEIGHT));
+        CLIP.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                0.915 * WIDTH, 0.23846153846153847 * HEIGHT,
+                                                0.915 * WIDTH, 0.23846153846153847 * HEIGHT));
+        CLIP.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.5923076923076923 * HEIGHT,
+                                                0.725 * WIDTH, 0.8846153846153846 * HEIGHT,
+                                                0.495 * WIDTH, 0.8846153846153846 * HEIGHT));
+        CLIP.getElements().add(new CubicCurveTo(0.265 * WIDTH, 0.8846153846153846 * HEIGHT,
+                                                0.075 * WIDTH, 0.5923076923076923 * HEIGHT,
+                                                0.075 * WIDTH, 0.23846153846153847 * HEIGHT));
         CLIP.getElements().add(new ClosePath());
 
         final ImageView IMAGE_VIEW;
@@ -1124,7 +1134,7 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         title.setFont(TITLE_FONT);
         title.setText(control.getTitle());
         title.setX(((WIDTH - title.getLayoutBounds().getWidth()) / 2.0));
-        title.setY(0.27 * WIDTH + title.getLayoutBounds().getHeight());
+        title.setY(0.315 * WIDTH + title.getLayoutBounds().getHeight());
         title.setId(control.getBackgroundDesign().CSS_TEXT);
 
         final Font UNIT_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.046728972 * WIDTH));
@@ -1133,7 +1143,7 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         unit.setFont(UNIT_FONT);
         unit.setText(control.getUnit());
         unit.setX((WIDTH - unit.getLayoutBounds().getWidth()) / 2.0);
-        unit.setY(0.335 * WIDTH + unit.getLayoutBounds().getHeight());
+        unit.setY(0.25 * WIDTH + unit.getLayoutBounds().getHeight());
         unit.setId(control.getBackgroundDesign().CSS_TEXT);
 
         titleAndUnit.getChildren().addAll(title, unit);
@@ -1148,37 +1158,37 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
 
         final Path GLOW_RING = new Path();
         GLOW_RING.setFillRule(FillRule.EVEN_ODD);
-        GLOW_RING.getElements().add(new MoveTo(0.1 * WIDTH, 0.7615384615384615 * HEIGHT));
-        GLOW_RING.getElements().add(new CubicCurveTo(0.1 * WIDTH, 0.4153846153846154 * HEIGHT,
-                                                     0.275 * WIDTH, 0.15384615384615385 * HEIGHT,
-                                                     0.495 * WIDTH, 0.15384615384615385 * HEIGHT));
-        GLOW_RING.getElements().add(new CubicCurveTo(0.715 * WIDTH, 0.15384615384615385 * HEIGHT,
-                                                     0.89 * WIDTH, 0.4153846153846154 * HEIGHT,
-                                                     0.89 * WIDTH, 0.7615384615384615 * HEIGHT));
-        GLOW_RING.getElements().add(new CubicCurveTo(0.89 * WIDTH, 0.7846153846153846 * HEIGHT,
-                                                     0.89 * WIDTH, 0.8461538461538461 * HEIGHT,
-                                                     0.89 * WIDTH, 0.8461538461538461 * HEIGHT));
-        GLOW_RING.getElements().add(new LineTo(0.1 * WIDTH, 0.8461538461538461 * HEIGHT));
-        GLOW_RING.getElements().add(new CubicCurveTo(0.1 * WIDTH, 0.8461538461538461 * HEIGHT,
-                                                     0.1 * WIDTH, 0.7846153846153846 * HEIGHT,
-                                                     0.1 * WIDTH, 0.7615384615384615 * HEIGHT));
+        GLOW_RING.getElements().add(new MoveTo(0.1 * WIDTH, 0.23846153846153847 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.1 * WIDTH, 0.5846153846153846 * HEIGHT,
+                                                     0.275 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                     0.495 * WIDTH, 0.8461538461538461 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.715 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                     0.89 * WIDTH, 0.5846153846153846 * HEIGHT,
+                                                     0.89 * WIDTH, 0.23846153846153847 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.89 * WIDTH, 0.2153846153846154 * HEIGHT,
+                                                     0.89 * WIDTH, 0.15384615384615385 * HEIGHT,
+                                                     0.89 * WIDTH, 0.15384615384615385 * HEIGHT));
+        GLOW_RING.getElements().add(new LineTo(0.1 * WIDTH, 0.15384615384615385 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.1 * WIDTH, 0.15384615384615385 * HEIGHT,
+                                                     0.1 * WIDTH, 0.2153846153846154 * HEIGHT,
+                                                     0.1 * WIDTH, 0.23846153846153847 * HEIGHT));
         GLOW_RING.getElements().add(new ClosePath());
-        GLOW_RING.getElements().add(new MoveTo(0.075 * WIDTH, 0.7615384615384615 * HEIGHT));
-        GLOW_RING.getElements().add(new CubicCurveTo(0.075 * WIDTH, 0.7846153846153846 * HEIGHT,
-                                                     0.075 * WIDTH, 0.8461538461538461 * HEIGHT,
-                                                     0.075 * WIDTH, 0.8461538461538461 * HEIGHT));
-        GLOW_RING.getElements().add(new LineTo(0.075 * WIDTH, 0.8846153846153846 * HEIGHT));
-        GLOW_RING.getElements().add(new LineTo(0.915 * WIDTH, 0.8846153846153846 * HEIGHT));
-        GLOW_RING.getElements().add(new LineTo(0.915 * WIDTH, 0.8461538461538461 * HEIGHT));
-        GLOW_RING.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.8461538461538461 * HEIGHT,
-                                                     0.915 * WIDTH, 0.7846153846153846 * HEIGHT,
-                                                     0.915 * WIDTH, 0.7615384615384615 * HEIGHT));
-        GLOW_RING.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.4076923076923077 * HEIGHT,
-                                                     0.725 * WIDTH, 0.11538461538461539 * HEIGHT,
-                                                     0.495 * WIDTH, 0.11538461538461539 * HEIGHT));
-        GLOW_RING.getElements().add(new CubicCurveTo(0.265 * WIDTH, 0.11538461538461539 * HEIGHT,
-                                                     0.075 * WIDTH, 0.4076923076923077 * HEIGHT,
-                                                     0.075 * WIDTH, 0.7615384615384615 * HEIGHT));
+        GLOW_RING.getElements().add(new MoveTo(0.075 * WIDTH, 0.23846153846153847 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.075 * WIDTH, 0.2153846153846154 * HEIGHT,
+                                                     0.075 * WIDTH, 0.15384615384615385 * HEIGHT,
+                                                     0.075 * WIDTH, 0.15384615384615385 * HEIGHT));
+        GLOW_RING.getElements().add(new LineTo(0.075 * WIDTH, 0.11538461538461539 * HEIGHT));
+        GLOW_RING.getElements().add(new LineTo(0.915 * WIDTH, 0.11538461538461539 * HEIGHT));
+        GLOW_RING.getElements().add(new LineTo(0.915 * WIDTH, 0.15384615384615385 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.15384615384615385 * HEIGHT,
+                                                     0.915 * WIDTH, 0.2153846153846154 * HEIGHT,
+                                                     0.915 * WIDTH, 0.23846153846153847 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.5923076923076923 * HEIGHT,
+                                                     0.725 * WIDTH, 0.8846153846153846 * HEIGHT,
+                                                     0.495 * WIDTH, 0.8846153846153846 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.265 * WIDTH, 0.8846153846153846 * HEIGHT,
+                                                     0.075 * WIDTH, 0.5923076923076923 * HEIGHT,
+                                                     0.075 * WIDTH, 0.23846153846153847 * HEIGHT));
         GLOW_RING.getElements().add(new ClosePath());
         final Paint GLOW_OFF_PAINT = new LinearGradient(0.495 * WIDTH, 0.11538461538461539 * HEIGHT,
                                                         0.495 * WIDTH, 0.8846153846153846 * HEIGHT,
@@ -1194,32 +1204,32 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         GLOW_RING.setFill(GLOW_OFF_PAINT);
         GLOW_RING.setStroke(null);
 
-        final Path HIGHLIGHT_UPPER_LEFT = new Path();
-        HIGHLIGHT_UPPER_LEFT.setFillRule(FillRule.EVEN_ODD);
-        HIGHLIGHT_UPPER_LEFT.getElements().add(new MoveTo(0.13 * WIDTH, 0.5153846153846153 * HEIGHT));
-        HIGHLIGHT_UPPER_LEFT.getElements().add(new CubicCurveTo(0.195 * WIDTH, 0.2846153846153846 * HEIGHT,
-                                                                0.335 * WIDTH, 0.15384615384615385 * HEIGHT,
-                                                                0.495 * WIDTH, 0.15384615384615385 * HEIGHT));
-        HIGHLIGHT_UPPER_LEFT.getElements().add(new CubicCurveTo(0.495 * WIDTH, 0.15384615384615385 * HEIGHT,
-                                                                0.495 * WIDTH, 0.11538461538461539 * HEIGHT,
-                                                                0.495 * WIDTH, 0.11538461538461539 * HEIGHT));
-        HIGHLIGHT_UPPER_LEFT.getElements().add(new CubicCurveTo(0.325 * WIDTH, 0.11538461538461539 * HEIGHT,
-                                                                0.18 * WIDTH, 0.26153846153846155 * HEIGHT,
-                                                                0.11 * WIDTH, 0.5 * HEIGHT));
-        HIGHLIGHT_UPPER_LEFT.getElements().add(new CubicCurveTo(0.11 * WIDTH, 0.5 * HEIGHT,
-                                                                0.13 * WIDTH, 0.5153846153846153 * HEIGHT,
-                                                                0.13 * WIDTH, 0.5153846153846153 * HEIGHT));
-        HIGHLIGHT_UPPER_LEFT.getElements().add(new ClosePath());
-        final Paint HIGHLIGHT_UPPER_LEFT_FILL = new RadialGradient(0, 0,
-                                                                   0.26 * WIDTH, 0.23846153846153847 * HEIGHT,
-                                                                   0.24 * WIDTH,
-                                                                   false, CycleMethod.NO_CYCLE,
-                                                                   new Stop(0.0, Color.color(1, 1, 1, 0.4)),
-                                                                   new Stop(1.0, Color.color(1, 1, 1, 0)));
-        HIGHLIGHT_UPPER_LEFT.setFill(HIGHLIGHT_UPPER_LEFT_FILL);
-        HIGHLIGHT_UPPER_LEFT.setStroke(null);
+        final Path HIGHLIGHT_LOWER_RIGHT = new Path();
+        HIGHLIGHT_LOWER_RIGHT.setFillRule(FillRule.EVEN_ODD);
+        HIGHLIGHT_LOWER_RIGHT.getElements().add(new MoveTo(0.86 * WIDTH, 0.49230769230769234 * HEIGHT));
+        HIGHLIGHT_LOWER_RIGHT.getElements().add(new CubicCurveTo(0.795 * WIDTH, 0.7153846153846154 * HEIGHT,
+                                                                 0.66 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                                 0.5 * WIDTH, 0.8461538461538461 * HEIGHT));
+        HIGHLIGHT_LOWER_RIGHT.getElements().add(new CubicCurveTo(0.5 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                                 0.5 * WIDTH, 0.8846153846153846 * HEIGHT,
+                                                                 0.5 * WIDTH, 0.8846153846153846 * HEIGHT));
+        HIGHLIGHT_LOWER_RIGHT.getElements().add(new CubicCurveTo(0.665 * WIDTH, 0.8846153846153846 * HEIGHT,
+                                                                 0.81 * WIDTH, 0.7384615384615385 * HEIGHT,
+                                                                 0.88 * WIDTH, 0.5076923076923077 * HEIGHT));
+        HIGHLIGHT_LOWER_RIGHT.getElements().add(new CubicCurveTo(0.88 * WIDTH, 0.5076923076923077 * HEIGHT,
+                                                                 0.86 * WIDTH, 0.49230769230769234 * HEIGHT,
+                                                                 0.86 * WIDTH, 0.49230769230769234 * HEIGHT));
+        HIGHLIGHT_LOWER_RIGHT.getElements().add(new ClosePath());
+        final Paint HIGHLIGHT_LOWER_RIGHT_FILL = new RadialGradient(0, 0,
+                                                                    0.73 * WIDTH, 0.7615384615384615 * HEIGHT,
+                                                                    0.2375 * WIDTH,
+                                                                    false, CycleMethod.NO_CYCLE,
+                                                                    new Stop(0.0, Color.color(1, 1, 1, 0.5490196078)),
+                                                                    new Stop(1.0, Color.color(1, 1, 1, 0)));
+        HIGHLIGHT_LOWER_RIGHT.setFill(HIGHLIGHT_LOWER_RIGHT_FILL);
+        HIGHLIGHT_LOWER_RIGHT.setStroke(null);
 
-        glowOff.getChildren().addAll(GLOW_RING, HIGHLIGHT_UPPER_LEFT);
+        glowOff.getChildren().addAll(GLOW_RING, HIGHLIGHT_LOWER_RIGHT);
     }
 
     public void drawGlowOn() {
@@ -1231,37 +1241,37 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
 
         final Path GLOW_RING = new Path();
         GLOW_RING.setFillRule(FillRule.EVEN_ODD);
-        GLOW_RING.getElements().add(new MoveTo(0.1 * WIDTH, 0.7615384615384615 * HEIGHT));
-        GLOW_RING.getElements().add(new CubicCurveTo(0.1 * WIDTH, 0.4153846153846154 * HEIGHT,
-                                                     0.275 * WIDTH, 0.15384615384615385 * HEIGHT,
-                                                     0.495 * WIDTH, 0.15384615384615385 * HEIGHT));
-        GLOW_RING.getElements().add(new CubicCurveTo(0.715 * WIDTH, 0.15384615384615385 * HEIGHT,
-                                                     0.89 * WIDTH, 0.4153846153846154 * HEIGHT,
-                                                     0.89 * WIDTH, 0.7615384615384615 * HEIGHT));
-        GLOW_RING.getElements().add(new CubicCurveTo(0.89 * WIDTH, 0.7846153846153846 * HEIGHT,
-                                                     0.89 * WIDTH, 0.8461538461538461 * HEIGHT,
-                                                     0.89 * WIDTH, 0.8461538461538461 * HEIGHT));
-        GLOW_RING.getElements().add(new LineTo(0.1 * WIDTH, 0.8461538461538461 * HEIGHT));
-        GLOW_RING.getElements().add(new CubicCurveTo(0.1 * WIDTH, 0.8461538461538461 * HEIGHT,
-                                                     0.1 * WIDTH, 0.7846153846153846 * HEIGHT,
-                                                     0.1 * WIDTH, 0.7615384615384615 * HEIGHT));
+        GLOW_RING.getElements().add(new MoveTo(0.1 * WIDTH, 0.23846153846153847 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.1 * WIDTH, 0.5846153846153846 * HEIGHT,
+                                                     0.275 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                     0.495 * WIDTH, 0.8461538461538461 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.715 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                     0.89 * WIDTH, 0.5846153846153846 * HEIGHT,
+                                                     0.89 * WIDTH, 0.23846153846153847 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.89 * WIDTH, 0.2153846153846154 * HEIGHT,
+                                                     0.89 * WIDTH, 0.15384615384615385 * HEIGHT,
+                                                     0.89 * WIDTH, 0.15384615384615385 * HEIGHT));
+        GLOW_RING.getElements().add(new LineTo(0.1 * WIDTH, 0.15384615384615385 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.1 * WIDTH, 0.15384615384615385 * HEIGHT,
+                                                     0.1 * WIDTH, 0.2153846153846154 * HEIGHT,
+                                                     0.1 * WIDTH, 0.23846153846153847 * HEIGHT));
         GLOW_RING.getElements().add(new ClosePath());
-        GLOW_RING.getElements().add(new MoveTo(0.075 * WIDTH, 0.7615384615384615 * HEIGHT));
-        GLOW_RING.getElements().add(new CubicCurveTo(0.075 * WIDTH, 0.7846153846153846 * HEIGHT,
-                                                     0.075 * WIDTH, 0.8461538461538461 * HEIGHT,
-                                                     0.075 * WIDTH, 0.8461538461538461 * HEIGHT));
-        GLOW_RING.getElements().add(new LineTo(0.075 * WIDTH, 0.8846153846153846 * HEIGHT));
-        GLOW_RING.getElements().add(new LineTo(0.915 * WIDTH, 0.8846153846153846 * HEIGHT));
-        GLOW_RING.getElements().add(new LineTo(0.915 * WIDTH, 0.8461538461538461 * HEIGHT));
-        GLOW_RING.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.8461538461538461 * HEIGHT,
-                                                     0.915 * WIDTH, 0.7846153846153846 * HEIGHT,
-                                                     0.915 * WIDTH, 0.7615384615384615 * HEIGHT));
-        GLOW_RING.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.4076923076923077 * HEIGHT,
-                                                     0.725 * WIDTH, 0.11538461538461539 * HEIGHT,
-                                                     0.495 * WIDTH, 0.11538461538461539 * HEIGHT));
-        GLOW_RING.getElements().add(new CubicCurveTo(0.265 * WIDTH, 0.11538461538461539 * HEIGHT,
-                                                     0.075 * WIDTH, 0.4076923076923077 * HEIGHT,
-                                                     0.075 * WIDTH, 0.7615384615384615 * HEIGHT));
+        GLOW_RING.getElements().add(new MoveTo(0.075 * WIDTH, 0.23846153846153847 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.075 * WIDTH, 0.2153846153846154 * HEIGHT,
+                                                     0.075 * WIDTH, 0.15384615384615385 * HEIGHT,
+                                                     0.075 * WIDTH, 0.15384615384615385 * HEIGHT));
+        GLOW_RING.getElements().add(new LineTo(0.075 * WIDTH, 0.11538461538461539 * HEIGHT));
+        GLOW_RING.getElements().add(new LineTo(0.915 * WIDTH, 0.11538461538461539 * HEIGHT));
+        GLOW_RING.getElements().add(new LineTo(0.915 * WIDTH, 0.15384615384615385 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.15384615384615385 * HEIGHT,
+                                                     0.915 * WIDTH, 0.2153846153846154 * HEIGHT,
+                                                     0.915 * WIDTH, 0.23846153846153847 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.5923076923076923 * HEIGHT,
+                                                     0.725 * WIDTH, 0.8846153846153846 * HEIGHT,
+                                                     0.495 * WIDTH, 0.8846153846153846 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.265 * WIDTH, 0.8846153846153846 * HEIGHT,
+                                                     0.075 * WIDTH, 0.5923076923076923 * HEIGHT,
+                                                     0.075 * WIDTH, 0.23846153846153847 * HEIGHT));
         GLOW_RING.getElements().add(new ClosePath());
 
         final Paint GLOW_ON_PAINT = new RadialGradient(0, 0,
@@ -1285,26 +1295,31 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         }
         GLOW_RING.setEffect(GLOW_EFFECT);
 
-        final Path HIGHLIGHT_UPPER_LEFT = new Path();
-        HIGHLIGHT_UPPER_LEFT.setFillRule(FillRule.EVEN_ODD);
-        HIGHLIGHT_UPPER_LEFT.getElements().add(new MoveTo(0.13 * WIDTH, 0.5153846153846153 * HEIGHT));
-        HIGHLIGHT_UPPER_LEFT.getElements().add(new CubicCurveTo(0.195 * WIDTH, 0.2846153846153846 * HEIGHT,
-                                                                0.335 * WIDTH, 0.15384615384615385 * HEIGHT,
-                                                                0.495 * WIDTH, 0.15384615384615385 * HEIGHT));
-        HIGHLIGHT_UPPER_LEFT.getElements().add(new CubicCurveTo(0.495 * WIDTH, 0.15384615384615385 * HEIGHT,
-                                                                0.495 * WIDTH, 0.11538461538461539 * HEIGHT,
-                                                                0.495 * WIDTH, 0.11538461538461539 * HEIGHT));
-        HIGHLIGHT_UPPER_LEFT.getElements().add(new CubicCurveTo(0.325 * WIDTH, 0.11538461538461539 * HEIGHT,
-                                                                0.18 * WIDTH, 0.26153846153846155 * HEIGHT,
-                                                                0.11 * WIDTH, 0.5 * HEIGHT));
-        HIGHLIGHT_UPPER_LEFT.getElements().add(new CubicCurveTo(0.11 * WIDTH, 0.5 * HEIGHT,
-                                                                0.13 * WIDTH, 0.5153846153846153 * HEIGHT,
-                                                                0.13 * WIDTH, 0.5153846153846153 * HEIGHT));
-        HIGHLIGHT_UPPER_LEFT.getElements().add(new ClosePath());
-        HIGHLIGHT_UPPER_LEFT.setFill(new RadialGradient(0, 0, 0.26635514018691586 * WIDTH, 0.16355140186915887 * HEIGHT, 0.23598130841121495 * WIDTH, false, CycleMethod.NO_CYCLE, new Stop(0.0, Color.color(1, 1, 1, 0.4)), new Stop(1.0, Color.color(1, 1, 1, 0))));
-        HIGHLIGHT_UPPER_LEFT.setStroke(null);
-
-        glowOn.getChildren().addAll(GLOW_RING, HIGHLIGHT_UPPER_LEFT);
+        final Path HIGHLIGHT_LOWER_RIGHT = new Path();
+        HIGHLIGHT_LOWER_RIGHT.setFillRule(FillRule.EVEN_ODD);
+        HIGHLIGHT_LOWER_RIGHT.getElements().add(new MoveTo(0.86 * WIDTH, 0.49230769230769234 * HEIGHT));
+        HIGHLIGHT_LOWER_RIGHT.getElements().add(new CubicCurveTo(0.795 * WIDTH, 0.7153846153846154 * HEIGHT,
+                                                                 0.66 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                                 0.5 * WIDTH, 0.8461538461538461 * HEIGHT));
+        HIGHLIGHT_LOWER_RIGHT.getElements().add(new CubicCurveTo(0.5 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                                 0.5 * WIDTH, 0.8846153846153846 * HEIGHT,
+                                                                 0.5 * WIDTH, 0.8846153846153846 * HEIGHT));
+        HIGHLIGHT_LOWER_RIGHT.getElements().add(new CubicCurveTo(0.665 * WIDTH, 0.8846153846153846 * HEIGHT,
+                                                                 0.81 * WIDTH, 0.7384615384615385 * HEIGHT,
+                                                                 0.88 * WIDTH, 0.5076923076923077 * HEIGHT));
+        HIGHLIGHT_LOWER_RIGHT.getElements().add(new CubicCurveTo(0.88 * WIDTH, 0.5076923076923077 * HEIGHT,
+                                                                 0.86 * WIDTH, 0.49230769230769234 * HEIGHT,
+                                                                 0.86 * WIDTH, 0.49230769230769234 * HEIGHT));
+        HIGHLIGHT_LOWER_RIGHT.getElements().add(new ClosePath());
+        final Paint HIGHLIGHT_LOWER_RIGHT_FILL = new RadialGradient(0, 0,
+                                                                    0.73 * WIDTH, 0.7615384615384615 * HEIGHT,
+                                                                    0.2375 * WIDTH,
+                                                                    false, CycleMethod.NO_CYCLE,
+                                                                    new Stop(0.0, Color.color(1, 1, 1, 0.5490196078)),
+                                                                    new Stop(1.0, Color.color(1, 1, 1, 0)));
+        HIGHLIGHT_LOWER_RIGHT.setFill(HIGHLIGHT_LOWER_RIGHT_FILL);
+        HIGHLIGHT_LOWER_RIGHT.setStroke(null);
+        glowOn.getChildren().addAll(GLOW_RING, HIGHLIGHT_LOWER_RIGHT);
     }
 
     public void drawIndicators() {
@@ -1319,15 +1334,15 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         IBOUNDS.setStroke(null);
         indicators.getChildren().add(IBOUNDS);
 
-        indicators.getTransforms().clear();
-        indicators.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
-        indicators.getTransforms().add(Transform.rotate(-control.getMinValue() * control.getAngleStep(), center.getX(), center.getY()));
-
         for (final Indicator indicator : control.getIndicators()) {
             if (Double.compare(indicator.getIndicatorValue(), control.getMinValue()) >= 0 && Double.compare(indicator.getIndicatorValue(), control.getMaxValue()) <= 0) {
-                final Group ARROW = createIndicator(WIDTH, indicator, new Point2D(WIDTH * 0.4813084112, WIDTH * 0.0841121495));
-                ARROW.getTransforms().add(Transform.rotate(indicator.getIndicatorValue() * control.getAngleStep(), center.getX(), center.getY()));
-                indicators.getChildren().add(ARROW);
+                final Group ARROW_GROUP = createIndicator(WIDTH, indicator, new Point2D(WIDTH * 0.4813084112, WIDTH * 0.0841121495));
+                ARROW_GROUP.getTransforms().clear();
+                ARROW_GROUP.setTranslateY(-WIDTH * 0.35);
+                ARROW_GROUP.getTransforms().add(Transform.rotate(-control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getX()));
+                final double ZERO_OFFSET = -90 + control.getRadialRange().ROTATION_OFFSET;
+                ARROW_GROUP.getTransforms().add(Transform.rotate(ZERO_OFFSET - (indicator.getIndicatorValue() - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getX()));
+                indicators.getChildren().add(ARROW_GROUP);
             }
         }
     }
@@ -1360,15 +1375,15 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         threshold.getChildren().addAll(THRESHOLD);
 
         threshold.getTransforms().clear();
-        threshold.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
-        threshold.getTransforms().add(Transform.rotate(-control.getMinValue() * control.getAngleStep(), center.getX(), center.getY()));
-        threshold.getTransforms().add(Transform.rotate(control.getThreshold() * control.getAngleStep(), center.getX(), center.getY()));
+        threshold.setTranslateY(-WIDTH * 0.35);
+        threshold.getTransforms().add(Transform.rotate(-control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getX()));
+        final double ZERO_OFFSET = -90 + control.getRadialRange().ROTATION_OFFSET;
+        threshold.getTransforms().add(Transform.rotate(ZERO_OFFSET - (control.getThreshold() - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getX()));
     }
 
     public void drawMinMeasuredIndicator() {
-        final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
         final double WIDTH = gaugeBounds.getWidth();
-        final double HEIGHT = gaugeBounds.getHeight();
+        final double HEIGHT = gaugeBounds.getWidth();
 
         minMeasured.getChildren().clear();
 
@@ -1387,15 +1402,15 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         minMeasured.getChildren().add(MIN_MEASURED);
 
         minMeasured.getTransforms().clear();
-        minMeasured.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
-        minMeasured.getTransforms().add(Transform.rotate(-control.getMinValue() * control.getAngleStep(), center.getX(), center.getY()));
-        minMeasured.getTransforms().add(Transform.rotate(control.getMinMeasuredValue() * control.getAngleStep(), center.getX(), center.getY()));
+        minMeasured.setTranslateY(-WIDTH * 0.35);
+        minMeasured.getTransforms().add(Transform.rotate(-control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getX()));
+        final double ZERO_OFFSET = -90 + control.getRadialRange().ROTATION_OFFSET;
+        minMeasured.setRotate(ZERO_OFFSET - (control.getMinMeasuredValue() - control.getMinValue()) * control.getAngleStep());
     }
 
     public void drawMaxMeasuredIndicator() {
-        final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
         final double WIDTH = gaugeBounds.getWidth();
-        final double HEIGHT = gaugeBounds.getHeight();
+        final double HEIGHT = gaugeBounds.getWidth();
 
         maxMeasured.getChildren().clear();
 
@@ -1414,9 +1429,10 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         maxMeasured.getChildren().add(MAX_MEASURED);
 
         maxMeasured.getTransforms().clear();
-        maxMeasured.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
-        maxMeasured.getTransforms().add(Transform.rotate(-control.getMinValue() * control.getAngleStep(), center.getX(), center.getY()));
-        maxMeasured.getTransforms().add(Transform.rotate(control.getMaxMeasuredValue() * control.getAngleStep(), center.getX(), center.getY()));
+        maxMeasured.setTranslateY(-WIDTH * 0.35);
+        maxMeasured.getTransforms().add(Transform.rotate(-control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getX()));
+        final double ZERO_OFFSET = -90 + control.getRadialRange().ROTATION_OFFSET;
+        maxMeasured.setRotate(ZERO_OFFSET - (control.getMaxMeasuredValue() - control.getMinValue()) * control.getAngleStep());
     }
 
     public void drawPointer() {
@@ -1781,7 +1797,13 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         }
 
         pointer.getTransforms().clear();
-        pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
+        pointer.setTranslateY(-WIDTH * 0.35);
+        pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getX()));
+    }
+
+    private static void drawRadialTicks(final Path TICKMARKS_PATH, final Point2D INNER_POINT, final Point2D OUTER_POINT) {
+        TICKMARKS_PATH.getElements().add(new MoveTo(INNER_POINT.getX(), INNER_POINT.getY()));
+        TICKMARKS_PATH.getElements().add(new LineTo(OUTER_POINT.getX(), OUTER_POINT.getY()));
     }
 
     public void drawForeground() {
@@ -1800,49 +1822,52 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         switch (control.getForegroundType()) {
             case TYPE2:
                 FOREGROUND.setFillRule(FillRule.EVEN_ODD);
-                FOREGROUND.getElements().add(new MoveTo(0.495 * WIDTH, 0.5923076923076923 * HEIGHT));
-                FOREGROUND.getElements().add(new CubicCurveTo(0.65 * WIDTH, 0.47692307692307695 * HEIGHT,
-                                                              0.73 * WIDTH, 0.47692307692307695 * HEIGHT,
-                                                              0.87 * WIDTH, 0.47692307692307695 * HEIGHT));
-                FOREGROUND.getElements().add(new CubicCurveTo(0.765 * WIDTH, 0.16153846153846155 * HEIGHT,
-                                                              0.52 * WIDTH, 0.023076923076923078 * HEIGHT,
-                                                              0.31 * WIDTH, 0.18461538461538463 * HEIGHT));
-                FOREGROUND.getElements().add(new CubicCurveTo(0.155 * WIDTH, 0.3076923076923077 * HEIGHT,
-                                                              0.075 * WIDTH, 0.5307692307692308 * HEIGHT,
-                                                              0.08 * WIDTH, 0.7692307692307693 * HEIGHT));
-                FOREGROUND.getElements().add(new CubicCurveTo(0.085 * WIDTH, 0.8615384615384616 * HEIGHT,
-                                                              0.35 * WIDTH, 0.7076923076923077 * HEIGHT,
-                                                              0.495 * WIDTH, 0.5923076923076923 * HEIGHT));
+                FOREGROUND.getElements().add(new MoveTo(0.495 * WIDTH, 0.36923076923076925 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.65 * WIDTH, 0.49230769230769234 * HEIGHT,
+                                                              0.73 * WIDTH, 0.4846153846153846 * HEIGHT,
+                                                              0.87 * WIDTH, 0.4846153846153846 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.765 * WIDTH, 0.8 * HEIGHT,
+                                                              0.52 * WIDTH, 0.9461538461538461 * HEIGHT,
+                                                              0.31 * WIDTH, 0.7769230769230769 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.155 * WIDTH, 0.6615384615384615 * HEIGHT,
+                                                              0.075 * WIDTH, 0.4307692307692308 * HEIGHT,
+                                                              0.08 * WIDTH, 0.19230769230769232 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.085 * WIDTH, 0.1 * HEIGHT,
+                                                              0.35 * WIDTH, 0.25384615384615383 * HEIGHT,
+                                                              0.495 * WIDTH, 0.36923076923076925 * HEIGHT));
                 FOREGROUND.getElements().add(new ClosePath());
-                FOREGROUND.setFill(new LinearGradient(0.31 * WIDTH, 0.19230769230769232 * HEIGHT,
-                                                      0.4915961998958187 * WIDTH, 0.7406193995005341 * HEIGHT,
+                FOREGROUND.setFill(new LinearGradient(0.495 * WIDTH, 0.23076923076923078 * HEIGHT,
+                                                      0.3072113748856438 * WIDTH, 0.7741215956054937 * HEIGHT,
                                                       false, CycleMethod.NO_CYCLE,
-                                                      new Stop(0.0, Color.color(1, 1, 1, 0.2470588235)),
-                                                      new Stop(1.0, Color.color(1, 1, 1, 0.0470588235))));
+                                                      new Stop(0.0, Color.color(1, 1, 1, 0)),
+                                                      new Stop(1.0, Color.color(1, 1, 1, 0.0980392157))));
                 FOREGROUND.setStroke(null);
                 foreground.getChildren().addAll(FOREGROUND);
                 break;
             case TYPE3:
                 FOREGROUND.setFillRule(FillRule.EVEN_ODD);
-                FOREGROUND.getElements().add(new MoveTo(0.08 * WIDTH, 0.7692307692307693 * HEIGHT));
-                FOREGROUND.getElements().add(new CubicCurveTo(0.205 * WIDTH, 0.8384615384615385 * HEIGHT,
-                                                              0.455 * WIDTH, 0.8461538461538461 * HEIGHT,
-                                                              0.495 * WIDTH, 0.8461538461538461 * HEIGHT));
-                FOREGROUND.getElements().add(new CubicCurveTo(0.53 * WIDTH, 0.8461538461538461 * HEIGHT,
-                                                              0.79 * WIDTH, 0.8461538461538461 * HEIGHT,
-                                                              0.91 * WIDTH, 0.7692307692307693 * HEIGHT));
-                FOREGROUND.getElements().add(new CubicCurveTo(0.91 * WIDTH, 0.4076923076923077 * HEIGHT,
-                                                              0.735 * WIDTH, 0.11538461538461539 * HEIGHT,
-                                                              0.495 * WIDTH, 0.11538461538461539 * HEIGHT));
-                FOREGROUND.getElements().add(new CubicCurveTo(0.255 * WIDTH, 0.11538461538461539 * HEIGHT,
-                                                              0.08 * WIDTH, 0.4076923076923077 * HEIGHT,
-                                                              0.08 * WIDTH, 0.7692307692307693 * HEIGHT));
+                FOREGROUND.getElements().add(new MoveTo(0.08 * WIDTH, 0.26153846153846155 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.09 * WIDTH, 0.6 * HEIGHT,
+                                                              0.27 * WIDTH, 0.8692307692307693 * HEIGHT,
+                                                              0.495 * WIDTH, 0.8692307692307693 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.72 * WIDTH, 0.8692307692307693 * HEIGHT,
+                                                              0.9 * WIDTH, 0.6 * HEIGHT,
+                                                              0.91 * WIDTH, 0.26153846153846155 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.865 * WIDTH, 0.5538461538461539 * HEIGHT,
+                                                              0.695 * WIDTH, 0.7692307692307693 * HEIGHT,
+                                                              0.495 * WIDTH, 0.7692307692307693 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.295 * WIDTH, 0.7692307692307693 * HEIGHT,
+                                                              0.125 * WIDTH, 0.5538461538461539 * HEIGHT,
+                                                              0.08 * WIDTH, 0.26153846153846155 * HEIGHT));
                 FOREGROUND.getElements().add(new ClosePath());
-                FOREGROUND.setFill(new LinearGradient(0.495 * WIDTH, 0.13076923076923078 * HEIGHT,
-                                                      0.495 * WIDTH, 0.8461538461538461 * HEIGHT,
+                FOREGROUND.setFill(new RadialGradient(0, 0,
+                                                      0.495 * WIDTH, 0.23076923076923078 * HEIGHT,
+                                                      0.415 * WIDTH,
                                                       false, CycleMethod.NO_CYCLE,
-                                                      new Stop(0.0, Color.color(1, 1, 1, 0.2470588235)),
-                                                      new Stop(1.0, Color.color(1, 1, 1, 0.0470588235))));
+                                                      new Stop(0.0, Color.color(1, 1, 1, 0)),
+                                                      new Stop(0.9, Color.color(1, 1, 1, 0.2274509804)),
+                                                      new Stop(0.96, Color.color(1, 1, 1, 0)),
+                                                      new Stop(1.0, Color.color(1, 1, 1, 0))));
                 FOREGROUND.setStroke(null);
                 foreground.getChildren().addAll(FOREGROUND);
                 break;
@@ -1853,25 +1878,22 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
             case TYPE1:
             default:
                 FOREGROUND.setFillRule(FillRule.EVEN_ODD);
-                FOREGROUND.getElements().add(new MoveTo(0.08 * WIDTH, 0.7692307692307693 * HEIGHT));
-                FOREGROUND.getElements().add(new CubicCurveTo(0.2 * WIDTH, 0.676923076923077 * HEIGHT,
-                                                              0.33 * WIDTH, 0.6230769230769231 * HEIGHT,
-                                                              0.495 * WIDTH, 0.6230769230769231 * HEIGHT));
-                FOREGROUND.getElements().add(new CubicCurveTo(0.665 * WIDTH, 0.6230769230769231 * HEIGHT,
-                                                              0.785 * WIDTH, 0.6692307692307692 * HEIGHT,
-                                                              0.91 * WIDTH, 0.7692307692307693 * HEIGHT));
-                FOREGROUND.getElements().add(new CubicCurveTo(0.91 * WIDTH, 0.4076923076923077 * HEIGHT,
-                                                              0.735 * WIDTH, 0.11538461538461539 * HEIGHT,
-                                                              0.495 * WIDTH, 0.11538461538461539 * HEIGHT));
-                FOREGROUND.getElements().add(new CubicCurveTo(0.255 * WIDTH, 0.11538461538461539 * HEIGHT,
-                                                              0.08 * WIDTH, 0.4076923076923077 * HEIGHT,
-                                                              0.08 * WIDTH, 0.7692307692307693 * HEIGHT));
+                FOREGROUND.getElements().add(new MoveTo(0.075 * WIDTH, 0.11538461538461539 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.145 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                              0.855 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                              0.915 * WIDTH, 0.11538461538461539 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.15384615384615385 * HEIGHT,
+                                                              0.735 * WIDTH, 0.2076923076923077 * HEIGHT,
+                                                              0.495 * WIDTH, 0.2076923076923077 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.255 * WIDTH, 0.2076923076923077 * HEIGHT,
+                                                              0.075 * WIDTH, 0.15384615384615385 * HEIGHT,
+                                                              0.075 * WIDTH, 0.11538461538461539 * HEIGHT));
                 FOREGROUND.getElements().add(new ClosePath());
-                FOREGROUND.setFill(new LinearGradient(0.495 * WIDTH, 0.12307692307692308 * HEIGHT,
-                                                      0.495 * WIDTH, 0.7461538461538462 * HEIGHT,
+                FOREGROUND.setFill(new LinearGradient(0.5 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                      0.5 * WIDTH, 0.2076923076923077 * HEIGHT,
                                                       false, CycleMethod.NO_CYCLE,
-                                                      new Stop(0.0, Color.color(1, 1, 1, 0.2980392157)),
-                                                      new Stop(1.0, Color.color(1, 1, 1, 0.0941176471))));
+                                                      new Stop(0.0, Color.color(1, 1, 1, 0.2470588235)),
+                                                      new Stop(1.0, Color.color(1, 1, 1, 0))));
                 FOREGROUND.setStroke(null);
                 foreground.getChildren().addAll(FOREGROUND);
                 break;

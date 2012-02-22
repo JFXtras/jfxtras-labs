@@ -25,20 +25,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control.gauge.behavior;
+package jfxtras.labs.internal.scene.control.behavior;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
-import jfxtras.labs.scene.control.gauge.LedBargraph;
+import jfxtras.labs.scene.control.gauge.Gauge;
+import javafx.scene.input.MouseEvent;
 
 
 /**
  * Created by
  * User: hansolo
- * Date: 16.02.12
- * Time: 11:30
+ * Date: 17.01.12
+ * Time: 09:15
  */
-public class LedBargraphBehavior extends BehaviorBase<LedBargraph> {
-    public LedBargraphBehavior(final LedBargraph CONTROL) {
+public class GaugeBehaviorBase<C extends Gauge> extends BehaviorBase<C> {
+
+    // ******************** Constructors **************************************
+    public GaugeBehaviorBase(final C CONTROL) {
         super(CONTROL);
     }
+
+
+    // ******************** Mouse Event Handling ******************************
+    public void mousePressed(final MouseEvent EVENT) {
+    }
+
+    public void mouseDragged(final MouseEvent EVENT) {
+    }
+
+    public void mouseReleased(final MouseEvent EVENT) {
+    }
+
+    public void mouseEntered(final MouseEvent EVENT) {
+    }
+
+    public void mouseExited(final MouseEvent EVENT) {
+        }
 }

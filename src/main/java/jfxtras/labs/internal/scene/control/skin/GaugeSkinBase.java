@@ -25,16 +25,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control.gauge.skin;
+package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
 import jfxtras.labs.scene.control.gauge.Gauge;
 import jfxtras.labs.scene.control.gauge.Gauge.KnobColor;
 import jfxtras.labs.scene.control.gauge.Indicator;
 import jfxtras.labs.scene.control.gauge.LedColor;
-import jfxtras.labs.scene.control.gauge.Radial;
 import jfxtras.labs.scene.control.gauge.Section;
-import jfxtras.labs.scene.control.gauge.behavior.GaugeBehaviorBase;
+import jfxtras.labs.internal.scene.control.behavior.GaugeBehaviorBase;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;

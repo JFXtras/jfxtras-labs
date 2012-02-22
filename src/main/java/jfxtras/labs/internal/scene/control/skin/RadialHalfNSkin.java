@@ -25,20 +25,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control.gauge.skin;
+package jfxtras.labs.internal.scene.control.skin;
 
-import jfxtras.labs.scene.control.gauge.Gauge.PointerType;
+import jfxtras.labs.internal.scene.control.behavior.RadialHalfNBehavior;
+import jfxtras.labs.scene.control.gauge.Gauge;
+import jfxtras.labs.scene.control.gauge.Indicator;
 import jfxtras.labs.scene.control.gauge.ModelEvent;
-import jfxtras.labs.scene.control.gauge.Radial;
+import jfxtras.labs.scene.control.gauge.RadialHalfN;
 import jfxtras.labs.scene.control.gauge.Section;
 import jfxtras.labs.scene.control.gauge.ViewModelEvent;
-import jfxtras.labs.scene.control.gauge.behavior.RadialBehavior;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
+import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -51,7 +51,13 @@ import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Paint;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
@@ -69,8 +75,6 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.util.Duration;
 
@@ -80,12 +84,12 @@ import java.util.ArrayList;
 /**
  * Created by
  * User: hansolo
- * Date: 02.01.12
- * Time: 17:14
+ * Date: 25.01.12
+ * Time: 09:54
  */
-public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
-    private static final Rectangle PREF_SIZE = new Rectangle(200, 200);
-    private Radial           control;
+public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehavior> {
+    private static final Rectangle PREF_SIZE = new Rectangle(200, 130);
+    private RadialHalfN      control;
     private Rectangle        gaugeBounds;
     private Point2D          framelessOffset;
     private Group            frame;
@@ -99,35 +103,24 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     private Group            glowOff;
     private Group            glowOn;
     private ArrayList<Color> glowColors;
-    private Group            lcd;
-    private Group            lcdContent;
-    private Text             lcdValueString;
-    private Text             lcdUnitString;
-    private Group            lcdThresholdIndicator;
     private Group            knobs;
     private Group            threshold;
     private Group            minMeasured;
     private Group            maxMeasured;
     private Group            pointer;
     private Group            bargraph;
-    private Group            bargraphOn;
     private Group            ledOff;
     private Group            ledOn;
     private Group            userLedOff;
     private Group            userLedOn;
     private Group            foreground;
-    private Timeline         rotationAngleTimeline;
-    private DoubleProperty   gaugeValue;
-    private double           negativeOffset;
     private Point2D          center;
     private int              noOfLeds;
     private ArrayList<Shape> leds;
     private DoubleProperty   currentValue;
     private DoubleProperty   formerValue;
-    private DoubleProperty   lcdValue;
-    private DoubleProperty   currentLcdValue;
     private FadeTransition   glowPulse;
-    private Rotate           pointerRotation;
+    private RotateTransition pointerRotation;
     private AnimationTimer   ledTimer;
     private boolean          ledOnVisible;
     private long             lastLedTimerCall;
@@ -139,10 +132,10 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
 
 
     // ******************** Constructors **************************************
-    public RadialSkin(final Radial CONTROL) {
-        super(CONTROL, new RadialBehavior(CONTROL));
+    public RadialHalfNSkin(final RadialHalfN CONTROL) {
+        super(CONTROL, new RadialHalfNBehavior(CONTROL));
         control                = CONTROL;
-        gaugeBounds            = new Rectangle(200, 200);
+        gaugeBounds            = new Rectangle(200, 130);
         framelessOffset        = new Point2D(0, 0);
         center                 = new Point2D(0, 0);
         frame                  = new Group();
@@ -156,34 +149,23 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         glowOff                = new Group();
         glowOn                 = new Group();
         glowColors             = new ArrayList<>(4);
-        lcd                    = new Group();
-        lcdContent             = new Group();
-        lcdValueString         = new Text();
-        lcdUnitString          = new Text();
-        lcdThresholdIndicator  = new Group();
         knobs                  = new Group();
         threshold              = new Group();
         minMeasured            = new Group();
         maxMeasured            = new Group();
         pointer                = new Group();
         bargraph               = new Group();
-        bargraphOn             = new Group();
         ledOff                 = new Group();
         ledOn                  = new Group();
         userLedOff             = new Group();
         userLedOn              = new Group();
         foreground             = new Group();
-        rotationAngleTimeline  = new Timeline();
-        gaugeValue             = new SimpleDoubleProperty(0);
-        negativeOffset         = 0;
         noOfLeds               = 60;
         leds                   = new ArrayList<>(60);
         currentValue           = new SimpleDoubleProperty(0);
         formerValue            = new SimpleDoubleProperty(0);
-        lcdValue               = new SimpleDoubleProperty(0);
-        currentLcdValue        = new SimpleDoubleProperty(0);
         glowPulse              = new FadeTransition(Duration.millis(800), glowOn);
-        pointerRotation        = new Rotate();
+        pointerRotation        = new RotateTransition(Duration.millis(control.getAnimationDuration()), pointer);
         isDirty                = false;
         ledTimer               = new AnimationTimer() {
             @Override public void handle(final long CURRENT_NANOSECONDS) {
@@ -293,24 +275,12 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         double value = Double.compare(control.getValue(), control.getMinValue()) < 0 ? control.getMinValue() : (Double.compare(control.getValue(), control.getMaxValue()) > 0 ? control.getMaxValue() : control.getValue());
         pointer.setRotate((value - control.getMinValue()) * control.getAngleStep());
 
-        if (gaugeValue.get() < control.getMinValue()) {
-            gaugeValue.set(control.getMinValue());
-        } else if (gaugeValue.get() > control.getMaxValue()) {
-            gaugeValue.set(control.getMaxValue());
-        }
+        addBindings();
+        addListeners();
 
         control.recalcRange();
         control.setMinMeasuredValue(control.getMaxValue());
         control.setMaxMeasuredValue(control.getMinValue());
-
-        if (control.getMinValue() < 0) {
-            negativeOffset = control.getMinValue() * control.getAngleStep();
-        } else {
-            negativeOffset = 0;
-        }
-
-        addBindings();
-        addListeners();
 
         initialized = true;
         paint();
@@ -378,24 +348,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             maxMeasured.visibleProperty().bind(control.maxMeasuredValueVisibleProperty());
         }
 
-        if (!lcdValue.isBound()) {
-            lcdValue.bind(control.valueProperty());
-        }
-
-        if (!lcd.visibleProperty().isBound()) {
-            lcd.visibleProperty().bind(control.lcdVisibleProperty());
-        }
-
-        if (!lcdContent.visibleProperty().isBound()) {
-            lcdContent.visibleProperty().bind(control.lcdVisibleProperty());
-        }
-
-        if (!lcdThresholdIndicator.visibleProperty().isBound()) {
-            if (control.isLcdThresholdVisible() && control.isLcdValueCoupled()) {
-                lcdThresholdIndicator.visibleProperty().bind(control.thresholdExceededProperty());
-            }
-        }
-
         if (!foreground.visibleProperty().isBound()) {
             foreground.visibleProperty().bind(control.foregroundVisibleProperty());
         }
@@ -436,22 +388,17 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
 
         control.valueProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                formerValue.set(oldValue.doubleValue());
-                if (rotationAngleTimeline.getStatus() != Animation.Status.STOPPED) {
-                    rotationAngleTimeline.stop();
+                formerValue.set(oldValue.doubleValue() < control.getMinValue() ? control.getMinValue() : oldValue.doubleValue());
+                if (pointerRotation.getStatus() != Animation.Status.STOPPED) {
+                    pointerRotation.stop();
                 }
                 if (control.isValueAnimationEnabled()) {
-                    final KeyValue kv = new KeyValue(gaugeValue, newValue, Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
-                    final KeyFrame kf = new KeyFrame(Duration.millis(control.getAnimationDuration()), kv);
-                    rotationAngleTimeline  = new Timeline();
-                    rotationAngleTimeline.getKeyFrames().add(kf);
-                    rotationAngleTimeline.play();
+                    pointerRotation.setFromAngle((formerValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
+                    pointerRotation.setToAngle((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
+                    pointerRotation.setInterpolator(Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
+                    pointerRotation.play();
                 } else {
-                    pointerRotation.setPivotX(center.getX());
-                    pointerRotation.setPivotY(center.getY());
-                    pointerRotation.setAngle((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
-                    pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET + (control.getMinValue() * control.getAngleStep()), center.getX(), center.getY()));
-                    pointer.getTransforms().add(pointerRotation);
+                    pointer.setRotate((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
                 }
 
                 // Highlight sections
@@ -499,14 +446,14 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             }
         });
 
-        gaugeValue.addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                if (bargraph.isVisible()) {
-                    int CURRENT_LED_INDEX = noOfLeds - 1 - (int) ((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
-                    int FORMER_LED_INDEX = noOfLeds - 1 - (int) ((oldValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
-                    final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int)((control.getThreshold() - control.getMinValue()) * control.getAngleStep() / 5.0);
+        pointer.rotateProperty().addListener(new ChangeListener<Number>() {
+            @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
+                currentValue.set(newValue.doubleValue() / control.getAngleStep() + control.getMinValue());
 
+                if (bargraph.isVisible()) {
+                    final int CURRENT_LED_INDEX = noOfLeds - 1 - (newValue.intValue() / 5);
+                    final int FORMER_LED_INDEX = noOfLeds - 1 - (oldValue.intValue() / 5);
+                    final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int)(control.getThreshold() * control.getAngleStep() / 5.0);
                     if (Double.compare(control.getValue(), formerValue.doubleValue()) >= 0) {
                         for (int i = CURRENT_LED_INDEX ; i <= FORMER_LED_INDEX ; i++) {
                             leds.get(i).setId("bargraph-on");
@@ -519,17 +466,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                     if (control.isThresholdVisible()) {
                         leds.get(THRESHOLD_LED_INDEX).setId("bargraph-threshold");
                     }
-                } else {
-                    pointer.getTransforms().clear();
-                    pointerRotation.setPivotX(center.getX());
-                    pointerRotation.setPivotY(center.getY());
-                    pointerRotation.setAngle((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
-                    pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET + negativeOffset, center.getX(), center.getY()));
-                    pointer.getTransforms().add(pointerRotation);
                 }
-
-                currentValue.set(newValue.doubleValue());
-                currentLcdValue.set(control.isLcdValueCoupled() ? currentValue.get() : control.getLcdValue());
 
                 if (Double.compare(currentValue.get(), control.getMinMeasuredValue()) < 0) {
                     control.setMinMeasuredValue(currentValue.get());
@@ -544,9 +481,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 if (!control.isThresholdExceeded()) {
                     ledOn.setOpacity(0.0);
                 }
-                if (control.isLcdVisible()) {
-                    drawLcdContent();
-                }
             }
         });
     }
@@ -555,14 +489,14 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         super.handleControlPropertyChanged(PROPERTY);
 
         if (PROPERTY == "ANIMATION_DURATION") {
-            //pointerRotation.setDuration(Duration.millis(control.getAnimationDuration()));
+            pointerRotation.setDuration(Duration.millis(control.getAnimationDuration()));
         } else if (PROPERTY == "RADIAL_RANGE") {
             noOfLeds = (int) (control.getRadialRange().ANGLE_RANGE / 5.0);
             isDirty = true;
         } else if (PROPERTY == "FRAME_DESIGN") {
-            drawCircularFrame(control, frame, gaugeBounds);
+            drawFrame();
         } else if (PROPERTY == "BACKGROUND_DESIGN") {
-            drawCircularBackground(control, background, gaugeBounds);
+            drawBackground();
             drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
         } else if (PROPERTY == "KNOB_DESIGN") {
             drawCircularKnobs(control, knobs, center, gaugeBounds);
@@ -573,12 +507,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         } else if (PROPERTY == "VALUE_COLOR") {
             drawPointer();
         } else if (PROPERTY == "FOREGROUND_TYPE") {
-            drawCircularForeground(control, foreground, gaugeBounds);
-        } else if (PROPERTY == "LCD_DESIGN") {
-            drawCircularLcd(control, lcd, gaugeBounds);
-            drawLcdContent();
-        } else if (PROPERTY == "LCD_NUMBER_SYSTEM") {
-            drawLcdContent();
+            drawForeground();
         } else if (PROPERTY == "USER_LED_BLINKING") {
             if (userLedOff.isVisible() && userLedOn.isVisible()) {
                 if (control.isUserLedBlinking()) {
@@ -604,7 +533,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             glowColors.add(Color.hsb(GLOW_COLOR.getHue(), 0.67, 0.90, 1.0));
             glowColors.add(Color.hsb(GLOW_COLOR.getHue(), 1.0, 1.0, 1.0));
             glowColors.add(Color.hsb(GLOW_COLOR.getHue(), 0.67, 0.90, 1.0));
-            drawCircularGlowOn(control, glowOn, glowColors, gaugeBounds);
+            drawGlowOn();
         } else if (PROPERTY == "GLOW_VISIBILITY") {
             glowOff.setVisible(control.isGlowVisible());
             if (!control.isGlowVisible()) {
@@ -632,11 +561,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 glowOn.setOpacity(0.0);
             }
         } else if (PROPERTY == "RANGE") {
-            if (control.getMinValue() < 0) {
-                negativeOffset = control.getMinValue() * control.getAngleStep();
-            } else {
-                negativeOffset = 0;
-            }
             drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
         } else if (PROPERTY.equals("MIN_MEASURED_VALUE")) {
             minMeasured.getTransforms().clear();
@@ -653,7 +577,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         } else if (PROPERTY == "SIMPLE_GRADIENT_BASE") {
             isDirty = true;
         }
-
     }
 
 
@@ -665,37 +588,35 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         calcGaugeBounds();
         setTranslateX(framelessOffset.getX());
         setTranslateY(framelessOffset.getY());
-        center = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getHeight() * 0.5);
+        center = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getHeight() / 1.3);
         getChildren().clear();
-        drawCircularFrame(control, frame, gaugeBounds);
-        drawCircularBackground(control, background, gaugeBounds);
-        drawCircularTrend(control, glowOn, gaugeBounds);
+        drawFrame();
+        drawBackground();
+        drawCircularTrend(control, trend, gaugeBounds);
         updateSections();
-        drawCircularSections(control, sections, gaugeBounds);
+        drawSections();
         updateAreas();
-        drawCircularAreas(control, areas, gaugeBounds);
+        drawAreas();
         drawTitleAndUnit();
         drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
         drawCircularLed(control, ledOff, ledOn, gaugeBounds);
         drawCircularUserLed(control, userLedOff, userLedOn, gaugeBounds);
         drawThreshold();
-        drawCircularGlowOff(glowOff, gaugeBounds);
-        drawCircularGlowOn(control, glowOn, glowColors, gaugeBounds);
+        drawGlowOff();
+        drawGlowOn();
         drawMinMeasuredIndicator();
         drawMaxMeasuredIndicator();
-        drawCircularIndicators(control, indicators, center, gaugeBounds);
-        drawCircularLcd(control, lcd, gaugeBounds);
-        drawLcdContent();
+        drawIndicators();
         drawPointer();
         drawCircularBargraph(control, bargraph, noOfLeds, leds, false, center, gaugeBounds);
         drawCircularKnobs(control, knobs, center, gaugeBounds);
-        drawCircularForeground(control, foreground, gaugeBounds);
+        drawForeground();
 
         getChildren().addAll(frame,
                              background,
-                             trend,
                              sections,
                              areas,
+                             trend,
                              ledOff,
                              ledOn,
                              userLedOff,
@@ -705,11 +626,8 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                              threshold,
                              glowOff,
                              glowOn,
-                             lcd,
-                             lcdContent,
                              pointer,
                              bargraph,
-                             bargraphOn,
                              minMeasured,
                              maxMeasured,
                              indicators,
@@ -725,7 +643,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         super.layoutChildren();
     }
 
-    @Override public Radial getSkinnable() {
+    @Override public RadialHalfN getSkinnable() {
         return control;
     }
 
@@ -736,7 +654,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     @Override protected double computePrefWidth(final double HEIGHT) {
         double prefWidth = PREF_SIZE.getWidth();
         if (HEIGHT != -1) {
-            prefWidth = Math.max(0, HEIGHT - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, HEIGHT - getInsets().getLeft() - getInsets().getRight()) * 1.5384615385;
         }
         return super.computePrefWidth(prefWidth);
     }
@@ -744,33 +662,9 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     @Override protected double computePrefHeight(final double WIDTH) {
         double prefHeight = PREF_SIZE.getHeight();
         if (WIDTH != -1) {
-            prefHeight = Math.max(0, WIDTH - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, WIDTH - getInsets().getTop() - getInsets().getBottom()) / 1.5384615385;
         }
         return super.computePrefWidth(prefHeight);
-    }
-
-    private String formatLcdValue(final double VALUE) {
-        final StringBuilder DEC_BUFFER = new StringBuilder(16);
-        DEC_BUFFER.append("0");
-        final int lcdDecimals = control.getLcdDecimals();
-        final boolean lcdScientificFormatEnabled = false;
-
-        if (lcdDecimals > 0) {
-            DEC_BUFFER.append(".");
-        }
-
-        for (int i = 0; i < lcdDecimals; i++) {
-            DEC_BUFFER.append("0");
-        }
-
-        if (lcdScientificFormatEnabled) {
-            DEC_BUFFER.append("E0");
-        }
-
-        DEC_BUFFER.trimToSize();
-        final java.text.DecimalFormat DEC_FORMAT = new java.text.DecimalFormat(DEC_BUFFER.toString(), new java.text.DecimalFormatSymbols(java.util.Locale.US));
-
-        return DEC_FORMAT.format(VALUE);
     }
 
     private void calcGaugeBounds() {
@@ -793,7 +687,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         for (final Section section : control.getSections()) {
             final double SECTION_START = section.getStart() < control.getMinValue() ? control.getMinValue() : section.getStart();
             final double SECTION_STOP = section.getStop() > control.getMaxValue() ? control.getMaxValue() : section.getStop();
-            final double ANGLE_START = control.getRadialRange().SECTIONS_OFFSET - (SECTION_START * control.getAngleStep()) + (control.getMinValue() * control.getAngleStep());
+            final double ANGLE_START = Gauge.RadialRange.RADIAL_180N.SECTIONS_OFFSET - (SECTION_START * control.getAngleStep()) + (control.getMinValue() * control.getAngleStep());
             final double ANGLE_EXTEND = -(SECTION_STOP - SECTION_START) * control.getAngleStep();
 
             final Arc OUTER_ARC = new Arc();
@@ -818,7 +712,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         for (final Section area : control.getAreas()) {
             final double AREA_START = area.getStart() < control.getMinValue() ? control.getMinValue() : area.getStart();
             final double AREA_STOP = area.getStop() > control.getMaxValue() ? control.getMaxValue() : area.getStop();
-            final double ANGLE_START = control.getRadialRange().SECTIONS_OFFSET - (AREA_START * control.getAngleStep()) + (control.getMinValue() * control.getAngleStep());
+            final double ANGLE_START = Gauge.RadialRange.RADIAL_180N.SECTIONS_OFFSET - (AREA_START * control.getAngleStep()) + (control.getMinValue() * control.getAngleStep());
             final double ANGLE_EXTEND = -(AREA_STOP - AREA_START) * control.getAngleStep();
 
             final Arc ARC = new Arc();
@@ -836,49 +730,620 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
 
 
     // ******************** Drawing *******************************************
+    public void drawFrame() {
+        final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+        final double WIDTH = control.getPrefWidth();
+        final double HEIGHT = control.getPrefHeight();
+
+        frame.getChildren().clear();
+
+        //final Shape SUBTRACT = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, WIDTH * 0.4158878326);
+
+        //final Shape OUTER_FRAME = Shape.subtract(new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.5 * WIDTH), SUBTRACT);
+
+        final Path OUTER_FRAME = new Path();
+        OUTER_FRAME.setFillRule(FillRule.EVEN_ODD);
+        OUTER_FRAME.getElements().add(new MoveTo(WIDTH, 0.7692307692307693 * HEIGHT));
+        OUTER_FRAME.getElements().add(new CubicCurveTo(WIDTH, 0.34615384615384615 * HEIGHT,
+                                                       0.775 * WIDTH, 0.0,
+                                                       0.5 * WIDTH, 0.0));
+        OUTER_FRAME.getElements().add(new CubicCurveTo(0.225 * WIDTH, 0.0,
+                                                       0.0, 0.34615384615384615 * HEIGHT,
+                                                       0.0, 0.7692307692307693 * HEIGHT));
+        OUTER_FRAME.getElements().add(new CubicCurveTo(0.0, 0.7692307692307693 * HEIGHT,
+                                                       0.0, HEIGHT,
+                                                       0.0, HEIGHT));
+        OUTER_FRAME.getElements().add(new LineTo(WIDTH, HEIGHT));
+        OUTER_FRAME.getElements().add(new CubicCurveTo(WIDTH, HEIGHT,
+                                                       WIDTH, 0.7692307692307693 * HEIGHT,
+                                                       WIDTH, 0.7692307692307693 * HEIGHT));
+        OUTER_FRAME.getElements().add(new ClosePath());
+        OUTER_FRAME.setFill(new Color(0.5176470588, 0.5176470588, 0.5176470588, 1));
+        OUTER_FRAME.setStroke(null);
+        frame.getChildren().add(OUTER_FRAME);
+
+        //final Shape INNER_FRAME = Shape.subtract(new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4205607476635514 * WIDTH), SUBTRACT);
+        final Path INNER_FRAME = new Path();
+        INNER_FRAME.setFillRule(FillRule.EVEN_ODD);
+        INNER_FRAME.getElements().add(new MoveTo(0.07 * WIDTH, 0.7615384615384615 * HEIGHT));
+        INNER_FRAME.getElements().add(new CubicCurveTo(0.07 * WIDTH, 0.7615384615384615 * HEIGHT,
+                                                       0.07 * WIDTH, 0.8923076923076924 * HEIGHT,
+                                                       0.07 * WIDTH, 0.8923076923076924 * HEIGHT));
+        INNER_FRAME.getElements().add(new LineTo(0.92 * WIDTH, 0.8923076923076924 * HEIGHT));
+        INNER_FRAME.getElements().add(new CubicCurveTo(0.92 * WIDTH, 0.8923076923076924 * HEIGHT,
+                                                       0.92 * WIDTH, 0.7615384615384615 * HEIGHT,
+                                                       0.92 * WIDTH, 0.7615384615384615 * HEIGHT));
+        INNER_FRAME.getElements().add(new CubicCurveTo(0.92 * WIDTH, 0.4 * HEIGHT,
+                                                       0.73 * WIDTH, 0.1076923076923077 * HEIGHT,
+                                                       0.495 * WIDTH, 0.1076923076923077 * HEIGHT));
+        INNER_FRAME.getElements().add(new CubicCurveTo(0.26 * WIDTH, 0.1076923076923077 * HEIGHT,
+                                                       0.07 * WIDTH, 0.4 * HEIGHT,
+                                                       0.07 * WIDTH, 0.7615384615384615 * HEIGHT));
+        INNER_FRAME.getElements().add(new ClosePath());
+        INNER_FRAME.setFill(new Color(0.6, 0.6, 0.6, 0.8));
+        INNER_FRAME.setStroke(null);
+
+        //final Shape MAIN_FRAME = Shape.subtract(new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4953271028037383 * WIDTH), SUBTRACT);
+        final Path MAIN_FRAME = new Path();
+        MAIN_FRAME.setFillRule(FillRule.EVEN_ODD);
+        MAIN_FRAME.getElements().add(new MoveTo(0.995 * WIDTH, 0.7692307692307693 * HEIGHT));
+        MAIN_FRAME.getElements().add(new CubicCurveTo(0.995 * WIDTH, 0.34615384615384615 * HEIGHT,
+                                                      0.775 * WIDTH, 0.007692307692307693 * HEIGHT,
+                                                      0.5 * WIDTH, 0.007692307692307693 * HEIGHT));
+        MAIN_FRAME.getElements().add(new CubicCurveTo(0.225 * WIDTH, 0.007692307692307693 * HEIGHT,
+                                                      0.0050 * WIDTH, 0.34615384615384615 * HEIGHT,
+                                                      0.0050 * WIDTH, 0.7692307692307693 * HEIGHT));
+        MAIN_FRAME.getElements().add(new CubicCurveTo(0.0050 * WIDTH, 0.7692307692307693 * HEIGHT,
+                                                      0.0050 * WIDTH, 0.9923076923076923 * HEIGHT,
+                                                      0.0050 * WIDTH, 0.9923076923076923 * HEIGHT));
+        MAIN_FRAME.getElements().add(new LineTo(0.995 * WIDTH, 0.9923076923076923 * HEIGHT));
+        MAIN_FRAME.getElements().add(new CubicCurveTo(0.995 * WIDTH, 0.9923076923076923 * HEIGHT,
+                                                      0.995 * WIDTH, 0.7692307692307693 * HEIGHT,
+                                                      0.995 * WIDTH, 0.7692307692307693 * HEIGHT));
+        MAIN_FRAME.getElements().add(new ClosePath());
+        final ImageView IMAGE_VIEW;
+        switch (control.getFrameDesign()) {
+            case GLOSSY_METAL:
+                final Paint GLOSSY1_FILL = new RadialGradient(0, 0,
+                                                              0.5 * WIDTH, 0.9923076923076923 * HEIGHT,
+                                                              0.495 * WIDTH,
+                                                              false, CycleMethod.NO_CYCLE,
+                                                              new Stop(0.0, Color.color(0.8235294118, 0.8235294118, 0.8235294118, 1)),
+                                                              new Stop(0.95, Color.color(0.8235294118, 0.8235294118, 0.8235294118, 1)),
+                                                              new Stop(1.0, Color.color(0.9960784314, 0.9960784314, 0.9960784314, 1)));
+                MAIN_FRAME.setFill(GLOSSY1_FILL);
+                MAIN_FRAME.setStroke(null);
+
+                final Path GLOSSY2 = new Path();
+                GLOSSY2.setFillRule(FillRule.EVEN_ODD);
+                GLOSSY2.getElements().add(new MoveTo(0.985 * WIDTH, 0.7692307692307693 * HEIGHT));
+                GLOSSY2.getElements().add(new CubicCurveTo(0.985 * WIDTH, 0.38461538461538464 * HEIGHT,
+                                                           0.775 * WIDTH, 0.023076923076923078 * HEIGHT,
+                                                           0.5 * WIDTH, 0.023076923076923078 * HEIGHT));
+                GLOSSY2.getElements().add(new CubicCurveTo(0.225 * WIDTH, 0.023076923076923078 * HEIGHT,
+                                                           0.015 * WIDTH, 0.38461538461538464 * HEIGHT,
+                                                           0.015 * WIDTH, 0.7692307692307693 * HEIGHT));
+                GLOSSY2.getElements().add(new CubicCurveTo(0.015 * WIDTH, 0.7692307692307693 * HEIGHT,
+                                                           0.015 * WIDTH, 0.9769230769230769 * HEIGHT,
+                                                           0.015 * WIDTH, 0.9769230769230769 * HEIGHT));
+                GLOSSY2.getElements().add(new LineTo(0.985 * WIDTH, 0.9769230769230769 * HEIGHT));
+                GLOSSY2.getElements().add(new CubicCurveTo(0.985 * WIDTH, 0.9769230769230769 * HEIGHT,
+                                                           0.985 * WIDTH, 0.7692307692307693 * HEIGHT,
+                                                           0.985 * WIDTH, 0.7692307692307693 * HEIGHT));
+                GLOSSY2.getElements().add(new ClosePath());
+                final Paint GLOSSY2_FILL = new LinearGradient(0.5 * WIDTH, 0.03076923076923077 * HEIGHT,
+                                                              0.50 * WIDTH, 0.9692307692307692 * HEIGHT,
+                                                              false, CycleMethod.NO_CYCLE,
+                                                              new Stop(0.0, Color.color(0.9764705882, 0.9764705882, 0.9764705882, 1)),
+                                                              new Stop(0.23, Color.color(0.7843137255, 0.7647058824, 0.7490196078, 1)),
+                                                              new Stop(0.34, Color.color(0.8235294118, 0.8235294118, 0.8235294118, 1)),
+                                                              new Stop(0.65, Color.color(0.1215686275, 0.1215686275, 0.1215686275, 1)),
+                                                              new Stop(0.84, Color.color(0.7843137255, 0.7607843137, 0.7529411765, 1)),
+                                                              new Stop(1.0, Color.color(0.7843137255, 0.7607843137, 0.7529411765, 1)));
+                GLOSSY2.setFill(GLOSSY2_FILL);
+                GLOSSY2.setStroke(null);
+
+                final Path GLOSSY3 = new Path();
+                GLOSSY3.setFillRule(FillRule.EVEN_ODD);
+                GLOSSY3.getElements().add(new MoveTo(0.935 * WIDTH, 0.7692307692307693 * HEIGHT));
+                GLOSSY3.getElements().add(new CubicCurveTo(0.935 * WIDTH, 0.43846153846153846 * HEIGHT,
+                                                           0.77 * WIDTH, 0.08461538461538462 * HEIGHT,
+                                                           0.495 * WIDTH, 0.08461538461538462 * HEIGHT));
+                GLOSSY3.getElements().add(new CubicCurveTo(0.22 * WIDTH, 0.08461538461538462 * HEIGHT,
+                                                           0.055 * WIDTH, 0.43846153846153846 * HEIGHT,
+                                                           0.055 * WIDTH, 0.7692307692307693 * HEIGHT));
+                GLOSSY3.getElements().add(new CubicCurveTo(0.055 * WIDTH, 0.7692307692307693 * HEIGHT,
+                                                           0.055 * WIDTH, 0.9153846153846154 * HEIGHT,
+                                                           0.055 * WIDTH, 0.9153846153846154 * HEIGHT));
+                GLOSSY3.getElements().add(new LineTo(0.935 * WIDTH, 0.9153846153846154 * HEIGHT));
+                GLOSSY3.getElements().add(new CubicCurveTo(0.935 * WIDTH, 0.9153846153846154 * HEIGHT,
+                                                           0.935 * WIDTH, 0.7692307692307693 * HEIGHT,
+                                                           0.935 * WIDTH, 0.7692307692307693 * HEIGHT));
+                GLOSSY3.getElements().add(new ClosePath());
+                final Paint GLOSSY3_FILL = Color.color(0.9647058824, 0.9647058824, 0.9647058824, 1);
+                GLOSSY3.setFill(GLOSSY3_FILL);
+                GLOSSY3.setStroke(null);
+
+                final Path GLOSSY4 = new Path();
+                GLOSSY4.setFillRule(FillRule.EVEN_ODD);
+                GLOSSY4.getElements().add(new MoveTo(0.065 * WIDTH, 0.7615384615384615 * HEIGHT));
+                GLOSSY4.getElements().add(new CubicCurveTo(0.065 * WIDTH, 0.7615384615384615 * HEIGHT,
+                                                           0.065 * WIDTH, 0.9 * HEIGHT,
+                                                           0.065 * WIDTH, 0.9 * HEIGHT));
+                GLOSSY4.getElements().add(new LineTo(0.925 * WIDTH, 0.9 * HEIGHT));
+                GLOSSY4.getElements().add(new CubicCurveTo(0.925 * WIDTH, 0.9 * HEIGHT,
+                                                           0.925 * WIDTH, 0.7615384615384615 * HEIGHT,
+                                                           0.925 * WIDTH, 0.7615384615384615 * HEIGHT));
+                GLOSSY4.getElements().add(new CubicCurveTo(0.925 * WIDTH, 0.3923076923076923 * HEIGHT,
+                                                           0.73 * WIDTH, 0.1 * HEIGHT,
+                                                           0.495 * WIDTH, 0.1 * HEIGHT));
+                GLOSSY4.getElements().add(new CubicCurveTo(0.26 * WIDTH, 0.1 * HEIGHT,
+                                                           0.065 * WIDTH, 0.3923076923076923 * HEIGHT,
+                                                           0.065 * WIDTH, 0.7615384615384615 * HEIGHT));
+                GLOSSY4.getElements().add(new ClosePath());
+                final Paint GLOSSY4_FILL = Color.color(0.2, 0.2, 0.2, 1);
+                GLOSSY4.setFill(GLOSSY4_FILL);
+                GLOSSY4.setStroke(null);
+                frame.getChildren().addAll(MAIN_FRAME, GLOSSY2, GLOSSY3, GLOSSY4);
+                break;
+            case DARK_GLOSSY:
+                final Paint DARK_GLOSSY1_FILL = new LinearGradient(0.805 * WIDTH, 0.16923076923076924 * HEIGHT,
+                                                                   0.14031962568464537 * WIDTH, 1.1918159604851613 * HEIGHT,
+                                                                   false, CycleMethod.NO_CYCLE,
+                                                                   new Stop(0.0, Color.color(0.6745098039, 0.6745098039, 0.6784313725, 1)),
+                                                                   new Stop(0.08, Color.color(0.9960784314, 0.9960784314, 1, 1)),
+                                                                   new Stop(0.52, Color.BLACK),
+                                                                   new Stop(0.55, Color.color(0.0196078431, 0.0235294118, 0.0196078431, 1)),
+                                                                   new Stop(0.84, Color.color(0.9725490196, 0.9803921569, 0.9764705882, 1)),
+                                                                   new Stop(0.99, Color.color(0.7058823529, 0.7058823529, 0.7058823529, 1)),
+                                                                   new Stop(1.0, Color.color(0.6980392157, 0.6980392157, 0.6980392157, 1)));
+                MAIN_FRAME.setFill(DARK_GLOSSY1_FILL);
+                MAIN_FRAME.setStroke(null);
+
+                final Path DARK_GLOSSY2 = new Path();
+                DARK_GLOSSY2.setFillRule(FillRule.EVEN_ODD);
+                DARK_GLOSSY2.getElements().add(new MoveTo(0.985 * WIDTH, 0.7692307692307693 * HEIGHT));
+                DARK_GLOSSY2.getElements().add(new CubicCurveTo(0.985 * WIDTH, 0.38461538461538464 * HEIGHT,
+                                                                0.775 * WIDTH, 0.023076923076923078 * HEIGHT,
+                                                                0.5 * WIDTH, 0.023076923076923078 * HEIGHT));
+                DARK_GLOSSY2.getElements().add(new CubicCurveTo(0.225 * WIDTH, 0.023076923076923078 * HEIGHT,
+                                                                0.015 * WIDTH, 0.38461538461538464 * HEIGHT,
+                                                                0.015 * WIDTH, 0.7692307692307693 * HEIGHT));
+                DARK_GLOSSY2.getElements().add(new CubicCurveTo(0.015 * WIDTH, 0.7692307692307693 * HEIGHT,
+                                                                0.015 * WIDTH, 0.9769230769230769 * HEIGHT,
+                                                                0.015 * WIDTH, 0.9769230769230769 * HEIGHT));
+                DARK_GLOSSY2.getElements().add(new LineTo(0.985 * WIDTH, 0.9769230769230769 * HEIGHT));
+                DARK_GLOSSY2.getElements().add(new CubicCurveTo(0.985 * WIDTH, 0.9769230769230769 * HEIGHT,
+                                                                0.985 * WIDTH, 0.7692307692307693 * HEIGHT,
+                                                                0.985 * WIDTH, 0.7692307692307693 * HEIGHT));
+                DARK_GLOSSY2.getElements().add(new ClosePath());
+                final Paint DARK_GLOSSY2_FILL = new LinearGradient(0.5 * WIDTH, 0.03076923076923077 * HEIGHT,
+                                                                   0.50 * WIDTH, 0.9692307692307692 * HEIGHT,
+                                                                   false, CycleMethod.NO_CYCLE,
+                                                                   new Stop(0.0, Color.color(0.2588235294, 0.2588235294, 0.2588235294, 1)),
+                                                                   new Stop(0.41, Color.color(0.2588235294, 0.2588235294, 0.2588235294, 1)),
+                                                                   new Stop(1.0, Color.BLACK));
+                DARK_GLOSSY2.setFill(DARK_GLOSSY2_FILL);
+                DARK_GLOSSY2.setStroke(null);
+
+                final Path DARK_GLOSSY3 = new Path();
+                DARK_GLOSSY3.setFillRule(FillRule.EVEN_ODD);
+                DARK_GLOSSY3.getElements().add(new MoveTo(0.985 * WIDTH, 0.7692307692307693 * HEIGHT));
+                DARK_GLOSSY3.getElements().add(new CubicCurveTo(0.985 * WIDTH, 0.38461538461538464 * HEIGHT,
+                                                                0.775 * WIDTH, 0.023076923076923078 * HEIGHT,
+                                                                0.5 * WIDTH, 0.023076923076923078 * HEIGHT));
+                DARK_GLOSSY3.getElements().add(new CubicCurveTo(0.225 * WIDTH, 0.023076923076923078 * HEIGHT,
+                                                                0.015 * WIDTH, 0.38461538461538464 * HEIGHT,
+                                                                0.015 * WIDTH, 0.7692307692307693 * HEIGHT));
+                DARK_GLOSSY3.getElements().add(new CubicCurveTo(0.07 * WIDTH, 0.5769230769230769 * HEIGHT,
+                                                                0.285 * WIDTH, 0.3923076923076923 * HEIGHT,
+                                                                0.5 * WIDTH, 0.3923076923076923 * HEIGHT));
+                DARK_GLOSSY3.getElements().add(new CubicCurveTo(0.735 * WIDTH, 0.3923076923076923 * HEIGHT,
+                                                                0.93 * WIDTH, 0.5769230769230769 * HEIGHT,
+                                                                0.985 * WIDTH, 0.7692307692307693 * HEIGHT));
+                DARK_GLOSSY3.getElements().add(new ClosePath());
+                final Paint DARK_GLOSSY3_FILL = new LinearGradient(0.5 * WIDTH, 0.03076923076923077 * HEIGHT,
+                                                                   0.5 * WIDTH, 0.7461538461538462 * HEIGHT,
+                                                                   false, CycleMethod.NO_CYCLE,
+                                                                   new Stop(0.0, Color.color(1, 1, 1, 1)),
+                                                                   new Stop(0.26, Color.color(1, 1, 1, 0.7372549020)),
+                                                                   new Stop(1.0, Color.color(1, 1, 1, 0)));
+                DARK_GLOSSY3.setFill(DARK_GLOSSY3_FILL);
+                DARK_GLOSSY3.setStroke(null);
+
+                final Path DARK_GLOSSY4 = new Path();
+                DARK_GLOSSY4.setFillRule(FillRule.EVEN_ODD);
+                DARK_GLOSSY4.getElements().add(new MoveTo(0.065 * WIDTH, 0.7615384615384615 * HEIGHT));
+                DARK_GLOSSY4.getElements().add(new CubicCurveTo(0.065 * WIDTH, 0.7615384615384615 * HEIGHT,
+                                                                0.065 * WIDTH, 0.9 * HEIGHT,
+                                                                0.065 * WIDTH, 0.9 * HEIGHT));
+                DARK_GLOSSY4.getElements().add(new LineTo(0.925 * WIDTH, 0.9 * HEIGHT));
+                DARK_GLOSSY4.getElements().add(new CubicCurveTo(0.925 * WIDTH, 0.9 * HEIGHT,
+                                                                0.925 * WIDTH, 0.7615384615384615 * HEIGHT,
+                                                                0.925 * WIDTH, 0.7615384615384615 * HEIGHT));
+                DARK_GLOSSY4.getElements().add(new CubicCurveTo(0.925 * WIDTH, 0.3923076923076923 * HEIGHT,
+                                                                0.73 * WIDTH, 0.1 * HEIGHT,
+                                                                0.495 * WIDTH, 0.1 * HEIGHT));
+                DARK_GLOSSY4.getElements().add(new CubicCurveTo(0.26 * WIDTH, 0.1 * HEIGHT,
+                                                                0.065 * WIDTH, 0.3923076923076923 * HEIGHT,
+                                                                0.065 * WIDTH, 0.7615384615384615 * HEIGHT));
+                DARK_GLOSSY4.getElements().add(new ClosePath());
+                final Paint DARK_GLOSSY4_FILL = new LinearGradient(0.775 * WIDTH, 0.26153846153846155 * HEIGHT,
+                                                                   0.17435126671722642 * WIDTH, 1.1539072912819428 * HEIGHT,
+                                                                   false, CycleMethod.NO_CYCLE,
+                                                                   new Stop(0.0, Color.color(0.6745098039, 0.6745098039, 0.6784313725, 1)),
+                                                                   new Stop(0.07, Color.color(0.9568627451, 0.9568627451, 0.9607843137, 1)),
+                                                                   new Stop(0.52, Color.BLACK),
+                                                                   new Stop(0.55, Color.color(0.0196078431, 0.0235294118, 0.0196078431, 1)),
+                                                                   new Stop(0.9, Color.color(0.9725490196, 0.9803921569, 0.9764705882, 1)),
+                                                                   new Stop(0.92, Color.color(0.9058823529, 0.9137254902, 0.9098039216, 1)),
+                                                                   new Stop(1.0, Color.color(0.6980392157, 0.6980392157, 0.6980392157, 1)));
+                DARK_GLOSSY4.setFill(DARK_GLOSSY4_FILL);
+                DARK_GLOSSY4.setStroke(null);
+                frame.getChildren().addAll(MAIN_FRAME, DARK_GLOSSY2, DARK_GLOSSY3, DARK_GLOSSY4);
+                break;
+            default:
+                IMAGE_VIEW = new ImageView();
+                IMAGE_VIEW.setVisible(false);
+                MAIN_FRAME.setId(control.getFrameDesign().CSS);
+                MAIN_FRAME.setStroke(null);
+                frame.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
+                break;
+        }
+    }
+
+    public void drawBackground() {
+        final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
+        final double WIDTH = gaugeBounds.getWidth();
+        final double HEIGHT = gaugeBounds.getHeight();
+
+        background.getChildren().clear();
+
+        final Rectangle IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
+        IBOUNDS.setOpacity(0.0);
+        IBOUNDS.setStroke(null);
+        background.getChildren().add(IBOUNDS);
+
+        final InnerShadow INNER_SHADOW = new InnerShadow();
+        INNER_SHADOW.setWidth(0.2 * SIZE);
+        INNER_SHADOW.setHeight(0.2 * SIZE);
+        INNER_SHADOW.setColor(Color.color(0, 0, 0, 1.0));
+        INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
+
+        final LinearGradient HL_GRADIENT = new LinearGradient(0, 0, SIZE, 0, false, CycleMethod.NO_CYCLE,
+            new Stop(0.0, Color.color(0.0, 0.0, 0.0, 0.6)),
+            new Stop(0.4, Color.color(0.0, 0.0, 0.0, 0.0)),
+            new Stop(0.6, Color.color(0.0, 0.0, 0.0, 0.0)),
+            new Stop(1.0, Color.color(0.0, 0.0, 0.0, 0.6)));
+
+        final Path BACKGROUND = new Path();
+        BACKGROUND.setFillRule(FillRule.EVEN_ODD);
+        BACKGROUND.getElements().add(new MoveTo(0.075 * WIDTH, 0.7615384615384615 * HEIGHT));
+        BACKGROUND.getElements().add(new CubicCurveTo(0.075 * WIDTH, 0.7615384615384615 * HEIGHT,
+                                                      0.075 * WIDTH, 0.8846153846153846 * HEIGHT,
+                                                      0.075 * WIDTH, 0.8846153846153846 * HEIGHT));
+        BACKGROUND.getElements().add(new LineTo(0.915 * WIDTH, 0.8846153846153846 * HEIGHT));
+        BACKGROUND.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.8846153846153846 * HEIGHT,
+                                                      0.915 * WIDTH, 0.7615384615384615 * HEIGHT,
+                                                      0.915 * WIDTH, 0.7615384615384615 * HEIGHT));
+        BACKGROUND.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.4076923076923077 * HEIGHT,
+                                                      0.725 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                      0.495 * WIDTH, 0.11538461538461539 * HEIGHT));
+        BACKGROUND.getElements().add(new CubicCurveTo(0.265 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                      0.075 * WIDTH, 0.4076923076923077 * HEIGHT,
+                                                      0.075 * WIDTH, 0.7615384615384615 * HEIGHT));
+        BACKGROUND.getElements().add(new ClosePath());
+        BACKGROUND.setStroke(null);
+
+        final Path CLIP = new Path();
+        CLIP.setFillRule(FillRule.EVEN_ODD);
+        CLIP.getElements().add(new MoveTo(0.075 * WIDTH, 0.7615384615384615 * HEIGHT));
+        CLIP.getElements().add(new CubicCurveTo(0.075 * WIDTH, 0.7615384615384615 * HEIGHT,
+                                                0.075 * WIDTH, 0.8846153846153846 * HEIGHT,
+                                                0.075 * WIDTH, 0.8846153846153846 * HEIGHT));
+        CLIP.getElements().add(new LineTo(0.915 * WIDTH, 0.8846153846153846 * HEIGHT));
+        CLIP.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.8846153846153846 * HEIGHT,
+                                                0.915 * WIDTH, 0.7615384615384615 * HEIGHT,
+                                                0.915 * WIDTH, 0.7615384615384615 * HEIGHT));
+        CLIP.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.4076923076923077 * HEIGHT,
+                                                0.725 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                0.495 * WIDTH, 0.11538461538461539 * HEIGHT));
+        CLIP.getElements().add(new CubicCurveTo(0.265 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                0.075 * WIDTH, 0.4076923076923077 * HEIGHT,
+                                                0.075 * WIDTH, 0.7615384615384615 * HEIGHT));
+        CLIP.getElements().add(new ClosePath());
+
+        final ImageView IMAGE_VIEW;
+        switch (control.getBackgroundDesign()) {
+            default:
+                BACKGROUND.setStyle(control.getSimpleGradientBaseColorString());
+                BACKGROUND.setId(control.getBackgroundDesign().CSS_BACKGROUND);
+                BACKGROUND.setEffect(INNER_SHADOW);
+                BACKGROUND.setStroke(null);
+                background.getChildren().addAll(BACKGROUND);
+                break;
+        }
+    }
+
+    public void drawSections() {
+        final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
+        final double WIDTH = gaugeBounds.getWidth();
+        final double HEIGHT = gaugeBounds.getHeight();
+
+        sections.getChildren().clear();
+
+        final Rectangle IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
+        IBOUNDS.setOpacity(0.0);
+        IBOUNDS.setStroke(null);
+        sections.getChildren().add(IBOUNDS);
+
+        for (final Section section : control.getSections()) {
+            final Shape currentSection = section.getSectionArea();
+            currentSection.setFill(section.getTransparentColor());
+            currentSection.setStroke(null);
+            sections.getChildren().add(currentSection);
+        }
+    }
+
+    public void drawAreas() {
+        final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
+        final double WIDTH = gaugeBounds.getWidth();
+        final double HEIGHT = gaugeBounds.getHeight();
+
+        areas.getChildren().clear();
+
+        final Rectangle IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
+        IBOUNDS.setOpacity(0.0);
+        IBOUNDS.setStroke(null);
+        areas.getChildren().add(IBOUNDS);
+
+        for (final Section area : control.getAreas()) {
+            final Shape currentArea = area.getFilledArea();
+            currentArea.setFill(area.getTransparentColor());
+            currentArea.setStroke(null);
+            areas.getChildren().add(currentArea);
+        }
+    }
+
     public void drawTitleAndUnit() {
         final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
+        final double WIDTH = gaugeBounds.getWidth();
+        final double HEIGHT = gaugeBounds.getHeight();
+
         titleAndUnit.getChildren().clear();
 
-        final Rectangle IBOUNDS = new Rectangle(0, 0, SIZE, SIZE);
+        final Rectangle IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         IBOUNDS.setStroke(null);
         titleAndUnit.getChildren().add(IBOUNDS);
 
-        final Font TITLE_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.046728972 * SIZE));
+        final Font TITLE_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.046728972 * WIDTH));
         final Text title = new Text();
         title.setTextOrigin(VPos.BOTTOM);
         title.setFont(TITLE_FONT);
         title.setText(control.getTitle());
-        title.setX(((SIZE - title.getLayoutBounds().getWidth()) / 2.0));
-        title.setY(0.3 * SIZE + title.getLayoutBounds().getHeight());
+        title.setX(((WIDTH - title.getLayoutBounds().getWidth()) / 2.0));
+        title.setY(0.27 * WIDTH + title.getLayoutBounds().getHeight());
         title.setId(control.getBackgroundDesign().CSS_TEXT);
 
-        final Font UNIT_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.046728972 * SIZE));
+        final Font UNIT_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.046728972 * WIDTH));
         final Text unit = new Text();
         unit.setTextOrigin(VPos.BOTTOM);
         unit.setFont(UNIT_FONT);
         unit.setText(control.getUnit());
-        unit.setX((SIZE - unit.getLayoutBounds().getWidth()) / 2.0);
-        unit.setY(0.365 * SIZE + unit.getLayoutBounds().getHeight());
+        unit.setX((WIDTH - unit.getLayoutBounds().getWidth()) / 2.0);
+        unit.setY(0.335 * WIDTH + unit.getLayoutBounds().getHeight());
         unit.setId(control.getBackgroundDesign().CSS_TEXT);
 
         titleAndUnit.getChildren().addAll(title, unit);
     }
 
+    public void drawGlowOff() {
+        final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
+        final double WIDTH = gaugeBounds.getWidth();
+        final double HEIGHT = gaugeBounds.getHeight();
+
+        glowOff.getChildren().clear();
+
+        final Path GLOW_RING = new Path();
+        GLOW_RING.setFillRule(FillRule.EVEN_ODD);
+        GLOW_RING.getElements().add(new MoveTo(0.1 * WIDTH, 0.7615384615384615 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.1 * WIDTH, 0.4153846153846154 * HEIGHT,
+                                                     0.275 * WIDTH, 0.15384615384615385 * HEIGHT,
+                                                     0.495 * WIDTH, 0.15384615384615385 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.715 * WIDTH, 0.15384615384615385 * HEIGHT,
+                                                     0.89 * WIDTH, 0.4153846153846154 * HEIGHT,
+                                                     0.89 * WIDTH, 0.7615384615384615 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.89 * WIDTH, 0.7846153846153846 * HEIGHT,
+                                                     0.89 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                     0.89 * WIDTH, 0.8461538461538461 * HEIGHT));
+        GLOW_RING.getElements().add(new LineTo(0.1 * WIDTH, 0.8461538461538461 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.1 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                     0.1 * WIDTH, 0.7846153846153846 * HEIGHT,
+                                                     0.1 * WIDTH, 0.7615384615384615 * HEIGHT));
+        GLOW_RING.getElements().add(new ClosePath());
+        GLOW_RING.getElements().add(new MoveTo(0.075 * WIDTH, 0.7615384615384615 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.075 * WIDTH, 0.7846153846153846 * HEIGHT,
+                                                     0.075 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                     0.075 * WIDTH, 0.8461538461538461 * HEIGHT));
+        GLOW_RING.getElements().add(new LineTo(0.075 * WIDTH, 0.8846153846153846 * HEIGHT));
+        GLOW_RING.getElements().add(new LineTo(0.915 * WIDTH, 0.8846153846153846 * HEIGHT));
+        GLOW_RING.getElements().add(new LineTo(0.915 * WIDTH, 0.8461538461538461 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                     0.915 * WIDTH, 0.7846153846153846 * HEIGHT,
+                                                     0.915 * WIDTH, 0.7615384615384615 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.4076923076923077 * HEIGHT,
+                                                     0.725 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                     0.495 * WIDTH, 0.11538461538461539 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.265 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                     0.075 * WIDTH, 0.4076923076923077 * HEIGHT,
+                                                     0.075 * WIDTH, 0.7615384615384615 * HEIGHT));
+        GLOW_RING.getElements().add(new ClosePath());
+        final Paint GLOW_OFF_PAINT = new LinearGradient(0.495 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                        0.495 * WIDTH, 0.8846153846153846 * HEIGHT,
+                                                        false, CycleMethod.NO_CYCLE,
+                                                        new Stop(0.0, Color.color(0.8, 0.8, 0.8, 0.4)),
+                                                        new Stop(0.17, Color.color(0.6, 0.6, 0.6, 0.4)),
+                                                        new Stop(0.33, Color.color(0.9882352941, 0.9882352941, 0.9882352941, 0.4)),
+                                                        new Stop(0.34, Color.color(1, 1, 1, 0.4)),
+                                                        new Stop(0.63, Color.color(0.8, 0.8, 0.8, 0.4)),
+                                                        new Stop(0.64, Color.color(0.7960784314, 0.7960784314, 0.7960784314, 0.4)),
+                                                        new Stop(0.83, Color.color(0.6, 0.6, 0.6, 0.4)),
+                                                        new Stop(1.0, Color.color(1, 1, 1, 0.4)));
+        GLOW_RING.setFill(GLOW_OFF_PAINT);
+        GLOW_RING.setStroke(null);
+
+        final Path HIGHLIGHT_UPPER_LEFT = new Path();
+        HIGHLIGHT_UPPER_LEFT.setFillRule(FillRule.EVEN_ODD);
+        HIGHLIGHT_UPPER_LEFT.getElements().add(new MoveTo(0.13 * WIDTH, 0.5153846153846153 * HEIGHT));
+        HIGHLIGHT_UPPER_LEFT.getElements().add(new CubicCurveTo(0.195 * WIDTH, 0.2846153846153846 * HEIGHT,
+                                                                0.335 * WIDTH, 0.15384615384615385 * HEIGHT,
+                                                                0.495 * WIDTH, 0.15384615384615385 * HEIGHT));
+        HIGHLIGHT_UPPER_LEFT.getElements().add(new CubicCurveTo(0.495 * WIDTH, 0.15384615384615385 * HEIGHT,
+                                                                0.495 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                                0.495 * WIDTH, 0.11538461538461539 * HEIGHT));
+        HIGHLIGHT_UPPER_LEFT.getElements().add(new CubicCurveTo(0.325 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                                0.18 * WIDTH, 0.26153846153846155 * HEIGHT,
+                                                                0.11 * WIDTH, 0.5 * HEIGHT));
+        HIGHLIGHT_UPPER_LEFT.getElements().add(new CubicCurveTo(0.11 * WIDTH, 0.5 * HEIGHT,
+                                                                0.13 * WIDTH, 0.5153846153846153 * HEIGHT,
+                                                                0.13 * WIDTH, 0.5153846153846153 * HEIGHT));
+        HIGHLIGHT_UPPER_LEFT.getElements().add(new ClosePath());
+        final Paint HIGHLIGHT_UPPER_LEFT_FILL = new RadialGradient(0, 0,
+                                                                   0.26 * WIDTH, 0.23846153846153847 * HEIGHT,
+                                                                   0.24 * WIDTH,
+                                                                   false, CycleMethod.NO_CYCLE,
+                                                                   new Stop(0.0, Color.color(1, 1, 1, 0.4)),
+                                                                   new Stop(1.0, Color.color(1, 1, 1, 0)));
+        HIGHLIGHT_UPPER_LEFT.setFill(HIGHLIGHT_UPPER_LEFT_FILL);
+        HIGHLIGHT_UPPER_LEFT.setStroke(null);
+
+        glowOff.getChildren().addAll(GLOW_RING, HIGHLIGHT_UPPER_LEFT);
+    }
+
+    public void drawGlowOn() {
+        final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
+        final double WIDTH = gaugeBounds.getWidth();
+        final double HEIGHT = gaugeBounds.getHeight();
+
+        glowOn.getChildren().clear();
+
+        final Path GLOW_RING = new Path();
+        GLOW_RING.setFillRule(FillRule.EVEN_ODD);
+        GLOW_RING.getElements().add(new MoveTo(0.1 * WIDTH, 0.7615384615384615 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.1 * WIDTH, 0.4153846153846154 * HEIGHT,
+                                                     0.275 * WIDTH, 0.15384615384615385 * HEIGHT,
+                                                     0.495 * WIDTH, 0.15384615384615385 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.715 * WIDTH, 0.15384615384615385 * HEIGHT,
+                                                     0.89 * WIDTH, 0.4153846153846154 * HEIGHT,
+                                                     0.89 * WIDTH, 0.7615384615384615 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.89 * WIDTH, 0.7846153846153846 * HEIGHT,
+                                                     0.89 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                     0.89 * WIDTH, 0.8461538461538461 * HEIGHT));
+        GLOW_RING.getElements().add(new LineTo(0.1 * WIDTH, 0.8461538461538461 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.1 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                     0.1 * WIDTH, 0.7846153846153846 * HEIGHT,
+                                                     0.1 * WIDTH, 0.7615384615384615 * HEIGHT));
+        GLOW_RING.getElements().add(new ClosePath());
+        GLOW_RING.getElements().add(new MoveTo(0.075 * WIDTH, 0.7615384615384615 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.075 * WIDTH, 0.7846153846153846 * HEIGHT,
+                                                     0.075 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                     0.075 * WIDTH, 0.8461538461538461 * HEIGHT));
+        GLOW_RING.getElements().add(new LineTo(0.075 * WIDTH, 0.8846153846153846 * HEIGHT));
+        GLOW_RING.getElements().add(new LineTo(0.915 * WIDTH, 0.8846153846153846 * HEIGHT));
+        GLOW_RING.getElements().add(new LineTo(0.915 * WIDTH, 0.8461538461538461 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                     0.915 * WIDTH, 0.7846153846153846 * HEIGHT,
+                                                     0.915 * WIDTH, 0.7615384615384615 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.915 * WIDTH, 0.4076923076923077 * HEIGHT,
+                                                     0.725 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                     0.495 * WIDTH, 0.11538461538461539 * HEIGHT));
+        GLOW_RING.getElements().add(new CubicCurveTo(0.265 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                     0.075 * WIDTH, 0.4076923076923077 * HEIGHT,
+                                                     0.075 * WIDTH, 0.7615384615384615 * HEIGHT));
+        GLOW_RING.getElements().add(new ClosePath());
+
+        final Paint GLOW_ON_PAINT = new RadialGradient(0, 0,
+                                                       0.5 * WIDTH, 0.5 * HEIGHT,
+                                                       0.4158878504672897 * WIDTH,
+                                                       false,
+                                                       CycleMethod.NO_CYCLE,
+                                                       new Stop(0.0, glowColors.get(0)),
+                                                       new Stop(0.91, glowColors.get(1)),
+                                                       new Stop(0.96, glowColors.get(2)),
+                                                       new Stop(1.0, glowColors.get(3)));
+
+        GLOW_RING.setFill(GLOW_ON_PAINT);
+        GLOW_RING.setStroke(null);
+
+        final DropShadow GLOW_EFFECT = new DropShadow();
+        GLOW_EFFECT.setRadius(0.15 * WIDTH);
+        GLOW_EFFECT.setBlurType(BlurType.GAUSSIAN);
+        if (!GLOW_EFFECT.colorProperty().isBound()) {
+            GLOW_EFFECT.colorProperty().bind(control.glowColorProperty());
+        }
+        GLOW_RING.setEffect(GLOW_EFFECT);
+
+        final Path HIGHLIGHT_UPPER_LEFT = new Path();
+        HIGHLIGHT_UPPER_LEFT.setFillRule(FillRule.EVEN_ODD);
+        HIGHLIGHT_UPPER_LEFT.getElements().add(new MoveTo(0.13 * WIDTH, 0.5153846153846153 * HEIGHT));
+        HIGHLIGHT_UPPER_LEFT.getElements().add(new CubicCurveTo(0.195 * WIDTH, 0.2846153846153846 * HEIGHT,
+                                                                0.335 * WIDTH, 0.15384615384615385 * HEIGHT,
+                                                                0.495 * WIDTH, 0.15384615384615385 * HEIGHT));
+        HIGHLIGHT_UPPER_LEFT.getElements().add(new CubicCurveTo(0.495 * WIDTH, 0.15384615384615385 * HEIGHT,
+                                                                0.495 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                                0.495 * WIDTH, 0.11538461538461539 * HEIGHT));
+        HIGHLIGHT_UPPER_LEFT.getElements().add(new CubicCurveTo(0.325 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                                0.18 * WIDTH, 0.26153846153846155 * HEIGHT,
+                                                                0.11 * WIDTH, 0.5 * HEIGHT));
+        HIGHLIGHT_UPPER_LEFT.getElements().add(new CubicCurveTo(0.11 * WIDTH, 0.5 * HEIGHT,
+                                                                0.13 * WIDTH, 0.5153846153846153 * HEIGHT,
+                                                                0.13 * WIDTH, 0.5153846153846153 * HEIGHT));
+        HIGHLIGHT_UPPER_LEFT.getElements().add(new ClosePath());
+        HIGHLIGHT_UPPER_LEFT.setFill(new RadialGradient(0, 0, 0.26635514018691586 * WIDTH, 0.16355140186915887 * HEIGHT, 0.23598130841121495 * WIDTH, false, CycleMethod.NO_CYCLE, new Stop(0.0, Color.color(1, 1, 1, 0.4)), new Stop(1.0, Color.color(1, 1, 1, 0))));
+        HIGHLIGHT_UPPER_LEFT.setStroke(null);
+
+        glowOn.getChildren().addAll(GLOW_RING, HIGHLIGHT_UPPER_LEFT);
+    }
+
+    public void drawIndicators() {
+        final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
+        final double WIDTH = gaugeBounds.getWidth();
+        final double HEIGHT = gaugeBounds.getHeight();
+
+        indicators.getChildren().clear();
+
+        final Rectangle IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
+        IBOUNDS.setOpacity(0.0);
+        IBOUNDS.setStroke(null);
+        indicators.getChildren().add(IBOUNDS);
+
+        indicators.getTransforms().clear();
+        indicators.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
+        indicators.getTransforms().add(Transform.rotate(-control.getMinValue() * control.getAngleStep(), center.getX(), center.getY()));
+
+        for (final Indicator indicator : control.getIndicators()) {
+            if (Double.compare(indicator.getIndicatorValue(), control.getMinValue()) >= 0 && Double.compare(indicator.getIndicatorValue(), control.getMaxValue()) <= 0) {
+                final Group ARROW = createIndicator(WIDTH, indicator, new Point2D(WIDTH * 0.4813084112, WIDTH * 0.0841121495));
+                ARROW.getTransforms().add(Transform.rotate(indicator.getIndicatorValue() * control.getAngleStep(), center.getX(), center.getY()));
+                indicators.getChildren().add(ARROW);
+            }
+        }
+    }
+
     public void drawThreshold() {
         final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
-        final double WIDTH = SIZE;
-        final double HEIGHT = SIZE;
+        final double WIDTH = gaugeBounds.getWidth();
+        final double HEIGHT = gaugeBounds.getHeight();
 
         threshold.getChildren().clear();
 
-        final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
+        final Rectangle IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         IBOUNDS.setStroke(null);
         threshold.getChildren().add(IBOUNDS);
 
-        final Path THRESHOLD = createTriangleShape(0.03 * WIDTH, 0.03 * HEIGHT, false);
+        final Path THRESHOLD = createTriangleShape(0.03 * WIDTH, 0.03 * WIDTH, false);
         THRESHOLD.setStrokeType(StrokeType.CENTERED);
         THRESHOLD.setStrokeLineCap(StrokeLineCap.ROUND);
         THRESHOLD.setStrokeLineJoin(StrokeLineJoin.ROUND);
@@ -889,7 +1354,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         THRESHOLD.setId("threshold-gradient");
 
         THRESHOLD.setTranslateX(0.485 * WIDTH);
-        THRESHOLD.setTranslateY(0.14 * HEIGHT);
+        THRESHOLD.setTranslateY(0.14 * WIDTH);
 
         threshold.getChildren().addAll(THRESHOLD);
 
@@ -901,22 +1366,22 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
 
     public void drawMinMeasuredIndicator() {
         final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
-        final double WIDTH = SIZE;
-        final double HEIGHT = SIZE;
+        final double WIDTH = gaugeBounds.getWidth();
+        final double HEIGHT = gaugeBounds.getHeight();
 
         minMeasured.getChildren().clear();
 
-        final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
+        final Rectangle IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         IBOUNDS.setStroke(null);
         minMeasured.getChildren().add(IBOUNDS);
 
-        final Path MIN_MEASURED = createTriangleShape(0.03 * WIDTH, 0.035 * HEIGHT, true);
+        final Path MIN_MEASURED = createTriangleShape(0.03 * WIDTH, 0.035 * WIDTH, true);
         MIN_MEASURED.setFill(Color.color(0.0, 0.0, 0.8));
         MIN_MEASURED.setStroke(null);
 
         MIN_MEASURED.setTranslateX(0.485 * WIDTH);
-        MIN_MEASURED.setTranslateY(0.1 * HEIGHT);
+        MIN_MEASURED.setTranslateY(0.1 * WIDTH);
 
         minMeasured.getChildren().add(MIN_MEASURED);
 
@@ -928,22 +1393,22 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
 
     public void drawMaxMeasuredIndicator() {
         final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
-        final double WIDTH = SIZE;
-        final double HEIGHT = SIZE;
+        final double WIDTH = gaugeBounds.getWidth();
+        final double HEIGHT = gaugeBounds.getHeight();
 
         maxMeasured.getChildren().clear();
 
-        final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
+        final Rectangle IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         IBOUNDS.setStroke(null);
         maxMeasured.getChildren().add(IBOUNDS);
 
-        final Path MAX_MEASURED = createTriangleShape(0.03 * WIDTH, 0.035 * HEIGHT, true);
+        final Path MAX_MEASURED = createTriangleShape(0.03 * WIDTH, 0.035 * WIDTH, true);
         MAX_MEASURED.setFill(Color.color(0.8, 0.0, 0.0));
         MAX_MEASURED.setStroke(null);
 
         MAX_MEASURED.setTranslateX(0.485 * WIDTH);
-        MAX_MEASURED.setTranslateY(0.1 * HEIGHT);
+        MAX_MEASURED.setTranslateY(0.1 * WIDTH);
 
         maxMeasured.getChildren().add(MAX_MEASURED);
 
@@ -955,15 +1420,15 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
 
     public void drawPointer() {
         final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
-        final double WIDTH = SIZE;
-        final double HEIGHT = SIZE;
+        final double WIDTH = gaugeBounds.getWidth();
+        final double HEIGHT = gaugeBounds.getWidth();
 
         pointer.getChildren().clear();
 
-        final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
+        final Rectangle IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         IBOUNDS.setStroke(null);
-        pointer.getChildren().addAll(IBOUNDS);
+        pointer.getChildren().add(IBOUNDS);
 
         final Path POINTER = new Path();
         final Path POINTER_FRONT = new Path();
@@ -1305,13 +1770,12 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             final DropShadow SHADOW = new DropShadow();
             SHADOW.setHeight(0.03 * WIDTH);
             SHADOW.setWidth(0.03 * HEIGHT);
-            SHADOW.setRadius(0.03 * WIDTH);
             SHADOW.setColor(Color.color(0, 0, 0, 0.75));
             POINTER.setEffect(SHADOW);
         }
 
         pointer.getChildren().addAll(POINTER);
-        if (control.getPointerType() == PointerType.TYPE9) {
+        if (control.getPointerType() == Gauge.PointerType.TYPE9) {
             pointer.getChildren().add(POINTER_FRONT);
         }
 
@@ -1319,76 +1783,97 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
     }
 
-    public void drawLcdContent() {
+    public void drawForeground() {
         final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
-        lcdContent.getChildren().clear();
+        final double WIDTH = gaugeBounds.getWidth();
+        final double HEIGHT = gaugeBounds.getHeight();
 
-        final Rectangle IBOUNDS = new Rectangle(0, 0, SIZE, SIZE);
+        foreground.getChildren().clear();
+
+        final Rectangle IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         IBOUNDS.setStroke(null);
-        lcdContent.getChildren().add(IBOUNDS);
+        foreground.getChildren().add(IBOUNDS);
 
-        final Rectangle LCD_FRAME = new Rectangle(((SIZE - SIZE * control.getRadialRange().LCD_FACTORS.getX()) / 2.0), (SIZE * control.getRadialRange().LCD_FACTORS.getY()), (SIZE * control.getRadialRange().LCD_FACTORS.getWidth()), (SIZE * control.getRadialRange().LCD_FACTORS.getHeight()));
-
-        final Font LCD_UNIT_FONT = Font.font(control.getLcdUnitFont(), FontWeight.NORMAL, (0.4 * LCD_FRAME.getLayoutBounds().getHeight()));
-        final Font LCD_VALUE_FONT;
-        final double UNIT_Y_OFFSET;
-        if (control.isLcdDigitalFontEnabled()) {
-            LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/digital.ttf"), (0.75 * LCD_FRAME.getLayoutBounds().getHeight()));
-            UNIT_Y_OFFSET = 1.5;
-        } else {
-            LCD_VALUE_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
-            UNIT_Y_OFFSET = 2.0;
-        }
-
-        lcdValueString.setFont(LCD_VALUE_FONT);
-        lcdUnitString.setFont(LCD_UNIT_FONT);
-
-        // Unit
-        lcdUnitString.setText(control.isLcdValueCoupled() ? control.getUnit() : control.getLcdUnit());
-        lcdUnitString.setTextOrigin(VPos.BOTTOM);
-        lcdUnitString.setTextAlignment(TextAlignment.RIGHT);
-        if (!lcdUnitString.visibleProperty().isBound()) {
-            lcdUnitString.visibleProperty().bind(control.lcdUnitVisibleProperty());
-        }
-        if (control.isLcdUnitVisible()) {
-            lcdUnitString.setX(LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdUnitString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0625);
-            lcdUnitString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / UNIT_Y_OFFSET - (lcdValueString.getLayoutBounds().getHeight() * 0.05));
-        }
-        lcdUnitString.getStyleClass().add("lcd");
-        lcdUnitString.setStyle(control.getLcdDesign().CSS);
-        lcdUnitString.setId("lcd-text");
-        lcdUnitString.setStroke(null);
-
-        // Value
-        switch (control.getLcdNumberSystem()) {
-            case HEXADECIMAL:
-                lcdValueString.setText(Integer.toHexString((int) currentLcdValue.get()).toUpperCase());
+        final Path FOREGROUND = new Path();
+        switch (control.getForegroundType()) {
+            case TYPE2:
+                FOREGROUND.setFillRule(FillRule.EVEN_ODD);
+                FOREGROUND.getElements().add(new MoveTo(0.495 * WIDTH, 0.5923076923076923 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.65 * WIDTH, 0.47692307692307695 * HEIGHT,
+                                                              0.73 * WIDTH, 0.47692307692307695 * HEIGHT,
+                                                              0.87 * WIDTH, 0.47692307692307695 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.765 * WIDTH, 0.16153846153846155 * HEIGHT,
+                                                              0.52 * WIDTH, 0.023076923076923078 * HEIGHT,
+                                                              0.31 * WIDTH, 0.18461538461538463 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.155 * WIDTH, 0.3076923076923077 * HEIGHT,
+                                                              0.075 * WIDTH, 0.5307692307692308 * HEIGHT,
+                                                              0.08 * WIDTH, 0.7692307692307693 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.085 * WIDTH, 0.8615384615384616 * HEIGHT,
+                                                              0.35 * WIDTH, 0.7076923076923077 * HEIGHT,
+                                                              0.495 * WIDTH, 0.5923076923076923 * HEIGHT));
+                FOREGROUND.getElements().add(new ClosePath());
+                FOREGROUND.setFill(new LinearGradient(0.31 * WIDTH, 0.19230769230769232 * HEIGHT,
+                                                      0.4915961998958187 * WIDTH, 0.7406193995005341 * HEIGHT,
+                                                      false, CycleMethod.NO_CYCLE,
+                                                      new Stop(0.0, Color.color(1, 1, 1, 0.2470588235)),
+                                                      new Stop(1.0, Color.color(1, 1, 1, 0.0470588235))));
+                FOREGROUND.setStroke(null);
+                foreground.getChildren().addAll(FOREGROUND);
                 break;
-
-            case OCTAL:
-                lcdValueString.setText(Integer.toOctalString((int) currentLcdValue.get()).toUpperCase());
+            case TYPE3:
+                FOREGROUND.setFillRule(FillRule.EVEN_ODD);
+                FOREGROUND.getElements().add(new MoveTo(0.08 * WIDTH, 0.7692307692307693 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.205 * WIDTH, 0.8384615384615385 * HEIGHT,
+                                                              0.455 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                              0.495 * WIDTH, 0.8461538461538461 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.53 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                              0.79 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                              0.91 * WIDTH, 0.7692307692307693 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.91 * WIDTH, 0.4076923076923077 * HEIGHT,
+                                                              0.735 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                              0.495 * WIDTH, 0.11538461538461539 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.255 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                              0.08 * WIDTH, 0.4076923076923077 * HEIGHT,
+                                                              0.08 * WIDTH, 0.7692307692307693 * HEIGHT));
+                FOREGROUND.getElements().add(new ClosePath());
+                FOREGROUND.setFill(new LinearGradient(0.495 * WIDTH, 0.13076923076923078 * HEIGHT,
+                                                      0.495 * WIDTH, 0.8461538461538461 * HEIGHT,
+                                                      false, CycleMethod.NO_CYCLE,
+                                                      new Stop(0.0, Color.color(1, 1, 1, 0.2470588235)),
+                                                      new Stop(1.0, Color.color(1, 1, 1, 0.0470588235))));
+                FOREGROUND.setStroke(null);
+                foreground.getChildren().addAll(FOREGROUND);
                 break;
+            case TYPE4:
 
-            case DECIMAL:
+            case TYPE5:
 
+            case TYPE1:
             default:
-                lcdValueString.setText(formatLcdValue(currentLcdValue.get()));
+                FOREGROUND.setFillRule(FillRule.EVEN_ODD);
+                FOREGROUND.getElements().add(new MoveTo(0.08 * WIDTH, 0.7692307692307693 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.2 * WIDTH, 0.676923076923077 * HEIGHT,
+                                                              0.33 * WIDTH, 0.6230769230769231 * HEIGHT,
+                                                              0.495 * WIDTH, 0.6230769230769231 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.665 * WIDTH, 0.6230769230769231 * HEIGHT,
+                                                              0.785 * WIDTH, 0.6692307692307692 * HEIGHT,
+                                                              0.91 * WIDTH, 0.7692307692307693 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.91 * WIDTH, 0.4076923076923077 * HEIGHT,
+                                                              0.735 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                              0.495 * WIDTH, 0.11538461538461539 * HEIGHT));
+                FOREGROUND.getElements().add(new CubicCurveTo(0.255 * WIDTH, 0.11538461538461539 * HEIGHT,
+                                                              0.08 * WIDTH, 0.4076923076923077 * HEIGHT,
+                                                              0.08 * WIDTH, 0.7692307692307693 * HEIGHT));
+                FOREGROUND.getElements().add(new ClosePath());
+                FOREGROUND.setFill(new LinearGradient(0.495 * WIDTH, 0.12307692307692308 * HEIGHT,
+                                                      0.495 * WIDTH, 0.7461538461538462 * HEIGHT,
+                                                      false, CycleMethod.NO_CYCLE,
+                                                      new Stop(0.0, Color.color(1, 1, 1, 0.2980392157)),
+                                                      new Stop(1.0, Color.color(1, 1, 1, 0.0941176471))));
+                FOREGROUND.setStroke(null);
+                foreground.getChildren().addAll(FOREGROUND);
                 break;
         }
-        if (control.isLcdUnitVisible()) {
-            lcdValueString.setX((LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdUnitString.getLayoutBounds().getWidth() - lcdValueString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0833333333));
-        } else {
-            lcdValueString.setX((LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdValueString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0625));
-        }
-        lcdValueString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / 2.0);
-        lcdValueString.setTextOrigin(VPos.BOTTOM);
-        lcdValueString.setTextAlignment(TextAlignment.RIGHT);
-        lcdValueString.getStyleClass().add("lcd");
-        lcdValueString.setStyle(control.getLcdDesign().CSS);
-        lcdValueString.setId("lcd-text");
-        lcdValueString.setStroke(null);
-
-        lcdContent.getChildren().addAll(lcdUnitString, lcdValueString);
     }
 }

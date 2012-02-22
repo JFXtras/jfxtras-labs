@@ -25,20 +25,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control.gauge.behavior;
+package jfxtras.labs.internal.scene.control.behavior;
 
-import jfxtras.labs.scene.control.gauge.RadialHalfN;
+import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import jfxtras.labs.scene.control.gauge.Led;
 
 
 /**
  * Created by
  * User: hansolo
- * Date: 25.01.12
- * Time: 09:54
+ * Date: 11.02.12
+ * Time: 14:00
  */
-public class RadialHalfNBehavior extends GaugeBehaviorBase<RadialHalfN> {
-
-    public RadialHalfNBehavior(final RadialHalfN CONTROL) {
+public class LedBehavior extends BehaviorBase<Led> {
+    public LedBehavior(final Led CONTROL) {
         super(CONTROL);
     }
 }

@@ -100,47 +100,47 @@
 }
 
 .radial {
-    -fx-skin: "jfxtras.labs.scene.control.gauge.skin.RadialSkin";
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.RadialSkin";
 }
 
 .radial-half-north {
-    -fx-skin: "jfxtras.labs.scene.control.gauge.skin.RadialHalfNSkin";
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.RadialHalfNSkin";
 }
 
 .radial-half-east {
-    -fx-skin: "jfxtras.labs.scene.control.gauge.skin.RadialHalfESkin";
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.RadialHalfESkin";
 }
 
 .radial-half-south {
-    -fx-skin: "jfxtras.labs.scene.control.gauge.skin.RadialHalfSSkin";
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.RadialHalfSSkin";
 }
 
 .radial-half-west {
-    -fx-skin: "jfxtras.labs.scene.control.gauge.skin.RadialHalfWSkin";
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.RadialHalfWSkin";
 }
 
 .radial-quarter-north {
-    -fx-skin: "jfxtras.labs.scene.control.gauge.skin.RadialQuarterNSkin";
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.RadialQuarterNSkin";
 }
 
 .radial-quarter-west {
-    -fx-skin: "jfxtras.labs.scene.control.gauge.skin.RadialQuarterWSkin";
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.RadialQuarterWSkin";
 }
 
 .radial-quarter-south {
-    -fx-skin: "jfxtras.labs.scene.control.gauge.skin.RadialQuarterSSkin";
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.RadialQuarterSSkin";
 }
 
 .radial-quarter-east {
-    -fx-skin: "jfxtras.labs.scene.control.gauge.skin.RadialQuarterESkin";
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.RadialQuarterESkin";
 }
 
 .linear {
-    -fx-skin: "jfxtras.labs.scene.control.gauge.skin.LinearSkin";
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.LinearSkin";
 }
 
 .lcd {
-    -fx-skin: "jfxtras.labs.scene.control.gauge.skin.LcdSkin";
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.LcdSkin";
 
     /************************************************************
     * Defintions of all lcd colors                              *

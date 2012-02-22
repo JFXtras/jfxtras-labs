@@ -25,20 +25,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control.gauge.behavior;
+package jfxtras.labs.internal.scene.control.behavior;
 
-import jfxtras.labs.scene.control.gauge.RadialQuarterN;
+import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import jfxtras.labs.scene.control.gauge.Trafficlight;
 
 
 /**
  * Created by
  * User: hansolo
- * Date: 01.02.12
- * Time: 17:28
+ * Date: 20.02.12
+ * Time: 20:52
  */
-public class RadialQuarterNBehavior extends GaugeBehaviorBase<RadialQuarterN> {
+public class TrafficlightBehavior extends BehaviorBase<Trafficlight> {
 
-    public RadialQuarterNBehavior(final RadialQuarterN CONTROL) {
+    public TrafficlightBehavior(final Trafficlight CONTROL) {
         super(CONTROL);
     }
 }

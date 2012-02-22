@@ -26,16 +26,16 @@
  */
 
 .led {
-    -fx-skin: "jfxtras.labs.scene.control.gauge.skin.LedSkin";
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.LedSkin";
     -fx-led : rgb(255, 0, 0);
 }
 
 .bargraph {
-    -fx-skin: "jfxtras.labs.scene.control.gauge.skin.LedBargraphSkin";
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.LedBargraphSkin";
 }
 
 .trafficlight {
-    -fx-skin: "jfxtras.labs.scene.control.gauge.skin.TrafficlightSkin";
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.TrafficlightSkin";
 }
 
 #fx-led-frame {
