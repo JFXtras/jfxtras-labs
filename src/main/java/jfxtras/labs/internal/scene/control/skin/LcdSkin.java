@@ -687,6 +687,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         LCD_FRAME.effectProperty().set(GLOW_EFFECT);
 
         glowOn.getChildren().addAll(LCD_FRAME);
+        glowOn.setCache(true);
     }
 
     public void drawLcd() {
@@ -1083,6 +1084,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         if (control.isLcdThresholdVisible()) {
             lcd.getChildren().add(lcdThresholdIndicator);
         }
+        lcd.setCache(true);
     }
 
     public void drawLcdContent() {

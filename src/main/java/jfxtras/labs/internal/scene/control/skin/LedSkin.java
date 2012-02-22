@@ -261,6 +261,7 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
                                  LED_OFF,
                                  ledOn,
                                  HIGHLIGHT);
+        led.setCache(true);
     }
 }
 

@@ -273,6 +273,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                 FRAME.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
                 break;
         }
+        FRAME.setCache(true);
     }
 
     protected void drawCircularBackground(final Gauge CONTROL, final Group BACKGROUND, final Rectangle GAUGE_BOUNDS) {
@@ -313,6 +314,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                 BACKGROUND.getChildren().addAll(BACKGROUND_SHAPE);
                 break;
         }
+        BACKGROUND.setCache(true);
     }
 
     protected void drawCircularTrend(final Gauge CONTROL, final Group trend, final Rectangle GAUGE_BOUNDS) {
@@ -459,6 +461,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
             ledOffsetX = matrixOffsetX;
             ledOffsetY += DIAMETER;
         }
+        trend.setCache(true);
     }
 
     protected void drawCircularSections(final Gauge CONTROL, final Group SECTIONS, final Rectangle GAUGE_BOUNDS) {
@@ -558,6 +561,8 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         HIGHLIGHT_UPPER_LEFT.setStroke(null);
 
         GLOW_OFF.getChildren().addAll(GLOW_RING, HIGHLIGHT_LOWER_RIGHT, HIGHLIGHT_UPPER_LEFT);
+
+        GLOW_OFF.setCache(true);
     }
 
     protected void drawCircularGlowOn(final Gauge CONTROL, final Group GLOW_ON, final ArrayList<Color> GLOW_COLORS, final Rectangle GAUGE_BOUNDS) {
@@ -626,6 +631,8 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         HIGHLIGHT_UPPER_LEFT.setStroke(null);
 
         GLOW_ON.getChildren().addAll(GLOW_RING, HIGHLIGHT_LOWER_RIGHT, HIGHLIGHT_UPPER_LEFT);
+
+        GLOW_ON.setCache(true);
     }
 
     protected void drawCircularIndicators(final Gauge CONTROL, final Group INDICATORS, final Point2D CENTER, final Rectangle GAUGE_BOUNDS) {
@@ -769,6 +776,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         LED_OFF_GROUP.setLayoutX(WIDTH * CONTROL.getLedPosition().getX());
         LED_OFF_GROUP.setLayoutY(WIDTH * CONTROL.getLedPosition().getY());
         LED_OFF.getChildren().addAll(IBOUNDS_OFF, LED_OFF_GROUP);
+        LED_OFF.setCache(true);
 
         // ON
         LED_ON.getChildren().clear();
@@ -779,6 +787,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         LED_ON_GROUP.setLayoutX(WIDTH * CONTROL.getLedPosition().getX());
         LED_ON_GROUP.setLayoutY(WIDTH * CONTROL.getLedPosition().getY());
         LED_ON.getChildren().addAll(IBOUNDS_ON, LED_ON_GROUP);
+        LED_ON.setCache(true);
     }
 
     protected void drawCircularUserLed(final Gauge CONTROL, final Group USER_LED_OFF, final Group USER_LED_ON, final Rectangle GAUGE_BOUNDS) {
@@ -902,6 +911,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
             LEDS.add(LED);
             BARGRAPH.getChildren().add(LED);
         }
+        BARGRAPH.setCache(true);
     }
 
     protected void drawCircularForeground(final Gauge CONTROL, final Group FOREGROUND, final Rectangle GAUGE_BOUNDS) {
@@ -1072,6 +1082,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                 FOREGROUND.getChildren().addAll(FOREGROUND_SHAPE);
                 break;
         }
+        FOREGROUND.setCache(true);
     }
 
     protected void drawCircularTickmarks(final Gauge CONTROL, final Group TICKMARKS, final Point2D CENTER, final Rectangle GAUGE_BOUNDS) {
@@ -1278,6 +1289,8 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
 
         TICKMARKS.getChildren().addAll(MAJOR_TICKMARKS_PATH, MEDIUM_TICKMARKS_PATH, MINOR_TICKMARKS_PATH);
         TICKMARKS.getChildren().addAll(tickmarkLabel);
+
+        TICKMARKS.setCache(true);
     }
 
     private static void drawRadialTicks(final Path TICKMARKS_PATH, final Point2D INNER_POINT, final Point2D OUTER_POINT) {
