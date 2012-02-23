@@ -44,6 +44,9 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
     private boolean        initialized;
     private Group          fixture;
     private Group          flip;
+    private Color          bright;
+    private Color          dark;
+    private Color          textColor;
     private Path           upper;
     private Text           upperText;
     private Path           upperNext;
@@ -72,6 +75,9 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         isDirty          = false;
         fixture          = new Group();
         flip             = new Group();
+        dark             = control.getColor().darker().darker();
+        bright           = control.getColor().brighter();
+        textColor        = control.getCharacterColor();
         upperText        = new Text(Character.toString(control.getCharacter()));
         lowerText        = new Text(Character.toString(control.getCharacter()));
         upperNextText    = new Text(Character.toString((char) (control.getCharacter() + 1)));
@@ -153,8 +159,11 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
         if (PROPERTY == "COLOR") {
+            dark = control.getColor().darker().darker();
+            bright = control.getColor().brighter();
             paint();
         } else if (PROPERTY == "CHARACTER_COLOR") {
+            textColor = control.getCharacterColor();
             paint();
         } else if (PROPERTY == "CHARACTER") {
             if (control.getCharacter() != currentChar) {
@@ -353,26 +362,26 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         final Paint LOWER_FILL = new LinearGradient(0.5342465753424658 * WIDTH, 0.5079365079365079 * HEIGHT,
                                                     0.5342465753424658 * WIDTH, 0.9947089947089947 * HEIGHT,
                                                     false, CycleMethod.NO_CYCLE,
-                                                    new Stop(0.0, Color.color(0.4274509804, 0.4274509804, 0.4274509804, 1)),
-                                                    new Stop(1.0, Color.color(0.2078431373, 0.2078431373, 0.2078431373, 1)));
+                                                    new Stop(0.0, bright),
+                                                    new Stop(1.0, dark));
         lower.setFill(LOWER_FILL);
         lower.setStroke(null);
 
         final InnerShadow LOWER_INNER_SHADOW0 = new InnerShadow();
-        LOWER_INNER_SHADOW0.setWidth(0.07397260273972603 * lower.getLayoutBounds().getWidth());
-        LOWER_INNER_SHADOW0.setHeight(0.07397260273972603 * lower.getLayoutBounds().getHeight());
+        LOWER_INNER_SHADOW0.setWidth(0.075 * lower.getLayoutBounds().getWidth());
+        LOWER_INNER_SHADOW0.setHeight(0.075 * lower.getLayoutBounds().getHeight());
         LOWER_INNER_SHADOW0.setOffsetX(0.0);
         LOWER_INNER_SHADOW0.setOffsetY(0.0);
-        LOWER_INNER_SHADOW0.setRadius(0.07397260273972603 * lower.getLayoutBounds().getWidth());
+        LOWER_INNER_SHADOW0.setRadius(0.075 * lower.getLayoutBounds().getWidth());
         LOWER_INNER_SHADOW0.setColor(Color.BLACK);
         LOWER_INNER_SHADOW0.setBlurType(BlurType.GAUSSIAN);
 
         final InnerShadow LOWER_INNER_SHADOW1 = new InnerShadow();
-        LOWER_INNER_SHADOW1.setWidth(0.049315068493150684 * lower.getLayoutBounds().getWidth());
-        LOWER_INNER_SHADOW1.setHeight(0.049315068493150684 * lower.getLayoutBounds().getHeight());
+        LOWER_INNER_SHADOW1.setWidth(0.05 * lower.getLayoutBounds().getWidth());
+        LOWER_INNER_SHADOW1.setHeight(0.05 * lower.getLayoutBounds().getHeight());
         LOWER_INNER_SHADOW1.setOffsetX(0);
-        LOWER_INNER_SHADOW1.setOffsetY(0.00821917808219178 * SIZE);
-        LOWER_INNER_SHADOW1.setRadius(0.049315068493150684 * lower.getLayoutBounds().getWidth());
+        LOWER_INNER_SHADOW1.setOffsetY(0.018 * SIZE);
+        LOWER_INNER_SHADOW1.setRadius(0.05 * lower.getLayoutBounds().getWidth());
         LOWER_INNER_SHADOW1.setColor(Color.WHITE);
         LOWER_INNER_SHADOW1.setBlurType(BlurType.GAUSSIAN);
         LOWER_INNER_SHADOW1.inputProperty().set(LOWER_INNER_SHADOW0);
@@ -406,26 +415,26 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         final Paint UPPER_FILL = new LinearGradient(0.5205479452054794 * WIDTH, 0.0,
                                                     0.5205479452054794 * WIDTH, 0.49206349206349204 * HEIGHT,
                                                     false, CycleMethod.NO_CYCLE,
-                                                    new Stop(0.0, Color.color(0.2039215686, 0.2039215686, 0.2039215686, 1)),
-                                                    new Stop(1.0, Color.color(0.4235294118, 0.4235294118, 0.4235294118, 1)));
+                                                    new Stop(0.0, dark),
+                                                    new Stop(1.0, bright));
         upper.setFill(UPPER_FILL);
         upper.setStroke(null);
 
         final InnerShadow UPPER_INNER_SHADOW0 = new InnerShadow();
-        UPPER_INNER_SHADOW0.setWidth(0.07397260273972603 * upper.getLayoutBounds().getWidth());
-        UPPER_INNER_SHADOW0.setHeight(0.07397260273972603 * upper.getLayoutBounds().getHeight());
+        UPPER_INNER_SHADOW0.setWidth(0.075 * upper.getLayoutBounds().getWidth());
+        UPPER_INNER_SHADOW0.setHeight(0.075 * upper.getLayoutBounds().getHeight());
         UPPER_INNER_SHADOW0.setOffsetX(0.0);
-        UPPER_INNER_SHADOW0.setOffsetY(-0.0);
-        UPPER_INNER_SHADOW0.setRadius(0.07397260273972603 * upper.getLayoutBounds().getWidth());
+        UPPER_INNER_SHADOW0.setOffsetY(0.0);
+        UPPER_INNER_SHADOW0.setRadius(0.075 * upper.getLayoutBounds().getWidth());
         UPPER_INNER_SHADOW0.setColor(Color.BLACK);
         UPPER_INNER_SHADOW0.setBlurType(BlurType.GAUSSIAN);
 
         final InnerShadow UPPER_INNER_SHADOW1 = new InnerShadow();
-        UPPER_INNER_SHADOW1.setWidth(0.049315068493150684 * upper.getLayoutBounds().getWidth());
-        UPPER_INNER_SHADOW1.setHeight(0.049315068493150684 * upper.getLayoutBounds().getHeight());
+        UPPER_INNER_SHADOW1.setWidth(0.05 * upper.getLayoutBounds().getWidth());
+        UPPER_INNER_SHADOW1.setHeight(0.05 * upper.getLayoutBounds().getHeight());
         UPPER_INNER_SHADOW1.setOffsetX(0);
-        UPPER_INNER_SHADOW1.setOffsetY(0.00821917808219178 * SIZE);
-        UPPER_INNER_SHADOW1.setRadius(0.049315068493150684 * upper.getLayoutBounds().getWidth());
+        UPPER_INNER_SHADOW1.setOffsetY(0.018 * SIZE);
+        UPPER_INNER_SHADOW1.setRadius(0.05 * upper.getLayoutBounds().getWidth());
         UPPER_INNER_SHADOW1.setColor(Color.WHITE);
         UPPER_INNER_SHADOW1.setBlurType(BlurType.GAUSSIAN);
         UPPER_INNER_SHADOW1.inputProperty().set(UPPER_INNER_SHADOW0);
@@ -441,7 +450,12 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         upperText.setX(((WIDTH - upperText.getLayoutBounds().getWidth()) / 2.0));
         upperText.setY(HEIGHT * 0.07 + upperText.getLayoutBounds().getHeight());
         upperText.setClip(upperClip);
-        upperText.setFill(control.getCharacterColor());
+        LinearGradient upperTextFill = new LinearGradient(0.0, upperText.getLayoutBounds().getMinY(),
+                                                          0.0, upperText.getLayoutBounds().getMaxY(),
+                                                          false, CycleMethod.NO_CYCLE,
+                                                          new Stop(0.0, textColor.darker()),
+                                                          new Stop(0.5, textColor));
+        upperText.setFill(upperTextFill);
         upperText.setStroke(null);
 
         Rectangle lowerClip = new Rectangle(0, lower.getLayoutBounds().getMinY(), WIDTH, HEIGHT / 2);
@@ -452,7 +466,12 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         lowerText.setX(((WIDTH - upperText.getLayoutBounds().getWidth()) / 2.0));
         lowerText.setY(HEIGHT * 0.07 + upperText.getLayoutBounds().getHeight());
         lowerText.setClip(lowerClip);
-        lowerText.setFill(control.getCharacterColor());
+        LinearGradient lowerTextFill = new LinearGradient(0.0, lowerText.getLayoutBounds().getMinY(),
+                                                          0.0, lowerText.getLayoutBounds().getMaxY(),
+                                                          false, CycleMethod.NO_CYCLE,
+                                                          new Stop(0.5, textColor),
+                                                          new Stop(1.0, textColor.darker()));
+        lowerText.setFill(lowerTextFill);
         lowerText.setStroke(null);
 
         upperNext = new Path();
@@ -477,13 +496,13 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
                                                      0.08035714285714286 * WIDTH, 0.0));
         upperNext.getElements().add(new CubicCurveTo(0.08035714285714286 * WIDTH, 0.0,
                                                      0.9196428571428571 * WIDTH, 0.0,
-                                                    0.9196428571428571 * WIDTH, 0.0));
+                                                     0.9196428571428571 * WIDTH, 0.0));
         upperNext.getElements().add(new ClosePath());
         final Paint UPPER_NEXT_FILL = new LinearGradient(0.5205479452054794 * WIDTH, 0.0,
                                                          0.5205479452054794 * WIDTH, 0.49206349206349204 * HEIGHT,
                                                          false, CycleMethod.NO_CYCLE,
-                                                         new Stop(0.0, Color.color(0.2039215686, 0.2039215686, 0.2039215686, 1)),
-                                                         new Stop(1.0, Color.color(0.4235294118, 0.4235294118, 0.4235294118, 1)));
+                                                         new Stop(0.0, dark),
+                                                         new Stop(1.0, bright));
         upperNext.setFill(UPPER_NEXT_FILL);
         upperNext.setStroke(null);
         upperNext.setEffect(UPPER_INNER_SHADOW1);
@@ -496,7 +515,12 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         upperNextText.setX(((WIDTH - upperText.getLayoutBounds().getWidth()) / 2.0));
         upperNextText.setY(HEIGHT * 0.07 + upperText.getLayoutBounds().getHeight());
         upperNextText.setClip(upperNextClip);
-        upperNextText.setFill(control.getCharacterColor());
+        LinearGradient upperNextTextFill = new LinearGradient(0.0, upperNextText.getLayoutBounds().getMinY(),
+                                                              0.0, upperNextText.getLayoutBounds().getMaxY(),
+                                                              false, CycleMethod.NO_CYCLE,
+                                                              new Stop(0.0, textColor.darker()),
+                                                              new Stop(0.5, textColor));
+        upperNextText.setFill(upperNextTextFill);
         upperNextText.setStroke(null);
 
         Rectangle lowerNextClip = new Rectangle(0, lower.getLayoutBounds().getMinY(), WIDTH, HEIGHT / 2);
@@ -507,7 +531,12 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         lowerNextText.setX(((WIDTH - lowerNextText.getLayoutBounds().getWidth()) / 2.0));
         lowerNextText.setY(HEIGHT * 0.07 + lowerNextText.getLayoutBounds().getHeight());
         lowerNextText.setClip(lowerNextClip);
-        lowerNextText.setFill(control.getCharacterColor());
+        LinearGradient lowerNextTextFill = new LinearGradient(0.0, lowerNextText.getLayoutBounds().getMinY(),
+                                                              0.0, lowerNextText.getLayoutBounds().getMaxY(),
+                                                              false, CycleMethod.NO_CYCLE,
+                                                              new Stop(0.0, textColor.darker()),
+                                                              new Stop(0.5, textColor));
+        lowerNextText.setFill(lowerNextTextFill);
         lowerNextText.setStroke(null);
         lowerNextText.setVisible(false);
         lowerFlipVert = new Rotate();

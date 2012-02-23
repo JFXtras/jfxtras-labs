@@ -49,11 +49,11 @@ public class Flipchar extends Control {
 
     // ******************** Constructors **************************************
     public Flipchar() {
-        color          = new SimpleObjectProperty<>(Color.DARKGRAY);
+        color          = new SimpleObjectProperty<>(Color.rgb(80, 80, 80));
         characterColor = new SimpleObjectProperty<>(Color.WHITE);
         type           = new SimpleObjectProperty<>(Type.NUMERIC);
         character      = new SimpleIntegerProperty(48);
-        flipTime       = new SimpleLongProperty(50000000l);
+        flipTime       = new SimpleLongProperty(500000l);
         flipSteps      = new SimpleIntegerProperty(36);
         keepAspect     = true;
 
@@ -124,7 +124,7 @@ public class Flipchar extends Control {
     }
 
     public final void setFlipTime(final long FLIP_TIME) {
-        flipTime.set(FLIP_TIME < 50000000l ? 50000000l : (FLIP_TIME > 3000000000l ? 3000000000l : FLIP_TIME));
+        flipTime.set(FLIP_TIME < 10000l ? 10000l : (FLIP_TIME > 3000000000l ? 3000000000l : FLIP_TIME));
     }
 
     public final LongProperty flipTimeProperty() {
