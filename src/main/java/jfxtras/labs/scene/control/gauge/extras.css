@@ -38,6 +38,10 @@
     -fx-skin: "jfxtras.labs.internal.scene.control.skin.TrafficlightSkin";
 }
 
+.flipchar {
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.FlipcharSkin";
+}
+
 #fx-led-frame {
     -fx-fill: linear-gradient(from 15% 15% to 85% 85%, rgba(0, 0, 0, 0.65) 0%, rgba(41, 41, 41, 0.65) 25%, rgba(255, 255, 255, 0.35) 100%);
 }
