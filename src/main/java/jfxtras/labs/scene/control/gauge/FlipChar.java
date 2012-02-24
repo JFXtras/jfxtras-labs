@@ -63,7 +63,6 @@ public class Flipchar extends Control {
     private ObjectProperty<Type>      type;
     private IntegerProperty           character;
     private LongProperty              flipTime;
-    private IntegerProperty           flipSteps;
     private boolean                   keepAspect;
 
 
@@ -73,8 +72,8 @@ public class Flipchar extends Control {
         characterColor = new SimpleObjectProperty<>(Color.WHITE);
         type           = new SimpleObjectProperty<>(Type.NUMERIC);
         character      = new SimpleIntegerProperty(48);
-        flipTime       = new SimpleLongProperty(500000l);
-        flipSteps      = new SimpleIntegerProperty(18);
+        //flipTime       = new SimpleLongProperty(1000000000l);
+        flipTime       = new SimpleLongProperty(   200000000l);
         keepAspect     = true;
 
         init();
@@ -144,23 +143,11 @@ public class Flipchar extends Control {
     }
 
     public final void setFlipTime(final long FLIP_TIME) {
-        flipTime.set(FLIP_TIME < 10000l ? 10000l : (FLIP_TIME > 3000000000l ? 3000000000l : FLIP_TIME));
+        flipTime.set(FLIP_TIME < 16666666l ? 16666666l : (FLIP_TIME > 3000000000l ? 3000000000l : FLIP_TIME));
     }
 
     public final LongProperty flipTimeProperty() {
         return flipTime;
-    }
-
-    public final int getFlipSteps() {
-        return flipSteps.get();
-    }
-
-    public final void setFlipSteps(final int FLIP_STEPS) {
-        flipSteps.set(FLIP_STEPS < 3 ? 3 : (FLIP_STEPS > 144 ? 144 : FLIP_STEPS));
-    }
-
-    public final IntegerProperty flipStepsProperty() {
-        return flipSteps;
     }
 
     public final boolean isKeepAspect() {

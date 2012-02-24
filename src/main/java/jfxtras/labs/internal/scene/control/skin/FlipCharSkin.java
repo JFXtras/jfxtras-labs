@@ -67,6 +67,7 @@ import jfxtras.labs.scene.control.gauge.Flipchar;
  */
 public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
     private Flipchar       control;
+    private static double  MIN_FLIP_TIME = 1000000000.0 / 60.0; // 60 fps
     private boolean        isDirty;
     private boolean        initialized;
     private Group          fixture;
@@ -85,7 +86,6 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
     private char           nextChar;
     private Rotate         rotate;
     private Rotate         lowerFlipVert;
-    private double         flipSteps;
     private double         flipStepInterval;
     private double         angleStep;
     private double         currentAngle;
@@ -112,25 +112,17 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         currentChar      = control.getCharacter();
         nextChar         = (char) (control.getCharacter() + 1);
         rotate           = new Rotate();
-        flipSteps        = control.getFlipSteps();
-        flipStepInterval = control.getFlipTime() / control.getFlipSteps();
-        angleStep        = 180.0 / flipSteps;
+        angleStep        = 180.0 / (control.getFlipTime() / (MIN_FLIP_TIME));
         currentAngle     = 0;
         flipping         = false;
         timer            = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                long currentNanoTime = System.nanoTime();
-                if (currentNanoTime > lastTimerCall + flipStepInterval) {
-                    if (initialized) {
-                        doTheFlip(angleStep);
-                    }
-                    lastTimerCall = currentNanoTime;
+                if (initialized) {
+                    doTheFlip(angleStep);
                 }
             }
         };
-        lastTimerCall    = 0l;
-
         init();
     }
 
@@ -163,7 +155,6 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         registerChangeListener(control.characterColorProperty(), "CHARACTER_COLOR");
         registerChangeListener(control.characterProperty(), "CHARACTER");
         registerChangeListener(control.flipTimeProperty(), "FLIP_TIME");
-        registerChangeListener(control.flipStepsProperty(), "FLIP_STEPS");
 
         initialized = true;
         paint();
@@ -178,7 +169,6 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         getChildren().clear();
         drawFixture();
         drawFlip();
-
         getChildren().addAll(fixture,
                              flip);
     }
@@ -199,10 +189,7 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
                 timer.start();
             }
         } else if (PROPERTY == "FLIP_TIME") {
-            flipStepInterval = control.getFlipTime() / control.getFlipSteps();
-        } else if (PROPERTY == "FLIP_STEPS") {
-            flipSteps = control.getFlipSteps();
-            flipStepInterval = control.getFlipTime() / control.getFlipSteps();
+            angleStep = 180.0 / (control.getFlipTime() / (MIN_FLIP_TIME));
         }
     }
 
