@@ -27,7 +27,8 @@ import java.util.regex.Pattern;
 public class Flipchar extends Control {
     public enum Type {
         NUMERIC(48, 57),
-        ALPHANUMERIC(45, 94);
+        ALPHANUMERIC(45, 94),
+        TIME(48, 53);
 
         public final int LOWER_BOUND;
         public final int UPPER_BOUND;
@@ -54,7 +55,7 @@ public class Flipchar extends Control {
         type           = new SimpleObjectProperty<>(Type.NUMERIC);
         character      = new SimpleIntegerProperty(48);
         flipTime       = new SimpleLongProperty(500000l);
-        flipSteps      = new SimpleIntegerProperty(36);
+        flipSteps      = new SimpleIntegerProperty(18);
         keepAspect     = true;
 
         init();

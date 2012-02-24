@@ -331,9 +331,6 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         final double HEIGHT = control.getPrefHeight();
 
         flip.getChildren().clear();
-        final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
-        IBOUNDS.setOpacity(0.0);
-        flip.getChildren().add(IBOUNDS);
 
         lower = new Path();
         lower.setFillRule(FillRule.EVEN_ODD);
@@ -386,7 +383,6 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         LOWER_INNER_SHADOW1.setBlurType(BlurType.GAUSSIAN);
         LOWER_INNER_SHADOW1.inputProperty().set(LOWER_INNER_SHADOW0);
         lower.setEffect(LOWER_INNER_SHADOW1);
-        lower.setCache(true);
 
         upper = new Path();
         upper.setFillRule(FillRule.EVEN_ODD);
@@ -439,7 +435,6 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         UPPER_INNER_SHADOW1.setBlurType(BlurType.GAUSSIAN);
         UPPER_INNER_SHADOW1.inputProperty().set(UPPER_INNER_SHADOW0);
         upper.setEffect(UPPER_INNER_SHADOW1);
-        //upper.setCache(true);
 
         Font font = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/droidsansmono.ttf"), (0.74 * HEIGHT));
 
@@ -507,7 +502,6 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         upperNext.setFill(UPPER_NEXT_FILL);
         upperNext.setStroke(null);
         upperNext.setEffect(UPPER_INNER_SHADOW1);
-        //upperNext.setCache(true);
 
         Rectangle upperNextClip = new Rectangle(0, 0, WIDTH, upper.getLayoutBounds().getHeight());
         upperNextText.setTextOrigin(VPos.BOTTOM);
