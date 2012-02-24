@@ -42,6 +42,11 @@
     -fx-skin: "jfxtras.labs.internal.scene.control.skin.FlipcharSkin";
 }
 
+.nixie-tube {
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.NixieTubeSkin";
+    -fx-glow-color: orange;
+}
+
 #fx-led-frame {
     -fx-fill: linear-gradient(from 15% 15% to 85% 85%, rgba(0, 0, 0, 0.65) 0%, rgba(41, 41, 41, 0.65) 25%, rgba(255, 255, 255, 0.35) 100%);
 }
@@ -56,4 +61,20 @@
 
 #fx-led-highlight {
     -fx-fill: radial-gradient(focus-angle 0deg, focus-distance 0%, center 12% 12%, radius 50%, rgba(200, 194, 208, 1) 0%, rgba(200, 194, 208, 0) 100%);
+}
+
+#tube-hl-middle {
+    -fx-fill: linear-gradient(from 0% 100% to 100% 100%, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+}
+
+#tube-hl-left {
+    -fx-fill: linear-gradient(from 4% 49% to 52% 49%, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+}
+
+#tube-hl-upper {
+    -fx-fill: linear-gradient(from 50% 0% to 50% 100%, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+}
+
+#tube-hl-top {
+    -fx-fill: linear-gradient(from 66% 14% to 35% 95%, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
 }
