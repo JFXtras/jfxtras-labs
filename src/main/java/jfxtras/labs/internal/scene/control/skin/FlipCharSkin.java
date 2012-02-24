@@ -114,7 +114,12 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
             @Override
             public void handle(long l) {
                 if (initialized) {
-                    doTheFlip(angleStep);
+                    if (control.isCountdownMode()) {
+                        flipBackward(angleStep);}
+                    else {
+                        flipForward(angleStep);
+                    }
+
                 }
             }
         };
@@ -220,7 +225,7 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         return super.computePrefWidth(prefHeight);
     }
 
-    private void doTheFlip(final double ANGLE) {
+    private void flipForward(final double ANGLE) {
         currentAngle += ANGLE;
         if (Double.compare(currentAngle, 180) >= 0) {
             currentAngle = 0;
@@ -262,6 +267,50 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
             lowerNextText.getTransforms().add(rotate);
         }
     }
+
+    private void flipBackward(final double ANGLE) {
+        currentAngle += ANGLE;
+        if (Double.compare(currentAngle, 180) >= 0) {
+            currentAngle = 0;
+            upper.getTransforms().clear();
+            upperText.getTransforms().clear();
+            lowerNextText.getTransforms().clear();
+            lowerNextText.setVisible(false);
+            lowerFlipVert.setAxis(Rotate.X_AXIS);
+            lowerFlipVert.setPivotY(control.getPrefHeight() * 0.07 + lowerNextText.getLayoutBounds().getHeight() / 2);
+            lowerFlipVert.setAngle(180);
+            lowerNextText.getTransforms().add(lowerFlipVert);
+            upperText.setVisible(true);
+
+            currentChar--;
+            if (currentChar < control.getType().LOWER_BOUND) {
+                currentChar = (char) control.getType().UPPER_BOUND;
+            }
+            nextChar = (char) (currentChar - 1);
+            if (nextChar < control.getType().LOWER_BOUND) {
+                nextChar = (char) control.getType().UPPER_BOUND;
+            }
+            if (currentChar == control.getCharacter()) {
+                timer.stop();
+                flipping = false;
+            }
+            upperText.setText(Character.toString(currentChar));
+            lowerText.setText(Character.toString(currentChar));
+            upperNextText.setText(Character.toString(nextChar));
+            lowerNextText.setText(Character.toString(nextChar));
+        }
+        if (currentAngle > 90) {
+            upperText.setVisible(false);
+            lowerNextText.setVisible(true);
+        }
+        if (flipping) {
+            rotate.setAngle(ANGLE);
+            upper.getTransforms().add(rotate);
+            upperText.getTransforms().add(rotate);
+            lowerNextText.getTransforms().add(rotate);
+        }
+    }
+
 
     // ******************** Drawing related ***********************************
     public final void drawFixture() {

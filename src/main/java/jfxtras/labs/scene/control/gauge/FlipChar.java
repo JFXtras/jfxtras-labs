@@ -27,9 +27,11 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -63,17 +65,23 @@ public class Flipchar extends Control {
     private ObjectProperty<Type>  type;
     private IntegerProperty       character;
     private LongProperty          flipTime;
+    private BooleanProperty       countdownMode;
     private boolean               keepAspect;
 
 
     // ******************** Constructors **************************************
     public Flipchar() {
-        color          = new SimpleObjectProperty<>(Color.rgb(80, 80, 80));
-        characterColor = new SimpleObjectProperty<>(Color.WHITE);
-        type           = new SimpleObjectProperty<>(Type.NUMERIC);
-        character      = new SimpleIntegerProperty(48);
-        flipTime       = new SimpleLongProperty(   200000000l);
-        keepAspect     = true;
+        this("0");
+    }
+
+    public Flipchar(final String CHARACTER) {
+        color            = new SimpleObjectProperty<>(Color.rgb(80, 80, 80));
+        characterColor   = new SimpleObjectProperty<>(Color.WHITE);
+        type             = new SimpleObjectProperty<>(Type.NUMERIC);
+        character        = new SimpleIntegerProperty(CHARACTER.charAt(0));
+        flipTime         = new SimpleLongProperty(200000000l);
+        countdownMode    = new SimpleBooleanProperty(false);
+        keepAspect       = true;
 
         init();
     }
@@ -147,6 +155,18 @@ public class Flipchar extends Control {
 
     public final LongProperty flipTimeProperty() {
         return flipTime;
+    }
+
+    public final boolean isCountdownMode() {
+        return countdownMode.get();
+    }
+
+    public final void setCountdownMode(final boolean COUNTDOWN_MODE) {
+        countdownMode.set(COUNTDOWN_MODE);
+    }
+
+    public final BooleanProperty countdownModeProperty() {
+        return countdownMode;
     }
 
     @Override public void setPrefSize(final double WIDTH, final double HEIGHT) {
