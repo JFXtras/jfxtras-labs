@@ -439,6 +439,7 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         UPPER_INNER_SHADOW1.setBlurType(BlurType.GAUSSIAN);
         UPPER_INNER_SHADOW1.inputProperty().set(UPPER_INNER_SHADOW0);
         upper.setEffect(UPPER_INNER_SHADOW1);
+        //upper.setCache(true);
 
         Font font = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/droidsansmono.ttf"), (0.74 * HEIGHT));
 
@@ -506,6 +507,7 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         upperNext.setFill(UPPER_NEXT_FILL);
         upperNext.setStroke(null);
         upperNext.setEffect(UPPER_INNER_SHADOW1);
+        //upperNext.setCache(true);
 
         Rectangle upperNextClip = new Rectangle(0, 0, WIDTH, upper.getLayoutBounds().getHeight());
         upperNextText.setTextOrigin(VPos.BOTTOM);
