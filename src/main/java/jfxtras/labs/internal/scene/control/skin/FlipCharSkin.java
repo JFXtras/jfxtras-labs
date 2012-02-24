@@ -50,11 +50,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontSmoothingType;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Transform;
-import javafx.scene.transform.Translate;
 import jfxtras.labs.internal.scene.control.behavior.FlipcharBehavior;
 import jfxtras.labs.scene.control.gauge.Flipchar;
 
@@ -86,12 +83,10 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
     private char           nextChar;
     private Rotate         rotate;
     private Rotate         lowerFlipVert;
-    private double         flipStepInterval;
     private double         angleStep;
     private double         currentAngle;
     private boolean        flipping;
     private AnimationTimer timer;
-    private long           lastTimerCall;
 
 
     // ******************** Constructors **************************************
@@ -378,25 +373,26 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         lower.setFill(LOWER_FILL);
         lower.setStroke(null);
 
-        final InnerShadow LOWER_INNER_SHADOW0 = new InnerShadow();
-        LOWER_INNER_SHADOW0.setWidth(0.075 * lower.getLayoutBounds().getWidth());
-        LOWER_INNER_SHADOW0.setHeight(0.075 * lower.getLayoutBounds().getHeight());
-        LOWER_INNER_SHADOW0.setOffsetX(0.0);
-        LOWER_INNER_SHADOW0.setOffsetY(0.0);
-        LOWER_INNER_SHADOW0.setRadius(0.075 * lower.getLayoutBounds().getWidth());
-        LOWER_INNER_SHADOW0.setColor(Color.BLACK);
-        LOWER_INNER_SHADOW0.setBlurType(BlurType.GAUSSIAN);
+        final InnerShadow LOWER_INNER_SHADOW = new InnerShadow();
+        LOWER_INNER_SHADOW.setWidth(0.075 * lower.getLayoutBounds().getWidth());
+        LOWER_INNER_SHADOW.setHeight(0.075 * lower.getLayoutBounds().getHeight());
+        LOWER_INNER_SHADOW.setOffsetX(0.0);
+        LOWER_INNER_SHADOW.setOffsetY(0.0);
+        LOWER_INNER_SHADOW.setRadius(0.075 * lower.getLayoutBounds().getWidth());
+        LOWER_INNER_SHADOW.setColor(Color.BLACK);
+        LOWER_INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
 
-        final InnerShadow LOWER_INNER_SHADOW1 = new InnerShadow();
-        LOWER_INNER_SHADOW1.setWidth(0.05 * lower.getLayoutBounds().getWidth());
-        LOWER_INNER_SHADOW1.setHeight(0.05 * lower.getLayoutBounds().getHeight());
-        LOWER_INNER_SHADOW1.setOffsetX(0);
-        LOWER_INNER_SHADOW1.setOffsetY(0.018 * SIZE);
-        LOWER_INNER_SHADOW1.setRadius(0.05 * lower.getLayoutBounds().getWidth());
-        LOWER_INNER_SHADOW1.setColor(Color.WHITE);
-        LOWER_INNER_SHADOW1.setBlurType(BlurType.GAUSSIAN);
-        LOWER_INNER_SHADOW1.inputProperty().set(LOWER_INNER_SHADOW0);
-        lower.setEffect(LOWER_INNER_SHADOW1);
+        final InnerShadow LOWER_LIGHT_EFFECT = new InnerShadow();
+        LOWER_LIGHT_EFFECT.setWidth(0.05 * lower.getLayoutBounds().getWidth());
+        LOWER_LIGHT_EFFECT.setHeight(0.05 * lower.getLayoutBounds().getHeight());
+        LOWER_LIGHT_EFFECT.setOffsetX(0);
+        LOWER_LIGHT_EFFECT.setOffsetY(0.018 * SIZE);
+        LOWER_LIGHT_EFFECT.setRadius(0.05 * lower.getLayoutBounds().getWidth());
+        LOWER_LIGHT_EFFECT.setColor(Color.WHITE);
+        LOWER_LIGHT_EFFECT.setBlurType(BlurType.GAUSSIAN);
+        LOWER_LIGHT_EFFECT.inputProperty().set(LOWER_INNER_SHADOW);
+        lower.setEffect(LOWER_LIGHT_EFFECT);
+        lower.setCache(true);
 
         upper = new Path();
         upper.setFillRule(FillRule.EVEN_ODD);
@@ -430,25 +426,25 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         upper.setFill(UPPER_FILL);
         upper.setStroke(null);
 
-        final InnerShadow UPPER_INNER_SHADOW0 = new InnerShadow();
-        UPPER_INNER_SHADOW0.setWidth(0.075 * upper.getLayoutBounds().getWidth());
-        UPPER_INNER_SHADOW0.setHeight(0.075 * upper.getLayoutBounds().getHeight());
-        UPPER_INNER_SHADOW0.setOffsetX(0.0);
-        UPPER_INNER_SHADOW0.setOffsetY(0.0);
-        UPPER_INNER_SHADOW0.setRadius(0.075 * upper.getLayoutBounds().getWidth());
-        UPPER_INNER_SHADOW0.setColor(Color.BLACK);
-        UPPER_INNER_SHADOW0.setBlurType(BlurType.GAUSSIAN);
+        final InnerShadow UPPER_INNER_SHADOW = new InnerShadow();
+        UPPER_INNER_SHADOW.setWidth(0.075 * upper.getLayoutBounds().getWidth());
+        UPPER_INNER_SHADOW.setHeight(0.075 * upper.getLayoutBounds().getHeight());
+        UPPER_INNER_SHADOW.setOffsetX(0.0);
+        UPPER_INNER_SHADOW.setOffsetY(0.0);
+        UPPER_INNER_SHADOW.setRadius(0.075 * upper.getLayoutBounds().getWidth());
+        UPPER_INNER_SHADOW.setColor(Color.BLACK);
+        UPPER_INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
 
-        final InnerShadow UPPER_INNER_SHADOW1 = new InnerShadow();
-        UPPER_INNER_SHADOW1.setWidth(0.05 * upper.getLayoutBounds().getWidth());
-        UPPER_INNER_SHADOW1.setHeight(0.05 * upper.getLayoutBounds().getHeight());
-        UPPER_INNER_SHADOW1.setOffsetX(0);
-        UPPER_INNER_SHADOW1.setOffsetY(0.018 * SIZE);
-        UPPER_INNER_SHADOW1.setRadius(0.05 * upper.getLayoutBounds().getWidth());
-        UPPER_INNER_SHADOW1.setColor(Color.WHITE);
-        UPPER_INNER_SHADOW1.setBlurType(BlurType.GAUSSIAN);
-        UPPER_INNER_SHADOW1.inputProperty().set(UPPER_INNER_SHADOW0);
-        upper.setEffect(UPPER_INNER_SHADOW1);
+        final InnerShadow UPPER_LIGHT_EFFECT = new InnerShadow();
+        UPPER_LIGHT_EFFECT.setWidth(0.05 * upper.getLayoutBounds().getWidth());
+        UPPER_LIGHT_EFFECT.setHeight(0.05 * upper.getLayoutBounds().getHeight());
+        UPPER_LIGHT_EFFECT.setOffsetX(0);
+        UPPER_LIGHT_EFFECT.setOffsetY(0.018 * SIZE);
+        UPPER_LIGHT_EFFECT.setRadius(0.05 * upper.getLayoutBounds().getWidth());
+        UPPER_LIGHT_EFFECT.setColor(Color.WHITE);
+        UPPER_LIGHT_EFFECT.setBlurType(BlurType.GAUSSIAN);
+        UPPER_LIGHT_EFFECT.inputProperty().set(UPPER_INNER_SHADOW);
+        upper.setEffect(UPPER_LIGHT_EFFECT);
 
         Font font = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/droidsansmono.ttf"), (0.74 * HEIGHT));
 
@@ -515,7 +511,7 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
                                                          new Stop(1.0, bright));
         upperNext.setFill(UPPER_NEXT_FILL);
         upperNext.setStroke(null);
-        upperNext.setEffect(UPPER_INNER_SHADOW1);
+        upperNext.setEffect(UPPER_LIGHT_EFFECT);
 
         Rectangle upperNextClip = new Rectangle(0, 0, WIDTH, upper.getLayoutBounds().getHeight());
         upperNextText.setTextOrigin(VPos.BOTTOM);

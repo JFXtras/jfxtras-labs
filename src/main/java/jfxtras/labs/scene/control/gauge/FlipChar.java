@@ -57,13 +57,13 @@ public class Flipchar extends Control {
             this.UPPER_BOUND = UPPER_BOUND;
         }
     }
-    private static final String DEFAULT_STYLE_CLASS = "flipchar";
-    private ObjectProperty<Color>     color;
-    private ObjectProperty<Color>     characterColor;
-    private ObjectProperty<Type>      type;
-    private IntegerProperty           character;
-    private LongProperty              flipTime;
-    private boolean                   keepAspect;
+    private static final String   DEFAULT_STYLE_CLASS = "flipchar";
+    private ObjectProperty<Color> color;
+    private ObjectProperty<Color> characterColor;
+    private ObjectProperty<Type>  type;
+    private IntegerProperty       character;
+    private LongProperty          flipTime;
+    private boolean               keepAspect;
 
 
     // ******************** Constructors **************************************
@@ -72,7 +72,6 @@ public class Flipchar extends Control {
         characterColor = new SimpleObjectProperty<>(Color.WHITE);
         type           = new SimpleObjectProperty<>(Type.NUMERIC);
         character      = new SimpleIntegerProperty(48);
-        //flipTime       = new SimpleLongProperty(1000000000l);
         flipTime       = new SimpleLongProperty(   200000000l);
         keepAspect     = true;
 
@@ -148,10 +147,6 @@ public class Flipchar extends Control {
 
     public final LongProperty flipTimeProperty() {
         return flipTime;
-    }
-
-    public final boolean isKeepAspect() {
-        return keepAspect;
     }
 
     @Override public void setPrefSize(final double WIDTH, final double HEIGHT) {
