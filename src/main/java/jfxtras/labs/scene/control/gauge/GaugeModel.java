@@ -53,7 +53,7 @@ import java.util.List;
  * Date: 02.01.12
  * Time: 17:14
  */
-public class Model {
+public class GaugeModel {
     private DoubleProperty               value;
     private BooleanProperty              valueAnimationEnabled;
     private DoubleProperty               animationDuration;
@@ -88,7 +88,7 @@ public class Model {
 
 
     // ******************** Constructors **************************************
-    public Model() {
+    public GaugeModel() {
         value                           = new SimpleDoubleProperty(0);
         valueAnimationEnabled           = new SimpleBooleanProperty(true);
         animationDuration               = new SimpleDoubleProperty(800);
@@ -124,25 +124,25 @@ public class Model {
 
 
     // ******************** Event handling ************************************
-    public final ObjectProperty<EventHandler<ModelEvent>> onModelEventProperty() {
+    public final ObjectProperty<EventHandler<GaugeModelEvent>> onModelEventProperty() {
         return onModelEvent;
     }
 
-    public final void setOnModelEvent(final EventHandler<ModelEvent> HANDLER) {
+    public final void setOnModelEvent(final EventHandler<GaugeModelEvent> HANDLER) {
         onModelEventProperty().set(HANDLER);
     }
 
-    public final EventHandler<ModelEvent> getOnModelEvent() {
+    public final EventHandler<GaugeModelEvent> getOnModelEvent() {
         return onModelEventProperty().get();
     }
 
-    private ObjectProperty<EventHandler<ModelEvent>> onModelEvent = new SimpleObjectProperty<>();
+    private ObjectProperty<EventHandler<GaugeModelEvent>> onModelEvent = new SimpleObjectProperty<>();
 
     public void fireModelEvent() {
-        final EventHandler<ModelEvent> MODEL_EVENT_HANDLER = getOnModelEvent();
+        final EventHandler<GaugeModelEvent> MODEL_EVENT_HANDLER = getOnModelEvent();
         if (MODEL_EVENT_HANDLER != null) {
-            final ModelEvent MODEL_EVENT = new ModelEvent();
-            MODEL_EVENT_HANDLER.handle(MODEL_EVENT);
+            final GaugeModelEvent GAUGE_MODEL_EVENT = new GaugeModelEvent();
+            MODEL_EVENT_HANDLER.handle(GAUGE_MODEL_EVENT);
         }
     }
 

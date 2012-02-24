@@ -51,24 +51,24 @@ public class Lcd extends Gauge {
 
     // ******************** Constructors **************************************
     public Lcd() {
-        this(new Model(), new ViewModel());
+        this(new GaugeModel(), new StyleModel());
     }
 
-    public Lcd(final Model MODEL) {
-        this(MODEL, new ViewModel());
+    public Lcd(final GaugeModel GAUGE_MODEL) {
+        this(GAUGE_MODEL, new StyleModel());
     }
 
-    public Lcd(final ViewModel VIEW_MODEL) {
-        this(new Model(), VIEW_MODEL);
+    public Lcd(final StyleModel STYLE_MODEL) {
+        this(new GaugeModel(), STYLE_MODEL);
     }
 
-    public Lcd(final Model MODEL, final ViewModel VIEW_MODEL) {
-        super(MODEL, VIEW_MODEL);
+    public Lcd(final GaugeModel GAUGE_MODEL, final StyleModel STYLE_MODEL) {
+        super(GAUGE_MODEL, STYLE_MODEL);
         lcdMinMeasuredValueVisible  = new SimpleBooleanProperty(true);
         lcdMaxMeasuredValueVisible  = new SimpleBooleanProperty(true);
         lcdFormerValueVisible       = new SimpleBooleanProperty(true);
-        lcdMinMeasuredValueDecimals = new SimpleIntegerProperty(VIEW_MODEL.getLcdDecimals());
-        lcdMaxMeasuredValueDecimals = new SimpleIntegerProperty(VIEW_MODEL.getLcdDecimals());
+        lcdMinMeasuredValueDecimals = new SimpleIntegerProperty(STYLE_MODEL.getLcdDecimals());
+        lcdMaxMeasuredValueDecimals = new SimpleIntegerProperty(STYLE_MODEL.getLcdDecimals());
         bargraphVisible             = new SimpleBooleanProperty(false);
         init();
     }

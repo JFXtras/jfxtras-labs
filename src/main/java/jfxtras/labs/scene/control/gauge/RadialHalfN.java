@@ -46,19 +46,19 @@ public class RadialHalfN extends Gauge {
 
     // ******************** Constructors **************************************
     public RadialHalfN() {
-        this(new Model(), new ViewModel());
+        this(new GaugeModel(), new StyleModel());
     }
 
-    public RadialHalfN(final Model MODEL) {
-        this(MODEL, new ViewModel());
+    public RadialHalfN(final GaugeModel GAUGE_MODEL) {
+        this(GAUGE_MODEL, new StyleModel());
     }
 
-    public RadialHalfN(final ViewModel VIEW_MODEL) {
-        this(new Model(), VIEW_MODEL);
+    public RadialHalfN(final StyleModel STYLE_MODEL) {
+        this(new GaugeModel(), STYLE_MODEL);
     }
 
-    public RadialHalfN(final Model MODEL, final ViewModel VIEW_MODEL) {
-        super(MODEL, VIEW_MODEL);
+    public RadialHalfN(final GaugeModel GAUGE_MODEL, final StyleModel STYLE_MODEL) {
+        super(GAUGE_MODEL, STYLE_MODEL);
         setRadialRange(Gauge.RadialRange.RADIAL_180N);
         init();
     }

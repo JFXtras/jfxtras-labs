@@ -56,7 +56,7 @@ import javafx.scene.paint.Color;
  * Date: 29.01.12
  * Time: 09:47
  */
-public class ViewModel {
+public class StyleModel {
     private BooleanProperty                      bargraph;
     private BooleanProperty                      minMeasuredValueVisible;
     private BooleanProperty                      maxMeasuredValueVisible;
@@ -119,7 +119,7 @@ public class ViewModel {
 
 
     // ******************** Constructors **************************************
-    public ViewModel() {
+    public StyleModel() {
         bargraph                        = new SimpleBooleanProperty(false);
         minMeasuredValueVisible         = new SimpleBooleanProperty(false);
         maxMeasuredValueVisible         = new SimpleBooleanProperty(false);
@@ -183,25 +183,25 @@ public class ViewModel {
 
 
     // ******************** Event handling ************************************
-    public final ObjectProperty<EventHandler<ViewModelEvent>> onViewModelEventProperty() {
+    public final ObjectProperty<EventHandler<StyleModelEvent>> onViewModelEventProperty() {
         return onViewModelEvent;
     }
 
-    public final void setOnViewModelEvent(final EventHandler<ViewModelEvent> HANDLER) {
+    public final void setOnViewModelEvent(final EventHandler<StyleModelEvent> HANDLER) {
         onViewModelEventProperty().set(HANDLER);
     }
 
-    public final EventHandler<ViewModelEvent> getOnViewModelEvent() {
+    public final EventHandler<StyleModelEvent> getOnViewModelEvent() {
         return onViewModelEventProperty().get();
     }
 
-    private ObjectProperty<EventHandler<ViewModelEvent>> onViewModelEvent = new SimpleObjectProperty<>();
+    private ObjectProperty<EventHandler<StyleModelEvent>> onViewModelEvent = new SimpleObjectProperty<>();
 
     public void fireViewModelEvent() {
-        final EventHandler<ViewModelEvent> VIEW_MODEL_EVENT_HANDLER = getOnViewModelEvent();
+        final EventHandler<StyleModelEvent> VIEW_MODEL_EVENT_HANDLER = getOnViewModelEvent();
         if (VIEW_MODEL_EVENT_HANDLER != null) {
-            final ViewModelEvent VIEW_MODEL_EVENT = new ViewModelEvent();
-            VIEW_MODEL_EVENT_HANDLER.handle(VIEW_MODEL_EVENT);
+            final StyleModelEvent STYLE_MODEL_EVENT = new StyleModelEvent();
+            VIEW_MODEL_EVENT_HANDLER.handle(STYLE_MODEL_EVENT);
         }
     }
 

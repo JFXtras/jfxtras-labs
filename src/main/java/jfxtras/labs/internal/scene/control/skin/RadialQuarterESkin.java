@@ -29,10 +29,10 @@ package jfxtras.labs.internal.scene.control.skin;
 
 import jfxtras.labs.internal.scene.control.behavior.RadialQuarterEBehavior;
 import jfxtras.labs.scene.control.gauge.Gauge;
-import jfxtras.labs.scene.control.gauge.ModelEvent;
+import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
 import jfxtras.labs.scene.control.gauge.RadialQuarterE;
 import jfxtras.labs.scene.control.gauge.Section;
-import jfxtras.labs.scene.control.gauge.ViewModelEvent;
+import jfxtras.labs.scene.control.gauge.StyleModelEvent;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
@@ -344,15 +344,15 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
     }
 
     private void addListeners() {
-        control.setOnModelEvent(new EventHandler<ModelEvent>() {
-            @Override public void handle(final ModelEvent EVENT) {
+        control.setOnModelEvent(new EventHandler<GaugeModelEvent>() {
+            @Override public void handle(final GaugeModelEvent EVENT) {
                 // Trigger repaint
                 isDirty = true;
             }
         });
 
-        control.setOnViewModelEvent(new EventHandler<ViewModelEvent>() {
-            @Override public void handle(final ViewModelEvent EVENT) {
+        control.setOnViewModelEvent(new EventHandler<StyleModelEvent>() {
+            @Override public void handle(final StyleModelEvent EVENT) {
                 // Trigger repaint
                 isDirty = true;
             }
