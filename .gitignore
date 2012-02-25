@@ -1,9 +1,14 @@
 .gradle
 build
-
+.classpath
+.project
+.settings
+bin
 src/main/Main.iml
 src/main/java/jfxtras/labs/scene/control/gauge/Gauge.iml
-JFXtras-Labs.iml
+*.iml
+*.ipr
+*.iws
 out/
 .idea/
 src/main/java/jfxtras/labs/scene/control/gauge/Demo.java
