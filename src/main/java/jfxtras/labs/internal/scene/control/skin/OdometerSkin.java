@@ -71,7 +71,7 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
     private Group[]        digits;
     private List<Column>   listOfColumns;
     private Group          background;
-    private int            counter;
+    private double         counter;
     private double         value;
     private double         stepSize;
     private AnimationTimer timer;
@@ -130,7 +130,7 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
 
         initialized = true;
         paint();
-        stepSize = control.getPrefHeight() / (control.getFlipTime() / (MIN_FLIP_TIME));
+        stepSize = control.getPrefHeight() / (control.getFlipTime() / MIN_FLIP_TIME);
         if (control.getValue() != value) {
             timer.start();
         }
@@ -197,12 +197,15 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
     }
 
     private void countUp() {
-        increaseDigit(0);
-
-        if (listOfColumns.get(0).getValue() == 0) {
-            increaseDigit(1);
+        int tenth = 1;
+        for (int i = 1 ; i < control.getNoOfDigits() ; i++) {
+            tenth *= 10;
+            if (((int) (counter / control.getPrefHeight() + 1) % tenth == 0)) {
+                increaseDigit(i);
+            }
         }
-
+        increaseDigit(0);
+        counter += stepSize;
     }
 
     private void increaseDigit(final int INDEX) {
@@ -240,6 +243,7 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
     }
 
     private void reset() {
+        counter = 0;
         paint();
     }
 
