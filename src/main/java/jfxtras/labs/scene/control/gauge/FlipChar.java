@@ -75,9 +75,9 @@ public class Flipchar extends Control {
     }
 
     public Flipchar(final String CHARACTER) {
-        color            = new SimpleObjectProperty<>(Color.rgb(80, 80, 80));
-        characterColor   = new SimpleObjectProperty<>(Color.WHITE);
-        type             = new SimpleObjectProperty<>(Type.NUMERIC);
+        color            = new SimpleObjectProperty<Color>(Color.rgb(80, 80, 80));
+        characterColor   = new SimpleObjectProperty<Color>(Color.WHITE);
+        type             = new SimpleObjectProperty<Type>(Type.NUMERIC);
         character        = new SimpleIntegerProperty(CHARACTER.charAt(0));
         flipTime         = new SimpleLongProperty(200000000l);
         countdownMode    = new SimpleBooleanProperty(false);

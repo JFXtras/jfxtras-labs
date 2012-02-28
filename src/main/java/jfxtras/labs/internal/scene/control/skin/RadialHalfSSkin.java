@@ -148,7 +148,7 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
         tickmarks              = new Group();
         glowOff                = new Group();
         glowOn                 = new Group();
-        glowColors             = new ArrayList<>(4);
+        glowColors             = new ArrayList<Color>(4);
         knobs                  = new Group();
         threshold              = new Group();
         minMeasured            = new Group();
@@ -161,7 +161,7 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
         userLedOn              = new Group();
         foreground             = new Group();
         noOfLeds               = 60;
-        leds                   = new ArrayList<>(60);
+        leds                   = new ArrayList<Shape>(60);
         currentValue           = new SimpleDoubleProperty(0);
         formerValue            = new SimpleDoubleProperty(0);
         glowPulse              = new FadeTransition(Duration.millis(800), glowOn);

@@ -89,12 +89,12 @@ public class Section {
     public Section(final double START, final double STOP, final Color COLOR, final Color HIGHLIGHT_COLOR, final Shape SECTION_AREA, final Shape FILLED_AREA, final String TEXT) {
         start                     = new SimpleDoubleProperty(START);
         stop                      = new SimpleDoubleProperty(STOP);
-        color                     = new SimpleObjectProperty<>(COLOR);
-        transparentColor          = new SimpleObjectProperty<>(Color.color(COLOR.getRed(), COLOR.getGreen(), COLOR.getBlue(), 0.3));
-        highlightColor            = new SimpleObjectProperty<>(HIGHLIGHT_COLOR);
-        transparentHighlightColor = new SimpleObjectProperty<>(Color.color(COLOR.getRed(), COLOR.getGreen(), COLOR.getBlue(), 0.5));
-        sectionArea               = new SimpleObjectProperty<>(SECTION_AREA);
-        filledArea                = new SimpleObjectProperty<>(FILLED_AREA);
+        color                     = new SimpleObjectProperty<Color>(COLOR);
+        transparentColor          = new SimpleObjectProperty<Color>(Color.color(COLOR.getRed(), COLOR.getGreen(), COLOR.getBlue(), 0.3));
+        highlightColor            = new SimpleObjectProperty<Color>(HIGHLIGHT_COLOR);
+        transparentHighlightColor = new SimpleObjectProperty<Color>(Color.color(COLOR.getRed(), COLOR.getGreen(), COLOR.getBlue(), 0.5));
+        sectionArea               = new SimpleObjectProperty<Shape>(SECTION_AREA);
+        filledArea                = new SimpleObjectProperty<Shape>(FILLED_AREA);
         paint                     = new SimpleObjectProperty<Paint>(COLOR);
         text                      = new SimpleStringProperty(TEXT);
         cssColor                  = new SimpleStringProperty(Util.INSTANCE.createCssColor(COLOR));

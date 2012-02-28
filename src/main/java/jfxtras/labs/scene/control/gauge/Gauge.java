@@ -56,7 +56,7 @@ import java.util.Locale;
 public abstract class Gauge extends Control {
     // ******************** Variable definitions ******************************
     private ObjectProperty<GaugeModel>  gaugeModelProperty;
-    private ObjectProperty<StyleModel> styleModelProperty;
+    private ObjectProperty<StyleModel>  styleModelProperty;
     private GaugeModel                  gaugeModel;
     private StyleModel                  styleModel;
     private ObjectProperty<RadialRange> radialRange;
@@ -258,7 +258,7 @@ public abstract class Gauge extends Control {
         DOWN("down"),
         UNKNOWN("unknown");
 
-        public final ArrayList<int[]> ledMatrix = new ArrayList<>(9);
+        public final ArrayList<int[]> ledMatrix = new ArrayList<int[]>(9);
 
         private Trend(final String TYPE) {
             if (TYPE == "up") {
@@ -324,11 +324,11 @@ public abstract class Gauge extends Control {
     }
 
     public Gauge(final GaugeModel GAUGE_MODEL, final StyleModel STYLE_MODEL) {
-        gaugeModelProperty = new SimpleObjectProperty<>(GAUGE_MODEL);
-        styleModelProperty = new SimpleObjectProperty<>(STYLE_MODEL);
+        gaugeModelProperty = new SimpleObjectProperty<GaugeModel>(GAUGE_MODEL);
+        styleModelProperty = new SimpleObjectProperty<StyleModel>(STYLE_MODEL);
         gaugeModel         = gaugeModelProperty.get();
         styleModel         = styleModelProperty.get();
-        radialRange        = new SimpleObjectProperty<>(RadialRange.RADIAL_300);
+        radialRange        = new SimpleObjectProperty<RadialRange>(RadialRange.RADIAL_300);
         angleStep          = new SimpleDoubleProperty(radialRange.get().ANGLE_RANGE / gaugeModel.getRange());
         ledBlinkingProperty().bind(thresholdExceededProperty());
         addModelListener();
@@ -369,7 +369,7 @@ public abstract class Gauge extends Control {
         return onModelEventProperty().get();
     }
 
-    private final ObjectProperty<EventHandler<GaugeModelEvent>> onModelEvent = new SimpleObjectProperty<>();
+    private final ObjectProperty<EventHandler<GaugeModelEvent>> onModelEvent = new SimpleObjectProperty<EventHandler<GaugeModelEvent>>();
 
     public void forwardModelEvent(final GaugeModelEvent EVENT) {
         final EventHandler<GaugeModelEvent> MODEL_EVENT_HANDLER = getOnModelEvent();
@@ -390,7 +390,7 @@ public abstract class Gauge extends Control {
         return onViewModelEventProperty().get();
     }
 
-    private final ObjectProperty<EventHandler<StyleModelEvent>> onViewModelEvent = new SimpleObjectProperty<>();
+    private final ObjectProperty<EventHandler<StyleModelEvent>> onViewModelEvent = new SimpleObjectProperty<EventHandler<StyleModelEvent>>();
 
     public void forwardViewModelEvent(final StyleModelEvent EVENT) {
         final EventHandler<StyleModelEvent> VIEW_MODEL_EVENT_HANDLER = getOnViewModelEvent();

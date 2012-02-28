@@ -148,7 +148,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         tickmarks              = new Group();
         glowOff                = new Group();
         glowOn                 = new Group();
-        glowColors             = new ArrayList<>(4);
+        glowColors             = new ArrayList<Color>(4);
         lcd                    = new Group();
         lcdContent             = new Group();
         lcdValueString         = new Text();
@@ -1542,7 +1542,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         MINOR_TICKMARKS_PATH.strokeLineJoinProperty().set(StrokeLineJoin.BEVEL);
         MINOR_TICKMARKS_PATH.strokeWidthProperty().set(0.0015 * SIZE);
 
-        final ArrayList<Text> tickmarkLabel = new ArrayList<>();
+        final ArrayList<Text> tickmarkLabel = new ArrayList<Text>();
 
         // Set stroke dependend on the current backgrounddesign
         MAJOR_TICKMARKS_PATH.setId(control.getBackgroundDesign().CSS_BACKGROUND);

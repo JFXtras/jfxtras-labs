@@ -155,7 +155,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         tickmarks              = new Group();
         glowOff                = new Group();
         glowOn                 = new Group();
-        glowColors             = new ArrayList<>(4);
+        glowColors             = new ArrayList<Color>(4);
         lcd                    = new Group();
         lcdContent             = new Group();
         lcdValueString         = new Text();
@@ -177,7 +177,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         gaugeValue             = new SimpleDoubleProperty(0);
         negativeOffset         = 0;
         noOfLeds               = 60;
-        leds                   = new ArrayList<>(60);
+        leds                   = new ArrayList<Shape>(60);
         currentValue           = new SimpleDoubleProperty(0);
         formerValue            = new SimpleDoubleProperty(0);
         lcdValue               = new SimpleDoubleProperty(0);

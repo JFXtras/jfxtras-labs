@@ -124,7 +124,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         control                    = CONTROL;
         sections                   = new Group();
         glowOn                     = new Group();
-        glowColors                 = new ArrayList<>(4);
+        glowColors                 = new ArrayList<Color>(4);
         lcd                        = new Group();
         lcdContent                 = new Group();
         lcdValueString             = new Text();
@@ -144,7 +144,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         currentValue               = new SimpleDoubleProperty(0);
         lcdValue                   = new SimpleDoubleProperty(0);
         currentLcdValue            = new SimpleDoubleProperty(0);
-        bargraph                   = new ArrayList<>(20);
+        bargraph                   = new ArrayList<Shape>(20);
         glowPulse                  = new FadeTransition(Duration.millis(800), glowOn);
         toValueAnimation           = new Transition() {
             {

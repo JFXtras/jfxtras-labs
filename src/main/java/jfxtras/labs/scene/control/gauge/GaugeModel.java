@@ -111,7 +111,7 @@ public class GaugeModel {
         lcdThreshold                    = new SimpleDoubleProperty(50);
         lcdThresholdBehaviorInverted    = new SimpleBooleanProperty(false);
         lcdUnit                         = new SimpleStringProperty("");
-        lcdNumberSystem                 = new SimpleObjectProperty<>(NumberSystem.DECIMAL);
+        lcdNumberSystem                 = new SimpleObjectProperty<NumberSystem>(NumberSystem.DECIMAL);
         maxNoOfMajorTicks               = new SimpleIntegerProperty(10);
         maxNoOfMinorTicks               = new SimpleIntegerProperty(10);
         majorTickSpacing                = new SimpleIntegerProperty(10);
@@ -136,7 +136,7 @@ public class GaugeModel {
         return onModelEventProperty().get();
     }
 
-    private ObjectProperty<EventHandler<GaugeModelEvent>> onModelEvent = new SimpleObjectProperty<>();
+    private ObjectProperty<EventHandler<GaugeModelEvent>> onModelEvent = new SimpleObjectProperty<EventHandler<GaugeModelEvent>>();
 
     public void fireModelEvent() {
         final EventHandler<GaugeModelEvent> MODEL_EVENT_HANDLER = getOnModelEvent();
@@ -458,7 +458,7 @@ public class GaugeModel {
     }
 
     public final List<Section> getSections() {
-        final List<Section> SECTIONS_COPY = new ArrayList<>(sections.size());
+        final List<Section> SECTIONS_COPY = new ArrayList<Section>(sections.size());
         SECTIONS_COPY.addAll(sections);
         return SECTIONS_COPY;
     }
@@ -497,7 +497,7 @@ public class GaugeModel {
     }
 
     public final List<Section> getAreas() {
-        final List<Section> AREAS_COPY = new ArrayList<>(areas.size());
+        final List<Section> AREAS_COPY = new ArrayList<Section>(areas.size());
         AREAS_COPY.addAll(areas);
         return AREAS_COPY;
     }
@@ -536,7 +536,7 @@ public class GaugeModel {
     }
 
     public final List<Indicator> getIndicators() {
-        final List<Indicator> INDICATORS_COPY = new ArrayList<>(indicators.size());
+        final List<Indicator> INDICATORS_COPY = new ArrayList<Indicator>(indicators.size());
         INDICATORS_COPY.addAll(indicators);
         return INDICATORS_COPY;
     }
