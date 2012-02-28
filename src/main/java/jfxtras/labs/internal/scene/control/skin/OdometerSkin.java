@@ -64,7 +64,7 @@ import java.util.List;
  */
 public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
     private Odometer       control;
-    private static double  MIN_FLIP_TIME = 1000000000.0 / 60.0; // 60 fps
+    private static double  MIN_FLIP_TIME = 1000_000_000.0 / 60.0; // 60 fps
     private boolean        isDirty;
     private boolean        initialized;
     private Group          foreground;
@@ -98,7 +98,8 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
                     if (control.isCountdownMode()) {
 
                     } else {
-                        countUp();
+                        //countUp();
+                        count();
                     }
                 }
             }
@@ -131,9 +132,6 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
         initialized = true;
         paint();
         stepSize = control.getPrefHeight() / (control.getFlipTime() / MIN_FLIP_TIME);
-        if (control.getValue() != value) {
-            timer.start();
-        }
     }
 
 
@@ -198,13 +196,32 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
 
     private void countUp() {
         int tenth = 1;
-        for (int i = 1 ; i < control.getNoOfDigits() ; i++) {
+        final double HEIGHT = control.getPrefHeight();
+        final int NO_OF_COLUMNS = control.getNoOfDigits() + control.getNoOfDecimals();
+        for (int i = 1 ; i < NO_OF_COLUMNS ; i++) {
             tenth *= 10;
-            if (((int) (counter / control.getPrefHeight() + 1) % tenth == 0)) {
+            if ((((int) (counter / HEIGHT) + 1) % tenth == 0)) {
                 increaseDigit(i);
             }
         }
         increaseDigit(0);
+    }
+
+    private void count() {
+        int tenth = 1;
+        final double HEIGHT = control.getPrefHeight();
+        final int NO_OF_COLUMNS = control.getNoOfDigits() + control.getNoOfDecimals();
+        for (int i = 1 ; i < NO_OF_COLUMNS ; i++) {
+            tenth *= 10;
+            if ((((int) (counter / HEIGHT) + 1) % tenth == 0)) {
+                increaseDigit(i);
+            }
+        }
+        if ((int) (counter / HEIGHT) >= control.getValue()) {
+            timer.stop();
+        } else {
+            increaseDigit(0);
+        }
         counter += stepSize;
     }
 
@@ -212,21 +229,21 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
         final double HEIGHT = control.getPrefHeight();
         final Column COLUMN = listOfColumns.get(INDEX);
         COLUMN.getPositions()[0] += stepSize;
-        if (COLUMN.getPositions()[0] > HEIGHT) {
+        if (Double.compare(COLUMN.getPositions()[0], HEIGHT) >= 0) {
             COLUMN.getPositions()[0] = -2 * HEIGHT;
             COLUMN.getNumbers()[0].setText(getCounter(INDEX));
         }
         COLUMN.getGroups()[0].setTranslateY(COLUMN.getPositions()[0]);
 
         COLUMN.getPositions()[1] += stepSize;
-        if (COLUMN.getPositions()[1] > HEIGHT) {
+        if (Double.compare(COLUMN.getPositions()[1], HEIGHT) >= 0) {
             COLUMN.getPositions()[1] = -2 * HEIGHT;
             COLUMN.getNumbers()[1].setText(getCounter(INDEX));
         }
         COLUMN.getGroups()[1].setTranslateY(COLUMN.getPositions()[1]);
 
         COLUMN.getPositions()[2] += stepSize;
-        if (COLUMN.getPositions()[2] > HEIGHT) {
+        if (Double.compare(COLUMN.getPositions()[2], HEIGHT) >= 0) {
             COLUMN.getPositions()[2] = -2 * HEIGHT;
             COLUMN.getNumbers()[2].setText(getCounter(INDEX));
         }
@@ -408,40 +425,22 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
         public void increaseCounter() {
             counter++;
             value++;
-            if (control.getType() == Odometer.Type.NUMERIC) {
-                if (counter > 9) {
-                    counter = 0;
-                }
-                if (value > 9) {
-                    value = 0;
-                }
-            } else {
-                if (counter > 5) {
-                    counter = 0;
-                }
-                if (value > 5) {
-                    value = 0;
-                }
+            if (counter > 9) {
+                counter = 0;
+            }
+            if (value > 9) {
+                value = 0;
             }
         }
 
         public void decreaseCounter() {
             counter--;
             value--;
-            if (control.getType() == Odometer.Type.NUMERIC) {
-                if (counter < 0) {
-                    counter = 9;
-                }
-                if (value < 0) {
-                    value = 9;
-                }
-            } else {
-                if (counter < 0) {
-                    counter = 5;
-                }
-                if (value < 0) {
-                    value = 5;
-                }
+            if (counter < 0) {
+                counter = 9;
+            }
+            if (value < 0) {
+                value = 9;
             }
         }
     }

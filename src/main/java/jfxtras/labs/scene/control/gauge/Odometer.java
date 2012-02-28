@@ -49,31 +49,19 @@ import javafx.scene.paint.Color;
  * Time: 15:39
  */
 public class Odometer extends Control {
-    public enum Type {
-        NUMERIC,
-        TIME
-    }
     private static final String        DEFAULT_STYLE_CLASS = "odometer";
-    private static final long          ONE_SECOND          = 1000000000l;
-    private static double              MIN_FLIP_TIME       = 1000000000.0 / 60.0; // 60 fps
+    private static final long          ONE_SECOND          = 1000_000_000l;
+    private static double              MIN_FLIP_TIME       = 1000_000_000.0 / 60.0; // 60 fps
     private ObjectProperty<Color>      color;
     private ObjectProperty<Color>      decimalColor;
     private ObjectProperty<Color>      numberColor;
     private ObjectProperty<Color>      numberDecimalColor;
     private LongProperty               flipTime;
     private BooleanProperty            countdownMode;
-    private DoubleProperty             value;
+    private IntegerProperty            value;
     private IntegerProperty            noOfDigits;
     private IntegerProperty            noOfDecimals;
-    private IntegerProperty            currentValue;
-    private SimpleObjectProperty<Type> type;
     private boolean                    keepAspect;
-    private int                        counter;
-    private DoubleProperty             posYDigit0;
-    private DoubleProperty             posYDigit1;
-    private DoubleProperty             posYDigit2;
-    private double                     stepSize;
-    private AnimationTimer             timer;
 
 
     // ******************** Constructors **************************************
@@ -88,11 +76,9 @@ public class Odometer extends Control {
         numberDecimalColor = new SimpleObjectProperty<>(Color.WHITE);
         noOfDigits         = new SimpleIntegerProperty(NO_OF_DIGITS < 0 ? 1 : NO_OF_DIGITS);
         noOfDecimals       = new SimpleIntegerProperty(0);
-        value              = new SimpleDoubleProperty(6);
-        currentValue       = new SimpleIntegerProperty(0);
+        value              = new SimpleIntegerProperty(0);
         flipTime           = new SimpleLongProperty(ONE_SECOND);
         countdownMode      = new SimpleBooleanProperty(false);
-        type               = new SimpleObjectProperty<>(Type.NUMERIC);
         keepAspect         = true;
         init();
     }
@@ -176,32 +162,16 @@ public class Odometer extends Control {
         return countdownMode;
     }
 
-    public final double getValue() {
+    public final int getValue() {
         return value.get();
     }
 
-    public final void setValue(final double VALUE) {
-        if (type.get() == Type.NUMERIC) {
-            value.set(VALUE < 0 ? 0 : (VALUE > 9 ? 9 : VALUE));
-        } else {
-            value.set(VALUE < 0 ? 0 : (VALUE > 5 ? 5 : VALUE));
-        }
+    public final void setValue(final int VALUE) {
+        value.set(VALUE < 0 ? 0 : VALUE);
     }
 
-    public final DoubleProperty valueProperty() {
+    public final IntegerProperty valueProperty() {
         return value;
-    }
-
-    public final Type getType() {
-        return type.get();
-    }
-
-    public final void setType(final Type TYPE) {
-        type.set(TYPE);
-    }
-
-    public final ObjectProperty<Type> typeProperty() {
-        return type;
     }
 
     public final int getNoOfDigits() {
