@@ -64,7 +64,7 @@ import jfxtras.labs.scene.control.gauge.Flipchar;
  */
 public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
     private Flipchar       control;
-    private static double  MIN_FLIP_TIME = 1000000000.0 / 60.0; // 60 fps
+    private static double  MIN_FLIP_TIME = 1000_000_000.0 / 60.0; // 60 fps
     private boolean        isDirty;
     private boolean        initialized;
     private Group          fixture;
