@@ -28,7 +28,15 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
+import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.VPos;
@@ -49,6 +57,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.transform.Transform;
+import javafx.util.Duration;
 import jfxtras.labs.internal.scene.control.behavior.OdometerBehavior;
 import jfxtras.labs.scene.control.gauge.Odometer;
 
@@ -63,19 +73,21 @@ import java.util.List;
  * Time: 15:40
  */
 public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
-    private Odometer       control;
-    private static double  MIN_FLIP_TIME = 1000_000_000.0 / 60.0; // 60 fps
-    private boolean        isDirty;
-    private boolean        initialized;
-    private Group          foreground;
-    private Group[]        digits;
-    private List<Column>   listOfColumns;
-    private Group          background;
-    private double         counter;
-    private double         value;
-    private double         stepSize;
-    private AnimationTimer timer;
-    private Font           font;
+    private Odometer            control;
+    private static double       MIN_FLIP_TIME = 1000_000_000.0 / 60.0; // 60 fps
+    private boolean             isDirty;
+    private boolean             initialized;
+    private Group               foreground;
+    private Group[]             digits;
+    private List<Column>        listOfColumns;
+    private Group               background;
+    private double              counter;
+    private double              value;
+    private double              stepSize;
+    private AnimationTimer      timer;
+    private Timeline            translate;
+    private DoubleProperty      trnslt;
+    private Font                font;
 
 
     // ******************** Constructors **************************************
@@ -91,19 +103,8 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
         counter           = 1;
         value             = 0;
         stepSize          = 1;
-        timer             = new AnimationTimer() {
-            @Override
-            public void handle(long l) {
-                if (initialized) {
-                    if (control.isCountdownMode()) {
-
-                    } else {
-                        //countUp();
-                        count();
-                    }
-                }
-            }
-        };
+        trnslt           = new SimpleDoubleProperty(0);
+        translate        = new Timeline();
         init();
     }
 
@@ -132,6 +133,18 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
         initialized = true;
         paint();
         stepSize = control.getPrefHeight() / (control.getFlipTime() / MIN_FLIP_TIME);
+
+        trnslt.addListener(new ChangeListener<Number>() {
+        @Override
+        public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
+            if (newValue.doubleValue() > oldValue.doubleValue()) {
+                counter++;
+            }
+            countUp(oldValue, newValue);
+        }
+    });
+
+
     }
 
 
@@ -156,9 +169,15 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
         if (PROPERTY == "VALUE") {
-            if(Double.compare(control.getValue(),value) != 0) {
-                timer.start();
+            if (translate.getStatus() != Animation.Status.STOPPED) {
+                translate.stop();
             }
+            final KeyValue kv = new KeyValue(trnslt, control.getPrefHeight(), Interpolator.LINEAR);
+            final KeyFrame kf = new KeyFrame(Duration.millis(control.getFlipTime() / 1000_000), kv);
+            translate  = new Timeline();
+            translate.getKeyFrames().add(kf);
+            translate.setCycleCount(Animation.INDEFINITE);
+            translate.play();
         }
     }
 
@@ -194,55 +213,40 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
         return super.computePrefWidth(prefHeight);
     }
 
-    private void countUp() {
+    private void countUp(Number oldValue, Number newValue) {
         int tenth = 1;
         final double HEIGHT = control.getPrefHeight();
         final int NO_OF_COLUMNS = control.getNoOfDigits() + control.getNoOfDecimals();
-        for (int i = 1 ; i < NO_OF_COLUMNS ; i++) {
+        for (int i = 0 ; i < NO_OF_COLUMNS ; i++) {
             tenth *= 10;
             if ((((int) (counter / HEIGHT) + 1) % tenth == 0)) {
-                increaseDigit(i);
+                //increaseDigit(i, oldValue, newValue);
             }
         }
-        increaseDigit(0);
+        increaseDigit(0, oldValue, newValue);
     }
 
-    private void count() {
-        int tenth = 1;
-        final double HEIGHT = control.getPrefHeight();
-        final int NO_OF_COLUMNS = control.getNoOfDigits() + control.getNoOfDecimals();
-        for (int i = 1 ; i < NO_OF_COLUMNS ; i++) {
-            tenth *= 10;
-            if ((((int) (counter / HEIGHT) + 1) % tenth == 0)) {
-                increaseDigit(i);
-            }
-        }
-        if ((int) (counter / HEIGHT) >= control.getValue()) {
-            timer.stop();
-        } else {
-            increaseDigit(0);
-        }
-        counter += stepSize;
-    }
 
-    private void increaseDigit(final int INDEX) {
+
+    private void increaseDigit(final int INDEX, final Number OLD_POSITION, final Number NEW_POSITION) {
         final double HEIGHT = control.getPrefHeight();
         final Column COLUMN = listOfColumns.get(INDEX);
-        COLUMN.getPositions()[0] += stepSize;
+        double step = NEW_POSITION.doubleValue() > OLD_POSITION.doubleValue() ? (NEW_POSITION.doubleValue() - OLD_POSITION.doubleValue()) : (NEW_POSITION.doubleValue());
+        COLUMN.getPositions()[0] += step;
         if (Double.compare(COLUMN.getPositions()[0], HEIGHT) >= 0) {
             COLUMN.getPositions()[0] = -2 * HEIGHT;
             COLUMN.getNumbers()[0].setText(getCounter(INDEX));
         }
         COLUMN.getGroups()[0].setTranslateY(COLUMN.getPositions()[0]);
 
-        COLUMN.getPositions()[1] += stepSize;
+        COLUMN.getPositions()[1] += step;
         if (Double.compare(COLUMN.getPositions()[1], HEIGHT) >= 0) {
             COLUMN.getPositions()[1] = -2 * HEIGHT;
             COLUMN.getNumbers()[1].setText(getCounter(INDEX));
         }
         COLUMN.getGroups()[1].setTranslateY(COLUMN.getPositions()[1]);
 
-        COLUMN.getPositions()[2] += stepSize;
+        COLUMN.getPositions()[2] += step;
         if (Double.compare(COLUMN.getPositions()[2], HEIGHT) >= 0) {
             COLUMN.getPositions()[2] = -2 * HEIGHT;
             COLUMN.getNumbers()[2].setText(getCounter(INDEX));
