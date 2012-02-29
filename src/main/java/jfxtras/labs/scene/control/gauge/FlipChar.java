@@ -45,7 +45,7 @@ import javafx.scene.paint.Color;
  * Date: 23.02.12
  * Time: 09:11
  */
-public class Flipchar extends Control {
+public class FlipChar extends Control {
     public enum Type {
         NUMERIC(48, 57),
         ALPHANUMERIC(45, 94),
@@ -70,11 +70,11 @@ public class Flipchar extends Control {
 
 
     // ******************** Constructors **************************************
-    public Flipchar() {
+    public FlipChar() {
         this("0");
     }
 
-    public Flipchar(final String CHARACTER) {
+    public FlipChar(final String CHARACTER) {
         color            = new SimpleObjectProperty<Color>(Color.rgb(80, 80, 80));
         characterColor   = new SimpleObjectProperty<Color>(Color.WHITE);
         type             = new SimpleObjectProperty<Type>(Type.NUMERIC);

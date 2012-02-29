@@ -52,8 +52,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
-import jfxtras.labs.internal.scene.control.behavior.FlipcharBehavior;
-import jfxtras.labs.scene.control.gauge.Flipchar;
+import jfxtras.labs.internal.scene.control.behavior.FlipCharBehavior;
+import jfxtras.labs.scene.control.gauge.FlipChar;
 
 
 /**
@@ -62,8 +62,8 @@ import jfxtras.labs.scene.control.gauge.Flipchar;
  * Date: 23.02.12
  * Time: 09:12
  */
-public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
-    private Flipchar       control;
+public class FlipCharSkin extends SkinBase<FlipChar, FlipCharBehavior> {
+    private FlipChar       control;
     private static double  MIN_FLIP_TIME = 1000000000.0 / 60.0; // 60 fps
     private boolean        isDirty;
     private boolean        initialized;
@@ -90,8 +90,8 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
 
 
     // ******************** Constructors **************************************
-    public FlipcharSkin(final Flipchar CONTROL) {
-        super(CONTROL, new FlipcharBehavior(CONTROL));
+    public FlipCharSkin(final FlipChar CONTROL) {
+        super(CONTROL, new FlipCharBehavior(CONTROL));
         control          = CONTROL;
         initialized      = false;
         isDirty          = false;
@@ -201,7 +201,7 @@ public class FlipcharSkin extends SkinBase<Flipchar, FlipcharBehavior> {
         super.layoutChildren();
     }
 
-    @Override public final Flipchar getSkinnable() {
+    @Override public final FlipChar getSkinnable() {
         return control;
     }
 

@@ -28,8 +28,7 @@
 package jfxtras.labs.internal.scene.control.behavior;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
-import jfxtras.labs.scene.control.gauge.Flipchar;
-
+import jfxtras.labs.scene.control.gauge.FlipChar;
 
 /**
  * Created by
@@ -37,9 +36,9 @@ import jfxtras.labs.scene.control.gauge.Flipchar;
  * Date: 23.02.12
  * Time: 09:12
  */
-public class FlipcharBehavior extends BehaviorBase<Flipchar> {
+public class FlipCharBehavior extends BehaviorBase<FlipChar> {
 
-    public FlipcharBehavior(final Flipchar CONTROL) {
+    public FlipCharBehavior(final FlipChar CONTROL) {
         super(CONTROL);
     }
 }
