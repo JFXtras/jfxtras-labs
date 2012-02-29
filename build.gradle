@@ -14,6 +14,8 @@ version                 = '0.1-SNAPSHOT'
 isRelease = !version.endsWith('SNAPSHOT')
 requiredJavaFxVersion   = '2.1.0'
 
+sourceCompatibility = 7
+
 /***************************************
  * Check environment
  ***************************************/
