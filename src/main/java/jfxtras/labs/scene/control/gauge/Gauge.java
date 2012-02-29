@@ -55,10 +55,10 @@ import java.util.Locale;
  */
 public abstract class Gauge extends Control {
     // ******************** Variable definitions ******************************
-    private ObjectProperty<Model>       modelProperty;
-    private ObjectProperty<ViewModel>   viewModelProperty;
-    private Model                       model;
-    private ViewModel                   viewModel;
+    private ObjectProperty<GaugeModel>  gaugeModelProperty;
+    private ObjectProperty<StyleModel>  styleModelProperty;
+    private GaugeModel                  gaugeModel;
+    private StyleModel                  styleModel;
     private ObjectProperty<RadialRange> radialRange;
     private DoubleProperty              angleStep;
 
@@ -258,7 +258,7 @@ public abstract class Gauge extends Control {
         DOWN("down"),
         UNKNOWN("unknown");
 
-        public final ArrayList<int[]> ledMatrix = new ArrayList<>(9);
+        public final ArrayList<int[]> ledMatrix = new ArrayList<int[]>(9);
 
         private Trend(final String TYPE) {
             if (TYPE == "up") {
@@ -312,24 +312,24 @@ public abstract class Gauge extends Control {
 
     // ******************** Constructors **************************************
     public Gauge() {
-        this(new Model());
+        this(new GaugeModel());
     }
 
-    public Gauge(final Model MODEL) {
-        this(MODEL, new ViewModel());
+    public Gauge(final GaugeModel GAUGE_MODEL) {
+        this(GAUGE_MODEL, new StyleModel());
     }
 
-    public Gauge(final ViewModel VIEW_MODEL) {
-        this(new Model(), VIEW_MODEL);
+    public Gauge(final StyleModel STYLE_MODEL) {
+        this(new GaugeModel(), STYLE_MODEL);
     }
 
-    public Gauge(final Model MODEL, final ViewModel VIEW_MODEL) {
-        modelProperty     = new SimpleObjectProperty<>(MODEL);
-        viewModelProperty = new SimpleObjectProperty<>(VIEW_MODEL);
-        model             = modelProperty.get();
-        viewModel         = viewModelProperty.get();
-        radialRange       = new SimpleObjectProperty<>(RadialRange.RADIAL_300);
-        angleStep         = new SimpleDoubleProperty(radialRange.get().ANGLE_RANGE / model.getRange());
+    public Gauge(final GaugeModel GAUGE_MODEL, final StyleModel STYLE_MODEL) {
+        gaugeModelProperty = new SimpleObjectProperty<GaugeModel>(GAUGE_MODEL);
+        styleModelProperty = new SimpleObjectProperty<StyleModel>(STYLE_MODEL);
+        gaugeModel         = gaugeModelProperty.get();
+        styleModel         = styleModelProperty.get();
+        radialRange        = new SimpleObjectProperty<RadialRange>(RadialRange.RADIAL_300);
+        angleStep          = new SimpleDoubleProperty(radialRange.get().ANGLE_RANGE / gaugeModel.getRange());
         ledBlinkingProperty().bind(thresholdExceededProperty());
         addModelListener();
         addViewModelListener();
@@ -342,58 +342,58 @@ public abstract class Gauge extends Control {
 
     // ******************** Event handling ************************************
     private final void addModelListener() {
-        model.setOnModelEvent(new EventHandler<ModelEvent>() {
-            public void handle(final ModelEvent EVENT) {
+        gaugeModel.setOnModelEvent(new EventHandler<GaugeModelEvent>() {
+            public void handle(final GaugeModelEvent EVENT) {
                 forwardModelEvent(EVENT);
             }
         });
     }
 
     private final void addViewModelListener() {
-        viewModel.setOnViewModelEvent(new EventHandler<ViewModelEvent>() {
-            public void handle(final ViewModelEvent EVENT) {
+        styleModel.setOnViewModelEvent(new EventHandler<StyleModelEvent>() {
+            public void handle(final StyleModelEvent EVENT) {
                 forwardViewModelEvent(EVENT);
             }
         });
     }
 
-    public final ObjectProperty<EventHandler<ModelEvent>> onModelEventProperty() {
+    public final ObjectProperty<EventHandler<GaugeModelEvent>> onModelEventProperty() {
         return onModelEvent;
     }
 
-    public final void setOnModelEvent(final EventHandler<ModelEvent> HANDLER) {
+    public final void setOnModelEvent(final EventHandler<GaugeModelEvent> HANDLER) {
         onModelEventProperty().set(HANDLER);
     }
 
-    public final EventHandler<ModelEvent> getOnModelEvent() {
+    public final EventHandler<GaugeModelEvent> getOnModelEvent() {
         return onModelEventProperty().get();
     }
 
-    private final ObjectProperty<EventHandler<ModelEvent>> onModelEvent = new SimpleObjectProperty<>();
+    private final ObjectProperty<EventHandler<GaugeModelEvent>> onModelEvent = new SimpleObjectProperty<EventHandler<GaugeModelEvent>>();
 
-    public void forwardModelEvent(final ModelEvent EVENT) {
-        final EventHandler<ModelEvent> MODEL_EVENT_HANDLER = getOnModelEvent();
+    public void forwardModelEvent(final GaugeModelEvent EVENT) {
+        final EventHandler<GaugeModelEvent> MODEL_EVENT_HANDLER = getOnModelEvent();
         if (MODEL_EVENT_HANDLER != null) {
             MODEL_EVENT_HANDLER.handle(EVENT);
         }
     }
 
-    public final ObjectProperty<EventHandler<ViewModelEvent>> onViewModelEventProperty() {
+    public final ObjectProperty<EventHandler<StyleModelEvent>> onViewModelEventProperty() {
         return onViewModelEvent;
     }
 
-    public final void setOnViewModelEvent(final EventHandler<ViewModelEvent> HANDLER) {
+    public final void setOnViewModelEvent(final EventHandler<StyleModelEvent> HANDLER) {
         onViewModelEventProperty().set(HANDLER);
     }
 
-    public final EventHandler<ViewModelEvent> getOnViewModelEvent() {
+    public final EventHandler<StyleModelEvent> getOnViewModelEvent() {
         return onViewModelEventProperty().get();
     }
 
-    private final ObjectProperty<EventHandler<ViewModelEvent>> onViewModelEvent = new SimpleObjectProperty<>();
+    private final ObjectProperty<EventHandler<StyleModelEvent>> onViewModelEvent = new SimpleObjectProperty<EventHandler<StyleModelEvent>>();
 
-    public void forwardViewModelEvent(final ViewModelEvent EVENT) {
-        final EventHandler<ViewModelEvent> VIEW_MODEL_EVENT_HANDLER = getOnViewModelEvent();
+    public void forwardViewModelEvent(final StyleModelEvent EVENT) {
+        final EventHandler<StyleModelEvent> VIEW_MODEL_EVENT_HANDLER = getOnViewModelEvent();
         if (VIEW_MODEL_EVENT_HANDLER != null) {
             VIEW_MODEL_EVENT_HANDLER.handle(EVENT);
         }
@@ -407,47 +407,47 @@ public abstract class Gauge extends Control {
 
 
     // ******************** Gauge Methods *************************************
-    public final ViewModel getViewModel() {
-        return viewModelProperty.get();
+    public final StyleModel getStyleModel() {
+        return styleModelProperty.get();
     }
 
-    public final void setViewModel(final ViewModel VIEW_MODEL) {
-        viewModelProperty.set(VIEW_MODEL);
-        viewModel = viewModelProperty().get();
+    public final void setStyleModel(final StyleModel STYLE_MODEL) {
+        styleModelProperty.set(STYLE_MODEL);
+        this.styleModel = styleModelProperty().get();
         addModelListener();
         init();
     }
 
-    public final ObjectProperty<Model> modelProperty() {
-        return modelProperty;
+    public final ObjectProperty<StyleModel> styleModelProperty() {
+            return styleModelProperty;
+        }
+
+    public final GaugeModel getGaugeModel() {
+        return gaugeModelProperty.get();
     }
 
-    public final Model getModel() {
-        return modelProperty.get();
-    }
-
-    public final void setModel(final Model MODEL) {
-        modelProperty.set(MODEL);
-        model = modelProperty.get();
+    public final void setGaugeModel(final GaugeModel GAUGE_MODEL) {
+        gaugeModelProperty.set(GAUGE_MODEL);
+        gaugeModel = gaugeModelProperty.get();
         addViewModelListener();
         init();
     }
 
-    public final ObjectProperty<ViewModel> viewModelProperty() {
-        return viewModelProperty;
+    public final ObjectProperty<GaugeModel> gaugeModelProperty() {
+        return gaugeModelProperty;
     }
 
     public final Gauge.RadialRange getRadialRange() {
         return radialRange.get();
     }
 
-    public void setRadialRange(final Gauge.RadialRange RADIAL_RANGE) {
+    public void setRadialRange(final RadialRange RADIAL_RANGE) {
         radialRange.set(RADIAL_RANGE);
-        model.calcRange(radialRange.get().ANGLE_RANGE);
-        angleStep.set(radialRange.get().ANGLE_RANGE / model.getRange());
+        gaugeModel.calcRange(radialRange.get().ANGLE_RANGE);
+        angleStep.set(radialRange.get().ANGLE_RANGE / gaugeModel.getRange());
     }
 
-    public final ObjectProperty<Gauge.RadialRange> radialRangeProperty() {
+    public final ObjectProperty<RadialRange> radialRangeProperty() {
         return radialRange;
     }
 
@@ -456,8 +456,8 @@ public abstract class Gauge extends Control {
     }
 
     public final void recalcRange() {
-        model.calcRange(radialRange.get().ANGLE_RANGE);
-        angleStep.set(radialRange.get().ANGLE_RANGE / model.getRange());
+        gaugeModel.calcRange(radialRange.get().ANGLE_RANGE);
+        angleStep.set(radialRange.get().ANGLE_RANGE / gaugeModel.getRange());
     }
 
     public final DoubleProperty angleStepProperty() {
@@ -473,1105 +473,1105 @@ public abstract class Gauge extends Control {
         }
 
 
-    // ******************** Model Methods *************************************
+    // ******************** GaugeModel Methods *************************************
     public final double getValue() {
-        return model.getValue();
+        return gaugeModel.getValue();
     }
 
     public final void setValue(final double VALUE) {
-        model.setValue(VALUE);
+        gaugeModel.setValue(VALUE);
     }
 
     public final DoubleProperty valueProperty() {
-        return model.valueProperty();
+        return gaugeModel.valueProperty();
     }
 
     public final boolean isValueAnimationEnabled() {
-        return model.isValueAnimationEnabled();
+        return gaugeModel.isValueAnimationEnabled();
     }
 
     public final void setValueAnimationEnabled(final boolean VALUE_ANIMATION_ENABLED) {
-        model.setValueAnimationEnabled(VALUE_ANIMATION_ENABLED);
+        gaugeModel.setValueAnimationEnabled(VALUE_ANIMATION_ENABLED);
     }
 
     public final BooleanProperty valueAnimationEnabledProperty() {
-        return model.valueAnimationEnabledProperty();
+        return gaugeModel.valueAnimationEnabledProperty();
     }
 
     public final double getAnimationDuration() {
-        return model.getAnimationDuration();
+        return gaugeModel.getAnimationDuration();
     }
 
     public final void setAnimationDuration(final double ANIMATION_DURATION) {
-        model.setAnimationDuration(ANIMATION_DURATION);
+        gaugeModel.setAnimationDuration(ANIMATION_DURATION);
     }
 
     public final DoubleProperty animationDurationProperty() {
-        return model.animationDurationProperty();
+        return gaugeModel.animationDurationProperty();
     }
 
     public final double getMinValue() {
-        return model.getMinValue();
+        return gaugeModel.getMinValue();
     }
 
     public final void setMinValue(final double MIN_VALUE) {
-        model.setMinValue(MIN_VALUE);
-        model.calcRange(radialRange.get().ANGLE_RANGE);
-        angleStep.set(radialRange.get().ANGLE_RANGE / model.getRange());
+        gaugeModel.setMinValue(MIN_VALUE);
+        gaugeModel.calcRange(radialRange.get().ANGLE_RANGE);
+        angleStep.set(radialRange.get().ANGLE_RANGE / gaugeModel.getRange());
     }
 
     public final DoubleProperty minValueProperty() {
-        return model.minValueProperty();
+        return gaugeModel.minValueProperty();
     }
 
     public final double getMaxValue() {
-        return model.getMaxValue();
+        return gaugeModel.getMaxValue();
     }
 
     public final void setMaxValue(final double MAX_VALUE) {
-        model.setMaxValue(MAX_VALUE);
-        model.calcRange(radialRange.get().ANGLE_RANGE);
-        angleStep.set(radialRange.get().ANGLE_RANGE / model.getRange());
+        gaugeModel.setMaxValue(MAX_VALUE);
+        gaugeModel.calcRange(radialRange.get().ANGLE_RANGE);
+        angleStep.set(radialRange.get().ANGLE_RANGE / gaugeModel.getRange());
     }
 
     public final DoubleProperty maxValueProperty() {
-        return model.maxValueProperty();
+        return gaugeModel.maxValueProperty();
     }
 
     public final double getRange() {
-        return model.getRange();
+        return gaugeModel.getRange();
     }
 
     public final DoubleProperty rangeProperty() {
-        return model.rangeProperty();
+        return gaugeModel.rangeProperty();
     }
 
     public final double getMinMeasuredValue() {
-        return model.getMinMeasuredValue();
+        return gaugeModel.getMinMeasuredValue();
     }
 
     public final void setMinMeasuredValue(final double MIN_MEASURED_VALUE) {
-        model.setMinMeasuredValue(MIN_MEASURED_VALUE);
+        gaugeModel.setMinMeasuredValue(MIN_MEASURED_VALUE);
     }
 
     public final DoubleProperty minMeasuredValueProperty() {
-        return model.minMeasuredValueProperty();
+        return gaugeModel.minMeasuredValueProperty();
     }
 
     public final boolean isBargraph() {
-        return viewModel.isBargraph();
+        return styleModel.isBargraph();
     }
 
     public final void setBargraph(final boolean BARGRAPH) {
-        viewModel.setBargraph(BARGRAPH);
+        styleModel.setBargraph(BARGRAPH);
     }
 
     public final BooleanProperty bargraphProperty() {
-        return viewModel.bargraphProperty();
+        return styleModel.bargraphProperty();
     }
 
     public final boolean isMinMeasuredValueVisible() {
-        return viewModel.isMinMeasuredValueVisible();
+        return styleModel.isMinMeasuredValueVisible();
     }
 
     public final void setMinMeasuredValueVisible(final boolean MIN_MEASURED_VALUE_VISIBLE) {
-        viewModel.setMinMeasuredValueVisible(MIN_MEASURED_VALUE_VISIBLE);
+        styleModel.setMinMeasuredValueVisible(MIN_MEASURED_VALUE_VISIBLE);
     }
 
     public final BooleanProperty minMeasuredValueVisibleProperty() {
-        return viewModel.minMeasuredValueVisibleProperty();
+        return styleModel.minMeasuredValueVisibleProperty();
     }
 
     public final void resetMinMeasuredValue() {
-        model.resetMinMeasuredValue();
+        gaugeModel.resetMinMeasuredValue();
     }
 
     public final double getMaxMeasuredValue() {
-        return model.getMaxMeasuredValue();
+        return gaugeModel.getMaxMeasuredValue();
     }
 
     public final void setMaxMeasuredValue(final double MAX_MEASURED_VALUE) {
-        model.setMaxMeasuredValue(MAX_MEASURED_VALUE);
+        gaugeModel.setMaxMeasuredValue(MAX_MEASURED_VALUE);
     }
 
     public final DoubleProperty maxMeasuredValueProperty() {
-        return model.maxMeasuredValueProperty();
+        return gaugeModel.maxMeasuredValueProperty();
     }
 
     public final boolean isMaxMeasuredValueVisible() {
-        return viewModel.isMaxMeasuredValueVisible();
+        return styleModel.isMaxMeasuredValueVisible();
     }
 
     public final void setMaxMeasuredValueVisible(final boolean MAX_MEASURED_VALUE_VISIBLE) {
-        viewModel.setMaxMeasuredValueVisible(MAX_MEASURED_VALUE_VISIBLE);
+        styleModel.setMaxMeasuredValueVisible(MAX_MEASURED_VALUE_VISIBLE);
     }
 
     public final BooleanProperty maxMeasuredValueVisibleProperty() {
-        return viewModel.maxMeasuredValueVisibleProperty();
+        return styleModel.maxMeasuredValueVisibleProperty();
     }
 
     public final void resetMaxMeasuredValue() {
-        model.resetMaxMeasuredValue();
+        gaugeModel.resetMaxMeasuredValue();
     }
 
     public final void resetMinMaxMeasuredValue() {
-        model.resetMinMaxMeasuredValue();
+        gaugeModel.resetMinMaxMeasuredValue();
     }
 
     public final double getThreshold() {
-        return model.getThreshold();
+        return gaugeModel.getThreshold();
     }
 
     public final void setThreshold(final double THRESHOLD) {
-        model.setThreshold(THRESHOLD);
+        gaugeModel.setThreshold(THRESHOLD);
     }
 
     public final DoubleProperty thresholdProperty() {
-        return model.thresholdProperty();
+        return gaugeModel.thresholdProperty();
     }
 
     public final boolean isThresholdBehaviorInverted() {
-        return model.isThresholdBehaviorInverted();
+        return gaugeModel.isThresholdBehaviorInverted();
     }
 
     public final void setThresholdBehaviorInverted(final boolean THRESHOLD_BEHAVIOR_INVERTED) {
-        model.setThresholdBehaviorInverted(THRESHOLD_BEHAVIOR_INVERTED);
+        gaugeModel.setThresholdBehaviorInverted(THRESHOLD_BEHAVIOR_INVERTED);
     }
 
     public final BooleanProperty thresholdBehaviorInvertedProperty() {
-        return model.thresholdBehaviorInvertedProperty();
+        return gaugeModel.thresholdBehaviorInvertedProperty();
     }
 
     public final boolean isThresholdExceeded() {
-        return model.isThresholdExceeded();
+        return gaugeModel.isThresholdExceeded();
     }
 
     public final void setThresholdExceeded(final boolean THRESHOLD_EXCEEDED) {
-        model.setThresholdExceeded(THRESHOLD_EXCEEDED);
+        gaugeModel.setThresholdExceeded(THRESHOLD_EXCEEDED);
     }
 
     public final BooleanProperty thresholdExceededProperty() {
-        return model.thresholdExceededProperty();
+        return gaugeModel.thresholdExceededProperty();
     }
 
     public final boolean isThresholdVisible() {
-        return viewModel.isThresholdVisible();
+        return styleModel.isThresholdVisible();
     }
 
     public final void setThresholdVisible(final boolean THRESHOLD_VISIBLE) {
-        viewModel.setThresholdVisible(THRESHOLD_VISIBLE);
+        styleModel.setThresholdVisible(THRESHOLD_VISIBLE);
     }
 
     public final BooleanProperty thresholdVisibleProperty() {
-        return viewModel.thresholdVisibleProperty();
+        return styleModel.thresholdVisibleProperty();
     }
 
     public final ThresholdColor getThresholdColor() {
-        return viewModel.getThresholdColor();
+        return styleModel.getThresholdColor();
     }
 
     public final void setThresholdColor(final ThresholdColor THRESHOLD_COLOR) {
-        viewModel.setThresholdColor(THRESHOLD_COLOR);
+        styleModel.setThresholdColor(THRESHOLD_COLOR);
     }
 
     public final ObjectProperty<ThresholdColor> thresholdColorProperty() {
-        return viewModel.thresholdColorProperty();
+        return styleModel.thresholdColorProperty();
     }
 
     public final String getTitle() {
-        return model.getTitle();
+        return gaugeModel.getTitle();
     }
 
     public final void setTitle(final String TITLE) {
-        model.setTitle(TITLE);
+        gaugeModel.setTitle(TITLE);
     }
 
     public final StringProperty titleProperty() {
-        return model.titleProperty();
+        return gaugeModel.titleProperty();
     }
 
     public final String getUnit() {
-        return model.getUnit();
+        return gaugeModel.getUnit();
     }
 
     public final void setUnit(final String UNIT) {
-        model.setUnit(UNIT);
+        gaugeModel.setUnit(UNIT);
     }
 
     public final StringProperty unitProperty() {
-        return model.unitProperty();
+        return gaugeModel.unitProperty();
     }
 
     public final FrameDesign getFrameDesign() {
-        return viewModel.getFrameDesign();
+        return styleModel.getFrameDesign();
     }
 
     public final void setFrameDesign(final FrameDesign FRAME_DESIGN) {
-        viewModel.setFrameDesign(FRAME_DESIGN);
+        styleModel.setFrameDesign(FRAME_DESIGN);
     }
 
     public final ObjectProperty<FrameDesign> frameDesignProperty() {
-        return viewModel.frameDesignProperty();
+        return styleModel.frameDesignProperty();
     }
 
     public final boolean isFrameVisible() {
-        return viewModel.isFrameVisible();
+        return styleModel.isFrameVisible();
     }
 
     public final void setFrameVisible(final boolean FRAME_VISIBLE) {
-        viewModel.setFrameVisible(FRAME_VISIBLE);
+        styleModel.setFrameVisible(FRAME_VISIBLE);
     }
 
     public final BooleanProperty frameVisibleProperty() {
-        return viewModel.frameVisibleProperty();
+        return styleModel.frameVisibleProperty();
     }
 
     public final BackgroundDesign getBackgroundDesign() {
-        return viewModel.getBackgroundDesign();
+        return styleModel.getBackgroundDesign();
     }
 
     public final void setBackgroundDesign(final BackgroundDesign BACKGROUND_DESIGN) {
-        viewModel.setBackgroundDesign(BACKGROUND_DESIGN);
+        styleModel.setBackgroundDesign(BACKGROUND_DESIGN);
     }
 
     public final ObjectProperty<BackgroundDesign> backgroundDesignProperty() {
-        return viewModel.backgroundDesignProperty();
+        return styleModel.backgroundDesignProperty();
     }
 
     public final boolean isBackgroundVisible() {
-        return viewModel.isBackgroundVisible();
+        return styleModel.isBackgroundVisible();
     }
 
     public final void setBackgroundVisible(final boolean BACKGROUND_VISIBLE) {
-        viewModel.setBackgroundVisible(BACKGROUND_VISIBLE);
+        styleModel.setBackgroundVisible(BACKGROUND_VISIBLE);
     }
 
     public final BooleanProperty backgroundVisibleProperty() {
-        return viewModel.backgroundVisibleProperty();
+        return styleModel.backgroundVisibleProperty();
     }
 
     public final KnobDesign getKnobDesign() {
-        return viewModel.getKnobDesign();
+        return styleModel.getKnobDesign();
     }
 
     public final void setKnobDesign(final KnobDesign KNOB_DESIGN) {
-        viewModel.setKnobDesign(KNOB_DESIGN);
+        styleModel.setKnobDesign(KNOB_DESIGN);
     }
 
     public final ObjectProperty<KnobDesign> knobDesignProperty() {
-        return viewModel.knobDesignProperty();
+        return styleModel.knobDesignProperty();
     }
 
     public final KnobColor getKnobColor() {
-        return viewModel.getKnobColor();
+        return styleModel.getKnobColor();
     }
 
     public final void setKnobColor(final KnobColor KNOB_COLOR) {
-        viewModel.setKnobColor(KNOB_COLOR);
+        styleModel.setKnobColor(KNOB_COLOR);
     }
 
     public final ObjectProperty<KnobColor> knobColorProperty() {
-        return viewModel.knobColorProperty();
+        return styleModel.knobColorProperty();
     }
 
     public final boolean isPostsVisible() {
-        return viewModel.isPostsVisible();
+        return styleModel.isPostsVisible();
     }
 
     public final void setPostsVisible(final boolean POSTS_VISIBLE) {
-        viewModel.setPostsVisible(POSTS_VISIBLE);
+        styleModel.setPostsVisible(POSTS_VISIBLE);
     }
 
     public final BooleanProperty postsVisibleProperty() {
-        return viewModel.postsVisibleProperty();
+        return styleModel.postsVisibleProperty();
     }
 
     public final PointerType getPointerType() {
-        return viewModel.getPointerType();
+        return styleModel.getPointerType();
     }
 
     public final void setPointerType(final PointerType POINTER_TYPE) {
-        viewModel.setPointerType(POINTER_TYPE);
+        styleModel.setPointerType(POINTER_TYPE);
     }
 
     public final ObjectProperty<PointerType> pointerTypeProperty() {
-        return viewModel.pointerTypeProperty();
+        return styleModel.pointerTypeProperty();
     }
 
     public final ColorDef getValueColor() {
-        return viewModel.getValueColor();
+        return styleModel.getValueColor();
     }
 
     public final void setValueColor(final ColorDef VALUE_COLOR) {
-        viewModel.setValueColor(VALUE_COLOR);
+        styleModel.setValueColor(VALUE_COLOR);
     }
 
     public final ObjectProperty<ColorDef> valueColorProperty() {
-        return viewModel.valueColorProperty();
+        return styleModel.valueColorProperty();
     }
 
     public final boolean isPointerShadowVisible() {
-        return viewModel.isPointerShadowVisible();
+        return styleModel.isPointerShadowVisible();
     }
 
     public final void setPointerShadowVisible(final boolean POINTER_SHADOW_VISIBLE) {
-        viewModel.setPointerShadowVisible(POINTER_SHADOW_VISIBLE);
+        styleModel.setPointerShadowVisible(POINTER_SHADOW_VISIBLE);
     }
 
     public final BooleanProperty pointerShadowVisibleProperty() {
-        return viewModel.pointerShadowVisibleProperty();
+        return styleModel.pointerShadowVisibleProperty();
     }
 
     public final boolean isLedVisible() {
-        return viewModel.isLedVisible();
+        return styleModel.isLedVisible();
     }
 
     public final void setLedVisible(final boolean LED_VISIBLE) {
-        viewModel.setLedVisible(LED_VISIBLE);
+        styleModel.setLedVisible(LED_VISIBLE);
     }
 
     public final BooleanProperty ledVisibleProperty() {
-        return viewModel.ledVisibleProperty();
+        return styleModel.ledVisibleProperty();
     }
 
     public final LedColor getLedColor() {
-        return viewModel.getLedColor();
+        return styleModel.getLedColor();
     }
 
     public final void setLedColor(final LedColor LED_COLOR) {
-        viewModel.setLedColor(LED_COLOR);
+        styleModel.setLedColor(LED_COLOR);
     }
 
     public final ObjectProperty<LedColor> ledColorProperty() {
-        return viewModel.ledColorProperty();
+        return styleModel.ledColorProperty();
     }
 
     public final boolean isLedBlinking() {
-        return viewModel.isLedBlinking();
+        return styleModel.isLedBlinking();
     }
 
     public final void setLedBlinking(final boolean LED_BLINKING) {
-        viewModel.setLedBlinking(LED_BLINKING);
+        styleModel.setLedBlinking(LED_BLINKING);
     }
 
     public final BooleanProperty ledBlinkingProperty() {
-        return viewModel.ledBlinkingProperty();
+        return styleModel.ledBlinkingProperty();
     }
 
     public final boolean isUserLedVisible() {
-        return viewModel.isUserLedVisible();
+        return styleModel.isUserLedVisible();
     }
 
     public final void setUserLedVisible(final boolean USER_LED_VISIBLE) {
-        viewModel.setUserLedVisible(USER_LED_VISIBLE);
+        styleModel.setUserLedVisible(USER_LED_VISIBLE);
     }
 
     public final BooleanProperty userLedVisibleProperty() {
-        return viewModel.userLedVisibleProperty();
+        return styleModel.userLedVisibleProperty();
     }
 
     public final LedColor getUserLedColor() {
-        return viewModel.getUserLedColor();
+        return styleModel.getUserLedColor();
     }
 
     public final void setUserLedColor(final LedColor USER_LED_COLOR) {
-        viewModel.setUserLedColor(USER_LED_COLOR);
+        styleModel.setUserLedColor(USER_LED_COLOR);
     }
 
     public final ObjectProperty<LedColor> userLedColorProperty() {
-        return viewModel.userLedColorProperty();
+        return styleModel.userLedColorProperty();
     }
 
     public final boolean isUserLedOn() {
-        return viewModel.isUserLedOn();
+        return styleModel.isUserLedOn();
     }
 
     public final void setUserLedOn(final boolean USER_LED_ON) {
-        viewModel.setUserLedOn(USER_LED_ON);
+        styleModel.setUserLedOn(USER_LED_ON);
     }
 
     public final BooleanProperty userLedOnProperty() {
-        return viewModel.userLedOnProperty();
+        return styleModel.userLedOnProperty();
     }
 
     public final boolean isUserLedBlinking() {
-        return viewModel.isUserLedBlinking();
+        return styleModel.isUserLedBlinking();
     }
 
     public final void setUserLedBlinking(final boolean USER_LED_BLINKING) {
-        viewModel.setUserLedBlinking(USER_LED_BLINKING);
+        styleModel.setUserLedBlinking(USER_LED_BLINKING);
     }
 
     public final BooleanProperty userLedBlinkingProperty() {
-        return viewModel.userLedBlinkingProperty();
+        return styleModel.userLedBlinkingProperty();
     }
 
     public final ForegroundType getForegroundType() {
-        return viewModel.getForegroundType();
+        return styleModel.getForegroundType();
     }
 
     public final void setForegroundType(final ForegroundType FOREGROUND_TYPE) {
-        viewModel.setForegroundType(FOREGROUND_TYPE);
+        styleModel.setForegroundType(FOREGROUND_TYPE);
     }
 
     public final ObjectProperty<ForegroundType> foregroundTypeProperty() {
-        return viewModel.foregroundTypeProperty();
+        return styleModel.foregroundTypeProperty();
     }
 
     public final boolean isForegroundVisible() {
-        return viewModel.isForegroundVisible();
+        return styleModel.isForegroundVisible();
     }
 
     public final void setForegroundVisible(final boolean FOREGROUND_VISIBLE) {
-        viewModel.setForegroundVisible(FOREGROUND_VISIBLE);
+        styleModel.setForegroundVisible(FOREGROUND_VISIBLE);
     }
 
     public final BooleanProperty foregroundVisibleProperty() {
-        return viewModel.foregroundVisibleProperty();
+        return styleModel.foregroundVisibleProperty();
     }
 
     public final double getLcdValue() {
-            return model.getLcdValue();
+            return gaugeModel.getLcdValue();
         }
 
     public final void setLcdValue(final double LCD_VALUE) {
-        model.setLcdValue(LCD_VALUE);
+        gaugeModel.setLcdValue(LCD_VALUE);
     }
 
     public final DoubleProperty lcdValueProperty() {
-        return model.lcdValueProperty();
+        return gaugeModel.lcdValueProperty();
     }
 
     public final boolean isLcdValueCoupled() {
-        return model.isLcdValueCoupled();
+        return gaugeModel.isLcdValueCoupled();
     }
 
     public final void setLcdValueCoupled(final boolean LCD_VALUE_COUPLED) {
-        model.setLcdValueCoupled(LCD_VALUE_COUPLED);
+        gaugeModel.setLcdValueCoupled(LCD_VALUE_COUPLED);
     }
 
     public final BooleanProperty lcdValueCoupledProperty() {
-        return model.lcdValueCoupledProperty();
+        return gaugeModel.lcdValueCoupledProperty();
     }
 
     public final double getLcdThreshold() {
-        return model.getLcdThreshold();
+        return gaugeModel.getLcdThreshold();
     }
 
     public final void setLcdThreshold(final double LCD_THRESHOLD) {
-        model.setLcdThreshold(LCD_THRESHOLD);
+        gaugeModel.setLcdThreshold(LCD_THRESHOLD);
     }
 
     public final DoubleProperty lcdThresholdProperty() {
-        return model.lcdThresholdProperty();
+        return gaugeModel.lcdThresholdProperty();
     }
 
     public final boolean isLcdThresholdBehaviorInverted() {
-        return model.isLcdThresholdBehaviorInverted();
+        return gaugeModel.isLcdThresholdBehaviorInverted();
     }
 
     public final void setLcdThresholdBehaviorInverted(final boolean LCD_THRESHOLD_BEHAVIOR_INVERTED) {
-        model.setLcdThresholdBehaviorInverted(LCD_THRESHOLD_BEHAVIOR_INVERTED);
+        gaugeModel.setLcdThresholdBehaviorInverted(LCD_THRESHOLD_BEHAVIOR_INVERTED);
     }
 
     public final BooleanProperty lcdThresholdBehaviorInvertedProperty() {
-        return model.lcdThresholdBehaviorInvertedProperty();
+        return gaugeModel.lcdThresholdBehaviorInvertedProperty();
     }
 
     public final boolean isLcdThresholdVisible() {
-        return viewModel.isLcdThresholdVisible();
+        return styleModel.isLcdThresholdVisible();
     }
 
     public final void setLcdThresholdVisible(final boolean LCD_THRESHOLD_VISIBLE) {
-        viewModel.setLcdThresholdVisible(LCD_THRESHOLD_VISIBLE);
+        styleModel.setLcdThresholdVisible(LCD_THRESHOLD_VISIBLE);
     }
 
     public final BooleanProperty lcdThresholdVisibleProperty() {
-        return viewModel.lcdThresholdVisibleProperty();
+        return styleModel.lcdThresholdVisibleProperty();
     }
 
     public final LcdDesign getLcdDesign() {
-        return viewModel.getLcdDesign();
+        return styleModel.getLcdDesign();
     }
 
     public final void setLcdDesign(final LcdDesign LCD_Design) {
-        viewModel.setLcdDesign(LCD_Design);
+        styleModel.setLcdDesign(LCD_Design);
     }
 
     public final ObjectProperty lcdDesignProperty() {
-        return viewModel.lcdDesignProperty();
+        return styleModel.lcdDesignProperty();
     }
 
     public final boolean isLcdVisible() {
-        return viewModel.isLcdVisible();
+        return styleModel.isLcdVisible();
     }
 
     public final void setLcdVisible(final boolean LCD_VISIBLE) {
-        viewModel.setLcdVisible(LCD_VISIBLE);
+        styleModel.setLcdVisible(LCD_VISIBLE);
     }
 
     public final BooleanProperty lcdVisibleProperty() {
-        return viewModel.lcdVisibleProperty();
+        return styleModel.lcdVisibleProperty();
     }
 
     public final boolean isLcdDigitalFontEnabled() {
-        return viewModel.isLcdDigitalFontEnabled();
+        return styleModel.isLcdDigitalFontEnabled();
     }
 
     public final void setLcdDigitalFontEnabled(final boolean LCD_DIGITAL_FONT_ENABLED) {
-        viewModel.setLcdDigitalFontEnabled(LCD_DIGITAL_FONT_ENABLED);
+        styleModel.setLcdDigitalFontEnabled(LCD_DIGITAL_FONT_ENABLED);
     }
 
     public final BooleanProperty lcdDigitalFontEnabledProperty() {
-        return viewModel.lcdDigitalFontEnabledProperty();
+        return styleModel.lcdDigitalFontEnabledProperty();
     }
 
     public final String getLcdUnit() {
-        return model.getLcdUnit();
+        return gaugeModel.getLcdUnit();
     }
 
     public final void setLcdUnit(final String LCD_UNIT) {
-        model.setLcdUnit(LCD_UNIT);
+        gaugeModel.setLcdUnit(LCD_UNIT);
     }
 
     public final StringProperty lcdUnitProperty() {
-        return model.lcdUnitProperty();
+        return gaugeModel.lcdUnitProperty();
     }
 
     public final boolean isLcdUnitVisible() {
-        return viewModel.getLcdUnitVisible();
+        return styleModel.getLcdUnitVisible();
     }
 
     public final void setLcdUnitVisible(final boolean LCD_UNIT_VISIBLE) {
-        viewModel.setLcdUnitVisible(LCD_UNIT_VISIBLE);
+        styleModel.setLcdUnitVisible(LCD_UNIT_VISIBLE);
     }
 
     public final BooleanProperty lcdUnitVisibleProperty() {
-        return viewModel.lcdUnitVisibleProperty();
+        return styleModel.lcdUnitVisibleProperty();
     }
 
     public final String getLcdUnitFont() {
-        return viewModel.getLcdUnitFont();
+        return styleModel.getLcdUnitFont();
     }
 
     public final void setLcdUnitFont(final String UNIT_FONT) {
-        viewModel.setLcdUnitFont(UNIT_FONT);
+        styleModel.setLcdUnitFont(UNIT_FONT);
     }
 
     public final StringProperty lcdUnitFontProperty() {
-        return viewModel.lcdUnitFontProperty();
+        return styleModel.lcdUnitFontProperty();
     }
 
     public final NumberSystem getLcdNumberSystem() {
-        return model.getLcdNumberSystem();
+        return gaugeModel.getLcdNumberSystem();
     }
 
     public final void setLcdNumberSystem(final NumberSystem LCD_NUMBER_SYSTEM) {
-        model.setLcdNumberSystem(LCD_NUMBER_SYSTEM);
+        gaugeModel.setLcdNumberSystem(LCD_NUMBER_SYSTEM);
     }
 
     public final ObjectProperty lcdNumberSystemProperty() {
-        return model.lcdNumberSystemProperty();
+        return gaugeModel.lcdNumberSystemProperty();
     }
 
     public final boolean isLcdNumberSystemVisible() {
-        return viewModel.isLcdNumberSystemVisible();
+        return styleModel.isLcdNumberSystemVisible();
     }
 
     public final void setLcdNumberSystemVisible(final boolean LCD_NUMBER_SYSTEM_VISIBLE) {
-        viewModel.setLcdNumberSystemVisible(LCD_NUMBER_SYSTEM_VISIBLE);
+        styleModel.setLcdNumberSystemVisible(LCD_NUMBER_SYSTEM_VISIBLE);
     }
 
     public final BooleanProperty lcdNumberSystemVisibleProperty() {
-        return viewModel.lcdNumberSystemVisibleProperty();
+        return styleModel.lcdNumberSystemVisibleProperty();
     }
 
     public final int getLcdDecimals() {
-        return viewModel.getLcdDecimals();
+        return styleModel.getLcdDecimals();
     }
 
     public final void setLcdDecimals(final int LCD_DECIMALS) {
-        viewModel.setLcdDecimals(LCD_DECIMALS);
+        styleModel.setLcdDecimals(LCD_DECIMALS);
     }
 
     public final IntegerProperty lcdDecimalsProperty() {
-        return viewModel.lcdDecimalsProperty();
+        return styleModel.lcdDecimalsProperty();
     }
 
     public final boolean isLcdBlinking() {
-        return viewModel.isLcdBlinking();
+        return styleModel.isLcdBlinking();
     }
 
     public final void setLcdBlinking(final boolean LCD_BLINKING) {
-        viewModel.setLcdBlinking(LCD_BLINKING);
+        styleModel.setLcdBlinking(LCD_BLINKING);
     }
 
     public final BooleanProperty lcdBlinkingProperty() {
-        return viewModel.lcdBlinkingProperty();
+        return styleModel.lcdBlinkingProperty();
     }
 
     public final boolean isGlowVisible() {
-        return viewModel.isGlowVisible();
+        return styleModel.isGlowVisible();
     }
 
     public final void setGlowVisible(final boolean GLOW_VISIBLE) {
-        viewModel.setGlowVisible(GLOW_VISIBLE);
+        styleModel.setGlowVisible(GLOW_VISIBLE);
     }
 
     public final BooleanProperty glowVisibleProperty() {
-        return viewModel.glowVisibleProperty();
+        return styleModel.glowVisibleProperty();
     }
 
     public final boolean isGlowOn() {
-        return viewModel.isGlowOn();
+        return styleModel.isGlowOn();
     }
 
     public final void setGlowOn(final boolean GLOW_ON) {
-        viewModel.setGlowOn(GLOW_ON);
+        styleModel.setGlowOn(GLOW_ON);
     }
 
     public final BooleanProperty glowOnProperty() {
-        return viewModel.glowOnProperty();
+        return styleModel.glowOnProperty();
     }
 
     public final boolean isPulsatingGlow() {
-        return viewModel.isPulsatingGlow();
+        return styleModel.isPulsatingGlow();
     }
 
     public final void setPulsatingGlow(final boolean PULSATING_GLOW) {
-        viewModel.setPulsatingGlow(PULSATING_GLOW);
+        styleModel.setPulsatingGlow(PULSATING_GLOW);
     }
 
     public final BooleanProperty pulsatingGlowProperty() {
-        return viewModel.pulsatingGlowProperty();
+        return styleModel.pulsatingGlowProperty();
     }
 
     public final Color getGlowColor() {
-        return viewModel.getGlowColor();
+        return styleModel.getGlowColor();
     }
 
     public final void setGlowColor(final Color GLOW_COLOR) {
-        viewModel.setGlowColor(GLOW_COLOR);
+        styleModel.setGlowColor(GLOW_COLOR);
     }
 
     public final ObjectProperty<Color> glowColorProperty() {
-        return viewModel.glowColorProperty();
+        return styleModel.glowColorProperty();
     }
 
     public final boolean isTickmarksVisible() {
-        return viewModel.isTickmarksVisible();
+        return styleModel.isTickmarksVisible();
     }
 
     public final void setTickmarksVisible(final boolean TICKMARKS_VISIBLE) {
-        viewModel.setTickmarksVisible(TICKMARKS_VISIBLE);
+        styleModel.setTickmarksVisible(TICKMARKS_VISIBLE);
     }
 
     public final BooleanProperty tickmarksVisibleProperty() {
-        return viewModel.tickmarksVisibleProperty();
+        return styleModel.tickmarksVisibleProperty();
     }
 
     public final boolean isMajorTicksVisible() {
-        return viewModel.isMajorTicksVisible();
+        return styleModel.isMajorTicksVisible();
     }
 
     public final void setMajorTicksVisible(final boolean MAJOR_TICKS_VISIBLE) {
-        viewModel.setMajorTicksVisible(MAJOR_TICKS_VISIBLE);
+        styleModel.setMajorTicksVisible(MAJOR_TICKS_VISIBLE);
     }
 
     public final BooleanProperty majorTicksVisibleProperty() {
-        return viewModel.majorTicksVisibleProperty();
+        return styleModel.majorTicksVisibleProperty();
     }
 
     public final TickmarkType getMajorTickmarkType() {
-        return viewModel.getMajorTickmarkType();
+        return styleModel.getMajorTickmarkType();
     }
 
     public final void setMajorTickmarkType(final TickmarkType TICKMARK_TYPE) {
-        viewModel.setMajorTickmarkType(TICKMARK_TYPE);
+        styleModel.setMajorTickmarkType(TICKMARK_TYPE);
     }
 
     public final ObjectProperty<TickmarkType> majorTickmarkTypeProperty() {
-        return viewModel.majorTickmarkTypeProperty();
+        return styleModel.majorTickmarkTypeProperty();
     }
 
     public final boolean isMinorTicksVisible() {
-        return viewModel.isMinorTicksVisible();
+        return styleModel.isMinorTicksVisible();
     }
 
     public final void setMinorTicksVisible(final boolean MINOR_TICKS_VISIBLE) {
-        viewModel.setMinorTicksVisible(MINOR_TICKS_VISIBLE);
+        styleModel.setMinorTicksVisible(MINOR_TICKS_VISIBLE);
     }
 
     public final BooleanProperty minorTicksVisibleProperty() {
-        return viewModel.minorTicksVisibleProperty();
+        return styleModel.minorTicksVisibleProperty();
     }
 
     public final boolean isTickLabelsVisible() {
-        return viewModel.isTickLabelsVisible();
+        return styleModel.isTickLabelsVisible();
     }
 
     public final void setTickLabelsVisible(final boolean TICKLABELS_VISIBLE) {
-        viewModel.setTickLabelsVisible(TICKLABELS_VISIBLE);
+        styleModel.setTickLabelsVisible(TICKLABELS_VISIBLE);
     }
 
     public final BooleanProperty ticklabelsVisibleProperty() {
-        return viewModel.ticklabelsVisibleProperty();
+        return styleModel.ticklabelsVisibleProperty();
     }
 
     public final TicklabelOrientation getTickLabelOrientation() {
-        return viewModel.getTickLabelOrientation();
+        return styleModel.getTickLabelOrientation();
     }
 
     public final void setTickLabelOrientation(final TicklabelOrientation TICKLABEL_ORIENTATION) {
-        viewModel.setTickLabelOrientation(TICKLABEL_ORIENTATION);
+        styleModel.setTickLabelOrientation(TICKLABEL_ORIENTATION);
     }
 
     public final ObjectProperty<TicklabelOrientation> tickLabelOrientationProperty() {
-        return viewModel.tickLabelOrientationProperty();
+        return styleModel.tickLabelOrientationProperty();
     }
 
     public final NumberFormat getTickLabelNumberFormat() {
-        return viewModel.getTickLabelNumberFormat();
+        return styleModel.getTickLabelNumberFormat();
     }
 
     public final void setTickLabelNumberFormat(final NumberFormat TICKLABEL_NUMBER_FORMAT) {
-        viewModel.setTickLabelNumberFormat(TICKLABEL_NUMBER_FORMAT);
+        styleModel.setTickLabelNumberFormat(TICKLABEL_NUMBER_FORMAT);
     }
 
     public final ObjectProperty<NumberFormat> tickLabelNumberFormatProperty() {
-        return viewModel.tickLabelNumberFormatProperty();
+        return styleModel.tickLabelNumberFormatProperty();
     }
 
     public final Point2D getTickmarksOffset() {
-        return viewModel.getTickmarksOffset();
+        return styleModel.getTickmarksOffset();
     }
 
     public final void setTickmarksOffset(final Point2D TICKMARKS_OFFSET) {
-        viewModel.setTickmarksOffset(TICKMARKS_OFFSET);
+        styleModel.setTickmarksOffset(TICKMARKS_OFFSET);
     }
 
     public final ObjectProperty<Point2D> tickmarksOffsetProperty() {
-        return viewModel.tickmarksOffsetProperty();
+        return styleModel.tickmarksOffsetProperty();
     }
 
     public final int getMaxNoOfMajorTicks() {
-        return model.getMaxNoOfMajorTicks();
+        return gaugeModel.getMaxNoOfMajorTicks();
     }
 
     public final void setMaxNoOfMajorTicks(final int MAX_NO_OF_MAJOR_TICKS) {
-        model.setMaxNoOfMajorTicks(MAX_NO_OF_MAJOR_TICKS);
+        gaugeModel.setMaxNoOfMajorTicks(MAX_NO_OF_MAJOR_TICKS);
     }
 
     public final IntegerProperty maxNoOfMajorTicksProperty() {
-        return model.maxNoOfMajorTicksProperty();
+        return gaugeModel.maxNoOfMajorTicksProperty();
     }
 
     public final int getMaxNoOfMinorTicks() {
-        return model.getMaxNoOfMinorTicks();
+        return gaugeModel.getMaxNoOfMinorTicks();
     }
 
     public final void setMaxNoOfMinorTicks(final int MAX_NO_OF_MINOR_TICKS) {
-        model.setMaxNoOfMinorTicks(MAX_NO_OF_MINOR_TICKS);
+        gaugeModel.setMaxNoOfMinorTicks(MAX_NO_OF_MINOR_TICKS);
     }
 
     public final IntegerProperty maxNoOfMinorTicksProperty() {
-        return model.maxNoOfMinorTicksProperty();
+        return gaugeModel.maxNoOfMinorTicksProperty();
     }
 
     public final int getMajorTickSpacing() {
-        return model.getMajorTickSpacing();
+        return gaugeModel.getMajorTickSpacing();
     }
 
     public final void setMajorTickSpacing(final int MAJOR_TICKSPACING) {
-        model.setMajorTickSpacing(MAJOR_TICKSPACING);
+        gaugeModel.setMajorTickSpacing(MAJOR_TICKSPACING);
     }
 
     public final IntegerProperty majorTickSpacingProperty() {
-        return model.majorTickSpacingProperty();
+        return gaugeModel.majorTickSpacingProperty();
     }
 
     public final int getMinorTickSpacing() {
-        return model.getMinorTickSpacing();
+        return gaugeModel.getMinorTickSpacing();
     }
 
     public final void setMinorTickSpacing(final int MINOR_TICKSPACING) {
-        model.setMinorTickSpacing(MINOR_TICKSPACING);
+        gaugeModel.setMinorTickSpacing(MINOR_TICKSPACING);
     }
 
     public final IntegerProperty minorTickSpacingProperty() {
-        return model.minorTickSpacingProperty();
+        return gaugeModel.minorTickSpacingProperty();
     }
 
     public final boolean isNiceScaling() {
-        return model.isNiceScaling();
+        return gaugeModel.isNiceScaling();
     }
 
     public final void setNiceScaling(final boolean NICE_SCALING) {
-        model.setNiceScaling(NICE_SCALING);
+        gaugeModel.setNiceScaling(NICE_SCALING);
         recalcRange();
     }
 
     public final BooleanProperty niceScalingProperty() {
-        return model.niceScalingProperty();
+        return gaugeModel.niceScalingProperty();
     }
 
     public final List<Section> getSections() {
-        return model.getSections();
+        return gaugeModel.getSections();
     }
 
     public final void setSections(final Section... SECTION_ARRAY) {
-        model.setSections(SECTION_ARRAY);
+        gaugeModel.setSections(SECTION_ARRAY);
     }
 
     public final void setSections(final List<Section> SECTIONS) {
-        model.setSections(SECTIONS);
+        gaugeModel.setSections(SECTIONS);
     }
 
     public final void addSection(final Section SECTION) {
-        model.addSection(SECTION);
+        gaugeModel.addSection(SECTION);
     }
 
     public final void removeSection(final Section SECTION) {
-        model.removeSection(SECTION);
+        gaugeModel.removeSection(SECTION);
     }
 
     public final void resetSections() {
-        model.resetSections();
+        gaugeModel.resetSections();
     }
 
     public final boolean isSectionsVisible() {
-        return viewModel.isSectionsVisible();
+        return styleModel.isSectionsVisible();
     }
 
     public final void setSectionsVisible(final boolean SECTIONS_VISIBLE) {
-        viewModel.setSectionsVisible(SECTIONS_VISIBLE);
+        styleModel.setSectionsVisible(SECTIONS_VISIBLE);
     }
 
     public final BooleanProperty sectionsVisibleProperty() {
-        return viewModel.sectionsVisibleProperty();
+        return styleModel.sectionsVisibleProperty();
     }
 
     public final boolean isExpandedSections() {
-        return viewModel.isExpandedSections();
+        return styleModel.isExpandedSections();
     }
 
     public final void setExpandedSections(final boolean EXPANDED_SECTIONS) {
-        viewModel.setExpandedSections(EXPANDED_SECTIONS);
+        styleModel.setExpandedSections(EXPANDED_SECTIONS);
     }
 
     public final BooleanProperty expandedSectionsProperty() {
-        return viewModel.expandedSectionsProperty();
+        return styleModel.expandedSectionsProperty();
     }
 
     public final boolean isSectionsHighlighting() {
-        return viewModel.isSectionsHighlighting();
+        return styleModel.isSectionsHighlighting();
     }
 
     public final void setSectionsHighlighting(final boolean SECTIONS_HIGHLIGHTING) {
-        viewModel.setSectionsHighlighting(SECTIONS_HIGHLIGHTING);
+        styleModel.setSectionsHighlighting(SECTIONS_HIGHLIGHTING);
     }
 
     public final BooleanProperty sectionsHighlightingProperty() {
-        return viewModel.sectionsHighlightingProperty();
+        return styleModel.sectionsHighlightingProperty();
     }
 
     public final List<Section> getAreas() {
-        return model.getAreas();
+        return gaugeModel.getAreas();
     }
 
     public final void setAreas(final Section... AREA_ARRAY) {
-        model.setAreas(AREA_ARRAY);
+        gaugeModel.setAreas(AREA_ARRAY);
     }
 
     public final void setAreas(final List<Section> AREAS) {
-        model.setAreas(AREAS);
+        gaugeModel.setAreas(AREAS);
     }
 
     public final void addArea(final Section AREA) {
-        model.addArea(AREA);
+        gaugeModel.addArea(AREA);
     }
 
     public final void removeArea(final Section AREA) {
-        model.removeArea(AREA);
+        gaugeModel.removeArea(AREA);
     }
 
     public final void resetAreas() {
-        model.resetAreas();
+        gaugeModel.resetAreas();
     }
 
     public final boolean isAreasVisible() {
-        return viewModel.isAreasVisible();
+        return styleModel.isAreasVisible();
     }
 
     public final void setAreasVisible(final boolean AREAS_VISIBLE) {
-        viewModel.setAreasVisible(AREAS_VISIBLE);
+        styleModel.setAreasVisible(AREAS_VISIBLE);
     }
 
     public final BooleanProperty areasVisibleProperty() {
-        return viewModel.areasVisibleProperty();
+        return styleModel.areasVisibleProperty();
     }
 
     public final boolean isAreasHighlighting() {
-        return viewModel.isAreasHighlighting();
+        return styleModel.isAreasHighlighting();
     }
 
     public final void setAreasHighlighting(final boolean AREAS_HIGHLIGHTING) {
-        viewModel.setAreasHighlighting(AREAS_HIGHLIGHTING);
+        styleModel.setAreasHighlighting(AREAS_HIGHLIGHTING);
     }
 
     public final BooleanProperty areasHighlightingProperty() {
-        return viewModel.areasHighlightingProperty();
+        return styleModel.areasHighlightingProperty();
     }
 
     public final List<Indicator> getIndicators() {
-        return model.getIndicators();
+        return gaugeModel.getIndicators();
     }
 
     public final void setIndicators(final Indicator... INDICATOR_ARRAY) {
-        model.setIndicators(INDICATOR_ARRAY);
+        gaugeModel.setIndicators(INDICATOR_ARRAY);
     }
 
     public final void setIndicators(final List<Indicator> INDICATORS) {
-        model.setIndicators(INDICATORS);
+        gaugeModel.setIndicators(INDICATORS);
     }
 
     public final void addIndicator(final Indicator INDICATOR) {
-        model.addIndicator(INDICATOR);
+        gaugeModel.addIndicator(INDICATOR);
     }
 
     public final void removeIndicator(final Indicator INDICATOR) {
-        model.removeIndicator(INDICATOR);
+        gaugeModel.removeIndicator(INDICATOR);
     }
 
     public final void resetIndicators() {
-        model.resetIndicators();
+        gaugeModel.resetIndicators();
     }
 
     public final boolean isIndicatorsVisible() {
-        return viewModel.isIndicatorsVisible();
+        return styleModel.isIndicatorsVisible();
     }
 
     public final void setIndicatorsVisible(final boolean INDICATORS_VISIBLE) {
-        viewModel.setIndicatorsVisible(INDICATORS_VISIBLE);
+        styleModel.setIndicatorsVisible(INDICATORS_VISIBLE);
     }
 
     public final BooleanProperty indicatorsVisibleProperty() {
-        return viewModel.indicatorsVisibleProperty();
+        return styleModel.indicatorsVisibleProperty();
     }
 
     public final Color getTextureColor() {
-        return viewModel.getTextureColor();
+        return styleModel.getTextureColor();
     }
 
     public final String getTextureColorString() {
-        return viewModel.getTextureColorString();
+        return styleModel.getTextureColorString();
     }
 
     public final void setTextureColor(final Color TEXTURE_COLOR) {
-        viewModel.setTextureColor(TEXTURE_COLOR);
+        styleModel.setTextureColor(TEXTURE_COLOR);
     }
 
     public final ObjectProperty<Color> textureColorProperty() {
-        return viewModel.textureColorProperty();
+        return styleModel.textureColorProperty();
     }
 
     public final Color getSimpleGradientBaseColor() {
-        return viewModel.getSimpleGradientBaseColor();
+        return styleModel.getSimpleGradientBaseColor();
     }
 
     public final String getSimpleGradientBaseColorString() {
-        return viewModel.getSimpleGradientBaseColorString();
+        return styleModel.getSimpleGradientBaseColorString();
     }
 
     public final void setSimpleGradientBaseColor(final Color SIMPLE_GRADIENT_BASE_COLOR) {
-        viewModel.setSimpleGradientBaseColor(SIMPLE_GRADIENT_BASE_COLOR);
+        styleModel.setSimpleGradientBaseColor(SIMPLE_GRADIENT_BASE_COLOR);
     }
 
     public final ObjectProperty<Color> simpleGradientBaseColorProperty() {
-            return viewModel.simpleGradientBaseColorProperty();
+        return styleModel.simpleGradientBaseColorProperty();
         }
 
     public final boolean isTitleVisible() {
-        return viewModel.isTitleVisible();
+        return styleModel.isTitleVisible();
     }
 
     public final void setTitleVisible(final boolean TITLE_VISIBLE) {
-        viewModel.setTitleVisible(TITLE_VISIBLE);
+        styleModel.setTitleVisible(TITLE_VISIBLE);
     }
 
     public final BooleanProperty titleVisibleProperty() {
-        return viewModel.titleVisibleProperty();
+        return styleModel.titleVisibleProperty();
     }
 
     public final boolean isUnitVisible() {
-        return viewModel.isUnitVisible();
+        return styleModel.isUnitVisible();
     }
 
     public final void setUnitVisible(final boolean UNIT_VISIBLE) {
-        viewModel.setUnitVisible(UNIT_VISIBLE);
+        styleModel.setUnitVisible(UNIT_VISIBLE);
     }
 
     public final BooleanProperty unitVisibleProperty() {
-        return viewModel.unitVisibleProperty();
+        return styleModel.unitVisibleProperty();
     }
 
     public final Trend getTrend() {
-        return model.getTrend();
+        return gaugeModel.getTrend();
     }
 
     public final void setTrend(final Trend TREND) {
-        model.setTrend(TREND);
+        gaugeModel.setTrend(TREND);
     }
 
     public final ObjectProperty<Trend> trendProperty() {
-        return model.trendProperty();
+        return gaugeModel.trendProperty();
     }
 
     public final boolean isTrendVisible() {
-        return viewModel.isTrendVisible();
+        return styleModel.isTrendVisible();
     }
 
     public final void setTrendVisible(final boolean TREND_VISIBLE) {
-        viewModel.setTrendVisible(TREND_VISIBLE);
+        styleModel.setTrendVisible(TREND_VISIBLE);
     }
 
     public final BooleanProperty trendVisibleProperty() {
-        return viewModel.trendVisibleProperty();
+        return styleModel.trendVisibleProperty();
     }
 
     public final Color getTrendUpColor() {
-            return viewModel.getTrendUpColor();
+            return styleModel.getTrendUpColor();
         }
 
     public final void setTrendUpColor(final Color TREND_UP_COLOR) {
-        viewModel.setTrendUpColor(TREND_UP_COLOR);
+        styleModel.setTrendUpColor(TREND_UP_COLOR);
     }
 
     public final ObjectProperty<Color> trendUpColorProperty() {
-        return viewModel.trendUpColorProperty();
+        return styleModel.trendUpColorProperty();
     }
 
     public final Color getTrendSteadyColor() {
-            return viewModel.getTrendSteadyColor();
+            return styleModel.getTrendSteadyColor();
     }
 
     public final void setTrendSteadyColor(final Color TREND_STEADY_COLOR) {
-        viewModel.setTrendSteadyColor(TREND_STEADY_COLOR);
+        styleModel.setTrendSteadyColor(TREND_STEADY_COLOR);
     }
 
     public final ObjectProperty<Color> trendSteadyColorProperty() {
-        return viewModel.trendSteadyColorProperty();
+        return styleModel.trendSteadyColorProperty();
     }
 
     public final Color getTrendDownColor() {
-        return viewModel.getTrendDownColor();
+        return styleModel.getTrendDownColor();
     }
 
     public final void setTrendDownColor(final Color TREND_DOWN_COLOR) {
-        viewModel.setTrendDownColor(TREND_DOWN_COLOR);
+        styleModel.setTrendDownColor(TREND_DOWN_COLOR);
     }
 
     public final ObjectProperty<Color> trendDownColorProperty() {
-            return viewModel.trendDownColorProperty();
+            return styleModel.trendDownColorProperty();
         }
 }

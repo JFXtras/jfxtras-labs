@@ -46,6 +46,7 @@ public class Trafficlight extends Control {
     private BooleanProperty redBlinking;
     private BooleanProperty yellowOn;
     private BooleanProperty yellowBlinking;
+    private BooleanProperty darkBackground;
 
 
     // ******************** Constructors **************************************
@@ -56,6 +57,7 @@ public class Trafficlight extends Control {
         redBlinking    = new SimpleBooleanProperty(false);
         yellowOn       = new SimpleBooleanProperty(false);
         yellowBlinking = new SimpleBooleanProperty(false);
+        darkBackground = new SimpleBooleanProperty(false);
 
         init();
     }
@@ -157,6 +159,18 @@ public class Trafficlight extends Control {
 
     public final BooleanProperty greenBlinkingProperty() {
         return greenBlinking;
+    }
+
+    public final boolean isDarkBackground() {
+        return darkBackground.get();
+    }
+
+    public final void setDarkBackground(final boolean DARK_BACKGROUND) {
+        darkBackground.set(DARK_BACKGROUND);
+    }
+
+    public final BooleanProperty darkBackgroundProperty() {
+        return darkBackground;
     }
 
 

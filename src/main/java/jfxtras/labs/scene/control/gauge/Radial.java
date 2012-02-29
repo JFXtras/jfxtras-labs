@@ -46,19 +46,19 @@ public final class Radial extends Gauge {
 
     // ******************** Constructors **************************************
     public Radial() {
-        this(new Model(), new ViewModel());
+        this(new GaugeModel(), new StyleModel());
     }
 
-    public Radial(final Model MODEL) {
-        this(MODEL, new ViewModel());
+    public Radial(final GaugeModel GAUGE_MODEL) {
+        this(GAUGE_MODEL, new StyleModel());
     }
 
-    public Radial(final ViewModel VIEW_MODEL) {
-        this(new Model(), VIEW_MODEL);
+    public Radial(final StyleModel STYLE_MODEL) {
+        this(new GaugeModel(), STYLE_MODEL);
     }
 
-    public Radial(final Model MODEL, final ViewModel VIEW_MODEL) {
-        super(MODEL, VIEW_MODEL);
+    public Radial(final GaugeModel GAUGE_MODEL, final StyleModel STYLE_MODEL) {
+        super(GAUGE_MODEL, STYLE_MODEL);
         init();
     }
 

@@ -56,7 +56,7 @@ import javafx.scene.paint.Color;
  * Date: 29.01.12
  * Time: 09:47
  */
-public class ViewModel {
+public class StyleModel {
     private BooleanProperty                      bargraph;
     private BooleanProperty                      minMeasuredValueVisible;
     private BooleanProperty                      maxMeasuredValueVisible;
@@ -119,33 +119,33 @@ public class ViewModel {
 
 
     // ******************** Constructors **************************************
-    public ViewModel() {
+    public StyleModel() {
         bargraph                        = new SimpleBooleanProperty(false);
         minMeasuredValueVisible         = new SimpleBooleanProperty(false);
         maxMeasuredValueVisible         = new SimpleBooleanProperty(false);
         thresholdVisible                = new SimpleBooleanProperty(false);
-        thresholdColor                  = new SimpleObjectProperty<>(Gauge.ThresholdColor.RED);
-        frameDesign                     = new SimpleObjectProperty<>(Gauge.FrameDesign.METAL);
+        thresholdColor                  = new SimpleObjectProperty<ThresholdColor>(Gauge.ThresholdColor.RED);
+        frameDesign                     = new SimpleObjectProperty<FrameDesign>(Gauge.FrameDesign.METAL);
         frameVisible                    = new SimpleBooleanProperty(true);
-        backgroundDesign                = new SimpleObjectProperty<>(Gauge.BackgroundDesign.DARK_GRAY);
+        backgroundDesign                = new SimpleObjectProperty<BackgroundDesign>(Gauge.BackgroundDesign.DARK_GRAY);
         backgroundVisible               = new SimpleBooleanProperty(true);
-        knobDesign                      = new SimpleObjectProperty<>(Gauge.KnobDesign.STANDARD);
-        knobColor                       = new SimpleObjectProperty<>(Gauge.KnobColor.SILVER);
+        knobDesign                      = new SimpleObjectProperty<KnobDesign>(Gauge.KnobDesign.STANDARD);
+        knobColor                       = new SimpleObjectProperty<KnobColor>(Gauge.KnobColor.SILVER);
         postsVisible                    = new SimpleBooleanProperty(true);
-        pointerType                     = new SimpleObjectProperty<>(Gauge.PointerType.TYPE1);
-        valueColor                      = new SimpleObjectProperty<>(ColorDef.RED);
+        pointerType                     = new SimpleObjectProperty<PointerType>(Gauge.PointerType.TYPE1);
+        valueColor                      = new SimpleObjectProperty<ColorDef>(ColorDef.RED);
         pointerShadowVisible            = new SimpleBooleanProperty(true);
         ledVisible                      = new SimpleBooleanProperty(true);
-        ledColor                        = new SimpleObjectProperty<>(LedColor.RED);
+        ledColor                        = new SimpleObjectProperty<LedColor>(LedColor.RED);
         ledBlinking                     = new SimpleBooleanProperty(false);
         userLedVisible                  = new SimpleBooleanProperty(false);
-        userLedColor                    = new SimpleObjectProperty<>(LedColor.BLUE);
+        userLedColor                    = new SimpleObjectProperty<LedColor>(LedColor.BLUE);
         userLedBlinking                 = new SimpleBooleanProperty(false);
         userLedOn                       = new SimpleBooleanProperty(false);
-        foregroundType                  = new SimpleObjectProperty<>(Radial.ForegroundType.TYPE1);
+        foregroundType                  = new SimpleObjectProperty<ForegroundType>(Radial.ForegroundType.TYPE1);
         foregroundVisible               = new SimpleBooleanProperty(true);
         lcdThresholdVisible             = new SimpleBooleanProperty(false);
-        lcdDesign                       = new SimpleObjectProperty<>(LcdDesign.WHITE);
+        lcdDesign                       = new SimpleObjectProperty<LcdDesign>(LcdDesign.WHITE);
         lcdVisible                      = new SimpleBooleanProperty(true);
         lcdUnitVisible                  = new SimpleBooleanProperty(false);
         lcdDigitalFontEnabled           = new SimpleBooleanProperty(false);
@@ -154,54 +154,54 @@ public class ViewModel {
         lcdNumberSystemVisible          = new SimpleBooleanProperty(false);
         lcdBlinking                     = new SimpleBooleanProperty(false);
         glowVisible                     = new SimpleBooleanProperty(false);
-        glowColor                       = new SimpleObjectProperty<>(Color.rgb(51, 255, 255));
+        glowColor                       = new SimpleObjectProperty<Color>(Color.rgb(51, 255, 255));
         glowOn                          = new SimpleBooleanProperty(false);
         pulsatingGlow                   = new SimpleBooleanProperty(false);
         tickmarksVisible                = new SimpleBooleanProperty(true);
         majorTicksVisible               = new SimpleBooleanProperty(true);
-        majorTickmarkType               = new SimpleObjectProperty<>(TickmarkType.LINE);
+        majorTickmarkType               = new SimpleObjectProperty<TickmarkType>(TickmarkType.LINE);
         minorTicksVisible               = new SimpleBooleanProperty(true);
         tickLabelsVisible               = new SimpleBooleanProperty(true);
-        tickLabelOrientation            = new SimpleObjectProperty<>(Gauge.TicklabelOrientation.NORMAL);
-        tickLabelNumberFormat           = new SimpleObjectProperty<>(Gauge.NumberFormat.AUTO);
-        tickmarksOffset                 = new SimpleObjectProperty<>(new Point2D(0, 0));
+        tickLabelOrientation            = new SimpleObjectProperty<TicklabelOrientation>(Gauge.TicklabelOrientation.NORMAL);
+        tickLabelNumberFormat           = new SimpleObjectProperty<NumberFormat>(Gauge.NumberFormat.AUTO);
+        tickmarksOffset                 = new SimpleObjectProperty<Point2D>(new Point2D(0, 0));
         sectionsVisible                 = new SimpleBooleanProperty(false);
         expandedSections                = new SimpleBooleanProperty(false);
         sectionsHighlighting            = new SimpleBooleanProperty(false);
         areasVisible                    = new SimpleBooleanProperty(false);
         areasHighlighting               = new SimpleBooleanProperty(false);
         indicatorsVisible               = new SimpleBooleanProperty(false);
-        textureColor                    = new SimpleObjectProperty<>(Color.rgb(104, 104, 104));
-        simpleGradientBaseColor         = new SimpleObjectProperty<>(Color.rgb(213, 0, 0));
+        textureColor                    = new SimpleObjectProperty<Color>(Color.rgb(104, 104, 104));
+        simpleGradientBaseColor         = new SimpleObjectProperty<Color>(Color.rgb(213, 0, 0));
         titleVisible                    = new SimpleBooleanProperty(true);
         unitVisible                     = new SimpleBooleanProperty(true);
         trendVisible                    = new SimpleBooleanProperty(false);
-        trendUpColor                    = new SimpleObjectProperty<>(Color.LIME);
-        trendSteadyColor                = new SimpleObjectProperty<>(Color.LIGHTBLUE);
-        trendDownColor                  = new SimpleObjectProperty<>(Color.RED);
+        trendUpColor                    = new SimpleObjectProperty<Color>(Color.LIME);
+        trendSteadyColor                = new SimpleObjectProperty<Color>(Color.LIGHTBLUE);
+        trendDownColor                  = new SimpleObjectProperty<Color>(Color.RED);
     }
 
 
     // ******************** Event handling ************************************
-    public final ObjectProperty<EventHandler<ViewModelEvent>> onViewModelEventProperty() {
+    public final ObjectProperty<EventHandler<StyleModelEvent>> onViewModelEventProperty() {
         return onViewModelEvent;
     }
 
-    public final void setOnViewModelEvent(final EventHandler<ViewModelEvent> HANDLER) {
+    public final void setOnViewModelEvent(final EventHandler<StyleModelEvent> HANDLER) {
         onViewModelEventProperty().set(HANDLER);
     }
 
-    public final EventHandler<ViewModelEvent> getOnViewModelEvent() {
+    public final EventHandler<StyleModelEvent> getOnViewModelEvent() {
         return onViewModelEventProperty().get();
     }
 
-    private ObjectProperty<EventHandler<ViewModelEvent>> onViewModelEvent = new SimpleObjectProperty<>();
+    private ObjectProperty<EventHandler<StyleModelEvent>> onViewModelEvent = new SimpleObjectProperty<EventHandler<StyleModelEvent>>();
 
     public void fireViewModelEvent() {
-        final EventHandler<ViewModelEvent> VIEW_MODEL_EVENT_HANDLER = getOnViewModelEvent();
+        final EventHandler<StyleModelEvent> VIEW_MODEL_EVENT_HANDLER = getOnViewModelEvent();
         if (VIEW_MODEL_EVENT_HANDLER != null) {
-            final ViewModelEvent VIEW_MODEL_EVENT = new ViewModelEvent();
-            VIEW_MODEL_EVENT_HANDLER.handle(VIEW_MODEL_EVENT);
+            final StyleModelEvent STYLE_MODEL_EVENT = new StyleModelEvent();
+            VIEW_MODEL_EVENT_HANDLER.handle(STYLE_MODEL_EVENT);
         }
     }
 

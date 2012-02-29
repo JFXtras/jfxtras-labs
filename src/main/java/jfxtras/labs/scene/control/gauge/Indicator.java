@@ -62,7 +62,7 @@ public class Indicator {
 
     public Indicator(final double VALUE, final Color COLOR, final String TEXT, final boolean VISIBLE) {
         indicatorValue = new SimpleDoubleProperty(VALUE);
-        indicatorColor = new SimpleObjectProperty<>(COLOR);
+        indicatorColor = new SimpleObjectProperty<Color>(COLOR);
         indicatorText  = new SimpleStringProperty(TEXT);
         visible        = new SimpleBooleanProperty(VISIBLE);
     }

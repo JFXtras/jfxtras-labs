@@ -32,12 +32,13 @@ buildscript {
         classpath files("${System.env['JAVAFX_HOME']}/rt/lib/jfxrt.jar")
     }
 }
-
+/*
 actualJavaFXVersion = com.sun.javafx.runtime.VersionInfo.runtimeVersion
 if (!actualJavaFXVersion.startsWith(requiredJavaFxVersion)) {
     println "Required JavaFX version is '$requiredJavaFxVersion' but actual version is '$actualJavaFXVersion'"
     System.exit(1)
 }
+*/
 // environment is ok
 
 /***************************************
@@ -54,4 +55,10 @@ dependencies {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.0-milestone-8'
+}
+
+
+task copyToLib(type: Copy) {
+    into "_lib"
+    from configurations.runtime
 }

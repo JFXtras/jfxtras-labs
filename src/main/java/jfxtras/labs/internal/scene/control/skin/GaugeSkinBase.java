@@ -1161,7 +1161,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
             TEXT_BARGRAPH_OFFSET = 0.0;
         }
 
-        final ArrayList<Text> tickmarkLabel = new ArrayList<>();
+        final ArrayList<Text> tickmarkLabel = new ArrayList<Text>();
 
         // Adjust the number format of the ticklabels
         final Gauge.NumberFormat numberFormat;

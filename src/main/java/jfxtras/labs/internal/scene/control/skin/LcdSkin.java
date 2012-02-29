@@ -29,9 +29,9 @@ package jfxtras.labs.internal.scene.control.skin;
 
 import jfxtras.labs.internal.scene.control.behavior.LcdBehavior;
 import jfxtras.labs.scene.control.gauge.Lcd;
-import jfxtras.labs.scene.control.gauge.ModelEvent;
+import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
 import jfxtras.labs.scene.control.gauge.Section;
-import jfxtras.labs.scene.control.gauge.ViewModelEvent;
+import jfxtras.labs.scene.control.gauge.StyleModelEvent;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
@@ -124,7 +124,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         control                    = CONTROL;
         sections                   = new Group();
         glowOn                     = new Group();
-        glowColors                 = new ArrayList<>(4);
+        glowColors                 = new ArrayList<Color>(4);
         lcd                        = new Group();
         lcdContent                 = new Group();
         lcdValueString             = new Text();
@@ -144,7 +144,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         currentValue               = new SimpleDoubleProperty(0);
         lcdValue                   = new SimpleDoubleProperty(0);
         currentLcdValue            = new SimpleDoubleProperty(0);
-        bargraph                   = new ArrayList<>(20);
+        bargraph                   = new ArrayList<Shape>(20);
         glowPulse                  = new FadeTransition(Duration.millis(800), glowOn);
         toValueAnimation           = new Transition() {
             {
@@ -271,15 +271,15 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
     }
 
     private void addListeners() {
-        control.setOnModelEvent(new EventHandler<ModelEvent>() {
-            @Override public void handle(final ModelEvent EVENT) {
+        control.setOnModelEvent(new EventHandler<GaugeModelEvent>() {
+            @Override public void handle(final GaugeModelEvent EVENT) {
                 // Trigger repaint
                 paint();
             }
         });
 
-        control.setOnViewModelEvent(new EventHandler<ViewModelEvent>() {
-            @Override public void handle(final ViewModelEvent EVENT) {
+        control.setOnViewModelEvent(new EventHandler<StyleModelEvent>() {
+            @Override public void handle(final StyleModelEvent EVENT) {
                 // Trigger repaint
                 paint();
             }

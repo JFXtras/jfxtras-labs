@@ -38,14 +38,14 @@ import javafx.event.EventType;
  * Date: 02.01.12
  * Time: 17:14
  */
-public class ModelEvent extends Event {
+public class GaugeModelEvent extends Event {
 
     // ******************** Constructors **************************************
-    public ModelEvent() {
-        super(new EventType<ModelEvent>());
+    public GaugeModelEvent() {
+        super(new EventType<GaugeModelEvent>());
     }
 
-    public ModelEvent(final Object source, final EventTarget target) {
-        super(source, target, new EventType<ModelEvent>());
+    public GaugeModelEvent(final Object source, final EventTarget target) {
+        super(source, target, new EventType<GaugeModelEvent>());
     }
 }

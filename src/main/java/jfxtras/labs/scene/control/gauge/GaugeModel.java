@@ -53,7 +53,7 @@ import java.util.List;
  * Date: 02.01.12
  * Time: 17:14
  */
-public class Model {
+public class GaugeModel {
     private DoubleProperty               value;
     private BooleanProperty              valueAnimationEnabled;
     private DoubleProperty               animationDuration;
@@ -88,7 +88,7 @@ public class Model {
 
 
     // ******************** Constructors **************************************
-    public Model() {
+    public GaugeModel() {
         value                           = new SimpleDoubleProperty(0);
         valueAnimationEnabled           = new SimpleBooleanProperty(true);
         animationDuration               = new SimpleDoubleProperty(800);
@@ -111,7 +111,7 @@ public class Model {
         lcdThreshold                    = new SimpleDoubleProperty(50);
         lcdThresholdBehaviorInverted    = new SimpleBooleanProperty(false);
         lcdUnit                         = new SimpleStringProperty("");
-        lcdNumberSystem                 = new SimpleObjectProperty<>(NumberSystem.DECIMAL);
+        lcdNumberSystem                 = new SimpleObjectProperty<NumberSystem>(NumberSystem.DECIMAL);
         maxNoOfMajorTicks               = new SimpleIntegerProperty(10);
         maxNoOfMinorTicks               = new SimpleIntegerProperty(10);
         majorTickSpacing                = new SimpleIntegerProperty(10);
@@ -124,25 +124,25 @@ public class Model {
 
 
     // ******************** Event handling ************************************
-    public final ObjectProperty<EventHandler<ModelEvent>> onModelEventProperty() {
+    public final ObjectProperty<EventHandler<GaugeModelEvent>> onModelEventProperty() {
         return onModelEvent;
     }
 
-    public final void setOnModelEvent(final EventHandler<ModelEvent> HANDLER) {
+    public final void setOnModelEvent(final EventHandler<GaugeModelEvent> HANDLER) {
         onModelEventProperty().set(HANDLER);
     }
 
-    public final EventHandler<ModelEvent> getOnModelEvent() {
+    public final EventHandler<GaugeModelEvent> getOnModelEvent() {
         return onModelEventProperty().get();
     }
 
-    private ObjectProperty<EventHandler<ModelEvent>> onModelEvent = new SimpleObjectProperty<>();
+    private ObjectProperty<EventHandler<GaugeModelEvent>> onModelEvent = new SimpleObjectProperty<EventHandler<GaugeModelEvent>>();
 
     public void fireModelEvent() {
-        final EventHandler<ModelEvent> MODEL_EVENT_HANDLER = getOnModelEvent();
+        final EventHandler<GaugeModelEvent> MODEL_EVENT_HANDLER = getOnModelEvent();
         if (MODEL_EVENT_HANDLER != null) {
-            final ModelEvent MODEL_EVENT = new ModelEvent();
-            MODEL_EVENT_HANDLER.handle(MODEL_EVENT);
+            final GaugeModelEvent GAUGE_MODEL_EVENT = new GaugeModelEvent();
+            MODEL_EVENT_HANDLER.handle(GAUGE_MODEL_EVENT);
         }
     }
 
@@ -458,7 +458,7 @@ public class Model {
     }
 
     public final List<Section> getSections() {
-        final List<Section> SECTIONS_COPY = new ArrayList<>(sections.size());
+        final List<Section> SECTIONS_COPY = new ArrayList<Section>(sections.size());
         SECTIONS_COPY.addAll(sections);
         return SECTIONS_COPY;
     }
@@ -497,7 +497,7 @@ public class Model {
     }
 
     public final List<Section> getAreas() {
-        final List<Section> AREAS_COPY = new ArrayList<>(areas.size());
+        final List<Section> AREAS_COPY = new ArrayList<Section>(areas.size());
         AREAS_COPY.addAll(areas);
         return AREAS_COPY;
     }
@@ -536,7 +536,7 @@ public class Model {
     }
 
     public final List<Indicator> getIndicators() {
-        final List<Indicator> INDICATORS_COPY = new ArrayList<>(indicators.size());
+        final List<Indicator> INDICATORS_COPY = new ArrayList<Indicator>(indicators.size());
         INDICATORS_COPY.addAll(indicators);
         return INDICATORS_COPY;
     }

@@ -30,10 +30,10 @@ package jfxtras.labs.internal.scene.control.skin;
 import jfxtras.labs.internal.scene.control.behavior.RadialHalfNBehavior;
 import jfxtras.labs.scene.control.gauge.Gauge;
 import jfxtras.labs.scene.control.gauge.Indicator;
-import jfxtras.labs.scene.control.gauge.ModelEvent;
+import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
 import jfxtras.labs.scene.control.gauge.RadialHalfN;
 import jfxtras.labs.scene.control.gauge.Section;
-import jfxtras.labs.scene.control.gauge.ViewModelEvent;
+import jfxtras.labs.scene.control.gauge.StyleModelEvent;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
@@ -148,7 +148,7 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         tickmarks              = new Group();
         glowOff                = new Group();
         glowOn                 = new Group();
-        glowColors             = new ArrayList<>(4);
+        glowColors             = new ArrayList<Color>(4);
         knobs                  = new Group();
         threshold              = new Group();
         minMeasured            = new Group();
@@ -161,7 +161,7 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         userLedOn              = new Group();
         foreground             = new Group();
         noOfLeds               = 60;
-        leds                   = new ArrayList<>(60);
+        leds                   = new ArrayList<Shape>(60);
         currentValue           = new SimpleDoubleProperty(0);
         formerValue            = new SimpleDoubleProperty(0);
         glowPulse              = new FadeTransition(Duration.millis(800), glowOn);
@@ -358,15 +358,15 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
     }
 
     private void addListeners() {
-        control.setOnModelEvent(new EventHandler<ModelEvent>() {
-            @Override public void handle(final ModelEvent EVENT) {
+        control.setOnModelEvent(new EventHandler<GaugeModelEvent>() {
+            @Override public void handle(final GaugeModelEvent EVENT) {
                 // Trigger repaint
                 isDirty = true;
             }
         });
 
-        control.setOnViewModelEvent(new EventHandler<ViewModelEvent>() {
-            @Override public void handle(final ViewModelEvent EVENT) {
+        control.setOnViewModelEvent(new EventHandler<StyleModelEvent>() {
+            @Override public void handle(final StyleModelEvent EVENT) {
                 // Trigger repaint
                 isDirty = true;
             }
