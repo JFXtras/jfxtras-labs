@@ -31,11 +31,15 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -78,11 +82,31 @@ public class NumberSpinnerDemo extends Application {
         });
         root.addRow(5, new Label(), button);
 
+        final ChoiceBox styles = new ChoiceBox(FXCollections.observableArrayList("squared", "rounded"));
+        styles.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+                System.out.println("index" + arg2.intValue());
+                Scene scene = styles.getScene();
+                if (arg2.intValue() == 0) {
+                    String path = NumberSpinner.class.getResource("NumberSpinnerSquared.css").toExternalForm();
+                    scene.getStylesheets().clear();
+                    scene.getStylesheets().add(path);
+                }
+                if (arg2.intValue() == 1) {
+                    String path = NumberSpinner.class.getResource("NumberSpinnerRounded.css").toExternalForm();
+                    scene.getStylesheets().clear();
+                    scene.getStylesheets().add(path);
+                }
+            }
+        });
+
+        root.addRow(6, new Label("change css"), styles);
+
         Scene scene = new Scene(root);
-        String path = NumberSpinner.class.getResource("number_spinner.css").toExternalForm();
-        System.out.println("path=" + path);
-        scene.getStylesheets().add(path);
         primaryStage.setScene(scene);
         primaryStage.show();
+        styles.getSelectionModel().select(0);
     }
 }
