@@ -47,7 +47,7 @@ import javafx.scene.control.TextField;
 public class NumberTextField extends TextField {
 
     private final NumberFormat nf;
-    private ObjectProperty<BigDecimal> number = new SimpleObjectProperty<>();
+    private ObjectProperty<BigDecimal> number = new SimpleObjectProperty();
 
     public final BigDecimal getNumber() {
         return number.get();

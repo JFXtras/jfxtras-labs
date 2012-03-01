@@ -62,7 +62,7 @@ public class NumberSpinner extends HBox {
     public static final String SPINNER_BUTTON_DOWN = "SpinnerButtonDown";
     private final String BUTTONS_BOX = "ButtonsBox";
     private NumberTextField numberField;
-    private ObjectProperty<BigDecimal> stepWitdhProperty = new SimpleObjectProperty<>();
+    private ObjectProperty<BigDecimal> stepWitdhProperty = new SimpleObjectProperty();
     private final double ARROW_SIZE = 4;
     private final Button incrementButton;
     private final Button decrementButton;
