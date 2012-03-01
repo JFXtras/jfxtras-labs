@@ -82,7 +82,7 @@ public class NumberSpinnerDemo extends Application {
         });
         root.addRow(5, new Label(), button);
 
-        final ChoiceBox styles = new ChoiceBox(FXCollections.observableArrayList("squared", "rounded"));
+        final ChoiceBox styles = new ChoiceBox(FXCollections.observableArrayList("squared", "rounded", "thommis"));
         styles.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
 
             @Override
@@ -96,6 +96,11 @@ public class NumberSpinnerDemo extends Application {
                 }
                 if (arg2.intValue() == 1) {
                     String path = NumberSpinner.class.getResource("NumberSpinnerRounded.css").toExternalForm();
+                    scene.getStylesheets().clear();
+                    scene.getStylesheets().add(path);
+                }
+                if (arg2.intValue() == 2) {
+                    String path = NumberSpinner.class.getResource("NumberSpinnerThommis.css").toExternalForm();
                     scene.getStylesheets().clear();
                     scene.getStylesheets().add(path);
                 }
