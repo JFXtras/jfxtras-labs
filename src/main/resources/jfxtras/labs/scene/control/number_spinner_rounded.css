@@ -1,0 +1,33 @@
+#NumberSpinner {
+/*      -fx-effect: dropshadow( gaussian, rgba(0,0,0,0.4) , 5, 0.0 , 2, 2 );*/
+/*      -fx-effect: dropshadow( gaussian, rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );*/
+}
+#NumberField {
+    -fx-border-width: 1;
+    -fx-border-color: lightgray;
+    -fx-background-insets:1;
+    -fx-background-radius: 10 0 0 0;
+    -fx-border-radius:10 0 0 0;
+    /*    -fx-border-radius:0 0 0 0;*/
+}
+#NumberSpinnerArrow {
+    -fx-fill: -fx-base;
+    -fx-stroke: gray;
+    /*        -fx-effect: innershadow( gaussian , black , 2 , 0.6 , 1 , 1 )*/
+}
+#ButtonsBox {
+    -fx-border-color:lightgray;
+    -fx-border-width: 1 1 1 0;
+    -fx-border-radius: 0 0 10 0;
+    /*    -fx-border-radius: 0 0 0 0;*/
+}
+#SpinnerButtonUp {
+    -fx-background-insets: 0;
+    -fx-background-radius:0 0 0 0;
+    /*    -fx-background-radius:0;*/
+}
+#SpinnerButtonDown {
+    -fx-background-insets: 0;
+    -fx-background-radius:0 0 10 0;
+    /*    -fx-background-radius:0;*/
+}
