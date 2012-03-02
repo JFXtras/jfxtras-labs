@@ -39,7 +39,7 @@ import javafx.stage.Stage;
 /**
  * @author Tom Eugelink
  */
-public class CalendarTextFieldXTest1 extends Application {
+public class CalendarTextFieldTest1 extends Application {
 	
     public static void main(String[] args) {
     	//java.util.Locale.setDefault(new java.util.Locale("de")); // weeks starts on monday

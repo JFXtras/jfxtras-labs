@@ -44,7 +44,7 @@ import jfxtras.labs.util.StringConverterFactory;
  * @author Tom Eugelink
  *
  */
-public class SpinnerXTest1 extends Application {
+public class SpinnerTest1 extends Application {
 	
     public static void main(String[] args) {
         launch(args);       
