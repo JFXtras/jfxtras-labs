@@ -58,14 +58,14 @@ import javafx.util.StringConverter;
  * 
  * @author Tom Eugelink
  */
-public class SpinnerX<T> extends Control
+public class Spinner<T> extends Control
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
 
 	/**
 	 */
-	public SpinnerX()
+	public Spinner()
 	{
 		construct();
 	}
@@ -77,7 +77,7 @@ public class SpinnerX<T> extends Control
 	 * @param model
 	 * @param startValue
 	 */
-	public SpinnerX(ObservableList<T> items)
+	public Spinner(ObservableList<T> items)
 	{
 		construct();
 		setItems(items);
@@ -88,7 +88,7 @@ public class SpinnerX<T> extends Control
 	 * @param model
 	 * @param startValue
 	 */
-	public SpinnerX(ObservableList<T> items, T startValue)
+	public Spinner(ObservableList<T> items, T startValue)
 	{
 		construct();
 		setItems(items);
@@ -102,7 +102,7 @@ public class SpinnerX<T> extends Control
 	 * 
 	 * @param list
 	 */
-	public SpinnerX(java.util.List<T> list)
+	public Spinner(java.util.List<T> list)
 	{
 		this( FXCollections.observableList(list) );
 	}
@@ -111,7 +111,7 @@ public class SpinnerX<T> extends Control
 	 * 
 	 * @param list
 	 */
-	public SpinnerX(T... list)
+	public Spinner(T... list)
 	{
 		this( Arrays.asList(list) );
 	}
@@ -137,7 +137,7 @@ public class SpinnerX<T> extends Control
 				int lIdx = getItems().indexOf(newValue);
 				
 				// set the value
-				if (SpinnerX.equals(indexObjectProperty.getValue(), lIdx) == false)
+				if (Spinner.equals(indexObjectProperty.getValue(), lIdx) == false)
 				{
 					indexObjectProperty.setValue(lIdx);
 				}
@@ -154,7 +154,7 @@ public class SpinnerX<T> extends Control
 				T lValue = newIndex < 0 ? null : getItems().get(newIndex);
 				
 				// set the value
-				if (SpinnerX.equals(valueObjectProperty.getValue(), lValue) == false)
+				if (Spinner.equals(valueObjectProperty.getValue(), lValue) == false)
 				{
 					valueObjectProperty.setValue(lValue);
 				}
@@ -215,7 +215,7 @@ public class SpinnerX<T> extends Control
 	// java bean API
 	public T getValue() { return this.valueObjectProperty.getValue(); }
 	public void setValue(T value) { this.valueObjectProperty.setValue(value); }
-	public SpinnerX<T> withValue(T value) { setValue(value); return this; }
+	public Spinner<T> withValue(T value) { setValue(value); return this; }
 	
 	/** Index: */
 	public ObjectProperty<Integer> indexProperty() { return this.indexObjectProperty; }
@@ -223,7 +223,7 @@ public class SpinnerX<T> extends Control
 	// java bean API
 	public Integer getIndex() { return this.indexObjectProperty.getValue(); }
 	public void setIndex(Integer value) { this.indexObjectProperty.setValue(value); }
-	public SpinnerX<T> withIndex(Integer value) { setIndex(value); return this; }
+	public Spinner<T> withIndex(Integer value) { setIndex(value); return this; }
 	
 	/** Cyclic: */
 	public ObjectProperty<Boolean> cyclicProperty() { return this.cyclicObjectProperty; }
@@ -231,7 +231,7 @@ public class SpinnerX<T> extends Control
 	// java bean API
 	public Boolean isCyclic() { return this.cyclicObjectProperty.getValue(); }
 	public void setCyclic(Boolean value) { this.cyclicObjectProperty.setValue(value); }
-	public SpinnerX<T> withCyclic(Boolean value) { setCyclic(value); return this; }
+	public Spinner<T> withCyclic(Boolean value) { setCyclic(value); return this; }
 
 	/** Editable: */
 	public ObjectProperty<Boolean> editableProperty() { return this.editableObjectProperty; }
@@ -239,7 +239,7 @@ public class SpinnerX<T> extends Control
 	// java bean API
 	public Boolean isEditable() { return this.editableObjectProperty.getValue(); }
 	public void setEditable(Boolean value) { this.editableObjectProperty.setValue(value); }
-	public SpinnerX<T> withEditable(Boolean value) { setEditable(value); return this; }
+	public Spinner<T> withEditable(Boolean value) { setEditable(value); return this; }
 
 	/** Items: */
 	public ObjectProperty<ObservableList<T>> itemsProperty() { return this.itemsObjectProperty; }
@@ -247,15 +247,15 @@ public class SpinnerX<T> extends Control
 	// java bean API
 	public ObservableList<T> getItems() { return this.itemsObjectProperty.getValue(); }
 	public void setItems(ObservableList<T> value) { this.itemsObjectProperty.setValue(value); }
-	public SpinnerX<T> withItems(ObservableList<T> value) { setItems(value); return this; }
+	public Spinner<T> withItems(ObservableList<T> value) { setItems(value); return this; }
 
 	/** CellFactory: */
-	public ObjectProperty<Callback<SpinnerX<T>, Node>> cellFactoryProperty() { return this.cellFactoryObjectProperty; }
-	final private ObjectProperty<Callback<SpinnerX<T>, Node>> cellFactoryObjectProperty = new SimpleObjectProperty<Callback<SpinnerX<T>, Node>>(this, "cellFactory", new DefaultCellFactory());
+	public ObjectProperty<Callback<Spinner<T>, Node>> cellFactoryProperty() { return this.cellFactoryObjectProperty; }
+	final private ObjectProperty<Callback<Spinner<T>, Node>> cellFactoryObjectProperty = new SimpleObjectProperty<Callback<Spinner<T>, Node>>(this, "cellFactory", new DefaultCellFactory());
 	// java bean API
-	public Callback<SpinnerX<T>, Node> getCellFactory() { return this.cellFactoryObjectProperty.getValue(); }
-	public void setCellFactory(Callback<SpinnerX<T>, Node> value) { this.cellFactoryObjectProperty.setValue(value); }
-	public SpinnerX<T> withCellFactory(Callback<SpinnerX<T>, Node> value) { setCellFactory(value); return this; }
+	public Callback<Spinner<T>, Node> getCellFactory() { return this.cellFactoryObjectProperty.getValue(); }
+	public void setCellFactory(Callback<Spinner<T>, Node> value) { this.cellFactoryObjectProperty.setValue(value); }
+	public Spinner<T> withCellFactory(Callback<Spinner<T>, Node> value) { setCellFactory(value); return this; }
 
 	/** StringConverter<T>: */
 	public ObjectProperty<StringConverter<T>> stringConverterProperty() { return this.stringConverterObjectProperty; }
@@ -263,7 +263,7 @@ public class SpinnerX<T> extends Control
 	// java bean API
 	public StringConverter<T> getStringConverter() { return this.stringConverterObjectProperty.getValue(); }
 	public void setStringConverter(StringConverter<T> value) { this.stringConverterObjectProperty.setValue(value); }
-	public SpinnerX<T> withStringConverter(StringConverter<T> value) { setStringConverter(value); return this; }
+	public Spinner<T> withStringConverter(StringConverter<T> value) { setStringConverter(value); return this; }
 
 	/** ArrowDirection: */
 	public ObjectProperty<ArrowDirection> arrowDirectionProperty() { return this.arrowDirectionObjectProperty; }
@@ -271,7 +271,7 @@ public class SpinnerX<T> extends Control
 	// java bean API
 	public ArrowDirection getArrowDirection() { return this.arrowDirectionObjectProperty.getValue(); }
 	public void setArrowDirection(ArrowDirection value) { this.arrowDirectionObjectProperty.setValue(value); }
-	public SpinnerX<T> withArrowDirection(ArrowDirection value) { setArrowDirection(value); return this; }
+	public Spinner<T> withArrowDirection(ArrowDirection value) { setArrowDirection(value); return this; }
 	public enum ArrowDirection {VERTICAL, HORIZONTAL}
 	
 	/** AddCallback: */
@@ -280,7 +280,7 @@ public class SpinnerX<T> extends Control
 	// java bean API
 	public Callback<T, Integer> getAddCallback() { return this.addCallbackObjectProperty.getValue(); }
 	public void setAddCallback(Callback<T, Integer> value) { this.addCallbackObjectProperty.setValue(value); }
-	public SpinnerX<T> withAddCallback(Callback<T, Integer> value) { setAddCallback(value); return this; }
+	public Spinner<T> withAddCallback(Callback<T, Integer> value) { setAddCallback(value); return this; }
 
 	// ==================================================================================================================
 	// StringConverter
@@ -310,12 +310,12 @@ public class SpinnerX<T> extends Control
 	/**
 	 * Default cell factory
 	 */
-	class DefaultCellFactory implements Callback<SpinnerX<T>, Node>
+	class DefaultCellFactory implements Callback<Spinner<T>, Node>
 	{
 		private Label label = null;
 		
 		@Override
-		public Node call(SpinnerX<T> spinner)
+		public Node call(Spinner<T> spinner)
 		{
 			// get value
 			T lValue = spinner.getValue();
@@ -339,7 +339,7 @@ public class SpinnerX<T> extends Control
 	// java bean API
 	public EventHandler<CycleEvent> getOnCycle() { return iOnCycleObjectProperty.getValue(); }
 	public void setOnCycle(EventHandler<CycleEvent> value) { iOnCycleObjectProperty.setValue(value); }
-	public SpinnerX<T> withOnCycle(EventHandler<CycleEvent> value) { setOnCycle(value); return this; }
+	public Spinner<T> withOnCycle(EventHandler<CycleEvent> value) { setOnCycle(value); return this; }
 	final static public String ONCYCLE_PROPERTY_ID = "onCycle";
 	
 	/**

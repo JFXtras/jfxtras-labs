@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package jfxtras.labs.internal.scene.control;
+package jfxtras.labs.internal.scene.control.skin;
 
 import javafx.animation.PauseTransition;
 import javafx.animation.PauseTransitionBuilder;
@@ -45,8 +45,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.util.Duration;
-import jfxtras.labs.scene.control.SpinnerX;
-import jfxtras.labs.scene.control.SpinnerX.ArrowDirection;
+import jfxtras.labs.internal.scene.control.behavior.SpinnerBehavior;
+import jfxtras.labs.scene.control.Spinner;
+import jfxtras.labs.scene.control.Spinner.ArrowDirection;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
 
@@ -56,7 +57,7 @@ import com.sun.javafx.scene.control.skin.SkinBase;
  * 
  * Possible extension: drop down list or grid for quick selection
  */
-public class SpinnerXCaspianSkin<T> extends SkinBase<SpinnerX<T>, SpinnerXBehavior<T>>
+public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<T>>
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -64,9 +65,9 @@ public class SpinnerXCaspianSkin<T> extends SkinBase<SpinnerX<T>, SpinnerXBehavi
 	/**
 	 * 
 	 */
-	public SpinnerXCaspianSkin(SpinnerX<T> control)
+	public SpinnerCaspianSkin(Spinner<T> control)
 	{
-		super(control, new SpinnerXBehavior<T>(control));
+		super(control, new SpinnerBehavior<T>(control));
 		construct();
 	}
 
@@ -101,7 +102,7 @@ public class SpinnerXCaspianSkin<T> extends SkinBase<SpinnerX<T>, SpinnerXBehavi
 		refreshValue();
 		
 		// react to value changes in the model
-		getSkinnable().arrowDirectionProperty().addListener(new ChangeListener<SpinnerX.ArrowDirection>()
+		getSkinnable().arrowDirectionProperty().addListener(new ChangeListener<Spinner.ArrowDirection>()
 		{
 			@Override
 			public void changed(ObservableValue<? extends ArrowDirection> arg0, ArrowDirection arg1, ArrowDirection arg2)
@@ -380,7 +381,7 @@ public class SpinnerXCaspianSkin<T> extends SkinBase<SpinnerX<T>, SpinnerXBehavi
 	 */
 	private void setArrowCSS()
 	{
-		if (getSkinnable().getArrowDirection().equals(SpinnerX.ArrowDirection.HORIZONTAL))
+		if (getSkinnable().getArrowDirection().equals(Spinner.ArrowDirection.HORIZONTAL))
 		{
 			decrementArrow.getStyleClass().add("left-arrow");
 			incrementArrow.getStyleClass().add("right-arrow");

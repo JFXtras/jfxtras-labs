@@ -1,14 +1,14 @@
 package jfxtras.labs.scene.control;
 
 /**
- * Items for SpinnerX providing an integer range without actually creating a list with all values.
+ * Items for Spinner providing an integer range without actually creating a list with all values.
  */
-public class SpinnerXIntegerList extends java.util.AbstractList<Integer>
+public class SpinnerIntegerList extends java.util.AbstractList<Integer>
 {
 	/**
 	 * 
 	 */
-	public SpinnerXIntegerList()
+	public SpinnerIntegerList()
 	{
 		this( (Integer.MIN_VALUE / 2) + 1, Integer.MAX_VALUE / 2, 1);
 	}
@@ -18,7 +18,7 @@ public class SpinnerXIntegerList extends java.util.AbstractList<Integer>
 	 * @param min
 	 * @param max
 	 */
-	public SpinnerXIntegerList(int min, int max)
+	public SpinnerIntegerList(int min, int max)
 	{
 		this(min, max, 1);
 	}
@@ -29,7 +29,7 @@ public class SpinnerXIntegerList extends java.util.AbstractList<Integer>
 	 * @param max
 	 * @param step
 	 */
-	public SpinnerXIntegerList(int min, int max, int step)
+	public SpinnerIntegerList(int min, int max, int step)
 	{
 		this.min = min;
 		this.size = ((max - min) / step) + 1;

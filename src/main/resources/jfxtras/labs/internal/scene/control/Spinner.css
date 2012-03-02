@@ -1,9 +1,9 @@
 /* basic settings */
-.spinnerx { 
-	-fx-skin: "jfxtras.labs.internal.scene.control.SpinnerXCaspianSkin";
+.spinner { 
+	-fx-skin: "jfxtras.labs.internal.scene.control.skin.SpinnerCaspianSkin";
 }
 
-.SpinnerXCaspianSkin { /* this is not picked up, CSS should be related to the skin not control. In the end the styling above should move down to here */ 
+.SpinnerCaspianSkin { /* this is not picked up, CSS should be related to the skin not control. In the end the styling above should move down to here */ 
 	-fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
 	-fx-background-insets: 0 0 -1 0, 0, 1, 2;
 	-fx-background-radius: 5, 5, 4, 3;
@@ -11,7 +11,7 @@
 	-fx-text-fill: -fx-text-base-color;
 }
 
-.SpinnerXCaspianSkin:focused { 
+.SpinnerCaspianSkin:focused { 
 	-fx-color: -fx-focused-base;
 	-fx-background-color: -fx-focus-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
 	-fx-background-insets: -1.4, 0, 1, 2;
@@ -24,19 +24,19 @@
 */
 
 /* arrow */
-.SpinnerXCaspianSkin .left-arrow { 
+.SpinnerCaspianSkin .left-arrow { 
     -fx-shape: "M4,-4 L0,0 L4,4 Z";
     -fx-scale-shape: false;
 }
-.SpinnerXCaspianSkin .right-arrow { 
+.SpinnerCaspianSkin .right-arrow { 
     -fx-shape: "M0,-4 L4,0 L0,4 Z";
     -fx-scale-shape: false;
 }
-.SpinnerXCaspianSkin .down-arrow { 
+.SpinnerCaspianSkin .down-arrow { 
     -fx-shape: "M-4,-2 L0,2 L4,-2 Z";
     -fx-scale-shape: false;
 }
-.SpinnerXCaspianSkin .up-arrow { 
+.SpinnerCaspianSkin .up-arrow { 
     -fx-shape: "M4,2 L-4,2 L0,-2 Z";
     -fx-scale-shape: false;
 }

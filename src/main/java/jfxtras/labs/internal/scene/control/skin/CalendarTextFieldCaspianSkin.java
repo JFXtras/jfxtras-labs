@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package jfxtras.labs.internal.scene.control;
+package jfxtras.labs.internal.scene.control.skin;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -48,8 +48,9 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Popup;
-import jfxtras.labs.scene.control.CalendarPickerX;
-import jfxtras.labs.scene.control.CalendarTextFieldX;
+import jfxtras.labs.internal.scene.control.behavior.CalendarTextFieldBehavior;
+import jfxtras.labs.scene.control.CalendarPicker;
+import jfxtras.labs.scene.control.CalendarTextField;
 import jfxtras.labs.util.NodeUtil;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
@@ -60,7 +61,7 @@ import com.sun.javafx.scene.control.skin.SkinBase;
  * 
  * Possible extension: drop down list or grid for quick selection
  */
-public class CalendarTextFieldXCaspianSkin extends SkinBase<CalendarTextFieldX, CalendarTextFieldXBehavior>
+public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, CalendarTextFieldBehavior>
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -68,9 +69,9 @@ public class CalendarTextFieldXCaspianSkin extends SkinBase<CalendarTextFieldX, 
 	/**
 	 * 
 	 */
-	public CalendarTextFieldXCaspianSkin(CalendarTextFieldX control)
+	public CalendarTextFieldCaspianSkin(CalendarTextField control)
 	{
-		super(control, new CalendarTextFieldXBehavior(control));
+		super(control, new CalendarTextFieldBehavior(control));
 		construct();
 	}
 
@@ -205,8 +206,8 @@ public class CalendarTextFieldXCaspianSkin extends SkinBase<CalendarTextFieldX, 
 		});
 		
 		// prep the picker
-		calendarPickerX = new CalendarPickerX();
-		calendarPickerX.setMode(CalendarPickerX.Mode.SINGLE);		
+		calendarPickerX = new CalendarPicker();
+		calendarPickerX.setMode(CalendarPicker.Mode.SINGLE);		
 		// bind our properties to the picker's 
 		Bindings.bindBidirectional(calendarPickerX.localeProperty(), getSkinnable().localeProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
 		Bindings.bindBidirectional(calendarPickerX.calendarProperty(), getSkinnable().valueProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
@@ -225,7 +226,7 @@ public class CalendarTextFieldXCaspianSkin extends SkinBase<CalendarTextFieldX, 
 	private TextField textField = null;
 	private ImageView imageView = null;
 	private GridPane gridPane = null;
-	private CalendarPickerX calendarPickerX = null;
+	private CalendarPicker calendarPickerX = null;
 	
 	/**
 	 * parse the contents that was typed in the textfield

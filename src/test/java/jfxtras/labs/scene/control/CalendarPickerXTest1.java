@@ -50,7 +50,7 @@ public class CalendarPickerXTest1 extends Application {
 	public void start(Stage stage) {
 
         // add a node
-		CalendarPickerX lXCalendarPicker = new CalendarPickerX();
+		CalendarPicker lXCalendarPicker = new CalendarPicker();
 		lXCalendarPicker.setCalendar(new GregorianCalendar(2011, 06, 01)); // set a value
 		//lXCalendarPicker.setMode(XCalendarPicker.Mode.RANGE);
 		//lXCalendarPicker.setMode(XCalendarPicker.Mode.MULTIPLE);

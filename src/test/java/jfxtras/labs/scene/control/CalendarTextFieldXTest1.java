@@ -53,7 +53,7 @@ public class CalendarTextFieldXTest1 extends Application {
 		VBox lVBox = new VBox();
 		
         // add a node
-		CalendarTextFieldX lCalendarTextFieldX = new CalendarTextFieldX();
+		CalendarTextField lCalendarTextFieldX = new CalendarTextField();
 		lCalendarTextFieldX.valueProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
 		lVBox.getChildren().add(lCalendarTextFieldX);
         

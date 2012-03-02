@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package jfxtras.labs.internal.scene.control;
+package jfxtras.labs.internal.scene.control.skin;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,17 +44,17 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
-import jfxtras.labs.scene.control.CalendarPickerX;
-import jfxtras.labs.scene.control.SpinnerX;
-import jfxtras.labs.scene.control.SpinnerX.CycleEvent;
-import jfxtras.labs.scene.control.SpinnerXIntegerList;
+import jfxtras.labs.scene.control.CalendarPicker;
+import jfxtras.labs.scene.control.Spinner;
+import jfxtras.labs.scene.control.Spinner.CycleEvent;
+import jfxtras.labs.scene.control.SpinnerIntegerList;
 
 /**
  * This skin uses regular JavaFX controls
  * @author Tom Eugelink
  *
  */
-public class CalendarPickerXControlSkin extends CalendarPickerXMonthlySkinAbstract<CalendarPickerXControlSkin>
+public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract<CalendarPickerControlSkin>
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -62,7 +62,7 @@ public class CalendarPickerXControlSkin extends CalendarPickerXMonthlySkinAbstra
 	/**
 	 * 
 	 */
-	public CalendarPickerXControlSkin(CalendarPickerX control)
+	public CalendarPickerControlSkin(CalendarPicker control)
 	{
 		super(control);
 		construct();
@@ -142,9 +142,9 @@ public class CalendarPickerXControlSkin extends CalendarPickerXMonthlySkinAbstra
 
 		// month spinner
 		List<String> lMonthLabels = getMonthLabels();
-		monthXSpinner = new SpinnerX<String>(lMonthLabels).withIndex(Calendar.getInstance().get(Calendar.MONTH)).withCyclic(Boolean.TRUE);
+		monthXSpinner = new Spinner<String>(lMonthLabels).withIndex(Calendar.getInstance().get(Calendar.MONTH)).withCyclic(Boolean.TRUE);
 		// on cycle overflow to year
-		monthXSpinner.setOnCycle(new EventHandler<SpinnerX.CycleEvent>()
+		monthXSpinner.setOnCycle(new EventHandler<Spinner.CycleEvent>()
 		{
 			@Override
 			public void handle(CycleEvent evt)
@@ -173,7 +173,7 @@ public class CalendarPickerXControlSkin extends CalendarPickerXMonthlySkinAbstra
 		lGridPane.add(monthXSpinner, 0, 0, 5, 1); // col, row, hspan, vspan
 		
 		// year spinner
-		yearXSpinner = new SpinnerX<Integer>(new SpinnerXIntegerList()).withValue(Calendar.getInstance().get(Calendar.YEAR));
+		yearXSpinner = new Spinner<Integer>(new SpinnerIntegerList()).withValue(Calendar.getInstance().get(Calendar.YEAR));
 		// if the value changed, update the displayed calendar
 		yearXSpinner.valueProperty().addListener(new ChangeListener<Integer>()
 		{
@@ -240,8 +240,8 @@ public class CalendarPickerXControlSkin extends CalendarPickerXMonthlySkinAbstra
 		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
 		getChildren().add(lGridPane);
 	}
-	private SpinnerX<String> monthXSpinner = null;
-	private SpinnerX<Integer> yearXSpinner = null;
+	private Spinner<String> monthXSpinner = null;
+	private Spinner<Integer> yearXSpinner = null;
 	final private List<Label> weekdayLabels = new ArrayList<Label>();
 	final private List<Label> weeknumberLabels = new ArrayList<Label>();
 	final private List<ToggleButton> dayButtons = new ArrayList<ToggleButton>();
@@ -282,7 +282,7 @@ public class CalendarPickerXControlSkin extends CalendarPickerXMonthlySkinAbstra
 				}
 				// make sure it adheres to the mode
 				// SINGLE: clear all but the last selected
-				while (getSkinnable().getMode() == CalendarPickerX.Mode.SINGLE && lCalendars.size() > 1) 
+				while (getSkinnable().getMode() == CalendarPicker.Mode.SINGLE && lCalendars.size() > 1) 
 				{
 					lCalendars.remove(0);
 				}

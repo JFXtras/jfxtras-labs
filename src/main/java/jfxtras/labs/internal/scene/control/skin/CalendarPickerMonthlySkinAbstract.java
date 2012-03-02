@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package jfxtras.labs.internal.scene.control;
+package jfxtras.labs.internal.scene.control.skin;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,7 +35,8 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.scene.control.CalendarPickerX;
+import jfxtras.labs.internal.scene.control.behavior.CalendarPickerBehavior;
+import jfxtras.labs.scene.control.CalendarPicker;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
 
@@ -47,7 +48,7 @@ import com.sun.javafx.scene.control.skin.SkinBase;
  *
  * @param <S> the actual skin class, so fluent methods return the correct class (see "return (S)this;")
  */
-abstract public class CalendarPickerXMonthlySkinAbstract<S> extends SkinBase<CalendarPickerX, CalendarPickerXBehavior>
+abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<CalendarPicker, CalendarPickerBehavior>
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -55,9 +56,9 @@ abstract public class CalendarPickerXMonthlySkinAbstract<S> extends SkinBase<Cal
 	/**
 	 * 
 	 */
-	public CalendarPickerXMonthlySkinAbstract(CalendarPickerX control)
+	public CalendarPickerMonthlySkinAbstract(CalendarPicker control)
 	{
-		super(control, new CalendarPickerXBehavior(control));
+		super(control, new CalendarPickerBehavior(control));
 		construct();
 	}
 

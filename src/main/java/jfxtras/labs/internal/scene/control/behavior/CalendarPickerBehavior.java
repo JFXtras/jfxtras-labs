@@ -24,9 +24,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package jfxtras.labs.internal.scene.control;
+package jfxtras.labs.internal.scene.control.behavior;
 
-import jfxtras.labs.scene.control.CalendarPickerX;
+import jfxtras.labs.scene.control.CalendarPicker;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
 
@@ -35,7 +35,7 @@ import com.sun.javafx.scene.control.behavior.BehaviorBase;
  * @author Tom Eugelink
  *
  */
-public class CalendarPickerXBehavior extends BehaviorBase<CalendarPickerX>
+public class CalendarPickerBehavior extends BehaviorBase<CalendarPicker>
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -44,7 +44,7 @@ public class CalendarPickerXBehavior extends BehaviorBase<CalendarPickerX>
 	 * 
 	 * @param control
 	 */
-	public CalendarPickerXBehavior(CalendarPickerX control)
+	public CalendarPickerBehavior(CalendarPicker control)
 	{
 		super(control);
 	}

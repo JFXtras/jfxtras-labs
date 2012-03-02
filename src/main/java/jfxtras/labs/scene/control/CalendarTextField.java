@@ -41,7 +41,7 @@ import javafx.scene.control.Control;
  * 
  * @author Tom Eugelink
  */
-public class CalendarTextFieldX extends Control
+public class CalendarTextField extends Control
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -49,7 +49,7 @@ public class CalendarTextFieldX extends Control
 	/**
 	 * 
 	 */
-	public CalendarTextFieldX()
+	public CalendarTextField()
 	{
 		setValue(Calendar.getInstance());
 		construct();
@@ -82,7 +82,7 @@ public class CalendarTextFieldX extends Control
 	// java bean API
 	public Calendar getValue() { return iValueObjectProperty.getValue(); }
 	public void setValue(Calendar value) { iValueObjectProperty.setValue(value); }
-	public CalendarTextFieldX withValue(Calendar value) { setValue(value); return this; }
+	public CalendarTextField withValue(Calendar value) { setValue(value); return this; }
 	final static public String VALUE_PROPERTY_ID = "value";
 
 	/** DateFormat: */
@@ -91,7 +91,7 @@ public class CalendarTextFieldX extends Control
 	// java bean API
 	public DateFormat getDateFormat() { return iDateFormatObjectProperty.getValue(); }
 	public void setDateFormat(DateFormat value) { iDateFormatObjectProperty.setValue(value); }
-	public CalendarTextFieldX withDateFormat(DateFormat value) { setDateFormat(value); return this; }
+	public CalendarTextField withDateFormat(DateFormat value) { setDateFormat(value); return this; }
 	final static public String DATEFORMAT_PROPERTY_ID = "dateFormat";
 
 	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc */
@@ -100,7 +100,7 @@ public class CalendarTextFieldX extends Control
 	//
 	public Locale getLocale() { return iLocaleObjectProperty.getValue(); }
 	public void setLocale(Locale value) { iLocaleObjectProperty.setValue(value); }
-	public CalendarTextFieldX withLocale(Locale value) { setLocale(value); return this; } 
+	public CalendarTextField withLocale(Locale value) { setLocale(value); return this; } 
 	final static public String LOCALE_PROPERTY_ID = "locale";
 	
 
