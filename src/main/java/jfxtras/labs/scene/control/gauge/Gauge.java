@@ -166,6 +166,7 @@ public abstract class Gauge extends Control {
         }
     public enum KnobDesign {
         STANDARD,
+        PLAIN,
         METAL,
         BIG
     }
@@ -810,16 +811,28 @@ public abstract class Gauge extends Control {
         return styleModel.valueColorProperty();
     }
 
-    public final boolean isPointerShadowVisible() {
-        return styleModel.isPointerShadowVisible();
+    public final boolean isPointerGlowEnabled() {
+        return styleModel.isPointerGlowEnabled();
     }
 
-    public final void setPointerShadowVisible(final boolean POINTER_SHADOW_VISIBLE) {
-        styleModel.setPointerShadowVisible(POINTER_SHADOW_VISIBLE);
+    public final void setPointerGlowEnabled(final boolean POINTER_GLOW_ENABLED) {
+        styleModel.setPointerGlowEnabled(POINTER_GLOW_ENABLED);
     }
 
-    public final BooleanProperty pointerShadowVisibleProperty() {
-        return styleModel.pointerShadowVisibleProperty();
+    public final BooleanProperty pointerGlowEnabledProperty() {
+        return styleModel.pointerGlowEnabledProperty();
+    }
+
+    public final boolean isPointerShadowEnabled() {
+        return styleModel.isPointerShadowEnabled();
+    }
+
+    public final void setPointerShadowEnabled(final boolean POINTER_SHADOW_ENABLED) {
+        styleModel.setPointerShadowEnabled(POINTER_SHADOW_ENABLED);
+    }
+
+    public final BooleanProperty pointerShadowEnabledProperty() {
+        return styleModel.pointerShadowEnabledProperty();
     }
 
     public final boolean isLedVisible() {
@@ -1252,6 +1265,30 @@ public abstract class Gauge extends Control {
 
     public final ObjectProperty<Point2D> tickmarksOffsetProperty() {
         return styleModel.tickmarksOffsetProperty();
+    }
+
+    public final boolean isTickmarkGlowEnabled() {
+        return styleModel.isTickmarkGlowEnabled();
+    }
+
+    public final void setTickmarkGlowEnabled(final boolean TICKMARK_GLOW_ENABLED) {
+        styleModel.setTickmarkGlowEnabled(TICKMARK_GLOW_ENABLED);
+    }
+
+    public final BooleanProperty tickmarkGlowEnabledProperty() {
+        return styleModel.tickmarkGlowEnabledProperty();
+    }
+
+    public final Color getTickmarkGlowColor() {
+        return styleModel.getTickmarkGlowColor();
+    }
+
+    public final void setTickmarkGlowColor(final Color TICKMARK_GLOW_COLOR) {
+        styleModel.setTickmarkGlowColor(TICKMARK_GLOW_COLOR);
+    }
+
+    public final ObjectProperty<Color> tickmarkGlowProperty() {
+        return styleModel.tickmarkGlowColorProperty();
     }
 
     public final int getMaxNoOfMajorTicks() {

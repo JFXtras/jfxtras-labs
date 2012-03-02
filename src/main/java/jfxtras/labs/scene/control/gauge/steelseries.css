@@ -41,21 +41,21 @@
     /************************************************************
     * Defintions of default colors                              *
     ************************************************************/
-    -fx-red     : rgb(213,   0,   0);
-    -fx-green   : rgb(  0, 148,   0);
-    -fx-blue    : rgb(  0, 120, 220);
-    -fx-orange  : rgb(248, 142,   0);
-    -fx-yellow  : rgb(210, 204,   0);
-    -fx-cyan    : rgb(  0, 159, 215);
-    -fx-magenta : rgb(223,  42, 125);
-    -fx-lila    : rgb( 71,   0, 255);
-    -fx-white   : rgb(245, 245, 245);
-    -fx-gray    : rgb(102, 102, 102);
-    -fx-black   : rgb( 15,  15,  15);
-    -fx-raith   : rgb( 65, 143, 193);
-    -fx-greenlcd: rgb( 24, 220, 183);
-    -fx-juggreen: rgb( 90, 183,   0);
-    -fx-custom  : rgb(  0, 195,  97);
+    -fx-red      : rgb(213,   0,   0);
+    -fx-green    : rgb(  0, 148,   0);
+    -fx-blue     : rgb(  0, 120, 220);
+    -fx-orange   : rgb(248, 142,   0);
+    -fx-yellow   : rgb(210, 204,   0);
+    -fx-cyan     : rgb(  0, 159, 215);
+    -fx-magenta  : rgb(223,  42, 125);
+    -fx-lila     : rgb( 71,   0, 255);
+    -fx-white    : rgb(245, 245, 245);
+    -fx-gray     : rgb(102, 102, 102);
+    -fx-black    : rgb( 15,  15,  15);
+    -fx-raith    : rgb( 65, 143, 193);
+    -fx-green-lcd: rgb( 24, 220, 183);
+    -fx-jug-green: rgb( 90, 183,   0);
+    -fx-custom   : rgb(  0, 195,  97);
 
     -fx-normal    : -fx-red;
     -fx-verydark  : derive(-fx-normal, -80%);

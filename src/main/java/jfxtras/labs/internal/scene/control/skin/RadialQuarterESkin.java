@@ -1185,11 +1185,37 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
                 break;
         }
 
-        if (control.isPointerShadowVisible()) {
-            final DropShadow SHADOW = new DropShadow();
+        final DropShadow SHADOW;
+        if (control.isPointerShadowEnabled()) {
+            SHADOW = new DropShadow();
             SHADOW.setHeight(0.03 * WIDTH);
             SHADOW.setWidth(0.03 * HEIGHT);
             SHADOW.setColor(Color.color(0, 0, 0, 0.75));
+
+        } else {
+            SHADOW = null;
+        }
+
+        // Pointer glow
+        if (control.isPointerGlowEnabled()) {
+            final DropShadow GLOW = new DropShadow();
+            GLOW.setWidth(0.04 * SIZE);
+            GLOW.setHeight(0.04 * SIZE);
+            GLOW.setOffsetX(0.0);
+            GLOW.setOffsetY(0.0);
+            GLOW.setRadius(0.04 * SIZE);
+            GLOW.setColor(control.getValueColor().COLOR);
+            GLOW.setBlurType(BlurType.GAUSSIAN);
+            if (control.getPointerType() == Gauge.PointerType.TYPE9) {
+                POINTER.setEffect(SHADOW);
+                POINTER_FRONT.setEffect(GLOW);
+            } else {
+                if (control.isPointerShadowEnabled()) {
+                    GLOW.inputProperty().set(SHADOW);
+                }
+                POINTER.setEffect(GLOW);
+            }
+        } else {
             POINTER.setEffect(SHADOW);
         }
 

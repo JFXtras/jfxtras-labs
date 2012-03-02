@@ -28,6 +28,7 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
+import javafx.scene.text.TextBoundsType;
 import jfxtras.labs.scene.control.gauge.Gauge;
 import jfxtras.labs.scene.control.gauge.Gauge.KnobColor;
 import jfxtras.labs.scene.control.gauge.Indicator;
@@ -98,11 +99,14 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         registerChangeListener(CONTROL.knobColorProperty(), "KNOB_COLOR");
         registerChangeListener(CONTROL.pointerTypeProperty(), "POINTER_TYPE");
         registerChangeListener(CONTROL.valueColorProperty(), "VALUE_COLOR");
+        registerChangeListener(CONTROL.pointerGlowEnabledProperty(), "POINTER_GLOW");
+        registerChangeListener(CONTROL.pointerShadowEnabledProperty(), "POINTER_SHADOW");
         registerChangeListener(CONTROL.foregroundTypeProperty(), "FOREGROUND_TYPE");
         registerChangeListener(CONTROL.lcdDesignProperty(), "LCD_DESIGN");
         registerChangeListener(CONTROL.lcdNumberSystemProperty(), "LCD_NUMBER_SYSTEM");
         registerChangeListener(CONTROL.userLedBlinkingProperty(), "USER_LED_BLINKING");
         registerChangeListener(CONTROL.ledBlinkingProperty(), "LED_BLINKING");
+        registerChangeListener(CONTROL.tickmarkGlowEnabledProperty(), "TICKMARK_GLOW_VISIBILITY");
         registerChangeListener(CONTROL.glowColorProperty(), "GLOW_COLOR");
         registerChangeListener(CONTROL.glowVisibleProperty(), "GLOW_VISIBILITY");
         registerChangeListener(CONTROL.glowOnProperty(), "GLOW_ON");
@@ -692,6 +696,10 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                 KNOB_SIZE = Math.ceil(WIDTH * 0.0841121495);
                 CENTER_KNOB = createMetalKnob(KNOB_SIZE, CONTROL.getKnobColor());
                 break;
+            case PLAIN:
+                KNOB_SIZE = Math.ceil(WIDTH * 0.0841121495);
+                CENTER_KNOB = createPlainKnob(KNOB_SIZE, CONTROL.getKnobColor());
+                break;
             case STANDARD:
             default:
                 KNOB_SIZE = Math.ceil(WIDTH * 0.0841121495);
@@ -702,6 +710,18 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         CENTER_KNOB.effectProperty().set(SHADOW);
         CENTER_KNOB.setTranslateX(CENTER_OFFSET.getX());
         CENTER_KNOB.setTranslateY(CENTER_OFFSET.getY());
+
+        if (CONTROL.isPointerGlowEnabled() && CONTROL.getPointerType() != Gauge.PointerType.TYPE9) {
+            final DropShadow GLOW = new DropShadow();
+            GLOW.setWidth(0.1 * SIZE);
+            GLOW.setHeight(0.1 * SIZE);
+            GLOW.setOffsetX(0.0);
+            GLOW.setOffsetY(0.0);
+            GLOW.setRadius(0.1 * SIZE);
+            GLOW.setColor(CONTROL.getValueColor().COLOR);
+            GLOW.setBlurType(BlurType.GAUSSIAN);
+            CENTER_KNOB.setEffect(GLOW);
+        }
 
         final Group MIN_POST = createStandardKnob(Math.ceil(WIDTH * 0.03738316893577576), CONTROL.getKnobColor());
         final Group MAX_POST = createStandardKnob(Math.ceil(WIDTH * 0.03738316893577576), CONTROL.getKnobColor());
@@ -1237,9 +1257,10 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                 // Draw the standard tickmark labels
                 if (CONTROL.isTickLabelsVisible()) {
                     final Text tickLabel = new Text(numberFormat.format(valueCounter));
-                    tickLabel.setSmooth(true);
+                    //tickLabel.setSmooth(true);
                     tickLabel.setFontSmoothingType(FontSmoothingType.LCD);
                     tickLabel.setTextOrigin(VPos.BOTTOM);
+                    tickLabel.setBoundsType(TextBoundsType.LOGICAL);
                     tickLabel.setId(CONTROL.getBackgroundDesign().CSS_TEXT);
                     tickLabel.setStroke(null);
                     tickLabel.setFont(STD_FONT);
@@ -1284,6 +1305,35 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
             } else if (CONTROL.isTickmarksVisible() && CONTROL.isMinorTicksVisible()) {
                 // Draw the minor TICKMARKS
                 drawRadialTicks(MINOR_TICKMARKS_PATH, innerPoint, outerPoint);
+            }
+        }
+
+        // Add glow to tickmarks and labels
+        if (CONTROL.isTickmarkGlowEnabled()) {
+            final InnerShadow INNER_GLOW = new InnerShadow();
+            INNER_GLOW.setWidth(0.005 * SIZE);
+            INNER_GLOW.setHeight(0.005 * SIZE);
+            INNER_GLOW.setOffsetX(0.0);
+            INNER_GLOW.setOffsetY(0.0);
+            INNER_GLOW.setRadius(0.005 * SIZE);
+            INNER_GLOW.setColor(CONTROL.getTickmarkGlowColor());
+            INNER_GLOW.setBlurType(BlurType.GAUSSIAN);
+
+            final DropShadow OUTER_GLOW = new DropShadow();
+            OUTER_GLOW.setWidth(0.02 * SIZE);
+            OUTER_GLOW.setHeight(0.02 * SIZE);
+            OUTER_GLOW.setOffsetX(0.0);
+            OUTER_GLOW.setOffsetY(0.0);
+            OUTER_GLOW.setRadius(0.02 * SIZE);
+            OUTER_GLOW.setColor(CONTROL.getTickmarkGlowColor());
+            OUTER_GLOW.setBlurType(BlurType.GAUSSIAN);
+            OUTER_GLOW.inputProperty().set(INNER_GLOW);
+
+            MAJOR_TICKMARKS_PATH.setEffect(OUTER_GLOW);
+            MEDIUM_TICKMARKS_PATH.setEffect(OUTER_GLOW);
+            MINOR_TICKMARKS_PATH.setEffect(OUTER_GLOW);
+            for (Text text : tickmarkLabel) {
+                text.setEffect(OUTER_GLOW);
             }
         }
 
@@ -1548,6 +1598,92 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         KNOB.getChildren().addAll(KNOB_FRAME, KNOB_MAIN, KNOB_LOWER_HIGHLIGHT, KNOB_UPPER_HIGHLIGHT, KNOB_INNER_FRAME, KNOB_INNER_BACKGROUND);
         return KNOB;
     }
+
+    protected Group createPlainKnob(final double SIZE, final KnobColor KNOB_COLOR) {
+            final Group KNOB = new Group();
+
+            final Circle KNOB_FRAME = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.5 * SIZE);
+            KNOB_FRAME.setFill(new LinearGradient(0.5 * SIZE, 0.0, 0.5 * SIZE, SIZE, false,
+                CycleMethod.NO_CYCLE,
+                new Stop(0.0, Color.color(0.3607843137, 0.3725490196, 0.3960784314, 1)),
+                new Stop(0.47, Color.color(0.1803921569, 0.1921568627, 0.2078431373, 1)),
+                new Stop(1.0, Color.color(0.0862745098, 0.0901960784, 0.1019607843, 1))));
+            KNOB_FRAME.setStroke(null);
+
+            final Stop[] KNOB_MAIN_STOPS;
+            switch (KNOB_COLOR) {
+                case BLACK:
+                    KNOB_MAIN_STOPS = new Stop[] {
+                        new Stop(0.0, Color.web("#2B2A2F")),
+                        new Stop(1.0, Color.web("#1A1B20"))
+                    };
+                    break;
+                case BRASS:
+                    KNOB_MAIN_STOPS = new Stop[] {
+                        new Stop(0.0, Color.web("#966E36")),
+                        new Stop(1.0, Color.web("#7C5F3D"))
+                    };
+                    break;
+                case SILVER:
+                default:
+                    KNOB_MAIN_STOPS = new Stop[] {
+                        new Stop(0.0, Color.color(0.8, 0.8, 0.8, 1)),
+                        new Stop(1.0, Color.color(0.3411764706, 0.3607843137, 0.3843137255, 1))
+                    };
+                    break;
+            }
+
+            final Circle KNOB_MAIN = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.4444444444444444 * SIZE);
+            KNOB_MAIN.setFill(new LinearGradient(0.5 * SIZE, 0.05555555555555555 * SIZE, 0.5 * SIZE,
+                                                 0.9444444444444444 * SIZE, false, CycleMethod.NO_CYCLE,
+                                                 KNOB_MAIN_STOPS));
+            KNOB_MAIN.setStroke(null);
+
+            final Path KNOB_LOWER_HIGHLIGHT = new Path();
+            KNOB_LOWER_HIGHLIGHT.setFillRule(FillRule.EVEN_ODD);
+            KNOB_LOWER_HIGHLIGHT.getElements().add(new MoveTo(0.7777777777777778 * SIZE, 0.8333333333333334 * SIZE));
+            KNOB_LOWER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.7222222222222222 * SIZE, 0.7222222222222222 * SIZE,
+                                                                    0.6111111111111112 * SIZE, 0.6666666666666666 * SIZE,
+                                                                    0.5 * SIZE, 0.6666666666666666 * SIZE));
+            KNOB_LOWER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.3888888888888889 * SIZE, 0.6666666666666666 * SIZE,
+                                                                    0.2777777777777778 * SIZE, 0.7222222222222222 * SIZE,
+                                                                    0.2222222222222222 * SIZE, 0.8333333333333334 * SIZE));
+            KNOB_LOWER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.2777777777777778 * SIZE, 0.8888888888888888 * SIZE,
+                                                                    0.3888888888888889 * SIZE, 0.9444444444444444 * SIZE,
+                                                                    0.5 * SIZE, 0.9444444444444444 * SIZE));
+            KNOB_LOWER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.6111111111111112 * SIZE, 0.9444444444444444 * SIZE,
+                                                                    0.7222222222222222 * SIZE, 0.8888888888888888 * SIZE,
+                                                                    0.7777777777777778 * SIZE, 0.8333333333333334 * SIZE));
+            KNOB_LOWER_HIGHLIGHT.getElements().add(new ClosePath());
+            KNOB_LOWER_HIGHLIGHT.setFill(new RadialGradient(0, 0, 0.5555555555555556 * SIZE, 0.9444444444444444 * SIZE,
+                                                            0.3888888888888889 * SIZE, false, CycleMethod.NO_CYCLE,
+                                                            new Stop(0.0, Color.color(1, 1, 1, 0.2)),
+                                                            new Stop(1.0, Color.color(1, 1, 1, 0))));
+            KNOB_LOWER_HIGHLIGHT.setStroke(null);
+
+            final Path KNOB_UPPER_HIGHLIGHT = new Path();
+            KNOB_UPPER_HIGHLIGHT.setFillRule(FillRule.EVEN_ODD);
+            KNOB_UPPER_HIGHLIGHT.getElements().add(new MoveTo(0.9444444444444444 * SIZE, 0.2777777777777778 * SIZE));
+            KNOB_UPPER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.8333333333333334 * SIZE, 0.1111111111111111 * SIZE,
+                                                                    0.6666666666666666 * SIZE, 0.0, 0.5 * SIZE, 0.0));
+            KNOB_UPPER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.3333333333333333 * SIZE, 0.0, 0.16666666666666666 * SIZE,
+                                                                    0.1111111111111111 * SIZE, 0.05555555555555555 * SIZE, 0.2777777777777778 * SIZE));
+            KNOB_UPPER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.16666666666666666 * SIZE, 0.3333333333333333 * SIZE,
+                                                                    0.3333333333333333 * SIZE, 0.3888888888888889 * SIZE,
+                                                                    0.5 * SIZE, 0.3888888888888889 * SIZE));
+            KNOB_UPPER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.6666666666666666 * SIZE, 0.3888888888888889 * SIZE,
+                                                                    0.8333333333333334 * SIZE, 0.3333333333333333 * SIZE,
+                                                                    0.9444444444444444 * SIZE, 0.2777777777777778 * SIZE));
+            KNOB_UPPER_HIGHLIGHT.getElements().add(new ClosePath());
+            KNOB_UPPER_HIGHLIGHT.setFill(new RadialGradient(0, 0, 0.5 * SIZE, 0.0, 0.5833333333333334 * SIZE,
+                                                            false, CycleMethod.NO_CYCLE,
+                                                            new Stop(0.0, Color.color(1, 1, 1, 0.35)),
+                                                            new Stop(1.0, Color.color(1, 1, 1, 0))));
+            KNOB_UPPER_HIGHLIGHT.setStroke(null);
+
+            KNOB.getChildren().addAll(KNOB_FRAME, KNOB_MAIN, KNOB_LOWER_HIGHLIGHT, KNOB_UPPER_HIGHLIGHT);
+            return KNOB;
+        }
 
     protected Group createBigKnob(final double SIZE, final KnobColor KNOB_COLOR) {
         final Group KNOB = new Group();

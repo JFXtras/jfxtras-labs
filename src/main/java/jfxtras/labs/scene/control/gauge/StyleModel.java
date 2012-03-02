@@ -70,7 +70,8 @@ public class StyleModel {
     private ObjectProperty<KnobColor>            knobColor;
     private BooleanProperty                      postsVisible;
     private ObjectProperty<PointerType>          pointerType;
-    private BooleanProperty                      pointerShadowVisible;
+    private BooleanProperty                      pointerShadowEnabled;
+    private BooleanProperty                      pointerGlowEnabled;
     private ObjectProperty<ColorDef>             valueColor;
     private BooleanProperty                      ledVisible;
     private ObjectProperty<LedColor>             ledColor;
@@ -102,6 +103,8 @@ public class StyleModel {
     private ObjectProperty<TicklabelOrientation> tickLabelOrientation;
     private ObjectProperty<NumberFormat>         tickLabelNumberFormat;
     private ObjectProperty<Point2D>              tickmarksOffset;
+    private BooleanProperty                      tickmarkGlowEnabled;
+    private ObjectProperty<Color>                tickmarkGlowColor;
     private BooleanProperty                      sectionsVisible;
     private BooleanProperty                      expandedSections;
     private BooleanProperty                      sectionsHighlighting;
@@ -134,7 +137,8 @@ public class StyleModel {
         postsVisible                    = new SimpleBooleanProperty(true);
         pointerType                     = new SimpleObjectProperty<PointerType>(Gauge.PointerType.TYPE1);
         valueColor                      = new SimpleObjectProperty<ColorDef>(ColorDef.RED);
-        pointerShadowVisible            = new SimpleBooleanProperty(true);
+        pointerShadowEnabled            = new SimpleBooleanProperty(true);
+        pointerGlowEnabled              = new SimpleBooleanProperty(false);
         ledVisible                      = new SimpleBooleanProperty(true);
         ledColor                        = new SimpleObjectProperty<LedColor>(LedColor.RED);
         ledBlinking                     = new SimpleBooleanProperty(false);
@@ -165,6 +169,8 @@ public class StyleModel {
         tickLabelOrientation            = new SimpleObjectProperty<TicklabelOrientation>(Gauge.TicklabelOrientation.NORMAL);
         tickLabelNumberFormat           = new SimpleObjectProperty<NumberFormat>(Gauge.NumberFormat.AUTO);
         tickmarksOffset                 = new SimpleObjectProperty<Point2D>(new Point2D(0, 0));
+        tickmarkGlowEnabled             = new SimpleBooleanProperty(false);
+        tickmarkGlowColor               = new SimpleObjectProperty<Color>(Color.color(0.5, 0.7, 0.9, 0.8));
         sectionsVisible                 = new SimpleBooleanProperty(false);
         expandedSections                = new SimpleBooleanProperty(false);
         sectionsHighlighting            = new SimpleBooleanProperty(false);
@@ -363,18 +369,6 @@ public class StyleModel {
         return pointerType;
     }
 
-    public final boolean isPointerShadowVisible() {
-        return pointerShadowVisible.get();
-    }
-
-    public final void setPointerShadowVisible(final boolean POINTER_SHADOW_VISIBLE) {
-        pointerShadowVisible.set(POINTER_SHADOW_VISIBLE);
-    }
-
-    public final BooleanProperty pointerShadowVisibleProperty() {
-        return pointerShadowVisible;
-    }
-
     public final ColorDef getValueColor() {
         return valueColor.get();
     }
@@ -385,6 +379,30 @@ public class StyleModel {
 
     public final ObjectProperty<ColorDef> valueColorProperty() {
         return valueColor;
+    }
+
+    public final boolean isPointerGlowEnabled() {
+        return pointerGlowEnabled.get();
+    }
+
+    public final void setPointerGlowEnabled(final boolean POINTER_GLOW_ENABLED) {
+        pointerGlowEnabled.set(POINTER_GLOW_ENABLED);
+    }
+
+    public final BooleanProperty pointerGlowEnabledProperty() {
+        return pointerGlowEnabled;
+    }
+
+    public final boolean isPointerShadowEnabled() {
+        return pointerShadowEnabled.get();
+    }
+
+    public final void setPointerShadowEnabled(final boolean POINTER_SHADOW_ENABLED) {
+        pointerShadowEnabled.set(POINTER_SHADOW_ENABLED);
+    }
+
+    public final BooleanProperty pointerShadowEnabledProperty() {
+        return pointerShadowEnabled;
     }
 
     public final boolean isLedVisible() {
@@ -746,6 +764,30 @@ public class StyleModel {
 
     public final ObjectProperty<Point2D> tickmarksOffsetProperty() {
         return tickmarksOffset;
+    }
+
+    public final boolean isTickmarkGlowEnabled() {
+        return tickmarkGlowEnabled.get();
+    }
+
+    public final void setTickmarkGlowEnabled(final boolean TICKMARK_GLOW_ENABLED) {
+        tickmarkGlowEnabled.set(TICKMARK_GLOW_ENABLED);
+    }
+
+    public final BooleanProperty tickmarkGlowEnabledProperty() {
+        return tickmarkGlowEnabled;
+    }
+
+    public final Color getTickmarkGlowColor() {
+        return tickmarkGlowColor.get();
+    }
+
+    public final void setTickmarkGlowColor(final Color TICKMARK_GLOW_COLOR) {
+        tickmarkGlowColor.set(TICKMARK_GLOW_COLOR);
+    }
+
+    public final ObjectProperty<Color> tickmarkGlowColorProperty() {
+        return tickmarkGlowColor;
     }
 
     public final boolean isSectionsVisible() {

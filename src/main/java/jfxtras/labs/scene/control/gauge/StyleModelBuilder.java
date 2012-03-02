@@ -115,8 +115,13 @@ public class StyleModelBuilder {
         return this;
     }
 
-    public final StyleModelBuilder pointerShadowVisible(final boolean POINTER_SHADOW_VISIBLE) {
-        styleModel.setPointerShadowVisible(POINTER_SHADOW_VISIBLE);
+    public final StyleModelBuilder pointerGlowEnabled(final boolean POINTER_GLOW_ENABLED) {
+        styleModel.setPointerGlowEnabled(POINTER_GLOW_ENABLED);
+        return this;
+    }
+
+    public final StyleModelBuilder pointerShadowEnabled(final boolean POINTER_SHADOW_ENABLED) {
+        styleModel.setPointerShadowEnabled(POINTER_SHADOW_ENABLED);
         return this;
     }
 
@@ -257,6 +262,16 @@ public class StyleModelBuilder {
 
     public final StyleModelBuilder tickLabelNumberFormat(final Gauge.NumberFormat TICKLABEL_NUMBER_FORMAT) {
         styleModel.setTickLabelNumberFormat(TICKLABEL_NUMBER_FORMAT);
+        return this;
+    }
+
+    public final StyleModelBuilder tickmarkGlowEnabled(final boolean TICKMARK_GLOW_ENABLED) {
+        styleModel.setTickmarkGlowEnabled(TICKMARK_GLOW_ENABLED);
+        return this;
+    }
+
+    public final StyleModelBuilder tickmarkGlowColor(final Color TICKMARK_GLOW_COLOR) {
+        styleModel.setTickmarkGlowColor(TICKMARK_GLOW_COLOR);
         return this;
     }
 

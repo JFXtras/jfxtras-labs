@@ -409,7 +409,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         control.setOnModelEvent(new EventHandler<GaugeModelEvent>() {
             @Override public void handle(final GaugeModelEvent EVENT) {
                 // Trigger repaint
-                isDirty = true;
+                paint();
             }
         });
 
@@ -651,7 +651,13 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         } else if (PROPERTY == "TREND") {
             drawCircularTrend(control, trend, gaugeBounds);
         } else if (PROPERTY == "SIMPLE_GRADIENT_BASE") {
-            isDirty = true;
+            paint();
+        } else if (PROPERTY == "TICKMARK_GLOW_VISIBILITY") {
+            drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
+        } else if (PROPERTY == "POINTER_GLOW") {
+            drawPointer();
+        } else if (PROPERTY == "POINTER_SHADOW") {
+            drawPointer();
         }
 
     }
@@ -1302,12 +1308,38 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 break;
         }
 
-        if (control.isPointerShadowVisible()) {
-            final DropShadow SHADOW = new DropShadow();
+        // Pointer shadow
+        final DropShadow SHADOW;
+        if (control.isPointerShadowEnabled()) {
+            SHADOW = new DropShadow();
             SHADOW.setHeight(0.03 * WIDTH);
             SHADOW.setWidth(0.03 * HEIGHT);
             SHADOW.setRadius(0.03 * WIDTH);
             SHADOW.setColor(Color.color(0, 0, 0, 0.75));
+        } else {
+            SHADOW = null;
+        }
+
+        // Pointer glow
+        if (control.isPointerGlowEnabled()) {
+            final DropShadow GLOW = new DropShadow();
+            GLOW.setWidth(0.04 * SIZE);
+            GLOW.setHeight(0.04 * SIZE);
+            GLOW.setOffsetX(0.0);
+            GLOW.setOffsetY(0.0);
+            GLOW.setRadius(0.04 * SIZE);
+            GLOW.setColor(control.getValueColor().COLOR);
+            GLOW.setBlurType(BlurType.GAUSSIAN);
+            if (control.getPointerType() == PointerType.TYPE9) {
+                POINTER.setEffect(SHADOW);
+                POINTER_FRONT.setEffect(GLOW);
+            } else {
+                if (control.isPointerShadowEnabled()) {
+                    GLOW.inputProperty().set(SHADOW);
+                }
+                POINTER.setEffect(GLOW);
+            }
+        } else {
             POINTER.setEffect(SHADOW);
         }
 
