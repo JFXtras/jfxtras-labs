@@ -58,7 +58,7 @@ task buildTimestamped(type: Copy, dependsOn: 'build') {
     into 'build/libs/timestamped'
     include '*.jar'
     rename { String fileName ->
-        fileName.replace('SNAPSHOT', "SNAPSHOT-${new Date().format('dd-MM-yyyy')}")
+        fileName.replace('SNAPSHOT', "SNAPSHOT-${new Date().format('HH-mm-dd-MM-yyyy')}")
     }
 }
 
