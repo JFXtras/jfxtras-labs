@@ -29,8 +29,9 @@ package jfxtras.labs.internal.scene.control.skin;
 
 import jfxtras.labs.internal.scene.control.behavior.RadialHalfSBehavior;
 import jfxtras.labs.scene.control.gauge.Gauge;
-import jfxtras.labs.scene.control.gauge.Indicator;
+import jfxtras.labs.scene.control.gauge.Marker;
 import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
+import jfxtras.labs.scene.control.gauge.MarkerEvent;
 import jfxtras.labs.scene.control.gauge.RadialHalfS;
 import jfxtras.labs.scene.control.gauge.Section;
 import jfxtras.labs.scene.control.gauge.StyleModelEvent;
@@ -317,7 +318,7 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
         }
 
         if (!indicators.visibleProperty().isBound()) {
-            indicators.visibleProperty().bind(control.indicatorsVisibleProperty());
+            indicators.visibleProperty().bind(control.markersVisibleProperty());
         }
 
         if (!ledOff.visibleProperty().isBound()) {
@@ -400,6 +401,8 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
                 } else {
                     pointer.setRotate(-(newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
                 }
+
+                checkMarkers(control, oldValue.doubleValue(), newValue.doubleValue());
 
                 // Highlight sections
                 if (control.isSectionsHighlighting()) {
@@ -1334,14 +1337,14 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
         IBOUNDS.setStroke(null);
         indicators.getChildren().add(IBOUNDS);
 
-        for (final Indicator indicator : control.getIndicators()) {
-            if (Double.compare(indicator.getIndicatorValue(), control.getMinValue()) >= 0 && Double.compare(indicator.getIndicatorValue(), control.getMaxValue()) <= 0) {
-                final Group ARROW_GROUP = createIndicator(WIDTH, indicator, new Point2D(WIDTH * 0.4813084112, WIDTH * 0.0841121495));
+        for (final Marker marker : control.getMarkers()) {
+            if (Double.compare(marker.getValue(), control.getMinValue()) >= 0 && Double.compare(marker.getValue(), control.getMaxValue()) <= 0) {
+                final Group ARROW_GROUP = createIndicator(WIDTH, marker, new Point2D(WIDTH * 0.4813084112, WIDTH * 0.0841121495));
                 ARROW_GROUP.getTransforms().clear();
                 ARROW_GROUP.setTranslateY(-WIDTH * 0.35);
                 ARROW_GROUP.getTransforms().add(Transform.rotate(-control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getX()));
                 final double ZERO_OFFSET = -90 + control.getRadialRange().ROTATION_OFFSET;
-                ARROW_GROUP.getTransforms().add(Transform.rotate(ZERO_OFFSET - (indicator.getIndicatorValue() - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getX()));
+                ARROW_GROUP.getTransforms().add(Transform.rotate(ZERO_OFFSET - (marker.getValue() - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getX()));
                 indicators.getChildren().add(ARROW_GROUP);
             }
         }

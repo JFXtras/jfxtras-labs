@@ -110,7 +110,7 @@ public class StyleModel {
     private BooleanProperty                      sectionsHighlighting;
     private BooleanProperty                      areasVisible;
     private BooleanProperty                      areasHighlighting;
-    private BooleanProperty                      indicatorsVisible;
+    private BooleanProperty                      markersVisible;
     private ObjectProperty<Color>                textureColor;
     private ObjectProperty<Color>                simpleGradientBaseColor;
     private BooleanProperty                      titleVisible;
@@ -176,7 +176,7 @@ public class StyleModel {
         sectionsHighlighting            = new SimpleBooleanProperty(false);
         areasVisible                    = new SimpleBooleanProperty(false);
         areasHighlighting               = new SimpleBooleanProperty(false);
-        indicatorsVisible               = new SimpleBooleanProperty(false);
+        markersVisible = new SimpleBooleanProperty(false);
         textureColor                    = new SimpleObjectProperty<Color>(Color.rgb(104, 104, 104));
         simpleGradientBaseColor         = new SimpleObjectProperty<Color>(Color.rgb(213, 0, 0));
         titleVisible                    = new SimpleBooleanProperty(true);
@@ -850,16 +850,16 @@ public class StyleModel {
         return areasHighlighting;
     }
 
-    public final boolean isIndicatorsVisible() {
-        return indicatorsVisible.get();
+    public final boolean isMarkersVisible() {
+        return markersVisible.get();
     }
 
-    public final void setIndicatorsVisible(final boolean INDICATORS_VISIBLE) {
-        indicatorsVisible.set(INDICATORS_VISIBLE);
+    public final void setMarkersVisible(final boolean MARKERS_VISIBLE) {
+        markersVisible.set(MARKERS_VISIBLE);
     }
 
-    public final BooleanProperty indicatorsVisibleProperty() {
-        return indicatorsVisible;
+    public final BooleanProperty markersVisibleProperty() {
+        return markersVisible;
     }
 
     public final Color getTextureColor() {

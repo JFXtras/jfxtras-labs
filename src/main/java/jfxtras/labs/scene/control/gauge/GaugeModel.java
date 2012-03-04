@@ -84,7 +84,7 @@ public class GaugeModel {
     private ObjectProperty<Trend>        trend;
     private ObservableList<Section>      sections;
     private ObservableList<Section>      areas;
-    private ObservableList<Indicator>    indicators;
+    private ObservableList<Marker>       markers;
 
 
     // ******************** Constructors **************************************
@@ -119,7 +119,7 @@ public class GaugeModel {
         trend                           = new SimpleObjectProperty<Trend>(Trend.UNKNOWN);
         sections                        = FXCollections.observableArrayList();
         areas                           = FXCollections.observableArrayList();
-        indicators                      = FXCollections.observableArrayList();
+        markers                         = FXCollections.observableArrayList();
     }
 
 
@@ -535,42 +535,42 @@ public class GaugeModel {
         fireModelEvent();
     }
 
-    public final List<Indicator> getIndicators() {
-        final List<Indicator> INDICATORS_COPY = new ArrayList<Indicator>(indicators.size());
-        INDICATORS_COPY.addAll(indicators);
+    public final List<Marker> getMarkers() {
+        final List<Marker> INDICATORS_COPY = new ArrayList<Marker>(markers.size());
+        INDICATORS_COPY.addAll(markers);
         return INDICATORS_COPY;
     }
 
-    public final void setIndicators(final Indicator... INDICATOR_ARRAY) {
-        indicators.clear();
-        for (final Indicator INDICATOR : INDICATOR_ARRAY) {
-            indicators.add(new Indicator(INDICATOR.getIndicatorValue(), INDICATOR.getIndicatorColor(), INDICATOR.getIndicatorText(), INDICATOR.isVisible()));
+    public final void setMarkers(final Marker... MARKER_ARRAY) {
+        markers.clear();
+        for (final Marker MARKER : MARKER_ARRAY) {
+            markers.add(new Marker(MARKER.getValue(), MARKER.getColor(), MARKER.getText(), MARKER.isVisible()));
         }
         fireModelEvent();
     }
 
-    public final void setIndicators(final List<Indicator> INDICATORS) {
-        indicators.clear();
-        for (final Indicator INDICATOR : INDICATORS) {
-            indicators.add(new Indicator(INDICATOR.getIndicatorValue(), INDICATOR.getIndicatorColor(), INDICATOR.getIndicatorText(), INDICATOR.isVisible()));
+    public final void setMarkers(final List<Marker> MARKERS) {
+        markers.clear();
+        for (final Marker MARKER : MARKERS) {
+            markers.add(new Marker(MARKER.getValue(), MARKER.getColor(), MARKER.getText(), MARKER.isVisible()));
         }
         fireModelEvent();
     }
 
-    public final void addIndicator(final Indicator INDICATOR) {
-        indicators.add(INDICATOR);
+    public final void addMarker(final Marker MARKER) {
+        markers.add(MARKER);
         fireModelEvent();
     }
 
-    public final void removeIndicator(final Indicator INDICATOR) {
-        if (indicators.contains(INDICATOR)) {
-            indicators.remove(INDICATOR);
+    public final void removeMarker(final Marker MARKER) {
+        if (markers.contains(MARKER)) {
+            markers.remove(MARKER);
         }
         fireModelEvent();
     }
 
-    public final void resetIndicators() {
-        indicators.clear();
+    public final void resetMarkers() {
+        markers.clear();
         fireModelEvent();
     }
 

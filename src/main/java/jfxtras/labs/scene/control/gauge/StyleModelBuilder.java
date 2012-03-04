@@ -295,8 +295,8 @@ public class StyleModelBuilder {
         return this;
     }
 
-    public final StyleModelBuilder indicatorsVisible(final boolean INDICATORS_VISIBLE) {
-        styleModel.setIndicatorsVisible(INDICATORS_VISIBLE);
+    public final StyleModelBuilder markersVisible(final boolean MARKERS_VISIBLE) {
+        styleModel.setMarkersVisible(MARKERS_VISIBLE);
         return this;
     }
 

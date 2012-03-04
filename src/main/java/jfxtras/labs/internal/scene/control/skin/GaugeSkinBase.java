@@ -31,8 +31,9 @@ import com.sun.javafx.scene.control.skin.SkinBase;
 import javafx.scene.text.TextBoundsType;
 import jfxtras.labs.scene.control.gauge.Gauge;
 import jfxtras.labs.scene.control.gauge.Gauge.KnobColor;
-import jfxtras.labs.scene.control.gauge.Indicator;
+import jfxtras.labs.scene.control.gauge.Marker;
 import jfxtras.labs.scene.control.gauge.LedColor;
+import jfxtras.labs.scene.control.gauge.MarkerEvent;
 import jfxtras.labs.scene.control.gauge.Section;
 import jfxtras.labs.internal.scene.control.behavior.GaugeBehaviorBase;
 import javafx.geometry.Insets;
@@ -153,6 +154,20 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         final double h = getHeight() - (padding.getTop() + padding.getBottom());
 
         //layoutGauge(x, y, w, h);
+    }
+
+
+    // ******************** Methods *******************************************
+    protected void checkMarkers(final Gauge CONTROL, final double OLD_VALUE, final double NEW_VALUE) {
+        if (CONTROL.isMarkersVisible() && !CONTROL.getMarkers().isEmpty()) {
+            for (Marker marker : CONTROL.getMarkers()) {
+                if (OLD_VALUE < marker.getValue() && NEW_VALUE > marker.getValue()) {
+                    marker.fireMarkerEvent(new MarkerEvent(CONTROL, null, MarkerEvent.Type.OVER_RUN));
+                } else if (OLD_VALUE > marker.getValue() && NEW_VALUE < marker.getValue()) {
+                    marker.fireMarkerEvent(new MarkerEvent(CONTROL, null, MarkerEvent.Type.UNDER_RUN));
+                }
+            }
+        }
     }
 
 
@@ -655,10 +670,10 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         INDICATORS.getTransforms().add(Transform.rotate(CONTROL.getRadialRange().ROTATION_OFFSET, CENTER.getX(), CENTER.getY()));
         INDICATORS.getTransforms().add(Transform.rotate(-CONTROL.getMinValue() * CONTROL.getAngleStep(), CENTER.getX(), CENTER.getY()));
 
-        for (final Indicator indicator : CONTROL.getIndicators()) {
-            if (Double.compare(indicator.getIndicatorValue(), CONTROL.getMinValue()) >= 0 && Double.compare(indicator.getIndicatorValue(), CONTROL.getMaxValue()) <= 0) {
-                final Group ARROW = createIndicator(SIZE, indicator, new Point2D(SIZE * 0.4813084112, SIZE * 0.0841121495));
-                ARROW.getTransforms().add(Transform.rotate(indicator.getIndicatorValue() * CONTROL.getAngleStep(), CENTER.getX(), CENTER.getY()));
+        for (final Marker marker : CONTROL.getMarkers()) {
+            if (Double.compare(marker.getValue(), CONTROL.getMinValue()) >= 0 && Double.compare(marker.getValue(), CONTROL.getMaxValue()) <= 0) {
+                final Group ARROW = createIndicator(SIZE, marker, new Point2D(SIZE * 0.4813084112, SIZE * 0.0841121495));
+                ARROW.getTransforms().add(Transform.rotate(marker.getValue() * CONTROL.getAngleStep(), CENTER.getX(), CENTER.getY()));
                 INDICATORS.getChildren().add(ARROW);
             }
         }
@@ -1406,15 +1421,15 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
        return LED;
    }
 
-    protected Group createIndicator(final double SIZE, final Indicator INDICATOR, final Point2D OFFSET) {
+    protected Group createIndicator(final double SIZE, final Marker MARKER, final Point2D OFFSET) {
         final Group INDICATOR_GROUP = new Group();
         final double WIDTH = (SIZE * 0.04);
         final double HEIGHT = (SIZE * 0.1);
-        INDICATOR_GROUP.getChildren().add(createIndicatorShape(WIDTH, HEIGHT, INDICATOR, OFFSET));
+        INDICATOR_GROUP.getChildren().add(createIndicatorShape(WIDTH, HEIGHT, MARKER, OFFSET));
         return INDICATOR_GROUP;
     }
 
-    protected Shape createIndicatorShape(final double WIDTH, final double HEIGHT, final Indicator INDICATOR, final Point2D OFFSET) {
+    protected Shape createIndicatorShape(final double WIDTH, final double HEIGHT, final Marker INDICATOR, final Point2D OFFSET) {
         final Path MARKER = new Path();
         MARKER.setFillRule(FillRule.EVEN_ODD);
         MARKER.getElements().add(new MoveTo(WIDTH * 0.1111111111111111, HEIGHT * 0.047619047619047616));
@@ -1432,10 +1447,10 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
 
         final LinearGradient HL_GRADIENT = new LinearGradient(MARKER.getLayoutX(), 0, MARKER.getLayoutX() + MARKER.getLayoutBounds().getWidth(),
                                                               0, false, CycleMethod.NO_CYCLE,
-                                                              new Stop(0.0, INDICATOR.getIndicatorColor().brighter()),
-                                                              new Stop(0.55, INDICATOR.getIndicatorColor().brighter()),
-                                                              new Stop(0.55, INDICATOR.getIndicatorColor().darker()),
-                                                              new Stop(1.0, INDICATOR.getIndicatorColor().darker()));
+                                                              new Stop(0.0, INDICATOR.getColor().brighter()),
+                                                              new Stop(0.55, INDICATOR.getColor().brighter()),
+                                                              new Stop(0.55, INDICATOR.getColor().darker()),
+                                                              new Stop(1.0, INDICATOR.getColor().darker()));
         MARKER.setFill(HL_GRADIENT);
 
         final InnerShadow INNER_SHADOW = new InnerShadow();

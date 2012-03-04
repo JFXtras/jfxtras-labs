@@ -167,13 +167,13 @@ public class GaugeModelBuilder {
         return this;
     }
 
-    public final GaugeModelBuilder indicators(final Indicator... INDICATOR_ARRAY) {
-        gaugeModel.setIndicators(INDICATOR_ARRAY);
+    public final GaugeModelBuilder markers(final Marker... MARKER_ARRAY) {
+        gaugeModel.setMarkers(MARKER_ARRAY);
         return this;
     }
 
-    public final GaugeModelBuilder indicators(final List<Indicator> INDICATORS) {
-        gaugeModel.setIndicators(INDICATORS);
+    public final GaugeModelBuilder markers(final List<Marker> MARKERS) {
+        gaugeModel.setMarkers(MARKERS);
         return this;
     }
 

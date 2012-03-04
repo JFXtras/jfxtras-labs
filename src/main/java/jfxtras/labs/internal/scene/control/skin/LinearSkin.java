@@ -29,9 +29,10 @@ package jfxtras.labs.internal.scene.control.skin;
 
 import jfxtras.labs.internal.scene.control.behavior.LinearBehavior;
 import jfxtras.labs.scene.control.gauge.Gauge.NumberFormat;
-import jfxtras.labs.scene.control.gauge.Indicator;
+import jfxtras.labs.scene.control.gauge.Marker;
 import jfxtras.labs.scene.control.gauge.Linear;
 import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
+import jfxtras.labs.scene.control.gauge.MarkerEvent;
 import jfxtras.labs.scene.control.gauge.Section;
 import jfxtras.labs.scene.control.gauge.StyleModelEvent;
 import javafx.animation.Animation;
@@ -300,7 +301,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         }
 
         if (!indicators.visibleProperty().isBound()) {
-            indicators.visibleProperty().bind(control.indicatorsVisibleProperty());
+            indicators.visibleProperty().bind(control.markersVisibleProperty());
         }
 
         if (!ledOff.visibleProperty().isBound()) {
@@ -390,6 +391,8 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
                     currentValue.set(newValue.doubleValue());
                     updateBar();
                 }
+
+                checkMarkers(control, oldValue.doubleValue(), newValue.doubleValue());
             }
         });
 
@@ -1042,15 +1045,15 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         indicators.getChildren().add(IBOUNDS);
         indicators.getTransforms().clear();
 
-        for (final Indicator indicator : control.getIndicators()) {
+        for (final Marker marker : control.getMarkers()) {
             final Group ARROW;
             if (WIDTH <= HEIGHT) {
                 // vertical
-                ARROW = createIndicator(SIZE, indicator, new Point2D(0.59 * WIDTH, 0.8345 * HEIGHT - SIZE * 0.0210280374 - Math.abs(indicator.getIndicatorValue()) * stepsize));
+                ARROW = createIndicator(SIZE, marker, new Point2D(0.59 * WIDTH, 0.8345 * HEIGHT - SIZE * 0.0210280374 - Math.abs(marker.getValue()) * stepsize));
                 ARROW.setRotate(90);
             } else {
                 // horizontal
-                ARROW = createIndicator(SIZE, indicator, new Point2D(0.1657142857142857 * WIDTH - SIZE * 0.0210280374 + Math.abs(indicator.getIndicatorValue()) * stepsize, 0.36 * HEIGHT));
+                ARROW = createIndicator(SIZE, marker, new Point2D(0.1657142857142857 * WIDTH - SIZE * 0.0210280374 + Math.abs(marker.getValue()) * stepsize, 0.36 * HEIGHT));
             }
             indicators.getChildren().add(ARROW);
         }

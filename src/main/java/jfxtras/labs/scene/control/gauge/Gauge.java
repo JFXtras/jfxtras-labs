@@ -1460,40 +1460,40 @@ public abstract class Gauge extends Control {
         return styleModel.areasHighlightingProperty();
     }
 
-    public final List<Indicator> getIndicators() {
-        return gaugeModel.getIndicators();
+    public final List<Marker> getMarkers() {
+        return gaugeModel.getMarkers();
     }
 
-    public final void setIndicators(final Indicator... INDICATOR_ARRAY) {
-        gaugeModel.setIndicators(INDICATOR_ARRAY);
+    public final void setMarkers(final Marker... MARKER_ARRAY) {
+        gaugeModel.setMarkers(MARKER_ARRAY);
     }
 
-    public final void setIndicators(final List<Indicator> INDICATORS) {
-        gaugeModel.setIndicators(INDICATORS);
+    public final void setMarkers(final List<Marker> MARKERS) {
+        gaugeModel.setMarkers(MARKERS);
     }
 
-    public final void addIndicator(final Indicator INDICATOR) {
-        gaugeModel.addIndicator(INDICATOR);
+    public final void addMarker(final Marker MARKER) {
+        gaugeModel.addMarker(MARKER);
     }
 
-    public final void removeIndicator(final Indicator INDICATOR) {
-        gaugeModel.removeIndicator(INDICATOR);
+    public final void removeMarker(final Marker MARKER) {
+        gaugeModel.removeMarker(MARKER);
     }
 
-    public final void resetIndicators() {
-        gaugeModel.resetIndicators();
+    public final void resetMarkers() {
+        gaugeModel.resetMarkers();
     }
 
-    public final boolean isIndicatorsVisible() {
-        return styleModel.isIndicatorsVisible();
+    public final boolean isMarkersVisible() {
+        return styleModel.isMarkersVisible();
     }
 
-    public final void setIndicatorsVisible(final boolean INDICATORS_VISIBLE) {
-        styleModel.setIndicatorsVisible(INDICATORS_VISIBLE);
+    public final void setMarkersVisible(final boolean INDICATORS_VISIBLE) {
+        styleModel.setMarkersVisible(INDICATORS_VISIBLE);
     }
 
-    public final BooleanProperty indicatorsVisibleProperty() {
-        return styleModel.indicatorsVisibleProperty();
+    public final BooleanProperty markersVisibleProperty() {
+        return styleModel.markersVisibleProperty();
     }
 
     public final Color getTextureColor() {

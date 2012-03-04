@@ -27,6 +27,7 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import jfxtras.labs.scene.control.gauge.MarkerEvent;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
@@ -35,6 +36,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.event.EventHandler;
 import javafx.scene.paint.Color;
 
 
@@ -44,65 +46,88 @@ import javafx.scene.paint.Color;
  * Date: 28.12.11
  * Time: 10:04
  */
-public class Indicator {
-    private DoubleProperty        indicatorValue;
-    private ObjectProperty<Color> indicatorColor;
-    private StringProperty        indicatorText;
+public class Marker {
+    private DoubleProperty        value;
+    private ObjectProperty<Color> color;
+    private StringProperty        text;
     private BooleanProperty       visible;
 
 
     // ******************** Constructors **************************************
-    public Indicator(final double VALUE, final Color COLOR) {
+    public Marker(final double VALUE, final Color COLOR) {
         this(VALUE, COLOR, Double.toString(VALUE));
     }
 
-    public Indicator(final double VALUE, final Color COLOR, final String TEXT) {
+    public Marker(final double VALUE, final Color COLOR, final String TEXT) {
         this(VALUE, COLOR, TEXT, true);
     }
 
-    public Indicator(final double VALUE, final Color COLOR, final String TEXT, final boolean VISIBLE) {
-        indicatorValue = new SimpleDoubleProperty(VALUE);
-        indicatorColor = new SimpleObjectProperty<Color>(COLOR);
-        indicatorText  = new SimpleStringProperty(TEXT);
-        visible        = new SimpleBooleanProperty(VISIBLE);
+    public Marker(final double VALUE, final Color COLOR, final String TEXT, final boolean VISIBLE) {
+        value   = new SimpleDoubleProperty(VALUE);
+        color   = new SimpleObjectProperty<Color>(COLOR);
+        text    = new SimpleStringProperty(TEXT);
+        visible = new SimpleBooleanProperty(VISIBLE);
+    }
+
+
+    // ******************** Event handling ************************************
+    public final ObjectProperty<EventHandler<MarkerEvent>> onMarkerEventProperty() {
+        return onMarkerEvent;
+    }
+
+    public final void setOnMarkerEvent(final EventHandler<MarkerEvent> HANDLER) {
+        onMarkerEventProperty().set(HANDLER);
+    }
+
+    public final EventHandler<MarkerEvent> getOnMarkerEvent() {
+        return onMarkerEventProperty().get();
+    }
+
+    private ObjectProperty<EventHandler<MarkerEvent>> onMarkerEvent = new SimpleObjectProperty<EventHandler<MarkerEvent>>();
+
+    public void fireMarkerEvent(final MarkerEvent MARKER_EVENT) {
+        final EventHandler<MarkerEvent> MARKER_EVENT_HANDLER = getOnMarkerEvent();
+        if (MARKER_EVENT_HANDLER != null) {
+            MARKER_EVENT_HANDLER.handle(MARKER_EVENT);
+        }
     }
 
 
     // ******************** Methods *******************************************
-    public final double getIndicatorValue() {
-        return indicatorValue.get();
+    public final double getValue() {
+        return value.get();
     }
 
-    public final void setIndicatorValue(final double VALUE) {
-        indicatorValue.set(VALUE);
+    public final void setValue(final double VALUE) {
+        value.set(VALUE);
     }
 
-    public final DoubleProperty indicatorValueProperty() {
-        return indicatorValue;
+    public final DoubleProperty valueProperty() {
+        return value;
     }
 
-    public final Color getIndicatorColor() {
-        return indicatorColor.get();
+    public final Color getColor() {
+        return color.get();
     }
 
-    public final void setIndicatorColor(final Color COLOR) {
-        indicatorColor.set(COLOR);
+    public final void setColor(final Color COLOR) {
+        color.set(COLOR);
     }
 
-    public final ObjectProperty<Color> indicatorColorProperty() {
-        return indicatorColor;
+    public final ObjectProperty<Color> colorProperty() {
+        return color;
     }
 
-    public final String getIndicatorText() {
-        return indicatorText.get();
+    public final String getText() {
+        return text.get();
     }
 
-    public final void setIndicatorText(final String TEXT) {
-        indicatorText.set(TEXT);
+    public final void setText(final String TEXT) {
+        text.set(TEXT);
     }
 
-    public final StringProperty indicatorTextProperty() {
-        return indicatorText;
+    public final StringProperty textProperty() {
+        return text;
     }
 
     public final boolean isVisible() {
@@ -116,4 +141,5 @@ public class Indicator {
     public final BooleanProperty visibleProperty() {
         return visible;
     }
+
 }

@@ -12,3 +12,4 @@ src/main/java/jfxtras/labs/scene/control/gauge/Gauge.iml
 out/
 .idea/
 src/main/java/jfxtras/labs/scene/control/gauge/Demo.java
+src/main/java/jfxtras/labs/scene/control/gauge/.DS_Store

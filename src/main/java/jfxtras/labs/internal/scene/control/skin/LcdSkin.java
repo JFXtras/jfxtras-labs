@@ -30,6 +30,8 @@ package jfxtras.labs.internal.scene.control.skin;
 import jfxtras.labs.internal.scene.control.behavior.LcdBehavior;
 import jfxtras.labs.scene.control.gauge.Lcd;
 import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
+import jfxtras.labs.scene.control.gauge.Marker;
+import jfxtras.labs.scene.control.gauge.MarkerEvent;
 import jfxtras.labs.scene.control.gauge.Section;
 import jfxtras.labs.scene.control.gauge.StyleModelEvent;
 import javafx.animation.Animation;
@@ -342,6 +344,8 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
                 } else {
                     currentValue.set(newValue.doubleValue());
                 }
+
+                checkMarkers(control, oldValue.doubleValue(), newValue.doubleValue());
             }
         });
 
@@ -737,7 +741,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.65));
         LCD_MAIN.setEffect(INNER_SHADOW);
 
-        // Prepare the trend indicators
+        // Prepare the trend markers
         trendUp = new Path();
         trendUp.setFillRule(FillRule.EVEN_ODD);
         trendUp.getElements().add(new MoveTo(0.18181818181818182 * WIDTH, 0.9375 * HEIGHT));
@@ -1160,7 +1164,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         lcdFormerValue.setX((WIDTH - lcdFormerValue.getLayoutBounds().getWidth()) / 2.0);
         lcdFormerValue.setFontSmoothingType(FontSmoothingType.LCD);
 
-        // Update the trend indicators
+        // Update the trend markers
         if (control.isTrendVisible()) {
             switch (control.getTrend()) {
                 case UP:

@@ -30,6 +30,8 @@ package jfxtras.labs.internal.scene.control.skin;
 import jfxtras.labs.internal.scene.control.behavior.RadialQuarterEBehavior;
 import jfxtras.labs.scene.control.gauge.Gauge;
 import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
+import jfxtras.labs.scene.control.gauge.Marker;
+import jfxtras.labs.scene.control.gauge.MarkerEvent;
 import jfxtras.labs.scene.control.gauge.RadialQuarterE;
 import jfxtras.labs.scene.control.gauge.Section;
 import jfxtras.labs.scene.control.gauge.StyleModelEvent;
@@ -299,7 +301,7 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
         }
 
         if (!indicators.visibleProperty().isBound()) {
-            indicators.visibleProperty().bind(control.indicatorsVisibleProperty());
+            indicators.visibleProperty().bind(control.markersVisibleProperty());
         }
 
         if (!ledOff.visibleProperty().isBound()) {
@@ -390,6 +392,8 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
                     pointer.getTransforms().add(Transform.rotate(-control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
                     pointer.getTransforms().add(pointerRotation);
                 }
+
+                checkMarkers(control, oldValue.doubleValue(), newValue.doubleValue());
 
                 // Highlight sections
                 if (control.isSectionsHighlighting()) {
