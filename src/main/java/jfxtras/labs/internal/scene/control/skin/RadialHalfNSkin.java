@@ -31,7 +31,6 @@ import jfxtras.labs.internal.scene.control.behavior.RadialHalfNBehavior;
 import jfxtras.labs.scene.control.gauge.Gauge;
 import jfxtras.labs.scene.control.gauge.Marker;
 import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
-import jfxtras.labs.scene.control.gauge.MarkerEvent;
 import jfxtras.labs.scene.control.gauge.RadialHalfN;
 import jfxtras.labs.scene.control.gauge.Section;
 import jfxtras.labs.scene.control.gauge.StyleModelEvent;
@@ -109,7 +108,8 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
     private Group            minMeasured;
     private Group            maxMeasured;
     private Group            pointer;
-    private Group            bargraph;
+    private Group            bargraphOff;
+    private Group            bargraphOn;
     private Group            ledOff;
     private Group            ledOn;
     private Group            userLedOff;
@@ -117,7 +117,8 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
     private Group            foreground;
     private Point2D          center;
     private int              noOfLeds;
-    private ArrayList<Shape> leds;
+    private ArrayList<Shape> ledsOff;
+    private ArrayList<Shape> ledsOn;
     private DoubleProperty   currentValue;
     private DoubleProperty   formerValue;
     private FadeTransition   glowPulse;
@@ -155,14 +156,16 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         minMeasured            = new Group();
         maxMeasured            = new Group();
         pointer                = new Group();
-        bargraph               = new Group();
+        bargraphOff            = new Group();
+        bargraphOn             = new Group();
         ledOff                 = new Group();
         ledOn                  = new Group();
         userLedOff             = new Group();
         userLedOn              = new Group();
         foreground             = new Group();
         noOfLeds               = 60;
-        leds                   = new ArrayList<Shape>(60);
+        ledsOff                = new ArrayList<Shape>(noOfLeds);
+        ledsOn                 = new ArrayList<Shape>(noOfLeds);
         currentValue           = new SimpleDoubleProperty(0);
         formerValue            = new SimpleDoubleProperty(0);
         glowPulse              = new FadeTransition(Duration.millis(800), glowOn);
@@ -304,11 +307,12 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
             areas.visibleProperty().bind(control.areasVisibleProperty());
         }
 
-        if (!bargraph.visibleProperty().isBound()) {
-            bargraph.visibleProperty().bind(control.bargraphProperty());
-            pointer.setVisible(!bargraph.isVisible());
-            knobs.setVisible(!bargraph.isVisible());
-            if (bargraph.isVisible()){
+        if (!bargraphOff.visibleProperty().isBound()) {
+            bargraphOff.visibleProperty().bind(control.bargraphProperty());
+            bargraphOn.visibleProperty().bind(control.bargraphProperty());
+            pointer.setVisible(!bargraphOff.isVisible());
+            knobs.setVisible(!bargraphOff.isVisible());
+            if (bargraphOff.isVisible()){
                 areas.setOpacity(0.0);
                 sections.setOpacity(0.0);
             } else {
@@ -453,21 +457,22 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
                 currentValue.set(newValue.doubleValue() / control.getAngleStep() + control.getMinValue());
 
-                if (bargraph.isVisible()) {
+                if (bargraphOff.isVisible()) {
                     final int CURRENT_LED_INDEX = noOfLeds - 1 - (newValue.intValue() / 5);
                     final int FORMER_LED_INDEX = noOfLeds - 1 - (oldValue.intValue() / 5);
                     final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int)(control.getThreshold() * control.getAngleStep() / 5.0);
                     if (Double.compare(control.getValue(), formerValue.doubleValue()) >= 0) {
                         for (int i = CURRENT_LED_INDEX ; i <= FORMER_LED_INDEX ; i++) {
-                            leds.get(i).setId("bargraph-on");
+                            ledsOn.get(i).setVisible(true);
                         }
                     } else {
                         for (int i = CURRENT_LED_INDEX ; i >= FORMER_LED_INDEX ; i--) {
-                            leds.get(i).setId("bargraph-off");
+                            ledsOn.get(i).setVisible(false);
                         }
                     }
                     if (control.isThresholdVisible()) {
-                        leds.get(THRESHOLD_LED_INDEX).setId("bargraph-threshold");
+                        ledsOn.get(THRESHOLD_LED_INDEX).setId("bargraph-threshold");
+                        ledsOn.get(THRESHOLD_LED_INDEX).setVisible(true);
                     }
                 }
 
@@ -611,7 +616,8 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         drawMaxMeasuredIndicator();
         drawIndicators();
         drawPointer();
-        drawCircularBargraph(control, bargraph, noOfLeds, leds, false, center, gaugeBounds);
+        drawCircularBargraph(control, bargraphOff, noOfLeds, ledsOff, false, true, center, gaugeBounds);
+        drawCircularBargraph(control, bargraphOn, noOfLeds, ledsOn, true, false, center, gaugeBounds);
         drawCircularKnobs(control, knobs, center, gaugeBounds);
         drawForeground();
 
@@ -630,7 +636,8 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                              glowOff,
                              glowOn,
                              pointer,
-                             bargraph,
+                             bargraphOff,
+                             bargraphOn,
                              minMeasured,
                              maxMeasured,
                              indicators,

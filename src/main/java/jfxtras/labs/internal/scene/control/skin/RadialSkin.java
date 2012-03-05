@@ -30,8 +30,6 @@ package jfxtras.labs.internal.scene.control.skin;
 import jfxtras.labs.internal.scene.control.behavior.RadialBehavior;
 import jfxtras.labs.scene.control.gauge.Gauge.PointerType;
 import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
-import jfxtras.labs.scene.control.gauge.Marker;
-import jfxtras.labs.scene.control.gauge.MarkerEvent;
 import jfxtras.labs.scene.control.gauge.Radial;
 import jfxtras.labs.scene.control.gauge.Section;
 import jfxtras.labs.scene.control.gauge.StyleModelEvent;
@@ -111,7 +109,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     private Group            minMeasured;
     private Group            maxMeasured;
     private Group            pointer;
-    private Group            bargraph;
+    private Group            bargraphOff;
     private Group            bargraphOn;
     private Group            ledOff;
     private Group            ledOn;
@@ -123,7 +121,8 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     private double           negativeOffset;
     private Point2D          center;
     private int              noOfLeds;
-    private ArrayList<Shape> leds;
+    private ArrayList<Shape> ledsOff;
+    private ArrayList<Shape> ledsOn;
     private DoubleProperty   currentValue;
     private DoubleProperty   formerValue;
     private DoubleProperty   lcdValue;
@@ -168,7 +167,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         minMeasured            = new Group();
         maxMeasured            = new Group();
         pointer                = new Group();
-        bargraph               = new Group();
+        bargraphOff            = new Group();
         bargraphOn             = new Group();
         ledOff                 = new Group();
         ledOn                  = new Group();
@@ -179,7 +178,8 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         gaugeValue             = new SimpleDoubleProperty(0);
         negativeOffset         = 0;
         noOfLeds               = 60;
-        leds                   = new ArrayList<Shape>(60);
+        ledsOff = new ArrayList<Shape>(noOfLeds);
+        ledsOn                 = new ArrayList<Shape>(noOfLeds);
         currentValue           = new SimpleDoubleProperty(0);
         formerValue            = new SimpleDoubleProperty(0);
         lcdValue               = new SimpleDoubleProperty(0);
@@ -335,11 +335,12 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             areas.visibleProperty().bind(control.areasVisibleProperty());
         }
 
-        if (!bargraph.visibleProperty().isBound()) {
-            bargraph.visibleProperty().bind(control.bargraphProperty());
-            pointer.setVisible(!bargraph.isVisible());
-            knobs.setVisible(!bargraph.isVisible());
-            if (bargraph.isVisible()){
+        if (!bargraphOff.visibleProperty().isBound()) {
+            bargraphOff.visibleProperty().bind(control.bargraphProperty());
+            bargraphOn.visibleProperty().bind(control.bargraphProperty());
+            pointer.setVisible(!bargraphOff.isVisible());
+            knobs.setVisible(!bargraphOff.isVisible());
+            if (bargraphOff.isVisible()){
                 areas.setOpacity(0.0);
                 sections.setOpacity(0.0);
             } else {
@@ -506,22 +507,23 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         gaugeValue.addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                if (bargraph.isVisible()) {
+                if (bargraphOff.isVisible()) {
                     int CURRENT_LED_INDEX = noOfLeds - 1 - (int) ((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
                     int FORMER_LED_INDEX = noOfLeds - 1 - (int) ((oldValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
                     final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int)((control.getThreshold() - control.getMinValue()) * control.getAngleStep() / 5.0);
 
                     if (Double.compare(control.getValue(), formerValue.doubleValue()) >= 0) {
                         for (int i = CURRENT_LED_INDEX ; i <= FORMER_LED_INDEX ; i++) {
-                            leds.get(i).setId("bargraph-on");
+                            ledsOn.get(i).setVisible(true);
                         }
                     } else {
                         for (int i = CURRENT_LED_INDEX ; i >= FORMER_LED_INDEX ; i--) {
-                            leds.get(i).setId("bargraph-off");
+                            ledsOn.get(i).setVisible(false);
                         }
                     }
                     if (control.isThresholdVisible()) {
-                        leds.get(THRESHOLD_LED_INDEX).setId("bargraph-threshold");
+                        ledsOn.get(THRESHOLD_LED_INDEX).setId("bargraph-threshold");
+                        ledsOn.get(THRESHOLD_LED_INDEX).setVisible(true);
                     }
                 } else {
                     pointer.getTransforms().clear();
@@ -697,7 +699,8 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         drawCircularLcd(control, lcd, gaugeBounds);
         drawLcdContent();
         drawPointer();
-        drawCircularBargraph(control, bargraph, noOfLeds, leds, false, center, gaugeBounds);
+        drawCircularBargraph(control, bargraphOff, noOfLeds, ledsOff, false, true, center, gaugeBounds);
+        drawCircularBargraph(control, bargraphOn, noOfLeds, ledsOn, true, false, center, gaugeBounds);
         drawCircularKnobs(control, knobs, center, gaugeBounds);
         drawCircularForeground(control, foreground, gaugeBounds);
 
@@ -718,7 +721,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                              lcd,
                              lcdContent,
                              pointer,
-                             bargraph,
+                             bargraphOff,
                              bargraphOn,
                              minMeasured,
                              maxMeasured,

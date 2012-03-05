@@ -904,7 +904,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         LCD.getChildren().addAll(LCD_FRAME, LCD_MAIN);
     }
 
-    protected void drawCircularBargraph(final Gauge CONTROL, final Group BARGRAPH, final int NO_OF_LEDS, final ArrayList<Shape> LEDS, final boolean ON, final Point2D CENTER, final Rectangle GAUGE_BOUNDS) {
+    protected void drawCircularBargraph(final Gauge CONTROL, final Group BARGRAPH, final int NO_OF_LEDS, final ArrayList<Shape> LEDS, final boolean ON, final boolean VISIBLE, final Point2D CENTER, final Rectangle GAUGE_BOUNDS) {
         final double WIDTH = GAUGE_BOUNDS.getWidth();
         final double HEIGHT = GAUGE_BOUNDS.getHeight();
 
@@ -943,6 +943,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         for (int i = 0 ; i < NO_OF_LEDS ; i++) {
             final Shape LED = createBargraphLed(GAUGE_BOUNDS, CONTROL, ON);
             LED.getTransforms().add(Transform.rotate(CONTROL.getRadialRange().SECTIONS_OFFSET - ADDITIONAL_OFFSET - 2.5 - (5 * i), CENTER.getX(), CENTER.getY()));
+            LED.setVisible(VISIBLE);
             LEDS.add(LED);
             BARGRAPH.getChildren().add(LED);
         }
