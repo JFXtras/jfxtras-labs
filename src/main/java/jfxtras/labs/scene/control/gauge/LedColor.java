@@ -49,8 +49,8 @@ public enum LedColor {
     GRAY("-fx-gray;", Color.rgb(102, 102, 102)),
     BLACK("-fx-black;", Color.rgb(15, 15, 15)),
     RAITH("-fx-raith;", Color.rgb(65, 143, 193)),
-    GREENLCD("-fx-greenlcd;", Color.rgb(24, 220, 183)),
-    JUG_GREEN("-fx-juggreen;", Color.rgb(90, 183, 0)),
+    GREEN_LCD("-fx-green-lcd;", Color.rgb(24, 220, 183)),
+    JUG_GREEN("-fx-jug-green;", Color.rgb(90, 183, 0)),
     CUSTOM("-fx-custom;", Color.rgb(0, 195, 97));
 
     public final String CSS;

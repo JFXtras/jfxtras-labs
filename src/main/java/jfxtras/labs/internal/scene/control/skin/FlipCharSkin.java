@@ -119,7 +119,6 @@ public class FlipCharSkin extends SkinBase<FlipChar, FlipCharBehavior> {
                     else {
                         flipForward(angleStep);
                     }
-
                 }
             }
         };

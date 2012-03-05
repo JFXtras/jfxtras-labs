@@ -97,7 +97,7 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
     private Group            trend;
     private Group            sections;
     private Group            areas;
-    private Group            indicators;
+    private Group            markers;
     private Group            titleAndUnit;
     private Group            tickmarks;
     private Group            glowOff;
@@ -145,7 +145,7 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
         trend                  = new Group();
         sections               = new Group();
         areas                  = new Group();
-        indicators             = new Group();
+        markers                = new Group();
         titleAndUnit           = new Group();
         tickmarks              = new Group();
         glowOff                = new Group();
@@ -291,89 +291,109 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
     }
 
     private void addBindings() {
-        if (!frame.visibleProperty().isBound()) {
-            frame.visibleProperty().bind(control.frameVisibleProperty());
+        if (frame.visibleProperty().isBound()) {
+            frame.visibleProperty().unbind();
+        }
+        frame.visibleProperty().bind(control.frameVisibleProperty());
+
+        if (background.visibleProperty().isBound()) {
+            background.visibleProperty().unbind();
+        }
+        background.visibleProperty().bind(control.backgroundVisibleProperty());
+
+        if (sections.visibleProperty().isBound()) {
+            sections.visibleProperty().unbind();
+        }
+        sections.visibleProperty().bind(control.sectionsVisibleProperty());
+
+        if (areas.visibleProperty().isBound()) {
+            areas.visibleProperty().unbind();
+        }
+        areas.visibleProperty().bind(control.areasVisibleProperty());
+
+        if (bargraphOff.visibleProperty().isBound()) {
+            bargraphOff.visibleProperty().unbind();
+        }
+        bargraphOff.visibleProperty().bind(control.bargraphProperty());
+        bargraphOn.visibleProperty().bind(control.bargraphProperty());
+        pointer.setVisible(!bargraphOff.isVisible());
+        knobs.setVisible(!bargraphOff.isVisible());
+        if (bargraphOff.isVisible()){
+            areas.setOpacity(0.0);
+            sections.setOpacity(0.0);
+        } else {
+            areas.setOpacity(1.0);
+            sections.setOpacity(1.0);
         }
 
-        if (!background.visibleProperty().isBound()) {
-            background.visibleProperty().bind(control.backgroundVisibleProperty());
-        }
 
-        if (!sections.visibleProperty().isBound()) {
-            sections.visibleProperty().bind(control.sectionsVisibleProperty());
+        if (markers.visibleProperty().isBound()) {
+            markers.visibleProperty().unbind();
         }
+        markers.visibleProperty().bind(control.markersVisibleProperty());
 
-        if (!areas.visibleProperty().isBound()) {
-            areas.visibleProperty().bind(control.areasVisibleProperty());
+        if (ledOff.visibleProperty().isBound()) {
+            ledOff.visibleProperty().unbind();
         }
+        ledOff.visibleProperty().bind(control.ledVisibleProperty());
 
-        if (!bargraphOff.visibleProperty().isBound()) {
-            bargraphOff.visibleProperty().bind(control.bargraphProperty());
-            bargraphOn.visibleProperty().bind(control.bargraphProperty());
-            pointer.setVisible(!bargraphOff.isVisible());
-            knobs.setVisible(!bargraphOff.isVisible());
-            if (bargraphOff.isVisible()){
-                areas.setOpacity(0.0);
-                sections.setOpacity(0.0);
-            } else {
-                areas.setOpacity(1.0);
-                sections.setOpacity(1.0);
-            }
+        if (ledOn.visibleProperty().isBound()) {
+            ledOn.visibleProperty().unbind();
         }
+        ledOn.visibleProperty().bind(control.ledVisibleProperty());
 
-        if (!indicators.visibleProperty().isBound()) {
-            indicators.visibleProperty().bind(control.markersVisibleProperty());
+        if (userLedOff.visibleProperty().isBound()) {
+            userLedOff.visibleProperty().unbind();
         }
+        userLedOff.visibleProperty().bind(control.userLedVisibleProperty());
 
-        if (!ledOff.visibleProperty().isBound()) {
-            ledOff.visibleProperty().bind(control.ledVisibleProperty());
+        if (userLedOn.visibleProperty().isBound()) {
+            userLedOn.visibleProperty().unbind();
         }
+        userLedOn.visibleProperty().bind(control.userLedVisibleProperty());
 
-        if (!ledOn.visibleProperty().isBound()) {
-            ledOn.visibleProperty().bind(control.ledVisibleProperty());
+        if (threshold.visibleProperty().isBound()) {
+            threshold.visibleProperty().unbind();
         }
+        threshold.visibleProperty().bind(control.thresholdVisibleProperty());
 
-        if (!userLedOff.visibleProperty().isBound()) {
-            userLedOff.visibleProperty().bind(control.userLedVisibleProperty());
+        if (minMeasured.visibleProperty().isBound()) {
+            minMeasured.visibleProperty().unbind();
         }
+        minMeasured.visibleProperty().bind(control.minMeasuredValueVisibleProperty());
 
-        if (!userLedOn.visibleProperty().isBound()) {
-            userLedOn.visibleProperty().bind(control.userLedVisibleProperty());
+        if (maxMeasured.visibleProperty().isBound()) {
+            maxMeasured.visibleProperty().unbind();
         }
+        maxMeasured.visibleProperty().bind(control.maxMeasuredValueVisibleProperty());
 
-        if (!threshold.visibleProperty().isBound()) {
-            threshold.visibleProperty().bind(control.thresholdVisibleProperty());
+        if (foreground.visibleProperty().isBound()) {
+            foreground.visibleProperty().unbind();
         }
+        foreground.visibleProperty().bind(control.foregroundVisibleProperty());
 
-        if (!minMeasured.visibleProperty().isBound()) {
-            minMeasured.visibleProperty().bind(control.minMeasuredValueVisibleProperty());
+        if (trend.visibleProperty().isBound()) {
+            trend.visibleProperty().unbind();
         }
-
-        if (!maxMeasured.visibleProperty().isBound()) {
-            maxMeasured.visibleProperty().bind(control.maxMeasuredValueVisibleProperty());
-        }
-
-        if (!foreground.visibleProperty().isBound()) {
-            foreground.visibleProperty().bind(control.foregroundVisibleProperty());
-        }
-
-        if (!trend.visibleProperty().isBound()) {
-            trend.visibleProperty().bind(control.trendVisibleProperty());
-        }
+        trend.visibleProperty().bind(control.trendVisibleProperty());
     }
 
     private void addListeners() {
-        control.setOnModelEvent(new EventHandler<GaugeModelEvent>() {
-            @Override public void handle(final GaugeModelEvent EVENT) {
+        control.setOnGaugeModelEvent(new EventHandler<GaugeModelEvent>() {
+            @Override
+            public void handle(final GaugeModelEvent EVENT) {
                 // Trigger repaint
-                isDirty = true;
+                addBindings();
+                paint();
             }
         });
 
-        control.setOnViewModelEvent(new EventHandler<StyleModelEvent>() {
-            @Override public void handle(final StyleModelEvent EVENT) {
+        control.setOnStyleModelEvent(new EventHandler<StyleModelEvent>() {
+            @Override
+            public void handle(final StyleModelEvent EVENT) {
                 // Trigger repaint
-                isDirty = true;
+                addBindings();
+                paint();
             }
         });
 
@@ -472,6 +492,7 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
                         }
                     }
                     if (control.isThresholdVisible()) {
+                        ledsOn.get(THRESHOLD_LED_INDEX).setStyle(control.getThresholdColor().CSS);
                         ledsOn.get(THRESHOLD_LED_INDEX).setId("bargraph-threshold");
                         ledsOn.get(THRESHOLD_LED_INDEX).setVisible(true);
                     }
@@ -641,7 +662,7 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
                              bargraphOn,
                              minMeasured,
                              maxMeasured,
-                             indicators,
+            markers,
                              knobs,
                              foreground);
     }
@@ -1303,9 +1324,10 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
         final DropShadow GLOW_EFFECT = new DropShadow();
         GLOW_EFFECT.setRadius(0.15 * WIDTH);
         GLOW_EFFECT.setBlurType(BlurType.GAUSSIAN);
-        if (!GLOW_EFFECT.colorProperty().isBound()) {
-            GLOW_EFFECT.colorProperty().bind(control.glowColorProperty());
+        if (GLOW_EFFECT.colorProperty().isBound()) {
+            GLOW_EFFECT.colorProperty().unbind();
         }
+        GLOW_EFFECT.colorProperty().bind(control.glowColorProperty());
         GLOW_RING.setEffect(GLOW_EFFECT);
 
         final Path HIGHLIGHT_LOWER_RIGHT = new Path();
@@ -1340,12 +1362,12 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
         final double WIDTH = gaugeBounds.getWidth();
         final double HEIGHT = gaugeBounds.getHeight();
 
-        indicators.getChildren().clear();
+        markers.getChildren().clear();
 
         final Rectangle IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         IBOUNDS.setStroke(null);
-        indicators.getChildren().add(IBOUNDS);
+        markers.getChildren().add(IBOUNDS);
 
         for (final Marker marker : control.getMarkers()) {
             if (Double.compare(marker.getValue(), control.getMinValue()) >= 0 && Double.compare(marker.getValue(), control.getMaxValue()) <= 0) {
@@ -1355,7 +1377,7 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
                 ARROW_GROUP.getTransforms().add(Transform.rotate(-control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getX()));
                 final double ZERO_OFFSET = -90 + control.getRadialRange().ROTATION_OFFSET;
                 ARROW_GROUP.getTransforms().add(Transform.rotate(ZERO_OFFSET - (marker.getValue() - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getX()));
-                indicators.getChildren().add(ARROW_GROUP);
+                markers.getChildren().add(ARROW_GROUP);
             }
         }
     }

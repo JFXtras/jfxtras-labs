@@ -61,9 +61,9 @@
     -fx-verydark  : derive(-fx-normal, -80%);
     -fx-darker    : derive(-fx-normal, -50%);
     -fx-dark      : derive(-fx-normal, -20%);
-    -fx-bright    : derive(-fx-normal, 20%);
-    -fx-brighter  : derive(-fx-normal, 50%);
-    -fx-verybright: derive(-fx-normal, 80%);
+    -fx-bright    : derive(-fx-normal,  20%);
+    -fx-brighter  : derive(-fx-normal,  50%);
+    -fx-verybright: derive(-fx-normal,  80%);
 
     /************************************************************
     * Defintions of all value colors used for pointer and bar   *
@@ -72,9 +72,9 @@
     -fx-value-verydark:   derive(-fx-value, -80%);
     -fx-value-darker:     derive(-fx-value, -50%);
     -fx-value-dark:       derive(-fx-value, -20%);
-    -fx-value-bright:     derive(-fx-value, 20%);
-    -fx-value-brighter:   derive(-fx-value, 50%);
-    -fx-value-verybright: derive(-fx-value, 80%);
+    -fx-value-bright:     derive(-fx-value,  20%);
+    -fx-value-brighter:   derive(-fx-value,  50%);
+    -fx-value-verybright: derive(-fx-value,  80%);
 
     /************************************************************
     * Defintions of all led colors                              *
@@ -83,9 +83,9 @@
     -fx-led-verydark:   derive(-fx-led, -80%);
     -fx-led-darker:     derive(-fx-led, -50%);
     -fx-led-dark:       derive(-fx-led, -20%);
-    -fx-led-bright:     derive(-fx-led, 20%);
-    -fx-led-brighter:   derive(-fx-led, 50%);
-    -fx-led-verybright: derive(-fx-led, 80%);
+    -fx-led-bright:     derive(-fx-led,  20%);
+    -fx-led-brighter:   derive(-fx-led,  50%);
+    -fx-led-verybright: derive(-fx-led,  80%);
 
     /************************************************************
     * Defintions of all threshold colors                        *
@@ -94,9 +94,9 @@
     -fx-threshold-verydark:   derive(-fx-threshold, -80%);
     -fx-threshold-darker:     derive(-fx-threshold, -50%);
     -fx-threshold-dark:       derive(-fx-threshold, -20%);
-    -fx-threshold-bright:     derive(-fx-threshold, 20%);
-    -fx-threshold-brighter:   derive(-fx-threshold, 50%);
-    -fx-threshold-verybright: derive(-fx-threshold, 80%);
+    -fx-threshold-bright:     derive(-fx-threshold,  20%);
+    -fx-threshold-brighter:   derive(-fx-threshold,  50%);
+    -fx-threshold-verybright: derive(-fx-threshold,  80%);
 }
 
 .radial {

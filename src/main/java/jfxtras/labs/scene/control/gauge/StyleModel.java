@@ -176,7 +176,7 @@ public class StyleModel {
         sectionsHighlighting            = new SimpleBooleanProperty(false);
         areasVisible                    = new SimpleBooleanProperty(false);
         areasHighlighting               = new SimpleBooleanProperty(false);
-        markersVisible = new SimpleBooleanProperty(false);
+        markersVisible                  = new SimpleBooleanProperty(false);
         textureColor                    = new SimpleObjectProperty<Color>(Color.rgb(104, 104, 104));
         simpleGradientBaseColor         = new SimpleObjectProperty<Color>(Color.rgb(213, 0, 0));
         titleVisible                    = new SimpleBooleanProperty(true);
@@ -189,22 +189,22 @@ public class StyleModel {
 
 
     // ******************** Event handling ************************************
-    public final ObjectProperty<EventHandler<StyleModelEvent>> onViewModelEventProperty() {
-        return onViewModelEvent;
+    public final ObjectProperty<EventHandler<StyleModelEvent>> onStyleModelEventProperty() {
+        return onStyleModelEvent;
     }
 
-    public final void setOnViewModelEvent(final EventHandler<StyleModelEvent> HANDLER) {
-        onViewModelEventProperty().set(HANDLER);
+    public final void setOnStyleModelEvent(final EventHandler<StyleModelEvent> HANDLER) {
+        onStyleModelEventProperty().set(HANDLER);
     }
 
-    public final EventHandler<StyleModelEvent> getOnViewModelEvent() {
-        return onViewModelEventProperty().get();
+    public final EventHandler<StyleModelEvent> getOnStyleModelEvent() {
+        return onStyleModelEventProperty().get();
     }
 
-    private ObjectProperty<EventHandler<StyleModelEvent>> onViewModelEvent = new SimpleObjectProperty<EventHandler<StyleModelEvent>>();
+    private ObjectProperty<EventHandler<StyleModelEvent>> onStyleModelEvent = new SimpleObjectProperty<EventHandler<StyleModelEvent>>();
 
-    public void fireViewModelEvent() {
-        final EventHandler<StyleModelEvent> VIEW_MODEL_EVENT_HANDLER = getOnViewModelEvent();
+    public void fireStyleModelEvent() {
+        final EventHandler<StyleModelEvent> VIEW_MODEL_EVENT_HANDLER = getOnStyleModelEvent();
         if (VIEW_MODEL_EVENT_HANDLER != null) {
             final StyleModelEvent STYLE_MODEL_EVENT = new StyleModelEvent();
             VIEW_MODEL_EVENT_HANDLER.handle(STYLE_MODEL_EVENT);

@@ -30,8 +30,6 @@ package jfxtras.labs.internal.scene.control.skin;
 import jfxtras.labs.internal.scene.control.behavior.LcdBehavior;
 import jfxtras.labs.scene.control.gauge.Lcd;
 import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
-import jfxtras.labs.scene.control.gauge.Marker;
-import jfxtras.labs.scene.control.gauge.MarkerEvent;
 import jfxtras.labs.scene.control.gauge.Section;
 import jfxtras.labs.scene.control.gauge.StyleModelEvent;
 import javafx.animation.Animation;
@@ -243,45 +241,54 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
     }
 
     private void addBindings() {
-        if (!sections.visibleProperty().isBound()) {
-            sections.visibleProperty().bind(control.sectionsVisibleProperty());
+        if (sections.visibleProperty().isBound()) {
+            sections.visibleProperty().unbind();
         }
+        sections.visibleProperty().bind(control.sectionsVisibleProperty());
 
-        if (!minMeasured.visibleProperty().isBound()) {
-            minMeasured.visibleProperty().bind(control.minMeasuredValueVisibleProperty());
+        if (minMeasured.visibleProperty().isBound()) {
+            minMeasured.visibleProperty().unbind();
         }
+        minMeasured.visibleProperty().bind(control.minMeasuredValueVisibleProperty());
 
-        if (!maxMeasured.visibleProperty().isBound()) {
-            maxMeasured.visibleProperty().bind(control.maxMeasuredValueVisibleProperty());
+        if (maxMeasured.visibleProperty().isBound()) {
+            maxMeasured.visibleProperty().unbind();
         }
+        maxMeasured.visibleProperty().bind(control.maxMeasuredValueVisibleProperty());
 
-        if (!lcdValue.isBound()) {
-            lcdValue.bind(control.valueProperty());
+        if (lcdValue.isBound()) {
+            lcdValue.unbind();
         }
+        lcdValue.bind(control.valueProperty());
 
-        if (!lcdMinMeasuredValue.visibleProperty().isBound()) {
-            lcdMinMeasuredValue.visibleProperty().bind(control.lcdMinMeasuredValueVisibleProperty());
+        if (lcdMinMeasuredValue.visibleProperty().isBound()) {
+            lcdMinMeasuredValue.visibleProperty().unbind();
         }
+        lcdMinMeasuredValue.visibleProperty().bind(control.lcdMinMeasuredValueVisibleProperty());
 
-        if (!lcdMaxMeasuredValue.visibleProperty().isBound()) {
-            lcdMaxMeasuredValue.visibleProperty().bind(control.lcdMaxMeasuredValueVisibleProperty());
+        if (lcdMaxMeasuredValue.visibleProperty().isBound()) {
+            lcdMinMeasuredValue.visibleProperty().unbind();
         }
+        lcdMaxMeasuredValue.visibleProperty().bind(control.lcdMaxMeasuredValueVisibleProperty());
 
-        if (!lcdFormerValue.visibleProperty().isBound()) {
-            lcdFormerValue.visibleProperty().bind(control.lcdFormerValueVisibleProperty());
+        if (lcdFormerValue.visibleProperty().isBound()) {
+            lcdFormerValue.visibleProperty().unbind();
         }
+        lcdFormerValue.visibleProperty().bind(control.lcdFormerValueVisibleProperty());
     }
 
     private void addListeners() {
-        control.setOnModelEvent(new EventHandler<GaugeModelEvent>() {
-            @Override public void handle(final GaugeModelEvent EVENT) {
+        control.setOnGaugeModelEvent(new EventHandler<GaugeModelEvent>() {
+            @Override
+            public void handle(final GaugeModelEvent EVENT) {
                 // Trigger repaint
                 paint();
             }
         });
 
-        control.setOnViewModelEvent(new EventHandler<StyleModelEvent>() {
-            @Override public void handle(final StyleModelEvent EVENT) {
+        control.setOnStyleModelEvent(new EventHandler<StyleModelEvent>() {
+            @Override
+            public void handle(final StyleModelEvent EVENT) {
                 // Trigger repaint
                 paint();
             }
@@ -532,9 +539,10 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         lcdUnitString.setTextAlignment(TextAlignment.RIGHT);
 
         lcdUnitString.setText(control.isLcdValueCoupled() ? control.getUnit() : control.getLcdUnit());
-        if (!lcdUnitString.visibleProperty().isBound()) {
-            lcdUnitString.visibleProperty().bind(control.lcdUnitVisibleProperty());
+        if (lcdUnitString.visibleProperty().isBound()) {
+            lcdUnitString.visibleProperty().unbind();
         }
+        lcdUnitString.visibleProperty().bind(control.lcdUnitVisibleProperty());
 
         lcdValueOffsetLeft = SIZE * 0.04;// SIZE * 0.0151515152; // distance between value and left border
 
@@ -685,9 +693,10 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         GLOW_EFFECT.setWidth(0.6 * SIZE);
         GLOW_EFFECT.setHeight(0.6 * SIZE);
         GLOW_EFFECT.setBlurType(BlurType.GAUSSIAN);
-        if (!GLOW_EFFECT.colorProperty().isBound()) {
-            GLOW_EFFECT.colorProperty().bind(control.glowColorProperty());
+        if (GLOW_EFFECT.colorProperty().isBound()) {
+            GLOW_EFFECT.colorProperty().unbind();
         }
+        GLOW_EFFECT.colorProperty().bind(control.glowColorProperty());
         LCD_FRAME.effectProperty().set(GLOW_EFFECT);
 
         glowOn.getChildren().addAll(LCD_FRAME);

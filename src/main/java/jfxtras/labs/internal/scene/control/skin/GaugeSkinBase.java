@@ -102,6 +102,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         registerChangeListener(CONTROL.valueColorProperty(), "VALUE_COLOR");
         registerChangeListener(CONTROL.pointerGlowEnabledProperty(), "POINTER_GLOW");
         registerChangeListener(CONTROL.pointerShadowEnabledProperty(), "POINTER_SHADOW");
+        registerChangeListener(CONTROL.thresholdColorProperty(), "THRESHOLD_COLOR");
         registerChangeListener(CONTROL.foregroundTypeProperty(), "FOREGROUND_TYPE");
         registerChangeListener(CONTROL.lcdDesignProperty(), "LCD_DESIGN");
         registerChangeListener(CONTROL.lcdNumberSystemProperty(), "LCD_NUMBER_SYSTEM");
@@ -622,9 +623,10 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         final DropShadow GLOW_EFFECT = new DropShadow();
         GLOW_EFFECT.setRadius(0.15 * WIDTH);
         GLOW_EFFECT.setBlurType(BlurType.GAUSSIAN);
-        if (!GLOW_EFFECT.colorProperty().isBound()) {
-            GLOW_EFFECT.colorProperty().bind(CONTROL.glowColorProperty());
+        if (GLOW_EFFECT.colorProperty().isBound()) {
+            GLOW_EFFECT.colorProperty().unbind();
         }
+        GLOW_EFFECT.colorProperty().bind(CONTROL.glowColorProperty());
         GLOW_RING.setEffect(GLOW_EFFECT);
 
         final Path HIGHLIGHT_LOWER_RIGHT = new Path();
@@ -792,7 +794,13 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         MAX_POST.setTranslateX(WIDTH * MAX_OFFSET.getX());
         MAX_POST.setTranslateY(WIDTH * MAX_OFFSET.getY());
 
+        if (MIN_POST.visibleProperty().isBound()) {
+            MIN_POST.visibleProperty().unbind();
+        }
         MIN_POST.visibleProperty().bind(CONTROL.postsVisibleProperty());
+        if (MAX_POST.visibleProperty().isBound()) {
+            MAX_POST.visibleProperty().unbind();
+        }
         MAX_POST.visibleProperty().bind(CONTROL.postsVisibleProperty());
 
         KNOBS.getChildren().addAll(CENTER_KNOB, MIN_POST, MAX_POST);

@@ -30,8 +30,6 @@ package jfxtras.labs.internal.scene.control.skin;
 import jfxtras.labs.internal.scene.control.behavior.RadialQuarterEBehavior;
 import jfxtras.labs.scene.control.gauge.Gauge;
 import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
-import jfxtras.labs.scene.control.gauge.Marker;
-import jfxtras.labs.scene.control.gauge.MarkerEvent;
 import jfxtras.labs.scene.control.gauge.RadialQuarterE;
 import jfxtras.labs.scene.control.gauge.Section;
 import jfxtras.labs.scene.control.gauge.StyleModelEvent;
@@ -94,7 +92,7 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
     private Group            trend;
     private Group            sections;
     private Group            areas;
-    private Group            indicators;
+    private Group            markers;
     private Group            titleAndUnit;
     private Group            tickmarks;
     private Group            glowOff;
@@ -141,7 +139,7 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
         trend                  = new Group();
         sections               = new Group();
         areas                  = new Group();
-        indicators             = new Group();
+        markers                = new Group();
         titleAndUnit           = new Group();
         tickmarks              = new Group();
         glowOff                = new Group();
@@ -284,79 +282,96 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
     }
 
     private void addBindings() {
-        if (!frame.visibleProperty().isBound()) {
-            frame.visibleProperty().bind(control.frameVisibleProperty());
+        if (frame.visibleProperty().isBound()) {
+            frame.visibleProperty().unbind();
         }
+        frame.visibleProperty().bind(control.frameVisibleProperty());
 
-        if (!background.visibleProperty().isBound()) {
-            background.visibleProperty().bind(control.backgroundVisibleProperty());
+        if (background.visibleProperty().isBound()) {
+            background.visibleProperty().unbind();
         }
+        background.visibleProperty().bind(control.backgroundVisibleProperty());
 
-        if (!sections.visibleProperty().isBound()) {
-            sections.visibleProperty().bind(control.sectionsVisibleProperty());
+        if (sections.visibleProperty().isBound()) {
+            sections.visibleProperty().unbind();
         }
+        sections.visibleProperty().bind(control.sectionsVisibleProperty());
 
-        if (!areas.visibleProperty().isBound()) {
-            areas.visibleProperty().bind(control.areasVisibleProperty());
+        if (areas.visibleProperty().isBound()) {
+            areas.visibleProperty().unbind();
         }
+        areas.visibleProperty().bind(control.areasVisibleProperty());
 
-        if (!indicators.visibleProperty().isBound()) {
-            indicators.visibleProperty().bind(control.markersVisibleProperty());
+        if (markers.visibleProperty().isBound()) {
+            markers.visibleProperty().unbind();
         }
+        markers.visibleProperty().bind(control.markersVisibleProperty());
 
-        if (!ledOff.visibleProperty().isBound()) {
-            ledOff.visibleProperty().bind(control.ledVisibleProperty());
+        if (ledOff.visibleProperty().isBound()) {
+            ledOff.visibleProperty().unbind();
         }
+        ledOff.visibleProperty().bind(control.ledVisibleProperty());
 
-        if (!ledOn.visibleProperty().isBound()) {
-            ledOn.visibleProperty().bind(control.ledVisibleProperty());
+        if (ledOn.visibleProperty().isBound()) {
+            ledOn.visibleProperty().unbind();
         }
+        ledOn.visibleProperty().bind(control.ledVisibleProperty());
 
-        if (!userLedOff.visibleProperty().isBound()) {
-            userLedOff.visibleProperty().bind(control.userLedVisibleProperty());
+        if (userLedOff.visibleProperty().isBound()) {
+            userLedOff.visibleProperty().unbind();
         }
+        userLedOff.visibleProperty().bind(control.userLedVisibleProperty());
 
-        if (!userLedOn.visibleProperty().isBound()) {
-            userLedOn.visibleProperty().bind(control.userLedVisibleProperty());
+        if (userLedOn.visibleProperty().isBound()) {
+            userLedOn.visibleProperty().unbind();
         }
+        userLedOn.visibleProperty().bind(control.userLedVisibleProperty());
 
-        if (!threshold.visibleProperty().isBound()) {
-            threshold.visibleProperty().bind(control.thresholdVisibleProperty());
+        if (threshold.visibleProperty().isBound()) {
+            threshold.visibleProperty().unbind();
         }
+        threshold.visibleProperty().bind(control.thresholdVisibleProperty());
 
-        if (!minMeasured.visibleProperty().isBound()) {
-            minMeasured.visibleProperty().bind(control.minMeasuredValueVisibleProperty());
+        if (minMeasured.visibleProperty().isBound()) {
+            minMeasured.visibleProperty().unbind();
         }
+        minMeasured.visibleProperty().bind(control.minMeasuredValueVisibleProperty());
 
-        if (!maxMeasured.visibleProperty().isBound()) {
-            maxMeasured.visibleProperty().bind(control.maxMeasuredValueVisibleProperty());
+        if (maxMeasured.visibleProperty().isBound()) {
+            maxMeasured.visibleProperty().unbind();
         }
+        maxMeasured.visibleProperty().bind(control.maxMeasuredValueVisibleProperty());
 
-        if (!lcdValue.isBound()) {
-            lcdValue.bind(control.valueProperty());
+        if (lcdValue.isBound()) {
+            lcdValue.unbind();
         }
+        lcdValue.bind(control.valueProperty());
 
-        if (!foreground.visibleProperty().isBound()) {
-            foreground.visibleProperty().bind(control.foregroundVisibleProperty());
+        if (foreground.visibleProperty().isBound()) {
+            foreground.visibleProperty().unbind();
         }
+        foreground.visibleProperty().bind(control.foregroundVisibleProperty());
 
-        if (!trend.visibleProperty().isBound()) {
-            trend.visibleProperty().bind(control.trendVisibleProperty());
+        if (trend.visibleProperty().isBound()) {
+            trend.visibleProperty().unbind();
         }
+        trend.visibleProperty().bind(control.trendVisibleProperty());
     }
 
     private void addListeners() {
-        control.setOnModelEvent(new EventHandler<GaugeModelEvent>() {
-            @Override public void handle(final GaugeModelEvent EVENT) {
-                // Trigger repaint
-                isDirty = true;
+        control.setOnGaugeModelEvent(new EventHandler<GaugeModelEvent>() {
+            @Override
+            public void handle(final GaugeModelEvent EVENT) {
+                addBindings();
+                paint();
             }
         });
 
-        control.setOnViewModelEvent(new EventHandler<StyleModelEvent>() {
-            @Override public void handle(final StyleModelEvent EVENT) {
-                // Trigger repaint
-                isDirty = true;
+        control.setOnStyleModelEvent(new EventHandler<StyleModelEvent>() {
+            @Override
+            public void handle(final StyleModelEvent EVENT) {
+                addBindings();
+                paint();
             }
         });
 
@@ -608,7 +623,7 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
                              glowOn,
                              minMeasured,
                              maxMeasured,
-                             indicators,
+            markers,
                              pointer,
                              knobs,
                              foreground);

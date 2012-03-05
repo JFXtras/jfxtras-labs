@@ -124,22 +124,22 @@ public class GaugeModel {
 
 
     // ******************** Event handling ************************************
-    public final ObjectProperty<EventHandler<GaugeModelEvent>> onModelEventProperty() {
-        return onModelEvent;
+    public final ObjectProperty<EventHandler<GaugeModelEvent>> onGaugeModelEventProperty() {
+        return onGaugeModelEvent;
     }
 
-    public final void setOnModelEvent(final EventHandler<GaugeModelEvent> HANDLER) {
-        onModelEventProperty().set(HANDLER);
+    public final void setOnGaugeModelEvent(final EventHandler<GaugeModelEvent> HANDLER) {
+        onGaugeModelEventProperty().set(HANDLER);
     }
 
-    public final EventHandler<GaugeModelEvent> getOnModelEvent() {
-        return onModelEventProperty().get();
+    public final EventHandler<GaugeModelEvent> getOnGaugeModelEvent() {
+        return onGaugeModelEventProperty().get();
     }
 
-    private ObjectProperty<EventHandler<GaugeModelEvent>> onModelEvent = new SimpleObjectProperty<EventHandler<GaugeModelEvent>>();
+    private ObjectProperty<EventHandler<GaugeModelEvent>> onGaugeModelEvent = new SimpleObjectProperty<EventHandler<GaugeModelEvent>>();
 
-    public void fireModelEvent() {
-        final EventHandler<GaugeModelEvent> MODEL_EVENT_HANDLER = getOnModelEvent();
+    public void fireGaugeModelEvent() {
+        final EventHandler<GaugeModelEvent> MODEL_EVENT_HANDLER = getOnGaugeModelEvent();
         if (MODEL_EVENT_HANDLER != null) {
             final GaugeModelEvent GAUGE_MODEL_EVENT = new GaugeModelEvent();
             MODEL_EVENT_HANDLER.handle(GAUGE_MODEL_EVENT);
@@ -468,7 +468,7 @@ public class GaugeModel {
         for (final Section SECTION : SECTION_ARRAY) {
             sections.add(new Section(SECTION.getStart(), SECTION.getStop(), SECTION.getColor(), SECTION.getText()));
         }
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void setSections(final List<Section> SECTIONS) {
@@ -476,24 +476,24 @@ public class GaugeModel {
         for (final Section SECTION : SECTIONS) {
             sections.add(new Section(SECTION.getStart(), SECTION.getStop(), SECTION.getColor(), SECTION.getText()));
         }
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void addSection(final Section SECTION) {
         sections.add(SECTION);
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void removeSection(final Section SECTION) {
         if (sections.contains(SECTION)) {
             sections.remove(SECTION);
         }
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void resetSections() {
         sections.clear();
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final List<Section> getAreas() {
@@ -507,7 +507,7 @@ public class GaugeModel {
         for (final Section AREA : AREA_ARRAY) {
             areas.add(new Section(AREA.getStart(), AREA.getStop(), AREA.getColor(), AREA.getText()));
         }
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void setAreas(final List<Section> AREAS) {
@@ -515,24 +515,24 @@ public class GaugeModel {
         for (final Section AREA : AREAS) {
             areas.add(new Section(AREA.getStart(), AREA.getStop(), AREA.getColor(), AREA.getText()));
         }
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void addArea(final Section AREA) {
         areas.add(AREA);
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void removeArea(final Section AREA) {
         if (areas.contains(AREA)) {
             areas.remove(AREA);
         }
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void resetAreas() {
         areas.clear();
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final List<Marker> getMarkers() {
@@ -546,7 +546,7 @@ public class GaugeModel {
         for (final Marker MARKER : MARKER_ARRAY) {
             markers.add(new Marker(MARKER.getValue(), MARKER.getColor(), MARKER.getText(), MARKER.isVisible()));
         }
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void setMarkers(final List<Marker> MARKERS) {
@@ -554,24 +554,24 @@ public class GaugeModel {
         for (final Marker MARKER : MARKERS) {
             markers.add(new Marker(MARKER.getValue(), MARKER.getColor(), MARKER.getText(), MARKER.isVisible()));
         }
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void addMarker(final Marker MARKER) {
         markers.add(MARKER);
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void removeMarker(final Marker MARKER) {
         if (markers.contains(MARKER)) {
             markers.remove(MARKER);
         }
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void resetMarkers() {
         markers.clear();
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     /**
