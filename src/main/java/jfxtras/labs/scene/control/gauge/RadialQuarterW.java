@@ -46,19 +46,19 @@ public class RadialQuarterW extends Gauge {
 
     // ******************** Constructors **************************************
     public RadialQuarterW() {
-        this(new Model(), new ViewModel());
+        this(new GaugeModel(), new StyleModel());
     }
 
-    public RadialQuarterW(final Model MODEL) {
-        this(MODEL, new ViewModel());
+    public RadialQuarterW(final GaugeModel GAUGE_MODEL) {
+        this(GAUGE_MODEL, new StyleModel());
     }
 
-    public RadialQuarterW(final ViewModel VIEW_MODEL) {
-        this(new Model(), VIEW_MODEL);
+    public RadialQuarterW(final StyleModel STYLE_MODEL) {
+        this(new GaugeModel(), STYLE_MODEL);
     }
 
-    public RadialQuarterW(final Model MODEL, final ViewModel VIEW_MODEL) {
-        super(MODEL, VIEW_MODEL);
+    public RadialQuarterW(final GaugeModel GAUGE_MODEL, final StyleModel STYLE_MODEL) {
+        super(GAUGE_MODEL, STYLE_MODEL);
         setRadialRange(Gauge.RadialRange.RADIAL_90W);
         init();
     }

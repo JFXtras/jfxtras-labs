@@ -142,6 +142,7 @@ public class TrafficlightSkin extends SkinBase<Trafficlight, TrafficlightBehavio
         registerChangeListener(control.yellowBlinkingProperty(), "YELLOW_BLINKING");
         registerChangeListener(control.greenOnProperty(), "GREEN");
         registerChangeListener(control.greenBlinkingProperty(), "GREEN_BLINKING");
+        registerChangeListener(control.darkBackgroundProperty(), "DARK_BACKGROUND");
 
         timer.start();
 
@@ -179,6 +180,8 @@ public class TrafficlightSkin extends SkinBase<Trafficlight, TrafficlightBehavio
             highlightGreenOn.setVisible(control.isGreenOn());
         } else if (PROPERTY == "GREEN_BLINKING") {
 
+        } else if (PROPERTY == "DARK_BACKGROUND") {
+           paint();
         }
     }
 
@@ -230,7 +233,7 @@ public class TrafficlightSkin extends SkinBase<Trafficlight, TrafficlightBehavio
         final Rectangle HOUSING_BACKGROUND = new Rectangle(0.125 * WIDTH, 0.055 * HEIGHT, 0.75 * WIDTH, 0.9 * HEIGHT);
         HOUSING_BACKGROUND.setArcWidth(0.75 * WIDTH);
         HOUSING_BACKGROUND.setArcHeight(0.3 * HEIGHT);
-        final Paint HOUSING_BACKGROUND_FILL = Color.color(0.8, 0.8, 0.8, 0.6);
+        final Paint HOUSING_BACKGROUND_FILL = control.isDarkBackground() ? Color.color(0.2, 0.2, 0.2, 0.6) : Color.color(0.8, 0.8, 0.8, 0.6);
         HOUSING_BACKGROUND.setFill(HOUSING_BACKGROUND_FILL);
         HOUSING_BACKGROUND.setStroke(null);
 
@@ -276,7 +279,7 @@ public class TrafficlightSkin extends SkinBase<Trafficlight, TrafficlightBehavio
                                                          0.0, 0.09 * HEIGHT,
                                                          0.0, 0.2 * HEIGHT));
         HOUSING_FRAME.getElements().add(new ClosePath());
-        final Paint HOUSING_FRAME_FILL = Color.color(0.2, 0.2, 0.2, 0.6);
+        final Paint HOUSING_FRAME_FILL = control.isDarkBackground() ? Color.color(0.8, 0.8, 0.8, 0.6) : Color.color(0.2, 0.2, 0.2, 0.6);
         HOUSING_FRAME.setFill(HOUSING_FRAME_FILL);
         HOUSING_FRAME.setStroke(null);
 

@@ -29,11 +29,11 @@ package jfxtras.labs.internal.scene.control.skin;
 
 import jfxtras.labs.internal.scene.control.behavior.LinearBehavior;
 import jfxtras.labs.scene.control.gauge.Gauge.NumberFormat;
-import jfxtras.labs.scene.control.gauge.Indicator;
+import jfxtras.labs.scene.control.gauge.Marker;
 import jfxtras.labs.scene.control.gauge.Linear;
-import jfxtras.labs.scene.control.gauge.ModelEvent;
+import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
 import jfxtras.labs.scene.control.gauge.Section;
-import jfxtras.labs.scene.control.gauge.ViewModelEvent;
+import jfxtras.labs.scene.control.gauge.StyleModelEvent;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
@@ -94,7 +94,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
     private Group            background;
     private Group            sections;
     private Group            areas;
-    private Group            indicators;
+    private Group            markers;
     private Group            titleAndUnit;
     private Group            tickmarks;
     private Group            glowOff;
@@ -143,12 +143,12 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         background             = new Group();
         sections               = new Group();
         areas                  = new Group();
-        indicators             = new Group();
+        markers                = new Group();
         titleAndUnit           = new Group();
         tickmarks              = new Group();
         glowOff                = new Group();
         glowOn                 = new Group();
-        glowColors             = new ArrayList<>(4);
+        glowColors             = new ArrayList<Color>(4);
         lcd                    = new Group();
         lcdContent             = new Group();
         lcdValueString         = new Text();
@@ -283,83 +283,103 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
     }
 
     private void addBindings() {
-        if (!frame.visibleProperty().isBound()) {
-            frame.visibleProperty().bind(control.frameVisibleProperty());
+        if (frame.visibleProperty().isBound()) {
+            frame.visibleProperty().unbind();
         }
+        frame.visibleProperty().bind(control.frameVisibleProperty());
 
-        if (!background.visibleProperty().isBound()) {
-            background.visibleProperty().bind(control.backgroundVisibleProperty());
+        if (background.visibleProperty().isBound()) {
+            background.visibleProperty().unbind();
         }
+        background.visibleProperty().bind(control.backgroundVisibleProperty());
 
-        if (!sections.visibleProperty().isBound()) {
-            sections.visibleProperty().bind(control.sectionsVisibleProperty());
+        if (sections.visibleProperty().isBound()) {
+            sections.visibleProperty().unbind();
         }
+        sections.visibleProperty().bind(control.sectionsVisibleProperty());
 
-        if (!areas.visibleProperty().isBound()) {
-            areas.visibleProperty().bind(control.areasVisibleProperty());
+        if (areas.visibleProperty().isBound()) {
+            areas.visibleProperty().unbind();
         }
+        areas.visibleProperty().bind(control.areasVisibleProperty());
 
-        if (!indicators.visibleProperty().isBound()) {
-            indicators.visibleProperty().bind(control.indicatorsVisibleProperty());
+        if (markers.visibleProperty().isBound()) {
+            markers.visibleProperty().unbind();
         }
+        markers.visibleProperty().bind(control.markersVisibleProperty());
 
-        if (!ledOff.visibleProperty().isBound()) {
-            ledOff.visibleProperty().bind(control.ledVisibleProperty());
+        if (ledOff.visibleProperty().isBound()) {
+            ledOff.visibleProperty().unbind();
         }
+        ledOff.visibleProperty().bind(control.ledVisibleProperty());
 
-        if (!ledOn.visibleProperty().isBound()) {
-            ledOn.visibleProperty().bind(control.ledVisibleProperty());
+        if (ledOn.visibleProperty().isBound()) {
+            ledOn.visibleProperty().unbind();
         }
+        ledOn.visibleProperty().bind(control.ledVisibleProperty());
 
-        if (!userLedOff.visibleProperty().isBound()) {
-            userLedOff.visibleProperty().bind(control.userLedVisibleProperty());
+        if (userLedOff.visibleProperty().isBound()) {
+            userLedOff.visibleProperty().unbind();
         }
+        userLedOff.visibleProperty().bind(control.userLedVisibleProperty());
 
-        if (!userLedOn.visibleProperty().isBound()) {
-            userLedOn.visibleProperty().bind(control.userLedVisibleProperty());
+        if (userLedOn.visibleProperty().isBound()) {
+            userLedOn.visibleProperty().unbind();
         }
+        userLedOn.visibleProperty().bind(control.userLedVisibleProperty());
 
-        if (!threshold.visibleProperty().isBound()) {
-            threshold.visibleProperty().bind(control.thresholdVisibleProperty());
+        if (threshold.visibleProperty().isBound()) {
+            threshold.visibleProperty().unbind();
         }
+        threshold.visibleProperty().bind(control.thresholdVisibleProperty());
 
-        if (!minMeasured.visibleProperty().isBound()) {
-            minMeasured.visibleProperty().bind(control.minMeasuredValueVisibleProperty());
+        if (minMeasured.visibleProperty().isBound()) {
+            minMeasured.visibleProperty().unbind();
         }
+        minMeasured.visibleProperty().bind(control.minMeasuredValueVisibleProperty());
 
-        if (!maxMeasured.visibleProperty().isBound()) {
-            maxMeasured.visibleProperty().bind(control.maxMeasuredValueVisibleProperty());
+        if (maxMeasured.visibleProperty().isBound()) {
+            maxMeasured.visibleProperty().unbind();
         }
+        maxMeasured.visibleProperty().bind(control.maxMeasuredValueVisibleProperty());
 
-        if (!lcdValue.isBound()) {
-            lcdValue.bind(control.valueProperty());
+        if (lcdValue.isBound()) {
+            lcdValue.unbind();
         }
+        lcdValue.bind(control.valueProperty());
 
-        if (!lcd.visibleProperty().isBound()) {
-            lcd.visibleProperty().bind(control.lcdVisibleProperty());
+        if (lcd.visibleProperty().isBound()) {
+            lcd.visibleProperty().unbind();
         }
+        lcd.visibleProperty().bind(control.lcdVisibleProperty());
 
-        if (!lcdContent.visibleProperty().isBound()) {
-            lcdContent.visibleProperty().bind(control.lcdVisibleProperty());
+        if (lcdContent.visibleProperty().isBound()) {
+            lcdContent.visibleProperty().unbind();
         }
+        lcdContent.visibleProperty().bind(control.lcdVisibleProperty());
 
-        if (!foreground.visibleProperty().isBound()) {
-            foreground.visibleProperty().bind(control.foregroundVisibleProperty());
+        if (foreground.visibleProperty().isBound()) {
+            foreground.visibleProperty().unbind();
         }
+        foreground.visibleProperty().bind(control.foregroundVisibleProperty());
     }
 
     private void addListeners() {
-        control.setOnModelEvent(new EventHandler<ModelEvent>() {
-            @Override public void handle(final ModelEvent EVENT) {
+        control.setOnGaugeModelEvent(new EventHandler<GaugeModelEvent>() {
+            @Override
+            public void handle(final GaugeModelEvent EVENT) {
                 // Trigger repaint
-                isDirty = true;
+                addBindings();
+                paint();
             }
         });
 
-        control.setOnViewModelEvent(new EventHandler<ViewModelEvent>() {
-            @Override public void handle(final ViewModelEvent EVENT) {
+        control.setOnStyleModelEvent(new EventHandler<StyleModelEvent>() {
+            @Override
+            public void handle(final StyleModelEvent EVENT) {
                 // Trigger repaint
-                isDirty = true;
+                addBindings();
+                paint();
             }
         });
 
@@ -390,6 +410,8 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
                     currentValue.set(newValue.doubleValue());
                     updateBar();
                 }
+
+                checkMarkers(control, oldValue.doubleValue(), newValue.doubleValue());
             }
         });
 
@@ -585,7 +607,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
                              glowOn,
                              minMeasured,
                              maxMeasured,
-                             indicators,
+            markers,
                              lcd,
                              lcdContent,
                              bar,
@@ -1020,9 +1042,10 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         final DropShadow GLOW_EFFECT = new DropShadow();
         GLOW_EFFECT.setRadius(0.15 * SIZE);
         GLOW_EFFECT.setBlurType(BlurType.GAUSSIAN);
-        if (!GLOW_EFFECT.colorProperty().isBound()) {
-            GLOW_EFFECT.colorProperty().bind(control.glowColorProperty());
+        if (GLOW_EFFECT.colorProperty().isBound()) {
+            GLOW_EFFECT.colorProperty().unbind();
         }
+        GLOW_EFFECT.colorProperty().bind(control.glowColorProperty());
         GLOW_RING.effectProperty().set(GLOW_EFFECT);
 
         glowOn.getChildren().addAll(GLOW_RING);
@@ -1034,25 +1057,25 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         final double WIDTH = gaugeBounds.getWidth();
         final double HEIGHT = gaugeBounds.getHeight();
 
-        indicators.getChildren().clear();
+        markers.getChildren().clear();
 
         final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         IBOUNDS.setStroke(null);
-        indicators.getChildren().add(IBOUNDS);
-        indicators.getTransforms().clear();
+        markers.getChildren().add(IBOUNDS);
+        markers.getTransforms().clear();
 
-        for (final Indicator indicator : control.getIndicators()) {
+        for (final Marker marker : control.getMarkers()) {
             final Group ARROW;
             if (WIDTH <= HEIGHT) {
                 // vertical
-                ARROW = createIndicator(SIZE, indicator, new Point2D(0.59 * WIDTH, 0.8345 * HEIGHT - SIZE * 0.0210280374 - Math.abs(indicator.getIndicatorValue()) * stepsize));
+                ARROW = createIndicator(SIZE, marker, new Point2D(0.59 * WIDTH, 0.8345 * HEIGHT - SIZE * 0.0210280374 - Math.abs(marker.getValue()) * stepsize));
                 ARROW.setRotate(90);
             } else {
                 // horizontal
-                ARROW = createIndicator(SIZE, indicator, new Point2D(0.1657142857142857 * WIDTH - SIZE * 0.0210280374 + Math.abs(indicator.getIndicatorValue()) * stepsize, 0.36 * HEIGHT));
+                ARROW = createIndicator(SIZE, marker, new Point2D(0.1657142857142857 * WIDTH - SIZE * 0.0210280374 + Math.abs(marker.getValue()) * stepsize, 0.36 * HEIGHT));
             }
-            indicators.getChildren().add(ARROW);
+            markers.getChildren().add(ARROW);
         }
     }
 
@@ -1441,9 +1464,10 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         lcdUnitString.setText(control.isLcdValueCoupled() ? control.getUnit() : control.getLcdUnit());
         lcdUnitString.setTextOrigin(VPos.BOTTOM);
         lcdUnitString.setTextAlignment(TextAlignment.RIGHT);
-        if (!lcdUnitString.visibleProperty().isBound()) {
-            lcdUnitString.visibleProperty().bind(control.lcdUnitVisibleProperty());
+        if (lcdUnitString.visibleProperty().isBound()) {
+            lcdUnitString.visibleProperty().unbind();
         }
+        lcdUnitString.visibleProperty().bind(control.lcdUnitVisibleProperty());
         if (control.isLcdUnitVisible()) {
             lcdUnitString.setX(LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdUnitString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0625);
             lcdUnitString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / UNIT_Y_OFFSET - (lcdValueString.getLayoutBounds().getHeight() * 0.05));
@@ -1542,7 +1566,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         MINOR_TICKMARKS_PATH.strokeLineJoinProperty().set(StrokeLineJoin.BEVEL);
         MINOR_TICKMARKS_PATH.strokeWidthProperty().set(0.0015 * SIZE);
 
-        final ArrayList<Text> tickmarkLabel = new ArrayList<>();
+        final ArrayList<Text> tickmarkLabel = new ArrayList<Text>();
 
         // Set stroke dependend on the current backgrounddesign
         MAJOR_TICKMARKS_PATH.setId(control.getBackgroundDesign().CSS_BACKGROUND);

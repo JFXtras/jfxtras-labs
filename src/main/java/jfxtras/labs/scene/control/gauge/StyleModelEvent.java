@@ -38,14 +38,14 @@ import javafx.event.EventType;
  * Date: 29.01.12
  * Time: 09:55
  */
-public class ViewModelEvent extends Event {
+public class StyleModelEvent extends Event {
 
     // ******************** Constructors **************************************
-    public ViewModelEvent() {
-        super(new EventType<ViewModelEvent>());
+    public StyleModelEvent() {
+        super(new EventType<StyleModelEvent>());
     }
 
-    public ViewModelEvent(final Object source, final EventTarget target) {
-        super(source, target, new EventType<ViewModelEvent>());
+    public StyleModelEvent(final Object source, final EventTarget target) {
+        super(source, target, new EventType<StyleModelEvent>());
     }
 }

@@ -29,10 +29,10 @@ package jfxtras.labs.internal.scene.control.skin;
 
 import jfxtras.labs.internal.scene.control.behavior.RadialBehavior;
 import jfxtras.labs.scene.control.gauge.Gauge.PointerType;
-import jfxtras.labs.scene.control.gauge.ModelEvent;
+import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
 import jfxtras.labs.scene.control.gauge.Radial;
 import jfxtras.labs.scene.control.gauge.Section;
-import jfxtras.labs.scene.control.gauge.ViewModelEvent;
+import jfxtras.labs.scene.control.gauge.StyleModelEvent;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
@@ -93,7 +93,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     private Group            trend;
     private Group            sections;
     private Group            areas;
-    private Group            indicators;
+    private Group            markers;
     private Group            titleAndUnit;
     private Group            tickmarks;
     private Group            glowOff;
@@ -109,7 +109,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     private Group            minMeasured;
     private Group            maxMeasured;
     private Group            pointer;
-    private Group            bargraph;
+    private Group            bargraphOff;
     private Group            bargraphOn;
     private Group            ledOff;
     private Group            ledOn;
@@ -121,7 +121,8 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     private double           negativeOffset;
     private Point2D          center;
     private int              noOfLeds;
-    private ArrayList<Shape> leds;
+    private ArrayList<Shape> ledsOff;
+    private ArrayList<Shape> ledsOn;
     private DoubleProperty   currentValue;
     private DoubleProperty   formerValue;
     private DoubleProperty   lcdValue;
@@ -150,12 +151,12 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         trend                  = new Group();
         sections               = new Group();
         areas                  = new Group();
-        indicators             = new Group();
+        markers                = new Group();
         titleAndUnit           = new Group();
         tickmarks              = new Group();
         glowOff                = new Group();
         glowOn                 = new Group();
-        glowColors             = new ArrayList<>(4);
+        glowColors             = new ArrayList<Color>(4);
         lcd                    = new Group();
         lcdContent             = new Group();
         lcdValueString         = new Text();
@@ -166,7 +167,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         minMeasured            = new Group();
         maxMeasured            = new Group();
         pointer                = new Group();
-        bargraph               = new Group();
+        bargraphOff            = new Group();
         bargraphOn             = new Group();
         ledOff                 = new Group();
         ledOn                  = new Group();
@@ -177,7 +178,8 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         gaugeValue             = new SimpleDoubleProperty(0);
         negativeOffset         = 0;
         noOfLeds               = 60;
-        leds                   = new ArrayList<>(60);
+        ledsOff                = new ArrayList<Shape>(noOfLeds);
+        ledsOn                 = new ArrayList<Shape>(noOfLeds);
         currentValue           = new SimpleDoubleProperty(0);
         formerValue            = new SimpleDoubleProperty(0);
         lcdValue               = new SimpleDoubleProperty(0);
@@ -317,106 +319,133 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     }
 
     private void addBindings() {
-        if (!frame.visibleProperty().isBound()) {
-            frame.visibleProperty().bind(control.frameVisibleProperty());
+        if (frame.visibleProperty().isBound()) {
+            frame.visibleProperty().unbind();
+        }
+        frame.visibleProperty().bind(control.frameVisibleProperty());
+
+
+        if (background.visibleProperty().isBound()) {
+            background.visibleProperty().unbind();
+        }
+        background.visibleProperty().bind(control.backgroundVisibleProperty());
+
+
+        if (sections.visibleProperty().isBound()) {
+            sections.visibleProperty().unbind();
+        }
+        sections.visibleProperty().bind(control.sectionsVisibleProperty());
+
+
+        if (areas.visibleProperty().isBound()) {
+            areas.visibleProperty().unbind();
+        }
+        areas.visibleProperty().bind(control.areasVisibleProperty());
+
+        if (bargraphOff.visibleProperty().isBound()) {
+            bargraphOff.visibleProperty().unbind();
+        }
+        bargraphOff.visibleProperty().bind(control.bargraphProperty());
+        bargraphOn.visibleProperty().bind(control.bargraphProperty());
+        pointer.setVisible(!bargraphOff.isVisible());
+        knobs.setVisible(!bargraphOff.isVisible());
+        if (bargraphOff.isVisible()){
+            areas.setOpacity(0.0);
+            sections.setOpacity(0.0);
+        } else {
+            areas.setOpacity(1.0);
+            sections.setOpacity(1.0);
         }
 
-        if (!background.visibleProperty().isBound()) {
-            background.visibleProperty().bind(control.backgroundVisibleProperty());
+        if (markers.visibleProperty().isBound()) {
+            markers.visibleProperty().unbind();
+        }
+        markers.visibleProperty().bind(control.markersVisibleProperty());
+
+        if (ledOff.visibleProperty().isBound()) {
+            ledOff.visibleProperty().unbind();
+        }
+        ledOff.visibleProperty().bind(control.ledVisibleProperty());
+
+        if (ledOn.visibleProperty().isBound()) {
+            ledOn.visibleProperty().unbind();
+        }
+        ledOn.visibleProperty().bind(control.ledVisibleProperty());
+
+        if (userLedOff.visibleProperty().isBound()) {
+            userLedOff.visibleProperty().unbind();
+        }
+        userLedOff.visibleProperty().bind(control.userLedVisibleProperty());
+
+        if (userLedOn.visibleProperty().isBound()) {
+            userLedOn.visibleProperty().unbind();
+        }
+        userLedOn.visibleProperty().bind(control.userLedVisibleProperty());
+
+        if (threshold.visibleProperty().isBound()) {
+            threshold.visibleProperty().unbind();
+        }
+        threshold.visibleProperty().bind(control.thresholdVisibleProperty());
+
+        if (minMeasured.visibleProperty().isBound()) {
+            minMeasured.visibleProperty().unbind();
+        }
+        minMeasured.visibleProperty().bind(control.minMeasuredValueVisibleProperty());
+
+        if (maxMeasured.visibleProperty().isBound()) {
+            maxMeasured.visibleProperty().unbind();
+        }
+        maxMeasured.visibleProperty().bind(control.maxMeasuredValueVisibleProperty());
+
+        if (lcdValue.isBound()) {
+            lcdValue.unbind();
+        }
+        lcdValue.bind(control.valueProperty());
+
+        if (lcd.visibleProperty().isBound()) {
+            lcd.visibleProperty().unbind();
+        }
+        lcd.visibleProperty().bind(control.lcdVisibleProperty());
+
+        if (lcdContent.visibleProperty().isBound()) {
+            lcdContent.visibleProperty().unbind();
+        }
+        lcdContent.visibleProperty().bind(control.lcdVisibleProperty());
+
+        if (lcdThresholdIndicator.visibleProperty().isBound()) {
+            lcdThresholdIndicator.visibleProperty().unbind();
+        }
+        if (control.isLcdThresholdVisible() && control.isLcdValueCoupled()) {
+            lcdThresholdIndicator.visibleProperty().bind(control.thresholdExceededProperty());
         }
 
-        if (!sections.visibleProperty().isBound()) {
-            sections.visibleProperty().bind(control.sectionsVisibleProperty());
+        if (foreground.visibleProperty().isBound()) {
+            foreground.visibleProperty().unbind();
         }
+        foreground.visibleProperty().bind(control.foregroundVisibleProperty());
 
-        if (!areas.visibleProperty().isBound()) {
-            areas.visibleProperty().bind(control.areasVisibleProperty());
+        if (trend.visibleProperty().isBound()) {
+            trend.visibleProperty().unbind();
         }
-
-        if (!bargraph.visibleProperty().isBound()) {
-            bargraph.visibleProperty().bind(control.bargraphProperty());
-            pointer.setVisible(!bargraph.isVisible());
-            knobs.setVisible(!bargraph.isVisible());
-            if (bargraph.isVisible()){
-                areas.setOpacity(0.0);
-                sections.setOpacity(0.0);
-            } else {
-                areas.setOpacity(1.0);
-                sections.setOpacity(1.0);
-            }
-        }
-
-        if (!indicators.visibleProperty().isBound()) {
-            indicators.visibleProperty().bind(control.indicatorsVisibleProperty());
-        }
-
-        if (!ledOff.visibleProperty().isBound()) {
-            ledOff.visibleProperty().bind(control.ledVisibleProperty());
-        }
-
-        if (!ledOn.visibleProperty().isBound()) {
-            ledOn.visibleProperty().bind(control.ledVisibleProperty());
-        }
-
-        if (!userLedOff.visibleProperty().isBound()) {
-            userLedOff.visibleProperty().bind(control.userLedVisibleProperty());
-        }
-
-        if (!userLedOn.visibleProperty().isBound()) {
-            userLedOn.visibleProperty().bind(control.userLedVisibleProperty());
-        }
-
-        if (!threshold.visibleProperty().isBound()) {
-            threshold.visibleProperty().bind(control.thresholdVisibleProperty());
-        }
-
-        if (!minMeasured.visibleProperty().isBound()) {
-            minMeasured.visibleProperty().bind(control.minMeasuredValueVisibleProperty());
-        }
-
-        if (!maxMeasured.visibleProperty().isBound()) {
-            maxMeasured.visibleProperty().bind(control.maxMeasuredValueVisibleProperty());
-        }
-
-        if (!lcdValue.isBound()) {
-            lcdValue.bind(control.valueProperty());
-        }
-
-        if (!lcd.visibleProperty().isBound()) {
-            lcd.visibleProperty().bind(control.lcdVisibleProperty());
-        }
-
-        if (!lcdContent.visibleProperty().isBound()) {
-            lcdContent.visibleProperty().bind(control.lcdVisibleProperty());
-        }
-
-        if (!lcdThresholdIndicator.visibleProperty().isBound()) {
-            if (control.isLcdThresholdVisible() && control.isLcdValueCoupled()) {
-                lcdThresholdIndicator.visibleProperty().bind(control.thresholdExceededProperty());
-            }
-        }
-
-        if (!foreground.visibleProperty().isBound()) {
-            foreground.visibleProperty().bind(control.foregroundVisibleProperty());
-        }
-
-        if (!trend.visibleProperty().isBound()) {
-            trend.visibleProperty().bind(control.trendVisibleProperty());
-        }
+        trend.visibleProperty().bind(control.trendVisibleProperty());
     }
 
     private void addListeners() {
-        control.setOnModelEvent(new EventHandler<ModelEvent>() {
-            @Override public void handle(final ModelEvent EVENT) {
+        control.setOnGaugeModelEvent(new EventHandler<GaugeModelEvent>() {
+            @Override
+            public void handle(final GaugeModelEvent EVENT) {
                 // Trigger repaint
-                isDirty = true;
+                addBindings();
+                paint();
             }
         });
 
-        control.setOnViewModelEvent(new EventHandler<ViewModelEvent>() {
-            @Override public void handle(final ViewModelEvent EVENT) {
+        control.setOnStyleModelEvent(new EventHandler<StyleModelEvent>() {
+            @Override
+            public void handle(final StyleModelEvent EVENT) {
                 // Trigger repaint
-                isDirty = true;
+                addBindings();
+                paint();
             }
         });
 
@@ -453,6 +482,8 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                     pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET + (control.getMinValue() * control.getAngleStep()), center.getX(), center.getY()));
                     pointer.getTransforms().add(pointerRotation);
                 }
+
+                checkMarkers(control, oldValue.doubleValue(), newValue.doubleValue());
 
                 // Highlight sections
                 if (control.isSectionsHighlighting()) {
@@ -502,22 +533,24 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         gaugeValue.addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                if (bargraph.isVisible()) {
+                if (bargraphOff.isVisible()) {
                     int CURRENT_LED_INDEX = noOfLeds - 1 - (int) ((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
                     int FORMER_LED_INDEX = noOfLeds - 1 - (int) ((oldValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
                     final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int)((control.getThreshold() - control.getMinValue()) * control.getAngleStep() / 5.0);
 
                     if (Double.compare(control.getValue(), formerValue.doubleValue()) >= 0) {
                         for (int i = CURRENT_LED_INDEX ; i <= FORMER_LED_INDEX ; i++) {
-                            leds.get(i).setId("bargraph-on");
+                            ledsOn.get(i).setVisible(true);
                         }
                     } else {
                         for (int i = CURRENT_LED_INDEX ; i >= FORMER_LED_INDEX ; i--) {
-                            leds.get(i).setId("bargraph-off");
+                            ledsOn.get(i).setVisible(false);
                         }
                     }
                     if (control.isThresholdVisible()) {
-                        leds.get(THRESHOLD_LED_INDEX).setId("bargraph-threshold");
+                        ledsOn.get(THRESHOLD_LED_INDEX).setStyle(control.getThresholdColor().CSS);
+                        ledsOn.get(THRESHOLD_LED_INDEX).setId("bargraph-threshold");
+                        ledsOn.get(THRESHOLD_LED_INDEX).setVisible(true);
                     }
                 } else {
                     pointer.getTransforms().clear();
@@ -572,6 +605,8 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             drawPointer();
         } else if (PROPERTY == "VALUE_COLOR") {
             drawPointer();
+        } else if(PROPERTY == "THRESHOLD_COLOR") {
+            drawThreshold();
         } else if (PROPERTY == "FOREGROUND_TYPE") {
             drawCircularForeground(control, foreground, gaugeBounds);
         } else if (PROPERTY == "LCD_DESIGN") {
@@ -651,7 +686,13 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         } else if (PROPERTY == "TREND") {
             drawCircularTrend(control, trend, gaugeBounds);
         } else if (PROPERTY == "SIMPLE_GRADIENT_BASE") {
-            isDirty = true;
+            paint();
+        } else if (PROPERTY == "TICKMARK_GLOW_VISIBILITY") {
+            drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
+        } else if (PROPERTY == "POINTER_GLOW") {
+            drawPointer();
+        } else if (PROPERTY == "POINTER_SHADOW") {
+            drawPointer();
         }
 
     }
@@ -683,11 +724,12 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         drawCircularGlowOn(control, glowOn, glowColors, gaugeBounds);
         drawMinMeasuredIndicator();
         drawMaxMeasuredIndicator();
-        drawCircularIndicators(control, indicators, center, gaugeBounds);
+        drawCircularIndicators(control, markers, center, gaugeBounds);
         drawCircularLcd(control, lcd, gaugeBounds);
         drawLcdContent();
         drawPointer();
-        drawCircularBargraph(control, bargraph, noOfLeds, leds, false, center, gaugeBounds);
+        drawCircularBargraph(control, bargraphOff, noOfLeds, ledsOff, false, true, center, gaugeBounds);
+        drawCircularBargraph(control, bargraphOn, noOfLeds, ledsOn, true, false, center, gaugeBounds);
         drawCircularKnobs(control, knobs, center, gaugeBounds);
         drawCircularForeground(control, foreground, gaugeBounds);
 
@@ -708,11 +750,11 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                              lcd,
                              lcdContent,
                              pointer,
-                             bargraph,
+                             bargraphOff,
                              bargraphOn,
                              minMeasured,
                              maxMeasured,
-                             indicators,
+            markers,
                              knobs,
                              foreground);
     }
@@ -884,7 +926,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         THRESHOLD.setStrokeLineCap(StrokeLineCap.ROUND);
         THRESHOLD.setStrokeLineJoin(StrokeLineJoin.ROUND);
         THRESHOLD.setStrokeWidth(0.002 * HEIGHT);
-
         THRESHOLD.getStyleClass().add("root");
         THRESHOLD.setStyle(control.getThresholdColor().CSS);
         THRESHOLD.setId("threshold-gradient");
@@ -1302,12 +1343,38 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 break;
         }
 
-        if (control.isPointerShadowVisible()) {
-            final DropShadow SHADOW = new DropShadow();
+        // Pointer shadow
+        final DropShadow SHADOW;
+        if (control.isPointerShadowEnabled()) {
+            SHADOW = new DropShadow();
             SHADOW.setHeight(0.03 * WIDTH);
             SHADOW.setWidth(0.03 * HEIGHT);
             SHADOW.setRadius(0.03 * WIDTH);
             SHADOW.setColor(Color.color(0, 0, 0, 0.75));
+        } else {
+            SHADOW = null;
+        }
+
+        // Pointer glow
+        if (control.isPointerGlowEnabled()) {
+            final DropShadow GLOW = new DropShadow();
+            GLOW.setWidth(0.04 * SIZE);
+            GLOW.setHeight(0.04 * SIZE);
+            GLOW.setOffsetX(0.0);
+            GLOW.setOffsetY(0.0);
+            GLOW.setRadius(0.04 * SIZE);
+            GLOW.setColor(control.getValueColor().COLOR);
+            GLOW.setBlurType(BlurType.GAUSSIAN);
+            if (control.getPointerType() == PointerType.TYPE9) {
+                POINTER.setEffect(SHADOW);
+                POINTER_FRONT.setEffect(GLOW);
+            } else {
+                if (control.isPointerShadowEnabled()) {
+                    GLOW.inputProperty().set(SHADOW);
+                }
+                POINTER.setEffect(GLOW);
+            }
+        } else {
             POINTER.setEffect(SHADOW);
         }
 
@@ -1350,9 +1417,10 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         lcdUnitString.setText(control.isLcdValueCoupled() ? control.getUnit() : control.getLcdUnit());
         lcdUnitString.setTextOrigin(VPos.BOTTOM);
         lcdUnitString.setTextAlignment(TextAlignment.RIGHT);
-        if (!lcdUnitString.visibleProperty().isBound()) {
-            lcdUnitString.visibleProperty().bind(control.lcdUnitVisibleProperty());
+        if (lcdUnitString.visibleProperty().isBound()) {
+            lcdUnitString.visibleProperty().unbind();
         }
+        lcdUnitString.visibleProperty().bind(control.lcdUnitVisibleProperty());
         if (control.isLcdUnitVisible()) {
             lcdUnitString.setX(LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdUnitString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0625);
             lcdUnitString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / UNIT_Y_OFFSET - (lcdValueString.getLayoutBounds().getHeight() * 0.05));

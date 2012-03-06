@@ -56,7 +56,7 @@ import javafx.scene.paint.Color;
  * Date: 29.01.12
  * Time: 09:47
  */
-public class ViewModel {
+public class StyleModel {
     private BooleanProperty                      bargraph;
     private BooleanProperty                      minMeasuredValueVisible;
     private BooleanProperty                      maxMeasuredValueVisible;
@@ -70,7 +70,8 @@ public class ViewModel {
     private ObjectProperty<KnobColor>            knobColor;
     private BooleanProperty                      postsVisible;
     private ObjectProperty<PointerType>          pointerType;
-    private BooleanProperty                      pointerShadowVisible;
+    private BooleanProperty                      pointerShadowEnabled;
+    private BooleanProperty                      pointerGlowEnabled;
     private ObjectProperty<ColorDef>             valueColor;
     private BooleanProperty                      ledVisible;
     private ObjectProperty<LedColor>             ledColor;
@@ -102,12 +103,14 @@ public class ViewModel {
     private ObjectProperty<TicklabelOrientation> tickLabelOrientation;
     private ObjectProperty<NumberFormat>         tickLabelNumberFormat;
     private ObjectProperty<Point2D>              tickmarksOffset;
+    private BooleanProperty                      tickmarkGlowEnabled;
+    private ObjectProperty<Color>                tickmarkGlowColor;
     private BooleanProperty                      sectionsVisible;
     private BooleanProperty                      expandedSections;
     private BooleanProperty                      sectionsHighlighting;
     private BooleanProperty                      areasVisible;
     private BooleanProperty                      areasHighlighting;
-    private BooleanProperty                      indicatorsVisible;
+    private BooleanProperty                      markersVisible;
     private ObjectProperty<Color>                textureColor;
     private ObjectProperty<Color>                simpleGradientBaseColor;
     private BooleanProperty                      titleVisible;
@@ -119,33 +122,34 @@ public class ViewModel {
 
 
     // ******************** Constructors **************************************
-    public ViewModel() {
+    public StyleModel() {
         bargraph                        = new SimpleBooleanProperty(false);
         minMeasuredValueVisible         = new SimpleBooleanProperty(false);
         maxMeasuredValueVisible         = new SimpleBooleanProperty(false);
         thresholdVisible                = new SimpleBooleanProperty(false);
-        thresholdColor                  = new SimpleObjectProperty<>(Gauge.ThresholdColor.RED);
-        frameDesign                     = new SimpleObjectProperty<>(Gauge.FrameDesign.METAL);
+        thresholdColor                  = new SimpleObjectProperty<ThresholdColor>(Gauge.ThresholdColor.RED);
+        frameDesign                     = new SimpleObjectProperty<FrameDesign>(Gauge.FrameDesign.METAL);
         frameVisible                    = new SimpleBooleanProperty(true);
-        backgroundDesign                = new SimpleObjectProperty<>(Gauge.BackgroundDesign.DARK_GRAY);
+        backgroundDesign                = new SimpleObjectProperty<BackgroundDesign>(Gauge.BackgroundDesign.DARK_GRAY);
         backgroundVisible               = new SimpleBooleanProperty(true);
-        knobDesign                      = new SimpleObjectProperty<>(Gauge.KnobDesign.STANDARD);
-        knobColor                       = new SimpleObjectProperty<>(Gauge.KnobColor.SILVER);
+        knobDesign                      = new SimpleObjectProperty<KnobDesign>(Gauge.KnobDesign.STANDARD);
+        knobColor                       = new SimpleObjectProperty<KnobColor>(Gauge.KnobColor.SILVER);
         postsVisible                    = new SimpleBooleanProperty(true);
-        pointerType                     = new SimpleObjectProperty<>(Gauge.PointerType.TYPE1);
-        valueColor                      = new SimpleObjectProperty<>(ColorDef.RED);
-        pointerShadowVisible            = new SimpleBooleanProperty(true);
+        pointerType                     = new SimpleObjectProperty<PointerType>(Gauge.PointerType.TYPE1);
+        valueColor                      = new SimpleObjectProperty<ColorDef>(ColorDef.RED);
+        pointerShadowEnabled            = new SimpleBooleanProperty(true);
+        pointerGlowEnabled              = new SimpleBooleanProperty(false);
         ledVisible                      = new SimpleBooleanProperty(true);
-        ledColor                        = new SimpleObjectProperty<>(LedColor.RED);
+        ledColor                        = new SimpleObjectProperty<LedColor>(LedColor.RED);
         ledBlinking                     = new SimpleBooleanProperty(false);
         userLedVisible                  = new SimpleBooleanProperty(false);
-        userLedColor                    = new SimpleObjectProperty<>(LedColor.BLUE);
+        userLedColor                    = new SimpleObjectProperty<LedColor>(LedColor.BLUE);
         userLedBlinking                 = new SimpleBooleanProperty(false);
         userLedOn                       = new SimpleBooleanProperty(false);
-        foregroundType                  = new SimpleObjectProperty<>(Radial.ForegroundType.TYPE1);
+        foregroundType                  = new SimpleObjectProperty<ForegroundType>(Radial.ForegroundType.TYPE1);
         foregroundVisible               = new SimpleBooleanProperty(true);
         lcdThresholdVisible             = new SimpleBooleanProperty(false);
-        lcdDesign                       = new SimpleObjectProperty<>(LcdDesign.WHITE);
+        lcdDesign                       = new SimpleObjectProperty<LcdDesign>(LcdDesign.WHITE);
         lcdVisible                      = new SimpleBooleanProperty(true);
         lcdUnitVisible                  = new SimpleBooleanProperty(false);
         lcdDigitalFontEnabled           = new SimpleBooleanProperty(false);
@@ -154,54 +158,56 @@ public class ViewModel {
         lcdNumberSystemVisible          = new SimpleBooleanProperty(false);
         lcdBlinking                     = new SimpleBooleanProperty(false);
         glowVisible                     = new SimpleBooleanProperty(false);
-        glowColor                       = new SimpleObjectProperty<>(Color.rgb(51, 255, 255));
+        glowColor                       = new SimpleObjectProperty<Color>(Color.rgb(51, 255, 255));
         glowOn                          = new SimpleBooleanProperty(false);
         pulsatingGlow                   = new SimpleBooleanProperty(false);
         tickmarksVisible                = new SimpleBooleanProperty(true);
         majorTicksVisible               = new SimpleBooleanProperty(true);
-        majorTickmarkType               = new SimpleObjectProperty<>(TickmarkType.LINE);
+        majorTickmarkType               = new SimpleObjectProperty<TickmarkType>(TickmarkType.LINE);
         minorTicksVisible               = new SimpleBooleanProperty(true);
         tickLabelsVisible               = new SimpleBooleanProperty(true);
-        tickLabelOrientation            = new SimpleObjectProperty<>(Gauge.TicklabelOrientation.NORMAL);
-        tickLabelNumberFormat           = new SimpleObjectProperty<>(Gauge.NumberFormat.AUTO);
-        tickmarksOffset                 = new SimpleObjectProperty<>(new Point2D(0, 0));
+        tickLabelOrientation            = new SimpleObjectProperty<TicklabelOrientation>(Gauge.TicklabelOrientation.NORMAL);
+        tickLabelNumberFormat           = new SimpleObjectProperty<NumberFormat>(Gauge.NumberFormat.AUTO);
+        tickmarksOffset                 = new SimpleObjectProperty<Point2D>(new Point2D(0, 0));
+        tickmarkGlowEnabled             = new SimpleBooleanProperty(false);
+        tickmarkGlowColor               = new SimpleObjectProperty<Color>(Color.color(0.5, 0.7, 0.9, 0.8));
         sectionsVisible                 = new SimpleBooleanProperty(false);
         expandedSections                = new SimpleBooleanProperty(false);
         sectionsHighlighting            = new SimpleBooleanProperty(false);
         areasVisible                    = new SimpleBooleanProperty(false);
         areasHighlighting               = new SimpleBooleanProperty(false);
-        indicatorsVisible               = new SimpleBooleanProperty(false);
-        textureColor                    = new SimpleObjectProperty<>(Color.rgb(104, 104, 104));
-        simpleGradientBaseColor         = new SimpleObjectProperty<>(Color.rgb(213, 0, 0));
+        markersVisible                  = new SimpleBooleanProperty(false);
+        textureColor                    = new SimpleObjectProperty<Color>(Color.rgb(104, 104, 104));
+        simpleGradientBaseColor         = new SimpleObjectProperty<Color>(Color.rgb(213, 0, 0));
         titleVisible                    = new SimpleBooleanProperty(true);
         unitVisible                     = new SimpleBooleanProperty(true);
         trendVisible                    = new SimpleBooleanProperty(false);
-        trendUpColor                    = new SimpleObjectProperty<>(Color.LIME);
-        trendSteadyColor                = new SimpleObjectProperty<>(Color.LIGHTBLUE);
-        trendDownColor                  = new SimpleObjectProperty<>(Color.RED);
+        trendUpColor                    = new SimpleObjectProperty<Color>(Color.LIME);
+        trendSteadyColor                = new SimpleObjectProperty<Color>(Color.LIGHTBLUE);
+        trendDownColor                  = new SimpleObjectProperty<Color>(Color.RED);
     }
 
 
     // ******************** Event handling ************************************
-    public final ObjectProperty<EventHandler<ViewModelEvent>> onViewModelEventProperty() {
-        return onViewModelEvent;
+    public final ObjectProperty<EventHandler<StyleModelEvent>> onStyleModelEventProperty() {
+        return onStyleModelEvent;
     }
 
-    public final void setOnViewModelEvent(final EventHandler<ViewModelEvent> HANDLER) {
-        onViewModelEventProperty().set(HANDLER);
+    public final void setOnStyleModelEvent(final EventHandler<StyleModelEvent> HANDLER) {
+        onStyleModelEventProperty().set(HANDLER);
     }
 
-    public final EventHandler<ViewModelEvent> getOnViewModelEvent() {
-        return onViewModelEventProperty().get();
+    public final EventHandler<StyleModelEvent> getOnStyleModelEvent() {
+        return onStyleModelEventProperty().get();
     }
 
-    private ObjectProperty<EventHandler<ViewModelEvent>> onViewModelEvent = new SimpleObjectProperty<>();
+    private ObjectProperty<EventHandler<StyleModelEvent>> onStyleModelEvent = new SimpleObjectProperty<EventHandler<StyleModelEvent>>();
 
-    public void fireViewModelEvent() {
-        final EventHandler<ViewModelEvent> VIEW_MODEL_EVENT_HANDLER = getOnViewModelEvent();
+    public void fireStyleModelEvent() {
+        final EventHandler<StyleModelEvent> VIEW_MODEL_EVENT_HANDLER = getOnStyleModelEvent();
         if (VIEW_MODEL_EVENT_HANDLER != null) {
-            final ViewModelEvent VIEW_MODEL_EVENT = new ViewModelEvent();
-            VIEW_MODEL_EVENT_HANDLER.handle(VIEW_MODEL_EVENT);
+            final StyleModelEvent STYLE_MODEL_EVENT = new StyleModelEvent();
+            VIEW_MODEL_EVENT_HANDLER.handle(STYLE_MODEL_EVENT);
         }
     }
 
@@ -363,18 +369,6 @@ public class ViewModel {
         return pointerType;
     }
 
-    public final boolean isPointerShadowVisible() {
-        return pointerShadowVisible.get();
-    }
-
-    public final void setPointerShadowVisible(final boolean POINTER_SHADOW_VISIBLE) {
-        pointerShadowVisible.set(POINTER_SHADOW_VISIBLE);
-    }
-
-    public final BooleanProperty pointerShadowVisibleProperty() {
-        return pointerShadowVisible;
-    }
-
     public final ColorDef getValueColor() {
         return valueColor.get();
     }
@@ -385,6 +379,30 @@ public class ViewModel {
 
     public final ObjectProperty<ColorDef> valueColorProperty() {
         return valueColor;
+    }
+
+    public final boolean isPointerGlowEnabled() {
+        return pointerGlowEnabled.get();
+    }
+
+    public final void setPointerGlowEnabled(final boolean POINTER_GLOW_ENABLED) {
+        pointerGlowEnabled.set(POINTER_GLOW_ENABLED);
+    }
+
+    public final BooleanProperty pointerGlowEnabledProperty() {
+        return pointerGlowEnabled;
+    }
+
+    public final boolean isPointerShadowEnabled() {
+        return pointerShadowEnabled.get();
+    }
+
+    public final void setPointerShadowEnabled(final boolean POINTER_SHADOW_ENABLED) {
+        pointerShadowEnabled.set(POINTER_SHADOW_ENABLED);
+    }
+
+    public final BooleanProperty pointerShadowEnabledProperty() {
+        return pointerShadowEnabled;
     }
 
     public final boolean isLedVisible() {
@@ -748,6 +766,30 @@ public class ViewModel {
         return tickmarksOffset;
     }
 
+    public final boolean isTickmarkGlowEnabled() {
+        return tickmarkGlowEnabled.get();
+    }
+
+    public final void setTickmarkGlowEnabled(final boolean TICKMARK_GLOW_ENABLED) {
+        tickmarkGlowEnabled.set(TICKMARK_GLOW_ENABLED);
+    }
+
+    public final BooleanProperty tickmarkGlowEnabledProperty() {
+        return tickmarkGlowEnabled;
+    }
+
+    public final Color getTickmarkGlowColor() {
+        return tickmarkGlowColor.get();
+    }
+
+    public final void setTickmarkGlowColor(final Color TICKMARK_GLOW_COLOR) {
+        tickmarkGlowColor.set(TICKMARK_GLOW_COLOR);
+    }
+
+    public final ObjectProperty<Color> tickmarkGlowColorProperty() {
+        return tickmarkGlowColor;
+    }
+
     public final boolean isSectionsVisible() {
         return sectionsVisible.get();
     }
@@ -808,16 +850,16 @@ public class ViewModel {
         return areasHighlighting;
     }
 
-    public final boolean isIndicatorsVisible() {
-        return indicatorsVisible.get();
+    public final boolean isMarkersVisible() {
+        return markersVisible.get();
     }
 
-    public final void setIndicatorsVisible(final boolean INDICATORS_VISIBLE) {
-        indicatorsVisible.set(INDICATORS_VISIBLE);
+    public final void setMarkersVisible(final boolean MARKERS_VISIBLE) {
+        markersVisible.set(MARKERS_VISIBLE);
     }
 
-    public final BooleanProperty indicatorsVisibleProperty() {
-        return indicatorsVisible;
+    public final BooleanProperty markersVisibleProperty() {
+        return markersVisible;
     }
 
     public final Color getTextureColor() {

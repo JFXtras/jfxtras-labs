@@ -53,7 +53,7 @@ import java.util.List;
  * Date: 02.01.12
  * Time: 17:14
  */
-public class Model {
+public class GaugeModel {
     private DoubleProperty               value;
     private BooleanProperty              valueAnimationEnabled;
     private DoubleProperty               animationDuration;
@@ -84,11 +84,11 @@ public class Model {
     private ObjectProperty<Trend>        trend;
     private ObservableList<Section>      sections;
     private ObservableList<Section>      areas;
-    private ObservableList<Indicator>    indicators;
+    private ObservableList<Marker>       markers;
 
 
     // ******************** Constructors **************************************
-    public Model() {
+    public GaugeModel() {
         value                           = new SimpleDoubleProperty(0);
         valueAnimationEnabled           = new SimpleBooleanProperty(true);
         animationDuration               = new SimpleDoubleProperty(800);
@@ -111,7 +111,7 @@ public class Model {
         lcdThreshold                    = new SimpleDoubleProperty(50);
         lcdThresholdBehaviorInverted    = new SimpleBooleanProperty(false);
         lcdUnit                         = new SimpleStringProperty("");
-        lcdNumberSystem                 = new SimpleObjectProperty<>(NumberSystem.DECIMAL);
+        lcdNumberSystem                 = new SimpleObjectProperty<NumberSystem>(NumberSystem.DECIMAL);
         maxNoOfMajorTicks               = new SimpleIntegerProperty(10);
         maxNoOfMinorTicks               = new SimpleIntegerProperty(10);
         majorTickSpacing                = new SimpleIntegerProperty(10);
@@ -119,30 +119,30 @@ public class Model {
         trend                           = new SimpleObjectProperty<Trend>(Trend.UNKNOWN);
         sections                        = FXCollections.observableArrayList();
         areas                           = FXCollections.observableArrayList();
-        indicators                      = FXCollections.observableArrayList();
+        markers                         = FXCollections.observableArrayList();
     }
 
 
     // ******************** Event handling ************************************
-    public final ObjectProperty<EventHandler<ModelEvent>> onModelEventProperty() {
-        return onModelEvent;
+    public final ObjectProperty<EventHandler<GaugeModelEvent>> onGaugeModelEventProperty() {
+        return onGaugeModelEvent;
     }
 
-    public final void setOnModelEvent(final EventHandler<ModelEvent> HANDLER) {
-        onModelEventProperty().set(HANDLER);
+    public final void setOnGaugeModelEvent(final EventHandler<GaugeModelEvent> HANDLER) {
+        onGaugeModelEventProperty().set(HANDLER);
     }
 
-    public final EventHandler<ModelEvent> getOnModelEvent() {
-        return onModelEventProperty().get();
+    public final EventHandler<GaugeModelEvent> getOnGaugeModelEvent() {
+        return onGaugeModelEventProperty().get();
     }
 
-    private ObjectProperty<EventHandler<ModelEvent>> onModelEvent = new SimpleObjectProperty<>();
+    private ObjectProperty<EventHandler<GaugeModelEvent>> onGaugeModelEvent = new SimpleObjectProperty<EventHandler<GaugeModelEvent>>();
 
-    public void fireModelEvent() {
-        final EventHandler<ModelEvent> MODEL_EVENT_HANDLER = getOnModelEvent();
+    public void fireGaugeModelEvent() {
+        final EventHandler<GaugeModelEvent> MODEL_EVENT_HANDLER = getOnGaugeModelEvent();
         if (MODEL_EVENT_HANDLER != null) {
-            final ModelEvent MODEL_EVENT = new ModelEvent();
-            MODEL_EVENT_HANDLER.handle(MODEL_EVENT);
+            final GaugeModelEvent GAUGE_MODEL_EVENT = new GaugeModelEvent();
+            MODEL_EVENT_HANDLER.handle(GAUGE_MODEL_EVENT);
         }
     }
 
@@ -458,7 +458,7 @@ public class Model {
     }
 
     public final List<Section> getSections() {
-        final List<Section> SECTIONS_COPY = new ArrayList<>(sections.size());
+        final List<Section> SECTIONS_COPY = new ArrayList<Section>(sections.size());
         SECTIONS_COPY.addAll(sections);
         return SECTIONS_COPY;
     }
@@ -468,7 +468,7 @@ public class Model {
         for (final Section SECTION : SECTION_ARRAY) {
             sections.add(new Section(SECTION.getStart(), SECTION.getStop(), SECTION.getColor(), SECTION.getText()));
         }
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void setSections(final List<Section> SECTIONS) {
@@ -476,28 +476,28 @@ public class Model {
         for (final Section SECTION : SECTIONS) {
             sections.add(new Section(SECTION.getStart(), SECTION.getStop(), SECTION.getColor(), SECTION.getText()));
         }
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void addSection(final Section SECTION) {
         sections.add(SECTION);
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void removeSection(final Section SECTION) {
         if (sections.contains(SECTION)) {
             sections.remove(SECTION);
         }
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void resetSections() {
         sections.clear();
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final List<Section> getAreas() {
-        final List<Section> AREAS_COPY = new ArrayList<>(areas.size());
+        final List<Section> AREAS_COPY = new ArrayList<Section>(areas.size());
         AREAS_COPY.addAll(areas);
         return AREAS_COPY;
     }
@@ -507,7 +507,7 @@ public class Model {
         for (final Section AREA : AREA_ARRAY) {
             areas.add(new Section(AREA.getStart(), AREA.getStop(), AREA.getColor(), AREA.getText()));
         }
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void setAreas(final List<Section> AREAS) {
@@ -515,63 +515,63 @@ public class Model {
         for (final Section AREA : AREAS) {
             areas.add(new Section(AREA.getStart(), AREA.getStop(), AREA.getColor(), AREA.getText()));
         }
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void addArea(final Section AREA) {
         areas.add(AREA);
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void removeArea(final Section AREA) {
         if (areas.contains(AREA)) {
             areas.remove(AREA);
         }
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
     public final void resetAreas() {
         areas.clear();
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
-    public final List<Indicator> getIndicators() {
-        final List<Indicator> INDICATORS_COPY = new ArrayList<>(indicators.size());
-        INDICATORS_COPY.addAll(indicators);
+    public final List<Marker> getMarkers() {
+        final List<Marker> INDICATORS_COPY = new ArrayList<Marker>(markers.size());
+        INDICATORS_COPY.addAll(markers);
         return INDICATORS_COPY;
     }
 
-    public final void setIndicators(final Indicator... INDICATOR_ARRAY) {
-        indicators.clear();
-        for (final Indicator INDICATOR : INDICATOR_ARRAY) {
-            indicators.add(new Indicator(INDICATOR.getIndicatorValue(), INDICATOR.getIndicatorColor(), INDICATOR.getIndicatorText(), INDICATOR.isVisible()));
+    public final void setMarkers(final Marker... MARKER_ARRAY) {
+        markers.clear();
+        for (final Marker MARKER : MARKER_ARRAY) {
+            markers.add(new Marker(MARKER.getValue(), MARKER.getColor(), MARKER.getText(), MARKER.isVisible()));
         }
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
-    public final void setIndicators(final List<Indicator> INDICATORS) {
-        indicators.clear();
-        for (final Indicator INDICATOR : INDICATORS) {
-            indicators.add(new Indicator(INDICATOR.getIndicatorValue(), INDICATOR.getIndicatorColor(), INDICATOR.getIndicatorText(), INDICATOR.isVisible()));
+    public final void setMarkers(final List<Marker> MARKERS) {
+        markers.clear();
+        for (final Marker MARKER : MARKERS) {
+            markers.add(new Marker(MARKER.getValue(), MARKER.getColor(), MARKER.getText(), MARKER.isVisible()));
         }
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
-    public final void addIndicator(final Indicator INDICATOR) {
-        indicators.add(INDICATOR);
-        fireModelEvent();
+    public final void addMarker(final Marker MARKER) {
+        markers.add(MARKER);
+        fireGaugeModelEvent();
     }
 
-    public final void removeIndicator(final Indicator INDICATOR) {
-        if (indicators.contains(INDICATOR)) {
-            indicators.remove(INDICATOR);
+    public final void removeMarker(final Marker MARKER) {
+        if (markers.contains(MARKER)) {
+            markers.remove(MARKER);
         }
-        fireModelEvent();
+        fireGaugeModelEvent();
     }
 
-    public final void resetIndicators() {
-        indicators.clear();
-        fireModelEvent();
+    public final void resetMarkers() {
+        markers.clear();
+        fireGaugeModelEvent();
     }
 
     /**

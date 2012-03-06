@@ -29,9 +29,9 @@ package jfxtras.labs.internal.scene.control.skin;
 
 import jfxtras.labs.internal.scene.control.behavior.LcdBehavior;
 import jfxtras.labs.scene.control.gauge.Lcd;
-import jfxtras.labs.scene.control.gauge.ModelEvent;
+import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
 import jfxtras.labs.scene.control.gauge.Section;
-import jfxtras.labs.scene.control.gauge.ViewModelEvent;
+import jfxtras.labs.scene.control.gauge.StyleModelEvent;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
@@ -124,7 +124,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         control                    = CONTROL;
         sections                   = new Group();
         glowOn                     = new Group();
-        glowColors                 = new ArrayList<>(4);
+        glowColors                 = new ArrayList<Color>(4);
         lcd                        = new Group();
         lcdContent                 = new Group();
         lcdValueString             = new Text();
@@ -144,7 +144,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         currentValue               = new SimpleDoubleProperty(0);
         lcdValue                   = new SimpleDoubleProperty(0);
         currentLcdValue            = new SimpleDoubleProperty(0);
-        bargraph                   = new ArrayList<>(20);
+        bargraph                   = new ArrayList<Shape>(20);
         glowPulse                  = new FadeTransition(Duration.millis(800), glowOn);
         toValueAnimation           = new Transition() {
             {
@@ -241,45 +241,54 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
     }
 
     private void addBindings() {
-        if (!sections.visibleProperty().isBound()) {
-            sections.visibleProperty().bind(control.sectionsVisibleProperty());
+        if (sections.visibleProperty().isBound()) {
+            sections.visibleProperty().unbind();
         }
+        sections.visibleProperty().bind(control.sectionsVisibleProperty());
 
-        if (!minMeasured.visibleProperty().isBound()) {
-            minMeasured.visibleProperty().bind(control.minMeasuredValueVisibleProperty());
+        if (minMeasured.visibleProperty().isBound()) {
+            minMeasured.visibleProperty().unbind();
         }
+        minMeasured.visibleProperty().bind(control.minMeasuredValueVisibleProperty());
 
-        if (!maxMeasured.visibleProperty().isBound()) {
-            maxMeasured.visibleProperty().bind(control.maxMeasuredValueVisibleProperty());
+        if (maxMeasured.visibleProperty().isBound()) {
+            maxMeasured.visibleProperty().unbind();
         }
+        maxMeasured.visibleProperty().bind(control.maxMeasuredValueVisibleProperty());
 
-        if (!lcdValue.isBound()) {
-            lcdValue.bind(control.valueProperty());
+        if (lcdValue.isBound()) {
+            lcdValue.unbind();
         }
+        lcdValue.bind(control.valueProperty());
 
-        if (!lcdMinMeasuredValue.visibleProperty().isBound()) {
-            lcdMinMeasuredValue.visibleProperty().bind(control.lcdMinMeasuredValueVisibleProperty());
+        if (lcdMinMeasuredValue.visibleProperty().isBound()) {
+            lcdMinMeasuredValue.visibleProperty().unbind();
         }
+        lcdMinMeasuredValue.visibleProperty().bind(control.lcdMinMeasuredValueVisibleProperty());
 
-        if (!lcdMaxMeasuredValue.visibleProperty().isBound()) {
-            lcdMaxMeasuredValue.visibleProperty().bind(control.lcdMaxMeasuredValueVisibleProperty());
+        if (lcdMaxMeasuredValue.visibleProperty().isBound()) {
+            lcdMinMeasuredValue.visibleProperty().unbind();
         }
+        lcdMaxMeasuredValue.visibleProperty().bind(control.lcdMaxMeasuredValueVisibleProperty());
 
-        if (!lcdFormerValue.visibleProperty().isBound()) {
-            lcdFormerValue.visibleProperty().bind(control.lcdFormerValueVisibleProperty());
+        if (lcdFormerValue.visibleProperty().isBound()) {
+            lcdFormerValue.visibleProperty().unbind();
         }
+        lcdFormerValue.visibleProperty().bind(control.lcdFormerValueVisibleProperty());
     }
 
     private void addListeners() {
-        control.setOnModelEvent(new EventHandler<ModelEvent>() {
-            @Override public void handle(final ModelEvent EVENT) {
+        control.setOnGaugeModelEvent(new EventHandler<GaugeModelEvent>() {
+            @Override
+            public void handle(final GaugeModelEvent EVENT) {
                 // Trigger repaint
                 paint();
             }
         });
 
-        control.setOnViewModelEvent(new EventHandler<ViewModelEvent>() {
-            @Override public void handle(final ViewModelEvent EVENT) {
+        control.setOnStyleModelEvent(new EventHandler<StyleModelEvent>() {
+            @Override
+            public void handle(final StyleModelEvent EVENT) {
                 // Trigger repaint
                 paint();
             }
@@ -342,6 +351,8 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
                 } else {
                     currentValue.set(newValue.doubleValue());
                 }
+
+                checkMarkers(control, oldValue.doubleValue(), newValue.doubleValue());
             }
         });
 
@@ -528,9 +539,10 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         lcdUnitString.setTextAlignment(TextAlignment.RIGHT);
 
         lcdUnitString.setText(control.isLcdValueCoupled() ? control.getUnit() : control.getLcdUnit());
-        if (!lcdUnitString.visibleProperty().isBound()) {
-            lcdUnitString.visibleProperty().bind(control.lcdUnitVisibleProperty());
+        if (lcdUnitString.visibleProperty().isBound()) {
+            lcdUnitString.visibleProperty().unbind();
         }
+        lcdUnitString.visibleProperty().bind(control.lcdUnitVisibleProperty());
 
         lcdValueOffsetLeft = SIZE * 0.04;// SIZE * 0.0151515152; // distance between value and left border
 
@@ -681,9 +693,10 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         GLOW_EFFECT.setWidth(0.6 * SIZE);
         GLOW_EFFECT.setHeight(0.6 * SIZE);
         GLOW_EFFECT.setBlurType(BlurType.GAUSSIAN);
-        if (!GLOW_EFFECT.colorProperty().isBound()) {
-            GLOW_EFFECT.colorProperty().bind(control.glowColorProperty());
+        if (GLOW_EFFECT.colorProperty().isBound()) {
+            GLOW_EFFECT.colorProperty().unbind();
         }
+        GLOW_EFFECT.colorProperty().bind(control.glowColorProperty());
         LCD_FRAME.effectProperty().set(GLOW_EFFECT);
 
         glowOn.getChildren().addAll(LCD_FRAME);
@@ -737,7 +750,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.65));
         LCD_MAIN.setEffect(INNER_SHADOW);
 
-        // Prepare the trend indicators
+        // Prepare the trend markers
         trendUp = new Path();
         trendUp.setFillRule(FillRule.EVEN_ODD);
         trendUp.getElements().add(new MoveTo(0.18181818181818182 * WIDTH, 0.9375 * HEIGHT));
@@ -1160,7 +1173,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         lcdFormerValue.setX((WIDTH - lcdFormerValue.getLayoutBounds().getWidth()) / 2.0);
         lcdFormerValue.setFontSmoothingType(FontSmoothingType.LCD);
 
-        // Update the trend indicators
+        // Update the trend markers
         if (control.isTrendVisible()) {
             switch (control.getTrend()) {
                 case UP:
