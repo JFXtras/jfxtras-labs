@@ -42,6 +42,7 @@ import javafx.event.EventType;
 import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyEvent;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 
@@ -55,6 +56,8 @@ import javafx.util.StringConverter;
  * If the value does not exist, if defined the AddCallback is called.
  * - If the AddCallback returns null, spinner will refresh showing the selected index
  * - If the AddCallback returns an Integer, spinner will jump to that index (usually the index where the new value was added).   
+ * 
+ * http://openjdk.java.net/projects/openjfx/ux/spinner/index.html
  * 
  * @author Tom Eugelink
  */

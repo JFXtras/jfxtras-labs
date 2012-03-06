@@ -3,7 +3,7 @@
 	-fx-skin: "jfxtras.labs.internal.scene.control.skin.SpinnerCaspianSkin";
 }
 
-.SpinnerCaspianSkin { /* this is not picked up, CSS should be related to the skin not control. In the end the styling above should move down to here */ 
+.SpinnerCaspianSkin {  
 	-fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
 	-fx-background-insets: 0 0 -1 0, 0, 1, 2;
 	-fx-background-radius: 5, 5, 4, 3;
@@ -11,7 +11,11 @@
 	-fx-text-fill: -fx-text-base-color;
 }
 
+/* this does not work
 .SpinnerCaspianSkin:focused { 
+}
+*/
+.spinner:focused { 
 	-fx-color: -fx-focused-base;
 	-fx-background-color: -fx-focus-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
 	-fx-background-insets: -1.4, 0, 1, 2;

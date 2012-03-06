@@ -26,16 +26,21 @@
  */
 package jfxtras.labs.scene.control;
 
+import com.sun.rowset.internal.InsertRow;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import jfxtras.labs.animation.Timer;
 import jfxtras.labs.scene.control.Spinner.ArrowDirection;
 import jfxtras.labs.util.StringConverterFactory;
 
@@ -54,6 +59,8 @@ public class SpinnerTest1 extends Application {
 	public void start(Stage stage) {
 		
 		GridPane lGridPane = new GridPane();
+		lGridPane.setVgap(5.0);
+		lGridPane.setPadding(new Insets(5.0));
 		ColumnConstraints column0 = new ColumnConstraints(10, 10, Double.MAX_VALUE);
 		column0.setHgrow(Priority.ALWAYS);
 		ColumnConstraints column1 = new ColumnConstraints(10, 10, Double.MAX_VALUE);
@@ -182,7 +189,7 @@ public class SpinnerTest1 extends Application {
 			lGridPane.add(lXSpinner, 1, lRowIdx++);
 		}
 
-        // create scene
+		// create scene
         Scene scene = new Scene(lGridPane, 400, 600);
         
         // create stage

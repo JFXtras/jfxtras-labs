@@ -110,7 +110,7 @@ public class SpinnerBehavior<T> extends BehaviorBase<Spinner<T>>
 	@Override public void mousePressed(MouseEvent evt)
 	{
 		// get the control
-		Spinner lControl = getControl();
+		Spinner<T> lControl = getControl();
 		
 		// if a control does not have the focus, request focus
 		if (!lControl.isFocused() && lControl.isFocusTraversable()) {
@@ -120,14 +120,21 @@ public class SpinnerBehavior<T> extends BehaviorBase<Spinner<T>>
 	
 	// ==================================================================================================================
 	// KEY EVENTS
-	// TODO: not working
 	
+	final static private String EVENT_PREVIOUS = "PreviousPressed";
+	final static private String EVENT_NEXT = "NextPressed";
 	protected final static List<KeyBinding> KEY_BINDINGS = new ArrayList<KeyBinding>();
 	static 
 	{
+		KEY_BINDINGS.add( new KeyBinding(KeyCode.MINUS, EVENT_PREVIOUS) ); // keyboard -		
+		KEY_BINDINGS.add( new KeyBinding(KeyCode.PLUS, EVENT_NEXT) ); // keyboard +
+		KEY_BINDINGS.add( new KeyBinding(KeyCode.SUBTRACT, EVENT_PREVIOUS) ); // keypad -		
+		KEY_BINDINGS.add( new KeyBinding(KeyCode.ADD, EVENT_NEXT) ); // keypad + 
+		KEY_BINDINGS.add(new KeyBinding(KeyCode.UP, EVENT_PREVIOUS));
+		KEY_BINDINGS.add(new KeyBinding(KeyCode.DOWN, EVENT_NEXT));
+		KEY_BINDINGS.add(new KeyBinding(KeyCode.LEFT, EVENT_PREVIOUS));
+		KEY_BINDINGS.add(new KeyBinding(KeyCode.RIGHT, EVENT_NEXT));
 		KEY_BINDINGS.addAll(TRAVERSAL_BINDINGS);
-		KEY_BINDINGS.add( new KeyBinding(KeyCode.MINUS, "NextPressed") );
-		KEY_BINDINGS.add( new KeyBinding(KeyCode.PLUS, "PreviousPressed") );		
 	}
 	
 	@Override protected List<KeyBinding> createKeyBindings() 
@@ -136,10 +143,10 @@ public class SpinnerBehavior<T> extends BehaviorBase<Spinner<T>>
 	}
 	
 	@Override protected void callAction(String name) {
-		if ("NextPressed".equals(name)) {
+		if (EVENT_PREVIOUS.equals(name)) {
 			getControl().decrement();
 		} 
-		else if ("PreviousPressed".equals(name)) {
+		else if (EVENT_NEXT.equals(name)) {
 			getControl().increment();
 		} 
 		else {
