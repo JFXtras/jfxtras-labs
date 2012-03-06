@@ -7,8 +7,8 @@ apply plugin: 'idea'
 /***************************************
  * Set Maven coordinates and build vars
  ***************************************/
-group                   = 'org.jfxlabs'
-archivesBaseName        = "jfxlabs"
+group                   = 'org.jfxtras'
+archivesBaseName        = "jfxtras-labs"
 version                 = '0.1-SNAPSHOT'
 
 isRelease = !version.endsWith('SNAPSHOT')
@@ -53,6 +53,10 @@ dependencies {
     testCompile 'junit:junit:4.10'
 }
 
+apply {
+  from 'gradle/mavenCentralDeploy.gradle'
+}
+
 task buildTimestamped(type: Copy, dependsOn: 'build') {
     from 'build/libs'
     into 'build/libs/timestamped'
@@ -65,7 +69,6 @@ task buildTimestamped(type: Copy, dependsOn: 'build') {
 task wrapper(type: Wrapper) {
     gradleVersion = '1.0-milestone-8'
 }
-
 
 task copyToLib(type: Copy) {
     into "_lib"
