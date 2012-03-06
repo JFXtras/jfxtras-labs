@@ -47,7 +47,7 @@ import javafx.scene.control.Control;
  * 
  * @author Tom Eugelink
  */
-public class CalendarPickerX extends Control
+public class CalendarPicker extends Control
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -55,7 +55,7 @@ public class CalendarPickerX extends Control
 	/**
 	 * 
 	 */
-	public CalendarPickerX()
+	public CalendarPicker()
 	{
 		construct();
 	}
@@ -111,7 +111,7 @@ public class CalendarPickerX extends Control
 	// java bean API
 	public Calendar getCalendar() { return iCalendarObjectProperty.getValue(); }
 	public void setCalendar(Calendar value) { iCalendarObjectProperty.setValue(value); }
-	public CalendarPickerX withCalendar(Calendar value) { setCalendar(value); return this; } 
+	public CalendarPicker withCalendar(Calendar value) { setCalendar(value); return this; } 
 
 	/** Calendars: */
 	public ObservableList<Calendar> calendars() { return iCalendars; }
@@ -152,7 +152,7 @@ public class CalendarPickerX extends Control
 	// java bean API
 	public Locale getLocale() { return iLocaleObjectProperty.getValue(); }
 	public void setLocale(Locale value) { iLocaleObjectProperty.setValue(value); }
-	public CalendarPickerX withLocale(Locale value) { setLocale(value); return (CalendarPickerX)this; } 
+	public CalendarPicker withLocale(Locale value) { setLocale(value); return (CalendarPicker)this; } 
 	// construct property
 	private void constructLocale()
 	{
@@ -191,7 +191,7 @@ public class CalendarPickerX extends Control
 			calendars().remove(calendars().size() - 1);
 		}
 	}
-	public CalendarPickerX withMode(Mode value) { setMode(value); return this; } 
+	public CalendarPicker withMode(Mode value) { setMode(value); return this; } 
 
 
 	// ==================================================================================================================

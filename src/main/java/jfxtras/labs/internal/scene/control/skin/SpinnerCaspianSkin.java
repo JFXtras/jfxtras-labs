@@ -24,16 +24,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package jfxtras.labs.internal.scene.control;
+package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.animation.PauseTransition;
-import javafx.animation.PauseTransitionBuilder;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -45,8 +44,10 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.util.Duration;
-import jfxtras.labs.scene.control.SpinnerX;
-import jfxtras.labs.scene.control.SpinnerX.ArrowDirection;
+import jfxtras.labs.animation.Timer;
+import jfxtras.labs.internal.scene.control.behavior.SpinnerBehavior;
+import jfxtras.labs.scene.control.Spinner;
+import jfxtras.labs.scene.control.Spinner.ArrowDirection;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
 
@@ -56,7 +57,7 @@ import com.sun.javafx.scene.control.skin.SkinBase;
  * 
  * Possible extension: drop down list or grid for quick selection
  */
-public class SpinnerXCaspianSkin<T> extends SkinBase<SpinnerX<T>, SpinnerXBehavior<T>>
+public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<T>>
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -64,9 +65,9 @@ public class SpinnerXCaspianSkin<T> extends SkinBase<SpinnerX<T>, SpinnerXBehavi
 	/**
 	 * 
 	 */
-	public SpinnerXCaspianSkin(SpinnerX<T> control)
+	public SpinnerCaspianSkin(Spinner<T> control)
 	{
-		super(control, new SpinnerXBehavior<T>(control));
+		super(control, new SpinnerBehavior<T>(control));
 		construct();
 	}
 
@@ -101,7 +102,7 @@ public class SpinnerXCaspianSkin<T> extends SkinBase<SpinnerX<T>, SpinnerXBehavi
 		refreshValue();
 		
 		// react to value changes in the model
-		getSkinnable().arrowDirectionProperty().addListener(new ChangeListener<SpinnerX.ArrowDirection>()
+		getSkinnable().arrowDirectionProperty().addListener(new ChangeListener<Spinner.ArrowDirection>()
 		{
 			@Override
 			public void changed(ObservableValue<? extends ArrowDirection> arg0, ArrowDirection arg1, ArrowDirection arg2)
@@ -171,46 +172,68 @@ public class SpinnerXCaspianSkin<T> extends SkinBase<SpinnerX<T>, SpinnerXBehavi
 		{
 			@Override public void handle(MouseEvent evt)
 			{
-				if (getSkinnable().getArrowDirection() == ArrowDirection.HORIZONTAL)
+				// if click was the in the greater vicinity of the decrement arrow
+				if (mouseEventOverArrow(evt, decrementArrow))
 				{
-					// was the click on the left side or right side
-					if (evt.getX() < gridPane.getWidth() / 2)
-					{
-						// left
-						unclickArrows();
-						decrementArrow.getStyleClass().add("clicked");
-						getSkinnable().decrement();
-						unclickTransition.playFrom(Duration.millis(0));
-					}
-					else
-					{
-						// right
-						unclickArrows();
-						incrementArrow.getStyleClass().add("clicked");
-						getSkinnable().increment();
-						unclickTransition.playFrom(Duration.millis(0));
-					}
+					// left
+					unclickArrows();
+					decrementArrow.getStyleClass().add("clicked");
+					getSkinnable().decrement();
+					unclickTimer.restart();
+					return;
 				}
-				else
+				
+				// if click was the in the greater vicinity of the increment arrow
+				if (mouseEventOverArrow(evt, incrementArrow))
 				{
-					// was the click on the top half or bottom half
-					if (evt.getY() > gridPane.getHeight() / 2)
-					{
-						// down
-						unclickArrows();
-						decrementArrow.getStyleClass().add("clicked");
-						getSkinnable().decrement();
-						unclickTransition.playFrom(Duration.millis(0));
-					}
-					else
-					{
-						// up
-						unclickArrows();
-						incrementArrow.getStyleClass().add("clicked");
-						getSkinnable().increment();
-						unclickTransition.playFrom(Duration.millis(0));
-					}
+					// right
+					unclickArrows();
+					incrementArrow.getStyleClass().add("clicked");
+					getSkinnable().increment();
+					unclickTimer.restart();
+					return;
 				}
+			}
+		});
+		gridPane.setOnMousePressed(new EventHandler<MouseEvent>()
+		{
+			@Override public void handle(MouseEvent evt)
+			{
+				// if click was the in the greater vicinity of the decrement arrow
+				if (mouseEventOverArrow(evt, decrementArrow))
+				{
+					// left
+					decrementArrow.getStyleClass().add("clicked");
+					repeatDecrementClickTimer.restart();
+					return;
+				}
+				
+				// if click was the in the greater vicinity of the increment arrow
+				if (mouseEventOverArrow(evt, incrementArrow))
+				{
+					// right
+					incrementArrow.getStyleClass().add("clicked");
+					repeatIncrementClickTimer.restart();
+					return;
+				}
+			}
+		});
+		gridPane.setOnMouseReleased(new EventHandler<MouseEvent>()
+		{
+			@Override public void handle(MouseEvent evt)
+			{
+				unclickArrows();
+				repeatDecrementClickTimer.stop();
+				repeatIncrementClickTimer.stop();
+			}
+		});
+		gridPane.setOnMouseExited(new EventHandler<MouseEvent>()
+		{
+			@Override public void handle(MouseEvent evt)
+			{
+				unclickArrows();
+				repeatDecrementClickTimer.stop();
+				repeatIncrementClickTimer.stop();
 			}
 		});
 		
@@ -222,15 +245,54 @@ public class SpinnerXCaspianSkin<T> extends SkinBase<SpinnerX<T>, SpinnerXBehavi
 	private Node valueNode = null;
 	private Region incrementArrow = null;
 	private GridPane gridPane = null;
-	final private PauseTransition unclickTransition = PauseTransitionBuilder.create().onFinished(new EventHandler<ActionEvent>()
+	
+	// timer to remove the click styling on the arrows afer a certain delay
+	final private Timer unclickTimer = new Timer(new Runnable()
 	{
 		@Override
-		public void handle(ActionEvent arg0)
+		public void run()
 		{
 			unclickArrows();
 		}
-	}).duration(Duration.millis(100)).build();
+	}).withDelay(Duration.millis(100)).withRepeats(false);
 
+	// timers to handle the holding-the-button
+	final private Timer repeatDecrementClickTimer = new Timer(new Runnable()
+	{
+		@Override
+		public void run()
+		{
+			getSkinnable().decrement();
+		}
+	}).withDelay(Duration.millis(500)).withCycleDuration(Duration.millis(50));
+	final private Timer repeatIncrementClickTimer = new Timer(new Runnable()
+	{
+		@Override
+		public void run()
+		{
+			getSkinnable().increment();
+		}
+	}).withDelay(Duration.millis(500)).withCycleDuration(Duration.millis(50));
+
+	/**
+	 * Check if the mouse event is considered to have happened over the arrow
+	 * @param evt
+	 * @param region
+	 * @return
+	 */
+	private boolean mouseEventOverArrow(MouseEvent evt, Region region)
+	{
+		// if click was the in the greater vicinity of the decrement arrow
+		Point2D lClickInRelationToArrow = region.sceneToLocal(evt.getSceneX(), evt.getSceneY());
+		if ( lClickInRelationToArrow.getX() >= 0.0 && lClickInRelationToArrow.getX() <= region.getWidth()
+		  && lClickInRelationToArrow.getY() >= 0.0 && lClickInRelationToArrow.getY() <= region.getHeight()
+		   )
+		{
+			return true;
+		}
+		return false;
+	}
+	
 	/*
 	 * 
 	 */
@@ -380,7 +442,7 @@ public class SpinnerXCaspianSkin<T> extends SkinBase<SpinnerX<T>, SpinnerXBehavi
 	 */
 	private void setArrowCSS()
 	{
-		if (getSkinnable().getArrowDirection().equals(SpinnerX.ArrowDirection.HORIZONTAL))
+		if (getSkinnable().getArrowDirection().equals(Spinner.ArrowDirection.HORIZONTAL))
 		{
 			decrementArrow.getStyleClass().add("left-arrow");
 			incrementArrow.getStyleClass().add("right-arrow");

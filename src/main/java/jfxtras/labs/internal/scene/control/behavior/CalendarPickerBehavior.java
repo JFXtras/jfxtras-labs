@@ -24,60 +24,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package jfxtras.labs.scene.control;
+package jfxtras.labs.internal.scene.control.behavior;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import jfxtras.labs.scene.control.CalendarPicker;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import com.sun.javafx.scene.control.behavior.BehaviorBase;
 
 /**
+ * 
  * @author Tom Eugelink
+ *
  */
-public class CalendarTextFieldXTest1 extends Application {
+public class CalendarPickerBehavior extends BehaviorBase<CalendarPicker>
+{
+	// ==================================================================================================================
+	// CONSTRUCTOR
 	
-    public static void main(String[] args) {
-    	//java.util.Locale.setDefault(new java.util.Locale("de")); // weeks starts on monday
-        launch(args);       
-    }
-
-	@Override
-	public void start(Stage stage) {
-
-		// a layout
-		VBox lVBox = new VBox();
-		
-        // add a node
-		CalendarTextFieldX lCalendarTextFieldX = new CalendarTextFieldX();
-		lCalendarTextFieldX.valueProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
-		lVBox.getChildren().add(lCalendarTextFieldX);
-        
-		// button
-		Button lButton = new Button("test");
-		lVBox.getChildren().add(lButton);
-		
-        // create scene
-        Scene scene = new Scene(lVBox, 350, 100);
-
-        // create stage
-        stage.setTitle("CalendarTextBoxX");
-        stage.setScene(scene);
-        stage.show();
-    }
-	
-	/*
+	/**
 	 * 
+	 * @param control
 	 */
-	static protected String quickFormatCalendar(Calendar value)
+	public CalendarPickerBehavior(CalendarPicker control)
 	{
-		SimpleDateFormat lSimpleDateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG);
-		lSimpleDateFormat.applyPattern("yyyy-MM-dd");
-		return value == null ? "null" : lSimpleDateFormat.format(value.getTime());
+		super(control);
 	}
-
 }

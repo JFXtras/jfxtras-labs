@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package jfxtras.labs.internal.scene.control;
+package jfxtras.labs.internal.scene.control.behavior;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ import java.util.List;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
-import jfxtras.labs.scene.control.SpinnerX;
+import jfxtras.labs.scene.control.Spinner;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
 import com.sun.javafx.scene.control.behavior.KeyBinding;
@@ -42,7 +42,7 @@ import com.sun.javafx.scene.control.behavior.KeyBinding;
  * @author Tom Eugelink
  *
  */
-public class SpinnerXBehavior<T> extends BehaviorBase<SpinnerX<T>>
+public class SpinnerBehavior<T> extends BehaviorBase<Spinner<T>>
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -51,7 +51,7 @@ public class SpinnerXBehavior<T> extends BehaviorBase<SpinnerX<T>>
 	 * 
 	 * @param control
 	 */
-	public SpinnerXBehavior(SpinnerX<T> control)
+	public SpinnerBehavior(Spinner<T> control)
 	{
 		super(control);
 		construct();
@@ -71,7 +71,7 @@ public class SpinnerXBehavior<T> extends BehaviorBase<SpinnerX<T>>
 	/**
 	 * 
 	 */
-	protected void parse(String text)
+	public void parse(String text)
 	{
 		// convert from string to value
 		T lValue = getControl().getStringConverter().fromString(text);
@@ -110,7 +110,7 @@ public class SpinnerXBehavior<T> extends BehaviorBase<SpinnerX<T>>
 	@Override public void mousePressed(MouseEvent evt)
 	{
 		// get the control
-		SpinnerX lControl = getControl();
+		Spinner<T> lControl = getControl();
 		
 		// if a control does not have the focus, request focus
 		if (!lControl.isFocused() && lControl.isFocusTraversable()) {
@@ -120,14 +120,21 @@ public class SpinnerXBehavior<T> extends BehaviorBase<SpinnerX<T>>
 	
 	// ==================================================================================================================
 	// KEY EVENTS
-	// TODO: not working
 	
+	final static private String EVENT_PREVIOUS = "PreviousPressed";
+	final static private String EVENT_NEXT = "NextPressed";
 	protected final static List<KeyBinding> KEY_BINDINGS = new ArrayList<KeyBinding>();
 	static 
 	{
+		KEY_BINDINGS.add( new KeyBinding(KeyCode.MINUS, EVENT_PREVIOUS) ); // keyboard -		
+		KEY_BINDINGS.add( new KeyBinding(KeyCode.PLUS, EVENT_NEXT) ); // keyboard +
+		KEY_BINDINGS.add( new KeyBinding(KeyCode.SUBTRACT, EVENT_PREVIOUS) ); // keypad -		
+		KEY_BINDINGS.add( new KeyBinding(KeyCode.ADD, EVENT_NEXT) ); // keypad + 
+		KEY_BINDINGS.add(new KeyBinding(KeyCode.UP, EVENT_PREVIOUS));
+		KEY_BINDINGS.add(new KeyBinding(KeyCode.DOWN, EVENT_NEXT));
+		KEY_BINDINGS.add(new KeyBinding(KeyCode.LEFT, EVENT_PREVIOUS));
+		KEY_BINDINGS.add(new KeyBinding(KeyCode.RIGHT, EVENT_NEXT));
 		KEY_BINDINGS.addAll(TRAVERSAL_BINDINGS);
-		KEY_BINDINGS.add( new KeyBinding(KeyCode.MINUS, "NextPressed") );
-		KEY_BINDINGS.add( new KeyBinding(KeyCode.PLUS, "PreviousPressed") );		
 	}
 	
 	@Override protected List<KeyBinding> createKeyBindings() 
@@ -136,10 +143,10 @@ public class SpinnerXBehavior<T> extends BehaviorBase<SpinnerX<T>>
 	}
 	
 	@Override protected void callAction(String name) {
-		if ("NextPressed".equals(name)) {
+		if (EVENT_PREVIOUS.equals(name)) {
 			getControl().decrement();
 		} 
-		else if ("PreviousPressed".equals(name)) {
+		else if (EVENT_NEXT.equals(name)) {
 			getControl().increment();
 		} 
 		else {

@@ -25,6 +25,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+/************************************************************
+* Defintion of style classes                                *
+************************************************************/
 .led {
     -fx-skin: "jfxtras.labs.internal.scene.control.skin.LedSkin";
     -fx-led : rgb(255, 0, 0);
@@ -51,7 +55,18 @@
     -fx-skin: "jfxtras.labs.internal.scene.control.skin.OdometerSkin";
 }
 
+.simple-indicator {
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.SimpleIndicatorSkin";
+    /*-fx-indicator-inner-color: rgba(153, 255, 255, 1); */
+    /*-fx-indicator-outer-color: rgba(0, 29, 255, 1);*/
+    -fx-indicator-inner-color: rgb(255, 255, 0);
+    -fx-indicator-outer-color: rgb(255, 0, 0);
+}
 
+
+/************************************************************
+* Defintion of Led fills                                    *
+************************************************************/
 #fx-led-frame {
     -fx-fill: linear-gradient(from 15% 15% to 85% 85%, rgba(0, 0, 0, 0.65) 0%, rgba(41, 41, 41, 0.65) 25%, rgba(255, 255, 255, 0.35) 100%);
 }
@@ -68,6 +83,10 @@
     -fx-fill: radial-gradient(focus-angle 0deg, focus-distance 0%, center 12% 12%, radius 50%, rgba(200, 194, 208, 1) 0%, rgba(200, 194, 208, 0) 100%);
 }
 
+
+/************************************************************
+* Defintion of NixieTube fills                              *
+************************************************************/
 #tube-hl-middle {
     -fx-fill: linear-gradient(from 0% 100% to 100% 100%, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
 }
@@ -83,3 +102,24 @@
 #tube-hl-top {
     -fx-fill: linear-gradient(from 66% 14% to 35% 95%, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
 }
+
+
+/************************************************************
+* Defintion of SimpleIndicator fills                        *
+************************************************************/
+#indicator-outer-frame-fill {
+    -fx-fill: linear-gradient(from 50% 0% to 50% 100%, rgba(242, 242, 242, 1) 0%, rgba(242, 242, 242, 1) 14%, rgba(242, 242, 242, 1) 15%, rgba(54, 54, 54, 1) 86%, rgba(51, 51, 51, 1) 87%, rgba(51, 51, 51, 1) 100%);
+}
+
+#indicator-inner-frame-fill {
+    -fx-fill: linear-gradient(from 50% 0% to 50% 100%, rgba(51, 51, 51, 1) 0%, rgba(51, 51, 51, 1) 15%, rgba(53, 53, 53, 1) 15%, rgba(226, 226, 226, 1) 86%, rgba(226, 226, 226, 1) 100%);
+}
+
+#indicator-main-fill {
+    -fx-fill: radial-gradient(focus-angle 0deg, focus-distance 0%, center 51% 85%, radius 111%, -fx-indicator-inner-color 0%, -fx-indicator-outer-color 100%);
+}
+
+#indicator-highlight-fill {
+    -fx-fill: linear-gradient(from 50% 0% to 50% 100%, rgba(255, 255, 255, 0.8) 0%, transparent 100%);
+}
+
