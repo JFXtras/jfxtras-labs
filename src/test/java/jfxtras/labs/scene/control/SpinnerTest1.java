@@ -26,21 +26,17 @@
  */
 package jfxtras.labs.scene.control;
 
-import com.sun.rowset.internal.InsertRow;
-
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import jfxtras.labs.animation.Timer;
 import jfxtras.labs.scene.control.Spinner.ArrowDirection;
 import jfxtras.labs.util.StringConverterFactory;
 

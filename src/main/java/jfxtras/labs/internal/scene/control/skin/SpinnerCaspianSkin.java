@@ -26,13 +26,6 @@
  */
 package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.animation.Animation;
-import javafx.animation.AnimationBuilder;
-import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
-import javafx.animation.PauseTransitionBuilder;
-import javafx.animation.Timeline;
-import javafx.animation.TimelineBuilder;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
@@ -186,7 +179,7 @@ public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<
 					unclickArrows();
 					decrementArrow.getStyleClass().add("clicked");
 					getSkinnable().decrement();
-					unclickTimer.playFrom(Duration.millis(0));
+					unclickTimer.restart();
 					return;
 				}
 				
@@ -197,7 +190,7 @@ public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<
 					unclickArrows();
 					incrementArrow.getStyleClass().add("clicked");
 					getSkinnable().increment();
-					unclickTimer.playFrom(Duration.millis(0));
+					unclickTimer.restart();
 					return;
 				}
 			}
@@ -253,15 +246,15 @@ public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<
 	private Region incrementArrow = null;
 	private GridPane gridPane = null;
 	
-	// transition to remove the click styling on the arrows afer a certain timeframe
-	final private PauseTransition unclickTimer = PauseTransitionBuilder.create().onFinished(new EventHandler<ActionEvent>()
+	// timer to remove the click styling on the arrows afer a certain delay
+	final private Timer unclickTimer = new Timer(new Runnable()
 	{
 		@Override
-		public void handle(ActionEvent arg0)
+		public void run()
 		{
 			unclickArrows();
 		}
-	}).duration(Duration.millis(100)).build();
+	}).withDelay(Duration.millis(100)).withRepeats(false);
 
 	// timers to handle the holding-the-button
 	final private Timer repeatDecrementClickTimer = new Timer(new Runnable()
@@ -271,7 +264,7 @@ public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<
 		{
 			getSkinnable().decrement();
 		}
-	}).withDelay(Duration.millis(500)).withCycleDuration(Duration.millis(100));
+	}).withDelay(Duration.millis(500)).withCycleDuration(Duration.millis(50));
 	final private Timer repeatIncrementClickTimer = new Timer(new Runnable()
 	{
 		@Override
@@ -279,7 +272,7 @@ public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<
 		{
 			getSkinnable().increment();
 		}
-	}).withDelay(Duration.millis(500)).withCycleDuration(Duration.millis(100));
+	}).withDelay(Duration.millis(500)).withCycleDuration(Duration.millis(50));
 
 	/**
 	 * Check if the mouse event is considered to have happened over the arrow

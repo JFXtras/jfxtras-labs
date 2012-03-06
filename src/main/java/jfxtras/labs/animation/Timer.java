@@ -86,6 +86,14 @@ public class Timer
 	public void setCycleDuration(Duration value) { this.cycleDurationObjectProperty.setValue(value); }
 	public Timer withCycleDuration(Duration value) { setCycleDuration(value); return this; }
 	
+	/** repeats: */
+	public ObjectProperty<Boolean> repeatsProperty() { return this.repeatsObjectProperty; }
+	final private ObjectProperty<Boolean> repeatsObjectProperty = new SimpleObjectProperty<Boolean>(this, "repeats", Boolean.TRUE);
+	// java bean API
+	public boolean getRepeats() { return this.repeatsObjectProperty.getValue(); }
+	public void setRepeats(boolean value) { this.repeatsObjectProperty.setValue(value); }
+	public Timer withRepeats(boolean value) { setRepeats(value); return this; }
+	
 	
 	// ==================================================================================================================
 	// TIMER
@@ -99,12 +107,16 @@ public class Timer
 		if (timerTaskAtomicReference.get() != null) throw new IllegalStateException("Timer already started");
 		
 		// create a task and schedule it
-		TimerTask lTimerTask = new TimerTask()
+		final TimerTask lTimerTask = new TimerTask()
 		{
 			@Override
 			public void run()
 			{
 				Platform.runLater(runnable);
+				if (repeatsObjectProperty.getValue().booleanValue() == false)
+				{
+					stop();
+				}
 			}
 		};
 		timer.schedule(lTimerTask, (long)this.delayObjectProperty.getValue().toMillis(), (long)this.cycleDurationObjectProperty.getValue().toMillis());
