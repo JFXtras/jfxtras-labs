@@ -47,7 +47,7 @@
 }
 
 .nixie-tube {
-    -fx-skin: "jfxtras.labs.internal.scene.control.skin.NixieTubeSkin";
+    -fx-skin      : "jfxtras.labs.internal.scene.control.skin.NixieTubeSkin";
     -fx-glow-color: orange;
 }
 
@@ -57,12 +57,16 @@
 
 .simple-indicator {
     -fx-skin: "jfxtras.labs.internal.scene.control.skin.SimpleIndicatorSkin";
-    /*-fx-indicator-inner-color: rgba(153, 255, 255, 1); */
-    /*-fx-indicator-outer-color: rgba(0, 29, 255, 1);*/
-    -fx-indicator-inner-color: rgb(255, 255, 0);
-    -fx-indicator-outer-color: rgb(255, 0, 0);
+    -fx-indicator-inner-color: rgb(255, 255,   0);
+    -fx-indicator-outer-color: rgb(255,   0,   0);
 }
 
+.rater {
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.RaterSkin";
+    -fx-rater-bright-color: rgb(255, 231,  81);
+    -fx-rater-dark-color  : rgb(255, 126,  18);
+    -fx-rater-stroke      : transparent;
+}
 
 /************************************************************
 * Defintion of Led fills                                    *
@@ -124,3 +128,19 @@
     -fx-fill: linear-gradient(from 50% 0% to 50% 100%, rgba(255, 255, 255, 0.8) 0%, transparent 100%);
 }
 
+
+/************************************************************
+* Defintion of Rater fills                                  *
+************************************************************/
+#star-fill {
+    -fx-fill: radial-gradient(focus-angle 0deg, focus-distance 0%, center 50% 81%, radius 50%, -fx-rater-bright-color 0%, -fx-rater-dark-color 100%);
+    -fx-stroke: -fx-rater-stroke;
+}
+
+#highlights-inner-fill {
+    -fx-fill: rgba(255, 255, 255, 0.1019607843);
+}
+
+#highlights-top-fill {
+    -fx-fill: linear-gradient(from 50% 0% to 50% 100%, rgba(255, 255, 255, 0.7490196078) 0%, rgba(255, 255, 255, 0.0470588235) 100%);
+}

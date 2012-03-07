@@ -72,7 +72,7 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
 
     private void init() {
         if (control.getPrefWidth() < 0 | control.getPrefHeight() < 0) {
-            control.setPrefSize(50, 50);
+            control.setPrefSize(48, 48);
         }
 
         control.prefWidthProperty().addListener(new ChangeListener<Number>() {
@@ -224,8 +224,6 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
         } else {
             main.setEffect(MAIN_INNER_SHADOW);
         }
-
-
 
         final Ellipse HIGHLIGHT = new Ellipse(0.504 * WIDTH, 0.294 * HEIGHT,
                                               0.26 * WIDTH, 0.15 * HEIGHT);
