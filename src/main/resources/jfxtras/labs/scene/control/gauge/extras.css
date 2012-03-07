@@ -109,6 +109,7 @@
 ************************************************************/
 #indicator-outer-frame-fill {
     -fx-fill: linear-gradient(from 50% 0% to 50% 100%, rgba(242, 242, 242, 1) 0%, rgba(242, 242, 242, 1) 14%, rgba(242, 242, 242, 1) 15%, rgba(54, 54, 54, 1) 86%, rgba(51, 51, 51, 1) 87%, rgba(51, 51, 51, 1) 100%);
+    -fx-stroke: transparent;
 }
 
 #indicator-inner-frame-fill {

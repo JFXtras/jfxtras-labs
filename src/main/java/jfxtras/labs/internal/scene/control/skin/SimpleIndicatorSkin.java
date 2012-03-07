@@ -183,12 +183,12 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
         OUTER_FRAME.setStroke(null);
 
         final InnerShadow OUTER_FRAME_INNER_SHADOW = new InnerShadow();
-        OUTER_FRAME_INNER_SHADOW.setWidth(0.0432 * OUTER_FRAME.getLayoutBounds().getWidth());
-        OUTER_FRAME_INNER_SHADOW.setHeight(0.0432 * OUTER_FRAME.getLayoutBounds().getHeight());
+        OUTER_FRAME_INNER_SHADOW.setWidth(0.05 * OUTER_FRAME.getLayoutBounds().getWidth());
+        OUTER_FRAME_INNER_SHADOW.setHeight(0.05 * OUTER_FRAME.getLayoutBounds().getHeight());
         OUTER_FRAME_INNER_SHADOW.setOffsetX(0.0);
         OUTER_FRAME_INNER_SHADOW.setOffsetY(0.0);
-        OUTER_FRAME_INNER_SHADOW.setRadius(0.0432 * OUTER_FRAME.getLayoutBounds().getWidth());
-        OUTER_FRAME_INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.6470588235));
+        OUTER_FRAME_INNER_SHADOW.setRadius(0.05 * OUTER_FRAME.getLayoutBounds().getWidth());
+        OUTER_FRAME_INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.9));
         OUTER_FRAME_INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
         OUTER_FRAME_INNER_SHADOW.inputProperty().set(null);
         OUTER_FRAME.setEffect(OUTER_FRAME_INNER_SHADOW);
@@ -196,17 +196,6 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
         final Circle INNER_FRAME = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4 * WIDTH);
         INNER_FRAME.setId("indicator-inner-frame-fill");
         INNER_FRAME.setStroke(null);
-
-        final DropShadow INNER_FRAME_DROP_SHADOW = new DropShadow();
-        INNER_FRAME_DROP_SHADOW.setWidth(0.05760 * INNER_FRAME.getLayoutBounds().getWidth());
-        INNER_FRAME_DROP_SHADOW.setHeight(0.05760 * INNER_FRAME.getLayoutBounds().getHeight());
-        INNER_FRAME_DROP_SHADOW.setOffsetX(0.0);
-        INNER_FRAME_DROP_SHADOW.setOffsetY(0.0);
-        INNER_FRAME_DROP_SHADOW.setRadius(0.05760 * INNER_FRAME.getLayoutBounds().getWidth());
-        INNER_FRAME_DROP_SHADOW.setColor(Color.color(0.2, 0.2, 0.2, 1));
-        INNER_FRAME_DROP_SHADOW.setBlurType(BlurType.GAUSSIAN);
-        INNER_FRAME_DROP_SHADOW.inputProperty().set(null);
-        INNER_FRAME.setEffect(INNER_FRAME_DROP_SHADOW);
 
         main = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.38 * WIDTH);
         main.setId("indicator-main-fill");
@@ -247,6 +236,7 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
                                        INNER_FRAME,
                                        main,
                                        HIGHLIGHT);
+        indicator.setCache(true);
     }
 
 }
