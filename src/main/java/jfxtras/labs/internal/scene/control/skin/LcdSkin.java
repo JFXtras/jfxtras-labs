@@ -234,7 +234,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
 
         addListeners();
 
-        currentValue.set(control.getValue());
+        currentLcdValue.set(control.getLcdValue());
 
         initialized = true;
         paint();
@@ -259,7 +259,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         if (lcdValue.isBound()) {
             lcdValue.unbind();
         }
-        lcdValue.bind(control.valueProperty());
+        lcdValue.bind(control.lcdValueProperty());
 
         if (lcdMinMeasuredValue.visibleProperty().isBound()) {
             lcdMinMeasuredValue.visibleProperty().unbind();
@@ -1149,7 +1149,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         lcdValueString.setId("lcd-text");
         lcdValueString.setStroke(null);
 
-        if (control.isBargraphVisible()) {
+        if (control.isBargraphVisible() && !bargraph.isEmpty()) {
             int activeBargraphSegments = (int) ((currentLcdValue.get() - (long) currentLcdValue.get()) * 20);
             for (int i = 0 ; i < 20 ; i++) {
                 if (i <= activeBargraphSegments) {
