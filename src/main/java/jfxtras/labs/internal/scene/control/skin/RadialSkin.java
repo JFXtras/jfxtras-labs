@@ -1401,7 +1401,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
 
         pointer.getTransforms().clear();
         pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
-        pointer.setCache(true);
+        //pointer.setCache(true);
     }
 
     public void drawLcdContent() {
