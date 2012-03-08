@@ -534,8 +534,10 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
                 if (bargraphOff.isVisible()) {
-                    int CURRENT_LED_INDEX = noOfLeds - 1 - (int) ((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
-                    int FORMER_LED_INDEX = noOfLeds - 1 - (int) ((oldValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
+                    final int CALC_CURRENT_INDEX = noOfLeds - 1 - (int) ((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
+                    final int CALC_FORMER_INDEX = noOfLeds - 1 - (int) ((oldValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
+                    final int CURRENT_LED_INDEX = CALC_CURRENT_INDEX < 0 ? 0 : (CALC_CURRENT_INDEX > ledsOn.size() ? ledsOn.size() : CALC_CURRENT_INDEX) ;
+                    final int FORMER_LED_INDEX = CALC_FORMER_INDEX < 0 ? 0 : (CALC_FORMER_INDEX > ledsOn.size() ? ledsOn.size() : CALC_FORMER_INDEX) ;
                     final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int)((control.getThreshold() - control.getMinValue()) * control.getAngleStep() / 5.0);
 
                     if (Double.compare(control.getValue(), formerValue.doubleValue()) >= 0) {
