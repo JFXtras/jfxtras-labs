@@ -645,7 +645,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
                              glowOn,
                              minMeasured,
                              maxMeasured,
-            markers,
+                             markers,
                              lcd,
                              lcdContent,
                              pointer,

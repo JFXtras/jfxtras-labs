@@ -326,7 +326,6 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
             sections.setOpacity(1.0);
         }
 
-
         if (markers.visibleProperty().isBound()) {
             markers.visibleProperty().unbind();
         }
@@ -476,7 +475,6 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         pointer.rotateProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
                 currentValue.set(newValue.doubleValue() / control.getAngleStep() + control.getMinValue());
-
                 if (bargraphOff.isVisible()) {
                     final int CALC_CURRENT_INDEX = noOfLeds - 1 - (newValue.intValue() / 5);
                     final int CALC_FORMER_INDEX = noOfLeds - 1 - (oldValue.intValue() / 5);
@@ -484,11 +482,11 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                     final int FORMER_LED_INDEX = CALC_FORMER_INDEX < 0 ? 0 : (CALC_FORMER_INDEX > noOfLeds ? noOfLeds : CALC_FORMER_INDEX) ;
                     final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int)(control.getThreshold() * control.getAngleStep() / 5.0);
                     if (Double.compare(control.getValue(), formerValue.doubleValue()) >= 0) {
-                        for (int i = CURRENT_LED_INDEX ; i < FORMER_LED_INDEX ; i++) {
+                        for (int i = CURRENT_LED_INDEX ; i <= FORMER_LED_INDEX ; i++) {
                             ledsOn.get(i).setVisible(true);
                         }
                     } else {
-                        for (int i = CURRENT_LED_INDEX ; i > FORMER_LED_INDEX ; i--) {
+                        for (int i = CURRENT_LED_INDEX ; i >= FORMER_LED_INDEX ; i--) {
                             ledsOn.get(i).setVisible(false);
                         }
                     }
@@ -663,7 +661,7 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                              bargraphOn,
                              minMeasured,
                              maxMeasured,
-            markers,
+                             markers,
                              knobs,
                              foreground);
     }

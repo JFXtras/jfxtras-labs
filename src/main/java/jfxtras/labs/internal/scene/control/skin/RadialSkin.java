@@ -416,7 +416,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             lcdThresholdIndicator.visibleProperty().unbind();
         }
         if (control.isLcdThresholdVisible() && control.isLcdValueCoupled()) {
-            lcdThresholdIndicator.visibleProperty().bind(control.thresholdExceededProperty());
+            lcdThresholdIndicator.visibleProperty().bind(control.thresholdVisibleProperty());
         }
 
         if (foreground.visibleProperty().isBound()) {
@@ -541,11 +541,11 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                     final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int)((control.getThreshold() - control.getMinValue()) * control.getAngleStep() / 5.0);
 
                     if (Double.compare(control.getValue(), formerValue.doubleValue()) >= 0) {
-                        for (int i = CURRENT_LED_INDEX ; i < FORMER_LED_INDEX ; i++) {
+                        for (int i = CURRENT_LED_INDEX ; i <= FORMER_LED_INDEX ; i++) {
                             ledsOn.get(i).setVisible(true);
                         }
                     } else {
-                        for (int i = CURRENT_LED_INDEX ; i > FORMER_LED_INDEX ; i--) {
+                        for (int i = CURRENT_LED_INDEX ; i >= FORMER_LED_INDEX ; i--) {
                             ledsOn.get(i).setVisible(false);
                         }
                     }
@@ -564,7 +564,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 }
 
                 currentValue.set(newValue.doubleValue());
-                currentLcdValue.set(control.isLcdValueCoupled() ? currentValue.get() : control.getLcdValue());
+                currentLcdValue.set(control.isLcdValueCoupled() ? newValue.doubleValue() : control.getLcdValue());
 
                 if (Double.compare(currentValue.get(), control.getMinMeasuredValue()) < 0) {
                     control.setMinMeasuredValue(currentValue.get());
@@ -572,10 +572,11 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                     control.setMaxMeasuredValue(currentValue.get());
                 }
                 if (control.isThresholdBehaviorInverted()) {
-                    control.setThresholdExceeded(currentValue.get() < control.getThreshold());
+                    control.setThresholdExceeded(currentValue.doubleValue() < control.getThreshold());
                 } else {
-                    control.setThresholdExceeded(currentValue.get() > control.getThreshold());
+                    control.setThresholdExceeded(currentValue.doubleValue() > control.getThreshold());
                 }
+
                 if (!control.isThresholdExceeded()) {
                     ledOn.setOpacity(0.0);
                 }
@@ -756,7 +757,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                              bargraphOn,
                              minMeasured,
                              maxMeasured,
-            markers,
+                             markers,
                              knobs,
                              foreground);
     }

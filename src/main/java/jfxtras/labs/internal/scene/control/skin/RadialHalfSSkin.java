@@ -664,7 +664,7 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
                              bargraphOn,
                              minMeasured,
                              maxMeasured,
-            markers,
+                             markers,
                              knobs,
                              foreground);
     }
@@ -1862,11 +1862,6 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
         pointer.getTransforms().clear();
         pointer.setTranslateY(-WIDTH * 0.35);
         pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getX()));
-    }
-
-    private static void drawRadialTicks(final Path TICKMARKS_PATH, final Point2D INNER_POINT, final Point2D OUTER_POINT) {
-        TICKMARKS_PATH.getElements().add(new MoveTo(INNER_POINT.getX(), INNER_POINT.getY()));
-        TICKMARKS_PATH.getElements().add(new LineTo(OUTER_POINT.getX(), OUTER_POINT.getY()));
     }
 
     public void drawForeground() {
