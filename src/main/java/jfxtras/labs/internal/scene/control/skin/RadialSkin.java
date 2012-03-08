@@ -292,8 +292,8 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
 
         noOfLeds = (int) (control.getRadialRange().ANGLE_RANGE / 5.0);
 
-        double value = Double.compare(control.getValue(), control.getMinValue()) < 0 ? control.getMinValue() : (Double.compare(control.getValue(), control.getMaxValue()) > 0 ? control.getMaxValue() : control.getValue());
-        pointer.setRotate((value - control.getMinValue()) * control.getAngleStep());
+        //double value = Double.compare(control.getValue(), control.getMinValue()) < 0 ? control.getMinValue() : (Double.compare(control.getValue(), control.getMaxValue()) > 0 ? control.getMaxValue() : control.getValue());
+        //pointer.setRotate((value - control.getMinValue()) * control.getAngleStep());
 
         if (gaugeValue.get() < control.getMinValue()) {
             gaugeValue.set(control.getMinValue());
@@ -922,7 +922,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         unit.setId(control.getBackgroundDesign().CSS_TEXT);
 
         titleAndUnit.getChildren().addAll(title, unit);
-        //titleAndUnit.setCache(true);
+        titleAndUnit.setCache(true);
     }
 
     public void drawThreshold() {
@@ -1401,7 +1401,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
 
         pointer.getTransforms().clear();
         pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
-        //pointer.setCache(true);
+        pointer.setCache(true);
     }
 
     public void drawLcdContent() {

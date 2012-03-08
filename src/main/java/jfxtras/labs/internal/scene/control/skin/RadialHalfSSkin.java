@@ -276,8 +276,8 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
 
         noOfLeds = (int) (control.getRadialRange().ANGLE_RANGE / 5.0);
 
-        double value = Double.compare(control.getValue(), control.getMinValue()) < 0 ? control.getMinValue() : (Double.compare(control.getValue(), control.getMaxValue()) > 0 ? control.getMaxValue() : control.getValue());
-        pointer.setRotate(-(value - control.getMinValue()) * control.getAngleStep());
+        //double value = Double.compare(control.getValue(), control.getMinValue()) < 0 ? control.getMinValue() : (Double.compare(control.getValue(), control.getMaxValue()) > 0 ? control.getMaxValue() : control.getValue());
+        //pointer.setRotate(-(value - control.getMinValue()) * control.getAngleStep());
 
         control.recalcRange();
         control.setMinMeasuredValue(control.getMaxValue());
