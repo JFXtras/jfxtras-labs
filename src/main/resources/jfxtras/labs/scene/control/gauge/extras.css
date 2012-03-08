@@ -43,7 +43,7 @@
 }
 
 .flipchar {
-    -fx-skin: "jfxtras.labs.internal.scene.control.skin.FlipcharSkin";
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.FlipCharSkin";
 }
 
 .nixie-tube {

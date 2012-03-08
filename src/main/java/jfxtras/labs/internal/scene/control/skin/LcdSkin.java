@@ -626,7 +626,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         lcdNumberSystem.setTextAlignment(TextAlignment.RIGHT);
         lcdNumberSystem.setText(control.getLcdNumberSystem().toString());
         lcdNumberSystem.setX(LCD_MAIN.getLayoutX() + (LCD_MAIN.getLayoutBounds().getWidth() - lcdTitle.getLayoutBounds().getWidth()) / 2.0);
-        lcdNumberSystem.setTranslateY(HEIGHT - lcdThresholdIndicator.getLayoutBounds().getHeight() - 0.0416666667 * SIZE);
+        lcdNumberSystem.setY(LCD_MAIN.getLayoutY() + LCD_MAIN.getHeight() - 0.0416666667 * SIZE);
         lcdNumberSystem.setFontSmoothingType(FontSmoothingType.LCD);
         lcdNumberSystem.getStyleClass().add("lcd");
         lcdNumberSystem.setStyle(control.getLcdDesign().CSS);
@@ -1110,6 +1110,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         final Rectangle IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         IBOUNDS.setStroke(null);
+        lcdContent.getChildren().add(IBOUNDS);
 
         final Rectangle LCD_MAIN = new Rectangle(1.0, 1.0, WIDTH - 2.0, HEIGHT - 2.0);
 
@@ -1131,6 +1132,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         }
         lcdNumberSystem.setText(control.getLcdNumberSystem().toString());
         lcdNumberSystem.setX(WIDTH - lcdNumberSystem.getLayoutBounds().getWidth() - 0.0416666667 * SIZE);
+        lcdNumberSystem.setY(LCD_MAIN.getLayoutY() + LCD_MAIN.getHeight() - 0.0416666667 * SIZE);
 
         if (!isNoOfDigitsValid()) {
             lcdValueString.setText("-E-");
@@ -1142,7 +1144,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             lcdValueString.setX((WIDTH - lcdValueString.getLayoutBounds().getWidth()) - lcdValueOffsetRight);
         }
         lcdValueString.setY(SIZE - (lcdValueString.getLayoutBounds().getHeight() * lcdDigitalFontSizeFactor) / 2.0);
-        lcdValueString.getStyleClass().add("lcd");
+        //lcdValueString.getStyleClass().add("lcd");
         lcdValueString.setStyle(control.getLcdDesign().CSS);
         lcdValueString.setId("lcd-text");
         lcdValueString.setStroke(null);
@@ -1199,8 +1201,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             }
         }
 
-        lcdContent.getChildren().addAll(IBOUNDS,
-                                        lcdValueString,
+        lcdContent.getChildren().addAll(lcdValueString,
                                         lcdMinMeasuredValue,
                                         lcdMaxMeasuredValue,
                                         lcdFormerValue,
