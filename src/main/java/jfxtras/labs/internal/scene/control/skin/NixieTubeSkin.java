@@ -141,9 +141,10 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
         super.handleControlPropertyChanged(PROPERTY);
         if (PROPERTY == "GLOW_COLOR") {
             createGlows();
+            setNumber();
             hatch.setEffect(hatchGlow);
         } else if (PROPERTY == "NUMBER") {
-            setClock();
+            setNumber();
         }
     }
 
@@ -213,7 +214,7 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
         nine.setStrokeWidth(1);
     }
 
-    private final void setClock() {
+    private final void setNumber() {
         switchOffAllNumbers();
         final double STROKE_WIDTH = 0.023255814 * control.getPrefWidth();
         final Color colorOn = Color.color(0.2, 0.2, 0.2, 1.0);
@@ -1834,6 +1835,7 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
         hatch.setEffect(hatchGlow);
 
         tube.getChildren().addAll(hatch);
+        tube.setCache(true);
 
         continueTube(tube, WIDTH, HEIGHT);
     }
@@ -2020,5 +2022,6 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
                                          HL_LEFT,
                                          HL_UPPER,
                                          HL_TOP);
+        foreground2.setCache(true);
     }
 }
