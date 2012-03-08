@@ -70,6 +70,14 @@ task wrapper(type: Wrapper) {
     gradleVersion = '1.0-milestone-8'
 }
 
+signArchives.onlyIf {
+      hasProperty('signing.keyId')
+}
+
+uploadArchives.onlyIf {
+      hasProperty('sonatypeUsername') && hasProperty('sonatypePassword')
+}
+
 task copyToLib(type: Copy) {
     into "_lib"
     from configurations.runtime
