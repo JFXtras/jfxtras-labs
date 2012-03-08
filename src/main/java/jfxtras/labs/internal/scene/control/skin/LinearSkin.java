@@ -607,7 +607,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
                              glowOn,
                              minMeasured,
                              maxMeasured,
-            markers,
+                             markers,
                              lcd,
                              lcdContent,
                              bar,

@@ -163,7 +163,7 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
         userLedOff             = new Group();
         userLedOn              = new Group();
         foreground             = new Group();
-        noOfLeds               = 60;
+        noOfLeds               = 35;
         ledsOff                = new ArrayList<Shape>(noOfLeds);
         ledsOn                 = new ArrayList<Shape>(noOfLeds);
         currentValue           = new SimpleDoubleProperty(0);
@@ -315,6 +315,9 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
             bargraphOff.visibleProperty().unbind();
         }
         bargraphOff.visibleProperty().bind(control.bargraphProperty());
+        if (bargraphOn.visibleProperty().isBound()) {
+            bargraphOn.visibleProperty().unbind();
+        }
         bargraphOn.visibleProperty().bind(control.bargraphProperty());
         pointer.setVisible(!bargraphOff.isVisible());
         knobs.setVisible(!bargraphOff.isVisible());
@@ -411,6 +414,16 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
             }
         });
 
+        control.thresholdExceededProperty().addListener(new ChangeListener<Boolean>() {
+            @Override public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
+                if(newValue) {
+                    ledTimer.start();
+                } else {
+                    ledTimer.stop();
+                }
+            }
+        });
+
         control.valueProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
                 formerValue.set(oldValue.doubleValue() < control.getMinValue() ? control.getMinValue() : oldValue.doubleValue());
@@ -478,16 +491,18 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
                 currentValue.set(-newValue.doubleValue() / control.getAngleStep() + control.getMinValue());
 
                 if (bargraphOff.isVisible()) {
-                    final int CURRENT_LED_INDEX =(newValue.intValue() / 5) * (-1);
-                    final int FORMER_LED_INDEX = (oldValue.intValue() / 5)* (-1);
+                    final int CALC_CURRENT_INDEX = (newValue.intValue() / 5) * (-1);
+                    final int CALC_FORMER_INDEX = (oldValue.intValue() / 5) * (-1);
+                    final int CURRENT_LED_INDEX = CALC_CURRENT_INDEX < 0 ? 0 : (CALC_CURRENT_INDEX >= noOfLeds ? noOfLeds : CALC_CURRENT_INDEX) ;
+                    final int FORMER_LED_INDEX = CALC_FORMER_INDEX < 0 ? 0 : (CALC_FORMER_INDEX >= noOfLeds ? noOfLeds - 1: CALC_FORMER_INDEX) ;
+
                     final int THRESHOLD_LED_INDEX = (int)(control.getThreshold() * control.getAngleStep() / 5.0);
                     if (Double.compare(control.getValue(), formerValue.doubleValue()) >= 0) {
-                        for (int i = FORMER_LED_INDEX ; i <= CURRENT_LED_INDEX ; i++) {
+                        for (int i = FORMER_LED_INDEX ; i < CURRENT_LED_INDEX ; i++) {
                             ledsOn.get(i).setVisible(true);
-
                         }
                     } else {
-                        for (int i = FORMER_LED_INDEX ; i >= CURRENT_LED_INDEX ; i--) {
+                        for (int i = FORMER_LED_INDEX ; i > CURRENT_LED_INDEX ; i--) {
                             ledsOn.get(i).setVisible(false);
                         }
                     }
@@ -662,7 +677,7 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
                              bargraphOn,
                              minMeasured,
                              maxMeasured,
-            markers,
+                             markers,
                              knobs,
                              foreground);
     }
@@ -1860,11 +1875,6 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
         pointer.getTransforms().clear();
         pointer.setTranslateY(-WIDTH * 0.35);
         pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getX()));
-    }
-
-    private static void drawRadialTicks(final Path TICKMARKS_PATH, final Point2D INNER_POINT, final Point2D OUTER_POINT) {
-        TICKMARKS_PATH.getElements().add(new MoveTo(INNER_POINT.getX(), INNER_POINT.getY()));
-        TICKMARKS_PATH.getElements().add(new LineTo(OUTER_POINT.getX(), OUTER_POINT.getY()));
     }
 
     public void drawForeground() {
