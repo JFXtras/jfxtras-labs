@@ -163,7 +163,7 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         userLedOff             = new Group();
         userLedOn              = new Group();
         foreground             = new Group();
-        noOfLeds               = 60;
+        noOfLeds               = 35;
         ledsOff                = new ArrayList<Shape>(noOfLeds);
         ledsOn                 = new ArrayList<Shape>(noOfLeds);
         currentValue           = new SimpleDoubleProperty(0);
@@ -480,15 +480,15 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                 if (bargraphOff.isVisible()) {
                     final int CALC_CURRENT_INDEX = noOfLeds - 1 - (newValue.intValue() / 5);
                     final int CALC_FORMER_INDEX = noOfLeds - 1 - (oldValue.intValue() / 5);
-                    final int CURRENT_LED_INDEX = CALC_CURRENT_INDEX < 0 ? 0 : (CALC_CURRENT_INDEX > ledsOn.size() ? ledsOn.size() : CALC_CURRENT_INDEX) ;
-                    final int FORMER_LED_INDEX = CALC_FORMER_INDEX < 0 ? 0 : (CALC_FORMER_INDEX > ledsOn.size() ? ledsOn.size() : CALC_FORMER_INDEX) ;
+                    final int CURRENT_LED_INDEX = CALC_CURRENT_INDEX < 0 ? 0 : (CALC_CURRENT_INDEX > noOfLeds ? noOfLeds : CALC_CURRENT_INDEX) ;
+                    final int FORMER_LED_INDEX = CALC_FORMER_INDEX < 0 ? 0 : (CALC_FORMER_INDEX > noOfLeds ? noOfLeds : CALC_FORMER_INDEX) ;
                     final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int)(control.getThreshold() * control.getAngleStep() / 5.0);
                     if (Double.compare(control.getValue(), formerValue.doubleValue()) >= 0) {
-                        for (int i = CURRENT_LED_INDEX ; i <= FORMER_LED_INDEX ; i++) {
+                        for (int i = CURRENT_LED_INDEX ; i < FORMER_LED_INDEX ; i++) {
                             ledsOn.get(i).setVisible(true);
                         }
                     } else {
-                        for (int i = CURRENT_LED_INDEX ; i >= FORMER_LED_INDEX ; i--) {
+                        for (int i = CURRENT_LED_INDEX ; i > FORMER_LED_INDEX ; i--) {
                             ledsOn.get(i).setVisible(false);
                         }
                     }
