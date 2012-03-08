@@ -922,7 +922,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         unit.setId(control.getBackgroundDesign().CSS_TEXT);
 
         titleAndUnit.getChildren().addAll(title, unit);
-        titleAndUnit.setCache(true);
+        //titleAndUnit.setCache(true);
     }
 
     public void drawThreshold() {
