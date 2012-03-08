@@ -297,7 +297,7 @@ public class TrafficlightSkin extends SkinBase<Trafficlight, TrafficlightBehavio
         final DropShadow RED_GLOW = new DropShadow();
         RED_GLOW.setWidth(0.25 * WIDTH);
         RED_GLOW.setHeight(0.25 * WIDTH);
-        RED_GLOW.setRadius(0.25 * WIDTH);
+        RED_GLOW.setRadius(0.18 * WIDTH);
         RED_GLOW.setColor(Color.RED);
         RED_GLOW.setBlurType(BlurType.GAUSSIAN);
         RED_GLOW.inputProperty().set(INNER_SHADOW);
@@ -305,7 +305,7 @@ public class TrafficlightSkin extends SkinBase<Trafficlight, TrafficlightBehavio
         final DropShadow YELLOW_GLOW = new DropShadow();
         YELLOW_GLOW.setWidth(0.25 * WIDTH);
         YELLOW_GLOW.setHeight(0.25 * WIDTH);
-        YELLOW_GLOW.setRadius(0.25 * WIDTH);
+        YELLOW_GLOW.setRadius(0.18 * WIDTH);
         YELLOW_GLOW.setColor(Color.YELLOW);
         YELLOW_GLOW.setBlurType(BlurType.GAUSSIAN);
         YELLOW_GLOW.inputProperty().set(INNER_SHADOW);
@@ -313,7 +313,7 @@ public class TrafficlightSkin extends SkinBase<Trafficlight, TrafficlightBehavio
         final DropShadow GREEN_GLOW = new DropShadow();
         GREEN_GLOW.setWidth(0.25 * WIDTH);
         GREEN_GLOW.setHeight(0.25 * WIDTH);
-        GREEN_GLOW.setRadius(0.25 * WIDTH);
+        GREEN_GLOW.setRadius(0.18 * WIDTH);
         GREEN_GLOW.setColor(Color.LIME);
         GREEN_GLOW.setBlurType(BlurType.GAUSSIAN);
         GREEN_GLOW.inputProperty().set(INNER_SHADOW);
