@@ -356,7 +356,7 @@ public class TrafficlightSkin extends SkinBase<Trafficlight, TrafficlightBehavio
         redOn.setFill(RED_ON_FILL);
         redOn.setStroke(null);
         redOn.setEffect(RED_GLOW);
-        redOn.setVisible(false);
+        redOn.setVisible(control.isRedOn());
 
         highlightRedOn = new Ellipse(0.49375 * WIDTH, 0.13 * HEIGHT, 0.23125 * WIDTH, 0.05 * HEIGHT);
         final Paint HIGHLIGHT_RED_ON_FILL = new RadialGradient(0, 0,
@@ -368,7 +368,7 @@ public class TrafficlightSkin extends SkinBase<Trafficlight, TrafficlightBehavio
                                                                new Stop(1.0, Color.color(1, 1, 1, 0.0862745098)));
         highlightRedOn.setFill(HIGHLIGHT_RED_ON_FILL);
         highlightRedOn.setStroke(null);
-        highlightRedOn.setVisible(false);
+        highlightRedOn.setVisible(control.isRedOn());
 
         trafficlight.getChildren().addAll(redOff,
                                           HIGHLIGHT_RED_OFF,
@@ -413,7 +413,7 @@ public class TrafficlightSkin extends SkinBase<Trafficlight, TrafficlightBehavio
         yellowOn.setFill(YELLOW_ON_FILL);
         yellowOn.setStroke(null);
         yellowOn.setEffect(YELLOW_GLOW);
-        yellowOn.setVisible(false);
+        yellowOn.setVisible(control.isYellowOn());
 
         highlightYellowOn = new Ellipse(0.49375 * WIDTH, 0.43 * HEIGHT, 0.23125 * WIDTH, 0.05 * HEIGHT);
         final Paint HIGHLIGHT_YELLOW_ON_FILL = new RadialGradient(0, 0,
@@ -425,7 +425,7 @@ public class TrafficlightSkin extends SkinBase<Trafficlight, TrafficlightBehavio
                                                                   new Stop(1.0, Color.color(1, 1, 1, 0.0862745098)));
         highlightYellowOn.setFill(HIGHLIGHT_YELLOW_ON_FILL);
         highlightYellowOn.setStroke(null);
-        highlightYellowOn.setVisible(false);
+        highlightYellowOn.setVisible(control.isYellowOn());
 
         trafficlight.getChildren().addAll(yellowOff,
                                           HIGHLIGHT_YELLOW_OFF,
@@ -470,7 +470,7 @@ public class TrafficlightSkin extends SkinBase<Trafficlight, TrafficlightBehavio
         greenOn.setFill(GREEN_ON_FILL);
         greenOn.setStroke(null);
         greenOn.setEffect(GREEN_GLOW);
-        greenOn.setVisible(false);
+        greenOn.setVisible(control.isGreenOn());
 
         highlightGreenOn = new Ellipse(0.49375 * WIDTH, 0.73 * HEIGHT, 0.23125 * WIDTH, 0.05 * HEIGHT);
         final Paint HIGHLIGHT_GREEN_ON_FILL = new RadialGradient(0, 0,
@@ -482,7 +482,7 @@ public class TrafficlightSkin extends SkinBase<Trafficlight, TrafficlightBehavio
                                                                  new Stop(1.0, Color.color(1, 1, 1, 0.0862745098)));
         highlightGreenOn.setFill(HIGHLIGHT_GREEN_ON_FILL);
         highlightGreenOn.setStroke(null);
-        highlightGreenOn.setVisible(false);
+        highlightGreenOn.setVisible(control.isGreenOn());
 
         trafficlight.getChildren().addAll(greenOff,
                                           HIGHLIGHT_GREEN_OFF,
