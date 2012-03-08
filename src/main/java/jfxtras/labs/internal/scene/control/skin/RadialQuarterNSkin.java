@@ -401,6 +401,16 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
             }
         });
 
+        control.thresholdExceededProperty().addListener(new ChangeListener<Boolean>() {
+            @Override public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
+                if(newValue) {
+                    ledTimer.start();
+                } else {
+                    ledTimer.stop();
+                }
+            }
+        });
+
         control.valueProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
                 if (rotationAngleTimeline.getStatus() != Animation.Status.STOPPED) {

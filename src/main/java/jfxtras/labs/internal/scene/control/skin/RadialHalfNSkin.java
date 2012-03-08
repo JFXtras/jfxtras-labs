@@ -315,6 +315,9 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
             bargraphOff.visibleProperty().unbind();
         }
         bargraphOff.visibleProperty().bind(control.bargraphProperty());
+        if (bargraphOn.visibleProperty().isBound()) {
+            bargraphOn.visibleProperty().unbind();
+        }
         bargraphOn.visibleProperty().bind(control.bargraphProperty());
         pointer.setVisible(!bargraphOff.isVisible());
         knobs.setVisible(!bargraphOff.isVisible());
@@ -407,6 +410,16 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
                 control.setPrefWidth(newValue.doubleValue());
                 isDirty = true;
+            }
+        });
+
+        control.thresholdExceededProperty().addListener(new ChangeListener<Boolean>() {
+            @Override public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
+                if(newValue) {
+                    ledTimer.start();
+                } else {
+                    ledTimer.stop();
+                }
             }
         });
 
