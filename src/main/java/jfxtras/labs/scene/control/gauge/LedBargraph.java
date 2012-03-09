@@ -184,12 +184,13 @@ public class LedBargraph extends Control {
     }
 
     public final void setLedColor(final int INDEX, final Color COLOR) {
-        if (INDEX < 0) {
+        int realIndex = INDEX - 1;
+        if (realIndex < 0) {
             ledColors.get().set(0, COLOR);
-        } else if (INDEX > noOfLeds.get() - 1) {
+        } else if (realIndex > noOfLeds.get() - 1) {
             ledColors.get().set(noOfLeds.get() - 1, COLOR);
         } else {
-            ledColors.get().set(INDEX, COLOR);
+            ledColors.get().set(realIndex, COLOR);
         }
     }
 

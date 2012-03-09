@@ -125,12 +125,22 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
         registerChangeListener(control.noOfLedsProperty(), "LED_NUMBER");
         registerChangeListener(control.ledColorsProperty(), "LED_COLOR");
 
+        if (control.getValue() > 0) {
+            for (int i = 0 ; i < control.getNoOfLeds() ; i++) {
+                if (Double.compare(i * stepSize.doubleValue(), control.getValue()) <= 0) {
+                    ledList.get(i).setOn(true);
+                } else {
+                    ledList.get(i).setOn(false);
+                }
+            }
+        }
+
         control.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
                 int currentLedPeakIndex = 0;
                 for (int i = 0 ; i < control.getNoOfLeds() ; i++) {
-                    if (Double.compare(i * stepSize.get(), newValue.doubleValue()) <= 0) {
+                    if (Double.compare(i * stepSize.doubleValue(), newValue.doubleValue()) <= 0) {
                         ledList.get(i).setOn(true);
                         currentLedPeakIndex = i;
                     } else {
