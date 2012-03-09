@@ -173,14 +173,14 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
             for (Led led : ledList) {
                 led.setFrameVisible(control.isFrameVisible());
             }
-            isDirty = true;
+            paint();
         } else if (PROPERTY == "LED_SIZE") {
             for (Led led : ledList) {
                 led.setPrefSize(control.getLedSize(), control.getLedSize());
             }
-            isDirty = true;
+            paint();
         } else if (PROPERTY == "ORIENTATION") {
-            drawLed();
+            paint();
         } else if (PROPERTY == "LED_NUMBER") {
             stepSize.set(1.0 / control.getNoOfLeds());
         } else if (PROPERTY == "LED_COLOR") {
