@@ -25,10 +25,9 @@
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.internal.scene.control.skin;
+package jfxtras.labs.scene.control.gauge;
 
 import javafx.scene.paint.Color;
-import jfxtras.labs.scene.control.gauge.SimpleIndicator;
 
 
 /**
