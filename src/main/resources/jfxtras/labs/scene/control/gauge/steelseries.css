@@ -692,12 +692,12 @@
 ************************************************************/
 #bargraph-on {
     -fx-fill: radial-gradient(focus-angle 0deg, focus-distance 0%, center 50% 50%, radius 45%, derive(-fx-value, 50%) 0%, derive(-fx-value, -20%) 100%);
-    -fx-effect: dropshadow( gaussian , -fx-value , 20 , 0.9 , 0 , 0 );
+    -fx-effect: dropshadow(gaussian, -fx-value, 20, 0.9, 0, 0);
 }
 
 #bargraph-threshold {
     -fx-fill: radial-gradient(focus-angle 0deg, focus-distance 0%, center 50% 50%, radius 45%, derive(-fx-threshold, 50%) 0%, derive(-fx-threshold, -20%) 100%);
-    -fx-effect: dropshadow( gaussian, -fx-threshold, 20, 0.9, 0, 0 );
+    -fx-effect: dropshadow(gaussian, -fx-threshold, 20, 0.9, 0, 0);
 }
 
 #bargraph-off {
