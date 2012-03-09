@@ -121,6 +121,7 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
 
         initialized = true;
         paint();
+        setNumber();
     }
 
 
