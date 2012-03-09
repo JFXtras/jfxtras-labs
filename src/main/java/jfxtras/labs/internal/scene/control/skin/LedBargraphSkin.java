@@ -254,7 +254,7 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
             pane.setSpacing(0);
             pane.setPadding(new Insets(0, 0, 0, 0));
             for (int i = 0 ; i < control.getNoOfLeds() ; i++) {
-                pane.getChildren().add(i, ledList.get(15 - i));
+                pane.getChildren().add(i, ledList.get(control.getNoOfLeds() - i));
             }
             bargraph.getChildren().add(pane);
         } else {
