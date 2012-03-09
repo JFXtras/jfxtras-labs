@@ -76,7 +76,9 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
         bargraph        = new Group();
         ledList         = new ArrayList<Led>(control.getNoOfLeds());
         for(int i = 0 ; i < control.getNoOfLeds() ; i++) {
-            ledList.add(new Led());
+            Led led = new Led();
+            led.setPrefSize(control.getLedSize(), control.getLedSize());
+            ledList.add(led);
         }
         lastTimerCall   = 0l;
         stepSize        = new SimpleDoubleProperty(1.0 / control.getNoOfLeds());
@@ -175,9 +177,13 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
             }
             paint();
         } else if (PROPERTY == "LED_SIZE") {
-            for (Led led : ledList) {
+            ledList.clear();
+            for(int i = 0 ; i < control.getNoOfLeds() ; i++) {
+                Led led = new Led();
                 led.setPrefSize(control.getLedSize(), control.getLedSize());
+                ledList.add(led);
             }
+            setLedColors();
             paint();
         } else if (PROPERTY == "ORIENTATION") {
             paint();
@@ -249,19 +255,21 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
         IBOUNDS.setOpacity(0.0);
         bargraph.getChildren().add(IBOUNDS);
 
+        final int NO_OF_LEDS = control.getNoOfLeds();
+
         if (control.getOrientation() == Orientation.VERTICAL) {
             VBox pane = new VBox();
             pane.setSpacing(0);
             pane.setPadding(new Insets(0, 0, 0, 0));
-            for (int i = 0 ; i < control.getNoOfLeds() ; i++) {
-                pane.getChildren().add(i, ledList.get(control.getNoOfLeds() - i));
+            for (int i = 0 ; i < NO_OF_LEDS ; i++) {
+                pane.getChildren().add(i, ledList.get(NO_OF_LEDS - 1 - i));
             }
             bargraph.getChildren().add(pane);
         } else {
             HBox pane = new HBox();
             pane.setSpacing(0);
             pane.setPadding(new Insets(0, 0, 0, 0));
-            for (int i = 0 ; i < control.getNoOfLeds() ; i++) {
+            for (int i = 0 ; i < NO_OF_LEDS ; i++) {
                 pane.getChildren().add(i, ledList.get(i));
             }
             bargraph.getChildren().add(pane);
