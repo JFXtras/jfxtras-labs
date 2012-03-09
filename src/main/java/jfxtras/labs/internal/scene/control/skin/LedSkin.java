@@ -108,6 +108,10 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
         registerChangeListener(control.onProperty(), "ON");
         registerChangeListener(control.blinkingProperty(), "BLINKING");
 
+        if (control.isBlinking()) {
+            timer.start();
+        }
+
         initialized = true;
         paint();
     }
@@ -231,7 +235,7 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
 
         ledOn.setId("fx-led-on");
         ledOn.setStroke(null);
-        ledOn.setVisible(false);
+        ledOn.setVisible(control.isOn());
 
         HIGHLIGHT.setId("fx-led-highlight");
         HIGHLIGHT.setStroke(null);

@@ -340,7 +340,7 @@ public class StyleModelBuilder {
         return this;
     }
 
-    public StyleModel build() {
+    public final StyleModel build() {
         return styleModel;
     }
 }

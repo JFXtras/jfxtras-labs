@@ -177,7 +177,7 @@ public class GaugeModelBuilder {
         return this;
     }
 
-    public GaugeModel build() {
+    public final GaugeModel build() {
         return gaugeModel;
     }
 }

@@ -114,12 +114,9 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
     protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
         if (PROPERTY == "INNER_COLOR") {
-            main.setStyle("-fx-indicator-inner-color: " + Util.INSTANCE.createCssColor(control.getInnerColor()));
-            main.setId("indicator-main-fill");
-            mainGlow.setColor(control.getInnerColor());
+            updateIndicator();
         } else if (PROPERTY == "OUTER_COLOR") {
-            main.setStyle("-fx-indicator-outer-color: " + Util.INSTANCE.createCssColor(control.getOuterColor()));
-            main.setId("indicator-main-fill");
+            updateIndicator();
         } else if (PROPERTY == "GLOW_VISIBILITY") {
             paint();
         }
@@ -164,7 +161,14 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
 
 
     // ******************** Drawing related ***********************************
-    public final void drawIndicator() {
+    private void updateIndicator() {
+        main.setStyle("-fx-indicator-inner-color: " + Util.INSTANCE.createCssColor(control.getInnerColor()) +
+                      "-fx-indicator-outer-color: " + Util.INSTANCE.createCssColor(control.getOuterColor()));
+        main.setId("indicator-main-fill");
+        mainGlow.setColor(control.getInnerColor());
+    }
+
+    private final void drawIndicator() {
         final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
         final double WIDTH = SIZE;
         final double HEIGHT = SIZE;
