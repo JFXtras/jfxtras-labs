@@ -53,13 +53,18 @@ public class LedBargraphBuilder {
         return this;
     }
 
-    public final LedBargraphBuilder type(final Led.Type LED_TYPE) {
+    public final LedBargraphBuilder ledType(final Led.Type LED_TYPE) {
         bargraph.setLedType(LED_TYPE);
         return this;
     }
 
     public final LedBargraphBuilder orientation(final Orientation ORIENTATION) {
         bargraph.setOrientation(ORIENTATION);
+        return this;
+    }
+
+    public final LedBargraphBuilder peakValueVisible(final boolean PEAK_VALUE_VISIBLE) {
+        bargraph.setPeakValueVisible(PEAK_VALUE_VISIBLE);
         return this;
     }
 
