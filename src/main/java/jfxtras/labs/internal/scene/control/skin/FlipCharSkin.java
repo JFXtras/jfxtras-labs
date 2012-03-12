@@ -111,8 +111,7 @@ public class FlipCharSkin extends SkinBase<FlipChar, FlipCharBehavior> {
         currentAngle     = 0;
         flipping         = false;
         timer            = new AnimationTimer() {
-            @Override
-            public void handle(long l) {
+            @Override public void handle(long l) {
                 if (initialized) {
                     if (control.isCountdownMode()) {
                         flipBackward(angleStep);}
@@ -312,7 +311,7 @@ public class FlipCharSkin extends SkinBase<FlipChar, FlipCharBehavior> {
 
 
     // ******************** Drawing related ***********************************
-    public final void drawFixture() {
+    public void drawFixture() {
         final double WIDTH = control.getPrefWidth();
         final double HEIGHT = control.getPrefHeight();
 
@@ -382,7 +381,7 @@ public class FlipCharSkin extends SkinBase<FlipChar, FlipCharBehavior> {
                                      LEFTMAIN);
     }
 
-    public final void drawFlip() {
+    public void drawFlip() {
         final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
         final double WIDTH = control.getPrefWidth();
         final double HEIGHT = control.getPrefHeight();
