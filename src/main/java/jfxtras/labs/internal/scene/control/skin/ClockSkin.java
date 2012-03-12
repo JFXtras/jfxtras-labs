@@ -54,6 +54,7 @@ import jfxtras.labs.internal.scene.control.behavior.ClockBehavior;
 import jfxtras.labs.scene.control.gauge.Clock;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
@@ -69,6 +70,7 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
     private static final long INTERVAL = 50000000l;
     private static final Calendar CAL  = Calendar.getInstance();
     private Clock                 control;
+    private int                   dst;
     private Group                 hourPointer;
     private Group                 minutePointer;
     private Group                 secondPointer;
@@ -91,11 +93,12 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         super(CONTROL, new ClockBehavior(CONTROL));
         control       = CONTROL;
         CAL.setTimeZone(TimeZone.getTimeZone(control.getTimeZone()));
+        dst           = control.isDaylightSavingTime() ? 1 : 0;
         hourPointer   = new Group();
         minutePointer = new Group();
         secondPointer = new Group();
         clock         = new Group();
-        hourAngle     = new SimpleDoubleProperty(360 / 12 * Calendar.getInstance().get(Calendar.HOUR - (control.isDST() ? 0 : 1)));
+        hourAngle     = new SimpleDoubleProperty(360 / 12 * Calendar.getInstance().get(Calendar.HOUR) + dst);
         minuteAngle   = new SimpleDoubleProperty(360 / 60 * Calendar.getInstance().get(Calendar.MINUTE));
         secondAngle   = new SimpleDoubleProperty(360 / 60 * Calendar.getInstance().get(Calendar.SECOND));
         hourOffset    = CAL.get(Calendar.HOUR_OF_DAY) - Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
@@ -117,7 +120,7 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
                     // Minutes
                     minuteAngle.set((minuteOffset + Calendar.getInstance().get(Calendar.MINUTE)) * 6);
                     // Hours
-                    hourAngle.set((hourOffset + Calendar.getInstance().get(Calendar.HOUR - (control.isDST() ? 0 : 1))) * 30 + 0.5 * Calendar.getInstance().get(Calendar.MINUTE));
+                    hourAngle.set((hourOffset + Calendar.getInstance().get(Calendar.HOUR)) * 30 + 0.5 * Calendar.getInstance().get(Calendar.MINUTE));
                     lastTimerCall = currentNanoTime;
                     lastHour = CAL.get(Calendar.HOUR_OF_DAY);
                 }
@@ -247,11 +250,13 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
 
     private void setTime() {
         CAL.setTimeZone(TimeZone.getTimeZone(control.getTimeZone()));
-        hourOffset    = CAL.get(Calendar.HOUR_OF_DAY) - Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        dst = control.isDaylightSavingTime() ? 1 : 0;
+        int localDst = Calendar.getInstance().getTimeZone().inDaylightTime(new Date()) ? 1 : 0;
+        hourOffset    = CAL.get(Calendar.HOUR_OF_DAY) + dst - Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + localDst;
         minuteOffset  = CAL.get(Calendar.MINUTE) - Calendar.getInstance().get(Calendar.MINUTE);
         secondAngle.set(Calendar.getInstance().get(Calendar.SECOND) * 6 + Calendar.getInstance().get(Calendar.MILLISECOND) * 0.006);
         minuteAngle.set((minuteOffset + Calendar.getInstance().get(Calendar.MINUTE)) * 6);
-        hourAngle.set((hourOffset + Calendar.getInstance().get(Calendar.HOUR - (control.isDST() ? 0 : 1))) * 30 + 0.5 * Calendar.getInstance().get(Calendar.MINUTE));
+        hourAngle.set((hourOffset + Calendar.getInstance().get(Calendar.HOUR)) * 30 + 0.5 * Calendar.getInstance().get(Calendar.MINUTE));
 
         checkForNight();
     }

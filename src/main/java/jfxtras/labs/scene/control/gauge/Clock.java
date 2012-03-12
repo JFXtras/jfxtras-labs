@@ -28,8 +28,10 @@
 package jfxtras.labs.scene.control.gauge;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -53,6 +55,7 @@ public class Clock extends Control {
     private BooleanProperty     running;
     private BooleanProperty     secondPointerVisible;
     private BooleanProperty     autoDimEnabled;
+    private BooleanProperty     daylightSavingTime;
 
 
     // ******************** Constructors **************************************
@@ -61,6 +64,7 @@ public class Clock extends Control {
         running              = new SimpleBooleanProperty(false);
         secondPointerVisible = new SimpleBooleanProperty(true);
         autoDimEnabled       = new SimpleBooleanProperty(true);
+        daylightSavingTime   = new SimpleBooleanProperty(Calendar.getInstance().getTimeZone().inDaylightTime(new Date()));
         init();
     }
 
@@ -124,24 +128,16 @@ public class Clock extends Control {
         return autoDimEnabled;
     }
 
-    public boolean isDST(){
-        /*************************************
-         * US. 2007 energy policy
-         * DST starts:      at 2:00am in standard time
-         *                  on the second Sunday in March
-         * DST ends:        at 2:00am in daylight time
-         *                  on the first Sunday in November
-         * ***********************************
-         */
-        final TimeZone TIME_ZONE = Calendar.getInstance().getTimeZone();
-        final SimpleTimeZone SIMPLE_TIME_ZONE = new SimpleTimeZone(TIME_ZONE.getRawOffset(),
-            TIME_ZONE.getDisplayName(),
-            Calendar.MARCH, 8, -Calendar.SUNDAY,
-            7200000,
-            Calendar.NOVEMBER, 1, -Calendar.SUNDAY,
-            7200000,
-            3600000);
-        return SIMPLE_TIME_ZONE.inDaylightTime(new Date()) ? true : false;
+    public final boolean isDaylightSavingTime() {
+        return daylightSavingTime.get();
+    }
+
+    public final void setDaylightSavingTime(final boolean DAYLIGHT_SAVING_TIME) {
+        daylightSavingTime.set(DAYLIGHT_SAVING_TIME);
+    }
+
+    public final BooleanProperty daylightSavingTimeProperty() {
+        return daylightSavingTime;
     }
 
 

@@ -46,6 +46,11 @@ public class ClockBuilder {
         return this;
     }
 
+    public final ClockBuilder daylightSavingTime(final boolean DAYLIGHT_SAVING_TIME) {
+        clock.setDaylightSavingTime(DAYLIGHT_SAVING_TIME);
+        return this;
+    }
+
     public final ClockBuilder secondPointerVisible(final boolean SECOND_POINTER_VISIBLE) {
         clock.setSecondPointerVisible(SECOND_POINTER_VISIBLE);
         return this;
