@@ -56,6 +56,11 @@ public class ClockBuilder {
         return this;
     }
 
+    public final ClockBuilder autoDimEnabled(final boolean AUTO_DIM_ENABLED) {
+        clock.setAutoDimEnabled(AUTO_DIM_ENABLED);
+        return this;
+    }
+
     public final ClockBuilder running(final boolean RUNNING) {
         clock.setRunning(RUNNING);
         return this;
