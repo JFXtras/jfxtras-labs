@@ -70,12 +70,18 @@
 
 .clock {
     -fx-skin: "jfxtras.labs.internal.scene.control.skin.ClockSkin";
-    -fx-clock-frame-fill             : linear-gradient(from 50% 0% to 50% 100%, rgb(51, 51, 51) 0%, rgb(153, 153, 153) 100%);
-    -fx-clock-bright-background-fill : radial-gradient(focus-angle 0deg, focus-distance 0%, center 50% 50%, radius 50%, rgb(191, 207, 197) 0%, rgb(226, 239, 229) 70%, rgb(199, 216, 206) 100%);
-    -fx-clock-dark-background-fill   : linear-gradient(from 0% 0% to 0% 100%, rgb(62, 59, 50) 0%, rgb(35, 37, 32) 100%);
-    -fx-clock-bright-foreground-fill : black;
-    -fx-clock-dark-foreground-fill   : white;
-    -fx-clock-second-pointer-color   : rgb(237, 0, 58);
+    -fx-clock-frame-fill            : linear-gradient(from 50% 0% to 50% 100%, rgb(51, 51, 51) 0%, rgb(153, 153, 153) 100%);
+    -fx-clock-bright-background-fill: radial-gradient(focus-angle 0deg, focus-distance 0%, center 50% 50%, radius 50%, rgb(191, 207, 197) 0%, rgb(226, 239, 229) 70%, rgb(199, 216, 206) 100%);
+    -fx-clock-dark-background-fill  : linear-gradient(from 0% 0% to 0% 100%, rgb(62, 59, 50) 0%, rgb(35, 37, 32) 100%);
+    -fx-clock-bright-foreground-fill: black;
+    -fx-clock-dark-foreground-fill  : white;
+    -fx-clock-second-pointer-color  : rgb(237, 0, 58);
+}
+
+.sixteen-segment {
+    -fx-skin             : "jfxtras.labs.internal.scene.control.skin.SixteenSegmentSkin";
+    -fx-segment-color-on : rgb(119, 219, 0);
+    -fx-segment-color-off: rgb(40, 40, 40);
 }
 
 
@@ -183,4 +189,19 @@
 
 #clock-second-pointer-fill {
     -fx-fill: -fx-clock-second-pointer-color;
+}
+
+/************************************************************
+* Definition of SixteenSegment fills                        *
+************************************************************/
+#sixteen-segment-on {
+    -fx-fill  : radial-gradient(focus-angle 0deg, focus-distance 0%, center 50% 50%, radius 50%, derive(-fx-segment-color-on, +30%) 0%, -fx-segment-color-on 50%, derive(-fx-segment-color-on, -30%) 100%);
+    -fx-stroke: transparent;
+    /*-fx-effect: dropshadow(gaussian, -fx-segment-color-on, 1.0, 0.5, 0, 0);*/
+}
+
+#sixteen-segment-off {
+    -fx-fill  : -fx-segment-color-off;
+    -fx-stroke: transparent;
+    -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.65), 1, 0.5, 0, 0);
 }
