@@ -41,6 +41,31 @@ public class LcdBuilder {
         return this;
     }
 
+    public final LcdBuilder lcdDesign(final LcdDesign LCD_DESIGN) {
+        lcd.setLcdDesign(LCD_DESIGN);
+        return this;
+    }
+
+    public final LcdBuilder value(final double VALUE) {
+        lcd.setLcdValue(VALUE);
+        return this;
+    }
+
+    public final LcdBuilder threshold(final double THRESHOLD) {
+        lcd.setLcdThreshold(THRESHOLD);
+        return this;
+    }
+
+    public final LcdBuilder lcdDecimals(final int LCD_DECIMALS) {
+        lcd.setLcdDecimals(LCD_DECIMALS);
+        return this;
+    }
+
+    public final LcdBuilder digitalFontEnabled(final boolean DIGITAL_FONT_ENABLED) {
+        lcd.setLcdDigitalFontEnabled(DIGITAL_FONT_ENABLED);
+        return this;
+    }
+
     public final LcdBuilder minMeasuredValueVisible(final boolean MIN_MEASURED_VALUE_VISIBLE) {
         lcd.setLcdMinMeasuredValueVisible(MIN_MEASURED_VALUE_VISIBLE);
         return this;
