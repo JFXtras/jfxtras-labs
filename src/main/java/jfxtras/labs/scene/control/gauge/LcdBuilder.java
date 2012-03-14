@@ -41,8 +41,8 @@ public class LcdBuilder {
         return this;
     }
 
-    public final LcdBuilder lcdDesign(final LcdDesign LCD_DESIGN) {
-        lcd.setLcdDesign(LCD_DESIGN);
+    public final LcdBuilder design(final LcdDesign DESIGN) {
+        lcd.setLcdDesign( DESIGN);
         return this;
     }
 
@@ -56,8 +56,8 @@ public class LcdBuilder {
         return this;
     }
 
-    public final LcdBuilder lcdDecimals(final int LCD_DECIMALS) {
-        lcd.setLcdDecimals(LCD_DECIMALS);
+    public final LcdBuilder decimals(final int DECIMALS) {
+        lcd.setLcdDecimals(DECIMALS);
         return this;
     }
 
