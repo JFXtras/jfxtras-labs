@@ -770,7 +770,7 @@ public class RadialQuarterWSkin extends GaugeSkinBase<RadialQuarterW, RadialQuar
         IBOUNDS.setOpacity(0.0);
         titleAndUnit.getChildren().add(IBOUNDS);
 
-        final Font TITLE_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.046728972 * SIZE));
+        final Font TITLE_FONT = Font.font(control.getTitleFont(), FontWeight.NORMAL, (0.046728972 * SIZE));
         final Text title = new Text();
         title.setTextOrigin(VPos.BOTTOM);
         title.setFont(TITLE_FONT);
@@ -779,7 +779,7 @@ public class RadialQuarterWSkin extends GaugeSkinBase<RadialQuarterW, RadialQuar
         title.setY(0.3 * SIZE + title.getLayoutBounds().getHeight());
         title.setId(control.getBackgroundDesign().CSS_TEXT);
 
-        final Font UNIT_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.046728972 * SIZE));
+        final Font UNIT_FONT = Font.font(control.getUnitFont(), FontWeight.NORMAL, (0.046728972 * SIZE));
         final Text unit = new Text();
         unit.setTextOrigin(VPos.BOTTOM);
         unit.setFont(UNIT_FONT);

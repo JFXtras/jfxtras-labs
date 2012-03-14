@@ -921,6 +921,30 @@ public abstract class Gauge extends Control {
         return styleModel.userLedBlinkingProperty();
     }
 
+    public final String getTitleFont() {
+        return styleModel.getTitleFont();
+    }
+
+    public final void setTitleFont(final String TITLE_FONT) {
+        styleModel.setTitleFont(TITLE_FONT);
+    }
+
+    public final StringProperty titleFontProperty() {
+        return styleModel.titleFontProperty();
+    }
+
+    public final String getUnitFont() {
+        return styleModel.getUnitFont();
+    }
+
+    public final void setUnitFont(final String UNIT_FONT) {
+        styleModel.setUnitFont(UNIT_FONT);
+    }
+
+    public final StringProperty unitFontProperty() {
+        return styleModel.unitFontProperty();
+    }
+
     public final ForegroundType getForegroundType() {
         return styleModel.getForegroundType();
     }
@@ -1069,12 +1093,24 @@ public abstract class Gauge extends Control {
         return styleModel.getLcdUnitFont();
     }
 
-    public final void setLcdUnitFont(final String UNIT_FONT) {
-        styleModel.setLcdUnitFont(UNIT_FONT);
+    public final void setLcdUnitFont(final String LCD_UNIT_FONT) {
+        styleModel.setLcdUnitFont(LCD_UNIT_FONT);
     }
 
     public final StringProperty lcdUnitFontProperty() {
         return styleModel.lcdUnitFontProperty();
+    }
+
+    public final String getLcdTitleFont() {
+        return styleModel.getLcdTitleFont();
+    }
+
+    public final void setLcdTitleFont(final String LCD_TITLE_FONT) {
+        styleModel.setLcdTitleFont(LCD_TITLE_FONT);
+    }
+
+    public final StringProperty lcdTitleFontProperty() {
+        return styleModel.lcdTitleFontProperty();
     }
 
     public final NumberSystem getLcdNumberSystem() {

@@ -80,6 +80,8 @@ public class StyleModel {
     private BooleanProperty                      userLedOn;
     private ObjectProperty<LedColor>             userLedColor;
     private BooleanProperty                      userLedBlinking;
+    private StringProperty                       titleFont;
+    private StringProperty                       unitFont;
     private ObjectProperty<ForegroundType>       foregroundType;
     private BooleanProperty                      foregroundVisible;
     private BooleanProperty                      lcdThresholdVisible;
@@ -88,6 +90,7 @@ public class StyleModel {
     private BooleanProperty                      lcdUnitVisible;
     private BooleanProperty                      lcdDigitalFontEnabled;
     private StringProperty                       lcdUnitFont;
+    private StringProperty                       lcdTitleFont;
     private IntegerProperty                      lcdDecimals;
     private BooleanProperty                      lcdNumberSystemVisible;
     private BooleanProperty                      lcdBlinking;
@@ -146,6 +149,8 @@ public class StyleModel {
         userLedColor                    = new SimpleObjectProperty<LedColor>(LedColor.BLUE);
         userLedBlinking                 = new SimpleBooleanProperty(false);
         userLedOn                       = new SimpleBooleanProperty(false);
+        titleFont                       = new SimpleStringProperty("Verdana");
+        unitFont                        = new SimpleStringProperty("Verdana");
         foregroundType                  = new SimpleObjectProperty<ForegroundType>(Radial.ForegroundType.TYPE1);
         foregroundVisible               = new SimpleBooleanProperty(true);
         lcdThresholdVisible             = new SimpleBooleanProperty(false);
@@ -154,6 +159,7 @@ public class StyleModel {
         lcdUnitVisible                  = new SimpleBooleanProperty(false);
         lcdDigitalFontEnabled           = new SimpleBooleanProperty(false);
         lcdUnitFont                     = new SimpleStringProperty("Verdana");
+        lcdTitleFont                    = new SimpleStringProperty("Verdana");
         lcdDecimals                     = new SimpleIntegerProperty(0);
         lcdNumberSystemVisible          = new SimpleBooleanProperty(false);
         lcdBlinking                     = new SimpleBooleanProperty(false);
@@ -489,6 +495,30 @@ public class StyleModel {
         return userLedBlinking;
     }
 
+    public final String getTitleFont() {
+        return titleFont.get();
+    }
+
+    public final void setTitleFont(final String TITLE_FONT) {
+        titleFont.set(TITLE_FONT);
+    }
+
+    public final StringProperty titleFontProperty() {
+        return titleFont;
+    }
+
+    public final String getUnitFont() {
+        return unitFont.get();
+    }
+
+    public final void setUnitFont(final String UNIT_FONT) {
+        unitFont.set(UNIT_FONT);
+    }
+
+    public final StringProperty unitFontProperty() {
+        return unitFont;
+    }
+
     public final Radial.ForegroundType getForegroundType() {
         return foregroundType.get();
     }
@@ -583,6 +613,18 @@ public class StyleModel {
 
     public final StringProperty lcdUnitFontProperty() {
         return lcdUnitFont;
+    }
+
+    public final String getLcdTitleFont() {
+        return lcdTitleFont.get();
+    }
+
+    public final void setLcdTitleFont(final String TITLE_FONT) {
+        lcdTitleFont.set(TITLE_FONT);
+    }
+
+    public final StringProperty lcdTitleFontProperty() {
+        return lcdTitleFont;
     }
 
     public final int getLcdDecimals() {

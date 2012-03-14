@@ -942,7 +942,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         IBOUNDS.setOpacity(0.0);
         IBOUNDS.setStroke(null);
 
-        final Font TITLE_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.08 * SIZE));
+        final Font TITLE_FONT = Font.font(control.getTitleFont(), FontWeight.NORMAL, (0.08 * SIZE));
         final Text title = new Text();
         title.setTextOrigin(VPos.BOTTOM);
         title.setFont(TITLE_FONT);
@@ -958,7 +958,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         }
         title.setId(control.getBackgroundDesign().CSS_TEXT);
 
-        final Font UNIT_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.0666666667 * SIZE));
+        final Font UNIT_FONT = Font.font(control.getUnitFont(), FontWeight.NORMAL, (0.0666666667 * SIZE));
         final Text unit = new Text();
         unit.setTextOrigin(VPos.BOTTOM);
         unit.setFont(UNIT_FONT);

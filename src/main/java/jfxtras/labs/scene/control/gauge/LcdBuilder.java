@@ -136,6 +136,16 @@ public class LcdBuilder {
         return this;
     }
 
+    public final LcdBuilder titleFont(final String TITLE_FONT) {
+        lcd.setLcdTitleFont(TITLE_FONT);
+        return this;
+    }
+
+    public final LcdBuilder unitFont(final String UNIT_FONT) {
+        lcd.setLcdUnitFont(UNIT_FONT);
+        return this;
+    }
+
     public final Lcd build() {
         return lcd;
     }

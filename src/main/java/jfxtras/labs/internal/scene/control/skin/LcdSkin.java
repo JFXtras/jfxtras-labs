@@ -607,9 +607,10 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         lcdValueBackgroundString.setId("lcd-text-background");
 
         // Setup the font for the lcd title, number system, min measured, max measure and former value
+        final Font LCD_TITLE_FONT = Font.font(control.getLcdTitleFont(), FontWeight.BOLD, (0.1666666667 * SIZE));
         final Font LCD_SMALL_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.1666666667 * SIZE));
         // Title
-        lcdTitle.setFont(LCD_SMALL_FONT);
+        lcdTitle.setFont(LCD_TITLE_FONT);
         lcdTitle.setTextOrigin(VPos.BASELINE);
         lcdTitle.setTextAlignment(TextAlignment.CENTER);
         lcdTitle.setText(control.getTitle());
@@ -631,7 +632,6 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         lcdNumberSystem.getStyleClass().add("lcd");
         lcdNumberSystem.setStyle(control.getLcdDesign().CSS);
         lcdNumberSystem.setId("lcd-text");
-
 
         // Min measured value
         lcdMinMeasuredValue.setFont(LCD_SMALL_FONT);
@@ -797,248 +797,228 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
 
         // Prepare bargraph
         if (control.isBargraphVisible()) {
-            final Path BARGRAPH_OFF = new Path();
-            BARGRAPH_OFF.setFillRule(FillRule.EVEN_ODD);
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.9166666666666666 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.9166666666666666 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.946969696969697 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.946969696969697 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.9166666666666666 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.8712121212121212 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.8712121212121212 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.9015151515151515 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.9015151515151515 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.8712121212121212 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.8257575757575758 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.8257575757575758 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.8560606060606061 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.8560606060606061 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.8257575757575758 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.7803030303030303 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.7803030303030303 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.8106060606060606 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.8106060606060606 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.7803030303030303 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.7348484848484849 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.7348484848484849 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.7651515151515151 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.7651515151515151 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.7348484848484849 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.6893939393939394 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.6893939393939394 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.7196969696969697 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.7196969696969697 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.6893939393939394 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.6439393939393939 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.6439393939393939 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.6742424242424242 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.6742424242424242 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.6439393939393939 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.5984848484848485 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.5984848484848485 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.6287878787878788 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.6287878787878788 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.5984848484848485 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.553030303030303 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.553030303030303 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.5833333333333334 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.5833333333333334 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.553030303030303 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.5075757575757576 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.5075757575757576 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.5378787878787878 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.5378787878787878 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.5075757575757576 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.4621212121212121 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.4621212121212121 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.49242424242424243 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.49242424242424243 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.4621212121212121 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.4166666666666667 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.4166666666666667 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.44696969696969696 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.44696969696969696 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.4166666666666667 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.3712121212121212 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.3712121212121212 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.4015151515151515 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.4015151515151515 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.3712121212121212 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.32575757575757575 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.32575757575757575 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.3560606060606061 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.3560606060606061 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.32575757575757575 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.2803030303030303 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.2803030303030303 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.3106060606060606 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.3106060606060606 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.2803030303030303 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.23484848484848486 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.23484848484848486 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.26515151515151514 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.26515151515151514 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.23484848484848486 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.1893939393939394 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.1893939393939394 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.2196969696969697 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.2196969696969697 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.1893939393939394 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.14393939393939395 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.14393939393939395 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.17424242424242425 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.17424242424242425 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.14393939393939395 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.09848484848484848 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.09848484848484848 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.12878787878787878 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.12878787878787878 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.09848484848484848 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.getElements().add(new MoveTo(0.05303030303030303 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.05303030303030303 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.08333333333333333 * WIDTH, 0.7708333333333334 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.08333333333333333 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new LineTo(0.05303030303030303 * WIDTH, 0.7291666666666666 * HEIGHT));
-            BARGRAPH_OFF.getElements().add(new ClosePath());
-            BARGRAPH_OFF.setId("lcd-text-background");
-            BARGRAPH_OFF.setStroke(null);
+            final Path BAR_GRAPH_OFF = new Path();
+            BAR_GRAPH_OFF.setFillRule(FillRule.EVEN_ODD);
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.9166666666666666 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.9166666666666666 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.946969696969697 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.946969696969697 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.8712121212121212 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.8712121212121212 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.9015151515151515 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.9015151515151515 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.8257575757575758 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.8257575757575758 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.8560606060606061 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.8560606060606061 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.7803030303030303 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.7803030303030303 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.8106060606060606 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.8106060606060606 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.7348484848484849 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.7348484848484849 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.7651515151515151 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.7651515151515151 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.6893939393939394 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.6893939393939394 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.7196969696969697 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.7196969696969697 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.6439393939393939 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.6439393939393939 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.6742424242424242 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.6742424242424242 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.5984848484848485 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.5984848484848485 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.6287878787878788 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.6287878787878788 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.553030303030303 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.553030303030303 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.5833333333333334 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.5833333333333334 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.5075757575757576 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.5075757575757576 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.5378787878787878 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.5378787878787878 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.4621212121212121 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.4621212121212121 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.49242424242424243 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.49242424242424243 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.4166666666666667 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.4166666666666667 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.44696969696969696 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.44696969696969696 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.3712121212121212 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.3712121212121212 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.4015151515151515 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.4015151515151515 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.32575757575757575 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.32575757575757575 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.3560606060606061 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.3560606060606061 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.2803030303030303 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.2803030303030303 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.3106060606060606 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.3106060606060606 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.23484848484848486 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.23484848484848486 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.26515151515151514 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.26515151515151514 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.1893939393939394 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.1893939393939394 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.2196969696969697 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.2196969696969697 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.14393939393939395 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.14393939393939395 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.17424242424242425 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.17424242424242425 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.09848484848484848 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.09848484848484848 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.12878787878787878 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.12878787878787878 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.getElements().add(new MoveTo(0.05303030303030303 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.05303030303030303 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.08333333333333333 * WIDTH, 0.78 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new LineTo(0.08333333333333333 * WIDTH, 0.74 * HEIGHT));
+            BAR_GRAPH_OFF.getElements().add(new ClosePath());
+            BAR_GRAPH_OFF.setId("lcd-text-background");
+            BAR_GRAPH_OFF.setStroke(null);
 
 
-            final Rectangle SEG1 = new Rectangle(0.05303030303030303 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                 0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG1 = new Rectangle(0.05303030303030303 * WIDTH, 0.74 * HEIGHT,
+                                                 0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG1.setId("lcd-text");
             SEG1.setStroke(null);
             SEG1.setVisible(false);
 
-            final Rectangle SEG2 = new Rectangle(0.09848484848484848 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                 0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG2 = new Rectangle(0.09848484848484848 * WIDTH, 0.74 * HEIGHT,
+                                                 0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG2.setId("lcd-text");
             SEG2.setStroke(null);
             SEG2.setVisible(false);
 
-            final Rectangle SEG3 = new Rectangle(0.14393939393939395 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                 0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG3 = new Rectangle(0.14393939393939395 * WIDTH, 0.74 * HEIGHT,
+                                                 0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG3.setId("lcd-text");
             SEG3.setStroke(null);
             SEG3.setVisible(false);
 
-            final Rectangle SEG4 = new Rectangle(0.1893939393939394 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                 0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG4 = new Rectangle(0.1893939393939394 * WIDTH, 0.74 * HEIGHT,
+                                                 0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG4.setId("lcd-text");
             SEG4.setStroke(null);
             SEG4.setVisible(false);
 
-            final Rectangle SEG5 = new Rectangle(0.23484848484848486 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                 0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG5 = new Rectangle(0.23484848484848486 * WIDTH, 0.74 * HEIGHT,
+                                                 0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG5.setId("lcd-text");
             SEG5.setStroke(null);
             SEG5.setVisible(false);
 
-            final Rectangle SEG6 = new Rectangle(0.2803030303030303 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                 0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG6 = new Rectangle(0.2803030303030303 * WIDTH, 0.74 * HEIGHT,
+                                                 0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG6.setId("lcd-text");
             SEG6.setStroke(null);
             SEG6.setVisible(false);
 
-            final Rectangle SEG7 = new Rectangle(0.32575757575757575 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                 0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG7 = new Rectangle(0.32575757575757575 * WIDTH, 0.74 * HEIGHT,
+                                                 0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG7.setId("lcd-text");
             SEG7.setStroke(null);
             SEG7.setVisible(false);
 
-            final Rectangle SEG8 = new Rectangle(0.3712121212121212 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                 0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG8 = new Rectangle(0.3712121212121212 * WIDTH, 0.74 * HEIGHT,
+                                                 0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG8.setId("lcd-text");
             SEG8.setStroke(null);
             SEG8.setVisible(false);
 
-            final Rectangle SEG9 = new Rectangle(0.4166666666666667 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                 0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG9 = new Rectangle(0.4166666666666667 * WIDTH, 0.74 * HEIGHT,
+                                                 0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG9.setId("lcd-text");
             SEG9.setStroke(null);
             SEG9.setVisible(false);
 
-            final Rectangle SEG10 = new Rectangle(0.4621212121212121 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                  0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG10 = new Rectangle(0.4621212121212121 * WIDTH, 0.74 * HEIGHT,
+                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG10.setId("lcd-text");
             SEG10.setStroke(null);
             SEG10.setVisible(false);
 
-            final Rectangle SEG11 = new Rectangle(0.5075757575757576 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                  0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG11 = new Rectangle(0.5075757575757576 * WIDTH, 0.74 * HEIGHT,
+                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG11.setId("lcd-text");
             SEG11.setStroke(null);
             SEG11.setVisible(false);
 
-            final Rectangle SEG12 = new Rectangle(0.553030303030303 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                  0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG12 = new Rectangle(0.553030303030303 * WIDTH, 0.74 * HEIGHT,
+                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG12.setId("lcd-text");
             SEG12.setStroke(null);
             SEG12.setVisible(false);
 
-            final Rectangle SEG13 = new Rectangle(0.5984848484848485 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                  0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG13 = new Rectangle(0.5984848484848485 * WIDTH, 0.74 * HEIGHT,
+                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG13.setId("lcd-text");
             SEG13.setStroke(null);
             SEG13.setVisible(false);
 
-            final Rectangle SEG14 = new Rectangle(0.6439393939393939 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                  0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG14 = new Rectangle(0.6439393939393939 * WIDTH, 0.74 * HEIGHT,
+                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG14.setId("lcd-text");
             SEG14.setStroke(null);
             SEG14.setVisible(false);
 
-            final Rectangle SEG15 = new Rectangle(0.6893939393939394 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                  0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG15 = new Rectangle(0.6893939393939394 * WIDTH, 0.74 * HEIGHT,
+                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG15.setId("lcd-text");
             SEG15.setStroke(null);
             SEG15.setVisible(false);
 
-            final Rectangle SEG16 = new Rectangle(0.7348484848484849 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                  0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG16 = new Rectangle(0.7348484848484849 * WIDTH, 0.74 * HEIGHT,
+                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG16.setId("lcd-text");
             SEG16.setStroke(null);
             SEG16.setVisible(false);
 
-            final Rectangle SEG17 = new Rectangle(0.7803030303030303 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                  0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG17 = new Rectangle(0.7803030303030303 * WIDTH, 0.74 * HEIGHT,
+                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG17.setId("lcd-text");
             SEG17.setStroke(null);
             SEG17.setVisible(false);
 
-            final Rectangle SEG18 = new Rectangle(0.8257575757575758 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                  0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG18 = new Rectangle(0.8257575757575758 * WIDTH, 0.74 * HEIGHT,
+                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG18.setId("lcd-text");
             SEG18.setStroke(null);
             SEG18.setVisible(false);
 
-            final Rectangle SEG19 = new Rectangle(0.8712121212121212 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                  0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG19 = new Rectangle(0.8712121212121212 * WIDTH, 0.74 * HEIGHT,
+                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG19.setId("lcd-text");
             SEG19.setStroke(null);
             SEG19.setVisible(false);
 
-            final Rectangle SEG20 = new Rectangle(0.9166666666666666 * WIDTH, 0.7291666666666666 * HEIGHT,
-                                                  0.030303030303030304 * WIDTH, 0.041666666666666664 * HEIGHT);
+            final Rectangle SEG20 = new Rectangle(0.9166666666666666 * WIDTH, 0.74 * HEIGHT,
+                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
             SEG20.setId("lcd-text");
             SEG20.setStroke(null);
             SEG20.setVisible(false);
@@ -1065,7 +1045,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             bargraph.add(SEG19);
             bargraph.add(SEG20);
 
-            lcd.getChildren().add(BARGRAPH_OFF);
+            lcd.getChildren().add(BAR_GRAPH_OFF);
             lcd.getChildren().addAll(bargraph);
         }
 
@@ -1144,7 +1124,6 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             lcdValueString.setX((WIDTH - lcdValueString.getLayoutBounds().getWidth()) - lcdValueOffsetRight);
         }
         lcdValueString.setY(SIZE - (lcdValueString.getLayoutBounds().getHeight() * lcdDigitalFontSizeFactor) / 2.0);
-        //lcdValueString.getStyleClass().add("lcd");
         lcdValueString.setStyle(control.getLcdDesign().CSS);
         lcdValueString.setId("lcd-text");
         lcdValueString.setStroke(null);

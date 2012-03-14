@@ -155,6 +155,16 @@ public class StyleModelBuilder {
         return this;
     }
 
+    public final StyleModelBuilder titleFont(final String TITLE_FONT) {
+        styleModel.setTitleFont(TITLE_FONT);
+        return this;
+    }
+
+    public final StyleModelBuilder unitfont(final String UNIT_FONT) {
+        styleModel.setUnitFont(UNIT_FONT);
+        return this;
+    }
+
     public final StyleModelBuilder foregroundType(final Radial.ForegroundType FOREGROUND_TYPE) {
         styleModel.setForegroundType(FOREGROUND_TYPE);
         return this;
@@ -197,6 +207,11 @@ public class StyleModelBuilder {
 
     public final StyleModelBuilder lcdUnitFont(final String UNIT_FONT) {
         styleModel.setLcdUnitFont(UNIT_FONT);
+        return this;
+    }
+
+    public final StyleModelBuilder lcdTitleFont(final String TITLE_FONT) {
+        styleModel.setLcdTitleFont(TITLE_FONT);
         return this;
     }
 
