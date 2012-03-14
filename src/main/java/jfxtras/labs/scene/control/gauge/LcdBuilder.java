@@ -101,6 +101,21 @@ public class LcdBuilder {
         return this;
     }
 
+    public final LcdBuilder titleVisible(final boolean TITLE_VISIBLE) {
+        lcd.setTitleVisible(TITLE_VISIBLE);
+        return this;
+    }
+
+    public final LcdBuilder unit(final String UNIT) {
+        lcd.setUnit(UNIT);
+        return this;
+    }
+
+    public final LcdBuilder unitVisible(final boolean UNIT_VISIBLE) {
+        lcd.setUnitVisible(UNIT_VISIBLE);
+        return this;
+    }
+
     public final LcdBuilder trendVisible(final boolean TREND_VISIBLE) {
         lcd.setTrendVisible(TREND_VISIBLE);
         return this;
