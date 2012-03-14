@@ -39,6 +39,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventTarget;
 import javafx.event.EventType;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
@@ -276,6 +277,23 @@ public class Spinner<T> extends Control
 	public Spinner<T> withArrowDirection(ArrowDirection value) { setArrowDirection(value); return this; }
 	public enum ArrowDirection {VERTICAL, HORIZONTAL}
 	
+	/** ArrowPosition: */
+	public ObjectProperty<ArrowPosition> arrowPositionProperty() { return this.arrowPositionObjectProperty; }
+	final private ObjectProperty<ArrowPosition> arrowPositionObjectProperty = new SimpleObjectProperty<ArrowPosition>(this, "arrowPosition", ArrowPosition.TRAILING);
+	// java bean API
+	public ArrowPosition getArrowPosition() { return this.arrowPositionObjectProperty.getValue(); }
+	public void setArrowPosition(ArrowPosition value) { this.arrowPositionObjectProperty.setValue(value); }
+	public Spinner<T> withArrowPosition(ArrowPosition value) { setArrowPosition(value); return this; }
+	public enum ArrowPosition {LEADING, TRAILING, SPLIT}
+	
+	/** Alignment: only applicable in non edit mode */
+	public ObjectProperty<Pos> alignmentProperty() { return this.alignmentObjectProperty; }
+	final private ObjectProperty<Pos> alignmentObjectProperty = new SimpleObjectProperty<Pos>(this, "alignment", Pos.CENTER_LEFT);
+	// java bean API
+	public Pos isAlignment() { return this.alignmentObjectProperty.getValue(); }
+	public void setAlignment(Pos value) { this.alignmentObjectProperty.setValue(value); }
+	public Spinner<T> withAlignment(Pos value) { setAlignment(value); return this; }
+
 	/** AddCallback: */
 	public ObjectProperty<Callback<T, Integer>> addCallbackProperty() { return this.addCallbackObjectProperty; }
 	final private ObjectProperty<Callback<T, Integer>> addCallbackObjectProperty = new SimpleObjectProperty<Callback<T, Integer>>(this, "addCallback", null);

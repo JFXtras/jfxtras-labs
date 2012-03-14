@@ -33,11 +33,13 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -48,6 +50,7 @@ import jfxtras.labs.animation.Timer;
 import jfxtras.labs.internal.scene.control.behavior.SpinnerBehavior;
 import jfxtras.labs.scene.control.Spinner;
 import jfxtras.labs.scene.control.Spinner.ArrowDirection;
+import jfxtras.labs.scene.control.Spinner.ArrowPosition;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
 
@@ -105,7 +108,7 @@ public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<
 		getSkinnable().arrowDirectionProperty().addListener(new ChangeListener<Spinner.ArrowDirection>()
 		{
 			@Override
-			public void changed(ObservableValue<? extends ArrowDirection> arg0, ArrowDirection arg1, ArrowDirection arg2)
+			public void changed(ObservableValue<? extends ArrowDirection> observableValue, ArrowDirection oldValue, ArrowDirection newValue)
 			{
 				setArrowCSS();
 				setArrowLocation();
@@ -113,6 +116,18 @@ public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<
 		});
 		setArrowCSS();
 		setArrowLocation();
+		
+		// react to value changes in the model
+		getSkinnable().alignmentProperty().addListener(new ChangeListener<Pos>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends Pos> observableValue, Pos oldValue, Pos newValue)
+			{
+				alignValue();
+			}
+		});
+		alignValue();
+		
 	}
 	
 	/*
@@ -133,13 +148,14 @@ public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<
 			Node lNode = getSkinnable().getCellFactory().call( getSkinnable() );
 			
 			// if node changed
-			if (valueNode != lNode)
-			{
-				// remove old, add new
-				gridPane.getChildren().remove(valueNode);
-				valueNode = lNode;
-				gridPane.add(valueNode, valueNodeX, valueNodeY, valueNodeW, valueNodeH);
-			}
+//			if (valueNode != lNode)
+//			{
+//				// remove old, add new
+//				gridPane.getChildren().remove(valueNode);
+//				valueNode = lNode;
+//				gridPane.add(valueNode, valueNodeX, valueNodeY, valueNodeW, valueNodeH);
+//			}
+// TODO: when does this run?			
 		}
 	}
 	
@@ -156,8 +172,8 @@ public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<
 		decrementArrow.getStyleClass().add("idle");
 
 		// for showing the value
-		valueNode = getSkinnable().getCellFactory().call(getSkinnable());
-		valueNode.getStyleClass().add("value");
+		valueGroup = new BorderPane();
+		valueGroup.getStyleClass().add("value");
 		
 		// right arrow
 		incrementArrow = new Region();
@@ -242,9 +258,9 @@ public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<
 		getChildren().add(gridPane); 
 	}
 	private Region decrementArrow = null;
-	private Node valueNode = null;
 	private Region incrementArrow = null;
 	private GridPane gridPane = null;
+	private BorderPane valueGroup;
 	
 	// timer to remove the click styling on the arrows afer a certain delay
 	final private Timer unclickTimer = new Timer(new Runnable()
@@ -307,11 +323,15 @@ public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<
 	 */
 	private void replaceValueNode()
 	{
+		// clear
+		valueGroup.getChildren().clear();
+		
 		// if not editable
 		if (getSkinnable().isEditable() == false)
 		{
 			// use the cell factory
-			valueNode = getSkinnable().getCellFactory().call(getSkinnable());
+			Node lNode = getSkinnable().getCellFactory().call(getSkinnable());
+			valueGroup.setCenter( lNode );
 		}
 		else
 		{
@@ -350,15 +370,21 @@ public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<
 		            }
 		        });
 			}
-			valueNode = textField;
-		}	
+			valueGroup.setCenter(textField);
+		}
 		
-		// replace node
-		gridPane.getChildren().remove(valueNode);
-		gridPane.add(valueNode, valueNodeX, valueNodeY, valueNodeW, valueNodeH);
+		// align
+		alignValue();
 	}
 	private TextField textField = null;
-	
+
+	/**
+	 * align the value inside the spinner
+	 */
+	private void alignValue()
+	{
+		BorderPane.setAlignment(valueGroup.getChildren().get(0), getSkinnable().alignmentProperty().getValue());
+	}
 	
 	// ==================================================================================================================
 	// EDITABLE
@@ -384,16 +410,17 @@ public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<
 	{
 		// get the things we decide on
 		ArrowDirection lArrowDirection = getSkinnable().getArrowDirection();
+		ArrowPosition lArrowPosition = getSkinnable().getArrowPosition();
 		
 		// get helper values
-		ColumnConstraints lColumnGrowing = new ColumnConstraints(5, 10, Double.MAX_VALUE);
-		lColumnGrowing.setHgrow(Priority.ALWAYS);
+		ColumnConstraints lColumnValue = new ColumnConstraints(valueGroup.getMinWidth(), valueGroup.getPrefWidth(), Double.MAX_VALUE);
+		lColumnValue.setHgrow(Priority.ALWAYS);
 		ColumnConstraints lColumnArrow = new ColumnConstraints(10);
 		
 		// get helper values
-		RowConstraints lRowGrowing = new RowConstraints(5, 10, Double.MAX_VALUE);
-		lRowGrowing.setVgrow(Priority.ALWAYS);
-		RowConstraints lRowArrow = new RowConstraints(5);
+		RowConstraints lRowValue = new RowConstraints(valueGroup.getMinHeight(), valueGroup.getPrefHeight(), Double.MAX_VALUE);
+		lRowValue.setVgrow(Priority.ALWAYS);
+		RowConstraints lRowArrow = new RowConstraints(10);
 
 		// clear the grid
 		gridPane.getChildren().clear();
@@ -403,39 +430,74 @@ public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<
 		
 		if (lArrowDirection == ArrowDirection.HORIZONTAL)
 		{
-			// construct a gridpane: one row, three columns: arrow, value, arrow
-			gridPane.setHgap(3);
-			gridPane.setVgap(0);
-			gridPane.add(decrementArrow, 0, 0);
-			valueNodeX = 1;
-			valueNodeY = 0;
-			valueNodeW = 1;
-			valueNodeH = 1;
-			gridPane.add(incrementArrow, 2, 0);
-			gridPane.getColumnConstraints().addAll(lColumnArrow, lColumnGrowing, lColumnArrow); 
+			if (lArrowPosition == ArrowPosition.LEADING)
+			{
+				// construct a gridpane: one row, three columns: arrow, arrow, value
+				gridPane.setHgap(3);
+				gridPane.setVgap(0);
+				gridPane.add(decrementArrow, 0, 0);
+				gridPane.add(incrementArrow, 1, 0);
+				gridPane.add(valueGroup, 2, 0);
+				gridPane.getColumnConstraints().addAll(lColumnArrow, lColumnArrow, lColumnValue);
+			}
+			if (lArrowPosition == ArrowPosition.TRAILING)
+			{
+				// construct a gridpane: one row, three columns: value, arrow, arrow
+				gridPane.setHgap(3);
+				gridPane.setVgap(0);
+				gridPane.add(valueGroup, 0, 0);
+				gridPane.add(decrementArrow, 1, 0);
+				gridPane.add(incrementArrow, 2, 0);
+				gridPane.getColumnConstraints().addAll(lColumnValue, lColumnArrow, lColumnArrow);
+			}
+			if (lArrowPosition == ArrowPosition.SPLIT)
+			{
+				// construct a gridpane: one row, three columns: arrow, value, arrow
+				gridPane.setHgap(3);
+				gridPane.setVgap(0);
+				gridPane.add(decrementArrow, 0, 0);
+				gridPane.add(valueGroup, 1, 0);
+				gridPane.add(incrementArrow, 2, 0);
+				gridPane.getColumnConstraints().addAll(lColumnArrow, lColumnValue, lColumnArrow);
+			}
 		}
 		if (lArrowDirection == ArrowDirection.VERTICAL)
 		{
-			// construct a gridpane: two rows, two columns: value, arrows on top
-			gridPane.setHgap(3);
-			gridPane.setVgap(0);
-			valueNodeX = 0;
-			valueNodeY = 0;
-			valueNodeW = 1;
-			valueNodeH = 2;
-			gridPane.add(incrementArrow, 1, 0);
-			gridPane.add(decrementArrow, 1, 1);
-			gridPane.getColumnConstraints().addAll(lColumnGrowing, lColumnArrow); 
-			gridPane.getRowConstraints().addAll(lRowGrowing, lRowGrowing);
+			if (lArrowPosition == ArrowPosition.LEADING)
+			{
+				// construct a gridpane: two rows, two columns: arrows on top, value
+				gridPane.setHgap(3);
+				gridPane.setVgap(0);
+				gridPane.add(incrementArrow, 0, 0);
+				gridPane.add(decrementArrow, 0, 1);
+				gridPane.add(valueGroup, 1, 0, 1, 2);
+				gridPane.getColumnConstraints().addAll(lColumnArrow, lColumnValue); 
+				gridPane.getRowConstraints().addAll(lRowArrow, lRowArrow);
+			}
+			if (lArrowPosition == ArrowPosition.TRAILING)
+			{
+				// construct a gridpane: two rows, two columns: value, arrows on top
+				gridPane.setHgap(3);
+				gridPane.setVgap(0);
+				gridPane.add(valueGroup, 0, 0, 1, 2);
+				gridPane.add(incrementArrow, 1, 0);
+				gridPane.add(decrementArrow, 1, 1);
+				gridPane.getColumnConstraints().addAll(lColumnValue, lColumnArrow); 
+				gridPane.getRowConstraints().addAll(lRowArrow, lRowArrow);
+			}
+			if (lArrowPosition == ArrowPosition.SPLIT)
+			{
+				// construct a gridpane: three rows, one columns: arrow, value, arrow
+				gridPane.setHgap(3);
+				gridPane.setVgap(0);
+				gridPane.add(incrementArrow, 0, 0);
+				gridPane.add(valueGroup, 0, 1);
+				gridPane.add(decrementArrow, 0, 2);
+				gridPane.getColumnConstraints().addAll(lColumnValue); 
+				gridPane.getRowConstraints().addAll(lRowArrow, lRowValue, lRowArrow);
+			}
 		}
-		
-		// place value node
-		replaceValueNode();
 	}
-	private int valueNodeX = 0;
-	private int valueNodeY = 0;
-	private int valueNodeW = 1;
-	private int valueNodeH = 1;
 	
 	/*
 	 * Set the CSS so the correct arrows are shown

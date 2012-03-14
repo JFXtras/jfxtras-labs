@@ -14,3 +14,6 @@ out/
 src/main/java/jfxtras/labs/scene/control/gauge/Demo.java
 src/main/java/jfxtras/labs/scene/control/gauge/.DS_Store
 src/main/java/Demo.java
+/nbproject/private/
+/nbbuild/
+/dist/
