@@ -339,6 +339,7 @@ public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<
 			if (textField == null) 
 			{
 				textField = new TextField();
+				// process text entry
 				textField.focusedProperty().addListener(new InvalidationListener()
 				{			
 					@Override
@@ -369,6 +370,9 @@ public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<
 		                }
 		            }
 		        });
+				
+				// alignment
+				textField.alignmentProperty().bind(getSkinnable().alignmentProperty());
 			}
 			valueGroup.setCenter(textField);
 		}

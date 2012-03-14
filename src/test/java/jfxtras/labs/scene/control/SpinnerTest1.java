@@ -30,6 +30,7 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -164,6 +165,21 @@ public class SpinnerTest1 extends Application {
 				Spinner<Integer> lXSpinner = new Spinner<Integer>(new SpinnerIntegerList(10, -10, -1));
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
+			{
+				lGridPane.add(new Label("align right"), 0, lRowIdx);
+				Spinner<String> lXSpinner = new Spinner<String>( "a", "b", "c", "d", "e" )
+					.withAlignment(Pos.CENTER_RIGHT)
+					;
+				lGridPane.add(lXSpinner, 1, lRowIdx++);
+			}
+			{
+				lGridPane.add(new Label("align right"), 0, lRowIdx);
+				Spinner<String> lXSpinner = new Spinner<String>( "a", "b", "c", "d", "e" )
+					.withAlignment(Pos.CENTER_RIGHT)
+					.withEditable(true)
+					;
+				lGridPane.add(lXSpinner, 1, lRowIdx++);
+			}
 			
 			lHBox.getChildren().add(lGridPane);
 		}
@@ -176,62 +192,62 @@ public class SpinnerTest1 extends Application {
 
 			// arrow position
 			{
-				lGridPane.add(new Label("Arrows HORIZONTAL LEADING"), 0, lRowIdx);
+				lGridPane.add(new Label("HORIZONTAL LEADING"), 0, lRowIdx);
 				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.LEADING);
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
 			{
-				lGridPane.add(new Label("Arrows HORIZONTAL TRAILING"), 0, lRowIdx);
+				lGridPane.add(new Label("HORIZONTAL TRAILING"), 0, lRowIdx);
 				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.TRAILING);
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
 			{
-				lGridPane.add(new Label("Arrows HORIZONTAL SPLIT"), 0, lRowIdx);
+				lGridPane.add(new Label("HORIZONTAL SPLIT"), 0, lRowIdx);
 				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.SPLIT);
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
 			{
-				lGridPane.add(new Label("Arrows VERTICAL LEADING"), 0, lRowIdx);
+				lGridPane.add(new Label("VERTICAL LEADING"), 0, lRowIdx);
 				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.LEADING);
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
 			{
-				lGridPane.add(new Label("Arrows VERTICAL TRAILING"), 0, lRowIdx);
+				lGridPane.add(new Label("VERTICAL TRAILING"), 0, lRowIdx);
 				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.TRAILING);
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
 			{
-				lGridPane.add(new Label("Arrows VERTICAL SPLIT"), 0, lRowIdx);
+				lGridPane.add(new Label("VERTICAL SPLIT"), 0, lRowIdx);
 				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.SPLIT);
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
 			{
-				lGridPane.add(new Label("Arrows HORIZONTAL LEADING"), 0, lRowIdx);
+				lGridPane.add(new Label("HORIZONTAL LEADING"), 0, lRowIdx);
 				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.LEADING).withEditable(true);
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
 			{
-				lGridPane.add(new Label("Arrows HORIZONTAL TRAILING"), 0, lRowIdx);
+				lGridPane.add(new Label("HORIZONTAL TRAILING"), 0, lRowIdx);
 				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.TRAILING).withEditable(true);
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
 			{
-				lGridPane.add(new Label("Arrows HORIZONTAL SPLIT"), 0, lRowIdx);
+				lGridPane.add(new Label("HORIZONTAL SPLIT"), 0, lRowIdx);
 				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.SPLIT).withEditable(true);
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
 			{
-				lGridPane.add(new Label("Arrows VERTICAL LEADING"), 0, lRowIdx);
+				lGridPane.add(new Label("VERTICAL LEADING"), 0, lRowIdx);
 				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.LEADING).withEditable(true);
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
 			{
-				lGridPane.add(new Label("Arrows VERTICAL TRAILING"), 0, lRowIdx);
+				lGridPane.add(new Label("VERTICAL TRAILING"), 0, lRowIdx);
 				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.TRAILING).withEditable(true);
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
 			{
-				lGridPane.add(new Label("Arrows VERTICAL SPLIT"), 0, lRowIdx);
+				lGridPane.add(new Label("VERTICAL SPLIT"), 0, lRowIdx);
 				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.SPLIT).withEditable(true);
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
