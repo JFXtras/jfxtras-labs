@@ -48,7 +48,7 @@ public enum Util {
         CSS_COLOR.append(", ");
         CSS_COLOR.append((int) (COLOR.getBlue() * 255));
         CSS_COLOR.append(", ");
-        CSS_COLOR.append((int) (COLOR.getOpacity()));
+        CSS_COLOR.append(COLOR.getOpacity());
         CSS_COLOR.append(");");
         return CSS_COLOR.toString();
     }

@@ -33,6 +33,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.ClosePath;
@@ -233,13 +234,17 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
     // ******************** Drawing related ***********************************
     public void updateCharacter() {
         segments.setStyle("-fx-segment-color-on: " + Util.INSTANCE.createCssColor(control.getColor()) +
-                          "-fx-segment-color-off: " + Util.INSTANCE.createCssColor(Color.rgb(40, 40, 40)));
+                          "-fx-segment-color-off: " + Util.INSTANCE.createCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.1)));
         final int ASCII = control.getCharacter().isEmpty() ? 20 : control.getCharacter().toUpperCase().charAt(0);
+        final InnerShadow INNER_SHADOW = new InnerShadow();
+        INNER_SHADOW.setRadius(0.05 * control.getPrefWidth());
+        INNER_SHADOW.setColor(Color.hsb(control.getColor().getHue(), control.getColor().getSaturation(), 0.2));
         final DropShadow GLOW = new DropShadow();
         GLOW.setSpread(0.01 * control.getPrefWidth());
         GLOW.setRadius(0.01 * control.getPrefWidth());
         GLOW.setColor(control.getColor());
-        GLOW.setBlurType(BlurType.ONE_PASS_BOX);
+        GLOW.setInput(INNER_SHADOW);
+        GLOW.setBlurType(BlurType.GAUSSIAN);
         for (Segment segment : segmentMap.keySet()) {
             if (mapping.containsKey(ASCII)) {
                 if (mapping.get(ASCII).contains(segment)) {
@@ -262,7 +267,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         final double HEIGHT = SIZE;
 
         segments.setStyle("-fx-segment-color-on: " + Util.INSTANCE.createCssColor(control.getColor()) +
-                          "-fx-segment-color-off: " + Util.INSTANCE.createCssColor(Color.rgb(40, 40, 40)));
+                          "-fx-segment-color-off: " + Util.INSTANCE.createCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.1)));
 
         segments.getChildren().clear();
 

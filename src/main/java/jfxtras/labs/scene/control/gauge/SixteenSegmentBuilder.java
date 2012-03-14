@@ -49,6 +49,11 @@ public class SixteenSegmentBuilder {
         return this;
     }
 
+    public final SixteenSegmentBuilder character(final Character CHARACTER) {
+        segment.setCharacter(CHARACTER);
+        return this;
+    }
+
     public final SixteenSegmentBuilder color(final Color COLOR) {
         segment.setColor(COLOR);
         return this;

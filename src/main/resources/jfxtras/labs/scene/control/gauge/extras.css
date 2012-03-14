@@ -81,7 +81,7 @@
 .sixteen-segment {
     -fx-skin             : "jfxtras.labs.internal.scene.control.skin.SixteenSegmentSkin";
     -fx-segment-color-on : rgb(119, 219, 0);
-    -fx-segment-color-off: rgb(40, 40, 40);
+    -fx-segment-color-off: rgba(119, 219, 0, 0.1);
 }
 
 
@@ -197,7 +197,6 @@
 #sixteen-segment-on {
     -fx-fill  : radial-gradient(focus-angle 0deg, focus-distance 0%, center 50% 50%, radius 50%, derive(-fx-segment-color-on, +30%) 0%, -fx-segment-color-on 50%, derive(-fx-segment-color-on, -30%) 100%);
     -fx-stroke: transparent;
-    /*-fx-effect: dropshadow(gaussian, -fx-segment-color-on, 1.0, 0.5, 0, 0);*/
 }
 
 #sixteen-segment-off {
