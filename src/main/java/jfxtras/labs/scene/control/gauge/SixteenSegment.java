@@ -51,6 +51,7 @@ import java.util.Map;
 public class SixteenSegment extends Control {
     private static final String                         DEFAULT_STYLE_CLASS = "sixteen-segment";
     private ObjectProperty<Color>                       color;
+    private BooleanProperty                             plainColor;
     private StringProperty                              character;
     private BooleanProperty                             dotOn;
     private Map<Integer, List<Segment>>                 mapping;
@@ -87,6 +88,7 @@ public class SixteenSegment extends Control {
 
     public SixteenSegment(final String CHARACTER, final Color COLOR) {
         color                = new SimpleObjectProperty<Color>(COLOR);
+        plainColor           = new SimpleBooleanProperty(false);
         character            = new SimpleStringProperty(CHARACTER);
         dotOn                = new SimpleBooleanProperty(false);
         mapping              = new HashMap<Integer, List<Segment>>(42);
@@ -164,6 +166,18 @@ public class SixteenSegment extends Control {
 
     public final ObjectProperty<Color> colorProperty() {
         return color;
+    }
+
+    public final boolean isPlainColor() {
+        return plainColor.get();
+    }
+
+    public final void setPlainColor(final boolean PLAIN_COLOR) {
+        plainColor.set(PLAIN_COLOR);
+    }
+
+    public final BooleanProperty plainColorProperty() {
+        return plainColor;
     }
 
     public final String getCharacter() {

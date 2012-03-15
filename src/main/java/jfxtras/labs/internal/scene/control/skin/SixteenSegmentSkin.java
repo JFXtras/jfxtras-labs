@@ -101,6 +101,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         // Register listeners
         registerChangeListener(control.characterProperty(), "CHARACTER");
         registerChangeListener(control.colorProperty(), "COLOR");
+        registerChangeListener(control.plainColorProperty(), "PLAIN_COLOR");
         registerChangeListener(control.customSegmentMappingProperty(), "CUSTOM_MAPPING");
         registerChangeListener(control.dotOnProperty(), "DOT_ON");
 
@@ -124,6 +125,8 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         if (PROPERTY == "CHARACTER") {
             updateCharacter();
         } else if (PROPERTY == "COLOR") {
+            updateCharacter();
+        } else if (PROPERTY == "PLAIN_COLOR") {
             updateCharacter();
         } else if (PROPERTY == "CUSTOM_MAPPING") {
             updateCharacter();
@@ -173,11 +176,14 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setRadius(0.05 * control.getPrefWidth());
         INNER_SHADOW.setColor(Color.hsb(control.getColor().getHue(), control.getColor().getSaturation(), 0.2));
+
+        final String ON_STYLE = control.isPlainColor() ? "sixteen-segment-plain-on" : "sixteen-segment-on";
+
         if (control.getCustomSegmentMapping().isEmpty()) {
             for (SixteenSegment.Segment segment : segmentMap.keySet()) {
                 if (control.getSegmentMapping().containsKey(ASCII)) {
                     if (control.getSegmentMapping().get(ASCII).contains(segment)) {
-                        segmentMap.get(segment).setId("sixteen-segment-on");
+                        segmentMap.get(segment).setId(ON_STYLE);
                         segmentMap.get(segment).setEffect(INNER_SHADOW);
                     } else {
                         segmentMap.get(segment).setId("sixteen-segment-off");
@@ -192,7 +198,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
             for (SixteenSegment.Segment segment : segmentMap.keySet()) {
                 if (control.getCustomSegmentMapping().containsKey(ASCII)) {
                     if (control.getCustomSegmentMapping().get(ASCII).contains(segment)) {
-                        segmentMap.get(segment).setId("sixteen-segment-on");
+                        segmentMap.get(segment).setId(ON_STYLE);
                         segmentMap.get(segment).setEffect(INNER_SHADOW);
                     } else {
                         segmentMap.get(segment).setId("sixteen-segment-off");
@@ -205,7 +211,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
             }
         }
         if (control.isDotOn()) {
-            segmentMap.get(SixteenSegment.Segment.DOT).setId("sixteen-segment-on");
+            segmentMap.get(SixteenSegment.Segment.DOT).setId(ON_STYLE);
             segmentMap.get(SixteenSegment.Segment.DOT).setEffect(INNER_SHADOW);
         }
     }

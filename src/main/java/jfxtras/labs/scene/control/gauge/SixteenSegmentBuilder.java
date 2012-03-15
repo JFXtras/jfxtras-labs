@@ -72,6 +72,11 @@ public class SixteenSegmentBuilder {
         return this;
     }
 
+    public final SixteenSegmentBuilder plainColor(final boolean PLAIN_COLOR) {
+        segment.setPlainColor(PLAIN_COLOR);
+        return this;
+    }
+
     public final SixteenSegment build() {
         return segment;
     }

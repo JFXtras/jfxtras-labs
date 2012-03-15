@@ -74,7 +74,7 @@
     -fx-clock-bright-background-fill: radial-gradient(focus-angle 0deg, focus-distance 0%, center 50% 50%, radius 50%, rgb(191, 207, 197) 0%, rgb(226, 239, 229) 70%, rgb(199, 216, 206) 100%);
     -fx-clock-dark-background-fill  : linear-gradient(from 0% 0% to 0% 100%, rgb(62, 59, 50) 0%, rgb(35, 37, 32) 100%);
     -fx-clock-bright-foreground-fill: black;
-    -fx-clock-dark-foreground-fill  : white;
+    -fx-clock-dark-foreground-fill  : rgb(226, 239, 229);
     -fx-clock-second-pointer-color  : rgb(237, 0, 58);
 }
 
@@ -199,8 +199,13 @@
     -fx-stroke: transparent;
 }
 
+#sixteen-segment-plain-on {
+    -fx-fill  : -fx-segment-color-on;
+    -fx-stroke: transparent;
+}
+
 #sixteen-segment-off {
     -fx-fill  : -fx-segment-color-off;
-    -fx-stroke: transparent;
     -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.65), 1, 0.5, 0, 0);
+    -fx-stroke: transparent;
 }
