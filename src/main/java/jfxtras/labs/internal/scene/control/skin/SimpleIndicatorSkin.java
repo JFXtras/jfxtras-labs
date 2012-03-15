@@ -110,8 +110,7 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
         getChildren().addAll(indicator);
     }
 
-    @Override
-    protected void handleControlPropertyChanged(final String PROPERTY) {
+    @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
         if (PROPERTY == "INNER_COLOR") {
             updateIndicator();
@@ -122,8 +121,7 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
         }
     }
 
-    @Override
-    public void layoutChildren() {
+    @Override public void layoutChildren() {
         if (isDirty) {
             paint();
             isDirty = false;
@@ -131,18 +129,15 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
         super.layoutChildren();
     }
 
-    @Override
-    public final SimpleIndicator getSkinnable() {
+    @Override public final SimpleIndicator getSkinnable() {
         return control;
     }
 
-    @Override
-    public final void dispose() {
+    @Override public final void dispose() {
         control = null;
     }
 
-    @Override
-    protected double computePrefWidth(final double PREF_WIDTH) {
+    @Override protected double computePrefWidth(final double PREF_WIDTH) {
         double prefWidth = 250;
         if (PREF_WIDTH != -1) {
             prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
@@ -150,8 +145,7 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
         return super.computePrefWidth(prefWidth);
     }
 
-    @Override
-    protected double computePrefHeight(final double PREF_HEIGHT) {
+    @Override protected double computePrefHeight(final double PREF_HEIGHT) {
         double prefHeight = 250;
         if (PREF_HEIGHT != -1) {
             prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());

@@ -190,8 +190,7 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
                              secondPointer);
     }
 
-    @Override
-    protected void handleControlPropertyChanged(final String PROPERTY) {
+    @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
         if (PROPERTY == "TIME_ZONE") {
           setTime();
@@ -211,8 +210,7 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         }
     }
 
-    @Override
-    public void layoutChildren() {
+    @Override public void layoutChildren() {
         if (isDirty) {
             paint();
             isDirty = false;
@@ -220,18 +218,15 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         super.layoutChildren();
     }
 
-    @Override
-    public final Clock getSkinnable() {
+    @Override public final Clock getSkinnable() {
         return control;
     }
 
-    @Override
-    public final void dispose() {
+    @Override public final void dispose() {
         control = null;
     }
 
-    @Override
-    protected double computePrefWidth(final double PREF_WIDTH) {
+    @Override protected double computePrefWidth(final double PREF_WIDTH) {
         double prefWidth = 127;
         if (PREF_WIDTH != -1) {
             prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
@@ -239,8 +234,7 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         return super.computePrefWidth(prefWidth);
     }
 
-    @Override
-    protected double computePrefHeight(final double PREF_HEIGHT) {
+    @Override protected double computePrefHeight(final double PREF_HEIGHT) {
         double prefHeight = 127;
         if (PREF_HEIGHT != -1) {
             prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());

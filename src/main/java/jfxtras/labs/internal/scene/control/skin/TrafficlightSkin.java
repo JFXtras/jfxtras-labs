@@ -162,8 +162,7 @@ public class TrafficlightSkin extends SkinBase<Trafficlight, TrafficlightBehavio
         getChildren().add(trafficlight);
     }
 
-    @Override
-    protected void handleControlPropertyChanged(final String PROPERTY) {
+    @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
         if (PROPERTY == "RED") {
             redOn.setVisible(control.isRedOn());
@@ -185,8 +184,7 @@ public class TrafficlightSkin extends SkinBase<Trafficlight, TrafficlightBehavio
         }
     }
 
-    @Override
-    public void layoutChildren() {
+    @Override public void layoutChildren() {
         if (isDirty) {
             paint();
             isDirty = false;
@@ -194,18 +192,15 @@ public class TrafficlightSkin extends SkinBase<Trafficlight, TrafficlightBehavio
         super.layoutChildren();
     }
 
-    @Override
-    public final Trafficlight getSkinnable() {
+    @Override public final Trafficlight getSkinnable() {
         return control;
     }
 
-    @Override
-    public final void dispose() {
+    @Override public final void dispose() {
         control = null;
     }
 
-    @Override
-    protected double computePrefWidth(final double PREF_WIDTH) {
+    @Override protected double computePrefWidth(final double PREF_WIDTH) {
         double prefWidth = 80;
         if (PREF_WIDTH != -1) {
             prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
@@ -213,8 +208,7 @@ public class TrafficlightSkin extends SkinBase<Trafficlight, TrafficlightBehavio
         return super.computePrefWidth(prefWidth);
     }
 
-    @Override
-    protected double computePrefHeight(final double PREF_HEIGHT) {
+    @Override protected double computePrefHeight(final double PREF_HEIGHT) {
         double prefHeight = 200;
         if (PREF_HEIGHT != -1) {
             prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());

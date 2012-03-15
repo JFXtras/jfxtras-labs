@@ -179,7 +179,6 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
     }
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
-        System.out.println(PROPERTY);
         super.handleControlPropertyChanged(PROPERTY);
         if (PROPERTY == "FRAME_VISIBLE") {
             for (Led led : ledList) {
