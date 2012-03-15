@@ -755,15 +755,18 @@
 * Defintion of the lcd gradient                             *
 ************************************************************/
 #lcd-main {
-    -fx-fill: linear-gradient(from 0% 0% to 0% 100%, -fx-start 0%, -fx-frac1 3%, -fx-frac2 50%, -fx-frac3 50%, -fx-stop 100%);
+    -fx-fill  : linear-gradient(from 0% 0% to 0% 100%, -fx-start 0%, -fx-frac1 3%, -fx-frac2 50%, -fx-frac3 50%, -fx-stop 100%);
+    -fx-stroke: transparent;
 }
 
 #lcd-text {
-    -fx-fill: -fx-lcd-text;
+    -fx-fill  : -fx-lcd-text;
+    -fx-stroke: transparent;
 }
 
 #lcd-text-background {
-    -fx-fill: -fx-lcd-text-bg;
+    -fx-fill  : -fx-lcd-text-bg;
+    -fx-stroke: transparent;
 }
 
 /************************************************************

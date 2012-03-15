@@ -892,7 +892,6 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         LCD_MAIN.getStyleClass().add("lcd");
         LCD_MAIN.setStyle(CONTROL.getLcdDesign().CSS);
         LCD_MAIN.setId("lcd-main");
-        LCD_MAIN.setStroke(null);
 
         final InnerShadow INNER_GLOW = new InnerShadow();
         INNER_GLOW.setWidth(0.25 * LCD_FRAME.getHeight());
