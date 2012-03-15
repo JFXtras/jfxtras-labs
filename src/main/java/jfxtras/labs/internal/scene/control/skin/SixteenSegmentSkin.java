@@ -60,31 +60,11 @@ import java.util.Map;
  * Time: 11:27
  */
 public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentBehavior> {
-    private static enum                 Segment {
-        A1,
-        A2,
-        B,
-        C,
-        D2,
-        D1,
-        E,
-        F,
-        G,
-        H,
-        J,
-        K,
-        L,
-        M,
-        N,
-        P,
-        DOT
-    };
-    private SixteenSegment              control;
-    private boolean                     isDirty;
-    private boolean                     initialized;
-    private Group                       segments;
-    private Map<Segment, Shape>         segmentMap;
-    private Map<Integer, List<Segment>> mapping;
+    private SixteenSegment                     control;
+    private boolean                            isDirty;
+    private boolean                            initialized;
+    private Group                              segments;
+    private Map<SixteenSegment.Segment, Shape> segmentMap;
 
 
     // ******************** Constructors **************************************
@@ -94,8 +74,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         initialized = false;
         isDirty     = false;
         segments    = new Group();
-        segmentMap  = new HashMap<Segment, Shape>(17);
-        mapping     = new HashMap<Integer, List<Segment>>(42);
+        segmentMap  = new HashMap<SixteenSegment.Segment, Shape>(17);
 
         init();
     }
@@ -116,13 +95,14 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
                 isDirty = true;
             }
         });
-        initMapping();
         createSegments();
         updateCharacter();
 
         // Register listeners
         registerChangeListener(control.characterProperty(), "CHARACTER");
         registerChangeListener(control.colorProperty(), "COLOR");
+        registerChangeListener(control.customSegmentMappingProperty(), "CUSTOM_MAPPING");
+        registerChangeListener(control.dotOnProperty(), "DOT_ON");
 
         initialized = true;
         paint();
@@ -144,6 +124,10 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         if (PROPERTY == "CHARACTER") {
             updateCharacter();
         } else if (PROPERTY == "COLOR") {
+            updateCharacter();
+        } else if (PROPERTY == "CUSTOM_MAPPING") {
+            updateCharacter();
+        } else if (PROPERTY == "DOT_ON") {
             updateCharacter();
         }
     }
@@ -180,56 +164,6 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         return super.computePrefWidth(prefHeight);
     }
 
-    private void initMapping() {
-        // Space
-        mapping.put(20, Arrays.asList(new Segment[]{}));
-        // * + , - . /
-        mapping.put(42, Arrays.asList(new Segment[]{Segment.G, Segment.H, Segment.J, Segment.L, Segment.M, Segment.N}));
-        mapping.put(43, Arrays.asList(new Segment[]{Segment.H, Segment.K, Segment.M, Segment.P}));
-        mapping.put(44, Arrays.asList(new Segment[]{Segment.N}));
-        mapping.put(45, Arrays.asList(new Segment[]{Segment.P, Segment.K}));
-        mapping.put(46, Arrays.asList(new Segment[]{Segment.DOT}));
-        mapping.put(47, Arrays.asList(new Segment[]{Segment.J, Segment.N}));
-        // 0 - 9
-        mapping.put(48, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.B, Segment.C, Segment.D2, Segment.D1, Segment.E, Segment.F, Segment.J, Segment.N}));
-        mapping.put(49, Arrays.asList(new Segment[]{Segment.J, Segment.B, Segment.C}));
-        mapping.put(50, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.B, Segment.D2, Segment.D1, Segment.E, Segment.P, Segment.K}));
-        mapping.put(51, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.B, Segment.C, Segment.D2, Segment.D1, Segment.K}));
-        mapping.put(52, Arrays.asList(new Segment[]{Segment.B, Segment.C, Segment.F, Segment.P, Segment.K}));
-        mapping.put(53, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.C, Segment.D2, Segment.D1, Segment.F, Segment.P, Segment.K}));
-        mapping.put(54, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.C, Segment.D2, Segment.D1, Segment.E, Segment.F, Segment.P, Segment.K}));
-        mapping.put(55, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.J, Segment.M}));
-        mapping.put(56, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.B, Segment.C, Segment.D2, Segment.D1, Segment.E, Segment.F, Segment.P, Segment.K}));
-        mapping.put(57, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.B, Segment.C, Segment.F, Segment.P, Segment.K}));
-        // A - Z
-        mapping.put(65, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.B, Segment.C, Segment.E, Segment.F, Segment.P, Segment.K}));
-        mapping.put(66, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.B, Segment.C, Segment.D2, Segment.D1, Segment.H, Segment.M, Segment.K}));
-        mapping.put(67, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.D2, Segment.D1, Segment.E, Segment.F}));
-        mapping.put(68, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.B, Segment.C, Segment.D2, Segment.D1, Segment.H, Segment.M}));
-        mapping.put(69, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.D2, Segment.D1, Segment.E, Segment.F, Segment.P, Segment.K}));
-        mapping.put(70, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.E, Segment.F, Segment.P, Segment.K}));
-        mapping.put(71, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.C, Segment.D2, Segment.D1, Segment.E, Segment.F, Segment.K}));
-        mapping.put(72, Arrays.asList(new Segment[]{Segment.B, Segment.C, Segment.E, Segment.F, Segment.P, Segment.K}));
-        mapping.put(73, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.D2, Segment.D1, Segment.M, Segment.H}));
-        mapping.put(74, Arrays.asList(new Segment[]{Segment.B, Segment.C, Segment.D2, Segment.D1, Segment.E}));
-        mapping.put(75, Arrays.asList(new Segment[]{Segment.E, Segment.F, Segment.J, Segment.L, Segment.P}));
-        mapping.put(76, Arrays.asList(new Segment[]{Segment.D2, Segment.D1, Segment.E, Segment.F}));
-        mapping.put(77, Arrays.asList(new Segment[]{Segment.B, Segment.C, Segment.E, Segment.F, Segment.G, Segment.J}));
-        mapping.put(78, Arrays.asList(new Segment[]{Segment.B, Segment.C, Segment.E, Segment.F, Segment.G, Segment.L}));
-        mapping.put(79, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.B, Segment.C, Segment.D2, Segment.D1, Segment.E, Segment.F}));
-        mapping.put(80, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.B, Segment.E, Segment.F, Segment.P, Segment.K}));
-        mapping.put(81, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.B, Segment.C, Segment.D2, Segment.D1, Segment.E, Segment.F, Segment.L}));
-        mapping.put(82, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.B, Segment.E, Segment.F, Segment.P, Segment.K, Segment.L}));
-        mapping.put(83, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.C, Segment.D2, Segment.D1, Segment.G, Segment.K}));
-        mapping.put(84, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.H, Segment.M}));
-        mapping.put(85, Arrays.asList(new Segment[]{Segment.B, Segment.C, Segment.D2, Segment.D1, Segment.E, Segment.F}));
-        mapping.put(86, Arrays.asList(new Segment[]{Segment.E, Segment.F, Segment.J, Segment.N}));
-        mapping.put(87, Arrays.asList(new Segment[]{Segment.B, Segment.C, Segment.E, Segment.F, Segment.L, Segment.N}));
-        mapping.put(88, Arrays.asList(new Segment[]{Segment.G, Segment.J, Segment.L, Segment.N}));
-        mapping.put(89, Arrays.asList(new Segment[]{Segment.G, Segment.J, Segment.M}));
-        mapping.put(90, Arrays.asList(new Segment[]{Segment.A1, Segment.A2, Segment.D2, Segment.D1, Segment.J, Segment.N}));
-    }
-
 
     // ******************** Drawing related ***********************************
     public void updateCharacter() {
@@ -239,25 +173,40 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setRadius(0.05 * control.getPrefWidth());
         INNER_SHADOW.setColor(Color.hsb(control.getColor().getHue(), control.getColor().getSaturation(), 0.2));
-        final DropShadow GLOW = new DropShadow();
-        GLOW.setSpread(0.01 * control.getPrefWidth());
-        GLOW.setRadius(0.01 * control.getPrefWidth());
-        GLOW.setColor(control.getColor());
-        GLOW.setInput(INNER_SHADOW);
-        GLOW.setBlurType(BlurType.GAUSSIAN);
-        for (Segment segment : segmentMap.keySet()) {
-            if (mapping.containsKey(ASCII)) {
-                if (mapping.get(ASCII).contains(segment)) {
-                    segmentMap.get(segment).setId("sixteen-segment-on");
-                    segmentMap.get(segment).setEffect(GLOW);
+        if (control.getCustomSegmentMapping().isEmpty()) {
+            for (SixteenSegment.Segment segment : segmentMap.keySet()) {
+                if (control.getSegmentMapping().containsKey(ASCII)) {
+                    if (control.getSegmentMapping().get(ASCII).contains(segment)) {
+                        segmentMap.get(segment).setId("sixteen-segment-on");
+                        segmentMap.get(segment).setEffect(INNER_SHADOW);
+                    } else {
+                        segmentMap.get(segment).setId("sixteen-segment-off");
+                        segmentMap.get(segment).setEffect(null);
+                    }
                 } else {
                     segmentMap.get(segment).setId("sixteen-segment-off");
                     segmentMap.get(segment).setEffect(null);
                 }
-            } else {
-                segmentMap.get(segment).setId("sixteen-segment-off");
-                segmentMap.get(segment).setEffect(null);
             }
+        } else {
+            for (SixteenSegment.Segment segment : segmentMap.keySet()) {
+                if (control.getCustomSegmentMapping().containsKey(ASCII)) {
+                    if (control.getCustomSegmentMapping().get(ASCII).contains(segment)) {
+                        segmentMap.get(segment).setId("sixteen-segment-on");
+                        segmentMap.get(segment).setEffect(INNER_SHADOW);
+                    } else {
+                        segmentMap.get(segment).setId("sixteen-segment-off");
+                        segmentMap.get(segment).setEffect(null);
+                    }
+                } else {
+                    segmentMap.get(segment).setId("sixteen-segment-off");
+                    segmentMap.get(segment).setEffect(null);
+                }
+            }
+        }
+        if (control.isDotOn()) {
+            segmentMap.get(SixteenSegment.Segment.DOT).setId("sixteen-segment-on");
+            segmentMap.get(SixteenSegment.Segment.DOT).setEffect(INNER_SHADOW);
         }
     }
 
@@ -288,7 +237,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         A1.getElements().add(new LineTo(0.13389121338912133 * WIDTH, 0.028985507246376812 * HEIGHT));
         A1.getElements().add(new ClosePath());
         A1.setId("sixteen-segment-off");
-        segmentMap.put(Segment.A1, A1);
+        segmentMap.put(SixteenSegment.Segment.A1, A1);
 
         final Path A2 = new Path();
         A2.setFillRule(FillRule.EVEN_ODD);
@@ -303,7 +252,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         A2.getElements().add(new LineTo(0.8702928870292888 * WIDTH, 0.03188405797101449 * HEIGHT));
         A2.getElements().add(new ClosePath());
         A2.setId("sixteen-segment-off");
-        segmentMap.put(Segment.A2, A2);
+        segmentMap.put(SixteenSegment.Segment.A2, A2);
 
         final Path B = new Path();
         B.setFillRule(FillRule.EVEN_ODD);
@@ -317,7 +266,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         B.getElements().add(new LineTo(0.8786610878661087 * WIDTH, 0.03768115942028986 * HEIGHT));
         B.getElements().add(new ClosePath());
         B.setId("sixteen-segment-off");
-        segmentMap.put(Segment.B, B);
+        segmentMap.put(SixteenSegment.Segment.B, B);
 
         final Path C = new Path();
         C.setFillRule(FillRule.EVEN_ODD);
@@ -330,7 +279,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         C.getElements().add(new LineTo(0.8158995815899581 * WIDTH, 0.5014492753623189 * HEIGHT));
         C.getElements().add(new ClosePath());
         C.setId("sixteen-segment-off");
-        segmentMap.put(Segment.C, C);
+        segmentMap.put(SixteenSegment.Segment.C, C);
 
         final Path D2 = new Path();
         D2.setFillRule(FillRule.EVEN_ODD);
@@ -345,7 +294,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         D2.getElements().add(new LineTo(0.7112970711297071 * WIDTH, 0.9159420289855073 * HEIGHT));
         D2.getElements().add(new ClosePath());
         D2.setId("sixteen-segment-off");
-        segmentMap.put(Segment.D2, D2);
+        segmentMap.put(SixteenSegment.Segment.D2, D2);
 
         final Path D1 = new Path();
         D1.setFillRule(FillRule.EVEN_ODD);
@@ -360,7 +309,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         D1.getElements().add(new LineTo(0.3682008368200837 * WIDTH, 0.9159420289855073 * HEIGHT));
         D1.getElements().add(new ClosePath());
         D1.setId("sixteen-segment-off");
-        segmentMap.put(Segment.D1, D1);
+        segmentMap.put(SixteenSegment.Segment.D1, D1);
 
         final Path E = new Path();
         E.setFillRule(FillRule.EVEN_ODD);
@@ -374,7 +323,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         E.getElements().add(new LineTo(0.0502092050209205 * WIDTH, 0.9623188405797102 * HEIGHT));
         E.getElements().add(new ClosePath());
         E.setId("sixteen-segment-off");
-        segmentMap.put(Segment.E, E);
+        segmentMap.put(SixteenSegment.Segment.E, E);
 
         final Path F = new Path();
         F.setFillRule(FillRule.EVEN_ODD);
@@ -387,7 +336,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         F.getElements().add(new LineTo(0.12552301255230125 * WIDTH, 0.03188405797101449 * HEIGHT));
         F.getElements().add(new ClosePath());
         F.setId("sixteen-segment-off");
-        segmentMap.put(Segment.F, F);
+        segmentMap.put(SixteenSegment.Segment.F, F);
 
         final Path G = new Path();
         G.setFillRule(FillRule.EVEN_ODD);
@@ -400,7 +349,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         G.getElements().add(new LineTo(0.20920502092050208 * WIDTH, 0.08695652173913043 * HEIGHT));
         G.getElements().add(new ClosePath());
         G.setId("sixteen-segment-off");
-        segmentMap.put(Segment.G, G);
+        segmentMap.put(SixteenSegment.Segment.G, G);
 
         final Path H = new Path();
         H.setFillRule(FillRule.EVEN_ODD);
@@ -414,7 +363,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         H.getElements().add(new LineTo(0.502092050209205 * WIDTH, 0.05507246376811594 * HEIGHT));
         H.getElements().add(new ClosePath());
         H.setId("sixteen-segment-off");
-        segmentMap.put(Segment.H, H);
+        segmentMap.put(SixteenSegment.Segment.H, H);
 
         final Path J = new Path();
         J.setFillRule(FillRule.EVEN_ODD);
@@ -427,7 +376,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         J.getElements().add(new LineTo(0.799163179916318 * WIDTH, 0.08695652173913043 * HEIGHT));
         J.getElements().add(new ClosePath());
         J.setId("sixteen-segment-off");
-        segmentMap.put(Segment.J, J);
+        segmentMap.put(SixteenSegment.Segment.J, J);
 
         final Path K = new Path();
         K.setFillRule(FillRule.EVEN_ODD);
@@ -440,7 +389,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         K.getElements().add(new LineTo(0.46443514644351463 * WIDTH, 0.4985507246376812 * HEIGHT));
         K.getElements().add(new ClosePath());
         K.setId("sixteen-segment-off");
-        segmentMap.put(Segment.K, K);
+        segmentMap.put(SixteenSegment.Segment.K, K);
 
         final Path L = new Path();
         L.setFillRule(FillRule.EVEN_ODD);
@@ -455,7 +404,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         L.getElements().add(new LineTo(0.7154811715481172 * WIDTH, 0.9130434782608695 * HEIGHT));
         L.getElements().add(new ClosePath());
         L.setId("sixteen-segment-off");
-        segmentMap.put(Segment.L, L);
+        segmentMap.put(SixteenSegment.Segment.L, L);
 
         final Path M = new Path();
         M.setFillRule(FillRule.EVEN_ODD);
@@ -469,7 +418,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         M.getElements().add(new LineTo(0.4225941422594142 * WIDTH, 0.9478260869565217 * HEIGHT));
         M.getElements().add(new ClosePath());
         M.setId("sixteen-segment-off");
-        segmentMap.put(Segment.M, M);
+        segmentMap.put(SixteenSegment.Segment.M, M);
 
         final Path N = new Path();
         N.setFillRule(FillRule.EVEN_ODD);
@@ -484,7 +433,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         N.getElements().add(new LineTo(0.12552301255230125 * WIDTH, 0.9130434782608695 * HEIGHT));
         N.getElements().add(new ClosePath());
         N.setId("sixteen-segment-off");
-        segmentMap.put(Segment.N, N);
+        segmentMap.put(SixteenSegment.Segment.N, N);
 
         final Path P = new Path();
         P.setFillRule(FillRule.EVEN_ODD);
@@ -497,11 +446,11 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         P.getElements().add(new LineTo(0.11715481171548117 * WIDTH, 0.4985507246376812 * HEIGHT));
         P.getElements().add(new ClosePath());
         P.setId("sixteen-segment-off");
-        segmentMap.put(Segment.P, P);
+        segmentMap.put(SixteenSegment.Segment.P, P);
 
         final Circle DOT = new Circle(0.9121338912133892 * WIDTH, 0.9391304347826087 * HEIGHT, 0.06694560669456066 * WIDTH);
         DOT.setId("sixteen-segment-off");
-        segmentMap.put(Segment.DOT, DOT);
+        segmentMap.put(SixteenSegment.Segment.DOT, DOT);
 
         segments.getChildren().addAll(A1,
                                       A2,

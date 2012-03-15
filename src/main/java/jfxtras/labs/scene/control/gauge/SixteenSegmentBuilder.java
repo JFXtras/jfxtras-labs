@@ -29,6 +29,9 @@ package jfxtras.labs.scene.control.gauge;
 
 import javafx.scene.paint.Color;
 
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * Created by
@@ -51,6 +54,16 @@ public class SixteenSegmentBuilder {
 
     public final SixteenSegmentBuilder character(final Character CHARACTER) {
         segment.setCharacter(CHARACTER);
+        return this;
+    }
+
+    public final SixteenSegmentBuilder dotOn(final boolean DOT_ON) {
+        segment.setDotOn(DOT_ON);
+        return this;
+    }
+
+    public final SixteenSegmentBuilder customSegmentMapping(final Map<Integer, List<SixteenSegment.Segment>> CUSTOM_SEGMENT_MAPPING) {
+        segment.setCustomSegmentMapping(CUSTOM_SEGMENT_MAPPING);
         return this;
     }
 
