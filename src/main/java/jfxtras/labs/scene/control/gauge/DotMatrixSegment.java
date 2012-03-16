@@ -71,7 +71,7 @@ public class DotMatrixSegment extends Control {
         mapping.put(20, Arrays.asList(new Dot[] {}));
         // * + , - . / : ; = \ _ < > #
         mapping.put(42, Arrays.asList(new Dot[]{Dot.D32, Dot.D13, Dot.D33, Dot.D53, Dot.D24, Dot.D34, Dot.D44, Dot.D15, Dot.D35, Dot.D55, Dot.D36}));
-        mapping.put(43, Arrays.asList(new Dot[]{Dot.D32, Dot.D33, Dot.D41, Dot.D42, Dot.D43, Dot.D44, Dot.D45, Dot.D35, Dot.D36}));
+        mapping.put(43, Arrays.asList(new Dot[]{Dot.D32, Dot.D33, Dot.D14, Dot.D24, Dot.D34, Dot.D44, Dot.D54, Dot.D35, Dot.D36}));
         mapping.put(44, Arrays.asList(new Dot[]{Dot.D25, Dot.D35, Dot.D36, Dot.D27}));
         mapping.put(45, Arrays.asList(new Dot[]{Dot.D14, Dot.D24, Dot.D34, Dot.D44, Dot.D54}));
         mapping.put(46, Arrays.asList(new Dot[]{Dot.D35, Dot.D36, Dot.D45, Dot.D46}));
