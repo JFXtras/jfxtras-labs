@@ -117,18 +117,27 @@
 ************************************************************/
 #tube-hl-middle {
     -fx-fill: linear-gradient(from 0% 100% to 100% 100%, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+    -fx-stroke: transparent;
 }
 
 #tube-hl-left {
-    -fx-fill: linear-gradient(from 4% 49% to 52% 49%, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+    -fx-fill: linear-gradient(from 0% 0% to 100% 0%, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.05) 80%, rgba(255, 255, 255, 0.05) 100%);
+    -fx-stroke: transparent;
+}
+
+#tube-hl-right {
+    -fx-fill: linear-gradient(from 0% 0% to 100% 0%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+    -fx-stroke: transparent;
 }
 
 #tube-hl-upper {
     -fx-fill: linear-gradient(from 50% 0% to 50% 100%, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+    -fx-stroke: transparent;
 }
 
 #tube-hl-top {
     -fx-fill: linear-gradient(from 66% 14% to 35% 95%, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+    -fx-stroke: transparent;
 }
 
 
