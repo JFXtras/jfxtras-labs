@@ -115,6 +115,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         if (!initialized) {
             init();
         }
+        updateCharacter();
         getChildren().clear();
         getChildren().add(segments);
     }
@@ -152,7 +153,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
     }
 
     @Override protected double computePrefWidth(final double PREF_WIDTH) {
-        double prefWidth = 229;
+        double prefWidth = 100;
         if (PREF_WIDTH != -1) {
             prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
         }
@@ -160,7 +161,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
     }
 
     @Override protected double computePrefHeight(final double PREF_HEIGHT) {
-        double prefHeight = 335;
+        double prefHeight = 150;
         if (PREF_HEIGHT != -1) {
             prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
         }
@@ -171,7 +172,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
     // ******************** Drawing related ***********************************
     public void updateCharacter() {
         segments.setStyle("-fx-segment-color-on: " + Util.INSTANCE.createCssColor(control.getColor()) +
-                          "-fx-segment-color-off: " + Util.INSTANCE.createCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.1)));
+                          "-fx-segment-color-off: " + Util.INSTANCE.createCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
         final int ASCII = control.getCharacter().isEmpty() ? 20 : control.getCharacter().toUpperCase().charAt(0);
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setRadius(0.05 * control.getPrefWidth());
@@ -217,12 +218,11 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
     }
 
     public void createSegments() {
-        final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
-        final double WIDTH = SIZE;
-        final double HEIGHT = SIZE;
+        final double WIDTH = control.getPrefWidth();
+        final double HEIGHT = control.getPrefHeight();
 
         segments.setStyle("-fx-segment-color-on: " + Util.INSTANCE.createCssColor(control.getColor()) +
-                          "-fx-segment-color-off: " + Util.INSTANCE.createCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.1)));
+                          "-fx-segment-color-off: " + Util.INSTANCE.createCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
 
         segments.getChildren().clear();
 

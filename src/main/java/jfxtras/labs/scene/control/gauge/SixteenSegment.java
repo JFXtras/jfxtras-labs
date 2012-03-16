@@ -92,7 +92,6 @@ public class SixteenSegment extends Control {
         character            = new SimpleStringProperty(CHARACTER);
         dotOn                = new SimpleBooleanProperty(false);
         mapping              = new HashMap<Integer, List<Segment>>(42);
-        //customSegmentMapping = new SimpleObjectProperty<Map<Integer, List<Segment>>>(new HashMap<Integer, List<Segment>>());
         init();
     }
 
@@ -251,17 +250,17 @@ public class SixteenSegment extends Control {
      * If you would like to add a $ sign (ASCII: 36) for example you should add the following code to
      * your custom segment map.
      *
-     * customSegmentMapping.put(36, Arrays.asList(new SixteenSegment.Segment[] {
-     *     SixteenSegment.Segment.A1,
-     *     SixteenSegment.Segment.A2,
-     *     SixteenSegment.Segment.F,
-     *     SixteenSegment.Segment.P,
-     *     SixteenSegment.Segment.K,
-     *     SixteenSegment.Segment.C,
-     *     SixteenSegment.Segment.D2,
-     *     SixteenSegment.Segment.D1,
-     *     SixteenSegment.Segment.H,
-     *     SixteenSegment.Segment.M
+     * customSegmentMapping.put(36, Arrays.asList(new SixteenSegment.Dot[] {
+     *     SixteenSegment.Dot.A1,
+     *     SixteenSegment.Dot.A2,
+     *     SixteenSegment.Dot.F,
+     *     SixteenSegment.Dot.P,
+     *     SixteenSegment.Dot.K,
+     *     SixteenSegment.Dot.C,
+     *     SixteenSegment.Dot.D2,
+     *     SixteenSegment.Dot.D1,
+     *     SixteenSegment.Dot.H,
+     *     SixteenSegment.Dot.M
      * }));
      *
      * @return a Map that contains the default mapping from ascii integers to segments
