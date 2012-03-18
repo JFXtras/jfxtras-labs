@@ -15,28 +15,28 @@ public class SpinnerIntegerList extends java.util.AbstractList<Integer>
 	
 	/**
 	 * 
-	 * @param min
-	 * @param max
+	 * @param from
+	 * @param to
 	 */
-	public SpinnerIntegerList(int min, int max)
+	public SpinnerIntegerList(int from, int to)
 	{
-		this(min, max, 1);
+		this(from, to, from > to ? -1 : 1);
 	}
 	
 	/**
 	 * 
-	 * @param min
-	 * @param max
+	 * @param from
+	 * @param to
 	 * @param step
 	 */
-	public SpinnerIntegerList(int min, int max, int step)
+	public SpinnerIntegerList(int from, int to, int step)
 	{
-		this.min = min;
-		this.size = ((max - min) / step) + 1;
-		if (size < 0) throw new IllegalArgumentException("This results in a negative size: " + min + ", " + max + "," + step);
+		this.from = from;
+		this.size = ((to - from) / step) + 1;
+		if (size < 0) throw new IllegalArgumentException("This results in a negative size: " + from + ", " + to + "," + step);
 		this.step = step;
 	}
-	private int min;
+	private int from;
 	private int size;
 	private int step;
 	
@@ -48,7 +48,7 @@ public class SpinnerIntegerList extends java.util.AbstractList<Integer>
 	public Integer get(int index)
 	{
 		if (index < 0) throw new IllegalArgumentException("Index cannot be < 0: " + index);
-		int lValue = this.min + (index * this.step);
+		int lValue = this.from + (index * this.step);
 		return lValue;
 	}
 
@@ -56,7 +56,7 @@ public class SpinnerIntegerList extends java.util.AbstractList<Integer>
 	public int indexOf(Object o)
 	{
 		int lValue = ((Integer)o).intValue();
-		int lIndex = (lValue - this.min) / this.step;
+		int lIndex = (lValue - this.from) / this.step;
 		return lIndex;
 	}
 	

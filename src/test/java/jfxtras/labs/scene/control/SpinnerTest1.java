@@ -26,6 +26,8 @@
  */
 package jfxtras.labs.scene.control;
 
+import java.math.BigInteger;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -135,34 +137,39 @@ public class SpinnerTest1 extends Application {
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
 			{
+				lGridPane.add(new Label("BigInteger range"), 0, lRowIdx);
+				Spinner<BigInteger> lXSpinner = new Spinner<BigInteger>(new SpinnerBigIntegerList(BigInteger.valueOf(Long.MIN_VALUE), BigInteger.valueOf(Long.MIN_VALUE + 1000)));
+				lGridPane.add(lXSpinner, 1, lRowIdx++);
+			}
+			{
 				lGridPane.add(new Label("Integer range"), 0, lRowIdx);
 				Spinner<Integer> lXSpinner = new Spinner<Integer>(new SpinnerIntegerList());
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Integer range 10..110"), 0, lRowIdx);
-				Spinner<Integer> lXSpinner = new Spinner<Integer>(new SpinnerIntegerList(10, 110));
+				Spinner<Integer> lXSpinner = new Spinner<Integer>(10, 110);
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Integer range 10..110 with setIndex 50"), 0, lRowIdx);
-				Spinner<Integer> lXSpinner = new Spinner<Integer>(new SpinnerIntegerList(10, 110));
+				Spinner<Integer> lXSpinner = new Spinner<Integer>(10, 110);
 				lXSpinner.setIndex(50);
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Integer range 0..1000 step 10"), 0, lRowIdx);
-				Spinner<Integer> lXSpinner = new Spinner<Integer>(new SpinnerIntegerList(0, 100, 10));
+				Spinner<Integer> lXSpinner = new Spinner<Integer>(0, 100, 10);
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Integer range -10..10"), 0, lRowIdx);
-				Spinner<Integer> lXSpinner = new Spinner<Integer>(new SpinnerIntegerList(-10, 10));
+				Spinner<Integer> lXSpinner = new Spinner<Integer>(-10, 10);
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Integer range 10..-10"), 0, lRowIdx);
-				Spinner<Integer> lXSpinner = new Spinner<Integer>(new SpinnerIntegerList(10, -10, -1));
+				Spinner<Integer> lXSpinner = new Spinner<Integer>(10, -10);
 				lGridPane.add(lXSpinner, 1, lRowIdx++);
 			}
 			{

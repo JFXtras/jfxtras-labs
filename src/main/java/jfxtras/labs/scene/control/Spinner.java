@@ -47,14 +47,13 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 /**
- * This is a spinner, showing one value at a time.
+ * This is a spinner, showing one value at a time from a list.
  * Basically a spinner shows a list of values and can do "next" or "previous" on this.
- * SpinnerX has some convenience constructors.
  * 
- * SpinnerX can be editable, the user can then type a value instead of selecting it.
+ * A spinner can be editable, the user can then type a value instead of selecting it.
  * If the value exists in the list, the spinner will simply jump to it. 
  * If the value does not exist, if defined the AddCallback is called.
- * - If the AddCallback returns null, spinner will refresh showing the selected index
+ * - If the AddCallback returns null, spinner will only refresh the current index.
  * - If the AddCallback returns an Integer, spinner will jump to that index (usually the index where the new value was added).   
  * 
  * http://openjdk.java.net/projects/openjfx/ux/spinner/index.html
@@ -117,6 +116,24 @@ public class Spinner<T> extends Control
 	public Spinner(T... list)
 	{
 		this( Arrays.asList(list) );
+	}
+
+	/**
+	 * 
+	 * @param list
+	 */
+	public Spinner(int from, int to)
+	{
+		this( (java.util.List<T>) new SpinnerIntegerList(from, to) );
+	}
+
+	/**
+	 * 
+	 * @param list
+	 */
+	public Spinner(int from, int to, int step)
+	{
+		this( (java.util.List<T>) new SpinnerIntegerList(from, to, step) );
 	}
 
 	// ------------
