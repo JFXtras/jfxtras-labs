@@ -30,13 +30,8 @@ package jfxtras.labs.internal.scene.control.skin;
 import com.sun.javafx.scene.control.skin.SkinBase;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
-import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -134,7 +129,7 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
         drawForeground();
         getChildren().add(background);
         for (Dial dial : listOfDials) {
-            getChildren().addAll(dial.getNextNumberGroup(), dial.getCurrentNumberGroup());//, dial.getFormerNumberGroup());
+            getChildren().addAll(dial.getNextNumberGroup(), dial.getCurrentNumberGroup());
         }
         getChildren().add(foreground);
     }
@@ -143,7 +138,11 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
         super.handleControlPropertyChanged(PROPERTY);
         if (PROPERTY == "ROTATION") {
             for (int i = 1 ; i < (control.getNoOfDigits() + control.getNoOfDecimals() + 1) ; i++) {
-                listOfDials.get(i - 1).setNumber(control.getDialPosition(i));
+                if (control.getRotations() == 0) {
+                    listOfDials.get(i - 1).reset();
+                } else {
+                    listOfDials.get(i - 1).setNumber(control.getDialPosition(i));
+                }
             }
         }
     }
@@ -275,33 +274,41 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
             currentNumberGroup = createGroup(NUMBER_COLOR, currentNumber, 0, OFFSET_X, 0);
             next               = new TranslateTransition(Duration.millis(control.getInterval()), nextNumberGroup);
             current            = new TranslateTransition(Duration.millis(control.getInterval()), currentNumberGroup);
-            parallel           = new ParallelTransition();
+            //parallel           = new ParallelTransition();
+            next.setFromY(-control.getPrefHeight());
+            next.setToY(0);
+            next.setInterpolator(Interpolator.LINEAR);
+            current.setFromY(0);
+            current.setToY(control.getPrefHeight());
+            current.setInterpolator(Interpolator.LINEAR);
+            current.setDelay(Duration.ZERO);
+            parallel = new ParallelTransition(next, current);
         }
 
         protected void setNumber(final int NUMBER) {
+            if (parallel.getStatus() == Animation.Status.RUNNING) {
+                parallel.stop();
+                increaseNumbers();
+            }
             if (!Integer.toString(NUMBER).equals(currentNumber.getText())) {
-                if (parallel.getStatus() == Animation.Status.RUNNING) {
-                    parallel.stop();
-                    resetGroups();
-                }
-                next.setFromY(-control.getPrefHeight());
-                next.setToY(0);
-                next.setInterpolator(Interpolator.LINEAR);
-                current.setFromY(0);
-                current.setToY(control.getPrefHeight());
-                current.setInterpolator(Interpolator.LINEAR);
-
-                parallel = new ParallelTransition(next, current);
                 parallel.play();
 
                 parallel.setOnFinished(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent actionEvent) {
-                        resetGroups();
+                        increaseNumbers();
                     }
                 });
 
             }
+        }
+
+        protected void reset() {
+            parallel.stop();
+            nextNumberGroup.setTranslateY(-control.getPrefHeight());
+            nextNumber.setText("1");
+            currentNumberGroup.setTranslateY(0);
+            currentNumber.setText("0");
         }
 
         protected Group getNextNumberGroup() {
@@ -327,7 +334,7 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
             return group;
         }
 
-        private void resetGroups() {
+        private void increaseNumbers() {
             int number = Integer.parseInt(nextNumber.getText());
             nextNumberGroup.setTranslateY(-control.getPrefHeight());
             nextNumber.setText(number == 9 ? "0" : Integer.toString(number + 1));

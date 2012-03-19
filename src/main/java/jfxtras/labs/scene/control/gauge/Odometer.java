@@ -152,7 +152,7 @@ public class Odometer extends Control {
     }
 
     public final void setInterval(final long INTERVAL) {
-        interval.set(INTERVAL < 200 ? 200 : (INTERVAL > 5000 ? 5000 : INTERVAL));
+        interval.set(INTERVAL < 100 ? 100 : (INTERVAL > 5000 ? 5000 : INTERVAL));
     }
 
     public final LongProperty intervalProperty() {
@@ -180,6 +180,7 @@ public class Odometer extends Control {
     }
 
     public final void reset() {
+        timer.stop();
         setRotations(0);
     }
 
