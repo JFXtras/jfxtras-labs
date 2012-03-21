@@ -84,31 +84,21 @@ public class GradientLookup {
         final double POS2 = STOP2.getOffset();
         final double POS3 = POSITION / (POS2 - POS1);
 
-        final double RED1   = STOP1.getColor().getRed();
-        final double GREEN1 = STOP1.getColor().getGreen();
-        final double BLUE1  = STOP1.getColor().getBlue();
-        final double ALPHA1 = STOP1.getColor().getOpacity();
+        final double DELTA_RED     = STOP2.getColor().getRed()     - STOP1.getColor().getRed();
+        final double DELTA_GREEN   = STOP2.getColor().getGreen()   - STOP1.getColor().getGreen();
+        final double DELTA_BLUE    = STOP2.getColor().getBlue()    - STOP1.getColor().getBlue();
+        final double DELTA_OPACITY = STOP2.getColor().getOpacity() - STOP1.getColor().getOpacity();
 
-        final double RED2   = STOP2.getColor().getRed();
-        final double GREEN2 = STOP2.getColor().getGreen();
-        final double BLUE2  = STOP2.getColor().getBlue();
-        final double ALPHA2 = STOP2.getColor().getOpacity();
+        double red     = STOP1.getColor().getRed()     + (DELTA_RED * POS3);
+        double green   = STOP1.getColor().getGreen()   + (DELTA_GREEN * POS3);
+        double blue    = STOP1.getColor().getBlue()    + (DELTA_BLUE * POS3);
+        double opacity = STOP1.getColor().getOpacity() + (DELTA_OPACITY * POS3);
 
-        final double DELTA_RED   = RED2 - RED1;
-        final double DELTA_GREEN = GREEN2 - GREEN1;
-        final double DELTA_BLUE  = BLUE2 - BLUE1;
-        final double DELTA_ALPHA = ALPHA2 - ALPHA1;
+        red     = red < 0 ? 0   : (red > 1 ? 1   : red);
+        green   = green < 0 ? 0 : (green > 1 ? 1 : green);
+        blue    = blue < 0 ? 0  : (blue > 1 ? 1  : blue);
+        opacity = opacity < 0 ? 0 : (opacity > 1 ? 1 : opacity);
 
-        double red   = RED1 + (DELTA_RED * POS3);
-        double green = GREEN1 + (DELTA_GREEN * POS3);
-        double blue  = BLUE1 + (DELTA_BLUE * POS3);
-        double alpha = ALPHA1 + (DELTA_ALPHA * POS3);
-
-        red   = red < 0 ? 0   : (red > 1 ? 1   : red);
-        green = green < 0 ? 0 : (green > 1 ? 1 : green);
-        blue  = blue < 0 ? 0  : (blue > 1 ? 1  : blue);
-        alpha = alpha < 0 ? 0 : (alpha > 1 ? 1 : alpha);
-
-        return Color.color(red, green, blue, alpha);
+        return Color.color(red, green, blue, opacity);
     }
 }
