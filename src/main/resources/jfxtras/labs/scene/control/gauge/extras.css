@@ -90,6 +90,17 @@
     -fx-segment-color-off: rgba(119, 219, 0, 0.075);
 }
 
+.step-indicator {
+    -fx-skin                                         : "jfxtras.labs.internal.scene.control.skin.StepIndicatorSkin";
+    -fx-step-indicator-inner-frame-fill              : rgb(158, 158, 158);
+    -fx-step-indicator-inner-background-fill         : rgb(244, 244, 244);
+    -fx-step-indicator-text-fill                     : rgb(108, 108, 108);
+    -fx-step-indicator-selected-inner-framefill      : derive(rgb(138, 205, 250), -30%);
+    -fx-step-indicator-selected-inner-background-fill: rgb(138, 205, 250);
+    -fx-step-indicator-selected-text-fill            : derive(rgb(138, 205, 250), -60%);
+    -fx-step-indicator-stroke                        : transparent;
+}
+
 
 /************************************************************
 * Defintion of Led fills                                    *
@@ -244,3 +255,48 @@
     -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 1.0), 1, 1.0, 0, 0);
     -fx-stroke: transparent;
 }
+
+
+/************************************************************
+* Definition of StepIndicator fills                         *
+************************************************************/
+#step-indicator-outer-frame {
+    -fx-fill  : rgb(201, 201, 201);
+    -fx-stroke: -fx-step-indicator-stroke;
+}
+
+#step-indicator-outer-background {
+    -fx-fill  : white;
+    -fx-stroke: -fx-step-indicator-stroke;
+}
+
+#step-indicator-inner-frame {
+    -fx-fill  : -fx-step-indicator-inner-frame-fill;
+    -fx-stroke: -fx-step-indicator-stroke;
+}
+
+#step-indicator-inner-background {
+    -fx-fill  : -fx-step-indicator-inner-background-fill;
+    -fx-stroke: -fx-step-indicator-stroke;
+}
+
+#step-indicator-text {
+    -fx-fill  : -fx-step-indicator-text-fill;
+    -fx-stroke: -fx-step-indicator-stroke;
+}
+
+#step-indicator-selected-inner-frame {
+    -fx-fill  : -fx-step-indicator-selected-inner-frame-fill;
+    -fx-stroke: -fx-step-indicator-stroke;
+}
+
+#step-indicator-selected-inner-background {
+    -fx-fill  : -fx-step-indicator-selected-inner-background-fill;
+    -fx-stroke: -fx-step-indicator-stroke;
+}
+
+#step-indicator-selected-text {
+    -fx-fill  : -fx-step-indicator-selected-text-fill;
+    -fx-stroke: -fx-step-indicator-stroke;
+}
+

@@ -166,7 +166,7 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
     }
 
     @Override protected double computePrefWidth(final double PREF_WIDTH) {
-        double prefWidth = 200;
+        double prefWidth = 160;
         if (PREF_WIDTH != -1) {
             prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
         }
@@ -174,7 +174,7 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
     }
 
     @Override protected double computePrefHeight(final double PREF_HEIGHT) {
-        double prefHeight = 200;
+        double prefHeight = 32;
         if (PREF_HEIGHT != -1) {
             prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
         }
