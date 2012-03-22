@@ -28,6 +28,8 @@
 package jfxtras.labs.internal.scene.control.behavior;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import javafx.scene.input.MouseEvent;
+import jfxtras.labs.internal.scene.control.skin.RaterSkin;
 import jfxtras.labs.scene.control.gauge.StepIndicator;
 
 
@@ -43,4 +45,8 @@ public class StepIndicatorBehavior extends BehaviorBase<StepIndicator> {
         super(CONTROL);
     }
 
+    @Override public void mousePressed(final MouseEvent EVENT) {
+        super.mousePressed(EVENT);
+        getControl().fireStepEvent();
+    }
 }

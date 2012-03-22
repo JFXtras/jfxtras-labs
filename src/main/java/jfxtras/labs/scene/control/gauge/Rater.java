@@ -55,10 +55,10 @@ public class Rater extends Control {
     }
 
     public Rater(final Color BRIGHT_COLOR, final Color DARK_COLOR) {
-        brightColor  = new SimpleObjectProperty<Color>(BRIGHT_COLOR);
-        darkColor    = new SimpleObjectProperty<Color>(DARK_COLOR);
-        noOfStars    = new SimpleIntegerProperty(5);
-        rating       = new SimpleIntegerProperty(0);
+        brightColor = new SimpleObjectProperty<Color>(BRIGHT_COLOR);
+        darkColor   = new SimpleObjectProperty<Color>(DARK_COLOR);
+        noOfStars   = new SimpleIntegerProperty(5);
+        rating      = new SimpleIntegerProperty(0);
 
         init();
     }

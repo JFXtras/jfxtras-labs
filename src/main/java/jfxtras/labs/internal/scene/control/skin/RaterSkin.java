@@ -60,23 +60,21 @@ import java.util.List;
  * Time: 10:17
  */
 public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
-    private Rater         control;
-    private RaterBehavior behavior;
-    private boolean       isDirty;
-    private boolean       initialized;
-    private int           noOfStars;
-    private int           rating;
-    private HBox          starContainer;
-    private List<Group>   stars;
-    private int           currentIndex;
-    private int           currentMouseOverIndex;
+    private Rater       control;
+    private boolean     isDirty;
+    private boolean     initialized;
+    private int         noOfStars;
+    private int         rating;
+    private HBox        starContainer;
+    private List<Group> stars;
+    private int         currentIndex;
+    private int         currentMouseOverIndex;
 
 
     // ******************** Constructors **************************************
     public RaterSkin(final Rater CONTROL) {
         super(CONTROL, new RaterBehavior(CONTROL));
         control               = CONTROL;
-        behavior              = super.getBehavior();
         initialized           = false;
         isDirty               = false;
         noOfStars             = control.getNoOfStars();
@@ -182,6 +180,24 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
     }
 
 
+    // ******************** Mouse event handling ******************************
+    private void addMouseEventListener(final Group STAR, final int INDEX) {
+        STAR.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                currentMouseOverIndex = INDEX;
+                highlightStars();
+            }
+        });
+
+        STAR.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(final MouseEvent EVENT) {
+                currentIndex = INDEX;
+            }
+        });
+    }
+
+
     // ******************** Drawing related ***********************************
     private void drawStars() {
         starContainer.getChildren().clear();
@@ -260,22 +276,6 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
             styleBuilder.append("-fx-rater-stroke: transparent;");
             stars.get(i).setStyle(styleBuilder.toString());
         }
-    }
-
-    private void addMouseEventListener(final Group STAR, final int INDEX) {
-        STAR.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                currentMouseOverIndex = INDEX;
-                highlightStars();
-            }
-        });
-
-        STAR.setOnMousePressed(new EventHandler<MouseEvent>() {
-            public void handle(final MouseEvent EVENT) {
-                currentIndex = INDEX;
-            }
-        });
     }
 
     private final Group createStar(final boolean SELECTED) {

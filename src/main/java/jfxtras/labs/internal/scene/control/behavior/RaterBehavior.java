@@ -46,8 +46,8 @@ public class RaterBehavior extends BehaviorBase<Rater> {
     }
 
     @Override public void mousePressed(final MouseEvent EVENT) {
-        final Rater CONTROL = super.getControl();
-        final RaterSkin SKIN = (RaterSkin) super.getControl().getSkin();
+        final Rater CONTROL = getControl();
+        final RaterSkin SKIN = (RaterSkin) getControl().getSkin();
         if (CONTROL.getRating() == 1 && SKIN.getCurrentIndex() == 1) {
             CONTROL.setRating(0);
         } else {

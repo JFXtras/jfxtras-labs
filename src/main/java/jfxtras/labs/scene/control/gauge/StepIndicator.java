@@ -31,6 +31,10 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventTarget;
+import javafx.event.EventType;
 import javafx.scene.control.Control;
 import javafx.scene.paint.Color;
 
@@ -42,10 +46,12 @@ import javafx.scene.paint.Color;
  * Time: 11:52
  */
 public class StepIndicator extends Control {
-    private static final String   DEFAULT_STYLE_CLASS = "step-indicator";
-    private ObjectProperty<Color> color;
-    private IntegerProperty       noOfCircles;
-    private IntegerProperty       score;
+    private static final String                     DEFAULT_STYLE_CLASS = "step-indicator";
+    private ObjectProperty<EventHandler<StepEvent>> onStepEvent         = new SimpleObjectProperty<EventHandler<StepEvent>>();
+    private ObjectProperty<Color>                   color;
+    private IntegerProperty                         noOfSteps;
+    private IntegerProperty                         currentStep;
+    private int                                     selectedStep;
 
 
     // ******************** Constructors **************************************
@@ -55,8 +61,8 @@ public class StepIndicator extends Control {
 
     public StepIndicator(final Color COLOR) {
         color       = new SimpleObjectProperty<Color>(COLOR);
-        noOfCircles = new SimpleIntegerProperty(5);
-        score       = new SimpleIntegerProperty(0);
+        noOfSteps = new SimpleIntegerProperty(5);
+        currentStep = new SimpleIntegerProperty(0);
 
         init();
     }
@@ -80,38 +86,88 @@ public class StepIndicator extends Control {
         return color;
     }
 
-    public final int getNoOfCircles() {
-        return noOfCircles.get();
+    public final int getNoOfSteps() {
+        return noOfSteps.get();
     }
 
-    public final void setNoOfCircles(final int NO_OF_CIRCLES) {
-        noOfCircles.set(NO_OF_CIRCLES < 3 ? 3 : (NO_OF_CIRCLES > 10 ? 10 : NO_OF_CIRCLES));
+    public final void setNoOfSteps(final int NO_OF_STEPS) {
+        noOfSteps.set(NO_OF_STEPS < 1 ? 1 : (NO_OF_STEPS > 20 ? 20 : NO_OF_STEPS));
     }
 
-    public final IntegerProperty noOfCirclesProperty() {
-        return noOfCircles;
+    public final IntegerProperty noOfStepsProperty() {
+        return noOfSteps;
     }
 
-    public final int getScore() {
-        return score.get();
+    public final int getCurrentStep() {
+        return currentStep.get();
     }
 
-    public final void setScore(final int SCORE) {
-        score.set(SCORE < 0 ? 0 : (SCORE > noOfCircles.get() ? noOfCircles.get() : SCORE));
+    public final void setCurrentStep(final int CURRENT_STEP) {
+        currentStep.set(CURRENT_STEP < 0 ? 0 : (CURRENT_STEP > noOfSteps.get() ? noOfSteps.get() : CURRENT_STEP));
     }
 
-    public final IntegerProperty scoreProperty() {
-        return score;
+    public final IntegerProperty currentStepProperty() {
+        return currentStep;
+    }
+
+    public final void setSelectedStep(final int SELECTED_STEP) {
+        selectedStep = SELECTED_STEP;
     }
 
     @Override public void setPrefSize(final double WIDTH, final double HEIGHT) {
         final double SIZE = WIDTH < (HEIGHT) ? (WIDTH) : HEIGHT;
-        super.setPrefSize(noOfCircles.get() * SIZE, SIZE);
+        super.setPrefSize(noOfSteps.get() * SIZE, SIZE);
+    }
+
+
+    // ******************** Event handling ************************************
+    public final ObjectProperty<EventHandler<StepEvent>> onStepEventProperty() {
+        return onStepEvent;
+    }
+
+    public final void setOnStepEvent(final EventHandler<StepEvent> HANDLER) {
+        onStepEventProperty().set(HANDLER);
+    }
+
+    public final EventHandler<StepEvent> getOnStepEvent() {
+        return onStepEventProperty().get();
+    }
+
+    public void fireStepEvent() {
+        if (selectedStep > 0) {
+            final EventHandler<StepEvent> MODEL_EVENT_HANDLER = getOnStepEvent();
+            if (MODEL_EVENT_HANDLER != null) {
+                final StepEvent Step_EVENT = new StepEvent(selectedStep);
+                MODEL_EVENT_HANDLER.handle(Step_EVENT);
+            }
+        }
     }
 
 
     // ******************** Style related *************************************
     @Override protected String getUserAgentStylesheet() {
         return getClass().getResource("extras.css").toExternalForm();
+    }
+
+
+    // ******************** Custom event **************************************
+    public class StepEvent extends Event {
+        private final int INDEX;
+
+
+        // ******************** Constructors **************************************
+        public StepEvent(final int INDEX) {
+            super(new EventType<StepEvent>());
+            this.INDEX = INDEX;
+        }
+
+        public StepEvent(final Object source, final EventTarget target, final int INDEX) {
+            super(source, target, new EventType<StepEvent>());
+            this.INDEX = INDEX;
+        }
+
+        public final int getIndex() {
+            return INDEX;
+        }
     }
 }

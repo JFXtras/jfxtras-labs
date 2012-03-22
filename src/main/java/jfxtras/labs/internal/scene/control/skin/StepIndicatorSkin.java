@@ -30,11 +30,13 @@ package jfxtras.labs.internal.scene.control.skin;
 import com.sun.javafx.scene.control.skin.SkinBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -70,7 +72,7 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
         control               = CONTROL;
         initialized           = false;
         isDirty               = false;
-        noOfCircles           = control.getNoOfCircles();
+        noOfCircles           = control.getNoOfSteps();
         circles               = new Group();
         selectedCircles       = new Group();
         init();
@@ -97,8 +99,8 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
 
         // Register listeners
         registerChangeListener(control.colorProperty(), "COLOR");
-        registerChangeListener(control.noOfCirclesProperty(), "NO_OF_CIRCLES");
-        registerChangeListener(control.scoreProperty(), "SCORE");
+        registerChangeListener(control.noOfStepsProperty(), "NO_OF_CIRCLES");
+        registerChangeListener(control.currentStepProperty(), "SCORE");
 
         initialized = true;
         paint();
@@ -119,7 +121,7 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
         if (PROPERTY == "NO_OF_CIRCLES") {
-            noOfCircles = control.getNoOfCircles();
+            noOfCircles = control.getNoOfSteps();
             paint();
         } else if (PROPERTY == "SCORE") {
             drawSelectedCircles();
@@ -158,6 +160,24 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
             prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
+    }
+
+
+    // ******************** Mouse event handling ******************************
+    private void addMouseEventListener(final Shape CIRCLE, final int INDEX) {
+        CIRCLE.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(final MouseEvent EVENT) {
+                control.setSelectedStep(INDEX);
+            }
+        });
+
+        CIRCLE.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(final MouseEvent EVENT) {
+                control.setSelectedStep(-1);
+            }
+        });
     }
 
 
@@ -211,7 +231,7 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
         final double STEP_SIZE = 1.3333333333 * WIDTH;
         Shape outerFrame = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.5 * WIDTH);
         Shape outerBackground = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.48333333333333334 * WIDTH);
-        for (int i = 1 ; i < control.getNoOfCircles() ; i++) {
+        for (int i = 1 ; i < control.getNoOfSteps() ; i++) {
             final Rectangle FRAME_CONNECTOR = new Rectangle(0.5 * WIDTH + ((i - 1) * STEP_SIZE), 0.3166666667 * HEIGHT, 1.3333333333 * WIDTH, 0.3666666667 * HEIGHT);
             outerFrame = Shape.union(outerFrame, FRAME_CONNECTOR);
 
@@ -238,7 +258,7 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
         // Create inner circles and connectors
         Shape innerFrame = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4 * WIDTH);
         Shape innerBackground = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.38333333333333336 * WIDTH);
-        for (int i = 1 ; i < control.getNoOfCircles() ; i++) {
+        for (int i = 1 ; i < control.getNoOfSteps() ; i++) {
             if (i != 0) {
                 final Rectangle FRAME_CONNECTOR = new Rectangle(0.5 * WIDTH + ((i - 1) * STEP_SIZE), 0.4333333333 * HEIGHT, 1.3333333333 * WIDTH, 0.1333333333 * HEIGHT);
                 innerFrame = Shape.union(innerFrame, FRAME_CONNECTOR);
@@ -275,7 +295,7 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
 
         selectedCircles.getChildren().clear();
 
-        final Rectangle IBOUNDS = new Rectangle(0, 0, control.getNoOfCircles() * WIDTH + (control.getNoOfCircles() - 1) * 0.3333333333 * HEIGHT, HEIGHT);
+        final Rectangle IBOUNDS = new Rectangle(0, 0, control.getNoOfSteps() * WIDTH + (control.getNoOfSteps() - 1) * 0.3333333333 * HEIGHT, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         selectedCircles.getChildren().add(IBOUNDS);
 
@@ -301,7 +321,7 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
         final double STEP_SIZE = 1.3333333333 * WIDTH;
         Shape innerFrameSelected = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4 * WIDTH);
         Shape innerBackgroundSelected = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.38333333333333336 * WIDTH);
-        for (int i = 1 ; i < control.getScore() ; i++) {
+        for (int i = 1 ; i < control.getCurrentStep() ; i++) {
             final Rectangle FRAME_CONNECTOR = new Rectangle(0.5 * WIDTH + ((i - 1) * STEP_SIZE), 0.4333333333 * HEIGHT, 1.3333333333 * WIDTH, 0.1333333333 * HEIGHT);
             innerFrameSelected = Shape.union(innerFrameSelected, FRAME_CONNECTOR);
 
@@ -325,7 +345,7 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
         // Add effects
         innerBackgroundSelected.setEffect(INNER_BACKGROUND_INNER_SHADOW);
 
-        if (control.getScore() == 0) {
+        if (control.getCurrentStep() == 0) {
             innerFrameSelected.setVisible(false);
             innerBackgroundSelected.setVisible(false);
         }
@@ -333,13 +353,13 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
 
         // Add numbers
         final Font FONT = Font.font("Arial", FontWeight.BOLD, 0.4 * HEIGHT);
-        for (int i = 0 ; i < control.getNoOfCircles() ; i++) {
+        for (int i = 0 ; i < control.getNoOfSteps() ; i++) {
             final Text NUMBER = new Text(Integer.toString(i + 1));
             NUMBER.setTextOrigin(VPos.CENTER);
             NUMBER.setTextAlignment(TextAlignment.CENTER);
             NUMBER.setFontSmoothingType(FontSmoothingType.LCD);
             NUMBER.setFont(FONT);
-            if (i < control.getScore()) {
+            if (i < control.getCurrentStep()) {
                 NUMBER.setId("step-indicator-selected-text");
             } else {
                 NUMBER.setId("step-indicator-text");
@@ -348,6 +368,16 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
             NUMBER.setTranslateY(0.5 * HEIGHT);
             selectedCircles.getChildren().add(NUMBER);
         }
+
+        // Add mouse event listener for completed steps
+        for (int i = 0 ; i < control.getCurrentStep() ; i++) {
+            final Circle HOT_SPOT = new Circle(0.5 * WIDTH + (i * STEP_SIZE), 0.5 * HEIGHT, 0.4 * WIDTH);
+            HOT_SPOT.setFill(Color.TRANSPARENT);
+            HOT_SPOT.setStroke(Color.TRANSPARENT);
+            selectedCircles.getChildren().add(HOT_SPOT);
+            addMouseEventListener(HOT_SPOT, i + 1);
+        }
+
 
         selectedCircles.setCache(true);
     }

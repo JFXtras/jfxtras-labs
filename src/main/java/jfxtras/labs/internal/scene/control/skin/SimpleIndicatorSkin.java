@@ -234,6 +234,5 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
                                        HIGHLIGHT);
         indicator.setCache(true);
     }
-
 }
 
