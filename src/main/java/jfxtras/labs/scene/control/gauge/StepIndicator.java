@@ -110,6 +110,18 @@ public class StepIndicator extends Control {
         return currentStep;
     }
 
+    public final void next() {
+        if (currentStep.get() < noOfSteps.get()) {
+            currentStep.set(currentStep.get() + 1);
+        }
+    }
+
+    public final void back() {
+        if (currentStep.get() > 0) {
+            currentStep.set(currentStep.get() - 1);
+        }
+    }
+
     public final void setSelectedStep(final int SELECTED_STEP) {
         selectedStep = SELECTED_STEP;
     }
