@@ -28,6 +28,7 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
@@ -113,9 +114,6 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
             }
         });
 
-        // Add bindings
-        addBindings();
-
         // Register listeners
         registerChangeListener(control.chargingProperty(), "CHARGING");
         registerChangeListener(control.chargeIndicatorProperty(), "CHARGE_INDICATOR");
@@ -142,27 +140,13 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
                              foreground);
     }
 
-    private void addBindings() {
-        if (plug.visibleProperty().isBound()) {
-            plug.visibleProperty().unbind();
-        }
-        plug.visibleProperty().bind(control.chargingProperty());
-
-        if (flashFrame.visibleProperty().isBound()) {
-            flashFrame.visibleProperty().unbind();
-        }
-        flashFrame.visibleProperty().bind(control.chargingProperty());
-        if (flashMain.visibleProperty().isBound()) {
-            flashMain.visibleProperty().unbind();
-        }
-        flashMain.visibleProperty().bind(control.chargingProperty());
-    }
-
     @Override
     protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
         if (PROPERTY == "CHARGING") {
-            //chargeTimer.start();
+            plug.setVisible(control.isCharging());
+            flashFrame.setVisible(control.isCharging());
+            flashMain.setVisible(control.isCharging());
         } else if(PROPERTY == "CHARGE_INDICATOR") {
             if (control.getChargeIndicator() == Battery.ChargeIndicator.PLUG) {
                 plug.setOpacity(1.0);
@@ -171,7 +155,7 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
             } else {
                 plug.setOpacity(0.0);
                 flashFrame.setOpacity(1.0);
-                flashMain.setOpacity(0.0);
+                flashMain.setOpacity(1.0);
             }
         } else if(PROPERTY == "CHARGE_LEVEL") {
             currentLevelColor = lookup.getColorAt(control.getChargingLevel());
@@ -263,6 +247,7 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
 
         background.getChildren().addAll(EMPTY_BOTTOM,
                                         EMPTY_BACKGROUND);
+        background.setCache(true);
     }
 
     public final void drawMain() {
@@ -440,25 +425,31 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
                                   plug,
                                   flashFrame,
                                   flashMain);
+        main.setCache(true);
     }
 
     private final void updateFluid() {
-        if (Double.compare(control.getChargingLevel(), 0) == 0) {
-            fluid.setVisible(false);
-        } else {
-            fluid.setVisible(true);
-        }
-        fluid.setHeight(control.getChargingLevel() * 0.8235294118 * control.getPrefHeight());
-        fluid.setY(0.1137254902 * control.getPrefHeight() + (0.8235294118 * control.getPrefHeight() - fluid.getHeight()));
-        fluid.setFill(new LinearGradient(0.0166666667 * control.getPrefWidth(), 0,
-                                         0.0166666667 * control.getPrefWidth() + 0.9666666667 * control.getPrefWidth(), 0,
-                                         false, CycleMethod.NO_CYCLE,
-                                         new Stop(0.0, currentLevelColor.darker().darker()),
-                                         new Stop(0.2, currentLevelColor.darker()),
-                                         new Stop(0.5, currentLevelColor),
-                                         new Stop(0.8, currentLevelColor.darker()),
-                                         new Stop(1.0, currentLevelColor.darker().darker())));
-        fluidHighlight.setY(0.1137254902 * control.getPrefHeight() + (0.8235294118 * control.getPrefHeight() - fluid.getHeight()));
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if (Double.compare(control.getChargingLevel(), 0) == 0) {
+                    fluid.setVisible(false);
+                } else {
+                    fluid.setVisible(true);
+                }
+                fluid.setHeight(control.getChargingLevel() * 0.8235294118 * control.getPrefHeight());
+                fluid.setY(0.1137254902 * control.getPrefHeight() + (0.8235294118 * control.getPrefHeight() - fluid.getHeight()));
+                fluid.setFill(new LinearGradient(0.0166666667 * control.getPrefWidth(), 0,
+                                                 0.0166666667 * control.getPrefWidth() + 0.9666666667 * control.getPrefWidth(), 0,
+                                                 false, CycleMethod.NO_CYCLE,
+                                                 new Stop(0.0, currentLevelColor.darker().darker()),
+                                                 new Stop(0.2, currentLevelColor.darker()),
+                                                 new Stop(0.5, currentLevelColor),
+                                                 new Stop(0.8, currentLevelColor.darker()),
+                                                 new Stop(1.0, currentLevelColor.darker().darker())));
+                fluidHighlight.setY(0.1137254902 * control.getPrefHeight() + (0.8235294118 * control.getPrefHeight() - fluid.getHeight()));
+            }
+        });
     }
 
     public final void drawForeground() {
@@ -811,5 +802,6 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
                                         CONNECTOR_FRAME,
                                         CONNECTOR_MAIN,
                                         CONNECTOR_HIGHLIGHT);
+        foreground.setCache(true);
     }
 }
