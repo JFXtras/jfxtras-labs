@@ -101,6 +101,10 @@
     -fx-step-indicator-stroke                        : transparent;
 }
 
+.battery {
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.BatterySkin";
+}
+
 
 /************************************************************
 * Defintion of Led fills                                    *
