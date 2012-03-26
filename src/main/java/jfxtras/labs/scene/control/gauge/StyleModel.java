@@ -111,6 +111,7 @@ public class StyleModel {
     private BooleanProperty                      sectionsVisible;
     private BooleanProperty                      expandedSections;
     private BooleanProperty                      sectionsHighlighting;
+    private BooleanProperty                      showSectionTickmarksOnly;
     private BooleanProperty                      areasVisible;
     private BooleanProperty                      areasHighlighting;
     private BooleanProperty                      markersVisible;
@@ -180,6 +181,7 @@ public class StyleModel {
         sectionsVisible                 = new SimpleBooleanProperty(false);
         expandedSections                = new SimpleBooleanProperty(false);
         sectionsHighlighting            = new SimpleBooleanProperty(false);
+        showSectionTickmarksOnly        = new SimpleBooleanProperty(false);
         areasVisible                    = new SimpleBooleanProperty(false);
         areasHighlighting               = new SimpleBooleanProperty(false);
         markersVisible                  = new SimpleBooleanProperty(false);
@@ -866,6 +868,18 @@ public class StyleModel {
 
     public final BooleanProperty sectionsHighlightingProperty() {
         return sectionsHighlighting;
+    }
+
+    public final boolean isShowSectionTickmarksOnly() {
+        return showSectionTickmarksOnly.get();
+    }
+
+    public final void setShowSectionTickmarksOnly(final boolean SHOW_SECTION_TICKMARKS_ONLY) {
+        showSectionTickmarksOnly.set(SHOW_SECTION_TICKMARKS_ONLY);
+    }
+
+    public final BooleanProperty showSectionTickmarksOnlyProperty() {
+        return showSectionTickmarksOnly;
     }
 
     public final boolean isAreasVisible() {

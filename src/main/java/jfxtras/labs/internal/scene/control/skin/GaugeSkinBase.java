@@ -1156,55 +1156,55 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         IBOUNDS.setOpacity(0.0);
         TICKMARKS.getChildren().add(IBOUNDS);
 
-        final Path MAJOR_TICKMARKS_PATH = new Path();
-        MAJOR_TICKMARKS_PATH.setFillRule(FillRule.EVEN_ODD);
-        MAJOR_TICKMARKS_PATH.setSmooth(true);
-        MAJOR_TICKMARKS_PATH.setStrokeType(StrokeType.CENTERED);
-        MAJOR_TICKMARKS_PATH.setStrokeLineCap(StrokeLineCap.ROUND);
-        MAJOR_TICKMARKS_PATH.setStrokeLineJoin(StrokeLineJoin.BEVEL);
-        MAJOR_TICKMARKS_PATH.setStrokeWidth(0.0046728972 * WIDTH);
+        final Path MAJOR_TICK_MARKS_PATH = new Path();
+        MAJOR_TICK_MARKS_PATH.setFillRule(FillRule.EVEN_ODD);
+        MAJOR_TICK_MARKS_PATH.setSmooth(true);
+        MAJOR_TICK_MARKS_PATH.setStrokeType(StrokeType.CENTERED);
+        MAJOR_TICK_MARKS_PATH.setStrokeLineCap(StrokeLineCap.ROUND);
+        MAJOR_TICK_MARKS_PATH.setStrokeLineJoin(StrokeLineJoin.BEVEL);
+        MAJOR_TICK_MARKS_PATH.setStrokeWidth(0.0046728972 * WIDTH);
         switch(CONTROL.getMajorTickmarkType()) {
             case TRIANGLE:
-                MAJOR_TICKMARKS_PATH.setId(CONTROL.getBackgroundDesign().CSS_TEXT);
-                //MAJOR_TICKMARKS_PATH.setStroke(null);
+                MAJOR_TICK_MARKS_PATH.setId(CONTROL.getBackgroundDesign().CSS_TEXT);
+                //MAJOR_TICK_MARKS_PATH.setStroke(null);
                 break;
             default:
-                MAJOR_TICKMARKS_PATH.setId(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
+                MAJOR_TICK_MARKS_PATH.setId(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
                 break;
         }
 
-        final Path MEDIUM_TICKMARKS_PATH = new Path();
-        MEDIUM_TICKMARKS_PATH.setFillRule(FillRule.EVEN_ODD);
-        MEDIUM_TICKMARKS_PATH.setSmooth(true);
-        MEDIUM_TICKMARKS_PATH.setStrokeType(StrokeType.CENTERED);
-        MEDIUM_TICKMARKS_PATH.setStrokeLineCap(StrokeLineCap.ROUND);
-        MEDIUM_TICKMARKS_PATH.setStrokeLineJoin(StrokeLineJoin.BEVEL);
-        MEDIUM_TICKMARKS_PATH.setStrokeWidth(0.0023364486 * WIDTH);
-        MEDIUM_TICKMARKS_PATH.setId(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
+        final Path MEDIUM_TICK_MARKS_PATH = new Path();
+        MEDIUM_TICK_MARKS_PATH.setFillRule(FillRule.EVEN_ODD);
+        MEDIUM_TICK_MARKS_PATH.setSmooth(true);
+        MEDIUM_TICK_MARKS_PATH.setStrokeType(StrokeType.CENTERED);
+        MEDIUM_TICK_MARKS_PATH.setStrokeLineCap(StrokeLineCap.ROUND);
+        MEDIUM_TICK_MARKS_PATH.setStrokeLineJoin(StrokeLineJoin.BEVEL);
+        MEDIUM_TICK_MARKS_PATH.setStrokeWidth(0.0023364486 * WIDTH);
+        MEDIUM_TICK_MARKS_PATH.setId(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
 
-        final Path MINOR_TICKMARKS_PATH = new Path();
-        MINOR_TICKMARKS_PATH.setFillRule(FillRule.EVEN_ODD);
-        MINOR_TICKMARKS_PATH.setSmooth(true);
-        MINOR_TICKMARKS_PATH.setStrokeType(StrokeType.CENTERED);
-        MINOR_TICKMARKS_PATH.setStrokeLineCap(StrokeLineCap.ROUND);
-        MINOR_TICKMARKS_PATH.setStrokeLineJoin(StrokeLineJoin.BEVEL);
-        MINOR_TICKMARKS_PATH.setStrokeWidth(0.0014018692 * WIDTH);
-        MINOR_TICKMARKS_PATH.setId(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
+        final Path MINOR_TICK_MARKS_PATH = new Path();
+        MINOR_TICK_MARKS_PATH.setFillRule(FillRule.EVEN_ODD);
+        MINOR_TICK_MARKS_PATH.setSmooth(true);
+        MINOR_TICK_MARKS_PATH.setStrokeType(StrokeType.CENTERED);
+        MINOR_TICK_MARKS_PATH.setStrokeLineCap(StrokeLineCap.ROUND);
+        MINOR_TICK_MARKS_PATH.setStrokeLineJoin(StrokeLineJoin.BEVEL);
+        MINOR_TICK_MARKS_PATH.setStrokeWidth(0.0014018692 * WIDTH);
+        MINOR_TICK_MARKS_PATH.setId(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
 
-        final double TEXT_BARGRAPH_OFFSET;
+        final double TEXT_BAR_GRAPH_OFFSET;
         if (CONTROL.isBargraph()) {
-            MAJOR_TICKMARKS_PATH.setVisible(false);
-            MEDIUM_TICKMARKS_PATH.setVisible(false);
-            MINOR_TICKMARKS_PATH.setVisible(false);
-            TEXT_BARGRAPH_OFFSET = 0.03;
+            MAJOR_TICK_MARKS_PATH.setVisible(false);
+            MEDIUM_TICK_MARKS_PATH.setVisible(false);
+            MINOR_TICK_MARKS_PATH.setVisible(false);
+            TEXT_BAR_GRAPH_OFFSET = 0.03;
         } else {
-            MAJOR_TICKMARKS_PATH.setVisible(true);
-            MEDIUM_TICKMARKS_PATH.setVisible(true);
-            MINOR_TICKMARKS_PATH.setVisible(true);
-            TEXT_BARGRAPH_OFFSET = 0.0;
+            MAJOR_TICK_MARKS_PATH.setVisible(true);
+            MEDIUM_TICK_MARKS_PATH.setVisible(true);
+            MINOR_TICK_MARKS_PATH.setVisible(true);
+            TEXT_BAR_GRAPH_OFFSET = 0.0;
         }
 
-        final ArrayList<Text> tickmarkLabel = new ArrayList<Text>();
+        final ArrayList<Text> tickMarkLabel = new ArrayList<Text>();
 
         // Adjust the number format of the ticklabels
         final Gauge.NumberFormat numberFormat;
@@ -1222,7 +1222,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
 
         // Definitions
         final Font STD_FONT                  = Font.font("Verdana", FontWeight.NORMAL, (0.035 * WIDTH));
-        final double TEXT_DISTANCE           = (TEXT_DISTANCE_FACTOR + TEXT_BARGRAPH_OFFSET) * WIDTH;
+        final double TEXT_DISTANCE           = (TEXT_DISTANCE_FACTOR + TEXT_BAR_GRAPH_OFFSET) * WIDTH;
         final double ticklabelRotationOffset = 0;
         final double MINOR_TICK_LENGTH       = (0.0133333333 * WIDTH);
         final double MEDIUM_TICK_LENGTH      = (0.02 * WIDTH);
@@ -1266,13 +1266,13 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                         case TRIANGLE:
                             Point2D outerPointLeft  = new Point2D(CENTER.getX() + RADIUS * Math.sin(Math.toRadians(alpha - 1.2)), CENTER.getY() + RADIUS * Math.cos(Math.toRadians(alpha - 1.2)));
                             Point2D outerPointRight = new Point2D(CENTER.getX() + RADIUS * Math.sin(Math.toRadians(alpha + 1.2)), CENTER.getY() + RADIUS * Math.cos(Math.toRadians(alpha + 1.2)));
-                            MAJOR_TICKMARKS_PATH.getElements().add(new MoveTo(innerPoint.getX(), innerPoint.getY()));
-                            MAJOR_TICKMARKS_PATH.getElements().add(new LineTo(outerPointLeft.getX(), outerPointLeft.getY()));
-                            MAJOR_TICKMARKS_PATH.getElements().add(new LineTo(outerPointRight.getX(), outerPointRight.getY()));
-                            MAJOR_TICKMARKS_PATH.getElements().add(new ClosePath());
+                            MAJOR_TICK_MARKS_PATH.getElements().add(new MoveTo(innerPoint.getX(), innerPoint.getY()));
+                            MAJOR_TICK_MARKS_PATH.getElements().add(new LineTo(outerPointLeft.getX(), outerPointLeft.getY()));
+                            MAJOR_TICK_MARKS_PATH.getElements().add(new LineTo(outerPointRight.getX(), outerPointRight.getY()));
+                            MAJOR_TICK_MARKS_PATH.getElements().add(new ClosePath());
                             break;
                         default:
-                            drawRadialTicks(MAJOR_TICKMARKS_PATH, innerPoint, outerPoint);
+                            drawRadialTicks(MAJOR_TICK_MARKS_PATH, innerPoint, outerPoint);
                             break;
                     }
                 }
@@ -1306,7 +1306,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                             tickLabel.rotateProperty().set(180 - alpha + ticklabelRotationOffset);
                             break;
                     }
-                    tickmarkLabel.add(tickLabel);
+                    tickMarkLabel.add(tickLabel);
                 }
 
                 valueCounter += CONTROL.getMajorTickSpacing();
@@ -1323,11 +1323,11 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                     CENTER.getY() + (RADIUS - MEDIUM_TICK_LENGTH) * cosValue);
                 outerPoint = new Point2D(CENTER.getX() + RADIUS * sinValue, CENTER.getY() + RADIUS * cosValue);
                 if (CONTROL.isTickmarksVisible() && CONTROL.isMinorTicksVisible()) {
-                    drawRadialTicks(MEDIUM_TICKMARKS_PATH, innerPoint, outerPoint);
+                    drawRadialTicks(MEDIUM_TICK_MARKS_PATH, innerPoint, outerPoint);
                 }
             } else if (CONTROL.isTickmarksVisible() && CONTROL.isMinorTicksVisible()) {
                 // Draw the minor TICKMARKS
-                drawRadialTicks(MINOR_TICKMARKS_PATH, innerPoint, outerPoint);
+                drawRadialTicks(MINOR_TICK_MARKS_PATH, innerPoint, outerPoint);
             }
         }
 
@@ -1352,16 +1352,16 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
             OUTER_GLOW.setBlurType(BlurType.GAUSSIAN);
             OUTER_GLOW.inputProperty().set(INNER_GLOW);
 
-            MAJOR_TICKMARKS_PATH.setEffect(OUTER_GLOW);
-            MEDIUM_TICKMARKS_PATH.setEffect(OUTER_GLOW);
-            MINOR_TICKMARKS_PATH.setEffect(OUTER_GLOW);
-            for (Text text : tickmarkLabel) {
+            MAJOR_TICK_MARKS_PATH.setEffect(OUTER_GLOW);
+            MEDIUM_TICK_MARKS_PATH.setEffect(OUTER_GLOW);
+            MINOR_TICK_MARKS_PATH.setEffect(OUTER_GLOW);
+            for (Text text : tickMarkLabel) {
                 text.setEffect(OUTER_GLOW);
             }
         }
 
-        TICKMARKS.getChildren().addAll(MAJOR_TICKMARKS_PATH, MEDIUM_TICKMARKS_PATH, MINOR_TICKMARKS_PATH);
-        TICKMARKS.getChildren().addAll(tickmarkLabel);
+        TICKMARKS.getChildren().addAll(MAJOR_TICK_MARKS_PATH, MEDIUM_TICK_MARKS_PATH, MINOR_TICK_MARKS_PATH);
+        TICKMARKS.getChildren().addAll(tickMarkLabel);
 
         TICKMARKS.setCache(true);
     }

@@ -1450,6 +1450,18 @@ public abstract class Gauge extends Control {
         return styleModel.sectionsHighlightingProperty();
     }
 
+    public final boolean isShowSectionTickmarksOnly() {
+        return styleModel.isShowSectionTickmarksOnly();
+    }
+
+    public final void setShowSectionTickmarksOnly(final boolean SHOW_SECTION_TICKMARKS_ONLY) {
+        styleModel.setShowSectionTickmarksOnly(SHOW_SECTION_TICKMARKS_ONLY);
+    }
+
+    public final BooleanProperty showSectionTickmarksOnlyProperty() {
+        return styleModel.showSectionTickmarksOnlyProperty();
+    }
+
     public final List<Section> getAreas() {
         return gaugeModel.getAreas();
     }

@@ -300,6 +300,11 @@ public class StyleModelBuilder {
         return this;
     }
 
+    public final StyleModelBuilder showSectionTickmarksOnly(final boolean SHOW_SECTION_TICKMARKS_ONLY) {
+        styleModel.setShowSectionTickmarksOnly(SHOW_SECTION_TICKMARKS_ONLY);
+        return this;
+    }
+
     public final StyleModelBuilder areasVisible(final boolean AREAS_VISIBLE) {
         styleModel.setAreasVisible(AREAS_VISIBLE);
         return this;
