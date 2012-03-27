@@ -167,6 +167,16 @@ public class GaugeModelBuilder {
         return this;
     }
 
+    public final GaugeModelBuilder tickMarkSections(final Section... TICK_MARK_SECTION_ARRAY) {
+        gaugeModel.setTickMarkSections(TICK_MARK_SECTION_ARRAY);
+        return this;
+    }
+
+    public final GaugeModelBuilder tickMarkSections(final List<Section> TICK_MARK_SECTIONS) {
+        gaugeModel.setSections(TICK_MARK_SECTIONS);
+        return this;
+    }
+
     public final GaugeModelBuilder markers(final Marker... MARKER_ARRAY) {
         gaugeModel.setMarkers(MARKER_ARRAY);
         return this;

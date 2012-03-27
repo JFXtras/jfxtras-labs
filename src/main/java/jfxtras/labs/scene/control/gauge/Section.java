@@ -229,6 +229,13 @@ public class Section {
         return ((Double.compare(VALUE, start.get()) >= 0 && Double.compare(VALUE, stop.get()) <= 0));
     }
 
+    public boolean equals(final Section SECTION) {
+        return (Double.compare(SECTION.getStart(), getStart()) == 0 &&
+                Double.compare(SECTION.getStop(), getStop()) == 0 &&
+                SECTION.getColor().equals(getColor()) &&
+                SECTION.getText().equals(getText()));
+    }
+
     @Override public String toString() {
         final StringBuilder NAME = new StringBuilder();
         NAME.append("Section: ").append("\n");

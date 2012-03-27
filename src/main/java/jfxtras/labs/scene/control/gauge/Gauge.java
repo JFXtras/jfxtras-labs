@@ -1534,6 +1534,30 @@ public abstract class Gauge extends Control {
         return styleModel.areasHighlightingProperty();
     }
 
+    public final List<Section> getTickMarkSections() {
+        return gaugeModel.getTickMarkSections();
+    }
+
+    public final void setTickMarkSections(final Section... TICK_MARK_SECTION_ARRAY) {
+        gaugeModel.setTickMarkSections(TICK_MARK_SECTION_ARRAY);
+    }
+
+    public final void setTickMarkSections(final List<Section> TICK_MARK_SECTIONS) {
+        gaugeModel.setTickMarkSections(TICK_MARK_SECTIONS);
+    }
+
+    public final void addTickMarkSection(final Section TICK_MARK_SECTION) {
+        gaugeModel.addTickMarkSection(TICK_MARK_SECTION);
+    }
+
+    public final void removeTickMarkSection(final Section TICK_MARK_SECTION) {
+        gaugeModel.removeTickMarkSection(TICK_MARK_SECTION);
+    }
+
+    public final void resetTickMarkSections() {
+        gaugeModel.resetTickMarkSections();
+    }
+
     public final List<Marker> getMarkers() {
         return gaugeModel.getMarkers();
     }

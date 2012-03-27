@@ -142,4 +142,9 @@ public class Marker {
         return visible;
     }
 
+    public final boolean equals(final Marker MARKER) {
+        return Double.compare(MARKER.getValue(), getValue()) == 0 &&
+               MARKER.getColor().equals(getColor()) &&
+               MARKER.getText().equals(getText());
+    }
 }

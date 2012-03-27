@@ -84,6 +84,7 @@ public class GaugeModel {
     private ObjectProperty<Trend>        trend;
     private ObservableList<Section>      sections;
     private ObservableList<Section>      areas;
+    private ObservableList<Section>      tickMarkSections;
     private ObservableList<Marker>       markers;
 
 
@@ -119,6 +120,7 @@ public class GaugeModel {
         trend                           = new SimpleObjectProperty<Trend>(Trend.UNKNOWN);
         sections                        = FXCollections.observableArrayList();
         areas                           = FXCollections.observableArrayList();
+        tickMarkSections                = FXCollections.observableArrayList();
         markers                         = FXCollections.observableArrayList();
     }
 
@@ -480,15 +482,18 @@ public class GaugeModel {
     }
 
     public final void addSection(final Section SECTION) {
-        sections.add(SECTION);
+        sections.add(new Section(SECTION.getStart(), SECTION.getStop(), SECTION.getColor(), SECTION.getText()));
         fireGaugeModelEvent();
     }
 
     public final void removeSection(final Section SECTION) {
-        if (sections.contains(SECTION)) {
-            sections.remove(SECTION);
+        for (Section section : sections) {
+            if (section.equals(SECTION)) {
+                sections.remove(section);
+                fireGaugeModelEvent();
+                break;
+            }
         }
-        fireGaugeModelEvent();
     }
 
     public final void resetSections() {
@@ -519,19 +524,64 @@ public class GaugeModel {
     }
 
     public final void addArea(final Section AREA) {
-        areas.add(AREA);
+        areas.add(new Section(AREA.getStart(), AREA.getStop(), AREA.getColor(), AREA.getText()));
         fireGaugeModelEvent();
     }
 
     public final void removeArea(final Section AREA) {
-        if (areas.contains(AREA)) {
-            areas.remove(AREA);
+        for (Section area : areas) {
+            if (area.equals(AREA)) {
+                areas.remove(area);
+                fireGaugeModelEvent();
+                break;
+            }
         }
-        fireGaugeModelEvent();
     }
 
     public final void resetAreas() {
         areas.clear();
+        fireGaugeModelEvent();
+    }
+
+    public final List<Section> getTickMarkSections() {
+        final List<Section> TICK_MARK_SECTIONS_COPY = new ArrayList<Section>(tickMarkSections.size());
+        TICK_MARK_SECTIONS_COPY.addAll(tickMarkSections);
+        return TICK_MARK_SECTIONS_COPY;
+    }
+
+    public final void setTickMarkSections(final Section... SECTIONS_ARRAY) {
+        tickMarkSections.clear();
+        for (final Section SECTION : SECTIONS_ARRAY) {
+            tickMarkSections.add(new Section(SECTION.getStart(), SECTION.getStop(), SECTION.getColor(), SECTION.getText()));
+        }
+        fireGaugeModelEvent();
+    }
+
+    public final void setTickMarkSections(final List<Section> SECTIONS) {
+        tickMarkSections.clear();
+        for (final Section SECTION : SECTIONS) {
+            tickMarkSections.add(new Section(SECTION.getStart(), SECTION.getStop(), SECTION.getColor(), SECTION.getText()));
+        }
+        fireGaugeModelEvent();
+    }
+
+    public final void addTickMarkSection(final Section SECTION) {
+        tickMarkSections.add(new Section(SECTION.getStart(), SECTION.getStop(), SECTION.getColor(), SECTION.getText()));
+        fireGaugeModelEvent();
+    }
+
+    public final void removeTickMarkSection(final Section SECTION) {
+        for (Section section : tickMarkSections) {
+            if (section.equals(SECTION)) {
+                tickMarkSections.remove(section);
+                fireGaugeModelEvent();
+                break;
+            }
+        }
+    }
+
+    public final void resetTickMarkSections() {
+        tickMarkSections.clear();
         fireGaugeModelEvent();
     }
 
@@ -558,15 +608,18 @@ public class GaugeModel {
     }
 
     public final void addMarker(final Marker MARKER) {
-        markers.add(MARKER);
+        markers.add(new Marker(MARKER.getValue(), MARKER.getColor(), MARKER.getText(), MARKER.isVisible()));
         fireGaugeModelEvent();
     }
 
     public final void removeMarker(final Marker MARKER) {
-        if (markers.contains(MARKER)) {
-            markers.remove(MARKER);
+        for (Marker marker : markers) {
+            if (marker.equals(MARKER)) {
+                markers.remove(marker);
+                fireGaugeModelEvent();
+                break;
+            }
         }
-        fireGaugeModelEvent();
     }
 
     public final void resetMarkers() {
