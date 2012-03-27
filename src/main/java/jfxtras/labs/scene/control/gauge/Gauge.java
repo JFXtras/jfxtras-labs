@@ -1245,6 +1245,18 @@ public abstract class Gauge extends Control {
         return styleModel.majorTickmarkTypeProperty();
     }
 
+    public final Color getMajorTickmarkColor() {
+        return styleModel.getMajorTickmarkColor();
+    }
+
+    public final void setMajorTickmarkColor(final Color MAJOR_TICKMARK_COLOR) {
+        styleModel.setMajorTickmarkColor(MAJOR_TICKMARK_COLOR);
+    }
+
+    public final ObjectProperty<Color> majorTickmarkColorProperty() {
+        return styleModel.majorTickmarkColorProperty();
+    }
+
     public final boolean isMinorTicksVisible() {
         return styleModel.isMinorTicksVisible();
     }
@@ -1255,6 +1267,18 @@ public abstract class Gauge extends Control {
 
     public final BooleanProperty minorTicksVisibleProperty() {
         return styleModel.minorTicksVisibleProperty();
+    }
+
+    public final Color getMinorTickmarkColor() {
+        return styleModel.getMinorTickmarkColor();
+    }
+
+    public final void setMinorTickmarkColor(final Color MINOR_TICKMARK_COLOR) {
+        styleModel.setMinorTickmarkColor(MINOR_TICKMARK_COLOR);
+    }
+
+    public final ObjectProperty<Color> minorTickmarkColorProperty() {
+        return styleModel.minorTickmarkColorProperty();
     }
 
     public final boolean isTickLabelsVisible() {

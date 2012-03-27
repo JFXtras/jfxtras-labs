@@ -260,8 +260,18 @@ public class StyleModelBuilder {
         return this;
     }
 
+    public final StyleModelBuilder majorTickmarkColor(final Color MAJOR_TICKMAKR_COLOR) {
+        styleModel.setMajorTickmarkColor(MAJOR_TICKMAKR_COLOR);
+        return this;
+    }
+
     public final StyleModelBuilder minorTickmarksVisible(final boolean MINOR_TICKMARKS_VISIBLE) {
         styleModel.setMinorTicksVisible(MINOR_TICKMARKS_VISIBLE);
+        return this;
+    }
+
+    public final StyleModelBuilder minorTickmarkColor(final Color MINOR_TICKMARK_COLOR) {
+        styleModel.setMinorTickmarkColor(MINOR_TICKMARK_COLOR);
         return this;
     }
 
