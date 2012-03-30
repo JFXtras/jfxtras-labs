@@ -498,8 +498,8 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
             fluid.setFill(new LinearGradient(0, 0.296875 * control.getPrefHeight(),
                                              0, 0.703125 * control.getPrefHeight(),
                                              false, CycleMethod.NO_CYCLE,
-                                             new Stop(0.0, Color.hsb(currentLevelColor.getHue(), currentLevelColor.getSaturation(), 0.20)),
-                                             new Stop(0.32, Color.hsb(currentLevelColor.getHue(), currentLevelColor.getSaturation(), 0.20)),
+                                             new Stop(0.0, Color.hsb(currentLevelColor.getHue(), currentLevelColor.getSaturation(), 0.5)),
+                                             new Stop(0.32, Color.hsb(currentLevelColor.getHue(), currentLevelColor.getSaturation(), 0.5)),
                                              new Stop(1.0, currentLevelColor)));
             }
         });
