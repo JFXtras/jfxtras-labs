@@ -68,7 +68,7 @@ public class SimpleBattery extends Control {
         charging        = new SimpleBooleanProperty(false);
         chargeCondition = new SimpleObjectProperty<ChargeCondition>(ChargeCondition.EMPTY);
         chargeIndicator = new SimpleObjectProperty<ChargeIndicator>(ChargeIndicator.PLUG);
-        levelColors     = new SimpleObjectProperty<Stop[]>(new Stop[]{new Stop(0.0, Color.RED), new Stop(0.60, Color.YELLOW), new Stop(1.0, Color.LIME)});
+        levelColors     = new SimpleObjectProperty<Stop[]>(new Stop[]{new Stop(0.0, Color.RED), new Stop(0.55, Color.YELLOW), new Stop(1.0, Color.LIME)});
         init();
     }
 
