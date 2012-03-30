@@ -287,18 +287,7 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
                                                 0.0546875 * WIDTH, 0.2890625 * HEIGHT,
                                                 0.0546875 * WIDTH, 0.3203125 * HEIGHT));
         BODY.getElements().add(new ClosePath());
-        //BODY.setId("simple-background-body");
-        final Paint BODY_FILL = new LinearGradient(0.5078125 * WIDTH, 0.28125 * HEIGHT,
-                                                   0.5078125 * WIDTH, 0.71875 * HEIGHT,
-                                                   false, CycleMethod.NO_CYCLE,
-                                                   new Stop(0.0, Color.color(0.8, 0.8, 0.8, 1)),
-                                                   new Stop(0.02, Color.color(0.2, 0.2, 0.2, 1)),
-                                                   new Stop(0.12, Color.WHITE),
-                                                   new Stop(0.73, Color.color(0.2, 0.2, 0.2, 1)),
-                                                   new Stop(0.86, Color.color(0.6, 0.6, 0.6, 1)),
-                                                   new Stop(1.0, Color.color(0.2, 0.2, 0.2, 1)));
-        BODY.setFill(BODY_FILL);
-        BODY.setStroke(null);
+        BODY.setId("simple-battery-body");
 
         final Path CONNECTOR = new Path();
         CONNECTOR.setFillRule(FillRule.EVEN_ODD);
@@ -322,18 +311,7 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         CONNECTOR.getElements().add(new LineTo(0.875 * WIDTH, 0.59375 * HEIGHT));
         CONNECTOR.getElements().add(new LineTo(0.875 * WIDTH, 0.40625 * HEIGHT));
         CONNECTOR.getElements().add(new ClosePath());
-        //CONNECTOR.setId("simple-background-connector");
-        final Paint CONNECTOR_FILL = new LinearGradient(0.9140625 * WIDTH, 0.40625 * HEIGHT,
-                                                        0.9140625 * WIDTH, 0.59375 * HEIGHT,
-                                                        false, CycleMethod.NO_CYCLE,
-                                                        new Stop(0.0, Color.color(0.8, 0.8, 0.8, 1)),
-                                                        new Stop(0.02, Color.color(0.2, 0.2, 0.2, 1)),
-                                                        new Stop(0.12, Color.WHITE),
-                                                        new Stop(0.73, Color.color(0.2, 0.2, 0.2, 1)),
-                                                        new Stop(0.86, Color.color(0.6, 0.6, 0.6, 1)),
-                                                        new Stop(1.0, Color.color(0.2, 0.2, 0.2, 1)));
-        CONNECTOR.setFill(CONNECTOR_FILL);
-        CONNECTOR.setStroke(null);
+        CONNECTOR.setId("simple-battery-connector");
 
         final InnerShadow CONNECTOR_INNER_SHADOW0 = new InnerShadow();
         CONNECTOR_INNER_SHADOW0.setWidth(0.05625 * CONNECTOR.getLayoutBounds().getWidth());
@@ -488,20 +466,8 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         plug.getElements().add(new LineTo(0.5390625 * WIDTH, 0.484375 * HEIGHT));
         plug.getElements().add(new ClosePath());
 
-        final Paint PLUG_FILL = Color.color(0.7411764706, 0.7411764706, 0.7411764706, 1);
-        plug.setFill(PLUG_FILL);
+        plug.setFill(Color.rgb(51, 51, 51));
         plug.setStroke(null);
-
-        final InnerShadow PLUG_INNER_SHADOW = new InnerShadow();
-        PLUG_INNER_SHADOW.setWidth(0.028125 * plug.getLayoutBounds().getWidth());
-        PLUG_INNER_SHADOW.setHeight(0.028125 * plug.getLayoutBounds().getHeight());
-        PLUG_INNER_SHADOW.setOffsetX(0.0);
-        PLUG_INNER_SHADOW.setOffsetY(0.0);
-        PLUG_INNER_SHADOW.setRadius(0.028125 * plug.getLayoutBounds().getWidth());
-        PLUG_INNER_SHADOW.setColor(Color.BLACK);
-        PLUG_INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
-        PLUG_INNER_SHADOW.inputProperty().set(null);
-        plug.setEffect(PLUG_INNER_SHADOW);
 
         if (control.getChargeIndicator() == SimpleBattery.ChargeIndicator.PLUG) {
             plug.setOpacity(1.0);
@@ -522,19 +488,19 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                if (Double.compare(control.getChargingLevel(), 0) == 0) {
-                    fluid.setVisible(false);
-                } else {
-                    fluid.setVisible(true);
-                }
+            if (Double.compare(control.getChargingLevel(), 0) == 0) {
+                fluid.setVisible(false);
+            } else {
+                fluid.setVisible(true);
+            }
 
-                fluid.setWidth(control.getChargingLevel() * 0.7890625 * control.getPrefWidth());
-                fluid.setFill(new LinearGradient(0, 0.296875 * control.getPrefHeight(),
-                                                 0, 0.703125 * control.getPrefHeight(),
-                                                 false, CycleMethod.NO_CYCLE,
-                                                 new Stop(0.0, currentLevelColor.darker()),
-                                                 new Stop(0.32, currentLevelColor.darker()),
-                                                 new Stop(1.0, currentLevelColor)));
+            fluid.setWidth(control.getChargingLevel() * 0.7890625 * control.getPrefWidth());
+            fluid.setFill(new LinearGradient(0, 0.296875 * control.getPrefHeight(),
+                                             0, 0.703125 * control.getPrefHeight(),
+                                             false, CycleMethod.NO_CYCLE,
+                                             new Stop(0.0, currentLevelColor.darker()),
+                                             new Stop(0.32, currentLevelColor.darker()),
+                                             new Stop(1.0, currentLevelColor)));
             }
         });
     }
@@ -553,23 +519,7 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
                                                     0.7890625 * WIDTH, 0.40625 * HEIGHT);
         REFLECTION.setArcWidth(0.046875 * WIDTH);
         REFLECTION.setArcHeight(0.046875 * HEIGHT);
-        //_REFLECTION.setId("simple-background-reflection");
-        final Paint _REFLECTION_FILL = new LinearGradient(0.46875 * WIDTH, 0.296875 * HEIGHT,
-                                                          0.46875 * WIDTH, 0.703125 * HEIGHT,
-                                                          false, CycleMethod.NO_CYCLE,
-                                                          new Stop(0.0, Color.color(1, 1, 1, 0)),
-                                                          new Stop(0.01, Color.color(1, 1, 1, 0.1960784314)),
-                                                          new Stop(0.02, Color.color(1, 1, 1, 0.2980392157)),
-                                                          new Stop(0.45, Color.color(1, 1, 1, 0.0156862745)),
-                                                          new Stop(0.47, Color.color(1, 1, 1, 0.0392156863)),
-                                                          new Stop(0.48, Color.color(1, 1, 1, 0)),
-                                                          new Stop(0.71, Color.color(1, 1, 1, 0)),
-                                                          new Stop(0.7101, Color.color(1, 1, 1, 0.0039215686)),
-                                                          new Stop(0.81, Color.color(1, 1, 1, 0.0941176471)),
-                                                          new Stop(0.8101, Color.color(1, 1, 1, 0.1019607843)),
-                                                          new Stop(1.0, Color.color(1, 1, 1, 0.4)));
-        REFLECTION.setFill(_REFLECTION_FILL);
-        REFLECTION.setStroke(null);
+        REFLECTION.setId("simple-battery-reflection");
 
         foreground.getChildren().addAll(REFLECTION);
     }

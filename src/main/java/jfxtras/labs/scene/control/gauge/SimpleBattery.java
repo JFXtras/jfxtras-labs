@@ -33,6 +33,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.geometry.Orientation;
 import javafx.scene.control.Control;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
