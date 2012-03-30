@@ -105,6 +105,11 @@
     -fx-skin: "jfxtras.labs.internal.scene.control.skin.BatterySkin";
 }
 
+.simple-battery {
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.SimpleBatterySkin";
+    -fx-simple-battery-fluid-fill: rgb(119, 219, 0);
+}
+
 
 /************************************************************
 * Defintion of Led fills                                    *
@@ -304,3 +309,22 @@
     -fx-stroke: -fx-step-indicator-stroke;
 }
 
+
+/************************************************************
+* Definition of SimpleBattery fills                         *
+************************************************************/
+#simple-battery-body {
+    -fx-fill: linear-gradient(from 50% 0% to 50% 100%, rgba(204, 204, 204, 1) 0%, rgba(51, 51, 51, 1) 1%, white 11%, rgba(51, 51, 51, 1) 73%, rgba(153, 153, 153, 1) 86%, rgba(51, 51, 51, 1) 100%);
+}
+
+#simple-battery-connector {
+    -fx-fill: linear-gradient(from 50% 0% to 50% 100%, rgba(204, 204, 204, 1) 0%, rgba(51, 51, 51, 1) 1%, white 11%, rgba(51, 51, 51, 1) 73%, rgba(153, 153, 153, 1) 86%, rgba(51, 51, 51, 1) 100%);
+}
+
+#simple-battery-fluid {
+    -fx-fill: linear-gradient(from 50% 0% to 50% 100%, derive(-fx-simple-battery-fluid-fill, -30%) 0%, derive(-fx-simple-battery-fluid-fill, -30%) 31%, -fx-simple-battery-fluid-fill 100%);
+}
+
+#simple-battery-reflection {
+    -fx-fill: linear-gradient(from 50% 0% to 50% 100%, transparent 0%, rgba(255, 255, 255, 0.1960784314) 0%, rgba(255, 255, 255, 0.2980392157) 1%, rgba(255, 255, 255, 0.0156862745) 44%, rgba(255, 255, 255, 0.0392156863) 46%, transparent 47%, transparent 70%, rgba(255, 255, 255, 0.0039215686) 71%, rgba(255, 255, 255, 0.0941176471) 81%, rgba(255, 255, 255, 0.1019607843) 81%, rgba(255, 255, 255, 0.4) 100%);
+}
