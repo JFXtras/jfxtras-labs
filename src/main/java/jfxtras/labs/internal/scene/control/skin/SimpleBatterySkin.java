@@ -324,8 +324,8 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         CONNECTOR_INNER_SHADOW0.inputProperty().set(null);
         CONNECTOR.setEffect(CONNECTOR_INNER_SHADOW0);
 
-        background.getChildren().addAll(BODY,
-                                     CONNECTOR);
+        background.getChildren().addAll(BODY, CONNECTOR);
+        background.setCache(true);
     }
 
     public final void drawMain() {
@@ -498,8 +498,8 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
             fluid.setFill(new LinearGradient(0, 0.296875 * control.getPrefHeight(),
                                              0, 0.703125 * control.getPrefHeight(),
                                              false, CycleMethod.NO_CYCLE,
-                                             new Stop(0.0, currentLevelColor.darker()),
-                                             new Stop(0.32, currentLevelColor.darker()),
+                                             new Stop(0.0, Color.hsb(currentLevelColor.getHue(), currentLevelColor.getSaturation(), 30)),
+                                             new Stop(0.32, Color.hsb(currentLevelColor.getHue(), currentLevelColor.getSaturation(), 30)),
                                              new Stop(1.0, currentLevelColor)));
             }
         });
@@ -522,6 +522,7 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         REFLECTION.setId("simple-battery-reflection");
 
         foreground.getChildren().addAll(REFLECTION);
+        foreground.setCache(true);
     }
 
 }

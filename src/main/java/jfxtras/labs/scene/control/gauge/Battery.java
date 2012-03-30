@@ -68,7 +68,7 @@ public class Battery extends Control {
         charging        = new SimpleBooleanProperty(false);
         chargeCondition = new SimpleObjectProperty<ChargeCondition>(ChargeCondition.EMPTY);
         chargeIndicator = new SimpleObjectProperty<ChargeIndicator>(ChargeIndicator.PLUG);
-        levelColors     = new SimpleObjectProperty<Stop[]>(new Stop[]{new Stop(0.0, Color.RED), new Stop(0.55, Color.YELLOW), new Stop(1.0, Color.LIME)});
+        levelColors     = new SimpleObjectProperty<Stop[]>(new Stop[]{new Stop(0.0, Color.RED), new Stop(0.55, Color.YELLOW), new Stop(1.0, Color.hsb(102, 1.0, 0.85))});
         init();
     }
 
@@ -133,7 +133,7 @@ public class Battery extends Control {
 
     public final void setLevelColors(final Stop[] LEVEL_COLORS) {
         if (LEVEL_COLORS.length == 0) {
-            levelColors.set(new Stop[]{new Stop(0.0, Color.RED), new Stop(0.55, Color.YELLOW), new Stop(1.0, Color.LIME)});
+            levelColors.set(new Stop[]{new Stop(0.0, Color.RED), new Stop(0.55, Color.YELLOW), new Stop(1.0, Color.hsb(102, 1.0, 0.85))});
         } else {
             levelColors.set(LEVEL_COLORS);
         }
@@ -144,10 +144,8 @@ public class Battery extends Control {
     }
 
     @Override public void setPrefSize(final double WIDTH, final double HEIGHT) {
-        double prefHeight = WIDTH < (HEIGHT * 0.47058823529411764) ? (WIDTH * 2.125) : HEIGHT;
-        double prefWidth = prefHeight * 0.47058823529411764;
-
-        super.setPrefSize(prefWidth, prefHeight);
+        final double SIZE = WIDTH <= HEIGHT ? WIDTH : HEIGHT;
+        super.setPrefSize(SIZE, SIZE);
     }
 
 
