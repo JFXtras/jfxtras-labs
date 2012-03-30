@@ -34,6 +34,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Control;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Stop;
 
 
 /**
@@ -57,6 +59,7 @@ public class Battery extends Control {
     private BooleanProperty                 charging;
     private ObjectProperty<ChargeCondition> chargeCondition;
     private ObjectProperty<ChargeIndicator> chargeIndicator;
+    private ObjectProperty<Stop[]>          levelColors;
 
 
     // ******************** Constructors **************************************
@@ -65,6 +68,7 @@ public class Battery extends Control {
         charging        = new SimpleBooleanProperty(false);
         chargeCondition = new SimpleObjectProperty<ChargeCondition>(ChargeCondition.EMPTY);
         chargeIndicator = new SimpleObjectProperty<ChargeIndicator>(ChargeIndicator.PLUG);
+        levelColors     = new SimpleObjectProperty<Stop[]>(new Stop[]{new Stop(0.0, Color.RED), new Stop(0.55, Color.YELLOW), new Stop(1.0, Color.LIME)});
         init();
     }
 
@@ -121,6 +125,22 @@ public class Battery extends Control {
 
     public final BooleanProperty chargingProperty() {
         return charging;
+    }
+
+    public final Stop[] getLevelColors() {
+            return levelColors.get();
+        }
+
+    public final void setLevelColors(final Stop[] LEVEL_COLORS) {
+        if (LEVEL_COLORS.length == 0) {
+            levelColors.set(new Stop[]{new Stop(0.0, Color.RED), new Stop(0.55, Color.YELLOW), new Stop(1.0, Color.LIME)});
+        } else {
+            levelColors.set(LEVEL_COLORS);
+        }
+    }
+
+    public final ObjectProperty<Stop[]> levelColorsProperty() {
+        return levelColors;
     }
 
     @Override public void setPrefSize(final double WIDTH, final double HEIGHT) {

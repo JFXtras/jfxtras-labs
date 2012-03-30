@@ -89,7 +89,7 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
         flashMain         = new Path();
         fluid             = new Rectangle();
         fluidHighlight    = new Rectangle();
-        lookup            = new GradientLookup(new Stop[]{new Stop(0.0, Color.RED), new Stop(0.55, Color.YELLOW), new Stop(1.0, Color.LIME)});
+        lookup            = new GradientLookup(control.getLevelColors());
         currentLevelColor = Color.RED;
 
         init();
@@ -118,6 +118,7 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
         registerChangeListener(control.chargingProperty(), "CHARGING");
         registerChangeListener(control.chargeIndicatorProperty(), "CHARGE_INDICATOR");
         registerChangeListener(control.chargingLevelProperty(), "CHARGE_LEVEL");
+        registerChangeListener(control.levelColorsProperty(), "LEVEL_COLORS");
 
         initialized = true;
         paint();
@@ -159,6 +160,9 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
             }
         } else if(PROPERTY == "CHARGE_LEVEL") {
             currentLevelColor = lookup.getColorAt(control.getChargingLevel());
+            updateFluid();
+        } else if(PROPERTY == "LEVEL_COLORS") {
+            lookup = new GradientLookup(control.getLevelColors());
             updateFluid();
         }
     }

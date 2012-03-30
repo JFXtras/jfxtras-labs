@@ -33,38 +33,38 @@ import javafx.scene.paint.Stop;
 /**
  * Created by
  * User: hansolo
- * Date: 23.03.12
- * Time: 15:58
+ * Date: 30.03.12
+ * Time: 15:13
  */
-public class BatteryBuilder {
-    private Battery battery;
+public class SimpleBatteryBuilder {
+    private SimpleBattery battery;
 
-    public final BatteryBuilder create() {
-        battery = new Battery();
+    public final SimpleBatteryBuilder create() {
+        battery = new SimpleBattery();
         return this;
     }
 
-    public final BatteryBuilder charging(final boolean CHARGING) {
+    public final SimpleBatteryBuilder charging(final boolean CHARGING) {
         battery.setCharging(CHARGING);
         return this;
     }
 
-    public final BatteryBuilder chargeIndicator(final Battery.ChargeIndicator CHARGE_INDICATOR) {
+    public final SimpleBatteryBuilder chargeIndicator(final SimpleBattery.ChargeIndicator CHARGE_INDICATOR) {
         battery.setChargeIndicator(CHARGE_INDICATOR);
         return this;
     }
 
-    public final BatteryBuilder chargingLevel(final double CHARGING_LEVEL) {
+    public final SimpleBatteryBuilder chargingLevel(final double CHARGING_LEVEL) {
         battery.setChargingLevel(CHARGING_LEVEL);
         return this;
     }
 
-    public final BatteryBuilder levelColors(final Stop[] LEVEL_COLORS) {
+    public final SimpleBatteryBuilder levelColors(final Stop[] LEVEL_COLORS) {
         battery.setLevelColors(LEVEL_COLORS);
         return this;
     }
 
-    public final Battery build() {
+    public final SimpleBattery build() {
         return battery;
     }
 }
