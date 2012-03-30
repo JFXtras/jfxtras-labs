@@ -48,6 +48,7 @@ import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import jfxtras.labs.internal.scene.control.behavior.SimpleBatteryBehavior;
+import jfxtras.labs.scene.control.gauge.Battery;
 import jfxtras.labs.scene.control.gauge.GradientLookup;
 import jfxtras.labs.scene.control.gauge.SimpleBattery;
 
@@ -76,17 +77,17 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
     // ******************** Constructors **************************************
     public SimpleBatterySkin(final SimpleBattery CONTROL) {
         super(CONTROL, new SimpleBatteryBehavior(CONTROL));
-        control     = CONTROL;
-        initialized = false;
-        isDirty     = false;
-        background = new Group();
-        main        = new Group();
-        foreground  = new Group();
+        control           = CONTROL;
+        initialized       = false;
+        isDirty           = false;
+        background        = new Group();
+        main              = new Group();
+        foreground        = new Group();
         plug              = new Path();
         flashFrame        = new Path();
         flashMain         = new Path();
         fluid             = new Rectangle();
-        lookup            = new GradientLookup(new Stop[]{new Stop(0.0, Color.RED), new Stop(0.55, Color.YELLOW), new Stop(1.0, Color.LIME)});
+        lookup            = new GradientLookup(control.getLevelColors());
         currentLevelColor = Color.RED;
 
         init();
@@ -115,6 +116,7 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         registerChangeListener(control.chargingProperty(), "CHARGING");
         registerChangeListener(control.chargeIndicatorProperty(), "CHARGE_INDICATOR");
         registerChangeListener(control.chargingLevelProperty(), "CHARGE_LEVEL");
+        registerChangeListener(control.levelColorsProperty(), "LEVEL_COLORS");
 
         initialized = true;
         paint();
@@ -156,6 +158,9 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
             }
         } else if(PROPERTY == "CHARGE_LEVEL") {
             currentLevelColor = lookup.getColorAt(control.getChargingLevel());
+            updateFluid();
+        } else if (PROPERTY == "LEVEL_COLORS") {
+            lookup = new GradientLookup(control.getLevelColors());
             updateFluid();
         }
     }
@@ -355,18 +360,21 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         main.getChildren().add(IBOUNDS);
-        final Rectangle FLUID = new Rectangle(0.0703125 * WIDTH, 0.296875 * HEIGHT,
+        fluid = new Rectangle(0.0703125 * WIDTH, 0.296875 * HEIGHT,
                                                0.7890625 * WIDTH, 0.40625 * HEIGHT);
-        FLUID.setArcWidth(0.046875 * WIDTH);
-        FLUID.setArcHeight(0.046875 * HEIGHT);
-        final Paint _FLUID_FILL = new LinearGradient(0, 0.296875 * HEIGHT,
-                                                     0, 0.703125 * HEIGHT,
-                                                     false, CycleMethod.NO_CYCLE,
-                                                     new Stop(0.0, Color.color(0.1647058824, 0.5450980392, 0, 1)),
-                                                     new Stop(0.32, Color.color(0.1647058824, 0.5450980392, 0, 1)),
-                                                     new Stop(1.0, Color.color(0.4666666667, 0.8588235294, 0, 1)));
-        FLUID.setFill(_FLUID_FILL);
-        FLUID.setStroke(null);
+        fluid.setArcWidth(0.046875 * WIDTH);
+        fluid.setArcHeight(0.046875 * HEIGHT);
+        final Paint FLUID_FILL = new LinearGradient(0, 0.296875 * HEIGHT,
+                                                    0, 0.703125 * HEIGHT,
+                                                    false, CycleMethod.NO_CYCLE,
+                                                    new Stop(0.0, Color.color(0.1647058824, 0.5450980392, 0, 1)),
+                                                    new Stop(0.32, Color.color(0.1647058824, 0.5450980392, 0, 1)),
+                                                    new Stop(1.0, Color.color(0.4666666667, 0.8588235294, 0, 1)));
+        fluid.setFill(FLUID_FILL);
+        fluid.setStroke(null);
+        if (Double.compare(control.getChargingLevel(), 0.0) == 0) {
+            this.fluid.setVisible(false);
+        }
 
         flashFrame = new Path();
         flashFrame.setFillRule(FillRule.EVEN_ODD);
@@ -382,6 +390,14 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         final Paint FLASH_FRAME_FILL = Color.WHITE;
         flashFrame.setFill(FLASH_FRAME_FILL);
         flashFrame.setStroke(null);
+        if (control.getChargeIndicator() == SimpleBattery.ChargeIndicator.FLASH) {
+            flashFrame.setOpacity(1.0);
+        } else {
+            flashFrame.setOpacity(0.0);
+        }
+        if (!control.isCharging()) {
+            flashFrame.setVisible(false);
+        }
 
         flashMain = new Path();
         flashMain.setFillRule(FillRule.EVEN_ODD);
@@ -397,17 +413,25 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         final Paint FLASH_MAIN_FILL = Color.color(0.9960784314, 0.9215686275, 0, 1);
         flashMain.setFill(FLASH_MAIN_FILL);
         flashMain.setStroke(null);
+        if (control.getChargeIndicator() == SimpleBattery.ChargeIndicator.FLASH) {
+            flashMain.setOpacity(1.0);
+        } else {
+            flashMain.setOpacity(0.0);
+        }
+        if (!control.isCharging()) {
+            flashMain.setVisible(false);
+        }
 
-        final InnerShadow FLASH_MAIN_INNER_SHADOW0 = new InnerShadow();
-        FLASH_MAIN_INNER_SHADOW0.setWidth(0.084375 * flashMain.getLayoutBounds().getWidth());
-        FLASH_MAIN_INNER_SHADOW0.setHeight(0.084375 * flashMain.getLayoutBounds().getHeight());
-        FLASH_MAIN_INNER_SHADOW0.setOffsetX(0.0);
-        FLASH_MAIN_INNER_SHADOW0.setOffsetY(0.0);
-        FLASH_MAIN_INNER_SHADOW0.setRadius(0.084375 * flashMain.getLayoutBounds().getWidth());
-        FLASH_MAIN_INNER_SHADOW0.setColor(Color.color(0.8509803922, 0.5294117647, 0, 1));
-        FLASH_MAIN_INNER_SHADOW0.setBlurType(BlurType.GAUSSIAN);
-        FLASH_MAIN_INNER_SHADOW0.inputProperty().set(null);
-        flashMain.setEffect(FLASH_MAIN_INNER_SHADOW0);
+        final InnerShadow FLASH_MAIN_INNER_SHADOW = new InnerShadow();
+        FLASH_MAIN_INNER_SHADOW.setWidth(0.084375 * flashMain.getLayoutBounds().getWidth());
+        FLASH_MAIN_INNER_SHADOW.setHeight(0.084375 * flashMain.getLayoutBounds().getHeight());
+        FLASH_MAIN_INNER_SHADOW.setOffsetX(0.0);
+        FLASH_MAIN_INNER_SHADOW.setOffsetY(0.0);
+        FLASH_MAIN_INNER_SHADOW.setRadius(0.084375 * flashMain.getLayoutBounds().getWidth());
+        FLASH_MAIN_INNER_SHADOW.setColor(Color.color(0.8509803922, 0.5294117647, 0, 1));
+        FLASH_MAIN_INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
+        FLASH_MAIN_INNER_SHADOW.inputProperty().set(null);
+        flashMain.setEffect(FLASH_MAIN_INNER_SHADOW);
 
         plug = new Path();
         plug.setFillRule(FillRule.EVEN_ODD);
@@ -479,7 +503,16 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         PLUG_INNER_SHADOW.inputProperty().set(null);
         plug.setEffect(PLUG_INNER_SHADOW);
 
-        main.getChildren().addAll(FLUID,
+        if (control.getChargeIndicator() == SimpleBattery.ChargeIndicator.PLUG) {
+            plug.setOpacity(1.0);
+        } else {
+            plug.setOpacity(0.0);
+        }
+        if (!control.isCharging()) {
+            plug.setVisible(false);
+        }
+
+        main.getChildren().addAll(fluid,
                                   flashFrame,
                                   flashMain,
                                   plug);
@@ -496,7 +529,6 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
                 }
 
                 fluid.setWidth(control.getChargingLevel() * 0.7890625 * control.getPrefWidth());
-                fluid.setX(0.0703125 * control.getPrefWidth() + (0.7890625 * control.getPrefWidth() - fluid.getWidth()));
                 fluid.setFill(new LinearGradient(0, 0.296875 * control.getPrefHeight(),
                                                  0, 0.703125 * control.getPrefHeight(),
                                                  false, CycleMethod.NO_CYCLE,
