@@ -28,6 +28,7 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
@@ -47,6 +48,7 @@ import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import jfxtras.labs.internal.scene.control.behavior.SimpleBatteryBehavior;
+import jfxtras.labs.scene.control.gauge.GradientLookup;
 import jfxtras.labs.scene.control.gauge.SimpleBattery;
 
 
@@ -57,27 +59,35 @@ import jfxtras.labs.scene.control.gauge.SimpleBattery;
  * Time: 09:19
  */
 public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBehavior> {
-    private SimpleBattery control;
-    private boolean      square;
-    private boolean      keepAspect;
-    private boolean      isDirty;
-    private boolean      initialized;
-    private Group        battery;
-    private Group        main;
-    private Group        foreground;
+    private SimpleBattery  control;
+    private boolean        isDirty;
+    private boolean        initialized;
+    private Group          background;
+    private Group          main;
+    private Group          foreground;
+    private Path           plug;
+    private Path           flashFrame;
+    private Path           flashMain;
+    private Rectangle      fluid;
+    private GradientLookup lookup;
+    private Color          currentLevelColor;
 
 
     // ******************** Constructors **************************************
     public SimpleBatterySkin(final SimpleBattery CONTROL) {
         super(CONTROL, new SimpleBatteryBehavior(CONTROL));
         control     = CONTROL;
-        square      = control.isSquare();
-        keepAspect  = control.isKeepAspect();
         initialized = false;
         isDirty     = false;
-        battery     = new Group();
+        background = new Group();
         main        = new Group();
         foreground  = new Group();
+        plug              = new Path();
+        flashFrame        = new Path();
+        flashMain         = new Path();
+        fluid             = new Rectangle();
+        lookup            = new GradientLookup(new Stop[]{new Stop(0.0, Color.RED), new Stop(0.55, Color.YELLOW), new Stop(1.0, Color.LIME)});
+        currentLevelColor = Color.RED;
 
         init();
     }
@@ -102,6 +112,9 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         });
 
         // Register listeners
+        registerChangeListener(control.chargingProperty(), "CHARGING");
+        registerChangeListener(control.chargeIndicatorProperty(), "CHARGE_INDICATOR");
+        registerChangeListener(control.chargingLevelProperty(), "CHARGE_LEVEL");
 
         initialized = true;
         paint();
@@ -114,11 +127,12 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
             init();
         }
         getChildren().clear();
-        drawBattery();
+
+        drawBackground();
         drawMain();
         drawForeground();
 
-        getChildren().addAll(battery,
+        getChildren().addAll(background,
                              main,
                              foreground);
     }
@@ -126,7 +140,24 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
     @Override
     protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
-
+        if (PROPERTY == "CHARGING") {
+            plug.setVisible(control.isCharging());
+            flashFrame.setVisible(control.isCharging());
+            flashMain.setVisible(control.isCharging());
+        } else if(PROPERTY == "CHARGE_INDICATOR") {
+            if (control.getChargeIndicator() == SimpleBattery.ChargeIndicator.PLUG) {
+                plug.setOpacity(1.0);
+                flashFrame.setOpacity(0.0);
+                flashMain.setOpacity(0.0);
+            } else {
+                plug.setOpacity(0.0);
+                flashFrame.setOpacity(1.0);
+                flashMain.setOpacity(1.0);
+            }
+        } else if(PROPERTY == "CHARGE_LEVEL") {
+            currentLevelColor = lookup.getColorAt(control.getChargingLevel());
+            updateFluid();
+        }
     }
 
     @Override
@@ -168,14 +199,17 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
 
 
     // ******************** Drawing related ***********************************
-    public final void drawBattery() {
+    public final void drawBackground() {
         final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
-        final double WIDTH = square ? SIZE : control.getPrefWidth();
-        final double HEIGHT = square ? SIZE : control.getPrefHeight();
-        battery.getChildren().clear();
+        final double WIDTH = SIZE;
+        final double HEIGHT = SIZE;
+
+        background.getChildren().clear();
+
         final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
-        battery.getChildren().add(IBOUNDS);
+        background.getChildren().add(IBOUNDS);
+
         final Path BODY = new Path();
         BODY.setFillRule(FillRule.EVEN_ODD);
         BODY.getElements().add(new MoveTo(0.0703125 * WIDTH, 0.3203125 * HEIGHT));
@@ -248,7 +282,7 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
                                                 0.0546875 * WIDTH, 0.2890625 * HEIGHT,
                                                 0.0546875 * WIDTH, 0.3203125 * HEIGHT));
         BODY.getElements().add(new ClosePath());
-        //BODY.setId("simple-battery-body");
+        //BODY.setId("simple-background-body");
         final Paint BODY_FILL = new LinearGradient(0.5078125 * WIDTH, 0.28125 * HEIGHT,
                                                    0.5078125 * WIDTH, 0.71875 * HEIGHT,
                                                    false, CycleMethod.NO_CYCLE,
@@ -283,7 +317,7 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         CONNECTOR.getElements().add(new LineTo(0.875 * WIDTH, 0.59375 * HEIGHT));
         CONNECTOR.getElements().add(new LineTo(0.875 * WIDTH, 0.40625 * HEIGHT));
         CONNECTOR.getElements().add(new ClosePath());
-        //CONNECTOR.setId("simple-battery-connector");
+        //CONNECTOR.setId("simple-background-connector");
         final Paint CONNECTOR_FILL = new LinearGradient(0.9140625 * WIDTH, 0.40625 * HEIGHT,
                                                         0.9140625 * WIDTH, 0.59375 * HEIGHT,
                                                         false, CycleMethod.NO_CYCLE,
@@ -307,15 +341,17 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         CONNECTOR_INNER_SHADOW0.inputProperty().set(null);
         CONNECTOR.setEffect(CONNECTOR_INNER_SHADOW0);
 
-        battery.getChildren().addAll(BODY,
+        background.getChildren().addAll(BODY,
                                      CONNECTOR);
     }
 
     public final void drawMain() {
         final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
-        final double WIDTH = square ? SIZE : control.getPrefWidth();
-        final double HEIGHT = square ? SIZE : control.getPrefHeight();
+        final double WIDTH = SIZE;
+        final double HEIGHT = SIZE;
+
         main.getChildren().clear();
+
         final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         main.getChildren().add(IBOUNDS);
@@ -323,9 +359,8 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
                                                0.7890625 * WIDTH, 0.40625 * HEIGHT);
         FLUID.setArcWidth(0.046875 * WIDTH);
         FLUID.setArcHeight(0.046875 * HEIGHT);
-        //_FLUID.setId("simple-battery-fluid");
-        final Paint _FLUID_FILL = new LinearGradient(0.46875 * WIDTH, 0.296875 * HEIGHT,
-                                                     0.46875 * WIDTH, 0.703125 * HEIGHT,
+        final Paint _FLUID_FILL = new LinearGradient(0, 0.296875 * HEIGHT,
+                                                     0, 0.703125 * HEIGHT,
                                                      false, CycleMethod.NO_CYCLE,
                                                      new Stop(0.0, Color.color(0.1647058824, 0.5450980392, 0, 1)),
                                                      new Stop(0.32, Color.color(0.1647058824, 0.5450980392, 0, 1)),
@@ -333,22 +368,160 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         FLUID.setFill(_FLUID_FILL);
         FLUID.setStroke(null);
 
-        main.getChildren().addAll(FLUID);
+        flashFrame = new Path();
+        flashFrame.setFillRule(FillRule.EVEN_ODD);
+        flashFrame.getElements().add(new MoveTo(0.59375 * WIDTH, 0.3671875 * HEIGHT));
+        flashFrame.getElements().add(new LineTo(0.34375 * WIDTH, 0.546875 * HEIGHT));
+        flashFrame.getElements().add(new LineTo(0.4453125 * WIDTH, 0.546875 * HEIGHT));
+        flashFrame.getElements().add(new LineTo(0.3515625 * WIDTH, 0.6484375 * HEIGHT));
+        flashFrame.getElements().add(new LineTo(0.5859375 * WIDTH, 0.5 * HEIGHT));
+        flashFrame.getElements().add(new LineTo(0.46875 * WIDTH, 0.5 * HEIGHT));
+        flashFrame.getElements().add(new LineTo(0.59375 * WIDTH, 0.3671875 * HEIGHT));
+        flashFrame.getElements().add(new ClosePath());
+
+        final Paint FLASH_FRAME_FILL = Color.WHITE;
+        flashFrame.setFill(FLASH_FRAME_FILL);
+        flashFrame.setStroke(null);
+
+        flashMain = new Path();
+        flashMain.setFillRule(FillRule.EVEN_ODD);
+        flashMain.getElements().add(new MoveTo(0.5625 * WIDTH, 0.390625 * HEIGHT));
+        flashMain.getElements().add(new LineTo(0.359375 * WIDTH, 0.5390625 * HEIGHT));
+        flashMain.getElements().add(new LineTo(0.453125 * WIDTH, 0.5390625 * HEIGHT));
+        flashMain.getElements().add(new LineTo(0.375 * WIDTH, 0.625 * HEIGHT));
+        flashMain.getElements().add(new LineTo(0.5703125 * WIDTH, 0.5078125 * HEIGHT));
+        flashMain.getElements().add(new LineTo(0.453125 * WIDTH, 0.5078125 * HEIGHT));
+        flashMain.getElements().add(new LineTo(0.5625 * WIDTH, 0.390625 * HEIGHT));
+        flashMain.getElements().add(new ClosePath());
+
+        final Paint FLASH_MAIN_FILL = Color.color(0.9960784314, 0.9215686275, 0, 1);
+        flashMain.setFill(FLASH_MAIN_FILL);
+        flashMain.setStroke(null);
+
+        final InnerShadow FLASH_MAIN_INNER_SHADOW0 = new InnerShadow();
+        FLASH_MAIN_INNER_SHADOW0.setWidth(0.084375 * flashMain.getLayoutBounds().getWidth());
+        FLASH_MAIN_INNER_SHADOW0.setHeight(0.084375 * flashMain.getLayoutBounds().getHeight());
+        FLASH_MAIN_INNER_SHADOW0.setOffsetX(0.0);
+        FLASH_MAIN_INNER_SHADOW0.setOffsetY(0.0);
+        FLASH_MAIN_INNER_SHADOW0.setRadius(0.084375 * flashMain.getLayoutBounds().getWidth());
+        FLASH_MAIN_INNER_SHADOW0.setColor(Color.color(0.8509803922, 0.5294117647, 0, 1));
+        FLASH_MAIN_INNER_SHADOW0.setBlurType(BlurType.GAUSSIAN);
+        FLASH_MAIN_INNER_SHADOW0.inputProperty().set(null);
+        flashMain.setEffect(FLASH_MAIN_INNER_SHADOW0);
+
+        plug = new Path();
+        plug.setFillRule(FillRule.EVEN_ODD);
+        plug.getElements().add(new MoveTo(0.5390625 * WIDTH, 0.484375 * HEIGHT));
+        plug.getElements().add(new CubicCurveTo(0.5390625 * WIDTH, 0.484375 * HEIGHT,
+                                                    0.609375 * WIDTH, 0.484375 * HEIGHT,
+                                                    0.609375 * WIDTH, 0.484375 * HEIGHT));
+        plug.getElements().add(new CubicCurveTo(0.6171875 * WIDTH, 0.484375 * HEIGHT,
+                                                    0.625 * WIDTH, 0.4765625 * HEIGHT,
+                                                    0.625 * WIDTH, 0.46875 * HEIGHT));
+        plug.getElements().add(new CubicCurveTo(0.625 * WIDTH, 0.46875 * HEIGHT,
+                                                    0.625 * WIDTH, 0.4609375 * HEIGHT,
+                                                    0.625 * WIDTH, 0.4609375 * HEIGHT));
+        plug.getElements().add(new CubicCurveTo(0.625 * WIDTH, 0.4609375 * HEIGHT,
+                                                    0.6171875 * WIDTH, 0.453125 * HEIGHT,
+                                                    0.609375 * WIDTH, 0.453125 * HEIGHT));
+        plug.getElements().add(new CubicCurveTo(0.609375 * WIDTH, 0.453125 * HEIGHT,
+                                                    0.5390625 * WIDTH, 0.453125 * HEIGHT,
+                                                    0.5390625 * WIDTH, 0.453125 * HEIGHT));
+        plug.getElements().add(new CubicCurveTo(0.5390625 * WIDTH, 0.4296875 * HEIGHT,
+                                                    0.5390625 * WIDTH, 0.40625 * HEIGHT,
+                                                    0.5390625 * WIDTH, 0.40625 * HEIGHT));
+        plug.getElements().add(new CubicCurveTo(0.4453125 * WIDTH, 0.40625 * HEIGHT,
+                                                    0.390625 * WIDTH, 0.4453125 * HEIGHT,
+                                                    0.375 * WIDTH, 0.484375 * HEIGHT));
+        plug.getElements().add(new CubicCurveTo(0.375 * WIDTH, 0.484375 * HEIGHT,
+                                                    0.3046875 * WIDTH, 0.484375 * HEIGHT,
+                                                    0.3046875 * WIDTH, 0.484375 * HEIGHT));
+        plug.getElements().add(new LineTo(0.3046875 * WIDTH, 0.5234375 * HEIGHT));
+        plug.getElements().add(new CubicCurveTo(0.3046875 * WIDTH, 0.5234375 * HEIGHT,
+                                                    0.3828125 * WIDTH, 0.5234375 * HEIGHT,
+                                                    0.3828125 * WIDTH, 0.5234375 * HEIGHT));
+        plug.getElements().add(new CubicCurveTo(0.390625 * WIDTH, 0.5625 * HEIGHT,
+                                                    0.4296875 * WIDTH, 0.59375 * HEIGHT,
+                                                    0.5390625 * WIDTH, 0.59375 * HEIGHT));
+        plug.getElements().add(new CubicCurveTo(0.5390625 * WIDTH, 0.59375 * HEIGHT,
+                                                    0.5390625 * WIDTH, 0.578125 * HEIGHT,
+                                                    0.5390625 * WIDTH, 0.5546875 * HEIGHT));
+        plug.getElements().add(new CubicCurveTo(0.5390625 * WIDTH, 0.5546875 * HEIGHT,
+                                                    0.6171875 * WIDTH, 0.5546875 * HEIGHT,
+                                                    0.6171875 * WIDTH, 0.5546875 * HEIGHT));
+        plug.getElements().add(new CubicCurveTo(0.6171875 * WIDTH, 0.5546875 * HEIGHT,
+                                                    0.625 * WIDTH, 0.546875 * HEIGHT,
+                                                    0.625 * WIDTH, 0.546875 * HEIGHT));
+        plug.getElements().add(new CubicCurveTo(0.625 * WIDTH, 0.546875 * HEIGHT,
+                                                    0.625 * WIDTH, 0.53125 * HEIGHT,
+                                                    0.625 * WIDTH, 0.53125 * HEIGHT));
+        plug.getElements().add(new CubicCurveTo(0.625 * WIDTH, 0.53125 * HEIGHT,
+                                                    0.6171875 * WIDTH, 0.5234375 * HEIGHT,
+                                                    0.6171875 * WIDTH, 0.5234375 * HEIGHT));
+        plug.getElements().add(new CubicCurveTo(0.6171875 * WIDTH, 0.5234375 * HEIGHT,
+                                                    0.5390625 * WIDTH, 0.5234375 * HEIGHT,
+                                                    0.5390625 * WIDTH, 0.5234375 * HEIGHT));
+        plug.getElements().add(new LineTo(0.5390625 * WIDTH, 0.484375 * HEIGHT));
+        plug.getElements().add(new ClosePath());
+
+        final Paint PLUG_FILL = Color.color(0.7411764706, 0.7411764706, 0.7411764706, 1);
+        plug.setFill(PLUG_FILL);
+        plug.setStroke(null);
+
+        final InnerShadow PLUG_INNER_SHADOW = new InnerShadow();
+        PLUG_INNER_SHADOW.setWidth(0.028125 * plug.getLayoutBounds().getWidth());
+        PLUG_INNER_SHADOW.setHeight(0.028125 * plug.getLayoutBounds().getHeight());
+        PLUG_INNER_SHADOW.setOffsetX(0.0);
+        PLUG_INNER_SHADOW.setOffsetY(0.0);
+        PLUG_INNER_SHADOW.setRadius(0.028125 * plug.getLayoutBounds().getWidth());
+        PLUG_INNER_SHADOW.setColor(Color.BLACK);
+        PLUG_INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
+        PLUG_INNER_SHADOW.inputProperty().set(null);
+        plug.setEffect(PLUG_INNER_SHADOW);
+
+        main.getChildren().addAll(FLUID,
+                                  flashFrame,
+                                  flashMain,
+                                  plug);
+    }
+
+    private final void updateFluid() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if (Double.compare(control.getChargingLevel(), 0) == 0) {
+                    fluid.setVisible(false);
+                } else {
+                    fluid.setVisible(true);
+                }
+
+                fluid.setWidth(control.getChargingLevel() * 0.7890625 * control.getPrefWidth());
+                fluid.setX(0.0703125 * control.getPrefWidth() + (0.7890625 * control.getPrefWidth() - fluid.getWidth()));
+                fluid.setFill(new LinearGradient(0, 0.296875 * control.getPrefHeight(),
+                                                 0, 0.703125 * control.getPrefHeight(),
+                                                 false, CycleMethod.NO_CYCLE,
+                                                 new Stop(0.0, currentLevelColor.darker()),
+                                                 new Stop(0.32, currentLevelColor.darker()),
+                                                 new Stop(1.0, currentLevelColor)));
+            }
+        });
     }
 
     public final void drawForeground() {
         final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
-        final double WIDTH = square ? SIZE : control.getPrefWidth();
-        final double HEIGHT = square ? SIZE : control.getPrefHeight();
+        final double WIDTH = SIZE;
+        final double HEIGHT = SIZE;
         foreground.getChildren().clear();
+
         final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         foreground.getChildren().add(IBOUNDS);
+
         final Rectangle REFLECTION = new Rectangle(0.0703125 * WIDTH, 0.296875 * HEIGHT,
                                                     0.7890625 * WIDTH, 0.40625 * HEIGHT);
         REFLECTION.setArcWidth(0.046875 * WIDTH);
         REFLECTION.setArcHeight(0.046875 * HEIGHT);
-        //_REFLECTION.setId("simple-battery-reflection");
+        //_REFLECTION.setId("simple-background-reflection");
         final Paint _REFLECTION_FILL = new LinearGradient(0.46875 * WIDTH, 0.296875 * HEIGHT,
                                                           0.46875 * WIDTH, 0.703125 * HEIGHT,
                                                           false, CycleMethod.NO_CYCLE,

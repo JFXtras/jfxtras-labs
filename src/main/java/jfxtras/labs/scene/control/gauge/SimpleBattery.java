@@ -27,6 +27,12 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Control;
 
 
@@ -37,16 +43,27 @@ import javafx.scene.control.Control;
  * Time: 09:19
  */
 public class SimpleBattery extends Control {
+    public enum ChargeCondition {
+            EMPTY,
+            PARTLY_CHARGED,
+            CHARGED
+        }        public enum ChargeIndicator {
+        PLUG,
+        FLASH
+    }
     private static final String DEFAULT_STYLE_CLASS = "simple-battery";
-    private boolean         square;
-    private boolean         keepAspect;
+    private DoubleProperty chargingLevel;
+    private BooleanProperty charging;
+    private ObjectProperty<ChargeCondition> chargeCondition;
+    private ObjectProperty<ChargeIndicator> chargeIndicator;
 
 
     // ******************** Constructors **************************************
     public SimpleBattery() {
-        square     = false;
-        keepAspect = false;
-
+        chargingLevel   = new SimpleDoubleProperty(0.0);
+        charging        = new SimpleBooleanProperty(false);
+        chargeCondition = new SimpleObjectProperty<ChargeCondition>(ChargeCondition.EMPTY);
+        chargeIndicator = new SimpleObjectProperty<ChargeIndicator>(ChargeIndicator.PLUG);
         init();
     }
 
@@ -57,24 +74,58 @@ public class SimpleBattery extends Control {
 
 
     // ******************** Methods *******************************************
+    public final double getChargingLevel() {
+            return chargingLevel.get();
+        }
 
-    public final boolean isSquare() {
-        return square;
+    public final void setChargingLevel(final double CHARGING_LEVEL) {
+        chargingLevel.set(CHARGING_LEVEL < 0 ? 0 : (CHARGING_LEVEL > 1 ? 1 : CHARGING_LEVEL));
     }
 
-    public final boolean isKeepAspect() {
-        return keepAspect;
+    public final DoubleProperty chargingLevelProperty() {
+        return chargingLevel;
+    }
+
+    public final boolean isCharging() {
+        return charging.get();
+    }
+
+    public final void setCharging(final boolean CHARGING) {
+        charging.set(CHARGING);
+    }
+
+    public final ChargeCondition getChargeCondition() {
+        return chargeCondition.get();
+    }
+
+    public final void setChargeCondition(final ChargeCondition CHARGE_CONDITION) {
+        chargeCondition.set(CHARGE_CONDITION);
+    }
+
+    public final ObjectProperty<ChargeCondition> chargeConditionProperty() {
+        return chargeCondition;
+    }
+
+    public final ChargeIndicator getChargeIndicator() {
+        return chargeIndicator.get();
+    }
+
+    public final void setChargeIndicator(final ChargeIndicator CHARGE_INDICATOR) {
+        chargeIndicator.set(CHARGE_INDICATOR);
+    }
+
+    public final ObjectProperty<ChargeIndicator> chargeIndicatorProperty() {
+        return chargeIndicator;
+    }
+
+    public final BooleanProperty chargingProperty() {
+        return charging;
     }
 
     @Override public void setPrefSize(final double WIDTH, final double HEIGHT) {
-        double prefHeight = WIDTH < (HEIGHT * 1.0) ? (WIDTH * 1.0) : HEIGHT;
-        double prefWidth = prefHeight * 1.0;
-
-        if (keepAspect) {
-            super.setPrefSize(prefWidth, prefHeight);
-        } else {
-            super.setPrefSize(WIDTH, HEIGHT);
-        }
+        double prefHeight = WIDTH < HEIGHT ? WIDTH : HEIGHT;
+        double prefWidth = prefHeight;
+        super.setPrefSize(prefWidth, prefHeight);
     }
 
 
