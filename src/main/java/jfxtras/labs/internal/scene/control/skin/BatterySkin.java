@@ -447,11 +447,11 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
                 fluid.setFill(new LinearGradient(0.0166666667 * control.getPrefWidth(), 0,
                                                  0.0166666667 * control.getPrefWidth() + 0.9666666667 * control.getPrefWidth(), 0,
                                                  false, CycleMethod.NO_CYCLE,
-                                                 new Stop(0.0, Color.hsb(currentLevelColor.getHue(), currentLevelColor.getSaturation(), 0.30)),
-                                                 new Stop(0.2, Color.hsb(currentLevelColor.getHue(), currentLevelColor.getSaturation(), 0.55)),
+                                                 new Stop(0.0, Color.hsb(currentLevelColor.getHue(), currentLevelColor.getSaturation(), 0.1)),
+                                                 new Stop(0.2, Color.hsb(currentLevelColor.getHue(), currentLevelColor.getSaturation(), 0.4)),
                                                  new Stop(0.5, currentLevelColor),
-                                                 new Stop(0.8, Color.hsb(currentLevelColor.getHue(), currentLevelColor.getSaturation(), 0.55)),
-                                                 new Stop(1.0, Color.hsb(currentLevelColor.getHue(), currentLevelColor.getSaturation(), 0.30))));
+                                                 new Stop(0.8, Color.hsb(currentLevelColor.getHue(), currentLevelColor.getSaturation(), 0.4)),
+                                                 new Stop(1.0, Color.hsb(currentLevelColor.getHue(), currentLevelColor.getSaturation(), 0.1))));
                 fluidHighlight.setY(0.1137254902 * control.getPrefHeight() + (0.8235294118 * control.getPrefHeight() - fluid.getHeight()));
             }
         });

@@ -339,9 +339,9 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         IBOUNDS.setOpacity(0.0);
         main.getChildren().add(IBOUNDS);
         fluid = new Rectangle(0.0703125 * WIDTH, 0.296875 * HEIGHT,
-                                               0.7890625 * WIDTH, 0.40625 * HEIGHT);
-        fluid.setArcWidth(0.046875 * WIDTH);
-        fluid.setArcHeight(0.046875 * HEIGHT);
+                              0.7890625 * WIDTH, 0.40625 * HEIGHT);
+        fluid.setArcWidth(0.025 * WIDTH);
+        fluid.setArcHeight(0.025 * HEIGHT);
         final Paint FLUID_FILL = new LinearGradient(0, 0.296875 * HEIGHT,
                                                     0, 0.703125 * HEIGHT,
                                                     false, CycleMethod.NO_CYCLE,
@@ -498,8 +498,8 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
             fluid.setFill(new LinearGradient(0, 0.296875 * control.getPrefHeight(),
                                              0, 0.703125 * control.getPrefHeight(),
                                              false, CycleMethod.NO_CYCLE,
-                                             new Stop(0.0, Color.hsb(currentLevelColor.getHue(), currentLevelColor.getSaturation(), 0.30)),
-                                             new Stop(0.32, Color.hsb(currentLevelColor.getHue(), currentLevelColor.getSaturation(), 0.30)),
+                                             new Stop(0.0, Color.hsb(currentLevelColor.getHue(), currentLevelColor.getSaturation(), 0.20)),
+                                             new Stop(0.32, Color.hsb(currentLevelColor.getHue(), currentLevelColor.getSaturation(), 0.20)),
                                              new Stop(1.0, currentLevelColor)));
             }
         });
@@ -516,9 +516,9 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         foreground.getChildren().add(IBOUNDS);
 
         final Rectangle REFLECTION = new Rectangle(0.0703125 * WIDTH, 0.296875 * HEIGHT,
-                                                    0.7890625 * WIDTH, 0.40625 * HEIGHT);
-        REFLECTION.setArcWidth(0.046875 * WIDTH);
-        REFLECTION.setArcHeight(0.046875 * HEIGHT);
+                                                   0.7890625 * WIDTH, 0.40625 * HEIGHT);
+        REFLECTION.setArcWidth(0.025 * WIDTH);
+        REFLECTION.setArcHeight(0.025 * HEIGHT);
         REFLECTION.setId("simple-battery-reflection");
 
         foreground.getChildren().addAll(REFLECTION);
