@@ -29,12 +29,15 @@ package jfxtras.labs.scene.control;
 import java.math.BigInteger;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -51,7 +54,7 @@ import jfxtras.labs.util.StringConverterFactory;
  * @author Tom Eugelink
  *
  */
-public class SpinnerTest1 extends Application {
+public class SpinnerTrial1 extends Application {
 	
     public static void main(String[] args) {
         launch(args);       
@@ -70,36 +73,40 @@ public class SpinnerTest1 extends Application {
 			
 			{
 				lGridPane.add(new Label("Empty list"), 0, lRowIdx);
-				Spinner<String> lXSpinner = new Spinner<String>();
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<String> lSpinner = new Spinner<String>();
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Cyclic list"), 0, lRowIdx);
-				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c")
+				Spinner<String> lSpinner = new Spinner<String>("a", "b", "c")
 					.withCyclic(true)
 					;
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				lGridPane.add(lSpinner, 1, lRowIdx);
+				
+				final TextField lValueTextField = new TextField();
+				lValueTextField.textProperty().bind(lSpinner.valueProperty());
+				lGridPane.add(lValueTextField, 2, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Cyclic list with null"), 0, lRowIdx);
-				Spinner<String> lXSpinner = new Spinner<String>( "a", "b", "c", null )
+				Spinner<String> lSpinner = new Spinner<String>( "a", "b", "c", null )
 					.withCyclic(true)
 					;
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Editable cyclic list"), 0, lRowIdx);
-				Spinner<String> lXSpinner = new Spinner<String>( "a", "b", "c", "d", "e" )
+				Spinner<String> lSpinner = new Spinner<String>( "a", "b", "c", "d", "e" )
 					.withCyclic(true)
 					.withEditable(true)
 					.withStringConverter(StringConverterFactory.forString())
 					;
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Editable and adding cyclic list"), 0, lRowIdx);
 				final ObservableList<String> lObservableList = FXCollections.observableArrayList("a", "b", "c", "d", "e");
-				Spinner<String> lXSpinner = new Spinner<String>( lObservableList )
+				Spinner<String> lSpinner = new Spinner<String>( lObservableList )
 					.withCyclic(true)
 					.withEditable(true)
 					.withStringConverter(StringConverterFactory.forString())
@@ -113,79 +120,79 @@ public class SpinnerTest1 extends Application {
 						}
 					})
 					;
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Observable list, 'z' prepended"), 0, lRowIdx);
 				final ObservableList<String> lObservableList = FXCollections.observableArrayList("a", "b", "c", "d", "e");
-				Spinner<String> lXSpinner = new Spinner<String>( lObservableList );
+				Spinner<String> lSpinner = new Spinner<String>( lObservableList );
 				lObservableList.add(0, "z");
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Observable list, first removed"), 0, lRowIdx);
 				final ObservableList<String> lObservableList = FXCollections.observableArrayList("a", "b", "c", "d", "e");
-				Spinner<String> lXSpinner = new Spinner<String>( lObservableList );
+				Spinner<String> lSpinner = new Spinner<String>( lObservableList );
 				lObservableList.remove("a");
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Observable list, emptied"), 0, lRowIdx);
 				final ObservableList<String> lObservableList = FXCollections.observableArrayList("a", "b", "c", "d", "e");
-				Spinner<String> lXSpinner = new Spinner<String>( lObservableList );
+				Spinner<String> lSpinner = new Spinner<String>( lObservableList );
 				lObservableList.clear();
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("BigInteger range"), 0, lRowIdx);
-				Spinner<BigInteger> lXSpinner = new Spinner<BigInteger>(new SpinnerBigIntegerList(BigInteger.valueOf(Long.MIN_VALUE), BigInteger.valueOf(Long.MIN_VALUE + 1000)));
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<BigInteger> lSpinner = new Spinner<BigInteger>(new SpinnerBigIntegerList(BigInteger.valueOf(Long.MIN_VALUE), BigInteger.valueOf(Long.MIN_VALUE + 1000)));
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Integer range"), 0, lRowIdx);
-				Spinner<Integer> lXSpinner = new Spinner<Integer>(new SpinnerIntegerList());
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<Integer> lSpinner = new Spinner<Integer>(new SpinnerIntegerList());
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Integer range 10..110"), 0, lRowIdx);
-				Spinner<Integer> lXSpinner = new Spinner<Integer>(10, 110);
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<Integer> lSpinner = new Spinner<Integer>(10, 110);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Integer range 10..110 with setIndex 50"), 0, lRowIdx);
-				Spinner<Integer> lXSpinner = new Spinner<Integer>(10, 110);
-				lXSpinner.setIndex(50);
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<Integer> lSpinner = new Spinner<Integer>(10, 110);
+				lSpinner.setIndex(50);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Integer range 0..1000 step 10"), 0, lRowIdx);
-				Spinner<Integer> lXSpinner = new Spinner<Integer>(0, 100, 10);
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<Integer> lSpinner = new Spinner<Integer>(0, 100, 10);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Integer range -10..10"), 0, lRowIdx);
-				Spinner<Integer> lXSpinner = new Spinner<Integer>(-10, 10);
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<Integer> lSpinner = new Spinner<Integer>(-10, 10);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Integer range 10..-10"), 0, lRowIdx);
-				Spinner<Integer> lXSpinner = new Spinner<Integer>(10, -10);
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<Integer> lSpinner = new Spinner<Integer>(10, -10);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("align right"), 0, lRowIdx);
-				Spinner<String> lXSpinner = new Spinner<String>( "a", "b", "c", "d", "e" )
+				Spinner<String> lSpinner = new Spinner<String>( "a", "b", "c", "d", "e" )
 					.withAlignment(Pos.CENTER_RIGHT)
 					;
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("align right"), 0, lRowIdx);
-				Spinner<String> lXSpinner = new Spinner<String>( "a", "b", "c", "d", "e" )
+				Spinner<String> lSpinner = new Spinner<String>( "a", "b", "c", "d", "e" )
 					.withAlignment(Pos.CENTER_RIGHT)
 					.withEditable(true)
 					;
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			
 			lHBox.getChildren().add(lGridPane);
@@ -200,63 +207,63 @@ public class SpinnerTest1 extends Application {
 			// arrow position
 			{
 				lGridPane.add(new Label("HORIZONTAL LEADING"), 0, lRowIdx);
-				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.LEADING);
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<String> lSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.LEADING);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("HORIZONTAL TRAILING"), 0, lRowIdx);
-				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.TRAILING);
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<String> lSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.TRAILING);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("HORIZONTAL SPLIT"), 0, lRowIdx);
-				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.SPLIT);
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<String> lSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.SPLIT);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("VERTICAL LEADING"), 0, lRowIdx);
-				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.LEADING);
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<String> lSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.LEADING);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("VERTICAL TRAILING"), 0, lRowIdx);
-				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.TRAILING);
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<String> lSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.TRAILING);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("VERTICAL SPLIT"), 0, lRowIdx);
-				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.SPLIT);
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<String> lSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.SPLIT);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("HORIZONTAL LEADING"), 0, lRowIdx);
-				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.LEADING).withEditable(true);
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<String> lSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.LEADING).withEditable(true);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("HORIZONTAL TRAILING"), 0, lRowIdx);
-				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.TRAILING).withEditable(true);
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<String> lSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.TRAILING).withEditable(true);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("HORIZONTAL SPLIT"), 0, lRowIdx);
-				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.SPLIT).withEditable(true);
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<String> lSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.SPLIT).withEditable(true);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("VERTICAL LEADING"), 0, lRowIdx);
-				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.LEADING).withEditable(true);
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<String> lSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.LEADING).withEditable(true);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("VERTICAL TRAILING"), 0, lRowIdx);
-				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.TRAILING).withEditable(true);
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<String> lSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.TRAILING).withEditable(true);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("VERTICAL SPLIT"), 0, lRowIdx);
-				Spinner<String> lXSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.SPLIT).withEditable(true);
-				lGridPane.add(lXSpinner, 1, lRowIdx++);
+				Spinner<String> lSpinner = new Spinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.SPLIT).withEditable(true);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			
 			lHBox.getChildren().add(lGridPane);

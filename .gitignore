@@ -18,3 +18,5 @@ src/main/java/Demo.java
 /nbproject/private/
 /nbbuild/
 /dist/
+nbproject
+build.xml
