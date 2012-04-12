@@ -52,8 +52,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
-import jfxtras.labs.internal.scene.control.behavior.FlipCharBehavior;
-import jfxtras.labs.scene.control.gauge.FlipChar;
+import jfxtras.labs.internal.scene.control.behavior.SplitFlapBehavior;
+import jfxtras.labs.scene.control.gauge.SplitFlap;
 
 
 /**
@@ -62,15 +62,17 @@ import jfxtras.labs.scene.control.gauge.FlipChar;
  * Date: 23.02.12
  * Time: 09:12
  */
-public class FlipCharSkin extends SkinBase<FlipChar, FlipCharBehavior> {
-    private FlipChar       control;
+public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
+    private SplitFlap control;
     private static double  MIN_FLIP_TIME = 1000000000.0 / 60.0; // 60 fps
     private boolean        isDirty;
     private boolean        initialized;
     private Group          fixture;
     private Group          flip;
     private Color          bright;
+    private Color          brighter;
     private Color          dark;
+    private Color          darker;
     private Color          textColor;
     private Path           upper;
     private Text           upperText;
@@ -90,15 +92,17 @@ public class FlipCharSkin extends SkinBase<FlipChar, FlipCharBehavior> {
 
 
     // ******************** Constructors **************************************
-    public FlipCharSkin(final FlipChar CONTROL) {
-        super(CONTROL, new FlipCharBehavior(CONTROL));
+    public SplitFlapSkin(final SplitFlap CONTROL) {
+        super(CONTROL, new SplitFlapBehavior(CONTROL));
         control          = CONTROL;
         initialized      = false;
         isDirty          = false;
         fixture          = new Group();
         flip             = new Group();
-        dark             = control.getColor().darker().darker();
         bright           = control.getColor().brighter();
+        brighter         = control.getColor().brighter().brighter();
+        dark             = control.getColor().darker();
+        darker           = control.getColor().darker().darker();
         textColor        = control.getCharacterColor();
         upperText        = new Text(Character.toString(control.getCharacter()));
         lowerText        = new Text(Character.toString(control.getCharacter()));
@@ -107,18 +111,18 @@ public class FlipCharSkin extends SkinBase<FlipChar, FlipCharBehavior> {
         currentChar      = control.getCharacter();
         nextChar         = (char) (control.getCharacter() + 1);
         rotate           = new Rotate();
-        angleStep        = 180.0 / (control.getFlipTime() / (MIN_FLIP_TIME));
+        angleStep        = 180.0 / ((control.getFlipTimeInMs() * 1000000) / (MIN_FLIP_TIME));
         currentAngle     = 0;
         flipping         = false;
         timer            = new AnimationTimer() {
             @Override public void handle(long l) {
-                if (initialized) {
-                    if (control.isCountdownMode()) {
-                        flipBackward(angleStep);}
-                    else {
-                        flipForward(angleStep);
-                    }
+            if (initialized) {
+                if (control.isCountdownMode()) {
+                    flipBackward(angleStep);}
+                else {
+                    flipForward(angleStep);
                 }
+            }
             }
         };
         init();
@@ -152,7 +156,7 @@ public class FlipCharSkin extends SkinBase<FlipChar, FlipCharBehavior> {
         registerChangeListener(control.colorProperty(), "COLOR");
         registerChangeListener(control.characterColorProperty(), "CHARACTER_COLOR");
         registerChangeListener(control.characterProperty(), "CHARACTER");
-        registerChangeListener(control.flipTimeProperty(), "FLIP_TIME");
+        registerChangeListener(control.flipTimeInMsProperty(), "FLIP_TIME");
 
         initialized = true;
         paint();
@@ -174,8 +178,10 @@ public class FlipCharSkin extends SkinBase<FlipChar, FlipCharBehavior> {
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
         if (PROPERTY == "COLOR") {
-            dark = control.getColor().darker().darker();
-            bright = control.getColor().brighter();
+            bright   = control.getColor().brighter();
+            brighter = control.getColor().brighter().brighter();
+            dark     = control.getColor().darker();
+            darker   = control.getColor().darker().darker();
             paint();
         } else if (PROPERTY == "CHARACTER_COLOR") {
             textColor = control.getCharacterColor();
@@ -187,7 +193,7 @@ public class FlipCharSkin extends SkinBase<FlipChar, FlipCharBehavior> {
                 timer.start();
             }
         } else if (PROPERTY == "FLIP_TIME") {
-            angleStep = 180.0 / (control.getFlipTime() / (MIN_FLIP_TIME));
+            angleStep = 180.0 / ((control.getFlipTimeInMs() * 1000000) / (MIN_FLIP_TIME));
         }
     }
 
@@ -199,7 +205,7 @@ public class FlipCharSkin extends SkinBase<FlipChar, FlipCharBehavior> {
         super.layoutChildren();
     }
 
-    @Override public final FlipChar getSkinnable() {
+    @Override public final SplitFlap getSkinnable() {
         return control;
     }
 
@@ -415,8 +421,8 @@ public class FlipCharSkin extends SkinBase<FlipChar, FlipCharBehavior> {
         final Paint LOWER_FILL = new LinearGradient(0.5342465753424658 * WIDTH, 0.5079365079365079 * HEIGHT,
                                                     0.5342465753424658 * WIDTH, 0.9947089947089947 * HEIGHT,
                                                     false, CycleMethod.NO_CYCLE,
-                                                    new Stop(0.0, bright),
-                                                    new Stop(1.0, dark));
+                                                    new Stop(0.0, brighter),
+                                                    new Stop(1.0, control.getColor()));
         lower.setFill(LOWER_FILL);
         lower.setStroke(null);
 
@@ -468,8 +474,8 @@ public class FlipCharSkin extends SkinBase<FlipChar, FlipCharBehavior> {
         final Paint UPPER_FILL = new LinearGradient(0.5205479452054794 * WIDTH, 0.0,
                                                     0.5205479452054794 * WIDTH, 0.49206349206349204 * HEIGHT,
                                                     false, CycleMethod.NO_CYCLE,
-                                                    new Stop(0.0, dark),
-                                                    new Stop(1.0, bright));
+                                                    new Stop(0.0, darker),
+                                                    new Stop(1.0, control.getColor()));
         upper.setFill(UPPER_FILL);
         upper.setStroke(null);
 
@@ -522,8 +528,8 @@ public class FlipCharSkin extends SkinBase<FlipChar, FlipCharBehavior> {
         LinearGradient lowerTextFill = new LinearGradient(0.0, lowerText.getLayoutBounds().getMinY(),
                                                           0.0, lowerText.getLayoutBounds().getMaxY(),
                                                           false, CycleMethod.NO_CYCLE,
-                                                          new Stop(0.5, textColor),
-                                                          new Stop(1.0, textColor.darker()));
+                                                          new Stop(0.5, textColor.brighter()),
+                                                          new Stop(1.0, textColor));
         lowerText.setFill(lowerTextFill);
         lowerText.setStroke(null);
 

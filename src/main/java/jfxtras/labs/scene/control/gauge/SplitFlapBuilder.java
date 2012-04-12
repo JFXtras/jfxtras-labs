@@ -29,55 +29,47 @@ package jfxtras.labs.scene.control.gauge;
 
 import javafx.scene.paint.Color;
 
-import java.util.List;
-import java.util.Map;
-
 
 /**
  * Created by
  * User: hansolo
- * Date: 16.03.12
- * Time: 09:15
+ * Date: 12.04.12
+ * Time: 14:48
  */
-public class DotMatrixSegmentBuilder {
-    private DotMatrixSegment segment;
+public class SplitFlapBuilder {
+    private SplitFlap splitFlap;
 
-    public final DotMatrixSegmentBuilder create() {
-        segment = new DotMatrixSegment();
+    public final SplitFlapBuilder create() {
+        splitFlap = new SplitFlap();
         return this;
     }
 
-    public final DotMatrixSegmentBuilder character(final String CHARACTER) {
-        segment.setCharacter(CHARACTER);
+    public final SplitFlapBuilder textColor(final Color TEXT_COLOR) {
+        splitFlap.setCharacterColor(TEXT_COLOR);
         return this;
     }
 
-    public final DotMatrixSegmentBuilder character(final Character CHARACTER) {
-        segment.setCharacter(CHARACTER);
+    public final SplitFlapBuilder color(final Color COLOR) {
+        splitFlap.setColor(COLOR);
         return this;
     }
 
-    public final DotMatrixSegmentBuilder dotOn(final boolean DOT_ON) {
-        segment.setDotOn(DOT_ON);
+    public final SplitFlapBuilder character(final String CHARACTER) {
+        splitFlap.setCharacter(CHARACTER);
         return this;
     }
 
-    public final DotMatrixSegmentBuilder customSegmentMapping(final Map<Integer, List<DotMatrixSegment.Dot>> CUSTOM_SEGMENT_MAPPING) {
-        segment.setCustomDotMapping(CUSTOM_SEGMENT_MAPPING);
+    public final SplitFlapBuilder type(final SplitFlap.Type TYPE) {
+        splitFlap.setType(TYPE);
         return this;
     }
 
-    public final DotMatrixSegmentBuilder color(final Color COLOR) {
-        segment.setColor(COLOR);
+    public final SplitFlapBuilder flipTimeInMs(final long FLIP_TIME_IN_MS) {
+        splitFlap.setFlipTimeInMs(FLIP_TIME_IN_MS);
         return this;
     }
 
-    public final DotMatrixSegmentBuilder plainColor(final boolean PLAIN_COLOR) {
-        segment.setPlainColor(PLAIN_COLOR);
-        return this;
-    }
-
-    public final DotMatrixSegment build() {
-        return segment != null ? segment : new DotMatrixSegment();
+    public final SplitFlap build() {
+        return splitFlap != null ? splitFlap : new SplitFlap();
     }
 }

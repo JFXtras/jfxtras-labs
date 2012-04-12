@@ -60,6 +60,6 @@ public class StepIndicatorBuilder {
     }
 
     public final StepIndicator build() {
-        return indicator;
+        return indicator != null ? indicator : new StepIndicator();
     }
 }

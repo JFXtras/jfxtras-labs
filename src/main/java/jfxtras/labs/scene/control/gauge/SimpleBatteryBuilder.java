@@ -65,6 +65,6 @@ public class SimpleBatteryBuilder {
     }
 
     public final SimpleBattery build() {
-        return battery;
+        return battery != null ? battery : new SimpleBattery();
     }
 }

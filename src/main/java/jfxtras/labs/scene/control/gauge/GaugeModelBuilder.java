@@ -188,6 +188,6 @@ public class GaugeModelBuilder {
     }
 
     public final GaugeModel build() {
-        return gaugeModel;
+        return gaugeModel != null ? gaugeModel : new GaugeModel();
     }
 }

@@ -60,6 +60,6 @@ public class NixieTubeBuilder {
     }
 
     public final NixieTube build() {
-        return tube;
+        return tube != null ? tube : new NixieTube();
     }
 }

@@ -65,6 +65,6 @@ public class RaterBuilder {
     }
 
     public final Rater build() {
-        return rater;
+        return rater != null ? rater : new Rater();
     }
 }

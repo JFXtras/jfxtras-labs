@@ -45,7 +45,7 @@ import javafx.scene.paint.Color;
  * Date: 23.02.12
  * Time: 09:11
  */
-public class FlipChar extends Control {
+public class SplitFlap extends Control {
     public enum Type {
         NUMERIC(48, 57),
         ALPHANUMERIC(45, 94),
@@ -59,27 +59,27 @@ public class FlipChar extends Control {
             this.UPPER_BOUND = UPPER_BOUND;
         }
     }
-    private static final String   DEFAULT_STYLE_CLASS = "flipchar";
+    private static final String   DEFAULT_STYLE_CLASS = "splitflap";
     private ObjectProperty<Color> color;
     private ObjectProperty<Color> characterColor;
     private ObjectProperty<Type>  type;
     private IntegerProperty       character;
-    private LongProperty          flipTime;
+    private LongProperty flipTimeInMs;
     private BooleanProperty       countdownMode;
     private boolean               keepAspect;
 
 
     // ******************** Constructors **************************************
-    public FlipChar() {
+    public SplitFlap() {
         this("0");
     }
 
-    public FlipChar(final String CHARACTER) {
-        color            = new SimpleObjectProperty<Color>(Color.rgb(80, 80, 80));
+    public SplitFlap(final String CHARACTER) {
+        color            = new SimpleObjectProperty<Color>(Color.rgb(56, 56, 56));
         characterColor   = new SimpleObjectProperty<Color>(Color.WHITE);
         type             = new SimpleObjectProperty<Type>(Type.NUMERIC);
         character        = new SimpleIntegerProperty(CHARACTER.charAt(0));
-        flipTime         = new SimpleLongProperty(200000000l);
+        flipTimeInMs = new SimpleLongProperty(200000000l);
         countdownMode    = new SimpleBooleanProperty(false);
         keepAspect       = true;
 
@@ -145,16 +145,16 @@ public class FlipChar extends Control {
         return character;
     }
 
-    public final long getFlipTime() {
-        return flipTime.get();
+    public final long getFlipTimeInMs() {
+        return flipTimeInMs.get();
     }
 
-    public final void setFlipTime(final long FLIP_TIME) {
-        flipTime.set(FLIP_TIME < 16666666l ? 16666666l : (FLIP_TIME > 3000000000l ? 3000000000l : FLIP_TIME));
+    public final void setFlipTimeInMs(final long FLIP_TIME_IN_MS) {
+        flipTimeInMs.set(FLIP_TIME_IN_MS < 16l ? 16l : (FLIP_TIME_IN_MS > 3000l ? 3000l : FLIP_TIME_IN_MS));
     }
 
-    public final LongProperty flipTimeProperty() {
-        return flipTime;
+    public final LongProperty flipTimeInMsProperty() {
+        return flipTimeInMs;
     }
 
     public final boolean isCountdownMode() {

@@ -60,6 +60,6 @@ public class SimpleIndicatorBuilder {
     }
 
     public final SimpleIndicator build() {
-        return indicator;
+        return indicator != null ? indicator : new SimpleIndicator();
     }
 }

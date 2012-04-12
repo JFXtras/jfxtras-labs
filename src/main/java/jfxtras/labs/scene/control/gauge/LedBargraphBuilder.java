@@ -89,6 +89,6 @@ public class LedBargraphBuilder {
     }
 
     public final LedBargraph build() {
-        return bargraph;
+        return bargraph != null ? bargraph : new LedBargraph();
     }
 }

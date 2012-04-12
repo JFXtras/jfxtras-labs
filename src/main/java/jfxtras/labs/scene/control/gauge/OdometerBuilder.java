@@ -29,55 +29,52 @@ package jfxtras.labs.scene.control.gauge;
 
 import javafx.scene.paint.Color;
 
-import java.util.List;
-import java.util.Map;
-
 
 /**
  * Created by
  * User: hansolo
- * Date: 16.03.12
- * Time: 09:15
+ * Date: 12.04.12
+ * Time: 15:38
  */
-public class DotMatrixSegmentBuilder {
-    private DotMatrixSegment segment;
+public class OdometerBuilder {
+    private Odometer odometer;
 
-    public final DotMatrixSegmentBuilder create() {
-        segment = new DotMatrixSegment();
+    public final OdometerBuilder create() {
+        odometer = new Odometer();
         return this;
     }
 
-    public final DotMatrixSegmentBuilder character(final String CHARACTER) {
-        segment.setCharacter(CHARACTER);
+    public final OdometerBuilder color(final Color COLOR) {
+        odometer.setColor(COLOR);
         return this;
     }
 
-    public final DotMatrixSegmentBuilder character(final Character CHARACTER) {
-        segment.setCharacter(CHARACTER);
+    public final OdometerBuilder decimalColor(final Color DECIMAL_COLOR) {
+        odometer.setDecimalColor(DECIMAL_COLOR);
         return this;
     }
 
-    public final DotMatrixSegmentBuilder dotOn(final boolean DOT_ON) {
-        segment.setDotOn(DOT_ON);
+    public final OdometerBuilder numberColor(final Color NUMBER_COLOR) {
+        odometer.setNumberColor(NUMBER_COLOR);
         return this;
     }
 
-    public final DotMatrixSegmentBuilder customSegmentMapping(final Map<Integer, List<DotMatrixSegment.Dot>> CUSTOM_SEGMENT_MAPPING) {
-        segment.setCustomDotMapping(CUSTOM_SEGMENT_MAPPING);
+    public final OdometerBuilder noOfDecimals(final int NO_OF_DECIMALS) {
+        odometer.setNoOfDecimals(NO_OF_DECIMALS);
         return this;
     }
 
-    public final DotMatrixSegmentBuilder color(final Color COLOR) {
-        segment.setColor(COLOR);
+    public final OdometerBuilder noOfDigits(final int NO_OF_DIGITS) {
+        odometer.setNoOfDigits(NO_OF_DIGITS);
         return this;
     }
 
-    public final DotMatrixSegmentBuilder plainColor(final boolean PLAIN_COLOR) {
-        segment.setPlainColor(PLAIN_COLOR);
+    public final OdometerBuilder interval(final long INTERVAL) {
+        odometer.setInterval(INTERVAL);
         return this;
     }
 
-    public final DotMatrixSegment build() {
-        return segment != null ? segment : new DotMatrixSegment();
+    public final Odometer build() {
+        return odometer != null ? odometer : new Odometer();
     }
 }

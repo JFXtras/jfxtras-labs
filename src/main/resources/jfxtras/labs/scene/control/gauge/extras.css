@@ -39,11 +39,11 @@
 }
 
 .trafficlight {
-    -fx-skin: "jfxtras.labs.internal.scene.control.skin.TrafficlightSkin";
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.TrafficLightSkin";
 }
 
-.flipchar {
-    -fx-skin: "jfxtras.labs.internal.scene.control.skin.FlipCharSkin";
+.splitflap {
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.SplitFlapSkin";
 }
 
 .nixie-tube {

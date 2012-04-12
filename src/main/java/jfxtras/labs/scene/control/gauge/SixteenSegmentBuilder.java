@@ -78,6 +78,6 @@ public class SixteenSegmentBuilder {
     }
 
     public final SixteenSegment build() {
-        return segment;
+        return segment != null ? segment : new SixteenSegment();
     }
 }

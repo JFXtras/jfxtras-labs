@@ -67,6 +67,6 @@ public class ClockBuilder {
     }
 
     public final Clock build() {
-        return clock;
+        return clock != null ? clock : new Clock();
     }
 }

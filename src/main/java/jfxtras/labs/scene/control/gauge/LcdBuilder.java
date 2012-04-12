@@ -27,6 +27,9 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.scene.control.ListCell;
+
+
 /**
  * Created by
  * User: hansolo
@@ -147,6 +150,6 @@ public class LcdBuilder {
     }
 
     public final Lcd build() {
-        return lcd;
+        return lcd != null ? lcd : new Lcd();
     }
 }

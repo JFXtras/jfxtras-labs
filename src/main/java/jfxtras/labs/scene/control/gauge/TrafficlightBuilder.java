@@ -33,50 +33,50 @@ package jfxtras.labs.scene.control.gauge;
  * Date: 09.03.12
  * Time: 16:12
  */
-public class TrafficlightBuilder {
-    private Trafficlight trafficlight;
+public class TrafficLightBuilder {
+    private TrafficLight trafficLight;
 
-    public final TrafficlightBuilder create() {
-        trafficlight = new Trafficlight();
+    public final TrafficLightBuilder create() {
+        trafficLight = new TrafficLight();
         return this;
     }
 
-    public final TrafficlightBuilder redOn(final boolean RED_ON) {
-        trafficlight.setRedOn(RED_ON);
+    public final TrafficLightBuilder redOn(final boolean RED_ON) {
+        trafficLight.setRedOn(RED_ON);
         return this;
     }
 
-    public final TrafficlightBuilder redBlinking(final boolean RED_BLINKING) {
-        trafficlight.setRedBlinking(RED_BLINKING);
+    public final TrafficLightBuilder redBlinking(final boolean RED_BLINKING) {
+        trafficLight.setRedBlinking(RED_BLINKING);
         return this;
     }
 
-    public final TrafficlightBuilder yellowOn(final boolean YELLOW_ON) {
-        trafficlight.setYellowOn(YELLOW_ON);
+    public final TrafficLightBuilder yellowOn(final boolean YELLOW_ON) {
+        trafficLight.setYellowOn(YELLOW_ON);
         return this;
     }
 
-    public final TrafficlightBuilder yellowBlinking(final boolean YELLOW_BLINKING) {
-        trafficlight.setYellowBlinking(YELLOW_BLINKING);
+    public final TrafficLightBuilder yellowBlinking(final boolean YELLOW_BLINKING) {
+        trafficLight.setYellowBlinking(YELLOW_BLINKING);
         return this;
     }
 
-    public final TrafficlightBuilder greenOn(final boolean GREEN_ON) {
-        trafficlight.setGreenOn(GREEN_ON);
+    public final TrafficLightBuilder greenOn(final boolean GREEN_ON) {
+        trafficLight.setGreenOn(GREEN_ON);
         return this;
     }
 
-    public final TrafficlightBuilder greenBlinking(final boolean GREEN_BLINKING) {
-        trafficlight.setGreenBlinking(GREEN_BLINKING);
+    public final TrafficLightBuilder greenBlinking(final boolean GREEN_BLINKING) {
+        trafficLight.setGreenBlinking(GREEN_BLINKING);
         return this;
     }
 
-    public final TrafficlightBuilder darkBackground(final boolean DARK_BACKGROUND) {
-        trafficlight.setDarkBackground(DARK_BACKGROUND);
+    public final TrafficLightBuilder darkBackground(final boolean DARK_BACKGROUND) {
+        trafficLight.setDarkBackground(DARK_BACKGROUND);
         return this;
     }
 
-    public final Trafficlight build() {
-        return trafficlight;
+    public final TrafficLight build() {
+        return trafficLight != null ? trafficLight : new TrafficLight();
     }
 }

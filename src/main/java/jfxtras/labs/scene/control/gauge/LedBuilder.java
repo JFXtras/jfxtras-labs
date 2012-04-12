@@ -65,6 +65,6 @@ public class LedBuilder {
     }
 
     public final Led build() {
-        return led;
+        return led != null ? led : new Led();
     }
 }

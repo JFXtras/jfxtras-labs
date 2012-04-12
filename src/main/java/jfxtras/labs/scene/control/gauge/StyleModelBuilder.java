@@ -371,6 +371,6 @@ public class StyleModelBuilder {
     }
 
     public final StyleModel build() {
-        return styleModel;
+        return styleModel != null ? styleModel : new StyleModel();
     }
 }
