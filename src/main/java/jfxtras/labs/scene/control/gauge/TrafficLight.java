@@ -38,7 +38,7 @@ import javafx.scene.control.Control;
  * Date: 20.02.12
  * Time: 20:52
  */
-public class TrafficLightN extends Control {
+public class TrafficLight extends Control {
     private static final String DEFAULT_STYLE_CLASS = "trafficlight";
     private BooleanProperty greenBlinking;
     private BooleanProperty greenOn;
@@ -50,7 +50,7 @@ public class TrafficLightN extends Control {
 
 
     // ******************** Constructors **************************************
-    public TrafficLightN() {
+    public TrafficLight() {
         greenBlinking  = new SimpleBooleanProperty(false);
         greenOn        = new SimpleBooleanProperty(false);
         redOn          = new SimpleBooleanProperty(false);

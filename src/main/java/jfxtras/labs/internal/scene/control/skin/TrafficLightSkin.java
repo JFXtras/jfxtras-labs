@@ -29,7 +29,7 @@ package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
 import jfxtras.labs.internal.scene.control.behavior.TrafficLightBehavior;
-import jfxtras.labs.scene.control.gauge.TrafficLightN;
+import jfxtras.labs.scene.control.gauge.TrafficLight;
 import javafx.animation.AnimationTimer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -59,9 +59,9 @@ import javafx.scene.shape.Shape;
  * Date: 20.02.12
  * Time: 20:52
  */
-public class TrafficLightSkinN extends SkinBase<TrafficLightN, TrafficLightBehavior> {
+public class TrafficLightSkin extends SkinBase<TrafficLight, TrafficLightBehavior> {
     public static final long BLINK_INTERVAL = 500000000l;
-    private TrafficLightN control;
+    private TrafficLight control;
     private boolean        isDirty;
     private boolean        initialized;
     private Group          trafficlight;
@@ -77,7 +77,7 @@ public class TrafficLightSkinN extends SkinBase<TrafficLightN, TrafficLightBehav
 
 
     // ******************** Constructors **************************************
-    public TrafficLightSkinN(final TrafficLightN CONTROL) {
+    public TrafficLightSkin(final TrafficLight CONTROL) {
         super(CONTROL, new TrafficLightBehavior(CONTROL));
         control           = CONTROL;
         initialized       = false;
@@ -192,7 +192,7 @@ public class TrafficLightSkinN extends SkinBase<TrafficLightN, TrafficLightBehav
         super.layoutChildren();
     }
 
-    @Override public final TrafficLightN getSkinnable() {
+    @Override public final TrafficLight getSkinnable() {
         return control;
     }
 
