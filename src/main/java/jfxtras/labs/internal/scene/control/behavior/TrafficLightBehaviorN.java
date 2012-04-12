@@ -28,7 +28,7 @@
 package jfxtras.labs.internal.scene.control.behavior;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
-import jfxtras.labs.scene.control.gauge.TrafficLight;
+import jfxtras.labs.scene.control.gauge.TrafficLightN;
 
 
 /**
@@ -37,9 +37,9 @@ import jfxtras.labs.scene.control.gauge.TrafficLight;
  * Date: 20.02.12
  * Time: 20:52
  */
-public class TrafficLightBehavior extends BehaviorBase<TrafficLight> {
+public class TrafficLightBehaviorN extends BehaviorBase<TrafficLightN> {
 
-    public TrafficLightBehavior(final TrafficLight CONTROL) {
+    public TrafficLightBehaviorN(final TrafficLightN CONTROL) {
         super(CONTROL);
     }
 }

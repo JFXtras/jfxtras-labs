@@ -33,50 +33,50 @@ package jfxtras.labs.scene.control.gauge;
  * Date: 09.03.12
  * Time: 16:12
  */
-public class TrafficLightBuilder {
-    private TrafficLight trafficLight;
+public class TrafficLightBuilderN {
+    private TrafficLightN trafficLight;
 
-    public final TrafficLightBuilder create() {
-        trafficLight = new TrafficLight();
+    public final TrafficLightBuilderN create() {
+        trafficLight = new TrafficLightN();
         return this;
     }
 
-    public final TrafficLightBuilder redOn(final boolean RED_ON) {
+    public final TrafficLightBuilderN redOn(final boolean RED_ON) {
         trafficLight.setRedOn(RED_ON);
         return this;
     }
 
-    public final TrafficLightBuilder redBlinking(final boolean RED_BLINKING) {
+    public final TrafficLightBuilderN redBlinking(final boolean RED_BLINKING) {
         trafficLight.setRedBlinking(RED_BLINKING);
         return this;
     }
 
-    public final TrafficLightBuilder yellowOn(final boolean YELLOW_ON) {
+    public final TrafficLightBuilderN yellowOn(final boolean YELLOW_ON) {
         trafficLight.setYellowOn(YELLOW_ON);
         return this;
     }
 
-    public final TrafficLightBuilder yellowBlinking(final boolean YELLOW_BLINKING) {
+    public final TrafficLightBuilderN yellowBlinking(final boolean YELLOW_BLINKING) {
         trafficLight.setYellowBlinking(YELLOW_BLINKING);
         return this;
     }
 
-    public final TrafficLightBuilder greenOn(final boolean GREEN_ON) {
+    public final TrafficLightBuilderN greenOn(final boolean GREEN_ON) {
         trafficLight.setGreenOn(GREEN_ON);
         return this;
     }
 
-    public final TrafficLightBuilder greenBlinking(final boolean GREEN_BLINKING) {
+    public final TrafficLightBuilderN greenBlinking(final boolean GREEN_BLINKING) {
         trafficLight.setGreenBlinking(GREEN_BLINKING);
         return this;
     }
 
-    public final TrafficLightBuilder darkBackground(final boolean DARK_BACKGROUND) {
+    public final TrafficLightBuilderN darkBackground(final boolean DARK_BACKGROUND) {
         trafficLight.setDarkBackground(DARK_BACKGROUND);
         return this;
     }
 
-    public final TrafficLight build() {
-        return trafficLight != null ? trafficLight : new TrafficLight();
+    public final TrafficLightN build() {
+        return trafficLight != null ? trafficLight : new TrafficLightN();
     }
 }
