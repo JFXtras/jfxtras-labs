@@ -48,7 +48,7 @@ import javafx.scene.paint.Color;
 public class SplitFlap extends Control {
     public enum Type {
         NUMERIC(48, 57),
-        ALPHANUMERIC(45, 94),
+        ALPHANUMERIC(32, 94),
         TIME(48, 53);
 
         public final int LOWER_BOUND;
@@ -64,7 +64,7 @@ public class SplitFlap extends Control {
     private ObjectProperty<Color> characterColor;
     private ObjectProperty<Type>  type;
     private IntegerProperty       character;
-    private LongProperty flipTimeInMs;
+    private LongProperty          flipTimeInMs;
     private BooleanProperty       countdownMode;
     private boolean               keepAspect;
 

@@ -244,12 +244,20 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
             upperText.setVisible(true);
 
             currentChar++;
-            if (currentChar > control.getType().UPPER_BOUND) {
-                currentChar = (char) control.getType().LOWER_BOUND;
+            if (currentChar > control.getType().UPPER_BOUND || currentChar < control.getType().LOWER_BOUND) {
+                if (control.getCharacter() == 32) {
+                    currentChar = 32;
+                } else {
+                    currentChar = (char) control.getType().LOWER_BOUND;
+                }
             }
             nextChar = (char) (currentChar + 1);
-            if (nextChar > control.getType().UPPER_BOUND) {
-                nextChar = (char) control.getType().LOWER_BOUND;
+            if (nextChar > control.getType().UPPER_BOUND || nextChar < control.getType().LOWER_BOUND) {
+                if (control.getCharacter() == 32) {
+                    nextChar = 32;
+                } else {
+                    nextChar = (char) control.getType().LOWER_BOUND;
+                }
             }
             if (currentChar == control.getCharacter()) {
                 timer.stop();
@@ -288,11 +296,19 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
 
             currentChar--;
             if (currentChar < control.getType().LOWER_BOUND) {
-                currentChar = (char) control.getType().UPPER_BOUND;
+                if (control.getCharacter() == 32) {
+                    currentChar = 32;
+                } else {
+                    currentChar = (char) control.getType().UPPER_BOUND;
+                }
             }
             nextChar = (char) (currentChar - 1);
             if (nextChar < control.getType().LOWER_BOUND) {
-                nextChar = (char) control.getType().UPPER_BOUND;
+                if (control.getCharacter() == 32) {
+                    nextChar = 32;
+                } else {
+                    nextChar = (char) control.getType().UPPER_BOUND;
+                }
             }
             if (currentChar == control.getCharacter()) {
                 timer.stop();
