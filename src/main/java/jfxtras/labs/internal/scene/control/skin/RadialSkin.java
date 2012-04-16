@@ -489,13 +489,13 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                     rotationAngleTimeline.getKeyFrames().add(kf);
                     rotationAngleTimeline.play();
                 } else {
-                    //pointerRotation.setPivotX(center.getX());
-                    //pointerRotation.setPivotY(center.getY());
-                    //pointerRotation.setAngle((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
                     pointer.getTransforms().clear();
-                    pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET + (control.getMinValue() * control.getAngleStep()), center.getX(), center.getY()));
-                    //pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET + (newValue.doubleValue() - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getY()));
-                    //pointer.getTransforms().add(pointerRotation);
+                    pointerRotation.setPivotX(center.getX());
+                    pointerRotation.setPivotY(center.getY());
+                    pointerRotation.setAngle((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
+                    //pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET + negativeOffset, center.getX(), center.getY()));
+                    pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
+                    pointer.getTransforms().add(pointerRotation);
                 }
 
                 checkMarkers(control, oldValue.doubleValue(), newValue.doubleValue());
