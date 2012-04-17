@@ -61,7 +61,13 @@ public class SplitFlap extends Control {
     }
     private static final String   DEFAULT_STYLE_CLASS = "splitflap";
     private ObjectProperty<Color> color;
+    private ObjectProperty<Color> upperFlapTopColor;
+    private ObjectProperty<Color> upperFlapBottomColor;
+    private ObjectProperty<Color> lowerFlapTopColor;
+    private ObjectProperty<Color> lowerFlapBottomColor;
     private ObjectProperty<Color> characterColor;
+    private ObjectProperty<Color> characterUpperFlapColor;
+    private ObjectProperty<Color> characterLowerFlapColor;
     private ObjectProperty<Type>  type;
     private IntegerProperty       character;
     private LongProperty          flipTimeInMs;
@@ -75,13 +81,19 @@ public class SplitFlap extends Control {
     }
 
     public SplitFlap(final String CHARACTER) {
-        color            = new SimpleObjectProperty<Color>(Color.rgb(56, 56, 56));
-        characterColor   = new SimpleObjectProperty<Color>(Color.WHITE);
-        type             = new SimpleObjectProperty<Type>(Type.NUMERIC);
-        character        = new SimpleIntegerProperty(CHARACTER.charAt(0));
-        flipTimeInMs     = new SimpleLongProperty(200l);
-        countdownMode    = new SimpleBooleanProperty(false);
-        keepAspect       = true;
+        color                   = new SimpleObjectProperty<Color>(Color.rgb(56, 56, 56));
+        upperFlapTopColor       = new SimpleObjectProperty<Color>(Color.rgb(68, 68, 68));
+        upperFlapBottomColor    = new SimpleObjectProperty<Color>(Color.rgb(34, 34, 34));
+        lowerFlapTopColor       = new SimpleObjectProperty<Color>(Color.rgb(88, 88, 88));
+        lowerFlapBottomColor    = new SimpleObjectProperty<Color>(Color.rgb(54, 54, 54));
+        characterColor          = new SimpleObjectProperty<Color>(Color.WHITE);
+        characterUpperFlapColor = new SimpleObjectProperty<Color>(Color.rgb(220, 226, 0));
+        characterLowerFlapColor = new SimpleObjectProperty<Color>(Color.rgb(253, 255, 84));
+        type                    = new SimpleObjectProperty<Type>(Type.NUMERIC);
+        character               = new SimpleIntegerProperty(CHARACTER.charAt(0));
+        flipTimeInMs            = new SimpleLongProperty(200l);
+        countdownMode           = new SimpleBooleanProperty(false);
+        keepAspect              = true;
 
         init();
     }
@@ -98,6 +110,10 @@ public class SplitFlap extends Control {
     }
 
     public final void setColor(final Color COLOR) {
+        lowerFlapTopColor.set(COLOR.brighter().brighter());
+        lowerFlapBottomColor.set(COLOR);
+        upperFlapTopColor.set(COLOR.darker().darker());
+        upperFlapBottomColor.set(COLOR);
         color.set(COLOR);
     }
 
@@ -105,16 +121,90 @@ public class SplitFlap extends Control {
         return color;
     }
 
+    public final Color getUpperFlapTopColor() {
+        return upperFlapTopColor.get();
+    }
+
+    public final void setUpperFlapTopColor(final Color UPPER_FLAP_TOP_COLOR) {
+        upperFlapTopColor.set(UPPER_FLAP_TOP_COLOR);
+    }
+
+    public final ObjectProperty<Color> upperFlapTopColorProperty() {
+        return upperFlapTopColor;
+    }
+
+    public final Color getUpperFlapBottomColor() {
+        return upperFlapBottomColor.get();
+    }
+
+    public final void setUpperFlapBottomColor(final Color UPPER_FLAP_BOTTOM_COLOR) {
+        upperFlapBottomColor.set(UPPER_FLAP_BOTTOM_COLOR);
+    }
+
+    public final ObjectProperty<Color> upperFlapBottomColorProperty() {
+        return upperFlapBottomColor;
+    }
+
+    public final Color getLowerFlapTopColor() {
+            return lowerFlapTopColor.get();
+        }
+
+    public final void setLowerFlapTopColor(final Color LOWER_FLAP_TOP_COLOR) {
+        lowerFlapTopColor.set(LOWER_FLAP_TOP_COLOR);
+    }
+
+    public final ObjectProperty<Color> lowerFlapTopColorProperty() {
+        return lowerFlapTopColor;
+    }
+
+    public final Color getLowerFlapBottomColor() {
+        return lowerFlapBottomColor.get();
+    }
+
+    public final void setLowerFlapBottomColor(final Color LOWER_FLAP_BOTTOM_COLOR) {
+        lowerFlapBottomColor.set(LOWER_FLAP_BOTTOM_COLOR);
+    }
+
+    public final ObjectProperty<Color> lowerFlapBottomColorProperty() {
+        return lowerFlapBottomColor;
+    }
+
     public final Color getCharacterColor() {
         return characterColor.get();
     }
 
     public final void setCharacterColor(final Color COLOR) {
+        characterUpperFlapColor.set(COLOR.darker());
+        characterLowerFlapColor.set(COLOR.brighter());
         characterColor.set(COLOR);
     }
 
     public final ObjectProperty<Color> characterColorProperty() {
         return characterColor;
+    }
+
+    public final Color getCharacterUpperFlapColor() {
+        return characterUpperFlapColor.get();
+    }
+
+    public final void setCharacterUpperFlapColor(final Color CHARACTER_UPPER_FLAP_COLOR) {
+        characterUpperFlapColor.set(CHARACTER_UPPER_FLAP_COLOR);
+    }
+
+    public final ObjectProperty<Color> characterUpperFlapColorProperty() {
+        return characterUpperFlapColor;
+    }
+
+    public final Color getCharacterLowerFlapColor() {
+        return characterLowerFlapColor.get();
+    }
+
+    public final void setCharacterLowerFlapColor(final Color CHARACTER_LOWER_FLAP_COLOR) {
+        characterLowerFlapColor.set(CHARACTER_LOWER_FLAP_COLOR);
+    }
+
+    public final ObjectProperty<Color> characterLowerFlapColorProperty() {
+        return characterLowerFlapColor;
     }
 
     public final Type getType() {

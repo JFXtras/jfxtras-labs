@@ -64,16 +64,11 @@ import jfxtras.labs.scene.control.gauge.SplitFlap;
  */
 public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
     private SplitFlap control;
-    private static double  MIN_FLIP_TIME = 1000000000.0 / 60.0; // 60 fps
+    private static double  MIN_FLIP_TIME = 16666666.6666667; // 60 fps
     private boolean        isDirty;
     private boolean        initialized;
     private Group          fixture;
     private Group          flip;
-    private Color          bright;
-    private Color          brighter;
-    private Color          dark;
-    private Color          darker;
-    private Color          textColor;
     private Path           upper;
     private Text           upperText;
     private Path           upperNext;
@@ -99,11 +94,6 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         isDirty          = false;
         fixture          = new Group();
         flip             = new Group();
-        bright           = control.getColor().brighter();
-        brighter         = control.getColor().brighter().brighter();
-        dark             = control.getColor().darker();
-        darker           = control.getColor().darker().darker();
-        textColor        = control.getCharacterColor();
         upperText        = new Text(Character.toString(control.getCharacter()));
         lowerText        = new Text(Character.toString(control.getCharacter()));
         upperNextText    = new Text(Character.toString((char) (control.getCharacter() + 1)));
@@ -178,13 +168,8 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
         if (PROPERTY == "COLOR") {
-            bright   = control.getColor().brighter();
-            brighter = control.getColor().brighter().brighter();
-            dark     = control.getColor().darker();
-            darker   = control.getColor().darker().darker();
             paint();
         } else if (PROPERTY == "CHARACTER_COLOR") {
-            textColor = control.getCharacterColor();
             paint();
         } else if (PROPERTY == "CHARACTER") {
             if (control.getCharacter() != currentChar) {
@@ -401,6 +386,8 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
                                      RIGHTMAIN,
                                      LEFTFRAME,
                                      LEFTMAIN);
+
+        fixture.setCache(true);
     }
 
     public void drawFlip() {
@@ -437,8 +424,8 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         final Paint LOWER_FILL = new LinearGradient(0.5342465753424658 * WIDTH, 0.5079365079365079 * HEIGHT,
                                                     0.5342465753424658 * WIDTH, 0.9947089947089947 * HEIGHT,
                                                     false, CycleMethod.NO_CYCLE,
-                                                    new Stop(0.0, brighter),
-                                                    new Stop(1.0, control.getColor()));
+                                                    new Stop(0.0, control.getLowerFlapTopColor()),
+                                                    new Stop(1.0, control.getLowerFlapBottomColor()));
         lower.setFill(LOWER_FILL);
         lower.setStroke(null);
 
@@ -490,8 +477,8 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         final Paint UPPER_FILL = new LinearGradient(0.5205479452054794 * WIDTH, 0.0,
                                                     0.5205479452054794 * WIDTH, 0.49206349206349204 * HEIGHT,
                                                     false, CycleMethod.NO_CYCLE,
-                                                    new Stop(0.0, darker),
-                                                    new Stop(1.0, control.getColor()));
+                                                    new Stop(0.0, control.getUpperFlapTopColor()),
+                                                    new Stop(1.0, control.getUpperFlapBottomColor()));
         upper.setFill(UPPER_FILL);
         upper.setStroke(null);
 
@@ -528,8 +515,8 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         LinearGradient upperTextFill = new LinearGradient(0.0, upperText.getLayoutBounds().getMinY(),
                                                           0.0, upperText.getLayoutBounds().getMaxY(),
                                                           false, CycleMethod.NO_CYCLE,
-                                                          new Stop(0.0, textColor.darker()),
-                                                          new Stop(0.5, textColor));
+                                                          new Stop(0.0, control.getCharacterUpperFlapColor()),
+                                                          new Stop(0.5, control.getCharacterColor()));
         upperText.setFill(upperTextFill);
         upperText.setStroke(null);
 
@@ -544,8 +531,8 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         LinearGradient lowerTextFill = new LinearGradient(0.0, lowerText.getLayoutBounds().getMinY(),
                                                           0.0, lowerText.getLayoutBounds().getMaxY(),
                                                           false, CycleMethod.NO_CYCLE,
-                                                          new Stop(0.5, textColor.brighter()),
-                                                          new Stop(1.0, textColor));
+                                                          new Stop(0.5, control.getCharacterLowerFlapColor()),
+                                                          new Stop(1.0, control.getCharacterColor()));
         lowerText.setFill(lowerTextFill);
         lowerText.setStroke(null);
 
@@ -576,8 +563,8 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         final Paint UPPER_NEXT_FILL = new LinearGradient(0.5205479452054794 * WIDTH, 0.0,
                                                          0.5205479452054794 * WIDTH, 0.49206349206349204 * HEIGHT,
                                                          false, CycleMethod.NO_CYCLE,
-                                                         new Stop(0.0, dark),
-                                                         new Stop(1.0, bright));
+                                                         new Stop(0.0, control.getUpperFlapTopColor()),
+                                                         new Stop(1.0, control.getUpperFlapBottomColor()));
         upperNext.setFill(UPPER_NEXT_FILL);
         upperNext.setStroke(null);
         upperNext.setEffect(UPPER_LIGHT_EFFECT);
@@ -593,8 +580,8 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         LinearGradient upperNextTextFill = new LinearGradient(0.0, upperNextText.getLayoutBounds().getMinY(),
                                                               0.0, upperNextText.getLayoutBounds().getMaxY(),
                                                               false, CycleMethod.NO_CYCLE,
-                                                              new Stop(0.0, textColor.darker()),
-                                                              new Stop(0.5, textColor));
+                                                              new Stop(0.0, control.getCharacterUpperFlapColor()),
+                                                              new Stop(0.5, control.getCharacterColor()));
         upperNextText.setFill(upperNextTextFill);
         upperNextText.setStroke(null);
 
@@ -609,8 +596,8 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         LinearGradient lowerNextTextFill = new LinearGradient(0.0, lowerNextText.getLayoutBounds().getMinY(),
                                                               0.0, lowerNextText.getLayoutBounds().getMaxY(),
                                                               false, CycleMethod.NO_CYCLE,
-                                                              new Stop(0.0, textColor.darker()),
-                                                              new Stop(0.5, textColor));
+                                                              new Stop(0.0, control.getCharacterLowerFlapColor()),
+                                                              new Stop(0.5, control.getCharacterColor()));
         lowerNextText.setFill(lowerNextTextFill);
         lowerNextText.setStroke(null);
         lowerNextText.setVisible(false);
