@@ -79,7 +79,7 @@ public class SplitFlap extends Control {
         characterColor   = new SimpleObjectProperty<Color>(Color.WHITE);
         type             = new SimpleObjectProperty<Type>(Type.NUMERIC);
         character        = new SimpleIntegerProperty(CHARACTER.charAt(0));
-        flipTimeInMs = new SimpleLongProperty(200000000l);
+        flipTimeInMs     = new SimpleLongProperty(200l);
         countdownMode    = new SimpleBooleanProperty(false);
         keepAspect       = true;
 
