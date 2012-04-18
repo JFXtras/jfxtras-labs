@@ -27,6 +27,7 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
+import javafx.scene.CacheHint;
 import jfxtras.labs.internal.scene.control.behavior.RadialBehavior;
 import jfxtras.labs.scene.control.gauge.Gauge.PointerType;
 import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
@@ -959,6 +960,8 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         threshold.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
         threshold.getTransforms().add(Transform.rotate(-control.getMinValue() * control.getAngleStep(), center.getX(), center.getY()));
         threshold.getTransforms().add(Transform.rotate(control.getThreshold() * control.getAngleStep(), center.getX(), center.getY()));
+
+        threshold.setCache(true);
     }
 
     public void drawMinMeasuredIndicator() {
@@ -986,6 +989,9 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         minMeasured.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
         minMeasured.getTransforms().add(Transform.rotate(-control.getMinValue() * control.getAngleStep(), center.getX(), center.getY()));
         minMeasured.getTransforms().add(Transform.rotate(control.getMinMeasuredValue() * control.getAngleStep(), center.getX(), center.getY()));
+
+        minMeasured.setCache(true);
+        minMeasured.setCacheHint(CacheHint.ROTATE);
     }
 
     public void drawMaxMeasuredIndicator() {
@@ -1013,6 +1019,9 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         maxMeasured.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
         maxMeasured.getTransforms().add(Transform.rotate(-control.getMinValue() * control.getAngleStep(), center.getX(), center.getY()));
         maxMeasured.getTransforms().add(Transform.rotate(control.getMaxMeasuredValue() * control.getAngleStep(), center.getX(), center.getY()));
+
+        maxMeasured.setCache(true);
+        maxMeasured.setCacheHint(CacheHint.ROTATE);
     }
 
     public void drawPointer() {
@@ -1406,6 +1415,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         pointer.getTransforms().clear();
         pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET + (control.getValue() - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getY()));
         pointer.setCache(true);
+        pointer.setCacheHint(CacheHint.ROTATE);
     }
 
     public void drawLcdContent() {

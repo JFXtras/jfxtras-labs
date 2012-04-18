@@ -909,6 +909,8 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         LCD_MAIN.setEffect(INNER_SHADOW);
 
         LCD.getChildren().addAll(LCD_FRAME, LCD_MAIN);
+
+        LCD.setCache(true);
     }
 
     protected void drawCircularBargraph(final Gauge CONTROL, final Group BARGRAPH, final int NO_OF_LEDS, final ArrayList<Shape> LEDS, final boolean ON, final boolean VISIBLE, final Point2D CENTER, final Rectangle GAUGE_BOUNDS) {
@@ -1367,9 +1369,9 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
     }
 
     private static void drawRadialTicks(final Path TICKMARKS_PATH, final Point2D INNER_POINT, final Point2D OUTER_POINT) {
-            TICKMARKS_PATH.getElements().add(new MoveTo(INNER_POINT.getX(), INNER_POINT.getY()));
-            TICKMARKS_PATH.getElements().add(new LineTo(OUTER_POINT.getX(), OUTER_POINT.getY()));
-        }
+        TICKMARKS_PATH.getElements().add(new MoveTo(INNER_POINT.getX(), INNER_POINT.getY()));
+        TICKMARKS_PATH.getElements().add(new LineTo(OUTER_POINT.getX(), OUTER_POINT.getY()));
+    }
 
 
     // ******************** Shape and Group creation **************************
@@ -1474,6 +1476,8 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         MARKER.setLayoutX(OFFSET.getX());
         MARKER.setLayoutY(OFFSET.getY());
 
+        MARKER.setCache(true);
+
         return MARKER;
     }
 
@@ -1521,6 +1525,9 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         KNOB_MAIN.setStroke(null);
 
         KNOB.getChildren().addAll(KNOB_FRAME, KNOB_MAIN);
+
+        KNOB.setCache(true);
+
         return KNOB;
     }
 
@@ -1619,94 +1626,100 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         KNOB_INNER_BACKGROUND.setStroke(null);
 
         KNOB.getChildren().addAll(KNOB_FRAME, KNOB_MAIN, KNOB_LOWER_HIGHLIGHT, KNOB_UPPER_HIGHLIGHT, KNOB_INNER_FRAME, KNOB_INNER_BACKGROUND);
+
+        KNOB.setCache(true);
+
         return KNOB;
     }
 
     protected Group createPlainKnob(final double SIZE, final KnobColor KNOB_COLOR) {
-            final Group KNOB = new Group();
+        final Group KNOB = new Group();
 
-            final Circle KNOB_FRAME = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.5 * SIZE);
-            KNOB_FRAME.setFill(new LinearGradient(0.5 * SIZE, 0.0, 0.5 * SIZE, SIZE, false,
-                CycleMethod.NO_CYCLE,
-                new Stop(0.0, Color.color(0.3607843137, 0.3725490196, 0.3960784314, 1)),
-                new Stop(0.47, Color.color(0.1803921569, 0.1921568627, 0.2078431373, 1)),
-                new Stop(1.0, Color.color(0.0862745098, 0.0901960784, 0.1019607843, 1))));
-            KNOB_FRAME.setStroke(null);
+        final Circle KNOB_FRAME = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.5 * SIZE);
+        KNOB_FRAME.setFill(new LinearGradient(0.5 * SIZE, 0.0, 0.5 * SIZE, SIZE, false,
+            CycleMethod.NO_CYCLE,
+            new Stop(0.0, Color.color(0.3607843137, 0.3725490196, 0.3960784314, 1)),
+            new Stop(0.47, Color.color(0.1803921569, 0.1921568627, 0.2078431373, 1)),
+            new Stop(1.0, Color.color(0.0862745098, 0.0901960784, 0.1019607843, 1))));
+        KNOB_FRAME.setStroke(null);
 
-            final Stop[] KNOB_MAIN_STOPS;
-            switch (KNOB_COLOR) {
-                case BLACK:
-                    KNOB_MAIN_STOPS = new Stop[] {
-                        new Stop(0.0, Color.web("#2B2A2F")),
-                        new Stop(1.0, Color.web("#1A1B20"))
-                    };
-                    break;
-                case BRASS:
-                    KNOB_MAIN_STOPS = new Stop[] {
-                        new Stop(0.0, Color.web("#966E36")),
-                        new Stop(1.0, Color.web("#7C5F3D"))
-                    };
-                    break;
-                case SILVER:
-                default:
-                    KNOB_MAIN_STOPS = new Stop[] {
-                        new Stop(0.0, Color.color(0.8, 0.8, 0.8, 1)),
-                        new Stop(1.0, Color.color(0.3411764706, 0.3607843137, 0.3843137255, 1))
-                    };
-                    break;
-            }
-
-            final Circle KNOB_MAIN = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.4444444444444444 * SIZE);
-            KNOB_MAIN.setFill(new LinearGradient(0.5 * SIZE, 0.05555555555555555 * SIZE, 0.5 * SIZE,
-                                                 0.9444444444444444 * SIZE, false, CycleMethod.NO_CYCLE,
-                                                 KNOB_MAIN_STOPS));
-            KNOB_MAIN.setStroke(null);
-
-            final Path KNOB_LOWER_HIGHLIGHT = new Path();
-            KNOB_LOWER_HIGHLIGHT.setFillRule(FillRule.EVEN_ODD);
-            KNOB_LOWER_HIGHLIGHT.getElements().add(new MoveTo(0.7777777777777778 * SIZE, 0.8333333333333334 * SIZE));
-            KNOB_LOWER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.7222222222222222 * SIZE, 0.7222222222222222 * SIZE,
-                                                                    0.6111111111111112 * SIZE, 0.6666666666666666 * SIZE,
-                                                                    0.5 * SIZE, 0.6666666666666666 * SIZE));
-            KNOB_LOWER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.3888888888888889 * SIZE, 0.6666666666666666 * SIZE,
-                                                                    0.2777777777777778 * SIZE, 0.7222222222222222 * SIZE,
-                                                                    0.2222222222222222 * SIZE, 0.8333333333333334 * SIZE));
-            KNOB_LOWER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.2777777777777778 * SIZE, 0.8888888888888888 * SIZE,
-                                                                    0.3888888888888889 * SIZE, 0.9444444444444444 * SIZE,
-                                                                    0.5 * SIZE, 0.9444444444444444 * SIZE));
-            KNOB_LOWER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.6111111111111112 * SIZE, 0.9444444444444444 * SIZE,
-                                                                    0.7222222222222222 * SIZE, 0.8888888888888888 * SIZE,
-                                                                    0.7777777777777778 * SIZE, 0.8333333333333334 * SIZE));
-            KNOB_LOWER_HIGHLIGHT.getElements().add(new ClosePath());
-            KNOB_LOWER_HIGHLIGHT.setFill(new RadialGradient(0, 0, 0.5555555555555556 * SIZE, 0.9444444444444444 * SIZE,
-                                                            0.3888888888888889 * SIZE, false, CycleMethod.NO_CYCLE,
-                                                            new Stop(0.0, Color.color(1, 1, 1, 0.2)),
-                                                            new Stop(1.0, Color.color(1, 1, 1, 0))));
-            KNOB_LOWER_HIGHLIGHT.setStroke(null);
-
-            final Path KNOB_UPPER_HIGHLIGHT = new Path();
-            KNOB_UPPER_HIGHLIGHT.setFillRule(FillRule.EVEN_ODD);
-            KNOB_UPPER_HIGHLIGHT.getElements().add(new MoveTo(0.9444444444444444 * SIZE, 0.2777777777777778 * SIZE));
-            KNOB_UPPER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.8333333333333334 * SIZE, 0.1111111111111111 * SIZE,
-                                                                    0.6666666666666666 * SIZE, 0.0, 0.5 * SIZE, 0.0));
-            KNOB_UPPER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.3333333333333333 * SIZE, 0.0, 0.16666666666666666 * SIZE,
-                                                                    0.1111111111111111 * SIZE, 0.05555555555555555 * SIZE, 0.2777777777777778 * SIZE));
-            KNOB_UPPER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.16666666666666666 * SIZE, 0.3333333333333333 * SIZE,
-                                                                    0.3333333333333333 * SIZE, 0.3888888888888889 * SIZE,
-                                                                    0.5 * SIZE, 0.3888888888888889 * SIZE));
-            KNOB_UPPER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.6666666666666666 * SIZE, 0.3888888888888889 * SIZE,
-                                                                    0.8333333333333334 * SIZE, 0.3333333333333333 * SIZE,
-                                                                    0.9444444444444444 * SIZE, 0.2777777777777778 * SIZE));
-            KNOB_UPPER_HIGHLIGHT.getElements().add(new ClosePath());
-            KNOB_UPPER_HIGHLIGHT.setFill(new RadialGradient(0, 0, 0.5 * SIZE, 0.0, 0.5833333333333334 * SIZE,
-                                                            false, CycleMethod.NO_CYCLE,
-                                                            new Stop(0.0, Color.color(1, 1, 1, 0.35)),
-                                                            new Stop(1.0, Color.color(1, 1, 1, 0))));
-            KNOB_UPPER_HIGHLIGHT.setStroke(null);
-
-            KNOB.getChildren().addAll(KNOB_FRAME, KNOB_MAIN, KNOB_LOWER_HIGHLIGHT, KNOB_UPPER_HIGHLIGHT);
-            return KNOB;
+        final Stop[] KNOB_MAIN_STOPS;
+        switch (KNOB_COLOR) {
+            case BLACK:
+                KNOB_MAIN_STOPS = new Stop[] {
+                    new Stop(0.0, Color.web("#2B2A2F")),
+                    new Stop(1.0, Color.web("#1A1B20"))
+                };
+                break;
+            case BRASS:
+                KNOB_MAIN_STOPS = new Stop[] {
+                    new Stop(0.0, Color.web("#966E36")),
+                    new Stop(1.0, Color.web("#7C5F3D"))
+                };
+                break;
+            case SILVER:
+            default:
+                KNOB_MAIN_STOPS = new Stop[] {
+                    new Stop(0.0, Color.color(0.8, 0.8, 0.8, 1)),
+                    new Stop(1.0, Color.color(0.3411764706, 0.3607843137, 0.3843137255, 1))
+                };
+                break;
         }
+
+        final Circle KNOB_MAIN = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.4444444444444444 * SIZE);
+        KNOB_MAIN.setFill(new LinearGradient(0.5 * SIZE, 0.05555555555555555 * SIZE, 0.5 * SIZE,
+                                             0.9444444444444444 * SIZE, false, CycleMethod.NO_CYCLE,
+                                             KNOB_MAIN_STOPS));
+        KNOB_MAIN.setStroke(null);
+
+        final Path KNOB_LOWER_HIGHLIGHT = new Path();
+        KNOB_LOWER_HIGHLIGHT.setFillRule(FillRule.EVEN_ODD);
+        KNOB_LOWER_HIGHLIGHT.getElements().add(new MoveTo(0.7777777777777778 * SIZE, 0.8333333333333334 * SIZE));
+        KNOB_LOWER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.7222222222222222 * SIZE, 0.7222222222222222 * SIZE,
+                                                                0.6111111111111112 * SIZE, 0.6666666666666666 * SIZE,
+                                                                0.5 * SIZE, 0.6666666666666666 * SIZE));
+        KNOB_LOWER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.3888888888888889 * SIZE, 0.6666666666666666 * SIZE,
+                                                                0.2777777777777778 * SIZE, 0.7222222222222222 * SIZE,
+                                                                0.2222222222222222 * SIZE, 0.8333333333333334 * SIZE));
+        KNOB_LOWER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.2777777777777778 * SIZE, 0.8888888888888888 * SIZE,
+                                                                0.3888888888888889 * SIZE, 0.9444444444444444 * SIZE,
+                                                                0.5 * SIZE, 0.9444444444444444 * SIZE));
+        KNOB_LOWER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.6111111111111112 * SIZE, 0.9444444444444444 * SIZE,
+                                                                0.7222222222222222 * SIZE, 0.8888888888888888 * SIZE,
+                                                                0.7777777777777778 * SIZE, 0.8333333333333334 * SIZE));
+        KNOB_LOWER_HIGHLIGHT.getElements().add(new ClosePath());
+        KNOB_LOWER_HIGHLIGHT.setFill(new RadialGradient(0, 0, 0.5555555555555556 * SIZE, 0.9444444444444444 * SIZE,
+                                                        0.3888888888888889 * SIZE, false, CycleMethod.NO_CYCLE,
+                                                        new Stop(0.0, Color.color(1, 1, 1, 0.2)),
+                                                        new Stop(1.0, Color.color(1, 1, 1, 0))));
+        KNOB_LOWER_HIGHLIGHT.setStroke(null);
+
+        final Path KNOB_UPPER_HIGHLIGHT = new Path();
+        KNOB_UPPER_HIGHLIGHT.setFillRule(FillRule.EVEN_ODD);
+        KNOB_UPPER_HIGHLIGHT.getElements().add(new MoveTo(0.9444444444444444 * SIZE, 0.2777777777777778 * SIZE));
+        KNOB_UPPER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.8333333333333334 * SIZE, 0.1111111111111111 * SIZE,
+                                                                0.6666666666666666 * SIZE, 0.0, 0.5 * SIZE, 0.0));
+        KNOB_UPPER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.3333333333333333 * SIZE, 0.0, 0.16666666666666666 * SIZE,
+                                                                0.1111111111111111 * SIZE, 0.05555555555555555 * SIZE, 0.2777777777777778 * SIZE));
+        KNOB_UPPER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.16666666666666666 * SIZE, 0.3333333333333333 * SIZE,
+                                                                0.3333333333333333 * SIZE, 0.3888888888888889 * SIZE,
+                                                                0.5 * SIZE, 0.3888888888888889 * SIZE));
+        KNOB_UPPER_HIGHLIGHT.getElements().add(new CubicCurveTo(0.6666666666666666 * SIZE, 0.3888888888888889 * SIZE,
+                                                                0.8333333333333334 * SIZE, 0.3333333333333333 * SIZE,
+                                                                0.9444444444444444 * SIZE, 0.2777777777777778 * SIZE));
+        KNOB_UPPER_HIGHLIGHT.getElements().add(new ClosePath());
+        KNOB_UPPER_HIGHLIGHT.setFill(new RadialGradient(0, 0, 0.5 * SIZE, 0.0, 0.5833333333333334 * SIZE,
+                                                        false, CycleMethod.NO_CYCLE,
+                                                        new Stop(0.0, Color.color(1, 1, 1, 0.35)),
+                                                        new Stop(1.0, Color.color(1, 1, 1, 0))));
+        KNOB_UPPER_HIGHLIGHT.setStroke(null);
+
+        KNOB.getChildren().addAll(KNOB_FRAME, KNOB_MAIN, KNOB_LOWER_HIGHLIGHT, KNOB_UPPER_HIGHLIGHT);
+
+        KNOB.setCache(true);
+
+        return KNOB;
+    }
 
     protected Group createBigKnob(final double SIZE, final KnobColor KNOB_COLOR) {
         final Group KNOB = new Group();
@@ -1811,6 +1824,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         KNOB_FOREGROUND.setStroke(null);
 
         KNOB.getChildren().addAll(KNOB_FRAME, KNOB_BACKGROUND, KNOB_FOREGROUND_FRAME, KNOB_FOREGROUND);
+        KNOB.setCache(true);
         return KNOB;
     }
 
@@ -1869,6 +1883,9 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         LED_GLOW.inputProperty().set(LED_INNER_SHADOW);
         LED.setEffect(LED_GLOW);
         */
+
+        LED.setCache(true);
+
         return LED;
     }
 
@@ -1907,6 +1924,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         INDICATOR.setStroke(null);
 
         LCD_THRESHOLD_INDICATOR.getChildren().addAll(INDICATOR);
+        LCD_THRESHOLD_INDICATOR.setCache(true);
 
         return LCD_THRESHOLD_INDICATOR;
     }
