@@ -72,6 +72,7 @@ public class SplitFlap extends Control {
     private IntegerProperty       character;
     private LongProperty          flipTimeInMs;
     private BooleanProperty       countdownMode;
+    private BooleanProperty       soundOn;
     private boolean               keepAspect;
 
 
@@ -82,17 +83,18 @@ public class SplitFlap extends Control {
 
     public SplitFlap(final String CHARACTER) {
         color                   = new SimpleObjectProperty<Color>(Color.rgb(56, 56, 56));
-        upperFlapTopColor       = new SimpleObjectProperty<Color>(Color.rgb(68, 68, 68));
-        upperFlapBottomColor    = new SimpleObjectProperty<Color>(Color.rgb(34, 34, 34));
-        lowerFlapTopColor       = new SimpleObjectProperty<Color>(Color.rgb(88, 88, 88));
-        lowerFlapBottomColor    = new SimpleObjectProperty<Color>(Color.rgb(54, 54, 54));
+        upperFlapTopColor       = new SimpleObjectProperty<Color>(Color.rgb(45, 46, 43));
+        upperFlapBottomColor    = new SimpleObjectProperty<Color>(Color.rgb(52, 53, 43));
+        lowerFlapTopColor       = new SimpleObjectProperty<Color>(Color.rgb(61, 61, 55));
+        lowerFlapBottomColor    = new SimpleObjectProperty<Color>(Color.rgb(43, 40, 34));
         characterColor          = new SimpleObjectProperty<Color>(Color.WHITE);
-        characterUpperFlapColor = new SimpleObjectProperty<Color>(Color.rgb(220, 226, 0));
-        characterLowerFlapColor = new SimpleObjectProperty<Color>(Color.rgb(253, 255, 84));
+        characterUpperFlapColor = new SimpleObjectProperty<Color>(Color.rgb(255, 255, 255));
+        characterLowerFlapColor = new SimpleObjectProperty<Color>(Color.rgb(244, 242, 232));
         type                    = new SimpleObjectProperty<Type>(Type.NUMERIC);
         character               = new SimpleIntegerProperty(CHARACTER.charAt(0));
         flipTimeInMs            = new SimpleLongProperty(200l);
         countdownMode           = new SimpleBooleanProperty(false);
+        soundOn                 = new SimpleBooleanProperty(false);
         keepAspect              = true;
 
         init();
@@ -257,6 +259,18 @@ public class SplitFlap extends Control {
 
     public final BooleanProperty countdownModeProperty() {
         return countdownMode;
+    }
+
+    public final boolean isSoundOn() {
+        return soundOn.get();
+    }
+
+    public final void setSoundOn(final boolean SOUND_ON) {
+        soundOn.set(SOUND_ON);
+    }
+
+    public final BooleanProperty soundOnProperty() {
+        return soundOn;
     }
 
     @Override public void setPrefSize(final double WIDTH, final double HEIGHT) {

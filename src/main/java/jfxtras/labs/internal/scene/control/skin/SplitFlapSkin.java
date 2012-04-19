@@ -35,6 +35,7 @@ import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -55,6 +56,8 @@ import javafx.scene.transform.Rotate;
 import jfxtras.labs.internal.scene.control.behavior.SplitFlapBehavior;
 import jfxtras.labs.scene.control.gauge.SplitFlap;
 
+import java.io.File;
+
 
 /**
  * Created by
@@ -63,27 +66,28 @@ import jfxtras.labs.scene.control.gauge.SplitFlap;
  * Time: 09:12
  */
 public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
-    private SplitFlap control;
-    private static double  MIN_FLIP_TIME = 16666666.6666667; // 60 fps
-    private boolean        isDirty;
-    private boolean        initialized;
-    private Group          fixture;
-    private Group          flip;
-    private Path           upper;
-    private Text           upperText;
-    private Path           upperNext;
-    private Text           upperNextText;
-    private Path           lower;
-    private Text           lowerText;
-    private Text           lowerNextText;
-    private char           currentChar;
-    private char           nextChar;
-    private Rotate         rotate;
-    private Rotate         lowerFlipVert;
-    private double         angleStep;
-    private double         currentAngle;
-    private boolean        flipping;
-    private AnimationTimer timer;
+    private SplitFlap        control;
+    private static double   MIN_FLIP_TIME = 16666666.6666667; // 60 fps
+    private final AudioClip SOUND         = new AudioClip(getClass().getResource("/jfxtras/labs/scene/control/gauge/flap.mp3").toExternalForm());
+    private boolean         isDirty;
+    private boolean         initialized;
+    private Group           fixture;
+    private Group           flip;
+    private Path            upper;
+    private Text            upperText;
+    private Path            upperNext;
+    private Text            upperNextText;
+    private Path            lower;
+    private Text            lowerText;
+    private Text            lowerNextText;
+    private char            currentChar;
+    private char            nextChar;
+    private Rotate          rotate;
+    private Rotate          lowerFlipVert;
+    private double          angleStep;
+    private double          currentAngle;
+    private boolean         flipping;
+    private AnimationTimer  timer;
 
 
     // ******************** Constructors **************************************
@@ -106,13 +110,13 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         flipping         = false;
         timer            = new AnimationTimer() {
             @Override public void handle(long l) {
-            if (initialized) {
-                if (control.isCountdownMode()) {
-                    flipBackward(angleStep);}
-                else {
-                    flipForward(angleStep);
+                if (initialized) {
+                    if (control.isCountdownMode()) {
+                        flipBackward(angleStep);}
+                    else {
+                        flipForward(angleStep);
+                    }
                 }
-            }
             }
         };
         init();
@@ -217,6 +221,9 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
     private void flipForward(final double ANGLE) {
         currentAngle += ANGLE;
         if (Double.compare(currentAngle, 180) >= 0) {
+            if (control.isSoundOn()) {
+                SOUND.play();
+            }
             currentAngle = 0;
             upper.getTransforms().clear();
             upperText.getTransforms().clear();
