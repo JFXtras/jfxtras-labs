@@ -67,6 +67,7 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
     private Path arrowUp;
     private Path arrowDown;
     private final double ARROW_SIZE = 4;
+    // arrow height is ARROW_HEIGHT * ARROW_SIZE
     private final double ARROW_HEIGHT = 0.7;
 
     /**
@@ -74,10 +75,10 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
      */
     private void createNodes() {
         root = GridPaneBuilder.create().columnConstraints(
-                ColumnConstraintsBuilder.create().fillWidth(false).build(),
-                ColumnConstraintsBuilder.create().fillWidth(false).build()).rowConstraints(
-                RowConstraintsBuilder.create().fillHeight(false).build(),
-                RowConstraintsBuilder.create().fillHeight(false).build()).build();
+                ColumnConstraintsBuilder.create().fillWidth(true).build(),
+                ColumnConstraintsBuilder.create().fillWidth(true).build()).rowConstraints(
+                RowConstraintsBuilder.create().fillHeight(true).build(),
+                RowConstraintsBuilder.create().fillHeight(true).build()).build();
         root.setFocusTraversable(true);
         textField = new NumberTextField();
 
@@ -101,26 +102,16 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
         arrowDown.getElements().addAll(new MoveTo(-ARROW_SIZE, 0), new LineTo(0, ARROW_SIZE * ARROW_HEIGHT),
                 new LineTo(ARROW_SIZE, 0));
         btnDown.getChildren().add(arrowDown);
+        
+        // We want the button's width to be the textfield's height
+        // As we set fillWidth == true in the GridPane, sizing one button is enough
+        btnUp.prefWidthProperty().bind(textField.heightProperty());
+        btnDown.prefWidthProperty().bind(textField.prefHeightProperty());
 
         // Textfield and two Buttons are layed out in a GridPane
         root.add(textField, 0, 0, 1, GridPane.REMAINING);
         root.add(btnUp, 1, 0);
         root.add(btnDown, 1, 1);
-
-        // Dynamic sizing of the Buttons: width == height of TextField, height == height of TextField/2
-        btnUp.prefHeightProperty().bind(textField.heightProperty().divide(2));
-        btnUp.minHeightProperty().bind(textField.heightProperty().divide(2));
-        btnUp.maxHeightProperty().bind(textField.heightProperty().divide(2));
-        btnUp.minWidthProperty().bind(textField.heightProperty());
-        btnUp.prefWidthProperty().bind(textField.heightProperty());
-        btnUp.maxWidthProperty().bind(textField.heightProperty());
-        
-        btnDown.minHeightProperty().bind(textField.heightProperty().divide(2));
-        btnDown.prefHeightProperty().bind(textField.heightProperty().divide(2));
-        btnDown.maxHeightProperty().bind(textField.heightProperty().divide(2));
-        btnDown.minWidthProperty().bind(textField.heightProperty());
-        btnDown.prefWidthProperty().bind(textField.heightProperty());
-        btnDown.maxWidthProperty().bind(textField.heightProperty());
 
         //
         // Mouse Handler for buttons
@@ -139,14 +130,14 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
                 getSkinnable().decrement();
             }
         });
-
+        
         getChildren().setAll(root);
 
         // uncomment for debugging
 //         root.setStyle("-fx-background-color:red;");
 //         root.setGridLinesVisible(true);
     }
-
+    
     /**
      * As we want to re-use the TextField's behaviour, but style the controls
      * focus, we have to use the following workaround:
