@@ -35,6 +35,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.EventHandler;
 import javafx.scene.control.Control;
 import javafx.scene.paint.Color;
 
@@ -69,6 +70,7 @@ public class SplitFlap extends Control {
     private ObjectProperty<Color> characterUpperFlapColor;
     private ObjectProperty<Color> characterLowerFlapColor;
     private ObjectProperty<Type>  type;
+    private BooleanProperty       interactive;
     private IntegerProperty       character;
     private LongProperty          flipTimeInMs;
     private BooleanProperty       countdownMode;
@@ -91,6 +93,7 @@ public class SplitFlap extends Control {
         characterUpperFlapColor = new SimpleObjectProperty<Color>(Color.rgb(255, 255, 255));
         characterLowerFlapColor = new SimpleObjectProperty<Color>(Color.rgb(244, 242, 232));
         type                    = new SimpleObjectProperty<Type>(Type.NUMERIC);
+        interactive             = new SimpleBooleanProperty(false);
         character               = new SimpleIntegerProperty(CHARACTER.charAt(0));
         flipTimeInMs            = new SimpleLongProperty(200l);
         countdownMode           = new SimpleBooleanProperty(false);
@@ -221,6 +224,18 @@ public class SplitFlap extends Control {
         return type;
     }
 
+    public final boolean isInteractive() {
+        return interactive.get();
+    }
+
+    public final void setInteractive(final boolean INTERACTIVE) {
+        interactive.set(INTERACTIVE);
+    }
+
+    public final BooleanProperty interactiveProperty() {
+        return interactive;
+    }
+
     public final char getCharacter() {
         return (char) character.get();
     }
@@ -271,6 +286,18 @@ public class SplitFlap extends Control {
 
     public final BooleanProperty soundOnProperty() {
         return soundOn;
+    }
+
+    public final void increase() {
+        setCountdownMode(false);
+        int nextCharacter = character.get() + 1 > type.get().UPPER_BOUND ? type.get().LOWER_BOUND : character.get() + 1;
+        setCharacter(new Character((char) nextCharacter).toString());
+    }
+
+    public final void decrease() {
+        setCountdownMode(true);
+        int previousCharacter = character.get() - 1 < type.get().LOWER_BOUND ? type.get().UPPER_BOUND : character.get() - 1;
+        setCharacter(new Character((char) previousCharacter).toString());
     }
 
     @Override public void setPrefSize(final double WIDTH, final double HEIGHT) {

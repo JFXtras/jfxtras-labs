@@ -28,6 +28,8 @@
 package jfxtras.labs.internal.scene.control.behavior;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import javafx.scene.input.MouseEvent;
+import jfxtras.labs.internal.scene.control.skin.SplitFlapSkin;
 import jfxtras.labs.scene.control.gauge.SplitFlap;
 
 

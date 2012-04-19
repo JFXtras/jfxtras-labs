@@ -31,10 +31,12 @@ import com.sun.javafx.scene.control.skin.SkinBase;
 import javafx.animation.AnimationTimer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -55,8 +57,6 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import jfxtras.labs.internal.scene.control.behavior.SplitFlapBehavior;
 import jfxtras.labs.scene.control.gauge.SplitFlap;
-
-import java.io.File;
 
 
 /**
@@ -273,8 +273,8 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
     }
 
     private void flipBackward(final double ANGLE) {
-        currentAngle += ANGLE;
-        if (Double.compare(currentAngle, 180) >= 0) {
+        currentAngle -= ANGLE;
+        if (Double.compare(currentAngle, 0) >= 0) {
             currentAngle = 0;
             upper.getTransforms().clear();
             upperText.getTransforms().clear();
@@ -282,7 +282,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
             lowerNextText.setVisible(false);
             lowerFlipVert.setAxis(Rotate.X_AXIS);
             lowerFlipVert.setPivotY(control.getPrefHeight() * 0.07 + lowerNextText.getLayoutBounds().getHeight() / 2);
-            lowerFlipVert.setAngle(180);
+            lowerFlipVert.setAngle(0);
             lowerNextText.getTransforms().add(lowerFlipVert);
             upperText.setVisible(true);
 
@@ -314,13 +314,33 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         if (currentAngle > 90) {
             upperText.setVisible(false);
             lowerNextText.setVisible(true);
+        } else {
+            upperText.setVisible(true);
+            lowerNextText.setVisible(false);
         }
         if (flipping) {
-            rotate.setAngle(ANGLE);
+            rotate.setAngle(-ANGLE);
             upper.getTransforms().add(rotate);
             upperText.getTransforms().add(rotate);
             lowerNextText.getTransforms().add(rotate);
         }
+    }
+
+
+    // ******************** Mouse event handling ******************************
+    private void addMouseEventListener(final Shape FLAP, final int FLAP_INDEX) {
+        FLAP.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(final MouseEvent EVENT) {
+                switch(FLAP_INDEX) {
+                    case 1:
+                        control.increase();
+                        break;
+                    case -1:
+                        control.decrease();
+                        break;
+                }
+            }
+        });
     }
 
 
@@ -525,7 +545,6 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
                                                           new Stop(0.0, control.getCharacterUpperFlapColor()),
                                                           new Stop(0.5, control.getCharacterColor()));
         upperText.setFill(upperTextFill);
-        upperText.setStroke(null);
 
         Rectangle lowerClip = new Rectangle(0, lower.getLayoutBounds().getMinY(), WIDTH, HEIGHT / 2);
         lowerText.setTextOrigin(VPos.BOTTOM);
@@ -613,6 +632,11 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         lowerFlipVert.setPivotY(HEIGHT * 0.07 + lowerNextText.getLayoutBounds().getHeight() / 2);
         lowerFlipVert.setAngle(180);
         lowerNextText.getTransforms().add(lowerFlipVert);
+
+        if (control.isInteractive()) {
+            addMouseEventListener(upperText, 1);
+            addMouseEventListener(lowerText, -1);
+        }
 
         flip.getChildren().addAll(lower,
                                   lowerText,

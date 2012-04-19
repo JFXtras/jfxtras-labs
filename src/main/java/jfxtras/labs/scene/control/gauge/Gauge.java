@@ -350,14 +350,6 @@ public abstract class Gauge extends Control {
         });
     }
 
-    private final void addStyleModelListener() {
-        styleModel.setOnStyleModelEvent(new EventHandler<StyleModelEvent>() {
-            public void handle(final StyleModelEvent EVENT) {
-                forwardStyleModelEvent(EVENT);
-            }
-        });
-    }
-
     public final ObjectProperty<EventHandler<GaugeModelEvent>> onGaugeModelEventProperty() {
         return onGaugeModelEvent;
     }
@@ -377,6 +369,14 @@ public abstract class Gauge extends Control {
         if (MODEL_EVENT_HANDLER != null) {
             MODEL_EVENT_HANDLER.handle(EVENT);
         }
+    }
+
+    private final void addStyleModelListener() {
+        styleModel.setOnStyleModelEvent(new EventHandler<StyleModelEvent>() {
+            public void handle(final StyleModelEvent EVENT) {
+                forwardStyleModelEvent(EVENT);
+            }
+        });
     }
 
     public final ObjectProperty<EventHandler<StyleModelEvent>> onStyleModelEventProperty() {
