@@ -35,6 +35,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.AudioClip;
@@ -71,8 +72,10 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
     private final AudioClip SOUND         = new AudioClip(getClass().getResource("/jfxtras/labs/scene/control/gauge/flap.mp3").toExternalForm());
     private boolean         isDirty;
     private boolean         initialized;
+    private Group           background;
     private Group           fixture;
     private Group           flip;
+    private Group           frame;
     private Path            upper;
     private Text            upperText;
     private Path            upperNext;
@@ -96,8 +99,10 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         control          = CONTROL;
         initialized      = false;
         isDirty          = false;
+        background       = new Group();
         fixture          = new Group();
         flip             = new Group();
+        frame            = new Group();
         upperText        = new Text(Character.toString(control.getCharacter()));
         lowerText        = new Text(Character.toString(control.getCharacter()));
         upperNextText    = new Text(Character.toString((char) (control.getCharacter() + 1)));
@@ -124,7 +129,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
 
     private void init() {
         if (control.getPrefWidth() < 0 | control.getPrefHeight() < 0) {
-            control.setPrefSize(112, 189);
+            control.setPrefSize(132, 227);
         }
 
         control.prefWidthProperty().addListener(new ChangeListener<Number>() {
@@ -151,6 +156,11 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         registerChangeListener(control.characterColorProperty(), "CHARACTER_COLOR");
         registerChangeListener(control.characterProperty(), "CHARACTER");
         registerChangeListener(control.flipTimeInMsProperty(), "FLIP_TIME");
+        registerChangeListener(control.frameVisibleProperty(), "FRAME_VISIBILITY");
+        registerChangeListener(control.backgroundVisibleProperty(), "BACKGROUND_VISIBILITY");
+
+        frame.setVisible(control.isFrameVisible());
+        background.setVisible(control.isBackgroundVisible());
 
         initialized = true;
         paint();
@@ -163,10 +173,14 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
             init();
         }
         getChildren().clear();
+        drawBackground();
         drawFixture();
         drawFlip();
-        getChildren().addAll(fixture,
-                             flip);
+        drawFrame();
+        getChildren().addAll(background,
+                             fixture,
+                             flip,
+                             frame);
     }
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
@@ -183,6 +197,10 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
             }
         } else if (PROPERTY == "FLIP_TIME") {
             angleStep = 180.0 / ((control.getFlipTimeInMs() * 1000000) / (MIN_FLIP_TIME));
+        } else if (PROPERTY == "FRAME_VISIBILITY") {
+            frame.setVisible(control.isFrameVisible());
+        } else if (PROPERTY == "BACKGROUND_VISIBILITY") {
+            background.setVisible(control.isBackgroundVisible());
         }
     }
 
@@ -203,7 +221,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
     }
 
     @Override protected double computePrefWidth(final double PREF_WIDTH) {
-        double prefWidth = 112;
+        double prefWidth = 132;
         if (PREF_WIDTH != -1) {
             prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
         }
@@ -211,7 +229,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
     }
 
     @Override protected double computePrefHeight(final double PREF_HEIGHT) {
-        double prefHeight = 189;
+        double prefHeight = 227;
         if (PREF_HEIGHT != -1) {
             prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
         }
@@ -345,20 +363,182 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
 
 
     // ******************** Drawing related ***********************************
+    public final void drawBackground() {
+        final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+        final double WIDTH = control.getPrefWidth();
+        final double HEIGHT = control.getPrefHeight();
+        background.getChildren().clear();
+        final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
+        IBOUNDS.setOpacity(0.0);
+        background.getChildren().add(IBOUNDS);
+
+        final Rectangle INNER_BACKGROUND = new Rectangle(0.0606060606 * WIDTH, 0.0352422907 * HEIGHT,
+                                                         0.8787878788 * WIDTH,0.9207048458 * HEIGHT);
+        final Paint INNER_BACKGROUND_FILL = new LinearGradient(0, 0.0352422907 * HEIGHT,
+                                                               0, 0.9559471366 * HEIGHT,
+                                                               false, CycleMethod.NO_CYCLE,
+                                                               new Stop(0.0, Color.BLACK),
+                                                               new Stop(1.0, Color.rgb(20, 20, 20)));
+        INNER_BACKGROUND.setFill(INNER_BACKGROUND_FILL);
+        INNER_BACKGROUND.setStroke(null);
+
+        final Path LOWER3 = new Path();
+        LOWER3.setFillRule(FillRule.EVEN_ODD);
+        LOWER3.getElements().add(new MoveTo(0.8712121212121212 * WIDTH, 0.947136563876652 * HEIGHT));
+        LOWER3.getElements().add(new CubicCurveTo(0.9090909090909091 * WIDTH, 0.947136563876652 * HEIGHT,
+                                                  0.9242424242424242 * WIDTH, 0.933920704845815 * HEIGHT,
+                                                  0.9242424242424242 * WIDTH, 0.9162995594713657 * HEIGHT));
+        LOWER3.getElements().add(new CubicCurveTo(0.9242424242424242 * WIDTH, 0.9162995594713657 * HEIGHT,
+                                                  0.9242424242424242 * WIDTH, 0.8149779735682819 * HEIGHT,
+                                                  0.9242424242424242 * WIDTH, 0.8149779735682819 * HEIGHT));
+        LOWER3.getElements().add(new LineTo(0.07575757575757576 * WIDTH, 0.8149779735682819 * HEIGHT));
+        LOWER3.getElements().add(new CubicCurveTo(0.07575757575757576 * WIDTH, 0.8149779735682819 * HEIGHT,
+                                                  0.07575757575757576 * WIDTH, 0.9162995594713657 * HEIGHT,
+                                                  0.07575757575757576 * WIDTH, 0.9162995594713657 * HEIGHT));
+        LOWER3.getElements().add(new CubicCurveTo(0.07575757575757576 * WIDTH, 0.933920704845815 * HEIGHT,
+                                                  0.09090909090909091 * WIDTH, 0.947136563876652 * HEIGHT,
+                                                  0.12878787878787878 * WIDTH, 0.947136563876652 * HEIGHT));
+        LOWER3.getElements().add(new CubicCurveTo(0.12878787878787878 * WIDTH, 0.947136563876652 * HEIGHT,
+                                                  0.8712121212121212 * WIDTH, 0.947136563876652 * HEIGHT,
+                                                  0.8712121212121212 * WIDTH, 0.947136563876652 * HEIGHT));
+        LOWER3.getElements().add(new ClosePath());
+        final Paint LOWER3_FILL = new LinearGradient(0.5378787878787878 * WIDTH, 0.5374449339207048 * HEIGHT,
+                                                     0.5378787878787878 * WIDTH, 0.9427312775330396 * HEIGHT,
+                                                     false, CycleMethod.NO_CYCLE,
+                                                     new Stop(0.0, control.getLowerFlapTopColor()),
+                                                     new Stop(1.0, control.getLowerFlapTopColor()));
+        LOWER3.setFill(LOWER3_FILL);
+        LOWER3.setStroke(null);
+
+        final InnerShadow LOWER_INNER_SHADOW = new InnerShadow();
+        LOWER_INNER_SHADOW.setWidth(0.075 * LOWER3.getLayoutBounds().getWidth());
+        LOWER_INNER_SHADOW.setHeight(0.28 * LOWER3.getLayoutBounds().getHeight());
+        LOWER_INNER_SHADOW.setOffsetX(0.0);
+        LOWER_INNER_SHADOW.setOffsetY(0.0);
+        LOWER_INNER_SHADOW.setRadius(0.075 * LOWER3.getLayoutBounds().getWidth());
+        LOWER_INNER_SHADOW.setColor(Color.BLACK);
+        LOWER_INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
+
+        final InnerShadow LOWER_LIGHT_EFFECT = new InnerShadow();
+        LOWER_LIGHT_EFFECT.setWidth(0.05 * LOWER3.getLayoutBounds().getWidth());
+        LOWER_LIGHT_EFFECT.setHeight(0.1866666667 * LOWER3.getLayoutBounds().getHeight());
+        LOWER_LIGHT_EFFECT.setOffsetX(0);
+        LOWER_LIGHT_EFFECT.setOffsetY(0.018 * SIZE);
+        LOWER_LIGHT_EFFECT.setRadius(0.05 * LOWER3.getLayoutBounds().getWidth());
+        LOWER_LIGHT_EFFECT.setColor(Color.WHITE);
+        LOWER_LIGHT_EFFECT.setBlurType(BlurType.GAUSSIAN);
+        LOWER_LIGHT_EFFECT.inputProperty().set(LOWER_INNER_SHADOW);
+
+        LOWER3.setEffect(LOWER_INNER_SHADOW);
+
+        final Path LOWER2 = new Path();
+        LOWER2.setFillRule(FillRule.EVEN_ODD);
+        LOWER2.getElements().add(new MoveTo(0.8712121212121212 * WIDTH, 0.9295154185022027 * HEIGHT));
+        LOWER2.getElements().add(new CubicCurveTo(0.9090909090909091 * WIDTH, 0.9295154185022027 * HEIGHT,
+                                                  0.9242424242424242 * WIDTH, 0.9162995594713657 * HEIGHT,
+                                                  0.9242424242424242 * WIDTH, 0.8986784140969163 * HEIGHT));
+        LOWER2.getElements().add(new CubicCurveTo(0.9242424242424242 * WIDTH, 0.8986784140969163 * HEIGHT,
+                                                  0.9242424242424242 * WIDTH, 0.7973568281938326 * HEIGHT,
+                                                  0.9242424242424242 * WIDTH, 0.7973568281938326 * HEIGHT));
+        LOWER2.getElements().add(new LineTo(0.07575757575757576 * WIDTH, 0.7973568281938326 * HEIGHT));
+        LOWER2.getElements().add(new CubicCurveTo(0.07575757575757576 * WIDTH, 0.7973568281938326 * HEIGHT,
+                                                  0.07575757575757576 * WIDTH, 0.8986784140969163 * HEIGHT,
+                                                  0.07575757575757576 * WIDTH, 0.8986784140969163 * HEIGHT));
+        LOWER2.getElements().add(new CubicCurveTo(0.07575757575757576 * WIDTH, 0.9162995594713657 * HEIGHT,
+                                                  0.09090909090909091 * WIDTH, 0.9295154185022027 * HEIGHT,
+                                                  0.12878787878787878 * WIDTH, 0.9295154185022027 * HEIGHT));
+        LOWER2.getElements().add(new CubicCurveTo(0.12878787878787878 * WIDTH, 0.9295154185022027 * HEIGHT,
+                                                  0.8712121212121212 * WIDTH, 0.9295154185022027 * HEIGHT,
+                                                  0.8712121212121212 * WIDTH, 0.9295154185022027 * HEIGHT));
+        LOWER2.getElements().add(new ClosePath());
+        final Paint LOWER2_FILL = new LinearGradient(0.5378787878787878 * WIDTH, 0.5198237885462555 * HEIGHT,
+                                                     0.5378787878787878 * WIDTH, 0.9251101321585903 * HEIGHT,
+                                                     false, CycleMethod.NO_CYCLE,
+                                                     new Stop(0.0, control.getLowerFlapTopColor()),
+                                                     new Stop(1.0, control.getLowerFlapTopColor()));
+        LOWER2.setFill(LOWER2_FILL);
+        LOWER2.setStroke(null);
+        LOWER2.setEffect(LOWER_INNER_SHADOW);
+
+        final Path LOWER1 = new Path();
+        LOWER1.setFillRule(FillRule.EVEN_ODD);
+        LOWER1.getElements().add(new MoveTo(0.8712121212121212 * WIDTH, 0.9118942731277533 * HEIGHT));
+        LOWER1.getElements().add(new CubicCurveTo(0.9090909090909091 * WIDTH, 0.9118942731277533 * HEIGHT,
+                                                  0.9242424242424242 * WIDTH, 0.8986784140969163 * HEIGHT,
+                                                  0.9242424242424242 * WIDTH, 0.8810572687224669 * HEIGHT));
+        LOWER1.getElements().add(new CubicCurveTo(0.9242424242424242 * WIDTH, 0.8810572687224669 * HEIGHT,
+                                                  0.9242424242424242 * WIDTH, 0.7797356828193832 * HEIGHT,
+                                                  0.9242424242424242 * WIDTH, 0.7797356828193832 * HEIGHT));
+        LOWER1.getElements().add(new LineTo(0.07575757575757576 * WIDTH, 0.7797356828193832 * HEIGHT));
+        LOWER1.getElements().add(new CubicCurveTo(0.07575757575757576 * WIDTH, 0.7797356828193832 * HEIGHT,
+                                                  0.07575757575757576 * WIDTH, 0.8810572687224669 * HEIGHT,
+                                                  0.07575757575757576 * WIDTH, 0.8810572687224669 * HEIGHT));
+        LOWER1.getElements().add(new CubicCurveTo(0.07575757575757576 * WIDTH, 0.8986784140969163 * HEIGHT,
+                                                  0.09090909090909091 * WIDTH, 0.9118942731277533 * HEIGHT,
+                                                  0.12878787878787878 * WIDTH, 0.9118942731277533 * HEIGHT));
+        LOWER1.getElements().add(new CubicCurveTo(0.12878787878787878 * WIDTH, 0.9118942731277533 * HEIGHT,
+                                                  0.8712121212121212 * WIDTH, 0.9118942731277533 * HEIGHT,
+                                                  0.8712121212121212 * WIDTH, 0.9118942731277533 * HEIGHT));
+        LOWER1.getElements().add(new ClosePath());
+        final Paint LOWER1_FILL = new LinearGradient(0.5378787878787878 * WIDTH, 0.5022026431718062 * HEIGHT,
+                                                     0.5378787878787878 * WIDTH, 0.9074889867841409 * HEIGHT,
+                                                     false, CycleMethod.NO_CYCLE,
+                                                     new Stop(0.0, control.getLowerFlapTopColor()),
+                                                     new Stop(1.0, control.getLowerFlapTopColor()));
+        LOWER1.setFill(LOWER1_FILL);
+        LOWER1.setStroke(null);
+        LOWER1.setEffect(LOWER_INNER_SHADOW);
+
+        final Path LOWER0 = new Path();
+        LOWER0.setFillRule(FillRule.EVEN_ODD);
+        LOWER0.getElements().add(new MoveTo(0.8712121212121212 * WIDTH, 0.8942731277533039 * HEIGHT));
+        LOWER0.getElements().add(new CubicCurveTo(0.9090909090909091 * WIDTH, 0.8942731277533039 * HEIGHT,
+                                                  0.9242424242424242 * WIDTH, 0.8810572687224669 * HEIGHT,
+                                                  0.9242424242424242 * WIDTH, 0.8634361233480177 * HEIGHT));
+        LOWER0.getElements().add(new CubicCurveTo(0.9242424242424242 * WIDTH, 0.8634361233480177 * HEIGHT,
+                                                  0.9242424242424242 * WIDTH, 0.762114537444934 * HEIGHT,
+                                                  0.9242424242424242 * WIDTH, 0.762114537444934 * HEIGHT));
+        LOWER0.getElements().add(new LineTo(0.07575757575757576 * WIDTH, 0.762114537444934 * HEIGHT));
+        LOWER0.getElements().add(new CubicCurveTo(0.07575757575757576 * WIDTH, 0.762114537444934 * HEIGHT,
+                                                  0.07575757575757576 * WIDTH, 0.8634361233480177 * HEIGHT,
+                                                  0.07575757575757576 * WIDTH, 0.8634361233480177 * HEIGHT));
+        LOWER0.getElements().add(new CubicCurveTo(0.07575757575757576 * WIDTH, 0.8810572687224669 * HEIGHT,
+                                                  0.09090909090909091 * WIDTH, 0.8942731277533039 * HEIGHT,
+                                                  0.12878787878787878 * WIDTH, 0.8942731277533039 * HEIGHT));
+        LOWER0.getElements().add(new CubicCurveTo(0.12878787878787878 * WIDTH, 0.8942731277533039 * HEIGHT,
+                                                  0.8712121212121212 * WIDTH, 0.8942731277533039 * HEIGHT,
+                                                  0.8712121212121212 * WIDTH, 0.8942731277533039 * HEIGHT));
+        LOWER0.getElements().add(new ClosePath());
+        final Paint LOWER0_FILL = new LinearGradient(0.5378787878787878 * WIDTH, 0.4845814977973568 * HEIGHT,
+                                                     0.5378787878787878 * WIDTH, 0.8898678414096917 * HEIGHT,
+                                                     false, CycleMethod.NO_CYCLE,
+                                                     new Stop(0.0, control.getLowerFlapTopColor()),
+                                                     new Stop(1.0, control.getLowerFlapTopColor()));
+        LOWER0.setFill(LOWER0_FILL);
+        LOWER0.setStroke(null);
+        LOWER0.setEffect(LOWER_INNER_SHADOW);
+
+        background.getChildren().addAll(INNER_BACKGROUND,
+                                        LOWER3,
+                                        LOWER2,
+                                        LOWER1,
+                                        LOWER0);
+
+        background.setCache(true);
+    }
+
     public void drawFixture() {
         final double WIDTH = control.getPrefWidth();
         final double HEIGHT = control.getPrefHeight();
-
         fixture.getChildren().clear();
-
         final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         fixture.getChildren().add(IBOUNDS);
-
-        final Rectangle RIGHTFRAME = new Rectangle(0.9196428571428571 * WIDTH, 0.41798941798941797 * HEIGHT,
-                                                   0.08035714285714286 * WIDTH, 0.164021164021164 * HEIGHT);
-        final Paint RIGHTFRAME_FILL = new LinearGradient(0.9642857142857143 * WIDTH, 0.41798941798941797 * HEIGHT,
-                                                         0.9642857142857143 * WIDTH, 0.582010582010582 * HEIGHT,
+        final Rectangle RIGHTFRAME = new Rectangle(0.8560606060606061 * WIDTH, 0.3920704845814978 * HEIGHT,
+                                                   0.06818181818181818 * WIDTH, 0.13656387665198239 * HEIGHT);
+        //RIGHTFRAME.setId("fixture-rightframe");
+        final Paint RIGHTFRAME_FILL = new LinearGradient(0.8939393939393939 * WIDTH, 0.3920704845814978 * HEIGHT,
+                                                         0.8939393939393939 * WIDTH, 0.5286343612334802 * HEIGHT,
                                                          false, CycleMethod.NO_CYCLE,
                                                          new Stop(0.0, Color.color(0.2196078431, 0.2196078431, 0.2196078431, 1)),
                                                          new Stop(0.18, Color.color(0.6117647059, 0.6117647059, 0.6117647059, 1)),
@@ -368,10 +548,11 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         RIGHTFRAME.setFill(RIGHTFRAME_FILL);
         RIGHTFRAME.setStroke(null);
 
-        final Rectangle RIGHTMAIN = new Rectangle(0.9285714285714286 * WIDTH, 0.42328042328042326 * HEIGHT,
-                                                  0.0625 * WIDTH, 0.15343915343915343 * HEIGHT);
-        final Paint RIGHTMAIN_FILL = new LinearGradient(0.9642857142857143 * WIDTH, 0.42328042328042326 * HEIGHT,
-                                                        0.9642857142857143 * WIDTH, 0.5767195767195767 * HEIGHT,
+        final Rectangle RIGHTMAIN = new Rectangle(0.8636363636363636 * WIDTH, 0.3964757709251101 * HEIGHT,
+                                                  0.05303030303030303 * WIDTH, 0.1277533039647577 * HEIGHT);
+        //RIGHTMAIN.setId("fixture-rightmain");
+        final Paint RIGHTMAIN_FILL = new LinearGradient(0.8939393939393939 * WIDTH, 0.3964757709251101 * HEIGHT,
+                                                        0.8939393939393939 * WIDTH, 0.5242290748898678 * HEIGHT,
                                                         false, CycleMethod.NO_CYCLE,
                                                         new Stop(0.0, Color.color(0.4549019608, 0.4549019608, 0.4549019608, 1)),
                                                         new Stop(0.13, Color.color(0.8352941176, 0.8352941176, 0.8352941176, 1)),
@@ -382,10 +563,11 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         RIGHTMAIN.setFill(RIGHTMAIN_FILL);
         RIGHTMAIN.setStroke(null);
 
-        final Rectangle LEFTFRAME = new Rectangle(0.0, 0.41798941798941797 * HEIGHT,
-                                                  0.08035714285714286 * WIDTH, 0.164021164021164 * HEIGHT);
-        final Paint LEFTFRAME_FILL = new LinearGradient(0.044642857142857144 * WIDTH, 0.41798941798941797 * HEIGHT,
-                                                        0.04464285714285716 * WIDTH, 0.582010582010582 * HEIGHT,
+        final Rectangle LEFTFRAME = new Rectangle(0.07575757575757576 * WIDTH, 0.3920704845814978 * HEIGHT,
+                                                  0.06818181818181818 * WIDTH, 0.13656387665198239 * HEIGHT);
+        //LEFTFRAME.setId("fixture-leftframe");
+        final Paint LEFTFRAME_FILL = new LinearGradient(0.11363636363636363 * WIDTH, 0.3920704845814978 * HEIGHT,
+                                                        0.11363636363636365 * WIDTH, 0.5286343612334802 * HEIGHT,
                                                         false, CycleMethod.NO_CYCLE,
                                                         new Stop(0.0, Color.color(0.2196078431, 0.2196078431, 0.2196078431, 1)),
                                                         new Stop(0.18, Color.color(0.6117647059, 0.6117647059, 0.6117647059, 1)),
@@ -395,10 +577,11 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         LEFTFRAME.setFill(LEFTFRAME_FILL);
         LEFTFRAME.setStroke(null);
 
-        final Rectangle LEFTMAIN = new Rectangle(0.008928571428571428 * WIDTH, 0.42328042328042326 * HEIGHT,
-                                                 0.0625 * WIDTH, 0.15343915343915343 * HEIGHT);
-        final Paint LEFTMAIN_FILL = new LinearGradient(0.044642857142857144 * WIDTH, 0.42328042328042326 * HEIGHT,
-                                                       0.04464285714285716 * WIDTH, 0.5767195767195767 * HEIGHT,
+        final Rectangle LEFTMAIN = new Rectangle(0.08333333333333333 * WIDTH, 0.3964757709251101 * HEIGHT,
+                                                 0.05303030303030303 * WIDTH, 0.1277533039647577 * HEIGHT);
+        //LEFTMAIN.setId("fixture-leftmain");
+        final Paint LEFTMAIN_FILL = new LinearGradient(0.11363636363636363 * WIDTH, 0.3964757709251101 * HEIGHT,
+                                                       0.11363636363636365 * WIDTH, 0.5242290748898678 * HEIGHT,
                                                        false, CycleMethod.NO_CYCLE,
                                                        new Stop(0.0, Color.color(0.4549019608, 0.4549019608, 0.4549019608, 1)),
                                                        new Stop(0.13, Color.color(0.8352941176, 0.8352941176, 0.8352941176, 1)),
@@ -409,47 +592,65 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         LEFTMAIN.setFill(LEFTMAIN_FILL);
         LEFTMAIN.setStroke(null);
 
+        final Rectangle AXIS = new Rectangle(0.1439393939 * WIDTH, 0.4537444934 * HEIGHT,
+                                             0.7121212121 * WIDTH, 0.013215859 * HEIGHT);
+        //AXIS.setId("fixture-axis");
+        final Paint AXIS_FILL = new LinearGradient(0.4166666666666667 * WIDTH, 0.40969162995594716 * HEIGHT,
+                                                   0.4166666666666667 * WIDTH, 0.42290748898678415 * HEIGHT,
+                                                   false, CycleMethod.NO_CYCLE,
+                                                   new Stop(0.0, Color.color(0.4549019608, 0.4549019608, 0.4549019608, 1)),
+                                                   new Stop(0.41, Color.color(0.8352941176, 0.8352941176, 0.8352941176, 1)),
+                                                   new Stop(0.72, Color.color(0.2196078431, 0.2196078431, 0.2196078431, 1)),
+                                                   new Stop(1.0, Color.color(0.3254901961, 0.3254901961, 0.3254901961, 1)));
+        AXIS.setFill(AXIS_FILL);
+        AXIS.setStroke(null);
+
         fixture.getChildren().addAll(RIGHTFRAME,
                                      RIGHTMAIN,
                                      LEFTFRAME,
-                                     LEFTMAIN);
+                                     LEFTMAIN,
+                                     AXIS);
 
         fixture.setCache(true);
     }
 
-    public void drawFlip() {
+    public final void drawFlip() {
         final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
         final double WIDTH = control.getPrefWidth();
         final double HEIGHT = control.getPrefHeight();
 
         flip.getChildren().clear();
 
+        final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
+        IBOUNDS.setOpacity(0.0);
+        flip.getChildren().add(IBOUNDS);
+
         lower = new Path();
         lower.setFillRule(FillRule.EVEN_ODD);
-        lower.getElements().add(new MoveTo(0.9196428571428571 * WIDTH, HEIGHT));
-        lower.getElements().add(new CubicCurveTo(0.9642857142857143 * WIDTH, HEIGHT,
-                                                 WIDTH, 0.9735449735449735 * HEIGHT,
-                                                 WIDTH, 0.9523809523809523 * HEIGHT));
-        lower.getElements().add(new CubicCurveTo(WIDTH, 0.9523809523809523 * HEIGHT,
-                                                 WIDTH, 0.5925925925925926 * HEIGHT,
-                                                 WIDTH, 0.5925925925925926 * HEIGHT));
-        lower.getElements().add(new LineTo(0.9017857142857143 * WIDTH, 0.5925925925925926 * HEIGHT));
-        lower.getElements().add(new LineTo(0.9017857142857143 * WIDTH, 0.5079365079365079 * HEIGHT));
-        lower.getElements().add(new LineTo(0.09821428571428571 * WIDTH, 0.5079365079365079 * HEIGHT));
-        lower.getElements().add(new LineTo(0.09821428571428571 * WIDTH, 0.5925925925925926 * HEIGHT));
-        lower.getElements().add(new LineTo(0.0, 0.5925925925925926 * HEIGHT));
-        lower.getElements().add(new CubicCurveTo(0.0, 0.5925925925925926 * HEIGHT,
-                                                 0.0, 0.9523809523809523 * HEIGHT,
-                                                 0.0, 0.9523809523809523 * HEIGHT));
-        lower.getElements().add(new CubicCurveTo(0.0, 0.9735449735449735 * HEIGHT,
-                                                 0.03571428571428571 * WIDTH, HEIGHT,
-                                                 0.08035714285714286 * WIDTH, HEIGHT));
-        lower.getElements().add(new CubicCurveTo(0.08035714285714286 * WIDTH, HEIGHT,
-                                                 0.9196428571428571 * WIDTH, HEIGHT,
-                                                 0.9196428571428571 * WIDTH, HEIGHT));
+        lower.getElements().add(new MoveTo(0.8712121212121212 * WIDTH, 0.8766519823788547 * HEIGHT));
+        lower.getElements().add(new CubicCurveTo(0.9090909090909091 * WIDTH, 0.8766519823788547 * HEIGHT,
+                                                 0.9242424242424242 * WIDTH, 0.8634361233480177 * HEIGHT,
+                                                 0.9242424242424242 * WIDTH, 0.8458149779735683 * HEIGHT));
+        lower.getElements().add(new CubicCurveTo(0.9242424242424242 * WIDTH, 0.8458149779735683 * HEIGHT,
+                                                 0.9242424242424242 * WIDTH, 0.5374449339207048 * HEIGHT,
+                                                 0.9242424242424242 * WIDTH, 0.5374449339207048 * HEIGHT));
+        lower.getElements().add(new LineTo(0.8409090909090909 * WIDTH, 0.5374449339207048 * HEIGHT));
+        lower.getElements().add(new LineTo(0.8409090909090909 * WIDTH, 0.4669603524229075 * HEIGHT));
+        lower.getElements().add(new LineTo(0.1590909090909091 * WIDTH, 0.4669603524229075 * HEIGHT));
+        lower.getElements().add(new LineTo(0.1590909090909091 * WIDTH, 0.5374449339207048 * HEIGHT));
+        lower.getElements().add(new LineTo(0.07575757575757576 * WIDTH, 0.5374449339207048 * HEIGHT));
+        lower.getElements().add(new CubicCurveTo(0.07575757575757576 * WIDTH, 0.5374449339207048 * HEIGHT,
+                                                 0.07575757575757576 * WIDTH, 0.8458149779735683 * HEIGHT,
+                                                 0.07575757575757576 * WIDTH, 0.8458149779735683 * HEIGHT));
+        lower.getElements().add(new CubicCurveTo(0.07575757575757576 * WIDTH, 0.8634361233480177 * HEIGHT,
+                                                 0.09090909090909091 * WIDTH, 0.8766519823788547 * HEIGHT,
+                                                 0.12878787878787878 * WIDTH, 0.8766519823788547 * HEIGHT));
+        lower.getElements().add(new CubicCurveTo(0.12878787878787878 * WIDTH, 0.8766519823788547 * HEIGHT,
+                                                 0.8712121212121212 * WIDTH, 0.8766519823788547 * HEIGHT,
+                                                 0.8712121212121212 * WIDTH, 0.8766519823788547 * HEIGHT));
         lower.getElements().add(new ClosePath());
-        final Paint LOWER_FILL = new LinearGradient(0.5342465753424658 * WIDTH, 0.5079365079365079 * HEIGHT,
-                                                    0.5342465753424658 * WIDTH, 0.9947089947089947 * HEIGHT,
+        final Paint LOWER_FILL = new LinearGradient(0.5378787878787878 * WIDTH, 0.4669603524229075 * HEIGHT,
+                                                    0.5378787878787878 * WIDTH, 0.8722466960352423 * HEIGHT,
                                                     false, CycleMethod.NO_CYCLE,
                                                     new Stop(0.0, control.getLowerFlapTopColor()),
                                                     new Stop(1.0, control.getLowerFlapBottomColor()));
@@ -457,52 +658,52 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         lower.setStroke(null);
 
         final InnerShadow LOWER_INNER_SHADOW = new InnerShadow();
-        LOWER_INNER_SHADOW.setWidth(0.075 * lower.getLayoutBounds().getWidth());
-        LOWER_INNER_SHADOW.setHeight(0.075 * lower.getLayoutBounds().getHeight());
+        LOWER_INNER_SHADOW.setWidth(0.075 * this.lower.getLayoutBounds().getWidth());
+        LOWER_INNER_SHADOW.setHeight(0.075 * this.lower.getLayoutBounds().getHeight());
         LOWER_INNER_SHADOW.setOffsetX(0.0);
         LOWER_INNER_SHADOW.setOffsetY(0.0);
-        LOWER_INNER_SHADOW.setRadius(0.075 * lower.getLayoutBounds().getWidth());
+        LOWER_INNER_SHADOW.setRadius(0.075 * this.lower.getLayoutBounds().getWidth());
         LOWER_INNER_SHADOW.setColor(Color.BLACK);
         LOWER_INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
 
         final InnerShadow LOWER_LIGHT_EFFECT = new InnerShadow();
-        LOWER_LIGHT_EFFECT.setWidth(0.05 * lower.getLayoutBounds().getWidth());
-        LOWER_LIGHT_EFFECT.setHeight(0.05 * lower.getLayoutBounds().getHeight());
+        LOWER_LIGHT_EFFECT.setWidth(0.05 * this.lower.getLayoutBounds().getWidth());
+        LOWER_LIGHT_EFFECT.setHeight(0.05 * this.lower.getLayoutBounds().getHeight());
         LOWER_LIGHT_EFFECT.setOffsetX(0);
-        LOWER_LIGHT_EFFECT.setOffsetY(0.018 * SIZE);
-        LOWER_LIGHT_EFFECT.setRadius(0.05 * lower.getLayoutBounds().getWidth());
-        LOWER_LIGHT_EFFECT.setColor(Color.WHITE);
+        LOWER_LIGHT_EFFECT.setOffsetY(0.013 * SIZE);
+        LOWER_LIGHT_EFFECT.setRadius(0.05 * this.lower.getLayoutBounds().getWidth());
+        LOWER_LIGHT_EFFECT.setColor(Color.color(1.0, 1.0, 1.0, 0.8));
         LOWER_LIGHT_EFFECT.setBlurType(BlurType.GAUSSIAN);
         LOWER_LIGHT_EFFECT.inputProperty().set(LOWER_INNER_SHADOW);
-        lower.setEffect(LOWER_LIGHT_EFFECT);
-        lower.setCache(true);
+        this.lower.setEffect(LOWER_LIGHT_EFFECT);
+        this.lower.setCache(true);
 
         upper = new Path();
         upper.setFillRule(FillRule.EVEN_ODD);
-        upper.getElements().add(new MoveTo(0.9196428571428571 * WIDTH, 0.0));
-        upper.getElements().add(new CubicCurveTo(0.9642857142857143 * WIDTH, 0.0,
-                                                 WIDTH, 0.026455026455026454 * HEIGHT,
-                                                 WIDTH, 0.047619047619047616 * HEIGHT));
-        upper.getElements().add(new CubicCurveTo(WIDTH, 0.047619047619047616 * HEIGHT,
-                                                 WIDTH, 0.4074074074074074 * HEIGHT,
-                                                 WIDTH, 0.4074074074074074 * HEIGHT));
-        upper.getElements().add(new LineTo(0.9017857142857143 * WIDTH, 0.4074074074074074 * HEIGHT));
-        upper.getElements().add(new LineTo(0.9017857142857143 * WIDTH, 0.49206349206349204 * HEIGHT));
-        upper.getElements().add(new LineTo(0.09821428571428571 * WIDTH, 0.49206349206349204 * HEIGHT));
-        upper.getElements().add(new LineTo(0.09821428571428571 * WIDTH, 0.4074074074074074 * HEIGHT));
-        upper.getElements().add(new LineTo(0.0, 0.4074074074074074 * HEIGHT));
-        upper.getElements().add(new CubicCurveTo(0.0, 0.4074074074074074 * HEIGHT,
-                                                 0.0, 0.047619047619047616 * HEIGHT,
-                                                 0.0, 0.047619047619047616 * HEIGHT));
-        upper.getElements().add(new CubicCurveTo(0.0, 0.026455026455026454 * HEIGHT,
-                                                 0.03571428571428571 * WIDTH, 0.0,
-                                                 0.08035714285714286 * WIDTH, 0.0));
-        upper.getElements().add(new CubicCurveTo(0.08035714285714286 * WIDTH, 0.0,
-                                                 0.9196428571428571 * WIDTH, 0.0,
-                                                 0.9196428571428571 * WIDTH, 0.0));
+        upper.getElements().add(new MoveTo(0.8712121212121212 * WIDTH, 0.04405286343612335 * HEIGHT));
+        upper.getElements().add(new CubicCurveTo(0.9090909090909091 * WIDTH, 0.04405286343612335 * HEIGHT,
+                                                 0.9242424242424242 * WIDTH, 0.05726872246696035 * HEIGHT,
+                                                 0.9242424242424242 * WIDTH, 0.07488986784140969 * HEIGHT));
+        upper.getElements().add(new CubicCurveTo(0.9242424242424242 * WIDTH, 0.07488986784140969 * HEIGHT,
+                                                 0.9242424242424242 * WIDTH, 0.3832599118942731 * HEIGHT,
+                                                 0.9242424242424242 * WIDTH, 0.3832599118942731 * HEIGHT));
+        upper.getElements().add(new LineTo(0.8409090909090909 * WIDTH, 0.3832599118942731 * HEIGHT));
+        upper.getElements().add(new LineTo(0.8409090909090909 * WIDTH, 0.45374449339207046 * HEIGHT));
+        upper.getElements().add(new LineTo(0.1590909090909091 * WIDTH, 0.45374449339207046 * HEIGHT));
+        upper.getElements().add(new LineTo(0.1590909090909091 * WIDTH, 0.3832599118942731 * HEIGHT));
+        upper.getElements().add(new LineTo(0.07575757575757576 * WIDTH, 0.3832599118942731 * HEIGHT));
+        upper.getElements().add(new CubicCurveTo(0.07575757575757576 * WIDTH, 0.3832599118942731 * HEIGHT,
+                                                 0.07575757575757576 * WIDTH, 0.07488986784140969 * HEIGHT,
+                                                 0.07575757575757576 * WIDTH, 0.07488986784140969 * HEIGHT));
+        upper.getElements().add(new CubicCurveTo(0.07575757575757576 * WIDTH, 0.05726872246696035 * HEIGHT,
+                                                 0.09090909090909091 * WIDTH, 0.04405286343612335 * HEIGHT,
+                                                 0.12878787878787878 * WIDTH, 0.04405286343612335 * HEIGHT));
+        upper.getElements().add(new CubicCurveTo(0.12878787878787878 * WIDTH, 0.04405286343612335 * HEIGHT,
+                                                 0.8712121212121212 * WIDTH, 0.04405286343612335 * HEIGHT,
+                                                 0.8712121212121212 * WIDTH, 0.04405286343612335 * HEIGHT));
         upper.getElements().add(new ClosePath());
-        final Paint UPPER_FILL = new LinearGradient(0.5205479452054794 * WIDTH, 0.0,
-                                                    0.5205479452054794 * WIDTH, 0.49206349206349204 * HEIGHT,
+        final Paint UPPER_FILL = new LinearGradient(0.5227272727272727 * WIDTH, 0.04405286343612335 * HEIGHT,
+                                                    0.5227272727272727 * WIDTH, 0.45374449339207046 * HEIGHT,
                                                     false, CycleMethod.NO_CYCLE,
                                                     new Stop(0.0, control.getUpperFlapTopColor()),
                                                     new Stop(1.0, control.getUpperFlapBottomColor()));
@@ -522,69 +723,71 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         UPPER_LIGHT_EFFECT.setWidth(0.05 * upper.getLayoutBounds().getWidth());
         UPPER_LIGHT_EFFECT.setHeight(0.05 * upper.getLayoutBounds().getHeight());
         UPPER_LIGHT_EFFECT.setOffsetX(0);
-        UPPER_LIGHT_EFFECT.setOffsetY(0.018 * SIZE);
+        UPPER_LIGHT_EFFECT.setOffsetY(0.013 * SIZE);
         UPPER_LIGHT_EFFECT.setRadius(0.05 * upper.getLayoutBounds().getWidth());
-        UPPER_LIGHT_EFFECT.setColor(Color.WHITE);
+        UPPER_LIGHT_EFFECT.setColor(Color.color(1.0, 1.0, 1.0, 0.8));
         UPPER_LIGHT_EFFECT.setBlurType(BlurType.GAUSSIAN);
         UPPER_LIGHT_EFFECT.inputProperty().set(UPPER_INNER_SHADOW);
         upper.setEffect(UPPER_LIGHT_EFFECT);
 
-        Font font = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/droidsansmono.ttf"), (0.74 * HEIGHT));
+        final Font FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/droidsansmono.ttf"), (0.704845815 * HEIGHT));
 
-        Rectangle upperClip = new Rectangle(0, 0, WIDTH, upper.getLayoutBounds().getHeight());
+        Rectangle upperClip = new Rectangle(0, upper.getLayoutBounds().getMinY(), WIDTH, upper.getLayoutBounds().getHeight());
         upperText.setTextOrigin(VPos.BOTTOM);
-        upperText.setFont(font);
+        upperText.setFont(FONT);
         upperText.setFontSmoothingType(FontSmoothingType.LCD);
         upperText.setText(Character.toString(control.getCharacter()));
         upperText.setX(((WIDTH - upperText.getLayoutBounds().getWidth()) / 2.0));
-        upperText.setY(HEIGHT * 0.07 + upperText.getLayoutBounds().getHeight());
+        upperText.setY(HEIGHT * 0.04 + upperText.getLayoutBounds().getHeight());
         upperText.setClip(upperClip);
         LinearGradient upperTextFill = new LinearGradient(0.0, upperText.getLayoutBounds().getMinY(),
                                                           0.0, upperText.getLayoutBounds().getMaxY(),
                                                           false, CycleMethod.NO_CYCLE,
                                                           new Stop(0.0, control.getCharacterUpperFlapColor()),
-                                                          new Stop(0.5, control.getCharacterColor()));
+                                                          new Stop(0.47, control.getCharacterColor()),
+                                                          new Stop(0.5, control.getCharacterColor().darker()));
         upperText.setFill(upperTextFill);
 
-        Rectangle lowerClip = new Rectangle(0, lower.getLayoutBounds().getMinY(), WIDTH, HEIGHT / 2);
+        Rectangle lowerClip = new Rectangle(0, lower.getLayoutBounds().getMinY(), WIDTH, lower.getLayoutBounds().getHeight());
         lowerText.setTextOrigin(VPos.BOTTOM);
-        lowerText.setFont(font);
+        lowerText.setFont(FONT);
         lowerText.setFontSmoothingType(FontSmoothingType.LCD);
         lowerText.setText(Character.toString(control.getCharacter()));
         lowerText.setX(((WIDTH - upperText.getLayoutBounds().getWidth()) / 2.0));
-        lowerText.setY(HEIGHT * 0.07 + upperText.getLayoutBounds().getHeight());
+        lowerText.setY(HEIGHT * 0.04 + upperText.getLayoutBounds().getHeight());
         lowerText.setClip(lowerClip);
         LinearGradient lowerTextFill = new LinearGradient(0.0, lowerText.getLayoutBounds().getMinY(),
                                                           0.0, lowerText.getLayoutBounds().getMaxY(),
                                                           false, CycleMethod.NO_CYCLE,
-                                                          new Stop(0.5, control.getCharacterLowerFlapColor()),
+                                                          new Stop(0.5, control.getCharacterColor().brighter()),
+                                                          new Stop(0.53, control.getCharacterLowerFlapColor()),
                                                           new Stop(1.0, control.getCharacterColor()));
         lowerText.setFill(lowerTextFill);
         lowerText.setStroke(null);
 
         upperNext = new Path();
         upperNext.setFillRule(FillRule.EVEN_ODD);
-        upperNext.getElements().add(new MoveTo(0.9196428571428571 * WIDTH, 0.0));
-        upperNext.getElements().add(new CubicCurveTo(0.9642857142857143 * WIDTH, 0.0,
-                                                     WIDTH, 0.026455026455026454 * HEIGHT,
-                                                     WIDTH, 0.047619047619047616 * HEIGHT));
-        upperNext.getElements().add(new CubicCurveTo(WIDTH, 0.047619047619047616 * HEIGHT,
-                                                     WIDTH, 0.4074074074074074 * HEIGHT,
-                                                     WIDTH, 0.4074074074074074 * HEIGHT));
-        upperNext.getElements().add(new LineTo(0.9017857142857143 * WIDTH, 0.4074074074074074 * HEIGHT));
-        upperNext.getElements().add(new LineTo(0.9017857142857143 * WIDTH, 0.49206349206349204 * HEIGHT));
-        upperNext.getElements().add(new LineTo(0.09821428571428571 * WIDTH, 0.49206349206349204 * HEIGHT));
-        upperNext.getElements().add(new LineTo(0.09821428571428571 * WIDTH, 0.4074074074074074 * HEIGHT));
-        upperNext.getElements().add(new LineTo(0.0, 0.4074074074074074 * HEIGHT));
-        upperNext.getElements().add(new CubicCurveTo(0.0, 0.4074074074074074 * HEIGHT,
-                                                     0.0, 0.047619047619047616 * HEIGHT,
-                                                     0.0, 0.047619047619047616 * HEIGHT));
-        upperNext.getElements().add(new CubicCurveTo(0.0, 0.026455026455026454 * HEIGHT,
-                                                     0.03571428571428571 * WIDTH, 0.0,
-                                                     0.08035714285714286 * WIDTH, 0.0));
-        upperNext.getElements().add(new CubicCurveTo(0.08035714285714286 * WIDTH, 0.0,
-                                                     0.9196428571428571 * WIDTH, 0.0,
-                                                     0.9196428571428571 * WIDTH, 0.0));
+        upperNext.getElements().add(new MoveTo(0.8712121212121212 * WIDTH, 0.04405286343612335 * HEIGHT));
+        upperNext.getElements().add(new CubicCurveTo(0.9090909090909091 * WIDTH, 0.04405286343612335 * HEIGHT,
+                                                     0.9242424242424242 * WIDTH, 0.05726872246696035 * HEIGHT,
+                                                     0.9242424242424242 * WIDTH, 0.07488986784140969 * HEIGHT));
+        upperNext.getElements().add(new CubicCurveTo(0.9242424242424242 * WIDTH, 0.07488986784140969 * HEIGHT,
+                                                     0.9242424242424242 * WIDTH, 0.3832599118942731 * HEIGHT,
+                                                     0.9242424242424242 * WIDTH, 0.3832599118942731 * HEIGHT));
+        upperNext.getElements().add(new LineTo(0.8409090909090909 * WIDTH, 0.3832599118942731 * HEIGHT));
+        upperNext.getElements().add(new LineTo(0.8409090909090909 * WIDTH, 0.45374449339207046 * HEIGHT));
+        upperNext.getElements().add(new LineTo(0.1590909090909091 * WIDTH, 0.45374449339207046 * HEIGHT));
+        upperNext.getElements().add(new LineTo(0.1590909090909091 * WIDTH, 0.3832599118942731 * HEIGHT));
+        upperNext.getElements().add(new LineTo(0.07575757575757576 * WIDTH, 0.3832599118942731 * HEIGHT));
+        upperNext.getElements().add(new CubicCurveTo(0.07575757575757576 * WIDTH, 0.3832599118942731 * HEIGHT,
+                                                     0.07575757575757576 * WIDTH, 0.07488986784140969 * HEIGHT,
+                                                     0.07575757575757576 * WIDTH, 0.07488986784140969 * HEIGHT));
+        upperNext.getElements().add(new CubicCurveTo(0.07575757575757576 * WIDTH, 0.05726872246696035 * HEIGHT,
+                                                     0.09090909090909091 * WIDTH, 0.04405286343612335 * HEIGHT,
+                                                     0.12878787878787878 * WIDTH, 0.04405286343612335 * HEIGHT));
+        upperNext.getElements().add(new CubicCurveTo(0.12878787878787878 * WIDTH, 0.04405286343612335 * HEIGHT,
+                                                     0.8712121212121212 * WIDTH, 0.04405286343612335 * HEIGHT,
+                                                     0.8712121212121212 * WIDTH, 0.04405286343612335 * HEIGHT));
         upperNext.getElements().add(new ClosePath());
         final Paint UPPER_NEXT_FILL = new LinearGradient(0.5205479452054794 * WIDTH, 0.0,
                                                          0.5205479452054794 * WIDTH, 0.49206349206349204 * HEIGHT,
@@ -593,43 +796,44 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
                                                          new Stop(1.0, control.getUpperFlapBottomColor()));
         upperNext.setFill(UPPER_NEXT_FILL);
         upperNext.setStroke(null);
-        upperNext.setEffect(UPPER_LIGHT_EFFECT);
 
         Rectangle upperNextClip = new Rectangle(0, 0, WIDTH, upper.getLayoutBounds().getHeight());
         upperNextText.setTextOrigin(VPos.BOTTOM);
-        upperNextText.setFont(font);
+        upperNextText.setFont(FONT);
         upperNextText.setFontSmoothingType(FontSmoothingType.LCD);
         upperNextText.setText(Character.toString((char)(control.getCharacter() + 1)));
         upperNextText.setX(((WIDTH - upperText.getLayoutBounds().getWidth()) / 2.0));
-        upperNextText.setY(HEIGHT * 0.07 + upperText.getLayoutBounds().getHeight());
+        upperNextText.setY(HEIGHT * 0.04 + upperText.getLayoutBounds().getHeight());
         upperNextText.setClip(upperNextClip);
         LinearGradient upperNextTextFill = new LinearGradient(0.0, upperNextText.getLayoutBounds().getMinY(),
                                                               0.0, upperNextText.getLayoutBounds().getMaxY(),
                                                               false, CycleMethod.NO_CYCLE,
                                                               new Stop(0.0, control.getCharacterUpperFlapColor()),
-                                                              new Stop(0.5, control.getCharacterColor()));
+                                                              new Stop(0.47, control.getCharacterColor()),
+                                                              new Stop(0.5, control.getCharacterColor().darker()));
         upperNextText.setFill(upperNextTextFill);
         upperNextText.setStroke(null);
 
-        Rectangle lowerNextClip = new Rectangle(0, lower.getLayoutBounds().getMinY(), WIDTH, HEIGHT / 2);
+        Rectangle lowerNextClip = new Rectangle(0, lower.getLayoutBounds().getMinY(), WIDTH, lower.getLayoutBounds().getHeight());
         lowerNextText.setTextOrigin(VPos.BOTTOM);
-        lowerNextText.setFont(font);
+        lowerNextText.setFont(FONT);
         lowerNextText.setFontSmoothingType(FontSmoothingType.LCD);
         lowerNextText.setText(Character.toString((char)(control.getCharacter() + 1)));
         lowerNextText.setX(((WIDTH - lowerNextText.getLayoutBounds().getWidth()) / 2.0));
-        lowerNextText.setY(HEIGHT * 0.07 + lowerNextText.getLayoutBounds().getHeight());
+        lowerNextText.setY(HEIGHT * 0.04 + lowerNextText.getLayoutBounds().getHeight());
         lowerNextText.setClip(lowerNextClip);
         LinearGradient lowerNextTextFill = new LinearGradient(0.0, lowerNextText.getLayoutBounds().getMinY(),
                                                               0.0, lowerNextText.getLayoutBounds().getMaxY(),
                                                               false, CycleMethod.NO_CYCLE,
-                                                              new Stop(0.0, control.getCharacterLowerFlapColor()),
-                                                              new Stop(0.5, control.getCharacterColor()));
+                                                              new Stop(0.5, control.getCharacterColor().brighter()),
+                                                              new Stop(0.53, control.getCharacterLowerFlapColor()),
+                                                              new Stop(1.0, control.getCharacterColor()));
         lowerNextText.setFill(lowerNextTextFill);
         lowerNextText.setStroke(null);
         lowerNextText.setVisible(false);
         lowerFlipVert = new Rotate();
         lowerFlipVert.setAxis(Rotate.X_AXIS);
-        lowerFlipVert.setPivotY(HEIGHT * 0.07 + lowerNextText.getLayoutBounds().getHeight() / 2);
+        lowerFlipVert.setPivotY(HEIGHT * 0.04 + lowerNextText.getLayoutBounds().getHeight() / 2);
         lowerFlipVert.setAngle(180);
         lowerNextText.getTransforms().add(lowerFlipVert);
 
@@ -646,5 +850,25 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
                                   upperText,
                                   lowerNextText
                                   );
+    }
+
+    public final void drawFrame() {
+        final double WIDTH = control.getPrefWidth();
+        final double HEIGHT = control.getPrefHeight();
+        frame.getChildren().clear();
+
+        final Shape FRAME = Shape.subtract(new Rectangle(0, 0, WIDTH, HEIGHT),
+                                           new Rectangle(0.0606060606 * WIDTH, 0.0352422907 * HEIGHT,
+                                                         0.8787878788 * WIDTH,0.9207048458 * HEIGHT));
+        final Paint FRAME_FILL = new LinearGradient(0.0, 0.0,
+                                                    0.0, HEIGHT,
+                                                    false, CycleMethod.NO_CYCLE,
+                                                    new Stop(0.0, control.getUpperFlapBottomColor()),
+                                                    new Stop(1.0, control.getLowerFlapTopColor()));
+        FRAME.setFill(FRAME_FILL);
+        FRAME.setStroke(null);
+
+        frame.getChildren().addAll(FRAME);
+        frame.setCache(true);
     }
 }

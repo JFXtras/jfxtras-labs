@@ -75,6 +75,8 @@ public class SplitFlap extends Control {
     private LongProperty          flipTimeInMs;
     private BooleanProperty       countdownMode;
     private BooleanProperty       soundOn;
+    private BooleanProperty       frameVisible;
+    private BooleanProperty       backgroundVisible;
     private boolean               keepAspect;
 
 
@@ -98,6 +100,8 @@ public class SplitFlap extends Control {
         flipTimeInMs            = new SimpleLongProperty(200l);
         countdownMode           = new SimpleBooleanProperty(false);
         soundOn                 = new SimpleBooleanProperty(false);
+        frameVisible            = new SimpleBooleanProperty(true);
+        backgroundVisible       = new SimpleBooleanProperty(true);
         keepAspect              = true;
 
         init();
@@ -288,6 +292,30 @@ public class SplitFlap extends Control {
         return soundOn;
     }
 
+    public final boolean isBackgroundVisible() {
+        return backgroundVisible.get();
+    }
+
+    public final void setBackgroundVisible(final boolean BACKGROUND_VISIBLE) {
+        backgroundVisible.set(BACKGROUND_VISIBLE);
+    }
+
+    public final BooleanProperty backgroundVisibleProperty() {
+        return backgroundVisible;
+    }
+
+    public final boolean isFrameVisible() {
+        return frameVisible.get();
+    }
+
+    public final void setFrameVisible(final boolean FRAME_VISIBLE) {
+        frameVisible.set(FRAME_VISIBLE);
+    }
+
+    public final BooleanProperty frameVisibleProperty() {
+        return frameVisible;
+    }
+
     public final void increase() {
         setCountdownMode(false);
         int nextCharacter = character.get() + 1 > type.get().UPPER_BOUND ? type.get().LOWER_BOUND : character.get() + 1;
@@ -301,8 +329,8 @@ public class SplitFlap extends Control {
     }
 
     @Override public void setPrefSize(final double WIDTH, final double HEIGHT) {
-        double prefHeight = WIDTH < (HEIGHT * 0.5925925925925926) ? (WIDTH * 1.6875) : HEIGHT;
-        double prefWidth = prefHeight * 0.5925925925925926;
+        double prefHeight = WIDTH < (HEIGHT * 0.5814977974) ? (WIDTH * 1.7196969697) : HEIGHT;
+        double prefWidth = prefHeight * 0.5814977974;
 
         if (keepAspect) {
             super.setPrefSize(prefWidth, prefHeight);

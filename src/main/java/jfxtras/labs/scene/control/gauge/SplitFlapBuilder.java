@@ -64,6 +64,26 @@ public class SplitFlapBuilder {
         return this;
     }
 
+    public final SplitFlapBuilder soundOn(final boolean SOUND_ON) {
+        splitFlap.setSoundOn(SOUND_ON);
+        return this;
+    }
+
+    public final SplitFlapBuilder frameVisible(final boolean FRAME_VISIBLE) {
+        splitFlap.setFrameVisible(FRAME_VISIBLE);
+        return this;
+    }
+
+    public final SplitFlapBuilder backgroundVisible(final boolean BACKGROUND_VISIBLE) {
+        splitFlap.setBackgroundVisible(BACKGROUND_VISIBLE);
+        return this;
+    }
+
+    public final SplitFlapBuilder interactive(final boolean INTERACTIVE) {
+        splitFlap.setInteractive(INTERACTIVE);
+        return this;
+    }
+
     public final SplitFlapBuilder flipTimeInMs(final long FLIP_TIME_IN_MS) {
         splitFlap.setFlipTimeInMs(FLIP_TIME_IN_MS);
         return this;
