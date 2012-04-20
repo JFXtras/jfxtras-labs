@@ -147,7 +147,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         });
 
         rotate.setAxis(Rotate.X_AXIS);
-        rotate.setPivotY(control.getPrefHeight() / 2);
+        rotate.setPivotY(control.getPrefHeight() * 0.4625550661);
 
         lowerFlipVert = new Rotate();
 
@@ -248,7 +248,8 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
             lowerNextText.getTransforms().clear();
             lowerNextText.setVisible(false);
             lowerFlipVert.setAxis(Rotate.X_AXIS);
-            lowerFlipVert.setPivotY(control.getPrefHeight() * 0.07 + lowerNextText.getLayoutBounds().getHeight() / 2);
+            //lowerFlipVert.setPivotY(control.getPrefHeight() * 0.04 + lowerNextText.getLayoutBounds().getHeight() / 2);
+            lowerFlipVert.setPivotY(control.getPrefHeight() * 0.4625550661);
             lowerFlipVert.setAngle(180);
             lowerNextText.getTransforms().add(lowerFlipVert);
             upperText.setVisible(true);
@@ -299,7 +300,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
             lowerNextText.getTransforms().clear();
             lowerNextText.setVisible(false);
             lowerFlipVert.setAxis(Rotate.X_AXIS);
-            lowerFlipVert.setPivotY(control.getPrefHeight() * 0.07 + lowerNextText.getLayoutBounds().getHeight() / 2);
+            lowerFlipVert.setPivotY(control.getPrefHeight() * 0.04 + lowerNextText.getLayoutBounds().getHeight() / 2);
             lowerFlipVert.setAngle(0);
             lowerNextText.getTransforms().add(lowerFlipVert);
             upperText.setVisible(true);
@@ -658,25 +659,24 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         lower.setStroke(null);
 
         final InnerShadow LOWER_INNER_SHADOW = new InnerShadow();
-        LOWER_INNER_SHADOW.setWidth(0.075 * this.lower.getLayoutBounds().getWidth());
-        LOWER_INNER_SHADOW.setHeight(0.075 * this.lower.getLayoutBounds().getHeight());
+        LOWER_INNER_SHADOW.setWidth(0.075 * lower.getLayoutBounds().getWidth());
+        LOWER_INNER_SHADOW.setHeight(0.075 * lower.getLayoutBounds().getHeight());
         LOWER_INNER_SHADOW.setOffsetX(0.0);
         LOWER_INNER_SHADOW.setOffsetY(0.0);
-        LOWER_INNER_SHADOW.setRadius(0.075 * this.lower.getLayoutBounds().getWidth());
+        LOWER_INNER_SHADOW.setRadius(0.075 * lower.getLayoutBounds().getWidth());
         LOWER_INNER_SHADOW.setColor(Color.BLACK);
         LOWER_INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
 
         final InnerShadow LOWER_LIGHT_EFFECT = new InnerShadow();
-        LOWER_LIGHT_EFFECT.setWidth(0.05 * this.lower.getLayoutBounds().getWidth());
-        LOWER_LIGHT_EFFECT.setHeight(0.05 * this.lower.getLayoutBounds().getHeight());
+        LOWER_LIGHT_EFFECT.setWidth(0.05 * lower.getLayoutBounds().getWidth());
+        LOWER_LIGHT_EFFECT.setHeight(0.05 * lower.getLayoutBounds().getHeight());
         LOWER_LIGHT_EFFECT.setOffsetX(0);
         LOWER_LIGHT_EFFECT.setOffsetY(0.013 * SIZE);
-        LOWER_LIGHT_EFFECT.setRadius(0.05 * this.lower.getLayoutBounds().getWidth());
+        LOWER_LIGHT_EFFECT.setRadius(0.05 * lower.getLayoutBounds().getWidth());
         LOWER_LIGHT_EFFECT.setColor(Color.color(1.0, 1.0, 1.0, 0.8));
         LOWER_LIGHT_EFFECT.setBlurType(BlurType.GAUSSIAN);
         LOWER_LIGHT_EFFECT.inputProperty().set(LOWER_INNER_SHADOW);
-        this.lower.setEffect(LOWER_LIGHT_EFFECT);
-        this.lower.setCache(true);
+        lower.setEffect(LOWER_LIGHT_EFFECT);
 
         upper = new Path();
         upper.setFillRule(FillRule.EVEN_ODD);
@@ -797,7 +797,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         upperNext.setFill(UPPER_NEXT_FILL);
         upperNext.setStroke(null);
 
-        Rectangle upperNextClip = new Rectangle(0, 0, WIDTH, upper.getLayoutBounds().getHeight());
+        Rectangle upperNextClip = new Rectangle(0, upper.getLayoutBounds().getMinY(), WIDTH, upper.getLayoutBounds().getHeight());
         upperNextText.setTextOrigin(VPos.BOTTOM);
         upperNextText.setFont(FONT);
         upperNextText.setFontSmoothingType(FontSmoothingType.LCD);
@@ -833,7 +833,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         lowerNextText.setVisible(false);
         lowerFlipVert = new Rotate();
         lowerFlipVert.setAxis(Rotate.X_AXIS);
-        lowerFlipVert.setPivotY(HEIGHT * 0.04 + lowerNextText.getLayoutBounds().getHeight() / 2);
+        lowerFlipVert.setPivotY(HEIGHT * 0.4625550661);
         lowerFlipVert.setAngle(180);
         lowerNextText.getTransforms().add(lowerFlipVert);
 
@@ -863,8 +863,8 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         final Paint FRAME_FILL = new LinearGradient(0.0, 0.0,
                                                     0.0, HEIGHT,
                                                     false, CycleMethod.NO_CYCLE,
-                                                    new Stop(0.0, control.getUpperFlapBottomColor()),
-                                                    new Stop(1.0, control.getLowerFlapTopColor()));
+                                                    new Stop(0.0, control.getFrameTopColor()),
+                                                    new Stop(1.0, control.getFrameBottomColor()));
         FRAME.setFill(FRAME_FILL);
         FRAME.setStroke(null);
 

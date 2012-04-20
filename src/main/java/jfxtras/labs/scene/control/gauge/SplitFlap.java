@@ -60,7 +60,7 @@ public class SplitFlap extends Control {
             this.UPPER_BOUND = UPPER_BOUND;
         }
     }
-    private static final String   DEFAULT_STYLE_CLASS = "splitflap";
+    private static final String   DEFAULT_STYLE_CLASS = "split-flap";
     private ObjectProperty<Color> color;
     private ObjectProperty<Color> upperFlapTopColor;
     private ObjectProperty<Color> upperFlapBottomColor;
@@ -76,6 +76,8 @@ public class SplitFlap extends Control {
     private BooleanProperty       countdownMode;
     private BooleanProperty       soundOn;
     private BooleanProperty       frameVisible;
+    private ObjectProperty<Color> frameTopColor;
+    private ObjectProperty<Color> frameBottomColor;
     private BooleanProperty       backgroundVisible;
     private boolean               keepAspect;
 
@@ -101,6 +103,8 @@ public class SplitFlap extends Control {
         countdownMode           = new SimpleBooleanProperty(false);
         soundOn                 = new SimpleBooleanProperty(false);
         frameVisible            = new SimpleBooleanProperty(true);
+        frameTopColor           = new SimpleObjectProperty<Color>(Color.rgb(52, 53, 43));
+        frameBottomColor        = new SimpleObjectProperty<Color>(Color.rgb(61, 61, 55));
         backgroundVisible       = new SimpleBooleanProperty(true);
         keepAspect              = true;
 
@@ -314,6 +318,30 @@ public class SplitFlap extends Control {
 
     public final BooleanProperty frameVisibleProperty() {
         return frameVisible;
+    }
+
+    public final Color getFrameTopColor() {
+        return frameTopColor.get();
+    }
+
+    public final void setFrameTopColor(final Color FRAME_TOP_COLOR) {
+        frameTopColor.set(FRAME_TOP_COLOR);
+    }
+
+    public final ObjectProperty<Color> frameTopColorProperty() {
+        return frameTopColor;
+    }
+
+    public final Color getFrameBottomColor() {
+        return frameBottomColor.get();
+    }
+
+    public final void setFrameBottomColor(final Color FRAME_BOTTOM_COLOR) {
+        frameBottomColor.set(FRAME_BOTTOM_COLOR);
+    }
+
+    public final ObjectProperty<Color> frameBottomColorProperty() {
+        return frameBottomColor;
     }
 
     public final void increase() {

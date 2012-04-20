@@ -42,7 +42,7 @@
     -fx-skin: "jfxtras.labs.internal.scene.control.skin.TrafficLightSkin";
 }
 
-.splitflap {
+.split-flap {
     -fx-skin: "jfxtras.labs.internal.scene.control.skin.SplitFlapSkin";
 }
 
