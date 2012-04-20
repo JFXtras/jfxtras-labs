@@ -33,6 +33,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.VPos;
+import javafx.scene.CacheHint;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
@@ -248,7 +249,6 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
             lowerNextText.getTransforms().clear();
             lowerNextText.setVisible(false);
             lowerFlipVert.setAxis(Rotate.X_AXIS);
-            //lowerFlipVert.setPivotY(control.getPrefHeight() * 0.04 + lowerNextText.getLayoutBounds().getHeight() / 2);
             lowerFlipVert.setPivotY(control.getPrefHeight() * 0.4625550661);
             lowerFlipVert.setAngle(180);
             lowerNextText.getTransforms().add(lowerFlipVert);
@@ -657,6 +657,8 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
                                                     new Stop(1.0, control.getLowerFlapBottomColor()));
         lower.setFill(LOWER_FILL);
         lower.setStroke(null);
+        lower.setCache(true);
+        lower.setCacheHint(CacheHint.QUALITY);
 
         final InnerShadow LOWER_INNER_SHADOW = new InnerShadow();
         LOWER_INNER_SHADOW.setWidth(0.075 * lower.getLayoutBounds().getWidth());
@@ -709,6 +711,8 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
                                                     new Stop(1.0, control.getUpperFlapBottomColor()));
         upper.setFill(UPPER_FILL);
         upper.setStroke(null);
+        upper.setCache(true);
+        upper.setCacheHint(CacheHint.SPEED);
 
         final InnerShadow UPPER_INNER_SHADOW = new InnerShadow();
         UPPER_INNER_SHADOW.setWidth(0.075 * upper.getLayoutBounds().getWidth());
@@ -796,6 +800,8 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
                                                          new Stop(1.0, control.getUpperFlapBottomColor()));
         upperNext.setFill(UPPER_NEXT_FILL);
         upperNext.setStroke(null);
+        upperNext.setCache(true);
+        upperNext.setCacheHint(CacheHint.SPEED);
 
         Rectangle upperNextClip = new Rectangle(0, upper.getLayoutBounds().getMinY(), WIDTH, upper.getLayoutBounds().getHeight());
         upperNextText.setTextOrigin(VPos.BOTTOM);
