@@ -51,6 +51,7 @@ repositories {
 dependencies {
     compile     files("${javafxHome}/rt/lib/jfxrt.jar")
     testCompile 'junit:junit:4.10'
+    testCompile files("lib/jemmy.jar", "lib/JemmyAWT.jar", "lib/JemmyAWTInput.jar", "lib/JemmyBrowser.jar", "lib/JemmyCore.jar", "lib/JemmyFX.jar")
 }
 
 apply {
