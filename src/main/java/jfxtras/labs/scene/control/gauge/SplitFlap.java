@@ -249,8 +249,8 @@ public class SplitFlap extends Control {
     }
 
     public final void setCharacter(final String CHARACTER) {
-        if (!CHARACTER.isEmpty() || (CHARACTER.charAt(0) >= type.get().LOWER_BOUND && CHARACTER.charAt(0) <= type.get().UPPER_BOUND)) {
-            character.set(CHARACTER.charAt(0));
+        if (!CHARACTER.isEmpty() || (CHARACTER.charAt(0) > type.get().LOWER_BOUND && CHARACTER.charAt(0) < type.get().UPPER_BOUND)) {
+            character.set(CHARACTER.toUpperCase().charAt(0));
         } else {
             character.set(32);
         }

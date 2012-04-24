@@ -163,9 +163,11 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         registerChangeListener(secondAngle, "SECOND");
         registerChangeListener(minuteAngle, "MINUTE");
         registerChangeListener(hourAngle, "HOUR");
+        registerChangeListener(control.typeProperty(), "TYPE");
 
         setTime();
         initialized = true;
+        checkForNight();
         paint();
         if (control.isRunning()) {
             timer.start();
@@ -207,6 +209,9 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
             minutePointer.setRotate(minuteAngle.get());
         } else if (PROPERTY == "HOUR") {
             hourPointer.setRotate(hourAngle.get());
+        } else if (PROPERTY == "TYPE") {
+            checkForNight();
+            paint();
         }
     }
 
@@ -263,7 +268,7 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
                 isDay = false;
             }
         } else {
-            isDay = true;
+            isDay = control.getType() == Clock.Type.BRIGHT;
         }
     }
 
@@ -289,6 +294,7 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         } else {
             BACKGROUND.setId("clock-dark-background-fill");
         }
+
         BACKGROUND.setStroke(null);
 
         final InnerShadow INNER_SHADOW = new InnerShadow();
@@ -309,7 +315,7 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
             if (angle % 30 == 0) {
                 // Big tickmarks
                 TICK = new Rectangle(0.48031496062992124 * WIDTH, 0.023622047244094488 * HEIGHT,
-                                     0.03937007874015748 * WIDTH, 0.14960629921259844 * HEIGHT);
+                                     0.03937007874015748 * WIDTH, 0.135 * HEIGHT);
             } else {
                 // Small tickmarks
                 TICK = new Rectangle(0.4881889763779528 * WIDTH, 0.023622047244094488 * HEIGHT,

@@ -28,10 +28,8 @@
 package jfxtras.labs.scene.control.gauge;
 
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -39,8 +37,6 @@ import javafx.scene.control.Control;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.SimpleTimeZone;
-import java.util.TimeZone;
 
 
 /**
@@ -50,12 +46,18 @@ import java.util.TimeZone;
  * Time: 12:44
  */
 public class Clock extends Control {
+    public enum Type {
+        BRIGHT,
+        DARK;
+    }
     private static final String DEFAULT_STYLE_CLASS = "clock";
-    private StringProperty      timeZone;
-    private BooleanProperty     running;
-    private BooleanProperty     secondPointerVisible;
-    private BooleanProperty     autoDimEnabled;
-    private BooleanProperty     daylightSavingTime;
+    private StringProperty       timeZone;
+    private BooleanProperty      running;
+    private BooleanProperty      secondPointerVisible;
+    private BooleanProperty      autoDimEnabled;
+    private BooleanProperty      daylightSavingTime;
+    private ObjectProperty<Type> type;
+
 
 
     // ******************** Constructors **************************************
@@ -65,6 +67,7 @@ public class Clock extends Control {
         secondPointerVisible = new SimpleBooleanProperty(true);
         autoDimEnabled       = new SimpleBooleanProperty(true);
         daylightSavingTime   = new SimpleBooleanProperty(Calendar.getInstance().getTimeZone().inDaylightTime(new Date()));
+        type                 = new SimpleObjectProperty<Type>(Type.BRIGHT);
         init();
     }
 
@@ -138,6 +141,18 @@ public class Clock extends Control {
 
     public final BooleanProperty daylightSavingTimeProperty() {
         return daylightSavingTime;
+    }
+
+    public final Type getType() {
+        return type.get();
+    }
+
+    public final void setType(final Type TYPE) {
+        type.set(TYPE);
+    }
+
+    public final ObjectProperty<Type> typeProperty() {
+        return type;
     }
 
 
