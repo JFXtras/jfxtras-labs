@@ -69,6 +69,11 @@ public class SplitFlapBuilder {
         return this;
     }
 
+    public final SplitFlapBuilder sound(final SplitFlap.Sound SOUND) {
+        splitFlap.setSound(SOUND);
+        return this;
+    }
+
     public final SplitFlapBuilder frameVisible(final boolean FRAME_VISIBLE) {
         splitFlap.setFrameVisible(FRAME_VISIBLE);
         return this;
