@@ -36,7 +36,6 @@ import javafx.geometry.VPos;
 import javafx.scene.CacheHint;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.AudioClip;
@@ -70,7 +69,9 @@ import jfxtras.labs.scene.control.gauge.SplitFlap;
 public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
     private SplitFlap        control;
     private static double   MIN_FLIP_TIME = 16666666.6666667; // 60 fps
-    private final AudioClip SOUND         = new AudioClip(getClass().getResource("/jfxtras/labs/scene/control/gauge/flap.mp3").toExternalForm());
+    private final AudioClip SOUND1 = new AudioClip(getClass().getResource("/jfxtras/labs/scene/control/gauge/flap.mp3").toExternalForm());
+    private final AudioClip SOUND2 = new AudioClip(getClass().getResource("/jfxtras/labs/scene/control/gauge/flap1.mp3").toExternalForm());
+    private final AudioClip SOUND3 = new AudioClip(getClass().getResource("/jfxtras/labs/scene/control/gauge/flap2.mp3").toExternalForm());
     private boolean         isDirty;
     private boolean         initialized;
     private Group           background;
@@ -159,6 +160,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         registerChangeListener(control.flipTimeInMsProperty(), "FLIP_TIME");
         registerChangeListener(control.frameVisibleProperty(), "FRAME_VISIBILITY");
         registerChangeListener(control.backgroundVisibleProperty(), "BACKGROUND_VISIBILITY");
+        registerChangeListener(control.countdownModeProperty(), "COUNTDOWN_MODE");
 
         frame.setVisible(control.isFrameVisible());
         background.setVisible(control.isBackgroundVisible());
@@ -202,6 +204,8 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
             frame.setVisible(control.isFrameVisible());
         } else if (PROPERTY == "BACKGROUND_VISIBILITY") {
             background.setVisible(control.isBackgroundVisible());
+        } else if (PROPERTY == "COUNDOWN_MODE") {
+            currentAngle = 180;
         }
     }
 
@@ -241,7 +245,16 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         currentAngle += ANGLE;
         if (Double.compare(currentAngle, 180) >= 0) {
             if (control.isSoundOn()) {
-                SOUND.play();
+                switch(control.getSound()) {
+                    case SOUND1:
+                        SOUND1.play();
+                        break;
+                    case SOUND2:
+                        SOUND2.play();
+                        break;
+                    case SOUND3:
+                        SOUND3.play();
+                }
             }
             currentAngle = 0;
             upper.getTransforms().clear();

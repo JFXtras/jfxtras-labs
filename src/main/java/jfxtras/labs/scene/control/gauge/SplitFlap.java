@@ -60,6 +60,11 @@ public class SplitFlap extends Control {
             this.UPPER_BOUND = UPPER_BOUND;
         }
     }
+    public enum Sound {
+        SOUND1,
+        SOUND2,
+        SOUND3
+    }
     private static final String   DEFAULT_STYLE_CLASS = "split-flap";
     private ObjectProperty<Color> color;
     private ObjectProperty<Color> upperFlapTopColor;
@@ -75,6 +80,7 @@ public class SplitFlap extends Control {
     private LongProperty          flipTimeInMs;
     private BooleanProperty       countdownMode;
     private BooleanProperty       soundOn;
+    private ObjectProperty<Sound> sound;
     private BooleanProperty       frameVisible;
     private ObjectProperty<Color> frameTopColor;
     private ObjectProperty<Color> frameBottomColor;
@@ -102,6 +108,7 @@ public class SplitFlap extends Control {
         flipTimeInMs            = new SimpleLongProperty(200l);
         countdownMode           = new SimpleBooleanProperty(false);
         soundOn                 = new SimpleBooleanProperty(false);
+        sound                   = new SimpleObjectProperty<Sound>(Sound.SOUND1);
         frameVisible            = new SimpleBooleanProperty(true);
         frameTopColor           = new SimpleObjectProperty<Color>(Color.rgb(52, 53, 43));
         frameBottomColor        = new SimpleObjectProperty<Color>(Color.rgb(61, 61, 55));
@@ -294,6 +301,18 @@ public class SplitFlap extends Control {
 
     public final BooleanProperty soundOnProperty() {
         return soundOn;
+    }
+
+    public final Sound getSound() {
+        return sound.get();
+    }
+
+    public final void setSound(final Sound SOUND) {
+        sound.set(SOUND);
+    }
+
+    public final ObjectProperty<Sound> soundProperty() {
+        return sound;
     }
 
     public final boolean isBackgroundVisible() {
