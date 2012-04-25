@@ -98,23 +98,23 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
     // ******************** Constructors **************************************
     public SplitFlapSkin(final SplitFlap CONTROL) {
         super(CONTROL, new SplitFlapBehavior(CONTROL));
-        control          = CONTROL;
-        initialized      = false;
-        isDirty          = false;
-        background       = new Group();
-        fixture          = new Group();
-        flip             = new Group();
-        frame            = new Group();
-        upperText        = new Text(Character.toString(control.getCharacter()));
-        lowerText        = new Text(Character.toString(control.getCharacter()));
-        upperNextText    = new Text(Character.toString((char) (control.getCharacter() + 1)));
-        lowerNextText    = new Text(Character.toString((char) (control.getCharacter() + 1)));
-        currentChar      = control.getCharacter();
-        nextChar         = (char) (control.getCharacter() + 1);
-        rotate           = new Rotate();
-        angleStep        = 180.0 / ((control.getFlipTimeInMs() * 1000000) / (MIN_FLIP_TIME));
-        currentAngle     = 0;
-        flipping         = false;
+        control               = CONTROL;
+        initialized           = false;
+        isDirty               = false;
+        background            = new Group();
+        fixture               = new Group();
+        flip                  = new Group();
+        frame                 = new Group();
+        upperText             = new Text(Character.toString(control.getCharacter()));
+        lowerText             = new Text(Character.toString(control.getCharacter()));
+        upperNextText         = new Text(Character.toString((char) (control.getCharacter() + 1)));
+        lowerNextText         = new Text(Character.toString((char) (control.getCharacter() + 1)));
+        currentChar           = control.getCharacter();
+        nextChar              = (char) (control.getCharacter() + 1);
+        rotate                = new Rotate();
+        angleStep             = 180.0 / ((control.getFlipTimeInMs() * 1000000) / (MIN_FLIP_TIME));
+        currentAngle          = 0;
+        flipping              = false;
         timer            = new AnimationTimer() {
             @Override public void handle(long l) {
                 if (initialized) {

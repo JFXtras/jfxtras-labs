@@ -35,7 +35,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.event.EventHandler;
 import javafx.scene.control.Control;
 import javafx.scene.paint.Color;
 
@@ -49,7 +48,8 @@ import javafx.scene.paint.Color;
 public class SplitFlap extends Control {
     public enum Type {
         NUMERIC(48, 57),
-        ALPHANUMERIC(32, 94),
+        ALPHANUMERIC(48, 90),
+        EXTENDED(32, 95),
         TIME(48, 53);
 
         public final int LOWER_BOUND;
