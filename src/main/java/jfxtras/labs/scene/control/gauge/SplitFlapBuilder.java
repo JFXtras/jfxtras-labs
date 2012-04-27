@@ -29,6 +29,8 @@ package jfxtras.labs.scene.control.gauge;
 
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
+
 
 /**
  * Created by
@@ -45,7 +47,7 @@ public class SplitFlapBuilder {
     }
 
     public final SplitFlapBuilder textColor(final Color TEXT_COLOR) {
-        splitFlap.setCharacterColor(TEXT_COLOR);
+        splitFlap.setTextColor(TEXT_COLOR);
         return this;
     }
 
@@ -54,13 +56,13 @@ public class SplitFlapBuilder {
         return this;
     }
 
-    public final SplitFlapBuilder character(final String CHARACTER) {
-        splitFlap.setCharacter(CHARACTER);
+    public final SplitFlapBuilder text(final String TEXT) {
+        splitFlap.setText(TEXT);
         return this;
     }
 
-    public final SplitFlapBuilder type(final SplitFlap.Type TYPE) {
-        splitFlap.setType(TYPE);
+    public final SplitFlapBuilder selection(final String[] SELECTION) {
+        splitFlap.setSelection(SELECTION);
         return this;
     }
 
