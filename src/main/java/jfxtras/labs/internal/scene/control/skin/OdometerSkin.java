@@ -137,12 +137,22 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
         if (PROPERTY == "ROTATION") {
-            for (int i = 1 ; i < (control.getNoOfDigits() + control.getNoOfDecimals() + 1) ; i++) {
-                if (control.getRotations() == 0) {
-                    listOfDials.get(i - 1).reset();
-                } else {
-                    listOfDials.get(i - 1).setNumber(control.getDialPosition(i));
+            String rot = Integer.toString(control.getRotations());
+            int noOfDials = control.getNoOfDigits() + control.getNoOfDecimals();
+            if (rot.length() > noOfDials) {
+                rot = rot.substring(rot.length() - noOfDials);
+            } else if (rot.length() < noOfDials) {
+                StringBuilder rotSB = new StringBuilder(noOfDials);
+                for (int i = 0 ; i < (noOfDials - rot.length()) ; i++) {
+                    rotSB.append("0");
                 }
+                rotSB.append(rot);
+                rot = rotSB.toString();
+            }
+            int index = listOfDials.size() - 1;
+            for (final char c : rot.toCharArray()) {
+                listOfDials.get(index).setToNumber(Integer.parseInt(String.valueOf(c)));
+                index--;
             }
         }
     }
@@ -296,10 +306,9 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
                 parallel.setOnFinished(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent actionEvent) {
-                        increaseNumbers();
+                    increaseNumbers();
                     }
                 });
-
             }
         }
 
@@ -309,6 +318,16 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
             nextNumber.setText("1");
             currentNumberGroup.setTranslateY(0);
             currentNumber.setText("0");
+        }
+
+        protected void setToNumber(final int NUMBER) {
+            int thisNumber = NUMBER < 0 ? 0 : (NUMBER > 9 ? 9 : NUMBER);
+            int commingNumber = thisNumber + 1 > 9 ? 0 : thisNumber + 1;
+            parallel.stop();
+            nextNumberGroup.setTranslateY(-control.getPrefHeight());
+            nextNumber.setText(Integer.toString(commingNumber));
+            currentNumberGroup.setTranslateY(0);
+            currentNumber.setText(Integer.toString(thisNumber));
         }
 
         protected Group getNextNumberGroup() {
