@@ -145,11 +145,11 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
-        if (PROPERTY == "GLOW_COLOR") {
+        if ("GLOW_COLOR".equals(PROPERTY)) {
             createGlows();
             setNumber();
             hatch.setEffect(hatchGlow);
-        } else if (PROPERTY == "NUMBER") {
+        } else if ("NUMBER".equals(PROPERTY)) {
             setNumber();
         }
     }

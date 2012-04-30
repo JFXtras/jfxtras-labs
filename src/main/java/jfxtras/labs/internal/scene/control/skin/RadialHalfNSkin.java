@@ -530,27 +530,27 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
 
-        if (PROPERTY == "ANIMATION_DURATION") {
+        if ("ANIMATION_DURATION".equals(PROPERTY)) {
             pointerRotation.setDuration(Duration.millis(control.getAnimationDuration()));
-        } else if (PROPERTY == "RADIAL_RANGE") {
+        } else if ("RADIAL_RANGE".equals(PROPERTY)) {
             noOfLeds = (int) (control.getRadialRange().ANGLE_RANGE / 5.0);
             isDirty = true;
-        } else if (PROPERTY == "FRAME_DESIGN") {
+        } else if ("FRAME_DESIGN".equals(PROPERTY)) {
             drawFrame();
-        } else if (PROPERTY == "BACKGROUND_DESIGN") {
+        } else if ("BACKGROUND_DESIGN".equals(PROPERTY)) {
             drawBackground();
             drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
-        } else if (PROPERTY == "KNOB_DESIGN") {
+        } else if ("KNOB_DESIGN".equals(PROPERTY)) {
             drawCircularKnobs(control, knobs, center, gaugeBounds);
-        } else if (PROPERTY == "KNOB_COLOR") {
+        } else if ("KNOB_COLOR".equals(PROPERTY)) {
             drawCircularKnobs(control, knobs, center, gaugeBounds);
-        } else if (PROPERTY == "POINTER_TYPE") {
+        } else if ("POINTER_TYPE".equals(PROPERTY)) {
             drawPointer();
-        } else if (PROPERTY == "VALUE_COLOR") {
+        } else if ("VALUE_COLOR".equals(PROPERTY)) {
             drawPointer();
-        } else if (PROPERTY == "FOREGROUND_TYPE") {
+        } else if ("FOREGROUND_TYPE".equals(PROPERTY)) {
             drawForeground();
-        } else if (PROPERTY == "USER_LED_BLINKING") {
+        } else if ("USER_LED_BLINKING".equals(PROPERTY)) {
             if (userLedOff.isVisible() && userLedOn.isVisible()) {
                 if (control.isUserLedBlinking()) {
                     userLedTimer.start();
@@ -559,7 +559,7 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                     userLedOn.setOpacity(0.0);
                 }
             }
-        } else if (PROPERTY == "LED_BLINKING") {
+        } else if ("LED_BLINKING".equals(PROPERTY)) {
             if (ledOff.isVisible() && ledOn.isVisible()) {
                 if (control.isLedBlinking()) {
                     ledTimer.start();
@@ -568,7 +568,7 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                     ledOn.setOpacity(0.0);
                 }
             }
-        } else if (PROPERTY == "GLOW_COLOR") {
+        } else if ("GLOW_COLOR".equals(PROPERTY)) {
             glowColors.clear();
             final Color GLOW_COLOR = control.getGlowColor();
             glowColors.add(Color.hsb(GLOW_COLOR.getHue(), 0.46, 0.96, 0.0));
@@ -576,12 +576,12 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
             glowColors.add(Color.hsb(GLOW_COLOR.getHue(), 1.0, 1.0, 1.0));
             glowColors.add(Color.hsb(GLOW_COLOR.getHue(), 0.67, 0.90, 1.0));
             drawGlowOn();
-        } else if (PROPERTY == "GLOW_VISIBILITY") {
+        } else if ("GLOW_VISIBILITY".equals(PROPERTY)) {
             glowOff.setVisible(control.isGlowVisible());
             if (!control.isGlowVisible()) {
                 glowOn.setOpacity(0.0);
             }
-        } else if (PROPERTY == "GLOW_ON") {
+        } else if ("GLOW_ON".equals(PROPERTY)) {
             if (glowOff.isVisible() && control.isGlowOn()) {
                 glowOn.setOpacity(1.0);
                 glowOff.setVisible(true);
@@ -589,7 +589,7 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                 glowOff.setVisible(true);
                 glowOn.setOpacity(0.0);
             }
-        } else if (PROPERTY == "PULSATING_GLOW") {
+        } else if ("PULSATING_GLOW".equals(PROPERTY)) {
             if (control.isPulsatingGlow() && control.isGlowVisible()) {
                 if (!glowOn.isVisible()) {
                     glowOn.setVisible(true);
@@ -602,21 +602,21 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                 glowPulse.stop();
                 glowOn.setOpacity(0.0);
             }
-        } else if (PROPERTY == "RANGE") {
+        } else if ("RANGE".equals(PROPERTY)) {
             drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
         } else if (PROPERTY.equals("MIN_MEASURED_VALUE")) {
             minMeasured.getTransforms().clear();
             minMeasured.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
             minMeasured.getTransforms().add(Transform.rotate(-control.getMinValue() * control.getAngleStep(), center.getX(), center.getY()));
             minMeasured.getTransforms().add(Transform.rotate(control.getMinMeasuredValue() * control.getAngleStep(), center.getX(), center.getY()));
-        } else if (PROPERTY == "MAX_MEASURED_VALUE") {
+        } else if ("MAX_MEASURED_VALUE".equals(PROPERTY)) {
             maxMeasured.getTransforms().clear();
             maxMeasured.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
             maxMeasured.getTransforms().add(Transform.rotate(-control.getMinValue() * control.getAngleStep(), center.getX(), center.getY()));
             maxMeasured.getTransforms().add(Transform.rotate(control.getMaxMeasuredValue() * control.getAngleStep(), center.getX(), center.getY()));
-        } else if (PROPERTY == "TREND") {
+        } else if ("TREND".equals(PROPERTY)) {
             drawCircularTrend(control, trend, gaugeBounds);
-        } else if (PROPERTY == "SIMPLE_GRADIENT_BASE") {
+        } else if ("SIMPLE_GRADIENT_BASE".equals(PROPERTY)) {
             isDirty = true;
         }
     }

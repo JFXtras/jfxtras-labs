@@ -431,12 +431,12 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
 
-        if (PROPERTY == "LCD_DESIGN") {
+        if ("LCD_DESIGN".equals(PROPERTY)) {
             drawLcd();
             drawLcdContent();
-        } else if (PROPERTY == "LCD_NUMBER_SYSTEM") {
+        } else if ("LCD_NUMBER_SYSTEM".equals(PROPERTY)) {
             drawLcdContent();
-        } else if (PROPERTY == "GLOW_COLOR") {
+        } else if ("GLOW_COLOR".equals(PROPERTY)) {
             glowColors.clear();
             final Color GLOW_COLOR = control.getGlowColor();
             glowColors.add(Color.hsb(GLOW_COLOR.getHue(), 0.46, 0.96, 0.0));
@@ -444,17 +444,17 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             glowColors.add(Color.hsb(GLOW_COLOR.getHue(), 1.0, 1.0, 1.0));
             glowColors.add(Color.hsb(GLOW_COLOR.getHue(), 0.67, 0.90, 1.0));
             drawGlowOn();
-        } else if (PROPERTY == "GLOW_VISIBILITY") {
+        } else if ("GLOW_VISIBILITY".equals(PROPERTY)) {
             if (!control.isGlowVisible()) {
                 glowOn.setOpacity(0.0);
             }
-        } else if (PROPERTY == "GLOW_ON") {
+        } else if ("GLOW_ON".equals(PROPERTY)) {
             if (control.isGlowOn()) {
                 glowOn.setOpacity(1.0);
             } else {
                 glowOn.setOpacity(0.0);
             }
-        } else if (PROPERTY == "PULSATING_GLOW") {
+        } else if ("PULSATING_GLOW".equals(PROPERTY)) {
             if (control.isPulsatingGlow() && control.isGlowVisible()) {
                 if (!glowOn.isVisible()) {
                     glowOn.setVisible(true);
@@ -467,7 +467,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
                 glowPulse.stop();
                 glowOn.setOpacity(0.0);
             }
-        } else if (PROPERTY == "TREND") {
+        } else if ("TREND".equals(PROPERTY)) {
             drawLcdContent();
         }
     }

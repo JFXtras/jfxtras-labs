@@ -100,7 +100,7 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
         // Register listeners
         registerChangeListener(control.colorProperty(), "COLOR");
         registerChangeListener(control.noOfStepsProperty(), "NO_OF_CIRCLES");
-        registerChangeListener(control.currentStepProperty(), "SCORE");
+        registerChangeListener(control.currentStepProperty(), "SELECTION");
 
         initialized = true;
         paint();
@@ -120,12 +120,12 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
-        if (PROPERTY == "NO_OF_CIRCLES") {
+        if ("NO_OF_CIRCLES".equals(PROPERTY)) {
             noOfCircles = control.getNoOfSteps();
             paint();
-        } else if (PROPERTY == "SCORE") {
+        } else if ("SELECTION".equals(PROPERTY)) {
             drawSelectedCircles();
-        } else if (PROPERTY == "COLOR") {
+        } else if ("COLOR".equals(PROPERTY)) {
             drawSelectedCircles();
         }
     }

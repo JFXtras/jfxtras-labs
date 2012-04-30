@@ -180,12 +180,12 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
-        if (PROPERTY == "FRAME_VISIBLE") {
+        if ("FRAME_VISIBLE".equals(PROPERTY)) {
             for (Led led : ledList) {
                 led.setFrameVisible(control.isFrameVisible());
             }
             paint();
-        } else if (PROPERTY == "LED_SIZE") {
+        } else if ("LED_SIZE".equals(PROPERTY)) {
             ledList.clear();
             for(int i = 0 ; i < control.getNoOfLeds() ; i++) {
                 Led led = new Led();
@@ -194,14 +194,14 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
             }
             setLedColors();
             paint();
-        } else if (PROPERTY == "ORIENTATION") {
+        } else if ("ORIENTATION".equals(PROPERTY)) {
             paint();
-        } else if (PROPERTY == "LED_NUMBER") {
+        } else if ("LED_NUMBER".equals(PROPERTY)) {
             stepSize.set(1.0 / control.getNoOfLeds());
-        } else if (PROPERTY == "LED_COLOR") {
+        } else if ("LED_COLOR".equals(PROPERTY)) {
             setLedColors();
             paint();
-        } else if (PROPERTY == "LED_TYPE") {
+        } else if ("LED_TYPE".equals(PROPERTY)) {
             setLedTypes();
             paint();
         }

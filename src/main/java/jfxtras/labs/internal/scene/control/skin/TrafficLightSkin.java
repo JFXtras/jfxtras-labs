@@ -164,22 +164,22 @@ public class TrafficLightSkin extends SkinBase<TrafficLight, TrafficLightBehavio
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
-        if (PROPERTY == "RED") {
+        if ("RED".equals(PROPERTY)) {
             redOn.setVisible(control.isRedOn());
             highlightRedOn.setVisible(control.isRedOn());
-        } else if (PROPERTY == "RED_BLINKING") {
+        } else if ("RED_BLINKING".equals(PROPERTY)) {
 
-        } else if (PROPERTY == "YELLOW") {
+        } else if ("YELLOW".equals(PROPERTY)) {
             yellowOn.setVisible(control.isYellowOn());
             highlightYellowOn.setVisible(control.isYellowOn());
-        } else if (PROPERTY == "YELLOW_BLINKING") {
+        } else if ("YELLOW_BLINKING".equals(PROPERTY)) {
 
-        } else if (PROPERTY == "GREEN") {
+        } else if ("GREEN".equals(PROPERTY)) {
             greenOn.setVisible(control.isGreenOn());
             highlightGreenOn.setVisible(control.isGreenOn());
-        } else if (PROPERTY == "GREEN_BLINKING") {
+        } else if ("GREEN_BLINKING".equals(PROPERTY)) {
 
-        } else if (PROPERTY == "DARK_BACKGROUND") {
+        } else if ("DARK_BACKGROUND".equals(PROPERTY)) {
            paint();
         }
     }

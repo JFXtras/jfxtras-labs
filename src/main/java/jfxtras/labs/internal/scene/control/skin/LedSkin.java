@@ -130,9 +130,9 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
-        if (PROPERTY == "ON") {
+        if ("ON".equals(PROPERTY)) {
             ledOn.setVisible(control.isOn());
-        } else if (PROPERTY == "BLINKING") {
+        } else if ("BLINKING".equals(PROPERTY)) {
             if (control.isBlinking()) {
                 timer.start();
             } else {

@@ -159,7 +159,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
 
         // Register listeners
         registerChangeListener(control.colorProperty(), "COLOR");
-        registerChangeListener(control.textColorProperty(), "CHARACTER_COLOR");
+        registerChangeListener(control.textColorProperty(), "TEXT_COLOR");
         registerChangeListener(control.textProperty(), "TEXT");
         registerChangeListener(control.flipTimeInMsProperty(), "FLIP_TIME");
         registerChangeListener(control.frameVisibleProperty(), "FRAME_VISIBILITY");
@@ -202,25 +202,25 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
-        if (PROPERTY == "COLOR") {
+        if ("COLOR".equals(PROPERTY)) {
             paint();
-        } else if (PROPERTY == "CHARACTER_COLOR") {
+        } else if ("TEXT_COLOR".equals(PROPERTY)) {
             paint();
-        } else if (PROPERTY == "TEXT") {
+        } else if ("TEXT".equals(PROPERTY)) {
             if (control.getText() != selectedSet.get(currentSelectionIndex)) {
                 timer.stop();
                 flipping = true;
                 timer.start();
             }
-        } else if (PROPERTY == "FLIP_TIME") {
+        } else if ("FLIP_TIME".equals(PROPERTY)) {
             angleStep = 180.0 / ((control.getFlipTimeInMs() * 1000000) / (MIN_FLIP_TIME));
-        } else if (PROPERTY == "FRAME_VISIBILITY") {
+        } else if ("FRAME_VISIBILITY".equals(PROPERTY)) {
             frame.setVisible(control.isFrameVisible());
-        } else if (PROPERTY == "BACKGROUND_VISIBILITY") {
+        } else if ("BACKGROUND_VISIBILITY".equals(PROPERTY)) {
             background.setVisible(control.isBackgroundVisible());
-        } else if (PROPERTY == "COUNDOWN_MODE") {
+        } else if ("COUNDOWN_MODE".equals(PROPERTY)) {
             currentAngle = 180;
-        } else if (PROPERTY == "SELECTION") {
+        } else if ("SELECTION".equals(PROPERTY)) {
             selectedSet.clear();
             selectedSet.addAll(control.getSelectedSet());
         }

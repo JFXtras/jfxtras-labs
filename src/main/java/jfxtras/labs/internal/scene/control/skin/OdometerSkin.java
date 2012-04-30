@@ -136,7 +136,7 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
-        if (PROPERTY == "ROTATION") {
+        if ("ROTATION".equals(PROPERTY)) {
             String rot = Integer.toString(control.getRotations());
             int noOfDials = control.getNoOfDigits() + control.getNoOfDecimals();
             if (rot.length() > noOfDials) {

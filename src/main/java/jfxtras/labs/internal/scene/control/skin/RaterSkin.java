@@ -129,16 +129,16 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
-        if (PROPERTY == "NO_OF_STARS") {
+        if ("NO_OF_STARS".equals(PROPERTY)) {
             noOfStars = control.getNoOfStars();
             drawStars();
             paint();
-        } else if (PROPERTY == "RATING") {
+        } else if ("RATING".equals(PROPERTY)) {
             rating = control.getRating();
             updateStars();
-        } else if (PROPERTY == "BRIGHT_COLOR") {
+        } else if ("BRIGHT_COLOR".equals(PROPERTY)) {
             updateStars();
-        } else if (PROPERTY == "DARK_COLOR") {
+        } else if ("DARK_COLOR".equals(PROPERTY)) {
             updateStars();
         }
     }

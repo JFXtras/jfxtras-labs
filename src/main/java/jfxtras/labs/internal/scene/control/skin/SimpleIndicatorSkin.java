@@ -112,11 +112,11 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
-        if (PROPERTY == "INNER_COLOR") {
+        if ("INNER_COLOR".equals(PROPERTY)) {
             updateIndicator();
-        } else if (PROPERTY == "OUTER_COLOR") {
+        } else if ("OUTER_COLOR".equals(PROPERTY)) {
             updateIndicator();
-        } else if (PROPERTY == "GLOW_VISIBILITY") {
+        } else if ("GLOW_VISIBILITY".equals(PROPERTY)) {
             paint();
         }
     }

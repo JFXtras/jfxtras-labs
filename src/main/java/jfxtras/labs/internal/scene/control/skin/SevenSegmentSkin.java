@@ -121,15 +121,15 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
 
-        if (PROPERTY == "CHARACTER") {
+        if ("CHARACTER".equals(PROPERTY)) {
             updateCharacter();
-        } else if (PROPERTY == "COLOR") {
+        } else if ("COLOR".equals(PROPERTY)) {
             updateCharacter();
-        } else if (PROPERTY == "PLAIN_COLOR") {
+        } else if ("PLAIN_COLOR".equals(PROPERTY)) {
             updateCharacter();
-        } else if (PROPERTY == "CUSTOM_MAPPING") {
+        } else if ("CUSTOM_MAPPING".equals(PROPERTY)) {
             updateCharacter();
-        } else if (PROPERTY == "DOT_ON") {
+        } else if ("DOT_ON".equals(PROPERTY)) {
             updateCharacter();
         }
     }

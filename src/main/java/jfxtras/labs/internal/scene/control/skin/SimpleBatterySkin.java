@@ -142,11 +142,11 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
     @Override
     protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
-        if (PROPERTY == "CHARGING") {
+        if ("CHARGING".equals(PROPERTY)) {
             plug.setVisible(control.isCharging());
             flashFrame.setVisible(control.isCharging());
             flashMain.setVisible(control.isCharging());
-        } else if(PROPERTY == "CHARGE_INDICATOR") {
+        } else if("CHARGE_INDICATOR".equals(PROPERTY)) {
             if (control.getChargeIndicator() == SimpleBattery.ChargeIndicator.PLUG) {
                 plug.setOpacity(1.0);
                 flashFrame.setOpacity(0.0);
@@ -156,10 +156,10 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
                 flashFrame.setOpacity(1.0);
                 flashMain.setOpacity(1.0);
             }
-        } else if(PROPERTY == "CHARGE_LEVEL") {
+        } else if("CHARGE_LEVEL".equals(PROPERTY)) {
             currentLevelColor = lookup.getColorAt(control.getChargingLevel());
             updateFluid();
-        } else if (PROPERTY == "LEVEL_COLORS") {
+        } else if ("LEVEL_COLORS".equals(PROPERTY)) {
             lookup = new GradientLookup(control.getLevelColors());
             updateFluid();
         }

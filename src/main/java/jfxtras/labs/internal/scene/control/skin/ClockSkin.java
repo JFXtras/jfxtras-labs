@@ -194,22 +194,22 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
-        if (PROPERTY == "TIME_ZONE") {
+        if ("TIME_ZONE".equals(PROPERTY)) {
           setTime();
-        } else if (PROPERTY == "RUNNING") {
+        } else if ("RUNNING".equals(PROPERTY)) {
             if (control.isRunning()) {
                 setTime();
                 timer.start();
             } else {
                 timer.stop();
             }
-        } else if (PROPERTY == "SECOND") {
+        } else if ("SECOND".equals(PROPERTY)) {
             secondPointer.setRotate(secondAngle.get());
-        } else if (PROPERTY == "MINUTE") {
+        } else if ("MINUTE".equals(PROPERTY)) {
             minutePointer.setRotate(minuteAngle.get());
-        } else if (PROPERTY == "HOUR") {
+        } else if ("HOUR".equals(PROPERTY)) {
             hourPointer.setRotate(hourAngle.get());
-        } else if (PROPERTY == "TYPE") {
+        } else if ("TYPE".equals(PROPERTY)) {
             checkForNight();
             paint();
         }
