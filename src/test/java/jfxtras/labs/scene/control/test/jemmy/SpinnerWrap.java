@@ -102,7 +102,6 @@ public class SpinnerWrap<T extends Spinner> extends ControlWrap<T>
 	{
 		return new GetAction()
 		{
-
 			@Override
 			public void run(Object... os) throws Exception
 			{

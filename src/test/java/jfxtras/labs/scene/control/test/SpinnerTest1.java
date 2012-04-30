@@ -33,6 +33,7 @@ import org.jemmy.fx.AppExecutor;
 import org.jemmy.fx.ByStyleClass;
 import org.jemmy.fx.Root;
 import org.jemmy.lookup.Lookup;
+import org.jemmy.timing.State;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -73,7 +74,7 @@ public class SpinnerTest1 {
     	org.jemmy.interfaces.Parent<Node> lParent = Root.ROOT.lookup().as(org.jemmy.interfaces.Parent.class, Node.class);
         Wrap<? extends Spinner> lControlWrapper = lParent.lookup(Spinner.class).wrap();
         // hack: the lookup only knows controls and their wrappers that are in JemmyFX; this lines creates the unknown SpinnerWrapper by ripping data from the ControlWrapper 
-        SpinnerWrap<Spinner<String>> lSpinnerWrapper = new SpinnerWrap<Spinner<String>>(lControlWrapper.getEnvironment(), lControlWrapper.getControl());
+        final SpinnerWrap<Spinner<String>> lSpinnerWrapper = new SpinnerWrap<Spinner<String>>(lControlWrapper.getEnvironment(), lControlWrapper.getControl());
         Wrap lDecArrowWrapper = lSpinnerWrapper.as(org.jemmy.interfaces.Parent.class, Node.class).lookup(new ByStyleClass<Node>("left-arrow")).wrap();
         Wrap lIncArrowWrapper = lSpinnerWrapper.as(org.jemmy.interfaces.Parent.class, Node.class).lookup(new ByStyleClass<Node>("right-arrow")).wrap();
         
@@ -82,23 +83,29 @@ public class SpinnerTest1 {
 
         // select next
 		lIncArrowWrapper.mouse().click(1);
-		Thread.sleep(200); // TODO wait for the mouse click to be processed, there should be a better way to sync 
-        Assert.assertEquals("b", lSpinnerWrapper.getControl().getValue());
+        lSpinnerWrapper.waitState(new State<String>() { @Override public String reached() {
+				return lSpinnerWrapper.getControl().getValue();
+        }}, "b");
 
         // select next
 		lIncArrowWrapper.mouse().click(1);
-		Thread.sleep(200); // TODO wait for the mouse click to be processed, there should be a better way to sync 
-        Assert.assertEquals("c", lSpinnerWrapper.getControl().getValue());
+        lSpinnerWrapper.waitState(new State<String>() { @Override public String reached() {
+				return lSpinnerWrapper.getControl().getValue();
+        }}, "c");
 
         // select next (cyclic)
 		lIncArrowWrapper.mouse().click(1);
-		Thread.sleep(200); // TODO wait for the mouse click to be processed, there should be a better way to sync 
-        Assert.assertEquals("a", lSpinnerWrapper.getControl().getValue());
+        lSpinnerWrapper.waitState(new State<String>() { @Override public String reached() {
+				return lSpinnerWrapper.getControl().getValue();
+        }}, "a");
 
 
         // type "b"
-        lSpinnerWrapper.as(org.jemmy.interfaces.Text.class).type("b"); // TODO: how to clear the text field?
-//        Assert.assertEquals( lSpinnerWrapper.getControl().getValue(), "b");
+        lSpinnerWrapper.as(org.jemmy.interfaces.Text.class).clear();
+        lSpinnerWrapper.as(org.jemmy.interfaces.Text.class).type("b");
+//        lSpinnerWrapper.waitState(new State<String>() { @Override public String reached() {
+//				return lSpinnerWrapper.getControl().getValue();
+//        }}, "b");
     }
 
 }
