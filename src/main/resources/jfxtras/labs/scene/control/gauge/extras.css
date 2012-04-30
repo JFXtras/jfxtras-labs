@@ -84,6 +84,12 @@
     -fx-segment-color-off: rgba(119, 219, 0, 0.075);
 }
 
+.seven-segment {
+    -fx-skin             : "jfxtras.labs.internal.scene.control.skin.SevenSegmentSkin";
+    -fx-segment-color-on : rgb(119, 219, 0);
+    -fx-segment-color-off: rgba(119, 219, 0, 0.075);
+}
+
 .dot-matrix-segment {
     -fx-skin             : "jfxtras.labs.internal.scene.control.skin.DotMatrixSegmentSkin";
     -fx-segment-color-on : rgb(119, 219, 0);
@@ -239,6 +245,25 @@
 }
 
 #sixteen-segment-off {
+    -fx-fill  : -fx-segment-color-off;
+    -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.65), 1, 0.5, 0, 0);
+    -fx-stroke: transparent;
+}
+
+/************************************************************
+* Definition of SevenSegment fills                          *
+************************************************************/
+#seven-segment-on {
+    -fx-fill  : radial-gradient(focus-angle 0deg, focus-distance 0%, center 50% 50%, radius 50%, derive(-fx-segment-color-on, +30%) 0%, -fx-segment-color-on 50%, derive(-fx-segment-color-on, -30%) 100%);
+    -fx-stroke: transparent;
+}
+
+#seven-segment-plain-on {
+    -fx-fill  : -fx-segment-color-on;
+    -fx-stroke: transparent;
+}
+
+#seven-segment-off {
     -fx-fill  : -fx-segment-color-off;
     -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.65), 1, 0.5, 0, 0);
     -fx-stroke: transparent;

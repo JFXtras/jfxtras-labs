@@ -29,74 +29,60 @@ package jfxtras.labs.scene.control.gauge;
 
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 /**
  * Created by
  * User: hansolo
- * Date: 12.04.12
- * Time: 14:48
+ * Date: 23.04.12
+ * Time: 08:40
  */
-public class SplitFlapBuilder {
-    private SplitFlap splitFlap;
+public class SevenSegmentBuilder {
+    private SevenSegment segment;
 
-    public final SplitFlapBuilder create() {
-        splitFlap = new SplitFlap();
+    public final SevenSegmentBuilder create() {
+        segment = new SevenSegment();
         return this;
     }
 
-    public final SplitFlapBuilder textColor(final Color TEXT_COLOR) {
-        splitFlap.setTextColor(TEXT_COLOR);
+    public final SevenSegmentBuilder character(final String CHARACTER) {
+        segment.setCharacter(CHARACTER);
         return this;
     }
 
-    public final SplitFlapBuilder color(final Color COLOR) {
-        splitFlap.setColor(COLOR);
+    public final SevenSegmentBuilder character(final Character CHARACTER) {
+        segment.setCharacter(CHARACTER);
         return this;
     }
 
-    public final SplitFlapBuilder text(final String TEXT) {
-        splitFlap.setText(TEXT);
+    public final SevenSegmentBuilder character(final int CHARACTER) {
+        segment.setCharacter(CHARACTER);
         return this;
     }
 
-    public final SplitFlapBuilder selection(final String[] SELECTION) {
-        splitFlap.setSelection(SELECTION);
+    public final SevenSegmentBuilder dotOn(final boolean DOT_ON) {
+        segment.setDotOn(DOT_ON);
         return this;
     }
 
-    public final SplitFlapBuilder soundOn(final boolean SOUND_ON) {
-        splitFlap.setSoundOn(SOUND_ON);
+    public final SevenSegmentBuilder customSegmentMapping(final Map<Integer, List<SevenSegment.Segment>> CUSTOM_SEGMENT_MAPPING) {
+        segment.setCustomSegmentMapping(CUSTOM_SEGMENT_MAPPING);
         return this;
     }
 
-    public final SplitFlapBuilder sound(final SplitFlap.Sound SOUND) {
-        splitFlap.setSound(SOUND);
+    public final SevenSegmentBuilder color(final Color COLOR) {
+        segment.setColor(COLOR);
         return this;
     }
 
-    public final SplitFlapBuilder frameVisible(final boolean FRAME_VISIBLE) {
-        splitFlap.setFrameVisible(FRAME_VISIBLE);
+    public final SevenSegmentBuilder plainColor(final boolean PLAIN_COLOR) {
+        segment.setPlainColor(PLAIN_COLOR);
         return this;
     }
 
-    public final SplitFlapBuilder backgroundVisible(final boolean BACKGROUND_VISIBLE) {
-        splitFlap.setBackgroundVisible(BACKGROUND_VISIBLE);
-        return this;
-    }
-
-    public final SplitFlapBuilder interactive(final boolean INTERACTIVE) {
-        splitFlap.setInteractive(INTERACTIVE);
-        return this;
-    }
-
-    public final SplitFlapBuilder flipTimeInMs(final long FLIP_TIME_IN_MS) {
-        splitFlap.setFlipTimeInMs(FLIP_TIME_IN_MS);
-        return this;
-    }
-
-    public final SplitFlap build() {
-        return splitFlap != null ? splitFlap : new SplitFlap();
+    public final SevenSegment build() {
+        return segment != null ? segment : new SevenSegment();
     }
 }
