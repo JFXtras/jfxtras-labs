@@ -38,9 +38,11 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Control;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 
 /**
@@ -67,35 +69,36 @@ public class SplitFlap extends Control {
         SOUND2,
         SOUND3
     }
-    private static final String       DEFAULT_STYLE_CLASS = "split-flap";
-    private ObjectProperty<Color>     color;
-    private ObjectProperty<Color>     upperFlapTopColor;
-    private ObjectProperty<Color>     upperFlapBottomColor;
-    private ObjectProperty<Color>     lowerFlapTopColor;
-    private ObjectProperty<Color>     lowerFlapBottomColor;
-    private ObjectProperty<Color>     textColor;
-    private ObjectProperty<Color>     textUpperFlapColor;
-    private ObjectProperty<Color>     textLowerFlapColor;
-    private DoubleProperty            flapCornerRadius;
-    private BooleanProperty           upperFlapHighlightEnabled;
-    private BooleanProperty           lowerFlapeHighlightEnabled;
-    private BooleanProperty           darkFixtureEnabled;
-    private ObjectProperty<String[]>  selection;
-    private ArrayList<String>         selectedSet;
-    private int                       currentSelectionIndex;
-    private int                       nextSelectionIndex;
-    private int                       previousSelectionIndex;
-    private BooleanProperty           interactive;
-    private StringProperty            text;
-    private LongProperty              flipTimeInMs;
-    private BooleanProperty           countdownMode;
-    private BooleanProperty           soundOn;
-    private ObjectProperty<Sound>     sound;
-    private BooleanProperty           frameVisible;
-    private ObjectProperty<Color>     frameTopColor;
-    private ObjectProperty<Color>     frameBottomColor;
-    private BooleanProperty           backgroundVisible;
-    private boolean                   keepAspect;
+    private static final String         DEFAULT_STYLE_CLASS = "split-flap";
+    private ObjectProperty<Color>       color;
+    private ObjectProperty<Color>       upperFlapTopColor;
+    private ObjectProperty<Color>       upperFlapBottomColor;
+    private ObjectProperty<Color>       lowerFlapTopColor;
+    private ObjectProperty<Color>       lowerFlapBottomColor;
+    private ObjectProperty<Color>       textColor;
+    private ObjectProperty<Color>       textUpperFlapColor;
+    private ObjectProperty<Color>       textLowerFlapColor;
+    private DoubleProperty              flapCornerRadius;
+    private BooleanProperty             upperFlapHighlightEnabled;
+    private BooleanProperty             lowerFlapeHighlightEnabled;
+    private BooleanProperty             darkFixtureEnabled;
+    private ObjectProperty<String[]>    selection;
+    private ArrayList<String>           selectedSet;
+    private BooleanProperty             imageMode;
+    private int                         currentSelectionIndex;
+    private int                         nextSelectionIndex;
+    private int                         previousSelectionIndex;
+    private BooleanProperty             interactive;
+    private StringProperty              text;
+    private LongProperty                flipTimeInMs;
+    private BooleanProperty             countdownMode;
+    private BooleanProperty             soundOn;
+    private ObjectProperty<Sound>       sound;
+    private BooleanProperty             frameVisible;
+    private ObjectProperty<Color>       frameTopColor;
+    private ObjectProperty<Color>       frameBottomColor;
+    private BooleanProperty             backgroundVisible;
+    private boolean                     keepAspect;
 
 
     // ******************** Constructors **************************************
@@ -122,6 +125,7 @@ public class SplitFlap extends Control {
         darkFixtureEnabled         = new SimpleBooleanProperty(true);
         selection                  = new SimpleObjectProperty<String[]>(CUSTOM_SELECTION.length == 0 ? EXTENDED : CUSTOM_SELECTION);
         selectedSet                = new ArrayList<String>(64);
+        imageMode                  = new SimpleBooleanProperty(false);
         currentSelectionIndex      = 0;
         nextSelectionIndex         = 1;
         previousSelectionIndex     = selection.get().length - 1;
@@ -130,7 +134,7 @@ public class SplitFlap extends Control {
         flipTimeInMs               = new SimpleLongProperty(200l);
         countdownMode              = new SimpleBooleanProperty(false);
         soundOn                    = new SimpleBooleanProperty(false);
-        sound                      = new SimpleObjectProperty<Sound>(Sound.SOUND1);
+        sound                      = new SimpleObjectProperty<Sound>(Sound.SOUND2);
         frameVisible               = new SimpleBooleanProperty(true);
         frameTopColor              = new SimpleObjectProperty<Color>(Color.rgb(52, 53, 43));
         frameBottomColor           = new SimpleObjectProperty<Color>(Color.rgb(61, 61, 55));
@@ -325,6 +329,18 @@ public class SplitFlap extends Control {
 
     public final ArrayList<String> getSelectedSet() {
         return selectedSet;
+    }
+
+    public final boolean isImageMode() {
+        return imageMode.get();
+    }
+
+    public final void setImageMode(final boolean IMAGE_MODE) {
+        imageMode.set(IMAGE_MODE);
+    }
+
+    public final BooleanProperty imageModeProperty() {
+        return imageMode;
     }
 
     public final boolean isInteractive() {

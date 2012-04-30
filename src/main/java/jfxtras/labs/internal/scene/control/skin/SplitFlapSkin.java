@@ -38,6 +38,8 @@ import javafx.scene.DepthTest;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
@@ -157,6 +159,11 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         selectedSet.clear();
         selectedSet.addAll(control.getSelectedSet());
 
+        upperText.setVisible(!control.isImageMode());
+        upperNextText.setVisible(!control.isImageMode());
+        lowerText.setVisible(!control.isImageMode());
+        lowerNextText.setVisible(!control.isImageMode());
+
         // Register listeners
         registerChangeListener(control.colorProperty(), "COLOR");
         registerChangeListener(control.textColorProperty(), "TEXT_COLOR");
@@ -165,6 +172,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         registerChangeListener(control.frameVisibleProperty(), "FRAME_VISIBILITY");
         registerChangeListener(control.backgroundVisibleProperty(), "BACKGROUND_VISIBILITY");
         registerChangeListener(control.countdownModeProperty(), "COUNTDOWN_MODE");
+        registerChangeListener(control.imageModeProperty(), "IMAGE_MODE");
 
         control.selectionProperty().addListener(new ChangeListener<String[]>() {
             @Override
@@ -223,6 +231,11 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         } else if ("SELECTION".equals(PROPERTY)) {
             selectedSet.clear();
             selectedSet.addAll(control.getSelectedSet());
+        } else if ("IMAGE_MODE".equals(PROPERTY)) {
+            upperText.setVisible(!control.isImageMode());
+            upperNextText.setVisible(!control.isImageMode());
+            lowerText.setVisible(!control.isImageMode());
+            lowerNextText.setVisible(!control.isImageMode());
         }
     }
 
@@ -293,7 +306,6 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
             if (nextSelectionIndex >= selectedSet.size()) {
                 nextSelectionIndex = 0;
             }
-
             if (selectedSet.get(currentSelectionIndex).equals(control.getText())) {
                 timer.stop();
                 flipping = false;
@@ -658,13 +670,9 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         double flapHeight       = 0.4140969163 * HEIGHT;
         double flapCornerRadius = (control.getFlapCornerRadius() / 227) * HEIGHT;
 
-
         final Rectangle CUT_UPPER_LEFT = new Rectangle(posLeft, 0.3832599118942731 * HEIGHT, cutOffWidth, cutOffHeight);
-
         final Rectangle CUT_UPPER_RIGHT = new Rectangle(posRight - cutOffWidth, 0.3832599118942731 * HEIGHT, cutOffWidth, cutOffHeight);
-
         final Rectangle CUT_LOWER_LEFT = new Rectangle(posLeft, 0.4625550661 * HEIGHT, cutOffWidth, cutOffHeight);
-
         final Rectangle CUT_LOWER_RIGHT = new Rectangle(posRight - cutOffWidth, 0.4625550661 * HEIGHT, cutOffWidth, cutOffHeight);
 
         final Rectangle UPPER_FLAP = new Rectangle(posLeft, posLeft, flapWidth, flapHeight);
@@ -767,6 +775,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
                                                                   new Stop(0.49, control.getTextColor()),
                                                                   new Stop(0.5, control.getTextColor().darker()));
         upperText.setFill(UPPER_TEXT_FILL);
+        upperText.setStroke(null);
 
         final Rectangle LOWER_CLIP = new Rectangle(0, lower.getLayoutBounds().getMinY(), WIDTH, lower.getLayoutBounds().getHeight());
         lowerText.setTextOrigin(VPos.BOTTOM);
@@ -799,13 +808,13 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         upperNext.setCache(true);
         upperNext.setCacheHint(CacheHint.SPEED);
 
-        final Rectangle UPPER_NEXT_CLIP = new Rectangle(0, upper.getLayoutBounds().getMinY(), WIDTH, upper.getLayoutBounds().getHeight());
+        final Rectangle UPPER_NEXT_CLIP = new Rectangle(0, upper.getLayoutY(), WIDTH, upper.getLayoutBounds().getHeight());
         upperNextText.setTextOrigin(VPos.BOTTOM);
         upperNextText.setFont(FONT);
         upperNextText.setFontSmoothingType(FontSmoothingType.LCD);
         upperNextText.setText(control.getNextText());
-        upperNextText.setX(((WIDTH - upperText.getLayoutBounds().getWidth()) / 2.0));
-        upperNextText.setY(HEIGHT * 0.04 + upperText.getLayoutBounds().getHeight());
+        upperNextText.setX(((WIDTH - upperNextText.getLayoutBounds().getWidth()) / 2.0));
+        upperNextText.setY(HEIGHT * 0.04 + upperNextText.getLayoutBounds().getHeight());
         upperNextText.setClip(UPPER_NEXT_CLIP);
         LinearGradient upperNextTextFill = new LinearGradient(0.0, upperNextText.getLayoutBounds().getMinY(),
                                                               0.0, upperNextText.getLayoutBounds().getMaxY(),
@@ -816,7 +825,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         upperNextText.setFill(upperNextTextFill);
         upperNextText.setStroke(null);
 
-        final Rectangle LOWER_NEXT_CLIP = new Rectangle(0, lower.getLayoutBounds().getMinY(), WIDTH, lower.getLayoutBounds().getHeight());
+        final Rectangle LOWER_NEXT_CLIP = new Rectangle(0, lower.getLayoutY(), WIDTH, lower.getLayoutBounds().getHeight());
         lowerNextText.setTextOrigin(VPos.BOTTOM);
         lowerNextText.setFont(FONT);
         lowerNextText.setFontSmoothingType(FontSmoothingType.LCD);
