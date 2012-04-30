@@ -442,7 +442,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
                                                     0.0, 0.8149779736 * HEIGHT + 0.1321585903 * HEIGHT,
                                                     false, CycleMethod.NO_CYCLE,
                                                     new Stop(0.0, control.getLowerFlapTopColor()),
-                                                    new Stop(1.0, control.getLowerFlapTopColor()));
+                                                    new Stop(1.0, control.getLowerFlapBottomColor()));
         RECT3.setFill(RECT3_FILL);
         RECT3.setStroke(null);
 
@@ -454,7 +454,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
                                                     0.0, 0.7973568282 * HEIGHT + 0.1321585903 * HEIGHT,
                                                     false, CycleMethod.NO_CYCLE,
                                                     new Stop(0.0, control.getLowerFlapTopColor()),
-                                                    new Stop(1.0, control.getLowerFlapTopColor()));
+                                                    new Stop(1.0, control.getLowerFlapBottomColor()));
         RECT2.setFill(RECT2_FILL);
         RECT2.setStroke(null);
 
@@ -466,7 +466,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
                                                     0.0, 0.7797356828 * HEIGHT + 0.1321585903 * HEIGHT,
                                                     false, CycleMethod.NO_CYCLE,
                                                     new Stop(0.0, control.getLowerFlapTopColor()),
-                                                    new Stop(1.0, control.getLowerFlapTopColor()));
+                                                    new Stop(1.0, control.getLowerFlapBottomColor()));
         RECT1.setFill(RECT1_FILL);
         RECT1.setStroke(null);
 
@@ -478,25 +478,25 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
                                                     0.0, 0.7621145374 * HEIGHT + 0.1321585903 * HEIGHT,
                                                     false, CycleMethod.NO_CYCLE,
                                                     new Stop(0.0, control.getLowerFlapTopColor()),
-                                                    new Stop(1.0, control.getLowerFlapTopColor()));
+                                                    new Stop(1.0, control.getLowerFlapBottomColor()));
         RECT0.setFill(RECT0_FILL);
         RECT0.setStroke(null);
 
         final InnerShadow LOWER_INNER_SHADOW = new InnerShadow();
-        LOWER_INNER_SHADOW.setWidth(0.075 * RECT3.getLayoutBounds().getHeight());
-        LOWER_INNER_SHADOW.setHeight(0.075 * RECT3.getLayoutBounds().getHeight());
+        LOWER_INNER_SHADOW.setWidth(0.01 * RECT3.getLayoutBounds().getHeight());
+        LOWER_INNER_SHADOW.setHeight(0.01 * RECT3.getLayoutBounds().getHeight());
         LOWER_INNER_SHADOW.setOffsetX(0.0);
-        LOWER_INNER_SHADOW.setOffsetY(0.0);
-        LOWER_INNER_SHADOW.setRadius(0.075 * RECT3.getLayoutBounds().getHeight());
+        LOWER_INNER_SHADOW.setOffsetY(-0.066 * RECT3.getLayoutBounds().getHeight());
+        LOWER_INNER_SHADOW.setRadius(0.001 * RECT3.getLayoutBounds().getHeight());
         LOWER_INNER_SHADOW.setColor(Color.BLACK);
         LOWER_INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
 
         final InnerShadow LOWER_LIGHT_EFFECT = new InnerShadow();
-        LOWER_LIGHT_EFFECT.setWidth(0.05 * RECT3.getLayoutBounds().getHeight());
-        LOWER_LIGHT_EFFECT.setHeight(0.05 * RECT3.getLayoutBounds().getHeight());
+        LOWER_LIGHT_EFFECT.setWidth(0.04 * RECT3.getLayoutBounds().getHeight());
+        LOWER_LIGHT_EFFECT.setHeight(0.04 * RECT3.getLayoutBounds().getHeight());
         LOWER_LIGHT_EFFECT.setOffsetX(0);
         LOWER_LIGHT_EFFECT.setOffsetY(0.01 * SIZE);
-        LOWER_LIGHT_EFFECT.setRadius(0.05 * RECT3.getLayoutBounds().getHeight());
+        LOWER_LIGHT_EFFECT.setRadius(0.04 * RECT3.getLayoutBounds().getHeight());
         LOWER_LIGHT_EFFECT.setColor(Color.WHITE);
         LOWER_LIGHT_EFFECT.setBlurType(BlurType.GAUSSIAN);
         LOWER_LIGHT_EFFECT.inputProperty().set(LOWER_INNER_SHADOW);
@@ -535,74 +535,103 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         double posRightFrame = WIDTH - offset - frameWidth;
         double posRightMain  = WIDTH - posLeftMain - mainWidth;
 
-        final Rectangle RIGHT_FRAME = new Rectangle(posRightFrame, 0.3920704845814978 * HEIGHT,
-                                                    frameWidth, frameHeight);
-        final Paint RIGHT_FRAME_FILL = new LinearGradient(0, 0.3920704845814978 * HEIGHT,
-                                                         0, 0.5286343612334802 * HEIGHT,
-                                                         false, CycleMethod.NO_CYCLE,
-                                                         new Stop(0.0, Color.color(0.2196078431, 0.2196078431, 0.2196078431, 1)),
-                                                         new Stop(0.18, Color.color(0.6117647059, 0.6117647059, 0.6117647059, 1)),
-                                                         new Stop(0.65, Color.color(0.1843137255, 0.1843137255, 0.1843137255, 1)),
-                                                         new Stop(0.89, Color.color(0.3294117647, 0.3372549020, 0.3333333333, 1)),
-                                                         new Stop(1.0, Color.color(0.2156862745, 0.2156862745, 0.2156862745, 1)));
+        final Rectangle RIGHT_FRAME = new Rectangle(posRightFrame, 0.3920704845814978 * HEIGHT, frameWidth, frameHeight);
+        final Paint RIGHT_FRAME_FILL;
+        final Rectangle RIGHT_MAIN = new Rectangle(posRightMain, 0.3964757709251101 * HEIGHT, mainWidth, mainHeight);
+        final Paint RIGHT_MAIN_FILL;
+        if (control.isDarkFixtureEnabled()) {
+            RIGHT_FRAME_FILL = new LinearGradient(0, 0.3920704845814978 * HEIGHT,
+                                                  0, 0.5286343612334802 * HEIGHT,
+                                                  false, CycleMethod.NO_CYCLE,
+                                                  new Stop(0.0, Color.rgb(26, 26, 26)),
+                                                  new Stop(0.18, Color.rgb(86, 86, 86)),
+                                                  new Stop(0.65, Color.rgb(17, 17, 17)),
+                                                  new Stop(0.89, Color.rgb(24, 24, 24)),
+                                                  new Stop(1.0, Color.rgb(25, 24, 24)));
+
+            RIGHT_MAIN_FILL = new LinearGradient(0, 0.3964757709251101 * HEIGHT,
+                                                 0 * WIDTH, 0.5242290748898678 * HEIGHT,
+                                                 false, CycleMethod.NO_CYCLE,
+                                                 new Stop(0.0, Color.rgb(66, 66, 66)),
+                                                 new Stop(0.13, Color.rgb(153, 153, 153)),
+                                                 new Stop(0.66, Color.rgb(6, 6, 6)),
+                                                 new Stop(0.73, Color.rgb(14, 14, 14)),
+                                                 new Stop(0.9, Color.rgb(39, 39, 39)),
+                                                 new Stop(1.0, Color.rgb(23, 23, 23)));
+        } else {
+            RIGHT_FRAME_FILL = new LinearGradient(0, 0.3920704845814978 * HEIGHT,
+                                                  0, 0.5286343612334802 * HEIGHT,
+                                                  false, CycleMethod.NO_CYCLE,
+                                                  new Stop(0.0, Color.rgb(56, 56, 56)),
+                                                  new Stop(0.18, Color.rgb(156, 156, 156)),
+                                                  new Stop(0.65, Color.rgb(47,47, 47)),
+                                                  new Stop(0.89, Color.rgb(84,84, 84)),
+                                                  new Stop(1.0, Color.rgb(55,55, 55)));
+
+            RIGHT_MAIN_FILL = new LinearGradient(0, 0.3964757709251101 * HEIGHT,
+                                                 0 * WIDTH, 0.5242290748898678 * HEIGHT,
+                                                 false, CycleMethod.NO_CYCLE,
+                                                 new Stop(0.0, Color.rgb(116, 116, 116)),
+                                                 new Stop(0.13, Color.rgb(213, 213, 213)),
+                                                 new Stop(0.66, Color.rgb(56, 56, 56)),
+                                                 new Stop(0.73, Color.rgb(64, 64, 64)),
+                                                 new Stop(0.9, Color.rgb(109, 109, 109)),
+                                                 new Stop(1.0, Color.rgb(83, 83, 83)));
+        }
         RIGHT_FRAME.setFill(RIGHT_FRAME_FILL);
         RIGHT_FRAME.setStroke(null);
-
-        final Rectangle RIGHT_MAIN = new Rectangle(posRightMain, 0.3964757709251101 * HEIGHT,
-                                                  mainWidth, mainHeight);
-        final Paint RIGHT_MAIN_FILL = new LinearGradient(0, 0.3964757709251101 * HEIGHT,
-                                                        0 * WIDTH, 0.5242290748898678 * HEIGHT,
-                                                        false, CycleMethod.NO_CYCLE,
-                                                        new Stop(0.0, Color.color(0.4549019608, 0.4549019608, 0.4549019608, 1)),
-                                                        new Stop(0.13, Color.color(0.8352941176, 0.8352941176, 0.8352941176, 1)),
-                                                        new Stop(0.66, Color.color(0.2196078431, 0.2196078431, 0.2196078431, 1)),
-                                                        new Stop(0.73, Color.color(0.2509803922, 0.2509803922, 0.2509803922, 1)),
-                                                        new Stop(0.9, Color.color(0.4274509804, 0.4274509804, 0.4274509804, 1)),
-                                                        new Stop(1.0, Color.color(0.3254901961, 0.3254901961, 0.3254901961, 1)));
         RIGHT_MAIN.setFill(RIGHT_MAIN_FILL);
         RIGHT_MAIN.setStroke(null);
 
-        final Rectangle LEFT_FRAME = new Rectangle(posLeftFrame, 0.3920704845814978 * HEIGHT,
-                                                   frameWidth, frameHeight);
-        final Paint LEFT_FRAME_FILL = new LinearGradient(0, 0.3920704845814978 * HEIGHT,
-                                                        0, 0.5286343612334802 * HEIGHT,
-                                                        false, CycleMethod.NO_CYCLE,
-                                                        new Stop(0.0, Color.color(0.2196078431, 0.2196078431, 0.2196078431, 1)),
-                                                        new Stop(0.18, Color.color(0.6117647059, 0.6117647059, 0.6117647059, 1)),
-                                                        new Stop(0.65, Color.color(0.1843137255, 0.1843137255, 0.1843137255, 1)),
-                                                        new Stop(0.89, Color.color(0.3294117647, 0.3372549020, 0.3333333333, 1)),
-                                                        new Stop(1.0, Color.color(0.2156862745, 0.2156862745, 0.2156862745, 1)));
+        final Rectangle LEFT_FRAME = new Rectangle(posLeftFrame, 0.3920704845814978 * HEIGHT, frameWidth, frameHeight);
+        final Paint LEFT_FRAME_FILL;
+        final Rectangle LEFT_MAIN = new Rectangle(posLeftMain, 0.3964757709251101 * HEIGHT, mainWidth, mainHeight);
+        final Paint LEFT_MAIN_FILL;
+        if (control.isDarkFixtureEnabled()) {
+            LEFT_FRAME_FILL = new LinearGradient(0, 0.3920704845814978 * HEIGHT,
+                                                 0, 0.5286343612334802 * HEIGHT,
+                                                 false, CycleMethod.NO_CYCLE,
+                                                 new Stop(0.0, Color.rgb(26, 26, 26)),
+                                                 new Stop(0.18, Color.rgb(86, 86, 86)),
+                                                 new Stop(0.65, Color.rgb(17, 17, 17)),
+                                                 new Stop(0.89, Color.rgb(24, 24, 24)),
+                                                 new Stop(1.0, Color.rgb(25, 24, 24)));
+
+            LEFT_MAIN_FILL = new LinearGradient(0, 0.3964757709251101 * HEIGHT,
+                                                0, 0.5242290748898678 * HEIGHT,
+                                                false, CycleMethod.NO_CYCLE,
+                                                new Stop(0.0, Color.rgb(66, 66, 66)),
+                                                new Stop(0.13, Color.rgb(153, 153, 153)),
+                                                new Stop(0.66, Color.rgb(6, 6, 6)),
+                                                new Stop(0.73, Color.rgb(14, 14, 14)),
+                                                new Stop(0.9, Color.rgb(39, 39, 39)),
+                                                new Stop(1.0, Color.rgb(23, 23, 23)));
+        } else {
+            LEFT_FRAME_FILL = new LinearGradient(0, 0.3920704845814978 * HEIGHT,
+                                                 0, 0.5286343612334802 * HEIGHT,
+                                                 false, CycleMethod.NO_CYCLE,
+                                                 new Stop(0.0, Color.rgb(56, 56, 56)),
+                                                 new Stop(0.18, Color.rgb(156, 156, 156)),
+                                                 new Stop(0.65, Color.rgb(47,47, 47)),
+                                                 new Stop(0.89, Color.rgb(84,84, 84)),
+                                                 new Stop(1.0, Color.rgb(55,55, 55)));
+
+            LEFT_MAIN_FILL = new LinearGradient(0, 0.3964757709251101 * HEIGHT,
+                                                0, 0.5242290748898678 * HEIGHT,
+                                                false, CycleMethod.NO_CYCLE,
+                                                new Stop(0.0, Color.rgb(116, 116, 116)),
+                                                new Stop(0.13, Color.rgb(213, 213, 213)),
+                                                new Stop(0.66, Color.rgb(56, 56, 56)),
+                                                new Stop(0.73, Color.rgb(64, 64, 64)),
+                                                new Stop(0.9, Color.rgb(109, 109, 109)),
+                                                new Stop(1.0, Color.rgb(83, 83, 83)));
+        }
         LEFT_FRAME.setFill(LEFT_FRAME_FILL);
         LEFT_FRAME.setStroke(null);
-
-        final Rectangle LEFT_MAIN = new Rectangle(posLeftMain, 0.3964757709251101 * HEIGHT,
-                                                 mainWidth, mainHeight);
-        final Paint LEFT_MAIN_FILL = new LinearGradient(0, 0.3964757709251101 * HEIGHT,
-                                                       0, 0.5242290748898678 * HEIGHT,
-                                                       false, CycleMethod.NO_CYCLE,
-                                                       new Stop(0.0, Color.color(0.4549019608, 0.4549019608, 0.4549019608, 1)),
-                                                       new Stop(0.13, Color.color(0.8352941176, 0.8352941176, 0.8352941176, 1)),
-                                                       new Stop(0.66, Color.color(0.2196078431, 0.2196078431, 0.2196078431, 1)),
-                                                       new Stop(0.73, Color.color(0.2509803922, 0.2509803922, 0.2509803922, 1)),
-                                                       new Stop(0.9, Color.color(0.4274509804, 0.4274509804, 0.4274509804, 1)),
-                                                       new Stop(1.0, Color.color(0.3254901961, 0.3254901961, 0.3254901961, 1)));
         LEFT_MAIN.setFill(LEFT_MAIN_FILL);
         LEFT_MAIN.setStroke(null);
 
-        final Rectangle AXIS = new Rectangle(posLeftFrame + frameWidth, 0.4537444934 * HEIGHT,
-                                             WIDTH - (2 * posLeftFrame) - (2 * frameWidth), 0.013215859 * HEIGHT);
-        final Paint AXIS_FILL = new LinearGradient(0, 0.4537444934 * HEIGHT,
-                                                   0, 0.4669603524 * HEIGHT,
-                                                   false, CycleMethod.NO_CYCLE,
-                                                   new Stop(0.0, Color.color(0.4549019608, 0.4549019608, 0.4549019608, 1)),
-                                                   new Stop(0.41, Color.color(0.8352941176, 0.8352941176, 0.8352941176, 1)),
-                                                   new Stop(0.72, Color.color(0.2196078431, 0.2196078431, 0.2196078431, 1)),
-                                                   new Stop(1.0, Color.color(0.3254901961, 0.3254901961, 0.3254901961, 1)));
-        AXIS.setFill(AXIS_FILL);
-        AXIS.setStroke(null);
-
-        fixture.getChildren().addAll(AXIS,
-                                     RIGHT_FRAME,
+        fixture.getChildren().addAll(RIGHT_FRAME,
                                      RIGHT_MAIN,
                                      LEFT_FRAME,
                                      LEFT_MAIN);
@@ -620,152 +649,164 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         flip.getChildren().add(IBOUNDS);
-        double offset       = 0.04405286343612335 * HEIGHT;
-        double posLeft      = offset;
-        double posRight     = WIDTH - offset;
-        double cutOffWidth  = 0.0484581498 * HEIGHT;
-        double cutOffHeight = 0.07048458149779736 * HEIGHT;
+        double offset           = 0.04405286343612335 * HEIGHT;
+        double posLeft          = offset;
+        double posRight         = WIDTH - offset;
+        double cutOffWidth      = 0.0484581498 * HEIGHT;
+        double cutOffHeight     = 0.0748898678 * HEIGHT;
+        double flapWidth        = WIDTH -  2 * offset;
+        double flapHeight       = 0.4140969163 * HEIGHT;
+        double flapCornerRadius = (control.getFlapCornerRadius() / 227) * HEIGHT;
 
-        final Rectangle CUT_UPPER_LEFT = new Rectangle(posLeft, 0.3832599118942731 * HEIGHT,
-                                                       cutOffWidth, cutOffHeight);
 
-        final Rectangle CUT_UPPER_RIGHT = new Rectangle(posRight - cutOffWidth, 0.3832599118942731 * HEIGHT,
-                                                        cutOffWidth, cutOffHeight);
+        final Rectangle CUT_UPPER_LEFT = new Rectangle(posLeft, 0.3832599118942731 * HEIGHT, cutOffWidth, cutOffHeight);
 
-        final Rectangle CUT_LOWER_LEFT = new Rectangle(posLeft, 0.4669603524229075 * HEIGHT,
-                                                       cutOffWidth, cutOffHeight);
+        final Rectangle CUT_UPPER_RIGHT = new Rectangle(posRight - cutOffWidth, 0.3832599118942731 * HEIGHT, cutOffWidth, cutOffHeight);
 
-        final Rectangle CUT_LOWER_RIGHT = new Rectangle(posRight - cutOffWidth, 0.4669603524229075 * HEIGHT,
-                                                        cutOffWidth, cutOffHeight);
+        final Rectangle CUT_LOWER_LEFT = new Rectangle(posLeft, 0.4625550661 * HEIGHT, cutOffWidth, cutOffHeight);
 
-        final Rectangle UPPER_FLAP = new Rectangle(posLeft, posLeft,
-                                                   WIDTH -  2 * offset, 0.40969163 * HEIGHT);
-        UPPER_FLAP.setArcWidth(0.05286343612334802 * HEIGHT);
-        UPPER_FLAP.setArcHeight(0.05286343612334802 * HEIGHT);
+        final Rectangle CUT_LOWER_RIGHT = new Rectangle(posRight - cutOffWidth, 0.4625550661 * HEIGHT, cutOffWidth, cutOffHeight);
 
-        final Rectangle LOWER_FLAP = new Rectangle(posLeft, 0.4669603524229075 * HEIGHT,
-                                                   WIDTH - 2 * offset, 0.40969163 * HEIGHT);
-        LOWER_FLAP.setArcWidth(0.05286343612334802 * HEIGHT);
-        LOWER_FLAP.setArcHeight(0.05286343612334802 * HEIGHT);
+        final Rectangle UPPER_FLAP = new Rectangle(posLeft, posLeft, flapWidth, flapHeight);
+        UPPER_FLAP.setArcWidth(flapCornerRadius);
+        UPPER_FLAP.setArcHeight(flapCornerRadius);
+
+        final Rectangle LOWER_FLAP = new Rectangle(posLeft, 0.4625550661 * HEIGHT, flapWidth, flapHeight);
+        LOWER_FLAP.setArcWidth(flapCornerRadius);
+        LOWER_FLAP.setArcHeight(flapCornerRadius);
 
         upper = Shape.subtract(Shape.subtract(UPPER_FLAP, CUT_UPPER_LEFT), CUT_UPPER_RIGHT);
         lower = Shape.subtract(Shape.subtract(LOWER_FLAP, CUT_LOWER_LEFT), CUT_LOWER_RIGHT);
 
-        final Paint LOWER_FILL = new LinearGradient(0.0, 0.4669603524229075 * HEIGHT,
-                                                    0.0, 0.8722466960352423 * HEIGHT,
+        final Paint LOWER_FILL = new LinearGradient(0.0, lower.getLayoutBounds().getMinY(),
+                                                    0.0, lower.getLayoutBounds().getMaxY(),
                                                     false, CycleMethod.NO_CYCLE,
-                                                    new Stop(0.0, control.getLowerFlapTopColor()),
-                                                    new Stop(1.0, control.getLowerFlapBottomColor()));
+                                                    new Stop(0.0, control.getLowerFlapTopColor().brighter().brighter()),
+                                                    new Stop(0.05, control.getLowerFlapTopColor()),
+                                                    new Stop(0.99, control.getLowerFlapBottomColor()),
+                                                    new Stop(0.0, control.getLowerFlapBottomColor().darker().darker()));
         lower.setFill(LOWER_FILL);
         lower.setStroke(null);
         lower.setCache(true);
         lower.setCacheHint(CacheHint.QUALITY);
 
         final InnerShadow LOWER_INNER_SHADOW = new InnerShadow();
-        LOWER_INNER_SHADOW.setWidth(0.08 * lower.getLayoutBounds().getHeight());
-        LOWER_INNER_SHADOW.setHeight(0.08 * lower.getLayoutBounds().getHeight());
+        LOWER_INNER_SHADOW.setWidth(0.01 * lower.getLayoutBounds().getHeight());
+        LOWER_INNER_SHADOW.setHeight(0.01 * lower.getLayoutBounds().getHeight());
         LOWER_INNER_SHADOW.setOffsetX(0.0);
-        LOWER_INNER_SHADOW.setOffsetY(0.0);
-        LOWER_INNER_SHADOW.setRadius(0.08 * lower.getLayoutBounds().getHeight());
+        LOWER_INNER_SHADOW.setOffsetY(-0.022 * lower.getLayoutBounds().getHeight());
+        LOWER_INNER_SHADOW.setRadius(0.01 * lower.getLayoutBounds().getHeight());
         LOWER_INNER_SHADOW.setColor(Color.BLACK);
         LOWER_INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
 
         final InnerShadow LOWER_LIGHT_EFFECT = new InnerShadow();
-        LOWER_LIGHT_EFFECT.setWidth(0.055 * lower.getLayoutBounds().getHeight());
-        LOWER_LIGHT_EFFECT.setHeight(0.055 * lower.getLayoutBounds().getHeight());
+        LOWER_LIGHT_EFFECT.setWidth(0.04 * lower.getLayoutBounds().getHeight());
+        LOWER_LIGHT_EFFECT.setHeight(0.04 * lower.getLayoutBounds().getHeight());
         LOWER_LIGHT_EFFECT.setOffsetX(0);
-        LOWER_LIGHT_EFFECT.setOffsetY(0.01 * lower.getLayoutBounds().getHeight());
-        LOWER_LIGHT_EFFECT.setRadius(0.055 * lower.getLayoutBounds().getHeight());
-        LOWER_LIGHT_EFFECT.setColor(Color.color(1.0, 1.0, 1.0, 1.0));
+        LOWER_LIGHT_EFFECT.setOffsetY(0.015 * lower.getLayoutBounds().getHeight());
+        LOWER_LIGHT_EFFECT.setRadius(0.04 * lower.getLayoutBounds().getHeight());
+        LOWER_LIGHT_EFFECT.setColor(Color.color(1.0, 1.0, 1.0, 0.8));
         LOWER_LIGHT_EFFECT.setBlurType(BlurType.GAUSSIAN);
         LOWER_LIGHT_EFFECT.inputProperty().set(LOWER_INNER_SHADOW);
-        lower.setEffect(LOWER_LIGHT_EFFECT);
+        if (control.isLowerFlapHighlightEnabled()) {
+            lower.setEffect(LOWER_LIGHT_EFFECT);
+        } else {
+            lower.setEffect(LOWER_INNER_SHADOW);
+        }
 
-        final Paint UPPER_FILL = new LinearGradient(0.0, 0.04405286343612335 * HEIGHT,
-                                                    0.0, 0.45374449339207046 * HEIGHT,
+        final Paint UPPER_FILL = new LinearGradient(0.0, upper.getLayoutBounds().getMinY(),
+                                                    0.0, upper.getLayoutBounds().getMaxY(),
                                                     false, CycleMethod.NO_CYCLE,
-                                                    new Stop(0.0, control.getUpperFlapTopColor()),
-                                                    new Stop(1.0, control.getUpperFlapBottomColor()));
+                                                    new Stop(0.0, control.getUpperFlapTopColor().darker()),
+                                                    new Stop(0.01, control.getUpperFlapTopColor()),
+                                                    new Stop(0.95, control.getUpperFlapBottomColor()),
+                                                    new Stop(1.0, control.getUpperFlapBottomColor().darker()));
         upper.setFill(UPPER_FILL);
         upper.setStroke(null);
 
         final InnerShadow UPPER_INNER_SHADOW = new InnerShadow();
-        UPPER_INNER_SHADOW.setWidth(0.08 * upper.getLayoutBounds().getHeight());
-        UPPER_INNER_SHADOW.setHeight(0.08 * upper.getLayoutBounds().getHeight());
+        UPPER_INNER_SHADOW.setWidth(0.02 * upper.getLayoutBounds().getHeight());
+        UPPER_INNER_SHADOW.setHeight(0.02 * upper.getLayoutBounds().getHeight());
         UPPER_INNER_SHADOW.setOffsetX(0.0);
-        UPPER_INNER_SHADOW.setOffsetY(0.0);
-        UPPER_INNER_SHADOW.setRadius(0.08 * upper.getLayoutBounds().getHeight());
+        UPPER_INNER_SHADOW.setOffsetY(0.022 * upper.getLayoutBounds().getHeight());
+        UPPER_INNER_SHADOW.setRadius(0.02 * upper.getLayoutBounds().getHeight());
         UPPER_INNER_SHADOW.setColor(Color.BLACK);
         UPPER_INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
 
         final InnerShadow UPPER_LIGHT_EFFECT = new InnerShadow();
-        UPPER_LIGHT_EFFECT.setWidth(0.055 * upper.getLayoutBounds().getHeight());
-        UPPER_LIGHT_EFFECT.setHeight(0.055 * upper.getLayoutBounds().getHeight());
+        UPPER_LIGHT_EFFECT.setWidth(0.04 * upper.getLayoutBounds().getHeight());
+        UPPER_LIGHT_EFFECT.setHeight(0.04 * upper.getLayoutBounds().getHeight());
         UPPER_LIGHT_EFFECT.setOffsetX(0);
         UPPER_LIGHT_EFFECT.setOffsetY(0.01 * upper.getLayoutBounds().getHeight());
-        UPPER_LIGHT_EFFECT.setRadius(0.055 * upper.getLayoutBounds().getHeight());
-        UPPER_LIGHT_EFFECT.setColor(Color.color(1.0, 1.0, 1.0, 1.0));
+        UPPER_LIGHT_EFFECT.setRadius(0.04 * upper.getLayoutBounds().getHeight());
+        UPPER_LIGHT_EFFECT.setColor(Color.color(1.0, 1.0, 1.0, 0.8));
         UPPER_LIGHT_EFFECT.setBlurType(BlurType.GAUSSIAN);
         UPPER_LIGHT_EFFECT.inputProperty().set(UPPER_INNER_SHADOW);
-        upper.setEffect(UPPER_LIGHT_EFFECT);
+        if (control.isUpperFlapHighlightEnabled()) {
+            upper.setEffect(UPPER_LIGHT_EFFECT);
+        } else {
+            upper.setEffect(UPPER_INNER_SHADOW);
+        }
         upper.setCache(true);
         upper.setCacheHint(CacheHint.SPEED);
 
         final Font FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/droidsansmono.ttf"), (0.704845815 * HEIGHT));
 
-        Rectangle upperClip = new Rectangle(0, upper.getLayoutBounds().getMinY(), WIDTH, upper.getLayoutBounds().getHeight());
+        final Rectangle UPPER_CLIP = new Rectangle(0, upper.getLayoutBounds().getMinY(), WIDTH, upper.getLayoutBounds().getHeight());
         upperText.setTextOrigin(VPos.BOTTOM);
         upperText.setFont(FONT);
         upperText.setFontSmoothingType(FontSmoothingType.LCD);
         upperText.setText(control.getText());
         upperText.setX(((WIDTH - upperText.getLayoutBounds().getWidth()) / 2.0));
         upperText.setY(HEIGHT * 0.04 + upperText.getLayoutBounds().getHeight());
-        upperText.setClip(upperClip);
-        LinearGradient upperTextFill = new LinearGradient(0.0, upperText.getLayoutBounds().getMinY(),
-                                                          0.0, upperText.getLayoutBounds().getMaxY(),
-                                                          false, CycleMethod.NO_CYCLE,
-                                                          new Stop(0.0, control.getTextUpperFlapColor()),
-                                                          new Stop(0.47, control.getTextColor()),
-                                                          new Stop(0.5, control.getTextColor().darker()));
-        upperText.setFill(upperTextFill);
+        upperText.setClip(UPPER_CLIP);
+        final LinearGradient UPPER_TEXT_FILL = new LinearGradient(0.0, upperText.getLayoutBounds().getMinY(),
+                                                                  0.0, upperText.getLayoutBounds().getMaxY(),
+                                                                  false, CycleMethod.NO_CYCLE,
+                                                                  new Stop(0.0, control.getTextUpperFlapColor()),
+                                                                  new Stop(0.49, control.getTextColor()),
+                                                                  new Stop(0.5, control.getTextColor().darker()));
+        upperText.setFill(UPPER_TEXT_FILL);
 
-        Rectangle lowerClip = new Rectangle(0, lower.getLayoutBounds().getMinY(), WIDTH, lower.getLayoutBounds().getHeight());
+        final Rectangle LOWER_CLIP = new Rectangle(0, lower.getLayoutBounds().getMinY(), WIDTH, lower.getLayoutBounds().getHeight());
         lowerText.setTextOrigin(VPos.BOTTOM);
         lowerText.setFont(FONT);
         lowerText.setFontSmoothingType(FontSmoothingType.LCD);
         lowerText.setText(control.getText());
         lowerText.setX(((WIDTH - upperText.getLayoutBounds().getWidth()) / 2.0));
         lowerText.setY(HEIGHT * 0.04 + upperText.getLayoutBounds().getHeight());
-        lowerText.setClip(lowerClip);
-        LinearGradient lowerTextFill = new LinearGradient(0.0, lowerText.getLayoutBounds().getMinY(),
-                                                          0.0, lowerText.getLayoutBounds().getMaxY(),
-                                                          false, CycleMethod.NO_CYCLE,
-                                                          new Stop(0.5, control.getTextColor().brighter()),
-                                                          new Stop(0.53, control.getTextLowerFlapColor()),
-                                                          new Stop(1.0, control.getTextColor()));
-        lowerText.setFill(lowerTextFill);
+        lowerText.setClip(LOWER_CLIP);
+        final LinearGradient LOWER_TEXT_FILL = new LinearGradient(0.0, lower.getLayoutBounds().getMinY(),
+                                                                  0.0, lowerText.getLayoutBounds().getMaxY(),
+                                                                  false, CycleMethod.NO_CYCLE,
+                                                                  new Stop(0.0, control.getTextColor().darker()),
+                                                                  new Stop(0.05, control.getTextLowerFlapColor()),
+                                                                  new Stop(1.0, control.getTextColor()));
+        lowerText.setFill(LOWER_TEXT_FILL);
         lowerText.setStroke(null);
 
         upperNext = Shape.subtract(Shape.subtract(UPPER_FLAP, CUT_UPPER_LEFT), CUT_UPPER_RIGHT);
 
-        final Paint UPPER_NEXT_FILL = new LinearGradient(0.0, 0.04405286343612335 * HEIGHT,
-                                                         0.0, 0.49206349206349204 * HEIGHT,
+        final Paint UPPER_NEXT_FILL = new LinearGradient(0.0, upperNext.getLayoutBounds().getMinY(),
+                                                         0.0, upperNext.getLayoutBounds().getMaxY(),
                                                          false, CycleMethod.NO_CYCLE,
-                                                         new Stop(0.0, control.getUpperFlapTopColor()),
-                                                         new Stop(1.0, control.getUpperFlapBottomColor()));
+                                                         new Stop(0.0, control.getUpperFlapTopColor().darker()),
+                                                         new Stop(0.01, control.getUpperFlapTopColor()),
+                                                         new Stop(0.95, control.getUpperFlapBottomColor()),
+                                                         new Stop(1.0, control.getUpperFlapBottomColor().darker()));
         upperNext.setFill(UPPER_NEXT_FILL);
         upperNext.setStroke(null);
         upperNext.setCache(true);
         upperNext.setCacheHint(CacheHint.SPEED);
 
-        Rectangle upperNextClip = new Rectangle(0, upper.getLayoutBounds().getMinY(), WIDTH, upper.getLayoutBounds().getHeight());
+        final Rectangle UPPER_NEXT_CLIP = new Rectangle(0, upper.getLayoutBounds().getMinY(), WIDTH, upper.getLayoutBounds().getHeight());
         upperNextText.setTextOrigin(VPos.BOTTOM);
         upperNextText.setFont(FONT);
         upperNextText.setFontSmoothingType(FontSmoothingType.LCD);
         upperNextText.setText(control.getNextText());
         upperNextText.setX(((WIDTH - upperText.getLayoutBounds().getWidth()) / 2.0));
         upperNextText.setY(HEIGHT * 0.04 + upperText.getLayoutBounds().getHeight());
-        upperNextText.setClip(upperNextClip);
+        upperNextText.setClip(UPPER_NEXT_CLIP);
         LinearGradient upperNextTextFill = new LinearGradient(0.0, upperNextText.getLayoutBounds().getMinY(),
                                                               0.0, upperNextText.getLayoutBounds().getMaxY(),
                                                               false, CycleMethod.NO_CYCLE,
@@ -775,21 +816,21 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         upperNextText.setFill(upperNextTextFill);
         upperNextText.setStroke(null);
 
-        Rectangle lowerNextClip = new Rectangle(0, lower.getLayoutBounds().getMinY(), WIDTH, lower.getLayoutBounds().getHeight());
+        final Rectangle LOWER_NEXT_CLIP = new Rectangle(0, lower.getLayoutBounds().getMinY(), WIDTH, lower.getLayoutBounds().getHeight());
         lowerNextText.setTextOrigin(VPos.BOTTOM);
         lowerNextText.setFont(FONT);
         lowerNextText.setFontSmoothingType(FontSmoothingType.LCD);
         lowerNextText.setText(control.getNextText());
         lowerNextText.setX(((WIDTH - lowerNextText.getLayoutBounds().getWidth()) / 2.0));
         lowerNextText.setY(HEIGHT * 0.04 + lowerNextText.getLayoutBounds().getHeight());
-        lowerNextText.setClip(lowerNextClip);
-        LinearGradient lowerNextTextFill = new LinearGradient(0.0, lowerNextText.getLayoutBounds().getMinY(),
-                                                              0.0, lowerNextText.getLayoutBounds().getMaxY(),
-                                                              false, CycleMethod.NO_CYCLE,
-                                                              new Stop(0.5, control.getTextColor().brighter()),
-                                                              new Stop(0.53, control.getTextLowerFlapColor()),
-                                                              new Stop(1.0, control.getTextColor()));
-        lowerNextText.setFill(lowerNextTextFill);
+        lowerNextText.setClip(LOWER_NEXT_CLIP);
+        final LinearGradient LOWER_NEXT_TEXT_FILL = new LinearGradient(0.0, lowerNextText.getLayoutBounds().getMinY(),
+                                                                       0.0, lowerNextText.getLayoutBounds().getMaxY(),
+                                                                       false, CycleMethod.NO_CYCLE,
+                                                                       new Stop(0.5, control.getTextColor().brighter()),
+                                                                       new Stop(0.53, control.getTextLowerFlapColor()),
+                                                                       new Stop(1.0, control.getTextColor()));
+        lowerNextText.setFill(LOWER_NEXT_TEXT_FILL);
         lowerNextText.setStroke(null);
         lowerNextText.setVisible(false);
         lowerFlipVert = new Rotate();
@@ -823,8 +864,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
                                   upperNextText,
                                   upper,
                                   upperText,
-                                  lowerNextText
-                                  );
+                                  lowerNextText);
     }
 
     public final void drawFrame() {

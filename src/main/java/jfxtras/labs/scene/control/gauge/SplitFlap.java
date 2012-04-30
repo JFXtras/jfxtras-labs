@@ -28,9 +28,11 @@
 package jfxtras.labs.scene.control.gauge;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -74,6 +76,10 @@ public class SplitFlap extends Control {
     private ObjectProperty<Color>     textColor;
     private ObjectProperty<Color>     textUpperFlapColor;
     private ObjectProperty<Color>     textLowerFlapColor;
+    private DoubleProperty            flapCornerRadius;
+    private BooleanProperty           upperFlapHighlightEnabled;
+    private BooleanProperty           lowerFlapeHighlightEnabled;
+    private BooleanProperty           darkFixtureEnabled;
     private ObjectProperty<String[]>  selection;
     private ArrayList<String>         selectedSet;
     private int                       currentSelectionIndex;
@@ -102,30 +108,34 @@ public class SplitFlap extends Control {
     }
 
     public SplitFlap(final String[] CUSTOM_SELECTION, final String TEXT) {
-        color                   = new SimpleObjectProperty<Color>(Color.rgb(56, 56, 56));
-        upperFlapTopColor       = new SimpleObjectProperty<Color>(Color.rgb(45, 46, 43));
-        upperFlapBottomColor    = new SimpleObjectProperty<Color>(Color.rgb(52, 53, 43));
-        lowerFlapTopColor       = new SimpleObjectProperty<Color>(Color.rgb(61, 61, 55));
-        lowerFlapBottomColor    = new SimpleObjectProperty<Color>(Color.rgb(43, 40, 34));
-        textColor               = new SimpleObjectProperty<Color>(Color.WHITE);
-        textUpperFlapColor      = new SimpleObjectProperty<Color>(Color.rgb(255, 255, 255));
-        textLowerFlapColor      = new SimpleObjectProperty<Color>(Color.rgb(244, 242, 232));
-        selection               = new SimpleObjectProperty<String[]>(CUSTOM_SELECTION.length == 0 ? EXTENDED : CUSTOM_SELECTION);
-        selectedSet             = new ArrayList<String>(64);
-        currentSelectionIndex   = 0;
-        nextSelectionIndex      = 1;
-        previousSelectionIndex  = selection.get().length - 1;
-        interactive             = new SimpleBooleanProperty(false);
-        text                    = new SimpleStringProperty(TEXT);
-        flipTimeInMs            = new SimpleLongProperty(200l);
-        countdownMode           = new SimpleBooleanProperty(false);
-        soundOn                 = new SimpleBooleanProperty(false);
-        sound                   = new SimpleObjectProperty<Sound>(Sound.SOUND1);
-        frameVisible            = new SimpleBooleanProperty(true);
-        frameTopColor           = new SimpleObjectProperty<Color>(Color.rgb(52, 53, 43));
-        frameBottomColor        = new SimpleObjectProperty<Color>(Color.rgb(61, 61, 55));
-        backgroundVisible       = new SimpleBooleanProperty(true);
-        keepAspect              = false;
+        color                      = new SimpleObjectProperty<Color>(Color.rgb(56, 56, 56));
+        upperFlapTopColor          = new SimpleObjectProperty<Color>(Color.rgb(43, 44, 39));
+        upperFlapBottomColor       = new SimpleObjectProperty<Color>(Color.rgb(59, 58, 53));
+        lowerFlapTopColor          = new SimpleObjectProperty<Color>(Color.rgb(59, 58, 53));
+        lowerFlapBottomColor       = new SimpleObjectProperty<Color>(Color.rgb(40, 41, 35));
+        textColor                  = new SimpleObjectProperty<Color>(Color.WHITE);
+        textUpperFlapColor         = new SimpleObjectProperty<Color>(Color.rgb(255, 255, 255));
+        textLowerFlapColor         = new SimpleObjectProperty<Color>(Color.rgb(248, 248, 248));
+        flapCornerRadius           = new SimpleDoubleProperty(6);
+        upperFlapHighlightEnabled  = new SimpleBooleanProperty(false);
+        lowerFlapeHighlightEnabled = new SimpleBooleanProperty(false);
+        darkFixtureEnabled         = new SimpleBooleanProperty(true);
+        selection                  = new SimpleObjectProperty<String[]>(CUSTOM_SELECTION.length == 0 ? EXTENDED : CUSTOM_SELECTION);
+        selectedSet                = new ArrayList<String>(64);
+        currentSelectionIndex      = 0;
+        nextSelectionIndex         = 1;
+        previousSelectionIndex     = selection.get().length - 1;
+        interactive                = new SimpleBooleanProperty(false);
+        text                       = new SimpleStringProperty(TEXT);
+        flipTimeInMs               = new SimpleLongProperty(200l);
+        countdownMode              = new SimpleBooleanProperty(false);
+        soundOn                    = new SimpleBooleanProperty(false);
+        sound                      = new SimpleObjectProperty<Sound>(Sound.SOUND1);
+        frameVisible               = new SimpleBooleanProperty(true);
+        frameTopColor              = new SimpleObjectProperty<Color>(Color.rgb(52, 53, 43));
+        frameBottomColor           = new SimpleObjectProperty<Color>(Color.rgb(61, 61, 55));
+        backgroundVisible          = new SimpleBooleanProperty(true);
+        keepAspect                 = false;
 
         init();
     }
@@ -145,9 +155,9 @@ public class SplitFlap extends Control {
     }
 
     public final void setColor(final Color COLOR) {
-        lowerFlapTopColor.set(COLOR.brighter().brighter());
+        lowerFlapTopColor.set(COLOR.brighter());
         lowerFlapBottomColor.set(COLOR);
-        upperFlapTopColor.set(COLOR.darker().darker());
+        upperFlapTopColor.set(COLOR.darker());
         upperFlapBottomColor.set(COLOR);
         color.set(COLOR);
     }
@@ -240,6 +250,55 @@ public class SplitFlap extends Control {
 
     public final ObjectProperty<Color> textLowerFlapColorProperty() {
         return textLowerFlapColor;
+    }
+
+    public final double getFlapCornerRadius() {
+        return flapCornerRadius.get();
+    }
+
+    public final void setFlapCornerRadius(final double FLAP_CORNER_RADIUS) {
+        double radius = FLAP_CORNER_RADIUS < 0 ? 0 : (FLAP_CORNER_RADIUS > 20 ? 20 : FLAP_CORNER_RADIUS);
+        flapCornerRadius.set(radius);
+    }
+
+    public final DoubleProperty flapCornerRadiusProperty() {
+        return flapCornerRadius;
+    }
+
+    public final boolean isUpperFlapHighlightEnabled() {
+        return upperFlapHighlightEnabled.get();
+    }
+
+    public final void setUpperFlapHighlightEnabled(final boolean UPPER_FLAP_HIGHLIGHT_ENABLED) {
+        upperFlapHighlightEnabled.set(UPPER_FLAP_HIGHLIGHT_ENABLED);
+    }
+
+    public final BooleanProperty upperFlapHighlightEnabledProperty() {
+        return upperFlapHighlightEnabled;
+    }
+
+    public final boolean isLowerFlapHighlightEnabled() {
+        return lowerFlapeHighlightEnabled.get();
+    }
+
+    public final void setLowerFlapHighlightEnabled(final boolean LOWER_FLAP_HIGHLIGHT_ENABLED) {
+        lowerFlapeHighlightEnabled.set(LOWER_FLAP_HIGHLIGHT_ENABLED);
+    }
+
+    public final BooleanProperty lowerFlapHighlightEnabledProperty() {
+        return lowerFlapeHighlightEnabled;
+    }
+
+    public final boolean isDarkFixtureEnabled() {
+        return darkFixtureEnabled.get();
+    }
+
+    public final void setDarkFixtureEnabled(final boolean DARK_FIXTURE_ENABLED) {
+        darkFixtureEnabled.set(DARK_FIXTURE_ENABLED);
+    }
+
+    public final BooleanProperty darkFixtureEnabledProperty() {
+        return darkFixtureEnabled;
     }
 
     public final String[] getSelection() {
