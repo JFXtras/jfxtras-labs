@@ -125,6 +125,7 @@ public class LcdBuilder {
     }
 
     public final LcdBuilder thresholdVisible(final boolean THRESHOLD_VISIBLE) {
+        lcd.setThresholdVisible(THRESHOLD_VISIBLE);
         lcd.setLcdThresholdVisible(THRESHOLD_VISIBLE);
         return this;
     }

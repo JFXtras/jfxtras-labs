@@ -168,7 +168,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
                 }
             }
         };
-        thresholdVisible           = true;
+        thresholdVisible           = control.isLcdThresholdVisible();
         lastThresholdTimerCall     = System.nanoTime() + BLINK_INTERVAL;
         thresholdTimer             = new AnimationTimer() {
             @Override public void handle(final long CURRENT_NANOSECONDS) {
@@ -348,7 +348,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
                     thresholdTimer.start();
                 } else {
                     thresholdTimer.stop();
-                    lcdThresholdIndicator.setVisible(true);
+                    lcdThresholdIndicator.setVisible(false);
                 }
             }
         });
@@ -1091,6 +1091,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         lcdThresholdIndicator = createLcdThresholdIndicator(HEIGHT * 0.2045454545, HEIGHT * 0.2045454545);
         lcdThresholdIndicator.setTranslateX(0.04 * SIZE);
         lcdThresholdIndicator.setTranslateY(HEIGHT - lcdThresholdIndicator.getLayoutBounds().getHeight() - 0.0416666667 * SIZE);
+        lcdThresholdIndicator.setVisible(control.isLcdThresholdVisible());
 
         lcd.getChildren().add(lcdThresholdIndicator);
 

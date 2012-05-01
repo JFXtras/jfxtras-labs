@@ -64,12 +64,14 @@ public class Lcd extends Gauge {
 
     public Lcd(final GaugeModel GAUGE_MODEL, final StyleModel STYLE_MODEL) {
         super(GAUGE_MODEL, STYLE_MODEL);
-        lcdMinMeasuredValueVisible  = new SimpleBooleanProperty(true);
-        lcdMaxMeasuredValueVisible  = new SimpleBooleanProperty(true);
-        lcdFormerValueVisible       = new SimpleBooleanProperty(true);
+        lcdMinMeasuredValueVisible  = new SimpleBooleanProperty(false);
+        lcdMaxMeasuredValueVisible  = new SimpleBooleanProperty(false);
+        lcdFormerValueVisible       = new SimpleBooleanProperty(false);
         lcdMinMeasuredValueDecimals = new SimpleIntegerProperty(STYLE_MODEL.getLcdDecimals());
         lcdMaxMeasuredValueDecimals = new SimpleIntegerProperty(STYLE_MODEL.getLcdDecimals());
         bargraphVisible             = new SimpleBooleanProperty(false);
+        setLcdThresholdVisible(false);
+        setTitle("");
         init();
     }
 
