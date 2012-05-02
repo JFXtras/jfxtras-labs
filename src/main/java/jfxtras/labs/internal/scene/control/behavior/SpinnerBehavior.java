@@ -69,7 +69,10 @@ public class SpinnerBehavior<T> extends BehaviorBase<Spinner<T>>
 	// EDITABLE
 	
 	/**
-	 * 
+	 * Parse the value (which usually comes from the TextField in the skin).
+	 * If the value exists in the current items, select it.
+	 * If not and a callback is defined, call the callback to have it handle it.
+	 * Otherwise do nothing (leave it to the skin).
 	 */
 	public void parse(String text)
 	{
@@ -91,7 +94,7 @@ public class SpinnerBehavior<T> extends BehaviorBase<Spinner<T>>
 			// call the callback
 			Integer lIndex = lAddCallback.call(lValue);
 			
-			// if the callback reports that it has processed the value by returning the index it added the item
+			// if the callback reports that it has processed the value by returning the index where it has added the item. (Or at least the index it wants to show now.)
 			if (lIndex != null)
 			{
 				// accept value and bail out

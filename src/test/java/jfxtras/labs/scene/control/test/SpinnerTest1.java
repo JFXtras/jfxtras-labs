@@ -25,6 +25,7 @@
 package jfxtras.labs.scene.control.test;
 
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import jfxtras.labs.scene.control.Spinner;
 import jfxtras.labs.scene.control.test.jemmy.SpinnerWrap;
 
@@ -103,9 +104,10 @@ public class SpinnerTest1 {
         // type "b"
         lSpinnerWrapper.as(org.jemmy.interfaces.Text.class).clear();
         lSpinnerWrapper.as(org.jemmy.interfaces.Text.class).type("b");
-//        lSpinnerWrapper.waitState(new State<String>() { @Override public String reached() {
-//				return lSpinnerWrapper.getControl().getValue();
-//        }}, "b");
+		lIncArrowWrapper.mouse().click(1); // we need a way to move the focus so the contents of the textfield are processed
+        lSpinnerWrapper.waitState(new State<String>() { @Override public String reached() {
+				return lSpinnerWrapper.getControl().getValue();
+        }}, "c");
     }
 
 }

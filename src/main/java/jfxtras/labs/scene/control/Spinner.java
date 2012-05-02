@@ -331,7 +331,7 @@ public class Spinner<T> extends Control
 		@Override
 		public T fromString(String string)
 		{
-			throw new IllegalStateException("not implemented");
+			throw new IllegalStateException("No StringConverter is set. An editable Spinner must have a StringConverter to be able to render and parse the value.");
 		}
 
 		@Override

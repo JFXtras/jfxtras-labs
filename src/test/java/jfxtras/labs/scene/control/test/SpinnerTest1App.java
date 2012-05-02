@@ -28,9 +28,11 @@ import java.awt.AWTException;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.control.Spinner;
+import jfxtras.labs.util.StringConverterFactory;
 
 public class SpinnerTest1App  extends Application {
     public static void main(String[] args) throws AWTException {
@@ -43,11 +45,12 @@ public class SpinnerTest1App  extends Application {
         Scene scene = new Scene(box);
 
         Spinner<String> lSpinner = new Spinner<String>("a", "b", "c")
-        		.withEditable(true)
+        		.withEditable(true).withStringConverter(StringConverterFactory.forString())
 				.withCyclic(true)
 				;
         
         box.getChildren().add(lSpinner);
+        box.getChildren().add(new Button("dummy"));
 
         stage.setScene(scene);
 
