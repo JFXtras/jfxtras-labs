@@ -27,8 +27,6 @@
 
 package jfxtras.labs.scene.control.gauge;
 
-import javafx.scene.control.ListCell;
-
 
 /**
  * Created by
@@ -51,6 +49,11 @@ public class LcdBuilder {
 
     public final LcdBuilder value(final double VALUE) {
         lcd.setLcdValue(VALUE);
+        return this;
+    }
+
+    public final LcdBuilder valueAnimationEnabled(final boolean VALUE_ANIMATION_ENABLED) {
+        lcd.setValueAnimationEnabled(VALUE_ANIMATION_ENABLED);
         return this;
     }
 
@@ -111,11 +114,13 @@ public class LcdBuilder {
 
     public final LcdBuilder unit(final String UNIT) {
         lcd.setUnit(UNIT);
+        lcd.setLcdUnit(UNIT);
         return this;
     }
 
     public final LcdBuilder unitVisible(final boolean UNIT_VISIBLE) {
         lcd.setUnitVisible(UNIT_VISIBLE);
+        lcd.setLcdUnitVisible(UNIT_VISIBLE);
         return this;
     }
 
@@ -131,6 +136,7 @@ public class LcdBuilder {
     }
 
     public final LcdBuilder thresholdBehaviorInverted(final boolean THRESHOLD_BEHAVIOR_INVERTED) {
+        lcd.setThresholdBehaviorInverted(THRESHOLD_BEHAVIOR_INVERTED);
         lcd.setLcdThresholdBehaviorInverted(THRESHOLD_BEHAVIOR_INVERTED);
         return this;
     }

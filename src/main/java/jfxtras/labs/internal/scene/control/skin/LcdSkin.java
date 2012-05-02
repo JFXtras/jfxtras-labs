@@ -168,12 +168,12 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
                 }
             }
         };
-        thresholdVisible           = control.isLcdThresholdVisible();
+        thresholdVisible           = false;
         lastThresholdTimerCall     = System.nanoTime() + BLINK_INTERVAL;
         thresholdTimer             = new AnimationTimer() {
             @Override public void handle(final long CURRENT_NANOSECONDS) {
                 long currentNanoTime = System.nanoTime();
-                if (currentNanoTime > lastThresholdTimerCall + BLINK_INTERVAL) {
+                if (currentNanoTime > lastThresholdTimerCall + BLINK_INTERVAL && control.isLcdThresholdVisible()) {
                     thresholdVisible ^= true;
                     lcdThresholdIndicator.setVisible(thresholdVisible);
                     lastThresholdTimerCall = currentNanoTime;
@@ -344,11 +344,13 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         control.thresholdExceededProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
-                if (newValue) {
-                    thresholdTimer.start();
-                } else {
-                    thresholdTimer.stop();
-                    lcdThresholdIndicator.setVisible(false);
+                if (control.isLcdThresholdVisible()) {
+                    if (newValue) {
+                        thresholdTimer.start();
+                    } else {
+                        thresholdTimer.stop();
+                        lcdThresholdIndicator.setVisible(false);
+                    }
                 }
             }
         });
@@ -402,7 +404,9 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
                 } else {
                     control.setThresholdExceeded(currentValue.get() > control.getThreshold());
                 }
-                lcdThresholdIndicator.setVisible(control.isThresholdExceeded());
+                if (control.isLcdThresholdVisible()) {
+                    lcdThresholdIndicator.setVisible(control.isThresholdExceeded());
+                }
 
                 drawLcdContent();
 

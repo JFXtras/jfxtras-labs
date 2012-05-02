@@ -105,8 +105,8 @@ public class GaugeModel {
         threshold                       = new SimpleDoubleProperty(50);
         thresholdBehaviorInverted       = new SimpleBooleanProperty(false);
         thresholdExceeded               = new SimpleBooleanProperty(false);
-        title                           = new SimpleStringProperty("title");
-        unit                            = new SimpleStringProperty("unit");
+        title                           = new SimpleStringProperty("");
+        unit                            = new SimpleStringProperty("");
         lcdValue                        = new SimpleDoubleProperty(0);
         lcdValueCoupled                 = new SimpleBooleanProperty(true);
         lcdThreshold                    = new SimpleDoubleProperty(50);

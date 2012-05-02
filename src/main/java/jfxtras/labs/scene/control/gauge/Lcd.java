@@ -70,8 +70,7 @@ public class Lcd extends Gauge {
         lcdMinMeasuredValueDecimals = new SimpleIntegerProperty(STYLE_MODEL.getLcdDecimals());
         lcdMaxMeasuredValueDecimals = new SimpleIntegerProperty(STYLE_MODEL.getLcdDecimals());
         bargraphVisible             = new SimpleBooleanProperty(false);
-        setLcdThresholdVisible(false);
-        setTitle("");
+        setValueAnimationEnabled(false);
         init();
     }
 
