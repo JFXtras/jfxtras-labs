@@ -37,11 +37,10 @@ import javafx.scene.paint.Color;
  * Time: 16:04
  */
 public class SimpleIndicatorBuilder {
-    private SimpleIndicator indicator;
+    private SimpleIndicator indicator = new SimpleIndicator();
 
-    public final SimpleIndicatorBuilder create() {
-        indicator = new SimpleIndicator();
-        return this;
+    public static final SimpleIndicatorBuilder create() {
+        return new SimpleIndicatorBuilder();
     }
 
     public final SimpleIndicatorBuilder innerColor(final Color INNER_COLOR) {

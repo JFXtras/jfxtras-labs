@@ -37,11 +37,10 @@ import javafx.scene.paint.Color;
  * Time: 15:38
  */
 public class OdometerBuilder {
-    private Odometer odometer;
+    private Odometer odometer = new Odometer();
 
-    public final OdometerBuilder create() {
-        odometer = new Odometer();
-        return this;
+    public static final OdometerBuilder create() {
+        return new OdometerBuilder();
     }
 
     public final OdometerBuilder color(final Color COLOR) {

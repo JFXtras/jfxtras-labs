@@ -39,11 +39,10 @@ import java.util.ArrayList;
  * Time: 14:48
  */
 public class SplitFlapBuilder {
-    private SplitFlap splitFlap;
+    private SplitFlap splitFlap = new SplitFlap();
 
-    public final SplitFlapBuilder create() {
-        splitFlap = new SplitFlap();
-        return this;
+    public static final SplitFlapBuilder create() {
+        return new SplitFlapBuilder();
     }
 
     public final SplitFlapBuilder textColor(final Color TEXT_COLOR) {

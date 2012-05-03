@@ -40,9 +40,9 @@ import java.util.List;
  */
 public class GaugeBuilder<T extends Gauge> {
     // ******************** Variable definitions ******************************
-    private GaugeType  gaugeType;
-    private GaugeModel gaugeModel;
-    private StyleModel styleModel;
+    private GaugeType  gaugeType  = GaugeType.RADIAL;
+    private GaugeModel gaugeModel = new GaugeModel();
+    private StyleModel styleModel = new StyleModel();
 
     // ******************** Enum definitions **********************************
     public enum GaugeType {
@@ -59,11 +59,8 @@ public class GaugeBuilder<T extends Gauge> {
 
 
     // ******************** Methods *******************************************
-    public final GaugeBuilder create(final GaugeType GAUGE_TYPE) {
-        gaugeType = GAUGE_TYPE;
-        gaugeModel = new GaugeModel();
-        styleModel = new StyleModel();
-        return this;
+    public static final GaugeBuilder create(final GaugeType GAUGE_TYPE) {
+        return new GaugeBuilder();
     }
 
     public final Gauge build() {
@@ -92,6 +89,11 @@ public class GaugeBuilder<T extends Gauge> {
 
 
     // ******************** GaugeModel related ********************************
+    public final GaugeBuilder gaugeType(final GaugeType GAUGE_TYPE) {
+        gaugeType = GAUGE_TYPE;
+        return this;
+    }
+
     public final GaugeBuilder value(final double VALUE) {
         gaugeModel.setValue(VALUE);
         return this;

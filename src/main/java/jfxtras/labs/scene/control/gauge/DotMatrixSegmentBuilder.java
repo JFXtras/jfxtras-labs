@@ -40,11 +40,10 @@ import java.util.Map;
  * Time: 09:15
  */
 public class DotMatrixSegmentBuilder {
-    private DotMatrixSegment segment;
+    private DotMatrixSegment segment = new DotMatrixSegment();
 
-    public final DotMatrixSegmentBuilder create() {
-        segment = new DotMatrixSegment();
-        return this;
+    public static final DotMatrixSegmentBuilder create() {
+        return new DotMatrixSegmentBuilder();
     }
 
     public final DotMatrixSegmentBuilder character(final String CHARACTER) {

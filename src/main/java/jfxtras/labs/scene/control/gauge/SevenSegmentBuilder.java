@@ -40,11 +40,10 @@ import java.util.Map;
  * Time: 08:40
  */
 public class SevenSegmentBuilder {
-    private SevenSegment segment;
+    private SevenSegment segment = new SevenSegment();
 
-    public final SevenSegmentBuilder create() {
-        segment = new SevenSegment();
-        return this;
+    public static final SevenSegmentBuilder create() {
+        return new SevenSegmentBuilder();
     }
 
     public final SevenSegmentBuilder character(final String CHARACTER) {

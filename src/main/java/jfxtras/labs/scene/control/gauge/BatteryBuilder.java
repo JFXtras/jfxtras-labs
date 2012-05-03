@@ -37,11 +37,10 @@ import javafx.scene.paint.Stop;
  * Time: 15:58
  */
 public class BatteryBuilder {
-    private Battery battery;
+    private Battery battery = new Battery();
 
-    public final BatteryBuilder create() {
-        battery = new Battery();
-        return this;
+    public static final BatteryBuilder create() {
+        return new BatteryBuilder();
     }
 
     public final BatteryBuilder charging(final boolean CHARGING) {

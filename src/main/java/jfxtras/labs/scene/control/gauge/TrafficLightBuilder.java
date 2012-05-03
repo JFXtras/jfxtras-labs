@@ -34,11 +34,10 @@ package jfxtras.labs.scene.control.gauge;
  * Time: 16:12
  */
 public class TrafficLightBuilder {
-    private TrafficLight trafficLight;
+    private TrafficLight trafficLight = new TrafficLight();
 
-    public final TrafficLightBuilder create() {
-        trafficLight = new TrafficLight();
-        return this;
+    public static final TrafficLightBuilder create() {
+        return new TrafficLightBuilder();
     }
 
     public final TrafficLightBuilder redOn(final boolean RED_ON) {

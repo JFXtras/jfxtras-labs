@@ -35,11 +35,10 @@ package jfxtras.labs.scene.control.gauge;
  * Time: 15:34
  */
 public class LcdBuilder {
-    private Lcd lcd;
+    private Lcd lcd = new Lcd();
 
-    public final LcdBuilder create() {
-        lcd = new Lcd();
-        return this;
+    public static final LcdBuilder create() {
+        return new LcdBuilder();
     }
 
     public final LcdBuilder design(final LcdDesign DESIGN) {

@@ -40,11 +40,10 @@ import java.util.List;
  * Time: 15:50
  */
 public class GaugeModelBuilder {
-    private GaugeModel gaugeModel;
+    private GaugeModel gaugeModel = new GaugeModel();
 
-    public final GaugeModelBuilder create() {
-        gaugeModel = new GaugeModel();
-        return this;
+    public static final GaugeModelBuilder create() {
+        return new GaugeModelBuilder();
     }
 
     public final GaugeModelBuilder value(final double VALUE) {

@@ -34,11 +34,10 @@ package jfxtras.labs.scene.control.gauge;
  * Time: 19:14
  */
 public class ClockBuilder {
-    private Clock clock;
+    private Clock clock = new Clock();
 
-    public final ClockBuilder create() {
-        clock = new Clock();
-        return this;
+    public static final ClockBuilder create() {
+        return new ClockBuilder();
     }
 
     public final ClockBuilder timeZone(final String TIME_ZONE) {

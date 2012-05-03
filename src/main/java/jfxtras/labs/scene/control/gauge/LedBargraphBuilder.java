@@ -30,7 +30,6 @@ package jfxtras.labs.scene.control.gauge;
 import javafx.geometry.Orientation;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 
@@ -41,54 +40,53 @@ import java.util.LinkedList;
  * Time: 16:37
  */
 public class LedBargraphBuilder {
-    private LedBargraph bargraph;
+    private LedBargraph barGraph = new LedBargraph();
 
-    public final LedBargraphBuilder create() {
-        bargraph = new LedBargraph();
-        return this;
+    public static final LedBargraphBuilder create() {
+        return new LedBargraphBuilder();
     }
 
     public final LedBargraphBuilder noOfLeds(final int NO_OF_LEDS) {
-        bargraph.setNoOfLeds(NO_OF_LEDS);
+        barGraph.setNoOfLeds(NO_OF_LEDS);
         return this;
     }
 
     public final LedBargraphBuilder ledType(final Led.Type LED_TYPE) {
-        bargraph.setLedType(LED_TYPE);
+        barGraph.setLedType(LED_TYPE);
         return this;
     }
 
     public final LedBargraphBuilder orientation(final Orientation ORIENTATION) {
-        bargraph.setOrientation(ORIENTATION);
+        barGraph.setOrientation(ORIENTATION);
         return this;
     }
 
     public final LedBargraphBuilder peakValueVisible(final boolean PEAK_VALUE_VISIBLE) {
-        bargraph.setPeakValueVisible(PEAK_VALUE_VISIBLE);
+        barGraph.setPeakValueVisible(PEAK_VALUE_VISIBLE);
         return this;
     }
 
     public final LedBargraphBuilder ledSize(final double LED_SIZE) {
-        bargraph.setLedSize(LED_SIZE);
+        barGraph.setLedSize(LED_SIZE);
         return this;
     }
 
     public final LedBargraphBuilder ledColors(final LinkedList<Color> LED_COLORS) {
-        bargraph.setLedColors(LED_COLORS);
+        barGraph.setLedColors(LED_COLORS);
         return this;
     }
 
     public final LedBargraphBuilder ledColor(final int INDEX, final Color COLOR) {
-        bargraph.setLedColor(INDEX, COLOR);
+        barGraph.setLedColor(INDEX, COLOR);
         return this;
     }
 
     public final LedBargraphBuilder value(final double VALUE) {
-        bargraph.setValue(VALUE);
+        barGraph.setValue(VALUE);
         return this;
     }
 
     public final LedBargraph build() {
-        return bargraph != null ? bargraph : new LedBargraph();
+        return barGraph != null ? barGraph : new LedBargraph();
     }
 }

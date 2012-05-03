@@ -37,11 +37,10 @@ import javafx.scene.paint.Color;
  * Time: 11:28
  */
 public class StepIndicatorBuilder {
-    private StepIndicator indicator;
+    private StepIndicator indicator = new StepIndicator();
 
-    public final StepIndicatorBuilder create() {
-        indicator = new StepIndicator();
-        return this;
+    public static final StepIndicatorBuilder create() {
+        return new StepIndicatorBuilder();
     }
 
     public final StepIndicatorBuilder noOfSteps(final int NO_OF_STEPS) {

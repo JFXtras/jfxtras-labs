@@ -37,11 +37,10 @@ import javafx.scene.paint.Color;
  * Time: 16:20
  */
 public class RaterBuilder {
-    private Rater rater;
+    private Rater rater = new Rater();
 
-    public final RaterBuilder create() {
-        rater = new Rater();
-        return this;
+    public static final RaterBuilder create() {
+        return new RaterBuilder();
     }
 
     public final RaterBuilder noOfStars(final int NO_OF_STARS) {

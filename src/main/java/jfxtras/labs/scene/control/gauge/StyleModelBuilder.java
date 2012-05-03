@@ -38,11 +38,10 @@ import javafx.scene.paint.Color;
  * Time: 10:43
  */
 public class StyleModelBuilder {
-    private StyleModel styleModel;
+    private StyleModel styleModel = new StyleModel();
 
-    public final StyleModelBuilder create() {
-        styleModel = new StyleModel();
-        return this;
+    public static final StyleModelBuilder create() {
+        return new StyleModelBuilder();
     }
 
     public final StyleModelBuilder bargraph(final boolean BARGRAPH) {

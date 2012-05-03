@@ -37,11 +37,10 @@ import javafx.scene.paint.Color;
  * Time: 15:48
  */
 public class LedBuilder {
-    private Led led;
+    private Led led = new Led();
 
-    public final LedBuilder create() {
-        led = new Led();
-        return this;
+    public static final LedBuilder create() {
+        return new LedBuilder();
     }
 
     public final LedBuilder color(final Color LED_COLOR) {

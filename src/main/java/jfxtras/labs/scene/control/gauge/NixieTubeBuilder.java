@@ -37,11 +37,10 @@ import javafx.scene.paint.Color;
  * Time: 16:26
  */
 public class NixieTubeBuilder {
-    private NixieTube tube;
+    private NixieTube tube = new NixieTube();
 
-    public final NixieTubeBuilder create() {
-        tube = new NixieTube();
-        return this;
+    public static final NixieTubeBuilder create() {
+        return new NixieTubeBuilder();
     }
 
     public final NixieTubeBuilder glowColor(final Color GLOW_COLOR) {
