@@ -808,7 +808,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         upperNext.setCache(true);
         upperNext.setCacheHint(CacheHint.SPEED);
 
-        final Rectangle UPPER_NEXT_CLIP = new Rectangle(0, upper.getLayoutY(), WIDTH, upper.getLayoutBounds().getHeight());
+        final Rectangle UPPER_NEXT_CLIP = new Rectangle(0, upper.getLayoutBounds().getMinY(), WIDTH, upper.getLayoutBounds().getHeight());
         upperNextText.setTextOrigin(VPos.BOTTOM);
         upperNextText.setFont(FONT);
         upperNextText.setFontSmoothingType(FontSmoothingType.LCD);
@@ -825,7 +825,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         upperNextText.setFill(upperNextTextFill);
         upperNextText.setStroke(null);
 
-        final Rectangle LOWER_NEXT_CLIP = new Rectangle(0, lower.getLayoutY(), WIDTH, lower.getLayoutBounds().getHeight());
+        final Rectangle LOWER_NEXT_CLIP = new Rectangle(0, lower.getLayoutBounds().getMinY(), WIDTH, lower.getLayoutBounds().getHeight());
         lowerNextText.setTextOrigin(VPos.BOTTOM);
         lowerNextText.setFont(FONT);
         lowerNextText.setFontSmoothingType(FontSmoothingType.LCD);

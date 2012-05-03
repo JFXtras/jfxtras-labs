@@ -110,6 +110,7 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
 
         // Register listeners
         registerChangeListener(control.rotationsProperty(), "ROTATION");
+        registerChangeListener(control.rotationPresetProperty(), "ROTATION_PRESET");
 
         initialized = true;
         paint();
@@ -136,7 +137,7 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
-        if ("ROTATION".equals(PROPERTY)) {
+        if ("ROTATION_PRESET".equals(PROPERTY)) {
             String rot = Integer.toString(control.getRotations());
             int noOfDials = control.getNoOfDigits() + control.getNoOfDecimals();
             if (rot.length() > noOfDials) {
@@ -153,6 +154,14 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
             for (final char c : rot.toCharArray()) {
                 listOfDials.get(index).setToNumber(Integer.parseInt(String.valueOf(c)));
                 index--;
+            }
+        } else if ("ROTATION".equals(PROPERTY)) {
+            for (int i = 1 ; i < (control.getNoOfDigits() + control.getNoOfDecimals() + 1) ; i++) {
+                if (control.getRotations() == 0) {
+                    listOfDials.get(i - 1).reset();
+                } else {
+                    listOfDials.get(i - 1).setNumber(control.getDialPosition(i));
+                }
             }
         }
     }

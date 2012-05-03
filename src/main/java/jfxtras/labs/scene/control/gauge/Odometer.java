@@ -56,6 +56,7 @@ public class Odometer extends Control {
     private ObjectProperty<Color> numberDecimalColor;
     private LongProperty          interval;
     private IntegerProperty       rotations;
+    private IntegerProperty       rotationPreset;
     private BooleanProperty       countdownMode;
     private IntegerProperty       noOfDigits;
     private IntegerProperty       noOfDecimals;
@@ -77,6 +78,7 @@ public class Odometer extends Control {
         noOfDecimals       = new SimpleIntegerProperty(0);
         interval           = new SimpleLongProperty(1000);
         rotations          = new SimpleIntegerProperty(0);
+        rotationPreset     = new SimpleIntegerProperty(0);
         countdownMode      = new SimpleBooleanProperty(false);
         lastTimerCall      = System.nanoTime();
         timer              = new AnimationTimer() {
@@ -163,12 +165,26 @@ public class Odometer extends Control {
         return rotations.get();
     }
 
+    /*
     public final void setRotations(final int ROTATIONS) {
         rotations.set(ROTATIONS);
     }
+    */
 
     public final IntegerProperty rotationsProperty() {
         return rotations;
+    }
+
+    public final int getRotationPreset() {
+        return rotationPreset.get();
+    }
+
+    public final void setRotationPreset(final int ROTATION_PRESET) {
+        rotationPreset.set(ROTATION_PRESET);
+    }
+
+    public final IntegerProperty rotationPresetProperty() {
+        return rotationPreset;
     }
 
     public final void start() {
@@ -181,7 +197,7 @@ public class Odometer extends Control {
 
     public final void reset() {
         timer.stop();
-        setRotations(0);
+        rotations.set(0);
     }
 
     public final boolean isCountdownMode() {

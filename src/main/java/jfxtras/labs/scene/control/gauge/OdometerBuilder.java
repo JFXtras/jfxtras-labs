@@ -43,6 +43,11 @@ public class OdometerBuilder {
         return new OdometerBuilder();
     }
 
+    public final OdometerBuilder rotationPreset(final int ROTATION_PRESET) {
+        odometer.setRotationPreset(ROTATION_PRESET);
+        return this;
+    }
+
     public final OdometerBuilder color(final Color COLOR) {
         odometer.setColor(COLOR);
         return this;
