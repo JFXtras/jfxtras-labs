@@ -41,6 +41,11 @@ public class LcdBuilder {
         return new LcdBuilder();
     }
 
+    public final LcdBuilder styleModel(final StyleModel STYLE_MODEL) {
+        lcd.setStyleModel(STYLE_MODEL);
+        return this;
+    }
+
     public final LcdBuilder design(final LcdDesign DESIGN) {
         lcd.setLcdDesign( DESIGN);
         return this;

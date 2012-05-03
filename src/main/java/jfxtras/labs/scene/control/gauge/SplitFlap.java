@@ -52,7 +52,8 @@ import java.util.LinkedHashMap;
  * Time: 09:11
  */
 public class SplitFlap extends Control {
-    public static final String[] TIME         = {"1", "2", "3", "4", "5", "0"};
+    public static final String[] TIME_0_TO_5  = {"1", "2", "3", "4", "5", "0"};
+    public static final String[] TIME_0_TO_9  = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
     public static final String[] NUMERIC      = {" ", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
     public static final String[] ALPHANUMERIC = {" ", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
                                                  "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
