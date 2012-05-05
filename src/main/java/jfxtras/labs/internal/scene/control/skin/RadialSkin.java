@@ -438,7 +438,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         control.setOnGaugeModelEvent(new EventHandler<GaugeModelEvent>() {
             @Override
             public void handle(final GaugeModelEvent EVENT) {
-                // Trigger repaint
                 addBindings();
                 paint();
             }
@@ -447,7 +446,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         control.setOnStyleModelEvent(new EventHandler<StyleModelEvent>() {
             @Override
             public void handle(final StyleModelEvent EVENT) {
-                // Trigger repaint
                 addBindings();
                 paint();
             }
@@ -1412,7 +1410,9 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         }
 
         pointer.getTransforms().clear();
-        pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET + (control.getValue() - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getY()));
+
+        final double VALUE = control.getValue() < control.getMinValue() ? control.getMinValue() : control.getValue();
+        pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET + (VALUE - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getY()));
         pointer.setCache(true);
         pointer.setCacheHint(CacheHint.ROTATE);
     }

@@ -878,8 +878,8 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
                                                            0.985 * WIDTH, 0.23076923076923078 * HEIGHT,
                                                            0.985 * WIDTH, 0.23076923076923078 * HEIGHT));
                 GLOSSY2.getElements().add(new ClosePath());
-                final Paint GLOSSY2_FILL = new LinearGradient(0.5 * WIDTH, 0.03076923076923077 * HEIGHT,
-                                                              0.50 * WIDTH, 0.9692307692307692 * HEIGHT,
+                final Paint GLOSSY2_FILL = new LinearGradient(0, 0.03076923076923077 * HEIGHT,
+                                                              0, 0.9692307692307692 * HEIGHT,
                                                               false, CycleMethod.NO_CYCLE,
                                                               new Stop(0.0, Color.color(0.9764705882, 0.9764705882, 0.9764705882, 1)),
                                                               new Stop(0.23, Color.color(0.7843137255, 0.7647058824, 0.7490196078, 1)),
@@ -964,8 +964,8 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
                                                                 0.985 * WIDTH, 0.23076923076923078 * HEIGHT,
                                                                 0.985 * WIDTH, 0.23076923076923078 * HEIGHT));
                 DARK_GLOSSY2.getElements().add(new ClosePath());
-                final Paint DARK_GLOSSY2_FILL = new LinearGradient(0.505 * WIDTH, 0.023076923076923078 * HEIGHT,
-                                                                   0.5050 * WIDTH, 0.9769230769230769 * HEIGHT,
+                final Paint DARK_GLOSSY2_FILL = new LinearGradient(0, 0.023076923076923078 * HEIGHT,
+                                                                   0, 0.9769230769230769 * HEIGHT,
                                                                    false, CycleMethod.NO_CYCLE,
                                                                    new Stop(0.0, Color.color(0.9764705882, 0.9764705882, 0.9764705882, 1)),
                                                                    new Stop(1.0E-4, Color.BLACK),
@@ -997,8 +997,8 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
                                                                 0.98 * WIDTH, 0.3769230769230769 * HEIGHT,
                                                                 0.985 * WIDTH, 0.26153846153846155 * HEIGHT));
                 DARK_GLOSSY3.getElements().add(new ClosePath());
-                final Paint DARK_GLOSSY3_FILL = new LinearGradient(0.5 * WIDTH, 0.03076923076923077 * HEIGHT,
-                                                                   0.5 * WIDTH, 0.6 * HEIGHT,
+                final Paint DARK_GLOSSY3_FILL = new LinearGradient(0, 0.03076923076923077 * HEIGHT,
+                                                                   0, 0.6 * HEIGHT,
                                                                    false, CycleMethod.NO_CYCLE,
                                                                    new Stop(0.0, Color.color(0.9764705882, 0.9764705882, 0.9764705882, 1)),
                                                                    new Stop(0.26, Color.color(1, 1, 1, 0.7372549020)),

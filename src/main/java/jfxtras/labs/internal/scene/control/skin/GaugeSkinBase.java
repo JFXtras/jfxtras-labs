@@ -179,32 +179,33 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         final double HEIGHT = SIZE;
 
         FRAME.getChildren().clear();
+        final Point2D CENTER = new Point2D(0.5 * WIDTH, 0.5 * HEIGHT);
 
-        final Shape SUBTRACT = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, WIDTH * 0.4158878326);
+        //final Shape SUBTRACT = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, WIDTH * 0.4158878326);
 
         //final Shape OUTER_FRAME = Shape.subtract(new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.5 * WIDTH), SUBTRACT);
-        final Shape OUTER_FRAME = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.5 * WIDTH);
+        final Shape OUTER_FRAME = new Circle(CENTER.getX(), CENTER.getY(), 0.5 * WIDTH);
         OUTER_FRAME.setFill(Color.color(0.5176470588, 0.5176470588, 0.5176470588, 1));
         OUTER_FRAME.setStroke(null);
         FRAME.getChildren().add(OUTER_FRAME);
 
         //final Shape INNER_FRAME = Shape.subtract(new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4205607476635514 * WIDTH), SUBTRACT);
-        final Shape INNER_FRAME = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4205607476635514 * WIDTH);
+        final Shape INNER_FRAME = new Circle(CENTER.getX(), CENTER.getY(), 0.4205607476635514 * WIDTH);
         INNER_FRAME.setFill(Color.color(0.6, 0.6, 0.6, 0.8));
         INNER_FRAME.setStroke(null);
 
         //final Shape MAIN_FRAME = Shape.subtract(new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4953271028037383 * WIDTH), SUBTRACT);
-        final Shape MAIN_FRAME = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4953271028037383 * WIDTH);
+        final Shape MAIN_FRAME = new Circle(CENTER.getX(), CENTER.getY(), 0.4953271028037383 * WIDTH);
         MAIN_FRAME.setStroke(null);
         final ImageView IMAGE_VIEW;
         switch (control.getFrameDesign()) {
             case GLOSSY_METAL:
-                MAIN_FRAME.setFill(new RadialGradient(0, 0, 0.5 * WIDTH, 0.5 * HEIGHT, 0.5 * WIDTH,
+                MAIN_FRAME.setFill(new RadialGradient(0, 0, CENTER.getX(), CENTER.getY(), 0.5 * WIDTH,
                                                       false, CycleMethod.NO_CYCLE,
                                                       new Stop(0.0, Color.color(0.8117647059, 0.8117647059, 0.8117647059, 1.0)),
                                                       new Stop(0.96, Color.color(0.8039215686, 0.8, 0.8039215686, 1.0)),
                                                       new Stop(1.0, Color.color(0.9568627451, 0.9568627451, 0.9568627451, 1.0))));
-                final Shape GLOSSY2 = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4859813084 * WIDTH);
+                final Shape GLOSSY2 = new Circle(CENTER.getX(), CENTER.getY(), 0.4859813084 * WIDTH);
                 GLOSSY2.setFill(new LinearGradient(0, GLOSSY2.getLayoutBounds().getMinY(),
                                                    0, GLOSSY2.getLayoutBounds().getMaxY(),
                                                    false, CycleMethod.NO_CYCLE,
@@ -214,9 +215,9 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                                                    new Stop(0.59, Color.color(0.1137254902, 0.1137254902, 0.1137254902, 1.0)),
                                                    new Stop(0.76, Color.color(0.7843137255, 0.7607843137, 0.7529411765, 1.0)),
                                                    new Stop(1.0, Color.color(0.8196078431, 0.8196078431, 0.8196078431, 1.0))));
-                final Shape GLOSSY3 = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4345794393 * WIDTH);
+                final Shape GLOSSY3 = new Circle(CENTER.getX(), CENTER.getY(), 0.4345794393 * WIDTH);
                 GLOSSY3.setFill(Color.web("#F6F6F6"));
-                final Shape GLOSSY4 = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4252336449 * WIDTH);
+                final Shape GLOSSY4 = new Circle(CENTER.getX(), CENTER.getY(), 0.4252336449 * WIDTH);
                 GLOSSY4.setFill(Color.web("#333333"));
                 FRAME.getChildren().addAll(MAIN_FRAME, GLOSSY2, GLOSSY3, GLOSSY4);
                 break;
@@ -231,9 +232,9 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                                                       new Stop(0.84, Color.color(0.9725490196, 0.9803921569, 0.9764705882, 1)),
                                                       new Stop(0.99, Color.color(0.3254901961, 0.3254901961, 0.3254901961, 1)),
                                                       new Stop(1.0, Color.color(0.3254901961, 0.3254901961, 0.3254901961, 1))));
-                final Circle DARK_GLOSSY2 = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.48598130841121495 * WIDTH);
-                DARK_GLOSSY2.setFill(new LinearGradient(0.5 * WIDTH, 0.014018691588785047 * HEIGHT,
-                                                        0.5 * WIDTH, 0.985981308411215 * HEIGHT,
+                final Circle DARK_GLOSSY2 = new Circle(CENTER.getX(), CENTER.getY(), 0.48598130841121495 * WIDTH);
+                DARK_GLOSSY2.setFill(new LinearGradient(0, 0.014018691588785047 * HEIGHT,
+                                                        0, 0.985981308411215 * HEIGHT,
                                                         false, CycleMethod.NO_CYCLE,
                                                         new Stop(0.0, Color.color(0.2588235294, 0.2588235294, 0.2588235294, 1)),
                                                         new Stop(0.42, Color.color(0.2588235294, 0.2588235294, 0.2588235294, 1)),
@@ -262,8 +263,8 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                                                                 0.014018691588785047 * WIDTH, 0.2336448598130841 * HEIGHT,
                                                                 0.014018691588785047 * WIDTH, 0.5 * HEIGHT));
                 DARK_GLOSSY3.getElements().add(new ClosePath());
-                DARK_GLOSSY3.setFill(new LinearGradient(0.5 * WIDTH, 0.014018691588785047 * HEIGHT,
-                                                        0.5 * WIDTH, 0.5280373831775701 * HEIGHT,
+                DARK_GLOSSY3.setFill(new LinearGradient(0, 0.014018691588785047 * HEIGHT,
+                                                        0, 0.5280373831775701 * HEIGHT,
                                                         false, CycleMethod.NO_CYCLE,
                                                         new Stop(0.0, Color.color(1, 1, 1, 1)),
                                                         new Stop(0.26, Color.color(1, 1, 1, 1)),
@@ -271,7 +272,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                                                         new Stop(1.0, Color.color(1, 1, 1, 0))));
                 DARK_GLOSSY3.setStroke(null);
 
-                final Circle DARK_GLOSSY4 = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4392523364485981 * WIDTH);
+                final Circle DARK_GLOSSY4 = new Circle(CENTER.getX(), CENTER.getY(), 0.4392523364485981 * WIDTH);
                 DARK_GLOSSY4.setFill(new LinearGradient(0.8037383177570093 * WIDTH, 0.1822429906542056 * HEIGHT,
                                                         0.18584594354259637 * WIDTH, 0.8001353648686187 * HEIGHT,
                                                         false, CycleMethod.NO_CYCLE,

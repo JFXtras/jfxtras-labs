@@ -961,8 +961,8 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                                                                 0.985 * WIDTH, 0.7692307692307693 * HEIGHT,
                                                                 0.985 * WIDTH, 0.7692307692307693 * HEIGHT));
                 DARK_GLOSSY2.getElements().add(new ClosePath());
-                final Paint DARK_GLOSSY2_FILL = new LinearGradient(0.5 * WIDTH, 0.03076923076923077 * HEIGHT,
-                                                                   0.50 * WIDTH, 0.9692307692307692 * HEIGHT,
+                final Paint DARK_GLOSSY2_FILL = new LinearGradient(0, 0.03076923076923077 * HEIGHT,
+                                                                   0, 0.9692307692307692 * HEIGHT,
                                                                    false, CycleMethod.NO_CYCLE,
                                                                    new Stop(0.0, Color.color(0.2588235294, 0.2588235294, 0.2588235294, 1)),
                                                                    new Stop(0.41, Color.color(0.2588235294, 0.2588235294, 0.2588235294, 1)),
@@ -986,8 +986,8 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                                                                 0.93 * WIDTH, 0.5769230769230769 * HEIGHT,
                                                                 0.985 * WIDTH, 0.7692307692307693 * HEIGHT));
                 DARK_GLOSSY3.getElements().add(new ClosePath());
-                final Paint DARK_GLOSSY3_FILL = new LinearGradient(0.5 * WIDTH, 0.03076923076923077 * HEIGHT,
-                                                                   0.5 * WIDTH, 0.7461538461538462 * HEIGHT,
+                final Paint DARK_GLOSSY3_FILL = new LinearGradient(0, 0.03076923076923077 * HEIGHT,
+                                                                   0, 0.7461538461538462 * HEIGHT,
                                                                    false, CycleMethod.NO_CYCLE,
                                                                    new Stop(0.0, Color.color(1, 1, 1, 1)),
                                                                    new Stop(0.26, Color.color(1, 1, 1, 0.7372549020)),
