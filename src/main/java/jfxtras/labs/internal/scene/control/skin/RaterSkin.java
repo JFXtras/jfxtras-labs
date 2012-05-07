@@ -334,7 +334,7 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
                                                       0.5 * WIDTH, 0.04 * HEIGHT));
         STAR_SHAPE.getElements().add(new ClosePath());
         STAR_SHAPE.setSmooth(true);
-        STAR_SHAPE.setId("star-fill");
+        STAR_SHAPE.getStyleClass().add("star-fill");
 
         final InnerShadow INNER_GLOW = new InnerShadow();
         INNER_GLOW.setWidth(0.2 * STAR_SHAPE.getLayoutBounds().getWidth());
@@ -401,7 +401,7 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
                                                            0.5 * WIDTH, 0.09 * HEIGHT));
         INNER_HIGHLIGHT.getElements().add(new ClosePath());
         INNER_HIGHLIGHT.setSmooth(true);
-        INNER_HIGHLIGHT.setId("highlights-inner-fill");
+        INNER_HIGHLIGHT.getStyleClass().add("highlights-inner-fill");
         INNER_HIGHLIGHT.setStroke(null);
 
         final Path TOP_HIGHLIGHT = new Path();
@@ -433,7 +433,7 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
                                                          0.5 * WIDTH, 0.065 * HEIGHT));
         TOP_HIGHLIGHT.getElements().add(new ClosePath());
         TOP_HIGHLIGHT.setSmooth(true);
-        TOP_HIGHLIGHT.setId("highlights-top-fill");
+        TOP_HIGHLIGHT.getStyleClass().add("highlights-top-fill");
         TOP_HIGHLIGHT.setStroke(null);
 
         STAR.getChildren().addAll(STAR_SHAPE, INNER_HIGHLIGHT, TOP_HIGHLIGHT);

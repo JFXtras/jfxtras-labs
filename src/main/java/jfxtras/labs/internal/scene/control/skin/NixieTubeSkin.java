@@ -1890,7 +1890,7 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
 
         final Rectangle HL_MIDDLE = new Rectangle(0.13953488372093023 * WIDTH, 0.2620689655172414 * HEIGHT,
                                                   0.7209302325581395 * WIDTH, 0.013793103448275862 * HEIGHT);
-        HL_MIDDLE.setId("tube-hl-middle");
+        HL_MIDDLE.getStyleClass().add("tube-hl-middle");
 
         final Path HL_LEFT = new Path();
         HL_LEFT.setFillRule(FillRule.EVEN_ODD);
@@ -1920,7 +1920,7 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
                                                    0.18604651162790697 * WIDTH, 0.2689655172413793 * HEIGHT,
                                                    0.18604651162790697 * WIDTH, 0.2689655172413793 * HEIGHT));
         HL_LEFT.getElements().add(new ClosePath());
-        HL_LEFT.setId("tube-hl-left");
+        HL_LEFT.getStyleClass().add("tube-hl-left");
 
         final Path HL_RIGHT = new Path();
         HL_RIGHT.setFillRule(FillRule.EVEN_ODD);
@@ -1947,15 +1947,15 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
                                                     0.8604651162790697 * WIDTH, 0.2689655172413793 * HEIGHT,
                                                     0.8604651162790697 * WIDTH, 0.2689655172413793 * HEIGHT));
         HL_RIGHT.getElements().add(new ClosePath());
-        HL_RIGHT.setId("tube-hl-right");
+        HL_RIGHT.getStyleClass().add("tube-hl-right");
 
         final Ellipse HL_UPPER = new Ellipse(0.5 * WIDTH, 0.1482758620689655 * HEIGHT,
                                              0.3023255813953488 * WIDTH, 0.07241379310344828 * HEIGHT);
-        HL_UPPER.setId("tube-hl-upper");
+        HL_UPPER.getStyleClass().add("tube-hl-upper");
 
         final Ellipse HL_TOP = new Ellipse(0.47674418604651164 * WIDTH, 0.04482758620689655 * HEIGHT,
                                            0.03488372093023256 * WIDTH, 0.02413793103448276 * HEIGHT);
-        HL_TOP.setId("tube-hl-top");
+        HL_TOP.getStyleClass().add("tube-hl-top");
 
         leftLight = new Rectangle(0.0, 0.32413793103448274 * HEIGHT,
                                                   0.011627906976744186 * WIDTH, 0.5793103448275863 * HEIGHT);

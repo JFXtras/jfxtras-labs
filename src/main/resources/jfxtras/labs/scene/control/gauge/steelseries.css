@@ -430,180 +430,180 @@
 /************************************************************
 * Defintions of all framedesign gradients                   *
 ************************************************************/
-#framedesign-metal {
+.frame-design-metal {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(254, 254, 254) 0%, rgb(210, 210, 210) 7%, rgb(179, 179, 179) 12%, rgb(213, 213, 213) 100%);
 }
 
-#framedesign-glossymetal {
+.frame-design-glossymetal {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(254, 254, 254) 0%, rgb(210, 210, 210) 7%, rgb(179, 179, 179) 12%, rgb(213, 213, 213) 100%);
 }
 
-#framedesign-darkglossy {
+.frame-design-darkglossy {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(254, 254, 254) 0%, rgb(210, 210, 210) 7%, rgb(179, 179, 179) 12%, rgb(213, 213, 213) 100%);
 }
 
-#framedesign-brass {
+.frame-design-brass {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(249, 243, 155) 0%, rgb(246, 226, 101) 5%, rgb(240, 225, 132) 10%, rgb(90, 57, 22) 50%, rgb(249, 237, 139) 90%, rgb(243, 226, 108) 95%, rgb(202, 182, 113) 100%);
 }
 
-#framedesign-steel {
+.frame-design-steel {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(231, 237, 237) 0%, rgb(189, 199, 198) 5%, rgb(192, 201, 200) 10%, rgb(23, 31, 33) 50%, rgb(196, 205, 204) 90%, rgb(194, 204, 203) 95%, rgb(189, 201, 199) 100%);
 }
 
-#framedesign-gold {
+.frame-design-gold {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(255, 255, 207) 0%, rgb(255, 237, 96) 15%, rgb(254, 199, 57) 22%, rgb(255, 249, 203) 30%, rgb(255, 199, 64) 38%, rgb(252, 194, 60) 44%, rgb(255, 204, 59) 51%, rgb(213, 134, 29) 60%, rgb(255, 201, 56) 68%, rgb(212, 135, 29) 75%, rgb(247, 238, 101) 100%);
 }
 
-#framedesign-anthracite {
+.frame-design-anthracite {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(118, 117, 135) 0%, rgb(74, 74, 82) 6%, rgb(50, 50, 54) 12%, rgb(97, 97, 108) 100%);
 }
 
-#framedesign-tiltedgray {
+.frame-design-tiltedgray {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(255, 255, 255) 0%, rgb(210, 210, 210) 7%, rgb(179, 179, 179) 16%, rgb(255, 255, 255) 33%, rgb(197, 197, 197) 55%, rgb(255, 255, 255) 79%, rgb(102, 102, 102) 100%);
 }
 
-#framedesign-tiltedblack {
+.frame-design-tiltedblack {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(102, 102, 102) 0%, rgb(0, 0, 0) 21%, rgb(102, 102, 102) 47%, rgb(0, 0, 0) 99%, rgb(0, 0, 0) 100%);
 }
 
-#framedesign-custom {
+.frame-design-custom {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(254, 254, 254) 0%, rgb(210, 210, 210) 7%, rgb(179, 179, 179) 12%, rgb(213, 213, 213) 100%);
 }
 
 /************************************************************
 * Defintions of all background gradients                    *
 ************************************************************/
-#backgrounddesign-darkgray {
+.background-design-darkgray {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(0, 0, 0) 0%, rgb(51, 51, 51) 40%, rgb(153, 153, 153) 100%);
     -fx-stroke: white;
 }
 
-#backgrounddesign-darkgray-text {
+.background-design-darkgray-text {
     -fx-fill: white;
 }
 
-#backgrounddesign-satingray {
+.background-design-satingray {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(45, 57, 57) 0%, rgb(45, 57, 57) 40%, rgb(45, 57, 57) 100%);
     -fx-stroke: rgb(167, 184, 180);
 }
 
-#backgrounddesign-satingray-text {
+.background-design-satingray-text {
     -fx-fill: rgb(167, 184, 180);
 }
 
-#backgrounddesign-lightgray {
+.background-design-lightgray {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(130, 130, 130) 0%, rgb(181, 181, 181) 40%, rgb(253, 253, 253) 100%);
     -fx-stroke: rgb(0, 0, 0);
 }
 
-#backgrounddesign-lightgray-text {
+.background-design-lightgray-text {
     -fx-fill: rgb(0, 0, 0);
 }
 
-#backgrounddesign-white {
+.background-design-white {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(255, 255, 255) 0%, rgb(255, 255, 255) 40%, rgb(255, 255, 255) 100%);
     -fx-stroke: rgb(0, 0, 0);
 }
 
-#backggrounddesign-white-text {
+.backgground-design-white-text {
     -fx-fill: rgb(0, 0, 0);
 }
 
-#backgrounddesign-black {
+.background-design-black {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 40%, rgb(0, 0, 0) 100%);
     -fx-stroke: rgb(255, 255, 255);
 }
 
-#backgrounddesign-black-text {
+.background-design-black-text {
     -fx-fill: rgb(255, 255, 255);
 }
 
-#backgrounddesign-beige {
+.background-design-beige {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(178, 172, 150) 0%, rgb(204, 205, 184) 40%, rgb(231, 231, 214) 100%);
     -fx-stroke: rgb(0, 0, 0);
 }
 
-#backgrounddesign-beige-text {
+.background-design-beige-text {
     -fx-fill: rgb(0, 0, 0);
 }
 
-#backgrounddesign-brown {
+.background-design-brown {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(245, 225, 193) 0%, rgb(245, 225, 193) 40%, rgb(255, 250, 240) 100%);
     -fx-stroke: rgb(109, 73, 47);
 }
 
-#backgrounddesign-brown-text {
+.background-design-brown-text {
     -fx-fill: rgb(109, 73, 47);
 }
 
-#backgrounddesign-red {
+.background-design-red {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(189, 93, 95) 0%, rgb(212, 132, 134) 40%, rgb(242, 218, 218) 100%);
     -fx-stroke: rgb(0, 0, 0);
 }
 
-#backgrounddesign-red-text {
+.background-design-red-text {
     -fx-fill: rgb(0, 0, 0);
 }
 
-#backgrounddesign-green {
+.background-design-green {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(65, 120, 40) 0%, rgb(129, 171, 95) 40%, rgb(218, 237, 202) 100%);
     -fx-stroke: rgb(0, 0, 0);
 }
 
-#backgrounddesign-green-text {
+.background-design-green-text {
     -fx-fill: rgb(0, 0, 0);
 }
 
-#backgrounddesign-blue {
+.background-design-blue {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(45, 83, 122) 0%, rgb(115, 144, 170) 40%, rgb(227, 234, 238) 100%);
     -fx-stroke: rgb(0, 0, 0);
 }
 
-#backgrounddesign-blue-text {
+.background-design-blue-text {
     -fx-fill: rgb(0, 0, 0);
 }
 
-#backgrounddesign-anthracite {
+.background-design-anthracite {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(50, 50, 54) 0%, rgb(47, 47, 51) 40%, rgb(69, 69, 74) 100%);
     -fx-stroke: rgb(250, 250, 250);
 }
 
-#backgrounddesign-anthracite-text {
+.background-design-anthracite-text {
     -fx-fill: rgb(250, 250, 250);
 }
 
-#backgrounddesign-mud {
+.background-design-mud {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(80, 86, 82) 0%, rgb(70, 76, 72) 40%, rgb(57, 62, 58) 100%);
     -fx-stroke: rgb(255, 255, 240);
 }
 
-#backgrounddesign-mud-text {
+.background-design-mud-text {
     -fx-fill: rgb(255, 255, 240);
 }
 
-#backgrounddesign-simplegradient {
+.background-design-simplegradient {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, derive(-fx-simplegradient-base, -50%) 0%, derive(-fx-simplegradient-base, 50%) 50%, derive(-fx-simplegradient-base, -50%) 100%);
 }
 
-#backgrounddesign-simplegradient-text {
+.background-design-simplegradient-text {
     -fx-fill: ladder(-fx-simplegradient-base, rgb(255, 255, 255) 49%, rgb(0, 0, 0) 50%);
 }
 
-#backgrounddesign-transparent {
+.background-design-transparent {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0) 100%);
     -fx-stroke: rgb(0, 0, 0);
 }
 
-#backgrounddesign-transparent-text {
+.background-design-transparent-text {
     -fx-fill: rgb(0, 0, 0);
 }
 
-#backgrounddesign-custom {
+.background-design-custom {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0) 100%);
     -fx-stroke: rgb(0, 0, 0);
 }
 
-#backgrounddesign-custom-text {
+.background-design-custom-text {
     -fx-fill: rgb(0, 0, 0);
 }
 
@@ -611,96 +611,96 @@
 /************************************************************
 * Defintions of all pointer gradients                       *
 ************************************************************/
-#pointer1-gradient {
+.pointer1-gradient {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, -fx-value-verydark 0%, -fx-value-dark 30%, -fx-value-dark 60%, -fx-value-verydark 100%);
     -fx-stroke: -fx-value-bright;
 }
 
-#pointer2-gradient {
+.pointer2-gradient {
     -fx-fill: linear-gradient(from 0% 100% to 0% 0%, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 36%, -fx-value-bright 36%, -fx-value-bright 100%);
 }
 
-#pointer3-gradient {
+.pointer3-gradient {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, -fx-value-bright 0%, -fx-value-bright 100%);
 }
 
-#pointer4-gradient {
+.pointer4-gradient {
     -fx-fill: linear-gradient(from 0% 0% to 100% 0%, -fx-value-darker 0%, -fx-value-darker 51%, -fx-value-bright 52%, -fx-value-bright 100%);
 }
 
-#pointer5-gradient {
+.pointer5-gradient {
     -fx-fill: linear-gradient(from 0% 0% to 100% 0%, -fx-value-bright 0%, -fx-value-bright 50%, -fx-value-dark 50%, -fx-value-dark 100%);
     -fx-stroke: -fx-value-darker;
 }
 
-#pointer6-gradient {
+.pointer6-gradient {
     -fx-fill: linear-gradient(from 0% 100% to 0% 0%, -fx-value-bright 0%, -fx-value-dark 25%, -fx-value-dark 75%, -fx-value-bright 100%);
     -fx-stroke: -fx-value-darker;
 }
 
-#pointer7-gradient {
+.pointer7-gradient {
     -fx-fill: linear-gradient(from 0% 0% to 100% 0%, -fx-value-dark 0%, -fx-value-bright 100%);
 }
 
-#pointer8-gradient {
+.pointer8-gradient {
     -fx-fill: linear-gradient(from 0% 0% to 100% 0%, -fx-value-bright 0%, -fx-value-bright 50%, -fx-value-dark 50%, -fx-value-dark 100%);
     -fx-stroke: -fx-value-darker;
 }
 
-#pointer9-gradient {
+.pointer9-gradient {
     -fx-fill: linear-gradient(from 0% 0% to 100% 0%, rgb(50, 50, 50) 0%, rgb(102, 102, 102) 48%, rgb(50, 50, 50) 100%);
     -fx-stroke: #2E2E2E;
 }
 
-#pointer9-box {
+.pointer9-box {
     -fx-fill: -fx-value-bright;
 }
 
-#pointer10-gradient {
+.pointer10-gradient {
     -fx-fill: linear-gradient(from 0% 0% to 100% 0%, -fx-value-bright 0%, -fx-value-bright 47%, -fx-value-dark 47%, -fx-value-dark 100%);
     -fx-stroke: -fx-value-dark;
 }
 
-#pointer11-gradient {
+.pointer11-gradient {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, -fx-value-dark 0%, -fx-value-darker 100%);
     -fx-stroke: -fx-value-verydark;
 }
 
-#pointer12-gradient {
+.pointer12-gradient {
     -fx-fill: linear-gradient(from 50% 16.8224% to 50% 50.467%, -fx-value-dark 0%, -fx-value-darker 100%);
     -fx-stroke: -fx-value-verydark;
 }
 
-#pointer13-gradient {
+.pointer13-gradient {
     -fx-fill: linear-gradient(from 50% 50% to 50% 13.0841%, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 85%, -fx-value-dark 85%, -fx-value-dark 100%);
 }
 
-#pointer14-gradient {
+.pointer14-gradient {
     -fx-fill: linear-gradient(from 0% 0% to 100% 0%, -fx-value-darker 0%, -fx-value-bright 50%, -fx-value-darker 100%);
 }
 
-#pointer15-gradient {
+.pointer15-gradient {
     -fx-fill: linear-gradient(from 0% 0% to 100% 0%, -fx-value-darker 0%, -fx-value-bright 50%, -fx-value-darker 100%);
 }
 
-#pointer16-gradient {
+.pointer16-gradient {
     -fx-fill: linear-gradient(from 0% 0% to 100% 0%, -fx-value-darker 0%, -fx-value-bright 50%, -fx-value-darker 100%);
 }
 
 /************************************************************
 * Defintions of bargraph color                              *
 ************************************************************/
-#bargraph-on {
+.bargraph-on {
     -fx-fill: radial-gradient(focus-angle 0deg, focus-distance 0%, center 50% 50%, radius 45%, derive(-fx-value, 50%) 0%, derive(-fx-value, -20%) 100%);
     -fx-effect: dropshadow(gaussian, -fx-value, 20, 0.9, 0, 0);
 }
 
-#bargraph-threshold {
+.bargraph-threshold {
     -fx-fill: radial-gradient(focus-angle 0deg, focus-distance 0%, center 50% 50%, radius 45%, derive(-fx-threshold, 50%) 0%, derive(-fx-threshold, -20%) 100%);
     -fx-effect: dropshadow(gaussian, -fx-threshold, 20, 0.9, 0, 0);
 }
 
-#bargraph-off {
+.bargraph-off {
     -fx-fill: rgb(80, 80, 80);
 
 }
@@ -708,63 +708,63 @@
 /************************************************************
 * Defintions of bar highlight gradients                     *
 ************************************************************/
-#bar-vertical-solid {
+.bar-vertical-solid {
     -fx-fill: -fx-value;
 }
 
-#bar-vertical-gradient {
+.bar-vertical-gradient {
     -fx-fill: linear-gradient(from 0% 0% to 100% 0%, -fx-value 0%, -fx-value-bright 99%, -fx-value-bright 100%);
 }
 
-#bar-vertical-highlight {
+.bar-vertical-highlight {
     -fx-fill: linear-gradient(from 0% 0% to 100% 0%, rgba(255, 255, 255, 0.6) 0%, rgba(0, 0, 0, 0.09) 80%, rgba(255, 255, 255, 0) 92%, rgba(0, 0, 0, 0.2) 100%);
 }
 
-#bar-vertical-highlight1 {
+.bar-vertical-highlight1 {
     -fx-fill: linear-gradient(from 0% 0% to 50% 0%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.047) 100%);
 }
 
-#bar-horizontal-solid {
+.bar-horizontal-solid {
     -fx-fill: -fx-value;
 }
 
-#bar-horizontal-gradient {
+.bar-horizontal-gradient {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, -fx-value-dark 0%, -fx-value-bright 99%, -fx-value-bright 100%);
 }
 
-#bar-horizontal-highlight {
+.bar-horizontal-highlight {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgba(255, 255, 255, 0.6) 0%, rgba(0, 0, 0, 0.09) 80%, rgba(255, 255, 255, 0) 92%, rgba(0, 0, 0, 0.2) 100%);
 }
 
-#bar-horizontal-highlight1 {
+.bar-horizontal-highlight1 {
     -fx-fill: linear-gradient(from 0% 0% to 0% 50%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.047) 100%);
 }
 
 /************************************************************
 * Defintion of led gradients                                *
 ************************************************************/
-#led-off-gradient {
+.led-off-gradient {
     -fx-fill: radial-gradient(focus-angle 0deg, focus-distance 0%, center 50% 47%, radius 45%, -fx-led-darker 0%, -fx-led-darker 15%, -fx-led-verydark 100%);
 }
 
-#led-on-gradient {
+.led-on-gradient {
     -fx-fill: radial-gradient(focus-angle 0deg, focus-distance 0%, center 50% 47%, radius 45%, -fx-led-verybright 0%, -fx-led-brighter 25%, -fx-led-brighter 45%, -fx-led-bright 100%);
 }
 
 /************************************************************
 * Defintion of the lcd gradient                             *
 ************************************************************/
-#lcd-main {
+.lcd-main {
     -fx-fill  : linear-gradient(from 0% 0% to 0% 100%, -fx-start 0%, -fx-frac1 3%, -fx-frac2 50%, -fx-frac3 50%, -fx-stop 100%);
     -fx-stroke: transparent;
 }
 
-#lcd-text {
+.lcd-text {
     -fx-fill  : -fx-lcd-text;
     -fx-stroke: transparent;
 }
 
-#lcd-text-background {
+.lcd-text-background {
     -fx-fill  : -fx-lcd-text-bg;
     -fx-stroke: transparent;
 }
@@ -772,7 +772,7 @@
 /************************************************************
 * Defintion of threshold indicator gradient                 *
 ************************************************************/
-#threshold-gradient {
+.threshold-gradient {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, -fx-threshold-darker 0%, -fx-threshold-bright 30%, -fx-threshold-bright 60%, -fx-threshold-darker 100%);
     -fx-stroke: derive(-fx-threshold-verybright, 100%);
 }
@@ -780,22 +780,22 @@
 /************************************************************
 * Defintion of circular foreground gradients                *
 ************************************************************/
-#foreground-type1 {
+.foreground-type1 {
     -fx-fill: linear-gradient(from 50% 8% to 50% 50%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.04) 100%);
 }
 
-#foreground-type2 {
+.foreground-type2 {
     -fx-fill: linear-gradient(from 31% 13% to 49% 49%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.04) 100%);
 }
 
-#foreground-type3 {
+.foreground-type3 {
     -fx-fill: linear-gradient(from 50% 8% to 50% 55%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.04) 100%);
 }
 
-#foreground-type4 {
+.foreground-type4 {
     -fx-fill: linear-gradient(from 13% 37% to 27% 41%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.04) 100%);
 }
 
-#foreground-type5 {
+.foreground-type5 {
     -fx-fill: linear-gradient(from 50% 8% to 50% 64%, rgba(255, 255, 255, 0.25) 0%, transparent 100%);
 }

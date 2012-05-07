@@ -446,10 +446,10 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
                     }
                     if (control.getWidth() <= control.getHeight()) {
                         // vertical
-                        currentBar.setId("bar-vertical-solid");
+                        currentBar.getStyleClass().add("bar-vertical-solid");
                     } else {
                         // horizontal
-                        currentBar.setId("bar-horizontal-solid");
+                        currentBar.getStyleClass().add("bar-horizontal-solid");
                     }
 
                 }
@@ -807,7 +807,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             default:
                 IMAGE_VIEW = new ImageView();
                 IMAGE_VIEW.setVisible(false);
-                MAIN_FRAME.setId(control.getFrameDesign().CSS);
+                MAIN_FRAME.getStyleClass().add(control.getFrameDesign().CSS);
                 MAIN_FRAME.setStroke(null);
                 frame.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
                 break;
@@ -856,7 +856,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         switch (control.getBackgroundDesign()) {
             default:
                 BACKGROUND.setStyle(control.getSimpleGradientBaseColorString());
-                BACKGROUND.setId(control.getBackgroundDesign().CSS_BACKGROUND);
+                BACKGROUND.getStyleClass().add(control.getBackgroundDesign().CSS_BACKGROUND);
                 BACKGROUND.setEffect(INNER_SHADOW);
                 background.getChildren().addAll(BACKGROUND);
                 break;
@@ -956,7 +956,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             title.setX(0.0628571429 * WIDTH);
             title.setY(0.1533333333 * HEIGHT + title.getLayoutBounds().getHeight());
         }
-        title.setId(control.getBackgroundDesign().CSS_TEXT);
+        title.getStyleClass().add(control.getBackgroundDesign().CSS_TEXT);
 
         final Font UNIT_FONT = Font.font(control.getUnitFont(), FontWeight.NORMAL, (0.0666666667 * SIZE));
         final Text unit = new Text();
@@ -972,7 +972,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             unit.setX(0.0628571429 * WIDTH);
             unit.setY(0.2666666667 * HEIGHT + unit.getLayoutBounds().getHeight());
         }
-        unit.setId(control.getBackgroundDesign().CSS_TEXT);
+        unit.getStyleClass().add(control.getBackgroundDesign().CSS_TEXT);
 
         titleAndUnit.getChildren().addAll(IBOUNDS, title, unit);
         titleAndUnit.setCache(true);
@@ -1113,7 +1113,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         THRESHOLD.setStrokeWidth(0.005 * SIZE);
         THRESHOLD.getStyleClass().add("root");
         THRESHOLD.setStyle(control.getThresholdColor().CSS);
-        THRESHOLD.setId("threshold-gradient");
+        THRESHOLD.getStyleClass().add("threshold-gradient");
 
         threshold.getChildren().addAll(IBOUNDS, THRESHOLD);
     }
@@ -1207,10 +1207,10 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             }
             currentBar.getStyleClass().add("root");
             currentBar.setStyle("-fx-value: " + control.getValueColor().CSS);
-            currentBar.setId("bar-vertical-solid");
+            currentBar.getStyleClass().add("bar-vertical-solid");
             currentBarHl = new Rectangle(currentBar.getLayoutBounds().getMinX(), currentBar.getLayoutBounds().getMinY(),
                                          currentBar.getLayoutBounds().getWidth(), currentBar.getLayoutBounds().getHeight());
-            currentBarHl.setId("bar-vertical-highlight");
+            currentBarHl.getStyleClass().add("bar-vertical-highlight");
         } else {
             // horizontal
             BAR_BOUNDS = new Rectangle(0.1657142857142857 * WIDTH, 0.42 * HEIGHT + 3, 0.6714285714 * WIDTH, 0.16 * HEIGHT - 5);
@@ -1225,10 +1225,10 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             }
             currentBar.getStyleClass().add("root");
             currentBar.setStyle("-fx-value: " + control.getValueColor().CSS);
-            currentBar.setId("bar-horizontal-solid");
+            currentBar.getStyleClass().add("bar-horizontal-solid");
             currentBarHl = new Rectangle(currentBar.getLayoutBounds().getMinX(), currentBar.getLayoutBounds().getMinY(),
                                          currentBar.getLayoutBounds().getWidth(), currentBar.getLayoutBounds().getHeight());
-            currentBarHl.setId("bar-horizontal-highlight");
+            currentBarHl.getStyleClass().add("bar-horizontal-highlight");
         }
         currentBar.setStroke(null);
         currentBarHl.setStroke(null);
@@ -1402,7 +1402,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         LCD_MAIN.setArcHeight(LCD_MAIN_CORNER_RADIUS);
         LCD_MAIN.getStyleClass().add("lcd");
         LCD_MAIN.setStyle(control.getLcdDesign().CSS);
-        LCD_MAIN.setId("lcd-main");
+        LCD_MAIN.getStyleClass().add("lcd-main");
         LCD_MAIN.setStroke(null);
 
         final InnerShadow INNER_GLOW = new InnerShadow();
@@ -1474,7 +1474,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         }
         lcdUnitString.getStyleClass().add("lcd");
         lcdUnitString.setStyle(control.getLcdDesign().CSS);
-        lcdUnitString.setId("lcd-text");
+        lcdUnitString.getStyleClass().add("lcd-text");
         lcdUnitString.setStroke(null);
 
         // Value
@@ -1503,7 +1503,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         lcdValueString.setTextAlignment(TextAlignment.RIGHT);
         lcdValueString.getStyleClass().add("lcd");
         lcdValueString.setStyle(control.getLcdDesign().CSS);
-        lcdValueString.setId("lcd-text");
+        lcdValueString.getStyleClass().add("lcd-text");
         lcdValueString.setStroke(null);
 
         lcdContent.getChildren().addAll(IBOUNDS, lcdUnitString, lcdValueString);
@@ -1569,9 +1569,9 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         final ArrayList<Text> tickmarkLabel = new ArrayList<Text>();
 
         // Set stroke dependend on the current backgrounddesign
-        MAJOR_TICKMARKS_PATH.setId(control.getBackgroundDesign().CSS_BACKGROUND);
-        MEDIUM_TICKMARKS_PATH.setId(control.getBackgroundDesign().CSS_BACKGROUND);
-        MINOR_TICKMARKS_PATH.setId(control.getBackgroundDesign().CSS_BACKGROUND);
+        MAJOR_TICKMARKS_PATH.getStyleClass().add(control.getBackgroundDesign().CSS_BACKGROUND);
+        MEDIUM_TICKMARKS_PATH.getStyleClass().add(control.getBackgroundDesign().CSS_BACKGROUND);
+        MINOR_TICKMARKS_PATH.getStyleClass().add(control.getBackgroundDesign().CSS_BACKGROUND);
 
         final Rectangle BAR_BOUNDS;
         final double MIN_POSITION;
@@ -1626,7 +1626,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
                     tickLabel.setFontSmoothingType(FontSmoothingType.LCD);
                     tickLabel.setTextAlignment(TextAlignment.CENTER);
                     tickLabel.setTextOrigin(VPos.BOTTOM);
-                    tickLabel.setId(control.getBackgroundDesign().CSS_TEXT);
+                    tickLabel.getStyleClass().add(control.getBackgroundDesign().CSS_TEXT);
                     tickLabel.setStroke(null);
                     tickLabel.setFont(STD_FONT);
                     if (ORIENTATION == VERTICAL) {

@@ -158,7 +158,7 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
     private void updateIndicator() {
         main.setStyle("-fx-indicator-inner-color: " + Util.INSTANCE.createCssColor(control.getInnerColor()) +
                       "-fx-indicator-outer-color: " + Util.INSTANCE.createCssColor(control.getOuterColor()));
-        main.setId("indicator-main-fill");
+        main.getStyleClass().add("indicator-main-fill");
         mainGlow.setColor(control.getInnerColor());
     }
 
@@ -177,7 +177,7 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
         indicator.getChildren().add(IBOUNDS);
 
         final Circle OUTER_FRAME = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.496 * WIDTH);
-        OUTER_FRAME.setId("indicator-outer-frame-fill");
+        OUTER_FRAME.getStyleClass().add("indicator-outer-frame-fill");
         OUTER_FRAME.setStroke(null);
 
         final InnerShadow OUTER_FRAME_INNER_SHADOW = new InnerShadow();
@@ -192,11 +192,11 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
         OUTER_FRAME.setEffect(OUTER_FRAME_INNER_SHADOW);
 
         final Circle INNER_FRAME = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4 * WIDTH);
-        INNER_FRAME.setId("indicator-inner-frame-fill");
+        INNER_FRAME.getStyleClass().add("indicator-inner-frame-fill");
         INNER_FRAME.setStroke(null);
 
         main = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.38 * WIDTH);
-        main.setId("indicator-main-fill");
+        main.getStyleClass().add("indicator-main-fill");
         main.setStroke(null);
 
         final InnerShadow MAIN_INNER_SHADOW = new InnerShadow();
@@ -225,7 +225,7 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
 
         final Ellipse HIGHLIGHT = new Ellipse(0.504 * WIDTH, 0.294 * HEIGHT,
                                               0.26 * WIDTH, 0.15 * HEIGHT);
-        HIGHLIGHT.setId("indicator-highlight-fill");
+        HIGHLIGHT.getStyleClass().add("indicator-highlight-fill");
         HIGHLIGHT.setStroke(null);
 
         indicator.getChildren().addAll(OUTER_FRAME,

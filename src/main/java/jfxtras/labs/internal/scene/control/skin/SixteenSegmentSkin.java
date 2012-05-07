@@ -47,9 +47,7 @@ import jfxtras.labs.internal.scene.control.behavior.SixteenSegmentBehavior;
 import jfxtras.labs.scene.control.gauge.SixteenSegment;
 import jfxtras.labs.scene.control.gauge.Util;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -184,14 +182,14 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
             for (SixteenSegment.Segment segment : segmentMap.keySet()) {
                 if (control.getSegmentMapping().containsKey(ASCII)) {
                     if (control.getSegmentMapping().get(ASCII).contains(segment)) {
-                        segmentMap.get(segment).setId(ON_STYLE);
+                        segmentMap.get(segment).getStyleClass().add(ON_STYLE);
                         segmentMap.get(segment).setEffect(INNER_SHADOW);
                     } else {
-                        segmentMap.get(segment).setId("sixteen-segment-off");
+                        segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
                         segmentMap.get(segment).setEffect(null);
                     }
                 } else {
-                    segmentMap.get(segment).setId("sixteen-segment-off");
+                    segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
                     segmentMap.get(segment).setEffect(null);
                 }
             }
@@ -199,20 +197,20 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
             for (SixteenSegment.Segment segment : segmentMap.keySet()) {
                 if (control.getCustomSegmentMapping().containsKey(ASCII)) {
                     if (control.getCustomSegmentMapping().get(ASCII).contains(segment)) {
-                        segmentMap.get(segment).setId(ON_STYLE);
+                        segmentMap.get(segment).getStyleClass().add(ON_STYLE);
                         segmentMap.get(segment).setEffect(INNER_SHADOW);
                     } else {
-                        segmentMap.get(segment).setId("sixteen-segment-off");
+                        segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
                         segmentMap.get(segment).setEffect(null);
                     }
                 } else {
-                    segmentMap.get(segment).setId("sixteen-segment-off");
+                    segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
                     segmentMap.get(segment).setEffect(null);
                 }
             }
         }
         if (control.isDotOn()) {
-            segmentMap.get(SixteenSegment.Segment.DOT).setId(ON_STYLE);
+            segmentMap.get(SixteenSegment.Segment.DOT).getStyleClass().add(ON_STYLE);
             segmentMap.get(SixteenSegment.Segment.DOT).setEffect(INNER_SHADOW);
         }
     }
@@ -242,7 +240,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         A1.getElements().add(new LineTo(0.13389121338912133 * WIDTH, 0.03188405797101449 * HEIGHT));
         A1.getElements().add(new LineTo(0.13389121338912133 * WIDTH, 0.028985507246376812 * HEIGHT));
         A1.getElements().add(new ClosePath());
-        A1.setId("sixteen-segment-off");
+        A1.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.A1, A1);
 
         final Path A2 = new Path();
@@ -257,7 +255,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         A2.getElements().add(new LineTo(0.8702928870292888 * WIDTH, 0.034782608695652174 * HEIGHT));
         A2.getElements().add(new LineTo(0.8702928870292888 * WIDTH, 0.03188405797101449 * HEIGHT));
         A2.getElements().add(new ClosePath());
-        A2.setId("sixteen-segment-off");
+        A2.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.A2, A2);
 
         final Path B = new Path();
@@ -271,7 +269,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         B.getElements().add(new LineTo(0.8075313807531381 * WIDTH, 0.08695652173913043 * HEIGHT));
         B.getElements().add(new LineTo(0.8786610878661087 * WIDTH, 0.03768115942028986 * HEIGHT));
         B.getElements().add(new ClosePath());
-        B.setId("sixteen-segment-off");
+        B.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.B, B);
 
         final Path C = new Path();
@@ -284,7 +282,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         C.getElements().add(new LineTo(0.7573221757322176 * WIDTH, 0.5420289855072464 * HEIGHT));
         C.getElements().add(new LineTo(0.8158995815899581 * WIDTH, 0.5014492753623189 * HEIGHT));
         C.getElements().add(new ClosePath());
-        C.setId("sixteen-segment-off");
+        C.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.C, C);
 
         final Path D2 = new Path();
@@ -299,7 +297,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         D2.getElements().add(new LineTo(0.4811715481171548 * WIDTH, 0.9159420289855073 * HEIGHT));
         D2.getElements().add(new LineTo(0.7112970711297071 * WIDTH, 0.9159420289855073 * HEIGHT));
         D2.getElements().add(new ClosePath());
-        D2.setId("sixteen-segment-off");
+        D2.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.D2, D2);
 
         final Path D1 = new Path();
@@ -314,7 +312,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         D1.getElements().add(new LineTo(0.12552301255230125 * WIDTH, 0.9159420289855073 * HEIGHT));
         D1.getElements().add(new LineTo(0.3682008368200837 * WIDTH, 0.9159420289855073 * HEIGHT));
         D1.getElements().add(new ClosePath());
-        D1.setId("sixteen-segment-off");
+        D1.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.D1, D1);
 
         final Path E = new Path();
@@ -328,7 +326,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         E.getElements().add(new LineTo(0.11715481171548117 * WIDTH, 0.9130434782608695 * HEIGHT));
         E.getElements().add(new LineTo(0.0502092050209205 * WIDTH, 0.9623188405797102 * HEIGHT));
         E.getElements().add(new ClosePath());
-        E.setId("sixteen-segment-off");
+        E.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.E, E);
 
         final Path F = new Path();
@@ -341,7 +339,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         F.getElements().add(new LineTo(0.10460251046025104 * WIDTH, 0.0463768115942029 * HEIGHT));
         F.getElements().add(new LineTo(0.12552301255230125 * WIDTH, 0.03188405797101449 * HEIGHT));
         F.getElements().add(new ClosePath());
-        F.setId("sixteen-segment-off");
+        F.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.F, F);
 
         final Path G = new Path();
@@ -354,7 +352,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         G.getElements().add(new LineTo(0.19665271966527198 * WIDTH, 0.20579710144927535 * HEIGHT));
         G.getElements().add(new LineTo(0.20920502092050208 * WIDTH, 0.08695652173913043 * HEIGHT));
         G.getElements().add(new ClosePath());
-        G.setId("sixteen-segment-off");
+        G.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.G, G);
 
         final Path H = new Path();
@@ -368,7 +366,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         H.getElements().add(new LineTo(0.4476987447698745 * WIDTH, 0.08695652173913043 * HEIGHT));
         H.getElements().add(new LineTo(0.502092050209205 * WIDTH, 0.05507246376811594 * HEIGHT));
         H.getElements().add(new ClosePath());
-        H.setId("sixteen-segment-off");
+        H.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.H, H);
 
         final Path J = new Path();
@@ -381,7 +379,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         J.getElements().add(new LineTo(0.7280334728033473 * WIDTH, 0.13333333333333333 * HEIGHT));
         J.getElements().add(new LineTo(0.799163179916318 * WIDTH, 0.08695652173913043 * HEIGHT));
         J.getElements().add(new ClosePath());
-        J.setId("sixteen-segment-off");
+        J.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.J, J);
 
         final Path K = new Path();
@@ -394,7 +392,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         K.getElements().add(new LineTo(0.5188284518828452 * WIDTH, 0.5362318840579711 * HEIGHT));
         K.getElements().add(new LineTo(0.46443514644351463 * WIDTH, 0.4985507246376812 * HEIGHT));
         K.getElements().add(new ClosePath());
-        K.setId("sixteen-segment-off");
+        K.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.K, K);
 
         final Path L = new Path();
@@ -409,7 +407,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         L.getElements().add(new LineTo(0.6778242677824268 * WIDTH, 0.8753623188405797 * HEIGHT));
         L.getElements().add(new LineTo(0.7154811715481172 * WIDTH, 0.9130434782608695 * HEIGHT));
         L.getElements().add(new ClosePath());
-        L.setId("sixteen-segment-off");
+        L.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.L, L);
 
         final Path M = new Path();
@@ -423,7 +421,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         M.getElements().add(new LineTo(0.4769874476987448 * WIDTH, 0.9130434782608695 * HEIGHT));
         M.getElements().add(new LineTo(0.4225941422594142 * WIDTH, 0.9478260869565217 * HEIGHT));
         M.getElements().add(new ClosePath());
-        M.setId("sixteen-segment-off");
+        M.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.M, M);
 
         final Path N = new Path();
@@ -438,7 +436,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         N.getElements().add(new LineTo(0.19665271966527198 * WIDTH, 0.8666666666666667 * HEIGHT));
         N.getElements().add(new LineTo(0.12552301255230125 * WIDTH, 0.9130434782608695 * HEIGHT));
         N.getElements().add(new ClosePath());
-        N.setId("sixteen-segment-off");
+        N.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.N, N);
 
         final Path P = new Path();
@@ -451,11 +449,11 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         P.getElements().add(new LineTo(0.17154811715481172 * WIDTH, 0.5362318840579711 * HEIGHT));
         P.getElements().add(new LineTo(0.11715481171548117 * WIDTH, 0.4985507246376812 * HEIGHT));
         P.getElements().add(new ClosePath());
-        P.setId("sixteen-segment-off");
+        P.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.P, P);
 
         final Circle DOT = new Circle(0.9121338912133892 * WIDTH, 0.9391304347826087 * HEIGHT, 0.06694560669456066 * WIDTH);
-        DOT.setId("sixteen-segment-off");
+        DOT.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.DOT, DOT);
 
         segments.getChildren().addAll(A1,

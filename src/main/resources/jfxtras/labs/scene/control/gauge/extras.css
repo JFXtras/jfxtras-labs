@@ -119,20 +119,20 @@
 /************************************************************
 * Defintion of Led fills                                    *
 ************************************************************/
-#fx-led-frame {
+.fx-led-frame {
     -fx-fill: linear-gradient(from 15% 15% to 85% 85%, rgba(20, 20, 20, 0.65) 0%, rgba(41, 41, 41, 0.65) 25%, rgba(200, 200, 200, 0.35) 100%);
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.65), 1, 0.5, 0, 0);
 }
 
-#fx-led-off {
+.fx-led-off {
     -fx-fill: linear-gradient(from 20% 20% to 90% 90%, derive(-fx-led, -75%) 0%, derive(-fx-led, -82%) 49%, derive(-fx-led, -75%) 100%);
 }
 
-#fx-led-on {
+.fx-led-on {
     -fx-fill: linear-gradient(from 20% 20% to 90% 90%, derive(-fx-led, -25%) 0%, derive(-fx-led, -45%) 49%, derive(-fx-led, 0%) 100%);
 }
 
-#fx-led-highlight {
+.fx-led-highlight {
     -fx-fill: radial-gradient(focus-angle 0deg, focus-distance 0%, center 12% 12%, radius 50%, rgba(200, 194, 208, 1) 0%, rgba(200, 194, 208, 0) 100%);
 }
 
@@ -140,27 +140,27 @@
 /************************************************************
 * Defintion of NixieTube fills                              *
 ************************************************************/
-#tube-hl-middle {
+.tube-hl-middle {
     -fx-fill: linear-gradient(from 0% 100% to 100% 100%, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
     -fx-stroke: transparent;
 }
 
-#tube-hl-left {
+.tube-hl-left {
     -fx-fill: linear-gradient(from 0% 0% to 100% 0%, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.05) 80%, rgba(255, 255, 255, 0.05) 100%);
     -fx-stroke: transparent;
 }
 
-#tube-hl-right {
+.tube-hl-right {
     -fx-fill: linear-gradient(from 0% 0% to 100% 0%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
     -fx-stroke: transparent;
 }
 
-#tube-hl-upper {
+.tube-hl-upper {
     -fx-fill: linear-gradient(from 50% 0% to 50% 100%, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
     -fx-stroke: transparent;
 }
 
-#tube-hl-top {
+.tube-hl-top {
     -fx-fill: linear-gradient(from 66% 14% to 35% 95%, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
     -fx-stroke: transparent;
 }
@@ -169,20 +169,20 @@
 /************************************************************
 * Defintion of SimpleIndicator fills                        *
 ************************************************************/
-#indicator-outer-frame-fill {
+.indicator-outer-frame-fill {
     -fx-fill: linear-gradient(from 50% 0% to 50% 100%, rgba(242, 242, 242, 1) 0%, rgba(242, 242, 242, 1) 14%, rgba(242, 242, 242, 1) 15%, rgba(54, 54, 54, 1) 86%, rgba(51, 51, 51, 1) 87%, rgba(51, 51, 51, 1) 100%);
     -fx-stroke: transparent;
 }
 
-#indicator-inner-frame-fill {
+.indicator-inner-frame-fill {
     -fx-fill: linear-gradient(from 50% 0% to 50% 100%, rgba(51, 51, 51, 1) 0%, rgba(51, 51, 51, 1) 15%, rgba(53, 53, 53, 1) 15%, rgba(226, 226, 226, 1) 86%, rgba(226, 226, 226, 1) 100%);
 }
 
-#indicator-main-fill {
+.indicator-main-fill {
     -fx-fill: radial-gradient(focus-angle 0deg, focus-distance 0%, center 51% 85%, radius 111%, -fx-indicator-inner-color 0%, -fx-indicator-outer-color 100%);
 }
 
-#indicator-highlight-fill {
+.indicator-highlight-fill {
     -fx-fill: linear-gradient(from 50% 0% to 50% 100%, rgba(255, 255, 255, 0.8) 0%, transparent 100%);
 }
 
@@ -190,16 +190,16 @@
 /************************************************************
 * Defintion of Rater fills                                  *
 ************************************************************/
-#star-fill {
+.star-fill {
     -fx-fill: radial-gradient(focus-angle 0deg, focus-distance 0%, center 50% 81%, radius 50%, -fx-rater-bright-color 0%, -fx-rater-dark-color 100%);
     -fx-stroke: -fx-rater-stroke;
 }
 
-#highlights-inner-fill {
+.highlights-inner-fill {
     -fx-fill: rgba(255, 255, 255, 0.1019607843);
 }
 
-#highlights-top-fill {
+.highlights-top-fill {
     -fx-fill: linear-gradient(from 50% 0% to 50% 100%, rgba(255, 255, 255, 0.7490196078) 0%, rgba(255, 255, 255, 0.0470588235) 100%);
 }
 
@@ -207,44 +207,44 @@
 /************************************************************
 * Definition of Clock fills                                 *
 ************************************************************/
-#clock-frame-fill {
+.clock-frame-fill {
     -fx-fill: -fx-clock-frame-fill;
 }
 
-#clock-bright-background-fill {
+.clock-bright-background-fill {
     -fx-fill: -fx-clock-bright-background-fill;
 }
 
-#clock-bright-foreground-fill {
+.clock-bright-foreground-fill {
     -fx-fill: -fx-clock-bright-foreground-fill;
 }
 
-#clock-dark-background-fill {
+.clock-dark-background-fill {
     -fx-fill: -fx-clock-dark-background-fill;
 }
 
-#clock-dark-foreground-fill {
+.clock-dark-foreground-fill {
     -fx-fill: -fx-clock-dark-foreground-fill;
 }
 
-#clock-second-pointer-fill {
+.clock-second-pointer-fill {
     -fx-fill: -fx-clock-second-pointer-color;
 }
 
 /************************************************************
 * Definition of SixteenSegment fills                        *
 ************************************************************/
-#sixteen-segment-on {
+.sixteen-segment-on {
     -fx-fill  : radial-gradient(focus-angle 0deg, focus-distance 0%, center 50% 50%, radius 50%, derive(-fx-segment-color-on, +30%) 0%, -fx-segment-color-on 50%, derive(-fx-segment-color-on, -30%) 100%);
     -fx-stroke: transparent;
 }
 
-#sixteen-segment-plain-on {
+.sixteen-segment-plain-on {
     -fx-fill  : -fx-segment-color-on;
     -fx-stroke: transparent;
 }
 
-#sixteen-segment-off {
+.sixteen-segment-off {
     -fx-fill  : -fx-segment-color-off;
     -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.65), 1, 0.5, 0, 0);
     -fx-stroke: transparent;
@@ -253,17 +253,17 @@
 /************************************************************
 * Definition of SevenSegment fills                          *
 ************************************************************/
-#seven-segment-on {
+.seven-segment-on {
     -fx-fill  : radial-gradient(focus-angle 0deg, focus-distance 0%, center 50% 50%, radius 50%, derive(-fx-segment-color-on, +30%) 0%, -fx-segment-color-on 50%, derive(-fx-segment-color-on, -30%) 100%);
     -fx-stroke: transparent;
 }
 
-#seven-segment-plain-on {
+.seven-segment-plain-on {
     -fx-fill  : -fx-segment-color-on;
     -fx-stroke: transparent;
 }
 
-#seven-segment-off {
+.seven-segment-off {
     -fx-fill  : -fx-segment-color-off;
     -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.65), 1, 0.5, 0, 0);
     -fx-stroke: transparent;
@@ -272,18 +272,18 @@
 /************************************************************
 * Definition of DotMatrixSegment fills                      *
 ************************************************************/
-#dot-matrix-segment-on {
+.dot-matrix-segment-on {
     -fx-fill  : radial-gradient(focus-angle 0deg, focus-distance 0%, center 50% 50%, radius 50%, derive(-fx-segment-color-on, +50%) 0%, -fx-segment-color-on 50%, derive(-fx-segment-color-on, -30%) 100%);
     -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.5), 1, 1.0, 0, 0);
     -fx-stroke: transparent;
 }
 
-#dot-matrix-segment-plain-on {
+.dot-matrix-segment-plain-on {
     -fx-fill  : -fx-segment-color-on;
     -fx-stroke: transparent;
 }
 
-#dot-matrix-segment-off {
+.dot-matrix-segment-off {
     -fx-fill  : -fx-segment-color-off;
     -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 1.0), 1, 1.0, 0, 0);
     -fx-stroke: transparent;
@@ -293,42 +293,42 @@
 /************************************************************
 * Definition of StepIndicator fills                         *
 ************************************************************/
-#step-indicator-outer-frame {
+.step-indicator-outer-frame {
     -fx-fill  : rgb(201, 201, 201);
     -fx-stroke: -fx-step-indicator-stroke;
 }
 
-#step-indicator-outer-background {
+.step-indicator-outer-background {
     -fx-fill  : white;
     -fx-stroke: -fx-step-indicator-stroke;
 }
 
-#step-indicator-inner-frame {
+.step-indicator-inner-frame {
     -fx-fill  : -fx-step-indicator-inner-frame-fill;
     -fx-stroke: -fx-step-indicator-stroke;
 }
 
-#step-indicator-inner-background {
+.step-indicator-inner-background {
     -fx-fill  : -fx-step-indicator-inner-background-fill;
     -fx-stroke: -fx-step-indicator-stroke;
 }
 
-#step-indicator-text {
+.step-indicator-text {
     -fx-fill  : -fx-step-indicator-text-fill;
     -fx-stroke: -fx-step-indicator-stroke;
 }
 
-#step-indicator-selected-inner-frame {
+.step-indicator-selected-inner-frame {
     -fx-fill  : -fx-step-indicator-selected-inner-frame-fill;
     -fx-stroke: -fx-step-indicator-stroke;
 }
 
-#step-indicator-selected-inner-background {
+.step-indicator-selected-inner-background {
     -fx-fill  : -fx-step-indicator-selected-inner-background-fill;
     -fx-stroke: -fx-step-indicator-stroke;
 }
 
-#step-indicator-selected-text {
+.step-indicator-selected-text {
     -fx-fill  : -fx-step-indicator-selected-text-fill;
     -fx-stroke: -fx-step-indicator-stroke;
 }
@@ -337,17 +337,17 @@
 /************************************************************
 * Definition of SimpleBattery fills                         *
 ************************************************************/
-#simple-battery-body {
+.simple-battery-body {
     -fx-fill  : linear-gradient(from 50% 0% to 50% 100%, rgba(204, 204, 204, 1) 0%, rgba(51, 51, 51, 1) 1%, white 11%, rgba(51, 51, 51, 1) 73%, rgba(153, 153, 153, 1) 86%, rgba(51, 51, 51, 1) 100%);
     -fx-stroke: transparent;
 }
 
-#simple-battery-connector {
+.simple-battery-connector {
     -fx-fill  : linear-gradient(from 50% 0% to 50% 100%, rgba(204, 204, 204, 1) 0%, rgba(51, 51, 51, 1) 1%, white 11%, rgba(51, 51, 51, 1) 73%, rgba(153, 153, 153, 1) 86%, rgba(51, 51, 51, 1) 100%);
     -fx-stroke: transparent;
 }
 
-#simple-battery-reflection {
+.simple-battery-reflection {
     -fx-fill  : linear-gradient(from 50% 0% to 50% 100%, transparent 0%, rgba(255, 255, 255, 0.1960784314) 0%, rgba(255, 255, 255, 0.2980392157) 1%, rgba(255, 255, 255, 0.0156862745) 44%, rgba(255, 255, 255, 0.0392156863) 46%, transparent 47%, transparent 70%, rgba(255, 255, 255, 0.0039215686) 71%, rgba(255, 255, 255, 0.0941176471) 81%, rgba(255, 255, 255, 0.1019607843) 81%, rgba(255, 255, 255, 0.4) 100%);
     -fx-stroke: transparent;
 }

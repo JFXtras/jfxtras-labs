@@ -285,14 +285,14 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         clock.getChildren().add(IBOUNDS);
 
         final Circle FRAME = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.5 * WIDTH);
-        FRAME.setId("clock-frame-fill");
+        FRAME.getStyleClass().add("clock-frame-fill");
         FRAME.setStroke(null);
 
         final Circle BACKGROUND = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4921259842519685 * WIDTH);
         if (isDay) {
-            BACKGROUND.setId("clock-bright-background-fill");
+            BACKGROUND.getStyleClass().add("clock-bright-background-fill");
         } else {
-            BACKGROUND.setId("clock-dark-background-fill");
+            BACKGROUND.getStyleClass().add("clock-dark-background-fill");
         }
 
         BACKGROUND.setStroke(null);
@@ -322,9 +322,9 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
                                      0.023622047244094488 * WIDTH, 0.047244094488188976 * HEIGHT);
             }
             if (isDay) {
-                TICK.setId("clock-bright-foreground-fill");
+                TICK.getStyleClass().add("clock-bright-foreground-fill");
             } else {
-                TICK.setId("clock-dark-foreground-fill");
+                TICK.getStyleClass().add("clock-dark-foreground-fill");
             }
             TICK.setStroke(null);
             TICK.getTransforms().add(TRANSFORM);
@@ -351,9 +351,9 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         final Rectangle MINUTE = new Rectangle(0.48031496062992124 * WIDTH, 0.047244094488188976 * HEIGHT,
                                              0.03937007874015748 * WIDTH, 0.47244094488188976 * HEIGHT);
         if (isDay) {
-            MINUTE.setId("clock-bright-foreground-fill");
+            MINUTE.getStyleClass().add("clock-bright-foreground-fill");
         } else {
-            MINUTE.setId("clock-dark-foreground-fill");
+            MINUTE.getStyleClass().add("clock-dark-foreground-fill");
         }
         MINUTE.setStroke(null);
 
@@ -388,9 +388,9 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         final Rectangle HOUR = new Rectangle(0.47244094488188976 * WIDTH, 0.2125984251968504 * HEIGHT,
                                                0.05511811023622047 * WIDTH, 0.2992125984251969 * HEIGHT);
         if (isDay) {
-            HOUR.setId("clock-bright-foreground-fill");
+            HOUR.getStyleClass().add("clock-bright-foreground-fill");
         } else {
-            HOUR.setId("clock-dark-foreground-fill");
+            HOUR.getStyleClass().add("clock-dark-foreground-fill");
         }
         HOUR.setStroke(null);
 
@@ -437,7 +437,7 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         second.getElements().add(new ClosePath());
         second = (Path) Path.subtract(second, new Circle(SIZE * 0.5, SIZE * 0.190909091, SIZE * 0.0363636364));
 
-        //second.setId("clock-second-pointer-fill"); // somehow doesn't work with elements created by subtract method
+        //second.getStyleClass().add("clock-second-pointer-fill"); // somehow doesn't work with elements created by subtract method
         second.setFill(Color.rgb(237, 0, 58));
         second.setStroke(null);
 
@@ -453,9 +453,9 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
 
         final Circle CENTER_KNOB = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.051181102362204724 * WIDTH);
         if (isDay) {
-            CENTER_KNOB.setId("clock-bright-foreground-fill");
+            CENTER_KNOB.getStyleClass().add("clock-bright-foreground-fill");
         } else {
-            CENTER_KNOB.setId("clock-dark-foreground-fill");
+            CENTER_KNOB.getStyleClass().add("clock-dark-foreground-fill");
         }
         CENTER_KNOB.setStroke(null);
 

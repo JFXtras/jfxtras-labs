@@ -65,28 +65,28 @@ public abstract class Gauge extends Control {
 
     // ******************** Enum definitions **********************************
     public enum BackgroundDesign {
-        DARK_GRAY("backgrounddesign-darkgray"),
-        SATIN_GRAY("backgrounddesign-satingray"),
-        LIGHT_GRAY("backgrounddesign-lightgray"),
-        WHITE("backgrounddesign-white"),
-        BLACK("backgrounddesign-black"),
-        BEIGE("backgrounddesign-beige"),
-        BROWN("backgrounddesign-brown"),
-        RED("backgrounddesign-red"),
-        GREEN("backgrounddesign-green"),
-        BLUE("backgrounddesign-blue"),
-        ANTHRACITE("backgrounddesign-anthracite"),
-        MUD("backgrounddesign-mud"),
-        //CARBON("backgrounddesign-carbon"),                       // Swing based
-        //STAINLESS("backgrounddesign-stainless"),                 // Swing based
-        //STAINLESS_GRINDED("backgrounddesign-stainlessgrinded"),  // Swing based
-        //BRUSHED_METAL("backgrounddesign-brushedmetal"),          // Swing based
-        //PUNCHED_SHEET("backgrounddesign-punchedsheet"),          // Swing based
-        //LINEN("backgrounddesign-linen"),                         // Swing based
-        //NOISY_PLASTIC("backgrounddesign-noisyplastic"),          // Swing based
-        SIMPLE_GRADIENT("backgrounddesign-simplegradient"),
-        TRANSPARENT("backgrounddesign-transparent"),
-        CUSTOM("backgrounddesign-custom");
+        DARK_GRAY("background-design-darkgray"),
+        SATIN_GRAY("background-design-satingray"),
+        LIGHT_GRAY("background-design-lightgray"),
+        WHITE("background-design-white"),
+        BLACK("background-design-black"),
+        BEIGE("background-design-beige"),
+        BROWN("background-design-brown"),
+        RED("background-design-red"),
+        GREEN("background-design-green"),
+        BLUE("background-design-blue"),
+        ANTHRACITE("background-design-anthracite"),
+        MUD("background-design-mud"),
+        //CARBON("background-design-carbon"),                       // Swing based
+        //STAINLESS("background-design-stainless"),                 // Swing based
+        //STAINLESS_GRINDED("background-design-stainlessgrinded"),  // Swing based
+        //BRUSHED_METAL("background-design-brushedmetal"),          // Swing based
+        //PUNCHED_SHEET("background-design-punchedsheet"),          // Swing based
+        //LINEN("background-design-linen"),                         // Swing based
+        //NOISY_PLASTIC("backgroundd-esign-noisyplastic"),          // Swing based
+        SIMPLE_GRADIENT("background-design-simplegradient"),
+        TRANSPARENT("background-design-transparent"),
+        CUSTOM("background-design-custom");
 
         public final String CSS_BACKGROUND;
         public final String CSS_TEXT;
@@ -97,19 +97,19 @@ public abstract class Gauge extends Control {
         }
     }
     public enum FrameDesign {
-        //BLACK_METAL("framedesign-blackmetal"),   // Swing based
-        //SHINY_METAL("framedesign-shinymetal"),   // Swing based
-        //CHROME("framedesign-chrome"),            // Swing based
-        METAL("framedesign-metal"),
-        GLOSSY_METAL("framedesign-glossymetal"),
-        DARK_GLOSSY("framedesign-darkglossy"),
-        BRASS("framedesign-brass"),
-        STEEL("framedesign-steel"),
-        GOLD("framedesign-gold"),
-        ANTHRACITE("framedesign-anthracite"),
-        TILTED_GRAY("framedesign-tiltedgray"),
-        TILTED_BLACK("framedesign-tiltedblack"),
-        CUSTOM("framedesign-custom");
+        //BLACK_METAL("frame-design-blackmetal"),   // Swing based
+        //SHINY_METAL("frame-design-shinymetal"),   // Swing based
+        //CHROME("frame-design-chrome"),            // Swing based
+        METAL("frame-design-metal"),
+        GLOSSY_METAL("frame-design-glossymetal"),
+        DARK_GLOSSY("frame-design-darkglossy"),
+        BRASS("frame-design-brass"),
+        STEEL("frame-design-steel"),
+        GOLD("frame-design-gold"),
+        ANTHRACITE("frame-design-anthracite"),
+        TILTED_GRAY("frame-design-tiltedgray"),
+        TILTED_BLACK("frame-design-tiltedblack"),
+        CUSTOM("frame-design-custom");
 
         public final String CSS;
 
@@ -125,9 +125,9 @@ public abstract class Gauge extends Control {
         RADIAL_180S(180, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 0, new Point2D(0.6, 0.2),new Point2D(0.3, 0.2), -1, 0.38),
         RADIAL_90(90, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 91, new Point2D(0.6, 0.4),new Point2D(0.3, 0.4), 1, 0.38),
         RADIAL_90N(90, 315, 225, new Rectangle(0.55, 0.52, 0.55, 0.12), 45, new Point2D(0.6, 0.4),new Point2D(0.3, 0.4), 1, 0.5),
-        RADIAL_90W(90, 225, 45, new Rectangle(0.2, 0.58, 0.45, 0.12), 45, new Point2D(0.12, 0.35),new Point2D(0.12, 0.55), 1, 0.5),
-        RADIAL_90S(90, -135, 45, new Rectangle(0.55, 0.36, 0.55, 0.12), 45, new Point2D(0.6, 0.5),new Point2D(0.3, 0.5), -1, 0.5),
-        RADIAL_90E(90, 135, 225, new Rectangle(0.2, 0.58, 0.45, 0.12), 45, new Point2D(0.78, 0.35),new Point2D(0.78, 0.55), -1, 0.5);
+        RADIAL_90W(90, 225, 45, new Rectangle(0.2, 0.58, 0.45, 0.12), 135, new Point2D(0.12, 0.35),new Point2D(0.12, 0.55), 1, 0.5),
+        RADIAL_90S(90, -135, 45, new Rectangle(0.55, 0.36, 0.55, 0.12), 225, new Point2D(0.6, 0.5),new Point2D(0.3, 0.5), -1, 0.5),
+        RADIAL_90E(90, 135, 225, new Rectangle(0.2, 0.58, 0.45, 0.12), 315, new Point2D(0.78, 0.35),new Point2D(0.78, 0.55), -1, 0.5);
 
         public final double    ANGLE_RANGE;
         public final double    ROTATION_OFFSET;

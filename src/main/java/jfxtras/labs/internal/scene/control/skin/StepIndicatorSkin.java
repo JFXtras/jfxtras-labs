@@ -244,8 +244,8 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
             final Circle OUTER_BACKGROUND = new Circle(0.5 * WIDTH + (i * STEP_SIZE), 0.5 * HEIGHT, 0.48333333333333334 * WIDTH);
             outerBackground = Shape.union(outerBackground, OUTER_BACKGROUND);
         }
-        outerFrame.setId("step-indicator-outer-frame");
-        outerBackground.setId("step-indicator-outer-background");
+        outerFrame.getStyleClass().add("step-indicator-outer-frame");
+        outerBackground.getStyleClass().add("step-indicator-outer-background");
 
         // Because the css styling does not work on shapes that have been create via Shape.union or Shape.subtract
         // we need to set the fill with code. This might change in the future
@@ -272,8 +272,8 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
             final Circle INNER_BACKGROUND = new Circle(0.5 * WIDTH + (i * STEP_SIZE), 0.5 * HEIGHT, 0.38333333333333336 * WIDTH);
             innerBackground = Shape.union(innerBackground, INNER_BACKGROUND);
         }
-        innerFrame.setId("step-indicator-inner-frame");
-        innerBackground.setId("step-indicator-inner-background");
+        innerFrame.getStyleClass().add("step-indicator-inner-frame");
+        innerBackground.getStyleClass().add("step-indicator-inner-background");
 
         // Because the css styling does not work on shapes that have been create via Shape.union or Shape.subtract
         // we need to set the fill with code. This might change in the future
@@ -334,8 +334,8 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
             final Circle INNER_BACKGROUND = new Circle(0.5 * WIDTH + (i * STEP_SIZE), 0.5 * HEIGHT, 0.38333333333333336 * WIDTH);
             innerBackgroundSelected = Shape.union(innerBackgroundSelected, INNER_BACKGROUND);
         }
-        innerFrameSelected.setId("step-indicator-inner-frame");
-        innerBackgroundSelected.setId("step-indicator-inner-background");
+        innerFrameSelected.getStyleClass().add("step-indicator-inner-frame");
+        innerBackgroundSelected.getStyleClass().add("step-indicator-inner-background");
 
         // Because the css styling does not work on shapes that have been create via Shape.union or Shape.subtract
         // we need to set the fill with code. This might change in the future
@@ -360,9 +360,9 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
             NUMBER.setFontSmoothingType(FontSmoothingType.LCD);
             NUMBER.setFont(FONT);
             if (i < control.getCurrentStep()) {
-                NUMBER.setId("step-indicator-selected-text");
+                NUMBER.getStyleClass().add("step-indicator-selected-text");
             } else {
-                NUMBER.setId("step-indicator-text");
+                NUMBER.getStyleClass().add("step-indicator-text");
             }
             NUMBER.setTranslateX((WIDTH - NUMBER.getLayoutBounds().getWidth()) / 2.0 + (i * STEP_SIZE));
             NUMBER.setTranslateY(0.5 * HEIGHT);

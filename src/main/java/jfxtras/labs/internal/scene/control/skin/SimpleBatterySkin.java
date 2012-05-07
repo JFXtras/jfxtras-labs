@@ -287,7 +287,7 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
                                                 0.0546875 * WIDTH, 0.2890625 * HEIGHT,
                                                 0.0546875 * WIDTH, 0.3203125 * HEIGHT));
         BODY.getElements().add(new ClosePath());
-        BODY.setId("simple-battery-body");
+        BODY.getStyleClass().add("simple-battery-body");
 
         final Path CONNECTOR = new Path();
         CONNECTOR.setFillRule(FillRule.EVEN_ODD);
@@ -311,7 +311,7 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         CONNECTOR.getElements().add(new LineTo(0.875 * WIDTH, 0.59375 * HEIGHT));
         CONNECTOR.getElements().add(new LineTo(0.875 * WIDTH, 0.40625 * HEIGHT));
         CONNECTOR.getElements().add(new ClosePath());
-        CONNECTOR.setId("simple-battery-connector");
+        CONNECTOR.getStyleClass().add("simple-battery-connector");
 
         final InnerShadow CONNECTOR_INNER_SHADOW0 = new InnerShadow();
         CONNECTOR_INNER_SHADOW0.setWidth(0.05625 * CONNECTOR.getLayoutBounds().getWidth());
@@ -519,7 +519,7 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
                                                    0.7890625 * WIDTH, 0.40625 * HEIGHT);
         REFLECTION.setArcWidth(0.025 * WIDTH);
         REFLECTION.setArcHeight(0.025 * HEIGHT);
-        REFLECTION.setId("simple-battery-reflection");
+        REFLECTION.getStyleClass().add("simple-battery-reflection");
 
         foreground.getChildren().addAll(REFLECTION);
         foreground.setCache(true);

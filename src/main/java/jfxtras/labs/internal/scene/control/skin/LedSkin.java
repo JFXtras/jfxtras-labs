@@ -221,17 +221,17 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
                 break;
         }
 
-        LED_FRAME.setId("fx-led-frame");
+        LED_FRAME.getStyleClass().add("fx-led-frame");
         LED_FRAME.setStroke(null);
 
-        LED_OFF.setId("fx-led-off");
+        LED_OFF.getStyleClass().add("fx-led-off");
         LED_OFF.setStroke(null);
 
-        ledOn.setId("fx-led-on");
+        ledOn.getStyleClass().add("fx-led-on");
         ledOn.setStroke(null);
         ledOn.setVisible(control.isOn());
 
-        HIGHLIGHT.setId("fx-led-highlight");
+        HIGHLIGHT.getStyleClass().add("fx-led-highlight");
         HIGHLIGHT.setStroke(null);
 
         if (!LED_FRAME.visibleProperty().isBound()) {

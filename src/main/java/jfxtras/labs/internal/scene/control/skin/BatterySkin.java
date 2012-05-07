@@ -470,7 +470,7 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
 
         final Rectangle MAIN_REFLECTION = new Rectangle(0.2705882353 * WIDTH, 0.1137254902 * HEIGHT,
                                                         0.462745098 * WIDTH, 0.8235294118 * HEIGHT);
-        //MAIN_REFLECTION.setId("foreground-mainreflection");
+        //MAIN_REFLECTION.getStyleClass().add("foreground-mainreflection");
         final Paint MAIN_REFLECTION_FILL = new LinearGradient(0.2705882353 * WIDTH, 0,
                                                               0.2705882353 * WIDTH + 0.462745098 * WIDTH, 0,
                                                               false, CycleMethod.NO_CYCLE,
@@ -519,7 +519,7 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
                                                           0.27058823529411763 * WIDTH, 0.47058823529411764 * HEIGHT));
         TOP_REFLECTION.getElements().add(new LineTo(0.27058823529411763 * WIDTH, 0.11372549019607843 * HEIGHT));
         TOP_REFLECTION.getElements().add(new ClosePath());
-        //TOP_REFLECTION.setId("foreground-topreflection");
+        //TOP_REFLECTION.getStyleClass().add("foreground-topreflection");
         final Paint TOP_REFLECTION_FILL = new LinearGradient(0.2705882353 * WIDTH, 0,
                                                              0.2705882353 * WIDTH + 0.462745098 * WIDTH, 0,
                                                              false, CycleMethod.NO_CYCLE,
@@ -583,7 +583,7 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
                                                   0.26666666666666666 * WIDTH, 0.9490196078431372 * HEIGHT,
                                                   0.26666666666666666 * WIDTH, 0.9490196078431372 * HEIGHT));
         BOTTOM.getElements().add(new ClosePath());
-        //BOTTOM.setId("foreground-bottom");
+        //BOTTOM.getStyleClass().add("foreground-bottom");
         final Paint BOTTOM_FILL = new LinearGradient(0.26666666666666666 * WIDTH, 0.9607843137254902 * HEIGHT,
                                                      0.7372549019607844 * WIDTH, 0.9607843137254902 * HEIGHT,
                                                      false, CycleMethod.NO_CYCLE,
@@ -645,7 +645,7 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
                                                 0.26666666666666666 * WIDTH, 0.07058823529411765 * HEIGHT,
                                                 0.26666666666666666 * WIDTH, 0.07058823529411765 * HEIGHT));
         HEAD.getElements().add(new ClosePath());
-        //HEAD.setId("foreground-head");
+        //HEAD.getStyleClass().add("foreground-head");
         final Paint HEAD_FILL = new LinearGradient(0.26666666666666666 * WIDTH, 0.08235294117647059 * HEIGHT,
                                                    0.7372549019607844 * WIDTH, 0.08235294117647059 * HEIGHT,
                                                    false, CycleMethod.NO_CYCLE,
@@ -686,7 +686,7 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
                                                          0.3803921568627451 * WIDTH, 0.07450980392156863 * HEIGHT,
                                                          0.3843137254901961 * WIDTH, 0.058823529411764705 * HEIGHT));
         HEADHIGHLIGHT.getElements().add(new ClosePath());
-        //HEADHIGHLIGHT.setId("foreground-headhighlight");
+        //HEADHIGHLIGHT.getStyleClass().add("foreground-headhighlight");
         final Paint HEADHIGHLIGHT_FILL = new RadialGradient(0, 0,
                                                             0.3333333333333333 * WIDTH, 0.047058823529411764 * HEIGHT,
                                                             0.049019607843137254 * WIDTH,
@@ -728,7 +728,7 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
                                                            0.3803921568627451 * WIDTH, 0.011764705882352941 * HEIGHT,
                                                            0.3803921568627451 * WIDTH, 0.011764705882352941 * HEIGHT));
         CONNTECTORFRAME.getElements().add(new ClosePath());
-        //CONNTECTORFRAME.setId("foreground-conntectorframe");
+        //CONNTECTORFRAME.getStyleClass().add("foreground-conntectorframe");
         final Paint CONNTECTORFRAME_FILL = new LinearGradient(0.3803921568627451 * WIDTH, 0.03137254901960784 * HEIGHT,
                                                               0.6078431372549019 * WIDTH, 0.03137254901960784 * HEIGHT,
                                                               false, CycleMethod.NO_CYCLE,
@@ -769,7 +769,7 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
                                                          0.3843137254901961 * WIDTH, 0.01568627450980392 * HEIGHT,
                                                          0.3843137254901961 * WIDTH, 0.01568627450980392 * HEIGHT));
         CONNECTORMAIN.getElements().add(new ClosePath());
-        //CONNECTORMAIN.setId("foreground-connectormain");
+        //CONNECTORMAIN.getStyleClass().add("foreground-connectormain");
         final Paint CONNECTORMAIN_FILL = new LinearGradient(0.3843137254901961 * WIDTH, 0.027450980392156862 * HEIGHT,
                                                             0.6039215686274509 * WIDTH, 0.027450980392156862 * HEIGHT,
                                                             false, CycleMethod.NO_CYCLE,
@@ -799,7 +799,7 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
                                                               0.49411764705882355 * WIDTH, 0.01568627450980392 * HEIGHT,
                                                               0.4980392156862745 * WIDTH, 0.0));
         CONNECTORHIGHLIGHT.getElements().add(new ClosePath());
-        //CONNECTORHIGHLIGHT.setId("foreground-connectorhighlight");
+        //CONNECTORHIGHLIGHT.getStyleClass().add("foreground-connectorhighlight");
         final Paint CONNECTORHIGHLIGHT_FILL = new RadialGradient(0, 0,
                                                                  0.4588235294117647 * WIDTH, 0.0,
                                                                  0.03333333333333333 * WIDTH,

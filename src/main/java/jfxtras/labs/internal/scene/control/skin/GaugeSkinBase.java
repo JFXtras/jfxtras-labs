@@ -289,7 +289,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
             default:
                 IMAGE_VIEW = new ImageView();
                 IMAGE_VIEW.setVisible(false);
-                MAIN_FRAME.setId(control.getFrameDesign().CSS);
+                MAIN_FRAME.getStyleClass().add(control.getFrameDesign().CSS);
                 MAIN_FRAME.setStroke(null);
                 FRAME.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
                 break;
@@ -329,7 +329,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         switch (CONTROL.getBackgroundDesign()) {
             default:
                 BACKGROUND_SHAPE.setStyle(CONTROL.getSimpleGradientBaseColorString());
-                BACKGROUND_SHAPE.setId(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
+                BACKGROUND_SHAPE.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
                 BACKGROUND_SHAPE.setEffect(INNER_SHADOW);
                 BACKGROUND_SHAPE.setStroke(null);
                 BACKGROUND.getChildren().addAll(BACKGROUND_SHAPE);
@@ -892,7 +892,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         LCD_MAIN.setArcHeight(LCD_MAIN_CORNER_RADIUS);
         LCD_MAIN.getStyleClass().add("lcd");
         LCD_MAIN.setStyle(CONTROL.getLcdDesign().CSS);
-        LCD_MAIN.setId("lcd-main");
+        LCD_MAIN.getStyleClass().add("lcd-main");
 
         final InnerShadow INNER_GLOW = new InnerShadow();
         INNER_GLOW.setWidth(0.25 * LCD_FRAME.getHeight());
@@ -987,7 +987,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                                                                     0.028037383177570093 * SIZE, 0.48598130841121495 * SIZE,
                                                                     0.13551401869158877 * SIZE, 0.6962616822429907 * SIZE));
                 FOREGROUND_SHAPE.getElements().add(new ClosePath());
-                FOREGROUND_SHAPE.setId("foreground-type2");
+                FOREGROUND_SHAPE.getStyleClass().add("foreground-type2");
                 FOREGROUND_SHAPE.setStroke(null);
                 FOREGROUND.getChildren().addAll(FOREGROUND_SHAPE);
                 break;
@@ -1007,7 +1007,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                                                                     0.08411214953271028 * SIZE, 0.2757009345794392 * SIZE,
                                                                     0.08411214953271028 * SIZE, 0.5093457943925234 * SIZE));
                 FOREGROUND_SHAPE.getElements().add(new ClosePath());
-                FOREGROUND_SHAPE.setId("foreground-type3");
+                FOREGROUND_SHAPE.getStyleClass().add("foreground-type3");
                 FOREGROUND_SHAPE.setStroke(null);
                 FOREGROUND.getChildren().addAll(FOREGROUND_SHAPE);
                 break;
@@ -1076,7 +1076,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                                                                     0.21495327102803738 * SIZE, 0.20093457943925233 * SIZE,
                                                                     0.2616822429906542 * SIZE, 0.22429906542056074 * SIZE));
                 FOREGROUND1_PATH.getElements().add(new ClosePath());
-                FOREGROUND_SHAPE.setId("foreground-type4");
+                FOREGROUND_SHAPE.getStyleClass().add("foreground-type4");
                 FOREGROUND1_PATH.setStroke(null);
                 FOREGROUND.getChildren().addAll(FOREGROUND_SHAPE, FOREGROUND1_PATH);
                 break;
@@ -1102,7 +1102,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                                                                     0.08411214953271028 * SIZE, 0.5327102803738317 * SIZE,
                                                                     0.08411214953271028 * SIZE, 0.5 * SIZE));
                 FOREGROUND_SHAPE.getElements().add(new ClosePath());
-                FOREGROUND_SHAPE.setId("foreground-type5");
+                FOREGROUND_SHAPE.getStyleClass().add("foreground-type5");
                 FOREGROUND_SHAPE.setStroke(null);
                 FOREGROUND.getChildren().addAll(FOREGROUND_SHAPE);
                 break;
@@ -1123,7 +1123,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                                                                     0.08411214953271028 * SIZE, 0.2757009345794392 * SIZE,
                                                                     0.08411214953271028 * SIZE, 0.5093457943925234 * SIZE));
                 FOREGROUND_SHAPE.getElements().add(new ClosePath());
-                FOREGROUND_SHAPE.setId("foreground-type1");
+                FOREGROUND_SHAPE.getStyleClass().add("foreground-type1");
                 FOREGROUND_SHAPE.setStroke(null);
                 FOREGROUND.getChildren().addAll(FOREGROUND_SHAPE);
                 break;
@@ -1154,7 +1154,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
 
         TICKMARKS.getTransforms().clear();
         TICKMARKS.getChildren().clear();
-        TICKMARKS.setId(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
+        TICKMARKS.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
         final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         TICKMARKS.getChildren().add(IBOUNDS);
@@ -1168,11 +1168,11 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         MAJOR_TICK_MARKS_PATH.setStrokeWidth(0.0046728972 * WIDTH);
         switch(CONTROL.getMajorTickmarkType()) {
             case TRIANGLE:
-                MAJOR_TICK_MARKS_PATH.setId(CONTROL.getBackgroundDesign().CSS_TEXT);
+                MAJOR_TICK_MARKS_PATH.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_TEXT);
                 //MAJOR_TICK_MARKS_PATH.setStroke(null);
                 break;
             default:
-                MAJOR_TICK_MARKS_PATH.setId(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
+                MAJOR_TICK_MARKS_PATH.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
                 break;
         }
 
@@ -1183,7 +1183,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         MEDIUM_TICK_MARKS_PATH.setStrokeLineCap(StrokeLineCap.ROUND);
         MEDIUM_TICK_MARKS_PATH.setStrokeLineJoin(StrokeLineJoin.BEVEL);
         MEDIUM_TICK_MARKS_PATH.setStrokeWidth(0.0023364486 * WIDTH);
-        MEDIUM_TICK_MARKS_PATH.setId(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
+        MEDIUM_TICK_MARKS_PATH.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
 
         final Path MINOR_TICK_MARKS_PATH = new Path();
         MINOR_TICK_MARKS_PATH.setFillRule(FillRule.EVEN_ODD);
@@ -1192,7 +1192,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         MINOR_TICK_MARKS_PATH.setStrokeLineCap(StrokeLineCap.ROUND);
         MINOR_TICK_MARKS_PATH.setStrokeLineJoin(StrokeLineJoin.BEVEL);
         MINOR_TICK_MARKS_PATH.setStrokeWidth(0.0014018692 * WIDTH);
-        MINOR_TICK_MARKS_PATH.setId(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
+        MINOR_TICK_MARKS_PATH.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
 
         final double TEXT_BAR_GRAPH_OFFSET;
         if (CONTROL.isBargraph()) {
@@ -1287,7 +1287,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                     tickLabel.setFontSmoothingType(FontSmoothingType.LCD);
                     tickLabel.setTextOrigin(VPos.BOTTOM);
                     tickLabel.setBoundsType(TextBoundsType.LOGICAL);
-                    tickLabel.setId(CONTROL.getBackgroundDesign().CSS_TEXT);
+                    tickLabel.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_TEXT);
                     tickLabel.setStroke(null);
                     tickLabel.setFont(STD_FONT);
                     tickLabel.setX(textPoint.getX() - tickLabel.getLayoutBounds().getHeight() / 2.0);
@@ -1408,13 +1408,13 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
        if (isOn) {
            MAIN_LED.getStyleClass().add("root");
            MAIN_LED.setStyle(LED_COLOR.CSS);
-           MAIN_LED.setId("led-on-gradient");
+           MAIN_LED.getStyleClass().add("led-on-gradient");
            MAIN_LED.setStroke(null);
            MAIN_LED.setEffect(GLOW_EFFECT);
        } else {
            MAIN_LED.getStyleClass().add("root");
            MAIN_LED.setStyle(LED_COLOR.CSS);
-           MAIN_LED.setId("led-off-gradient");
+           MAIN_LED.getStyleClass().add("led-off-gradient");
            MAIN_LED.setStroke(null);
            MAIN_LED.effectProperty().set(INNER_SHADOW);
        }
@@ -1871,9 +1871,9 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
 
         LED.setStyle("-fx-value: " + CONTROL.getValueColor().CSS);
         if (ON) {
-            LED.setId("bargraph-on");
+            LED.getStyleClass().add("bargraph-on");
         } else {
-            LED.setId("bargraph-off");
+            LED.getStyleClass().add("bargraph-off");
         }
         LED.setStroke(null);
 
@@ -1921,7 +1921,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         INDICATOR.getStyleClass().add("lcd");
         // CSS_STYLE = control.getLcdDesign().CSS
         INDICATOR.setStyle(CSS_STYLE);
-        INDICATOR.setId("lcd-foreground");
+        INDICATOR.getStyleClass().add("lcd-foreground");
         INDICATOR.setStroke(null);
 
         LCD_THRESHOLD_INDICATOR.getChildren().addAll(INDICATOR);

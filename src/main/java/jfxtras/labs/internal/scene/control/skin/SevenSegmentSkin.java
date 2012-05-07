@@ -182,14 +182,14 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
             for (SevenSegment.Segment segment : segmentMap.keySet()) {
                 if (control.getSegmentMapping().containsKey(ASCII)) {
                     if (control.getSegmentMapping().get(ASCII).contains(segment)) {
-                        segmentMap.get(segment).setId(ON_STYLE);
+                        segmentMap.get(segment).getStyleClass().add(ON_STYLE);
                         segmentMap.get(segment).setEffect(INNER_SHADOW);
                     } else {
-                        segmentMap.get(segment).setId("sixteen-segment-off");
+                        segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
                         segmentMap.get(segment).setEffect(null);
                     }
                 } else {
-                    segmentMap.get(segment).setId("sixteen-segment-off");
+                    segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
                     segmentMap.get(segment).setEffect(null);
                 }
             }
@@ -197,20 +197,20 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
             for (SevenSegment.Segment segment : segmentMap.keySet()) {
                 if (control.getCustomSegmentMapping().containsKey(ASCII)) {
                     if (control.getCustomSegmentMapping().get(ASCII).contains(segment)) {
-                        segmentMap.get(segment).setId(ON_STYLE);
+                        segmentMap.get(segment).getStyleClass().add(ON_STYLE);
                         segmentMap.get(segment).setEffect(INNER_SHADOW);
                     } else {
-                        segmentMap.get(segment).setId("sixteen-segment-off");
+                        segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
                         segmentMap.get(segment).setEffect(null);
                     }
                 } else {
-                    segmentMap.get(segment).setId("sixteen-segment-off");
+                    segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
                     segmentMap.get(segment).setEffect(null);
                 }
             }
         }
         if (control.isDotOn()) {
-            segmentMap.get(SevenSegment.Segment.DOT).setId(ON_STYLE);
+            segmentMap.get(SevenSegment.Segment.DOT).getStyleClass().add(ON_STYLE);
             segmentMap.get(SevenSegment.Segment.DOT).setEffect(INNER_SHADOW);
         }
     }
@@ -240,7 +240,7 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
         A.getElements().add(new LineTo(0.13973799126637554 * WIDTH, 0.0));
         A.getElements().add(new LineTo(0.11790393013100436 * WIDTH, 0.014925373134328358 * HEIGHT));
         A.getElements().add(new ClosePath());
-        A.setId("seven-segment-off");
+        A.getStyleClass().add("seven-segment-off");
         segmentMap.put(SevenSegment.Segment.A, A);
 
         final Path B = new Path();
@@ -254,7 +254,7 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
         B.getElements().add(new LineTo(0.8209606986899564 * WIDTH, 0.07462686567164178 * HEIGHT));
         B.getElements().add(new LineTo(0.8951965065502183 * WIDTH, 0.023880597014925373 * HEIGHT));
         B.getElements().add(new ClosePath());
-        B.setId("seven-segment-off");
+        B.getStyleClass().add("seven-segment-off");
         segmentMap.put(SevenSegment.Segment.B, B);
 
         final Path C = new Path();
@@ -267,7 +267,7 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
         C.getElements().add(new LineTo(0.7685589519650655 * WIDTH, 0.5432835820895522 * HEIGHT));
         C.getElements().add(new LineTo(0.8296943231441049 * WIDTH, 0.5014925373134328 * HEIGHT));
         C.getElements().add(new ClosePath());
-        C.setId("seven-segment-off");
+        C.getStyleClass().add("seven-segment-off");
         segmentMap.put(SevenSegment.Segment.C, C);
 
         final Path D = new Path();
@@ -282,7 +282,7 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
         D.getElements().add(new LineTo(0.7991266375545851 * WIDTH, 0.982089552238806 * HEIGHT));
         D.getElements().add(new LineTo(0.7205240174672489 * WIDTH, 0.9283582089552239 * HEIGHT));
         D.getElements().add(new ClosePath());
-        D.setId("seven-segment-off");
+        D.getStyleClass().add("seven-segment-off");
         segmentMap.put(SevenSegment.Segment.D, D);
 
         final Path E = new Path();
@@ -296,7 +296,7 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
         E.getElements().add(new LineTo(0.10043668122270742 * WIDTH, 0.9253731343283582 * HEIGHT));
         E.getElements().add(new LineTo(0.03056768558951965 * WIDTH, 0.9761194029850746 * HEIGHT));
         E.getElements().add(new ClosePath());
-        E.setId("seven-segment-off");
+        E.getStyleClass().add("seven-segment-off");
         segmentMap.put(SevenSegment.Segment.E, E);
 
         final Path F = new Path();
@@ -309,7 +309,7 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
         F.getElements().add(new LineTo(0.08733624454148471 * WIDTH, 0.03283582089552239 * HEIGHT));
         F.getElements().add(new LineTo(0.1091703056768559 * WIDTH, 0.01791044776119403 * HEIGHT));
         F.getElements().add(new ClosePath());
-        F.setId("seven-segment-off");
+        F.getStyleClass().add("seven-segment-off");
         segmentMap.put(SevenSegment.Segment.F, F);
 
         final Path G = new Path();
@@ -322,11 +322,11 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
         G.getElements().add(new LineTo(0.1572052401746725 * WIDTH, 0.5373134328358209 * HEIGHT));
         G.getElements().add(new LineTo(0.7729257641921398 * WIDTH, 0.5373134328358209 * HEIGHT));
         G.getElements().add(new ClosePath());
-        G.setId("seven-segment-off");
+        G.getStyleClass().add("seven-segment-off");
         segmentMap.put(SevenSegment.Segment.G, G);
 
         final Circle DOT = new Circle(0.9301310043668122 * WIDTH, 0.9522388059701492 * HEIGHT, 0.06986899563318777 * WIDTH);
-        DOT.setId("seven-segment-off");
+        DOT.getStyleClass().add("seven-segment-off");
         segmentMap.put(SevenSegment.Segment.DOT, DOT);
 
         segments.getChildren().addAll(A,

@@ -27,6 +27,7 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
+import javafx.scene.CacheHint;
 import jfxtras.labs.internal.scene.control.behavior.RadialQuarterNBehavior;
 import jfxtras.labs.scene.control.gauge.RadialQuarterN;
 import jfxtras.labs.scene.control.gauge.Gauge;
@@ -806,7 +807,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
         title.setText(control.getTitle());
         title.setX(((SIZE - title.getLayoutBounds().getWidth()) / 2.0));
         title.setY(0.16 * SIZE + title.getLayoutBounds().getHeight());
-        title.setId(control.getBackgroundDesign().CSS_TEXT);
+        title.getStyleClass().add(control.getBackgroundDesign().CSS_TEXT);
 
         final Font UNIT_FONT = Font.font(control.getUnitFont(), FontWeight.NORMAL, (0.046728972 * SIZE));
         final Text unit = new Text();
@@ -815,7 +816,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
         unit.setText(control.getUnit());
         unit.setX((SIZE - unit.getLayoutBounds().getWidth()) / 2.0);
         unit.setY(0.365 * SIZE + unit.getLayoutBounds().getHeight());
-        unit.setId(control.getBackgroundDesign().CSS_TEXT);
+        unit.getStyleClass().add(control.getBackgroundDesign().CSS_TEXT);
 
         titleAndUnit.getChildren().addAll(title, unit);
     }
@@ -840,7 +841,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
 
         THRESHOLD.getStyleClass().add("root");
         THRESHOLD.setStyle(control.getThresholdColor().CSS);
-        THRESHOLD.setId("threshold-gradient");
+        THRESHOLD.getStyleClass().add("threshold-gradient");
 
         THRESHOLD.setTranslateX(0.485 * WIDTH);
         THRESHOLD.setTranslateY(0.25 * HEIGHT);
@@ -926,7 +927,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
         POINTER.setStyle("-fx-value: " + control.getValueColor().CSS);
         switch (control.getPointerType()) {
             case TYPE2:
-                POINTER.setId("pointer2-gradient");
+                POINTER.getStyleClass().add("pointer2-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.52 * WIDTH, 0.71 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.515 * WIDTH, 0.695 * HEIGHT));
@@ -953,7 +954,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
                 break;
 
             case TYPE3:
-                POINTER.setId("pointer3-gradient");
+                POINTER.getStyleClass().add("pointer3-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.4953271028037383 * WIDTH, 0.1308411214953271 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.5046728971962616 * WIDTH, 0.1308411214953271 * HEIGHT));
@@ -965,7 +966,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
                 break;
 
             case TYPE4:
-                POINTER.setId("pointer4-gradient");
+                POINTER.getStyleClass().add("pointer4-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.5 * WIDTH, 0.255 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.51 * WIDTH, 0.265 * HEIGHT));
@@ -980,7 +981,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
                 break;
 
             case TYPE5:
-                POINTER.setId("pointer5-gradient");
+                POINTER.getStyleClass().add("pointer5-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.5 * WIDTH, 0.735 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.525 * WIDTH, 0.735 * HEIGHT));
@@ -995,7 +996,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
                 break;
 
             case TYPE6:
-                POINTER.setId("pointer6-gradient");
+                POINTER.getStyleClass().add("pointer6-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.475 * WIDTH, 0.735 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.475 * WIDTH, 0.595 * HEIGHT));
@@ -1025,7 +1026,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
                 break;
 
             case TYPE7:
-                POINTER.setId("pointer7-gradient");
+                POINTER.getStyleClass().add("pointer7-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.49 * WIDTH, 0.255 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.47 * WIDTH, 0.735 * HEIGHT));
@@ -1037,7 +1038,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
                 break;
 
             case TYPE8:
-                POINTER.setId("pointer8-gradient");
+                POINTER.getStyleClass().add("pointer8-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.5 * WIDTH, 0.765 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.535 * WIDTH, 0.735 * HEIGHT));
@@ -1056,7 +1057,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
                 break;
 
             case TYPE9:
-                POINTER.setId("pointer9-gradient");
+                POINTER.getStyleClass().add("pointer9-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.495 * WIDTH, 0.37 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.505 * WIDTH, 0.37 * HEIGHT));
@@ -1090,7 +1091,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
 
                 POINTER_FRONT.getStyleClass().add("root");
                 POINTER_FRONT.setStyle("-fx-value: " + control.getValueColor().CSS);
-                POINTER_FRONT.setId("pointer9-box");
+                POINTER_FRONT.getStyleClass().add("pointer9-box");
                 POINTER_FRONT.setFillRule(FillRule.EVEN_ODD);
                 POINTER_FRONT.getElements().add(new MoveTo(0.495 * WIDTH, 0.355 * HEIGHT));
                 POINTER_FRONT.getElements().add(new LineTo(0.505 * WIDTH, 0.355 * HEIGHT));
@@ -1102,7 +1103,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
                 break;
 
             case TYPE10:
-                POINTER.setId("pointer10-gradient");
+                POINTER.getStyleClass().add("pointer10-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.5 * WIDTH, 0.25 * HEIGHT));
                 POINTER.getElements().add(new CubicCurveTo(0.5 * WIDTH, 0.25 * HEIGHT,
@@ -1125,7 +1126,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
                 break;
 
             case TYPE11:
-                POINTER.setId("pointer11-gradient");
+                POINTER.getStyleClass().add("pointer11-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.5 * WIDTH, 0.25 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.485 * WIDTH, 0.735 * HEIGHT));
@@ -1144,7 +1145,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
                 break;
 
             case TYPE12:
-                POINTER.setId("pointer12-gradient");
+                POINTER.getStyleClass().add("pointer12-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.5 * WIDTH, 0.25 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.485 * WIDTH, 0.735 * HEIGHT));
@@ -1159,7 +1160,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
                 break;
 
             case TYPE13:
-                POINTER.setId("pointer13-gradient");
+                POINTER.getStyleClass().add("pointer13-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.485 * WIDTH, 0.275 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.5 * WIDTH, 0.245 * HEIGHT));
@@ -1172,7 +1173,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
                 break;
 
             case TYPE14:
-                POINTER.setId("pointer14-gradient");
+                POINTER.getStyleClass().add("pointer14-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.485 * WIDTH, 0.275 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.5 * WIDTH, 0.245 * HEIGHT));
@@ -1185,7 +1186,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
                 break;
 
             case TYPE15:
-                POINTER.setId("pointer15-gradient");
+                POINTER.getStyleClass().add("pointer15-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.485 * WIDTH, 0.745 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.485 * WIDTH, 0.37 * HEIGHT));
@@ -1200,7 +1201,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
                 break;
 
             case TYPE16:
-                POINTER.setId("pointer16-gradient");
+                POINTER.getStyleClass().add("pointer16-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.5 * WIDTH, 0.86 * HEIGHT));
                 POINTER.getElements().add(new CubicCurveTo(0.52 * WIDTH, 0.86 * HEIGHT,
@@ -1232,7 +1233,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
 
             default:
                 POINTER.setStyle("-fx-pointer: " + control.getValueColor().CSS);
-                POINTER.setId("pointer1-gradient");
+                POINTER.getStyleClass().add("pointer1-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.515 * WIDTH, 0.705 * HEIGHT));
                 POINTER.getElements().add(new CubicCurveTo(0.515 * WIDTH, 0.69 * HEIGHT,
@@ -1309,6 +1310,9 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
 
         pointer.getTransforms().clear();
         pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
+
+        pointer.setCache(true);
+        pointer.setCacheHint(CacheHint.ROTATE);
     }
 
     public void drawLcdContent() {
@@ -1349,7 +1353,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
         }
         lcdUnitString.getStyleClass().add("lcd");
         lcdUnitString.setStyle(control.getLcdDesign().CSS);
-        lcdUnitString.setId("lcd-text");
+        lcdUnitString.getStyleClass().add("lcd-text");
         lcdUnitString.setStroke(null);
 
         // Value
@@ -1378,7 +1382,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
         lcdValueString.setTextAlignment(TextAlignment.RIGHT);
         lcdValueString.getStyleClass().add("lcd");
         lcdValueString.setStyle(control.getLcdDesign().CSS);
-        lcdValueString.setId("lcd-text");
+        lcdValueString.getStyleClass().add("lcd-text");
         lcdValueString.setStroke(null);
 
         lcdContent.getChildren().addAll(lcdUnitString, lcdValueString);

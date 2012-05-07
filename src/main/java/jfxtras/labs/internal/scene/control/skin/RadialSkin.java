@@ -293,9 +293,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
 
         noOfLeds = (int) (control.getRadialRange().ANGLE_RANGE / 5.0);
 
-        //double value = Double.compare(control.getValue(), control.getMinValue()) < 0 ? control.getMinValue() : (Double.compare(control.getValue(), control.getMaxValue()) > 0 ? control.getMaxValue() : control.getValue());
-        //pointer.setRotate((value - control.getMinValue()) * control.getAngleStep());
-
         if (gaugeValue.get() < control.getMinValue()) {
             gaugeValue.set(control.getMinValue());
         } else if (gaugeValue.get() > control.getMaxValue()) {
@@ -566,7 +563,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                     }
                     if (control.isThresholdVisible()) {
                         ledsOn.get(THRESHOLD_LED_INDEX).setStyle(control.getThresholdColor().CSS);
-                        ledsOn.get(THRESHOLD_LED_INDEX).setId("bargraph-threshold");
+                        ledsOn.get(THRESHOLD_LED_INDEX).getStyleClass().add("bargraph-threshold");
                         ledsOn.get(THRESHOLD_LED_INDEX).setVisible(true);
                     }
                 } else {
@@ -912,7 +909,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         title.setText(control.getTitle());
         title.setX(((SIZE - title.getLayoutBounds().getWidth()) / 2.0));
         title.setY(0.3 * SIZE + title.getLayoutBounds().getHeight());
-        title.setId(control.getBackgroundDesign().CSS_TEXT);
+        title.getStyleClass().add(control.getBackgroundDesign().CSS_TEXT);
 
         final Font UNIT_FONT = Font.font(control.getUnitFont(), FontWeight.NORMAL, (0.046728972 * SIZE));
         final Text unit = new Text();
@@ -921,7 +918,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         unit.setText(control.getUnit());
         unit.setX((SIZE - unit.getLayoutBounds().getWidth()) / 2.0);
         unit.setY(0.365 * SIZE + unit.getLayoutBounds().getHeight());
-        unit.setId(control.getBackgroundDesign().CSS_TEXT);
+        unit.getStyleClass().add(control.getBackgroundDesign().CSS_TEXT);
 
         titleAndUnit.getChildren().addAll(title, unit);
         titleAndUnit.setCache(true);
@@ -946,7 +943,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         THRESHOLD.setStrokeWidth(0.002 * HEIGHT);
         THRESHOLD.getStyleClass().add("root");
         THRESHOLD.setStyle(control.getThresholdColor().CSS);
-        THRESHOLD.setId("threshold-gradient");
+        THRESHOLD.getStyleClass().add("threshold-gradient");
 
         THRESHOLD.setTranslateX(0.485 * WIDTH);
         THRESHOLD.setTranslateY(0.14 * HEIGHT);
@@ -1040,7 +1037,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         POINTER.setStyle("-fx-value: " + control.getValueColor().CSS);
         switch (control.getPointerType()) {
             case TYPE2:
-                POINTER.setId("pointer2-gradient");
+                POINTER.getStyleClass().add("pointer2-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.514018691588785 * WIDTH, 0.4719626168224299 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.5046728971962616 * WIDTH, 0.46261682242990654 * HEIGHT));
@@ -1072,7 +1069,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 break;
 
             case TYPE3:
-                POINTER.setId("pointer3-gradient");
+                POINTER.getStyleClass().add("pointer3-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.4953271028037383 * WIDTH, 0.1308411214953271 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.5046728971962616 * WIDTH, 0.1308411214953271 * HEIGHT));
@@ -1084,7 +1081,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 break;
 
             case TYPE4:
-                POINTER.setId("pointer4-gradient");
+                POINTER.getStyleClass().add("pointer4-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.5 * WIDTH, 0.1261682242990654 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.5093457943925234 * WIDTH, 0.13551401869158877 * HEIGHT));
@@ -1099,7 +1096,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 break;
 
             case TYPE5:
-                POINTER.setId("pointer5-gradient");
+                POINTER.getStyleClass().add("pointer5-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(WIDTH * 0.5, HEIGHT * 0.4953271028037383));
                 POINTER.getElements().add(new LineTo(WIDTH * 0.5280373831775701, HEIGHT * 0.4953271028037383));
@@ -1114,7 +1111,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 break;
 
             case TYPE6:
-                POINTER.setId("pointer6-gradient");
+                POINTER.getStyleClass().add("pointer6-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(WIDTH * 0.48130841121495327, HEIGHT * 0.48598130841121495));
                 POINTER.getElements().add(new LineTo(WIDTH * 0.48130841121495327, HEIGHT * 0.3925233644859813));
@@ -1135,7 +1132,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 break;
 
             case TYPE7:
-                POINTER.setId("pointer7-gradient");
+                POINTER.getStyleClass().add("pointer7-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.49065420560747663 * WIDTH, 0.1308411214953271 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.4766355140186916 * WIDTH, 0.5 * HEIGHT));
@@ -1147,7 +1144,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 break;
 
             case TYPE8:
-                POINTER.setId("pointer8-gradient");
+                POINTER.getStyleClass().add("pointer8-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.4953271028037383 * WIDTH, 0.5327102803738317 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.5327102803738317 * WIDTH, 0.5 * HEIGHT));
@@ -1166,7 +1163,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 break;
 
             case TYPE9:
-                POINTER.setId("pointer9-gradient");
+                POINTER.getStyleClass().add("pointer9-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(WIDTH * 0.4953271028037383, HEIGHT * 0.2336448598130841));
                 POINTER.getElements().add(new LineTo(WIDTH * 0.5046728971962616, HEIGHT * 0.2336448598130841));
@@ -1192,7 +1189,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
 
                 POINTER_FRONT.getStyleClass().add("root");
                 POINTER_FRONT.setStyle("-fx-value: " + control.getValueColor().CSS);
-                POINTER_FRONT.setId("pointer9-box");
+                POINTER_FRONT.getStyleClass().add("pointer9-box");
                 POINTER_FRONT.setFillRule(FillRule.EVEN_ODD);
                 POINTER_FRONT.getElements().add(new MoveTo(WIDTH * 0.4953271028037383, HEIGHT * 0.21962616822429906));
                 POINTER_FRONT.getElements().add(new LineTo(WIDTH * 0.5046728971962616, HEIGHT * 0.21962616822429906));
@@ -1204,7 +1201,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 break;
 
             case TYPE10:
-                POINTER.setId("pointer10-gradient");
+                POINTER.getStyleClass().add("pointer10-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.4953271028037383 * WIDTH, 0.14953271028037382 * HEIGHT));
                 POINTER.getElements().add(new CubicCurveTo(0.4953271028037383 * WIDTH, 0.14953271028037382 * HEIGHT,
@@ -1227,7 +1224,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 break;
 
             case TYPE11:
-                POINTER.setId("pointer11-gradient");
+                POINTER.getStyleClass().add("pointer11-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.5 * WIDTH, 0.16822429906542055 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.48598130841121495 * WIDTH, 0.5 * HEIGHT));
@@ -1246,7 +1243,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 break;
 
             case TYPE12:
-                POINTER.setId("pointer12-gradient");
+                POINTER.getStyleClass().add("pointer12-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.5 * WIDTH, 0.16822429906542055 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.48598130841121495 * WIDTH, 0.5 * HEIGHT));
@@ -1261,7 +1258,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 break;
 
             case TYPE13:
-                POINTER.setId("pointer13-gradient");
+                POINTER.getStyleClass().add("pointer13-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.48598130841121495 * WIDTH, 0.16822429906542055 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.5 * WIDTH, 0.1308411214953271 * HEIGHT));
@@ -1274,7 +1271,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 break;
 
             case TYPE14:
-                POINTER.setId("pointer14-gradient");
+                POINTER.getStyleClass().add("pointer14-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.48598130841121495 * WIDTH, 0.16822429906542055 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.5 * WIDTH, 0.1308411214953271 * HEIGHT));
@@ -1287,7 +1284,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 break;
 
             case TYPE15:
-                POINTER.setId("pointer15-gradient");
+                POINTER.getStyleClass().add("pointer15-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.48 * WIDTH, 0.505 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.48 * WIDTH, 0.275 * HEIGHT));
@@ -1302,7 +1299,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 break;
 
             case TYPE16:
-                POINTER.setId("pointer16-gradient");
+                POINTER.getStyleClass().add("pointer16-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.495 * WIDTH, 0.625 * HEIGHT));
                 POINTER.getElements().add(new CubicCurveTo(0.515 * WIDTH, 0.625 * HEIGHT,
@@ -1334,7 +1331,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
 
             default:
                 POINTER.setStyle("-fx-pointer: " + control.getValueColor().CSS);
-                POINTER.setId("pointer1-gradient");
+                POINTER.getStyleClass().add("pointer1-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(WIDTH * 0.5186915887850467, HEIGHT * 0.4719626168224299));
                 POINTER.getElements().add(new CubicCurveTo(WIDTH * 0.514018691588785, HEIGHT * 0.45794392523364486,
@@ -1456,7 +1453,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         }
         lcdUnitString.getStyleClass().add("lcd");
         lcdUnitString.setStyle(control.getLcdDesign().CSS);
-        lcdUnitString.setId("lcd-text");
+        lcdUnitString.getStyleClass().add("lcd-text");
         lcdUnitString.setStroke(null);
 
         // Value
@@ -1485,7 +1482,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         lcdValueString.setTextAlignment(TextAlignment.RIGHT);
         lcdValueString.getStyleClass().add("lcd");
         lcdValueString.setStyle(control.getLcdDesign().CSS);
-        lcdValueString.setId("lcd-text");
+        lcdValueString.getStyleClass().add("lcd-text");
         lcdValueString.setStroke(null);
 
         lcdContent.getChildren().addAll(lcdUnitString, lcdValueString);
