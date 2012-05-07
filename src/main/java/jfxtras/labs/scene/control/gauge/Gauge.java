@@ -127,7 +127,7 @@ public abstract class Gauge extends Control {
         RADIAL_90N(90, 315, 225, new Rectangle(0.55, 0.52, 0.55, 0.12), 45, new Point2D(0.6, 0.4),new Point2D(0.3, 0.4), 1, 0.5),
         RADIAL_90W(90, 225, 45, new Rectangle(0.2, 0.58, 0.45, 0.12), 135, new Point2D(0.12, 0.35),new Point2D(0.12, 0.55), 1, 0.5),
         RADIAL_90S(90, -135, 45, new Rectangle(0.55, 0.36, 0.55, 0.12), 225, new Point2D(0.6, 0.5),new Point2D(0.3, 0.5), -1, 0.5),
-        RADIAL_90E(90, 135, 225, new Rectangle(0.2, 0.58, 0.45, 0.12), 315, new Point2D(0.78, 0.35),new Point2D(0.78, 0.55), -1, 0.5);
+        RADIAL_90E(90, 135, 225, new Rectangle(0.2, 0.58, 0.45, 0.12), -315, new Point2D(0.78, 0.35),new Point2D(0.78, 0.55), -1, 0.5);
 
         public final double    ANGLE_RANGE;
         public final double    ROTATION_OFFSET;
