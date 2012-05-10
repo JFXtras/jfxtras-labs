@@ -38,8 +38,6 @@ import javafx.scene.DepthTest;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.InnerShadow;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
@@ -87,12 +85,12 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
     private ArrayList<String> selectedSet;
     private int               currentSelectionIndex;
     private int               nextSelectionIndex;
-    private int               previousSelectionIndex;
     private Rotate            rotate;
     private Rotate            lowerFlipVert;
     private double            angleStep;
     private double            currentAngle;
     private boolean           flipping;
+    private int               lastFlapDirection;
     private AnimationTimer    timer;
 
 
@@ -113,11 +111,11 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         selectedSet            = new ArrayList<String>(64);
         currentSelectionIndex  = 0;
         nextSelectionIndex     = 1;
-        previousSelectionIndex = 52;
         rotate                 = new Rotate();
         angleStep              = 180.0 / ((control.getFlipTimeInMs() * 1000000) / (MIN_FLIP_TIME));
         currentAngle           = 0;
         flipping               = false;
+        lastFlapDirection      = 0;
         timer                  = new AnimationTimer() {
             @Override public void handle(long l) {
                 if (initialized) {
@@ -175,8 +173,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         registerChangeListener(control.imageModeProperty(), "IMAGE_MODE");
 
         control.selectionProperty().addListener(new ChangeListener<String[]>() {
-            @Override
-            public void changed(ObservableValue<? extends String[]> ov, String[] oldValue, String[] newValue) {
+            @Override public void changed(ObservableValue<? extends String[]> ov, String[] oldValue, String[] newValue) {
                 selectedSet.clear();
                 for (String text : newValue) {
                     selectedSet.add(text);
@@ -271,8 +268,8 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         return super.computePrefWidth(prefHeight);
     }
 
-    private void flipForward(final double ANGLE) {
-        currentAngle += ANGLE;
+    private void flipForward(final double ANGLE_STEP) {
+        currentAngle += ANGLE_STEP;
         if (Double.compare(currentAngle, 180) >= 0) {
             if (control.isSoundOn()) {
                 switch(control.getSound()) {
@@ -297,7 +294,6 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
             lowerNextText.getTransforms().add(lowerFlipVert);
             upperText.setVisible(true);
 
-            previousSelectionIndex = currentSelectionIndex;
             currentSelectionIndex++;
             if (currentSelectionIndex >= selectedSet.size()) {
                 currentSelectionIndex = 0;
@@ -332,16 +328,19 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
             lowerNextText.setVisible(true);
         }
         if (flipping) {
-            rotate.setAngle(ANGLE);
+            upper.getTransforms().remove(rotate);
+            upperText.getTransforms().remove(rotate);
+            lowerNextText.getTransforms().remove(rotate);
+            rotate.setAngle(currentAngle);
             upper.getTransforms().add(rotate);
             upperText.getTransforms().add(rotate);
             lowerNextText.getTransforms().add(rotate);
         }
     }
 
-    private void flipBackward(final double ANGLE) {
-        currentAngle += ANGLE;
-        if (Double.compare(currentAngle, 180) >= 0) {
+    private void flipBackward(final double ANGLE_STEP) {
+        currentAngle -= ANGLE_STEP;
+        if (Double.compare(currentAngle, 0) <= 0) {
             if (control.isSoundOn()) {
                 switch(control.getSound()) {
                     case SOUND1:
@@ -354,18 +353,17 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
                         SOUND3.play();
                 }
             }
-            currentAngle = 0;
+            currentAngle = 180;
             upper.getTransforms().clear();
             upperText.getTransforms().clear();
             lowerNextText.getTransforms().clear();
-            lowerNextText.setVisible(false);
+            lowerNextText.setVisible(true);
             lowerFlipVert.setAxis(Rotate.X_AXIS);
             lowerFlipVert.setPivotY(control.getPrefHeight() * 0.4625550661);
             lowerFlipVert.setAngle(180);
             lowerNextText.getTransforms().add(lowerFlipVert);
-            upperText.setVisible(true);
+            upperText.setVisible(false);
 
-            previousSelectionIndex = currentSelectionIndex;
             currentSelectionIndex--;
             if (currentSelectionIndex < 0) {
                 currentSelectionIndex = selectedSet.size() - 1;
@@ -374,15 +372,14 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
             if (nextSelectionIndex < 0) {
                 nextSelectionIndex = selectedSet.size() - 1;
             }
-
             if (selectedSet.get(currentSelectionIndex).equals(control.getText())) {
                 timer.stop();
                 flipping = false;
             }
-            upperText.setText(selectedSet.get(currentSelectionIndex));
-            lowerText.setText(selectedSet.get(currentSelectionIndex));
-            upperNextText.setText(selectedSet.get(nextSelectionIndex));
-            lowerNextText.setText(selectedSet.get(nextSelectionIndex));
+            upperText.setText(selectedSet.get(nextSelectionIndex));
+            lowerText.setText(selectedSet.get(nextSelectionIndex));
+            upperNextText.setText(selectedSet.get(currentSelectionIndex));
+            lowerNextText.setText(selectedSet.get(currentSelectionIndex));
             if (selectedSet.get(currentSelectionIndex).length() > 1) {
                 double textOffset = 0.1057268722 * getPrefHeight();
                 upperText.setX(textOffset);
@@ -390,13 +387,20 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
                 upperNextText.setX(textOffset);
                 lowerNextText.setX(textOffset);
             }
+            rotate.setAngle(currentAngle);
+            upper.getTransforms().add(rotate);
+            upperText.getTransforms().add(rotate);
+            lowerNextText.getTransforms().add(rotate);
         }
-        if (currentAngle > 90) {
-            upperText.setVisible(false);
-            lowerNextText.setVisible(true);
+        if (currentAngle < 90) {
+            upperText.setVisible(true);
+            lowerNextText.setVisible(false);
         }
         if (flipping) {
-            rotate.setAngle(ANGLE);
+            upper.getTransforms().remove(rotate);
+            upperText.getTransforms().remove(rotate);
+            lowerNextText.getTransforms().remove(rotate);
+            rotate.setAngle(currentAngle);
             upper.getTransforms().add(rotate);
             upperText.getTransforms().add(rotate);
             lowerNextText.getTransforms().add(rotate);
@@ -405,21 +409,40 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
 
 
     // ******************** Mouse event handling ******************************
-    private void addMouseEventListener(final Shape FLAP, final int FLAP_INDEX) {
+    private void addMouseEventListener(final Shape FLAP, final int FLAP_DIRECTION) {
         FLAP.setOnMousePressed(new EventHandler<MouseEvent>() {
-            public void handle(final MouseEvent EVENT) {
-                switch(FLAP_INDEX) {
+            @Override public void handle(final MouseEvent EVENT) {
+                switch(FLAP_DIRECTION) {
                     case 1:
+                        currentAngle = 0;
+                        checkLastFlapDirection(FLAP_DIRECTION);
                         control.flipForward();
+                        lastFlapDirection = FLAP_DIRECTION;
                         break;
                     case -1:
+                        currentAngle = 180;
+                        checkLastFlapDirection(FLAP_DIRECTION);
                         control.flipBackward();
+                        lastFlapDirection = FLAP_DIRECTION;
                         break;
                 }
             }
         });
     }
 
+    private void checkLastFlapDirection(final int CURRENT_FLAP_DIRECTION) {
+        if (CURRENT_FLAP_DIRECTION == 1 && lastFlapDirection == -1) {
+            // changed from backward to forward
+            System.out.println("changed from backward to forward");
+        } else if (CURRENT_FLAP_DIRECTION == -1 && lastFlapDirection == 1) {
+            // changed from forward to backward
+            rotate.setAngle(currentAngle);
+            upper.getTransforms().add(rotate);
+            upperText.getTransforms().add(rotate);
+            lowerNextText.getTransforms().add(rotate);
+            System.out.println("changed from forward to backward");
+        }
+    }
 
     // ******************** Drawing related ***********************************
     public final void drawBackground() {
@@ -862,7 +885,9 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
 
         if (control.isInteractive()) {
             addMouseEventListener(upperText, 1);
+            addMouseEventListener(upperNextText, 1);
             addMouseEventListener(lowerText, -1);
+            addMouseEventListener(lowerNextText, -1);
         }
 
         flip.setDepthTest(DepthTest.ENABLE);

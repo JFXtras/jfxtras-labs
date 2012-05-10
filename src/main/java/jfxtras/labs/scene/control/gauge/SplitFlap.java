@@ -38,11 +38,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Control;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 
 
 /**

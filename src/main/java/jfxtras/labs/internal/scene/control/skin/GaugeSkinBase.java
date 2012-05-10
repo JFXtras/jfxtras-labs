@@ -1381,11 +1381,11 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
 
        final Circle LED_BACKGROUND = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.25 * SIZE);
        LED_BACKGROUND.setFill(new LinearGradient(0.0, 0.0,
-           0.0, SIZE,
-           false, CycleMethod.NO_CYCLE,
-           new Stop(0.0, Color.color(0, 0, 0, 0.9)),
-           new Stop(0.4, Color.color(0.2, 0.2, 0.2, 0.96)),
-           new Stop(1.0, Color.color(0.6, 0.6, 0.6, 1))
+                                                 0.0, SIZE,
+                                                 false, CycleMethod.NO_CYCLE,
+                                                 new Stop(0.0, Color.color(0, 0, 0, 0.9)),
+                                                 new Stop(0.4, Color.color(0.2, 0.2, 0.2, 0.96)),
+                                                 new Stop(1.0, Color.color(0.6, 0.6, 0.6, 1))
        ));
        LED_BACKGROUND.setStroke(null);
 
@@ -1420,12 +1420,19 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
        }
 
        final Circle LED_INNER_SHADOW = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.2261904762 * SIZE);
-       LED_INNER_SHADOW.setFill(new RadialGradient(0, 0, 0.47619047619047616 * SIZE, 0.47619047619047616 * SIZE, 0.4523809523809524 * SIZE, false, CycleMethod.NO_CYCLE, new Stop(0.0, Color.color(0, 0, 0, 0)), new Stop(0.86, Color.color(0, 0, 0, 0.3450980392)),
-           new Stop(1.0, new Color(0, 0, 0, 0.4))));
+       LED_INNER_SHADOW.setFill(new RadialGradient(0, 0,
+                                                   0.47619047619047616 * SIZE, 0.47619047619047616 * SIZE,
+                                                   0.4523809523809524 * SIZE, false, CycleMethod.NO_CYCLE,
+                                                   new Stop(0.0, Color.rgb(0, 0, 0, 0)),
+                                                   new Stop(0.86, Color.rgb(0, 0, 0, 0.3450980392)),
+                                                   new Stop(1.0, Color.rgb(0, 0, 0, 0.4))));
        LED_INNER_SHADOW.setStroke(null);
 
        final Ellipse LED_HIGHLIGHT = new Ellipse(0.5 * SIZE, 0.4 * SIZE, 0.1 * SIZE, 0.06 * SIZE);
-       LED_HIGHLIGHT.setFill(new LinearGradient(0.0, 0.3 * SIZE, 0.0, 0.5 * SIZE, false, CycleMethod.NO_CYCLE, new Stop(0.0, new Color(1, 1, 1, 0.4)), new Stop(1.0, new Color(1, 1, 1, 0))));
+       LED_HIGHLIGHT.setFill(new LinearGradient(0.0, 0.3 * SIZE,
+                                                0.0, 0.5 * SIZE, false, CycleMethod.NO_CYCLE,
+                                                new Stop(0.0, Color.rgb(1, 1, 1, 0.4)),
+                                                new Stop(1.0, Color.rgb(1, 1, 1, 0))));
        LED_HIGHLIGHT.setStroke(null);
 
        LED.getChildren().addAll(LED_BACKGROUND, MAIN_LED, LED_HIGHLIGHT);
@@ -1513,16 +1520,16 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
 
         final Circle KNOB_FRAME = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.5 * SIZE);
         KNOB_FRAME.setFill(new LinearGradient(0.5 * SIZE, 0.0, 0.5 * SIZE, SIZE, false,
-            CycleMethod.NO_CYCLE,
-            new Stop(0.0, new Color(0.7058823529, 0.7058823529, 0.7058823529, 1)),
-            new Stop(0.46, new Color(0.2470588235, 0.2470588235, 0.2470588235, 1)),
-            new Stop(1.0, new Color(0.1568627451, 0.1568627451, 0.1568627451, 1))));
+                                              CycleMethod.NO_CYCLE,
+                                              new Stop(0.0, Color.color(0.7058823529, 0.7058823529, 0.7058823529, 1)),
+                                              new Stop(0.46, Color.color(0.2470588235, 0.2470588235, 0.2470588235, 1)),
+                                              new Stop(1.0, Color.color(0.1568627451, 0.1568627451, 0.1568627451, 1))));
         KNOB_FRAME.setStroke(null);
 
         final Circle KNOB_MAIN = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.3888888888888889 * SIZE);
         KNOB_MAIN.setFill(new LinearGradient(0.5 * SIZE, 0.1111111111111111 * SIZE, 0.5 * SIZE,
-            0.8888888888888888 * SIZE, false, CycleMethod.NO_CYCLE,
-            KNOB_MAIN_STOPS));
+                                             0.8888888888888888 * SIZE, false, CycleMethod.NO_CYCLE,
+                                             KNOB_MAIN_STOPS));
         KNOB_MAIN.setStroke(null);
 
         KNOB.getChildren().addAll(KNOB_FRAME, KNOB_MAIN);

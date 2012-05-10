@@ -803,7 +803,7 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                                                        WIDTH, 0.7692307692307693 * HEIGHT,
                                                        WIDTH, 0.7692307692307693 * HEIGHT));
         OUTER_FRAME.getElements().add(new ClosePath());
-        OUTER_FRAME.setFill(new Color(0.5176470588, 0.5176470588, 0.5176470588, 1));
+        OUTER_FRAME.setFill(Color.color(0.5176470588, 0.5176470588, 0.5176470588, 1));
         OUTER_FRAME.setStroke(null);
         frame.getChildren().add(OUTER_FRAME);
 
@@ -825,7 +825,7 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                                                        0.07 * WIDTH, 0.4 * HEIGHT,
                                                        0.07 * WIDTH, 0.7615384615384615 * HEIGHT));
         INNER_FRAME.getElements().add(new ClosePath());
-        INNER_FRAME.setFill(new Color(0.6, 0.6, 0.6, 0.8));
+        INNER_FRAME.setFill(Color.color(0.6, 0.6, 0.6, 0.8));
         INNER_FRAME.setStroke(null);
 
         //final Shape MAIN_FRAME = Shape.subtract(new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4953271028037383 * WIDTH), SUBTRACT);
