@@ -27,15 +27,12 @@
 
 package jfxtras.labs.scene.control.gauge;
 
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Control;
-import javafx.scene.paint.Color;
 
 
 /**
@@ -45,17 +42,31 @@ import javafx.scene.paint.Color;
  * Time: 12:55
  */
 public class XYControl extends Control {
-    private static final String     DEFAULT_STYLE_CLASS = "xy-control";
-    private DoubleProperty          xValue;
-    private DoubleProperty          yValue;
-    private ObjectProperty<Point2D> position;
+    public enum Sensitivity {
+        COARSE(0.1),
+        MEDIUM(0.025),
+        FINE(0.005);
+
+        public final double STEP_SIZE;
+
+        private Sensitivity(final double STEP_SIZE) {
+            this.STEP_SIZE = STEP_SIZE;
+        }
+    }
+
+    private static final String         DEFAULT_STYLE_CLASS = "xy-control";
+    private DoubleProperty              xValue;
+    private DoubleProperty              yValue;
+    private ObjectProperty<Sensitivity> sensitivity;
+    private ObjectProperty<Point2D>     position;
 
 
     // ******************** Constructors **************************************
     public XYControl() {
-        xValue   = new SimpleDoubleProperty(0);
-        yValue   = new SimpleDoubleProperty(0);
-        position = new SimpleObjectProperty<Point2D>(new Point2D(xValue.get(),  yValue.get()));
+        xValue      = new SimpleDoubleProperty(0);
+        yValue      = new SimpleDoubleProperty(0);
+        sensitivity = new SimpleObjectProperty<Sensitivity>(Sensitivity.COARSE);
+        position    = new SimpleObjectProperty<Point2D>(new Point2D(xValue.get(),  yValue.get()));
         init();
     }
 
@@ -76,7 +87,7 @@ public class XYControl extends Control {
     }
 
     public final void setXValue(final double X_VALUE) {
-        xValue.set(X_VALUE);
+        validateValue(X_VALUE, xValue);
     }
 
     public final DoubleProperty xValueProperty() {
@@ -88,11 +99,23 @@ public class XYControl extends Control {
     }
 
     public final void setYValue(final double Y_VALUE) {
-        yValue.set(Y_VALUE);
+        validateValue(Y_VALUE, yValue);
     }
 
     public final DoubleProperty yValueProperty() {
         return yValue;
+    }
+
+    public final Sensitivity getSensitivity() {
+        return sensitivity.get();
+    }
+
+    public final void setSensitivity(final Sensitivity SENSITIVITY) {
+        sensitivity.set(SENSITIVITY);
+    }
+
+    public final ObjectProperty<Sensitivity> sensitivityProperty() {
+        return sensitivity;
     }
 
     public final Point2D getPosition() {
@@ -114,9 +137,37 @@ public class XYControl extends Control {
         return position;
     }
 
+    public final void incrementX() {
+        setXValue(getXValue() + sensitivity.get().STEP_SIZE);
+    }
+
+    public final void decrementX() {
+        setXValue(getXValue() - sensitivity.get().STEP_SIZE);
+    }
+
+    public final void incrementY() {
+        setYValue(getYValue() + sensitivity.get().STEP_SIZE);
+    }
+
+    public final void decrementY() {
+        setYValue(getYValue() - sensitivity.get().STEP_SIZE);
+    }
+
     public final void reset() {
         setXValue(0);
         setYValue(0);
+    }
+
+    private void validateValue(final double VALUE, final DoubleProperty TARGET) {
+        double value;
+        if (VALUE < -1) {
+            value = -1;
+        } else if (VALUE > 1) {
+            value = 1;
+        } else {
+            value = VALUE;
+        }
+        TARGET.set(value);
     }
 
 

@@ -115,6 +115,32 @@
     -fx-skin: "jfxtras.labs.internal.scene.control.skin.SimpleBatterySkin";
 }
 
+.xy-control {
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.XYControlSkin";
+    -fx-font-family: "System";
+    -fx-font-size: 11px;
+    -fx-base: #353535;
+    -fx-background: #040404;/*#F4F4F4;*/
+    -fx-focus-color: #FF9300;
+    -fx-control-inner-background: transparent;/*#FFFFFF;*/
+    -fx-inner-border: linear-gradient(to bottom, derive(-fx-color,70.79892658616063%) 0%, derive(-fx-color,20.338125359401953%) 100%);
+    -fx-body-color: linear-gradient( to bottom, derive(-fx-color, 51.216216216216225%) 0%, derive(-fx-color, 4.810810810810807%) 100%);
+    -fx-background-radius: 0, 0, 0, 0;
+    -fx-padding: 0px 0px 0px 0px;
+    -fx-background-insets: 0 0 -1 0, 0, 0, 1;
+    -fx-sensitivity-color: red;
+    -fx-text-base-color: ladder(
+        -fx-color,
+        -fx-light-text-color 45%,
+        -fx-dark-text-color  46%,
+        -fx-dark-text-color  59%,
+        -fx-mid-text-color   60%
+    );
+}
+.xy-control:focused {
+    -fx-background-insets: -1.4, 0, 0, 1;
+}
+
 
 /************************************************************
 * Defintion of Led fills                                    *
@@ -351,3 +377,105 @@
     -fx-fill  : linear-gradient(from 50% 0% to 50% 100%, transparent 0%, rgba(255, 255, 255, 0.1960784314) 0%, rgba(255, 255, 255, 0.2980392157) 1%, rgba(255, 255, 255, 0.0156862745) 44%, rgba(255, 255, 255, 0.0392156863) 46%, transparent 47%, transparent 70%, rgba(255, 255, 255, 0.0039215686) 71%, rgba(255, 255, 255, 0.0941176471) 81%, rgba(255, 255, 255, 0.1019607843) 81%, rgba(255, 255, 255, 0.4) 100%);
     -fx-stroke: transparent;
 }
+
+
+/************************************************************
+* Definition of XYControl fills                             *
+************************************************************/
+.xy-control .xy-area {
+    -fx-background-color : -fx-box-border, linear-gradient(to bottom, derive(-fx-color,80%) 0%, derive(-fx-color,70%) 100%);
+    -fx-padding          : 0px 200px 200px 0px; /* top right bottom left */
+    -fx-stroke           : -fx-text-base-color;
+}
+
+.xy-control .xy-button {
+    -fx-background-color : -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-background-radius: 0, 0, 1, 1;
+    -fx-padding          : 0px 0px 0px 0px; /* top right bottom left */
+    -fx-text-fill        : -fx-text-base-color;
+    -fx-alignment        : CENTER;
+    -fx-content-display  : LEFT;
+}
+
+.xy-control:focused .xy-button {
+    -fx-color            : -fx-focused-base;
+    -fx-background-color : -fx-focus-color, derive(-fx-color,-36%), derive(-fx-color,73%), linear-gradient(to bottom, derive(-fx-color,-19%),derive(-fx-color,61%));
+    -fx-background-insets: -1.4, 0, 1, 2;
+    -fx-background-radius: 0;
+}
+
+.xy-control .xy-button:hover {
+    -fx-color: -fx-hover-base;
+}
+
+.xy-control .xy-button:pressed {
+    -fx-color: -fx-pressed-base;
+}
+
+.xy-control .xy-slider-horizontal {
+    -fx-background-color : -fx-box-border,
+                           linear-gradient(to bottom, derive(-fx-color,30%) 5%, derive(-fx-color,-17%) 100%);
+    -fx-padding          : 0px 160px 20px 0px; /* top right bottom left */
+    -fx-background-insets: 0, 1;
+}
+
+.xy-control .xy-slider-vertical {
+    -fx-background-color : -fx-box-border,
+                           linear-gradient(to bottom, derive(-fx-color,30%) 5%, derive(-fx-color,-17%) 100%);
+    -fx-padding          : 0px 20px 160px 0px;
+    -fx-background-insets: 0, 1;
+}
+
+.xy-control .xy-slider-horizontal-thumb {
+    -fx-background-color : derive(-fx-box-border, 50%),
+                           linear-gradient(to bottom, derive(-fx-sensitivity-color,50%) 0%, -fx-sensitivity-color 100%);
+    -fx-padding          : 0px 3px 20px 0px; /* top right bottom left */
+    -fx-background-insets: 0, 1;
+}
+
+.xy-control .xy-slider-vertical-thumb {
+    -fx-background-color : derive(-fx-box-border, 50%),
+                           linear-gradient(to bottom, derive(-fx-sensitivity-color,50%) 0%, -fx-sensitivity-color 100%);
+    -fx-padding          : 0px 20px 3px 0px; /* top right bottom left */
+    -fx-background-insets: 0, 1;
+}
+
+.xy-control .arrow {
+    -fx-fill  : -fx-text-base-color;
+    -fx-stroke: transparent;
+}
+
+.xy-control .zero {
+    -fx-fill        : transparent;
+    -fx-stroke      : -fx-text-base-color;
+    -fx-stroke-width: 2px;
+}
+
+.xy-control .xy-thumb {
+    -fx-background-color : derive(-fx-color,-36%),
+                           derive(-fx-color,73%),
+                           linear-gradient(to bottom, derive(-fx-sensitivity-color,-20%),derive(-fx-sensitivity-color,40%));
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 1.0em;
+    -fx-padding          : 0.625em;
+}
+
+.xy-control:focused .xy-thumb {
+    -fx-color            : -fx-focused-base;
+    -fx-background-color : -fx-focus-color,
+                           derive(-fx-color,-36%),
+                           derive(-fx-color,73%),
+                           linear-gradient(to bottom, derive(-fx-sensitivity-color,-20%),derive(-fx-sensitivity-color,40%));
+    -fx-background-insets: -1.4, 0, 1, 2;
+    -fx-background-radius: 1.0em;
+}
+
+.xy-control .xy-thumb:hover {
+    -fx-color: -fx-hover-base;
+}
+
+.xy-control .xy-thumb:pressed {
+    -fx-color: -fx-pressed-base;
+}
+

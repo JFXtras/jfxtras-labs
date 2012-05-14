@@ -38,8 +38,10 @@ import jfxtras.labs.scene.control.gauge.XYControl;
  * Time: 12:55
  */
 public class XYControlBehavior extends BehaviorBase<XYControl> {
+    private XYControl control;
 
     public XYControlBehavior(final XYControl CONTROL) {
         super(CONTROL);
+        control = CONTROL;
     }
 }
