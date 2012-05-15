@@ -35,7 +35,6 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -53,8 +52,6 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import jfxtras.labs.internal.scene.control.behavior.XYControlBehavior;
 import jfxtras.labs.scene.control.gauge.XYControl;
 
@@ -94,8 +91,7 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         super(CONTROL, new XYControlBehavior(CONTROL));
         control     = CONTROL;
         handler     = new EventHandler<Event>() {
-            @Override
-            public void handle(final Event EVENT) {
+            @Override public void handle(final Event EVENT) {
                 if (MouseEvent.MOUSE_CLICKED == EVENT.getEventType()) {
                     if (incrementX.equals(EVENT.getSource())) {
                         control.incrementX();
@@ -145,7 +141,7 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
                     if (thumb.equals(EVENT.getSource())) {
                     }
                 } else if (ScrollEvent.SCROLL == EVENT.getEventType()) {
-                    if (((ScrollEvent) EVENT).getDeltaY() < -20) {
+                    if (((ScrollEvent) EVENT).getDeltaY() < -30) {
                         switch(control.getSensitivity()) {
                             case COARSE:
 
@@ -157,7 +153,7 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
                                 control.setSensitivity(XYControl.Sensitivity.MEDIUM);
                                 break;
                         }
-                    } else if (((ScrollEvent) EVENT).getDeltaY() > 20) {
+                    } else if (((ScrollEvent) EVENT).getDeltaY() > 30) {
                         switch(control.getSensitivity()) {
                             case COARSE:
                                 control.setSensitivity(XYControl.Sensitivity.MEDIUM);
@@ -313,16 +309,23 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         Pane pane = new Pane();
 
         //area.getStyleClass().setAll("xy-area");
-        Rectangle background = new Rectangle(0, 0, 200, 200);
-        background.setFill(new LinearGradient(0, background.getLayoutBounds().getMinY(), 0, background.getLayoutBounds().getMaxY(),
-                                              false, CycleMethod.NO_CYCLE,
-                                              new Stop(0.0, Color.rgb(200, 200, 200)),
-                                              new Stop(1.0, Color.rgb(180, 180, 180))));
+        Rectangle areaFrame = new Rectangle(0, 0, 200, 200);
+        areaFrame.setFill(new LinearGradient(0, 0,
+                                             areaFrame.getLayoutBounds().getMaxX(), areaFrame.getLayoutBounds().getMaxY(),
+                                             false, CycleMethod.NO_CYCLE,
+                                             new Stop(0.0, Color.rgb(80, 80, 80)),
+                                             new Stop(1.0, Color.rgb(220, 220, 220))));
+        Rectangle areaBackground = new Rectangle(1, 1, 198, 198);
+        areaBackground.setFill(new LinearGradient(0, areaBackground.getLayoutBounds().getMinY(),
+                                                  0, areaBackground.getLayoutBounds().getMaxY(),
+                                                  false, CycleMethod.NO_CYCLE,
+                                                  new Stop(0.0, Color.rgb(220, 220, 220)),
+                                                  new Stop(1.0, Color.rgb(180, 180, 180))));
         Line xAxis = new Line(0, 100, 200, 100);
         xAxis.setFill(Color.rgb(80, 80, 80));
         Line yAxis = new Line(100, 0, 100, 200);
         yAxis.setFill(Color.rgb(80, 80, 80));
-        area.getChildren().addAll(background, xAxis, yAxis);
+        area.getChildren().addAll(areaFrame, areaBackground, xAxis, yAxis);
         area.relocate(0, 0);
         pane.getChildren().add(area);
 
