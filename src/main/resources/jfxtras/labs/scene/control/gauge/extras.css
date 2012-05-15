@@ -120,11 +120,11 @@
     -fx-font-family: "System";
     -fx-font-size: 11px;
     -fx-base: #353535;
-    -fx-background: #040404;/*#F4F4F4;*/
-    -fx-focus-color: #FF9300;
-    -fx-control-inner-background: transparent;/*#FFFFFF;*/
-    -fx-inner-border: linear-gradient(to bottom, derive(-fx-color,70.79892658616063%) 0%, derive(-fx-color,20.338125359401953%) 100%);
-    -fx-body-color: linear-gradient( to bottom, derive(-fx-color, 51.216216216216225%) 0%, derive(-fx-color, 4.810810810810807%) 100%);
+    -fx-background: #040404;
+    -fx-focus-color: transparent;
+    -fx-control-inner-background: transparent;
+    -fx-inner-border: linear-gradient(to bottom, derive(-fx-color,71%) 0%, derive(-fx-color,20%) 100%);
+    -fx-body-color: linear-gradient( to bottom, derive(-fx-color, 51%) 0%, derive(-fx-color, 5%) 100%);
     -fx-background-radius: 0, 0, 0, 0;
     -fx-padding: 0px 0px 0px 0px;
     -fx-background-insets: 0 0 -1 0, 0, 0, 1;
@@ -389,6 +389,9 @@
 }
 
 .xy-control .xy-button {
+    -fx-base: #353535;
+    -fx-background: #040404;
+    -fx-focus-color: transparent;
     -fx-background-color : -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
     -fx-background-insets: 0 0 -1 0, 0, 1, 2;
     -fx-background-radius: 0, 0, 1, 1;
@@ -397,17 +400,18 @@
     -fx-alignment        : CENTER;
     -fx-content-display  : LEFT;
 }
-
+/*
 .xy-control:focused .xy-button {
     -fx-color            : -fx-focused-base;
     -fx-background-color : -fx-focus-color, derive(-fx-color,-36%), derive(-fx-color,73%), linear-gradient(to bottom, derive(-fx-color,-19%),derive(-fx-color,61%));
     -fx-background-insets: -1.4, 0, 1, 2;
     -fx-background-radius: 0;
 }
-
+*/
 .xy-control .xy-button:hover {
     -fx-color: -fx-hover-base;
 }
+
 
 .xy-control .xy-button:pressed {
     -fx-color: -fx-pressed-base;
