@@ -27,12 +27,17 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Control;
+import javafx.scene.paint.Color;
 
 
 /**
@@ -43,30 +48,40 @@ import javafx.scene.control.Control;
  */
 public class XYControl extends Control {
     public enum Sensitivity {
-        COARSE(0.1),
-        MEDIUM(0.025),
-        FINE(0.005);
+        COARSE(0.1, Color.RED),
+        MEDIUM(0.025, Color.rgb(255, 191, 0)),
+        FINE(0.005, Color.LIME);
 
         public final double STEP_SIZE;
+        public final Color COLOR;
 
-        private Sensitivity(final double STEP_SIZE) {
+        private Sensitivity(final double STEP_SIZE, final Color COLOR) {
             this.STEP_SIZE = STEP_SIZE;
+            this.COLOR = COLOR;
         }
     }
 
     private static final String         DEFAULT_STYLE_CLASS = "xy-control";
     private DoubleProperty              xValue;
     private DoubleProperty              yValue;
+    private StringProperty              xAxisLabel;
+    private StringProperty              yAxisLabel;
+    private BooleanProperty             xAxisLabelVisible;
+    private BooleanProperty             yAxisLabelVisible;
     private ObjectProperty<Sensitivity> sensitivity;
     private ObjectProperty<Point2D>     position;
 
 
     // ******************** Constructors **************************************
     public XYControl() {
-        xValue      = new SimpleDoubleProperty(0);
-        yValue      = new SimpleDoubleProperty(0);
-        sensitivity = new SimpleObjectProperty<Sensitivity>(Sensitivity.COARSE);
-        position    = new SimpleObjectProperty<Point2D>(new Point2D(xValue.get(),  yValue.get()));
+        xValue            = new SimpleDoubleProperty(0);
+        yValue            = new SimpleDoubleProperty(0);
+        xAxisLabel        = new SimpleStringProperty("x");
+        yAxisLabel        = new SimpleStringProperty("y");
+        xAxisLabelVisible = new SimpleBooleanProperty(false);
+        yAxisLabelVisible = new SimpleBooleanProperty(false);
+        sensitivity       = new SimpleObjectProperty<Sensitivity>(Sensitivity.COARSE);
+        position          = new SimpleObjectProperty<Point2D>(new Point2D(xValue.get(),  yValue.get()));
         init();
     }
 
@@ -104,6 +119,54 @@ public class XYControl extends Control {
 
     public final DoubleProperty yValueProperty() {
         return yValue;
+    }
+
+    public final String getXAxisLabel() {
+        return xAxisLabel.get();
+    }
+
+    public final void setXAxisLabel(final String X_AXIS_LABEL) {
+        xAxisLabel.set(X_AXIS_LABEL);
+    }
+
+    public final StringProperty xAxisLabelProperty() {
+        return xAxisLabel;
+    }
+
+    public final String getYAxisLabel() {
+        return yAxisLabel.get();
+    }
+
+    public final void setYAxisLabel(final String Y_AXIS_LABEL) {
+        yAxisLabel.set(Y_AXIS_LABEL);
+    }
+
+    public final StringProperty yAxisLabelProperty() {
+        return yAxisLabel;
+    }
+
+    public final boolean isXAxisLabelVisible() {
+        return xAxisLabelVisible.get();
+    }
+
+    public final void setXAxisLabelVisible(final boolean X_AXIS_LABEL_VISIBLE) {
+        xAxisLabelVisible.set(X_AXIS_LABEL_VISIBLE);
+    }
+
+    public final BooleanProperty xAxisLabelVisibleProperty() {
+        return xAxisLabelVisible;
+    }
+
+    public final boolean isYAxisLabelVisible() {
+        return yAxisLabelVisible.get();
+    }
+
+    public final void setYAxisLabelVisible(final boolean Y_AXIS_LABEL_VISIBLE) {
+        yAxisLabelVisible.set(Y_AXIS_LABEL_VISIBLE);
+    }
+
+    public final BooleanProperty yAxisLabelVisibleProperty() {
+        return yAxisLabelVisible;
     }
 
     public final Sensitivity getSensitivity() {

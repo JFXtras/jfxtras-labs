@@ -35,7 +35,9 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Group;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
@@ -52,6 +54,12 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.RotateBuilder;
 import jfxtras.labs.internal.scene.control.behavior.XYControlBehavior;
 import jfxtras.labs.scene.control.gauge.XYControl;
 
@@ -210,6 +218,10 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         // Register listeners
         registerChangeListener(control.xValueProperty(), "X");
         registerChangeListener(control.yValueProperty(), "Y");
+        registerChangeListener(control.xAxisLabelProperty(), "X_AXIS_LABEL");
+        registerChangeListener(control.yAxisLabelProperty(), "Y_AXIS_LABEL");
+        registerChangeListener(control.xAxisLabelVisibleProperty(), "X_AXIS_LABEL_VISIBILITY");
+        registerChangeListener(control.yAxisLabelVisibleProperty(), "Y_AXIS_LABEL_VISIBILITY");
         registerChangeListener(control.sensitivityProperty(), "SENSITIVITY");
         incrementX.addEventFilter(MouseEvent.MOUSE_CLICKED, handler);
         decrementX.addEventFilter(MouseEvent.MOUSE_CLICKED, handler);
@@ -246,8 +258,14 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
             double posY = control.getYValue() * areaHeight / 2 + areaHeight / 2;
             thumb.setLayoutY(posY);
             verSliderThumb.setLayoutY(control.getYValue() * verSlider.getLayoutBounds().getHeight() / 2 + verSlider.getLayoutBounds().getHeight() / 2 - verSliderThumb.getLayoutBounds().getHeight() / 2 + incrementY.getLayoutBounds().getHeight());
-        } else if ("STEP_SIZE".equals(PROPERTY)) {
-
+        } else if ("X_AXIS_LABEL".equals(PROPERTY)) {
+            paint();
+        } else if ("Y_AXIS_LABEL".equals(PROPERTY)) {
+            paint();
+        } else if ("X_AXIS_LABEL_VISIBILITY".equals(PROPERTY)) {
+            paint();
+        } else if ("Y_AXIS_LABEL_VISIBILITY".equals(PROPERTY)) {
+            paint();
         } else if ("SENSITIVITY".equals(PROPERTY)) {
             switch (control.getSensitivity()) {
                 case COARSE:
@@ -304,12 +322,18 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
 
     // ******************** Drawing related ***********************************
     private void drawControl() {
+        final double SIZE        = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+        final double AREA_SIZE   = 0.9090909091 * SIZE;
+        final double BUTTON_SIZE = 0.0909090909 * SIZE;
+        final Font FONT          = Font.font("Verdana", FontWeight.NORMAL, 0.055 * AREA_SIZE);
+
         getChildren().clear();
 
         Pane pane = new Pane();
 
+        // xy area
         //area.getStyleClass().setAll("xy-area");
-        Rectangle areaFrame = new Rectangle(0, 0, 200, 200);
+        Rectangle areaFrame = new Rectangle(0, 0, AREA_SIZE, AREA_SIZE);
         areaFrame.setFill(new LinearGradient(0, 0,
                                              areaFrame.getLayoutBounds().getMaxX(), areaFrame.getLayoutBounds().getMaxY(),
                                              false, CycleMethod.NO_CYCLE,
@@ -317,82 +341,121 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
                                              new Stop(0.49, Color.rgb(64, 64, 64)),
                                              new Stop(0.5, Color.rgb(240, 240, 240)),
                                              new Stop(1.0, Color.rgb(240, 240, 240))));
-        Rectangle areaBackground = new Rectangle(1, 1, 198, 198);
+        Rectangle areaBackground = new Rectangle(1, 1, areaFrame.getLayoutBounds().getWidth() - 2, areaFrame.getLayoutBounds().getWidth() - 2);
         areaBackground.setFill(new LinearGradient(0, areaBackground.getLayoutBounds().getMinY(),
                                                   0, areaBackground.getLayoutBounds().getMaxY(),
                                                   false, CycleMethod.NO_CYCLE,
                                                   new Stop(0.0, Color.rgb(220, 220, 220)),
                                                   new Stop(1.0, Color.rgb(180, 180, 180))));
-        Line xAxis = new Line(0, 100, 200, 100);
-        xAxis.setFill(Color.rgb(80, 80, 80));
-        Line yAxis = new Line(100, 0, 100, 200);
-        yAxis.setFill(Color.rgb(80, 80, 80));
+
+        Line xAxis = new Line(1, AREA_SIZE / 2, AREA_SIZE - 1, AREA_SIZE / 2);
+        xAxis.setFill(null);
+        xAxis.setStroke(Color.rgb(38, 38, 38));
+
+        Line yAxis = new Line(AREA_SIZE / 2, 1, AREA_SIZE / 2, AREA_SIZE - 1);
+        yAxis.setFill(null);
+        yAxis.setStroke(Color.rgb(38, 38, 38));
+
         area.getChildren().addAll(areaFrame, areaBackground, xAxis, yAxis);
         area.relocate(0, 0);
         pane.getChildren().add(area);
 
+        // horizontal slider
         decrementX.getStyleClass().setAll("xy-button");
-        decrementX.relocate(0, 200);
-        Group arrowDecX = createArrow(Direction.LEFT, 20);
+        decrementX.relocate(0, AREA_SIZE);
+        Group arrowDecX = createArrow(Direction.LEFT, BUTTON_SIZE);
         decrementX.getChildren().add(arrowDecX);
         StackPane.setAlignment(arrowDecX, Pos.CENTER);
         StackPane.setMargin(arrowDecX, new Insets(0, 0, 0, 0));
         pane.getChildren().add(decrementX);
 
         horSlider.getStyleClass().setAll("xy-slider-horizontal");
-        horSlider.relocate(20, 200);
+        Rectangle horSliderBounds = new Rectangle(AREA_SIZE - 2 * BUTTON_SIZE, BUTTON_SIZE);
+        horSliderBounds.setOpacity(0.0);
+
+        Text xAxisLabel = new Text(control.getXAxisLabel());
+        xAxisLabel.setFont(FONT);
+        xAxisLabel.getStyleClass().add("arrow");
+        xAxisLabel.setTextOrigin(VPos.CENTER);
+        xAxisLabel.setTextAlignment(TextAlignment.CENTER);
+        xAxisLabel.setVisible(control.isXAxisLabelVisible());
+
+        horSlider.getChildren().addAll(horSliderBounds, xAxisLabel);
+        horSlider.relocate(BUTTON_SIZE, AREA_SIZE);
         pane.getChildren().add(horSlider);
 
-        horSliderThumb.getStyleClass().setAll("xy-slider-horizontal-thumb");
-        horSliderThumb.relocate(98, 200);
+        Rectangle horThumb = new Rectangle(3, BUTTON_SIZE);
+        horThumb.getStyleClass().add("xy-slider-horizontal-thumb");
+        horSliderThumb.getChildren().add(horThumb);
+        horSliderThumb.relocate(AREA_SIZE / 2 - 1, AREA_SIZE);
         pane.getChildren().add(horSliderThumb);
 
         incrementX.getStyleClass().setAll("xy-button");
-        incrementX.relocate(180, 200);
-        Group arrowIncX = createArrow(Direction.RIGHT, 20);
+        incrementX.relocate(AREA_SIZE - BUTTON_SIZE, AREA_SIZE);
+        Group arrowIncX = createArrow(Direction.RIGHT, BUTTON_SIZE);
         incrementX.getChildren().add(arrowIncX);
         StackPane.setAlignment(arrowIncX, Pos.CENTER);
         StackPane.setMargin(arrowIncX, new Insets(0, 0, 0, 0));
         pane.getChildren().add(incrementX);
 
+        // vertical slider
         incrementY.getStyleClass().setAll("xy-button");
-        incrementY.relocate(200, 0);
-        Group arrowIncY = createArrow(Direction.UP, 20);
+        incrementY.relocate(AREA_SIZE, 0);
+        Group arrowIncY = createArrow(Direction.UP, BUTTON_SIZE);
         incrementY.getChildren().add(arrowIncY);
         StackPane.setAlignment(arrowIncY, Pos.CENTER);
         StackPane.setMargin(arrowIncY, new Insets(0, 0, 0, 0));
         pane.getChildren().add(incrementY);
 
         verSlider.getStyleClass().setAll("xy-slider-vertical");
-        verSlider.relocate(200, 20);
+
+        Group group = new Group();
+        Rectangle verSliderBounds = new Rectangle(BUTTON_SIZE, AREA_SIZE - 2 * BUTTON_SIZE);
+        verSliderBounds.setOpacity(0.0);
+
+        Text yAxisLabel = new Text(control.getYAxisLabel());
+        yAxisLabel.setFont(FONT);
+        yAxisLabel.getStyleClass().add("arrow");
+        yAxisLabel.setTextOrigin(VPos.CENTER);
+        yAxisLabel.setTextAlignment(TextAlignment.CENTER);
+        yAxisLabel.setVisible(control.isYAxisLabelVisible());
+        yAxisLabel.setRotate(-90);
+        yAxisLabel.setLayoutX(-yAxisLabel.getLayoutBounds().getHeight());
+        yAxisLabel.setLayoutY(verSliderBounds.getLayoutBounds().getHeight() / 2);
+        group.getChildren().addAll(verSliderBounds, yAxisLabel);
+        verSlider.getChildren().addAll(group);
+        verSlider.relocate(AREA_SIZE, BUTTON_SIZE);
         pane.getChildren().add(verSlider);
 
-        verSliderThumb.getStyleClass().setAll("xy-slider-vertical-thumb");
-        verSliderThumb.relocate(200, 98);
+        Rectangle verThumb = new Rectangle(BUTTON_SIZE, 3);
+        verThumb.getStyleClass().add("xy-slider-vertical-thumb");
+        verSliderThumb.getChildren().add(verThumb);
+        verSliderThumb.relocate(AREA_SIZE, AREA_SIZE / 2 - 1);
         pane.getChildren().add(verSliderThumb);
 
         decrementY.getStyleClass().setAll("xy-button");
-        decrementY.relocate(200, 180);
-        Group arrowDecY = createArrow(Direction.DOWN, 20);
+        decrementY.relocate(AREA_SIZE, AREA_SIZE - BUTTON_SIZE);
+        Group arrowDecY = createArrow(Direction.DOWN, BUTTON_SIZE);
         decrementY.getChildren().add(arrowDecY);
         StackPane.setAlignment(arrowDecY, Pos.CENTER);
         StackPane.setMargin(arrowDecY, new Insets(0, 0, 0, 0));
         pane.getChildren().add(decrementY);
 
+        // reset button
         reset.getStyleClass().setAll("xy-button");
-        reset.relocate(200, 200);
+        reset.relocate(AREA_SIZE, AREA_SIZE);
         final Group RESET_GROUP = new Group();
-        final Rectangle IBOUNDS = new Rectangle(20, 20);
+        final Rectangle IBOUNDS = new Rectangle(BUTTON_SIZE, BUTTON_SIZE);
         IBOUNDS.setOpacity(0.0);
-        final Ellipse ZERO = new Ellipse(10, 10, 4, 5);
-        ZERO.setStrokeWidth(2.0);
+        final Ellipse ZERO = new Ellipse(0.5 * BUTTON_SIZE, 0.5 * BUTTON_SIZE, 0.02 * AREA_SIZE, 0.025 * AREA_SIZE);
+        ZERO.setStrokeWidth(0.01 * AREA_SIZE);
         ZERO.getStyleClass().add("zero");
         RESET_GROUP.getChildren().addAll(IBOUNDS, ZERO);
         reset.getChildren().add(RESET_GROUP);
         pane.getChildren().add(reset);
 
         thumb.getStyleClass().setAll("xy-thumb");
-        thumb.relocate(95, 95);
+        thumb.relocate(AREA_SIZE / 2 - 5, AREA_SIZE / 2 - 5);
         pane.getChildren().add(thumb);
 
         getChildren().addAll(pane);
