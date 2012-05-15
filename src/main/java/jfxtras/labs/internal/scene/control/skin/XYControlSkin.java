@@ -313,8 +313,10 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         areaFrame.setFill(new LinearGradient(0, 0,
                                              areaFrame.getLayoutBounds().getMaxX(), areaFrame.getLayoutBounds().getMaxY(),
                                              false, CycleMethod.NO_CYCLE,
-                                             new Stop(0.0, Color.rgb(80, 80, 80)),
-                                             new Stop(1.0, Color.rgb(220, 220, 220))));
+                                             new Stop(0.0, Color.rgb(64, 64, 64)),
+                                             new Stop(0.49, Color.rgb(64, 64, 64)),
+                                             new Stop(0.5, Color.rgb(240, 240, 240)),
+                                             new Stop(1.0, Color.rgb(240, 240, 240))));
         Rectangle areaBackground = new Rectangle(1, 1, 198, 198);
         areaBackground.setFill(new LinearGradient(0, areaBackground.getLayoutBounds().getMinY(),
                                                   0, areaBackground.getLayoutBounds().getMaxY(),
