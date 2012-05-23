@@ -435,8 +435,7 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
 
     private final void updateFluid() {
         Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
+            @Override public void run() {
                 if (Double.compare(control.getChargingLevel(), 0) == 0) {
                     fluid.setVisible(false);
                 } else {

@@ -486,8 +486,7 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
 
     private final void updateFluid() {
         Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
+            @Override public void run() {
             if (Double.compare(control.getChargingLevel(), 0) == 0) {
                 fluid.setVisible(false);
             } else {

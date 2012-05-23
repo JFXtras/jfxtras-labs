@@ -42,6 +42,7 @@ import java.util.Map;
 public class DotMatrixSegmentBuilder {
     private DotMatrixSegment segment = new DotMatrixSegment();
 
+
     public static final DotMatrixSegmentBuilder create() {
         return new DotMatrixSegmentBuilder();
     }
