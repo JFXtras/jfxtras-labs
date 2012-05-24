@@ -1,4 +1,4 @@
-/*
+    /*
  * Copyright (c) 2012, JFXtras
  *  All rights reserved.
  *
@@ -36,6 +36,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.VPos;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -60,7 +63,7 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
         initFocusBehaviourWorkaround();
         requestLayout();
     }
-    private GridPane root;
+//    private GridPane root;
     private TextField textField;
     private StackPane btnUp;
     private StackPane btnDown;
@@ -71,15 +74,10 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
     private final double ARROW_HEIGHT = 0.7;
 
     /**
-     * Creates and lays out the Nodes in this Skin
+     * Creates the Nodes in this Skin
      */
     private void createNodes() {
-        root = GridPaneBuilder.create().columnConstraints(
-                ColumnConstraintsBuilder.create().fillWidth(true).build(),
-                ColumnConstraintsBuilder.create().fillWidth(true).build()).rowConstraints(
-                RowConstraintsBuilder.create().fillHeight(true).build(),
-                RowConstraintsBuilder.create().fillHeight(true).build()).build();
-        root.setFocusTraversable(true);
+        setFocusTraversable(true);
         textField = new NumberTextField();
 
         //
@@ -103,15 +101,8 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
                 new LineTo(ARROW_SIZE, 0));
         btnDown.getChildren().add(arrowDown);
         
-        // We want the button's width to be the textfield's height
-        // As we set fillWidth == true in the GridPane, sizing one button is enough
-        btnUp.prefWidthProperty().bind(textField.heightProperty());
-        btnDown.prefWidthProperty().bind(textField.prefHeightProperty());
 
-        // Textfield and two Buttons are layed out in a GridPane
-        root.add(textField, 0, 0, 1, GridPane.REMAINING);
-        root.add(btnUp, 1, 0);
-        root.add(btnDown, 1, 1);
+        this.getChildren().addAll(textField, btnUp, btnDown);
 
         //
         // Mouse Handler for buttons
@@ -131,12 +122,38 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
             }
         });
         
-        getChildren().setAll(root);
-
-        // uncomment for debugging
-//         root.setStyle("-fx-background-color:red;");
-//         root.setGridLinesVisible(true);
     }
+
+    @Override
+    protected void layoutChildren() {
+        super.layoutChildren();
+        System.out.println("control-width=" + this.getWidth());
+        Insets insets = getInsets();
+        double x = insets.getLeft();
+        double y = insets.getTop();
+        double textfieldHeight = this.getHeight()-insets.getTop() - insets.getBottom();
+        double buttonWidth = textField.prefHeight(-1);
+        double textfieldWidth = this.getWidth()-insets.getLeft()-insets.getRight() - buttonWidth;
+        layoutInArea(textField, x, y, textfieldWidth, textfieldHeight, USE_PREF_SIZE, HPos.LEFT, VPos.TOP);
+        layoutInArea(btnUp, x+textfieldWidth, y, buttonWidth, textfieldHeight/2, USE_PREF_SIZE, HPos.LEFT, VPos.TOP);
+        layoutInArea(btnDown, x+textfieldWidth, y+textfieldHeight/2, buttonWidth, textfieldHeight/2, USE_PREF_SIZE, HPos.LEFT, VPos.TOP);
+    }
+
+    @Override
+    protected double computePrefWidth(double PREF_WIDTH) {
+        super.computePrefWidth(PREF_WIDTH);
+        System.out.println("left="+getInsets().getLeft());
+        System.out.println("right="+getInsets().getRight());
+        System.out.println("textfield="+ textField.prefWidth(-1));
+        System.out.println("btnUp="+ textField.prefHeight(-1));
+        double prefWidth = getInsets().getLeft()
+                + textField.prefWidth(PREF_WIDTH)
+                + textField.prefHeight(PREF_WIDTH)
+                + getInsets().getRight();
+        return prefWidth;
+    }
+
+    
     
     /**
      * As we want to re-use the TextField's behaviour, but style the controls

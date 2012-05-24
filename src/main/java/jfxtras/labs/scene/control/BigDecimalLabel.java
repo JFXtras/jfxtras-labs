@@ -28,25 +28,19 @@ package jfxtras.labs.scene.control;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
-import java.text.ParseException;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
 
 /**
- * Textfield implementation that accepts formatted number and stores them in a
- * BigDecimal property The user input is formatted when the focus is lost or the
- * user hits RETURN.
+ * Label implementation that displays a formatted BigDecimal.
  *
  * @author Thomas Bolz
  */
-public class NumberTextField extends TextField {
+public class BigDecimalLabel extends Label {
 
-    private final NumberFormat nf;
     private ObjectProperty<BigDecimal> number = new SimpleObjectProperty();
 
     public final BigDecimal getNumber() {
@@ -61,70 +55,44 @@ public class NumberTextField extends TextField {
         return number;
     }
 
-    public NumberTextField() {
+    final private ObjectProperty<NumberFormat> format = new SimpleObjectProperty();
+    public NumberFormat getFormat() {return format.getValue();}
+    public final void setFormat(NumberFormat value) {format.set(value);}
+    public ObjectProperty<NumberFormat> formatProperty() {return format;}
+
+    public BigDecimalLabel() {
         this(BigDecimal.ZERO);
     }
 
-    public NumberTextField(BigDecimal value) {
+    public BigDecimalLabel(BigDecimal value) {
         this(value, NumberFormat.getInstance());
-        initHandlers();
     }
 
-    public NumberTextField(BigDecimal value, NumberFormat nf) {
+    public BigDecimalLabel(BigDecimal value, NumberFormat nf) {
         super();
-        this.nf = nf;
+        setFormat(nf);
         initHandlers();
         setNumber(value);
     }
 
     private void initHandlers() {
 
-        // try to parse when focus is lost or RETURN is hit
-        setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent arg0) {
-                parseAndFormatInput();
-            }
-        });
-
-        focusedProperty().addListener(new ChangeListener<Boolean>() {
-
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (!newValue.booleanValue()) {
-                    parseAndFormatInput();
-                }
-            }
-        });
-
-        // Set text in field if BigDecimal property is changed from outside.
+        // Text is formatted and displayed if the underlying number or format changes.
         numberProperty().addListener(new ChangeListener<BigDecimal>() {
 
             @Override
-            public void changed(ObservableValue<? extends BigDecimal> obserable, BigDecimal oldValue, BigDecimal newValue) {
-                setText(nf.format(newValue));
+            public void changed(ObservableValue<? extends BigDecimal> observable, BigDecimal oldValue, BigDecimal newValue) {
+                setText(getFormat().format(getNumber()));
             }
         });
-    }
+        // Text is formatted and displayed if the underlying number or format changes.
+        formatProperty().addListener(new ChangeListener<NumberFormat>() {
 
-    /**
-     * Tries to parse the user input to a number according to the provided
-     * NumberFormat
-     */
-    private void parseAndFormatInput() {
-        try {
-            String input = getText();
-            if (input == null || input.length() == 0) {
-                return;
+            @Override
+            public void changed(ObservableValue<? extends NumberFormat> observable, NumberFormat olValue, NumberFormat newValue) {
+                setText(getFormat().format(getNumber()));
             }
-            Number parsedNumber = nf.parse(input);
-            BigDecimal newValue = new BigDecimal(parsedNumber.toString());
-            setNumber(newValue);
-            selectAll();
-        } catch (ParseException ex) {
-            // If parsing fails keep old number
-            setText(nf.format(number.get()));
-        }
+
+        });
     }
 }
