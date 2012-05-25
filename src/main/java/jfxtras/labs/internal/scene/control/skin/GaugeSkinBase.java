@@ -181,16 +181,14 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         FRAME.getChildren().clear();
         final Point2D CENTER = new Point2D(0.5 * WIDTH, 0.5 * HEIGHT);
 
-        //final Shape SUBTRACT = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, WIDTH * 0.4158878326);
-
-        //final Shape OUTER_FRAME = Shape.subtract(new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.5 * WIDTH), SUBTRACT);
-        final Shape OUTER_FRAME = new Circle(CENTER.getX(), CENTER.getY(), 0.5 * WIDTH);
+        final Shape SUBTRACT = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, WIDTH * 0.4158878326);
+        SUBTRACT.setFill(Color.TRANSPARENT);
+        final Shape OUTER_FRAME = Shape.subtract(new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.5 * WIDTH), SUBTRACT);
         OUTER_FRAME.setFill(Color.color(0.5176470588, 0.5176470588, 0.5176470588, 1));
         OUTER_FRAME.setStroke(null);
         FRAME.getChildren().add(OUTER_FRAME);
 
-        //final Shape INNER_FRAME = Shape.subtract(new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4205607476635514 * WIDTH), SUBTRACT);
-        final Shape INNER_FRAME = new Circle(CENTER.getX(), CENTER.getY(), 0.4205607476635514 * WIDTH);
+        final Shape INNER_FRAME = Shape.subtract(new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4205607476635514 * WIDTH), SUBTRACT);
         INNER_FRAME.setFill(Color.color(0.6, 0.6, 0.6, 0.8));
         INNER_FRAME.setStroke(null);
 
