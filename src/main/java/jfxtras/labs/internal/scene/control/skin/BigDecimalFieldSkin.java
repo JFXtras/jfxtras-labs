@@ -127,7 +127,6 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
     @Override
     protected void layoutChildren() {
         super.layoutChildren();
-        System.out.println("control-width=" + this.getWidth());
         Insets insets = getInsets();
         double x = insets.getLeft();
         double y = insets.getTop();
@@ -142,10 +141,6 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
     @Override
     protected double computePrefWidth(double PREF_WIDTH) {
         super.computePrefWidth(PREF_WIDTH);
-        System.out.println("left="+getInsets().getLeft());
-        System.out.println("right="+getInsets().getRight());
-        System.out.println("textfield="+ textField.prefWidth(-1));
-        System.out.println("btnUp="+ textField.prefHeight(-1));
         double prefWidth = getInsets().getLeft()
                 + textField.prefWidth(PREF_WIDTH)
                 + textField.prefHeight(PREF_WIDTH)
