@@ -27,9 +27,19 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Orientation;
 import javafx.scene.paint.Color;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 
@@ -40,53 +50,74 @@ import java.util.LinkedList;
  * Time: 16:37
  */
 public class LedBargraphBuilder {
-    private LedBargraph barGraph = new LedBargraph();
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
 
     public static final LedBargraphBuilder create() {
         return new LedBargraphBuilder();
     }
 
     public final LedBargraphBuilder noOfLeds(final int NO_OF_LEDS) {
-        barGraph.setNoOfLeds(NO_OF_LEDS);
+        properties.put("noOfLeds", new SimpleIntegerProperty(NO_OF_LEDS));
         return this;
     }
 
     public final LedBargraphBuilder ledType(final Led.Type LED_TYPE) {
-        barGraph.setLedType(LED_TYPE);
+        properties.put("ledType", new SimpleObjectProperty<Led.Type>(LED_TYPE));
         return this;
     }
 
     public final LedBargraphBuilder orientation(final Orientation ORIENTATION) {
-        barGraph.setOrientation(ORIENTATION);
+        properties.put("orientation", new SimpleObjectProperty<Orientation>(ORIENTATION));
         return this;
     }
 
     public final LedBargraphBuilder peakValueVisible(final boolean PEAK_VALUE_VISIBLE) {
-        barGraph.setPeakValueVisible(PEAK_VALUE_VISIBLE);
+        properties.put("peakValueVisible", new SimpleBooleanProperty(PEAK_VALUE_VISIBLE));
         return this;
     }
 
     public final LedBargraphBuilder ledSize(final double LED_SIZE) {
-        barGraph.setLedSize(LED_SIZE);
+        properties.put("ledSize", new SimpleDoubleProperty(LED_SIZE));
         return this;
     }
 
     public final LedBargraphBuilder ledColors(final LinkedList<Color> LED_COLORS) {
-        barGraph.setLedColors(LED_COLORS);
+        properties.put("ledColors", new SimpleObjectProperty<LinkedList<Color>>(LED_COLORS));
         return this;
     }
 
     public final LedBargraphBuilder ledColor(final int INDEX, final Color COLOR) {
-        barGraph.setLedColor(INDEX, COLOR);
+        properties.put("ledColorIndex", new SimpleIntegerProperty(INDEX));
+        properties.put("ledColor", new SimpleObjectProperty<Color>(COLOR));
         return this;
     }
 
     public final LedBargraphBuilder value(final double VALUE) {
-        barGraph.setValue(VALUE);
+        properties.put("value", new SimpleDoubleProperty(VALUE));
         return this;
     }
 
     public final LedBargraph build() {
-        return barGraph != null ? barGraph : new LedBargraph();
+        final LedBargraph LED_BARGRAPH = new LedBargraph();
+        for (String key : properties.keySet()) {
+            if ("noOfLeds".equals(key)) {
+                LED_BARGRAPH.setNoOfLeds(((IntegerProperty) properties.get(key)).get());
+            } else if ("ledType".equals(key)) {
+                LED_BARGRAPH.setLedType(((ObjectProperty<Led.Type>) properties.get(key)).get());
+            } else if ("orientation".equals(key)) {
+                LED_BARGRAPH.setOrientation(((ObjectProperty<Orientation>) properties.get(key)).get());
+            } else if ("peakValueVisible".equals(key)) {
+                LED_BARGRAPH.setPeakValueVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("ledSize".equals(key)) {
+                LED_BARGRAPH.setLedSize(((DoubleProperty) properties.get(key)).get());
+            } else if ("ledColors".equals(key)) {
+                LED_BARGRAPH.setLedColors(((ObjectProperty<LinkedList<Color>>) properties.get(key)).get());
+            } else if ("ledColor".equals(key)) {
+                LED_BARGRAPH.setLedColor(((IntegerProperty) properties.get("ledColorIndex")).get(), ((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("value".equals(key)) {
+                LED_BARGRAPH.setValue(((DoubleProperty) properties.get(key)).get());
+            }
+        }
+        return LED_BARGRAPH;
     }
 }

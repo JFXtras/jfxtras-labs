@@ -27,7 +27,14 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
+
+import java.util.HashMap;
 
 
 /**
@@ -37,28 +44,38 @@ import javafx.scene.paint.Color;
  * Time: 16:04
  */
 public class SimpleIndicatorBuilder {
-    private SimpleIndicator indicator = new SimpleIndicator();
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
 
     public static final SimpleIndicatorBuilder create() {
         return new SimpleIndicatorBuilder();
     }
 
     public final SimpleIndicatorBuilder innerColor(final Color INNER_COLOR) {
-        indicator.setInnerColor(INNER_COLOR);
+        properties.put("innerColor", new SimpleObjectProperty<Color>(INNER_COLOR));
         return this;
     }
 
     public final SimpleIndicatorBuilder outerColor(final Color OUTER_COLOR) {
-        indicator.setOuterColor(OUTER_COLOR);
+        properties.put("outerColor", new SimpleObjectProperty<Color>(OUTER_COLOR));
         return this;
     }
 
     public final SimpleIndicatorBuilder glowVisible(final boolean GLOW_VISIBLE) {
-        indicator.setGlowVisible(GLOW_VISIBLE);
+        properties.put("glowVisible", new SimpleBooleanProperty(GLOW_VISIBLE));
         return this;
     }
 
     public final SimpleIndicator build() {
-        return indicator != null ? indicator : new SimpleIndicator();
+        final SimpleIndicator INDICATOR = new SimpleIndicator();
+        for (String key : properties.keySet()) {
+            if ("innerColor".equals(key)) {
+                INDICATOR.setInnerColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("outerColor".equals(key)) {
+                INDICATOR.setOuterColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("glowVisible".equals(key)) {
+                INDICATOR.setGlowVisible(((BooleanProperty) properties.get(key)).get());
+            }
+        }
+        return INDICATOR;
     }
 }

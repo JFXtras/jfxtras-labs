@@ -27,7 +27,16 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Stop;
+
+import java.util.HashMap;
 
 
 /**
@@ -37,33 +46,45 @@ import javafx.scene.paint.Stop;
  * Time: 15:13
  */
 public class SimpleBatteryBuilder {
-    private SimpleBattery battery = new SimpleBattery();
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
 
     public static final SimpleBatteryBuilder create() {
         return new SimpleBatteryBuilder();
     }
 
     public final SimpleBatteryBuilder charging(final boolean CHARGING) {
-        battery.setCharging(CHARGING);
+        properties.put("charging", new SimpleBooleanProperty(CHARGING));
         return this;
     }
 
     public final SimpleBatteryBuilder chargeIndicator(final SimpleBattery.ChargeIndicator CHARGE_INDICATOR) {
-        battery.setChargeIndicator(CHARGE_INDICATOR);
+        properties.put("chargeIndicator", new SimpleObjectProperty<SimpleBattery.ChargeIndicator>(CHARGE_INDICATOR));
         return this;
     }
 
     public final SimpleBatteryBuilder chargingLevel(final double CHARGING_LEVEL) {
-        battery.setChargingLevel(CHARGING_LEVEL);
+        properties.put("chargingLevel", new SimpleDoubleProperty(CHARGING_LEVEL));
         return this;
     }
 
     public final SimpleBatteryBuilder levelColors(final Stop[] LEVEL_COLORS) {
-        battery.setLevelColors(LEVEL_COLORS);
+        properties.put("levelColors", new SimpleObjectProperty<Stop[]>(LEVEL_COLORS));
         return this;
     }
 
     public final SimpleBattery build() {
-        return battery != null ? battery : new SimpleBattery();
+        final SimpleBattery BATTERY = new SimpleBattery();
+        for (String key : properties.keySet()) {
+            if ("charging".equals(key)) {
+                BATTERY.setCharging(((BooleanProperty) properties.get(key)).get());
+            } else if ("chargeIndicator".equals(key)) {
+                BATTERY.setChargeIndicator(((ObjectProperty<SimpleBattery.ChargeIndicator>) properties.get(key)).get());
+            } else if ("chargingLevel".equals(key)) {
+                BATTERY.setChargingLevel(((DoubleProperty) properties.get(key)).get());
+            } else if ("levelColors".equals(key)) {
+                BATTERY.setLevelColors(((ObjectProperty<Stop[]>) properties.get(key)).get());
+            }
+        }
+        return BATTERY;
     }
 }

@@ -27,7 +27,16 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
+
+import java.util.HashMap;
 
 
 /**
@@ -37,48 +46,66 @@ import javafx.scene.paint.Color;
  * Time: 15:38
  */
 public class OdometerBuilder {
-    private Odometer odometer = new Odometer();
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
 
     public static final OdometerBuilder create() {
         return new OdometerBuilder();
     }
 
     public final OdometerBuilder rotationPreset(final int ROTATION_PRESET) {
-        odometer.setRotationPreset(ROTATION_PRESET);
+        properties.put("rotationPreset", new SimpleIntegerProperty(ROTATION_PRESET));
         return this;
     }
 
     public final OdometerBuilder color(final Color COLOR) {
-        odometer.setColor(COLOR);
+        properties.put("color", new SimpleObjectProperty<Color>(COLOR));
         return this;
     }
 
     public final OdometerBuilder decimalColor(final Color DECIMAL_COLOR) {
-        odometer.setDecimalColor(DECIMAL_COLOR);
+        properties.put("decimalColor", new SimpleObjectProperty<Color>(DECIMAL_COLOR));
         return this;
     }
 
     public final OdometerBuilder numberColor(final Color NUMBER_COLOR) {
-        odometer.setNumberColor(NUMBER_COLOR);
+        properties.put("numberColor", new SimpleObjectProperty<Color>(NUMBER_COLOR));
         return this;
     }
 
     public final OdometerBuilder noOfDecimals(final int NO_OF_DECIMALS) {
-        odometer.setNoOfDecimals(NO_OF_DECIMALS);
+        properties.put("noOfDecimals", new SimpleIntegerProperty(NO_OF_DECIMALS));
         return this;
     }
 
     public final OdometerBuilder noOfDigits(final int NO_OF_DIGITS) {
-        odometer.setNoOfDigits(NO_OF_DIGITS);
+        properties.put("noOfDigits", new SimpleIntegerProperty(NO_OF_DIGITS));
         return this;
     }
 
     public final OdometerBuilder interval(final long INTERVAL) {
-        odometer.setInterval(INTERVAL);
+        properties.put("interval", new SimpleLongProperty(INTERVAL));
         return this;
     }
 
     public final Odometer build() {
-        return odometer != null ? odometer : new Odometer();
+        final Odometer ODOMETER = new Odometer();
+        for (String key : properties.keySet()) {
+            if ("rotationPreset".equals(key)) {
+                ODOMETER.setRotationPreset(((IntegerProperty) properties.get(key)).get());
+            } else if ("color".equals(key)) {
+                ODOMETER.setColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("decimalColor".equals(key)) {
+                ODOMETER.setDecimalColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("numberColor".equals(key)) {
+                ODOMETER.setNumberColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("noOfDecimals".equals(key)) {
+                ODOMETER.setNoOfDecimals(((IntegerProperty) properties.get(key)).get());
+            } else if ("noOfDigits".equals(key)) {
+                ODOMETER.setNoOfDigits(((IntegerProperty) properties.get(key)).get());
+            } else if ("interval".equals(key)) {
+                ODOMETER.setInterval(((LongProperty) properties.get(key)).get());
+            }
+        }
+        return ODOMETER;
     }
 }

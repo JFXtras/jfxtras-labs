@@ -27,6 +27,17 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
+import java.util.HashMap;
+
+
 /**
  * Created by
  * User: hansolo
@@ -34,43 +45,59 @@ package jfxtras.labs.scene.control.gauge;
  * Time: 08:59
  */
 public class XYControlBuilder {
-    private XYControl xyControl = new XYControl();
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
 
     public static final XYControlBuilder create() {
         return new XYControlBuilder();
     }
 
     public final XYControlBuilder xValue(final double X_VALUE) {
-        xyControl.setXValue(X_VALUE);
+        properties.put("xValue", new SimpleDoubleProperty(X_VALUE));
         return this;
     }
 
     public final XYControlBuilder yValue(final double Y_VALUE) {
-        xyControl.setYValue(Y_VALUE);
+        properties.put("yValue", new SimpleDoubleProperty(Y_VALUE));
         return this;
     }
 
     public final XYControlBuilder xAxisLabel(final String X_AXIS_LABEL) {
-        xyControl.setXAxisLabel(X_AXIS_LABEL);
+        properties.put("xAxisLabel", new SimpleStringProperty(X_AXIS_LABEL));
         return this;
     }
 
     public final XYControlBuilder yAxisLabel(final String Y_AXIS_LABEL) {
-        xyControl.setYAxisLabel(Y_AXIS_LABEL);
+        properties.put("yAxisLabel", new SimpleStringProperty(Y_AXIS_LABEL));
         return this;
     }
 
     public final XYControlBuilder xAxisLabelVisible(final boolean X_AXIS_LABEL_VISIBLE) {
-        xyControl.setXAxisLabelVisible(X_AXIS_LABEL_VISIBLE);
+        properties.put("xAxisLabelVisible", new SimpleBooleanProperty(X_AXIS_LABEL_VISIBLE));
         return this;
     }
 
     public final XYControlBuilder yAxisLabelVisible(final boolean Y_AXIS_LABEL_VISIBLE) {
-        xyControl.setYAxisLabelVisible(Y_AXIS_LABEL_VISIBLE);
+        properties.put("yAxisLabelVisible", new SimpleBooleanProperty(Y_AXIS_LABEL_VISIBLE));
         return this;
     }
 
     public final XYControl build() {
-        return xyControl == null ? new XYControl() : xyControl;
+        final XYControl CONTROL = new XYControl();
+        for (String key : properties.keySet()) {
+            if ("xValue".equals(key)) {
+                CONTROL.setXValue(((DoubleProperty) properties.get(key)).get());
+            } else if ("yValue".equals(key)) {
+                CONTROL.setYValue(((DoubleProperty) properties.get(key)).get());
+            } else if ("xAxisLabel".equals(key)) {
+                CONTROL.setXAxisLabel(((StringProperty) properties.get(key)).get());
+            } else if ("yAxisLabel".equals(key)) {
+                CONTROL.setYAxisLabel(((StringProperty) properties.get(key)).get());
+            } else if ("xAxisLabelVisible".equals(key)) {
+                CONTROL.setXAxisLabelVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("yAxisLabelVisible".equals(key)) {
+                CONTROL.setYAxisLabelVisible(((BooleanProperty) properties.get(key)).get());
+            }
+        }
+        return CONTROL;
     }
 }

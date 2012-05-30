@@ -27,7 +27,14 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
+
+import java.util.HashMap;
 
 
 /**
@@ -37,33 +44,45 @@ import javafx.scene.paint.Color;
  * Time: 15:48
  */
 public class LedBuilder {
-    private Led led = new Led();
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
 
     public static final LedBuilder create() {
         return new LedBuilder();
     }
 
     public final LedBuilder color(final Color LED_COLOR) {
-        led.setColor(LED_COLOR);
+        properties.put("color", new SimpleObjectProperty<Color>(LED_COLOR));
         return this;
     }
 
     public final LedBuilder type(final Led.Type TYPE) {
-        led.setType(TYPE);
+        properties.put("type", new SimpleObjectProperty<Led.Type>(TYPE));
         return this;
     }
 
     public final LedBuilder on(final boolean ON) {
-        led.setOn(ON);
+        properties.put("on", new SimpleBooleanProperty(ON));
         return this;
     }
 
     public final LedBuilder blinking(final boolean BLINKING) {
-        led.setBlinking(BLINKING);
+        properties.put("blinking", new SimpleBooleanProperty(BLINKING));
         return this;
     }
 
     public final Led build() {
-        return led != null ? led : new Led();
+        final Led LED = new Led();
+        for (String key : properties.keySet()) {
+            if ("color".equals(key)) {
+                LED.setColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("type".equals(key)) {
+                LED.setType(((ObjectProperty<Led.Type>) properties.get(key)).get());
+            } else if ("on".equals(key)) {
+                LED.setOn(((BooleanProperty) properties.get(key)).get());
+            } else if ("blinking".equals(key)) {
+                LED.setBlinking(((BooleanProperty) properties.get(key)).get());
+            }
+        }
+        return LED;
     }
 }

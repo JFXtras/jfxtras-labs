@@ -27,8 +27,18 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.paint.Color;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,48 +50,66 @@ import java.util.Map;
  * Time: 08:40
  */
 public class SevenSegmentBuilder {
-    private SevenSegment segment = new SevenSegment();
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
 
     public static final SevenSegmentBuilder create() {
         return new SevenSegmentBuilder();
     }
 
     public final SevenSegmentBuilder character(final String CHARACTER) {
-        segment.setCharacter(CHARACTER);
+        properties.put("character", new SimpleStringProperty(CHARACTER));
         return this;
     }
 
     public final SevenSegmentBuilder character(final Character CHARACTER) {
-        segment.setCharacter(CHARACTER);
+        properties.put("charCharacter", new SimpleObjectProperty<Character>(CHARACTER));
         return this;
     }
 
     public final SevenSegmentBuilder character(final int CHARACTER) {
-        segment.setCharacter(CHARACTER);
+        properties.put("intCharacter", new SimpleIntegerProperty(CHARACTER));
         return this;
     }
 
     public final SevenSegmentBuilder dotOn(final boolean DOT_ON) {
-        segment.setDotOn(DOT_ON);
+        properties.put("dotOn", new SimpleBooleanProperty(DOT_ON));
         return this;
     }
 
     public final SevenSegmentBuilder customSegmentMapping(final Map<Integer, List<SevenSegment.Segment>> CUSTOM_SEGMENT_MAPPING) {
-        segment.setCustomSegmentMapping(CUSTOM_SEGMENT_MAPPING);
+        properties.put("customSegmentMapping", new SimpleObjectProperty<Map<Integer, List<SevenSegment.Segment>>>(CUSTOM_SEGMENT_MAPPING));
         return this;
     }
 
     public final SevenSegmentBuilder color(final Color COLOR) {
-        segment.setColor(COLOR);
+        properties.put("color", new SimpleObjectProperty<Color>(COLOR));
         return this;
     }
 
     public final SevenSegmentBuilder plainColor(final boolean PLAIN_COLOR) {
-        segment.setPlainColor(PLAIN_COLOR);
+        properties.put("plainColor", new SimpleBooleanProperty(PLAIN_COLOR));
         return this;
     }
 
     public final SevenSegment build() {
-        return segment != null ? segment : new SevenSegment();
+        final SevenSegment SEGMENT = new SevenSegment();
+        for (String key : properties.keySet()) {
+            if ("character".equals(key)) {
+                SEGMENT.setCharacter(((StringProperty) properties.get(key)).get());
+            } else if ("charCharacter".equals(key)) {
+                SEGMENT.setCharacter(((ObjectProperty<Character>) properties.get(key)).get());
+            } else if ("intCharacter".equals(key)) {
+                SEGMENT.setCharacter(((IntegerProperty) properties.get(key)).get());
+            } else if ("dotOn".equals(key)) {
+                SEGMENT.setDotOn(((BooleanProperty) properties.get(key)).get());
+            } else if ("customSegmentMapping".equals(key)) {
+                SEGMENT.setCustomSegmentMapping(((ObjectProperty<Map<Integer, List<SevenSegment.Segment>>>) properties.get(key)).get());
+            } else if ("color".equals(key)) {
+                SEGMENT.setColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("plainColor".equals(key)) {
+                SEGMENT.setPlainColor(((BooleanProperty) properties.get(key)).get());
+            }
+        }
+        return SEGMENT;
     }
 }

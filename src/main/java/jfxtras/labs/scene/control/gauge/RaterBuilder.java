@@ -27,7 +27,14 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
+
+import java.util.HashMap;
 
 
 /**
@@ -37,33 +44,45 @@ import javafx.scene.paint.Color;
  * Time: 16:20
  */
 public class RaterBuilder {
-    private Rater rater = new Rater();
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
 
     public static final RaterBuilder create() {
         return new RaterBuilder();
     }
 
     public final RaterBuilder noOfStars(final int NO_OF_STARS) {
-        rater.setNoOfStars(NO_OF_STARS);
+        properties.put("noOfStars", new SimpleIntegerProperty(NO_OF_STARS));
         return this;
     }
 
     public final RaterBuilder brightColor(final Color BRIGHT_COLOR) {
-        rater.setBrightColor(BRIGHT_COLOR);
+        properties.put("brightColor", new SimpleObjectProperty<Color>(BRIGHT_COLOR));
         return this;
     }
 
     public final RaterBuilder darkColor(final Color DARK_COLOR) {
-        rater.setDarkColor(DARK_COLOR);
+        properties.put("darkColor", new SimpleObjectProperty<Color>(DARK_COLOR));
         return this;
     }
 
-    public final RaterBuilder value(final int RATING) {
-        rater.setRating(RATING);
+    public final RaterBuilder rating(final int RATING) {
+        properties.put("rating", new SimpleIntegerProperty(RATING));
         return this;
     }
 
     public final Rater build() {
-        return rater != null ? rater : new Rater();
+        final Rater RATER = new Rater();
+        for (String key : properties.keySet()) {
+            if ("noOfStars".equals(key)) {
+                RATER.setNoOfStars(((IntegerProperty) properties.get(key)).get());
+            } else if ("brightColor".equals(key)) {
+                RATER.setBrightColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("darkColor".equals(key)) {
+                RATER.setDarkColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("rating".equals(key)) {
+                RATER.setRating(((IntegerProperty) properties.get(key)).get());
+            }
+        }
+        return RATER;
     }
 }

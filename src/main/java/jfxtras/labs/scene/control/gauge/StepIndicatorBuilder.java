@@ -27,7 +27,14 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
+
+import java.util.HashMap;
 
 
 /**
@@ -37,28 +44,38 @@ import javafx.scene.paint.Color;
  * Time: 11:28
  */
 public class StepIndicatorBuilder {
-    private StepIndicator indicator = new StepIndicator();
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
 
     public static final StepIndicatorBuilder create() {
         return new StepIndicatorBuilder();
     }
 
     public final StepIndicatorBuilder noOfSteps(final int NO_OF_STEPS) {
-        indicator.setNoOfSteps(NO_OF_STEPS);
+        properties.put("noOfSteps", new SimpleIntegerProperty(NO_OF_STEPS));
         return this;
     }
 
     public final StepIndicatorBuilder color(final Color COLOR) {
-        indicator.setColor(COLOR);
+        properties.put("color", new SimpleObjectProperty<Color>(COLOR));
         return this;
     }
 
     public final StepIndicatorBuilder currentStep(final int CURRENT_STEP) {
-        indicator.setCurrentStep(CURRENT_STEP);
+        properties.put("currentStep", new SimpleIntegerProperty(CURRENT_STEP));
         return this;
     }
 
     public final StepIndicator build() {
-        return indicator != null ? indicator : new StepIndicator();
+        final StepIndicator INDICATOR = new StepIndicator();
+        for (String key : properties.keySet()) {
+            if ("noOfSteps".equals(key)) {
+                INDICATOR.setNoOfSteps(((IntegerProperty) properties.get(key)).get());
+            } else if ("color".equals(key)) {
+                INDICATOR.setColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("currentStep".equals(key)) {
+                INDICATOR.setCurrentStep(((IntegerProperty) properties.get(key)).get());
+            }
+        }
+        return INDICATOR;
     }
 }

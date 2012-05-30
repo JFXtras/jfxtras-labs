@@ -27,6 +27,20 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
+import java.util.HashMap;
+
 
 /**
  * Created by
@@ -35,132 +49,186 @@ package jfxtras.labs.scene.control.gauge;
  * Time: 15:34
  */
 public class LcdBuilder {
-    private Lcd lcd = new Lcd();
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
 
     public static final LcdBuilder create() {
         return new LcdBuilder();
     }
 
     public final LcdBuilder styleModel(final StyleModel STYLE_MODEL) {
-        lcd.setStyleModel(STYLE_MODEL);
+        properties.put("styleModel", new SimpleObjectProperty<StyleModel>(STYLE_MODEL));
         return this;
     }
 
     public final LcdBuilder design(final LcdDesign DESIGN) {
-        lcd.setLcdDesign( DESIGN);
+        properties.put("design", new SimpleObjectProperty<LcdDesign>(DESIGN));
         return this;
     }
 
     public final LcdBuilder value(final double VALUE) {
-        lcd.setLcdValue(VALUE);
+        properties.put("value", new SimpleDoubleProperty(VALUE));
         return this;
     }
 
     public final LcdBuilder valueAnimationEnabled(final boolean VALUE_ANIMATION_ENABLED) {
-        lcd.setValueAnimationEnabled(VALUE_ANIMATION_ENABLED);
+        properties.put("valueAnimationEnabled", new SimpleBooleanProperty(VALUE_ANIMATION_ENABLED));
         return this;
     }
 
     public final LcdBuilder threshold(final double THRESHOLD) {
-        lcd.setLcdThreshold(THRESHOLD);
+        properties.put("threshold", new SimpleDoubleProperty(THRESHOLD));
         return this;
     }
 
     public final LcdBuilder decimals(final int DECIMALS) {
-        lcd.setLcdDecimals(DECIMALS);
+        properties.put("decimals", new SimpleIntegerProperty(DECIMALS));
         return this;
     }
 
     public final LcdBuilder digitalFontEnabled(final boolean DIGITAL_FONT_ENABLED) {
-        lcd.setLcdDigitalFontEnabled(DIGITAL_FONT_ENABLED);
+        properties.put("digitalFontEnabled", new SimpleBooleanProperty(DIGITAL_FONT_ENABLED));
         return this;
     }
 
     public final LcdBuilder minMeasuredValueVisible(final boolean MIN_MEASURED_VALUE_VISIBLE) {
-        lcd.setLcdMinMeasuredValueVisible(MIN_MEASURED_VALUE_VISIBLE);
+        properties.put("minMeasuredValueVisible", new SimpleBooleanProperty(MIN_MEASURED_VALUE_VISIBLE));
         return this;
     }
 
     public final LcdBuilder minMeasuredValueDecimals(final int MIN_MEASURED_VALUE_DECIMALS) {
-        lcd.setLcdMinMeasuredValueDecimals(MIN_MEASURED_VALUE_DECIMALS);
+        properties.put("minMeasuredValueDecimals", new SimpleIntegerProperty(MIN_MEASURED_VALUE_DECIMALS));
         return this;
     }
 
     public final LcdBuilder maxMeasuredValueVisible(final boolean MAX_MEASURED_VALUE_VISIBLE) {
-        lcd.setLcdMaxMeasuredValueVisible(MAX_MEASURED_VALUE_VISIBLE);
+        properties.put("maxMeasuredValueVisible", new SimpleBooleanProperty(MAX_MEASURED_VALUE_VISIBLE));
         return this;
     }
 
     public final LcdBuilder maxMeasuredValueDecimals(final int MAX_MEASURED_VALUE_DECIMALS) {
-        lcd.setLcdMaxMeasuredValueDecimals(MAX_MEASURED_VALUE_DECIMALS);
+        properties.put("maxMeasuredValueDecimals", new SimpleIntegerProperty(MAX_MEASURED_VALUE_DECIMALS));
         return this;
     }
 
     public final LcdBuilder formerValueVisible(final boolean FORMER_VALUE_VISIBLE) {
-        lcd.setLcdFormerValueVisible(FORMER_VALUE_VISIBLE);
+        properties.put("formerValueVisible", new SimpleBooleanProperty(FORMER_VALUE_VISIBLE));
         return this;
     }
 
     public final LcdBuilder bargraphVisible(final boolean BARGRAPH_VISIBLE) {
-        lcd.setBargraphVisible(BARGRAPH_VISIBLE);
+        properties.put("bargraphVisible", new SimpleBooleanProperty(BARGRAPH_VISIBLE));
         return this;
     }
 
     public final LcdBuilder title(final String TITLE) {
-        lcd.setTitle(TITLE);
+        properties.put("title", new SimpleStringProperty(TITLE));
         return this;
     }
 
     public final LcdBuilder titleVisible(final boolean TITLE_VISIBLE) {
-        lcd.setTitleVisible(TITLE_VISIBLE);
+        properties.put("titleVisible", new SimpleBooleanProperty(TITLE_VISIBLE));
         return this;
     }
 
     public final LcdBuilder unit(final String UNIT) {
-        lcd.setUnit(UNIT);
-        lcd.setLcdUnit(UNIT);
+        properties.put("unit", new SimpleStringProperty(UNIT));
         return this;
     }
 
     public final LcdBuilder unitVisible(final boolean UNIT_VISIBLE) {
-        lcd.setUnitVisible(UNIT_VISIBLE);
-        lcd.setLcdUnitVisible(UNIT_VISIBLE);
+        properties.put("unitVisible", new SimpleBooleanProperty(UNIT_VISIBLE));
         return this;
     }
 
     public final LcdBuilder trendVisible(final boolean TREND_VISIBLE) {
-        lcd.setTrendVisible(TREND_VISIBLE);
+        properties.put("trendVisible", new SimpleBooleanProperty(TREND_VISIBLE));
         return this;
     }
 
     public final LcdBuilder thresholdVisible(final boolean THRESHOLD_VISIBLE) {
-        lcd.setThresholdVisible(THRESHOLD_VISIBLE);
-        lcd.setLcdThresholdVisible(THRESHOLD_VISIBLE);
+        properties.put("thresholdVisible", new SimpleBooleanProperty(THRESHOLD_VISIBLE));
         return this;
     }
 
     public final LcdBuilder thresholdBehaviorInverted(final boolean THRESHOLD_BEHAVIOR_INVERTED) {
-        lcd.setThresholdBehaviorInverted(THRESHOLD_BEHAVIOR_INVERTED);
-        lcd.setLcdThresholdBehaviorInverted(THRESHOLD_BEHAVIOR_INVERTED);
+        properties.put("thresholdBehaviorInverted", new SimpleBooleanProperty(THRESHOLD_BEHAVIOR_INVERTED));
         return this;
     }
 
     public final LcdBuilder numberSystemVisible(final boolean NUMBER_SYSTEM_VISIBLE) {
-        lcd.setLcdNumberSystemVisible(NUMBER_SYSTEM_VISIBLE);
+        properties.put("numberSystemVisible", new SimpleBooleanProperty(NUMBER_SYSTEM_VISIBLE));
         return this;
     }
 
     public final LcdBuilder titleFont(final String TITLE_FONT) {
-        lcd.setLcdTitleFont(TITLE_FONT);
+        properties.put("titleFont", new SimpleStringProperty(TITLE_FONT));
         return this;
     }
 
     public final LcdBuilder unitFont(final String UNIT_FONT) {
-        lcd.setLcdUnitFont(UNIT_FONT);
+        properties.put("unitFont", new SimpleStringProperty(UNIT_FONT));
         return this;
     }
 
     public final Lcd build() {
-        return lcd != null ? lcd : new Lcd();
+        final Lcd LCD = new Lcd();
+
+        for (String key : properties.keySet()) {
+            if("styleModel".equals(key)) {
+                LCD.setStyleModel(((ObjectProperty<StyleModel>) properties.get(key)).get());
+            } else if("design".equals(key)) {
+                LCD.setLcdDesign(((ObjectProperty<LcdDesign>) properties.get(key)).get());
+            } else if("value".equals(key)) {
+                LCD.setValue(((DoubleProperty) properties.get(key)).get());
+            } else if("valueAnimationEnabled".equals(key)) {
+                LCD.setValueAnimationEnabled(((BooleanProperty) properties.get(key)).get());
+            } else if("threshold".equals(key)) {
+                LCD.setThreshold(((DoubleProperty) properties.get(key)).get());
+                LCD.setLcdThreshold(((DoubleProperty) properties.get(key)).get());
+            } else if("decimals".equals(key)) {
+                LCD.setLcdDecimals(((IntegerProperty) properties.get(key)).get());
+            } else if("digitalFontEnabled".equals(key)) {
+                LCD.setLcdDigitalFontEnabled(((BooleanProperty) properties.get(key)).get());
+            } else if("minMeasuredValueVisible".equals(key)) {
+                LCD.setLcdMinMeasuredValueVisible(((BooleanProperty) properties.get(key)).get());
+            } else if("minMeasuredValueDecimals".equals(key)) {
+                LCD.setLcdMinMeasuredValueDecimals(((IntegerProperty) properties.get(key)).get());
+            } else if ("maxMeasuredValueVisible".equals(key)) {
+                LCD.setLcdMaxMeasuredValueVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("maxMeasuredValueDecimals".equals(key)) {
+                LCD.setLcdMaxMeasuredValueDecimals(((IntegerProperty) properties.get(key)).get());
+            } else if ("formerValueVisible".equals(key)) {
+                LCD.setLcdFormerValueVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("bargraphVisible".equals(key)) {
+                LCD.setBargraphVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("title".equals(key)) {
+                LCD.setTitle(((StringProperty) properties.get(key)).get());
+            } else if ("titleVisible".equals(key)) {
+                LCD.setTitleVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("unit".equals(key)) {
+                LCD.setUnit(((StringProperty) properties.get(key)).get());
+                LCD.setLcdUnit(((StringProperty) properties.get(key)).get());
+            } else if ("unitVisible".equals(key)) {
+                LCD.setUnitVisible(((BooleanProperty) properties.get(key)).get());
+                LCD.setLcdUnitVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("trendVisible".equals(key)) {
+                LCD.setTrendVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("thresholdVisible".equals(key)) {
+                LCD.setThresholdVisible(((BooleanProperty) properties.get(key)).get());
+                LCD.setLcdThresholdVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("thresholdBehaviorInverted".equals(key)) {
+                LCD.setThresholdBehaviorInverted(((BooleanProperty) properties.get(key)).get());
+                LCD.setLcdThresholdBehaviorInverted(((BooleanProperty) properties.get(key)).get());
+            } else if ("numberSystemVisible".equals(key)) {
+                LCD.setLcdNumberSystemVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("unitFont".equals(key)) {
+                LCD.setUnitFont(((StringProperty) properties.get(key)).get());
+                LCD.setLcdUnitFont(((StringProperty) properties.get(key)).get());
+            } else if ("titleFont".equals(key)) {
+                LCD.setTitleFont(((StringProperty) properties.get(key)).get());
+                LCD.setLcdTitleFont(((StringProperty) properties.get(key)).get());
+            }
+        }
+        return LCD;
     }
 }

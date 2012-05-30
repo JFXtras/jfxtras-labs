@@ -27,8 +27,16 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.paint.Color;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,44 +48,59 @@ import java.util.Map;
  * Time: 09:15
  */
 public class DotMatrixSegmentBuilder {
-    private DotMatrixSegment segment = new DotMatrixSegment();
-
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
 
     public static final DotMatrixSegmentBuilder create() {
         return new DotMatrixSegmentBuilder();
     }
 
     public final DotMatrixSegmentBuilder character(final String CHARACTER) {
-        segment.setCharacter(CHARACTER);
+        properties.put("character", new SimpleStringProperty(CHARACTER));
         return this;
     }
 
     public final DotMatrixSegmentBuilder character(final Character CHARACTER) {
-        segment.setCharacter(CHARACTER);
+        properties.put("charCharacter", new SimpleObjectProperty<Character>(CHARACTER));
         return this;
     }
 
     public final DotMatrixSegmentBuilder dotOn(final boolean DOT_ON) {
-        segment.setDotOn(DOT_ON);
+        properties.put("dotOn", new SimpleBooleanProperty(DOT_ON));
         return this;
     }
 
     public final DotMatrixSegmentBuilder customSegmentMapping(final Map<Integer, List<DotMatrixSegment.Dot>> CUSTOM_SEGMENT_MAPPING) {
-        segment.setCustomDotMapping(CUSTOM_SEGMENT_MAPPING);
+        properties.put("customSegmentMapping", new SimpleObjectProperty<Map<Integer, List<DotMatrixSegment.Dot>>>(CUSTOM_SEGMENT_MAPPING));
         return this;
     }
 
     public final DotMatrixSegmentBuilder color(final Color COLOR) {
-        segment.setColor(COLOR);
+        properties.put("color", new SimpleObjectProperty<Color>(COLOR));
         return this;
     }
 
     public final DotMatrixSegmentBuilder plainColor(final boolean PLAIN_COLOR) {
-        segment.setPlainColor(PLAIN_COLOR);
+        properties.put("plainColor", new SimpleBooleanProperty(PLAIN_COLOR));
         return this;
     }
 
     public final DotMatrixSegment build() {
-        return segment != null ? segment : new DotMatrixSegment();
+        final DotMatrixSegment SEGMENT = new DotMatrixSegment();
+        for (String key : properties.keySet()) {
+            if ("character".equals(key)) {
+                SEGMENT.setCharacter(((StringProperty) properties.get(key)).get());
+            } else if("charCharacter".equals(key)) {
+                SEGMENT.setCharacter(((ObjectProperty<Character>) properties.get(key)).get());
+            } else if ("dotOn".equals(key)) {
+                SEGMENT.setDotOn(((BooleanProperty) properties.get(key)).get());
+            } else if ("customSegmentMapping".equals(key)) {
+                SEGMENT.setCustomDotMapping(((ObjectProperty<Map<Integer, List<DotMatrixSegment.Dot>>>) properties.get(key)).get());
+            } else if ("color".equals(key)) {
+                SEGMENT.setColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("plainColor".equals(key)) {
+                SEGMENT.setPlainColor(((BooleanProperty) properties.get(key)).get());
+            }
+        }
+        return SEGMENT;
     }
 }

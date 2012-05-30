@@ -27,7 +27,16 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.paint.Color;
+
+import java.util.HashMap;
 
 
 /**
@@ -37,28 +46,38 @@ import javafx.scene.paint.Color;
  * Time: 16:26
  */
 public class NixieTubeBuilder {
-    private NixieTube tube = new NixieTube();
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
 
     public static final NixieTubeBuilder create() {
         return new NixieTubeBuilder();
     }
 
     public final NixieTubeBuilder glowColor(final Color GLOW_COLOR) {
-        tube.setGlowColor(GLOW_COLOR);
+        properties.put("glowColor", new SimpleObjectProperty<Color>(GLOW_COLOR));
         return this;
     }
 
     public final NixieTubeBuilder number(final String NUMBER) {
-        tube.setNumber(NUMBER);
+        properties.put("number", new SimpleStringProperty(NUMBER));
         return this;
     }
 
     public final NixieTubeBuilder number(final int NUMBER) {
-        tube.setNumber(NUMBER);
+        properties.put("intNumber", new SimpleIntegerProperty(NUMBER));
         return this;
     }
 
     public final NixieTube build() {
-        return tube != null ? tube : new NixieTube();
+        final NixieTube TUBE = new NixieTube();
+        for (String key : properties.keySet()) {
+            if ("glowColor".equals(key)) {
+                TUBE.setGlowColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("number".equals(key)) {
+                TUBE.setNumber(((StringProperty) properties.get(key)).get());
+            } else if ("intNumber".equals(key)) {
+                TUBE.setNumber(((IntegerProperty) properties.get(key)).get());
+            }
+        }
+        return TUBE;
     }
 }

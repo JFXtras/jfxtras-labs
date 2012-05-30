@@ -27,6 +27,15 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
+import java.util.HashMap;
+
+
 /**
  * Created by
  * User: hansolo
@@ -34,38 +43,52 @@ package jfxtras.labs.scene.control.gauge;
  * Time: 19:14
  */
 public class ClockBuilder {
-    private Clock clock = new Clock();
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
 
     public static final ClockBuilder create() {
         return new ClockBuilder();
     }
 
     public final ClockBuilder timeZone(final String TIME_ZONE) {
-        clock.setTimeZone(TIME_ZONE);
+        properties.put("timeZone", new SimpleStringProperty(TIME_ZONE));
         return this;
     }
 
     public final ClockBuilder daylightSavingTime(final boolean DAYLIGHT_SAVING_TIME) {
-        clock.setDaylightSavingTime(DAYLIGHT_SAVING_TIME);
+        properties.put("daylightSavingTime", new SimpleBooleanProperty(DAYLIGHT_SAVING_TIME));
         return this;
     }
 
     public final ClockBuilder secondPointerVisible(final boolean SECOND_POINTER_VISIBLE) {
-        clock.setSecondPointerVisible(SECOND_POINTER_VISIBLE);
+        properties.put("secondPointerVisible", new SimpleBooleanProperty(SECOND_POINTER_VISIBLE));
         return this;
     }
 
     public final ClockBuilder autoDimEnabled(final boolean AUTO_DIM_ENABLED) {
-        clock.setAutoDimEnabled(AUTO_DIM_ENABLED);
+        properties.put("autoDimEnabled", new SimpleBooleanProperty(AUTO_DIM_ENABLED));
         return this;
     }
 
     public final ClockBuilder running(final boolean RUNNING) {
-        clock.setRunning(RUNNING);
+        properties.put("running", new SimpleBooleanProperty(RUNNING));
         return this;
     }
 
     public final Clock build() {
-        return clock != null ? clock : new Clock();
+        final Clock CLOCK = new Clock();
+        for (String key : properties.keySet()) {
+            if ("timeZone".equals(key)) {
+                CLOCK.setTimeZone(((StringProperty) properties.get(key)).get());
+            } else if ("daylightSavingTime".equals(key)) {
+                CLOCK.setDaylightSavingTime(((BooleanProperty) properties.get(key)).get());
+            } else if ("secondPointerVisible".equals(key)) {
+                CLOCK.setSecondPointerVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("autoDimEnabled".equals(key)) {
+                CLOCK.setAutoDimEnabled(((BooleanProperty) properties.get(key)).get());
+            } else if ("running".equals(key)) {
+                CLOCK.setRunning(((BooleanProperty) properties.get(key)).get());
+            }
+        }
+        return CLOCK;
     }
 }

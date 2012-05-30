@@ -27,9 +27,20 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import com.sun.org.apache.xpath.internal.functions.FuncLocalPart;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -39,63 +50,87 @@ import java.util.ArrayList;
  * Time: 14:48
  */
 public class SplitFlapBuilder {
-    private SplitFlap splitFlap = new SplitFlap();
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
 
     public static final SplitFlapBuilder create() {
         return new SplitFlapBuilder();
     }
 
     public final SplitFlapBuilder textColor(final Color TEXT_COLOR) {
-        splitFlap.setTextColor(TEXT_COLOR);
+        properties.put("textColor", new SimpleObjectProperty<Color>(TEXT_COLOR));
         return this;
     }
 
     public final SplitFlapBuilder color(final Color COLOR) {
-        splitFlap.setColor(COLOR);
+        properties.put("color", new SimpleObjectProperty<Color>(COLOR));
         return this;
     }
 
     public final SplitFlapBuilder text(final String TEXT) {
-        splitFlap.setText(TEXT);
+        properties.put("text", new SimpleStringProperty(TEXT));
         return this;
     }
 
     public final SplitFlapBuilder selection(final String[] SELECTION) {
-        splitFlap.setSelection(SELECTION);
+        properties.put("selection", new SimpleObjectProperty<String[]>(SELECTION));
         return this;
     }
 
     public final SplitFlapBuilder soundOn(final boolean SOUND_ON) {
-        splitFlap.setSoundOn(SOUND_ON);
+        properties.put("soundOn", new SimpleBooleanProperty(SOUND_ON));
         return this;
     }
 
     public final SplitFlapBuilder sound(final SplitFlap.Sound SOUND) {
-        splitFlap.setSound(SOUND);
+        properties.put("sound", new SimpleObjectProperty<SplitFlap.Sound>(SOUND));
         return this;
     }
 
     public final SplitFlapBuilder frameVisible(final boolean FRAME_VISIBLE) {
-        splitFlap.setFrameVisible(FRAME_VISIBLE);
+        properties.put("frameVisible", new SimpleBooleanProperty(FRAME_VISIBLE));
         return this;
     }
 
     public final SplitFlapBuilder backgroundVisible(final boolean BACKGROUND_VISIBLE) {
-        splitFlap.setBackgroundVisible(BACKGROUND_VISIBLE);
+        properties.put("backgroundVisible", new SimpleBooleanProperty(BACKGROUND_VISIBLE));
         return this;
     }
 
     public final SplitFlapBuilder interactive(final boolean INTERACTIVE) {
-        splitFlap.setInteractive(INTERACTIVE);
+        properties.put("interactive", new SimpleBooleanProperty(INTERACTIVE));
         return this;
     }
 
     public final SplitFlapBuilder flipTimeInMs(final long FLIP_TIME_IN_MS) {
-        splitFlap.setFlipTimeInMs(FLIP_TIME_IN_MS);
+        properties.put("flipTimeInMs", new SimpleLongProperty(FLIP_TIME_IN_MS));
         return this;
     }
 
     public final SplitFlap build() {
-        return splitFlap != null ? splitFlap : new SplitFlap();
+        final SplitFlap FLAP = new SplitFlap();
+        for (String key : properties.keySet()) {
+            if ("textColor".equals(key)) {
+                FLAP.setTextColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("color".equals(key)) {
+                FLAP.setColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("text".equals(key)) {
+                FLAP.setText(((StringProperty) properties.get(key)).get());
+            } else if ("selection".equals(key)) {
+                FLAP.setSelection(((SimpleObjectProperty<String[]>) properties.get(key)).get());
+            } else if ("soundOn".equals(key)) {
+                FLAP.setSoundOn(((BooleanProperty) properties.get(key)).get());
+            } else if ("sound".equals(key)) {
+                FLAP.setSound(((ObjectProperty<SplitFlap.Sound>) properties.get(key)).get());
+            } else if ("frameVisible".equals(key)) {
+                FLAP.setFrameVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("backgroundVisible".equals(key)) {
+                FLAP.setBackgroundVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("interactive".equals(key)) {
+                FLAP.setInteractive(((BooleanProperty) properties.get(key)).get());
+            } else if ("flipTimeInMs".equals(key)) {
+                FLAP.setFlipTimeInMs(((LongProperty) properties.get(key)).get());
+            }
+        }
+        return FLAP;
     }
 }
