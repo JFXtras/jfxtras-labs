@@ -58,10 +58,10 @@ import java.util.Map;
  * Time: 08:12
  */
 public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavior> {
-    private SevenSegment                       control;
-    private boolean                            isDirty;
-    private boolean                            initialized;
-    private Group segments;
+    private SevenSegment                     control;
+    private boolean                          isDirty;
+    private boolean                          initialized;
+    private Group                            segments;
     private Map<SevenSegment.Segment, Shape> segmentMap;
 
 
@@ -176,20 +176,22 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
         INNER_SHADOW.setRadius(0.05 * control.getPrefWidth());
         INNER_SHADOW.setColor(Color.hsb(control.getColor().getHue(), control.getColor().getSaturation(), 0.2));
 
-        final String ON_STYLE = control.isPlainColor() ? "sixteen-segment-plain-on" : "sixteen-segment-on";
+        final String ON_STYLE = control.isPlainColor() ? "seven-segment-plain-on" : "seven-segment-on";
 
         if (control.getCustomSegmentMapping().isEmpty()) {
             for (SevenSegment.Segment segment : segmentMap.keySet()) {
                 if (control.getSegmentMapping().containsKey(ASCII)) {
                     if (control.getSegmentMapping().get(ASCII).contains(segment)) {
+                        segmentMap.get(segment).getStyleClass().clear();
                         segmentMap.get(segment).getStyleClass().add(ON_STYLE);
                         segmentMap.get(segment).setEffect(INNER_SHADOW);
                     } else {
-                        segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
+                        segmentMap.get(segment).getStyleClass().clear();
+                        segmentMap.get(segment).getStyleClass().add("seven-segment-off");
                         segmentMap.get(segment).setEffect(null);
                     }
                 } else {
-                    segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
+                    segmentMap.get(segment).getStyleClass().add("seven-segment-off");
                     segmentMap.get(segment).setEffect(null);
                 }
             }
@@ -197,21 +199,25 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
             for (SevenSegment.Segment segment : segmentMap.keySet()) {
                 if (control.getCustomSegmentMapping().containsKey(ASCII)) {
                     if (control.getCustomSegmentMapping().get(ASCII).contains(segment)) {
+                        segmentMap.get(segment).getStyleClass().clear();
                         segmentMap.get(segment).getStyleClass().add(ON_STYLE);
                         segmentMap.get(segment).setEffect(INNER_SHADOW);
                     } else {
-                        segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
+                        segmentMap.get(segment).getStyleClass().clear();
+                        segmentMap.get(segment).getStyleClass().add("seven-segment-off");
                         segmentMap.get(segment).setEffect(null);
                     }
                 } else {
-                    segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
+                    segmentMap.get(segment).getStyleClass().clear();
+                    segmentMap.get(segment).getStyleClass().add("seven-segment-off");
                     segmentMap.get(segment).setEffect(null);
                 }
             }
         }
         if (control.isDotOn()) {
-            segmentMap.get(SevenSegment.Segment.DOT).getStyleClass().add(ON_STYLE);
-            segmentMap.get(SevenSegment.Segment.DOT).setEffect(INNER_SHADOW);
+            segmentMap.get(SixteenSegment.Segment.DOT).getStyleClass().clear();
+            segmentMap.get(SixteenSegment.Segment.DOT).getStyleClass().add(ON_STYLE);
+            segmentMap.get(SixteenSegment.Segment.DOT).setEffect(INNER_SHADOW);
         }
     }
 

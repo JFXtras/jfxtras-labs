@@ -175,13 +175,16 @@ public class DotMatrixSegmentSkin extends SkinBase<DotMatrixSegment, DotMatrixSe
             for (DotMatrixSegment.Dot dot : dotMap.keySet()) {
                 if (control.getDotMapping().containsKey(ASCII)) {
                     if (control.getDotMapping().get(ASCII).contains(dot)) {
+                        dotMap.get(dot).getStyleClass().clear();
                         dotMap.get(dot).getStyleClass().add(ON_STYLE);
                         dotMap.get(dot).setEffect(INNER_SHADOW);
                     } else {
+                        dotMap.get(dot).getStyleClass().clear();
                         dotMap.get(dot).getStyleClass().add("dot-matrix-segment-off");
                         dotMap.get(dot).setEffect(null);
                     }
                 } else {
+                    dotMap.get(dot).getStyleClass().clear();
                     dotMap.get(dot).getStyleClass().add("dot-matrix-segment-off");
                     dotMap.get(dot).setEffect(null);
                 }
@@ -190,13 +193,16 @@ public class DotMatrixSegmentSkin extends SkinBase<DotMatrixSegment, DotMatrixSe
             for (DotMatrixSegment.Dot dot : dotMap.keySet()) {
                 if (control.getCustomDotMapping().containsKey(ASCII)) {
                     if (control.getCustomDotMapping().get(ASCII).contains(dot)) {
+                        dotMap.get(dot).getStyleClass().clear();
                         dotMap.get(dot).getStyleClass().add(ON_STYLE);
                         dotMap.get(dot).setEffect(INNER_SHADOW);
                     } else {
+                        dotMap.get(dot).getStyleClass().clear();
                         dotMap.get(dot).getStyleClass().add("dot-matrix-segment-off");
                         dotMap.get(dot).setEffect(null);
                     }
                 } else {
+                    dotMap.get(dot).getStyleClass().clear();
                     dotMap.get(dot).getStyleClass().add("dot-matrix-segment-off");
                     dotMap.get(dot).setEffect(null);
                 }

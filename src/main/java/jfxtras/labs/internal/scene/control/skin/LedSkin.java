@@ -227,6 +227,7 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
         LED_OFF.getStyleClass().add("fx-led-off");
         LED_OFF.setStroke(null);
 
+        ledOn.getStyleClass().clear();
         ledOn.getStyleClass().add("fx-led-on");
         ledOn.setStroke(null);
         ledOn.setVisible(control.isOn());

@@ -182,13 +182,16 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
             for (SixteenSegment.Segment segment : segmentMap.keySet()) {
                 if (control.getSegmentMapping().containsKey(ASCII)) {
                     if (control.getSegmentMapping().get(ASCII).contains(segment)) {
+                        segmentMap.get(segment).getStyleClass().clear();
                         segmentMap.get(segment).getStyleClass().add(ON_STYLE);
                         segmentMap.get(segment).setEffect(INNER_SHADOW);
                     } else {
+                        segmentMap.get(segment).getStyleClass().clear();
                         segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
                         segmentMap.get(segment).setEffect(null);
                     }
                 } else {
+                    segmentMap.get(segment).getStyleClass().clear();
                     segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
                     segmentMap.get(segment).setEffect(null);
                 }
@@ -197,19 +200,23 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
             for (SixteenSegment.Segment segment : segmentMap.keySet()) {
                 if (control.getCustomSegmentMapping().containsKey(ASCII)) {
                     if (control.getCustomSegmentMapping().get(ASCII).contains(segment)) {
+                        segmentMap.get(segment).getStyleClass().clear();
                         segmentMap.get(segment).getStyleClass().add(ON_STYLE);
                         segmentMap.get(segment).setEffect(INNER_SHADOW);
                     } else {
+                        segmentMap.get(segment).getStyleClass().clear();
                         segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
                         segmentMap.get(segment).setEffect(null);
                     }
                 } else {
+                    segmentMap.get(segment).getStyleClass().clear();
                     segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
                     segmentMap.get(segment).setEffect(null);
                 }
             }
         }
         if (control.isDotOn()) {
+            segmentMap.get(SixteenSegment.Segment.DOT).getStyleClass().clear();
             segmentMap.get(SixteenSegment.Segment.DOT).getStyleClass().add(ON_STYLE);
             segmentMap.get(SixteenSegment.Segment.DOT).setEffect(INNER_SHADOW);
         }
