@@ -173,7 +173,6 @@ public class LcdBuilder {
 
     public final Lcd build() {
         final Lcd LCD = new Lcd();
-
         for (String key : properties.keySet()) {
             if("styleModel".equals(key)) {
                 LCD.setStyleModel(((ObjectProperty<StyleModel>) properties.get(key)).get());
@@ -181,6 +180,7 @@ public class LcdBuilder {
                 LCD.setLcdDesign(((ObjectProperty<LcdDesign>) properties.get(key)).get());
             } else if("value".equals(key)) {
                 LCD.setValue(((DoubleProperty) properties.get(key)).get());
+                LCD.setLcdValue(((DoubleProperty) properties.get(key)).get());
             } else if("valueAnimationEnabled".equals(key)) {
                 LCD.setValueAnimationEnabled(((BooleanProperty) properties.get(key)).get());
             } else if("threshold".equals(key)) {

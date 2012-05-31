@@ -477,8 +477,8 @@ public abstract class Gauge extends Control {
     }
 
     public final Point2D getUserLedPosition() {
-            return radialRange.get().USER_LED_POSITION;
-        }
+        return radialRange.get().USER_LED_POSITION;
+    }
 
 
     // ******************** GaugeModel Methods *************************************
