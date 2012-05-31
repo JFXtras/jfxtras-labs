@@ -1439,6 +1439,14 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/bus.ttf"), (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
                 UNIT_Y_OFFSET = 2.0;
                 break;
+            case PIXEL:
+                LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/pixel.ttf"), (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
+                UNIT_Y_OFFSET = 2.0;
+                break;
+            case PHONE_LCD:
+                LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/phonelcd.ttf"), (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
+                UNIT_Y_OFFSET = 2.0;
+                break;
             case STANDARD:
             default:
                 LCD_VALUE_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));

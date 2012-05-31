@@ -20,3 +20,4 @@ src/main/java/Demo.java
 /dist/
 nbproject
 build.xml
+.DS_Store

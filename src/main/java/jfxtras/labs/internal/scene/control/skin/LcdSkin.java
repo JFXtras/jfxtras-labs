@@ -571,6 +571,14 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
                 LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/digital.ttf"), (0.5833333333 * SIZE));
                 lcdDigitalFontSizeFactor = 1.9098073909;
                 break;
+            case PIXEL:
+                LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/pixel.ttf"), (0.5208333333 * SIZE));
+                lcdDigitalFontSizeFactor = 1.0;
+                break;
+            case PHONE_LCD:
+                LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/phonelcd.ttf"), (0.4583333333 * SIZE));
+                lcdDigitalFontSizeFactor = 1.0;
+                break;
             case STANDARD:
             default:
                 LCD_VALUE_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.5 * SIZE));

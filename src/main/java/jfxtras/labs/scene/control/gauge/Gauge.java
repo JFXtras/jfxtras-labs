@@ -131,7 +131,9 @@ public abstract class Gauge extends Control {
     public static enum LcdFont {
         STANDARD,
         LCD,
-        BUS
+        BUS,
+        PIXEL,
+        PHONE_LCD
     }
     public static enum NumberFormat {
         AUTO("0"),
