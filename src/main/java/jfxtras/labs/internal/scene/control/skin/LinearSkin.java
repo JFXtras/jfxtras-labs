@@ -1449,14 +1449,22 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         final Font LCD_UNIT_FONT = Font.font(control.getLcdUnitFont(), FontWeight.NORMAL, (0.4 * LCD_FRAME.getLayoutBounds().getHeight()));
         final Font LCD_VALUE_FONT;
         final double UNIT_Y_OFFSET;
-        if (control.isLcdDigitalFontEnabled()) {
-            LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/digital.ttf"), (0.75 * LCD_FRAME.getLayoutBounds().getHeight()));
-            UNIT_Y_OFFSET = 1.5;
-        } else {
-            LCD_VALUE_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
-            UNIT_Y_OFFSET = 2.0;
-        }
 
+        switch(control.getLcdValueFont()) {
+            case LCD:
+                LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/digital.ttf"), (0.75 * LCD_FRAME.getLayoutBounds().getHeight()));
+                UNIT_Y_OFFSET = 1.5;
+                break;
+            case BUS:
+                LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/bus.ttf"), (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
+                UNIT_Y_OFFSET = 2.0;
+                break;
+            case STANDARD:
+            default:
+                LCD_VALUE_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
+                UNIT_Y_OFFSET = 2.0;
+                break;
+        }
         lcdValueString.setFont(LCD_VALUE_FONT);
         lcdUnitString.setFont(LCD_UNIT_FONT);
 

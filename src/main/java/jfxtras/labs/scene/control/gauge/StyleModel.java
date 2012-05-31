@@ -88,9 +88,9 @@ public class StyleModel {
     private ObjectProperty<LcdDesign>            lcdDesign;
     private BooleanProperty                      lcdVisible;
     private BooleanProperty                      lcdUnitVisible;
-    private BooleanProperty                      lcdDigitalFontEnabled;
     private StringProperty                       lcdUnitFont;
     private StringProperty                       lcdTitleFont;
+    private ObjectProperty<Gauge.LcdFont>        lcdValueFont;
     private IntegerProperty                      lcdDecimals;
     private BooleanProperty                      lcdNumberSystemVisible;
     private BooleanProperty                      lcdBlinking;
@@ -160,9 +160,9 @@ public class StyleModel {
         lcdDesign                       = new SimpleObjectProperty<LcdDesign>(LcdDesign.WHITE);
         lcdVisible                      = new SimpleBooleanProperty(true);
         lcdUnitVisible                  = new SimpleBooleanProperty(false);
-        lcdDigitalFontEnabled           = new SimpleBooleanProperty(false);
         lcdUnitFont                     = new SimpleStringProperty("Verdana");
         lcdTitleFont                    = new SimpleStringProperty("Verdana");
+        lcdValueFont                    = new SimpleObjectProperty<Gauge.LcdFont>(Gauge.LcdFont.STANDARD);
         lcdDecimals                     = new SimpleIntegerProperty(0);
         lcdNumberSystemVisible          = new SimpleBooleanProperty(false);
         lcdBlinking                     = new SimpleBooleanProperty(false);
@@ -585,18 +585,6 @@ public class StyleModel {
         return lcdVisible;
     }
 
-    public final boolean isLcdDigitalFontEnabled() {
-        return lcdDigitalFontEnabled.get();
-    }
-
-    public final void setLcdDigitalFontEnabled(final boolean LCD_DIGITAL_FONT_ENABLED) {
-        lcdDigitalFontEnabled.set(LCD_DIGITAL_FONT_ENABLED);
-    }
-
-    public final BooleanProperty lcdDigitalFontEnabledProperty() {
-        return lcdDigitalFontEnabled;
-    }
-
     public final boolean getLcdUnitVisible() {
         return lcdUnitVisible.get();
     }
@@ -631,6 +619,18 @@ public class StyleModel {
 
     public final StringProperty lcdTitleFontProperty() {
         return lcdTitleFont;
+    }
+
+    public final Gauge.LcdFont getLcdValueFont() {
+        return lcdValueFont.get();
+    }
+
+    public final void setLcdValueFont(final Gauge.LcdFont VALUE_FONT) {
+        lcdValueFont.set(VALUE_FONT);
+    }
+
+    public final ObjectProperty<Gauge.LcdFont> lcdValueFontProperty() {
+        return lcdValueFont;
     }
 
     public final int getLcdDecimals() {

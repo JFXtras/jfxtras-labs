@@ -29,8 +29,11 @@ package jfxtras.labs.scene.control.gauge;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.text.Font;
 
 
 /**
@@ -40,13 +43,13 @@ import javafx.beans.property.SimpleIntegerProperty;
  * Time: 07:39
  */
 public class Lcd extends Gauge {
-    private static final String DEFAULT_STYLE_CLASS = "lcd";
-    private BooleanProperty     lcdMinMeasuredValueVisible;
-    private BooleanProperty     lcdMaxMeasuredValueVisible;
-    private BooleanProperty     lcdFormerValueVisible;
-    private IntegerProperty     lcdMinMeasuredValueDecimals;
-    private IntegerProperty     lcdMaxMeasuredValueDecimals;
-    private BooleanProperty     bargraphVisible;
+    private static final String  DEFAULT_STYLE_CLASS = "lcd";
+    private BooleanProperty      lcdMinMeasuredValueVisible;
+    private BooleanProperty      lcdMaxMeasuredValueVisible;
+    private BooleanProperty      lcdFormerValueVisible;
+    private IntegerProperty      lcdMinMeasuredValueDecimals;
+    private IntegerProperty      lcdMaxMeasuredValueDecimals;
+    private BooleanProperty      bargraphVisible;
 
 
     // ******************** Constructors **************************************
@@ -159,4 +162,6 @@ public class Lcd extends Gauge {
     public final BooleanProperty bargraphVisibleProperty() {
         return bargraphVisible;
     }
+
+
 }

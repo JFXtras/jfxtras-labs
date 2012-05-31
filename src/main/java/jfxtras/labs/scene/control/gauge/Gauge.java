@@ -64,7 +64,7 @@ public abstract class Gauge extends Control {
 
 
     // ******************** Enum definitions **********************************
-    public enum BackgroundDesign {
+    public static enum BackgroundDesign {
         DARK_GRAY("background-design-darkgray"),
         SATIN_GRAY("background-design-satingray"),
         LIGHT_GRAY("background-design-lightgray"),
@@ -96,7 +96,7 @@ public abstract class Gauge extends Control {
             this.CSS_TEXT = CSS_BACKGROUND + "-text";
         }
     }
-    public enum FrameDesign {
+    public static enum FrameDesign {
         //BLACK_METAL("frame-design-blackmetal"),   // Swing based
         //SHINY_METAL("frame-design-shinymetal"),   // Swing based
         //CHROME("frame-design-chrome"),            // Swing based
@@ -117,7 +117,75 @@ public abstract class Gauge extends Control {
             this.CSS = CSS;
         }
     }
-    public enum RadialRange {
+    public static enum KnobColor {
+            BLACK,
+            BRASS,
+            SILVER
+        }
+    public static enum KnobDesign {
+        STANDARD,
+        PLAIN,
+        METAL,
+        BIG
+    }
+    public static enum LcdFont {
+        STANDARD,
+        LCD,
+        BUS
+    }
+    public static enum NumberFormat {
+        AUTO("0"),
+        STANDARD("0"),
+        FRACTIONAL("0.0#"),
+        SCIENTIFIC("0.##E0"),
+        PERCENTAGE("##0.0%");
+
+        private final DecimalFormat DF;
+
+        private NumberFormat(final String FORMAT_STRING) {
+            Locale.setDefault(new Locale("en", "US"));
+
+            DF = new DecimalFormat(FORMAT_STRING);
+        }
+
+        public String format(final Number NUMBER) {
+            return DF.format(NUMBER);
+        }
+    }
+    public static enum NumberSystem {
+        DECIMAL("dec"),
+        HEXADECIMAL("hex"),
+        OCTAL("oct");
+
+        private String text;
+
+        private NumberSystem(final String TEXT) {
+            text = TEXT;
+        }
+
+        @Override public String toString() {
+            return text;
+        }
+    }
+    public static enum PointerType {
+        TYPE1,
+        TYPE2,
+        TYPE3,
+        TYPE4,
+        TYPE5,
+        TYPE6,
+        TYPE7,
+        TYPE8,
+        TYPE9,
+        TYPE10,
+        TYPE11,
+        TYPE12,
+        TYPE13,
+        TYPE14,
+        TYPE15,
+        TYPE16
+    }
+    public static enum RadialRange {
         RADIAL_300(300, -150, 240, new Rectangle(0.4, 0.56, 0.4, 0.12), 150, new Point2D(0.6, 0.4),new Point2D(0.3, 0.4), 1, 0.38),
         RADIAL_270(270, -180, 270, new Rectangle(0.4, 0.56, 0.4, 0.12), 180, new Point2D(0.6, 0.4),new Point2D(0.3, 0.4), 1, 0.38),
         RADIAL_180(180, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 90, new Point2D(0.6, 0.4),new Point2D(0.3, 0.4), 1, 0.38),
@@ -159,70 +227,7 @@ public abstract class Gauge extends Control {
             this.RADIUS_FACTOR                     = RADIUS_FACTOR;
         }
     }
-    public enum KnobColor {
-            BLACK,
-            BRASS,
-            SILVER
-        }
-    public enum KnobDesign {
-        STANDARD,
-        PLAIN,
-        METAL,
-        BIG
-    }
-    public enum NumberFormat {
-        AUTO("0"),
-        STANDARD("0"),
-        FRACTIONAL("0.0#"),
-        SCIENTIFIC("0.##E0"),
-        PERCENTAGE("##0.0%");
-
-        private final DecimalFormat DF;
-
-        private NumberFormat(final String FORMAT_STRING) {
-            Locale.setDefault(new Locale("en", "US"));
-
-            DF = new DecimalFormat(FORMAT_STRING);
-        }
-
-        public String format(final Number NUMBER) {
-            return DF.format(NUMBER);
-        }
-    }
-    public enum NumberSystem {
-        DECIMAL("dec"),
-        HEXADECIMAL("hex"),
-        OCTAL("oct");
-
-        private String text;
-
-        private NumberSystem(final String TEXT) {
-            text = TEXT;
-        }
-
-        @Override public String toString() {
-            return text;
-        }
-    }
-    public enum PointerType {
-        TYPE1,
-        TYPE2,
-        TYPE3,
-        TYPE4,
-        TYPE5,
-        TYPE6,
-        TYPE7,
-        TYPE8,
-        TYPE9,
-        TYPE10,
-        TYPE11,
-        TYPE12,
-        TYPE13,
-        TYPE14,
-        TYPE15,
-        TYPE16
-    }
-    public enum ThresholdColor {
+    public static enum ThresholdColor {
         RED("-fx-red;"),
         GREEN("-fx-green;"),
         BLUE("-fx-blue;"),
@@ -244,16 +249,16 @@ public abstract class Gauge extends Control {
             this.CSS = "-fx-threshold: " + CSS_COLOR;
         }
     }
-    public enum TickmarkType {
+    public static enum TickmarkType {
         LINE,
         TRIANGLE
     }
-    public enum TicklabelOrientation {
+    public static enum TicklabelOrientation {
             NORMAL,
             HORIZONTAL,
             TANGENT
         }
-    public enum Trend {
+    public static enum Trend {
         UP("up"),
         STEADY("steady"),
         DOWN("down"),
@@ -1053,18 +1058,6 @@ public abstract class Gauge extends Control {
         return styleModel.lcdVisibleProperty();
     }
 
-    public final boolean isLcdDigitalFontEnabled() {
-        return styleModel.isLcdDigitalFontEnabled();
-    }
-
-    public final void setLcdDigitalFontEnabled(final boolean LCD_DIGITAL_FONT_ENABLED) {
-        styleModel.setLcdDigitalFontEnabled(LCD_DIGITAL_FONT_ENABLED);
-    }
-
-    public final BooleanProperty lcdDigitalFontEnabledProperty() {
-        return styleModel.lcdDigitalFontEnabledProperty();
-    }
-
     public final String getLcdUnit() {
         return gaugeModel.getLcdUnit();
     }
@@ -1111,6 +1104,18 @@ public abstract class Gauge extends Control {
 
     public final StringProperty lcdTitleFontProperty() {
         return styleModel.lcdTitleFontProperty();
+    }
+
+    public final Gauge.LcdFont getLcdValueFont() {
+        return styleModel.getLcdValueFont();
+    }
+
+    public final void setLcdValueFont(final Gauge.LcdFont VALUE_FONT) {
+        styleModel.setLcdValueFont(VALUE_FONT);
+    }
+
+    public final ObjectProperty<Gauge.LcdFont> lcdValueFontProperty() {
+        return styleModel.lcdValueFontProperty();
     }
 
     public final NumberSystem getLcdNumberSystem() {

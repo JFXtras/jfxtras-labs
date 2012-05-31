@@ -118,6 +118,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         registerChangeListener(CONTROL.maxMeasuredValueProperty(), "MAX_MEASURED_VALUE");
         registerChangeListener(CONTROL.trendProperty(), "TREND");
         registerChangeListener(CONTROL.simpleGradientBaseColorProperty(), "SIMPLE_GRADIENT_BASE");
+        registerChangeListener(CONTROL.lcdValueFontProperty(), "LCD_VALUE_FONT");
     }
 
 

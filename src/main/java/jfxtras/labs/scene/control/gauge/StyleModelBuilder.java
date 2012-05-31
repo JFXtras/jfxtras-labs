@@ -205,11 +205,6 @@ public class StyleModelBuilder {
         return this;
     }
 
-    public final StyleModelBuilder lcdDigitalFontEnabled(final boolean LCD_DIGITAL_FONT_ENABLED) {
-        properties.put("lcdDigitalFontEnabled", new SimpleBooleanProperty(LCD_DIGITAL_FONT_ENABLED));
-        return this;
-    }
-
     public final StyleModelBuilder lcdNumberSystemVisible(final boolean NUMBER_SYSTEM_VISIBLE) {
         properties.put("lcdNumberSystemVisible", new SimpleBooleanProperty(NUMBER_SYSTEM_VISIBLE));
         return this;
@@ -222,6 +217,11 @@ public class StyleModelBuilder {
 
     public final StyleModelBuilder lcdTitleFont(final String TITLE_FONT) {
         properties.put("lcdTitleFont", new SimpleStringProperty(TITLE_FONT));
+        return this;
+    }
+
+    public final StyleModelBuilder lcdValueFont(final Gauge.LcdFont VALUE_FONT) {
+        properties.put("lcdValueFont", new SimpleObjectProperty<Gauge.LcdFont>(VALUE_FONT));
         return this;
     }
 
@@ -443,14 +443,14 @@ public class StyleModelBuilder {
                 MODEL.setLcdVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("lcdUnitStringVisible".equals(key)) {
                 MODEL.setLcdUnitVisible(((BooleanProperty) properties.get(key)).get());
-            } else if ("lcdDigitalFontEnabled".equals(key)) {
-                MODEL.setLcdDigitalFontEnabled(((BooleanProperty) properties.get(key)).get());
             } else if ("lcdNumberSystemVisible".equals(key)) {
                 MODEL.setLcdNumberSystemVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("lcdUnitFont".equals(key)) {
                 MODEL.setLcdUnitFont(((StringProperty) properties.get(key)).get());
             } else if ("lcdTitleFont".equals(key)) {
                 MODEL.setLcdTitleFont(((StringProperty) properties.get(key)).get());
+            } else if ("lcdValueFont".equals(key)) {
+                MODEL.setLcdValueFont(((ObjectProperty<Gauge.LcdFont>) properties.get(key)).get());
             } else if ("lcdDecimals".equals(key)) {
                 MODEL.setLcdDecimals(((IntegerProperty) properties.get(key)).get());
             } else if ("lcdBlinking".equals(key)) {

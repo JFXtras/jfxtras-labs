@@ -38,6 +38,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.text.Font;
 
 import java.util.HashMap;
 
@@ -82,11 +83,6 @@ public class LcdBuilder {
 
     public final LcdBuilder decimals(final int DECIMALS) {
         properties.put("decimals", new SimpleIntegerProperty(DECIMALS));
-        return this;
-    }
-
-    public final LcdBuilder digitalFontEnabled(final boolean DIGITAL_FONT_ENABLED) {
-        properties.put("digitalFontEnabled", new SimpleBooleanProperty(DIGITAL_FONT_ENABLED));
         return this;
     }
 
@@ -170,6 +166,11 @@ public class LcdBuilder {
         return this;
     }
 
+    public final LcdBuilder valueFont(final Gauge.LcdFont VALUE_FONT) {
+        properties.put("valueFont", new SimpleObjectProperty<Gauge.LcdFont>(VALUE_FONT));
+        return this;
+    }
+
     public final Lcd build() {
         final Lcd LCD = new Lcd();
 
@@ -187,8 +188,6 @@ public class LcdBuilder {
                 LCD.setLcdThreshold(((DoubleProperty) properties.get(key)).get());
             } else if("decimals".equals(key)) {
                 LCD.setLcdDecimals(((IntegerProperty) properties.get(key)).get());
-            } else if("digitalFontEnabled".equals(key)) {
-                LCD.setLcdDigitalFontEnabled(((BooleanProperty) properties.get(key)).get());
             } else if("minMeasuredValueVisible".equals(key)) {
                 LCD.setLcdMinMeasuredValueVisible(((BooleanProperty) properties.get(key)).get());
             } else if("minMeasuredValueDecimals".equals(key)) {
@@ -227,6 +226,8 @@ public class LcdBuilder {
             } else if ("titleFont".equals(key)) {
                 LCD.setTitleFont(((StringProperty) properties.get(key)).get());
                 LCD.setLcdTitleFont(((StringProperty) properties.get(key)).get());
+            } else if ("valueFont".equals(key)) {
+                LCD.setLcdValueFont(((ObjectProperty<Gauge.LcdFont>) properties.get(key)).get());
             }
         }
         return LCD;

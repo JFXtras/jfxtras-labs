@@ -28,6 +28,7 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 import jfxtras.labs.internal.scene.control.behavior.LcdBehavior;
+import jfxtras.labs.scene.control.gauge.Gauge;
 import jfxtras.labs.scene.control.gauge.Lcd;
 import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
 import jfxtras.labs.scene.control.gauge.Section;
@@ -284,11 +285,6 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             lcdTitle.visibleProperty().unbind();
         }
         lcdTitle.visibleProperty().bind(control.titleVisibleProperty());
-
-        if (lcdValueBackgroundString.visibleProperty().isBound()) {
-            lcdValueBackgroundString.visibleProperty().unbind();
-        }
-        lcdValueBackgroundString.visibleProperty().bind(control.lcdDigitalFontEnabledProperty());
     }
 
     private void addListeners() {
@@ -473,6 +469,9 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             }
         } else if ("TREND".equals(PROPERTY)) {
             drawLcdContent();
+        } else if ("LCD_VALUE_FONT".equals(PROPERTY)) {
+            drawLcd();
+            drawLcdContent();
         }
     }
 
@@ -557,13 +556,26 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         final Rectangle LCD_MAIN = new Rectangle(1.0, 1.0, WIDTH - 2.0, HEIGHT - 2.0);
 
         // Setup the lcd value
+        /*
+        * THANX A LOT TO VOLCANO TYPE FOR SPONSORING JFXTRAS WITH THE 'BUS' FONT THAT
+        * IS NOW AVAILABLE IN THE LCD CONTROL.
+        * HTTP://WWW.VOLCANO-TYPE.DE
+        * */
         final Font LCD_VALUE_FONT;
-        if (control.isLcdDigitalFontEnabled()) {
-            LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/digital.ttf"), (0.5833333333 * SIZE));
-            lcdDigitalFontSizeFactor = 1.9098073909;
-        } else {
-            LCD_VALUE_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.5 * SIZE));
-            lcdDigitalFontSizeFactor = 1.0;
+        switch(control.getLcdValueFont()) {
+            case BUS:
+                LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/bus.otf"), (0.4583333333 * SIZE));
+                lcdDigitalFontSizeFactor = 1.0;
+                break;
+            case LCD:
+                LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/digital.ttf"), (0.5833333333 * SIZE));
+                lcdDigitalFontSizeFactor = 1.9098073909;
+                break;
+            case STANDARD:
+            default:
+                LCD_VALUE_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.5 * SIZE));
+                lcdDigitalFontSizeFactor = 1.0;
+                break;
         }
         lcdValueString.setFont(LCD_VALUE_FONT);
         lcdValueString.setFontSmoothingType(FontSmoothingType.LCD);
@@ -641,6 +653,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         lcdValueBackgroundString.getStyleClass().add("lcd");
         lcdValueBackgroundString.setStyle(control.getLcdDesign().CSS);
         lcdValueBackgroundString.getStyleClass().add("lcd-text-background");
+        lcdValueBackgroundString.setVisible(Gauge.LcdFont.LCD == control.getLcdValueFont());
 
         // Setup the font for the lcd title, number system, min measured, max measure and former value
         final Font LCD_TITLE_FONT = Font.font(control.getLcdTitleFont(), FontWeight.BOLD, (0.1666666667 * SIZE));
