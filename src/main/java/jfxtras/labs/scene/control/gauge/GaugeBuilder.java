@@ -82,7 +82,9 @@ public class GaugeBuilder<T extends Gauge> {
 
         // gauge model
         for (String key : gaugeProperties.keySet()) {
-            if ("value".equals(key)) {
+            if ("gaugeType".equals(key)) {
+                gaugeType = ((ObjectProperty<GaugeType>) gaugeProperties.get(key)).get();
+            } else if ("value".equals(key)) {
                 gaugeModel.setValue(((DoubleProperty) gaugeProperties.get(key)).get());
             } else if ("valueAnimationEnabled".equals(key)) {
                 gaugeModel.setValueAnimationEnabled(((BooleanProperty) gaugeProperties.get(key)).get());
@@ -203,14 +205,14 @@ public class GaugeBuilder<T extends Gauge> {
                 styleModel.setLcdVisible(((BooleanProperty) styleProperties.get(key)).get());
             } else if ("lcdUnitStringVisible".equals(key)) {
                 styleModel.setLcdUnitVisible(((BooleanProperty) styleProperties.get(key)).get());
-            } else if ("lcdDigitalFontEnabled".equals(key)) {
-                styleModel.setLcdDigitalFontEnabled(((BooleanProperty) styleProperties.get(key)).get());
             } else if ("lcdNumberSystemVisible".equals(key)) {
                 styleModel.setLcdNumberSystemVisible(((BooleanProperty) styleProperties.get(key)).get());
             } else if ("lcdUnitFont".equals(key)) {
                 styleModel.setLcdUnitFont(((StringProperty) styleProperties.get(key)).get());
             } else if ("lcdTitleFont".equals(key)) {
                 styleModel.setLcdTitleFont(((StringProperty) styleProperties.get(key)).get());
+            } else if ("lcdValueFont".equals(key)) {
+                styleModel.setLcdValueFont(((ObjectProperty<Gauge.LcdFont>) styleProperties.get(key)).get());
             } else if ("lcdDecimals".equals(key)) {
                 styleModel.setLcdDecimals(((IntegerProperty) styleProperties.get(key)).get());
             } else if ("lcdBlinking".equals(key)) {
@@ -583,11 +585,6 @@ public class GaugeBuilder<T extends Gauge> {
         return this;
     }
 
-    public final GaugeBuilder lcdDigitalFontEnabled(final boolean LCD_DIGITAL_FONT_ENABLED) {
-        styleProperties.put("lcdDigitalFontEnabled", new SimpleBooleanProperty(LCD_DIGITAL_FONT_ENABLED));
-        return this;
-    }
-
     public final GaugeBuilder lcdNumberSystemVisible(final boolean NUMBER_SYSTEM_VISIBLE) {
         styleProperties.put("lcdNumberSystemVisible", new SimpleBooleanProperty(NUMBER_SYSTEM_VISIBLE));
         return this;
@@ -600,6 +597,11 @@ public class GaugeBuilder<T extends Gauge> {
 
     public final GaugeBuilder lcdTitleFont(final String TITLE_FONT) {
         styleProperties.put("lcdTitleFont", new SimpleStringProperty(TITLE_FONT));
+        return this;
+    }
+
+    public final GaugeBuilder lcdValueFont(final Gauge.LcdFont VALUE_FONT) {
+        styleProperties.put("lcdValueFont", new SimpleObjectProperty<Gauge.LcdFont>(VALUE_FONT));
         return this;
     }
 
