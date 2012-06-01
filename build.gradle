@@ -7,12 +7,9 @@ apply plugin: 'idea'
 /***************************************
  * Set Maven coordinates and build vars
  ***************************************/
-group                   = 'org.jfxtras'
-archivesBaseName        = "jfxtras-labs"
-version                 = '0.1-SNAPSHOT'
+// set from file gradle.properties
 
 isRelease = !version.endsWith('SNAPSHOT')
-requiredJavaFxVersion   = '2.1.0'
 
 //sourceCompatibility = 7
 
@@ -68,7 +65,7 @@ task buildTimestamped(type: Copy, dependsOn: 'build') {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.0-milestone-8'
+    gradleVersion = '1.0-rc-3'
 }
 
 signArchives.onlyIf {
