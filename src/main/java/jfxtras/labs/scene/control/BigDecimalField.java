@@ -62,7 +62,7 @@ public class BigDecimalField extends Control {
     }
 
     /**
-     * @return text representation of number
+     * @return The text representation of number
      */
     public String getText() {
         return getFormat().format(number.getValue());
@@ -70,7 +70,7 @@ public class BigDecimalField extends Control {
 
     /**
      * 
-     * @param text representation of number
+     * @param formattedNumber representation of number
      */
     public void setText(String formattedNumber) {
         try {
@@ -98,24 +98,21 @@ public class BigDecimalField extends Control {
     final private ObjectProperty<BigDecimal> number;
 
     /**
-     * The BigDecimal number
-     * @return 
+     * @return The BigDecimal number
      */
     public BigDecimal getNumber() {
         return number.getValue();
     }
 
     /**
-     * The BigDecimal number
-     * @return 
+     * Set the BigDecimal number
      */
-    public  void setNumber(BigDecimal value) {
+    public void setNumber(BigDecimal value) {
         number.set(value);
     }
 
     /**
-     * The BigDecimal number
-     * @return 
+     * @return The property containing the BigDecimal number
      */
     public ObjectProperty<BigDecimal> numberProperty() {
         return number;

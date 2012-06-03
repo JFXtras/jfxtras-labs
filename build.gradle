@@ -4,53 +4,37 @@ apply plugin: 'signing'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
-/***************************************
- * Set Maven coordinates and build vars
- ***************************************/
-group                   = 'org.jfxtras'
-archivesBaseName        = "jfxtras-labs"
-version                 = '0.1-SNAPSHOT'
-
-isRelease = !version.endsWith('SNAPSHOT')
-requiredJavaFxVersion   = '2.1.0'
-
-//sourceCompatibility = 7
-
-/***************************************
- * Check environment
- ***************************************/
-javafxHome = System.env['JAVAFX_HOME']
-if(!javafxHome) {
-    println """Please set environment variable JAVAFX_HOME
-to the directory that contains /rt/lib/jfxrt.jar
-for JavaFX version $requiredJavaFxVersion"""
-    System.exit 1
-}
-
 buildscript {
-    dependencies {
-        classpath files("${System.env['JAVAFX_HOME']}/rt/lib/jfxrt.jar")
+    final javafxHome = System.env['JAVAFX_HOME']
+    if (javafxHome) {
+      ext.javafxJar = "${javafxHome}/rt/lib/jfxrt.jar"
+    } else {
+      final javaHome = System.env['JAVA_HOME']
+      if (javaHome)
+        ext.javafxJar = "${javaHome}/jre/lib/jfxrt.jar"
+    }
+
+    try {
+      println "JavaFX runtime jar: ${ext.javafxJar}"
+      dependencies {
+        classpath files(ext.javafxJar)
+      }
+    } catch (MissingPropertyException mpe) {
+      println """
+                 |  Please set the environment variable JAVAFX_HOME
+                 |  to the directory that contains rt/lib/jfxrt.jar
+                 |  of JavaFX version ${jfxtras_requiredJavaFxVersion}.\n""".stripMargin()
+      System.exit 1
     }
 }
-/*
-actualJavaFXVersion = com.sun.javafx.runtime.VersionInfo.runtimeVersion
-if (!actualJavaFXVersion.startsWith(requiredJavaFxVersion)) {
-    println "Required JavaFX version is '$requiredJavaFxVersion' but actual version is '$actualJavaFXVersion'"
-    System.exit(1)
-}
-*/
-// environment is ok
 
-/***************************************
- * The build script proper
- ***************************************/
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile     files("${javafxHome}/rt/lib/jfxrt.jar")
-    testCompile 'junit:junit:4.10'
+    compile      files(ext.javafxJar)
+    testCompile  "junit:junit:${jfxtras_junitVersion}"
     testCompile files("lib/jemmy.jar", "lib/JemmyAWT.jar", "lib/JemmyAWTInput.jar", "lib/JemmyBrowser.jar", "lib/JemmyCore.jar", "lib/JemmyFX.jar")
 }
 
@@ -68,15 +52,15 @@ task buildTimestamped(type: Copy, dependsOn: 'build') {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.0-milestone-8'
+    gradleVersion = '1.0-rc-3'
 }
 
 signArchives.onlyIf {
-      hasProperty('signing.keyId')
+      project.hasProperty('signing.keyId')
 }
 
 uploadArchives.onlyIf {
-      hasProperty('sonatypeUsername') && hasProperty('sonatypePassword')
+      project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')
 }
 
 task copyToLib(type: Copy) {

@@ -76,8 +76,7 @@ public class Spinner<T> extends Control
 	// model
 	
 	/**
-	 * @param model
-	 * @param startValue
+	 * @param items The item list used to populate the spinner.
 	 */
 	public Spinner(ObservableList<T> items)
 	{
@@ -87,8 +86,8 @@ public class Spinner<T> extends Control
 	}
 
 	/**
-	 * @param model
-	 * @param startValue
+	 * @param items The item list used to populate the spinner.
+	 * @param startValue The initial value of the spinner (one of the items).
 	 */
 	public Spinner(ObservableList<T> items, T startValue)
 	{
@@ -101,7 +100,6 @@ public class Spinner<T> extends Control
 	// convenience
 	
 	/**
-	 * 
 	 * @param list
 	 */
 	public Spinner(java.util.List<T> list)
@@ -110,7 +108,6 @@ public class Spinner<T> extends Control
 	}
 
 	/**
-	 * 
 	 * @param list
 	 */
 	public Spinner(T... list)
@@ -119,8 +116,8 @@ public class Spinner<T> extends Control
 	}
 
 	/**
-	 * 
-	 * @param list
+	 * @param from
+	 * @param to
 	 */
 	public Spinner(int from, int to)
 	{
@@ -128,8 +125,9 @@ public class Spinner<T> extends Control
 	}
 
 	/**
-	 * 
-	 * @param list
+	 * @param from
+	 * @param to
+	 * @param step
 	 */
 	public Spinner(int from, int to, int step)
 	{
@@ -531,7 +529,7 @@ public class Spinner<T> extends Control
 	 * Does a o1.equals(o2) but also checks if o1 or o2 are null.
 	 * @param o1
 	 * @param o2
-	 * @return
+	 * @return True if the two values are equal, false otherwise.
 	 */
 	static public boolean equals(Object o1, Object o2)
 	{

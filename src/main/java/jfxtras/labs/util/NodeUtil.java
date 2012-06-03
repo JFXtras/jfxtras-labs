@@ -7,7 +7,7 @@ public class NodeUtil
 	/**
 	 * 
 	 * @param node
-	 * @return
+	 * @return The X screen coordinate of the node.
 	 */
 	static public double screenX(Node node)
 	{
@@ -17,7 +17,7 @@ public class NodeUtil
 	/**
 	 * 
 	 * @param node
-	 * @return
+	 * @return The Y screen coordinate of the node.
 	 */
 	static public double screenY(Node node)
 	{

@@ -38,7 +38,7 @@ public class StringConverterFactory
 {
 	/**
 	 * 
-	 * @return
+	 * @return A default string converter that does no extra processing on the strings it is given.
 	 */
 	static public StringConverter<String> forString()
 	{
