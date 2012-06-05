@@ -71,7 +71,7 @@ public class GaugeBuilder<T extends Gauge> {
 
 
     // ******************** Methods *******************************************
-    public static final GaugeBuilder create(final GaugeType GAUGE_TYPE) {
+    public static final GaugeBuilder create() {
         return new GaugeBuilder();
     }
 
