@@ -151,6 +151,11 @@ public class LcdBuilder {
         return this;
     }
 
+    public final LcdBuilder numberSystem(final Gauge.NumberSystem NUMBER_SYSTEM) {
+        properties.put("numberSystem", new SimpleObjectProperty<Gauge.NumberSystem>(NUMBER_SYSTEM));
+        return this;
+    }
+
     public final LcdBuilder numberSystemVisible(final boolean NUMBER_SYSTEM_VISIBLE) {
         properties.put("numberSystemVisible", new SimpleBooleanProperty(NUMBER_SYSTEM_VISIBLE));
         return this;
@@ -228,6 +233,8 @@ public class LcdBuilder {
             } else if ("thresholdBehaviorInverted".equals(key)) {
                 CONTROL.setThresholdBehaviorInverted(((BooleanProperty) properties.get(key)).get());
                 CONTROL.setLcdThresholdBehaviorInverted(((BooleanProperty) properties.get(key)).get());
+            } else if("numberSystem".equals(key)) {
+                CONTROL.setLcdNumberSystem(((ObjectProperty<Gauge.NumberSystem>) properties.get(key)).get());
             } else if ("numberSystemVisible".equals(key)) {
                 CONTROL.setLcdNumberSystemVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("unitFont".equals(key)) {
