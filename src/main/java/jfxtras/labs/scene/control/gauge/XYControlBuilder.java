@@ -81,6 +81,16 @@ public class XYControlBuilder {
         return this;
     }
 
+    public final XYControlBuilder prefWidth(final double PREF_WIDTH) {
+        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
+        return this;
+    }
+
+    public final XYControlBuilder prefHeight(final double PREF_HEIGHT) {
+        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
+        return this;
+    }
+
     public final XYControl build() {
         final XYControl CONTROL = new XYControl();
         for (String key : properties.keySet()) {
@@ -96,6 +106,10 @@ public class XYControlBuilder {
                 CONTROL.setXAxisLabelVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("yAxisLabelVisible".equals(key)) {
                 CONTROL.setYAxisLabelVisible(((BooleanProperty) properties.get(key)).get());
+            }  else if ("prefWidth".equals(key)) {
+                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
+            } else if ("prefHeight".equals(key)) {
+                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
             }
         }
         return CONTROL;

@@ -28,9 +28,11 @@
 package jfxtras.labs.scene.control.gauge;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
 
@@ -70,19 +72,33 @@ public class LedBuilder {
         return this;
     }
 
+    public final LedBuilder prefWidth(final double PREF_WIDTH) {
+        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
+        return this;
+    }
+
+    public final LedBuilder prefHeight(final double PREF_HEIGHT) {
+        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
+        return this;
+    }
+
     public final Led build() {
-        final Led LED = new Led();
+        final Led CONTROL = new Led();
         for (String key : properties.keySet()) {
             if ("color".equals(key)) {
-                LED.setColor(((ObjectProperty<Color>) properties.get(key)).get());
+                CONTROL.setColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("type".equals(key)) {
-                LED.setType(((ObjectProperty<Led.Type>) properties.get(key)).get());
+                CONTROL.setType(((ObjectProperty<Led.Type>) properties.get(key)).get());
             } else if ("on".equals(key)) {
-                LED.setOn(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setOn(((BooleanProperty) properties.get(key)).get());
             } else if ("blinking".equals(key)) {
-                LED.setBlinking(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setBlinking(((BooleanProperty) properties.get(key)).get());
+            }  else if ("prefWidth".equals(key)) {
+                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
+            } else if ("prefHeight".equals(key)) {
+                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
             }
         }
-        return LED;
+        return CONTROL;
     }
 }

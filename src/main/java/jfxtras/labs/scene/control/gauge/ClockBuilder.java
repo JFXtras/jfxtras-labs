@@ -28,8 +28,10 @@
 package jfxtras.labs.scene.control.gauge;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -74,21 +76,35 @@ public class ClockBuilder {
         return this;
     }
 
+    public final ClockBuilder prefWidth(final double PREF_WIDTH) {
+        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
+        return this;
+    }
+
+    public final ClockBuilder prefHeight(final double PREF_HEIGHT) {
+        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
+        return this;
+    }
+
     public final Clock build() {
-        final Clock CLOCK = new Clock();
+        final Clock CONTROL = new Clock();
         for (String key : properties.keySet()) {
             if ("timeZone".equals(key)) {
-                CLOCK.setTimeZone(((StringProperty) properties.get(key)).get());
+                CONTROL.setTimeZone(((StringProperty) properties.get(key)).get());
             } else if ("daylightSavingTime".equals(key)) {
-                CLOCK.setDaylightSavingTime(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setDaylightSavingTime(((BooleanProperty) properties.get(key)).get());
             } else if ("secondPointerVisible".equals(key)) {
-                CLOCK.setSecondPointerVisible(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setSecondPointerVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("autoDimEnabled".equals(key)) {
-                CLOCK.setAutoDimEnabled(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setAutoDimEnabled(((BooleanProperty) properties.get(key)).get());
             } else if ("running".equals(key)) {
-                CLOCK.setRunning(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setRunning(((BooleanProperty) properties.get(key)).get());
+            }  else if ("prefWidth".equals(key)) {
+                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
+            } else if ("prefHeight".equals(key)) {
+                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
             }
         }
-        return CLOCK;
+        return CONTROL;
     }
 }

@@ -72,19 +72,33 @@ public class BatteryBuilder {
         return this;
     }
 
+    public final BatteryBuilder prefWidth(final double PREF_WIDTH) {
+        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
+        return this;
+    }
+
+    public final BatteryBuilder prefHeight(final double PREF_HEIGHT) {
+        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
+        return this;
+    }
+
     public final Battery build() {
-        final Battery BATTERY = new Battery();
+        final Battery CONTROL = new Battery();
         for (String key : properties.keySet()) {
             if ("charging".equals(key)) {
-                BATTERY.setCharging(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setCharging(((BooleanProperty) properties.get(key)).get());
             } else if ("chargeIndicator".equals(key)) {
-                BATTERY.setChargeIndicator(((ObjectProperty<Battery.ChargeIndicator>) properties.get(key)).get());
+                CONTROL.setChargeIndicator(((ObjectProperty<Battery.ChargeIndicator>) properties.get(key)).get());
             } else if ("chargingLevel".equals(key)) {
-                BATTERY.setChargingLevel(((DoubleProperty) properties.get(key)).get());
+                CONTROL.setChargingLevel(((DoubleProperty) properties.get(key)).get());
             } else if ("levelColors".equals(key)) {
-                BATTERY.setLevelColors(((ObjectProperty<Stop[]>) properties.get(key)).get());
+                CONTROL.setLevelColors(((ObjectProperty<Stop[]>) properties.get(key)).get());
+            }  else if ("prefWidth".equals(key)) {
+                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
+            } else if ("prefHeight".equals(key)) {
+                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
             }
         }
-        return BATTERY;
+        return CONTROL;
     }
 }

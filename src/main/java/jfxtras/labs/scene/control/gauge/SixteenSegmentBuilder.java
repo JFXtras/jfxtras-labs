@@ -28,10 +28,12 @@
 package jfxtras.labs.scene.control.gauge;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -85,23 +87,37 @@ public class SixteenSegmentBuilder {
         return this;
     }
 
+    public final SixteenSegmentBuilder prefWidth(final double PREF_WIDTH) {
+        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
+        return this;
+    }
+
+    public final SixteenSegmentBuilder prefHeight(final double PREF_HEIGHT) {
+        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
+        return this;
+    }
+
     public final SixteenSegment build() {
-        final SixteenSegment SEGMENT = new SixteenSegment();
+        final SixteenSegment CONTROL = new SixteenSegment();
         for (String key : properties.keySet()) {
             if ("character".equals(key)) {
-                SEGMENT.setCharacter(((StringProperty) properties.get(key)).get());
+                CONTROL.setCharacter(((StringProperty) properties.get(key)).get());
             } else if ("charCharacter".equals(key)) {
-                SEGMENT.setCharacter(((ObjectProperty<Character>) properties.get(key)).get());
+                CONTROL.setCharacter(((ObjectProperty<Character>) properties.get(key)).get());
             } else if ("dotOn".equals(key)) {
-                SEGMENT.setDotOn(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setDotOn(((BooleanProperty) properties.get(key)).get());
             } else if ("customSegmentMapping".equals(key)) {
-                SEGMENT.setCustomSegmentMapping(((ObjectProperty<Map<Integer, List<SixteenSegment.Segment>>>) properties.get(key)).get());
+                CONTROL.setCustomSegmentMapping(((ObjectProperty<Map<Integer, List<SixteenSegment.Segment>>>) properties.get(key)).get());
             } else if ("color".equals(key)) {
-                SEGMENT.setColor(((ObjectProperty<Color>) properties.get(key)).get());
+                CONTROL.setColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("plainColor".equals(key)) {
-                SEGMENT.setPlainColor(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setPlainColor(((BooleanProperty) properties.get(key)).get());
+            }  else if ("prefWidth".equals(key)) {
+                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
+            } else if ("prefHeight".equals(key)) {
+                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
             }
         }
-        return SEGMENT;
+        return CONTROL;
     }
 }

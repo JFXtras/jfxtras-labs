@@ -97,27 +97,41 @@ public class LedBargraphBuilder {
         return this;
     }
 
+    public final LedBargraphBuilder prefWidth(final double PREF_WIDTH) {
+        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
+        return this;
+    }
+
+    public final LedBargraphBuilder prefHeight(final double PREF_HEIGHT) {
+        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
+        return this;
+    }
+
     public final LedBargraph build() {
-        final LedBargraph LED_BARGRAPH = new LedBargraph();
+        final LedBargraph CONTROL = new LedBargraph();
         for (String key : properties.keySet()) {
             if ("noOfLeds".equals(key)) {
-                LED_BARGRAPH.setNoOfLeds(((IntegerProperty) properties.get(key)).get());
+                CONTROL.setNoOfLeds(((IntegerProperty) properties.get(key)).get());
             } else if ("ledType".equals(key)) {
-                LED_BARGRAPH.setLedType(((ObjectProperty<Led.Type>) properties.get(key)).get());
+                CONTROL.setLedType(((ObjectProperty<Led.Type>) properties.get(key)).get());
             } else if ("orientation".equals(key)) {
-                LED_BARGRAPH.setOrientation(((ObjectProperty<Orientation>) properties.get(key)).get());
+                CONTROL.setOrientation(((ObjectProperty<Orientation>) properties.get(key)).get());
             } else if ("peakValueVisible".equals(key)) {
-                LED_BARGRAPH.setPeakValueVisible(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setPeakValueVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("ledSize".equals(key)) {
-                LED_BARGRAPH.setLedSize(((DoubleProperty) properties.get(key)).get());
+                CONTROL.setLedSize(((DoubleProperty) properties.get(key)).get());
             } else if ("ledColors".equals(key)) {
-                LED_BARGRAPH.setLedColors(((ObjectProperty<LinkedList<Color>>) properties.get(key)).get());
+                CONTROL.setLedColors(((ObjectProperty<LinkedList<Color>>) properties.get(key)).get());
             } else if ("ledColor".equals(key)) {
-                LED_BARGRAPH.setLedColor(((IntegerProperty) properties.get("ledColorIndex")).get(), ((ObjectProperty<Color>) properties.get(key)).get());
+                CONTROL.setLedColor(((IntegerProperty) properties.get("ledColorIndex")).get(), ((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("value".equals(key)) {
-                LED_BARGRAPH.setValue(((DoubleProperty) properties.get(key)).get());
+                CONTROL.setValue(((DoubleProperty) properties.get(key)).get());
+            }  else if ("prefWidth".equals(key)) {
+                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
+            } else if ("prefHeight".equals(key)) {
+                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
             }
         }
-        return LED_BARGRAPH;
+        return CONTROL;
     }
 }

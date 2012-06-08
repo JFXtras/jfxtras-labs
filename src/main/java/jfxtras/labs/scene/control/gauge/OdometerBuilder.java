@@ -27,10 +27,12 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -87,25 +89,39 @@ public class OdometerBuilder {
         return this;
     }
 
+    public final OdometerBuilder prefWidth(final double PREF_WIDTH) {
+        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
+        return this;
+    }
+
+    public final OdometerBuilder prefHeight(final double PREF_HEIGHT) {
+        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
+        return this;
+    }
+
     public final Odometer build() {
-        final Odometer ODOMETER = new Odometer();
+        final Odometer CONTROL = new Odometer();
         for (String key : properties.keySet()) {
             if ("rotationPreset".equals(key)) {
-                ODOMETER.setRotationPreset(((IntegerProperty) properties.get(key)).get());
+                CONTROL.setRotationPreset(((IntegerProperty) properties.get(key)).get());
             } else if ("color".equals(key)) {
-                ODOMETER.setColor(((ObjectProperty<Color>) properties.get(key)).get());
+                CONTROL.setColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("decimalColor".equals(key)) {
-                ODOMETER.setDecimalColor(((ObjectProperty<Color>) properties.get(key)).get());
+                CONTROL.setDecimalColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("numberColor".equals(key)) {
-                ODOMETER.setNumberColor(((ObjectProperty<Color>) properties.get(key)).get());
+                CONTROL.setNumberColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("noOfDecimals".equals(key)) {
-                ODOMETER.setNoOfDecimals(((IntegerProperty) properties.get(key)).get());
+                CONTROL.setNoOfDecimals(((IntegerProperty) properties.get(key)).get());
             } else if ("noOfDigits".equals(key)) {
-                ODOMETER.setNoOfDigits(((IntegerProperty) properties.get(key)).get());
+                CONTROL.setNoOfDigits(((IntegerProperty) properties.get(key)).get());
             } else if ("interval".equals(key)) {
-                ODOMETER.setInterval(((LongProperty) properties.get(key)).get());
+                CONTROL.setInterval(((LongProperty) properties.get(key)).get());
+            }  else if ("prefWidth".equals(key)) {
+                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
+            } else if ("prefHeight".equals(key)) {
+                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
             }
         }
-        return ODOMETER;
+        return CONTROL;
     }
 }

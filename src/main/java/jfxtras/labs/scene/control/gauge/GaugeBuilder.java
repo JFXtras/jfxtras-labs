@@ -38,6 +38,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.ButtonBuilder;
 import javafx.scene.paint.Color;
 
 import java.util.HashMap;
@@ -76,9 +77,12 @@ public class GaugeBuilder<T extends Gauge> {
     }
 
     public final Gauge build() {
-        GaugeType gaugeType   = GaugeType.RADIAL;
+        Gauge      gauge;
+        GaugeType  gaugeType  = GaugeType.RADIAL;
         GaugeModel gaugeModel = new GaugeModel();
         StyleModel styleModel = new StyleModel();
+        double     prefWidth  = -1;
+        double     prefHeight = -1;
 
         // gauge model
         for (String key : gaugeProperties.keySet()) {
@@ -140,6 +144,10 @@ public class GaugeBuilder<T extends Gauge> {
                 gaugeModel.setMarkers(((ObjectProperty<Marker[]>) gaugeProperties.get(key)).get());
             } else if ("markersList".equals(key)) {
                 gaugeModel.setMarkers(((ObjectProperty<List<Marker>>) gaugeProperties.get(key)).get());
+            } else if ("prefWidth".equals(key)) {
+                prefWidth = ((DoubleProperty) gaugeProperties.get(key)).get();
+            } else if ("prefHeight".equals(key)) {
+                prefHeight = ((DoubleProperty) gaugeProperties.get(key)).get();
             }
         }
 
@@ -274,25 +282,32 @@ public class GaugeBuilder<T extends Gauge> {
 
         switch (gaugeType) {
             case LCD:
-                return (T) new Lcd(gaugeModel, styleModel);
+                gauge = (T) new Lcd(gaugeModel, styleModel);
             case LINEAR:
-                return (T) new Linear(gaugeModel, styleModel);
+                gauge = new Linear(gaugeModel, styleModel);
             case RADIAL_HALF_N:
-                return (T) new RadialHalfN(gaugeModel, styleModel);
+                gauge = (T) new RadialHalfN(gaugeModel, styleModel);
             case RADIAL_HALF_S:
-                return (T) new RadialHalfS(gaugeModel, styleModel);
+                gauge = (T) new RadialHalfS(gaugeModel, styleModel);
             case RADIAL_QUARTER_N:
-                return (T) new RadialQuarterN(gaugeModel, styleModel);
+                gauge = (T) new RadialQuarterN(gaugeModel, styleModel);
             case RADIAL_QUARTER_E:
-                return (T) new RadialQuarterE(gaugeModel, styleModel);
+                gauge = (T) new RadialQuarterE(gaugeModel, styleModel);
             case RADIAL_QUARTER_S:
-                return (T) new RadialQuarterS(gaugeModel, styleModel);
+                gauge = (T) new RadialQuarterS(gaugeModel, styleModel);
             case RADIAL_QUARTER_W:
-                return (T) new RadialQuarterW(gaugeModel, styleModel);
+                gauge = (T) new RadialQuarterW(gaugeModel, styleModel);
             case RADIAL:
             default:
-                return (T) new Radial(gaugeModel, styleModel);
+                gauge = (T) new Radial(gaugeModel, styleModel);
         }
+        if (prefWidth != -1) {
+            gauge.setPrefWidth(prefWidth);
+        }
+        if (prefHeight != -1) {
+            gauge.setPrefHeight(prefHeight);
+        }
+        return gauge;
     }
 
 
@@ -429,6 +444,16 @@ public class GaugeBuilder<T extends Gauge> {
 
     public final GaugeBuilder markers(final List<Marker> MARKERS) {
         gaugeProperties.put("markersList", new SimpleObjectProperty<List<Marker>>(MARKERS));
+        return this;
+    }
+
+    public final GaugeBuilder prefWidth(final double WIDTH) {
+        gaugeProperties.put("prefWidth", new SimpleDoubleProperty(WIDTH));
+        return this;
+    }
+
+    public final GaugeBuilder prefHeight(final double HEIGHT) {
+        gaugeProperties.put("prefHeight", new SimpleDoubleProperty(HEIGHT));
         return this;
     }
 

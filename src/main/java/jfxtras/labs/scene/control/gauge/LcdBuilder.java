@@ -171,65 +171,79 @@ public class LcdBuilder {
         return this;
     }
 
+    public final LcdBuilder prefWidth(final double PREF_WIDTH) {
+        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
+        return this;
+    }
+
+    public final LcdBuilder prefHeight(final double PREF_HEIGHT) {
+        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
+        return this;
+    }
+
     public final Lcd build() {
-        final Lcd LCD = new Lcd();
+        final Lcd CONTROL = new Lcd();
         for (String key : properties.keySet()) {
             if("styleModel".equals(key)) {
-                LCD.setStyleModel(((ObjectProperty<StyleModel>) properties.get(key)).get());
+                CONTROL.setStyleModel(((ObjectProperty<StyleModel>) properties.get(key)).get());
             } else if("design".equals(key)) {
-                LCD.setLcdDesign(((ObjectProperty<LcdDesign>) properties.get(key)).get());
+                CONTROL.setLcdDesign(((ObjectProperty<LcdDesign>) properties.get(key)).get());
             } else if("value".equals(key)) {
-                LCD.setValue(((DoubleProperty) properties.get(key)).get());
-                LCD.setLcdValue(((DoubleProperty) properties.get(key)).get());
+                CONTROL.setValue(((DoubleProperty) properties.get(key)).get());
+                CONTROL.setLcdValue(((DoubleProperty) properties.get(key)).get());
             } else if("valueAnimationEnabled".equals(key)) {
-                LCD.setValueAnimationEnabled(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setValueAnimationEnabled(((BooleanProperty) properties.get(key)).get());
             } else if("threshold".equals(key)) {
-                LCD.setThreshold(((DoubleProperty) properties.get(key)).get());
-                LCD.setLcdThreshold(((DoubleProperty) properties.get(key)).get());
+                CONTROL.setThreshold(((DoubleProperty) properties.get(key)).get());
+                CONTROL.setLcdThreshold(((DoubleProperty) properties.get(key)).get());
             } else if("decimals".equals(key)) {
-                LCD.setLcdDecimals(((IntegerProperty) properties.get(key)).get());
+                CONTROL.setLcdDecimals(((IntegerProperty) properties.get(key)).get());
             } else if("minMeasuredValueVisible".equals(key)) {
-                LCD.setLcdMinMeasuredValueVisible(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setLcdMinMeasuredValueVisible(((BooleanProperty) properties.get(key)).get());
             } else if("minMeasuredValueDecimals".equals(key)) {
-                LCD.setLcdMinMeasuredValueDecimals(((IntegerProperty) properties.get(key)).get());
+                CONTROL.setLcdMinMeasuredValueDecimals(((IntegerProperty) properties.get(key)).get());
             } else if ("maxMeasuredValueVisible".equals(key)) {
-                LCD.setLcdMaxMeasuredValueVisible(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setLcdMaxMeasuredValueVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("maxMeasuredValueDecimals".equals(key)) {
-                LCD.setLcdMaxMeasuredValueDecimals(((IntegerProperty) properties.get(key)).get());
+                CONTROL.setLcdMaxMeasuredValueDecimals(((IntegerProperty) properties.get(key)).get());
             } else if ("formerValueVisible".equals(key)) {
-                LCD.setLcdFormerValueVisible(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setLcdFormerValueVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("bargraphVisible".equals(key)) {
-                LCD.setBargraphVisible(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setBargraphVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("title".equals(key)) {
-                LCD.setTitle(((StringProperty) properties.get(key)).get());
+                CONTROL.setTitle(((StringProperty) properties.get(key)).get());
             } else if ("titleVisible".equals(key)) {
-                LCD.setTitleVisible(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setTitleVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("unit".equals(key)) {
-                LCD.setUnit(((StringProperty) properties.get(key)).get());
-                LCD.setLcdUnit(((StringProperty) properties.get(key)).get());
+                CONTROL.setUnit(((StringProperty) properties.get(key)).get());
+                CONTROL.setLcdUnit(((StringProperty) properties.get(key)).get());
             } else if ("unitVisible".equals(key)) {
-                LCD.setUnitVisible(((BooleanProperty) properties.get(key)).get());
-                LCD.setLcdUnitVisible(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setUnitVisible(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setLcdUnitVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("trendVisible".equals(key)) {
-                LCD.setTrendVisible(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setTrendVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("thresholdVisible".equals(key)) {
-                LCD.setThresholdVisible(((BooleanProperty) properties.get(key)).get());
-                LCD.setLcdThresholdVisible(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setThresholdVisible(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setLcdThresholdVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("thresholdBehaviorInverted".equals(key)) {
-                LCD.setThresholdBehaviorInverted(((BooleanProperty) properties.get(key)).get());
-                LCD.setLcdThresholdBehaviorInverted(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setThresholdBehaviorInverted(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setLcdThresholdBehaviorInverted(((BooleanProperty) properties.get(key)).get());
             } else if ("numberSystemVisible".equals(key)) {
-                LCD.setLcdNumberSystemVisible(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setLcdNumberSystemVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("unitFont".equals(key)) {
-                LCD.setUnitFont(((StringProperty) properties.get(key)).get());
-                LCD.setLcdUnitFont(((StringProperty) properties.get(key)).get());
+                CONTROL.setUnitFont(((StringProperty) properties.get(key)).get());
+                CONTROL.setLcdUnitFont(((StringProperty) properties.get(key)).get());
             } else if ("titleFont".equals(key)) {
-                LCD.setTitleFont(((StringProperty) properties.get(key)).get());
-                LCD.setLcdTitleFont(((StringProperty) properties.get(key)).get());
+                CONTROL.setTitleFont(((StringProperty) properties.get(key)).get());
+                CONTROL.setLcdTitleFont(((StringProperty) properties.get(key)).get());
             } else if ("valueFont".equals(key)) {
-                LCD.setLcdValueFont(((ObjectProperty<Gauge.LcdFont>) properties.get(key)).get());
+                CONTROL.setLcdValueFont(((ObjectProperty<Gauge.LcdFont>) properties.get(key)).get());
+            }  else if ("prefWidth".equals(key)) {
+                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
+            } else if ("prefHeight".equals(key)) {
+                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
             }
         }
-        return LCD;
+        return CONTROL;
     }
 }

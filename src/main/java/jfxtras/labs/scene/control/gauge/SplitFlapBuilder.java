@@ -29,10 +29,12 @@ package jfxtras.labs.scene.control.gauge;
 
 import com.sun.org.apache.xpath.internal.functions.FuncLocalPart;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -106,31 +108,45 @@ public class SplitFlapBuilder {
         return this;
     }
 
+    public final SplitFlapBuilder prefWidth(final double PREF_WIDTH) {
+        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
+        return this;
+    }
+
+    public final SplitFlapBuilder prefHeight(final double PREF_HEIGHT) {
+        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
+        return this;
+    }
+
     public final SplitFlap build() {
-        final SplitFlap FLAP = new SplitFlap();
+        final SplitFlap CONTROL = new SplitFlap();
         for (String key : properties.keySet()) {
             if ("textColor".equals(key)) {
-                FLAP.setTextColor(((ObjectProperty<Color>) properties.get(key)).get());
+                CONTROL.setTextColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("color".equals(key)) {
-                FLAP.setColor(((ObjectProperty<Color>) properties.get(key)).get());
+                CONTROL.setColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("text".equals(key)) {
-                FLAP.setText(((StringProperty) properties.get(key)).get());
+                CONTROL.setText(((StringProperty) properties.get(key)).get());
             } else if ("selection".equals(key)) {
-                FLAP.setSelection(((SimpleObjectProperty<String[]>) properties.get(key)).get());
+                CONTROL.setSelection(((SimpleObjectProperty<String[]>) properties.get(key)).get());
             } else if ("soundOn".equals(key)) {
-                FLAP.setSoundOn(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setSoundOn(((BooleanProperty) properties.get(key)).get());
             } else if ("sound".equals(key)) {
-                FLAP.setSound(((ObjectProperty<SplitFlap.Sound>) properties.get(key)).get());
+                CONTROL.setSound(((ObjectProperty<SplitFlap.Sound>) properties.get(key)).get());
             } else if ("frameVisible".equals(key)) {
-                FLAP.setFrameVisible(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setFrameVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("backgroundVisible".equals(key)) {
-                FLAP.setBackgroundVisible(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setBackgroundVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("interactive".equals(key)) {
-                FLAP.setInteractive(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setInteractive(((BooleanProperty) properties.get(key)).get());
             } else if ("flipTimeInMs".equals(key)) {
-                FLAP.setFlipTimeInMs(((LongProperty) properties.get(key)).get());
+                CONTROL.setFlipTimeInMs(((LongProperty) properties.get(key)).get());
+            }  else if ("prefWidth".equals(key)) {
+                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
+            } else if ("prefHeight".equals(key)) {
+                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
             }
         }
-        return FLAP;
+        return CONTROL;
     }
 }
