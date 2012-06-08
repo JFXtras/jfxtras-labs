@@ -38,7 +38,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.control.ButtonBuilder;
 import javafx.scene.paint.Color;
 
 import java.util.HashMap;
@@ -77,7 +76,6 @@ public class GaugeBuilder<T extends Gauge> {
     }
 
     public final Gauge build() {
-        Gauge      gauge;
         GaugeType  gaugeType  = GaugeType.RADIAL;
         GaugeModel gaugeModel = new GaugeModel();
         StyleModel styleModel = new StyleModel();
@@ -282,32 +280,52 @@ public class GaugeBuilder<T extends Gauge> {
 
         switch (gaugeType) {
             case LCD:
-                gauge = (T) new Lcd(gaugeModel, styleModel);
+                Lcd lcd = new Lcd(gaugeModel, styleModel);
+                if (prefWidth != -1) { lcd.setPrefWidth(prefWidth); }
+                if (prefHeight != -1) { lcd.setPrefHeight(prefHeight);}
+                return lcd;
             case LINEAR:
-                gauge = new Linear(gaugeModel, styleModel);
+                Linear linear = new Linear(gaugeModel, styleModel);
+                if (prefWidth != -1) { linear.setPrefWidth(prefWidth); }
+                if (prefHeight != -1) { linear.setPrefHeight(prefHeight);}
+                return linear;
             case RADIAL_HALF_N:
-                gauge = (T) new RadialHalfN(gaugeModel, styleModel);
+                RadialHalfN radialHalfN = new RadialHalfN(gaugeModel, styleModel);
+                if (prefWidth != -1) { radialHalfN.setPrefWidth(prefWidth); }
+                if (prefHeight != -1) { radialHalfN.setPrefHeight(prefHeight);}
+                return radialHalfN;
             case RADIAL_HALF_S:
-                gauge = (T) new RadialHalfS(gaugeModel, styleModel);
+                RadialHalfS radialHalfS = new RadialHalfS(gaugeModel, styleModel);
+                if (prefWidth != -1) { radialHalfS.setPrefWidth(prefWidth); }
+                if (prefHeight != -1) { radialHalfS.setPrefHeight(prefHeight);}
+                return radialHalfS;
             case RADIAL_QUARTER_N:
-                gauge = (T) new RadialQuarterN(gaugeModel, styleModel);
+                RadialQuarterN radialQuarterN = new RadialQuarterN(gaugeModel, styleModel);
+                if (prefWidth != -1) { radialQuarterN.setPrefWidth(prefWidth); }
+                if (prefHeight != -1) { radialQuarterN.setPrefHeight(prefHeight);}
+                return radialQuarterN;
             case RADIAL_QUARTER_E:
-                gauge = (T) new RadialQuarterE(gaugeModel, styleModel);
+                RadialQuarterE radialQuarterE = new RadialQuarterE(gaugeModel, styleModel);
+                if (prefWidth != -1) { radialQuarterE.setPrefWidth(prefWidth); }
+                if (prefHeight != -1) { radialQuarterE.setPrefHeight(prefHeight);}
+                return radialQuarterE;
             case RADIAL_QUARTER_S:
-                gauge = (T) new RadialQuarterS(gaugeModel, styleModel);
+                RadialQuarterS radialQuarterS = new RadialQuarterS(gaugeModel, styleModel);
+                if (prefWidth != -1) { radialQuarterS.setPrefWidth(prefWidth); }
+                if (prefHeight != -1) { radialQuarterS.setPrefHeight(prefHeight);}
+                return radialQuarterS;
             case RADIAL_QUARTER_W:
-                gauge = (T) new RadialQuarterW(gaugeModel, styleModel);
+                RadialQuarterW radialQuarterW = new RadialQuarterW(gaugeModel, styleModel);
+                if (prefWidth != -1) { radialQuarterW.setPrefWidth(prefWidth); }
+                if (prefHeight != -1) { radialQuarterW.setPrefHeight(prefHeight);}
+                return radialQuarterW;
             case RADIAL:
             default:
-                gauge = (T) new Radial(gaugeModel, styleModel);
+                Radial radial = new Radial(gaugeModel, styleModel);
+                if (prefWidth != -1) { radial.setPrefWidth(prefWidth); }
+                if (prefHeight != -1) { radial.setPrefHeight(prefHeight);}
+                return radial;
         }
-        if (prefWidth != -1) {
-            gauge.setPrefWidth(prefWidth);
-        }
-        if (prefHeight != -1) {
-            gauge.setPrefHeight(prefHeight);
-        }
-        return gauge;
     }
 
 
