@@ -28,8 +28,6 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
-import java.math.BigDecimal;
-import java.text.ParseException;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
@@ -43,12 +41,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import jfxtras.labs.internal.scene.control.behavior.BigDecimalFieldBehaviour;
 import jfxtras.labs.scene.control.BigDecimalField;
+
+import java.math.BigDecimal;
+import java.text.ParseException;
 
 /**
  * Skin implementation for {@link BigDecimalField}.
@@ -247,6 +248,7 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
             try {
                 String input = getText();
                 if (input == null || input.length() == 0) {
+                    getSkinnable().setNumber(new BigDecimal(0));
                     return;
                 }
                 Number parsedNumber = getSkinnable().getFormat().parse(input);
