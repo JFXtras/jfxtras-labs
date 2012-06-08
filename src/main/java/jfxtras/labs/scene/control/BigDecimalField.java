@@ -27,20 +27,23 @@
 
 package jfxtras.labs.scene.control;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.scene.control.Control;
+
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.control.Control;
 
 /**
  * Input field for BigDecimal values. This control has the following features:
  * - BigDecimal {@link #number} is parsed and formatted according to the provided NumberFormat
- * - up/down arrow keys and buttons increment/decrement the {@link #number} by {@link #stepwidth} 
- * 
+ * - up/down arrow keys and buttons increment/decrement the {@link #number} by {@link #stepwidth}
+ *
  * @author Thomas Bolz
  */
 public class BigDecimalField extends Control {
@@ -49,9 +52,15 @@ public class BigDecimalField extends Control {
         super();
         setStyle(null);
         getStyleClass().add("big-decimal-field");
-        number = new SimpleObjectProperty(this, "number", BigDecimal.ZERO);
+        number = new SimpleObjectProperty(this, "number");
         stepwidth = new SimpleObjectProperty(this, "stepwidth", BigDecimal.ONE);
         format = new SimpleObjectProperty(this, "format", NumberFormat.getNumberInstance());
+        promptText = new SimpleStringProperty(this, "promptText", "");
+    }
+
+    public BigDecimalField(BigDecimal number) {
+        this();
+        setNumber(number);
     }
 
     public BigDecimalField(BigDecimal initialValue, BigDecimal stepwidth, NumberFormat format) {
@@ -65,11 +74,13 @@ public class BigDecimalField extends Control {
      * @return The text representation of number
      */
     public String getText() {
-        return getFormat().format(number.getValue());
+        if (number.getValue() != null)
+            return getFormat().format(number.getValue());
+        else
+            return null;
     }
 
     /**
-     * 
      * @param formattedNumber representation of number
      */
     public void setText(String formattedNumber) {
@@ -85,16 +96,20 @@ public class BigDecimalField extends Control {
      * increments the number by stepwidth
      */
     public void increment() {
-        setNumber(getNumber().add(getStepwidth()));
+        if (getNumber() != null && getStepwidth() != null) {
+            setNumber(getNumber().add(getStepwidth()));
+        }
     }
 
     /**
      * decrements the number by stepwidth
      */
     public void decrement() {
-        setNumber(getNumber().subtract(getStepwidth()));
+        if (getNumber() != null && getStepwidth() != null) {
+            setNumber(getNumber().subtract(getStepwidth()));
+        }
     }
-    
+
     final private ObjectProperty<BigDecimal> number;
 
     /**
@@ -133,7 +148,7 @@ public class BigDecimalField extends Control {
     /**
      * stepwidth for inc/dec operation
      */
-    public  void setStepwidth(BigDecimal value) {
+    public void setStepwidth(BigDecimal value) {
         stepwidth.set(value);
     }
 
@@ -143,6 +158,7 @@ public class BigDecimalField extends Control {
     public ObjectProperty<BigDecimal> stepwidthProperty() {
         return stepwidth;
     }
+
     final private ObjectProperty<NumberFormat> format;
 
     public NumberFormat getFormat() {
@@ -157,8 +173,22 @@ public class BigDecimalField extends Control {
         return format;
     }
 
+    final private StringProperty promptText;
+
+    public String getPromptText() {
+        return promptText.getValue();
+    }
+
+    public final void setPromptText(String value) {
+        promptText.setValue(value);
+    }
+
+    public StringProperty promptTextProperty() {
+        return promptText;
+    }
+
     @Override
     protected String getUserAgentStylesheet() {
-        return getClass().getResource("/jfxtras/labs/internal/scene/control/"+getClass().getSimpleName()+".css").toExternalForm();
+        return getClass().getResource("/jfxtras/labs/internal/scene/control/" + getClass().getSimpleName() + ".css").toExternalForm();
     }
 }

@@ -27,11 +27,9 @@
 
 package jfxtras.labs.scene.control;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -42,6 +40,11 @@ import javafx.scene.control.LabelBuilder;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 /**
  *
@@ -67,6 +70,9 @@ public class BigDecimalFieldDemo extends Application {
         final BigDecimalField decimalFormat = new BigDecimalField(BigDecimal.ZERO, new BigDecimal("0.05"), new DecimalFormat("#,##0.00"));
         final BigDecimalField percent = new BigDecimalField(BigDecimal.ZERO, new BigDecimal("0.01"), NumberFormat.getPercentInstance());
         final BigDecimalField localizedCurrency = new BigDecimalField(BigDecimal.ZERO, new BigDecimal("0.01"), NumberFormat.getCurrencyInstance(Locale.UK));
+        final BigDecimalField promptText = new BigDecimalField();
+        promptText.setNumber(null);
+        promptText.setPromptText("Enter something");
         Label label1;
         root.addRow(1, new Label("default"), defaultSpinner, label1 = LabelBuilder.create().build());
 //        label1.textProperty().bind(Bindings.convert(defaultSpinner.numberProperty()));
@@ -77,6 +83,14 @@ public class BigDecimalFieldDemo extends Application {
         disabledField.setDisable(true);
         root.addRow(5, new Label("disabled field"), disabledField);
         root.addRow(6, new Label("regular TextField"), new TextField("1.000,1234"));
+        root.addRow(7, new Label("with promptText"), promptText);
+
+        promptText.numberProperty().addListener(new ChangeListener<BigDecimal>() {
+            @Override
+            public void changed(ObservableValue<? extends BigDecimal> observableValue, BigDecimal o, BigDecimal o1) {
+                System.out.println(o1);
+            }
+        });
 
         Button button = new Button("Reset fields");
         button.setOnAction(new EventHandler<ActionEvent>() {
@@ -88,10 +102,11 @@ public class BigDecimalFieldDemo extends Application {
                 percent.setNumber(new BigDecimal(Math.random()));
                 localizedCurrency.setNumber(new BigDecimal(Math.random() * 1000));
                 disabledField.setNumber(new BigDecimal(Math.random() * 1000));
+                promptText.setNumber(null);
 //                defaultSpinner.dumpSizes();
             }
         });
-        root.addRow(7, new Label(), button);
+        root.addRow(8, new Label(), button);
 
         Scene scene = new Scene(root);
 //        String path = NumberSpinnerDemo2.class.getResource("number_spinner.css").toExternalForm();
