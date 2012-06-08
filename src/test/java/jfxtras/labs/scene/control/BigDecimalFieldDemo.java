@@ -72,6 +72,7 @@ public class BigDecimalFieldDemo extends Application {
         final BigDecimalField localizedCurrency = new BigDecimalField(BigDecimal.ZERO, new BigDecimal("0.01"), NumberFormat.getCurrencyInstance(Locale.UK));
         final BigDecimalField promptText = new BigDecimalField();
         promptText.setPromptText("Enter something");
+        promptText.clear();
         Label label1;
         root.addRow(1, new Label("default"), defaultSpinner, label1 = LabelBuilder.create().build());
 //        label1.textProperty().bind(Bindings.convert(defaultSpinner.numberProperty()));
@@ -101,10 +102,11 @@ public class BigDecimalFieldDemo extends Application {
                 percent.setNumber(new BigDecimal(Math.random()));
                 localizedCurrency.setNumber(new BigDecimal(Math.random() * 1000));
                 disabledField.setNumber(new BigDecimal(Math.random() * 1000));
+                promptText.clear();
 //                defaultSpinner.dumpSizes();
             }
         });
-        root.addRow(7, new Label(), button);
+        root.addRow(8, new Label(), button);
 
         Scene scene = new Scene(root);
 //        String path = NumberSpinnerDemo2.class.getResource("number_spinner.css").toExternalForm();

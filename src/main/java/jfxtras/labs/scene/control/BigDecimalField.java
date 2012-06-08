@@ -31,6 +31,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Control;
 
 import java.math.BigDecimal;
@@ -56,6 +58,12 @@ public class BigDecimalField extends Control {
         stepwidth = new SimpleObjectProperty(this, "stepwidth", BigDecimal.ONE);
         format = new SimpleObjectProperty(this, "format", NumberFormat.getNumberInstance());
         promptText = new SimpleStringProperty(this, "promptText", "");
+        number.addListener(new ChangeListener<BigDecimal>() {
+            @Override
+            public void changed(ObservableValue<? extends BigDecimal> observableValue, BigDecimal oldValue, BigDecimal newValue) {
+                BigDecimalField.this.cleared = false;
+            }
+        });
     }
 
     public BigDecimalField(BigDecimal initialValue, BigDecimal stepwidth, NumberFormat format) {
@@ -69,6 +77,9 @@ public class BigDecimalField extends Control {
      * @return The text representation of number
      */
     public String getText() {
+        if (cleared) {
+            return "";
+        }
         return getFormat().format(number.getValue());
     }
 
@@ -82,6 +93,11 @@ public class BigDecimalField extends Control {
         } catch (ParseException ex) {
             Logger.getLogger(BigDecimalField.class.getName()).log(Level.INFO, null, ex);
         }
+    }
+
+    public void clear() {
+        setNumber(new BigDecimal(0));
+        this.cleared = true;
     }
 
     /**
@@ -98,6 +114,8 @@ public class BigDecimalField extends Control {
         setNumber(getNumber().subtract(getStepwidth()));
     }
 
+
+    private boolean cleared = false;
     final private ObjectProperty<BigDecimal> number;
 
     /**
