@@ -1456,7 +1456,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
                 UNIT_Y_OFFSET = 1.5;
                 break;
             case BUS:
-                LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/bus.ttf"), (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
+                LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/bus.otf"), (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
                 UNIT_Y_OFFSET = 2.0;
                 break;
             case PIXEL:

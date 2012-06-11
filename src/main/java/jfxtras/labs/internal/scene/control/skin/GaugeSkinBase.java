@@ -1430,8 +1430,8 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
        final Ellipse LED_HIGHLIGHT = new Ellipse(0.5 * SIZE, 0.4 * SIZE, 0.1 * SIZE, 0.06 * SIZE);
        LED_HIGHLIGHT.setFill(new LinearGradient(0.0, 0.3 * SIZE,
                                                 0.0, 0.5 * SIZE, false, CycleMethod.NO_CYCLE,
-                                                new Stop(0.0, Color.rgb(1, 1, 1, 0.4)),
-                                                new Stop(1.0, Color.rgb(1, 1, 1, 0))));
+                                                new Stop(0.0, Color.rgb(255, 255, 255, 0.4)),
+                                                new Stop(1.0, Color.rgb(255, 255, 255, 0))));
        LED_HIGHLIGHT.setStroke(null);
 
        LED.getChildren().addAll(LED_BACKGROUND, MAIN_LED, LED_HIGHLIGHT);

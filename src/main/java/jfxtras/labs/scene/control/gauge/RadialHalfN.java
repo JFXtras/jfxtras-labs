@@ -72,7 +72,8 @@ public class RadialHalfN extends Gauge {
 
     // ******************** Methods *******************************************
     @Override public final void setPrefSize(final double WIDTH, final double HEIGHT) {
-        super.setPrefSize(WIDTH, WIDTH / 1.5384615385);
+        final double SIZE  = WIDTH == 0 ? 200 : WIDTH;
+        super.setPrefSize(SIZE, SIZE / 1.5384615385);
     }
 
     @Override public final void setRadialRange(final RadialRange RADIAL_RANGE) {

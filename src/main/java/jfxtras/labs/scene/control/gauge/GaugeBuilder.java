@@ -277,7 +277,9 @@ public class GaugeBuilder<T extends Gauge> {
                 styleModel.setTrendDownColor(((ObjectProperty<Color>) styleProperties.get(key)).get());
             }
         }
-
+        final double WIDTH  = prefWidth == -1 ? 200 : prefWidth;
+        final double HEIGHT = prefHeight == -1 ? 200 : prefHeight;
+        final double SIZE = WIDTH <= HEIGHT ? WIDTH : HEIGHT;
         switch (gaugeType) {
             case LCD:
                 Lcd lcd = new Lcd(gaugeModel, styleModel);
@@ -291,39 +293,32 @@ public class GaugeBuilder<T extends Gauge> {
                 return linear;
             case RADIAL_HALF_N:
                 RadialHalfN radialHalfN = new RadialHalfN(gaugeModel, styleModel);
-                if (prefWidth != -1) { radialHalfN.setPrefWidth(prefWidth); }
-                if (prefHeight != -1) { radialHalfN.setPrefHeight(prefHeight);}
+                radialHalfN.setPrefSize(SIZE, SIZE);
                 return radialHalfN;
             case RADIAL_HALF_S:
                 RadialHalfS radialHalfS = new RadialHalfS(gaugeModel, styleModel);
-                if (prefWidth != -1) { radialHalfS.setPrefWidth(prefWidth); }
-                if (prefHeight != -1) { radialHalfS.setPrefHeight(prefHeight);}
+                radialHalfS.setPrefSize(SIZE, SIZE);
                 return radialHalfS;
             case RADIAL_QUARTER_N:
                 RadialQuarterN radialQuarterN = new RadialQuarterN(gaugeModel, styleModel);
-                if (prefWidth != -1) { radialQuarterN.setPrefWidth(prefWidth); }
-                if (prefHeight != -1) { radialQuarterN.setPrefHeight(prefHeight);}
+                radialQuarterN.setPrefSize(SIZE, SIZE);
                 return radialQuarterN;
             case RADIAL_QUARTER_E:
                 RadialQuarterE radialQuarterE = new RadialQuarterE(gaugeModel, styleModel);
-                if (prefWidth != -1) { radialQuarterE.setPrefWidth(prefWidth); }
-                if (prefHeight != -1) { radialQuarterE.setPrefHeight(prefHeight);}
+                radialQuarterE.setPrefSize(SIZE, SIZE);
                 return radialQuarterE;
             case RADIAL_QUARTER_S:
                 RadialQuarterS radialQuarterS = new RadialQuarterS(gaugeModel, styleModel);
-                if (prefWidth != -1) { radialQuarterS.setPrefWidth(prefWidth); }
-                if (prefHeight != -1) { radialQuarterS.setPrefHeight(prefHeight);}
+                radialQuarterS.setPrefSize(SIZE, SIZE);
                 return radialQuarterS;
             case RADIAL_QUARTER_W:
                 RadialQuarterW radialQuarterW = new RadialQuarterW(gaugeModel, styleModel);
-                if (prefWidth != -1) { radialQuarterW.setPrefWidth(prefWidth); }
-                if (prefHeight != -1) { radialQuarterW.setPrefHeight(prefHeight);}
+                radialQuarterW.setPrefSize(SIZE, SIZE);
                 return radialQuarterW;
             case RADIAL:
             default:
                 Radial radial = new Radial(gaugeModel, styleModel);
-                if (prefWidth != -1) { radial.setPrefWidth(prefWidth); }
-                if (prefHeight != -1) { radial.setPrefHeight(prefHeight);}
+                radial.setPrefSize(SIZE, SIZE);
                 return radial;
         }
     }
