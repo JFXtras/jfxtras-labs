@@ -76,11 +76,12 @@ public class GaugeBuilder<T extends Gauge> {
     }
 
     public final Gauge build() {
-        GaugeType  gaugeType  = GaugeType.RADIAL;
-        GaugeModel gaugeModel = new GaugeModel();
-        StyleModel styleModel = new StyleModel();
-        double     prefWidth  = -1;
-        double     prefHeight = -1;
+        GaugeType         gaugeType   = GaugeType.RADIAL;
+        GaugeModel        gaugeModel  = new GaugeModel();
+        StyleModel        styleModel  = new StyleModel();
+        double            prefWidth   = -1;
+        double            prefHeight  = -1;
+        Gauge.RadialRange radialRange = Gauge.RadialRange.RADIAL_300;
 
         // gauge model
         for (String key : gaugeProperties.keySet()) {
@@ -100,6 +101,8 @@ public class GaugeBuilder<T extends Gauge> {
                 gaugeModel.setThreshold(((DoubleProperty) gaugeProperties.get(key)).get());
             } else if ("thresholdBehaviorInverted".equals(key)) {
                 gaugeModel.setThresholdBehaviorInverted(((BooleanProperty) gaugeProperties.get(key)).get());
+            } else if ("radialRange".equals(key)) {
+                radialRange = ((ObjectProperty<Gauge.RadialRange>) gaugeProperties.get(key)).get();
             } else if ("title".equals(key)) {
                 gaugeModel.setTitle(((StringProperty) gaugeProperties.get(key)).get());
             } else if ("unit".equals(key)) {
@@ -322,6 +325,12 @@ public class GaugeBuilder<T extends Gauge> {
             case RADIAL:
             default:
                 Radial radial = new Radial(gaugeModel, styleModel);
+                if (radialRange == Gauge.RadialRange.RADIAL_90 ||
+                    radialRange == Gauge.RadialRange.RADIAL_180 ||
+                    radialRange == Gauge.RadialRange.RADIAL_270 ||
+                    radialRange == Gauge.RadialRange.RADIAL_300) {
+                    radial.setRadialRange(radialRange);
+                }
                 radial.setPrefSize(SIZE, SIZE);
                 return radial;
         }
@@ -366,6 +375,11 @@ public class GaugeBuilder<T extends Gauge> {
 
     public final GaugeBuilder thresholdBehaviorInverted(final boolean THRESHOLD_BEHAVIOR_INVERTED) {
         gaugeProperties.put("thresholdBehaviorInverted", new SimpleBooleanProperty(THRESHOLD_BEHAVIOR_INVERTED));
+        return this;
+    }
+
+    public final GaugeBuilder radialRange(final Gauge.RadialRange RADIAL_RANGE) {
+        gaugeProperties.put("radialRange", new SimpleObjectProperty<Gauge.RadialRange>(RADIAL_RANGE));
         return this;
     }
 
