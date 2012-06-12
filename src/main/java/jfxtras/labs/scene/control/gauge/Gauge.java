@@ -261,60 +261,12 @@ public abstract class Gauge extends Control {
             TANGENT
         }
     public static enum Trend {
-        UP("up"),
-        STEADY("steady"),
-        DOWN("down"),
-        UNKNOWN("unknown");
-
-        public final ArrayList<int[]> ledMatrix = new ArrayList<int[]>(9);
-
-        private Trend(final String TYPE) {
-            if (TYPE == "up") {
-                ledMatrix.add(new int[] {0, 0, 1, 1, 1, 1, 1, 1, 1});
-                ledMatrix.add(new int[] {0, 0, 0, 1, 1, 1, 1, 1, 1});
-                ledMatrix.add(new int[] {0, 0, 0, 0, 1, 1, 1, 1, 1});
-                ledMatrix.add(new int[] {0, 0, 0, 1, 1, 1, 1, 1, 1});
-                ledMatrix.add(new int[] {0, 0, 1, 1, 1, 1, 1, 1, 1});
-                ledMatrix.add(new int[] {0, 1, 1, 1, 1, 1, 0, 1, 1});
-                ledMatrix.add(new int[] {1, 1, 1, 1, 1, 0, 0, 0, 1});
-                ledMatrix.add(new int[] {0, 1, 1, 1, 0, 0, 0, 0, 0});
-                ledMatrix.add(new int[] {0, 0, 1, 0, 0, 0, 0, 0, 0});
-            }
-            if (TYPE == "steady") {
-                ledMatrix.add(new int[] {0, 0, 0, 0, 1, 0, 0, 0, 0});
-                ledMatrix.add(new int[] {0, 0, 0, 0, 1, 1, 0, 0, 0});
-                ledMatrix.add(new int[] {0, 0, 0, 0, 1, 1, 1, 0, 0});
-                ledMatrix.add(new int[] {1, 1, 1, 1, 1, 1, 1, 1, 0});
-                ledMatrix.add(new int[] {1, 1, 1, 1, 1, 1, 1, 1, 1});
-                ledMatrix.add(new int[] {1, 1, 1, 1, 1, 1, 1, 1, 0});
-                ledMatrix.add(new int[] {0, 0, 0, 0, 1, 1, 1, 0, 0});
-                ledMatrix.add(new int[] {0, 0, 0, 0, 1, 1, 0, 0, 0});
-                ledMatrix.add(new int[] {0, 0, 0, 0, 1, 0, 0, 0, 0});
-            }
-            if (TYPE == "down") {
-                ledMatrix.add(new int[] {0, 0, 1, 0, 0, 0, 0, 0, 0});
-                ledMatrix.add(new int[] {0, 1, 1, 1, 0, 0, 0, 0, 0});
-                ledMatrix.add(new int[] {1, 1, 1, 1, 1, 0, 0, 0, 1});
-                ledMatrix.add(new int[] {0, 1, 1, 1, 1, 1, 0, 1, 1});
-                ledMatrix.add(new int[] {0, 0, 1, 1, 1, 1, 1, 1, 1});
-                ledMatrix.add(new int[] {0, 0, 0, 1, 1, 1, 1, 1, 1});
-                ledMatrix.add(new int[] {0, 0, 0, 0, 1, 1, 1, 1, 1});
-                ledMatrix.add(new int[] {0, 0, 0, 1, 1, 1, 1, 1, 1});
-                ledMatrix.add(new int[] {0, 0, 1, 1, 1, 1, 1, 1, 1});
-            }
-            if (TYPE == "unknown")
-            {
-                ledMatrix.add(new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0});
-                ledMatrix.add(new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0});
-                ledMatrix.add(new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0});
-                ledMatrix.add(new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0});
-                ledMatrix.add(new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0});
-                ledMatrix.add(new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0});
-                ledMatrix.add(new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0});
-                ledMatrix.add(new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0});
-                ledMatrix.add(new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0});
-            }
-        }
+        UP,
+        RISING,
+        STEADY,
+        FALLING,
+        DOWN,
+        UNKNOWN;
     }
 
 
@@ -1693,6 +1645,18 @@ public abstract class Gauge extends Control {
         return styleModel.trendUpColorProperty();
     }
 
+    public final Color getTrendRisingColor() {
+        return styleModel.getTrendRisingColor();
+    }
+
+    public final void setTrendRisingColor(final Color TREND_RISING_COLOR) {
+        styleModel.setTrendRisingColor(TREND_RISING_COLOR);
+    }
+
+    public final ObjectProperty<Color> trendRisingColorProperty() {
+        return styleModel.trendRisingColorProperty();
+    }
+
     public final Color getTrendSteadyColor() {
             return styleModel.getTrendSteadyColor();
     }
@@ -1703,6 +1667,18 @@ public abstract class Gauge extends Control {
 
     public final ObjectProperty<Color> trendSteadyColorProperty() {
         return styleModel.trendSteadyColorProperty();
+    }
+
+    public final Color getTrendFallingColor() {
+            return styleModel.getTrendFallingColor();
+        }
+
+    public final void setTrendFallingColor(final Color TREND_FALLING_COLOR) {
+        styleModel.setTrendFallingColor(TREND_FALLING_COLOR);
+    }
+
+    public final ObjectProperty<Color> trendFallingColorProperty() {
+        return styleModel.trendFallingColorProperty();
     }
 
     public final Color getTrendDownColor() {

@@ -68,6 +68,7 @@ import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Transform;
+import sun.security.x509.CertAttrSet;
 
 import java.util.ArrayList;
 
@@ -348,52 +349,49 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         IBOUNDS.setStroke(null);
         trend.getChildren().add(IBOUNDS);
 
-        final double RADIUS = 0.005 * WIDTH;
-        final double DIAMETER = 2 * RADIUS;
-
-        double matrixOffsetX = 0.455 * WIDTH;
-        double matrixOffsetY = 0.79 * WIDTH;
+        double trendOffsetX = 0.455 * WIDTH;
+        double trendOffsetY = 0.79 * WIDTH;
 
         switch(CONTROL.getRadialRange()) {
             case RADIAL_300:
-                matrixOffsetX = 0.455 * WIDTH;
-                matrixOffsetY = 0.79 * WIDTH;
+                trendOffsetX = 0.455 * WIDTH;
+                trendOffsetY = 0.79 * WIDTH;
                 break;
             case RADIAL_270:
-                matrixOffsetX = 0.60 * WIDTH;
-                matrixOffsetY = 0.72 * HEIGHT;
+                trendOffsetX = 0.60 * WIDTH;
+                trendOffsetY = 0.72 * HEIGHT;
                 break;
             case RADIAL_180:
-                matrixOffsetX = 0.455 * WIDTH;
-                matrixOffsetY = 0.79 * WIDTH;
+                trendOffsetX = 0.455 * WIDTH;
+                trendOffsetY = 0.79 * WIDTH;
                 break;
             case RADIAL_180N:
-                matrixOffsetX = 0.60 * WIDTH;
-                matrixOffsetY = 0.45 * WIDTH;
+                trendOffsetX = 0.60 * WIDTH;
+                trendOffsetY = 0.45 * WIDTH;
                 break;
             case RADIAL_180S:
-                matrixOffsetX = 0.60 * WIDTH;
-                matrixOffsetY = 0.11 * WIDTH;
+                trendOffsetX = 0.60 * WIDTH;
+                trendOffsetY = 0.11 * WIDTH;
                 break;
             case RADIAL_90:
-                matrixOffsetX = 0.455 * WIDTH;
-                matrixOffsetY = 0.79 * WIDTH;
+                trendOffsetX = 0.455 * WIDTH;
+                trendOffsetY = 0.79 * WIDTH;
                 break;
             case RADIAL_90N:
-                matrixOffsetX = 0.60 * WIDTH;
-                matrixOffsetY = 0.72 * WIDTH;
+                trendOffsetX = 0.60 * WIDTH;
+                trendOffsetY = 0.72 * WIDTH;
                 break;
             case RADIAL_90S:
-                matrixOffsetX = 0.60 * WIDTH;
-                matrixOffsetY = 0.2 * WIDTH;
+                trendOffsetX = 0.60 * WIDTH;
+                trendOffsetY = 0.2 * WIDTH;
                 break;
         }
 
         // Frame
-        final Rectangle MATRIX_FRAME = new Rectangle(matrixOffsetX - 1, matrixOffsetY - 1,
+        final Rectangle MATRIX_FRAME = new Rectangle(trendOffsetX - 1, trendOffsetY - 1,
                                                      0.1 * WIDTH, 0.1 * WIDTH);
-        MATRIX_FRAME.setFill(new LinearGradient(0, matrixOffsetY - 1,
-            0, matrixOffsetY - 1 + MATRIX_FRAME.getLayoutBounds().getHeight(),
+        MATRIX_FRAME.setFill(new LinearGradient(0, trendOffsetY - 1,
+            0, trendOffsetY - 1 + MATRIX_FRAME.getLayoutBounds().getHeight(),
             false, CycleMethod.NO_CYCLE,
             new Stop(0.0, Color.color(0.1, 0.1, 0.1, 1.0)),
             new Stop(0.1, Color.color(0.3, 0.3, 0.3, 1.0)),
@@ -405,82 +403,19 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         // Background
         final Rectangle MATRIX_BACKGROUND = new Rectangle(MATRIX_FRAME.getX() + 1, MATRIX_FRAME.getY() + 1,
                                                           MATRIX_FRAME.getWidth() - 2, MATRIX_FRAME.getHeight() - 2);
-        MATRIX_BACKGROUND.setFill(new LinearGradient(0, matrixOffsetY,
-            0, matrixOffsetY + MATRIX_FRAME.getLayoutBounds().getHeight(),
-            false, CycleMethod.NO_CYCLE,
-            new Stop(0.0, Color.color(0.3, 0.3, 0.3, 1.0)),
-            new Stop(1.0, Color.color(0.1, 0.1, 0.1, 1.0))));
+        MATRIX_BACKGROUND.setFill(new LinearGradient(0, trendOffsetY,
+                                                     0, trendOffsetY + MATRIX_FRAME.getLayoutBounds().getHeight(),
+                                                     false, CycleMethod.NO_CYCLE,
+                                                     new Stop(0.0, Color.color(0.3, 0.3, 0.3, 1.0)),
+                                                     new Stop(1.0, Color.color(0.1, 0.1, 0.1, 1.0))));
         MATRIX_BACKGROUND.setStroke(null);
-        trend.getChildren().add(MATRIX_BACKGROUND);
 
-        // Led's
-        Paint ledPaint;
-        Color ledColor;
-        switch(CONTROL.getTrend()) {
-            case UP:
-                ledPaint = CONTROL.getTrendUpColor();
-                ledColor = CONTROL.getTrendUpColor();
-                break;
-            case STEADY:
-                ledPaint = CONTROL.getTrendSteadyColor();
-                ledColor = CONTROL.getTrendSteadyColor();
-                break;
-            case DOWN:
-                ledPaint = CONTROL.getTrendDownColor();
-                ledColor = CONTROL.getTrendDownColor();
-                break;
-            default:
-                ledPaint = new RadialGradient(0, 0,
-                                              matrixOffsetX + RADIUS, matrixOffsetY + RADIUS,
-                                              RADIUS,
-                                              false, CycleMethod.NO_CYCLE,
-                                              new Stop(0.0, Color.rgb(102, 102, 102)),
-                                              new Stop(1.0, Color.rgb(51, 51, 51)));
-                ledColor = Color.rgb(75, 75, 75);
-                break;
-        }
+        // Indicator
+        Group indicator = createTrendIndicator(CONTROL, WIDTH * 0.09);
+        indicator.setTranslateX(trendOffsetX + 1);
+        indicator.setTranslateY(trendOffsetY + 1);
+        trend.getChildren().addAll(MATRIX_BACKGROUND, indicator);
 
-        final InnerShadow INNER_SHADOW = new InnerShadow();
-        INNER_SHADOW.setWidth(0.002 * WIDTH);
-        INNER_SHADOW.setHeight(0.002 * WIDTH);
-        INNER_SHADOW.setColor(Color.color(0, 0, 0, 1.0));
-        INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
-
-        final DropShadow GLOW_EFFECT = new DropShadow();
-        GLOW_EFFECT.setInput(INNER_SHADOW);
-        GLOW_EFFECT.setSpread(0.1);
-        GLOW_EFFECT.setRadius(0.01 * WIDTH);
-        GLOW_EFFECT.setBlurType(BlurType.GAUSSIAN);
-        GLOW_EFFECT.setColor(ledColor);
-        double ledOffsetX = matrixOffsetX;
-        double ledOffsetY = matrixOffsetY;
-        for (int y = 0 ; y < 9 ; y++) {
-            for (int x = 0 ; x < 9 ; x++) {
-                Circle led = new Circle(ledOffsetX + RADIUS, ledOffsetY + RADIUS, RADIUS);
-                if (CONTROL.getTrend().ledMatrix.get(y)[x] == 1) {
-                    led.setFill(new RadialGradient(0, 0,
-                                                   ledOffsetX + RADIUS, ledOffsetY + RADIUS,
-                                                   RADIUS,
-                                                   false, CycleMethod.NO_CYCLE,
-                                                   new Stop(0.0, ((Color) ledPaint)),
-                                                   new Stop(1.0, ((Color) ledPaint).darker().darker())));
-                    led.setEffect(GLOW_EFFECT);
-                } else {
-                    led.setFill(new RadialGradient(0, 0,
-                                                   ledOffsetX + RADIUS, ledOffsetY + RADIUS,
-                                                   RADIUS,
-                                                   false, CycleMethod.NO_CYCLE,
-                                                   new Stop(0.0, Color.rgb(80, 80, 80)),
-                                                   new Stop(1.0, Color.rgb(50, 50, 50))));
-                    led.setEffect(INNER_SHADOW);
-                }
-                led.setSmooth(true);
-                trend.getChildren().add(led);
-                ledOffsetX += DIAMETER;
-            }
-            ledOffsetX = matrixOffsetX;
-            ledOffsetY += DIAMETER;
-        }
         trend.setCache(true);
     }
 
@@ -1934,5 +1869,227 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         LCD_THRESHOLD_INDICATOR.setCache(true);
 
         return LCD_THRESHOLD_INDICATOR;
+    }
+
+    protected Group createTrendIndicator(final Gauge CONTROL, final double SIZE) {
+        final double WIDTH  = SIZE;
+        final double HEIGHT = SIZE;
+        final Group GROUP = new Group();
+
+        GROUP.getChildren().clear();
+
+        final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
+        IBOUNDS.setOpacity(0.0);
+        GROUP.getChildren().add(IBOUNDS);
+
+        final Path BACK  = new Path();
+        BACK.setFillRule(FillRule.EVEN_ODD);
+        final Path FRONT = new Path();
+        FRONT.setFillRule(FillRule.EVEN_ODD);
+        final Paint FRONT_FILL;
+        final InnerShadow HIGHLIGHT = new InnerShadow();
+
+        switch(CONTROL.getTrend()) {
+            case UP:
+                BACK.getElements().add(new MoveTo(0.2777777777777778 * WIDTH, 0.9444444444444444 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.2777777777777778 * WIDTH, 0.5555555555555556 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.05555555555555555 * WIDTH, 0.5555555555555556 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.5 * WIDTH, 0.0));
+                BACK.getElements().add(new LineTo(WIDTH, 0.5555555555555556 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.7777777777777778 * WIDTH, 0.5555555555555556 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.7777777777777778 * WIDTH, 0.9444444444444444 * HEIGHT));
+                BACK.getElements().add(new ClosePath());
+                BACK.setFill(CONTROL.getTrendUpColor().darker());
+                BACK.setStroke(null);
+
+                FRONT.getElements().add(new MoveTo(0.3333333333333333 * WIDTH, 0.8888888888888888 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.3333333333333333 * WIDTH, 0.5 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.16666666666666666 * WIDTH, 0.5 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.5 * WIDTH, 0.05555555555555555 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.8888888888888888 * WIDTH, 0.5 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.7222222222222222 * WIDTH, 0.5 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.7222222222222222 * WIDTH, 0.8888888888888888 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.3333333333333333 * WIDTH, 0.8888888888888888 * HEIGHT));
+                FRONT.getElements().add(new ClosePath());
+                FRONT_FILL = new LinearGradient(0.5 * WIDTH, 0.05555555555555555 * HEIGHT,
+                                                0.6696079958902622 * WIDTH, 0.928113051953479 * HEIGHT,
+                                                false, CycleMethod.NO_CYCLE,
+                                                new Stop(0.0, CONTROL.getTrendUpColor().brighter()),
+                                                new Stop(1.0, CONTROL.getTrendUpColor()));
+                FRONT.setFill(FRONT_FILL);
+                FRONT.setStroke(null);
+
+                HIGHLIGHT.setWidth(0.19999999999999998 * FRONT.getLayoutBounds().getWidth());
+                HIGHLIGHT.setHeight(0.19999999999999998 * FRONT.getLayoutBounds().getHeight());
+                HIGHLIGHT.setOffsetX(0.1021392590825304 * SIZE);
+                HIGHLIGHT.setOffsetY(0.0857050146248719 * SIZE);
+                HIGHLIGHT.setRadius(0.19999999999999998 * FRONT.getLayoutBounds().getWidth());
+                HIGHLIGHT.setColor(Color.color(1, 1, 1, 0.65));
+                HIGHLIGHT.setBlurType(BlurType.GAUSSIAN);
+                FRONT.setEffect(HIGHLIGHT);
+                break;
+
+            case RISING:
+                BACK.getElements().add(new MoveTo(0.3888888888888889 * WIDTH, 0.9444444444444444 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.6666666666666666 * WIDTH, 0.6666666666666666 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.8888888888888888 * WIDTH, 0.8888888888888888 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.8888888888888888 * WIDTH, 0.1111111111111111 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.1111111111111111 * WIDTH, 0.1111111111111111 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.3333333333333333 * WIDTH, 0.3333333333333333 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.05555555555555555 * WIDTH, 0.6111111111111112 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.3888888888888889 * WIDTH, 0.9444444444444444 * HEIGHT));
+                BACK.getElements().add(new ClosePath());
+                BACK.setFill(CONTROL.getTrendRisingColor().darker());
+                BACK.setStroke(null);
+
+                FRONT.getElements().add(new MoveTo(0.3888888888888889 * WIDTH, 0.8888888888888888 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.6666666666666666 * WIDTH, 0.6111111111111112 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.8333333333333334 * WIDTH, 0.7777777777777778 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.8333333333333334 * WIDTH, 0.16666666666666666 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.2222222222222222 * WIDTH, 0.16666666666666666 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.3888888888888889 * WIDTH, 0.3333333333333333 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.1111111111111111 * WIDTH, 0.6111111111111112 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.3888888888888889 * WIDTH, 0.8888888888888888 * HEIGHT));
+                FRONT.getElements().add(new ClosePath());
+                FRONT_FILL = new LinearGradient(0.8333333333333334 * WIDTH, 0.16666666666666666 * HEIGHT,
+                                                            0.33182081403995967 * WIDTH, 0.8321962583727439 * HEIGHT,
+                                                            false, CycleMethod.NO_CYCLE,
+                                                            new Stop(0.0, CONTROL.getTrendRisingColor().brighter()),
+                                                            new Stop(1.0, CONTROL.getTrendRisingColor()));
+                FRONT.setFill(FRONT_FILL);
+                FRONT.setStroke(null);
+
+                HIGHLIGHT.setWidth(0.19999999999999998 * FRONT.getLayoutBounds().getWidth());
+                HIGHLIGHT.setHeight(0.19999999999999998 * FRONT.getLayoutBounds().getHeight());
+                HIGHLIGHT.setOffsetX(0.045602685776755844 * SIZE);
+                HIGHLIGHT.setOffsetY(0.1252923494381211 * SIZE);
+                HIGHLIGHT.setRadius(0.19999999999999998 * FRONT.getLayoutBounds().getWidth());
+                HIGHLIGHT.setColor(Color.color(1, 1, 1, 0.65));
+                HIGHLIGHT.setBlurType(BlurType.GAUSSIAN);
+                FRONT.setEffect(HIGHLIGHT);
+                break;
+
+            case STEADY:
+                BACK.setFillRule(FillRule.EVEN_ODD);
+                BACK.getElements().add(new MoveTo(0.05555555555555555 * WIDTH, 0.2777777777777778 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.4444444444444444 * WIDTH, 0.2777777777777778 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.4444444444444444 * WIDTH, 0.05555555555555555 * HEIGHT));
+                BACK.getElements().add(new LineTo(WIDTH, 0.5 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.4444444444444444 * WIDTH, HEIGHT));
+                BACK.getElements().add(new LineTo(0.4444444444444444 * WIDTH, 0.7777777777777778 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.05555555555555555 * WIDTH, 0.7777777777777778 * HEIGHT));
+                BACK.getElements().add(new ClosePath());
+                BACK.setFill(CONTROL.getTrendSteadyColor().darker());
+                BACK.setStroke(null);
+
+                FRONT.getElements().add(new MoveTo(0.1111111111111111 * WIDTH, 0.3333333333333333 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.5 * WIDTH, 0.3333333333333333 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.5 * WIDTH, 0.16666666666666666 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.8888888888888888 * WIDTH, 0.5 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.5 * WIDTH, 0.8888888888888888 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.5 * WIDTH, 0.7222222222222222 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.1111111111111111 * WIDTH, 0.7222222222222222 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.1111111111111111 * WIDTH, 0.3333333333333333 * HEIGHT));
+                FRONT.getElements().add(new ClosePath());
+                FRONT_FILL = new LinearGradient(0.5 * WIDTH, 0.1111111111111111 * HEIGHT,
+                                                0.5 * WIDTH, 0.8888888888888888 * HEIGHT,
+                                                false, CycleMethod.NO_CYCLE,
+                                                new Stop(0.0, CONTROL.getTrendSteadyColor().brighter()),
+                                                new Stop(1.0, CONTROL.getTrendSteadyColor()));
+                FRONT.setFill(FRONT_FILL);
+                FRONT.setStroke(null);
+
+                HIGHLIGHT.setWidth(0.19999999999999998 * FRONT.getLayoutBounds().getWidth());
+                HIGHLIGHT.setHeight(0.19999999999999998 * FRONT.getLayoutBounds().getHeight());
+                HIGHLIGHT.setOffsetX(8.164311994315688E-18 * SIZE);
+                HIGHLIGHT.setOffsetY(0.13333333333333333 * SIZE);
+                HIGHLIGHT.setRadius(0.19999999999999998 * FRONT.getLayoutBounds().getWidth());
+                HIGHLIGHT.setColor(Color.color(1, 1, 1, 0.65));
+                HIGHLIGHT.setBlurType(BlurType.GAUSSIAN);
+                FRONT.setEffect(HIGHLIGHT);
+                break;
+
+            case FALLING:
+                BACK.getElements().add(new MoveTo(0.3888888888888889 * WIDTH, 0.05555555555555555 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.6666666666666666 * WIDTH, 0.3333333333333333 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.8888888888888888 * WIDTH, 0.1111111111111111 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.8888888888888888 * WIDTH, 0.8888888888888888 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.1111111111111111 * WIDTH, 0.8888888888888888 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.3333333333333333 * WIDTH, 0.6666666666666666 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.05555555555555555 * WIDTH, 0.3888888888888889 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.3888888888888889 * WIDTH, 0.05555555555555555 * HEIGHT));
+                BACK.getElements().add(new ClosePath());
+                BACK.setFill(CONTROL.getTrendFallingColor().darker());
+                BACK.setStroke(null);
+
+                FRONT.getElements().add(new MoveTo(0.3888888888888889 * WIDTH, 0.1111111111111111 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.6666666666666666 * WIDTH, 0.3888888888888889 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.8333333333333334 * WIDTH, 0.2222222222222222 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.8333333333333334 * WIDTH, 0.8333333333333334 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.2222222222222222 * WIDTH, 0.8333333333333334 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.3888888888888889 * WIDTH, 0.6666666666666666 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.1111111111111111 * WIDTH, 0.3888888888888889 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.3888888888888889 * WIDTH, 0.1111111111111111 * HEIGHT));
+                FRONT.getElements().add(new ClosePath());
+                FRONT_FILL = new LinearGradient(0.2222222222222222 * WIDTH, 0.2222222222222222 * HEIGHT,
+                                                0.8507615832769312 * WIDTH, 0.8507615832769311 * HEIGHT,
+                                                false, CycleMethod.NO_CYCLE,
+                                                new Stop(0.0, CONTROL.getTrendFallingColor().brighter()),
+                                                new Stop(1.0, CONTROL.getTrendFallingColor()));
+                FRONT.setFill(FRONT_FILL);
+                FRONT.setStroke(null);
+
+                HIGHLIGHT.setWidth(0.19999999999999998 * FRONT.getLayoutBounds().getWidth());
+                HIGHLIGHT.setHeight(0.19999999999999998 * FRONT.getLayoutBounds().getHeight());
+                HIGHLIGHT.setOffsetX(0);
+                HIGHLIGHT.setOffsetY(0.13333333333333333 * SIZE);
+                HIGHLIGHT.setRadius(0.19999999999999998 * FRONT.getLayoutBounds().getWidth());
+                HIGHLIGHT.setColor(Color.color(1, 1, 1, 0.65));
+                HIGHLIGHT.setBlurType(BlurType.GAUSSIAN);
+                FRONT.setEffect(HIGHLIGHT);
+                break;
+
+            case DOWN:
+                BACK.getElements().add(new MoveTo(0.2777777777777778 * WIDTH, 0.05555555555555555 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.2777777777777778 * WIDTH, 0.4444444444444444 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.05555555555555555 * WIDTH, 0.4444444444444444 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.5 * WIDTH, HEIGHT));
+                BACK.getElements().add(new LineTo(WIDTH, 0.4444444444444444 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.7777777777777778 * WIDTH, 0.4444444444444444 * HEIGHT));
+                BACK.getElements().add(new LineTo(0.7777777777777778 * WIDTH, 0.05555555555555555 * HEIGHT));
+                BACK.getElements().add(new ClosePath());
+                BACK.setFill(CONTROL.getTrendDownColor().darker());
+                BACK.setStroke(null);
+
+                FRONT.getElements().add(new MoveTo(0.3333333333333333 * WIDTH, 0.1111111111111111 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.3333333333333333 * WIDTH, 0.5 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.16666666666666666 * WIDTH, 0.5 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.5 * WIDTH, 0.8888888888888888 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.8888888888888888 * WIDTH, 0.5 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.7222222222222222 * WIDTH, 0.5 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.7222222222222222 * WIDTH, 0.1111111111111111 * HEIGHT));
+                FRONT.getElements().add(new LineTo(0.3333333333333333 * WIDTH, 0.1111111111111111 * HEIGHT));
+                FRONT.getElements().add(new ClosePath());
+                FRONT_FILL = new LinearGradient(0.5 * WIDTH, 0.05555555555555555 * HEIGHT,
+                                                            0.50 * WIDTH, 0.9444444444444444 * HEIGHT,
+                                                            false, CycleMethod.NO_CYCLE,
+                                                            new Stop(0.0, CONTROL.getTrendDownColor().brighter()),
+                                                            new Stop(1.0, CONTROL.getTrendDownColor()));
+                FRONT.setFill(FRONT_FILL);
+                FRONT.setStroke(null);
+
+                HIGHLIGHT.setWidth(0.19999999999999998 * FRONT.getLayoutBounds().getWidth());
+                HIGHLIGHT.setHeight(0.19999999999999998 * FRONT.getLayoutBounds().getHeight());
+                HIGHLIGHT.setOffsetX(0.06666666666666668 * SIZE);
+                HIGHLIGHT.setOffsetY(0.11547005383792514 * SIZE);
+                HIGHLIGHT.setRadius(0.19999999999999998 * FRONT.getLayoutBounds().getWidth());
+                HIGHLIGHT.setColor(Color.color(1, 1, 1, 0.65));
+                HIGHLIGHT.setBlurType(BlurType.GAUSSIAN);
+                FRONT.setEffect(HIGHLIGHT);
+                break;
+        }
+
+        GROUP.getChildren().addAll(BACK, FRONT);
+        return GROUP;
     }
 }

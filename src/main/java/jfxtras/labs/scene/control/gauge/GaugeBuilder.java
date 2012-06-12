@@ -271,8 +271,12 @@ public class GaugeBuilder<T extends Gauge> {
                 styleModel.setTrendVisible(((BooleanProperty) styleProperties.get(key)).get());
             } else if ("trendUpColor".equals(key)) {
                 styleModel.setTrendUpColor(((ObjectProperty<Color>) styleProperties.get(key)).get());
+            } else if ("trendRisingColor".equals(key)) {
+                styleModel.setTrendRisingColor(((ObjectProperty<Color>) styleProperties.get(key)).get());
             } else if ("trendSteadyColor".equals(key)) {
                 styleModel.setTrendSteadyColor(((ObjectProperty<Color>) styleProperties.get(key)).get());
+            } else if ("trendFallingColor".equals(key)) {
+                styleModel.setTrendFallingColor(((ObjectProperty<Color>) styleProperties.get(key)).get());
             } else if ("trendDownColor".equals(key)) {
                 styleModel.setTrendDownColor(((ObjectProperty<Color>) styleProperties.get(key)).get());
             }
@@ -788,8 +792,18 @@ public class GaugeBuilder<T extends Gauge> {
         return this;
     }
 
+    public final GaugeBuilder trendRisingColor(final Color TREND_RISING_COLOR) {
+        styleProperties.put("trendRisingColor", new SimpleObjectProperty<Color>(TREND_RISING_COLOR));
+        return this;
+    }
+
     public final GaugeBuilder trendSteadyColor(final Color TREND_STEADY_COLOR) {
         styleProperties.put("trendSteadyColor", new SimpleObjectProperty<Color>(TREND_STEADY_COLOR));
+        return this;
+    }
+
+    public final GaugeBuilder trendFallingColor(final Color TREND_FALLING_COLOR) {
+        styleProperties.put("trendFallingColor", new SimpleObjectProperty<Color>(TREND_FALLING_COLOR));
         return this;
     }
 

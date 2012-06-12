@@ -123,7 +123,9 @@ public class StyleModel {
     private BooleanProperty                      unitVisible;
     private BooleanProperty                      trendVisible;
     private ObjectProperty<Color>                trendUpColor;
+    private ObjectProperty<Color>                trendRisingColor;
     private ObjectProperty<Color>                trendSteadyColor;
+    private ObjectProperty<Color>                trendFallingColor;
     private ObjectProperty<Color>                trendDownColor;
 
 
@@ -195,7 +197,9 @@ public class StyleModel {
         unitVisible                     = new SimpleBooleanProperty(true);
         trendVisible                    = new SimpleBooleanProperty(false);
         trendUpColor                    = new SimpleObjectProperty<Color>(Color.LIME);
-        trendSteadyColor                = new SimpleObjectProperty<Color>(Color.LIGHTBLUE);
+        trendRisingColor                = new SimpleObjectProperty<Color>(Color.YELLOWGREEN);
+        trendSteadyColor                = new SimpleObjectProperty<Color>(Color.YELLOW);
+        trendFallingColor               = new SimpleObjectProperty<Color>(Color.ORANGE);
         trendDownColor                  = new SimpleObjectProperty<Color>(Color.RED);
     }
 
@@ -1032,6 +1036,18 @@ public class StyleModel {
         return trendUpColor;
     }
 
+    public final Color getTrendRisingColor() {
+        return trendRisingColor.get();
+    }
+
+    public final void setTrendRisingColor(final Color TREND_RISING_COLOR) {
+        trendRisingColor.set(TREND_RISING_COLOR);
+    }
+
+    public final ObjectProperty<Color> trendRisingColorProperty() {
+        return trendRisingColor;
+    }
+
     public final Color getTrendSteadyColor() {
             return trendSteadyColor.get();
     }
@@ -1042,6 +1058,18 @@ public class StyleModel {
 
     public final ObjectProperty<Color> trendSteadyColorProperty() {
         return trendSteadyColor;
+    }
+
+    public final Color getTrendFallingColor() {
+        return trendFallingColor.get();
+    }
+
+    public final void setTrendFallingColor(final Color TREND_FALLING_COLOR) {
+        trendFallingColor.set(TREND_FALLING_COLOR);
+    }
+
+    public final ObjectProperty<Color> trendFallingColorProperty() {
+        return trendFallingColor;
     }
 
     public final Color getTrendDownColor() {

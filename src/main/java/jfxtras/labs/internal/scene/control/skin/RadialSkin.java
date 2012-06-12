@@ -725,7 +725,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         getChildren().clear();
         drawCircularFrame(control, frame, gaugeBounds);
         drawCircularBackground(control, background, gaugeBounds);
-        drawCircularTrend(control, glowOn, gaugeBounds);
+        drawCircularTrend(control, trend, gaugeBounds);
         updateSections();
         drawCircularSections(control, sections, gaugeBounds);
         updateAreas();

@@ -370,8 +370,18 @@ public class StyleModelBuilder {
         return this;
     }
 
+    public final StyleModelBuilder trendRisingColor(final Color TREND_RISING_COLOR) {
+        properties.put("trendRisingColor", new SimpleObjectProperty<Color>(TREND_RISING_COLOR));
+        return this;
+    }
+
     public final StyleModelBuilder trendSteadyColor(final Color TREND_STEADY_COLOR) {
         properties.put("trendSteadyColor", new SimpleObjectProperty<Color>(TREND_STEADY_COLOR));
+        return this;
+    }
+
+    public final StyleModelBuilder trendFallingColor(final Color TREND_FALLING_COLOR) {
+        properties.put("trendFallingColor", new SimpleObjectProperty<Color>(TREND_FALLING_COLOR));
         return this;
     }
 
@@ -503,8 +513,12 @@ public class StyleModelBuilder {
                 MODEL.setTrendVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("trendUpColor".equals(key)) {
                 MODEL.setTrendUpColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("trendRisingColor".equals(key)) {
+                MODEL.setTrendRisingColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("trendSteadyColor".equals(key)) {
                 MODEL.setTrendSteadyColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("trendFallingColor".equals(key)) {
+                MODEL.setTrendFallingColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("trendDownColor".equals(key)) {
                 MODEL.setTrendDownColor(((ObjectProperty<Color>) properties.get(key)).get());
             }
