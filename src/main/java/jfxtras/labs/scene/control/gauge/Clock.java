@@ -34,6 +34,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Control;
+import javafx.scene.paint.Color;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -46,18 +47,27 @@ import java.util.Date;
  * Time: 12:44
  */
 public class Clock extends Control {
-    public enum Type {
+    public enum                               BackgroundStyle {
         BRIGHT,
-        DARK;
+        DARK,
+        CUSTOM
     }
-    private static final String DEFAULT_STYLE_CLASS = "clock";
-    private StringProperty       timeZone;
-    private BooleanProperty      running;
-    private BooleanProperty      secondPointerVisible;
-    private BooleanProperty      autoDimEnabled;
-    private BooleanProperty      daylightSavingTime;
-    private ObjectProperty<Type> type;
-
+    public static enum                        ClockStyle {
+        DB,
+        IOS6
+    }
+    private static final String               DEFAULT_STYLE_CLASS = "clock";
+    private StringProperty                    timeZone;
+    private BooleanProperty                   running;
+    private BooleanProperty                   secondPointerVisible;
+    private BooleanProperty                   autoDimEnabled;
+    private BooleanProperty                   daylightSavingTime;
+    private ObjectProperty<BackgroundStyle>   backgroundStyle;
+    private ObjectProperty<ClockStyle>        clockStyle;
+    private ObjectProperty<Color>             backgroundColor;
+    private ObjectProperty<Color> tickMarkColor;
+    private ObjectProperty<Color>             pointerColor;
+    private ObjectProperty<Color>             secondPointerColor;
 
 
     // ******************** Constructors **************************************
@@ -67,7 +77,12 @@ public class Clock extends Control {
         secondPointerVisible = new SimpleBooleanProperty(true);
         autoDimEnabled       = new SimpleBooleanProperty(true);
         daylightSavingTime   = new SimpleBooleanProperty(Calendar.getInstance().getTimeZone().inDaylightTime(new Date()));
-        type                 = new SimpleObjectProperty<Type>(Type.BRIGHT);
+        backgroundStyle      = new SimpleObjectProperty<BackgroundStyle>(BackgroundStyle.BRIGHT);
+        clockStyle           = new SimpleObjectProperty<ClockStyle>(ClockStyle.DB);
+        backgroundColor      = new SimpleObjectProperty<Color>(Color.WHITE);
+        tickMarkColor        = new SimpleObjectProperty<Color>(Color.BLACK);
+        pointerColor         = new SimpleObjectProperty<Color>(Color.BLACK);
+        secondPointerColor   = new SimpleObjectProperty<Color>(Color.rgb(237, 0, 58));
         init();
     }
 
@@ -143,16 +158,76 @@ public class Clock extends Control {
         return daylightSavingTime;
     }
 
-    public final Type getType() {
-        return type.get();
+    public final BackgroundStyle getBackgroundStyle() {
+        return backgroundStyle.get();
     }
 
-    public final void setType(final Type TYPE) {
-        type.set(TYPE);
+    public final void setBackgroundStyle(final BackgroundStyle BACKGROUND_STYLE) {
+        backgroundStyle.set(BACKGROUND_STYLE);
     }
 
-    public final ObjectProperty<Type> typeProperty() {
-        return type;
+    public final ObjectProperty<BackgroundStyle> backgroundStyleProperty() {
+        return backgroundStyle;
+    }
+
+    public final ClockStyle getClockStyle() {
+        return clockStyle.get();
+    }
+
+    public final void setClockStyle(final ClockStyle CLOCK_STYLE) {
+        clockStyle.set(CLOCK_STYLE);
+    }
+
+    public final ObjectProperty<ClockStyle> clockStyleProperty() {
+        return clockStyle;
+    }
+
+    public final Color getBackgroundColor() {
+        return backgroundColor.get();
+    }
+
+    public final void setBackgroundColor(final Color BACKGROUND_COLOR) {
+        backgroundColor.set(BACKGROUND_COLOR);
+    }
+
+    public final ObjectProperty<Color> backgroundColorProperty() {
+        return backgroundColor;
+    }
+
+    public final Color getTickMarkColor() {
+        return tickMarkColor.get();
+    }
+
+    public final void setTickMarkColor(final Color TICK_MARK_COLOR) {
+        tickMarkColor.set(TICK_MARK_COLOR);
+    }
+
+    public final ObjectProperty<Color> tickMarkColorProperty() {
+        return tickMarkColor;
+    }
+
+    public final Color getPointerColor() {
+        return pointerColor.get();
+    }
+
+    public final void setPointerColor(final Color POINTER_COLOR) {
+        pointerColor.set(POINTER_COLOR);
+    }
+
+    public final ObjectProperty<Color> pointerColorProperty() {
+        return pointerColor;
+    }
+
+    public final Color getSecondPointerColor() {
+        return secondPointerColor.get();
+    }
+
+    public final void setSecondPointerColor(final Color SECOND_POINTER_COLOR) {
+        secondPointerColor.set(SECOND_POINTER_COLOR);
+    }
+
+    public final ObjectProperty<Color> secondPointerColorProperty() {
+        return secondPointerColor;
     }
 
 

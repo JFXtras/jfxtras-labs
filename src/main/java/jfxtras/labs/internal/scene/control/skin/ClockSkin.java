@@ -29,6 +29,11 @@ package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
 import javafx.animation.AnimationTimer;
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.animation.TimelineBuilder;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
@@ -37,26 +42,26 @@ import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.effect.Light;
+import javafx.scene.effect.Lighting;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.CubicCurveTo;
-import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
-import javafx.scene.shape.ShapeBuilder;
 import javafx.scene.transform.Transform;
+import javafx.util.Duration;
 import jfxtras.labs.internal.scene.control.behavior.ClockBehavior;
 import jfxtras.labs.scene.control.gauge.Clock;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
 
@@ -67,13 +72,16 @@ import java.util.TimeZone;
  * Time: 12:44
  */
 public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
-    private static final long INTERVAL = 50000000l;
-    private static final Calendar CAL  = Calendar.getInstance();
+    private static final long     INTERVAL = 50000000l;
+    private static final Calendar CAL      = Calendar.getInstance();
     private Clock                 control;
     private int                   dst;
     private Group                 hourPointer;
+    private Group                 hourPointerShadow;
     private Group                 minutePointer;
+    private Group                 minutePointerShadow;
     private Group                 secondPointer;
+    private Group                 secondPointerShadow;
     private Group                 clock;
     private DoubleProperty        hourAngle;
     private DoubleProperty        minuteAngle;
@@ -81,8 +89,10 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
     private int                   hourOffset;
     private int                   minuteOffset;
     private int                   lastHour;
+    private DoubleProperty        minute;
     private long                  lastTimerCall;
     private boolean               isDay;
+    private Timeline              timeline;
     private AnimationTimer        timer;
     private boolean               isDirty;
     private boolean               initialized;
@@ -91,22 +101,27 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
     // ******************** Constructors **************************************
     public ClockSkin(final Clock CONTROL) {
         super(CONTROL, new ClockBehavior(CONTROL));
-        control       = CONTROL;
+        control             = CONTROL;
         CAL.setTimeZone(TimeZone.getTimeZone(control.getTimeZone()));
-        dst           = control.isDaylightSavingTime() ? 1 : 0;
-        hourPointer   = new Group();
-        minutePointer = new Group();
-        secondPointer = new Group();
-        clock         = new Group();
-        hourAngle     = new SimpleDoubleProperty(360 / 12 * Calendar.getInstance().get(Calendar.HOUR) + dst);
-        minuteAngle   = new SimpleDoubleProperty(360 / 60 * Calendar.getInstance().get(Calendar.MINUTE));
-        secondAngle   = new SimpleDoubleProperty(360 / 60 * Calendar.getInstance().get(Calendar.SECOND));
-        hourOffset    = CAL.get(Calendar.HOUR_OF_DAY) - Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        minuteOffset  = CAL.get(Calendar.MINUTE) - Calendar.getInstance().get(Calendar.MINUTE);
-        lastHour      = CAL.get(Calendar.HOUR_OF_DAY);
-        lastTimerCall = 0;
-        isDay         = true;
-        timer         = new AnimationTimer() {
+        dst                 = control.isDaylightSavingTime() ? 1 : 0;
+        hourPointer         = new Group();
+        hourPointerShadow   = new Group(hourPointer);
+        minutePointer       = new Group();
+        minutePointerShadow = new Group(minutePointer);
+        secondPointer       = new Group();
+        secondPointerShadow = new Group(secondPointer);
+        clock               = new Group();
+        hourAngle           = new SimpleDoubleProperty(360 / 12 * Calendar.getInstance().get(Calendar.HOUR) + dst);
+        minuteAngle         = new SimpleDoubleProperty(360 / 60 * Calendar.getInstance().get(Calendar.MINUTE));
+        secondAngle         = new SimpleDoubleProperty(360 / 60 * Calendar.getInstance().get(Calendar.SECOND));
+        hourOffset          = CAL.get(Calendar.HOUR_OF_DAY) - Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        minuteOffset        = CAL.get(Calendar.MINUTE) - Calendar.getInstance().get(Calendar.MINUTE);
+        lastHour            = CAL.get(Calendar.HOUR_OF_DAY);
+        minute              = new SimpleDoubleProperty(0);
+        lastTimerCall       = 0;
+        isDay               = true;
+        timeline            = new Timeline();
+        timer               = new AnimationTimer() {
             @Override public void handle(long l) {
                 long currentNanoTime = System.nanoTime();
                 if (currentNanoTime >= lastTimerCall + INTERVAL) {
@@ -118,7 +133,7 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
                     // Seconds
                     secondAngle.set(Calendar.getInstance().get(Calendar.SECOND) * 6 + Calendar.getInstance().get(Calendar.MILLISECOND) * 0.006);
                     // Minutes
-                    minuteAngle.set((minuteOffset + Calendar.getInstance().get(Calendar.MINUTE)) * 6);
+                    minute.set((minuteOffset + Calendar.getInstance().get(Calendar.MINUTE)) * 6);
                     // Hours
                     hourAngle.set((hourOffset + Calendar.getInstance().get(Calendar.HOUR)) * 30 + 0.5 * Calendar.getInstance().get(Calendar.MINUTE));
                     lastTimerCall = currentNanoTime;
@@ -126,9 +141,13 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
                 }
             }
         };
-        isDirty       = false;
-        initialized   = false;
-
+        minute.addListener(new ChangeListener<Number>() {
+            @Override public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
+                moveMinutePointer(newValue.doubleValue());
+            }
+        });
+        isDirty             = false;
+        initialized         = false;
         init();
     }
 
@@ -163,7 +182,13 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         registerChangeListener(secondAngle, "SECOND");
         registerChangeListener(minuteAngle, "MINUTE");
         registerChangeListener(hourAngle, "HOUR");
-        registerChangeListener(control.typeProperty(), "TYPE");
+        registerChangeListener(control.backgroundStyleProperty(), "BACKGROUND_STYLE");
+        registerChangeListener(control.clockStyleProperty(), "CLOCK_STYLE");
+        registerChangeListener(control.backgroundColorProperty(), "BACKGROUND_COLOR");
+        registerChangeListener(control.pointerColorProperty(), "POINTER_COLOR");
+        registerChangeListener(control.secondPointerColorProperty(), "SECOND_POINTER_COLOR");
+        registerChangeListener(control.tickMarkColorProperty(), "TICK_MARK_COLOR");
+
 
         setTime();
         initialized = true;
@@ -185,11 +210,11 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         drawMinutePointer();
         drawHourPointer();
         drawSecondPointer();
-
+        drawShadows();
         getChildren().addAll(clock,
-                             minutePointer,
-                             hourPointer,
-                             secondPointer);
+                             minutePointerShadow,
+                             hourPointerShadow,
+                             secondPointerShadow);
     }
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
@@ -211,6 +236,18 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
             hourPointer.setRotate(hourAngle.get());
         } else if ("TYPE".equals(PROPERTY)) {
             checkForNight();
+            paint();
+        } else if ("BACKGROUND_STYLE".equals(PROPERTY)) {
+            paint();
+        } else if ("CLOCK_STYLE".equals(PROPERTY)) {
+            drawSecondPointer();
+        } else if ("BACKGROUND_COLOR".equals(PROPERTY)) {
+            paint();
+        } else if ("POINTER_COLOR".equals(PROPERTY)) {
+            paint();
+        } else if ("SECOND_POINTER_COLOR".equals(PROPERTY)) {
+            paint();
+        } else if ("TICK_MARK_COLOR".equals(PROPERTY)) {
             paint();
         }
     }
@@ -251,13 +288,21 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         CAL.setTimeZone(TimeZone.getTimeZone(control.getTimeZone()));
         dst = control.isDaylightSavingTime() ? 1 : 0;
         int localDst = Calendar.getInstance().getTimeZone().inDaylightTime(new Date()) ? 1 : 0;
-        hourOffset    = CAL.get(Calendar.HOUR_OF_DAY) + dst - Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + localDst;
-        minuteOffset  = CAL.get(Calendar.MINUTE) - Calendar.getInstance().get(Calendar.MINUTE);
+        hourOffset   = CAL.get(Calendar.HOUR_OF_DAY) + dst - Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + localDst;
+        minuteOffset = CAL.get(Calendar.MINUTE) - Calendar.getInstance().get(Calendar.MINUTE);
         secondAngle.set(Calendar.getInstance().get(Calendar.SECOND) * 6 + Calendar.getInstance().get(Calendar.MILLISECOND) * 0.006);
         minuteAngle.set((minuteOffset + Calendar.getInstance().get(Calendar.MINUTE)) * 6);
         hourAngle.set((hourOffset + Calendar.getInstance().get(Calendar.HOUR)) * 30 + 0.5 * Calendar.getInstance().get(Calendar.MINUTE));
 
         checkForNight();
+    }
+
+    private void moveMinutePointer(double newMinuteAngle) {
+        final KeyValue kv = new KeyValue(minuteAngle, newMinuteAngle, Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
+        final KeyFrame kf = new KeyFrame(Duration.millis(200), kv);
+        timeline  = new Timeline();
+        timeline.getKeyFrames().add(kf);
+        timeline.play();
     }
 
     private void checkForNight() {
@@ -267,10 +312,11 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
             } else {
                 isDay = false;
             }
-        } else {
-            isDay = control.getType() == Clock.Type.BRIGHT;
+        } else if (control.getBackgroundStyle() != Clock.BackgroundStyle.CUSTOM) {
+            isDay = control.getBackgroundStyle() == Clock.BackgroundStyle.BRIGHT;
         }
     }
+
 
     // ******************** Drawing related ***********************************
     public void drawClock() {
@@ -285,28 +331,67 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         clock.getChildren().add(IBOUNDS);
 
         final Circle FRAME = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.5 * WIDTH);
+        FRAME.getStyleClass().clear();
         FRAME.getStyleClass().add("clock-frame-fill");
         FRAME.setStroke(null);
 
-        final Circle BACKGROUND = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4921259842519685 * WIDTH);
-        if (isDay) {
-            BACKGROUND.getStyleClass().add("clock-bright-background-fill");
-        } else {
-            BACKGROUND.getStyleClass().add("clock-dark-background-fill");
-        }
+        final InnerShadow HIGHLIGHT = new InnerShadow();
+        HIGHLIGHT.setWidth(0.15 * SIZE);
+        HIGHLIGHT.setHeight(0.15 * SIZE);
+        HIGHLIGHT.setOffsetY(-0.025 * SIZE);
+        HIGHLIGHT.setColor(Color.color(1, 1, 1, 0.65));
 
+        final InnerShadow SHADOW = new InnerShadow();
+        SHADOW.setInput(HIGHLIGHT);
+        SHADOW.setWidth(0.15 * SIZE);
+        SHADOW.setHeight(0.15 * SIZE);
+        SHADOW.setOffsetY(0.025 * SIZE);
+        SHADOW.setColor(Color.color(0, 0, 0, 0.1));
+        FRAME.setEffect(SHADOW);
+
+        final Circle BACKGROUND = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4921259842519685 * WIDTH);
+        if (control.getBackgroundStyle() == Clock.BackgroundStyle.CUSTOM) {
+            BACKGROUND.setFill(control.getBackgroundColor());
+        } else {
+            BACKGROUND.getStyleClass().clear();
+            if (isDay) {
+                BACKGROUND.getStyleClass().add("clock-bright-background-fill");
+            } else {
+                BACKGROUND.getStyleClass().add("clock-dark-background-fill");
+            }
+        }
         BACKGROUND.setStroke(null);
 
         final InnerShadow INNER_SHADOW = new InnerShadow();
-        INNER_SHADOW.setWidth(0.08503937007874016 * BACKGROUND.getLayoutBounds().getWidth());
-        INNER_SHADOW.setHeight(0.08503937007874016 * BACKGROUND.getLayoutBounds().getHeight());
-        INNER_SHADOW.setOffsetX(1.157146581871515E-18 * SIZE);
-        INNER_SHADOW.setOffsetY(0.01889763779527559 * SIZE);
-        INNER_SHADOW.setRadius(0.08503937007874016 * BACKGROUND.getLayoutBounds().getWidth());
-        INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.4980392157));
+        INNER_SHADOW.setWidth(0.0929889298892989 * BACKGROUND.getLayoutBounds().getWidth());
+        INNER_SHADOW.setHeight(0.0929889298892989 * BACKGROUND.getLayoutBounds().getHeight());
+        INNER_SHADOW.setOffsetY(0.008856088560885609 * SIZE);
+        INNER_SHADOW.setRadius(0.0929889298892989 * BACKGROUND.getLayoutBounds().getWidth());
+        INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.6470588235));
         INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
         INNER_SHADOW.inputProperty().set(null);
         BACKGROUND.setEffect(INNER_SHADOW);
+
+        final Path GLASS_EFFECT = new Path();
+        if (control.getClockStyle() == Clock.ClockStyle.IOS6) {
+            GLASS_EFFECT.setFillRule(FillRule.EVEN_ODD);
+            GLASS_EFFECT.getElements().add(new MoveTo(0.023622047244094488 * WIDTH, 0.36220472440944884 * HEIGHT));
+            GLASS_EFFECT.getElements().add(new CubicCurveTo(0.08661417322834646 * WIDTH, 0.15748031496062992 * HEIGHT,
+                                                            0.2677165354330709 * WIDTH, 0.007874015748031496 * HEIGHT,
+                                                            0.5039370078740157 * WIDTH, 0.007874015748031496 * HEIGHT));
+            GLASS_EFFECT.getElements().add(new CubicCurveTo(0.7322834645669292 * WIDTH, 0.007874015748031496 * HEIGHT,
+                                                            0.9133858267716536 * WIDTH, 0.15748031496062992 * HEIGHT,
+                                                            0.9763779527559056 * WIDTH, 0.36220472440944884 * HEIGHT));
+            GLASS_EFFECT.getElements().add(new CubicCurveTo(0.984251968503937 * WIDTH, 0.3858267716535433 * HEIGHT,
+                                                            0.7480314960629921 * WIDTH, 0.5039370078740157 * HEIGHT,
+                                                            0.5039370078740157 * WIDTH, 0.5039370078740157 * HEIGHT));
+            GLASS_EFFECT.getElements().add(new CubicCurveTo(0.25196850393700787 * WIDTH, 0.49606299212598426 * HEIGHT,
+                                                            0.015748031496062992 * WIDTH, 0.3858267716535433 * HEIGHT,
+                                                            0.023622047244094488 * WIDTH, 0.36220472440944884 * HEIGHT));
+            GLASS_EFFECT.getElements().add(new ClosePath());
+            GLASS_EFFECT.setFill(Color.color(1, 1, 1, 0.15));
+            GLASS_EFFECT.setStroke(null);
+        }
 
         final Group TICK_MARKS = new Group();
         for (int angle = 0 ; angle < 360 ; angle += 6) {
@@ -314,17 +399,40 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
             final Rectangle TICK;
             if (angle % 30 == 0) {
                 // Big tickmarks
-                TICK = new Rectangle(0.48031496062992124 * WIDTH, 0.023622047244094488 * HEIGHT,
-                                     0.03937007874015748 * WIDTH, 0.135 * HEIGHT);
+                if (control.getClockStyle() == Clock.ClockStyle.IOS6) {
+                    if (angle % 90 == 0) {
+                        TICK = new Rectangle(0.4763779528 * WIDTH, 0.023622047244094488 * HEIGHT,
+                                             0.0472440945 * WIDTH, 0.110701107 * HEIGHT);
+                    } else {
+                        TICK = new Rectangle(0.48031496062992124 * WIDTH, 0.023622047244094488 * HEIGHT,
+                                             0.03937007874015748 * WIDTH, 0.110701107 * HEIGHT);
+                    }
+                } else {
+                    TICK = new Rectangle(0.48031496062992124 * WIDTH, 0.023622047244094488 * HEIGHT,
+                                         0.03937007874015748 * WIDTH, 0.110701107 * HEIGHT);
+                }
             } else {
                 // Small tickmarks
-                TICK = new Rectangle(0.4881889763779528 * WIDTH, 0.023622047244094488 * HEIGHT,
-                                     0.023622047244094488 * WIDTH, 0.047244094488188976 * HEIGHT);
+                switch (control.getClockStyle()) {
+                    case IOS6:
+                        TICK = new Rectangle(0.4960629921 * WIDTH, 0.023622047244094488 * HEIGHT,
+                                             0.0078740157 * WIDTH, 0.047244094488188976 * HEIGHT);
+                        break;
+                    case DB:
+                    default:
+                        TICK = new Rectangle(0.4881889763779528 * WIDTH, 0.023622047244094488 * HEIGHT,
+                                             0.023622047244094488 * WIDTH, 0.047244094488188976 * HEIGHT);
+                        break;
+                }
             }
-            if (isDay) {
-                TICK.getStyleClass().add("clock-bright-foreground-fill");
+            if (control.getBackgroundStyle() == Clock.BackgroundStyle.CUSTOM) {
+                TICK.setFill(control.getTickMarkColor());
             } else {
-                TICK.getStyleClass().add("clock-dark-foreground-fill");
+                if (isDay) {
+                    TICK.getStyleClass().add("clock-bright-foreground-fill");
+                } else {
+                    TICK.getStyleClass().add("clock-dark-foreground-fill");
+                }
             }
             TICK.setStroke(null);
             TICK.getTransforms().add(TRANSFORM);
@@ -332,8 +440,9 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         }
 
         clock.getChildren().addAll(FRAME,
-                                   BACKGROUND,
-                                   TICK_MARKS);
+            BACKGROUND,
+            GLASS_EFFECT,
+            TICK_MARKS);
         clock.setCache(true);
     }
 
@@ -347,29 +456,32 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         minutePointer.getChildren().add(IBOUNDS);
+        final Shape MINUTE;
+        switch(control.getClockStyle()) {
+            case IOS6:
+                MINUTE = new Rectangle(0.4783464567 * WIDTH, 0.047244094488188976 * HEIGHT,
+                                       0.0433070866 * WIDTH, 0.5511811024 * HEIGHT);
+                break;
+            case DB:
+            default:
+                MINUTE = new Rectangle(0.48031496062992124 * WIDTH, 0.047244094488188976 * HEIGHT,
+                                       0.03937007874015748 * WIDTH, 0.47244094488188976 * HEIGHT);
+                break;
+        }
 
-        final Rectangle MINUTE = new Rectangle(0.48031496062992124 * WIDTH, 0.047244094488188976 * HEIGHT,
-                                             0.03937007874015748 * WIDTH, 0.47244094488188976 * HEIGHT);
-        if (isDay) {
-            MINUTE.getStyleClass().add("clock-bright-foreground-fill");
+        if (control.getBackgroundStyle() == Clock.BackgroundStyle.CUSTOM) {
+            MINUTE.setFill(control.getPointerColor());
         } else {
-            MINUTE.getStyleClass().add("clock-dark-foreground-fill");
+            MINUTE.getStyleClass().clear();
+            if (isDay) {
+                MINUTE.getStyleClass().add("clock-bright-foreground-fill");
+            } else {
+                MINUTE.getStyleClass().add("clock-dark-foreground-fill");
+            }
         }
         MINUTE.setStroke(null);
 
-        final DropShadow DROP_SHADOW = new DropShadow();
-        DROP_SHADOW.setWidth(2.0);
-        DROP_SHADOW.setHeight(2.0);
-        DROP_SHADOW.setOffsetX(0.0);
-        DROP_SHADOW.setOffsetY(0.0);
-        DROP_SHADOW.setRadius(2.0);
-        DROP_SHADOW.setColor(Color.color(0, 0, 0, 0.65));
-        DROP_SHADOW.setBlurType(BlurType.GAUSSIAN);
-        DROP_SHADOW.inputProperty().set(null);
-        MINUTE.setEffect(DROP_SHADOW);
-
         minutePointer.setRotate(minuteAngle.get());
-
         minutePointer.getChildren().add(MINUTE);
         minutePointer.setCache(true);
     }
@@ -384,29 +496,32 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         hourPointer.getChildren().add(IBOUNDS);
+        final Shape HOUR;
+        switch (control.getClockStyle()) {
+            case IOS6:
+                HOUR = new Rectangle(0.4783464567 * WIDTH, 0.2440944882 * HEIGHT,
+                                     0.0433070866 * WIDTH, 0.3543307087 * HEIGHT);
+                break;
+            case DB:
+            default:
+                HOUR = new Rectangle(0.47244094488188976 * WIDTH, 0.2125984251968504 * HEIGHT,
+                                     0.05511811023622047 * WIDTH, 0.2992125984251969 * HEIGHT);
+                break;
+        }
 
-        final Rectangle HOUR = new Rectangle(0.47244094488188976 * WIDTH, 0.2125984251968504 * HEIGHT,
-                                               0.05511811023622047 * WIDTH, 0.2992125984251969 * HEIGHT);
-        if (isDay) {
-            HOUR.getStyleClass().add("clock-bright-foreground-fill");
+        if (control.getBackgroundStyle() == Clock.BackgroundStyle.CUSTOM) {
+            HOUR.setFill(control.getPointerColor());
         } else {
-            HOUR.getStyleClass().add("clock-dark-foreground-fill");
+            HOUR.getStyleClass().clear();
+            if (isDay) {
+                HOUR.getStyleClass().add("clock-bright-foreground-fill");
+            } else {
+                HOUR.getStyleClass().add("clock-dark-foreground-fill");
+            }
         }
         HOUR.setStroke(null);
 
-        final DropShadow DROP_SHADOW = new DropShadow();
-        DROP_SHADOW.setWidth(2.0);
-        DROP_SHADOW.setHeight(2.0);
-        DROP_SHADOW.setOffsetX(0.0);
-        DROP_SHADOW.setOffsetY(0.0);
-        DROP_SHADOW.setRadius(2.0);
-        DROP_SHADOW.setColor(Color.color(0, 0, 0, 0.65));
-        DROP_SHADOW.setBlurType(BlurType.GAUSSIAN);
-        DROP_SHADOW.inputProperty().set(null);
-        HOUR.setEffect(DROP_SHADOW);
-
         hourPointer.setRotate(hourAngle.get());
-
         hourPointer.getChildren().add(HOUR);
         hourPointer.setCache(true);
     }
@@ -421,48 +536,88 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         secondPointer.getChildren().add(IBOUNDS);
-
-        final Circle OUTER_CIRCLE = new Circle(SIZE * 0.5,
-                                               SIZE * 0.190909091,
-                                               SIZE * 0.0454545454);
-        final Circle INNER_CIRCLE = new Circle(SIZE * 0.5,
-                                               SIZE * 0.190909091,
-                                               SIZE * 0.0363636364);
-
-        Path second = (Path) Path.subtract(OUTER_CIRCLE, INNER_CIRCLE);
-        second.getElements().add(new MoveTo(WIDTH * 0.4863636364, SIZE * 0.5));
-        second.getElements().add(new LineTo(WIDTH * 0.5136363636, SIZE * 0.5));
-        second.getElements().add(new LineTo(WIDTH * 0.5045454545, WIDTH * 0.0363636364));
-        second.getElements().add(new LineTo(WIDTH * 0.4954545455, WIDTH * 0.0363636364));
-        second.getElements().add(new ClosePath());
-        second = (Path) Path.subtract(second, new Circle(SIZE * 0.5, SIZE * 0.190909091, SIZE * 0.0363636364));
-
+        Path second;
+        switch (control.getClockStyle()) {
+            case IOS6:
+                final Shape TOP_CIRCLE = new Circle(0.5 * WIDTH,
+                                                    0.20078740157480315 * HEIGHT,
+                                                    0.036900369 * WIDTH);
+                final Shape BODY       = new Rectangle(0.4926199262 * WIDTH, 0.2204724409 * HEIGHT,
+                                                       0.0147601476 * WIDTH, 0.4409448819 * HEIGHT);
+                BODY.setFill(Color.BLACK);
+                final Shape CENTER_CIRCLE = new Circle(0.5 * WIDTH,
+                                                       0.5 * HEIGHT,
+                                                       0.0236220472 * WIDTH);
+                Shape tmp = Path.union(TOP_CIRCLE, BODY);
+                tmp.setFill(Color.BLACK);
+                second = (Path) Path.union(tmp, CENTER_CIRCLE);
+                break;
+            case DB:
+            default:
+                final Circle OUTER_CIRCLE = new Circle(SIZE * 0.5,
+                                                       SIZE * 0.190909091,
+                                                       SIZE * 0.0454545454);
+                final Circle INNER_CIRCLE = new Circle(SIZE * 0.5,
+                                                       SIZE * 0.190909091,
+                                                       SIZE * 0.0363636364);
+                second = (Path) Path.subtract(OUTER_CIRCLE, INNER_CIRCLE);
+                second.getElements().add(new MoveTo(WIDTH * 0.4863636364, SIZE * 0.5));
+                second.getElements().add(new LineTo(WIDTH * 0.5136363636, SIZE * 0.5));
+                second.getElements().add(new LineTo(WIDTH * 0.5045454545, WIDTH * 0.0363636364));
+                second.getElements().add(new LineTo(WIDTH * 0.4954545455, WIDTH * 0.0363636364));
+                second.getElements().add(new ClosePath());
+                second = (Path) Path.subtract(second, new Circle(SIZE * 0.5, SIZE * 0.190909091, SIZE * 0.0363636364));
+                break;
+        }
         //second.getStyleClass().add("clock-second-pointer-fill"); // somehow doesn't work with elements created by subtract method
-        second.setFill(Color.rgb(237, 0, 58));
+        if (control.getBackgroundStyle() == Clock.BackgroundStyle.CUSTOM) {
+            second.setFill(control.getSecondPointerColor());
+        } else {
+            second.setFill(Color.rgb(237, 0, 58));
+        }
         second.setStroke(null);
 
-        final DropShadow DROP_SHADOW = new DropShadow();
-        DROP_SHADOW.setWidth(2.0);
-        DROP_SHADOW.setHeight(2.0);
-        DROP_SHADOW.setOffsetX(0.0);
-        DROP_SHADOW.setOffsetY(0.0);
-        DROP_SHADOW.setRadius(2.0);
-        DROP_SHADOW.setColor(Color.color(0, 0, 0, 0.65));
-        DROP_SHADOW.setBlurType(BlurType.GAUSSIAN);
-        second.setEffect(DROP_SHADOW);
-
-        final Circle CENTER_KNOB = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.051181102362204724 * WIDTH);
-        if (isDay) {
-            CENTER_KNOB.getStyleClass().add("clock-bright-foreground-fill");
-        } else {
-            CENTER_KNOB.getStyleClass().add("clock-dark-foreground-fill");
-        }
-        CENTER_KNOB.setStroke(null);
-
+        secondPointer.getChildren().add(second);
         secondPointer.setRotate(secondAngle.get());
 
-        secondPointer.getChildren().addAll(second, CENTER_KNOB);
+        final Circle CENTER_KNOB;
+        if (control.getClockStyle() == Clock.ClockStyle.DB) {
+            CENTER_KNOB = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.051181102362204724 * WIDTH);
+            CENTER_KNOB.getStyleClass().clear();
+            if (isDay) {
+                CENTER_KNOB.getStyleClass().add("clock-bright-foreground-fill");
+            } else {
+                CENTER_KNOB.getStyleClass().add("clock-dark-foreground-fill");
+            }
+            CENTER_KNOB.setStroke(null);
+        } else {
+            CENTER_KNOB = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.0078740157 * WIDTH);
+            CENTER_KNOB.setFill(Color.color(0.8745098039, 0.8745098039, 0.8156862745, 1));
+            CENTER_KNOB.setStroke(null);
+        }
+        secondPointer.getChildren().add(CENTER_KNOB);
         secondPointer.setCache(true);
+    }
+
+    private void drawShadows() {
+        final double SIZE  = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+        final double WIDTH = SIZE;
+
+        final Lighting LIGHTING   = new Lighting();
+        final Light.Distant LIGHT = new Light.Distant();
+        LIGHT.setAzimuth(270);
+        LIGHTING.setLight(LIGHT);
+
+        final DropShadow DROP_SHADOW = new DropShadow();
+        DROP_SHADOW.setInput(LIGHTING);
+        DROP_SHADOW.setOffsetY(0.015 * WIDTH);
+        DROP_SHADOW.setRadius(0.015 * WIDTH);
+        DROP_SHADOW.setBlurType(BlurType.GAUSSIAN);
+        DROP_SHADOW.setColor(Color.color(0, 0, 0, 0.55));
+
+        minutePointerShadow.setEffect(DROP_SHADOW);
+        hourPointerShadow.setEffect(DROP_SHADOW);
+        secondPointerShadow.setEffect(DROP_SHADOW);
     }
 }
 

@@ -29,11 +29,14 @@ package jfxtras.labs.scene.control.gauge;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.paint.Color;
 
 import java.util.HashMap;
 
@@ -76,6 +79,36 @@ public class ClockBuilder {
         return this;
     }
 
+    public final ClockBuilder clockStyle(final Clock.ClockStyle CLOCK_STYLE) {
+        properties.put("clockStyle", new SimpleObjectProperty<Clock.ClockStyle>(CLOCK_STYLE));
+        return this;
+    }
+
+    public final ClockBuilder backgroundStyle(final Clock.BackgroundStyle BACKGROUND_STYLE) {
+        properties.put("backgroundStyle", new SimpleObjectProperty<Clock.BackgroundStyle>(BACKGROUND_STYLE));
+        return this;
+    }
+
+    public final ClockBuilder backgroundColor(final Color BACKGROUND_COLOR) {
+        properties.put("backgroundColor", new SimpleObjectProperty<Color>(BACKGROUND_COLOR));
+        return this;
+    }
+
+    public final ClockBuilder pointerColor(final Color POINTER_COLOR) {
+        properties.put("pointerColor", new SimpleObjectProperty<Color>(POINTER_COLOR));
+        return this;
+    }
+
+    public final ClockBuilder secondPointerColor(final Color SECOND_POINTER_COLOR) {
+        properties.put("secondPointerColor", new SimpleObjectProperty<Color>(SECOND_POINTER_COLOR));
+        return this;
+    }
+
+    public final ClockBuilder tickMarkColor(final Color TICK_MARK_COLOR) {
+        properties.put("tickMarkColor", new SimpleObjectProperty<Color>(TICK_MARK_COLOR));
+        return this;
+    }
+
     public final ClockBuilder prefWidth(final double PREF_WIDTH) {
         properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
         return this;
@@ -99,10 +132,22 @@ public class ClockBuilder {
                 CONTROL.setAutoDimEnabled(((BooleanProperty) properties.get(key)).get());
             } else if ("running".equals(key)) {
                 CONTROL.setRunning(((BooleanProperty) properties.get(key)).get());
-            }  else if ("prefWidth".equals(key)) {
+            } else if ("clockStyle".equals(key)) {
+                CONTROL.setClockStyle(((ObjectProperty<Clock.ClockStyle>) properties.get(key)).get());
+            } else if ("prefWidth".equals(key)) {
                 CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
             } else if ("prefHeight".equals(key)) {
                 CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
+            } else if ("backgroundStyle".equals(key)) {
+                CONTROL.setBackgroundStyle(((ObjectProperty<Clock.BackgroundStyle>) properties.get(key)).get());
+            } else if ("backgroundColor".equals(key)) {
+                CONTROL.setBackgroundColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("pointerColor".equals(key)) {
+                CONTROL.setPointerColor(((ObjectProperty<Color>) properties.get(key)).get());;
+            } else if ("secondPointerColor".equals(key)) {
+                CONTROL.setSecondPointerColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("tickMarkColor".equals(key)) {
+                CONTROL.setTickMarkColor(((ObjectProperty<Color>) properties.get(key)).get());
             }
         }
         return CONTROL;
