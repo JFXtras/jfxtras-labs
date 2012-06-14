@@ -36,7 +36,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 import java.util.HashMap;
 
@@ -84,28 +84,43 @@ public class ClockBuilder {
         return this;
     }
 
-    public final ClockBuilder backgroundStyle(final Clock.BackgroundStyle BACKGROUND_STYLE) {
-        properties.put("backgroundStyle", new SimpleObjectProperty<Clock.BackgroundStyle>(BACKGROUND_STYLE));
+    public final ClockBuilder theme(final Clock.Theme Theme) {
+        properties.put("theme", new SimpleObjectProperty<Clock.Theme>(Theme));
         return this;
     }
 
-    public final ClockBuilder backgroundColor(final Color BACKGROUND_COLOR) {
-        properties.put("backgroundColor", new SimpleObjectProperty<Color>(BACKGROUND_COLOR));
+    public final ClockBuilder brightBackgroundPaint(final Paint BRIGHT_BACKGROUND_PAINT) {
+        properties.put("brightBackgroundPaint", new SimpleObjectProperty<Paint>(BRIGHT_BACKGROUND_PAINT));
         return this;
     }
 
-    public final ClockBuilder pointerColor(final Color POINTER_COLOR) {
-        properties.put("pointerColor", new SimpleObjectProperty<Color>(POINTER_COLOR));
+    public final ClockBuilder darkBackgroundPaint(final Paint DARK_BACKGROUND_PAINT) {
+        properties.put("darkBackgroundPaint", new SimpleObjectProperty<Paint>(DARK_BACKGROUND_PAINT));
         return this;
     }
 
-    public final ClockBuilder secondPointerColor(final Color SECOND_POINTER_COLOR) {
-        properties.put("secondPointerColor", new SimpleObjectProperty<Color>(SECOND_POINTER_COLOR));
+    public final ClockBuilder brightPointerPaint(final Paint BRIGHT_POINTER_PAINT) {
+        properties.put("brightPointerPaint", new SimpleObjectProperty<Paint>(BRIGHT_POINTER_PAINT));
         return this;
     }
 
-    public final ClockBuilder tickMarkColor(final Color TICK_MARK_COLOR) {
-        properties.put("tickMarkColor", new SimpleObjectProperty<Color>(TICK_MARK_COLOR));
+    public final ClockBuilder darkPointerPaint(final Paint DARK_POINTER_PAINT) {
+        properties.put("darkPointerPaint", new SimpleObjectProperty<Paint>(DARK_POINTER_PAINT));
+        return this;
+    }
+
+    public final ClockBuilder brightTickMarkPaint(final Paint BRIGHT_TICK_MARK_PAINT) {
+        properties.put("brightTickMarkPaint", new SimpleObjectProperty<Paint>(BRIGHT_TICK_MARK_PAINT));
+        return this;
+    }
+
+    public final ClockBuilder darkTickMarkPaint(final Paint DARK_TICK_MARK_PAINT) {
+        properties.put("darkTickMarkPaint", new SimpleObjectProperty<Paint>(DARK_TICK_MARK_PAINT));
+        return this;
+    }
+
+    public final ClockBuilder secondPointerPaint(final Paint SECOND_POINTER_PAINT) {
+        properties.put("secondPointerPaint", new SimpleObjectProperty<Paint>(SECOND_POINTER_PAINT));
         return this;
     }
 
@@ -138,16 +153,22 @@ public class ClockBuilder {
                 CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
             } else if ("prefHeight".equals(key)) {
                 CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
-            } else if ("backgroundStyle".equals(key)) {
-                CONTROL.setBackgroundStyle(((ObjectProperty<Clock.BackgroundStyle>) properties.get(key)).get());
-            } else if ("backgroundColor".equals(key)) {
-                CONTROL.setBackgroundColor(((ObjectProperty<Color>) properties.get(key)).get());
-            } else if ("pointerColor".equals(key)) {
-                CONTROL.setPointerColor(((ObjectProperty<Color>) properties.get(key)).get());;
-            } else if ("secondPointerColor".equals(key)) {
-                CONTROL.setSecondPointerColor(((ObjectProperty<Color>) properties.get(key)).get());
-            } else if ("tickMarkColor".equals(key)) {
-                CONTROL.setTickMarkColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("theme".equals(key)) {
+                CONTROL.setTheme(((ObjectProperty<Clock.Theme>) properties.get(key)).get());
+            } else if ("brightBackgroundPaint".equals(key)) {
+                CONTROL.setBrightBackgroundPaint(((ObjectProperty<Paint>) properties.get(key)).get());
+            } else if ("darkBackgroundPaint".equals(key)) {
+                CONTROL.setDarkBackgroundPaint(((ObjectProperty<Paint>) properties.get(key)).get());
+            } else if ("brightPointerPaint".equals(key)) {
+                CONTROL.setBrightPointerPaint(((ObjectProperty<Paint>) properties.get(key)).get());;
+            } else if ("darkPointerPaint".equals(key)) {
+                CONTROL.setDarkPointerPaint(((ObjectProperty<Paint>) properties.get(key)).get());
+            } else if ("brightTickMarkPaint".equals(key)) {
+                CONTROL.setBrightTickMarkPaint(((ObjectProperty<Paint>) properties.get(key)).get());
+            } else if ("darkTickMarkPaint".equals(key)) {
+                CONTROL.setDarkTickMarkPaint(((ObjectProperty<Paint>) properties.get(key)).get());
+            } else if ("secondPointerPaint".equals(key)) {
+                CONTROL.setSecondPointerPaint(((ObjectProperty<Paint>) properties.get(key)).get());
             }
         }
         return CONTROL;

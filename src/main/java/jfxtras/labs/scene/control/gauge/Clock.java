@@ -35,6 +35,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Control;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -47,42 +48,47 @@ import java.util.Date;
  * Time: 12:44
  */
 public class Clock extends Control {
-    public enum                               BackgroundStyle {
+    public enum Theme {
         BRIGHT,
-        DARK,
-        CUSTOM
+        DARK
     }
-    public static enum                        ClockStyle {
+    public static enum ClockStyle {
         DB,
         IOS6
     }
-    private static final String               DEFAULT_STYLE_CLASS = "clock";
-    private StringProperty                    timeZone;
-    private BooleanProperty                   running;
-    private BooleanProperty                   secondPointerVisible;
-    private BooleanProperty                   autoDimEnabled;
-    private BooleanProperty                   daylightSavingTime;
-    private ObjectProperty<BackgroundStyle>   backgroundStyle;
-    private ObjectProperty<ClockStyle>        clockStyle;
-    private ObjectProperty<Color>             backgroundColor;
-    private ObjectProperty<Color> tickMarkColor;
-    private ObjectProperty<Color>             pointerColor;
-    private ObjectProperty<Color>             secondPointerColor;
+    private static final String        DEFAULT_STYLE_CLASS = "clock";
+    private StringProperty             timeZone;
+    private BooleanProperty            running;
+    private BooleanProperty            secondPointerVisible;
+    private BooleanProperty            autoDimEnabled;
+    private BooleanProperty            daylightSavingTime;
+    private ObjectProperty<Theme>      theme;
+    private ObjectProperty<ClockStyle> clockStyle;
+    private ObjectProperty<Paint>      brightBackgroundPaint;
+    private ObjectProperty<Paint>      darkBackgroundPaint;
+    private ObjectProperty<Paint>      brightTickMarkPaint;
+    private ObjectProperty<Paint>      darkTickMarkPaint;
+    private ObjectProperty<Paint>      brightPointerPaint;
+    private ObjectProperty<Paint>      darkPointerPaint;
+    private ObjectProperty<Paint>      secondPointerPaint;
 
 
     // ******************** Constructors **************************************
     public Clock() {
-        timeZone             = new SimpleStringProperty(Calendar.getInstance().getTimeZone().getDisplayName());
-        running              = new SimpleBooleanProperty(false);
-        secondPointerVisible = new SimpleBooleanProperty(true);
-        autoDimEnabled       = new SimpleBooleanProperty(true);
-        daylightSavingTime   = new SimpleBooleanProperty(Calendar.getInstance().getTimeZone().inDaylightTime(new Date()));
-        backgroundStyle      = new SimpleObjectProperty<BackgroundStyle>(BackgroundStyle.BRIGHT);
-        clockStyle           = new SimpleObjectProperty<ClockStyle>(ClockStyle.DB);
-        backgroundColor      = new SimpleObjectProperty<Color>(Color.WHITE);
-        tickMarkColor        = new SimpleObjectProperty<Color>(Color.BLACK);
-        pointerColor         = new SimpleObjectProperty<Color>(Color.BLACK);
-        secondPointerColor   = new SimpleObjectProperty<Color>(Color.rgb(237, 0, 58));
+        timeZone              = new SimpleStringProperty(Calendar.getInstance().getTimeZone().getDisplayName());
+        running               = new SimpleBooleanProperty(false);
+        secondPointerVisible  = new SimpleBooleanProperty(true);
+        autoDimEnabled        = new SimpleBooleanProperty(false);
+        daylightSavingTime    = new SimpleBooleanProperty(Calendar.getInstance().getTimeZone().inDaylightTime(new Date()));
+        theme                 = new SimpleObjectProperty<Theme>(Theme.BRIGHT);
+        clockStyle            = new SimpleObjectProperty<ClockStyle>(ClockStyle.DB);
+        brightBackgroundPaint = new SimpleObjectProperty<Paint>(null);
+        darkBackgroundPaint   = new SimpleObjectProperty<Paint>(null);
+        brightPointerPaint    = new SimpleObjectProperty<Paint>(Color.BLACK);
+        darkPointerPaint      = new SimpleObjectProperty<Paint>(Color.WHITE);
+        brightTickMarkPaint   = new SimpleObjectProperty<Paint>(Color.BLACK);
+        darkTickMarkPaint     = new SimpleObjectProperty<Paint>(Color.WHITE);
+        secondPointerPaint    = new SimpleObjectProperty<Paint>(Color.rgb(237, 0, 58));
         init();
     }
 
@@ -158,16 +164,16 @@ public class Clock extends Control {
         return daylightSavingTime;
     }
 
-    public final BackgroundStyle getBackgroundStyle() {
-        return backgroundStyle.get();
+    public final Theme getTheme() {
+        return theme.get();
     }
 
-    public final void setBackgroundStyle(final BackgroundStyle BACKGROUND_STYLE) {
-        backgroundStyle.set(BACKGROUND_STYLE);
+    public final void setTheme(final Theme Theme) {
+        theme.set(Theme);
     }
 
-    public final ObjectProperty<BackgroundStyle> backgroundStyleProperty() {
-        return backgroundStyle;
+    public final ObjectProperty<Theme> themeProperty() {
+        return theme;
     }
 
     public final ClockStyle getClockStyle() {
@@ -182,52 +188,88 @@ public class Clock extends Control {
         return clockStyle;
     }
 
-    public final Color getBackgroundColor() {
-        return backgroundColor.get();
+    public final Paint getBrightBackgroundPaint() {
+        return brightBackgroundPaint.get();
     }
 
-    public final void setBackgroundColor(final Color BACKGROUND_COLOR) {
-        backgroundColor.set(BACKGROUND_COLOR);
+    public final void setBrightBackgroundPaint(final Paint BRIGHT_BACKGROUND_PAINT) {
+        brightBackgroundPaint.set(BRIGHT_BACKGROUND_PAINT);
     }
 
-    public final ObjectProperty<Color> backgroundColorProperty() {
-        return backgroundColor;
+    public final ObjectProperty<Paint> brightBackgroundPaintProperty() {
+        return brightBackgroundPaint;
     }
 
-    public final Color getTickMarkColor() {
-        return tickMarkColor.get();
+    public final Paint getDarkBackgroundPaint() {
+        return darkBackgroundPaint.get();
     }
 
-    public final void setTickMarkColor(final Color TICK_MARK_COLOR) {
-        tickMarkColor.set(TICK_MARK_COLOR);
+    public final void setDarkBackgroundPaint(final Paint DARK_BACKGROUND_PAINT) {
+        darkBackgroundPaint.set(DARK_BACKGROUND_PAINT);
     }
 
-    public final ObjectProperty<Color> tickMarkColorProperty() {
-        return tickMarkColor;
+    public final ObjectProperty<Paint> darkBackgroundPaintProperty() {
+        return darkBackgroundPaint;
     }
 
-    public final Color getPointerColor() {
-        return pointerColor.get();
+    public final Paint getBrightTickMarkPaint() {
+        return brightTickMarkPaint.get();
     }
 
-    public final void setPointerColor(final Color POINTER_COLOR) {
-        pointerColor.set(POINTER_COLOR);
+    public final void setBrightTickMarkPaint(final Paint BRIGHT_TICK_MARK_PAINT) {
+        brightTickMarkPaint.set(BRIGHT_TICK_MARK_PAINT);
     }
 
-    public final ObjectProperty<Color> pointerColorProperty() {
-        return pointerColor;
+    public final ObjectProperty<Paint> brightTickMarkPaintProperty() {
+        return brightTickMarkPaint;
     }
 
-    public final Color getSecondPointerColor() {
-        return secondPointerColor.get();
+    public final Paint getDarkTickMarkPaint() {
+        return darkTickMarkPaint.get();
     }
 
-    public final void setSecondPointerColor(final Color SECOND_POINTER_COLOR) {
-        secondPointerColor.set(SECOND_POINTER_COLOR);
+    public final void setDarkTickMarkPaint(final Paint DARK_TICK_MARK_PAINT) {
+        darkTickMarkPaint.set(DARK_TICK_MARK_PAINT);
     }
 
-    public final ObjectProperty<Color> secondPointerColorProperty() {
-        return secondPointerColor;
+    public final ObjectProperty<Paint> darkTickMarkPaintProperty() {
+        return darkTickMarkPaint;
+    }
+
+    public final Paint getBrightPointerPaint() {
+        return brightPointerPaint.get();
+    }
+
+    public final void setBrightPointerPaint(final Paint BRIGHT_POINTER_PAINT) {
+        brightPointerPaint.set(BRIGHT_POINTER_PAINT);
+    }
+
+    public final ObjectProperty<Paint> brightPointerPaintProperty() {
+        return brightPointerPaint;
+    }
+
+    public final Paint getDarkPointerPaint() {
+        return darkPointerPaint.get();
+    }
+
+    public final void setDarkPointerPaint(final Paint DARK_POINTER_PAINT) {
+        darkPointerPaint.set(DARK_POINTER_PAINT);
+    }
+
+    public final ObjectProperty<Paint> darkPointerPaintProperty() {
+        return darkPointerPaint;
+    }
+
+    public final Paint getSecondPointerPaint() {
+        return secondPointerPaint.get();
+    }
+
+    public final void setSecondPointerPaint(final Paint SECOND_POINTER_PAINT) {
+        secondPointerPaint.set(SECOND_POINTER_PAINT);
+    }
+
+    public final ObjectProperty<Paint> secondPointerPaintProperty() {
+        return secondPointerPaint;
     }
 
 

@@ -33,7 +33,6 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.animation.TimelineBuilder;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
@@ -45,7 +44,11 @@ import javafx.scene.effect.InnerShadow;
 import javafx.scene.effect.Light;
 import javafx.scene.effect.Lighting;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.CubicCurveTo;
@@ -170,6 +173,22 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
             }
         });
 
+        if (control.getBrightBackgroundPaint() == null) {
+            control.setBrightBackgroundPaint(new RadialGradient(0, 0,
+                                                                getPrefWidth() / 2, getPrefHeight() / 2,
+                                                                getPrefWidth() / 2, false, CycleMethod.NO_CYCLE,
+                                                                new Stop(0, Color.rgb(191, 207, 197)),
+                                                                new Stop(0.7, Color.rgb(226, 239, 229)),
+                                                                new Stop(1.0, Color.rgb(199, 216, 206))));
+        }
+        if (control.getDarkBackgroundPaint() == null) {
+                    control.setDarkBackgroundPaint(new LinearGradient(0, 0,
+                                                                      0, getPrefHeight(),
+                                                                      false, CycleMethod.NO_CYCLE,
+                                                                      new Stop(0, Color.rgb(62, 59, 50)),
+                                                                      new Stop(1.0, Color.rgb(35, 37, 32))));
+        }
+
         // Bindings
         if (secondPointer.visibleProperty().isBound()) {
             secondPointer.visibleProperty().unbind();
@@ -182,13 +201,15 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         registerChangeListener(secondAngle, "SECOND");
         registerChangeListener(minuteAngle, "MINUTE");
         registerChangeListener(hourAngle, "HOUR");
-        registerChangeListener(control.backgroundStyleProperty(), "BACKGROUND_STYLE");
+        registerChangeListener(control.themeProperty(), "THEME");
         registerChangeListener(control.clockStyleProperty(), "CLOCK_STYLE");
-        registerChangeListener(control.backgroundColorProperty(), "BACKGROUND_COLOR");
-        registerChangeListener(control.pointerColorProperty(), "POINTER_COLOR");
-        registerChangeListener(control.secondPointerColorProperty(), "SECOND_POINTER_COLOR");
-        registerChangeListener(control.tickMarkColorProperty(), "TICK_MARK_COLOR");
-
+        registerChangeListener(control.brightBackgroundPaintProperty(), "BRIGHT_BACKGROUND_PAINT");
+        registerChangeListener(control.darkBackgroundPaintProperty(), "DARK_BACKGROUND_PAINT");
+        registerChangeListener(control.brightPointerPaintProperty(), "BRIGHT_POINTER_PAINT");
+        registerChangeListener(control.darkPointerPaintProperty(), "DARK_POINTER_PAINT");
+        registerChangeListener(control.brightTickMarkPaintProperty(), "BRIGHT_TICK_MARK_PAINT");
+        registerChangeListener(control.darkTickMarkPaintProperty(), "DARK_TICK_MARK_PAINT");
+        registerChangeListener(control.secondPointerPaintProperty(), "SECOND_POINTER_PAINT");
 
         setTime();
         initialized = true;
@@ -237,17 +258,23 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         } else if ("TYPE".equals(PROPERTY)) {
             checkForNight();
             paint();
-        } else if ("BACKGROUND_STYLE".equals(PROPERTY)) {
+        } else if ("THEME".equals(PROPERTY)) {
             paint();
         } else if ("CLOCK_STYLE".equals(PROPERTY)) {
             drawSecondPointer();
-        } else if ("BACKGROUND_COLOR".equals(PROPERTY)) {
+        } else if ("BRIGHT_BACKGROUND_PAINT".equals(PROPERTY)) {
             paint();
-        } else if ("POINTER_COLOR".equals(PROPERTY)) {
+        } else if ("DARK_BACKGROUND_PAINT".equals(PROPERTY)) {
             paint();
-        } else if ("SECOND_POINTER_COLOR".equals(PROPERTY)) {
+        } else if ("BRIGHT_POINTER_PAINT".equals(PROPERTY)) {
             paint();
-        } else if ("TICK_MARK_COLOR".equals(PROPERTY)) {
+        } else if ("DARK_POINTER_PAINT".equals(PROPERTY)) {
+            paint();
+        } else if ("BRIGHT_TICK_MARK_PAINT".equals(PROPERTY)) {
+            paint();
+        } else if ("DARK_TICK_MARK_PAINT".equals(PROPERTY)) {
+            paint();
+        } else if ("SECOND_POINTER_PAINT".equals(PROPERTY)) {
             paint();
         }
     }
@@ -312,8 +339,8 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
             } else {
                 isDay = false;
             }
-        } else if (control.getBackgroundStyle() != Clock.BackgroundStyle.CUSTOM) {
-            isDay = control.getBackgroundStyle() == Clock.BackgroundStyle.BRIGHT;
+        } else {
+            isDay = control.getTheme() == Clock.Theme.BRIGHT;
         }
     }
 
@@ -350,14 +377,17 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         FRAME.setEffect(SHADOW);
 
         final Circle BACKGROUND = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4921259842519685 * WIDTH);
-        if (control.getBackgroundStyle() == Clock.BackgroundStyle.CUSTOM) {
-            BACKGROUND.setFill(control.getBackgroundColor());
-        } else {
-            BACKGROUND.getStyleClass().clear();
+        if (control.isAutoDimEnabled()) {
             if (isDay) {
-                BACKGROUND.getStyleClass().add("clock-bright-background-fill");
+                BACKGROUND.setFill(control.getBrightBackgroundPaint());
             } else {
-                BACKGROUND.getStyleClass().add("clock-dark-background-fill");
+                BACKGROUND.setFill(control.getDarkBackgroundPaint());
+            }
+        } else {
+            if (control.getTheme() == Clock.Theme.BRIGHT) {
+                BACKGROUND.setFill(control.getBrightBackgroundPaint());
+            } else {
+                BACKGROUND.setFill(control.getDarkBackgroundPaint());
             }
         }
         BACKGROUND.setStroke(null);
@@ -425,13 +455,17 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
                         break;
                 }
             }
-            if (control.getBackgroundStyle() == Clock.BackgroundStyle.CUSTOM) {
-                TICK.setFill(control.getTickMarkColor());
-            } else {
+            if (control.isAutoDimEnabled()) {
                 if (isDay) {
-                    TICK.getStyleClass().add("clock-bright-foreground-fill");
+                    TICK.setFill(control.getBrightTickMarkPaint());
                 } else {
-                    TICK.getStyleClass().add("clock-dark-foreground-fill");
+                    TICK.setFill(control.getDarkTickMarkPaint());
+                }
+            } else {
+                if (control.getTheme() == Clock.Theme.BRIGHT) {
+                    TICK.setFill(control.getBrightTickMarkPaint());
+                } else {
+                    TICK.setFill(control.getDarkTickMarkPaint());
                 }
             }
             TICK.setStroke(null);
@@ -468,17 +502,20 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
                                        0.03937007874015748 * WIDTH, 0.47244094488188976 * HEIGHT);
                 break;
         }
-
-        if (control.getBackgroundStyle() == Clock.BackgroundStyle.CUSTOM) {
-            MINUTE.setFill(control.getPointerColor());
-        } else {
-            MINUTE.getStyleClass().clear();
+        if (control.isAutoDimEnabled()) {
             if (isDay) {
-                MINUTE.getStyleClass().add("clock-bright-foreground-fill");
+                MINUTE.setFill(control.getBrightPointerPaint());
             } else {
-                MINUTE.getStyleClass().add("clock-dark-foreground-fill");
+                MINUTE.setFill(control.getDarkPointerPaint());
+            }
+        } else {
+            if (control.getTheme() == Clock.Theme.BRIGHT) {
+                MINUTE.setFill(control.getBrightPointerPaint());
+            } else {
+                MINUTE.setFill(control.getDarkPointerPaint());
             }
         }
+
         MINUTE.setStroke(null);
 
         minutePointer.setRotate(minuteAngle.get());
@@ -508,15 +545,17 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
                                      0.05511811023622047 * WIDTH, 0.2992125984251969 * HEIGHT);
                 break;
         }
-
-        if (control.getBackgroundStyle() == Clock.BackgroundStyle.CUSTOM) {
-            HOUR.setFill(control.getPointerColor());
-        } else {
-            HOUR.getStyleClass().clear();
+        if (control.isAutoDimEnabled()) {
             if (isDay) {
-                HOUR.getStyleClass().add("clock-bright-foreground-fill");
+                HOUR.setFill(control.getBrightPointerPaint());
             } else {
-                HOUR.getStyleClass().add("clock-dark-foreground-fill");
+                HOUR.setFill(control.getDarkPointerPaint());
+            }
+        } else {
+            if (control.getTheme() == Clock.Theme.BRIGHT) {
+                HOUR.setFill(control.getBrightPointerPaint());
+            } else {
+                HOUR.setFill(control.getDarkPointerPaint());
             }
         }
         HOUR.setStroke(null);
@@ -569,12 +608,7 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
                 second = (Path) Path.subtract(second, new Circle(SIZE * 0.5, SIZE * 0.190909091, SIZE * 0.0363636364));
                 break;
         }
-        //second.getStyleClass().add("clock-second-pointer-fill"); // somehow doesn't work with elements created by subtract method
-        if (control.getBackgroundStyle() == Clock.BackgroundStyle.CUSTOM) {
-            second.setFill(control.getSecondPointerColor());
-        } else {
-            second.setFill(Color.rgb(237, 0, 58));
-        }
+        second.setFill(control.getSecondPointerPaint());
         second.setStroke(null);
 
         secondPointer.getChildren().add(second);
@@ -584,10 +618,18 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         if (control.getClockStyle() == Clock.ClockStyle.DB) {
             CENTER_KNOB = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.051181102362204724 * WIDTH);
             CENTER_KNOB.getStyleClass().clear();
-            if (isDay) {
-                CENTER_KNOB.getStyleClass().add("clock-bright-foreground-fill");
+            if (control.isAutoDimEnabled()) {
+                if (isDay) {
+                    CENTER_KNOB.setFill(control.getBrightPointerPaint());
+                } else {
+                    CENTER_KNOB.setFill(control.getDarkPointerPaint());
+                }
             } else {
-                CENTER_KNOB.getStyleClass().add("clock-dark-foreground-fill");
+                if (Clock.Theme.BRIGHT == control.getTheme()) {
+                    CENTER_KNOB.setFill(control.getBrightPointerPaint());
+                } else {
+                    CENTER_KNOB.setFill(control.getDarkPointerPaint());
+                }
             }
             CENTER_KNOB.setStroke(null);
         } else {
