@@ -11,7 +11,8 @@ public class NodeUtil
 	 */
 	static public double screenX(Node node)
 	{
-		return node.getLayoutX() + node.getScene().getX() + node.getScene().getWindow().getX();
+		return node.localToScene(node.getBoundsInLocal()).getMinX() + node.getScene().getX() + node.getScene().getWindow().getX();
+
 	}
 	
 	/**
@@ -21,6 +22,6 @@ public class NodeUtil
 	 */
 	static public double screenY(Node node)
 	{
-		return node.getLayoutY() + node.getScene().getY() + node.getScene().getWindow().getY();
+		return node.localToScene(node.getBoundsInLocal()).getMinY() + node.getScene().getY() + node.getScene().getWindow().getY();
 	}
 }

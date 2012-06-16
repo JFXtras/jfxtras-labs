@@ -73,6 +73,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 	{
 		super(control, new CalendarTextFieldBehavior(control));
 		construct();
+		// show where the skin is loaded from (for debugging in Ensemble) System.out.println("!!! " + this.getClass().getProtectionDomain().getCodeSource().getLocation());
 	}
 
 	/*

@@ -28,7 +28,6 @@ import java.awt.AWTException;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.control.Spinner;
@@ -50,7 +49,6 @@ public class SpinnerTest1App  extends Application {
 				;
         
         box.getChildren().add(lSpinner);
-        box.getChildren().add(new Button("dummy"));
 
         stage.setScene(scene);
 
