@@ -86,6 +86,11 @@ public class LcdBuilder {
         return this;
     }
 
+    public final LcdBuilder backgroundVisible(final boolean BACKGROUND_VISIBLE) {
+        properties.put("backgroundVisible", new SimpleBooleanProperty(BACKGROUND_VISIBLE));
+        return this;
+    }
+
     public final LcdBuilder minMeasuredValueVisible(final boolean MIN_MEASURED_VALUE_VISIBLE) {
         properties.put("minMeasuredValueVisible", new SimpleBooleanProperty(MIN_MEASURED_VALUE_VISIBLE));
         return this;
@@ -203,6 +208,8 @@ public class LcdBuilder {
                 CONTROL.setLcdThreshold(((DoubleProperty) properties.get(key)).get());
             } else if("decimals".equals(key)) {
                 CONTROL.setLcdDecimals(((IntegerProperty) properties.get(key)).get());
+            } else if ("backgroundVisible".equals(key)) {
+                CONTROL.setBackgroundVisible(((BooleanProperty) properties.get(key)).get());
             } else if("minMeasuredValueVisible".equals(key)) {
                 CONTROL.setLcdMinMeasuredValueVisible(((BooleanProperty) properties.get(key)).get());
             } else if("minMeasuredValueDecimals".equals(key)) {

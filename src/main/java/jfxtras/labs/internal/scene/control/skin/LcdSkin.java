@@ -233,6 +233,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
 
         addBindings();
         addListeners();
+        registerChangeListener(control.backgroundVisibleProperty(), "BACKGROUND_VISIBILITY");
 
         currentLcdValue.set(control.getLcdValue());
 
@@ -472,6 +473,8 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         } else if ("LCD_VALUE_FONT".equals(PROPERTY)) {
             drawLcd();
             drawLcdContent();
+        } else if ("BACKGROUND_VISIBILITY".equals(PROPERTY)) {
+            paint();
         }
     }
 
@@ -782,6 +785,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
                                                         new Stop(1.0, Color.color(0.86, 0.86, 0.86, 1)));
         LCD_FRAME.setFill(LCD_FRAME_FILL);
         LCD_FRAME.setStroke(null);
+        LCD_FRAME.setVisible(control.isBackgroundVisible());
 
         final Rectangle LCD_MAIN = new Rectangle(1.0, 1.0, WIDTH - 2.0, HEIGHT - 2.0);
         final double LCD_MAIN_CORNER_RADIUS = LCD_FRAME.getArcWidth() - 1;
@@ -790,6 +794,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
 
         LCD_MAIN.setStyle(control.getLcdDesign().CSS);
         LCD_MAIN.getStyleClass().add("lcd-main");
+        LCD_MAIN.setVisible(control.isBackgroundVisible());
 
         final InnerShadow INNER_GLOW = new InnerShadow();
         INNER_GLOW.setWidth(0.25 * SIZE);
