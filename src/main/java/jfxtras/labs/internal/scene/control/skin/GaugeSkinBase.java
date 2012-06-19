@@ -197,7 +197,6 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         //final Shape MAIN_FRAME = Shape.subtract(new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4953271028037383 * WIDTH), SUBTRACT);
         final Shape MAIN_FRAME = new Circle(CENTER.getX(), CENTER.getY(), 0.4953271028037383 * WIDTH);
         MAIN_FRAME.setStroke(null);
-        final ImageView IMAGE_VIEW;
         switch (control.getFrameDesign()) {
             case GLOSSY_METAL:
                 MAIN_FRAME.setFill(new RadialGradient(0, 0, CENTER.getX(), CENTER.getY(), 0.5 * WIDTH,
@@ -287,8 +286,6 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                 FRAME.getChildren().addAll(MAIN_FRAME, DARK_GLOSSY2, DARK_GLOSSY3, DARK_GLOSSY4);
                 break;
             default:
-                IMAGE_VIEW = new ImageView();
-                IMAGE_VIEW.setVisible(false);
                 MAIN_FRAME.getStyleClass().add(control.getFrameDesign().CSS);
                 MAIN_FRAME.setStroke(null);
                 FRAME.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
@@ -311,17 +308,6 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         INNER_SHADOW.setHeight(0.2 * SIZE);
         INNER_SHADOW.setColor(Color.color(0, 0, 0, 1.0));
         INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
-
-        /*// needed for carbon and punched sheet look
-        final LinearGradient HL_GRADIENT = new LinearGradient(0, 0, SIZE, 0, false, CycleMethod.NO_CYCLE,
-            new Stop(0.0, Color.color(0.0, 0.0, 0.0, 0.6)),
-            new Stop(0.4, Color.color(0.0, 0.0, 0.0, 0.0)),
-            new Stop(0.6, Color.color(0.0, 0.0, 0.0, 0.0)),
-            new Stop(1.0, Color.color(0.0, 0.0, 0.0, 0.6)));
-
-            final Shape CLIP = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.4158878504672897 * SIZE);
-            final ImageView IMAGE_VIEW;
-        */
 
         final Shape BACKGROUND_SHAPE = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.4158878504672897 * SIZE);
         BACKGROUND_SHAPE.setStroke(null);
