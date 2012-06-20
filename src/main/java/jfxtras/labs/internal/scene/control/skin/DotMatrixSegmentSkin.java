@@ -72,7 +72,7 @@ public class DotMatrixSegmentSkin extends SkinBase<DotMatrixSegment, DotMatrixSe
 
     private void init() {
         if (control.getPrefWidth() < 0 | control.getPrefHeight() < 0) {
-            control.setPrefSize(41, 57);
+            control.setPrefSize(40, 56);
         }
 
         control.prefWidthProperty().addListener(new ChangeListener<Number>() {
@@ -144,7 +144,7 @@ public class DotMatrixSegmentSkin extends SkinBase<DotMatrixSegment, DotMatrixSe
     }
 
     @Override protected double computePrefWidth(final double PREF_WIDTH) {
-        double prefWidth = 41;
+        double prefWidth = 40;
         if (PREF_WIDTH != -1) {
             prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
         }
@@ -152,7 +152,7 @@ public class DotMatrixSegmentSkin extends SkinBase<DotMatrixSegment, DotMatrixSe
     }
 
     @Override protected double computePrefHeight(final double PREF_HEIGHT) {
-        double prefHeight = 57;
+        double prefHeight = 56;
         if (PREF_HEIGHT != -1) {
             prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
         }
