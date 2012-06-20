@@ -42,9 +42,7 @@ import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import jfxtras.labs.internal.scene.control.behavior.SevenSegmentBehavior;
-import jfxtras.labs.internal.scene.control.behavior.SixteenSegmentBehavior;
 import jfxtras.labs.scene.control.gauge.SevenSegment;
-import jfxtras.labs.scene.control.gauge.SixteenSegment;
 import jfxtras.labs.scene.control.gauge.Util;
 
 import java.util.HashMap;
@@ -215,9 +213,9 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
             }
         }
         if (control.isDotOn()) {
-            segmentMap.get(SixteenSegment.Segment.DOT).getStyleClass().clear();
-            segmentMap.get(SixteenSegment.Segment.DOT).getStyleClass().add(ON_STYLE);
-            segmentMap.get(SixteenSegment.Segment.DOT).setEffect(INNER_SHADOW);
+            segmentMap.get(SevenSegment.Segment.DOT).getStyleClass().clear();
+            segmentMap.get(SevenSegment.Segment.DOT).getStyleClass().add(ON_STYLE);
+            segmentMap.get(SevenSegment.Segment.DOT).setEffect(INNER_SHADOW);
         }
     }
 
