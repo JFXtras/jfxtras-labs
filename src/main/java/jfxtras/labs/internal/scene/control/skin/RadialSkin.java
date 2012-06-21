@@ -450,14 +450,12 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
 
         control.prefWidthProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                control.setPrefHeight(newValue.doubleValue());
                 isDirty = true;
             }
         });
 
         control.prefHeightProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                control.setPrefWidth(newValue.doubleValue());
                 isDirty = true;
             }
         });

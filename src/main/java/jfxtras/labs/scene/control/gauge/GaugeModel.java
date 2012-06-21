@@ -460,9 +460,10 @@ public class GaugeModel {
     }
 
     public final List<Section> getSections() {
-        final List<Section> SECTIONS_COPY = new ArrayList<Section>(sections.size());
-        SECTIONS_COPY.addAll(sections);
-        return SECTIONS_COPY;
+        //final List<Section> SECTIONS_COPY = new ArrayList<Section>(sections.size());
+        //SECTIONS_COPY.addAll(sections);
+        //return SECTIONS_COPY;
+        return sections;
     }
 
     public final void setSections(final Section... SECTION_ARRAY) {
@@ -502,9 +503,10 @@ public class GaugeModel {
     }
 
     public final List<Section> getAreas() {
-        final List<Section> AREAS_COPY = new ArrayList<Section>(areas.size());
-        AREAS_COPY.addAll(areas);
-        return AREAS_COPY;
+        //final List<Section> AREAS_COPY = new ArrayList<Section>(areas.size());
+        //AREAS_COPY.addAll(areas);
+        //return AREAS_COPY;
+        return areas;
     }
 
     public final void setAreas(final Section... AREA_ARRAY) {
@@ -544,9 +546,10 @@ public class GaugeModel {
     }
 
     public final List<Section> getTickMarkSections() {
-        final List<Section> TICK_MARK_SECTIONS_COPY = new ArrayList<Section>(tickMarkSections.size());
-        TICK_MARK_SECTIONS_COPY.addAll(tickMarkSections);
-        return TICK_MARK_SECTIONS_COPY;
+        //final List<Section> TICK_MARK_SECTIONS_COPY = new ArrayList<Section>(tickMarkSections.size());
+        //TICK_MARK_SECTIONS_COPY.addAll(tickMarkSections);
+        //return TICK_MARK_SECTIONS_COPY;
+        return tickMarkSections;
     }
 
     public final void setTickMarkSections(final Section... SECTIONS_ARRAY) {
@@ -586,9 +589,10 @@ public class GaugeModel {
     }
 
     public final List<Marker> getMarkers() {
-        final List<Marker> INDICATORS_COPY = new ArrayList<Marker>(markers.size());
-        INDICATORS_COPY.addAll(markers);
-        return INDICATORS_COPY;
+        //final List<Marker> INDICATORS_COPY = new ArrayList<Marker>(markers.size());
+        //INDICATORS_COPY.addAll(markers);
+        //return INDICATORS_COPY;
+        return markers;
     }
 
     public final void setMarkers(final Marker... MARKER_ARRAY) {

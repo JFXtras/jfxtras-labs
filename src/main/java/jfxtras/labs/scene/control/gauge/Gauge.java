@@ -271,19 +271,19 @@ public abstract class Gauge extends Control {
 
 
     // ******************** Constructors **************************************
-    public Gauge() {
+    protected Gauge() {
         this(new GaugeModel());
     }
 
-    public Gauge(final GaugeModel GAUGE_MODEL) {
+    protected Gauge(final GaugeModel GAUGE_MODEL) {
         this(GAUGE_MODEL, new StyleModel());
     }
 
-    public Gauge(final StyleModel STYLE_MODEL) {
+    protected Gauge(final StyleModel STYLE_MODEL) {
         this(new GaugeModel(), STYLE_MODEL);
     }
 
-    public Gauge(final GaugeModel GAUGE_MODEL, final StyleModel STYLE_MODEL) {
+    protected Gauge(final GaugeModel GAUGE_MODEL, final StyleModel STYLE_MODEL) {
         gaugeModelProperty = new SimpleObjectProperty<GaugeModel>(GAUGE_MODEL);
         styleModelProperty = new SimpleObjectProperty<StyleModel>(STYLE_MODEL);
         gaugeModel         = gaugeModelProperty.get();

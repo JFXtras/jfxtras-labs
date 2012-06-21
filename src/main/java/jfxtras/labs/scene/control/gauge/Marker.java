@@ -27,7 +27,6 @@
 
 package jfxtras.labs.scene.control.gauge;
 
-import jfxtras.labs.scene.control.gauge.MarkerEvent;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
@@ -47,13 +46,16 @@ import javafx.scene.paint.Color;
  * Time: 10:04
  */
 public class Marker {
-    private DoubleProperty        value;
-    private ObjectProperty<Color> color;
-    private StringProperty        text;
-    private BooleanProperty       visible;
+    private DoubleProperty        value   = new SimpleDoubleProperty();
+    private ObjectProperty<Color> color   = new SimpleObjectProperty<Color>(Color.TRANSPARENT);
+    private StringProperty        text    = new SimpleStringProperty("");
+    private BooleanProperty       visible = new SimpleBooleanProperty();
 
 
     // ******************** Constructors **************************************
+    public Marker() {
+    }
+
     public Marker(final double VALUE, final Color COLOR) {
         this(VALUE, COLOR, Double.toString(VALUE));
     }
@@ -63,10 +65,10 @@ public class Marker {
     }
 
     public Marker(final double VALUE, final Color COLOR, final String TEXT, final boolean VISIBLE) {
-        value   = new SimpleDoubleProperty(VALUE);
-        color   = new SimpleObjectProperty<Color>(COLOR);
-        text    = new SimpleStringProperty(TEXT);
-        visible = new SimpleBooleanProperty(VISIBLE);
+        setValue(VALUE);
+        setColor(COLOR);
+        setText(TEXT);
+        setVisible(VISIBLE);
     }
 
 

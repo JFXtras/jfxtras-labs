@@ -298,35 +298,43 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 Lcd lcd = new Lcd(gaugeModel, styleModel);
                 if (prefWidth != -1) { lcd.setPrefWidth(prefWidth); }
                 if (prefHeight != -1) { lcd.setPrefHeight(prefHeight);}
+                super.applyTo(lcd);
                 return lcd;
             case LINEAR:
                 Linear linear = new Linear(gaugeModel, styleModel);
                 if (prefWidth != -1) { linear.setPrefWidth(prefWidth); }
                 if (prefHeight != -1) { linear.setPrefHeight(prefHeight);}
+                super.applyTo(linear);
                 return linear;
             case RADIAL_HALF_N:
                 RadialHalfN radialHalfN = new RadialHalfN(gaugeModel, styleModel);
                 radialHalfN.setPrefSize(SIZE, SIZE);
+                super.applyTo(radialHalfN);
                 return radialHalfN;
             case RADIAL_HALF_S:
                 RadialHalfS radialHalfS = new RadialHalfS(gaugeModel, styleModel);
                 radialHalfS.setPrefSize(SIZE, SIZE);
+                super.applyTo(radialHalfS);
                 return radialHalfS;
             case RADIAL_QUARTER_N:
                 RadialQuarterN radialQuarterN = new RadialQuarterN(gaugeModel, styleModel);
                 radialQuarterN.setPrefSize(SIZE, SIZE);
+                super.applyTo(radialQuarterN);
                 return radialQuarterN;
             case RADIAL_QUARTER_E:
                 RadialQuarterE radialQuarterE = new RadialQuarterE(gaugeModel, styleModel);
                 radialQuarterE.setPrefSize(SIZE, SIZE);
+                super.applyTo(radialQuarterE);
                 return radialQuarterE;
             case RADIAL_QUARTER_S:
                 RadialQuarterS radialQuarterS = new RadialQuarterS(gaugeModel, styleModel);
                 radialQuarterS.setPrefSize(SIZE, SIZE);
+                super.applyTo(radialQuarterS);
                 return radialQuarterS;
             case RADIAL_QUARTER_W:
                 RadialQuarterW radialQuarterW = new RadialQuarterW(gaugeModel, styleModel);
                 radialQuarterW.setPrefSize(SIZE, SIZE);
+                super.applyTo(radialQuarterW);
                 return radialQuarterW;
             case RADIAL:
             default:
@@ -338,6 +346,7 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                     radial.setRadialRange(radialRange);
                 }
                 radial.setPrefSize(SIZE, SIZE);
+                super.applyTo(radial);
                 return radial;
         }
     }
