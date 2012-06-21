@@ -36,7 +36,9 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
+import javafx.util.Builder;
 
 import java.util.HashMap;
 
@@ -47,9 +49,15 @@ import java.util.HashMap;
  * Date: 09.03.12
  * Time: 16:26
  */
-public class NixieTubeBuilder {
+public class NixieTubeBuilder<B extends NixieTubeBuilder<B>> extends ControlBuilder<B> implements Builder<NixieTube> {
     private HashMap<String, Property> properties = new HashMap<String, Property>();
 
+
+    // ******************** Constructors **************************************
+    protected NixieTubeBuilder() {};
+
+
+    // ******************** Methods *******************************************
     public static final NixieTubeBuilder create() {
         return new NixieTubeBuilder();
     }
@@ -69,17 +77,17 @@ public class NixieTubeBuilder {
         return this;
     }
 
-    public final NixieTubeBuilder prefWidth(final double PREF_WIDTH) {
+    @Override public final B prefWidth(final double PREF_WIDTH) {
         properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-        return this;
+        return (B)this;
     }
 
-    public final NixieTubeBuilder prefHeight(final double PREF_HEIGHT) {
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
         properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-        return this;
+        return (B)this;
     }
 
-    public final NixieTube build() {
+    @Override public final NixieTube build() {
         final NixieTube CONTROL = new NixieTube();
         for (String key : properties.keySet()) {
             if ("glowColor".equals(key)) {

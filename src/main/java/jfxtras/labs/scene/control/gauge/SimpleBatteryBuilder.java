@@ -34,7 +34,9 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Stop;
+import javafx.util.Builder;
 
 import java.util.HashMap;
 
@@ -45,9 +47,15 @@ import java.util.HashMap;
  * Date: 30.03.12
  * Time: 15:13
  */
-public class SimpleBatteryBuilder {
+public class SimpleBatteryBuilder<B extends SimpleBatteryBuilder<B>> extends ControlBuilder<B> implements Builder<SimpleBattery> {
     private HashMap<String, Property> properties = new HashMap<String, Property>();
 
+
+    // ******************** Constructors **************************************
+    protected SimpleBatteryBuilder() {};
+
+
+    // ******************** Methods *******************************************
     public static final SimpleBatteryBuilder create() {
         return new SimpleBatteryBuilder();
     }
@@ -72,17 +80,17 @@ public class SimpleBatteryBuilder {
         return this;
     }
 
-    public final SimpleBatteryBuilder prefWidth(final double PREF_WIDTH) {
+    @Override public final B prefWidth(final double PREF_WIDTH) {
         properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-        return this;
+        return (B)this;
     }
 
-    public final SimpleBatteryBuilder prefHeight(final double PREF_HEIGHT) {
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
         properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-        return this;
+        return (B)this;
     }
 
-    public final SimpleBattery build() {
+    @Override public final SimpleBattery build() {
         final SimpleBattery CONTROL = new SimpleBattery();
         for (String key : properties.keySet()) {
             if ("charging".equals(key)) {

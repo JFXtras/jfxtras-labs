@@ -38,7 +38,9 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
+import javafx.util.Builder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +52,7 @@ import java.util.List;
  * Date: 05.03.12
  * Time: 10:03
  */
-public class GaugeBuilder<T extends Gauge> {
+public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> implements Builder<Gauge> {
     // ******************** Variable definitions ******************************
     private HashMap<String, Property> gaugeProperties = new HashMap<String, Property>();
     private HashMap<String, Property> styleProperties = new HashMap<String, Property>();
@@ -70,8 +72,12 @@ public class GaugeBuilder<T extends Gauge> {
     }
 
 
+    // ******************** Constructors **************************************
+    protected GaugeBuilder() {};
+
+
     // ******************** Methods *******************************************
-    public static final GaugeBuilder create() {
+    public static final GaugeBuilder<?> create() {
         return new GaugeBuilder();
     }
 
@@ -338,14 +344,14 @@ public class GaugeBuilder<T extends Gauge> {
 
 
     // ******************** GaugeModel related ********************************
-    public final GaugeBuilder gaugeType(final GaugeType GAUGE_TYPE) {
+    public final B gaugeType(final GaugeType GAUGE_TYPE) {
         gaugeProperties.put("gaugeType", new SimpleObjectProperty<GaugeType>(GAUGE_TYPE));
-        return this;
+        return (B)this;
     }
 
-    public final GaugeBuilder value(final double VALUE) {
+    public final B value(final double VALUE) {
         gaugeProperties.put("value", new SimpleDoubleProperty(VALUE));
-        return this;
+        return (B)this;
     }
 
     public final GaugeBuilder valueAnimationEnabled(final boolean VALUE_ANIMATION_ENABLED) {
@@ -478,14 +484,14 @@ public class GaugeBuilder<T extends Gauge> {
         return this;
     }
 
-    public final GaugeBuilder prefWidth(final double WIDTH) {
+    @Override public final B prefWidth(final double WIDTH) {
         gaugeProperties.put("prefWidth", new SimpleDoubleProperty(WIDTH));
-        return this;
+        return (B)this;
     }
 
-    public final GaugeBuilder prefHeight(final double HEIGHT) {
+    @Override public final B prefHeight(final double HEIGHT) {
         gaugeProperties.put("prefHeight", new SimpleDoubleProperty(HEIGHT));
-        return this;
+        return (B)this;
     }
 
 

@@ -34,6 +34,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.ControlBuilder;
+import javafx.util.Builder;
 
 import java.util.HashMap;
 
@@ -44,9 +46,15 @@ import java.util.HashMap;
  * Date: 15.05.12
  * Time: 08:59
  */
-public class XYControlBuilder {
+public class XYControlBuilder<B extends XYControlBuilder<B>> extends ControlBuilder<B> implements Builder<XYControl> {
     private HashMap<String, Property> properties = new HashMap<String, Property>();
 
+
+    // ******************** Constructors **************************************
+    protected XYControlBuilder() {};
+
+
+    // ******************** Methods *******************************************
     public static final XYControlBuilder create() {
         return new XYControlBuilder();
     }
@@ -81,17 +89,17 @@ public class XYControlBuilder {
         return this;
     }
 
-    public final XYControlBuilder prefWidth(final double PREF_WIDTH) {
+    @Override public final B prefWidth(final double PREF_WIDTH) {
         properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-        return this;
+        return (B)this;
     }
 
-    public final XYControlBuilder prefHeight(final double PREF_HEIGHT) {
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
         properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-        return this;
+        return (B)this;
     }
 
-    public final XYControl build() {
+    @Override public final XYControl build() {
         final XYControl CONTROL = new XYControl();
         for (String key : properties.keySet()) {
             if ("xValue".equals(key)) {

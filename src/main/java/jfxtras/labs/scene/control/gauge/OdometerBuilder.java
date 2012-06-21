@@ -36,7 +36,9 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
+import javafx.util.Builder;
 
 import java.util.HashMap;
 
@@ -47,9 +49,15 @@ import java.util.HashMap;
  * Date: 12.04.12
  * Time: 15:38
  */
-public class OdometerBuilder {
+public class OdometerBuilder<B extends OdometerBuilder<B>> extends ControlBuilder<B> implements Builder<Odometer> {
     private HashMap<String, Property> properties = new HashMap<String, Property>();
 
+
+    // ******************** Constructors **************************************
+    protected OdometerBuilder() {};
+
+
+    // ******************** Methods *******************************************
     public static final OdometerBuilder create() {
         return new OdometerBuilder();
     }
@@ -89,17 +97,17 @@ public class OdometerBuilder {
         return this;
     }
 
-    public final OdometerBuilder prefWidth(final double PREF_WIDTH) {
+    @Override public final B prefWidth(final double PREF_WIDTH) {
         properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-        return this;
+        return (B)this;
     }
 
-    public final OdometerBuilder prefHeight(final double PREF_HEIGHT) {
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
         properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-        return this;
+        return (B)this;
     }
 
-    public final Odometer build() {
+    @Override public final Odometer build() {
         final Odometer CONTROL = new Odometer();
         for (String key : properties.keySet()) {
             if ("rotationPreset".equals(key)) {

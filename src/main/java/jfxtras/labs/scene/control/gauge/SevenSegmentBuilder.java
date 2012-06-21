@@ -38,7 +38,9 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
+import javafx.util.Builder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -51,9 +53,15 @@ import java.util.Map;
  * Date: 23.04.12
  * Time: 08:40
  */
-public class SevenSegmentBuilder {
+public class SevenSegmentBuilder<B extends SevenSegmentBuilder<B>> extends ControlBuilder<B> implements Builder<SevenSegment> {
     private HashMap<String, Property> properties = new HashMap<String, Property>();
 
+
+    // ******************** Constructors **************************************
+    protected SevenSegmentBuilder() {};
+
+
+    // ******************** Methods *******************************************
     public static final SevenSegmentBuilder create() {
         return new SevenSegmentBuilder();
     }
@@ -93,17 +101,17 @@ public class SevenSegmentBuilder {
         return this;
     }
 
-    public final SevenSegmentBuilder prefWidth(final double PREF_WIDTH) {
+    @Override public final B prefWidth(final double PREF_WIDTH) {
         properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-        return this;
+        return (B)this;
     }
 
-    public final SevenSegmentBuilder prefHeight(final double PREF_HEIGHT) {
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
         properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-        return this;
+        return (B)this;
     }
 
-    public final SevenSegment build() {
+    @Override public final SevenSegment build() {
         final SevenSegment CONTROL = new SevenSegment();
         for (String key : properties.keySet()) {
             if ("character".equals(key)) {

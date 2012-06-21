@@ -32,6 +32,8 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.control.ControlBuilder;
+import javafx.util.Builder;
 
 import java.util.HashMap;
 
@@ -42,9 +44,15 @@ import java.util.HashMap;
  * Date: 09.03.12
  * Time: 16:12
  */
-public class TrafficLightBuilder {
+public class TrafficLightBuilder<B extends TrafficLightBuilder<B>> extends ControlBuilder<B> implements Builder<TrafficLight> {
     private HashMap<String, Property> properties = new HashMap<String, Property>();
 
+
+    // ******************** Constructors **************************************
+    protected TrafficLightBuilder() {};
+
+
+    // ******************** Methods *******************************************
     public static final TrafficLightBuilder create() {
         return new TrafficLightBuilder();
     }
@@ -84,17 +92,17 @@ public class TrafficLightBuilder {
         return this;
     }
 
-    public final TrafficLightBuilder prefWidth(final double PREF_WIDTH) {
+    @Override public final B prefWidth(final double PREF_WIDTH) {
         properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-        return this;
+        return (B)this;
     }
 
-    public final TrafficLightBuilder prefHeight(final double PREF_HEIGHT) {
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
         properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-        return this;
+        return (B)this;
     }
 
-    public final TrafficLight build() {
+    @Override public final TrafficLight build() {
         final TrafficLight CONTROL = new TrafficLight();
         for (String key : properties.keySet()) {
             if ("redOn".equals(key)) {

@@ -34,7 +34,9 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
+import javafx.util.Builder;
 
 import java.util.HashMap;
 
@@ -45,9 +47,15 @@ import java.util.HashMap;
  * Date: 09.03.12
  * Time: 15:48
  */
-public class LedBuilder {
+public class LedBuilder<B extends LedBuilder<B>> extends ControlBuilder<B> implements Builder<Led> {
     private HashMap<String, Property> properties = new HashMap<String, Property>();
 
+
+    // ******************** Constructors **************************************
+    protected LedBuilder() {};
+
+
+    // ******************** Methods *******************************************
     public static final LedBuilder create() {
         return new LedBuilder();
     }
@@ -72,17 +80,17 @@ public class LedBuilder {
         return this;
     }
 
-    public final LedBuilder prefWidth(final double PREF_WIDTH) {
+    @Override public final B prefWidth(final double PREF_WIDTH) {
         properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-        return this;
+        return (B)this;
     }
 
-    public final LedBuilder prefHeight(final double PREF_HEIGHT) {
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
         properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-        return this;
+        return (B)this;
     }
 
-    public final Led build() {
+    @Override public final Led build() {
         final Led CONTROL = new Led();
         for (String key : properties.keySet()) {
             if ("color".equals(key)) {

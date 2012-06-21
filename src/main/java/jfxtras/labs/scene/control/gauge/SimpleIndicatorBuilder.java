@@ -34,7 +34,9 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
+import javafx.util.Builder;
 
 import java.util.HashMap;
 
@@ -45,9 +47,15 @@ import java.util.HashMap;
  * Date: 09.03.12
  * Time: 16:04
  */
-public class SimpleIndicatorBuilder {
+public class SimpleIndicatorBuilder<B extends SimpleIndicatorBuilder<B>> extends ControlBuilder<B> implements Builder<SimpleIndicator> {
     private HashMap<String, Property> properties = new HashMap<String, Property>();
 
+
+    // ******************** Constructors **************************************
+    protected SimpleIndicatorBuilder() {};
+
+
+    // ******************** Methods *******************************************
     public static final SimpleIndicatorBuilder create() {
         return new SimpleIndicatorBuilder();
     }
@@ -67,17 +75,17 @@ public class SimpleIndicatorBuilder {
         return this;
     }
 
-    public final SimpleIndicatorBuilder prefWidth(final double PREF_WIDTH) {
+    @Override public final B prefWidth(final double PREF_WIDTH) {
         properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-        return this;
+        return (B)this;
     }
 
-    public final SimpleIndicatorBuilder prefHeight(final double PREF_HEIGHT) {
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
         properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-        return this;
+        return (B)this;
     }
 
-    public final SimpleIndicator build() {
+    @Override public final SimpleIndicator build() {
         final SimpleIndicator CONTROL = new SimpleIndicator();
         for (String key : properties.keySet()) {
             if ("innerColor".equals(key)) {

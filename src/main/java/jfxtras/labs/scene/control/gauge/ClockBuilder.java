@@ -36,7 +36,9 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Paint;
+import javafx.util.Builder;
 
 import java.util.HashMap;
 
@@ -47,9 +49,15 @@ import java.util.HashMap;
  * Date: 12.03.12
  * Time: 19:14
  */
-public class ClockBuilder {
+public class ClockBuilder<B extends ClockBuilder<B>> extends ControlBuilder<B> implements Builder<Clock> {
     private HashMap<String, Property> properties = new HashMap<String, Property>();
 
+
+    // ******************** Constructors **************************************
+    protected ClockBuilder() {};
+
+
+    // ******************** Methods *******************************************
     public static final ClockBuilder create() {
         return new ClockBuilder();
     }
@@ -124,17 +132,17 @@ public class ClockBuilder {
         return this;
     }
 
-    public final ClockBuilder prefWidth(final double PREF_WIDTH) {
+    @Override public final B prefWidth(final double PREF_WIDTH) {
         properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-        return this;
+        return (B)this;
     }
 
-    public final ClockBuilder prefHeight(final double PREF_HEIGHT) {
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
         properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-        return this;
+        return (B)this;
     }
 
-    public final Clock build() {
+    @Override public final Clock build() {
         final Clock CONTROL = new Clock();
         for (String key : properties.keySet()) {
             if ("timeZone".equals(key)) {

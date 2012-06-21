@@ -27,7 +27,6 @@
 
 package jfxtras.labs.scene.control.gauge;
 
-import com.sun.org.apache.xpath.internal.functions.FuncLocalPart;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.LongProperty;
@@ -39,9 +38,10 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
+import javafx.util.Builder;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -51,9 +51,15 @@ import java.util.HashMap;
  * Date: 12.04.12
  * Time: 14:48
  */
-public class SplitFlapBuilder {
+public class SplitFlapBuilder<B extends SplitFlapBuilder<B>> extends ControlBuilder<B> implements Builder<SplitFlap> {
     private HashMap<String, Property> properties = new HashMap<String, Property>();
 
+
+    // ******************** Constructors **************************************
+    protected SplitFlapBuilder() {};
+
+
+    // ******************** Methods *******************************************
     public static final SplitFlapBuilder create() {
         return new SplitFlapBuilder();
     }
@@ -108,17 +114,17 @@ public class SplitFlapBuilder {
         return this;
     }
 
-    public final SplitFlapBuilder prefWidth(final double PREF_WIDTH) {
+    @Override public final B prefWidth(final double PREF_WIDTH) {
         properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-        return this;
+        return (B)this;
     }
 
-    public final SplitFlapBuilder prefHeight(final double PREF_HEIGHT) {
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
         properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-        return this;
+        return (B)this;
     }
 
-    public final SplitFlap build() {
+    @Override public final SplitFlap build() {
         final SplitFlap CONTROL = new SplitFlap();
         for (String key : properties.keySet()) {
             if ("textColor".equals(key)) {

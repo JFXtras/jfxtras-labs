@@ -37,7 +37,9 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Orientation;
+import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
+import javafx.util.Builder;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -49,9 +51,15 @@ import java.util.LinkedList;
  * Date: 09.03.12
  * Time: 16:37
  */
-public class LedBargraphBuilder {
+public class LedBargraphBuilder<B extends LedBargraphBuilder<B>> extends ControlBuilder<B> implements Builder<LedBargraph> {
     private HashMap<String, Property> properties = new HashMap<String, Property>();
 
+
+    // ******************** Constructors **************************************
+    protected LedBargraphBuilder() {};
+
+
+    // ******************** Methods *******************************************
     public static final LedBargraphBuilder create() {
         return new LedBargraphBuilder();
     }
@@ -97,17 +105,17 @@ public class LedBargraphBuilder {
         return this;
     }
 
-    public final LedBargraphBuilder prefWidth(final double PREF_WIDTH) {
+    @Override public final B prefWidth(final double PREF_WIDTH) {
         properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-        return this;
+        return (B)this;
     }
 
-    public final LedBargraphBuilder prefHeight(final double PREF_HEIGHT) {
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
         properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-        return this;
+        return (B)this;
     }
 
-    public final LedBargraph build() {
+    @Override public final LedBargraph build() {
         final LedBargraph CONTROL = new LedBargraph();
         for (String key : properties.keySet()) {
             if ("noOfLeds".equals(key)) {

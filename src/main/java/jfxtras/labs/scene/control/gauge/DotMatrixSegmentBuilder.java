@@ -36,7 +36,9 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
+import javafx.util.Builder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,9 +51,15 @@ import java.util.Map;
  * Date: 16.03.12
  * Time: 09:15
  */
-public class DotMatrixSegmentBuilder {
+public class DotMatrixSegmentBuilder<B extends DotMatrixSegmentBuilder<B>> extends ControlBuilder<B> implements Builder<DotMatrixSegment> {
     private HashMap<String, Property> properties = new HashMap<String, Property>();
 
+
+    // ******************** Constructors **************************************
+    protected DotMatrixSegmentBuilder() {};
+
+
+    // ******************** Methods *******************************************
     public static final DotMatrixSegmentBuilder create() {
         return new DotMatrixSegmentBuilder();
     }
@@ -86,17 +94,17 @@ public class DotMatrixSegmentBuilder {
         return this;
     }
 
-    public final DotMatrixSegmentBuilder prefWidth(final double PREF_WIDTH) {
+    @Override public final B prefWidth(final double PREF_WIDTH) {
         properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-        return this;
+        return (B)this;
     }
 
-    public final DotMatrixSegmentBuilder prefHeight(final double PREF_HEIGHT) {
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
         properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-        return this;
+        return (B)this;
     }
 
-    public final DotMatrixSegment build() {
+    @Override public final DotMatrixSegment build() {
         final DotMatrixSegment CONTROL = new DotMatrixSegment();
         for (String key : properties.keySet()) {
             if ("character".equals(key)) {
