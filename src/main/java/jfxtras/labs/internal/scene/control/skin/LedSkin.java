@@ -235,9 +235,10 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
         HIGHLIGHT.getStyleClass().add("fx-led-highlight");
         HIGHLIGHT.setStroke(null);
 
-        if (!LED_FRAME.visibleProperty().isBound()) {
-            LED_FRAME.visibleProperty().bind(control.frameVisibleProperty());
+        if (LED_FRAME.visibleProperty().isBound()) {
+            LED_FRAME.visibleProperty().unbind();
         }
+        LED_FRAME.visibleProperty().bind(control.frameVisibleProperty());
 
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setWidth(0.180 * SIZE);
