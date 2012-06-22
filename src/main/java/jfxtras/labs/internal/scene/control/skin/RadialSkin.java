@@ -102,6 +102,8 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     private ArrayList<Color> glowColors;
     private Group            lcd;
     private Group            lcdContent;
+    private Font             lcdUnitFont;
+    private Font             lcdValueFont;
     private Text             lcdValueString;
     private Text             lcdUnitString;
     private Group            lcdThresholdIndicator;
@@ -433,16 +435,14 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
 
     private void addListeners() {
         control.setOnGaugeModelEvent(new EventHandler<GaugeModelEvent>() {
-            @Override
-            public void handle(final GaugeModelEvent EVENT) {
+            @Override public void handle(final GaugeModelEvent EVENT) {
                 addBindings();
                 paint();
             }
         });
 
         control.setOnStyleModelEvent(new EventHandler<StyleModelEvent>() {
-            @Override
-            public void handle(final StyleModelEvent EVENT) {
+            @Override public void handle(final StyleModelEvent EVENT) {
                 addBindings();
                 paint();
             }
@@ -541,8 +541,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         });
 
         gaugeValue.addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
+            @Override public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
                 if (bargraphOff.isVisible()) {
                     final int CALC_CURRENT_INDEX = noOfLeds - 1 - (int) ((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
                     final int CALC_FORMER_INDEX = noOfLeds - 1 - (int) ((oldValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
@@ -687,7 +686,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 negativeOffset = 0;
             }
             drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
-        } else if (PROPERTY.equals("MIN_MEASURED_VALUE".equals(PROPERTY))) {
+        } else if ("MIN_MEASURED_VALUE".equals(PROPERTY)) {
             minMeasured.getTransforms().clear();
             minMeasured.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
             minMeasured.getTransforms().add(Transform.rotate(-control.getMinValue() * control.getAngleStep(), center.getX(), center.getY()));
@@ -774,6 +773,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
 
     @Override public void layoutChildren() {
         if (isDirty) {
+            adjustLcdFont();
             paint();
             isDirty = false;
         }
@@ -886,6 +886,31 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             ARC.setLength(ANGLE_EXTEND);
 
             area.setFilledArea(ARC);
+        }
+    }
+
+    private void adjustLcdFont() {
+        final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
+        // Load font for lcd
+        final double LCD_HEIGHT = SIZE * control.getRadialRange().LCD_FACTORS.getHeight();
+        lcdUnitFont = Font.font(control.getLcdUnitFont(), FontWeight.NORMAL, (0.4 * LCD_HEIGHT));
+        switch(control.getLcdValueFont()) {
+            case LCD:
+                lcdValueFont = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/digital.ttf"), (0.75 * LCD_HEIGHT));
+                break;
+            case BUS:
+                lcdValueFont = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/bus.otf"), (0.6 * LCD_HEIGHT));
+                break;
+            case PIXEL:
+                lcdValueFont = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/pixel.ttf"), (0.6 * LCD_HEIGHT));
+                break;
+            case PHONE_LCD:
+                lcdValueFont = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/phonelcd.ttf"), (0.6 * LCD_HEIGHT));
+                break;
+            case STANDARD:
+            default:
+                lcdValueFont = Font.font("Verdana", FontWeight.NORMAL, (0.6 * LCD_HEIGHT));
+                break;
         }
     }
 
@@ -1423,35 +1448,30 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
 
         final Rectangle LCD_FRAME = new Rectangle(((SIZE - SIZE * control.getRadialRange().LCD_FACTORS.getX()) / 2.0), (SIZE * control.getRadialRange().LCD_FACTORS.getY()), (SIZE * control.getRadialRange().LCD_FACTORS.getWidth()), (SIZE * control.getRadialRange().LCD_FACTORS.getHeight()));
 
-        final Font LCD_UNIT_FONT = Font.font(control.getLcdUnitFont(), FontWeight.NORMAL, (0.4 * LCD_FRAME.getLayoutBounds().getHeight()));
-        final Font LCD_VALUE_FONT;
         final double UNIT_Y_OFFSET;
-
         switch(control.getLcdValueFont()) {
             case LCD:
-                LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/digital.ttf"), (0.75 * LCD_FRAME.getLayoutBounds().getHeight()));
                 UNIT_Y_OFFSET = 1.5;
                 break;
             case BUS:
-                LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/bus.otf"), (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
                 UNIT_Y_OFFSET = 2.0;
                 break;
             case PIXEL:
-                LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/pixel.ttf"), (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
                 UNIT_Y_OFFSET = 2.0;
                 break;
             case PHONE_LCD:
-                LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/phonelcd.ttf"), (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
                 UNIT_Y_OFFSET = 2.0;
                 break;
             case STANDARD:
             default:
-                LCD_VALUE_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
                 UNIT_Y_OFFSET = 2.0;
                 break;
         }
-        lcdValueString.setFont(LCD_VALUE_FONT);
-        lcdUnitString.setFont(LCD_UNIT_FONT);
+        if (lcdValueFont == null) {
+            adjustLcdFont();
+        }
+        lcdValueString.setFont(lcdValueFont);
+        lcdUnitString.setFont(lcdUnitFont);
 
         // Unit
         lcdUnitString.setText(control.isLcdValueCoupled() ? control.getUnit() : control.getLcdUnit());
@@ -1465,6 +1485,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             lcdUnitString.setX(LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdUnitString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0625);
             lcdUnitString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / UNIT_Y_OFFSET - (lcdValueString.getLayoutBounds().getHeight() * 0.05));
         }
+        lcdUnitString.getStyleClass().clear();
         lcdUnitString.getStyleClass().add("lcd");
         lcdUnitString.setStyle(control.getLcdDesign().CSS);
         lcdUnitString.getStyleClass().add("lcd-text");
@@ -1494,6 +1515,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         lcdValueString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / 2.0);
         lcdValueString.setTextOrigin(VPos.BOTTOM);
         lcdValueString.setTextAlignment(TextAlignment.RIGHT);
+        lcdValueString.getStyleClass().clear();
         lcdValueString.getStyleClass().add("lcd");
         lcdValueString.setStyle(control.getLcdDesign().CSS);
         lcdValueString.getStyleClass().add("lcd-text");
