@@ -103,6 +103,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         registerChangeListener(CONTROL.valueColorProperty(), "VALUE_COLOR");
         registerChangeListener(CONTROL.pointerGlowEnabledProperty(), "POINTER_GLOW");
         registerChangeListener(CONTROL.pointerShadowEnabledProperty(), "POINTER_SHADOW");
+        registerChangeListener(CONTROL.thresholdProperty(), "THRESHOLD");
         registerChangeListener(CONTROL.thresholdColorProperty(), "THRESHOLD_COLOR");
         registerChangeListener(CONTROL.foregroundTypeProperty(), "FOREGROUND_TYPE");
         registerChangeListener(CONTROL.lcdDesignProperty(), "LCD_DESIGN");
@@ -811,7 +812,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         LCD_MAIN.setArcWidth(LCD_MAIN_CORNER_RADIUS);
         LCD_MAIN.setArcHeight(LCD_MAIN_CORNER_RADIUS);
         LCD_MAIN.getStyleClass().add("lcd");
-        LCD_MAIN.setStyle(CONTROL.getLcdDesign().CSS);
+        LCD_MAIN.getStyleClass().add(CONTROL.getLcdDesign().CSS);
         LCD_MAIN.getStyleClass().add("lcd-main");
 
         final InnerShadow INNER_GLOW = new InnerShadow();

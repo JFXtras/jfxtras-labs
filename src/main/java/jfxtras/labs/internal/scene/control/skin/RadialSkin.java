@@ -543,10 +543,10 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         gaugeValue.addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
                 if (bargraphOff.isVisible()) {
-                    final int CALC_CURRENT_INDEX = noOfLeds - 1 - (int) ((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
-                    final int CALC_FORMER_INDEX = noOfLeds - 1 - (int) ((oldValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
-                    final int CURRENT_LED_INDEX = CALC_CURRENT_INDEX < 0 ? 0 : (CALC_CURRENT_INDEX > noOfLeds ? noOfLeds : CALC_CURRENT_INDEX) ;
-                    final int FORMER_LED_INDEX = CALC_FORMER_INDEX < 0 ? 0 : (CALC_FORMER_INDEX > noOfLeds ? noOfLeds : CALC_FORMER_INDEX) ;
+                    final int CALC_CURRENT_INDEX  = noOfLeds - 1 - (int) ((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
+                    final int CALC_FORMER_INDEX   = noOfLeds - 1 - (int) ((oldValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
+                    final int CURRENT_LED_INDEX   = CALC_CURRENT_INDEX < 0 ? 0 : (CALC_CURRENT_INDEX > noOfLeds ? noOfLeds : CALC_CURRENT_INDEX) ;
+                    final int FORMER_LED_INDEX    = CALC_FORMER_INDEX < 0 ? 0 : (CALC_FORMER_INDEX > noOfLeds ? noOfLeds : CALC_FORMER_INDEX) ;
                     final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int)((control.getThreshold() - control.getMinValue()) * control.getAngleStep() / 5.0);
 
                     if (Double.compare(control.getValue(), formerValue.doubleValue()) >= 0) {
@@ -560,6 +560,8 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                     }
                     if (control.isThresholdVisible()) {
                         ledsOn.get(THRESHOLD_LED_INDEX).setVisible(true);
+                        ledsOn.get(THRESHOLD_LED_INDEX).getStyleClass().clear();
+                        ledsOn.get(THRESHOLD_LED_INDEX).getStyleClass().add("bargraph-threshold");
                     }
                 } else {
                     pointer.getTransforms().clear();
@@ -618,13 +620,21 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             drawPointer();
         } else if("THRESHOLD_COLOR".equals(PROPERTY)) {
             final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int)((control.getThreshold() - control.getMinValue()) * control.getAngleStep() / 5.0);
-            ledsOn.get(THRESHOLD_LED_INDEX).setStyle(control.getThresholdColor().CSS);
+            //ledsOn.get(THRESHOLD_LED_INDEX).setStyle(control.getThresholdColor().CSS);
             ledsOn.get(THRESHOLD_LED_INDEX).getStyleClass().add("bargraph-threshold");
             drawThreshold();
         } else if ("FOREGROUND_TYPE".equals(PROPERTY)) {
             drawCircularForeground(control, foreground, gaugeBounds);
         } else if ("LCD_DESIGN".equals(PROPERTY)) {
             drawCircularLcd(control, lcd, gaugeBounds);
+            lcdUnitString.getStyleClass().clear();
+            lcdUnitString.getStyleClass().add("lcd");
+            lcdUnitString.getStyleClass().add(control.getLcdDesign().CSS);
+            lcdUnitString.getStyleClass().add("lcd-text");
+            lcdValueString.getStyleClass().clear();
+            lcdValueString.getStyleClass().add("lcd");
+            lcdValueString.getStyleClass().add(control.getLcdDesign().CSS);
+            lcdValueString.getStyleClass().add("lcd-text");
             drawLcdContent();
         } else if ("LCD_NUMBER_SYSTEM".equals(PROPERTY)) {
             drawLcdContent();
@@ -965,8 +975,8 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         THRESHOLD.setStrokeLineCap(StrokeLineCap.ROUND);
         THRESHOLD.setStrokeLineJoin(StrokeLineJoin.ROUND);
         THRESHOLD.setStrokeWidth(0.002 * HEIGHT);
-        //THRESHOLD.getStyleClass().add("root");
-        THRESHOLD.setStyle(control.getThresholdColor().CSS);
+        THRESHOLD.getStyleClass().add("root");
+        THRESHOLD.getStyleClass().add(control.getThresholdColor().CSS);
         THRESHOLD.getStyleClass().add("threshold-gradient");
 
         THRESHOLD.setTranslateX(0.485 * WIDTH);
@@ -1486,10 +1496,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             lcdUnitString.setX(LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdUnitString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0625);
             lcdUnitString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / UNIT_Y_OFFSET - (lcdValueString.getLayoutBounds().getHeight() * 0.05));
         }
-        lcdUnitString.getStyleClass().clear();
-        lcdUnitString.getStyleClass().add("lcd");
-        lcdUnitString.setStyle(control.getLcdDesign().CSS);
-        lcdUnitString.getStyleClass().add("lcd-text");
         lcdUnitString.setStroke(null);
 
         // Value
@@ -1516,10 +1522,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         lcdValueString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / 2.0);
         lcdValueString.setTextOrigin(VPos.BOTTOM);
         lcdValueString.setTextAlignment(TextAlignment.RIGHT);
-        lcdValueString.getStyleClass().clear();
-        lcdValueString.getStyleClass().add("lcd");
-        lcdValueString.setStyle(control.getLcdDesign().CSS);
-        lcdValueString.getStyleClass().add("lcd-text");
         lcdValueString.setStroke(null);
 
         lcdContent.getChildren().addAll(lcdUnitString, lcdValueString);

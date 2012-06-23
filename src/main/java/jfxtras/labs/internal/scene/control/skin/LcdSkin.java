@@ -431,6 +431,9 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         super.handleControlPropertyChanged(PROPERTY);
 
         if ("LCD_DESIGN".equals(PROPERTY)) {
+            lcdValueString.getStyleClass().clear();
+            lcdValueString.getStyleClass().add(control.getLcdDesign().CSS);
+            lcdValueString.getStyleClass().add("lcd-text");
             drawLcd();
             drawLcdContent();
         } else if ("LCD_NUMBER_SYSTEM".equals(PROPERTY)) {
@@ -607,8 +610,9 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             lcdUnitString.setX((WIDTH - lcdUnitString.getLayoutBounds().getWidth()) - SIZE * 0.04);
             lcdUnitString.setY(SIZE - (lcdValueString.getLayoutBounds().getHeight() * lcdDigitalFontSizeFactor) / 2.0);
             lcdUnitString.setFontSmoothingType(FontSmoothingType.LCD);
+            lcdUnitString.getStyleClass().clear();
             lcdUnitString.getStyleClass().add("lcd");
-            lcdUnitString.setStyle(control.getLcdDesign().CSS);
+            lcdUnitString.getStyleClass().add(control.getLcdDesign().CSS);
             lcdUnitString.getStyleClass().add("lcd-text");
             lcdValueOffsetRight = (lcdUnitString.getLayoutBounds().getWidth() + SIZE * 0.0833333333); // distance between value and unit
             lcdValueString.setX(LCD_MAIN.getX() + LCD_MAIN.getWidth() - lcdValueString.getLayoutBounds().getWidth() - lcdValueOffsetRight);
@@ -659,8 +663,9 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         }
         lcdValueBackgroundString.setY(SIZE - (lcdValueBackgroundString.getLayoutBounds().getHeight() * lcdDigitalFontSizeFactor) / 2.0);
         lcdValueBackgroundString.setFontSmoothingType(FontSmoothingType.LCD);
+        lcdValueBackgroundString.getStyleClass().clear();
         lcdValueBackgroundString.getStyleClass().add("lcd");
-        lcdValueBackgroundString.setStyle(control.getLcdDesign().CSS);
+        lcdValueBackgroundString.getStyleClass().add(control.getLcdDesign().CSS);
         lcdValueBackgroundString.getStyleClass().add("lcd-text-background");
         lcdValueBackgroundString.setVisible(Gauge.LcdFont.LCD == control.getLcdValueFont());
 
@@ -675,8 +680,9 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         lcdTitle.setX(LCD_MAIN.getLayoutX() + (LCD_MAIN.getLayoutBounds().getWidth() - lcdTitle.getLayoutBounds().getWidth()) / 2.0);
         lcdTitle.setY(LCD_MAIN.getLayoutY() + lcdTitle.getLayoutBounds().getHeight() + 0.04 * SIZE);
         lcdTitle.setFontSmoothingType(FontSmoothingType.LCD);
+        lcdTitle.getStyleClass().clear();
         lcdTitle.getStyleClass().add("lcd");
-        lcdTitle.setStyle(control.getLcdDesign().CSS);
+        lcdTitle.getStyleClass().add(control.getLcdDesign().CSS);
         lcdTitle.getStyleClass().add("lcd-text");
 
         // NumberSystem
@@ -687,8 +693,9 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         lcdNumberSystem.setX(LCD_MAIN.getLayoutX() + (LCD_MAIN.getLayoutBounds().getWidth() - lcdTitle.getLayoutBounds().getWidth()) / 2.0);
         lcdNumberSystem.setY(LCD_MAIN.getLayoutY() + LCD_MAIN.getHeight() - 0.0416666667 * SIZE);
         lcdNumberSystem.setFontSmoothingType(FontSmoothingType.LCD);
+        lcdNumberSystem.getStyleClass().clear();
         lcdNumberSystem.getStyleClass().add("lcd");
-        lcdNumberSystem.setStyle(control.getLcdDesign().CSS);
+        lcdNumberSystem.getStyleClass().add(control.getLcdDesign().CSS);
         lcdNumberSystem.getStyleClass().add("lcd-text");
 
         // Min measured value
@@ -698,8 +705,9 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         lcdMinMeasuredValue.setX(LCD_MAIN.getLayoutX() + 0.0416666667 * SIZE);
         lcdMinMeasuredValue.setY(LCD_MAIN.getLayoutY() + lcdMinMeasuredValue.getLayoutBounds().getHeight() + 0.04 * SIZE);
         lcdMinMeasuredValue.setFontSmoothingType(FontSmoothingType.LCD);
+        lcdMinMeasuredValue.getStyleClass().clear();
         lcdMinMeasuredValue.getStyleClass().add("lcd");
-        lcdMinMeasuredValue.setStyle(control.getLcdDesign().CSS);
+        lcdMinMeasuredValue.getStyleClass().add(control.getLcdDesign().CSS);
         lcdMinMeasuredValue.getStyleClass().add("lcd-text");
 
         // Max measured value
@@ -708,8 +716,9 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         lcdMaxMeasuredValue.setTextAlignment(TextAlignment.RIGHT);
         lcdMaxMeasuredValue.setY(LCD_MAIN.getLayoutY() + lcdMinMeasuredValue.getLayoutBounds().getHeight() + 0.04 * SIZE);
         lcdMaxMeasuredValue.setFontSmoothingType(FontSmoothingType.LCD);
+        lcdMaxMeasuredValue.getStyleClass().clear();
         lcdMaxMeasuredValue.getStyleClass().add("lcd");
-        lcdMaxMeasuredValue.setStyle(control.getLcdDesign().CSS);
+        lcdMaxMeasuredValue.getStyleClass().add(control.getLcdDesign().CSS);
         lcdMaxMeasuredValue.getStyleClass().add("lcd-text");
 
         // Former value
@@ -718,8 +727,9 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         lcdFormerValue.setTextAlignment(TextAlignment.CENTER);
         lcdFormerValue.setY(LCD_MAIN.getLayoutY() + LCD_MAIN.getHeight() - 0.0416666667 * SIZE);
         lcdFormerValue.setFontSmoothingType(FontSmoothingType.LCD);
+        lcdFormerValue.getStyleClass().clear();
         lcdFormerValue.getStyleClass().add("lcd");
-        lcdFormerValue.setStyle(control.getLcdDesign().CSS);
+        lcdFormerValue.getStyleClass().add(control.getLcdDesign().CSS);
         lcdFormerValue.getStyleClass().add("lcd-text");
     }
 
@@ -790,7 +800,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         LCD_MAIN.setArcWidth(LCD_MAIN_CORNER_RADIUS);
         LCD_MAIN.setArcHeight(LCD_MAIN_CORNER_RADIUS);
 
-        LCD_MAIN.setStyle(control.getLcdDesign().CSS);
+        LCD_MAIN.getStyleClass().add(control.getLcdDesign().CSS);
         LCD_MAIN.getStyleClass().add("lcd-main");
         LCD_MAIN.setVisible(control.isBackgroundVisible());
 
@@ -817,8 +827,9 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         trendUp.getElements().add(new LineTo(0.24242424242424243 * WIDTH, 0.9375 * HEIGHT));
         trendUp.getElements().add(new LineTo(0.18181818181818182 * WIDTH, 0.9375 * HEIGHT));
         trendUp.getElements().add(new ClosePath());
+        trendUp.getStyleClass().clear();
         trendUp.getStyleClass().add("lcd");
-        trendUp.setStyle(control.getLcdDesign().CSS);
+        trendUp.getStyleClass().add(control.getLcdDesign().CSS);
         trendUp.getStyleClass().add("lcd-text");
         trendUp.setVisible(false);
 
@@ -829,8 +840,9 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         trendSteady.getElements().add(new LineTo(0.18181818181818182 * WIDTH, 0.9375 * HEIGHT));
         trendSteady.getElements().add(new LineTo(0.18181818181818182 * WIDTH, 0.8125 * HEIGHT));
         trendSteady.getElements().add(new ClosePath());
+        trendSteady.getStyleClass().clear();
         trendSteady.getStyleClass().add("lcd");
-        trendSteady.setStyle(control.getLcdDesign().CSS);
+        trendSteady.getStyleClass().add(control.getLcdDesign().CSS);
         trendSteady.getStyleClass().add("lcd-text");
         trendSteady.setVisible(false);
 
@@ -841,8 +853,9 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         trendDown.getElements().add(new LineTo(0.24242424242424243 * WIDTH, 0.8125 * HEIGHT));
         trendDown.getElements().add(new LineTo(0.18181818181818182 * WIDTH, 0.8125 * HEIGHT));
         trendDown.getElements().add(new ClosePath());
+        trendDown.getStyleClass().clear();
         trendDown.getStyleClass().add("lcd");
-        trendDown.setStyle(control.getLcdDesign().CSS);
+        trendDown.getStyleClass().add(control.getLcdDesign().CSS);
         trendDown.getStyleClass().add("lcd-text");
         trendDown.setVisible(false);
 
@@ -954,126 +967,126 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             BAR_GRAPH_OFF.getElements().add(new LineTo(0.08333333333333333 * WIDTH, 0.78 * HEIGHT));
             BAR_GRAPH_OFF.getElements().add(new LineTo(0.08333333333333333 * WIDTH, 0.74 * HEIGHT));
             BAR_GRAPH_OFF.getElements().add(new ClosePath());
-            BAR_GRAPH_OFF.setStyle(control.getLcdDesign().CSS);
+            BAR_GRAPH_OFF.getStyleClass().add(control.getLcdDesign().CSS);
             BAR_GRAPH_OFF.getStyleClass().add("lcd-text-background");
 
             final Rectangle SEG1 = new Rectangle(0.05303030303030303 * WIDTH, 0.74 * HEIGHT,
                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG1.setStyle(control.getLcdDesign().CSS);
+            SEG1.getStyleClass().add(control.getLcdDesign().CSS);
             SEG1.getStyleClass().add("lcd-text");
             SEG1.setVisible(false);
 
             final Rectangle SEG2 = new Rectangle(0.09848484848484848 * WIDTH, 0.74 * HEIGHT,
                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG2.setStyle(control.getLcdDesign().CSS);
+            SEG2.getStyleClass().add(control.getLcdDesign().CSS);
             SEG2.getStyleClass().add("lcd-text");
             SEG2.setVisible(false);
 
             final Rectangle SEG3 = new Rectangle(0.14393939393939395 * WIDTH, 0.74 * HEIGHT,
                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG3.setStyle(control.getLcdDesign().CSS);
+            SEG3.getStyleClass().add(control.getLcdDesign().CSS);
             SEG3.getStyleClass().add("lcd-text");
             SEG3.setVisible(false);
 
             final Rectangle SEG4 = new Rectangle(0.1893939393939394 * WIDTH, 0.74 * HEIGHT,
                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG4.setStyle(control.getLcdDesign().CSS);
+            SEG4.getStyleClass().add(control.getLcdDesign().CSS);
             SEG4.getStyleClass().add("lcd-text");
             SEG4.setVisible(false);
 
             final Rectangle SEG5 = new Rectangle(0.23484848484848486 * WIDTH, 0.74 * HEIGHT,
                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG5.setStyle(control.getLcdDesign().CSS);
+            SEG5.getStyleClass().add(control.getLcdDesign().CSS);
             SEG5.getStyleClass().add("lcd-text");
             SEG5.setVisible(false);
 
             final Rectangle SEG6 = new Rectangle(0.2803030303030303 * WIDTH, 0.74 * HEIGHT,
                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG6.setStyle(control.getLcdDesign().CSS);
+            SEG6.getStyleClass().add(control.getLcdDesign().CSS);
             SEG6.getStyleClass().add("lcd-text");
             SEG6.setVisible(false);
 
             final Rectangle SEG7 = new Rectangle(0.32575757575757575 * WIDTH, 0.74 * HEIGHT,
                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG7.setStyle(control.getLcdDesign().CSS);
+            SEG7.getStyleClass().add(control.getLcdDesign().CSS);
             SEG7.getStyleClass().add("lcd-text");
             SEG7.setVisible(false);
 
             final Rectangle SEG8 = new Rectangle(0.3712121212121212 * WIDTH, 0.74 * HEIGHT,
                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG8.setStyle(control.getLcdDesign().CSS);
+            SEG8.getStyleClass().add(control.getLcdDesign().CSS);
             SEG8.getStyleClass().add("lcd-text");
             SEG8.setVisible(false);
 
             final Rectangle SEG9 = new Rectangle(0.4166666666666667 * WIDTH, 0.74 * HEIGHT,
                                                  0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG9.setStyle(control.getLcdDesign().CSS);
+            SEG9.getStyleClass().add(control.getLcdDesign().CSS);
             SEG9.getStyleClass().add("lcd-text");
             SEG9.setVisible(false);
 
             final Rectangle SEG10 = new Rectangle(0.4621212121212121 * WIDTH, 0.74 * HEIGHT,
                                                   0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG10.setStyle(control.getLcdDesign().CSS);
+            SEG10.getStyleClass().add(control.getLcdDesign().CSS);
             SEG10.getStyleClass().add("lcd-text");
             SEG10.setVisible(false);
 
             final Rectangle SEG11 = new Rectangle(0.5075757575757576 * WIDTH, 0.74 * HEIGHT,
                                                   0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG11.setStyle(control.getLcdDesign().CSS);
+            SEG11.getStyleClass().add(control.getLcdDesign().CSS);
             SEG11.getStyleClass().add("lcd-text");
             SEG11.setVisible(false);
 
             final Rectangle SEG12 = new Rectangle(0.553030303030303 * WIDTH, 0.74 * HEIGHT,
                                                   0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG12.setStyle(control.getLcdDesign().CSS);
+            SEG12.getStyleClass().add(control.getLcdDesign().CSS);
             SEG12.getStyleClass().add("lcd-text");
             SEG12.setVisible(false);
 
             final Rectangle SEG13 = new Rectangle(0.5984848484848485 * WIDTH, 0.74 * HEIGHT,
                                                   0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG13.setStyle(control.getLcdDesign().CSS);
+            SEG13.getStyleClass().add(control.getLcdDesign().CSS);
             SEG13.getStyleClass().add("lcd-text");
             SEG13.setVisible(false);
 
             final Rectangle SEG14 = new Rectangle(0.6439393939393939 * WIDTH, 0.74 * HEIGHT,
                                                   0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG14.setStyle(control.getLcdDesign().CSS);
+            SEG14.getStyleClass().add(control.getLcdDesign().CSS);
             SEG14.getStyleClass().add("lcd-text");
             SEG14.setVisible(false);
 
             final Rectangle SEG15 = new Rectangle(0.6893939393939394 * WIDTH, 0.74 * HEIGHT,
                                                   0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG15.setStyle(control.getLcdDesign().CSS);
+            SEG15.getStyleClass().add(control.getLcdDesign().CSS);
             SEG15.getStyleClass().add("lcd-text");
             SEG15.setVisible(false);
 
             final Rectangle SEG16 = new Rectangle(0.7348484848484849 * WIDTH, 0.74 * HEIGHT,
                                                   0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG16.setStyle(control.getLcdDesign().CSS);
+            SEG16.getStyleClass().add(control.getLcdDesign().CSS);
             SEG16.getStyleClass().add("lcd-text");
             SEG16.setVisible(false);
 
             final Rectangle SEG17 = new Rectangle(0.7803030303030303 * WIDTH, 0.74 * HEIGHT,
                                                   0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG17.setStyle(control.getLcdDesign().CSS);
+            SEG17.getStyleClass().add(control.getLcdDesign().CSS);
             SEG17.getStyleClass().add("lcd-text");
             SEG17.setVisible(false);
 
             final Rectangle SEG18 = new Rectangle(0.8257575757575758 * WIDTH, 0.74 * HEIGHT,
                                                   0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG18.setStyle(control.getLcdDesign().CSS);
+            SEG18.getStyleClass().add(control.getLcdDesign().CSS);
             SEG18.getStyleClass().add("lcd-text");
             SEG18.setVisible(false);
 
             final Rectangle SEG19 = new Rectangle(0.8712121212121212 * WIDTH, 0.74 * HEIGHT,
                                                   0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG19.setStyle(control.getLcdDesign().CSS);
+            SEG19.getStyleClass().add(control.getLcdDesign().CSS);
             SEG19.getStyleClass().add("lcd-text");
             SEG19.setVisible(false);
 
             final Rectangle SEG20 = new Rectangle(0.9166666666666666 * WIDTH, 0.74 * HEIGHT,
                                                   0.030303030303030304 * WIDTH, 0.04 * HEIGHT);
-            SEG20.setStyle(control.getLcdDesign().CSS);
+            SEG20.getStyleClass().add(control.getLcdDesign().CSS);
             SEG20.getStyleClass().add("lcd-text");
             SEG20.setVisible(false);
 
@@ -1170,8 +1183,6 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             lcdValueString.setX((WIDTH - lcdValueString.getLayoutBounds().getWidth()) - lcdValueOffsetRight);
         }
         lcdValueString.setY(SIZE - (lcdValueString.getLayoutBounds().getHeight() * lcdDigitalFontSizeFactor) / 2.0);
-        lcdValueString.setStyle(control.getLcdDesign().CSS);
-        lcdValueString.getStyleClass().add("lcd-text");
 
         if (control.isBargraphVisible() && !bargraph.isEmpty()) {
             int activeBargraphSegments = (int) ((currentLcdValue.get() - (long) currentLcdValue.get()) * 20);
@@ -1265,7 +1276,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         LCD_THRESHOLD.getElements().add(new LineTo(0.0, HEIGHT));
         LCD_THRESHOLD.getElements().add(new ClosePath());
         LCD_THRESHOLD.getStyleClass().add("lcd");
-        LCD_THRESHOLD.setStyle(control.getLcdDesign().CSS);
+        LCD_THRESHOLD.getStyleClass().add(control.getLcdDesign().CSS);
         LCD_THRESHOLD.getStyleClass().add("lcd-text");
         LCD_THRESHOLD.setStroke(null);
 
