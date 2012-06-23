@@ -28,6 +28,7 @@ package jfxtras.labs.scene.control;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import javafx.beans.InvalidationListener;
@@ -176,7 +177,7 @@ public class CalendarPicker extends Control
 	public ObjectProperty<Mode> modeProperty() { return iModeObjectProperty; }
 	final private SimpleObjectProperty<Mode> iModeObjectProperty = new SimpleObjectProperty<Mode>(this, "mode", Mode.SINGLE);
 	final static public String MODE_PROPERTY_ID = "mode";
-	public enum Mode { SINGLE, MULTIPLE } // TODO: , RANGE
+	public enum Mode { SINGLE, MULTIPLE, RANGE };
 	// java bean API
 	public Mode getMode() { return iModeObjectProperty.getValue(); }
 	public void setMode(Mode value)
@@ -207,5 +208,17 @@ public class CalendarPicker extends Control
 		SimpleDateFormat lSimpleDateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG);
 		lSimpleDateFormat.applyPattern("yyyy-MM-dd");
 		return value == null ? "null" : lSimpleDateFormat.format(value.getTime());
+	}
+	static public String quickFormatCalendar(List<Calendar> value)
+	{
+		if (value == null) return "null";
+		String s = value.size() + "x [";
+		for (Calendar lCalendar : value)
+		{
+			if (s.endsWith("[") == false) s += ",";
+			s += quickFormatCalendar(lCalendar);
+		}
+		s += "]";
+		return s;
 	}
 }

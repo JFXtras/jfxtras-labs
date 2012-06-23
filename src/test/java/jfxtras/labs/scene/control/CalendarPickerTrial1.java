@@ -52,8 +52,8 @@ public class CalendarPickerTrial1 extends Application {
         // add a node
 		CalendarPicker lXCalendarPicker = new CalendarPicker();
 		lXCalendarPicker.setCalendar(new GregorianCalendar(2011, 06, 01)); // set a value
-		//lXCalendarPicker.setMode(XCalendarPicker.Mode.RANGE);
-		//lXCalendarPicker.setMode(XCalendarPicker.Mode.MULTIPLE);
+//		lXCalendarPicker.setMode(CalendarPicker.Mode.RANGE);
+		lXCalendarPicker.setMode(CalendarPicker.Mode.MULTIPLE);
         
         // create scene
         Scene scene = new Scene(lXCalendarPicker, 300, 300);

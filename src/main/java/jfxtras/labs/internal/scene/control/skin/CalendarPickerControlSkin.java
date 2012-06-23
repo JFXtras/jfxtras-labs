@@ -28,9 +28,10 @@ package jfxtras.labs.internal.scene.control.skin;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.beans.property.BooleanProperty;
@@ -41,9 +42,13 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import jfxtras.labs.scene.control.CalendarPicker;
 import jfxtras.labs.scene.control.Spinner;
 import jfxtras.labs.scene.control.Spinner.CycleEvent;
@@ -98,7 +103,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			@Override
 			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Calendar> arg0)
 			{
-				refreshSelection();
+				refreshDayButtonToggleState();
 			} 
 		});
 		
@@ -222,7 +227,35 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			// create buttons
 			ToggleButton lToggleButton = new ToggleButton("" + i);
 			lToggleButton.getStyleClass().add("day");
-			lToggleButton.selectedProperty().addListener(dayToggleButtonSelectedPropertyChangeListener);
+			lToggleButton.selectedProperty().addListener(new ChangeListener<Boolean>()
+			{
+				@Override
+				public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2)
+				{
+					refreshDayButtonToggleState();
+				}
+			});
+			lToggleButton.onMouseReleasedProperty().set(new EventHandler<MouseEvent>()
+			{
+				@Override
+				public void handle(MouseEvent event)
+				{
+					ToggleButton lToggleButton = (ToggleButton)event.getSource();					
+					toggle(lToggleButton, event.isShiftDown());
+				}
+			});
+			lToggleButton.onKeyReleasedProperty().set(new EventHandler<KeyEvent>()
+			{
+				@Override
+				public void handle(KeyEvent event)
+				{
+					ToggleButton lToggleButton = (ToggleButton)event.getSource();
+					if (" ".equals(event.getText()))
+					{
+						toggle(lToggleButton, event.isShiftDown());
+					}
+				}
+			});
 			
 			// remember which bean belongs to this property
 			booleanPropertyToDayToggleButtonMap.put(lToggleButton.selectedProperty(), lToggleButton);
@@ -245,59 +278,96 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	final private List<Label> weekdayLabels = new ArrayList<Label>();
 	final private List<Label> weeknumberLabels = new ArrayList<Label>();
 	final private List<ToggleButton> dayButtons = new ArrayList<ToggleButton>();
-	final private Map<BooleanProperty, ToggleButton> booleanPropertyToDayToggleButtonMap = new HashMap<BooleanProperty, ToggleButton>();
-	final private ChangeListener<Boolean> dayToggleButtonSelectedPropertyChangeListener = new ChangeListener<Boolean>()
+	final private Map<BooleanProperty, ToggleButton> booleanPropertyToDayToggleButtonMap = new WeakHashMap<BooleanProperty, ToggleButton>();
+	
+	/**
+	 * 
+	 * @param toggleButton
+	 * @param shiftIsPressed
+	 */
+	private void toggle(ToggleButton toggleButton, boolean shiftIsPressed)		
 	{
-		@Override
-		public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue)		
+		// base reference
+		int lDayToggleButtonIdx = dayButtons.indexOf(toggleButton);
+		
+		// calculate the day-of-month
+		int lFirstOfMonthIdx = determineFirstOfMonthDayOfWeek();
+		int lDayOfMonth = lDayToggleButtonIdx - lFirstOfMonthIdx + 1;
+
+		// create calendar representing the date that was toggled
+		Calendar lToggledCalendar = (Calendar)getDisplayedCalendar().clone();
+		lToggledCalendar.set(Calendar.YEAR, getDisplayedCalendar().get(Calendar.YEAR));
+		lToggledCalendar.set(Calendar.MONTH, getDisplayedCalendar().get(Calendar.MONTH));
+		lToggledCalendar.set(Calendar.DATE, lDayOfMonth);
+
+		// select or deselect
+		List<Calendar> lCalendars = getSkinnable().calendars();
+		boolean lSelect = !lCalendars.contains(lToggledCalendar); 
+		if (lSelect) 
 		{
-			// if we're refreshing, do not react to changes
-			if (iRefreshingSelection.get() > 0) return;
+			// only add if not present
+			lCalendars.add(lToggledCalendar);
 			
-			// selected or deselected
-			boolean lSelected = newValue;
-			
-			// base reference
-			ToggleButton lToggleButton = booleanPropertyToDayToggleButtonMap.get(observableValue);
-			int lDayToggleButtonIdx = dayButtons.indexOf(lToggleButton);
-			
-			// calculate the day-of-month
-			int lFirstOfMonthIdx = determineFirstOfMonthDayOfWeek();
-			int lDayOfMonth = lDayToggleButtonIdx - lFirstOfMonthIdx + 1;
-	
-			// create calendar representing the date that was toggled
-			Calendar lToggledCalendar = (Calendar)getDisplayedCalendar().clone();
-			lToggledCalendar.set(Calendar.YEAR, getDisplayedCalendar().get(Calendar.YEAR));
-			lToggledCalendar.set(Calendar.MONTH, getDisplayedCalendar().get(Calendar.MONTH));
-			lToggledCalendar.set(Calendar.DATE, lDayOfMonth);
-	
-			// add or remove?
-			List<Calendar> lCalendars = getSkinnable().calendars();
-			if (lSelected) 
+			// make sure it adheres to the mode
+			// SINGLE: clear all but the last selected
+			while (getSkinnable().getMode() == CalendarPicker.Mode.SINGLE && lCalendars.size() > 1) 
 			{
-				// only add if not present
-				if (!lCalendars.contains(lToggledCalendar)) 
-				{
-					lCalendars.add(lToggledCalendar);
-				}
-				// make sure it adheres to the mode
-				// SINGLE: clear all but the last selected
-				while (getSkinnable().getMode() == CalendarPicker.Mode.SINGLE && lCalendars.size() > 1) 
-				{
-					lCalendars.remove(0);
-				}
-				// TODO: range
+				lCalendars.remove(0);
 			}
-			else 
+			// MULTIPLE: do nothing, just add the new one
+			//           if shift is pressed, behave like RANGE below
+			while (getSkinnable().getMode() == CalendarPicker.Mode.SINGLE && lCalendars.size() > 1) 
 			{
-				// only remove when present
-				if (lCalendars.contains(lToggledCalendar)) 
+				lCalendars.remove(0);
+			}
+			// RANGE: if shift is not pressed, behave like single
+			//        if shift is pressed, also add the dates between 
+			while (getSkinnable().getMode() == CalendarPicker.Mode.RANGE && shiftIsPressed == false && lCalendars.size() > 1) 
+			{
+				lCalendars.remove(0);
+			}
+			if ((getSkinnable().getMode() == CalendarPicker.Mode.MULTIPLE || getSkinnable().getMode() == CalendarPicker.Mode.RANGE) && shiftIsPressed == true) 
+			{
+				// we muust have a last selected			
+				if (iLastSelected != null) 
 				{
-					lCalendars.remove(lToggledCalendar);
+					// get the other calendar and make sure other <= toggle
+					Calendar lOtherCalendar = iLastSelected;
+					if (lOtherCalendar.after(lToggledCalendar))
+					{
+						Calendar lSwap = lOtherCalendar;
+						lOtherCalendar = lToggledCalendar;
+						lToggledCalendar = lSwap;
+					}
+					
+					// walk towards the toggled date and add all in between
+					Calendar lWalker = (Calendar)lOtherCalendar.clone(); // the @#$#@$@# calendars are mutable
+					lWalker.add(Calendar.DATE, 1);
+					while (lWalker.before(lToggledCalendar))
+					{
+						lCalendars.add((Calendar)lWalker.clone()); // the @#$#@$@# calendars are mutable
+						lWalker.add(Calendar.DATE, 1);
+					}
+					
+					// let's have a nice collection
+					Collections.sort(lCalendars);
 				}
-			}	
+			}
+			
+			// remember
+			iLastSelected = (Calendar)lToggledCalendar.clone();
 		}
-	};
+		else 
+		{
+			// remove
+			lCalendars.remove(lToggledCalendar);
+			iLastSelected = null;
+		}
+		
+		// make sure the buttons are toggled correctly
+		refreshDayButtonToggleState();
+	}
+	private Calendar iLastSelected = null;
 
 	/*
 	 * 
@@ -326,8 +396,8 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		refreshSpinner();
 		refreshWeekdayLabels();
 		refreshWeeknumberLabels();
-		refreshDayButtons();
-		refreshSelection();
+		refreshDayButtonsVisibilityAndLabel();
+		refreshDayButtonToggleState();
 	}
 	
 	/*
@@ -385,7 +455,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	/*
 	 * 
 	 */
-	private void refreshDayButtons()
+	private void refreshDayButtonsVisibilityAndLabel()
 	{
 		// setup the buttons [0..(6*7)-1]
 		// displayed calendar always points to the 1st of the month
@@ -445,7 +515,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	/*
 	 * 
 	 */
-	private void refreshSelection()
+	private void refreshDayButtonToggleState()
 	{
 		iRefreshingSelection.addAndGet(1);
 		try
