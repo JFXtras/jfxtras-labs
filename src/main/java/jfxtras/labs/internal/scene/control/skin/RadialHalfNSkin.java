@@ -490,11 +490,12 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
                 currentValue.set(newValue.doubleValue() / control.getAngleStep() + control.getMinValue());
                 if (bargraphOff.isVisible()) {
-                    final int CALC_CURRENT_INDEX = noOfLeds - 1 - (newValue.intValue() / 5);
-                    final int CALC_FORMER_INDEX = noOfLeds - 1 - (oldValue.intValue() / 5);
-                    final int CURRENT_LED_INDEX = CALC_CURRENT_INDEX < 0 ? 0 : (CALC_CURRENT_INDEX > noOfLeds ? noOfLeds : CALC_CURRENT_INDEX) ;
-                    final int FORMER_LED_INDEX = CALC_FORMER_INDEX < 0 ? 0 : (CALC_FORMER_INDEX > noOfLeds ? noOfLeds : CALC_FORMER_INDEX) ;
+                    final int CALC_CURRENT_INDEX  = noOfLeds - 1 - (newValue.intValue() / 5);
+                    final int CALC_FORMER_INDEX   = noOfLeds - 1 - (oldValue.intValue() / 5);
+                    final int CURRENT_LED_INDEX   = CALC_CURRENT_INDEX < 0 ? 0 : (CALC_CURRENT_INDEX > noOfLeds ? noOfLeds : CALC_CURRENT_INDEX) ;
+                    final int FORMER_LED_INDEX    = CALC_FORMER_INDEX < 0 ? 0 : (CALC_FORMER_INDEX > noOfLeds ? noOfLeds : CALC_FORMER_INDEX) ;
                     final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int)(control.getThreshold() * control.getAngleStep() / 5.0);
+
                     if (Double.compare(control.getValue(), formerValue.doubleValue()) >= 0) {
                         for (int i = CURRENT_LED_INDEX ; i <= FORMER_LED_INDEX ; i++) {
                             ledsOn.get(i).setVisible(true);
@@ -505,9 +506,9 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                         }
                     }
                     if (control.isThresholdVisible()) {
-                        ledsOn.get(THRESHOLD_LED_INDEX).setStyle(control.getThresholdColor().CSS);
-                        ledsOn.get(THRESHOLD_LED_INDEX).getStyleClass().add("bargraph-threshold");
                         ledsOn.get(THRESHOLD_LED_INDEX).setVisible(true);
+                        ledsOn.get(THRESHOLD_LED_INDEX).getStyleClass().clear();
+                        ledsOn.get(THRESHOLD_LED_INDEX).getStyleClass().add("bargraph-threshold");
                     }
                 }
 
@@ -549,6 +550,10 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
             drawPointer();
         } else if ("VALUE_COLOR".equals(PROPERTY)) {
             drawPointer();
+        } else if("THRESHOLD_COLOR".equals(PROPERTY)) {
+            final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int)(control.getThreshold() * control.getAngleStep() / 5.0);
+            ledsOn.get(THRESHOLD_LED_INDEX).getStyleClass().clear();
+            ledsOn.get(THRESHOLD_LED_INDEX).getStyleClass().add("bargraph-threshold");
         } else if ("FOREGROUND_TYPE".equals(PROPERTY)) {
             drawForeground();
         } else if ("USER_LED_BLINKING".equals(PROPERTY)) {

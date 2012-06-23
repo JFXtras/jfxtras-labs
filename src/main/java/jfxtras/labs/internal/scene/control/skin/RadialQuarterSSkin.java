@@ -102,6 +102,8 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
     private ArrayList<Color> glowColors;
     private Group            lcd;
     private Group            lcdContent;
+    private Font             lcdUnitFont;
+    private Font             lcdValueFont;
     private Text             lcdValueString;
     private Text             lcdUnitString;
     private Group            lcdThresholdIndicator;
@@ -533,6 +535,14 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
             drawCircularForeground(control, foreground, gaugeBounds);
         } else if ("LCD_DESIGN".equals(PROPERTY)) {
             drawCircularLcd(control, lcd, gaugeBounds);
+            lcdUnitString.getStyleClass().clear();
+            lcdUnitString.getStyleClass().add("lcd");
+            lcdUnitString.getStyleClass().add(control.getLcdDesign().CSS);
+            lcdUnitString.getStyleClass().add("lcd-text");
+            lcdValueString.getStyleClass().clear();
+            lcdValueString.getStyleClass().add("lcd");
+            lcdValueString.getStyleClass().add(control.getLcdDesign().CSS);
+            lcdValueString.getStyleClass().add("lcd-text");
             drawLcdContent();
         } else if ("LCD_NUMBER_SYSTEM".equals(PROPERTY)) {
             drawLcdContent();
@@ -664,6 +674,7 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
 
     @Override public void layoutChildren() {
         if (isDirty) {
+            adjustLcdFont();
             paint();
             isDirty = false;
         }
@@ -781,6 +792,31 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
             final Shape AREA = Shape.subtract(ARC, SUBTRACT);
 
             area.setFilledArea(AREA);
+        }
+    }
+
+    private void adjustLcdFont() {
+        final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
+        // Load font for lcd
+        final double LCD_HEIGHT = SIZE * control.getRadialRange().LCD_FACTORS.getHeight();
+        lcdUnitFont = Font.font(control.getLcdUnitFont(), FontWeight.NORMAL, (0.4 * LCD_HEIGHT));
+        switch(control.getLcdValueFont()) {
+            case LCD:
+                lcdValueFont = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/digital.ttf"), (0.75 * LCD_HEIGHT));
+                break;
+            case BUS:
+                lcdValueFont = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/bus.otf"), (0.6 * LCD_HEIGHT));
+                break;
+            case PIXEL:
+                lcdValueFont = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/pixel.ttf"), (0.6 * LCD_HEIGHT));
+                break;
+            case PHONE_LCD:
+                lcdValueFont = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/phonelcd.ttf"), (0.6 * LCD_HEIGHT));
+                break;
+            case STANDARD:
+            default:
+                lcdValueFont = Font.font("Verdana", FontWeight.NORMAL, (0.6 * LCD_HEIGHT));
+                break;
         }
     }
 
@@ -1320,36 +1356,30 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
 
         final Rectangle LCD_FRAME = new Rectangle(((SIZE - SIZE * control.getRadialRange().LCD_FACTORS.getX()) / 2.0), (SIZE * control.getRadialRange().LCD_FACTORS.getY()), (SIZE * control.getRadialRange().LCD_FACTORS.getWidth()), (SIZE * control.getRadialRange().LCD_FACTORS.getHeight()));
 
-        final Font LCD_UNIT_FONT = Font.font(control.getLcdUnitFont(), FontWeight.NORMAL, (0.4 * LCD_FRAME.getLayoutBounds().getHeight()));
-
-        final Font LCD_VALUE_FONT;
         final double UNIT_Y_OFFSET;
-
         switch(control.getLcdValueFont()) {
             case LCD:
-                LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/digital.ttf"), (0.75 * LCD_FRAME.getLayoutBounds().getHeight()));
                 UNIT_Y_OFFSET = 1.5;
                 break;
             case BUS:
-                LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/bus.otf"), (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
                 UNIT_Y_OFFSET = 2.0;
                 break;
             case PIXEL:
-                LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/pixel.ttf"), (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
                 UNIT_Y_OFFSET = 2.0;
                 break;
             case PHONE_LCD:
-                LCD_VALUE_FONT = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/phonelcd.ttf"), (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
                 UNIT_Y_OFFSET = 2.0;
                 break;
             case STANDARD:
             default:
-                LCD_VALUE_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.6 * LCD_FRAME.getLayoutBounds().getHeight()));
                 UNIT_Y_OFFSET = 2.0;
                 break;
         }
-        lcdValueString.setFont(LCD_VALUE_FONT);
-        lcdUnitString.setFont(LCD_UNIT_FONT);
+        if (this.lcdValueFont == null) {
+            adjustLcdFont();
+        }
+        lcdValueString.setFont(lcdValueFont);
+        lcdUnitString.setFont(lcdUnitFont);
 
         // Unit
         lcdUnitString.setText(control.isLcdValueCoupled() ? control.getUnit() : control.getLcdUnit());
@@ -1362,9 +1392,6 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
             lcdUnitString.setX(LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdUnitString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0625);
             lcdUnitString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / UNIT_Y_OFFSET - (lcdValueString.getLayoutBounds().getHeight() * 0.05));
         }
-        lcdUnitString.getStyleClass().add("lcd");
-        lcdUnitString.setStyle(control.getLcdDesign().CSS);
-        lcdUnitString.getStyleClass().add("lcd-text");
         lcdUnitString.setStroke(null);
 
         // Value
@@ -1391,9 +1418,6 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
         lcdValueString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / 2.0);
         lcdValueString.setTextOrigin(VPos.BOTTOM);
         lcdValueString.setTextAlignment(TextAlignment.RIGHT);
-        lcdValueString.getStyleClass().add("lcd");
-        lcdValueString.setStyle(control.getLcdDesign().CSS);
-        lcdValueString.getStyleClass().add("lcd-text");
         lcdValueString.setStroke(null);
 
         lcdContent.getChildren().addAll(lcdUnitString, lcdValueString);

@@ -620,7 +620,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             drawPointer();
         } else if("THRESHOLD_COLOR".equals(PROPERTY)) {
             final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int)((control.getThreshold() - control.getMinValue()) * control.getAngleStep() / 5.0);
-            //ledsOn.get(THRESHOLD_LED_INDEX).setStyle(control.getThresholdColor().CSS);
+            ledsOn.get(THRESHOLD_LED_INDEX).getStyleClass().clear();
             ledsOn.get(THRESHOLD_LED_INDEX).getStyleClass().add("bargraph-threshold");
             drawThreshold();
         } else if ("FOREGROUND_TYPE".equals(PROPERTY)) {
