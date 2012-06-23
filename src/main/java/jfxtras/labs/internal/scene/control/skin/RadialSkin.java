@@ -559,8 +559,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                         }
                     }
                     if (control.isThresholdVisible()) {
-                        ledsOn.get(THRESHOLD_LED_INDEX).setStyle(control.getThresholdColor().CSS);
-                        ledsOn.get(THRESHOLD_LED_INDEX).getStyleClass().add("bargraph-threshold");
                         ledsOn.get(THRESHOLD_LED_INDEX).setVisible(true);
                     }
                 } else {
@@ -619,6 +617,9 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         } else if ("VALUE_COLOR".equals(PROPERTY)) {
             drawPointer();
         } else if("THRESHOLD_COLOR".equals(PROPERTY)) {
+            final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int)((control.getThreshold() - control.getMinValue()) * control.getAngleStep() / 5.0);
+            ledsOn.get(THRESHOLD_LED_INDEX).setStyle(control.getThresholdColor().CSS);
+            ledsOn.get(THRESHOLD_LED_INDEX).getStyleClass().add("bargraph-threshold");
             drawThreshold();
         } else if ("FOREGROUND_TYPE".equals(PROPERTY)) {
             drawCircularForeground(control, foreground, gaugeBounds);
@@ -926,24 +927,24 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         titleAndUnit.getChildren().add(IBOUNDS);
 
         final Font TITLE_FONT = Font.font(control.getTitleFont(), FontWeight.NORMAL, (0.046728972 * SIZE));
-        final Text title = new Text();
-        title.setTextOrigin(VPos.BOTTOM);
-        title.setFont(TITLE_FONT);
-        title.setText(control.getTitle());
-        title.setX(((SIZE - title.getLayoutBounds().getWidth()) / 2.0));
-        title.setY(0.3 * SIZE + title.getLayoutBounds().getHeight());
-        title.getStyleClass().add(control.getBackgroundDesign().CSS_TEXT);
+        final Text TITLE = new Text();
+        TITLE.setTextOrigin(VPos.BOTTOM);
+        TITLE.setFont(TITLE_FONT);
+        TITLE.setText(control.getTitle());
+        TITLE.setX(((SIZE - TITLE.getLayoutBounds().getWidth()) / 2.0));
+        TITLE.setY(0.3 * SIZE + TITLE.getLayoutBounds().getHeight());
+        TITLE.getStyleClass().add(control.getBackgroundDesign().CSS_TEXT);
 
         final Font UNIT_FONT = Font.font(control.getUnitFont(), FontWeight.NORMAL, (0.046728972 * SIZE));
-        final Text unit = new Text();
-        unit.setTextOrigin(VPos.BOTTOM);
-        unit.setFont(UNIT_FONT);
-        unit.setText(control.getUnit());
-        unit.setX((SIZE - unit.getLayoutBounds().getWidth()) / 2.0);
-        unit.setY(0.365 * SIZE + unit.getLayoutBounds().getHeight());
-        unit.getStyleClass().add(control.getBackgroundDesign().CSS_TEXT);
+        final Text UNIT = new Text();
+        UNIT.setTextOrigin(VPos.BOTTOM);
+        UNIT.setFont(UNIT_FONT);
+        UNIT.setText(control.getUnit());
+        UNIT.setX((SIZE - UNIT.getLayoutBounds().getWidth()) / 2.0);
+        UNIT.setY(0.365 * SIZE + UNIT.getLayoutBounds().getHeight());
+        UNIT.getStyleClass().add(control.getBackgroundDesign().CSS_TEXT);
 
-        titleAndUnit.getChildren().addAll(title, unit);
+        titleAndUnit.getChildren().addAll(TITLE, UNIT);
         titleAndUnit.setCache(true);
     }
 
@@ -964,7 +965,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         THRESHOLD.setStrokeLineCap(StrokeLineCap.ROUND);
         THRESHOLD.setStrokeLineJoin(StrokeLineJoin.ROUND);
         THRESHOLD.setStrokeWidth(0.002 * HEIGHT);
-        THRESHOLD.getStyleClass().add("root");
+        //THRESHOLD.getStyleClass().add("root");
         THRESHOLD.setStyle(control.getThresholdColor().CSS);
         THRESHOLD.getStyleClass().add("threshold-gradient");
 
@@ -1172,11 +1173,11 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 POINTER.getElements().add(new MoveTo(0.4953271028037383 * WIDTH, 0.5327102803738317 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.5327102803738317 * WIDTH, 0.5 * HEIGHT));
                 POINTER.getElements().add(new CubicCurveTo(0.5327102803738317 * WIDTH, 0.5 * HEIGHT,
-                    0.5046728971962616 * WIDTH, 0.45794392523364486 * HEIGHT,
-                    0.4953271028037383 * WIDTH, 0.14953271028037382 * HEIGHT));
+                                                           0.5046728971962616 * WIDTH, 0.45794392523364486 * HEIGHT,
+                                                           0.4953271028037383 * WIDTH, 0.14953271028037382 * HEIGHT));
                 POINTER.getElements().add(new CubicCurveTo(0.49065420560747663 * WIDTH, 0.45794392523364486 * HEIGHT,
-                    0.46261682242990654 * WIDTH, 0.5 * HEIGHT,
-                    0.46261682242990654 * WIDTH, 0.5 * HEIGHT));
+                                                           0.46261682242990654 * WIDTH, 0.5 * HEIGHT,
+                                                           0.46261682242990654 * WIDTH, 0.5 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.4953271028037383 * WIDTH, 0.5327102803738317 * HEIGHT));
                 POINTER.getElements().add(new ClosePath());
                 POINTER.setStrokeType(StrokeType.CENTERED);
@@ -1228,17 +1229,17 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(0.4953271028037383 * WIDTH, 0.14953271028037382 * HEIGHT));
                 POINTER.getElements().add(new CubicCurveTo(0.4953271028037383 * WIDTH, 0.14953271028037382 * HEIGHT,
-                    0.4439252336448598 * WIDTH, 0.49065420560747663 * HEIGHT,
-                    0.4439252336448598 * WIDTH, 0.5 * HEIGHT));
+                                                           0.4439252336448598 * WIDTH, 0.49065420560747663 * HEIGHT,
+                                                           0.4439252336448598 * WIDTH, 0.5 * HEIGHT));
                 POINTER.getElements().add(new CubicCurveTo(0.4439252336448598 * WIDTH, 0.5327102803738317 * HEIGHT,
-                    0.4672897196261682 * WIDTH, 0.5560747663551402 * HEIGHT,
-                    0.4953271028037383 * WIDTH, 0.5560747663551402 * HEIGHT));
+                                                           0.4672897196261682 * WIDTH, 0.5560747663551402 * HEIGHT,
+                                                           0.4953271028037383 * WIDTH, 0.5560747663551402 * HEIGHT));
                 POINTER.getElements().add(new CubicCurveTo(0.5280373831775701 * WIDTH, 0.5560747663551402 * HEIGHT,
-                    0.5560747663551402 * WIDTH, 0.5327102803738317 * HEIGHT,
-                    0.5560747663551402 * WIDTH, 0.5 * HEIGHT));
+                                                           0.5560747663551402 * WIDTH, 0.5327102803738317 * HEIGHT,
+                                                           0.5560747663551402 * WIDTH, 0.5 * HEIGHT));
                 POINTER.getElements().add(new CubicCurveTo(0.5560747663551402 * WIDTH, 0.49065420560747663 * HEIGHT,
-                    0.4953271028037383 * WIDTH, 0.14953271028037382 * HEIGHT,
-                    0.4953271028037383 * WIDTH, 0.14953271028037382 * HEIGHT));
+                                                           0.4953271028037383 * WIDTH, 0.14953271028037382 * HEIGHT,
+                                                           0.4953271028037383 * WIDTH, 0.14953271028037382 * HEIGHT));
                 POINTER.getElements().add(new ClosePath());
                 POINTER.setStrokeType(StrokeType.CENTERED);
                 POINTER.setStrokeLineCap(StrokeLineCap.BUTT);
@@ -1252,11 +1253,11 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 POINTER.getElements().add(new MoveTo(0.5 * WIDTH, 0.16822429906542055 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.48598130841121495 * WIDTH, 0.5 * HEIGHT));
                 POINTER.getElements().add(new CubicCurveTo(0.48598130841121495 * WIDTH, 0.5 * HEIGHT,
-                    0.48130841121495327 * WIDTH, 0.5841121495327103 * HEIGHT,
-                    0.5 * WIDTH, 0.5841121495327103 * HEIGHT));
+                                                           0.48130841121495327 * WIDTH, 0.5841121495327103 * HEIGHT,
+                                                           0.5 * WIDTH, 0.5841121495327103 * HEIGHT));
                 POINTER.getElements().add(new CubicCurveTo(0.514018691588785 * WIDTH, 0.5841121495327103 * HEIGHT,
-                    0.5093457943925234 * WIDTH, 0.5 * HEIGHT,
-                    0.5093457943925234 * WIDTH, 0.5 * HEIGHT));
+                                                           0.5093457943925234 * WIDTH, 0.5 * HEIGHT,
+                                                           0.5093457943925234 * WIDTH, 0.5 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.5 * WIDTH, 0.16822429906542055 * HEIGHT));
                 POINTER.getElements().add(new ClosePath());
                 POINTER.setStrokeType(StrokeType.CENTERED);
