@@ -59,7 +59,7 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
 
 
     // ******************** Enum definitions **********************************
-    public enum GaugeType {
+    public static enum GaugeType {
         LCD,
         LINEAR,
         RADIAL_HALF_N,

@@ -27,6 +27,15 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.paint.Color;
+
+
 /**
  * Created by
  * User: hansolo
@@ -42,6 +51,10 @@ public final class Radial extends Gauge {
         TYPE4,
         TYPE5
     }
+    private BooleanProperty       histogramVisible;
+    private ObjectProperty<Color> histogramColor;
+    private BooleanProperty       histogramCreationEnabled;
+    private LongProperty          histogramDataPeriodInMinutes;
 
 
     // ******************** Constructors **************************************
@@ -59,6 +72,10 @@ public final class Radial extends Gauge {
 
     public Radial(final GaugeModel GAUGE_MODEL, final StyleModel STYLE_MODEL) {
         super(GAUGE_MODEL, STYLE_MODEL);
+        histogramVisible             = new SimpleBooleanProperty(false);
+        histogramColor               = new SimpleObjectProperty<Color>(Color.RED);
+        histogramCreationEnabled     = new SimpleBooleanProperty(false);
+        histogramDataPeriodInMinutes = new SimpleLongProperty(60);
         init();
     }
 
@@ -83,5 +100,53 @@ public final class Radial extends Gauge {
     @Override public void setMaxSize(final double WIDTH, final double HEIGHT) {
         final double SIZE = WIDTH <= HEIGHT ? WIDTH : HEIGHT;
         super.setMaxSize(SIZE, SIZE);
+    }
+
+    public final boolean isHistogramVisible() {
+        return histogramVisible.get();
+    }
+
+    public final void setHistogramVisible(final boolean HISTOGRAM_VISIBLE) {
+        histogramVisible.set(HISTOGRAM_VISIBLE);
+    }
+
+    public final BooleanProperty histogramVisibleProperty() {
+        return histogramVisible;
+    }
+
+    public final Color getHistogramColor() {
+        return histogramColor.get();
+    }
+
+    public final void setHistogramColor(final Color HISTOGRAM_COLOR) {
+        histogramColor.set(HISTOGRAM_COLOR);
+    }
+
+    public final ObjectProperty<Color> histogramColorProperty() {
+        return histogramColor;
+    }
+
+    public final boolean isHistogramCreationEnabled() {
+        return histogramCreationEnabled.get();
+    }
+
+    public final void setHistogramCreationEnabled(final boolean HISTOGRAM_CREATION_ENABLED) {
+        histogramCreationEnabled.set(HISTOGRAM_CREATION_ENABLED);
+    }
+
+    public final BooleanProperty histogramCreationEnabledProperty() {
+        return histogramCreationEnabled;
+    }
+
+    public final long getHistogramDataPeriodInMinutes() {
+        return histogramDataPeriodInMinutes.get();
+    }
+
+    public final void setHistogramDataPeriodInMinutes(final long HISTOGRAM_DATA_PERIOD_IN_MINUTES) {
+        histogramDataPeriodInMinutes.set(HISTOGRAM_DATA_PERIOD_IN_MINUTES);
+    }
+
+    public final LongProperty histogramDataPeriodInMinutesProperty() {
+        return histogramDataPeriodInMinutes;
     }
 }

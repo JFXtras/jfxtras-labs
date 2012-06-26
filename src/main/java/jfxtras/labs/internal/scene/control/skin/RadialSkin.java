@@ -29,13 +29,17 @@ package jfxtras.labs.internal.scene.control.skin;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.property.LongProperty;
 import javafx.scene.CacheHint;
+import javafx.scene.effect.Light;
+import javafx.scene.effect.Lighting;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.shape.Line;
 import jfxtras.labs.internal.scene.control.behavior.RadialBehavior;
 import jfxtras.labs.scene.control.gauge.Gauge.PointerType;
-import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
 import jfxtras.labs.scene.control.gauge.Radial;
 import jfxtras.labs.scene.control.gauge.Section;
-import jfxtras.labs.scene.control.gauge.StyleModelEvent;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
@@ -47,7 +51,6 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
@@ -140,6 +143,12 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     private AnimationTimer   userLedTimer;
     private boolean          userLedOnVisible;
     private long             lastUserLedTimerCall;
+    // ***** JavaFX 2.2 related properties *****
+    private Group            histogram;
+    private LongProperty     histogramOpacityDecreasingInterval;
+    private long             lastHistogramFadingTimerCall;
+    private AnimationTimer   histogramFadingTimer;
+    // *****************************************
     private boolean          isDirty;
     private boolean          initialized;
 
@@ -224,6 +233,22 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         };
         lastUserLedTimerCall   = 0l;
         userLedOnVisible       = false;
+
+        // ***** JavaFX 2.2 related *****
+        histogram              = new Group();
+        histogramOpacityDecreasingInterval.bind(control.histogramDataPeriodInMinutesProperty().multiply(60000000000l).multiply(0.01));
+        lastHistogramFadingTimerCall = System.nanoTime();
+        histogramFadingTimer = new AnimationTimer() {
+            @Override public void handle(long l) {
+                long currentNanoTime = System.nanoTime();
+                if (currentNanoTime > lastHistogramFadingTimerCall + histogramOpacityDecreasingInterval.get()) {
+                    // reduceHistogramOpacity();
+                    lastHistogramFadingTimerCall = currentNanoTime;
+                }
+            }
+        };
+        // ******************************
+
         initialized            = false;
         init();
     }
@@ -927,6 +952,38 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         }
     }
 
+    private void addValueToHistogram(final double VALUE) {
+        /*
+        ImageView histogramImage = new ImageView(histogram.snapshot(new SnapshotParameters(), null);
+        final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
+        final double WIDTH = SIZE;
+        final double HEIGHT = SIZE;
+
+        histogram.getChildren().clear();
+        histogram.setOpacity(1.0);
+
+        final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
+        IBOUNDS.setOpacity(0.0);
+        IBOUNDS.setStroke(null);
+        histogram.getChildren().addAll(IBOUNDS);
+
+        Line line = new Line(center.getX(), center.getY(), center.getX(), HEIGHT * 0.35);
+        line.setStroke(control.getHistogramColor());
+
+        histogram.getChildren().addAll(histogramImage, line);
+
+        histogram.getTransforms().clear();
+        double currentValue = control.getValue() < control.getMinValue() ? control.getMinValue() : control.getValue();
+        histogram.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET + (currentValue - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getY()));
+        */
+    }
+
+    private void reduceHistogramOpacity() {
+        double opacity = histogram.getOpacity();
+        if (opacity > 0) {
+            histogram.setOpacity(histogram.getOpacity() - (histogramOpacityDecreasingInterval.get() / 100));
+        }
+    }
 
     // ******************** Drawing *******************************************
     public void drawTitleAndUnit() {
@@ -1111,7 +1168,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 POINTER.getElements().add(new LineTo(0.5046728971962616 * WIDTH, 0.1308411214953271 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.5046728971962616 * WIDTH, 0.5046728971962616 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.4953271028037383 * WIDTH, 0.5046728971962616 * HEIGHT));
-                POINTER.getElements().add(new LineTo(0.4953271028037383 * WIDTH, 0.1308411214953271 * HEIGHT));
                 POINTER.getElements().add(new ClosePath());
                 POINTER.setStroke(null);
                 break;
@@ -1403,17 +1459,11 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         }
 
         // Pointer shadow
-        final DropShadow SHADOW;
         if (control.isPointerShadowEnabled()) {
-            SHADOW = new DropShadow();
-            SHADOW.setHeight(0.03 * WIDTH);
-            SHADOW.setWidth(0.03 * HEIGHT);
-            SHADOW.setRadius(0.03 * WIDTH);
-            SHADOW.setColor(Color.color(0, 0, 0, 0.75));
-        } else {
-            SHADOW = null;
+            drawShadows();
         }
 
+        final DropShadow SHADOW = new DropShadow();
         // Pointer glow
         if (control.isPointerGlowEnabled()) {
             final DropShadow GLOW = new DropShadow();
@@ -1433,8 +1483,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 }
                 POINTER.setEffect(GLOW);
             }
-        } else {
-            POINTER.setEffect(SHADOW);
         }
 
         pointer.getChildren().addAll(POINTER);
@@ -1527,5 +1575,24 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         lcdValueString.setStroke(null);
 
         lcdContent.getChildren().addAll(lcdUnitString, lcdValueString);
+    }
+
+    private void drawShadows() {
+        final double SIZE  = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+        final double WIDTH = SIZE;
+
+        final Lighting LIGHTING   = new Lighting();
+        final Light.Distant LIGHT = new Light.Distant();
+        LIGHT.setAzimuth(270);
+        LIGHTING.setLight(LIGHT);
+
+        final DropShadow DROP_SHADOW = new DropShadow();
+        DROP_SHADOW.setInput(LIGHTING);
+        DROP_SHADOW.setOffsetY(0.015 * WIDTH);
+        DROP_SHADOW.setRadius(0.015 * WIDTH);
+        DROP_SHADOW.setBlurType(BlurType.GAUSSIAN);
+        DROP_SHADOW.setColor(Color.color(0, 0, 0, 0.55));
+
+        pointer.setEffect(DROP_SHADOW);
     }
 }

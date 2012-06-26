@@ -1373,6 +1373,7 @@ public abstract class Gauge extends Control {
         return gaugeModel.getSections();
     }
 
+    /* Removed due to FXML compatibility
     public final void setSections(final Section... SECTION_ARRAY) {
         gaugeModel.setSections(SECTION_ARRAY);
     }
@@ -1380,6 +1381,7 @@ public abstract class Gauge extends Control {
     public final void setSections(final List<Section> SECTIONS) {
         gaugeModel.setSections(SECTIONS);
     }
+    */
 
     public final void addSection(final Section SECTION) {
         gaugeModel.addSection(SECTION);
@@ -1445,6 +1447,7 @@ public abstract class Gauge extends Control {
         return gaugeModel.getAreas();
     }
 
+    /* Removed due to FXML compatibility
     public final void setAreas(final Section... AREA_ARRAY) {
         gaugeModel.setAreas(AREA_ARRAY);
     }
@@ -1452,6 +1455,7 @@ public abstract class Gauge extends Control {
     public final void setAreas(final List<Section> AREAS) {
         gaugeModel.setAreas(AREAS);
     }
+    */
 
     public final void addArea(final Section AREA) {
         gaugeModel.addArea(AREA);
@@ -1493,6 +1497,7 @@ public abstract class Gauge extends Control {
         return gaugeModel.getTickMarkSections();
     }
 
+    /* Removed due to FXML compatibility
     public final void setTickMarkSections(final Section... TICK_MARK_SECTION_ARRAY) {
         gaugeModel.setTickMarkSections(TICK_MARK_SECTION_ARRAY);
     }
@@ -1500,6 +1505,7 @@ public abstract class Gauge extends Control {
     public final void setTickMarkSections(final List<Section> TICK_MARK_SECTIONS) {
         gaugeModel.setTickMarkSections(TICK_MARK_SECTIONS);
     }
+    */
 
     public final void addTickMarkSection(final Section TICK_MARK_SECTION) {
         gaugeModel.addTickMarkSection(TICK_MARK_SECTION);
@@ -1517,6 +1523,7 @@ public abstract class Gauge extends Control {
         return gaugeModel.getMarkers();
     }
 
+    /* Removed due to FXML compatibility
     public final void setMarkers(final Marker... MARKER_ARRAY) {
         gaugeModel.setMarkers(MARKER_ARRAY);
     }
@@ -1524,6 +1531,7 @@ public abstract class Gauge extends Control {
     public final void setMarkers(final List<Marker> MARKERS) {
         gaugeModel.setMarkers(MARKERS);
     }
+    */
 
     public final void addMarker(final Marker MARKER) {
         gaugeModel.addMarker(MARKER);
