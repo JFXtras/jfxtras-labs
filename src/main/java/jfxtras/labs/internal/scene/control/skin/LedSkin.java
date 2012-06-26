@@ -107,6 +107,8 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
         // Register listeners
         registerChangeListener(control.onProperty(), "ON");
         registerChangeListener(control.blinkingProperty(), "BLINKING");
+        registerChangeListener(control.colorProperty(), "COLOR");
+        registerChangeListener(control.typeProperty(), "TYPE");
 
         if (control.isBlinking()) {
             timer.start();
@@ -124,7 +126,6 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
         }
         getChildren().clear();
         drawLed();
-
         getChildren().addAll(led);
     }
 
@@ -139,6 +140,10 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
                 timer.stop();
                 ledOn.setVisible(false);
             }
+        } else if ("COLOR".equals(PROPERTY)) {
+            paint();
+        } else if ("TYPE".equals(PROPERTY)) {
+            paint();
         }
     }
 
