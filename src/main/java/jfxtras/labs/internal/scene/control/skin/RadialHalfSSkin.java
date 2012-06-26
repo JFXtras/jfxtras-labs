@@ -27,6 +27,8 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.scene.CacheHint;
 import jfxtras.labs.internal.scene.control.behavior.RadialHalfSBehavior;
 import jfxtras.labs.scene.control.gauge.Gauge;
@@ -383,19 +385,15 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
     }
 
     private void addListeners() {
-        control.setOnGaugeModelEvent(new EventHandler<GaugeModelEvent>() {
-            @Override
-            public void handle(final GaugeModelEvent EVENT) {
-                // Trigger repaint
+        control.gaugeModelProperty().addListener(new InvalidationListener() {
+            @Override public void invalidated(Observable observable) {
                 addBindings();
                 paint();
             }
         });
 
-        control.setOnStyleModelEvent(new EventHandler<StyleModelEvent>() {
-            @Override
-            public void handle(final StyleModelEvent EVENT) {
-                // Trigger repaint
+        control.styleModelProperty().addListener(new InvalidationListener() {
+            @Override public void invalidated(Observable observable) {
                 addBindings();
                 paint();
             }

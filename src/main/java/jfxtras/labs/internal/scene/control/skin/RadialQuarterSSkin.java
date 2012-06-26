@@ -27,6 +27,8 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.scene.CacheHint;
 import jfxtras.labs.internal.scene.control.behavior.RadialQuarterSBehavior;
 import jfxtras.labs.scene.control.gauge.Gauge;
@@ -373,17 +375,15 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
     }
 
     private void addListeners() {
-        control.setOnGaugeModelEvent(new EventHandler<GaugeModelEvent>() {
-            @Override
-            public void handle(final GaugeModelEvent EVENT) {
+        control.gaugeModelProperty().addListener(new InvalidationListener() {
+            @Override public void invalidated(Observable observable) {
                 addBindings();
                 paint();
             }
         });
 
-        control.setOnStyleModelEvent(new EventHandler<StyleModelEvent>() {
-            @Override
-            public void handle(final StyleModelEvent EVENT) {
+        control.styleModelProperty().addListener(new InvalidationListener() {
+            @Override public void invalidated(Observable observable) {
                 addBindings();
                 paint();
             }

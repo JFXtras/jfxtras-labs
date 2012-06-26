@@ -83,11 +83,21 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
 
     public final Gauge build() {
         GaugeType         gaugeType   = GaugeType.RADIAL;
-        GaugeModel        gaugeModel  = new GaugeModel();
-        StyleModel        styleModel  = new StyleModel();
         double            prefWidth   = -1;
         double            prefHeight  = -1;
         Gauge.RadialRange radialRange = Gauge.RadialRange.RADIAL_300;
+        GaugeModel        gaugeModel;
+        if (gaugeProperties.containsKey("gaugeModel")) {
+            gaugeModel = ((ObjectProperty<GaugeModel>) gaugeProperties.get("gaugeModel")).get();
+        } else {
+            gaugeModel = new GaugeModel();
+        }
+        StyleModel        styleModel;
+        if (styleProperties.containsKey("styleModel")) {
+            styleModel = ((ObjectProperty<StyleModel>) styleProperties.get("styleModel")).get();
+        } else {
+            styleModel = new StyleModel();
+        }
 
         // gauge model
         for (String key : gaugeProperties.keySet()) {
@@ -353,6 +363,11 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
 
 
     // ******************** GaugeModel related ********************************
+    public final B gaugeModel(final GaugeModel GAUGE_MODEL) {
+        gaugeProperties.put("gaugeModel", new SimpleObjectProperty<GaugeModel>(GAUGE_MODEL));
+        return (B)this;
+    }
+
     public final B gaugeType(final GaugeType GAUGE_TYPE) {
         gaugeProperties.put("gaugeType", new SimpleObjectProperty<GaugeType>(GAUGE_TYPE));
         return (B)this;
@@ -506,6 +521,11 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
 
 
     // ******************** StyleModel related ********************************
+    public final B styleModel(final StyleModel STYLE_MODEL) {
+        styleProperties.put("styleModel", new SimpleObjectProperty<StyleModel>(STYLE_MODEL));
+        return (B) this;
+    }
+
     public final GaugeBuilder bargraph(final boolean BARGRAPH) {
         styleProperties.put("bargraph", new SimpleBooleanProperty(BARGRAPH));
         return this;

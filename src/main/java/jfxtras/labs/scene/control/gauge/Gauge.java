@@ -272,7 +272,7 @@ public abstract class Gauge extends Control {
 
     // ******************** Constructors **************************************
     protected Gauge() {
-        this(new GaugeModel());
+        this(new GaugeModel(), new StyleModel());
     }
 
     protected Gauge(final GaugeModel GAUGE_MODEL) {
@@ -375,8 +375,6 @@ public abstract class Gauge extends Control {
         styleModelProperty.set(STYLE_MODEL);
         styleModel = styleModelProperty().get();
         addStyleModelListener();
-        styleModel.fireStyleModelEvent();
-        init();
     }
 
     public final ObjectProperty<StyleModel> styleModelProperty() {
@@ -391,8 +389,6 @@ public abstract class Gauge extends Control {
         gaugeModelProperty.set(GAUGE_MODEL);
         gaugeModel = gaugeModelProperty.get();
         addGaugeModelListener();
-        gaugeModel.fireGaugeModelEvent();
-        init();
     }
 
     public final ObjectProperty<GaugeModel> gaugeModelProperty() {
@@ -1377,13 +1373,13 @@ public abstract class Gauge extends Control {
         return gaugeModel.getSections();
     }
 
-    /*public final void setSections(final Section... SECTION_ARRAY) {
+    public final void setSections(final Section... SECTION_ARRAY) {
         gaugeModel.setSections(SECTION_ARRAY);
     }
 
     public final void setSections(final List<Section> SECTIONS) {
         gaugeModel.setSections(SECTIONS);
-    }*/
+    }
 
     public final void addSection(final Section SECTION) {
         gaugeModel.addSection(SECTION);
@@ -1449,13 +1445,13 @@ public abstract class Gauge extends Control {
         return gaugeModel.getAreas();
     }
 
-    /*public final void setAreas(final Section... AREA_ARRAY) {
+    public final void setAreas(final Section... AREA_ARRAY) {
         gaugeModel.setAreas(AREA_ARRAY);
     }
 
     public final void setAreas(final List<Section> AREAS) {
         gaugeModel.setAreas(AREAS);
-    }*/
+    }
 
     public final void addArea(final Section AREA) {
         gaugeModel.addArea(AREA);
@@ -1497,13 +1493,13 @@ public abstract class Gauge extends Control {
         return gaugeModel.getTickMarkSections();
     }
 
-    /*public final void setTickMarkSections(final Section... TICK_MARK_SECTION_ARRAY) {
+    public final void setTickMarkSections(final Section... TICK_MARK_SECTION_ARRAY) {
         gaugeModel.setTickMarkSections(TICK_MARK_SECTION_ARRAY);
     }
 
     public final void setTickMarkSections(final List<Section> TICK_MARK_SECTIONS) {
         gaugeModel.setTickMarkSections(TICK_MARK_SECTIONS);
-    }*/
+    }
 
     public final void addTickMarkSection(final Section TICK_MARK_SECTION) {
         gaugeModel.addTickMarkSection(TICK_MARK_SECTION);
@@ -1521,13 +1517,13 @@ public abstract class Gauge extends Control {
         return gaugeModel.getMarkers();
     }
 
-    /*public final void setMarkers(final Marker... MARKER_ARRAY) {
+    public final void setMarkers(final Marker... MARKER_ARRAY) {
         gaugeModel.setMarkers(MARKER_ARRAY);
     }
 
     public final void setMarkers(final List<Marker> MARKERS) {
         gaugeModel.setMarkers(MARKERS);
-    }*/
+    }
 
     public final void addMarker(final Marker MARKER) {
         gaugeModel.addMarker(MARKER);

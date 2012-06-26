@@ -179,6 +179,7 @@ public class GaugeModel {
 
     public final void setValue(final double VALUE) {
         value.set(Double.compare(VALUE, niceMinValue.get()) < 0 ? niceMinValue.get() : (Double.compare(VALUE, niceMaxValue.get()) > 0 ? niceMaxValue.get() : VALUE));
+        fireGaugeModelEvent();
     }
 
     public final DoubleProperty valueProperty() {
@@ -191,6 +192,7 @@ public class GaugeModel {
 
     public final void setValueAnimationEnabled(final boolean VALUE_ANIMATION_ENABLED) {
         valueAnimationEnabled.set(VALUE_ANIMATION_ENABLED);
+        fireGaugeModelEvent();
     }
 
     public final BooleanProperty valueAnimationEnabledProperty() {
@@ -203,6 +205,7 @@ public class GaugeModel {
 
     public final void setAnimationDuration(final double ANIMATION_DURATION) {
         animationDuration.set(ANIMATION_DURATION);
+        fireGaugeModelEvent();
     }
 
     public final DoubleProperty animationDurationProperty() {
@@ -215,6 +218,7 @@ public class GaugeModel {
 
     public final void setMinValue(final double MIN_VALUE) {
         minValue.set(MIN_VALUE);
+        fireGaugeModelEvent();
     }
 
     public final DoubleProperty minValueProperty() {
@@ -227,6 +231,7 @@ public class GaugeModel {
 
     public final void setMaxValue(final double MAX_VALUE) {
         maxValue.set(MAX_VALUE);
+        fireGaugeModelEvent();
     }
 
     public final DoubleProperty maxValueProperty() {
@@ -247,6 +252,7 @@ public class GaugeModel {
 
     public final void setMinMeasuredValue(final double MIN_MEASURED_VALUE) {
         minMeasuredValue.set(MIN_MEASURED_VALUE);
+        fireGaugeModelEvent();
     }
 
     public final DoubleProperty minMeasuredValueProperty() {
@@ -263,6 +269,7 @@ public class GaugeModel {
 
     public final void setMaxMeasuredValue(final double MAX_MEASURED_VALUE) {
         maxMeasuredValue.set(MAX_MEASURED_VALUE);
+        fireGaugeModelEvent();
     }
 
     public final DoubleProperty maxMeasuredValueProperty() {
@@ -284,6 +291,7 @@ public class GaugeModel {
 
     public final void setThreshold(final double THRESHOLD) {
         threshold.set(Double.compare(THRESHOLD, niceMinValue.get()) < 0 ? niceMinValue.get() : (Double.compare(THRESHOLD, niceMaxValue.get()) > 0 ? niceMaxValue.get() : THRESHOLD));
+        fireGaugeModelEvent();
     }
 
     public final DoubleProperty thresholdProperty() {
@@ -296,6 +304,7 @@ public class GaugeModel {
 
     public final void setThresholdBehaviorInverted(final boolean THRESHOLD_BEHAVIOR_INVERTED) {
         thresholdBehaviorInverted.set(THRESHOLD_BEHAVIOR_INVERTED);
+        fireGaugeModelEvent();
     }
 
     public final BooleanProperty thresholdBehaviorInvertedProperty() {
@@ -308,6 +317,7 @@ public class GaugeModel {
 
     public final void setThresholdExceeded(final boolean THRESHOLD_EXCEEDED) {
         thresholdExceeded.set(THRESHOLD_EXCEEDED);
+        fireGaugeModelEvent();
     }
 
     public final BooleanProperty thresholdExceededProperty() {
@@ -320,6 +330,7 @@ public class GaugeModel {
 
     public final void setTitle(final String TITLE) {
         title.set(TITLE);
+        fireGaugeModelEvent();
     }
 
     public final StringProperty titleProperty() {
@@ -332,6 +343,7 @@ public class GaugeModel {
 
     public final void setUnit(final String UNIT) {
         unit.set(UNIT);
+        fireGaugeModelEvent();
     }
 
     public final StringProperty unitProperty() {
@@ -344,6 +356,7 @@ public class GaugeModel {
 
     public final void setLcdValue(final double LCD_VALUE) {
         lcdValue.set(LCD_VALUE);
+        fireGaugeModelEvent();
     }
 
     public final DoubleProperty lcdValueProperty() {
@@ -356,6 +369,7 @@ public class GaugeModel {
 
     public final void setLcdValueCoupled(final boolean LCD_VALUE_COUPLED) {
         lcdValueCoupled.set(LCD_VALUE_COUPLED);
+        fireGaugeModelEvent();
     }
 
     public final BooleanProperty lcdValueCoupledProperty() {
@@ -368,6 +382,7 @@ public class GaugeModel {
 
     public final void setLcdThreshold(final double LCD_THRESHOLD) {
         lcdThreshold.set(LCD_THRESHOLD);
+        fireGaugeModelEvent();
     }
 
     public final DoubleProperty lcdThresholdProperty() {
@@ -380,6 +395,7 @@ public class GaugeModel {
 
     public final void setLcdThresholdBehaviorInverted(final boolean LCD_THRESHOLD_BEHAVIOR_INVERTED) {
         lcdThresholdBehaviorInverted.set(LCD_THRESHOLD_BEHAVIOR_INVERTED);
+        fireGaugeModelEvent();
     }
 
     public final BooleanProperty lcdThresholdBehaviorInvertedProperty() {
@@ -392,6 +408,7 @@ public class GaugeModel {
 
     public final void setLcdUnit(final String LCD_UNIT_STRING) {
         lcdUnit.set(LCD_UNIT_STRING);
+        fireGaugeModelEvent();
     }
 
     public final StringProperty lcdUnitProperty() {
@@ -404,6 +421,7 @@ public class GaugeModel {
 
     public final void setLcdNumberSystem(final NumberSystem LCD_NUMBER_SYSTEM) {
         lcdNumberSystem.set(LCD_NUMBER_SYSTEM);
+        fireGaugeModelEvent();
     }
 
     public final ObjectProperty lcdNumberSystemProperty() {
@@ -416,6 +434,7 @@ public class GaugeModel {
 
     public final void setMaxNoOfMajorTicks(final int MAX_NO_OF_MAJOR_TICKS) {
         maxNoOfMajorTicks.set(MAX_NO_OF_MAJOR_TICKS);
+        fireGaugeModelEvent();
     }
 
     public final IntegerProperty maxNoOfMajorTicksProperty() {
@@ -428,6 +447,7 @@ public class GaugeModel {
 
     public final void setMaxNoOfMinorTicks(final int MAX_NO_OF_MINOR_TICKS) {
         maxNoOfMinorTicks.set(MAX_NO_OF_MINOR_TICKS);
+        fireGaugeModelEvent();
     }
 
     public final IntegerProperty maxNoOfMinorTicksProperty() {
@@ -440,6 +460,7 @@ public class GaugeModel {
 
     public final void setMajorTickSpacing(final int MAJOR_TICKSPACING) {
         majorTickSpacing.set(MAJOR_TICKSPACING);
+        fireGaugeModelEvent();
     }
 
     public final IntegerProperty majorTickSpacingProperty() {
@@ -452,6 +473,7 @@ public class GaugeModel {
 
     public final void setMinorTickSpacing(final int MINOR_TICKSPACING) {
         minorTickSpacing.set(MINOR_TICKSPACING);
+        fireGaugeModelEvent();
     }
 
     public final IntegerProperty minorTickSpacingProperty() {
@@ -464,6 +486,7 @@ public class GaugeModel {
 
     public final void setTrend(final Trend TREND) {
         trend.set(TREND);
+        fireGaugeModelEvent();
     }
 
     public final ObjectProperty<Trend> trendProperty() {
@@ -476,6 +499,7 @@ public class GaugeModel {
 
     public final void setNiceScaling(final boolean NICE_SCALING) {
         niceScaling.set(NICE_SCALING);
+        fireGaugeModelEvent();
     }
 
     public final BooleanProperty niceScalingProperty() {
@@ -494,6 +518,7 @@ public class GaugeModel {
         for (final Section SECTION : SECTION_ARRAY) {
             sections.add(new Section(SECTION.getStart(), SECTION.getStop(), SECTION.getColor(), SECTION.getText()));
         }
+        fireGaugeModelEvent();
     }
 
     public final void setSections(final List<Section> SECTIONS) {
@@ -501,10 +526,12 @@ public class GaugeModel {
         for (final Section SECTION : SECTIONS) {
             sections.add(new Section(SECTION.getStart(), SECTION.getStop(), SECTION.getColor(), SECTION.getText()));
         }
+        fireGaugeModelEvent();
     }
 
     public final void addSection(final Section SECTION) {
         sections.add(new Section(SECTION.getStart(), SECTION.getStop(), SECTION.getColor(), SECTION.getText()));
+        fireGaugeModelEvent();
     }
 
     public final void removeSection(final Section SECTION) {
@@ -514,10 +541,12 @@ public class GaugeModel {
                 break;
             }
         }
+        fireGaugeModelEvent();
     }
 
     public final void resetSections() {
         sections.clear();
+        fireGaugeModelEvent();
     }
 
     public final List<Section> getAreas() {
@@ -532,6 +561,7 @@ public class GaugeModel {
         for (final Section AREA : AREA_ARRAY) {
             areas.add(new Section(AREA.getStart(), AREA.getStop(), AREA.getColor(), AREA.getText()));
         }
+        fireGaugeModelEvent();
     }
 
     public final void setAreas(final List<Section> AREAS) {
@@ -539,10 +569,12 @@ public class GaugeModel {
         for (final Section AREA : AREAS) {
             areas.add(new Section(AREA.getStart(), AREA.getStop(), AREA.getColor(), AREA.getText()));
         }
+        fireGaugeModelEvent();
     }
 
     public final void addArea(final Section AREA) {
         areas.add(new Section(AREA.getStart(), AREA.getStop(), AREA.getColor(), AREA.getText()));
+        fireGaugeModelEvent();
     }
 
     public final void removeArea(final Section AREA) {
@@ -552,10 +584,12 @@ public class GaugeModel {
                 break;
             }
         }
+        fireGaugeModelEvent();
     }
 
     public final void resetAreas() {
         areas.clear();
+        fireGaugeModelEvent();
     }
 
     public final List<Section> getTickMarkSections() {
@@ -570,6 +604,7 @@ public class GaugeModel {
         for (final Section SECTION : SECTIONS_ARRAY) {
             tickMarkSections.add(new Section(SECTION.getStart(), SECTION.getStop(), SECTION.getColor(), SECTION.getText()));
         }
+        fireGaugeModelEvent();
     }
 
     public final void setTickMarkSections(final List<Section> SECTIONS) {
@@ -577,10 +612,12 @@ public class GaugeModel {
         for (final Section SECTION : SECTIONS) {
             tickMarkSections.add(new Section(SECTION.getStart(), SECTION.getStop(), SECTION.getColor(), SECTION.getText()));
         }
+        fireGaugeModelEvent();
     }
 
     public final void addTickMarkSection(final Section SECTION) {
         tickMarkSections.add(new Section(SECTION.getStart(), SECTION.getStop(), SECTION.getColor(), SECTION.getText()));
+        fireGaugeModelEvent();
     }
 
     public final void removeTickMarkSection(final Section SECTION) {
@@ -590,10 +627,12 @@ public class GaugeModel {
                 break;
             }
         }
+        fireGaugeModelEvent();
     }
 
     public final void resetTickMarkSections() {
         tickMarkSections.clear();
+        fireGaugeModelEvent();
     }
 
     public final List<Marker> getMarkers() {
@@ -608,6 +647,7 @@ public class GaugeModel {
         for (final Marker MARKER : MARKER_ARRAY) {
             markers.add(new Marker(MARKER.getValue(), MARKER.getColor(), MARKER.getText(), MARKER.isVisible()));
         }
+        fireGaugeModelEvent();
     }
 
     public final void setMarkers(final List<Marker> MARKERS) {
@@ -615,10 +655,12 @@ public class GaugeModel {
         for (final Marker MARKER : MARKERS) {
             markers.add(new Marker(MARKER.getValue(), MARKER.getColor(), MARKER.getText(), MARKER.isVisible()));
         }
+        fireGaugeModelEvent();
     }
 
     public final void addMarker(final Marker MARKER) {
         markers.add(new Marker(MARKER.getValue(), MARKER.getColor(), MARKER.getText(), MARKER.isVisible()));
+        fireGaugeModelEvent();
     }
 
     public final void removeMarker(final Marker MARKER) {
@@ -628,10 +670,12 @@ public class GaugeModel {
                 break;
             }
         }
+        fireGaugeModelEvent();
     }
 
     public final void resetMarkers() {
         markers.clear();
+        fireGaugeModelEvent();
     }
 
     /**
