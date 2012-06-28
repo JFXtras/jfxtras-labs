@@ -30,11 +30,16 @@ package jfxtras.labs.internal.scene.control.skin;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.CacheHint;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.SnapshotParametersBuilder;
 import javafx.scene.effect.Light;
 import javafx.scene.effect.Lighting;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.shape.Line;
 import jfxtras.labs.internal.scene.control.behavior.RadialBehavior;
 import jfxtras.labs.scene.control.gauge.Gauge.PointerType;
@@ -91,6 +96,7 @@ import java.util.ArrayList;
  */
 public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     private static final Rectangle PREF_SIZE = new Rectangle(200, 200);
+    //private final SnapshotParameters SNAPSHOT_PARAMETER = SnapshotParametersBuilder.create().fill(Color.TRANSPARENT).build();
     private Radial           control;
     private Rectangle        gaugeBounds;
     private Point2D          framelessOffset;
@@ -145,6 +151,9 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     private long             lastUserLedTimerCall;
     // ***** JavaFX 2.2 related properties *****
     private Group            histogram;
+    private ImageView        histogramImage;
+    private WritableImage    img;
+    private long             histogramInterval;
     private LongProperty     histogramOpacityDecreasingInterval;
     private long             lastHistogramFadingTimerCall;
     private AnimationTimer   histogramFadingTimer;
@@ -231,18 +240,20 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 }
             }
         };
-        lastUserLedTimerCall   = 0l;
-        userLedOnVisible       = false;
+        lastUserLedTimerCall = 0l;
+        userLedOnVisible     = false;
 
         // ***** JavaFX 2.2 related *****
-        histogram              = new Group();
-        histogramOpacityDecreasingInterval.bind(control.histogramDataPeriodInMinutesProperty().multiply(60000000000l).multiply(0.01));
-        lastHistogramFadingTimerCall = System.nanoTime();
+        histogram      = new Group();
+        histogramImage = new ImageView();
+        histogramImage.setSmooth(true);
+        histogramInterval = control.histogramDataPeriodInMinutesProperty().get() * 60000000000l / 100l;
+        lastHistogramFadingTimerCall = 0l;
         histogramFadingTimer = new AnimationTimer() {
             @Override public void handle(long l) {
                 long currentNanoTime = System.nanoTime();
-                if (currentNanoTime > lastHistogramFadingTimerCall + histogramOpacityDecreasingInterval.get()) {
-                    // reduceHistogramOpacity();
+                if (currentNanoTime > lastHistogramFadingTimerCall + histogramInterval) {
+                    reduceHistogramOpacity();
                     lastHistogramFadingTimerCall = currentNanoTime;
                 }
             }
@@ -341,6 +352,13 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         addBindings();
         addListeners();
 
+        registerChangeListener(control.histogramCreationEnabledProperty(), "HISTOGRAM_CREATION");
+        registerChangeListener(control.histogramDataPeriodInMinutesProperty(), "HISTOGRAM_PERIOD");
+
+        if (control.isHistogramCreationEnabled()) {
+            histogramFadingTimer.start();
+        }
+
         initialized = true;
         paint();
     }
@@ -351,12 +369,15 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         }
         frame.visibleProperty().bind(control.frameVisibleProperty());
 
-
         if (background.visibleProperty().isBound()) {
             background.visibleProperty().unbind();
         }
         background.visibleProperty().bind(control.backgroundVisibleProperty());
 
+        if (histogram.visibleProperty().isBound()) {
+            histogram.visibleProperty().unbind();
+        }
+        histogram.visibleProperty().bind(control.histogramVisibleProperty());
 
         if (sections.visibleProperty().isBound()) {
             sections.visibleProperty().unbind();
@@ -477,12 +498,14 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
 
         control.prefWidthProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
+                img = new WritableImage(newValue.intValue(), (int) getPrefWidth());
                 isDirty = true;
             }
         });
 
         control.prefHeightProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
+                img = new WritableImage((int) getPrefWidth(), newValue.intValue());
                 isDirty = true;
             }
         });
@@ -562,6 +585,11 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                             currentArea.setEffect(null);
                         }
                     }
+                }
+
+                // Histogram
+                if (control.isHistogramCreationEnabled()) {
+                    addValueToHistogram(oldValue.doubleValue());
                 }
 
             }
@@ -744,6 +772,14 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             drawPointer();
         } else if ("POINTER_SHADOW".equals(PROPERTY)) {
             drawPointer();
+        } else if ("HISTOGRAM_CREATION".equals(PROPERTY)) {
+            if (control.isHistogramCreationEnabled()) {
+                histogramFadingTimer.start();
+            } else {
+                histogramFadingTimer.stop();
+            }
+        } else if ("HISTOGRAM_PERIOD".equals(PROPERTY)) {
+            histogramInterval = control.histogramDataPeriodInMinutesProperty().get() * 60000000000l / 100l;
         }
     }
 
@@ -785,6 +821,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
 
         getChildren().addAll(frame,
                              background,
+                             histogram,
                              trend,
                              sections,
                              areas,
@@ -953,35 +990,31 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     }
 
     private void addValueToHistogram(final double VALUE) {
-        /*
-        ImageView histogramImage = new ImageView(histogram.snapshot(new SnapshotParameters(), null);
-        final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
-        final double WIDTH = SIZE;
-        final double HEIGHT = SIZE;
+        final double SIZE = control.getPrefWidth() <= control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+
+        if (img == null) {
+            img = new WritableImage((int) SIZE, (int) SIZE);
+        }
+        //histogramImage.setImage(histogram.snapshot(SNAPSHOT_PARAMETER, img));
+        histogramImage.setClip(new Circle(0.5 * SIZE, 0.5 * SIZE, 0.4158878504672897 * SIZE));
+        histogramImage.setOpacity(1.0);
 
         histogram.getChildren().clear();
-        histogram.setOpacity(1.0);
 
-        final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
+        final Shape IBOUNDS = new Rectangle(0, 0, SIZE, SIZE);
         IBOUNDS.setOpacity(0.0);
         IBOUNDS.setStroke(null);
-        histogram.getChildren().addAll(IBOUNDS);
 
-        Line line = new Line(center.getX(), center.getY(), center.getX(), HEIGHT * 0.35);
+        Line line = new Line(center.getX(), center.getY() - SIZE * 0.22, center.getX(), center.getY() - SIZE * 0.25);
         line.setStroke(control.getHistogramColor());
+        line.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET + (VALUE - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getY()));
 
-        histogram.getChildren().addAll(histogramImage, line);
-
-        histogram.getTransforms().clear();
-        double currentValue = control.getValue() < control.getMinValue() ? control.getMinValue() : control.getValue();
-        histogram.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET + (currentValue - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getY()));
-        */
+        histogram.getChildren().addAll(IBOUNDS, histogramImage, line);
     }
 
     private void reduceHistogramOpacity() {
-        double opacity = histogram.getOpacity();
-        if (opacity > 0) {
-            histogram.setOpacity(histogram.getOpacity() - (histogramOpacityDecreasingInterval.get() / 100));
+        if (histogramImage.getOpacity() > 0) {
+            histogramImage.setOpacity(histogramImage.getOpacity() - (control.histogramDataPeriodInMinutesProperty().doubleValue() / 100.0));
         }
     }
 

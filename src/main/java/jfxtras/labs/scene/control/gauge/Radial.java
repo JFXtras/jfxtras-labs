@@ -28,9 +28,13 @@
 package jfxtras.labs.scene.control.gauge;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
@@ -54,7 +58,7 @@ public final class Radial extends Gauge {
     private BooleanProperty       histogramVisible;
     private ObjectProperty<Color> histogramColor;
     private BooleanProperty       histogramCreationEnabled;
-    private LongProperty          histogramDataPeriodInMinutes;
+    private IntegerProperty       histogramDataPeriodInMinutes;
 
 
     // ******************** Constructors **************************************
@@ -73,9 +77,9 @@ public final class Radial extends Gauge {
     public Radial(final GaugeModel GAUGE_MODEL, final StyleModel STYLE_MODEL) {
         super(GAUGE_MODEL, STYLE_MODEL);
         histogramVisible             = new SimpleBooleanProperty(false);
-        histogramColor               = new SimpleObjectProperty<Color>(Color.RED);
+        histogramColor               = new SimpleObjectProperty<Color>(Color.AQUAMARINE);
         histogramCreationEnabled     = new SimpleBooleanProperty(false);
-        histogramDataPeriodInMinutes = new SimpleLongProperty(60);
+        histogramDataPeriodInMinutes = new SimpleIntegerProperty(5);
         init();
     }
 
@@ -138,15 +142,15 @@ public final class Radial extends Gauge {
         return histogramCreationEnabled;
     }
 
-    public final long getHistogramDataPeriodInMinutes() {
+    public final int getHistogramDataPeriodInMinutes() {
         return histogramDataPeriodInMinutes.get();
     }
 
-    public final void setHistogramDataPeriodInMinutes(final long HISTOGRAM_DATA_PERIOD_IN_MINUTES) {
+    public final void setHistogramDataPeriodInMinutes(final int HISTOGRAM_DATA_PERIOD_IN_MINUTES) {
         histogramDataPeriodInMinutes.set(HISTOGRAM_DATA_PERIOD_IN_MINUTES);
     }
 
-    public final LongProperty histogramDataPeriodInMinutesProperty() {
+    public final IntegerProperty histogramDataPeriodInMinutesProperty() {
         return histogramDataPeriodInMinutes;
     }
 }
