@@ -30,12 +30,10 @@ package jfxtras.labs.internal.scene.control.skin;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleLongProperty;
 import javafx.scene.CacheHint;
 import javafx.scene.effect.Light;
 import javafx.scene.effect.Lighting;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.shape.Line;
 import jfxtras.labs.internal.scene.control.behavior.RadialBehavior;
 import jfxtras.labs.scene.control.gauge.Gauge.PointerType;
@@ -148,7 +146,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     // ***** JavaFX 2.2 related properties *****
     private Group            histogram;
     private ImageView        histogramImage;
-    private WritableImage    img;
+    //private WritableImage    img;
     private long             histogramInterval;
     private LongProperty     histogramOpacityDecreasingInterval;
     private long             lastHistogramFadingTimerCall;
@@ -494,14 +492,14 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
 
         control.prefWidthProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                img = new WritableImage(newValue.intValue(), (int) getPrefWidth());
+                //img = new WritableImage(newValue.intValue(), (int) getPrefWidth());
                 isDirty = true;
             }
         });
 
         control.prefHeightProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                img = new WritableImage((int) getPrefWidth(), newValue.intValue());
+                //img = new WritableImage((int) getPrefWidth(), newValue.intValue());
                 isDirty = true;
             }
         });
@@ -988,10 +986,12 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     private void addValueToHistogram(final double VALUE) {
         final double SIZE = control.getPrefWidth() <= control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
 
+        /*
         if (img == null) {
             img = new WritableImage((int) SIZE, (int) SIZE);
         }
-        //histogramImage.setImage(histogram.snapshot(SNAPSHOT_PARAMETER, img));
+        histogramImage.setImage(histogram.snapshot(SNAPSHOT_PARAMETER, img));
+        */
         histogramImage.setClip(new Circle(0.5 * SIZE, 0.5 * SIZE, 0.4158878504672897 * SIZE));
         histogramImage.setOpacity(1.0);
 
