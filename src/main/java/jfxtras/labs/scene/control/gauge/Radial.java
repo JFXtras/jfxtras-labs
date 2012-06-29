@@ -57,6 +57,7 @@ public final class Radial extends Gauge {
     }
     private BooleanProperty       histogramVisible;
     private ObjectProperty<Color> histogramColor;
+    private DoubleProperty        histogramLineWidth;
     private BooleanProperty       histogramCreationEnabled;
     private IntegerProperty       histogramDataPeriodInMinutes;
 
@@ -78,6 +79,7 @@ public final class Radial extends Gauge {
         super(GAUGE_MODEL, STYLE_MODEL);
         histogramVisible             = new SimpleBooleanProperty(false);
         histogramColor               = new SimpleObjectProperty<Color>(Color.AQUAMARINE);
+        histogramLineWidth           = new SimpleDoubleProperty(1.0);
         histogramCreationEnabled     = new SimpleBooleanProperty(false);
         histogramDataPeriodInMinutes = new SimpleIntegerProperty(5);
         init();
@@ -128,6 +130,19 @@ public final class Radial extends Gauge {
 
     public final ObjectProperty<Color> histogramColorProperty() {
         return histogramColor;
+    }
+
+    public final double getHistogramLineWidth() {
+        return histogramLineWidth.get();
+    }
+
+    public final void setHistogramLineWidth(final double HISTOGRAM_LINE_WIDTH) {
+        double lineWidth = HISTOGRAM_LINE_WIDTH < 0.5 ? 0.5 : (HISTOGRAM_LINE_WIDTH > 3.0 ? 3.0 : HISTOGRAM_LINE_WIDTH);
+        histogramLineWidth.set(lineWidth);
+    }
+
+    public final DoubleProperty histogramLineWidthProperty() {
+        return histogramLineWidth;
     }
 
     public final boolean isHistogramCreationEnabled() {
