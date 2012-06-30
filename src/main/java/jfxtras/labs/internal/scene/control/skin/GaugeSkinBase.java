@@ -67,6 +67,7 @@ import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Transform;
+import jfxtras.labs.scene.control.gauge.Util;
 
 import java.util.ArrayList;
 
@@ -312,6 +313,39 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         BACKGROUND_SHAPE.setStroke(null);
 
         switch (CONTROL.getBackgroundDesign()) {
+            case CARBON:
+                BACKGROUND_SHAPE.setFill(Util.INSTANCE.createCarbonPattern());
+                BACKGROUND_SHAPE.setStroke(null);
+                final Shape SHADOW_OVERLAY1 = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.4158878504672897 * SIZE);
+                SHADOW_OVERLAY1.setFill(new LinearGradient(SHADOW_OVERLAY1.getLayoutBounds().getMinX(), 0,
+                                                     SHADOW_OVERLAY1.getLayoutBounds().getMaxX(), 0,
+                                                     false, CycleMethod.NO_CYCLE,
+                                                     new Stop(0.0, Color.color(0.0, 0.0, 0.0, 0.5)),
+                                                     new Stop(0.4, Color.color(1.0, 1.0, 1.0, 0.0)),
+                                                     new Stop(0.6, Color.color(1.0, 1.0, 1.0, 0.0)),
+                                                     new Stop(1.0, Color.color(0.0, 0.0, 0.0, 0.5))));
+                SHADOW_OVERLAY1.setStroke(null);
+                BACKGROUND.getChildren().addAll(BACKGROUND_SHAPE, SHADOW_OVERLAY1);
+                break;
+            case PUNCHED_SHEET:
+                BACKGROUND_SHAPE.setFill(Util.INSTANCE.createPunchedSheetPattern(CONTROL.getTextureColor()));
+                BACKGROUND_SHAPE.setStroke(null);
+                final Shape SHADOW_OVERLAY2 = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.4158878504672897 * SIZE);
+                SHADOW_OVERLAY2.setFill(new LinearGradient(SHADOW_OVERLAY2.getLayoutBounds().getMinX(), 0,
+                                                           SHADOW_OVERLAY2.getLayoutBounds().getMaxX(), 0,
+                                                           false, CycleMethod.NO_CYCLE,
+                                                           new Stop(0.0, Color.color(0.0, 0.0, 0.0, 0.5)),
+                                                           new Stop(0.4, Color.color(1.0, 1.0, 1.0, 0.0)),
+                                                           new Stop(0.6, Color.color(1.0, 1.0, 1.0, 0.0)),
+                                                           new Stop(1.0, Color.color(0.0, 0.0, 0.0, 0.5))));
+
+                SHADOW_OVERLAY2.setStroke(null);
+                BACKGROUND.getChildren().addAll(BACKGROUND_SHAPE, SHADOW_OVERLAY2);
+                break;
+            case NOISY_PLASTIC:
+                BACKGROUND_SHAPE.setFill(Util.INSTANCE.createNoisePattern(SIZE * 0.8317757009, SIZE * 0.8317757009, CONTROL.getTextureColor()));
+                BACKGROUND_SHAPE.setStroke(null);
+                break;
             default:
                 BACKGROUND_SHAPE.setStyle(CONTROL.getSimpleGradientBaseColorString());
                 BACKGROUND_SHAPE.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);

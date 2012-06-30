@@ -27,7 +27,22 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.SnapshotParametersBuilder;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
+import javafx.scene.shape.ArcType;
+import javafx.scene.shape.Shape;
+
+import java.util.Random;
 
 
 /**
@@ -38,6 +53,8 @@ import javafx.scene.paint.Color;
  */
 public enum Util {
     INSTANCE;
+
+    private static final SnapshotParameters SNAPSHOT_PARAMETER = SnapshotParametersBuilder.create().fill(Color.TRANSPARENT).build();
 
     public final String createCssColor(final Color COLOR) {
         final StringBuilder CSS_COLOR = new StringBuilder(19);
@@ -53,9 +70,6 @@ public enum Util {
         return CSS_COLOR.toString();
     }
 
-    /* THE FOLLOWING METHODS RELY ON JAVA FX 2.2 SO PLEASE LEAVE THEM AS COMMENTS AS LONG AS JAVA FX 2.2 IS NOT RELEASED*/
-
-    /*
     public final Canvas createConicalGradient(final Shape SHAPE, final Stop[] STOPS, final double ROTATION_OFFSET) {
             final Canvas CANVAS = new Canvas(SHAPE.getLayoutBounds().getWidth(), SHAPE.getLayoutBounds().getHeight());
             createConicalGradient(CANVAS, SHAPE, STOPS, ROTATION_OFFSET);
@@ -79,12 +93,12 @@ public enum Util {
         CANVAS.setLayoutY(SHAPE.getLayoutBounds().getMinY());
         CANVAS.setClip(CLIP);
         // create the gradient with the given stops
-        final GraphicsContext CTX         = CANVAS.getGraphicsContext2D();
-        final Bounds BOUNDS               = SHAPE.getLayoutBounds();
-        final Point2D CENTER              = new Point2D(BOUNDS.getWidth() / 2, BOUNDS.getHeight() / 2);
-        final double RADIUS               = Math.sqrt(BOUNDS.getWidth() * BOUNDS.getWidth() + BOUNDS.getHeight() * BOUNDS.getHeight()) / 2;
-        final double ANGLE_STEP           = 0.1;
-        final GradientLookup COLOR_LOOKUP = new GradientLookup(STOPS);
+        final GraphicsContext CTX          = CANVAS.getGraphicsContext2D();
+        final Bounds          BOUNDS       = SHAPE.getLayoutBounds();
+        final Point2D         CENTER       = new Point2D(BOUNDS.getWidth() / 2, BOUNDS.getHeight() / 2);
+        final double          RADIUS       = Math.sqrt(BOUNDS.getWidth() * BOUNDS.getWidth() + BOUNDS.getHeight() * BOUNDS.getHeight()) / 2;
+        final double          ANGLE_STEP   = 0.1;
+        final GradientLookup  COLOR_LOOKUP = new GradientLookup(STOPS);
         CTX.translate(CENTER.getX(), CENTER.getY());
         CTX.rotate(-90 + ROTATION_OFFSET);
         CTX.translate(-CENTER.getX(), -CENTER.getY());
@@ -207,13 +221,13 @@ public enum Util {
                                        new Stop(1, Color.rgb(45, 45, 45))));
         CTX.fill();
 
-        final Image PATTERN_IMAGE = CANVAS.snapshot(new SnapshotParameters(), null);
+        final Image PATTERN_IMAGE = CANVAS.snapshot(SNAPSHOT_PARAMETER, null);
         final ImagePattern PATTERN = new ImagePattern(PATTERN_IMAGE, 0, 0, WIDTH, HEIGHT, false);
 
         return PATTERN;
     }
 
-    public final ImagePattern createPunchedSheetPattern() {
+    public final ImagePattern createPunchedSheetPattern(final Color TEXTURE_COLOR) {
         final double WIDTH = 15;
         final double HEIGHT = 15;
         final Canvas CANVAS = new Canvas(WIDTH, HEIGHT);
@@ -223,7 +237,8 @@ public enum Util {
         CTX.beginPath();
         CTX.rect(0, 0, WIDTH, HEIGHT);
         CTX.closePath();
-        CTX.setFill(Color.rgb(29, 33, 35));
+        //CTX.setFill(Color.rgb(29, 33, 35));
+        CTX.setFill(TEXTURE_COLOR);
         CTX.fill();
 
         // ULB
@@ -249,7 +264,7 @@ public enum Util {
         CTX.bezierCurveTo(WIDTH * 0.4, HEIGHT * 0.066666, WIDTH * 0.333333, 0, WIDTH * 0.2, 0);
         CTX.bezierCurveTo(WIDTH * 0.066666, 0, 0, HEIGHT * 0.066666, 0, HEIGHT * 0.2);
         CTX.closePath();
-        CTX.setFill(Color.rgb(5, 5, 6));
+        CTX.setFill(TEXTURE_COLOR.darker().darker());
         CTX.fill();
 
         // LRB
@@ -275,13 +290,74 @@ public enum Util {
         CTX.bezierCurveTo(WIDTH * 0.866666, HEIGHT * 0.533333, WIDTH * 0.8, HEIGHT * 0.466666, WIDTH * 0.666666, HEIGHT * 0.466666);
         CTX.bezierCurveTo(WIDTH * 0.533333, HEIGHT * 0.466666, WIDTH * 0.466666, HEIGHT * 0.533333, WIDTH * 0.466666, HEIGHT * 0.666666);
         CTX.closePath();
-        CTX.setFill(Color.rgb(5, 5, 6));
+        CTX.setFill(TEXTURE_COLOR.darker().darker());
         CTX.fill();
 
-        final Image PATTERN_IMAGE = CANVAS.snapshot(new SnapshotParameters(), null);
+        final Image PATTERN_IMAGE = CANVAS.snapshot(SNAPSHOT_PARAMETER, null);
         final ImagePattern PATTERN = new ImagePattern(PATTERN_IMAGE, 0, 0, WIDTH, HEIGHT, false);
 
         return PATTERN;
     }
-    */
+
+    public final ImagePattern createNoisePattern(final double WIDTH, final double HEIGHT, final Color TEXTURE_COLOR) {
+        final Canvas CANVAS = new Canvas(WIDTH, HEIGHT);
+        final GraphicsContext CTX = CANVAS.getGraphicsContext2D();
+
+        CTX.setFill(new LinearGradient(0, 0,
+                                       WIDTH, HEIGHT,
+                                       false, CycleMethod.NO_CYCLE,
+                                       new Stop(0, brighter(TEXTURE_COLOR, 0.15)),
+                                       new Stop(1, darker(TEXTURE_COLOR, 0.15))));
+        CTX.fillRect(0, 0, WIDTH, HEIGHT);
+
+        final Color  DARK_NOISE   = TEXTURE_COLOR.darker();
+        final Color  BRIGHT_NOISE = TEXTURE_COLOR.brighter();
+        final Random BW_RND       = new Random();
+        final Random ALPHA_RND    = new Random();
+        Color  noiseColor;
+        double noiseAlpha;
+        for (int y = 0; y < HEIGHT; y++) {
+            for (int x = 0; x < WIDTH; x++) {
+                if (BW_RND.nextBoolean()) {
+                    noiseColor = BRIGHT_NOISE;
+                } else {
+                    noiseColor = DARK_NOISE;
+                }
+                noiseAlpha = 0.0392156863 + (ALPHA_RND.nextInt(10) / 255) - 0.0196078431;
+                CTX.beginPath();
+                CTX.moveTo(x, y);
+                CTX.lineTo(x, y);
+                CTX.setStroke(Color.color(noiseColor.getRed(), noiseColor.getGreen(), noiseColor.getBlue(), noiseAlpha));
+                CTX.stroke();
+            }
+        }
+        final Image PATTERN_IMAGE = CANVAS.snapshot(SNAPSHOT_PARAMETER, null);
+        final ImagePattern PATTERN = new ImagePattern(PATTERN_IMAGE, 0, 0, WIDTH, HEIGHT, false);
+
+        return PATTERN;
+    }
+
+    public Color darker(final Color COLOR, final double FRACTION) {
+        double red   = Math.round(COLOR.getRed() * (1.0 - FRACTION));
+        double green = Math.round(COLOR.getGreen() * (1.0 - FRACTION));
+        double blue  = Math.round(COLOR.getBlue() * (1.0 - FRACTION));
+
+        red   = red < 0 ? 0 : (red > 1 ? 1 : red);
+        green = green < 0 ? 0 : (green > 1 ? 1 : green);
+        blue  = blue < 0 ? 0 : (blue > 1 ? 1 : blue);
+
+        return Color.color(red, green, blue, COLOR.getOpacity());
+    }
+
+    public Color brighter(final Color COLOR, final double FRACTION) {
+        double red   = Math.round(COLOR.getRed() * (1.0 + FRACTION));
+        double green = Math.round(COLOR.getGreen() * (1.0 + FRACTION));
+        double blue  = Math.round(COLOR.getBlue() * (1.0 + FRACTION));
+
+        red = red < 0 ? 0 : (red > 1 ? 1 : red);
+        green = green < 0 ? 0 : (green > 1 ? 1 : green);
+        blue = blue < 0 ? 0 : (blue > 1 ? 1 : blue);
+
+        return Color.color(red, green, blue, COLOR.getOpacity());
+    }
 }

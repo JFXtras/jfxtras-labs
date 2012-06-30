@@ -77,13 +77,13 @@ public abstract class Gauge extends Control {
         BLUE("background-design-blue"),
         ANTHRACITE("background-design-anthracite"),
         MUD("background-design-mud"),
-        //CARBON("background-design-carbon"),                       // Swing based
-        //STAINLESS("background-design-stainless"),                 // Swing based
-        //STAINLESS_GRINDED("background-design-stainlessgrinded"),  // Swing based
-        //BRUSHED_METAL("background-design-brushedmetal"),          // Swing based
-        //PUNCHED_SHEET("background-design-punchedsheet"),          // Swing based
-        //LINEN("background-design-linen"),                         // Swing based
-        //NOISY_PLASTIC("backgroundd-esign-noisyplastic"),          // Swing based
+        CARBON("background-design-carbon"),
+        //STAINLESS("background-design-stainless"),
+        //STAINLESS_GRINDED("background-design-stainlessgrinded"),
+        //BRUSHED_METAL("background-design-brushedmetal"),
+        PUNCHED_SHEET("background-design-punchedsheet"),
+        //LINEN("background-design-linen"),
+        NOISY_PLASTIC("backgroundd-esign-noisyplastic"),
         SIMPLE_GRADIENT("background-design-simplegradient"),
         TRANSPARENT("background-design-transparent"),
         CUSTOM("background-design-custom");
