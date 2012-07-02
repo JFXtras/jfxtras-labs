@@ -642,6 +642,33 @@
     -fx-fill: rgb(0, 0, 0);
 }
 
+.background-design-carbon {
+    -fx-fill  : rgb(29, 33, 35);
+    -fx-stroke: rgb(255, 255, 255);
+}
+
+.background-design-carbon-text {
+    -fx-fill: rgb(255, 255, 255);
+}
+
+.background-design-punchedsheet {
+    -fx-fill  : rgb(29, 33, 35);
+    -fx-stroke: rgb(255, 255, 255);
+}
+
+.background-design-punchedsheet-text {
+    -fx-fill: rgb(255, 255, 255);
+}
+
+.background-design-noisyplastic {
+    -fx-fill  : rgb(29, 33, 35);
+    -fx-stroke: rgb(255, 255, 255);
+}
+
+.background-design-noisyplastic-text {
+    -fx-fill: rgb(255, 255, 255);
+}
+
 
 /************************************************************
 * Defintions of all pointer gradients                       *

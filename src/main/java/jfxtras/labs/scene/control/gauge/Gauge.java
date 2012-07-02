@@ -83,7 +83,7 @@ public abstract class Gauge extends Control {
         //BRUSHED_METAL("background-design-brushedmetal"),
         PUNCHED_SHEET("background-design-punchedsheet"),
         //LINEN("background-design-linen"),
-        NOISY_PLASTIC("backgroundd-esign-noisyplastic"),
+        NOISY_PLASTIC("backgroundd-design-noisyplastic"),
         SIMPLE_GRADIENT("background-design-simplegradient"),
         TRANSPARENT("background-design-transparent"),
         CUSTOM("background-design-custom");
