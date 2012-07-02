@@ -132,6 +132,11 @@ public class ClockBuilder<B extends ClockBuilder<B>> extends ControlBuilder<B> i
         return this;
     }
 
+    public final ClockBuilder title(final String TITLE) {
+        properties.put("title", new SimpleStringProperty(TITLE));
+        return this;
+    }
+
     @Override public final B prefWidth(final double PREF_WIDTH) {
         properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
         return (B)this;
@@ -177,6 +182,8 @@ public class ClockBuilder<B extends ClockBuilder<B>> extends ControlBuilder<B> i
                 CONTROL.setDarkTickMarkPaint(((ObjectProperty<Paint>) properties.get(key)).get());
             } else if ("secondPointerPaint".equals(key)) {
                 CONTROL.setSecondPointerPaint(((ObjectProperty<Paint>) properties.get(key)).get());
+            } else if ("title".equals(key)) {
+                CONTROL.setTitle(((StringProperty) properties.get(key)).get());
             }
         }
         return CONTROL;

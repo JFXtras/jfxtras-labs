@@ -71,6 +71,7 @@ public class Clock extends Control {
     private ObjectProperty<Paint>      brightPointerPaint;
     private ObjectProperty<Paint>      darkPointerPaint;
     private ObjectProperty<Paint>      secondPointerPaint;
+    private StringProperty             title;
 
 
     // ******************** Constructors **************************************
@@ -270,6 +271,18 @@ public class Clock extends Control {
 
     public final ObjectProperty<Paint> secondPointerPaintProperty() {
         return secondPointerPaint;
+    }
+
+    public final String getTitle() {
+            return title.get();
+        }
+
+    public final void setTitle(final String TITLE) {
+        title.set(TITLE);
+    }
+
+    public final StringProperty titleProperty() {
+        return title;
     }
 
 

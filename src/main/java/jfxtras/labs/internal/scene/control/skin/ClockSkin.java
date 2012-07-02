@@ -35,6 +35,8 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
@@ -58,6 +60,11 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontSmoothingType;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Transform;
 import javafx.util.Duration;
 import jfxtras.labs.internal.scene.control.behavior.ClockBehavior;
@@ -210,6 +217,7 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         registerChangeListener(control.brightTickMarkPaintProperty(), "BRIGHT_TICK_MARK_PAINT");
         registerChangeListener(control.darkTickMarkPaintProperty(), "DARK_TICK_MARK_PAINT");
         registerChangeListener(control.secondPointerPaintProperty(), "SECOND_POINTER_PAINT");
+        registerChangeListener(control.titleProperty(), "TITLE");
 
         setTime();
         initialized = true;
@@ -275,6 +283,8 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         } else if ("DARK_TICK_MARK_PAINT".equals(PROPERTY)) {
             paint();
         } else if ("SECOND_POINTER_PAINT".equals(PROPERTY)) {
+            paint();
+        } else if ("TITLE".equals(PROPERTY)) {
             paint();
         }
     }
@@ -392,6 +402,18 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         }
         BACKGROUND.setStroke(null);
 
+        final Text TITLE = new Text(control.getTitle());
+        TITLE.setFontSmoothingType(FontSmoothingType.LCD);
+        TITLE.setFont(Font.font("Verdana", FontWeight.NORMAL, 0.06 * SIZE));
+        TITLE.setTextAlignment(TextAlignment.CENTER);
+        TITLE.setX((SIZE - TITLE.getLayoutBounds().getWidth()) / 2.0);
+        TITLE.setY(0.6 * SIZE + TITLE.getLayoutBounds().getHeight());
+        if (control.getTheme() == Clock.Theme.BRIGHT) {
+            TITLE.setFill(control.getBrightTickMarkPaint());
+        } else {
+            TITLE.setFill(control.getDarkTickMarkPaint());
+        }
+
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setWidth(0.0929889298892989 * BACKGROUND.getLayoutBounds().getWidth());
         INNER_SHADOW.setHeight(0.0929889298892989 * BACKGROUND.getLayoutBounds().getHeight());
@@ -475,6 +497,7 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
 
         clock.getChildren().addAll(FRAME,
             BACKGROUND,
+            TITLE,
             GLASS_EFFECT,
             TICK_MARKS);
         clock.setCache(true);
