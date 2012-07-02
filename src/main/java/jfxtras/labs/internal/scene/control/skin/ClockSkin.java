@@ -35,8 +35,6 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
@@ -48,7 +46,6 @@ import javafx.scene.effect.Lighting;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Paint;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
@@ -192,8 +189,8 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
                     control.setDarkBackgroundPaint(new LinearGradient(0, 0,
                                                                       0, getPrefHeight(),
                                                                       false, CycleMethod.NO_CYCLE,
-                                                                      new Stop(0, Color.rgb(62, 59, 50)),
-                                                                      new Stop(1.0, Color.rgb(35, 37, 32))));
+                                                                      new Stop(0, Color.rgb(0, 0, 0)),
+                                                                      new Stop(1.0, Color.rgb(0, 0, 0))));
         }
 
         // Bindings
@@ -408,10 +405,18 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         TITLE.setTextAlignment(TextAlignment.CENTER);
         TITLE.setX((SIZE - TITLE.getLayoutBounds().getWidth()) / 2.0);
         TITLE.setY(0.6 * SIZE + TITLE.getLayoutBounds().getHeight());
-        if (control.getTheme() == Clock.Theme.BRIGHT) {
-            TITLE.setFill(control.getBrightTickMarkPaint());
+        if (control.isAutoDimEnabled()) {
+            if (isDay) {
+                TITLE.setFill(control.getBrightTickMarkPaint());
+            } else {
+                TITLE.setFill(control.getDarkTickMarkPaint());
+            }
         } else {
-            TITLE.setFill(control.getDarkTickMarkPaint());
+            if (control.getTheme() == Clock.Theme.BRIGHT) {
+                TITLE.setFill(control.getBrightTickMarkPaint());
+            } else {
+                TITLE.setFill(control.getDarkTickMarkPaint());
+            }
         }
 
         final InnerShadow INNER_SHADOW = new InnerShadow();
@@ -680,8 +685,17 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         DROP_SHADOW.setBlurType(BlurType.GAUSSIAN);
         DROP_SHADOW.setColor(Color.color(0, 0, 0, 0.55));
 
-        minutePointerShadow.setEffect(DROP_SHADOW);
-        hourPointerShadow.setEffect(DROP_SHADOW);
+        if (control.isAutoDimEnabled()) {
+            if (isDay) {
+                minutePointerShadow.setEffect(DROP_SHADOW);
+                hourPointerShadow.setEffect(DROP_SHADOW);
+            }
+        } else {
+            if (control.getTheme() == Clock.Theme.BRIGHT) {
+                minutePointerShadow.setEffect(DROP_SHADOW);
+                hourPointerShadow.setEffect(DROP_SHADOW);
+            }
+        }
         secondPointerShadow.setEffect(DROP_SHADOW);
     }
 }

@@ -83,8 +83,8 @@ public class Clock extends Control {
         daylightSavingTime    = new SimpleBooleanProperty(Calendar.getInstance().getTimeZone().inDaylightTime(new Date()));
         theme                 = new SimpleObjectProperty<Theme>(Theme.BRIGHT);
         clockStyle            = new SimpleObjectProperty<ClockStyle>(ClockStyle.DB);
-        brightBackgroundPaint = new SimpleObjectProperty<Paint>(null);
-        darkBackgroundPaint   = new SimpleObjectProperty<Paint>(null);
+        brightBackgroundPaint = new SimpleObjectProperty<Paint>(Color.WHITE);
+        darkBackgroundPaint   = new SimpleObjectProperty<Paint>(Color.BLACK);
         brightPointerPaint    = new SimpleObjectProperty<Paint>(Color.BLACK);
         darkPointerPaint      = new SimpleObjectProperty<Paint>(Color.WHITE);
         brightTickMarkPaint   = new SimpleObjectProperty<Paint>(Color.BLACK);
