@@ -90,6 +90,7 @@ public class Clock extends Control {
         brightTickMarkPaint   = new SimpleObjectProperty<Paint>(Color.BLACK);
         darkTickMarkPaint     = new SimpleObjectProperty<Paint>(Color.WHITE);
         secondPointerPaint    = new SimpleObjectProperty<Paint>(Color.rgb(237, 0, 58));
+        title                 = new SimpleStringProperty("");
         init();
     }
 
