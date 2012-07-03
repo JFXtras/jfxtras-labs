@@ -27,15 +27,6 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import javafx.scene.CacheHint;
-import jfxtras.labs.internal.scene.control.behavior.RadialQuarterWBehavior;
-import jfxtras.labs.scene.control.gauge.Gauge;
-import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
-import jfxtras.labs.scene.control.gauge.RadialQuarterW;
-import jfxtras.labs.scene.control.gauge.Section;
-import jfxtras.labs.scene.control.gauge.StyleModelEvent;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
@@ -43,13 +34,15 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
+import javafx.scene.CacheHint;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
@@ -75,6 +68,10 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.util.Duration;
+import jfxtras.labs.internal.scene.control.behavior.RadialQuarterWBehavior;
+import jfxtras.labs.scene.control.gauge.Gauge;
+import jfxtras.labs.scene.control.gauge.RadialQuarterW;
+import jfxtras.labs.scene.control.gauge.Section;
 
 import java.util.ArrayList;
 
@@ -102,10 +99,12 @@ public class RadialQuarterWSkin extends GaugeSkinBase<RadialQuarterW, RadialQuar
     private Group            glowOn;
     private ArrayList<Color> glowColors;
     private Group            knobs;
+    private Group            knobsShadow;
     private Group            threshold;
     private Group            minMeasured;
     private Group            maxMeasured;
     private Group            pointer;
+    private Group            pointerShadow;
     private Group            ledOff;
     private Group            ledOn;
     private Group            userLedOff;
@@ -149,10 +148,12 @@ public class RadialQuarterWSkin extends GaugeSkinBase<RadialQuarterW, RadialQuar
         glowOn                 = new Group();
         glowColors             = new ArrayList<Color>(4);
         knobs                  = new Group();
+        knobsShadow            = new Group(knobs);
         threshold              = new Group();
         minMeasured            = new Group();
         maxMeasured            = new Group();
         pointer                = new Group();
+        pointerShadow          = new Group(pointer);
         ledOff                 = new Group();
         ledOn                  = new Group();
         userLedOff             = new Group();
@@ -615,6 +616,9 @@ public class RadialQuarterWSkin extends GaugeSkinBase<RadialQuarterW, RadialQuar
         drawPointer();
         drawCircularKnobs(control, knobs, center, gaugeBounds);
         drawCircularForeground(control, foreground, gaugeBounds);
+        if (control.isPointerShadowEnabled() && !control.isPointerGlowEnabled()) {
+            addDropShadow(control, knobs, pointerShadow);
+        }
 
         getChildren().addAll(frame,
                              background,
@@ -633,8 +637,8 @@ public class RadialQuarterWSkin extends GaugeSkinBase<RadialQuarterW, RadialQuar
                              minMeasured,
                              maxMeasured,
                              markers,
-                             pointer,
-                             knobs,
+                             pointerShadow,
+                             knobsShadow,
                              foreground);
     }
 
@@ -1239,17 +1243,6 @@ public class RadialQuarterWSkin extends GaugeSkinBase<RadialQuarterW, RadialQuar
                 break;
         }
 
-        final DropShadow SHADOW;
-        if (control.isPointerShadowEnabled()) {
-            SHADOW = new DropShadow();
-            SHADOW.setHeight(0.03 * WIDTH);
-            SHADOW.setWidth(0.03 * HEIGHT);
-            SHADOW.setColor(Color.color(0, 0, 0, 0.75));
-
-        } else {
-            SHADOW = null;
-        }
-
         // Pointer glow
         if (control.isPointerGlowEnabled()) {
             final DropShadow GLOW = new DropShadow();
@@ -1261,16 +1254,10 @@ public class RadialQuarterWSkin extends GaugeSkinBase<RadialQuarterW, RadialQuar
             GLOW.setColor(control.getValueColor().COLOR);
             GLOW.setBlurType(BlurType.GAUSSIAN);
             if (control.getPointerType() == Gauge.PointerType.TYPE9) {
-                POINTER.setEffect(SHADOW);
                 POINTER_FRONT.setEffect(GLOW);
             } else {
-                if (control.isPointerShadowEnabled()) {
-                    GLOW.inputProperty().set(SHADOW);
-                }
                 POINTER.setEffect(GLOW);
             }
-        } else {
-            POINTER.setEffect(SHADOW);
         }
 
         pointer.getChildren().addAll(POINTER);

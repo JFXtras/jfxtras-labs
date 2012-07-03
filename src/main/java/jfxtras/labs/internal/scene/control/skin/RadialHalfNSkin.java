@@ -27,29 +27,21 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import javafx.scene.CacheHint;
-import jfxtras.labs.internal.scene.control.behavior.RadialHalfNBehavior;
-import jfxtras.labs.scene.control.gauge.Gauge;
-import jfxtras.labs.scene.control.gauge.Marker;
-import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
-import jfxtras.labs.scene.control.gauge.RadialHalfN;
-import jfxtras.labs.scene.control.gauge.Section;
-import jfxtras.labs.scene.control.gauge.StyleModelEvent;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
+import javafx.scene.CacheHint;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
@@ -80,6 +72,11 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Transform;
 import javafx.util.Duration;
+import jfxtras.labs.internal.scene.control.behavior.RadialHalfNBehavior;
+import jfxtras.labs.scene.control.gauge.Gauge;
+import jfxtras.labs.scene.control.gauge.Marker;
+import jfxtras.labs.scene.control.gauge.RadialHalfN;
+import jfxtras.labs.scene.control.gauge.Section;
 
 import java.util.ArrayList;
 
@@ -107,10 +104,12 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
     private Group            glowOn;
     private ArrayList<Color> glowColors;
     private Group            knobs;
+    private Group            knobsShadow;
     private Group            threshold;
     private Group            minMeasured;
     private Group            maxMeasured;
     private Group            pointer;
+    private Group            pointerShadow;
     private Group            bargraphOff;
     private Group            bargraphOn;
     private Group            ledOff;
@@ -155,10 +154,12 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         glowOn                 = new Group();
         glowColors             = new ArrayList<Color>(4);
         knobs                  = new Group();
+        knobsShadow            = new Group(knobs);
         threshold              = new Group();
         minMeasured            = new Group();
         maxMeasured            = new Group();
         pointer                = new Group();
+        pointerShadow          = new Group(pointer);
         bargraphOff            = new Group();
         bargraphOn             = new Group();
         ledOff                 = new Group();
@@ -658,6 +659,9 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         drawCircularBargraph(control, bargraphOn, noOfLeds, ledsOn, true, false, center, gaugeBounds);
         drawCircularKnobs(control, knobs, center, gaugeBounds);
         drawForeground();
+        if (control.isPointerShadowEnabled() && !control.isPointerGlowEnabled()) {
+            addDropShadow(control, knobs, pointerShadow);
+        }
 
         getChildren().addAll(frame,
                              background,
@@ -673,13 +677,13 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                              threshold,
                              glowOff,
                              glowOn,
-                             pointer,
+                             pointerShadow,
                              bargraphOff,
                              bargraphOn,
                              minMeasured,
                              maxMeasured,
                              markers,
-                             knobs,
+                             knobsShadow,
                              foreground);
     }
 
@@ -1815,17 +1819,6 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                 break;
         }
 
-        final DropShadow SHADOW;
-        if (control.isPointerShadowEnabled()) {
-            SHADOW = new DropShadow();
-            SHADOW.setHeight(0.03 * WIDTH);
-            SHADOW.setWidth(0.03 * HEIGHT);
-            SHADOW.setColor(Color.color(0, 0, 0, 0.75));
-
-        } else {
-            SHADOW = null;
-        }
-
         // Pointer glow
         if (control.isPointerGlowEnabled()) {
             final DropShadow GLOW = new DropShadow();
@@ -1837,16 +1830,10 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
             GLOW.setColor(control.getValueColor().COLOR);
             GLOW.setBlurType(BlurType.GAUSSIAN);
             if (control.getPointerType() == Gauge.PointerType.TYPE9) {
-                POINTER.setEffect(SHADOW);
                 POINTER_FRONT.setEffect(GLOW);
             } else {
-                if (control.isPointerShadowEnabled()) {
-                    GLOW.inputProperty().set(SHADOW);
-                }
                 POINTER.setEffect(GLOW);
             }
-        } else {
-            POINTER.setEffect(SHADOW);
         }
 
         pointer.getChildren().addAll(POINTER);
