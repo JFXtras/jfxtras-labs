@@ -671,17 +671,18 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
 
     private void drawShadows() {
         final double SIZE  = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
-        final double WIDTH = SIZE;
 
-        final Lighting LIGHTING   = new Lighting();
-        final Light.Distant LIGHT = new Light.Distant();
+        final Light.Distant LIGHT    = new Light.Distant();
         LIGHT.setAzimuth(270);
+        LIGHT.setElevation(50);
+
+        final Lighting      LIGHTING = new Lighting();
         LIGHTING.setLight(LIGHT);
 
         final DropShadow DROP_SHADOW = new DropShadow();
         DROP_SHADOW.setInput(LIGHTING);
-        DROP_SHADOW.setOffsetY(0.015 * WIDTH);
-        DROP_SHADOW.setRadius(0.015 * WIDTH);
+        DROP_SHADOW.setOffsetY(0.015 * SIZE);
+        DROP_SHADOW.setRadius(0.015 * SIZE);
         DROP_SHADOW.setBlurType(BlurType.GAUSSIAN);
         DROP_SHADOW.setColor(Color.color(0, 0, 0, 0.55));
 

@@ -28,21 +28,17 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
-import javafx.scene.text.TextBoundsType;
-import jfxtras.labs.scene.control.gauge.Gauge;
-import jfxtras.labs.scene.control.gauge.Gauge.KnobColor;
-import jfxtras.labs.scene.control.gauge.Marker;
-import jfxtras.labs.scene.control.gauge.LedColor;
-import jfxtras.labs.scene.control.gauge.MarkerEvent;
-import jfxtras.labs.scene.control.gauge.Section;
-import jfxtras.labs.internal.scene.control.behavior.GaugeBehaviorBase;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.control.Control;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.effect.Light;
+import javafx.scene.effect.Lighting;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -66,7 +62,15 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextBoundsType;
 import javafx.scene.transform.Transform;
+import jfxtras.labs.internal.scene.control.behavior.GaugeBehaviorBase;
+import jfxtras.labs.scene.control.gauge.Gauge;
+import jfxtras.labs.scene.control.gauge.Gauge.KnobColor;
+import jfxtras.labs.scene.control.gauge.LedColor;
+import jfxtras.labs.scene.control.gauge.Marker;
+import jfxtras.labs.scene.control.gauge.MarkerEvent;
+import jfxtras.labs.scene.control.gauge.Section;
 import jfxtras.labs.scene.control.gauge.Util;
 
 import java.util.ArrayList;
@@ -2110,5 +2114,30 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
 
         GROUP.getChildren().addAll(BACK, FRONT);
         return GROUP;
+    }
+
+
+    // ******************** Effects *******************************************
+    protected void addDropShadow(final Control CONTROL, final Node... NODES) {
+        if (NODES.length == 0) {
+            return;
+        }
+        final double        SIZE     = CONTROL.getPrefWidth() < CONTROL.getPrefHeight() ? CONTROL.getPrefWidth() : CONTROL.getPrefHeight();
+        final Lighting      LIGHTING = new Lighting();
+        final Light.Distant LIGHT    = new Light.Distant();
+        LIGHT.setAzimuth(270);
+        LIGHT.setElevation(60);
+        LIGHTING.setLight(LIGHT);
+
+        final DropShadow DROP_SHADOW = new DropShadow();
+        DROP_SHADOW.setInput(LIGHTING);
+        DROP_SHADOW.setOffsetY(0.0075 * SIZE);
+        DROP_SHADOW.setRadius(0.0075 * SIZE);
+        DROP_SHADOW.setBlurType(BlurType.GAUSSIAN);
+        DROP_SHADOW.setColor(Color.color(0, 0, 0, 0.45));
+
+        for (Node node : NODES) {
+            node.setEffect(DROP_SHADOW);
+        }
     }
 }
