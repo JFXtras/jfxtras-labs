@@ -90,7 +90,7 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
     }
 
     private void init() {
-        if (control.getPrefWidth() < 0 | control.getPrefHeight() < 0) {
+        if (control.getPrefWidth() <= 0 | control.getPrefHeight() <= 0) {
             control.setPrefSize(0.68 * 40 * (control.getNoOfDigits() + control.getNoOfDecimals()), 40);
         }
 
@@ -111,6 +111,10 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
         // Register listeners
         registerChangeListener(control.rotationsProperty(), "ROTATION");
         registerChangeListener(control.rotationPresetProperty(), "ROTATION_PRESET");
+        registerChangeListener(control.noOfDigitsProperty(), "NO_OF_DIGITS");
+        registerChangeListener(control.noOfDecimalsProperty(), "NO_OF_DECIMALS");
+        registerChangeListener(control.decimalColorProperty(), "DECIMAL_COLOR");
+        registerChangeListener(control.colorProperty(), "COLOR");
 
         initialized = true;
         paint();
@@ -163,6 +167,16 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
                     listOfDials.get(i - 1).setNumber(control.getDialPosition(i));
                 }
             }
+        } else if ("NO_OF_DIGITS".equals(PROPERTY)) {
+            control.setPrefSize(0.68 * getPrefHeight() * (control.getNoOfDigits() + control.getNoOfDecimals()), getPrefHeight());
+            paint();
+        } else if ("NO_OF_DECIMALS".equals(PROPERTY)) {
+            control.setPrefSize(0.68 * getPrefHeight() * (control.getNoOfDigits() + control.getNoOfDecimals()), getPrefHeight());
+            paint();
+        } else if ("DECIMAL_COLOR".equals(PROPERTY)) {
+            paint();
+        } else if ("COLOR".equals(PROPERTY)) {
+            paint();
         }
     }
 

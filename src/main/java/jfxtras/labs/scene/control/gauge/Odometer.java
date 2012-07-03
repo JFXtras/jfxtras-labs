@@ -29,12 +29,10 @@ package jfxtras.labs.scene.control.gauge;
 
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -95,7 +93,6 @@ public class Odometer extends Control {
     }
 
     private void init() {
-        // the -fx-skin attribute in the CSS sets which Skin class is used
         getStyleClass().add(DEFAULT_STYLE_CLASS);
     }
 
