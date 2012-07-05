@@ -27,26 +27,18 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import jfxtras.labs.internal.scene.control.behavior.LinearBehavior;
-import jfxtras.labs.scene.control.gauge.Gauge.NumberFormat;
-import jfxtras.labs.scene.control.gauge.Marker;
-import jfxtras.labs.scene.control.gauge.Linear;
-import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
-import jfxtras.labs.scene.control.gauge.Section;
-import jfxtras.labs.scene.control.gauge.StyleModelEvent;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.Timeline;
 import javafx.animation.Transition;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
@@ -77,6 +69,11 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
+import jfxtras.labs.internal.scene.control.behavior.LinearBehavior;
+import jfxtras.labs.scene.control.gauge.Gauge.NumberFormat;
+import jfxtras.labs.scene.control.gauge.Linear;
+import jfxtras.labs.scene.control.gauge.Marker;
+import jfxtras.labs.scene.control.gauge.Section;
 
 import java.util.ArrayList;
 
@@ -826,7 +823,8 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setWidth(0.2 * SIZE);
         INNER_SHADOW.setHeight(0.2 * SIZE);
-        INNER_SHADOW.setColor(Color.color(0, 0, 0, 1.0));
+        INNER_SHADOW.setOffsetY(0.03 * SIZE);
+        INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.8));
         INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
 
         final LinearGradient HL_GRADIENT = new LinearGradient(0, 0, WIDTH, 0, false, CycleMethod.NO_CYCLE,
