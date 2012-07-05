@@ -90,7 +90,6 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
     private void init() {
         double prefWidth  = control.getPrefWidth();
         double prefHeight = control.getPrefHeight();
-        System.out.println("init() 1st: prefWidth: " + prefWidth + ", prefHeight: " + prefHeight);
         if (prefWidth <= 0) {
             if (prefHeight <= 0) {
                 prefHeight = 40;
@@ -103,8 +102,6 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
             }
             prefHeight = (prefWidth / (control.getNoOfDigits() + control.getNoOfDecimals())) * 1.6875;
         }
-        System.out.println("init() 2nd: prefWidth: " + prefWidth + ", prefHeight: " + prefHeight);
-
         control.setPrefSize(prefWidth, prefHeight);
 
         // Register listeners
