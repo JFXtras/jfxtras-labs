@@ -384,20 +384,6 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
     }
 
     private void addListeners() {
-        control.prefWidthProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                control.setPrefHeight(newValue.doubleValue());
-                isDirty = true;
-            }
-        });
-
-        control.prefHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                control.setPrefWidth(newValue.doubleValue());
-                isDirty = true;
-            }
-        });
-
         control.valueProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
                 formerValue.set(oldValue.doubleValue() < control.getMinValue() ? control.getMinValue() : oldValue.doubleValue());

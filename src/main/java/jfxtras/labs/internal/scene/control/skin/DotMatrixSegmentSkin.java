@@ -28,8 +28,6 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.paint.Color;
@@ -75,17 +73,6 @@ public class DotMatrixSegmentSkin extends SkinBase<DotMatrixSegment, DotMatrixSe
             control.setPrefSize(40, 56);
         }
 
-        control.prefWidthProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
-
-        control.prefHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
         createDots();
         updateCharacter();
 

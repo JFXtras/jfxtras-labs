@@ -29,8 +29,6 @@ package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.InnerShadow;
@@ -48,7 +46,6 @@ import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import jfxtras.labs.internal.scene.control.behavior.SimpleBatteryBehavior;
-import jfxtras.labs.scene.control.gauge.Battery;
 import jfxtras.labs.scene.control.gauge.GradientLookup;
 import jfxtras.labs.scene.control.gauge.SimpleBattery;
 
@@ -97,20 +94,6 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         if (control.getPrefWidth() < 0 | control.getPrefHeight() < 0) {
             control.setPrefSize(128, 128);
         }
-
-        control.prefWidthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
-
-        control.prefHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
 
         // Register listeners
         registerChangeListener(control.chargingProperty(), "CHARGING");

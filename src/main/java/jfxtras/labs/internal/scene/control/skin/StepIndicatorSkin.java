@@ -28,8 +28,6 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
@@ -82,20 +80,6 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
         if (control.getPrefWidth() < 0 | control.getPrefHeight() < 0) {
             control.setPrefSize(noOfCircles * 60 + (noOfCircles - 1) * 20, 60);
         }
-
-        control.prefWidthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
-
-        control.prefHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
 
         // Register listeners
         registerChangeListener(control.colorProperty(), "COLOR");

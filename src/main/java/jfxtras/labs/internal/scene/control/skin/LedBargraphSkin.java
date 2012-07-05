@@ -103,20 +103,6 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
             control.setPrefSize(16, 16);
         }
 
-        control.prefWidthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
-
-        control.prefHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
-
         // Register listeners
         registerChangeListener(control.ledTypeProperty(), "LED_TYPE");
         registerChangeListener(control.frameVisibleProperty(), "FRAME_VISIBLE");

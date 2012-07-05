@@ -163,20 +163,6 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
             control.setPrefSize(200, 200);
         }
 
-        control.prefWidthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
-
-        control.prefHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
-
         if (control.getBrightBackgroundPaint() == null) {
             control.setBrightBackgroundPaint(new RadialGradient(0, 0,
                                                                 getPrefWidth() / 2, getPrefHeight() / 2,

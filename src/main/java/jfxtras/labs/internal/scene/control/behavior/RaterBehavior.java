@@ -56,7 +56,7 @@ public class RaterBehavior extends BehaviorBase<Rater> {
     }
 
     @Override public void mouseExited(final MouseEvent EVENT) {
-        final RaterSkin SKIN = (RaterSkin) super.getControl().getSkin();
+        final RaterSkin SKIN = (RaterSkin) getControl().getSkin();
         SKIN.deHighlightStars();
     }
 }

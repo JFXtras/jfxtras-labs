@@ -33,8 +33,6 @@ import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.Timeline;
 import javafx.animation.Transition;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
@@ -288,30 +286,6 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
     }
 
     private void addListeners() {
-        control.gaugeModelProperty().addListener(new InvalidationListener() {
-            @Override public void invalidated(Observable observable) {
-                paint();
-            }
-        });
-
-        control.styleModelProperty().addListener(new InvalidationListener() {
-            @Override public void invalidated(Observable observable) {
-                paint();
-            }
-        });
-
-        control.prefWidthProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                isDirty = true;
-            }
-        });
-
-        control.prefHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                isDirty = true;
-            }
-        });
-
         control.lcdBlinkingProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
@@ -471,6 +445,14 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             drawLcdContent();
         } else if ("BACKGROUND_VISIBILITY".equals(PROPERTY)) {
             paint();
+        } else if ("GAUGE_MODEL".equals(PROPERTY)) {
+            addBindings();
+        } else if ("STYLE_MODEL".equals(PROPERTY)) {
+            addBindings();
+        } else if ("PREF_WIDTH".equals(PROPERTY)) {
+
+        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
+
         }
     }
 

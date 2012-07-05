@@ -104,20 +104,6 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
             control.setPrefSize(86, 145);
         }
 
-        control.prefWidthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
-
-        control.prefHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
-
         // Register listeners
         registerChangeListener(control.glowColorProperty(), "GLOW_COLOR");
         registerChangeListener(control.numberProperty(), "NUMBER");
