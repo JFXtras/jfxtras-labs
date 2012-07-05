@@ -1364,7 +1364,7 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
             lcdUnitString.visibleProperty().bind(control.lcdUnitVisibleProperty());
         }
         if (control.isLcdUnitVisible()) {
-            lcdUnitString.setX(LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdUnitString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0625);
+            lcdUnitString.setX(LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdUnitString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0833333333); // 0.0625
             lcdUnitString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / UNIT_Y_OFFSET - (lcdValueString.getLayoutBounds().getHeight() * 0.05));
         }
         lcdUnitString.setStroke(null);
@@ -1388,7 +1388,7 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
         if (control.isLcdUnitVisible()) {
             lcdValueString.setX((LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdUnitString.getLayoutBounds().getWidth() - lcdValueString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0833333333));
         } else {
-            lcdValueString.setX((LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdValueString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0625));
+            lcdValueString.setX((LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdValueString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0833333333)); // 0.0625
         }
         lcdValueString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / 2.0);
         lcdValueString.setTextOrigin(VPos.BOTTOM);

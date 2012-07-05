@@ -316,7 +316,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         INNER_SHADOW.setWidth(0.2 * SIZE);
         INNER_SHADOW.setHeight(0.2 * SIZE);
         INNER_SHADOW.setOffsetY(0.03 * SIZE);
-        INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.8));
+        INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.7));
         INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
 
         final Shape BACKGROUND_SHAPE = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.4158878504672897 * SIZE);

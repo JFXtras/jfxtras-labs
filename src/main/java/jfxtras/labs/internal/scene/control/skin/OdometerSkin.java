@@ -164,11 +164,9 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
         } else if ("COLOR".equals(PROPERTY)) {
             paint();
         } else if ("PREF_WIDTH".equals(PROPERTY)) {
-            double prefHeight = 1.6875 * (control.getPrefWidth() / (control.getNoOfDigits() + control.getNoOfDecimals()));
-            if (Double.compare(control.getPrefHeight(), prefHeight) != 0) {
-                control.setPrefHeight(prefHeight);
-                paint();
-            }
+            double prefHeight = control.getPrefWidth() < (control.getPrefHeight() * 0.5925925925925926) ? (control.getPrefWidth() * 1.6875) : control.getPrefHeight();
+            double prefWidth = prefHeight * 0.5925925925925926 * (control.getNoOfDigits() + control.getNoOfDecimals());
+            control.setPrefSize(prefWidth, prefHeight);
         } else if ("PREF_HEIGHT".equals(PROPERTY)) {
             double prefWidth = 0.5925925925925926 * control.getPrefHeight();
             if (Double.compare(control.getPrefWidth(), prefWidth) != 0) {

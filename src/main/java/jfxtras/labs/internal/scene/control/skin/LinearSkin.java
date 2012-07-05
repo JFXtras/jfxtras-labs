@@ -824,7 +824,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         INNER_SHADOW.setWidth(0.2 * SIZE);
         INNER_SHADOW.setHeight(0.2 * SIZE);
         INNER_SHADOW.setOffsetY(0.03 * SIZE);
-        INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.8));
+        INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.7));
         INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
 
         final LinearGradient HL_GRADIENT = new LinearGradient(0, 0, WIDTH, 0, false, CycleMethod.NO_CYCLE,
