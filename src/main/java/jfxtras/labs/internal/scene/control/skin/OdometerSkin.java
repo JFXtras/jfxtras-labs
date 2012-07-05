@@ -88,9 +88,24 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
     }
 
     private void init() {
-        if (control.getPrefWidth() <= 0 | control.getPrefHeight() <= 0) {
-            control.setPrefSize(0.5925925925925926 * 40 * (control.getNoOfDigits() + control.getNoOfDecimals()), 40);
+        double prefWidth  = control.getPrefWidth();
+        double prefHeight = control.getPrefHeight();
+        System.out.println("init() 1st: prefWidth: " + prefWidth + ", prefHeight: " + prefHeight);
+        if (prefWidth <= 0) {
+            if (prefHeight <= 0) {
+                prefHeight = 40;
+            }
+            prefWidth = 0.5925925925925926 * prefHeight * (control.getNoOfDigits() + control.getNoOfDecimals());
         }
+        if (prefHeight <= 0) {
+            if (prefWidth <= 0) {
+                prefWidth = 0.5925925925925926 * 40 * (control.getNoOfDigits() + control.getNoOfDecimals());
+            }
+            prefHeight = (prefWidth / (control.getNoOfDigits() + control.getNoOfDecimals())) * 1.6875;
+        }
+        System.out.println("init() 2nd: prefWidth: " + prefWidth + ", prefHeight: " + prefHeight);
+
+        control.setPrefSize(prefWidth, prefHeight);
 
         // Register listeners
         registerChangeListener(control.rotationsProperty(), "ROTATION");
@@ -164,14 +179,14 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
         } else if ("COLOR".equals(PROPERTY)) {
             paint();
         } else if ("PREF_WIDTH".equals(PROPERTY)) {
-            double prefHeight = control.getPrefWidth() < (control.getPrefHeight() * 0.5925925925925926) ? (control.getPrefWidth() * 1.6875) : control.getPrefHeight();
-            double prefWidth = prefHeight * 0.5925925925925926 * (control.getNoOfDigits() + control.getNoOfDecimals());
-            control.setPrefSize(prefWidth, prefHeight);
+            double prefHeight = (control.getPrefWidth() / (control.getNoOfDigits() + control.getNoOfDecimals())) * 1.6875;
+            if (Double.compare(control.getPrefHeight(), prefHeight) != 0) {
+                control.setPrefHeight(prefHeight);
+            }
         } else if ("PREF_HEIGHT".equals(PROPERTY)) {
-            double prefWidth = 0.5925925925925926 * control.getPrefHeight();
+            double prefWidth = control.getPrefHeight() * 0.5925925925925926 * (control.getNoOfDigits() + control.getNoOfDecimals());
             if (Double.compare(control.getPrefWidth(), prefWidth) != 0) {
                 control.setPrefWidth(prefWidth);
-                paint();
             }
         }
     }
@@ -190,22 +205,6 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
 
     @Override public final void dispose() {
         control = null;
-    }
-
-    @Override protected double computePrefWidth(final double PREF_WIDTH) {
-        double prefWidth = 0.5925925925925926 * control.getPrefHeight() * (control.getNoOfDigits() + control.getNoOfDecimals());
-        if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
-        }
-        return super.computePrefWidth(prefWidth);
-    }
-
-    @Override protected double computePrefHeight(final double PREF_HEIGHT) {
-        double prefHeight = 1.6875 * (control.getPrefWidth() / (control.getNoOfDigits() + control.getNoOfDecimals()));
-        if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
-        }
-        return super.computePrefWidth(prefHeight);
     }
 
 

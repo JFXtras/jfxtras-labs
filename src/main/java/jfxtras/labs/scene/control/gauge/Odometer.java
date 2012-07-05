@@ -32,6 +32,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -168,7 +169,7 @@ public class Odometer extends Control {
     }
     */
 
-    public final IntegerProperty rotationsProperty() {
+    public final ReadOnlyIntegerProperty rotationsProperty() {
         return rotations;
     }
 
@@ -246,8 +247,8 @@ public class Odometer extends Control {
     }
 
     @Override public void setPrefSize(final double WIDTH, final double HEIGHT) {
-        double prefHeight = WIDTH < (HEIGHT * 0.5925925925925926) ? (WIDTH * 1.6875) : HEIGHT;
-        double prefWidth = prefHeight * 0.5925925925925926 * (noOfDigits.get() + noOfDecimals.get());
+        double prefHeight = (WIDTH / (getNoOfDigits() + getNoOfDecimals())) * 1.6875 < (HEIGHT * 0.5925925925925926) ? (WIDTH / (getNoOfDigits() + getNoOfDecimals())) * 1.6875 : HEIGHT;
+        double prefWidth = prefHeight * 0.5925925925925926 * (getNoOfDigits() + getNoOfDecimals());
         super.setPrefSize(prefWidth, prefHeight);
     }
 
