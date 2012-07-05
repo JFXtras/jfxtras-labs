@@ -96,6 +96,8 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         // Register listeners
         registerChangeListener(CONTROL.widthProperty(), "WIDTH");
         registerChangeListener(CONTROL.heightProperty(), "HEIGHT");
+        registerChangeListener(CONTROL.prefWidthProperty(), "PREF_WIDTH");
+        registerChangeListener(CONTROL.prefHeightProperty(), "PREF_HEIGHT");
         registerChangeListener(CONTROL.animationDurationProperty(), "ANIMATION_DURATION");
         registerChangeListener(CONTROL.radialRangeProperty(), "RADIAL_RANGE");
         registerChangeListener(CONTROL.frameDesignProperty(), "FRAME_DESIGN");
@@ -124,6 +126,9 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         registerChangeListener(CONTROL.trendProperty(), "TREND");
         registerChangeListener(CONTROL.simpleGradientBaseColorProperty(), "SIMPLE_GRADIENT_BASE");
         registerChangeListener(CONTROL.lcdValueFontProperty(), "LCD_VALUE_FONT");
+        registerChangeListener(CONTROL.gaugeModelProperty(), "GAUGE_MODEL");
+        registerChangeListener(CONTROL.styleModelProperty(), "STYLE_MODEL");
+        registerChangeListener(CONTROL.thresholdExceededProperty(), "THRESHOLD_EXCEEDED");
     }
 
 
@@ -310,7 +315,8 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setWidth(0.2 * SIZE);
         INNER_SHADOW.setHeight(0.2 * SIZE);
-        INNER_SHADOW.setColor(Color.color(0, 0, 0, 1.0));
+        INNER_SHADOW.setOffsetY(0.03 * SIZE);
+        INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.8));
         INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
 
         final Shape BACKGROUND_SHAPE = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.4158878504672897 * SIZE);
@@ -651,14 +657,6 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         IBOUNDS.setStroke(null);
         KNOBS.getChildren().add(IBOUNDS);
 
-        final DropShadow SHADOW = new DropShadow();
-        SHADOW.setBlurType(BlurType.GAUSSIAN);
-        SHADOW.setColor(Color.color(0, 0, 0, 0.65));
-
-        final DropShadow POST_SHADOW = new DropShadow();
-        POST_SHADOW.setBlurType(BlurType.GAUSSIAN);
-        POST_SHADOW.setColor(Color.color(0, 0, 0, 0.35));
-
         final Group CENTER_KNOB;
         final Point2D CENTER_OFFSET;
         final double KNOB_SIZE;
@@ -682,7 +680,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                 break;
         }
         CENTER_OFFSET = new Point2D(CENTER.getX() - KNOB_SIZE / 2.0, CENTER.getY() - KNOB_SIZE / 2.0);
-        CENTER_KNOB.effectProperty().set(SHADOW);
+        //CENTER_KNOB.effectProperty().set(SHADOW);
         CENTER_KNOB.setTranslateX(CENTER_OFFSET.getX());
         CENTER_KNOB.setTranslateY(CENTER_OFFSET.getY());
 
@@ -745,8 +743,6 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                 MAX_OFFSET = new Point2D(0.6261682510375977, 0.8037382960319519);
                 break;
         }
-        MIN_POST.setEffect(POST_SHADOW);
-        MAX_POST.setEffect(POST_SHADOW);
         MIN_POST.setTranslateX(WIDTH * MIN_OFFSET.getX());
         MIN_POST.setTranslateY(WIDTH * MIN_OFFSET.getY());
         MAX_POST.setTranslateX(WIDTH * MAX_OFFSET.getX());

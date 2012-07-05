@@ -33,8 +33,6 @@ import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
@@ -386,20 +384,6 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
     }
 
     private void addListeners() {
-        control.gaugeModelProperty().addListener(new InvalidationListener() {
-            @Override public void invalidated(Observable observable) {
-                addBindings();
-                paint();
-            }
-        });
-
-        control.styleModelProperty().addListener(new InvalidationListener() {
-            @Override public void invalidated(Observable observable) {
-                addBindings();
-                paint();
-            }
-        });
-
         control.prefWidthProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
                 control.setPrefHeight(newValue.doubleValue());
@@ -411,16 +395,6 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
                 control.setPrefWidth(newValue.doubleValue());
                 isDirty = true;
-            }
-        });
-
-        control.thresholdExceededProperty().addListener(new ChangeListener<Boolean>() {
-            @Override public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
-                if(newValue) {
-                    ledTimer.start();
-                } else {
-                    ledTimer.stop();
-                }
             }
         });
 
@@ -621,6 +595,20 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
             drawCircularTrend(control, trend, gaugeBounds);
         } else if ("SIMPLE_GRADIENT_BASE".equals(PROPERTY)) {
             isDirty = true;
+        } else if ("GAUGE_MODEL".equals(PROPERTY)) {
+            addBindings();
+        } else if ("STYLE_MODEL".equals(PROPERTY)) {
+            addBindings();
+        } else if ("THRESHOLD_EXCEEDED".equals(PROPERTY)) {
+            if(control.isThresholdExceeded()) {
+                ledTimer.start();
+            } else {
+                ledTimer.stop();
+            }
+        } else if ("PREF_WIDTH".equals(PROPERTY)) {
+
+        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
+
         }
     }
 
@@ -1074,7 +1062,8 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setWidth(0.2 * SIZE);
         INNER_SHADOW.setHeight(0.2 * SIZE);
-        INNER_SHADOW.setColor(Color.color(0, 0, 0, 1.0));
+        INNER_SHADOW.setOffsetY(0.03 * SIZE);
+        INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.8));
         INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
 
         final LinearGradient HL_GRADIENT = new LinearGradient(0, 0, SIZE, 0, false, CycleMethod.NO_CYCLE,

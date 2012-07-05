@@ -34,8 +34,6 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
@@ -481,44 +479,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     }
 
     private void addListeners() {
-        control.gaugeModelProperty().addListener(new InvalidationListener() {
-            @Override public void invalidated(Observable observable) {
-                addBindings();
-                paint();
-            }
-        });
-
-        control.styleModelProperty().addListener(new InvalidationListener() {
-            @Override public void invalidated(Observable observable) {
-                addBindings();
-                paint();
-            }
-        });
-
-        control.prefWidthProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                img = new WritableImage(newValue.intValue(), (int) getPrefWidth());
-                isDirty = true;
-            }
-        });
-
-        control.prefHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                img = new WritableImage((int) getPrefWidth(), newValue.intValue());
-                isDirty = true;
-            }
-        });
-
-        control.thresholdExceededProperty().addListener(new ChangeListener<Boolean>() {
-            @Override public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
-                if(newValue) {
-                    ledTimer.start();
-                } else {
-                    ledTimer.stop();
-                }
-            }
-        });
-
         control.valueProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
                 formerValue.set(oldValue.doubleValue());
@@ -789,6 +749,22 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             }
         } else if ("HISTOGRAM_PERIOD".equals(PROPERTY)) {
             histogramInterval = control.histogramDataPeriodInMinutesProperty().get() * 60000000000l / 100l;
+        } else if ("GAUGE_MODEL".equals(PROPERTY)) {
+            addBindings();
+        } else if ("STYLE_MODEL".equals(PROPERTY)) {
+            addBindings();
+        } else if ("THRESHOLD_EXCEEDED".equals(PROPERTY)) {
+            if(control.isThresholdExceeded()) {
+                ledTimer.start();
+            } else {
+                ledTimer.stop();
+            }
+        } else if ("PREF_WIDTH".equals(PROPERTY)) {
+            final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+            img = new WritableImage((int) SIZE, (int) SIZE);
+        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
+            final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+            img = new WritableImage((int) SIZE, (int) SIZE);
         }
     }
 
