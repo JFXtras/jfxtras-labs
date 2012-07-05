@@ -857,9 +857,10 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setInput(INNER_GLOW);
         INNER_SHADOW.setWidth(0.15 * LCD_FRAME.getHeight());
-        INNER_SHADOW.setHeight(0.15 * LCD_FRAME.getHeight());
+        INNER_SHADOW.setHeight(0.075 * LCD_FRAME.getHeight());
         INNER_SHADOW.setOffsetY(0.025 * LCD_FRAME.getHeight());
         INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.65));
+
         LCD_MAIN.setEffect(INNER_SHADOW);
 
         LCD.getChildren().addAll(LCD_FRAME, LCD_MAIN);

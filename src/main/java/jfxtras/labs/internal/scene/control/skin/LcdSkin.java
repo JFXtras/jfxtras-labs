@@ -27,25 +27,18 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import jfxtras.labs.internal.scene.control.behavior.LcdBehavior;
-import jfxtras.labs.scene.control.gauge.Gauge;
-import jfxtras.labs.scene.control.gauge.Lcd;
-import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
-import jfxtras.labs.scene.control.gauge.Section;
-import jfxtras.labs.scene.control.gauge.StyleModelEvent;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.Timeline;
 import javafx.animation.Transition;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
@@ -68,6 +61,10 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
+import jfxtras.labs.internal.scene.control.behavior.LcdBehavior;
+import jfxtras.labs.scene.control.gauge.Gauge;
+import jfxtras.labs.scene.control.gauge.Lcd;
+import jfxtras.labs.scene.control.gauge.Section;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -615,7 +612,8 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             lcdValueOffsetRight = (lcdUnitString.getLayoutBounds().getWidth() + SIZE * 0.0833333333); // distance between value and unit
             lcdValueString.setX(LCD_MAIN.getX() + LCD_MAIN.getWidth() - lcdValueString.getLayoutBounds().getWidth() - lcdValueOffsetRight);
         } else {
-            lcdValueOffsetRight = SIZE * 0.04;// SIZE * 0.0151515152; // distance between value and right border
+            //lcdValueOffsetRight = SIZE * 0.04;// SIZE * 0.0151515152; // distance between value and right border
+            lcdValueOffsetRight = SIZE * 0.0833333333;
             lcdValueString.setX((WIDTH - lcdValueString.getLayoutBounds().getWidth()) - lcdValueOffsetRight);
         }
 
@@ -812,9 +810,10 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setInput(INNER_GLOW);
         INNER_SHADOW.setWidth(0.15 * SIZE);
-        INNER_SHADOW.setHeight(0.15 * SIZE);
+        INNER_SHADOW.setHeight(0.075 * SIZE);
         INNER_SHADOW.setOffsetY(0.025 * SIZE);
         INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.65));
+
         LCD_MAIN.setEffect(INNER_SHADOW);
 
         // Prepare the trend markers
