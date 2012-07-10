@@ -89,16 +89,16 @@ public class Util {
     }
 
     public static Color darker(final Color COLOR, final double FRACTION) {
-        double red   = clamp(0, 1, Math.round(COLOR.getRed() * (1.0 - FRACTION)));
-        double green = clamp(0, 1, Math.round(COLOR.getGreen() * (1.0 - FRACTION)));
-        double blue  = clamp(0, 1, Math.round(COLOR.getBlue() * (1.0 - FRACTION)));
+        double red   = clamp(0, 1, COLOR.getRed() * (1.0 - FRACTION));
+        double green = clamp(0, 1, COLOR.getGreen() * (1.0 - FRACTION));
+        double blue  = clamp(0, 1, COLOR.getBlue() * (1.0 - FRACTION));
         return new Color(red, green, blue, COLOR.getOpacity());
     }
 
     public static Color brighter(final Color COLOR, final double FRACTION) {
-        double red   = clamp(0, 1, Math.round(COLOR.getRed() * (1.0 + FRACTION)));
-        double green = clamp(0, 1, Math.round(COLOR.getGreen() * (1.0 + FRACTION)));
-        double blue  = clamp(0, 1, Math.round(COLOR.getBlue() * (1.0 + FRACTION)));
+        double red   = clamp(0, 1, COLOR.getRed() * (1.0 + FRACTION));
+        double green = clamp(0, 1, COLOR.getGreen() * (1.0 + FRACTION));
+        double blue  = clamp(0, 1, COLOR.getBlue() * (1.0 + FRACTION));
         return new Color(red, green, blue, COLOR.getOpacity());
     }
 
