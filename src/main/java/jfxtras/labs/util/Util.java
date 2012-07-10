@@ -358,16 +358,16 @@ public class Util {
     }
 
     public static Image createNoiseImage(final double WIDTH, final double HEIGHT, final Color COLOR) {
-        return createNoisePattern(WIDTH, HEIGHT, COLOR.darker(), COLOR.brighter(), 30);
+        return createNoiseImage(WIDTH, HEIGHT, COLOR.darker(), COLOR.brighter(), 30);
     }
 
-    public static Image createNoisePattern(final double WIDTH, final double HEIGHT, final Color DARK_COLOR, final Color BRIGHT_COLOR, final double ALPHA_VARIATION_IN_PERCENT) {
+    public static Image createNoiseImage(final double WIDTH, final double HEIGHT, final Color DARK_COLOR, final Color BRIGHT_COLOR, final double ALPHA_VARIATION_IN_PERCENT) {
         if (WIDTH <= 0 || HEIGHT <= 0) {
             return null;
         }
         double alphaVariationInPercent      = clamp(0, 100, ALPHA_VARIATION_IN_PERCENT);
         final WritableImage IMAGE           = new WritableImage((int) WIDTH, (int) HEIGHT);
-        final PixelWriter PIXEL_WRITER    = IMAGE.getPixelWriter();
+        final PixelWriter PIXEL_WRITER      = IMAGE.getPixelWriter();
         final Random        BW_RND          = new Random();
         final Random        ALPHA_RND       = new Random();
         final double        ALPHA_START     = alphaVariationInPercent / 100 / 2;

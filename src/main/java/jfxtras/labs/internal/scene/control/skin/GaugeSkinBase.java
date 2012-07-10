@@ -209,7 +209,8 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         MAIN_FRAME.setStroke(null);
         switch (control.getFrameDesign()) {
             case BLACK_METAL:
-                ConicalGradient bmGradient = new ConicalGradient(CENTER,
+                ConicalGradient bmGradient = new ConicalGradient(new Point2D(MAIN_FRAME.getLayoutBounds().getWidth() / 2,
+                                                                             MAIN_FRAME.getLayoutBounds().getHeight() / 2),
                                                                  new Stop(0.0000, Color.rgb(254, 254, 254)),
                                                                  new Stop(0.1250, Color.rgb(0, 0, 0)),
                                                                  new Stop(0.3472, Color.rgb(153, 153, 153)),
@@ -218,22 +219,28 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                                                                  new Stop(0.8750, Color.rgb(0, 0, 0)),
                                                                  new Stop(1.0000, Color.rgb(254, 254, 254)));
                 MAIN_FRAME.setFill(bmGradient.apply(MAIN_FRAME));
+                MAIN_FRAME.setStroke(null);
+                FRAME.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
                 break;
             case SHINY_METAL:
-                ConicalGradient smGradient = new ConicalGradient(CENTER,
+                ConicalGradient smGradient = new ConicalGradient(new Point2D(MAIN_FRAME.getLayoutBounds().getWidth() / 2,
+                                                                             MAIN_FRAME.getLayoutBounds().getHeight() / 2),
                                                                  new Stop(0.0000, Color.rgb(254, 254, 254)),
-                                                                 new Stop(0.1250, control.getFrameBaseColor()),
-                                                                 new Stop(0.2500, control.getFrameBaseColor()),
+                                                                 new Stop(0.1250, Util.darker(control.getFrameBaseColor(), 0.15)),
+                                                                 new Stop(0.2500, control.getFrameBaseColor().darker()),
                                                                  new Stop(0.3472, control.getFrameBaseColor().brighter()),
-                                                                 new Stop(0.5000, control.getFrameBaseColor()),
+                                                                 new Stop(0.5000, control.getFrameBaseColor().darker().darker()),
                                                                  new Stop(0.6527, control.getFrameBaseColor().brighter()),
-                                                                 new Stop(0.7500, control.getFrameBaseColor()),
-                                                                 new Stop(0.8750, control.getFrameBaseColor()),
+                                                                 new Stop(0.7500, control.getFrameBaseColor().darker()),
+                                                                 new Stop(0.8750, Util.darker(control.getFrameBaseColor(), 0.15)),
                                                                  new Stop(1.0000, Color.rgb(254, 254, 254)));
                 MAIN_FRAME.setFill(smGradient.apply(MAIN_FRAME));
+                MAIN_FRAME.setStroke(null);
+                FRAME.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
                 break;
             case CHROME:
-                ConicalGradient cmGradient = new ConicalGradient(CENTER,
+                ConicalGradient cmGradient = new ConicalGradient(new Point2D(MAIN_FRAME.getLayoutBounds().getWidth() / 2,
+                                                                             MAIN_FRAME.getLayoutBounds().getHeight() / 2),
                                                                  new Stop(0.00, Color.WHITE),
                                                                  new Stop(0.09, Color.WHITE),
                                                                  new Stop(0.12, Color.rgb(136, 136, 138)),
@@ -252,6 +259,8 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                                                                  new Stop(0.97, Color.rgb(164, 188, 190)),
                                                                  new Stop(1.00, Color.WHITE));
                 MAIN_FRAME.setFill(cmGradient.apply(MAIN_FRAME));
+                MAIN_FRAME.setStroke(null);
+                FRAME.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
                 break;
             case GLOSSY_METAL:
                 MAIN_FRAME.setFill(new RadialGradient(0, 0, CENTER.getX(), CENTER.getY(), 0.5 * WIDTH,
@@ -387,6 +396,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                                                                new Stop(0.97, Color.web("#FDFDFD")),
                                                                new Stop(1.00, Color.web("#FDFDFD")));
                 BACKGROUND_SHAPE.setFill(gradient.apply(BACKGROUND_SHAPE));
+                BACKGROUND.getChildren().addAll(BACKGROUND_SHAPE);
                 break;
             case CARBON:
                 BACKGROUND_SHAPE.setFill(Util.createCarbonPattern());
@@ -418,14 +428,20 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                 BACKGROUND.getChildren().addAll(BACKGROUND_SHAPE, SHADOW_OVERLAY2);
                 break;
             case NOISY_PLASTIC:
+                final Shape BACKGROUND_PLAIN = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.4158878504672897 * SIZE);
+                BACKGROUND_PLAIN.setFill(new LinearGradient(0.0, BACKGROUND_PLAIN.getLayoutY(),
+                                                            0.0, BACKGROUND_PLAIN.getLayoutBounds().getHeight(),
+                                                            false, CycleMethod.NO_CYCLE,
+                                                            new Stop(0.0, Util.brighter(CONTROL.getTextureColor(), 0.15)),
+                                                            new Stop(1.0, Util.darker(CONTROL.getTextureColor(), 0.15))));
+                BACKGROUND_PLAIN.setStroke(null);
                 BACKGROUND_SHAPE.setFill(Util.applyNoisyBackground(BACKGROUND_SHAPE, CONTROL.getTextureColor()));
-                BACKGROUND_SHAPE.setStroke(null);
+                BACKGROUND.getChildren().addAll(BACKGROUND_PLAIN, BACKGROUND_SHAPE);
                 break;
             default:
                 BACKGROUND_SHAPE.setStyle(CONTROL.getSimpleGradientBaseColorString());
                 BACKGROUND_SHAPE.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
                 BACKGROUND_SHAPE.setEffect(INNER_SHADOW);
-                BACKGROUND_SHAPE.setStroke(null);
                 BACKGROUND.getChildren().addAll(BACKGROUND_SHAPE);
                 break;
         }
