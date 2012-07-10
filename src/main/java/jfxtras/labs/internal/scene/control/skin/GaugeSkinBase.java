@@ -1894,7 +1894,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         LED_INNER_SHADOW.setRadius(0.02 * WIDTH);
         LED_INNER_SHADOW.setColor(Color.BLACK);
         LED.setEffect(LED_INNER_SHADOW);
-
+        LED.getStyleClass().add("root");
         LED.setStyle("-fx-value: " + CONTROL.getValueColor().CSS);
         if (ON) {
             LED.getStyleClass().add("bargraph-on");

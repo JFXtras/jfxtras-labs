@@ -388,16 +388,16 @@ public class Util {
         return IMAGE;
     }
 
-    public static Paint applyNoisyBackground(final Node NODE, final Color TEXTURE_COLOR) {
-        final int           WIDTH           = (int) NODE.getLayoutBounds().getWidth();
-        final int           HEIGHT          = (int) NODE.getLayoutBounds().getHeight();
+    public static Paint applyNoisyBackground(final Shape SHAPE, final Color TEXTURE_COLOR) {
+        final int           WIDTH           = (int) SHAPE.getLayoutBounds().getWidth();
+        final int           HEIGHT          = (int) SHAPE.getLayoutBounds().getHeight();
         final WritableImage IMAGE           = new WritableImage(WIDTH, HEIGHT);
         final PixelWriter   PIXEL_WRITER    = IMAGE.getPixelWriter();
         final Random        BW_RND          = new Random();
         final Random        ALPHA_RND       = new Random();
         final double        ALPHA_START     = 0.02;
         final double        ALPHA_VARIATION = 0.04;
-        Color noiseColor;
+        Color  noiseColor;
         double noiseAlpha;
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
@@ -410,6 +410,10 @@ public class Util {
                 PIXEL_WRITER.setColor(x, y, Color.color(noiseColor.getRed(), noiseColor.getGreen(), noiseColor.getBlue(), noiseAlpha));
             }
         }
-        return new ImagePattern(IMAGE, -NODE.getTranslateX(), -NODE.getTranslateY(), WIDTH, HEIGHT, false);
+		double x      = SHAPE.getLayoutBounds().getMinX();
+		double y      = SHAPE.getLayoutBounds().getMinY();
+		double width  = SHAPE.getLayoutBounds().getWidth();
+	    double height = SHAPE.getLayoutBounds().getHeight();
+		return new ImagePattern(IMAGE, x, y, width, height, false);
     }
 }

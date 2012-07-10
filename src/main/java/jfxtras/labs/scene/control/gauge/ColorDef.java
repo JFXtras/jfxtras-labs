@@ -55,7 +55,7 @@ public enum ColorDef {
     public final Color COLOR;
 
     ColorDef(final String CSS_COLOR, final Color JFX_COLOR) {
-        this.CSS = CSS_COLOR;
+        this.CSS   = CSS_COLOR;
         this.COLOR = JFX_COLOR;
     }
 }

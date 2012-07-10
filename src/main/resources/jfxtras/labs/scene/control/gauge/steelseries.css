@@ -100,19 +100,22 @@
 }
 
 .radial {
-    -fx-skin: "jfxtras.labs.internal.scene.control.skin.RadialSkin";
+    -fx-skin : "jfxtras.labs.internal.scene.control.skin.RadialSkin";
+    -fx-value: -fx-red;
 }
 
 .radial-half-north {
-    -fx-skin: "jfxtras.labs.internal.scene.control.skin.RadialHalfNSkin";
+    -fx-skin : "jfxtras.labs.internal.scene.control.skin.RadialHalfNSkin";
+    -fx-value: -fx-red;
 }
 
 .radial-half-east {
-    -fx-skin: "jfxtras.labs.internal.scene.control.skin.RadialHalfESkin";
+    -fx-skin : "jfxtras.labs.internal.scene.control.skin.RadialHalfESkin";
 }
 
 .radial-half-south {
-    -fx-skin: "jfxtras.labs.internal.scene.control.skin.RadialHalfSSkin";
+    -fx-skin : "jfxtras.labs.internal.scene.control.skin.RadialHalfSSkin";
+    -fx-value: -fx-red;
 }
 
 .radial-half-west {
@@ -465,6 +468,18 @@
 /************************************************************
 * Defintions of all framedesign gradients                   *
 ************************************************************/
+.frame-design-blackmetal {
+    -fx-fill: black;
+}
+
+.frame-design-shinymetal {
+    -fx-fill: gray;
+}
+
+.frame-design-chrome {
+    -fx-fill: gray;
+}
+
 .frame-design-metal {
     -fx-fill: linear-gradient(from 0% 0% to 0% 100%, rgb(254, 254, 254) 0%, rgb(210, 210, 210) 7%, rgb(179, 179, 179) 12%, rgb(213, 213, 213) 100%);
 }
@@ -667,6 +682,15 @@
 
 .background-design-noisyplastic-text {
     -fx-fill: rgb(255, 255, 255);
+}
+
+.background-design-stainless {
+    -fx-fill  : rgb(160, 160, 160);
+    -fx-stroke: rgb(0, 0, 0);
+}
+
+.background-design-stainless-text {
+    -fx-fill: rgb(0, 0, 0);
 }
 
 

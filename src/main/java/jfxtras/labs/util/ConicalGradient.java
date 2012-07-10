@@ -158,8 +158,12 @@ public class ConicalGradient {
         return RASTER;
     }
 
-    public ImagePattern apply(final Shape SHAPE) {
-        center = new Point2D(SHAPE.getLayoutBounds().getWidth() / 2.0, SHAPE.getLayoutBounds().getHeight() / 2.0);
-        return new ImagePattern(getImage(SHAPE.getLayoutBounds().getWidth(), SHAPE.getLayoutBounds().getHeight()), -SHAPE.getTranslateX(), -SHAPE.getTranslateY(), SHAPE.getLayoutBounds().getWidth(), SHAPE.getLayoutBounds().getHeight(), false);
+    public ImagePattern apply(final Shape SHAPE) {		
+		double x      = SHAPE.getLayoutBounds().getMinX();
+		double y      = SHAPE.getLayoutBounds().getMinY();
+		double width  = SHAPE.getLayoutBounds().getWidth();
+		double height = SHAPE.getLayoutBounds().getHeight();
+		center        = new Point2D(width / 2.0, width / 2.0);
+		return new ImagePattern(getImage(width, height), x, y, width, height, false);
     }
 }
