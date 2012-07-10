@@ -85,6 +85,11 @@ public class StyleModelBuilder {
         return this;
     }
 
+    public final StyleModelBuilder frameBaseColor(final Color FRAME_BASE_COLOR) {
+        properties.put("frameBaseColor", new SimpleObjectProperty<Color>(FRAME_BASE_COLOR));
+        return this;
+    }
+
     public final StyleModelBuilder frameVisible(final boolean FRAME_VISIBLE) {
         properties.put("frameVisible", new SimpleBooleanProperty(FRAME_VISIBLE));
         return this;
@@ -405,6 +410,8 @@ public class StyleModelBuilder {
                 MODEL.setThresholdColor(((ObjectProperty<Gauge.ThresholdColor>) properties.get(key)).get());
             } else if ("frameDesign".equals(key)) {
                 MODEL.setFrameDesign(((ObjectProperty<Gauge.FrameDesign>) properties.get(key)).get());
+            } else if ("frameBaseColor".equals(key)) {
+                MODEL.setFrameBaseColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("frameVisible".equals(key)) {
                 MODEL.setFrameVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("backgroundDesign".equals(key)) {

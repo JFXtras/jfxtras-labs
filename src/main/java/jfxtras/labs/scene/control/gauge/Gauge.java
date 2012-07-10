@@ -27,7 +27,6 @@
 
 package jfxtras.labs.scene.control.gauge;
 
-import jfxtras.labs.scene.control.gauge.Radial.ForegroundType;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -40,9 +39,9 @@ import javafx.geometry.Point2D;
 import javafx.scene.control.Control;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import jfxtras.labs.scene.control.gauge.Radial.ForegroundType;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -78,7 +77,7 @@ public abstract class Gauge extends Control {
         ANTHRACITE("background-design-anthracite"),
         MUD("background-design-mud"),
         CARBON("background-design-carbon"),
-        //STAINLESS("background-design-stainless"),
+        STAINLESS("background-design-stainless"),
         //STAINLESS_GRINDED("background-design-stainlessgrinded"),
         //BRUSHED_METAL("background-design-brushedmetal"),
         PUNCHED_SHEET("background-design-punchedsheet"),
@@ -97,9 +96,9 @@ public abstract class Gauge extends Control {
         }
     }
     public static enum FrameDesign {
-        //BLACK_METAL("frame-design-blackmetal"),   // Swing based
-        //SHINY_METAL("frame-design-shinymetal"),   // Swing based
-        //CHROME("frame-design-chrome"),            // Swing based
+        BLACK_METAL("frame-design-blackmetal"),
+        SHINY_METAL("frame-design-shinymetal"),
+        CHROME("frame-design-chrome"),
         METAL("frame-design-metal"),
         GLOSSY_METAL("frame-design-glossymetal"),
         DARK_GLOSSY("frame-design-darkglossy"),
@@ -431,7 +430,7 @@ public abstract class Gauge extends Control {
     }
 
 
-    // ******************** GaugeModel Methods *************************************
+    // ******************** GaugeModel Methods ********************************
     public final double getValue() {
         return gaugeModel.getValue();
     }
@@ -660,6 +659,8 @@ public abstract class Gauge extends Control {
         return gaugeModel.unitProperty();
     }
 
+
+    // ******************** StyleModel Methods ********************************
     public final FrameDesign getFrameDesign() {
         return styleModel.getFrameDesign();
     }
@@ -670,6 +671,18 @@ public abstract class Gauge extends Control {
 
     public final ObjectProperty<FrameDesign> frameDesignProperty() {
         return styleModel.frameDesignProperty();
+    }
+
+    public final Color getFrameBaseColor() {
+        return styleModel.getFrameBaseColor();
+    }
+
+    public final void setFrameBaseColor(final Color FRAME_BASE_COLOR) {
+        styleModel.setFrameBaseColor(FRAME_BASE_COLOR);
+    }
+
+    public final ObjectProperty<Color> frameBaseColorProperty() {
+        return styleModel.frameBaseColorProperty();
     }
 
     public final boolean isFrameVisible() {

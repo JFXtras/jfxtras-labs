@@ -182,6 +182,8 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 styleModel.setThresholdColor(((ObjectProperty<Gauge.ThresholdColor>) styleProperties.get(key)).get());
             } else if ("frameDesign".equals(key)) {
                 styleModel.setFrameDesign(((ObjectProperty<Gauge.FrameDesign>) styleProperties.get(key)).get());
+            } else if ("frameBaseColor".equals(key)) {
+                styleModel.setFrameBaseColor(((ObjectProperty<Color>) styleProperties.get(key)).get());
             } else if ("frameVisible".equals(key)) {
                 styleModel.setFrameVisible(((BooleanProperty) styleProperties.get(key)).get());
             } else if ("backgroundDesign".equals(key)) {
@@ -553,6 +555,11 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
 
     public final GaugeBuilder frameDesign(final Gauge.FrameDesign FRAME_DESIGN) {
         styleProperties.put("frameDesign", new SimpleObjectProperty<Gauge.FrameDesign>(FRAME_DESIGN));
+        return this;
+    }
+
+    public final GaugeBuilder frameBaseColor(final Color FRAME_BASE_COLOR) {
+        styleProperties.put("frameBaseColor", new SimpleObjectProperty<Color>(FRAME_BASE_COLOR));
         return this;
     }
 

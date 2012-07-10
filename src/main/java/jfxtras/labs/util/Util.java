@@ -25,22 +25,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control.gauge;
+package jfxtras.labs.util;
 
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.SnapshotParametersBuilder;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Paint;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Shape;
+import jfxtras.labs.scene.control.gauge.GradientLookup;
 
 import java.util.Random;
 
@@ -51,12 +56,11 @@ import java.util.Random;
  * Date: 27.01.12
  * Time: 15:35
  */
-public enum Util {
-    INSTANCE;
+public class Util {
 
     private static final SnapshotParameters SNAPSHOT_PARAMETER = SnapshotParametersBuilder.create().fill(Color.TRANSPARENT).build();
 
-    public final String createCssColor(final Color COLOR) {
+    public static final String createCssColor(final Color COLOR) {
         final StringBuilder CSS_COLOR = new StringBuilder(19);
         CSS_COLOR.append("rgba(");
         CSS_COLOR.append((int) (COLOR.getRed() * 255));
@@ -70,13 +74,67 @@ public enum Util {
         return CSS_COLOR.toString();
     }
 
-    public final Canvas createConicalGradient(final Shape SHAPE, final Stop[] STOPS, final double ROTATION_OFFSET) {
-            final Canvas CANVAS = new Canvas(SHAPE.getLayoutBounds().getWidth(), SHAPE.getLayoutBounds().getHeight());
-            createConicalGradient(CANVAS, SHAPE, STOPS, ROTATION_OFFSET);
-            return CANVAS;
-        }
+    public static Color interpolateColor(final Color COLOR1, final Color COLOR2, final double FRACTION) {
+        double red   = COLOR1.getRed() + (COLOR2.getRed() - COLOR1.getRed()) * FRACTION;
+        double green = COLOR1.getGreen() + (COLOR2.getGreen() - COLOR1.getGreen()) * FRACTION;
+        double blue  = COLOR1.getBlue() + (COLOR2.getBlue() - COLOR1.getBlue()) * FRACTION;
+        double alpha = COLOR1.getOpacity() + (COLOR2.getOpacity() - COLOR1.getOpacity()) * FRACTION;
+        return new Color(red, green, blue, alpha);
+    }
 
-    public final void createConicalGradient(final Canvas CANVAS, final Shape SHAPE, final Stop[] STOPS, final double ROTATION_OFFSET) {
+    public static Color biLinearInterpolateColor(final Color COLOR_UL, final Color COLOR_UR, final Color COLOR_LL, final Color COLOR_LR, final float FRACTION_X, final float FRACTION_Y) {
+        final Color INTERPOLATED_COLOR_X1 = interpolateColor(COLOR_UL, COLOR_UR, FRACTION_X);
+        final Color INTERPOLATED_COLOR_X2 = interpolateColor(COLOR_LL, COLOR_LR, FRACTION_X);
+        return interpolateColor(INTERPOLATED_COLOR_X1, INTERPOLATED_COLOR_X2, FRACTION_Y);
+    }
+
+    public static Color darker(final Color COLOR, final double FRACTION) {
+        double red   = clamp(0, 1, Math.round(COLOR.getRed() * (1.0 - FRACTION)));
+        double green = clamp(0, 1, Math.round(COLOR.getGreen() * (1.0 - FRACTION)));
+        double blue  = clamp(0, 1, Math.round(COLOR.getBlue() * (1.0 - FRACTION)));
+        return new Color(red, green, blue, COLOR.getOpacity());
+    }
+
+    public static Color brighter(final Color COLOR, final double FRACTION) {
+        double red   = clamp(0, 1, Math.round(COLOR.getRed() * (1.0 + FRACTION)));
+        double green = clamp(0, 1, Math.round(COLOR.getGreen() * (1.0 + FRACTION)));
+        double blue  = clamp(0, 1, Math.round(COLOR.getBlue() * (1.0 + FRACTION)));
+        return new Color(red, green, blue, COLOR.getOpacity());
+    }
+
+    public static double clamp(final double MIN, final double MAX, final double VALUE) {
+        return VALUE < MIN ? MIN : (VALUE > MAX ? MAX : VALUE);
+    }
+
+    public static double colorDistance(final Color COLOR1, final Color COLOR2) {
+        final double DELTA_R = COLOR2.getRed() - COLOR1.getRed();
+        final double DELTA_G = COLOR2.getGreen() - COLOR1.getGreen();
+        final double DELTA_B = COLOR2.getBlue() - COLOR1.getBlue();
+        return Math.sqrt(DELTA_R * DELTA_R + DELTA_G * DELTA_G + DELTA_B * DELTA_B);
+    }
+
+    public static boolean isDark(final Color COLOR) {
+        final double DISTANCE_TO_WHITE = colorDistance(COLOR, Color.WHITE);
+        final double DISTANCE_TO_BLACK = colorDistance(COLOR, Color.BLACK);
+        return DISTANCE_TO_BLACK < DISTANCE_TO_WHITE;
+    }
+
+    public static boolean isBright(final Color COLOR) {
+        return !isDark(COLOR);
+    }
+
+    public static Image takeSnapshot(final Node NODE) {
+        WritableImage img = new WritableImage((int) NODE.getLayoutBounds().getWidth(), (int) NODE.getLayoutBounds().getHeight());
+        return NODE.snapshot(SNAPSHOT_PARAMETER, img);
+    }
+
+    public static Canvas createConicalGradient(final Shape SHAPE, final Stop[] STOPS, final double ROTATION_OFFSET) {
+                final Canvas CANVAS = new Canvas(SHAPE.getLayoutBounds().getWidth(), SHAPE.getLayoutBounds().getHeight());
+                createConicalGradient(CANVAS, SHAPE, STOPS, ROTATION_OFFSET);
+                return CANVAS;
+            }
+
+    public static void createConicalGradient(final Canvas CANVAS, final Shape SHAPE, final Stop[] STOPS, final double ROTATION_OFFSET) {
         // adjust size of canvas to size of shape if needed
         if (CANVAS.getLayoutBounds().getWidth() < SHAPE.getLayoutBounds().getWidth()) {
             CANVAS.setWidth(SHAPE.getLayoutBounds().getWidth());
@@ -98,7 +156,7 @@ public enum Util {
         final Point2D         CENTER       = new Point2D(BOUNDS.getWidth() / 2, BOUNDS.getHeight() / 2);
         final double          RADIUS       = Math.sqrt(BOUNDS.getWidth() * BOUNDS.getWidth() + BOUNDS.getHeight() * BOUNDS.getHeight()) / 2;
         final double          ANGLE_STEP   = 0.1;
-        final GradientLookup  COLOR_LOOKUP = new GradientLookup(STOPS);
+        final GradientLookup COLOR_LOOKUP = new GradientLookup(STOPS);
         CTX.translate(CENTER.getX(), CENTER.getY());
         CTX.rotate(-90 + ROTATION_OFFSET);
         CTX.translate(-CENTER.getX(), -CENTER.getY());
@@ -117,7 +175,7 @@ public enum Util {
         }
     }
 
-    public final ImagePattern createCarbonPattern() {
+    public static ImagePattern createCarbonPattern() {
         final double WIDTH        = 12;
         final double HEIGHT       = 12;
         final Canvas CANVAS       = new Canvas(WIDTH, HEIGHT);
@@ -227,7 +285,7 @@ public enum Util {
         return PATTERN;
     }
 
-    public final ImagePattern createPunchedSheetPattern(final Color TEXTURE_COLOR) {
+    public static ImagePattern createPunchedSheetPattern(final Color TEXTURE_COLOR) {
         final double WIDTH = 15;
         final double HEIGHT = 15;
         final Canvas CANVAS = new Canvas(WIDTH, HEIGHT);
@@ -299,65 +357,59 @@ public enum Util {
         return PATTERN;
     }
 
-    public final ImagePattern createNoisePattern(final double WIDTH, final double HEIGHT, final Color TEXTURE_COLOR) {
-        final Canvas CANVAS = new Canvas(WIDTH, HEIGHT);
-        final GraphicsContext CTX = CANVAS.getGraphicsContext2D();
+    public static Image createNoiseImage(final double WIDTH, final double HEIGHT, final Color COLOR) {
+        return createNoisePattern(WIDTH, HEIGHT, COLOR.darker(), COLOR.brighter(), 30);
+    }
 
-        CTX.setFill(new LinearGradient(0, 0,
-                                       WIDTH, HEIGHT,
-                                       false, CycleMethod.NO_CYCLE,
-                                       new Stop(0, brighter(TEXTURE_COLOR, 0.15)),
-                                       new Stop(1, darker(TEXTURE_COLOR, 0.15))));
-        CTX.fillRect(0, 0, WIDTH, HEIGHT);
-
-        final Color  DARK_NOISE   = TEXTURE_COLOR.darker();
-        final Color  BRIGHT_NOISE = TEXTURE_COLOR.brighter();
-        final Random BW_RND       = new Random();
-        final Random ALPHA_RND    = new Random();
-        Color  noiseColor;
+    public static Image createNoisePattern(final double WIDTH, final double HEIGHT, final Color DARK_COLOR, final Color BRIGHT_COLOR, final double ALPHA_VARIATION_IN_PERCENT) {
+        if (WIDTH <= 0 || HEIGHT <= 0) {
+            return null;
+        }
+        double alphaVariationInPercent      = clamp(0, 100, ALPHA_VARIATION_IN_PERCENT);
+        final WritableImage IMAGE           = new WritableImage((int) WIDTH, (int) HEIGHT);
+        final PixelWriter PIXEL_WRITER    = IMAGE.getPixelWriter();
+        final Random        BW_RND          = new Random();
+        final Random        ALPHA_RND       = new Random();
+        final double        ALPHA_START     = alphaVariationInPercent / 100 / 2;
+        final double        ALPHA_VARIATION = alphaVariationInPercent / 100;
+        Color noiseColor;
         double noiseAlpha;
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 if (BW_RND.nextBoolean()) {
-                    noiseColor = BRIGHT_NOISE;
+                    noiseColor = BRIGHT_COLOR;
                 } else {
-                    noiseColor = DARK_NOISE;
+                    noiseColor = DARK_COLOR;
                 }
-                noiseAlpha = 0.0392156863 + (ALPHA_RND.nextInt(10) / 255) - 0.0196078431;
-                CTX.beginPath();
-                CTX.moveTo(x, y);
-                CTX.lineTo(x, y);
-                CTX.setStroke(Color.color(noiseColor.getRed(), noiseColor.getGreen(), noiseColor.getBlue(), noiseAlpha));
-                CTX.stroke();
+                noiseAlpha = clamp(0, 1, ALPHA_START + ALPHA_RND.nextDouble() * ALPHA_VARIATION);
+                PIXEL_WRITER.setColor(x, y, Color.color(noiseColor.getRed(), noiseColor.getGreen(), noiseColor.getBlue(), noiseAlpha));
             }
         }
-        final Image PATTERN_IMAGE = CANVAS.snapshot(SNAPSHOT_PARAMETER, null);
-        final ImagePattern PATTERN = new ImagePattern(PATTERN_IMAGE, 0, 0, WIDTH, HEIGHT, false);
-
-        return PATTERN;
+        return IMAGE;
     }
 
-    public Color darker(final Color COLOR, final double FRACTION) {
-        double red   = Math.round(COLOR.getRed() * (1.0 - FRACTION));
-        double green = Math.round(COLOR.getGreen() * (1.0 - FRACTION));
-        double blue  = Math.round(COLOR.getBlue() * (1.0 - FRACTION));
-
-        red   = red < 0 ? 0 : (red > 1 ? 1 : red);
-        green = green < 0 ? 0 : (green > 1 ? 1 : green);
-        blue  = blue < 0 ? 0 : (blue > 1 ? 1 : blue);
-
-        return Color.color(red, green, blue, COLOR.getOpacity());
-    }
-
-    public Color brighter(final Color COLOR, final double FRACTION) {
-        double red   = Math.round(COLOR.getRed() * (1.0 + FRACTION));
-        double green = Math.round(COLOR.getGreen() * (1.0 + FRACTION));
-        double blue  = Math.round(COLOR.getBlue() * (1.0 + FRACTION));
-
-        red = red < 0 ? 0 : (red > 1 ? 1 : red);
-        green = green < 0 ? 0 : (green > 1 ? 1 : green);
-        blue = blue < 0 ? 0 : (blue > 1 ? 1 : blue);
-
-        return Color.color(red, green, blue, COLOR.getOpacity());
+    public static Paint applyNoisyBackground(final Node NODE, final Color TEXTURE_COLOR) {
+        final int           WIDTH           = (int) NODE.getLayoutBounds().getWidth();
+        final int           HEIGHT          = (int) NODE.getLayoutBounds().getHeight();
+        final WritableImage IMAGE           = new WritableImage(WIDTH, HEIGHT);
+        final PixelWriter   PIXEL_WRITER    = IMAGE.getPixelWriter();
+        final Random        BW_RND          = new Random();
+        final Random        ALPHA_RND       = new Random();
+        final double        ALPHA_START     = 0.02;
+        final double        ALPHA_VARIATION = 0.04;
+        Color noiseColor;
+        double noiseAlpha;
+        for (int y = 0; y < HEIGHT; y++) {
+            for (int x = 0; x < WIDTH; x++) {
+                if (BW_RND.nextBoolean()) {
+                    noiseColor = TEXTURE_COLOR.brighter();
+                } else {
+                    noiseColor = TEXTURE_COLOR.darker();
+                }
+                noiseAlpha = clamp(0, 1, ALPHA_START + ALPHA_RND.nextDouble() * ALPHA_VARIATION);
+                PIXEL_WRITER.setColor(x, y, Color.color(noiseColor.getRed(), noiseColor.getGreen(), noiseColor.getBlue(), noiseAlpha));
+            }
+        }
+        return new ImagePattern(IMAGE, -NODE.getTranslateX(), -NODE.getTranslateY(), WIDTH, HEIGHT, false);
     }
 }

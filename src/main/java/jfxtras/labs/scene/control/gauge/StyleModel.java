@@ -48,6 +48,7 @@ import javafx.beans.property.StringProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
+import jfxtras.labs.util.Util;
 
 
 /**
@@ -63,6 +64,7 @@ public class StyleModel {
     private BooleanProperty                      thresholdVisible;
     private ObjectProperty<ThresholdColor>       thresholdColor;
     private ObjectProperty<FrameDesign>          frameDesign;
+    private ObjectProperty<Color>                frameBaseColor;
     private BooleanProperty                      frameVisible;
     private ObjectProperty<BackgroundDesign>     backgroundDesign;
     private BooleanProperty                      backgroundVisible;
@@ -137,6 +139,7 @@ public class StyleModel {
         thresholdVisible                = new SimpleBooleanProperty(false);
         thresholdColor                  = new SimpleObjectProperty<ThresholdColor>(Gauge.ThresholdColor.RED);
         frameDesign                     = new SimpleObjectProperty<FrameDesign>(Gauge.FrameDesign.METAL);
+        frameBaseColor                  = new SimpleObjectProperty<Color>(Color.rgb(160, 160, 160));
         frameVisible                    = new SimpleBooleanProperty(true);
         backgroundDesign                = new SimpleObjectProperty<BackgroundDesign>(Gauge.BackgroundDesign.DARK_GRAY);
         backgroundVisible               = new SimpleBooleanProperty(true);
@@ -305,6 +308,18 @@ public class StyleModel {
 
     public final ObjectProperty<Gauge.FrameDesign> frameDesignProperty() {
         return frameDesign;
+    }
+
+    public final Color getFrameBaseColor() {
+        return frameBaseColor.get();
+    }
+
+    public final void setFrameBaseColor(final Color FRAME_BASE_COLOR) {
+        frameBaseColor.set(FRAME_BASE_COLOR);
+    }
+
+    public final ObjectProperty<Color> frameBaseColorProperty() {
+        return frameBaseColor;
     }
 
     public final boolean isFrameVisible() {
@@ -1017,7 +1032,7 @@ public class StyleModel {
     public final String getTextureColorString() {
         final StringBuilder COLOR_STRING = new StringBuilder(30);
         COLOR_STRING.append("-fx-texture: ");
-        COLOR_STRING.append(Util.INSTANCE.createCssColor(getTextureColor()));
+        COLOR_STRING.append(Util.createCssColor(getTextureColor()));
         return COLOR_STRING.toString();
     }
 
@@ -1037,7 +1052,7 @@ public class StyleModel {
     public final String getSimpleGradientBaseColorString() {
         final StringBuilder COLOR_STRING = new StringBuilder(30);
         COLOR_STRING.append("-fx-simplegradient-base: ");
-        COLOR_STRING.append(Util.INSTANCE.createCssColor(getSimpleGradientBaseColor()));
+        COLOR_STRING.append(Util.createCssColor(getSimpleGradientBaseColor()));
         return COLOR_STRING.toString();
     }
 

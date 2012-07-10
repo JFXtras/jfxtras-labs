@@ -39,7 +39,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import jfxtras.labs.internal.scene.control.behavior.LedBehavior;
 import jfxtras.labs.scene.control.gauge.Led;
-import jfxtras.labs.scene.control.gauge.Util;
+import jfxtras.labs.util.Util;
 
 
 /**
@@ -166,11 +166,11 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
 
     // ******************** Drawing related ***********************************
     public final void drawLed() {
-        final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
-        final double WIDTH = SIZE;
+        final double SIZE   = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+        final double WIDTH  = SIZE;
         final double HEIGHT = SIZE;
 
-        led.setStyle("-fx-led: " + Util.INSTANCE.createCssColor(control.getColor()));
+        led.setStyle("-fx-led: " + Util.createCssColor(control.getColor()));
 
         led.getChildren().clear();
 

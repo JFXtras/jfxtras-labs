@@ -39,7 +39,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import jfxtras.labs.internal.scene.control.behavior.SimpleIndicatorBehavior;
 import jfxtras.labs.scene.control.gauge.SimpleIndicator;
-import jfxtras.labs.scene.control.gauge.Util;
+import jfxtras.labs.util.Util;
 
 
 /**
@@ -140,8 +140,8 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
 
     // ******************** Drawing related ***********************************
     private void updateIndicator() {
-        main.setStyle("-fx-indicator-inner-color: " + Util.INSTANCE.createCssColor(control.getInnerColor()) +
-                      "-fx-indicator-outer-color: " + Util.INSTANCE.createCssColor(control.getOuterColor()));
+        main.setStyle("-fx-indicator-inner-color: " + Util.createCssColor(control.getInnerColor()) +
+                      "-fx-indicator-outer-color: " + Util.createCssColor(control.getOuterColor()));
         main.getStyleClass().add("indicator-main-fill");
         mainGlow.setColor(control.getInnerColor());
     }
@@ -151,8 +151,8 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
         final double WIDTH = SIZE;
         final double HEIGHT = SIZE;
 
-        indicator.setStyle("-fx-indicator-inner-color: " + Util.INSTANCE.createCssColor(control.getInnerColor()) +
-                           "-fx-indicator-outer-color: " + Util.INSTANCE.createCssColor(control.getOuterColor()));
+        indicator.setStyle("-fx-indicator-inner-color: " + Util.createCssColor(control.getInnerColor()) +
+                           "-fx-indicator-outer-color: " + Util.createCssColor(control.getOuterColor()));
 
         indicator.getChildren().clear();
 
