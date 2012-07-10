@@ -395,8 +395,8 @@ public class Util {
         final PixelWriter   PIXEL_WRITER    = IMAGE.getPixelWriter();
         final Random        BW_RND          = new Random();
         final Random        ALPHA_RND       = new Random();
-        final double        ALPHA_START     = 0.02;
-        final double        ALPHA_VARIATION = 0.04;
+        final double        ALPHA_START     = 0.045;
+        final double        ALPHA_VARIATION = 0.09;
         Color  noiseColor;
         double noiseAlpha;
         for (int y = 0; y < HEIGHT; y++) {

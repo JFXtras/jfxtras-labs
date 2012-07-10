@@ -53,7 +53,7 @@ import java.util.TreeSet;
  * Time: 09:46
  */
 public class ConicalGradient {
-    private Point2D center;
+    private Point2D    center;
     private List<Stop> sortedStops;
 
 
@@ -67,10 +67,19 @@ public class ConicalGradient {
     }
 
     public ConicalGradient(final Point2D CENTER, final Stop... STOPS) {
-        this(CENTER, Arrays.asList(STOPS));
+        this(CENTER, 0.0, Arrays.asList(STOPS));
     }
 
     public ConicalGradient(final Point2D CENTER, final List<Stop> STOPS) {
+        this(CENTER, 0.0, STOPS);
+    }
+
+    public ConicalGradient(final Point2D CENTER, final double OFFSET, final Stop... STOPS) {
+        this(CENTER, Arrays.asList(STOPS));
+    }
+
+    public ConicalGradient(final Point2D CENTER, final double OFFSET, final List<Stop> STOPS) {
+        double offset = Util.clamp(0, 1, OFFSET);
         center = CENTER;
         List<Stop> stops;
         if (STOPS == null || STOPS.isEmpty()) {
@@ -99,10 +108,53 @@ public class ConicalGradient {
         for (final Double FRACTION : sortedFractions) {
             sortedStops.add(new Stop(FRACTION, stopMap.get(FRACTION)));
         }
+        if (offset > 0) {
+            recalculate(offset);
+        }
     }
 
 
     // ******************** Methods *******************************************
+    private void recalculate(double offset) {
+        offset = Util.clamp(0, 1, offset);
+        List<Stop> stops = new ArrayList<Stop>(sortedStops.size());
+        Stop lastStop = null;
+        for (Stop stop : sortedStops) {
+            double newOffset = stop.getOffset() + offset;
+            if (newOffset > 1) {
+                newOffset -= 1.000001;
+                if (lastStop == null) {
+                    continue;
+                }
+                stops.add(new Stop(0.0, interpolateColor(lastStop.getColor(), stop.getColor(), (1.0 - offset))));
+                stops.add(new Stop(1.0, interpolateColor(lastStop.getColor(), stop.getColor(), (1.0 - offset))));
+            }
+            stops.add(new Stop(newOffset, stop.getColor()));
+            lastStop = stop;
+        }
+
+        HashMap<Double, Color> stopMap = new LinkedHashMap<Double, Color>(stops.size());
+        for (Stop stop : stops) {
+            stopMap.put(stop.getOffset(), stop.getColor());
+        }
+
+        List<Stop> sortedStops2 = new LinkedList<Stop>();
+        SortedSet<Double> sortedFractions = new TreeSet<Double>(stopMap.keySet());
+        if (sortedFractions.last() < 1) {
+            stopMap.put(1.0, stopMap.get(sortedFractions.first()));
+            sortedFractions.add(1.0);
+        }
+        if (sortedFractions.first() > 0) {
+            stopMap.put(0.0, stopMap.get(sortedFractions.last()));
+            sortedFractions.add(0.0);
+        }
+        for (Double fraction : sortedFractions) {
+            sortedStops2.add(new Stop(fraction, stopMap.get(fraction)));
+        }
+        sortedStops.clear();
+        sortedStops.addAll(sortedStops2);
+    }
+
     private Color interpolateColor(final Color COLOR1, final Color COLOR2, final double FRACTION) {
         double red = COLOR1.getRed() + (COLOR2.getRed() - COLOR1.getRed()) * FRACTION;
         double green = COLOR1.getGreen() + (COLOR2.getGreen() - COLOR1.getGreen()) * FRACTION;
@@ -158,7 +210,7 @@ public class ConicalGradient {
         return RASTER;
     }
 
-    public ImagePattern apply(final Shape SHAPE) {		
+    public ImagePattern apply(final Shape SHAPE) {
 		double x      = SHAPE.getLayoutBounds().getMinX();
 		double y      = SHAPE.getLayoutBounds().getMinY();
 		double width  = SHAPE.getLayoutBounds().getWidth();

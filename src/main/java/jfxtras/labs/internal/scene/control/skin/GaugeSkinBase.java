@@ -381,7 +381,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
             case STAINLESS:
                 ConicalGradient gradient = new ConicalGradient(new Point2D(SIZE / 2, SIZE / 2),
                                                                new Stop(0.00, Color.web("#FDFDFD")),
-                                                               new Stop(0.03, Color.web("#FDFDFD")),
+                                                               new Stop(0.03, Color.web("#E2E2E2")),
                                                                new Stop(0.10, Color.web("#B2B2B4")),
                                                                new Stop(0.14, Color.web("#ACACAE")),
                                                                new Stop(0.24, Color.web("#FDFDFD")),
@@ -393,9 +393,10 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                                                                new Stop(0.76, Color.web("#FDFDFD")),
                                                                new Stop(0.81, Color.web("#ACACAE")),
                                                                new Stop(0.85, Color.web("#B2B2B4")),
-                                                               new Stop(0.97, Color.web("#FDFDFD")),
+                                                               new Stop(0.97, Color.web("#E2E2E2")),
                                                                new Stop(1.00, Color.web("#FDFDFD")));
                 BACKGROUND_SHAPE.setFill(gradient.apply(BACKGROUND_SHAPE));
+                BACKGROUND_SHAPE.setEffect(INNER_SHADOW);
                 BACKGROUND.getChildren().addAll(BACKGROUND_SHAPE);
                 break;
             case CARBON:
@@ -435,6 +436,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                                                             new Stop(0.0, Util.brighter(CONTROL.getTextureColor(), 0.15)),
                                                             new Stop(1.0, Util.darker(CONTROL.getTextureColor(), 0.15))));
                 BACKGROUND_PLAIN.setStroke(null);
+                BACKGROUND_PLAIN.setEffect(INNER_SHADOW);
                 BACKGROUND_SHAPE.setFill(Util.applyNoisyBackground(BACKGROUND_SHAPE, CONTROL.getTextureColor()));
                 BACKGROUND.getChildren().addAll(BACKGROUND_PLAIN, BACKGROUND_SHAPE);
                 break;
