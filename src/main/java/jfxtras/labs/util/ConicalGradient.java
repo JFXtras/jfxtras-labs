@@ -178,7 +178,7 @@ public class ConicalGradient {
         final PixelWriter PIXEL_WRITER = RASTER.getPixelWriter();
         Color color = Color.TRANSPARENT;
         if (center == null) {
-            center = new Point2D(height / 2, height / 2);
+            center = new Point2D(width / 2, height / 2);
         }
 
         for (int y = 0; y < height; y++) {
