@@ -145,6 +145,9 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
                     hourAngle.set((hourOffset + Calendar.getInstance().get(Calendar.HOUR)) * 30 + 0.5 * Calendar.getInstance().get(Calendar.MINUTE));
                     lastTimerCall = currentNanoTime;
                     lastHour = CAL.get(Calendar.HOUR_OF_DAY);
+                    control.setHour(CAL.get(Calendar.HOUR_OF_DAY));
+                    control.setMinute(CAL.get(Calendar.MINUTE));
+                    control.setSecond(CAL.get(Calendar.SECOND));
                 }
             }
         };
@@ -188,9 +191,9 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         // Register listeners
         registerChangeListener(control.runningProperty(), "RUNNING");
         registerChangeListener(control.timeZoneProperty(), "TIME_ZONE");
-        registerChangeListener(secondAngle, "SECOND");
-        registerChangeListener(minuteAngle, "MINUTE");
-        registerChangeListener(hourAngle, "HOUR");
+        registerChangeListener(secondAngle, "SECOND_ANGLE");
+        registerChangeListener(minuteAngle, "MINUTE_ANGLE");
+        registerChangeListener(hourAngle, "HOUR_ANGLE");
         registerChangeListener(control.themeProperty(), "THEME");
         registerChangeListener(control.clockStyleProperty(), "CLOCK_STYLE");
         registerChangeListener(control.brightBackgroundPaintProperty(), "BRIGHT_BACKGROUND_PAINT");
@@ -201,6 +204,10 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         registerChangeListener(control.darkTickMarkPaintProperty(), "DARK_TICK_MARK_PAINT");
         registerChangeListener(control.secondPointerPaintProperty(), "SECOND_POINTER_PAINT");
         registerChangeListener(control.titleProperty(), "TITLE");
+        registerChangeListener(control.hourProperty(), "HOUR");
+        registerChangeListener(control.minuteProperty(), "MINUTE");
+        registerChangeListener(control.secondProperty(), "SECOND");
+
 
         setTime();
         initialized = true;
@@ -208,6 +215,8 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         paint();
         if (control.isRunning()) {
             timer.start();
+        } else if (control.getHour() != 0 || control.getMinute() != 0 || control.getSecond() != 0) {
+            setTime(control.getHour(), control.getMinute(), control.getSecond());
         }
     }
 
@@ -240,11 +249,11 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
             } else {
                 timer.stop();
             }
-        } else if ("SECOND".equals(PROPERTY)) {
+        } else if ("SECOND_ANGLE".equals(PROPERTY)) {
             secondPointer.setRotate(secondAngle.get());
-        } else if ("MINUTE".equals(PROPERTY)) {
+        } else if ("MINUTE_ANGLE".equals(PROPERTY)) {
             minutePointer.setRotate(minuteAngle.get());
-        } else if ("HOUR".equals(PROPERTY)) {
+        } else if ("HOUR_ANGLE".equals(PROPERTY)) {
             hourPointer.setRotate(hourAngle.get());
         } else if ("TYPE".equals(PROPERTY)) {
             checkForNight();
@@ -269,6 +278,18 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
             paint();
         } else if ("TITLE".equals(PROPERTY)) {
             paint();
+        } else if ("HOUR".equals(PROPERTY)) {
+            if (!control.isRunning()) {
+                setTime(control.getHour(), control.getMinute(), control.getSecond());
+            }
+        } else if ("MINUTE".equals(PROPERTY)) {
+            if (!control.isRunning()) {
+                setTime(control.getHour(), control.getMinute(), control.getSecond());
+            }
+        } else if ("SECOND".equals(PROPERTY)) {
+            if (!control.isRunning()) {
+                setTime(control.getHour(), control.getMinute(), control.getSecond());
+            }
         }
     }
 
@@ -313,7 +334,13 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         secondAngle.set(Calendar.getInstance().get(Calendar.SECOND) * 6 + Calendar.getInstance().get(Calendar.MILLISECOND) * 0.006);
         minuteAngle.set((minuteOffset + Calendar.getInstance().get(Calendar.MINUTE)) * 6);
         hourAngle.set((hourOffset + Calendar.getInstance().get(Calendar.HOUR)) * 30 + 0.5 * Calendar.getInstance().get(Calendar.MINUTE));
+        checkForNight();
+    }
 
+    private void setTime(final int HOUR, final int MINUTE, final int SECOND) {
+        secondAngle.set(SECOND * 6);
+        minuteAngle.set(MINUTE * 6);
+        hourAngle.set(HOUR * 30 + 0.5 * MINUTE);
         checkForNight();
     }
 

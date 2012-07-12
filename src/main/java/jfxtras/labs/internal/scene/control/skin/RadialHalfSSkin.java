@@ -1165,7 +1165,7 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
         title.setFont(TITLE_FONT);
         title.setText(control.getTitle());
         title.setX(((WIDTH - title.getLayoutBounds().getWidth()) / 2.0));
-        title.setY(0.315 * WIDTH + title.getLayoutBounds().getHeight());
+        title.setY(0.3 * WIDTH + title.getLayoutBounds().getHeight());
         title.getStyleClass().add(control.getBackgroundDesign().CSS_TEXT);
 
         final Font UNIT_FONT = Font.font(control.getUnitFont(), FontWeight.NORMAL, (0.046728972 * WIDTH));

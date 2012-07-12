@@ -1159,7 +1159,7 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         unit.setFont(UNIT_FONT);
         unit.setText(control.getUnit());
         unit.setX((WIDTH - unit.getLayoutBounds().getWidth()) / 2.0);
-        unit.setY(0.335 * WIDTH + unit.getLayoutBounds().getHeight());
+        unit.setY(0.32 * WIDTH + unit.getLayoutBounds().getHeight());
         unit.getStyleClass().add(control.getBackgroundDesign().CSS_TEXT);
 
         titleAndUnit.getChildren().addAll(title, unit);
