@@ -33,6 +33,8 @@ import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.Timeline;
 import javafx.animation.Transition;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
@@ -83,7 +85,9 @@ import java.util.ArrayList;
  * Time: 18:04
  */
 public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
-    private static final Rectangle PREF_SIZE = new Rectangle(170, 350);
+    private static final Rectangle MIN_SIZE  = new Rectangle(25, 50);
+    private static final Rectangle PREF_SIZE = new Rectangle(170, 340);
+    private static final Rectangle MAX_SIZE  = new Rectangle(512, 1024);
     private Linear           control;
     private Rectangle        gaugeBounds;
     private Point2D          framelessOffset;
@@ -362,6 +366,26 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
     }
 
     private void addListeners() {
+        /*
+        control.getAreas().addListener(new InvalidationListener() {
+            @Override public void invalidated(Observable observable) {
+
+            }
+        });
+
+        control.getSections().addListener(new InvalidationListener() {
+            @Override public void invalidated(Observable observable) {
+
+            }
+        });
+        */
+
+        control.getMarkers().addListener(new InvalidationListener() {
+            @Override public void invalidated(Observable observable) {
+                drawIndicators();
+            }
+        });
+
         control.valueProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
                 formerValue = oldValue.doubleValue();
@@ -506,7 +530,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
                 glowOn.setOpacity(0.0);
             }
 
-        } else if ("RANGE".equals(PROPERTY)) {
+        } else if ("TICKMARKS".equals(PROPERTY)) {
             drawTickmarks();
 
         } else if ("MIN_MEASURED_VALUE".equals(PROPERTY)) {
@@ -533,6 +557,12 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             addBindings();
         } else if ("STYLE_MODEL".equals(PROPERTY)) {
             addBindings();
+        } else if ("AREAS".equals(PROPERTY)) {
+
+        } else if ("SECTIONS".equals(PROPERTY)) {
+
+        } else if ("MARKERS".equals(PROPERTY)) {
+            drawIndicators();
         }
     }
 
@@ -599,20 +629,82 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         control = null;
     }
 
-    @Override protected double computePrefWidth(final double HEIGHT) {
-        double prefWidth = PREF_SIZE.getWidth();
-        if (HEIGHT != -1) {
-            prefWidth = Math.max(0, HEIGHT - getInsets().getLeft() - getInsets().getRight());
+    @Override protected double computePrefWidth(final double WIDTH) {
+        double prefWidth;
+        if (WIDTH < getPrefHeight()) {
+            // vertical
+            prefWidth = PREF_SIZE.getWidth();
+        } else {
+            // horizontal
+            prefWidth = PREF_SIZE.getHeight();
+        }
+        if (WIDTH != -1) {
+            prefWidth = Math.max(0, WIDTH - getInsets().getLeft() - getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
 
-    @Override protected double computePrefHeight(final double WIDTH) {
-        double prefHeight = PREF_SIZE.getHeight();
-        if (WIDTH != -1) {
-            prefHeight = Math.max(0, WIDTH - getInsets().getTop() - getInsets().getBottom());
+    @Override protected double computePrefHeight(final double HEIGHT) {
+        double prefHeight;
+        if (HEIGHT < getPrefHeight()) {
+            // vertical
+            prefHeight = PREF_SIZE.getHeight();
+        } else {
+            // horizontal
+            prefHeight = PREF_SIZE.getWidth();
         }
-        return super.computePrefWidth(prefHeight);
+        if (HEIGHT != -1) {
+            prefHeight = Math.max(0, HEIGHT - getInsets().getTop() - getInsets().getBottom());
+        }
+        return super.computePrefHeight(prefHeight);
+    }
+
+    @Override protected double computeMinWidth(final double WIDTH) {
+        double minWidth;
+        if (getPrefWidth() < getPrefHeight()) {
+            // vertical
+            minWidth = Math.max(MIN_SIZE.getWidth(), WIDTH);
+        } else {
+            // horizontal
+            minWidth = Math.max(MIN_SIZE.getHeight(), WIDTH);
+        }
+        return super.computeMinWidth(minWidth);
+    }
+
+    @Override protected double computeMinHeight(final double HEIGHT) {
+        double minHeight;
+        if (getPrefWidth() < getPrefHeight()) {
+            // vertical
+            minHeight = Math.max(MIN_SIZE.getHeight(), HEIGHT);
+        } else {
+            // horizontal
+            minHeight = Math.max(MIN_SIZE.getWidth(), HEIGHT);
+        }
+        return super.computeMinHeight(minHeight);
+    }
+
+    @Override protected double computeMaxWidth(final double WIDTH) {
+        double maxWidth;
+        if (getPrefWidth() < getPrefHeight()) {
+            // vertical
+            maxWidth = Math.max(MAX_SIZE.getWidth(), WIDTH);
+        } else {
+            // horizontal
+            maxWidth = Math.max(MAX_SIZE.getHeight(), WIDTH);
+        }
+        return super.computeMaxWidth(maxWidth);
+    }
+
+    @Override protected double computeMaxHeight(final double HEIGHT) {
+        double maxHeight;
+        if (getPrefWidth() < getPrefHeight()) {
+            // vertical
+            maxHeight = Math.max(MAX_SIZE.getHeight(), HEIGHT);
+        } else {
+            // horizontal
+            maxHeight = Math.max(MAX_SIZE.getWidth(), HEIGHT);
+        }
+        return super.computeMaxHeight(maxHeight);
     }
 
     private String formatLcdValue(final double VALUE) {
@@ -651,6 +743,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             framelessOffset = new Point2D(-SIZE * 0.0841121495 - 1, -SIZE * 0.0841121495 - 1);
         }
     }
+
 
     // ******************** Drawing *******************************************
     public void drawFrame() {

@@ -34,6 +34,8 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
@@ -82,7 +84,9 @@ import java.util.ArrayList;
  * Time: 17:28
  */
 public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuarterNBehavior> {
+    private static final Rectangle MIN_SIZE  = new Rectangle(25, 25);
     private static final Rectangle PREF_SIZE = new Rectangle(200, 200);
+    private static final Rectangle MAX_SIZE  = new Rectangle(1024, 1024);
     private RadialQuarterN   control;
     private Rectangle        gaugeBounds;
     private Point2D          framelessOffset;
@@ -375,6 +379,26 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
     }
 
     private void addListeners() {
+        control.getAreas().addListener(new InvalidationListener() {
+            @Override public void invalidated(Observable observable) {
+                updateAreas();
+                drawCircularAreas(control, areas, gaugeBounds);
+            }
+        });
+
+        control.getSections().addListener(new InvalidationListener() {
+            @Override public void invalidated(Observable observable) {
+                updateSections();
+                drawCircularSections(control, sections, gaugeBounds);
+            }
+        });
+
+        control.getMarkers().addListener(new InvalidationListener() {
+            @Override public void invalidated(Observable observable) {
+                drawCircularIndicators(control, markers, center, gaugeBounds);
+            }
+        });
+
         control.valueProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
                 if (rotationAngleTimeline.getStatus() != Animation.Status.STOPPED) {
@@ -561,7 +585,7 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
                 glowOn.setOpacity(0.0);
             }
 
-        } else if ("RANGE".equals(PROPERTY)) {
+        } else if ("TICKMARKS".equals(PROPERTY)) {
             drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
         } else if ("MIN_MEASURED_VALUE".equals(PROPERTY)) {
             minMeasured.getTransforms().clear();
@@ -589,6 +613,14 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
 
         } else if ("PREF_HEIGHT".equals(PROPERTY)) {
 
+        } else if ("AREAS".equals(PROPERTY)) {
+            updateAreas();
+            drawCircularAreas(control, areas, gaugeBounds);
+        } else if ("SECTIONS".equals(PROPERTY)) {
+            updateSections();
+            drawCircularSections(control, sections, gaugeBounds);
+        } else if ("MARKERS".equals(PROPERTY)) {
+            drawCircularIndicators(control, markers, center, gaugeBounds);
         }
     }
 
@@ -683,6 +715,22 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
             prefHeight = Math.max(0, WIDTH - getInsets().getTop() - getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
+    }
+
+    @Override protected double computeMinWidth(final double WIDTH) {
+        return super.computeMinWidth(Math.max(MIN_SIZE.getWidth(), WIDTH - getInsets().getLeft() - getInsets().getRight()));
+    }
+
+    @Override protected double computeMinHeight(final double HEIGHT) {
+        return super.computeMinHeight(Math.max(MIN_SIZE.getHeight(), HEIGHT - getInsets().getTop() - getInsets().getBottom()));
+    }
+
+    @Override protected double computeMaxWidth(final double WIDTH) {
+        return super.computeMaxWidth(Math.max(MAX_SIZE.getWidth(), WIDTH - getInsets().getLeft() - getInsets().getRight()));
+    }
+
+    @Override protected double computeMaxHeight(final double HEIGHT) {
+        return super.computeMaxHeight(Math.max(MAX_SIZE.getHeight(), HEIGHT - getInsets().getTop() - getInsets().getBottom()));
     }
 
     private String formatLcdValue(final double VALUE) {

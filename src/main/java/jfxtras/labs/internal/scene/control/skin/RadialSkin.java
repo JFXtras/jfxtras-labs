@@ -34,6 +34,8 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
@@ -88,7 +90,9 @@ import java.util.ArrayList;
  * Time: 17:14
  */
 public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
+    private static final Rectangle   MIN_SIZE           = new Rectangle(25, 25);
     private static final Rectangle   PREF_SIZE          = new Rectangle(200, 200);
+    private static final Rectangle   MAX_SIZE           = new Rectangle(1024, 1024);
     private final SnapshotParameters SNAPSHOT_PARAMETER = SnapshotParametersBuilder.create().fill(Color.TRANSPARENT).build();
     private Radial           control;
     private Rectangle        gaugeBounds;
@@ -479,6 +483,26 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     }
 
     private void addListeners() {
+        control.getAreas().addListener(new InvalidationListener() {
+            @Override public void invalidated(Observable observable) {
+                updateAreas();
+                drawCircularAreas(control, areas, gaugeBounds);
+            }
+        });
+
+        control.getSections().addListener(new InvalidationListener() {
+            @Override public void invalidated(Observable observable) {
+                updateSections();
+                drawCircularSections(control, sections, gaugeBounds);
+            }
+        });
+
+        control.getMarkers().addListener(new InvalidationListener() {
+            @Override public void invalidated(Observable observable) {
+                drawCircularIndicators(control, markers, center, gaugeBounds);
+            }
+        });
+
         control.valueProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
                 formerValue.set(oldValue.doubleValue());
@@ -714,13 +738,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 glowPulse.stop();
                 glowOn.setOpacity(0.0);
             }
-        } else if ("RANGE".equals(PROPERTY)) {
-            if (control.getMinValue() < 0) {
-                negativeOffset = control.getMinValue() * control.getAngleStep();
-            } else {
-                negativeOffset = 0;
-            }
-            drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
         } else if ("MIN_MEASURED_VALUE".equals(PROPERTY)) {
             minMeasured.getTransforms().clear();
             minMeasured.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
@@ -735,7 +752,12 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             drawCircularTrend(control, trend, gaugeBounds);
         } else if ("SIMPLE_GRADIENT_BASE".equals(PROPERTY)) {
             paint();
-        } else if ("TICKMARK_GLOW_VISIBILITY".equals(PROPERTY)) {
+        } else if ("TICKMARKS".equals(PROPERTY)) {
+            if (control.getMinValue() < 0) {
+                negativeOffset = control.getMinValue() * control.getAngleStep();
+            } else {
+                negativeOffset = 0;
+            }
             drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
         } else if ("POINTER_GLOW".equals(PROPERTY)) {
             drawPointer();
@@ -761,10 +783,22 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             }
         } else if ("PREF_WIDTH".equals(PROPERTY)) {
             final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
-            img = new WritableImage((int) SIZE, (int) SIZE);
+            if (SIZE > 0) {
+                img = new WritableImage((int) SIZE, (int) SIZE);
+            }
         } else if ("PREF_HEIGHT".equals(PROPERTY)) {
             final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
-            img = new WritableImage((int) SIZE, (int) SIZE);
+            if (SIZE > 0) {
+                img = new WritableImage((int) SIZE, (int) SIZE);
+            }
+        } else if ("AREAS".equals(PROPERTY)) {
+            updateAreas();
+            drawCircularAreas(control, areas, gaugeBounds);
+        } else if ("SECTIONS".equals(PROPERTY)) {
+            updateSections();
+            drawCircularSections(control, sections, gaugeBounds);
+        } else if ("MARKERS".equals(PROPERTY)) {
+            drawCircularIndicators(control, markers, center, gaugeBounds);
         }
     }
 
@@ -864,7 +898,23 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         if (WIDTH != -1) {
             prefHeight = Math.max(0, WIDTH - getInsets().getTop() - getInsets().getBottom());
         }
-        return super.computePrefWidth(prefHeight);
+        return super.computePrefHeight(prefHeight);
+    }
+
+    @Override protected double computeMinWidth(final double WIDTH) {
+        return super.computeMinWidth(Math.max(MIN_SIZE.getWidth(), WIDTH - getInsets().getLeft() - getInsets().getRight()));
+    }
+
+    @Override protected double computeMinHeight(final double HEIGHT) {
+        return super.computeMinHeight(Math.max(MIN_SIZE.getHeight(), HEIGHT - getInsets().getTop() - getInsets().getBottom()));
+    }
+
+    @Override protected double computeMaxWidth(final double WIDTH) {
+        return super.computeMaxWidth(Math.max(MAX_SIZE.getWidth(), WIDTH - getInsets().getLeft() - getInsets().getRight()));
+    }
+
+    @Override protected double computeMaxHeight(final double HEIGHT) {
+        return super.computeMaxHeight(Math.max(MAX_SIZE.getHeight(), HEIGHT - getInsets().getTop() - getInsets().getBottom()));
     }
 
     private String formatLcdValue(final double VALUE) {

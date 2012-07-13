@@ -256,10 +256,14 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 styleModel.setMajorTickmarkType(((ObjectProperty<Gauge.TickmarkType>) styleProperties.get(key)).get());
             } else if ("majorTickmarkColor".equals(key)) {
                 styleModel.setMajorTickmarkColor(((ObjectProperty<Color>) styleProperties.get(key)).get());
+            } else if ("majorTickmarkColorEnabled".equals(key)) {
+                styleModel.setMajorTickmarkColorEnabled(((BooleanProperty) styleProperties.get(key)).get());
             } else if ("minorTickmarksVisible".equals(key)) {
                 styleModel.setMinorTicksVisible(((BooleanProperty) styleProperties.get(key)).get());
             } else if ("minorTickmarkColor".equals(key)) {
                 styleModel.setMinorTickmarkColor(((ObjectProperty<Color>) styleProperties.get(key)).get());
+            } else if ("minorTickmarkColorEnabled".equals(key)) {
+                styleModel.setMinorTickmarkColorEnabled(((BooleanProperty) styleProperties.get(key)).get());
             } else if ("tickLabelsVisible".equals(key)) {
                 styleModel.setTickLabelsVisible(((BooleanProperty) styleProperties.get(key)).get());
             } else if ("tickLabelOrientation".equals(key)) {
@@ -753,6 +757,11 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
         return this;
     }
 
+    public final GaugeBuilder majorTickmarkColorEnabled(final boolean MAJOR_TICKMARK_COLOR_ENABLED) {
+        styleProperties.put("majorTickmarkColorEnabled", new SimpleBooleanProperty(MAJOR_TICKMARK_COLOR_ENABLED));
+        return this;
+    }
+
     public final GaugeBuilder minorTickmarksVisible(final boolean MINOR_TICKMARKS_VISIBLE) {
         styleProperties.put("minorTickmarksVisible", new SimpleBooleanProperty(MINOR_TICKMARKS_VISIBLE));
         return this;
@@ -760,6 +769,11 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
 
     public final GaugeBuilder minorTickmarkColor(final Color MINOR_TICKMARK_COLOR) {
         styleProperties.put("minorTickmarkColor", new SimpleObjectProperty<Color>(MINOR_TICKMARK_COLOR));
+        return this;
+    }
+
+    public final GaugeBuilder minorTickmarkColorEnabled(final boolean MINOR_TICKMARK_COLOR_ENABLED) {
+        styleProperties.put("minorTickmarkColorEnabled", new SimpleBooleanProperty(MINOR_TICKMARK_COLOR_ENABLED));
         return this;
     }
 

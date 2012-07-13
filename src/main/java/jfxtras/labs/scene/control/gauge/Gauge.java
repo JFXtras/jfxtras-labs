@@ -34,6 +34,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Control;
@@ -42,7 +43,6 @@ import javafx.scene.shape.Rectangle;
 import jfxtras.labs.scene.control.gauge.Radial.ForegroundType;
 
 import java.text.DecimalFormat;
-import java.util.List;
 import java.util.Locale;
 
 
@@ -1225,6 +1225,18 @@ public abstract class Gauge extends Control {
         return styleModel.majorTickmarkColorProperty();
     }
 
+    public final boolean isMajorTickmarkColorEnabled() {
+        return styleModel.isMajorTickmarkColorEnabled();
+    }
+
+    public final void setMajorTickmarkColorEnabled(final boolean MAJOR_TICKMARK_COLOR_ENABLED) {
+        styleModel.setMajorTickmarkColorEnabled(MAJOR_TICKMARK_COLOR_ENABLED);
+    }
+
+    public final BooleanProperty majorTickmarkColorEnabledProperty() {
+        return styleModel.majorTickmarkColorEnabledProperty();
+    }
+
     public final boolean isMinorTicksVisible() {
         return styleModel.isMinorTicksVisible();
     }
@@ -1247,6 +1259,18 @@ public abstract class Gauge extends Control {
 
     public final ObjectProperty<Color> minorTickmarkColorProperty() {
         return styleModel.minorTickmarkColorProperty();
+    }
+
+    public final boolean isMinorTickmarkColorEnabled() {
+        return styleModel.isMinorTickmarkColorEnabled();
+    }
+
+    public final void setMinorTickmarkColorEnabled(final boolean MINOR_TICKMARK_COLOR_ENABLED) {
+        styleModel.setMinorTickmarkColorEnabled(MINOR_TICKMARK_COLOR_ENABLED);
+    }
+
+    public final BooleanProperty minorTickmarkColorEnabledProperty() {
+        return styleModel.minorTickmarkColorEnabledProperty();
     }
 
     public final boolean isTickLabelsVisible() {
@@ -1382,7 +1406,7 @@ public abstract class Gauge extends Control {
         return gaugeModel.niceScalingProperty();
     }
 
-    public final List<Section> getSections() {
+    public final ObservableList<Section> getSections() {
         return gaugeModel.getSections();
     }
 
@@ -1456,7 +1480,7 @@ public abstract class Gauge extends Control {
         return styleModel.showSectionTickmarksOnlyProperty();
     }
 
-    public final List<Section> getAreas() {
+    public final ObservableList<Section> getAreas() {
         return gaugeModel.getAreas();
     }
 
@@ -1506,7 +1530,7 @@ public abstract class Gauge extends Control {
         return styleModel.areasHighlightingProperty();
     }
 
-    public final List<Section> getTickMarkSections() {
+    public final ObservableList<Section> getTickMarkSections() {
         return gaugeModel.getTickMarkSections();
     }
 
@@ -1532,7 +1556,7 @@ public abstract class Gauge extends Control {
         gaugeModel.resetTickMarkSections();
     }
 
-    public final List<Marker> getMarkers() {
+    public final ObservableList<Marker> getMarkers() {
         return gaugeModel.getMarkers();
     }
 

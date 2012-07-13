@@ -116,12 +116,10 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         registerChangeListener(CONTROL.lcdNumberSystemProperty(), "LCD_NUMBER_SYSTEM");
         registerChangeListener(CONTROL.userLedBlinkingProperty(), "USER_LED_BLINKING");
         registerChangeListener(CONTROL.ledBlinkingProperty(), "LED_BLINKING");
-        registerChangeListener(CONTROL.tickmarkGlowEnabledProperty(), "TICKMARK_GLOW_VISIBILITY");
         registerChangeListener(CONTROL.glowColorProperty(), "GLOW_COLOR");
         registerChangeListener(CONTROL.glowVisibleProperty(), "GLOW_VISIBILITY");
         registerChangeListener(CONTROL.glowOnProperty(), "GLOW_ON");
         registerChangeListener(CONTROL.pulsatingGlowProperty(), "PULSATING_GLOW");
-        registerChangeListener(CONTROL.rangeProperty(), "RANGE");
         registerChangeListener(CONTROL.minMeasuredValueProperty(), "MIN_MEASURED_VALUE");
         registerChangeListener(CONTROL.maxMeasuredValueProperty(), "MAX_MEASURED_VALUE");
         registerChangeListener(CONTROL.trendProperty(), "TREND");
@@ -130,32 +128,47 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         registerChangeListener(CONTROL.gaugeModelProperty(), "GAUGE_MODEL");
         registerChangeListener(CONTROL.styleModelProperty(), "STYLE_MODEL");
         registerChangeListener(CONTROL.thresholdExceededProperty(), "THRESHOLD_EXCEEDED");
+        registerChangeListener(CONTROL.rangeProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.tickmarkGlowEnabledProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.tickmarkGlowProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.majorTickmarkColorProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.majorTickmarkTypeProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.majorTickSpacingProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.majorTickmarkColorEnabledProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.minorTickmarkColorProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.minorTickSpacingProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.minorTickmarkColorEnabledProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.tickLabelNumberFormatProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.tickLabelOrientationProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.tickmarksOffsetProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.areasHighlightingProperty(), "AREAS");
+        registerChangeListener(CONTROL.sectionsHighlightingProperty(), "SECTIONS");
     }
 
 
      // ******************** Skin Layout **************************************
-    @Override protected double computeMinWidth(final double HEIGHT) {
-        return getSkinnable().prefWidth(HEIGHT);
+    @Override protected double computeMinWidth(final double WIDTH) {
+        return getSkinnable().prefWidth(WIDTH);
     }
 
-    @Override protected double computeMinHeight(final double WIDTH) {
-        return getSkinnable().prefHeight(WIDTH);
+    @Override protected double computeMinHeight(final double HEIGHT) {
+        return getSkinnable().prefHeight(HEIGHT);
     }
 
-    @Override protected double computePrefWidth(final double HEIGHT) {
-        return getSkinnable().prefWidth(HEIGHT);
+    @Override protected double computePrefWidth(final double WIDTH) {
+        return getSkinnable().prefWidth(WIDTH);
     }
 
-    @Override protected double computePrefHeight(final double WIDTH) {
-        return getSkinnable().prefHeight(WIDTH);
+    @Override protected double computePrefHeight(final double HEIGHT) {
+        return getSkinnable().prefHeight(HEIGHT);
     }
 
-    @Override protected double computeMaxWidth(final double HEIGHT) {
-        return getSkinnable().prefWidth(HEIGHT);
+    @Override protected double computeMaxWidth(final double WIDTH) {
+        return getSkinnable().prefWidth(WIDTH);
     }
 
-    @Override protected double computeMaxHeight(final double WIDTH) {
-        return getSkinnable().prefHeight(WIDTH);
+    @Override protected double computeMaxHeight(final double HEIGHT) {
+        return getSkinnable().prefHeight(HEIGHT);
     }
 
     @Override protected void layoutChildren() {
@@ -1169,8 +1182,8 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
     }
 
     protected void drawCircularTickmarks(final Gauge CONTROL, final Group TICKMARKS, final Point2D CENTER, final Rectangle GAUGE_BOUNDS) {
-        final double SIZE = GAUGE_BOUNDS.getWidth() <= GAUGE_BOUNDS.getHeight() ? GAUGE_BOUNDS.getWidth() : GAUGE_BOUNDS.getHeight();
-        final double WIDTH = GAUGE_BOUNDS.getWidth();
+        final double SIZE   = GAUGE_BOUNDS.getWidth() <= GAUGE_BOUNDS.getHeight() ? GAUGE_BOUNDS.getWidth() : GAUGE_BOUNDS.getHeight();
+        final double WIDTH  = GAUGE_BOUNDS.getWidth();
         final double HEIGHT = GAUGE_BOUNDS.getHeight();
 
         final double RADIUS_FACTOR = CONTROL.getRadialRange().RADIUS_FACTOR;
@@ -1203,14 +1216,26 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         MAJOR_TICK_MARKS_PATH.setStrokeLineCap(StrokeLineCap.ROUND);
         MAJOR_TICK_MARKS_PATH.setStrokeLineJoin(StrokeLineJoin.BEVEL);
         MAJOR_TICK_MARKS_PATH.setStrokeWidth(0.0046728972 * WIDTH);
-        switch(CONTROL.getMajorTickmarkType()) {
-            case TRIANGLE:
-                MAJOR_TICK_MARKS_PATH.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_TEXT);
-                //MAJOR_TICK_MARKS_PATH.setStroke(null);
-                break;
-            default:
-                MAJOR_TICK_MARKS_PATH.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
-                break;
+        if (CONTROL.isMajorTickmarkColorEnabled()) {
+            switch(CONTROL.getMajorTickmarkType()) {
+                case TRIANGLE:
+                    MAJOR_TICK_MARKS_PATH.setFill(CONTROL.getMajorTickmarkColor());
+                    MAJOR_TICK_MARKS_PATH.setStroke(null);
+                    break;
+                default:
+                    MAJOR_TICK_MARKS_PATH.setFill(null);
+                    MAJOR_TICK_MARKS_PATH.setStroke(CONTROL.getMajorTickmarkColor());
+                    break;
+            }
+        } else {
+            switch(CONTROL.getMajorTickmarkType()) {
+                case TRIANGLE:
+                    MAJOR_TICK_MARKS_PATH.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_TEXT);
+                    break;
+                default:
+                    MAJOR_TICK_MARKS_PATH.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
+                    break;
+            }
         }
 
         final Path MEDIUM_TICK_MARKS_PATH = new Path();
@@ -1229,7 +1254,12 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         MINOR_TICK_MARKS_PATH.setStrokeLineCap(StrokeLineCap.ROUND);
         MINOR_TICK_MARKS_PATH.setStrokeLineJoin(StrokeLineJoin.BEVEL);
         MINOR_TICK_MARKS_PATH.setStrokeWidth(0.0014018692 * WIDTH);
-        MINOR_TICK_MARKS_PATH.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
+        if (CONTROL.isMinorTickmarkColorEnabled()) {
+            MINOR_TICK_MARKS_PATH.setFill(null);
+            MINOR_TICK_MARKS_PATH.setStroke(CONTROL.getMinorTickmarkColor());
+        } else {
+            MINOR_TICK_MARKS_PATH.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
+        }
 
         final double TEXT_BAR_GRAPH_OFFSET;
         if (CONTROL.isBargraph()) {
@@ -1320,7 +1350,6 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                 // Draw the standard tickmark labels
                 if (CONTROL.isTickLabelsVisible()) {
                     final Text tickLabel = new Text(numberFormat.format(valueCounter));
-                    //tickLabel.setSmooth(true);
                     tickLabel.setFontSmoothingType(FontSmoothingType.LCD);
                     tickLabel.setTextOrigin(VPos.BOTTOM);
                     tickLabel.setBoundsType(TextBoundsType.LOGICAL);
@@ -1374,19 +1403,11 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         // Add glow to tickmarks and labels
         if (CONTROL.isTickmarkGlowEnabled()) {
             final InnerShadow INNER_GLOW = new InnerShadow();
-            INNER_GLOW.setWidth(0.005 * SIZE);
-            INNER_GLOW.setHeight(0.005 * SIZE);
-            INNER_GLOW.setOffsetX(0.0);
-            INNER_GLOW.setOffsetY(0.0);
             INNER_GLOW.setRadius(0.005 * SIZE);
             INNER_GLOW.setColor(CONTROL.getTickmarkGlowColor());
             INNER_GLOW.setBlurType(BlurType.GAUSSIAN);
 
             final DropShadow OUTER_GLOW = new DropShadow();
-            OUTER_GLOW.setWidth(0.02 * SIZE);
-            OUTER_GLOW.setHeight(0.02 * SIZE);
-            OUTER_GLOW.setOffsetX(0.0);
-            OUTER_GLOW.setOffsetY(0.0);
             OUTER_GLOW.setRadius(0.02 * SIZE);
             OUTER_GLOW.setColor(CONTROL.getTickmarkGlowColor());
             OUTER_GLOW.setBlurType(BlurType.GAUSSIAN);

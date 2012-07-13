@@ -104,8 +104,10 @@ public class StyleModel {
     private BooleanProperty                      majorTicksVisible;
     private ObjectProperty<TickmarkType>         majorTickmarkType;
     private ObjectProperty<Color>                majorTickmarkColor;
+    private BooleanProperty                      majorTickmarkColorEnabled;
     private BooleanProperty                      minorTicksVisible;
     private ObjectProperty<Color>                minorTickmarkColor;
+    private BooleanProperty                      minorTickmarkColorEnabled;
     private BooleanProperty                      tickLabelsVisible;
     private ObjectProperty<TicklabelOrientation> tickLabelOrientation;
     private ObjectProperty<NumberFormat>         tickLabelNumberFormat;
@@ -179,8 +181,10 @@ public class StyleModel {
         majorTicksVisible               = new SimpleBooleanProperty(true);
         majorTickmarkType               = new SimpleObjectProperty<TickmarkType>(TickmarkType.LINE);
         majorTickmarkColor              = new SimpleObjectProperty<Color>(Color.WHITE);
+        majorTickmarkColorEnabled       = new SimpleBooleanProperty(false);
         minorTicksVisible               = new SimpleBooleanProperty(true);
         minorTickmarkColor              = new SimpleObjectProperty<Color>(Color.WHITE);
+        minorTickmarkColorEnabled       = new SimpleBooleanProperty(false);
         tickLabelsVisible               = new SimpleBooleanProperty(true);
         tickLabelOrientation            = new SimpleObjectProperty<TicklabelOrientation>(Gauge.TicklabelOrientation.NORMAL);
         tickLabelNumberFormat           = new SimpleObjectProperty<NumberFormat>(Gauge.NumberFormat.AUTO);
@@ -830,6 +834,19 @@ public class StyleModel {
         return majorTickmarkColor;
     }
 
+    public final boolean isMajorTickmarkColorEnabled() {
+        return majorTickmarkColorEnabled.get();
+    }
+
+    public final void setMajorTickmarkColorEnabled(final boolean MAJOR_TICKMARK_COLOR_ENABLED) {
+        majorTickmarkColorEnabled.set(MAJOR_TICKMARK_COLOR_ENABLED);
+        fireStyleModelEvent();
+    }
+
+    public final BooleanProperty majorTickmarkColorEnabledProperty() {
+        return majorTickmarkColorEnabled;
+    }
+
     public final boolean isMinorTicksVisible() {
         return minorTicksVisible.get();
     }
@@ -854,6 +871,19 @@ public class StyleModel {
 
     public final ObjectProperty<Color> minorTickmarkColorProperty() {
         return minorTickmarkColor;
+    }
+
+    public final boolean isMinorTickmarkColorEnabled() {
+        return minorTickmarkColorEnabled.get();
+    }
+
+    public final void setMinorTickmarkColorEnabled(final boolean MINOR_TICKMARK_COLOR_ENABLED) {
+        minorTickmarkColorEnabled.set(MINOR_TICKMARK_COLOR_ENABLED);
+        fireStyleModelEvent();
+    }
+
+    public final BooleanProperty minorTickmarkColorEnabledProperty() {
+        return minorTickmarkColorEnabled;
     }
 
     public final boolean isTickLabelsVisible() {

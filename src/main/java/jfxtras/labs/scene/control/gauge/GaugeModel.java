@@ -29,8 +29,6 @@ package jfxtras.labs.scene.control.gauge;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import jfxtras.labs.scene.control.gauge.Gauge.NumberSystem;
-import jfxtras.labs.scene.control.gauge.Gauge.Trend;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -44,8 +42,9 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import jfxtras.labs.scene.control.gauge.Gauge.NumberSystem;
+import jfxtras.labs.scene.control.gauge.Gauge.Trend;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -506,7 +505,7 @@ public class GaugeModel {
         return niceScaling;
     }
 
-    public final List<Section> getSections() {
+    public final ObservableList<Section> getSections() {
         //final List<Section> SECTIONS_COPY = new ArrayList<Section>(sections.size());
         //SECTIONS_COPY.addAll(sections);
         //return SECTIONS_COPY;
@@ -549,7 +548,7 @@ public class GaugeModel {
         fireGaugeModelEvent();
     }
 
-    public final List<Section> getAreas() {
+    public final ObservableList<Section> getAreas() {
         //final List<Section> AREAS_COPY = new ArrayList<Section>(areas.size());
         //AREAS_COPY.addAll(areas);
         //return AREAS_COPY;
@@ -592,7 +591,7 @@ public class GaugeModel {
         fireGaugeModelEvent();
     }
 
-    public final List<Section> getTickMarkSections() {
+    public final ObservableList<Section> getTickMarkSections() {
         //final List<Section> TICK_MARK_SECTIONS_COPY = new ArrayList<Section>(tickMarkSections.size());
         //TICK_MARK_SECTIONS_COPY.addAll(tickMarkSections);
         //return TICK_MARK_SECTIONS_COPY;
@@ -635,7 +634,7 @@ public class GaugeModel {
         fireGaugeModelEvent();
     }
 
-    public final List<Marker> getMarkers() {
+    public final ObservableList<Marker> getMarkers() {
         //final List<Marker> INDICATORS_COPY = new ArrayList<Marker>(markers.size());
         //INDICATORS_COPY.addAll(markers);
         //return INDICATORS_COPY;
