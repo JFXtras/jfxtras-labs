@@ -74,6 +74,8 @@ import jfxtras.labs.scene.control.gauge.Gauge.NumberFormat;
 import jfxtras.labs.scene.control.gauge.Linear;
 import jfxtras.labs.scene.control.gauge.Marker;
 import jfxtras.labs.scene.control.gauge.Section;
+import jfxtras.labs.util.ConicalGradient;
+import jfxtras.labs.util.Util;
 
 import java.util.ArrayList;
 
@@ -781,6 +783,60 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
 
         final ImageView IMAGE_VIEW;
         switch (control.getFrameDesign()) {
+            case BLACK_METAL:
+                ConicalGradient bmGradient = new ConicalGradient(new Point2D(MAIN_FRAME.getLayoutBounds().getWidth() / 2,
+                                                                             MAIN_FRAME.getLayoutBounds().getHeight() / 2),
+                                                                 new Stop(0.0000, Color.rgb(254, 254, 254)),
+                                                                 new Stop(0.1250, Color.rgb(0, 0, 0)),
+                                                                 new Stop(0.3472, Color.rgb(153, 153, 153)),
+                                                                 new Stop(0.5000, Color.rgb(0, 0, 0)),
+                                                                 new Stop(0.6805, Color.rgb(153, 153, 153)),
+                                                                 new Stop(0.8750, Color.rgb(0, 0, 0)),
+                                                                 new Stop(1.0000, Color.rgb(254, 254, 254)));
+                MAIN_FRAME.setFill(bmGradient.apply(MAIN_FRAME));
+                MAIN_FRAME.setStroke(null);
+                frame.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
+                break;
+            case SHINY_METAL:
+                ConicalGradient smGradient = new ConicalGradient(new Point2D(MAIN_FRAME.getLayoutBounds().getWidth() / 2,
+                                                                             MAIN_FRAME.getLayoutBounds().getHeight() / 2),
+                                                                 new Stop(0.0000, Color.rgb(254, 254, 254)),
+                                                                 new Stop(0.1250, Util.darker(control.getFrameBaseColor(), 0.15)),
+                                                                 new Stop(0.2500, control.getFrameBaseColor().darker()),
+                                                                 new Stop(0.3472, control.getFrameBaseColor().brighter()),
+                                                                 new Stop(0.5000, control.getFrameBaseColor().darker().darker()),
+                                                                 new Stop(0.6527, control.getFrameBaseColor().brighter()),
+                                                                 new Stop(0.7500, control.getFrameBaseColor().darker()),
+                                                                 new Stop(0.8750, Util.darker(control.getFrameBaseColor(), 0.15)),
+                                                                 new Stop(1.0000, Color.rgb(254, 254, 254)));
+                MAIN_FRAME.setFill(smGradient.apply(MAIN_FRAME));
+                MAIN_FRAME.setStroke(null);
+                frame.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
+                break;
+            case CHROME:
+                ConicalGradient cmGradient = new ConicalGradient(new Point2D(MAIN_FRAME.getLayoutBounds().getWidth() / 2,
+                                                                             MAIN_FRAME.getLayoutBounds().getHeight() / 2),
+                                                                 new Stop(0.00, Color.WHITE),
+                                                                 new Stop(0.09, Color.WHITE),
+                                                                 new Stop(0.12, Color.rgb(136, 136, 138)),
+                                                                 new Stop(0.16, Color.rgb(164, 185, 190)),
+                                                                 new Stop(0.25, Color.rgb(158, 179, 182)),
+                                                                 new Stop(0.29, Color.rgb(112, 112, 112)),
+                                                                 new Stop(0.33, Color.rgb(221, 227, 227)),
+                                                                 new Stop(0.38, Color.rgb(155, 176, 179)),
+                                                                 new Stop(0.48, Color.rgb(156, 176, 177)),
+                                                                 new Stop(0.52, Color.rgb(254, 255, 255)),
+                                                                 new Stop(0.63, Color.WHITE),
+                                                                 new Stop(0.68, Color.rgb(156, 180, 180)),
+                                                                 new Stop(0.80, Color.rgb(198, 209, 211)),
+                                                                 new Stop(0.83, Color.rgb(246, 248, 247)),
+                                                                 new Stop(0.87, Color.rgb(204, 216, 216)),
+                                                                 new Stop(0.97, Color.rgb(164, 188, 190)),
+                                                                 new Stop(1.00, Color.WHITE));
+                MAIN_FRAME.setFill(cmGradient.apply(MAIN_FRAME));
+                MAIN_FRAME.setStroke(null);
+                frame.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
+                break;
             case GLOSSY_METAL:
                 MAIN_FRAME.setFill(new LinearGradient(0.4714285714285714 * WIDTH, 0.014285714285714285 * HEIGHT,
                                                       0.47142857142857153 * WIDTH, 0.9785714285714285 * HEIGHT,
@@ -917,6 +973,78 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
 
         final ImageView IMAGE_VIEW;
         switch (control.getBackgroundDesign()) {
+            case STAINLESS:
+                ConicalGradient gradient = new ConicalGradient(new Point2D(SIZE / 2, SIZE / 2),
+                                                               new Stop(0.00, Color.web("#FDFDFD")),
+                                                               new Stop(0.03, Color.web("#E2E2E2")),
+                                                               new Stop(0.10, Color.web("#B2B2B4")),
+                                                               new Stop(0.14, Color.web("#ACACAE")),
+                                                               new Stop(0.24, Color.web("#FDFDFD")),
+                                                               new Stop(0.33, Color.web("#6E6E70")),
+                                                               new Stop(0.38, Color.web("#6E6E70")),
+                                                               new Stop(0.50, Color.web("#FDFDFD")),
+                                                               new Stop(0.62, Color.web("#6E6E70")),
+                                                               new Stop(0.67, Color.web("#6E6E70")),
+                                                               new Stop(0.76, Color.web("#FDFDFD")),
+                                                               new Stop(0.81, Color.web("#ACACAE")),
+                                                               new Stop(0.85, Color.web("#B2B2B4")),
+                                                               new Stop(0.97, Color.web("#E2E2E2")),
+                                                               new Stop(1.00, Color.web("#FDFDFD")));
+                BACKGROUND.setFill(gradient.apply(BACKGROUND));
+                BACKGROUND.setEffect(INNER_SHADOW);
+                background.getChildren().addAll(BACKGROUND);
+                break;
+            case CARBON:
+                BACKGROUND.setFill(Util.createCarbonPattern());
+                BACKGROUND.setStroke(null);
+                final Rectangle SHADOW_OVERLAY1 = new Rectangle(0.0841121495 * SIZE + 1, 0.0841121495 * SIZE + 1,
+                                                                WIDTH - (2 * 0.0841121495 * SIZE) - 2, HEIGHT - (2 * 0.0841121495 * SIZE) - 2);
+                SHADOW_OVERLAY1.setArcWidth(0.05 * SIZE);
+                SHADOW_OVERLAY1.setArcHeight(0.05 * SIZE);
+                SHADOW_OVERLAY1.setStroke(null);
+                SHADOW_OVERLAY1.setFill(new LinearGradient(SHADOW_OVERLAY1.getLayoutBounds().getMinX(), 0,
+                                                     SHADOW_OVERLAY1.getLayoutBounds().getMaxX(), 0,
+                                                     false, CycleMethod.NO_CYCLE,
+                                                     new Stop(0.0, Color.color(0.0, 0.0, 0.0, 0.5)),
+                                                     new Stop(0.4, Color.color(1.0, 1.0, 1.0, 0.0)),
+                                                     new Stop(0.6, Color.color(1.0, 1.0, 1.0, 0.0)),
+                                                     new Stop(1.0, Color.color(0.0, 0.0, 0.0, 0.5))));
+                SHADOW_OVERLAY1.setStroke(null);
+                background.getChildren().addAll(BACKGROUND, SHADOW_OVERLAY1);
+                break;
+            case PUNCHED_SHEET:
+                BACKGROUND.setFill(Util.createPunchedSheetPattern(control.getTextureColor()));
+                BACKGROUND.setStroke(null);
+                final Rectangle SHADOW_OVERLAY2 = new Rectangle(0.0841121495 * SIZE + 1, 0.0841121495 * SIZE + 1,
+                                                                WIDTH - (2 * 0.0841121495 * SIZE) - 2, HEIGHT - (2 * 0.0841121495 * SIZE) - 2);
+                SHADOW_OVERLAY2.setArcWidth(0.05 * SIZE);
+                SHADOW_OVERLAY2.setArcHeight(0.05 * SIZE);
+                SHADOW_OVERLAY2.setFill(new LinearGradient(SHADOW_OVERLAY2.getLayoutBounds().getMinX(), 0,
+                                                           SHADOW_OVERLAY2.getLayoutBounds().getMaxX(), 0,
+                                                           false, CycleMethod.NO_CYCLE,
+                                                           new Stop(0.0, Color.color(0.0, 0.0, 0.0, 0.5)),
+                                                           new Stop(0.4, Color.color(1.0, 1.0, 1.0, 0.0)),
+                                                           new Stop(0.6, Color.color(1.0, 1.0, 1.0, 0.0)),
+                                                           new Stop(1.0, Color.color(0.0, 0.0, 0.0, 0.5))));
+
+                SHADOW_OVERLAY2.setStroke(null);
+                background.getChildren().addAll(BACKGROUND, SHADOW_OVERLAY2);
+                break;
+            case NOISY_PLASTIC:
+                final Rectangle BACKGROUND_PLAIN = new Rectangle(0.0841121495 * SIZE + 1, 0.0841121495 * SIZE + 1,
+                                                                 WIDTH - (2 * 0.0841121495 * SIZE) - 2, HEIGHT - (2 * 0.0841121495 * SIZE) - 2);
+                BACKGROUND_PLAIN.setArcWidth(0.05 * SIZE);
+                BACKGROUND_PLAIN.setArcHeight(0.05 * SIZE);
+                BACKGROUND_PLAIN.setFill(new LinearGradient(0.0, BACKGROUND_PLAIN.getLayoutY(),
+                                                            0.0, BACKGROUND_PLAIN.getLayoutBounds().getHeight(),
+                                                            false, CycleMethod.NO_CYCLE,
+                                                            new Stop(0.0, Util.brighter(control.getTextureColor(), 0.15)),
+                                                            new Stop(1.0, Util.darker(control.getTextureColor(), 0.15))));
+                BACKGROUND_PLAIN.setStroke(null);
+                BACKGROUND_PLAIN.setEffect(INNER_SHADOW);
+                BACKGROUND.setFill(Util.applyNoisyBackground(BACKGROUND, control.getTextureColor()));
+                background.getChildren().addAll(BACKGROUND_PLAIN, BACKGROUND);
+                break;
             default:
                 BACKGROUND.setStyle(control.getSimpleGradientBaseColorString());
                 BACKGROUND.getStyleClass().add(control.getBackgroundDesign().CSS_BACKGROUND);
