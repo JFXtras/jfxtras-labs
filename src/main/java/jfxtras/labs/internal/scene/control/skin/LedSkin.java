@@ -170,9 +170,9 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
         final double WIDTH  = SIZE;
         final double HEIGHT = SIZE;
 
-        led.setStyle("-fx-led: " + Util.createCssColor(control.getColor()));
-
         led.getChildren().clear();
+
+        led.setStyle("-fx-led: " + Util.createCssColor(control.getColor()));
 
         final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
@@ -211,18 +211,15 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
         }
 
         LED_FRAME.getStyleClass().add("fx-led-frame");
-        LED_FRAME.setStroke(null);
 
         LED_OFF.getStyleClass().add("fx-led-off");
-        LED_OFF.setStroke(null);
 
         ledOn.getStyleClass().clear();
+        ledOn.getStyleClass().add("led");
         ledOn.getStyleClass().add("fx-led-on");
-        ledOn.setStroke(null);
         ledOn.setVisible(control.isOn());
 
         HIGHLIGHT.getStyleClass().add("fx-led-highlight");
-        HIGHLIGHT.setStroke(null);
 
         if (LED_FRAME.visibleProperty().isBound()) {
             LED_FRAME.visibleProperty().unbind();

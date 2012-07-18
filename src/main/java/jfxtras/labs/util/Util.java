@@ -60,7 +60,7 @@ public class Util {
 
     private static final SnapshotParameters SNAPSHOT_PARAMETER = SnapshotParametersBuilder.create().fill(Color.TRANSPARENT).build();
 
-    public static final String createCssColor(final Color COLOR) {
+    public static String createCssColor(final Color COLOR) {
         final StringBuilder CSS_COLOR = new StringBuilder(19);
         CSS_COLOR.append("rgba(");
         CSS_COLOR.append((int) (COLOR.getRed() * 255));
@@ -72,6 +72,16 @@ public class Util {
         CSS_COLOR.append(COLOR.getOpacity());
         CSS_COLOR.append(");");
         return CSS_COLOR.toString();
+    }
+
+    public static String createWebColor(final Color COLOR) {
+        String red = Integer.toHexString((int)(COLOR.getRed() * 255));
+        if (red.length() == 1) red = "0" + red;
+        String green = Integer.toHexString((int)(COLOR.getGreen() * 255));
+        if (green.length() == 1) green = "0" + green;
+        String blue = Integer.toHexString((int)(COLOR.getBlue() * 255));
+        if (blue.length() == 1) blue = "0" + blue;
+        return "#" + red + green + blue;
     }
 
     public static Color interpolateColor(final Color COLOR1, final Color COLOR2, final double FRACTION) {
