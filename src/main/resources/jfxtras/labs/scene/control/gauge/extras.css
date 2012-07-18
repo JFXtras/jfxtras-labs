@@ -145,23 +145,23 @@
 /************************************************************
 * Defintion of Led fills                                    *
 ************************************************************/
-.fx-led-frame {
+.led .frame {
     -fx-fill  : linear-gradient(from 15% 15% to 85% 85%, rgba(20, 20, 20, 0.65) 0%, rgba(41, 41, 41, 0.65) 25%, rgba(200, 200, 200, 0.35) 100%);
     -fx-stroke: transparent;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.65), 1, 0.5, 0, 0);
 }
 
-.fx-led-off {
+.led .off {
     -fx-fill  : linear-gradient(from 20% 20% to 90% 90%, derive(-fx-led, -75%) 0%, derive(-fx-led, -82%) 49%, derive(-fx-led, -75%) 100%);
     -fx-stroke: transparent;
 }
 
-.fx-led-on {
+.led .on {
     -fx-fill  : linear-gradient(from 20% 20% to 90% 90%, derive(-fx-led, -25%) 0%, derive(-fx-led, -45%) 49%, derive(-fx-led, 0%) 100%);
     -fx-stroke: transparent;
 }
 
-.fx-led-highlight {
+.led .highlight {
     -fx-fill  : radial-gradient(focus-angle 0deg, focus-distance 0%, center 12% 12%, radius 50%, rgba(200, 194, 208, 1) 0%, rgba(200, 194, 208, 0) 100%);
     -fx-stroke: transparent;
 }
