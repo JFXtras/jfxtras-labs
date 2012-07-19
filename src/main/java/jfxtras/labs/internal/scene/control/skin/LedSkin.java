@@ -219,7 +219,9 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
 
         LED_FRAME.getStyleClass().add("frame");
 
+        LED_OFF.getStyleClass().clear();
         LED_OFF.getStyleClass().add("off");
+        LED_OFF.setStyle("-fx-led: " + Util.createCssColor(control.getColor()));
 
         ledOn.getStyleClass().clear();
         ledOn.getStyleClass().add("on");
@@ -243,7 +245,7 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
 
         final DropShadow GLOW = new DropShadow();
         GLOW.setSpread(0.35);
-        GLOW.setRadius(0.32 * ledOn.getLayoutBounds().getWidth());
+        GLOW.setRadius(0.16 * ledOn.getLayoutBounds().getWidth());
         GLOW.setColor(control.getColor());
         GLOW.setBlurType(BlurType.GAUSSIAN);
         GLOW.setInput(INNER_SHADOW);

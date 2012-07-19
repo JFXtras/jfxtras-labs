@@ -506,9 +506,6 @@ public class GaugeModel {
     }
 
     public final ObservableList<Section> getSections() {
-        //final List<Section> SECTIONS_COPY = new ArrayList<Section>(sections.size());
-        //SECTIONS_COPY.addAll(sections);
-        //return SECTIONS_COPY;
         return sections;
     }
 
@@ -549,9 +546,6 @@ public class GaugeModel {
     }
 
     public final ObservableList<Section> getAreas() {
-        //final List<Section> AREAS_COPY = new ArrayList<Section>(areas.size());
-        //AREAS_COPY.addAll(areas);
-        //return AREAS_COPY;
         return areas;
     }
 
@@ -592,9 +586,6 @@ public class GaugeModel {
     }
 
     public final ObservableList<Section> getTickMarkSections() {
-        //final List<Section> TICK_MARK_SECTIONS_COPY = new ArrayList<Section>(tickMarkSections.size());
-        //TICK_MARK_SECTIONS_COPY.addAll(tickMarkSections);
-        //return TICK_MARK_SECTIONS_COPY;
         return tickMarkSections;
     }
 
@@ -635,9 +626,6 @@ public class GaugeModel {
     }
 
     public final ObservableList<Marker> getMarkers() {
-        //final List<Marker> INDICATORS_COPY = new ArrayList<Marker>(markers.size());
-        //INDICATORS_COPY.addAll(markers);
-        //return INDICATORS_COPY;
         return markers;
     }
 
@@ -714,7 +702,6 @@ public class GaugeModel {
 
         // nice, rounded fraction
         final double NICE_FRACTION;
-
         if (ROUND) {
             if (FRACTION < 1.5) {
                 NICE_FRACTION = 1;
