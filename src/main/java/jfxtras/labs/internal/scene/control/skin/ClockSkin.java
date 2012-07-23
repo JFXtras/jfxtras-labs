@@ -46,6 +46,7 @@ import javafx.scene.effect.Lighting;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Paint;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
@@ -469,17 +470,26 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
             final Rectangle TICK;
             if (angle % 30 == 0) {
                 // Big tickmarks
-                if (control.getClockStyle() == Clock.ClockStyle.IOS6) {
-                    if (angle % 90 == 0) {
-                        TICK = new Rectangle(0.4763779528 * WIDTH, 0.023622047244094488 * HEIGHT,
-                                             0.0472440945 * WIDTH, 0.110701107 * HEIGHT);
-                    } else {
+                switch(control.getClockStyle()) {
+                    case IOS6:
+                        if (angle % 90 == 0) {
+                            TICK = new Rectangle(0.4763779528 * WIDTH, 0.023622047244094488 * HEIGHT,
+                                                 0.0472440945 * WIDTH, 0.110701107 * HEIGHT);
+                        } else {
+                            TICK = new Rectangle(0.48031496062992124 * WIDTH, 0.023622047244094488 * HEIGHT,
+                                                 0.03937007874015748 * WIDTH, 0.110701107 * HEIGHT);
+                        }
+                        break;
+                    case DB:
                         TICK = new Rectangle(0.48031496062992124 * WIDTH, 0.023622047244094488 * HEIGHT,
                                              0.03937007874015748 * WIDTH, 0.110701107 * HEIGHT);
-                    }
-                } else {
-                    TICK = new Rectangle(0.48031496062992124 * WIDTH, 0.023622047244094488 * HEIGHT,
-                                         0.03937007874015748 * WIDTH, 0.110701107 * HEIGHT);
+                        break;
+                    default:
+                        TICK = new Rectangle(0.49606299212598426 * WIDTH, 0.031496062992125984 * HEIGHT,
+                                             0.015748031496062992 * WIDTH, 0.06299212598425197 * HEIGHT);
+                        TICK.setArcWidth(0.0078740157 * WIDTH);
+                        TICK.setArcHeight(0.0078740157 * HEIGHT);
+                        break;
                 }
             } else {
                 // Small tickmarks
@@ -489,9 +499,14 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
                                              0.0078740157 * WIDTH, 0.047244094488188976 * HEIGHT);
                         break;
                     case DB:
-                    default:
                         TICK = new Rectangle(0.4881889763779528 * WIDTH, 0.023622047244094488 * HEIGHT,
                                              0.023622047244094488 * WIDTH, 0.047244094488188976 * HEIGHT);
+                        break;
+                    default:
+                        TICK = new Rectangle(0.49606299212598426 * WIDTH, 0.031496062992125984 * HEIGHT,
+                                             0.007874015748031496 * WIDTH, 0.03937007874015748 * HEIGHT);
+                        TICK.setArcWidth(0.0039370079 * WIDTH);
+                        TICK.setArcHeight(0.0039370079 * HEIGHT);
                         break;
                 }
             }
@@ -538,9 +553,16 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
                                        0.0433070866 * WIDTH, 0.5511811024 * HEIGHT);
                 break;
             case DB:
-            default:
                 MINUTE = new Rectangle(0.48031496062992124 * WIDTH, 0.047244094488188976 * HEIGHT,
                                        0.03937007874015748 * WIDTH, 0.47244094488188976 * HEIGHT);
+                break;
+            default:
+                final Circle MINUTE_CIRCLE = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.03543307086614173 * WIDTH);
+                final Rectangle MINUTE_RECT = new Rectangle(0.4881889763779528 * WIDTH, 0.12598425196850394 * HEIGHT,
+                                                       0.023622047244094488 * WIDTH, 0.4881889763779528 * HEIGHT);
+                MINUTE_RECT.setArcWidth(0.011811023622047244 * WIDTH);
+                MINUTE_RECT.setArcHeight(0.011811023622047244 * HEIGHT);
+                MINUTE = Shape.union(MINUTE_CIRCLE, MINUTE_RECT);
                 break;
         }
         if (control.isAutoDimEnabled()) {
@@ -561,6 +583,18 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
 
         minutePointer.setRotate(minuteAngle.get());
         minutePointer.getChildren().add(MINUTE);
+
+        if (control.getClockStyle() == Clock.ClockStyle.STANDARD) {
+            final Rectangle MINUTE_FLOUR = new Rectangle(0.49606299212598426 * WIDTH, 0.13385826771653545 * HEIGHT,
+                                                        0.007874015748031496 * WIDTH, 0.2992125984251969 * HEIGHT);
+            MINUTE_FLOUR.setArcWidth(0.003937007874015748 * WIDTH);
+            MINUTE_FLOUR.setArcHeight(0.003937007874015748 * HEIGHT);
+            final Paint MINUTEFLOUR_FILL = Color.color(0.8274509804, 0.8666666667, 0.6156862745, 1);
+            MINUTE_FLOUR.setFill(MINUTEFLOUR_FILL);
+            MINUTE_FLOUR.setStroke(null);
+            minutePointer.getChildren().add(MINUTE_FLOUR);
+        }
+
         minutePointer.setCache(true);
     }
 
@@ -581,9 +615,16 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
                                      0.0433070866 * WIDTH, 0.3543307087 * HEIGHT);
                 break;
             case DB:
-            default:
                 HOUR = new Rectangle(0.47244094488188976 * WIDTH, 0.2125984251968504 * HEIGHT,
                                      0.05511811023622047 * WIDTH, 0.2992125984251969 * HEIGHT);
+                break;
+            default:
+                final Circle HOUR_CIRCLE = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.051181102362204724 * WIDTH);
+                final Rectangle HOUR_RECT = new Rectangle(0.48031496062992124 * WIDTH, 0.2047244094488189 * HEIGHT,
+                                                          0.03937007874015748 * WIDTH, 0.3937007874015748 * HEIGHT);
+                HOUR_RECT.setArcWidth(0.01968503937007874 * WIDTH);
+                HOUR_RECT.setArcHeight(0.01968503937007874 * HEIGHT);
+                HOUR = Shape.union(HOUR_CIRCLE, HOUR_RECT);
                 break;
         }
         if (control.isAutoDimEnabled()) {
@@ -603,6 +644,18 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
 
         hourPointer.setRotate(hourAngle.get());
         hourPointer.getChildren().add(HOUR);
+
+        if (control.getClockStyle() == Clock.ClockStyle.STANDARD) {
+            final Rectangle HOUR_FLOUR = new Rectangle(0.4881889763779528 * WIDTH, 0.2204724409448819 * HEIGHT,
+                                                      0.023622047244094488 * WIDTH, 0.2125984251968504 * HEIGHT);
+            HOUR_FLOUR.setArcWidth(0.011811023622047244 * WIDTH);
+            HOUR_FLOUR.setArcHeight(0.011811023622047244 * HEIGHT);
+            final Paint HOURFLOUR_FILL = Color.color(0.8235294118, 0.8588235294, 0.5882352941, 1);
+            HOUR_FLOUR.setFill(HOURFLOUR_FILL);
+            HOUR_FLOUR.setStroke(null);
+            hourPointer.getChildren().add(HOUR_FLOUR);
+        }
+
         hourPointer.setCache(true);
     }
 
@@ -633,7 +686,6 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
                 second = (Path) Path.union(tmp, CENTER_CIRCLE);
                 break;
             case DB:
-            default:
                 final Circle OUTER_CIRCLE = new Circle(SIZE * 0.5,
                                                        SIZE * 0.190909091,
                                                        SIZE * 0.0454545454);
@@ -648,35 +700,62 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
                 second.getElements().add(new ClosePath());
                 second = (Path) Path.subtract(second, new Circle(SIZE * 0.5, SIZE * 0.190909091, SIZE * 0.0363636364));
                 break;
+            default:
+                final Circle SECOND_CIRCLE = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.027559055118110236 * WIDTH);
+                final Rectangle SECOND_RECT = new Rectangle(0.49606299212598426 * WIDTH, 0.06299212598425197 * HEIGHT,
+                                                            0.007874015748031496 * WIDTH, 0.4251968503937008 * HEIGHT);
+                SECOND_RECT.setArcWidth(0.007874015748031496 * WIDTH);
+                SECOND_RECT.setArcHeight(0.007874015748031496 * HEIGHT);
+                second = (Path) Shape.union(SECOND_CIRCLE, SECOND_RECT);
+                break;
         }
         second.setFill(control.getSecondPointerPaint());
         second.setStroke(null);
 
         secondPointer.getChildren().add(second);
+        if (control.getClockStyle() == Clock.ClockStyle.STANDARD) {
+            final Rectangle SECOND_FLOUR = new Rectangle(0.49606299212598426 * WIDTH, 0.06299212598425197 * HEIGHT,
+                                                        0.007874015748031496 * WIDTH, 0.03937007874015748 * HEIGHT);
+            SECOND_FLOUR.setArcWidth(0.007874015748031496 * WIDTH);
+            SECOND_FLOUR.setArcHeight(0.007874015748031496 * HEIGHT);
+            final Paint SECONDFLOUR_FILL = Color.color(0.8039215686, 0.8549019608, 0.5921568627, 1);
+            SECOND_FLOUR.setFill(SECONDFLOUR_FILL);
+            SECOND_FLOUR.setStroke(null);
+            secondPointer.getChildren().add(SECOND_FLOUR);
+        }
+
         secondPointer.setRotate(secondAngle.get());
 
         final Circle CENTER_KNOB;
-        if (control.getClockStyle() == Clock.ClockStyle.DB) {
-            CENTER_KNOB = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.051181102362204724 * WIDTH);
-            CENTER_KNOB.getStyleClass().clear();
-            if (control.isAutoDimEnabled()) {
-                if (isDay) {
-                    CENTER_KNOB.setFill(control.getBrightPointerPaint());
+        switch(control.getClockStyle()) {
+            case DB:
+                CENTER_KNOB = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.051181102362204724 * WIDTH);
+                CENTER_KNOB.getStyleClass().clear();
+                if (control.isAutoDimEnabled()) {
+                    if (isDay) {
+                        CENTER_KNOB.setFill(control.getBrightPointerPaint());
+                    } else {
+                        CENTER_KNOB.setFill(control.getDarkPointerPaint());
+                    }
                 } else {
-                    CENTER_KNOB.setFill(control.getDarkPointerPaint());
+                    if (Clock.Theme.BRIGHT == control.getTheme()) {
+                        CENTER_KNOB.setFill(control.getBrightPointerPaint());
+                    } else {
+                        CENTER_KNOB.setFill(control.getDarkPointerPaint());
+                    }
                 }
-            } else {
-                if (Clock.Theme.BRIGHT == control.getTheme()) {
-                    CENTER_KNOB.setFill(control.getBrightPointerPaint());
-                } else {
-                    CENTER_KNOB.setFill(control.getDarkPointerPaint());
-                }
-            }
-            CENTER_KNOB.setStroke(null);
-        } else {
-            CENTER_KNOB = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.0078740157 * WIDTH);
-            CENTER_KNOB.setFill(Color.color(0.8745098039, 0.8745098039, 0.8156862745, 1));
-            CENTER_KNOB.setStroke(null);
+                CENTER_KNOB.setStroke(null);
+                break;
+            case IOS6:
+                CENTER_KNOB = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.0078740157 * WIDTH);
+                CENTER_KNOB.setFill(Color.color(0.8745098039, 0.8745098039, 0.8156862745, 1));
+                CENTER_KNOB.setStroke(null);
+                break;
+            default:
+                CENTER_KNOB = new Circle(0.5 * WIDTH, 0.5 * WIDTH, 0.25 * WIDTH);
+                CENTER_KNOB.setFill(Color.TRANSPARENT);
+                CENTER_KNOB.setStroke(Color.TRANSPARENT);
+            break;
         }
         secondPointer.getChildren().add(CENTER_KNOB);
         secondPointer.setCache(true);

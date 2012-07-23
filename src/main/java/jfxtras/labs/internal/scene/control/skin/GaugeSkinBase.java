@@ -84,14 +84,13 @@ import java.util.ArrayList;
  * Time: 09:03
  */
 public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase<C>> extends SkinBase<C, B> {
-    public static final long BLINK_INTERVAL = 500000000l;
+    private long blinkInterval = 500000000l;
 
 
     // ******************** Constructors **************************************
     public GaugeSkinBase(final C CONTROL, final B BEHAVIOR) {
         super(CONTROL, BEHAVIOR);
 
-        // Labels do not block the mouse by default, unlike most other UI Controls.
         //consumeMouseEvents(false);
 
         // Register listeners
@@ -194,6 +193,14 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                 }
             }
         }
+    }
+
+    protected long getBlinkInterval() {
+        return blinkInterval;
+    }
+
+    protected void setBlinkInterval(final long BLINK_INTERVAL) {
+        blinkInterval = BLINK_INTERVAL < 50000000l ? 50000000l : (BLINK_INTERVAL > 2000000000l ? 2000000000l : BLINK_INTERVAL);
     }
 
 

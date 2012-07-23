@@ -154,27 +154,25 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         };
         isDirty                    = false;
         initialized                = false;
-        lastLcdTimerCall           = System.nanoTime() + BLINK_INTERVAL;
+        lastLcdTimerCall           = System.nanoTime() + getBlinkInterval();
         valueVisible               = true;
         lcdBlinkingTimer           = new AnimationTimer() {
-            @Override public void handle(final long CURRENT_NANOSECONDS) {
-                long currentNanoTime = System.nanoTime();
-                if (currentNanoTime > lastLcdTimerCall + BLINK_INTERVAL) {
+            @Override public void handle(final long NOW) {
+                if (NOW > lastLcdTimerCall + getBlinkInterval()) {
                     valueVisible ^= true;
                     lcdValueString.setVisible(valueVisible);
-                    lastLcdTimerCall = currentNanoTime;
+                    lastLcdTimerCall = NOW;
                 }
             }
         };
         thresholdVisible           = false;
-        lastThresholdTimerCall     = System.nanoTime() + BLINK_INTERVAL;
+        lastThresholdTimerCall     = System.nanoTime() + getBlinkInterval();
         thresholdTimer             = new AnimationTimer() {
-            @Override public void handle(final long CURRENT_NANOSECONDS) {
-                long currentNanoTime = System.nanoTime();
-                if (currentNanoTime > lastThresholdTimerCall + BLINK_INTERVAL && control.isLcdThresholdVisible()) {
+            @Override public void handle(final long NOW) {
+                if (NOW > lastThresholdTimerCall + getBlinkInterval() && control.isLcdThresholdVisible()) {
                     thresholdVisible ^= true;
                     lcdThresholdIndicator.setVisible(thresholdVisible);
-                    lastThresholdTimerCall = currentNanoTime;
+                    lastThresholdTimerCall = NOW;
                 }
             }
         };

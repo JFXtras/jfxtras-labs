@@ -182,32 +182,30 @@ public class RadialQuarterNSkin extends GaugeSkinBase<RadialQuarterN, RadialQuar
         pointerRotation        = new Rotate();
         isDirty                = false;
         ledTimer               = new AnimationTimer() {
-            @Override public void handle(final long CURRENT_NANOSECONDS) {
-                long currentNanoTime = System.nanoTime();
-                if (currentNanoTime > lastLedTimerCall + BLINK_INTERVAL) {
+            @Override public void handle(final long NOW) {
+                if (NOW > lastLedTimerCall + getBlinkInterval()) {
                     ledOnVisible ^= true;
                     if (ledOnVisible) {
                         ledOn.setOpacity(1.0);
                     } else {
                         ledOn.setOpacity(0.0);
                     }
-                    lastLedTimerCall = currentNanoTime;
+                    lastLedTimerCall = NOW;
                 }
             }
         };
         lastLedTimerCall       = 0l;
         ledOnVisible           = false;
         userLedTimer           = new AnimationTimer() {
-            @Override public void handle(final long CURRENT_NANOSECONDS) {
-                long currentNanoTime = System.nanoTime();
-                if (currentNanoTime > lastUserLedTimerCall + BLINK_INTERVAL) {
+            @Override public void handle(final long NOW) {
+                if (NOW > lastUserLedTimerCall + getBlinkInterval()) {
                     userLedOnVisible ^= true;
                     if (userLedOnVisible) {
                         userLedOn.setOpacity(1.0);
                     } else {
                         userLedOn.setOpacity(0.0);
                     }
-                    lastUserLedTimerCall = currentNanoTime;
+                    lastUserLedTimerCall = NOW;
                 }
             }
         };

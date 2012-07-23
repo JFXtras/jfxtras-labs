@@ -57,7 +57,8 @@ public class Clock extends Control {
     }
     public static enum ClockStyle {
         DB,
-        IOS6
+        IOS6,
+        STANDARD
     }
     private static final String        DEFAULT_STYLE_CLASS = "clock";
     private StringProperty             timeZone;
