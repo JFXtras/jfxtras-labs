@@ -398,10 +398,6 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         super.handleControlPropertyChanged(PROPERTY);
 
         if ("LCD_DESIGN".equals(PROPERTY)) {
-            lcdValueString.getStyleClass().clear();
-			lcdValueBackgroundString.getStyleClass().setAll("lcd");
-            lcdValueString.getStyleClass().add(control.getLcdDesign().CSS);
-            lcdValueString.getStyleClass().add("lcd-text");
             drawLcd();
             drawLcdContent();
         } else if ("LCD_NUMBER_SYSTEM".equals(PROPERTY)) {
@@ -567,6 +563,10 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         }
         lcdValueString.setFont(LCD_VALUE_FONT);
         lcdValueString.setFontSmoothingType(FontSmoothingType.LCD);
+        lcdValueString.getStyleClass().clear();
+        lcdValueString.getStyleClass().add("lcd");
+        lcdValueString.getStyleClass().add(control.getLcdDesign().CSS);
+        lcdValueString.getStyleClass().add("lcd-text");
 
         // Setup the lcd unit
         final Font LCD_UNIT_FONT = Font.font(control.getLcdUnitFont(), FontWeight.NORMAL, (0.26 * LCD_MAIN.getLayoutBounds().getHeight()));
