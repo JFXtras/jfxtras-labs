@@ -399,6 +399,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
 
         if ("LCD_DESIGN".equals(PROPERTY)) {
             lcdValueString.getStyleClass().clear();
+			lcdValueBackgroundString.getStyleClass().setAll("lcd");
             lcdValueString.getStyleClass().add(control.getLcdDesign().CSS);
             lcdValueString.getStyleClass().add("lcd-text");
             drawLcd();

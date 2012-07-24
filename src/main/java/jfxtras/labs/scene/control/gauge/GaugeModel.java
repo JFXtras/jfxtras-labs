@@ -696,6 +696,37 @@ public class GaugeModel {
      * @param ROUND whether to round the result or ceil
      * @return a "nice" number to be used for the value range
      */
+    private static double calcNiceNumber(final double RANGE, final boolean ROUND) {
+        final double EXPONENT = Math.floor(Math.log10(RANGE));   // exponent of range
+        final double FRACTION = RANGE / Math.pow(10, EXPONENT);  // fractional part of range
+
+        // nice, rounded fraction
+        final double NICE_FRACTION;
+        if (ROUND) {
+            if (FRACTION < 1.5) {
+                NICE_FRACTION = 1;
+            } else if (FRACTION < 3) {
+                NICE_FRACTION = 2;
+            } else if (FRACTION < 7) {
+                NICE_FRACTION = 5;
+            } else {
+                NICE_FRACTION = 10;
+            }
+        } else {
+            if (Double.compare(FRACTION, 1) <= 0) {
+                NICE_FRACTION = 1;
+            } else if (Double.compare(FRACTION, 2) <= 0) {
+                NICE_FRACTION = 2;
+            } else if (Double.compare(FRACTION, 5) <= 0) {
+                NICE_FRACTION = 5;
+            } else {
+                NICE_FRACTION = 10;
+            }
+        }
+        return NICE_FRACTION * Math.pow(10, EXPONENT);
+    }
+
+    /*
     private double calcNiceNumber(final double RANGE, final boolean ROUND) {
         double exponent;     // exponent of range
         double fraction;     // fractional part of range
@@ -755,5 +786,6 @@ public class GaugeModel {
         }
         return result;
     }
+    */
 
 }
