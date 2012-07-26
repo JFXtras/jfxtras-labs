@@ -31,6 +31,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
@@ -187,16 +189,17 @@ public abstract class Gauge extends Control {
         TYPE16
     }
     public static enum RadialRange {
-        RADIAL_300(300, -150, 240, new Rectangle(0.4, 0.56, 0.4, 0.12), 150, new Point2D(0.6, 0.4),new Point2D(0.3, 0.4), 1, 0.38),
-        RADIAL_270(270, -180, 270, new Rectangle(0.4, 0.56, 0.4, 0.12), 180, new Point2D(0.6, 0.4),new Point2D(0.3, 0.4), 1, 0.38),
-        RADIAL_180(180, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 90, new Point2D(0.6, 0.4),new Point2D(0.3, 0.4), 1, 0.38),
-        RADIAL_180N(180, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 90, new Point2D(0.6, 0.35),new Point2D(0.3, 0.35), 1, 0.38),
-        RADIAL_180S(180, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 0, new Point2D(0.6, 0.2),new Point2D(0.3, 0.2), -1, 0.38),
-        RADIAL_90(90, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 91, new Point2D(0.6, 0.4),new Point2D(0.3, 0.4), 1, 0.38),
-        RADIAL_90N(90, 315, 225, new Rectangle(0.55, 0.52, 0.55, 0.12), 45, new Point2D(0.6, 0.4),new Point2D(0.3, 0.4), 1, 0.5),
-        RADIAL_90W(90, 225, 45, new Rectangle(0.2, 0.58, 0.45, 0.12), 135, new Point2D(0.12, 0.35),new Point2D(0.12, 0.55), 1, 0.5),
-        RADIAL_90S(90, -135, 45, new Rectangle(0.55, 0.36, 0.55, 0.12), 225, new Point2D(0.6, 0.5),new Point2D(0.3, 0.5), -1, 0.5),
-        RADIAL_90E(90, 135, 225, new Rectangle(0.2, 0.58, 0.45, 0.12), -315, new Point2D(0.78, 0.35),new Point2D(0.78, 0.55), -1, 0.5);
+        RADIAL_360(360, 0, 0, new Rectangle(0.4, 0.56, 0.4, 0.12), 0, new Point2D(0.6, 0.4), new Point2D(0.3, 0.4), 1, 0.38),
+        RADIAL_300(300, -150, 240, new Rectangle(0.4, 0.56, 0.4, 0.12), 150, new Point2D(0.6, 0.4), new Point2D(0.3, 0.4), 1, 0.38),
+        RADIAL_270(270, -180, 270, new Rectangle(0.4, 0.56, 0.4, 0.12), 180, new Point2D(0.6, 0.4), new Point2D(0.3, 0.4), 1, 0.38),
+        RADIAL_180(180, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 90, new Point2D(0.6, 0.4), new Point2D(0.3, 0.4), 1, 0.38),
+        RADIAL_180N(180, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 90, new Point2D(0.6, 0.35), new Point2D(0.3, 0.35), 1, 0.38),
+        RADIAL_180S(180, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 0, new Point2D(0.6, 0.2), new Point2D(0.3, 0.2), -1, 0.38),
+        RADIAL_90(90, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 91, new Point2D(0.6, 0.4), new Point2D(0.3, 0.4), 1, 0.38),
+        RADIAL_90N(90, 315, 225, new Rectangle(0.55, 0.52, 0.55, 0.12), 45, new Point2D(0.6, 0.4), new Point2D(0.3, 0.4), 1, 0.5),
+        RADIAL_90W(90, 225, 45, new Rectangle(0.2, 0.58, 0.45, 0.12), 135, new Point2D(0.12, 0.35), new Point2D(0.12, 0.55), 1, 0.5),
+        RADIAL_90S(90, -135, 45, new Rectangle(0.55, 0.36, 0.55, 0.12), 225, new Point2D(0.6, 0.5), new Point2D(0.3, 0.5), -1, 0.5),
+        RADIAL_90E(90, 135, 225, new Rectangle(0.2, 0.58, 0.45, 0.12), -315, new Point2D(0.78, 0.35), new Point2D(0.78, 0.55), -1, 0.5);
 
         public final double    ANGLE_RANGE;
         public final double    ROTATION_OFFSET;
@@ -301,58 +304,58 @@ public abstract class Gauge extends Control {
 
     // ******************** Event handling ************************************
     private final void addGaugeModelListener() {
-        gaugeModel.setOnGaugeModelEvent(new EventHandler<GaugeModelEvent>() {
-            public void handle(final GaugeModelEvent EVENT) {
+        gaugeModel.setOnGaugeModelEvent(new EventHandler<GaugeModel.GaugeModelEvent>() {
+            public void handle(final GaugeModel.GaugeModelEvent EVENT) {
                 forwardModelEvent(EVENT);
             }
         });
     }
 
-    public final ObjectProperty<EventHandler<GaugeModelEvent>> onGaugeModelEventProperty() {
+    public final ObjectProperty<EventHandler<GaugeModel.GaugeModelEvent>> onGaugeModelEventProperty() {
         return onGaugeModelEvent;
     }
 
-    public final void setOnGaugeModelEvent(final EventHandler<GaugeModelEvent> HANDLER) {
+    public final void setOnGaugeModelEvent(final EventHandler<GaugeModel.GaugeModelEvent> HANDLER) {
         onGaugeModelEventProperty().set(HANDLER);
     }
 
-    public final EventHandler<GaugeModelEvent> getOnGaugeModelEvent() {
+    public final EventHandler<GaugeModel.GaugeModelEvent> getOnGaugeModelEvent() {
         return onGaugeModelEventProperty().get();
     }
 
-    private final ObjectProperty<EventHandler<GaugeModelEvent>> onGaugeModelEvent = new SimpleObjectProperty<EventHandler<GaugeModelEvent>>();
+    private final ObjectProperty<EventHandler<GaugeModel.GaugeModelEvent>> onGaugeModelEvent = new SimpleObjectProperty<EventHandler<GaugeModel.GaugeModelEvent>>();
 
-    public void forwardModelEvent(final GaugeModelEvent EVENT) {
-        final EventHandler<GaugeModelEvent> MODEL_EVENT_HANDLER = getOnGaugeModelEvent();
+    public void forwardModelEvent(final GaugeModel.GaugeModelEvent EVENT) {
+        final EventHandler<GaugeModel.GaugeModelEvent> MODEL_EVENT_HANDLER = getOnGaugeModelEvent();
         if (MODEL_EVENT_HANDLER != null) {
             MODEL_EVENT_HANDLER.handle(EVENT);
         }
     }
 
     private final void addStyleModelListener() {
-        styleModel.setOnStyleModelEvent(new EventHandler<StyleModelEvent>() {
-            public void handle(final StyleModelEvent EVENT) {
+        styleModel.setOnStyleModelEvent(new EventHandler<StyleModel.StyleModelEvent>() {
+            public void handle(final StyleModel.StyleModelEvent EVENT) {
                 forwardStyleModelEvent(EVENT);
             }
         });
     }
 
-    public final ObjectProperty<EventHandler<StyleModelEvent>> onStyleModelEventProperty() {
+    public final ObjectProperty<EventHandler<StyleModel.StyleModelEvent>> onStyleModelEventProperty() {
         return onStyleModelEvent;
     }
 
-    public final void setOnStyleModelEvent(final EventHandler<StyleModelEvent> HANDLER) {
+    public final void setOnStyleModelEvent(final EventHandler<StyleModel.StyleModelEvent> HANDLER) {
         onStyleModelEventProperty().set(HANDLER);
     }
 
-    public final EventHandler<StyleModelEvent> getOnStyleModelEvent() {
+    public final EventHandler<StyleModel.StyleModelEvent> getOnStyleModelEvent() {
         return onStyleModelEventProperty().get();
     }
 
-    private final ObjectProperty<EventHandler<StyleModelEvent>> onStyleModelEvent = new SimpleObjectProperty<EventHandler<StyleModelEvent>>();
+    private final ObjectProperty<EventHandler<StyleModel.StyleModelEvent>> onStyleModelEvent = new SimpleObjectProperty<EventHandler<StyleModel.StyleModelEvent>>();
 
-    public void forwardStyleModelEvent(final StyleModelEvent EVENT) {
-        final EventHandler<StyleModelEvent> STYLE_MODEL_EVENT_HANDLER = getOnStyleModelEvent();
+    public void forwardStyleModelEvent(final StyleModel.StyleModelEvent EVENT) {
+        final EventHandler<StyleModel.StyleModelEvent> STYLE_MODEL_EVENT_HANDLER = getOnStyleModelEvent();
         if (STYLE_MODEL_EVENT_HANDLER != null) {
             STYLE_MODEL_EVENT_HANDLER.handle(EVENT);
         }
@@ -376,7 +379,7 @@ public abstract class Gauge extends Control {
         addStyleModelListener();
     }
 
-    public final ObjectProperty<StyleModel> styleModelProperty() {
+    public final ReadOnlyObjectProperty<StyleModel> styleModelProperty() {
             return styleModelProperty;
         }
 
@@ -390,7 +393,7 @@ public abstract class Gauge extends Control {
         addGaugeModelListener();
     }
 
-    public final ObjectProperty<GaugeModel> gaugeModelProperty() {
+    public final ReadOnlyObjectProperty<GaugeModel> gaugeModelProperty() {
         return gaugeModelProperty;
     }
 
@@ -402,6 +405,12 @@ public abstract class Gauge extends Control {
         radialRange.set(RADIAL_RANGE);
         gaugeModel.calcRange(radialRange.get().ANGLE_RANGE);
         angleStep.set(radialRange.get().ANGLE_RANGE / gaugeModel.getRange());
+        if (RADIAL_RANGE == RadialRange.RADIAL_360) {
+            setKnobsVisible(false);
+            setEndlessMode(true);
+        } else {
+            setEndlessMode(false);
+        }
     }
 
     public final ObjectProperty<RadialRange> radialRangeProperty() {
@@ -417,7 +426,7 @@ public abstract class Gauge extends Control {
         angleStep.set(radialRange.get().ANGLE_RANGE / gaugeModel.getRange());
     }
 
-    public final DoubleProperty angleStepProperty() {
+    public final ReadOnlyDoubleProperty angleStepProperty() {
         return angleStep;
     }
 
@@ -441,6 +450,10 @@ public abstract class Gauge extends Control {
 
     public final DoubleProperty valueProperty() {
         return gaugeModel.valueProperty();
+    }
+
+    public final double getRealValue() {
+        return gaugeModel.getRealValue();
     }
 
     public final boolean isValueAnimationEnabled() {
@@ -745,16 +758,16 @@ public abstract class Gauge extends Control {
         return styleModel.knobColorProperty();
     }
 
-    public final boolean isPostsVisible() {
-        return styleModel.isPostsVisible();
+    public final boolean isKnobsVisible() {
+        return styleModel.getKnobsVisible();
     }
 
-    public final void setPostsVisible(final boolean POSTS_VISIBLE) {
-        styleModel.setPostsVisible(POSTS_VISIBLE);
+    public final void setKnobsVisible(final boolean POSTS_VISIBLE) {
+        styleModel.setKnobsVisible(POSTS_VISIBLE);
     }
 
-    public final BooleanProperty postsVisibleProperty() {
-        return styleModel.postsVisibleProperty();
+    public final BooleanProperty knobsVisibleProperty() {
+        return styleModel.knobsVisibleProperty();
     }
 
     public final PointerType getPointerType() {
@@ -1592,6 +1605,16 @@ public abstract class Gauge extends Control {
 
     public final BooleanProperty markersVisibleProperty() {
         return styleModel.markersVisibleProperty();
+    }
+
+    public final boolean isEndlessMode() {
+        return gaugeModel.isEndlessMode();
+    }
+
+    public final void setEndlessMode(final boolean ENDLESS_MODE) {
+        if (getRadialRange() == RadialRange.RADIAL_360) {
+            gaugeModel.setEndlessMode(ENDLESS_MODE);
+        }
     }
 
     public final Color getTextureColor() {

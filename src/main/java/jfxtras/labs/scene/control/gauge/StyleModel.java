@@ -27,6 +27,9 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.event.Event;
+import javafx.event.EventTarget;
+import javafx.event.EventType;
 import jfxtras.labs.scene.control.gauge.Gauge.BackgroundDesign;
 import jfxtras.labs.scene.control.gauge.Gauge.FrameDesign;
 import jfxtras.labs.scene.control.gauge.Gauge.KnobColor;
@@ -70,7 +73,7 @@ public class StyleModel {
     private BooleanProperty                      backgroundVisible;
     private ObjectProperty<KnobDesign>           knobDesign;
     private ObjectProperty<KnobColor>            knobColor;
-    private BooleanProperty                      postsVisible;
+    private BooleanProperty                      knobsVisible;
     private ObjectProperty<PointerType>          pointerType;
     private BooleanProperty                      pointerShadowEnabled;
     private BooleanProperty                      pointerGlowEnabled;
@@ -147,7 +150,7 @@ public class StyleModel {
         backgroundVisible               = new SimpleBooleanProperty(true);
         knobDesign                      = new SimpleObjectProperty<KnobDesign>(Gauge.KnobDesign.STANDARD);
         knobColor                       = new SimpleObjectProperty<KnobColor>(Gauge.KnobColor.SILVER);
-        postsVisible                    = new SimpleBooleanProperty(true);
+        knobsVisible                    = new SimpleBooleanProperty(true);
         pointerType                     = new SimpleObjectProperty<PointerType>(Gauge.PointerType.TYPE1);
         valueColor                      = new SimpleObjectProperty<ColorDef>(ColorDef.RED);
         pointerShadowEnabled            = new SimpleBooleanProperty(true);
@@ -391,17 +394,17 @@ public class StyleModel {
         return knobColor;
     }
 
-    public final boolean isPostsVisible() {
-        return postsVisible.get();
+    public final boolean getKnobsVisible() {
+        return knobsVisible.get();
     }
 
-    public final void setPostsVisible(final boolean POSTS_VISIBLE) {
-        postsVisible.set(POSTS_VISIBLE);
+    public final void setKnobsVisible(final boolean KNOBS_VISIBLE) {
+        knobsVisible.set(KNOBS_VISIBLE);
         fireStyleModelEvent();
     }
 
-    public final BooleanProperty postsVisibleProperty() {
-        return postsVisible;
+    public final BooleanProperty knobsVisibleProperty() {
+        return knobsVisible;
     }
 
     public final Gauge.PointerType getPointerType() {
@@ -1197,5 +1200,19 @@ public class StyleModel {
 
     public final ObjectProperty<Color> trendDownColorProperty() {
         return trendDownColor;
+    }
+
+
+    // ******************** Internal classes **********************************
+    public class StyleModelEvent extends Event {
+
+        // ******************** Constructors **************************************
+        public StyleModelEvent() {
+            super(new EventType<StyleModelEvent>());
+        }
+
+        public StyleModelEvent(final Object source, final EventTarget target) {
+            super(source, target, new EventType<StyleModelEvent>());
+        }
     }
 }

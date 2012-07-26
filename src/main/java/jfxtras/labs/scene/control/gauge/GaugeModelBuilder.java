@@ -198,6 +198,11 @@ public class GaugeModelBuilder {
         return this;
     }
 
+    public final GaugeModelBuilder endlessMode(final boolean ENDLESS_MODE) {
+        properties.put("endlessMode", new SimpleBooleanProperty(ENDLESS_MODE));
+        return this;
+    }
+
     public final GaugeModel build() {
         final GaugeModel MODEL = new GaugeModel();
         for (String key : properties.keySet()) {
@@ -257,6 +262,8 @@ public class GaugeModelBuilder {
                 MODEL.setMarkers(((ObjectProperty<Marker[]>) properties.get(key)).get());
             } else if ("markersList".equals(key)) {
                 MODEL.setMarkers(((ObjectProperty<List<Marker>>) properties.get(key)).get());
+            } else if ("endlessMode".equals(key)) {
+                MODEL.setEndlessMode(((BooleanProperty) properties.get(key)).get());
             }
         }
         return MODEL;

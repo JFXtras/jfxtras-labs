@@ -163,6 +163,8 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 gaugeModel.setMarkers(((ObjectProperty<Marker[]>) gaugeProperties.get(key)).get());
             } else if ("markersList".equals(key)) {
                 gaugeModel.setMarkers(((ObjectProperty<List<Marker>>) gaugeProperties.get(key)).get());
+            } else if ("endlessMode".equals(key)) {
+                gaugeModel.setEndlessMode(((BooleanProperty) gaugeProperties.get(key)).get());
             } else if ("prefWidth".equals(key)) {
                 prefWidth = ((DoubleProperty) gaugeProperties.get(key)).get();
             } else if ("prefHeight".equals(key)) {
@@ -200,8 +202,12 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 styleModel.setKnobDesign(((ObjectProperty<Gauge.KnobDesign>) styleProperties.get(key)).get());
             } else if ("knobColor".equals(key)) {
                 styleModel.setKnobColor(((ObjectProperty<Gauge.KnobColor>) styleProperties.get(key)).get());
-            } else if ("postsVisible".equals(key)) {
-                styleModel.setPostsVisible(((BooleanProperty) styleProperties.get(key)).get());
+            } else if ("knobsVisible".equals(key)) {
+                if (gaugeModel.isEndlessMode()) {
+                    styleModel.setKnobsVisible(false);
+                } else {
+                    styleModel.setKnobsVisible(((BooleanProperty) styleProperties.get(key)).get());
+                }
             } else if ("pointerType".equals(key)) {
                 styleModel.setPointerType(((ObjectProperty<Gauge.PointerType>) styleProperties.get(key)).get());
             } else if ("valueColor".equals(key)) {
@@ -378,7 +384,8 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 if (radialRange == Gauge.RadialRange.RADIAL_90 ||
                     radialRange == Gauge.RadialRange.RADIAL_180 ||
                     radialRange == Gauge.RadialRange.RADIAL_270 ||
-                    radialRange == Gauge.RadialRange.RADIAL_300) {
+                    radialRange == Gauge.RadialRange.RADIAL_300 ||
+                    radialRange == Gauge.RadialRange.RADIAL_360) {
                     radial.setRadialRange(radialRange);
                 }
                 radial.setPrefSize(SIZE, SIZE);
@@ -536,6 +543,11 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
         return this;
     }
 
+    public final GaugeBuilder endlessMode(final boolean ENDLESS_MODE) {
+        gaugeProperties.put("endlessMode", new SimpleBooleanProperty(ENDLESS_MODE));
+        return this;
+    }
+
     @Override public final B prefWidth(final double WIDTH) {
         gaugeProperties.put("prefWidth", new SimpleDoubleProperty(WIDTH));
         return (B)this;
@@ -624,8 +636,8 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
         return this;
     }
 
-    public final GaugeBuilder postsVisible(final boolean POSTS_VISIBLE) {
-        styleProperties.put("postsVisible", new SimpleBooleanProperty(POSTS_VISIBLE));
+    public final GaugeBuilder knobsVisible(final boolean KNOBS_VISIBLE) {
+        styleProperties.put("knobsVisible", new SimpleBooleanProperty(KNOBS_VISIBLE));
         return this;
     }
 

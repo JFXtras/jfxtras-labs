@@ -854,11 +854,11 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         if (MIN_POST.visibleProperty().isBound()) {
             MIN_POST.visibleProperty().unbind();
         }
-        MIN_POST.visibleProperty().bind(CONTROL.postsVisibleProperty());
+        MIN_POST.visibleProperty().bind(CONTROL.knobsVisibleProperty());
         if (MAX_POST.visibleProperty().isBound()) {
             MAX_POST.visibleProperty().unbind();
         }
-        MAX_POST.visibleProperty().bind(CONTROL.postsVisibleProperty());
+        MAX_POST.visibleProperty().bind(CONTROL.knobsVisibleProperty());
 
         KNOBS.getChildren().addAll(CENTER_KNOB, MIN_POST, MAX_POST);
     }
@@ -1382,7 +1382,13 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                             tickLabel.rotateProperty().set(180 - alpha + ticklabelRotationOffset);
                             break;
                     }
-                    tickMarkLabel.add(tickLabel);
+                    if (CONTROL.getRadialRange() == Gauge.RadialRange.RADIAL_360) {
+                        if (Double.compare(valueCounter, CONTROL.getMaxValue()) != 0) {
+                            tickMarkLabel.add(tickLabel);
+                        }
+                    } else {
+                        tickMarkLabel.add(tickLabel);
+                    }
                 }
 
                 valueCounter += CONTROL.getMajorTickSpacing();

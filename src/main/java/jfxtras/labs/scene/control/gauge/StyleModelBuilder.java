@@ -115,8 +115,8 @@ public class StyleModelBuilder {
         return this;
     }
 
-    public final StyleModelBuilder postsVisible(final boolean POSTS_VISIBLE) {
-        properties.put("postsVisible", new SimpleBooleanProperty(POSTS_VISIBLE));
+    public final StyleModelBuilder knobsVisible(final boolean KNOBS_VISIBLE) {
+        properties.put("knobsVisible", new SimpleBooleanProperty(KNOBS_VISIBLE));
         return this;
     }
 
@@ -432,8 +432,8 @@ public class StyleModelBuilder {
                 MODEL.setKnobDesign(((ObjectProperty<Gauge.KnobDesign>) properties.get(key)).get());
             } else if ("knobColor".equals(key)) {
                 MODEL.setKnobColor(((ObjectProperty<Gauge.KnobColor>) properties.get(key)).get());
-            } else if ("postsVisible".equals(key)) {
-                MODEL.setPostsVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("knobsVisible".equals(key)) {
+                MODEL.setKnobsVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("pointerType".equals(key)) {
                 MODEL.setPointerType(((ObjectProperty<Gauge.PointerType>) properties.get(key)).get());
             } else if ("valueColor".equals(key)) {

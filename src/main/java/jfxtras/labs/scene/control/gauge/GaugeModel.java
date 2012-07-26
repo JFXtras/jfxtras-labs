@@ -41,7 +41,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventTarget;
+import javafx.event.EventType;
 import jfxtras.labs.scene.control.gauge.Gauge.NumberSystem;
 import jfxtras.labs.scene.control.gauge.Gauge.Trend;
 
@@ -56,6 +59,7 @@ import java.util.List;
  */
 public class GaugeModel {
     private DoubleProperty               value;
+    private DoubleProperty               realValue;
     private BooleanProperty              valueAnimationEnabled;
     private DoubleProperty               animationDuration;
     private DoubleProperty               minValue;
@@ -87,11 +91,13 @@ public class GaugeModel {
     private ObservableList<Section>      areas;
     private ObservableList<Section>      tickMarkSections;
     private ObservableList<Marker>       markers;
+    private BooleanProperty              endlessMode;
 
 
     // ******************** Constructors **************************************
     public GaugeModel() {
         value                           = new SimpleDoubleProperty(0);
+        realValue                       = new SimpleDoubleProperty(0);
         valueAnimationEnabled           = new SimpleBooleanProperty(true);
         animationDuration               = new SimpleDoubleProperty(800);
         minValue                        = new SimpleDoubleProperty(0);
@@ -123,6 +129,7 @@ public class GaugeModel {
         areas                           = FXCollections.observableArrayList();
         tickMarkSections                = FXCollections.observableArrayList();
         markers                         = FXCollections.observableArrayList();
+        endlessMode                     = new SimpleBooleanProperty(false);
 
         sections.addListener(new InvalidationListener() {
             @Override public void invalidated(Observable ov) {
@@ -177,12 +184,22 @@ public class GaugeModel {
     }
 
     public final void setValue(final double VALUE) {
-        value.set(Double.compare(VALUE, niceMinValue.get()) < 0 ? niceMinValue.get() : (Double.compare(VALUE, niceMaxValue.get()) > 0 ? niceMaxValue.get() : VALUE));
+        if (isEndlessMode()) {
+            value.set(VALUE % getRange());
+            realValue.set(VALUE);
+        } else {
+            value.set(clamp(niceMinValue.get(), niceMaxValue.get(), VALUE));
+            realValue.set(value.get());
+        }
         fireGaugeModelEvent();
     }
 
     public final DoubleProperty valueProperty() {
         return value;
+    }
+
+    public final double getRealValue() {
+        return realValue.get();
     }
 
     public final boolean isValueAnimationEnabled() {
@@ -216,7 +233,7 @@ public class GaugeModel {
     }
 
     public final void setMinValue(final double MIN_VALUE) {
-        minValue.set(MIN_VALUE);
+        minValue.set(MIN_VALUE > maxValue.get() ? maxValue.get() - minorTickSpacing.get() : MIN_VALUE);
         fireGaugeModelEvent();
     }
 
@@ -229,7 +246,7 @@ public class GaugeModel {
     }
 
     public final void setMaxValue(final double MAX_VALUE) {
-        maxValue.set(MAX_VALUE);
+        maxValue.set(MAX_VALUE < minValue.get() ? minValue.get() + minorTickSpacing.get() : MAX_VALUE);
         fireGaugeModelEvent();
     }
 
@@ -665,6 +682,24 @@ public class GaugeModel {
         fireGaugeModelEvent();
     }
 
+    public final boolean isEndlessMode() {
+        return endlessMode.get();
+    }
+
+    public final void setEndlessMode(final boolean ENDLESS_MODE) {
+        endlessMode.set(ENDLESS_MODE);
+    }
+
+    public final BooleanProperty endlessModeProperty() {
+        return endlessMode;
+    }
+
+
+    // ******************** Utility methods ***********************************
+    private double clamp(final double MIN, final double MAX, final double VALUE) {
+        return VALUE < MIN ? MIN : (VALUE > MAX ? MAX : VALUE);
+    }
+
     /**
      * Calculate and update values for major and minor tick spacing and nice
      * minimum and maximum values on the axis.
@@ -788,4 +823,17 @@ public class GaugeModel {
     }
     */
 
+
+    // ******************** Internal Classes **********************************
+    public class GaugeModelEvent extends Event {
+
+        // ******************** Constructors **************************************
+        public GaugeModelEvent() {
+            super(new EventType<GaugeModelEvent>());
+        }
+
+        public GaugeModelEvent(final Object source, final EventTarget target) {
+            super(source, target, new EventType<GaugeModelEvent>());
+        }
+    }
 }
