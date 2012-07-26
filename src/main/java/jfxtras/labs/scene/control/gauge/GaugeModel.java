@@ -33,6 +33,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -200,6 +201,10 @@ public class GaugeModel {
 
     public final double getRealValue() {
         return realValue.get();
+    }
+
+    public final ReadOnlyDoubleProperty realValueProperty() {
+        return realValue;
     }
 
     public final boolean isValueAnimationEnabled() {

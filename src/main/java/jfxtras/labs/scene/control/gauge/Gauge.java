@@ -456,6 +456,10 @@ public abstract class Gauge extends Control {
         return gaugeModel.getRealValue();
     }
 
+    public final ReadOnlyDoubleProperty realValueProperty() {
+        return gaugeModel.realValueProperty();
+    }
+
     public final boolean isValueAnimationEnabled() {
         return gaugeModel.isValueAnimationEnabled();
     }

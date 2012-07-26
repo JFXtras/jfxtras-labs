@@ -76,6 +76,7 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.util.Duration;
 import jfxtras.labs.internal.scene.control.behavior.RadialBehavior;
+import jfxtras.labs.scene.control.gauge.Gauge;
 import jfxtras.labs.scene.control.gauge.Gauge.PointerType;
 import jfxtras.labs.scene.control.gauge.Radial;
 import jfxtras.labs.scene.control.gauge.Section;
@@ -501,17 +502,17 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             }
         });
 
-        control.valueProperty().addListener(new ChangeListener<Number>() {
+        control.realValueProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
                 formerValue.set(oldValue.doubleValue());
                 if (rotationAngleTimeline.getStatus() != Animation.Status.STOPPED) {
                     rotationAngleTimeline.stop();
                 }
                 if (control.isValueAnimationEnabled()) {
-                    final KeyValue kv = new KeyValue(gaugeValue, newValue, Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
-                    final KeyFrame kf = new KeyFrame(Duration.millis(control.getAnimationDuration()), kv);
-                    rotationAngleTimeline  = new Timeline();
-                    rotationAngleTimeline.getKeyFrames().add(kf);
+                    final KeyValue KEY_VALUE = new KeyValue(gaugeValue, newValue, Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
+                    final KeyFrame KEY_FRAME = new KeyFrame(Duration.millis(control.getAnimationDuration()), KEY_VALUE);
+                    rotationAngleTimeline    = new Timeline();
+                    rotationAngleTimeline.getKeyFrames().add(KEY_FRAME);
                     rotationAngleTimeline.play();
                 } else {
                     gaugeValue.set(newValue.doubleValue());
@@ -651,6 +652,14 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         } else if ("RADIAL_RANGE".equals(PROPERTY)) {
             noOfLeds = (int) (control.getRadialRange().ANGLE_RANGE / 5.0);
             isDirty = true;
+            if (pointerRotation.angleProperty().isBound()) {
+                pointerRotation.angleProperty().unbind();
+            }
+            if (control.getRadialRange() == Gauge.RadialRange.RADIAL_360) {
+                pointerRotation.angleProperty().bind(gaugeValue.multiply(control.angleStepProperty()).add(control.getRadialRange().ROTATION_OFFSET));
+            } else {
+                pointerRotation.angleProperty().bind((gaugeValue.subtract(control.minValueProperty())).multiply(control.angleStepProperty()).add(control.getRadialRange().ROTATION_OFFSET));
+            }
         } else if ("FRAME_DESIGN".equals(PROPERTY)) {
             drawCircularFrame(control, frame, gaugeBounds);
         } else if ("BACKGROUND_DESIGN".equals(PROPERTY)) {
