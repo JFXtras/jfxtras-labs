@@ -63,6 +63,7 @@ public class GaugeModel {
     private DoubleProperty               realValue;
     private BooleanProperty              valueAnimationEnabled;
     private DoubleProperty               animationDuration;
+    private DoubleProperty               redrawTolerance;
     private DoubleProperty               minValue;
     private DoubleProperty               maxValue;
     private DoubleProperty               range;
@@ -101,6 +102,7 @@ public class GaugeModel {
         realValue                       = new SimpleDoubleProperty(0);
         valueAnimationEnabled           = new SimpleBooleanProperty(true);
         animationDuration               = new SimpleDoubleProperty(800);
+        redrawTolerance                 = new SimpleDoubleProperty(0);
         minValue                        = new SimpleDoubleProperty(0);
         maxValue                        = new SimpleDoubleProperty(100);
         range                           = new SimpleDoubleProperty(100);
@@ -231,6 +233,22 @@ public class GaugeModel {
 
     public final DoubleProperty animationDurationProperty() {
         return animationDuration;
+    }
+
+    public final double getRedrawTolerance() {
+            return redrawTolerance.get();
+        }
+
+    public final void setRedrawTolerance(final double REDRAW_TOLERANCE) {
+        redrawTolerance.set(clamp(0.0, 1.0, REDRAW_TOLERANCE));
+    }
+
+    public final DoubleProperty redrawToleranceProperty() {
+        return redrawTolerance;
+    }
+
+    public final double getRedrawToleranceValue() {
+        return redrawToleranceProperty().multiply(rangeProperty()).doubleValue();
     }
 
     public final double getMinValue() {

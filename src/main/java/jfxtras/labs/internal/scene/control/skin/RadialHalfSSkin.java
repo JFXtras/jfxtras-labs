@@ -412,6 +412,13 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
                 if (pointerRotation.getStatus() != Animation.Status.STOPPED) {
                     pointerRotation.stop();
                 }
+
+                // If the new value is in the range between the old value +- the redraw tolerance return and do nothing
+                if (newValue.doubleValue() > (oldValue.doubleValue() - control.getRedrawToleranceValue()) &&
+                    newValue.doubleValue() < (oldValue.doubleValue() + control.getRedrawToleranceValue())) {
+                    return;
+                }
+
                 if (control.isValueAnimationEnabled()) {
                     pointerRotation.setFromAngle(-(formerValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
                     pointerRotation.setToAngle(-(newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());

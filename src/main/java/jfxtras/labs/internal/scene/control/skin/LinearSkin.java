@@ -392,6 +392,13 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
                 if (toValueAnimation.getStatus() != Animation.Status.STOPPED) {
                     toValueAnimation.stop();
                 }
+
+                // If the new value is in the range between the old value +- the redraw tolerance return and do nothing
+                if (newValue.doubleValue() > (oldValue.doubleValue() - control.getRedrawToleranceValue()) &&
+                    newValue.doubleValue() < (oldValue.doubleValue() + control.getRedrawToleranceValue())) {
+                    return;
+                }
+
                 if (control.isValueAnimationEnabled()) {
                     toValueAnimation.setInterpolator(Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
                     toValueAnimation.play();

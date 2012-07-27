@@ -111,6 +111,8 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 gaugeModel.setValueAnimationEnabled(((BooleanProperty) gaugeProperties.get(key)).get());
             } else if ("animationDuration".equals(key)) {
                 gaugeModel.setAnimationDuration(((DoubleProperty) gaugeProperties.get(key)).get());
+            } else if ("redrawTolerance".equals(key)) {
+                gaugeModel.setRedrawTolerance(((DoubleProperty) gaugeProperties.get(key)).get());
             } else if ("minValue".equals(key)) {
                 gaugeModel.setMinValue(((DoubleProperty) gaugeProperties.get(key)).get());
             } else if ("maxValue".equals(key)) {
@@ -420,6 +422,11 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
 
     public final GaugeBuilder animationDuration(final double ANIMATION_DURATION) {
         gaugeProperties.put("animationDuration", new SimpleDoubleProperty(ANIMATION_DURATION));
+        return this;
+    }
+
+    public final GaugeBuilder redrawTolerance(final double REDRAW_TOLERANCE) {
+        gaugeProperties.put("redrawTolerance", new SimpleDoubleProperty(REDRAW_TOLERANCE));
         return this;
     }
 

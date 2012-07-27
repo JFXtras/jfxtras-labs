@@ -142,6 +142,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         registerChangeListener(CONTROL.tickmarksOffsetProperty(), "TICKMARKS");
         registerChangeListener(CONTROL.areasHighlightingProperty(), "AREAS");
         registerChangeListener(CONTROL.sectionsHighlightingProperty(), "SECTIONS");
+        registerChangeListener(CONTROL.redrawToleranceProperty(), "REDRAW_TOLERANCE");
     }
 
 

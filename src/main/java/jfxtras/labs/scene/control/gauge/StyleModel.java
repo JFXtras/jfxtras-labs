@@ -27,9 +27,20 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.event.EventTarget;
 import javafx.event.EventType;
+import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 import jfxtras.labs.scene.control.gauge.Gauge.BackgroundDesign;
 import jfxtras.labs.scene.control.gauge.Gauge.FrameDesign;
 import jfxtras.labs.scene.control.gauge.Gauge.KnobColor;
@@ -40,17 +51,6 @@ import jfxtras.labs.scene.control.gauge.Gauge.ThresholdColor;
 import jfxtras.labs.scene.control.gauge.Gauge.TicklabelOrientation;
 import jfxtras.labs.scene.control.gauge.Gauge.TickmarkType;
 import jfxtras.labs.scene.control.gauge.Radial.ForegroundType;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.event.EventHandler;
-import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
 import jfxtras.labs.util.Util;
 
 

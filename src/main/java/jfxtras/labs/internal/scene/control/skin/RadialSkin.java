@@ -508,6 +508,18 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 if (rotationAngleTimeline.getStatus() != Animation.Status.STOPPED) {
                     rotationAngleTimeline.stop();
                 }
+
+                // Histogram
+                if (control.isHistogramCreationEnabled()) {
+                    addValueToHistogram(oldValue.doubleValue());
+                }
+
+                // If the new value is in the range between the old value +- the redraw tolerance return and do nothing
+                if (newValue.doubleValue() > (oldValue.doubleValue() - control.getRedrawToleranceValue()) &&
+                    newValue.doubleValue() < (oldValue.doubleValue() + control.getRedrawToleranceValue())) {
+                    return;
+                }
+
                 if (control.isValueAnimationEnabled()) {
                     final KeyValue KEY_VALUE = new KeyValue(gaugeValue, newValue, Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
                     final KeyFrame KEY_FRAME = new KeyFrame(Duration.millis(control.getAnimationDuration()), KEY_VALUE);
@@ -574,12 +586,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                         }
                     }
                 }
-
-                // Histogram
-                if (control.isHistogramCreationEnabled()) {
-                    addValueToHistogram(oldValue.doubleValue());
-                }
-
             }
         });
 

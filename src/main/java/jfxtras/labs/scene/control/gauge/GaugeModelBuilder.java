@@ -73,6 +73,11 @@ public class GaugeModelBuilder {
         return this;
     }
 
+    public final GaugeModelBuilder redrawTolerance(final double REDRAW_TOLERANCE) {
+        properties.put("redrawTolerance", new SimpleDoubleProperty(REDRAW_TOLERANCE));
+        return this;
+    }
+
     public final GaugeModelBuilder minValue(final double MIN_VALUE) {
         properties.put("minValue", new SimpleDoubleProperty(MIN_VALUE));
         return this;
@@ -212,6 +217,8 @@ public class GaugeModelBuilder {
                 MODEL.setValueAnimationEnabled(((BooleanProperty) properties.get(key)).get());
             } else if ("animationDuration".equals(key)) {
                 MODEL.setAnimationDuration(((DoubleProperty) properties.get(key)).get());
+            } else if ("redrawTolerance".equals(key)) {
+                MODEL.setRedrawTolerance(((DoubleProperty) properties.get(key)).get());
             } else if ("minValue".equals(key)) {
                 MODEL.setMinValue(((DoubleProperty) properties.get(key)).get());
             } else if ("maxValue".equals(key)) {

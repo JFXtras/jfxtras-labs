@@ -484,6 +484,22 @@ public abstract class Gauge extends Control {
         return gaugeModel.animationDurationProperty();
     }
 
+    public final double getRedrawTolerance() {
+        return gaugeModel.getRedrawTolerance();
+    }
+
+    public final void setRedrawTolerance(final double REDRAW_TOLERANCE) {
+        gaugeModel.setRedrawTolerance(REDRAW_TOLERANCE);
+    }
+
+    public final DoubleProperty redrawToleranceProperty() {
+        return gaugeModel.redrawToleranceProperty();
+    }
+
+    public final double getRedrawToleranceValue() {
+        return gaugeModel.getRedrawToleranceValue();
+    }
+
     public final double getMinValue() {
         return gaugeModel.getMinValue();
     }
