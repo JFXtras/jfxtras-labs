@@ -1407,12 +1407,6 @@ public abstract class Gauge extends Control {
         return gaugeModel.getMajorTickSpacing();
     }
 
-    /*
-    public final void setMajorTickSpacing(final int MAJOR_TICKSPACING) {
-        gaugeModel.setMajorTickSpacing(MAJOR_TICKSPACING);
-    }
-    */
-
     public final ReadOnlyIntegerProperty majorTickSpacingProperty() {
         return gaugeModel.majorTickSpacingProperty();
     }
@@ -1420,12 +1414,6 @@ public abstract class Gauge extends Control {
     public final int getMinorTickSpacing() {
         return gaugeModel.getMinorTickSpacing();
     }
-
-    /*
-    public final void setMinorTickSpacing(final int MINOR_TICKSPACING) {
-        gaugeModel.setMinorTickSpacing(MINOR_TICKSPACING);
-    }
-    */
 
     public final ReadOnlyIntegerProperty minorTickSpacingProperty() {
         return gaugeModel.minorTickSpacingProperty();

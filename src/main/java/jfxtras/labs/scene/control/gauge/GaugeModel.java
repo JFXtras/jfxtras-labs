@@ -498,13 +498,6 @@ public class GaugeModel {
         return majorTickSpacing.get();
     }
 
-    /*
-    public final void setMajorTickSpacing(final int MAJOR_TICKSPACING) {
-        majorTickSpacing.set(MAJOR_TICKSPACING);
-        fireGaugeModelEvent();
-    }
-    */
-
     public final ReadOnlyIntegerProperty majorTickSpacingProperty() {
         return majorTickSpacing;
     }
@@ -512,13 +505,6 @@ public class GaugeModel {
     public final int getMinorTickSpacing() {
         return minorTickSpacing.get();
     }
-
-    /*
-    public final void setMinorTickSpacing(final int MINOR_TICKSPACING) {
-        minorTickSpacing.set(MINOR_TICKSPACING);
-        fireGaugeModelEvent();
-    }
-    */
 
     public final ReadOnlyIntegerProperty minorTickSpacingProperty() {
         return minorTickSpacing;

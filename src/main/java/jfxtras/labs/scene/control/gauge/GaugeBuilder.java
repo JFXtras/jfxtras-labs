@@ -141,11 +141,7 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 gaugeModel.setMaxNoOfMajorTicks(((IntegerProperty) gaugeProperties.get(key)).get());
             } else if ("maxNoOfMinorTicks".equals(key)) {
                 gaugeModel.setMaxNoOfMinorTicks(((IntegerProperty) gaugeProperties.get(key)).get());
-            } /*else if ("majorTickSpacing".equals(key)) {
-                gaugeModel.setMajorTickSpacing(((IntegerProperty) gaugeProperties.get(key)).get());
-            } else if ("minorTickSpacing".equals(key)) {
-                gaugeModel.setMinorTickSpacing(((IntegerProperty) gaugeProperties.get(key)).get());
-            } */else if ("trend".equals(key)) {
+            } else if ("trend".equals(key)) {
                 gaugeModel.setTrend(((ObjectProperty<Gauge.Trend>) gaugeProperties.get(key)).get());
             } else if ("niceScaling".equals(key)) {
                 gaugeModel.setNiceScaling(((BooleanProperty) gaugeProperties.get(key)).get());
@@ -499,17 +495,7 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
         gaugeProperties.put("maxNoOfMinorTicks", new SimpleIntegerProperty(MAX_NO_OF_MINOR_TICKS));
         return this;
     }
-    /*
-    public final GaugeBuilder majorTickSpacing(final int MAJOR_TICKSPACING) {
-        gaugeProperties.put("majorTickSpacing", new SimpleIntegerProperty(MAJOR_TICKSPACING));
-        return this;
-    }
 
-    public final GaugeBuilder minorTickSpacing(final int MINOR_TICKSPACING) {
-        gaugeProperties.put("minorTickSpacing", new SimpleIntegerProperty(MINOR_TICKSPACING));
-        return this;
-    }
-    */
     public final GaugeBuilder trend(final Gauge.Trend TREND) {
         gaugeProperties.put("trend", new SimpleObjectProperty<Gauge.Trend>(TREND));
         return this;
