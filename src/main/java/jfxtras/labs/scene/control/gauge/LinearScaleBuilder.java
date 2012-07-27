@@ -69,8 +69,8 @@ public class LinearScaleBuilder<B extends LinearScaleBuilder<B>> extends Control
         return this;
     }
 
-    public final LinearScaleBuilder niceScale(final boolean NICE_SCALE) {
-        properties.put("niceScale", new SimpleBooleanProperty(NICE_SCALE));
+    public final LinearScaleBuilder niceScaling(final boolean NICE_SCALING) {
+        properties.put("niceScaling", new SimpleBooleanProperty(NICE_SCALING));
         return this;
     }
 
@@ -106,8 +106,8 @@ public class LinearScaleBuilder<B extends LinearScaleBuilder<B>> extends Control
         }
 
         for (String key : properties.keySet()) {
-            if ("nicScale".equals(key)) {
-                CONTROL.setNiceScale(((BooleanProperty) properties.get(key)).get());
+            if ("niceScaling".equals(key)) {
+                CONTROL.setNiceScaling(((BooleanProperty) properties.get(key)).get());
             } else if ("maxNoOfMajorTicks".equals(key)) {
                 CONTROL.setMaxNoOfMajorTicks(((IntegerProperty) properties.get(key)).get());
             } else if ("maxNoOfMinorTicks".equals(key)) {

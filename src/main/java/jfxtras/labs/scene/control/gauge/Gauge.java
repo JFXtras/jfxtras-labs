@@ -32,7 +32,6 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -511,7 +510,7 @@ public abstract class Gauge extends Control {
         angleStep.set(radialRange.get().ANGLE_RANGE / gaugeModel.getRange());
     }
 
-    public final DoubleProperty minValueProperty() {
+    public final ReadOnlyDoubleProperty minValueProperty() {
         return gaugeModel.minValueProperty();
     }
 
@@ -525,7 +524,7 @@ public abstract class Gauge extends Control {
         angleStep.set(radialRange.get().ANGLE_RANGE / gaugeModel.getRange());
     }
 
-    public final DoubleProperty maxValueProperty() {
+    public final ReadOnlyDoubleProperty maxValueProperty() {
         return gaugeModel.maxValueProperty();
     }
 
@@ -533,7 +532,7 @@ public abstract class Gauge extends Control {
         return gaugeModel.getRange();
     }
 
-    public final DoubleProperty rangeProperty() {
+    public final ReadOnlyDoubleProperty rangeProperty() {
         return gaugeModel.rangeProperty();
     }
 
@@ -1403,19 +1402,19 @@ public abstract class Gauge extends Control {
         return gaugeModel.maxNoOfMinorTicksProperty();
     }
 
-    public final int getMajorTickSpacing() {
+    public final double getMajorTickSpacing() {
         return gaugeModel.getMajorTickSpacing();
     }
 
-    public final ReadOnlyIntegerProperty majorTickSpacingProperty() {
+    public final ReadOnlyDoubleProperty majorTickSpacingProperty() {
         return gaugeModel.majorTickSpacingProperty();
     }
 
-    public final int getMinorTickSpacing() {
+    public final double getMinorTickSpacing() {
         return gaugeModel.getMinorTickSpacing();
     }
 
-    public final ReadOnlyIntegerProperty minorTickSpacingProperty() {
+    public final ReadOnlyDoubleProperty minorTickSpacingProperty() {
         return gaugeModel.minorTickSpacingProperty();
     }
 
