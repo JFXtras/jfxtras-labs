@@ -142,7 +142,7 @@ public class GaugeModelBuilder {
         properties.put("maxNoOfMinorTicks", new SimpleIntegerProperty(MAX_NO_OF_MINOR_TICKS));
         return this;
     }
-
+    /*
     public final GaugeModelBuilder majorTickSpacing(final int MAJOR_TICKSPACING) {
         properties.put("majorTickSpacing", new SimpleIntegerProperty(MAJOR_TICKSPACING));
         return this;
@@ -152,7 +152,7 @@ public class GaugeModelBuilder {
         properties.put("minorTickSpacing", new SimpleIntegerProperty(MINOR_TICKSPACING));
         return this;
     }
-
+    */
     public final GaugeModelBuilder trend(final Trend TREND) {
         properties.put("trend", new SimpleObjectProperty<Trend>(TREND));
         return this;
@@ -245,11 +245,11 @@ public class GaugeModelBuilder {
                 MODEL.setMaxNoOfMajorTicks(((IntegerProperty) properties.get(key)).get());
             } else if ("maxNoOfMinorTicks".equals(key)) {
                 MODEL.setMaxNoOfMinorTicks(((IntegerProperty) properties.get(key)).get());
-            } else if ("majorTickSpacing".equals(key)) {
+            } /*else if ("majorTickSpacing".equals(key)) {
                 MODEL.setMajorTickSpacing(((IntegerProperty) properties.get(key)).get());
             } else if ("minorTickSpacing".equals(key)) {
                 MODEL.setMinorTickSpacing(((IntegerProperty) properties.get(key)).get());
-            } else if ("trend".equals(key)) {
+            } */else if ("trend".equals(key)) {
                 MODEL.setTrend(((ObjectProperty<Trend>) properties.get(key)).get());
             } else if ("niceScaling".equals(key)) {
                 MODEL.setNiceScaling(((BooleanProperty) properties.get(key)).get());

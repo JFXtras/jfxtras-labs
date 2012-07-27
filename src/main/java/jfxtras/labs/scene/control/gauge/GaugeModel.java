@@ -34,6 +34,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -497,12 +498,14 @@ public class GaugeModel {
         return majorTickSpacing.get();
     }
 
+    /*
     public final void setMajorTickSpacing(final int MAJOR_TICKSPACING) {
         majorTickSpacing.set(MAJOR_TICKSPACING);
         fireGaugeModelEvent();
     }
+    */
 
-    public final IntegerProperty majorTickSpacingProperty() {
+    public final ReadOnlyIntegerProperty majorTickSpacingProperty() {
         return majorTickSpacing;
     }
 
@@ -510,12 +513,14 @@ public class GaugeModel {
         return minorTickSpacing.get();
     }
 
+    /*
     public final void setMinorTickSpacing(final int MINOR_TICKSPACING) {
         minorTickSpacing.set(MINOR_TICKSPACING);
         fireGaugeModelEvent();
     }
+    */
 
-    public final IntegerProperty minorTickSpacingProperty() {
+    public final ReadOnlyIntegerProperty minorTickSpacingProperty() {
         return minorTickSpacing;
     }
 
