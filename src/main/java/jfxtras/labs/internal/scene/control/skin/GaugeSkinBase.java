@@ -1224,9 +1224,9 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         MAJOR_TICK_MARKS_PATH.setStrokeLineCap(StrokeLineCap.ROUND);
         MAJOR_TICK_MARKS_PATH.setStrokeLineJoin(StrokeLineJoin.BEVEL);
         if (WIDTH < 200) {
-            MAJOR_TICK_MARKS_PATH.setStrokeWidth(0.95);
+            MAJOR_TICK_MARKS_PATH.setStrokeWidth(1.0);
         } else {
-            MAJOR_TICK_MARKS_PATH.setStrokeWidth(0.0046728972 * WIDTH);
+            MAJOR_TICK_MARKS_PATH.setStrokeWidth(0.005 * WIDTH);
         }
         if (CONTROL.isMajorTickmarkColorEnabled()) {
             switch(CONTROL.getMajorTickmarkType()) {
@@ -1257,9 +1257,9 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         MEDIUM_TICK_MARKS_PATH.setStrokeLineCap(StrokeLineCap.ROUND);
         MEDIUM_TICK_MARKS_PATH.setStrokeLineJoin(StrokeLineJoin.BEVEL);
         if (WIDTH < 200) {
-            MEDIUM_TICK_MARKS_PATH.setStrokeWidth(0.45);
+            MEDIUM_TICK_MARKS_PATH.setStrokeWidth(0.5);
         } else {
-            MEDIUM_TICK_MARKS_PATH.setStrokeWidth(0.0023364486 * WIDTH);
+            MEDIUM_TICK_MARKS_PATH.setStrokeWidth(0.0025 * WIDTH);
         }
         MEDIUM_TICK_MARKS_PATH.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
 
@@ -1270,9 +1270,9 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         MINOR_TICK_MARKS_PATH.setStrokeLineCap(StrokeLineCap.ROUND);
         MINOR_TICK_MARKS_PATH.setStrokeLineJoin(StrokeLineJoin.BEVEL);
         if (WIDTH < 200) {
-            MINOR_TICK_MARKS_PATH.setStrokeWidth(0.2);
+            MINOR_TICK_MARKS_PATH.setStrokeWidth(0.30);
         } else {
-            MINOR_TICK_MARKS_PATH.setStrokeWidth(0.0014018692 * WIDTH);
+            MINOR_TICK_MARKS_PATH.setStrokeWidth(0.0015 * WIDTH);
         }
         if (CONTROL.isMinorTickmarkColorEnabled()) {
             MINOR_TICK_MARKS_PATH.setFill(null);
@@ -1311,7 +1311,12 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         }
 
         // Definitions
-        final Font STD_FONT                  = Font.font("Verdana", FontWeight.NORMAL, (0.035 * WIDTH));
+        final Font STD_FONT;
+        if (WIDTH < 250) {
+            STD_FONT = Font.font("Verdana", FontWeight.NORMAL, 8);
+        } else {
+            STD_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.035 * WIDTH));
+        }
         final double TEXT_DISTANCE           = (TEXT_DISTANCE_FACTOR + TEXT_BAR_GRAPH_OFFSET) * WIDTH;
         final double ticklabelRotationOffset = 0;
         final double MINOR_TICK_LENGTH       = (0.0133333333 * WIDTH);
