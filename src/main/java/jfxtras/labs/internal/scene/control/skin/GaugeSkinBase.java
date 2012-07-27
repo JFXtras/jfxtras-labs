@@ -1223,7 +1223,11 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         MAJOR_TICK_MARKS_PATH.setStrokeType(StrokeType.CENTERED);
         MAJOR_TICK_MARKS_PATH.setStrokeLineCap(StrokeLineCap.ROUND);
         MAJOR_TICK_MARKS_PATH.setStrokeLineJoin(StrokeLineJoin.BEVEL);
-        MAJOR_TICK_MARKS_PATH.setStrokeWidth(0.0046728972 * WIDTH);
+        if (WIDTH < 200) {
+            MAJOR_TICK_MARKS_PATH.setStrokeWidth(0.95);
+        } else {
+            MAJOR_TICK_MARKS_PATH.setStrokeWidth(0.0046728972 * WIDTH);
+        }
         if (CONTROL.isMajorTickmarkColorEnabled()) {
             switch(CONTROL.getMajorTickmarkType()) {
                 case TRIANGLE:
@@ -1252,7 +1256,11 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         MEDIUM_TICK_MARKS_PATH.setStrokeType(StrokeType.CENTERED);
         MEDIUM_TICK_MARKS_PATH.setStrokeLineCap(StrokeLineCap.ROUND);
         MEDIUM_TICK_MARKS_PATH.setStrokeLineJoin(StrokeLineJoin.BEVEL);
-        MEDIUM_TICK_MARKS_PATH.setStrokeWidth(0.0023364486 * WIDTH);
+        if (WIDTH < 200) {
+            MEDIUM_TICK_MARKS_PATH.setStrokeWidth(0.45);
+        } else {
+            MEDIUM_TICK_MARKS_PATH.setStrokeWidth(0.0023364486 * WIDTH);
+        }
         MEDIUM_TICK_MARKS_PATH.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
 
         final Path MINOR_TICK_MARKS_PATH = new Path();
@@ -1261,7 +1269,11 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         MINOR_TICK_MARKS_PATH.setStrokeType(StrokeType.CENTERED);
         MINOR_TICK_MARKS_PATH.setStrokeLineCap(StrokeLineCap.ROUND);
         MINOR_TICK_MARKS_PATH.setStrokeLineJoin(StrokeLineJoin.BEVEL);
-        MINOR_TICK_MARKS_PATH.setStrokeWidth(0.0014018692 * WIDTH);
+        if (WIDTH < 200) {
+            MINOR_TICK_MARKS_PATH.setStrokeWidth(0.2);
+        } else {
+            MINOR_TICK_MARKS_PATH.setStrokeWidth(0.0014018692 * WIDTH);
+        }
         if (CONTROL.isMinorTickmarkColorEnabled()) {
             MINOR_TICK_MARKS_PATH.setFill(null);
             MINOR_TICK_MARKS_PATH.setStroke(CONTROL.getMinorTickmarkColor());
