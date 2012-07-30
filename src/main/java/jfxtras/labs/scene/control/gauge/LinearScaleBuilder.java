@@ -106,27 +106,12 @@ public class LinearScaleBuilder<B extends LinearScaleBuilder<B>> extends Control
 
     public LinearScale build() {
         final LinearScale CONTROL = new LinearScale();
-        if (properties.keySet().contains("maxValue") && properties.keySet().contains("minValue")) {
-            double minValue = ((DoubleProperty) properties.get("minValue")).doubleValue();
-            double maxValue = ((DoubleProperty) properties.get("maxValue")).doubleValue();
-            if (minValue > CONTROL.getMaxValue() && minValue < maxValue) {
-                CONTROL.setMaxValue(maxValue);
-                CONTROL.setMinValue(minValue);
-            } else if (maxValue < CONTROL.getMinValue() && maxValue > minValue){
-                CONTROL.setMinValue(minValue);
-                CONTROL.setMaxValue(maxValue);
-            } else {
-                CONTROL.setMinValue(minValue);
-                CONTROL.setMaxValue(maxValue);
-            }
-        } else if (properties.keySet().contains("minValue")) {
-            CONTROL.setMinValue(((DoubleProperty) properties.get("minValue")).get());
-        } else if (properties.keySet().contains("maxValue")) {
-            CONTROL.setMaxValue(((DoubleProperty) properties.get("maxValue")).get());
-        }
-
         for (String key : properties.keySet()) {
-            if ("niceScaling".equals(key)) {
+            if ("minValue".equals(key)) {
+                CONTROL.setMinValue(((DoubleProperty) properties.get(key)).get());
+            } else if ("maxValue".equals(key)) {
+                CONTROL.setMaxValue(((DoubleProperty) properties.get(key)).get());
+            } else if ("niceScaling".equals(key)) {
                 CONTROL.setNiceScaling(((BooleanProperty) properties.get(key)).get());
             } else if ("maxNoOfMajorTicks".equals(key)) {
                 CONTROL.setMaxNoOfMajorTicks(((IntegerProperty) properties.get(key)).get());

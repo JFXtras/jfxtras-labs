@@ -236,11 +236,16 @@ public class GaugeModel {
 
     public final void setMinValue(final double MIN_VALUE) {
         scale.get().setMinValue(MIN_VALUE);
+        scale.get().setUncorrectedMinValue(MIN_VALUE);
         fireGaugeModelEvent();
     }
 
     public final ReadOnlyDoubleProperty minValueProperty() {
         return scale.get().minValueProperty();
+    }
+
+    public final double getUncorrectedMinValue() {
+        return scale.get().getUncorrectedMinValue();
     }
 
     public final double getMaxValue() {
@@ -249,11 +254,16 @@ public class GaugeModel {
 
     public final void setMaxValue(final double MAX_VALUE) {
         scale.get().setMaxValue(MAX_VALUE);
+        scale.get().setUncorrectedMaxValue(MAX_VALUE);
         fireGaugeModelEvent();
     }
 
     public final ReadOnlyDoubleProperty maxValueProperty() {
         return scale.get().maxValueProperty();
+    }
+
+    public final double getUncorrectedMaxValue() {
+        return scale.get().getUncorrectedMaxValue();
     }
 
     public final double getRange() {
@@ -262,30 +272,6 @@ public class GaugeModel {
 
     public final ReadOnlyDoubleProperty rangeProperty() {
         return scale.get().rangeProperty();
-    }
-
-    public final double getNiceMinValue() {
-        return scale.get().getNiceMinValue();
-    }
-
-    public final ReadOnlyDoubleProperty niceMinValueProperty() {
-        return scale.get().niceMinValueProperty();
-    }
-
-    public final double getNiceMaxValue() {
-        return scale.get().getNiceMaxValue();
-    }
-
-    public final ReadOnlyDoubleProperty niceMaxValueProperty() {
-        return scale.get().niceMaxValueProperty();
-    }
-
-    public final double getNiceRange() {
-        return scale.get().getNiceRange();
-    }
-
-    public final ReadOnlyDoubleProperty niceRangeProperty() {
-        return scale.get().niceRangeProperty();
     }
 
     public final double getMinMeasuredValue() {
@@ -558,6 +544,10 @@ public class GaugeModel {
         return scale.get().tightScaleProperty();
     }
 
+    public final double getTightScaleOffset() {
+        return scale.get().getTightScaleOffset();
+    }
+
     public final boolean isLargeNumberScale() {
         return scale.get().isLargeNumberScale();
     }
@@ -752,8 +742,15 @@ public class GaugeModel {
      * Calculate and update values for major and minor tick spacing and nice
      * minimum and maximum values on the axis.
      */
-    protected void calcRange(final double ANGLE_RANGE) {
-        scale.get().calculate();
+    protected void calcRange() {
+        if (getMinValue() < getMaxValue()) {
+            if (scale.get().isTightScale()) {
+                //scale.get().calculateTight();
+                scale.get().calculateLoose();
+            } else {
+                scale.get().calculateLoose();
+            }
+        }
     }
 
 

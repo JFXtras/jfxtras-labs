@@ -41,6 +41,8 @@ public class Scale {
     private DoubleProperty minValue;
     private DoubleProperty maxValue;
     private DoubleProperty range;
+    private DoubleProperty uncorrectedMinValue;
+    private DoubleProperty uncorrectedMaxValue;
 
 
     // ******************** Constructors **************************************
@@ -49,10 +51,12 @@ public class Scale {
     }
 
     public Scale(final double MIN_VALUE, final double MAX_VALUE) {
-        minValue = new SimpleDoubleProperty(MIN_VALUE);
-        maxValue = new SimpleDoubleProperty(MAX_VALUE);
-        range    = new SimpleDoubleProperty();
-        range.bind(maxValueProperty().subtract(minValueProperty()));
+        minValue            = new SimpleDoubleProperty(MIN_VALUE);
+        maxValue            = new SimpleDoubleProperty(MAX_VALUE);
+        range               = new SimpleDoubleProperty();
+        range.bind(maxValue.subtract(minValue));
+        uncorrectedMinValue = new SimpleDoubleProperty(MIN_VALUE);
+        uncorrectedMaxValue = new SimpleDoubleProperty(MAX_VALUE);
     }
 
 
@@ -62,9 +66,6 @@ public class Scale {
     }
 
     public final void setMinValue(final double MIN_VALUE) {
-        if (Double.compare(MIN_VALUE, getMaxValue()) >= 0) {
-            throw new IllegalArgumentException("minValue must be smaller than maxValue");
-        }
         minValue.set(MIN_VALUE);
     }
 
@@ -77,9 +78,6 @@ public class Scale {
     }
 
     public final void setMaxValue(final double MAX_VALUE) {
-        if (Double.compare(MAX_VALUE,getMinValue()) <= 0) {
-            throw new IllegalArgumentException("maxValue must be bigger than minValue");
-        }
         maxValue.set(MAX_VALUE);
     }
 
@@ -95,7 +93,29 @@ public class Scale {
         return range;
     }
 
-    protected double clamp(final double MIN_VALUE, final double MAX_VALUE, final double VALUE) {
-        return VALUE < MIN_VALUE ? MIN_VALUE : (VALUE > MAX_VALUE ? MAX_VALUE : VALUE);
+    public final double getUncorrectedMinValue() {
+        return uncorrectedMinValue.get();
+    }
+
+    public final void setUncorrectedMinValue(final double UNCORRECTED_MIN_VALUE) {
+        minValue.set(UNCORRECTED_MIN_VALUE);
+        uncorrectedMinValue.set(UNCORRECTED_MIN_VALUE);
+    }
+
+    public final ReadOnlyDoubleProperty uncorrectedMinValueProperty() {
+        return uncorrectedMinValue;
+    }
+
+    public final double getUncorrectedMaxValue() {
+        return uncorrectedMaxValue.get();
+    }
+
+    public final void setUncorrectedMaxValue(final double UNCORRECTED_MAX_VALUE) {
+        maxValue.set(UNCORRECTED_MAX_VALUE);
+        uncorrectedMaxValue.set(UNCORRECTED_MAX_VALUE);
+    }
+
+    public final ReadOnlyDoubleProperty uncorrectedMaxValueProperty() {
+        return uncorrectedMaxValue;
     }
 }

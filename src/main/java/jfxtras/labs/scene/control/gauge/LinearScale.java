@@ -33,8 +33,6 @@ import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 
 
 /**
@@ -44,19 +42,17 @@ import javafx.beans.value.ObservableValue;
  * Time: 16:15
  */
 public class LinearScale extends Scale {
-    private BooleanProperty        tightScale;
-    private BooleanProperty        niceScaling;
-    private DoubleProperty         niceMinValue;
-    private DoubleProperty         niceMaxValue;
-    private DoubleProperty         majorTickSpacing;
-    private DoubleProperty         minorTickSpacing;
-    private IntegerProperty        maxNoOfMajorTicks;
-    private IntegerProperty        maxNoOfMinorTicks;
-    private DoubleProperty         niceRange;
-    private BooleanProperty        largeNumberScale;
-    private ChangeListener<Number> listener;
-    // calculation related
-    //private double                 exponent;
+    private BooleanProperty tightScale;
+    private BooleanProperty niceScaling;
+    private DoubleProperty  niceMinValue;
+    private DoubleProperty  niceMaxValue;
+    private DoubleProperty  majorTickSpacing;
+    private DoubleProperty  minorTickSpacing;
+    private IntegerProperty maxNoOfMajorTicks;
+    private IntegerProperty maxNoOfMinorTicks;
+    private DoubleProperty  niceRange;
+    private BooleanProperty largeNumberScale;
+    private double          tightScaleOffset;
 
 
     // ******************** Constructors **************************************
@@ -83,18 +79,7 @@ public class LinearScale extends Scale {
         maxNoOfMinorTicks = new SimpleIntegerProperty(10);
         majorTickSpacing  = new SimpleDoubleProperty(10);
         minorTickSpacing  = new SimpleDoubleProperty(1);
-        listener = new ChangeListener<Number>() {
-            @Override public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                if (niceScaling.get()) {
-                    calculate();
-                }
-            }
-        };
-        super.minValueProperty().addListener(listener);
-        super.maxValueProperty().addListener(listener);
-
-        // calculation related
-        //exponent = Math.floor(Math.log10(100));
+        tightScaleOffset  = 0;
     }
 
 
@@ -207,27 +192,49 @@ public class LinearScale extends Scale {
         return minorTickSpacing;
     }
 
+    public final double getTightScaleOffset() {
+        return tightScaleOffset;
+    }
+
     /**
      * Calculate and update values for major and minor tick spacing and niceScaling
      * minimum and maximum values on the axis.
      */
-    protected void calculate() {
+    protected void calculateLoose() {
         if (isNiceScaling()) {
             niceRange.set(calcNiceNumber(getRange(), false));
-            majorTickSpacing.set((int) (calcNiceNumber(niceRange.get() / (getMaxNoOfMajorTicks() - 1), true)));
-            //niceMinValue.set(Math.floor(getMinValue() / Math.pow(10, exponent)) * Math.pow(10, exponent));
-            //niceMaxValue.set(getNiceMinValue() + getNiceRange());
+            majorTickSpacing.set((int) (calcNiceNumber(niceRange.doubleValue() / (maxNoOfMajorTicks.doubleValue() - 1), true)));
             niceMinValue.set(Math.floor(getMinValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
-            niceMaxValue.set(Math.ceil(getMaxValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
-            minorTickSpacing.set((int) calcNiceNumber(getMajorTickSpacing() / ((double) getMaxNoOfMajorTicks() - 1), true));
+            niceMaxValue.set(Math.ceil(getUncorrectedMaxValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
+            minorTickSpacing.set((int) calcNiceNumber(majorTickSpacing.doubleValue() / (maxNoOfMinorTicks.intValue() - 1), true));
+            niceRange.set(niceMaxValue.doubleValue() - niceMinValue.doubleValue());
             setMinValue(niceMinValue.get());
             setMaxValue(niceMaxValue.get());
         } else {
-            niceRange.set(getMaxValue() - getMinValue());
+            niceRange.set(getRange());
             niceMinValue.set(getMinValue());
             niceMaxValue.set(getMaxValue());
         }
     }
+
+    protected void calculateTight() {
+        if (isNiceScaling()) {
+            niceRange.set(calcNiceNumber(getRange(), false));
+            majorTickSpacing.set((int) (calcNiceNumber(niceRange.doubleValue() / (maxNoOfMajorTicks.doubleValue() - 1), true)));
+            niceMinValue.set(Math.floor(getMinValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
+            niceMaxValue.set(Math.ceil(getUncorrectedMaxValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
+            minorTickSpacing.set((int) calcNiceNumber(majorTickSpacing.doubleValue() / (maxNoOfMinorTicks.intValue() - 1), true));
+            tightScaleOffset = uncorrectedMinValueProperty().doubleValue() - niceMinValue.doubleValue();
+            niceRange.set(getRange());
+            setMinValue(getMinValue());
+            setMaxValue(getMaxValue());
+        } else {
+            niceRange.set(getRange());
+            niceMinValue.set(getMinValue());
+            niceMaxValue.set(getMaxValue());
+        }
+    }
+
 
     /**
      * Returns a "niceScaling" number approximately equal to the range.
@@ -239,7 +246,6 @@ public class LinearScale extends Scale {
      * @return a "niceScaling" number to be used for the value range
      */
     private double calcNiceNumber(final double RANGE, final boolean ROUND) {
-        //exponent = getMinValue() > 0 ? Math.floor(Math.log10(getMinValue())) : Math.ceil(Math.log10(Math.abs(getMinValue())));
         final double EXPONENT = Math.floor(Math.log10(RANGE));   // exponent of range
         final double FRACTION = RANGE / Math.pow(10, EXPONENT);  // fractional part of range
         final double MOD      = FRACTION % 0.5;

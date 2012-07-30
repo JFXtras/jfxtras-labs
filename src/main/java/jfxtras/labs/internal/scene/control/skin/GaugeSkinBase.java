@@ -1329,31 +1329,33 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         Point2D innerPoint;
         Point2D outerPoint;
 
-        final double ROTATION_OFFSET = CONTROL.getRadialRange().ROTATION_OFFSET; // Depends on RadialRange
-        final double RADIUS          = WIDTH * RADIUS_FACTOR;
-        final double ANGLE_STEP      = (CONTROL.getRadialRange().ANGLE_RANGE / ((CONTROL.getMaxValue() - CONTROL.getMinValue()) / CONTROL.getMinorTickSpacing())) * CONTROL.getRadialRange().ANGLE_STEP_SIGN;
-        double valueCounter          = CONTROL.getMinValue();
-        int majorTickCounter         = CONTROL.getMaxNoOfMinorTicks() - 1; // Indicator when to draw the major tickmark
-        double sinValue;
-        double cosValue;
-
         // Set some default parameters for the graphics object
         if (CONTROL.getTickmarksOffset() != null) {
             TICKMARKS.translateXProperty().set(CONTROL.getTickmarksOffset().getX());
             TICKMARKS.translateYProperty().set(CONTROL.getTickmarksOffset().getY());
         }
 
+        final double ROTATION_OFFSET = CONTROL.getRadialRange().ROTATION_OFFSET; // Depends on RadialRange
+        final double RADIUS          = WIDTH * RADIUS_FACTOR;
+        final double ANGLE_STEP      = (CONTROL.getRadialRange().ANGLE_RANGE / ((CONTROL.getMaxValue() - CONTROL.getMinValue()) / CONTROL.getMinorTickSpacing())) * CONTROL.getRadialRange().ANGLE_STEP_SIGN;
+        double valueCounter          = CONTROL.getMinValue();
+        //int majorTickCounter         = CONTROL.isTightScale() ? CONTROL.getMaxNoOfMinorTicks() - ((int) Math.ceil(CONTROL.getMinorTickSpacing() / CONTROL.getGaugeModel().getTightScaleOffset()) + 1) : CONTROL.getMaxNoOfMinorTicks() - 1; // Indicator when to draw the major tickmark
+        int majorTickCounter         = CONTROL.getMaxNoOfMinorTicks() - 1;
+        double sinValue;
+        double cosValue;
+
         final Transform transform = Transform.rotate(ROTATION_OFFSET - 180, CENTER.getX(), CENTER.getY());
         TICKMARKS.getTransforms().add(transform);
 
-        // Create the scale path in a loop
-        final double LOWER_BOUND = (!CONTROL.isNiceScaling() | CONTROL.isTightScale()) ? CONTROL.getMinValue() : CONTROL.getNiceMinValue();
-        final double UPPER_BOUND = (!CONTROL.isNiceScaling() | CONTROL.isTightScale()) ? CONTROL.getMaxValue() : CONTROL.getNiceMaxValue();
+        // ******************** Create the scale path in a loop ***************
+        // recalculate the scaling
+        final double LOWER_BOUND = CONTROL.getMinValue();
+        final double UPPER_BOUND = CONTROL.getMaxValue();
         final double STEP_SIZE   = CONTROL.getMinorTickSpacing();
 
-        for (double alpha = 0, counter = LOWER_BOUND ; Double.compare(counter, UPPER_BOUND) <= 0 ; alpha -= ANGLE_STEP, counter += STEP_SIZE) {
-            sinValue = Math.sin(Math.toRadians(alpha));
-            cosValue = Math.cos(Math.toRadians(alpha));
+        for (double angle = 0, counter = LOWER_BOUND ; Double.compare(counter, UPPER_BOUND) <= 0 ; angle -= ANGLE_STEP, counter += STEP_SIZE) {
+            sinValue = Math.sin(Math.toRadians(angle));
+            cosValue = Math.cos(Math.toRadians(angle));
 
             majorTickCounter++;
 
@@ -1367,8 +1369,8 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                 if (CONTROL.isTickmarksVisible() && CONTROL.isMajorTicksVisible()) {
                     switch(CONTROL.getMajorTickmarkType()) {
                         case TRIANGLE:
-                            Point2D outerPointLeft  = new Point2D(CENTER.getX() + RADIUS * Math.sin(Math.toRadians(alpha - 1.2)), CENTER.getY() + RADIUS * Math.cos(Math.toRadians(alpha - 1.2)));
-                            Point2D outerPointRight = new Point2D(CENTER.getX() + RADIUS * Math.sin(Math.toRadians(alpha + 1.2)), CENTER.getY() + RADIUS * Math.cos(Math.toRadians(alpha + 1.2)));
+                            Point2D outerPointLeft  = new Point2D(CENTER.getX() + RADIUS * Math.sin(Math.toRadians(angle - 1.2)), CENTER.getY() + RADIUS * Math.cos(Math.toRadians(angle - 1.2)));
+                            Point2D outerPointRight = new Point2D(CENTER.getX() + RADIUS * Math.sin(Math.toRadians(angle + 1.2)), CENTER.getY() + RADIUS * Math.cos(Math.toRadians(angle + 1.2)));
                             MAJOR_TICK_MARKS_PATH.getElements().add(new MoveTo(innerPoint.getX(), innerPoint.getY()));
                             MAJOR_TICK_MARKS_PATH.getElements().add(new LineTo(outerPointLeft.getX(), outerPointLeft.getY()));
                             MAJOR_TICK_MARKS_PATH.getElements().add(new LineTo(outerPointRight.getX(), outerPointRight.getY()));
@@ -1393,10 +1395,10 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                     tickLabel.setY(textPoint.getY() + tickLabel.getLayoutBounds().getHeight() / 2.0);
                     switch (CONTROL.getTickLabelOrientation()) {
                         case NORMAL:
-                            if (Double.compare(alpha, -CONTROL.getRadialRange().TICKLABEL_ORIENATION_CHANGE_ANGLE) > 0) {
-                                tickLabel.rotateProperty().set(-90 - alpha);
+                            if (Double.compare(angle, -CONTROL.getRadialRange().TICKLABEL_ORIENATION_CHANGE_ANGLE) > 0) {
+                                tickLabel.rotateProperty().set(-90 - angle);
                             } else {
-                                tickLabel.rotateProperty().set(90 - alpha);
+                                tickLabel.rotateProperty().set(90 - angle);
                             }
                             break;
                         case HORIZONTAL:
@@ -1405,7 +1407,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                         case TANGENT:
 
                         default:
-                            tickLabel.rotateProperty().set(180 - alpha + ticklabelRotationOffset);
+                            tickLabel.rotateProperty().set(180 - angle + ticklabelRotationOffset);
                             break;
                     }
                     if (CONTROL.getRadialRange() == Gauge.RadialRange.RADIAL_360) {

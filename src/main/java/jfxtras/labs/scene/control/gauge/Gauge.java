@@ -403,7 +403,7 @@ public abstract class Gauge extends Control {
 
     public void setRadialRange(final RadialRange RADIAL_RANGE) {
         radialRange.set(RADIAL_RANGE);
-        gaugeModel.calcRange(radialRange.get().ANGLE_RANGE);
+        gaugeModel.calcRange();
         angleStep.set(radialRange.get().ANGLE_RANGE / gaugeModel.getRange());
         if (RADIAL_RANGE == RadialRange.RADIAL_360) {
             setKnobsVisible(false);
@@ -422,7 +422,9 @@ public abstract class Gauge extends Control {
     }
 
     public final void recalcRange() {
-        gaugeModel.calcRange(radialRange.get().ANGLE_RANGE);
+        if (getMinValue() < getMaxValue()) {
+            gaugeModel.calcRange();
+        }
         angleStep.set(radialRange.get().ANGLE_RANGE / gaugeModel.getRange());
     }
 
@@ -506,12 +508,16 @@ public abstract class Gauge extends Control {
 
     public final void setMinValue(final double MIN_VALUE) {
         gaugeModel.setMinValue(MIN_VALUE);
-        gaugeModel.calcRange(radialRange.get().ANGLE_RANGE);
+        gaugeModel.calcRange();
         angleStep.set(radialRange.get().ANGLE_RANGE / gaugeModel.getRange());
     }
 
     public final ReadOnlyDoubleProperty minValueProperty() {
         return gaugeModel.minValueProperty();
+    }
+
+    public final double getUncorrectedMinValue() {
+        return gaugeModel.getUncorrectedMinValue();
     }
 
     public final double getMaxValue() {
@@ -520,12 +526,16 @@ public abstract class Gauge extends Control {
 
     public final void setMaxValue(final double MAX_VALUE) {
         gaugeModel.setMaxValue(MAX_VALUE);
-        gaugeModel.calcRange(radialRange.get().ANGLE_RANGE);
+        gaugeModel.calcRange();
         angleStep.set(radialRange.get().ANGLE_RANGE / gaugeModel.getRange());
     }
 
     public final ReadOnlyDoubleProperty maxValueProperty() {
         return gaugeModel.maxValueProperty();
+    }
+
+    public final double getUncorrectedMaxValue() {
+        return gaugeModel.getUncorrectedMaxValue();
     }
 
     public final double getRange() {
@@ -534,30 +544,6 @@ public abstract class Gauge extends Control {
 
     public final ReadOnlyDoubleProperty rangeProperty() {
         return gaugeModel.rangeProperty();
-    }
-
-    public final double getNiceMinValue() {
-        return gaugeModel.getNiceMinValue();
-    }
-
-    public final ReadOnlyDoubleProperty niceMinValueProperty() {
-        return gaugeModel.niceMinValueProperty();
-    }
-
-    public final double getNiceMaxValue() {
-        return gaugeModel.getNiceMaxValue();
-    }
-
-    public final ReadOnlyDoubleProperty niceMaxValueProperty() {
-        return gaugeModel.niceMaxValueProperty();
-    }
-
-    public final double getNiceRange() {
-        return gaugeModel.getNiceRange();
-    }
-
-    public final ReadOnlyDoubleProperty niceRangeProperty() {
-        return gaugeModel.niceRangeProperty();
     }
 
     public final double getMinMeasuredValue() {
