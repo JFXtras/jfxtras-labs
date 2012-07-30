@@ -141,10 +141,18 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 gaugeModel.setMaxNoOfMajorTicks(((IntegerProperty) gaugeProperties.get(key)).get());
             } else if ("maxNoOfMinorTicks".equals(key)) {
                 gaugeModel.setMaxNoOfMinorTicks(((IntegerProperty) gaugeProperties.get(key)).get());
+            } else if ("majorTickSpacing".equals(key)) {
+                gaugeModel.setMajorTickSpacing(((DoubleProperty) gaugeProperties.get(key)).get());
+            } else if ("minorTickSpacing".equals(key)) {
+                gaugeModel.setMinorTickSpacing(((DoubleProperty) gaugeProperties.get(key)).get());
             } else if ("trend".equals(key)) {
                 gaugeModel.setTrend(((ObjectProperty<Gauge.Trend>) gaugeProperties.get(key)).get());
             } else if ("niceScaling".equals(key)) {
                 gaugeModel.setNiceScaling(((BooleanProperty) gaugeProperties.get(key)).get());
+            } else if ("tightScale".equals(key)) {
+                gaugeModel.setTightScale(((BooleanProperty) gaugeProperties.get(key)).get());
+            } else if ("largeNumberScale".equals(key)) {
+                gaugeModel.setLargeNumberScale(((BooleanProperty) gaugeProperties.get(key)).get());
             } else if ("sectionsArray".equals(key)) {
                 gaugeModel.setSections(((ObjectProperty<Section[]>) gaugeProperties.get(key)).get());
             } else if ("sectionsList".equals(key)) {
@@ -496,6 +504,16 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
         return this;
     }
 
+    public final GaugeBuilder majorTickSpacing(final double MAJOR_TICK_SPACING) {
+        gaugeProperties.put("majorTickSpacing", new SimpleDoubleProperty(MAJOR_TICK_SPACING));
+        return this;
+    }
+
+    public final GaugeBuilder minorTickSpacing(final double MINOR_TICK_SPACING) {
+        gaugeProperties.put("minorTickSpacing", new SimpleDoubleProperty(MINOR_TICK_SPACING));
+        return this;
+    }
+
     public final GaugeBuilder trend(final Gauge.Trend TREND) {
         gaugeProperties.put("trend", new SimpleObjectProperty<Gauge.Trend>(TREND));
         return this;
@@ -503,6 +521,16 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
 
     public final GaugeBuilder niceScaling(final boolean NICE_SCALING) {
         gaugeProperties.put("niceScaling", new SimpleBooleanProperty(NICE_SCALING));
+        return this;
+    }
+
+    public final GaugeBuilder tightScale(final boolean TIGHT_SCALE) {
+        gaugeProperties.put("tightScale", new SimpleBooleanProperty(TIGHT_SCALE));
+        return this;
+    }
+
+    public final GaugeBuilder largeNumberScale(final boolean LARGE_NUMBER_SCALE) {
+        gaugeProperties.put("largeNumberScale", new SimpleBooleanProperty(LARGE_NUMBER_SCALE));
         return this;
     }
 

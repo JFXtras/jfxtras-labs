@@ -56,7 +56,7 @@ public class LinearScale extends Scale {
     private BooleanProperty        largeNumberScale;
     private ChangeListener<Number> listener;
     // calculation related
-    private double                 exponent;
+    //private double                 exponent;
 
 
     // ******************** Constructors **************************************
@@ -94,7 +94,7 @@ public class LinearScale extends Scale {
         super.maxValueProperty().addListener(listener);
 
         // calculation related
-        exponent = Math.floor(Math.log10(100));
+        //exponent = Math.floor(Math.log10(100));
     }
 
 
@@ -187,7 +187,11 @@ public class LinearScale extends Scale {
         return majorTickSpacing.get();
     }
 
-    public final ReadOnlyDoubleProperty majorTickSpacingProperty() {
+    public final void setMajorTickSpacing(final double MAJOR_TICKSPACING) {
+        majorTickSpacing.set(MAJOR_TICKSPACING);
+    }
+
+    public final DoubleProperty majorTickSpacingProperty() {
         return majorTickSpacing;
     }
 
@@ -195,7 +199,11 @@ public class LinearScale extends Scale {
         return minorTickSpacing.get();
     }
 
-    public final ReadOnlyDoubleProperty minorTickSpacingProperty() {
+    public final void setMinorTickSpacing(final double MINOR_TICK_SPACING) {
+        minorTickSpacing.set(MINOR_TICK_SPACING);
+    }
+
+    public final DoubleProperty minorTickSpacingProperty() {
         return minorTickSpacing;
     }
 
@@ -207,10 +215,10 @@ public class LinearScale extends Scale {
         if (isNiceScaling()) {
             niceRange.set(calcNiceNumber(getRange(), false));
             majorTickSpacing.set((int) (calcNiceNumber(niceRange.get() / (getMaxNoOfMajorTicks() - 1), true)));
-            niceMinValue.set(Math.floor(getMinValue() / Math.pow(10, exponent)) * Math.pow(10, exponent));
-            niceMaxValue.set(getNiceMinValue() + getNiceRange());
-            //niceMinValue.set(Math.floor(getMinValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
-            //niceMaxValue.set(Math.ceil(getMaxValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
+            //niceMinValue.set(Math.floor(getMinValue() / Math.pow(10, exponent)) * Math.pow(10, exponent));
+            //niceMaxValue.set(getNiceMinValue() + getNiceRange());
+            niceMinValue.set(Math.floor(getMinValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
+            niceMaxValue.set(Math.ceil(getMaxValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
             minorTickSpacing.set((int) calcNiceNumber(getMajorTickSpacing() / ((double) getMaxNoOfMajorTicks() - 1), true));
             setMinValue(niceMinValue.get());
             setMaxValue(niceMaxValue.get());
@@ -231,9 +239,9 @@ public class LinearScale extends Scale {
      * @return a "niceScaling" number to be used for the value range
      */
     private double calcNiceNumber(final double RANGE, final boolean ROUND) {
-        exponent = getMinValue() > 0 ? Math.floor(Math.log10(getMinValue())) : Math.ceil(Math.log10(Math.abs(getMinValue())));
-        //final double exponent = Math.floor(Math.log10(RANGE));   // exponent of range
-        final double FRACTION = RANGE / Math.pow(10, exponent);  // fractional part of range
+        //exponent = getMinValue() > 0 ? Math.floor(Math.log10(getMinValue())) : Math.ceil(Math.log10(Math.abs(getMinValue())));
+        final double EXPONENT = Math.floor(Math.log10(RANGE));   // exponent of range
+        final double FRACTION = RANGE / Math.pow(10, EXPONENT);  // fractional part of range
         final double MOD      = FRACTION % 0.5;
         double niceFraction;
 
@@ -268,6 +276,6 @@ public class LinearScale extends Scale {
                 }
             }
         }
-        return niceFraction * Math.pow(10, exponent);
+        return niceFraction * Math.pow(10, EXPONENT);
     }
 }

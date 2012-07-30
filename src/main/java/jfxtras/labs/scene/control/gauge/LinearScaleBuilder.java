@@ -84,6 +84,16 @@ public class LinearScaleBuilder<B extends LinearScaleBuilder<B>> extends Control
         return this;
     }
 
+    public final LinearScaleBuilder majorTickSpacing(final double MAJOR_TICK_SPACING) {
+        properties.put("majorTickSpacing", new SimpleDoubleProperty(MAJOR_TICK_SPACING));
+        return this;
+    }
+
+    public final LinearScaleBuilder minorTickSpacing(final double MINOR_TICK_SPACING) {
+        properties.put("minorTickSpacing", new SimpleDoubleProperty(MINOR_TICK_SPACING));
+        return this;
+    }
+
     public final LinearScaleBuilder tightScale(final boolean TIGHT_SCALE) {
         properties.put("tightScale", new SimpleBooleanProperty(TIGHT_SCALE));
         return this;

@@ -536,6 +536,30 @@ public abstract class Gauge extends Control {
         return gaugeModel.rangeProperty();
     }
 
+    public final double getNiceMinValue() {
+        return gaugeModel.getNiceMinValue();
+    }
+
+    public final ReadOnlyDoubleProperty niceMinValueProperty() {
+        return gaugeModel.niceMinValueProperty();
+    }
+
+    public final double getNiceMaxValue() {
+        return gaugeModel.getNiceMaxValue();
+    }
+
+    public final ReadOnlyDoubleProperty niceMaxValueProperty() {
+        return gaugeModel.niceMaxValueProperty();
+    }
+
+    public final double getNiceRange() {
+        return gaugeModel.getNiceRange();
+    }
+
+    public final ReadOnlyDoubleProperty niceRangeProperty() {
+        return gaugeModel.niceRangeProperty();
+    }
+
     public final double getMinMeasuredValue() {
         return gaugeModel.getMinMeasuredValue();
     }
@@ -1406,7 +1430,11 @@ public abstract class Gauge extends Control {
         return gaugeModel.getMajorTickSpacing();
     }
 
-    public final ReadOnlyDoubleProperty majorTickSpacingProperty() {
+    public final void setMajorTickSpacing(final double MAJOR_TICK_SPACING) {
+        gaugeModel.setMajorTickSpacing(MAJOR_TICK_SPACING);
+    }
+
+    public final DoubleProperty majorTickSpacingProperty() {
         return gaugeModel.majorTickSpacingProperty();
     }
 
@@ -1414,7 +1442,11 @@ public abstract class Gauge extends Control {
         return gaugeModel.getMinorTickSpacing();
     }
 
-    public final ReadOnlyDoubleProperty minorTickSpacingProperty() {
+    public final void setMinorTickSpacing(final double MINOR_TICK_SPACING) {
+        gaugeModel.setMinorTickSpacing(MINOR_TICK_SPACING);
+    }
+
+    public final DoubleProperty minorTickSpacingProperty() {
         return gaugeModel.minorTickSpacingProperty();
     }
 
@@ -1429,6 +1461,30 @@ public abstract class Gauge extends Control {
 
     public final BooleanProperty niceScalingProperty() {
         return gaugeModel.niceScalingProperty();
+    }
+
+    public final boolean isTightScale() {
+        return  gaugeModel.isTightScale();
+    }
+
+    public final void setTightScale(final boolean TIGHT_SCALE) {
+        gaugeModel.setTightScale(TIGHT_SCALE);
+    }
+
+    public final BooleanProperty tightScaleProperty() {
+        return gaugeModel.tightScaleProperty();
+    }
+
+    public final boolean isLargeNumberScale() {
+        return gaugeModel.isLargeNumberScale();
+    }
+
+    public final void setLargeNumberScale(final boolean LARGE_NUMBER_SCALE) {
+        gaugeModel.setLargeNumberScale(LARGE_NUMBER_SCALE);
+    }
+
+    public final BooleanProperty largeNumberScaleProperty() {
+        return gaugeModel.largeNumberScaleProperty();
     }
 
     public final ObservableList<Section> getSections() {

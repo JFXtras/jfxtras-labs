@@ -140,6 +140,9 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         registerChangeListener(CONTROL.tickLabelNumberFormatProperty(), "TICKMARKS");
         registerChangeListener(CONTROL.tickLabelOrientationProperty(), "TICKMARKS");
         registerChangeListener(CONTROL.tickmarksOffsetProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.niceScalingProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.tightScaleProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.largeNumberScaleProperty(), "TICKMARKS");
         registerChangeListener(CONTROL.areasHighlightingProperty(), "AREAS");
         registerChangeListener(CONTROL.sectionsHighlightingProperty(), "SECTIONS");
         registerChangeListener(CONTROL.redrawToleranceProperty(), "REDRAW_TOLERANCE");
@@ -1343,7 +1346,12 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         final Transform transform = Transform.rotate(ROTATION_OFFSET - 180, CENTER.getX(), CENTER.getY());
         TICKMARKS.getTransforms().add(transform);
 
-        for (double alpha = 0, counter = CONTROL.getMinValue(); Double.compare(counter, CONTROL.getMaxValue()) <= 0; alpha -= ANGLE_STEP, counter += CONTROL.getMinorTickSpacing()) {
+        // Create the scale path in a loop
+        final double LOWER_BOUND = (!CONTROL.isNiceScaling() | CONTROL.isTightScale()) ? CONTROL.getMinValue() : CONTROL.getNiceMinValue();
+        final double UPPER_BOUND = (!CONTROL.isNiceScaling() | CONTROL.isTightScale()) ? CONTROL.getMaxValue() : CONTROL.getNiceMaxValue();
+        final double STEP_SIZE   = CONTROL.getMinorTickSpacing();
+
+        for (double alpha = 0, counter = LOWER_BOUND ; Double.compare(counter, UPPER_BOUND) <= 0 ; alpha -= ANGLE_STEP, counter += STEP_SIZE) {
             sinValue = Math.sin(Math.toRadians(alpha));
             cosValue = Math.cos(Math.toRadians(alpha));
 

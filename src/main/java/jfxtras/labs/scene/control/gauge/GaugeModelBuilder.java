@@ -143,13 +143,33 @@ public class GaugeModelBuilder {
         return this;
     }
 
-    public final GaugeModelBuilder trend(final Trend TREND) {
-        properties.put("trend", new SimpleObjectProperty<Trend>(TREND));
+    public final GaugeModelBuilder majorTickSpacing(final double MAJOR_TICK_SPACING) {
+        properties.put("majorTickSpacing", new SimpleDoubleProperty(MAJOR_TICK_SPACING));
+        return this;
+    }
+
+    public final GaugeModelBuilder minorTickSpacing(final double MINOR_TICK_SPACING) {
+        properties.put("minorTickSpacing", new SimpleDoubleProperty(MINOR_TICK_SPACING));
         return this;
     }
 
     public final GaugeModelBuilder niceScaling(final boolean NICE_SCALING) {
         properties.put("niceScaling", new SimpleBooleanProperty(NICE_SCALING));
+        return this;
+    }
+
+    public final GaugeModelBuilder tightScale(final boolean TIGHT_SCALE) {
+        properties.put("tightScale", new SimpleBooleanProperty(TIGHT_SCALE));
+        return this;
+    }
+
+    public final GaugeModelBuilder largeNumberScale(final boolean LARGE_NUMBER_SCALE) {
+        properties.put("largeNumberScale", new SimpleBooleanProperty(LARGE_NUMBER_SCALE));
+        return this;
+    }
+
+    public final GaugeModelBuilder trend(final Trend TREND) {
+        properties.put("trend", new SimpleObjectProperty<Trend>(TREND));
         return this;
     }
 
@@ -235,10 +255,18 @@ public class GaugeModelBuilder {
                 MODEL.setMaxNoOfMajorTicks(((IntegerProperty) properties.get(key)).get());
             } else if ("maxNoOfMinorTicks".equals(key)) {
                 MODEL.setMaxNoOfMinorTicks(((IntegerProperty) properties.get(key)).get());
+            } else if ("majorTickSpacing".equals(key)) {
+                MODEL.setMajorTickSpacing(((DoubleProperty) properties.get(key)).get());
+            } else if ("minorTickSpacing".equals(key)) {
+                MODEL.setMinorTickSpacing(((DoubleProperty) properties.get(key)).get());
             } else if ("trend".equals(key)) {
                 MODEL.setTrend(((ObjectProperty<Trend>) properties.get(key)).get());
             } else if ("niceScaling".equals(key)) {
                 MODEL.setNiceScaling(((BooleanProperty) properties.get(key)).get());
+            } else if ("tightScale".equals(key)) {
+                MODEL.setTightScale(((BooleanProperty) properties.get(key)).get());
+            } else if ("largeNumberScale".equals(key)) {
+                MODEL.setLargeNumberScale(((BooleanProperty) properties.get(key)).get());
             } else if ("sectionsArray".equals(key)) {
                 MODEL.setSections(((ObjectProperty<Section[]>) properties.get(key)).get());
             } else if ("sectionsList".equals(key)) {

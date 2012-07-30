@@ -264,6 +264,30 @@ public class GaugeModel {
         return scale.get().rangeProperty();
     }
 
+    public final double getNiceMinValue() {
+        return scale.get().getNiceMinValue();
+    }
+
+    public final ReadOnlyDoubleProperty niceMinValueProperty() {
+        return scale.get().niceMinValueProperty();
+    }
+
+    public final double getNiceMaxValue() {
+        return scale.get().getNiceMaxValue();
+    }
+
+    public final ReadOnlyDoubleProperty niceMaxValueProperty() {
+        return scale.get().niceMaxValueProperty();
+    }
+
+    public final double getNiceRange() {
+        return scale.get().getNiceRange();
+    }
+
+    public final ReadOnlyDoubleProperty niceRangeProperty() {
+        return scale.get().niceRangeProperty();
+    }
+
     public final double getMinMeasuredValue() {
         return minMeasuredValue.get();
     }
@@ -476,7 +500,11 @@ public class GaugeModel {
         return scale.get().getMajorTickSpacing();
     }
 
-    public final ReadOnlyDoubleProperty majorTickSpacingProperty() {
+    public final void setMajorTickSpacing(final double MAJOR_TICK_SPACING) {
+        scale.get().setMajorTickSpacing(MAJOR_TICK_SPACING);
+    }
+
+    public final DoubleProperty majorTickSpacingProperty() {
         return scale.get().majorTickSpacingProperty();
     }
 
@@ -484,7 +512,11 @@ public class GaugeModel {
         return scale.get().getMinorTickSpacing();
     }
 
-    public final ReadOnlyDoubleProperty minorTickSpacingProperty() {
+    public final void setMinorTickSpacing(final double MINOR_TICK_SPACING) {
+        scale.get().setMinorTickSpacing(MINOR_TICK_SPACING);
+    }
+
+    public final DoubleProperty minorTickSpacingProperty() {
         return scale.get().minorTickSpacingProperty();
     }
 
@@ -512,6 +544,30 @@ public class GaugeModel {
 
     public final BooleanProperty niceScalingProperty() {
         return scale.get().niceScalingProperty();
+    }
+
+    public final boolean isTightScale() {
+        return scale.get().isTightScale();
+    }
+
+    public final void setTightScale(final boolean TIGHT_SCALE) {
+        scale.get().setTightScale(TIGHT_SCALE);
+    }
+
+    public final BooleanProperty tightScaleProperty() {
+        return scale.get().tightScaleProperty();
+    }
+
+    public final boolean isLargeNumberScale() {
+        return scale.get().isLargeNumberScale();
+    }
+
+    public final void setLargeNumberScale(final boolean LARGE_NUMBER_SCALE) {
+        scale.get().setLargeNumberScale(LARGE_NUMBER_SCALE);
+    }
+
+    public final BooleanProperty largeNumberScaleProperty() {
+        return scale.get().largeNumberScaleProperty();
     }
 
     public final ObservableList<Section> getSections() {
@@ -699,107 +755,6 @@ public class GaugeModel {
     protected void calcRange(final double ANGLE_RANGE) {
         scale.get().calculate();
     }
-
-    /**
-     * Returns a "nice" number approximately equal to the range.
-     * Rounds the number if ROUND == true.
-     * Takes the ceiling if ROUND = false.
-     *
-     * @param RANGE the value range (maxValue - minValue)
-     * @param ROUND whether to round the result or ceil
-     * @return a "nice" number to be used for the value range
-     */
-    private static double calcNiceNumber(final double RANGE, final boolean ROUND) {
-        final double EXPONENT = Math.floor(Math.log10(RANGE));   // exponent of range
-        final double FRACTION = RANGE / Math.pow(10, EXPONENT);  // fractional part of range
-
-        // nice, rounded fraction
-        final double NICE_FRACTION;
-        if (ROUND) {
-            if (FRACTION < 1.5) {
-                NICE_FRACTION = 1;
-            } else if (FRACTION < 3) {
-                NICE_FRACTION = 2;
-            } else if (FRACTION < 7) {
-                NICE_FRACTION = 5;
-            } else {
-                NICE_FRACTION = 10;
-            }
-        } else {
-            if (Double.compare(FRACTION, 1) <= 0) {
-                NICE_FRACTION = 1;
-            } else if (Double.compare(FRACTION, 2) <= 0) {
-                NICE_FRACTION = 2;
-            } else if (Double.compare(FRACTION, 5) <= 0) {
-                NICE_FRACTION = 5;
-            } else {
-                NICE_FRACTION = 10;
-            }
-        }
-        return NICE_FRACTION * Math.pow(10, EXPONENT);
-    }
-
-    /*
-    private double calcNiceNumber(final double RANGE, final boolean ROUND) {
-        double exponent;     // exponent of range
-        double fraction;     // fractional part of range
-        double niceFraction; // nice rounded fraction
-        double result;
-
-        if (RANGE  > 10000) {
-            double roundedFraction;
-            double log10Range = Math.log(RANGE) / Math.log(10);
-
-            exponent = Math.floor(log10Range);
-            fraction = RANGE / Math.pow(10, exponent);
-
-            double mod = fraction % 0.5;
-            if (mod != 0) {
-                roundedFraction = fraction - mod;
-                roundedFraction += 0.5;
-            } else {
-                roundedFraction = fraction;
-            }
-
-            result = roundedFraction * Math.pow(10, exponent);
-        } else {
-            if (minValue.get() > 0) {
-                exponent = Math.floor(Math.log10(minValue.get()));
-            } else {
-                exponent = Math.ceil(Math.log10(Math.abs(minValue.get())));
-            }
-
-            niceMinValue.set(Math.floor(minValue.get()) / Math.pow(10, exponent) * Math.pow(10, exponent));
-            niceMaxValue.set(niceMinValue.get() + RANGE);
-
-            fraction = RANGE / Math.pow(10, exponent);
-
-            if (ROUND) {
-                if (fraction < 1.5) {
-                    niceFraction = 1;
-                } else if (fraction < 3) {
-                    niceFraction = 2;
-                } else if (fraction < 7) {
-                    niceFraction = 5;
-                } else {
-                    niceFraction = 10;
-                }
-            } else {
-                if (Double.compare(fraction, 1) <= 0) {
-                    niceFraction = 1;
-                } else if (Double.compare(fraction, 2) <= 0) {
-                    niceFraction = 2;
-                } else if (Double.compare(fraction, 5) <= 0) {
-                    niceFraction = 5;
-                } else {
-                    niceFraction = 10;
-                }
-            }
-            result = niceFraction * Math.pow(10, exponent);
-        }
-        return result;
-    }
-    */
 
 
     // ******************** Internal Classes **********************************
