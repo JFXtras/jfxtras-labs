@@ -84,6 +84,16 @@ public class LinearScaleBuilder<B extends LinearScaleBuilder<B>> extends Control
         return this;
     }
 
+    public final LinearScaleBuilder tightScale(final boolean TIGHT_SCALE) {
+        properties.put("tightScale", new SimpleBooleanProperty(TIGHT_SCALE));
+        return this;
+    }
+
+    public final LinearScaleBuilder largeNumberScale(final boolean LARGE_NUMBER_SCALE) {
+        properties.put("largeNumberScale", new SimpleBooleanProperty(LARGE_NUMBER_SCALE));
+        return this;
+    }
+
     public LinearScale build() {
         final LinearScale CONTROL = new LinearScale();
         if (properties.keySet().contains("maxValue") && properties.keySet().contains("minValue")) {
@@ -112,6 +122,10 @@ public class LinearScaleBuilder<B extends LinearScaleBuilder<B>> extends Control
                 CONTROL.setMaxNoOfMajorTicks(((IntegerProperty) properties.get(key)).get());
             } else if ("maxNoOfMinorTicks".equals(key)) {
                 CONTROL.setMaxNoOfMinorTicks(((IntegerProperty) properties.get(key)).get());
+            } else if ("tightScale".equals(key)) {
+                CONTROL.setTightScale(((BooleanProperty) properties.get(key)).get());
+            } else if ("largeNumberScale".equals(key)) {
+                CONTROL.setLargeNumberScale(((BooleanProperty) properties.get(key)).get());
             }
         }
         return CONTROL;

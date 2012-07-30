@@ -44,6 +44,7 @@ import javafx.beans.value.ObservableValue;
  * Time: 16:15
  */
 public class LinearScale extends Scale {
+    private BooleanProperty        tightScale;
     private BooleanProperty        niceScaling;
     private DoubleProperty         niceMinValue;
     private DoubleProperty         niceMaxValue;
@@ -52,7 +53,10 @@ public class LinearScale extends Scale {
     private IntegerProperty        maxNoOfMajorTicks;
     private IntegerProperty        maxNoOfMinorTicks;
     private DoubleProperty         niceRange;
+    private BooleanProperty        largeNumberScale;
     private ChangeListener<Number> listener;
+    // calculation related
+    private double                 exponent;
 
 
     // ******************** Constructors **************************************
@@ -69,10 +73,12 @@ public class LinearScale extends Scale {
 
     // ******************** Initialization ************************************
     private void init() {
-        niceScaling = new SimpleBooleanProperty(true);
+        tightScale        = new SimpleBooleanProperty(false);
+        niceScaling       = new SimpleBooleanProperty(true);
         niceMinValue      = new SimpleDoubleProperty(getMinValue());
         niceMaxValue      = new SimpleDoubleProperty(getMaxValue());
         niceRange         = new SimpleDoubleProperty(getRange());
+        largeNumberScale  = new SimpleBooleanProperty(false);
         maxNoOfMajorTicks = new SimpleIntegerProperty(10);
         maxNoOfMinorTicks = new SimpleIntegerProperty(10);
         majorTickSpacing  = new SimpleDoubleProperty(10);
@@ -86,10 +92,25 @@ public class LinearScale extends Scale {
         };
         super.minValueProperty().addListener(listener);
         super.maxValueProperty().addListener(listener);
+
+        // calculation related
+        exponent = Math.floor(Math.log10(100));
     }
 
 
     // ******************** Methods *******************************************
+    public final boolean isTightScale() {
+        return tightScale.get();
+    }
+
+    public final void setTightScale(final boolean TIGHT_SCALE) {
+        tightScale.set(TIGHT_SCALE);
+    }
+
+    public final BooleanProperty tightScaleProperty() {
+        return tightScale;
+    }
+
     public final boolean isNiceScaling() {
         return niceScaling.get();
     }
@@ -142,6 +163,26 @@ public class LinearScale extends Scale {
         return maxNoOfMinorTicks;
     }
 
+    public final double getNiceRange() {
+        return niceRange.get();
+    }
+
+    public final ReadOnlyDoubleProperty niceRangeProperty() {
+        return niceRange;
+    }
+
+    public final boolean isLargeNumberScale() {
+        return largeNumberScale.get();
+    }
+
+    public final void setLargeNumberScale(final boolean LARGE_NUMBER_SCALE) {
+        largeNumberScale.set(LARGE_NUMBER_SCALE);
+    }
+
+    public final BooleanProperty largeNumberScaleProperty() {
+        return largeNumberScale;
+    }
+
     public final double getMajorTickSpacing() {
         return majorTickSpacing.get();
     }
@@ -166,8 +207,10 @@ public class LinearScale extends Scale {
         if (isNiceScaling()) {
             niceRange.set(calcNiceNumber(getRange(), false));
             majorTickSpacing.set((int) (calcNiceNumber(niceRange.get() / (getMaxNoOfMajorTicks() - 1), true)));
-            niceMinValue.set(Math.floor(getMinValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
-            niceMaxValue.set(Math.ceil(getMaxValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
+            niceMinValue.set(Math.floor(getMinValue() / Math.pow(10, exponent)) * Math.pow(10, exponent));
+            niceMaxValue.set(getNiceMinValue() + getNiceRange());
+            //niceMinValue.set(Math.floor(getMinValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
+            //niceMaxValue.set(Math.ceil(getMaxValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
             minorTickSpacing.set((int) calcNiceNumber(getMajorTickSpacing() / ((double) getMaxNoOfMajorTicks() - 1), true));
             setMinValue(niceMinValue.get());
             setMaxValue(niceMaxValue.get());
@@ -187,33 +230,44 @@ public class LinearScale extends Scale {
      * @param ROUND whether to round the result or ceil
      * @return a "niceScaling" number to be used for the value range
      */
-    private static double calcNiceNumber(final double RANGE, final boolean ROUND) {
-        final double EXPONENT = Math.floor(Math.log10(RANGE));   // exponent of range
-        final double FRACTION = RANGE / Math.pow(10, EXPONENT);  // fractional part of range
+    private double calcNiceNumber(final double RANGE, final boolean ROUND) {
+        exponent = getMinValue() > 0 ? Math.floor(Math.log10(getMinValue())) : Math.ceil(Math.log10(Math.abs(getMinValue())));
+        //final double exponent = Math.floor(Math.log10(RANGE));   // exponent of range
+        final double FRACTION = RANGE / Math.pow(10, exponent);  // fractional part of range
+        final double MOD      = FRACTION % 0.5;
+        double niceFraction;
 
-        // niceScaling, rounded fraction
-        final double NICE_FRACTION;
-        if (ROUND) {
-            if (FRACTION < 1.5) {
-                NICE_FRACTION = 1;
-            } else if (FRACTION < 3) {
-                NICE_FRACTION = 2;
-            } else if (FRACTION < 7) {
-                NICE_FRACTION = 5;
+        // niceScaling
+        if (isLargeNumberScale()) {
+            if (MOD != 0) {
+                niceFraction = FRACTION - MOD;
+                niceFraction += 0.5;
             } else {
-                NICE_FRACTION = 10;
+                niceFraction = FRACTION;
             }
         } else {
-            if (Double.compare(FRACTION, 1) <= 0) {
-                NICE_FRACTION = 1;
-            } else if (Double.compare(FRACTION, 2) <= 0) {
-                NICE_FRACTION = 2;
-            } else if (Double.compare(FRACTION, 5) <= 0) {
-                NICE_FRACTION = 5;
+            if (ROUND) {
+                if (FRACTION < 1.5) {
+                    niceFraction = 1;
+                } else if (FRACTION < 3) {
+                    niceFraction = 2;
+                } else if (FRACTION < 7) {
+                    niceFraction = 5;
+                } else {
+                    niceFraction = 10;
+                }
             } else {
-                NICE_FRACTION = 10;
+                if (Double.compare(FRACTION, 1) <= 0) {
+                    niceFraction = 1;
+                } else if (Double.compare(FRACTION, 2) <= 0) {
+                    niceFraction = 2;
+                } else if (Double.compare(FRACTION, 5) <= 0) {
+                    niceFraction = 5;
+                } else {
+                    niceFraction = 10;
+                }
             }
         }
-        return NICE_FRACTION * Math.pow(10, EXPONENT);
+        return niceFraction * Math.pow(10, exponent);
     }
 }
