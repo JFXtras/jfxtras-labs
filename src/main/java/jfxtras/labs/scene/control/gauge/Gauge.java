@@ -1460,6 +1460,10 @@ public abstract class Gauge extends Control {
         return gaugeModel.tightScaleProperty();
     }
 
+    public final double getTightScaleOffset() {
+        return gaugeModel.getTightScaleOffset();
+    }
+
     public final boolean isLargeNumberScale() {
         return gaugeModel.isLargeNumberScale();
     }
@@ -1470,6 +1474,18 @@ public abstract class Gauge extends Control {
 
     public final BooleanProperty largeNumberScaleProperty() {
         return gaugeModel.largeNumberScaleProperty();
+    }
+
+    public final boolean isLastLabelVisible() {
+        return gaugeModel.isLastLabelVisible();
+    }
+
+    public final void setLastLabelVisible(final boolean LAST_LABEL_VISIBLE) {
+        gaugeModel.setLastLabelVisible(LAST_LABEL_VISIBLE);
+    }
+
+    public final BooleanProperty lastLabelVisibleProperty() {
+        return gaugeModel.lastLabelVisibleProperty();
     }
 
     public final ObservableList<Section> getSections() {

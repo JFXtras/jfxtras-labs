@@ -560,6 +560,18 @@ public class GaugeModel {
         return scale.get().largeNumberScaleProperty();
     }
 
+    public final boolean isLastLabelVisible() {
+        return scale.get().isLastLabelVisible();
+    }
+
+    public final void setLastLabelVisible(final boolean LAST_LABEL_VISIBLE) {
+        scale.get().setLastLabelVisible(LAST_LABEL_VISIBLE);
+    }
+
+    public final BooleanProperty lastLabelVisibleProperty() {
+        return lastLabelVisibleProperty();
+    }
+
     public final ObservableList<Section> getSections() {
         return sections;
     }

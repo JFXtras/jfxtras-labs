@@ -153,6 +153,8 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 gaugeModel.setTightScale(((BooleanProperty) gaugeProperties.get(key)).get());
             } else if ("largeNumberScale".equals(key)) {
                 gaugeModel.setLargeNumberScale(((BooleanProperty) gaugeProperties.get(key)).get());
+            } else if ("lastLabelVisible".equals(key)) {
+                gaugeModel.setLastLabelVisible(((BooleanProperty) gaugeProperties.get(key)).get());
             } else if ("sectionsArray".equals(key)) {
                 gaugeModel.setSections(((ObjectProperty<Section[]>) gaugeProperties.get(key)).get());
             } else if ("sectionsList".equals(key)) {
@@ -531,6 +533,11 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
 
     public final GaugeBuilder largeNumberScale(final boolean LARGE_NUMBER_SCALE) {
         gaugeProperties.put("largeNumberScale", new SimpleBooleanProperty(LARGE_NUMBER_SCALE));
+        return this;
+    }
+
+    public final GaugeBuilder lastLabelVisible(final boolean LAST_LABEL_VISIBLE) {
+        gaugeProperties.put("lastLabelVisible", new SimpleBooleanProperty(LAST_LABEL_VISIBLE));
         return this;
     }
 

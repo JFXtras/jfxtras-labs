@@ -1338,8 +1338,8 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         final double ROTATION_OFFSET = CONTROL.getRadialRange().ROTATION_OFFSET; // Depends on RadialRange
         final double RADIUS          = WIDTH * RADIUS_FACTOR;
         final double ANGLE_STEP      = (CONTROL.getRadialRange().ANGLE_RANGE / ((CONTROL.getMaxValue() - CONTROL.getMinValue()) / CONTROL.getMinorTickSpacing())) * CONTROL.getRadialRange().ANGLE_STEP_SIGN;
-        double valueCounter          = CONTROL.isTightScale() ? CONTROL.getMinValue() + CONTROL.getGaugeModel().getTightScaleOffset() * CONTROL.getMinorTickSpacing() : CONTROL.getMinValue();
-        int majorTickCounter         = CONTROL.isTightScale() ? CONTROL.getMaxNoOfMinorTicks() - 1 - (int) (CONTROL.getGaugeModel().getTightScaleOffset()) : CONTROL.getMaxNoOfMinorTicks() - 1; // Indicator when to draw the major tickmark
+        double valueCounter          = CONTROL.isTightScale() ? CONTROL.getMinValue() + CONTROL.getTightScaleOffset() * CONTROL.getMinorTickSpacing() : CONTROL.getMinValue();
+        int majorTickCounter         = CONTROL.isTightScale() ? CONTROL.getMaxNoOfMinorTicks() - 1 - (int) (CONTROL.getTightScaleOffset()) : CONTROL.getMaxNoOfMinorTicks() - 1; // Indicator when to draw the major tickmark
         double sinValue;
         double cosValue;
 
@@ -1409,12 +1409,14 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                             tickLabel.rotateProperty().set(180 - angle + ticklabelRotationOffset);
                             break;
                     }
-                    if (CONTROL.getRadialRange() == Gauge.RadialRange.RADIAL_360) {
-                        if (Double.compare(valueCounter, CONTROL.getMaxValue()) != 0) {
+
+                    // Check if current label is the last of the scale
+                    if (Double.compare(valueCounter, UPPER_BOUND) != 0) {
+                        tickMarkLabel.add(tickLabel);
+                    } else {
+                        if (CONTROL.isLastLabelVisible() && CONTROL.getRadialRange() != Gauge.RadialRange.RADIAL_360) {
                             tickMarkLabel.add(tickLabel);
                         }
-                    } else {
-                        tickMarkLabel.add(tickLabel);
                     }
                 }
 

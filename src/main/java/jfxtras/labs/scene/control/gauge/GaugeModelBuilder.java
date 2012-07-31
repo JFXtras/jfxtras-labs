@@ -168,6 +168,11 @@ public class GaugeModelBuilder {
         return this;
     }
 
+    public final GaugeModelBuilder lastLabelVisible(final boolean LAST_LABEL_VISIBLE) {
+        properties.put("lastLabelVisible", new SimpleBooleanProperty(LAST_LABEL_VISIBLE));
+        return this;
+    }
+
     public final GaugeModelBuilder trend(final Trend TREND) {
         properties.put("trend", new SimpleObjectProperty<Trend>(TREND));
         return this;
@@ -267,6 +272,8 @@ public class GaugeModelBuilder {
                 MODEL.setTightScale(((BooleanProperty) properties.get(key)).get());
             } else if ("largeNumberScale".equals(key)) {
                 MODEL.setLargeNumberScale(((BooleanProperty) properties.get(key)).get());
+            } else if ("lastLabelVisible".equals(key)) {
+                MODEL.setLastLabelVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("sectionsArray".equals(key)) {
                 MODEL.setSections(((ObjectProperty<Section[]>) properties.get(key)).get());
             } else if ("sectionsList".equals(key)) {

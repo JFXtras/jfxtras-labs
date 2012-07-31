@@ -26,8 +26,10 @@
  */
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
 
@@ -38,11 +40,12 @@ import javafx.beans.property.SimpleDoubleProperty;
  * Time: 15:44
  */
 public class Scale {
-    private DoubleProperty minValue;
-    private DoubleProperty maxValue;
-    private DoubleProperty range;
-    private DoubleProperty uncorrectedMinValue;
-    private DoubleProperty uncorrectedMaxValue;
+    private DoubleProperty  minValue;
+    private DoubleProperty  maxValue;
+    private DoubleProperty  range;
+    private DoubleProperty  uncorrectedMinValue;
+    private DoubleProperty  uncorrectedMaxValue;
+    private BooleanProperty lastLabelVisible;
 
 
     // ******************** Constructors **************************************
@@ -57,6 +60,7 @@ public class Scale {
         range.bind(maxValue.subtract(minValue));
         uncorrectedMinValue = new SimpleDoubleProperty(MIN_VALUE);
         uncorrectedMaxValue = new SimpleDoubleProperty(MAX_VALUE);
+        lastLabelVisible    = new SimpleBooleanProperty(true);
     }
 
 
@@ -117,5 +121,17 @@ public class Scale {
 
     public final ReadOnlyDoubleProperty uncorrectedMaxValueProperty() {
         return uncorrectedMaxValue;
+    }
+
+    public final boolean isLastLabelVisible() {
+        return lastLabelVisible.get();
+    }
+
+    public final void setLastLabelVisible(final boolean LAST_LABEL_VISIBLE) {
+        lastLabelVisible.set(LAST_LABEL_VISIBLE);
+    }
+
+    public final BooleanProperty lastLabelVisibleProperty() {
+        return lastLabelVisible;
     }
 }
