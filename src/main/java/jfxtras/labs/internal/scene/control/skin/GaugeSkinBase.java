@@ -1338,9 +1338,8 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         final double ROTATION_OFFSET = CONTROL.getRadialRange().ROTATION_OFFSET; // Depends on RadialRange
         final double RADIUS          = WIDTH * RADIUS_FACTOR;
         final double ANGLE_STEP      = (CONTROL.getRadialRange().ANGLE_RANGE / ((CONTROL.getMaxValue() - CONTROL.getMinValue()) / CONTROL.getMinorTickSpacing())) * CONTROL.getRadialRange().ANGLE_STEP_SIGN;
-        double valueCounter          = CONTROL.getMinValue();
-        //int majorTickCounter         = CONTROL.isTightScale() ? CONTROL.getMaxNoOfMinorTicks() - ((int) Math.ceil(CONTROL.getMinorTickSpacing() / CONTROL.getGaugeModel().getTightScaleOffset()) + 1) : CONTROL.getMaxNoOfMinorTicks() - 1; // Indicator when to draw the major tickmark
-        int majorTickCounter         = CONTROL.getMaxNoOfMinorTicks() - 1;
+        double valueCounter          = CONTROL.isTightScale() ? CONTROL.getMinValue() + CONTROL.getGaugeModel().getTightScaleOffset() * CONTROL.getMinorTickSpacing() : CONTROL.getMinValue();
+        int majorTickCounter         = CONTROL.isTightScale() ? CONTROL.getMaxNoOfMinorTicks() - 1 - (int) (CONTROL.getGaugeModel().getTightScaleOffset()) : CONTROL.getMaxNoOfMinorTicks() - 1; // Indicator when to draw the major tickmark
         double sinValue;
         double cosValue;
 

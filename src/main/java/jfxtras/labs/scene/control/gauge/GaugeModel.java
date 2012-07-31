@@ -745,8 +745,7 @@ public class GaugeModel {
     protected void calcRange() {
         if (getMinValue() < getMaxValue()) {
             if (scale.get().isTightScale()) {
-                //scale.get().calculateTight();
-                scale.get().calculateLoose();
+                scale.get().calculateTight();
             } else {
                 scale.get().calculateLoose();
             }

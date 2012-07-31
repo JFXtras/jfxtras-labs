@@ -219,22 +219,20 @@ public class LinearScale extends Scale {
 
     protected void calculateTight() {
         if (isNiceScaling()) {
-            niceRange.set(calcNiceNumber(getRange(), false));
+            niceRange.set(getUncorrectedMaxValue() - getUncorrectedMinValue());
             majorTickSpacing.set(calcNiceNumber(niceRange.doubleValue() / (maxNoOfMajorTicks.doubleValue() - 1), true));
-            niceMinValue.set(Math.floor(getMinValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
+            niceMinValue.set(Math.floor(getUncorrectedMinValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
             niceMaxValue.set(Math.ceil(getUncorrectedMaxValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
-            minorTickSpacing.set(calcNiceNumber(majorTickSpacing.doubleValue() / (maxNoOfMinorTicks.intValue() - 1), true));
-            tightScaleOffset = uncorrectedMinValueProperty().doubleValue() - niceMinValue.doubleValue();
-            niceRange.set(getRange());
-            setMinValue(getMinValue());
-            setMaxValue(getMaxValue());
+            minorTickSpacing.set(calcNiceNumber(majorTickSpacing.doubleValue() / (maxNoOfMinorTicks.doubleValue() - 1), true));
+            tightScaleOffset = (int) (((getUncorrectedMinValue() - niceMinValue.doubleValue()) + 1) / minorTickSpacing.doubleValue());
+            niceMinValue.set(getUncorrectedMinValue());
+            niceMaxValue.set(getUncorrectedMaxValue());
         } else {
             niceRange.set(getRange());
             niceMinValue.set(getMinValue());
             niceMaxValue.set(getMaxValue());
         }
     }
-
 
     /**
      * Returns a "niceScaling" number approximately equal to the range.
