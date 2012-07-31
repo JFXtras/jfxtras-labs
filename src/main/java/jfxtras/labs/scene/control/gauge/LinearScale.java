@@ -203,10 +203,10 @@ public class LinearScale extends Scale {
     protected void calculateLoose() {
         if (isNiceScaling()) {
             niceRange.set(calcNiceNumber(getRange(), false));
-            majorTickSpacing.set((int) (calcNiceNumber(niceRange.doubleValue() / (maxNoOfMajorTicks.doubleValue() - 1), true)));
+            majorTickSpacing.set(calcNiceNumber(niceRange.doubleValue() / (maxNoOfMajorTicks.doubleValue() - 1), true));
             niceMinValue.set(Math.floor(getMinValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
             niceMaxValue.set(Math.ceil(getUncorrectedMaxValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
-            minorTickSpacing.set((int) calcNiceNumber(majorTickSpacing.doubleValue() / (maxNoOfMinorTicks.intValue() - 1), true));
+            minorTickSpacing.set(calcNiceNumber(majorTickSpacing.doubleValue() / (maxNoOfMinorTicks.intValue() - 1), true));
             niceRange.set(niceMaxValue.doubleValue() - niceMinValue.doubleValue());
             setMinValue(niceMinValue.get());
             setMaxValue(niceMaxValue.get());
@@ -220,10 +220,10 @@ public class LinearScale extends Scale {
     protected void calculateTight() {
         if (isNiceScaling()) {
             niceRange.set(calcNiceNumber(getRange(), false));
-            majorTickSpacing.set((int) (calcNiceNumber(niceRange.doubleValue() / (maxNoOfMajorTicks.doubleValue() - 1), true)));
+            majorTickSpacing.set(calcNiceNumber(niceRange.doubleValue() / (maxNoOfMajorTicks.doubleValue() - 1), true));
             niceMinValue.set(Math.floor(getMinValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
             niceMaxValue.set(Math.ceil(getUncorrectedMaxValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
-            minorTickSpacing.set((int) calcNiceNumber(majorTickSpacing.doubleValue() / (maxNoOfMinorTicks.intValue() - 1), true));
+            minorTickSpacing.set(calcNiceNumber(majorTickSpacing.doubleValue() / (maxNoOfMinorTicks.intValue() - 1), true));
             tightScaleOffset = uncorrectedMinValueProperty().doubleValue() - niceMinValue.doubleValue();
             niceRange.set(getRange());
             setMinValue(getMinValue());
