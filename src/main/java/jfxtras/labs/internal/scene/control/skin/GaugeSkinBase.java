@@ -1986,7 +1986,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         /*
         final DropShadow LED_GLOW = new DropShadow();
         LED_GLOW.setRadius(0.018 * WIDTH);
-        LED_GLOW.setColor(Color.BLACK);
+        LED_GLOW.setLabelColor(Color.BLACK);
         LED_GLOW.inputProperty().set(LED_INNER_SHADOW);
         LED.setEffect(LED_GLOW);
         */

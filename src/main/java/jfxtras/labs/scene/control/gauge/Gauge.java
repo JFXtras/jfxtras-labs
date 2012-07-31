@@ -55,15 +55,6 @@ import java.util.Locale;
  * Time: 17:14
  */
 public abstract class Gauge extends Control {
-    // ******************** Variable definitions ******************************
-    private ObjectProperty<GaugeModel>  gaugeModelProperty;
-    private ObjectProperty<StyleModel>  styleModelProperty;
-    private GaugeModel                  gaugeModel;
-    private StyleModel                  styleModel;
-    private ObjectProperty<RadialRange> radialRange;
-    private DoubleProperty              angleStep;
-
-
     // ******************** Enum definitions **********************************
     public static enum BackgroundDesign {
         DARK_GRAY("background-design-darkgray"),
@@ -258,10 +249,10 @@ public abstract class Gauge extends Control {
         TRIANGLE
     }
     public static enum TicklabelOrientation {
-            NORMAL,
-            HORIZONTAL,
-            TANGENT
-        }
+        NORMAL,
+        HORIZONTAL,
+        TANGENT
+    }
     public static enum Trend {
         UP,
         RISING,
@@ -270,6 +261,14 @@ public abstract class Gauge extends Control {
         DOWN,
         UNKNOWN;
     }
+
+    // ******************** Variable definitions ******************************
+    private ObjectProperty<GaugeModel>  gaugeModelProperty;
+    private ObjectProperty<StyleModel>  styleModelProperty;
+    private GaugeModel                  gaugeModel;
+    private StyleModel                  styleModel;
+    private ObjectProperty<RadialRange> radialRange;
+    private DoubleProperty              angleStep;
 
 
     // ******************** Constructors **************************************
