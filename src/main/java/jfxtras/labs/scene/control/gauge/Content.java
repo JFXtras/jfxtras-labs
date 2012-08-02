@@ -42,6 +42,7 @@ public class Content {
         RED,
         GREEN,
         BLUE,
+        YELLOW,
         RGB
     }
     

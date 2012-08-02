@@ -50,6 +50,7 @@ import javafx.scene.shape.*;
 import javafx.util.Duration;
 import jfxtras.labs.internal.scene.control.behavior.MatrixPanelBehavior;
 import jfxtras.labs.scene.control.gauge.Content;
+import jfxtras.labs.scene.control.gauge.Content.MatrixColor;
 import jfxtras.labs.scene.control.gauge.MatrixPanel;
 import jfxtras.labs.scene.control.gauge.UtilHex;
 
@@ -80,7 +81,6 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
     private Group               dots;
     private List<Content>       contents;
     private Map<Integer, Shape> dotMap;
-    private IntegerProperty[]   incrPos=null;
     private BooleanProperty[]   visibleContent=null;
     private final int           toneScale=85;
     private final Color         COLOR_OFF = Color.rgb(39, 39, 39,0.25);
@@ -565,9 +565,26 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
     private final int LED_COLUMN    = 0;
     private final int LED_ROW       = 1;
     private final int LED_INTENSITY = 2;
+    /*
+     * full area required for each content, even not visible
+     */
+    private final ArrayList<int[][]> fullAreas = new ArrayList<int[][]>();
+    /*
+     * visible AREAS in the panel, one per content
+     */
+    private Rectangle[] visibleArea = null;
+    /* 
+     * PAIRS of contents in the same area
+     */
+    private final ArrayList<ContentPair> pairs=new ArrayList<ContentPair>();
+    /*
+     * ANIMATION of each content
+     */
+    private Animation[] Anim=null;
     
+       
     public void updatePanel() {
-        System.out.println("update");
+        //System.out.println("updatePanel");
         if (contents == null) {
             return;
         }
@@ -579,24 +596,12 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
          * 2: tone mid  (170)
          * 3: tone high (255)
          */
-
-        /*
-         * full area required for each content, even not visible
-         */
-        final ArrayList<int[][]> fullAreas = new ArrayList<int[][]>();
-        /*
-         * visible AREAS in the panel, one per content
-         */
-        final Rectangle[] visibleArea = new Rectangle[contents.size()];
-        /* 
-         * PAIRS of contents in the same area
-         */
-        final ArrayList<ContentPair> pairs=new ArrayList<ContentPair>();
         
         /*
          * FIRST: GET IMAGE RAW DATA AND FILL THE LEDS IN ITS AREA
          */
         int contAreas = 0;
+        visibleArea = new Rectangle[contents.size()];
         for (final Content content : contents) {
             int x0 = (int) content.getOrigin().getX() + (int) content.getArea().getX();
             int y0 = (int) content.getOrigin().getY() + (int) content.getArea().getY();
@@ -617,9 +622,9 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
                     final int tamLineaBMT = (int)(UtilHex.dword2Long(v[20],v[21], v[22], v[23]) / bmpHeight / levels / 3); // en bytes
                     int pos = 32;
                     final int[][] area = new int[bmpHeight][tamLineaBMT * 8];
-                    final int[] colors={(content.getColor().equals(Content.MatrixColor.RED) || content.getColor().equals(Content.MatrixColor.RGB))?1:0,
-                                        (content.getColor().equals(Content.MatrixColor.GREEN) || content.getColor().equals(Content.MatrixColor.RGB))?1:0,
-                                        (content.getColor().equals(Content.MatrixColor.BLUE) || content.getColor().equals(Content.MatrixColor.RGB))?1:0};
+                    final int[] colors={(content.getColor().equals(MatrixColor.RED) || content.getColor().equals(MatrixColor.YELLOW) || content.getColor().equals(MatrixColor.RGB))?1:0,
+                                        (content.getColor().equals(MatrixColor.GREEN) || content.getColor().equals(MatrixColor.YELLOW) || content.getColor().equals(MatrixColor.RGB))?1:0,
+                                        (content.getColor().equals(MatrixColor.BLUE) || content.getColor().equals(MatrixColor.RGB))?1:0};
                     for (int j = 0; j < levels; j++) { // leds: [RED k=0]0-1-2-3, [GREEN k=1]0-10-20-30, [BLUE k=2] 0-100-200-300
                         for(int k=0; k<3; k++){ // 3 colors
                             for (int fila = 0; fila < bmpHeight; fila++) {
@@ -641,9 +646,10 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
                 MatrixPanel.DotFont dotF = new MatrixPanel.DotFont(content.getTxtContent(), content.getMatrixFont(), content.getFontGap().getGapWidth());
                 boolean[][] bDots = dotF.getDotString();
                 if (bDots != null) {
-                    final int color=(content.getColor().equals(Content.MatrixColor.RED)?3:
-                                    ((content.getColor().equals(Content.MatrixColor.GREEN)?30:
-                                    (((content.getColor().equals(Content.MatrixColor.BLUE)?300:333))))));
+                    final int color=(content.getColor().equals(MatrixColor.RED)?3:
+                                    (content.getColor().equals(MatrixColor.GREEN)?30:
+                                    (content.getColor().equals(MatrixColor.BLUE)?300:
+                                    (content.getColor().equals(MatrixColor.YELLOW)?33:333))));
                     final int[][] area = new int[bDots.length][bDots[0].length];
                     for (int fila = 0; fila < bDots.length; fila++) {
                         for (int j = 0; j < bDots[fila].length; j++) {
@@ -707,46 +713,85 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
          * THIRD: DISPLAY WITH/OUT ANIMATION
          */
         
-        // bind posX/posY increment (1) to allow for pause time (0) for each content
-        incrPos=new SimpleIntegerProperty[contents.size()];
-        
         // bind content display to paired content
         visibleContent=new SimpleBooleanProperty[contents.size()];
+        
+        Anim=new Animation[contents.size()];
         
         for (final Content content : contents) {
             
             final int iContent=contents.indexOf(content);
+            /*
+             * Create ANIMATION for each content
+             */
+            Anim[iContent]=new Animation(iContent, content);
+            Anim[iContent].initAnimation();
             
-            incrPos[iContent]=new SimpleIntegerProperty(1);
+        }        
+        
+        /*
+         * START ANIMATIONS AT THE SAME TIME
+         */
+        for (final Animation a : Anim) {
+            a.start();
+        }
+    }
+
+    private class Animation extends AnimationTimer{
+        private long lastUpdate=0l;
+        private boolean bBlink=false; // heartbit
+        private int contBlink=0;
+        private int iter=0;        
+        private int iContent;
+        private Content content=null;
+        private int oriX, oriY, endX, endY;
+        private int areaWidth, areaHeight;
+        private int contentWidth, contentHeight;
+        private IntegerProperty posX, posY, posXIni, posYIni;
+        private int[][] contentArea=null;
+        private int speed, limitBlink, iterLeds;
+        private boolean isBlinkEffect;
+        
+        private LinkedHashMap<Integer,int[]> brightLeds=null;
+        private ArrayList<int[]> arrBrightLeds=null;
+        private IntegerProperty incrPos=null;
+        
+        public Animation(int iContent, Content theContent){
+            
+            this.iContent=iContent;
+            this.content=theContent;
+            
+            // bind posX/posY increment (1) to allow for pause time (0) for each content
+            incrPos=new SimpleIntegerProperty(1);
             
             visibleContent[iContent]=new SimpleBooleanProperty(true); // SINGLE && FIRST
             if(content.getOrder().equals(Content.RotationOrder.SECOND)){
                 visibleContent[iContent].setValue(false);
             }
             
-            final int[][] contentArea = fullAreas.get(iContent);
-            if(contentArea==null){
-                continue;
-            }
+        }
+        
+        public void initAnimation(){
+            this.contentArea = fullAreas.get(iContent);            
 
-            final int oriX = (int) visibleArea[iContent].getX();
-            final int oriY = (int) visibleArea[iContent].getY();
-            final int endX = (int) visibleArea[iContent].getWidth();
-            final int endY = (int) visibleArea[iContent].getHeight();
-            final int areaWidth = endX-oriX;
-            final int areaHeight = endY-oriY;
+            oriX = (int) visibleArea[iContent].getX();
+            oriY = (int) visibleArea[iContent].getY();
+            endX = (int) visibleArea[iContent].getWidth();
+            endY = (int) visibleArea[iContent].getHeight();
+            areaWidth = endX-oriX;
+            areaHeight = endY-oriY;
 
             /*
             * Total dimensions of area of the content
             */
-            final int contentWidth = contentArea[0].length;
-            final int contentHeight = contentArea.length;
+            contentWidth = contentArea[0].length;
+            contentHeight = contentArea.length;
             
             /*
             * START LOCATION OF CONTENT
             */
-            final IntegerProperty posXIni= new SimpleIntegerProperty(0);
-            final IntegerProperty posYIni = new SimpleIntegerProperty(0);
+            posXIni= new SimpleIntegerProperty(0);
+            posYIni = new SimpleIntegerProperty(0);
 
             // content at its final position
             posYIni.set(0);
@@ -783,26 +828,25 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
             } 
             
             // +1,-1 to make the translation ot the content, 0 to pause it
-            final IntegerProperty posX = new SimpleIntegerProperty(posXIni.get());
-            final IntegerProperty posY = new SimpleIntegerProperty(posYIni.get());
+            posX = new SimpleIntegerProperty(posXIni.get());
+            posY = new SimpleIntegerProperty(posYIni.get());
             
             // speed = gap of ms to refresh the matrixPanel
-            final int speed = (content.getLapse() > 20) ?content.getLapse():20;
-            final boolean isBlinkEffect=(content.getEffect().equals(Content.Effect.BLINK) || 
-                                         content.getEffect().equals(Content.Effect.BLINK_4) ||
-                                         content.getEffect().equals(Content.Effect.BLINK_10));
-            final int limitBlink=(content.getEffect().equals(Content.Effect.BLINK)?10000: 
-                                  (content.getEffect().equals(Content.Effect.BLINK_4)?7:
-                                   (content.getEffect().equals(Content.Effect.BLINK_10)?19:0)));
-    
+            speed = (content.getLapse() > 20) ?content.getLapse():20;
+            isBlinkEffect=(content.getEffect().equals(Content.Effect.BLINK) || 
+                            content.getEffect().equals(Content.Effect.BLINK_4) ||
+                            content.getEffect().equals(Content.Effect.BLINK_10));
+            limitBlink=(content.getEffect().equals(Content.Effect.BLINK)?10000: 
+                        (content.getEffect().equals(Content.Effect.BLINK_4)?7:
+                         (content.getEffect().equals(Content.Effect.BLINK_10)?19:0)));
+
             /*
              * Effect.SPRAY
              */
-            
-            final LinkedHashMap<Integer,int[]> brightLeds = new LinkedHashMap<Integer,int[]>();
-            final ArrayList<int[]> arrBrightLeds=new ArrayList<int[]>();
-            
             if(content.getEffect().equals(Content.Effect.SPRAY)){
+                brightLeds = new LinkedHashMap<Integer,int[]>();
+                arrBrightLeds=new ArrayList<int[]>();
+                
                 // list of brighting LEDs: column j, row i, intensity val
                 for (int i = oriY; i < endY; i++) {
                     for (int j = oriX; j < endX; j++) {
@@ -831,217 +875,203 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
                 }
                 arrBrightLeds.clear();
 
+                /*
+                 * SPRAY Effect. Number of leds showed in each step
+                 */
+                iterLeds=brightLeds.size()/16;
             }
-            
-            /*
-             * SPRAY Effect. Number of leds showed in each step
-             */
-            final int iterLeds=brightLeds.size()/16;
-        
-            
-            
-            /*
-             * THE ANIMATION
-             */
-            new AnimationTimer() {
-                private long lastUpdate=0l;
-                // blink effect
-                private boolean bBlink=false; // heartbit
-                private int contBlink=0;
-                private int iter=0;
+        }
                 
-                @Override
-                public void handle(long now) {
+        @Override
+        public void handle(long now) {
+            /*
+            *  only make one frame step animation IF enough fps, 
+            *  the content is visible and it isn't in pause
+            */
+            if (now > lastUpdate + speed*1000000 && 
+                visibleContent[iContent].getValue() && 
+                incrPos.intValue()==1) {  
 
-                    /*
-                    *  only make one frame step animation IF enough fps, 
-                    *  the content is visible and it isn't in pause
-                    */
-                    if (now > lastUpdate + speed*1000000 && 
-                        visibleContent[iContent].getValue() && 
-                        incrPos[iContent].intValue()==1) {  
-                        
+                /*
+                *  check only the visible area
+                */
+                if(content.getEffect().equals(Content.Effect.SPRAY)){
+                    // show bunch of leds, starting from the end of the shrinking map
+                    for(int buc=0;buc<iterLeds;buc++){
+                        int[] led=(int[])brightLeds.get(brightLeds.size()-iter-1);
+                        final int toneB=(int)(led[LED_INTENSITY]/100);
+                        final int toneG=(int)((led[LED_INTENSITY]-toneB*100)/10);
+                        final int toneR=(int)(led[LED_INTENSITY]-toneB*100-toneG*10);
+                        Integer dot = new Integer(led[LED_COLUMN] + led[LED_ROW] * ledWidth.intValue());
+                        ((Circle)dotMap.get(dot)).setFill(Color.rgb(toneScale*toneR, toneScale*toneG, toneScale*toneB));
+                        iter=(iter<brightLeds.size()-1)?iter+1:iter;
+                    }                            
+                } else {
+                    for (int j = oriX; j < endX; j++) {
+                        for (int i = oriY; i < endY; i++) {
+                            Integer dot = new Integer(j + i * ledWidth.intValue());
+                            if (dotMap.get(dot) != null) {
+                                int pos=posX.intValue();
+                                if(content.getEffect().equals(Content.Effect.MIRROR)){
+                                    if(content.getTxtAlign().equals(Content.Align.LEFT) && j-oriX>contentWidth/2){
+                                        pos=-pos;
+                                    } else if(content.getTxtAlign().equals(Content.Align.CENTER) && j-oriX>areaWidth/2d){
+                                        pos=-pos-areaWidth+contentWidth;                                                
+                                    } else if(content.getTxtAlign().equals(Content.Align.RIGHT) && j-oriX>-contentWidth/2+areaWidth){
+                                        pos=-pos+2*(contentWidth-areaWidth);
+                                    }                                            
+                                }
+
+                                int val = 0;
+                                if (j + pos >= oriX && j + pos < contentWidth + oriX &&
+                                    i + posY.intValue() >= oriY && i + posY.intValue() < contentHeight + oriY) {
+                                    val = contentArea[i + posY.intValue() - oriY][j + pos - oriX];
+                                } 
+                                if ((val > 0 && !isBlinkEffect) || (val>0 && isBlinkEffect && bBlink)) {
+                                    final int toneB=val/100;
+                                    final int toneG=(val-toneB*100)/10;
+                                    final int toneR=(val-toneB*100-toneG*10);
+                                    ((Circle)dotMap.get(dot)).setFill(Color.rgb(toneScale*toneR, toneScale*toneG, toneScale*toneB));
+                                } else { 
+                                    ((Circle)dotMap.get(dot)).setFill(COLOR_OFF);
+                                }
+                            }
+                        }
+                    }
+                }
+                /*
+                 * INCREMENT TRASLATION OF CONTENT 
+                 * CHECK END OF MOVEMENT
+                 */
+                boolean endRotation=false;
+
+                if (content.getEffect().equals(Content.Effect.NONE)) {
+                    endRotation=true;
+                } else if (content.getEffect().equals(Content.Effect.SCROLL_RIGHT)) {
+                    posX.set(posX.intValue() - incrPos.getValue());
+                    if(content.getTxtAlign().equals(Content.Align.LEFT)){
+                        endRotation=(posX.intValue() < 0); // +cW-cW
+                    } else if(content.getTxtAlign().equals(Content.Align.CENTER)){
+                        endRotation=(posX.intValue() < -areaWidth/2+contentWidth/2); //+cW-(aW/2+cW/2)
+                    } else if(content.getTxtAlign().equals(Content.Align.RIGHT)){
+                        endRotation=(posX.intValue() < contentWidth-areaWidth); //+cW-aW
+                    }
+                } else if (content.getEffect().equals(Content.Effect.SCROLL_LEFT)) {
+                    posX.set(posX.intValue() + incrPos.getValue());
+                    if(content.getTxtAlign().equals(Content.Align.LEFT)){
+                        endRotation=(posX.intValue() > 0); // -aW+aW=0
+                    } else if(content.getTxtAlign().equals(Content.Align.CENTER)){
+                        endRotation=(posX.intValue() > -areaWidth/2+contentWidth/2); //-aW+(aW/2+fW/2)
+                    } else if(content.getTxtAlign().equals(Content.Align.RIGHT)){
+                        endRotation=(posX.intValue() > -areaWidth+contentWidth); // -aW+aW
+                    }
+                } else if (content.getEffect().equals(Content.Effect.SCROLL_DOWN)) {
+                    posY.set(posY.intValue() - incrPos.getValue());
+                    endRotation = (posY.intValue() < 0); // fullHeight-fullHeight
+                } else if (content.getEffect().equals(Content.Effect.SCROLL_UP)) {
+                    posY.set(posY.intValue() + incrPos.getValue());
+                    endRotation = (posY.intValue() > 0); // -areaHeight+areaHeight
+                } else if (content.getEffect().equals(Content.Effect.MIRROR)) {
+                    posX.set(posX.intValue() + incrPos.getValue());
+                    if(content.getTxtAlign().equals(Content.Align.LEFT)){
+                        endRotation=(posX.intValue() > 0); // -cW/2+cW/2
+                    } else if(content.getTxtAlign().equals(Content.Align.CENTER)){
+                        endRotation=(posX.intValue() > -areaWidth/2+contentWidth/2); // -aW/2+cW/2
+                    } else if(content.getTxtAlign().equals(Content.Align.RIGHT)){
+                        endRotation=(posX.intValue() > contentWidth-areaWidth); // cW/2-aW + cW/2
+                    }
+
+
+                } else if (isBlinkEffect){
+                    if(contBlink==limitBlink){
+                        endRotation=true;
+                        contBlink=-1;
+                    } else if(incrPos.getValue()==1){ // not in pause time
+                        endRotation=false;
+                        contBlink+=1;
+                        bBlink=!bBlink;                                
+                    }
+                } else if (content.getEffect().equals(Content.Effect.SPRAY)) {             
+                    if(iter>=brightLeds.size()-1){
+                        endRotation=true;
+                        iter=0;
+                    }
+                    else{
+                        endRotation=false;
+                    }
+                }
+
+                /*
+                * POST EFFECT
+                */
+                if(endRotation) {
+
+                    if(content.getPostEffect().equals(Content.PostEffect.STOP)) { 
+//                        System.out.println("stop content "+iContent);
+                        this.stop();
+                    } else if(content.getPostEffect().equals(Content.PostEffect.REPEAT) || 
+                              content.getPostEffect().equals(Content.PostEffect.PAUSE)){
+                        posX.set(posXIni.get());
+                        posY.set(posYIni.get());                               
+
+                        incrPos.setValue(0);                               
+
                         /*
-                        *  check only the visible area
+                        * PAUSE BETWEEN ROTATIONS
                         */
-                        if(content.getEffect().equals(Content.Effect.SPRAY)){
-                            // show bunch of leds, starting from the end of the shrinking map
-                            for(int buc=0;buc<iterLeds;buc++){
-                                int[] led=(int[])brightLeds.get(brightLeds.size()-iter-1);
-                                final int toneB=(int)(led[LED_INTENSITY]/100);
-                                final int toneG=(int)((led[LED_INTENSITY]-toneB*100)/10);
-                                final int toneR=(int)(led[LED_INTENSITY]-toneB*100-toneG*10);
-                                Integer dot = new Integer(led[LED_COLUMN] + led[LED_ROW] * ledWidth.intValue());
-                                ((Circle)dotMap.get(dot)).setFill(Color.rgb(toneScale*toneR, toneScale*toneG, toneScale*toneB));
-                                iter=(iter<brightLeds.size()-1)?iter+1:iter;
-                            }                            
-                        } else {
-                                for (int j = oriX; j < endX; j++) {
-                            for (int i = oriY; i < endY; i++) {
-                                    Integer dot = new Integer(j + i * ledWidth.intValue());
-                                    if (dotMap.get(dot) != null) {
-                                        int pos=posX.intValue();
-                                        if(content.getEffect().equals(Content.Effect.MIRROR)){
-                                            if(content.getTxtAlign().equals(Content.Align.LEFT) && j-oriX>contentWidth/2){
-                                                pos=-pos;
-                                            } else if(content.getTxtAlign().equals(Content.Align.CENTER) && j-oriX>areaWidth/2d){
-                                                pos=-pos-areaWidth+contentWidth;                                                
-                                            } else if(content.getTxtAlign().equals(Content.Align.RIGHT) && j-oriX>-contentWidth/2+areaWidth){
-                                                pos=-pos+2*(contentWidth-areaWidth);
-                                            }                                            
-                                        }
-                                        
-                                        int val = 0;
-                                        if (j + pos >= oriX && j + pos < contentWidth + oriX &&
-                                            i + posY.intValue() >= oriY && i + posY.intValue() < contentHeight + oriY) {
-                                            val = contentArea[i + posY.intValue() - oriY][j + pos - oriX];
-                                        } 
-                                        if ((val > 0 && !isBlinkEffect) || (isBlinkEffect && bBlink)) {
-                                            final int toneB=val/100;
-                                            final int toneG=(val-toneB*100)/10;
-                                            final int toneR=(val-toneB*100-toneG*10);
-                                            ((Circle)dotMap.get(dot)).setFill(Color.rgb(toneScale*toneR, toneScale*toneG, toneScale*toneB));
-                                        } else { 
+                        PauseTransition t=new PauseTransition();
+                        if(content.getPostEffect().equals(Content.PostEffect.REPEAT)){
+                            t.setDuration(Duration.millis(10));
+//                            System.out.println("repeat content "+iContent);  
+                        } else{
+                            t.setDuration(Duration.millis(content.getPause()));
+//                            System.out.println("Start pause content "+iContent);
+                        }
+                        t.setOnFinished(new EventHandler<ActionEvent>() {
+                            @Override
+                            public void handle(ActionEvent event) {
+                                System.out.println("End pause content "+iContent);
+                                incrPos.setValue(1);
+
+                                // clear screen
+                                if(content.getClear() || content.getEffect().equals(Content.Effect.SPRAY)){
+    //                                            for(Shape entry:dotMap.values()){
+    //                                                ((Circle)entry).setFill(COLOR_OFF);
+    //                                            }
+                                    for (int i = oriY; i < endY; i++) {
+                                        for (int j = oriX; j < endX; j++) {
+                                            Integer dot = new Integer(j + i * ledWidth.intValue());
                                             ((Circle)dotMap.get(dot)).setFill(COLOR_OFF);
                                         }
                                     }
                                 }
-                            }
-                        }
-                        /*
-                         * INCREMENT TRASLATION OF CONTENT 
-                         * CHECK END OF MOVEMENT
-                         */
-                        boolean endRotation=false;
-                        
-                        if (content.getEffect().equals(Content.Effect.NONE)) {
-                            endRotation=true;
-                        } else if (content.getEffect().equals(Content.Effect.SCROLL_RIGHT)) {
-                            posX.set(posX.intValue() - incrPos[iContent].getValue());
-                            if(content.getTxtAlign().equals(Content.Align.LEFT)){
-                                endRotation=(posX.intValue() < 0); // +cW-cW
-                            } else if(content.getTxtAlign().equals(Content.Align.CENTER)){
-                                endRotation=(posX.intValue() < -areaWidth/2+contentWidth/2); //+cW-(aW/2+cW/2)
-                            } else if(content.getTxtAlign().equals(Content.Align.RIGHT)){
-                                endRotation=(posX.intValue() < contentWidth-areaWidth); //+cW-aW
-                            }
-                        } else if (content.getEffect().equals(Content.Effect.SCROLL_LEFT)) {
-                            posX.set(posX.intValue() + incrPos[iContent].getValue());
-                            if(content.getTxtAlign().equals(Content.Align.LEFT)){
-                                endRotation=(posX.intValue() > 0); // -aW+aW=0
-                            } else if(content.getTxtAlign().equals(Content.Align.CENTER)){
-                                endRotation=(posX.intValue() > -areaWidth/2+contentWidth/2); //-aW+(aW/2+fW/2)
-                            } else if(content.getTxtAlign().equals(Content.Align.RIGHT)){
-                                endRotation=(posX.intValue() > -areaWidth+contentWidth); // -aW+aW
-                            }
-                        } else if (content.getEffect().equals(Content.Effect.SCROLL_DOWN)) {
-                            posY.set(posY.intValue() - incrPos[iContent].getValue());
-                            endRotation = (posY.intValue() < 0); // fullHeight-fullHeight
-                        } else if (content.getEffect().equals(Content.Effect.SCROLL_UP)) {
-                            posY.set(posY.intValue() + incrPos[iContent].getValue());
-                            endRotation = (posY.intValue() > 0); // -areaHeight+areaHeight
-                        } else if (content.getEffect().equals(Content.Effect.MIRROR)) {
-                            posX.set(posX.intValue() + incrPos[iContent].getValue());
-                            if(content.getTxtAlign().equals(Content.Align.LEFT)){
-                                endRotation=(posX.intValue() > 0); // -cW/2+cW/2
-                            } else if(content.getTxtAlign().equals(Content.Align.CENTER)){
-                                endRotation=(posX.intValue() > -areaWidth/2+contentWidth/2); // -aW/2+cW/2
-                            } else if(content.getTxtAlign().equals(Content.Align.RIGHT)){
-                                endRotation=(posX.intValue() > contentWidth-areaWidth); // cW/2-aW + cW/2
-                            }
-                           
-                            
-                        } else if (isBlinkEffect){
-                            if(contBlink==limitBlink){
-                                endRotation=true;
-                                contBlink=-1;
-                            } else if(incrPos[iContent].getValue()==1){ // not in pause time
-                                endRotation=false;
-                                contBlink+=1;
-                                bBlink=!bBlink;                                
-                            }
-                        } else if (content.getEffect().equals(Content.Effect.SPRAY)) {             
-                            if(iter>=brightLeds.size()-1){
-                                endRotation=true;
-                                iter=0;
-                            }
-                            else{
-                                endRotation=false;
-                            }
-                        }
 
-                        /*
-                        * POST EFFECT
-                        */
-                        if(endRotation) {
-                            
-                            if(content.getPostEffect().equals(Content.PostEffect.STOP)) { 
-                                System.out.println("stop content "+iContent);
-                                this.stop();
-                            } else if(content.getPostEffect().equals(Content.PostEffect.REPEAT) || 
-                                      content.getPostEffect().equals(Content.PostEffect.PAUSE)){
-                                posX.set(posXIni.get());
-                                posY.set(posYIni.get());                               
-                                
-                                incrPos[iContent].setValue(0);                               
-                                
-                                /*
-                                * PAUSE BETWEEN ROTATIONS
-                                */
-                                PauseTransition t=new PauseTransition();
-                                if(content.getPostEffect().equals(Content.PostEffect.REPEAT)){
-                                    t.setDuration(Duration.millis(10));
-                                    System.out.println("repeat content "+iContent);  
-                                } else{
-                                    t.setDuration(Duration.millis(content.getPause()));
-                                    System.out.println("Start pause content "+iContent);
+                                if(!content.getOrder().equals(Content.RotationOrder.SINGLE)){
+                                    // at the end of the content display, allow paired content to be displayed
+                                    for(ContentPair pair: pairs){
+                                        if(pair.isInPair(iContent)){                                                    
+                                            visibleContent[pair.getFirstIndex()].setValue(!pair.isVisibleFirst());
+                                            visibleContent[pair.getSecondIndex()].setValue(!pair.isVisibleSecond());                                            
+                                            pairs.get(pairs.indexOf(pair)).changeIndex();
+                                            break;
+                                        }
+                                    }                                
                                 }
-                                t.setOnFinished(new EventHandler<ActionEvent>() {
-                                    @Override
-                                    public void handle(ActionEvent event) {
-                                        System.out.println("End pause content "+iContent);
-                                        incrPos[iContent].setValue(1);
-                                        
-                                        // clear screen
-                                        if(content.getClear() || content.getEffect().equals(Content.Effect.SPRAY)){
-//                                            for(Shape entry:dotMap.values()){
-//                                                ((Circle)entry).setFill(COLOR_OFF);
-//                                            }
-                                            for (int i = oriY; i < endY; i++) {
-                                                for (int j = oriX; j < endX; j++) {
-                                                    Integer dot = new Integer(j + i * ledWidth.intValue());
-                                                    ((Circle)dotMap.get(dot)).setFill(COLOR_OFF);
-                                                }
-                                            }
-                                        }
-                                        
-                                        if(!content.getOrder().equals(Content.RotationOrder.SINGLE)){
-                                            // at the end of the content display, allow paired content to be displayed
-                                            for(ContentPair pair: pairs){
-                                                if(pair.isInPair(iContent)){                                                    
-                                                    visibleContent[pair.getFirstIndex()].setValue(!pair.isVisibleFirst());
-                                                    visibleContent[pair.getSecondIndex()].setValue(!pair.isVisibleSecond());                                            
-                                                    pairs.get(pairs.indexOf(pair)).changeIndex();
-                                                    break;
-                                                }
-                                            }                                
-                                        }
-                                    }
-                                });                                        
-                                t.playFromStart();                                
                             }
-                            
-                            
-                        }
-                        //System.out.println((now-lastUpdate)/1000000);
-                        lastUpdate = now;
+                        });                                        
+                        t.playFromStart();                                
                     }
+
+
                 }
-            }.start();
-
-        }        
+                //System.out.println((now-lastUpdate)/1000000);
+                lastUpdate = now;
+            }
+        }
+        
+        
     }
-
+    
     private static class ContentPair {
 
         private int indexFirst;
