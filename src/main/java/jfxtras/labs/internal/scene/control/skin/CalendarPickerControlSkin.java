@@ -190,6 +190,19 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		});
 		lGridPane.add(yearXSpinner, 5, 0, 3, 1); // col, row, hspan, vspan
 		
+		// double click here to show today
+		Label lTodayLabel = new Label("   ");
+		lTodayLabel.onMouseClickedProperty().set(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent event)
+			{
+				if (event.getClickCount() < 1) return;
+				setDisplayedCalendarToToday();
+			}
+		});
+		lGridPane.add(lTodayLabel, 0, 1);  // col, row
+		
 		// weekday labels
 		for (int i = 0; i < 7; i++)
 		{
@@ -461,6 +474,23 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		setDisplayedCalendar(lCalendar);
 	}
 	
+
+	/*
+	 * 
+	 */
+	private void setDisplayedCalendarToToday()
+	{
+		// get spinner values
+		Calendar lTodayCalendar = Calendar.getInstance();
+		
+		// get new calendar to display
+		Calendar lCalendar = (Calendar)getDisplayedCalendar().clone();
+		lCalendar.set(Calendar.YEAR, lTodayCalendar.get(Calendar.YEAR));
+		lCalendar.set(Calendar.MONTH, lTodayCalendar.get(Calendar.MONTH));
+		
+		// set it
+		setDisplayedCalendar(lCalendar);
+	}
 	
 	/**
 	 * refresh all
