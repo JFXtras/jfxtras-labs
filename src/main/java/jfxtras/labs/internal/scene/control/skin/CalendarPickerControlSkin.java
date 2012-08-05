@@ -183,7 +183,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		yearXSpinner.valueProperty().addListener(new ChangeListener<Integer>()
 		{
 			@Override
-			public void changed(ObservableValue arg0, Integer oldValue, Integer newValue)
+			public void changed(ObservableValue observableValue, Integer oldValue, Integer newValue)
 			{
 				setDisplayedCalendarFromSpinners();
 			}
@@ -201,6 +201,10 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			// add it
 			lGridPane.add(lLabel, i + 1, 1);  // col, row
 			
+			// remember the column it is associated with
+			lLabel.setUserData(Integer.valueOf(i));
+			lLabel.onMouseClickedProperty().set(weekdayLabelMouseClickedPropertyEventHandler);
+
 			// remember it
 			weekdayLabels.add(lLabel);
 			lLabel.setAlignment(Pos.BASELINE_CENTER); // TODO: not working
@@ -216,6 +220,10 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			
 			// remember it
 			weeknumberLabels.add(lLabel);
+			
+			// remember the row it is associated with
+			lLabel.setUserData(Integer.valueOf(i));
+			lLabel.onMouseClickedProperty().set(weeknumerLabelMouseClickedPropertyEventHandler);
 
 			// first of a row: add the weeknumber
 			lGridPane.add(weeknumberLabels.get(i), 0, i + 2);  // col, row
@@ -227,37 +235,11 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			// create buttons
 			ToggleButton lToggleButton = new ToggleButton("" + i);
 			lToggleButton.getStyleClass().add("day");
-			lToggleButton.selectedProperty().addListener(new ChangeListener<Boolean>()
-			{
-				@Override
-				public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2)
-				{
-					refreshDayButtonToggleState();
-				}
-			});
-			lToggleButton.onMouseReleasedProperty().set(new EventHandler<MouseEvent>()
-			{
-				@Override
-				public void handle(MouseEvent event)
-				{
-					ToggleButton lToggleButton = (ToggleButton)event.getSource();					
-					toggle(lToggleButton, event.isShiftDown());
-				}
-			});
-			lToggleButton.onKeyReleasedProperty().set(new EventHandler<KeyEvent>()
-			{
-				@Override
-				public void handle(KeyEvent event)
-				{
-					ToggleButton lToggleButton = (ToggleButton)event.getSource();
-					if (" ".equals(event.getText()))
-					{
-						toggle(lToggleButton, event.isShiftDown());
-					}
-				}
-			});
+			lToggleButton.selectedProperty().addListener(toggleButtonSelectedPropertyChangeListener); // for minimal memory usage, use a single listener
+			lToggleButton.onMouseReleasedProperty().set(toggleButtonMouseReleasedPropertyEventHandler); // for minimal memory usage, use a single listener
+			lToggleButton.onKeyReleasedProperty().set(toggleButtonKeyReleasedPropertyEventHandler); // for minimal memory usage, use a single listener
 			
-			// remember which bean belongs to this property
+			// remember which button belongs to this property
 			booleanPropertyToDayToggleButtonMap.put(lToggleButton.selectedProperty(), lToggleButton);
 			
 			// add it
@@ -279,13 +261,91 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	final private List<Label> weeknumberLabels = new ArrayList<Label>();
 	final private List<ToggleButton> dayButtons = new ArrayList<ToggleButton>();
 	final private Map<BooleanProperty, ToggleButton> booleanPropertyToDayToggleButtonMap = new WeakHashMap<BooleanProperty, ToggleButton>();
-	
+	final private ChangeListener<Boolean> toggleButtonSelectedPropertyChangeListener = new ChangeListener<Boolean>()
+	{
+		@Override
+		public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue)
+		{
+			refreshDayButtonToggleState();
+		}
+	};
+	final private EventHandler<MouseEvent> toggleButtonMouseReleasedPropertyEventHandler = new EventHandler<MouseEvent>()
+	{
+		@Override
+		public void handle(MouseEvent event)
+		{
+			ToggleButton lToggleButton = (ToggleButton)event.getSource();					
+			toggle(lToggleButton, event.isShiftDown());
+		}
+	};
+	final private EventHandler<KeyEvent> toggleButtonKeyReleasedPropertyEventHandler = new EventHandler<KeyEvent>()
+	{
+		@Override
+		public void handle(KeyEvent event)
+		{
+			ToggleButton lToggleButton = (ToggleButton)event.getSource();
+			if (" ".equals(event.getText()))
+			{
+				toggle(lToggleButton, event.isShiftDown());
+			}
+		}
+	};
+	final private EventHandler<MouseEvent> weekdayLabelMouseClickedPropertyEventHandler = new EventHandler<MouseEvent>()
+	{
+		@Override
+		public void handle(MouseEvent event)
+		{
+			// in single or range mode this does not do anything
+			if (getSkinnable().getMode() == CalendarPicker.Mode.SINGLE) return;
+			if (getSkinnable().getMode() == CalendarPicker.Mode.RANGE) return;
+			
+			// process the calendars
+			int lColIdx = ((Integer)((Label)event.getSource()).getUserData()).intValue();
+			for (int lRowIdx = 0; lRowIdx < 6; lRowIdx++)
+			{			
+				int lIdx = (lRowIdx * 7) + lColIdx;
+				ToggleButton lToggleButton = dayButtons.get(lIdx);	
+				if (lToggleButton.isVisible() == true) toggle(lToggleButton, false);
+			}
+		}
+	};
+	final private EventHandler<MouseEvent> weeknumerLabelMouseClickedPropertyEventHandler = new EventHandler<MouseEvent>()
+	{
+		@Override
+		public void handle(MouseEvent event)
+		{
+			// in single mode this does not do anything
+			if (getSkinnable().getMode() == CalendarPicker.Mode.SINGLE) return;
+			
+			// in range mode we clear the existing selection
+			if (getSkinnable().getMode() == CalendarPicker.Mode.RANGE)
+			{
+				getSkinnable().calendars().clear();
+			}
+			
+			// process the calendars
+			int lRowIdx = ((Integer)((Label)event.getSource()).getUserData()).intValue();
+			for (int i = lRowIdx * 7; i < (lRowIdx * 7) + 7; i++)
+			{			
+				ToggleButton lToggleButton = dayButtons.get(i);	
+				if (getSkinnable().getMode() == CalendarPicker.Mode.RANGE) 
+				{
+					getSkinnable().calendars().add( calendarForToggleButton(lToggleButton) );
+				}
+				else
+				{
+					toggle(lToggleButton, false);
+				}
+			}
+		}
+	};
+		
 	/**
 	 * 
 	 * @param toggleButton
-	 * @param shiftIsPressed
+	 * @return
 	 */
-	private void toggle(ToggleButton toggleButton, boolean shiftIsPressed)		
+	private Calendar calendarForToggleButton(ToggleButton toggleButton)
 	{
 		// base reference
 		int lDayToggleButtonIdx = dayButtons.indexOf(toggleButton);
@@ -299,6 +359,20 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		lToggledCalendar.set(Calendar.YEAR, getDisplayedCalendar().get(Calendar.YEAR));
 		lToggledCalendar.set(Calendar.MONTH, getDisplayedCalendar().get(Calendar.MONTH));
 		lToggledCalendar.set(Calendar.DATE, lDayOfMonth);
+		
+		// return
+		return lToggledCalendar;
+	}
+	
+	/**
+	 * 
+	 * @param toggleButton
+	 * @param shiftIsPressed
+	 */
+	private void toggle(ToggleButton toggleButton, boolean shiftIsPressed)		
+	{
+		// create calendar representing the date that was toggled
+		Calendar lToggledCalendar = calendarForToggleButton(toggleButton);
 
 		// select or deselect
 		List<Calendar> lCalendars = getSkinnable().calendars();
