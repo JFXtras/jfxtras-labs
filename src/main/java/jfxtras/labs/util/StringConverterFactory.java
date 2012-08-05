@@ -57,4 +57,26 @@ public class StringConverterFactory
 			}
 		};
 	}
+	
+	/**
+	 * 
+	 * @return A default string converter that does no extra processing on the strings it is given.
+	 */
+	static public StringConverter<Integer> forInteger()
+	{
+		return new StringConverter<Integer>()
+		{
+			@Override
+			public Integer fromString(String string)
+			{
+				return Integer.valueOf(string);
+			}
+
+			@Override
+			public String toString(Integer value)
+			{
+				return "" + value;
+			}
+		};
+	}
 }

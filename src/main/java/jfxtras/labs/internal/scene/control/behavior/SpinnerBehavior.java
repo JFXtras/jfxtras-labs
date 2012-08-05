@@ -76,8 +76,15 @@ public class SpinnerBehavior<T> extends BehaviorBase<Spinner<T>>
 	 */
 	public void parse(String text)
 	{
+		// strip
+		String lText = text;
+		String lPostfix = getControl().getPostfix();
+		if (lPostfix.length() > 0 && lText.endsWith(lPostfix)) lText = lText.substring(0, lText.length() - lPostfix.length());
+		String lPrefix = getControl().getPrefix();
+		if (lPrefix.length() > 0 && lText.startsWith(lPrefix)) lText = lText.substring(lPrefix.length());
+		
 		// convert from string to value
-		T lValue = getControl().getStringConverter().fromString(text);
+		T lValue = getControl().getStringConverter().fromString(lText);
 		
 		// if the value does exists in the domain
 		if (getControl().getItems().indexOf(lValue) >= 0)

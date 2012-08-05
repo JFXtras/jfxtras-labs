@@ -141,7 +141,7 @@ public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<
 		{
 			// update textfield
 			T lValue = getSkinnable().getValue();
-			textField.setText( getSkinnable().getStringConverter().toString(lValue) );
+			textField.setText( getSkinnable().getPrefix() + getSkinnable().getStringConverter().toString(lValue) + getSkinnable().getPostfix() );
 		}
 		else
 		{
