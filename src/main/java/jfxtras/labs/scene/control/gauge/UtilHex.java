@@ -280,13 +280,13 @@ public class UtilHex {
             try {
                 fis = new FileInputStream(file);
             } catch (FileNotFoundException ex) {
-                System.out.println("Fichero " + m_sFullPath + " no encontrado");
+                System.out.println("File " + m_sFullPath + " not found");
                 return false;
             }
             try {
                 read(fis);
             } catch (IOException ex) {
-                System.out.append("Error de lectura");
+                System.out.append("Error reading bmp file");
                 return false;
             }
 
@@ -299,7 +299,7 @@ public class UtilHex {
             try {
                 read(stream);
             } catch (IOException ex) {
-                System.out.append("Error de lectura");
+                System.out.append("Error reading bmp file");
                 return false;
             }
 

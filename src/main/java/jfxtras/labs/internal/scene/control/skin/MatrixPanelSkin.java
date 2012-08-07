@@ -32,12 +32,15 @@ import java.util.*;
 import javafx.animation.AnimationTimer;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -79,7 +82,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
     private IntegerProperty     ledWidth;
     private IntegerProperty     ledHeight;
     private Group               dots;
-    private List<Content>       contents;
+    private ObservableList<Content> contents;
     private Map<Integer, Shape> dotMap;
     private BooleanProperty[]   visibleContent=null;
     private final int           toneScale=85;
@@ -114,8 +117,6 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
         ledHeight.bind(control.ledHeightProperty());
 
         contents = control.getContents();
-
-        dotMap = new HashMap<Integer, Shape>(ledWidth.intValue() * ledHeight.intValue());
 
         addBindings();
         addListeners();
@@ -154,6 +155,13 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
                 isDirty = true;
             }
+        });
+              
+        contents.addListener(new ListChangeListener(){
+            @Override public void onChanged(ListChangeListener.Change c) {
+                System.out.println("Change");
+                paint();                
+            }            
         });
 
     }
@@ -568,7 +576,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
     /*
      * full area required for each content, even not visible
      */
-    private final ArrayList<int[][]> fullAreas = new ArrayList<int[][]>();
+    private ArrayList<int[][]> fullAreas = null;
     /*
      * visible AREAS in the panel, one per content
      */
@@ -576,19 +584,21 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
     /* 
      * PAIRS of contents in the same area
      */
-    private final ArrayList<ContentPair> pairs=new ArrayList<ContentPair>();
+    private ArrayList<ContentPair> pairs=null;
     /*
      * ANIMATION of each content
      */
-    private Animation[] Anim=null;
+    private ArrayList<Animation> Anim=null;
     
        
     public void updatePanel() {
-        //System.out.println("updatePanel");
+        System.out.println("updatePanel "+contents.size());
         if (contents == null) {
             return;
         }
-
+        // stop previous animations, if any
+        stop();
+        
         /*
          * status of the full matrix of visible leds
          * 0: off
@@ -601,6 +611,8 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
          * FIRST: GET IMAGE RAW DATA AND FILL THE LEDS IN ITS AREA
          */
         int contAreas = 0;
+        fullAreas = new ArrayList<int[][]>();
+        pairs=new ArrayList<ContentPair>();
         visibleArea = new Rectangle[contents.size()];
         for (final Content content : contents) {
             int x0 = (int) content.getOrigin().getX() + (int) content.getArea().getX();
@@ -715,18 +727,24 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
         
         // bind content display to paired content
         visibleContent=new SimpleBooleanProperty[contents.size()];
-        
-        Anim=new Animation[contents.size()];
+        // clear screen
+        for(Shape entry:dotMap.values()){
+            ((Circle)entry).setFill(COLOR_OFF);
+        }
+
+        Anim=new ArrayList<Animation>();
         
         for (final Content content : contents) {
             
             final int iContent=contents.indexOf(content);
             /*
-             * Create ANIMATION for each content
+             * Create ANIMATION for each content, if content is not null
              */
-            Anim[iContent]=new Animation(iContent, content);
-            Anim[iContent].initAnimation();
-            
+            if(fullAreas.get(iContent)!=null){
+                Animation iAnim=new Animation(iContent, content);
+                iAnim.initAnimation();
+                Anim.add(iAnim);
+            }
         }        
         
         /*
@@ -734,6 +752,16 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
          */
         for (final Animation a : Anim) {
             a.start();
+        }
+    }
+    
+    public void stop(){
+        if(Anim!=null){
+            for (final Animation a : Anim) {
+                a.stop();
+            }
+            Anim.clear();
+            Anim=null;
         }
     }
 
@@ -749,7 +777,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
         private int contentWidth, contentHeight;
         private IntegerProperty posX, posY, posXIni, posYIni;
         private int[][] contentArea=null;
-        private int speed, limitBlink, iterLeds;
+        private int realLapse, advance, limX, limitBlink, iterLeds;
         private boolean isBlinkEffect;
         
         private LinkedHashMap<Integer,int[]> brightLeds=null;
@@ -797,10 +825,16 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
             posYIni.set(0);
             if(content.getTxtAlign().equals(Content.Align.LEFT)){
                 posXIni.set(0);
+                // SCROLL_RIGHT: +cW-cW, SCROLL_LEFT: -aW+aW=0, MIRROR: -cW/2+cW/2
+                limX=0; 
             } else if(content.getTxtAlign().equals(Content.Align.CENTER)){
                 posXIni.set(contentWidth/2-areaWidth/2);
+                //SCROLL_RIGHT: +cW-(aW/2+cW/2) SCROLL_LEFT: -aW+(aW/2+fW/2), MIRROR: -aW/2+cW/2
+                limX=-areaWidth/2+contentWidth/2; 
             } else if(content.getTxtAlign().equals(Content.Align.RIGHT)){
                 posXIni.set(contentWidth-areaWidth);
+                //SCROLL_RIGHT: +cW-aW, SCROLL_LEFT: -aW+cW=0, MIRROR: cW/2-aW + cW/2
+                limX=contentWidth-areaWidth; 
             }
             
             // moved first if neccessary to start the scrolling effect
@@ -832,7 +866,16 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
             posY = new SimpleIntegerProperty(posYIni.get());
             
             // speed = gap of ms to refresh the matrixPanel
-            speed = (content.getLapse() > 20) ?content.getLapse():20;
+            realLapse = (content.getLapse() >= 250)?content.getLapse():250;
+            
+            if(content.getLapse()>0){
+                advance=realLapse/content.getLapse(); // horizontal advance per step (int). 
+                realLapse=advance*content.getLapse();
+            }
+            else{
+                advance=10;
+            }
+            
             isBlinkEffect=(content.getEffect().equals(Content.Effect.BLINK) || 
                             content.getEffect().equals(Content.Effect.BLINK_4) ||
                             content.getEffect().equals(Content.Effect.BLINK_10));
@@ -876,9 +919,9 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
                 arrBrightLeds.clear();
 
                 /*
-                 * SPRAY Effect. Number of leds showed in each step
+                 * SPRAY Effect. Number of new leds showed in each step
                  */
-                iterLeds=brightLeds.size()/16;
+                iterLeds=brightLeds.size()/advance;
             }
         }
                 
@@ -888,7 +931,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
             *  only make one frame step animation IF enough fps, 
             *  the content is visible and it isn't in pause
             */
-            if (now > lastUpdate + speed*1000000 && 
+            if (now > lastUpdate + realLapse*1000000 && 
                 visibleContent[iContent].getValue() && 
                 incrPos.intValue()==1) {  
 
@@ -948,40 +991,28 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
                 if (content.getEffect().equals(Content.Effect.NONE)) {
                     endRotation=true;
                 } else if (content.getEffect().equals(Content.Effect.SCROLL_RIGHT)) {
-                    posX.set(posX.intValue() - incrPos.getValue());
-                    if(content.getTxtAlign().equals(Content.Align.LEFT)){
-                        endRotation=(posX.intValue() < 0); // +cW-cW
-                    } else if(content.getTxtAlign().equals(Content.Align.CENTER)){
-                        endRotation=(posX.intValue() < -areaWidth/2+contentWidth/2); //+cW-(aW/2+cW/2)
-                    } else if(content.getTxtAlign().equals(Content.Align.RIGHT)){
-                        endRotation=(posX.intValue() < contentWidth-areaWidth); //+cW-aW
+                    endRotation=(posX.intValue() <= limX); 
+                    if(posX.intValue() - advance*incrPos.getValue() <= limX){ 
+                        posX.set(limX);
                     }
-                } else if (content.getEffect().equals(Content.Effect.SCROLL_LEFT)) {
-                    posX.set(posX.intValue() + incrPos.getValue());
-                    if(content.getTxtAlign().equals(Content.Align.LEFT)){
-                        endRotation=(posX.intValue() > 0); // -aW+aW=0
-                    } else if(content.getTxtAlign().equals(Content.Align.CENTER)){
-                        endRotation=(posX.intValue() > -areaWidth/2+contentWidth/2); //-aW+(aW/2+fW/2)
-                    } else if(content.getTxtAlign().equals(Content.Align.RIGHT)){
-                        endRotation=(posX.intValue() > -areaWidth+contentWidth); // -aW+aW
+                    else{
+                        posX.set(posX.intValue() - advance*incrPos.getValue());
+                    } 
+                } else if (content.getEffect().equals(Content.Effect.SCROLL_LEFT) || 
+                           content.getEffect().equals(Content.Effect.MIRROR)) {
+                    endRotation=(posX.intValue() >= limX); 
+                    if(posX.intValue() + advance*incrPos.getValue() >= limX){ 
+                        posX.set(limX);
                     }
+                    else{
+                        posX.set(posX.intValue() + advance*incrPos.getValue());
+                    }                    
                 } else if (content.getEffect().equals(Content.Effect.SCROLL_DOWN)) {
                     posY.set(posY.intValue() - incrPos.getValue());
                     endRotation = (posY.intValue() < 0); // fullHeight-fullHeight
                 } else if (content.getEffect().equals(Content.Effect.SCROLL_UP)) {
                     posY.set(posY.intValue() + incrPos.getValue());
                     endRotation = (posY.intValue() > 0); // -areaHeight+areaHeight
-                } else if (content.getEffect().equals(Content.Effect.MIRROR)) {
-                    posX.set(posX.intValue() + incrPos.getValue());
-                    if(content.getTxtAlign().equals(Content.Align.LEFT)){
-                        endRotation=(posX.intValue() > 0); // -cW/2+cW/2
-                    } else if(content.getTxtAlign().equals(Content.Align.CENTER)){
-                        endRotation=(posX.intValue() > -areaWidth/2+contentWidth/2); // -aW/2+cW/2
-                    } else if(content.getTxtAlign().equals(Content.Align.RIGHT)){
-                        endRotation=(posX.intValue() > contentWidth-areaWidth); // cW/2-aW + cW/2
-                    }
-
-
                 } else if (isBlinkEffect){
                     if(contBlink==limitBlink){
                         endRotation=true;
@@ -1030,14 +1061,11 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
                         t.setOnFinished(new EventHandler<ActionEvent>() {
                             @Override
                             public void handle(ActionEvent event) {
-                                System.out.println("End pause content "+iContent);
+//                                System.out.println("End pause content "+iContent);
                                 incrPos.setValue(1);
 
                                 // clear screen
                                 if(content.getClear() || content.getEffect().equals(Content.Effect.SPRAY)){
-    //                                            for(Shape entry:dotMap.values()){
-    //                                                ((Circle)entry).setFill(COLOR_OFF);
-    //                                            }
                                     for (int i = oriY; i < endY; i++) {
                                         for (int j = oriX; j < endX; j++) {
                                             Integer dot = new Integer(j + i * ledWidth.intValue());

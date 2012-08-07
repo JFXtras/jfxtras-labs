@@ -1031,40 +1031,24 @@ public class MatrixPanel extends Control {
             return ledHeight;
         }
 
-    public final List<Content> getContents() {
+    public final ObservableList<Content> getContents() {
         return contents;
     }
 
     public final void setContents(final Content[] CONTENT_ARRAY) {
-        contents.clear();
-        for (final Content CONTENT : CONTENT_ARRAY) {
-            if(CONTENT.getType().equals(Content.Type.IMAGE)){
-                contents.add(new Content(CONTENT.getColor(),CONTENT.getType(),CONTENT.getOrigin(),CONTENT.getArea(),CONTENT.getBmpName(), 
-                                            Content.MatrixFont.NONE,Content.Gap.NULL, Content.Align.LEFT, CONTENT.getEffect(),CONTENT.getPostEffect(),
-                                            CONTENT.getPause(),CONTENT.getLapse(),CONTENT.getOrder(),CONTENT.getClear()));
-            }
-            else{
-                contents.add(new Content(CONTENT.getColor(),CONTENT.getType(),CONTENT.getOrigin(),CONTENT.getArea(),CONTENT.getTxtContent(), 
-                                         CONTENT.getMatrixFont(),CONTENT.getFontGap(), CONTENT.getTxtAlign(), CONTENT.getEffect(),
-                                         CONTENT.getPostEffect(),CONTENT.getPause(),CONTENT.getLapse(),CONTENT.getOrder(),CONTENT.getClear()));
-            }
-        }
+        /*
+         * clear and add all contents, getting just one and only Change Event
+         * instead of adding one content by one to the list
+         */
+        contents.setAll(CONTENT_ARRAY);        
     }
 
     public final void setContents(final List<Content> CONTENTS) {
-        contents.clear();
-        for (final Content CONTENT : CONTENTS) {
-            if(CONTENT.getType().equals(Content.Type.IMAGE)){
-                contents.add(new Content(CONTENT.getColor(),CONTENT.getType(),CONTENT.getOrigin(),CONTENT.getArea(),CONTENT.getBmpName(), 
-                                         Content.MatrixFont.NONE,Content.Gap.NULL, Content.Align.LEFT, CONTENT.getEffect(),CONTENT.getPostEffect(),
-                                         CONTENT.getPause(),CONTENT.getLapse(),CONTENT.getOrder(),CONTENT.getClear()));
-            }
-            else{
-                contents.add(new Content(CONTENT.getColor(),CONTENT.getType(),CONTENT.getOrigin(),CONTENT.getArea(),CONTENT.getTxtContent(), 
-                                         CONTENT.getMatrixFont(),CONTENT.getFontGap(), CONTENT.getTxtAlign(), CONTENT.getEffect(),CONTENT.getPostEffect(),
-                                         CONTENT.getPause(),CONTENT.getLapse(),CONTENT.getOrder(),CONTENT.getClear()));
-            }
-        }
+        /*
+         * clear and add all contents, getting just one and only Change Event
+         * instead of adding one content by one to the list
+         */
+        contents.setAll(CONTENTS);
     }
 
     public final void addContent(final Content CONTENT) {
