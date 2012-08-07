@@ -185,7 +185,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 		gridPane.setHgap(3);
 		gridPane.add(textField, 0, 0);
 		gridPane.add(imageView, 1, 0);
-		ColumnConstraints column0 = new ColumnConstraints(10, 10, Double.MAX_VALUE);
+		ColumnConstraints column0 = new ColumnConstraints(100, 10, Double.MAX_VALUE);
 		column0.setHgrow(Priority.ALWAYS);
 		gridPane.getColumnConstraints().addAll(column0); // first column gets any extra width
 		
@@ -239,7 +239,11 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 			// get the text to parse
 			String lText = textField.getText();
 			lText = lText.trim();
-			if (lText.length() == 0) return;
+			if (lText.length() == 0) 
+			{
+				getSkinnable().setValue(null);
+				return;
+			}
 			
 			// starts with - means substract days
 			if (lText.startsWith("-") || lText.startsWith("+"))

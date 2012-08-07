@@ -51,7 +51,6 @@ public class CalendarTextField extends Control
 	 */
 	public CalendarTextField()
 	{
-		setValue(Calendar.getInstance());
 		construct();
 	}
 	

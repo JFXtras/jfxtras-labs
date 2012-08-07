@@ -39,6 +39,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -140,7 +141,7 @@ public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<
 		{
 			// update textfield
 			T lValue = getSkinnable().getValue();
-			textField.setText( getSkinnable().getStringConverter().toString(lValue) );
+			textField.setText( getSkinnable().getPrefix() + getSkinnable().getStringConverter().toString(lValue) + getSkinnable().getPostfix() );
 		}
 		else
 		{
@@ -243,6 +244,35 @@ public class SpinnerCaspianSkin<T> extends SkinBase<Spinner<T>, SpinnerBehavior<
 				unclickArrows();
 				repeatDecrementClickTimer.stop();
 				repeatIncrementClickTimer.stop();
+			}
+		});
+		// mouse wheel
+		gridPane.setOnScroll(new EventHandler<ScrollEvent>()
+		{
+			@Override
+			public void handle(ScrollEvent evt)
+			{
+				// if click was the in the greater vicinity of the decrement arrow
+				if (evt.getDeltaY() < 0 || evt.getDeltaX() < 0)
+				{
+					// left
+					unclickArrows();
+					decrementArrow.getStyleClass().add("clicked");
+					getSkinnable().decrement();
+					unclickTimer.restart();
+					return;
+				}
+				
+				// if click was the in the greater vicinity of the increment arrow
+				if (evt.getDeltaY() > 0 || evt.getDeltaX() > 0)
+				{
+					// right
+					unclickArrows();
+					incrementArrow.getStyleClass().add("clicked");
+					getSkinnable().increment();
+					unclickTimer.restart();
+					return;
+				}
 			}
 		});
 		

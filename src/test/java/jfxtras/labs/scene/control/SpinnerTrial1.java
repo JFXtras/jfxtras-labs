@@ -186,7 +186,44 @@ public class SpinnerTrial1 extends Application {
 				Spinner<String> lSpinner = new Spinner<String>( "a", "b", "c", "d", "e" )
 					.withAlignment(Pos.CENTER_RIGHT)
 					.withEditable(true)
+					.withStringConverter(StringConverterFactory.forString())
 					;
+				lGridPane.add(lSpinner, 1, lRowIdx++);
+			}
+			{
+				lGridPane.add(new Label("Integer range 0..100 with %"), 0, lRowIdx);
+				Spinner<Integer> lSpinner = new Spinner<Integer>(0, 100)
+						.withPostfix("%")
+						.withAlignment(Pos.CENTER_RIGHT)
+						;
+				lGridPane.add(lSpinner, 1, lRowIdx++);
+			}
+			{
+				lGridPane.add(new Label("Integer range 0..100 with %"), 0, lRowIdx);
+				Spinner<Integer> lSpinner = new Spinner<Integer>(0, 100)
+						.withPostfix("%")
+						.withAlignment(Pos.CENTER_RIGHT)
+						.withEditable(true)
+						.withStringConverter(StringConverterFactory.forInteger())
+						;
+				lGridPane.add(lSpinner, 1, lRowIdx++);
+			}
+			{
+				lGridPane.add(new Label("Integer currency 0..100"), 0, lRowIdx);
+				Spinner<Integer> lSpinner = new Spinner<Integer>(0, 100)
+						.withPrefix("$ ")
+						.withAlignment(Pos.CENTER_RIGHT)
+						;
+				lGridPane.add(lSpinner, 1, lRowIdx++);
+			}
+			{
+				lGridPane.add(new Label("Integer currency 0..100"), 0, lRowIdx);
+				Spinner<Integer> lSpinner = new Spinner<Integer>(0, 100)
+						.withPrefix("$ ")
+						.withAlignment(Pos.CENTER_RIGHT)
+						.withEditable(true)
+						.withStringConverter(StringConverterFactory.forInteger())
+						;
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			
