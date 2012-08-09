@@ -57,6 +57,7 @@ public class SpinnerIntegerList extends java.util.AbstractList<Integer>
 	{
 		int lValue = ((Integer)o).intValue();
 		int lIndex = (lValue - this.from) / this.step;
+		if (lIndex > size) return -1;
 		return lIndex;
 	}
 	

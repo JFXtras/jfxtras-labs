@@ -31,9 +31,15 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -50,24 +56,76 @@ public class CalendarTextFieldTrial1 extends Application {
 	@Override
 	public void start(Stage stage) {
 
-		// a layout
-		VBox lVBox = new VBox();
-//		lVBox.getChildren().add(new Label("blabla"));
-		
-        // add a node
-		CalendarTextField lCalendarTextFieldX = new CalendarTextField();
-		lCalendarTextFieldX.valueProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
-		lVBox.getChildren().add(lCalendarTextFieldX);
-        
-		// button
-		Button lButton = new Button("test");
-		lVBox.getChildren().add(lButton);
+		HBox lHBox = new HBox();
+
+		{
+			GridPane lGridPane = new GridPane();
+			lGridPane.setVgap(5.0);
+			lGridPane.setPadding(new Insets(5.0));
+			int lRowIdx = 0;
+			
+	        // default textfield
+			{
+				lGridPane.add(new Label("default"), 0, lRowIdx);
+				CalendarTextField lCalendarTextField = new CalendarTextField();
+				lGridPane.add(lCalendarTextField, 1, lRowIdx);
+				
+				final TextField lValueTextField = new TextField();
+				lCalendarTextField.valueProperty().addListener(new ChangeListener<Calendar>()
+				{
+					@Override
+					public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
+					{
+						lValueTextField.setText(CalendarPicker.quickFormatCalendar(newValue));
+					}
+				});
+				lValueTextField.setText(CalendarPicker.quickFormatCalendar(lCalendarTextField.getValue()));
+				lValueTextField.setDisable(true);
+				lGridPane.add(lValueTextField, 2, lRowIdx++);
+			}
+			
+	        // preset value
+			{
+				lGridPane.add(new Label("preset value"), 0, lRowIdx);
+				CalendarTextField lCalendarTextField = new CalendarTextField();
+				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
+				
+				lCalendarTextField.valueProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
+			}
+			
+	        // programmatically set to null
+			{
+				lGridPane.add(new Label("programatically to null"), 0, lRowIdx);
+				CalendarTextField lCalendarTextField = new CalendarTextField();
+				lGridPane.add(lCalendarTextField, 1, lRowIdx);
+				
+				final TextField lValueTextField = new TextField();
+				lCalendarTextField.valueProperty().addListener(new ChangeListener<Calendar>()
+				{
+					@Override
+					public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
+					{
+						lValueTextField.setText(CalendarPicker.quickFormatCalendar(newValue));
+					}
+				});
+				lValueTextField.setText(CalendarPicker.quickFormatCalendar(lCalendarTextField.getValue()));
+				lValueTextField.setDisable(true);
+				lGridPane.add(lValueTextField, 2, lRowIdx++);
+				
+				// set
+				lCalendarTextField.setValue(Calendar.getInstance());
+				lCalendarTextField.setValue(null);
+			}
+			
+			lHBox.getChildren().add(lGridPane);
+		}
+			
 		
         // create scene
-        Scene scene = new Scene(lVBox, 350, 100);
+        Scene scene = new Scene(lHBox, 800, 600);
 
         // create stage
-        stage.setTitle("CalendarTextBoxX");
+        stage.setTitle("CalendarTextBox");
         stage.setScene(scene);
         stage.show();
     }

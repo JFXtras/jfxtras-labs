@@ -259,6 +259,22 @@ public class Spinner<T> extends Control
 	public void setEditable(Boolean value) { this.editableObjectProperty.setValue(value); }
 	public Spinner<T> withEditable(Boolean value) { setEditable(value); return this; }
 
+	/** Postfix: */
+	public ObjectProperty<String> postfixProperty() { return this.postfixObjectProperty; }
+	final private ObjectProperty<String> postfixObjectProperty = new SimpleObjectProperty<String>(this, "postfix", "");
+	// java bean API
+	public String getPostfix() { return this.postfixObjectProperty.getValue(); }
+	public void setPostfix(String value) { this.postfixObjectProperty.setValue(value); }
+	public Spinner<T> withPostfix(String value) { setPostfix(value); return this; }
+
+	/** Prefix: */
+	public ObjectProperty<String> prefixProperty() { return this.prefixObjectProperty; }
+	final private ObjectProperty<String> prefixObjectProperty = new SimpleObjectProperty<String>(this, "prefix", "");
+	// java bean API
+	public String getPrefix() { return this.prefixObjectProperty.getValue(); }
+	public void setPrefix(String value) { this.prefixObjectProperty.setValue(value); }
+	public Spinner<T> withPrefix(String value) { setPrefix(value); return this; }
+
 	/** Items: */
 	public ObjectProperty<ObservableList<T>> itemsProperty() { return this.itemsObjectProperty; }
 	final private ObjectProperty<ObservableList<T>> itemsObjectProperty = new SimpleObjectProperty<ObservableList<T>>(this, "items", null);
@@ -360,7 +376,7 @@ public class Spinner<T> extends Control
 			{
 				this.label = new Label();
 			}
-			this.label.setText( lValue == null ? "" : getStringConverter().toString(lValue) );
+			this.label.setText( lValue == null ? "" : spinner.getPrefix() + getStringConverter().toString(lValue) + spinner.getPostfix() );
 			return this.label;
 		}
 	};
