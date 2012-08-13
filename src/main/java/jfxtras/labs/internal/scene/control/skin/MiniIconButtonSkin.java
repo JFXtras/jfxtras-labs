@@ -46,6 +46,21 @@ import jfxtras.labs.scene.control.MiniIconButton;
 public class MiniIconButtonSkin extends ButtonSkin {
 
     /**
+     * transition for the mini-icon jump
+     */
+    private final TranslateTransition jumpTransition = new TranslateTransition();
+
+    /**
+     * the timline for blinking
+     */
+    private final Timeline blinkTimeline = new Timeline();
+
+    /**
+     * remember the used keyframe, it is easier to change
+     */
+    private KeyFrame kf;
+
+    /**
      * Fixed distance for the first version
      */
     private static final double JUMP_DISTANCE = 4.0;
@@ -60,11 +75,18 @@ public class MiniIconButtonSkin extends ButtonSkin {
      */
     private static final double MINIMUM_OPACITY_FOR_BLINKING = 0.0;
 
-    public MiniIconButtonSkin(MiniIconButton miniIconButton) {
+    public MiniIconButtonSkin(final MiniIconButton miniIconButton) {
         super(miniIconButton);
-        createMiniIconButton();
+        setMiniIcon(miniIconButton.getMiniIcon());
+        positionMiniIcon(miniIconButton);
+        calculateAndSetNewMiniIconSize(miniIconButton);
+        defaultConfigJumpingAnimation();
+        defaultConfigBlinkingAnimation();
+        configureJumping(miniIconButton);
+        configureBlinking(miniIconButton);
+        startAnimation(miniIconButton);
         addImageViewSizeBindings();
-        addAnimation();
+        addChangeListeners();
     }
 
     @Override
@@ -87,33 +109,154 @@ public class MiniIconButtonSkin extends ButtonSkin {
         layoutInArea(miniIcon, left, top,
                 width, height,
                 baselineOffset, getMargin(miniIcon),
-                childAlignment != null? childAlignment.getHpos() : getAlignment().getHpos(),
-                childAlignment != null? childAlignment.getVpos() : getAlignment().getVpos());
+                childAlignment != null ? childAlignment.getHpos() : getAlignment().getHpos(),
+                childAlignment != null ? childAlignment.getVpos() : getAlignment().getVpos());
     }
 
-    private void createMiniIconButton() {
+    /**
+     * adds the change listeners to the {@link MiniIconButton} properties
+     */
+    private void addChangeListeners() {
         final MiniIconButton miniIconButton = (MiniIconButton)getSkinnable();
+        miniIconButton.animationDurationProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(final ObservableValue<? extends Number> observableValue,
+                                final Number oldDuraction,
+                                final Number newDuration) {
+                stopAnimation(miniIconButton);
+                configureJumping(miniIconButton);
+                configureBlinking(miniIconButton);
+                startAnimation(miniIconButton);
+                requestLayout();
+            }
+        });
+
+        miniIconButton.animationTypeProperty().addListener(new ChangeListener<MiniIconButton.AnimationType>() {
+            @Override
+            public void changed(final ObservableValue<? extends MiniIconButton.AnimationType> observableValue,
+                                final MiniIconButton.AnimationType oldAnimationType,
+                                final MiniIconButton.AnimationType newAnimationType) {
+                startAnimation(miniIconButton);
+                requestLayout();
+            }
+        });
+
+        miniIconButton.miniIconPositionProperty().addListener(new ChangeListener<Pos>() {
+            @Override
+            public void changed(final ObservableValue<? extends Pos> observableValue,
+                                final Pos oldPosition,
+                                final Pos newPosition) {
+                StackPane.setAlignment(miniIconButton.getMiniIcon(), newPosition);
+                requestLayout();
+            }
+        });
+
+        miniIconButton.miniIconProperty().addListener(new ChangeListener<ImageView>() {
+            @Override
+            public void changed(final ObservableValue<? extends ImageView> observableValue,
+                                final ImageView oldMiniIcon,
+                                final ImageView newMiniIcon) {
+                stopAnimation(miniIconButton);
+                changeMiniIcon(oldMiniIcon, newMiniIcon);
+                positionMiniIcon(miniIconButton);
+                configureJumping(miniIconButton);
+                configureBlinking(miniIconButton);
+                calculateAndSetNewMiniIconSize(miniIconButton);
+                startAnimation(miniIconButton);
+                requestLayout();
+            }
+        });
+
+        miniIconButton.miniIconRatioProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(final ObservableValue<? extends Number> observableValue,
+                                final Number oldNumber,
+                                final Number newNumber) {
+                stopAnimation(miniIconButton);
+                calculateAndSetNewMiniIconSize(miniIconButton);
+                startAnimation(miniIconButton);
+                requestLayout();
+            }
+        });
+    }
+
+    /**
+     * removes the old mini icon and sets the new one
+     * @param oldMiniIcon the old mini icon
+     * @param newMiniIcon the new mini icon
+     */
+    private void changeMiniIcon(final ImageView oldMiniIcon, final ImageView newMiniIcon) {
+        getChildren().remove(oldMiniIcon);
+        setMiniIcon(newMiniIcon);
+    }
+
+    /**
+     * sets the given mini icon
+     * @param miniIcon the mini icon
+     */
+    private void setMiniIcon(final ImageView miniIcon) {
+        getChildren().add(miniIcon);
+    }
+
+    /**
+     * configure the blinking has some steps to do
+     * <ol>
+     *     <li>remove the old {@link KeyFrame} from the timeline</li>
+     *     <li>create a new {@link KeyValue}</li>
+     *     <li>create a new {@link KeyFrame}</li>
+     *     <li>add new {@link KeyFrame} to the timeline</li>
+     * </ol>
+     * @param miniIconButton the mini icon button
+     */
+    private void configureBlinking(final MiniIconButton miniIconButton) {
+        blinkTimeline.getKeyFrames().remove(kf);
+        final KeyValue kv = new KeyValue(miniIconButton.getMiniIcon().opacityProperty(), MINIMUM_OPACITY_FOR_BLINKING);
+        kf = new KeyFrame(Duration.millis(miniIconButton.getAnimationDuration()), kv);
+        blinkTimeline.getKeyFrames().add(kf);
+    }
+
+    /**
+     * configure the jumping animation
+     * @param miniIconButton the mini icon button
+     */
+    private void configureJumping(final MiniIconButton miniIconButton) {
+        final ImageView miniIcon = miniIconButton.getMiniIcon();
+        jumpTransition.setNode(miniIcon);
+        jumpTransition.setDuration(Duration.millis(miniIconButton.getAnimationDuration()));
+    }
+
+    /**
+     * positions the mini icon on the given {@link Pos}
+     * @param miniIconButton
+     */
+    private void positionMiniIcon(final MiniIconButton miniIconButton) {
         final ImageView miniIcon = miniIconButton.getMiniIcon();
         StackPane.setAlignment(miniIcon, miniIconButton.getMiniIconPosition());
         StackPane.setMargin(miniIcon, new Insets(MARGIN, MARGIN, MARGIN, MARGIN));
-        getChildren().addAll(miniIcon);
     }
 
     /**
      * bind the size of the mini-icon to the button size
      */
     private void addImageViewSizeBindings() {
+        final MiniIconButton miniIconButton = (MiniIconButton)getSkinnable();
         widthProperty().addListener(new ChangeListener() {
             @Override
-            public void changed(ObservableValue o, Object oldVal, Object newVal) {
-                calculateAndSetNewMiniIconSize();
+            public void changed(final ObservableValue o,
+                                final Object oldVal,
+                                final Object newVal) {
+                calculateAndSetNewMiniIconSize(miniIconButton);
+                requestLayout();
             }
         });
 
         heightProperty().addListener(new ChangeListener() {
             @Override
-            public void changed(ObservableValue o, Object oldVal, Object newVal) {
-                calculateAndSetNewMiniIconSize();
+            public void changed(final ObservableValue o,
+                                final Object oldVal,
+                                final Object newVal) {
+                calculateAndSetNewMiniIconSize(miniIconButton);
+                requestLayout();
             }
         });
     }
@@ -122,9 +265,9 @@ public class MiniIconButtonSkin extends ButtonSkin {
      * Calculates the mini icons size.
      * The max height and width are the original height and width of the image
      * to avoid pixel blocks instead of a good looking icon.
+     * @param miniIconButton the mini icon button
      */
-    private void calculateAndSetNewMiniIconSize() {
-        final MiniIconButton miniIconButton = (MiniIconButton)getSkinnable();
+    private void calculateAndSetNewMiniIconSize(final MiniIconButton miniIconButton) {
         final ImageView miniIcon = miniIconButton.getMiniIcon();
 
         // multiply the button width and height with the ratio
@@ -164,53 +307,58 @@ public class MiniIconButtonSkin extends ButtonSkin {
 
     /**
      * Add the animation based on the animation type.
+     * @param miniIconButton the mini icon button
      */
-    private void addAnimation() {
-        final MiniIconButton miniIconButton = (MiniIconButton)getSkinnable();
+    private void startAnimation(final MiniIconButton miniIconButton) {
+
         switch (miniIconButton.getAnimationType()) {
             case BLINK:
-                addBlinkingAnimation();
+                jumpTransition.stop();
+                blinkTimeline.play();
                 break;
             case JUMP:
-                addJumpingAnimation();
+                blinkTimeline.stop();
+                jumpTransition.play();
                 break;
             case NONE:
-                // none is the default case
             default:
-                // noting to animate
+                blinkTimeline.stop();
+                jumpTransition.stop();
                 break;
         }
     }
 
     /**
+     * Stops the animation and resets the start values
+     * @param miniIconButton the mini icon button
+     */
+    private void stopAnimation(final MiniIconButton miniIconButton) {
+        final ImageView miniIcon = miniIconButton.getMiniIcon();
+        jumpTransition.stop();
+        blinkTimeline.stop();
+
+        miniIcon.setOpacity(1.0);
+        miniIcon.setTranslateY(0.0);
+    }
+
+    /**
      * The jump animation changes the position of the mini-icon.
      */
-    private void addJumpingAnimation() {
-        final MiniIconButton miniIconButton = (MiniIconButton)getSkinnable();
-        final ImageView miniIcon = miniIconButton.getMiniIcon();
-        final TranslateTransition translateTransition =  new TranslateTransition(Duration.millis(miniIconButton.getAnimationDuration()), miniIcon);
+    private void defaultConfigJumpingAnimation() {
         final double start = 0.0;
         final double end = -JUMP_DISTANCE;
-        translateTransition.setFromY(start);
-        translateTransition.setToY(end);
-        translateTransition.setCycleCount(-1);
-        translateTransition.setAutoReverse(true);
-        translateTransition.setInterpolator(Interpolator.EASE_BOTH);
-        translateTransition.play();
+        jumpTransition.setFromY(start);
+        jumpTransition.setToY(end);
+        jumpTransition.setCycleCount(-1);
+        jumpTransition.setAutoReverse(true);
+        jumpTransition.setInterpolator(Interpolator.EASE_BOTH);
     }
 
     /**
      * Blinking animation changes the opacity of the mini-icon.
      */
-    private void addBlinkingAnimation() {
-        final MiniIconButton miniIconButton = (MiniIconButton)getSkinnable();
-        final ImageView miniIcon = miniIconButton.getMiniIcon();
-        final Timeline timeline = new Timeline();
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.setAutoReverse(true);
-        final KeyValue kv = new KeyValue(miniIcon.opacityProperty(), MINIMUM_OPACITY_FOR_BLINKING);
-        final KeyFrame kf = new KeyFrame(Duration.millis(miniIconButton.getAnimationDuration()), kv);
-        timeline.getKeyFrames().add(kf);
-        timeline.play();
+    private void defaultConfigBlinkingAnimation() {
+        blinkTimeline.setCycleCount(Timeline.INDEFINITE);
+        blinkTimeline.setAutoReverse(true);
     }
 }
