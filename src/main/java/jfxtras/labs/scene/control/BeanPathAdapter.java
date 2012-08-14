@@ -7,9 +7,12 @@ import java.lang.invoke.MethodType;
 import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -230,12 +233,33 @@ import javafx.util.StringConverter;
  * </pre>
  * 
  * </li>
+ * <li>
+ * <b>{@linkplain Date}/{@linkplain Calendar} binding:</b>
+ * 
+ * <pre>
+ * // Assuming &quot;dob&quot; is a java.util.Date or java.util.Calendar field
+ * // in person it can be bound to a java.util.Date or
+ * // java.util.Calendar JavaFX control property. Example uses a
+ * // jfxtras.labs.scene.control.CalendarPicker
+ * final Person person = new Person();
+ * final BeanPathAdapter&lt;Person&gt; personPA = new BeanPathAdapter&lt;&gt;(person);
+ * CalendarPicker calendarPicker = new CalendarPicker();
+ * personPA.bindBidirectional(&quot;dob&quot;, calendarPicker.calendarProperty(),
+ * 		Calendar.class);
+ * </pre>
+ * 
+ * </li>
  * </ol>
  * 
  * @see #bindBidirectional(String, Property)
+ * @see #bindContentBidirectional(String, String, Class, ObservableList, Class,
+ *      SelectionModel, String)
+ * @see #bindContentBidirectional(String, String, Class, ObservableSet, Class,
+ *      SelectionModel, String)
+ * @see #bindContentBidirectional(String, String, Class, ObservableMap, Class,
+ *      SelectionModel, String)
  * @param <B>
  *            the bean type
- * @author Will Hoover
  */
 public class BeanPathAdapter<B> {
 
@@ -991,7 +1015,7 @@ public class BeanPathAdapter<B> {
 			// reset initial dirty value
 			final Object currVal = fp.getDirty();
 			if (val != null && !val.toString().isEmpty()
-					&& !val.equals(currVal)) {
+					&& !val.equals(currVal) && !fp.hasDefaultDerived()) {
 				fp.setDirty(val);
 			}
 		}
@@ -1096,6 +1120,7 @@ public class BeanPathAdapter<B> {
 	 */
 	protected static class FieldStringConverter<T> extends StringConverter<T> {
 
+		public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
 		private final Class<T> targetClass;
 
 		/**
@@ -1122,15 +1147,7 @@ public class BeanPathAdapter<B> {
 		 */
 		@Override
 		public String toString(final T object) {
-			String cv = null;
-			if (object != null
-					&& SelectionModel.class.isAssignableFrom(object.getClass())) {
-				cv = ((SelectionModel<?>) object).getSelectedItem() != null ? ((SelectionModel<?>) object)
-						.getSelectedItem().toString() : null;
-			} else if (object != null) {
-				cv = object.toString();
-			}
-			return cv;
+			return coerceToString(object);
 		}
 
 		/**
@@ -1140,6 +1157,31 @@ public class BeanPathAdapter<B> {
 			return targetClass;
 		}
 
+		/**
+		 * Attempts to coerce a value into a {@linkplain String}
+		 * 
+		 * @param v
+		 *            the value to coerce
+		 * @return the coerced value (null when value failed to be coerced)
+		 */
+		public static <VT> String coerceToString(final VT v) {
+			String cv = null;
+			if (v != null
+					&& SelectionModel.class.isAssignableFrom(v.getClass())) {
+				cv = ((SelectionModel<?>) v).getSelectedItem() != null ? ((SelectionModel<?>) v)
+						.getSelectedItem().toString() : null;
+			} else if (v != null
+					&& (Calendar.class.isAssignableFrom(v.getClass()) || Date.class
+							.isAssignableFrom(v.getClass()))) {
+				final Date date = Date.class
+						.isAssignableFrom(v.getClass()) ? (Date) v
+						: ((Calendar) v).getTime();
+				cv = SDF.format(date);
+			} else if (v != null) {
+				cv = v.toString();
+			}
+			return cv;
+		}
 		/**
 		 * Attempts to coerce a value into the specified class
 		 * 
@@ -1159,8 +1201,34 @@ public class BeanPathAdapter<B> {
 			if (v == null || (!isStringType && v.toString().isEmpty())) {
 				val = (VT) FieldHandle.defaultValue(targetClass);
 			} else if (isStringType
-					|| (v != null && v.getClass().isAssignableFrom(targetClass))) {
+					|| (v != null && targetClass.isAssignableFrom(v.getClass()))) {
 				val = (VT) targetClass.cast(v);
+			} else if (v != null && Date.class.isAssignableFrom(targetClass)) {
+				if (Calendar.class.isAssignableFrom(v.getClass())) {
+					val = (VT) ((Calendar) v).getTime();
+				} else {
+					try {
+						val = (VT) SDF.parse(v.toString());
+					} catch (final Throwable t) {
+						throw new IllegalArgumentException(String.format(
+								"Unable to convert %1$s to %2$s", v,
+								targetClass), t);
+					}
+				}
+			} else if (v != null
+					&& Calendar.class.isAssignableFrom(targetClass)) {
+				final Calendar cal = Calendar.getInstance();
+				Date date = null;
+				try {
+					date = Date.class.isAssignableFrom(v.getClass()) ? (Date) v
+							: SDF.parse(v.toString());
+					cal.setTime(date);
+					val = (VT) cal;
+				} catch (final Throwable t) {
+					throw new IllegalArgumentException(String.format(
+							"Unable to convert %1$s to %2$s", v, targetClass),
+							t);
+				}
 			} else {
 				val = FieldHandle.valueOf(targetClass, v.toString());
 			}
@@ -1249,6 +1317,19 @@ public class BeanPathAdapter<B> {
 		}
 
 		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String get() {
+			try {
+				final Object dv = getDirty();
+				return FieldStringConverter.coerceToString(dv);
+			} catch (final Throwable t) {
+				throw new RuntimeException("Unable to get value", t);
+			}
+		}
+
+		/**
 		 * Sets the {@link FieldHandle#deriveValueFromAccessor()} value
 		 */
 		protected void setDerived() {
@@ -1277,9 +1358,22 @@ public class BeanPathAdapter<B> {
 		private void setObject(final Object v) {
 			try {
 				if (v != null
-						&& Collection.class.isAssignableFrom(v.getClass())) {
+						&& (Collection.class.isAssignableFrom(v.getClass()) || Map.class
+								.isAssignableFrom(v.getClass()))) {
 					fieldHandle.getSetter().invoke(v);
 					postSet();
+				} else if (v != null
+						&& (Calendar.class.isAssignableFrom(v.getClass()) || Date.class
+								.isAssignableFrom(v.getClass()))) {
+					final Object cv = fieldHandle.getAccessor().invoke();
+					if (cv != v) {
+						final Object val = FieldStringConverter.coerce(
+								v,
+								cv != null ? cv.getClass() : fieldHandle
+										.getFieldType());
+						fieldHandle.getSetter().invoke(val);
+						postSet();
+					}
 				} else {
 					set(v != null ? v.toString() : null);
 				}
@@ -1917,19 +2011,6 @@ public class BeanPathAdapter<B> {
 		}
 
 		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public String get() {
-			try {
-				final Object dv = getDirty();
-				return dv != null ? dv.toString() : null;
-			} catch (final Throwable t) {
-				throw new RuntimeException("Unable to get value", t);
-			}
-		}
-
-		/**
 		 * @return the dirty value before conversion takes place
 		 */
 		public Object getDirty() {
@@ -1974,6 +2055,13 @@ public class BeanPathAdapter<B> {
 		@SuppressWarnings("unchecked")
 		public Class<T> getFieldType() {
 			return (Class<T>) fieldHandle.getFieldType();
+		}
+
+		/**
+		 * @return the {@linkplain FieldHandle#hasDefaultDerived()}
+		 */
+		public boolean hasDefaultDerived() {
+			return fieldHandle.hasDefaultDerived();
 		}
 
 		/**
@@ -2154,6 +2242,7 @@ public class BeanPathAdapter<B> {
 		private MethodHandle setter;
 		private final Class<F> declaredFieldType;
 		private T target;
+		private boolean hasDefaultDerived;
 
 		/**
 		 * Constructor
@@ -2429,10 +2518,11 @@ public class BeanPathAdapter<B> {
 							targetValue = (F) new LinkedHashSet<>();
 						} else if (Map.class.isAssignableFrom(clazz)) {
 							targetValue = (F) new HashMap<>();
-						} else {
+						} else if (!Calendar.class.isAssignableFrom(getFieldType())) {
 							targetValue = clazz.newInstance();
 						}
 					}
+					hasDefaultDerived = true;
 				} catch (final Exception e) {
 					throw new IllegalArgumentException(
 							String.format(
@@ -2440,6 +2530,8 @@ public class BeanPathAdapter<B> {
 									getAccessor(), getAccessor().type()
 											.returnType()));
 				}
+			} else {
+				hasDefaultDerived = false;
 			}
 			return targetValue;
 		}
@@ -2493,6 +2585,13 @@ public class BeanPathAdapter<B> {
 		 */
 		public Class<?> getFieldType() {
 			return getAccessor().type().returnType();
+		}
+
+		/**
+		 * @return true if a default value has been derived
+		 */
+		public boolean hasDefaultDerived() {
+			return hasDefaultDerived;
 		}
 	}
 }
