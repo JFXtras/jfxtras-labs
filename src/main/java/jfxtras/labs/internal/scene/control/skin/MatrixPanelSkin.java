@@ -32,7 +32,6 @@ import java.util.*;
 import javafx.animation.AnimationTimer;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -75,7 +74,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
     private Point2D             framelessOffset;
     private Group               frame;
     private Group               background;
-    private Group               bar;
+    private Group               matrix;
     private Group               foreground;
     private boolean             isDirty;
     private boolean             initialized;
@@ -96,7 +95,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
         framelessOffset = new Point2D(0, 0);
         frame = new Group();
         background = new Group();
-        bar = new Group();
+        matrix = new Group();
         foreground = new Group();
         ledWidth = new SimpleIntegerProperty(0);
         ledHeight = new SimpleIntegerProperty(0);
@@ -159,8 +158,8 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
               
         contents.addListener(new ListChangeListener(){
             @Override public void onChanged(ListChangeListener.Change c) {
-                System.out.println("Change");
-                paint();                
+//                System.out.println("Change");
+                updatePanel();                
             }            
         });
 
@@ -193,17 +192,10 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
         
         getChildren().addAll(frame,
             background,
-            bar,
+            matrix,
             foreground);
         
-        Platform.runLater(new Runnable(){
-
-            @Override
-            public void run() {
-                updatePanel();
-            }
-            
-        });
+        updatePanel();
         
         isDirty = false;
     }
@@ -543,12 +535,12 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
         final double WIDTH = gaugeBounds.getWidth() - 2 * (0.0841121495 * SIZE + 5);
         final double HEIGHT = gaugeBounds.getHeight() - 2 * (0.0841121495 * SIZE + 5);
 
-        bar.getChildren().clear();
+        matrix.getChildren().clear();
 
         final Shape IBOUNDS = new Rectangle(0.0841121495 * SIZE + 1, 0.0841121495 * SIZE + 1, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         IBOUNDS.setStroke(null);
-        bar.getChildren().add(IBOUNDS);
+        matrix.getChildren().add(IBOUNDS);
 
         radio = WIDTH / (3d * ledWidth.doubleValue() + 1);
         double gapW = radio;
@@ -567,7 +559,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
             }
         }
         dots.setCache(true);
-        bar.getChildren().add(dots);
+        matrix.getChildren().add(dots);
     }
     
     private final int LED_COLUMN    = 0;
@@ -592,167 +584,174 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
     
        
     public void updatePanel() {
-        System.out.println("updatePanel "+contents.size());
+//        System.out.println("updatePanel "+contents.size());
         if (contents == null) {
             return;
         }
         // stop previous animations, if any
         stop();
         
-        /*
-         * status of the full matrix of visible leds
-         * 0: off
-         * 1: tone low  ( 85)
-         * 2: tone mid  (170)
-         * 3: tone high (255)
-         */
-        
-        /*
-         * FIRST: GET IMAGE RAW DATA AND FILL THE LEDS IN ITS AREA
-         */
-        int contAreas = 0;
-        fullAreas = new ArrayList<int[][]>();
-        pairs=new ArrayList<ContentPair>();
-        visibleArea = new Rectangle[contents.size()];
-        for (final Content content : contents) {
-            int x0 = (int) content.getOrigin().getX() + (int) content.getArea().getX();
-            int y0 = (int) content.getOrigin().getY() + (int) content.getArea().getY();
-            int maxX = Math.min((int) content.getArea().getWidth(), ledWidth.intValue());
-            int maxY = Math.min((int) content.getArea().getHeight(), ledHeight.intValue());
-            visibleArea[contAreas] = new Rectangle(Math.max(x0, 0), Math.max(y0, 0), maxX, maxY);
-            
-            if (content.getType().equals(Content.Type.IMAGE)) {
-                UtilHex img = new UtilHex();
-                img.convertsBmp(content.getBmpName(), 65, 190, true,true,true);
-                                
-                String sBytes = img.getRawData();
-                if (sBytes != null) {
-                    String[] v = sBytes.split("\\s");
-                    final int levels = 3;
-                    //final int bmpWidth = UtilHex.word2Int(v[6], v[7]);
-                    final int bmpHeight = UtilHex.word2Int(v[8], v[9]);
-                    final int tamLineaBMT = (int)(UtilHex.dword2Long(v[20],v[21], v[22], v[23]) / bmpHeight / levels / 3); // en bytes
-                    int pos = 32;
-                    final int[][] area = new int[bmpHeight][tamLineaBMT * 8];
-                    final int[] colors={(content.getColor().equals(MatrixColor.RED) || content.getColor().equals(MatrixColor.YELLOW) || content.getColor().equals(MatrixColor.RGB))?1:0,
-                                        (content.getColor().equals(MatrixColor.GREEN) || content.getColor().equals(MatrixColor.YELLOW) || content.getColor().equals(MatrixColor.RGB))?1:0,
-                                        (content.getColor().equals(MatrixColor.BLUE) || content.getColor().equals(MatrixColor.RGB))?1:0};
-                    for (int j = 0; j < levels; j++) { // leds: [RED k=0]0-1-2-3, [GREEN k=1]0-10-20-30, [BLUE k=2] 0-100-200-300
-                        for(int k=0; k<3; k++){ // 3 colors
-                            for (int fila = 0; fila < bmpHeight; fila++) {
-                                for (int i = 0; i < tamLineaBMT; i++) { // recorrido por cada byte de cada fila
-                                    String bits = UtilHex.hex2bin(v[pos++]); // contiene la fila de 8 bits
-                                    for (int m = 0; m < 8; m++) {
-                                        area[fila][i * 8 + m] += (bits.substring(m, m + 1).equalsIgnoreCase("1") ? 1 : 0)*Math.pow(10,k)*colors[k];
+        // run as thread
+        Platform.runLater(new Runnable(){
+
+            @Override
+            public void run() {
+                /*
+                 * status of the full matrix of visible leds
+                 * 0: off
+                 * 1: tone low  ( 85)
+                 * 2: tone mid  (170)
+                 * 3: tone high (255)
+                 */
+
+                /*
+                 * FIRST: GET IMAGE RAW DATA AND FILL THE LEDS IN ITS AREA
+                 */
+                int contAreas = 0;
+                fullAreas = new ArrayList<int[][]>();
+                pairs=new ArrayList<ContentPair>();
+                visibleArea = new Rectangle[contents.size()];
+                for (final Content content : contents) {
+                    int x0 = (int) content.getOrigin().getX() + (int) content.getArea().getX();
+                    int y0 = (int) content.getOrigin().getY() + (int) content.getArea().getY();
+                    int maxX = Math.min((int) content.getArea().getWidth(), ledWidth.intValue());
+                    int maxY = Math.min((int) content.getArea().getHeight(), ledHeight.intValue());
+                    visibleArea[contAreas] = new Rectangle(Math.max(x0, 0), Math.max(y0, 0), maxX, maxY);
+
+                    if (content.getType().equals(Content.Type.IMAGE)) {
+                        UtilHex img = new UtilHex();
+                        img.convertsBmp(content.getBmpName(), 65, 190, true,true,true);
+
+                        String sBytes = img.getRawData();
+                        if (sBytes != null) {
+                            String[] v = sBytes.split("\\s");
+                            final int levels = 3;
+                            //final int bmpWidth = UtilHex.word2Int(v[6], v[7]);
+                            final int bmpHeight = UtilHex.word2Int(v[8], v[9]);
+                            final int tamLineaBMT = (int)(UtilHex.dword2Long(v[20],v[21], v[22], v[23]) / bmpHeight / levels / 3); // en bytes
+                            int pos = 32;
+                            final int[][] area = new int[bmpHeight][tamLineaBMT * 8];
+                            final int[] colors={(content.getColor().equals(MatrixColor.RED) || content.getColor().equals(MatrixColor.YELLOW) || content.getColor().equals(MatrixColor.RGB))?1:0,
+                                                (content.getColor().equals(MatrixColor.GREEN) || content.getColor().equals(MatrixColor.YELLOW) || content.getColor().equals(MatrixColor.RGB))?1:0,
+                                                (content.getColor().equals(MatrixColor.BLUE) || content.getColor().equals(MatrixColor.RGB))?1:0};
+                            for (int j = 0; j < levels; j++) { // leds: [RED k=0]0-1-2-3, [GREEN k=1]0-10-20-30, [BLUE k=2] 0-100-200-300
+                                for(int k=0; k<3; k++){ // 3 colors
+                                    for (int fila = 0; fila < bmpHeight; fila++) {
+                                        for (int i = 0; i < tamLineaBMT; i++) { // recorrido por cada byte de cada fila
+                                            String bits = UtilHex.hex2bin(v[pos++]); // contiene la fila de 8 bits
+                                            for (int m = 0; m < 8; m++) {
+                                                area[fila][i * 8 + m] += (bits.substring(m, m + 1).equalsIgnoreCase("1") ? 1 : 0)*Math.pow(10,k)*colors[k];
+                                            }
+                                        }
                                     }
+                                }                        
+                            }
+                            fullAreas.add(contAreas,area);
+                        }
+                        else{
+                            fullAreas.add(contAreas,null);
+                        }
+                    } else if (content.getType().equals(Content.Type.TEXT)) {
+                        MatrixPanel.DotFont dotF = new MatrixPanel.DotFont(content.getTxtContent(), content.getMatrixFont(), content.getFontGap().getGapWidth());
+                        boolean[][] bDots = dotF.getDotString();
+                        if (bDots != null) {
+                            final int color=(content.getColor().equals(MatrixColor.RED)?3:
+                                            (content.getColor().equals(MatrixColor.GREEN)?30:
+                                            (content.getColor().equals(MatrixColor.BLUE)?300:
+                                            (content.getColor().equals(MatrixColor.YELLOW)?33:333))));
+                            final int[][] area = new int[bDots.length][bDots[0].length];
+                            for (int fila = 0; fila < bDots.length; fila++) {
+                                for (int j = 0; j < bDots[fila].length; j++) {
+                                    area[fila][j] = ((bDots[fila][j]) ? color : 0);
                                 }
                             }
-                        }                        
-                    }
-                    fullAreas.add(contAreas,area);
-                }
-                else{
-                    fullAreas.add(contAreas,null);
-                }
-            } else if (content.getType().equals(Content.Type.TEXT)) {
-                MatrixPanel.DotFont dotF = new MatrixPanel.DotFont(content.getTxtContent(), content.getMatrixFont(), content.getFontGap().getGapWidth());
-                boolean[][] bDots = dotF.getDotString();
-                if (bDots != null) {
-                    final int color=(content.getColor().equals(MatrixColor.RED)?3:
-                                    (content.getColor().equals(MatrixColor.GREEN)?30:
-                                    (content.getColor().equals(MatrixColor.BLUE)?300:
-                                    (content.getColor().equals(MatrixColor.YELLOW)?33:333))));
-                    final int[][] area = new int[bDots.length][bDots[0].length];
-                    for (int fila = 0; fila < bDots.length; fila++) {
-                        for (int j = 0; j < bDots[fila].length; j++) {
-                            area[fila][j] = ((bDots[fila][j]) ? color : 0);
+                            fullAreas.add(contAreas,area);
+                        }
+                        else{
+                            fullAreas.add(contAreas,null);
                         }
                     }
-                    fullAreas.add(contAreas,area);
-                }
-                else{
-                    fullAreas.add(contAreas,null);
-                }
-            }
-            contAreas += 1;
+                    contAreas += 1;
 
-        }
-        /*
-         * SECOND: CHECK FOR CONTENT PAIRS
-         */
-        for (final Content content1 : contents) {            
-            if(content1.getOrder().equals(Content.RotationOrder.FIRST)){
-                final int iContent1=contents.indexOf(content1);
-                for (final Content content2 : contents) {            
-                    final int iContent2=contents.indexOf(content2);
-                    if(content2.getOrder().equals(Content.RotationOrder.SECOND) &&
-                            content1.getArea().getBoundsInLocal().equals(content2.getArea().getBoundsInLocal())){
-                        ContentPair pair=new ContentPair(iContent1,iContent2);
-                        pairs.add(pair);
-                        break;
+                }
+                /*
+                 * SECOND: CHECK FOR CONTENT PAIRS
+                 */
+                for (final Content content1 : contents) {            
+                    if(content1.getOrder().equals(Content.RotationOrder.FIRST)){
+                        final int iContent1=contents.indexOf(content1);
+                        for (final Content content2 : contents) {            
+                            final int iContent2=contents.indexOf(content2);
+                            if(content2.getOrder().equals(Content.RotationOrder.SECOND) &&
+                                    content1.getArea().getBoundsInLocal().equals(content2.getArea().getBoundsInLocal())){
+                                ContentPair pair=new ContentPair(iContent1,iContent2);
+                                pairs.add(pair);
+                                break;
+                            }
+                        }
                     }
                 }
-            }
-        }
-        
-//        // Create the dark inner shadow on the bottom
-//        InnerShadow innerShadow = InnerShadowBuilder.create()
-//                                                    .offsetY(1)
-//                                                    .radius(1)
-//                                                    .color(Color.color(0, 0, 0, 0.65))
-//                                                    .blurType(BlurType.GAUSSIAN)
-//                                                    .build();
-//
-//        // Create the bright inner glow on the top
-//        InnerShadow innerGlow = InnerShadowBuilder.create()
-//                                                .offsetY(1)
-//                                                .radius(1)
-//                                                .color(Color.color(1, 1, 1, 0.65))
-//                                                .blurType(BlurType.GAUSSIAN)
-//                                                .input(innerShadow)
-//                                                .build();
-//
-//        // Create the drop shadow on the outside
-//        final DropShadow dropShadow = DropShadowBuilder.create()
-//                                                .radius(1)
-//                                                .color(Color.color(0, 0, 0, 0.65))
-//                                                .blurType(BlurType.GAUSSIAN)
-//                                                .input(innerGlow)
-//                                                .build();
-        
-        
-        /*
-         * THIRD: DISPLAY WITH/OUT ANIMATION
-         */
-        
-        // bind content display to paired content
-        visibleContent=new SimpleBooleanProperty[contents.size()];
-        // clear screen
-        for(Shape entry:dotMap.values()){
-            ((Circle)entry).setFill(COLOR_OFF);
-        }
 
-        Anim=new ArrayList<Animation>();
-        
-        for (final Content content : contents) {
-            
-            final int iContent=contents.indexOf(content);
-            /*
-             * Create ANIMATION for each content, if content is not null
-             */
-            if(fullAreas.get(iContent)!=null){
-                Animation iAnim=new Animation(iContent, content);
-                iAnim.initAnimation();
-                Anim.add(iAnim);
-            }
-        }        
-        
-        /*
-         * START ANIMATIONS AT THE SAME TIME
-         */
-        for (final Animation a : Anim) {
-            a.start();
-        }
+        //        // Create the dark inner shadow on the bottom
+        //        InnerShadow innerShadow = InnerShadowBuilder.create()
+        //                                                    .offsetY(1)
+        //                                                    .radius(1)
+        //                                                    .color(Color.color(0, 0, 0, 0.65))
+        //                                                    .blurType(BlurType.GAUSSIAN)
+        //                                                    .build();
+        //
+        //        // Create the bright inner glow on the top
+        //        InnerShadow innerGlow = InnerShadowBuilder.create()
+        //                                                .offsetY(1)
+        //                                                .radius(1)
+        //                                                .color(Color.color(1, 1, 1, 0.65))
+        //                                                .blurType(BlurType.GAUSSIAN)
+        //                                                .input(innerShadow)
+        //                                                .build();
+        //
+        //        // Create the drop shadow on the outside
+        //        final DropShadow dropShadow = DropShadowBuilder.create()
+        //                                                .radius(1)
+        //                                                .color(Color.color(0, 0, 0, 0.65))
+        //                                                .blurType(BlurType.GAUSSIAN)
+        //                                                .input(innerGlow)
+        //                                                .build();
+
+
+                /*
+                 * THIRD: DISPLAY WITH/OUT ANIMATION
+                 */
+
+                // bind content display to paired content
+                visibleContent=new SimpleBooleanProperty[contents.size()];
+                // clear screen
+                for(Shape entry:dotMap.values()){
+                    ((Circle)entry).setFill(COLOR_OFF);
+                }
+
+                Anim=new ArrayList<Animation>();
+
+                for (final Content content : contents) {
+
+                    final int iContent=contents.indexOf(content);
+                    /*
+                     * Create ANIMATION for each content, if content is not null
+                     */
+                    if(fullAreas.get(iContent)!=null){
+                        Animation iAnim=new Animation(iContent, content);
+                        iAnim.initAnimation();
+                        Anim.add(iAnim);
+                    }
+                }        
+
+                /*
+                 * START ANIMATIONS AT THE SAME TIME
+                 */
+                for (final Animation a : Anim) {
+                    a.start();
+                }
+            }            
+        });
     }
     
     public void stop(){
