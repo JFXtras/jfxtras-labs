@@ -69,7 +69,7 @@ public class MiniIconButton extends Button {
      * creates an empty button with a mini icon set
      * @param miniIcon the mini icon shown in front of the button
      */
-    public MiniIconButton(ImageView miniIcon) {
+    public MiniIconButton(final ImageView miniIcon) {
         super();
         setMiniIcon(miniIcon);
         init();
@@ -80,7 +80,7 @@ public class MiniIconButton extends Button {
      * @param text A text string for its label.
      * @param miniIcon the mini icon shown in front of the button
      */
-    public MiniIconButton(String text, ImageView miniIcon) {
+    public MiniIconButton(final String text, final ImageView miniIcon) {
         super(text);
         setMiniIcon(miniIcon);
         init();
@@ -91,7 +91,7 @@ public class MiniIconButton extends Button {
      * @param graphic the icon for its label.
      * @param miniIcon the mini icon shown in front of the button
      */
-    public MiniIconButton(Node graphic, ImageView miniIcon) {
+    public MiniIconButton(final Node graphic, final ImageView miniIcon) {
         super(null, graphic);
         setMiniIcon(miniIcon);
         init();
@@ -104,7 +104,7 @@ public class MiniIconButton extends Button {
      * @param graphic the icon for its label.
      * @param miniIcon the mini icon shown in front of the button
      */
-    public MiniIconButton(String text, Node graphic, ImageView miniIcon) {
+    public MiniIconButton(final String text, final Node graphic, final ImageView miniIcon) {
         super(text, graphic);
         setMiniIcon(miniIcon);
         init();
@@ -135,7 +135,7 @@ public class MiniIconButton extends Button {
      * Sets the mini icon
      * @param value node for the mini icon
      */
-    public void setMiniIcon(ImageView value) {
+    public void setMiniIcon(final ImageView value) {
         miniIconProperty().setValue(value);
     }
 
@@ -170,7 +170,7 @@ public class MiniIconButton extends Button {
      * @param value
      * @see AnimationType
      */
-    public void setAnimationType(AnimationType value) {
+    public void setAnimationType(final AnimationType value) {
         this.animationType.setValue(value);
     }
 
@@ -186,7 +186,7 @@ public class MiniIconButton extends Button {
      * Sets the position of the mini icon with {@link Pos}
      * @param value position of the mini-icon
      */
-    public final void setMiniIconPosition(Pos value) {
+    public final void setMiniIconPosition(final Pos value) {
         miniIconPosition.set(value);
     }
 
@@ -211,7 +211,7 @@ public class MiniIconButton extends Button {
      * Sets the ratio of the mini-icon corresponding to the buttons size
      * @param value could be a double number between 0.01 and 1.0 all others will be set to 0.01 or 1.0
      */
-    public final void setMiniIconRatio(double value) {
+    public final void setMiniIconRatio(final double value) {
         miniIconRatio.set(value);
     }
 
@@ -236,7 +236,7 @@ public class MiniIconButton extends Button {
      * Sets the animation duration in milli seconds
      * @param value animation duration in milliseconds
      */
-    public final void setAnimationDuration(double value) {
+    public final void setAnimationDuration(final double value) {
         animationDuration.set(value);
     }
 
