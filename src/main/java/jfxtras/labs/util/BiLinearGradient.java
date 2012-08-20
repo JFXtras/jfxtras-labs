@@ -31,11 +31,12 @@ public class BiLinearGradient {
 
 
     // ******************** Methods *******************************************
-    private Color interpolateColor(final Color COLOR1, final Color COLOR2, final double FRACTION) {
-        double red   = COLOR1.getRed() + (COLOR2.getRed() - COLOR1.getRed()) * FRACTION;
-        double green = COLOR1.getGreen() + (COLOR2.getGreen() - COLOR1.getGreen()) * FRACTION;
-        double blue  = COLOR1.getBlue() + (COLOR2.getBlue() - COLOR1.getBlue()) * FRACTION;
-        double alpha = COLOR1.getOpacity() + (COLOR2.getOpacity() - COLOR1.getOpacity()) * FRACTION;
+    private Color interpolateColor(final Color COLOR1, final Color COLOR2, double fraction) {
+        fraction     = fraction < 0 ? 0 : (fraction > 1 ? 1 : fraction);
+        double red   = COLOR1.getRed() + (COLOR2.getRed() - COLOR1.getRed()) * fraction;
+        double green = COLOR1.getGreen() + (COLOR2.getGreen() - COLOR1.getGreen()) * fraction;
+        double blue  = COLOR1.getBlue() + (COLOR2.getBlue() - COLOR1.getBlue()) * fraction;
+        double alpha = COLOR1.getOpacity() + (COLOR2.getOpacity() - COLOR1.getOpacity()) * fraction;
         red   = red < 0 ? 0 : (red > 1 ? 1 : red);
         green = green < 0 ? 0 : (green > 1 ? 1 : green);
         blue  = blue < 0 ? 0 : (blue > 1 ? 1 : blue);
