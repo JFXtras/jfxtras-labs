@@ -1754,8 +1754,10 @@ public class BeanPathAdapter<B> {
 			int i = -1;
 			final Map<Object, Object> nc = new HashMap<>();
 			for (final Object item : oc) {
-				fpv = updateCollectionItemProperty(++i, item);
-				nc.put(i, fpv);
+				if (item != null) {
+					fpv = updateCollectionItemProperty(++i, item);
+					nc.put(i, fpv);
+				}
 			}
 			toMap.clear();
 			toMap.putAll(nc);
@@ -1778,8 +1780,10 @@ public class BeanPathAdapter<B> {
 			int i = -1;
 			final List<Object> nc = new ArrayList<>();
 			for (final Map.Entry<Object, Object> item : oc.entrySet()) {
-				fpv = updateCollectionItemProperty(++i, item.getValue());
-				nc.add(fpv);
+				if (item != null && item.getValue() != null) {
+					fpv = updateCollectionItemProperty(++i, item.getValue());
+					nc.add(fpv);
+				}
 			}
 			toCol.clear();
 			toCol.addAll(nc);
@@ -1802,8 +1806,10 @@ public class BeanPathAdapter<B> {
 			int i = -1;
 			final Map<Object, Object> nc = new HashMap<>();
 			for (final Map.Entry<Object, Object> item : oc.entrySet()) {
-				fpv = updateCollectionItemProperty(++i, item.getValue());
-				nc.put(i, fpv);
+				if (item != null && item.getValue() != null) {
+					fpv = updateCollectionItemProperty(++i, item.getValue());
+					nc.put(i, fpv);
+				}
 			}
 			toMap.clear();
 			toMap.putAll(nc);
