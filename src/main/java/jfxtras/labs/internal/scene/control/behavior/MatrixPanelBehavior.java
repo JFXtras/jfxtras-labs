@@ -36,7 +36,7 @@ import jfxtras.labs.scene.control.gauge.MatrixPanel;
  * User: hansolo
  * Date: 09.01.12
  * Time: 18:06
- * Modified by José Pereda Llamas <jperedadnr>
+ * Modified by Jose Pereda Llamas <jperedadnr>
  * On : 23-jun-2012, 11:47:23
  */
 public class MatrixPanelBehavior extends BehaviorBase<MatrixPanel> {

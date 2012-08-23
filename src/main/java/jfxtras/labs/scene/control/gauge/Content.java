@@ -33,7 +33,7 @@ import javafx.scene.shape.Rectangle;
 
 /**
  *
- * @author José Pereda Llamas <jperedadnr>
+ * @author Jose Pereda Llamas <jperedadnr>
  * Created on : 23-jun-2012, 12:59:27
  */
 public class Content {

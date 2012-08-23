@@ -35,7 +35,7 @@ import javafx.util.Builder;
 
 /**
  *
- * @author José Pereda Llamas <jperedadnr>
+ * @author Jose Pereda Llamas <jperedadnr>
  * Created on : 09-jul-2012, 23:04:22
  */
 public class ContentBuilder implements Builder<Content> {

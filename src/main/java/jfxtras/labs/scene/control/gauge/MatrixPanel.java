@@ -38,7 +38,7 @@ import javafx.scene.control.Control;
  * User: hansolo
  * Date: 09.01.12
  * Time: 18:02
- * Modified by José Pereda Llamas <jperedadnr>
+ * Modified by Jose Pereda Llamas <jperedadnr>
  * On : 23-jun-2012, 11:47:23
  */
 public class MatrixPanel extends Control {
@@ -138,11 +138,11 @@ public class MatrixPanel extends Control {
         DD1_DOT_122("22 26 2A 32 22", 122) /* z */,
         DD1_DOT_123("10 6C 82 00 00", 123) /* { */,
         DD1_DOT_125("00 00 82 6C 10", 125) /* } */,
-        DD1_DOT_161("00 00 BE 00 00", 161) /* ¡ */,
-        DD1_DOT_186("40 A0 40 00 00", 186) /* º */,
-        DD1_DOT_191("0C 12 A2 02 04", 191) /* ¿ */,
-        DD1_DOT_209("3E 90 88 84 3E", 209) /* Ñ */,
-        DD1_DOT_241("3E 90 A0 A0 1E", 241) /* ñ */;
+        DD1_DOT_161("00 00 BE 00 00", 161) /* &iexcl; */,
+        DD1_DOT_186("40 A0 40 00 00", 186) /* &ordm; */,
+        DD1_DOT_191("0C 12 A2 02 04", 191) /* &iquest; */,
+        DD1_DOT_209("3E 90 88 84 3E", 209) /* &Ntilde; */,
+        DD1_DOT_241("3E 90 A0 A0 1E", 241) /* &ntilde; */;
 
         private final String hexLetra;
         private final int decLetra;
@@ -254,11 +254,11 @@ public class MatrixPanel extends Control {
         DD2_DOT_122("22 26 26 2A 32 32 22", 122) /* z */,
         DD2_DOT_123("10 7C EE 82 00 00 00", 123) /* { */,
         DD2_DOT_125("00 00 82 EE 7C 10 00", 125) /* } */,
-        DD2_DOT_161("00 00 BE BE 00 00 00", 161) /* ¡ */,
-        DD2_DOT_186("40 E0 A0 E0 40 00 00", 186) /* º */,
-        DD2_DOT_191("0C 1E B2 A2 02 06 04", 191) /* ¿ */,
-        DD2_DOT_209("3E BE 90 88 84 BE 3E", 209) /* Ñ */,
-        DD2_DOT_241("3E BE 90 A0 A0 BE 1E", 241) /* ñ */;
+        DD2_DOT_161("00 00 BE BE 00 00 00", 161) /* &iexcl; */,
+        DD2_DOT_186("40 E0 A0 E0 40 00 00", 186) /* &ordm; */,
+        DD2_DOT_191("0C 1E B2 A2 02 06 04", 191) /* &iquest; */,
+        DD2_DOT_209("3E BE 90 88 84 BE 3E", 209) /* &Ntilde; */,
+        DD2_DOT_241("3E BE 90 A0 A0 BE 1E", 241) /* &ntilde; */;
 
         private final String hexLetra;
         private final int decLetra;
@@ -369,11 +369,11 @@ public class MatrixPanel extends Control {
         DD4_DOT_122("21 80 23 80 26 80 2C 80 38 80 30 80 20 80", 122) /* z */,
         DD4_DOT_123("08 00 7F 00 F7 80 80 80 00 00 00 00 00 00", 123) /* { */,
         DD4_DOT_125("00 00 00 00 80 80 F7 80 7F 00 08 00 00 00", 125) /* } */,
-        DD4_DOT_161("00 00 00 00 BF 80 BF 80 00 00 00 00 00 00", 161) /* ¡ */,
-        DD4_DOT_186("20 00 50 00 50 00 20 00 00 00 00 00 00 00", 186) /* º */,
-        DD4_DOT_191("07 00 0F 80 B8 80 B0 80 00 80 01 80 01 00", 191) /* ¿ */,
-        DD4_DOT_209("3F 80 BF 80 98 00 8C 00 86 00 BF 80 3F 80", 209) /* Ñ */,
-        DD4_DOT_241("3F 80 BF 80 90 00 A0 00 A0 00 BF 80 1F 80", 241) /* ñ */;
+        DD4_DOT_161("00 00 00 00 BF 80 BF 80 00 00 00 00 00 00", 161) /* &iexcl; */,
+        DD4_DOT_186("20 00 50 00 50 00 20 00 00 00 00 00 00 00", 186) /* &ordm; */,
+        DD4_DOT_191("07 00 0F 80 B8 80 B0 80 00 80 01 80 01 00", 191) /* &iquest; */,
+        DD4_DOT_209("3F 80 BF 80 98 00 8C 00 86 00 BF 80 3F 80", 209) /* &Ntilde; */,
+        DD4_DOT_241("3F 80 BF 80 90 00 A0 00 A0 00 BF 80 1F 80", 241) /* &ntilde; */;
 
         private final String hexLetra;
         private final int decLetra;
@@ -484,11 +484,11 @@ public class MatrixPanel extends Control {
         DD6_DOT_122("0C 1C 0C 3C 0C 7C 0C EC 0D CC 0F 8C 0F 0C 0E 0C", 122) /* z */,
         DD6_DOT_123("03 00 1F E0 7C F8 E0 1C C0 0C 00 00 00 00 00 00", 123) /* { */,
         DD6_DOT_125("00 00 00 00 00 00 C0 0C E0 1C 7C F8 1F E0 03 00", 125) /* } */,
-        DD6_DOT_161("00 00 00 00 00 00 CF FC CF FC 00 00 00 00 00 00", 161) /* ¡ */,
-        DD6_DOT_186("30 00 78 00 CC 00 CC 00 78 00 30 00 00 00 00 00", 186) /* º */,
-        DD6_DOT_191("00 F0 01 F8 03 9C CE 0C CC 0C 00 1C 00 3C 00 38", 191) /* ¿ */,
-        DD6_DOT_209("0F FC 0F FC C3 80 C1 C0 C0 E0 C0 70 0F FC 0F FC", 209) /* Ñ */,
-        DD6_DOT_241("0F FC CF FC C3 00 C7 00 CE 00 CE 00 C7 FC 03 FC", 241) /* ñ */;
+        DD6_DOT_161("00 00 00 00 00 00 CF FC CF FC 00 00 00 00 00 00", 161) /* &iexcl; */,
+        DD6_DOT_186("30 00 78 00 CC 00 CC 00 78 00 30 00 00 00 00 00", 186) /* &ordm; */,
+        DD6_DOT_191("00 F0 01 F8 03 9C CE 0C CC 0C 00 1C 00 3C 00 38", 191) /* &iquest; */,
+        DD6_DOT_209("0F FC 0F FC C3 80 C1 C0 C0 E0 C0 70 0F FC 0F FC", 209) /* &Ntilde; */,
+        DD6_DOT_241("0F FC CF FC C3 00 C7 00 CE 00 CE 00 C7 FC 03 FC", 241) /* &ntilde; */;
 
         private final String hexLetra;
         private final int decLetra;
@@ -599,11 +599,11 @@ public class MatrixPanel extends Control {
         DD7_DOT_122("0C 0C 0C 1C 0C 3C 0C 7C 0C EC 0D CC 0F 8C 0F 0C 0E 0C 0C 0C", 122) /* z */,
         DD7_DOT_123("00 00 03 00 1F E0 7C F8 E0 1C C0 0C 00 00 00 00 00 00 00 00", 123) /* { */,
         DD7_DOT_125("00 00 00 00 00 00 C0 0C E0 1C 7C F8 1F E0 03 00 00 00 00 00", 125) /* } */,
-        DD7_DOT_161("00 00 00 00 00 00 00 00 CF FC CF FC 00 00 00 00 00 00 00 00", 161) /* ¡ */,
-        DD7_DOT_186("00 00 30 00 78 00 CC 00 CC 00 78 00 30 00 00 00 00 00 00 00", 186) /* º */,
-        DD7_DOT_191("00 F0 01 F8 03 9C 07 0C CE 0C CC 0C 00 0C 00 1C 00 38 00 30", 191) /* ¿ */,
-        DD7_DOT_209("0F FC 0F FC C7 00 C3 80 C1 C0 C0 E0 C0 70 C0 38 0F FC 0F FC", 209) /* Ñ */,
-        DD7_DOT_241("0F FC 0F FC C3 80 C7 00 CE 00 CC 00 CC 00 CE 00 07 FC 03 FC", 241) /* ñ */;
+        DD7_DOT_161("00 00 00 00 00 00 00 00 CF FC CF FC 00 00 00 00 00 00 00 00", 161) /* &iexcl; */,
+        DD7_DOT_186("00 00 30 00 78 00 CC 00 CC 00 78 00 30 00 00 00 00 00 00 00", 186) /* &ordm; */,
+        DD7_DOT_191("00 F0 01 F8 03 9C 07 0C CE 0C CC 0C 00 0C 00 1C 00 38 00 30", 191) /* &iquest; */,
+        DD7_DOT_209("0F FC 0F FC C7 00 C3 80 C1 C0 C0 E0 C0 70 C0 38 0F FC 0F FC", 209) /* &Ntilde; */,
+        DD7_DOT_241("0F FC 0F FC C3 80 C7 00 CE 00 CC 00 CC 00 CE 00 07 FC 03 FC", 241) /* &ntilde; */;
 
         private final String hexLetra;
         private final int decLetra;
@@ -715,11 +715,11 @@ public class MatrixPanel extends Control {
         DD8_DOT_122("0C 0F 0C 1F 0C 3B 0C 73 0C E3 0D C3 0F 83 0F 03", 122) /* z */,
         DD8_DOT_123("01 80 1F F8 7E 7E E0 07 C0 03 00 00 00 00 00 00", 123) /* { */,
         DD8_DOT_125("00 00 00 00 00 00 C0 03 E0 07 7E 7E 1F F8 01 80", 125) /* } */,
-        DD8_DOT_161("00 00 00 00 00 00 CF FF CF FF 00 00 00 00 00 00", 161) /* ¡ */,
-        DD8_DOT_186("30 00 78 00 CC 00 CC 00 78 00 30 00 00 00 00 00", 186) /* º */,
-        DD8_DOT_191("00 7C 00 FE 01 C7 CF 03 CE 03 00 07 00 0F 00 0E", 191) /* ¿ */,
-        DD8_DOT_209("0F FF 0F FF C3 80 C1 C0 C0 E0 C0 70 0F FF 0F FF", 209) /* Ñ */,
-        DD8_DOT_241("0F FF CF FF C3 80 C7 00 CE 00 CE 00 C7 FF 03 FF", 241) /* ñ */;
+        DD8_DOT_161("00 00 00 00 00 00 CF FF CF FF 00 00 00 00 00 00", 161) /* &iexcl; */,
+        DD8_DOT_186("30 00 78 00 CC 00 CC 00 78 00 30 00 00 00 00 00", 186) /* &ordm; */,
+        DD8_DOT_191("00 7C 00 FE 01 C7 CF 03 CE 03 00 07 00 0F 00 0E", 191) /* &iquest; */,
+        DD8_DOT_209("0F FF 0F FF C3 80 C1 C0 C0 E0 C0 70 0F FF 0F FF", 209) /* &Ntilde; */,
+        DD8_DOT_241("0F FF CF FF C3 80 C7 00 CE 00 CE 00 C7 FF 03 FF", 241) /* &ntilde; */;
 
         private final String hexLetra;
         private final int decLetra;
@@ -831,11 +831,11 @@ public class MatrixPanel extends Control {
         DD9_DOT_122("0C 07 0C 0F 0C 1F 0C 3B 0C 73 0C E3 0D C3 0F 83 0F 03 0E 03", 122) /* z */,
         DD9_DOT_123("00 00 01 80 1F F8 7E 7E E0 07 C0 03 00 00 00 00 00 00 00 00", 123) /* { */,
         DD9_DOT_125("00 00 00 00 00 00 C0 03 E0 07 7E 7E 1F F8 01 80 00 00 00 00", 125) /* } */,
-        DD9_DOT_161("00 00 00 00 00 00 00 00 CF FF CF FF 00 00 00 00 00 00 00 00", 161) /* ¡ */,
-        DD9_DOT_186("00 00 30 00 78 00 CC 00 CC 00 78 00 30 00 00 00 00 00 00 00", 186) /* º */,
-        DD9_DOT_191("00 3C 00 7E 00 E7 01 C3 CF 83 CF 03 00 03 00 07 00 0E 00 0C", 191) /* ¿ */,
-        DD9_DOT_209("0F FF 0F FF C7 00 C3 80 C1 C0 C0 E0 C0 70 C0 38 0F FF 0F FF", 209) /* Ñ */,
-        DD9_DOT_241("0F FF 0F FF C3 80 C7 00 CE 00 CC 00 CC 00 CE 00 07 FF 03 FF", 241) /* ñ */;
+        DD9_DOT_161("00 00 00 00 00 00 00 00 CF FF CF FF 00 00 00 00 00 00 00 00", 161) /* &iexcl; */,
+        DD9_DOT_186("00 00 30 00 78 00 CC 00 CC 00 78 00 30 00 00 00 00 00 00 00", 186) /* &ordm; */,
+        DD9_DOT_191("00 3C 00 7E 00 E7 01 C3 CF 83 CF 03 00 03 00 07 00 0E 00 0C", 191) /* &iquest; */,
+        DD9_DOT_209("0F FF 0F FF C7 00 C3 80 C1 C0 C0 E0 C0 70 C0 38 0F FF 0F FF", 209) /* &Ntilde; */,
+        DD9_DOT_241("0F FF 0F FF C3 80 C7 00 CE 00 CC 00 CC 00 CE 00 07 FF 03 FF", 241) /* &ntilde; */;
 
         private final String hexLetra;
         private final int decLetra;
@@ -947,11 +947,11 @@ public class MatrixPanel extends Control {
         DD10_DOT_122("00 F0 00 7F 00 F0 00 FF 00 F0 01 FF 00 F0 03 FF 00 F0 07 CF 00 F0 0F 8F 00 F0 1F 0F 00 F0 3E 0F 00 F0 7C 0F 00 F0 F8 0F 00 F3 F0 0F 00 FF E0 0F 00 FF C0 0F 00 FF 80 0F 00 FE 00 0F 00 00 00 00", 122) /* z */,
         DD10_DOT_123("00 00 00 00 00 00 00 00 00 03 C0 00 00 07 E0 00 00 1F F8 00 03 FF FF 80 0F F8 1F E0 3F E0 07 FC 7C 00 00 3E F8 00 00 1F F0 00 00 0F 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00", 123) /* { */,
         DD10_DOT_125("00 00 00 00 00 00 00 00 00 00 00 00 F0 00 00 0F F8 00 00 1F 7C 00 00 3E 3F E0 07 FC 0F F8 1F E0 03 FF FF 80 00 1F F8 00 00 07 E0 00 00 03 C0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00", 125) /* } */,
-        DD10_DOT_161("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 78 00 00 00 FC 03 FF FF FC 3F FF FF FC 3F FF FF FC 03 FF FF 78 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00", 161) /* ¡ */,
-        DD10_DOT_186("00 00 00 00 00 00 00 00 07 00 00 00 1F C0 00 00 1F C0 00 00 38 E0 00 00 38 E0 00 00 38 E0 00 00 1F C0 00 00 1F C0 00 00 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00", 186) /* º */,
-        DD10_DOT_191("00 00 03 F0 00 00 0F FC 00 00 1F FE 00 00 3F FE 00 01 FE 7F F0 FF F8 1F F0 FF E0 1F F0 FF C0 0F F0 FF 00 1F 00 00 00 1F 00 00 00 7F 00 00 00 FE 00 00 00 FE 00 00 00 FC 00 00 00 F0 00 00 00 00", 191) /* ¿ */,
-        DD10_DOT_209("00 FF FF FF 00 FF FF FF F0 FF FF FF F0 FF FF FF F0 7F 00 00 F0 3F 80 00 F0 1F C0 00 F0 0F E0 00 F0 07 F0 00 F0 03 F8 00 F0 01 FC 00 F0 FF FF FF F0 FF FF FF 00 FF FF FF 00 FF FF FF 00 00 00 00", 209) /* Ñ */,
-        DD10_DOT_241("00 3F FF FF 00 3F FF FF 00 3F FF FF 3C 3F FF FF 3C 03 F8 00 3C 0F E0 00 3C 1F 80 00 3C 1E 00 00 3C 3F 00 00 3C 3F 00 00 3C 3F C0 00 3C 1F FF FF 00 1F FF FF 00 0F FF FF 00 03 FF FF 00 00 00 00", 241) /* ñ */;
+        DD10_DOT_161("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 78 00 00 00 FC 03 FF FF FC 3F FF FF FC 3F FF FF FC 03 FF FF 78 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00", 161) /* &iexcl; */,
+        DD10_DOT_186("00 00 00 00 00 00 00 00 07 00 00 00 1F C0 00 00 1F C0 00 00 38 E0 00 00 38 E0 00 00 38 E0 00 00 1F C0 00 00 1F C0 00 00 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00", 186) /* &ordm; */,
+        DD10_DOT_191("00 00 03 F0 00 00 0F FC 00 00 1F FE 00 00 3F FE 00 01 FE 7F F0 FF F8 1F F0 FF E0 1F F0 FF C0 0F F0 FF 00 1F 00 00 00 1F 00 00 00 7F 00 00 00 FE 00 00 00 FE 00 00 00 FC 00 00 00 F0 00 00 00 00", 191) /* &iquest; */,
+        DD10_DOT_209("00 FF FF FF 00 FF FF FF F0 FF FF FF F0 FF FF FF F0 7F 00 00 F0 3F 80 00 F0 1F C0 00 F0 0F E0 00 F0 07 F0 00 F0 03 F8 00 F0 01 FC 00 F0 FF FF FF F0 FF FF FF 00 FF FF FF 00 FF FF FF 00 00 00 00", 209) /* &Ntilde; */,
+        DD10_DOT_241("00 3F FF FF 00 3F FF FF 00 3F FF FF 3C 3F FF FF 3C 03 F8 00 3C 0F E0 00 3C 1F 80 00 3C 1E 00 00 3C 3F 00 00 3C 3F 00 00 3C 3F C0 00 3C 1F FF FF 00 1F FF FF 00 0F FF FF 00 03 FF FF 00 00 00 00", 241) /* &ntilde; */;
 
         private final String hexLetra;
         private final int decLetra;
