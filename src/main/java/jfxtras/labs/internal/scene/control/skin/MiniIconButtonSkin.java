@@ -280,7 +280,7 @@ public class MiniIconButtonSkin extends ButtonSkin {
         // If there is an original image, try to use the original size
         // as maximum.
         // I am not sure if this is a legal case, but the ImageView
-        // can have an empty image. Perhaps there is an usecase I can´t
+        // can have an empty image. Perhaps there is an usecase I can not
         // think of. Therefor this code avoids an NPE and calculates
         // the width and height only based on the buttons size.
         if (miniIcon.getImage() != null) {
