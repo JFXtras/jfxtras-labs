@@ -62,7 +62,7 @@ import jfxtras.labs.scene.control.gauge.UtilHex;
  * User: hansolo
  * Date: 09.01.12
  * Time: 18:04
- * Modified by José Pereda Llamas <jperedadnr>
+ * Modified by Jose Pereda Llamas <jperedadnr>
  * On : 23-jun-2012, 11:47:23
  */
 public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> {
@@ -537,7 +537,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
 
         matrix.getChildren().clear();
 
-        final Shape IBOUNDS = new Rectangle(0.0841121495 * SIZE + 1, 0.0841121495 * SIZE + 1, WIDTH, HEIGHT);
+        final Shape IBOUNDS = new Rectangle(0.0841121495 * SIZE + 5, 0.0841121495 * SIZE + 5, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         IBOUNDS.setStroke(null);
         matrix.getChildren().add(IBOUNDS);
@@ -551,7 +551,9 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
 
         for (int i = 0; i < ledHeight.intValue(); i++) {
             for (int j = 0; j < ledWidth.intValue(); j++) {
-                Circle circ = new Circle(0.0841121495 * SIZE + 3 + gapW + j * (gapW + 2d * radio), 0.0841121495 * SIZE + 3 + gapH + i * (gapH + 2d * radio), radio, Color.DARKGREY);
+                Circle circ = new Circle(0.0841121495 * SIZE + 5 + gapW + radio + j * (gapW + 2d * radio), 
+                                         0.0841121495 * SIZE + 5 + gapH + radio + i * (gapH + 2d * radio), 
+                                         radio, Color.DARKGREY);
                 circ.setFill(COLOR_OFF);
                 dotMap.put(new Integer(j + i * ledWidth.intValue()), circ);
 

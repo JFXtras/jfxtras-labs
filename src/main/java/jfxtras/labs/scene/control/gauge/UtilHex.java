@@ -38,7 +38,7 @@ import java.util.MissingResourceException;
 
 
 /**
- * @author José Pereda Llamas <jperedadnr>
+ * @author Jose Pereda Llamas <jperedadnr>
  *         Created on : 23-jun-2012, 14:49:58
  */
 public class UtilHex {
@@ -491,17 +491,17 @@ public class UtilHex {
         }
 
         public String BMP2MemoriaGrafica() {
-            // número líneas con color padded with zeroes to be a multiple of one bytes (de 8)
+            // color number of lines padded with zeroes to be a multiple of one bytes (de 8)
             int colSize = ((int) (width / 8) + (width % 8 > 0 ? 1 : 0)) * 8;
             // Scan line is padded with zeroes to be a multiple of two bytes (de 16)
             int lineSize = ((int) (width / 16) + (width % 16 > 0 ? 1 : 0)) * 16;
 
             long tam = 32l + levels * lineSize * height * numColors / 8;
 
-            // CABECERA BMT
-            // 04 DF + 01/FF comprimido/no comprimido + FF FF FF
+            // Header of BMT file
+            // 04 DF + 01/FF zipped/unzipped + FF FF FF
             // + colSize (word) + filas (word) + colorMask + levels + 00 00 00 00 00 00 00 01 00 00
-            // +tam total colores (word)+ 00 00 + tam total (word) + 00 00 00 00
+            // +tam total colors (word)+ 00 00 + tam total (word) + 00 00 00 00
             String mem = "04 DF FF FF FF FF ";
             mem = mem.concat(long2Word(colSize, false)).concat(" ").concat(long2Word(height, false)).concat(" ");
             mem = mem.concat(dec2hexStr(colorMask)).concat(" ").concat(dec2hexStr(levels)).concat(" ");
@@ -538,29 +538,29 @@ public class UtilHex {
             return mem;
         }
 
-        // transforma bmp a datos gráficos para panel, sin cabeceras, en tres planos separados, en funcion del tono maximo
+        // transforms bmp to rawData, without header, three splitted planes, according tonoMax
         private String[][] getPanelRawData(int tonoMax) {
-            int coloresPorPixel = 3; // el bmp tiene 3 planos de colores
+            int coloresPorPixel = 3; // 3 color planes in bmp 
 
-            int tam = scanLineSize; // (tamaño de cada fila del bmp, en bytes=ancho fichero, ej. 74) x 3
-            int colSize = ((int) (width / 8) + (width % 8 > 0 ? 1 : 0)) * 8; // bytes multiplos de 8, ej. 80
-            int lineSize = ((int) (width / 16) + (width % 16 > 0 ? 1 : 0)) * 16; // bytes multiplos de 16, ej. 80
+            int tam = scanLineSize; // (bmp row size, bytes, eg. 74) x 3
+            int colSize = ((int) (width / 8) + (width % 8 > 0 ? 1 : 0)) * 8; // bytes multiple of 8, eg. 80
+            int lineSize = ((int) (width / 16) + (width % 16 > 0 ? 1 : 0)) * 16; // bytes multiple of 16, eg. 80
 
-            // aunque es byte, lo guardo como string de hexadecimales
+            //string of hexadecimals
             String[][] panelData = new String[coloresPorPixel][height * lineSize / 8];
 
             int[] swapBMP = {
                 2,
                 1,
                 0
-            }; //  bmp: AZUL-VERDE-ROJO, swap->R,V,A
+            }; //  bmp: BLUE-GREEN-RED, swap->R,G,B
 
             for (int k = 0; k < coloresPorPixel; k++) {
                 int iPlano = swapBMP[k];
-                // plano k
+                // plane k
                 int pos = 0;
                 String lastBit = "";
-                for (int j = height - 1; j >= 0; j--) {      // fila del bmp en orden inverso
+                for (int j = height - 1; j >= 0; j--) {      // bmp row, from bottom to top
                     for (int i = k; i < lineSize * coloresPorPixel + k; i += coloresPorPixel * 8) { // columna del bmp
                         String bits = "";
                         for (int m = 0; m < 8; m++) {
@@ -573,9 +573,9 @@ public class UtilHex {
                                     lastBit = "0";
                                 }
                             } else if (i + m * coloresPorPixel < colSize * coloresPorPixel) {
-                                bits = bits.concat(lastBit);  // OJO RELLENO CON bits en ultimo colSize
+                                bits = bits.concat("0");  // filled with 0 last colSize
                             } else if (i + m * coloresPorPixel < lineSize * coloresPorPixel) {
-                                bits = bits.concat("0"); // OJO RELLENO CON 00 en gap colSize a lineSize
+                                bits = bits.concat("0"); // filled with 0 last gap colSize to lineSize
                             }
                         }
                         if (pos < lineSize * height / 8) {

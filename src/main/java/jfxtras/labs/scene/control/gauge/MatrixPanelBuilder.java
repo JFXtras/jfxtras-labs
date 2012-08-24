@@ -36,7 +36,7 @@ import javafx.util.Builder;
 
 /**
  *
- * @author José Pereda Llamas <jperedadnr>
+ * @author Jose Pereda Llamas <jperedadnr>
  * Created on : 23-jun-2012, 11:47:23
  */
 public class MatrixPanelBuilder <B extends MatrixPanelBuilder<B>> extends ControlBuilder<B> implements Builder<MatrixPanel> {
