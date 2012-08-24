@@ -529,7 +529,7 @@ public class BeanPathAdapter<B> {
 			throw new NullPointerException();
 		}
 		if (getRoot() == null) {
-			this.root = new FieldBean<>(null, bean, null);
+			this.root = new FieldBean<Void, B>(null, bean, null);
 		} else {
 			getRoot().setBean(bean);
 		}
@@ -604,9 +604,9 @@ public class BeanPathAdapter<B> {
 	protected static class FieldBean<PT, BT> implements Serializable {
 
 		private static final long serialVersionUID = 7397535724568852021L;
-		private final Map<String, FieldBean<BT, ?>> fieldBeans = new HashMap<>();
-		private final Map<String, FieldProperty<BT, ?>> fieldProperties = new HashMap<>();
-		private final Map<Class<?>, FieldStringConverter<?>> stringConverters = new HashMap<>();
+		private final Map<String, FieldBean<BT, ?>> fieldBeans = new HashMap<String, FieldBean<BT, ?>>();
+		private final Map<String, FieldProperty<BT, ?>> fieldProperties = new HashMap<String, FieldProperty<BT, ?>>();
+		private final Map<Class<?>, FieldStringConverter<?>> stringConverters = new HashMap<Class<?>, FieldStringConverter<?>>();
 		private FieldHandle<PT, BT> fieldHandle;
 		private final FieldBean<?, PT> parent;
 		private BT bean;
@@ -906,7 +906,7 @@ public class BeanPathAdapter<B> {
 			} else if (operation != FieldBeanOperation.UNBIND) {
 				// add a new bean/property chain
 				if (isField) {
-					final FieldProperty<BT, ?> childProp = new FieldProperty<>(
+					final FieldProperty<BT, ?> childProp = new FieldProperty<BT, Object>(
 							getBean(), fieldNames[0], Object.class,
 							collectionItemPath, observable, collectionItemType,
 							selectionModel, itemMaster);
@@ -919,9 +919,9 @@ public class BeanPathAdapter<B> {
 					// bean
 					// if the child bean exists on the bean it will remain
 					// unchanged
-					final FieldHandle<BT, Object> pfh = new FieldHandle<>(
+					final FieldHandle<BT, Object> pfh = new FieldHandle<BT, Object>(
 							getBean(), fieldNames[0], Object.class);
-					final FieldBean<BT, ?> childBean = new FieldBean<>(this,
+					final FieldBean<BT, ?> childBean = new FieldBean<BT, Object>(this,
 							pfh);
 					// progress to the next child field/bean in the path chain
 					final String nextFieldPath = fieldPath.substring(fieldPath
@@ -1100,7 +1100,7 @@ public class BeanPathAdapter<B> {
 				return (FieldStringConverter<FCT>) stringConverters
 						.get(targetClass);
 			} else {
-				final FieldStringConverter<FCT> fsc = new FieldStringConverter<>(
+				final FieldStringConverter<FCT> fsc = new FieldStringConverter<FCT>(
 						targetClass);
 				stringConverters.put(targetClass, fsc);
 				return fsc;
@@ -1441,7 +1441,7 @@ public class BeanPathAdapter<B> {
 				addRemoveCollectionListener(false);
 				Collection<?> items = (Collection<?>) getDirty();
 				if (items == null) {
-					items = new LinkedHashSet<>();
+					items = new LinkedHashSet<Object>();
 					fieldHandle.getSetter().invoke(items);
 				}
 				syncCollectionValues(items, false);
@@ -1449,7 +1449,7 @@ public class BeanPathAdapter<B> {
 				addRemoveCollectionListener(false);
 				Map<?, ?> items = (Map<?, ?>) getDirty();
 				if (items == null) {
-					items = new HashMap<>();
+					items = new HashMap<Object, Object>();
 					fieldHandle.getSetter().invoke(items);
 				}
 				syncCollectionValues(items, false);
@@ -1726,7 +1726,7 @@ public class BeanPathAdapter<B> {
 				final Collection<Object> toCol, final Collection<Object> oc) {
 			Object fpv;
 			int i = -1;
-			final List<Object> nc = new ArrayList<>();
+			final List<Object> nc = new ArrayList<Object>();
 			for (final Object item : oc) {
 				fpv = updateCollectionItemProperty(++i, item);
 				nc.add(fpv);
@@ -1750,7 +1750,7 @@ public class BeanPathAdapter<B> {
 				final Collection<Object> oc) {
 			Object fpv;
 			int i = -1;
-			final Map<Object, Object> nc = new HashMap<>();
+			final Map<Object, Object> nc = new HashMap<Object, Object>();
 			for (final Object item : oc) {
 				fpv = updateCollectionItemProperty(++i, item);
 				nc.put(i, fpv);
@@ -1774,7 +1774,7 @@ public class BeanPathAdapter<B> {
 				final ObservableMap<Object, Object> oc) {
 			Object fpv;
 			int i = -1;
-			final List<Object> nc = new ArrayList<>();
+			final List<Object> nc = new ArrayList<Object>();
 			for (final Map.Entry<Object, Object> item : oc.entrySet()) {
 				fpv = updateCollectionItemProperty(++i, item.getValue());
 				nc.add(fpv);
@@ -1798,7 +1798,7 @@ public class BeanPathAdapter<B> {
 				final ObservableMap<Object, Object> oc) {
 			Object fpv;
 			int i = -1;
-			final Map<Object, Object> nc = new HashMap<>();
+			final Map<Object, Object> nc = new HashMap<Object, Object>();
 			for (final Map.Entry<Object, Object> item : oc.entrySet()) {
 				fpv = updateCollectionItemProperty(++i, item.getValue());
 				nc.put(i, fpv);
@@ -1877,7 +1877,12 @@ public class BeanPathAdapter<B> {
 					}
 				}
 				return fp;
-			} catch (InstantiationException | IllegalAccessException e) {
+			} catch (InstantiationException e) {
+				throw new UnsupportedOperationException(String.format(
+						"Cannot create collection item bean using %1$s",
+						collectionType), e);
+			}
+			catch (IllegalAccessException e) {
 				throw new UnsupportedOperationException(String.format(
 						"Cannot create collection item bean using %1$s",
 						collectionType), e);
@@ -1896,7 +1901,7 @@ public class BeanPathAdapter<B> {
 		protected FieldProperty<?, ?> genCollectionFieldProperty(final Object bean) {
 			FieldBean<Void, Object> fb;
 			FieldProperty<?, ?> fp;
-			fb = new FieldBean<>(null, bean, null);
+			fb = new FieldBean<Void, Object>(null, bean, null);
 			fp = fb.performOperation(collectionItemPath, Object.class, null,
 					null, null, collectionSelectionModel, null,
 					FieldBeanOperation.CREATE_OR_FIND);
@@ -2213,9 +2218,9 @@ public class BeanPathAdapter<B> {
 	 */
 	protected static class FieldHandle<T, F> {
 
-		private static final Map<Class<?>, MethodHandle> VALUE_OF_MAP = new HashMap<>(
+		private static final Map<Class<?>, MethodHandle> VALUE_OF_MAP = new HashMap<Class<?>, MethodHandle>(
 				1);
-		private static final Map<Class<?>, Object> DFLTS = new HashMap<>();
+		private static final Map<Class<?>, Object> DFLTS = new HashMap<Class<?>, Object>();
 		static {
 			DFLTS.put(Boolean.class, Boolean.FALSE);
 			DFLTS.put(boolean.class, false);
@@ -2513,11 +2518,11 @@ public class BeanPathAdapter<B> {
 						final Class<F> clazz = (Class<F>) getAccessor().type()
 								.returnType();
 						if (List.class.isAssignableFrom(clazz)) {
-							targetValue = (F) new ArrayList<>();
+							targetValue = (F) new ArrayList<Object>();
 						} else if (Set.class.isAssignableFrom(clazz)) {
-							targetValue = (F) new LinkedHashSet<>();
+							targetValue = (F) new LinkedHashSet<Object>();
 						} else if (Map.class.isAssignableFrom(clazz)) {
-							targetValue = (F) new HashMap<>();
+							targetValue = (F) new HashMap<Object, Object>();
 						} else if (!Calendar.class.isAssignableFrom(getFieldType())) {
 							targetValue = clazz.newInstance();
 						}
