@@ -66,7 +66,7 @@ public class CalendarPickerTrial1 extends Application {
         //Bindings.bindWithInverse(lXCalendarPicker.calendar(), lBusinessModelBean.iCalendarObjectProperty); // this works, but the exception is not preventing the value to be set
         
         // create stage
-        stage.setTitle("CalendarPickerX");
+        stage.setTitle("CalendarPicker");
         stage.setScene(scene);
         stage.show();	
     }

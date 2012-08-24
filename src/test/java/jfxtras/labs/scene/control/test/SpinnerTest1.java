@@ -25,7 +25,6 @@
 package jfxtras.labs.scene.control.test;
 
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import jfxtras.labs.scene.control.Spinner;
 import jfxtras.labs.scene.control.test.jemmy.SpinnerWrap;
 
@@ -33,7 +32,6 @@ import org.jemmy.control.Wrap;
 import org.jemmy.fx.AppExecutor;
 import org.jemmy.fx.ByStyleClass;
 import org.jemmy.fx.Root;
-import org.jemmy.lookup.Lookup;
 import org.jemmy.timing.State;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -68,7 +66,7 @@ public class SpinnerTest1 {
     public void tearDown() {
     }
 
-    // TODO : Test fails build @Test
+    @Test
     public void select() throws InterruptedException {
     	
     	// get the control

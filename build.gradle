@@ -29,13 +29,14 @@ buildscript {
 }
 
 repositories {
+	mavenRepo urls: "https://oss.sonatype.org/content/repositories/snapshots/"
     mavenCentral()
 }
 
 dependencies {
     compile      files(ext.javafxJar)
     testCompile  "junit:junit:${jfxtras_junitVersion}"
-    testCompile files("lib/jemmy.jar", "lib/JemmyAWT.jar", "lib/JemmyAWTInput.jar", "lib/JemmyBrowser.jar", "lib/JemmyCore.jar", "lib/JemmyFX.jar")
+    testCompile  "net.java.jemmy:JemmyFX:0.9.3-SNAPSHOT"
 }
 
 apply {
