@@ -71,8 +71,8 @@ import jfxtras.labs.scene.control.gauge.LedColor;
 import jfxtras.labs.scene.control.gauge.Marker;
 import jfxtras.labs.scene.control.gauge.MarkerEvent;
 import jfxtras.labs.scene.control.gauge.Section;
-import jfxtras.labs.util.Util;
 import jfxtras.labs.util.ConicalGradient;
+import jfxtras.labs.util.Util;
 
 import java.util.ArrayList;
 
