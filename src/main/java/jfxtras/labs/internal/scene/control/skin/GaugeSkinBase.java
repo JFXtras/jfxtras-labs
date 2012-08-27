@@ -1390,7 +1390,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                     tickLabel.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_TEXT);
                     tickLabel.setStroke(null);
                     tickLabel.setFont(STD_FONT);
-                    tickLabel.setX(textPoint.getX() - tickLabel.getLayoutBounds().getHeight() / 2.0);
+                    tickLabel.setX(textPoint.getX() - tickLabel.getLayoutBounds().getWidth() / 2.0);
                     tickLabel.setY(textPoint.getY() + tickLabel.getLayoutBounds().getHeight() / 2.0);
                     switch (CONTROL.getTickLabelOrientation()) {
                         case NORMAL:
