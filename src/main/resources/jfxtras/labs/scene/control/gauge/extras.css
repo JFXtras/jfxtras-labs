@@ -116,26 +116,25 @@
 }
 
 .xy-control {
-    -fx-skin: "jfxtras.labs.internal.scene.control.skin.XYControlSkin";
-    -fx-font-family: "System";
-    -fx-font-size: 11px;
-    -fx-base: #353535;
-    -fx-background: #040404;
-    -fx-focus-color: transparent;
+    -fx-skin                    : "jfxtras.labs.internal.scene.control.skin.XYControlSkin";
+    -fx-font-family             : "System";
+    -fx-font-size               : 11px;
+    -fx-base                    : #353535;
+    -fx-background              : #040404;
+    -fx-focus-color             : transparent;
     -fx-control-inner-background: transparent;
-    -fx-inner-border: linear-gradient(to bottom, derive(-fx-color,71%) 0%, derive(-fx-color,20%) 100%);
-    -fx-body-color: linear-gradient( to bottom, derive(-fx-color, 51%) 0%, derive(-fx-color, 5%) 100%);
-    -fx-background-radius: 0, 0, 0, 0;
-    -fx-padding: 0px 0px 0px 0px;
-    -fx-background-insets: 0 0 -1 0, 0, 0, 1;
-    -fx-sensitivity-color: red;
-    -fx-text-base-color: ladder(
-        -fx-color,
-        -fx-light-text-color 45%,
-        -fx-dark-text-color  46%,
-        -fx-dark-text-color  59%,
-        -fx-mid-text-color   60%
-    );
+    -fx-inner-border            : linear-gradient(to bottom, derive(-fx-color,71%) 0%, derive(-fx-color,20%) 100%);
+    -fx-body-color              : linear-gradient( to bottom, derive(-fx-color, 51%) 0%, derive(-fx-color, 5%) 100%);
+    -fx-background-radius       : 0, 0, 0, 0;
+    -fx-padding                 : 0px 0px 0px 0px;
+    -fx-background-insets       : 0 0 -1 0, 0, 0, 1;
+    -fx-sensitivity-color       : red;
+    -fx-text-base-color         : ladder(
+                                         -fx-color,
+                                         -fx-light-text-color 45%,
+                                         -fx-dark-text-color  46%,
+                                         -fx-dark-text-color  59%,
+                                         -fx-mid-text-color   60%);
 }
 .xy-control:focused {
     -fx-background-insets: -1.4, 0, 0, 1;
@@ -393,16 +392,16 @@
 }
 
 .xy-control .xy-button {
-    -fx-base             : #353535;
-    -fx-background       : #040404;
-    -fx-focus-color      : transparent;
-    -fx-background-color : -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
-    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
-    -fx-background-radius: 0, 0, 1, 1;
-    -fx-padding          : 0 0 0 0; /* top right bottom left */
-    -fx-text-fill        : -fx-text-base-color;
-    -fx-alignment        : CENTER;
-    -fx-content-display  : LEFT;
+    -fx-base                  : #353535;
+    -fx-background            : #040404;
+    -fx-focus-color           : transparent;
+    -fx-background-color      : -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-insets     : 0 0 -1 0, 0, 1, 2;
+    -fx-background-radius     : 0, 0, 1, 1;
+    -fx-padding               : 0 0 0 0; /* top right bottom left */
+    -fx-text-fill             : -fx-text-base-color;
+    -fx-alignment             : CENTER;
+    -fx-content-display       : LEFT;
 }
 
 .xy-control .xy-button:hover {
@@ -457,7 +456,7 @@
     -fx-padding          : 0.625em;
 }
 
-.xy-control:focused .xy-thumb {
+.xy-control .xy-thumb:focused {
     -fx-color            : -fx-focused-base;
     -fx-background-color : -fx-focus-color,
                            derive(-fx-color,-36%),

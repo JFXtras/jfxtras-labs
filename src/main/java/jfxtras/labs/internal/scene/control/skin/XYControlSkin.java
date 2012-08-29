@@ -189,6 +189,8 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         initialized    = false;
         isDirty        = false;
 
+        getStyleClass().add("xy-control");
+
         init();
     }
 
@@ -214,7 +216,6 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         thumb.addEventFilter(MouseEvent.MOUSE_DRAGGED, handler);
         thumb.addEventFilter(MouseEvent.MOUSE_RELEASED, handler);
         addEventFilter(ScrollEvent.SCROLL, handler);
-
         initialized = true;
         paint();
     }
@@ -307,14 +308,15 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         final double SIZE        = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
         final double AREA_SIZE   = 0.9090909091 * SIZE;
         final double BUTTON_SIZE = 0.0909090909 * SIZE;
-        final Font FONT          = Font.font("Verdana", FontWeight.NORMAL, 0.055 * AREA_SIZE);
+        final Font   FONT        = Font.font("Verdana", FontWeight.NORMAL, 0.055 * AREA_SIZE);
 
         getChildren().clear();
+        getStyleClass().setAll("xy-control");
 
         Pane pane = new Pane();
+        pane.getStyleClass().setAll("xy-control");
 
         // xy area
-        //area.getStyleClass().setAll("xy-area");
         Rectangle areaFrame = new Rectangle(0, 0, AREA_SIZE, AREA_SIZE);
         areaFrame.setFill(new LinearGradient(0, 0,
                                              areaFrame.getLayoutBounds().getMaxX(), areaFrame.getLayoutBounds().getMaxY(),
@@ -343,7 +345,8 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         pane.getChildren().add(area);
 
         // horizontal slider
-        decrementX.getStyleClass().setAll("xy-button");
+        decrementX.getStyleClass().add("xy-button");
+
         decrementX.relocate(0, AREA_SIZE);
         Group arrowDecX = createArrow(Direction.LEFT, BUTTON_SIZE);
         decrementX.getChildren().add(arrowDecX);
@@ -351,7 +354,7 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         StackPane.setMargin(arrowDecX, new Insets(0, 0, 0, 0));
         pane.getChildren().add(decrementX);
 
-        horSlider.getStyleClass().setAll("xy-slider-horizontal");
+        horSlider.getStyleClass().add("xy-slider-horizontal");
         Rectangle horSliderBounds = new Rectangle(AREA_SIZE - 2 * BUTTON_SIZE, BUTTON_SIZE);
         horSliderBounds.setOpacity(0.0);
 
@@ -372,7 +375,7 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         horSliderThumb.relocate(AREA_SIZE / 2 - 1, AREA_SIZE);
         pane.getChildren().add(horSliderThumb);
 
-        incrementX.getStyleClass().setAll("xy-button");
+        incrementX.getStyleClass().add("xy-button");
         incrementX.relocate(AREA_SIZE - BUTTON_SIZE, AREA_SIZE);
         Group arrowIncX = createArrow(Direction.RIGHT, BUTTON_SIZE);
         incrementX.getChildren().add(arrowIncX);
@@ -381,7 +384,7 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         pane.getChildren().add(incrementX);
 
         // vertical slider
-        incrementY.getStyleClass().setAll("xy-button");
+        incrementY.getStyleClass().add("xy-button");
         incrementY.relocate(AREA_SIZE, 0);
         Group arrowIncY = createArrow(Direction.UP, BUTTON_SIZE);
         incrementY.getChildren().add(arrowIncY);
@@ -389,7 +392,7 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         StackPane.setMargin(arrowIncY, new Insets(0, 0, 0, 0));
         pane.getChildren().add(incrementY);
 
-        verSlider.getStyleClass().setAll("xy-slider-vertical");
+        verSlider.getStyleClass().add("xy-slider-vertical");
 
         Group group = new Group();
         Rectangle verSliderBounds = new Rectangle(BUTTON_SIZE, AREA_SIZE - 2 * BUTTON_SIZE);
@@ -415,7 +418,7 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         verSliderThumb.relocate(AREA_SIZE, AREA_SIZE / 2 - 1);
         pane.getChildren().add(verSliderThumb);
 
-        decrementY.getStyleClass().setAll("xy-button");
+        decrementY.getStyleClass().add("xy-button");
         decrementY.relocate(AREA_SIZE, AREA_SIZE - BUTTON_SIZE);
         Group arrowDecY = createArrow(Direction.DOWN, BUTTON_SIZE);
         decrementY.getChildren().add(arrowDecY);
@@ -424,7 +427,7 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         pane.getChildren().add(decrementY);
 
         // reset button
-        reset.getStyleClass().setAll("xy-button");
+        reset.getStyleClass().addAll("xy-button");
         reset.relocate(AREA_SIZE, AREA_SIZE);
         final Group RESET_GROUP = new Group();
         final Rectangle IBOUNDS = new Rectangle(BUTTON_SIZE, BUTTON_SIZE);
@@ -436,7 +439,7 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         reset.getChildren().add(RESET_GROUP);
         pane.getChildren().add(reset);
 
-        thumb.getStyleClass().setAll("xy-thumb");
+        thumb.getStyleClass().addAll("xy-thumb");
         thumb.relocate(AREA_SIZE / 2 - 5, AREA_SIZE / 2 - 5);
         pane.getChildren().add(thumb);
 
