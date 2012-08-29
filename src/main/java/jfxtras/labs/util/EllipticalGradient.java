@@ -27,6 +27,7 @@
 
 package jfxtras.labs.util;
 
+import javafx.animation.Interpolator;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
@@ -89,15 +90,6 @@ public class EllipticalGradient {
         }
     }
 
-    private Color interpolateColor(final Color COLOR1, final Color COLOR2, double fraction) {
-        fraction     = fraction < 0 ? 0 : (fraction > 1 ? 1 : fraction);
-        double red   = COLOR1.getRed() + (COLOR2.getRed() - COLOR1.getRed()) * fraction;
-        double green = COLOR1.getGreen() + (COLOR2.getGreen() - COLOR1.getGreen()) * fraction;
-        double blue  = COLOR1.getBlue() + (COLOR2.getBlue() - COLOR1.getBlue()) * fraction;
-        double alpha = COLOR1.getOpacity() + (COLOR2.getOpacity() - COLOR1.getOpacity()) * fraction;
-        return new Color(red, green, blue, alpha);
-    }
-
     public List<Stop> getStops() {
         return sortedStops;
     }
@@ -129,7 +121,7 @@ public class EllipticalGradient {
                     nextOffset    = sortedStops.get(i + 1).getOffset();
                     if (Double.compare(isInside, currentOffset) > 0 && Double.compare(isInside, nextOffset) <= 0) {
                         fraction = (isInside - currentOffset) / (nextOffset - currentOffset);
-                        color    = interpolateColor(sortedStops.get(i).getColor(), sortedStops.get(i + 1).getColor(), fraction);
+                        color    = (Color) Interpolator.LINEAR.interpolate(sortedStops.get(i).getColor(), sortedStops.get(i + 1).getColor(), fraction);
                     }
                 }
                 PIXEL_WRITER.setColor(x, y, color);

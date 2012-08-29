@@ -27,6 +27,7 @@
 
 package jfxtras.labs.util;
 
+import javafx.animation.Interpolator;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -84,19 +85,10 @@ public class Util {
         return "#" + red + green + blue;
     }
 
-    public static Color interpolateColor(final Color COLOR1, final Color COLOR2, double fraction) {
-        fraction     = fraction < 0 ? 0 : (fraction > 1 ? 1 : fraction);
-        double red   = COLOR1.getRed() + (COLOR2.getRed() - COLOR1.getRed()) * fraction;
-        double green = COLOR1.getGreen() + (COLOR2.getGreen() - COLOR1.getGreen()) * fraction;
-        double blue  = COLOR1.getBlue() + (COLOR2.getBlue() - COLOR1.getBlue()) * fraction;
-        double alpha = COLOR1.getOpacity() + (COLOR2.getOpacity() - COLOR1.getOpacity()) * fraction;
-        return new Color(red, green, blue, alpha);
-    }
-
     public static Color biLinearInterpolateColor(final Color COLOR_UL, final Color COLOR_UR, final Color COLOR_LL, final Color COLOR_LR, final float FRACTION_X, final float FRACTION_Y) {
-        final Color INTERPOLATED_COLOR_X1 = interpolateColor(COLOR_UL, COLOR_UR, FRACTION_X);
-        final Color INTERPOLATED_COLOR_X2 = interpolateColor(COLOR_LL, COLOR_LR, FRACTION_X);
-        return interpolateColor(INTERPOLATED_COLOR_X1, INTERPOLATED_COLOR_X2, FRACTION_Y);
+        final Color INTERPOLATED_COLOR_X1 = (Color) Interpolator.LINEAR.interpolate(COLOR_UL, COLOR_UR, FRACTION_X);
+        final Color INTERPOLATED_COLOR_X2 = (Color) Interpolator.LINEAR.interpolate(COLOR_LL, COLOR_LR, FRACTION_X);
+        return (Color) Interpolator.LINEAR.interpolate(INTERPOLATED_COLOR_X1, INTERPOLATED_COLOR_X2, FRACTION_Y);
     }
 
     public static Color darker(final Color COLOR, final double FRACTION) {

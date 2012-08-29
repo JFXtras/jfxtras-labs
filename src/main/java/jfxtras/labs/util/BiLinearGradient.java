@@ -1,5 +1,6 @@
 package jfxtras.labs.util;
 
+import javafx.animation.Interpolator;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
@@ -31,23 +32,10 @@ public class BiLinearGradient {
 
 
     // ******************** Methods *******************************************
-    private Color interpolateColor(final Color COLOR1, final Color COLOR2, double fraction) {
-        fraction     = fraction < 0 ? 0 : (fraction > 1 ? 1 : fraction);
-        double red   = COLOR1.getRed() + (COLOR2.getRed() - COLOR1.getRed()) * fraction;
-        double green = COLOR1.getGreen() + (COLOR2.getGreen() - COLOR1.getGreen()) * fraction;
-        double blue  = COLOR1.getBlue() + (COLOR2.getBlue() - COLOR1.getBlue()) * fraction;
-        double alpha = COLOR1.getOpacity() + (COLOR2.getOpacity() - COLOR1.getOpacity()) * fraction;
-        red   = red < 0 ? 0 : (red > 1 ? 1 : red);
-        green = green < 0 ? 0 : (green > 1 ? 1 : green);
-        blue  = blue < 0 ? 0 : (blue > 1 ? 1 : blue);
-        alpha = alpha < 0 ? 0 : (alpha > 1 ? 1 : alpha);
-        return new Color(red, green, blue, alpha);
-    }
-
     private Color biLinearInterpolateColor(final Color COL_00, final Color COL_10, final Color COL_01, final Color COL_11, final double FRAC_X, final double FRAC_Y) {
-        final Color INTERPOLATED_COLOR_X1 = interpolateColor(COL_00, COL_10, FRAC_X);
-        final Color INTERPOLATED_COLOR_X2 = interpolateColor(COL_01, COL_11, FRAC_X);
-        return interpolateColor(INTERPOLATED_COLOR_X1, INTERPOLATED_COLOR_X2, FRAC_Y);
+        final Color INTERPOLATED_COLOR_X1 = (Color) Interpolator.LINEAR.interpolate(COL_00, COL_10, FRAC_X);
+        final Color INTERPOLATED_COLOR_X2 = (Color) Interpolator.LINEAR.interpolate(COL_01, COL_11, FRAC_X);
+        return (Color) Interpolator.LINEAR.interpolate(INTERPOLATED_COLOR_X1, INTERPOLATED_COLOR_X2, FRAC_Y);
     }
 
     public Image getImage(final double WIDTH, final double HEIGHT) {
