@@ -124,6 +124,16 @@ public class SplitFlapBuilder<B extends SplitFlapBuilder<B>> extends ControlBuil
         return (B)this;
     }
 
+    @Override public final B layoutX(final double LAYOUT_X) {
+            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
+            return (B)this;
+        }
+
+    @Override public final B layoutY(final double LAYOUT_Y) {
+        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
+        return (B)this;
+    }
+
     @Override public final SplitFlap build() {
         final SplitFlap CONTROL = new SplitFlap();
         for (String key : properties.keySet()) {
@@ -151,6 +161,10 @@ public class SplitFlapBuilder<B extends SplitFlapBuilder<B>> extends ControlBuil
                 CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
             } else if ("prefHeight".equals(key)) {
                 CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
+            } else if ("layoutX".equals(key)) {
+                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
+            } else if ("layoutY".equals(key)) {
+                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
             }
         }
         return CONTROL;

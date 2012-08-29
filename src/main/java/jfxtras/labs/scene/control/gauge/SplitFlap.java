@@ -41,6 +41,7 @@ import javafx.scene.control.Control;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 /**
@@ -146,9 +147,7 @@ public class SplitFlap extends Control {
     private void init() {
         // the -fx-skin attribute in the CSS sets which Skin class is used
         getStyleClass().add(DEFAULT_STYLE_CLASS);
-        for (String text : selection.get()) {
-            selectedSet.add(text);
-        }
+        selectedSet.addAll(Arrays.asList(EXTENDED));
     }
 
 
@@ -311,13 +310,9 @@ public class SplitFlap extends Control {
     public final void setSelection(final String[] SELECTION) {
         selectedSet.clear();
         if (SELECTION.length == 0) {
-            for (String text : EXTENDED) {
-                selectedSet.add(text);
-            }
+            selectedSet.addAll(Arrays.asList(EXTENDED));
         } else {
-            for (String text : SELECTION) {
-                selectedSet.add(text);
-            }
+            selectedSet.addAll(Arrays.asList(SELECTION));
         }
         selection.set(SELECTION);
     }

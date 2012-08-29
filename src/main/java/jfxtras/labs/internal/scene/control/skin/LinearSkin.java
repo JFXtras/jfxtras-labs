@@ -27,26 +27,18 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import jfxtras.labs.internal.scene.control.behavior.LinearBehavior;
-import jfxtras.labs.scene.control.gauge.Gauge.NumberFormat;
-import jfxtras.labs.scene.control.gauge.Marker;
-import jfxtras.labs.scene.control.gauge.Linear;
-import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
-import jfxtras.labs.scene.control.gauge.Section;
-import jfxtras.labs.scene.control.gauge.StyleModelEvent;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.Timeline;
 import javafx.animation.Transition;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
@@ -77,6 +69,13 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
+import jfxtras.labs.internal.scene.control.behavior.LinearBehavior;
+import jfxtras.labs.scene.control.gauge.Gauge.NumberFormat;
+import jfxtras.labs.scene.control.gauge.Linear;
+import jfxtras.labs.scene.control.gauge.Marker;
+import jfxtras.labs.scene.control.gauge.Section;
+import jfxtras.labs.util.ConicalGradient;
+import jfxtras.labs.util.Util;
 
 import java.util.ArrayList;
 
@@ -88,7 +87,9 @@ import java.util.ArrayList;
  * Time: 18:04
  */
 public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
-    private static final Rectangle PREF_SIZE = new Rectangle(170, 350);
+    private static final Rectangle MIN_SIZE  = new Rectangle(25, 50);
+    private static final Rectangle PREF_SIZE = new Rectangle(170, 340);
+    private static final Rectangle MAX_SIZE  = new Rectangle(512, 1024);
     private Linear           control;
     private Rectangle        gaugeBounds;
     private Point2D          framelessOffset;
@@ -178,32 +179,30 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             }
         };
         ledTimer               = new AnimationTimer() {
-            @Override public void handle(final long CURRENT_NANOSECONDS) {
-                long currentNanoTime = System.nanoTime();
-                if (currentNanoTime > lastLedTimerCall + BLINK_INTERVAL) {
+            @Override public void handle(final long NOW) {
+                if (NOW > lastLedTimerCall + getBlinkInterval()) {
                     ledOnVisible ^= true;
                     if (ledOnVisible) {
                         ledOn.setOpacity(1.0);
                     } else {
                         ledOn.setOpacity(0.0);
                     }
-                    lastLedTimerCall = currentNanoTime;
+                    lastLedTimerCall = NOW;
                 }
             }
         };
         lastLedTimerCall       = 0l;
         ledOnVisible           = false;
         userLedTimer           = new AnimationTimer() {
-            @Override public void handle(final long CURRENT_NANOSECONDS) {
-                long currentNanoTime = System.nanoTime();
-                if (currentNanoTime > lastUserLedTimerCall + BLINK_INTERVAL) {
+            @Override public void handle(final long NOW) {
+                if (NOW > lastUserLedTimerCall + getBlinkInterval()) {
                     userLedOnVisible ^= true;
                     if (userLedOnVisible) {
                         userLedOn.setOpacity(1.0);
                     } else {
                         userLedOn.setOpacity(0.0);
                     }
-                    lastUserLedTimerCall = currentNanoTime;
+                    lastUserLedTimerCall = NOW;
                 }
             }
         };
@@ -367,29 +366,23 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
     }
 
     private void addListeners() {
-        control.gaugeModelProperty().addListener(new InvalidationListener() {
+        /*
+        control.getAreas().addListener(new InvalidationListener() {
             @Override public void invalidated(Observable observable) {
-                addBindings();
-                paint();
+
             }
         });
 
-        control.styleModelProperty().addListener(new InvalidationListener() {
+        control.getSections().addListener(new InvalidationListener() {
             @Override public void invalidated(Observable observable) {
-                addBindings();
-                paint();
+
             }
         });
+        */
 
-        control.prefWidthProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                isDirty = true;
-            }
-        });
-
-        control.prefHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                isDirty = true;
+        control.getMarkers().addListener(new InvalidationListener() {
+            @Override public void invalidated(Observable observable) {
+                drawIndicators();
             }
         });
 
@@ -399,6 +392,13 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
                 if (toValueAnimation.getStatus() != Animation.Status.STOPPED) {
                     toValueAnimation.stop();
                 }
+
+                // If the new value is in the range between the old value +- the redraw tolerance return and do nothing
+                if (newValue.doubleValue() > (oldValue.doubleValue() - control.getRedrawToleranceValue()) &&
+                    newValue.doubleValue() < (oldValue.doubleValue() + control.getRedrawToleranceValue())) {
+                    return;
+                }
+
                 if (control.isValueAnimationEnabled()) {
                     toValueAnimation.setInterpolator(Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
                     toValueAnimation.play();
@@ -537,7 +537,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
                 glowOn.setOpacity(0.0);
             }
 
-        } else if ("RANGE".equals(PROPERTY)) {
+        } else if ("TICKMARKS".equals(PROPERTY)) {
             drawTickmarks();
 
         } else if ("MIN_MEASURED_VALUE".equals(PROPERTY)) {
@@ -560,6 +560,16 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
 
         } else if ("SIMPLE_GRADIENT_BASE".equals(PROPERTY)) {
             isDirty = true;
+        } else if ("GAUGE_MODEL".equals(PROPERTY)) {
+            addBindings();
+        } else if ("STYLE_MODEL".equals(PROPERTY)) {
+            addBindings();
+        } else if ("AREAS".equals(PROPERTY)) {
+
+        } else if ("SECTIONS".equals(PROPERTY)) {
+
+        } else if ("MARKERS".equals(PROPERTY)) {
+            drawIndicators();
         }
     }
 
@@ -626,20 +636,82 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         control = null;
     }
 
-    @Override protected double computePrefWidth(final double HEIGHT) {
-        double prefWidth = PREF_SIZE.getWidth();
-        if (HEIGHT != -1) {
-            prefWidth = Math.max(0, HEIGHT - getInsets().getLeft() - getInsets().getRight());
+    @Override protected double computePrefWidth(final double WIDTH) {
+        double prefWidth;
+        if (WIDTH < getPrefHeight()) {
+            // vertical
+            prefWidth = PREF_SIZE.getWidth();
+        } else {
+            // horizontal
+            prefWidth = PREF_SIZE.getHeight();
+        }
+        if (WIDTH != -1) {
+            prefWidth = Math.max(0, WIDTH - getInsets().getLeft() - getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
 
-    @Override protected double computePrefHeight(final double WIDTH) {
-        double prefHeight = PREF_SIZE.getHeight();
-        if (WIDTH != -1) {
-            prefHeight = Math.max(0, WIDTH - getInsets().getTop() - getInsets().getBottom());
+    @Override protected double computePrefHeight(final double HEIGHT) {
+        double prefHeight;
+        if (HEIGHT < getPrefHeight()) {
+            // vertical
+            prefHeight = PREF_SIZE.getHeight();
+        } else {
+            // horizontal
+            prefHeight = PREF_SIZE.getWidth();
         }
-        return super.computePrefWidth(prefHeight);
+        if (HEIGHT != -1) {
+            prefHeight = Math.max(0, HEIGHT - getInsets().getTop() - getInsets().getBottom());
+        }
+        return super.computePrefHeight(prefHeight);
+    }
+
+    @Override protected double computeMinWidth(final double WIDTH) {
+        double minWidth;
+        if (getPrefWidth() < getPrefHeight()) {
+            // vertical
+            minWidth = Math.max(MIN_SIZE.getWidth(), WIDTH);
+        } else {
+            // horizontal
+            minWidth = Math.max(MIN_SIZE.getHeight(), WIDTH);
+        }
+        return super.computeMinWidth(minWidth);
+    }
+
+    @Override protected double computeMinHeight(final double HEIGHT) {
+        double minHeight;
+        if (getPrefWidth() < getPrefHeight()) {
+            // vertical
+            minHeight = Math.max(MIN_SIZE.getHeight(), HEIGHT);
+        } else {
+            // horizontal
+            minHeight = Math.max(MIN_SIZE.getWidth(), HEIGHT);
+        }
+        return super.computeMinHeight(minHeight);
+    }
+
+    @Override protected double computeMaxWidth(final double WIDTH) {
+        double maxWidth;
+        if (getPrefWidth() < getPrefHeight()) {
+            // vertical
+            maxWidth = Math.max(MAX_SIZE.getWidth(), WIDTH);
+        } else {
+            // horizontal
+            maxWidth = Math.max(MAX_SIZE.getHeight(), WIDTH);
+        }
+        return super.computeMaxWidth(maxWidth);
+    }
+
+    @Override protected double computeMaxHeight(final double HEIGHT) {
+        double maxHeight;
+        if (getPrefWidth() < getPrefHeight()) {
+            // vertical
+            maxHeight = Math.max(MAX_SIZE.getHeight(), HEIGHT);
+        } else {
+            // horizontal
+            maxHeight = Math.max(MAX_SIZE.getWidth(), HEIGHT);
+        }
+        return super.computeMaxHeight(maxHeight);
     }
 
     private String formatLcdValue(final double VALUE) {
@@ -679,6 +751,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         }
     }
 
+
     // ******************** Drawing *******************************************
     public void drawFrame() {
         final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
@@ -715,6 +788,60 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
 
         final ImageView IMAGE_VIEW;
         switch (control.getFrameDesign()) {
+            case BLACK_METAL:
+                ConicalGradient bmGradient = new ConicalGradient(new Point2D(MAIN_FRAME.getLayoutBounds().getWidth() / 2,
+                                                                             MAIN_FRAME.getLayoutBounds().getHeight() / 2),
+                                                                 new Stop(0.0000, Color.rgb(254, 254, 254)),
+                                                                 new Stop(0.1250, Color.rgb(0, 0, 0)),
+                                                                 new Stop(0.3472, Color.rgb(153, 153, 153)),
+                                                                 new Stop(0.5000, Color.rgb(0, 0, 0)),
+                                                                 new Stop(0.6805, Color.rgb(153, 153, 153)),
+                                                                 new Stop(0.8750, Color.rgb(0, 0, 0)),
+                                                                 new Stop(1.0000, Color.rgb(254, 254, 254)));
+                MAIN_FRAME.setFill(bmGradient.apply(MAIN_FRAME));
+                MAIN_FRAME.setStroke(null);
+                frame.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
+                break;
+            case SHINY_METAL:
+                ConicalGradient smGradient = new ConicalGradient(new Point2D(MAIN_FRAME.getLayoutBounds().getWidth() / 2,
+                                                                             MAIN_FRAME.getLayoutBounds().getHeight() / 2),
+                                                                 new Stop(0.0000, Color.rgb(254, 254, 254)),
+                                                                 new Stop(0.1250, Util.darker(control.getFrameBaseColor(), 0.15)),
+                                                                 new Stop(0.2500, control.getFrameBaseColor().darker()),
+                                                                 new Stop(0.3472, control.getFrameBaseColor().brighter()),
+                                                                 new Stop(0.5000, control.getFrameBaseColor().darker().darker()),
+                                                                 new Stop(0.6527, control.getFrameBaseColor().brighter()),
+                                                                 new Stop(0.7500, control.getFrameBaseColor().darker()),
+                                                                 new Stop(0.8750, Util.darker(control.getFrameBaseColor(), 0.15)),
+                                                                 new Stop(1.0000, Color.rgb(254, 254, 254)));
+                MAIN_FRAME.setFill(smGradient.apply(MAIN_FRAME));
+                MAIN_FRAME.setStroke(null);
+                frame.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
+                break;
+            case CHROME:
+                ConicalGradient cmGradient = new ConicalGradient(new Point2D(MAIN_FRAME.getLayoutBounds().getWidth() / 2,
+                                                                             MAIN_FRAME.getLayoutBounds().getHeight() / 2),
+                                                                 new Stop(0.00, Color.WHITE),
+                                                                 new Stop(0.09, Color.WHITE),
+                                                                 new Stop(0.12, Color.rgb(136, 136, 138)),
+                                                                 new Stop(0.16, Color.rgb(164, 185, 190)),
+                                                                 new Stop(0.25, Color.rgb(158, 179, 182)),
+                                                                 new Stop(0.29, Color.rgb(112, 112, 112)),
+                                                                 new Stop(0.33, Color.rgb(221, 227, 227)),
+                                                                 new Stop(0.38, Color.rgb(155, 176, 179)),
+                                                                 new Stop(0.48, Color.rgb(156, 176, 177)),
+                                                                 new Stop(0.52, Color.rgb(254, 255, 255)),
+                                                                 new Stop(0.63, Color.WHITE),
+                                                                 new Stop(0.68, Color.rgb(156, 180, 180)),
+                                                                 new Stop(0.80, Color.rgb(198, 209, 211)),
+                                                                 new Stop(0.83, Color.rgb(246, 248, 247)),
+                                                                 new Stop(0.87, Color.rgb(204, 216, 216)),
+                                                                 new Stop(0.97, Color.rgb(164, 188, 190)),
+                                                                 new Stop(1.00, Color.WHITE));
+                MAIN_FRAME.setFill(cmGradient.apply(MAIN_FRAME));
+                MAIN_FRAME.setStroke(null);
+                frame.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
+                break;
             case GLOSSY_METAL:
                 MAIN_FRAME.setFill(new LinearGradient(0.4714285714285714 * WIDTH, 0.014285714285714285 * HEIGHT,
                                                       0.47142857142857153 * WIDTH, 0.9785714285714285 * HEIGHT,
@@ -826,7 +953,8 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setWidth(0.2 * SIZE);
         INNER_SHADOW.setHeight(0.2 * SIZE);
-        INNER_SHADOW.setColor(Color.color(0, 0, 0, 1.0));
+        INNER_SHADOW.setOffsetY(0.03 * SIZE);
+        INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.7));
         INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
 
         final LinearGradient HL_GRADIENT = new LinearGradient(0, 0, WIDTH, 0, false, CycleMethod.NO_CYCLE,
@@ -850,6 +978,78 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
 
         final ImageView IMAGE_VIEW;
         switch (control.getBackgroundDesign()) {
+            case STAINLESS:
+                ConicalGradient gradient = new ConicalGradient(new Point2D(SIZE / 2, SIZE / 2),
+                                                               new Stop(0.00, Color.web("#FDFDFD")),
+                                                               new Stop(0.03, Color.web("#E2E2E2")),
+                                                               new Stop(0.10, Color.web("#B2B2B4")),
+                                                               new Stop(0.14, Color.web("#ACACAE")),
+                                                               new Stop(0.24, Color.web("#FDFDFD")),
+                                                               new Stop(0.33, Color.web("#6E6E70")),
+                                                               new Stop(0.38, Color.web("#6E6E70")),
+                                                               new Stop(0.50, Color.web("#FDFDFD")),
+                                                               new Stop(0.62, Color.web("#6E6E70")),
+                                                               new Stop(0.67, Color.web("#6E6E70")),
+                                                               new Stop(0.76, Color.web("#FDFDFD")),
+                                                               new Stop(0.81, Color.web("#ACACAE")),
+                                                               new Stop(0.85, Color.web("#B2B2B4")),
+                                                               new Stop(0.97, Color.web("#E2E2E2")),
+                                                               new Stop(1.00, Color.web("#FDFDFD")));
+                BACKGROUND.setFill(gradient.apply(BACKGROUND));
+                BACKGROUND.setEffect(INNER_SHADOW);
+                background.getChildren().addAll(BACKGROUND);
+                break;
+            case CARBON:
+                BACKGROUND.setFill(Util.createCarbonPattern());
+                BACKGROUND.setStroke(null);
+                final Rectangle SHADOW_OVERLAY1 = new Rectangle(0.0841121495 * SIZE + 1, 0.0841121495 * SIZE + 1,
+                                                                WIDTH - (2 * 0.0841121495 * SIZE) - 2, HEIGHT - (2 * 0.0841121495 * SIZE) - 2);
+                SHADOW_OVERLAY1.setArcWidth(0.05 * SIZE);
+                SHADOW_OVERLAY1.setArcHeight(0.05 * SIZE);
+                SHADOW_OVERLAY1.setStroke(null);
+                SHADOW_OVERLAY1.setFill(new LinearGradient(SHADOW_OVERLAY1.getLayoutBounds().getMinX(), 0,
+                                                     SHADOW_OVERLAY1.getLayoutBounds().getMaxX(), 0,
+                                                     false, CycleMethod.NO_CYCLE,
+                                                     new Stop(0.0, Color.color(0.0, 0.0, 0.0, 0.5)),
+                                                     new Stop(0.4, Color.color(1.0, 1.0, 1.0, 0.0)),
+                                                     new Stop(0.6, Color.color(1.0, 1.0, 1.0, 0.0)),
+                                                     new Stop(1.0, Color.color(0.0, 0.0, 0.0, 0.5))));
+                SHADOW_OVERLAY1.setStroke(null);
+                background.getChildren().addAll(BACKGROUND, SHADOW_OVERLAY1);
+                break;
+            case PUNCHED_SHEET:
+                BACKGROUND.setFill(Util.createPunchedSheetPattern(control.getTextureColor()));
+                BACKGROUND.setStroke(null);
+                final Rectangle SHADOW_OVERLAY2 = new Rectangle(0.0841121495 * SIZE + 1, 0.0841121495 * SIZE + 1,
+                                                                WIDTH - (2 * 0.0841121495 * SIZE) - 2, HEIGHT - (2 * 0.0841121495 * SIZE) - 2);
+                SHADOW_OVERLAY2.setArcWidth(0.05 * SIZE);
+                SHADOW_OVERLAY2.setArcHeight(0.05 * SIZE);
+                SHADOW_OVERLAY2.setFill(new LinearGradient(SHADOW_OVERLAY2.getLayoutBounds().getMinX(), 0,
+                                                           SHADOW_OVERLAY2.getLayoutBounds().getMaxX(), 0,
+                                                           false, CycleMethod.NO_CYCLE,
+                                                           new Stop(0.0, Color.color(0.0, 0.0, 0.0, 0.5)),
+                                                           new Stop(0.4, Color.color(1.0, 1.0, 1.0, 0.0)),
+                                                           new Stop(0.6, Color.color(1.0, 1.0, 1.0, 0.0)),
+                                                           new Stop(1.0, Color.color(0.0, 0.0, 0.0, 0.5))));
+
+                SHADOW_OVERLAY2.setStroke(null);
+                background.getChildren().addAll(BACKGROUND, SHADOW_OVERLAY2);
+                break;
+            case NOISY_PLASTIC:
+                final Rectangle BACKGROUND_PLAIN = new Rectangle(0.0841121495 * SIZE + 1, 0.0841121495 * SIZE + 1,
+                                                                 WIDTH - (2 * 0.0841121495 * SIZE) - 2, HEIGHT - (2 * 0.0841121495 * SIZE) - 2);
+                BACKGROUND_PLAIN.setArcWidth(0.05 * SIZE);
+                BACKGROUND_PLAIN.setArcHeight(0.05 * SIZE);
+                BACKGROUND_PLAIN.setFill(new LinearGradient(0.0, BACKGROUND_PLAIN.getLayoutY(),
+                                                            0.0, BACKGROUND_PLAIN.getLayoutBounds().getHeight(),
+                                                            false, CycleMethod.NO_CYCLE,
+                                                            new Stop(0.0, Util.brighter(control.getTextureColor(), 0.15)),
+                                                            new Stop(1.0, Util.darker(control.getTextureColor(), 0.15))));
+                BACKGROUND_PLAIN.setStroke(null);
+                BACKGROUND_PLAIN.setEffect(INNER_SHADOW);
+                BACKGROUND.setFill(Util.applyNoisyBackground(BACKGROUND, control.getTextureColor()));
+                background.getChildren().addAll(BACKGROUND_PLAIN, BACKGROUND);
+                break;
             default:
                 BACKGROUND.setStyle(control.getSimpleGradientBaseColorString());
                 BACKGROUND.getStyleClass().add(control.getBackgroundDesign().CSS_BACKGROUND);

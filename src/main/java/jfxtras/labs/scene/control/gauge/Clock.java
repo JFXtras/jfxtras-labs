@@ -28,8 +28,11 @@
 package jfxtras.labs.scene.control.gauge;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -54,7 +57,8 @@ public class Clock extends Control {
     }
     public static enum ClockStyle {
         DB,
-        IOS6
+        IOS6,
+        STANDARD
     }
     private static final String        DEFAULT_STYLE_CLASS = "clock";
     private StringProperty             timeZone;
@@ -71,6 +75,10 @@ public class Clock extends Control {
     private ObjectProperty<Paint>      brightPointerPaint;
     private ObjectProperty<Paint>      darkPointerPaint;
     private ObjectProperty<Paint>      secondPointerPaint;
+    private IntegerProperty            hour;
+    private IntegerProperty            minute;
+    private IntegerProperty            second;
+    private StringProperty             title;
 
 
     // ******************** Constructors **************************************
@@ -82,13 +90,17 @@ public class Clock extends Control {
         daylightSavingTime    = new SimpleBooleanProperty(Calendar.getInstance().getTimeZone().inDaylightTime(new Date()));
         theme                 = new SimpleObjectProperty<Theme>(Theme.BRIGHT);
         clockStyle            = new SimpleObjectProperty<ClockStyle>(ClockStyle.DB);
-        brightBackgroundPaint = new SimpleObjectProperty<Paint>(null);
-        darkBackgroundPaint   = new SimpleObjectProperty<Paint>(null);
+        brightBackgroundPaint = new SimpleObjectProperty<Paint>(Color.WHITE);
+        darkBackgroundPaint   = new SimpleObjectProperty<Paint>(Color.BLACK);
         brightPointerPaint    = new SimpleObjectProperty<Paint>(Color.BLACK);
         darkPointerPaint      = new SimpleObjectProperty<Paint>(Color.WHITE);
         brightTickMarkPaint   = new SimpleObjectProperty<Paint>(Color.BLACK);
         darkTickMarkPaint     = new SimpleObjectProperty<Paint>(Color.WHITE);
         secondPointerPaint    = new SimpleObjectProperty<Paint>(Color.rgb(237, 0, 58));
+        title                 = new SimpleStringProperty("");
+        hour                  = new SimpleIntegerProperty(0);
+        minute                = new SimpleIntegerProperty(0);
+        second                = new SimpleIntegerProperty(0);
         init();
     }
 
@@ -270,6 +282,58 @@ public class Clock extends Control {
 
     public final ObjectProperty<Paint> secondPointerPaintProperty() {
         return secondPointerPaint;
+    }
+
+    public final String getTitle() {
+            return title.get();
+        }
+
+    public final void setTitle(final String TITLE) {
+        title.set(TITLE);
+    }
+
+    public final StringProperty titleProperty() {
+        return title;
+    }
+
+    public final int getHour() {
+        return hour.get();
+    }
+
+    public final void setHour(final int HOUR) {
+        hour.set(clamp(0, 23, HOUR));
+    }
+
+    public final ReadOnlyIntegerProperty hourProperty() {
+        return hour;
+    }
+
+    public final int getMinute() {
+        return minute.get();
+    }
+
+    public final void setMinute(final int MINUTE) {
+        minute.set(clamp(0, 59, MINUTE));
+    }
+
+    public final ReadOnlyIntegerProperty minuteProperty() {
+        return minute;
+    }
+
+    public final int getSecond() {
+        return second.get();
+    }
+
+    public final void setSecond(final int SECOND) {
+        second.set(clamp(0, 59, SECOND));
+    }
+
+    public final ReadOnlyIntegerProperty secondProperty() {
+        return second;
+    }
+
+    private int clamp(final int MIN, final int MAX, final int VALUE) {
+        return VALUE < MIN ? MIN : (VALUE > MAX ? MAX : VALUE);
     }
 
 

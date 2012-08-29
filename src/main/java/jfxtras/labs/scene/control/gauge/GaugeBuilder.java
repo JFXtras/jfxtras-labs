@@ -85,6 +85,8 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
         GaugeType         gaugeType   = GaugeType.RADIAL;
         double            prefWidth   = -1;
         double            prefHeight  = -1;
+        double            layoutX     = -1;
+        double            layoutY     = -1;
         Gauge.RadialRange radialRange = Gauge.RadialRange.RADIAL_300;
         GaugeModel        gaugeModel;
         if (gaugeProperties.containsKey("gaugeModel")) {
@@ -109,6 +111,8 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 gaugeModel.setValueAnimationEnabled(((BooleanProperty) gaugeProperties.get(key)).get());
             } else if ("animationDuration".equals(key)) {
                 gaugeModel.setAnimationDuration(((DoubleProperty) gaugeProperties.get(key)).get());
+            } else if ("redrawTolerance".equals(key)) {
+                gaugeModel.setRedrawTolerance(((DoubleProperty) gaugeProperties.get(key)).get());
             } else if ("minValue".equals(key)) {
                 gaugeModel.setMinValue(((DoubleProperty) gaugeProperties.get(key)).get());
             } else if ("maxValue".equals(key)) {
@@ -138,13 +142,19 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
             } else if ("maxNoOfMinorTicks".equals(key)) {
                 gaugeModel.setMaxNoOfMinorTicks(((IntegerProperty) gaugeProperties.get(key)).get());
             } else if ("majorTickSpacing".equals(key)) {
-                gaugeModel.setMajorTickSpacing(((IntegerProperty) gaugeProperties.get(key)).get());
+                gaugeModel.setMajorTickSpacing(((DoubleProperty) gaugeProperties.get(key)).get());
             } else if ("minorTickSpacing".equals(key)) {
-                gaugeModel.setMinorTickSpacing(((IntegerProperty) gaugeProperties.get(key)).get());
+                gaugeModel.setMinorTickSpacing(((DoubleProperty) gaugeProperties.get(key)).get());
             } else if ("trend".equals(key)) {
                 gaugeModel.setTrend(((ObjectProperty<Gauge.Trend>) gaugeProperties.get(key)).get());
             } else if ("niceScaling".equals(key)) {
                 gaugeModel.setNiceScaling(((BooleanProperty) gaugeProperties.get(key)).get());
+            } else if ("tightScale".equals(key)) {
+                gaugeModel.setTightScale(((BooleanProperty) gaugeProperties.get(key)).get());
+            } else if ("largeNumberScale".equals(key)) {
+                gaugeModel.setLargeNumberScale(((BooleanProperty) gaugeProperties.get(key)).get());
+            } else if ("lastLabelVisible".equals(key)) {
+                gaugeModel.setLastLabelVisible(((BooleanProperty) gaugeProperties.get(key)).get());
             } else if ("sectionsArray".equals(key)) {
                 gaugeModel.setSections(((ObjectProperty<Section[]>) gaugeProperties.get(key)).get());
             } else if ("sectionsList".equals(key)) {
@@ -161,10 +171,16 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 gaugeModel.setMarkers(((ObjectProperty<Marker[]>) gaugeProperties.get(key)).get());
             } else if ("markersList".equals(key)) {
                 gaugeModel.setMarkers(((ObjectProperty<List<Marker>>) gaugeProperties.get(key)).get());
+            } else if ("endlessMode".equals(key)) {
+                gaugeModel.setEndlessMode(((BooleanProperty) gaugeProperties.get(key)).get());
             } else if ("prefWidth".equals(key)) {
                 prefWidth = ((DoubleProperty) gaugeProperties.get(key)).get();
             } else if ("prefHeight".equals(key)) {
                 prefHeight = ((DoubleProperty) gaugeProperties.get(key)).get();
+            } else if ("layoutX".equals(key)) {
+                layoutX = ((DoubleProperty) gaugeProperties.get(key)).get();
+            } else if ("layoutY".equals(key)) {
+                layoutY = ((DoubleProperty) gaugeProperties.get(key)).get();
             }
         }
 
@@ -182,6 +198,8 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 styleModel.setThresholdColor(((ObjectProperty<Gauge.ThresholdColor>) styleProperties.get(key)).get());
             } else if ("frameDesign".equals(key)) {
                 styleModel.setFrameDesign(((ObjectProperty<Gauge.FrameDesign>) styleProperties.get(key)).get());
+            } else if ("frameBaseColor".equals(key)) {
+                styleModel.setFrameBaseColor(((ObjectProperty<Color>) styleProperties.get(key)).get());
             } else if ("frameVisible".equals(key)) {
                 styleModel.setFrameVisible(((BooleanProperty) styleProperties.get(key)).get());
             } else if ("backgroundDesign".equals(key)) {
@@ -192,8 +210,12 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 styleModel.setKnobDesign(((ObjectProperty<Gauge.KnobDesign>) styleProperties.get(key)).get());
             } else if ("knobColor".equals(key)) {
                 styleModel.setKnobColor(((ObjectProperty<Gauge.KnobColor>) styleProperties.get(key)).get());
-            } else if ("postsVisible".equals(key)) {
-                styleModel.setPostsVisible(((BooleanProperty) styleProperties.get(key)).get());
+            } else if ("knobsVisible".equals(key)) {
+                if (gaugeModel.isEndlessMode()) {
+                    styleModel.setKnobsVisible(false);
+                } else {
+                    styleModel.setKnobsVisible(((BooleanProperty) styleProperties.get(key)).get());
+                }
             } else if ("pointerType".equals(key)) {
                 styleModel.setPointerType(((ObjectProperty<Gauge.PointerType>) styleProperties.get(key)).get());
             } else if ("valueColor".equals(key)) {
@@ -254,10 +276,14 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 styleModel.setMajorTickmarkType(((ObjectProperty<Gauge.TickmarkType>) styleProperties.get(key)).get());
             } else if ("majorTickmarkColor".equals(key)) {
                 styleModel.setMajorTickmarkColor(((ObjectProperty<Color>) styleProperties.get(key)).get());
+            } else if ("majorTickmarkColorEnabled".equals(key)) {
+                styleModel.setMajorTickmarkColorEnabled(((BooleanProperty) styleProperties.get(key)).get());
             } else if ("minorTickmarksVisible".equals(key)) {
                 styleModel.setMinorTicksVisible(((BooleanProperty) styleProperties.get(key)).get());
             } else if ("minorTickmarkColor".equals(key)) {
                 styleModel.setMinorTickmarkColor(((ObjectProperty<Color>) styleProperties.get(key)).get());
+            } else if ("minorTickmarkColorEnabled".equals(key)) {
+                styleModel.setMinorTickmarkColorEnabled(((BooleanProperty) styleProperties.get(key)).get());
             } else if ("tickLabelsVisible".equals(key)) {
                 styleModel.setTickLabelsVisible(((BooleanProperty) styleProperties.get(key)).get());
             } else if ("tickLabelOrientation".equals(key)) {
@@ -314,36 +340,50 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 Linear linear = new Linear(gaugeModel, styleModel);
                 if (prefWidth != -1) { linear.setPrefWidth(prefWidth); }
                 if (prefHeight != -1) { linear.setPrefHeight(prefHeight);}
+                if (layoutX != -1) {linear.setLayoutX(layoutX);}
+                if (layoutY != -1) {linear.setLayoutY(layoutY);}
                 super.applyTo(linear);
                 return linear;
             case RADIAL_HALF_N:
                 RadialHalfN radialHalfN = new RadialHalfN(gaugeModel, styleModel);
                 radialHalfN.setPrefSize(SIZE, SIZE);
+                if (layoutX != -1) {radialHalfN.setLayoutX(layoutX);}
+                if (layoutY != -1) {radialHalfN.setLayoutY(layoutY);}
                 super.applyTo(radialHalfN);
                 return radialHalfN;
             case RADIAL_HALF_S:
                 RadialHalfS radialHalfS = new RadialHalfS(gaugeModel, styleModel);
                 radialHalfS.setPrefSize(SIZE, SIZE);
+                if (layoutX != -1) {radialHalfS.setLayoutX(layoutX);}
+                if (layoutY != -1) {radialHalfS.setLayoutY(layoutY);}
                 super.applyTo(radialHalfS);
                 return radialHalfS;
             case RADIAL_QUARTER_N:
                 RadialQuarterN radialQuarterN = new RadialQuarterN(gaugeModel, styleModel);
                 radialQuarterN.setPrefSize(SIZE, SIZE);
+                if (layoutX != -1) {radialQuarterN.setLayoutX(layoutX);}
+                if (layoutY != -1) {radialQuarterN.setLayoutY(layoutY);}
                 super.applyTo(radialQuarterN);
                 return radialQuarterN;
             case RADIAL_QUARTER_E:
                 RadialQuarterE radialQuarterE = new RadialQuarterE(gaugeModel, styleModel);
                 radialQuarterE.setPrefSize(SIZE, SIZE);
+                if (layoutX != -1) {radialQuarterE.setLayoutX(layoutX);}
+                if (layoutY != -1) {radialQuarterE.setLayoutY(layoutY);}
                 super.applyTo(radialQuarterE);
                 return radialQuarterE;
             case RADIAL_QUARTER_S:
                 RadialQuarterS radialQuarterS = new RadialQuarterS(gaugeModel, styleModel);
                 radialQuarterS.setPrefSize(SIZE, SIZE);
+                if (layoutX != -1) {radialQuarterS.setLayoutX(layoutX);}
+                if (layoutY != -1) {radialQuarterS.setLayoutY(layoutY);}
                 super.applyTo(radialQuarterS);
                 return radialQuarterS;
             case RADIAL_QUARTER_W:
                 RadialQuarterW radialQuarterW = new RadialQuarterW(gaugeModel, styleModel);
                 radialQuarterW.setPrefSize(SIZE, SIZE);
+                if (layoutX != -1) {radialQuarterW.setLayoutX(layoutX);}
+                if (layoutY != -1) {radialQuarterW.setLayoutY(layoutY);}
                 super.applyTo(radialQuarterW);
                 return radialQuarterW;
             case RADIAL:
@@ -352,10 +392,13 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 if (radialRange == Gauge.RadialRange.RADIAL_90 ||
                     radialRange == Gauge.RadialRange.RADIAL_180 ||
                     radialRange == Gauge.RadialRange.RADIAL_270 ||
-                    radialRange == Gauge.RadialRange.RADIAL_300) {
+                    radialRange == Gauge.RadialRange.RADIAL_300 ||
+                    radialRange == Gauge.RadialRange.RADIAL_360) {
                     radial.setRadialRange(radialRange);
                 }
                 radial.setPrefSize(SIZE, SIZE);
+                if (layoutX != -1) {radial.setLayoutX(layoutX);}
+                if (layoutY != -1) {radial.setLayoutY(layoutY);}
                 super.applyTo(radial);
                 return radial;
         }
@@ -385,6 +428,11 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
 
     public final GaugeBuilder animationDuration(final double ANIMATION_DURATION) {
         gaugeProperties.put("animationDuration", new SimpleDoubleProperty(ANIMATION_DURATION));
+        return this;
+    }
+
+    public final GaugeBuilder redrawTolerance(final double REDRAW_TOLERANCE) {
+        gaugeProperties.put("redrawTolerance", new SimpleDoubleProperty(REDRAW_TOLERANCE));
         return this;
     }
 
@@ -458,13 +506,13 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
         return this;
     }
 
-    public final GaugeBuilder majorTickSpacing(final int MAJOR_TICKSPACING) {
-        gaugeProperties.put("majorTickSpacing", new SimpleIntegerProperty(MAJOR_TICKSPACING));
+    public final GaugeBuilder majorTickSpacing(final double MAJOR_TICK_SPACING) {
+        gaugeProperties.put("majorTickSpacing", new SimpleDoubleProperty(MAJOR_TICK_SPACING));
         return this;
     }
 
-    public final GaugeBuilder minorTickSpacing(final int MINOR_TICKSPACING) {
-        gaugeProperties.put("minorTickSpacing", new SimpleIntegerProperty(MINOR_TICKSPACING));
+    public final GaugeBuilder minorTickSpacing(final double MINOR_TICK_SPACING) {
+        gaugeProperties.put("minorTickSpacing", new SimpleDoubleProperty(MINOR_TICK_SPACING));
         return this;
     }
 
@@ -475,6 +523,21 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
 
     public final GaugeBuilder niceScaling(final boolean NICE_SCALING) {
         gaugeProperties.put("niceScaling", new SimpleBooleanProperty(NICE_SCALING));
+        return this;
+    }
+
+    public final GaugeBuilder tightScale(final boolean TIGHT_SCALE) {
+        gaugeProperties.put("tightScale", new SimpleBooleanProperty(TIGHT_SCALE));
+        return this;
+    }
+
+    public final GaugeBuilder largeNumberScale(final boolean LARGE_NUMBER_SCALE) {
+        gaugeProperties.put("largeNumberScale", new SimpleBooleanProperty(LARGE_NUMBER_SCALE));
+        return this;
+    }
+
+    public final GaugeBuilder lastLabelVisible(final boolean LAST_LABEL_VISIBLE) {
+        gaugeProperties.put("lastLabelVisible", new SimpleBooleanProperty(LAST_LABEL_VISIBLE));
         return this;
     }
 
@@ -508,6 +571,11 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
         return this;
     }
 
+    public final GaugeBuilder endlessMode(final boolean ENDLESS_MODE) {
+        gaugeProperties.put("endlessMode", new SimpleBooleanProperty(ENDLESS_MODE));
+        return this;
+    }
+
     @Override public final B prefWidth(final double WIDTH) {
         gaugeProperties.put("prefWidth", new SimpleDoubleProperty(WIDTH));
         return (B)this;
@@ -515,6 +583,16 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
 
     @Override public final B prefHeight(final double HEIGHT) {
         gaugeProperties.put("prefHeight", new SimpleDoubleProperty(HEIGHT));
+        return (B)this;
+    }
+
+    @Override public final B layoutX(final double LAYOUT_X) {
+            gaugeProperties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
+            return (B)this;
+        }
+
+    @Override public final B layoutY(final double LAYOUT_Y) {
+        gaugeProperties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
         return (B)this;
     }
 
@@ -556,6 +634,11 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
         return this;
     }
 
+    public final GaugeBuilder frameBaseColor(final Color FRAME_BASE_COLOR) {
+        styleProperties.put("frameBaseColor", new SimpleObjectProperty<Color>(FRAME_BASE_COLOR));
+        return this;
+    }
+
     public final GaugeBuilder frameVisible(final boolean FRAME_VISIBLE) {
         styleProperties.put("frameVisible", new SimpleBooleanProperty(FRAME_VISIBLE));
         return this;
@@ -581,8 +664,8 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
         return this;
     }
 
-    public final GaugeBuilder postsVisible(final boolean POSTS_VISIBLE) {
-        styleProperties.put("postsVisible", new SimpleBooleanProperty(POSTS_VISIBLE));
+    public final GaugeBuilder knobsVisible(final boolean KNOBS_VISIBLE) {
+        styleProperties.put("knobsVisible", new SimpleBooleanProperty(KNOBS_VISIBLE));
         return this;
     }
 
@@ -746,6 +829,11 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
         return this;
     }
 
+    public final GaugeBuilder majorTickmarkColorEnabled(final boolean MAJOR_TICKMARK_COLOR_ENABLED) {
+        styleProperties.put("majorTickmarkColorEnabled", new SimpleBooleanProperty(MAJOR_TICKMARK_COLOR_ENABLED));
+        return this;
+    }
+
     public final GaugeBuilder minorTickmarksVisible(final boolean MINOR_TICKMARKS_VISIBLE) {
         styleProperties.put("minorTickmarksVisible", new SimpleBooleanProperty(MINOR_TICKMARKS_VISIBLE));
         return this;
@@ -753,6 +841,11 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
 
     public final GaugeBuilder minorTickmarkColor(final Color MINOR_TICKMARK_COLOR) {
         styleProperties.put("minorTickmarkColor", new SimpleObjectProperty<Color>(MINOR_TICKMARK_COLOR));
+        return this;
+    }
+
+    public final GaugeBuilder minorTickmarkColorEnabled(final boolean MINOR_TICKMARK_COLOR_ENABLED) {
+        styleProperties.put("minorTickmarkColorEnabled", new SimpleBooleanProperty(MINOR_TICKMARK_COLOR_ENABLED));
         return this;
     }
 

@@ -29,23 +29,25 @@ package jfxtras.labs.scene.control.gauge;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import jfxtras.labs.scene.control.gauge.Gauge.NumberSystem;
-import jfxtras.labs.scene.control.gauge.Gauge.Trend;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventTarget;
+import javafx.event.EventType;
+import jfxtras.labs.scene.control.gauge.Gauge.NumberSystem;
+import jfxtras.labs.scene.control.gauge.Gauge.Trend;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -57,15 +59,10 @@ import java.util.List;
  */
 public class GaugeModel {
     private DoubleProperty               value;
+    private DoubleProperty               realValue;
     private BooleanProperty              valueAnimationEnabled;
     private DoubleProperty               animationDuration;
-    private DoubleProperty               minValue;
-    private DoubleProperty               maxValue;
-    private DoubleProperty               range;
-    private BooleanProperty              niceScaling;
-    private DoubleProperty               niceMinValue;
-    private DoubleProperty               niceMaxValue;
-    private DoubleProperty               niceRange;
+    private DoubleProperty               redrawTolerance;
     private DoubleProperty               minMeasuredValue;
     private DoubleProperty               maxMeasuredValue;
     private DoubleProperty               threshold;
@@ -79,29 +76,22 @@ public class GaugeModel {
     private BooleanProperty              lcdThresholdBehaviorInverted;
     private StringProperty               lcdUnit;
     private ObjectProperty<NumberSystem> lcdNumberSystem;
-    private IntegerProperty              maxNoOfMajorTicks;
-    private IntegerProperty              maxNoOfMinorTicks;
-    private IntegerProperty              majorTickSpacing;
-    private IntegerProperty              minorTickSpacing;
+    private ObjectProperty<LinearScale>  scale;
     private ObjectProperty<Trend>        trend;
     private ObservableList<Section>      sections;
     private ObservableList<Section>      areas;
     private ObservableList<Section>      tickMarkSections;
     private ObservableList<Marker>       markers;
+    private BooleanProperty              endlessMode;
 
 
     // ******************** Constructors **************************************
     public GaugeModel() {
         value                           = new SimpleDoubleProperty(0);
+        realValue                       = new SimpleDoubleProperty(0);
         valueAnimationEnabled           = new SimpleBooleanProperty(true);
         animationDuration               = new SimpleDoubleProperty(800);
-        minValue                        = new SimpleDoubleProperty(0);
-        maxValue                        = new SimpleDoubleProperty(100);
-        range                           = new SimpleDoubleProperty(100);
-        niceScaling                     = new SimpleBooleanProperty(true);
-        niceMinValue                    = new SimpleDoubleProperty(0);
-        niceMaxValue                    = new SimpleDoubleProperty(100);
-        niceRange                       = new SimpleDoubleProperty(100);
+        redrawTolerance                 = new SimpleDoubleProperty(0);
         minMeasuredValue                = new SimpleDoubleProperty(100);
         maxMeasuredValue                = new SimpleDoubleProperty(0);
         threshold                       = new SimpleDoubleProperty(50);
@@ -115,15 +105,13 @@ public class GaugeModel {
         lcdThresholdBehaviorInverted    = new SimpleBooleanProperty(false);
         lcdUnit                         = new SimpleStringProperty("");
         lcdNumberSystem                 = new SimpleObjectProperty<NumberSystem>(NumberSystem.DECIMAL);
-        maxNoOfMajorTicks               = new SimpleIntegerProperty(10);
-        maxNoOfMinorTicks               = new SimpleIntegerProperty(10);
-        majorTickSpacing                = new SimpleIntegerProperty(10);
-        minorTickSpacing                = new SimpleIntegerProperty(1);
+        scale                           = new SimpleObjectProperty<LinearScale>(new LinearScale(0, 100));
         trend                           = new SimpleObjectProperty<Trend>(Trend.UNKNOWN);
         sections                        = FXCollections.observableArrayList();
         areas                           = FXCollections.observableArrayList();
         tickMarkSections                = FXCollections.observableArrayList();
         markers                         = FXCollections.observableArrayList();
+        endlessMode                     = new SimpleBooleanProperty(false);
 
         sections.addListener(new InvalidationListener() {
             @Override public void invalidated(Observable ov) {
@@ -178,12 +166,26 @@ public class GaugeModel {
     }
 
     public final void setValue(final double VALUE) {
-        value.set(Double.compare(VALUE, niceMinValue.get()) < 0 ? niceMinValue.get() : (Double.compare(VALUE, niceMaxValue.get()) > 0 ? niceMaxValue.get() : VALUE));
+        if (isEndlessMode()) {
+            value.set(VALUE % getRange());
+            realValue.set(VALUE);
+        } else {
+            value.set(clamp(scale.get().getNiceMinValue(), scale.get().getNiceMaxValue(), VALUE));
+            realValue.set(value.get());
+        }
         fireGaugeModelEvent();
     }
 
     public final DoubleProperty valueProperty() {
         return value;
+    }
+
+    public final double getRealValue() {
+        return realValue.get();
+    }
+
+    public final ReadOnlyDoubleProperty realValueProperty() {
+        return realValue;
     }
 
     public final boolean isValueAnimationEnabled() {
@@ -212,38 +214,64 @@ public class GaugeModel {
         return animationDuration;
     }
 
+    public final double getRedrawTolerance() {
+            return redrawTolerance.get();
+        }
+
+    public final void setRedrawTolerance(final double REDRAW_TOLERANCE) {
+        redrawTolerance.set(clamp(0.0, 1.0, REDRAW_TOLERANCE));
+    }
+
+    public final DoubleProperty redrawToleranceProperty() {
+        return redrawTolerance;
+    }
+
+    public final double getRedrawToleranceValue() {
+        return redrawToleranceProperty().multiply(rangeProperty()).doubleValue();
+    }
+
     public final double getMinValue() {
-        return minValue.get();
+        return scale.get().getMinValue();
     }
 
     public final void setMinValue(final double MIN_VALUE) {
-        minValue.set(MIN_VALUE);
+        scale.get().setMinValue(MIN_VALUE);
+        scale.get().setUncorrectedMinValue(MIN_VALUE);
         fireGaugeModelEvent();
     }
 
-    public final DoubleProperty minValueProperty() {
-        return minValue;
+    public final ReadOnlyDoubleProperty minValueProperty() {
+        return scale.get().minValueProperty();
+    }
+
+    public final double getUncorrectedMinValue() {
+        return scale.get().getUncorrectedMinValue();
     }
 
     public final double getMaxValue() {
-        return maxValue.get();
+        return scale.get().getMaxValue();
     }
 
     public final void setMaxValue(final double MAX_VALUE) {
-        maxValue.set(MAX_VALUE);
+        scale.get().setMaxValue(MAX_VALUE);
+        scale.get().setUncorrectedMaxValue(MAX_VALUE);
         fireGaugeModelEvent();
     }
 
-    public final DoubleProperty maxValueProperty() {
-        return maxValue;
+    public final ReadOnlyDoubleProperty maxValueProperty() {
+        return scale.get().maxValueProperty();
+    }
+
+    public final double getUncorrectedMaxValue() {
+        return scale.get().getUncorrectedMaxValue();
     }
 
     public final double getRange() {
-        return range.get();
+        return scale.get().getRange();
     }
 
-    public final DoubleProperty rangeProperty() {
-        return range;
+    public final ReadOnlyDoubleProperty rangeProperty() {
+        return scale.get().rangeProperty();
     }
 
     public final double getMinMeasuredValue() {
@@ -290,7 +318,7 @@ public class GaugeModel {
     }
 
     public final void setThreshold(final double THRESHOLD) {
-        threshold.set(Double.compare(THRESHOLD, niceMinValue.get()) < 0 ? niceMinValue.get() : (Double.compare(THRESHOLD, niceMaxValue.get()) > 0 ? niceMaxValue.get() : THRESHOLD));
+        threshold.set(Double.compare(THRESHOLD, scale.get().getNiceMinValue()) < 0 ? scale.get().getNiceMinValue() : (Double.compare(THRESHOLD, scale.get().getNiceMaxValue()) > 0 ? scale.get().getNiceMaxValue() : THRESHOLD));
         fireGaugeModelEvent();
     }
 
@@ -429,55 +457,53 @@ public class GaugeModel {
     }
 
     public final int getMaxNoOfMajorTicks() {
-        return maxNoOfMajorTicks.get();
+        return scale.get().getMaxNoOfMajorTicks();
     }
 
     public final void setMaxNoOfMajorTicks(final int MAX_NO_OF_MAJOR_TICKS) {
-        maxNoOfMajorTicks.set(MAX_NO_OF_MAJOR_TICKS);
+        scale.get().setMaxNoOfMajorTicks(MAX_NO_OF_MAJOR_TICKS);
         fireGaugeModelEvent();
     }
 
     public final IntegerProperty maxNoOfMajorTicksProperty() {
-        return maxNoOfMajorTicks;
+        return scale.get().maxNoOfMajorTicksProperty();
     }
 
     public final int getMaxNoOfMinorTicks() {
-        return maxNoOfMinorTicks.get();
+        return scale.get().getMaxNoOfMinorTicks();
     }
 
     public final void setMaxNoOfMinorTicks(final int MAX_NO_OF_MINOR_TICKS) {
-        maxNoOfMinorTicks.set(MAX_NO_OF_MINOR_TICKS);
+        scale.get().setMaxNoOfMinorTicks(MAX_NO_OF_MINOR_TICKS);
         fireGaugeModelEvent();
     }
 
     public final IntegerProperty maxNoOfMinorTicksProperty() {
-        return maxNoOfMinorTicks;
+        return scale.get().maxNoOfMinorTicksProperty();
     }
 
-    public final int getMajorTickSpacing() {
-        return majorTickSpacing.get();
+    public final double getMajorTickSpacing() {
+        return scale.get().getMajorTickSpacing();
     }
 
-    public final void setMajorTickSpacing(final int MAJOR_TICKSPACING) {
-        majorTickSpacing.set(MAJOR_TICKSPACING);
-        fireGaugeModelEvent();
+    public final void setMajorTickSpacing(final double MAJOR_TICK_SPACING) {
+        scale.get().setMajorTickSpacing(MAJOR_TICK_SPACING);
     }
 
-    public final IntegerProperty majorTickSpacingProperty() {
-        return majorTickSpacing;
+    public final DoubleProperty majorTickSpacingProperty() {
+        return scale.get().majorTickSpacingProperty();
     }
 
-    public final int getMinorTickSpacing() {
-        return minorTickSpacing.get();
+    public final double getMinorTickSpacing() {
+        return scale.get().getMinorTickSpacing();
     }
 
-    public final void setMinorTickSpacing(final int MINOR_TICKSPACING) {
-        minorTickSpacing.set(MINOR_TICKSPACING);
-        fireGaugeModelEvent();
+    public final void setMinorTickSpacing(final double MINOR_TICK_SPACING) {
+        scale.get().setMinorTickSpacing(MINOR_TICK_SPACING);
     }
 
-    public final IntegerProperty minorTickSpacingProperty() {
-        return minorTickSpacing;
+    public final DoubleProperty minorTickSpacingProperty() {
+        return scale.get().minorTickSpacingProperty();
     }
 
     public final Trend getTrend() {
@@ -494,22 +520,59 @@ public class GaugeModel {
     }
 
     public final boolean isNiceScaling() {
-        return niceScaling.get();
+        return scale.get().isNiceScaling();
     }
 
     public final void setNiceScaling(final boolean NICE_SCALING) {
-        niceScaling.set(NICE_SCALING);
+        scale.get().setNiceScaling(NICE_SCALING);
         fireGaugeModelEvent();
     }
 
     public final BooleanProperty niceScalingProperty() {
-        return niceScaling;
+        return scale.get().niceScalingProperty();
     }
 
-    public final List<Section> getSections() {
-        //final List<Section> SECTIONS_COPY = new ArrayList<Section>(sections.size());
-        //SECTIONS_COPY.addAll(sections);
-        //return SECTIONS_COPY;
+    public final boolean isTightScale() {
+        return scale.get().isTightScale();
+    }
+
+    public final void setTightScale(final boolean TIGHT_SCALE) {
+        scale.get().setTightScale(TIGHT_SCALE);
+    }
+
+    public final BooleanProperty tightScaleProperty() {
+        return scale.get().tightScaleProperty();
+    }
+
+    public final double getTightScaleOffset() {
+        return scale.get().getTightScaleOffset();
+    }
+
+    public final boolean isLargeNumberScale() {
+        return scale.get().isLargeNumberScale();
+    }
+
+    public final void setLargeNumberScale(final boolean LARGE_NUMBER_SCALE) {
+        scale.get().setLargeNumberScale(LARGE_NUMBER_SCALE);
+    }
+
+    public final BooleanProperty largeNumberScaleProperty() {
+        return scale.get().largeNumberScaleProperty();
+    }
+
+    public final boolean isLastLabelVisible() {
+        return scale.get().isLastLabelVisible();
+    }
+
+    public final void setLastLabelVisible(final boolean LAST_LABEL_VISIBLE) {
+        scale.get().setLastLabelVisible(LAST_LABEL_VISIBLE);
+    }
+
+    public final BooleanProperty lastLabelVisibleProperty() {
+        return lastLabelVisibleProperty();
+    }
+
+    public final ObservableList<Section> getSections() {
         return sections;
     }
 
@@ -549,10 +612,7 @@ public class GaugeModel {
         fireGaugeModelEvent();
     }
 
-    public final List<Section> getAreas() {
-        //final List<Section> AREAS_COPY = new ArrayList<Section>(areas.size());
-        //AREAS_COPY.addAll(areas);
-        //return AREAS_COPY;
+    public final ObservableList<Section> getAreas() {
         return areas;
     }
 
@@ -592,10 +652,7 @@ public class GaugeModel {
         fireGaugeModelEvent();
     }
 
-    public final List<Section> getTickMarkSections() {
-        //final List<Section> TICK_MARK_SECTIONS_COPY = new ArrayList<Section>(tickMarkSections.size());
-        //TICK_MARK_SECTIONS_COPY.addAll(tickMarkSections);
-        //return TICK_MARK_SECTIONS_COPY;
+    public final ObservableList<Section> getTickMarkSections() {
         return tickMarkSections;
     }
 
@@ -635,10 +692,7 @@ public class GaugeModel {
         fireGaugeModelEvent();
     }
 
-    public final List<Marker> getMarkers() {
-        //final List<Marker> INDICATORS_COPY = new ArrayList<Marker>(markers.size());
-        //INDICATORS_COPY.addAll(markers);
-        //return INDICATORS_COPY;
+    public final ObservableList<Marker> getMarkers() {
         return markers;
     }
 
@@ -678,66 +732,49 @@ public class GaugeModel {
         fireGaugeModelEvent();
     }
 
+    public final boolean isEndlessMode() {
+        return endlessMode.get();
+    }
+
+    public final void setEndlessMode(final boolean ENDLESS_MODE) {
+        endlessMode.set(ENDLESS_MODE);
+    }
+
+    public final BooleanProperty endlessModeProperty() {
+        return endlessMode;
+    }
+
+
+    // ******************** Utility methods ***********************************
+    private double clamp(final double MIN, final double MAX, final double VALUE) {
+        return VALUE < MIN ? MIN : (VALUE > MAX ? MAX : VALUE);
+    }
+
     /**
      * Calculate and update values for major and minor tick spacing and nice
      * minimum and maximum values on the axis.
      */
-    protected void calcRange(final double ANGLE_RANGE) {
-        if (isNiceScaling()) {
-            niceRange.set(calcNiceNumber(range.doubleValue(), false));
-            majorTickSpacing.set((int) (calcNiceNumber(niceRange.get() / (getMaxNoOfMajorTicks() - 1), true)));
-            niceMinValue.set(Math.floor(getMinValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
-            niceMaxValue.set(Math.ceil(getMaxValue() / majorTickSpacing.doubleValue()) * majorTickSpacing.doubleValue());
-            minorTickSpacing.set((int) calcNiceNumber((double) getMajorTickSpacing() / ((double) getMaxNoOfMajorTicks() - 1), true));
-            minValue.set(niceMinValue.get());
-            maxValue.set(niceMaxValue.get());
-            range.set(niceMaxValue.get() - niceMinValue.get());
-        } else {
-            niceRange.set(getMaxValue() - getMinValue());
-            niceMinValue.set(getMinValue());
-            niceMaxValue.set(getMaxValue());
-            range.set(getMaxValue() - getMinValue());
+    protected void calcRange() {
+        if (getMinValue() < getMaxValue()) {
+            if (scale.get().isTightScale()) {
+                scale.get().calculateTight();
+            } else {
+                scale.get().calculateLoose();
+            }
         }
     }
 
-    /**
-     * Returns a "nice" number approximately equal to the range.
-     * Rounds the number if ROUND == true.
-     * Takes the ceiling if ROUND = false.
-     *
-     * @param RANGE the value range (maxValue - minValue)
-     * @param ROUND whether to round the result or ceil
-     * @return a "nice" number to be used for the value range
-     */
-    private static double calcNiceNumber(final double RANGE, final boolean ROUND) {
-        final double EXPONENT = Math.floor(Math.log10(RANGE));   // exponent of range
-        final double FRACTION = RANGE / Math.pow(10, EXPONENT);  // fractional part of range
 
-        // nice, rounded fraction
-        final double NICE_FRACTION;
+    // ******************** Internal Classes **********************************
+    public class GaugeModelEvent extends Event {
 
-        if (ROUND) {
-            if (FRACTION < 1.5) {
-                NICE_FRACTION = 1;
-            } else if (FRACTION < 3) {
-                NICE_FRACTION = 2;
-            } else if (FRACTION < 7) {
-                NICE_FRACTION = 5;
-            } else {
-                NICE_FRACTION = 10;
-            }
-        } else {
-            if (Double.compare(FRACTION, 1) <= 0) {
-                NICE_FRACTION = 1;
-            } else if (Double.compare(FRACTION, 2) <= 0) {
-                NICE_FRACTION = 2;
-            } else if (Double.compare(FRACTION, 5) <= 0) {
-                NICE_FRACTION = 5;
-            } else {
-                NICE_FRACTION = 10;
-            }
+        // ******************** Constructors **************************************
+        public GaugeModelEvent() {
+            super(new EventType<GaugeModelEvent>());
         }
-        return NICE_FRACTION * Math.pow(10, EXPONENT);
-    }
 
+        public GaugeModelEvent(final Object source, final EventTarget target) {
+            super(source, target, new EventType<GaugeModelEvent>());
+        }
+    }
 }

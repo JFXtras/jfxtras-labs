@@ -27,18 +27,6 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import javafx.beans.property.LongProperty;
-import javafx.scene.CacheHint;
-import javafx.scene.effect.Light;
-import javafx.scene.effect.Lighting;
-import javafx.scene.image.ImageView;
-import javafx.scene.shape.Line;
-import jfxtras.labs.internal.scene.control.behavior.RadialBehavior;
-import jfxtras.labs.scene.control.gauge.Gauge.PointerType;
-import jfxtras.labs.scene.control.gauge.Radial;
-import jfxtras.labs.scene.control.gauge.Section;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
@@ -46,16 +34,24 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
+import javafx.scene.CacheHint;
 import javafx.scene.Group;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.SnapshotParametersBuilder;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
@@ -63,6 +59,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.CubicCurveTo;
 import javafx.scene.shape.FillRule;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -78,6 +75,11 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.util.Duration;
+import jfxtras.labs.internal.scene.control.behavior.RadialBehavior;
+import jfxtras.labs.scene.control.gauge.Gauge;
+import jfxtras.labs.scene.control.gauge.Gauge.PointerType;
+import jfxtras.labs.scene.control.gauge.Radial;
+import jfxtras.labs.scene.control.gauge.Section;
 
 import java.util.ArrayList;
 
@@ -89,8 +91,10 @@ import java.util.ArrayList;
  * Time: 17:14
  */
 public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
-    private static final Rectangle PREF_SIZE = new Rectangle(200, 200);
-    //private final SnapshotParameters SNAPSHOT_PARAMETER = SnapshotParametersBuilder.create().fill(Color.TRANSPARENT).build();
+    private static final Rectangle   MIN_SIZE           = new Rectangle(25, 25);
+    private static final Rectangle   PREF_SIZE          = new Rectangle(200, 200);
+    private static final Rectangle   MAX_SIZE           = new Rectangle(1024, 1024);
+    private final SnapshotParameters SNAPSHOT_PARAMETER = SnapshotParametersBuilder.create().fill(Color.TRANSPARENT).build();
     private Radial           control;
     private Rectangle        gaugeBounds;
     private Point2D          framelessOffset;
@@ -113,10 +117,12 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     private Text             lcdUnitString;
     private Group            lcdThresholdIndicator;
     private Group            knobs;
+    private Group            knobsShadow;
     private Group            threshold;
     private Group            minMeasured;
     private Group            maxMeasured;
     private Group            pointer;
+    private Group            pointerShadow;
     private Group            bargraphOff;
     private Group            bargraphOn;
     private Group            ledOff;
@@ -143,15 +149,12 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     private AnimationTimer   userLedTimer;
     private boolean          userLedOnVisible;
     private long             lastUserLedTimerCall;
-    // ***** JavaFX 2.2 related properties *****
     private Group            histogram;
     private ImageView        histogramImage;
-    //private WritableImage    img;
+    private WritableImage    img;
     private long             histogramInterval;
-    private LongProperty     histogramOpacityDecreasingInterval;
     private long             lastHistogramFadingTimerCall;
     private AnimationTimer   histogramFadingTimer;
-    // *****************************************
     private boolean          isDirty;
     private boolean          initialized;
 
@@ -180,10 +183,12 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         lcdUnitString          = new Text();
         lcdThresholdIndicator  = new Group();
         knobs                  = new Group();
+        knobsShadow            = new Group(knobs);
         threshold              = new Group();
         minMeasured            = new Group();
         maxMeasured            = new Group();
         pointer                = new Group();
+        pointerShadow          = new Group(pointer);
         bargraphOff            = new Group();
         bargraphOn             = new Group();
         ledOff                 = new Group();
@@ -205,32 +210,30 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         pointerRotation        = new Rotate();
         isDirty                = false;
         ledTimer               = new AnimationTimer() {
-            @Override public void handle(final long CURRENT_NANOSECONDS) {
-                long currentNanoTime = System.nanoTime();
-                if (currentNanoTime > lastLedTimerCall + BLINK_INTERVAL) {
+            @Override public void handle(final long NOW) {
+                if (NOW > lastLedTimerCall + getBlinkInterval()) {
                     ledOnVisible ^= true;
                     if (ledOnVisible) {
                         ledOn.setOpacity(1.0);
                     } else {
                         ledOn.setOpacity(0.0);
                     }
-                    lastLedTimerCall = currentNanoTime;
+                    lastLedTimerCall = NOW;
                 }
             }
         };
-        lastLedTimerCall       = 0l;
-        ledOnVisible           = false;
-        userLedTimer           = new AnimationTimer() {
-            @Override public void handle(final long CURRENT_NANOSECONDS) {
-                long currentNanoTime = System.nanoTime();
-                if (currentNanoTime > lastUserLedTimerCall + BLINK_INTERVAL) {
+        lastLedTimerCall = 0l;
+        ledOnVisible     = false;
+        userLedTimer     = new AnimationTimer() {
+            @Override public void handle(final long NOW) {
+                if (NOW > lastUserLedTimerCall + getBlinkInterval()) {
                     userLedOnVisible ^= true;
                     if (userLedOnVisible) {
                         userLedOn.setOpacity(1.0);
                     } else {
                         userLedOn.setOpacity(0.0);
                     }
-                    lastUserLedTimerCall = currentNanoTime;
+                    lastUserLedTimerCall = NOW;
                 }
             }
         };
@@ -254,7 +257,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         };
         // ******************************
 
-        initialized            = false;
+        initialized = false;
         init();
     }
 
@@ -352,6 +355,9 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         if (control.isHistogramCreationEnabled()) {
             histogramFadingTimer.start();
         }
+
+        // Use bindings for pointer rotation
+        pointerRotation.angleProperty().bind((gaugeValue.subtract(control.minValueProperty())).multiply(control.angleStepProperty()).add(control.getRadialRange().ROTATION_OFFSET));
 
         initialized = true;
         paint();
@@ -476,58 +482,56 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     }
 
     private void addListeners() {
-        control.gaugeModelProperty().addListener(new InvalidationListener() {
+        control.getAreas().addListener(new InvalidationListener() {
             @Override public void invalidated(Observable observable) {
-                addBindings();
-                paint();
+                updateAreas();
+                drawCircularAreas(control, areas, gaugeBounds);
             }
         });
 
-        control.styleModelProperty().addListener(new InvalidationListener() {
+        control.getSections().addListener(new InvalidationListener() {
             @Override public void invalidated(Observable observable) {
-                addBindings();
-                paint();
+                updateSections();
+                drawCircularSections(control, sections, gaugeBounds);
             }
         });
 
-        control.prefWidthProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                //img = new WritableImage(newValue.intValue(), (int) getPrefWidth());
-                isDirty = true;
+        control.getMarkers().addListener(new InvalidationListener() {
+            @Override public void invalidated(Observable observable) {
+                drawCircularIndicators(control, markers, center, gaugeBounds);
             }
         });
 
-        control.prefHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                //img = new WritableImage((int) getPrefWidth(), newValue.intValue());
-                isDirty = true;
-            }
-        });
-
-        control.thresholdExceededProperty().addListener(new ChangeListener<Boolean>() {
-            @Override public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
-                if(newValue) {
-                    ledTimer.start();
-                } else {
-                    ledTimer.stop();
-                }
-            }
-        });
-
-        control.valueProperty().addListener(new ChangeListener<Number>() {
+        control.realValueProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
                 formerValue.set(oldValue.doubleValue());
                 if (rotationAngleTimeline.getStatus() != Animation.Status.STOPPED) {
                     rotationAngleTimeline.stop();
                 }
+
+                // Histogram
+                if (control.isHistogramCreationEnabled()) {
+                    addValueToHistogram(oldValue.doubleValue());
+                }
+
+                // If the new value is in the range between the old value +- the redraw tolerance return and do nothing
+                if (newValue.doubleValue() > (oldValue.doubleValue() - control.getRedrawToleranceValue()) &&
+                    newValue.doubleValue() < (oldValue.doubleValue() + control.getRedrawToleranceValue())) {
+                    return;
+                }
+
                 if (control.isValueAnimationEnabled()) {
-                    final KeyValue kv = new KeyValue(gaugeValue, newValue, Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
-                    final KeyFrame kf = new KeyFrame(Duration.millis(control.getAnimationDuration()), kv);
-                    rotationAngleTimeline  = new Timeline();
-                    rotationAngleTimeline.getKeyFrames().add(kf);
+                    final KeyValue KEY_VALUE = new KeyValue(gaugeValue, newValue, Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
+                    final KeyFrame KEY_FRAME = new KeyFrame(Duration.millis(control.getAnimationDuration()), KEY_VALUE);
+                    rotationAngleTimeline    = new Timeline();
+                    rotationAngleTimeline.getKeyFrames().add(KEY_FRAME);
                     rotationAngleTimeline.play();
                 } else {
+                    gaugeValue.set(newValue.doubleValue());
+                    pointerRotation.setPivotX(center.getX());
+                    pointerRotation.setPivotY(center.getY());
                     pointer.getTransforms().clear();
+                    /* using bindings in init() method for pointer rotation
                     pointerRotation.setPivotX(center.getX());
                     pointerRotation.setPivotY(center.getY());
                     pointerRotation.setAngle((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
@@ -535,6 +539,8 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                     pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
                     pointer.getTransforms().add(pointerRotation);
                     gaugeValue.set(newValue.doubleValue());
+                    */
+                    pointer.getTransforms().add(pointerRotation);
                 }
 
                 checkMarkers(control, oldValue.doubleValue(), newValue.doubleValue());
@@ -580,30 +586,24 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                         }
                     }
                 }
-
-                // Histogram
-                if (control.isHistogramCreationEnabled()) {
-                    addValueToHistogram(oldValue.doubleValue());
-                }
-
             }
         });
 
         gaugeValue.addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
                 if (bargraphOff.isVisible()) {
-                    final int CALC_CURRENT_INDEX  = noOfLeds - 1 - (int) ((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
-                    final int CALC_FORMER_INDEX   = noOfLeds - 1 - (int) ((oldValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
-                    final int CURRENT_LED_INDEX   = CALC_CURRENT_INDEX < 0 ? 0 : (CALC_CURRENT_INDEX > noOfLeds ? noOfLeds : CALC_CURRENT_INDEX) ;
-                    final int FORMER_LED_INDEX    = CALC_FORMER_INDEX < 0 ? 0 : (CALC_FORMER_INDEX > noOfLeds ? noOfLeds : CALC_FORMER_INDEX) ;
-                    final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int)((control.getThreshold() - control.getMinValue()) * control.getAngleStep() / 5.0);
+                    final int CALC_CURRENT_INDEX = noOfLeds - 1 - (int) ((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
+                    final int CALC_FORMER_INDEX = noOfLeds - 1 - (int) ((oldValue.doubleValue() - control.getMinValue()) * control.getAngleStep() / 5.0);
+                    final int CURRENT_LED_INDEX = CALC_CURRENT_INDEX < 0 ? 0 : (CALC_CURRENT_INDEX > noOfLeds ? noOfLeds : CALC_CURRENT_INDEX);
+                    final int FORMER_LED_INDEX = CALC_FORMER_INDEX < 0 ? 0 : (CALC_FORMER_INDEX > noOfLeds ? noOfLeds : CALC_FORMER_INDEX);
+                    final int THRESHOLD_LED_INDEX = noOfLeds - 1 - (int) ((control.getThreshold() - control.getMinValue()) * control.getAngleStep() / 5.0);
 
                     if (Double.compare(control.getValue(), formerValue.doubleValue()) >= 0) {
-                        for (int i = CURRENT_LED_INDEX ; i <= FORMER_LED_INDEX ; i++) {
+                        for (int i = CURRENT_LED_INDEX; i <= FORMER_LED_INDEX; i++) {
                             ledsOn.get(i).setVisible(true);
                         }
                     } else {
-                        for (int i = CURRENT_LED_INDEX ; i >= FORMER_LED_INDEX ; i--) {
+                        for (int i = CURRENT_LED_INDEX; i >= FORMER_LED_INDEX; i--) {
                             ledsOn.get(i).setVisible(false);
                         }
                     }
@@ -616,9 +616,13 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                     pointer.getTransforms().clear();
                     pointerRotation.setPivotX(center.getX());
                     pointerRotation.setPivotY(center.getY());
+                    /* using bindings in init() method for pointer rotation
+                    pointerRotation.setPivotX(center.getX());
+                    pointerRotation.setPivotY(center.getY());
                     pointerRotation.setAngle((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
                     //pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET + negativeOffset, center.getX(), center.getY()));
                     pointer.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
+                    */
                     pointer.getTransforms().add(pointerRotation);
                 }
 
@@ -654,6 +658,14 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         } else if ("RADIAL_RANGE".equals(PROPERTY)) {
             noOfLeds = (int) (control.getRadialRange().ANGLE_RANGE / 5.0);
             isDirty = true;
+            if (pointerRotation.angleProperty().isBound()) {
+                pointerRotation.angleProperty().unbind();
+            }
+            if (control.getRadialRange() == Gauge.RadialRange.RADIAL_360) {
+                pointerRotation.angleProperty().bind(gaugeValue.multiply(control.angleStepProperty()).add(control.getRadialRange().ROTATION_OFFSET));
+            } else {
+                pointerRotation.angleProperty().bind((gaugeValue.subtract(control.minValueProperty())).multiply(control.angleStepProperty()).add(control.getRadialRange().ROTATION_OFFSET));
+            }
         } else if ("FRAME_DESIGN".equals(PROPERTY)) {
             drawCircularFrame(control, frame, gaugeBounds);
         } else if ("BACKGROUND_DESIGN".equals(PROPERTY)) {
@@ -739,13 +751,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 glowPulse.stop();
                 glowOn.setOpacity(0.0);
             }
-        } else if ("RANGE".equals(PROPERTY)) {
-            if (control.getMinValue() < 0) {
-                negativeOffset = control.getMinValue() * control.getAngleStep();
-            } else {
-                negativeOffset = 0;
-            }
-            drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
         } else if ("MIN_MEASURED_VALUE".equals(PROPERTY)) {
             minMeasured.getTransforms().clear();
             minMeasured.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET, center.getX(), center.getY()));
@@ -760,7 +765,12 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             drawCircularTrend(control, trend, gaugeBounds);
         } else if ("SIMPLE_GRADIENT_BASE".equals(PROPERTY)) {
             paint();
-        } else if ("TICKMARK_GLOW_VISIBILITY".equals(PROPERTY)) {
+        } else if ("TICKMARKS".equals(PROPERTY)) {
+            if (control.getMinValue() < 0) {
+                negativeOffset = control.getMinValue() * control.getAngleStep();
+            } else {
+                negativeOffset = 0;
+            }
             drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
         } else if ("POINTER_GLOW".equals(PROPERTY)) {
             drawPointer();
@@ -774,6 +784,34 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             }
         } else if ("HISTOGRAM_PERIOD".equals(PROPERTY)) {
             histogramInterval = control.histogramDataPeriodInMinutesProperty().get() * 60000000000l / 100l;
+        } else if ("GAUGE_MODEL".equals(PROPERTY)) {
+            addBindings();
+        } else if ("STYLE_MODEL".equals(PROPERTY)) {
+            addBindings();
+        } else if ("THRESHOLD_EXCEEDED".equals(PROPERTY)) {
+            if(control.isThresholdExceeded()) {
+                ledTimer.start();
+            } else {
+                ledTimer.stop();
+            }
+        } else if ("PREF_WIDTH".equals(PROPERTY)) {
+            final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+            if (SIZE > 0) {
+                img = new WritableImage((int) SIZE, (int) SIZE);
+            }
+        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
+            final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+            if (SIZE > 0) {
+                img = new WritableImage((int) SIZE, (int) SIZE);
+            }
+        } else if ("AREAS".equals(PROPERTY)) {
+            updateAreas();
+            drawCircularAreas(control, areas, gaugeBounds);
+        } else if ("SECTIONS".equals(PROPERTY)) {
+            updateSections();
+            drawCircularSections(control, sections, gaugeBounds);
+        } else if ("MARKERS".equals(PROPERTY)) {
+            drawCircularIndicators(control, markers, center, gaugeBounds);
         }
     }
 
@@ -812,6 +850,9 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         drawCircularBargraph(control, bargraphOn, noOfLeds, ledsOn, true, false, center, gaugeBounds);
         drawCircularKnobs(control, knobs, center, gaugeBounds);
         drawCircularForeground(control, foreground, gaugeBounds);
+        if (control.isPointerShadowEnabled() && !control.isPointerGlowEnabled()) {
+            addDropShadow(control, knobs, pointerShadow);
+        }
 
         getChildren().addAll(frame,
                              background,
@@ -830,13 +871,13 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                              glowOn,
                              lcd,
                              lcdContent,
-                             pointer,
+                             pointerShadow,
                              bargraphOff,
                              bargraphOn,
                              minMeasured,
                              maxMeasured,
                              markers,
-                             knobs,
+                             knobsShadow,
                              foreground);
     }
 
@@ -870,7 +911,23 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         if (WIDTH != -1) {
             prefHeight = Math.max(0, WIDTH - getInsets().getTop() - getInsets().getBottom());
         }
-        return super.computePrefWidth(prefHeight);
+        return super.computePrefHeight(prefHeight);
+    }
+
+    @Override protected double computeMinWidth(final double WIDTH) {
+        return super.computeMinWidth(Math.max(MIN_SIZE.getWidth(), WIDTH - getInsets().getLeft() - getInsets().getRight()));
+    }
+
+    @Override protected double computeMinHeight(final double HEIGHT) {
+        return super.computeMinHeight(Math.max(MIN_SIZE.getHeight(), HEIGHT - getInsets().getTop() - getInsets().getBottom()));
+    }
+
+    @Override protected double computeMaxWidth(final double WIDTH) {
+        return super.computeMaxWidth(Math.max(MAX_SIZE.getWidth(), WIDTH - getInsets().getLeft() - getInsets().getRight()));
+    }
+
+    @Override protected double computeMaxHeight(final double HEIGHT) {
+        return super.computeMaxHeight(Math.max(MAX_SIZE.getHeight(), HEIGHT - getInsets().getTop() - getInsets().getBottom()));
     }
 
     private String formatLcdValue(final double VALUE) {
@@ -986,12 +1043,10 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
     private void addValueToHistogram(final double VALUE) {
         final double SIZE = control.getPrefWidth() <= control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
 
-        /*
         if (img == null) {
             img = new WritableImage((int) SIZE, (int) SIZE);
         }
         histogramImage.setImage(histogram.snapshot(SNAPSHOT_PARAMETER, img));
-        */
         histogramImage.setClip(new Circle(0.5 * SIZE, 0.5 * SIZE, 0.4158878504672897 * SIZE));
         histogramImage.setOpacity(1.0);
 
@@ -1002,17 +1057,20 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         IBOUNDS.setStroke(null);
 
         Line line = new Line(center.getX(), center.getY() - SIZE * 0.22, center.getX(), center.getY() - SIZE * 0.25);
+        line.setStrokeWidth(control.getHistogramLineWidth());
         line.setStroke(control.getHistogramColor());
         line.getTransforms().add(Transform.rotate(control.getRadialRange().ROTATION_OFFSET + (VALUE - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getY()));
+        line.setBlendMode(BlendMode.HARD_LIGHT);
 
         histogram.getChildren().addAll(IBOUNDS, histogramImage, line);
     }
 
     private void reduceHistogramOpacity() {
-        if (histogramImage.getOpacity() > 0) {
+        if (Double.compare(histogramImage.getOpacity(), 0) > 0) {
             histogramImage.setOpacity(histogramImage.getOpacity() - (control.histogramDataPeriodInMinutesProperty().doubleValue() / 100.0));
         }
     }
+
 
     // ******************** Drawing *******************************************
     public void drawTitleAndUnit() {
@@ -1150,7 +1208,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         IBOUNDS.setStroke(null);
-        pointer.getChildren().addAll(IBOUNDS);
+        pointer.getChildren().add(IBOUNDS);
 
         final Path POINTER = new Path();
         final Path POINTER_FRONT = new Path();
@@ -1166,26 +1224,26 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 POINTER.getElements().add(new LineTo(0.5046728971962616 * WIDTH, 0.3411214953271028 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.5046728971962616 * WIDTH, 0.2336448598130841 * HEIGHT));
                 POINTER.getElements().add(new CubicCurveTo(0.5046728971962616 * WIDTH, 0.2336448598130841 * HEIGHT,
-                    0.5046728971962616 * WIDTH, 0.1308411214953271 * HEIGHT,
-                    0.4953271028037383 * WIDTH, 0.1308411214953271 * HEIGHT));
+                                                           0.5046728971962616 * WIDTH, 0.1308411214953271 * HEIGHT,
+                                                           0.4953271028037383 * WIDTH, 0.1308411214953271 * HEIGHT));
                 POINTER.getElements().add(new CubicCurveTo(0.49065420560747663 * WIDTH, 0.1308411214953271 * HEIGHT,
-                    0.49065420560747663 * WIDTH, 0.2336448598130841 * HEIGHT,
-                    0.49065420560747663 * WIDTH, 0.2336448598130841 * HEIGHT));
+                                                           0.49065420560747663 * WIDTH, 0.2336448598130841 * HEIGHT,
+                                                           0.49065420560747663 * WIDTH, 0.2336448598130841 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.49065420560747663 * WIDTH, 0.3411214953271028 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.49065420560747663 * WIDTH, 0.46261682242990654 * HEIGHT));
                 POINTER.getElements().add(new LineTo(0.48130841121495327 * WIDTH, 0.4719626168224299 * HEIGHT));
                 POINTER.getElements().add(new CubicCurveTo(0.48130841121495327 * WIDTH, 0.4719626168224299 * HEIGHT,
-                    0.4672897196261682 * WIDTH, 0.49065420560747663 * HEIGHT,
-                    0.4672897196261682 * WIDTH, 0.5 * HEIGHT));
+                                                           0.4672897196261682 * WIDTH, 0.49065420560747663 * HEIGHT,
+                                                           0.4672897196261682 * WIDTH, 0.5 * HEIGHT));
                 POINTER.getElements().add(new CubicCurveTo(0.4672897196261682 * WIDTH, 0.5186915887850467 * HEIGHT,
-                    0.48130841121495327 * WIDTH, 0.5327102803738317 * HEIGHT,
-                    0.4953271028037383 * WIDTH, 0.5327102803738317 * HEIGHT));
+                                                           0.48130841121495327 * WIDTH, 0.5327102803738317 * HEIGHT,
+                                                           0.4953271028037383 * WIDTH, 0.5327102803738317 * HEIGHT));
                 POINTER.getElements().add(new CubicCurveTo(0.514018691588785 * WIDTH, 0.5327102803738317 * HEIGHT,
-                    0.5327102803738317 * WIDTH, 0.5186915887850467 * HEIGHT,
-                    0.5327102803738317 * WIDTH, 0.5 * HEIGHT));
+                                                           0.5327102803738317 * WIDTH, 0.5186915887850467 * HEIGHT,
+                                                           0.5327102803738317 * WIDTH, 0.5 * HEIGHT));
                 POINTER.getElements().add(new CubicCurveTo(0.5327102803738317 * WIDTH, 0.49065420560747663 * HEIGHT,
-                    0.514018691588785 * WIDTH, 0.4719626168224299 * HEIGHT,
-                    0.514018691588785 * WIDTH, 0.4719626168224299 * HEIGHT));
+                                                           0.514018691588785 * WIDTH, 0.4719626168224299 * HEIGHT,
+                                                           0.514018691588785 * WIDTH, 0.4719626168224299 * HEIGHT));
                 POINTER.getElements().add(new ClosePath());
                 POINTER.setStroke(null);
                 break;
@@ -1451,7 +1509,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             case TYPE1:
 
             default:
-                POINTER.setStyle("-fx-pointer: " + control.getValueColor().CSS);
+                POINTER.setStyle("-fx-value: " + control.getValueColor().CSS);
                 POINTER.getStyleClass().add("pointer1-gradient");
                 POINTER.setFillRule(FillRule.EVEN_ODD);
                 POINTER.getElements().add(new MoveTo(WIDTH * 0.5186915887850467, HEIGHT * 0.4719626168224299));
@@ -1487,12 +1545,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 break;
         }
 
-        // Pointer shadow
-        if (control.isPointerShadowEnabled()) {
-            drawShadows();
-        }
-
-        final DropShadow SHADOW = new DropShadow();
         // Pointer glow
         if (control.isPointerGlowEnabled()) {
             final DropShadow GLOW = new DropShadow();
@@ -1504,12 +1556,8 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             GLOW.setColor(control.getValueColor().COLOR);
             GLOW.setBlurType(BlurType.GAUSSIAN);
             if (control.getPointerType() == PointerType.TYPE9) {
-                POINTER.setEffect(SHADOW);
                 POINTER_FRONT.setEffect(GLOW);
             } else {
-                if (control.isPointerShadowEnabled()) {
-                    GLOW.inputProperty().set(SHADOW);
-                }
                 POINTER.setEffect(GLOW);
             }
         }
@@ -1572,7 +1620,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         }
         lcdUnitString.visibleProperty().bind(control.lcdUnitVisibleProperty());
         if (control.isLcdUnitVisible()) {
-            lcdUnitString.setX(LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdUnitString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0625);
+            lcdUnitString.setX(LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdUnitString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0833333333);// 0.0625
             lcdUnitString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / UNIT_Y_OFFSET - (lcdValueString.getLayoutBounds().getHeight() * 0.05));
         }
         lcdUnitString.setStroke(null);
@@ -1596,7 +1644,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         if (control.isLcdUnitVisible()) {
             lcdValueString.setX((LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdUnitString.getLayoutBounds().getWidth() - lcdValueString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0833333333));
         } else {
-            lcdValueString.setX((LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdValueString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0625));
+            lcdValueString.setX((LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdValueString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0833333333));// 0.0625
         }
         lcdValueString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / 2.0);
         lcdValueString.setTextOrigin(VPos.BOTTOM);
@@ -1604,24 +1652,5 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         lcdValueString.setStroke(null);
 
         lcdContent.getChildren().addAll(lcdUnitString, lcdValueString);
-    }
-
-    private void drawShadows() {
-        final double SIZE  = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
-        final double WIDTH = SIZE;
-
-        final Lighting LIGHTING   = new Lighting();
-        final Light.Distant LIGHT = new Light.Distant();
-        LIGHT.setAzimuth(270);
-        LIGHTING.setLight(LIGHT);
-
-        final DropShadow DROP_SHADOW = new DropShadow();
-        DROP_SHADOW.setInput(LIGHTING);
-        DROP_SHADOW.setOffsetY(0.015 * WIDTH);
-        DROP_SHADOW.setRadius(0.015 * WIDTH);
-        DROP_SHADOW.setBlurType(BlurType.GAUSSIAN);
-        DROP_SHADOW.setColor(Color.color(0, 0, 0, 0.55));
-
-        pointer.setEffect(DROP_SHADOW);
     }
 }

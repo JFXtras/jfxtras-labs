@@ -27,29 +27,21 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import javafx.scene.CacheHint;
-import jfxtras.labs.internal.scene.control.behavior.RadialHalfNBehavior;
-import jfxtras.labs.scene.control.gauge.Gauge;
-import jfxtras.labs.scene.control.gauge.Marker;
-import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
-import jfxtras.labs.scene.control.gauge.RadialHalfN;
-import jfxtras.labs.scene.control.gauge.Section;
-import jfxtras.labs.scene.control.gauge.StyleModelEvent;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
+import javafx.scene.CacheHint;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
@@ -80,6 +72,11 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Transform;
 import javafx.util.Duration;
+import jfxtras.labs.internal.scene.control.behavior.RadialHalfNBehavior;
+import jfxtras.labs.scene.control.gauge.Gauge;
+import jfxtras.labs.scene.control.gauge.Marker;
+import jfxtras.labs.scene.control.gauge.RadialHalfN;
+import jfxtras.labs.scene.control.gauge.Section;
 
 import java.util.ArrayList;
 
@@ -91,7 +88,9 @@ import java.util.ArrayList;
  * Time: 09:54
  */
 public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehavior> {
+    private static final Rectangle MIN_SIZE  = new Rectangle(38, 25);
     private static final Rectangle PREF_SIZE = new Rectangle(200, 130);
+    private static final Rectangle MAX_SIZE  = new Rectangle(1024, 666);
     private RadialHalfN      control;
     private Rectangle        gaugeBounds;
     private Point2D          framelessOffset;
@@ -107,10 +106,12 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
     private Group            glowOn;
     private ArrayList<Color> glowColors;
     private Group            knobs;
+    private Group            knobsShadow;
     private Group            threshold;
     private Group            minMeasured;
     private Group            maxMeasured;
     private Group            pointer;
+    private Group            pointerShadow;
     private Group            bargraphOff;
     private Group            bargraphOn;
     private Group            ledOff;
@@ -155,10 +156,12 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         glowOn                 = new Group();
         glowColors             = new ArrayList<Color>(4);
         knobs                  = new Group();
+        knobsShadow            = new Group(knobs);
         threshold              = new Group();
         minMeasured            = new Group();
         maxMeasured            = new Group();
         pointer                = new Group();
+        pointerShadow          = new Group(pointer);
         bargraphOff            = new Group();
         bargraphOn             = new Group();
         ledOff                 = new Group();
@@ -175,32 +178,30 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         pointerRotation        = new RotateTransition(Duration.millis(control.getAnimationDuration()), pointer);
         isDirty                = false;
         ledTimer               = new AnimationTimer() {
-            @Override public void handle(final long CURRENT_NANOSECONDS) {
-                long currentNanoTime = System.nanoTime();
-                if (currentNanoTime > lastLedTimerCall + BLINK_INTERVAL) {
+            @Override public void handle(final long NOW) {
+                if (NOW > lastLedTimerCall + getBlinkInterval()) {
                     ledOnVisible ^= true;
                     if (ledOnVisible) {
                         ledOn.setOpacity(1.0);
                     } else {
                         ledOn.setOpacity(0.0);
                     }
-                    lastLedTimerCall = currentNanoTime;
+                    lastLedTimerCall = NOW;
                 }
             }
         };
         lastLedTimerCall       = 0l;
         ledOnVisible           = false;
         userLedTimer           = new AnimationTimer() {
-            @Override public void handle(final long CURRENT_NANOSECONDS) {
-                long currentNanoTime = System.nanoTime();
-                if (currentNanoTime > lastUserLedTimerCall + BLINK_INTERVAL) {
+            @Override public void handle(final long NOW) {
+                if (NOW > lastUserLedTimerCall + getBlinkInterval()) {
                     userLedOnVisible ^= true;
                     if (userLedOnVisible) {
                         userLedOn.setOpacity(1.0);
                     } else {
                         userLedOn.setOpacity(0.0);
                     }
-                    lastUserLedTimerCall = currentNanoTime;
+                    lastUserLedTimerCall = NOW;
                 }
             }
         };
@@ -384,41 +385,23 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
     }
 
     private void addListeners() {
-        control.gaugeModelProperty().addListener(new InvalidationListener() {
+        control.getAreas().addListener(new InvalidationListener() {
             @Override public void invalidated(Observable observable) {
-                addBindings();
-                paint();
+                updateAreas();
+                drawCircularAreas(control, areas, gaugeBounds);
             }
         });
 
-        control.styleModelProperty().addListener(new InvalidationListener() {
+        control.getSections().addListener(new InvalidationListener() {
             @Override public void invalidated(Observable observable) {
-                addBindings();
-                paint();
+                updateSections();
+                drawCircularSections(control, sections, gaugeBounds);
             }
         });
 
-        control.prefWidthProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                control.setPrefHeight(newValue.doubleValue());
-                isDirty = true;
-            }
-        });
-
-        control.prefHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                control.setPrefWidth(newValue.doubleValue());
-                isDirty = true;
-            }
-        });
-
-        control.thresholdExceededProperty().addListener(new ChangeListener<Boolean>() {
-            @Override public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
-                if(newValue) {
-                    ledTimer.start();
-                } else {
-                    ledTimer.stop();
-                }
+        control.getMarkers().addListener(new InvalidationListener() {
+            @Override public void invalidated(Observable observable) {
+                drawCircularIndicators(control, markers, center, gaugeBounds);
             }
         });
 
@@ -428,6 +411,13 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                 if (pointerRotation.getStatus() != Animation.Status.STOPPED) {
                     pointerRotation.stop();
                 }
+
+                // If the new value is in the range between the old value +- the redraw tolerance return and do nothing
+                if (newValue.doubleValue() > (oldValue.doubleValue() - control.getRedrawToleranceValue()) &&
+                    newValue.doubleValue() < (oldValue.doubleValue() + control.getRedrawToleranceValue())) {
+                    return;
+                }
+
                 if (control.isValueAnimationEnabled()) {
                     pointerRotation.setFromAngle((formerValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
                     pointerRotation.setToAngle((newValue.doubleValue() - control.getMinValue()) * control.getAngleStep());
@@ -606,7 +596,7 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                 glowPulse.stop();
                 glowOn.setOpacity(0.0);
             }
-        } else if ("RANGE".equals(PROPERTY)) {
+        } else if ("TICKMARKS".equals(PROPERTY)) {
             drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
         } else if (PROPERTY.equals("MIN_MEASURED_VALUE")) {
             minMeasured.getTransforms().clear();
@@ -622,6 +612,28 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
             drawCircularTrend(control, trend, gaugeBounds);
         } else if ("SIMPLE_GRADIENT_BASE".equals(PROPERTY)) {
             isDirty = true;
+        } else if ("GAUGE_MODEL".equals(PROPERTY)) {
+            addBindings();
+        } else if ("STYLE_MODEL".equals(PROPERTY)) {
+            addBindings();
+        } else if ("THRESHOLD_EXCEEDED".equals(PROPERTY)) {
+            if(control.isThresholdExceeded()) {
+                ledTimer.start();
+            } else {
+                ledTimer.stop();
+            }
+        } else if ("PREF_WIDTH".equals(PROPERTY)) {
+
+        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
+
+        } else if ("AREAS".equals(PROPERTY)) {
+            updateAreas();
+            drawCircularAreas(control, areas, gaugeBounds);
+        } else if ("SECTIONS".equals(PROPERTY)) {
+            updateSections();
+            drawCircularSections(control, sections, gaugeBounds);
+        } else if ("MARKERS".equals(PROPERTY)) {
+            drawCircularIndicators(control, markers, center, gaugeBounds);
         }
     }
 
@@ -658,6 +670,9 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         drawCircularBargraph(control, bargraphOn, noOfLeds, ledsOn, true, false, center, gaugeBounds);
         drawCircularKnobs(control, knobs, center, gaugeBounds);
         drawForeground();
+        if (control.isPointerShadowEnabled() && !control.isPointerGlowEnabled()) {
+            addDropShadow(control, knobs, pointerShadow);
+        }
 
         getChildren().addAll(frame,
                              background,
@@ -673,13 +688,13 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                              threshold,
                              glowOff,
                              glowOn,
-                             pointer,
+                             pointerShadow,
                              bargraphOff,
                              bargraphOn,
                              minMeasured,
                              maxMeasured,
                              markers,
-                             knobs,
+                             knobsShadow,
                              foreground);
     }
 
@@ -713,6 +728,22 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
             prefHeight = Math.max(0, WIDTH - getInsets().getTop() - getInsets().getBottom()) / 1.5384615385;
         }
         return super.computePrefWidth(prefHeight);
+    }
+
+    @Override protected double computeMinWidth(final double WIDTH) {
+        return super.computeMinWidth(Math.max(MIN_SIZE.getWidth(), WIDTH - getInsets().getLeft() - getInsets().getRight()));
+    }
+
+    @Override protected double computeMinHeight(final double HEIGHT) {
+        return super.computeMinHeight(Math.max(MIN_SIZE.getHeight(), HEIGHT - getInsets().getTop() - getInsets().getBottom()));
+    }
+
+    @Override protected double computeMaxWidth(final double WIDTH) {
+        return super.computeMaxWidth(Math.max(MAX_SIZE.getWidth(), WIDTH - getInsets().getLeft() - getInsets().getRight()));
+    }
+
+    @Override protected double computeMaxHeight(final double HEIGHT) {
+        return super.computeMaxHeight(Math.max(MAX_SIZE.getHeight(), HEIGHT - getInsets().getTop() - getInsets().getBottom()));
     }
 
     private void calcGaugeBounds() {
@@ -1055,7 +1086,8 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setWidth(0.2 * SIZE);
         INNER_SHADOW.setHeight(0.2 * SIZE);
-        INNER_SHADOW.setColor(Color.color(0, 0, 0, 1.0));
+        INNER_SHADOW.setOffsetY(0.03 * SIZE);
+        INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.7));
         INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
 
         final LinearGradient HL_GRADIENT = new LinearGradient(0, 0, SIZE, 0, false, CycleMethod.NO_CYCLE,
@@ -1180,7 +1212,7 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         unit.setFont(UNIT_FONT);
         unit.setText(control.getUnit());
         unit.setX((WIDTH - unit.getLayoutBounds().getWidth()) / 2.0);
-        unit.setY(0.335 * WIDTH + unit.getLayoutBounds().getHeight());
+        unit.setY(0.32 * WIDTH + unit.getLayoutBounds().getHeight());
         unit.getStyleClass().add(control.getBackgroundDesign().CSS_TEXT);
 
         titleAndUnit.getChildren().addAll(title, unit);
@@ -1815,17 +1847,6 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                 break;
         }
 
-        final DropShadow SHADOW;
-        if (control.isPointerShadowEnabled()) {
-            SHADOW = new DropShadow();
-            SHADOW.setHeight(0.03 * WIDTH);
-            SHADOW.setWidth(0.03 * HEIGHT);
-            SHADOW.setColor(Color.color(0, 0, 0, 0.75));
-
-        } else {
-            SHADOW = null;
-        }
-
         // Pointer glow
         if (control.isPointerGlowEnabled()) {
             final DropShadow GLOW = new DropShadow();
@@ -1837,16 +1858,10 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
             GLOW.setColor(control.getValueColor().COLOR);
             GLOW.setBlurType(BlurType.GAUSSIAN);
             if (control.getPointerType() == Gauge.PointerType.TYPE9) {
-                POINTER.setEffect(SHADOW);
                 POINTER_FRONT.setEffect(GLOW);
             } else {
-                if (control.isPointerShadowEnabled()) {
-                    GLOW.inputProperty().set(SHADOW);
-                }
                 POINTER.setEffect(GLOW);
             }
-        } else {
-            POINTER.setEffect(SHADOW);
         }
 
         pointer.getChildren().addAll(POINTER);

@@ -29,15 +29,12 @@ package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
 import com.sun.javafx.scene.traversal.Direction;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
-import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
@@ -58,8 +55,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.RotateBuilder;
 import jfxtras.labs.internal.scene.control.behavior.XYControlBehavior;
 import jfxtras.labs.scene.control.gauge.XYControl;
 
@@ -89,7 +84,6 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
     private double       thumbY;
     private double       mouseX;
     private double       mouseY;
-
     private boolean      isDirty;
     private boolean      initialized;
 
@@ -202,18 +196,6 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         if (control.getPrefWidth() < 0 | control.getPrefHeight() < 0) {
             control.setPrefSize(220, 220);
         }
-
-        control.prefWidthProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
-
-        control.prefHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
 
         // Register listeners
         registerChangeListener(control.xValueProperty(), "X");

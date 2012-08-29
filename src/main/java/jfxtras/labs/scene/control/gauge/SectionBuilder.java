@@ -28,90 +28,91 @@
 package jfxtras.labs.scene.control.gauge;
 
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.control.ControlBuilder;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
 import javafx.util.Builder;
 
 import java.util.HashMap;
 
 
 /**
- * Created by
+ * Created with IntelliJ IDEA.
  * User: hansolo
- * Date: 22.03.12
- * Time: 11:28
+ * Date: 29.08.12
+ * Time: 07:42
+ * To change this template use File | Settings | File Templates.
  */
-public class StepIndicatorBuilder<B extends StepIndicatorBuilder<B>> extends ControlBuilder<B> implements Builder<StepIndicator> {
+public class SectionBuilder implements Builder<Section> {
     private HashMap<String, Property> properties = new HashMap<String, Property>();
 
 
     // ******************** Constructors **************************************
-    protected StepIndicatorBuilder() {};
+    protected SectionBuilder() {};
 
 
     // ******************** Methods *******************************************
-    public static final StepIndicatorBuilder create() {
-        return new StepIndicatorBuilder();
+    public static final SectionBuilder create() {
+        return new SectionBuilder();
     }
 
-    public final StepIndicatorBuilder noOfSteps(final int NO_OF_STEPS) {
-        properties.put("noOfSteps", new SimpleIntegerProperty(NO_OF_STEPS));
+    public final SectionBuilder start(final double START) {
+        properties.put("start", new SimpleDoubleProperty(START));
         return this;
     }
 
-    public final StepIndicatorBuilder color(final Color COLOR) {
+    public final SectionBuilder stop(final double STOP) {
+        properties.put("stop", new SimpleDoubleProperty(STOP));
+        return this;
+    }
+
+    public final SectionBuilder color(final Color COLOR) {
         properties.put("color", new SimpleObjectProperty<Color>(COLOR));
         return this;
     }
 
-    public final StepIndicatorBuilder currentStep(final int CURRENT_STEP) {
-        properties.put("currentStep", new SimpleIntegerProperty(CURRENT_STEP));
+    public final SectionBuilder highlightColor(final Color HIGHLIGHT_COLOR) {
+        properties.put("highlightColor", new SimpleObjectProperty<Color>(HIGHLIGHT_COLOR));
         return this;
     }
 
-    @Override public final B prefWidth(final double PREF_WIDTH) {
-        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-        return (B)this;
+    public final SectionBuilder sectionArea(final Shape SECTION_AREA) {
+        properties.put("sectionArea", new SimpleObjectProperty<Shape>(SECTION_AREA));
+        return this;
     }
 
-    @Override public final B prefHeight(final double PREF_HEIGHT) {
-        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-        return (B)this;
+    public final SectionBuilder filledArea(final Shape FILLED_AREA) {
+        properties.put("filledArea", new SimpleObjectProperty<Shape>(FILLED_AREA));
+        return this;
     }
 
-    @Override public final B layoutX(final double LAYOUT_X) {
-            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
-            return (B)this;
-        }
-
-    @Override public final B layoutY(final double LAYOUT_Y) {
-        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
-        return (B)this;
+    public final SectionBuilder text(final String TEXT) {
+        properties.put("text", new SimpleStringProperty(TEXT));
+        return this;
     }
 
-    @Override public final StepIndicator build() {
-        final StepIndicator CONTROL = new StepIndicator();
+    @Override public final Section build() {
+        final Section CONTROL = new Section();
         for (String key : properties.keySet()) {
-            if ("noOfSteps".equals(key)) {
-                CONTROL.setNoOfSteps(((IntegerProperty) properties.get(key)).get());
+            if ("start".equals(key)) {
+                CONTROL.setStart(((DoubleProperty) properties.get(key)).get());
+            } else if ("stop".equals(key)) {
+                CONTROL.setStop(((DoubleProperty) properties.get(key)).get());
             } else if ("color".equals(key)) {
                 CONTROL.setColor(((ObjectProperty<Color>) properties.get(key)).get());
-            } else if ("currentStep".equals(key)) {
-                CONTROL.setCurrentStep(((IntegerProperty) properties.get(key)).get());
-            }  else if ("prefWidth".equals(key)) {
-                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
-            } else if ("prefHeight".equals(key)) {
-                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
-            } else if ("layoutX".equals(key)) {
-                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
-            } else if ("layoutY".equals(key)) {
-                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
+            } else if ("highlightColor".equals(key)) {
+                CONTROL.setHighlightColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("sectionArea".equals(key)) {
+                CONTROL.setSectionArea(((ObjectProperty<Shape>) properties.get(key)).get());
+            } else if ("filledArea".equals(key)) {
+                CONTROL.setFilledArea(((ObjectProperty<Shape>) properties.get(key)).get());
+            } else if ("text".equals(key)) {
+                CONTROL.setText(((StringProperty) properties.get(key)).get());
             }
         }
         return CONTROL;

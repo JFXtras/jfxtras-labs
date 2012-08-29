@@ -73,6 +73,11 @@ public class GaugeModelBuilder {
         return this;
     }
 
+    public final GaugeModelBuilder redrawTolerance(final double REDRAW_TOLERANCE) {
+        properties.put("redrawTolerance", new SimpleDoubleProperty(REDRAW_TOLERANCE));
+        return this;
+    }
+
     public final GaugeModelBuilder minValue(final double MIN_VALUE) {
         properties.put("minValue", new SimpleDoubleProperty(MIN_VALUE));
         return this;
@@ -138,23 +143,38 @@ public class GaugeModelBuilder {
         return this;
     }
 
-    public final GaugeModelBuilder majorTickSpacing(final int MAJOR_TICKSPACING) {
-        properties.put("majorTickSpacing", new SimpleIntegerProperty(MAJOR_TICKSPACING));
+    public final GaugeModelBuilder majorTickSpacing(final double MAJOR_TICK_SPACING) {
+        properties.put("majorTickSpacing", new SimpleDoubleProperty(MAJOR_TICK_SPACING));
         return this;
     }
 
-    public final GaugeModelBuilder minorTickSpacing(final int MINOR_TICKSPACING) {
-        properties.put("minorTickSpacing", new SimpleIntegerProperty(MINOR_TICKSPACING));
-        return this;
-    }
-
-    public final GaugeModelBuilder trend(final Trend TREND) {
-        properties.put("trend", new SimpleObjectProperty<Trend>(TREND));
+    public final GaugeModelBuilder minorTickSpacing(final double MINOR_TICK_SPACING) {
+        properties.put("minorTickSpacing", new SimpleDoubleProperty(MINOR_TICK_SPACING));
         return this;
     }
 
     public final GaugeModelBuilder niceScaling(final boolean NICE_SCALING) {
         properties.put("niceScaling", new SimpleBooleanProperty(NICE_SCALING));
+        return this;
+    }
+
+    public final GaugeModelBuilder tightScale(final boolean TIGHT_SCALE) {
+        properties.put("tightScale", new SimpleBooleanProperty(TIGHT_SCALE));
+        return this;
+    }
+
+    public final GaugeModelBuilder largeNumberScale(final boolean LARGE_NUMBER_SCALE) {
+        properties.put("largeNumberScale", new SimpleBooleanProperty(LARGE_NUMBER_SCALE));
+        return this;
+    }
+
+    public final GaugeModelBuilder lastLabelVisible(final boolean LAST_LABEL_VISIBLE) {
+        properties.put("lastLabelVisible", new SimpleBooleanProperty(LAST_LABEL_VISIBLE));
+        return this;
+    }
+
+    public final GaugeModelBuilder trend(final Trend TREND) {
+        properties.put("trend", new SimpleObjectProperty<Trend>(TREND));
         return this;
     }
 
@@ -198,6 +218,11 @@ public class GaugeModelBuilder {
         return this;
     }
 
+    public final GaugeModelBuilder endlessMode(final boolean ENDLESS_MODE) {
+        properties.put("endlessMode", new SimpleBooleanProperty(ENDLESS_MODE));
+        return this;
+    }
+
     public final GaugeModel build() {
         final GaugeModel MODEL = new GaugeModel();
         for (String key : properties.keySet()) {
@@ -207,6 +232,8 @@ public class GaugeModelBuilder {
                 MODEL.setValueAnimationEnabled(((BooleanProperty) properties.get(key)).get());
             } else if ("animationDuration".equals(key)) {
                 MODEL.setAnimationDuration(((DoubleProperty) properties.get(key)).get());
+            } else if ("redrawTolerance".equals(key)) {
+                MODEL.setRedrawTolerance(((DoubleProperty) properties.get(key)).get());
             } else if ("minValue".equals(key)) {
                 MODEL.setMinValue(((DoubleProperty) properties.get(key)).get());
             } else if ("maxValue".equals(key)) {
@@ -234,13 +261,19 @@ public class GaugeModelBuilder {
             } else if ("maxNoOfMinorTicks".equals(key)) {
                 MODEL.setMaxNoOfMinorTicks(((IntegerProperty) properties.get(key)).get());
             } else if ("majorTickSpacing".equals(key)) {
-                MODEL.setMajorTickSpacing(((IntegerProperty) properties.get(key)).get());
+                MODEL.setMajorTickSpacing(((DoubleProperty) properties.get(key)).get());
             } else if ("minorTickSpacing".equals(key)) {
-                MODEL.setMinorTickSpacing(((IntegerProperty) properties.get(key)).get());
+                MODEL.setMinorTickSpacing(((DoubleProperty) properties.get(key)).get());
             } else if ("trend".equals(key)) {
                 MODEL.setTrend(((ObjectProperty<Trend>) properties.get(key)).get());
             } else if ("niceScaling".equals(key)) {
                 MODEL.setNiceScaling(((BooleanProperty) properties.get(key)).get());
+            } else if ("tightScale".equals(key)) {
+                MODEL.setTightScale(((BooleanProperty) properties.get(key)).get());
+            } else if ("largeNumberScale".equals(key)) {
+                MODEL.setLargeNumberScale(((BooleanProperty) properties.get(key)).get());
+            } else if ("lastLabelVisible".equals(key)) {
+                MODEL.setLastLabelVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("sectionsArray".equals(key)) {
                 MODEL.setSections(((ObjectProperty<Section[]>) properties.get(key)).get());
             } else if ("sectionsList".equals(key)) {
@@ -257,6 +290,8 @@ public class GaugeModelBuilder {
                 MODEL.setMarkers(((ObjectProperty<Marker[]>) properties.get(key)).get());
             } else if ("markersList".equals(key)) {
                 MODEL.setMarkers(((ObjectProperty<List<Marker>>) properties.get(key)).get());
+            } else if ("endlessMode".equals(key)) {
+                MODEL.setEndlessMode(((BooleanProperty) properties.get(key)).get());
             }
         }
         return MODEL;

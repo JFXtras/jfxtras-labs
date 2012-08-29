@@ -27,15 +27,6 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import javafx.scene.CacheHint;
-import jfxtras.labs.internal.scene.control.behavior.RadialQuarterEBehavior;
-import jfxtras.labs.scene.control.gauge.Gauge;
-import jfxtras.labs.scene.control.gauge.GaugeModelEvent;
-import jfxtras.labs.scene.control.gauge.RadialQuarterE;
-import jfxtras.labs.scene.control.gauge.Section;
-import jfxtras.labs.scene.control.gauge.StyleModelEvent;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
@@ -43,13 +34,15 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
+import javafx.scene.CacheHint;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
@@ -75,6 +68,10 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.util.Duration;
+import jfxtras.labs.internal.scene.control.behavior.RadialQuarterEBehavior;
+import jfxtras.labs.scene.control.gauge.Gauge;
+import jfxtras.labs.scene.control.gauge.RadialQuarterE;
+import jfxtras.labs.scene.control.gauge.Section;
 
 import java.util.ArrayList;
 
@@ -86,7 +83,9 @@ import java.util.ArrayList;
  * Time: 09:42
  */
 public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuarterEBehavior> {
+    private static final Rectangle MIN_SIZE  = new Rectangle(25, 25);
     private static final Rectangle PREF_SIZE = new Rectangle(200, 200);
+    private static final Rectangle MAX_SIZE  = new Rectangle(1024, 1024);
     private RadialQuarterE   control;
     private Rectangle        gaugeBounds;
     private Point2D          framelessOffset;
@@ -102,10 +101,12 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
     private Group            glowOn;
     private ArrayList<Color> glowColors;
     private Group            knobs;
+    private Group            knobsShadow;
     private Group            threshold;
     private Group            minMeasured;
     private Group            maxMeasured;
     private Group            pointer;
+    private Group            pointerShadow;
     private Group            ledOff;
     private Group            ledOn;
     private Group            userLedOff;
@@ -149,10 +150,12 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
         glowOn                 = new Group();
         glowColors             = new ArrayList<Color>(4);
         knobs                  = new Group();
+        knobsShadow            = new Group(knobs);
         threshold              = new Group();
         minMeasured            = new Group();
         maxMeasured            = new Group();
         pointer                = new Group();
+        pointerShadow          = new Group();
         ledOff                 = new Group();
         ledOn                  = new Group();
         userLedOff             = new Group();
@@ -166,32 +169,30 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
         pointerRotation        = new Rotate();
         isDirty                = false;
         ledTimer               = new AnimationTimer() {
-            @Override public void handle(final long CURRENT_NANOSECONDS) {
-                long currentNanoTime = System.nanoTime();
-                if (currentNanoTime > lastLedTimerCall + BLINK_INTERVAL) {
+            @Override public void handle(final long NOW) {
+                if (NOW > lastLedTimerCall + getBlinkInterval()) {
                     ledOnVisible ^= true;
                     if (ledOnVisible) {
                         ledOn.setOpacity(1.0);
                     } else {
                         ledOn.setOpacity(0.0);
                     }
-                    lastLedTimerCall = currentNanoTime;
+                    lastLedTimerCall = NOW;
                 }
             }
         };
         lastLedTimerCall       = 0l;
         ledOnVisible           = false;
         userLedTimer           = new AnimationTimer() {
-            @Override public void handle(final long CURRENT_NANOSECONDS) {
-                long currentNanoTime = System.nanoTime();
-                if (currentNanoTime > lastUserLedTimerCall + BLINK_INTERVAL) {
+            @Override public void handle(final long NOW) {
+                if (NOW > lastUserLedTimerCall + getBlinkInterval()) {
                     userLedOnVisible ^= true;
                     if (userLedOnVisible) {
                         userLedOn.setOpacity(1.0);
                     } else {
                         userLedOn.setOpacity(0.0);
                     }
-                    lastUserLedTimerCall = currentNanoTime;
+                    lastUserLedTimerCall = NOW;
                 }
             }
         };
@@ -362,41 +363,23 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
     }
 
     private void addListeners() {
-        control.gaugeModelProperty().addListener(new InvalidationListener() {
+        control.getAreas().addListener(new InvalidationListener() {
             @Override public void invalidated(Observable observable) {
-                addBindings();
-                paint();
+                updateAreas();
+                drawCircularAreas(control, areas, gaugeBounds);
             }
         });
 
-        control.styleModelProperty().addListener(new InvalidationListener() {
+        control.getSections().addListener(new InvalidationListener() {
             @Override public void invalidated(Observable observable) {
-                addBindings();
-                paint();
+                updateSections();
+                drawCircularSections(control, sections, gaugeBounds);
             }
         });
 
-        control.prefWidthProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                control.setPrefHeight(newValue.doubleValue());
-                isDirty = true;
-            }
-        });
-
-        control.prefHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                control.setPrefWidth(newValue.doubleValue());
-                isDirty = true;
-            }
-        });
-
-        control.thresholdExceededProperty().addListener(new ChangeListener<Boolean>() {
-            @Override public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
-                if(newValue) {
-                    ledTimer.start();
-                } else {
-                    ledTimer.stop();
-                }
+        control.getMarkers().addListener(new InvalidationListener() {
+            @Override public void invalidated(Observable observable) {
+                drawCircularIndicators(control, markers, center, gaugeBounds);
             }
         });
 
@@ -405,6 +388,13 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
                 if (rotationAngleTimeline.getStatus() != Animation.Status.STOPPED) {
                     rotationAngleTimeline.stop();
                 }
+
+                // If the new value is in the range between the old value +- the redraw tolerance return and do nothing
+                if (newValue.doubleValue() > (oldValue.doubleValue() - control.getRedrawToleranceValue()) &&
+                    newValue.doubleValue() < (oldValue.doubleValue() + control.getRedrawToleranceValue())) {
+                    return;
+                }
+
                 if (control.isValueAnimationEnabled()) {
                     final KeyValue kv = new KeyValue(gaugeValue, newValue, Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
                     final KeyFrame kf = new KeyFrame(Duration.millis(control.getAnimationDuration()), kv);
@@ -569,7 +559,7 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
                 glowPulse.stop();
                 glowOn.setOpacity(0.0);
             }
-        } else if ("RANGE".equals(PROPERTY)) {
+        } else if ("TICKMARKS".equals(PROPERTY)) {
             drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
         } else if (PROPERTY.equals("MIN_MEASURED_VALUE".equals(PROPERTY))) {
             final double ZERO_OFFSET = -45 - control.getMinValue() * control.getAngleStep();
@@ -583,6 +573,28 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
             maxMeasured.getTransforms().add(Transform.rotate(-ZERO_OFFSET - control.getMaxMeasuredValue() * control.getAngleStep(), rotationCenter.getX(), rotationCenter.getY()));
         } else if ("TREND".equals(PROPERTY)) {
             drawCircularTrend(control, trend, gaugeBounds);
+        } else if ("GAUGE_MODEL".equals(PROPERTY)) {
+            addBindings();
+        } else if ("STYLE_MODEL".equals(PROPERTY)) {
+            addBindings();
+        } else if ("THRESHOLD_EXCEEDED".equals(PROPERTY)) {
+            if(control.isThresholdExceeded()) {
+                ledTimer.start();
+            } else {
+                ledTimer.stop();
+            }
+        } else if ("PREF_WIDTH".equals(PROPERTY)) {
+
+        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
+
+        } else if ("AREAS".equals(PROPERTY)) {
+            updateAreas();
+            drawCircularAreas(control, areas, gaugeBounds);
+        } else if ("SECTIONS".equals(PROPERTY)) {
+            updateSections();
+            drawCircularSections(control, sections, gaugeBounds);
+        } else if ("MARKERS".equals(PROPERTY)) {
+            drawCircularIndicators(control, markers, center, gaugeBounds);
         }
     }
 
@@ -614,9 +626,13 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
         drawCircularGlowOn(control, glowOn, glowColors, gaugeBounds);
         drawMinMeasuredIndicator();
         drawMaxMeasuredIndicator();
+        drawCircularIndicators(control, markers, center, gaugeBounds);
         drawPointer();
         drawCircularKnobs(control, knobs, center, gaugeBounds);
         drawCircularForeground(control, foreground, gaugeBounds);
+        if (control.isPointerShadowEnabled() && !control.isPointerGlowEnabled()) {
+            addDropShadow(control, knobs, pointerShadow);
+        }
 
         getChildren().addAll(frame,
                              background,
@@ -635,8 +651,8 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
                              minMeasured,
                              maxMeasured,
                              markers,
-                             pointer,
-                             knobs,
+                             pointerShadow,
+                             knobsShadow,
                              foreground);
     }
 
@@ -670,6 +686,22 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
             prefHeight = Math.max(0, WIDTH - getInsets().getTop() - getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
+    }
+
+    @Override protected double computeMinWidth(final double WIDTH) {
+        return super.computeMinWidth(Math.max(MIN_SIZE.getWidth(), WIDTH - getInsets().getLeft() - getInsets().getRight()));
+    }
+
+    @Override protected double computeMinHeight(final double HEIGHT) {
+        return super.computeMinHeight(Math.max(MIN_SIZE.getHeight(), HEIGHT - getInsets().getTop() - getInsets().getBottom()));
+    }
+
+    @Override protected double computeMaxWidth(final double WIDTH) {
+        return super.computeMaxWidth(Math.max(MAX_SIZE.getWidth(), WIDTH - getInsets().getLeft() - getInsets().getRight()));
+    }
+
+    @Override protected double computeMaxHeight(final double HEIGHT) {
+        return super.computeMaxHeight(Math.max(MAX_SIZE.getHeight(), HEIGHT - getInsets().getTop() - getInsets().getBottom()));
     }
 
     private void calcGaugeBounds() {
@@ -1215,17 +1247,6 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
                 break;
         }
 
-        final DropShadow SHADOW;
-        if (control.isPointerShadowEnabled()) {
-            SHADOW = new DropShadow();
-            SHADOW.setHeight(0.03 * WIDTH);
-            SHADOW.setWidth(0.03 * HEIGHT);
-            SHADOW.setColor(Color.color(0, 0, 0, 0.75));
-
-        } else {
-            SHADOW = null;
-        }
-
         // Pointer glow
         if (control.isPointerGlowEnabled()) {
             final DropShadow GLOW = new DropShadow();
@@ -1237,16 +1258,10 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
             GLOW.setColor(control.getValueColor().COLOR);
             GLOW.setBlurType(BlurType.GAUSSIAN);
             if (control.getPointerType() == Gauge.PointerType.TYPE9) {
-                POINTER.setEffect(SHADOW);
                 POINTER_FRONT.setEffect(GLOW);
             } else {
-                if (control.isPointerShadowEnabled()) {
-                    GLOW.inputProperty().set(SHADOW);
-                }
                 POINTER.setEffect(GLOW);
             }
-        } else {
-            POINTER.setEffect(SHADOW);
         }
 
         pointer.getChildren().addAll(POINTER);

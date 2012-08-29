@@ -27,23 +27,24 @@
 
 package jfxtras.labs.scene.control.gauge;
 
-import jfxtras.labs.scene.control.gauge.Radial.ForegroundType;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Control;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import jfxtras.labs.scene.control.gauge.Radial.ForegroundType;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 
@@ -54,15 +55,6 @@ import java.util.Locale;
  * Time: 17:14
  */
 public abstract class Gauge extends Control {
-    // ******************** Variable definitions ******************************
-    private ObjectProperty<GaugeModel>  gaugeModelProperty;
-    private ObjectProperty<StyleModel>  styleModelProperty;
-    private GaugeModel                  gaugeModel;
-    private StyleModel                  styleModel;
-    private ObjectProperty<RadialRange> radialRange;
-    private DoubleProperty              angleStep;
-
-
     // ******************** Enum definitions **********************************
     public static enum BackgroundDesign {
         DARK_GRAY("background-design-darkgray"),
@@ -77,13 +69,13 @@ public abstract class Gauge extends Control {
         BLUE("background-design-blue"),
         ANTHRACITE("background-design-anthracite"),
         MUD("background-design-mud"),
-        //CARBON("background-design-carbon"),                       // Swing based
-        //STAINLESS("background-design-stainless"),                 // Swing based
-        //STAINLESS_GRINDED("background-design-stainlessgrinded"),  // Swing based
-        //BRUSHED_METAL("background-design-brushedmetal"),          // Swing based
-        //PUNCHED_SHEET("background-design-punchedsheet"),          // Swing based
-        //LINEN("background-design-linen"),                         // Swing based
-        //NOISY_PLASTIC("backgroundd-esign-noisyplastic"),          // Swing based
+        CARBON("background-design-carbon"),
+        STAINLESS("background-design-stainless"),
+        //STAINLESS_GRINDED("background-design-stainlessgrinded"),
+        //BRUSHED_METAL("background-design-brushedmetal"),
+        PUNCHED_SHEET("background-design-punchedsheet"),
+        //LINEN("background-design-linen"),
+        NOISY_PLASTIC("backgroundd-design-noisyplastic"),
         SIMPLE_GRADIENT("background-design-simplegradient"),
         TRANSPARENT("background-design-transparent"),
         CUSTOM("background-design-custom");
@@ -97,9 +89,9 @@ public abstract class Gauge extends Control {
         }
     }
     public static enum FrameDesign {
-        //BLACK_METAL("frame-design-blackmetal"),   // Swing based
-        //SHINY_METAL("frame-design-shinymetal"),   // Swing based
-        //CHROME("frame-design-chrome"),            // Swing based
+        BLACK_METAL("frame-design-blackmetal"),
+        SHINY_METAL("frame-design-shinymetal"),
+        CHROME("frame-design-chrome"),
         METAL("frame-design-metal"),
         GLOSSY_METAL("frame-design-glossymetal"),
         DARK_GLOSSY("frame-design-darkglossy"),
@@ -188,16 +180,17 @@ public abstract class Gauge extends Control {
         TYPE16
     }
     public static enum RadialRange {
-        RADIAL_300(300, -150, 240, new Rectangle(0.4, 0.56, 0.4, 0.12), 150, new Point2D(0.6, 0.4),new Point2D(0.3, 0.4), 1, 0.38),
-        RADIAL_270(270, -180, 270, new Rectangle(0.4, 0.56, 0.4, 0.12), 180, new Point2D(0.6, 0.4),new Point2D(0.3, 0.4), 1, 0.38),
-        RADIAL_180(180, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 90, new Point2D(0.6, 0.4),new Point2D(0.3, 0.4), 1, 0.38),
-        RADIAL_180N(180, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 90, new Point2D(0.6, 0.35),new Point2D(0.3, 0.35), 1, 0.38),
-        RADIAL_180S(180, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 0, new Point2D(0.6, 0.2),new Point2D(0.3, 0.2), -1, 0.38),
-        RADIAL_90(90, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 91, new Point2D(0.6, 0.4),new Point2D(0.3, 0.4), 1, 0.38),
-        RADIAL_90N(90, 315, 225, new Rectangle(0.55, 0.52, 0.55, 0.12), 45, new Point2D(0.6, 0.4),new Point2D(0.3, 0.4), 1, 0.5),
-        RADIAL_90W(90, 225, 45, new Rectangle(0.2, 0.58, 0.45, 0.12), 135, new Point2D(0.12, 0.35),new Point2D(0.12, 0.55), 1, 0.5),
-        RADIAL_90S(90, -135, 45, new Rectangle(0.55, 0.36, 0.55, 0.12), 225, new Point2D(0.6, 0.5),new Point2D(0.3, 0.5), -1, 0.5),
-        RADIAL_90E(90, 135, 225, new Rectangle(0.2, 0.58, 0.45, 0.12), -315, new Point2D(0.78, 0.35),new Point2D(0.78, 0.55), -1, 0.5);
+        RADIAL_360(360, 0, 0, new Rectangle(0.4, 0.56, 0.4, 0.12), 0, new Point2D(0.6, 0.4), new Point2D(0.3, 0.4), 1, 0.38),
+        RADIAL_300(300, -150, 240, new Rectangle(0.4, 0.56, 0.4, 0.12), 150, new Point2D(0.6, 0.4), new Point2D(0.3, 0.4), 1, 0.38),
+        RADIAL_270(270, -180, 270, new Rectangle(0.4, 0.56, 0.4, 0.12), 180, new Point2D(0.6, 0.4), new Point2D(0.3, 0.4), 1, 0.38),
+        RADIAL_180(180, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 90, new Point2D(0.6, 0.4), new Point2D(0.3, 0.4), 1, 0.38),
+        RADIAL_180N(180, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 90, new Point2D(0.6, 0.35), new Point2D(0.3, 0.35), 1, 0.38),
+        RADIAL_180S(180, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 0, new Point2D(0.6, 0.2), new Point2D(0.3, 0.2), -1, 0.38),
+        RADIAL_90(90, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 91, new Point2D(0.6, 0.4), new Point2D(0.3, 0.4), 1, 0.38),
+        RADIAL_90N(90, 315, 225, new Rectangle(0.55, 0.52, 0.55, 0.12), 45, new Point2D(0.6, 0.4), new Point2D(0.3, 0.4), 1, 0.5),
+        RADIAL_90W(90, 225, 45, new Rectangle(0.2, 0.58, 0.45, 0.12), 135, new Point2D(0.12, 0.35), new Point2D(0.12, 0.55), 1, 0.5),
+        RADIAL_90S(90, -135, 45, new Rectangle(0.55, 0.36, 0.55, 0.12), 225, new Point2D(0.6, 0.5), new Point2D(0.3, 0.5), -1, 0.5),
+        RADIAL_90E(90, 135, 225, new Rectangle(0.2, 0.58, 0.45, 0.12), -315, new Point2D(0.78, 0.35), new Point2D(0.78, 0.55), -1, 0.5);
 
         public final double    ANGLE_RANGE;
         public final double    ROTATION_OFFSET;
@@ -256,10 +249,10 @@ public abstract class Gauge extends Control {
         TRIANGLE
     }
     public static enum TicklabelOrientation {
-            NORMAL,
-            HORIZONTAL,
-            TANGENT
-        }
+        NORMAL,
+        HORIZONTAL,
+        TANGENT
+    }
     public static enum Trend {
         UP,
         RISING,
@@ -268,6 +261,14 @@ public abstract class Gauge extends Control {
         DOWN,
         UNKNOWN;
     }
+
+    // ******************** Variable definitions ******************************
+    private ObjectProperty<GaugeModel>  gaugeModelProperty;
+    private ObjectProperty<StyleModel>  styleModelProperty;
+    private GaugeModel                  gaugeModel;
+    private StyleModel                  styleModel;
+    private ObjectProperty<RadialRange> radialRange;
+    private DoubleProperty              angleStep;
 
 
     // ******************** Constructors **************************************
@@ -302,58 +303,58 @@ public abstract class Gauge extends Control {
 
     // ******************** Event handling ************************************
     private final void addGaugeModelListener() {
-        gaugeModel.setOnGaugeModelEvent(new EventHandler<GaugeModelEvent>() {
-            public void handle(final GaugeModelEvent EVENT) {
+        gaugeModel.setOnGaugeModelEvent(new EventHandler<GaugeModel.GaugeModelEvent>() {
+            public void handle(final GaugeModel.GaugeModelEvent EVENT) {
                 forwardModelEvent(EVENT);
             }
         });
     }
 
-    public final ObjectProperty<EventHandler<GaugeModelEvent>> onGaugeModelEventProperty() {
+    public final ObjectProperty<EventHandler<GaugeModel.GaugeModelEvent>> onGaugeModelEventProperty() {
         return onGaugeModelEvent;
     }
 
-    public final void setOnGaugeModelEvent(final EventHandler<GaugeModelEvent> HANDLER) {
+    public final void setOnGaugeModelEvent(final EventHandler<GaugeModel.GaugeModelEvent> HANDLER) {
         onGaugeModelEventProperty().set(HANDLER);
     }
 
-    public final EventHandler<GaugeModelEvent> getOnGaugeModelEvent() {
+    public final EventHandler<GaugeModel.GaugeModelEvent> getOnGaugeModelEvent() {
         return onGaugeModelEventProperty().get();
     }
 
-    private final ObjectProperty<EventHandler<GaugeModelEvent>> onGaugeModelEvent = new SimpleObjectProperty<EventHandler<GaugeModelEvent>>();
+    private final ObjectProperty<EventHandler<GaugeModel.GaugeModelEvent>> onGaugeModelEvent = new SimpleObjectProperty<EventHandler<GaugeModel.GaugeModelEvent>>();
 
-    public void forwardModelEvent(final GaugeModelEvent EVENT) {
-        final EventHandler<GaugeModelEvent> MODEL_EVENT_HANDLER = getOnGaugeModelEvent();
+    public void forwardModelEvent(final GaugeModel.GaugeModelEvent EVENT) {
+        final EventHandler<GaugeModel.GaugeModelEvent> MODEL_EVENT_HANDLER = getOnGaugeModelEvent();
         if (MODEL_EVENT_HANDLER != null) {
             MODEL_EVENT_HANDLER.handle(EVENT);
         }
     }
 
     private final void addStyleModelListener() {
-        styleModel.setOnStyleModelEvent(new EventHandler<StyleModelEvent>() {
-            public void handle(final StyleModelEvent EVENT) {
+        styleModel.setOnStyleModelEvent(new EventHandler<StyleModel.StyleModelEvent>() {
+            public void handle(final StyleModel.StyleModelEvent EVENT) {
                 forwardStyleModelEvent(EVENT);
             }
         });
     }
 
-    public final ObjectProperty<EventHandler<StyleModelEvent>> onStyleModelEventProperty() {
+    public final ObjectProperty<EventHandler<StyleModel.StyleModelEvent>> onStyleModelEventProperty() {
         return onStyleModelEvent;
     }
 
-    public final void setOnStyleModelEvent(final EventHandler<StyleModelEvent> HANDLER) {
+    public final void setOnStyleModelEvent(final EventHandler<StyleModel.StyleModelEvent> HANDLER) {
         onStyleModelEventProperty().set(HANDLER);
     }
 
-    public final EventHandler<StyleModelEvent> getOnStyleModelEvent() {
+    public final EventHandler<StyleModel.StyleModelEvent> getOnStyleModelEvent() {
         return onStyleModelEventProperty().get();
     }
 
-    private final ObjectProperty<EventHandler<StyleModelEvent>> onStyleModelEvent = new SimpleObjectProperty<EventHandler<StyleModelEvent>>();
+    private final ObjectProperty<EventHandler<StyleModel.StyleModelEvent>> onStyleModelEvent = new SimpleObjectProperty<EventHandler<StyleModel.StyleModelEvent>>();
 
-    public void forwardStyleModelEvent(final StyleModelEvent EVENT) {
-        final EventHandler<StyleModelEvent> STYLE_MODEL_EVENT_HANDLER = getOnStyleModelEvent();
+    public void forwardStyleModelEvent(final StyleModel.StyleModelEvent EVENT) {
+        final EventHandler<StyleModel.StyleModelEvent> STYLE_MODEL_EVENT_HANDLER = getOnStyleModelEvent();
         if (STYLE_MODEL_EVENT_HANDLER != null) {
             STYLE_MODEL_EVENT_HANDLER.handle(EVENT);
         }
@@ -377,7 +378,7 @@ public abstract class Gauge extends Control {
         addStyleModelListener();
     }
 
-    public final ObjectProperty<StyleModel> styleModelProperty() {
+    public final ReadOnlyObjectProperty<StyleModel> styleModelProperty() {
             return styleModelProperty;
         }
 
@@ -391,7 +392,7 @@ public abstract class Gauge extends Control {
         addGaugeModelListener();
     }
 
-    public final ObjectProperty<GaugeModel> gaugeModelProperty() {
+    public final ReadOnlyObjectProperty<GaugeModel> gaugeModelProperty() {
         return gaugeModelProperty;
     }
 
@@ -401,8 +402,14 @@ public abstract class Gauge extends Control {
 
     public void setRadialRange(final RadialRange RADIAL_RANGE) {
         radialRange.set(RADIAL_RANGE);
-        gaugeModel.calcRange(radialRange.get().ANGLE_RANGE);
+        gaugeModel.calcRange();
         angleStep.set(radialRange.get().ANGLE_RANGE / gaugeModel.getRange());
+        if (RADIAL_RANGE == RadialRange.RADIAL_360) {
+            setKnobsVisible(false);
+            setEndlessMode(true);
+        } else {
+            setEndlessMode(false);
+        }
     }
 
     public final ObjectProperty<RadialRange> radialRangeProperty() {
@@ -414,11 +421,13 @@ public abstract class Gauge extends Control {
     }
 
     public final void recalcRange() {
-        gaugeModel.calcRange(radialRange.get().ANGLE_RANGE);
+        if (getMinValue() < getMaxValue()) {
+            gaugeModel.calcRange();
+        }
         angleStep.set(radialRange.get().ANGLE_RANGE / gaugeModel.getRange());
     }
 
-    public final DoubleProperty angleStepProperty() {
+    public final ReadOnlyDoubleProperty angleStepProperty() {
         return angleStep;
     }
 
@@ -431,7 +440,7 @@ public abstract class Gauge extends Control {
     }
 
 
-    // ******************** GaugeModel Methods *************************************
+    // ******************** GaugeModel Methods ********************************
     public final double getValue() {
         return gaugeModel.getValue();
     }
@@ -442,6 +451,14 @@ public abstract class Gauge extends Control {
 
     public final DoubleProperty valueProperty() {
         return gaugeModel.valueProperty();
+    }
+
+    public final double getRealValue() {
+        return gaugeModel.getRealValue();
+    }
+
+    public final ReadOnlyDoubleProperty realValueProperty() {
+        return gaugeModel.realValueProperty();
     }
 
     public final boolean isValueAnimationEnabled() {
@@ -468,18 +485,38 @@ public abstract class Gauge extends Control {
         return gaugeModel.animationDurationProperty();
     }
 
+    public final double getRedrawTolerance() {
+        return gaugeModel.getRedrawTolerance();
+    }
+
+    public final void setRedrawTolerance(final double REDRAW_TOLERANCE) {
+        gaugeModel.setRedrawTolerance(REDRAW_TOLERANCE);
+    }
+
+    public final DoubleProperty redrawToleranceProperty() {
+        return gaugeModel.redrawToleranceProperty();
+    }
+
+    public final double getRedrawToleranceValue() {
+        return gaugeModel.getRedrawToleranceValue();
+    }
+
     public final double getMinValue() {
         return gaugeModel.getMinValue();
     }
 
     public final void setMinValue(final double MIN_VALUE) {
         gaugeModel.setMinValue(MIN_VALUE);
-        gaugeModel.calcRange(radialRange.get().ANGLE_RANGE);
+        gaugeModel.calcRange();
         angleStep.set(radialRange.get().ANGLE_RANGE / gaugeModel.getRange());
     }
 
-    public final DoubleProperty minValueProperty() {
+    public final ReadOnlyDoubleProperty minValueProperty() {
         return gaugeModel.minValueProperty();
+    }
+
+    public final double getUncorrectedMinValue() {
+        return gaugeModel.getUncorrectedMinValue();
     }
 
     public final double getMaxValue() {
@@ -488,19 +525,23 @@ public abstract class Gauge extends Control {
 
     public final void setMaxValue(final double MAX_VALUE) {
         gaugeModel.setMaxValue(MAX_VALUE);
-        gaugeModel.calcRange(radialRange.get().ANGLE_RANGE);
+        gaugeModel.calcRange();
         angleStep.set(radialRange.get().ANGLE_RANGE / gaugeModel.getRange());
     }
 
-    public final DoubleProperty maxValueProperty() {
+    public final ReadOnlyDoubleProperty maxValueProperty() {
         return gaugeModel.maxValueProperty();
+    }
+
+    public final double getUncorrectedMaxValue() {
+        return gaugeModel.getUncorrectedMaxValue();
     }
 
     public final double getRange() {
         return gaugeModel.getRange();
     }
 
-    public final DoubleProperty rangeProperty() {
+    public final ReadOnlyDoubleProperty rangeProperty() {
         return gaugeModel.rangeProperty();
     }
 
@@ -660,6 +701,8 @@ public abstract class Gauge extends Control {
         return gaugeModel.unitProperty();
     }
 
+
+    // ******************** StyleModel Methods ********************************
     public final FrameDesign getFrameDesign() {
         return styleModel.getFrameDesign();
     }
@@ -670,6 +713,18 @@ public abstract class Gauge extends Control {
 
     public final ObjectProperty<FrameDesign> frameDesignProperty() {
         return styleModel.frameDesignProperty();
+    }
+
+    public final Color getFrameBaseColor() {
+        return styleModel.getFrameBaseColor();
+    }
+
+    public final void setFrameBaseColor(final Color FRAME_BASE_COLOR) {
+        styleModel.setFrameBaseColor(FRAME_BASE_COLOR);
+    }
+
+    public final ObjectProperty<Color> frameBaseColorProperty() {
+        return styleModel.frameBaseColorProperty();
     }
 
     public final boolean isFrameVisible() {
@@ -732,16 +787,16 @@ public abstract class Gauge extends Control {
         return styleModel.knobColorProperty();
     }
 
-    public final boolean isPostsVisible() {
-        return styleModel.isPostsVisible();
+    public final boolean isKnobsVisible() {
+        return styleModel.getKnobsVisible();
     }
 
-    public final void setPostsVisible(final boolean POSTS_VISIBLE) {
-        styleModel.setPostsVisible(POSTS_VISIBLE);
+    public final void setKnobsVisible(final boolean POSTS_VISIBLE) {
+        styleModel.setKnobsVisible(POSTS_VISIBLE);
     }
 
-    public final BooleanProperty postsVisibleProperty() {
-        return styleModel.postsVisibleProperty();
+    public final BooleanProperty knobsVisibleProperty() {
+        return styleModel.knobsVisibleProperty();
     }
 
     public final PointerType getPointerType() {
@@ -1212,6 +1267,18 @@ public abstract class Gauge extends Control {
         return styleModel.majorTickmarkColorProperty();
     }
 
+    public final boolean isMajorTickmarkColorEnabled() {
+        return styleModel.isMajorTickmarkColorEnabled();
+    }
+
+    public final void setMajorTickmarkColorEnabled(final boolean MAJOR_TICKMARK_COLOR_ENABLED) {
+        styleModel.setMajorTickmarkColorEnabled(MAJOR_TICKMARK_COLOR_ENABLED);
+    }
+
+    public final BooleanProperty majorTickmarkColorEnabledProperty() {
+        return styleModel.majorTickmarkColorEnabledProperty();
+    }
+
     public final boolean isMinorTicksVisible() {
         return styleModel.isMinorTicksVisible();
     }
@@ -1234,6 +1301,18 @@ public abstract class Gauge extends Control {
 
     public final ObjectProperty<Color> minorTickmarkColorProperty() {
         return styleModel.minorTickmarkColorProperty();
+    }
+
+    public final boolean isMinorTickmarkColorEnabled() {
+        return styleModel.isMinorTickmarkColorEnabled();
+    }
+
+    public final void setMinorTickmarkColorEnabled(final boolean MINOR_TICKMARK_COLOR_ENABLED) {
+        styleModel.setMinorTickmarkColorEnabled(MINOR_TICKMARK_COLOR_ENABLED);
+    }
+
+    public final BooleanProperty minorTickmarkColorEnabledProperty() {
+        return styleModel.minorTickmarkColorEnabledProperty();
     }
 
     public final boolean isTickLabelsVisible() {
@@ -1332,27 +1411,27 @@ public abstract class Gauge extends Control {
         return gaugeModel.maxNoOfMinorTicksProperty();
     }
 
-    public final int getMajorTickSpacing() {
+    public final double getMajorTickSpacing() {
         return gaugeModel.getMajorTickSpacing();
     }
 
-    public final void setMajorTickSpacing(final int MAJOR_TICKSPACING) {
-        gaugeModel.setMajorTickSpacing(MAJOR_TICKSPACING);
+    public final void setMajorTickSpacing(final double MAJOR_TICK_SPACING) {
+        gaugeModel.setMajorTickSpacing(MAJOR_TICK_SPACING);
     }
 
-    public final IntegerProperty majorTickSpacingProperty() {
+    public final DoubleProperty majorTickSpacingProperty() {
         return gaugeModel.majorTickSpacingProperty();
     }
 
-    public final int getMinorTickSpacing() {
+    public final double getMinorTickSpacing() {
         return gaugeModel.getMinorTickSpacing();
     }
 
-    public final void setMinorTickSpacing(final int MINOR_TICKSPACING) {
-        gaugeModel.setMinorTickSpacing(MINOR_TICKSPACING);
+    public final void setMinorTickSpacing(final double MINOR_TICK_SPACING) {
+        gaugeModel.setMinorTickSpacing(MINOR_TICK_SPACING);
     }
 
-    public final IntegerProperty minorTickSpacingProperty() {
+    public final DoubleProperty minorTickSpacingProperty() {
         return gaugeModel.minorTickSpacingProperty();
     }
 
@@ -1369,7 +1448,47 @@ public abstract class Gauge extends Control {
         return gaugeModel.niceScalingProperty();
     }
 
-    public final List<Section> getSections() {
+    public final boolean isTightScale() {
+        return  gaugeModel.isTightScale();
+    }
+
+    public final void setTightScale(final boolean TIGHT_SCALE) {
+        gaugeModel.setTightScale(TIGHT_SCALE);
+    }
+
+    public final BooleanProperty tightScaleProperty() {
+        return gaugeModel.tightScaleProperty();
+    }
+
+    public final double getTightScaleOffset() {
+        return gaugeModel.getTightScaleOffset();
+    }
+
+    public final boolean isLargeNumberScale() {
+        return gaugeModel.isLargeNumberScale();
+    }
+
+    public final void setLargeNumberScale(final boolean LARGE_NUMBER_SCALE) {
+        gaugeModel.setLargeNumberScale(LARGE_NUMBER_SCALE);
+    }
+
+    public final BooleanProperty largeNumberScaleProperty() {
+        return gaugeModel.largeNumberScaleProperty();
+    }
+
+    public final boolean isLastLabelVisible() {
+        return gaugeModel.isLastLabelVisible();
+    }
+
+    public final void setLastLabelVisible(final boolean LAST_LABEL_VISIBLE) {
+        gaugeModel.setLastLabelVisible(LAST_LABEL_VISIBLE);
+    }
+
+    public final BooleanProperty lastLabelVisibleProperty() {
+        return gaugeModel.lastLabelVisibleProperty();
+    }
+
+    public final ObservableList<Section> getSections() {
         return gaugeModel.getSections();
     }
 
@@ -1443,7 +1562,7 @@ public abstract class Gauge extends Control {
         return styleModel.showSectionTickmarksOnlyProperty();
     }
 
-    public final List<Section> getAreas() {
+    public final ObservableList<Section> getAreas() {
         return gaugeModel.getAreas();
     }
 
@@ -1493,7 +1612,7 @@ public abstract class Gauge extends Control {
         return styleModel.areasHighlightingProperty();
     }
 
-    public final List<Section> getTickMarkSections() {
+    public final ObservableList<Section> getTickMarkSections() {
         return gaugeModel.getTickMarkSections();
     }
 
@@ -1519,7 +1638,7 @@ public abstract class Gauge extends Control {
         gaugeModel.resetTickMarkSections();
     }
 
-    public final List<Marker> getMarkers() {
+    public final ObservableList<Marker> getMarkers() {
         return gaugeModel.getMarkers();
     }
 
@@ -1555,6 +1674,16 @@ public abstract class Gauge extends Control {
 
     public final BooleanProperty markersVisibleProperty() {
         return styleModel.markersVisibleProperty();
+    }
+
+    public final boolean isEndlessMode() {
+        return gaugeModel.isEndlessMode();
+    }
+
+    public final void setEndlessMode(final boolean ENDLESS_MODE) {
+        if (getRadialRange() == RadialRange.RADIAL_360) {
+            gaugeModel.setEndlessMode(ENDLESS_MODE);
+        }
     }
 
     public final Color getTextureColor() {

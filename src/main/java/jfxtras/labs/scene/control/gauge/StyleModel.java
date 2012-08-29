@@ -27,6 +27,20 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventTarget;
+import javafx.event.EventType;
+import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 import jfxtras.labs.scene.control.gauge.Gauge.BackgroundDesign;
 import jfxtras.labs.scene.control.gauge.Gauge.FrameDesign;
 import jfxtras.labs.scene.control.gauge.Gauge.KnobColor;
@@ -37,17 +51,7 @@ import jfxtras.labs.scene.control.gauge.Gauge.ThresholdColor;
 import jfxtras.labs.scene.control.gauge.Gauge.TicklabelOrientation;
 import jfxtras.labs.scene.control.gauge.Gauge.TickmarkType;
 import jfxtras.labs.scene.control.gauge.Radial.ForegroundType;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.event.EventHandler;
-import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
+import jfxtras.labs.util.Util;
 
 
 /**
@@ -63,12 +67,13 @@ public class StyleModel {
     private BooleanProperty                      thresholdVisible;
     private ObjectProperty<ThresholdColor>       thresholdColor;
     private ObjectProperty<FrameDesign>          frameDesign;
+    private ObjectProperty<Color>                frameBaseColor;
     private BooleanProperty                      frameVisible;
     private ObjectProperty<BackgroundDesign>     backgroundDesign;
     private BooleanProperty                      backgroundVisible;
     private ObjectProperty<KnobDesign>           knobDesign;
     private ObjectProperty<KnobColor>            knobColor;
-    private BooleanProperty                      postsVisible;
+    private BooleanProperty                      knobsVisible;
     private ObjectProperty<PointerType>          pointerType;
     private BooleanProperty                      pointerShadowEnabled;
     private BooleanProperty                      pointerGlowEnabled;
@@ -102,8 +107,10 @@ public class StyleModel {
     private BooleanProperty                      majorTicksVisible;
     private ObjectProperty<TickmarkType>         majorTickmarkType;
     private ObjectProperty<Color>                majorTickmarkColor;
+    private BooleanProperty                      majorTickmarkColorEnabled;
     private BooleanProperty                      minorTicksVisible;
     private ObjectProperty<Color>                minorTickmarkColor;
+    private BooleanProperty                      minorTickmarkColorEnabled;
     private BooleanProperty                      tickLabelsVisible;
     private ObjectProperty<TicklabelOrientation> tickLabelOrientation;
     private ObjectProperty<NumberFormat>         tickLabelNumberFormat;
@@ -137,12 +144,13 @@ public class StyleModel {
         thresholdVisible                = new SimpleBooleanProperty(false);
         thresholdColor                  = new SimpleObjectProperty<ThresholdColor>(Gauge.ThresholdColor.RED);
         frameDesign                     = new SimpleObjectProperty<FrameDesign>(Gauge.FrameDesign.METAL);
+        frameBaseColor                  = new SimpleObjectProperty<Color>(Color.rgb(160, 160, 160));
         frameVisible                    = new SimpleBooleanProperty(true);
         backgroundDesign                = new SimpleObjectProperty<BackgroundDesign>(Gauge.BackgroundDesign.DARK_GRAY);
         backgroundVisible               = new SimpleBooleanProperty(true);
         knobDesign                      = new SimpleObjectProperty<KnobDesign>(Gauge.KnobDesign.STANDARD);
         knobColor                       = new SimpleObjectProperty<KnobColor>(Gauge.KnobColor.SILVER);
-        postsVisible                    = new SimpleBooleanProperty(true);
+        knobsVisible                    = new SimpleBooleanProperty(true);
         pointerType                     = new SimpleObjectProperty<PointerType>(Gauge.PointerType.TYPE1);
         valueColor                      = new SimpleObjectProperty<ColorDef>(ColorDef.RED);
         pointerShadowEnabled            = new SimpleBooleanProperty(true);
@@ -176,8 +184,10 @@ public class StyleModel {
         majorTicksVisible               = new SimpleBooleanProperty(true);
         majorTickmarkType               = new SimpleObjectProperty<TickmarkType>(TickmarkType.LINE);
         majorTickmarkColor              = new SimpleObjectProperty<Color>(Color.WHITE);
+        majorTickmarkColorEnabled       = new SimpleBooleanProperty(false);
         minorTicksVisible               = new SimpleBooleanProperty(true);
         minorTickmarkColor              = new SimpleObjectProperty<Color>(Color.WHITE);
+        minorTickmarkColorEnabled       = new SimpleBooleanProperty(false);
         tickLabelsVisible               = new SimpleBooleanProperty(true);
         tickLabelOrientation            = new SimpleObjectProperty<TicklabelOrientation>(Gauge.TicklabelOrientation.NORMAL);
         tickLabelNumberFormat           = new SimpleObjectProperty<NumberFormat>(Gauge.NumberFormat.AUTO);
@@ -191,7 +201,7 @@ public class StyleModel {
         areasVisible                    = new SimpleBooleanProperty(false);
         areasHighlighting               = new SimpleBooleanProperty(false);
         markersVisible                  = new SimpleBooleanProperty(false);
-        textureColor                    = new SimpleObjectProperty<Color>(Color.rgb(104, 104, 104));
+        textureColor                    = new SimpleObjectProperty<Color>(Color.rgb(29, 33, 35));
         simpleGradientBaseColor         = new SimpleObjectProperty<Color>(Color.rgb(213, 0, 0));
         titleVisible                    = new SimpleBooleanProperty(true);
         unitVisible                     = new SimpleBooleanProperty(true);
@@ -307,6 +317,18 @@ public class StyleModel {
         return frameDesign;
     }
 
+    public final Color getFrameBaseColor() {
+        return frameBaseColor.get();
+    }
+
+    public final void setFrameBaseColor(final Color FRAME_BASE_COLOR) {
+        frameBaseColor.set(FRAME_BASE_COLOR);
+    }
+
+    public final ObjectProperty<Color> frameBaseColorProperty() {
+        return frameBaseColor;
+    }
+
     public final boolean isFrameVisible() {
         return frameVisible.get();
     }
@@ -372,17 +394,17 @@ public class StyleModel {
         return knobColor;
     }
 
-    public final boolean isPostsVisible() {
-        return postsVisible.get();
+    public final boolean getKnobsVisible() {
+        return knobsVisible.get();
     }
 
-    public final void setPostsVisible(final boolean POSTS_VISIBLE) {
-        postsVisible.set(POSTS_VISIBLE);
+    public final void setKnobsVisible(final boolean KNOBS_VISIBLE) {
+        knobsVisible.set(KNOBS_VISIBLE);
         fireStyleModelEvent();
     }
 
-    public final BooleanProperty postsVisibleProperty() {
-        return postsVisible;
+    public final BooleanProperty knobsVisibleProperty() {
+        return knobsVisible;
     }
 
     public final Gauge.PointerType getPointerType() {
@@ -815,6 +837,19 @@ public class StyleModel {
         return majorTickmarkColor;
     }
 
+    public final boolean isMajorTickmarkColorEnabled() {
+        return majorTickmarkColorEnabled.get();
+    }
+
+    public final void setMajorTickmarkColorEnabled(final boolean MAJOR_TICKMARK_COLOR_ENABLED) {
+        majorTickmarkColorEnabled.set(MAJOR_TICKMARK_COLOR_ENABLED);
+        fireStyleModelEvent();
+    }
+
+    public final BooleanProperty majorTickmarkColorEnabledProperty() {
+        return majorTickmarkColorEnabled;
+    }
+
     public final boolean isMinorTicksVisible() {
         return minorTicksVisible.get();
     }
@@ -839,6 +874,19 @@ public class StyleModel {
 
     public final ObjectProperty<Color> minorTickmarkColorProperty() {
         return minorTickmarkColor;
+    }
+
+    public final boolean isMinorTickmarkColorEnabled() {
+        return minorTickmarkColorEnabled.get();
+    }
+
+    public final void setMinorTickmarkColorEnabled(final boolean MINOR_TICKMARK_COLOR_ENABLED) {
+        minorTickmarkColorEnabled.set(MINOR_TICKMARK_COLOR_ENABLED);
+        fireStyleModelEvent();
+    }
+
+    public final BooleanProperty minorTickmarkColorEnabledProperty() {
+        return minorTickmarkColorEnabled;
     }
 
     public final boolean isTickLabelsVisible() {
@@ -1017,7 +1065,7 @@ public class StyleModel {
     public final String getTextureColorString() {
         final StringBuilder COLOR_STRING = new StringBuilder(30);
         COLOR_STRING.append("-fx-texture: ");
-        COLOR_STRING.append(Util.INSTANCE.createCssColor(getTextureColor()));
+        COLOR_STRING.append(Util.createCssColor(getTextureColor()));
         return COLOR_STRING.toString();
     }
 
@@ -1037,7 +1085,7 @@ public class StyleModel {
     public final String getSimpleGradientBaseColorString() {
         final StringBuilder COLOR_STRING = new StringBuilder(30);
         COLOR_STRING.append("-fx-simplegradient-base: ");
-        COLOR_STRING.append(Util.INSTANCE.createCssColor(getSimpleGradientBaseColor()));
+        COLOR_STRING.append(Util.createCssColor(getSimpleGradientBaseColor()));
         return COLOR_STRING.toString();
     }
 
@@ -1152,5 +1200,19 @@ public class StyleModel {
 
     public final ObjectProperty<Color> trendDownColorProperty() {
         return trendDownColor;
+    }
+
+
+    // ******************** Internal classes **********************************
+    public class StyleModelEvent extends Event {
+
+        // ******************** Constructors **************************************
+        public StyleModelEvent() {
+            super(new EventType<StyleModelEvent>());
+        }
+
+        public StyleModelEvent(final Object source, final EventTarget target) {
+            super(source, target, new EventType<StyleModelEvent>());
+        }
     }
 }

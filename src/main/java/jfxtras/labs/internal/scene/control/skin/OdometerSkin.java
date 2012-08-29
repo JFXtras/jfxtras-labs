@@ -32,8 +32,6 @@ import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.VPos;
@@ -90,27 +88,31 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
     }
 
     private void init() {
-        if (control.getPrefWidth() < 0 | control.getPrefHeight() < 0) {
-            control.setPrefSize(0.68 * 40 * (control.getNoOfDigits() + control.getNoOfDecimals()), 40);
+        double prefWidth  = control.getPrefWidth();
+        double prefHeight = control.getPrefHeight();
+        if (prefWidth <= 0) {
+            if (prefHeight <= 0) {
+                prefHeight = 40;
+            }
+            prefWidth = 0.5925925925925926 * prefHeight * (control.getNoOfDigits() + control.getNoOfDecimals());
         }
-
-        control.prefWidthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
+        if (prefHeight <= 0) {
+            if (prefWidth <= 0) {
+                prefWidth = 0.5925925925925926 * 40 * (control.getNoOfDigits() + control.getNoOfDecimals());
             }
-        });
-
-        control.prefHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
+            prefHeight = (prefWidth / (control.getNoOfDigits() + control.getNoOfDecimals())) * 1.6875;
+        }
+        control.setPrefSize(prefWidth, prefHeight);
 
         // Register listeners
         registerChangeListener(control.rotationsProperty(), "ROTATION");
         registerChangeListener(control.rotationPresetProperty(), "ROTATION_PRESET");
+        registerChangeListener(control.noOfDigitsProperty(), "NO_OF_DIGITS");
+        registerChangeListener(control.noOfDecimalsProperty(), "NO_OF_DECIMALS");
+        registerChangeListener(control.decimalColorProperty(), "DECIMAL_COLOR");
+        registerChangeListener(control.colorProperty(), "COLOR");
+        registerChangeListener(control.prefWidthProperty(), "PREF_WIDTH");
+        registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");
 
         initialized = true;
         paint();
@@ -163,6 +165,26 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
                     listOfDials.get(i - 1).setNumber(control.getDialPosition(i));
                 }
             }
+        } else if ("NO_OF_DIGITS".equals(PROPERTY)) {
+            control.setPrefSize(0.5925925925925926 * getPrefHeight() * (control.getNoOfDigits() + control.getNoOfDecimals()), getPrefHeight());
+            paint();
+        } else if ("NO_OF_DECIMALS".equals(PROPERTY)) {
+            control.setPrefSize(0.5925925925925926 * getPrefHeight() * (control.getNoOfDigits() + control.getNoOfDecimals()), getPrefHeight());
+            paint();
+        } else if ("DECIMAL_COLOR".equals(PROPERTY)) {
+            paint();
+        } else if ("COLOR".equals(PROPERTY)) {
+            paint();
+        } else if ("PREF_WIDTH".equals(PROPERTY)) {
+            double prefHeight = (control.getPrefWidth() / (control.getNoOfDigits() + control.getNoOfDecimals())) * 1.6875;
+            if (Double.compare(control.getPrefHeight(), prefHeight) != 0) {
+                control.setPrefHeight(prefHeight);
+            }
+        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
+            double prefWidth = control.getPrefHeight() * 0.5925925925925926 * (control.getNoOfDigits() + control.getNoOfDecimals());
+            if (Double.compare(control.getPrefWidth(), prefWidth) != 0) {
+                control.setPrefWidth(prefWidth);
+            }
         }
     }
 
@@ -180,22 +202,6 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
 
     @Override public final void dispose() {
         control = null;
-    }
-
-    @Override protected double computePrefWidth(final double PREF_WIDTH) {
-        double prefWidth = 0.68 * control.getPrefHeight() * (control.getNoOfDigits() + control.getNoOfDecimals());
-        if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
-        }
-        return super.computePrefWidth(prefWidth);
-    }
-
-    @Override protected double computePrefHeight(final double PREF_HEIGHT) {
-        double prefHeight = 40;
-        if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
-        }
-        return super.computePrefWidth(prefHeight);
     }
 
 

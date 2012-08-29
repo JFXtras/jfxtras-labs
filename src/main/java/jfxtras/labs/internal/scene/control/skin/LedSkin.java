@@ -28,20 +28,18 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
-import jfxtras.labs.internal.scene.control.behavior.LedBehavior;
-import jfxtras.labs.scene.control.gauge.Led;
-import jfxtras.labs.scene.control.gauge.Util;
 import javafx.animation.AnimationTimer;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.effect.BlurType;
-import javafx.scene.effect.InnerShadow;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.Group;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import jfxtras.labs.internal.scene.control.behavior.LedBehavior;
+import jfxtras.labs.scene.control.gauge.Led;
+import jfxtras.labs.util.Util;
 
 
 /**
@@ -90,25 +88,15 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
             control.setPrefSize(16, 16);
         }
 
-        control.prefWidthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
-
-        control.prefHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
+        led.getStyleClass().setAll("led");
 
         // Register listeners
         registerChangeListener(control.onProperty(), "ON");
         registerChangeListener(control.blinkingProperty(), "BLINKING");
         registerChangeListener(control.colorProperty(), "COLOR");
         registerChangeListener(control.typeProperty(), "TYPE");
+        registerChangeListener(control.prefWidthProperty(), "PREF_WIDTH");
+        registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");
 
         if (control.isBlinking()) {
             timer.start();
@@ -143,6 +131,10 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
         } else if ("COLOR".equals(PROPERTY)) {
             paint();
         } else if ("TYPE".equals(PROPERTY)) {
+            paint();
+        } else if ("PREF_WIDTH".equals(PROPERTY)) {
+            paint();
+        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
             paint();
         }
     }
@@ -182,13 +174,12 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
 
     // ******************** Drawing related ***********************************
     public final void drawLed() {
-        final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
-        final double WIDTH = SIZE;
+        final double SIZE   = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+        final double WIDTH  = SIZE;
         final double HEIGHT = SIZE;
 
-        led.setStyle("-fx-led: " + Util.INSTANCE.createCssColor(control.getColor()));
-
         led.getChildren().clear();
+        led.setStyle("-fx-led: " + Util.createCssColor(control.getColor()));
 
         final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
@@ -226,19 +217,18 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
                 break;
         }
 
-        LED_FRAME.getStyleClass().add("fx-led-frame");
-        LED_FRAME.setStroke(null);
+        LED_FRAME.getStyleClass().add("frame");
 
-        LED_OFF.getStyleClass().add("fx-led-off");
-        LED_OFF.setStroke(null);
+        LED_OFF.getStyleClass().clear();
+        LED_OFF.getStyleClass().add("off");
+        LED_OFF.setStyle("-fx-led: " + Util.createCssColor(control.getColor()));
 
         ledOn.getStyleClass().clear();
-        ledOn.getStyleClass().add("fx-led-on");
-        ledOn.setStroke(null);
+        ledOn.getStyleClass().add("on");
+        ledOn.setStyle("-fx-led: " + Util.createCssColor(control.getColor()));
         ledOn.setVisible(control.isOn());
 
-        HIGHLIGHT.getStyleClass().add("fx-led-highlight");
-        HIGHLIGHT.setStroke(null);
+        HIGHLIGHT.getStyleClass().add("highlight");
 
         if (LED_FRAME.visibleProperty().isBound()) {
             LED_FRAME.visibleProperty().unbind();
@@ -251,7 +241,6 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
         INNER_SHADOW.setRadius(0.15 * SIZE);
         INNER_SHADOW.setColor(Color.BLACK);
         INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
-        INNER_SHADOW.inputProperty().set(null);
         LED_OFF.setEffect(INNER_SHADOW);
 
         final DropShadow GLOW = new DropShadow();
@@ -259,13 +248,14 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
         GLOW.setRadius(0.16 * ledOn.getLayoutBounds().getWidth());
         GLOW.setColor(control.getColor());
         GLOW.setBlurType(BlurType.GAUSSIAN);
-        GLOW.inputProperty().set(INNER_SHADOW);
+        GLOW.setInput(INNER_SHADOW);
         ledOn.setEffect(GLOW);
 
         led.getChildren().addAll(LED_FRAME,
                                  LED_OFF,
                                  ledOn,
                                  HIGHLIGHT);
+
         led.setCache(true);
     }
 }

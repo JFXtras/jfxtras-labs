@@ -135,20 +135,6 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
             control.setPrefSize(132, 227);
         }
 
-        control.prefWidthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
-
-        control.prefHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
-
         rotate.setAxis(Rotate.X_AXIS);
         rotate.setPivotY(control.getPrefHeight() * 0.4625550661);
 

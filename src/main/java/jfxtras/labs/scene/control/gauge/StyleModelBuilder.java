@@ -85,6 +85,11 @@ public class StyleModelBuilder {
         return this;
     }
 
+    public final StyleModelBuilder frameBaseColor(final Color FRAME_BASE_COLOR) {
+        properties.put("frameBaseColor", new SimpleObjectProperty<Color>(FRAME_BASE_COLOR));
+        return this;
+    }
+
     public final StyleModelBuilder frameVisible(final boolean FRAME_VISIBLE) {
         properties.put("frameVisible", new SimpleBooleanProperty(FRAME_VISIBLE));
         return this;
@@ -110,8 +115,8 @@ public class StyleModelBuilder {
         return this;
     }
 
-    public final StyleModelBuilder postsVisible(final boolean POSTS_VISIBLE) {
-        properties.put("postsVisible", new SimpleBooleanProperty(POSTS_VISIBLE));
+    public final StyleModelBuilder knobsVisible(final boolean KNOBS_VISIBLE) {
+        properties.put("knobsVisible", new SimpleBooleanProperty(KNOBS_VISIBLE));
         return this;
     }
 
@@ -275,6 +280,11 @@ public class StyleModelBuilder {
         return this;
     }
 
+    public final StyleModelBuilder majorTickmarkColorEnabled(final boolean MAJOR_TICKMARK_COLOR_ENABLED) {
+        properties.put("majorTickmarkColorEnabled", new SimpleBooleanProperty(MAJOR_TICKMARK_COLOR_ENABLED));
+        return this;
+    }
+
     public final StyleModelBuilder minorTickmarksVisible(final boolean MINOR_TICKMARKS_VISIBLE) {
         properties.put("minorTickmarksVisible", new SimpleBooleanProperty(MINOR_TICKMARKS_VISIBLE));
         return this;
@@ -282,6 +292,11 @@ public class StyleModelBuilder {
 
     public final StyleModelBuilder minorTickmarkColor(final Color MINOR_TICKMARK_COLOR) {
         properties.put("minorTickmarkColor", new SimpleObjectProperty<Color>(MINOR_TICKMARK_COLOR));
+        return this;
+    }
+
+    public final StyleModelBuilder minorTickmarkColorEnabled(final boolean MINOR_TICKMARK_COLOR_ENABLED) {
+        properties.put("minorTickmarkColorEnabled", new SimpleBooleanProperty(MINOR_TICKMARK_COLOR_ENABLED));
         return this;
     }
 
@@ -405,6 +420,8 @@ public class StyleModelBuilder {
                 MODEL.setThresholdColor(((ObjectProperty<Gauge.ThresholdColor>) properties.get(key)).get());
             } else if ("frameDesign".equals(key)) {
                 MODEL.setFrameDesign(((ObjectProperty<Gauge.FrameDesign>) properties.get(key)).get());
+            } else if ("frameBaseColor".equals(key)) {
+                MODEL.setFrameBaseColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("frameVisible".equals(key)) {
                 MODEL.setFrameVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("backgroundDesign".equals(key)) {
@@ -415,8 +432,8 @@ public class StyleModelBuilder {
                 MODEL.setKnobDesign(((ObjectProperty<Gauge.KnobDesign>) properties.get(key)).get());
             } else if ("knobColor".equals(key)) {
                 MODEL.setKnobColor(((ObjectProperty<Gauge.KnobColor>) properties.get(key)).get());
-            } else if ("postsVisible".equals(key)) {
-                MODEL.setPostsVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("knobsVisible".equals(key)) {
+                MODEL.setKnobsVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("pointerType".equals(key)) {
                 MODEL.setPointerType(((ObjectProperty<Gauge.PointerType>) properties.get(key)).get());
             } else if ("valueColor".equals(key)) {
@@ -477,10 +494,14 @@ public class StyleModelBuilder {
                 MODEL.setMajorTickmarkType(((ObjectProperty<TickmarkType>) properties.get(key)).get());
             } else if ("majorTickmarkColor".equals(key)) {
                 MODEL.setMajorTickmarkColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("majorTickmarkColorEnabled".equals(key)) {
+                MODEL.setMajorTickmarkColorEnabled(((BooleanProperty) properties.get(key)).get());
             } else if ("minorTickmarksVisible".equals(key)) {
                 MODEL.setMinorTicksVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("minorTickmarkColor".equals(key)) {
                 MODEL.setMinorTickmarkColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("minorTickmarkColorEnabled".equals(key)) {
+                MODEL.setMinorTickmarkColorEnabled(((BooleanProperty) properties.get(key)).get());
             } else if ("tickLabelsVisible".equals(key)) {
                 MODEL.setTickLabelsVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("tickLabelOrientation".equals(key)) {

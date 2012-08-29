@@ -28,21 +28,17 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
-import javafx.scene.text.TextBoundsType;
-import jfxtras.labs.scene.control.gauge.Gauge;
-import jfxtras.labs.scene.control.gauge.Gauge.KnobColor;
-import jfxtras.labs.scene.control.gauge.Marker;
-import jfxtras.labs.scene.control.gauge.LedColor;
-import jfxtras.labs.scene.control.gauge.MarkerEvent;
-import jfxtras.labs.scene.control.gauge.Section;
-import jfxtras.labs.internal.scene.control.behavior.GaugeBehaviorBase;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.control.Control;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.effect.Light;
+import javafx.scene.effect.Lighting;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -66,7 +62,17 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextBoundsType;
 import javafx.scene.transform.Transform;
+import jfxtras.labs.internal.scene.control.behavior.GaugeBehaviorBase;
+import jfxtras.labs.scene.control.gauge.Gauge;
+import jfxtras.labs.scene.control.gauge.Gauge.KnobColor;
+import jfxtras.labs.scene.control.gauge.LedColor;
+import jfxtras.labs.scene.control.gauge.Marker;
+import jfxtras.labs.scene.control.gauge.MarkerEvent;
+import jfxtras.labs.scene.control.gauge.Section;
+import jfxtras.labs.util.ConicalGradient;
+import jfxtras.labs.util.Util;
 
 import java.util.ArrayList;
 
@@ -78,19 +84,20 @@ import java.util.ArrayList;
  * Time: 09:03
  */
 public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase<C>> extends SkinBase<C, B> {
-    public static final long BLINK_INTERVAL = 500000000l;
+    private long blinkInterval = 500000000l;
 
 
     // ******************** Constructors **************************************
     public GaugeSkinBase(final C CONTROL, final B BEHAVIOR) {
         super(CONTROL, BEHAVIOR);
 
-        // Labels do not block the mouse by default, unlike most other UI Controls.
         //consumeMouseEvents(false);
 
         // Register listeners
         registerChangeListener(CONTROL.widthProperty(), "WIDTH");
         registerChangeListener(CONTROL.heightProperty(), "HEIGHT");
+        registerChangeListener(CONTROL.prefWidthProperty(), "PREF_WIDTH");
+        registerChangeListener(CONTROL.prefHeightProperty(), "PREF_HEIGHT");
         registerChangeListener(CONTROL.animationDurationProperty(), "ANIMATION_DURATION");
         registerChangeListener(CONTROL.radialRangeProperty(), "RADIAL_RANGE");
         registerChangeListener(CONTROL.frameDesignProperty(), "FRAME_DESIGN");
@@ -108,43 +115,63 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         registerChangeListener(CONTROL.lcdNumberSystemProperty(), "LCD_NUMBER_SYSTEM");
         registerChangeListener(CONTROL.userLedBlinkingProperty(), "USER_LED_BLINKING");
         registerChangeListener(CONTROL.ledBlinkingProperty(), "LED_BLINKING");
-        registerChangeListener(CONTROL.tickmarkGlowEnabledProperty(), "TICKMARK_GLOW_VISIBILITY");
         registerChangeListener(CONTROL.glowColorProperty(), "GLOW_COLOR");
         registerChangeListener(CONTROL.glowVisibleProperty(), "GLOW_VISIBILITY");
         registerChangeListener(CONTROL.glowOnProperty(), "GLOW_ON");
         registerChangeListener(CONTROL.pulsatingGlowProperty(), "PULSATING_GLOW");
-        registerChangeListener(CONTROL.rangeProperty(), "RANGE");
         registerChangeListener(CONTROL.minMeasuredValueProperty(), "MIN_MEASURED_VALUE");
         registerChangeListener(CONTROL.maxMeasuredValueProperty(), "MAX_MEASURED_VALUE");
         registerChangeListener(CONTROL.trendProperty(), "TREND");
         registerChangeListener(CONTROL.simpleGradientBaseColorProperty(), "SIMPLE_GRADIENT_BASE");
         registerChangeListener(CONTROL.lcdValueFontProperty(), "LCD_VALUE_FONT");
+        registerChangeListener(CONTROL.gaugeModelProperty(), "GAUGE_MODEL");
+        registerChangeListener(CONTROL.styleModelProperty(), "STYLE_MODEL");
+        registerChangeListener(CONTROL.thresholdExceededProperty(), "THRESHOLD_EXCEEDED");
+        registerChangeListener(CONTROL.rangeProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.tickmarkGlowEnabledProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.tickmarkGlowProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.majorTickmarkColorProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.majorTickmarkTypeProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.majorTickSpacingProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.majorTickmarkColorEnabledProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.minorTickmarkColorProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.minorTickSpacingProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.minorTickmarkColorEnabledProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.tickLabelNumberFormatProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.tickLabelOrientationProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.tickmarksOffsetProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.niceScalingProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.tightScaleProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.largeNumberScaleProperty(), "TICKMARKS");
+        registerChangeListener(CONTROL.areasHighlightingProperty(), "AREAS");
+        registerChangeListener(CONTROL.sectionsHighlightingProperty(), "SECTIONS");
+        registerChangeListener(CONTROL.redrawToleranceProperty(), "REDRAW_TOLERANCE");
     }
 
 
      // ******************** Skin Layout **************************************
-    @Override protected double computeMinWidth(final double HEIGHT) {
-        return getSkinnable().prefWidth(HEIGHT);
+    @Override protected double computeMinWidth(final double WIDTH) {
+        return getSkinnable().prefWidth(WIDTH);
     }
 
-    @Override protected double computeMinHeight(final double WIDTH) {
-        return getSkinnable().prefHeight(WIDTH);
+    @Override protected double computeMinHeight(final double HEIGHT) {
+        return getSkinnable().prefHeight(HEIGHT);
     }
 
-    @Override protected double computePrefWidth(final double HEIGHT) {
-        return getSkinnable().prefWidth(HEIGHT);
+    @Override protected double computePrefWidth(final double WIDTH) {
+        return getSkinnable().prefWidth(WIDTH);
     }
 
-    @Override protected double computePrefHeight(final double WIDTH) {
-        return getSkinnable().prefHeight(WIDTH);
+    @Override protected double computePrefHeight(final double HEIGHT) {
+        return getSkinnable().prefHeight(HEIGHT);
     }
 
-    @Override protected double computeMaxWidth(final double HEIGHT) {
-        return getSkinnable().prefWidth(HEIGHT);
+    @Override protected double computeMaxWidth(final double WIDTH) {
+        return getSkinnable().prefWidth(WIDTH);
     }
 
-    @Override protected double computeMaxHeight(final double WIDTH) {
-        return getSkinnable().prefHeight(WIDTH);
+    @Override protected double computeMaxHeight(final double HEIGHT) {
+        return getSkinnable().prefHeight(HEIGHT);
     }
 
     @Override protected void layoutChildren() {
@@ -172,6 +199,14 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         }
     }
 
+    protected long getBlinkInterval() {
+        return blinkInterval;
+    }
+
+    protected void setBlinkInterval(final long BLINK_INTERVAL) {
+        blinkInterval = BLINK_INTERVAL < 50000000l ? 50000000l : (BLINK_INTERVAL > 2000000000l ? 2000000000l : BLINK_INTERVAL);
+    }
+
 
     // ******************** Drawing *******************************************
     protected void drawCircularFrame(final Gauge control, final Group FRAME, final Rectangle GAUGE_BOUNDS) {
@@ -197,6 +232,60 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         final Shape MAIN_FRAME = new Circle(CENTER.getX(), CENTER.getY(), 0.4953271028037383 * WIDTH);
         MAIN_FRAME.setStroke(null);
         switch (control.getFrameDesign()) {
+            case BLACK_METAL:
+                ConicalGradient bmGradient = new ConicalGradient(new Point2D(MAIN_FRAME.getLayoutBounds().getWidth() / 2,
+                                                                             MAIN_FRAME.getLayoutBounds().getHeight() / 2),
+                                                                 new Stop(0.0000, Color.rgb(254, 254, 254)),
+                                                                 new Stop(0.1250, Color.rgb(0, 0, 0)),
+                                                                 new Stop(0.3472, Color.rgb(153, 153, 153)),
+                                                                 new Stop(0.5000, Color.rgb(0, 0, 0)),
+                                                                 new Stop(0.6805, Color.rgb(153, 153, 153)),
+                                                                 new Stop(0.8750, Color.rgb(0, 0, 0)),
+                                                                 new Stop(1.0000, Color.rgb(254, 254, 254)));
+                MAIN_FRAME.setFill(bmGradient.apply(MAIN_FRAME));
+                MAIN_FRAME.setStroke(null);
+                FRAME.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
+                break;
+            case SHINY_METAL:
+                ConicalGradient smGradient = new ConicalGradient(new Point2D(MAIN_FRAME.getLayoutBounds().getWidth() / 2,
+                                                                             MAIN_FRAME.getLayoutBounds().getHeight() / 2),
+                                                                 new Stop(0.0000, Color.rgb(254, 254, 254)),
+                                                                 new Stop(0.1250, Util.darker(control.getFrameBaseColor(), 0.15)),
+                                                                 new Stop(0.2500, control.getFrameBaseColor().darker()),
+                                                                 new Stop(0.3472, control.getFrameBaseColor().brighter()),
+                                                                 new Stop(0.5000, control.getFrameBaseColor().darker().darker()),
+                                                                 new Stop(0.6527, control.getFrameBaseColor().brighter()),
+                                                                 new Stop(0.7500, control.getFrameBaseColor().darker()),
+                                                                 new Stop(0.8750, Util.darker(control.getFrameBaseColor(), 0.15)),
+                                                                 new Stop(1.0000, Color.rgb(254, 254, 254)));
+                MAIN_FRAME.setFill(smGradient.apply(MAIN_FRAME));
+                MAIN_FRAME.setStroke(null);
+                FRAME.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
+                break;
+            case CHROME:
+                ConicalGradient cmGradient = new ConicalGradient(new Point2D(MAIN_FRAME.getLayoutBounds().getWidth() / 2,
+                                                                             MAIN_FRAME.getLayoutBounds().getHeight() / 2),
+                                                                 new Stop(0.00, Color.WHITE),
+                                                                 new Stop(0.09, Color.WHITE),
+                                                                 new Stop(0.12, Color.rgb(136, 136, 138)),
+                                                                 new Stop(0.16, Color.rgb(164, 185, 190)),
+                                                                 new Stop(0.25, Color.rgb(158, 179, 182)),
+                                                                 new Stop(0.29, Color.rgb(112, 112, 112)),
+                                                                 new Stop(0.33, Color.rgb(221, 227, 227)),
+                                                                 new Stop(0.38, Color.rgb(155, 176, 179)),
+                                                                 new Stop(0.48, Color.rgb(156, 176, 177)),
+                                                                 new Stop(0.52, Color.rgb(254, 255, 255)),
+                                                                 new Stop(0.63, Color.WHITE),
+                                                                 new Stop(0.68, Color.rgb(156, 180, 180)),
+                                                                 new Stop(0.80, Color.rgb(198, 209, 211)),
+                                                                 new Stop(0.83, Color.rgb(246, 248, 247)),
+                                                                 new Stop(0.87, Color.rgb(204, 216, 216)),
+                                                                 new Stop(0.97, Color.rgb(164, 188, 190)),
+                                                                 new Stop(1.00, Color.WHITE));
+                MAIN_FRAME.setFill(cmGradient.apply(MAIN_FRAME));
+                MAIN_FRAME.setStroke(null);
+                FRAME.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
+                break;
             case GLOSSY_METAL:
                 MAIN_FRAME.setFill(new RadialGradient(0, 0, CENTER.getX(), CENTER.getY(), 0.5 * WIDTH,
                                                       false, CycleMethod.NO_CYCLE,
@@ -305,18 +394,80 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setWidth(0.2 * SIZE);
         INNER_SHADOW.setHeight(0.2 * SIZE);
-        INNER_SHADOW.setColor(Color.color(0, 0, 0, 1.0));
+        INNER_SHADOW.setOffsetY(0.03 * SIZE);
+        INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.7));
         INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
 
         final Shape BACKGROUND_SHAPE = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.4158878504672897 * SIZE);
         BACKGROUND_SHAPE.setStroke(null);
 
         switch (CONTROL.getBackgroundDesign()) {
+            case STAINLESS:
+                ConicalGradient gradient = new ConicalGradient(new Point2D(SIZE / 2, SIZE / 2),
+                                                               new Stop(0.00, Color.web("#FDFDFD")),
+                                                               new Stop(0.03, Color.web("#E2E2E2")),
+                                                               new Stop(0.10, Color.web("#B2B2B4")),
+                                                               new Stop(0.14, Color.web("#ACACAE")),
+                                                               new Stop(0.24, Color.web("#FDFDFD")),
+                                                               new Stop(0.33, Color.web("#6E6E70")),
+                                                               new Stop(0.38, Color.web("#6E6E70")),
+                                                               new Stop(0.50, Color.web("#FDFDFD")),
+                                                               new Stop(0.62, Color.web("#6E6E70")),
+                                                               new Stop(0.67, Color.web("#6E6E70")),
+                                                               new Stop(0.76, Color.web("#FDFDFD")),
+                                                               new Stop(0.81, Color.web("#ACACAE")),
+                                                               new Stop(0.85, Color.web("#B2B2B4")),
+                                                               new Stop(0.97, Color.web("#E2E2E2")),
+                                                               new Stop(1.00, Color.web("#FDFDFD")));
+                BACKGROUND_SHAPE.setFill(gradient.apply(BACKGROUND_SHAPE));
+                BACKGROUND_SHAPE.setEffect(INNER_SHADOW);
+                BACKGROUND.getChildren().addAll(BACKGROUND_SHAPE);
+                break;
+            case CARBON:
+                BACKGROUND_SHAPE.setFill(Util.createCarbonPattern());
+                BACKGROUND_SHAPE.setStroke(null);
+                final Shape SHADOW_OVERLAY1 = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.4158878504672897 * SIZE);
+                SHADOW_OVERLAY1.setFill(new LinearGradient(SHADOW_OVERLAY1.getLayoutBounds().getMinX(), 0,
+                                                     SHADOW_OVERLAY1.getLayoutBounds().getMaxX(), 0,
+                                                     false, CycleMethod.NO_CYCLE,
+                                                     new Stop(0.0, Color.color(0.0, 0.0, 0.0, 0.5)),
+                                                     new Stop(0.4, Color.color(1.0, 1.0, 1.0, 0.0)),
+                                                     new Stop(0.6, Color.color(1.0, 1.0, 1.0, 0.0)),
+                                                     new Stop(1.0, Color.color(0.0, 0.0, 0.0, 0.5))));
+                SHADOW_OVERLAY1.setStroke(null);
+                BACKGROUND.getChildren().addAll(BACKGROUND_SHAPE, SHADOW_OVERLAY1);
+                break;
+            case PUNCHED_SHEET:
+                BACKGROUND_SHAPE.setFill(Util.createPunchedSheetPattern(CONTROL.getTextureColor()));
+                BACKGROUND_SHAPE.setStroke(null);
+                final Shape SHADOW_OVERLAY2 = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.4158878504672897 * SIZE);
+                SHADOW_OVERLAY2.setFill(new LinearGradient(SHADOW_OVERLAY2.getLayoutBounds().getMinX(), 0,
+                                                           SHADOW_OVERLAY2.getLayoutBounds().getMaxX(), 0,
+                                                           false, CycleMethod.NO_CYCLE,
+                                                           new Stop(0.0, Color.color(0.0, 0.0, 0.0, 0.5)),
+                                                           new Stop(0.4, Color.color(1.0, 1.0, 1.0, 0.0)),
+                                                           new Stop(0.6, Color.color(1.0, 1.0, 1.0, 0.0)),
+                                                           new Stop(1.0, Color.color(0.0, 0.0, 0.0, 0.5))));
+
+                SHADOW_OVERLAY2.setStroke(null);
+                BACKGROUND.getChildren().addAll(BACKGROUND_SHAPE, SHADOW_OVERLAY2);
+                break;
+            case NOISY_PLASTIC:
+                final Shape BACKGROUND_PLAIN = new Circle(0.5 * SIZE, 0.5 * SIZE, 0.4158878504672897 * SIZE);
+                BACKGROUND_PLAIN.setFill(new LinearGradient(0.0, BACKGROUND_PLAIN.getLayoutY(),
+                                                            0.0, BACKGROUND_PLAIN.getLayoutBounds().getHeight(),
+                                                            false, CycleMethod.NO_CYCLE,
+                                                            new Stop(0.0, Util.brighter(CONTROL.getTextureColor(), 0.15)),
+                                                            new Stop(1.0, Util.darker(CONTROL.getTextureColor(), 0.15))));
+                BACKGROUND_PLAIN.setStroke(null);
+                BACKGROUND_PLAIN.setEffect(INNER_SHADOW);
+                BACKGROUND_SHAPE.setFill(Util.applyNoisyBackground(BACKGROUND_SHAPE, CONTROL.getTextureColor()));
+                BACKGROUND.getChildren().addAll(BACKGROUND_PLAIN, BACKGROUND_SHAPE);
+                break;
             default:
                 BACKGROUND_SHAPE.setStyle(CONTROL.getSimpleGradientBaseColorString());
                 BACKGROUND_SHAPE.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
                 BACKGROUND_SHAPE.setEffect(INNER_SHADOW);
-                BACKGROUND_SHAPE.setStroke(null);
                 BACKGROUND.getChildren().addAll(BACKGROUND_SHAPE);
                 break;
         }
@@ -613,14 +764,6 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         IBOUNDS.setStroke(null);
         KNOBS.getChildren().add(IBOUNDS);
 
-        final DropShadow SHADOW = new DropShadow();
-        SHADOW.setBlurType(BlurType.GAUSSIAN);
-        SHADOW.setColor(Color.color(0, 0, 0, 0.65));
-
-        final DropShadow POST_SHADOW = new DropShadow();
-        POST_SHADOW.setBlurType(BlurType.GAUSSIAN);
-        POST_SHADOW.setColor(Color.color(0, 0, 0, 0.35));
-
         final Group CENTER_KNOB;
         final Point2D CENTER_OFFSET;
         final double KNOB_SIZE;
@@ -644,7 +787,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                 break;
         }
         CENTER_OFFSET = new Point2D(CENTER.getX() - KNOB_SIZE / 2.0, CENTER.getY() - KNOB_SIZE / 2.0);
-        CENTER_KNOB.effectProperty().set(SHADOW);
+        //CENTER_KNOB.effectProperty().set(SHADOW);
         CENTER_KNOB.setTranslateX(CENTER_OFFSET.getX());
         CENTER_KNOB.setTranslateY(CENTER_OFFSET.getY());
 
@@ -707,8 +850,6 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                 MAX_OFFSET = new Point2D(0.6261682510375977, 0.8037382960319519);
                 break;
         }
-        MIN_POST.setEffect(POST_SHADOW);
-        MAX_POST.setEffect(POST_SHADOW);
         MIN_POST.setTranslateX(WIDTH * MIN_OFFSET.getX());
         MIN_POST.setTranslateY(WIDTH * MIN_OFFSET.getY());
         MAX_POST.setTranslateX(WIDTH * MAX_OFFSET.getX());
@@ -717,11 +858,11 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         if (MIN_POST.visibleProperty().isBound()) {
             MIN_POST.visibleProperty().unbind();
         }
-        MIN_POST.visibleProperty().bind(CONTROL.postsVisibleProperty());
+        MIN_POST.visibleProperty().bind(CONTROL.knobsVisibleProperty());
         if (MAX_POST.visibleProperty().isBound()) {
             MAX_POST.visibleProperty().unbind();
         }
-        MAX_POST.visibleProperty().bind(CONTROL.postsVisibleProperty());
+        MAX_POST.visibleProperty().bind(CONTROL.knobsVisibleProperty());
 
         KNOBS.getChildren().addAll(CENTER_KNOB, MIN_POST, MAX_POST);
     }
@@ -823,9 +964,10 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setInput(INNER_GLOW);
         INNER_SHADOW.setWidth(0.15 * LCD_FRAME.getHeight());
-        INNER_SHADOW.setHeight(0.15 * LCD_FRAME.getHeight());
+        INNER_SHADOW.setHeight(0.075 * LCD_FRAME.getHeight());
         INNER_SHADOW.setOffsetY(0.025 * LCD_FRAME.getHeight());
         INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.65));
+
         LCD_MAIN.setEffect(INNER_SHADOW);
 
         LCD.getChildren().addAll(LCD_FRAME, LCD_MAIN);
@@ -1051,8 +1193,8 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
     }
 
     protected void drawCircularTickmarks(final Gauge CONTROL, final Group TICKMARKS, final Point2D CENTER, final Rectangle GAUGE_BOUNDS) {
-        final double SIZE = GAUGE_BOUNDS.getWidth() <= GAUGE_BOUNDS.getHeight() ? GAUGE_BOUNDS.getWidth() : GAUGE_BOUNDS.getHeight();
-        final double WIDTH = GAUGE_BOUNDS.getWidth();
+        final double SIZE   = GAUGE_BOUNDS.getWidth() <= GAUGE_BOUNDS.getHeight() ? GAUGE_BOUNDS.getWidth() : GAUGE_BOUNDS.getHeight();
+        final double WIDTH  = GAUGE_BOUNDS.getWidth();
         final double HEIGHT = GAUGE_BOUNDS.getHeight();
 
         final double RADIUS_FACTOR = CONTROL.getRadialRange().RADIUS_FACTOR;
@@ -1084,15 +1226,31 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         MAJOR_TICK_MARKS_PATH.setStrokeType(StrokeType.CENTERED);
         MAJOR_TICK_MARKS_PATH.setStrokeLineCap(StrokeLineCap.ROUND);
         MAJOR_TICK_MARKS_PATH.setStrokeLineJoin(StrokeLineJoin.BEVEL);
-        MAJOR_TICK_MARKS_PATH.setStrokeWidth(0.0046728972 * WIDTH);
-        switch(CONTROL.getMajorTickmarkType()) {
-            case TRIANGLE:
-                MAJOR_TICK_MARKS_PATH.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_TEXT);
-                //MAJOR_TICK_MARKS_PATH.setStroke(null);
-                break;
-            default:
-                MAJOR_TICK_MARKS_PATH.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
-                break;
+        if (WIDTH < 200) {
+            MAJOR_TICK_MARKS_PATH.setStrokeWidth(1.0);
+        } else {
+            MAJOR_TICK_MARKS_PATH.setStrokeWidth(0.005 * WIDTH);
+        }
+        if (CONTROL.isMajorTickmarkColorEnabled()) {
+            switch(CONTROL.getMajorTickmarkType()) {
+                case TRIANGLE:
+                    MAJOR_TICK_MARKS_PATH.setFill(CONTROL.getMajorTickmarkColor());
+                    MAJOR_TICK_MARKS_PATH.setStroke(null);
+                    break;
+                default:
+                    MAJOR_TICK_MARKS_PATH.setFill(null);
+                    MAJOR_TICK_MARKS_PATH.setStroke(CONTROL.getMajorTickmarkColor());
+                    break;
+            }
+        } else {
+            switch(CONTROL.getMajorTickmarkType()) {
+                case TRIANGLE:
+                    MAJOR_TICK_MARKS_PATH.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_TEXT);
+                    break;
+                default:
+                    MAJOR_TICK_MARKS_PATH.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
+                    break;
+            }
         }
 
         final Path MEDIUM_TICK_MARKS_PATH = new Path();
@@ -1101,7 +1259,11 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         MEDIUM_TICK_MARKS_PATH.setStrokeType(StrokeType.CENTERED);
         MEDIUM_TICK_MARKS_PATH.setStrokeLineCap(StrokeLineCap.ROUND);
         MEDIUM_TICK_MARKS_PATH.setStrokeLineJoin(StrokeLineJoin.BEVEL);
-        MEDIUM_TICK_MARKS_PATH.setStrokeWidth(0.0023364486 * WIDTH);
+        if (WIDTH < 200) {
+            MEDIUM_TICK_MARKS_PATH.setStrokeWidth(0.5);
+        } else {
+            MEDIUM_TICK_MARKS_PATH.setStrokeWidth(0.0025 * WIDTH);
+        }
         MEDIUM_TICK_MARKS_PATH.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
 
         final Path MINOR_TICK_MARKS_PATH = new Path();
@@ -1110,8 +1272,17 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         MINOR_TICK_MARKS_PATH.setStrokeType(StrokeType.CENTERED);
         MINOR_TICK_MARKS_PATH.setStrokeLineCap(StrokeLineCap.ROUND);
         MINOR_TICK_MARKS_PATH.setStrokeLineJoin(StrokeLineJoin.BEVEL);
-        MINOR_TICK_MARKS_PATH.setStrokeWidth(0.0014018692 * WIDTH);
-        MINOR_TICK_MARKS_PATH.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
+        if (WIDTH < 200) {
+            MINOR_TICK_MARKS_PATH.setStrokeWidth(0.30);
+        } else {
+            MINOR_TICK_MARKS_PATH.setStrokeWidth(0.0015 * WIDTH);
+        }
+        if (CONTROL.isMinorTickmarkColorEnabled()) {
+            MINOR_TICK_MARKS_PATH.setFill(null);
+            MINOR_TICK_MARKS_PATH.setStroke(CONTROL.getMinorTickmarkColor());
+        } else {
+            MINOR_TICK_MARKS_PATH.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);
+        }
 
         final double TEXT_BAR_GRAPH_OFFSET;
         if (CONTROL.isBargraph()) {
@@ -1143,7 +1314,12 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         }
 
         // Definitions
-        final Font STD_FONT                  = Font.font("Verdana", FontWeight.NORMAL, (0.035 * WIDTH));
+        final Font STD_FONT;
+        if (WIDTH < 250) {
+            STD_FONT = Font.font("Verdana", FontWeight.NORMAL, 8);
+        } else {
+            STD_FONT = Font.font("Verdana", FontWeight.NORMAL, (0.035 * WIDTH));
+        }
         final double TEXT_DISTANCE           = (TEXT_DISTANCE_FACTOR + TEXT_BAR_GRAPH_OFFSET) * WIDTH;
         final double ticklabelRotationOffset = 0;
         final double MINOR_TICK_LENGTH       = (0.0133333333 * WIDTH);
@@ -1153,26 +1329,32 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         Point2D innerPoint;
         Point2D outerPoint;
 
-        final double ROTATION_OFFSET = CONTROL.getRadialRange().ROTATION_OFFSET; // Depends on RadialRange
-        final double RADIUS          = WIDTH * RADIUS_FACTOR;
-        final double ANGLE_STEP      = (CONTROL.getRadialRange().ANGLE_RANGE / ((CONTROL.getMaxValue() - CONTROL.getMinValue()) / CONTROL.getMinorTickSpacing())) * CONTROL.getRadialRange().ANGLE_STEP_SIGN;
-        double valueCounter          = CONTROL.getMinValue();
-        int majorTickCounter         = CONTROL.getMaxNoOfMinorTicks() - 1; // Indicator when to draw the major tickmark
-        double sinValue;
-        double cosValue;
-
         // Set some default parameters for the graphics object
         if (CONTROL.getTickmarksOffset() != null) {
             TICKMARKS.translateXProperty().set(CONTROL.getTickmarksOffset().getX());
             TICKMARKS.translateYProperty().set(CONTROL.getTickmarksOffset().getY());
         }
 
+        final double ROTATION_OFFSET = CONTROL.getRadialRange().ROTATION_OFFSET; // Depends on RadialRange
+        final double RADIUS          = WIDTH * RADIUS_FACTOR;
+        final double ANGLE_STEP      = (CONTROL.getRadialRange().ANGLE_RANGE / ((CONTROL.getMaxValue() - CONTROL.getMinValue()) / CONTROL.getMinorTickSpacing())) * CONTROL.getRadialRange().ANGLE_STEP_SIGN;
+        double valueCounter          = CONTROL.isTightScale() ? CONTROL.getMinValue() + CONTROL.getTightScaleOffset() * CONTROL.getMinorTickSpacing() : CONTROL.getMinValue();
+        int majorTickCounter         = CONTROL.isTightScale() ? CONTROL.getMaxNoOfMinorTicks() - 1 - (int) (CONTROL.getTightScaleOffset()) : CONTROL.getMaxNoOfMinorTicks() - 1; // Indicator when to draw the major tickmark
+        double sinValue;
+        double cosValue;
+
         final Transform transform = Transform.rotate(ROTATION_OFFSET - 180, CENTER.getX(), CENTER.getY());
         TICKMARKS.getTransforms().add(transform);
 
-        for (double alpha = 0, counter = CONTROL.getMinValue(); Double.compare(counter, CONTROL.getMaxValue()) <= 0; alpha -= ANGLE_STEP, counter += CONTROL.getMinorTickSpacing()) {
-            sinValue = Math.sin(Math.toRadians(alpha));
-            cosValue = Math.cos(Math.toRadians(alpha));
+        // ******************** Create the scale path in a loop ***************
+        // recalculate the scaling
+        final double LOWER_BOUND = CONTROL.getMinValue();
+        final double UPPER_BOUND = CONTROL.getMaxValue();
+        final double STEP_SIZE   = CONTROL.getMinorTickSpacing();
+
+        for (double angle = 0, counter = LOWER_BOUND ; Double.compare(counter, UPPER_BOUND) <= 0 ; angle -= ANGLE_STEP, counter += STEP_SIZE) {
+            sinValue = Math.sin(Math.toRadians(angle));
+            cosValue = Math.cos(Math.toRadians(angle));
 
             majorTickCounter++;
 
@@ -1186,8 +1368,8 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                 if (CONTROL.isTickmarksVisible() && CONTROL.isMajorTicksVisible()) {
                     switch(CONTROL.getMajorTickmarkType()) {
                         case TRIANGLE:
-                            Point2D outerPointLeft  = new Point2D(CENTER.getX() + RADIUS * Math.sin(Math.toRadians(alpha - 1.2)), CENTER.getY() + RADIUS * Math.cos(Math.toRadians(alpha - 1.2)));
-                            Point2D outerPointRight = new Point2D(CENTER.getX() + RADIUS * Math.sin(Math.toRadians(alpha + 1.2)), CENTER.getY() + RADIUS * Math.cos(Math.toRadians(alpha + 1.2)));
+                            Point2D outerPointLeft  = new Point2D(CENTER.getX() + RADIUS * Math.sin(Math.toRadians(angle - 1.2)), CENTER.getY() + RADIUS * Math.cos(Math.toRadians(angle - 1.2)));
+                            Point2D outerPointRight = new Point2D(CENTER.getX() + RADIUS * Math.sin(Math.toRadians(angle + 1.2)), CENTER.getY() + RADIUS * Math.cos(Math.toRadians(angle + 1.2)));
                             MAJOR_TICK_MARKS_PATH.getElements().add(new MoveTo(innerPoint.getX(), innerPoint.getY()));
                             MAJOR_TICK_MARKS_PATH.getElements().add(new LineTo(outerPointLeft.getX(), outerPointLeft.getY()));
                             MAJOR_TICK_MARKS_PATH.getElements().add(new LineTo(outerPointRight.getX(), outerPointRight.getY()));
@@ -1202,21 +1384,20 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                 // Draw the standard tickmark labels
                 if (CONTROL.isTickLabelsVisible()) {
                     final Text tickLabel = new Text(numberFormat.format(valueCounter));
-                    //tickLabel.setSmooth(true);
                     tickLabel.setFontSmoothingType(FontSmoothingType.LCD);
                     tickLabel.setTextOrigin(VPos.BOTTOM);
                     tickLabel.setBoundsType(TextBoundsType.LOGICAL);
                     tickLabel.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_TEXT);
                     tickLabel.setStroke(null);
                     tickLabel.setFont(STD_FONT);
-                    tickLabel.setX(textPoint.getX() - tickLabel.getLayoutBounds().getHeight() / 2.0);
+                    tickLabel.setX(textPoint.getX() - tickLabel.getLayoutBounds().getWidth() / 2.0);
                     tickLabel.setY(textPoint.getY() + tickLabel.getLayoutBounds().getHeight() / 2.0);
                     switch (CONTROL.getTickLabelOrientation()) {
                         case NORMAL:
-                            if (Double.compare(alpha, -CONTROL.getRadialRange().TICKLABEL_ORIENATION_CHANGE_ANGLE) > 0) {
-                                tickLabel.rotateProperty().set(-90 - alpha);
+                            if (Double.compare(angle, -CONTROL.getRadialRange().TICKLABEL_ORIENATION_CHANGE_ANGLE) > 0) {
+                                tickLabel.rotateProperty().set(-90 - angle);
                             } else {
-                                tickLabel.rotateProperty().set(90 - alpha);
+                                tickLabel.rotateProperty().set(90 - angle);
                             }
                             break;
                         case HORIZONTAL:
@@ -1225,10 +1406,18 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                         case TANGENT:
 
                         default:
-                            tickLabel.rotateProperty().set(180 - alpha + ticklabelRotationOffset);
+                            tickLabel.rotateProperty().set(180 - angle + ticklabelRotationOffset);
                             break;
                     }
-                    tickMarkLabel.add(tickLabel);
+
+                    // Check if current label is the last of the scale
+                    if (Double.compare(valueCounter, UPPER_BOUND) != 0) {
+                        tickMarkLabel.add(tickLabel);
+                    } else {
+                        if (CONTROL.isLastLabelVisible() && CONTROL.getRadialRange() != Gauge.RadialRange.RADIAL_360) {
+                            tickMarkLabel.add(tickLabel);
+                        }
+                    }
                 }
 
                 valueCounter += CONTROL.getMajorTickSpacing();
@@ -1256,19 +1445,11 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         // Add glow to tickmarks and labels
         if (CONTROL.isTickmarkGlowEnabled()) {
             final InnerShadow INNER_GLOW = new InnerShadow();
-            INNER_GLOW.setWidth(0.005 * SIZE);
-            INNER_GLOW.setHeight(0.005 * SIZE);
-            INNER_GLOW.setOffsetX(0.0);
-            INNER_GLOW.setOffsetY(0.0);
             INNER_GLOW.setRadius(0.005 * SIZE);
             INNER_GLOW.setColor(CONTROL.getTickmarkGlowColor());
             INNER_GLOW.setBlurType(BlurType.GAUSSIAN);
 
             final DropShadow OUTER_GLOW = new DropShadow();
-            OUTER_GLOW.setWidth(0.02 * SIZE);
-            OUTER_GLOW.setHeight(0.02 * SIZE);
-            OUTER_GLOW.setOffsetX(0.0);
-            OUTER_GLOW.setOffsetY(0.0);
             OUTER_GLOW.setRadius(0.02 * SIZE);
             OUTER_GLOW.setColor(CONTROL.getTickmarkGlowColor());
             OUTER_GLOW.setBlurType(BlurType.GAUSSIAN);
@@ -1806,7 +1987,7 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         /*
         final DropShadow LED_GLOW = new DropShadow();
         LED_GLOW.setRadius(0.018 * WIDTH);
-        LED_GLOW.setColor(Color.BLACK);
+        LED_GLOW.setLabelColor(Color.BLACK);
         LED_GLOW.inputProperty().set(LED_INNER_SHADOW);
         LED.setEffect(LED_GLOW);
         */
@@ -2076,5 +2257,30 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
 
         GROUP.getChildren().addAll(BACK, FRONT);
         return GROUP;
+    }
+
+
+    // ******************** Effects *******************************************
+    protected void addDropShadow(final Control CONTROL, final Node... NODES) {
+        if (NODES.length == 0) {
+            return;
+        }
+        final double        SIZE     = CONTROL.getPrefWidth() < CONTROL.getPrefHeight() ? CONTROL.getPrefWidth() : CONTROL.getPrefHeight();
+        final Lighting      LIGHTING = new Lighting();
+        final Light.Distant LIGHT    = new Light.Distant();
+        LIGHT.setAzimuth(270);
+        LIGHT.setElevation(60);
+        LIGHTING.setLight(LIGHT);
+
+        final DropShadow DROP_SHADOW = new DropShadow();
+        DROP_SHADOW.setInput(LIGHTING);
+        DROP_SHADOW.setOffsetY(0.0075 * SIZE);
+        DROP_SHADOW.setRadius(0.0075 * SIZE);
+        DROP_SHADOW.setBlurType(BlurType.GAUSSIAN);
+        DROP_SHADOW.setColor(Color.color(0, 0, 0, 0.45));
+
+        for (Node node : NODES) {
+            node.setEffect(DROP_SHADOW);
+        }
     }
 }

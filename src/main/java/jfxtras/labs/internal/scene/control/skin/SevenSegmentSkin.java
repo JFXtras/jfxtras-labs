@@ -28,8 +28,6 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.paint.Color;
@@ -43,7 +41,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import jfxtras.labs.internal.scene.control.behavior.SevenSegmentBehavior;
 import jfxtras.labs.scene.control.gauge.SevenSegment;
-import jfxtras.labs.scene.control.gauge.Util;
+import jfxtras.labs.util.Util;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -80,17 +78,6 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
             control.setPrefSize(40, 56);
         }
 
-        control.prefWidthProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
-
-        control.prefHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                isDirty = true;
-            }
-        });
         createSegments();
         updateCharacter();
 
@@ -167,8 +154,8 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
 
     // ******************** Drawing related ***********************************
     public void updateCharacter() {
-        segments.setStyle("-fx-segment-color-on: " + Util.INSTANCE.createCssColor(control.getColor()) +
-                          "-fx-segment-color-off: " + Util.INSTANCE.createCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
+        segments.setStyle("-fx-segment-color-on: " + Util.createCssColor(control.getColor()) +
+                          "-fx-segment-color-off: " + Util.createCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
         final int ASCII = control.getCharacter().isEmpty() ? 20 : control.getCharacter().toUpperCase().charAt(0);
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setRadius(0.05 * control.getPrefWidth());
@@ -223,8 +210,8 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
         final double WIDTH = control.getPrefWidth();
         final double HEIGHT = control.getPrefHeight();
 
-        segments.setStyle("-fx-segment-color-on: " + Util.INSTANCE.createCssColor(control.getColor()) +
-                          "-fx-segment-color-off: " + Util.INSTANCE.createCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
+        segments.setStyle("-fx-segment-color-on: " + Util.createCssColor(control.getColor()) +
+                          "-fx-segment-color-off: " + Util.createCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
 
         segments.getChildren().clear();
 
