@@ -51,7 +51,6 @@ import java.util.Locale;
 
 import org.jemmy.fx.FXClickFocus;
 
-import com.javafx.experiments.scenicview.ScenicView;
 
 /**
  *

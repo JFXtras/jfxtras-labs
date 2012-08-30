@@ -85,7 +85,6 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
      * Creates the Nodes in this Skin
      */
     private void createNodes() {
-        setFocusTraversable(false);
         textField = new NumberTextField();
         textField.promptTextProperty().bind(getSkinnable().promptTextProperty());
 
