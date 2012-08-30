@@ -180,15 +180,17 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
         if (!initialized) {
             init();
         }
-        getChildren().clear();
-        drawBackground();
-        drawFixture();
-        drawFlip();
-        drawFrame();
-        getChildren().addAll(background,
-                             fixture,
-                             flip,
-                             frame);
+        if (control.getScene() != null) {
+            getChildren().clear();
+            drawBackground();
+            drawFixture();
+            drawFlip();
+            drawFrame();
+            getChildren().addAll(background,
+                                 fixture,
+                                 flip,
+                                 frame);
+        }
     }
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {

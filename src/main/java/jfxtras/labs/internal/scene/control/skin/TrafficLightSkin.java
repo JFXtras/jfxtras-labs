@@ -140,10 +140,11 @@ public class TrafficLightSkin extends SkinBase<TrafficLight, TrafficLightBehavio
         if (!initialized) {
             init();
         }
-        getChildren().clear();
-        drawTrafficLight();
-
-        getChildren().add(trafficlight);
+        if (control.getScene() != null) {
+            getChildren().clear();
+            drawTrafficLight();
+            getChildren().add(trafficlight);
+        }
     }
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {

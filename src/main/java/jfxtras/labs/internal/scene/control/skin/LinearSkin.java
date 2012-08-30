@@ -579,45 +579,47 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         if (!initialized) {
             init();
         }
-        calcGaugeBounds();
-        setTranslateX(framelessOffset.getX());
-        setTranslateY(framelessOffset.getY());
-        getChildren().clear();
-        drawFrame();
-        drawBackground();
-        drawTitleAndUnit();
-        drawTickmarks();
-        drawLed();
-        drawUserLed();
-        drawThreshold();
-        drawGlowOff();
-        drawGlowOn();
-        drawMinMeasuredIndicator();
-        drawMaxMeasuredIndicator();
-        drawIndicators();
-        drawLcd();
-        drawLcdContent();
-        drawBar();
-        drawForeground();
+        if (control.getScene() != null) {
+            calcGaugeBounds();
+            setTranslateX(framelessOffset.getX());
+            setTranslateY(framelessOffset.getY());
+            getChildren().clear();
+            drawFrame();
+            drawBackground();
+            drawTitleAndUnit();
+            drawTickmarks();
+            drawLed();
+            drawUserLed();
+            drawThreshold();
+            drawGlowOff();
+            drawGlowOn();
+            drawMinMeasuredIndicator();
+            drawMaxMeasuredIndicator();
+            drawIndicators();
+            drawLcd();
+            drawLcdContent();
+            drawBar();
+            drawForeground();
 
-        getChildren().addAll(frame,
-                             background,
-                             ledOff,
-                             ledOn,
-                             userLedOff,
-                             userLedOn,
-                             titleAndUnit,
-                             tickmarks,
-                             threshold,
-                             glowOff,
-                             glowOn,
-                             minMeasured,
-                             maxMeasured,
-                             markers,
-                             lcd,
-                             lcdContent,
-                             bar,
-                             foreground);
+            getChildren().addAll(frame,
+                                 background,
+                                 ledOff,
+                                 ledOn,
+                                 userLedOff,
+                                 userLedOn,
+                                 titleAndUnit,
+                                 tickmarks,
+                                 threshold,
+                                 glowOff,
+                                 glowOn,
+                                 minMeasured,
+                                 maxMeasured,
+                                 markers,
+                                 lcd,
+                                 lcdContent,
+                                 bar,
+                                 foreground);
+        }
     }
 
     @Override public void layoutChildren() {

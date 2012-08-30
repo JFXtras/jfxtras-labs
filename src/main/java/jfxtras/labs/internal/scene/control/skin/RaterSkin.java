@@ -106,9 +106,11 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
         if (!initialized) {
             init();
         }
-        getChildren().clear();
-        drawStars();
-        getChildren().addAll(starContainer);
+        if (control.getScene() != null) {
+            getChildren().clear();
+            drawStars();
+            getChildren().addAll(starContainer);
+        }
     }
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {

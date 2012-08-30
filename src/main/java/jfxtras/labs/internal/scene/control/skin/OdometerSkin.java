@@ -124,17 +124,19 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
         if (!initialized) {
             init();
         }
-        font = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/droidsansmono.ttf"), (0.85 * control.getPrefHeight()));
-        setClip(new Rectangle(0, 1, control.getPrefWidth(), control.getPrefHeight()));
-        getChildren().clear();
-        drawBackground();
-        setupDials();
-        drawForeground();
-        getChildren().add(background);
-        for (Dial dial : listOfDials) {
-            getChildren().addAll(dial.getNextNumberGroup(), dial.getCurrentNumberGroup());
+        if (control.getScene() != null) {
+            font = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/droidsansmono.ttf"), (0.85 * control.getPrefHeight()));
+            setClip(new Rectangle(0, 1, control.getPrefWidth(), control.getPrefHeight()));
+            getChildren().clear();
+            drawBackground();
+            setupDials();
+            drawForeground();
+            getChildren().add(background);
+            for (Dial dial : listOfDials) {
+                getChildren().addAll(dial.getNextNumberGroup(), dial.getCurrentNumberGroup());
+            }
+            getChildren().add(foreground);
         }
-        getChildren().add(foreground);
     }
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {

@@ -98,9 +98,11 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         if (!initialized) {
             init();
         }
-        updateCharacter();
-        getChildren().clear();
-        getChildren().add(segments);
+        if (control.getScene() != null) {
+            updateCharacter();
+            getChildren().clear();
+            getChildren().add(segments);
+        }
     }
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {

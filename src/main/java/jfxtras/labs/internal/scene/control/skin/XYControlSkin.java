@@ -226,7 +226,9 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         if (!initialized) {
             init();
         }
-        drawControl();
+        if (control.getScene() != null) {
+            drawControl();
+        }
     }
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {

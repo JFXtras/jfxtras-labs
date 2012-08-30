@@ -96,10 +96,12 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
         if (!initialized) {
             init();
         }
-        getChildren().clear();
-        drawCircles();
-        drawSelectedCircles();
-        getChildren().addAll(circles, selectedCircles);
+        if (control.getScene() != null) {
+            getChildren().clear();
+            drawCircles();
+            drawSelectedCircles();
+            getChildren().addAll(circles, selectedCircles);
+        }
     }
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {

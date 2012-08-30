@@ -112,9 +112,11 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
         if (!initialized) {
             init();
         }
-        getChildren().clear();
-        drawLed();
-        getChildren().addAll(led);
+        if (control.getScene() != null) {
+            getChildren().clear();
+            drawLed();
+            getChildren().addAll(led);
+        }
     }
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {

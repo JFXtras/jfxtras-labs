@@ -88,10 +88,11 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
         if (!initialized) {
             init();
         }
-        getChildren().clear();
-        drawIndicator();
-
-        getChildren().addAll(indicator);
+        if (control.getScene() != null) {
+            getChildren().clear();
+            drawIndicator();
+            getChildren().addAll(indicator);
+        }
     }
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {

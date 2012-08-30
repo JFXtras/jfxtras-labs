@@ -227,16 +227,18 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         if (!initialized) {
             init();
         }
-        getChildren().clear();
-        drawClock();
-        drawMinutePointer();
-        drawHourPointer();
-        drawSecondPointer();
-        drawShadows();
-        getChildren().addAll(clock,
-                             minutePointerShadow,
-                             hourPointerShadow,
-                             secondPointerShadow);
+        if (control.getScene() != null) {
+            getChildren().clear();
+            drawClock();
+            drawMinutePointer();
+            drawHourPointer();
+            drawSecondPointer();
+            drawShadows();
+            getChildren().addAll(clock,
+                                 minutePointerShadow,
+                                 hourPointerShadow,
+                                 secondPointerShadow);
+        }
     }
 
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {

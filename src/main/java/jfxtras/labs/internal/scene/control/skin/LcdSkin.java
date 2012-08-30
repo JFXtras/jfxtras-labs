@@ -457,16 +457,18 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         if (!initialized) {
             init();
         }
-        getChildren().clear();
-        drawGlowOn();
-        drawLcd();
-        drawLcdContent();
+        if (control.getScene() != null) {
+            getChildren().clear();
+            drawGlowOn();
+            drawLcd();
+            drawLcdContent();
 
-        getChildren().addAll(minMeasured,
-                             maxMeasured,
-                             lcd,
-                             glowOn,
-                             lcdContent);
+            getChildren().addAll(minMeasured,
+                                 maxMeasured,
+                                 lcd,
+                                 glowOn,
+                                 lcdContent);
+        }
     }
 
     @Override public void layoutChildren() {
