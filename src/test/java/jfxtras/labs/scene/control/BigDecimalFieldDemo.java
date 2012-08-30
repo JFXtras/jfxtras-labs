@@ -30,11 +30,14 @@ package jfxtras.labs.scene.control;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ComboBoxBuilder;
 import javafx.scene.control.Label;
 import javafx.scene.control.LabelBuilder;
 import javafx.scene.control.TextField;
@@ -45,6 +48,10 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
+
+import org.jemmy.fx.FXClickFocus;
+
+import com.javafx.experiments.scenicview.ScenicView;
 
 /**
  *
@@ -84,6 +91,12 @@ public class BigDecimalFieldDemo extends Application {
         root.addRow(5, new Label("disabled field"), disabledField);
         root.addRow(6, new Label("regular TextField"), new TextField("1.000,1234"));
         root.addRow(7, new Label("with promptText"), promptText);
+        root.addRow(8, new Label("CalendarTextField"), new CalendarTextField());
+        root.addRow(9, new Label("ComboBox"), ComboBoxBuilder
+        		.create()
+        		.editable(true)
+        		.build()
+        	);
 
         promptText.numberProperty().addListener(new ChangeListener<BigDecimal>() {
             @Override
@@ -106,7 +119,7 @@ public class BigDecimalFieldDemo extends Application {
 //                defaultSpinner.dumpSizes();
             }
         });
-        root.addRow(8, new Label(), button);
+        root.addRow(10, new Label(), button);
 
         Scene scene = new Scene(root);
 //        String path = NumberSpinnerDemo2.class.getResource("number_spinner.css").toExternalForm();

@@ -13,14 +13,15 @@
 }
 
 /*
- * NOTE: this is not the :focused pseudo class, but a workaround see documentation 
- * in the Skin. It must be named like below 
+ * NOTE: this is the :focused pseudo class AND a workaround see documentation 
+ * in the Skin. Actually both style names are necessary! 
  */
-.big-decimal-field-focused {
+.big-decimal-field:focused, .big-decimal-field-focused {
     -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
     -fx-background-insets: -0.4, 1, 2;
     -fx-background-radius: 3.4, 2, 2;
 }
+
 
 .big-decimal-field:disabled {
     -fx-opacity: -fx-disabled-opacity;
