@@ -148,8 +148,7 @@ public class CalendarPicker extends Control
 
 	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc */
 	public ObjectProperty<Locale> localeProperty() { return iLocaleObjectProperty; }
-	volatile private ObjectProperty<Locale> iLocaleObjectProperty = new SimpleObjectProperty<Locale>(Locale.getDefault());
-	final static public String LOCALE_PROPERTY_ID = "locale";
+	volatile private ObjectProperty<Locale> iLocaleObjectProperty = new SimpleObjectProperty<Locale>(this, "locale", Locale.getDefault());
 	// java bean API
 	public Locale getLocale() { return iLocaleObjectProperty.getValue(); }
 	public void setLocale(Locale value) { iLocaleObjectProperty.setValue(value); }
@@ -176,7 +175,6 @@ public class CalendarPicker extends Control
 	/** Mode: single, range or multiple */
 	public ObjectProperty<Mode> modeProperty() { return iModeObjectProperty; }
 	final private SimpleObjectProperty<Mode> iModeObjectProperty = new SimpleObjectProperty<Mode>(this, "mode", Mode.SINGLE);
-	final static public String MODE_PROPERTY_ID = "mode";
 	public enum Mode { SINGLE, MULTIPLE, RANGE };
 	// java bean API
 	public Mode getMode() { return iModeObjectProperty.getValue(); }

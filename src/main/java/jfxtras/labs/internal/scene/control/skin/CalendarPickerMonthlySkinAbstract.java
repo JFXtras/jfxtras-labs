@@ -110,8 +110,7 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 	}
 	public S withDisplayedCalendar(Calendar value) { setDisplayedCalendar(value); return (S)this; } 
 	public ObjectProperty<Calendar> displayedCalendar() { return iDisplayedCalendarObjectProperty; }
-	volatile private ObjectProperty<Calendar> iDisplayedCalendarObjectProperty = new SimpleObjectProperty<Calendar>();
-	final static public String DISPLAYEDCALENDAR_PROPERTY_ID = "displayedCalendar";
+	volatile private ObjectProperty<Calendar> iDisplayedCalendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "displayedCalendar");
 	private Calendar derriveDisplayedCalendar(Calendar lDisplayedCalendar)
 	{
 		// done
