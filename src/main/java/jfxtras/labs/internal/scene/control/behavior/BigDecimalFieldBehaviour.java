@@ -27,17 +27,51 @@
 
 package jfxtras.labs.internal.scene.control.behavior;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javafx.scene.input.KeyCode;
+
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.behavior.KeyBinding;
+
 import jfxtras.labs.scene.control.BigDecimalField;
 
 /**
- * 
+ * KeyBindings for the {@link BigDecimalField}.
  * @author Thomas Bolz
  */
 public class BigDecimalFieldBehaviour extends BehaviorBase<BigDecimalField> {
 
-    public BigDecimalFieldBehaviour(BigDecimalField control) {
-        super(control);
-    }
+	public BigDecimalFieldBehaviour(BigDecimalField control) {
+		super(control);
+	}
 
+	final static private String INCREMENT_EVENT = "increment";
+	final static private String DECREMENT_EVENT = "decrement";
+	/**
+	 * Key Bindings
+	 */
+	protected final static List<KeyBinding> KEY_BINDINGS = new ArrayList<KeyBinding>();
+	static {
+		KEY_BINDINGS.add(new KeyBinding(KeyCode.UP, INCREMENT_EVENT));
+		KEY_BINDINGS.add(new KeyBinding(KeyCode.DOWN, DECREMENT_EVENT));
+		KEY_BINDINGS.addAll(TRAVERSAL_BINDINGS);
+	}
+
+	@Override
+	protected List<KeyBinding> createKeyBindings() {
+		return KEY_BINDINGS;
+	}
+
+	@Override
+	protected void callAction(String name) {
+		if (INCREMENT_EVENT.equals(name)) {
+			getControl().decrement();
+		} else if (DECREMENT_EVENT.equals(name)) {
+			getControl().increment();
+		} else {
+			super.callAction(name);
+		}
+	}
 }

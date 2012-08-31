@@ -27,7 +27,9 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import com.sun.javafx.scene.control.skin.SkinBase;
+import java.math.BigDecimal;
+import java.text.ParseException;
+
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
@@ -37,7 +39,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
-import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -48,8 +49,7 @@ import javafx.scene.shape.Path;
 import jfxtras.labs.internal.scene.control.behavior.BigDecimalFieldBehaviour;
 import jfxtras.labs.scene.control.BigDecimalField;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
+import com.sun.javafx.scene.control.skin.SkinBase;
 
 /**
  * Skin implementation for {@link BigDecimalField}.
@@ -58,14 +58,18 @@ import java.text.ParseException;
  */
 public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFieldBehaviour> {
 
-    public BigDecimalFieldSkin(BigDecimalField control) {
+    private BigDecimalField CONTROL;
+
+	public BigDecimalFieldSkin(BigDecimalField control) {
         super(control, new BigDecimalFieldBehaviour(control));
+        this.CONTROL = control;
         createNodes();
         initFocusBehaviourWorkaround();
         requestLayout();
+        setFocusTraversable(false);
+        textField.setFocusTraversable(true);
     }
-//    private GridPane root;
-    private TextField textField;
+    private NumberTextField textField;
     private StackPane btnUp;
     private StackPane btnDown;
     private Path arrowUp;
@@ -74,15 +78,16 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
     // arrow height is ARROW_HEIGHT * ARROW_SIZE
     private final double ARROW_HEIGHT = 0.7;
 
+    @Override
+    public BigDecimalField getSkinnable() {return CONTROL;}
+    
     /**
      * Creates the Nodes in this Skin
      */
     private void createNodes() {
-        setFocusTraversable(true);
         textField = new NumberTextField();
         textField.promptTextProperty().bind(getSkinnable().promptTextProperty());
 
-//        initializePromptText();
         //
         // The Buttons are StackPanes with a Path on top
         //
@@ -127,21 +132,6 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
         
     }
 
-//    private void initializePromptText() {
-//        getSkinnable().promptTextProperty().addListener(new ChangeListener<String>() {
-//            @Override
-//            public void changed(ObservableValue<? extends String> observableValue, String oldText, String newText) {
-//                changePromptText();
-//            }
-//        });
-//        changePromptText();
-//    }
-//
-//    private void changePromptText() {
-//        textField.promptTextProperty().bind(getSkinnable().getPromptText());
-////        textField.setPromptText(getSkinnable().getPromptText());
-//    }
-
     @Override
     protected void layoutChildren() {
         super.layoutChildren();
@@ -175,13 +165,16 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
      */
     private void initFocusBehaviourWorkaround() {
         // If focus is gained on the Control, it is forwarded to the TextField.
-        getSkinnable().focusedProperty().addListener(new InvalidationListener() {
-
-            @Override
-            public void invalidated(Observable arg0) {
-                textField.requestFocus();
+        CONTROL.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override public void changed(ObservableValue<? extends Boolean> ov, Boolean wasFocused, Boolean isFocused) {
+                if (isFocused) { 
+                    textField.requestFocus();		
+                } else {
+                	textField.setFocus(false);
+                }
             }
         });
+    	
         // If the TextField gains/loses focus the style of the Control is changed
         textField.focusedProperty().addListener(new InvalidationListener() {
 
@@ -277,6 +270,10 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
                 // If parsing fails keep old number
                 setText(getSkinnable().getText());
             }
+        }
+        
+        public void setFocus(boolean b){
+            super.setFocused(b); 
         }
     }
 
