@@ -66,5 +66,5 @@ uploadArchives.onlyIf {
 
 task copyToLib(type: Copy) {
     into "_lib"
-    from configurations.runtime
+    from configurations.testCompile
 }
