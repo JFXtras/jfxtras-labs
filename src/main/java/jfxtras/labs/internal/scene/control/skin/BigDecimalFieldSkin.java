@@ -64,19 +64,17 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
         super(control, new BigDecimalFieldBehaviour(control));
         this.CONTROL = control;
         createNodes();
-        initFocusBehaviourWorkaround();
+        initFocusSimulation();
         requestLayout();
-        setFocusTraversable(false);
-        textField.setFocusTraversable(true);
     }
-    private NumberTextField textField;
-    private StackPane btnUp;
-    private StackPane btnDown;
-    private Path arrowUp;
-    private Path arrowDown;
-    private final double ARROW_SIZE = 4;
-    // arrow height is ARROW_HEIGHT * ARROW_SIZE
-    private final double ARROW_HEIGHT = 0.7;
+
+	private NumberTextField	textField;
+	private StackPane		btnUp;
+	private StackPane		btnDown;
+	private Path			arrowUp;
+	private Path			arrowDown;
+	private final double	ARROW_SIZE		= 4;
+	private final double	ARROW_HEIGHT	= 0.7;
 
     @Override
     public BigDecimalField getSkinnable() {return CONTROL;}
@@ -158,36 +156,25 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
 
     
     
-    /**
-     * As we want to re-use the TextField's behaviour, but style the controls
-     * focus, we have to use the following workaround:
-     *
-     */
-    private void initFocusBehaviourWorkaround() {
-        // If focus is gained on the Control, it is forwarded to the TextField.
-        CONTROL.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override public void changed(ObservableValue<? extends Boolean> ov, Boolean wasFocused, Boolean isFocused) {
-                if (isFocused) { 
-                    textField.requestFocus();		
-                } else {
-                	textField.setFocus(false);
-                }
-            }
-        });
-    	
-        // If the TextField gains/loses focus the style of the Control is changed
-        textField.focusedProperty().addListener(new InvalidationListener() {
+	/**
+	 * The BigDecimalField itself is never focused (setFocusTraversable(false),
+	 * but we want it to look focused when the textfield has the focus.
+	 * 
+	 */
+    private void initFocusSimulation() {
 
-            @Override
-            public void invalidated(Observable arg0) {
-                if (textField.isFocused()) {
-                    getSkinnable().getStyleClass().add("big-decimal-field-focused");
-                } else {
-                    getSkinnable().getStyleClass().remove("big-decimal-field-focused");
-                }
-
-            }
-        });
+    	// If the TextField gains/loses focus the style of the CONTROL is changed
+		textField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov,
+					Boolean wasFocused, Boolean isFocused) {
+				if (isFocused) {
+					getSkinnable().getStyleClass().add("big-decimal-field-focused");
+				} else {
+					getSkinnable().getStyleClass().remove("big-decimal-field-focused");
+				}
+			}
+		});
 
     }
 
@@ -272,9 +259,6 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
             }
         }
         
-        public void setFocus(boolean b){
-            super.setFocused(b); 
-        }
     }
 
 }
