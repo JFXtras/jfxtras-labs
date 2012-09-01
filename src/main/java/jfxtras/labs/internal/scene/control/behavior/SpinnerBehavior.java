@@ -140,8 +140,8 @@ public class SpinnerBehavior<T> extends BehaviorBase<Spinner<T>>
 		KEY_BINDINGS.add( new KeyBinding(KeyCode.PLUS, EVENT_NEXT) ); // keyboard +
 		KEY_BINDINGS.add( new KeyBinding(KeyCode.SUBTRACT, EVENT_PREVIOUS) ); // keypad -		
 		KEY_BINDINGS.add( new KeyBinding(KeyCode.ADD, EVENT_NEXT) ); // keypad + 
-		KEY_BINDINGS.add(new KeyBinding(KeyCode.UP, EVENT_PREVIOUS));
-		KEY_BINDINGS.add(new KeyBinding(KeyCode.DOWN, EVENT_NEXT));
+		KEY_BINDINGS.add(new KeyBinding(KeyCode.UP, EVENT_NEXT));
+		KEY_BINDINGS.add(new KeyBinding(KeyCode.DOWN, EVENT_PREVIOUS));
 		KEY_BINDINGS.add(new KeyBinding(KeyCode.LEFT, EVENT_PREVIOUS));
 		KEY_BINDINGS.add(new KeyBinding(KeyCode.RIGHT, EVENT_NEXT));
 		KEY_BINDINGS.addAll(TRAVERSAL_BINDINGS);
