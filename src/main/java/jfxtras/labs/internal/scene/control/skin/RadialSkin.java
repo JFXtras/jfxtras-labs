@@ -686,7 +686,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             drawThreshold();
         } else if ("FOREGROUND_TYPE".equals(PROPERTY)) {
             drawCircularForeground(control, foreground, gaugeBounds);
-        } else if ("LCD_DESIGN".equals(PROPERTY)) {
+        } else if ("LCD".equals(PROPERTY)) {
             drawCircularLcd(control, lcd, gaugeBounds);
             lcdUnitString.getStyleClass().clear();
             lcdUnitString.getStyleClass().add("lcd");
@@ -696,8 +696,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             lcdValueString.getStyleClass().add("lcd");
             lcdValueString.getStyleClass().add(control.getLcdDesign().CSS);
             lcdValueString.getStyleClass().add("lcd-text");
-            drawLcdContent();
-        } else if ("LCD_NUMBER_SYSTEM".equals(PROPERTY)) {
             drawLcdContent();
         } else if ("USER_LED_BLINKING".equals(PROPERTY)) {
             if (userLedOff.isVisible() && userLedOn.isVisible()) {

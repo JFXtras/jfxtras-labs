@@ -1171,6 +1171,18 @@ public abstract class Gauge extends Control {
         return styleModel.lcdBlinkingProperty();
     }
 
+    public final boolean isLcdBackgroundVisible() {
+        return styleModel.isLcdBackgroundVisible();
+    }
+
+    public final void setLcdBackgroundVisible(final boolean LCD_BACKGROUND_VISIBLE) {
+        styleModel.setLcdBackgroundVisible(LCD_BACKGROUND_VISIBLE);
+    }
+
+    public final BooleanProperty lcdBackgroundVisibleProperty() {
+        return styleModel.lcdBackgroundVisibleProperty();
+    }
+
     public final boolean isGlowVisible() {
         return styleModel.isGlowVisible();
     }

@@ -397,10 +397,8 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
 
-        if ("LCD_DESIGN".equals(PROPERTY)) {
+        if ("LCD".equals(PROPERTY)) {
             drawLcd();
-            drawLcdContent();
-        } else if ("LCD_NUMBER_SYSTEM".equals(PROPERTY)) {
             drawLcdContent();
         } else if ("GLOW_COLOR".equals(PROPERTY)) {
             glowColors.clear();
@@ -434,9 +432,6 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
                 glowOn.setOpacity(0.0);
             }
         } else if ("TREND".equals(PROPERTY)) {
-            drawLcdContent();
-        } else if ("LCD_VALUE_FONT".equals(PROPERTY)) {
-            drawLcd();
             drawLcdContent();
         } else if ("BACKGROUND_VISIBILITY".equals(PROPERTY)) {
             paint();
@@ -772,7 +767,6 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
                                                         new Stop(1.0, Color.color(0.86, 0.86, 0.86, 1)));
         LCD_FRAME.setFill(LCD_FRAME_FILL);
         LCD_FRAME.setStroke(null);
-        LCD_FRAME.setVisible(control.isBackgroundVisible());
 
         final Rectangle LCD_MAIN = new Rectangle(1.0, 1.0, WIDTH - 2.0, HEIGHT - 2.0);
         final double LCD_MAIN_CORNER_RADIUS = LCD_FRAME.getArcWidth() - 1;
@@ -781,7 +775,6 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
 
         LCD_MAIN.getStyleClass().add(control.getLcdDesign().CSS);
         LCD_MAIN.getStyleClass().add("lcd-main");
-        LCD_MAIN.setVisible(control.isBackgroundVisible());
 
         final InnerShadow INNER_GLOW = new InnerShadow();
         INNER_GLOW.setWidth(0.25 * SIZE);
@@ -798,6 +791,12 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.65));
 
         LCD_MAIN.setEffect(INNER_SHADOW);
+
+        // Switch lcd background off if needed
+        if (!control.isLcdBackgroundVisible()) {
+            LCD_FRAME.setVisible(false);
+            LCD_MAIN.setVisible(false);
+        }
 
         // Prepare the trend markers
         trendUp = new Path();

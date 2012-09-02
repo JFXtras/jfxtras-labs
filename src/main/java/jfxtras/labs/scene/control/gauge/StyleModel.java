@@ -99,6 +99,7 @@ public class StyleModel {
     private IntegerProperty                      lcdDecimals;
     private BooleanProperty                      lcdNumberSystemVisible;
     private BooleanProperty                      lcdBlinking;
+    private BooleanProperty                      lcdBackgroundVisible;
     private BooleanProperty                      glowVisible;
     private ObjectProperty<Color>                glowColor;
     private BooleanProperty                      glowOn;
@@ -176,6 +177,7 @@ public class StyleModel {
         lcdDecimals                     = new SimpleIntegerProperty(0);
         lcdNumberSystemVisible          = new SimpleBooleanProperty(false);
         lcdBlinking                     = new SimpleBooleanProperty(false);
+        lcdBackgroundVisible            = new SimpleBooleanProperty(true);
         glowVisible                     = new SimpleBooleanProperty(false);
         glowColor                       = new SimpleObjectProperty<Color>(Color.rgb(51, 255, 255));
         glowOn                          = new SimpleBooleanProperty(false);
@@ -731,6 +733,19 @@ public class StyleModel {
 
     public final BooleanProperty lcdBlinkingProperty() {
         return lcdBlinking;
+    }
+
+    public final boolean isLcdBackgroundVisible() {
+        return lcdBackgroundVisible.get();
+    }
+
+    public final void setLcdBackgroundVisible(final boolean LCD_BACKGROUND_VISIBLE) {
+        lcdBackgroundVisible.set(LCD_BACKGROUND_VISIBLE);
+        fireStyleModelEvent();
+    }
+
+    public final BooleanProperty lcdBackgroundVisibleProperty() {
+        return lcdBackgroundVisible;
     }
 
     public final boolean isGlowVisible() {

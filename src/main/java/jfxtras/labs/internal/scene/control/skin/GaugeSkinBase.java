@@ -111,8 +111,10 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         registerChangeListener(CONTROL.thresholdProperty(), "THRESHOLD");
         registerChangeListener(CONTROL.thresholdColorProperty(), "THRESHOLD_COLOR");
         registerChangeListener(CONTROL.foregroundTypeProperty(), "FOREGROUND_TYPE");
-        registerChangeListener(CONTROL.lcdDesignProperty(), "LCD_DESIGN");
-        registerChangeListener(CONTROL.lcdNumberSystemProperty(), "LCD_NUMBER_SYSTEM");
+        registerChangeListener(CONTROL.lcdDesignProperty(), "LCD");
+        registerChangeListener(CONTROL.lcdNumberSystemProperty(), "LCD");
+        registerChangeListener(CONTROL.lcdValueFontProperty(), "LCD");
+        registerChangeListener(CONTROL.lcdBackgroundVisibleProperty(), "LCD");
         registerChangeListener(CONTROL.userLedBlinkingProperty(), "USER_LED_BLINKING");
         registerChangeListener(CONTROL.ledBlinkingProperty(), "LED_BLINKING");
         registerChangeListener(CONTROL.glowColorProperty(), "GLOW_COLOR");
@@ -123,7 +125,6 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         registerChangeListener(CONTROL.maxMeasuredValueProperty(), "MAX_MEASURED_VALUE");
         registerChangeListener(CONTROL.trendProperty(), "TREND");
         registerChangeListener(CONTROL.simpleGradientBaseColorProperty(), "SIMPLE_GRADIENT_BASE");
-        registerChangeListener(CONTROL.lcdValueFontProperty(), "LCD_VALUE_FONT");
         registerChangeListener(CONTROL.gaugeModelProperty(), "GAUGE_MODEL");
         registerChangeListener(CONTROL.styleModelProperty(), "STYLE_MODEL");
         registerChangeListener(CONTROL.thresholdExceededProperty(), "THRESHOLD_EXCEEDED");
@@ -969,6 +970,11 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         INNER_SHADOW.setColor(Color.color(0, 0, 0, 0.65));
 
         LCD_MAIN.setEffect(INNER_SHADOW);
+
+        if (!CONTROL.isLcdBackgroundVisible()) {
+            LCD_FRAME.setVisible(false);
+            LCD_MAIN.setVisible(false);
+        }
 
         LCD.getChildren().addAll(LCD_FRAME, LCD_MAIN);
 

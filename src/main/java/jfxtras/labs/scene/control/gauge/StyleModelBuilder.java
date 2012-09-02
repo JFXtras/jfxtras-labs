@@ -240,6 +240,11 @@ public class StyleModelBuilder {
         return this;
     }
 
+    public final StyleModelBuilder lcdBackgroundVisible(final boolean LCD_BACKGROUND_VISIBLE) {
+        properties.put("lcdBackgroundVisible", new SimpleBooleanProperty(LCD_BACKGROUND_VISIBLE));
+        return this;
+    }
+
     public final StyleModelBuilder glowVisible(final boolean GLOW_VISIBLE) {
         properties.put("glowVisible", new SimpleBooleanProperty(GLOW_VISIBLE));
         return this;
@@ -482,6 +487,8 @@ public class StyleModelBuilder {
                 MODEL.setLcdDecimals(((IntegerProperty) properties.get(key)).get());
             } else if ("lcdBlinking".equals(key)) {
                 MODEL.setLcdBlinking(((BooleanProperty) properties.get(key)).get());
+            } else if ("lcdBackgroundVisible".equals(key)) {
+                MODEL.setLcdBackgroundVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("glowVisible".equals(key)) {
                 MODEL.setGlowVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("glowOn".equals(key)) {
