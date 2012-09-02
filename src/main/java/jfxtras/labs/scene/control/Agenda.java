@@ -61,7 +61,7 @@ public class Agenda extends Control
 	{
 		// setup the CSS
 		// the -fx-skin attribute in the CSS sets which Skin class is used
-		this.getStyleClass().add(this.getClass().getSimpleName().toLowerCase());
+		this.getStyleClass().add(this.getClass().getSimpleName());
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class Agenda extends Control
 		public String getSummary();
 		public String getDescription();
 		public String getLocation();
-		public String getType();
+		public String getGroup(); // this will result in a CSS class being assigned
 	}
 	
 	/**
@@ -113,7 +113,7 @@ public class Agenda extends Control
 		
 		/** WholeDay: */
 		public ObjectProperty<Boolean> wholeDayProperty() { return wholeDayObjectProperty; }
-		final private ObjectProperty<Boolean> wholeDayObjectProperty = new SimpleObjectProperty<Boolean>(this, "wholeDay");
+		final private ObjectProperty<Boolean> wholeDayObjectProperty = new SimpleObjectProperty<Boolean>(this, "wholeDay", false);
 		// java bean API
 		public Boolean isWholeDay() { return wholeDayObjectProperty.getValue(); }
 		public void setWholeDay(Boolean value) { wholeDayObjectProperty.setValue(value); }
@@ -143,13 +143,13 @@ public class Agenda extends Control
 		public void setLocation(String value) { locationObjectProperty.setValue(value); }
 		public AppointmentImpl withLocation(String value) { setLocation(value); return this; } 
 		
-		/** Type: */
-		public ObjectProperty<String> typeProperty() { return typeObjectProperty; }
-		final private ObjectProperty<String> typeObjectProperty = new SimpleObjectProperty<String>(this, "type");
+		/** Group: */
+		public ObjectProperty<String> groupProperty() { return groupObjectProperty; }
+		final private ObjectProperty<String> groupObjectProperty = new SimpleObjectProperty<String>(this, "group");
 		// java bean API
-		public String getType() { return typeObjectProperty.getValue(); }
-		public void setType(String value) { typeObjectProperty.setValue(value); }
-		public AppointmentImpl withType(String value) { setType(value); return this; } 
+		public String getGroup() { return groupObjectProperty.getValue(); }
+		public void setGroup(String value) { groupObjectProperty.setValue(value); }
+		public AppointmentImpl withGroup(String value) { setGroup(value); return this; } 
 	}
 	
 	
@@ -163,7 +163,7 @@ public class Agenda extends Control
 
 	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc */
 	public ObjectProperty<Locale> localeProperty() { return iLocaleObjectProperty; }
-	volatile private ObjectProperty<Locale> iLocaleObjectProperty = new SimpleObjectProperty<Locale>(this, "locale", Locale.getDefault());
+	final private ObjectProperty<Locale> iLocaleObjectProperty = new SimpleObjectProperty<Locale>(this, "locale", Locale.getDefault());
 	// java bean API
 	public Locale getLocale() { return iLocaleObjectProperty.getValue(); }
 	public void setLocale(Locale value) { iLocaleObjectProperty.setValue(value); }

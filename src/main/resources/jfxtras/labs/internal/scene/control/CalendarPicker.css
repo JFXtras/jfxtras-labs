@@ -1,5 +1,5 @@
 /* basic settings */
-.calendarpicker { 
+.CalendarPicker { 
 	-fx-skin: "jfxtras.labs.internal.scene.control.skin.CalendarPickerControlSkin";
 }
 

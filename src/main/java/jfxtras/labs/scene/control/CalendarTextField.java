@@ -61,7 +61,7 @@ public class CalendarTextField extends Control
 	{
 		// setup the CSS
 		// the -fx-skin attribute in the CSS sets which Skin class is used
-		this.getStyleClass().add(this.getClass().getSimpleName().toLowerCase());
+		this.getStyleClass().add(this.getClass().getSimpleName());
 		
 		// this is apparently needed for good focus behavior
 		setFocusTraversable(false);

@@ -68,7 +68,7 @@ public class CalendarPicker extends Control
 	{
 		// setup the CSS
 		// the -fx-skin attribute in the CSS sets which Skin class is used
-		this.getStyleClass().add(this.getClass().getSimpleName().toLowerCase());
+		this.getStyleClass().add(this.getClass().getSimpleName());
 		
 		// construct properties
 		constructCalendar();

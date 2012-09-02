@@ -26,6 +26,9 @@
  */
 package jfxtras.labs.scene.control;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -45,6 +48,31 @@ public class AgendaTrial1 extends Application {
         // add a node
 		Agenda lAgenda = new Agenda();		
     	//lAgenda.setLocale(new java.util.Locale("de")); // weeks starts on monday
+		int lTodayYear = Calendar.getInstance().get(Calendar.YEAR);
+		int lTodayMonth = Calendar.getInstance().get(Calendar.MONTH);
+		int lTodayDay = Calendar.getInstance().get(Calendar.DATE);
+		lAgenda.appointments().addAll(
+			new Agenda.AppointmentImpl()
+				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 8, 00))
+				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 10, 00))
+				.withSummary("Test summary")
+				.withDescription("A much longer test description")
+				.withGroup("group1")
+		, 	new Agenda.AppointmentImpl()
+				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 8, 00))
+				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 12, 00))
+				.withSummary("Summary 2")
+				.withDescription("A description 2")
+				.withGroup("group2")
+		, 	new Agenda.AppointmentImpl()
+				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 8, 00))
+				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 12, 00))
+				.withSummary("all day")
+				.withDescription("A description")
+				.withGroup("group2")
+				.withWholeDay(true)
+		);
+		
         
         // create scene
         Scene scene = new Scene(lAgenda, 600, 400);

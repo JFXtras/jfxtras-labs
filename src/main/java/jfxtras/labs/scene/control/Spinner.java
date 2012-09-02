@@ -143,7 +143,7 @@ public class Spinner<T> extends Control
 	{
 		// setup the CSS
 		// the -fx-skin attribute in the CSS sets which Skin class is used
-		this.getStyleClass().add(this.getClass().getSimpleName().toLowerCase());
+		this.getStyleClass().add(this.getClass().getSimpleName());
 		
 		// react to changes of the value
 		this.valueObjectProperty.addListener(new ChangeListener<T>()
