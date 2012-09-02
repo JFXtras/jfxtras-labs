@@ -71,6 +71,13 @@ public class AgendaTrial1 extends Application {
 				.withDescription("A description")
 				.withGroup("group2")
 				.withWholeDay(true)
+		, 	new Agenda.AppointmentImpl()
+				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 8, 00))
+				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 12, 00))
+				.withSummary("all day2")
+				.withDescription("A description3")
+				.withGroup("group3")
+				.withWholeDay(true)
 		);
 		
         

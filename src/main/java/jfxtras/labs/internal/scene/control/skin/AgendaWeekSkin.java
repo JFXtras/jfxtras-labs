@@ -29,7 +29,9 @@ package jfxtras.labs.internal.scene.control.skin;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -125,13 +127,13 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	 */
 	private void createNodes()
 	{
-        lDays = new Group();
+        lDaysCanvas = new Group();
         lScrollPane = ScrollPaneBuilder.create()
 	        .prefWidth(getSkinnable().getWidth())
 	        .prefHeight(getSkinnable().getHeight() - 100)
 	        .layoutY(50)
-	        .content(lDays)
-	        .hbarPolicy(ScrollBarPolicy.NEVER)
+	        .content(lDaysCanvas)
+	        .hbarPolicy(ScrollBarPolicy.AS_NEEDED)
 	        .pannable(true)
 	        .build();
         borderPane.setCenter(lScrollPane);
@@ -151,20 +153,55 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		
 		System.out.println("paint()");
 		lastWidth = getSkinnable().getWidth();
+
+		// this will be replaced with CSS
+		Map<String, Color> lGroupColor = new HashMap<String, Color>();
+		lGroupColor.put("group1", Color.LIGHTBLUE);
+		lGroupColor.put("group2", Color.LIGHTGREEN);
+		lGroupColor.put("group3", Color.LIGHTSALMON);
 		
-		double lHeaderHeight = new Text("XXX").getBoundsInParent().getHeight() + 10; // 10 is margin
-        Group lHeader = new Group();
-        lHeader.getChildren().add(RectangleBuilder.create().width(getSkinnable().getWidth()).height(lHeaderHeight).stroke(null).fill(Color.WHITE).build()); // blow up to full width
-        borderPane.setTop(lHeader);
+		// put the appointments in the appropriate day
+		Map<Calendar, List<Agenda.Appointment>> lWholeDayAppointmentsPerDay = new HashMap<Calendar, List<Appointment>>();
+		Map<Calendar, List<Agenda.Appointment>> lTimeframeAppointmentsPerDay = new HashMap<Calendar, List<Appointment>>();
+		lWholeDayAppointmentsPerDay.put(null, new ArrayList<Agenda.Appointment>());
+		lTimeframeAppointmentsPerDay.put(null, new ArrayList<Agenda.Appointment>());
+		int lMaxNumberOfWholedayAppointments = 0;
+    	for (Agenda.Appointment lApp : getSkinnable().appointments())
+    	{
+    		if (lApp.isWholeDay())
+    		{
+    			lWholeDayAppointmentsPerDay.get(null).add(lApp);
+    			if (lWholeDayAppointmentsPerDay.get(null).size() > lMaxNumberOfWholedayAppointments)
+    			{
+    				lMaxNumberOfWholedayAppointments = lWholeDayAppointmentsPerDay.get(null).size();    				 
+    			}
+    			else
+    			{
+    				lTimeframeAppointmentsPerDay.get(null).add(lApp);
+    			}
+    		}
+    	}
+    	
+		// determine the maximum number of whole day appointments
+		double lWholedayTitleHeight = 25;
+		double lWholedayBarWidth = 5; 
+		
+		// paint the header
+		double lHeaderMargin = 5;
+		double lHeaderHeight = new Text("XXX").getBoundsInParent().getHeight() + lHeaderMargin + (lMaxNumberOfWholedayAppointments * lWholedayTitleHeight) + 10; // 10 is margin
+        Group lHeaderCanvas = new Group();
+        lHeaderCanvas.getChildren().add(RectangleBuilder.create().width(getSkinnable().getWidth()).height(lHeaderHeight).stroke(null).fill(Color.WHITE).build()); // blow up to full width
+        lHeaderCanvas.setTranslateX(2); // this is the border of the scrollpane
+        borderPane.setTop(lHeaderCanvas);
 		
 		// 
         {
 //	        Group lDays = new Group();
-        	lDays.getChildren().clear();
+        	lDaysCanvas.getChildren().clear();
 
         	// determine sizes
 	        double lTimeColumnWidth = new Text("88:88").getBoundsInParent().getWidth() + 25; // 25 is whitespace
-	        double lDaycolumnWidth = (getSkinnable().getWidth() - lTimeColumnWidth - 12) / 7; // TODO use lScrollPane.viewportBoundsProperty().get().getWidth() and lose the 12 px for the scrollbar
+	        double lDaycolumnWidth = (getSkinnable().getWidth() - lTimeColumnWidth - 15) / 7; // TODO use lScrollPane.viewportBoundsProperty().get().getWidth() and lose the 15 px for the scrollbar
         	if (lScrollPane.viewportBoundsProperty().get() != null) System.out.println(lScrollPane.viewportBoundsProperty().get().getWidth());
 	        int lHourHeigh = 40;
 	
@@ -173,7 +210,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 //	        IBOUNDS.setOpacity(0.0);
 	        IBOUNDS.setStroke(null);
 	        IBOUNDS.setFill(Color.WHITE);
-	        lDays.getChildren().add(IBOUNDS);
+	        lDaysCanvas.getChildren().add(IBOUNDS);
 	        
 	
 	        // draw times
@@ -183,43 +220,95 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	        	{
 		        	Line l = new Line(0, lHour * lHourHeigh, IBOUNDS.getWidth(), lHour * lHourHeigh);
 		        	l.setStroke(Color.LIGHTGRAY);
-		        	lDays.getChildren().add(l);
+		        	lDaysCanvas.getChildren().add(l);
 	        	}
 	        	// text
 	        	{
 	        		Text t = new Text(0, lHour * lHourHeigh, lHour + ":00");	        		
-		        	t.setStroke(Color.LIGHTGRAY);
 		            t.setStroke(null);
 		            t.setFontSmoothingType(FontSmoothingType.LCD);
 		            t.setTranslateY(t.getBoundsInParent().getHeight());
 		            t.setTranslateX(lTimeColumnWidth - t.getBoundsInParent().getWidth() - 10); // 10 is margin
-		        	lDays.getChildren().add(t);
+		        	lDaysCanvas.getChildren().add(t);
 	        	}
 	        	// halfhour
 	        	{
 		        	Line l = new Line(lTimeColumnWidth, (lHour + 0.5) * lHourHeigh, IBOUNDS.getWidth(), (lHour + 0.5) * lHourHeigh);
 		        	l.setStroke(Color.LIGHTGRAY);
-		        	lDays.getChildren().add(l);
+		        	lDaysCanvas.getChildren().add(l);
 	        	}
 	        }
 	    	
 	        // draw day columns and their title
+	        double lDayTitleHeight = 0;
 	    	List<String> lWeekdayLabels = getWeekdayLabels();
 	    	for (int i = 0; i < 7; i++)
 	    	{
 	        	Line l = new Line(lTimeColumnWidth + (i * lDaycolumnWidth), 0, lTimeColumnWidth + (i * lDaycolumnWidth), 24 * lHourHeigh);
 	        	l.setStroke(Color.LIGHTGRAY);
-	        	lDays.getChildren().add(l);
+	        	lDaysCanvas.getChildren().add(l);
 	        	
-	        	Text t = new Text(lTimeColumnWidth + (i * lDaycolumnWidth), lHeaderHeight, lWeekdayLabels.get(i));
+	        	Text t = new Text(lTimeColumnWidth + (i * lDaycolumnWidth), 0, lWeekdayLabels.get(i));
+	            t.setStroke(null);
+	            t.setFontSmoothingType(FontSmoothingType.LCD);
 	            t.setTranslateX((lDaycolumnWidth - t.getBoundsInParent().getWidth()) / 2); // center
-	        	lHeader.getChildren().add(t);
+	            lDayTitleHeight = t.getBoundsInParent().getHeight();
+	            t.setTranslateY(lDayTitleHeight); 
+	        	lHeaderCanvas.getChildren().add(t);
 	    	}
 
-	        
+	        // paint the appointments for each day
+	    	// first the whole days appointments
+	    	int lWholedayAppointmentCnt = 0;
+	    	int lDayColIdx = 0;
+	    	for (Agenda.Appointment lApp : lWholeDayAppointmentsPerDay.get(null))
+	    	{
+	    		// paint the header
+	    		Rectangle r = RectangleBuilder.create()
+	    						.x(lTimeColumnWidth + (lDayColIdx * lDaycolumnWidth) + (lWholedayAppointmentCnt * lWholedayBarWidth))
+	    						.y(lDayTitleHeight + lHeaderMargin + (lWholedayAppointmentCnt * lWholedayTitleHeight))
+	    						.width(lDaycolumnWidth - (lWholedayAppointmentCnt * lWholedayBarWidth))
+	    						.height(lWholedayTitleHeight)
+	    						.stroke(Color.DARKGRAY)
+	    						.fill(lGroupColor.get(lApp.getGroup()))
+	    						.build();
+	        	lHeaderCanvas.getChildren().add(r);
+	        	
+	        	// add title
+	        	Text t = new Text(r.getX() + 5, r.getY(), lApp.getSummary());
+	            t.setStroke(null);
+	            t.setFontSmoothingType(FontSmoothingType.LCD);
+	            t.setTranslateY( t.getBoundsInParent().getHeight()); 
+	        	lHeaderCanvas.getChildren().add(t);
+	    			    		
+	    		// paint the bar in the header
+	    		Rectangle r2 = RectangleBuilder.create()
+						.x(r.getX())
+						.y(r.getY() + r.getHeight())
+						.width(lWholedayBarWidth)
+						.height(lHeaderHeight - r.getY() - r.getHeight())
+						.stroke(Color.DARKGRAY)
+						.fill(lGroupColor.get(lApp.getGroup()))
+						.build();
+	    		lHeaderCanvas.getChildren().add(r2);
+	        	
+	    		// paint the bar in the day
+	    		Rectangle r3 = RectangleBuilder.create()
+						.x(r.getX())
+						.y(0)
+						.width(lWholedayBarWidth)
+						.height(24 * lHourHeigh)
+						.stroke(Color.DARKGRAY)
+						.fill(lGroupColor.get(lApp.getGroup()))
+						.build();
+	    		lDaysCanvas.getChildren().add(r3);
+	        	
+	        	// next
+	        	lWholedayAppointmentCnt++;
+	    	}
 		}
     }
-    Group lDays = null;
+    Group lDaysCanvas = null;
     ScrollPane lScrollPane = null;
 
 	private void blowupToFullSize(Group group)
