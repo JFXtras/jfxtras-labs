@@ -28,64 +28,88 @@ package jfxtras.labs.scene.control;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.util.HashMap;
 
-import javafx.scene.control.ControlBuilder;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.util.Builder;
 
 /**
  * Builder for {@link BigDecimalField}.
+ * 
  * @author Thomas Bolz
- *
+ * 
  */
-public class BigDecimalFieldBuilder extends ControlBuilder<BigDecimalFieldBuilder> implements
-		Builder<BigDecimalField> {
+public class BigDecimalFieldBuilder<B extends BigDecimalFieldBuilder<B>>
+		implements Builder<BigDecimalField> {
+	private static final String			NUMBER			= "number";
+	private static final String			NUMBER_FORMAT	= "numberFormat";
+	private static final String			STEPWIDTH		= "stepwidth";
+	private static final String			PROMPT_TEXT		= "promptText";
+	private static final String			MIN_VALUE		= "minValue";
+	private static final String			MAX_VALUE		= "maxValue";
+	private HashMap<String, Property>	properties		= new HashMap<String, Property>();
 
-	private BigDecimalField control;
-	
-	private BigDecimalFieldBuilder() {
+	// ******************** Constructors **************************************
+	protected BigDecimalFieldBuilder() {
 		super();
-		control = new BigDecimalField();
-	}
+	};
 
+	// ******************** Methods *******************************************
 	public static final BigDecimalFieldBuilder create() {
 		return new BigDecimalFieldBuilder();
 	}
 
-	public final BigDecimalFieldBuilder number(BigDecimal value) {
-		control.setNumber(value);
+	public final BigDecimalFieldBuilder number(BigDecimal number) {
+		properties.put(NUMBER, new SimpleObjectProperty<BigDecimal>(number));
 		return this;
-	}
-	
-	public final BigDecimalFieldBuilder format(NumberFormat value) {
-		control.setFormat(value);
-		return this;
-	}
-	
-	public final BigDecimalFieldBuilder stepwidth(BigDecimal value) {
-		control.setStepwidth(value);
-		return this;
-	}
-	
-	public final BigDecimalFieldBuilder promptText(String value) {
-		control.setPromptText(value);
-		return this;
-	}
-	
-	public final BigDecimalFieldBuilder minValue(BigDecimal value) {
-		control.setMinValue(value);
-		return this;
-	}
-	
-	public final BigDecimalFieldBuilder maxValue(BigDecimal value) {
-		control.setMaxValue(value);
-		return this;
-	}
-	
-	
-	@Override
-	public BigDecimalField build() {
-		return control;
 	}
 
+	public final BigDecimalFieldBuilder format(NumberFormat numberFormat) {
+		properties.put(NUMBER_FORMAT, new SimpleObjectProperty<NumberFormat>(numberFormat));
+		return this;
+	}
+
+	public final BigDecimalFieldBuilder stepwidth(BigDecimal stepwidth) {
+		properties.put(STEPWIDTH, new SimpleObjectProperty<BigDecimal>(stepwidth));
+		return this;
+	}
+
+	public final BigDecimalFieldBuilder promptText(String promptText) {
+		properties.put(PROMPT_TEXT, new SimpleStringProperty(promptText));
+		return this;
+	}
+
+	public final BigDecimalFieldBuilder minValue(BigDecimal minValue) {
+		properties.put(MIN_VALUE, new SimpleObjectProperty<BigDecimal>(minValue));
+		return this;
+	}
+
+	public final BigDecimalFieldBuilder maxValue(BigDecimal maxValue) {
+		properties.put(MAX_VALUE, new SimpleObjectProperty<BigDecimal>(maxValue));
+		return this;
+	}
+
+	@Override
+	public BigDecimalField build() {
+		final BigDecimalField CONTROL = new BigDecimalField();
+		for (String key : properties.keySet()) {
+			if (MAX_VALUE.equals(key)) {
+				CONTROL.setMaxValue(((SimpleObjectProperty<BigDecimal>) properties.get(key)).get());
+			} else if (MIN_VALUE.equals(key)) {
+				CONTROL.setMinValue(((SimpleObjectProperty<BigDecimal>) properties.get(key)).get());
+			} else if (NUMBER.equals(key)) {
+				CONTROL.setNumber(((SimpleObjectProperty<BigDecimal>) properties.get(key)).get());
+			} else if (NUMBER_FORMAT.equals(key)) {
+				CONTROL.setFormat(((SimpleObjectProperty<NumberFormat>) properties.get(key)).get());
+			} else if (PROMPT_TEXT.equals(key)) {
+				CONTROL.setPromptText(((SimpleStringProperty) properties.get(key)).get());
+			} else if (STEPWIDTH.equals(key)) {
+				CONTROL.setStepwidth(((SimpleObjectProperty<BigDecimal>) properties.get(key)).get());
+			}
+		}
+		return CONTROL;
+	}
 
 }
