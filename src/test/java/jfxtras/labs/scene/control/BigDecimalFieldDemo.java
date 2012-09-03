@@ -27,29 +27,25 @@
 
 package jfxtras.labs.scene.control;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
+
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.ComboBoxBuilder;
 import javafx.scene.control.Label;
 import javafx.scene.control.LabelBuilder;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
-
-import org.jemmy.fx.FXClickFocus;
 
 
 /**
@@ -97,6 +93,16 @@ public class BigDecimalFieldDemo extends Application {
         		.build()
         	);
 
+        root.addRow(10, new Label("Field with boundaries (0,100%)"), 
+        		BigDecimalFieldBuilder.create()
+            	.number(new BigDecimal("0.1"))
+            	.minValue(BigDecimal.ZERO)
+            	.maxValue(BigDecimal.ONE)
+            	.stepwidth(new BigDecimal("0.01"))
+            	.format(DecimalFormat.getPercentInstance())
+            	.build()
+        	);
+
         promptText.numberProperty().addListener(new ChangeListener<BigDecimal>() {
             @Override
             public void changed(ObservableValue<? extends BigDecimal> observableValue, BigDecimal o, BigDecimal o1) {
@@ -118,7 +124,7 @@ public class BigDecimalFieldDemo extends Application {
 //                defaultSpinner.dumpSizes();
             }
         });
-        root.addRow(10, new Label(), button);
+        root.addRow(11, new Label(), button);
 
         Scene scene = new Scene(root);
 //        String path = NumberSpinnerDemo2.class.getResource("number_spinner.css").toExternalForm();

@@ -43,29 +43,47 @@ import javafx.scene.control.Control;
  * Input field for BigDecimal values. This control has the following features: -
  * BigDecimal {@link #number} is parsed and formatted according to the provided
  * NumberFormat - up/down arrow keys and buttons increment/decrement the
- * {@link #number} by {@link #stepwidth}
+ * {@link #number} by {@link #stepwidth}. If {@link #minValueProperty()} and/or
+ * {@link #maxValue} are set, values outside these boundaries are not accepted
+ * for {@link #number}.
  * 
  * @author Thomas Bolz
  */
 public class BigDecimalField extends Control {
 
+	/**
+	 * Default constructor. Returns a {@link BigDecimalField} with no number,
+	 * minValue and maxValue set, but stepwidth 1 and default
+	 * {@link NumberFormat}.
+	 */
 	public BigDecimalField() {
 		super();
 		setStyle(null);
 		getStyleClass().add("big-decimal-field");
 		number = new SimpleObjectProperty<BigDecimal>(this, "number");
 		stepwidth = new SimpleObjectProperty<BigDecimal>(this, "stepwidth", BigDecimal.ONE);
-		format = new SimpleObjectProperty<NumberFormat>(this, "format",
-				NumberFormat.getNumberInstance());
+		maxValue = new SimpleObjectProperty<BigDecimal>(this, "maxValue");
+		minValue = new SimpleObjectProperty<BigDecimal>(this, "minValue");
+		format = new SimpleObjectProperty<NumberFormat>(this, "format", NumberFormat.getNumberInstance());
 		promptText = new SimpleStringProperty(this, "promptText", "");
 		setFocusTraversable(false);
 	}
 
+	/**
+	 * Returns a {@link BigDecimalField} with stepwidth 1 and {@link #number} set to number.
+	 * @param number
+	 */
 	public BigDecimalField(BigDecimal number) {
 		this();
 		setNumber(number);
 	}
 
+	/**
+	 * 
+	 * @param initialValue
+	 * @param stepwidth
+	 * @param format
+	 */
 	public BigDecimalField(BigDecimal initialValue, BigDecimal stepwidth,
 			NumberFormat format) {
 		this();
@@ -103,7 +121,9 @@ public class BigDecimalField extends Control {
 	 */
 	public void increment() {
 		if (getNumber() != null && getStepwidth() != null) {
-			setNumber(getNumber().add(getStepwidth()));
+			BigDecimal newValue = getNumber().add(getStepwidth());
+			if (checkBounds(newValue) == false) {return;}
+			setNumber(newValue);
 		}
 	}
 
@@ -112,7 +132,9 @@ public class BigDecimalField extends Control {
 	 */
 	public void decrement() {
 		if (getNumber() != null && getStepwidth() != null) {
-			setNumber(getNumber().subtract(getStepwidth()));
+			BigDecimal newValue = getNumber().subtract(getStepwidth());
+			if (checkBounds(newValue) == false) {return;}
+			setNumber(newValue);
 		}
 	}
 
@@ -129,7 +151,25 @@ public class BigDecimalField extends Control {
 	 * Set the BigDecimal number
 	 */
 	public void setNumber(BigDecimal value) {
+		if (checkBounds(value) == false) {
+			throw new IllegalArgumentException("number is out of bounds (" + minValue+", " + maxValue+")");
+		}
 		number.set(value);
+	}
+
+	/**
+	 * Checks if value is between minValue and maxValue (both including) if set at all.
+	 * @param value
+	 * @return
+	 */
+	private boolean checkBounds(BigDecimal value) {
+		if (value != null && getMaxValue() != null && value.compareTo(getMaxValue()) > 0) {
+			return false;
+		}
+		if (value != null && getMinValue() != null && value.compareTo(getMinValue()) < 0) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -192,6 +232,17 @@ public class BigDecimalField extends Control {
 	public StringProperty promptTextProperty() {
 		return promptText;
 	}
+	
+	final private ObjectProperty<BigDecimal> maxValue;
+	public BigDecimal getMaxValue() { return maxValue.getValue(); }
+	public void setMaxValue(BigDecimal value) { maxValue.set(value); }
+	public ObjectProperty<BigDecimal> maxValueProperty() { return maxValue; }
+	
+	final private ObjectProperty<BigDecimal> minValue;
+	public BigDecimal getMinValue() { return minValue.getValue(); }
+	public void setMinValue(BigDecimal value) { minValue.set(value); }
+	public ObjectProperty<BigDecimal> minValueProperty() { return minValue; }
+	
 
 	@Override
 	protected String getUserAgentStylesheet() {

@@ -256,6 +256,10 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
             } catch (ParseException ex) {
                 // If parsing fails keep old number
                 setText(getSkinnable().getText());
+            } catch (IllegalArgumentException ex) {
+                // If minValue and/or maxValue are set and the new number is out of these bounds
+            	// keep also the old number
+                setText(getSkinnable().getText());
             }
         }
         
