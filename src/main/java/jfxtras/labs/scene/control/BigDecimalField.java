@@ -58,6 +58,7 @@ public class BigDecimalField extends Control {
 		format = new SimpleObjectProperty<NumberFormat>(this, "format",
 				NumberFormat.getNumberInstance());
 		promptText = new SimpleStringProperty(this, "promptText", "");
+		setFocusTraversable(false);
 	}
 
 	public BigDecimalField(BigDecimal number) {
