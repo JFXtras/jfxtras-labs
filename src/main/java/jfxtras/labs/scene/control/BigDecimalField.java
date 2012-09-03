@@ -28,6 +28,7 @@
 package jfxtras.labs.scene.control;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.logging.Level;
@@ -152,7 +153,8 @@ public class BigDecimalField extends Control {
 	 */
 	public void setNumber(BigDecimal value) {
 		if (checkBounds(value) == false) {
-			throw new IllegalArgumentException("number is out of bounds (" + minValue+", " + maxValue+")");
+			String message = MessageFormat.format("number {0} is out of bounds({1}, {2})", value, minValue.get(), maxValue.get());
+			throw new IllegalArgumentException(message);
 		}
 		number.set(value);
 	}
