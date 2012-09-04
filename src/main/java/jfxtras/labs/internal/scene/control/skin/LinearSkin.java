@@ -1052,6 +1052,11 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
                 BACKGROUND.setFill(Util.applyNoisyBackground(BACKGROUND, control.getTextureColor()));
                 background.getChildren().addAll(BACKGROUND_PLAIN, BACKGROUND);
                 break;
+            case BRUSHED_METAL:
+                BACKGROUND.setFill(Util.applyBrushedMetalBackground(BACKGROUND, control.getTextureColor()));
+                BACKGROUND.setEffect(INNER_SHADOW);
+                background.getChildren().addAll(BACKGROUND);
+                break;
             default:
                 BACKGROUND.setStyle(control.getSimpleGradientBaseColorString());
                 BACKGROUND.getStyleClass().add(control.getBackgroundDesign().CSS_BACKGROUND);

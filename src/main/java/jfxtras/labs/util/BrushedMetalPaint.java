@@ -32,6 +32,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Shape;
 
 import java.util.Random;
@@ -72,7 +73,7 @@ public class BrushedMetalPaint {
 
 
     // ******************** Methods *******************************************
-    public Image filter(final double W, final double H) {
+    public Image getImage(final double W, final double H) {
         final int WIDTH  = (int) W;
         final int HEIGHT = (int) H;
 
@@ -115,11 +116,19 @@ public class BrushedMetalPaint {
         return DESTINATION;
     }
 
-    public ImageView filter(final double W, final double H, final Shape CLIP) {
-        final Image IMAGE = filter(W, H);
+    public ImageView getImageView(final double W, final double H, final Shape CLIP) {
+        final Image IMAGE = getImage(W, H);
         final ImageView IMAGE_VIEW = new ImageView(IMAGE);
         IMAGE_VIEW.setClip(CLIP);
         return IMAGE_VIEW;
+    }
+
+    public ImagePattern apply(final Shape SHAPE) {
+        double x      = SHAPE.getLayoutBounds().getMinX();
+        double y      = SHAPE.getLayoutBounds().getMinY();
+        double width  = SHAPE.getLayoutBounds().getWidth();
+        double height = SHAPE.getLayoutBounds().getHeight();
+        return new ImagePattern(getImage(width, height), x, y, width, height, false);
     }
 
     public void blur(final int[] IN, final int[] OUT, final int WIDTH, final int RADIUS) {

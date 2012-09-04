@@ -72,7 +72,7 @@ public abstract class Gauge extends Control {
         CARBON("background-design-carbon"),
         STAINLESS("background-design-stainless"),
         //STAINLESS_GRINDED("background-design-stainlessgrinded"),
-        //BRUSHED_METAL("background-design-brushedmetal"),
+        BRUSHED_METAL("background-design-brushedmetal"),
         PUNCHED_SHEET("background-design-punchedsheet"),
         //LINEN("background-design-linen"),
         NOISY_PLASTIC("backgroundd-design-noisyplastic"),

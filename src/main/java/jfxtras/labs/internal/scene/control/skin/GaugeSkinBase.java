@@ -465,6 +465,11 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
                 BACKGROUND_SHAPE.setFill(Util.applyNoisyBackground(BACKGROUND_SHAPE, CONTROL.getTextureColor()));
                 BACKGROUND.getChildren().addAll(BACKGROUND_PLAIN, BACKGROUND_SHAPE);
                 break;
+            case BRUSHED_METAL:
+                BACKGROUND_SHAPE.setFill(Util.applyBrushedMetalBackground(BACKGROUND_SHAPE, CONTROL.getTextureColor()));
+                BACKGROUND_SHAPE.setEffect(INNER_SHADOW);
+                BACKGROUND.getChildren().addAll(BACKGROUND_SHAPE);
+                break;
             default:
                 BACKGROUND_SHAPE.setStyle(CONTROL.getSimpleGradientBaseColorString());
                 BACKGROUND_SHAPE.getStyleClass().add(CONTROL.getBackgroundDesign().CSS_BACKGROUND);

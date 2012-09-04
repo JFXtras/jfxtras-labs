@@ -419,4 +419,14 @@ public class Util {
 	    double height = SHAPE.getLayoutBounds().getHeight();
 		return new ImagePattern(IMAGE, x, y, width, height, false);
     }
+
+    public static Image createBrushedMetalImage(final double WIDTH, final double HEIGHT, final Color TEXTURE_COLOR) {
+        final BrushedMetalPaint PAINT = new BrushedMetalPaint(TEXTURE_COLOR);
+        return PAINT.getImage(WIDTH, HEIGHT);
+    }
+
+    public static Paint applyBrushedMetalBackground(final Shape SHAPE, final Color TEXTURE_COLOR) {
+        final BrushedMetalPaint PAINT = new BrushedMetalPaint(TEXTURE_COLOR);
+        return PAINT.apply(SHAPE);
+    }
 }
