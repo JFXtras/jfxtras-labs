@@ -226,7 +226,7 @@ public class LcdBuilder<B extends LcdBuilder<B>> extends ControlBuilder<B> imple
             } else if("decimals".equals(key)) {
                 CONTROL.setLcdDecimals(((IntegerProperty) properties.get(key)).get());
             } else if ("backgroundVisible".equals(key)) {
-                CONTROL.setBackgroundVisible(((BooleanProperty) properties.get(key)).get());
+                CONTROL.setLcdBackgroundVisible(((BooleanProperty) properties.get(key)).get());
             } else if("minMeasuredValueVisible".equals(key)) {
                 CONTROL.setLcdMinMeasuredValueVisible(((BooleanProperty) properties.get(key)).get());
             } else if("minMeasuredValueDecimals".equals(key)) {

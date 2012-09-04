@@ -692,6 +692,15 @@
     -fx-fill: rgb(0, 0, 0);
 }
 
+.background-design-brushedmetal {
+    -fx-fill : rgb(220, 220, 220);
+    -fx-stroke: rgb(220, 220, 220);
+}
+
+.background-design-brushedmetal-text {
+    -fx-fill : rgb(220, 220, 220);
+}
+
 
 /************************************************************
 * Defintions of all pointer gradients                       *

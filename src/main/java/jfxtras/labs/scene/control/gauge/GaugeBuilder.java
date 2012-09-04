@@ -264,6 +264,8 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 styleModel.setLcdDecimals(((IntegerProperty) styleProperties.get(key)).get());
             } else if ("lcdBlinking".equals(key)) {
                 styleModel.setLcdBlinking(((BooleanProperty) styleProperties.get(key)).get());
+            } else if ("lcdBackgroundVisible".equals(key)) {
+                styleModel.setLcdBackgroundVisible(((BooleanProperty) styleProperties.get(key)).get());
             } else if ("glowVisible".equals(key)) {
                 styleModel.setGlowVisible(((BooleanProperty) styleProperties.get(key)).get());
             } else if ("glowOn".equals(key)) {
@@ -786,6 +788,11 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
 
     public final GaugeBuilder lcdBlinking(final boolean LCD_BLINKING) {
         styleProperties.put("lcdBlinking", new SimpleBooleanProperty(LCD_BLINKING));
+        return this;
+    }
+
+    public final GaugeBuilder lcdBackgroundVisible(final boolean LCD_BACKGROUND_VISIBLE) {
+        styleProperties.put("lcdBackgroundVisible", new SimpleBooleanProperty(LCD_BACKGROUND_VISIBLE));
         return this;
     }
 

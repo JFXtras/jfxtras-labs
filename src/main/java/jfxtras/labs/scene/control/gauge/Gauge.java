@@ -72,7 +72,7 @@ public abstract class Gauge extends Control {
         CARBON("background-design-carbon"),
         STAINLESS("background-design-stainless"),
         //STAINLESS_GRINDED("background-design-stainlessgrinded"),
-        //BRUSHED_METAL("background-design-brushedmetal"),
+        BRUSHED_METAL("background-design-brushedmetal"),
         PUNCHED_SHEET("background-design-punchedsheet"),
         //LINEN("background-design-linen"),
         NOISY_PLASTIC("backgroundd-design-noisyplastic"),
@@ -1169,6 +1169,18 @@ public abstract class Gauge extends Control {
 
     public final BooleanProperty lcdBlinkingProperty() {
         return styleModel.lcdBlinkingProperty();
+    }
+
+    public final boolean isLcdBackgroundVisible() {
+        return styleModel.isLcdBackgroundVisible();
+    }
+
+    public final void setLcdBackgroundVisible(final boolean LCD_BACKGROUND_VISIBLE) {
+        styleModel.setLcdBackgroundVisible(LCD_BACKGROUND_VISIBLE);
+    }
+
+    public final BooleanProperty lcdBackgroundVisibleProperty() {
+        return styleModel.lcdBackgroundVisibleProperty();
     }
 
     public final boolean isGlowVisible() {

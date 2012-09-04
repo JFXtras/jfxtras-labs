@@ -84,7 +84,7 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
      */
     private void createNodes() {
         textField = new NumberTextField();
-        textField.promptTextProperty().bind(getSkinnable().promptTextProperty());
+        textField.promptTextProperty().bind(CONTROL.promptTextProperty());
 
         //
         // The Buttons are StackPanes with a Path on top
@@ -117,14 +117,14 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
 
             @Override
             public void handle(MouseEvent arg0) {
-                getSkinnable().increment();
+                CONTROL.increment();
             }
         });
         btnDown.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent arg0) {
-                getSkinnable().decrement();
+                CONTROL.decrement();
             }
         });
         
@@ -169,9 +169,9 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
 			public void changed(ObservableValue<? extends Boolean> ov,
 					Boolean wasFocused, Boolean isFocused) {
 				if (isFocused) {
-					getSkinnable().getStyleClass().add("big-decimal-field-focused");
+					CONTROL.getStyleClass().add("big-decimal-field-focused");
 				} else {
-					getSkinnable().getStyleClass().remove("big-decimal-field-focused");
+					CONTROL.getStyleClass().remove("big-decimal-field-focused");
 				}
 			}
 		});
@@ -186,7 +186,7 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
         public NumberTextField() {
             getStyleClass().add("number-text-field");
             initHandlers();
-            setText(getSkinnable().getText());
+            setText(CONTROL.getText());
         }
 
         private void initHandlers() {
@@ -212,10 +212,10 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
             });
 
             // If number in controller changes update the TextField with the formatted number string
-            getSkinnable().numberProperty().addListener(new InvalidationListener() {
+            CONTROL.numberProperty().addListener(new InvalidationListener() {
                 @Override
                 public void invalidated(Observable arg0) {
-                    setText(getSkinnable().getText());
+                    setText(CONTROL.getText());
                 }
             });
 
@@ -225,11 +225,11 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
                 @Override
                 public void handle(KeyEvent keyEvent) {
                     if (keyEvent.getCode() == KeyCode.DOWN) {
-                        getSkinnable().decrement();
+                        CONTROL.decrement();
                         keyEvent.consume();
                     }
                     if (keyEvent.getCode() == KeyCode.UP) {
-                        getSkinnable().increment();
+                        CONTROL.increment();
                         keyEvent.consume();
                     }
                 }
@@ -245,17 +245,21 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
             try {
                 String input = getText();
                 if (input == null || input.length() == 0) {
-                    getSkinnable().setNumber(null);
+                    CONTROL.setNumber(null);
                     return;
                 }
-                Number parsedNumber = getSkinnable().getFormat().parse(input);
+                Number parsedNumber = CONTROL.getFormat().parse(input);
                 BigDecimal newValue = new BigDecimal(parsedNumber.toString());
                 // if parsing succeeded change number in Controller
-                getSkinnable().setNumber(newValue);
+                CONTROL.setNumber(newValue);
                 selectAll();
             } catch (ParseException ex) {
                 // If parsing fails keep old number
-                setText(getSkinnable().getText());
+                setText(CONTROL.getText());
+            } catch (IllegalArgumentException ex) {
+                // If minValue and/or maxValue are set and the new number is out of these bounds
+            	// keep also the old number
+                setText(CONTROL.getText());
             }
         }
         
