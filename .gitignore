@@ -22,3 +22,4 @@ nbproject
 build.xml
 .DS_Store
 /_lib
+/gradlew_release.cmd
