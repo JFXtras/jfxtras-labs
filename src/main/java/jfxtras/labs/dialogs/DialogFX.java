@@ -147,6 +147,7 @@ public final class DialogFX extends Stage {
     
     private void addOKButton() {
         List<String> labels = new ArrayList<>(1);
+        List<String> labels = new ArrayList<String>(1);
         labels.add("OK");
         
         addButtons(labels, 0, 0);
@@ -161,6 +162,7 @@ public final class DialogFX extends Stage {
          * method if required. You have the power!
          */
         List<String> labels = new ArrayList<>(2);
+        List<String> labels = new ArrayList<String>(2);
         labels.add("Yes");
         labels.add("No");
         
