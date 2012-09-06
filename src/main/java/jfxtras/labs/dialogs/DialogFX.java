@@ -146,7 +146,6 @@ public final class DialogFX extends Stage {
     }
     
     private void addOKButton() {
-        List<String> labels = new ArrayList<>(1);
         List<String> labels = new ArrayList<String>(1);
         labels.add("OK");
         
@@ -161,7 +160,6 @@ public final class DialogFX extends Stage {
          * assign default/cancel Yes/No buttons using the full addButtons()
          * method if required. You have the power!
          */
-        List<String> labels = new ArrayList<>(2);
         List<String> labels = new ArrayList<String>(2);
         labels.add("Yes");
         labels.add("No");
