@@ -1,0 +1,28 @@
+/* basic settings */
+.LocalDatePicker { 
+	-fx-skin: "jfxtras.labs.internal.scene.control.skin.LocalDatePickerControlSkin";
+}
+
+/* style level 
+.LocalDatePickerControlSkin { 
+}
+*/
+
+/* weekday 
+.LocalDatePickerControlSkin .weekday { 
+}
+*/
+
+.LocalDatePickerControlSkin .weekend { 
+	-fx-text-fill: -fx-accent;
+}
+
+/* day
+.LocalDatePickerControlSkin .day { 
+}
+*/
+
+/* highlight today */
+.LocalDatePickerControlSkin .today { 
+	-fx-color: DARKGRAY; 
+}
