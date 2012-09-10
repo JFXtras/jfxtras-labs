@@ -396,7 +396,7 @@ public abstract class Gauge extends Control {
         return gaugeModelProperty;
     }
 
-    public final Gauge.RadialRange getRadialRange() {
+    public Gauge.RadialRange getRadialRange() {
         return radialRange.get();
     }
 

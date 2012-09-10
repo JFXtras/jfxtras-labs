@@ -64,6 +64,7 @@ public class SimpleGauge extends Gauge {
     }
 
     public SimpleGauge(final GaugeModel MODEL) {
+        super(MODEL);
         barColor              = new SimpleObjectProperty<Color>(Color.rgb(178, 177, 212));
         barBackgroundColor    = new SimpleObjectProperty<Color>(Color.rgb(234, 234, 234));
         barWidth              = new SimpleDoubleProperty(20);
@@ -83,6 +84,14 @@ public class SimpleGauge extends Gauge {
 
 
     // ******************** Methods *******************************************
+    @Override public RadialRange getRadialRange() {
+        return RadialRange.RADIAL_300;
+    }
+
+    public void setRadialRange(final RadialRange RADIAL_RANGE) {
+        super.setRadialRange(RadialRange.RADIAL_300);
+    }
+
     public final Color getBarColor() {
         return barColor.get();
     }
