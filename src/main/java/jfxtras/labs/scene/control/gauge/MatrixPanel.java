@@ -32,6 +32,7 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
+import javafx.scene.paint.Color;
 
 /**
  * Created by
@@ -977,6 +978,7 @@ public class MatrixPanel extends Control {
     private IntegerProperty                     ledHeight;
     private ObservableList<Content>             contents;
     private ObjectProperty<Gauge.FrameDesign>   frameDesign;
+    private ObjectProperty<Color>               frameBaseColor;
     private BooleanProperty                     frameVisible;
     
     // ******************** Constructors **************************************
@@ -993,6 +995,7 @@ public class MatrixPanel extends Control {
         ledWidth    = new SimpleIntegerProperty(1);
         ledHeight   = new SimpleIntegerProperty(1);
         frameDesign = new SimpleObjectProperty<Gauge.FrameDesign>(Gauge.FrameDesign.GLOSSY_METAL);
+        frameBaseColor = new SimpleObjectProperty<Color>(Color.rgb(160, 160, 160));
         frameVisible= new SimpleBooleanProperty(true);        
     }
 
@@ -1088,6 +1091,14 @@ public class MatrixPanel extends Control {
 
     public final ObjectProperty<Gauge.FrameDesign> frameDesignProperty() {
         return frameDesign;
+    }
+
+    public final Color getFrameBaseColor() {
+        return frameBaseColor.get();
+    }
+
+    public final void setFrameBaseColor(final Color FRAME_BASE_COLOR) {
+        frameBaseColor.set(FRAME_BASE_COLOR);
     }
 
     public final boolean isFrameVisible() {
