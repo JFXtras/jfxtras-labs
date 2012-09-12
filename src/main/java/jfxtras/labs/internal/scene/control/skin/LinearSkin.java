@@ -974,27 +974,40 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         CLIP_SHAPE.setArcWidth(0.05 * SIZE);
         CLIP_SHAPE.setArcHeight(0.05 * SIZE);
 
-        final Shape CLIP = CLIP_SHAPE;
-
-        final ImageView IMAGE_VIEW;
         switch (control.getBackgroundDesign()) {
             case STAINLESS:
+                Color c1 = Color.hsb(control.getTextureColor().getHue(), control.getTextureColor().getSaturation(), Color.web("#FDFDFD").getBrightness());
+                Color c2 = Color.hsb(control.getTextureColor().getHue(), control.getTextureColor().getSaturation(), Color.web("#E2E2E2").getBrightness());
+                Color c3 = Color.hsb(control.getTextureColor().getHue(), control.getTextureColor().getSaturation(), Color.web("#B2B2B4").getBrightness());
+                Color c4 = Color.hsb(control.getTextureColor().getHue(), control.getTextureColor().getSaturation(), Color.web("#ACACAE").getBrightness());
+                Color c5 = Color.hsb(control.getTextureColor().getHue(), control.getTextureColor().getSaturation(), Color.web("#FDFDFD").getBrightness());
+                Color c6 = Color.hsb(control.getTextureColor().getHue(), control.getTextureColor().getSaturation(), Color.web("#6E6E70").getBrightness());
+                Color c7 = Color.hsb(control.getTextureColor().getHue(), control.getTextureColor().getSaturation(), Color.web("#6E6E70").getBrightness());
+                Color c8 = Color.hsb(control.getTextureColor().getHue(), control.getTextureColor().getSaturation(), Color.web("#FDFDFD").getBrightness());
+                Color c9 = Color.hsb(control.getTextureColor().getHue(), control.getTextureColor().getSaturation(), Color.web("#6E6E70").getBrightness());
+                Color c10 = Color.hsb(control.getTextureColor().getHue(), control.getTextureColor().getSaturation(), Color.web("#6E6E70").getBrightness());
+                Color c11 = Color.hsb(control.getTextureColor().getHue(), control.getTextureColor().getSaturation(), Color.web("#FDFDFD").getBrightness());
+                Color c12 = Color.hsb(control.getTextureColor().getHue(), control.getTextureColor().getSaturation(), Color.web("#ACACAE").getBrightness());
+                Color c13 = Color.hsb(control.getTextureColor().getHue(), control.getTextureColor().getSaturation(), Color.web("#B2B2B4").getBrightness());
+                Color c14 = Color.hsb(control.getTextureColor().getHue(), control.getTextureColor().getSaturation(), Color.web("#E2E2E2").getBrightness());
+                Color c15 = Color.hsb(control.getTextureColor().getHue(), control.getTextureColor().getSaturation(), Color.web("#FDFDFD").getBrightness());
+
                 ConicalGradient gradient = new ConicalGradient(new Point2D(SIZE / 2, SIZE / 2),
-                                                               new Stop(0.00, Color.web("#FDFDFD")),
-                                                               new Stop(0.03, Color.web("#E2E2E2")),
-                                                               new Stop(0.10, Color.web("#B2B2B4")),
-                                                               new Stop(0.14, Color.web("#ACACAE")),
-                                                               new Stop(0.24, Color.web("#FDFDFD")),
-                                                               new Stop(0.33, Color.web("#6E6E70")),
-                                                               new Stop(0.38, Color.web("#6E6E70")),
-                                                               new Stop(0.50, Color.web("#FDFDFD")),
-                                                               new Stop(0.62, Color.web("#6E6E70")),
-                                                               new Stop(0.67, Color.web("#6E6E70")),
-                                                               new Stop(0.76, Color.web("#FDFDFD")),
-                                                               new Stop(0.81, Color.web("#ACACAE")),
-                                                               new Stop(0.85, Color.web("#B2B2B4")),
-                                                               new Stop(0.97, Color.web("#E2E2E2")),
-                                                               new Stop(1.00, Color.web("#FDFDFD")));
+                                                               new Stop(0.00, c1),
+                                                               new Stop(0.03, c2),
+                                                               new Stop(0.10, c3),
+                                                               new Stop(0.14, c4),
+                                                               new Stop(0.24, c5),
+                                                               new Stop(0.33, c6),
+                                                               new Stop(0.38, c7),
+                                                               new Stop(0.50, c8),
+                                                               new Stop(0.62, c9),
+                                                               new Stop(0.67, c10),
+                                                               new Stop(0.76, c11),
+                                                               new Stop(0.81, c12),
+                                                               new Stop(0.85, c13),
+                                                               new Stop(0.97, c14),
+                                                               new Stop(1.00, c15));
                 BACKGROUND.setFill(gradient.apply(BACKGROUND));
                 BACKGROUND.setEffect(INNER_SHADOW);
                 background.getChildren().addAll(BACKGROUND);

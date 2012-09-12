@@ -203,7 +203,7 @@ public class StyleModel {
         areasVisible                    = new SimpleBooleanProperty(false);
         areasHighlighting               = new SimpleBooleanProperty(false);
         markersVisible                  = new SimpleBooleanProperty(false);
-        textureColor                    = new SimpleObjectProperty<Color>(Color.rgb(29, 33, 35));
+        textureColor                    = new SimpleObjectProperty<Color>(Color.rgb(35, 35, 35));
         simpleGradientBaseColor         = new SimpleObjectProperty<Color>(Color.rgb(213, 0, 0));
         titleVisible                    = new SimpleBooleanProperty(true);
         unitVisible                     = new SimpleBooleanProperty(true);

@@ -76,7 +76,7 @@ public class ConicalGradient {
     }
 
     public ConicalGradient(final Point2D CENTER, final double OFFSET, final Stop... STOPS) {
-        this(CENTER, Arrays.asList(STOPS));
+        this(CENTER, OFFSET, Arrays.asList(STOPS));
     }
 
     public ConicalGradient(final Point2D CENTER, final double OFFSET, final List<Stop> STOPS) {
