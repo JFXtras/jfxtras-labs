@@ -68,7 +68,8 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
         RADIAL_QUARTER_E,
         RADIAL_QUARTER_S,
         RADIAL_QUARTER_W,
-        RADIAL
+        RADIAL,
+        SIMPLE_GAUGE
     }
 
 
@@ -388,6 +389,14 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 if (layoutY != -1) {radialQuarterW.setLayoutY(layoutY);}
                 super.applyTo(radialQuarterW);
                 return radialQuarterW;
+            case SIMPLE_GAUGE:
+                SimpleGauge simpleGauge = new SimpleGauge(gaugeModel);
+                simpleGauge.setPrefSize(SIZE, SIZE);
+                simpleGauge.setRadialRange(Gauge.RadialRange.RADIAL_300);
+                if (layoutX != -1) {simpleGauge.setLayoutX(layoutX);}
+                if (layoutY != -1) {simpleGauge.setLayoutY(layoutY);}
+                super.applyTo(simpleGauge);
+                return simpleGauge;
             case RADIAL:
             default:
                 Radial radial = new Radial(gaugeModel, styleModel);

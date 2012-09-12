@@ -325,6 +325,7 @@ public class StyleModel {
 
     public final void setFrameBaseColor(final Color FRAME_BASE_COLOR) {
         frameBaseColor.set(FRAME_BASE_COLOR);
+        fireStyleModelEvent();
     }
 
     public final ObjectProperty<Color> frameBaseColorProperty() {

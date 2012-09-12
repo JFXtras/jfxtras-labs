@@ -359,6 +359,8 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         // Use bindings for pointer rotation
         pointerRotation.angleProperty().bind((gaugeValue.subtract(control.minValueProperty())).multiply(control.angleStepProperty()).add(control.getRadialRange().ROTATION_OFFSET));
 
+        calcGaugeBounds();
+
         initialized = true;
         repaint();
     }
@@ -799,12 +801,14 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             if (SIZE > 0) {
                 img = new WritableImage((int) SIZE, (int) SIZE);
             }
+            calcGaugeBounds();
             repaint();
         } else if ("PREF_HEIGHT".equals(PROPERTY)) {
             final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
             if (SIZE > 0) {
                 img = new WritableImage((int) SIZE, (int) SIZE);
             }
+            calcGaugeBounds();
             repaint();
         } else if ("AREAS".equals(PROPERTY)) {
             updateAreas();
