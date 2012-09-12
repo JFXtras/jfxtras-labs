@@ -281,6 +281,8 @@ public class RadialQuarterWSkin extends GaugeSkinBase<RadialQuarterW, RadialQuar
         addBindings();
         addListeners();
 
+        calcGaugeBounds();
+
         initialized = true;
         repaint();
     }

@@ -290,6 +290,8 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         control.setMinMeasuredValue(control.getMaxValue());
         control.setMaxMeasuredValue(control.getMinValue());
 
+        calcGaugeBounds();
+
         initialized = true;
         repaint();
     }

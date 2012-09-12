@@ -279,6 +279,8 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         control.setMinMeasuredValue(control.getMaxValue());
         control.setMaxMeasuredValue(control.getMinValue());
 
+        calcGaugeBounds();
+
         initialized = true;
         repaint();
     }

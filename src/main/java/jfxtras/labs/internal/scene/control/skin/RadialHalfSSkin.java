@@ -290,6 +290,8 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
         addBindings();
         addListeners();
 
+        calcGaugeBounds();
+
         initialized = true;
         repaint();
     }
