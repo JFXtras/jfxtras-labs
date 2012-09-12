@@ -52,12 +52,7 @@ public class Linear extends Gauge {
 
     public Linear(final GaugeModel GAUGE_MODEL, final StyleModel STYLE_MODEL) {
         super(GAUGE_MODEL, STYLE_MODEL);
-        init();
-    }
 
-
-    // ******************** Initialization ************************************
-    @Override public final void init() {
         getStyleClass().setAll(DEFAULT_STYLE_CLASS);
     }
 

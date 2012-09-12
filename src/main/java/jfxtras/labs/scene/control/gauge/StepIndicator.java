@@ -64,11 +64,6 @@ public class StepIndicator extends Control {
         noOfSteps = new SimpleIntegerProperty(5);
         currentStep = new SimpleIntegerProperty(0);
 
-        init();
-    }
-
-    private void init() {
-        // the -fx-skin attribute in the CSS sets which Skin class is used
         getStyleClass().add(DEFAULT_STYLE_CLASS);
     }
 

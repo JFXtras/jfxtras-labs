@@ -101,11 +101,7 @@ public class Clock extends Control {
         hour                  = new SimpleIntegerProperty(0);
         minute                = new SimpleIntegerProperty(0);
         second                = new SimpleIntegerProperty(0);
-        init();
-    }
 
-    private void init() {
-        // the -fx-skin attribute in the CSS sets which Skin class is used
         getStyleClass().add(DEFAULT_STYLE_CLASS);
     }
 

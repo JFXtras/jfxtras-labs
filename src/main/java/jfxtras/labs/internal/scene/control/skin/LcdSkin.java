@@ -233,7 +233,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         currentLcdValue.set(control.getLcdValue());
 
         initialized = true;
-        paint();
+        repaint();
     }
 
     private void addBindings() {
@@ -299,7 +299,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         control.bargraphVisibleProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
-                paint();
+                repaint();
             }
         });
 
@@ -394,6 +394,8 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         });
     }
 
+
+    // ******************** Methods *******************************************
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
 
@@ -434,21 +436,27 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         } else if ("TREND".equals(PROPERTY)) {
             drawLcdContent();
         } else if ("BACKGROUND_VISIBILITY".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("GAUGE_MODEL".equals(PROPERTY)) {
             addBindings();
         } else if ("STYLE_MODEL".equals(PROPERTY)) {
             addBindings();
         } else if ("PREF_WIDTH".equals(PROPERTY)) {
-
+            repaint();
         } else if ("PREF_HEIGHT".equals(PROPERTY)) {
-
+            repaint();
         }
     }
 
+    public void repaint() {
+        isDirty = true;
+        requestLayout();
+    }
 
-    // ******************** Methods *******************************************
-    public void paint() {
+    @Override public void layoutChildren() {
+        if (!isDirty) {
+            return;
+        }
         if (!initialized) {
             init();
         }
@@ -459,18 +467,13 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             drawLcdContent();
 
             getChildren().addAll(minMeasured,
-                                 maxMeasured,
-                                 lcd,
-                                 glowOn,
-                                 lcdContent);
+                maxMeasured,
+                lcd,
+                glowOn,
+                lcdContent);
         }
-    }
+        isDirty = false;
 
-    @Override public void layoutChildren() {
-        if (isDirty) {
-            paint();
-            isDirty = false;
-        }
         super.layoutChildren();
     }
 

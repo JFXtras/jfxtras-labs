@@ -96,32 +96,19 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         }
 
         // Register listeners
+        registerChangeListener(control.prefWidthProperty(), "PREF_WIDTH");
+        registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");
         registerChangeListener(control.chargingProperty(), "CHARGING");
         registerChangeListener(control.chargeIndicatorProperty(), "CHARGE_INDICATOR");
         registerChangeListener(control.chargingLevelProperty(), "CHARGE_LEVEL");
         registerChangeListener(control.levelColorsProperty(), "LEVEL_COLORS");
 
         initialized = true;
-        paint();
+        repaint();
     }
 
 
     // ******************** Methods *******************************************
-    public final void paint() {
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            getChildren().clear();
-            drawBackground();
-            drawMain();
-            drawForeground();
-            getChildren().addAll(background,
-                                 main,
-                                 foreground);
-        }
-    }
-
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
         if ("CHARGING".equals(PROPERTY)) {
@@ -147,11 +134,29 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
         }
     }
 
+    public final void repaint() {
+        isDirty = true;
+        requestLayout();
+    }
+
     @Override public void layoutChildren() {
-        if (isDirty) {
-            paint();
-            isDirty = false;
+        if (!isDirty) {
+            return;
         }
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            getChildren().clear();
+            drawBackground();
+            drawMain();
+            drawForeground();
+            getChildren().addAll(background,
+                main,
+                foreground);
+        }
+        isDirty = false;
+
         super.layoutChildren();
     }
 

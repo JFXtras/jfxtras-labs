@@ -115,30 +115,11 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
         registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");
 
         initialized = true;
-        paint();
+        repaint();
     }
 
 
     // ******************** Methods *******************************************
-    public final void paint() {
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            font = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/droidsansmono.ttf"), (0.85 * control.getPrefHeight()));
-            setClip(new Rectangle(0, 1, control.getPrefWidth(), control.getPrefHeight()));
-            getChildren().clear();
-            drawBackground();
-            setupDials();
-            drawForeground();
-            getChildren().add(background);
-            for (Dial dial : listOfDials) {
-                getChildren().addAll(dial.getNextNumberGroup(), dial.getCurrentNumberGroup());
-            }
-            getChildren().add(foreground);
-        }
-    }
-
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
         if ("ROTATION_PRESET".equals(PROPERTY)) {
@@ -169,32 +150,56 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
             }
         } else if ("NO_OF_DIGITS".equals(PROPERTY)) {
             control.setPrefSize(0.5925925925925926 * getPrefHeight() * (control.getNoOfDigits() + control.getNoOfDecimals()), getPrefHeight());
-            paint();
+            repaint();
         } else if ("NO_OF_DECIMALS".equals(PROPERTY)) {
             control.setPrefSize(0.5925925925925926 * getPrefHeight() * (control.getNoOfDigits() + control.getNoOfDecimals()), getPrefHeight());
-            paint();
+            repaint();
         } else if ("DECIMAL_COLOR".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("COLOR".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("PREF_WIDTH".equals(PROPERTY)) {
             double prefHeight = (control.getPrefWidth() / (control.getNoOfDigits() + control.getNoOfDecimals())) * 1.6875;
             if (Double.compare(control.getPrefHeight(), prefHeight) != 0) {
                 control.setPrefHeight(prefHeight);
             }
+            repaint();
         } else if ("PREF_HEIGHT".equals(PROPERTY)) {
             double prefWidth = control.getPrefHeight() * 0.5925925925925926 * (control.getNoOfDigits() + control.getNoOfDecimals());
             if (Double.compare(control.getPrefWidth(), prefWidth) != 0) {
                 control.setPrefWidth(prefWidth);
             }
+            repaint();
         }
     }
 
+    public final void repaint() {
+        isDirty = true;
+        requestLayout();
+    }
+
     @Override public void layoutChildren() {
-        if (isDirty) {
-            paint();
-            isDirty = false;
+        if (!isDirty) {
+            return;
         }
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            font = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/droidsansmono.ttf"), (0.85 * control.getPrefHeight()));
+            setClip(new Rectangle(0, 1, control.getPrefWidth(), control.getPrefHeight()));
+            getChildren().clear();
+            drawBackground();
+            setupDials();
+            drawForeground();
+            getChildren().add(background);
+            for (Dial dial : listOfDials) {
+                getChildren().addAll(dial.getNextNumberGroup(), dial.getCurrentNumberGroup());
+            }
+            getChildren().add(foreground);
+        }
+        isDirty = false;
+
         super.layoutChildren();
     }
 

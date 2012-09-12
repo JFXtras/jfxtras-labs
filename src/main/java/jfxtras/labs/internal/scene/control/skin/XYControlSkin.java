@@ -200,6 +200,8 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         }
 
         // Register listeners
+        registerChangeListener(control.prefWidthProperty(), "PREF_WIDTH");
+        registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");
         registerChangeListener(control.xValueProperty(), "X");
         registerChangeListener(control.yValueProperty(), "Y");
         registerChangeListener(control.xAxisLabelProperty(), "X_AXIS_LABEL");
@@ -217,20 +219,11 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         thumb.addEventFilter(MouseEvent.MOUSE_RELEASED, handler);
         addEventFilter(ScrollEvent.SCROLL, handler);
         initialized = true;
-        paint();
+        repaint();
     }
 
 
     // ******************** Methods *******************************************
-    public final void paint() {
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            drawControl();
-        }
-    }
-
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
         if ("X".equals(PROPERTY)) {
@@ -244,13 +237,13 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
             thumb.setLayoutY(posY);
             verSliderThumb.setLayoutY(control.getYValue() * verSlider.getLayoutBounds().getHeight() / 2 + verSlider.getLayoutBounds().getHeight() / 2 - verSliderThumb.getLayoutBounds().getHeight() / 2 + incrementY.getLayoutBounds().getHeight());
         } else if ("X_AXIS_LABEL".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("Y_AXIS_LABEL".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("X_AXIS_LABEL_VISIBILITY".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("Y_AXIS_LABEL_VISIBILITY".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("SENSITIVITY".equals(PROPERTY)) {
             switch (control.getSensitivity()) {
                 case COARSE:
@@ -269,14 +262,30 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
                     verSliderThumb.setStyle("-fx-sensitivity-color: green;");
                     break;
             }
+        } else if ("PREF_WIDTH".equals(PROPERTY)) {
+            repaint();
+        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
+            repaint();
         }
     }
 
+    public final void repaint() {
+        isDirty = true;
+        requestLayout();
+    }
+
     @Override public void layoutChildren() {
-        if (isDirty) {
-            paint();
-            isDirty = false;
+        if (!isDirty) {
+            return;
         }
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            drawControl();
+        }
+        isDirty = false;
+
         super.layoutChildren();
     }
 
@@ -375,6 +384,8 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         horThumb.getStyleClass().add("xy-slider-horizontal-thumb");
         horSliderThumb.getChildren().add(horThumb);
         horSliderThumb.relocate(AREA_SIZE / 2 - 1, AREA_SIZE);
+        horSliderThumb.getStyleClass().clear();
+        horSliderThumb.getStyleClass().addAll("xy-slider-horizontal-thumb");
         pane.getChildren().add(horSliderThumb);
 
         incrementX.getStyleClass().add("xy-button");
@@ -418,6 +429,8 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         verThumb.getStyleClass().add("xy-slider-vertical-thumb");
         verSliderThumb.getChildren().add(verThumb);
         verSliderThumb.relocate(AREA_SIZE, AREA_SIZE / 2 - 1);
+        verSliderThumb.getStyleClass().clear();
+        verSliderThumb.getStyleClass().addAll("xy-slider-vertical-thumb");
         pane.getChildren().add(verSliderThumb);
 
         decrementY.getStyleClass().add("xy-button");
@@ -441,6 +454,7 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         reset.getChildren().add(RESET_GROUP);
         pane.getChildren().add(reset);
 
+        thumb.getStyleClass().clear();
         thumb.getStyleClass().addAll("xy-thumb");
         thumb.relocate(AREA_SIZE / 2 - 5, AREA_SIZE / 2 - 5);
         pane.getChildren().add(thumb);

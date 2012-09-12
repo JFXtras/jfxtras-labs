@@ -91,18 +91,48 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
         }
 
         // Register listeners
+        registerChangeListener(control.prefWidthProperty(), "PREF_WIDTH");
+        registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");
         registerChangeListener(control.darkColorProperty(), "DARK_COLOR");
         registerChangeListener(control.brightColorProperty(), "BRIGHT_COLOR");
         registerChangeListener(control.noOfStarsProperty(), "NO_OF_STARS");
         registerChangeListener(control.ratingProperty(), "RATING");
 
         initialized = true;
-        paint();
+        repaint();
     }
 
 
     // ******************** Methods *******************************************
-    public final void paint() {
+    @Override protected void handleControlPropertyChanged(final String PROPERTY) {
+        super.handleControlPropertyChanged(PROPERTY);
+        if ("NO_OF_STARS".equals(PROPERTY)) {
+            noOfStars = control.getNoOfStars();
+            drawStars();
+            repaint();
+        } else if ("RATING".equals(PROPERTY)) {
+            rating = control.getRating();
+            updateStars();
+        } else if ("BRIGHT_COLOR".equals(PROPERTY)) {
+            updateStars();
+        } else if ("DARK_COLOR".equals(PROPERTY)) {
+            updateStars();
+        } else if ("PREF_WIDTH".equals(PROPERTY)) {
+            repaint();
+        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
+            repaint();
+        }
+    }
+
+    public final void repaint() {
+        isDirty = true;
+        requestLayout();
+    }
+
+    @Override public void layoutChildren() {
+        if (!isDirty) {
+            return;
+        }
         if (!initialized) {
             init();
         }
@@ -111,33 +141,8 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
             drawStars();
             getChildren().addAll(starContainer);
         }
-    }
+        isDirty = false;
 
-    @Override protected void handleControlPropertyChanged(final String PROPERTY) {
-        super.handleControlPropertyChanged(PROPERTY);
-        if ("NO_OF_STARS".equals(PROPERTY)) {
-            noOfStars = control.getNoOfStars();
-            drawStars();
-            paint();
-        } else if ("RATING".equals(PROPERTY)) {
-            rating = control.getRating();
-            updateStars();
-        } else if ("BRIGHT_COLOR".equals(PROPERTY)) {
-            updateStars();
-        } else if ("DARK_COLOR".equals(PROPERTY)) {
-            updateStars();
-        }
-    }
-
-    public int getCurrentIndex() {
-        return currentIndex;
-    }
-
-    @Override public void layoutChildren() {
-        if (isDirty) {
-            paint();
-            isDirty = false;
-        }
         super.layoutChildren();
     }
 
@@ -163,6 +168,10 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
             prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
+    }
+
+    public int getCurrentIndex() {
+        return currentIndex;
     }
 
 

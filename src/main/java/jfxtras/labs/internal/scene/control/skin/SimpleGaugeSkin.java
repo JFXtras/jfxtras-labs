@@ -131,7 +131,7 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
         updateNumberFormat();
 
         initialized = true;
-        paint();
+        repaint();
     }
 
 
@@ -142,14 +142,14 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
             size  = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
             valueText.setLayoutX((size - valueText.getLayoutBounds().getWidth()) / 2);
             valueText.setLayoutY((size - valueText.getLayoutBounds().getHeight()) / 2 + control.getLabelFontSize());
-            paint();
+            repaint();
         } else if ("PREF_HEIGHT".equals(PROPERTY)) {
             size  = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
             valueText.setLayoutX((size - valueText.getLayoutBounds().getWidth()) / 2);
             valueText.setLayoutY((size - valueText.getLayoutBounds().getHeight()) / 2 + control.getLabelFontSize());
-            paint();
+            repaint();
         } else if ("FULL_REPAINT".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("VALUE".equals(PROPERTY)) {
             if (control.isValueAnimationEnabled()) {
                 final KeyValue KEY_VALUE = new KeyValue(gaugeValue, control.getValue(), Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
@@ -169,7 +169,7 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
             drawGauge();
         } else if ("LABEL".equals(PROPERTY)) {
             updateNumberFormat();
-            paint();
+            repaint();
         } else if ("GAUGE_VALUE".equals(PROPERTY)) {
             if (!control.getSections().isEmpty()) {
                 for (Section section : control.getSections()) {
@@ -188,21 +188,24 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
         }
     }
 
-    public final void paint() {
+    public final void repaint() {
+        isDirty = true;
+        requestLayout();
+
+    }
+
+    @Override public void layoutChildren() {
+        if (!isDirty) {
+            return;
+        }
         if (!initialized) {
             init();
         }
         getChildren().clear();
         drawGauge();
         getChildren().addAll(gauge);
+        isDirty = false;
 
-    }
-
-    @Override public void layoutChildren() {
-        if (isDirty) {
-            paint();
-            isDirty = false;
-        }
         super.layoutChildren();
     }
 

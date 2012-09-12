@@ -291,7 +291,7 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         control.setMaxMeasuredValue(control.getMinValue());
 
         initialized = true;
-        paint();
+        repaint();
     }
 
     private void addBindings() {
@@ -517,6 +517,8 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         });
     }
 
+
+    // ******************** Methods *******************************************
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
 
@@ -623,9 +625,9 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                 ledTimer.stop();
             }
         } else if ("PREF_WIDTH".equals(PROPERTY)) {
-
+            repaint();
         } else if ("PREF_HEIGHT".equals(PROPERTY)) {
-
+            repaint();
         } else if ("AREAS".equals(PROPERTY)) {
             updateAreas();
             drawCircularAreas(control, areas, gaugeBounds);
@@ -637,9 +639,15 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         }
     }
 
+    public void repaint() {
+        isDirty = true;
+        requestLayout();
+    }
 
-    // ******************** Methods *******************************************
-    public void paint() {
+    @Override public void layoutChildren() {
+        if (!isDirty) {
+            return;
+        }
         if (!initialized) {
             init();
         }
@@ -676,35 +684,30 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
             }
 
             getChildren().addAll(frame,
-                                 background,
-                                 sections,
-                                 areas,
-                                 trend,
-                                 ledOff,
-                                 ledOn,
-                                 userLedOff,
-                                 userLedOn,
-                                 titleAndUnit,
-                                 tickmarks,
-                                 threshold,
-                                 glowOff,
-                                 glowOn,
-                                 pointerShadow,
-                                 bargraphOff,
-                                 bargraphOn,
-                                 minMeasured,
-                                 maxMeasured,
-                                 markers,
-                                 knobsShadow,
-                                 foreground);
+                background,
+                sections,
+                areas,
+                trend,
+                ledOff,
+                ledOn,
+                userLedOff,
+                userLedOn,
+                titleAndUnit,
+                tickmarks,
+                threshold,
+                glowOff,
+                glowOn,
+                pointerShadow,
+                bargraphOff,
+                bargraphOn,
+                minMeasured,
+                maxMeasured,
+                markers,
+                knobsShadow,
+                foreground);
         }
-    }
+        isDirty = false;
 
-    @Override public void layoutChildren() {
-        if (isDirty) {
-            paint();
-            isDirty = false;
-        }
         super.layoutChildren();
     }
 

@@ -82,11 +82,7 @@ public class XYControl extends Control {
         yAxisLabelVisible = new SimpleBooleanProperty(false);
         sensitivity       = new SimpleObjectProperty<Sensitivity>(Sensitivity.COARSE);
         position          = new SimpleObjectProperty<Point2D>(new Point2D(xValue.get(),  yValue.get()));
-        init();
-    }
 
-    private void init() {
-        // the -fx-skin attribute in the CSS sets which Skin class is used
         getStyleClass().add(DEFAULT_STYLE_CLASS);
     }
 

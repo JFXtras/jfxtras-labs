@@ -61,12 +61,7 @@ public class RadialQuarterN extends Gauge {
     public RadialQuarterN(final GaugeModel GAUGE_MODEL, final StyleModel STYLE_MODEL) {
         super(GAUGE_MODEL, STYLE_MODEL);
         setRadialRange(Gauge.RadialRange.RADIAL_90N);
-        init();
-    }
 
-
-    // ******************** Initialization ************************************
-    @Override public final void init() {
         getStyleClass().setAll(DEFAULT_STYLE_CLASS);
     }
 

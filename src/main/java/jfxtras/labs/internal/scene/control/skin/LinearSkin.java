@@ -280,7 +280,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         control.setMaxMeasuredValue(control.getMinValue());
 
         initialized = true;
-        paint();
+        repaint();
     }
 
     private void addBindings() {
@@ -454,6 +454,8 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         });
     }
 
+
+    // ******************** Methods *******************************************
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
         if ("GAUGE_TYPE".equals(PROPERTY)) {
@@ -570,12 +572,22 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
 
         } else if ("MARKERS".equals(PROPERTY)) {
             drawIndicators();
+        } else if ("PREF_WIDTH".equals(PROPERTY)) {
+            repaint();
+        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
+            repaint();
         }
     }
 
+    public final void repaint() {
+        isDirty = true;
+        requestLayout();
+    }
 
-    // ******************** Methods *******************************************
-    public void paint() {
+    @Override public void layoutChildren() {
+        if (isDirty) {
+            return;
+        }
         if (!initialized) {
             init();
         }
@@ -602,31 +614,26 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             drawForeground();
 
             getChildren().addAll(frame,
-                                 background,
-                                 ledOff,
-                                 ledOn,
-                                 userLedOff,
-                                 userLedOn,
-                                 titleAndUnit,
-                                 tickmarks,
-                                 threshold,
-                                 glowOff,
-                                 glowOn,
-                                 minMeasured,
-                                 maxMeasured,
-                                 markers,
-                                 lcd,
-                                 lcdContent,
-                                 bar,
-                                 foreground);
+                background,
+                ledOff,
+                ledOn,
+                userLedOff,
+                userLedOn,
+                titleAndUnit,
+                tickmarks,
+                threshold,
+                glowOff,
+                glowOn,
+                minMeasured,
+                maxMeasured,
+                markers,
+                lcd,
+                lcdContent,
+                bar,
+                foreground);
         }
-    }
+        isDirty = false;
 
-    @Override public void layoutChildren() {
-        if (isDirty) {
-            paint();
-            isDirty = false;
-        }
         super.layoutChildren();
     }
 

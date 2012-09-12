@@ -141,11 +141,6 @@ public class SplitFlap extends Control {
         backgroundVisible          = new SimpleBooleanProperty(true);
         keepAspect                 = false;
 
-        init();
-    }
-
-    private void init() {
-        // the -fx-skin attribute in the CSS sets which Skin class is used
         getStyleClass().add(DEFAULT_STYLE_CLASS);
         selectedSet.addAll(Arrays.asList(EXTENDED));
     }

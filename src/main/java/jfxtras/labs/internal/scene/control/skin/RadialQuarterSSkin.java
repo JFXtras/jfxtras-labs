@@ -295,7 +295,7 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
         addListeners();
 
         initialized = true;
-        paint();
+        repaint();
     }
 
     private void addBindings() {
@@ -501,6 +501,8 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
         });
     }
 
+
+    // ******************** Methods *******************************************
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
 
@@ -611,9 +613,9 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
                 ledTimer.stop();
             }
         } else if ("PREF_WIDTH".equals(PROPERTY)) {
-
+            repaint();
         } else if ("PREF_HEIGHT".equals(PROPERTY)) {
-
+            repaint();
         } else if ("AREAS".equals(PROPERTY)) {
             updateAreas();
             drawCircularAreas(control, areas, gaugeBounds);
@@ -625,9 +627,7 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
         }
     }
 
-
-    // ******************** Methods *******************************************
-    public void paint() {
+    public void repaint() {
         if (!initialized) {
             init();
         }
@@ -688,11 +688,69 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
     }
 
     @Override public void layoutChildren() {
-        if (isDirty) {
-            adjustLcdFont();
-            paint();
-            isDirty = false;
+        if (!isDirty) {
+            return;
         }
+        adjustLcdFont();
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            calcGaugeBounds();
+            setTranslateX(framelessOffset.getX());
+            setTranslateY(framelessOffset.getY());
+            center = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getHeight() * 0.265);
+            getChildren().clear();
+            drawCircularFrame(control, frame, gaugeBounds);
+            drawCircularBackground(control, background, gaugeBounds);
+            drawCircularTrend(control, trend, gaugeBounds);
+            updateSections();
+            drawCircularSections(control, sections, gaugeBounds);
+            updateAreas();
+            drawCircularAreas(control, areas, gaugeBounds);
+            drawTitleAndUnit();
+            drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
+            drawCircularLed(control, ledOff, ledOn, gaugeBounds);
+            drawCircularUserLed(control, userLedOff, userLedOn, gaugeBounds);
+            drawThreshold();
+            drawCircularGlowOff(glowOff, gaugeBounds);
+            drawCircularGlowOn(control, glowOn, glowColors, gaugeBounds);
+            drawMinMeasuredIndicator();
+            drawMaxMeasuredIndicator();
+            drawCircularLcd(control, lcd, gaugeBounds);
+            drawLcdContent();
+            drawPointer();
+            drawCircularKnobs(control, knobs, center, gaugeBounds);
+            drawCircularForeground(control, foreground, gaugeBounds);
+            if (control.isPointerShadowEnabled() && !control.isPointerGlowEnabled()) {
+                addDropShadow(control, knobs, pointerShadow);
+            }
+
+            getChildren().addAll(frame,
+                background,
+                trend,
+                sections,
+                areas,
+                ledOff,
+                ledOn,
+                userLedOff,
+                userLedOn,
+                titleAndUnit,
+                tickmarks,
+                threshold,
+                glowOff,
+                glowOn,
+                minMeasured,
+                maxMeasured,
+                markers,
+                lcd,
+                lcdContent,
+                pointerShadow,
+                knobsShadow,
+                foreground);
+        }
+        isDirty = false;
+
         super.layoutChildren();
     }
 

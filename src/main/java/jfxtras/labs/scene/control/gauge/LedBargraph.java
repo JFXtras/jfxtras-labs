@@ -70,12 +70,7 @@ public class LedBargraph extends Control {
         ledColors        = new SimpleObjectProperty<LinkedList<Color>>(new LinkedList<Color>());
         peakValueVisible = new SimpleBooleanProperty(false);
         value            = new SimpleDoubleProperty(0);
-        init();
-    }
 
-
-    // ******************** Initialization ************************************
-    private void init() {
         for (int i = 0 ; i < noOfLeds.get() ; i++) {
             if (i < 11) {
                 ledColors.get().add(Color.LIME);
@@ -85,8 +80,6 @@ public class LedBargraph extends Control {
                 ledColors.get().add(Color.RED);
             }
         }
-
-        // the -fx-skin attribute in the CSS sets which Skin class is used
         getStyleClass().add(DEFAULT_STYLE_CLASS);
     }
 

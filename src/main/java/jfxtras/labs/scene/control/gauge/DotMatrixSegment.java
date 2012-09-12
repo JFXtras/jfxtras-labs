@@ -55,17 +55,13 @@ public class DotMatrixSegment extends Control {
         character            = new SimpleStringProperty(CHARACTER);
         dotOn                = new SimpleBooleanProperty(false);
         mapping              = new HashMap<Integer, List<Dot>>(72);
-        init();
+
+        initMapping();
+        getStyleClass().add(DEFAULT_STYLE_CLASS);
     }
 
 
     // ******************** Initialization ************************************
-    private void init() {
-        initMapping();
-        // the -fx-skin attribute in the CSS sets which Skin class is used
-        getStyleClass().add(DEFAULT_STYLE_CLASS);
-    }
-
     private void initMapping() {
         // Space
         mapping.put(20, Arrays.asList(new Dot[] {}));

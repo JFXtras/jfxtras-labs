@@ -82,6 +82,8 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         updateCharacter();
 
         // Register listeners
+        registerChangeListener(control.prefWidthProperty(), "PREF_WIDTH");
+        registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");
         registerChangeListener(control.characterProperty(), "CHARACTER");
         registerChangeListener(control.colorProperty(), "COLOR");
         registerChangeListener(control.plainColorProperty(), "PLAIN_COLOR");
@@ -89,22 +91,11 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         registerChangeListener(control.dotOnProperty(), "DOT_ON");
 
         initialized = true;
-        paint();
+        repaint();
     }
 
 
     // ******************** Methods *******************************************
-    public final void paint() {
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            updateCharacter();
-            getChildren().clear();
-            getChildren().add(segments);
-        }
-    }
-
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
 
@@ -118,14 +109,32 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
             updateCharacter();
         } else if ("DOT_ON".equals(PROPERTY)) {
             updateCharacter();
+        } else if ("PREF_WIDTH".equals(PROPERTY)) {
+            repaint();
+        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
+            repaint();
         }
     }
 
+    public final void repaint() {
+        isDirty = true;
+        requestLayout();
+    }
+
     @Override public void layoutChildren() {
-        if (isDirty) {
-            paint();
-            isDirty = false;
+        if (!isDirty) {
+            return;
         }
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            updateCharacter();
+            getChildren().clear();
+            getChildren().add(segments);
+        }
+        isDirty = false;
+
         super.layoutChildren();
     }
 

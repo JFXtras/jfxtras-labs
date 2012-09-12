@@ -73,12 +73,7 @@ public class SimpleGauge extends Gauge {
         labelColor            = new SimpleObjectProperty<Color>(Color.BLACK);
         unitColor             = new SimpleObjectProperty<Color>(Color.BLACK);
         noOfDecimals          = new SimpleIntegerProperty(2);
-        init();
-    }
 
-
-    // ******************** Initialization ************************************
-    @Override public final void init() {
         getStyleClass().setAll(DEFAULT_STYLE_CLASS);
     }
 

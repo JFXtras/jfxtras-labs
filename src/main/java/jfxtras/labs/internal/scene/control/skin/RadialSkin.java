@@ -360,7 +360,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         pointerRotation.angleProperty().bind((gaugeValue.subtract(control.minValueProperty())).multiply(control.angleStepProperty()).add(control.getRadialRange().ROTATION_OFFSET));
 
         initialized = true;
-        paint();
+        repaint();
     }
 
     private void addBindings() {
@@ -650,6 +650,8 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         });
     }
 
+
+    // ******************** Methods *******************************************
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
 
@@ -762,7 +764,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         } else if ("TREND".equals(PROPERTY)) {
             drawCircularTrend(control, trend, gaugeBounds);
         } else if ("SIMPLE_GRADIENT_BASE".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("TICKMARKS".equals(PROPERTY)) {
             if (control.getMinValue() < 0) {
                 negativeOffset = control.getMinValue() * control.getAngleStep();
@@ -797,11 +799,13 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             if (SIZE > 0) {
                 img = new WritableImage((int) SIZE, (int) SIZE);
             }
+            repaint();
         } else if ("PREF_HEIGHT".equals(PROPERTY)) {
             final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
             if (SIZE > 0) {
                 img = new WritableImage((int) SIZE, (int) SIZE);
             }
+            repaint();
         } else if ("AREAS".equals(PROPERTY)) {
             updateAreas();
             drawCircularAreas(control, areas, gaugeBounds);
@@ -813,9 +817,16 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         }
     }
 
+    public void repaint() {
+        isDirty = true;
+        requestLayout();
+    }
 
-    // ******************** Methods *******************************************
-    public void paint() {
+    @Override public void layoutChildren() {
+        if (!isDirty) {
+            return;
+        }
+        adjustLcdFont();
         if (!initialized) {
             init();
         }
@@ -854,39 +865,33 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             }
 
             getChildren().addAll(frame,
-                                 background,
-                                 histogram,
-                                 trend,
-                                 sections,
-                                 areas,
-                                 ledOff,
-                                 ledOn,
-                                 userLedOff,
-                                 userLedOn,
-                                 titleAndUnit,
-                                 tickmarks,
-                                 threshold,
-                                 glowOff,
-                                 glowOn,
-                                 lcd,
-                                 lcdContent,
-                                 pointerShadow,
-                                 bargraphOff,
-                                 bargraphOn,
-                                 minMeasured,
-                                 maxMeasured,
-                                 markers,
-                                 knobsShadow,
-                                 foreground);
+                background,
+                histogram,
+                trend,
+                sections,
+                areas,
+                ledOff,
+                ledOn,
+                userLedOff,
+                userLedOn,
+                titleAndUnit,
+                tickmarks,
+                threshold,
+                glowOff,
+                glowOn,
+                lcd,
+                lcdContent,
+                pointerShadow,
+                bargraphOff,
+                bargraphOn,
+                minMeasured,
+                maxMeasured,
+                markers,
+                knobsShadow,
+                foreground);
         }
-    }
+        isDirty = false;
 
-    @Override public void layoutChildren() {
-        if (isDirty) {
-            adjustLcdFont();
-            paint();
-            isDirty = false;
-        }
         super.layoutChildren();
     }
 

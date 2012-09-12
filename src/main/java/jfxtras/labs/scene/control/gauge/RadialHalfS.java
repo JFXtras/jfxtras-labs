@@ -60,12 +60,7 @@ public class RadialHalfS extends Gauge {
     public RadialHalfS(final GaugeModel GAUGE_MODEL, final StyleModel STYLE_MODEL) {
         super(GAUGE_MODEL, STYLE_MODEL);
         setRadialRange(Gauge.RadialRange.RADIAL_180S);
-        init();
-    }
 
-
-    // ******************** Initialization ************************************
-    @Override public final void init() {
         getStyleClass().setAll(DEFAULT_STYLE_CLASS);
     }
 

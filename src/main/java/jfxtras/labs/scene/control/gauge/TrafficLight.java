@@ -59,13 +59,6 @@ public class TrafficLight extends Control {
         yellowBlinking = new SimpleBooleanProperty(false);
         darkBackground = new SimpleBooleanProperty(false);
 
-        init();
-    }
-
-
-    // ******************** Initialization ************************************
-    private void init() {
-        // the -fx-skin attribute in the CSS sets which Skin class is used
         getStyleClass().add(DEFAULT_STYLE_CLASS);
     }
 

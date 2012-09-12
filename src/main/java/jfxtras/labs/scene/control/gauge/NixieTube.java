@@ -54,11 +54,6 @@ public class NixieTube extends Control {
         number     = new SimpleIntegerProperty(-1);
         keepAspect = true;
 
-        init();
-    }
-
-    private void init() {
-        // the -fx-skin attribute in the CSS sets which Skin class is used
         getStyleClass().add(DEFAULT_STYLE_CLASS);
     }
 

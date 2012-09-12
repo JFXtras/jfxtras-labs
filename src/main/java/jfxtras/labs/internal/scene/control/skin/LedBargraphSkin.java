@@ -104,6 +104,8 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
         }
 
         // Register listeners
+        registerChangeListener(control.prefWidthProperty(), "PREF_WIDTH");
+        registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");
         registerChangeListener(control.ledTypeProperty(), "LED_TYPE");
         registerChangeListener(control.frameVisibleProperty(), "FRAME_VISIBLE");
         registerChangeListener(control.ledSizeProperty(), "LED_SIZE");
@@ -150,29 +152,18 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
         setLedTypes();
 
         initialized = true;
-        paint();
+        repaint();
     }
 
 
     // ******************** Methods *******************************************
-    public final void paint() {
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            getChildren().clear();
-            drawLed();
-            getChildren().add(bargraph);
-        }
-    }
-
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
         if ("FRAME_VISIBLE".equals(PROPERTY)) {
             for (Led led : ledList) {
                 led.setFrameVisible(control.isFrameVisible());
             }
-            paint();
+            repaint();
         } else if ("LED_SIZE".equals(PROPERTY)) {
             ledList.clear();
             for(int i = 0 ; i < control.getNoOfLeds() ; i++) {
@@ -181,25 +172,43 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
                 ledList.add(led);
             }
             setLedColors();
-            paint();
+            repaint();
         } else if ("ORIENTATION".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("LED_NUMBER".equals(PROPERTY)) {
             stepSize.set(1.0 / control.getNoOfLeds());
         } else if ("LED_COLOR".equals(PROPERTY)) {
             setLedColors();
-            paint();
+            repaint();
         } else if ("LED_TYPE".equals(PROPERTY)) {
             setLedTypes();
-            paint();
+            repaint();
+        } else if ("PREF_WIDTH".equals(PROPERTY)) {
+            repaint();
+        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
+            repaint();
         }
     }
 
+    public final void repaint() {
+        isDirty = true;
+        requestLayout();
+    }
+
     @Override public void layoutChildren() {
-        if (isDirty) {
-            paint();
-            isDirty = false;
+        if (!isDirty) {
+            return;
         }
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            getChildren().clear();
+            drawLed();
+            getChildren().add(bargraph);
+        }
+        isDirty = false;
+
         super.layoutChildren();
     }
 

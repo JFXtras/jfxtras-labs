@@ -89,22 +89,11 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
         registerChangeListener(control.dotOnProperty(), "DOT_ON");
 
         initialized = true;
-        paint();
+        repaint();
     }
 
 
     // ******************** Methods *******************************************
-    public final void paint() {
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            updateCharacter();
-            getChildren().clear();
-            getChildren().add(segments);
-        }
-    }
-
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
 
@@ -121,11 +110,25 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
         }
     }
 
+    public final void repaint() {
+        isDirty = true;
+        requestLayout();
+    }
+
     @Override public void layoutChildren() {
-        if (isDirty) {
-            paint();
-            isDirty = false;
+        if (!isDirty) {
+            return;
         }
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            updateCharacter();
+            getChildren().clear();
+            getChildren().add(segments);
+        }
+        isDirty = false;
+
         super.layoutChildren();
     }
 

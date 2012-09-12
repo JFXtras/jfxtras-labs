@@ -33,7 +33,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.geometry.Orientation;
 import javafx.scene.control.Control;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
@@ -70,11 +69,7 @@ public class SimpleBattery extends Control {
         chargeCondition = new SimpleObjectProperty<ChargeCondition>(ChargeCondition.EMPTY);
         chargeIndicator = new SimpleObjectProperty<ChargeIndicator>(ChargeIndicator.PLUG);
         levelColors     = new SimpleObjectProperty<Stop[]>(new Stop[]{new Stop(0.0, Color.RED), new Stop(0.55, Color.YELLOW), new Stop(1.0, Color.hsb(102, 1.0, 0.85))});
-        init();
-    }
 
-    private void init() {
-        // the -fx-skin attribute in the CSS sets which Skin class is used
         getStyleClass().add(DEFAULT_STYLE_CLASS);
     }
 

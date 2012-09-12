@@ -297,10 +297,6 @@ public abstract class Gauge extends Control {
     }
 
 
-    // ******************** Initialization ************************************
-    public abstract void init();
-
-
     // ******************** Event handling ************************************
     private final void addGaugeModelListener() {
         gaugeModel.setOnGaugeModelEvent(new EventHandler<GaugeModel.GaugeModelEvent>() {

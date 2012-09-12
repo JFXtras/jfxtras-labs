@@ -131,22 +131,11 @@ public class TrafficLightSkin extends SkinBase<TrafficLight, TrafficLightBehavio
         timer.start();
 
         initialized = true;
-        paint();
+        repaint();
     }
 
 
     // ******************** Methods *******************************************
-    public final void paint() {
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            getChildren().clear();
-            drawTrafficLight();
-            getChildren().add(trafficlight);
-        }
-    }
-
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
         if ("RED".equals(PROPERTY)) {
@@ -165,15 +154,33 @@ public class TrafficLightSkin extends SkinBase<TrafficLight, TrafficLightBehavio
         } else if ("GREEN_BLINKING".equals(PROPERTY)) {
 
         } else if ("DARK_BACKGROUND".equals(PROPERTY)) {
-           paint();
+            repaint();
+        } else if ("PREF_WIDTH".equals(PROPERTY)) {
+            repaint();
+        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
+            repaint();
         }
     }
 
+    public final void repaint() {
+        isDirty = true;
+        requestLayout();
+    }
+
     @Override public void layoutChildren() {
-        if (isDirty) {
-            paint();
-            isDirty = false;
+        if (!isDirty) {
+            return;
         }
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            getChildren().clear();
+            drawTrafficLight();
+            getChildren().add(trafficlight);
+        }
+        isDirty = false;
+
         super.layoutChildren();
     }
 

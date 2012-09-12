@@ -74,17 +74,42 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
         }
 
         // Register listeners
+        registerChangeListener(control.prefWidthProperty(), "PREF_WIDTH");
+        registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");
         registerChangeListener(control.innerColorProperty(), "INNER_COLOR");
         registerChangeListener(control.outerColorProperty(), "OUTER_COLOR");
         registerChangeListener(control.glowVisibleProperty(), "GLOW_VISIBILITY");
 
         initialized = true;
-        paint();
+        repaint();
     }
 
 
     // ******************** Methods *******************************************
-    public final void paint() {
+    @Override protected void handleControlPropertyChanged(final String PROPERTY) {
+        super.handleControlPropertyChanged(PROPERTY);
+        if ("INNER_COLOR".equals(PROPERTY)) {
+            updateIndicator();
+        } else if ("OUTER_COLOR".equals(PROPERTY)) {
+            updateIndicator();
+        } else if ("GLOW_VISIBILITY".equals(PROPERTY)) {
+            repaint();
+        } else if ("PREF_WIDTH".equals(PROPERTY)) {
+            repaint();
+        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
+            repaint();
+        }
+    }
+
+    public final void repaint() {
+        isDirty = true;
+        requestLayout();
+    }
+
+    @Override public void layoutChildren() {
+        if (!isDirty) {
+            return;
+        }
         if (!initialized) {
             init();
         }
@@ -93,24 +118,8 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
             drawIndicator();
             getChildren().addAll(indicator);
         }
-    }
+        isDirty = false;
 
-    @Override protected void handleControlPropertyChanged(final String PROPERTY) {
-        super.handleControlPropertyChanged(PROPERTY);
-        if ("INNER_COLOR".equals(PROPERTY)) {
-            updateIndicator();
-        } else if ("OUTER_COLOR".equals(PROPERTY)) {
-            updateIndicator();
-        } else if ("GLOW_VISIBILITY".equals(PROPERTY)) {
-            paint();
-        }
-    }
-
-    @Override public void layoutChildren() {
-        if (isDirty) {
-            paint();
-            isDirty = false;
-        }
         super.layoutChildren();
     }
 

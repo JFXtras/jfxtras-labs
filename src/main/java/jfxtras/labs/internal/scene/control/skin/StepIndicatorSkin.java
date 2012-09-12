@@ -82,17 +82,43 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
         }
 
         // Register listeners
+        registerChangeListener(control.prefWidthProperty(), "PREF_WIDTH");
+        registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");
         registerChangeListener(control.colorProperty(), "COLOR");
         registerChangeListener(control.noOfStepsProperty(), "NO_OF_CIRCLES");
         registerChangeListener(control.currentStepProperty(), "SELECTION");
 
         initialized = true;
-        paint();
+        repaint();
     }
 
 
     // ******************** Methods *******************************************
-    public final void paint() {
+    @Override protected void handleControlPropertyChanged(final String PROPERTY) {
+        super.handleControlPropertyChanged(PROPERTY);
+        if ("NO_OF_CIRCLES".equals(PROPERTY)) {
+            noOfCircles = control.getNoOfSteps();
+            repaint();
+        } else if ("SELECTION".equals(PROPERTY)) {
+            drawSelectedCircles();
+        } else if ("COLOR".equals(PROPERTY)) {
+            drawSelectedCircles();
+        } else if ("PREF_WIDTH".equals(PROPERTY)) {
+            repaint();
+        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
+            repaint();
+        }
+    }
+
+    public final void repaint() {
+        isDirty = true;
+        repaint();
+    }
+
+    @Override public void layoutChildren() {
+        if (!isDirty) {
+            return;
+        }
         if (!initialized) {
             init();
         }
@@ -102,25 +128,8 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
             drawSelectedCircles();
             getChildren().addAll(circles, selectedCircles);
         }
-    }
+        isDirty = false;
 
-    @Override protected void handleControlPropertyChanged(final String PROPERTY) {
-        super.handleControlPropertyChanged(PROPERTY);
-        if ("NO_OF_CIRCLES".equals(PROPERTY)) {
-            noOfCircles = control.getNoOfSteps();
-            paint();
-        } else if ("SELECTION".equals(PROPERTY)) {
-            drawSelectedCircles();
-        } else if ("COLOR".equals(PROPERTY)) {
-            drawSelectedCircles();
-        }
-    }
-
-    @Override public void layoutChildren() {
-        if (isDirty) {
-            paint();
-            isDirty = false;
-        }
         super.layoutChildren();
     }
 

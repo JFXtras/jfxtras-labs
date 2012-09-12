@@ -80,12 +80,7 @@ public final class Radial extends Gauge {
         histogramLineWidth           = new SimpleDoubleProperty(1.0);
         histogramCreationEnabled     = new SimpleBooleanProperty(false);
         histogramDataPeriodInMinutes = new SimpleIntegerProperty(5);
-        init();
-    }
 
-
-    // ******************** Initialization ************************************
-    @Override public final void init() {
         getStyleClass().setAll(DEFAULT_STYLE_CLASS);
     }
 

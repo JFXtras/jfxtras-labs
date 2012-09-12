@@ -90,10 +90,7 @@ public class Odometer extends Control {
                 }
             }
         };
-        init();
-    }
 
-    private void init() {
         getStyleClass().add(DEFAULT_STYLE_CLASS);
     }
 

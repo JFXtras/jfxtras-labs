@@ -103,22 +103,11 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
         }
 
         initialized = true;
-        paint();
+        repaint();
     }
 
 
     // ******************** Methods *******************************************
-    public final void paint() {
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            getChildren().clear();
-            drawLed();
-            getChildren().addAll(led);
-        }
-    }
-
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
         if ("ON".equals(PROPERTY)) {
@@ -131,21 +120,34 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
                 ledOn.setVisible(false);
             }
         } else if ("COLOR".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("TYPE".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("PREF_WIDTH".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("PREF_HEIGHT".equals(PROPERTY)) {
-            paint();
+            repaint();
         }
     }
 
+    public final void repaint() {
+        isDirty = true;
+        requestLayout();
+    }
+
     @Override public void layoutChildren() {
-        if (isDirty) {
-            paint();
-            isDirty = false;
+        if (!isDirty) {
+        return;
         }
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            getChildren().clear();
+            drawLed();
+            getChildren().addAll(led);
+        }
+        isDirty = false;
         super.layoutChildren();
     }
 

@@ -64,13 +64,6 @@ public class Led extends Control {
         blinking     = new SimpleBooleanProperty(false);
         frameVisible = new SimpleBooleanProperty(true);
 
-        init();
-    }
-
-
-    // ******************** Initialization ************************************
-    private void init() {
-        // the -fx-skin attribute in the CSS sets which Skin class is used
         getStyleClass().add(DEFAULT_STYLE_CLASS);
     }
 

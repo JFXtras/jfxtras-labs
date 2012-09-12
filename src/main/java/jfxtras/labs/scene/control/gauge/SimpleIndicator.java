@@ -58,11 +58,6 @@ public class SimpleIndicator extends Control {
         outerColor  = new SimpleObjectProperty<Color>(OUTER_COLOR);
         glowVisible = new SimpleBooleanProperty(GLOW_VISIBLE);
 
-        init();
-    }
-
-    private void init() {
-        // the -fx-skin attribute in the CSS sets which Skin class is used
         getStyleClass().add(DEFAULT_STYLE_CLASS);
     }
 

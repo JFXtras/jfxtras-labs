@@ -136,7 +136,7 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
                     CAL.setTimeZone(TimeZone.getTimeZone(control.getTimeZone()));
                     if (CAL.get(Calendar.HOUR_OF_DAY) < lastHour) {
                         checkForNight();
-                        paint();
+                        repaint();
                     }
                     // Seconds
                     secondAngle.set(Calendar.getInstance().get(Calendar.SECOND) * 6 + Calendar.getInstance().get(Calendar.MILLISECOND) * 0.006);
@@ -190,6 +190,8 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         secondPointer.visibleProperty().bind(control.secondPointerVisibleProperty());
 
         // Register listeners
+        registerChangeListener(control.prefWidthProperty(), "PREF_WIDTH");
+        registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");
         registerChangeListener(control.runningProperty(), "RUNNING");
         registerChangeListener(control.timeZoneProperty(), "TIME_ZONE");
         registerChangeListener(secondAngle, "SECOND_ANGLE");
@@ -213,7 +215,7 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         setTime();
         initialized = true;
         checkForNight();
-        paint();
+        repaint();
         if (control.isRunning()) {
             timer.start();
         } else if (control.getHour() != 0 || control.getMinute() != 0 || control.getSecond() != 0) {
@@ -223,28 +225,10 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
 
 
     // ******************** Methods *******************************************
-    public final void paint() {
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            getChildren().clear();
-            drawClock();
-            drawMinutePointer();
-            drawHourPointer();
-            drawSecondPointer();
-            drawShadows();
-            getChildren().addAll(clock,
-                                 minutePointerShadow,
-                                 hourPointerShadow,
-                                 secondPointerShadow);
-        }
-    }
-
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
         if ("TIME_ZONE".equals(PROPERTY)) {
-          setTime();
+            setTime();
         } else if ("RUNNING".equals(PROPERTY)) {
             if (control.isRunning()) {
                 setTime();
@@ -260,27 +244,27 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
             hourPointer.setRotate(hourAngle.get());
         } else if ("TYPE".equals(PROPERTY)) {
             checkForNight();
-            paint();
+            repaint();
         } else if ("THEME".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("CLOCK_STYLE".equals(PROPERTY)) {
             drawSecondPointer();
         } else if ("BRIGHT_BACKGROUND_PAINT".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("DARK_BACKGROUND_PAINT".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("BRIGHT_POINTER_PAINT".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("DARK_POINTER_PAINT".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("BRIGHT_TICK_MARK_PAINT".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("DARK_TICK_MARK_PAINT".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("SECOND_POINTER_PAINT".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("TITLE".equals(PROPERTY)) {
-            paint();
+            repaint();
         } else if ("HOUR".equals(PROPERTY)) {
             if (!control.isRunning()) {
                 setTime(control.getHour(), control.getMinute(), control.getSecond());
@@ -293,14 +277,39 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
             if (!control.isRunning()) {
                 setTime(control.getHour(), control.getMinute(), control.getSecond());
             }
+        } else if ("PREF_WIDTH".equals(PROPERTY)) {
+            repaint();
+        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
+            repaint();
         }
     }
 
+    public void repaint() {
+        isDirty = true;
+        requestLayout();
+    }
+
     @Override public void layoutChildren() {
-        if (isDirty) {
-            paint();
-            isDirty = false;
+        if (!isDirty) {
+            return;
         }
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            getChildren().clear();
+            drawClock();
+            drawMinutePointer();
+            drawHourPointer();
+            drawSecondPointer();
+            drawShadows();
+            getChildren().addAll(clock,
+                minutePointerShadow,
+                hourPointerShadow,
+                secondPointerShadow);
+        }
+        isDirty = false;
+
         super.layoutChildren();
     }
 

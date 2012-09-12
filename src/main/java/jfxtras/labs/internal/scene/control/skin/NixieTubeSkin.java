@@ -28,8 +28,6 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
@@ -105,19 +103,44 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
         }
 
         // Register listeners
+        registerChangeListener(control.prefWidthProperty(), "PREF_WIDTH");
+        registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");
         registerChangeListener(control.glowColorProperty(), "GLOW_COLOR");
         registerChangeListener(control.numberProperty(), "NUMBER");
 
         createGlows();
 
         initialized = true;
-        paint();
+        repaint();
         setNumber();
     }
 
 
     // ******************** Methods *******************************************
-    public final void paint() {
+    @Override protected void handleControlPropertyChanged(final String PROPERTY) {
+        super.handleControlPropertyChanged(PROPERTY);
+        if ("GLOW_COLOR".equals(PROPERTY)) {
+            createGlows();
+            setNumber();
+            hatch.setEffect(hatchGlow);
+        } else if ("NUMBER".equals(PROPERTY)) {
+            setNumber();
+        } else if ("PREF_WIDTH".equals(PROPERTY)) {
+            repaint();
+        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
+            repaint();
+        }
+    }
+
+    public final void repaint() {
+        isDirty = true;
+        requestLayout();
+    }
+
+    @Override public void layoutChildren() {
+        if (!isDirty) {
+            return;
+        }
         if (!initialized) {
             init();
         }
@@ -127,24 +150,8 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
             drawTube();
             getChildren().addAll(numbers, tube);
         }
-    }
+        isDirty = false;
 
-    @Override protected void handleControlPropertyChanged(final String PROPERTY) {
-        super.handleControlPropertyChanged(PROPERTY);
-        if ("GLOW_COLOR".equals(PROPERTY)) {
-            createGlows();
-            setNumber();
-            hatch.setEffect(hatchGlow);
-        } else if ("NUMBER".equals(PROPERTY)) {
-            setNumber();
-        }
-    }
-
-    @Override public void layoutChildren() {
-        if (isDirty) {
-            paint();
-            isDirty = false;
-        }
         super.layoutChildren();
     }
 

@@ -29,11 +29,8 @@ package jfxtras.labs.scene.control.gauge;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.text.Font;
 
 
 /**
@@ -74,12 +71,7 @@ public class Lcd extends Gauge {
         lcdMaxMeasuredValueDecimals = new SimpleIntegerProperty(STYLE_MODEL.getLcdDecimals());
         bargraphVisible             = new SimpleBooleanProperty(false);
         setValueAnimationEnabled(false);
-        init();
-    }
 
-
-    // ******************** Initialization ************************************
-    @Override public final void init() {
         getStyleClass().setAll(DEFAULT_STYLE_CLASS);
     }
 
