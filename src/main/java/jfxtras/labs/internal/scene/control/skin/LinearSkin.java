@@ -460,29 +460,21 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
     // ******************** Methods *******************************************
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
-        if ("GAUGE_TYPE".equals(PROPERTY)) {
-            isDirty = true;
 
-        } else if ("FRAME_DESIGN".equals(PROPERTY)) {
+        if ("FRAME_DESIGN".equals(PROPERTY)) {
             drawFrame();
-
         } else if ("BACKGROUND_DESIGN".equals(PROPERTY)) {
             drawBackground();
             drawTickmarks();
-
         } else if ("VALUE_COLOR".equals(PROPERTY)) {
             drawBar();
-
         } else if ("FOREGROUND_TYPE".equals(PROPERTY)) {
             drawForeground();
-
         } else if ("LCD_DESIGN".equals(PROPERTY)) {
             drawLcd();
             drawLcdContent();
-
         } else if ("LCD_NUMBER_SYSTEM".equals(PROPERTY)) {
             drawLcdContent();
-
         } else if ("USER_LED_BLINKING".equals(PROPERTY)) {
             if (userLedOff.isVisible() && userLedOn.isVisible()) {
                 if (control.isUserLedBlinking()) {
@@ -492,7 +484,6 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
                     userLedOn.setOpacity(0.0);
                 }
             }
-
         } else if ("LED_BLINKING".equals(PROPERTY)) {
             if (ledOff.isVisible() && ledOn.isVisible()) {
                 if (control.isLedBlinking()) {
@@ -502,7 +493,6 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
                     ledOn.setOpacity(0.0);
                 }
             }
-
         } else if ("GLOW_COLOR".equals(PROPERTY)) {
             glowColors.clear();
             final Color GLOW_COLOR = control.getGlowColor();
@@ -511,7 +501,6 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             glowColors.add(Color.hsb(GLOW_COLOR.getHue(), 1.0, 1.0, 1.0));
             glowColors.add(Color.hsb(GLOW_COLOR.getHue(), 0.67, 0.90, 1.0));
             drawGlowOn();
-
         } else if ("GLOW_VISIBILITY".equals(PROPERTY)) {
             glowOff.setVisible(control.isGlowVisible());
             if (!control.isGlowVisible()) {
@@ -543,7 +532,6 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
 
         } else if ("TICKMARKS".equals(PROPERTY)) {
             drawTickmarks();
-
         } else if ("MIN_MEASURED_VALUE".equals(PROPERTY)) {
             if (control.getPrefWidth() <= control.getPrefHeight()) {
                 // vertical
@@ -561,7 +549,6 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
                 // horizontal
                 maxMeasured.setTranslateX(Math.abs((control.getMaxMeasuredValue() - control.getMinValue()) * stepsize));
             }
-
         } else if ("SIMPLE_GRADIENT_BASE".equals(PROPERTY)) {
             isDirty = true;
         } else if ("GAUGE_MODEL".equals(PROPERTY)) {
@@ -581,13 +568,13 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         }
     }
 
-    public final void repaint() {
+    public void repaint() {
         isDirty = true;
         requestLayout();
     }
 
     @Override public void layoutChildren() {
-        if (isDirty) {
+        if (!isDirty) {
             return;
         }
         if (!initialized) {
@@ -597,7 +584,9 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             calcGaugeBounds();
             setTranslateX(framelessOffset.getX());
             setTranslateY(framelessOffset.getY());
+
             getChildren().clear();
+
             drawFrame();
             drawBackground();
             drawTitleAndUnit();
@@ -616,23 +605,23 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             drawForeground();
 
             getChildren().addAll(frame,
-                background,
-                ledOff,
-                ledOn,
-                userLedOff,
-                userLedOn,
-                titleAndUnit,
-                tickmarks,
-                threshold,
-                glowOff,
-                glowOn,
-                minMeasured,
-                maxMeasured,
-                markers,
-                lcd,
-                lcdContent,
-                bar,
-                foreground);
+                                 background,
+                                 ledOff,
+                                 ledOn,
+                                 userLedOff,
+                                 userLedOn,
+                                 titleAndUnit,
+                                 tickmarks,
+                                 threshold,
+                                 glowOff,
+                                 glowOn,
+                                 minMeasured,
+                                 maxMeasured,
+                                 markers,
+                                 lcd,
+                                 lcdContent,
+                                 bar,
+                                 foreground);
         }
         isDirty = false;
 
