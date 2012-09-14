@@ -492,9 +492,6 @@ public class LocalDatePickerControlSkin extends SkinBase<LocalDatePicker, LocalD
 					}
 					lLocalDates.remove(lToggledLocalDate); // make sure this is added last 
 					lLocalDates.add(lToggledLocalDate); // make sure this is added last 
-					
-					// let's have a nice collection
-//					Collections.sort(lLocalDates);
 				}
 			}
 			

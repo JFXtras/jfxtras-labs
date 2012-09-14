@@ -132,21 +132,7 @@ public class LocalDatePicker extends Control
 			@Override
 			public void onChanged(ListChangeListener.Change<? extends LocalDate> change)
 			{
-				// if the active LocalDate is not longer in LocalDates, select another
-//				if (!localDates().contains(getLocalDate())) 
-//				{
-//					// if there are other left
-//					if (localDates().size() > 0) 
-//					{
-//						// select the first
-//						setLocalDate( localDates().get(0) );
-//					}
-//					else 
-//					{
-//						// clear it
-//						setLocalDate(null);
-//					}
-//				}
+				// update the localDate
 				if (localDates.size() == 0)
 				{
 					// clear date
@@ -174,13 +160,19 @@ public class LocalDatePicker extends Control
 	{
 		public void invalidated()
 		{
-			// do it
+			// do super
 			super.invalidated();
 			
 			// update the collection; remove excessive LocalDates
 			while (modeObjectProperty.getValue() == Mode.SINGLE && localDates().size() > 1) {
 				localDates().remove(localDates().size() - 1);
 			}
+		}
+		
+		public void set(Mode value)
+		{
+			if (value == null) throw new NullPointerException("Null not allowed");
+			super.set(value);
 		}
 	};
 	public final /* this final was added under heavy objection */ Mode getMode() { return modeObjectProperty.getValue(); }
