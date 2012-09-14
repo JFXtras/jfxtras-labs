@@ -191,7 +191,6 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
     public final void repaint() {
         isDirty = true;
         requestLayout();
-
     }
 
     @Override public void layoutChildren() {
@@ -277,8 +276,9 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
 
     // ******************** Drawing related ***********************************
     public final void drawGauge() {
-        final double RADIUS = size / 2 - 4;
+        size  = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
 
+        final double RADIUS = size / 2 - 4;
         center              = new Point2D(size / 2, size / 2);
 
         gauge.getChildren().clear();
