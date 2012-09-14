@@ -63,8 +63,6 @@ public final class DialogFX extends Stage {
      */
     public enum Type { ACCEPT, ERROR, INFO, QUESTION };
     
-    private static final String DIALOG_ICON_PATH = "/jfxtras/labs/dialogs/";
-    
     private Type type;
     private Stage stage;
     private Scene scene;
@@ -176,7 +174,7 @@ public final class DialogFX extends Stage {
     }
     
     private void loadIconFromResource(String fileName) {
-        Image imgIcon = new Image(getClass().getResourceAsStream(DIALOG_ICON_PATH + fileName));
+        Image imgIcon = new Image(getClass().getResourceAsStream(fileName));
         icon.setPreserveRatio(true);
         icon.setFitHeight(48);
         icon.setImage(imgIcon);
