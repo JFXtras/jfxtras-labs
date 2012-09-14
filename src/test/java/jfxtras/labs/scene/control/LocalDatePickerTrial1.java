@@ -58,6 +58,7 @@ public class LocalDatePickerTrial1 extends Application {
 //		lLocalDatePicker.setLocalDate(LocalDate.of(2011, 06, 01)); // set a value
 //		lLocalDatePicker.setMode(LocalDatePicker.Mode.RANGE);
 		lLocalDatePicker.setMode(LocalDatePicker.Mode.MULTIPLE);
+//		lLocalDatePicker.setMode(null);
         lVBox.getChildren().add(lLocalDatePicker);
         
 		// textfield

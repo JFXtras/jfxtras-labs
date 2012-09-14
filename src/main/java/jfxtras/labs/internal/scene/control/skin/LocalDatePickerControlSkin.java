@@ -155,17 +155,17 @@ public class LocalDatePickerControlSkin extends SkinBase<LocalDatePicker, LocalD
 	 * it also is used to determine first-day-of-week, weekday labels, etc
 	 * The LocalDate should not be modified using any of its add or set methods (it should be considered immutable)  
 	 */
-	public LocalDate getDisplayedLocalDate() { return iDisplayedLocalDateObjectProperty.getValue(); }
+	public LocalDate getDisplayedLocalDate() { return displayedLocalDateObjectProperty.getValue(); }
 	public void setDisplayedLocalDate(LocalDate value)  
 	{
 		LocalDate lValue = getDisplayedLocalDate();
 		
 		// // set value
-		iDisplayedLocalDateObjectProperty.setValue(derriveDisplayedLocalDate(value)); 
+		displayedLocalDateObjectProperty.setValue(derriveDisplayedLocalDate(value)); 
 	}
 	public LocalDatePickerControlSkin withDisplayedLocalDate(LocalDate value) { setDisplayedLocalDate(value); return this; } 
-	public ObjectProperty<LocalDate> displayedLocalDate() { return iDisplayedLocalDateObjectProperty; }
-	volatile private ObjectProperty<LocalDate> iDisplayedLocalDateObjectProperty = new SimpleObjectProperty<LocalDate>(this, "displayedLocalDate");
+	public ObjectProperty<LocalDate> displayedLocalDate() { return displayedLocalDateObjectProperty; }
+	volatile private ObjectProperty<LocalDate> displayedLocalDateObjectProperty = new SimpleObjectProperty<LocalDate>(this, "displayedLocalDate");
 	private LocalDate derriveDisplayedLocalDate(LocalDate localDate)
 	{
 		// done
@@ -479,25 +479,22 @@ public class LocalDatePickerControlSkin extends SkinBase<LocalDatePicker, LocalD
 				if (iLastSelected != null) 
 				{
 					// get the other LocalDate and make sure other <= toggle
-					LocalDate lOtherLocalDate = iLastSelected;
-					if (lOtherLocalDate.isAfter(lToggledLocalDate))
-					{
-						LocalDate lSwap = lOtherLocalDate;
-						lOtherLocalDate = lToggledLocalDate;
-						lToggledLocalDate = lSwap;
-					}
+					LocalDate lPreviousSelectedLocalDate = iLastSelected;
+					int lDirection = (lPreviousSelectedLocalDate.isAfter(lToggledLocalDate) ? -1 : 1);
 					
 					// walk towards the toggled date and add all in between
-					LocalDate lWalker = lOtherLocalDate;
-					lWalker = lWalker.plusDays(1);
-					while (lWalker.isBefore(lToggledLocalDate))
+					LocalDate lWalker = lPreviousSelectedLocalDate;
+					lWalker = lWalker.plusDays(lDirection);
+					while (!lWalker.equals(lToggledLocalDate))
 					{
 						lLocalDates.add(lWalker); 
-						lWalker = lWalker.plusDays(1);
+						lWalker = lWalker.plusDays(lDirection);
 					}
+					lLocalDates.remove(lToggledLocalDate); // make sure this is added last 
+					lLocalDates.add(lToggledLocalDate); // make sure this is added last 
 					
 					// let's have a nice collection
-					Collections.sort(lLocalDates);
+//					Collections.sort(lLocalDates);
 				}
 			}
 			
