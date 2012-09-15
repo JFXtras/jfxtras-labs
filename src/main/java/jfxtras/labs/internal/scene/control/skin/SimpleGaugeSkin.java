@@ -128,6 +128,12 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
         registerChangeListener(control.valueProperty(), "VALUE");
         registerChangeListener(gaugeValue, "GAUGE_VALUE");
 
+        // Don't show bar if value is smaller or equal minValue
+        if (bar.visibleProperty().isBound()) {
+            bar.visibleProperty().unbind();
+        }
+        bar.visibleProperty().bind(gaugeValue.greaterThan(control.minValueProperty()));
+
         updateNumberFormat();
 
         initialized = true;
