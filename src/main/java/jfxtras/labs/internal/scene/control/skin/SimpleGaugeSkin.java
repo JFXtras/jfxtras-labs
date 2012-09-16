@@ -128,6 +128,12 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
         registerChangeListener(control.valueProperty(), "VALUE");
         registerChangeListener(gaugeValue, "GAUGE_VALUE");
 
+        // Don't show bar if value is smaller or equal minValue
+        if (bar.visibleProperty().isBound()) {
+            bar.visibleProperty().unbind();
+        }
+        bar.visibleProperty().bind(gaugeValue.greaterThan(control.minValueProperty()));
+
         updateNumberFormat();
 
         initialized = true;
@@ -191,7 +197,6 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
     public final void repaint() {
         isDirty = true;
         requestLayout();
-
     }
 
     @Override public void layoutChildren() {
@@ -277,8 +282,9 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
 
     // ******************** Drawing related ***********************************
     public final void drawGauge() {
-        final double RADIUS = size / 2 - 4;
+        size  = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
 
+        final double RADIUS = size / 2 - 4;
         center              = new Point2D(size / 2, size / 2);
 
         gauge.getChildren().clear();
