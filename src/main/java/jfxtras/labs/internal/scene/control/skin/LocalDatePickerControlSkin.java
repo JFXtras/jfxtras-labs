@@ -26,9 +26,7 @@
  */
 package jfxtras.labs.internal.scene.control.skin;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -155,28 +153,16 @@ public class LocalDatePickerControlSkin extends SkinBase<LocalDatePicker, LocalD
 	 * it also is used to determine first-day-of-week, weekday labels, etc
 	 * The LocalDate should not be modified using any of its add or set methods (it should be considered immutable)  
 	 */
-	public LocalDate getDisplayedLocalDate() { return iDisplayedLocalDateObjectProperty.getValue(); }
+	public LocalDate getDisplayedLocalDate() { return displayedLocalDateObjectProperty.getValue(); }
 	public void setDisplayedLocalDate(LocalDate value)  
 	{
-		LocalDate lValue = getDisplayedLocalDate();
-		
-		// // set value
-		iDisplayedLocalDateObjectProperty.setValue(derriveDisplayedLocalDate(value)); 
+		// set value
+		if (value.getDayOfMonth() != 1) value = LocalDate.of(value.getYear(), value.getMonthOfYear(), 1);
+		displayedLocalDateObjectProperty.setValue( value ); 
 	}
 	public LocalDatePickerControlSkin withDisplayedLocalDate(LocalDate value) { setDisplayedLocalDate(value); return this; } 
-	public ObjectProperty<LocalDate> displayedLocalDate() { return iDisplayedLocalDateObjectProperty; }
-	volatile private ObjectProperty<LocalDate> iDisplayedLocalDateObjectProperty = new SimpleObjectProperty<LocalDate>(this, "displayedLocalDate");
-	private LocalDate derriveDisplayedLocalDate(LocalDate localDate)
-	{
-		// done
-		if (localDate == null) return null;
-		
-		// always the 1st of the month
-		LocalDate lLocalDate = LocalDate.of(localDate.getYear(), localDate.getMonthOfYear(), 1);
-		
-		// done
-		return lLocalDate;
-	}
+	public ObjectProperty<LocalDate> displayedLocalDate() { return displayedLocalDateObjectProperty; }
+	volatile private ObjectProperty<LocalDate> displayedLocalDateObjectProperty = new SimpleObjectProperty<LocalDate>(this, "displayedLocalDate");
 
 	/**
 	 * 
@@ -479,25 +465,19 @@ public class LocalDatePickerControlSkin extends SkinBase<LocalDatePicker, LocalD
 				if (iLastSelected != null) 
 				{
 					// get the other LocalDate and make sure other <= toggle
-					LocalDate lOtherLocalDate = iLastSelected;
-					if (lOtherLocalDate.isAfter(lToggledLocalDate))
-					{
-						LocalDate lSwap = lOtherLocalDate;
-						lOtherLocalDate = lToggledLocalDate;
-						lToggledLocalDate = lSwap;
-					}
+					LocalDate lPreviousSelectedLocalDate = iLastSelected;
+					int lDirection = (lPreviousSelectedLocalDate.isAfter(lToggledLocalDate) ? -1 : 1);
 					
 					// walk towards the toggled date and add all in between
-					LocalDate lWalker = lOtherLocalDate;
-					lWalker = lWalker.plusDays(1);
-					while (lWalker.isBefore(lToggledLocalDate))
+					LocalDate lWalker = lPreviousSelectedLocalDate;
+					lWalker = lWalker.plusDays(lDirection);
+					while (!lWalker.equals(lToggledLocalDate))
 					{
 						lLocalDates.add(lWalker); 
-						lWalker = lWalker.plusDays(1);
+						lWalker = lWalker.plusDays(lDirection);
 					}
-					
-					// let's have a nice collection
-					Collections.sort(lLocalDates);
+					lLocalDates.remove(lToggledLocalDate); // make sure this is added last 
+					lLocalDates.add(lToggledLocalDate); // make sure this is added last 
 				}
 			}
 			
@@ -799,7 +779,10 @@ public class LocalDatePickerControlSkin extends SkinBase<LocalDatePicker, LocalD
 	 */
 	protected boolean isWeekend(int idx) 
 	{
-		return false; //(isWeekday(idx, java.util.LocalDate.SATURDAY) || isWeekday(idx, java.util.LocalDate.SUNDAY));
+		// 1 = monday, 7 = sunday
+		int lFirstDayOfWeek = DayOfWeek.firstDayOfWeekFor(getSkinnable().getLocale()).getValue();
+		int lDayOfWeek = (lFirstDayOfWeek + idx - 1) % 7;
+		return lDayOfWeek == 5 || lDayOfWeek == 6;
 	}
 	
 	/**

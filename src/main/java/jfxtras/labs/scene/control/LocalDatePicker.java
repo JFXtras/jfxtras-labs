@@ -28,8 +28,6 @@ package jfxtras.labs.scene.control;
 
 import java.util.Locale;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -41,9 +39,13 @@ import javafx.scene.control.Control;
 import javax.time.calendar.LocalDate;
 
 /**
- * LocalDate picker component
- * Unfortunately this control suffers from JavaFX issue RT-16732 (http://javafx-jira.kenai.com/browse/RT-16732)!
- * The workaround is to load the required CSS in the application's own CSS. 
+ * LocalDate (JSR-310) picker component.
+ * This is the basis implementation using the new date API JSR-310.
+ * The picker can be put in three modes, SINGLE for selecting one date, RANGE of a continguous range and MULTIPLE for free selection of dates.
+ * A single property "localDate" is present, which is most usable in single mode.
+ * A observable list "localDates" is present, which is most usable in range or multiple mode. 
+ * In this mode the "localDate" will hold the last selected date.
+ * There is a CalendarPicker component for backward compatibility.
  * 
  * @author Tom Eugelink
  */
@@ -59,6 +61,16 @@ public class LocalDatePicker extends Control
 	{
 		construct();
 	}
+
+	/**
+	 * 
+	 * @param localDate
+	 */
+	public LocalDatePicker(LocalDate localDate)
+	{
+		construct();
+		setLocalDate(localDate);
+	}
 	
 	/*
 	 * 
@@ -67,12 +79,11 @@ public class LocalDatePicker extends Control
 	{
 		// setup the CSS
 		// the -fx-skin attribute in the CSS sets which Skin class is used
-		this.getStyleClass().add(this.getClass().getSimpleName());
+		this.getStyleClass().add(DEFAULT_STYLE_CLASS);
 		
 		// construct properties
 		constructLocalDate();
 		constructLocalDates();
-		constructLocale();
 	}
 
 	/**
@@ -80,16 +91,19 @@ public class LocalDatePicker extends Control
 	 */
 	@Override protected String getUserAgentStylesheet()
 	{
-		return this.getClass().getResource("/jfxtras/labs/internal/scene/control/" + this.getClass().getSimpleName() + ".css").toString();
+		return this.getClass().getResource("/jfxtras/labs/internal/scene/control/" + DEFAULT_STYLE_CLASS + ".css").toString();
 	}
+    private static final String DEFAULT_STYLE_CLASS = LocalDatePicker.class.getSimpleName();
 	
 	// ==================================================================================================================
 	// PROPERTIES
 	
 	/** LocalDate: */
-	public ObjectProperty<LocalDate> localDateProperty() { return iLocalDateObjectProperty; }
-	final private ObjectProperty<LocalDate> iLocalDateObjectProperty = new SimpleObjectProperty<LocalDate>(this, "LocalDate");
-	// construct property
+	public final /* this final was added under heavy objection */ ObjectProperty<LocalDate> localDateProperty() { return localDateObjectProperty; }
+	private final ObjectProperty<LocalDate> localDateObjectProperty = new SimpleObjectProperty<LocalDate>(this, "localDate");
+	public final /* this final was added under heavy objection */ LocalDate getLocalDate() { return localDateObjectProperty.getValue(); }
+	public final /* this final was added under heavy objection */ void setLocalDate(LocalDate value) { localDateObjectProperty.setValue(value); }
+	public LocalDatePicker withLocalDate(LocalDate value) { setLocalDate(value); return this; } 
 	private void constructLocalDate()
 	{
 		// if this value is changed by binding, make sure related things are updated
@@ -99,7 +113,7 @@ public class LocalDatePicker extends Control
 			public void changed(ObservableValue<? extends LocalDate> observableValue, LocalDate oldValue, LocalDate newValue)
 			{
 				// if the new value is set to null, remove the old value
-				if (oldValue != null) {
+				if (oldValue != null && newValue == null) {
 					localDates().remove(oldValue);
 				}
 				if (newValue != null && localDates().contains(newValue) == false) {
@@ -108,38 +122,28 @@ public class LocalDatePicker extends Control
 			} 
 		});
 	}
-	// java bean API
-	public LocalDate getLocalDate() { return iLocalDateObjectProperty.getValue(); }
-	public void setLocalDate(LocalDate value) { iLocalDateObjectProperty.setValue(value); }
-	public LocalDatePicker withLocalDate(LocalDate value) { setLocalDate(value); return this; } 
 
 	/** LocalDates: */
-	public ObservableList<LocalDate> localDates() { return iLocalDates; }
-	final private ObservableList<LocalDate> iLocalDates =  javafx.collections.FXCollections.observableArrayList();
-	final static public String LocalDateS_PROPERTY_ID = "LocalDates";
-	// construct property
+	public final /* this final was added under heavy objection */ ObservableList<LocalDate> localDates() { return localDates; }
+	private final ObservableList<LocalDate> localDates =  javafx.collections.FXCollections.observableArrayList();
 	private void constructLocalDates()
 	{
 		// make sure the singled out LocalDate is 
 		localDates().addListener(new ListChangeListener<LocalDate>() 
 		{
 			@Override
-			public void onChanged(javafx.collections.ListChangeListener.Change<? extends LocalDate> change)
+			public void onChanged(ListChangeListener.Change<? extends LocalDate> change)
 			{
-				// if the active LocalDate is not longer in LocalDates, select another
-				if (!localDates().contains(getLocalDate())) 
+				// update the localDate
+				if (localDates.size() == 0)
 				{
-					// if there are other left
-					if (localDates().size() > 0) 
-					{
-						// select the first
-						setLocalDate( localDates().get(0) );
-					}
-					else 
-					{
-						// clear it
-						setLocalDate(null);
-					}
+					// clear date
+					setLocalDate(null);
+				}
+				else
+				{
+					// set the last one
+					setLocalDate(localDates.get(localDates.size() - 1));
 				}
 			} 
 		});
@@ -148,46 +152,33 @@ public class LocalDatePicker extends Control
 	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc */
 	public ObjectProperty<Locale> localeProperty() { return iLocaleObjectProperty; }
 	volatile private ObjectProperty<Locale> iLocaleObjectProperty = new SimpleObjectProperty<Locale>(this, "locale", Locale.getDefault());
-	// java bean API
-	public Locale getLocale() { return iLocaleObjectProperty.getValue(); }
-	public void setLocale(Locale value) { iLocaleObjectProperty.setValue(value); }
+	public final /* this final was added under heavy objection */ Locale getLocale() { return iLocaleObjectProperty.getValue(); }
+	public final /* this final was added under heavy objection */ void setLocale(Locale value) { iLocaleObjectProperty.setValue(value); }
 	public LocalDatePicker withLocale(Locale value) { setLocale(value); return (LocalDatePicker)this; } 
-	// construct property
-	private void constructLocale()
-	{
-		// make sure the singled out LocalDate is 
-		localeProperty().addListener(new InvalidationListener() 
-		{
-			@Override
-			public void invalidated(Observable observable)
-			{
-				// if the locale is changed, all selected LocalDates must be cleared
-				// because "equals" takes the locale of the LocalDate in account and suddenly LocalDates that were equal in date no longer are
-// TODO: skin are created after the control, so this clears any set values because it is initialized in the constructor
-// so we need a smarter way to do this, however LocalDate does not have a "getLocale"
-// should we recreated all values copying DMY?				
-//LocalDates().clear();
-			} 
-		});
-	}
 	
 	/** Mode: single, range or multiple */
-	public ObjectProperty<Mode> modeProperty() { return iModeObjectProperty; }
-	final private SimpleObjectProperty<Mode> iModeObjectProperty = new SimpleObjectProperty<Mode>(this, "mode", Mode.SINGLE);
-	public enum Mode { SINGLE, MULTIPLE, RANGE };
-	// java bean API
-	public Mode getMode() { return iModeObjectProperty.getValue(); }
-	public void setMode(Mode value)
+	public final /* this final was added under heavy objection */ ObjectProperty<Mode> modeProperty() { return modeObjectProperty; }
+	private final SimpleObjectProperty<Mode> modeObjectProperty = new SimpleObjectProperty<Mode>(this, "mode", Mode.SINGLE)
 	{
-		if (value == null) throw new IllegalArgumentException("NULL not allowed");
-		
-		// set it
-		iModeObjectProperty.setValue(value);
-		
-		// update the collection; remove excessive LocalDates
-		while (getMode() == Mode.SINGLE && localDates().size() > 1) {
-			localDates().remove(localDates().size() - 1);
+		public void invalidated()
+		{
+			// do super
+			super.invalidated();
+			
+			// update the collection; remove excessive LocalDates
+			while (modeObjectProperty.getValue() == Mode.SINGLE && localDates().size() > 1) {
+				localDates().remove(localDates().size() - 1);
+			}
 		}
-	}
+		
+		public void set(Mode value)
+		{
+			if (value == null) throw new NullPointerException("Null not allowed");
+			super.set(value);
+		}
+	};
+	public final /* this final was added under heavy objection */ Mode getMode() { return modeObjectProperty.getValue(); }
+	public final /* this final was added under heavy objection */ void setMode(Mode value) { modeObjectProperty.setValue(value); }
 	public LocalDatePicker withMode(Mode value) { setMode(value); return this; } 
+	public enum Mode { SINGLE, MULTIPLE, RANGE };
 }
