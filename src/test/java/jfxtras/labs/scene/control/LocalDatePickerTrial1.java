@@ -43,7 +43,7 @@ import javax.time.calendar.LocalDate;
 public class LocalDatePickerTrial1 extends Application {
 	
     public static void main(String[] args) {    	
-    	//java.util.Locale.setDefault(new java.util.Locale("de")); // weeks starts on monday
+//    	java.util.Locale.setDefault(new java.util.Locale("de")); // weeks starts on monday
         launch(args);       
     }
 

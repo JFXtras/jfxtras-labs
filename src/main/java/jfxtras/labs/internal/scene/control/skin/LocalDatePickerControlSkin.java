@@ -779,7 +779,10 @@ public class LocalDatePickerControlSkin extends SkinBase<LocalDatePicker, LocalD
 	 */
 	protected boolean isWeekend(int idx) 
 	{
-		return false; //(isWeekday(idx, java.util.LocalDate.SATURDAY) || isWeekday(idx, java.util.LocalDate.SUNDAY));
+		// 1 = monday, 7 = sunday
+		int lFirstDayOfWeek = DayOfWeek.firstDayOfWeekFor(getSkinnable().getLocale()).getValue();
+		int lDayOfWeek = (lFirstDayOfWeek + idx - 1) % 7;
+		return lDayOfWeek == 5 || lDayOfWeek == 6;
 	}
 	
 	/**
