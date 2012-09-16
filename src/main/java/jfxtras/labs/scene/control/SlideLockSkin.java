@@ -27,6 +27,7 @@
 package jfxtras.labs.scene.control;
 
 
+import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -35,9 +36,7 @@ import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TouchEvent;
 import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.LinearGradientBuilder;
-import javafx.scene.paint.Stop;
+import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.RectangleBuilder;
 import javafx.scene.shape.SVGPath;
@@ -45,8 +44,9 @@ import javafx.scene.shape.SVGPathBuilder;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.ScaleBuilder;
-import static jfxtras.labs.scene.control.SlideLock.PREFERRED_WIDTH;
+
 import static jfxtras.labs.scene.control.SlideLock.PREFERRED_HEIGHT;
+import static jfxtras.labs.scene.control.SlideLock.PREFERRED_WIDTH;
 
 /**
  * This represents the actual drawing of the slide to unlock control. All mouse and touch event handlers are
@@ -60,7 +60,7 @@ public class SlideLockSkin extends Region implements Skin<SlideLock>{
     private Text                     text;
     private EventHandler<MouseEvent> mouseHandler;
     private EventHandler<TouchEvent> touchHandler;
-
+    private AnimationTimer           currentSpotlightAnim;
     
     public SlideLockSkin(final SlideLock slideLock) {
         this.CONTROL = slideLock;
@@ -100,10 +100,58 @@ public class SlideLockSkin extends Region implements Skin<SlideLock>{
 
         drawControl();
         addHandlers();
+        startAnimations();
+    }
+
+    /**
+     * This method builds an AnimationTimer and starts it to provide periodic animations.
+     * If the skin is to call the layoutChildren() method it is important to stop and recreate if scaling changes.
+     * Since this is mainly to animate the panning of a spotlight on the text node the startAnimation() method should
+     * be called after the text node on the Scene because the animation needs to know how wide the text is in order
+     * to pan across. (presentation logic)
+     */
+    private void startAnimations() {
+
+        // create a spot light animation across the letters.
+        final double spotlightRadius = 70;
+        if (currentSpotlightAnim != null) {
+            currentSpotlightAnim.stop();
+        }
+        currentSpotlightAnim = new AnimationTimer() {
+            long startTime = System.currentTimeMillis();
+            long duration = 0;
+            double x = -spotlightRadius;
+            @Override
+            public void handle(long now) {
+
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                duration=duration+elapsedTime;
+                if (duration > 150) {
+                    RadialGradient lightColor = RadialGradientBuilder.create()
+                            .radius(spotlightRadius)
+                            .centerX(x)
+                            .centerY(text.getY())
+                            .proportional(false)
+                            .stops(new Stop(0, Color.WHITE),
+                                    new Stop(.5, Color.WHITE),
+                                    new Stop(1, Color.web("#555555")))
+                            .build();
+                    x=x+10;
+                    if (x > text.getBoundsInParent().getMaxX() + spotlightRadius) {
+                        x=-spotlightRadius;
+                    }
+                    text.setFill(lightColor);
+                    startTime = System.currentTimeMillis();
+                    duration = 0;
+                }
+            }
+        };
+        currentSpotlightAnim.start();
     }
 
     @Override public void layoutChildren() {
         drawControl();
+        startAnimations();
         super.layoutChildren();
     }
 
@@ -161,6 +209,7 @@ public class SlideLockSkin extends Region implements Skin<SlideLock>{
                 opacity = 0;
             }
             CONTROL.setTextOpacity(opacity);
+            currentSpotlightAnim.stop();
         }
     }
 
@@ -169,6 +218,7 @@ public class SlideLockSkin extends Region implements Skin<SlideLock>{
     private void buttonSnapBack() {
         if (CONTROL.isLocked()){
             CONTROL.getSnapButtonBackAnim().play();
+            currentSpotlightAnim.start();
         }
     }
 
