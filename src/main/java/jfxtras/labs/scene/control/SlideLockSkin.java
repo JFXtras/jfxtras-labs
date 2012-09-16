@@ -27,7 +27,6 @@
 package jfxtras.labs.scene.control;
 
 
-import javafx.animation.Timeline;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -44,314 +43,272 @@ import javafx.scene.shape.RectangleBuilder;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.SVGPathBuilder;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextBuilder;
+import javafx.scene.transform.Scale;
+import javafx.scene.transform.ScaleBuilder;
+import static jfxtras.labs.scene.control.SlideLock.PREFERRED_WIDTH;
+import static jfxtras.labs.scene.control.SlideLock.PREFERRED_HEIGHT;
 
 /**
+ * This represents the actual drawing of the slide to unlock control. All mouse and touch event handlers are
+ * managed in this class.
  *
  * @author cdea
  */
 public class SlideLockSkin extends Region implements Skin<SlideLock>{
-    final private SlideLock slideLock;
+    private final SlideLock          CONTROL;
+    private Group                    button;
+    private Text                     text;
+    private EventHandler<MouseEvent> mouseHandler;
+    private EventHandler<TouchEvent> touchHandler;
 
     
     public SlideLockSkin(final SlideLock slideLock) {
-        this.slideLock = slideLock;
+        this.CONTROL = slideLock;
+
+        if (CONTROL.getPrefWidth() <= 0 || CONTROL.getPrefHeight() <= 0) {
+            CONTROL.setPrefSize(PREFERRED_WIDTH, PREFERRED_HEIGHT);
+        }
+
+        button = new Group();
+        text   = new Text(CONTROL.getText());
+
+        mouseHandler = new EventHandler<MouseEvent>() {
+            @Override public void handle(final MouseEvent event) {
+                if (MouseEvent.MOUSE_PRESSED == event.getEventType()) {
+                    buttonPressAction(button, event.getX(), event.getY());
+                } else if (MouseEvent.MOUSE_DRAGGED == event.getEventType()) {
+                    moveButtonAction(button, event.getX(), event.getY());
+                } else if (MouseEvent.MOUSE_RELEASED == event.getEventType()) {
+                    buttonSnapBack();
+                }
+            }
+        };
+
+        touchHandler = new EventHandler<TouchEvent>() {
+            @Override public void handle(final TouchEvent event) {
+                if (TouchEvent.TOUCH_PRESSED == event.getEventType()) {
+                    buttonPressAction(button, event.getTouchPoint().getX(), event.getTouchPoint().getY());
+                } else if (TouchEvent.TOUCH_MOVED == event.getEventType()) {
+                    moveButtonAction(button, event.getTouchPoint().getX(), event.getTouchPoint().getY());
+                } else if (TouchEvent.TOUCH_RELEASED == event.getEventType()) {
+                    buttonSnapBack();
+                }
+            }
+        };
 
         setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-        
-        // 0 background
-        Node slideBackground = createSlideBackground();
-        getChildren().add(slideBackground);
-        
-        // 1 slide area
-        getChildren().add(createSlideArea());
-        
-        // 2 glare frame
-        Node glareFrame = createGlareFrame();
-        getChildren().add(glareFrame);        
-        
-        // 3 text
-        final Node text = createText();
-        getChildren().add(text);
-        
-        // 4 
-        final Node slideButton = createSlideButton();
-        slideButton.setTranslateX(SlideLock.START_XCOORD);
-        slideButton.translateXProperty().bind(slideLock.endXProperty());
-        slideButton.setTranslateY(SlideLock.BUTTON_YCOORD);
-        getChildren().add(slideButton);
-        
-        text.setTranslateX(SlideLock.START_XCOORD + slideButton.getBoundsInParent().getWidth() + 20 ); //182(move to the right of the button (left x plus width of button)
-        text.setTranslateY(108);
-        text.opacityProperty().bind(slideLock.textOpacityProperty()); // change it.
-        
 
-        
-        // 5 top slide glare
-        Node topSlideGlareRect = createTopSlideGlareRect();
-        getChildren().add(topSlideGlareRect);
-        
-        // begin mouse press
-        setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                buttonPressAction(slideButton, event.getX(), event.getY());
-            }
-        });
-        
-        setOnMouseDragged(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                moveButtonAction(slideButton, event.getX(), event.getY());               
-           }
-        });
-        
-        setOnTouchPressed(new EventHandler<TouchEvent>() {
-            @Override
-            public void handle(TouchEvent event) {
-                buttonPressAction(slideButton, event.getTouchPoint().getX(), event.getTouchPoint().getY());
-            }
-        });
-        setOnTouchMoved(new EventHandler<TouchEvent>() {
-            @Override
-            public void handle(TouchEvent event) {
-                moveButtonAction(slideButton, event.getTouchPoint().getX(), event.getTouchPoint().getY());
-            }
-        });
-        
-        
-        
-
-       
-        // set the current location
-        setOnMouseReleased(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent event){
-                buttonSnapBack(slideLock.getSnapButtonBackAnim());
-                if (!slideLock.lockedProperty().get()) {
-                    System.out.println("Unlocked");
-                } else {
-                    System.out.println("Locked");
-                }
-            }
-        });
-        
-        setOnTouchReleased(new EventHandler<TouchEvent>() {
-            @Override
-            public void handle(TouchEvent event) {
-                buttonSnapBack(slideLock.getSnapButtonBackAnim());
-                if (!slideLock.lockedProperty().get()) {
-                    System.out.println("Unlocked");
-                } else {
-                    System.out.println("Locked");
-                }
-            }
-        });
-
-    } 
-   
-//    @Override
-//    protected void layoutChildren() {
-//        double width = getWidth();
-//        double height = getHeight();
-//        //               Node        x,          y,    width,   height, baselOff,       Hpos,        Vpos
-//        layoutInArea(children.get(0), 0d,        0d,    111d,    111d,   50d,           HPos.LEFT, VPos.CENTER);
-//    }
-
-    @Override
-    public SlideLock getSkinnable() {
-        return slideLock;
+        drawControl();
+        addHandlers();
     }
 
-    @Override
-    public Node getNode() {
+    @Override public void layoutChildren() {
+        drawControl();
+        super.layoutChildren();
+    }
+
+    @Override public SlideLock getSkinnable() {
+        return CONTROL;
+    }
+
+    @Override public Node getNode() {
         return this;
     }
 
-    @Override
-    public void dispose() {
+    @Override public void dispose() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
-    private void buttonPressAction(final Node slideButton, double x, double y) {
-        if (slideButton.getBoundsInParent().contains(x, y)) {
-            slideLock.startXProperty().set(x - slideLock.endXProperty().get());
-            System.out.println("press translate X: " + slideButton.getTranslateX() + 
-                    " start X: " + slideLock.startXProperty().get());
+
+    private void addHandlers() {
+        // MouseEvents
+        setOnMousePressed(mouseHandler);
+        setOnMouseDragged(mouseHandler);
+        setOnMouseReleased(mouseHandler);
+        // TouchEvents
+        setOnTouchPressed(touchHandler);
+        setOnTouchMoved(touchHandler);
+        setOnTouchReleased(touchHandler);
+    }
+
+    private void buttonPressAction(final Node slideButton, final double X, final double Y) {
+        if (slideButton.getBoundsInParent().contains(X, Y)) {
+            CONTROL.setStartX(X - CONTROL.getEndX());
         }
     }
-    private void moveButtonAction(final Node slideButton, double x, double y) {
-        
-        String buttonPressed = Boolean.toString(slideButton.getBoundsInParent().contains(x, y));
-        // check when user pressed the button
-        if (slideButton.getBoundsInParent().contains(x, y)) {
-            slideLock.endXProperty().set(x- slideLock.startXProperty().get());
-            if (slideButton.getTranslateX() < SlideLock.START_XCOORD) {
-                slideLock.lockedProperty().set(true);
-                slideLock.endXProperty().set(SlideLock.START_XCOORD);
-            } else if (slideButton.getTranslateX() > SlideLock.END_XCOORD) {
-                slideLock.lockedProperty().set(false);
-                slideLock.endXProperty().set(SlideLock.END_XCOORD);
-            } else {
-                slideLock.lockedProperty().set(true);
 
+    private void moveButtonAction(final Node slideButton, final double X, final double Y) {
+        final double WIDTH          = CONTROL.getPrefWidth();
+        final double HEIGHT         = CONTROL.getPrefHeight();
+        final double SCALE_FACTOR_X = WIDTH / PREFERRED_WIDTH;
+        final double SCALE_FACTOR_Y = HEIGHT / PREFERRED_HEIGHT;
+
+        System.out.println(X + ", " + Y);
+
+        // check when user pressed the button
+        if (slideButton.getBoundsInParent().contains(X, Y)) {
+            CONTROL.setEndX(X - CONTROL.getStartX());
+            if (slideButton.getTranslateX() < SlideLock.START_XCOORD) {
+                CONTROL.setLocked(true);
+                CONTROL.setEndX(SlideLock.START_XCOORD);
+            } else if (slideButton.getTranslateX() > SlideLock.END_XCOORD) {
+                CONTROL.setLocked(false);
+                CONTROL.setEndX(SlideLock.END_XCOORD);
+            } else {
+                CONTROL.setLocked(true);
             }
-            double opacity = 1d - (double)(slideButton.getTranslateX()) / 200;
+            double opacity = 1d - (slideButton.getTranslateX()) / 200.0;
             if (opacity < 0) {
                 opacity = 0;
             }
-            slideLock.textOpacityProperty().set(opacity);
+            CONTROL.setTextOpacity(opacity);
+        }
+    }
 
-            System.out.println("drag translate X: " + slideButton.getTranslateX() + 
-                    " opacity " + (slideLock.textOpacityProperty()) + 
-                    " start X: " + slideLock.startXProperty() + 
-                    " is Locked: " + slideLock.lockedProperty());
+
+    // ******************** Drawing related ***********************************
+    private void buttonSnapBack() {
+        if (CONTROL.isLocked()){
+            CONTROL.getSnapButtonBackAnim().play();
         }
     }
-    
-    private void buttonSnapBack(Timeline snapBack) {
-        if (slideLock.lockedProperty().getValue()){
-            slideLock.getSnapButtonBackAnim().play();
-        }
-    }
-    
-    private Rectangle createSlideBackground() {
+
+    private void drawControl() {
+        final double WIDTH          = CONTROL.getPrefWidth();
+        final double HEIGHT         = CONTROL.getPrefHeight();
+        final double SCALE_FACTOR_X = WIDTH / PREFERRED_WIDTH;
+        final double SCALE_FACTOR_Y = HEIGHT / PREFERRED_HEIGHT;
+        final Scale SCALE           = ScaleBuilder.create()
+                .x(WIDTH / PREFERRED_WIDTH)
+                .y(HEIGHT / PREFERRED_HEIGHT)
+                .pivotX(0)
+                .pivotY(0)
+                .build();
+
         Rectangle backgroundRect = RectangleBuilder.create()
-                                        .id("slide-background")
-                                        .width(523.28571)
-                                        .height(188)
-                                        
-                                        .build();
-        return backgroundRect;
-    }
-    private Rectangle createSlideArea() {
+                .id("slide-background")
+                .width(WIDTH)
+                .height(HEIGHT)
+                .build();
+        backgroundRect.visibleProperty().bind(CONTROL.backgroundVisibleProperty());
+
         Rectangle slideArea = RectangleBuilder.create()
-                                        .id("slide-area")
-                                        .x(32.05)
-                                        .y(46.31)
-                                        .width(462.01947)
-                                        .height(100.01947)
-                                        .arcWidth(15)
-                                        .arcHeight(15)
-                                        .build();
-        return slideArea;
-    }
-    
-    private Text createText() {
-        Text text = TextBuilder.create()
-            .id("slide-text")
-            .text(slideLock.textProperty().get())
-            .build();
-        return text;
-    }
-    
-    private SVGPath createGlareFrame() {
+                .id("slide-area")
+                .x(0.0612476117 * WIDTH)
+                .y(0.2463297872 * HEIGHT)
+                .width(0.8829200973 * WIDTH)
+                .height(0.5319148936 * HEIGHT)
+                .arcWidth(0.079787234 * HEIGHT)
+                .arcHeight(0.079787234 * HEIGHT)
+                .build();
+
         SVGPath glareRect = SVGPathBuilder.create()
-                                        .fill(LinearGradientBuilder.create()
-                                            .proportional(true)
-                                            .startX(0)
-                                            .startY(0)
-                                            .endX(0)
-                                            .endY(1)
-                                            .stops(new Stop(0, Color.web("f0f0f0", 1)),
-                                                   new Stop(1, Color.web("f0f0f0", 0))
-                                            ).build()
-                                        )
-                                        .opacity(.274)
-                                        .content("m 0,0 0,94 32,0 0,-27.218747 C 30.998808,55.222973 37.761737,45.9354 46.156457,45.93665 l 431.687503,0.06427 c 8.39472,0.0013 15.15487,9.290837 15.15315,20.814756 l -0.004,27.218754 30.28125,0 0,-94.0000031 L 0,0 z")
-                                        .id("glare-frame")
-                                        .build();
-        return glareRect;
+                .fill(LinearGradientBuilder.create()
+                        .proportional(true)
+                        .startX(0)
+                        .startY(0)
+                        .endX(0)
+                        .endY(1)
+                        .stops(new Stop(0, Color.web("f0f0f0", 1)),
+                                new Stop(1, Color.web("f0f0f0", 0))
+                        )
+                        .build()
+                )
+                .opacity(.274)
+                .transforms(SCALE)
+                .content("m 0,0 0,94 32,0 0,-27.218747 C 30.998808,55.222973 37.761737,45.9354 46.156457,45.93665 l 431.687503,0.06427 c 8.39472,0.0013 15.15487,9.290837 15.15315,20.814756 l -0.004,27.218754 30.28125,0 0,-94.0000031 L 0,0 z")
+                .id("glare-frame")
+                .build();
+        glareRect.visibleProperty().bind(CONTROL.backgroundVisibleProperty());
+
+        text.setText(CONTROL.getText());
+        text.setId("slide-text");
+        text.getTransforms().clear();
+        text.getTransforms().add(SCALE);
+
+        drawSlideButton();
+        button.translateXProperty().bind(CONTROL.endXProperty().multiply(SCALE_FACTOR_X));
+        button.setTranslateY(SlideLock.BUTTON_YCOORD * SCALE_FACTOR_Y);
+
+        text.setTranslateX(SlideLock.START_XCOORD + button.getBoundsInParent().getWidth() + 0.1063829787 * HEIGHT);
+        text.setTranslateY(0.5744680851 * HEIGHT);
+        text.opacityProperty().bind(CONTROL.textOpacityProperty());
+
+        Rectangle topGlareRect = RectangleBuilder.create()
+                .id("slide-top-glare")
+                .fill(Color.WHITE)
+                .width(WIDTH)
+                .height(0.5 * HEIGHT)
+                .opacity(0.0627451)
+                .build();
+        topGlareRect.visibleProperty().bind(CONTROL.backgroundVisibleProperty());
+        getChildren().clear();
+        getChildren().addAll(backgroundRect, slideArea, glareRect, text, button, topGlareRect);
     }
 
-    private Node createSlideButton() {
-        Group button = new Group();
-        
+    private void drawSlideButton() {
+        final double WIDTH   = CONTROL.getPrefWidth();
+        final double HEIGHT  = CONTROL.getPrefHeight();
+        final double SCALE_X = WIDTH / PREFERRED_WIDTH;
+        final double SCALE_Y = HEIGHT / PREFERRED_HEIGHT;
+        Scale scale = new Scale();
+        scale.setX(SCALE_X);
+        scale.setY(SCALE_Y);
+        scale.setPivotX(0);
+        scale.setPivotY(0);
+
+        button.getChildren().clear();
+
         // build gradientRect
         Rectangle gradientRect = RectangleBuilder.create()
-                .x(18.783)
-                .y(12.211)
-                .width(81.87566)
-                .height(67.9892)
-                .arcWidth(17.466)
-                .arcWidth(17.466)
-//                .fill(Color.WHITE)
-                .fill(LinearGradientBuilder.create()
-                    .proportional(true)
-                    .startX(0)
-                    .startY(1)
-                    .endX(0)
-                    .endY(0)
-                    .stops(new Stop(0, Color.web("747474")),
-                           new Stop(1, Color.web("e8e8e8")))
-                .build()
-                 )
+                .x(0.0358943492 * WIDTH)
+                .y(0.0649521277 * HEIGHT)
+                .width(0.156464544 * WIDTH)
+                .height(0.3616446809 * HEIGHT)
+                .arcWidth(0.0929042553 * HEIGHT)
+                .arcHeight(0.0929042553 * HEIGHT)
+                        //.fill(Color.WHITE)
+                .fill(CONTROL.getButtonArrowBackgroundColor())
                 .id("button-gradient-rect")
                 .build();
         button.getChildren().add(gradientRect);
-        
-        
+
         // build arrowBlurShadow
         SVGPath arrowBlurShadow = SVGPathBuilder.create()
                 .fill(Color.BLACK)
                 .effect(new GaussianBlur(5))
+                .transforms(scale)
                 .content("m 17.40912,2.47162 c -8.27303,0 -14.9375,7.04253 -14.9375,15.78125 l 0,59.9375 c 0,8.73872 6.66447,15.75 14.9375,15.75 l 84.625,0 c 8.27303,0 14.9375,-7.01128 14.9375,-15.75 l 0,-59.9375 c 0,-8.73872 -6.66447,-15.78125 -14.9375,-15.78125 l -84.625,0 z m 45.0625,18.15625 27.5625,27.59375 -27.5625,27.5625 0,-15.5625 -33.0625,0 0,-24 33.0625,0 0,-15.59375 z")
                 .id("#button-arrow-blur-shadow")
                 .build();
-        
-        
         button.getChildren().add(arrowBlurShadow);
 
-        
-        
-        
         // build arrowStencilCrisp
         SVGPath arrowStencilCrisp = SVGPathBuilder.create()
                 .content("m 17.40912,0.47162 c -8.27303,0 -14.9375,7.04253 -14.9375,15.78125 l 0,59.9375 c 0,8.73872 6.66447,15.75 14.9375,15.75 l 84.625,0 c 8.27303,0 14.9375,-7.01128 14.9375,-15.75 l 0,-59.9375 c 0,-8.73872 -6.66447,-15.78125 -14.9375,-15.78125 l -84.625,0 z m 45.0625,18.15625 27.5625,27.59375 -27.5625,27.5625 0,-15.5625 -33.0625,0 0,-24 33.0625,0 0,-15.59375 z")
-                .fill(LinearGradientBuilder.create()
-                    .proportional(true)
-                    .startX(0)
-                    .startY(1)
-                    .endX(0)
-                    .endY(0)
-                    .stops(new Stop(0, Color.web("c5c5c5")),
-                           new Stop(1, Color.web("f0f0f0"))).build()
-//                    .stops(new Stop(0, Color.web("ff0000")),
-//                    new Stop(1, Color.web("f0f0f0"))).build() // red button
-                 )
+                .fill(CONTROL.getButtonColor())
                 .id("#button-arrow-stencil-crisp")
+                .transforms(scale)
                 .build();
         button.getChildren().add(arrowStencilCrisp);
-        
+
         // build glareRect
         SVGPath glareRect = SVGPathBuilder.create()
                 .content("m 17.83252,1.67757 c -8.27303,0 -14.9375,7.21042 -14.9375,16.15746 l 0,28.31557 114.5,0 0,-28.31557 c 0,-8.94704 -6.66447,-16.15746 -14.9375,-16.15746 l -84.625,0 z")
                 .fill(LinearGradientBuilder.create()
-                    .proportional(true)
-                    .startX(0)
-                    .startY(1)
-                    .endX(0)
-                    .endY(0)
-                    .stops(new Stop(0, Color.web("f4f4f4", 0.60)),
-                           new Stop(1, Color.web("ffffff", 0.2063063)))
-                    .build()
-                 )
+                        .proportional(true)
+                        .startX(0)
+                        .startY(1)
+                        .endX(0)
+                        .endY(0)
+                        .stops(new Stop(0, Color.web("f4f4f4", 0.60)),
+                                new Stop(1, Color.web("ffffff", 0.2063063)))
+                        .build()
+                )
                 .id("#button-arrow-glare-rect")
+                .transforms(scale)
                 .build();
-//        glareRect.setVisible(false); // red button
+        glareRect.visibleProperty().bind(CONTROL.buttonGlareVisibleProperty()); // red button
         button.getChildren().add(glareRect);
-        
-        return button;
+        button.setCache(true);
     }
-    
-    private Rectangle createTopSlideGlareRect() {
-        Rectangle glareRect = RectangleBuilder.create()
-                                        .id("slide-top-glare")
-                                        .fill(Color.WHITE)
-                                        .width(523.28571)
-                                        .height(94)
-                                        .opacity(0.0627451)
-                                        .build();
-        return glareRect;
-    }
-    
 }
