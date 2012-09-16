@@ -28,8 +28,6 @@ package jfxtras.labs.scene.control;
 
 import java.util.Locale;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -41,9 +39,13 @@ import javafx.scene.control.Control;
 import javax.time.calendar.LocalDate;
 
 /**
- * LocalDate picker component
- * Unfortunately this control suffers from JavaFX issue RT-16732 (http://javafx-jira.kenai.com/browse/RT-16732)!
- * The workaround is to load the required CSS in the application's own CSS. 
+ * LocalDate (JSR-310) picker component.
+ * This is the basis implementation using the new date API JSR-310.
+ * The picker can be put in three modes, SINGLE for selecting one date, RANGE of a continguous range and MULTIPLE for free selection of dates.
+ * A single property "localDate" is present, which is most usable in single mode.
+ * A observable list "localDates" is present, which is most usable in range or multiple mode. 
+ * In this mode the "localDate" will hold the last selected date.
+ * There is a CalendarPicker component for backward compatibility.
  * 
  * @author Tom Eugelink
  */
@@ -77,7 +79,7 @@ public class LocalDatePicker extends Control
 	{
 		// setup the CSS
 		// the -fx-skin attribute in the CSS sets which Skin class is used
-		this.getStyleClass().add(this.getClass().getSimpleName());
+		this.getStyleClass().add(DEFAULT_STYLE_CLASS);
 		
 		// construct properties
 		constructLocalDate();

@@ -34,7 +34,7 @@ repositories {
 }
 
 dependencies {
-    compile      files(ext.javafxJar, "lib/jsr-310-ri-0.6.3.jar")
+    compile     files(ext.javafxJar, "lib/jsr-310-ri-0.6.3.jar", "lib/jsr-310-TZDB-all-0.6.3.jar")
     testCompile  "junit:junit:${jfxtras_junitVersion}"
     testCompile  "net.java.jemmy:JemmyFX:0.9.3-SNAPSHOT"
 }

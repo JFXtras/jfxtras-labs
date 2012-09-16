@@ -26,9 +26,7 @@
  */
 package jfxtras.labs.internal.scene.control.skin;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -158,25 +156,13 @@ public class LocalDatePickerControlSkin extends SkinBase<LocalDatePicker, LocalD
 	public LocalDate getDisplayedLocalDate() { return displayedLocalDateObjectProperty.getValue(); }
 	public void setDisplayedLocalDate(LocalDate value)  
 	{
-		LocalDate lValue = getDisplayedLocalDate();
-		
-		// // set value
-		displayedLocalDateObjectProperty.setValue(derriveDisplayedLocalDate(value)); 
+		// set value
+		if (value.getDayOfMonth() != 1) value = LocalDate.of(value.getYear(), value.getMonthOfYear(), 1);
+		displayedLocalDateObjectProperty.setValue( value ); 
 	}
 	public LocalDatePickerControlSkin withDisplayedLocalDate(LocalDate value) { setDisplayedLocalDate(value); return this; } 
 	public ObjectProperty<LocalDate> displayedLocalDate() { return displayedLocalDateObjectProperty; }
 	volatile private ObjectProperty<LocalDate> displayedLocalDateObjectProperty = new SimpleObjectProperty<LocalDate>(this, "displayedLocalDate");
-	private LocalDate derriveDisplayedLocalDate(LocalDate localDate)
-	{
-		// done
-		if (localDate == null) return null;
-		
-		// always the 1st of the month
-		LocalDate lLocalDate = LocalDate.of(localDate.getYear(), localDate.getMonthOfYear(), 1);
-		
-		// done
-		return lLocalDate;
-	}
 
 	/**
 	 * 

@@ -26,14 +26,15 @@
  */
 package jfxtras.labs.scene.control;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import javafx.application.Application;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -49,85 +50,54 @@ public class CalendarPickerTrial1 extends Application {
 	@Override
 	public void start(Stage stage) {
 
+		VBox lVBox = new VBox();
+		lVBox.setSpacing(25);
+		
         // add a node
-		CalendarPicker lXCalendarPicker = new CalendarPicker();
-		lXCalendarPicker.setCalendar(new GregorianCalendar(2011, 06, 01)); // set a value
-//		lXCalendarPicker.setMode(CalendarPicker.Mode.RANGE);
-		lXCalendarPicker.setMode(CalendarPicker.Mode.MULTIPLE);
+		final CalendarPicker lCalendarPicker = new CalendarPicker();
+		lVBox.getChildren().add(lCalendarPicker);
         
-        // create scene
-        Scene scene = new Scene(lXCalendarPicker, 300, 300);
+		// textfield
+        {
+			final TextField lTextField = new TextField();
+			lTextField.setEditable(false);
+	        lCalendarPicker.calendarProperty().addListener(new ChangeListener<Calendar>()
+			{
+				@Override
+				public void changed(ObservableValue<? extends Calendar> CalendarProperty, Calendar oldValue, Calendar newValue)
+				{
+					lTextField.setText(CalendarPicker.quickFormatCalendar(newValue));
+				}
+			});
+	        lVBox.getChildren().add(lTextField);
+        }
+        
+		// textfield
+        {
+			final TextField lTextField = new TextField();
+			lTextField.setEditable(false);
+	        lCalendarPicker.calendars().addListener(new ListChangeListener<Calendar>()
+	        {
+				@Override
+				public void onChanged(javafx.collections.ListChangeListener.Change<? extends Calendar> arg0)
+				{
+					lTextField.setText(CalendarPicker.quickFormatCalendar(lCalendarPicker.calendars()));
+				}
+	        });
+	        lVBox.getChildren().add(lTextField);
+        }
 
-        // bind Picker to BusinessModelBean 
-        BusinessModelBean lBusinessModelBean = new BusinessModelBean();
-        //Binding.bind(lXCalendarPicker.calendar(), lBusinessModelBean.iCalendarObjectProperty); // works and handles the exception for odd dates, but only in the setter
-        //lXCalendarPicker.calendar().bind( lBusinessModelBean.iCalendarObjectProperty ); // this won't work "A bound value cannot be set."
-        //lBusinessModelBean.iCalendarObjectProperty.bind(lXCalendarPicker.calendar()); // this works, but does not handle the exception for odd dates since it bypasses the setter and exceptions are ignored
-        //Bindings.bindWithInverse(lXCalendarPicker.calendar(), lBusinessModelBean.iCalendarObjectProperty); // this works, but the exception is not preventing the value to be set
-        
+        // setup
+//		lCalendarPicker.setCalendar(new GregorianCalendar(2011, 06, 01)); // set a value
+//		lCalendarPicker.setMode(CalendarPicker.Mode.RANGE);
+		lCalendarPicker.setMode(CalendarPicker.Mode.MULTIPLE);
+
+		// create scene
+        Scene scene = new Scene(lVBox, 300, 300);
+
         // create stage
         stage.setTitle("CalendarPicker");
         stage.setScene(scene);
         stage.show();	
     }
-	
-
-	class BusinessModelBean
-	{
-		public BusinessModelBean()
-		{
-//			iCalendarObjectProperty.addListener(new InvalidationListener<Calendar>()
-//			{
-//				@Override
-//				public void invalidated(ObservableValue<? extends Calendar> observableValue)
-//				{
-//					Calendar value = observableValue.getValue();
-//					if (value != null && value.get(Calendar.DATE) % 2 == 1)
-//					{
-//						System.out.println("odd date");
-//						throw new IllegalArgumentException("odd date");
-//					}
-//				}
-//			});
-		}
-		
-		final public ObjectProperty<Calendar> iCalendarObjectProperty = new SimpleObjectProperty<Calendar>()
-		{
-			// check it in the setter, but the setter is not called when JavaFX binding is used, so this is not a 100% converage
-			@Override
-			public void set(Calendar value)
-			{
-				if (value != null && value.get(Calendar.DATE) % 2 == 1)
-				{
-					System.out.println("odd date");
-					throw new IllegalArgumentException("odd date");
-				}
-				super.set(value);
-			}
-			
-			// check after setting the value, when the property has become invalid, this is 100% converage but after the fact
-//			@Override
-//			public void invalidated()
-//			{
-//				Calendar value = get();
-//				if (value != null && value.get(Calendar.DATE) % 2 == 1)
-//				{
-//					System.out.println("odd date");
-//					throw new IllegalArgumentException("odd date");
-//				}
-//				super.invalidated();
-//			}
-		};
-	}
-	
-	/*
-	 * 
-	 */
-	static protected String quickFormatCalendar(Calendar value)
-	{
-		SimpleDateFormat lSimpleDateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG);
-		lSimpleDateFormat.applyPattern("yyyy-MM-dd");
-		return value == null ? "null" : lSimpleDateFormat.format(value.getTime());
-	}
-
 }
