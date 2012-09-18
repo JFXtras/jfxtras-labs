@@ -26,11 +26,13 @@
  */
 package jfxtras.labs.scene.control.gauge;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -42,51 +44,57 @@ import java.util.List;
 /**
  * Created with IntelliJ IDEA.
  * User: hansolo
- * Date: 10.09.12
- * Time: 15:16
+ * Date: 18.09.12
+ * Time: 10:21
  * To change this template use File | Settings | File Templates.
  */
-public class SimpleGauge extends Gauge {
-    private static final String   DEFAULT_STYLE_CLASS = "simple-gauge";
-    private ObjectProperty<Color>      barBackgroundColor;
-    private ObjectProperty<Color>      barColor;
-    private DoubleProperty             barWidth;
-    private DoubleProperty             labelFontSize;
-    private DoubleProperty             unitFontSize;
-    private ObjectProperty<Color>      labelColor;
-    private ObjectProperty<Color>      unitColor;
-    private IntegerProperty            noOfDecimals;
+public abstract class SimpleGauge extends Gauge {
+    private ObjectProperty<Color> barBackgroundColor;
+    private ObjectProperty<Color> barColor;
+    private DoubleProperty        barWidth;
+    private DoubleProperty        labelFontSize;
+    private DoubleProperty        unitFontSize;
+    private ObjectProperty<Color> labelColor;
+    private ObjectProperty<Color> unitColor;
+    private IntegerProperty       noOfDecimals;
+    private BooleanProperty       minLabelVisible;
+    private BooleanProperty       maxLabelVisible;
+    private DoubleProperty        minMaxLabelFontSize;
+    private ObjectProperty<Color> minLabelColor;
+    private ObjectProperty<Color> maxLabelColor;
+    private BooleanProperty       roundedBar;
 
 
     // ******************** Constructors **************************************
-    public SimpleGauge() {
-        this(new GaugeModel());
+    protected SimpleGauge() {
+        this(new GaugeModel(), new StyleModel());
     }
 
-    public SimpleGauge(final GaugeModel MODEL) {
-        super(MODEL);
-        barColor              = new SimpleObjectProperty<Color>(Color.rgb(178, 177, 212));
-        barBackgroundColor    = new SimpleObjectProperty<Color>(Color.rgb(234, 234, 234));
-        barWidth              = new SimpleDoubleProperty(20);
-        labelFontSize         = new SimpleDoubleProperty(36);
-        unitFontSize          = new SimpleDoubleProperty(36);
-        labelColor            = new SimpleObjectProperty<Color>(Color.BLACK);
-        unitColor             = new SimpleObjectProperty<Color>(Color.BLACK);
-        noOfDecimals          = new SimpleIntegerProperty(2);
+    protected SimpleGauge(final GaugeModel GAUGE_MODEL) {
+        this(GAUGE_MODEL, new StyleModel());
+    }
 
-        getStyleClass().setAll(DEFAULT_STYLE_CLASS);
+    protected SimpleGauge(final GaugeModel GAUGE_MODEL, final StyleModel STYLE_MODEL) {
+        super(GAUGE_MODEL, STYLE_MODEL);
+        barColor            = new SimpleObjectProperty<Color>(Color.rgb(178, 177, 212));
+        barBackgroundColor  = new SimpleObjectProperty<Color>(Color.rgb(234, 234, 234));
+        barWidth            = new SimpleDoubleProperty(20);
+        labelFontSize       = new SimpleDoubleProperty(36);
+        unitFontSize        = new SimpleDoubleProperty(20);
+        labelColor          = new SimpleObjectProperty<Color>(Color.BLACK);
+        unitColor           = new SimpleObjectProperty<Color>(Color.BLACK);
+        noOfDecimals        = new SimpleIntegerProperty(2);
+        minLabelVisible     = new SimpleBooleanProperty(false);
+        maxLabelVisible     = new SimpleBooleanProperty(false);
+        minMaxLabelFontSize = new SimpleDoubleProperty(10);
+        minLabelColor       = new SimpleObjectProperty<Color>(Color.BLACK);
+        maxLabelColor       = new SimpleObjectProperty<Color>(Color.BLACK);
+        roundedBar          = new SimpleBooleanProperty(true);
+
     }
 
 
     // ******************** Methods *******************************************
-    @Override public RadialRange getRadialRange() {
-        return RadialRange.RADIAL_300;
-    }
-
-    public void setRadialRange(final RadialRange RADIAL_RANGE) {
-        super.setRadialRange(RadialRange.RADIAL_300);
-    }
-
     public final Color getBarColor() {
         return barColor.get();
     }
@@ -116,7 +124,8 @@ public class SimpleGauge extends Gauge {
     }
 
     public final void setBarWidth(final double BAR_WIDTH) {
-        barWidth.set(BAR_WIDTH);
+        double width = BAR_WIDTH < 1 ? 1 : (BAR_WIDTH > 100 ? 100 : BAR_WIDTH);
+        barWidth.set(width);
     }
 
     public final DoubleProperty barWidthProperty() {
@@ -141,7 +150,8 @@ public class SimpleGauge extends Gauge {
     }
 
     public final void setUnitFontSize(final double UNIT_FONT_SIZE) {
-        unitFontSize.set(UNIT_FONT_SIZE);
+        double size = UNIT_FONT_SIZE < 8 ? 8 : (UNIT_FONT_SIZE > 52 ? 52 : UNIT_FONT_SIZE);
+        unitFontSize.set(size);
     }
 
     public final DoubleProperty unitFontSizeProperty() {
@@ -193,8 +203,76 @@ public class SimpleGauge extends Gauge {
         getGaugeModel().setSections(SECTIONS);
     }
 
-    @Override public void setPrefSize(final double WIDTH, final double HEIGHT) {
-        final double SIZE = WIDTH < HEIGHT ? WIDTH : HEIGHT;
-        super.setPrefSize(SIZE, SIZE);
+    public final boolean isMinLabelVisible() {
+        return minLabelVisible.get();
+    }
+
+    public final void setMinLabelVisible(final boolean MIN_LABEL_VISIBLE) {
+        minLabelVisible.set(MIN_LABEL_VISIBLE);
+    }
+
+    public final BooleanProperty minLabelVisibleProperty() {
+        return minLabelVisible;
+    }
+
+    public final boolean isMaxLabelVisible() {
+        return maxLabelVisible.get();
+    }
+
+    public final void setMaxLabelVisible(final boolean MAX_LABEL_VISIBLE) {
+        maxLabelVisible.set(MAX_LABEL_VISIBLE);
+    }
+
+    public final BooleanProperty maxLabelVisibleProperty() {
+        return maxLabelVisible;
+    }
+
+    public final double getMinMaxLabelFontSize() {
+        return minMaxLabelFontSize.get();
+    }
+
+    public final void setMinMaxLabelFontSize(final double MIN_MAX_LABEL_FONT_SIZE) {
+        double size = MIN_MAX_LABEL_FONT_SIZE < 8 ? 8 : (MIN_MAX_LABEL_FONT_SIZE > 52 ? 52 : MIN_MAX_LABEL_FONT_SIZE);
+        minMaxLabelFontSize.set(size);
+    }
+
+    public final DoubleProperty minMaxLabelFontSizeProperty() {
+        return minMaxLabelFontSize;
+    }
+
+    public final Color getMinLabelColor() {
+        return minLabelColor.get();
+    }
+
+    public final void setMinLabelColor(final Color MIN_LABEL_COLOR) {
+        minLabelColor.set(MIN_LABEL_COLOR);
+    }
+
+    public final ObjectProperty<Color> minLabelColorProperty() {
+        return minLabelColor;
+    }
+
+    public final Color getMaxLabelColor() {
+        return maxLabelColor.get();
+    }
+
+    public final void setMaxLabelColor(final Color MAX_LABEL_COLOR) {
+        maxLabelColor.set(MAX_LABEL_COLOR);
+    }
+
+    public final ObjectProperty<Color> maxLabelColorProperty() {
+        return maxLabelColor;
+    }
+
+    public final boolean isRoundedBar() {
+        return roundedBar.get();
+    }
+
+    public final void setRoundedBar(final boolean ROUNDED_BAR) {
+        roundedBar.set(ROUNDED_BAR);
+    }
+
+    public final BooleanProperty roundedBarProperty() {
+        return roundedBar;
     }
 }

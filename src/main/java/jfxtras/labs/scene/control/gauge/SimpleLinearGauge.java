@@ -24,21 +24,27 @@
  *   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package jfxtras.labs.internal.scene.control.behavior;
-
-import jfxtras.labs.scene.control.gauge.SimpleGauge;
-
+package jfxtras.labs.scene.control.gauge;
 
 /**
  * Created with IntelliJ IDEA.
  * User: hansolo
- * Date: 10.09.12
- * Time: 15:16
+ * Date: 18.09.12
+ * Time: 10:18
  * To change this template use File | Settings | File Templates.
  */
-public class SimpleGaugeBehavior extends GaugeBehaviorBase<SimpleGauge> {
+public class SimpleLinearGauge extends SimpleGauge {
+    private static final String DEFAULT_STYLE_CLASS = "simple-linear-gauge";
 
-    public SimpleGaugeBehavior(final SimpleGauge CONTROL) {
-        super(CONTROL);
+
+    // ******************** Constructors **************************************
+    public SimpleLinearGauge() {
+        this(new GaugeModel());
     }
+
+    public SimpleLinearGauge(final GaugeModel MODEL) {
+        super(MODEL);
+        getStyleClass().setAll(DEFAULT_STYLE_CLASS);
+    }
+
 }
