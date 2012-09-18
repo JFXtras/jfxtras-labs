@@ -452,7 +452,7 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
                 valueText.setLayoutX((width - valueText.getLayoutBounds().getWidth()) / 2);
                 valueText.setLayoutY(valueText.getLayoutBounds().getHeight());
                 unitText.setLayoutX(center.getX() - control.getBarWidth() / 2 - unitText.getLayoutBounds().getHeight() - 5);
-                unitText.setLayoutY(center.getY() + unitText.getLayoutBounds().getHeight() / 2 + valueText.getLayoutBounds().getHeight() + 5 + control.getBarWidth() / 2);
+                unitText.setLayoutY(BAR_BACKGROUND.getEndY() + (BAR_BACKGROUND.getStartY() - BAR_BACKGROUND.getEndY()) / 2 + unitText.getLayoutBounds().getHeight() / 2);
                 minLabel.setLayoutX(center.getX() - control.getBarWidth() / 2 - minLabel.getLayoutBounds().getWidth() - 2);
                 minLabel.setLayoutY(BAR_BACKGROUND.getStartY());
                 maxLabel.setLayoutX(center.getX() - control.getBarWidth() / 2 - maxLabel.getLayoutBounds().getWidth() - 2);
