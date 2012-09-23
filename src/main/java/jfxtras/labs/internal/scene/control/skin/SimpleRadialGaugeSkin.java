@@ -54,9 +54,9 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
-import jfxtras.labs.internal.scene.control.behavior.SimpleGaugeBehavior;
+import jfxtras.labs.internal.scene.control.behavior.SimpleRadialGaugeBehavior;
 import jfxtras.labs.scene.control.gauge.Section;
-import jfxtras.labs.scene.control.gauge.SimpleGauge;
+import jfxtras.labs.scene.control.gauge.SimpleRadialGauge;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -71,24 +71,26 @@ import java.util.Locale;
  * Time: 15:16
  * To change this template use File | Settings | File Templates.
  */
-public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehavior> {
-    private SimpleGauge    control;
-    private boolean        isDirty;
-    private boolean        initialized;
-    private Pane           gauge;
-    private Point2D        center;
-    private Arc            bar;
-    private Text           valueText;
-    private NumberFormat   valueFormat;
-    private Text           unitText;
-    private Timeline       timeline;
-    private DoubleProperty gaugeValue;
-    private double         size;
+public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, SimpleRadialGaugeBehavior> {
+    private SimpleRadialGauge control;
+    private boolean           isDirty;
+    private boolean           initialized;
+    private Pane              gauge;
+    private Point2D           center;
+    private Arc               bar;
+    private Text              valueText;
+    private NumberFormat      valueFormat;
+    private Text              unitText;
+    private Timeline          timeline;
+    private DoubleProperty    gaugeValue;
+    private double            size;
+    private Text              minLabel;
+    private Text              maxLabel;
 
 
     // ******************** Constructors **************************************
-    public SimpleGaugeSkin(final SimpleGauge CONTROL) {
-        super(CONTROL, new SimpleGaugeBehavior(CONTROL));
+    public SimpleRadialGaugeSkin(final SimpleRadialGauge CONTROL) {
+        super(CONTROL, new SimpleRadialGaugeBehavior(CONTROL));
         control        = CONTROL;
         initialized    = false;
         isDirty        = false;
@@ -101,10 +103,13 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
         timeline       = new Timeline();
         gaugeValue     = new SimpleDoubleProperty(control.getValue());
         size           = 200;
-
+        minLabel       = new Text(valueFormat.format(control.getMinValue()));
+        maxLabel       = new Text(valueFormat.format(control.getMaxValue()));
         init();
     }
 
+
+    // ******************** Initialization ************************************
     private void init() {
         if (control.getPrefWidth() < 0 | control.getPrefHeight() < 0) {
             control.setPrefSize(200, 200);
@@ -123,21 +128,40 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
         registerChangeListener(control.unitProperty(), "FULL_REPAINT");
         registerChangeListener(control.barColorProperty(), "BAR");
         registerChangeListener(control.barWidthProperty(), "BAR");
+        registerChangeListener(control.roundedBarProperty(), "BAR");
         registerChangeListener(control.labelFontSizeProperty(), "LABEL");
         registerChangeListener(control.noOfDecimalsProperty(), "LABEL");
+        registerChangeListener(control.minLabelColorProperty(), "MIN_MAX_LABEL");
+        registerChangeListener(control.maxLabelColorProperty(), "MIN_MAX_LABEL");
+        registerChangeListener(control.minMaxLabelFontSizeProperty(), "MIN_MAX_LABEL");
         registerChangeListener(control.valueProperty(), "VALUE");
+        registerChangeListener(control.minLabelVisibleProperty(), "MIN_LABEL_VISIBLE");
         registerChangeListener(gaugeValue, "GAUGE_VALUE");
 
+        addBindings();
+
+        updateNumberFormat();
+
+        initialized = true;
+        repaint();
+    }
+
+    private void addBindings() {
         // Don't show bar if value is smaller or equal minValue
         if (bar.visibleProperty().isBound()) {
             bar.visibleProperty().unbind();
         }
         bar.visibleProperty().bind(gaugeValue.greaterThan(control.minValueProperty()));
 
-        updateNumberFormat();
+        if (minLabel.visibleProperty().isBound()) {
+            minLabel.visibleProperty().unbind();
+        }
+        minLabel.visibleProperty().bind(control.minLabelVisibleProperty());
 
-        initialized = true;
-        repaint();
+        if (maxLabel.visibleProperty().isBound()) {
+            maxLabel.visibleProperty().unbind();
+        }
+        maxLabel.visibleProperty().bind(control.maxLabelVisibleProperty());
     }
 
 
@@ -165,7 +189,7 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
                         gaugeValue.set(control.getValue());
                     }
                 });
-                timeline    = new Timeline();
+                timeline = new Timeline();
                 timeline.getKeyFrames().add(KEY_FRAME);
                 timeline.play();
             } else {
@@ -175,6 +199,12 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
             drawGauge();
         } else if ("LABEL".equals(PROPERTY)) {
             updateNumberFormat();
+            repaint();
+        } else if ("MIN_MAX_LABEL".equals(PROPERTY)) {
+            minLabel.setFill(control.getMinLabelColor());
+            minLabel.setFont(Font.font("Verdana", control.getMinMaxLabelFontSize()));
+            maxLabel.setFill(control.getMaxLabelColor());
+            maxLabel.setFont(Font.font("Verdana", control.getMinMaxLabelFontSize()));
             repaint();
         } else if ("GAUGE_VALUE".equals(PROPERTY)) {
             if (!control.getSections().isEmpty()) {
@@ -214,7 +244,7 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
         super.layoutChildren();
     }
 
-    @Override public final SimpleGauge getSkinnable() {
+    @Override public final SimpleRadialGauge getSkinnable() {
         return control;
     }
 
@@ -239,11 +269,11 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
     }
 
     @Override protected double computeMinWidth(final double MIN_WIDTH) {
-        return super.computeMinWidth(Math.max(200, MIN_WIDTH - getInsets().getLeft() - getInsets().getRight()));
+        return super.computeMinWidth(Math.max(50, MIN_WIDTH - getInsets().getLeft() - getInsets().getRight()));
     }
 
     @Override protected double computeMinHeight(final double MIN_HEIGHT) {
-        return super.computeMinHeight(Math.max(200, MIN_HEIGHT - getInsets().getTop() - getInsets().getBottom()));
+        return super.computeMinHeight(Math.max(50, MIN_HEIGHT - getInsets().getTop() - getInsets().getBottom()));
     }
 
     @Override protected double computeMaxWidth(final double MAX_WIDTH) {
@@ -294,7 +324,7 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
 
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setRadius(0.01 * size);
-        INNER_SHADOW.setBlurType(BlurType.ONE_PASS_BOX);
+        INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
         INNER_SHADOW.setColor(Color.rgb(0, 0, 0, 0.65));
 
         final InnerShadow INNER_GLOW = new InnerShadow();
@@ -315,7 +345,11 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
         BAR_BACKGROUND.setSmooth(true);
         BAR_BACKGROUND.setStroke(control.getBarBackgroundColor());
         BAR_BACKGROUND.setStrokeWidth(control.getBarWidth());
-        BAR_BACKGROUND.setStrokeLineCap(StrokeLineCap.ROUND);
+        if (control.isRoundedBar()) {
+            BAR_BACKGROUND.setStrokeLineCap(StrokeLineCap.ROUND);
+        } else {
+            BAR_BACKGROUND.setStrokeLineCap(StrokeLineCap.BUTT);
+        }
         BAR_BACKGROUND.setEffect(INNER_SHADOW);
 
         bar.setCenterX(center.getX());
@@ -328,7 +362,11 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
         bar.setFill(null);
         bar.setSmooth(true);
         updateBarColor(control.getBarColor());
-        bar.setStrokeLineCap(StrokeLineCap.ROUND);
+        if (control.isRoundedBar()) {
+            bar.setStrokeLineCap(StrokeLineCap.ROUND);
+        } else {
+            bar.setStrokeLineCap(StrokeLineCap.BUTT);
+        }
         bar.setStrokeWidth(control.getBarWidth());
         bar.setEffect(INNER_SHADOW);
 
@@ -347,14 +385,32 @@ public class SimpleGaugeSkin extends GaugeSkinBase<SimpleGauge, SimpleGaugeBehav
         unitText.setTextOrigin(VPos.BOTTOM);
         unitText.setText(control.getUnit());
         unitText.setLayoutX((size - unitText.getLayoutBounds().getWidth()) / 2);
-        unitText.setLayoutY((size - valueText.getLayoutBounds().getHeight()) / 2 + 2 * control.getLabelFontSize() + size * 0.01);
+        unitText.setLayoutY(valueText.getLayoutY() + size * 0.05 + unitText.getLayoutBounds().getHeight());
         unitText.setEffect(INNER_GLOW);
 
+        minLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, control.getMinMaxLabelFontSize()));
+        minLabel.setFill(control.getMinLabelColor());
+        minLabel.setTextAlignment(TextAlignment.CENTER);
+        minLabel.setTextOrigin(VPos.BOTTOM);
+        minLabel.setText(valueFormat.format(control.getMinValue()));
+        minLabel.setLayoutX(size * 0.025);
+        minLabel.setLayoutY(size - minLabel.getLayoutBounds().getHeight() - (size * 0.025));
+
+        maxLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, control.getMinMaxLabelFontSize()));
+        maxLabel.setFill(control.getMaxLabelColor());
+        maxLabel.setTextAlignment(TextAlignment.CENTER);
+        maxLabel.setTextOrigin(VPos.BOTTOM);
+        maxLabel.setText(valueFormat.format(control.getMaxValue()));
+        maxLabel.setLayoutX(size - maxLabel.getLayoutBounds().getWidth() - (size * 0.025));
+        maxLabel.setLayoutY(size - maxLabel.getLayoutBounds().getHeight() - (size * 0.025));
+
         gauge.getChildren().addAll(IBOUNDS,
-            BAR_BACKGROUND,
-            bar,
-            valueText,
-            unitText);
+                                   BAR_BACKGROUND,
+                                   bar,
+                                   valueText,
+                                   unitText,
+                                   minLabel,
+                                   maxLabel);
         gauge.setCache(true);
         gauge.setCacheHint(CacheHint.QUALITY);
     }

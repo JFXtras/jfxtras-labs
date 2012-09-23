@@ -1451,8 +1451,8 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
     }
 
     public void updateBar() {
-        final double WIDTH = gaugeBounds.getWidth();
-        final double HEIGHT = gaugeBounds.getHeight();
+        final double WIDTH    = gaugeBounds.getWidth();
+        final double HEIGHT   = gaugeBounds.getHeight();
         final double barValue = currentValue.get();
         if (WIDTH <= HEIGHT) {
             // vertical

@@ -29,7 +29,16 @@ package jfxtras.labs.scene.control;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.beans.property.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Control;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.LinearGradientBuilder;
@@ -109,6 +118,11 @@ public class SlideLock extends Control {
         final KeyFrame TEXT_OPACITY_UNLOCK_KF = new KeyFrame(Duration.millis(1000), TEXT_OPACITY_UNLOCK_KV);
 
         unlockAnimation.getKeyFrames().addAll(UNLOCK_KEY_FRAME, TEXT_OPACITY_UNLOCK_KF);
+        unlockAnimation.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override public void handle(final ActionEvent EVENT) {
+                setLocked(false);
+            }
+        });
 
         // default to a grey background for the button arrow region.
         buttonArrowBackgroundColor.set(LinearGradientBuilder.create()
