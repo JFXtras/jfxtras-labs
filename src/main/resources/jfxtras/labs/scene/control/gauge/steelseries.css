@@ -153,9 +153,14 @@
     -fx-lcd-text-bg: rgba(0, 12, 6, 0.1);
 }
 
-.simple-gauge {
-    -fx-skin: "jfxtras.labs.internal.scene.control.skin.SimpleGaugeSkin";
+.simple-radial-gauge {
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.SimpleRadialGaugeSkin";
 }
+
+.simple-linear-gauge {
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.SimpleLinearGaugeSkin";
+}
+
 
 /************************************************************
 * Defintions of all lcd colors                              *

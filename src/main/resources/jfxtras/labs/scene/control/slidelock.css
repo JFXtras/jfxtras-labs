@@ -7,7 +7,7 @@
 */
 
 .slide-lock { 
-    -fx-skin: "jfxtras.labs.scene.control.SlideLockSkin";
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.SlideLockSkin";
 }
 
 #slide-background {

@@ -54,6 +54,10 @@ import java.util.List;
  */
 public class SimpleGaugeBuilder<B extends SimpleGaugeBuilder<B>> extends ControlBuilder<B> implements Builder<SimpleGauge> {
     private HashMap<String, Property> properties = new HashMap<String, Property>();
+    public static enum GaugeType {
+        SIMPLE_RADIAL_GAUGE,
+        SIMPLE_LINEAR_GAUGE
+    }
 
 
     // ******************** Constructors **************************************
@@ -63,6 +67,11 @@ public class SimpleGaugeBuilder<B extends SimpleGaugeBuilder<B>> extends Control
     // ******************** Methods *******************************************
     public static final SimpleGaugeBuilder create() {
         return new SimpleGaugeBuilder();
+    }
+
+    public final SimpleGaugeBuilder type(final GaugeType TYPE) {
+        properties.put("TYPE", new SimpleObjectProperty<GaugeType>(TYPE));
+        return this;
     }
 
     public final SimpleGaugeBuilder model(final GaugeModel MODEL) {
@@ -145,6 +154,36 @@ public class SimpleGaugeBuilder<B extends SimpleGaugeBuilder<B>> extends Control
         return this;
     }
 
+    public final SimpleGaugeBuilder minLabelVisible(final boolean MIN_LABEL_VISIBLE) {
+        properties.put("MIN_LABEL_VISIBLE", new SimpleBooleanProperty(MIN_LABEL_VISIBLE));
+        return this;
+    }
+
+    public final SimpleGaugeBuilder maxLabelVisible(final boolean MAX_LABEL_VISIBLE) {
+        properties.put("MAX_LABEL_VISIBLE", new SimpleBooleanProperty(MAX_LABEL_VISIBLE));
+        return this;
+    }
+
+    public final SimpleGaugeBuilder minMaxLabelFontSize(final double MIN_MAX_LABEL_FONT_SIZE) {
+        properties.put("MIN_MAX_LABEL_FONT_SIZE", new SimpleDoubleProperty(MIN_MAX_LABEL_FONT_SIZE));
+        return this;
+    }
+
+    public final SimpleGaugeBuilder minLabelColor(final Color MIN_LABEL_COLOR) {
+        properties.put("MIN_LABEL_COLOR", new SimpleObjectProperty<Color>(MIN_LABEL_COLOR));
+        return this;
+    }
+
+    public final SimpleGaugeBuilder maxLabelColor(final Color MAX_LABEL_COLOR) {
+        properties.put("MAX_LABEL_COLOR", new SimpleObjectProperty<Color>(MAX_LABEL_COLOR));
+        return this;
+    }
+
+    public final SimpleGaugeBuilder roundedBar(final boolean ROUNDED_BAR) {
+        properties.put("ROUNDED_BAR", new SimpleBooleanProperty(ROUNDED_BAR));
+        return this;
+    }
+
     @Override public final B prefWidth(final double PREF_WIDTH) {
         properties.put("PREF_WIDTH", new SimpleDoubleProperty(PREF_WIDTH));
         return (B)this;
@@ -166,7 +205,20 @@ public class SimpleGaugeBuilder<B extends SimpleGaugeBuilder<B>> extends Control
     }
 
     @Override public final SimpleGauge build() {
-        final SimpleGauge CONTROL = new SimpleGauge();
+        final SimpleGauge CONTROL;
+
+        if (properties.containsKey("TYPE")) {
+            switch(((ObjectProperty<GaugeType>)properties.get("TYPE")).get()) {
+                case SIMPLE_LINEAR_GAUGE:
+                    CONTROL = new SimpleLinearGauge();
+                    break;
+                case SIMPLE_RADIAL_GAUGE:
+                default:
+                    CONTROL = new SimpleRadialGauge();
+            }
+        } else {
+            CONTROL = new SimpleRadialGauge();
+        }
 
         if (properties.containsKey("MODEL")) {
             CONTROL.setGaugeModel(((ObjectProperty<GaugeModel>) properties.get("MODEL")).get());
@@ -211,9 +263,20 @@ public class SimpleGaugeBuilder<B extends SimpleGaugeBuilder<B>> extends Control
                 CONTROL.setUnitColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("UNIT_FONT_SIZE".equals(key)) {
                 CONTROL.setUnitFontSize(((DoubleProperty) properties.get(key)).get());
+            } else if ("MIN_LABEL_VISIBLE".equals(key)) {
+                CONTROL.setMinLabelVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("MAX_LABEL_VISIBLE".equals(key)) {
+                CONTROL.setMaxLabelVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("MIN_MAX_LABEL_FONT_SIZE".equals(key)) {
+                CONTROL.setMinMaxLabelFontSize(((DoubleProperty) properties.get(key)).get());
+            } else if ("MIN_LABEL_COLOR".equals(key)) {
+                CONTROL.setMinLabelColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("MAX_LABEL_COLOR".equals(key)) {
+                CONTROL.setMaxLabelColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("ROUNDED_BAR".equals(key)) {
+                CONTROL.setRoundedBar(((BooleanProperty) properties.get(key)).get());
             }
         }
-
         return CONTROL;
     }
 }

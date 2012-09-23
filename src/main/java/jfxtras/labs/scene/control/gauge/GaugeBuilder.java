@@ -69,7 +69,8 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
         RADIAL_QUARTER_S,
         RADIAL_QUARTER_W,
         RADIAL,
-        SIMPLE_GAUGE
+        SIMPLE_RADIAL_GAUGE,
+        SIMPLE_LINEAR_GAUGE
     }
 
 
@@ -335,14 +336,14 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
         switch (gaugeType) {
             case LCD:
                 Lcd lcd = new Lcd(gaugeModel, styleModel);
-                if (prefWidth != -1) { lcd.setPrefWidth(prefWidth); }
-                if (prefHeight != -1) { lcd.setPrefHeight(prefHeight);}
+                if (prefWidth != -1) {lcd.setPrefWidth(prefWidth); }
+                if (prefHeight != -1) {lcd.setPrefHeight(prefHeight);}
                 super.applyTo(lcd);
                 return lcd;
             case LINEAR:
                 Linear linear = new Linear(gaugeModel, styleModel);
-                if (prefWidth != -1) { linear.setPrefWidth(prefWidth); }
-                if (prefHeight != -1) { linear.setPrefHeight(prefHeight);}
+                if (prefWidth != -1) {linear.setPrefWidth(prefWidth);}
+                if (prefHeight != -1) {linear.setPrefHeight(prefHeight);}
                 if (layoutX != -1) {linear.setLayoutX(layoutX);}
                 if (layoutY != -1) {linear.setLayoutY(layoutY);}
                 super.applyTo(linear);
@@ -389,14 +390,22 @@ public class GaugeBuilder<B extends GaugeBuilder<B>> extends ControlBuilder<B> i
                 if (layoutY != -1) {radialQuarterW.setLayoutY(layoutY);}
                 super.applyTo(radialQuarterW);
                 return radialQuarterW;
-            case SIMPLE_GAUGE:
-                SimpleGauge simpleGauge = new SimpleGauge(gaugeModel);
-                simpleGauge.setPrefSize(SIZE, SIZE);
-                simpleGauge.setRadialRange(Gauge.RadialRange.RADIAL_300);
-                if (layoutX != -1) {simpleGauge.setLayoutX(layoutX);}
-                if (layoutY != -1) {simpleGauge.setLayoutY(layoutY);}
-                super.applyTo(simpleGauge);
-                return simpleGauge;
+            case SIMPLE_RADIAL_GAUGE:
+                SimpleRadialGauge simpleRadialGauge = new SimpleRadialGauge(gaugeModel);
+                simpleRadialGauge.setPrefSize(SIZE, SIZE);
+                simpleRadialGauge.setRadialRange(Gauge.RadialRange.RADIAL_300);
+                if (layoutX != -1) {simpleRadialGauge.setLayoutX(layoutX);}
+                if (layoutY != -1) {simpleRadialGauge.setLayoutY(layoutY);}
+                super.applyTo(simpleRadialGauge);
+                return simpleRadialGauge;
+            case SIMPLE_LINEAR_GAUGE:
+                SimpleLinearGauge simpleLinearGauge = new SimpleLinearGauge();
+                if (prefWidth != -1) {simpleLinearGauge.setPrefWidth(prefWidth); }
+                if (prefHeight != -1) {simpleLinearGauge.setPrefHeight(prefHeight);}
+                if (layoutX != -1) {simpleLinearGauge.setLayoutX(layoutX);}
+                if (layoutY != -1) {simpleLinearGauge.setLayoutY(layoutY);}
+                super.applyTo(simpleLinearGauge);
+                return simpleLinearGauge;
             case RADIAL:
             default:
                 Radial radial = new Radial(gaugeModel, styleModel);
