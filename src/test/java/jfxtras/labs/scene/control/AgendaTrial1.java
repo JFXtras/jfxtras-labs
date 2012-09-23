@@ -65,15 +65,26 @@ public class AgendaTrial1 extends Application {
 				.withDescription("A description 2")
 				.withGroup("group2")
 		, 	new Agenda.AppointmentImpl()
-				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 8, 00))
+				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 8, 45))
 				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 12, 00))
+				.withSummary("Summary 3")
+				.withDescription("A description 3")
+				.withGroup("group3")
+		, 	new Agenda.AppointmentImpl()
+				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 00, 00))
+				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 23, 59))
+				.withSummary("Summary 4")
+				.withDescription("A description 4")
+				.withGroup("group1")
+		// -----
+		, 	new Agenda.AppointmentImpl()
+				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 00, 00))
 				.withSummary("all day")
 				.withDescription("A description")
 				.withGroup("group2")
 				.withWholeDay(true)
 		, 	new Agenda.AppointmentImpl()
-				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 8, 00))
-				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 12, 00))
+				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 00, 00))
 				.withSummary("all day2")
 				.withDescription("A description3")
 				.withGroup("group3")
@@ -82,7 +93,7 @@ public class AgendaTrial1 extends Application {
 		
         
         // create scene
-        Scene scene = new Scene(lAgenda, 600, 400);
+        Scene scene = new Scene(lAgenda, 900, 400);
 
         // create stage
         stage.setTitle("Agenda");

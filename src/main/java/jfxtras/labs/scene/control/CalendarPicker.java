@@ -87,7 +87,7 @@ public class CalendarPicker extends Control
 	// ==================================================================================================================
 	// PROPERTIES
 	
-	/** Calendar: */
+	/** calendar: */
 	public ObjectProperty<Calendar> calendarProperty() { return iCalendarObjectProperty; }
 	final private ObjectProperty<Calendar> iCalendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar");
 	// construct property
@@ -125,7 +125,7 @@ public class CalendarPicker extends Control
 		calendars().addListener(new ListChangeListener<Calendar>() 
 		{
 			@Override
-			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Calendar> arg0)
+			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Calendar> change)
 			{
 				// if the active calendar is not longer in calendars, select another
 				if (!calendars().contains(getCalendar())) 

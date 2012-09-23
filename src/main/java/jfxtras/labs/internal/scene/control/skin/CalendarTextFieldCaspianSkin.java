@@ -207,15 +207,15 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 		});
 		
 		// prep the picker
-		calendarPickerX = new CalendarPicker();
-		calendarPickerX.setMode(CalendarPicker.Mode.SINGLE);		
+		calendarPicker = new CalendarPicker();
+		calendarPicker.setMode(CalendarPicker.Mode.SINGLE);		
 		// bind our properties to the picker's 
-		Bindings.bindBidirectional(calendarPickerX.localeProperty(), getSkinnable().localeProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
-		Bindings.bindBidirectional(calendarPickerX.calendarProperty(), getSkinnable().valueProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
-		calendarPickerX.calendarProperty().addListener(new ChangeListener<Calendar>()
+		Bindings.bindBidirectional(calendarPicker.localeProperty(), getSkinnable().localeProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
+		Bindings.bindBidirectional(calendarPicker.calendarProperty(), getSkinnable().valueProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
+		calendarPicker.calendarProperty().addListener(new ChangeListener<Calendar>()
 		{
 			@Override
-			public void changed(ObservableValue<? extends Calendar> arg0, Calendar arg1, Calendar arg2)
+			public void changed(ObservableValue<? extends Calendar> observable, Calendar oldValue, Calendar newValue)
 			{
 				if (popup != null) 
 				{
@@ -227,7 +227,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 	private TextField textField = null;
 	private ImageView imageView = null;
 	private GridPane gridPane = null;
-	private CalendarPicker calendarPickerX = null;
+	private CalendarPicker calendarPicker = null;
 	
 	/**
 	 * parse the contents that was typed in the textfield
@@ -305,7 +305,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 			
 			BorderPane lBorderPane = new BorderPane();
 			lBorderPane.getStyleClass().add(this.getClass().getSimpleName() + "_popup");
-			lBorderPane.setCenter(calendarPickerX);
+			lBorderPane.setCenter(calendarPicker);
 			
 			popup.getContent().add(lBorderPane);
 		}
@@ -315,7 +315,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 		
 		// move the focus over
 		// TODO: not working
-		calendarPickerX.requestFocus();
+		calendarPicker.requestFocus();
 	}
 	private Popup popup = null;
 }

@@ -32,15 +32,19 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.ListChangeListener;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPaneBuilder;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -161,26 +165,50 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		lGroupColor.put("group3", Color.LIGHTSALMON);
 		
 		// put the appointments in the appropriate day
-		Map<Calendar, List<Agenda.Appointment>> lWholeDayAppointmentsPerDay = new HashMap<Calendar, List<Appointment>>();
-		Map<Calendar, List<Agenda.Appointment>> lTimeframeAppointmentsPerDay = new HashMap<Calendar, List<Appointment>>();
-		lWholeDayAppointmentsPerDay.put(null, new ArrayList<Agenda.Appointment>());
-		lTimeframeAppointmentsPerDay.put(null, new ArrayList<Agenda.Appointment>());
+		Calendar lToday = Calendar.getInstance();
+		TreeMap<Calendar, List<Agenda.Appointment>> lWholeDayAppointmentsPerDay = new TreeMap<Calendar, List<Appointment>>();
+		TreeMap<Calendar, List<Agenda.Appointment>> lTimeframeAppointmentsPerDay = new TreeMap<Calendar, List<Appointment>>();
+		TreeMap<Calendar, TreeMap<String, AppointsmentsPane>> lAppointmentNodesPerDayPerSlot = new TreeMap<Calendar, TreeMap<String, AppointsmentsPane>>();
+		lWholeDayAppointmentsPerDay.put(lToday, new ArrayList<Agenda.Appointment>()); // temp
+		lTimeframeAppointmentsPerDay.put(lToday, new ArrayList<Agenda.Appointment>()); // temp
+		lAppointmentNodesPerDayPerSlot.put(lToday, new TreeMap<String, AppointsmentsPane>()); // temp
 		int lMaxNumberOfWholedayAppointments = 0;
     	for (Agenda.Appointment lApp : getSkinnable().appointments())
     	{
     		if (lApp.isWholeDay())
     		{
-    			lWholeDayAppointmentsPerDay.get(null).add(lApp);
-    			if (lWholeDayAppointmentsPerDay.get(null).size() > lMaxNumberOfWholedayAppointments)
+    			lWholeDayAppointmentsPerDay.get(lToday).add(lApp);
+    			if (lWholeDayAppointmentsPerDay.get(lToday).size() > lMaxNumberOfWholedayAppointments)
     			{
-    				lMaxNumberOfWholedayAppointments = lWholeDayAppointmentsPerDay.get(null).size();    				 
-    			}
-    			else
-    			{
-    				lTimeframeAppointmentsPerDay.get(null).add(lApp);
+    				lMaxNumberOfWholedayAppointments = lWholeDayAppointmentsPerDay.get(lToday).size();    				 
     			}
     		}
+			else
+			{
+				lTimeframeAppointmentsPerDay.get(lToday).add(lApp);
+				
+				// create a slot identifier
+				String lSlotId = (lApp.getStartTime().get(Calendar.HOUR_OF_DAY) < 10 ? "0" : "") + lApp.getStartTime().get(Calendar.HOUR_OF_DAY)
+						       + ":"
+						       + (lApp.getStartTime().get(Calendar.MINUTE) < 30 ? "00" : "30" )
+						       ;
+				if (lAppointmentNodesPerDayPerSlot.get(lToday).get(lSlotId) == null) lAppointmentNodesPerDayPerSlot.get(lToday).put(lSlotId, new AppointsmentsPane());
+				lAppointmentNodesPerDayPerSlot.get(lToday).get(lSlotId).add(lApp);
+			}
     	}
+    	
+    	// process appointment nodes for one day 
+    	TreeMap<String, AppointsmentsPane> lAppointmentNodesMap = lAppointmentNodesPerDayPerSlot.get(lToday);
+    	System.out.println(lAppointmentNodesMap);
+    	TreeMap<String, AppointsmentsPane> lStartAndEndTimesMap = new TreeMap<String, AppointsmentsPane>();
+    	for (String lStartTimeId : lAppointmentNodesMap.keySet())
+    	{
+    		System.out.println("starttime " + lStartTimeId);
+    		AppointsmentsPane lAppointsmentsPane = lAppointmentNodesMap.get(lStartTimeId);
+    		lStartAndEndTimesMap.put(lStartTimeId + "S", lAppointsmentsPane);
+    		lStartAndEndTimesMap.put(lAppointsmentsPane.getEndTimeAsString() + "E", lAppointsmentsPane);
+    	}
+    	System.out.println(lStartAndEndTimesMap.keySet());
     	
 		// determine the maximum number of whole day appointments
 		double lWholedayTitleHeight = 25;
@@ -261,7 +289,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	    	// first the whole days appointments
 	    	int lWholedayAppointmentCnt = 0;
 	    	int lDayColIdx = 0;
-	    	for (Agenda.Appointment lApp : lWholeDayAppointmentsPerDay.get(null))
+	    	for (Agenda.Appointment lApp : lWholeDayAppointmentsPerDay.get(lToday))
 	    	{
 	    		// paint the header
 	    		Rectangle r = RectangleBuilder.create()
@@ -310,6 +338,79 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
     }
     Group lDaysCanvas = null;
     ScrollPane lScrollPane = null;
+    
+    /**
+     * 
+     *
+     */
+    class AppointsmentsPane extends Region
+    {
+    	List<Appointment> appointments = new ArrayList<Agenda.Appointment>();
+    	
+    	public AppointsmentsPane()
+    	{
+    		getChildren().add(pane);
+    	}
+    	Pane pane = new Pane();
+    	
+    	/**
+    	 * 
+    	 * @param appointment
+    	 */
+    	public void add(Appointment appointment)
+    	{
+    		appointments.add(appointment);
+    	}
+    	
+    	/**
+    	 * 
+    	 * @return
+    	 */
+    	public String getStartTimeAsString()
+    	{
+    		if (appointments.size() < 1) return null;
+    		String lSlotId = "AA:AA";
+    		for (Appointment lAppointment : appointments)
+    		{
+				String lSlotId2 = (lAppointment.getStartTime().get(Calendar.HOUR_OF_DAY) < 10 ? "0" : "") + lAppointment.getStartTime().get(Calendar.HOUR_OF_DAY)
+						        + ":"
+						        + (lAppointment.getStartTime().get(Calendar.MINUTE) < 30 ? "00" : "30" )
+						        ;
+				if (lSlotId2.compareTo(lSlotId) < 0) lSlotId = lSlotId2;
+    		}
+    		return lSlotId;
+    	}
+
+    	/**
+    	 * 
+    	 * @return
+    	 */
+    	public String getEndTimeAsString()
+    	{
+    		if (appointments.size() < 1) return null;
+    		String lSlotId = "00:00";
+    		for (Appointment lAppointment : appointments)
+    		{
+				String lSlotId2 = (lAppointment.getEndTime().get(Calendar.HOUR_OF_DAY) < 10 ? "0" : "") + lAppointment.getEndTime().get(Calendar.HOUR_OF_DAY)
+						        + ":"
+						        + (lAppointment.getEndTime().get(Calendar.MINUTE) < 30 ? "00" : "30" )
+						        ;
+				if (lSlotId2.compareTo(lSlotId) > 0) lSlotId = lSlotId2;
+    		}
+    		return lSlotId;
+    	}
+
+    	/**
+    	 * 
+    	 */
+    	public String toString()
+    	{
+    		return super.toString()
+    		     + ";" + getStartTimeAsString() + "-" + getEndTimeAsString()
+    		     + ";cnt=" + appointments.size()
+    		     ;
+    	}
+    }
 
 	private void blowupToFullSize(Group group)
 	{
