@@ -249,7 +249,7 @@ public class SlideLock extends Control {
         return buttonColor;
     }
 
-    protected Timeline getSnapButtonBackAnim() {
+    public Timeline getSnapButtonBackAnim() {
         return snapButtonBackAnim;
     }
 

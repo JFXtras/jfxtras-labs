@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package jfxtras.labs.scene.control;
+package jfxtras.labs.internal.scene.control.skin;
 
 
 import javafx.animation.AnimationTimer;
@@ -44,6 +44,7 @@ import javafx.scene.shape.SVGPathBuilder;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.ScaleBuilder;
+import jfxtras.labs.scene.control.SlideLock;
 
 import static jfxtras.labs.scene.control.SlideLock.PREFERRED_HEIGHT;
 import static jfxtras.labs.scene.control.SlideLock.PREFERRED_WIDTH;
