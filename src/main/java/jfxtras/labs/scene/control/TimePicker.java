@@ -31,6 +31,7 @@ import java.util.Calendar;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Control;
+import jfxtras.labs.scene.control.CalendarPicker.Mode;
 
 /**
  * TimePicker control
@@ -73,12 +74,18 @@ public class TimePicker extends Control
 	
 	/** calendar: */
 	public ObjectProperty<Calendar> calendarProperty() { return iCalendarObjectProperty; }
-	final private ObjectProperty<Calendar> iCalendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar");
+	final private ObjectProperty<Calendar> iCalendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar", Calendar.getInstance());
 	public Calendar getCalendar() { return iCalendarObjectProperty.getValue(); }
 	public void setCalendar(Calendar value) { iCalendarObjectProperty.setValue(value); }
 	public TimePicker withCalendar(Calendar value) { setCalendar(value); return this; } 
 
-	
+	/** MinuteStep */
+	public ObjectProperty<Integer> minuteStepProperty() { return iMinuteStepProperty; }
+	final private SimpleObjectProperty<Integer> iMinuteStepProperty = new SimpleObjectProperty<Integer>(this, "minuteStep", 1);
+	public Integer getMinuteStep() { return iMinuteStepProperty.getValue(); }
+	public void setMinuteStep(Integer value) { iMinuteStepProperty.setValue(value); }
+	public TimePicker withMinuteStep(Integer value) { setMinuteStep(value); return this; } 
+
 	// ==================================================================================================================
 	// SUPPORT
 }

@@ -43,7 +43,8 @@ public class TimePickerTrial1 extends Application {
 	public void start(Stage stage) {
 
         // add a node
-		TimePicker lTimePicker = new TimePicker();		
+		TimePicker lTimePicker = new TimePicker();	
+//		lTimePicker.setMinuteStep(15);
         
         // create scene
         Scene scene = new Scene(lTimePicker, 900, 400);
