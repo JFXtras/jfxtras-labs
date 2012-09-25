@@ -296,6 +296,16 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
 
         calcGaugeBounds();
 
+        // Init styles
+        lcdUnitString.getStyleClass().clear();
+        lcdUnitString.getStyleClass().add("lcd");
+        lcdUnitString.getStyleClass().add(control.getLcdDesign().CSS);
+        lcdUnitString.getStyleClass().add("lcd-text");
+        lcdValueString.getStyleClass().clear();
+        lcdValueString.getStyleClass().add("lcd");
+        lcdValueString.getStyleClass().add(control.getLcdDesign().CSS);
+        lcdValueString.getStyleClass().add("lcd-text");
+
         initialized = true;
         repaint();
     }
@@ -593,7 +603,7 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
 
         } else if ("TICKMARKS".equals(PROPERTY)) {
             drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
-        } else if (PROPERTY.equals("MIN_MEASURED_VALUE".equals(PROPERTY))) {
+        } else if ("MIN_MEASURED_VALUE".equals(PROPERTY)) {
             final double ZERO_OFFSET = 180 + control.getRadialRange().ROTATION_OFFSET;
             minMeasured.getTransforms().clear();
             minMeasured.getTransforms().add(Transform.rotate(ZERO_OFFSET - (control.getMinMeasuredValue() - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getY()));

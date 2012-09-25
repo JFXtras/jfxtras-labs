@@ -155,7 +155,7 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
         minMeasured            = new Group();
         maxMeasured            = new Group();
         pointer                = new Group();
-        pointerShadow          = new Group();
+        pointerShadow          = new Group(pointer);
         ledOff                 = new Group();
         ledOn                  = new Group();
         userLedOff             = new Group();
@@ -565,7 +565,7 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
             }
         } else if ("TICKMARKS".equals(PROPERTY)) {
             drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
-        } else if (PROPERTY.equals("MIN_MEASURED_VALUE".equals(PROPERTY))) {
+        } else if ("MIN_MEASURED_VALUE".equals(PROPERTY)) {
             final double ZERO_OFFSET = -45 - control.getMinValue() * control.getAngleStep();
             minMeasured.setRotate(control.getRadialRange().ANGLE_RANGE);
             minMeasured.getTransforms().clear();
@@ -637,7 +637,6 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
             drawCircularGlowOn(control, glowOn, glowColors, gaugeBounds);
             drawMinMeasuredIndicator();
             drawMaxMeasuredIndicator();
-            drawCircularIndicators(control, markers, center, gaugeBounds);
             drawPointer();
             drawCircularKnobs(control, knobs, center, gaugeBounds);
             drawCircularForeground(control, foreground, gaugeBounds);
@@ -1275,8 +1274,8 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
         if (control.getPointerType() == Gauge.PointerType.TYPE9) {
             pointer.getChildren().add(POINTER_FRONT);
         }
-
         pointer.setRotate(control.getRadialRange().ANGLE_RANGE);
+
         pointer.setCache(true);
         pointer.setCacheHint(CacheHint.ROTATE);
     }

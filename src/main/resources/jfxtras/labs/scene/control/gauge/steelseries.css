@@ -172,7 +172,7 @@
     -fx-frac3      : rgb(225, 220, 183);
     -fx-stop       : rgb(237, 232, 191);
     -fx-lcd-text   : rgb(  0,   0,   0);
-    -fx-lcd-text-bg: rgba(0, 0, 0, 0.1);
+    -fx-lcd-text-bg: rgba( 0,   0,   0, 0.1);
 }
 .lcd-blue {
     -fx-start      : rgb(255, 255, 255);
@@ -181,7 +181,7 @@
     -fx-frac3      : rgb(136, 212, 255);
     -fx-stop       : rgb(192, 232, 255);
     -fx-lcd-text   : rgb( 18,  69, 100);
-    -fx-lcd-text-bg: rgba(18, 69, 100, 0.1);
+    -fx-lcd-text-bg: rgba(18,  69, 100, 0.1);
 }
 .lcd-orange {
     -fx-start      : rgb(255, 255, 255);
@@ -190,7 +190,7 @@
     -fx-frac3      : rgb(255, 201, 104);
     -fx-stop       : rgb(255, 227, 173);
     -fx-lcd-text   : rgb( 80,  55,   0);
-    -fx-lcd-text-bg: rgba(80, 55, 0, 0.1);
+    -fx-lcd-text-bg: rgba(80,  55,   0, 0.1);
 }
 .lcd-red {
     -fx-start      : rgb(255, 255, 255);
@@ -199,7 +199,7 @@
     -fx-frac3      : rgb(252, 114, 115);
     -fx-stop       : rgb(254, 178, 178);
     -fx-lcd-text   : rgb( 79,  12,  14);
-    -fx-lcd-text-bg: rgba(79, 12, 14, 0.1);
+    -fx-lcd-text-bg: rgba(79,  12,  14, 0.1);
 }
 .lcd-yellow {
     -fx-start      : rgb(255, 255, 255);
@@ -208,7 +208,7 @@
     -fx-frac3      : rgb(158, 205,   0);
     -fx-stop       : rgb(210, 255,   0);
     -fx-lcd-text   : rgb( 64,  83,   0);
-    -fx-lcd-text-bg: rgba(64, 83, 0, 0.1);
+    -fx-lcd-text-bg: rgba(64,  83,   0, 0.1);
 }
 .lcd-white {
     -fx-start      : rgb(255, 255, 255);
@@ -217,7 +217,7 @@
     -fx-frac3      : rgb(229, 239, 244);
     -fx-stop       : rgb(255, 255, 255);
     -fx-lcd-text   : rgb(  0,   0,   0);
-    -fx-lcd-text-bg: rgba(0, 0, 0, 0.1);
+    -fx-lcd-text-bg: rgba(0,    0,   0, 0.1);
 }
 .lcd-gray {
     -fx-start      : rgb( 65,  65,  65);
@@ -244,7 +244,7 @@
     -fx-frac3      : rgb( 28,  57,  57);
     -fx-stop       : rgb( 23,  46,  46);
     -fx-lcd-text   : rgb(  0, 185, 165);
-    -fx-lcd-text-bg: rgba(0, 185, 165, 0.1);
+    -fx-lcd-text-bg: rgba(0,  185, 165, 0.1);
 }
 .lcd-green-darkgreen {
     -fx-start      : rgb( 27,  41,  17);
@@ -271,7 +271,7 @@
     -fx-frac3      : rgb(  3, 162, 254);
     -fx-stop       : rgb( 11, 172, 244);
     -fx-lcd-text   : rgb(  0,   0,   0);
-    -fx-lcd-text-bg: rgba(0, 0, 0, 0.1);
+    -fx-lcd-text-bg: rgba( 0,   0,   0, 0.1);
 }
 .lcd-blue-darkblue {
     -fx-start      : rgb( 18,  33,  88);
@@ -280,7 +280,7 @@
     -fx-frac3      : rgb( 17,  31,  94);
     -fx-stop       : rgb( 21,  25,  90);
     -fx-lcd-text   : rgb( 23,  99, 221);
-    -fx-lcd-text-bg: rgba(23, 99, 221, 0.1);
+    -fx-lcd-text-bg: rgba(23,  99, 221, 0.1);
 }
 .lcd-blue-lightblue {
     -fx-start      : rgb( 88, 107, 132);
@@ -307,7 +307,7 @@
     -fx-frac3      : rgb(166, 175, 156);
     -fx-stop       : rgb(175, 184, 165);
     -fx-lcd-text   : rgb( 35,  42,  52);
-    -fx-lcd-text-bg: rgba(35, 42, 52, 0.1);
+    -fx-lcd-text-bg: rgba(35,  42,  52, 0.1);
 }
 .lcd-standard-green {
     -fx-start      : rgb(255, 255, 255);
@@ -316,16 +316,16 @@
     -fx-frac3      : rgb(153, 176, 151);
     -fx-stop       : rgb(114, 138, 109);
     -fx-lcd-text   : rgb(  0,  12,   6);
-    -fx-lcd-text-bg: rgba(0, 12, 6, 0.1);
+    -fx-lcd-text-bg: rgba(0,   12,   6, 0.1);
 }
 .lcd-blue-blue {
     -fx-start      : rgb(100, 168, 253);
     -fx-frac1      : rgb(100, 168, 253);
     -fx-frac2      : rgb( 95, 160, 250);
     -fx-frac3      : rgb( 80, 144, 252);
-    -fx-stop       :  rgb( 74, 134, 255);
-    -fx-lcd-text   :  rgb(  0,  44, 187);
-    -fx-lcd-text-bg: rgba(0, 44, 187, 0.1);
+    -fx-stop       : rgb( 74, 134, 255);
+    -fx-lcd-text   : rgb(  0,  44, 187);
+    -fx-lcd-text-bg: rgba( 0,  44, 187, 0.1);
 }
 .lcd-red-darkred {
     -fx-start      : rgb( 72,  36,  50);
@@ -352,7 +352,7 @@
     -fx-frac3      : rgb(174, 147, 252);
     -fx-stop       : rgb(168, 136, 233);
     -fx-lcd-text   : rgb(  7,  97,  72);
-    -fx-lcd-text-bg: rgba(7, 97, 72, 0.1);
+    -fx-lcd-text-bg: rgba( 7,  97,  72, 0.1);
 }
 .lcd-black-red {
     -fx-start      : rgb(  8,  12,  11);
@@ -361,7 +361,7 @@
     -fx-frac3      : rgb(  7,  13,   9);
     -fx-stop       : rgb(  9,  13,  14);
     -fx-lcd-text   : rgb(181,   0,  38);
-    -fx-lcd-text-bg: rgba(181, 0, 38, 0.1);
+    -fx-lcd-text-bg: rgba(181,  0,  38, 0.1);
 }
 .lcd-darkgreen {
     -fx-start      : rgb( 25,  85,   0);
@@ -370,7 +370,7 @@
     -fx-frac3      : rgb( 30, 101,   0);
     -fx-stop       : rgb( 25,  85,   0);
     -fx-lcd-text   : rgb( 35,  49,  35);
-    -fx-lcd-text-bg: rgba(35, 49, 35, 0.1);
+    -fx-lcd-text-bg: rgba(35,  49,  35, 0.1);
 }
 .lcd-amber {
     -fx-start      : rgb(182,  71,   0);
@@ -379,7 +379,7 @@
     -fx-frac3      : rgb(212,  93,   5);
     -fx-stop       : rgb(182,  71,   0);
     -fx-lcd-text   : rgb( 89,  58,  10);
-    -fx-lcd-text-bg: rgba(89, 58, 10, 0.1);
+    -fx-lcd-text-bg: rgba(89,  58,  10, 0.1);
 }
 .lcd-lightblue {
     -fx-start      : rgb(125, 146, 184);
@@ -388,7 +388,7 @@
     -fx-frac3      : rgb(138, 155, 194);
     -fx-stop       : rgb(125, 146, 184);
     -fx-lcd-text   : rgb(  9,   0,  81);
-    -fx-lcd-text-bg: rgba(9, 0, 81, 0.1);
+    -fx-lcd-text-bg: rgba( 9,   0,  81, 0.1);
 }
 .lcd-green-black {
     -fx-start      : rgb(  1,  47,   0);
@@ -406,7 +406,7 @@
     -fx-frac3      : rgb(213, 245,  24);
     -fx-stop       : rgb(224, 248,  88);
     -fx-lcd-text   : rgb(  9,  19,   0);
-    -fx-lcd-text-bg: rgba(9, 19, 0, 0.1);
+    -fx-lcd-text-bg: rgba( 9,  19,   0, 0.1);
 }
 .lcd-black-yellow {
     -fx-start      : rgb( 43,   3,   3);
@@ -424,7 +424,7 @@
     -fx-frac3      : rgb(118, 201,   0);
     -fx-stop       : rgb(105, 179,   4);
     -fx-lcd-text   : rgb(  0,  35,   0);
-    -fx-lcd-text-bg: rgba(0, 35, 0, 0.1);
+    -fx-lcd-text-bg: rgba( 0,  35,   0, 0.1);
 }
 .lcd-darklila {
     -fx-start      : rgb( 35,  24,  75);

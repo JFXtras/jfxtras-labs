@@ -565,7 +565,7 @@ public class RadialQuarterWSkin extends GaugeSkinBase<RadialQuarterW, RadialQuar
             }
         } else if ("TICKMARKS".equals(PROPERTY)) {
             drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
-        } else if (PROPERTY.equals("MIN_MEASURED_VALUE".equals(PROPERTY))) {
+        } else if ("MIN_MEASURED_VALUE".equals(PROPERTY)) {
             final double ZERO_OFFSET = 45 - control.getMinValue() * control.getAngleStep() - control.getRadialRange().ANGLE_RANGE;
             minMeasured.getTransforms().clear();
             minMeasured.getTransforms().add(Transform.rotate(ZERO_OFFSET + (control.getMinMeasuredValue() * control.getAngleStep()), rotationCenter.getX(), rotationCenter.getY()));
@@ -706,30 +706,6 @@ public class RadialQuarterWSkin extends GaugeSkinBase<RadialQuarterW, RadialQuar
 
     @Override protected double computeMaxHeight(final double HEIGHT) {
         return super.computeMaxHeight(Math.max(MAX_SIZE.getHeight(), HEIGHT - getInsets().getTop() - getInsets().getBottom()));
-    }
-
-    private String formatLcdValue(final double VALUE) {
-        final StringBuilder DEC_BUFFER = new StringBuilder(16);
-        DEC_BUFFER.append("0");
-        final int lcdDecimals = control.getLcdDecimals();
-        final boolean lcdScientificFormatEnabled = false;
-
-        if (lcdDecimals > 0) {
-            DEC_BUFFER.append(".");
-        }
-
-        for (int i = 0; i < lcdDecimals; i++) {
-            DEC_BUFFER.append("0");
-        }
-
-        if (lcdScientificFormatEnabled) {
-            DEC_BUFFER.append("E0");
-        }
-
-        DEC_BUFFER.trimToSize();
-        final java.text.DecimalFormat DEC_FORMAT = new java.text.DecimalFormat(DEC_BUFFER.toString(), new java.text.DecimalFormatSymbols(java.util.Locale.US));
-
-        return DEC_FORMAT.format(VALUE);
     }
 
     private void calcGaugeBounds() {

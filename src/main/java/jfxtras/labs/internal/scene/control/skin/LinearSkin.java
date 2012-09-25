@@ -281,6 +281,16 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
 
         calcGaugeBounds();
 
+        // Init styles
+        lcdUnitString.getStyleClass().clear();
+        lcdUnitString.getStyleClass().add("lcd");
+        lcdUnitString.getStyleClass().add(control.getLcdDesign().CSS);
+        lcdUnitString.getStyleClass().add("lcd-text");
+        lcdValueString.getStyleClass().clear();
+        lcdValueString.getStyleClass().add("lcd");
+        lcdValueString.getStyleClass().add(control.getLcdDesign().CSS);
+        lcdValueString.getStyleClass().add("lcd-text");
+
         initialized = true;
         repaint();
     }
