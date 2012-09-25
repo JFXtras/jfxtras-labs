@@ -168,7 +168,7 @@ public class StyleModel {
         foregroundType                  = new SimpleObjectProperty<ForegroundType>(Radial.ForegroundType.TYPE1);
         foregroundVisible               = new SimpleBooleanProperty(true);
         lcdThresholdVisible             = new SimpleBooleanProperty(false);
-        lcdDesign                       = new SimpleObjectProperty<LcdDesign>(LcdDesign.WHITE);
+        lcdDesign                       = new SimpleObjectProperty<LcdDesign>(LcdDesign.STANDARD_GREEN);
         lcdVisible                      = new SimpleBooleanProperty(true);
         lcdUnitVisible                  = new SimpleBooleanProperty(false);
         lcdUnitFont                     = new SimpleStringProperty("Verdana");

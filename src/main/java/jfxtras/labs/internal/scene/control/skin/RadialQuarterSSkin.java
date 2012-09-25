@@ -296,6 +296,16 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
 
         calcGaugeBounds();
 
+        // Init styles
+        lcdUnitString.getStyleClass().clear();
+        lcdUnitString.getStyleClass().add("lcd");
+        lcdUnitString.getStyleClass().add(control.getLcdDesign().CSS);
+        lcdUnitString.getStyleClass().add("lcd-text");
+        lcdValueString.getStyleClass().clear();
+        lcdValueString.getStyleClass().add("lcd");
+        lcdValueString.getStyleClass().add(control.getLcdDesign().CSS);
+        lcdValueString.getStyleClass().add("lcd-text");
+
         initialized = true;
         repaint();
     }
@@ -593,7 +603,7 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
 
         } else if ("TICKMARKS".equals(PROPERTY)) {
             drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
-        } else if (PROPERTY.equals("MIN_MEASURED_VALUE".equals(PROPERTY))) {
+        } else if ("MIN_MEASURED_VALUE".equals(PROPERTY)) {
             final double ZERO_OFFSET = 180 + control.getRadialRange().ROTATION_OFFSET;
             minMeasured.getTransforms().clear();
             minMeasured.getTransforms().add(Transform.rotate(ZERO_OFFSET - (control.getMinMeasuredValue() - control.getMinValue()) * control.getAngleStep(), center.getX(), center.getY()));
@@ -630,63 +640,8 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
     }
 
     public void repaint() {
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            calcGaugeBounds();
-            setTranslateX(framelessOffset.getX());
-            setTranslateY(framelessOffset.getY());
-            center = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getHeight() * 0.265);
-            getChildren().clear();
-            drawCircularFrame(control, frame, gaugeBounds);
-            drawCircularBackground(control, background, gaugeBounds);
-            drawCircularTrend(control, trend, gaugeBounds);
-            updateSections();
-            drawCircularSections(control, sections, gaugeBounds);
-            updateAreas();
-            drawCircularAreas(control, areas, gaugeBounds);
-            drawTitleAndUnit();
-            drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
-            drawCircularLed(control, ledOff, ledOn, gaugeBounds);
-            drawCircularUserLed(control, userLedOff, userLedOn, gaugeBounds);
-            drawThreshold();
-            drawCircularGlowOff(glowOff, gaugeBounds);
-            drawCircularGlowOn(control, glowOn, glowColors, gaugeBounds);
-            drawMinMeasuredIndicator();
-            drawMaxMeasuredIndicator();
-            drawCircularLcd(control, lcd, gaugeBounds);
-            drawLcdContent();
-            drawPointer();
-            drawCircularKnobs(control, knobs, center, gaugeBounds);
-            drawCircularForeground(control, foreground, gaugeBounds);
-            if (control.isPointerShadowEnabled() && !control.isPointerGlowEnabled()) {
-                addDropShadow(control, knobs, pointerShadow);
-            }
-
-            getChildren().addAll(frame,
-                                 background,
-                                 trend,
-                                 sections,
-                                 areas,
-                                 ledOff,
-                                 ledOn,
-                                 userLedOff,
-                                 userLedOn,
-                                 titleAndUnit,
-                                 tickmarks,
-                                 threshold,
-                                 glowOff,
-                                 glowOn,
-                                 minMeasured,
-                                 maxMeasured,
-                                 markers,
-                                 lcd,
-                                 lcdContent,
-                                 pointerShadow,
-                                 knobsShadow,
-                                 foreground);
-        }
+        isDirty = true;
+        requestLayout();
     }
 
     @Override public void layoutChildren() {

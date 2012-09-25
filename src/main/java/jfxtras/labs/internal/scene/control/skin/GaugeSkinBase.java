@@ -999,7 +999,6 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         }
 
         LCD.getChildren().addAll(LCD_FRAME, LCD_MAIN);
-
         LCD.setCache(true);
     }
 
