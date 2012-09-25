@@ -73,6 +73,7 @@ public class CalendarPicker extends Control
 		constructCalendar();
 		constructCalendars();
 		constructLocale();
+//		constructMode();
 	}
 
 	/**
@@ -87,8 +88,8 @@ public class CalendarPicker extends Control
 	// PROPERTIES
 	
 	/** calendar: */
-	public ObjectProperty<Calendar> calendarProperty() { return iCalendarObjectProperty; }
-	final private ObjectProperty<Calendar> iCalendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar");
+	public ObjectProperty<Calendar> calendarProperty() { return calendarObjectProperty; }
+	final private ObjectProperty<Calendar> calendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar");
 	// construct property
 	private void constructCalendar()
 	{
@@ -109,14 +110,13 @@ public class CalendarPicker extends Control
 		});
 	}
 	// java bean API
-	public Calendar getCalendar() { return iCalendarObjectProperty.getValue(); }
-	public void setCalendar(Calendar value) { iCalendarObjectProperty.setValue(value); }
+	public Calendar getCalendar() { return calendarObjectProperty.getValue(); }
+	public void setCalendar(Calendar value) { calendarObjectProperty.setValue(value); }
 	public CalendarPicker withCalendar(Calendar value) { setCalendar(value); return this; } 
 
 	/** Calendars: */
-	public ObservableList<Calendar> calendars() { return iCalendars; }
-	final private ObservableList<Calendar> iCalendars =  javafx.collections.FXCollections.observableArrayList();
-	final static public String CALENDARS_PROPERTY_ID = "calendars";
+	public ObservableList<Calendar> calendars() { return calendars; }
+	final private ObservableList<Calendar> calendars =  javafx.collections.FXCollections.observableArrayList();
 	// construct property
 	private void constructCalendars()
 	{
@@ -146,11 +146,11 @@ public class CalendarPicker extends Control
 	}
 
 	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc */
-	public ObjectProperty<Locale> localeProperty() { return iLocaleObjectProperty; }
-	volatile private ObjectProperty<Locale> iLocaleObjectProperty = new SimpleObjectProperty<Locale>(this, "locale", Locale.getDefault());
+	public ObjectProperty<Locale> localeProperty() { return localeObjectProperty; }
+	volatile private ObjectProperty<Locale> localeObjectProperty = new SimpleObjectProperty<Locale>(this, "locale", Locale.getDefault());
 	// java bean API
-	public Locale getLocale() { return iLocaleObjectProperty.getValue(); }
-	public void setLocale(Locale value) { iLocaleObjectProperty.setValue(value); }
+	public Locale getLocale() { return localeObjectProperty.getValue(); }
+	public void setLocale(Locale value) { localeObjectProperty.setValue(value); }
 	public CalendarPicker withLocale(Locale value) { setLocale(value); return (CalendarPicker)this; } 
 	// construct property
 	private void constructLocale()
@@ -172,31 +172,50 @@ public class CalendarPicker extends Control
 	}
 	
 	/** Mode: single, range or multiple */
-	public ObjectProperty<Mode> modeProperty() { return iModeObjectProperty; }
-	final private SimpleObjectProperty<Mode> iModeObjectProperty = new SimpleObjectProperty<Mode>(this, "mode", Mode.SINGLE);
-	public enum Mode { SINGLE, MULTIPLE, RANGE };
-	// java bean API
-	public Mode getMode() { return iModeObjectProperty.getValue(); }
-	public void setMode(Mode value)
+	public ObjectProperty<Mode> modeProperty() { return modeObjectProperty; }
+	final private SimpleObjectProperty<Mode> modeObjectProperty = new SimpleObjectProperty<Mode>(this, "mode", Mode.SINGLE)
 	{
-		if (value == null) throw new IllegalArgumentException("NULL not allowed");
-		
-		// set it
-		iModeObjectProperty.setValue(value);
-		
-		// update the collection; remove excessive calendars
-		while (getMode() == Mode.SINGLE && calendars().size() > 1) {
-			calendars().remove(calendars().size() - 1);
+		public void set(Mode value)
+		{
+			if (value == null) throw new NullPointerException("Null not allowed");
+			super.set(value);
 		}
-	}
+	};
+	public enum Mode { SINGLE, MULTIPLE, RANGE };
+	// construct property
+//	private void constructMode()
+//	{
+//		// if this value is changed by binding, make sure related things are updated
+//		modeProperty().addListener(new ChangeListener<Mode>()
+//		{
+//			@Override
+//			public void changed(ObservableValue<? extends Mode> observableValue, Mode oldValue, Mode newValue)
+//			{
+//				// update the collection; remove excessive calendars
+//				while (getMode() == Mode.SINGLE && calendars().size() > 1) {
+//					calendars().remove(calendars().size() - 1);
+//				}
+//			} 
+//		});
+//	}
+	// java bean API
+	public Mode getMode() { return modeObjectProperty.getValue(); }
+	public void setMode(Mode value) { modeObjectProperty.setValue(value); }
 	public CalendarPicker withMode(Mode value) { setMode(value); return this; } 
 
+	/** ShowTime: only applicable in SINGLE mode */
+	public ObjectProperty<Boolean> showTimeProperty() { return showTimeObjectProperty; }
+	volatile private ObjectProperty<Boolean> showTimeObjectProperty = new SimpleObjectProperty<Boolean>(this, "showTime", false);
+	// java bean API
+	public Boolean getShowTime() { return showTimeObjectProperty.getValue(); }
+	public void setShowTime(Boolean value) { showTimeObjectProperty.setValue(value); }
+	public CalendarPicker withShowTime(Boolean value) { setShowTime(value); return (CalendarPicker)this; } 
+	
 
 	// ==================================================================================================================
 	// SUPPORT
 	
-
-	/*
+	/**
 	 * 
 	 */
 	static public String quickFormatCalendar(Calendar value)

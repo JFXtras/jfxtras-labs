@@ -66,7 +66,7 @@ public class CalendarPickerTrial1 extends Application {
 				@Override
 				public void changed(ObservableValue<? extends Calendar> CalendarProperty, Calendar oldValue, Calendar newValue)
 				{
-					lTextField.setText(CalendarPicker.quickFormatCalendar(newValue));
+					lTextField.setText(CalendarTimePicker.quickFormatCalendar(newValue));
 				}
 			});
 	        lVBox.getChildren().add(lTextField);
@@ -90,7 +90,8 @@ public class CalendarPickerTrial1 extends Application {
         // setup
 //		lCalendarPicker.setCalendar(new GregorianCalendar(2011, 06, 01)); // set a value
 //		lCalendarPicker.setMode(CalendarPicker.Mode.RANGE);
-		lCalendarPicker.setMode(CalendarPicker.Mode.MULTIPLE);
+//		lCalendarPicker.setMode(CalendarPicker.Mode.MULTIPLE);
+        lCalendarPicker.setShowTime(true);
 
 		// create scene
         Scene scene = new Scene(lVBox, 300, 300);

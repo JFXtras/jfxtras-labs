@@ -34,6 +34,9 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -48,6 +51,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import jfxtras.labs.scene.control.CalendarPicker;
+import jfxtras.labs.scene.control.CalendarTimePicker;
 import jfxtras.labs.scene.control.Spinner;
 import jfxtras.labs.scene.control.Spinner.CycleEvent;
 import jfxtras.labs.scene.control.SpinnerIntegerList;
@@ -81,17 +85,20 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		
 		// start listening to changes
 		// if the calendar changes, the display calendar will jump to show that
-		getSkinnable().calendarProperty().addListener(new ChangeListener<Calendar>()  
+		getSkinnable().calendarProperty().addListener(new InvalidationListener()
 		{
+			
 			@Override
-			public void changed(ObservableValue<? extends Calendar> observable, Calendar oldValue, Calendar newValue)
+			public void invalidated(Observable arg0)
 			{
-				if (newValue != null) {
-					setDisplayedCalendar(newValue);
+				if (getSkinnable().getCalendar() != null) 
+				{
+					setDisplayedCalendar(getSkinnable().getCalendar());
 				}
 			} 
 		});
-		if (getSkinnable().getCalendar() != null) {
+		if (getSkinnable().getCalendar() != null) 
+		{
 			setDisplayedCalendar(getSkinnable().getCalendar());
 		}
 		
@@ -106,10 +113,10 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		});
 		
 		// if the displayed calendar changes, the screen must be refreshed
-		displayedCalendar().addListener(new ChangeListener<Calendar>()  
+		displayedCalendar().addListener(new InvalidationListener()
 		{
 			@Override
-			public void changed(ObservableValue<? extends Calendar> observable, Calendar oldValue, Calendar newValue)
+			public void invalidated(Observable arg0)
 			{
 				refresh();
 			} 
@@ -262,6 +269,14 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			dayButtons.add(lToggleButton);
 		}
 
+		// add timepicker
+		// TODO: this is done upon construction, we need to make this dynamic based on Mode and showTime
+		if (getSkinnable().getMode().equals(CalendarPicker.Mode.SINGLE) && getSkinnable().showTimeProperty().get() == true)
+		{
+			lGridPane.add(timePicker, 1, 8, 7, 1); // col, row, hspan, vspan
+			Bindings.bindBidirectional(timePicker.calendarProperty(), getSkinnable().calendarProperty()); 
+		}
+		
 		// add to self
 		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
 		getChildren().add(lGridPane);
@@ -271,6 +286,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	final private List<Label> weekdayLabels = new ArrayList<Label>();
 	final private List<Label> weeknumberLabels = new ArrayList<Label>();
 	final private List<ToggleButton> dayButtons = new ArrayList<ToggleButton>();
+	final private CalendarTimePicker timePicker = new CalendarTimePicker();
 	final private Map<BooleanProperty, ToggleButton> booleanPropertyToDayToggleButtonMap = new WeakHashMap<BooleanProperty, ToggleButton>();
 	final private ChangeListener<Boolean> toggleButtonSelectedPropertyChangeListener = new ChangeListener<Boolean>()
 	{
@@ -371,6 +387,13 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		lToggledCalendar.set(Calendar.MONTH, getDisplayedCalendar().get(Calendar.MONTH));
 		lToggledCalendar.set(Calendar.DATE, lDayOfMonth);
 		
+		// include time
+		if (timePicker.isVisible() && timePicker.getCalendar() != null)
+		{
+			lToggledCalendar.set(Calendar.HOUR_OF_DAY, timePicker.getCalendar().get(Calendar.HOUR_OF_DAY));
+			lToggledCalendar.set(Calendar.MINUTE, timePicker.getCalendar().get(Calendar.MINUTE));
+		}
+		
 		// return
 		return lToggledCalendar;
 	}
@@ -387,7 +410,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 
 		// select or deselect
 		List<Calendar> lCalendars = getSkinnable().calendars();
-		boolean lSelect = !lCalendars.contains(lToggledCalendar); 
+		boolean lSelect = !contains(lCalendars, lToggledCalendar);  
 		if (lSelect) 
 		{
 			// only add if not present
@@ -639,7 +662,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 				int lIdx = lFirstOfMonthIdx + i - 1;
 	
 				// is selected
-				boolean lSelected = lCalendars.contains(lCalendar);
+				boolean lSelected = contains(lCalendars, lCalendar);  
 				dayButtons.get(lIdx).setSelected( lSelected );
 			}
 		}
@@ -649,4 +672,25 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		}
 	}
 	final private AtomicInteger iRefreshingSelection = new AtomicInteger(0);
+	
+	/**
+	 * contains only check YMD
+	 * @param calendars
+	 * @param calendar
+	 * @return
+	 */
+	private boolean contains(List<Calendar> calendars, Calendar calendar)
+	{
+		for (Calendar c : calendars)
+		{
+			if ( c.get(Calendar.YEAR) == calendar.get(Calendar.YEAR)
+			  && c.get(Calendar.MONTH) == calendar.get(Calendar.MONTH)
+			  && c.get(Calendar.DATE) == calendar.get(Calendar.DATE)
+			   )
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }
