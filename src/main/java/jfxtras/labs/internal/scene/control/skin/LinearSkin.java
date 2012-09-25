@@ -1625,9 +1625,8 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         LCD_MAIN.setArcWidth(LCD_MAIN_CORNER_RADIUS);
         LCD_MAIN.setArcHeight(LCD_MAIN_CORNER_RADIUS);
         LCD_MAIN.getStyleClass().add("lcd");
-        LCD_MAIN.setStyle(control.getLcdDesign().CSS);
+        LCD_MAIN.getStyleClass().add(control.getLcdDesign().CSS);
         LCD_MAIN.getStyleClass().add("lcd-main");
-        LCD_MAIN.setStroke(null);
 
         final InnerShadow INNER_GLOW = new InnerShadow();
         INNER_GLOW.setWidth(0.25 * LCD_FRAME.getHeight());
@@ -1712,10 +1711,6 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             lcdUnitString.setX(LCD_FRAME.getX() + (LCD_FRAME.getWidth() - lcdUnitString.getLayoutBounds().getWidth()) - LCD_FRAME.getHeight() * 0.0625);
             lcdUnitString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / UNIT_Y_OFFSET - (lcdValueString.getLayoutBounds().getHeight() * 0.05));
         }
-        lcdUnitString.getStyleClass().add("lcd");
-        lcdUnitString.setStyle(control.getLcdDesign().CSS);
-        lcdUnitString.getStyleClass().add("lcd-text");
-        lcdUnitString.setStroke(null);
 
         // Value
         switch (control.getLcdNumberSystem()) {
@@ -1741,10 +1736,6 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         lcdValueString.setY(LCD_FRAME.getY() + (LCD_FRAME.getHeight() + lcdValueString.getLayoutBounds().getHeight()) / 2.0);
         lcdValueString.setTextOrigin(VPos.BOTTOM);
         lcdValueString.setTextAlignment(TextAlignment.RIGHT);
-        lcdValueString.getStyleClass().add("lcd");
-        lcdValueString.setStyle(control.getLcdDesign().CSS);
-        lcdValueString.getStyleClass().add("lcd-text");
-        lcdValueString.setStroke(null);
 
         lcdContent.getChildren().addAll(IBOUNDS, lcdUnitString, lcdValueString);
     }
