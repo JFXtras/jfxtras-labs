@@ -24,34 +24,46 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package jfxtras.labs.scene.control;
+package jfxtras.labs.internal.scene.control.behavior;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import jfxtras.labs.scene.control.CalendarTimeTextField;
+
+import com.sun.javafx.scene.control.behavior.BehaviorBase;
 
 /**
+ * 
  * @author Tom Eugelink
+ *
  */
-public class TimePickerTrial1 extends Application {
+public class CalendarTimeTextFieldBehavior extends BehaviorBase<CalendarTimeTextField>
+{
+	// ==================================================================================================================
+	// CONSTRUCTOR
 	
-    public static void main(String[] args) {
-        launch(args);       
-    }
+	/**
+	 * 
+	 * @param control
+	 */
+	public CalendarTimeTextFieldBehavior(CalendarTimeTextField control)
+	{
+		super(control);
+		construct();
+	}
+	
+	/*
+	 * 
+	 */
+	private void construct()
+	{
+		
+	}
 
-	@Override
-	public void start(Stage stage) {
-
-        // add a node
-		TimePicker lTimePicker = new TimePicker();	
-//		lTimePicker.setMinuteStep(15);
-        
-        // create scene
-        Scene scene = new Scene(lTimePicker, 900, 400);
-
-        // create stage
-        stage.setTitle("TimePicker");
-        stage.setScene(scene);
-        stage.show();	
-    }
+	// ==================================================================================================================
+	// BEHAVIOR
+	
+	// ==================================================================================================================
+	// MOUSE EVENTS
+	
+	// ==================================================================================================================
+	// KEY EVENTS
 }

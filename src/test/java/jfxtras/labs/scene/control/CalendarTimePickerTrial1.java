@@ -24,28 +24,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package jfxtras.labs.internal.scene.control.behavior;
+package jfxtras.labs.scene.control;
 
-import jfxtras.labs.scene.control.TimePicker;
-
-import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 /**
- * 
  * @author Tom Eugelink
- *
  */
-public class TimePickerBehavior extends BehaviorBase<TimePicker>
-{
-	// ==================================================================================================================
-	// CONSTRUCTOR
+public class CalendarTimePickerTrial1 extends Application {
 	
-	/**
-	 * 
-	 * @param control
-	 */
-	public TimePickerBehavior(TimePicker control)
-	{
-		super(control);
-	}
+    public static void main(String[] args) {
+        launch(args);       
+    }
+
+	@Override
+	public void start(Stage stage) {
+
+        // add a node
+		CalendarTimePicker lTimePicker = new CalendarTimePicker();	
+//		lTimePicker.setMinuteStep(15);
+        
+        // create scene
+        Scene scene = new Scene(lTimePicker, 900, 400);
+
+        // create stage
+        stage.setTitle("TimePicker");
+        stage.setScene(scene);
+        stage.show();	
+    }
 }

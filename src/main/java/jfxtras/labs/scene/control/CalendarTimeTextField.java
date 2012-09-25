@@ -26,19 +26,22 @@
  */
 package jfxtras.labs.scene.control;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Control;
-import jfxtras.labs.scene.control.CalendarPicker.Mode;
 
 /**
- * TimePicker control
- *  
+ * A textField with displays a calendar (date) with a icon to popup the CalendarPickerX
+ * Features relative mutation options, like -1 or -1d for yesterday, -1m for minus one month, +1w, +2y. # is today.
+ * 
  * @author Tom Eugelink
  */
-public class TimePicker extends Control
+public class CalendarTimeTextField extends Control
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -46,7 +49,7 @@ public class TimePicker extends Control
 	/**
 	 * 
 	 */
-	public TimePicker()
+	public CalendarTimeTextField()
 	{
 		construct();
 	}
@@ -59,6 +62,9 @@ public class TimePicker extends Control
 		// setup the CSS
 		// the -fx-skin attribute in the CSS sets which Skin class is used
 		this.getStyleClass().add(this.getClass().getSimpleName());
+		
+		// this is apparently needed for good focus behavior
+		setFocusTraversable(false);
 	}
 
 	/**
@@ -72,20 +78,26 @@ public class TimePicker extends Control
 	// ==================================================================================================================
 	// PROPERTIES
 	
-	/** calendar: */
-	public ObjectProperty<Calendar> calendarProperty() { return iCalendarObjectProperty; }
-	final private ObjectProperty<Calendar> iCalendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar", Calendar.getInstance());
-	public Calendar getCalendar() { return iCalendarObjectProperty.getValue(); }
-	public void setCalendar(Calendar value) { iCalendarObjectProperty.setValue(value); }
-	public TimePicker withCalendar(Calendar value) { setCalendar(value); return this; } 
+	/** Value: */
+	public ObjectProperty<Calendar> valueProperty() { return iValueObjectProperty; }
+	final private ObjectProperty<Calendar> iValueObjectProperty = new SimpleObjectProperty<Calendar>(this, "value", null);
+	// java bean API
+	public Calendar getValue() { return iValueObjectProperty.getValue(); }
+	public void setValue(Calendar value) { iValueObjectProperty.setValue(value); }
+	public CalendarTimeTextField withValue(Calendar value) { setValue(value); return this; }
 
 	/** MinuteStep */
 	public ObjectProperty<Integer> minuteStepProperty() { return iMinuteStepProperty; }
 	final private SimpleObjectProperty<Integer> iMinuteStepProperty = new SimpleObjectProperty<Integer>(this, "minuteStep", 1);
 	public Integer getMinuteStep() { return iMinuteStepProperty.getValue(); }
 	public void setMinuteStep(Integer value) { iMinuteStepProperty.setValue(value); }
-	public TimePicker withMinuteStep(Integer value) { setMinuteStep(value); return this; } 
+	public CalendarTimeTextField withMinuteStep(Integer value) { setMinuteStep(value); return this; } 
+
 
 	// ==================================================================================================================
-	// SUPPORT
+	// EVENTS
+	
+	// ==================================================================================================================
+	// BEHAVIOR
+	
 }

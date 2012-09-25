@@ -37,8 +37,8 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import jfxtras.labs.internal.scene.control.behavior.TimePickerBehavior;
-import jfxtras.labs.scene.control.TimePicker;
+import jfxtras.labs.internal.scene.control.behavior.CalendarTimePickerBehavior;
+import jfxtras.labs.scene.control.CalendarTimePicker;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
 
@@ -46,7 +46,7 @@ import com.sun.javafx.scene.control.skin.SkinBase;
  * @author Tom Eugelink
  *
  */
-public class TimePickerSkin extends SkinBase<TimePicker, TimePickerBehavior>
+public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, CalendarTimePickerBehavior>
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -54,9 +54,9 @@ public class TimePickerSkin extends SkinBase<TimePicker, TimePickerBehavior>
 	/**
 	 * 
 	 */
-	public TimePickerSkin(TimePicker control)
+	public CalendarTimePickerSkin(CalendarTimePicker control)
 	{
-		super(control, new TimePickerBehavior(control));
+		super(control, new CalendarTimePickerBehavior(control));
 		construct();
 	}
 
@@ -121,7 +121,8 @@ public class TimePickerSkin extends SkinBase<TimePicker, TimePickerBehavior>
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
 			{
-				Calendar lCalendar = (Calendar)getSkinnable().getCalendar().clone();
+				Calendar lCalendar = (Calendar)getSkinnable().getCalendar();
+				lCalendar = (lCalendar == null ? Calendar.getInstance() : (Calendar)lCalendar.clone());
 				lCalendar.set(Calendar.HOUR_OF_DAY, newValue.intValue());
 				getSkinnable().setCalendar(lCalendar);
 			}
@@ -131,14 +132,15 @@ public class TimePickerSkin extends SkinBase<TimePicker, TimePickerBehavior>
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
 			{
-				Calendar lCalendar = (Calendar)getSkinnable().getCalendar().clone();
+				Calendar lCalendar = (Calendar)getSkinnable().getCalendar();
+				lCalendar = (lCalendar == null ? Calendar.getInstance() : (Calendar)lCalendar.clone());
 				int lValue = newValue.intValue();
 				int lStepSize = getSkinnable().minuteStepProperty().get().intValue();
 				if (lStepSize > 1)
 				{
 					lValue = (lValue + (lStepSize / 2)) / lStepSize;
 					lValue *= lStepSize;
-					if (lValue > 59) lValue = 59;
+					if (lValue > 59) lValue -= lStepSize;
 				}
 				lCalendar.set(Calendar.MINUTE, lValue);
 				getSkinnable().setCalendar(lCalendar);
@@ -163,10 +165,24 @@ public class TimePickerSkin extends SkinBase<TimePicker, TimePickerBehavior>
 	private void refresh()
 	{
 		Calendar lCalendar = getSkinnable().getCalendar();
-		int lHour = lCalendar.get(Calendar.HOUR_OF_DAY);
-		int lMinute = lCalendar.get(Calendar.MINUTE);
+		int lHour = lCalendar == null ? 0 : lCalendar.get(Calendar.HOUR_OF_DAY);
+		int lMinute = lCalendar == null ? 0 : lCalendar.get(Calendar.MINUTE);
 		hourScrollBar.valueProperty().set(lHour);
 		minuteScrollBar.valueProperty().set(lMinute);
-		timeText.setText( (lHour < 10 ? "0" : "") + lHour + ":" + (lMinute < 10 ? "0" : "") + lMinute);
+		timeText.setText( calendarTimeToText(lCalendar));
+	}
+	
+	/**
+	 * 
+	 * @param calendar
+	 * @return
+	 */
+	static public String calendarTimeToText(Calendar calendar)
+	{
+		if (calendar == null) return "";
+		int lHour = calendar.get(Calendar.HOUR_OF_DAY);
+		int lMinute = calendar.get(Calendar.MINUTE);
+		String lText = (lHour < 10 ? "0" : "") + lHour + ":" + (lMinute < 10 ? "0" : "") + lMinute;
+		return lText;
 	}
 }
