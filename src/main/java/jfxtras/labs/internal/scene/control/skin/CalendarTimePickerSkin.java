@@ -134,15 +134,17 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 			{
 				Calendar lCalendar = (Calendar)getSkinnable().getCalendar();
 				lCalendar = (lCalendar == null ? Calendar.getInstance() : (Calendar)lCalendar.clone());
-				int lValue = newValue.intValue();
-				int lStepSize = getSkinnable().minuteStepProperty().get().intValue();
-				if (lStepSize > 1)
+				
+				// in order no to first set a non stepsize calendar, we step the minutes here 
+				int lMinutes = newValue.intValue();
+				int lMinuteStep = getSkinnable().getMinuteStep();
+				if (lMinuteStep > 1)
 				{
-					lValue = (lValue + (lStepSize / 2)) / lStepSize;
-					lValue *= lStepSize;
-					if (lValue > 59) lValue -= lStepSize;
+					lMinutes += getSkinnable().getMinuteStep() / 2; // add half a step, so the scroller jumps to the next tick when the mouse is half way
+					if (lMinutes > 59) lMinutes -= lMinuteStep;
 				}
-				lCalendar.set(Calendar.MINUTE, lValue);
+				lCalendar.set(Calendar.MINUTE, lMinutes);
+				lCalendar = blockMinutesToStep(lCalendar, getSkinnable().getMinuteStep());
 				getSkinnable().setCalendar(lCalendar);
 			}
 		});
@@ -185,4 +187,27 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 		String lText = (lHour < 10 ? "0" : "") + lHour + ":" + (lMinute < 10 ? "0" : "") + lMinute;
 		return lText;
 	}
+	
+	/**
+	 * minutes fit in the minute steps
+	 */
+	static public Calendar blockMinutesToStep(Calendar calendar, Integer stepSize)
+	{
+		if (stepSize == null || calendar == null) return calendar;
+			
+		// set the minutes to match the step size
+		int lMinutes = calendar.get(Calendar.MINUTE);
+		if (stepSize == 1) return calendar;
+		lMinutes = lMinutes / stepSize; // trunk
+		lMinutes *= stepSize;
+		if (calendar.get(Calendar.MINUTE) != lMinutes)
+		{
+			Calendar lCalendar = (Calendar)calendar.clone();
+			lCalendar.set(Calendar.MINUTE, lMinutes);
+			calendar = lCalendar;
+		}
+		return calendar;
+	}
+
+
 }

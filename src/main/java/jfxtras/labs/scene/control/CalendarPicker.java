@@ -43,8 +43,7 @@ import javafx.scene.control.Control;
 
 /**
  * Calendar picker component
- * Unfortunately this control suffers from JavaFX issue RT-16732 (http://javafx-jira.kenai.com/browse/RT-16732)!
- * The workaround is to load the required CSS (CalendarPickerX.css) in the application's own CSS. 
+ * The calendar is (and should) be treated as immutable. That means the setter is not used, but when a value is changed a new instance (clone) is put in the calendar property.
  * 
  * @author Tom Eugelink
  */

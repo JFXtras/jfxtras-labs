@@ -44,7 +44,7 @@ public class CalendarTimePickerTrial1 extends Application {
 
         // add a node
 		CalendarTimePicker lTimePicker = new CalendarTimePicker();	
-//		lTimePicker.setMinuteStep(15);
+		lTimePicker.setMinuteStep(5);
         
         // create scene
         Scene scene = new Scene(lTimePicker, 900, 400);

@@ -26,15 +26,17 @@
  */
 package jfxtras.labs.scene.control;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Control;
-import jfxtras.labs.scene.control.CalendarPicker.Mode;
+import jfxtras.labs.internal.scene.control.skin.CalendarTimePickerSkin;
 
 /**
  * TimePicker control
+ * The calendar is (and should) be treated as immutable. That means the setter is not used, but when a value is changed a new instance (clone) is put in the calendar property.
  *  
  * @author Tom Eugelink
  */
@@ -74,18 +76,44 @@ public class CalendarTimePicker extends Control
 	
 	/** calendar: */
 	public ObjectProperty<Calendar> calendarProperty() { return iCalendarObjectProperty; }
-	final private ObjectProperty<Calendar> iCalendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar", Calendar.getInstance());
+	final private ObjectProperty<Calendar> iCalendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar", Calendar.getInstance())
+	{
+		public void set(Calendar value)
+		{
+			value = CalendarTimePickerSkin.blockMinutesToStep(value, getMinuteStep());
+			super.set(value);
+		}		
+	};
 	public Calendar getCalendar() { return iCalendarObjectProperty.getValue(); }
 	public void setCalendar(Calendar value) { iCalendarObjectProperty.setValue(value); }
 	public CalendarTimePicker withCalendar(Calendar value) { setCalendar(value); return this; } 
 
 	/** MinuteStep */
 	public ObjectProperty<Integer> minuteStepProperty() { return iMinuteStepProperty; }
-	final private SimpleObjectProperty<Integer> iMinuteStepProperty = new SimpleObjectProperty<Integer>(this, "minuteStep", 1);
+	final private SimpleObjectProperty<Integer> iMinuteStepProperty = new SimpleObjectProperty<Integer>(this, "minuteStep", 1)
+	{
+		public void set(Integer value)
+		{
+			super.set(value);
+			setCalendar( CalendarTimePickerSkin.blockMinutesToStep(getCalendar(), getMinuteStep()) );
+		}		
+	};
 	public Integer getMinuteStep() { return iMinuteStepProperty.getValue(); }
 	public void setMinuteStep(Integer value) { iMinuteStepProperty.setValue(value); }
 	public CalendarTimePicker withMinuteStep(Integer value) { setMinuteStep(value); return this; } 
 
 	// ==================================================================================================================
 	// SUPPORT
+	
+
+	/*
+	 * 
+	 */
+	static public String quickFormatCalendar(Calendar value)
+	{
+		if (value == null) return "null";
+		SimpleDateFormat lSimpleDateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG);
+		lSimpleDateFormat.applyPattern("yyyy-MM-dd HH:mm:ss");
+		return value == null ? "null" : lSimpleDateFormat.format(value.getTime());
+	}
 }

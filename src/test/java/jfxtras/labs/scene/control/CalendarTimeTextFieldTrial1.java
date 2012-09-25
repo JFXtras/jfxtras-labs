@@ -69,7 +69,7 @@ public class CalendarTimeTextFieldTrial1 extends Application {
 				lGridPane.add(new Label("default"), 0, lRowIdx);
 				CalendarTimeTextField lCalendarTimeTextField = new CalendarTimeTextField();
 				lCalendarTimeTextField.setValue(Calendar.getInstance());
-				lCalendarTimeTextField.setMinuteStep(30);
+				lCalendarTimeTextField.setMinuteStep(5);
 				lGridPane.add(lCalendarTimeTextField, 1, lRowIdx);
 				
 				final TextField lValueTextField = new TextField();
@@ -92,7 +92,7 @@ public class CalendarTimeTextFieldTrial1 extends Application {
 				CalendarTimeTextField lCalendarTimeTextField = new CalendarTimeTextField();
 				lGridPane.add(lCalendarTimeTextField, 1, lRowIdx++);
 				
-				lCalendarTimeTextField.valueProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
+				lCalendarTimeTextField.valueProperty().set(new GregorianCalendar(2011, 2, 01, 13, 45, 30)); // set a value
 			}
 			
 	        // programmatically set to null
@@ -138,7 +138,7 @@ public class CalendarTimeTextFieldTrial1 extends Application {
 	static protected String quickFormatCalendar(Calendar value)
 	{
 		SimpleDateFormat lSimpleDateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG);
-		lSimpleDateFormat.applyPattern("yyyy-MM-dd hh:mm:ss");
+		lSimpleDateFormat.applyPattern("yyyy-MM-dd HH:mm:ss");
 		return value == null ? "null" : lSimpleDateFormat.format(value.getTime());
 	}
 

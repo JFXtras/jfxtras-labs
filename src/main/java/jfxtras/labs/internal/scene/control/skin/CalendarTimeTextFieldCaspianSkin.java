@@ -85,10 +85,11 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 		createNodes();
 		
 		// react to value changes in the model
-		getSkinnable().valueProperty().addListener(new ChangeListener<Calendar>()
+		getSkinnable().valueProperty().addListener(new InvalidationListener() // invalidation is also fired if there is no change (which is the case if a time if blocked to the existing time), but the text must be refreshed
 		{
+			
 			@Override
-			public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
+			public void invalidated(Observable arg0)
 			{
 				refreshValue();
 			}
@@ -150,21 +151,18 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 					Calendar lCalendar = (Calendar)getSkinnable().getValue().clone();
 					
 					// modify
-					int lField = Calendar.DATE;
-					if (keyEvent.isControlDown()) lField = Calendar.MONTH;
-					if (keyEvent.isAltDown()) lField = Calendar.YEAR;
-					if (keyEvent.isShiftDown()) lField = Calendar.WEEK_OF_YEAR;
-					lCalendar.add(lField, keyEvent.getCode() == KeyCode.UP ? 1 : -1);
+					if (keyEvent.isControlDown()) lCalendar.add(Calendar.HOUR_OF_DAY, keyEvent.getCode() == KeyCode.UP ? 1 : -1);
+					else lCalendar.add(Calendar.MINUTE, keyEvent.getCode() == KeyCode.UP ? getSkinnable().getMinuteStep() : -1 * getSkinnable().getMinuteStep());
 					
 					// set it
-					getSkinnable().setValue(lCalendar);
+					getSkinnable().setValue( CalendarTimePickerSkin.blockMinutesToStep(lCalendar, getSkinnable().getMinuteStep()) );
 				}
 			}
 		});
 		// bind the textField's tooltip to our (so it will show up) and give it a default value describing the mutation features
 		// TODO: internationalize the tooltip
 		Bindings.bindBidirectional(textField.tooltipProperty(), getSkinnable().tooltipProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
-//		textField.setTooltip(new Tooltip("Type a date or use # for today, or +/-<number>[d|w|m|y] for delta's (for example: -3m for minus 3 months)\nUse cursor up and down plus optional shift (week), ctrl (month) or alt (year) for quick keyboard changes."));
+		textField.setTooltip(new Tooltip("Type a time or use # for now, or +/-<number>[h|m] for delta's (for example: -3m for minus 3 minutes)\nUse cursor up and down plus optional ctrl (hour) for quick keyboard changes."));
 
 		// the icon
 		Image lImage = new Image(this.getClass().getResourceAsStream(this.getClass().getSimpleName() + "Icon.png"));
@@ -239,13 +237,11 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 				// + has problems 
 				if (lText.startsWith("+")) lText = lText.substring(1);
 				
-				// special units Day, Week, Month, Year
+				// special units hour, minute
 				// TODO: internationalize?
 				int lUnit = Calendar.DATE;
-				if (lText.toLowerCase().endsWith("d")) { lText = lText.substring(0, lText.length() - 1); lUnit = Calendar.DATE; }
-				if (lText.toLowerCase().endsWith("w")) { lText = lText.substring(0, lText.length() - 1); lUnit = Calendar.WEEK_OF_YEAR; }
-				if (lText.toLowerCase().endsWith("m")) { lText = lText.substring(0, lText.length() - 1); lUnit = Calendar.MONTH; }
-				if (lText.toLowerCase().endsWith("y")) { lText = lText.substring(0, lText.length() - 1); lUnit = Calendar.YEAR; }
+				if (lText.toLowerCase().endsWith("m")) { lText = lText.substring(0, lText.length() - 1); lUnit = Calendar.MINUTE; }
+				if (lText.toLowerCase().endsWith("h")) { lText = lText.substring(0, lText.length() - 1); lUnit = Calendar.HOUR_OF_DAY; }
 				
 				// parse the delta
 				int lDelta = Integer.parseInt(lText);
@@ -253,22 +249,30 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 				lCalendar.add(lUnit, lDelta);
 				
 				// set the value
-				getSkinnable().setValue(lCalendar);
+				getSkinnable().setValue( CalendarTimePickerSkin.blockMinutesToStep(lCalendar, getSkinnable().getMinuteStep()) );
 			}
 			else if (lText.equals("#"))
 			{
 				// set the value
-				getSkinnable().setValue(Calendar.getInstance()); // TODO locale
+				getSkinnable().setValue( CalendarTimePickerSkin.blockMinutesToStep(Calendar.getInstance(), getSkinnable().getMinuteStep()) ); // TODO locale
 			}
 			else
 			{
-//				// parse using the formatter
-//				Date lDate = getSkinnable().getDateFormat().parse( lText );
-//				Calendar lCalendar = Calendar.getInstance(); // TODO: how to get the correct locale
-//				lCalendar.setTime(lDate);
-//				
-//				// set the value
-//				getSkinnable().setValue(lCalendar);
+				// parse using the formatter
+				int lIdx = lText.indexOf(":");
+				if (lIdx > 0)
+				{
+					int lHour = Integer.parseInt(lText.substring(0, lIdx));
+					int lMinute = Integer.parseInt(lText.substring(lIdx + 1));
+					Calendar lCalendar = (getSkinnable().getValue() != null ? (Calendar)getSkinnable().getValue().clone() : Calendar.getInstance());
+					lCalendar.set(Calendar.HOUR_OF_DAY, lHour);
+					lCalendar.set(Calendar.MINUTE, lMinute);
+					getSkinnable().setValue( CalendarTimePickerSkin.blockMinutesToStep(lCalendar, getSkinnable().getMinuteStep()) );
+				}
+				else 
+				{
+					refreshValue();
+				}
 			}
 		}
 		catch (Throwable t) 

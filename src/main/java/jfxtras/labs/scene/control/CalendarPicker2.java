@@ -41,8 +41,7 @@ import javax.time.calendar.LocalDate;
 
 /**
  * Calendar picker component
- * This class is a extention on LocalDatePicker to add Calendar support, it takes care of converting to and from LocalDate and makes easy binding possible. 
- * It adds a calendar property and a calenders observable list.
+ * The calendar is (and should) be treated as immutable. That means the setter is not used, but when a value is changed a new instance (clone) is put in the calendar property.
  * 
  * @author Tom Eugelink
  */

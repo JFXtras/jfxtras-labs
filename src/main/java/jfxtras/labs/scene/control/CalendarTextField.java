@@ -36,7 +36,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Control;
 
 /**
- * A textField with displays a calendar (date) with a icon to popup the CalendarPickerX
+ * A textField with displays a calendar (date) with a icon to popup the CalendarPicker
+ * The calendar is (and should) be treated as immutable. That means the setter is not used, but when a value is changed a new instance (clone) is put in the calendar property.
  * Features relative mutation options, like -1 or -1d for yesterday, -1m for minus one month, +1w, +2y. # is today.
  * 
  * @author Tom Eugelink
