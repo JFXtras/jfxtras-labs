@@ -52,9 +52,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import jfxtras.labs.scene.control.CalendarPicker;
 import jfxtras.labs.scene.control.CalendarTimePicker;
-import jfxtras.labs.scene.control.Spinner;
-import jfxtras.labs.scene.control.Spinner.CycleEvent;
-import jfxtras.labs.scene.control.SpinnerIntegerList;
+import jfxtras.labs.scene.control.ListSpinner;
+import jfxtras.labs.scene.control.ListSpinner.CycleEvent;
+import jfxtras.labs.scene.control.ListSpinnerIntegerList;
 
 /**
  * This skin uses regular JavaFX controls
@@ -152,9 +152,9 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 
 		// month spinner
 		List<String> lMonthLabels = getMonthLabels();
-		monthXSpinner = new Spinner<String>(lMonthLabels).withIndex(Calendar.getInstance().get(Calendar.MONTH)).withCyclic(Boolean.TRUE);
+		monthXSpinner = new ListSpinner<String>(lMonthLabels).withIndex(Calendar.getInstance().get(Calendar.MONTH)).withCyclic(Boolean.TRUE);
 		// on cycle overflow to year
-		monthXSpinner.setOnCycle(new EventHandler<Spinner.CycleEvent>()
+		monthXSpinner.setOnCycle(new EventHandler<ListSpinner.CycleEvent>()
 		{
 			@Override
 			public void handle(CycleEvent evt)
@@ -183,7 +183,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		lGridPane.add(monthXSpinner, 0, 0, 5, 1); // col, row, hspan, vspan
 		
 		// year spinner
-		yearXSpinner = new Spinner<Integer>(new SpinnerIntegerList()).withValue(Calendar.getInstance().get(Calendar.YEAR));
+		yearXSpinner = new ListSpinner<Integer>(new ListSpinnerIntegerList()).withValue(Calendar.getInstance().get(Calendar.YEAR));
 		// if the value changed, update the displayed calendar
 		yearXSpinner.valueProperty().addListener(new ChangeListener<Integer>()
 		{
@@ -281,8 +281,8 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
 		getChildren().add(lGridPane);
 	}
-	private Spinner<String> monthXSpinner = null;
-	private Spinner<Integer> yearXSpinner = null;
+	private ListSpinner<String> monthXSpinner = null;
+	private ListSpinner<Integer> yearXSpinner = null;
 	final private List<Label> weekdayLabels = new ArrayList<Label>();
 	final private List<Label> weeknumberLabels = new ArrayList<Label>();
 	final private List<ToggleButton> dayButtons = new ArrayList<ToggleButton>();

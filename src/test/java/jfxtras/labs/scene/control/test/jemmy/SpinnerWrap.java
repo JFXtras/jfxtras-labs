@@ -4,7 +4,7 @@ import java.util.List;
 
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
-import jfxtras.labs.scene.control.Spinner;
+import jfxtras.labs.scene.control.ListSpinner;
 
 import org.jemmy.action.GetAction;
 import org.jemmy.control.ControlInterfaces;
@@ -21,9 +21,9 @@ import org.jemmy.interfaces.Selectable;
 import org.jemmy.lookup.Lookup;
 import org.jemmy.timing.State;
 
-@ControlType(Spinner.class)
+@ControlType(ListSpinner.class)
 @ControlInterfaces(value = Selectable.class)
-public class SpinnerWrap<T extends Spinner> extends ControlWrap<T>
+public class SpinnerWrap<T extends ListSpinner> extends ControlWrap<T>
 {
 
 	public SpinnerWrap(Environment env, T node)

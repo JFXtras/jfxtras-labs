@@ -8,12 +8,12 @@ import java.math.BigInteger;
  * So the difference between the from and to values (to-from) cannot be larger than Integer.MAX_VALUE.
  * What this class allows is that this range can be anywhere in the BigInteger's range. 
  */
-public class SpinnerBigIntegerList extends java.util.AbstractList<BigInteger>
+public class ListSpinnerBigIntegerList extends java.util.AbstractList<BigInteger>
 {
 	/**
 	 * 
 	 */
-	public SpinnerBigIntegerList()
+	public ListSpinnerBigIntegerList()
 	{
 		this( BigInteger.valueOf(Integer.MIN_VALUE / 2).add(BigInteger.ONE), BigInteger.valueOf(Integer.MAX_VALUE / 2), BigInteger.ONE);
 	}
@@ -23,7 +23,7 @@ public class SpinnerBigIntegerList extends java.util.AbstractList<BigInteger>
 	 * @param from
 	 * @param to
 	 */
-	public SpinnerBigIntegerList(BigInteger from, BigInteger to)
+	public ListSpinnerBigIntegerList(BigInteger from, BigInteger to)
 	{
 		this(from, to, from.compareTo(to) > 0 ? BigInteger.valueOf(-1) : BigInteger.ONE);
 	}
@@ -34,7 +34,7 @@ public class SpinnerBigIntegerList extends java.util.AbstractList<BigInteger>
 	 * @param to
 	 * @param step
 	 */
-	public SpinnerBigIntegerList(BigInteger from, BigInteger to, BigInteger step)
+	public ListSpinnerBigIntegerList(BigInteger from, BigInteger to, BigInteger step)
 	{
 		this.from = from;
 		this.size = to.subtract(from).divide(step).add(BigInteger.ONE).intValue();

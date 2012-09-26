@@ -32,7 +32,7 @@ import java.util.List;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
-import jfxtras.labs.scene.control.Spinner;
+import jfxtras.labs.scene.control.ListSpinner;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
 import com.sun.javafx.scene.control.behavior.KeyBinding;
@@ -42,7 +42,7 @@ import com.sun.javafx.scene.control.behavior.KeyBinding;
  * @author Tom Eugelink
  *
  */
-public class SpinnerBehavior<T> extends BehaviorBase<Spinner<T>>
+public class ListSpinnerBehavior<T> extends BehaviorBase<ListSpinner<T>>
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -51,7 +51,7 @@ public class SpinnerBehavior<T> extends BehaviorBase<Spinner<T>>
 	 * 
 	 * @param control
 	 */
-	public SpinnerBehavior(Spinner<T> control)
+	public ListSpinnerBehavior(ListSpinner<T> control)
 	{
 		super(control);
 		construct();
@@ -121,7 +121,7 @@ public class SpinnerBehavior<T> extends BehaviorBase<Spinner<T>>
 	@Override public void mousePressed(MouseEvent evt)
 	{
 		// get the control
-		Spinner<T> lControl = getControl();
+		ListSpinner<T> lControl = getControl();
 		
 		// if a control does not have the focus, request focus
 		if (!lControl.isFocused() && lControl.isFocusTraversable()) {

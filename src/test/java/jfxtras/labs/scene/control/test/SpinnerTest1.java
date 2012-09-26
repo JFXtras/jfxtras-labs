@@ -25,7 +25,7 @@
 package jfxtras.labs.scene.control.test;
 
 import javafx.scene.Node;
-import jfxtras.labs.scene.control.Spinner;
+import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.test.jemmy.SpinnerWrap;
 
 import org.jemmy.control.Wrap;
@@ -71,9 +71,9 @@ public class SpinnerTest1 {
     	
     	// get the control
     	org.jemmy.interfaces.Parent<Node> lParent = Root.ROOT.lookup().as(org.jemmy.interfaces.Parent.class, Node.class);
-        Wrap<? extends Spinner> lControlWrapper = lParent.lookup(Spinner.class).wrap();
+        Wrap<? extends ListSpinner> lControlWrapper = lParent.lookup(ListSpinner.class).wrap();
         // hack: the lookup only knows controls and their wrappers that are in JemmyFX; this lines creates the unknown SpinnerWrapper by ripping data from the ControlWrapper 
-        final SpinnerWrap<Spinner<String>> lSpinnerWrapper = new SpinnerWrap<Spinner<String>>(lControlWrapper.getEnvironment(), lControlWrapper.getControl());
+        final SpinnerWrap<ListSpinner<String>> lSpinnerWrapper = new SpinnerWrap<ListSpinner<String>>(lControlWrapper.getEnvironment(), lControlWrapper.getControl());
         Wrap lDecArrowWrapper = lSpinnerWrapper.as(org.jemmy.interfaces.Parent.class, Node.class).lookup(new ByStyleClass<Node>("left-arrow")).wrap();
         Wrap lIncArrowWrapper = lSpinnerWrapper.as(org.jemmy.interfaces.Parent.class, Node.class).lookup(new ByStyleClass<Node>("right-arrow")).wrap();
         

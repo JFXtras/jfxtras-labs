@@ -30,7 +30,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import jfxtras.labs.scene.control.Spinner;
+import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.util.StringConverterFactory;
 
 public class SpinnerTest1App  extends Application {
@@ -43,7 +43,7 @@ public class SpinnerTest1App  extends Application {
         VBox box = new VBox();
         Scene scene = new Scene(box);
 
-        Spinner<String> lSpinner = new Spinner<String>("a", "b", "c")
+        ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c")
         		.withEditable(true).withStringConverter(StringConverterFactory.forString())
 				.withCyclic(true)
 				;

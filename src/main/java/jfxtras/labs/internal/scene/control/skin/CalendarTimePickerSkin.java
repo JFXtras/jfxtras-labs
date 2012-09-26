@@ -112,8 +112,8 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 		hourScrollSlider.maxProperty().set(23);
 //		hourScrollSlider.setShowTickLabels(true);
 //		hourScrollSlider.setShowTickMarks(true);
-		hourScrollSlider.setMajorTickUnit(3);
-		hourScrollSlider.setMinorTickCount(0);
+		hourScrollSlider.setMajorTickUnit(12);
+		hourScrollSlider.setMinorTickCount(3);
 		minuteScrollSlider.minProperty().set(00);
 		minuteScrollSlider.maxProperty().set(59);
 		minuteScrollSlider.setShowTickLabels(true);
@@ -164,7 +164,7 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 		lVBox.getChildren().add(minuteScrollSlider);
 		getChildren().add(lVBox);
 		getChildren().add(timeText);
-		StackPane.setAlignment(timeText, Pos.TOP_CENTER);
+//		StackPane.setAlignment(timeText, Pos.TOP_CENTER);
 
 		// add self as CSS style
 		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control		

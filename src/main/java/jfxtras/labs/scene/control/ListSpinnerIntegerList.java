@@ -3,12 +3,12 @@ package jfxtras.labs.scene.control;
 /**
  * Items for Spinner providing an integer range without actually creating a list with all values.
  */
-public class SpinnerIntegerList extends java.util.AbstractList<Integer>
+public class ListSpinnerIntegerList extends java.util.AbstractList<Integer>
 {
 	/**
 	 * 
 	 */
-	public SpinnerIntegerList()
+	public ListSpinnerIntegerList()
 	{
 		this( (Integer.MIN_VALUE / 2) + 1, Integer.MAX_VALUE / 2, 1);
 	}
@@ -18,7 +18,7 @@ public class SpinnerIntegerList extends java.util.AbstractList<Integer>
 	 * @param from
 	 * @param to
 	 */
-	public SpinnerIntegerList(int from, int to)
+	public ListSpinnerIntegerList(int from, int to)
 	{
 		this(from, to, from > to ? -1 : 1);
 	}
@@ -29,7 +29,7 @@ public class SpinnerIntegerList extends java.util.AbstractList<Integer>
 	 * @param to
 	 * @param step
 	 */
-	public SpinnerIntegerList(int from, int to, int step)
+	public ListSpinnerIntegerList(int from, int to, int step)
 	{
 		this.from = from;
 		this.size = ((to - from) / step) + 1;

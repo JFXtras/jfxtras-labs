@@ -58,9 +58,9 @@ import javax.time.calendar.format.DateTimeFormatters;
 
 import jfxtras.labs.internal.scene.control.behavior.LocalDatePickerBehavior;
 import jfxtras.labs.scene.control.LocalDatePicker;
-import jfxtras.labs.scene.control.Spinner;
-import jfxtras.labs.scene.control.Spinner.CycleEvent;
-import jfxtras.labs.scene.control.SpinnerIntegerList;
+import jfxtras.labs.scene.control.ListSpinner;
+import jfxtras.labs.scene.control.ListSpinner.CycleEvent;
+import jfxtras.labs.scene.control.ListSpinnerIntegerList;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
 
@@ -196,9 +196,9 @@ public class LocalDatePickerControlSkin extends SkinBase<LocalDatePicker, LocalD
 
 		// month spinner
 		List<String> lMonthLabels = getMonthLabels();
-		monthXSpinner = new Spinner<String>(lMonthLabels).withIndex(LocalDate.now().getMonthOfYear().getValue()).withCyclic(Boolean.TRUE);
+		monthXSpinner = new ListSpinner<String>(lMonthLabels).withIndex(LocalDate.now().getMonthOfYear().getValue()).withCyclic(Boolean.TRUE);
 		// on cycle overflow to year
-		monthXSpinner.setOnCycle(new EventHandler<Spinner.CycleEvent>()
+		monthXSpinner.setOnCycle(new EventHandler<ListSpinner.CycleEvent>()
 		{
 			@Override
 			public void handle(CycleEvent evt)
@@ -227,7 +227,7 @@ public class LocalDatePickerControlSkin extends SkinBase<LocalDatePicker, LocalD
 		lGridPane.add(monthXSpinner, 0, 0, 5, 1); // col, row, hspan, vspan
 		
 		// year spinner
-		yearXSpinner = new Spinner<Integer>(new SpinnerIntegerList()).withValue(LocalDate.now().getYear());
+		yearXSpinner = new ListSpinner<Integer>(new ListSpinnerIntegerList()).withValue(LocalDate.now().getYear());
 		// if the value changed, update the displayed LocalDate
 		yearXSpinner.valueProperty().addListener(new ChangeListener<Integer>()
 		{
@@ -317,8 +317,8 @@ public class LocalDatePickerControlSkin extends SkinBase<LocalDatePicker, LocalD
 		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
 		getChildren().add(lGridPane);
 	}
-	private Spinner<String> monthXSpinner = null;
-	private Spinner<Integer> yearXSpinner = null;
+	private ListSpinner<String> monthXSpinner = null;
+	private ListSpinner<Integer> yearXSpinner = null;
 	final private List<Label> weekdayLabels = new ArrayList<Label>();
 	final private List<Label> weeknumberLabels = new ArrayList<Label>();
 	final private List<ToggleButton> dayButtons = new ArrayList<ToggleButton>();
