@@ -87,7 +87,6 @@ public class SpinnerBehavior<T> extends BehaviorBase<Spinner<T>>
 		T lValue = getControl().getStringConverter().fromString(lText);
 		
 		// if the value does exists in the domain
-System.out.println(getControl().getItems());
 		int lItemIndex = getControl().getItems().indexOf(lValue);
 		if (lItemIndex >= 0)
 		{
