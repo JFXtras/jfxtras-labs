@@ -60,9 +60,18 @@ public class SpinnerBigIntegerList extends java.util.AbstractList<BigInteger>
 	@Override
 	public int indexOf(Object o)
 	{
+		// calculate the index
 		BigInteger lValue = (BigInteger)o;
-		BigInteger lIndex = lValue.subtract(this.from).divide(this.step);
-		return lIndex.intValue();
+		BigInteger lIndexBigInteger = lValue.subtract(this.from).divide(this.step);
+		int lIndex = lIndexBigInteger.intValue();
+		if (lIndex > size) return -1;
+		
+		// check if that what is at the index matches with out value
+		BigInteger lValueAtIndex = get(lIndex);
+		if (o.equals(lValueAtIndex) == false) return -1;
+		
+		// found it
+		return lIndex;
 	}
 	
 	@Override

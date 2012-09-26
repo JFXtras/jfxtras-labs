@@ -55,9 +55,16 @@ public class SpinnerIntegerList extends java.util.AbstractList<Integer>
 	@Override
 	public int indexOf(Object o)
 	{
+		// calculate the index
 		int lValue = ((Integer)o).intValue();
 		int lIndex = (lValue - this.from) / this.step;
 		if (lIndex > size) return -1;
+		
+		// check if that what is at the index matches with out value
+		Integer lValueAtIndex = get(lIndex);
+		if (o.equals(lValueAtIndex) == false) return -1;
+		
+		// found it
 		return lIndex;
 	}
 	
