@@ -34,8 +34,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollBar;
+import javafx.scene.control.Slider;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import jfxtras.labs.internal.scene.control.behavior.CalendarTimePickerBehavior;
 import jfxtras.labs.scene.control.CalendarTimePicker;
@@ -80,17 +81,17 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 		});
 		refresh();
 
-//		// react to changes in the minuteStep 
-//		getSkinnable().minuteStepProperty().addListener(new InvalidationListener() 
-//		{
-//			@Override
-//			public void invalidated(Observable observable)
-//			{
-//				minuteScrollBar.setBlockIncrement(getSkinnable().getMinuteStep().doubleValue());
+		// react to changes in the minuteStep 
+		getSkinnable().minuteStepProperty().addListener(new InvalidationListener() 
+		{
+			@Override
+			public void invalidated(Observable observable)
+			{
+				minuteScrollSlider.setBlockIncrement(getSkinnable().getMinuteStep().doubleValue());
 //				minuteScrollBar.setUnitIncrement(getSkinnable().getMinuteStep().doubleValue());
-//			} 
-//		});
-//		minuteScrollBar.setBlockIncrement(getSkinnable().getMinuteStep().doubleValue());
+			} 
+		});
+		minuteScrollSlider.setBlockIncrement(getSkinnable().getMinuteStep().doubleValue());
 //		minuteScrollBar.setUnitIncrement(getSkinnable().getMinuteStep().doubleValue());
 	}
 	
@@ -106,17 +107,19 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 	 */
 	private void createNodes()
 	{
-		// two scrollbars
-		hourScrollBar.minProperty().set(00);
-		hourScrollBar.maxProperty().set(23);
-		minuteScrollBar.minProperty().set(00);
-		minuteScrollBar.maxProperty().set(59);
-		VBox lVBox = new VBox(0);
-		lVBox.alignmentProperty().set(Pos.CENTER);
-		lVBox.getChildren().add(hourScrollBar);
-		lVBox.getChildren().add(minuteScrollBar);
-		getChildren().add(lVBox);
-		hourScrollBar.valueProperty().addListener(new ChangeListener<Number>()
+		// two sliders
+		hourScrollSlider.minProperty().set(00);
+		hourScrollSlider.maxProperty().set(23);
+//		hourScrollSlider.setShowTickLabels(true);
+//		hourScrollSlider.setShowTickMarks(true);
+		hourScrollSlider.setMajorTickUnit(3);
+		hourScrollSlider.setMinorTickCount(0);
+		minuteScrollSlider.minProperty().set(00);
+		minuteScrollSlider.maxProperty().set(59);
+		minuteScrollSlider.setShowTickLabels(true);
+		minuteScrollSlider.setShowTickMarks(true);
+		minuteScrollSlider.setMajorTickUnit(10);
+		hourScrollSlider.valueProperty().addListener(new ChangeListener<Number>()
 		{
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
@@ -127,7 +130,7 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 				getSkinnable().setCalendar(lCalendar);
 			}
 		});
-		minuteScrollBar.valueProperty().addListener(new ChangeListener<Number>()
+		minuteScrollSlider.valueProperty().addListener(new ChangeListener<Number>()
 		{
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
@@ -152,13 +155,22 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 		// add label
 		timeText.setOpacity(0.5);
 		timeText.setDisable(true);
-		getChildren().add(timeText);
 		
+		// layout
+		// TODO: the timeText should be over the hour slider, now it is at the top
+		VBox lVBox = new VBox(0);
+		lVBox.alignmentProperty().set(Pos.CENTER);
+		lVBox.getChildren().add(hourScrollSlider);
+		lVBox.getChildren().add(minuteScrollSlider);
+		getChildren().add(lVBox);
+		getChildren().add(timeText);
+		StackPane.setAlignment(timeText, Pos.TOP_CENTER);
+
 		// add self as CSS style
 		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control		
 	}
-	final private ScrollBar hourScrollBar = new ScrollBar();
-	final private ScrollBar minuteScrollBar = new ScrollBar();
+	final private Slider hourScrollSlider = new Slider();
+	final private Slider minuteScrollSlider = new Slider();
 	final private Text timeText = new Text("XX:XX");
 	
 	/**
@@ -169,8 +181,8 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 		Calendar lCalendar = getSkinnable().getCalendar();
 		int lHour = lCalendar == null ? 0 : lCalendar.get(Calendar.HOUR_OF_DAY);
 		int lMinute = lCalendar == null ? 0 : lCalendar.get(Calendar.MINUTE);
-		hourScrollBar.valueProperty().set(lHour);
-		minuteScrollBar.valueProperty().set(lMinute);
+		hourScrollSlider.valueProperty().set(lHour);
+		minuteScrollSlider.valueProperty().set(lMinute);
 		timeText.setText( calendarTimeToText(lCalendar));
 	}
 	

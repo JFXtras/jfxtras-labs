@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -36,6 +37,12 @@ public class SpinnerTrail2 extends Application
 			{
 				spinnerIntegerList.add(integer);
 				return spinnerIntegerList.size() - 1;
+//				int l = integer; while (l > 128) l -= 128; l += 128;
+//				int u = integer; while (u < 4096) u += 128; u -= 128;
+//				SpinnerIntegerList spinnerIntegerList = new SpinnerIntegerList(l, u, 128);
+//				segmentSpinner.setItems(FXCollections.observableList(spinnerIntegerList));
+//				int i = spinnerIntegerList.indexOf(integer);
+//				return i;
 			}
 		});
 		
