@@ -26,6 +26,8 @@
  */
 package jfxtras.labs.dialogs;
 
+import java.util.HashMap;
+import java.util.List;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -38,9 +40,6 @@ import javafx.beans.property.StringProperty;
 import javafx.scene.control.ControlBuilder;
 import javafx.util.Builder;
 
-import java.util.HashMap;
-import java.util.List;
-
 
 /**
  * Created with IntelliJ IDEA.
@@ -48,6 +47,10 @@ import java.util.List;
  * Date: 04.09.12
  * Time: 09:05
  * To change this template use File | Settings | File Templates.
+ * 
+ * Mods: HecklerMark
+ * Date: 25.09.12
+ * Desc: Added stylesheet capability. Guess I need to check out IDEA for this project now (sigh). :-)
  */
 public class DialogFXBuilder <B extends DialogFXBuilder<B>> extends ControlBuilder<B> implements Builder<DialogFX> {
     private HashMap<String, Property> properties = new HashMap<String, Property>();
@@ -90,6 +93,11 @@ public class DialogFXBuilder <B extends DialogFXBuilder<B>> extends ControlBuild
         return this;
     }
 
+    public final DialogFXBuilder stylesheet(final String STYLESHEET) {
+        properties.put("stylesheet", new SimpleStringProperty(STYLESHEET));
+        return this;
+    }
+
 
     @Override public DialogFX build() {
         final DialogFX CONTROL = new DialogFX();
@@ -109,6 +117,8 @@ public class DialogFXBuilder <B extends DialogFXBuilder<B>> extends ControlBuild
                 CONTROL.setModal(((BooleanProperty) properties.get(key)).get());
             } else if ("titleText".equals(key)) {
                 CONTROL.setTitleText(((StringProperty) properties.get(key)).get());
+            } else if ("stylesheet".equals(key)) {
+                CONTROL.addStylesheet(((StringProperty) properties.get(key)).get());
             }
         }
 
