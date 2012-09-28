@@ -229,7 +229,14 @@ public class ListSpinner<T> extends Control
 	
 	/** Value: */
 	public ObjectProperty<T> valueProperty() { return this.valueObjectProperty; }
-	final private ObjectProperty<T> valueObjectProperty = new SimpleObjectProperty<T>(this, "value", null);
+	final private ObjectProperty<T> valueObjectProperty = new SimpleObjectProperty<T>(this, "value", null)
+	{
+		public void set(T value)
+		{
+			if (getItems().indexOf(value) < 0) throw new IllegalArgumentException("Value does not exist in the list: " + value); 
+			super.set(value);
+		}
+	};
 	// java bean API
 	public T getValue() { return this.valueObjectProperty.getValue(); }
 	public void setValue(T value) { this.valueObjectProperty.setValue(value); }
@@ -237,24 +244,43 @@ public class ListSpinner<T> extends Control
 	
 	/** Index: */
 	public ObjectProperty<Integer> indexProperty() { return this.indexObjectProperty; }
-	final private ObjectProperty<Integer> indexObjectProperty = new SimpleObjectProperty<Integer>(this, "index", null);
-	// java bean API
+	final private ObjectProperty<Integer> indexObjectProperty = new SimpleObjectProperty<Integer>(this, "index", null)
+	{
+		public void set(Integer value)
+		{
+			if (value == null) throw new NullPointerException("Null not allowed as the value for index");
+			if (value >= getItems().size()) throw new IllegalArgumentException("Index out of bounds: " + value + ", valid values are 0-" + (getItems().size() - 1)); 
+			super.set(value);
+		}
+	};
 	public Integer getIndex() { return this.indexObjectProperty.getValue(); }
 	public void setIndex(Integer value) { this.indexObjectProperty.setValue(value); }
 	public ListSpinner<T> withIndex(Integer value) { setIndex(value); return this; }
 	
 	/** Cyclic: */
 	public ObjectProperty<Boolean> cyclicProperty() { return this.cyclicObjectProperty; }
-	final private ObjectProperty<Boolean> cyclicObjectProperty = new SimpleObjectProperty<Boolean>(this, "cyclic", false);
-	// java bean API
+	final private ObjectProperty<Boolean> cyclicObjectProperty = new SimpleObjectProperty<Boolean>(this, "cyclic", false)
+	{
+		public void set(Boolean value)
+		{
+			if (value == null) throw new NullPointerException("Null not allowed as the value for cyclic");
+			super.set(value);
+		}
+	};
 	public Boolean isCyclic() { return this.cyclicObjectProperty.getValue(); }
 	public void setCyclic(Boolean value) { this.cyclicObjectProperty.setValue(value); }
 	public ListSpinner<T> withCyclic(Boolean value) { setCyclic(value); return this; }
 
 	/** Editable: */
 	public ObjectProperty<Boolean> editableProperty() { return this.editableObjectProperty; }
-	final private ObjectProperty<Boolean> editableObjectProperty = new SimpleObjectProperty<Boolean>(this, "editable", false);
-	// java bean API
+	final private ObjectProperty<Boolean> editableObjectProperty = new SimpleObjectProperty<Boolean>(this, "editable", false)
+	{
+		public void set(Boolean value)
+		{
+			if (value == null) throw new NullPointerException("Null not allowed as the value for editable");
+			super.set(value);
+		}
+	};
 	public Boolean isEditable() { return this.editableObjectProperty.getValue(); }
 	public void setEditable(Boolean value) { this.editableObjectProperty.setValue(value); }
 	public ListSpinner<T> withEditable(Boolean value) { setEditable(value); return this; }
@@ -262,7 +288,6 @@ public class ListSpinner<T> extends Control
 	/** Postfix: */
 	public ObjectProperty<String> postfixProperty() { return this.postfixObjectProperty; }
 	final private ObjectProperty<String> postfixObjectProperty = new SimpleObjectProperty<String>(this, "postfix", "");
-	// java bean API
 	public String getPostfix() { return this.postfixObjectProperty.getValue(); }
 	public void setPostfix(String value) { this.postfixObjectProperty.setValue(value); }
 	public ListSpinner<T> withPostfix(String value) { setPostfix(value); return this; }
@@ -270,15 +295,20 @@ public class ListSpinner<T> extends Control
 	/** Prefix: */
 	public ObjectProperty<String> prefixProperty() { return this.prefixObjectProperty; }
 	final private ObjectProperty<String> prefixObjectProperty = new SimpleObjectProperty<String>(this, "prefix", "");
-	// java bean API
 	public String getPrefix() { return this.prefixObjectProperty.getValue(); }
 	public void setPrefix(String value) { this.prefixObjectProperty.setValue(value); }
 	public ListSpinner<T> withPrefix(String value) { setPrefix(value); return this; }
 
 	/** Items: */
 	public ObjectProperty<ObservableList<T>> itemsProperty() { return this.itemsObjectProperty; }
-	final private ObjectProperty<ObservableList<T>> itemsObjectProperty = new SimpleObjectProperty<ObservableList<T>>(this, "items", null);
-	// java bean API
+	final private ObjectProperty<ObservableList<T>> itemsObjectProperty = new SimpleObjectProperty<ObservableList<T>>(this, "items", null)
+	{
+		public void set(ObservableList<T> value)
+		{
+			if (value == null) throw new NullPointerException("Null not allowed as the value for items");
+			super.set(value);
+		}
+	};
 	public ObservableList<T> getItems() { return this.itemsObjectProperty.getValue(); }
 	public void setItems(ObservableList<T> value) { this.itemsObjectProperty.setValue(value); }
 	public ListSpinner<T> withItems(ObservableList<T> value) { setItems(value); return this; }
@@ -286,7 +316,6 @@ public class ListSpinner<T> extends Control
 	/** CellFactory: */
 	public ObjectProperty<Callback<ListSpinner<T>, Node>> cellFactoryProperty() { return this.cellFactoryObjectProperty; }
 	final private ObjectProperty<Callback<ListSpinner<T>, Node>> cellFactoryObjectProperty = new SimpleObjectProperty<Callback<ListSpinner<T>, Node>>(this, "cellFactory", new DefaultCellFactory());
-	// java bean API
 	public Callback<ListSpinner<T>, Node> getCellFactory() { return this.cellFactoryObjectProperty.getValue(); }
 	public void setCellFactory(Callback<ListSpinner<T>, Node> value) { this.cellFactoryObjectProperty.setValue(value); }
 	public ListSpinner<T> withCellFactory(Callback<ListSpinner<T>, Node> value) { setCellFactory(value); return this; }
@@ -294,15 +323,20 @@ public class ListSpinner<T> extends Control
 	/** StringConverter<T>: */
 	public ObjectProperty<StringConverter<T>> stringConverterProperty() { return this.stringConverterObjectProperty; }
 	final private ObjectProperty<StringConverter<T>> stringConverterObjectProperty = new SimpleObjectProperty<StringConverter<T>>(this, "stringConverter", new DefaultStringConverter());
-	// java bean API
 	public StringConverter<T> getStringConverter() { return this.stringConverterObjectProperty.getValue(); }
 	public void setStringConverter(StringConverter<T> value) { this.stringConverterObjectProperty.setValue(value); }
 	public ListSpinner<T> withStringConverter(StringConverter<T> value) { setStringConverter(value); return this; }
 
 	/** ArrowDirection: */
 	public ObjectProperty<ArrowDirection> arrowDirectionProperty() { return this.arrowDirectionObjectProperty; }
-	final private ObjectProperty<ArrowDirection> arrowDirectionObjectProperty = new SimpleObjectProperty<ArrowDirection>(this, "arrowDirection", ArrowDirection.HORIZONTAL);
-	// java bean API
+	final private ObjectProperty<ArrowDirection> arrowDirectionObjectProperty = new SimpleObjectProperty<ArrowDirection>(this, "arrowDirection", ArrowDirection.HORIZONTAL)
+	{
+		public void set(ArrowDirection value)
+		{
+			if (value == null) throw new NullPointerException("Null not allowed as the value for arrowDirection");
+			super.set(value);
+		}
+	};
 	public ArrowDirection getArrowDirection() { return this.arrowDirectionObjectProperty.getValue(); }
 	public void setArrowDirection(ArrowDirection value) { this.arrowDirectionObjectProperty.setValue(value); }
 	public ListSpinner<T> withArrowDirection(ArrowDirection value) { setArrowDirection(value); return this; }
@@ -310,8 +344,14 @@ public class ListSpinner<T> extends Control
 	
 	/** ArrowPosition: */
 	public ObjectProperty<ArrowPosition> arrowPositionProperty() { return this.arrowPositionObjectProperty; }
-	final private ObjectProperty<ArrowPosition> arrowPositionObjectProperty = new SimpleObjectProperty<ArrowPosition>(this, "arrowPosition", ArrowPosition.TRAILING);
-	// java bean API
+	final private ObjectProperty<ArrowPosition> arrowPositionObjectProperty = new SimpleObjectProperty<ArrowPosition>(this, "arrowPosition", ArrowPosition.TRAILING)
+	{
+		public void set(ArrowPosition value)
+		{
+			if (value == null) throw new NullPointerException("Null not allowed as the value for arrowPosition");
+			super.set(value);
+		}
+	};			
 	public ArrowPosition getArrowPosition() { return this.arrowPositionObjectProperty.getValue(); }
 	public void setArrowPosition(ArrowPosition value) { this.arrowPositionObjectProperty.setValue(value); }
 	public ListSpinner<T> withArrowPosition(ArrowPosition value) { setArrowPosition(value); return this; }
@@ -319,8 +359,14 @@ public class ListSpinner<T> extends Control
 	
 	/** Alignment: only applicable in non edit mode */
 	public ObjectProperty<Pos> alignmentProperty() { return this.alignmentObjectProperty; }
-	final private ObjectProperty<Pos> alignmentObjectProperty = new SimpleObjectProperty<Pos>(this, "alignment", Pos.CENTER_LEFT);
-	// java bean API
+	final private ObjectProperty<Pos> alignmentObjectProperty = new SimpleObjectProperty<Pos>(this, "alignment", Pos.CENTER_LEFT)
+	{
+		public void set(Pos value)
+		{
+			if (value == null) throw new NullPointerException("Null not allowed as the value for alignment");
+			super.set(value);
+		}
+	};			
 	public Pos isAlignment() { return this.alignmentObjectProperty.getValue(); }
 	public void setAlignment(Pos value) { this.alignmentObjectProperty.setValue(value); }
 	public ListSpinner<T> withAlignment(Pos value) { setAlignment(value); return this; }
@@ -328,7 +374,6 @@ public class ListSpinner<T> extends Control
 	/** AddCallback: */
 	public ObjectProperty<Callback<T, Integer>> addCallbackProperty() { return this.addCallbackObjectProperty; }
 	final private ObjectProperty<Callback<T, Integer>> addCallbackObjectProperty = new SimpleObjectProperty<Callback<T, Integer>>(this, "addCallback", null);
-	// java bean API
 	public Callback<T, Integer> getAddCallback() { return this.addCallbackObjectProperty.getValue(); }
 	public void setAddCallback(Callback<T, Integer> value) { this.addCallbackObjectProperty.setValue(value); }
 	public ListSpinner<T> withAddCallback(Callback<T, Integer> value) { setAddCallback(value); return this; }

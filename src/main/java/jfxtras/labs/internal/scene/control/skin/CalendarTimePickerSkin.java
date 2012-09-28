@@ -161,7 +161,6 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 		});
 		
 		// add label
-		timeText.setOpacity(0.5);
 		timeText.setDisable(true);
 		timeText.getStyleClass().add("timeLabel");
 
@@ -196,7 +195,7 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 			{				
 				Text lText = new Text("23");
 				lText.setY(lText.prefHeight(0));
-				lText.setX(this.getWidth() - lText.prefWidth(0) - lScrollSliderOuterPadding - 20); // do not use prefWidth / 2; the picker will start growing
+				lText.setX(this.getWidth() - lText.prefWidth(0) - lScrollSliderOuterPadding); // do not use prefWidth / 2; the picker will start growing
 				getChildren().add(lText);
 			}
 			// 0: only add if there can be at least two labels

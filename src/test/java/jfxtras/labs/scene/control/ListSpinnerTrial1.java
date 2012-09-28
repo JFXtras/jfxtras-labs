@@ -306,7 +306,7 @@ public class ListSpinnerTrial1 extends Application {
         Scene scene = new Scene(lHBox, 800, 600);
         
         // create stage
-        stage.setTitle("SpinnerX");
+        stage.setTitle("Spinner");
         stage.setScene(scene);
         stage.show();
     }

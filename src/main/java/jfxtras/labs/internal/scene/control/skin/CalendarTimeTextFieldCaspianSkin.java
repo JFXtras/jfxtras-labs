@@ -167,10 +167,8 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 		// the icon
 		Image lImage = new Image(this.getClass().getResourceAsStream(this.getClass().getSimpleName() + "Icon.png"));
 		imageView = new ImageView(lImage);
-		// use a pane for mouse click detection; the imageView is not clickable on the transparent parts
-		Pane lPane = new Pane();
-		lPane.getChildren().add(imageView);
-		lPane.setOnMouseClicked(new EventHandler<MouseEvent>()
+		imageView.setPickOnBounds(true);
+		imageView.setOnMouseClicked(new EventHandler<MouseEvent>()
 		{
 			@Override public void handle(MouseEvent evt)
 			{
@@ -186,7 +184,7 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 		gridPane = new GridPane();
 		gridPane.setHgap(3);
 		gridPane.add(textField, 0, 0);
-		gridPane.add(lPane, 1, 0);
+		gridPane.add(imageView, 1, 0);
 		ColumnConstraints column0 = new ColumnConstraints(100, 10, Double.MAX_VALUE);
 		column0.setHgrow(Priority.ALWAYS);
 		gridPane.getColumnConstraints().addAll(column0); // first column gets any extra width
@@ -311,17 +309,15 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 			
 			// add a close button
 			ImageView lImageView = new ImageView(closeIconImage);
-			// use a pane for mouse click detection; the imageView is not clickable on the transparent parts
-			Pane lPane = new Pane();
-			lPane.getChildren().add(lImageView);
-			lPane.setOnMouseClicked(new EventHandler<MouseEvent>()
+			lImageView.setPickOnBounds(true);
+			lImageView.setOnMouseClicked(new EventHandler<MouseEvent>()
 					{
 				@Override public void handle(MouseEvent evt)
 				{
 					popup.hide();
 				}
 			});
-			lBorderPane.rightProperty().set(lPane);
+			lBorderPane.rightProperty().set(lImageView);
 			
 			// add pane
 			popup.getContent().add(lBorderPane);

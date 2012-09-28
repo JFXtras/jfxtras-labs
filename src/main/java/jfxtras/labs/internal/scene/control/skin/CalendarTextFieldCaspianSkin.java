@@ -169,6 +169,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 		// the icon
 		Image lImage = new Image(this.getClass().getResourceAsStream(this.getClass().getSimpleName() + "Icon.png"));
 		imageView = new ImageView(lImage);
+		imageView.setPickOnBounds(true);
 		imageView.setOnMouseClicked(new EventHandler<MouseEvent>()
 		{
 			@Override public void handle(MouseEvent evt)
