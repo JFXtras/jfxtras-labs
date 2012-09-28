@@ -98,6 +98,7 @@ public class CalendarTimeTextFieldTrial1 extends Application {
 			{
 				lGridPane.add(new Label("programatically to null"), 0, lRowIdx);
 				CalendarTimeTextField lCalendarTimeTextField = new CalendarTimeTextField();
+				lCalendarTimeTextField.setPromptText("type time here");
 				lGridPane.add(lCalendarTimeTextField, 1, lRowIdx);
 				
 				final TextField lValueTextField = new TextField();

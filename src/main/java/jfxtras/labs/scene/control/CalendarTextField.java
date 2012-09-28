@@ -80,32 +80,33 @@ public class CalendarTextField extends Control
 	// PROPERTIES
 	
 	/** Value: */
-	public ObjectProperty<Calendar> valueProperty() { return iValueObjectProperty; }
-	final private ObjectProperty<Calendar> iValueObjectProperty = new SimpleObjectProperty<Calendar>(this, "value", null);
-	// java bean API
-	public Calendar getValue() { return iValueObjectProperty.getValue(); }
-	public void setValue(Calendar value) { iValueObjectProperty.setValue(value); }
+	public ObjectProperty<Calendar> valueProperty() { return valueObjectProperty; }
+	final private ObjectProperty<Calendar> valueObjectProperty = new SimpleObjectProperty<Calendar>(this, "value", null);
+	public Calendar getValue() { return valueObjectProperty.getValue(); }
+	public void setValue(Calendar value) { valueObjectProperty.setValue(value); }
 	public CalendarTextField withValue(Calendar value) { setValue(value); return this; }
-	final static public String VALUE_PROPERTY_ID = "value";
 
 	/** DateFormat: */
-	public ObjectProperty<DateFormat> dateFormatProperty() { return iDateFormatObjectProperty; }
-	final private ObjectProperty<DateFormat> iDateFormatObjectProperty = new SimpleObjectProperty<DateFormat>(this, "dateFormat", SimpleDateFormat.getDateInstance());
-	// java bean API
-	public DateFormat getDateFormat() { return iDateFormatObjectProperty.getValue(); }
-	public void setDateFormat(DateFormat value) { iDateFormatObjectProperty.setValue(value); }
+	public ObjectProperty<DateFormat> dateFormatProperty() { return dateFormatObjectProperty; }
+	final private ObjectProperty<DateFormat> dateFormatObjectProperty = new SimpleObjectProperty<DateFormat>(this, "dateFormat", SimpleDateFormat.getDateInstance());
+	public DateFormat getDateFormat() { return dateFormatObjectProperty.getValue(); }
+	public void setDateFormat(DateFormat value) { dateFormatObjectProperty.setValue(value); }
 	public CalendarTextField withDateFormat(DateFormat value) { setDateFormat(value); return this; }
-	final static public String DATEFORMAT_PROPERTY_ID = "dateFormat";
 
 	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc */
-	public ObjectProperty<Locale> localeProperty() { return iLocaleObjectProperty; }
-	final private ObjectProperty<Locale> iLocaleObjectProperty = new SimpleObjectProperty<Locale>(Locale.getDefault());
-	//
-	public Locale getLocale() { return iLocaleObjectProperty.getValue(); }
-	public void setLocale(Locale value) { iLocaleObjectProperty.setValue(value); }
+	public ObjectProperty<Locale> localeProperty() { return localeObjectProperty; }
+	final private ObjectProperty<Locale> localeObjectProperty = new SimpleObjectProperty<Locale>(Locale.getDefault());
+	public Locale getLocale() { return localeObjectProperty.getValue(); }
+	public void setLocale(Locale value) { localeObjectProperty.setValue(value); }
 	public CalendarTextField withLocale(Locale value) { setLocale(value); return this; } 
-	final static public String LOCALE_PROPERTY_ID = "locale";
 	
+	/** PromptText: */
+	public ObjectProperty<String> promptTextProperty() { return promptTextObjectProperty; }
+	final private ObjectProperty<String> promptTextObjectProperty = new SimpleObjectProperty<String>(this, "promptText", null);
+	public String getPromptText() { return promptTextObjectProperty.get(); }
+	public void setPromptText(String value) { promptTextObjectProperty.set(value); }
+	public CalendarTextField withPromptText(String value) { setPromptText(value); return this; }
+
 
 	// ==================================================================================================================
 	// EVENTS

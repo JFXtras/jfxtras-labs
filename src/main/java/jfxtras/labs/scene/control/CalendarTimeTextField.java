@@ -76,18 +76,17 @@ public class CalendarTimeTextField extends Control
 	// PROPERTIES
 	
 	/** Value: */
-	public ObjectProperty<Calendar> valueProperty() { return iValueObjectProperty; }
-	final private ObjectProperty<Calendar> iValueObjectProperty = new SimpleObjectProperty<Calendar>(this, "value", null);
-	// java bean API
-	public Calendar getValue() { return iValueObjectProperty.getValue(); }
-	public void setValue(Calendar value) { iValueObjectProperty.setValue(value); }
+	public ObjectProperty<Calendar> valueProperty() { return valueObjectProperty; }
+	final private ObjectProperty<Calendar> valueObjectProperty = new SimpleObjectProperty<Calendar>(this, "value", null);
+	public Calendar getValue() { return valueObjectProperty.getValue(); }
+	public void setValue(Calendar value) { valueObjectProperty.setValue(value); }
 	public CalendarTimeTextField withValue(Calendar value) { setValue(value); return this; }
 
 	/** MinuteStep */
-	public ObjectProperty<Integer> minuteStepProperty() { return iMinuteStepProperty; }
-	final private SimpleObjectProperty<Integer> iMinuteStepProperty = new SimpleObjectProperty<Integer>(this, "minuteStep", 1);
-	public Integer getMinuteStep() { return iMinuteStepProperty.getValue(); }
-	public void setMinuteStep(Integer value) { iMinuteStepProperty.setValue(value); }
+	public ObjectProperty<Integer> minuteStepProperty() { return minuteStepProperty; }
+	final private SimpleObjectProperty<Integer> minuteStepProperty = new SimpleObjectProperty<Integer>(this, "minuteStep", 1);
+	public Integer getMinuteStep() { return minuteStepProperty.getValue(); }
+	public void setMinuteStep(Integer value) { minuteStepProperty.setValue(value); }
 	public CalendarTimeTextField withMinuteStep(Integer value) { setMinuteStep(value); return this; } 
 
 
@@ -97,6 +96,13 @@ public class CalendarTimeTextField extends Control
 	public Boolean getShowLabels() { return showLabelsProperty.getValue(); }
 	public void setShowLabels(Boolean value) { showLabelsProperty.setValue(value); }
 	public CalendarTimeTextField withShowLabels(Boolean value) { setShowLabels(value); return this; } 
+	
+	/** PromptText: */
+	public ObjectProperty<String> promptTextProperty() { return promptTextObjectProperty; }
+	final private ObjectProperty<String> promptTextObjectProperty = new SimpleObjectProperty<String>(this, "promptText", null);
+	public String getPromptText() { return promptTextObjectProperty.get(); }
+	public void setPromptText(String value) { promptTextObjectProperty.set(value); }
+	public CalendarTimeTextField withPromptText(String value) { setPromptText(value); return this; }
 
 	// ==================================================================================================================
 	// EVENTS

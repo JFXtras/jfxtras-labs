@@ -35,12 +35,10 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -97,6 +95,7 @@ public class CalendarTextFieldTrial1 extends Application {
 			{
 				lGridPane.add(new Label("programatically to null"), 0, lRowIdx);
 				CalendarTextField lCalendarTextField = new CalendarTextField();
+				lCalendarTextField.setPromptText("type calendar here");
 				lGridPane.add(lCalendarTextField, 1, lRowIdx);
 				
 				final TextField lValueTextField = new TextField();
