@@ -75,8 +75,8 @@ public class CalendarTimePicker extends Control
 	// PROPERTIES
 	
 	/** calendar: */
-	public ObjectProperty<Calendar> calendarProperty() { return iCalendarObjectProperty; }
-	final private ObjectProperty<Calendar> iCalendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar", Calendar.getInstance())
+	public ObjectProperty<Calendar> calendarProperty() { return calendarObjectProperty; }
+	final private ObjectProperty<Calendar> calendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar", Calendar.getInstance())
 	{
 		public void set(Calendar value)
 		{
@@ -84,13 +84,13 @@ public class CalendarTimePicker extends Control
 			super.set(value);
 		}		
 	};
-	public Calendar getCalendar() { return iCalendarObjectProperty.getValue(); }
-	public void setCalendar(Calendar value) { iCalendarObjectProperty.setValue(value); }
+	public Calendar getCalendar() { return calendarObjectProperty.getValue(); }
+	public void setCalendar(Calendar value) { calendarObjectProperty.setValue(value); }
 	public CalendarTimePicker withCalendar(Calendar value) { setCalendar(value); return this; } 
 
 	/** MinuteStep */
-	public ObjectProperty<Integer> minuteStepProperty() { return iMinuteStepProperty; }
-	final private SimpleObjectProperty<Integer> iMinuteStepProperty = new SimpleObjectProperty<Integer>(this, "minuteStep", 1)
+	public ObjectProperty<Integer> minuteStepProperty() { return minuteStepProperty; }
+	final private SimpleObjectProperty<Integer> minuteStepProperty = new SimpleObjectProperty<Integer>(this, "minuteStep", 1)
 	{
 		public void set(Integer value)
 		{
@@ -98,9 +98,23 @@ public class CalendarTimePicker extends Control
 			setCalendar( CalendarTimePickerSkin.blockMinutesToStep(getCalendar(), getMinuteStep()) );
 		}		
 	};
-	public Integer getMinuteStep() { return iMinuteStepProperty.getValue(); }
-	public void setMinuteStep(Integer value) { iMinuteStepProperty.setValue(value); }
+	public Integer getMinuteStep() { return minuteStepProperty.getValue(); }
+	public void setMinuteStep(Integer value) { minuteStepProperty.setValue(value); }
 	public CalendarTimePicker withMinuteStep(Integer value) { setMinuteStep(value); return this; } 
+
+	/** ShowLabels */
+	public ObjectProperty<Boolean> showLabelsProperty() { return showLabelsProperty; }
+	final private SimpleObjectProperty<Boolean> showLabelsProperty = new SimpleObjectProperty<Boolean>(this, "showLabels", false)
+	{
+		public void set(Boolean value)
+		{
+			if (value == null) throw new NullPointerException("showLabels cannot be null");
+			super.set(value);
+		}		
+	};
+	public Boolean getShowLabels() { return showLabelsProperty.getValue(); }
+	public void setShowLabels(Boolean value) { showLabelsProperty.setValue(value); }
+	public CalendarTimePicker withShowLabels(Boolean value) { setShowLabels(value); return this; } 
 
 	// ==================================================================================================================
 	// SUPPORT

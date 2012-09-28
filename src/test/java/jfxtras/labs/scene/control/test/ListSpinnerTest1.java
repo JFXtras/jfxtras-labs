@@ -44,14 +44,14 @@ import org.junit.Test;
  *
  * @author shura
  */
-public class SpinnerTest1 {
+public class ListSpinnerTest1 {
 
-    public SpinnerTest1() {
+    public ListSpinnerTest1() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        AppExecutor.executeNoBlock(SpinnerTest1App.class);
+        AppExecutor.executeNoBlock(ListSpinnerTest1App.class);
     }
 
     @AfterClass

@@ -35,7 +35,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -46,11 +45,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Popup;
 import jfxtras.labs.internal.scene.control.behavior.CalendarTimeTextFieldBehavior;
-import jfxtras.labs.scene.control.CalendarTimeTextField;
 import jfxtras.labs.scene.control.CalendarTimePicker;
+import jfxtras.labs.scene.control.CalendarTimeTextField;
 import jfxtras.labs.util.NodeUtil;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
@@ -167,11 +167,15 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 		// the icon
 		Image lImage = new Image(this.getClass().getResourceAsStream(this.getClass().getSimpleName() + "Icon.png"));
 		imageView = new ImageView(lImage);
-		imageView.setOnMouseClicked(new EventHandler<MouseEvent>()
+		// use a pane for mouse click detection; the imageView is not clickable on the transparent parts
+		Pane lPane = new Pane();
+		lPane.getChildren().add(imageView);
+		lPane.setOnMouseClicked(new EventHandler<MouseEvent>()
 		{
 			@Override public void handle(MouseEvent evt)
 			{
-				if (textField.focusedProperty().get() == true) {
+				if (textField.focusedProperty().get() == true) 
+				{
 					parse();
 				}
 				showPopup(evt);
@@ -182,7 +186,7 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 		gridPane = new GridPane();
 		gridPane.setHgap(3);
 		gridPane.add(textField, 0, 0);
-		gridPane.add(imageView, 1, 0);
+		gridPane.add(lPane, 1, 0);
 		ColumnConstraints column0 = new ColumnConstraints(100, 10, Double.MAX_VALUE);
 		column0.setHgrow(Priority.ALWAYS);
 		gridPane.getColumnConstraints().addAll(column0); // first column gets any extra width
@@ -209,11 +213,16 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 		// bind our properties to the picker's 
 		Bindings.bindBidirectional(TimePicker.calendarProperty(), getSkinnable().valueProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
 		Bindings.bindBidirectional(TimePicker.minuteStepProperty(), getSkinnable().minuteStepProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
+		Bindings.bindBidirectional(TimePicker.showLabelsProperty(), getSkinnable().showLabelsProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
+		
+		// close icon
+		closeIconImage = new Image(this.getClass().getResourceAsStream(this.getClass().getSimpleName() + "CloseWindowIcon.png"));
 	}
 	private TextField textField = null;
 	private ImageView imageView = null;
 	private GridPane gridPane = null;
 	private CalendarTimePicker TimePicker = null;
+	private Image closeIconImage = null;
 	
 	/**
 	 * parse the contents that was typed in the textfield
@@ -295,21 +304,26 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 			popup.setAutoHide(true);
 			popup.setHideOnEscape(true);
 			
+			// add the timepicker
 			BorderPane lBorderPane = new BorderPane();
 			lBorderPane.getStyleClass().add(this.getClass().getSimpleName() + "_popup");
 			lBorderPane.setCenter(TimePicker);
 			
-			Button lButton = new Button("close");
-			lButton.setOnAction(new EventHandler<ActionEvent>()
-			{
-				@Override
-				public void handle(ActionEvent arg0)
+			// add a close button
+			ImageView lImageView = new ImageView(closeIconImage);
+			// use a pane for mouse click detection; the imageView is not clickable on the transparent parts
+			Pane lPane = new Pane();
+			lPane.getChildren().add(lImageView);
+			lPane.setOnMouseClicked(new EventHandler<MouseEvent>()
+					{
+				@Override public void handle(MouseEvent evt)
 				{
 					popup.hide();
 				}
 			});
-			lBorderPane.bottomProperty().set(lButton);
+			lBorderPane.rightProperty().set(lPane);
 			
+			// add pane
 			popup.getContent().add(lBorderPane);
 		}
 		

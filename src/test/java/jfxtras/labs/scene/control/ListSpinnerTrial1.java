@@ -49,7 +49,7 @@ import jfxtras.labs.util.StringConverterFactory;
  * @author Tom Eugelink
  *
  */
-public class SpinnerTrial1 extends Application {
+public class ListSpinnerTrial1 extends Application {
 	
     public static void main(String[] args) {
         launch(args);       

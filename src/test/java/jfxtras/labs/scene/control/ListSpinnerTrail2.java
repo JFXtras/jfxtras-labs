@@ -12,7 +12,7 @@ import javafx.util.converter.IntegerStringConverter;
 import jfxtras.labs.scene.control.ListSpinner.ArrowDirection;
 import jfxtras.labs.util.StringConverterFactory;
 
-public class SpinnerTrail2 extends Application
+public class ListSpinnerTrail2 extends Application
 {
 	public static void main(String[] args)
 	{

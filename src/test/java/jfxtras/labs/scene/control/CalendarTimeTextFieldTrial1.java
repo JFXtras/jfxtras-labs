@@ -35,12 +35,10 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -70,6 +68,7 @@ public class CalendarTimeTextFieldTrial1 extends Application {
 				CalendarTimeTextField lCalendarTimeTextField = new CalendarTimeTextField();
 				lCalendarTimeTextField.setValue(Calendar.getInstance());
 				lCalendarTimeTextField.setMinuteStep(5);
+				lCalendarTimeTextField.setShowLabels(false);
 				lGridPane.add(lCalendarTimeTextField, 1, lRowIdx);
 				
 				final TextField lValueTextField = new TextField();

@@ -33,9 +33,8 @@ import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.Slider;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import jfxtras.labs.internal.scene.control.behavior.CalendarTimePickerBehavior;
@@ -88,11 +87,20 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 			public void invalidated(Observable observable)
 			{
 				minuteScrollSlider.setBlockIncrement(getSkinnable().getMinuteStep().doubleValue());
-//				minuteScrollBar.setUnitIncrement(getSkinnable().getMinuteStep().doubleValue());
 			} 
 		});
 		minuteScrollSlider.setBlockIncrement(getSkinnable().getMinuteStep().doubleValue());
-//		minuteScrollBar.setUnitIncrement(getSkinnable().getMinuteStep().doubleValue());
+		
+		// react to changes in showLabels 
+		getSkinnable().showLabelsProperty().addListener(new InvalidationListener() 
+		{
+			@Override
+			public void invalidated(Observable observable)
+			{
+				// paint
+				refreshLayout();
+			} 
+		});
 	}
 	
 	// ==================================================================================================================
@@ -116,8 +124,8 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 		hourScrollSlider.setMinorTickCount(3);
 		minuteScrollSlider.minProperty().set(00);
 		minuteScrollSlider.maxProperty().set(59);
-		minuteScrollSlider.setShowTickLabels(true);
-		minuteScrollSlider.setShowTickMarks(true);
+//		minuteScrollSlider.setShowTickLabels(true);
+//		minuteScrollSlider.setShowTickMarks(true);
 		minuteScrollSlider.setMajorTickUnit(10);
 		hourScrollSlider.valueProperty().addListener(new ChangeListener<Number>()
 		{
@@ -155,23 +163,151 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 		// add label
 		timeText.setOpacity(0.5);
 		timeText.setDisable(true);
-		
-		// layout
-		// TODO: the timeText should be over the hour slider, now it is at the top
-		VBox lVBox = new VBox(0);
-		lVBox.alignmentProperty().set(Pos.CENTER);
-		lVBox.getChildren().add(hourScrollSlider);
-		lVBox.getChildren().add(minuteScrollSlider);
-		getChildren().add(lVBox);
-		getChildren().add(timeText);
-//		StackPane.setAlignment(timeText, Pos.TOP_CENTER);
+		timeText.getStyleClass().add("timeLabel");
 
+		// refresh layout
+		refreshLayout();
+		
 		// add self as CSS style
 		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control		
 	}
 	final private Slider hourScrollSlider = new Slider();
 	final private Slider minuteScrollSlider = new Slider();
 	final private Text timeText = new Text("XX:XX");
+	final Region hourLabelsPane = new Region()
+	{
+		{
+			layoutChildren();
+			//setStyle("-fx-border-color: red; -fx-border-width:1px;");
+		}
+		
+		protected void layoutChildren()
+		{
+			getChildren().clear();
+			
+			// get some basic numbers
+			double lLabelWidth = new Text("88").prefWidth(0);
+			double lWhitespace = lLabelWidth;
+			double lLabelWidthPlusWhitespace = lLabelWidth + lWhitespace;
+			double lScrollSliderOuterPadding = 5;
+
+			// 23: is always added (this also forces the initial height of the pane)
+			{
+				Text lText = new Text("23");
+				lText.setY(lText.prefHeight(0));
+				lText.setX(this.getWidth() - lText.prefWidth(0) - lScrollSliderOuterPadding); // do not use prefWidth / 2; the picker will start growing
+				getChildren().add(lText);
+			}
+			// 0: only add if there can be at least two labels
+			if (this.getWidth() >= (2 * lLabelWidth) + lWhitespace)
+			{
+				Text lText = new Text("0");
+				lText.setY(lText.prefHeight(0));
+				lText.setX(lScrollSliderOuterPadding);
+				getChildren().add(lText);
+			}
+
+			// now we're going to play with some numbers
+			// given the available width, how many labels cold we place (rounded down)
+			int lNumberOfLabels = (int)(this.getWidth()  / lLabelWidthPlusWhitespace) + 2;
+			System.out.println(lNumberOfLabels);
+			int lStep = 24;
+			if (lNumberOfLabels >= 24/1) lStep = 1; 
+			else if (lNumberOfLabels >= 24/2) lStep = 2;
+			else if (lNumberOfLabels >= 24/3) lStep = 3;
+			else if (lNumberOfLabels >= 24/4) lStep = 4;
+			else if (lNumberOfLabels > 24/6) lStep = 6;			
+			else if (lNumberOfLabels > 24/12) lStep = 12;			
+			for (int i = lStep; i < 23; i += lStep)
+			{
+				Text lText = new Text("" + i);
+				lText.setY(lText.prefHeight(0));
+				double lX = (lScrollSliderOuterPadding + ((minuteScrollSlider.getWidth() - (2*lScrollSliderOuterPadding)) / 23 * i)) - (lText.prefWidth(0) / 2);
+				if (lX < getWidth() - lLabelWidthPlusWhitespace - lScrollSliderOuterPadding) // not too close to the last label
+				{
+					lText.setX(lX);
+					getChildren().add(lText);
+				}
+			}
+		}
+	};
+	final Region minuteLabelsPane = new Region()
+	{
+		{
+			layoutChildren();
+			//setStyle("-fx-border-color: red; -fx-border-width:1px;");
+		}
+		
+		protected void layoutChildren()
+		{
+			getChildren().clear();
+			
+			// get some basic numbers
+			double lLabelWidth = new Text("88").prefWidth(0);
+			double lWhitespace = lLabelWidth;
+			double lLabelWidthPlusWhitespace = lLabelWidth + lWhitespace;
+			double lScrollSliderOuterPadding = 5;
+
+			// 59: is always added (this also forces the initial height of the pane) 
+			{
+				Text lText = new Text("59");
+				lText.setY(lText.prefHeight(0));
+				lText.setX(this.getWidth() - lText.prefWidth(0) - lScrollSliderOuterPadding);  // do not use prefWidth / 2; the picker will start growing
+				getChildren().add(lText);
+			}
+			// 0: only add if there can be at least two labels
+			if (this.getWidth() >= (2 * lLabelWidth) + lWhitespace)
+			{
+				Text lText = new Text("0");
+				lText.setX(lScrollSliderOuterPadding);
+				lText.setY(lText.prefHeight(0));
+				getChildren().add(lText);
+			}
+
+			// now we're going to play with some numbers
+			// given the available width, how many labels cold we place (rounded down)
+			int lNumberOfLabels = (int)(this.getWidth()  / lLabelWidthPlusWhitespace) + 2;
+			System.out.println(lNumberOfLabels);
+			int lStep = 60;
+			if (lNumberOfLabels >= 60/1) lStep = 1; 
+			else if (lNumberOfLabels >= 60/2) lStep = 2;
+			else if (lNumberOfLabels >= 60/3) lStep = 3;
+			else if (lNumberOfLabels >= 60/4) lStep = 4;
+			else if (lNumberOfLabels >= 60/5) lStep = 5;
+			else if (lNumberOfLabels >= 60/10) lStep = 10;
+			else if (lNumberOfLabels >= 60/15) lStep = 15;			
+			else if (lNumberOfLabels >= 60/30) lStep = 30;
+			if (lStep < getSkinnable().getMinuteStep()) lStep = getSkinnable().getMinuteStep();
+			for (int i = lStep; i < 59; i += lStep)
+			{
+				Text lText = new Text("" + i);
+				lText.setY(lText.prefHeight(0));
+				double lX = (lScrollSliderOuterPadding + ((minuteScrollSlider.getWidth() - (2*lScrollSliderOuterPadding)) / 59 * i)) - (lText.prefWidth(0) / 2);
+				if (lX < getWidth() - lLabelWidthPlusWhitespace - lScrollSliderOuterPadding) // not too close to the last label
+				{
+					lText.setX(lX);
+					getChildren().add(lText);
+				}
+			}
+		}
+	};
+	
+	/**
+	 * 
+	 */
+	private void refreshLayout()
+	{
+		// layout
+		getChildren().clear();
+		VBox lVBox = new VBox(0);
+		lVBox.alignmentProperty().set(Pos.CENTER);
+		if (getSkinnable().getShowLabels()) lVBox.getChildren().add(hourLabelsPane);
+		lVBox.getChildren().add(hourScrollSlider);
+		lVBox.getChildren().add(minuteScrollSlider);
+		if (getSkinnable().getShowLabels()) lVBox.getChildren().add(minuteLabelsPane);
+		getChildren().add(lVBox);
+		getChildren().add(timeText);
+	}
 	
 	/**
 	 * 

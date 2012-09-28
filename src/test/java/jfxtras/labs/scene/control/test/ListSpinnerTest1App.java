@@ -33,7 +33,7 @@ import javafx.stage.Stage;
 import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.util.StringConverterFactory;
 
-public class SpinnerTest1App  extends Application {
+public class ListSpinnerTest1App  extends Application {
     public static void main(String[] args) throws AWTException {
         launch(args);
     }
