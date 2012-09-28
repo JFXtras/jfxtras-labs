@@ -41,7 +41,6 @@ import jfxtras.labs.internal.scene.control.behavior.CalendarTimePickerBehavior;
 import jfxtras.labs.scene.control.CalendarTimePicker;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
-import com.sun.xml.internal.bind.v2.schemagen.episode.Bindings;
 
 /**
  * @author Tom Eugelink
