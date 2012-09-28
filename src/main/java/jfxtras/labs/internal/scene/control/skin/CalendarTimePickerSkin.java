@@ -41,6 +41,7 @@ import jfxtras.labs.internal.scene.control.behavior.CalendarTimePickerBehavior;
 import jfxtras.labs.scene.control.CalendarTimePicker;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
+import com.sun.xml.internal.bind.v2.schemagen.episode.Bindings;
 
 /**
  * @author Tom Eugelink
@@ -177,6 +178,7 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 	final Region hourLabelsPane = new Region()
 	{
 		{
+			prefWidthProperty().bind(hourScrollSlider.prefWidthProperty());
 			layoutChildren();
 			//setStyle("-fx-border-color: red; -fx-border-width:1px;");
 		}
@@ -192,10 +194,10 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 			double lScrollSliderOuterPadding = 5;
 
 			// 23: is always added (this also forces the initial height of the pane)
-			{
+			{				
 				Text lText = new Text("23");
 				lText.setY(lText.prefHeight(0));
-				lText.setX(this.getWidth() - lText.prefWidth(0) - lScrollSliderOuterPadding); // do not use prefWidth / 2; the picker will start growing
+				lText.setX(this.getWidth() - lText.prefWidth(0) - lScrollSliderOuterPadding - 20); // do not use prefWidth / 2; the picker will start growing
 				getChildren().add(lText);
 			}
 			// 0: only add if there can be at least two labels
@@ -210,7 +212,6 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 			// now we're going to play with some numbers
 			// given the available width, how many labels cold we place (rounded down)
 			int lNumberOfLabels = (int)(this.getWidth()  / lLabelWidthPlusWhitespace) + 2;
-			System.out.println(lNumberOfLabels);
 			int lStep = 24;
 			if (lNumberOfLabels >= 24/1) lStep = 1; 
 			else if (lNumberOfLabels >= 24/2) lStep = 2;
@@ -267,7 +268,6 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 			// now we're going to play with some numbers
 			// given the available width, how many labels cold we place (rounded down)
 			int lNumberOfLabels = (int)(this.getWidth()  / lLabelWidthPlusWhitespace) + 2;
-			System.out.println(lNumberOfLabels);
 			int lStep = 60;
 			if (lNumberOfLabels >= 60/1) lStep = 1; 
 			else if (lNumberOfLabels >= 60/2) lStep = 2;

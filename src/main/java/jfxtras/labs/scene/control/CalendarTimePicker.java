@@ -116,6 +116,8 @@ public class CalendarTimePicker extends Control
 	public void setShowLabels(Boolean value) { showLabelsProperty.setValue(value); }
 	public CalendarTimePicker withShowLabels(Boolean value) { setShowLabels(value); return this; } 
 
+	// TODO: add showTimeLabels, but the labels make the layout jump
+	
 	// ==================================================================================================================
 	// SUPPORT
 	
