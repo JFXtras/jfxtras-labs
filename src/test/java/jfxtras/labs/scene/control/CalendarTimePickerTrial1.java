@@ -48,7 +48,7 @@ public class CalendarTimePickerTrial1 extends Application {
 		lTimePicker.setShowLabels(true);
         
         // create scene
-        Scene scene = new Scene(lTimePicker, 900, 400);
+        Scene scene = new Scene(lTimePicker, 900, 100);
 
         // create stage
         stage.setTitle("TimePicker");

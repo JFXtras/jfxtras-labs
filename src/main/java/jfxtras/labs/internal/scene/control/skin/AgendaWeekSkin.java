@@ -115,11 +115,120 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	
 
 	// ==================================================================================================================
+	// LOGIC
+	
+	/**
+	 * This method prepares a day for being drawn.
+	 * The appointments within one day might overlap, this method will create a data structure so it is clear how these overlapping appointments should be drawn.
+	 * All appointments in one day are process based on their start time; earliest first, and if there are more with the same start time, longest duration first.
+	 * The appointments are then place onto (parallel) tracks; an appointment initially is placed in track 1. 
+	 * But if there is already an appointment there, then the appointment is placed in track 2. 
+	 * Unless there also is an appointment already there, then track 3 is tried. Track 4, track 5, until a free slot is found.
+	 * For example (the letters are not the sequence in which the appointments are processed, theý're just for identifying them):
+	 *  1 2 3 4
+	 *  -------
+	 *  . . . .
+	 *  . . . .
+	 *  A . . .
+	 *  A B C .
+	 *  A B C D
+	 *  A B . D
+	 *  A . . D
+	 *  A E . D
+	 *  A . . D
+	 *  . . . D
+	 *  . . . D
+	 *  F . . D
+	 *  F H . D 
+	 *  . . . .
+	 *  G . . . 
+	 *  . . . .
+	 * 
+	 *  When rendering the appointments above, parallel appointments are rendered smaller and indented so a piece is the area is always visible.
+	 *  So the single appointment G is rendered full width, while A, B, C and D are smaller and indented.
+	 *  The size and amount of indentation depends on the number of appointments that are rendered next to each other.
+	 *  But appointments may be enclosed (like E in A) or extend (like D past A), but once there is room again, the cluster should end and a new cluster should start; G should be draw full width again.
+	 *  
+	 *  A cluster of appointments always starts with a free standing appointment in track 1, for example A or G. This appointment is called the cluster owner.
+	 *  When the next appointment is added to the tracks, and finds that it cannot be put in track 1, it will be added as a member to the cluster denoted by the appointment in track 1.
+	 *  A special case is an appointment that can be placed in track 1, but is linked to a cluster by a earlier appointment in a higher track (in this case F is linked by D to the cluster owned by A).
+	 *  Appointment H by proxy of F is also part of the cluster owned by A. And this is logical ofcourse, because F, H and D are drawn in the same "row". 
+	 *  G finally starts a new cluster.
+	 *   
+	 */
+	private void prepare(Day day)
+	{
+		
+	}
+
+	/**
+	 * 
+	 *
+	 */
+	class Day extends Region
+	{
+		List<AppointmentRegion> appointmentRegions = new ArrayList<AgendaWeekSkin.AppointmentRegion>();
+		List<List<AppointmentRegion>> tracks = new ArrayList<List<AppointmentRegion>>();
+	}
+
+    /**
+     * An appointment region is a represenation of an appointment in one day.
+     * Appointments may span multiple days, each day gets its own appointment region.
+     *
+     */
+    class AppointmentRegion extends Region
+    {
+    	public AppointmentRegion(Agenda.Appointment appointment)
+    	{
+    		this.appointment = appointment;
+    	}
+    	Agenda.Appointment appointment;
+    	
+    	/**
+    	 * 
+    	 * @return
+    	 */
+    	public String getStartTimeAsString()
+    	{
+			String lSlotId = (appointment.getStartTime().get(Calendar.HOUR_OF_DAY) < 10 ? "0" : "") + appointment.getStartTime().get(Calendar.HOUR_OF_DAY)
+					       + ":"
+					       + (appointment.getStartTime().get(Calendar.MINUTE) < 30 ? "00" : "30" )
+					       ;
+    		return lSlotId;
+    	}
+
+    	/**
+    	 * 
+    	 * @return
+    	 */
+    	public String getEndTimeAsString()
+    	{
+			String lSlotId = (appointment.getEndTime().get(Calendar.HOUR_OF_DAY) < 10 ? "0" : "") + appointment.getEndTime().get(Calendar.HOUR_OF_DAY)
+					       + ":"
+					       + (appointment.getEndTime().get(Calendar.MINUTE) < 30 ? "00" : "30" )
+					       ;
+    		return lSlotId;
+    	}
+
+    	/**
+    	 * 
+    	 */
+    	public String toString()
+    	{
+    		return super.toString()
+    		     + ";" + getStartTimeAsString() + "-" + getEndTimeAsString()
+    		     ;
+    	}
+    }
+
+	// ==================================================================================================================
 	// DRAW
 	
 	// this is needed to react to resizing of the control
-    @Override public void layoutChildren() {
-        if (lastWidth != getSkinnable().getWidth()) {
+    @Override public void layoutChildren() 
+    {
+        if (lastWidth != getSkinnable().getWidth()) 
+        {
             paint();
         }
         super.layoutChildren();
@@ -168,10 +277,10 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		Calendar lToday = Calendar.getInstance();
 		TreeMap<Calendar, List<Agenda.Appointment>> lWholeDayAppointmentsPerDay = new TreeMap<Calendar, List<Appointment>>();
 		TreeMap<Calendar, List<Agenda.Appointment>> lTimeframeAppointmentsPerDay = new TreeMap<Calendar, List<Appointment>>();
-		TreeMap<Calendar, TreeMap<String, AppointsmentsPane>> lAppointmentNodesPerDayPerSlot = new TreeMap<Calendar, TreeMap<String, AppointsmentsPane>>();
+		TreeMap<Calendar, TreeMap<String, AppointmentRegion>> lAppointmentNodesPerDayPerSlot = new TreeMap<Calendar, TreeMap<String, AppointmentRegion>>();
 		lWholeDayAppointmentsPerDay.put(lToday, new ArrayList<Agenda.Appointment>()); // temp
 		lTimeframeAppointmentsPerDay.put(lToday, new ArrayList<Agenda.Appointment>()); // temp
-		lAppointmentNodesPerDayPerSlot.put(lToday, new TreeMap<String, AppointsmentsPane>()); // temp
+		lAppointmentNodesPerDayPerSlot.put(lToday, new TreeMap<String, AppointmentRegion>()); // temp
 		int lMaxNumberOfWholedayAppointments = 0;
     	for (Agenda.Appointment lApp : getSkinnable().appointments())
     	{
@@ -187,28 +296,29 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			{
 				lTimeframeAppointmentsPerDay.get(lToday).add(lApp);
 				
-				// create a slot identifier
-				String lSlotId = (lApp.getStartTime().get(Calendar.HOUR_OF_DAY) < 10 ? "0" : "") + lApp.getStartTime().get(Calendar.HOUR_OF_DAY)
-						       + ":"
-						       + (lApp.getStartTime().get(Calendar.MINUTE) < 30 ? "00" : "30" )
-						       ;
-				if (lAppointmentNodesPerDayPerSlot.get(lToday).get(lSlotId) == null) lAppointmentNodesPerDayPerSlot.get(lToday).put(lSlotId, new AppointsmentsPane());
-				lAppointmentNodesPerDayPerSlot.get(lToday).get(lSlotId).add(lApp);
 			}
     	}
     	
     	// process appointment nodes for one day 
-    	TreeMap<String, AppointsmentsPane> lAppointmentNodesMap = lAppointmentNodesPerDayPerSlot.get(lToday);
+    	TreeMap<String, AppointmentRegion> lAppointmentNodesMap = lAppointmentNodesPerDayPerSlot.get(lToday);
     	System.out.println(lAppointmentNodesMap);
-    	TreeMap<String, AppointsmentsPane> lStartAndEndTimesMap = new TreeMap<String, AppointsmentsPane>();
+    	TreeMap<String, AppointmentRegion> lStartAndEndTimesMap = new TreeMap<String, AppointmentRegion>();
     	for (String lStartTimeId : lAppointmentNodesMap.keySet())
     	{
     		System.out.println("starttime " + lStartTimeId);
-    		AppointsmentsPane lAppointsmentsPane = lAppointmentNodesMap.get(lStartTimeId);
+    		AppointmentRegion lAppointsmentsPane = lAppointmentNodesMap.get(lStartTimeId);
     		lStartAndEndTimesMap.put(lStartTimeId + "S", lAppointsmentsPane);
     		lStartAndEndTimesMap.put(lAppointsmentsPane.getEndTimeAsString() + "E", lAppointsmentsPane);
     	}
     	System.out.println(lStartAndEndTimesMap.keySet());
+    	int lIndentCnt = 0;
+    	for (String lKey : lStartAndEndTimesMap.keySet())
+    	{
+    		AppointmentRegion lAppointsmentsPane = lStartAndEndTimesMap.get(lKey);
+    		if (lKey.endsWith("S")) lIndentCnt++;
+    		else lIndentCnt--;
+    		
+    	}
     	
 		// determine the maximum number of whole day appointments
 		double lWholedayTitleHeight = 25;
@@ -339,79 +449,6 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
     Group lDaysCanvas = null;
     ScrollPane lScrollPane = null;
     
-    /**
-     * 
-     *
-     */
-    class AppointsmentsPane extends Region
-    {
-    	List<Appointment> appointments = new ArrayList<Agenda.Appointment>();
-    	
-    	public AppointsmentsPane()
-    	{
-    		getChildren().add(pane);
-    	}
-    	Pane pane = new Pane();
-    	
-    	/**
-    	 * 
-    	 * @param appointment
-    	 */
-    	public void add(Appointment appointment)
-    	{
-    		appointments.add(appointment);
-    	}
-    	
-    	/**
-    	 * 
-    	 * @return
-    	 */
-    	public String getStartTimeAsString()
-    	{
-    		if (appointments.size() < 1) return null;
-    		String lSlotId = "AA:AA";
-    		for (Appointment lAppointment : appointments)
-    		{
-				String lSlotId2 = (lAppointment.getStartTime().get(Calendar.HOUR_OF_DAY) < 10 ? "0" : "") + lAppointment.getStartTime().get(Calendar.HOUR_OF_DAY)
-						        + ":"
-						        + (lAppointment.getStartTime().get(Calendar.MINUTE) < 30 ? "00" : "30" )
-						        ;
-				if (lSlotId2.compareTo(lSlotId) < 0) lSlotId = lSlotId2;
-    		}
-    		return lSlotId;
-    	}
-
-    	/**
-    	 * 
-    	 * @return
-    	 */
-    	public String getEndTimeAsString()
-    	{
-    		if (appointments.size() < 1) return null;
-    		String lSlotId = "00:00";
-    		for (Appointment lAppointment : appointments)
-    		{
-				String lSlotId2 = (lAppointment.getEndTime().get(Calendar.HOUR_OF_DAY) < 10 ? "0" : "") + lAppointment.getEndTime().get(Calendar.HOUR_OF_DAY)
-						        + ":"
-						        + (lAppointment.getEndTime().get(Calendar.MINUTE) < 30 ? "00" : "30" )
-						        ;
-				if (lSlotId2.compareTo(lSlotId) > 0) lSlotId = lSlotId2;
-    		}
-    		return lSlotId;
-    	}
-
-    	/**
-    	 * 
-    	 */
-    	public String toString()
-    	{
-    		return super.toString()
-    		     + ";" + getStartTimeAsString() + "-" + getEndTimeAsString()
-    		     + ";cnt=" + appointments.size()
-    		     ;
-    	}
-    }
-
 	private void blowupToFullSize(Group group)
 	{
 		// create a rectangle that is exactly the available size
