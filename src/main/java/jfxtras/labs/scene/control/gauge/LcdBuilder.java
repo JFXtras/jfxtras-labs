@@ -188,6 +188,16 @@ public class LcdBuilder<B extends LcdBuilder<B>> extends ControlBuilder<B> imple
         return this;
     }
 
+    public final LcdBuilder clockMode(final boolean CLOCK_MODE) {
+        properties.put("clockMode", new SimpleBooleanProperty(CLOCK_MODE));
+        return this;
+    }
+
+    public final LcdBuilder clockSecondsVisible(final boolean CLOCK_SECONDS_VISIBLE) {
+        properties.put("clockSecondsVisible", new SimpleBooleanProperty(CLOCK_SECONDS_VISIBLE));
+        return this;
+    }
+
     @Override public final B prefWidth(final double PREF_WIDTH) {
         properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
         return (B)this;
@@ -269,7 +279,11 @@ public class LcdBuilder<B extends LcdBuilder<B>> extends ControlBuilder<B> imple
                 CONTROL.setLcdTitleFont(((StringProperty) properties.get(key)).get());
             } else if ("valueFont".equals(key)) {
                 CONTROL.setLcdValueFont(((ObjectProperty<Gauge.LcdFont>) properties.get(key)).get());
-            }  else if ("prefWidth".equals(key)) {
+            } else if ("clockMode".equals(key)) {
+                CONTROL.setClockMode(((BooleanProperty) properties.get(key)).get());
+            } else if ("clockSecondsVisible".equals(key)) {
+                CONTROL.setClockSecondsVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("prefWidth".equals(key)) {
                 CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
             } else if ("prefHeight".equals(key)) {
                 CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
