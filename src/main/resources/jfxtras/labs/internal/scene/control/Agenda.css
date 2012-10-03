@@ -48,6 +48,12 @@
 	-fx-stroke: WHITE;
 }
 
+.AgendaWeekSkin .AppointmentTimeLabel {
+	-fx-fill: BLACK;
+	-fx-stroke: transparent;
+	-fx-font-size: 0.8em;
+}
+
 .AgendaWeekSkin .AppointmentLabel {
 	-fx-fill: BLACK;
 	-fx-stroke: transparent;
