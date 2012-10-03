@@ -40,13 +40,15 @@ import javafx.beans.property.SimpleIntegerProperty;
  * Time: 07:39
  */
 public class Lcd extends Gauge {
-    private static final String  DEFAULT_STYLE_CLASS = "lcd";
-    private BooleanProperty      lcdMinMeasuredValueVisible;
-    private BooleanProperty      lcdMaxMeasuredValueVisible;
-    private BooleanProperty      lcdFormerValueVisible;
-    private IntegerProperty      lcdMinMeasuredValueDecimals;
-    private IntegerProperty      lcdMaxMeasuredValueDecimals;
-    private BooleanProperty      bargraphVisible;
+    private static final String DEFAULT_STYLE_CLASS = "lcd";
+    private BooleanProperty     lcdMinMeasuredValueVisible;
+    private BooleanProperty     lcdMaxMeasuredValueVisible;
+    private BooleanProperty     lcdFormerValueVisible;
+    private IntegerProperty     lcdMinMeasuredValueDecimals;
+    private IntegerProperty     lcdMaxMeasuredValueDecimals;
+    private BooleanProperty     bargraphVisible;
+    private BooleanProperty     clockMode;
+    private BooleanProperty     clockSecondsVisible;
 
 
     // ******************** Constructors **************************************
@@ -70,6 +72,8 @@ public class Lcd extends Gauge {
         lcdMinMeasuredValueDecimals = new SimpleIntegerProperty(STYLE_MODEL.getLcdDecimals());
         lcdMaxMeasuredValueDecimals = new SimpleIntegerProperty(STYLE_MODEL.getLcdDecimals());
         bargraphVisible             = new SimpleBooleanProperty(false);
+        clockMode                   = new SimpleBooleanProperty(false);
+        clockSecondsVisible         = new SimpleBooleanProperty(true);
         setValueAnimationEnabled(false);
 
         getStyleClass().setAll(DEFAULT_STYLE_CLASS);
@@ -155,5 +159,27 @@ public class Lcd extends Gauge {
         return bargraphVisible;
     }
 
+    public final boolean isClockMode() {
+        return clockMode.get();
+    }
 
+    public final void setClockMode(final boolean CLOCK_MODE) {
+        clockMode.set(CLOCK_MODE);
+    }
+
+    public final BooleanProperty clockModeProperty() {
+        return clockMode;
+    }
+
+    public final boolean isClockSecondsVisible() {
+        return clockSecondsVisible.get();
+    }
+
+    public final void setClockSecondsVisible(final boolean CLOCK_SECONDS_VISIBLE) {
+        clockSecondsVisible.set(CLOCK_SECONDS_VISIBLE);
+    }
+
+    public final BooleanProperty clockSecondsVisibleProperty() {
+        return clockSecondsVisible;
+    }
 }

@@ -35,6 +35,8 @@ import javafx.animation.Timeline;
 import javafx.animation.Transition;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.VPos;
@@ -65,6 +67,7 @@ import jfxtras.labs.scene.control.gauge.Lcd;
 import jfxtras.labs.scene.control.gauge.Section;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -114,6 +117,9 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
     private boolean              initialized;
     private long                 lastLcdTimerCall;
     private long                 lastThresholdTimerCall;
+    private long                 lastClockTimerCall;
+    private AnimationTimer       clockTimer;
+    private StringProperty       lcdClockValue;
 
 
     // ******************** Constructors **************************************
@@ -176,6 +182,15 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
                 }
             }
         };
+        lastClockTimerCall         = System.nanoTime();
+        clockTimer                 = new AnimationTimer() {
+            @Override public void handle(final long NOW) {
+                if (NOW > lastClockTimerCall + 500000000l) {
+                    updateLcdClock();
+                }
+            }
+        };
+        lcdClockValue              = new SimpleStringProperty("00:00:00");
         init();
     }
 
@@ -226,9 +241,15 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             lcdBlinkingTimer.start();
         }
 
+        if (control.isClockMode()) {
+            clockTimer.start();
+        }
+
         addBindings();
         addListeners();
         registerChangeListener(control.backgroundVisibleProperty(), "BACKGROUND_VISIBILITY");
+        registerChangeListener(control.clockModeProperty(), "CLOCK_MODE");
+        registerChangeListener(lcdClockValue, "CLOCK_VALUE");
 
         currentLcdValue.set(control.getLcdValue());
 
@@ -445,6 +466,14 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             repaint();
         } else if ("PREF_HEIGHT".equals(PROPERTY)) {
             repaint();
+        } else if ("CLOCK_MODE".equals(PROPERTY)) {
+            if (control.isClockMode()) {
+                clockTimer.start();
+            } else {
+                clockTimer.stop();
+            }
+        } else if ("CLOCK_VALUE".equals(PROPERTY)) {
+            drawLcdContent();
         }
     }
 
@@ -846,7 +875,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         lcd.getChildren().addAll(LCD_FRAME, LCD_MAIN);
 
         // Prepare bargraph
-        if (control.isBargraphVisible()) {
+        if (control.isBargraphVisible() && !control.isClockMode()) {
             final Path BAR_GRAPH_OFF = new Path();
             BAR_GRAPH_OFF.setFillRule(FillRule.EVEN_ODD);
             BAR_GRAPH_OFF.getElements().add(new MoveTo(0.9166666666666666 * WIDTH, 0.74 * HEIGHT));
@@ -1122,8 +1151,8 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
     }
 
     public void drawLcdContent() {
-        final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
-        final double WIDTH = control.getPrefWidth();
+        final double SIZE   = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+        final double WIDTH  = control.getPrefWidth();
         final double HEIGHT = control.getPrefHeight();
 
         lcdContent.getChildren().clear();
@@ -1136,30 +1165,34 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         final Rectangle LCD_MAIN = new Rectangle(1.0, 1.0, WIDTH - 2.0, HEIGHT - 2.0);
 
         // Update the lcd value
-        switch (control.getLcdNumberSystem()) {
-            case HEXADECIMAL:
-                lcdValueString.setText(Integer.toHexString((int) currentLcdValue.get()).toUpperCase());
-                break;
+        if (control.isClockMode()) {
+            lcdValueString.setText(lcdClockValue.get());
+        } else {
+            switch (control.getLcdNumberSystem()) {
+                case HEXADECIMAL:
+                    lcdValueString.setText(Integer.toHexString((int) currentLcdValue.get()).toUpperCase());
+                    break;
 
-            case OCTAL:
-                lcdValueString.setText(Integer.toOctalString((int) currentLcdValue.get()).toUpperCase());
-                break;
+                case OCTAL:
+                    lcdValueString.setText(Integer.toOctalString((int) currentLcdValue.get()).toUpperCase());
+                    break;
 
-            case DECIMAL:
+                case DECIMAL:
 
-            default:
-                lcdValueString.setText(formatLcdValue(currentLcdValue.get(), control.getLcdDecimals()));
-                break;
+                default:
+                    lcdValueString.setText(formatLcdValue(currentLcdValue.get(), control.getLcdDecimals()));
+                    break;
+            }
+            lcdNumberSystem.setText(control.getLcdNumberSystem().toString());
+            lcdNumberSystem.setX(WIDTH - lcdNumberSystem.getLayoutBounds().getWidth() - 0.0416666667 * SIZE);
+            lcdNumberSystem.setY(LCD_MAIN.getLayoutY() + LCD_MAIN.getHeight() - 0.0416666667 * SIZE);
+
+            if (!isNoOfDigitsValid()) {
+                lcdValueString.setText("-E-");
+            }
         }
-        lcdNumberSystem.setText(control.getLcdNumberSystem().toString());
-        lcdNumberSystem.setX(WIDTH - lcdNumberSystem.getLayoutBounds().getWidth() - 0.0416666667 * SIZE);
-        lcdNumberSystem.setY(LCD_MAIN.getLayoutY() + LCD_MAIN.getHeight() - 0.0416666667 * SIZE);
 
-        if (!isNoOfDigitsValid()) {
-            lcdValueString.setText("-E-");
-        }
-
-        if (control.isLcdUnitVisible()) {
+        if (control.isLcdUnitVisible() && !control.isClockMode()) {
             lcdValueString.setX((LCD_MAIN.getX() + (LCD_MAIN.getWidth() - lcdValueString.getLayoutBounds().getWidth()) - lcdValueOffsetRight));
         } else {
             lcdValueString.setX((WIDTH - lcdValueString.getLayoutBounds().getWidth()) - lcdValueOffsetRight);
@@ -1218,13 +1251,32 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             }
         }
 
-        lcdContent.getChildren().addAll(lcdValueString,
-                                        lcdMinMeasuredValue,
-                                        lcdMaxMeasuredValue,
-                                        lcdFormerValue,
-                                        trendUp,
-                                        trendSteady,
-                                        trendDown);
+        if (control.isClockMode()) {
+            lcdContent.getChildren().addAll(lcdValueString);
+        } else {
+            lcdContent.getChildren().addAll(lcdValueString,
+                                            lcdMinMeasuredValue,
+                                            lcdMaxMeasuredValue,
+                                            lcdFormerValue,
+                                            trendUp,
+                                            trendSteady,
+                                            trendDown);
+        }
+    }
+
+    private void updateLcdClock() {
+        int hours   = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        int minutes = Calendar.getInstance().get(Calendar.MINUTE);
+        int seconds = Calendar.getInstance().get(Calendar.SECOND);
+        String hourString   = hours < 10 ? "0" + Integer.toString(hours) : Integer.toString(hours);
+        String minuteString = minutes < 10 ? "0" + Integer.toString(minutes) : Integer.toString(minutes);
+        String secondString = seconds < 10 ? "0" + Integer.toString(seconds) : Integer.toString(seconds);
+
+        if (control.isClockSecondsVisible()) {
+            lcdClockValue.set(hourString + ":" + minuteString + ":" + secondString);
+        } else {
+            lcdClockValue.set(hourString + ":" + minuteString);
+        }
     }
 
 
