@@ -52,28 +52,83 @@ public class AgendaTrial1 extends Application {
 		int lTodayMonth = Calendar.getInstance().get(Calendar.MONTH);
 		int lTodayDay = Calendar.getInstance().get(Calendar.DATE);
 		lAgenda.appointments().addAll(
+		/*
+		 *  . . . .
+		 *  . . . . 
+		 *  A . . .  8:00
+		 *  A B C .  8:30
+		 *  A B C D  9:00
+		 *  A B . D  9:30
+		 *  A . . D 10:00
+		 *  A E . D 10:30
+		 *  A . . D 11:00
+		 *  . . . D 11:30
+		 *  . . . D 12:00
+		 *  F . . D 12:30
+		 *  F H . D 13:00
+		 *  . . . . 13:30
+		 *  G . . . 14:00
+		 *  . . . . 14:30
+		 * 
+		 */
 			new Agenda.AppointmentImpl()
 				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 8, 00))
-				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 10, 00))
-				.withSummary("Test summary")
+				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 11, 30))
+				.withSummary("A")
 				.withDescription("A much longer test description")
 				.withGroup("group1")
 		, 	new Agenda.AppointmentImpl()
-				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 8, 00))
-				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 12, 00))
-				.withSummary("Summary 2")
+				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 8, 30))
+				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 10, 00))
+				.withSummary("B")
 				.withDescription("A description 2")
 				.withGroup("group2")
 		, 	new Agenda.AppointmentImpl()
-				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 8, 45))
-				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 12, 00))
-				.withSummary("Summary 3")
+				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 8, 30))
+				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 9, 30))
+				.withSummary("C")
 				.withDescription("A description 3")
 				.withGroup("group3")
 		, 	new Agenda.AppointmentImpl()
-				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 00, 00))
-				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 23, 59))
-				.withSummary("Summary 4")
+				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 9, 00))
+				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 13, 30))
+				.withSummary("D")
+				.withDescription("A description 4")
+				.withGroup("group1")
+		, 	new Agenda.AppointmentImpl()
+				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 10, 30))
+				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 11, 00))
+				.withSummary("E")
+				.withDescription("A description 4")
+				.withGroup("group1")
+		, 	new Agenda.AppointmentImpl()
+				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 12, 30))
+				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 13, 30))
+				.withSummary("F")
+				.withDescription("A description 4")
+				.withGroup("group1")
+		, 	new Agenda.AppointmentImpl()
+				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 13, 00))
+				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 13, 30))
+				.withSummary("H")
+				.withDescription("A description 4")
+				.withGroup("group1")
+		, 	new Agenda.AppointmentImpl()
+				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 14, 00))
+				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 14, 30))
+				.withSummary("G")
+				.withDescription("A description 4")
+				.withGroup("group1")
+		, 	new Agenda.AppointmentImpl()
+				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 15, 00))
+				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 16, 00))
+				.withSummary("I")
+				.withDescription("A description 4")
+				.withGroup("group1")
+		, 	new Agenda.AppointmentImpl()
+				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 15, 30))
+				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 16, 00))
+				.withSummary("J")
 				.withDescription("A description 4")
 				.withGroup("group1")
 		// -----
@@ -93,7 +148,7 @@ public class AgendaTrial1 extends Application {
 		
         
         // create scene
-        Scene scene = new Scene(lAgenda, 900, 400);
+        Scene scene = new Scene(lAgenda, 900, 900);
 
         // create stage
         stage.setTitle("Agenda");

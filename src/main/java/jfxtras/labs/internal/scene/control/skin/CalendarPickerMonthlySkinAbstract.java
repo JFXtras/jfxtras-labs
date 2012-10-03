@@ -91,7 +91,9 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 	 * it also is used to determine first-day-of-week, weekday labels, etc
 	 * The calendar should not be modified using any of its add or set methods (it should be considered immutable)  
 	 */
-	public Calendar getDisplayedCalendar() { return iDisplayedCalendarObjectProperty.getValue(); }
+	public ObjectProperty<Calendar> displayedCalendar() { return displayedCalendarObjectProperty; }
+	volatile private ObjectProperty<Calendar> displayedCalendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "displayedCalendar");
+	public Calendar getDisplayedCalendar() { return displayedCalendarObjectProperty.getValue(); }
 	public void setDisplayedCalendar(Calendar value)  
 	{
 		Calendar lValue = getDisplayedCalendar();
@@ -106,11 +108,9 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 		}
 		
 		// set value
-		iDisplayedCalendarObjectProperty.setValue(derriveDisplayedCalendar(value)); 
+		displayedCalendarObjectProperty.setValue(derriveDisplayedCalendar(value)); 
 	}
 	public S withDisplayedCalendar(Calendar value) { setDisplayedCalendar(value); return (S)this; } 
-	public ObjectProperty<Calendar> displayedCalendar() { return iDisplayedCalendarObjectProperty; }
-	volatile private ObjectProperty<Calendar> iDisplayedCalendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "displayedCalendar");
 	private Calendar derriveDisplayedCalendar(Calendar lDisplayedCalendar)
 	{
 		// done
@@ -133,14 +133,14 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 	private void refreshLocale()
 	{
 		// create the formatter to use
-		iSimpleDateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG, getSkinnable().getLocale());
+		simpleDateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG, getSkinnable().getLocale());
 		
 		// update the displayed calendar
 		setDisplayedCalendar(getDisplayedCalendar());
 	}
 
 	//
-	private SimpleDateFormat iSimpleDateFormat = null;
+	private SimpleDateFormat simpleDateFormat = null;
 	
 	// ==================================================================================================================
 	// SUPPORT
@@ -155,7 +155,7 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 
 		// setup the dayLabels
 		// Calendar.SUNDAY = 1 and Calendar.SATURDAY = 7
-		iSimpleDateFormat.applyPattern("E");
+		simpleDateFormat.applyPattern("E");
 		Calendar lCalendar = new java.util.GregorianCalendar(2009, 6, 5); // july 5th 2009 is a Sunday
 		for (int i = 0; i < 7; i++)
 		{
@@ -163,7 +163,7 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 			lCalendar.set(java.util.Calendar.DATE, 4 + getDisplayedCalendar().getFirstDayOfWeek() + i);
 
 			// assign day
-			lWeekdayLabels.add( iSimpleDateFormat.format(lCalendar.getTime()));
+			lWeekdayLabels.add( simpleDateFormat.format(lCalendar.getTime()));
 		}
 		
 		// done
@@ -202,7 +202,7 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 		List<String> lMonthLabels = new ArrayList<String>();
 
 		// setup the month
-		iSimpleDateFormat.applyPattern("MMMM");
+		simpleDateFormat.applyPattern("MMMM");
 		Calendar lCalendar = new java.util.GregorianCalendar(2009, 0, 1); 
 		for (int i = 0; i < 12; i++)
 		{
@@ -210,7 +210,7 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 			lCalendar.set(java.util.Calendar.MONTH, i);
 
 			// assign day
-			lMonthLabels.add( iSimpleDateFormat.format(lCalendar.getTime()));
+			lMonthLabels.add( simpleDateFormat.format(lCalendar.getTime()));
 		}
 		
 		// done

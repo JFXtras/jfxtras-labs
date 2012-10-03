@@ -7,3 +7,59 @@
 .AgendaWeekSkin { 
 }
 */
+
+.AgendaWeekSkin .Week {
+	-fx-fill: WHITE;
+	-fx-stroke: transparent;
+}
+
+.AgendaWeekSkin .HourLabel {
+	-fx-fill: BLACK;
+	-fx-stroke: transparent;
+}
+
+.AgendaWeekSkin .HourLine {
+	-fx-fill: transparent;
+	-fx-stroke: LIGHTGRAY;
+}
+
+.AgendaWeekSkin .HalfHourLine {
+	-fx-fill: transparent;
+	-fx-stroke: LIGHTGRAY;
+	-fx-stroke-dash-array: 2 2;
+}
+
+.AgendaWeekSkin .DayHeader {
+	-fx-fill: transparent;
+	-fx-stroke: transparent;
+}
+
+.AgendaWeekSkin .Day {
+	-fx-fill: transparent;
+	-fx-stroke: transparent;
+}
+
+.AgendaWeekSkin .DaySeparator {
+	-fx-fill: transparent;
+	-fx-stroke: LIGHTGRAY;
+}
+
+.AgendaWeekSkin .Appointment {
+	-fx-stroke: WHITE;
+}
+
+.AgendaWeekSkin .AppointmentLabel {
+	-fx-fill: BLACK;
+	-fx-stroke: transparent;
+}
+
+.group1 {
+	-fx-fill: rgb(22,167,102);
+}
+.group2 {
+	-fx-fill: rgb(161,222,105);
+}
+.group3 {
+	-fx-fill: rgb(255,117,55);
+}
+

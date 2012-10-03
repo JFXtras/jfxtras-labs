@@ -73,6 +73,33 @@ public class Agenda extends Control
 	}
 	
 	// ==================================================================================================================
+	// PROPERTIES
+	
+	/** Appointments: */
+	public ObservableList<Appointment> appointments() { return appointments; }
+	final private ObservableList<Appointment> appointments =  javafx.collections.FXCollections.observableArrayList();
+	final static public String APPOINTMENTS_PROPERTY_ID = "appointments";
+
+	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc */
+	public ObjectProperty<Locale> localeProperty() { return iLocaleObjectProperty; }
+	final private ObjectProperty<Locale> iLocaleObjectProperty = new SimpleObjectProperty<Locale>(this, "locale", Locale.getDefault());
+	public Locale getLocale() { return iLocaleObjectProperty.getValue(); }
+	public void setLocale(Locale value) { iLocaleObjectProperty.setValue(value); }
+	public Agenda withLocale(Locale value) { setLocale(value); return this; } 
+
+	/** 
+	 * DisplayedCalendar: this calendar denotes the timeframe being displayed. 
+	 * If the agenda is in week skin, it will display the week containing this date. (Things like FirstDayOfWeek are taken into account.)
+	 * In month skin, the month containing this date.
+	 */
+	public ObjectProperty<Calendar> displayedCalendar() { return displayedCalendarObjectProperty; }
+	volatile private ObjectProperty<Calendar> displayedCalendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "displayedCalendar", Calendar.getInstance());
+	public Calendar getDisplayedCalendar() { return displayedCalendarObjectProperty.getValue(); }
+	public void setDisplayedCalendar(Calendar value) { displayedCalendarObjectProperty.setValue(value); }
+	public Agenda withDisplayedCalendar(Calendar value) { setDisplayedCalendar(value); return this; }
+	
+	
+	// ==================================================================================================================
 	// Appointment
 	
 	/**
@@ -98,7 +125,6 @@ public class Agenda extends Control
 		/** StartTime: */
 		public ObjectProperty<Calendar> startTimeProperty() { return startTimeObjectProperty; }
 		final private ObjectProperty<Calendar> startTimeObjectProperty = new SimpleObjectProperty<Calendar>(this, "startTime");
-		// java bean API
 		public Calendar getStartTime() { return startTimeObjectProperty.getValue(); }
 		public void setStartTime(Calendar value) { startTimeObjectProperty.setValue(value); }
 		public AppointmentImpl withStartTime(Calendar value) { setStartTime(value); return this; }
@@ -106,7 +132,6 @@ public class Agenda extends Control
 		/** EndTime: */
 		public ObjectProperty<Calendar> endTimeProperty() { return endTimeObjectProperty; }
 		final private ObjectProperty<Calendar> endTimeObjectProperty = new SimpleObjectProperty<Calendar>(this, "endTime");
-		// java bean API
 		public Calendar getEndTime() { return endTimeObjectProperty.getValue(); }
 		public void setEndTime(Calendar value) { endTimeObjectProperty.setValue(value); }
 		public AppointmentImpl withEndTime(Calendar value) { setEndTime(value); return this; } 
@@ -114,7 +139,6 @@ public class Agenda extends Control
 		/** WholeDay: */
 		public ObjectProperty<Boolean> wholeDayProperty() { return wholeDayObjectProperty; }
 		final private ObjectProperty<Boolean> wholeDayObjectProperty = new SimpleObjectProperty<Boolean>(this, "wholeDay", false);
-		// java bean API
 		public Boolean isWholeDay() { return wholeDayObjectProperty.getValue(); }
 		public void setWholeDay(Boolean value) { wholeDayObjectProperty.setValue(value); }
 		public AppointmentImpl withWholeDay(Boolean value) { setWholeDay(value); return this; } 
@@ -122,7 +146,6 @@ public class Agenda extends Control
 		/** Summary: */
 		public ObjectProperty<String> summaryProperty() { return summaryObjectProperty; }
 		final private ObjectProperty<String> summaryObjectProperty = new SimpleObjectProperty<String>(this, "summary");
-		// java bean API
 		public String getSummary() { return summaryObjectProperty.getValue(); }
 		public void setSummary(String value) { summaryObjectProperty.setValue(value); }
 		public AppointmentImpl withSummary(String value) { setSummary(value); return this; } 
@@ -130,7 +153,6 @@ public class Agenda extends Control
 		/** Description: */
 		public ObjectProperty<String> descriptionProperty() { return descriptionObjectProperty; }
 		final private ObjectProperty<String> descriptionObjectProperty = new SimpleObjectProperty<String>(this, "description");
-		// java bean API
 		public String getDescription() { return descriptionObjectProperty.getValue(); }
 		public void setDescription(String value) { descriptionObjectProperty.setValue(value); }
 		public AppointmentImpl withDescription(String value) { setDescription(value); return this; } 
@@ -138,7 +160,6 @@ public class Agenda extends Control
 		/** Location: */
 		public ObjectProperty<String> locationProperty() { return locationObjectProperty; }
 		final private ObjectProperty<String> locationObjectProperty = new SimpleObjectProperty<String>(this, "location");
-		// java bean API
 		public String getLocation() { return locationObjectProperty.getValue(); }
 		public void setLocation(String value) { locationObjectProperty.setValue(value); }
 		public AppointmentImpl withLocation(String value) { setLocation(value); return this; } 
@@ -146,29 +167,11 @@ public class Agenda extends Control
 		/** Group: */
 		public ObjectProperty<String> groupProperty() { return groupObjectProperty; }
 		final private ObjectProperty<String> groupObjectProperty = new SimpleObjectProperty<String>(this, "group");
-		// java bean API
 		public String getGroup() { return groupObjectProperty.getValue(); }
 		public void setGroup(String value) { groupObjectProperty.setValue(value); }
 		public AppointmentImpl withGroup(String value) { setGroup(value); return this; } 
 	}
 	
-	
-	// ==================================================================================================================
-	// PROPERTIES
-	
-	/** Appointments: */
-	public ObservableList<Appointment> appointments() { return appointments; }
-	final private ObservableList<Appointment> appointments =  javafx.collections.FXCollections.observableArrayList();
-	final static public String APPOINTMENTS_PROPERTY_ID = "appointments";
-
-	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc */
-	public ObjectProperty<Locale> localeProperty() { return iLocaleObjectProperty; }
-	final private ObjectProperty<Locale> iLocaleObjectProperty = new SimpleObjectProperty<Locale>(this, "locale", Locale.getDefault());
-	// java bean API
-	public Locale getLocale() { return iLocaleObjectProperty.getValue(); }
-	public void setLocale(Locale value) { iLocaleObjectProperty.setValue(value); }
-	public Agenda withLocale(Locale value) { setLocale(value); return this; } 
-
 	
 	// ==================================================================================================================
 	// SUPPORT
