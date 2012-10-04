@@ -4,14 +4,14 @@
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the <organization> nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
+ *	 * Redistributions of source code must retain the above copyright
+ *	   notice, this list of conditions and the following disclaimer.
+ *	 * Redistributions in binary form must reproduce the above copyright
+ *	   notice, this list of conditions and the following disclaimer in the
+ *	   documentation and/or other materials provided with the distribution.
+ *	 * Neither the name of the <organization> nor the
+ *	   names of its contributors may be used to endorse or promote products
+ *	   derived from this software without specific prior written permission.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -115,56 +115,23 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	// DRAW
 	
 	// this is needed to react to resizing of the control
-    @Override public void layoutChildren() 
-    {
-        if (lastWidth != getSkinnable().getWidth()) 
-        {
-            paint();
-        }
-        super.layoutChildren();
-    }
-    double lastWidth = 0;
-
-    /**
-	 * construct the nodes
-	 */
-	private void createNodes()
+	@Override public void layoutChildren() 
 	{
-		// we use a borderpane
-		borderPane = new BorderPane();
-		
-		// top
-		weekHeader = new WeekHeader();
-        borderPane.setTop(weekHeader);
-        
-        // center
-        week = new Week();
-        weekScrollPane = ScrollPaneBuilder.create()
-	        .prefWidth(getSkinnable().getWidth())
-	        .prefHeight(getSkinnable().getHeight())
-	        .layoutY(50)
-	        .content(week)
-	        .hbarPolicy(ScrollBarPolicy.AS_NEEDED)
-	        .pannable(true)
-	        .build();
-        borderPane.setCenter(weekScrollPane);
-        
-        // add to self
-		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
-        getChildren().add(borderPane);
+		if (lastWidth != getSkinnable().getWidth()) 
+		{
+			paint();
+		}
+		super.layoutChildren();
 	}
-	BorderPane borderPane = null;
-	WeekHeader weekHeader = null;
-	Week week = null;
-    ScrollPane weekScrollPane = null;
-    
+	double lastWidth = 0;
+
 	/**
 	 * 
 	 */
 	private void paint()
 	{
 		//System.out.println("!!! paint");
-        calculateSizes();        
+		calculateSizes();		
 		borderPane.layout();
 		weekHeader.layoutChildren();
 		for (DayHeader lDayHeader : weekHeader.dayHeaders) 
@@ -187,6 +154,39 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	}
 	
 
+	/**
+	 * construct the nodes
+	 */
+	private void createNodes()
+	{
+		// we use a borderpane
+		borderPane = new BorderPane();
+		
+		// top
+		weekHeader = new WeekHeader();
+		borderPane.setTop(weekHeader);
+		
+		// center
+		week = new Week();
+		weekScrollPane = ScrollPaneBuilder.create()
+			.prefWidth(getSkinnable().getWidth())
+			.prefHeight(getSkinnable().getHeight())
+			.layoutY(50)
+			.content(week)
+			.hbarPolicy(ScrollBarPolicy.AS_NEEDED)
+			.pannable(true)
+			.build();
+		borderPane.setCenter(weekScrollPane);
+		
+		// add to self
+		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
+		getChildren().add(borderPane);
+	}
+	BorderPane borderPane = null;
+	WeekHeader weekHeader = null;
+	Week week = null;
+	ScrollPane weekScrollPane = null;
+	
 	// ==================================================================================================================
 	// LOGIC
 	
@@ -225,8 +225,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				lDayHeader.setLayoutY(0.0);
 				getChildren().add(lDayHeader);
 			}
-//	        setTranslateX(2); // this is the border of the scrollpane
-	    }
+//			setTranslateX(2); // this is the border of the scrollpane
+		}
 	}
 	
 	/**
@@ -264,13 +264,13 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			getChildren().clear();
 			
 			// add the background; this is needed to make sure the day node is the appropriate size, therefore it is transparent
-	        Rectangle lBackground = new Rectangle(0, 0, dayWidth, headerHeight);
-	        lBackground.getStyleClass().clear();
-	        lBackground.getStyleClass().add("DayHeader");
-	        getChildren().add(lBackground);
+			Rectangle lBackground = new Rectangle(0, 0, dayWidth, headerHeight);
+			lBackground.getStyleClass().clear();
+			lBackground.getStyleClass().add("DayHeader");
+			getChildren().add(lBackground);
 			
-	        // set label
-	        int lPadding = 3;
+			// set label
+			int lPadding = 3;
 			String lLabel = iDayOfWeekDateFormat.format(calendar.getTime()) + " " + iDateFormat.format(calendar.getTime());
 			Text lText = new Text(lLabel);
 			double lX = (dayWidth - lText.prefWidth(0)) / 2;
@@ -278,40 +278,40 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			lText.setY(lText.prefHeight(0));
 			lText.setClip(new Rectangle(0, 0, lBackground.getWidth() - lPadding, lBackground.getHeight()));
 			getChildren().add(lText);
-	        
-	        // then add all appointments headers
-	        for (AppointmentHeaderArea lAppointmentHeaderArea : appointmentHeaderAreas)
-	        {
-	        	int lIdx = appointmentHeaderAreas.indexOf(lAppointmentHeaderArea);
-	        	lAppointmentHeaderArea.setLayoutX(lIdx * wholedayAppointmentWidth);
-	        	lAppointmentHeaderArea.setLayoutY( lText.getY() + lText.prefHeight(0) + (lIdx * wholedayTitleHeight) );
-				getChildren().add(lAppointmentHeaderArea);	        	
-	        }
+			
+			// then add all appointments headers
+			for (AppointmentHeaderArea lAppointmentHeaderArea : appointmentHeaderAreas)
+			{
+				int lIdx = appointmentHeaderAreas.indexOf(lAppointmentHeaderArea);
+				lAppointmentHeaderArea.setLayoutX(lIdx * wholedayAppointmentWidth);
+				lAppointmentHeaderArea.setLayoutY( lText.getY() + lText.prefHeight(0) + (lIdx * wholedayTitleHeight) );
+				getChildren().add(lAppointmentHeaderArea);				
+			}
 		}
 		
 	}
 
-    /**
-     * Responsible for rendering a single appointment on a single day.
-     * An appointment region is a representation of an appointment in one single day.
-     * Appointments may span multiple days, each day gets its own appointment region.
-     * 
-     */
-    class AppointmentHeaderArea extends Pane
-    {
-    	DayHeader dayHeader = null;
-    	
+	/**
+	 * Responsible for rendering a single appointment on a single day.
+	 * An appointment region is a representation of an appointment in one single day.
+	 * Appointments may span multiple days, each day gets its own appointment region.
+	 * 
+	 */
+	class AppointmentHeaderArea extends Pane
+	{
+		DayHeader dayHeader = null;
+		
 		/**
 		 * 
 		 * @param calendar
 		 * @param appointment
 		 */
-    	public AppointmentHeaderArea(Calendar calendar, Agenda.Appointment appointment)
-    	{
-    		// remember
-    		this.appointment = appointment;
-    	}
-    	final Agenda.Appointment appointment;
+		public AppointmentHeaderArea(Calendar calendar, Agenda.Appointment appointment)
+		{
+			// remember
+			this.appointment = appointment;
+		}
+		final Agenda.Appointment appointment;
 
 		/**
 		 * 
@@ -322,17 +322,16 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			
 			// what is my index
 			int lIdx = dayHeader.appointmentHeaderAreas.indexOf(this);
-			System.out.println(appointment.getSummary() + " " + lIdx);
 			
 			// add the background; this is needed to make sure the day node is the appropriate size and it doubles as the styling
-	        final Rectangle lBackground = new Rectangle(0, 0, dayWidth - (lIdx * wholedayAppointmentWidth), (dayHeader.appointmentHeaderAreas.size() - lIdx) * wholedayTitleHeight);
-	        lBackground.getStyleClass().clear();
-	        lBackground.getStyleClass().add("Appointment");
-	        lBackground.getStyleClass().add(appointment.getGroup());
-	        getChildren().add(lBackground);
-	        
-	        // add a text node
-	        double lPadding = 3;
+			final Rectangle lBackground = new Rectangle(0, 0, dayWidth - (lIdx * wholedayAppointmentWidth), (dayHeader.appointmentHeaderAreas.size() - lIdx) * wholedayTitleHeight);
+			lBackground.getStyleClass().clear();
+			lBackground.getStyleClass().add("Appointment");
+			lBackground.getStyleClass().add(appointment.getGroup());
+			getChildren().add(lBackground);
+			
+			// add a text node
+			double lPadding = 3;
 			Text lSummaryText = new Text(appointment.getSummary());
 			lSummaryText.getStyleClass().clear();
 			lSummaryText.getStyleClass().add("AppointmentLabel");
@@ -340,10 +339,10 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			lSummaryText.setY( lSummaryText.prefHeight(0));
 //			lSummaryText.setWrappingWidth(lBackground.getWidth() - (2 * lPadding));
 			lSummaryText.setClip(new Rectangle(0, 0, lBackground.getWidth() - lPadding, lBackground.getHeight() - lPadding));
-			getChildren().add(lSummaryText);	        
+			getChildren().add(lSummaryText);			
 		}
 
-    }
+	}
 
 	/**
 	 * Responsible for rendering the days
@@ -372,41 +371,41 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			getChildren().clear();
 			
 			// add the background
-	        final Rectangle lBackground = new Rectangle(0, 0, timeWidth + (7 * dayWidth), 24 * hourHeight);
-	        lBackground.getStyleClass().clear();
-	        lBackground.getStyleClass().add("Week");
-	        getChildren().add(lBackground);
+			final Rectangle lBackground = new Rectangle(0, 0, timeWidth + (7 * dayWidth), 24 * hourHeight);
+			lBackground.getStyleClass().clear();
+			lBackground.getStyleClass().add("Week");
+			getChildren().add(lBackground);
 			
-	        // draw times
-	        for (int lHour = 0; lHour < 24; lHour++)
-	        {
-	        	// hour
-	        	{
-		        	Line l = new Line(0, lHour * hourHeight, lBackground.getWidth(), lHour * hourHeight);
-			        l.getStyleClass().clear();
-	        		l.getStyleClass().add("HourLine");
-		        	getChildren().add(l);
-	        	}
-	        	// text
-	        	{
-	        		Text t = new Text(0, lHour * hourHeight, lHour + ":00");
-	    	        t.getStyleClass().clear();
-	        		t.getStyleClass().add("HourLabel");
-		            t.setFontSmoothingType(FontSmoothingType.LCD);
-		            t.setTranslateY(t.getBoundsInParent().getHeight());
-		            t.setTranslateX(timeWidth - t.getBoundsInParent().getWidth() - 10); // 10 is margin
-		        	getChildren().add(t);
-	        	}
-	        	// halfhour
-	        	{
-		        	Line l = new Line(timeWidth, (lHour + 0.5) * hourHeight, lBackground.getWidth(), (lHour + 0.5) * hourHeight);
-			        l.getStyleClass().clear();
-	        		l.getStyleClass().add("HalfHourLine");
-		        	getChildren().add(l);
-	        	}
-	        }
-	        
-	        // now place the day nodes
+			// draw times
+			for (int lHour = 0; lHour < 24; lHour++)
+			{
+				// hour
+				{
+					Line l = new Line(0, lHour * hourHeight, lBackground.getWidth(), lHour * hourHeight);
+					l.getStyleClass().clear();
+					l.getStyleClass().add("HourLine");
+					getChildren().add(l);
+				}
+				// text
+				{
+					Text t = new Text(0, lHour * hourHeight, lHour + ":00");
+					t.getStyleClass().clear();
+					t.getStyleClass().add("HourLabel");
+					t.setFontSmoothingType(FontSmoothingType.LCD);
+					t.setTranslateY(t.getBoundsInParent().getHeight());
+					t.setTranslateX(timeWidth - t.getBoundsInParent().getWidth() - 10); // 10 is margin
+					getChildren().add(t);
+				}
+				// halfhour
+				{
+					Line l = new Line(timeWidth, (lHour + 0.5) * hourHeight, lBackground.getWidth(), (lHour + 0.5) * hourHeight);
+					l.getStyleClass().clear();
+					l.getStyleClass().add("HalfHourLine");
+					getChildren().add(l);
+				}
+			}
+			
+			// now place the day nodes
 			for (int i = 0; i < 7; i++)
 			{
 				Day lDay = days.get(i);
@@ -415,12 +414,11 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				getChildren().add(lDay);
 				
 				Line l = new Line(lDay.getLayoutX(), 0, lDay.getLayoutX(), dayHeight);
-		        l.getStyleClass().clear();
+				l.getStyleClass().clear();
 				l.getStyleClass().add("DaySeparator");
 				getChildren().add(l);
 			}
 		}
-
 	}
 	
 	/**
@@ -437,7 +435,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		 * The appointments are then place onto (parallel) tracks; an appointment initially is placed in track 1. 
 		 * But if there is already an (partially overlapping) appointment there, then the appointment is placed in track 2. 
 		 * Unless there also is an appointment already in track 2, then track 3 is tried, then track 4, track 5, until a free slot is found.
-		 * For example (the letters are not the sequence in which the appointments are processed, theý're just for identifying them):
+		 * For example (the letters are not the sequence in which the appointments are processed, they're just for identifying them):
 		 * 
 		 *  tracks
 		 *  1 2 3 4
@@ -584,43 +582,43 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			getChildren().clear();
 			
 			// add the background; this is needed to make sure the day node is the appropriate size, therefore it is transparent
-	        final Rectangle lBackground = new Rectangle(0, 0, dayWidth, dayHeight);
-	        lBackground.getStyleClass().clear();
-	        lBackground.getStyleClass().add("Day");
-	        getChildren().add(lBackground);
+			final Rectangle lBackground = new Rectangle(0, 0, dayWidth, dayHeight);
+			lBackground.getStyleClass().clear();
+			lBackground.getStyleClass().add("Day");
+			getChildren().add(lBackground);
 			
-	        // first add all the whole day appointments
-	        int lWholedayCnt = 0;
-	        for (AppointmentArea lAppointmentArea : wholedayAppointmentAreas)
-	        {
-	        	lAppointmentArea.setLayoutX(lWholedayCnt * wholedayAppointmentWidth);
-	        	lAppointmentArea.setLayoutY(0);
+			// first add all the whole day appointments
+			int lWholedayCnt = 0;
+			for (AppointmentArea lAppointmentArea : wholedayAppointmentAreas)
+			{
+				lAppointmentArea.setLayoutX(lWholedayCnt * wholedayAppointmentWidth);
+				lAppointmentArea.setLayoutY(0);
 				getChildren().add(lAppointmentArea);
 				lWholedayCnt++;
-	        }
-	        
-	        // then add all appointments to the day
-	        double lAppointmentsWidth = dayContentWidth - (lWholedayCnt * wholedayAppointmentWidth);	        
-	        for (AppointmentArea lAppointmentArea : appointmentAreas)
-	        {
-	        	int lOffsetY = (lAppointmentArea.start.get(Calendar.HOUR_OF_DAY) * 60) + lAppointmentArea.start.get(Calendar.MINUTE);
-	        	lAppointmentArea.setLayoutX((lWholedayCnt * wholedayAppointmentWidth) + (lAppointmentsWidth / lAppointmentArea.clusterOwner.clusterTracks.size() * lAppointmentArea.clusterTrackIdx));
-	        	lAppointmentArea.setLayoutY(dayHeight / (24 * 60) * lOffsetY );
-				getChildren().add(lAppointmentArea);	        	
-	        }
+			}
+			
+			// then add all appointments to the day
+			double lAppointmentsWidth = dayContentWidth - (lWholedayCnt * wholedayAppointmentWidth);			
+			for (AppointmentArea lAppointmentArea : appointmentAreas)
+			{
+				int lOffsetY = (lAppointmentArea.start.get(Calendar.HOUR_OF_DAY) * 60) + lAppointmentArea.start.get(Calendar.MINUTE);
+				lAppointmentArea.setLayoutX((lWholedayCnt * wholedayAppointmentWidth) + (lAppointmentsWidth / lAppointmentArea.clusterOwner.clusterTracks.size() * lAppointmentArea.clusterTrackIdx));
+				lAppointmentArea.setLayoutY(dayHeight / (24 * 60) * lOffsetY );
+				getChildren().add(lAppointmentArea);				
+			}
 		}
 	}
 	
-    /**
-     * Responsible for rendering a single appointment on a single day.
-     * An appointment region is a representation of an appointment in one single day.
-     * Appointments may span multiple days, each day gets its own appointment region.
-     * 
-     */
-    class AppointmentArea extends Pane
-    {
-    	Day day = null;
-    	// for the role of cluster owner
+	/**
+	 * Responsible for rendering a single appointment on a single day.
+	 * An appointment region is a representation of an appointment in one single day.
+	 * Appointments may span multiple days, each day gets its own appointment region.
+	 * 
+	 */
+	class AppointmentArea extends Pane
+	{
+		Day day = null;
+		// for the role of cluster owner
 		List<AppointmentArea> clusterMembers = null; 
 		List<List<AppointmentArea>> clusterTracks = null;
 		// for the role of cluster member
@@ -632,78 +630,78 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		 * @param calendar
 		 * @param appointment
 		 */
-    	public AppointmentArea(Calendar calendar, Agenda.Appointment appointment)
-    	{
-    		// remember
-    		this.appointment = appointment;
-    		
-    		// wholeday
-    		if (appointment.isWholeDay())
-    		{
-        		// start
-    			this.start = (Calendar)appointment.getStartTime().clone();
-    			this.start.set(Calendar.HOUR_OF_DAY, 0);
-    			this.start.set(Calendar.MINUTE, 0);
-    			this.start.set(Calendar.SECOND, 0);
-    			this.start.set(Calendar.MILLISECOND, 0);
-        		
-        		// end
-        		this.end = (Calendar)appointment.getStartTime().clone();
-        		this.end.set(Calendar.HOUR_OF_DAY, 23);
-        		this.end.set(Calendar.MINUTE, 59);
-        		this.end.set(Calendar.SECOND, 59);
-        		this.end.set(Calendar.MILLISECOND, 999);
-    		}
-    		else
-    		{
-	    		// start
-	    		Calendar lDayStartCalendar = (Calendar)calendar.clone();
-	    		lDayStartCalendar.set(Calendar.HOUR_OF_DAY, 0);
-	    		lDayStartCalendar.set(Calendar.MINUTE, 0);
-	    		lDayStartCalendar.set(Calendar.SECOND, 0);
-	    		lDayStartCalendar.set(Calendar.MILLISECOND, 0);
-	    		this.start = (appointment.getStartTime().before(lDayStartCalendar) ? lDayStartCalendar : appointment.getStartTime());
-	    		
-	    		// end
-	    		Calendar lDayEndCalendar = (Calendar)calendar.clone();
-	    		lDayEndCalendar.set(Calendar.HOUR_OF_DAY, 23);
-	    		lDayEndCalendar.set(Calendar.MINUTE, 59);
-	    		lDayEndCalendar.set(Calendar.SECOND, 59);
-	    		lDayEndCalendar.set(Calendar.MILLISECOND, 999);
-	    		this.end = (appointment.getEndTime().after(lDayEndCalendar) ? lDayEndCalendar : appointment.getEndTime());
-    		}
-    	
-    		// strings
+		public AppointmentArea(Calendar calendar, Agenda.Appointment appointment)
+		{
+			// remember
+			this.appointment = appointment;
+			
+			// wholeday
+			if (appointment.isWholeDay())
+			{
+				// start
+				this.start = (Calendar)appointment.getStartTime().clone();
+				this.start.set(Calendar.HOUR_OF_DAY, 0);
+				this.start.set(Calendar.MINUTE, 0);
+				this.start.set(Calendar.SECOND, 0);
+				this.start.set(Calendar.MILLISECOND, 0);
+				
+				// end
+				this.end = (Calendar)appointment.getStartTime().clone();
+				this.end.set(Calendar.HOUR_OF_DAY, 23);
+				this.end.set(Calendar.MINUTE, 59);
+				this.end.set(Calendar.SECOND, 59);
+				this.end.set(Calendar.MILLISECOND, 999);
+			}
+			else
+			{
+				// start
+				Calendar lDayStartCalendar = (Calendar)calendar.clone();
+				lDayStartCalendar.set(Calendar.HOUR_OF_DAY, 0);
+				lDayStartCalendar.set(Calendar.MINUTE, 0);
+				lDayStartCalendar.set(Calendar.SECOND, 0);
+				lDayStartCalendar.set(Calendar.MILLISECOND, 0);
+				this.start = (appointment.getStartTime().before(lDayStartCalendar) ? lDayStartCalendar : appointment.getStartTime());
+				
+				// end
+				Calendar lDayEndCalendar = (Calendar)calendar.clone();
+				lDayEndCalendar.set(Calendar.HOUR_OF_DAY, 23);
+				lDayEndCalendar.set(Calendar.MINUTE, 59);
+				lDayEndCalendar.set(Calendar.SECOND, 59);
+				lDayEndCalendar.set(Calendar.MILLISECOND, 999);
+				this.end = (appointment.getEndTime().after(lDayEndCalendar) ? lDayEndCalendar : appointment.getEndTime());
+			}
+		
+			// strings
 			this.startAsString = (this.start.get(Calendar.HOUR_OF_DAY) < 10 ? "0" : "") + this.start.get(Calendar.HOUR_OF_DAY)
-		               + ":"
-		               + (this.start.get(Calendar.MINUTE) < 10 ? "0" : "" ) + this.start.get(Calendar.MINUTE)
-		               ;
+					   + ":"
+					   + (this.start.get(Calendar.MINUTE) < 10 ? "0" : "" ) + this.start.get(Calendar.MINUTE)
+					   ;
 			this.endAsString = (this.end.get(Calendar.HOUR_OF_DAY) < 10 ? "0" : "") + this.end.get(Calendar.HOUR_OF_DAY)
-				             + ":"
-				             + (this.end.get(Calendar.MINUTE) < 10 ? "0" : "" ) + this.end.get(Calendar.MINUTE)
-				             ;
+							 + ":"
+							 + (this.end.get(Calendar.MINUTE) < 10 ? "0" : "" ) + this.end.get(Calendar.MINUTE)
+							 ;
 			
 			// duration
 			durationInMS = this.end.getTimeInMillis() - this.start.getTimeInMillis();
-    	}
-    	final Agenda.Appointment appointment;
-    	final Calendar start;
-    	final String startAsString;
-    	final Calendar end;
-    	final String endAsString;
-    	final long durationInMS;
-    	
-    	/**
-    	 * 
-    	 */
-    	public String toString()
-    	{
-    		return super.toString()
-    		     + ";" + startAsString + "-" + endAsString
-    		     + ";" + durationInMS + "ms"
-    		     ;
-    	}
-    	
+		}
+		final Agenda.Appointment appointment;
+		final Calendar start;
+		final String startAsString;
+		final Calendar end;
+		final String endAsString;
+		final long durationInMS;
+		
+		/**
+		 * 
+		 */
+		public String toString()
+		{
+			return super.toString()
+				 + ";" + startAsString + "-" + endAsString
+				 + ";" + durationInMS + "ms"
+				 ;
+		}
+		
 
 		/**
 		 * 
@@ -716,26 +714,26 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			if (appointment.isWholeDay()) 
 			{
 				// add the background; this is needed to make sure the day node is the appropriate size and it doubles as the styling
-		        final Rectangle lBackground = new Rectangle(0, 0, wholedayAppointmentWidth, dayHeight);
-		        lBackground.getStyleClass().clear();
-		        lBackground.getStyleClass().add("Appointment");
-		        lBackground.getStyleClass().add(appointment.getGroup());
-		        getChildren().add(lBackground);
+				final Rectangle lBackground = new Rectangle(0, 0, wholedayAppointmentWidth, dayHeight);
+				lBackground.getStyleClass().clear();
+				lBackground.getStyleClass().add("Appointment");
+				lBackground.getStyleClass().add(appointment.getGroup());
+				getChildren().add(lBackground);
 				return;
 			}
 			
 			// add the background; this is needed to make sure the day node is the appropriate size and it doubles as the styling
-        	double lW = (dayContentWidth - (day.wholedayAppointmentAreas.size() * wholedayAppointmentWidth)) * (1.0 / (((double)clusterOwner.clusterTracks.size())));
-        	if (clusterTrackIdx < clusterOwner.clusterTracks.size() - 1) lW *= 1.5;
-        	double lH = (dayHeight / (24 * 60) * (durationInMS / 1000 / 60) );
-	        final Rectangle lBackground = new Rectangle(0, 0, lW, lH);
-	        lBackground.getStyleClass().clear();
-	        lBackground.getStyleClass().add("Appointment");
-	        lBackground.getStyleClass().add(appointment.getGroup());
-	        getChildren().add(lBackground);
-	        
-	        // add a text node
-	        double lPadding = 3;
+			double lW = (dayContentWidth - (day.wholedayAppointmentAreas.size() * wholedayAppointmentWidth)) * (1.0 / (((double)clusterOwner.clusterTracks.size())));
+			if (clusterTrackIdx < clusterOwner.clusterTracks.size() - 1) lW *= 1.5;
+			double lH = (dayHeight / (24 * 60) * (durationInMS / 1000 / 60) );
+			final Rectangle lBackground = new Rectangle(0, 0, lW, lH);
+			lBackground.getStyleClass().clear();
+			lBackground.getStyleClass().add("Appointment");
+			lBackground.getStyleClass().add(appointment.getGroup());
+			getChildren().add(lBackground);
+			
+			// add a text node
+			double lPadding = 3;
 			String lLabel = startAsString + "-" + endAsString;
 			Text lTimeText = new Text(lLabel);
 			lTimeText.getStyleClass().clear();
@@ -752,19 +750,19 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			lSummaryText.setY( lTimeText.getY() + new Text("X").prefHeight(0));
 			lSummaryText.setWrappingWidth(lBackground.getWidth() - (2 * lPadding));
 			lSummaryText.setClip(new Rectangle(0, 0, lBackground.getWidth(), lBackground.getHeight() - lPadding));
-			getChildren().add(lSummaryText);	        
+			getChildren().add(lSummaryText);			
 		}
-    }
+	}
 
 	// ==================================================================================================================
 	// SUPPORT
 
-    /**
-     * 
-     */
-    private void calculateSizes()
-    {
-    	// generic
+	/**
+	 * 
+	 */
+	private void calculateSizes()
+	{
+		// generic
 		scrollbarSize = 15; // TODO: derive this from an actual ScrollBar.
 
 		// header
@@ -781,37 +779,37 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 
 		// time column
 		int lTimeColumnWhitespace = 10;
-        timeWidth = new Text("88:88").getBoundsInParent().getWidth() + lTimeColumnWhitespace;
-        
-        // day columns
-        dayFirstColumnX = timeWidth + lTimeColumnWhitespace;
-        dayWidth = (getSkinnable().getWidth() - timeWidth - scrollbarSize) / 7;
-    	if (weekScrollPane.viewportBoundsProperty().get() != null) 
-    	{
-	        dayWidth = (weekScrollPane.viewportBoundsProperty().get().getWidth() - timeWidth - scrollbarSize) / 7;
-    	}
-    	dayContentWidth = dayWidth - 10;
-    	
-    	// hour height
-        hourHeight = (2 * new Text("X").getBoundsInParent().getHeight()) + 10; // 10 is padding
-        if (weekScrollPane.viewportBoundsProperty().get() != null && (weekScrollPane.viewportBoundsProperty().get().getHeight() - scrollbarSize) > hourHeight * 24)
-        {
-            // if there is more room than absolutely required, let the height grow with the available room
-        	hourHeight = (weekScrollPane.viewportBoundsProperty().get().getHeight() - scrollbarSize) / 24;
-        }
-        dayHeight = hourHeight * 24;
-    }
+		timeWidth = new Text("88:88").getBoundsInParent().getWidth() + lTimeColumnWhitespace;
+		
+		// day columns
+		dayFirstColumnX = timeWidth + lTimeColumnWhitespace;
+		dayWidth = (getSkinnable().getWidth() - timeWidth - scrollbarSize) / 7;
+		if (weekScrollPane.viewportBoundsProperty().get() != null) 
+		{
+			dayWidth = (weekScrollPane.viewportBoundsProperty().get().getWidth() - timeWidth - scrollbarSize) / 7;
+		}
+		dayContentWidth = dayWidth - 10;
+		
+		// hour height
+		hourHeight = (2 * new Text("X").getBoundsInParent().getHeight()) + 10; // 10 is padding
+		if (weekScrollPane.viewportBoundsProperty().get() != null && (weekScrollPane.viewportBoundsProperty().get().getHeight() - scrollbarSize) > hourHeight * 24)
+		{
+			// if there is more room than absolutely required, let the height grow with the available room
+			hourHeight = (weekScrollPane.viewportBoundsProperty().get().getHeight() - scrollbarSize) / 24;
+		}
+		dayHeight = hourHeight * 24;
+	}
 	double scrollbarSize = 0;
 	double headerHeight = 0;
 	double maxNumberOfWholedayAppointments = 0;
 	double wholedayTitleHeight = 0;
 	double wholedayAppointmentWidth = 5;
-    double timeWidth = 0;
-    double dayFirstColumnX = 0;
-    double dayWidth = 0;
-    double dayContentWidth = 0;
-    double dayHeight = 0;
-    double hourHeight = 0;
+	double timeWidth = 0;
+	double dayFirstColumnX = 0;
+	double dayWidth = 0;
+	double dayContentWidth = 0;
+	double dayHeight = 0;
+	double hourHeight = 0;
 	
 	/**
 	 * get the calendar for the first day of the week
@@ -903,9 +901,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	private boolean sameDay(Calendar c1, Calendar c2)
 	{
 		return c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
-		    && c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH)
-		    && c1.get(Calendar.DATE) == c2.get(Calendar.DATE)
-		     ; 
+			&& c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH)
+			&& c1.get(Calendar.DATE) == c2.get(Calendar.DATE)
+			 ; 
 	}
 
 	/**
@@ -957,8 +955,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			// .....NNNNN..... -> Ps <= Ne & Pe >= Ns -> overlap
 			// ..........NNN.. -> Ps <= Ne & Pe >= Ns -> overlap
 			// .NNNNNNNNNNNNN. -> Ps <= Ne & Pe >= Ns -> overlap
-			// .N............. -> false    & Pe >= Ns -> no overlap
-			// .............N. -> Ps <= Ne & false    -> no overlap
+			// .N............. -> false	& Pe >= Ns -> no overlap
+			// .............N. -> Ps <= Ne & false	-> no overlap
 			if ( (lAppointmentArea.start.equals(appointmentArea.start) || lAppointmentArea.start.before(appointmentArea.end)) 
 			  && (lAppointmentArea.end.equals(appointmentArea.start) || lAppointmentArea.end.after(appointmentArea.start))
 			   )
