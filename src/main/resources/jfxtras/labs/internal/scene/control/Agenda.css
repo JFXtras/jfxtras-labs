@@ -8,9 +8,8 @@
 }
 */
 
-.AgendaWeekSkin .Week {
-	-fx-fill: WHITE;
-	-fx-stroke: transparent;
+.AgendaWeekSkin .WeekPane {
+	-fx-background-color: WHITE;
 }
 
 .AgendaWeekSkin .HourLabel {
@@ -37,15 +36,14 @@
 .AgendaWeekSkin .Day {
 	-fx-fill: transparent;
 	-fx-stroke: transparent;
-}
-
-.AgendaWeekSkin .DaySeparator {
-	-fx-fill: transparent;
-	-fx-stroke: LIGHTGRAY;
+	-fx-border-color:LIGHTGRAY;
+	-fx-border-width: 0px 0px 0px 1px;
 }
 
 .AgendaWeekSkin .Appointment {
-	-fx-stroke: WHITE;
+	-fx-border-color: WHITE;
+	-fx-border-width: 1px;
+	-fx-padding: 3px;
 }
 
 .AgendaWeekSkin .AppointmentTimeLabel {
@@ -60,12 +58,12 @@
 }
 
 .group1 {
-	-fx-fill: rgb(22,167,102);
+	-fx-background-color: rgb(22,167,102);
 }
 .group2 {
-	-fx-fill: rgb(161,222,105);
+	-fx-background-color: rgb(161,222,105);
 }
 .group3 {
-	-fx-fill: rgb(255,117,55);
+	-fx-background-color: rgb(255,117,55);
 }
 
