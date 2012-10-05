@@ -109,7 +109,7 @@ public class SimpleGaugeBuilder<B extends SimpleGaugeBuilder<B>> extends Control
         return this;
     }
 
-    public final SimpleGaugeBuilder labelFontSize(final double LABEL_FONT_SIZE) {
+    public final SimpleGaugeBuilder valueLabelFontSize(final double LABEL_FONT_SIZE) {
         properties.put("LABEL_FONT_SIZE", new SimpleDoubleProperty(LABEL_FONT_SIZE));
         return this;
     }

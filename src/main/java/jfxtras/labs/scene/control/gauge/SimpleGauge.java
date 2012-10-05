@@ -36,6 +36,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.paint.Color;
 
@@ -98,7 +99,9 @@ public abstract class SimpleGauge extends Gauge {
         minLabelColor       = new SimpleObjectProperty<Color>(Color.BLACK);
         maxLabelColor       = new SimpleObjectProperty<Color>(Color.BLACK);
         roundedBar          = new SimpleBooleanProperty(true);
-
+        timeToValueInMs     = new SimpleDoubleProperty(1500);
+        unit                = new SimpleStringProperty(GAUGE_MODEL.getUnit());
+        canvasMode          = new SimpleBooleanProperty(false);
     }
 
 

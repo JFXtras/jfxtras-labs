@@ -377,6 +377,7 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
         startAngle       = -(150 - (360 - length) / 2);
     }
 
+
     // ******************** Drawing related ***********************************
     private void drawNodeGauge() {
         size  = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
