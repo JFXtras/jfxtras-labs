@@ -37,11 +37,7 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.ScrollPaneBuilder;
@@ -125,13 +121,23 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	{
 		// get the first day of week calendar
 		Calendar lCalendar = getFirstDayOfWeekCalendar();
+		Calendar lStartCalendar = (Calendar)lCalendar.clone();
 		
 		// assign it
+		Calendar lEndCalendar = null;
 		for (int i = 0; i < 7; i++)
 		{
 			week.days.get(i).calendarObjectProperty.set( (Calendar)lCalendar.clone() );
+			if (i== 6) lEndCalendar = (Calendar)lCalendar.clone();
 			lCalendar.add(Calendar.DATE, 1);
 		}		
+		
+		// tell the skin what range is needed
+		if (getSkinnable().getCalendarRangeCallback() != null)
+		{
+			Agenda.CalendarRange lCalendarRange = new Agenda.CalendarRange(lStartCalendar, lEndCalendar);
+			getSkinnable().getCalendarRangeCallback().call(lCalendarRange);
+		}
 	}
 	
 	/**

@@ -35,9 +35,23 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
+import javafx.util.Callback;
 
 /**
  * Agenda control
+ * This controls renders appointments in a schedule. 
+ * Normally this would be called a Calendar, but since there are controls like CalendarPicker, this would be confusing. 
+ * Hence the name "Agenda".
+ * 
+ * The control has a list of appointments and a calendar (date) that should be displayed.
+ * The skin will use the calendar to display the appropriate day, week, month or year (depending on which skin is active).
+ * The skin will then scan the list of appointments and display those that are visible.
+ * 
+ * You could provide all available appointments in one big list, but that may be a bit memory heavy.
+ * An alternative is to register to the displayedCalendar property and upon change update the appointment collection.
+ * A drawback of this approach is that you need to know what skin (day, week, ...) is active, so the correct set is provided, but most of the time this is known to the coder.
+ * Therefore all skins are obligated to report the range they display via the calendarRangeCallback.
+ * So if the calendar changes, the skin adapts and reports the new range via the callback, through which the coder can set the correct appointments. 
  *  
  * @author Tom Eugelink
  */
@@ -98,7 +112,34 @@ public class Agenda extends Control
 	public void setDisplayedCalendar(Calendar value) { displayedCalendarObjectProperty.setValue(value); }
 	public Agenda withDisplayedCalendar(Calendar value) { setDisplayedCalendar(value); return this; }
 	
+	/** CalendarRangeCallback: */
+	public ObjectProperty<Callback<CalendarRange, Void>> calendarRangeCallbackProperty() { return calendarRangeCallbackObjectProperty; }
+	final private ObjectProperty<Callback<CalendarRange, Void>> calendarRangeCallbackObjectProperty = new SimpleObjectProperty<Callback<CalendarRange, Void>>(this, "calendarRangeCallback", null);
+	public Callback<CalendarRange, Void> getCalendarRangeCallback() { return this.calendarRangeCallbackObjectProperty.getValue(); }
+	public void setCalendarRangeCallback(Callback<CalendarRange, Void> value) { this.calendarRangeCallbackObjectProperty.setValue(value); }
+	public Agenda withCalendarRangeCallback(Callback<CalendarRange, Void> value) { setCalendarRangeCallback(value); return this; }
 	
+	/**
+	 * The CalendarRange that is being displayed.
+	 * Appointments should match:
+	 * - start date >= range start 
+	 * - end date <= range end
+	 */
+	static public class CalendarRange
+	{
+		public CalendarRange(Calendar start, Calendar end)
+		{
+			this.start = start;
+			this.end = end;
+		}
+		
+		public Calendar getStartCalendar() { return start; }
+		Calendar start;
+		
+		public Calendar getEndCalendar() { return end; }
+		Calendar end; 
+	}
+
 	// ==================================================================================================================
 	// Appointment
 	
