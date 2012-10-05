@@ -129,13 +129,13 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
         registerChangeListener(control.maxValueProperty(), "FULL_REPAINT");
         registerChangeListener(control.gaugeModelProperty(), "FULL_REPAINT");
         registerChangeListener(control.barBackgroundColorProperty(), "FULL_REPAINT");
-        registerChangeListener(control.labelColorProperty(), "FULL_REPAINT");
-        registerChangeListener(control.unitColorProperty(), "FULL_REPAINT");
+        registerChangeListener(control.valueLabelColorProperty(), "FULL_REPAINT");
+        registerChangeListener(control.unitLabelColorProperty(), "FULL_REPAINT");
         registerChangeListener(control.unitProperty(), "FULL_REPAINT");
         registerChangeListener(control.barColorProperty(), "BAR");
         registerChangeListener(control.barWidthProperty(), "BAR");
         registerChangeListener(control.roundedBarProperty(), "BAR");
-        registerChangeListener(control.labelFontSizeProperty(), "LABEL");
+        registerChangeListener(control.valueLabelFontSizeProperty(), "LABEL");
         registerChangeListener(control.noOfDecimalsProperty(), "LABEL");
         registerChangeListener(control.minLabelColorProperty(), "MIN_MAX_LABEL");
         registerChangeListener(control.maxLabelColorProperty(), "MIN_MAX_LABEL");
@@ -421,15 +421,15 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
         bar.setStrokeWidth(control.getBarWidth());
         bar.setEffect(INNER_SHADOW);
 
-        valueText.setFont(Font.font("Verdana", FontWeight.BOLD, control.getLabelFontSize()));
-        valueText.setFill(control.getLabelColor());
+        valueText.setFont(Font.font("Verdana", FontWeight.BOLD, control.getValueLabelFontSize()));
+        valueText.setFill(control.getValueLabelColor());
         valueText.setTextAlignment(TextAlignment.CENTER);
         valueText.setTextOrigin(VPos.BOTTOM);
         valueText.setText(valueFormat.format(gaugeValue.doubleValue()));
         valueText.setEffect(INNER_GLOW);
 
-        unitText.setFont(Font.font("Verdana", FontWeight.BOLD, control.getUnitFontSize()));
-        unitText.setFill(control.getUnitColor());
+        unitText.setFont(Font.font("Verdana", FontWeight.BOLD, control.getUnitLabelFontSize()));
+        unitText.setFill(control.getUnitLabelColor());
         unitText.setTextAlignment(TextAlignment.CENTER);
         unitText.setTextOrigin(VPos.BOTTOM);
         unitText.setText(control.getUnit());

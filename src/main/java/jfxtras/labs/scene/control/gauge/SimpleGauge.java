@@ -36,6 +36,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.paint.Color;
 
 import java.util.List;
@@ -52,10 +53,12 @@ public abstract class SimpleGauge extends Gauge {
     private ObjectProperty<Color> barBackgroundColor;
     private ObjectProperty<Color> barColor;
     private DoubleProperty        barWidth;
-    private DoubleProperty        labelFontSize;
-    private DoubleProperty        unitFontSize;
-    private ObjectProperty<Color> labelColor;
-    private ObjectProperty<Color> unitColor;
+    private DoubleProperty        valueLabelFontSize;
+    private DoubleProperty        unitLabelFontSize;
+    private ObjectProperty<Color> valueLabelColor;
+    private ObjectProperty<Color> unitLabelColor;
+    private BooleanProperty       valueLabelVisible;
+    private BooleanProperty       unitLabelVisible;
     private IntegerProperty       noOfDecimals;
     private BooleanProperty       minLabelVisible;
     private BooleanProperty       maxLabelVisible;
@@ -63,6 +66,9 @@ public abstract class SimpleGauge extends Gauge {
     private ObjectProperty<Color> minLabelColor;
     private ObjectProperty<Color> maxLabelColor;
     private BooleanProperty       roundedBar;
+    private DoubleProperty        timeToValueInMs;
+    private StringProperty        unit;
+    private BooleanProperty       canvasMode;
 
 
     // ******************** Constructors **************************************
@@ -79,10 +85,12 @@ public abstract class SimpleGauge extends Gauge {
         barColor            = new SimpleObjectProperty<Color>(Color.rgb(178, 177, 212));
         barBackgroundColor  = new SimpleObjectProperty<Color>(Color.rgb(234, 234, 234));
         barWidth            = new SimpleDoubleProperty(20);
-        labelFontSize       = new SimpleDoubleProperty(36);
-        unitFontSize        = new SimpleDoubleProperty(20);
-        labelColor          = new SimpleObjectProperty<Color>(Color.BLACK);
-        unitColor           = new SimpleObjectProperty<Color>(Color.BLACK);
+        valueLabelFontSize  = new SimpleDoubleProperty(36);
+        unitLabelFontSize   = new SimpleDoubleProperty(20);
+        valueLabelColor     = new SimpleObjectProperty<Color>(Color.BLACK);
+        unitLabelColor      = new SimpleObjectProperty<Color>(Color.BLACK);
+        valueLabelVisible   = new SimpleBooleanProperty(true);
+        unitLabelVisible    = new SimpleBooleanProperty(true);
         noOfDecimals        = new SimpleIntegerProperty(2);
         minLabelVisible     = new SimpleBooleanProperty(false);
         maxLabelVisible     = new SimpleBooleanProperty(false);
@@ -132,54 +140,78 @@ public abstract class SimpleGauge extends Gauge {
         return barWidth;
     }
 
-    public final double getLabelFontSize() {
-        return labelFontSize.get();
+    public final double getValueLabelFontSize() {
+        return valueLabelFontSize.get();
     }
 
-    public final void setLabelFontSize(final double LABEL_FONT_SIZE) {
-        double size = LABEL_FONT_SIZE < 8 ? 8 : (LABEL_FONT_SIZE > 52 ? 52 : LABEL_FONT_SIZE);
-        labelFontSize.set(size);
+    public final void setValueLabelFontSize(final double VALUE_LABEL_FONT_SIZE) {
+        double size = VALUE_LABEL_FONT_SIZE < 8 ? 8 : (VALUE_LABEL_FONT_SIZE > 52 ? 52 : VALUE_LABEL_FONT_SIZE);
+        valueLabelFontSize.set(size);
     }
 
-    public final ReadOnlyDoubleProperty labelFontSizeProperty() {
-        return labelFontSize;
+    public final ReadOnlyDoubleProperty valueLabelFontSizeProperty() {
+        return valueLabelFontSize;
     }
 
-    public final double getUnitFontSize() {
-        return unitFontSize.get();
+    public final double getUnitLabelFontSize() {
+        return unitLabelFontSize.get();
     }
 
-    public final void setUnitFontSize(final double UNIT_FONT_SIZE) {
-        double size = UNIT_FONT_SIZE < 8 ? 8 : (UNIT_FONT_SIZE > 52 ? 52 : UNIT_FONT_SIZE);
-        unitFontSize.set(size);
+    public final void setUnitLabelFontSize(final double UNIT_LABEL_FONT_SIZE) {
+        double size = UNIT_LABEL_FONT_SIZE < 8 ? 8 : (UNIT_LABEL_FONT_SIZE > 52 ? 52 : UNIT_LABEL_FONT_SIZE);
+        unitLabelFontSize.set(size);
     }
 
-    public final DoubleProperty unitFontSizeProperty() {
-        return unitFontSize;
+    public final DoubleProperty unitLabelFontSizeProperty() {
+        return unitLabelFontSize;
     }
 
-    public final Color getLabelColor() {
-        return labelColor.get();
+    public final Color getValueLabelColor() {
+        return valueLabelColor.get();
     }
 
-    public final void setLabelColor(final Color LABEL_COLOR) {
-        labelColor.set(LABEL_COLOR);
+    public final void setValueLabelColor(final Color VALUE_LABEL_COLOR) {
+        valueLabelColor.set(VALUE_LABEL_COLOR);
     }
 
-    public final ObjectProperty<Color> labelColorProperty() {
-        return labelColor;
+    public final ObjectProperty<Color> valueLabelColorProperty() {
+        return valueLabelColor;
     }
 
-    public final Color getUnitColor() {
-        return unitColor.get();
+    public final Color getUnitLabelColor() {
+        return unitLabelColor.get();
     }
 
-    public final void setUnitColor(final Color UNIT_COLOR) {
-        unitColor.set(UNIT_COLOR);
+    public final void setUnitLabelColor(final Color UNIT_LABEL_COLOR) {
+        unitLabelColor.set(UNIT_LABEL_COLOR);
     }
 
-    public final ObjectProperty<Color> unitColorProperty() {
-        return unitColor;
+    public final ObjectProperty<Color> unitLabelColorProperty() {
+        return unitLabelColor;
+    }
+
+    public final boolean isValueLabelVisible() {
+        return valueLabelVisible.get();
+    }
+
+    public final void setValueLabelVisible(final boolean VALUE_LABEL_VISIBLE) {
+        valueLabelVisible.set(VALUE_LABEL_VISIBLE);
+    }
+
+    public final BooleanProperty valueLabelVisibleProperty() {
+        return valueLabelVisible;
+    }
+
+    public final boolean isUnitLabelVisible() {
+        return unitLabelVisible.get();
+    }
+
+    public final void setUnitLabelVisible(final boolean UNIT_LABEL_VISIBLE) {
+        unitLabelVisible.set(UNIT_LABEL_VISIBLE);
+    }
+
+    public final BooleanProperty unitLabelVisibleProperty() {
+        return unitLabelVisible;
     }
 
     public final int getNoOfDecimals() {
@@ -274,5 +306,30 @@ public abstract class SimpleGauge extends Gauge {
 
     public final BooleanProperty roundedBarProperty() {
         return roundedBar;
+    }
+
+    public final double getTimeToValueInMs() {
+        return timeToValueInMs.get();
+    }
+
+    public final void setTimeToValueInMs(final double TIME_TO_VALUE_IN_MS) {
+        double value = TIME_TO_VALUE_IN_MS < 10 ? 10 : (TIME_TO_VALUE_IN_MS > 5000 ? 5000 : TIME_TO_VALUE_IN_MS);
+        timeToValueInMs.set(value);
+    }
+
+    public final DoubleProperty timeToValueInMsProperty() {
+        return timeToValueInMs;
+    }
+
+    public final boolean isCanvasMode() {
+        return canvasMode.get();
+    }
+
+    public final void setCanvasMode(final boolean CANVAS_MODE) {
+        canvasMode.set(CANVAS_MODE);
+    }
+
+    public final BooleanProperty canvasModeProperty() {
+        return canvasMode;
     }
 }

@@ -144,13 +144,13 @@ public class SimpleGaugeBuilder<B extends SimpleGaugeBuilder<B>> extends Control
         return this;
     }
 
-    public final SimpleGaugeBuilder labelColor(final Color LABEL_COLOR) {
-        properties.put("LABEL_COLOR", new SimpleObjectProperty<Color>(LABEL_COLOR));
+    public final SimpleGaugeBuilder valueLabelColor(final Color VALUE_LABEL_COLOR) {
+        properties.put("VALUE_LABEL_COLOR", new SimpleObjectProperty<Color>(VALUE_LABEL_COLOR));
         return this;
     }
 
-    public final SimpleGaugeBuilder unitColor(final Color UNIT_COLOR) {
-        properties.put("UNIT_COLOR", new SimpleObjectProperty<Color>(UNIT_COLOR));
+    public final SimpleGaugeBuilder unitLabelColor(final Color UNIT_LABEL_COLOR) {
+        properties.put("UNIT_LABEL_COLOR", new SimpleObjectProperty<Color>(UNIT_LABEL_COLOR));
         return this;
     }
 
@@ -181,6 +181,26 @@ public class SimpleGaugeBuilder<B extends SimpleGaugeBuilder<B>> extends Control
 
     public final SimpleGaugeBuilder roundedBar(final boolean ROUNDED_BAR) {
         properties.put("ROUNDED_BAR", new SimpleBooleanProperty(ROUNDED_BAR));
+        return this;
+    }
+
+    public final SimpleGaugeBuilder valueLabelVisible(final boolean VALUE_LABEL_VISIBLE) {
+        properties.put("VALUE_LABEL_VISIBLE", new SimpleBooleanProperty(VALUE_LABEL_VISIBLE));
+        return this;
+    }
+
+    public final SimpleGaugeBuilder unitLabelVisible(final boolean UNIT_LABEL_VISIBLE) {
+        properties.put("UNIT_LABEL_VISIBLE", new SimpleBooleanProperty(UNIT_LABEL_VISIBLE));
+        return this;
+    }
+
+    public final SimpleGaugeBuilder timeToValueInMs(final double TIME_TO_VALUE_IN_MS) {
+        properties.put("TIME_TO_VALUE_IN_MS", new SimpleDoubleProperty(TIME_TO_VALUE_IN_MS));
+        return this;
+    }
+
+    public final SimpleGaugeBuilder canvasMode(final boolean CANVAS_MODE) {
+        properties.put("CANVAS_MODE", new SimpleBooleanProperty(CANVAS_MODE));
         return this;
     }
 
@@ -246,7 +266,7 @@ public class SimpleGaugeBuilder<B extends SimpleGaugeBuilder<B>> extends Control
             } else if ("BAR_WIDTH".equals(key)) {
                 CONTROL.setBarWidth(((DoubleProperty) properties.get(key)).get());
             } else if ("LABEL_FONT_SIZE".equals(key)) {
-                CONTROL.setLabelFontSize(((DoubleProperty) properties.get(key)).get());
+                CONTROL.setValueLabelFontSize(((DoubleProperty) properties.get(key)).get());
             } else if ("NO_OF_DECIMALS".equals(key)) {
                 CONTROL.setNoOfDecimals(((IntegerProperty) properties.get(key)).get());
             } else if ("SECTIONS_ARRAY".equals(key)) {
@@ -258,11 +278,11 @@ public class SimpleGaugeBuilder<B extends SimpleGaugeBuilder<B>> extends Control
             } else if ("BAR_BACKGROUND_COLOR".equals(key)) {
                 CONTROL.setBarBackgroundColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("LABEL_COLOR".equals(key)) {
-                CONTROL.setLabelColor(((ObjectProperty<Color>) properties.get(key)).get());
+                CONTROL.setValueLabelColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("UNIT_COLOR".equals(key)) {
-                CONTROL.setUnitColor(((ObjectProperty<Color>) properties.get(key)).get());
+                CONTROL.setUnitLabelColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("UNIT_FONT_SIZE".equals(key)) {
-                CONTROL.setUnitFontSize(((DoubleProperty) properties.get(key)).get());
+                CONTROL.setUnitLabelFontSize(((DoubleProperty) properties.get(key)).get());
             } else if ("MIN_LABEL_VISIBLE".equals(key)) {
                 CONTROL.setMinLabelVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("MAX_LABEL_VISIBLE".equals(key)) {
@@ -275,6 +295,14 @@ public class SimpleGaugeBuilder<B extends SimpleGaugeBuilder<B>> extends Control
                 CONTROL.setMaxLabelColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("ROUNDED_BAR".equals(key)) {
                 CONTROL.setRoundedBar(((BooleanProperty) properties.get(key)).get());
+            }  else if ("VALUE_LABEL_VISIBLE".equals(key)) {
+                CONTROL.setValueLabelVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("UNIT_LABEL_VISIBLE".equals(key)) {
+                CONTROL.setUnitLabelVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("TIME_TO_VALUE_IN_MS".equals(key)) {
+                CONTROL.setTimeToValueInMs(((DoubleProperty) properties.get(key)).get());
+            } else if ("CANVAS_MODE".equals(key)) {
+                CONTROL.setCanvasMode(((BooleanProperty) properties.get(key)).get());
             }
         }
         return CONTROL;

@@ -37,6 +37,8 @@ import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.CacheHint;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.layout.Pane;
@@ -70,9 +72,12 @@ import java.util.Locale;
  * To change this template use File | Settings | File Templates.
  */
 public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, SimpleRadialGaugeBehavior> {
+    private static final double INSETS = 4;
     private SimpleRadialGauge control;
     private boolean           isDirty;
     private boolean           initialized;
+    private Canvas            canvas;
+    private GraphicsContext   ctx;
     private Pane              gauge;
     private Point2D           center;
     private Arc               bar;
@@ -84,25 +89,41 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
     private double            size;
     private Text              minLabel;
     private Text              maxLabel;
+    private Stop[]            barGradientStops;
+    private double            xy;
+    private double            wh;
+    private double            startAngle;
+    private double            length;
 
 
     // ******************** Constructors **************************************
     public SimpleRadialGaugeSkin(final SimpleRadialGauge CONTROL) {
         super(CONTROL, new SimpleRadialGaugeBehavior(CONTROL));
-        control        = CONTROL;
-        initialized    = false;
-        isDirty        = false;
-        gauge          = new Pane();
-        center         = new Point2D(100, 100);
-        bar            = new Arc();
-        valueText      = new Text();
-        valueFormat    = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.US));
-        unitText       = new Text();
-        timeline       = new Timeline();
-        gaugeValue     = new SimpleDoubleProperty(control.getValue());
-        size           = 200;
-        minLabel       = new Text(valueFormat.format(control.getMinValue()));
-        maxLabel       = new Text(valueFormat.format(control.getMaxValue()));
+        control          = CONTROL;
+        initialized      = false;
+        isDirty          = false;
+        gauge            = new Pane();
+        canvas           = new Canvas();
+        ctx              = canvas.getGraphicsContext2D();
+        center           = new Point2D(100, 100);
+        bar              = new Arc();
+        valueText        = new Text(Double.toString(control.getValue()));
+        valueFormat      = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.US));
+        unitText         = new Text(control.getUnit());
+        timeline         = new Timeline();
+        gaugeValue       = new SimpleDoubleProperty(control.getValue());
+        size             = 200;
+        minLabel         = new Text(valueFormat.format(control.getMinValue()));
+        maxLabel         = new Text(valueFormat.format(control.getMaxValue()));
+        xy               = (control.getBarWidth() + 2) / 2 + INSETS;
+        wh               = size - 2 * INSETS - control.getBarWidth() - 2;
+        startAngle       = -(150 - (360 - control.getRadialRange().ANGLE_RANGE) / 2);
+        length           = control.getRadialRange().ANGLE_RANGE;
+        barGradientStops = new Stop[] {
+            new Stop(0, Color.TRANSPARENT),
+            new Stop(0.8, control.getBarColor().darker()),
+            new Stop(1.0, control.getBarColor().brighter())
+        };
         init();
     }
 
@@ -115,19 +136,25 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
         center = new Point2D(control.getPrefWidth() / 2, control.getPrefHeight() / 2);
 
         // Register listeners
-        registerChangeListener(control.prefWidthProperty(), "PREF_WIDTH");
-        registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");
+        registerChangeListener(control.widthProperty(), "WIDTH");
+        registerChangeListener(control.heightProperty(), "HEIGHT");
+        registerChangeListener(control.prefWidthProperty(), "WIDTH");
+        registerChangeListener(control.prefHeightProperty(), "HEIGHT");
+        registerChangeListener(control.minWidthProperty(), "WIDTH");
+        registerChangeListener(control.minHeightProperty(), "HEIGHT");
+        registerChangeListener(control.maxWidthProperty(), "WIDTH");
+        registerChangeListener(control.maxHeightProperty(), "HEIGHT");
         registerChangeListener(control.minValueProperty(), "FULL_REPAINT");
         registerChangeListener(control.maxValueProperty(), "FULL_REPAINT");
         registerChangeListener(control.gaugeModelProperty(), "FULL_REPAINT");
         registerChangeListener(control.barBackgroundColorProperty(), "FULL_REPAINT");
-        registerChangeListener(control.labelColorProperty(), "FULL_REPAINT");
-        registerChangeListener(control.unitColorProperty(), "FULL_REPAINT");
+        registerChangeListener(control.valueLabelColorProperty(), "FULL_REPAINT");
+        registerChangeListener(control.unitLabelColorProperty(), "FULL_REPAINT");
         registerChangeListener(control.unitProperty(), "FULL_REPAINT");
         registerChangeListener(control.barColorProperty(), "BAR");
         registerChangeListener(control.barWidthProperty(), "BAR");
         registerChangeListener(control.roundedBarProperty(), "BAR");
-        registerChangeListener(control.labelFontSizeProperty(), "LABEL");
+        registerChangeListener(control.valueLabelFontSizeProperty(), "LABEL");
         registerChangeListener(control.noOfDecimalsProperty(), "LABEL");
         registerChangeListener(control.minLabelColorProperty(), "MIN_MAX_LABEL");
         registerChangeListener(control.maxLabelColorProperty(), "MIN_MAX_LABEL");
@@ -160,28 +187,42 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
             maxLabel.visibleProperty().unbind();
         }
         maxLabel.visibleProperty().bind(control.maxLabelVisibleProperty());
+        
+        if (valueText.visibleProperty().isBound()) {
+            valueText.visibleProperty().unbind();
+        }
+        valueText.visibleProperty().bind(control.valueLabelVisibleProperty());
+
+        if (unitText.visibleProperty().isBound()) {
+            unitText.visibleProperty().unbind();
+        }
+        unitText.visibleProperty().bind(control.unitLabelVisibleProperty());
     }
 
 
     // ******************** Methods *******************************************
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
-        if ("PREF_WIDTH".equals(PROPERTY)) {
-            size  = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+        if ("WIDTH".equals(PROPERTY)) {
+            recalcParameters();
             valueText.setLayoutX((size - valueText.getLayoutBounds().getWidth()) / 2);
-            valueText.setLayoutY((size - valueText.getLayoutBounds().getHeight()) / 2 + control.getLabelFontSize());
+            valueText.setLayoutY((size - valueText.getLayoutBounds().getHeight()) / 2 + control.getValueLabelFontSize());
+            canvas.setWidth(size);
+            canvas.setHeight(size);
             repaint();
-        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
-            size  = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+        } else if ("HEIGHT".equals(PROPERTY)) {
+            recalcParameters();
             valueText.setLayoutX((size - valueText.getLayoutBounds().getWidth()) / 2);
-            valueText.setLayoutY((size - valueText.getLayoutBounds().getHeight()) / 2 + control.getLabelFontSize());
+            valueText.setLayoutY((size - valueText.getLayoutBounds().getHeight()) / 2 + control.getValueLabelFontSize());
+            canvas.setWidth(size);
+            canvas.setHeight(size);
             repaint();
         } else if ("FULL_REPAINT".equals(PROPERTY)) {
             repaint();
         } else if ("VALUE".equals(PROPERTY)) {
             if (control.isValueAnimationEnabled()) {
-                final KeyValue KEY_VALUE = new KeyValue(gaugeValue, control.getValue(), Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
-                final KeyFrame KEY_FRAME = new KeyFrame(Duration.millis(1500), KEY_VALUE);
+                final KeyValue KEY_VALUE = new KeyValue(gaugeValue, control.getValue(), Interpolator.EASE_BOTH);
+                final KeyFrame KEY_FRAME = new KeyFrame(Duration.millis(control.getTimeToValueInMs()), KEY_VALUE);
                 timeline.setOnFinished(new EventHandler<ActionEvent>() {
                     @Override public void handle(ActionEvent actionEvent) {
                         gaugeValue.set(control.getValue());
@@ -194,7 +235,16 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
                 gaugeValue.set(control.getValue());
             }
         } else if ("BAR".equals(PROPERTY)) {
-            drawGauge();
+            if (control.isCanvasMode()) {
+                barGradientStops = new Stop[] {
+                    new Stop(0, Color.TRANSPARENT),
+                    new Stop(0.8, control.getBarColor().darker()),
+                    new Stop(1.0, control.getBarColor().brighter())
+                };
+                drawCanvasGauge(ctx);
+            } else {
+                drawNodeGauge();
+            }
         } else if ("LABEL".equals(PROPERTY)) {
             updateNumberFormat();
             repaint();
@@ -217,8 +267,12 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
             }
             valueText.setText(valueFormat.format(gaugeValue.get()));
             valueText.setLayoutX((size - valueText.getLayoutBounds().getWidth()) / 2);
-            valueText.setLayoutY((size - valueText.getLayoutBounds().getHeight()) / 2 + control.getLabelFontSize());
+            valueText.setLayoutY((size - valueText.getLayoutBounds().getHeight()) / 2 + control.getValueLabelFontSize());
             bar.setLength(-gaugeValue.get() * control.getAngleStep());
+
+            if (control.isCanvasMode()) {
+                drawCanvasGauge(ctx);
+            }
         }
     }
 
@@ -235,8 +289,16 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
             init();
         }
         getChildren().clear();
-        drawGauge();
-        getChildren().addAll(gauge);
+
+        // Use the following call for canvas gauges
+        if (control.isCanvasMode()) {
+            drawCanvasGauge(ctx);
+            getChildren().addAll(canvas);
+        } else {
+            drawNodeGauge();
+            getChildren().addAll(gauge);
+        }
+
         isDirty = false;
 
         super.layoutChildren();
@@ -304,16 +366,24 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
                                          new Stop((RADIUS - control.getBarWidth()) / RADIUS, Color.TRANSPARENT),
                                          new Stop((RADIUS - control.getBarWidth() + 1) / RADIUS, BAR_COLOR.darker()),
                                          new Stop((RADIUS - control.getBarWidth() / 2) / RADIUS, BAR_COLOR),
-                                         new Stop(1.0, BAR_COLOR)));
+                                         new Stop(1.0, BAR_COLOR.deriveColor(0.85, 0.85, 0.85, 1))));
     }
 
+    private void recalcParameters() {
+        size             = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+        xy               = (control.getBarWidth() + 2) / 2 + INSETS;
+        wh               = size - 2 * INSETS - control.getBarWidth() - 2;
+        length           = control.getRadialRange().ANGLE_RANGE;
+        startAngle       = -(150 - (360 - length) / 2);
+    }
 
     // ******************** Drawing related ***********************************
-    public final void drawGauge() {
+    private void drawNodeGauge() {
         size  = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
 
-        final double RADIUS = size / 2 - 4;
-        center              = new Point2D(size / 2, size / 2);
+        final double RADIUS     = size / 2 - 4;
+        final double ARC_RADIUS = RADIUS - control.getBarWidth() / 2;
+        center                  = new Point2D(size / 2, size / 2);
 
         gauge.getChildren().clear();
 
@@ -331,8 +401,8 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
         final Arc BAR_BACKGROUND = new Arc();
         BAR_BACKGROUND.setCenterX(center.getX());
         BAR_BACKGROUND.setCenterY(center.getY());
-        BAR_BACKGROUND.setRadiusX(RADIUS - control.getBarWidth() / 2);
-        BAR_BACKGROUND.setRadiusY(RADIUS - control.getBarWidth() / 2);
+        BAR_BACKGROUND.setRadiusX(ARC_RADIUS);
+        BAR_BACKGROUND.setRadiusY(ARC_RADIUS);
         BAR_BACKGROUND.setStartAngle(-(90 - (360 - control.getRadialRange().ANGLE_RANGE) / 2));
         BAR_BACKGROUND.setLength(control.getRadialRange().ANGLE_RANGE);
         BAR_BACKGROUND.setType(ArcType.OPEN);
@@ -365,22 +435,22 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
         bar.setStrokeWidth(control.getBarWidth());
         bar.setEffect(INNER_SHADOW);
 
-        valueText.setFont(Font.font("Verdana", FontWeight.BOLD, control.getLabelFontSize()));
-        valueText.setFill(control.getLabelColor());
+        valueText.setFont(Font.font("Verdana", FontWeight.BOLD, control.getValueLabelFontSize()));
+        valueText.setFill(control.getValueLabelColor());
         valueText.setTextAlignment(TextAlignment.CENTER);
-        valueText.setTextOrigin(VPos.BOTTOM);
+        valueText.setTextOrigin(VPos.BASELINE);
         valueText.setText(valueFormat.format(gaugeValue.doubleValue()));
         valueText.setLayoutX((size - valueText.getLayoutBounds().getWidth()) / 2);
-        valueText.setLayoutY((size - valueText.getLayoutBounds().getHeight()) / 2 + control.getLabelFontSize());
+        valueText.setLayoutY((size - valueText.getLayoutBounds().getHeight()) / 2);
         valueText.setEffect(INNER_GLOW);
 
-        unitText.setFont(Font.font("Verdana", FontWeight.BOLD, control.getUnitFontSize()));
-        unitText.setFill(control.getUnitColor());
+        unitText.setFont(Font.font("Verdana", FontWeight.BOLD, control.getUnitLabelFontSize()));
+        unitText.setFill(control.getUnitLabelColor());
         unitText.setTextAlignment(TextAlignment.CENTER);
         unitText.setTextOrigin(VPos.BOTTOM);
         unitText.setText(control.getUnit());
         unitText.setLayoutX((size - unitText.getLayoutBounds().getWidth()) / 2);
-        unitText.setLayoutY(valueText.getLayoutY() + size * 0.05 + unitText.getLayoutBounds().getHeight());
+        unitText.setLayoutY((size - unitText.getLayoutBounds().getHeight()));
         unitText.setEffect(INNER_GLOW);
 
         minLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, control.getMinMaxLabelFontSize()));
@@ -407,5 +477,67 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
                                    maxLabel);
         gauge.setCache(true);
         gauge.setCacheHint(CacheHint.QUALITY);
+    }
+
+    private void drawCanvasGauge(final GraphicsContext CTX) {
+        //size  = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+
+        //canvas.setWidth(size);
+        //canvas.setHeight(size);
+
+        //final double INSETS       = 4;
+        //final double xy           = (control.getBarWidth() + 2) / 2 + INSETS;
+        //final double wh           = size - 2 * INSETS - control.getBarWidth() - 2;
+        //final double startAngle   = -(150 - (360 - control.getAngleRange()) / 2);
+        //final double length       = control.getAngleRange();
+
+        CTX.clearRect(0, 0, size, size);
+        CTX.setStroke(control.getBarBackgroundColor().darker());
+        CTX.setLineWidth(control.getBarWidth() + 2);
+        if (control.isRoundedBar()) {
+            CTX.setLineCap(StrokeLineCap.ROUND);
+        } else {
+            CTX.setLineCap(StrokeLineCap.BUTT);
+        }
+        CTX.strokeArc(xy, xy, wh, wh, startAngle, -length, ArcType.OPEN);
+
+        CTX.setStroke(control.getBarBackgroundColor());
+        CTX.setLineWidth(control.getBarWidth());
+        if (control.isRoundedBar()) {
+            CTX.setLineCap(StrokeLineCap.ROUND);
+        } else {
+            CTX.setLineCap(StrokeLineCap.BUTT);
+        }
+        CTX.strokeArc(xy, xy, wh, wh, startAngle, -length, ArcType.OPEN);
+
+        //CTX.setStroke(control.getBarColor());
+        CTX.setStroke(new RadialGradient(0, 0,
+            0.5 * size, 0.5 * size,
+            0.5 * wh,
+            false, CycleMethod.NO_CYCLE,
+            barGradientStops));
+        CTX.setLineWidth(control.getBarWidth());
+        if (control.isRoundedBar()) {
+            CTX.setLineCap(StrokeLineCap.ROUND);
+        } else {
+            CTX.setLineCap(StrokeLineCap.BUTT);
+        }
+        CTX.strokeArc(xy, xy, wh, wh, startAngle, -gaugeValue.doubleValue() * control.getAngleStep(), ArcType.OPEN);
+
+        if (control.isValueLabelVisible()) {
+            CTX.setFont(Font.font("Verdana", FontWeight.BOLD, control.getValueLabelFontSize()));
+            CTX.setFill(control.getValueLabelColor());
+            CTX.setTextAlign(TextAlignment.CENTER);
+            CTX.setTextBaseline(VPos.CENTER);
+            CTX.fillText(valueFormat.format(gaugeValue.doubleValue()), size / 2, size / 2);
+        }
+
+        if (control.isUnitLabelVisible() && !control.getUnit().isEmpty()) {
+            CTX.setFont(Font.font("Verdana", FontWeight.BOLD, control.getUnitLabelFontSize()));
+            CTX.setFill(control.getUnitLabelColor());
+            CTX.setTextAlign(TextAlignment.CENTER);
+            CTX.setTextBaseline(VPos.BOTTOM);
+            CTX.fillText(control.getUnit(), size / 2, size - control.getUnitLabelFontSize());
+        }
     }
 }
