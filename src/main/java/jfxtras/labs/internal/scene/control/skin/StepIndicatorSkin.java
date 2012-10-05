@@ -112,7 +112,7 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
 
     public final void repaint() {
         isDirty = true;
-        repaint();
+        requestLayout();
     }
 
     @Override public void layoutChildren() {
