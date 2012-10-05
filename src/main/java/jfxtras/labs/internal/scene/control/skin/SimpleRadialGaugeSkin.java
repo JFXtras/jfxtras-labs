@@ -46,8 +46,6 @@ import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -319,9 +317,6 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
 
         gauge.getChildren().clear();
 
-        final Shape IBOUNDS = new Rectangle(0, 0, size, size);
-        IBOUNDS.setOpacity(0.0);
-
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setRadius(0.01 * size);
         INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
@@ -404,8 +399,7 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
         maxLabel.setLayoutX(size - maxLabel.getLayoutBounds().getWidth() - (size * 0.025));
         maxLabel.setLayoutY(size - maxLabel.getLayoutBounds().getHeight() - (size * 0.025));
 
-        gauge.getChildren().addAll(IBOUNDS,
-                                   BAR_BACKGROUND,
+        gauge.getChildren().addAll(BAR_BACKGROUND,
                                    bar,
                                    valueText,
                                    unitText,
