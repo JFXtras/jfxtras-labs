@@ -30,10 +30,15 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import jfxtras.labs.scene.control.Agenda.CalendarRange;
 
 /**
  * @author Tom Eugelink
@@ -48,9 +53,11 @@ public class AgendaTrial1 extends Application {
 	public void start(Stage stage) {
 
         // add a node
-		Agenda lAgenda = new Agenda();		
+		final Agenda lAgenda = new Agenda();		
     	//lAgenda.setLocale(new java.util.Locale("de")); // weeks starts on monday
-		Calendar lFirstDayOfWeekCalendar = getFirstDayOfWeekCalendar(lAgenda.getLocale(), Calendar.getInstance());
+		
+		// initial set
+		Calendar lFirstDayOfWeekCalendar = getFirstDayOfWeekCalendar(lAgenda.getLocale(), lAgenda.getDisplayedCalendar());
 		int lYear = lFirstDayOfWeekCalendar.get(Calendar.YEAR);
 		int lMonth = lFirstDayOfWeekCalendar.get(Calendar.MONTH);
 		int lDay = lFirstDayOfWeekCalendar.get(Calendar.DATE);
@@ -147,8 +154,14 @@ public class AgendaTrial1 extends Application {
 				.withDescription("A description3")
 				.withGroup("group3")
 				.withWholeDay(true)
+		, 	new Agenda.AppointmentImpl()
+			.withStartTime(new GregorianCalendar(lYear, lMonth, lDay + 1))
+			.withSummary("all day2")
+			.withDescription("A description3")
+			.withGroup("group3")
+			.withWholeDay(true)
 		);
-		String lIpsum = "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus";
+		final String lIpsum = "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus";
 		// day spanner
 		{
 			Calendar lStart = (Calendar)lFirstDayOfWeekCalendar.clone();
@@ -165,30 +178,58 @@ public class AgendaTrial1 extends Application {
 			
 			lAgenda.appointments().add(lAppointment);
 		}
-		// add a whole bunch of random appointments
-		for (int i = 0; i < 20; i++)
-		{
-			Calendar lStart = (Calendar)lFirstDayOfWeekCalendar.clone();
-			lStart.add(Calendar.DATE, new Random().nextInt(7));
-			lStart.add(Calendar.HOUR_OF_DAY, new Random().nextInt(24));
-			lStart.add(Calendar.MINUTE, new Random().nextInt(60));
-			
-			Calendar lEnd = (Calendar)lStart.clone();
-			lEnd.add(Calendar.MINUTE, 15 + new Random().nextInt(24 * 60));
-			
-			Agenda.Appointment lAppointment = new Agenda.AppointmentImpl()
-			.withStartTime(lStart)
-			.withEndTime(lEnd)
-			.withSummary(lIpsum.substring(0, new Random().nextInt(50)))
-			.withDescription(lIpsum.substring(0, new Random().nextInt(lIpsum.length())))
-			.withGroup("group" + (new Random().nextInt(3) + 1));
-			
-//			lAgenda.appointments().add(lAppointment);
-		}
 		
+
+		// update range
+		final AtomicBoolean lSkippedFirstRangeChange = new AtomicBoolean(false);		
+		lAgenda.calendarRangeCallbackProperty().set(new Callback<Agenda.CalendarRange, Void>()
+		{
+			@Override
+			public Void call(CalendarRange arg0)
+			{
+				// the first change should not be processed, because it is set above
+				if (lSkippedFirstRangeChange.get() == false)
+				{
+					lSkippedFirstRangeChange.set(true);
+					return null;
+				}
+				
+				// add a whole bunch of random appointments
+				for (int i = 0; i < 20; i++)
+				{
+					Calendar lFirstDayOfWeekCalendar = getFirstDayOfWeekCalendar(lAgenda.getLocale(), lAgenda.getDisplayedCalendar());
+					
+					Calendar lStart = (Calendar)lFirstDayOfWeekCalendar.clone();
+					lStart.add(Calendar.DATE, new Random().nextInt(7));
+					lStart.add(Calendar.HOUR_OF_DAY, new Random().nextInt(24));
+					lStart.add(Calendar.MINUTE, new Random().nextInt(60));
+					
+					Calendar lEnd = (Calendar)lStart.clone();
+					lEnd.add(Calendar.MINUTE, 15 + new Random().nextInt(24 * 60));
+					
+					Agenda.Appointment lAppointment = new Agenda.AppointmentImpl()
+					.withStartTime(lStart)
+					.withEndTime(lEnd)
+					.withWholeDay(new Random().nextInt(50) > 40)
+					.withSummary(lIpsum.substring(0, new Random().nextInt(50)))
+					.withDescription(lIpsum.substring(0, new Random().nextInt(lIpsum.length())))
+					.withGroup("group" + (new Random().nextInt(3) + 1));					
+					lAgenda.appointments().add(lAppointment);
+				}
+				return null;
+			}
+		});
+		
+		HBox lHBox = new HBox();
+		CalendarTextField lCalendarTextField = new CalendarTextField();
+		lCalendarTextField.valueProperty().bindBidirectional(lAgenda.displayedCalendar());		
+        lHBox.getChildren().add(lCalendarTextField);
         
         // create scene
-        Scene scene = new Scene(lAgenda, 900, 900);
+        BorderPane lBorderPane = new BorderPane();
+        lBorderPane.setCenter(lAgenda);
+        lBorderPane.setBottom(lHBox);
+        Scene scene = new Scene(lBorderPane, 900, 900);
 
         // create stage
         stage.setTitle("Agenda");
