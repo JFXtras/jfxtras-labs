@@ -90,6 +90,9 @@ public class CalendarPicker extends Control
 	/** calendar: */
 	public ObjectProperty<Calendar> calendarProperty() { return calendarObjectProperty; }
 	final private ObjectProperty<Calendar> calendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar");
+	public Calendar getCalendar() { return calendarObjectProperty.getValue(); }
+	public void setCalendar(Calendar value) { calendarObjectProperty.setValue(value); }
+	public CalendarPicker withCalendar(Calendar value) { setCalendar(value); return this; } 
 	// construct property
 	private void constructCalendar()
 	{
@@ -109,10 +112,6 @@ public class CalendarPicker extends Control
 			} 
 		});
 	}
-	// java bean API
-	public Calendar getCalendar() { return calendarObjectProperty.getValue(); }
-	public void setCalendar(Calendar value) { calendarObjectProperty.setValue(value); }
-	public CalendarPicker withCalendar(Calendar value) { setCalendar(value); return this; } 
 
 	/** Calendars: */
 	public ObservableList<Calendar> calendars() { return calendars; }
@@ -148,7 +147,6 @@ public class CalendarPicker extends Control
 	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc */
 	public ObjectProperty<Locale> localeProperty() { return localeObjectProperty; }
 	volatile private ObjectProperty<Locale> localeObjectProperty = new SimpleObjectProperty<Locale>(this, "locale", Locale.getDefault());
-	// java bean API
 	public Locale getLocale() { return localeObjectProperty.getValue(); }
 	public void setLocale(Locale value) { localeObjectProperty.setValue(value); }
 	public CalendarPicker withLocale(Locale value) { setLocale(value); return (CalendarPicker)this; } 
@@ -182,6 +180,9 @@ public class CalendarPicker extends Control
 		}
 	};
 	public enum Mode { SINGLE, MULTIPLE, RANGE };
+	public Mode getMode() { return modeObjectProperty.getValue(); }
+	public void setMode(Mode value) { modeObjectProperty.setValue(value); }
+	public CalendarPicker withMode(Mode value) { setMode(value); return this; } 
 	// construct property
 //	private void constructMode()
 //	{
@@ -198,15 +199,10 @@ public class CalendarPicker extends Control
 //			} 
 //		});
 //	}
-	// java bean API
-	public Mode getMode() { return modeObjectProperty.getValue(); }
-	public void setMode(Mode value) { modeObjectProperty.setValue(value); }
-	public CalendarPicker withMode(Mode value) { setMode(value); return this; } 
 
 	/** ShowTime: only applicable in SINGLE mode */
 	public ObjectProperty<Boolean> showTimeProperty() { return showTimeObjectProperty; }
 	volatile private ObjectProperty<Boolean> showTimeObjectProperty = new SimpleObjectProperty<Boolean>(this, "showTime", false);
-	// java bean API
 	public Boolean getShowTime() { return showTimeObjectProperty.getValue(); }
 	public void setShowTime(Boolean value) { showTimeObjectProperty.setValue(value); }
 	public CalendarPicker withShowTime(Boolean value) { setShowTime(value); return (CalendarPicker)this; } 

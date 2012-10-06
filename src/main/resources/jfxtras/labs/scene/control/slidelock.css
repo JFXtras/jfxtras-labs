@@ -20,7 +20,7 @@
     -fx-stroke-miterlimit: 4;
     -fx-stroke-opacity   : 1;
     -fx-stroke-dasharray : none;
-    -fx-stroke-dashoffset: 0
+    -fx-stroke-dashoffset: 0;
 }
 
 #slide-area {
@@ -36,7 +36,7 @@
     -fx-stroke-miterlimit: 4;
     -fx-stroke-opacity   : 1;
     -fx-stroke-dasharray : none;
-    -fx-stroke-dashoffset: 0
+    -fx-stroke-dashoffset: 0;
 }
 
 #slide-frame {
@@ -52,7 +52,7 @@
     -fx-stroke-miterlimit: 4;
     -fx-stroke-opacity   : 1;
     -fx-stroke-dasharray : none;
-    -fx-stroke-dashoffset: 0
+    -fx-stroke-dashoffset: 0;
 }
 
 /*
@@ -66,7 +66,7 @@
 -fx-stroke-miterlimit:4;
 -fx-stroke-opacity:1;
 -fx-stroke-dasharray:none;
--fx-stroke-dashoffset:0
+-fx-stroke-dashoffset:0;
 */
 
 #button-gradient-rect {
@@ -79,7 +79,7 @@
     -fx-stroke-miterlimit: 4;
     -fx-stroke-opacity   : 1;
     -fx-stroke-dasharray : none;
-    -fx-stroke-dashoffset: 0
+    -fx-stroke-dashoffset: 0;
 
 }
 
@@ -92,7 +92,7 @@
     -fx-stroke-miterlimit: 4;
     -fx-stroke-opacity   : 1;
     -fx-stroke-dasharray : none;
-    -fx-stroke-dashoffset: 0
+    -fx-stroke-dashoffset: 0;
 }
 
 #button-arrow-stencil-crisp {
@@ -104,7 +104,7 @@
     -fx-stroke-miterlimit: 4;
     -fx-stroke-opacity   : 1;
     -fx-stroke-dasharray : none;
-    -fx-stroke-dashoffset: 0
+    -fx-stroke-dashoffset: 0;
 }
 
 #button-arrow-glare-rect {
