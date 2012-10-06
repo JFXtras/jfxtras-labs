@@ -154,7 +154,7 @@ public class Agenda extends Control
 		public String getSummary();
 		public String getDescription();
 		public String getLocation();
-		public String getGroup(); // this will result in a CSS class being assigned
+		public String getStyleClass(); // this is the CSS class being assigned
 	}
 	
 	/**
@@ -205,12 +205,12 @@ public class Agenda extends Control
 		public void setLocation(String value) { locationObjectProperty.setValue(value); }
 		public AppointmentImpl withLocation(String value) { setLocation(value); return this; } 
 		
-		/** Group: */
-		public ObjectProperty<String> groupProperty() { return groupObjectProperty; }
-		final private ObjectProperty<String> groupObjectProperty = new SimpleObjectProperty<String>(this, "group");
-		public String getGroup() { return groupObjectProperty.getValue(); }
-		public void setGroup(String value) { groupObjectProperty.setValue(value); }
-		public AppointmentImpl withGroup(String value) { setGroup(value); return this; } 
+		/** StyleClass: */
+		public ObjectProperty<String> styleClassProperty() { return styleClassObjectProperty; }
+		final private ObjectProperty<String> styleClassObjectProperty = new SimpleObjectProperty<String>(this, "styleClass");
+		public String getStyleClass() { return styleClassObjectProperty.getValue(); }
+		public void setStyleClass(String value) { styleClassObjectProperty.setValue(value); }
+		public AppointmentImpl withStyleClass(String value) { setStyleClass(value); return this; } 
 	}
 	
 	

@@ -38,9 +38,12 @@ import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ListChangeListener;
+import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.ScrollPaneBuilder;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
@@ -50,6 +53,7 @@ import javafx.scene.text.Text;
 import jfxtras.labs.internal.scene.control.behavior.AgendaBehavior;
 import jfxtras.labs.scene.control.Agenda;
 import jfxtras.labs.scene.control.Agenda.Appointment;
+import jfxtras.labs.util.NodeUtil;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
 
@@ -351,7 +355,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	 * Responsible for rendering a single whole day appointment on a day header.
 	 * 
 	 */
-	class AppointmentHeaderPane extends Pane
+	class AppointmentHeaderPane extends Focusable
 	{
 		/**
 		 * 
@@ -365,7 +369,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			
 			// for debugging setStyle("-fx-border-color:GREEN;-fx-border-width:4px;");
 			getStyleClass().add("Appointment");
-			getStyleClass().add(appointment.getGroup());
+			getStyleClass().add(appointment.getStyleClass());
 
 			// add a text node
 			double lPadding = 3;
@@ -712,7 +716,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	 * Appointments may span multiple days, each day gets its own appointment region.
 	 * 
 	 */
-	class AppointmentPane extends Pane
+	class AppointmentPane extends Focusable
 	{
 		DayPane day = null;
 		// for the role of cluster owner
@@ -731,7 +735,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		{
 			// for debugging setStyle("-fx-border-color:BLUE;-fx-border-width:4px;");
 			getStyleClass().add("Appointment");
-			getStyleClass().add(appointment.getGroup());
+			getStyleClass().add(appointment.getStyleClass());
 			
 			// remember
 			this.appointment = appointment;
@@ -815,6 +819,14 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					getChildren().add(lSummaryText);			
 				}
 			}
+			
+			// duration dragger
+			durationDragger = new DurationDragger(this);
+			durationDragger.xProperty().bind(widthProperty().multiply(0.25));
+			durationDragger.yProperty().bind(heightProperty().subtract(5));
+			durationDragger.widthProperty().bind(widthProperty().multiply(0.5));
+			durationDragger.setHeight(3);
+			getChildren().add(durationDragger);	
 		}
 		final Agenda.Appointment appointment;
 		final Calendar start;
@@ -822,6 +834,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		final Calendar end;
 		final String endAsString;
 		final long durationInMS;
+		final DurationDragger durationDragger;
 		
 		/**
 		 * 
@@ -834,6 +847,121 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				 ;
 		}
 	}
+
+	
+	// ==================================================================================================================
+	// RESIZING
+	
+	/**
+	 * 
+	 */
+	class DurationDragger extends Rectangle
+	{
+		public DurationDragger(AppointmentPane appointmentPane)
+		{
+			// remember
+			this.appointmentPane = appointmentPane;
+			
+			// styling
+			getStyleClass().add("DurationDragger");
+
+			// play with the mouse pointer to show something can be done here
+			setOnMouseEntered(new EventHandler<MouseEvent>()
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					if (!mouseEvent.isPrimaryButtonDown())
+					{
+						DurationDragger.this.setCursor(Cursor.HAND);
+					}
+				}
+			});
+			setOnMouseExited(new EventHandler<MouseEvent>()
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					if (!mouseEvent.isPrimaryButtonDown())
+					{
+						DurationDragger.this.setCursor(Cursor.DEFAULT);
+					}
+				}
+			});
+			setOnMousePressed(new EventHandler<MouseEvent>()
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					// // record a delta distance for the drag and drop operation.
+					// dragDelta.x = stage.getX() - mouseEvent.getScreenX();
+					// dragDelta.y = stage.getY() - mouseEvent.getScreenY();
+					DurationDragger.this.setCursor(Cursor.MOVE);
+				}
+			});
+			setOnMouseReleased(new EventHandler<MouseEvent>()
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					DurationDragger.this.setCursor(Cursor.HAND);
+				}
+			});
+			setOnMouseDragged(new EventHandler<MouseEvent>()
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					// - calculate the number of pixels from onscreen nodeY (layoutY) to onscreen mouseY					
+					double lNodeScreenY = NodeUtil.screenY(DurationDragger.this.appointmentPane);
+					double lMouseY = mouseEvent.getScreenY();
+					System.out.println("!!! " + lNodeScreenY + " / " + lMouseY);
+					
+					// - calculate the new durationInMs (minimum treshold is 10 minutes?)
+			
+					// - update the node height
+					
+					// stage.setX(mouseEvent.getScreenX() + dragDelta.x);
+					// stage.setY(mouseEvent.getScreenY() + dragDelta.y);
+				}
+			});
+		}
+		final AppointmentPane appointmentPane;
+	}
+	
+	
+	// ==================================================================================================================
+	// FOCUS
+	
+	/**
+	 * These panes are focusable 
+	 * TODO: multiselect?
+	 */
+	class Focusable extends Pane
+	{
+		/**
+		 * 
+		 */
+		public Focusable()
+		{
+//			setOnMouseClicked(focusEventHandler);
+		}
+		
+		EventHandler<MouseEvent> focusEventHandler = new EventHandler<MouseEvent>()
+		{
+			@Override public void handle(MouseEvent evt)
+			{
+				if (focused != null)
+				{
+					focused.getStyleClass().remove("focused");
+				}
+				focused = Focusable.this;
+				focused.getStyleClass().add("focused");
+			}
+		};
+	}
+	Focusable focused = null;
+
 	
 	// ==================================================================================================================
 	// SUPPORT
@@ -881,6 +1009,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			hourHeight = (weekScrollPane.viewportBoundsProperty().get().getHeight() - scrollbarSize) / 24;
 		}
 		dayHeight = hourHeight * 24;
+		durationInMSPerPixel = (24 * 60 * 60 * 1000) / dayHeight;
 		
 		// if the viewport is active
 		if (weekScrollPane.viewportBoundsProperty() != null && weekScrollPane.viewportBoundsProperty().get() != null)
@@ -901,6 +1030,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	double dayWidth = 0;
 	double dayContentWidth = 0;
 	double dayHeight = 0;
+	double durationInMSPerPixel = 0;
 	double hourHeight = 0;
 	
 	/**

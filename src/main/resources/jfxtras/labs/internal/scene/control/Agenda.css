@@ -43,7 +43,6 @@
 .AgendaWeekSkin .Appointment {
 	-fx-border-color: WHITE;
 	-fx-border-width: 1px;
-	-fx-padding: 3px;
 }
 
 .AgendaWeekSkin .AppointmentTimeLabel {
@@ -92,3 +91,16 @@
 .group6 { -fx-background-color: #c62b00; }
 .group7 { -fx-background-color: #ff5700; } 
  */
+ 
+.AgendaWeekSkin .DurationDragger {
+	-fx-fill: #00000040;	
+}
+
+.AgendaWeekSkin .focused { 
+	-fx-color: -fx-focused-base;
+	-fx-background-color: -fx-focus-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+	-fx-background-insets: -1.4, 0, 1, 2;
+	-fx-background-radius: 6.4, 5, 4, 3;	
+}
+
+ 
