@@ -321,7 +321,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			{
 				int lIdx = appointmentHeaderPanes.indexOf(lAppointmentHeaderPane);
 				lAppointmentHeaderPane.setLayoutX(lIdx * wholedayAppointmentWidth);
-				lAppointmentHeaderPane.setLayoutY( text.getY() + ((lIdx + lOffset) * wholedayTitleHeight) );
+				lAppointmentHeaderPane.setLayoutY( titleCalendarHeight + ((lIdx + lOffset) * wholedayTitleHeight) );
 				lAppointmentHeaderPane.setPrefSize(dayWidth - (lIdx * wholedayAppointmentWidth), (appointmentHeaderPanes.size() - lIdx) * wholedayTitleHeight);
 			}
 		}
@@ -372,7 +372,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			Text lSummaryText = new Text(appointment.getSummary());
 			lSummaryText.getStyleClass().add("AppointmentLabel");
 			lSummaryText.setX( lPadding );
-			lSummaryText.setY( lSummaryText.prefHeight(0));
+			lSummaryText.setY( textHeight1M );
 			Rectangle lClip = new Rectangle(0,0,0,0);
 			lClip.widthProperty().bind(widthProperty().subtract(lPadding));
 			lClip.heightProperty().bind(heightProperty());
@@ -472,6 +472,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				hourLines.get(lHour).startYProperty().set(lHour * hourHeight);
 				halfHourLines.get(lHour).startXProperty().set(timeWidth);
 				halfHourLines.get(lHour).startYProperty().set((lHour + 0.5) * hourHeight);
+				hourTexts.get(lHour).xProperty().set(timeWidth - hourTexts.get(lHour).getBoundsInParent().getWidth());
 				hourTexts.get(lHour).yProperty().set(lHour * hourHeight);
 			}
 
@@ -626,12 +627,10 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					if (lAppointment.isWholeDay())
 					{
 						wholedayAppointmentPanes.add(lAppointmentPane);
-						getChildren().add(lAppointmentPane);
 					}
 					else
 					{
 						appointmentPanes.add(lAppointmentPane);
-						getChildren().add(lAppointmentPane);
 					}
 				}
 			}
@@ -650,7 +649,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				}
 			});
 			
-			// start placing appointments
+			// start placing appointments in the tracks
 			AppointmentPane lClusterOwner = null;
 			for (AppointmentPane lAppointmentPane : appointmentPanes)
 			{
@@ -696,6 +695,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			}
 			
 			// and layout
+			getChildren().addAll(wholedayAppointmentPanes);
+			getChildren().addAll(appointmentPanes);
 			relayout();
 			
 			// we're done, now have the header updated
@@ -805,7 +806,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				{
 					lSummaryText.getStyleClass().add("AppointmentLabel");
 					lSummaryText.setX( lPadding );
-					lSummaryText.setY( lTimeText.getY() + new Text("X").prefHeight(0));
+					lSummaryText.setY( lTimeText.getY() + textHeight1M);
 					lSummaryText.wrappingWidthProperty().bind(widthProperty().subtract(lPadding));
 					Rectangle lClip = new Rectangle(0,0,0,0);
 					lClip.widthProperty().bind(widthProperty());
@@ -844,7 +845,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	{
 		// generic
 		double scrollbarSize = 15; // TODO: derive this from an actual ScrollBar.
-
+		textHeight1M = new Text("X").getBoundsInParent().getHeight();
+		
 		// header
 		maxNumberOfWholedayAppointments = 0;
 		for (DayPane lDay : week.days)
@@ -854,8 +856,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				maxNumberOfWholedayAppointments = lDay.wholedayAppointmentPanes.size();
 			}
 		}
-		wholedayTitleHeight = new Text("XXX").getBoundsInParent().getHeight() + 5; // nmot sure why the 5 is needed
-		headerHeight = new Text("XXX").getBoundsInParent().getHeight() + (maxNumberOfWholedayAppointments * wholedayTitleHeight);
+		titleCalendarHeight = 1.5 * textHeight1M; 
+		wholedayTitleHeight = textHeight1M + 5; // not sure why the 5 is needed
+		headerHeight = titleCalendarHeight + (maxNumberOfWholedayAppointments * wholedayTitleHeight);
 
 		// time column
 		int lTimeColumnWhitespace = 10;
@@ -871,7 +874,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		dayContentWidth = dayWidth - 10;
 		
 		// hour height
-		hourHeight = (2 * new Text("X").getBoundsInParent().getHeight()) + 10; // 10 is padding
+		hourHeight = (2 * textHeight1M) + 10; // 10 is padding
 		if (weekScrollPane.viewportBoundsProperty().get() != null && (weekScrollPane.viewportBoundsProperty().get().getHeight() - scrollbarSize) > hourHeight * 24)
 		{
 			// if there is more room than absolutely required, let the height grow with the available room
@@ -887,6 +890,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			week.setPrefSize(weekScrollPane.viewportBoundsProperty().get().getWidth(), 24 * hourHeight);				
 		}
 	}
+	double textHeight1M = 0;
+	double titleCalendarHeight = 0;
 	double headerHeight = 0;
 	int maxNumberOfWholedayAppointments = 0;
 	double wholedayTitleHeight = 0;

@@ -213,7 +213,7 @@ public class AgendaTrial1 extends Application {
 					.withWholeDay(new Random().nextInt(50) > 40)
 					.withSummary(lIpsum.substring(0, new Random().nextInt(50)))
 					.withDescription(lIpsum.substring(0, new Random().nextInt(lIpsum.length())))
-					.withGroup("group" + (new Random().nextInt(3) + 1));					
+					.withGroup("group" + (new Random().nextInt(24)));					
 					lAgenda.appointments().add(lAppointment);
 				}
 				return null;
