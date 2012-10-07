@@ -96,6 +96,13 @@
 	-fx-fill: #00000040;	
 }
 
+.AgendaWeekSkin .ResizeRectangle {
+	-fx-fill: transparent;
+	-fx-stroke: #00000080;
+    -fx-stroke-width: 2;
+    -fx-stroke-dash-array: 4 4 4 4;
+}
+
 .AgendaWeekSkin .focused { 
 	-fx-color: -fx-focused-base;
 	-fx-background-color: -fx-focus-color, -fx-outer-border, -fx-inner-border, -fx-body-color;

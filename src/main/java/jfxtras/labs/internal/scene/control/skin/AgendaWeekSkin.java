@@ -623,7 +623,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				// check if the appointment falls in today
 				// appointments may span multiple days, but the appointment pane will clamp the start and end date
 				AppointmentPane lAppointmentPane = new AppointmentPane(calendarObjectProperty.get(), lAppointment);
-				lAppointmentPane.day = this;
+				lAppointmentPane.dayPane = this;
 				if ( sameDay(calendarObjectProperty.get(), lAppointmentPane.start) 
 				  && sameDay(calendarObjectProperty.get(), lAppointmentPane.end)
 				   )
@@ -718,7 +718,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	 */
 	class AppointmentPane extends Focusable
 	{
-		DayPane day = null;
+		DayPane dayPane = null;
 		// for the role of cluster owner
 		List<AppointmentPane> clusterMembers = null; 
 		List<List<AppointmentPane>> clusterTracks = null;
@@ -897,14 +897,24 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					// dragDelta.x = stage.getX() - mouseEvent.getScreenX();
 					// dragDelta.y = stage.getY() - mouseEvent.getScreenY();
 					DurationDragger.this.setCursor(Cursor.MOVE);
+					resizeRectangle = new Rectangle(DurationDragger.this.appointmentPane.getLayoutX(), DurationDragger.this.appointmentPane.getLayoutY(), DurationDragger.this.appointmentPane.getWidth(), DurationDragger.this.appointmentPane.getHeight());
+					resizeRectangle.getStyleClass().add("ResizeRectangle");
+					DurationDragger.this.appointmentPane.dayPane.getChildren().add(resizeRectangle);
 				}
 			});
 			setOnMouseReleased(new EventHandler<MouseEvent>()
 			{
 				@Override
 				public void handle(MouseEvent mouseEvent)
-				{
+				{					
 					DurationDragger.this.setCursor(Cursor.HAND);
+					DurationDragger.this.appointmentPane.dayPane.getChildren().remove(resizeRectangle);
+					resizeRectangle = null;
+					
+					// - set the new end date for the appointment (recalculating the duration)
+					
+					// - relayoutAppointments for the one day
+					// - relayout the one day
 				}
 			});
 			setOnMouseDragged(new EventHandler<MouseEvent>()
@@ -915,18 +925,14 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					// - calculate the number of pixels from onscreen nodeY (layoutY) to onscreen mouseY					
 					double lNodeScreenY = NodeUtil.screenY(DurationDragger.this.appointmentPane);
 					double lMouseY = mouseEvent.getScreenY();
-					System.out.println("!!! " + lNodeScreenY + " / " + lMouseY);
-					
-					// - calculate the new durationInMs (minimum treshold is 10 minutes?)
-			
-					// - update the node height
-					
-					// stage.setX(mouseEvent.getScreenX() + dragDelta.x);
-					// stage.setY(mouseEvent.getScreenY() + dragDelta.y);
+					double lHeight = lMouseY - lNodeScreenY;
+					if (lHeight < 20) lHeight = 20;
+					resizeRectangle.setHeight(lHeight);
 				}
 			});
 		}
 		final AppointmentPane appointmentPane;
+		Rectangle resizeRectangle;
 	}
 	
 	
