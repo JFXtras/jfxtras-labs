@@ -900,6 +900,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					resizeRectangle = new Rectangle(DurationDragger.this.appointmentPane.getLayoutX(), DurationDragger.this.appointmentPane.getLayoutY(), DurationDragger.this.appointmentPane.getWidth(), DurationDragger.this.appointmentPane.getHeight());
 					resizeRectangle.getStyleClass().add("ResizeRectangle");
 					DurationDragger.this.appointmentPane.dayPane.getChildren().add(resizeRectangle);
+					
+					// disable panning on the scrollPane
+					weekScrollPane.setPannable(false);
 				}
 			});
 			setOnMouseReleased(new EventHandler<MouseEvent>()
@@ -907,14 +910,32 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				@Override
 				public void handle(MouseEvent mouseEvent)
 				{					
+					// - calculate the new end date for the appointment (recalculating the duration)
+					int ms = (int)(resizeRectangle.getHeight() * durationInMSPerPixel);
+					Calendar lCalendar = (Calendar)DurationDragger.this.appointmentPane.appointment.getStartTime().clone();
+					lCalendar.add(Calendar.MILLISECOND, ms);
+					
+					// align to X minutes accuracy
+					int lAlignToMinutes = 5;
+					lCalendar.set(Calendar.MILLISECOND, 0);
+					lCalendar.set(Calendar.SECOND, 0);
+					int lMinutes = lCalendar.get(Calendar.MINUTE) % lAlignToMinutes;
+					if (lMinutes < (lAlignToMinutes/2)) lCalendar.add(Calendar.MINUTE, -1 * lMinutes);
+					else lCalendar.add(Calendar.MINUTE, lAlignToMinutes - lMinutes);
+					
+					// set the new enddate
+					DurationDragger.this.appointmentPane.appointment.setEndTime(lCalendar);
+					
+					// relayoutAppointments for the one day
+					DurationDragger.this.appointmentPane.dayPane.setupAppointments();
+					
+					// reset ui
 					DurationDragger.this.setCursor(Cursor.HAND);
 					DurationDragger.this.appointmentPane.dayPane.getChildren().remove(resizeRectangle);
-					resizeRectangle = null;
+					resizeRectangle = null;					
 					
-					// - set the new end date for the appointment (recalculating the duration)
-					
-					// - relayoutAppointments for the one day
-					// - relayout the one day
+					// re-enable panning on the scrollPane
+					weekScrollPane.setPannable(true);
 				}
 			});
 			setOnMouseDragged(new EventHandler<MouseEvent>()
@@ -926,7 +947,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					double lNodeScreenY = NodeUtil.screenY(DurationDragger.this.appointmentPane);
 					double lMouseY = mouseEvent.getScreenY();
 					double lHeight = lMouseY - lNodeScreenY;
-					if (lHeight < 20) lHeight = 20;
+					if (lHeight < 5) lHeight = 5;
 					resizeRectangle.setHeight(lHeight);
 				}
 			});

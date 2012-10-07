@@ -149,12 +149,25 @@ public class Agenda extends Control
 	static public interface Appointment
 	{
 		public Calendar getStartTime();
+		public void setStartTime(Calendar c);
+		
 		public Calendar getEndTime();
+		public void setEndTime(Calendar c);
+		
 		public Boolean isWholeDay();
+		public void setWholeDay(Boolean b);
+		
 		public String getSummary();
+		public void setSummary(String s);
+		
 		public String getDescription();
+		public void setDescription(String s);
+		
 		public String getLocation();
+		public void setLocation(String s);
+		
 		public String getStyleClass(); // this is the CSS class being assigned
+		public void setStyleClass(String s);
 	}
 	
 	/**
