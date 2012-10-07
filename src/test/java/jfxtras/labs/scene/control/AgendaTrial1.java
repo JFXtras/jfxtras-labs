@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -235,6 +236,7 @@ public class AgendaTrial1 extends Application {
         BorderPane lBorderPane = new BorderPane();
         lBorderPane.setCenter(lAgenda);
         lBorderPane.setBottom(lHBox);
+        //lBorderPane.setLeft(new Label("AAAAAAA"));
         Scene scene = new Scene(lBorderPane, 900, 900);
 
         // create stage
