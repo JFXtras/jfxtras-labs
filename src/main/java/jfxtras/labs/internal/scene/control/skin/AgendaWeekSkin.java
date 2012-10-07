@@ -52,6 +52,7 @@ import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
 import jfxtras.labs.internal.scene.control.behavior.AgendaBehavior;
 import jfxtras.labs.scene.control.Agenda;
+import jfxtras.labs.scene.control.CalendarTimePicker;
 import jfxtras.labs.scene.control.Agenda.Appointment;
 import jfxtras.labs.util.NodeUtil;
 
@@ -865,6 +866,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					if (!mouseEvent.isPrimaryButtonDown())
 					{
 						DurationDragger.this.setCursor(Cursor.HAND);
+						
+						// no one else
+						mouseEvent.consume();
 					}
 				}
 			});
@@ -876,6 +880,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					if (!mouseEvent.isPrimaryButtonDown())
 					{
 						DurationDragger.this.setCursor(Cursor.DEFAULT);
+						
+						// no one else
+						mouseEvent.consume();
 					}
 				}
 			});
@@ -912,6 +919,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					double lHeight = lMouseY - lNodeScreenY;
 					if (lHeight < 5) lHeight = 5;
 					resizeRectangle.setHeight(lHeight);
+					
+					// no one else
+					mouseEvent.consume();
 				}
 			});
 			// end resize
@@ -926,12 +936,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					lCalendar.add(Calendar.MILLISECOND, ms);
 					
 					// align to X minutes accuracy
-					int lAlignToMinutes = 5;
-					lCalendar.set(Calendar.MILLISECOND, 0);
-					lCalendar.set(Calendar.SECOND, 0);
-					int lMinutes = lCalendar.get(Calendar.MINUTE) % lAlignToMinutes;
-					if (lMinutes < (lAlignToMinutes/2)) lCalendar.add(Calendar.MINUTE, -1 * lMinutes);
-					else lCalendar.add(Calendar.MINUTE, lAlignToMinutes - lMinutes);
+					setTimeToNearestMinutes(lCalendar, 5);
 					
 					// set the new enddate
 					DurationDragger.this.appointmentPane.appointment.setEndTime(lCalendar);
@@ -946,6 +951,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					
 					// re-enable panning on the scrollPane
 					weekScrollPane.setPannable(true);
+					
+					// no one else
+					mouseEvent.consume();
 				}
 			});
 		}
@@ -959,7 +967,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	
 	/**
 	 * These panes are focusable 
-	 * TODO: multiselect?
+	 * TODO: (multi)select?
+	 * TODO: shouldn't we be using JFX drag features?
 	 */
 	abstract class AbstractAppointmentArea extends Pane
 	{
@@ -992,6 +1001,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					// remember
 					startX = mouseEvent.getScreenX();
 					startY = mouseEvent.getScreenY();
+					
+					// no one else
+					mouseEvent.consume();
 				}
 			});
 			// visualize resize
@@ -1006,6 +1018,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					double lY = NodeUtil.screenY(AbstractAppointmentArea.this) - NodeUtil.screenY(AgendaWeekSkin.this) + lDeltaY;
 					resizeRectangle.setX(lX);
 					resizeRectangle.setY(lY);
+					
+					// no one else
+					mouseEvent.consume();
 				}
 			});
 			// end resize
@@ -1025,29 +1040,48 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 						{
 							// get the appointment that needs handling
 							Appointment lAppointment = AbstractAppointmentArea.this.appointment;
+							Calendar lDroppedOnCalendar = lDayPane.calendarObjectProperty.get();
 							
-							// calculate new start
-							// TODO: also calculate the minute where it was dropped
-							Calendar lStartCalendar = (lAppointment.isWholeDay() ? setTimeTo0000( (Calendar)lAppointment.getStartTime().clone() ) : (Calendar)lAppointment.getStartTime().clone() );
-							lStartCalendar.set(Calendar.YEAR, lDayPane.calendarObjectProperty.get().get(Calendar.YEAR));
-							lStartCalendar.set(Calendar.MONTH, lDayPane.calendarObjectProperty.get().get(Calendar.MONTH));
-							lStartCalendar.set(Calendar.DATE, lDayPane.calendarObjectProperty.get().get(Calendar.DATE));
-							// and end times
-							// TODO: calculate the minutes
-							Calendar lEndCalendar = (lAppointment.isWholeDay() ? setTimeTo2359( (Calendar)lStartCalendar.clone() ) : (Calendar)lAppointment.getEndTime().clone());
-							lEndCalendar.set(Calendar.YEAR, lDayPane.calendarObjectProperty.get().get(Calendar.YEAR));
-							lEndCalendar.set(Calendar.MONTH, lDayPane.calendarObjectProperty.get().get(Calendar.MONTH));
-							lEndCalendar.set(Calendar.DATE, lDayPane.calendarObjectProperty.get().get(Calendar.DATE));
-							
-							// set the new enddate
-							lAppointment.setStartTime(lStartCalendar);
-							lAppointment.setEndTime(lEndCalendar);
-							
-							// no longer whole day (just in case it was)
-							lAppointment.setWholeDay(false);
-										
-							// redo whole week
-							setupAppointments();
+							if (lAppointment.isWholeDay())
+							{
+								// calculate new start
+								Calendar lStartCalendar = setTimeTo0000( (Calendar)lDroppedOnCalendar.clone() );
+								// and end times
+								Calendar lEndCalendar = setTimeTo2359( (Calendar)lDroppedOnCalendar.clone() );
+								
+								// set the new enddate
+								lAppointment.setStartTime(lStartCalendar);
+								lAppointment.setEndTime(lEndCalendar);
+								
+								// no longer whole day
+								lAppointment.setWholeDay(false);
+							}
+							else
+							{
+								// duration
+								long lDurationInMS = lAppointment.getEndTime().getTimeInMillis() - lAppointment.getStartTime().getTimeInMillis();
+								
+								// calculate new start
+								Calendar lStartCalendar = (Calendar)lAppointment.getStartTime().clone();
+								lStartCalendar.set(Calendar.YEAR, lDroppedOnCalendar.get(Calendar.YEAR));
+								lStartCalendar.set(Calendar.MONTH, lDroppedOnCalendar.get(Calendar.MONTH));
+								lStartCalendar.set(Calendar.DATE, lDroppedOnCalendar.get(Calendar.DATE));
+	
+								// also add the delta Y minutes
+								int lDeltaDurationInMS = (int)((mouseEvent.getScreenY() - startY) * durationInMSPerPixel);
+								lStartCalendar.add(Calendar.MILLISECOND, lDeltaDurationInMS);
+								setTimeToNearestMinutes(lStartCalendar, 5);
+								while (sameDay(lStartCalendar, lDroppedOnCalendar) == false && lStartCalendar.before(lDroppedOnCalendar)) { lStartCalendar.add(Calendar.MINUTE, 1);  }// the delta may have pushed it out of today 
+								while (sameDay(lStartCalendar, lDroppedOnCalendar) == false && lStartCalendar.after(lDroppedOnCalendar)) { lStartCalendar.add(Calendar.MINUTE, -1);  }// the delta may have pushed it out of today
+								
+								// calculate
+								Calendar lEndCalendar = (Calendar)lStartCalendar.clone();
+								lEndCalendar.add(Calendar.MILLISECOND, (int)lDurationInMS);
+								
+								// set the new enddate
+								lAppointment.setStartTime(lStartCalendar);
+								lAppointment.setEndTime(lEndCalendar);
+							}
 						}
 					}
 					
@@ -1075,11 +1109,11 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 							
 							// now a whole day (just in case it was)
 							lAppointment.setWholeDay(true);
-										
-							// redo whole week
-							setupAppointments();
 						}
 					}
+					
+					// redo whole week
+					setupAppointments();
 					
 					// reset ui
 					AbstractAppointmentArea.this.setCursor(Cursor.HAND);
@@ -1088,6 +1122,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					
 					// re-enable panning on the scrollPane
 					weekScrollPane.setPannable(true);
+					
+					// no one else
+					mouseEvent.consume();
 				}
 			});
 		}
@@ -1105,6 +1142,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				}
 				focused = AbstractAppointmentArea.this;
 				focused.getStyleClass().add("focused");
+				
+				// no one else
+				evt.consume();
 			}
 		};
 	}
@@ -1321,6 +1361,23 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		c.set(Calendar.MINUTE, 59);
 		c.set(Calendar.SECOND, 59);
 		c.set(Calendar.MILLISECOND, 999);
+		return c;
+	}
+	
+	/**
+	 * 
+	 * @param c
+	 * @param minutes
+	 * @return
+	 */
+	private Calendar setTimeToNearestMinutes(Calendar c, int minutes)
+	{
+		// align to X minutes accuracy
+		c.set(Calendar.MILLISECOND, 0);
+		c.set(Calendar.SECOND, 0);
+		int lMinutes = c.get(Calendar.MINUTE) % minutes;
+		if (lMinutes < (minutes/2)) c.add(Calendar.MINUTE, -1 * lMinutes);
+		else c.add(Calendar.MINUTE, minutes - lMinutes);
 		return c;
 	}
 }
