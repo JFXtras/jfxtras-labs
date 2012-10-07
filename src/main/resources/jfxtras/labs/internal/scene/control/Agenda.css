@@ -25,12 +25,12 @@
 .AgendaWeekSkin .HalfHourLine {
 	-fx-fill: transparent;
 	-fx-stroke: LIGHTGRAY;
-	-fx-stroke-dash-array: 2 2;
+	-fx-stroke-dash-array: 4 4 4 4;
 }
 
 .AgendaWeekSkin .DayHeader {
-	-fx-fill: transparent;
-	-fx-stroke: transparent;
+	-fx-border-color:LIGHTGRAY;
+	-fx-border-width: 0px 0px 0px 1px;
 }
 
 .AgendaWeekSkin .Day {

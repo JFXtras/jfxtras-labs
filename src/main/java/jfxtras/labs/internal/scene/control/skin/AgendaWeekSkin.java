@@ -216,6 +216,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		
 		// top: header have to be created after the week, because there is a binding to days
 		weekHeader = new WeekHeaderPane();
+		weekHeader.setTranslateX(1); // correct for the scrollpane
 		borderPane.setTop(weekHeader);
 		
 		// add to self
@@ -264,12 +265,14 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		public DayHeaderPane(DayPane day)
 		{
 			// for debugging setStyle("-fx-border-color:PINK;-fx-border-width:4px;");
+			getStyleClass().add("DayHeader");
+			
 			// remember
 			this.day = day;
 			day.dayHeader = this; // two way link
 			
 			// set label
-			int lPadding = 3;
+			final int lPadding = 3;
 			text = new Text("?");
 			Rectangle lClip = new Rectangle(0,0,0,0);
 			lClip.widthProperty().bind(widthProperty().subtract(lPadding));
@@ -285,7 +288,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					String lLabel = iDayOfWeekDateFormat.format(DayHeaderPane.this.day.calendarObjectProperty.get().getTime()) + " " + iDateFormat.format(DayHeaderPane.this.day.calendarObjectProperty.get().getTime());
 					text.setText(lLabel);
 					double lX = (dayWidth - text.prefWidth(0)) / 2;
-					text.setX( lX < 0 ? 0 : lX );
+					text.setX( lX < 0 ? lPadding : lX + lPadding );
 					text.setY(text.prefHeight(0));
 				}
 			});
