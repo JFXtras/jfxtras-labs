@@ -24,6 +24,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+// TODO: adding of an appointment by dragging an area (this conflicts with panning)
+// TODO: editing of summary
+// TODO: dropping an area event in the header and then back into the day; take the location of the drop into account as the start time (instead of the last start time)
+// TODO: single day view
+// TODO: allow dragging on day spanning events on the not-the-first areas
 package jfxtras.labs.internal.scene.control.skin;
 
 import java.text.SimpleDateFormat;
@@ -61,8 +66,6 @@ import com.sun.javafx.scene.control.skin.SkinBase;
 
 /**
  * @author Tom Eugelink
- * TODO: adding of an appointment by dragging an area (this conflicts with panning)
- * TODO: single day view
  */
 public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 {
@@ -790,7 +793,6 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		
 			// duration
 			durationInMS = this.end.getTimeInMillis() - this.start.getTimeInMillis();
-			offsetFromStartInMS = (appointment.isWholeDay() ? 0 : this.start.getTimeInMillis() - appointment.getStartTime().getTimeInMillis());
 			
 			// strings
 			this.startAsString = (this.start.get(Calendar.HOUR_OF_DAY) < 10 ? "0" : "") + this.start.get(Calendar.HOUR_OF_DAY)
@@ -971,7 +973,6 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					// - calculate the new end date for the appointment (recalculating the duration)
 					int ms = (int)(resizeRectangle.getHeight() * durationInMSPerPixel);
 					Calendar lCalendar = (Calendar)DurationDragger.this.appointmentPane.appointment.getStartTime().clone();					
-					lCalendar.add(Calendar.MILLISECOND, (int)DurationDragger.this.appointmentPane.offsetFromStartInMS);
 					lCalendar.add(Calendar.MILLISECOND, ms);
 					
 					// align to X minutes accuracy
@@ -1002,17 +1003,16 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	
 	
 	// ==================================================================================================================
-	// FOCUS
+	// GENERIC APPOINTMENT AREA
 	
 	/**
-	 * These panes are focusable 
+	 * This class handles shared logic like dragging and focusable. 
 	 * TODO: (multi)select?
 	 * TODO: shouldn't we be using JFX drag features?
 	 */
 	abstract class AbstractAppointmentArea extends Pane
 	{
 		Agenda.Appointment appointment = null;
-		long offsetFromStartInMS = 0;
 		boolean isFirstAreaOfAppointment = true;
 		boolean isLastAreaOfAppointment = true;
 
@@ -1113,7 +1113,6 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 								
 								// calculate new start
 								Calendar lStartCalendar = copyYMD(lDroppedOnCalendar, (Calendar)lAppointment.getStartTime().clone());
-								lStartCalendar.add(Calendar.MILLISECOND, -1 * (int)offsetFromStartInMS);
 	
 								// also add the delta Y minutes
 								int lDeltaDurationInMS = (int)((mouseEvent.getScreenY() - startY) * durationInMSPerPixel);
