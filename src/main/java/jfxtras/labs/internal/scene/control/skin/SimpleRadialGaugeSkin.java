@@ -102,9 +102,9 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
         control          = CONTROL;
         initialized      = false;
         isDirty          = false;
-        gauge            = new Pane();
         canvas           = new Canvas();
         ctx              = canvas.getGraphicsContext2D();
+        gauge            = new Pane();
         center           = new Point2D(100, 100);
         bar              = new Arc();
         valueText        = new Text(Double.toString(control.getValue()));
@@ -147,6 +147,7 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
         registerChangeListener(control.minValueProperty(), "FULL_REPAINT");
         registerChangeListener(control.maxValueProperty(), "FULL_REPAINT");
         registerChangeListener(control.gaugeModelProperty(), "FULL_REPAINT");
+        registerChangeListener(control.barFrameColorProperty(), "FULL_REPAINT");
         registerChangeListener(control.barBackgroundColorProperty(), "FULL_REPAINT");
         registerChangeListener(control.valueLabelColorProperty(), "FULL_REPAINT");
         registerChangeListener(control.unitLabelColorProperty(), "FULL_REPAINT");
@@ -289,8 +290,6 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
             init();
         }
         getChildren().clear();
-
-        // Use the following call for canvas gauges
         if (control.isCanvasMode()) {
             drawCanvasGauge(ctx);
             getChildren().addAll(canvas);
@@ -493,7 +492,7 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
         //final double length       = control.getAngleRange();
 
         CTX.clearRect(0, 0, size, size);
-        CTX.setStroke(control.getBarBackgroundColor().darker());
+        CTX.setStroke(control.getBarFrameColor());
         CTX.setLineWidth(control.getBarWidth() + 2);
         if (control.isRoundedBar()) {
             CTX.setLineCap(StrokeLineCap.ROUND);

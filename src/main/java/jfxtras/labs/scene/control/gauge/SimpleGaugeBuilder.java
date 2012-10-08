@@ -139,6 +139,11 @@ public class SimpleGaugeBuilder<B extends SimpleGaugeBuilder<B>> extends Control
         return this;
     }
 
+    public final SimpleGaugeBuilder barFrameColor(final Color BAR_FRAME_COLOR) {
+        properties.put("BAR_FRAME_COLOR", new SimpleObjectProperty<Color>(BAR_FRAME_COLOR));
+        return this;
+    }
+
     public final SimpleGaugeBuilder barBackgroundColor(final Color BAR_BACKGROUND_COLOR) {
         properties.put("BAR_BACKGROUND_COLOR", new SimpleObjectProperty<Color>(BAR_BACKGROUND_COLOR));
         return this;
@@ -275,6 +280,8 @@ public class SimpleGaugeBuilder<B extends SimpleGaugeBuilder<B>> extends Control
                 CONTROL.setSections(((ObjectProperty<List<Section>>) properties.get(key)).get());
             } else if ("UNIT".equals(key)) {
                 CONTROL.setUnit(((StringProperty) properties.get(key)).get());
+            } else if ("BAR_FRAME_COLOR".equals(key)) {
+                CONTROL.setBarFrameColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("BAR_BACKGROUND_COLOR".equals(key)) {
                 CONTROL.setBarBackgroundColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("LABEL_COLOR".equals(key)) {

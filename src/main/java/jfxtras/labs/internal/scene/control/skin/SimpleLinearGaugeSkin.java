@@ -38,6 +38,8 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.CacheHint;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.layout.Pane;
@@ -75,6 +77,8 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
     private SimpleLinearGauge control;
     private boolean           isDirty;
     private boolean           initialized;
+    private Canvas            canvas;
+    private GraphicsContext   ctx;
     private Pane              gauge;
     private Point2D           center;
     private Line              bar;
@@ -89,28 +93,36 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
     private Text              maxLabel;
     private Orientation       orientation;
     private double            stepsize;
+    private Stop[]            barGradientStops;
 
 
     // ******************** Constructors **************************************
     public SimpleLinearGaugeSkin(final SimpleLinearGauge CONTROL) {
         super(CONTROL, new SimpleLinearGaugeBehavior(CONTROL));
-        control        = CONTROL;
-        initialized    = false;
-        isDirty        = false;
-        gauge          = new Pane();
-        center         = new Point2D(100, 50);
-        bar            = new Line();
-        valueText      = new Text();
-        valueFormat    = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.US));
-        unitText       = new Text();
-        timeline       = new Timeline();
-        gaugeValue     = new SimpleDoubleProperty(control.getValue());
-        width          = 200;
-        height         = 60;
-        minLabel       = new Text(valueFormat.format(control.getMinValue()));
-        maxLabel       = new Text(valueFormat.format(control.getMaxValue()));
-        orientation    = Orientation.HORIZONTAL;
-        stepsize       = 1;
+        control          = CONTROL;
+        initialized      = false;
+        isDirty          = false;
+        canvas           = new Canvas();
+        ctx              = canvas.getGraphicsContext2D();
+        gauge            = new Pane();
+        center           = new Point2D(100, 50);
+        bar              = new Line();
+        valueText        = new Text();
+        valueFormat      = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.US));
+        unitText         = new Text();
+        timeline         = new Timeline();
+        gaugeValue       = new SimpleDoubleProperty(control.getValue());
+        width            = 200;
+        height           = 60;
+        minLabel         = new Text(valueFormat.format(control.getMinValue()));
+        maxLabel         = new Text(valueFormat.format(control.getMaxValue()));
+        orientation      = Orientation.HORIZONTAL;
+        stepsize         = 1;
+        barGradientStops = new Stop[] {
+            new Stop(0, Color.TRANSPARENT),
+            new Stop(0.8, control.getBarColor().darker()),
+            new Stop(1.0, control.getBarColor().brighter())
+        };
         init();
     }
 
@@ -123,11 +135,18 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
         center = new Point2D(control.getPrefWidth() / 2, control.getPrefHeight() / 2);
 
         // Register listeners
-        registerChangeListener(control.prefWidthProperty(), "PREF_WIDTH");
-        registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");
+        registerChangeListener(control.widthProperty(), "WIDTH");
+        registerChangeListener(control.heightProperty(), "HEIGHT");
+        registerChangeListener(control.prefWidthProperty(), "WIDTH");
+        registerChangeListener(control.prefHeightProperty(), "HEIGHT");
+        registerChangeListener(control.minWidthProperty(), "WIDTH");
+        registerChangeListener(control.minHeightProperty(), "HEIGHT");
+        registerChangeListener(control.maxWidthProperty(), "WIDTH");
+        registerChangeListener(control.maxHeightProperty(), "HEIGHT");
         registerChangeListener(control.minValueProperty(), "FULL_REPAINT");
         registerChangeListener(control.maxValueProperty(), "FULL_REPAINT");
         registerChangeListener(control.gaugeModelProperty(), "FULL_REPAINT");
+        registerChangeListener(control.barFrameColorProperty(), "FULL_REPAINT");
         registerChangeListener(control.barBackgroundColorProperty(), "FULL_REPAINT");
         registerChangeListener(control.valueLabelColorProperty(), "FULL_REPAINT");
         registerChangeListener(control.unitLabelColorProperty(), "FULL_REPAINT");
@@ -168,21 +187,35 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
             maxLabel.visibleProperty().unbind();
         }
         maxLabel.visibleProperty().bind(control.maxLabelVisibleProperty());
+
+        if (valueText.visibleProperty().isBound()) {
+            valueText.visibleProperty().unbind();
+        }
+        valueText.visibleProperty().bind(control.valueLabelVisibleProperty());
+
+        if (unitText.visibleProperty().isBound()) {
+            unitText.visibleProperty().unbind();
+        }
+        unitText.visibleProperty().bind(control.unitLabelVisibleProperty());
     }
 
 
     // ******************** Methods *******************************************
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
-        if ("PREF_WIDTH".equals(PROPERTY)) {
+        if ("WIDTH".equals(PROPERTY)) {
             width  = control.getPrefWidth();
             height = control.getPrefHeight();
             orientation = width < height ? Orientation.VERTICAL : Orientation.HORIZONTAL;
+            canvas.setWidth(width);
+            canvas.setHeight(height);
             repaint();
-        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
+        } else if ("HEIGHT".equals(PROPERTY)) {
             width  = control.getPrefWidth();
             height = control.getPrefHeight();
             orientation = width < height ? Orientation.VERTICAL : Orientation.HORIZONTAL;
+            canvas.setWidth(width);
+            canvas.setHeight(height);
             repaint();
         } else if ("FULL_REPAINT".equals(PROPERTY)) {
             repaint();
@@ -202,7 +235,16 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
                 gaugeValue.set(control.getValue());
             }
         } else if ("BAR".equals(PROPERTY)) {
-            drawGauge();
+            if (control.isCanvasMode()) {
+                barGradientStops = new Stop[] {
+                    new Stop(0, Color.TRANSPARENT),
+                    new Stop(0.8, control.getBarColor().darker()),
+                    new Stop(1.0, control.getBarColor().brighter())
+                };
+                drawCanvasGauge(ctx);
+            } else {
+                drawNodeGauge();
+            }
         } else if ("LABEL".equals(PROPERTY)) {
             updateNumberFormat();
             repaint();
@@ -235,6 +277,10 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
                     bar.setEndX(control.getBarWidth() + (gaugeValue.get() * stepsize));
                     break;
             }
+
+            if (control.isCanvasMode()) {
+                drawCanvasGauge(ctx);
+            }
         }
     }
 
@@ -251,8 +297,14 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
             init();
         }
         getChildren().clear();
-        drawGauge();
-        getChildren().addAll(gauge);
+        if (control.isCanvasMode()) {
+            drawCanvasGauge(ctx);
+            getChildren().addAll(canvas);
+        } else {
+            drawNodeGauge();
+            getChildren().addAll(gauge);
+        }
+
         isDirty = false;
 
         super.layoutChildren();
@@ -335,7 +387,7 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
 
 
     // ******************** Drawing related ***********************************
-    public final void drawGauge() {
+    public final void drawNodeGauge() {
         width       = control.getPrefWidth();
         height      = control.getPrefHeight();
         orientation = width < height ? Orientation.VERTICAL : Orientation.HORIZONTAL;
@@ -480,5 +532,63 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
                                    maxLabel);
         gauge.setCache(true);
         gauge.setCacheHint(CacheHint.QUALITY);
+    }
+
+    private void drawCanvasGauge(final GraphicsContext CTX) {
+        if (Orientation.VERTICAL == orientation) {
+            stepsize = Math.abs((height - (2 * control.getBarWidth()) - valueText.getLayoutBounds().getHeight() - 5 - control.getBarWidth() / 2) / control.getRange());
+        } else {
+            stepsize = Math.abs((width - (2 * control.getBarWidth())) / control.getRange());
+        }
+        CTX.clearRect(0, 0, width, height);
+        CTX.setStroke(control.getBarFrameColor());
+        CTX.setLineWidth(control.getBarWidth() + 2);
+        if (control.isRoundedBar()) {
+            CTX.setLineCap(StrokeLineCap.ROUND);
+        } else {
+            CTX.setLineCap(StrokeLineCap.BUTT);
+        }
+        if (Orientation.VERTICAL == orientation) {
+            CTX.strokeLine(center.getX(), height - control.getBarWidth(), center.getX(), control.getBarWidth() + valueText.getLayoutBounds().getHeight() + 5 + control.getBarWidth() / 2);
+        } else {
+            CTX.strokeLine(control.getBarWidth(), center.getY(), width - control.getBarWidth(), center.getY());
+        }
+
+        CTX.setStroke(control.getBarBackgroundColor());
+        CTX.setLineWidth(control.getBarWidth());
+        if (control.isRoundedBar()) {
+            CTX.setLineCap(StrokeLineCap.ROUND);
+        } else {
+            CTX.setLineCap(StrokeLineCap.BUTT);
+        }
+        if (Orientation.VERTICAL == orientation) {
+            CTX.strokeLine(center.getX(), height - control.getBarWidth(), center.getX(), control.getBarWidth() + valueText.getLayoutBounds().getHeight() + 5 + control.getBarWidth() / 2 - (gaugeValue.get() * stepsize));
+        } else {
+            CTX.strokeLine(control.getBarWidth(), center.getY(), width - control.getBarWidth() + (gaugeValue.get() * stepsize), center.getY());
+        }
+
+        if (control.isValueLabelVisible()) {
+            CTX.setFont(Font.font("Verdana", FontWeight.BOLD, control.getValueLabelFontSize()));
+            CTX.setFill(control.getValueLabelColor());
+            CTX.setTextAlign(TextAlignment.CENTER);
+            CTX.setTextBaseline(VPos.CENTER);
+            if (Orientation.VERTICAL == orientation) {
+                CTX.fillText(valueFormat.format(gaugeValue.doubleValue()), width / 2, control.getValueLabelFontSize());
+            } else {
+                CTX.fillText(valueFormat.format(gaugeValue.doubleValue()), width / 2, control.getValueLabelFontSize());
+            }
+        }
+
+        if (control.isUnitLabelVisible() && !control.getUnit().isEmpty()) {
+            CTX.setFont(Font.font("Verdana", FontWeight.BOLD, control.getUnitLabelFontSize()));
+            CTX.setFill(control.getUnitLabelColor());
+            CTX.setTextAlign(TextAlignment.CENTER);
+            CTX.setTextBaseline(VPos.BOTTOM);
+            if (Orientation.VERTICAL == orientation) {
+                CTX.fillText(control.getUnit(), width / 2, height - control.getUnitLabelFontSize());
+            } else {
+                CTX.fillText(control.getUnit(), width / 2, height - control.getUnitLabelFontSize());
+            }
+        }
     }
 }
