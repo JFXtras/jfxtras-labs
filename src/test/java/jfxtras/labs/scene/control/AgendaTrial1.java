@@ -34,7 +34,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -172,6 +171,7 @@ public class AgendaTrial1 extends Application {
 		// day spanner
 		{
 			Calendar lStart = (Calendar)lFirstDayOfWeekCalendar.clone();
+			lStart.add(Calendar.SECOND, 5);
 			lStart.add(Calendar.DATE, 1);
 			Calendar lEnd = (Calendar)lStart.clone();
 			lEnd.add(Calendar.DATE, 2);

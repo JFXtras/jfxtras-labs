@@ -54,7 +54,6 @@ import javafx.util.Duration;
 import jfxtras.labs.animation.Timer;
 import jfxtras.labs.internal.scene.control.behavior.AgendaBehavior;
 import jfxtras.labs.scene.control.Agenda;
-import jfxtras.labs.scene.control.CalendarTimePicker;
 import jfxtras.labs.scene.control.Agenda.Appointment;
 import jfxtras.labs.util.NodeUtil;
 
@@ -62,7 +61,8 @@ import com.sun.javafx.scene.control.skin.SkinBase;
 
 /**
  * @author Tom Eugelink
- * TODO: the alignment of wholeday in header and day is not pixel perfect
+ * TODO: adding of an appointment by dragging an area (this conflicts with panning)
+ * TODO: single day view
  */
 public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 {
@@ -103,11 +103,11 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			@Override
 			public void invalidated(Observable observable)
 			{
-				assignCalendarToTheDays();
+				assignCalendarToTheDayPanes();
 				setupAppointments();
 			}
 		});
-		assignCalendarToTheDays();
+		assignCalendarToTheDayPanes();
 		
 		// react to changes in the appointments 
 		getSkinnable().appointments().addListener(new ListChangeListener<Agenda.Appointment>() 
@@ -125,7 +125,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	 * Assign a calendar to each day, so it knows what it must draw.
 	 * 
 	 */
-	private void assignCalendarToTheDays()
+	private void assignCalendarToTheDayPanes()
 	{
 		// get the first day of week calendar
 		Calendar lCalendar = getFirstDayOfWeekCalendar();
@@ -180,7 +180,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		{
 			lDay.setupAppointments();
 		}
-		nowTimer.restart(); // place the now line
+		nowUpdateRunnable.run(); // place the now line
 	}
 	
 	// ==================================================================================================================
@@ -215,6 +215,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			public void invalidated(Observable viewportBoundsProperty)
 			{
 				calculateSizes();
+				nowUpdateRunnable.run();
 			}
 		});
 		
@@ -273,34 +274,34 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	 */
 	class DayHeaderPane extends Pane
 	{
-		public DayHeaderPane(DayPane day)
+		public DayHeaderPane(DayPane dayPane)
 		{
 			// for debugging setStyle("-fx-border-color:PINK;-fx-border-width:4px;");
 			getStyleClass().add("DayHeader");
 			
-			// remember
-			this.dayPane = day;
-			day.dayHeader = this; // two way link
+			// link up the two panes
+			this.dayPane = dayPane;
+			dayPane.dayHeader = this; // two way link
 			
 			// set label
 			final int lPadding = 3;
-			text = new Text("?");
+			calendarText = new Text("?");
 			Rectangle lClip = new Rectangle(0,0,0,0);
 			lClip.widthProperty().bind(widthProperty().subtract(lPadding));
 			lClip.heightProperty().bind(heightProperty());
-			text.setClip(lClip);
-			getChildren().add(text);
-			day.calendarObjectProperty.addListener(new InvalidationListener()
+			calendarText.setClip(lClip);
+			getChildren().add(calendarText);
+			dayPane.calendarObjectProperty.addListener(new InvalidationListener()
 			{
 				@Override
 				public void invalidated(Observable arg0)
 				{
 					if (DayHeaderPane.this.dayPane.calendarObjectProperty.get() == null) return;
 					String lLabel = iDayOfWeekDateFormat.format(DayHeaderPane.this.dayPane.calendarObjectProperty.get().getTime()) + " " + iDateFormat.format(DayHeaderPane.this.dayPane.calendarObjectProperty.get().getTime());
-					text.setText(lLabel);
-					double lX = (dayWidth - text.prefWidth(0)) / 2;
-					text.setX( lX < 0 ? lPadding : lX + lPadding );
-					text.setY(text.prefHeight(0));
+					calendarText.setText(lLabel);
+					double lX = (dayWidth - calendarText.prefWidth(0)) / 2;
+					calendarText.setX( lX < 0 ? lPadding : lX + lPadding );
+					calendarText.setY(calendarText.prefHeight(0));
 				}
 			});
 			
@@ -326,7 +327,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			relayout();
 		}
 		DayPane dayPane = null;
-		Text text = null;
+		Text calendarText = null;
 		
 		/**
 		 * 
@@ -396,7 +397,18 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			lClip.heightProperty().bind(heightProperty());
 			lSummaryText.setClip(lClip);
 			getChildren().add(lSummaryText);			
+			
+			// history visualizer
+			historyVisualizer = new Rectangle();
+			historyVisualizer.xProperty().set(0);
+			historyVisualizer.yProperty().set(0);
+			historyVisualizer.widthProperty().bind(prefWidthProperty());
+			historyVisualizer.heightProperty().bind(prefHeightProperty());
+			getChildren().add(historyVisualizer);
+			historyVisualizer.setVisible(false);
+			historyVisualizer.getStyleClass().add("History");
 		}
+		final Rectangle historyVisualizer;
 	}
 	
 	/**
@@ -492,7 +504,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				hourTexts.get(lHour).yProperty().set(lHour * hourHeight);
 			}
 
-			// postion the day panes
+			// position the day panes
 			for (int i = 0; i < 7; i++)
 			{
 				DayPane lDay = dayPanes.get(i);
@@ -835,7 +847,18 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				durationDragger.setHeight(3);
 				getChildren().add(durationDragger);
 			}
+			
+			// history visualizer
+			historyVisualizer = new Rectangle();
+			historyVisualizer.xProperty().set(0);
+			historyVisualizer.yProperty().set(0);
+			historyVisualizer.widthProperty().bind(prefWidthProperty());
+			historyVisualizer.heightProperty().bind(prefHeightProperty());
+			getChildren().add(historyVisualizer);
+			historyVisualizer.setVisible(false);
+			historyVisualizer.getStyleClass().add("History");
 		}
+		final Rectangle historyVisualizer;
 		final Calendar start;
 		final String startAsString;
 		final Calendar end;
@@ -1175,10 +1198,10 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 
 	
 	// ==================================================================================================================
-	// TODAY
+	// NOW
 	
-	Rectangle nowLine = new Rectangle(0,0,0,0);
-	Timer nowTimer = new Timer(new Runnable()
+	final Rectangle nowLine = new Rectangle(0,0,0,0);
+	Runnable nowUpdateRunnable = new Runnable()
 	{
 		{
 			nowLine.getStyleClass().add("Now");
@@ -1213,6 +1236,16 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					nowLine.setHeight(3);
 					nowLine.setWidth(dayWidth);	
 				}
+				
+				// display history
+				for (AppointmentPane lAppointmentPane : lDayPane.appointmentPanes)
+				{
+					lAppointmentPane.historyVisualizer.setVisible( lAppointmentPane.start.before(lNow));
+				}
+				for (AppointmentPane lAppointmentPane : lDayPane.wholedayAppointmentPanes)
+				{
+					lAppointmentPane.historyVisualizer.setVisible( lAppointmentPane.start.before(lNow));
+				}
 			}
 			
 			// if cannot be placed, remove
@@ -1220,8 +1253,25 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			{
 				weekPane.getChildren().remove(nowLine);
 			}
+			
+			// also for headers
+			for (DayHeaderPane lDayHeaderPane : weekHeaderPane.dayHeaderPanes)
+			{
+				for (AppointmentHeaderPane lAppointmentHeaderPane : lDayHeaderPane.appointmentHeaderPanes)
+				{
+					lAppointmentHeaderPane.historyVisualizer.setVisible(lAppointmentHeaderPane.appointment.getStartTime().before(lNow));
+				}
+			}
 		}
-	}).withCycleDuration(new Duration(10 * 1000)).start(); // once every 10 seconds
+	};
+	
+	/**
+	 * This timer takes care of visualizing NOW
+	 */
+	Timer nowTimer = new Timer(nowUpdateRunnable)
+		.withCycleDuration(new Duration(60 * 1000))// every minute
+		.withDelay(new Duration( (60 - Calendar.getInstance().get(Calendar.SECOND)) * 1000)) // start on the minute
+		.start();  
 	
 	// ==================================================================================================================
 	// SUPPORT
@@ -1254,10 +1304,10 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		
 		// day columns
 		dayFirstColumnX = timeWidth + lTimeColumnWhitespace;
-		dayWidth = (getSkinnable().getWidth() - timeWidth - scrollbarSize) / 7;
+		dayWidth = (getSkinnable().getWidth() - timeWidth - scrollbarSize) / 7; // 7 days per week
 		if (weekScrollPane.viewportBoundsProperty().get() != null) 
 		{
-			dayWidth = (weekScrollPane.viewportBoundsProperty().get().getWidth() - timeWidth) / 7;
+			dayWidth = (weekScrollPane.viewportBoundsProperty().get().getWidth() - timeWidth) / 7; // 7 days per week
 		}
 		dayContentWidth = dayWidth - 10;
 		

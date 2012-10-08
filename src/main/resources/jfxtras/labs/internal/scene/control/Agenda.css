@@ -114,4 +114,9 @@
 	-fx-fill: RED;
 	-fx-stroke: WHITE;
 }
- 
+.AgendaWeekSkin .History {
+	-fx-stroke: transparent;
+	-fx-fill: #FFFFFF70;
+}
+
+
