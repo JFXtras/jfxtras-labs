@@ -70,26 +70,23 @@ public class Timer
 	// ==================================================================================================================
 	// PROPERTIES
 	
-	/** delay: */
+	/** delay: initial delay */
 	public ObjectProperty<Duration> delayProperty() { return this.delayObjectProperty; }
 	final private ObjectProperty<Duration> delayObjectProperty = new SimpleObjectProperty<Duration>(this, "delay", Duration.millis(0));
-	// java bean API
 	public Duration getDelay() { return this.delayObjectProperty.getValue(); }
 	public void setDelay(Duration value) { this.delayObjectProperty.setValue(value); }
 	public Timer withDelay(Duration value) { setDelay(value); return this; }
 	
-	/** cycleDuration: */
+	/** cycleDuration: time between fires */
 	public ObjectProperty<Duration> cycleDurationProperty() { return this.cycleDurationObjectProperty; }
 	final private ObjectProperty<Duration> cycleDurationObjectProperty = new SimpleObjectProperty<Duration>(this, "cycleDuration", Duration.millis(1000));
-	// java bean API
 	public Duration getCycleDuration() { return this.cycleDurationObjectProperty.getValue(); }
 	public void setCycleDuration(Duration value) { this.cycleDurationObjectProperty.setValue(value); }
 	public Timer withCycleDuration(Duration value) { setCycleDuration(value); return this; }
 	
-	/** repeats: */
+	/** repeats: If flag is false, instructs the Timer to send only one action event to its listeners. */
 	public ObjectProperty<Boolean> repeatsProperty() { return this.repeatsObjectProperty; }
 	final private ObjectProperty<Boolean> repeatsObjectProperty = new SimpleObjectProperty<Boolean>(this, "repeats", Boolean.TRUE);
-	// java bean API
 	public boolean getRepeats() { return this.repeatsObjectProperty.getValue(); }
 	public void setRepeats(boolean value) { this.repeatsObjectProperty.setValue(value); }
 	public Timer withRepeats(boolean value) { setRepeats(value); return this; }
@@ -101,7 +98,7 @@ public class Timer
 	/**
 	 * Start the timer
 	 */
-	synchronized public void start()
+	synchronized public Timer start()
 	{
 		// check if the timer is already running
 		if (timerTaskAtomicReference.get() != null) throw new IllegalStateException("Timer already started");
@@ -123,27 +120,36 @@ public class Timer
 		
 		// remember for future reference
 		timerTaskAtomicReference.set(lTimerTask);
+		
+		// for chaining
+		return this;
 	}
 	final private AtomicReference<TimerTask> timerTaskAtomicReference = new AtomicReference<TimerTask>(null);
 	
 	/**
 	 * stop the timer if running
 	 */
-	public void stop()
+	public Timer stop()
 	{
 		TimerTask lTimerTask = timerTaskAtomicReference.getAndSet(null);
 		if (lTimerTask != null)
 		{
 			lTimerTask.cancel();
 		}
+		
+		// for chaining
+		return this;
 	}
 	
 	/**
 	 * restart the timer
 	 */
-	public void restart()
+	public Timer restart()
 	{
 		stop();
 		start();
+		
+		// for chaining
+		return this;
 	}
 }

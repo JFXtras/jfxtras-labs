@@ -50,6 +50,8 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
+import jfxtras.labs.animation.Timer;
 import jfxtras.labs.internal.scene.control.behavior.AgendaBehavior;
 import jfxtras.labs.scene.control.Agenda;
 import jfxtras.labs.scene.control.CalendarTimePicker;
@@ -178,6 +180,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		{
 			lDay.setupAppointments();
 		}
+		nowTimer.restart(); // place the now line
 	}
 	
 	// ==================================================================================================================
@@ -633,8 +636,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				// appointments may span multiple days, but the appointment pane will clamp the start and end date
 				AppointmentPane lAppointmentPane = new AppointmentPane(calendarObjectProperty.get(), lAppointment);
 				lAppointmentPane.dayPane = this;
-				if ( sameDay(calendarObjectProperty.get(), lAppointmentPane.start) 
-				  && sameDay(calendarObjectProperty.get(), lAppointmentPane.end)
+				if ( isSameDay(calendarObjectProperty.get(), lAppointmentPane.start) 
+				  && isSameDay(calendarObjectProperty.get(), lAppointmentPane.end)
 				   )
 				{
 					if (lAppointment.isWholeDay())
@@ -762,13 +765,21 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			{
 				// start
 				Calendar lDayStartCalendar = setTimeTo0000( (Calendar)calendar.clone() );
-				this.start = (appointment.getStartTime().before(lDayStartCalendar) ? lDayStartCalendar : appointment.getStartTime());
+				this.start = (appointment.getStartTime().before(lDayStartCalendar) ? lDayStartCalendar : (Calendar)appointment.getStartTime().clone());
 				
 				// end
 				Calendar lDayEndCalendar = setTimeTo2359( (Calendar)calendar.clone() );
-				this.end = (appointment.getEndTime().after(lDayEndCalendar) ? lDayEndCalendar : appointment.getEndTime());
+				this.end = (appointment.getEndTime().after(lDayEndCalendar) ? lDayEndCalendar : (Calendar)appointment.getEndTime().clone());
+				
+				// always is final appointment
+				isFirstAreaOfAppointment = this.start.equals(appointment.getStartTime()); 
+				isLastAreaOfAppointment = this.end.equals(appointment.getEndTime()); 
 			}
 		
+			// duration
+			durationInMS = this.end.getTimeInMillis() - this.start.getTimeInMillis();
+			offsetFromStartInMS = (appointment.isWholeDay() ? 0 : this.start.getTimeInMillis() - appointment.getStartTime().getTimeInMillis());
+			
 			// strings
 			this.startAsString = (this.start.get(Calendar.HOUR_OF_DAY) < 10 ? "0" : "") + this.start.get(Calendar.HOUR_OF_DAY)
 					   + ":"
@@ -778,9 +789,6 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 							 + ":"
 							 + (this.end.get(Calendar.MINUTE) < 10 ? "0" : "" ) + this.end.get(Calendar.MINUTE)
 							 ;
-			
-			// duration
-			durationInMS = this.end.getTimeInMillis() - this.start.getTimeInMillis();
 			
 			// only for whole day events
 			if (appointment.isWholeDay() == false)
@@ -814,12 +822,19 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			}
 			
 			// duration dragger
-			durationDragger = new DurationDragger(this);
-			durationDragger.xProperty().bind(widthProperty().multiply(0.25));
-			durationDragger.yProperty().bind(heightProperty().subtract(5));
-			durationDragger.widthProperty().bind(widthProperty().multiply(0.5));
-			durationDragger.setHeight(3);
-			getChildren().add(durationDragger);	
+			if (isLastAreaOfAppointment == false)
+			{
+				durationDragger = null;
+			}
+			else
+			{
+				durationDragger = new DurationDragger(this);
+				durationDragger.xProperty().bind(widthProperty().multiply(0.25));
+				durationDragger.yProperty().bind(heightProperty().subtract(5));
+				durationDragger.widthProperty().bind(widthProperty().multiply(0.5));
+				durationDragger.setHeight(3);
+				getChildren().add(durationDragger);
+			}
 		}
 		final Calendar start;
 		final String startAsString;
@@ -932,7 +947,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				{					
 					// - calculate the new end date for the appointment (recalculating the duration)
 					int ms = (int)(resizeRectangle.getHeight() * durationInMSPerPixel);
-					Calendar lCalendar = (Calendar)DurationDragger.this.appointmentPane.appointment.getStartTime().clone();
+					Calendar lCalendar = (Calendar)DurationDragger.this.appointmentPane.appointment.getStartTime().clone();					
+					lCalendar.add(Calendar.MILLISECOND, (int)DurationDragger.this.appointmentPane.offsetFromStartInMS);
 					lCalendar.add(Calendar.MILLISECOND, ms);
 					
 					// align to X minutes accuracy
@@ -941,9 +957,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					// set the new enddate
 					DurationDragger.this.appointmentPane.appointment.setEndTime(lCalendar);
 					
-					// relayoutAppointments for the one day
-					DurationDragger.this.appointmentPane.dayPane.setupAppointments();
-					
+					// redo whole week
+					setupAppointments();
+									
 					// reset ui
 					DurationDragger.this.setCursor(Cursor.HAND);
 					DurationDragger.this.appointmentPane.dayPane.getChildren().remove(resizeRectangle);
@@ -973,7 +989,11 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	abstract class AbstractAppointmentArea extends Pane
 	{
 		Agenda.Appointment appointment = null;
-		
+		long offsetFromStartInMS = 0;
+		boolean isFirstAreaOfAppointment = true;
+		boolean isLastAreaOfAppointment = true;
+
+
 		/**
 		 * 
 		 */
@@ -987,7 +1007,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				@Override
 				public void handle(MouseEvent mouseEvent)
 				{
-					// plae the rectangle
+					if (isFirstAreaOfAppointment == false) return;
+					
+					// place the rectangle
 					AbstractAppointmentArea.this.setCursor(Cursor.MOVE);
 					double lX = NodeUtil.screenX(AbstractAppointmentArea.this) - NodeUtil.screenX(AgendaWeekSkin.this);
 					double lY = NodeUtil.screenY(AbstractAppointmentArea.this) - NodeUtil.screenY(AgendaWeekSkin.this);
@@ -1012,6 +1034,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				@Override
 				public void handle(MouseEvent mouseEvent)
 				{
+					if (isFirstAreaOfAppointment == false) return;
+					
 					double lDeltaX = mouseEvent.getScreenX() - startX;
 					double lDeltaY = mouseEvent.getScreenY() - startY;
 					double lX = NodeUtil.screenX(AbstractAppointmentArea.this) - NodeUtil.screenX(AgendaWeekSkin.this) + lDeltaX;
@@ -1029,6 +1053,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				@Override
 				public void handle(MouseEvent mouseEvent)
 				{
+					if (isFirstAreaOfAppointment == false) return;
+					
 					// find out where it was dropped
 					for (DayPane lDayPane : weekPane.dayPanes)
 					{
@@ -1041,13 +1067,14 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 							// get the appointment that needs handling
 							Appointment lAppointment = AbstractAppointmentArea.this.appointment;
 							Calendar lDroppedOnCalendar = lDayPane.calendarObjectProperty.get();
-							
+		
+							// is wholeday now, will become partial
 							if (lAppointment.isWholeDay())
 							{
 								// calculate new start
-								Calendar lStartCalendar = setTimeTo0000( (Calendar)lDroppedOnCalendar.clone() );
+								Calendar lStartCalendar = copyYMD( lDroppedOnCalendar, (Calendar)lAppointment.getStartTime().clone() );
 								// and end times
-								Calendar lEndCalendar = setTimeTo2359( (Calendar)lDroppedOnCalendar.clone() );
+								Calendar lEndCalendar = lAppointment.getEndTime() == null ? setTimeTo2359( (Calendar)lDroppedOnCalendar.clone() ) : copyYMD( lDroppedOnCalendar, (Calendar)lAppointment.getEndTime().clone() );
 								
 								// set the new enddate
 								lAppointment.setStartTime(lStartCalendar);
@@ -1062,17 +1089,15 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 								long lDurationInMS = lAppointment.getEndTime().getTimeInMillis() - lAppointment.getStartTime().getTimeInMillis();
 								
 								// calculate new start
-								Calendar lStartCalendar = (Calendar)lAppointment.getStartTime().clone();
-								lStartCalendar.set(Calendar.YEAR, lDroppedOnCalendar.get(Calendar.YEAR));
-								lStartCalendar.set(Calendar.MONTH, lDroppedOnCalendar.get(Calendar.MONTH));
-								lStartCalendar.set(Calendar.DATE, lDroppedOnCalendar.get(Calendar.DATE));
+								Calendar lStartCalendar = copyYMD(lDroppedOnCalendar, (Calendar)lAppointment.getStartTime().clone());
+								lStartCalendar.add(Calendar.MILLISECOND, -1 * (int)offsetFromStartInMS);
 	
 								// also add the delta Y minutes
 								int lDeltaDurationInMS = (int)((mouseEvent.getScreenY() - startY) * durationInMSPerPixel);
 								lStartCalendar.add(Calendar.MILLISECOND, lDeltaDurationInMS);
 								setTimeToNearestMinutes(lStartCalendar, 5);
-								while (sameDay(lStartCalendar, lDroppedOnCalendar) == false && lStartCalendar.before(lDroppedOnCalendar)) { lStartCalendar.add(Calendar.MINUTE, 1);  }// the delta may have pushed it out of today 
-								while (sameDay(lStartCalendar, lDroppedOnCalendar) == false && lStartCalendar.after(lDroppedOnCalendar)) { lStartCalendar.add(Calendar.MINUTE, -1);  }// the delta may have pushed it out of today
+								while (isSameDay(lStartCalendar, lDroppedOnCalendar) == false && lStartCalendar.before(lDroppedOnCalendar)) { lStartCalendar.add(Calendar.MINUTE, 1);  }// the delta may have pushed it out of today 
+								while (isSameDay(lStartCalendar, lDroppedOnCalendar) == false && lStartCalendar.after(lDroppedOnCalendar)) { lStartCalendar.add(Calendar.MINUTE, -1);  }// the delta may have pushed it out of today
 								
 								// calculate
 								Calendar lEndCalendar = (Calendar)lStartCalendar.clone();
@@ -1098,14 +1123,12 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 							Appointment lAppointment = AbstractAppointmentArea.this.appointment;
 							
 							// calculate new start
-							Calendar lStartCalendar = (Calendar)lAppointment.getStartTime().clone();
-							lStartCalendar.set(Calendar.YEAR, lDayHeaderPane.dayPane.calendarObjectProperty.get().get(Calendar.YEAR));
-							lStartCalendar.set(Calendar.MONTH, lDayHeaderPane.dayPane.calendarObjectProperty.get().get(Calendar.MONTH));
-							lStartCalendar.set(Calendar.DATE, lDayHeaderPane.dayPane.calendarObjectProperty.get().get(Calendar.DATE));
+							Calendar lStartCalendar = copyYMD(lDayHeaderPane.dayPane.calendarObjectProperty.get(), (Calendar)lAppointment.getStartTime().clone() );
 							
-							// set the new enddate
+							// set the new start date
 							lAppointment.setStartTime(lStartCalendar);
-							lAppointment.setEndTime(null);
+							
+							// enddate can be ignored
 							
 							// now a whole day (just in case it was)
 							lAppointment.setWholeDay(true);
@@ -1150,6 +1173,55 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	}
 	AbstractAppointmentArea focused = null;
 
+	
+	// ==================================================================================================================
+	// TODAY
+	
+	Rectangle nowLine = new Rectangle(0,0,0,0);
+	Timer nowTimer = new Timer(new Runnable()
+	{
+		{
+			nowLine.getStyleClass().add("Now");
+		}
+		
+		@Override
+		public void run()
+		{
+			//  get now
+			Calendar lNow = Calendar.getInstance();
+			
+			// see if we are displaying now
+			// check all days
+			boolean lFound = false;
+			for (DayPane lDayPane : weekPane.dayPanes)
+			{
+				// if the calendar of the day is the same day as now
+				if (isSameDay(lDayPane.calendarObjectProperty.get(), lNow))
+				{
+					lFound = true;
+					
+					// add if not present
+					if (weekPane.getChildren().contains(nowLine) == false)
+					{
+						weekPane.getChildren().add(nowLine);
+					}
+
+					// place it
+					int lOffsetY = (lNow.get(Calendar.HOUR_OF_DAY) * 60) + lNow.get(Calendar.MINUTE);
+					nowLine.setX(lDayPane.getLayoutX());
+					nowLine.setY(dayHeight / (24 * 60) * lOffsetY );
+					nowLine.setHeight(3);
+					nowLine.setWidth(dayWidth);	
+				}
+			}
+			
+			// if cannot be placed, remove
+			if (lFound == false)
+			{
+				weekPane.getChildren().remove(nowLine);
+			}
+		}
+	}).withCycleDuration(new Duration(10 * 1000)).start(); // once every 10 seconds
 	
 	// ==================================================================================================================
 	// SUPPORT
@@ -1263,7 +1335,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	 * @param c2
 	 * @return
 	 */
-	private boolean sameDay(Calendar c1, Calendar c2)
+	private boolean isSameDay(Calendar c1, Calendar c2)
 	{
 		return c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
 			&& c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH)
@@ -1379,5 +1451,19 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		if (lMinutes < (minutes/2)) c.add(Calendar.MINUTE, -1 * lMinutes);
 		else c.add(Calendar.MINUTE, minutes - lMinutes);
 		return c;
+	}
+	
+	/**
+	 * 
+	 * @param from
+	 * @param to
+	 * @return
+	 */
+	private Calendar copyYMD(Calendar from, Calendar to)
+	{
+		to.set(Calendar.YEAR, from.get(Calendar.YEAR));
+		to.set(Calendar.MONTH, from.get(Calendar.MONTH));
+		to.set(Calendar.DATE, from.get(Calendar.DATE));
+		return to;
 	}
 }

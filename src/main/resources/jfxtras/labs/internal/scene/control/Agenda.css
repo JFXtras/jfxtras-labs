@@ -110,4 +110,8 @@
 	-fx-background-radius: 6.4, 5, 4, 3;	
 }
 
+.AgendaWeekSkin .Now {
+	-fx-fill: RED;
+	-fx-stroke: WHITE;
+}
  
