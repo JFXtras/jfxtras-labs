@@ -51,6 +51,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class SimpleGauge extends Gauge {
+    private ObjectProperty<Color> barFrameColor;
     private ObjectProperty<Color> barBackgroundColor;
     private ObjectProperty<Color> barColor;
     private DoubleProperty        barWidth;
@@ -84,6 +85,7 @@ public abstract class SimpleGauge extends Gauge {
     protected SimpleGauge(final GaugeModel GAUGE_MODEL, final StyleModel STYLE_MODEL) {
         super(GAUGE_MODEL, STYLE_MODEL);
         barColor            = new SimpleObjectProperty<Color>(Color.rgb(178, 177, 212));
+        barFrameColor       = new SimpleObjectProperty<Color>(Color.rgb(100, 100, 100));
         barBackgroundColor  = new SimpleObjectProperty<Color>(Color.rgb(234, 234, 234));
         barWidth            = new SimpleDoubleProperty(20);
         valueLabelFontSize  = new SimpleDoubleProperty(36);
@@ -116,6 +118,18 @@ public abstract class SimpleGauge extends Gauge {
 
     public final ObjectProperty<Color> barColorProperty() {
         return barColor;
+    }
+
+    public final Color getBarFrameColor() {
+        return barFrameColor.get();
+    }
+
+    public final void setBarFrameColor(final Color BAR_FRAME_COLOR) {
+        barFrameColor.set(BAR_FRAME_COLOR);
+    }
+
+    public final ObjectProperty<Color> barFrameColorProperty() {
+        return barFrameColor;
     }
 
     public final Color getBarBackgroundColor() {

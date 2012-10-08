@@ -493,7 +493,7 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
         //final double length       = control.getAngleRange();
 
         CTX.clearRect(0, 0, size, size);
-        CTX.setStroke(control.getBarBackgroundColor().darker());
+        CTX.setStroke(control.getBarFrameColor());
         CTX.setLineWidth(control.getBarWidth() + 2);
         if (control.isRoundedBar()) {
             CTX.setLineCap(StrokeLineCap.ROUND);
