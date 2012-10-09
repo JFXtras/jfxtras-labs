@@ -24,7 +24,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// TODO: adding of an appointment by dragging an area (this conflicts with panning)
 // TODO: editing of summary
 // TODO: dropping an area event in the header and then back into the day; take the location of the drop into account as the start time (instead of the last start time)
 // TODO: single day view
@@ -122,6 +121,36 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			} 
 		});
 		setupAppointments();
+		
+		// react to changes in the appointments 
+		getSkinnable().selectedAppointments().addListener(new ListChangeListener<Agenda.Appointment>() 
+		{
+			@Override
+			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Appointment> changes)
+			{
+				// update the styleclass
+				for (DayPane lDayPane : weekPane.dayPanes)
+				{
+					for (AbstractAppointmentPane lAppointmentPane : lDayPane.collectAllPanes())
+					{
+						// remove 
+						if ( lAppointmentPane.getStyleClass().contains("Selected") == true
+						  && getSkinnable().selectedAppointments().contains(lAppointmentPane.appointment) == false
+						   )
+						{
+							lAppointmentPane.getStyleClass().remove("Selected");
+						}
+						// add
+						if ( lAppointmentPane.getStyleClass().contains("Selected") == false
+						  && getSkinnable().selectedAppointments().contains(lAppointmentPane.appointment) == true
+						   )
+						{
+							lAppointmentPane.getStyleClass().add("Selected");
+						}
+					}
+				}
+			} 
+		});
 	}
 	
 	/**
@@ -172,6 +201,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	}
 	private SimpleDateFormat iDayOfWeekDateFormat = null;
 	private SimpleDateFormat iDateFormat = null;
+	private SimpleDateFormat iTimeFormat = new SimpleDateFormat("hh:mm");
 
 	/**
 	 * Have all days reconstruct the appointments
@@ -208,7 +238,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			.layoutY(50)
 			.content(weekPane)
 			.hbarPolicy(ScrollBarPolicy.NEVER)
-			.pannable(true)
+			.pannable(false)
 			.build();
 		borderPane.setCenter(weekScrollPane);
 		// bind the size of the week to the scrollpane's viewport
@@ -373,7 +403,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	 * Responsible for rendering a single whole day appointment on a day header.
 	 * 
 	 */
-	class AppointmentHeaderPane extends AbstractAppointmentArea
+	class AppointmentHeaderPane extends AbstractAppointmentPane
 	{
 		/**
 		 * 
@@ -549,8 +579,89 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					relayout();
 				}
 			});
+			
+			// start resize
+			setOnMousePressed(new EventHandler<MouseEvent>()
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					// if there is no one to handle the result, don't eve bother
+					if (getSkinnable().addAppointmentCallbackProperty().get() == null) return;
+					
+					// show the rectangle
+					DayPane.this.setCursor(Cursor.V_RESIZE);
+					double lY = mouseEvent.getScreenY() - NodeUtil.screenY(DayPane.this);
+					resizeRectangle = new Rectangle(0, lY, dayWidth, 10);
+					resizeRectangle.getStyleClass().add("ResizeRectangle");
+					DayPane.this.getChildren().add(resizeRectangle);
+					
+					// this event should not be processed by the appointment area
+					mouseEvent.consume();
+				}
+			});
+			// visualize resize
+			setOnMouseDragged(new EventHandler<MouseEvent>()
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					if (resizeRectangle == null) return;
+					
+					// - calculate the number of pixels from onscreen nodeY (layoutY) to onscreen mouseY					
+					double lHeight = mouseEvent.getScreenY() - NodeUtil.screenY(resizeRectangle);
+					if (lHeight < 5) lHeight = 5;
+					resizeRectangle.setHeight(lHeight);
+					
+					// no one else
+					mouseEvent.consume();
+				}
+			});
+			// end resize
+			setOnMouseReleased(new EventHandler<MouseEvent>()
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					if (resizeRectangle == null) return;
+					
+					// calculate the starttime
+					Calendar lStartCalendar = setTimeTo0000((Calendar)DayPane.this.calendarObjectProperty.get().clone());
+					lStartCalendar.add(Calendar.MILLISECOND, (int)(resizeRectangle.getY() * durationInMSPerPixel));
+					setTimeToNearestMinutes(lStartCalendar, 5);
+					
+					// calculate the new end date for the appointment (recalculating the duration)
+					Calendar lEndCalendar = (Calendar)lStartCalendar.clone();					
+					lEndCalendar.add(Calendar.MILLISECOND, (int)(resizeRectangle.getHeight() * durationInMSPerPixel));
+					setTimeToNearestMinutes(lEndCalendar, 5);
+					
+					// reset ui
+					DayPane.this.setCursor(Cursor.HAND);
+					DayPane.this.getChildren().remove(resizeRectangle);
+					resizeRectangle = null;					
+					
+					// no one else
+					mouseEvent.consume();
+					
+					// ask the control if this calendar can be added
+					getSkinnable().addAppointmentCallbackProperty().get().call(new Agenda.CalendarRange(lStartCalendar, lEndCalendar));
+				}
+			});
 		}
 		ObjectProperty<Calendar> calendarObjectProperty = new SimpleObjectProperty<Calendar>(DayPane.this, "calendar");
+		Rectangle resizeRectangle = null;
+		
+		/**
+		 * 
+		 * @return
+		 */
+		public List<AbstractAppointmentPane> collectAllPanes()
+		{
+			List<AbstractAppointmentPane> lPanes = new ArrayList<AgendaWeekSkin.AbstractAppointmentPane>(appointmentPanes);
+			lPanes.addAll(wholedayAppointmentPanes);
+			lPanes.addAll(dayHeader.appointmentHeaderPanes);
+			return lPanes;
+		}
 		
 		/**
 		 * 
@@ -743,7 +854,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	 * Appointments may span multiple days, each day gets its own appointment region.
 	 * 
 	 */
-	class AppointmentPane extends AbstractAppointmentArea
+	class AppointmentPane extends AbstractAppointmentPane
 	{
 		DayPane dayPane = null;
 		// for the role of cluster owner
@@ -795,14 +906,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			durationInMS = this.end.getTimeInMillis() - this.start.getTimeInMillis();
 			
 			// strings
-			this.startAsString = (this.start.get(Calendar.HOUR_OF_DAY) < 10 ? "0" : "") + this.start.get(Calendar.HOUR_OF_DAY)
-					   + ":"
-					   + (this.start.get(Calendar.MINUTE) < 10 ? "0" : "" ) + this.start.get(Calendar.MINUTE)
-					   ;
-			this.endAsString = (this.end.get(Calendar.HOUR_OF_DAY) < 10 ? "0" : "") + this.end.get(Calendar.HOUR_OF_DAY)
-							 + ":"
-							 + (this.end.get(Calendar.MINUTE) < 10 ? "0" : "" ) + this.end.get(Calendar.MINUTE)
-							 ;
+			this.startAsString = iTimeFormat.format(this.start.getTime());
+			this.endAsString = iTimeFormat.format(this.end.getTime());
 			
 			// only for whole day events
 			if (appointment.isWholeDay() == false)
@@ -935,13 +1040,10 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					// // record a delta distance for the drag and drop operation.
 					// dragDelta.x = stage.getX() - mouseEvent.getScreenX();
 					// dragDelta.y = stage.getY() - mouseEvent.getScreenY();
-					DurationDragger.this.setCursor(Cursor.MOVE);
+					DurationDragger.this.setCursor(Cursor.V_RESIZE);
 					resizeRectangle = new Rectangle(DurationDragger.this.appointmentPane.getLayoutX(), DurationDragger.this.appointmentPane.getLayoutY(), DurationDragger.this.appointmentPane.getWidth(), DurationDragger.this.appointmentPane.getHeight());
 					resizeRectangle.getStyleClass().add("ResizeRectangle");
 					DurationDragger.this.appointmentPane.dayPane.getChildren().add(resizeRectangle);
-					
-					// disable panning on the scrollPane
-					weekScrollPane.setPannable(false);
 					
 					// this event should not be processed by the appointment area
 					mouseEvent.consume();
@@ -989,9 +1091,6 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					DurationDragger.this.appointmentPane.dayPane.getChildren().remove(resizeRectangle);
 					resizeRectangle = null;					
 					
-					// re-enable panning on the scrollPane
-					weekScrollPane.setPannable(true);
-					
 					// no one else
 					mouseEvent.consume();
 				}
@@ -1010,45 +1109,41 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	 * TODO: (multi)select?
 	 * TODO: shouldn't we be using JFX drag features?
 	 */
-	abstract class AbstractAppointmentArea extends Pane
+	abstract class AbstractAppointmentPane extends Pane
 	{
 		Agenda.Appointment appointment = null;
 		boolean isFirstAreaOfAppointment = true;
 		boolean isLastAreaOfAppointment = true;
 
-
 		/**
 		 * 
 		 */
-		public AbstractAppointmentArea()
+		public AbstractAppointmentPane()
 		{
-//			setOnMouseClicked(focusEventHandler);
-			
 			// start resize
 			setOnMousePressed(new EventHandler<MouseEvent>()
 			{
 				@Override
 				public void handle(MouseEvent mouseEvent)
-				{
-					if (isFirstAreaOfAppointment == false) return;
+				{					
+					// no one else
+					mouseEvent.consume();
+					
+					// no drag yet
+					dragged = mouseEvent.isPrimaryButtonDown() ? false : true; // if not primary mouse, then just assume drag from the start 
+					if (isFirstAreaOfAppointment == false) return; // TODO: temporarily
 					
 					// place the rectangle
-					AbstractAppointmentArea.this.setCursor(Cursor.MOVE);
-					double lX = NodeUtil.screenX(AbstractAppointmentArea.this) - NodeUtil.screenX(AgendaWeekSkin.this);
-					double lY = NodeUtil.screenY(AbstractAppointmentArea.this) - NodeUtil.screenY(AgendaWeekSkin.this);
-					resizeRectangle = new Rectangle(lX, lY, AbstractAppointmentArea.this.getWidth(), (AbstractAppointmentArea.this.appointment.isWholeDay() ? titleCalendarHeight : AbstractAppointmentArea.this.getHeight()) );
-					resizeRectangle.getStyleClass().add("ResizeRectangle");
-					dragPane.getChildren().add(resizeRectangle);
-					
-					// disable panning on the scrollPane
-					weekScrollPane.setPannable(false);
+					AbstractAppointmentPane.this.setCursor(Cursor.MOVE);
+					double lX = NodeUtil.screenX(AbstractAppointmentPane.this) - NodeUtil.screenX(AgendaWeekSkin.this);
+					double lY = NodeUtil.screenY(AbstractAppointmentPane.this) - NodeUtil.screenY(AgendaWeekSkin.this);
+					dragRectangle = new Rectangle(lX, lY, AbstractAppointmentPane.this.getWidth(), (AbstractAppointmentPane.this.appointment.isWholeDay() ? titleCalendarHeight : AbstractAppointmentPane.this.getHeight()) );
+					dragRectangle.getStyleClass().add("ResizeRectangle");
+					dragPane.getChildren().add(dragRectangle);
 					
 					// remember
 					startX = mouseEvent.getScreenX();
 					startY = mouseEvent.getScreenY();
-					
-					// no one else
-					mouseEvent.consume();
 				}
 			});
 			// visualize resize
@@ -1057,14 +1152,19 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				@Override
 				public void handle(MouseEvent mouseEvent)
 				{
-					if (isFirstAreaOfAppointment == false) return;
+					// no one else
+					mouseEvent.consume();
+					
+					// no dragged
+					dragged = true;
+					if (dragRectangle == null) return;
 					
 					double lDeltaX = mouseEvent.getScreenX() - startX;
 					double lDeltaY = mouseEvent.getScreenY() - startY;
-					double lX = NodeUtil.screenX(AbstractAppointmentArea.this) - NodeUtil.screenX(AgendaWeekSkin.this) + lDeltaX;
-					double lY = NodeUtil.screenY(AbstractAppointmentArea.this) - NodeUtil.screenY(AgendaWeekSkin.this) + lDeltaY;
-					resizeRectangle.setX(lX);
-					resizeRectangle.setY(lY);
+					double lX = NodeUtil.screenX(AbstractAppointmentPane.this) - NodeUtil.screenX(AgendaWeekSkin.this) + lDeltaX;
+					double lY = NodeUtil.screenY(AbstractAppointmentPane.this) - NodeUtil.screenY(AgendaWeekSkin.this) + lDeltaY;
+					dragRectangle.setX(lX);
+					dragRectangle.setY(lY);
 					
 					// no one else
 					mouseEvent.consume();
@@ -1076,7 +1176,35 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				@Override
 				public void handle(MouseEvent mouseEvent)
 				{
-					if (isFirstAreaOfAppointment == false) return;
+					// no one else
+					mouseEvent.consume();
+					
+					// reset ui
+					boolean lDragged = (dragRectangle != null);
+					AbstractAppointmentPane.this.setCursor(Cursor.HAND);
+					dragPane.getChildren().remove(dragRectangle);
+					dragRectangle = null;					
+					
+					// if not dragged, then we're selecting
+					if (dragged == false)
+					{
+						// if not shift pressed, clear the selection
+						if (mouseEvent.isShiftDown() == false)
+						{
+							getSkinnable().selectedAppointments().clear();
+						}
+						// add to selection if not already added
+						if (getSkinnable().selectedAppointments().contains(AbstractAppointmentPane.this.appointment) == false)
+						{
+							getSkinnable().selectedAppointments().add(AbstractAppointmentPane.this.appointment);
+						}
+						return;
+					}
+					
+					// ------------
+					// dragging
+					
+					if (lDragged == false) return;
 					
 					// find out where it was dropped
 					for (DayPane lDayPane : weekPane.dayPanes)
@@ -1088,7 +1216,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 						   )
 						{
 							// get the appointment that needs handling
-							Appointment lAppointment = AbstractAppointmentArea.this.appointment;
+							Appointment lAppointment = AbstractAppointmentPane.this.appointment;
 							Calendar lDroppedOnCalendar = lDayPane.calendarObjectProperty.get();
 		
 							// is wholeday now, will become partial
@@ -1142,7 +1270,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 						   )
 						{
 							// get the appointment that needs handling
-							Appointment lAppointment = AbstractAppointmentArea.this.appointment;
+							Appointment lAppointment = AbstractAppointmentPane.this.appointment;
 							
 							// calculate new start
 							Calendar lStartCalendar = copyYMD(lDayHeaderPane.dayPane.calendarObjectProperty.get(), (Calendar)lAppointment.getStartTime().clone() );
@@ -1158,42 +1286,16 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					}
 					
 					// redo whole week
-					setupAppointments();
-					
-					// reset ui
-					AbstractAppointmentArea.this.setCursor(Cursor.HAND);
-					dragPane.getChildren().remove(resizeRectangle);
-					resizeRectangle = null;					
-					
-					// re-enable panning on the scrollPane
-					weekScrollPane.setPannable(true);
-					
-					// no one else
-					mouseEvent.consume();
+					setupAppointments();					
 				}
 			});
 		}
-		Rectangle resizeRectangle;
+		Rectangle dragRectangle;
 		double startX = 0;
 		double startY = 0;
-		
-		EventHandler<MouseEvent> focusEventHandler = new EventHandler<MouseEvent>()
-		{
-			@Override public void handle(MouseEvent evt)
-			{
-				if (focused != null)
-				{
-					focused.getStyleClass().remove("focused");
-				}
-				focused = AbstractAppointmentArea.this;
-				focused.getStyleClass().add("focused");
-				
-				// no one else
-				evt.consume();
-			}
-		};
+		boolean dragged = false;
 	}
-	AbstractAppointmentArea focused = null;
+	AbstractAppointmentPane focused = null;
 
 	
 	// ==================================================================================================================

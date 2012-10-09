@@ -92,7 +92,6 @@ public class Agenda extends Control
 	/** Appointments: */
 	public ObservableList<Appointment> appointments() { return appointments; }
 	final private ObservableList<Appointment> appointments =  javafx.collections.FXCollections.observableArrayList();
-	final static public String APPOINTMENTS_PROPERTY_ID = "appointments";
 
 	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc */
 	public ObjectProperty<Locale> localeProperty() { return iLocaleObjectProperty; }
@@ -112,18 +111,52 @@ public class Agenda extends Control
 	public void setDisplayedCalendar(Calendar value) { displayedCalendarObjectProperty.setValue(value); }
 	public Agenda withDisplayedCalendar(Calendar value) { setDisplayedCalendar(value); return this; }
 	
-	/** CalendarRangeCallback: */
+	/** selectedAppointments: */
+	public ObservableList<Appointment> selectedAppointments() { return selectedAppointments; }
+	final private ObservableList<Appointment> selectedAppointments =  javafx.collections.FXCollections.observableArrayList();
+
+	/** calendarRangeCallback: 
+	 * Appointments should match:
+	 * - start date >= range start 
+	 * - end date <= range end
+	 */
 	public ObjectProperty<Callback<CalendarRange, Void>> calendarRangeCallbackProperty() { return calendarRangeCallbackObjectProperty; }
 	final private ObjectProperty<Callback<CalendarRange, Void>> calendarRangeCallbackObjectProperty = new SimpleObjectProperty<Callback<CalendarRange, Void>>(this, "calendarRangeCallback", null);
 	public Callback<CalendarRange, Void> getCalendarRangeCallback() { return this.calendarRangeCallbackObjectProperty.getValue(); }
 	public void setCalendarRangeCallback(Callback<CalendarRange, Void> value) { this.calendarRangeCallbackObjectProperty.setValue(value); }
 	public Agenda withCalendarRangeCallback(Callback<CalendarRange, Void> value) { setCalendarRangeCallback(value); return this; }
 	
+	/** addAppointmentCallback:
+	 * Since the Agenda is not the owner of the appointments but only dictates an interface, it does not know how to create a new one.
+	 * So you need to implement this callback and create an appointment and add it to the appointments.
+	 * The range specifies the start and end times.
+	 * The calendars can be used (they do not need to be cloned).
+	 * 
+	 * Example:
+		lAgenda.addAppointmentCallbackProperty().set(new Callback<Agenda.CalendarRange, Void>()
+		{
+			@Override
+			public Void call(CalendarRange calendarRange)
+			{
+				lAgenda.appointments().add( new Agenda.AppointmentImpl()
+				.withStartTime(calendarRange.start)
+				.withEndTime(calendarRange.end)
+				.withSummary("new")
+				.withDescription("new")
+				.withStyleClass("group1"));
+				return null;
+			}
+		});
+	 * 
+	 */
+	public ObjectProperty<Callback<CalendarRange, Void>> addAppointmentCallbackProperty() { return addAppointmentCallbackObjectProperty; }
+	final private ObjectProperty<Callback<CalendarRange, Void>> addAppointmentCallbackObjectProperty = new SimpleObjectProperty<Callback<CalendarRange, Void>>(this, "addAppointmentCallback", null);
+	public Callback<CalendarRange, Void> getAddAppointmentCallback() { return this.addAppointmentCallbackObjectProperty.getValue(); }
+	public void setAddAppointmentCallback(Callback<CalendarRange, Void> value) { this.addAppointmentCallbackObjectProperty.setValue(value); }
+	public Agenda withAddAppointmentCallback(Callback<CalendarRange, Void> value) { setAddAppointmentCallback(value); return this; }
+	
 	/**
-	 * The CalendarRange that is being displayed.
-	 * Appointments should match:
-	 * - start date >= range start 
-	 * - end date <= range end
+	 * A Calendar range
 	 */
 	static public class CalendarRange
 	{
@@ -223,7 +256,16 @@ public class Agenda extends Control
 		final private ObjectProperty<String> styleClassObjectProperty = new SimpleObjectProperty<String>(this, "styleClass");
 		public String getStyleClass() { return styleClassObjectProperty.getValue(); }
 		public void setStyleClass(String value) { styleClassObjectProperty.setValue(value); }
-		public AppointmentImpl withStyleClass(String value) { setStyleClass(value); return this; } 
+		public AppointmentImpl withStyleClass(String value) { setStyleClass(value); return this; }
+		
+		public String toString()
+		{
+			return super.toString()
+				 + quickFormatCalendar(this.getStartTime())
+				 + " - "
+				 + quickFormatCalendar(this.getEndTime())
+				 ;
+		}
 	}
 	
 	
@@ -235,10 +277,9 @@ public class Agenda extends Control
 	 */
 	static public String quickFormatCalendar(Calendar value)
 	{
-		if (value == null) return "null";
-		SimpleDateFormat lSimpleDateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG);
-		lSimpleDateFormat.applyPattern("yyyy-MM-dd");
-		return value == null ? "null" : lSimpleDateFormat.format(value.getTime());
+		if (value == null) return "";
+		SimpleDateFormat lSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+		return lSimpleDateFormat.format(value.getTime());
 	}
 	static public String quickFormatCalendar(List<Calendar> value)
 	{
