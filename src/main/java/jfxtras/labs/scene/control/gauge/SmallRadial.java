@@ -48,17 +48,17 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class SmallRadial extends Gauge {
-    private static final String        DEFAULT_STYLE_CLASS = "small-radial";
-    private BooleanProperty            valueAnimationEnabled;
-    private ObjectProperty<Color>      valueLabelColor;
-    private BooleanProperty            valueLabelVisible;
-    private IntegerProperty            noOfDecimals;
-    private DoubleProperty             timeToValueInMs;
-    private ObjectProperty<Color>      frameColor;
-    private ObjectProperty<Color>      backgroundColor;
-    private ObjectProperty<Color>      tickMarkColor;
-    private ObjectProperty<Color>      pointerColor;
+    private static final String   DEFAULT_STYLE_CLASS = "small-radial";
+    private ObjectProperty<Color> valueLabelColor;
+    private BooleanProperty       valueLabelVisible;
+    private IntegerProperty       noOfDecimals;
+    private DoubleProperty        timeToValueInMs;
+    private ObjectProperty<Color> frameColor;
+    private ObjectProperty<Color> backgroundColor;
+    private ObjectProperty<Color> tickMarkColor;
+    private ObjectProperty<Color> pointerColor;
     private ObjectProperty<Color> centerKnobColor;
+    private ObjectProperty<Color> thresholdLedColor;
 
 
     // ******************** Constructors **************************************
@@ -73,7 +73,6 @@ public class SmallRadial extends Gauge {
     public SmallRadial(final GaugeModel GAUGE_MODEL, final StyleModel STYLE_MODEL) {
         super(GAUGE_MODEL, STYLE_MODEL);
         setRadialRange(RadialRange.RADIAL_280);
-        valueAnimationEnabled = new SimpleBooleanProperty(true);
         valueLabelColor       = new SimpleObjectProperty<Color>(Color.BLACK);
         valueLabelVisible     = new SimpleBooleanProperty(true);
         noOfDecimals          = new SimpleIntegerProperty(2);
@@ -81,7 +80,8 @@ public class SmallRadial extends Gauge {
         backgroundColor       = new SimpleObjectProperty<Color>(Color.rgb(220, 220, 220));
         tickMarkColor         = new SimpleObjectProperty<Color>(Color.BLACK);
         pointerColor          = new SimpleObjectProperty<Color>(Color.RED);
-        centerKnobColor = new SimpleObjectProperty<Color>(Color.BLACK);
+        centerKnobColor       = new SimpleObjectProperty<Color>(Color.BLACK);
+        thresholdLedColor     = new SimpleObjectProperty<Color>(Color.RED);
         timeToValueInMs       = new SimpleDoubleProperty(1500);
         getStyleClass().add(DEFAULT_STYLE_CLASS);
     }
@@ -195,6 +195,18 @@ public class SmallRadial extends Gauge {
 
     public final ObjectProperty<Color> centerKnobColorProperty() {
         return centerKnobColor;
+    }
+
+    public final Color getThresholdLedColor() {
+        return thresholdLedColor.get();
+    }
+
+    public final void setThresholdLedColor(final Color THRESHOLD_LED_COLOR) {
+        thresholdLedColor.set(THRESHOLD_LED_COLOR);
+    }
+
+    public final ObjectProperty<Color> thresholdLedColorProperty() {
+        return thresholdLedColor;
     }
 
     public final double getTimeToValueInMs() {

@@ -27,10 +27,13 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
+import javafx.animation.AnimationTimer;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.ActionEvent;
@@ -40,7 +43,14 @@ import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadowBuilder;
+import javafx.scene.effect.InnerShadowBuilder;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.ClosePath;
@@ -56,7 +66,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.RotateBuilder;
-import javafx.scene.transform.Scale;
 import javafx.util.Duration;
 import jfxtras.labs.internal.scene.control.behavior.SmallRadialBehavior;
 import jfxtras.labs.scene.control.gauge.Section;
@@ -81,7 +90,10 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
     private Path            pointer;
     private Text            valueText;
     private Canvas          background;
-    private GraphicsContext ctx;
+    private GraphicsContext ctxBackground;
+    private Canvas          ledOn;
+    private GraphicsContext ctxLedOn;
+    private boolean         on;
     private Point2D         center;
     private double          angleOffset;
     private NumberFormat    valueFormat;
@@ -91,6 +103,8 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
     private Rotate          rotate;
     private boolean         isDirty;
     private boolean         initialized;
+    private long            lastTimerCall;
+    private AnimationTimer  timer;
 
 
     // ******************** Constructors **************************************
@@ -104,13 +118,26 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
         valueFormat      = new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.US));
         valueText        = new Text(valueFormat.format(control.getValue()));
         background       = new Canvas();
-        ctx              = background.getGraphicsContext2D();
+        ctxBackground    = background.getGraphicsContext2D();
+        ledOn            = new Canvas();
+        ctxLedOn         = ledOn.getGraphicsContext2D();
+        on               = false;
         center           = new Point2D(100, 100);
-        angleOffset      = -(control.getRadialRange().ANGLE_RANGE / 2);
+        angleOffset      = -(control.getRadialRange().ANGLE_RANGE * 0.5);
         timeline         = new Timeline();
         gaugeValue       = new SimpleDoubleProperty(control.getValue());
         size             = 200;
         rotate           = RotateBuilder.create().pivotX(100).pivotY(100).angle(angleOffset - gaugeValue.get() * control.getAngleStep()).build();
+        lastTimerCall    = System.nanoTime();
+        timer            = new AnimationTimer() {
+            @Override public void handle(final long NOW) {
+                if (NOW > lastTimerCall + 500000000l) {
+                    on ^= true;
+                    ledOn.setVisible(on);
+                    lastTimerCall = NOW;
+                }
+            }
+        };
         init();
     }
 
@@ -118,6 +145,8 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
         if (control.getPrefWidth() < 0 | control.getPrefHeight() < 0) {
             control.setPrefSize(121, 121);
         }
+
+        ledOn.setVisible(false);
 
         // Register listeners
         registerChangeListener(control.widthProperty(), "WIDTH");
@@ -128,6 +157,8 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
         registerChangeListener(control.minHeightProperty(), "HEIGHT");
         registerChangeListener(control.maxWidthProperty(), "WIDTH");
         registerChangeListener(control.maxHeightProperty(), "HEIGHT");
+        registerChangeListener(control.titleProperty(), "FULL_REPAINT");
+        registerChangeListener(control.ledVisibleProperty(), "FULL_REPAINT");
         registerChangeListener(control.minValueProperty(), "FULL_REPAINT");
         registerChangeListener(control.maxValueProperty(), "FULL_REPAINT");
         registerChangeListener(control.gaugeModelProperty(), "FULL_REPAINT");
@@ -137,11 +168,14 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
         registerChangeListener(control.tickMarkColorProperty(), "FULL_REPAINT");
         registerChangeListener(control.pointerColorProperty(), "FULL_REPAINT");
         registerChangeListener(control.centerKnobColorProperty(), "FULL_REPAINT");
+        registerChangeListener(control.thresholdLedColorProperty(), "FULL_REPAINT");
         registerChangeListener(control.noOfDecimalsProperty(), "LABEL");
         registerChangeListener(control.valueProperty(), "VALUE");
+        registerChangeListener(control.thresholdExceededProperty(), "THRESHOLD_EXCEEDED");
         registerChangeListener(gaugeValue, "GAUGE_VALUE");
 
         addBindings();
+        addListeners();
 
         pointer.getTransforms().add(rotate);
 
@@ -155,6 +189,18 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
             valueText.visibleProperty().unbind();
         }
         valueText.visibleProperty().bind(control.valueLabelVisibleProperty());
+    }
+
+    private void addListeners() {
+        gaugeValue.addListener(new InvalidationListener() {
+            @Override public void invalidated(Observable observable) {
+                if (control.isThresholdBehaviorInverted()) {
+                    control.setThresholdExceeded(gaugeValue.doubleValue() < control.getThreshold());
+                } else {
+                    control.setThresholdExceeded(gaugeValue.doubleValue() > control.getThreshold());
+                }
+            }
+        });
     }
 
 
@@ -189,9 +235,17 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
             repaint();
         } else if ("GAUGE_VALUE".equals(PROPERTY)) {
             valueText.setText(valueFormat.format(gaugeValue.get()));
-            valueText.setX((size - valueText.getLayoutBounds().getWidth()) / 2);
+            valueText.setX((size - valueText.getLayoutBounds().getWidth()) * 0.5);
             valueText.setY(0.88 * size);
             rotate.setAngle(angleOffset + gaugeValue.get() * control.getAngleStep());
+        } else if ("THRESHOLD_EXCEEDED".equals(PROPERTY)) {
+            if (control.isThresholdExceeded()) {
+                timer.start();
+            } else {
+                timer.stop();
+                on = false;
+                ledOn.setVisible(on);
+            }
         }
     }
 
@@ -254,20 +308,6 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
         return super.computeMaxHeight(Math.max(121, MAX_WIDTH - getInsets().getTop() - getInsets().getBottom()));
     }
 
-    private final String createCssColor(final Color COLOR) {
-        final StringBuilder CSS_COLOR = new StringBuilder(19);
-        CSS_COLOR.append("rgba(");
-        CSS_COLOR.append((int) (COLOR.getRed() * 255));
-        CSS_COLOR.append(", ");
-        CSS_COLOR.append((int) (COLOR.getGreen() * 255));
-        CSS_COLOR.append(", ");
-        CSS_COLOR.append((int) (COLOR.getBlue() * 255));
-        CSS_COLOR.append(", ");
-        CSS_COLOR.append(COLOR.getOpacity());
-        CSS_COLOR.append(");");
-        return CSS_COLOR.toString();
-    }
-
     private void updateNumberFormat() {
         StringBuilder noOfDecimals = new StringBuilder(5);
         if (control.getNoOfDecimals() == 0) {
@@ -283,30 +323,30 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
 
     private void reCalcParameters() {
         size        = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
-        double c    = size / 2;
-        angleOffset = -(control.getRadialRange().ANGLE_RANGE / 2);
+        double c    = 0.5 * size;
+        angleOffset = -(control.getRadialRange().ANGLE_RANGE * 0.5);
         center      = new Point2D(c, c);
         rotate.setPivotX(c);
         rotate.setPivotY(c);
-        valueText.setX((size - valueText.getLayoutBounds().getWidth()) / 2);
+        valueText.setFont(Font.font("Verdana", FontWeight.NORMAL, FontPosture.REGULAR, 0.11570247933884298 * size));
+        valueText.setX((size - valueText.getLayoutBounds().getWidth()) * 0.5);
         valueText.setY(0.88 * size);
         background.setWidth(size);
         background.setHeight(size);
+        ledOn.setWidth(size);
+        ledOn.setHeight(size);
         drawGaugeBackground();
+        drawLedOn(ctxLedOn);
     }
 
 
     // ******************** Drawing related ***********************************
     private final void drawGauge() {
         valueText.setFont(Font.font("Verdana", FontWeight.NORMAL, FontPosture.REGULAR, 0.11570247933884298 * size));
-        valueText.setX((size - valueText.getLayoutBounds().getWidth()) / 2);
+        valueText.setX((size - valueText.getLayoutBounds().getWidth()) * 0.5);
         valueText.setY(0.88 * size);
         valueText.setTextOrigin(VPos.BOTTOM);
-        valueText.getTransforms().add(new Rotate(0.0, 0.36363636363636365 * size, 0.8760330578512396 * size));
-        valueText.getTransforms().add(new Scale(1.0, 1.0));
-        //valueLabel.getStyleClass().add("embeddedradial-value4");
         valueText.setFill(control.getValueLabelColor());
-
 
         pointer.setFillRule(FillRule.EVEN_ODD);
         pointer.getElements().add(new MoveTo(0.50 * size, 0.12396694214876033 * size));
@@ -343,14 +383,14 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
         KNOB.setStroke(null);
 
         smallRadial.getChildren().clear();
-        smallRadial.getChildren().addAll(background, valueText);
+        smallRadial.getChildren().addAll(background, valueText, ledOn);
         smallRadial.getChildren().addAll(pointer, KNOB);
     }
 
     private void drawTickmarks(final GraphicsContext CTX) {
         double sinValue;
         double cosValue;
-        double offset = 180 + control.getRadialRange().ANGLE_RANGE / 2;
+        double offset = 180 + control.getRadialRange().ANGLE_RANGE * 0.5;
 
         for (double angle = 0, counter = control.getMinValue() ; Double.compare(counter, control.getMaxValue()) <= 0 ; angle -= control.getAngleStep(), counter++) {
             sinValue = Math.sin(Math.toRadians(angle + offset));
@@ -377,7 +417,7 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
     }
 
     private final void drawSections(final GraphicsContext CTX) {
-        final double xy     = (size - 0.77 * size) / 2;
+        final double xy     = (size - 0.77 * size) * 0.5;
         final double wh     = size * 0.77;
         final double OFFSET = angleOffset - 90;
         for (final Section section : control.getSections()) {
@@ -392,32 +432,144 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
         }
     }
 
+    private final void drawLedOff(final GraphicsContext ctx) {
+        //LED_FRAME
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(0.3677685950413223 * size, 0.6074380165289256 * size, 0.05371900826446281 * size, 0.05371900826446281 * size, 0, 360);
+        ctx.setFill(new LinearGradient(0.3305785123966942 * size, 0.5702479338842975 * size,
+                                       0.40654866244152993 * size, 0.6462180839291333 * size,
+                                       false, CycleMethod.NO_CYCLE,
+                                       new Stop(0.0, Color.color(0.0784313725, 0.0784313725, 0.0784313725, 0.6470588235)),
+                                       new Stop(0.15, Color.color(0.0784313725, 0.0784313725, 0.0784313725, 0.6470588235)),
+                                       new Stop(0.26, Color.color(0.1607843137, 0.1607843137, 0.1607843137, 0.6470588235)),
+                                       new Stop(0.261, Color.color(0.1607843137, 0.1607843137, 0.1607843137, 0.6431372549)),
+                                       new Stop(0.85, Color.color(0.7843137255, 0.7843137255, 0.7843137255, 0.4039215686)),
+                                       new Stop(1.0, Color.color(0.7843137255, 0.7843137255, 0.7843137255, 0.3450980392))));
+        ctx.fill();
+        ctx.restore();
+
+        //LED_OFF
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(0.3677685950413223 * size, 0.6074380165289256 * size, 0.045454545454545456 * size, 0.045454545454545456 * size, 0, 360);
+        ctx.setFill(new LinearGradient(0.33884297520661155 * size, 0.5785123966942148 * size,
+                                       0.3972815521641775 * size, 0.6369509736517808 * size,
+                                       false, CycleMethod.NO_CYCLE,
+                                       new Stop(0.0, control.getThresholdLedColor().darker().darker()),
+                                       new Stop(0.49, control.getThresholdLedColor().darker().darker().darker()),
+                                       new Stop(1.0, control.getThresholdLedColor().darker().darker())));
+        ctx.fill();
+
+        ctx.applyEffect(InnerShadowBuilder.create()
+            .offsetX(0.0 * size)
+            .offsetY(0.0 * size)
+            .radius(0.0013523666 * size)
+            .color(Color.color(0, 0, 0, 1.0))
+            .blurType(BlurType.GAUSSIAN)
+            .input(null)
+            .build());
+        ctx.restore();
+
+        //LED_HIGHLIGHT
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(0.3677685950413223 * size, 0.6074380165289256 * size, 0.0371900826446281 * size, 0.0371900826446281 * size, 0, 360);
+        ctx.setFill(new RadialGradient(0, 0,
+            0.33884297520661155 * size, 0.5785123966942148 * size,
+            0.0371900826446281 * size,
+            false, CycleMethod.NO_CYCLE,
+            new Stop(0.0, Color.color(0.7843137255, 0.7607843137, 0.8156862745, 0.6)),
+            new Stop(1.0, Color.TRANSPARENT)));
+        ctx.fill();
+        ctx.restore();
+    }
+
+    private final void drawLedOn(final GraphicsContext ctx) {
+        //LED_ON
+        ctx.save();
+        ctx.scale(1.0, 1);
+        ctx.beginPath();
+        ctx.arc(0.3677685950413223 * size, 0.6074380165289256 * size, 0.045454545454545456 * size, 0.045454545454545456 * size, 0, 360);
+        ctx.setFill(new LinearGradient(0.33884297520661155 * size, 0.5785123966942148 * size,
+                                       0.3972815521641775 * size, 0.6369509736517808 * size,
+                                       false, CycleMethod.NO_CYCLE,
+                                       new Stop(0.0, control.getThresholdLedColor()),
+                                       new Stop(0.49, control.getThresholdLedColor().darker()),
+                                       new Stop(1.0, control.getThresholdLedColor().brighter())));
+        ctx.fill();
+
+        ctx.applyEffect(InnerShadowBuilder.create()
+                                          .offsetX(0.0 * size)
+                                          .offsetY(0.0 * size)
+                                          .radius(0.0013523666 * size)
+                                          .color(Color.color(0, 0, 0, 1.0))
+                                          .blurType(BlurType.GAUSSIAN)
+                                          .input(DropShadowBuilder.create()
+                                                                  .offsetX(0.0 * size)
+                                                                  .offsetY(0.0 * size)
+                                                                  .radius(0.01 * size)
+                                                                  .color(control.getThresholdLedColor())
+                                                                  .blurType(BlurType.GAUSSIAN)
+                                                                  .build())
+                                          .build());
+        ctx.restore();
+
+        //LED_HIGHLIGHT
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(0.3677685950413223 * size, 0.6074380165289256 * size, 0.0371900826446281 * size, 0.0371900826446281 * size, 0, 360);
+        ctx.setFill(new RadialGradient(0, 0,
+                                       0.33884297520661155 * size, 0.5785123966942148 * size,
+                                       0.0371900826446281 * size,
+                                       false, CycleMethod.NO_CYCLE,
+                                       new Stop(0.0, Color.color(0.7843137255, 0.7607843137, 0.8156862745, 0.6)),
+                                       new Stop(1.0, Color.TRANSPARENT)));
+        ctx.fill();
+        ctx.restore();
+    }
+
     private final void drawGaugeBackground() {
-        ctx.clearRect(0, 0, size, size);
+        ctxBackground.clearRect(0, 0, size, size);
 
         // FRAME
-        ctx.save();
-        ctx.scale(1.0, 1);
-        ctx.beginPath();
-        ctx.arc(0.5 * size, 0.5 * size, 0.5 * size, 0.5 * size, 0, 360);
-        ctx.setFill(control.getFrameColor());
-        ctx.fill();
-        ctx.restore();
+        ctxBackground.save();
+        ctxBackground.scale(1.0, 1);
+        ctxBackground.beginPath();
+        ctxBackground.arc(0.5 * size, 0.5 * size, 0.5 * size, 0.5 * size, 0, 360);
+        ctxBackground.setFill(control.getFrameColor());
+        ctxBackground.fill();
+        ctxBackground.restore();
 
         // BACKGROUND
-        ctx.save();
-        ctx.scale(1.0, 1);
-        ctx.beginPath();
-        ctx.arc(0.5 * size, 0.5 * size, 0.43388429752066116 * size, 0.43388429752066116 * size, 0, 360);
-        ctx.setFill(control.getBackgroundColor());
-        ctx.fill();
-        ctx.restore();
+        ctxBackground.save();
+        ctxBackground.scale(1.0, 1);
+        ctxBackground.beginPath();
+        ctxBackground.arc(0.5 * size, 0.5 * size, 0.43388429752066116 * size, 0.43388429752066116 * size, 0, 360);
+        ctxBackground.setFill(control.getBackgroundColor());
+        ctxBackground.fill();
+        ctxBackground.restore();
 
         // SECTIONS
-        drawSections(ctx);
+        drawSections(ctxBackground);
 
         // TICKMARKS
-        drawTickmarks(ctx);
+        drawTickmarks(ctxBackground);
+
+        // THRESHOLD INDICATOR LED OFF
+        if (control.isLedVisible()) {
+            ctxBackground.save();
+            drawLedOff(ctxBackground);
+            ctxBackground.restore();
+        }
+
+        // TITLE
+        ctxBackground.save();
+        ctxBackground.setFont(Font.font("Verdana", FontWeight.NORMAL, 0.1 * size));
+        ctxBackground.setTextAlign(TextAlignment.CENTER);
+        ctxBackground.setFill(control.getTickMarkColor());
+        ctxBackground.fillText(control.getTitle(), 0.5 * size, 0.35 * size);
+        ctxBackground.restore();
 
         background.setCache(true);
     }

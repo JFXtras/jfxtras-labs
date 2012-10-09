@@ -35,6 +35,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
 import javafx.util.Builder;
@@ -65,6 +67,16 @@ public class SmallRadialBuilder<B extends SmallRadialBuilder<B>> extends Control
 
     public final SmallRadialBuilder model(final GaugeModel GAUGE_MODEL) {
         properties.put("GAUGE_MODEL", new SimpleObjectProperty<GaugeModel>(GAUGE_MODEL));
+        return this;
+    }
+
+    public final SmallRadialBuilder title(final String TITLE) {
+        properties.put("TITLE", new SimpleStringProperty(TITLE));
+        return this;
+    }
+
+    public final SmallRadialBuilder threshold(final double THRESHOLD) {
+        properties.put("THRESHOLD", new SimpleDoubleProperty(THRESHOLD));
         return this;
     }
 
@@ -133,6 +145,11 @@ public class SmallRadialBuilder<B extends SmallRadialBuilder<B>> extends Control
         return this;
     }
 
+    public final SmallRadialBuilder thresholdLedColor(final Color THRESHOLD_LED_COLOR) {
+        properties.put("THRESHOLD_LED_COLOR", new SimpleObjectProperty<Color>(THRESHOLD_LED_COLOR));
+        return this;
+    }
+
     public final SmallRadialBuilder valueLabelVisible(final boolean VALUE_LABEL_VISIBLE) {
         properties.put("VALUE_LABEL_VISIBLE", new SimpleBooleanProperty(VALUE_LABEL_VISIBLE));
         return this;
@@ -168,6 +185,10 @@ public class SmallRadialBuilder<B extends SmallRadialBuilder<B>> extends Control
         for (String key : properties.keySet()) {
             if ("GAUGE_MODEL".equals(key)) {
                 CONTROL.setGaugeModel(((ObjectProperty<GaugeModel>) properties.get(key)).get());
+            } else if ("TITLE".equals(key)) {
+                CONTROL.setTitle(((StringProperty) properties.get(key)).get());
+            } else if ("THRESHOLD".equals(key)) {
+                CONTROL.setThreshold(((DoubleProperty) properties.get(key)).get());
             } else if ("MIN_VALUE".equals(key)) {
                 CONTROL.setMinValue(((DoubleProperty) properties.get(key)).get());
             } else if("MAX_VALUE".equals(key)) {
@@ -186,6 +207,8 @@ public class SmallRadialBuilder<B extends SmallRadialBuilder<B>> extends Control
                 CONTROL.setPointerColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("CENTER_KNOB_COLOR".equals(key)) {
                 CONTROL.setCenterKnobColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("THRESHOLD_LED_COLOR".equals(key)) {
+                CONTROL.setThresholdLedColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("NO_OF_DECIMALS".equals(key)) {
                 CONTROL.setNoOfDecimals(((IntegerProperty) properties.get(key)).get());
             } else if ("SECTIONS_ARRAY".equals(key)) {
