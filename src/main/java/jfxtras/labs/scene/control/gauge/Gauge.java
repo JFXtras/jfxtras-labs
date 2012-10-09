@@ -182,6 +182,7 @@ public abstract class Gauge extends Control {
     public static enum RadialRange {
         RADIAL_360(360, 0, 0, new Rectangle(0.4, 0.56, 0.4, 0.12), 0, new Point2D(0.6, 0.4), new Point2D(0.3, 0.4), 1, 0.38),
         RADIAL_300(300, -150, 240, new Rectangle(0.4, 0.56, 0.4, 0.12), 150, new Point2D(0.6, 0.4), new Point2D(0.3, 0.4), 1, 0.38),
+        RADIAL_280(280, -140, 280, new Rectangle(0.4, 0.56, 0.4, 0.12), 150, new Point2D(0.6, 0.4), new Point2D(0.3, 0.4), 1, 0.38),
         RADIAL_270(270, -180, 270, new Rectangle(0.4, 0.56, 0.4, 0.12), 180, new Point2D(0.6, 0.4), new Point2D(0.3, 0.4), 1, 0.38),
         RADIAL_180(180, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 90, new Point2D(0.6, 0.4), new Point2D(0.3, 0.4), 1, 0.38),
         RADIAL_180N(180, -90, 180, new Rectangle(0.55, 0.56, 0.55, 0.12), 90, new Point2D(0.6, 0.35), new Point2D(0.3, 0.35), 1, 0.38),

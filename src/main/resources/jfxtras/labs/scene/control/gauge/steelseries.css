@@ -161,6 +161,10 @@
     -fx-skin: "jfxtras.labs.internal.scene.control.skin.SimpleLinearGaugeSkin";
 }
 
+.small-radial {
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.SmallRadialSkin";
+}
+
 
 /************************************************************
 * Defintions of all lcd colors                              *
