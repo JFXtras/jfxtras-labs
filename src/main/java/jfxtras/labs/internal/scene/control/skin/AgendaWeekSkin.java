@@ -24,7 +24,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// TODO: editing of summary
+// TODO: how to do delete of appointments? popup menu? delete icon?
+// TODO: assign different group; popup menu? dropdown menu?
+// TODO: editing of summary: inline? popup?
 // TODO: dropping an area event in the header and then back into the day; take the location of the drop into account as the start time (instead of the last start time)
 // TODO: single day view
 // TODO: allow dragging on day spanning events on the not-the-first areas
@@ -897,7 +899,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				Calendar lDayEndCalendar = setTimeTo2359( (Calendar)calendar.clone() );
 				this.end = (appointment.getEndTime().after(lDayEndCalendar) ? lDayEndCalendar : (Calendar)appointment.getEndTime().clone());
 				
-				// always is final appointment
+				// always is first and last appointment
 				isFirstAreaOfAppointment = this.start.equals(appointment.getStartTime()); 
 				isLastAreaOfAppointment = this.end.equals(appointment.getEndTime()); 
 			}
