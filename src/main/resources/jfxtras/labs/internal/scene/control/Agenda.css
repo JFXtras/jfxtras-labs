@@ -103,7 +103,7 @@
     -fx-stroke-dash-array: 4 4 4 4;
 }
 
-.AgendaWeekSkin .focused { 
+.AgendaWeekSkin .Selected { 
 	-fx-color: -fx-focused-base;
 	-fx-background-color: -fx-focus-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
 	-fx-background-insets: -1.4, 0, 1, 2;
