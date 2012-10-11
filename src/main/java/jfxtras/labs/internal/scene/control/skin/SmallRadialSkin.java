@@ -127,7 +127,7 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
         timeline         = new Timeline();
         gaugeValue       = new SimpleDoubleProperty(control.getValue());
         size             = 200;
-        rotate           = RotateBuilder.create().pivotX(100).pivotY(100).angle(angleOffset - gaugeValue.get() * control.getAngleStep()).build();
+        rotate           = RotateBuilder.create().pivotX(100).pivotY(100).angle(angleOffset + (gaugeValue.get() - control.getMinValue()) * control.getAngleStep()).build();
         lastTimerCall    = System.nanoTime();
         timer            = new AnimationTimer() {
             @Override public void handle(final long NOW) {
@@ -179,6 +179,9 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
         addListeners();
 
         pointer.getTransforms().add(rotate);
+        if (control.getValue() > control.getThreshold()) {
+            control.setThresholdExceeded(true);
+        }
 
         initialized = true;
         repaint();
