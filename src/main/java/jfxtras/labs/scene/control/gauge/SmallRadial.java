@@ -59,6 +59,7 @@ public class SmallRadial extends Gauge {
     private ObjectProperty<Color> pointerColor;
     private ObjectProperty<Color> centerKnobColor;
     private ObjectProperty<Color> thresholdLedColor;
+    private BooleanProperty       pointerShadowVisible;
 
 
     // ******************** Constructors **************************************
@@ -80,8 +81,9 @@ public class SmallRadial extends Gauge {
         backgroundColor       = new SimpleObjectProperty<Color>(Color.rgb(220, 220, 220));
         tickMarkColor         = new SimpleObjectProperty<Color>(Color.BLACK);
         pointerColor          = new SimpleObjectProperty<Color>(Color.RED);
-        centerKnobColor       = new SimpleObjectProperty<Color>(Color.BLACK);
+        centerKnobColor       = new SimpleObjectProperty<Color>(Color.rgb(110, 110, 110));
         thresholdLedColor     = new SimpleObjectProperty<Color>(Color.RED);
+        pointerShadowVisible  = new SimpleBooleanProperty(false);
         timeToValueInMs       = new SimpleDoubleProperty(1500);
         getStyleClass().add(DEFAULT_STYLE_CLASS);
     }
@@ -207,6 +209,18 @@ public class SmallRadial extends Gauge {
 
     public final ObjectProperty<Color> thresholdLedColorProperty() {
         return thresholdLedColor;
+    }
+
+    public final boolean isPointerShadowVisible() {
+        return pointerShadowVisible.get();
+    }
+
+    public final void setPointerShadowVisible(final boolean POINTER_SHADOW_VISIBLE) {
+        pointerShadowVisible.set(POINTER_SHADOW_VISIBLE);
+    }
+
+    public final BooleanProperty pointerShadowVisibleProperty() {
+        return pointerShadowVisible;
     }
 
     public final double getTimeToValueInMs() {

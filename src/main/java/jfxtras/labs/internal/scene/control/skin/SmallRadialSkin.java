@@ -169,6 +169,7 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
         registerChangeListener(control.pointerColorProperty(), "FULL_REPAINT");
         registerChangeListener(control.centerKnobColorProperty(), "FULL_REPAINT");
         registerChangeListener(control.thresholdLedColorProperty(), "FULL_REPAINT");
+        registerChangeListener(control.pointerShadowVisibleProperty(), "FULL_REPAINT");
         registerChangeListener(control.noOfDecimalsProperty(), "LABEL");
         registerChangeListener(control.valueProperty(), "VALUE");
         registerChangeListener(control.thresholdExceededProperty(), "THRESHOLD_EXCEEDED");
@@ -376,11 +377,24 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
             0.8);
         pointer.setStroke(POINTER_FILL.darker());
         pointer.setFill(POINTER_FILL);
+        if (control.isPointerShadowVisible()) {
+            pointer.setEffect(DropShadowBuilder.create()
+                                               .radius(0.05 * size)
+                                               .color(Color.rgb(0, 0, 0, 0.5))
+                                               .blurType(BlurType.GAUSSIAN)
+                                               .build());
+        }
 
         final Circle KNOB = new Circle(0.5 * size, 0.5 * size, 0.06198347107438017 * size);
         //KNOB.getStyleClass().add("embeddedradial-knob");
-        KNOB.setFill(control.getCenterKnobColor());
+        KNOB.setFill(new LinearGradient(0, KNOB.getLayoutBounds().getMinY(), 0, KNOB.getLayoutBounds().getMaxY(),
+                                        false, CycleMethod.NO_CYCLE,
+                                        new Stop(0, control.getCenterKnobColor().brighter()),
+                                        new Stop(1.0, control.getCenterKnobColor().darker())));
         KNOB.setStroke(null);
+        KNOB.setEffect(InnerShadowBuilder.create().radius(0.0085 * size)
+                                         .blurType(BlurType.GAUSSIAN)
+                                         .build());
 
         smallRadial.getChildren().clear();
         smallRadial.getChildren().addAll(background, valueText, ledOn);
@@ -488,7 +502,6 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
     private final void drawLedOn(final GraphicsContext ctx) {
         //LED_ON
         ctx.save();
-        ctx.scale(1.0, 1);
         ctx.beginPath();
         ctx.arc(0.3677685950413223 * size, 0.6074380165289256 * size, 0.045454545454545456 * size, 0.045454545454545456 * size, 0, 360);
         ctx.setFill(new LinearGradient(0.33884297520661155 * size, 0.5785123966942148 * size,
@@ -499,20 +512,20 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
                                        new Stop(1.0, control.getThresholdLedColor().brighter())));
         ctx.fill();
 
-        ctx.applyEffect(InnerShadowBuilder.create()
-                                          .offsetX(0.0 * size)
-                                          .offsetY(0.0 * size)
-                                          .radius(0.0013523666 * size)
-                                          .color(Color.color(0, 0, 0, 1.0))
-                                          .blurType(BlurType.GAUSSIAN)
-                                          .input(DropShadowBuilder.create()
+        ctx.applyEffect(DropShadowBuilder.create()
+                                         .offsetX(0.0 * size)
+                                         .offsetY(0.0 * size)
+                                         .radius(0.05 * size)
+                                         .color(control.getThresholdLedColor().brighter())
+                                         .blurType(BlurType.GAUSSIAN)
+                                         .input(InnerShadowBuilder.create()
                                                                   .offsetX(0.0 * size)
                                                                   .offsetY(0.0 * size)
-                                                                  .radius(0.01 * size)
-                                                                  .color(control.getThresholdLedColor())
+                                                                  .radius(0.0013523666 * size)
+                                                                  .color(Color.color(0, 0, 0, 1.0))
                                                                   .blurType(BlurType.GAUSSIAN)
                                                                   .build())
-                                          .build());
+                                         .build());
         ctx.restore();
 
         //LED_HIGHLIGHT
@@ -534,19 +547,32 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
 
         // FRAME
         ctxBackground.save();
-        ctxBackground.scale(1.0, 1);
         ctxBackground.beginPath();
         ctxBackground.arc(0.5 * size, 0.5 * size, 0.5 * size, 0.5 * size, 0, 360);
-        ctxBackground.setFill(control.getFrameColor());
+        ctxBackground.setFill(new LinearGradient(0, 0, 0, size,
+                                                 false, CycleMethod.NO_CYCLE,
+                                                 new Stop(0, control.getFrameColor().brighter()),
+                                                 new Stop(1.0, control.getFrameColor().darker())));
         ctxBackground.fill();
         ctxBackground.restore();
 
         // BACKGROUND
         ctxBackground.save();
-        ctxBackground.scale(1.0, 1);
         ctxBackground.beginPath();
         ctxBackground.arc(0.5 * size, 0.5 * size, 0.43388429752066116 * size, 0.43388429752066116 * size, 0, 360);
-        ctxBackground.setFill(control.getBackgroundColor());
+        ctxBackground.setFill(new LinearGradient(0, 0.0661157025 * size, 0, 0.9338842975 * size,
+                                                 false, CycleMethod.NO_CYCLE,
+                                                 new Stop(0, control.getBackgroundColor().darker()),
+                                                 new Stop(1.0, control.getBackgroundColor().brighter())));
+        ctxBackground.fill();
+
+        ctxBackground.arc(0.5 * size, 0.5 * size, 0.43388429752066116 * size, 0.43388429752066116 * size, 0, 360);
+        ctxBackground.setFill(new RadialGradient(0, 0, 0.5 * size, 0.57 * size, 0.5 * size,
+            false, CycleMethod.NO_CYCLE,
+            new Stop(0.0, Color.TRANSPARENT),
+            new Stop(0.9, Color.TRANSPARENT),
+            new Stop(0.95, Color.rgb(0, 0, 0, 0.1)),
+            new Stop(1.0, Color.rgb(0, 0, 0, 0.3))));
         ctxBackground.fill();
         ctxBackground.restore();
 

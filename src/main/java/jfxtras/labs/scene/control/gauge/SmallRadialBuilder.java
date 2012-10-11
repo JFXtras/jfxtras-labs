@@ -150,6 +150,11 @@ public class SmallRadialBuilder<B extends SmallRadialBuilder<B>> extends Control
         return this;
     }
 
+    public final SmallRadialBuilder pointerShadowVisible(final boolean POINTER_SHADOW_VISIBLE) {
+        properties.put("POINTER_SHADOW_VISIBLE", new SimpleBooleanProperty(POINTER_SHADOW_VISIBLE));
+        return this;
+    }
+
     public final SmallRadialBuilder valueLabelVisible(final boolean VALUE_LABEL_VISIBLE) {
         properties.put("VALUE_LABEL_VISIBLE", new SimpleBooleanProperty(VALUE_LABEL_VISIBLE));
         return this;
@@ -209,6 +214,8 @@ public class SmallRadialBuilder<B extends SmallRadialBuilder<B>> extends Control
                 CONTROL.setCenterKnobColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("THRESHOLD_LED_COLOR".equals(key)) {
                 CONTROL.setThresholdLedColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("POINTER_SHADOW_VISIBLE".equals(key)) {
+                CONTROL.setPointerShadowVisible(((BooleanProperty) properties.get(key)).get());
             } else if ("NO_OF_DECIMALS".equals(key)) {
                 CONTROL.setNoOfDecimals(((IntegerProperty) properties.get(key)).get());
             } else if ("SECTIONS_ARRAY".equals(key)) {
