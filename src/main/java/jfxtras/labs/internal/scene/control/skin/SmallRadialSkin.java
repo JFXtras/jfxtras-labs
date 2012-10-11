@@ -238,7 +238,7 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
             valueText.setText(valueFormat.format(gaugeValue.get()));
             valueText.setX((size - valueText.getLayoutBounds().getWidth()) * 0.5);
             valueText.setY(0.88 * size);
-            rotate.setAngle(angleOffset + gaugeValue.get() * control.getAngleStep());
+            rotate.setAngle(angleOffset + (gaugeValue.get() - control.getMinValue()) * control.getAngleStep());
         } else if ("THRESHOLD_EXCEEDED".equals(PROPERTY)) {
             if (control.isThresholdExceeded()) {
                 timer.start();
@@ -435,7 +435,7 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
         final double wh     = size * 0.77;
         final double OFFSET = angleOffset - 90;
         for (final Section section : control.getSections()) {
-            final double ANGLE_START   = section.getStart() * control.getAngleStep();
+            final double ANGLE_START   = (section.getStart() - control.getMinValue()) * control.getAngleStep();
             final double ANGLE_EXTEND  = (section.getStop() - section.getStart()) * control.getAngleStep();
             CTX.save();
             CTX.setStroke(section.getColor());
