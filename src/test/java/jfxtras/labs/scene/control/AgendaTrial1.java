@@ -28,7 +28,9 @@ package jfxtras.labs.scene.control;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -38,6 +40,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import jfxtras.labs.scene.control.Agenda.AppointmentGroup;
 import jfxtras.labs.scene.control.Agenda.CalendarRange;
 
 /**
@@ -56,6 +59,42 @@ public class AgendaTrial1 extends Application {
 		final Agenda lAgenda = new Agenda();		
     	//lAgenda.setLocale(new java.util.Locale("de")); // weeks starts on monday
 		
+		// setup appointment groups
+		final Map<String, Agenda.AppointmentGroup> lAppointmentGroupMap = new HashMap<String, Agenda.AppointmentGroup>();
+		lAppointmentGroupMap.put("group0", new Agenda.AppointmentGroupImpl().withStyleClass("group0"));
+		lAppointmentGroupMap.put("group1", new Agenda.AppointmentGroupImpl().withStyleClass("group1"));
+		lAppointmentGroupMap.put("group2", new Agenda.AppointmentGroupImpl().withStyleClass("group2"));
+		lAppointmentGroupMap.put("group3", new Agenda.AppointmentGroupImpl().withStyleClass("group3"));
+		lAppointmentGroupMap.put("group4", new Agenda.AppointmentGroupImpl().withStyleClass("group4"));
+		lAppointmentGroupMap.put("group5", new Agenda.AppointmentGroupImpl().withStyleClass("group5"));
+		lAppointmentGroupMap.put("group6", new Agenda.AppointmentGroupImpl().withStyleClass("group6"));
+		lAppointmentGroupMap.put("group7", new Agenda.AppointmentGroupImpl().withStyleClass("group7"));
+		lAppointmentGroupMap.put("group8", new Agenda.AppointmentGroupImpl().withStyleClass("group8"));
+		lAppointmentGroupMap.put("group9", new Agenda.AppointmentGroupImpl().withStyleClass("group9"));
+		lAppointmentGroupMap.put("group10", new Agenda.AppointmentGroupImpl().withStyleClass("group10"));
+		lAppointmentGroupMap.put("group11", new Agenda.AppointmentGroupImpl().withStyleClass("group11"));
+		lAppointmentGroupMap.put("group12", new Agenda.AppointmentGroupImpl().withStyleClass("group12"));
+		lAppointmentGroupMap.put("group13", new Agenda.AppointmentGroupImpl().withStyleClass("group13"));
+		lAppointmentGroupMap.put("group14", new Agenda.AppointmentGroupImpl().withStyleClass("group14"));
+		lAppointmentGroupMap.put("group15", new Agenda.AppointmentGroupImpl().withStyleClass("group15"));
+		lAppointmentGroupMap.put("group16", new Agenda.AppointmentGroupImpl().withStyleClass("group16"));
+		lAppointmentGroupMap.put("group17", new Agenda.AppointmentGroupImpl().withStyleClass("group17"));
+		lAppointmentGroupMap.put("group18", new Agenda.AppointmentGroupImpl().withStyleClass("group18"));
+		lAppointmentGroupMap.put("group19", new Agenda.AppointmentGroupImpl().withStyleClass("group19"));
+		lAppointmentGroupMap.put("group0", new Agenda.AppointmentGroupImpl().withStyleClass("group20"));
+		lAppointmentGroupMap.put("group1", new Agenda.AppointmentGroupImpl().withStyleClass("group21"));
+		lAppointmentGroupMap.put("group2", new Agenda.AppointmentGroupImpl().withStyleClass("group22"));
+		lAppointmentGroupMap.put("group3", new Agenda.AppointmentGroupImpl().withStyleClass("group23"));
+		for (String lId : lAppointmentGroupMap.keySet())
+		{
+			AppointmentGroup lAppointmentGroup = lAppointmentGroupMap.get(lId);
+			lAppointmentGroup.setDescription(lId);
+			lAgenda.appointmentGroups().add(lAppointmentGroup);
+		}
+			
+		
+		// create the appoinment groups
+		
 		// accept new appointments
 		lAgenda.createAppointmentCallbackProperty().set(new Callback<Agenda.CalendarRange, Agenda.Appointment>()
 		{
@@ -67,7 +106,7 @@ public class AgendaTrial1 extends Application {
 				.withEndTime(calendarRange.getEndCalendar())
 				.withSummary("new")
 				.withDescription("new")
-				.withStyleClass("group1");
+				.withAppointmentGroup(lAppointmentGroupMap.get("group1"));
 			}
 		});
 		
@@ -101,85 +140,85 @@ public class AgendaTrial1 extends Application {
 				.withEndTime(new GregorianCalendar(lYear, lMonth, lDay, 11, 30))
 				.withSummary("A")
 				.withDescription("A much longer test description")
-				.withStyleClass("group7")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group7"))
 		, 	new Agenda.AppointmentImpl()
 				.withStartTime(new GregorianCalendar(lYear, lMonth, lDay, 8, 30))
 				.withEndTime(new GregorianCalendar(lYear, lMonth, lDay, 10, 00))
 				.withSummary("B")
 				.withDescription("A description 2")
-				.withStyleClass("group8")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group8"))
 		, 	new Agenda.AppointmentImpl()
 				.withStartTime(new GregorianCalendar(lYear, lMonth, lDay, 8, 30))
 				.withEndTime(new GregorianCalendar(lYear, lMonth, lDay, 9, 30))
 				.withSummary("C")
 				.withDescription("A description 3")
-				.withStyleClass("group9")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group9"))
 		, 	new Agenda.AppointmentImpl()
 				.withStartTime(new GregorianCalendar(lYear, lMonth, lDay, 9, 00))
 				.withEndTime(new GregorianCalendar(lYear, lMonth, lDay, 13, 30))
 				.withSummary("D")
 				.withDescription("A description 4")
-				.withStyleClass("group7")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group7"))
 		, 	new Agenda.AppointmentImpl()
 				.withStartTime(new GregorianCalendar(lYear, lMonth, lDay, 10, 30))
 				.withEndTime(new GregorianCalendar(lYear, lMonth, lDay, 11, 00))
 				.withSummary("E")
 				.withDescription("A description 4")
-				.withStyleClass("group7")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group7"))
 		, 	new Agenda.AppointmentImpl()
 				.withStartTime(new GregorianCalendar(lYear, lMonth, lDay, 12, 30))
 				.withEndTime(new GregorianCalendar(lYear, lMonth, lDay, 13, 30))
 				.withSummary("F")
 				.withDescription("A description 4")
-				.withStyleClass("group7")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group7"))
 		, 	new Agenda.AppointmentImpl()
 				.withStartTime(new GregorianCalendar(lYear, lMonth, lDay, 13, 00))
 				.withEndTime(new GregorianCalendar(lYear, lMonth, lDay, 13, 30))
 				.withSummary("H")
 				.withDescription("A description 4")
-				.withStyleClass("group7")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group7"))
 		, 	new Agenda.AppointmentImpl()
 				.withStartTime(new GregorianCalendar(lYear, lMonth, lDay, 14, 00))
 				.withEndTime(new GregorianCalendar(lYear, lMonth, lDay, 14, 45))
 				.withSummary("G")
 				.withDescription("A description 4")
-				.withStyleClass("group7")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group7"))
 		, 	new Agenda.AppointmentImpl()
 				.withStartTime(new GregorianCalendar(lYear, lMonth, lDay, 15, 00))
 				.withEndTime(new GregorianCalendar(lYear, lMonth, lDay, 16, 00))
 				.withSummary("I")
 				.withDescription("A description 4")
-				.withStyleClass("group7")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group7"))
 		, 	new Agenda.AppointmentImpl()
 				.withStartTime(new GregorianCalendar(lYear, lMonth, lDay, 15, 30))
 				.withEndTime(new GregorianCalendar(lYear, lMonth, lDay, 16, 00))
 				.withSummary("J")
 				.withDescription("A description 4")
-				.withStyleClass("group7")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group7"))
 		// -----
 		, 	new Agenda.AppointmentImpl()
 				.withStartTime(new GregorianCalendar(lYear, lMonth, lDay))
 				.withSummary("all day1")
 				.withDescription("A description")
-				.withStyleClass("group7")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group7"))
 				.withWholeDay(true)
 		, 	new Agenda.AppointmentImpl()
 				.withStartTime(new GregorianCalendar(lYear, lMonth, lDay))
 				.withSummary("all day2")
 				.withDescription("A description")
-				.withStyleClass("group8")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group8"))
 				.withWholeDay(true)
 		, 	new Agenda.AppointmentImpl()
 				.withStartTime(new GregorianCalendar(lYear, lMonth, lDay))
 				.withSummary("all day3")
 				.withDescription("A description3")
-				.withStyleClass("group9")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group9"))
 				.withWholeDay(true)
 		, 	new Agenda.AppointmentImpl()
 				.withStartTime(new GregorianCalendar(lYear, lMonth, lDay + 1))
 				.withSummary("all day")
 				.withDescription("A description3")
-				.withStyleClass("group3")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group3"))
 				.withWholeDay(true)
 		);
 		final String lIpsum = "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus";
@@ -196,7 +235,7 @@ public class AgendaTrial1 extends Application {
 			.withEndTime(lEnd)
 			.withSummary(lIpsum.substring(0, new Random().nextInt(50)))
 			.withDescription(lIpsum.substring(0, 10 + new Random().nextInt(lIpsum.length() - 10)))
-			.withStyleClass("group" + (new Random().nextInt(3) + 1));
+			.withAppointmentGroup(lAppointmentGroupMap.get("group" + (new Random().nextInt(3) + 1)));
 			
 			lAgenda.appointments().add(lAppointment);
 		}
@@ -235,7 +274,7 @@ public class AgendaTrial1 extends Application {
 					.withWholeDay(new Random().nextInt(50) > 40)
 					.withSummary(lIpsum.substring(0, new Random().nextInt(50)))
 					.withDescription(lIpsum.substring(0, new Random().nextInt(lIpsum.length())))
-					.withStyleClass("group" + (new Random().nextInt(24)));					
+					.withAppointmentGroup(lAppointmentGroupMap.get("group" + (new Random().nextInt(10))));					
 					lAgenda.appointments().add(lAppointment);
 				}
 				return null;

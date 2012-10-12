@@ -132,3 +132,14 @@
 	-fx-padding: 0.766667em 0.733333em 0.75em 0.733333em;
 	-fx-text-fill: -fx-text-base-color;
 }
+
+.AgendaWeekSkin_popup .AppointmentGroups {
+	-fx-border-color: BLACK;
+	-fx-border-width: 1px;
+	-fx-padding: 2px;
+}
+
+.AgendaWeekSkin_popup .AppointmentGroup {
+	-fx-border-color: WHITE;
+	-fx-border-width: 1px;
+}

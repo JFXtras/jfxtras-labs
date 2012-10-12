@@ -26,6 +26,7 @@
 // TODO: how to do delete of appointments? popup menu? delete icon?
 // TODO: assign different group; popup menu? dropdown menu?
 // TODO: editing of summary: inline? popup?
+// TODO: undo feature on all actions (remove, add, ...)
 // TODO: dropping an area event in the header and then back into the day; take the location of the drop into account as the start time (instead of the last start time)
 // TODO: single day view
 // TODO: allow dragging on day spanning events on the not-the-first areas
@@ -425,7 +426,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			
 			// for debugging setStyle("-fx-border-color:GREEN;-fx-border-width:4px;");
 			getStyleClass().add("Appointment");
-			getStyleClass().add(appointment.getStyleClass());
+			getStyleClass().add(appointment.getAppointmentGroup().getStyleClass());
 
 			// add a text node
 			double lPadding = 3;
@@ -440,7 +441,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			getChildren().add(lSummaryText);			
 			
 			// add the menu header
-			getChildren().add(menuArrow);
+			getChildren().add(menuIcon);
 			
 			// history visualizer
 			historyVisualizer = new Rectangle();
@@ -888,7 +889,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		{
 			// for debugging setStyle("-fx-border-color:BLUE;-fx-border-width:4px;");
 			getStyleClass().add("Appointment");
-			getStyleClass().add(appointment.getStyleClass());
+			getStyleClass().add(appointment.getAppointmentGroup().getStyleClass());
 			
 			// remember
 			this.appointment = appointment;
@@ -971,7 +972,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			}
 			
 			// add the menu header
-			if (appointment.isWholeDay() == false) getChildren().add(menuArrow);
+			if (appointment.isWholeDay() == false) getChildren().add(menuIcon);
 			
 			// history visualizer
 			historyVisualizer = new Rectangle();
@@ -1311,41 +1312,41 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			
 			// setup menu arrow
 			double lPadding = 3;
-			menuArrow.getStyleClass().add("down-arrow");
+			menuIcon.getStyleClass().add("down-arrow");
 			double lArrowSize = 6;
-			menuArrow.layoutXProperty().bind(widthProperty().subtract(lArrowSize + lPadding));
-			menuArrow.setLayoutY(lPadding);
-			menuArrow.setPrefSize(lArrowSize, lArrowSize);
+			menuIcon.layoutXProperty().bind(widthProperty().subtract(lArrowSize + lPadding));
+			menuIcon.setLayoutY(lPadding);
+			menuIcon.setPrefSize(lArrowSize, lArrowSize);
 			// play with the mouse pointer to show something can be done here
-			menuArrow.setOnMouseEntered(new EventHandler<MouseEvent>()
+			menuIcon.setOnMouseEntered(new EventHandler<MouseEvent>()
 			{
 				@Override
 				public void handle(MouseEvent mouseEvent)
 				{
 					if (!mouseEvent.isPrimaryButtonDown())
 					{						
-						menuArrow.setCursor(Cursor.HAND);
+						menuIcon.setCursor(Cursor.HAND);
 						
 						// no one else
 						mouseEvent.consume();
 					}
 				}
 			});
-			menuArrow.setOnMouseExited(new EventHandler<MouseEvent>()
+			menuIcon.setOnMouseExited(new EventHandler<MouseEvent>()
 			{
 				@Override
 				public void handle(MouseEvent mouseEvent)
 				{
 					if (!mouseEvent.isPrimaryButtonDown())
 					{
-						menuArrow.setCursor(Cursor.DEFAULT);
+						menuIcon.setCursor(Cursor.DEFAULT);
 						
 						// no one else
 						mouseEvent.consume();
 					}
 				}
 			});
-			menuArrow.setOnMousePressed(new EventHandler<MouseEvent>() // these just need to be captured, so they are not processed by the underlying pane
+			menuIcon.setOnMousePressed(new EventHandler<MouseEvent>() // these just need to be captured, so they are not processed by the underlying pane
 			{
 				@Override
 				public void handle(MouseEvent mouseEvent)
@@ -1353,7 +1354,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					mouseEvent.consume();
 				}
 			});
-			menuArrow.setOnMouseReleased(new EventHandler<MouseEvent>() // these just need to be captured, so they are not processed by the underlying pane
+			menuIcon.setOnMouseReleased(new EventHandler<MouseEvent>() // these just need to be captured, so they are not processed by the underlying pane
 			{
 				@Override
 				public void handle(MouseEvent mouseEvent)
@@ -1361,13 +1362,13 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					mouseEvent.consume();
 				}
 			});
-			menuArrow.setOnMouseClicked(new EventHandler<MouseEvent>()
+			menuIcon.setOnMouseClicked(new EventHandler<MouseEvent>()
 			{
 				@Override
 				public void handle(MouseEvent mouseEvent)
 				{
 					mouseEvent.consume();
-					showPopup(mouseEvent, AbstractAppointmentPane.this);
+					showMenu(mouseEvent, AbstractAppointmentPane.this);
 				}
 			});
 		}
@@ -1375,7 +1376,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		double startX = 0;
 		double startY = 0;
 		boolean dragged = false;
-		Region menuArrow = new Region();
+		Region menuIcon = new Region();
 		
 		public String describe()
 		{
@@ -1482,19 +1483,19 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	/*
 	 * 
 	 */
-	private void showPopup(MouseEvent evt, final AbstractAppointmentPane abstractAppointmentPane)
+	private void showMenu(MouseEvent evt, final AbstractAppointmentPane abstractAppointmentPane)
 	{
 		// create popup
-		final Popup popup = new Popup();
-		popup.setAutoFix(true);
-		popup.setAutoHide(true);
-		popup.setHideOnEscape(true);
+		final Popup lPopup = new Popup();
+		lPopup.setAutoFix(true);
+		lPopup.setAutoHide(true);
+		lPopup.setHideOnEscape(true);
 		
 		// initial layout
 		double lPadding = 3;
 		VBox lVBox = new VBox(lPadding);
 		lVBox.getStyleClass().add(this.getClass().getSimpleName() + "_popup");
-		popup.getContent().add(lVBox);
+		lPopup.getContent().add(lVBox);
 		
 		// description
 		lVBox.getChildren().add(new Label(abstractAppointmentPane.describe()));
@@ -1507,15 +1508,74 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			@Override
 			public void handle(ActionEvent arg0)
 			{
-				popup.hide();
+				lPopup.hide();
 				getSkinnable().selectedAppointments().remove(abstractAppointmentPane.appointment); // TODO: we should make sure this happens in the control when the appointment is remove from the appointments collection
 				getSkinnable().appointments().remove(abstractAppointmentPane.appointment);
 			}
 		});
 		lVBox.getChildren().add(lDeleteButton);
 		
+		// construct a area of appointment groups
+		GridPane lAppointmentGroupGridPane = new GridPane();
+		lAppointmentGroupGridPane.getStyleClass().add("AppointmentGroups");
+		lAppointmentGroupGridPane.setHgap(2);
+		lAppointmentGroupGridPane.setVgap(2);
+		int lCnt = 0;
+		for (Agenda.AppointmentGroup lAppointmentGroup : getSkinnable().appointmentGroups())
+		{
+			// create the appointment group
+			final Pane lPane = new Pane();
+			lPane.setPrefSize(25, 25);
+			lPane.getStyleClass().addAll("AppointmentGroup", lAppointmentGroup.getStyleClass());
+			lAppointmentGroupGridPane.add(lPane, lCnt % 5, lCnt / 5);
+			lCnt++;
+			
+			// mouse reactions
+			lPane.setOnMouseEntered(new EventHandler<MouseEvent>()
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					if (!mouseEvent.isPrimaryButtonDown())
+					{						
+						mouseEvent.consume();
+						lPane.setCursor(Cursor.HAND);
+					}
+				}
+			});
+			lPane.setOnMouseExited(new EventHandler<MouseEvent>()
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					if (!mouseEvent.isPrimaryButtonDown())
+					{
+						mouseEvent.consume();
+						lPane.setCursor(Cursor.DEFAULT);
+					}
+				}
+			});
+			final Agenda.AppointmentGroup lAppointmentGroupFinal = lAppointmentGroup; 
+			lPane.setOnMouseClicked(new EventHandler<MouseEvent>()
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					mouseEvent.consume();
+					lPopup.hide();
+					
+					// assign appointment group
+					abstractAppointmentPane.appointment.setAppointmentGroup(lAppointmentGroupFinal);
+					
+					// refresh
+					setupAppointments();
+				}
+			});
+		}
+		lVBox.getChildren().add(lAppointmentGroupGridPane);
+		
 		// show it just below the menu icon
-		popup.show(abstractAppointmentPane, NodeUtil.screenX(abstractAppointmentPane), NodeUtil.screenY(abstractAppointmentPane.menuArrow) + abstractAppointmentPane.menuArrow.getHeight());
+		lPopup.show(abstractAppointmentPane, NodeUtil.screenX(abstractAppointmentPane), NodeUtil.screenY(abstractAppointmentPane.menuIcon) + abstractAppointmentPane.menuIcon.getHeight());
 	}
 
 	// ==================================================================================================================
