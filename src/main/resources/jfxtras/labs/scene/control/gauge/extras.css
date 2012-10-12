@@ -136,6 +136,7 @@
                                          -fx-dark-text-color  59%,
                                          -fx-mid-text-color   60%);
 }
+
 .xy-control:focused {
     -fx-background-insets: -1.4, 0, 0, 1;
 }
@@ -199,20 +200,23 @@
 * Defintion of SimpleIndicator fills                        *
 ************************************************************/
 .indicator-outer-frame-fill {
-    -fx-fill: linear-gradient(from 50% 0% to 50% 100%, rgba(242, 242, 242, 1) 0%, rgba(242, 242, 242, 1) 14%, rgba(242, 242, 242, 1) 15%, rgba(54, 54, 54, 1) 86%, rgba(51, 51, 51, 1) 87%, rgba(51, 51, 51, 1) 100%);
+    -fx-fill  : linear-gradient(from 50% 0% to 50% 100%, rgba(242, 242, 242, 1) 0%, rgba(242, 242, 242, 1) 14%, rgba(242, 242, 242, 1) 15%, rgba(54, 54, 54, 1) 86%, rgba(51, 51, 51, 1) 87%, rgba(51, 51, 51, 1) 100%);
     -fx-stroke: transparent;
 }
 
 .indicator-inner-frame-fill {
-    -fx-fill: linear-gradient(from 50% 0% to 50% 100%, rgba(51, 51, 51, 1) 0%, rgba(51, 51, 51, 1) 15%, rgba(53, 53, 53, 1) 15%, rgba(226, 226, 226, 1) 86%, rgba(226, 226, 226, 1) 100%);
+    -fx-fill  : linear-gradient(from 50% 0% to 50% 100%, rgba(51, 51, 51, 1) 0%, rgba(51, 51, 51, 1) 15%, rgba(53, 53, 53, 1) 15%, rgba(226, 226, 226, 1) 86%, rgba(226, 226, 226, 1) 100%);
+    -fx-stroke: transparent;
 }
 
 .indicator-main-fill {
     -fx-fill: radial-gradient(focus-angle 0deg, focus-distance 0%, center 51% 85%, radius 111%, -fx-indicator-inner-color 0%, -fx-indicator-outer-color 100%);
+    -fx-stroke: transparent;
 }
 
 .indicator-highlight-fill {
     -fx-fill: linear-gradient(from 50% 0% to 50% 100%, rgba(255, 255, 255, 0.8) 0%, transparent 100%);
+    -fx-stroke: transparent;
 }
 
 
