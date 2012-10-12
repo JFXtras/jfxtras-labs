@@ -23,12 +23,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// TODO: delete button in popu menu is not very pretty
+// TODO: delete button in popup menu is not very pretty
 // TODO: editing of summary: inline? popup?
-// TODO: undo feature on all actions (remove, add, ...)
 // TODO: dropping an area event in the header and then back into the day; take the location of the drop into account as the start time (instead of the last start time)
-// TODO: single day view
 // TODO: allow dragging on day spanning events on the not-the-first areas
+// TODO: undo feature on all actions (remove, add, ...)
+// TODO: single day view
 package jfxtras.labs.internal.scene.control.skin;
 
 import java.text.SimpleDateFormat;
@@ -52,9 +52,12 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.ScrollPaneBuilder;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -439,6 +442,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			lSummaryText.setClip(lClip);
 			getChildren().add(lSummaryText);			
 			
+			// tooltip
+			Tooltip.install(this, new Tooltip(appointment.getDescription()));
+
 			// add the menu header
 			getChildren().add(menuIcon);
 			
@@ -954,6 +960,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				}
 			}
 			
+			// tooltip
+			Tooltip.install(this, new Tooltip(appointment.getDescription()));
+
 			// duration dragger
 			if (isLastAreaOfAppointment == false)
 			{
@@ -1517,33 +1526,44 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		lPopup.setHideOnEscape(true);
 		
 		// initial layout
-		VBox lVBox = new VBox(2 * padding);
-		lVBox.getStyleClass().add(this.getClass().getSimpleName() + "_popup");
-		lPopup.getContent().add(lVBox);
+		VBox lMenuVBox = new VBox(2 * padding);
+		lMenuVBox.getStyleClass().add(this.getClass().getSimpleName() + "_popup");
+		lPopup.getContent().add(lMenuVBox);
 		
 		// time
 		Text lTimeText = new Text(abstractAppointmentPane.describe());
 		lTimeText.getStyleClass().add("TimeText");
-		lVBox.getChildren().add(lTimeText);
+		lMenuVBox.getChildren().add(lTimeText);
 		// summary
-		Text lSummaryText = new Text(abstractAppointmentPane.appointment.getSummary());
-		lSummaryText.getStyleClass().add("SummaryText");
-		lSummaryText.wrappingWidthProperty().set(lTimeText.getBoundsInParent().getWidth());
-		lVBox.getChildren().add(lSummaryText);
+		if (abstractAppointmentPane.appointment.getSummary() != null && abstractAppointmentPane.appointment.getSummary().trim().length() > 0)
+		{
+			Text lSummaryText = new Text(abstractAppointmentPane.appointment.getSummary().trim());
+			lSummaryText.getStyleClass().add("SummaryText");
+			lSummaryText.wrappingWidthProperty().set(lTimeText.getBoundsInParent().getWidth());
+			lMenuVBox.getChildren().add(lSummaryText);
+		}
 		
 		// actions
-		Button lDeleteButton = new Button("delete");
-		lDeleteButton.setOnAction(new EventHandler<ActionEvent>()
+		VBox lActionsVBox = new VBox();
+		lActionsVBox.getChildren().add(new Text("Actions:"));
+		HBox lHBox = new HBox();
+		lActionsVBox.getChildren().add(lHBox);
+		// delete
 		{
-			@Override
-			public void handle(ActionEvent arg0)
+			ImageButton lImageButton = new ImageButton( new Image(this.getClass().getResourceAsStream("jqueryMobileBlack16x16/delete.png")) );
+			lImageButton.setOnMouseClicked(new EventHandler<MouseEvent>()
 			{
-				lPopup.hide();
-				getSkinnable().selectedAppointments().remove(abstractAppointmentPane.appointment); // TODO: we should make sure this happens in the control when the appointment is remove from the appointments collection
-				getSkinnable().appointments().remove(abstractAppointmentPane.appointment);
-			}
-		});
-		lVBox.getChildren().add(lDeleteButton);
+				@Override public void handle(MouseEvent evt)
+				{
+					lPopup.hide();
+					getSkinnable().selectedAppointments().remove(abstractAppointmentPane.appointment); // TODO: we should make sure this happens in the control when the appointment is remove from the appointments collection
+					getSkinnable().appointments().remove(abstractAppointmentPane.appointment);
+				}
+			});
+			Tooltip.install(lImageButton, new Tooltip("Delete"));
+			lHBox.getChildren().add(lImageButton);
+		}
+		lMenuVBox.getChildren().add(lActionsVBox);
 		
 		// construct a area of appointment groups
 		VBox lAppointmentGroupVBox = new VBox();
@@ -1560,7 +1580,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			final Pane lPane = new Pane();			
 			lPane.setPrefSize(15, 15);
 			lPane.getStyleClass().addAll("AppointmentGroup", lAppointmentGroup.getStyleClass());
-			lAppointmentGroupGridPane.add(lPane, lCnt % 5, 1 + (lCnt / 5) );
+			lAppointmentGroupGridPane.add(lPane, lCnt % 5, lCnt / 5 );
 			lCnt++;
 			
 			// tooltip
@@ -1608,7 +1628,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				}
 			});
 		}
-		lVBox.getChildren().add(lAppointmentGroupVBox);
+		lMenuVBox.getChildren().add(lAppointmentGroupVBox);
 		
 		// show it just below the menu icon
 		lPopup.show(abstractAppointmentPane, NodeUtil.screenX(abstractAppointmentPane), NodeUtil.screenY(abstractAppointmentPane.menuIcon) + abstractAppointmentPane.menuIcon.getHeight());
@@ -1857,5 +1877,36 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		to.set(Calendar.MONTH, from.get(Calendar.MONTH));
 		to.set(Calendar.DATE, from.get(Calendar.DATE));
 		return to;
+	}
+	
+	class ImageButton extends ImageView
+	{
+		public ImageButton(Image i)
+		{
+			super(i);
+			setPickOnBounds(true);
+			setOnMouseEntered(new EventHandler<MouseEvent>()
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					if (!mouseEvent.isPrimaryButtonDown())
+					{						
+						ImageButton.this.setCursor(Cursor.HAND);
+					}
+				}
+			});
+			setOnMouseExited(new EventHandler<MouseEvent>()
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					if (!mouseEvent.isPrimaryButtonDown())
+					{
+						ImageButton.this.setCursor(Cursor.DEFAULT);
+					}
+				}
+			});
+		}
 	}
 }
