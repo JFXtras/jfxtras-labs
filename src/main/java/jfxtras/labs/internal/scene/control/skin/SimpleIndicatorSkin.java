@@ -152,7 +152,6 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
     private void updateIndicator() {
         main.setStyle("-fx-indicator-inner-color: " + Util.createCssColor(control.getInnerColor()) +
                       "-fx-indicator-outer-color: " + Util.createCssColor(control.getOuterColor()));
-        main.getStyleClass().add("indicator-main-fill");
         mainGlow.setColor(control.getInnerColor());
     }
 
@@ -187,11 +186,11 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
 
         final Circle INNER_FRAME = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.4 * WIDTH);
         INNER_FRAME.getStyleClass().add("indicator-inner-frame-fill");
-        INNER_FRAME.setStroke(null);
 
         main = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.38 * WIDTH);
+        main.setStyle("-fx-indicator-inner-color: " + Util.createCssColor(control.getInnerColor()) +
+                      "-fx-indicator-outer-color: " + Util.createCssColor(control.getOuterColor()));
         main.getStyleClass().add("indicator-main-fill");
-        main.setStroke(null);
 
         final InnerShadow MAIN_INNER_SHADOW = new InnerShadow();
         MAIN_INNER_SHADOW.setWidth(0.2880 * main.getLayoutBounds().getWidth());
@@ -220,7 +219,6 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
         final Ellipse HIGHLIGHT = new Ellipse(0.504 * WIDTH, 0.294 * HEIGHT,
                                               0.26 * WIDTH, 0.15 * HEIGHT);
         HIGHLIGHT.getStyleClass().add("indicator-highlight-fill");
-        HIGHLIGHT.setStroke(null);
 
         indicator.getChildren().addAll(OUTER_FRAME,
                                        INNER_FRAME,
