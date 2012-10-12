@@ -1136,7 +1136,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					// no drag yet
 					dragged = mouseEvent.isPrimaryButtonDown() ? false : true; // if not primary mouse, then just assume drag from the start 
 					if (isFirstAreaOfAppointment == false) return; // TODO: temporarily
-					
+
 					// place the rectangle
 					AbstractAppointmentPane.this.setCursor(Cursor.MOVE);
 					double lX = NodeUtil.screenX(AbstractAppointmentPane.this) - NodeUtil.screenX(AgendaWeekSkin.this);
