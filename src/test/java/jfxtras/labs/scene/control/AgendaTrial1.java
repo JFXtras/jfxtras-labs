@@ -63,8 +63,8 @@ public class AgendaTrial1 extends Application {
 			public Agenda.Appointment call(CalendarRange calendarRange)
 			{
 				return new Agenda.AppointmentImpl()
-				.withStartTime(calendarRange.start)
-				.withEndTime(calendarRange.end)
+				.withStartTime(calendarRange.getStartCalendar())
+				.withEndTime(calendarRange.getEndCalendar())
 				.withSummary("new")
 				.withDescription("new")
 				.withStyleClass("group1");

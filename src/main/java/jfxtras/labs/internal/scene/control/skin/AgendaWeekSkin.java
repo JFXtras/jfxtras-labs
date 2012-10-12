@@ -434,6 +434,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			
 			// history visualizer
 			historyVisualizer = new Rectangle();
+			historyVisualizer.setMouseTransparent(true);
 			historyVisualizer.xProperty().set(0);
 			historyVisualizer.yProperty().set(0);
 			historyVisualizer.widthProperty().bind(prefWidthProperty());
@@ -581,7 +582,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				}
 			});
 			
-			// start resize
+			// start new apppointment
 			setOnMousePressed(new EventHandler<MouseEvent>()
 			{
 				@Override
@@ -961,6 +962,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			
 			// history visualizer
 			historyVisualizer = new Rectangle();
+			historyVisualizer.setMouseTransparent(true);
 			historyVisualizer.xProperty().set(0);
 			historyVisualizer.yProperty().set(0);
 			historyVisualizer.widthProperty().bind(prefWidthProperty());
@@ -1013,7 +1015,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				public void handle(MouseEvent mouseEvent)
 				{
 					if (!mouseEvent.isPrimaryButtonDown())
-					{
+					{						
 						DurationDragger.this.setCursor(Cursor.HAND);
 						
 						// no one else
