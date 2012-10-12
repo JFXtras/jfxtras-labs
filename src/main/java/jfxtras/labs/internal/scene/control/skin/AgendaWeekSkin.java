@@ -17,7 +17,6 @@
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
@@ -589,7 +588,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				public void handle(MouseEvent mouseEvent)
 				{
 					// if there is no one to handle the result, don't eve bother
-					if (getSkinnable().addAppointmentCallbackProperty().get() == null) return;
+					if (getSkinnable().createAppointmentCallbackProperty().get() == null) return;
 					
 					// show the rectangle
 					DayPane.this.setCursor(Cursor.V_RESIZE);
@@ -627,6 +626,13 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				{
 					if (resizeRectangle == null) return;
 					
+					// no one else
+					mouseEvent.consume();
+					
+					// reset ui
+					DayPane.this.setCursor(Cursor.HAND);
+					DayPane.this.getChildren().remove(resizeRectangle);
+					
 					// calculate the starttime
 					Calendar lStartCalendar = setTimeTo0000((Calendar)DayPane.this.calendarObjectProperty.get().clone());
 					lStartCalendar.add(Calendar.MILLISECOND, (int)(resizeRectangle.getY() * durationInMSPerPixel));
@@ -637,16 +643,12 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					lEndCalendar.add(Calendar.MILLISECOND, (int)(resizeRectangle.getHeight() * durationInMSPerPixel));
 					setTimeToNearestMinutes(lEndCalendar, 5);
 					
-					// reset ui
-					DayPane.this.setCursor(Cursor.HAND);
-					DayPane.this.getChildren().remove(resizeRectangle);
+					// ask the control to create a new appointment (null may be returned)
+					Agenda.Appointment lAppointment = getSkinnable().createAppointmentCallbackProperty().get().call(new Agenda.CalendarRange(lStartCalendar, lEndCalendar));
+					if (lAppointment != null) getSkinnable().appointments().add(lAppointment); // the appointments are listened to, so they will automatically be refreshed
+					
+					// clean up
 					resizeRectangle = null;					
-					
-					// no one else
-					mouseEvent.consume();
-					
-					// ask the control if this calendar can be added
-					getSkinnable().addAppointmentCallbackProperty().get().call(new Agenda.CalendarRange(lStartCalendar, lEndCalendar));
 				}
 			});
 		}

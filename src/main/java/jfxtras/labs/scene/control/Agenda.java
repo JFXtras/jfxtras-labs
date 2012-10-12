@@ -128,32 +128,31 @@ public class Agenda extends Control
 	
 	/** addAppointmentCallback:
 	 * Since the Agenda is not the owner of the appointments but only dictates an interface, it does not know how to create a new one.
-	 * So you need to implement this callback and create an appointment and add it to the appointments.
-	 * The range specifies the start and end times.
-	 * The calendars can be used (they do not need to be cloned).
+	 * So you need to implement this callback and create an appointment.
+	 * The calendars in the provided range specify the start and end times, they can be used to create the new appointment (they do not need to be cloned).
+	 * Null may be returned to indicate that no appointment was created.
 	 * 
 	 * Example:
-		lAgenda.addAppointmentCallbackProperty().set(new Callback<Agenda.CalendarRange, Void>()
+		lAgenda.createAppointmentCallbackProperty().set(new Callback<Agenda.CalendarRange, Appointment>()
 		{
 			@Override
 			public Void call(CalendarRange calendarRange)
 			{
-				lAgenda.appointments().add( new Agenda.AppointmentImpl()
-				.withStartTime(calendarRange.start)
-				.withEndTime(calendarRange.end)
-				.withSummary("new")
-				.withDescription("new")
-				.withStyleClass("group1"));
-				return null;
+				return new Agenda.AppointmentImpl()
+					.withStartTime(calendarRange.start)
+					.withEndTime(calendarRange.end)
+					.withSummary("new")
+					.withDescription("new")
+					.withStyleClass("group1");
 			}
 		});
 	 * 
 	 */
-	public ObjectProperty<Callback<CalendarRange, Void>> addAppointmentCallbackProperty() { return addAppointmentCallbackObjectProperty; }
-	final private ObjectProperty<Callback<CalendarRange, Void>> addAppointmentCallbackObjectProperty = new SimpleObjectProperty<Callback<CalendarRange, Void>>(this, "addAppointmentCallback", null);
-	public Callback<CalendarRange, Void> getAddAppointmentCallback() { return this.addAppointmentCallbackObjectProperty.getValue(); }
-	public void setAddAppointmentCallback(Callback<CalendarRange, Void> value) { this.addAppointmentCallbackObjectProperty.setValue(value); }
-	public Agenda withAddAppointmentCallback(Callback<CalendarRange, Void> value) { setAddAppointmentCallback(value); return this; }
+	public ObjectProperty<Callback<CalendarRange, Appointment>> createAppointmentCallbackProperty() { return createAppointmentCallbackObjectProperty; }
+	final private ObjectProperty<Callback<CalendarRange, Appointment>> createAppointmentCallbackObjectProperty = new SimpleObjectProperty<Callback<CalendarRange, Appointment>>(this, "createAppointmentCallback", null);
+	public Callback<CalendarRange, Appointment> getCreateAppointmentCallback() { return this.createAppointmentCallbackObjectProperty.getValue(); }
+	public void setCreateAppointmentCallback(Callback<CalendarRange, Appointment> value) { this.createAppointmentCallbackObjectProperty.setValue(value); }
+	public Agenda withCreateAppointmentCallback(Callback<CalendarRange, Appointment> value) { setCreateAppointmentCallback(value); return this; }
 	
 	/**
 	 * A Calendar range

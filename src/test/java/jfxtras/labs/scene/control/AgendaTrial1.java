@@ -57,18 +57,17 @@ public class AgendaTrial1 extends Application {
     	//lAgenda.setLocale(new java.util.Locale("de")); // weeks starts on monday
 		
 		// accept new appointments
-		lAgenda.addAppointmentCallbackProperty().set(new Callback<Agenda.CalendarRange, Void>()
+		lAgenda.createAppointmentCallbackProperty().set(new Callback<Agenda.CalendarRange, Agenda.Appointment>()
 		{
 			@Override
-			public Void call(CalendarRange calendarRange)
+			public Agenda.Appointment call(CalendarRange calendarRange)
 			{
-				lAgenda.appointments().add( new Agenda.AppointmentImpl()
+				return new Agenda.AppointmentImpl()
 				.withStartTime(calendarRange.start)
 				.withEndTime(calendarRange.end)
 				.withSummary("new")
 				.withDescription("new")
-				.withStyleClass("group1"));
-				return null;
+				.withStyleClass("group1");
 			}
 		});
 		
