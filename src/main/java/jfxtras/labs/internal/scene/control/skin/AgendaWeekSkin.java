@@ -43,18 +43,25 @@ import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ListChangeListener;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.ScrollPaneBuilder;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
+import javafx.stage.Popup;
 import javafx.util.Duration;
 import jfxtras.labs.animation.Timer;
 import jfxtras.labs.internal.scene.control.behavior.AgendaBehavior;
@@ -431,6 +438,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			lClip.heightProperty().bind(heightProperty());
 			lSummaryText.setClip(lClip);
 			getChildren().add(lSummaryText);			
+			
+			// add the menu header
+			getChildren().add(menuArrow);
 			
 			// history visualizer
 			historyVisualizer = new Rectangle();
@@ -960,6 +970,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				getChildren().add(durationDragger);
 			}
 			
+			// add the menu header
+			if (appointment.isWholeDay() == false) getChildren().add(menuArrow);
+			
 			// history visualizer
 			historyVisualizer = new Rectangle();
 			historyVisualizer.setMouseTransparent(true);
@@ -1295,11 +1308,94 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					setupAppointments();					
 				}
 			});
+			
+			// setup menu arrow
+			double lPadding = 3;
+			menuArrow.getStyleClass().add("down-arrow");
+			double lArrowSize = 6;
+			menuArrow.layoutXProperty().bind(widthProperty().subtract(lArrowSize + lPadding));
+			menuArrow.setLayoutY(lPadding);
+			menuArrow.setPrefSize(lArrowSize, lArrowSize);
+			// play with the mouse pointer to show something can be done here
+			menuArrow.setOnMouseEntered(new EventHandler<MouseEvent>()
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					if (!mouseEvent.isPrimaryButtonDown())
+					{						
+						menuArrow.setCursor(Cursor.HAND);
+						
+						// no one else
+						mouseEvent.consume();
+					}
+				}
+			});
+			menuArrow.setOnMouseExited(new EventHandler<MouseEvent>()
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					if (!mouseEvent.isPrimaryButtonDown())
+					{
+						menuArrow.setCursor(Cursor.DEFAULT);
+						
+						// no one else
+						mouseEvent.consume();
+					}
+				}
+			});
+			menuArrow.setOnMousePressed(new EventHandler<MouseEvent>() // these just need to be captured, so they are not processed by the underlying pane
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					mouseEvent.consume();
+				}
+			});
+			menuArrow.setOnMouseReleased(new EventHandler<MouseEvent>() // these just need to be captured, so they are not processed by the underlying pane
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					mouseEvent.consume();
+				}
+			});
+			menuArrow.setOnMouseClicked(new EventHandler<MouseEvent>()
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					mouseEvent.consume();
+					showPopup(mouseEvent, AbstractAppointmentPane.this);
+				}
+			});
 		}
 		Rectangle dragRectangle;
 		double startX = 0;
 		double startY = 0;
 		boolean dragged = false;
+		Region menuArrow = new Region();
+		
+		public String describe()
+		{
+			// strings
+			StringBuilder lStringBuilder = new StringBuilder();
+			lStringBuilder.append( iDateFormat.format(this.appointment.getStartTime().getTime()) );
+			if (this.appointment.isWholeDay() == false)
+			{
+				lStringBuilder.append( " " );
+				lStringBuilder.append( iTimeFormat.format(this.appointment.getStartTime().getTime()) );
+				lStringBuilder.append( " - " );
+				if (isSameDay(this.appointment.getStartTime(), this.appointment.getEndTime()) == false)
+				{
+					lStringBuilder.append( iDateFormat.format(this.appointment.getEndTime().getTime()) );
+					lStringBuilder.append( " " );
+				}
+				lStringBuilder.append( iTimeFormat.format(this.appointment.getEndTime().getTime()) );
+			}
+			return lStringBuilder.toString();
+		}
 	}
 	AbstractAppointmentPane focused = null;
 
@@ -1380,6 +1476,48 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		.withDelay(new Duration( (60 - Calendar.getInstance().get(Calendar.SECOND)) * 1000)) // start on the minute
 		.start();  
 	
+	// ==================================================================================================================
+	// POPUP
+
+	/*
+	 * 
+	 */
+	private void showPopup(MouseEvent evt, final AbstractAppointmentPane abstractAppointmentPane)
+	{
+		// create popup
+		final Popup popup = new Popup();
+		popup.setAutoFix(true);
+		popup.setAutoHide(true);
+		popup.setHideOnEscape(true);
+		
+		// initial layout
+		double lPadding = 3;
+		VBox lVBox = new VBox(lPadding);
+		lVBox.getStyleClass().add(this.getClass().getSimpleName() + "_popup");
+		popup.getContent().add(lVBox);
+		
+		// description
+		lVBox.getChildren().add(new Label(abstractAppointmentPane.describe()));
+		lVBox.getChildren().add(new Label(abstractAppointmentPane.appointment.getSummary()));
+		
+		// actions
+		Button lDeleteButton = new Button("delete");
+		lDeleteButton.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent arg0)
+			{
+				popup.hide();
+				getSkinnable().selectedAppointments().remove(abstractAppointmentPane.appointment); // TODO: we should make sure this happens in the control when the appointment is remove from the appointments collection
+				getSkinnable().appointments().remove(abstractAppointmentPane.appointment);
+			}
+		});
+		lVBox.getChildren().add(lDeleteButton);
+		
+		// show it just below the menu icon
+		popup.show(abstractAppointmentPane, NodeUtil.screenX(abstractAppointmentPane), NodeUtil.screenY(abstractAppointmentPane.menuArrow) + abstractAppointmentPane.menuArrow.getHeight());
+	}
+
 	// ==================================================================================================================
 	// SUPPORT
 
