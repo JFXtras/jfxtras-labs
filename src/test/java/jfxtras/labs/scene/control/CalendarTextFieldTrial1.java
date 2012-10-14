@@ -116,6 +116,16 @@ public class CalendarTextFieldTrial1 extends Application {
 				lCalendarTextField.setValue(null);
 			}
 			
+	        // preset value wuth time
+			{
+				lGridPane.add(new Label("preset value"), 0, lRowIdx);
+				CalendarTextField lCalendarTextField = new CalendarTextField();
+				lCalendarTextField.showTimeProperty().set(true);
+				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
+				
+				lCalendarTextField.valueProperty().set(Calendar.getInstance()); // set a value
+			}
+			
 			lHBox.getChildren().add(lGridPane);
 		}
 			

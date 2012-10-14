@@ -198,6 +198,13 @@ public class AgendaTrial1 extends Application {
 				.withAppointmentGroup(lAppointmentGroupMap.get("group07"))
 		// -----
 		, 	new Agenda.AppointmentImpl()
+				.withStartTime(new GregorianCalendar(lYear, lMonth, lDay, 20, 30))
+				.withEndTime(new GregorianCalendar(lYear, lMonth, lDay, 20, 31))
+				.withSummary("S")
+				.withDescription("Too short")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group07"))
+		// -----
+		, 	new Agenda.AppointmentImpl()
 				.withStartTime(new GregorianCalendar(lYear, lMonth, lDay))
 				.withSummary("all day1")
 				.withDescription("A description")

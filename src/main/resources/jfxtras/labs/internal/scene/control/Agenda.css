@@ -131,14 +131,6 @@
 	-fx-text-fill: -fx-text-base-color;
 }
 
-.AgendaWeekSkin_popup .TimeText {
-	-fx-font-weight: bold;	
-}
-
-.AgendaWeekSkin_popup .SummaryText {
-	-fx-font-style: italic;	
-}
-
 .AgendaWeekSkin_popup .AppointmentGroups {
 }
 

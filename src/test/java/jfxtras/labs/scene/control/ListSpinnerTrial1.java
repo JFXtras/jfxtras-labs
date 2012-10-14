@@ -131,13 +131,13 @@ public class ListSpinnerTrial1 extends Application {
 				lObservableList.remove("a");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
-			{
-				lGridPane.add(new Label("Observable list, emptied"), 0, lRowIdx);
-				final ObservableList<String> lObservableList = FXCollections.observableArrayList("a", "b", "c", "d", "e");
-				ListSpinner<String> lSpinner = new ListSpinner<String>( lObservableList );
-				lObservableList.clear();
-				lGridPane.add(lSpinner, 1, lRowIdx++);
-			}
+//			{
+//				lGridPane.add(new Label("Observable list, emptied"), 0, lRowIdx);
+//				final ObservableList<String> lObservableList = FXCollections.observableArrayList("a", "b", "c", "d", "e");
+//				ListSpinner<String> lSpinner = new ListSpinner<String>( lObservableList );
+//				lObservableList.clear(); // TODO: causes exception
+//				lGridPane.add(lSpinner, 1, lRowIdx++);
+//			}
 			{
 				lGridPane.add(new Label("BigInteger range"), 0, lRowIdx);
 				ListSpinner<BigInteger> lSpinner = new ListSpinner<BigInteger>(new ListSpinnerBigIntegerList(BigInteger.valueOf(Long.MIN_VALUE), BigInteger.valueOf(Long.MIN_VALUE + 1000)));

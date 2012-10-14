@@ -23,8 +23,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// TODO: delete button in popup menu is not very pretty
-// TODO: editing of summary: inline? popup?
+// TODO: manual edit of all properties, location, description
+// TODO: concept of tasks; appointment with only a start date (not whole day) 
 // TODO: dropping an area event in the header and then back into the day; take the location of the drop into account as the start time (instead of the last start time)
 // TODO: allow dragging on day spanning events on the not-the-first areas
 // TODO: undo feature on all actions (remove, add, ...)
@@ -42,15 +42,16 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.ScrollPaneBuilder;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -59,18 +60,19 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import jfxtras.labs.animation.Timer;
 import jfxtras.labs.internal.scene.control.behavior.AgendaBehavior;
 import jfxtras.labs.scene.control.Agenda;
 import jfxtras.labs.scene.control.Agenda.Appointment;
+import jfxtras.labs.scene.control.CalendarTextField;
 import jfxtras.labs.util.NodeUtil;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
@@ -424,8 +426,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		 */
 		public AppointmentHeaderPane(Agenda.Appointment appointment)
 		{
-			// remember
-			this.appointment = appointment;
+			super(appointment);
 			
 			// for debugging setStyle("-fx-border-color:GREEN;-fx-border-width:4px;");
 			getStyleClass().add("Appointment");
@@ -442,9 +443,6 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			lSummaryText.setClip(lClip);
 			getChildren().add(lSummaryText);			
 			
-			// tooltip
-			Tooltip.install(this, new Tooltip(appointment.getDescription()));
-
 			// add the menu header
 			getChildren().add(menuIcon);
 			
@@ -709,6 +707,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				double lW = (dayContentWidth - (wholedayAppointmentPanes.size() * wholedayAppointmentWidth)) * (1.0 / (((double)lAppointmentPane.clusterOwner.clusterTracks.size())));
 				if (lAppointmentPane.clusterTrackIdx < lAppointmentPane.clusterOwner.clusterTracks.size() - 1) lW *= 1.5;
 				double lH = (dayHeight / (24 * 60) * (lAppointmentPane.durationInMS / 1000 / 60) );
+				if (lH < 2 * padding) lH = 2 * padding; 
 				lAppointmentPane.setPrefSize(lW, lH);
 			}
 		}			
@@ -892,12 +891,11 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		 */
 		public AppointmentPane(Calendar calendar, Agenda.Appointment appointment)
 		{
+			super(appointment);
+			
 			// for debugging setStyle("-fx-border-color:BLUE;-fx-border-width:4px;");
 			getStyleClass().add("Appointment");
 			getStyleClass().add(appointment.getAppointmentGroup().getStyleClass());
-			
-			// remember
-			this.appointment = appointment;
 			
 			// wholeday
 			if (appointment.isWholeDay())
@@ -960,9 +958,6 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				}
 			}
 			
-			// tooltip
-			Tooltip.install(this, new Tooltip(appointment.getDescription()));
-
 			// duration dragger
 			if (isLastAreaOfAppointment == false)
 			{
@@ -1217,8 +1212,14 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		/**
 		 * 
 		 */
-		public AbstractAppointmentPane()
+		public AbstractAppointmentPane(Agenda.Appointment appointment)
 		{
+			// remember
+			this.appointment = appointment;
+
+			// tooltip
+			Tooltip.install(this, new Tooltip(appointment.getSummary()));
+			
 			// start resize
 			setOnMousePressed(new EventHandler<MouseEvent>()
 			{
@@ -1519,29 +1520,135 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	 */
 	private void showMenu(MouseEvent evt, final AbstractAppointmentPane abstractAppointmentPane)
 	{
+		// TODO: should we use an intermediate appointment and have an ok button which copies all data?
+		
 		// create popup
 		final Popup lPopup = new Popup();
 		lPopup.setAutoFix(true);
 		lPopup.setAutoHide(true);
 		lPopup.setHideOnEscape(true);
+		lPopup.setOnHidden(new EventHandler<WindowEvent>()
+		{
+			@Override
+			public void handle(WindowEvent arg0)
+			{
+				setupAppointments();
+			}
+		});
 		
 		// initial layout
-		VBox lMenuVBox = new VBox(2 * padding);
+		VBox lMenuVBox = new VBox(padding);
 		lMenuVBox.getStyleClass().add(this.getClass().getSimpleName() + "_popup");
 		lPopup.getContent().add(lMenuVBox);
-		
+
 		// time
-		Text lTimeText = new Text(abstractAppointmentPane.describe());
-		lTimeText.getStyleClass().add("TimeText");
-		lMenuVBox.getChildren().add(lTimeText);
-		// summary
-		if (abstractAppointmentPane.appointment.getSummary() != null && abstractAppointmentPane.appointment.getSummary().trim().length() > 0)
+		lMenuVBox.getChildren().add(new Text("Time:"));
+		// start
+		final CalendarTextField lStartCalendarTextField = new CalendarTextField().withShowTime(true);
+		lStartCalendarTextField.setLocale(getSkinnable().getLocale());
+		lStartCalendarTextField.setValue(abstractAppointmentPane.appointment.getStartTime());
+		lMenuVBox.getChildren().add(lStartCalendarTextField);
+		// end
+		final CalendarTextField lEndCalendarTextField = new CalendarTextField().withShowTime(true);
+		lEndCalendarTextField.setLocale(getSkinnable().getLocale());
+		lEndCalendarTextField.setValue(abstractAppointmentPane.appointment.getEndTime());
+		lMenuVBox.getChildren().add(lEndCalendarTextField);
+		lEndCalendarTextField.valueProperty().addListener(new ChangeListener<Calendar>()
 		{
-			Text lSummaryText = new Text(abstractAppointmentPane.appointment.getSummary().trim());
-			lSummaryText.getStyleClass().add("SummaryText");
-			lSummaryText.wrappingWidthProperty().set(lTimeText.getBoundsInParent().getWidth());
-			lMenuVBox.getChildren().add(lSummaryText);
-		}
+			@Override
+			public void changed(ObservableValue<? extends Calendar> arg0, Calendar oldValue, Calendar newValue)
+			{
+				abstractAppointmentPane.appointment.setEndTime(newValue);
+				// refresh is done upon popup close
+			}
+		});
+		lEndCalendarTextField.setVisible(abstractAppointmentPane.appointment.getEndTime() != null);
+		// wholeday
+		final CheckBox lWholedayCheckBox = new CheckBox("Wholeday");
+		lWholedayCheckBox.selectedProperty().set(abstractAppointmentPane.appointment.isWholeDay());
+		lMenuVBox.getChildren().add(lWholedayCheckBox);
+		lWholedayCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldValue, Boolean newValue)
+			{
+				abstractAppointmentPane.appointment.setWholeDay(newValue);
+				if (newValue == true) 
+				{
+					abstractAppointmentPane.appointment.setEndTime(null);
+				}
+				else
+				{
+					Calendar lEndTime = (Calendar)abstractAppointmentPane.appointment.getStartTime().clone();
+					lEndTime.add(Calendar.MINUTE, 30);
+					abstractAppointmentPane.appointment.setEndTime(lEndTime);
+					lEndCalendarTextField.setValue(abstractAppointmentPane.appointment.getEndTime());
+				}
+				lEndCalendarTextField.setVisible(abstractAppointmentPane.appointment.getEndTime() != null);
+				// refresh is done upon popup close
+			}
+		});
+		// event handling
+		lStartCalendarTextField.valueProperty().addListener(new ChangeListener<Calendar>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends Calendar> arg0, Calendar oldValue, Calendar newValue)
+			{
+				// enddate
+				if (abstractAppointmentPane.appointment.isWholeDay())
+				{
+					abstractAppointmentPane.appointment.setStartTime(newValue);
+				}
+				else
+				{
+					// calculate duration
+					long lDurationInMS = abstractAppointmentPane.appointment.getEndTime().getTimeInMillis() - abstractAppointmentPane.appointment.getStartTime().getTimeInMillis();
+					
+					// set
+					abstractAppointmentPane.appointment.setStartTime(newValue);
+					
+					// end date
+					Calendar lEndCalendar = (Calendar)abstractAppointmentPane.appointment.getStartTime().clone();
+					lEndCalendar.add(Calendar.MILLISECOND, (int)lDurationInMS);
+					abstractAppointmentPane.appointment.setEndTime(lEndCalendar);
+					
+					// update field
+					lEndCalendarTextField.setValue(abstractAppointmentPane.appointment.getEndTime());
+					
+					// refresh is done upon popup close
+				}
+			}
+		});
+		
+		// summary
+		lMenuVBox.getChildren().add(new Text("Summary:"));
+		TextField lSummaryTextField = new TextField();
+		lSummaryTextField.setText(abstractAppointmentPane.appointment.getSummary());
+		lSummaryTextField.textProperty().addListener(new ChangeListener<String>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends String> arg0, String oldValue, String newValue)
+			{
+				abstractAppointmentPane.appointment.setSummary(newValue);
+				// refresh is done upon popup close
+			}
+		});
+		lMenuVBox.getChildren().add(lSummaryTextField);
+		
+		// location
+		lMenuVBox.getChildren().add(new Text("Location:"));
+		TextField lLocationTextField = new TextField();
+		lLocationTextField.setText( abstractAppointmentPane.appointment.getLocation() == null ? "" : abstractAppointmentPane.appointment.getLocation());
+		lLocationTextField.textProperty().addListener(new ChangeListener<String>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends String> arg0, String oldValue, String newValue)
+			{
+				abstractAppointmentPane.appointment.setLocation(newValue);
+				// refresh is done upon popup close
+			}
+		});
+		lMenuVBox.getChildren().add(lLocationTextField);
 		
 		// actions
 		VBox lActionsVBox = new VBox();
@@ -1558,6 +1665,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					lPopup.hide();
 					getSkinnable().selectedAppointments().remove(abstractAppointmentPane.appointment); // TODO: we should make sure this happens in the control when the appointment is remove from the appointments collection
 					getSkinnable().appointments().remove(abstractAppointmentPane.appointment);
+					// refresh is done via the collection events
 				}
 			});
 			Tooltip.install(lImageButton, new Tooltip("Delete"));
@@ -1580,7 +1688,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			final Pane lPane = new Pane();			
 			lPane.setPrefSize(15, 15);
 			lPane.getStyleClass().addAll("AppointmentGroup", lAppointmentGroup.getStyleClass());
-			lAppointmentGroupGridPane.add(lPane, lCnt % 5, lCnt / 5 );
+			lAppointmentGroupGridPane.add(lPane, lCnt % 10, lCnt / 10 );
 			lCnt++;
 			
 			// tooltip
@@ -1623,8 +1731,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					// assign appointment group
 					abstractAppointmentPane.appointment.setAppointmentGroup(lAppointmentGroupFinal);
 					
-					// refresh
-					setupAppointments();
+					// refresh is done upon popup close
 				}
 			});
 		}
