@@ -622,6 +622,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					
 					// this event should not be processed by the appointment area
 					mouseEvent.consume();
+					dragged = false;
+					getSkinnable().selectedAppointments().clear();
 				}
 			});
 			// visualize resize
@@ -639,6 +641,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					
 					// no one else
 					mouseEvent.consume();
+					dragged = true;
 				}
 			});
 			// end resize
@@ -655,6 +658,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					// reset ui
 					DayPane.this.setCursor(Cursor.HAND);
 					DayPane.this.getChildren().remove(resizeRectangle);
+					
+					// must have dragged
+					if (dragged == false) return;
 					
 					// calculate the starttime
 					Calendar lStartCalendar = setTimeTo0000((Calendar)DayPane.this.calendarObjectProperty.get().clone());
@@ -677,6 +683,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		}
 		ObjectProperty<Calendar> calendarObjectProperty = new SimpleObjectProperty<Calendar>(DayPane.this, "calendar");
 		Rectangle resizeRectangle = null;
+		boolean dragged = false;
 		
 		/**
 		 * 
