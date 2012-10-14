@@ -229,7 +229,6 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 			}
 		});
 		
-		
 		// close icon
 		closeIconImage = new Image(this.getClass().getResourceAsStream(this.getClass().getSimpleName() + "CloseWindowIcon.png"));
 	}

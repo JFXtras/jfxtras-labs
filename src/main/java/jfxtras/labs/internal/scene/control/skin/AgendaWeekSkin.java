@@ -23,14 +23,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+// TODO: refactor the layout code in showMenu
 // TODO: manual edit of all properties, location, description
-// TODO: concept of tasks; appointment with only a start date (not whole day) 
+// TODO: concept of tasks; appointment with only a start date (not whole day). Rendered as a line. 
 // TODO: dropping an area event in the header and then back into the day; take the location of the drop into account as the start time (instead of the last start time)
 // TODO: allow dragging on day spanning events on the not-the-first areas
 // TODO: undo feature on all actions (remove, add, ...)
 // TODO: single day view
+// TODO: reminders?
+// TODO: callbacks to check if a delete is ok, etc
 package jfxtras.labs.internal.scene.control.skin;
 
+import java.awt.BorderLayout;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -280,13 +284,17 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		borderPane.prefWidthProperty().bind(dragPane.widthProperty());
 		borderPane.prefHeightProperty().bind(dragPane.heightProperty());
 		getChildren().add(dragPane);
+		
+		// close icon
+		closeIconImage = new Image(this.getClass().getResourceAsStream(this.getClass().getSimpleName() + "PopupCloseWindowIcon.png"));
 	}
 	Pane dragPane = null;
 	BorderPane borderPane = null;
 	WeekHeaderPane weekHeaderPane = null;
 	ScrollPane weekScrollPane = null;
 	WeekPane weekPane = null;
-	
+	private Image closeIconImage = null;
+
 	// ==================================================================================================================
 	// PANES
 	
@@ -1535,11 +1543,26 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				setupAppointments();
 			}
 		});
+
+		BorderPane lBorderPane = new BorderPane();
+		lBorderPane.getStyleClass().add(this.getClass().getSimpleName() + "_popup");
+		lPopup.getContent().add(lBorderPane);
 		
+		// close icon
+		ImageView lImageView = new ImageView(closeIconImage);
+		lImageView.setPickOnBounds(true);
+		lImageView.setOnMouseClicked(new EventHandler<MouseEvent>()
+		{
+			@Override public void handle(MouseEvent evt)
+			{
+				lPopup.hide(); 
+			}
+		});
+		lBorderPane.setRight(lImageView);
+
 		// initial layout
 		VBox lMenuVBox = new VBox(padding);
-		lMenuVBox.getStyleClass().add(this.getClass().getSimpleName() + "_popup");
-		lPopup.getContent().add(lMenuVBox);
+		lBorderPane.setCenter(lMenuVBox);
 
 		// time
 		lMenuVBox.getChildren().add(new Text("Time:"));
