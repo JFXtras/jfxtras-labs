@@ -279,6 +279,22 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
             }
 
             if (control.isCanvasMode()) {
+                for (Section section : control.getSections()) {
+                    if (gaugeValue.get() > section.getStart() && gaugeValue.get() < section.getStop()) {
+                        barGradientStops = new Stop[] {
+                            new Stop(0, Color.TRANSPARENT),
+                            new Stop(0.8, section.getColor().darker()),
+                            new Stop(1.0, section.getColor().brighter())
+                        };
+                        break;
+                    } else {
+                        barGradientStops = new Stop[] {
+                            new Stop(0, Color.TRANSPARENT),
+                            new Stop(0.8, control.getBarColor().darker()),
+                            new Stop(1.0, control.getBarColor().brighter())
+                        };
+                    }
+                }
                 drawCanvasGauge(ctx);
             }
         }
