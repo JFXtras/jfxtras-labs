@@ -272,6 +272,22 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
             bar.setLength(-gaugeValue.get() * control.getAngleStep());
 
             if (control.isCanvasMode()) {
+                for (Section section : control.getSections()) {
+                    if (gaugeValue.get() > section.getStart() && gaugeValue.get() < section.getStop()) {
+                        barGradientStops = new Stop[] {
+                            new Stop(0, Color.TRANSPARENT),
+                            new Stop(0.8, section.getColor().darker()),
+                            new Stop(1.0, section.getColor().brighter())
+                        };
+                        break;
+                    } else {
+                        barGradientStops = new Stop[] {
+                            new Stop(0, Color.TRANSPARENT),
+                            new Stop(0.8, control.getBarColor().darker()),
+                            new Stop(1.0, control.getBarColor().brighter())
+                        };
+                    }
+                }
                 drawCanvasGauge(ctx);
             }
         }
@@ -512,10 +528,10 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
 
         //CTX.setStroke(control.getBarColor());
         CTX.setStroke(new RadialGradient(0, 0,
-            0.5 * size, 0.5 * size,
-            0.5 * wh,
-            false, CycleMethod.NO_CYCLE,
-            barGradientStops));
+                                         0.5 * size, 0.5 * size,
+                                         0.5 * wh,
+                                         false, CycleMethod.NO_CYCLE,
+                                         barGradientStops));
         CTX.setLineWidth(control.getBarWidth());
         if (control.isRoundedBar()) {
             CTX.setLineCap(StrokeLineCap.ROUND);
