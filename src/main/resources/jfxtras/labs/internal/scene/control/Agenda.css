@@ -96,6 +96,10 @@
 	-fx-fill: #00000040;	
 }
 
+.AgendaWeekSkin .MenuIcon {
+	-fx-fill: #00000040;	
+}
+
 .AgendaWeekSkin .ResizeRectangle {
 	-fx-fill: transparent;
 	-fx-stroke: #00000080;
@@ -119,16 +123,18 @@
 	-fx-fill: #FFFFFF70;
 }
 
-.AgendaWeekSkin .down-arrow {
-	-fx-background-color: #00000040;
-    -fx-shape: "M-8,-4 L-4,0 L0,-4 Z";
-    -fx-scale-shape: true;
-}
-
 .AgendaWeekSkin_popup {
 	-fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
 	-fx-background-insets: 0 0 -1 0,0,1,2;
 	-fx-background-radius: 5,5,4,3;
 	-fx-padding: 0.766667em 0.733333em 0.75em 0.733333em;
 	-fx-text-fill: -fx-text-base-color;
+}
+
+.AgendaWeekSkin_popup .AppointmentGroups {
+}
+
+.AgendaWeekSkin_popup .AppointmentGroup {
+	-fx-border-color: WHITE;
+	-fx-border-width: 1px;
 }

@@ -103,11 +103,11 @@ public class CalendarPicker extends Control
 			public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
 			{
 				// if the new value is set to null, remove the old value
-				if (oldValue != null) {
-					calendars().remove(oldValue);
-				}
 				if (newValue != null && calendars().contains(newValue) == false) {
 					calendars().add(newValue);
+				}
+				if (oldValue != null) {
+					calendars().remove(oldValue);
 				}
 			} 
 		});

@@ -33,6 +33,8 @@ import java.util.Locale;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Control;
 
 /**
@@ -66,6 +68,9 @@ public class CalendarTextField extends Control
 		
 		// this is apparently needed for good focus behavior
 		setFocusTraversable(false);
+		
+		// construct properties
+		constructShowTimeProperty();
 	}
 
 	/**
@@ -87,8 +92,10 @@ public class CalendarTextField extends Control
 	public CalendarTextField withValue(Calendar value) { setValue(value); return this; }
 
 	/** DateFormat: */
+	private final DateFormat dateFormat = SimpleDateFormat.getDateInstance();
+	private final DateFormat dateTimeFormat = SimpleDateFormat.getDateTimeInstance();
 	public ObjectProperty<DateFormat> dateFormatProperty() { return dateFormatObjectProperty; }
-	final private ObjectProperty<DateFormat> dateFormatObjectProperty = new SimpleObjectProperty<DateFormat>(this, "dateFormat", SimpleDateFormat.getDateInstance());
+	final private ObjectProperty<DateFormat> dateFormatObjectProperty = new SimpleObjectProperty<DateFormat>(this, "dateFormat", dateFormat);
 	public DateFormat getDateFormat() { return dateFormatObjectProperty.getValue(); }
 	public void setDateFormat(DateFormat value) { dateFormatObjectProperty.setValue(value); }
 	public CalendarTextField withDateFormat(DateFormat value) { setDateFormat(value); return this; }
@@ -107,6 +114,25 @@ public class CalendarTextField extends Control
 	public void setPromptText(String value) { promptTextObjectProperty.set(value); }
 	public CalendarTextField withPromptText(String value) { setPromptText(value); return this; }
 
+	/** ShowTime: only applicable in SINGLE mode */
+	public ObjectProperty<Boolean> showTimeProperty() { return showTimeObjectProperty; }
+	volatile private ObjectProperty<Boolean> showTimeObjectProperty = new SimpleObjectProperty<Boolean>(this, "showTime", false);
+	public Boolean getShowTime() { return showTimeObjectProperty.getValue(); }
+	public void setShowTime(Boolean value) { showTimeObjectProperty.setValue(value); }
+	public CalendarTextField withShowTime(Boolean value) { setShowTime(value); return (CalendarTextField)this; } 
+	private void constructShowTimeProperty()
+	{
+		showTimeObjectProperty.addListener(new ChangeListener<Boolean>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldValue, Boolean newValue)
+			{
+				// change to show time
+				if (newValue == true && getDateFormat() == dateFormat) setDateFormat(dateTimeFormat);
+				if (newValue == false && getDateFormat() == dateTimeFormat) setDateFormat(dateFormat);
+			}
+		});
+	}
 
 	// ==================================================================================================================
 	// EVENTS

@@ -117,6 +117,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 	{
 		// the main textField
 		textField = new TextField();
+		textField.setPrefColumnCount(20);
 		textField.focusedProperty().addListener(new InvalidationListener()
 		{			
 			@Override
@@ -151,9 +152,10 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 					
 					// modify
 					int lField = Calendar.DATE;
-					if (keyEvent.isControlDown()) lField = Calendar.MONTH;
-					if (keyEvent.isAltDown()) lField = Calendar.YEAR;
-					if (keyEvent.isShiftDown()) lField = Calendar.WEEK_OF_YEAR;
+					if (keyEvent.isShiftDown() == false && keyEvent.isControlDown()) lField = Calendar.MONTH;
+					if (keyEvent.isShiftDown() == false && keyEvent.isAltDown()) lField = Calendar.YEAR;
+					if (keyEvent.isShiftDown() == true && keyEvent.isControlDown() && getSkinnable().showTimeProperty().get()) lField = Calendar.HOUR_OF_DAY;
+					if (keyEvent.isShiftDown() == true && keyEvent.isAltDown() && getSkinnable().showTimeProperty().get()) lField = Calendar.MINUTE;
 					lCalendar.add(lField, keyEvent.getCode() == KeyCode.UP ? 1 : -1);
 					
 					// set it
@@ -210,7 +212,8 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 		
 		// prep the picker
 		calendarPicker = new CalendarPicker();
-		calendarPicker.setMode(CalendarPicker.Mode.SINGLE);		
+		calendarPicker.setMode(CalendarPicker.Mode.SINGLE);
+		calendarPicker.showTimeProperty().bind(getSkinnable().showTimeProperty());
 		// bind our properties to the picker's 
 		Bindings.bindBidirectional(calendarPicker.localeProperty(), getSkinnable().localeProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
 		Bindings.bindBidirectional(calendarPicker.calendarProperty(), getSkinnable().valueProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
@@ -219,18 +222,22 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 			@Override
 			public void changed(ObservableValue<? extends Calendar> observable, Calendar oldValue, Calendar newValue)
 			{
-				if (popup != null) 
+				if (popup != null && getSkinnable().showTimeProperty().get() == false) 
 				{
-					popup.hide();
+					popup.hide(); popup = null;
 				}
 			}
 		});
+		
+		// close icon
+		closeIconImage = new Image(this.getClass().getResourceAsStream(this.getClass().getSimpleName() + "CloseWindowIcon.png"));
 	}
 	private TextField textField = null;
 	private ImageView imageView = null;
 	private GridPane gridPane = null;
 	private CalendarPicker calendarPicker = null;
-	
+	private Image closeIconImage = null;
+
 	/**
 	 * parse the contents that was typed in the textfield
 	 */
@@ -309,6 +316,22 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 			lBorderPane.getStyleClass().add(this.getClass().getSimpleName() + "_popup");
 			lBorderPane.setCenter(calendarPicker);
 			
+			// add a close button
+			if (getSkinnable().showTimeProperty().get() == true)
+			{
+				ImageView lImageView = new ImageView(closeIconImage);
+				lImageView.setPickOnBounds(true);
+				lImageView.setOnMouseClicked(new EventHandler<MouseEvent>()
+				{
+					@Override public void handle(MouseEvent evt)
+					{
+						popup.hide(); popup = null;
+					}
+				});
+				lBorderPane.rightProperty().set(lImageView);
+			}
+			
+			// add to popup
 			popup.getContent().add(lBorderPane);
 		}
 		

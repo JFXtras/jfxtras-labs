@@ -93,6 +93,10 @@ public class Agenda extends Control
 	public ObservableList<Appointment> appointments() { return appointments; }
 	final private ObservableList<Appointment> appointments =  javafx.collections.FXCollections.observableArrayList();
 
+	/** AppointmentGroups: */
+	public ObservableList<AppointmentGroup> appointmentGroups() { return appointmentGroups; }
+	final private ObservableList<AppointmentGroup> appointmentGroups =  javafx.collections.FXCollections.observableArrayList();
+
 	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc */
 	public ObjectProperty<Locale> localeProperty() { return iLocaleObjectProperty; }
 	final private ObjectProperty<Locale> iLocaleObjectProperty = new SimpleObjectProperty<Locale>(this, "locale", Locale.getDefault());
@@ -198,8 +202,8 @@ public class Agenda extends Control
 		public String getLocation();
 		public void setLocation(String s);
 		
-		public String getStyleClass(); // this is the CSS class being assigned
-		public void setStyleClass(String s);
+		public AppointmentGroup getAppointmentGroup();
+		public void setAppointmentGroup(AppointmentGroup s);
 	}
 	
 	/**
@@ -250,21 +254,60 @@ public class Agenda extends Control
 		public void setLocation(String value) { locationObjectProperty.setValue(value); }
 		public AppointmentImpl withLocation(String value) { setLocation(value); return this; } 
 		
-		/** StyleClass: */
-		public ObjectProperty<String> styleClassProperty() { return styleClassObjectProperty; }
-		final private ObjectProperty<String> styleClassObjectProperty = new SimpleObjectProperty<String>(this, "styleClass");
-		public String getStyleClass() { return styleClassObjectProperty.getValue(); }
-		public void setStyleClass(String value) { styleClassObjectProperty.setValue(value); }
-		public AppointmentImpl withStyleClass(String value) { setStyleClass(value); return this; }
+		/** AppointmentGroup: */
+		public ObjectProperty<AppointmentGroup> appointmentGroupProperty() { return appointmentGroupObjectProperty; }
+		final private ObjectProperty<AppointmentGroup> appointmentGroupObjectProperty = new SimpleObjectProperty<AppointmentGroup>(this, "appointmentGroup");
+		public AppointmentGroup getAppointmentGroup() { return appointmentGroupObjectProperty.getValue(); }
+		public void setAppointmentGroup(AppointmentGroup value) { appointmentGroupObjectProperty.setValue(value); }
+		public AppointmentImpl withAppointmentGroup(AppointmentGroup value) { setAppointmentGroup(value); return this; }
 		
 		public String toString()
 		{
 			return super.toString()
+				 + ", "
 				 + quickFormatCalendar(this.getStartTime())
 				 + " - "
 				 + quickFormatCalendar(this.getEndTime())
 				 ;
 		}
+	}
+	
+	
+	// ==================================================================================================================
+	// AppointmentGroup
+	
+	/**
+	 * The interface that appointment groups must adhere to; you can provide your own implementation.
+	 * An appointment group is a binding element between appointments; it contains information about visualization, and in the future reminders, etc.
+	 */
+	static public interface AppointmentGroup
+	{
+		public String getDescription();
+		public void setDescription(String s);
+		
+		public String getStyleClass(); // this is the CSS class being assigned
+		public void setStyleClass(String s);
+	}
+	
+	/**
+	 * A class to help you get going; all the required methods of the interface are implemented as JavaFX properties 
+	 */
+	static public class AppointmentGroupImpl 
+	implements AppointmentGroup
+	{
+		/** Description: */
+		public ObjectProperty<String> descriptionProperty() { return descriptionObjectProperty; }
+		final private ObjectProperty<String> descriptionObjectProperty = new SimpleObjectProperty<String>(this, "description");
+		public String getDescription() { return descriptionObjectProperty.getValue(); }
+		public void setDescription(String value) { descriptionObjectProperty.setValue(value); }
+		public AppointmentGroupImpl withDescription(String value) { setDescription(value); return this; } 
+				
+		/** StyleClass: */
+		public ObjectProperty<String> styleClassProperty() { return styleClassObjectProperty; }
+		final private ObjectProperty<String> styleClassObjectProperty = new SimpleObjectProperty<String>(this, "styleClass");
+		public String getStyleClass() { return styleClassObjectProperty.getValue(); }
+		public void setStyleClass(String value) { styleClassObjectProperty.setValue(value); }
+		public AppointmentGroupImpl withStyleClass(String value) { setStyleClass(value); return this; }
 	}
 	
 	
