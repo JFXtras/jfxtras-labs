@@ -284,9 +284,9 @@ public class SimpleGaugeBuilder<B extends SimpleGaugeBuilder<B>> extends Control
                 CONTROL.setBarFrameColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("BAR_BACKGROUND_COLOR".equals(key)) {
                 CONTROL.setBarBackgroundColor(((ObjectProperty<Color>) properties.get(key)).get());
-            } else if ("LABEL_COLOR".equals(key)) {
+            } else if ("VALUE_LABEL_COLOR".equals(key)) {
                 CONTROL.setValueLabelColor(((ObjectProperty<Color>) properties.get(key)).get());
-            } else if ("UNIT_COLOR".equals(key)) {
+            } else if ("UNIT_LABEL_COLOR".equals(key)) {
                 CONTROL.setUnitLabelColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("UNIT_FONT_SIZE".equals(key)) {
                 CONTROL.setUnitLabelFontSize(((DoubleProperty) properties.get(key)).get());

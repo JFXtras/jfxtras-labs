@@ -163,9 +163,33 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
         registerChangeListener(control.minLabelVisibleProperty(), "MIN_LABEL_VISIBLE");
         registerChangeListener(gaugeValue, "GAUGE_VALUE");
 
+        valueText.setFill(control.getValueLabelColor());
+        unitText.setFill(control.getUnitLabelColor());
+        minLabel.setFill(control.getMinLabelColor());
+        maxLabel.setFill(control.getMaxLabelColor());
+
         addBindings();
 
         updateNumberFormat();
+
+        if (control.isCanvasMode()) {
+            for (Section section : control.getSections()) {
+                if (gaugeValue.get() > section.getStart() && gaugeValue.get() < section.getStop()) {
+                    barGradientStops = new Stop[] {
+                        new Stop(0, Color.TRANSPARENT),
+                        new Stop(0.8, section.getColor().darker()),
+                        new Stop(1.0, section.getColor().brighter())
+                    };
+                    break;
+                } else {
+                    barGradientStops = new Stop[] {
+                        new Stop(0, Color.TRANSPARENT),
+                        new Stop(0.8, control.getBarColor().darker()),
+                        new Stop(1.0, control.getBarColor().brighter())
+                    };
+                }
+            }
+        }
 
         initialized = true;
         repaint();
@@ -197,6 +221,16 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
             unitText.visibleProperty().unbind();
         }
         unitText.visibleProperty().bind(control.unitLabelVisibleProperty());
+
+        if (valueText.fillProperty().isBound()) {
+            valueText.fillProperty().unbind();
+        }
+        valueText.fillProperty().bind(control.valueLabelColorProperty());
+
+        if (unitText.fillProperty().isBound()) {
+            unitText.fillProperty().unbind();
+        }
+        unitText.fillProperty().bind(control.unitLabelColorProperty());
     }
 
 
@@ -480,7 +514,16 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
         }
         bar.setFill(null);
         bar.setSmooth(true);
-        updateBarColor(control.getBarColor());
+        if (!control.getSections().isEmpty()) {
+            for (Section section : control.getSections()) {
+                if (gaugeValue.get() > section.getStart() && gaugeValue.get() < section.getStop()) {
+                    updateBarColor(section.getColor());
+                    break;
+                } else {
+                    updateBarColor(control.getBarColor());
+                }
+            }
+        }
         if (control.isRoundedBar()) {
             bar.setStrokeLineCap(StrokeLineCap.ROUND);
         } else {
@@ -490,14 +533,14 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
         bar.setEffect(INNER_SHADOW);
 
         valueText.setFont(Font.font("Verdana", FontWeight.BOLD, control.getValueLabelFontSize()));
-        valueText.setFill(control.getValueLabelColor());
+        //valueText.setFill(control.getValueLabelColor());
         valueText.setTextAlignment(TextAlignment.CENTER);
         valueText.setTextOrigin(VPos.BOTTOM);
         valueText.setText(valueFormat.format(gaugeValue.doubleValue()));
         valueText.setEffect(INNER_GLOW);
 
         unitText.setFont(Font.font("Verdana", FontWeight.BOLD, control.getUnitLabelFontSize()));
-        unitText.setFill(control.getUnitLabelColor());
+        //unitText.setFill(control.getUnitLabelColor());
         unitText.setTextAlignment(TextAlignment.CENTER);
         unitText.setTextOrigin(VPos.BOTTOM);
         unitText.setText(control.getUnit());
