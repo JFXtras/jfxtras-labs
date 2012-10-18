@@ -34,7 +34,6 @@
 // TODO: callbacks to check if a delete is ok, etc
 package jfxtras.labs.internal.scene.control.skin;
 
-import java.awt.BorderLayout;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -219,7 +218,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	}
 	private SimpleDateFormat iDayOfWeekDateFormat = null;
 	private SimpleDateFormat iDateFormat = null;
-	private SimpleDateFormat iTimeFormat = new SimpleDateFormat("hh:mm");
+	private SimpleDateFormat iTimeFormat = new SimpleDateFormat("HH:mm");
 
 	/**
 	 * Have all days reconstruct the appointments
@@ -841,7 +840,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				
 				// in which track should it be added
 				int lTrackNr = determineTrackWhereAppointmentCanBeAdded(lClusterOwner.clusterTracks, lAppointmentPane);
-				// if it can be added to track 0, then we have a "situation". Track 0 could mean 
+				// if it can be added to track 0, then we have a "situation". Track 0 could mean
 				// - we must start a new cluster
 				// - the appointment is still linked to the running cluster by means of a linking appointment in the higher tracks
 				if (lTrackNr == 0)
@@ -1018,6 +1017,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			return super.toString()
 				 + ";" + startAsString + "-" + endAsString
 				 + ";" + durationInMS + "ms"
+				 + ";" + appointment.getSummary()
 				 ;
 		}
 	}
