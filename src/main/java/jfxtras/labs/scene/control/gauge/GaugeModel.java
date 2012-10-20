@@ -569,7 +569,7 @@ public class GaugeModel {
     }
 
     public final BooleanProperty lastLabelVisibleProperty() {
-        return lastLabelVisibleProperty();
+        return scale.get().lastLabelVisibleProperty();
     }
 
     public final ObservableList<Section> getSections() {

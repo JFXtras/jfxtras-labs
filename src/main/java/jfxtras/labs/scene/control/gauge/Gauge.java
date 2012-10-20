@@ -1777,7 +1777,7 @@ public abstract class Gauge extends Control {
 
     public final Color getTrendUpColor() {
             return styleModel.getTrendUpColor();
-        }
+    }
 
     public final void setTrendUpColor(final Color TREND_UP_COLOR) {
         styleModel.setTrendUpColor(TREND_UP_COLOR);
@@ -1813,7 +1813,7 @@ public abstract class Gauge extends Control {
 
     public final Color getTrendFallingColor() {
             return styleModel.getTrendFallingColor();
-        }
+    }
 
     public final void setTrendFallingColor(final Color TREND_FALLING_COLOR) {
         styleModel.setTrendFallingColor(TREND_FALLING_COLOR);
@@ -1833,5 +1833,5 @@ public abstract class Gauge extends Control {
 
     public final ObjectProperty<Color> trendDownColorProperty() {
             return styleModel.trendDownColorProperty();
-        }
+    }
 }
