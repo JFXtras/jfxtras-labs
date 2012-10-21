@@ -33,6 +33,7 @@ import java.util.Locale;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 import javafx.util.Callback;
@@ -76,6 +77,9 @@ public class Agenda extends Control
 		// setup the CSS
 		// the -fx-skin attribute in the CSS sets which Skin class is used
 		this.getStyleClass().add(this.getClass().getSimpleName());
+		
+		// appointments
+		constructAppointments();
 	}
 
 	/**
@@ -92,7 +96,23 @@ public class Agenda extends Control
 	/** Appointments: */
 	public ObservableList<Appointment> appointments() { return appointments; }
 	final private ObservableList<Appointment> appointments =  javafx.collections.FXCollections.observableArrayList();
-
+	private void constructAppointments()
+	{
+		// when appointments are removed, they can't be selected anymore
+		appointments.addListener(new ListChangeListener<Agenda.Appointment>() 
+		{
+			@Override
+			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Appointment> changes)
+			{
+// this causes a IllegalStateException (this is intended to replace the TODO line in the skin)				
+//				for (Appointment lAppointment : changes.getRemoved())
+//				{
+//					selectedAppointments.remove(lAppointment);
+//				}
+			} 
+		});
+	}
+	
 	/** AppointmentGroups: */
 	public ObservableList<AppointmentGroup> appointmentGroups() { return appointmentGroups; }
 	final private ObservableList<AppointmentGroup> appointmentGroups =  javafx.collections.FXCollections.observableArrayList();
