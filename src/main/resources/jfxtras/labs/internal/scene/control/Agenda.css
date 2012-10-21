@@ -100,7 +100,7 @@
 	-fx-fill: #00000040;	
 }
 
-.AgendaWeekSkin .ResizeRectangle {
+.AgendaWeekSkin .GhostRectangle {
 	-fx-fill: transparent;
 	-fx-stroke: #00000080;
     -fx-stroke-width: 2;
