@@ -43,7 +43,9 @@ import java.util.List;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -116,7 +118,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		});
 		refreshLocale();
 		
-		// react to changes in the appointments 
+		// react to changes in the displayed calendar 
 		getSkinnable().displayedCalendar().addListener(new InvalidationListener()
 		{			
 			@Override
@@ -145,29 +147,38 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			@Override
 			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Appointment> changes)
 			{
-				// update the styleclass
-				for (DayPane lDayPane : weekPane.dayPanes)
-				{
-					for (AbstractAppointmentPane lAppointmentPane : lDayPane.collectAllPanes())
-					{
-						// remove 
-						if ( lAppointmentPane.getStyleClass().contains("Selected") == true
-						  && getSkinnable().selectedAppointments().contains(lAppointmentPane.appointment) == false
-						   )
-						{
-							lAppointmentPane.getStyleClass().remove("Selected");
-						}
-						// add
-						if ( lAppointmentPane.getStyleClass().contains("Selected") == false
-						  && getSkinnable().selectedAppointments().contains(lAppointmentPane.appointment) == true
-						   )
-						{
-							lAppointmentPane.getStyleClass().add("Selected");
-						}
-					}
-				}
+				setOrRemoveSelected();
 			} 
 		});
+		setOrRemoveSelected();
+	}
+	
+	/**
+	 * set or remove the Selected class from the appointments
+	 */
+	private void setOrRemoveSelected()
+	{
+		// update the styleclass
+		for (DayPane lDayPane : weekPane.dayPanes)
+		{
+			for (AbstractAppointmentPane lAppointmentPane : lDayPane.collectAllPanes())
+			{
+				// remove 
+				if ( lAppointmentPane.getStyleClass().contains("Selected") == true
+				  && getSkinnable().selectedAppointments().contains(lAppointmentPane.appointment) == false
+				   )
+				{
+					lAppointmentPane.getStyleClass().remove("Selected");
+				}
+				// add
+				if ( lAppointmentPane.getStyleClass().contains("Selected") == false
+				  && getSkinnable().selectedAppointments().contains(lAppointmentPane.appointment) == true
+				   )
+				{
+					lAppointmentPane.getStyleClass().add("Selected");
+				}
+			}
+		}		
 	}
 	
 	/**
@@ -180,7 +191,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		Calendar lCalendar = getFirstDayOfWeekCalendar();
 		Calendar lStartCalendar = (Calendar)lCalendar.clone();
 		
-		// assign it
+		// assign it to each day pane
 		Calendar lEndCalendar = null;
 		for (int i = 0; i < 7; i++)
 		{
@@ -189,7 +200,10 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			lCalendar.add(Calendar.DATE, 1);
 		}		
 		
-		// tell the skin what range is needed
+		// place the now line
+		nowUpdateRunnable.run(); 
+		
+		// tell the skin what range is displayed, so it can update the appointments
 		if (getSkinnable().getCalendarRangeCallback() != null)
 		{
 			Agenda.CalendarRange lCalendarRange = new Agenda.CalendarRange(lStartCalendar, lEndCalendar);
@@ -203,9 +217,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	private void refreshLocale()
 	{
 		// create the formatter to use
-		iDayOfWeekDateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, getSkinnable().getLocale());
-		iDayOfWeekDateFormat.applyPattern("E");
-		iDateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, getSkinnable().getLocale());
+		dayOfWeekDateFormat = new SimpleDateFormat("E", getSkinnable().getLocale());
+		dateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, getSkinnable().getLocale());
 		
 		// force redraw the dayHeaders by reassigning the calendar
 		for (DayPane lDay : weekPane.dayPanes)
@@ -216,9 +229,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			}
 		}
 	}
-	private SimpleDateFormat iDayOfWeekDateFormat = null;
-	private SimpleDateFormat iDateFormat = null;
-	private SimpleDateFormat iTimeFormat = new SimpleDateFormat("HH:mm");
+	private SimpleDateFormat dayOfWeekDateFormat = null;
+	private SimpleDateFormat dateFormat = null;
+	final static private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
 	/**
 	 * Have all days reconstruct the appointments
@@ -230,7 +243,6 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		{
 			lDay.setupAppointments();
 		}
-		nowUpdateRunnable.run(); // place the now line
 	}
 	
 	// ==================================================================================================================
@@ -250,12 +262,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		// center
 		weekPane = new WeekPane();
 		weekScrollPane = ScrollPaneBuilder.create()
-			.prefWidth(getSkinnable().getWidth())
-			.prefHeight(getSkinnable().getHeight())
-			.layoutY(50)
 			.content(weekPane)
 			.hbarPolicy(ScrollBarPolicy.NEVER)
-			.pannable(false)
+			.pannable(false) // panning would conflict with creating a new appointment
 			.build();
 		borderPane.setCenter(weekScrollPane);
 		// bind the size of the week to the scrollpane's viewport
@@ -274,31 +283,34 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		weekHeaderPane.setTranslateX(1); // correct for the scrollpane
 		borderPane.setTop(weekHeaderPane);
 		
-		// add to self
-		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
+		// create a transparent pane where dragging an appointment is visualized 
 		dragPane = new Pane();
-		dragPane.prefWidthProperty().bind(widthProperty());
+		dragPane.prefWidthProperty().bind(widthProperty()); // the drag pane is the same size as the whole skin
 		dragPane.prefHeightProperty().bind(heightProperty());
+		// the borderpane is placed in the drag pane and sized to match 
 		dragPane.getChildren().add(borderPane);
 		borderPane.prefWidthProperty().bind(dragPane.widthProperty());
 		borderPane.prefHeightProperty().bind(dragPane.heightProperty());
+		
+		// add to self
+		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control		
 		getChildren().add(dragPane);
 		
-		// close icon
+		// load the close icon
 		closeIconImage = new Image(this.getClass().getResourceAsStream(this.getClass().getSimpleName() + "PopupCloseWindowIcon.png"));
 	}
-	Pane dragPane = null;
-	BorderPane borderPane = null;
-	WeekHeaderPane weekHeaderPane = null;
-	ScrollPane weekScrollPane = null;
-	WeekPane weekPane = null;
+	private Pane dragPane = null;
+	private BorderPane borderPane = null;
+	private WeekHeaderPane weekHeaderPane = null;
+	private ScrollPane weekScrollPane = null;
+	private WeekPane weekPane = null;
 	private Image closeIconImage = null;
 
 	// ==================================================================================================================
 	// PANES
 	
 	/**
-	 * Responsible for rendering the days
+	 * Responsible for rendering the day headers
 	 */
 	class WeekHeaderPane extends Pane
 	{
@@ -324,7 +336,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 
 	/**
 	 * Responsible for rendering the day header (whole day appointments).
-	 * This class is connected to the day and uses its data.
+	 * This class is connected to the daypane and uses its data.
 	 */
 	class DayHeaderPane extends Pane
 	{
@@ -333,29 +345,28 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			// for debugging setStyle("-fx-border-color:PINK;-fx-border-width:4px;");
 			getStyleClass().add("DayHeader");
 			
-			// link up the two panes
+			// link up the day and day header panes
 			this.dayPane = dayPane;
-			dayPane.dayHeader = this; // two way link
+			dayPane.dayHeaderPane = this; // two way link
 			
 			// set label
-			final int lPadding = 3;
 			calendarText = new Text("?");
+			double lX = (dayWidthProperty.get() - calendarText.prefWidth(0)) / 2;
+			calendarText.setX( padding ); // align left
+			calendarText.setY( calendarText.prefHeight(0) );
 			Rectangle lClip = new Rectangle(0,0,0,0);
-			lClip.widthProperty().bind(widthProperty().subtract(lPadding));
+			lClip.widthProperty().bind(widthProperty().subtract(padding));
 			lClip.heightProperty().bind(heightProperty());
 			calendarText.setClip(lClip);
 			getChildren().add(calendarText);
+			// react to changes in the calendar by updating the label
 			dayPane.calendarObjectProperty.addListener(new InvalidationListener()
 			{
 				@Override
 				public void invalidated(Observable arg0)
 				{
-					if (DayHeaderPane.this.dayPane.calendarObjectProperty.get() == null) return;
-					String lLabel = iDayOfWeekDateFormat.format(DayHeaderPane.this.dayPane.calendarObjectProperty.get().getTime()) + " " + iDateFormat.format(DayHeaderPane.this.dayPane.calendarObjectProperty.get().getTime());
+					String lLabel = DayHeaderPane.this.dayPane.calendarObjectProperty.get() == null ? "" : dayOfWeekDateFormat.format(DayHeaderPane.this.dayPane.calendarObjectProperty.get().getTime()) + " " + dateFormat.format(DayHeaderPane.this.dayPane.calendarObjectProperty.get().getTime());
 					calendarText.setText(lLabel);
-					double lX = (dayWidth - calendarText.prefWidth(0)) / 2;
-					calendarText.setX( lX < 0 ? lPadding : lX + lPadding );
-					calendarText.setY(calendarText.prefHeight(0));
 				}
 			});
 			
@@ -393,9 +404,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			for (AppointmentHeaderPane lAppointmentHeaderPane : appointmentHeaderPanes)
 			{
 				int lIdx = appointmentHeaderPanes.indexOf(lAppointmentHeaderPane);
-				lAppointmentHeaderPane.setLayoutX(lIdx * wholedayAppointmentWidth);
-				lAppointmentHeaderPane.setLayoutY( titleCalendarHeight + ((lIdx + lOffset) * wholedayTitleHeight) );
-				lAppointmentHeaderPane.setPrefSize(dayWidth - (lIdx * wholedayAppointmentWidth), (appointmentHeaderPanes.size() - lIdx) * wholedayTitleHeight);
+				lAppointmentHeaderPane.setLayoutX(lIdx * wholedayAppointmentWidth); // each pane is cascade offset to the right to allow connecting to the wholeday appointment on the day pane 
+				lAppointmentHeaderPane.setLayoutY( titleCalendarHeight + ((lIdx + lOffset) * wholedayTitleHeight) ); // each pane is cascaded offset down so the title label is visible 
+				lAppointmentHeaderPane.setPrefSize(dayWidthProperty.get() - (lIdx * wholedayAppointmentWidth), (appointmentHeaderPanes.size() - lIdx) * wholedayTitleHeight); // make sure the size matches the cascading
 			}
 		}
 		
@@ -404,12 +415,13 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		 */
 		public void setupAppointments()
 		{
-			// create headers
+			// remove all appointments and create new ones
 			getChildren().removeAll(appointmentHeaderPanes);
 			appointmentHeaderPanes.clear();
-			for (AppointmentPane lAppointmentPane : dayPane.wholedayAppointmentPanes)
+			// for all wholeday appointments on the day pane, create a header appointment pane as well
+			for (AppointmentPane lAppointmentPane : dayPane.wholedayAppointmentPanes)  
 			{
-				AppointmentHeaderPane lAppointmentHeaderPane = new AppointmentHeaderPane(lAppointmentPane.appointment);
+				AppointmentHeaderPane lAppointmentHeaderPane = new AppointmentHeaderPane(lAppointmentPane.appointment); 
 				getChildren().add(lAppointmentHeaderPane);				
 				appointmentHeaderPanes.add(lAppointmentHeaderPane);	
 			}
@@ -453,18 +465,11 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			// add the menu header
 			getChildren().add(menuIcon);
 			
-			// history visualizer
-			historyVisualizer = new Rectangle();
-			historyVisualizer.setMouseTransparent(true);
-			historyVisualizer.xProperty().set(0);
-			historyVisualizer.yProperty().set(0);
-			historyVisualizer.widthProperty().bind(prefWidthProperty());
-			historyVisualizer.heightProperty().bind(prefHeightProperty());
-			getChildren().add(historyVisualizer);
-			historyVisualizer.setVisible(false);
-			historyVisualizer.getStyleClass().add("History");
+			// historical visualizer
+			historicalVisualizer = new HistoricalVisualizer(this);
+			getChildren().add(historicalVisualizer);
 		}
-		final Rectangle historyVisualizer;
+		final Rectangle historicalVisualizer;
 	}
 	
 	/**
@@ -472,6 +477,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	 */
 	class WeekPane extends Pane
 	{
+		final List<DayPane> dayPanes = new ArrayList<DayPane>();
+
 		/**
 		 * 
 		 */
@@ -479,35 +486,38 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		{
 			getStyleClass().add("WeekPane");
 			
-			// draw times
+			// draw hours
 			for (int lHour = 0; lHour < 24; lHour++)
 			{
 				// hour line
 				{
 					Line l = new Line(0,10,100,10);
 					l.getStyleClass().add("HourLine");
+					l.startXProperty().set(0.0);
+					l.startYProperty().bind(hourHeighProperty.multiply(lHour));
 					l.endXProperty().bind(widthProperty());
 					l.endYProperty().bind(l.startYProperty());
 					getChildren().add(l);
-					hourLines.add(l);
 				}
 				// half hour line
 				{
 					Line l = new Line(0,10,100,10);
 					l.getStyleClass().add("HalfHourLine");
+					l.startXProperty().bind(timeWidthProperty);
 					l.endXProperty().bind(widthProperty());
+					l.startYProperty().bind(hourHeighProperty.multiply(lHour + 0.5));
 					l.endYProperty().bind(l.startYProperty());
 					getChildren().add(l);
-					halfHourLines.add(l);
 				}
 				// hour text
 				{
 					Text t = new Text(lHour + ":00");
+					t.xProperty().bind(timeWidthProperty.subtract(t.getBoundsInParent().getWidth()));
+					t.yProperty().bind(hourHeighProperty.multiply(lHour));
 					t.setTranslateY(t.getBoundsInParent().getHeight()); // move it under the line
 					t.getStyleClass().add("HourLabel");
 					t.setFontSmoothingType(FontSmoothingType.LCD);
 					getChildren().add(t);
-					hourTexts.add(t);
 				}
 			}
 
@@ -515,58 +525,12 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			for (int i = 0; i < 7; i++)
 			{
 				DayPane lDay = new DayPane();
+				lDay.layoutXProperty().bind(dayWidthProperty.multiply(i).add(dayFirstColumnXProperty));
+				lDay.layoutYProperty().set(0.0);
+				lDay.prefWidthProperty().bind(dayWidthProperty);
+				lDay.prefHeightProperty().bind(dayHeightProperty);
 				getChildren().add(lDay);
 				dayPanes.add(lDay);
-			}
-			
-			// change the layout related to the size
-			widthProperty().addListener(new InvalidationListener()
-			{
-				@Override
-				public void invalidated(Observable arg0)
-				{
-					relayout();
-				}
-			});
-			heightProperty().addListener(new InvalidationListener()
-			{
-				@Override
-				public void invalidated(Observable arg0)
-				{
-					relayout();
-				}
-			});
-			
-			// layout
-			relayout();
-		}
-		final List<DayPane> dayPanes = new ArrayList<DayPane>();
-		final List<Text> hourTexts = new ArrayList<Text>();
-		final List<Line> hourLines = new ArrayList<Line>();
-		final List<Line> halfHourLines = new ArrayList<Line>();
-		
-		/**
-		 * 
-		 */
-		private void relayout()
-		{
-			// position the hours
-			for (int lHour = 0; lHour < 24; lHour++)
-			{
-				hourLines.get(lHour).startYProperty().set(lHour * hourHeight);
-				halfHourLines.get(lHour).startXProperty().set(timeWidth);
-				halfHourLines.get(lHour).startYProperty().set((lHour + 0.5) * hourHeight);
-				hourTexts.get(lHour).xProperty().set(timeWidth - hourTexts.get(lHour).getBoundsInParent().getWidth());
-				hourTexts.get(lHour).yProperty().set(lHour * hourHeight);
-			}
-
-			// position the day panes
-			for (int i = 0; i < 7; i++)
-			{
-				DayPane lDay = dayPanes.get(i);
-				lDay.setLayoutX(dayFirstColumnX + (i * dayWidth));
-				lDay.setLayoutY(0.0);
-				lDay.setPrefSize(dayWidth, dayHeight);
 			}
 		}
 	}
@@ -578,7 +542,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	class DayPane extends Pane
 	{
 		// know your header
-		DayHeaderPane dayHeader = null;
+		DayHeaderPane dayHeaderPane = null;
 		
 		public DayPane()
 		{
@@ -615,7 +579,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					// show the rectangle
 					DayPane.this.setCursor(Cursor.V_RESIZE);
 					double lY = mouseEvent.getScreenY() - NodeUtil.screenY(DayPane.this);
-					resizeRectangle = new Rectangle(0, lY, dayWidth, 10);
+					resizeRectangle = new Rectangle(0, lY, dayWidthProperty.get(), 10);
 					resizeRectangle.getStyleClass().add("ResizeRectangle");
 					DayPane.this.getChildren().add(resizeRectangle);
 					
@@ -692,7 +656,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		{
 			List<AbstractAppointmentPane> lPanes = new ArrayList<AgendaWeekSkin.AbstractAppointmentPane>(appointmentPanes);
 			lPanes.addAll(wholedayAppointmentPanes);
-			lPanes.addAll(dayHeader.appointmentHeaderPanes);
+			lPanes.addAll(dayHeaderPane.appointmentHeaderPanes);
 			return lPanes;
 		}
 		
@@ -707,7 +671,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			{
 				lAppointmentPane.setLayoutX(lWholedayCnt * wholedayAppointmentWidth);
 				lAppointmentPane.setLayoutY(0);
-				lAppointmentPane.setPrefSize(wholedayAppointmentWidth, dayHeight);
+				lAppointmentPane.setPrefSize(wholedayAppointmentWidth, dayHeightProperty.get());
 				lWholedayCnt++;
 			}
 			
@@ -717,10 +681,10 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			{
 				int lOffsetY = (lAppointmentPane.start.get(Calendar.HOUR_OF_DAY) * 60) + lAppointmentPane.start.get(Calendar.MINUTE);
 				lAppointmentPane.setLayoutX((lWholedayCnt * wholedayAppointmentWidth) + (lAppointmentsWidth / lAppointmentPane.clusterOwner.clusterTracks.size() * lAppointmentPane.clusterTrackIdx));
-				lAppointmentPane.setLayoutY(dayHeight / (24 * 60) * lOffsetY );
+				lAppointmentPane.setLayoutY(dayHeightProperty.get() / (24 * 60) * lOffsetY );
 				double lW = (dayContentWidth - (wholedayAppointmentPanes.size() * wholedayAppointmentWidth)) * (1.0 / (((double)lAppointmentPane.clusterOwner.clusterTracks.size())));
 				if (lAppointmentPane.clusterTrackIdx < lAppointmentPane.clusterOwner.clusterTracks.size() - 1) lW *= 1.5;
-				double lH = (dayHeight / (24 * 60) * (lAppointmentPane.durationInMS / 1000 / 60) );
+				double lH = (dayHeightProperty.get() / (24 * 60) * (lAppointmentPane.durationInMS / 1000 / 60) );
 				if (lH < 2 * padding) lH = 2 * padding; 
 				lAppointmentPane.setPrefSize(lW, lH);
 			}
@@ -876,7 +840,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			relayout();
 			
 			// we're done, now have the header updated
-			dayHeader.setupAppointments();
+			dayHeaderPane.setupAppointments();
 		}
 		final List<AppointmentPane> appointmentPanes = new ArrayList<AppointmentPane>(); // all appointments that need to be drawn
 		final List<AppointmentPane> wholedayAppointmentPanes = new ArrayList<AppointmentPane>(); // all appointments that need to be drawn
@@ -939,8 +903,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			durationInMS = this.end.getTimeInMillis() - this.start.getTimeInMillis();
 			
 			// strings
-			this.startAsString = iTimeFormat.format(this.start.getTime());
-			this.endAsString = iTimeFormat.format(this.end.getTime());
+			this.startAsString = timeFormat.format(this.start.getTime());
+			this.endAsString = timeFormat.format(this.end.getTime());
 			
 			// only for whole day events
 			if (appointment.isWholeDay() == false)
@@ -991,17 +955,10 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			if (appointment.isWholeDay() == false) getChildren().add(menuIcon);
 			
 			// history visualizer
-			historyVisualizer = new Rectangle();
-			historyVisualizer.setMouseTransparent(true);
-			historyVisualizer.xProperty().set(0);
-			historyVisualizer.yProperty().set(0);
-			historyVisualizer.widthProperty().bind(prefWidthProperty());
-			historyVisualizer.heightProperty().bind(prefHeightProperty());
-			getChildren().add(historyVisualizer);
-			historyVisualizer.setVisible(false);
-			historyVisualizer.getStyleClass().add("History");
+			historicalVisualizer = new HistoricalVisualizer(this);
+			getChildren().add(historicalVisualizer);
 		}
-		final Rectangle historyVisualizer;
+		final Rectangle historicalVisualizer;
 		final Calendar start;
 		final String startAsString;
 		final Calendar end;
@@ -1023,6 +980,28 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	}
 
 			
+	// ==================================================================================================================
+	// HISTORICAL
+	
+	/**
+	 * For whiting-out an appoinment pane
+	 *
+	 */
+	class HistoricalVisualizer extends Rectangle
+	{
+		public HistoricalVisualizer(Pane pane)
+		{
+			// it 100% overlays the pane it is bound to
+			setMouseTransparent(true);
+			xProperty().set(0);
+			yProperty().set(0);
+			widthProperty().bind(pane.prefWidthProperty());
+			heightProperty().bind(pane.prefHeightProperty());
+			setVisible(false);
+			getStyleClass().add("History");			
+		}
+	}
+	
 	// ==================================================================================================================
 	// RESIZING
 	
@@ -1432,18 +1411,18 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		{
 			// strings
 			StringBuilder lStringBuilder = new StringBuilder();
-			lStringBuilder.append( iDateFormat.format(this.appointment.getStartTime().getTime()) );
+			lStringBuilder.append( dateFormat.format(this.appointment.getStartTime().getTime()) );
 			if (this.appointment.isWholeDay() == false)
 			{
 				lStringBuilder.append( " " );
-				lStringBuilder.append( iTimeFormat.format(this.appointment.getStartTime().getTime()) );
+				lStringBuilder.append( timeFormat.format(this.appointment.getStartTime().getTime()) );
 				lStringBuilder.append( " - " );
 				if (isSameDay(this.appointment.getStartTime(), this.appointment.getEndTime()) == false)
 				{
-					lStringBuilder.append( iDateFormat.format(this.appointment.getEndTime().getTime()) );
+					lStringBuilder.append( dateFormat.format(this.appointment.getEndTime().getTime()) );
 					lStringBuilder.append( " " );
 				}
-				lStringBuilder.append( iTimeFormat.format(this.appointment.getEndTime().getTime()) );
+				lStringBuilder.append( timeFormat.format(this.appointment.getEndTime().getTime()) );
 			}
 			return lStringBuilder.toString();
 		}
@@ -1455,6 +1434,10 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	// NOW
 	
 	final Rectangle nowLine = new Rectangle(0,0,0,0);
+	
+	/**
+	 * This is implemented as a runnable so it can be called from a timer, but also directly
+	 */
 	Runnable nowUpdateRunnable = new Runnable()
 	{
 		{
@@ -1467,7 +1450,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			//  get now
 			Calendar lNow = Calendar.getInstance();
 			
-			// see if we are displaying now
+			// see if we are displaying now (this has to do with the fact that now may slide in or out of the view)
 			// check all days
 			boolean lFound = false;
 			for (DayPane lDayPane : weekPane.dayPanes)
@@ -1486,19 +1469,19 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					// place it
 					int lOffsetY = (lNow.get(Calendar.HOUR_OF_DAY) * 60) + lNow.get(Calendar.MINUTE);
 					nowLine.setX(lDayPane.getLayoutX());
-					nowLine.setY(dayHeight / (24 * 60) * lOffsetY );
+					nowLine.setY(dayHeightProperty.get() / (24 * 60) * lOffsetY );
 					nowLine.setHeight(3);
-					nowLine.setWidth(dayWidth);	
+					nowLine.setWidth(dayWidthProperty.get());	
 				}
 				
 				// display history
 				for (AppointmentPane lAppointmentPane : lDayPane.appointmentPanes)
 				{
-					lAppointmentPane.historyVisualizer.setVisible( lAppointmentPane.start.before(lNow));
+					lAppointmentPane.historicalVisualizer.setVisible( lAppointmentPane.start.before(lNow));
 				}
 				for (AppointmentPane lAppointmentPane : lDayPane.wholedayAppointmentPanes)
 				{
-					lAppointmentPane.historyVisualizer.setVisible( lAppointmentPane.start.before(lNow));
+					lAppointmentPane.historicalVisualizer.setVisible( lAppointmentPane.start.before(lNow));
 				}
 			}
 			
@@ -1513,18 +1496,18 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			{
 				for (AppointmentHeaderPane lAppointmentHeaderPane : lDayHeaderPane.appointmentHeaderPanes)
 				{
-					lAppointmentHeaderPane.historyVisualizer.setVisible(lAppointmentHeaderPane.appointment.getStartTime().before(lNow));
+					lAppointmentHeaderPane.historicalVisualizer.setVisible(lAppointmentHeaderPane.appointment.getStartTime().before(lNow));
 				}
 			}
 		}
 	};
 	
 	/**
-	 * This timer takes care of visualizing NOW
+	 * This timer takes care of updating NOW
 	 */
 	Timer nowTimer = new Timer(nowUpdateRunnable)
-		.withCycleDuration(new Duration(60 * 1000))// every minute
-		.withDelay(new Duration( (60 - Calendar.getInstance().get(Calendar.SECOND)) * 1000)) // start on the minute
+		.withCycleDuration(new Duration(60 * 1000)) // every minute
+		.withDelay(new Duration( (60 - Calendar.getInstance().get(Calendar.SECOND)) * 1000)) // trigger exactly on each new minute
 		.start();  
 	
 	// ==================================================================================================================
@@ -1798,33 +1781,33 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 
 		// time column
 		int lTimeColumnWhitespace = 10;
-		timeWidth = new Text("88:88").getBoundsInParent().getWidth() + lTimeColumnWhitespace;
+		timeWidthProperty.set( new Text("88:88").getBoundsInParent().getWidth() + lTimeColumnWhitespace );
 		
 		// day columns
-		dayFirstColumnX = timeWidth + lTimeColumnWhitespace;
-		dayWidth = (getSkinnable().getWidth() - timeWidth - scrollbarSize) / 7; // 7 days per week
+		dayFirstColumnXProperty.set( timeWidthProperty.get() + lTimeColumnWhitespace );
+		dayWidthProperty.set( (getSkinnable().getWidth() - timeWidthProperty.get() - scrollbarSize) / 7 ); // 7 days per week
 		if (weekScrollPane.viewportBoundsProperty().get() != null) 
 		{
-			dayWidth = (weekScrollPane.viewportBoundsProperty().get().getWidth() - timeWidth) / 7; // 7 days per week
+			dayWidthProperty.set( (weekScrollPane.viewportBoundsProperty().get().getWidth() - timeWidthProperty.get()) / 7 ); // 7 days per week
 		}
-		dayContentWidth = dayWidth - 10;
+		dayContentWidth = dayWidthProperty.get() - 10;
 		
 		// hour height
-		hourHeight = (2 * textHeight1M) + 10; // 10 is padding
-		if (weekScrollPane.viewportBoundsProperty().get() != null && (weekScrollPane.viewportBoundsProperty().get().getHeight() - scrollbarSize) > hourHeight * 24)
+		hourHeighProperty.set( (2 * textHeight1M) + 10 ); // 10 is padding
+		if (weekScrollPane.viewportBoundsProperty().get() != null && (weekScrollPane.viewportBoundsProperty().get().getHeight() - scrollbarSize) > hourHeighProperty.get() * 24)
 		{
 			// if there is more room than absolutely required, let the height grow with the available room
-			hourHeight = (weekScrollPane.viewportBoundsProperty().get().getHeight() - scrollbarSize) / 24;
+			hourHeighProperty.set( (weekScrollPane.viewportBoundsProperty().get().getHeight() - scrollbarSize) / 24 );
 		}
-		dayHeight = hourHeight * 24;
-		durationInMSPerPixel = (24 * 60 * 60 * 1000) / dayHeight;
+		dayHeightProperty.set(hourHeighProperty.get() * 24);
+		durationInMSPerPixel = (24 * 60 * 60 * 1000) / dayHeightProperty.get();
 		
 		// if the viewport is active
 		if (weekScrollPane.viewportBoundsProperty() != null && weekScrollPane.viewportBoundsProperty().get() != null)
 		{
 			// make sure the border pane uses these sizes
 			weekHeaderPane.setPrefSize(weekScrollPane.viewportBoundsProperty().get().getWidth(), headerHeight);
-			weekPane.setPrefSize(weekScrollPane.viewportBoundsProperty().get().getWidth(), 24 * hourHeight);				
+			weekPane.setPrefSize(weekScrollPane.viewportBoundsProperty().get().getWidth(), 24 * hourHeighProperty.get());				
 		}
 	}
 	double padding = 3;
@@ -1834,13 +1817,14 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	int maxNumberOfWholedayAppointments = 0;
 	double wholedayTitleHeight = 0;
 	double wholedayAppointmentWidth = 5;
-	double timeWidth = 0;
-	double dayFirstColumnX = 0;
-	double dayWidth = 0;
+	DoubleProperty timeWidthProperty = new SimpleDoubleProperty(0); // double timeWidth = 0;
+	DoubleProperty dayFirstColumnXProperty = new SimpleDoubleProperty(0); // double dayFirstColumnX = 0;
+	DoubleProperty dayWidthProperty = new SimpleDoubleProperty(0); //	double dayWidth = 0;
 	double dayContentWidth = 0;
-	double dayHeight = 0;
+	DoubleProperty dayHeightProperty = new SimpleDoubleProperty(0);  // double dayHeight = 0;
 	double durationInMSPerPixel = 0;
-	double hourHeight = 0;
+	DoubleProperty hourHeighProperty = new SimpleDoubleProperty(0); //	double hourHeight = 0;
+	
 	
 	/**
 	 * get the calendar for the first day of the week
