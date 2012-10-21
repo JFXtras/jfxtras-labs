@@ -161,7 +161,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		// update the styleclass
 		for (DayPane lDayPane : weekPane.dayPanes)
 		{
-			for (AbstractAppointmentPane lAppointmentPane : lDayPane.collectAllPanes())
+			for (AbstractAppointmentPane lAppointmentPane : lDayPane.allAbstractAppointmentPanes())
 			{
 				// remove 
 				if ( lAppointmentPane.getStyleClass().contains("Selected") == true
@@ -419,7 +419,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			getChildren().removeAll(appointmentHeaderPanes);
 			appointmentHeaderPanes.clear();
 			// for all wholeday appointments on the day pane, create a header appointment pane as well
-			for (AppointmentPane lAppointmentPane : dayPane.wholedayAppointmentPanes)  
+			for (WholedayAppointmentPane lAppointmentPane : dayPane.wholedayAppointmentPanes)  
 			{
 				AppointmentHeaderPane lAppointmentHeaderPane = new AppointmentHeaderPane(lAppointmentPane.appointment); 
 				getChildren().add(lAppointmentHeaderPane);				
@@ -530,6 +530,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				lDay.prefWidthProperty().bind(dayWidthProperty);
 				lDay.prefHeightProperty().bind(dayHeightProperty);
 				getChildren().add(lDay);
+				
+				// remember
 				dayPanes.add(lDay);
 			}
 		}
@@ -541,6 +543,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	 */
 	class DayPane extends Pane
 	{
+		// this daypane is representing this calendar (date)
+		ObjectProperty<Calendar> calendarObjectProperty = new SimpleObjectProperty<Calendar>(DayPane.this, "calendar");
+		
 		// know your header
 		DayHeaderPane dayHeaderPane = null;
 		
@@ -549,7 +554,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			// for debugging setStyle("-fx-border-color:PINK;-fx-border-width:4px;");		
 			getStyleClass().add("Day");
 			
-			// change the layout related to the size
+			// the appointments layout is too complex to cleanly calculate using binding, so we'll listen to size changes
 			widthProperty().addListener(new InvalidationListener()
 			{
 				@Override
@@ -567,7 +572,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				}
 			});
 			
-			// start new apppointment
+			// ---------
+			
+			// start new appointment
 			setOnMousePressed(new EventHandler<MouseEvent>()
 			{
 				@Override
@@ -622,7 +629,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					DayPane.this.setCursor(Cursor.HAND);
 					DayPane.this.getChildren().remove(resizeRectangle);
 					
-					// must have dragged
+					// must have dragged (otherwise it is considered an "unselect all" action)
 					if (dragged == false) return;
 					
 					// calculate the starttime
@@ -635,16 +642,18 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					lEndCalendar.add(Calendar.MILLISECOND, (int)(resizeRectangle.getHeight() * durationInMSPerPixel));
 					setTimeToNearestMinutes(lEndCalendar, 5);
 					
-					// ask the control to create a new appointment (null may be returned)
-					Agenda.Appointment lAppointment = getSkinnable().createAppointmentCallbackProperty().get().call(new Agenda.CalendarRange(lStartCalendar, lEndCalendar));
-					if (lAppointment != null) getSkinnable().appointments().add(lAppointment); // the appointments are listened to, so they will automatically be refreshed
-					
 					// clean up
 					resizeRectangle = null;					
+					
+					// ask the control to create a new appointment (null may be returned)
+					Agenda.Appointment lAppointment = getSkinnable().createAppointmentCallbackProperty().get().call(new Agenda.CalendarRange(lStartCalendar, lEndCalendar));
+					if (lAppointment != null) 
+					{
+						getSkinnable().appointments().add(lAppointment); // the appointments collection is listened to, so they will automatically be refreshed
+					}
 				}
 			});
 		}
-		ObjectProperty<Calendar> calendarObjectProperty = new SimpleObjectProperty<Calendar>(DayPane.this, "calendar");
 		Rectangle resizeRectangle = null;
 		boolean dragged = false;
 		
@@ -652,9 +661,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		 * 
 		 * @return
 		 */
-		public List<AbstractAppointmentPane> collectAllPanes()
+		public List<AbstractAppointmentPane> allAbstractAppointmentPanes()
 		{
-			List<AbstractAppointmentPane> lPanes = new ArrayList<AgendaWeekSkin.AbstractAppointmentPane>(appointmentPanes);
+			List<AbstractAppointmentPane> lPanes = new ArrayList<AgendaWeekSkin.AbstractAppointmentPane>(regularAppointmentPanes);
 			lPanes.addAll(wholedayAppointmentPanes);
 			lPanes.addAll(dayHeaderPane.appointmentHeaderPanes);
 			return lPanes;
@@ -667,7 +676,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		{
 			// first add all the whole day appointments
 			int lWholedayCnt = 0;
-			for (AppointmentPane lAppointmentPane : wholedayAppointmentPanes)
+			for (WholedayAppointmentPane lAppointmentPane : wholedayAppointmentPanes)
 			{
 				lAppointmentPane.setLayoutX(lWholedayCnt * wholedayAppointmentWidth);
 				lAppointmentPane.setLayoutY(0);
@@ -675,18 +684,29 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				lWholedayCnt++;
 			}
 			
-			// then add all appointments to the day
-			double lAppointmentsWidth = dayContentWidth - (lWholedayCnt * wholedayAppointmentWidth);			
-			for (AppointmentPane lAppointmentPane : appointmentPanes)
+			// then add all regular appointments to the day
+			// calculate how much room is remaining for the regular appointments
+			double lRemainingWidthForRegularAppointments = dayContentWidth - (lWholedayCnt * wholedayAppointmentWidth);			
+			for (RegularAppointmentPane lAppointmentPane : regularAppointmentPanes)
 			{
-				int lOffsetY = (lAppointmentPane.start.get(Calendar.HOUR_OF_DAY) * 60) + lAppointmentPane.start.get(Calendar.MINUTE);
-				lAppointmentPane.setLayoutX((lWholedayCnt * wholedayAppointmentWidth) + (lAppointmentsWidth / lAppointmentPane.clusterOwner.clusterTracks.size() * lAppointmentPane.clusterTrackIdx));
-				lAppointmentPane.setLayoutY(dayHeightProperty.get() / (24 * 60) * lOffsetY );
+				// the X is determine by offsetting the wholeday appointments and then calculate the X of the track the appointment is placed in (available width / number of tracks) 
+				lAppointmentPane.setLayoutX((lWholedayCnt * wholedayAppointmentWidth) + (lRemainingWidthForRegularAppointments / lAppointmentPane.clusterOwner.clusterTracks.size() * lAppointmentPane.clusterTrackIdx));
+				
+				// the Y is determined by the start time in minutes projected onto the total day height (being 24 hours)
+				int lTimeFactor = (lAppointmentPane.start.get(Calendar.HOUR_OF_DAY) * 60) + lAppointmentPane.start.get(Calendar.MINUTE);
+				lAppointmentPane.setLayoutY(dayHeightProperty.get() / (24 * 60) * lTimeFactor );
+				
+				// the width is the remaining width (subtracting the wholeday appointments) divided by the number of tracks in the cluster
 				double lW = (dayContentWidth - (wholedayAppointmentPanes.size() * wholedayAppointmentWidth)) * (1.0 / (((double)lAppointmentPane.clusterOwner.clusterTracks.size())));
+				// all but the most right appointment get 50% extra width, so they underlap the next track 
 				if (lAppointmentPane.clusterTrackIdx < lAppointmentPane.clusterOwner.clusterTracks.size() - 1) lW *= 1.5;
+				lAppointmentPane.setPrefWidth(lW);
+				
+				// the height is determing by the duration projected against the total dayHeight (being 24 hours)
 				double lH = (dayHeightProperty.get() / (24 * 60) * (lAppointmentPane.durationInMS / 1000 / 60) );
+				// the height has a minimum size, in order to be able to render sensibly
 				if (lH < 2 * padding) lH = 2 * padding; 
-				lAppointmentPane.setPrefSize(lW, lH);
+				lAppointmentPane.setPrefHeight(lH);
 			}
 		}			
 
@@ -694,13 +714,13 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		 * This method prepares a day for being drawn.
 		 * The appointments within one day might overlap, this method will create a data structure so it is clear how these overlapping appointments should be drawn.
 		 * All appointments in one day are process based on their start time; earliest first, and if there are more with the same start time, longest duration first.
-		 * The appointments are then place onto (parallel) tracks; an appointment initially is placed in track 1. 
-		 * But if there is already an (partially overlapping) appointment there, then the appointment is placed in track 2. 
-		 * Unless there also is an appointment already in track 2, then track 3 is tried, then track 4, track 5, until a free slot is found.
+		 * The appointments are then place onto (parallel) tracks; an appointment initially is placed in track 0. 
+		 * But if there is already an (partially overlapping) appointment there, then the appointment is moved to track 1. 
+		 * Unless there also is an appointment already in that track 1, then the next track is tried, and so forth, until a free track is found.
 		 * For example (the letters are not the sequence in which the appointments are processed, they're just for identifying them):
 		 * 
 		 *  tracks
-		 *  1 2 3 4
+		 *  0 1 2 3
 		 *  -------
 		 *  . . . .
 		 *  . . . .
@@ -719,21 +739,20 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		 *  G . . . 
 		 *  . . . .
 		 * 
-		 * Appointment A was rendered first and put into track 1 and its start time.
-		 * Then appointment B was added, initially it was put in track 1, but appointment A already uses the same timeslot, so B was moved into track 2.
-		 * C moved from track 1, conflicting with A, to track 2, conflicting with B, and ended up in track 3.
-		 * And so forth.
+		 * Appointment A was rendered first and put into track 0 and its start time.
+		 * Then appointment B was added, initially it was put in track 0, but appointment A already uses the that slot, so B was moved into track 1.
+		 * C moved from track 0, conflicting with A, to track 1, conflicting with B, and ended up in track 2. And so forth.
 		 * F and H show that even though D overlaps them, they could perfectly be placed in lower tracks.
 		 * 
-		 * A cluster of appointments always starts with a free standing appointment in track 1, for example A or G, this appointment is called the cluster owner.
-		 * When the next appointment is added to the tracks, and finds that it cannot be put in track 1, it will be added as a member to the cluster denoted by the appointment in track 1.
-		 * The word "denoted" is used on purpose, because special attention must be paid to an appointment that is placed in track 1, but is linked to a cluster by a earlier appointment in a higher track.
-		 * In the example above, F is linked by D to the cluster owned by A. So F is not a cluster of its own, but a member of the cluster owned by A.
+		 * A cluster of appointments always starts with a free standing appointment in track 0, for example A or G, such appointment is called the cluster owner.
+		 * When the next appointment is added to the tracks, and finds that it cannot be put in track 0, it will be added as a member to the cluster represented by the appointment in track 0.
+		 * Special attention must be paid to an appointment that is placed in track 0, but is linked to a cluster by a earlier appointment in a higher track; such an appointment is not the cluster owner.
+		 * In the example above, F is linked through D to the cluster owned by A. So F is not a cluster owner, but a member of the cluster owned by A.
 		 * And appointment H through F is also part of the cluster owned by A.  
 		 * G finally starts a new cluster.
-		 * The cluster owner knows all members and how many tracks there are, each member has a direct link to the cluster owner. 
-		 *   
-		 * When rendering the appointments above, parallel appointments are rendered narrower & indented, so appointments partially overlap and a piece of all appointments is always visible to the user.
+		 * The cluster owner knows all members and how many tracks there are, each member knows in what track it is and has a direct link to the cluster owner. 
+		 *  
+		 * When rendering the appointments above, parallel appointments are rendered narrower & indented, so appointments partially overlap and the left side of an appointment is always visible to the user.
 		 * In the example above the single appointment G is rendered full width, while for example A, B, C and D are overlapping.
 		 * F and H are drawn in the same dimensions as A and B in order to allow D to overlap then.
 		 * The size and amount of indentation depends on the number of appointments that are rendered next to each other.
@@ -747,39 +766,45 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		public void setupAppointments()
 		{
 			// clear
-			getChildren().removeAll(appointmentPanes);
-			appointmentPanes.clear();
+			getChildren().removeAll(regularAppointmentPanes);
+			regularAppointmentPanes.clear();
 			getChildren().removeAll(wholedayAppointmentPanes);
 			wholedayAppointmentPanes.clear();			
 			if (calendarObjectProperty.get() == null) return;
 			
 			// scan all appointments and filter the ones for this day
 			for (Agenda.Appointment lAppointment : getSkinnable().appointments())
-			{				
-				// check if the appointment falls in today
-				// appointments may span multiple days, but the appointment pane will clamp the start and end date
-				AppointmentPane lAppointmentPane = new AppointmentPane(calendarObjectProperty.get(), lAppointment);
-				lAppointmentPane.dayPane = this;
-				if ( isSameDay(calendarObjectProperty.get(), lAppointmentPane.start) 
-				  && isSameDay(calendarObjectProperty.get(), lAppointmentPane.end)
-				   )
+			{
+				// different panes depending on the appointment time
+				if (lAppointment.isWholeDay())
 				{
-					if (lAppointment.isWholeDay())
+					// if appointment falls on the same date as this day pane
+					if (isSameDay(calendarObjectProperty.get(), lAppointment.getStartTime()))
 					{
+						WholedayAppointmentPane lAppointmentPane = new WholedayAppointmentPane(lAppointment, this);
 						wholedayAppointmentPanes.add(lAppointmentPane);
 					}
-					else
+				}
+				else
+				{
+					// appointments may span multiple days, but the appointment pane will clamp the start and end date
+					RegularAppointmentPane lAppointmentPane = new RegularAppointmentPane(lAppointment, this);
+					
+					// check if the appointment falls in the same day as this day pane
+					if ( isSameDay(calendarObjectProperty.get(), lAppointmentPane.start) 
+					  && isSameDay(calendarObjectProperty.get(), lAppointmentPane.end)
+					   )
 					{
-						appointmentPanes.add(lAppointmentPane);
+						regularAppointmentPanes.add(lAppointmentPane);
 					}
 				}
 			}
 			
 			// sort on start time and then decreasing duration
-			Collections.sort(appointmentPanes, new Comparator<AppointmentPane>()
+			Collections.sort(regularAppointmentPanes, new Comparator<AbstractDayAppointmentPane>()
 			{
 				@Override
-				public int compare(AppointmentPane o1, AppointmentPane o2)
+				public int compare(AbstractDayAppointmentPane o1, AbstractDayAppointmentPane o2)
 				{
 					if (o1.startAsString.equals(o2.startAsString) == false)
 					{
@@ -790,8 +815,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			});
 			
 			// start placing appointments in the tracks
-			AppointmentPane lClusterOwner = null;
-			for (AppointmentPane lAppointmentPane : appointmentPanes)
+			RegularAppointmentPane lClusterOwner = null;
+			for (RegularAppointmentPane lAppointmentPane : regularAppointmentPanes)
 			{
 				// if there is no cluster owner
 				if (lClusterOwner == null)
@@ -799,7 +824,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					// than the current becomes an owner
 					// only create a minimal cluster, because it will be setup fully in the code below
 					lClusterOwner = lAppointmentPane;
-					lClusterOwner.clusterTracks = new ArrayList<List<AppointmentPane>>();
+					lClusterOwner.clusterTracks = new ArrayList<List<RegularAppointmentPane>>();
 				}
 				
 				// in which track should it be added
@@ -820,9 +845,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					if (lOverlaps == false)
 					{
 						lClusterOwner = lAppointmentPane;
-						lClusterOwner.clusterMembers = new ArrayList<AppointmentPane>(); 
-						lClusterOwner.clusterTracks = new ArrayList<List<AppointmentPane>>();
-						lClusterOwner.clusterTracks.add(new ArrayList<AppointmentPane>());
+						lClusterOwner.clusterMembers = new ArrayList<RegularAppointmentPane>(); 
+						lClusterOwner.clusterTracks = new ArrayList<List<RegularAppointmentPane>>();
+						lClusterOwner.clusterTracks.add(new ArrayList<RegularAppointmentPane>());
 					}
 				}
 				
@@ -836,135 +861,146 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			
 			// and layout
 			getChildren().addAll(wholedayAppointmentPanes);
-			getChildren().addAll(appointmentPanes);
+			getChildren().addAll(regularAppointmentPanes);
+			// laying out the appointments is fairly complex, so we use listeners and a relayout method instead of binding
 			relayout();
 			
 			// we're done, now have the header updated
 			dayHeaderPane.setupAppointments();
 		}
-		final List<AppointmentPane> appointmentPanes = new ArrayList<AppointmentPane>(); // all appointments that need to be drawn
-		final List<AppointmentPane> wholedayAppointmentPanes = new ArrayList<AppointmentPane>(); // all appointments that need to be drawn
+		final List<RegularAppointmentPane> regularAppointmentPanes = new ArrayList<RegularAppointmentPane>(); // all appointments that need to be drawn
+		final List<WholedayAppointmentPane> wholedayAppointmentPanes = new ArrayList<WholedayAppointmentPane>(); // all appointments that need to be drawn
 	}
 	
 	/**
-	 * Responsible for rendering a single appointment on a single day.
-	 * An appointment region is a representation of an appointment in one single day.
-	 * Appointments may span multiple days, each day gets its own appointment region.
+	 * Responsible for rendering a whoelday appointment on a single day.
 	 * 
 	 */
-	class AppointmentPane extends AbstractAppointmentPane
+	class WholedayAppointmentPane extends AbstractDayAppointmentPane
 	{
-		DayPane dayPane = null;
-		// for the role of cluster owner
-		List<AppointmentPane> clusterMembers = null; 
-		List<List<AppointmentPane>> clusterTracks = null;
-		// for the role of cluster member
-		AppointmentPane clusterOwner = null;
-		int clusterTrackIdx = -1;
-
 		/**
 		 * 
 		 * @param calendar
 		 * @param appointment
 		 */
-		public AppointmentPane(Calendar calendar, Agenda.Appointment appointment)
+		public WholedayAppointmentPane(Agenda.Appointment appointment, DayPane dayPane)
 		{
-			super(appointment);
+			super(appointment, dayPane);
 			
-			// for debugging setStyle("-fx-border-color:BLUE;-fx-border-width:4px;");
-			getStyleClass().add("Appointment");
-			getStyleClass().add(appointment.getAppointmentGroup().getStyleClass());
-			
-			// wholeday
-			if (appointment.isWholeDay())
-			{
-				// start
-				this.start = setTimeTo0000( (Calendar)appointment.getStartTime().clone() );
-				
-				// end
-				this.end = setTimeTo2359( (Calendar)appointment.getStartTime().clone() );
-			}
-			else
-			{
-				// start
-				Calendar lDayStartCalendar = setTimeTo0000( (Calendar)calendar.clone() );
-				this.start = (appointment.getStartTime().before(lDayStartCalendar) ? lDayStartCalendar : (Calendar)appointment.getStartTime().clone());
-				
-				// end
-				Calendar lDayEndCalendar = setTimeTo2359( (Calendar)calendar.clone() );
-				this.end = (appointment.getEndTime().after(lDayEndCalendar) ? lDayEndCalendar : (Calendar)appointment.getEndTime().clone());
-				
-				// always is first and last appointment
-				isFirstAreaOfAppointment = this.start.equals(appointment.getStartTime()); 
-				isLastAreaOfAppointment = this.end.equals(appointment.getEndTime()); 
-			}
-		
-			// duration
+			// start
+			this.start = setTimeTo0000( (Calendar)appointment.getStartTime().clone() );
+			this.end = setTimeTo2359( (Calendar)appointment.getStartTime().clone() );
 			durationInMS = this.end.getTimeInMillis() - this.start.getTimeInMillis();
 			
 			// strings
 			this.startAsString = timeFormat.format(this.start.getTime());
 			this.endAsString = timeFormat.format(this.end.getTime());
 			
-			// only for whole day events
-			if (appointment.isWholeDay() == false)
-			{
-				// add the duration as text
-				Text lTimeText = new Text(startAsString + "-" + endAsString);
-				{
-					lTimeText.getStyleClass().add("AppointmentTimeLabel");
-					lTimeText.setX( padding );
-					lTimeText.setY(lTimeText.prefHeight(0));
-					Rectangle lClip = new Rectangle(0,0,0,0);
-					lClip.widthProperty().bind(widthProperty().subtract(padding));
-					lClip.heightProperty().bind(heightProperty());
-					lTimeText.setClip(lClip);
-					getChildren().add(lTimeText);
-				}
-				// add summary
-				Text lSummaryText = new Text(appointment.getSummary());
-				{
-					lSummaryText.getStyleClass().add("AppointmentLabel");
-					lSummaryText.setX( padding );
-					lSummaryText.setY( lTimeText.getY() + textHeight1M);
-					lSummaryText.wrappingWidthProperty().bind(widthProperty().subtract(padding));
-					Rectangle lClip = new Rectangle(0,0,0,0);
-					lClip.widthProperty().bind(widthProperty());
-					lClip.heightProperty().bind(heightProperty().subtract(padding));
-					lSummaryText.setClip(lClip);
-					getChildren().add(lSummaryText);			
-				}
-			}
-			
 			// duration dragger
-			if (isLastAreaOfAppointment == false)
-			{
-				durationDragger = null;
-			}
-			else
-			{
-				durationDragger = new DurationDragger(this);
-				durationDragger.xProperty().bind(widthProperty().multiply(0.25));
-				durationDragger.yProperty().bind(heightProperty().subtract(5));
-				durationDragger.widthProperty().bind(widthProperty().multiply(0.5));
-				durationDragger.setHeight(3);
-				getChildren().add(durationDragger);
-			}
-			
-			// add the menu header
-			if (appointment.isWholeDay() == false) getChildren().add(menuIcon);
+			durationDragger = new DurationDragger(this);
+			getChildren().add(durationDragger);
 			
 			// history visualizer
 			historicalVisualizer = new HistoricalVisualizer(this);
 			getChildren().add(historicalVisualizer);
 		}
-		final Rectangle historicalVisualizer;
-		final Calendar start;
-		final String startAsString;
-		final Calendar end;
-		final String endAsString;
-		final long durationInMS;
-		final DurationDragger durationDragger;
+
+		/**
+		 * 
+		 */
+		public String toString()
+		{
+			return super.toString()
+				 + ";" + startAsString + " wholeday"
+				 + ";" + appointment.getSummary()
+				 ;
+		}
+	}
+
+	/**
+	 * Responsible for rendering a regular appointment on a day.
+	 * Appointments may span multiple days, each day gets its own appointment pane.
+	 * 
+	 */
+	class RegularAppointmentPane extends AbstractDayAppointmentPane
+	{
+		// for the role of cluster owner
+		List<RegularAppointmentPane> clusterMembers = null; 
+		List<List<RegularAppointmentPane>> clusterTracks = null;
+		
+		// for the role of cluster member
+		RegularAppointmentPane clusterOwner = null;
+		int clusterTrackIdx = -1;
+
+		/**
+		 * 
+		 * @param dayPaneCalendar
+		 * @param appointment
+		 */
+		public RegularAppointmentPane(Agenda.Appointment appointment, DayPane dayPane)
+		{
+			super(appointment, dayPane);
+			
+			// start
+			Calendar lDayStartCalendar = setTimeTo0000( (Calendar)dayPane.calendarObjectProperty.get().clone() );
+			this.start = (appointment.getStartTime().before(lDayStartCalendar) ? lDayStartCalendar : (Calendar)appointment.getStartTime().clone());			
+			// end
+			Calendar lDayEndCalendar = setTimeTo2359( (Calendar)dayPane.calendarObjectProperty.get().clone() );
+			this.end = (appointment.getEndTime().after(lDayEndCalendar) ? lDayEndCalendar : (Calendar)appointment.getEndTime().clone());
+			// duration
+			durationInMS = this.end.getTimeInMillis() - this.start.getTimeInMillis();
+			
+			// may span multiple days; mark which one this is 
+			isFirstAreaOfAppointment = this.start.equals(appointment.getStartTime()); 
+			isLastAreaOfAppointment = this.end.equals(appointment.getEndTime()); 
+		
+			// strings
+			this.startAsString = timeFormat.format(this.start.getTime());
+			this.endAsString = timeFormat.format(this.end.getTime());
+			
+			// add the duration as text
+			Text lTimeText = new Text(startAsString + "-" + endAsString);
+			{
+				lTimeText.getStyleClass().add("AppointmentTimeLabel");
+				lTimeText.setX( padding );
+				lTimeText.setY(lTimeText.prefHeight(0));
+				Rectangle lClip = new Rectangle(0,0,0,0);
+				lClip.widthProperty().bind(widthProperty().subtract(padding));
+				lClip.heightProperty().bind(heightProperty());
+				lTimeText.setClip(lClip);
+				getChildren().add(lTimeText);
+			}
+			// add summary
+			Text lSummaryText = new Text(appointment.getSummary());
+			{
+				lSummaryText.getStyleClass().add("AppointmentLabel");
+				lSummaryText.setX( padding );
+				lSummaryText.setY( lTimeText.getY() + textHeight1M);
+				lSummaryText.wrappingWidthProperty().bind(widthProperty().subtract(padding));
+				Rectangle lClip = new Rectangle(0,0,0,0);
+				lClip.widthProperty().bind(widthProperty());
+				lClip.heightProperty().bind(heightProperty().subtract(padding));
+				lSummaryText.setClip(lClip);
+				getChildren().add(lSummaryText);			
+			}
+			
+			// duration dragger
+			if (isLastAreaOfAppointment == true)
+			{
+				durationDragger = new DurationDragger(this);
+				getChildren().add(durationDragger);
+			}
+			
+			// add the menu header
+			if (appointment.isWholeDay() == false) 
+			{
+				getChildren().add(menuIcon);
+			}
+			
+			// history visualizer
+			historicalVisualizer = new HistoricalVisualizer(this);
+			getChildren().add(historicalVisualizer);
+		}
 		
 		/**
 		 * 
@@ -984,8 +1020,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	// HISTORICAL
 	
 	/**
-	 * For whiting-out an appoinment pane
-	 *
+	 * For whiting-out an appointment pane
 	 */
 	class HistoricalVisualizer extends Rectangle
 	{
@@ -1082,10 +1117,16 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	 */
 	class DurationDragger extends Rectangle
 	{
-		public DurationDragger(AppointmentPane appointmentPane)
+		public DurationDragger(AbstractDayAppointmentPane appointmentPane)
 		{
 			// remember
 			this.appointmentPane = appointmentPane;
+			
+			// bind
+			xProperty().bind(appointmentPane.widthProperty().multiply(0.25));
+			yProperty().bind(appointmentPane.heightProperty().subtract(5));
+			widthProperty().bind(appointmentPane.widthProperty().multiply(0.5));
+			setHeight(3);
 			
 			// styling
 			getStyleClass().add("DurationDragger");
@@ -1184,18 +1225,42 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				}
 			});
 		}
-		final AppointmentPane appointmentPane;
+		final AbstractDayAppointmentPane appointmentPane;
 		Rectangle resizeRectangle;
 	}
 	
 	
 	// ==================================================================================================================
 	// GENERIC APPOINTMENT AREA
+
+	/**
+	 * This class has the shared parts of day (non header) appointment panes
+	 *
+	 */
+	abstract class AbstractDayAppointmentPane extends AbstractAppointmentPane
+	{
+		public AbstractDayAppointmentPane(Agenda.Appointment appointment, DayPane dayPane)
+		{
+			super(appointment);
+			this.dayPane = dayPane;
+			
+			// for debugging setStyle("-fx-border-color:BLUE;-fx-border-width:4px;");
+			getStyleClass().add("Appointment");
+			getStyleClass().add(appointment.getAppointmentGroup().getStyleClass());	
+		}
+		final DayPane dayPane;
+		
+		Rectangle historicalVisualizer = null;
+		Calendar start = null;
+		String startAsString = null;
+		Calendar end = null;
+		String endAsString = null;
+		long durationInMS = 0;
+		DurationDragger durationDragger = null;
+	}
 	
 	/**
-	 * This class handles shared logic like dragging and focusable. 
-	 * TODO: (multi)select?
-	 * TODO: shouldn't we be using JFX drag features?
+	 * This class handles shared logic for all (both day and header) appointment panes, like dragging and focusable. 
 	 */
 	abstract class AbstractAppointmentPane extends Pane
 	{
@@ -1475,11 +1540,11 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				}
 				
 				// display history
-				for (AppointmentPane lAppointmentPane : lDayPane.appointmentPanes)
+				for (RegularAppointmentPane lAppointmentPane : lDayPane.regularAppointmentPanes)
 				{
 					lAppointmentPane.historicalVisualizer.setVisible( lAppointmentPane.start.before(lNow));
 				}
-				for (AppointmentPane lAppointmentPane : lDayPane.wholedayAppointmentPanes)
+				for (WholedayAppointmentPane lAppointmentPane : lDayPane.wholedayAppointmentPanes)
 				{
 					lAppointmentPane.historicalVisualizer.setVisible( lAppointmentPane.start.before(lNow));
 				}
@@ -1882,13 +1947,13 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	 * @param appointmentPane
 	 * @return
 	 */
-	private int determineTrackWhereAppointmentCanBeAdded(List<List<AppointmentPane>> tracks, AppointmentPane appointmentPane)
+	private int determineTrackWhereAppointmentCanBeAdded(List<List<RegularAppointmentPane>> tracks, RegularAppointmentPane appointmentPane)
 	{
 		int lTrackNr = 0;
 		while (true)
 		{
 			// make sure there is a arraylist for this track
-			if (lTrackNr == tracks.size()) tracks.add(new ArrayList<AppointmentPane>());
+			if (lTrackNr == tracks.size()) tracks.add(new ArrayList<RegularAppointmentPane>());
 			
 			// scan all existing appointments in this track and see if there is an overlap
 			if (checkIfTheAppointmentOverlapsAnAppointmentAlreadyInThisTrack(tracks, lTrackNr, appointmentPane) == false)
@@ -1909,13 +1974,13 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	 * @param appointmentPane
 	 * @return
 	 */
-	private boolean checkIfTheAppointmentOverlapsAnAppointmentAlreadyInThisTrack(List<List<AppointmentPane>> tracks, int tracknr, AppointmentPane appointmentPane)
+	private boolean checkIfTheAppointmentOverlapsAnAppointmentAlreadyInThisTrack(List<List<RegularAppointmentPane>> tracks, int tracknr, RegularAppointmentPane appointmentPane)
 	{
 		// get the track
-		List<AppointmentPane> lTrack = tracks.get(tracknr);
+		List<RegularAppointmentPane> lTrack = tracks.get(tracknr);
 		
 		// scan all existing appointments in this track
-		for (AppointmentPane lAppointmentPane : lTrack)
+		for (RegularAppointmentPane lAppointmentPane : lTrack)
 		{
 			// There is an overlap:
 			// if the start time of the already placed appointment is before or equals the new appointment's end time 
