@@ -175,7 +175,7 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
 
         if (control.isCanvasMode()) {
             for (Section section : control.getSections()) {
-                if (gaugeValue.get() > section.getStart() && gaugeValue.get() < section.getStop()) {
+                if ((gaugeValue.get() - control.getMinValue()) > section.getStart() && (gaugeValue.get() - control.getMinValue()) < section.getStop()) {
                     barGradientStops = new Stop[] {
                         new Stop(0, Color.TRANSPARENT),
                         new Stop(0.8, section.getColor().darker()),
@@ -292,7 +292,7 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
         } else if ("GAUGE_VALUE".equals(PROPERTY)) {
             if (!control.getSections().isEmpty()) {
                 for (Section section : control.getSections()) {
-                    if (gaugeValue.get() > section.getStart() && gaugeValue.get() < section.getStop()) {
+                    if ((gaugeValue.get() - control.getMinValue()) > section.getStart() && (gaugeValue.get() - control.getMinValue()) < section.getStop()) {
                         updateBarColor(section.getColor());
                         break;
                     } else {
@@ -307,7 +307,7 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
 
             if (control.isCanvasMode()) {
                 for (Section section : control.getSections()) {
-                    if (gaugeValue.get() > section.getStart() && gaugeValue.get() < section.getStop()) {
+                    if ((gaugeValue.get() - control.getMinValue()) > section.getStart() && (gaugeValue.get() - control.getMinValue()) < section.getStop()) {
                         barGradientStops = new Stop[] {
                             new Stop(0, Color.TRANSPARENT),
                             new Stop(0.8, section.getColor().darker()),
@@ -478,7 +478,7 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
         bar.setSmooth(true);
         if (!control.getSections().isEmpty()) {
             for (Section section : control.getSections()) {
-                if (gaugeValue.get() > section.getStart() && gaugeValue.get() < section.getStop()) {
+                if ((gaugeValue.get() - control.getMinValue()) > section.getStart() && (gaugeValue.get() - control.getMinValue()) < section.getStop()) {
                     updateBarColor(section.getColor());
                     break;
                 } else {
