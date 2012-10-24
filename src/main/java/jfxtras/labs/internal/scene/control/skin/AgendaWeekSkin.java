@@ -44,6 +44,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
@@ -55,6 +58,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.control.CheckBox;
@@ -72,6 +76,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontSmoothingType;
@@ -770,10 +775,12 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		 */
 		public void setupAppointments()
 		{
+			// remember for animation
+			final List<RegularAppointmentPane> lOldRegularAppointmentPanes = new ArrayList<RegularAppointmentPane>(regularAppointmentPanes); 
+			final List<WholedayAppointmentPane> lOldWholedayAppointmentPanes = new ArrayList<WholedayAppointmentPane>(wholedayAppointmentPanes); 
+
 			// clear
-			getChildren().removeAll(regularAppointmentPanes);
 			regularAppointmentPanes.clear();
-			getChildren().removeAll(wholedayAppointmentPanes);
 			wholedayAppointmentPanes.clear();			
 			if (calendarObjectProperty.get() == null) return;
 			
@@ -864,12 +871,17 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				// for debug  System.out.println("----"); for (int i = 0; i < lClusterOwner.clusterTracks.size(); i++) { System.out.println(i + ": " + lClusterOwner.clusterTracks.get(i) ); } System.out.println("----");
 			}
 			
-			// and layout
-			getChildren().addAll(wholedayAppointmentPanes);
-			getChildren().addAll(regularAppointmentPanes);
 			// laying out the appointments is fairly complex, so we use listeners and a relayout method instead of binding
 			relayout();
-			
+
+			// and swap the appointments; old ones out, new ones in
+			// TODO: animation? we could move the old appointments to the equivalent positions on the drag pane, then animate them to their new positions, remove thge old, and insert the new ones.
+			// however, this needs to be cross-days, so it cannot be done here (this is only one day), but after the complete setupAppointments()
+			getChildren().removeAll(lOldRegularAppointmentPanes);
+			getChildren().removeAll(lOldWholedayAppointmentPanes);
+			getChildren().addAll(wholedayAppointmentPanes);
+			getChildren().addAll(regularAppointmentPanes);
+
 			// we're done, now have the header updated
 			dayHeaderPane.setupAppointments();
 		}
@@ -1743,7 +1755,6 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				@Override public void handle(MouseEvent evt)
 				{
 					lPopup.hide();
-					getSkinnable().selectedAppointments().remove(abstractAppointmentPane.appointment); // TODO: we should make sure this happens in the control when the appointment is remove from the appointments collection
 					getSkinnable().appointments().remove(abstractAppointmentPane.appointment);
 					// refresh is done via the collection events
 				}

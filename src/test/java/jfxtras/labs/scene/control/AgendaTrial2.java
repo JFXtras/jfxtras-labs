@@ -46,7 +46,7 @@ import jfxtras.labs.scene.control.Agenda.CalendarRange;
 /**
  * @author Tom Eugelink
  */
-public class AgendaTrial1 extends Application {
+public class AgendaTrial2 extends Application {
 	
     public static void main(String[] args) {
         launch(args);       
@@ -249,8 +249,7 @@ public class AgendaTrial1 extends Application {
 			.withAppointmentGroup(lAppointmentGroupMap.get("group0" + (new Random().nextInt(3) + 1)));
 			
 			lAgenda.appointments().add(lAppointment);
-		}
-		
+		}		
 
 		// update range
 		final AtomicBoolean lSkippedFirstRangeChange = new AtomicBoolean(false);		
@@ -268,7 +267,7 @@ public class AgendaTrial1 extends Application {
 				
 				// add a whole bunch of random appointments
 				lAgenda.appointments().clear();
-				for (int i = 0; i < 20; i++)
+				for (int i = 0; i < 10; i++)
 				{
 					Calendar lFirstDayOfWeekCalendar = getFirstDayOfWeekCalendar(lAgenda.getLocale(), lAgenda.getDisplayedCalendar());
 					
@@ -293,17 +292,18 @@ public class AgendaTrial1 extends Application {
 			}
 		});
 		
-		HBox lHBox = new HBox();
-		CalendarTextField lCalendarTextField = new CalendarTextField();
-		lCalendarTextField.valueProperty().bindBidirectional(lAgenda.displayedCalendar());		
-        lHBox.getChildren().add(lCalendarTextField);
+		CalendarPicker lCalendarPicker = new CalendarPicker();
+		lCalendarPicker.setStyle("-fx-padding: 10px;");
+		lCalendarPicker.calendarProperty().bindBidirectional(lAgenda.displayedCalendar());		
         
         // create scene
         BorderPane lBorderPane = new BorderPane();
         lBorderPane.setCenter(lAgenda);
-        lBorderPane.setBottom(lHBox);
+        lBorderPane.setLeft(lCalendarPicker);
         //lBorderPane.setLeft(new Label("AAAAAAA"));
-        Scene scene = new Scene(lBorderPane, 900, 900);
+        
+        Scene scene = new Scene(lBorderPane, 1000, 600);
+        scene.getStylesheets().addAll(this.getClass().getResource(this.getClass().getSimpleName() + ".css").toExternalForm());
 
         // create stage
         stage.setTitle("Agenda");
