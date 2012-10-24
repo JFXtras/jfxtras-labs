@@ -44,18 +44,30 @@
     -fx-background-color: #aaaaaa;
 }
 
-.AgendaWeekSkin .DayHeaderx {
-    -fx-padding: 5 12 5 12;   
-    -fx-border-style: null; 
+.AgendaWeekSkin {
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-padding: 5 0 0 0;   
+}
+
+.AgendaWeekSkin .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.AgendaWeekSkin .DayHeader .Calendar {
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 13pt;
+}
+
+.AgendaWeekSkin_popup {
+    -fx-padding: 5;   
+    -fx-border-color: #aaaaaa;
+    -fx-border-style: 1px; 
     -fx-background-radius: 0;
  
     -fx-background-color: #cccccc;
    
     -fx-font-size: 11pt;
     -fx-text-fill: black;
-
-	-fx-border-color:white;
-	-fx-border-width: 0px 0px 0px 1px;
 }
 
 .scroll-bar {

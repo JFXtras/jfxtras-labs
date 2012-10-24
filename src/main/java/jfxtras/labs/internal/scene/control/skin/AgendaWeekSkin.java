@@ -361,6 +361,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			
 			// set label
 			calendarText = new Text("?");
+			calendarText.getStyleClass().add("Calendar");
 			double lX = (dayWidthProperty.get() - calendarText.prefWidth(0)) / 2;
 			calendarText.setX( padding ); // align left
 			calendarText.setY( calendarText.prefHeight(0) );

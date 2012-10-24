@@ -3,10 +3,8 @@
 	-fx-skin: "jfxtras.labs.internal.scene.control.skin.AgendaWeekSkin";
 }
 
-/* skin level 
 .AgendaWeekSkin { 
 }
-*/
 
 .AgendaWeekSkin .WeekPane {
 	-fx-background-color: WHITE;
