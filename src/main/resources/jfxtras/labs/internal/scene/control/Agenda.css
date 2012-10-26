@@ -31,12 +31,27 @@
 	-fx-border-width: 0px 0px 0px 1px;
 }
 
+.AgendaWeekSkin .DayHeader .weekend { 
+	-fx-text-fill: BLACK;
+	-fx-font-weight: bold;
+}
+
 .AgendaWeekSkin .Day {
 	-fx-fill: transparent;
 	-fx-stroke: transparent;
 	-fx-border-color:LIGHTGRAY;
 	-fx-border-width: 0px 0px 0px 1px;
 }
+
+.AgendaWeekSkin .weekend {
+	-fx-background-color: #eeeeee90;
+}
+
+/* TODO: for some reason this does not work: removing today from the style classes does not clear the grayish background 
+.AgendaWeekSkin .today {
+	-fx-background-color: #eeeeee90;
+}
+*/
 
 .AgendaWeekSkin .Appointment {
 	-fx-border-color: WHITE;

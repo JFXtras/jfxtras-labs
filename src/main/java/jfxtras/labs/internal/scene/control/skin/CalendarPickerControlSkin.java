@@ -556,8 +556,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		{
 			Label lLabel = weekdayLabels.get(i);
 			lLabel.setText( lWeekdayLabels.get(i) );
-			lLabel.getStyleClass().remove("weekend");
-			lLabel.getStyleClass().remove("weekday");
+			lLabel.getStyleClass().removeAll("weekend", "weekday");
 			lLabel.getStyleClass().add(isWeekdayWeekend(i) ? "weekend" : "weekday"); 
 		}
 	}

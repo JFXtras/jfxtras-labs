@@ -26,6 +26,8 @@
  */
 package jfxtras.labs.scene.control;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -36,8 +38,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.scene.control.Agenda.AppointmentGroup;
@@ -294,15 +300,20 @@ public class AgendaTrial2 extends Application {
 		
 		CalendarPicker lCalendarPicker = new CalendarPicker();
 		lCalendarPicker.setStyle("-fx-padding: 10px;");
-		lCalendarPicker.calendarProperty().bindBidirectional(lAgenda.displayedCalendar());		
+		lCalendarPicker.calendarProperty().bindBidirectional(lAgenda.displayedCalendar());
+		
+		ImageView lImageView = new ImageView(new Image(this.getClass().getResourceAsStream("Bert frown-300gray.png")));
+		lImageView.getStyleClass().add("TheImage");
         
         // create scene
         BorderPane lBorderPane = new BorderPane();
         lBorderPane.setCenter(lAgenda);
-        lBorderPane.setLeft(lCalendarPicker);
-        //lBorderPane.setLeft(new Label("AAAAAAA"));
+        VBox lVBox = new VBox(10.0);
+        lVBox.getChildren().add(lCalendarPicker);
+//        lVBox.getChildren().add(lImageView);
+        lBorderPane.setLeft(lVBox);
         
-        Scene scene = new Scene(lBorderPane, 1000, 600);
+		Scene scene = new Scene(lBorderPane, 1000, 600);
         scene.getStylesheets().addAll(this.getClass().getResource(this.getClass().getSimpleName() + ".css").toExternalForm());
 
         // create stage

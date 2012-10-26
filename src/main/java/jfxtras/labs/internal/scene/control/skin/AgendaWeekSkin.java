@@ -44,9 +44,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
@@ -58,7 +55,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.control.CheckBox;
@@ -76,7 +72,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontSmoothingType;
@@ -205,7 +200,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		Calendar lEndCalendar = null;
 		for (int i = 0; i < 7; i++)
 		{
-			weekPane.dayPanes.get(i).calendarObjectProperty.set( (Calendar)lCalendar.clone() );
+			// set the calendar
+			DayPane lDayPane = weekPane.dayPanes.get(i); 
+			lDayPane.calendarObjectProperty.set( (Calendar)lCalendar.clone() );
 			if (i== 6) lEndCalendar = (Calendar)lCalendar.clone();
 			lCalendar.add(Calendar.DATE, 1);
 		}		
@@ -231,12 +228,21 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		dateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, getSkinnable().getLocale());
 		
 		// force redraw the dayHeaders by reassigning the calendar
-		for (DayPane lDay : weekPane.dayPanes)
+		int lCnt = 0;
+		for (DayPane lDayPane : weekPane.dayPanes)
 		{
-			if (lDay.calendarObjectProperty.get() != null)
+			if (lDayPane.calendarObjectProperty.get() != null)
 			{
-				lDay.calendarObjectProperty.set( (Calendar)lDay.calendarObjectProperty.get().clone() );
+				lDayPane.calendarObjectProperty.set( (Calendar)lDayPane.calendarObjectProperty.get().clone() );
 			}
+
+			// set weekend class
+			String lWeekendOrWeekday = isWeekdayWeekend(lCnt) ? "weekend" : "weekday";
+			lDayPane.getStyleClass().removeAll("weekend", "weekday");
+			lDayPane.getStyleClass().add(lWeekendOrWeekday);			
+			lDayPane.dayHeaderPane.calendarText.getStyleClass().removeAll("weekend", "weekday");
+			lDayPane.dayHeaderPane.calendarText.getStyleClass().add(lWeekendOrWeekday);
+			lCnt++;
 		}
 	}
 	private SimpleDateFormat dayOfWeekDateFormat = null;
@@ -1524,6 +1530,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	{
 		{
 			nowLine.getStyleClass().add("Now");
+			nowLine.setHeight(3);
 		}
 		
 		@Override
@@ -1538,22 +1545,32 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			for (DayPane lDayPane : weekPane.dayPanes)
 			{
 				// if the calendar of the day is the same day as now
-				if (isSameDay(lDayPane.calendarObjectProperty.get(), lNow))
+				if (isSameDay(lDayPane.calendarObjectProperty.get(), lNow) == false)
 				{
+					// not today
+					lDayPane.getStyleClass().remove("today");					
+				}
+				else
+				{
+					// today
+					if (lDayPane.getStyleClass().contains("today") == false) 
+					{
+						lDayPane.getStyleClass().add("today");
+					}
 					lFound = true;
 					
 					// add if not present
 					if (weekPane.getChildren().contains(nowLine) == false)
 					{
 						weekPane.getChildren().add(nowLine);
+						nowLine.xProperty().bind(lDayPane.layoutXProperty());
 					}
 
 					// place it
 					int lOffsetY = (lNow.get(Calendar.HOUR_OF_DAY) * 60) + lNow.get(Calendar.MINUTE);
-					nowLine.setX(lDayPane.getLayoutX());
 					nowLine.setY(dayHeightProperty.get() / (24 * 60) * lOffsetY );
-					nowLine.setHeight(3);
-					nowLine.setWidth(dayWidthProperty.get());	
+					if (nowLine.widthProperty().isBound() == false) nowLine.widthProperty().bind(dayWidthProperty);	
+
 				}
 				
 				// display history
@@ -1834,6 +1851,30 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	// SUPPORT
 
 	/**
+	 * check if a certain weekday name is a certain day-of-the-week
+	 */
+	protected boolean isWeekday(int idx, int weekdaynr)
+	{
+		// setup the dayLabels
+		// Calendar.SUNDAY = 1 and Calendar.SATURDAY = 7
+		Calendar lCalendar = new java.util.GregorianCalendar(2009, 6, 4 + getSkinnable().getDisplayedCalendar().getFirstDayOfWeek()); // july 5th 2009 is a Sunday
+		lCalendar.add(java.util.Calendar.DATE, idx);
+		int lDayOfWeek = lCalendar.get(java.util.Calendar.DAY_OF_WEEK);
+
+		// check
+		return (lDayOfWeek == weekdaynr);
+	}
+
+	/**
+	 * check if a certain weekday name is a certain day-of-the-week
+	 */
+	protected boolean isWeekdayWeekend(int idx) 
+	{
+		return (isWeekday(idx, java.util.Calendar.SATURDAY) || isWeekday(idx, java.util.Calendar.SUNDAY));
+	}
+	
+
+	/**
 	 * 
 	 */
 	private void calculateSizes()
@@ -1911,11 +1952,12 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		Calendar lLocalCalendar = Calendar.getInstance(getSkinnable().getLocale());
 		int lFirstDayOfWeek = lLocalCalendar.getFirstDayOfWeek();
 		
-		// now get the displayed calendar
+		// get the displayed calendar
 		Calendar lDisplayedCalendar = getSkinnable().getDisplayedCalendar();
+		if (lDisplayedCalendar == null) return null;
 		
-		// this is the first day of week calendar
-		Calendar lFirstDayOfWeekCalendar = (Calendar)getSkinnable().getDisplayedCalendar().clone();
+		// work towards the first day of week calendar
+		Calendar lFirstDayOfWeekCalendar = (Calendar)lDisplayedCalendar.clone();
 		
 		// if not on the first day of the week, correct with the appropriate amount
 		lFirstDayOfWeekCalendar.add(Calendar.DATE, lFirstDayOfWeek - lFirstDayOfWeekCalendar.get(Calendar.DAY_OF_WEEK));
