@@ -299,6 +299,13 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
                     }
                 }
             }
+            if (control.isThresholdBehaviorInverted() && gaugeValue.doubleValue() < control.getThreshold()) {
+                control.setThresholdExceeded(true);
+            } else if (!control.isThresholdBehaviorInverted() && gaugeValue.doubleValue() > control.getThreshold()) {
+                control.setThresholdExceeded(true);
+            } else {
+                control.setThresholdExceeded(false);
+            }
             valueText.setText(valueFormat.format(gaugeValue.get()));
             switch (orientation) {
                 case VERTICAL:

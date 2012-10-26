@@ -94,6 +94,7 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
     private double            wh;
     private double            startAngle;
     private double            length;
+    private Canvas            alertIndicator;
 
 
     // ******************** Constructors **************************************
@@ -124,6 +125,7 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
             new Stop(0.8, control.getBarColor().darker()),
             new Stop(1.0, control.getBarColor().brighter())
         };
+        alertIndicator   = createAlertIndicatorCanvas(control.getPrefWidth() * 0.165, control.getPrefHeight() * 0.135, control.getThresholdColor().COLOR);
         init();
     }
 
@@ -244,6 +246,7 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
             valueText.setLayoutY((size - valueText.getLayoutBounds().getHeight()) / 2 + control.getValueLabelFontSize());
             canvas.setWidth(size);
             canvas.setHeight(size);
+            alertIndicator = createAlertIndicatorCanvas(control.getPrefWidth() * 0.165, control.getPrefHeight() * 0.135, control.getThresholdColor().COLOR);
             repaint();
         } else if ("HEIGHT".equals(PROPERTY)) {
             recalcParameters();
@@ -251,8 +254,10 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
             valueText.setLayoutY((size - valueText.getLayoutBounds().getHeight()) / 2 + control.getValueLabelFontSize());
             canvas.setWidth(size);
             canvas.setHeight(size);
+            alertIndicator = createAlertIndicatorCanvas(control.getPrefWidth() * 0.165, control.getPrefHeight() * 0.135, control.getThresholdColor().COLOR);
             repaint();
         } else if ("FULL_REPAINT".equals(PROPERTY)) {
+            alertIndicator = createAlertIndicatorCanvas(control.getPrefWidth() * 0.165, control.getPrefHeight() * 0.135, control.getThresholdColor().COLOR);
             repaint();
         } else if ("VALUE".equals(PROPERTY)) {
             if (control.isValueAnimationEnabled()) {
@@ -305,6 +310,15 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
             valueText.setLayoutY((size - valueText.getLayoutBounds().getHeight()) / 2 + control.getValueLabelFontSize());
             bar.setLength(-gaugeValue.get() * control.getAngleStep());
 
+            if (control.isThresholdBehaviorInverted() && gaugeValue.doubleValue() < control.getThreshold()) {
+                control.setThresholdExceeded(true);
+            } else if (!control.isThresholdBehaviorInverted() && gaugeValue.doubleValue() > control.getThreshold()) {
+                control.setThresholdExceeded(true);
+            } else {
+                control.setThresholdExceeded(false);
+            }
+            alertIndicator.setVisible(control.isThresholdExceeded());
+
             if (control.isCanvasMode()) {
                 for (Section section : control.getSections()) {
                     if ((gaugeValue.get() - control.getMinValue()) > section.getStart() && (gaugeValue.get() - control.getMinValue()) < section.getStop()) {
@@ -341,8 +355,10 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
         }
         getChildren().clear();
         if (control.isCanvasMode()) {
+            alertIndicator.setLayoutX((size - alertIndicator.getWidth()) * 0.5);
+            alertIndicator.setLayoutY(size * 0.6);
             drawCanvasGauge(ctx);
-            getChildren().addAll(canvas);
+            getChildren().addAll(canvas, alertIndicator);
         } else {
             drawNodeGauge();
             getChildren().addAll(gauge);
@@ -528,12 +544,16 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
         maxLabel.setLayoutX(size - maxLabel.getLayoutBounds().getWidth() - (size * 0.025));
         maxLabel.setLayoutY(size - maxLabel.getLayoutBounds().getHeight() - (size * 0.025));
 
+        alertIndicator.setLayoutX((size - alertIndicator.getWidth()) * 0.5);
+        alertIndicator.setLayoutY(size * 0.6);
+
         gauge.getChildren().addAll(BAR_BACKGROUND,
                                    bar,
                                    valueText,
                                    unitText,
                                    minLabel,
-                                   maxLabel);
+                                   maxLabel,
+                                   alertIndicator);
         gauge.setCache(true);
         gauge.setCacheHint(CacheHint.QUALITY);
     }

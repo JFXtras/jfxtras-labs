@@ -33,6 +33,8 @@ import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Control;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
@@ -2284,6 +2286,106 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
 
         GROUP.getChildren().addAll(BACK, FRONT);
         return GROUP;
+    }
+
+    public final Canvas createAlertIndicatorCanvas(final double WIDTH, final double HEIGHT, final Paint PAINT) {
+        final Canvas          CANVAS = new Canvas(WIDTH, HEIGHT);
+        final GraphicsContext CTX    = CANVAS.getGraphicsContext2D();
+
+        //alert
+        CTX.save();
+        CTX.beginPath();
+        CTX.moveTo(0.45161290322580644 * WIDTH, 0.8518518518518519 * HEIGHT);
+        CTX.bezierCurveTo(0.45161290322580644 * WIDTH, 0.8148148148148148 * HEIGHT, 0.4838709677419355 * WIDTH, 0.7777777777777778 * HEIGHT, 0.5161290322580645 * WIDTH, 0.7777777777777778 * HEIGHT);
+        CTX.bezierCurveTo(0.5161290322580645 * WIDTH, 0.7777777777777778 * HEIGHT, 0.5483870967741935 * WIDTH, 0.8148148148148148 * HEIGHT, 0.5483870967741935 * WIDTH, 0.8518518518518519 * HEIGHT);
+        CTX.bezierCurveTo(0.5483870967741935 * WIDTH, 0.8518518518518519 * HEIGHT, 0.5161290322580645 * WIDTH, 0.8888888888888888 * HEIGHT, 0.5161290322580645 * WIDTH, 0.8888888888888888 * HEIGHT);
+        CTX.bezierCurveTo(0.4838709677419355 * WIDTH, 0.8888888888888888 * HEIGHT, 0.45161290322580644 * WIDTH, 0.8518518518518519 * HEIGHT, 0.45161290322580644 * WIDTH, 0.8518518518518519 * HEIGHT);
+        CTX.closePath();
+        CTX.moveTo(0.45161290322580644 * WIDTH, 0.3333333333333333 * HEIGHT);
+        CTX.bezierCurveTo(0.45161290322580644 * WIDTH, 0.2962962962962963 * HEIGHT, 0.4838709677419355 * WIDTH, 0.25925925925925924 * HEIGHT, 0.5161290322580645 * WIDTH, 0.25925925925925924 * HEIGHT);
+        CTX.bezierCurveTo(0.5161290322580645 * WIDTH, 0.25925925925925924 * HEIGHT, 0.5483870967741935 * WIDTH, 0.2962962962962963 * HEIGHT, 0.5483870967741935 * WIDTH, 0.3333333333333333 * HEIGHT);
+        CTX.bezierCurveTo(0.5483870967741935 * WIDTH, 0.3333333333333333 * HEIGHT, 0.5483870967741935 * WIDTH, 0.6666666666666666 * HEIGHT, 0.5483870967741935 * WIDTH, 0.6666666666666666 * HEIGHT);
+        CTX.bezierCurveTo(0.5483870967741935 * WIDTH, 0.6666666666666666 * HEIGHT, 0.5161290322580645 * WIDTH, 0.7037037037037037 * HEIGHT, 0.5161290322580645 * WIDTH, 0.7037037037037037 * HEIGHT);
+        CTX.bezierCurveTo(0.4838709677419355 * WIDTH, 0.7037037037037037 * HEIGHT, 0.45161290322580644 * WIDTH, 0.6666666666666666 * HEIGHT, 0.45161290322580644 * WIDTH, 0.6666666666666666 * HEIGHT);
+        CTX.bezierCurveTo(0.45161290322580644 * WIDTH, 0.6666666666666666 * HEIGHT, 0.45161290322580644 * WIDTH, 0.3333333333333333 * HEIGHT, 0.45161290322580644 * WIDTH, 0.3333333333333333 * HEIGHT);
+        CTX.closePath();
+        CTX.moveTo(0.41935483870967744 * WIDTH, 0.1111111111111111 * HEIGHT);
+        CTX.bezierCurveTo(0.41935483870967744 * WIDTH, 0.1111111111111111 * HEIGHT, 0.06451612903225806 * WIDTH, 0.8148148148148148 * HEIGHT, 0.06451612903225806 * WIDTH, 0.8148148148148148 * HEIGHT);
+        CTX.bezierCurveTo(0.03225806451612903 * WIDTH, 0.8888888888888888 * HEIGHT, 0.06451612903225806 * WIDTH, 0.9629629629629629 * HEIGHT, 0.16129032258064516 * WIDTH, 0.9629629629629629 * HEIGHT);
+        CTX.bezierCurveTo(0.16129032258064516 * WIDTH, 0.9629629629629629 * HEIGHT, 0.8387096774193549 * WIDTH, 0.9629629629629629 * HEIGHT, 0.8387096774193549 * WIDTH, 0.9629629629629629 * HEIGHT);
+        CTX.bezierCurveTo(0.9354838709677419 * WIDTH, 0.9629629629629629 * HEIGHT, 0.967741935483871 * WIDTH, 0.8888888888888888 * HEIGHT, 0.9032258064516129 * WIDTH, 0.8148148148148148 * HEIGHT);
+        CTX.bezierCurveTo(0.9032258064516129 * WIDTH, 0.8148148148148148 * HEIGHT, 0.5806451612903226 * WIDTH, 0.1111111111111111 * HEIGHT, 0.5806451612903226 * WIDTH, 0.1111111111111111 * HEIGHT);
+        CTX.bezierCurveTo(0.5161290322580645 * WIDTH, 0.037037037037037035 * HEIGHT, 0.45161290322580644 * WIDTH, 0.037037037037037035 * HEIGHT, 0.41935483870967744 * WIDTH, 0.1111111111111111 * HEIGHT);
+        CTX.closePath();
+        CTX.setFill(PAINT);
+        CTX.fill();
+        CTX.restore();
+
+        return CANVAS;
+    }
+
+    public final Shape createAlertIndicator(final double WIDTH, final double HEIGHT, final Paint PAINT) {
+        final Path ALERT = new Path();
+        ALERT.setFillRule(FillRule.EVEN_ODD);
+        ALERT.getElements().add(new MoveTo(0.45161290322580644 * WIDTH, 0.8518518518518519 * HEIGHT));
+        ALERT.getElements().add(new CubicCurveTo(0.45161290322580644 * WIDTH, 0.8148148148148148 * HEIGHT,
+                                                 0.4838709677419355 * WIDTH, 0.7777777777777778 * HEIGHT,
+                                                 0.5161290322580645 * WIDTH, 0.7777777777777778 * HEIGHT));
+        ALERT.getElements().add(new CubicCurveTo(0.5161290322580645 * WIDTH, 0.7777777777777778 * HEIGHT,
+                                                 0.5483870967741935 * WIDTH, 0.8148148148148148 * HEIGHT,
+                                                 0.5483870967741935 * WIDTH, 0.8518518518518519 * HEIGHT));
+        ALERT.getElements().add(new CubicCurveTo(0.5483870967741935 * WIDTH, 0.8518518518518519 * HEIGHT,
+                                                 0.5161290322580645 * WIDTH, 0.8888888888888888 * HEIGHT,
+                                                 0.5161290322580645 * WIDTH, 0.8888888888888888 * HEIGHT));
+        ALERT.getElements().add(new CubicCurveTo(0.4838709677419355 * WIDTH, 0.8888888888888888 * HEIGHT,
+                                                 0.45161290322580644 * WIDTH, 0.8518518518518519 * HEIGHT,
+                                                 0.45161290322580644 * WIDTH, 0.8518518518518519 * HEIGHT));
+        ALERT.getElements().add(new ClosePath());
+        ALERT.getElements().add(new MoveTo(0.45161290322580644 * WIDTH, 0.3333333333333333 * HEIGHT));
+        ALERT.getElements().add(new CubicCurveTo(0.45161290322580644 * WIDTH, 0.2962962962962963 * HEIGHT,
+                                                 0.4838709677419355 * WIDTH, 0.25925925925925924 * HEIGHT,
+                                                 0.5161290322580645 * WIDTH, 0.25925925925925924 * HEIGHT));
+        ALERT.getElements().add(new CubicCurveTo(0.5161290322580645 * WIDTH, 0.25925925925925924 * HEIGHT,
+                                                 0.5483870967741935 * WIDTH, 0.2962962962962963 * HEIGHT,
+                                                 0.5483870967741935 * WIDTH, 0.3333333333333333 * HEIGHT));
+        ALERT.getElements().add(new CubicCurveTo(0.5483870967741935 * WIDTH, 0.3333333333333333 * HEIGHT,
+                                                 0.5483870967741935 * WIDTH, 0.6666666666666666 * HEIGHT,
+                                                 0.5483870967741935 * WIDTH, 0.6666666666666666 * HEIGHT));
+        ALERT.getElements().add(new CubicCurveTo(0.5483870967741935 * WIDTH, 0.6666666666666666 * HEIGHT,
+                                                 0.5161290322580645 * WIDTH, 0.7037037037037037 * HEIGHT,
+                                                 0.5161290322580645 * WIDTH, 0.7037037037037037 * HEIGHT));
+        ALERT.getElements().add(new CubicCurveTo(0.4838709677419355 * WIDTH, 0.7037037037037037 * HEIGHT,
+                                                 0.45161290322580644 * WIDTH, 0.6666666666666666 * HEIGHT,
+                                                 0.45161290322580644 * WIDTH, 0.6666666666666666 * HEIGHT));
+        ALERT.getElements().add(new CubicCurveTo(0.45161290322580644 * WIDTH, 0.6666666666666666 * HEIGHT,
+                                                 0.45161290322580644 * WIDTH, 0.3333333333333333 * HEIGHT,
+                                                 0.45161290322580644 * WIDTH, 0.3333333333333333 * HEIGHT));
+        ALERT.getElements().add(new ClosePath());
+        ALERT.getElements().add(new MoveTo(0.41935483870967744 * WIDTH, 0.1111111111111111 * HEIGHT));
+        ALERT.getElements().add(new CubicCurveTo(0.41935483870967744 * WIDTH, 0.1111111111111111 * HEIGHT,
+                                                 0.06451612903225806 * WIDTH, 0.8148148148148148 * HEIGHT,
+                                                 0.06451612903225806 * WIDTH, 0.8148148148148148 * HEIGHT));
+        ALERT.getElements().add(new CubicCurveTo(0.03225806451612903 * WIDTH, 0.8888888888888888 * HEIGHT,
+                                                 0.06451612903225806 * WIDTH, 0.9629629629629629 * HEIGHT,
+                                                 0.16129032258064516 * WIDTH, 0.9629629629629629 * HEIGHT));
+        ALERT.getElements().add(new CubicCurveTo(0.16129032258064516 * WIDTH, 0.9629629629629629 * HEIGHT,
+                                                 0.8387096774193549 * WIDTH, 0.9629629629629629 * HEIGHT,
+                                                 0.8387096774193549 * WIDTH, 0.9629629629629629 * HEIGHT));
+        ALERT.getElements().add(new CubicCurveTo(0.9354838709677419 * WIDTH, 0.9629629629629629 * HEIGHT,
+                                                 0.967741935483871 * WIDTH, 0.8888888888888888 * HEIGHT,
+                                                 0.9032258064516129 * WIDTH, 0.8148148148148148 * HEIGHT));
+        ALERT.getElements().add(new CubicCurveTo(0.9032258064516129 * WIDTH, 0.8148148148148148 * HEIGHT,
+                                                 0.5806451612903226 * WIDTH, 0.1111111111111111 * HEIGHT,
+                                                 0.5806451612903226 * WIDTH, 0.1111111111111111 * HEIGHT));
+        ALERT.getElements().add(new CubicCurveTo(0.5161290322580645 * WIDTH, 0.037037037037037035 * HEIGHT,
+                                                 0.45161290322580644 * WIDTH, 0.037037037037037035 * HEIGHT,
+                                                 0.41935483870967744 * WIDTH, 0.1111111111111111 * HEIGHT));
+        ALERT.getElements().add(new ClosePath());
+
+        ALERT.setFill(PAINT);
+        ALERT.setStroke(null);
+
+        return ALERT;
     }
 
 

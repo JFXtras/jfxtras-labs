@@ -224,25 +224,28 @@ public abstract class Gauge extends Control {
         }
     }
     public static enum ThresholdColor {
-        RED("-fx-red;"),
-        GREEN("-fx-green;"),
-        BLUE("-fx-blue;"),
-        ORANGE("-fx-orange;"),
-        YELLOW("-fx-yellow;"),
-        CYAN("-fx-cyan;"),
-        MAGENTA("-fx-magenta;"),
-        WHITE("-fx-white;"),
-        GRAY("-fx-gray;"),
-        BLACK("-fx-black;"),
-        RAITH("-fx-raith;"),
-        GREEN_LCD("-fx-green-lcd;"),
-        JUG_GREEN("-fx-jug-green;"),
-        CUSTOM("-fx-custom;");
+        RED("-fx-red;", Color.rgb(213, 0, 0)),
+        GREEN("-fx-green;", Color.rgb(0, 148, 0)),
+        BLUE("-fx-blue;", Color.rgb(0, 120, 220)),
+        ORANGE("-fx-orange;", Color.rgb(248, 142, 0)),
+        YELLOW("-fx-yellow;", Color.rgb(210, 204, 0)),
+        CYAN("-fx-cyan;", Color.rgb(0, 159, 215)),
+        MAGENTA("-fx-magenta;", Color.rgb(223, 42, 125)),
+        LILA("-fx-lila", Color.rgb(71, 0, 255)),
+        WHITE("-fx-white;", Color.rgb(245, 245, 245)),
+        GRAY("-fx-gray;", Color.rgb(102, 102, 102)),
+        BLACK("-fx-black;", Color.rgb(15, 15, 15)),
+        RAITH("-fx-raith;", Color.rgb(65, 143, 193)),
+        GREEN_LCD("-fx-green-lcd;", Color.rgb(24, 220, 183)),
+        JUG_GREEN("-fx-jug-green;", Color.rgb(90, 183, 0)),
+        CUSTOM("-fx-custom;", Color.rgb(0, 195, 97));
 
         public final String CSS;
+        public final Color COLOR;
 
-        ThresholdColor(final String CSS_COLOR) {
-            this.CSS = "-fx-threshold: " + CSS_COLOR;
+        ThresholdColor(final String CSS_COLOR, final Color COLOR) {
+            this.CSS   = "-fx-threshold: " + CSS_COLOR;
+            this.COLOR = COLOR;
         }
     }
     public static enum TickmarkType {
