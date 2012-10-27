@@ -368,7 +368,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			// set label
 			calendarText = new Text("?");
 			calendarText.getStyleClass().add("Calendar");
-			double lX = (dayWidthProperty.get() - calendarText.prefWidth(0)) / 2;
+//			double lX = (dayWidthProperty.get() - calendarText.prefWidth(0)) / 2;
 			calendarText.setX( padding ); // align left
 			calendarText.setY( calendarText.prefHeight(0) );
 			Rectangle lClip = new Rectangle(0,0,0,0);
@@ -529,7 +529,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				// hour text
 				{
 					Text t = new Text(lHour + ":00");
-					t.xProperty().bind(timeWidthProperty.subtract(t.getBoundsInParent().getWidth()));
+					t.xProperty().bind(timeWidthProperty.subtract(t.getBoundsInParent().getWidth()).subtract(timeColumnWhitespace / 2));
 					t.yProperty().bind(hourHeighProperty.multiply(lHour));
 					t.setTranslateY(t.getBoundsInParent().getHeight()); // move it under the line
 					t.getStyleClass().add("HourLabel");
@@ -1897,12 +1897,11 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		headerHeightProperty.set( titleCalendarHeightProperty.get() + (highestNumberOfWholedayAppointmentsProperty.get() * wholedayTitleHeightProperty.get()) );
 
 		// time column
-		int lTimeColumnWhitespace = 10;
-		timeWidthProperty.set( new Text("88:88").getBoundsInParent().getWidth() + lTimeColumnWhitespace );
+		timeWidthProperty.set( new Text("88:88").getBoundsInParent().getWidth() + timeColumnWhitespace );
 		
 		// day columns
-		dayFirstColumnXProperty.set( timeWidthProperty.get() + lTimeColumnWhitespace );
-		dayWidthProperty.set( (getSkinnable().getWidth() - timeWidthProperty.get() - lScrollbarSize) / 7 ); // 7 days per week
+		dayFirstColumnXProperty.set( timeWidthProperty.get() );
+		dayWidthProperty.set( (getSkinnable().getWidth() - timeWidthProperty.get() - lScrollbarSize ) / 7 ); // 7 days per week
 		if (weekScrollPane.viewportBoundsProperty().get() != null) 
 		{
 			dayWidthProperty.set( (weekScrollPane.viewportBoundsProperty().get().getWidth() - timeWidthProperty.get()) / 7 ); // 7 days per week
@@ -1928,6 +1927,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		}
 	}
 	private final double padding = 3;
+	private final double timeColumnWhitespace = 10.0;
 	private final double wholedayAppointmentWidth = 5;
 	private final IntegerProperty highestNumberOfWholedayAppointmentsProperty = new SimpleIntegerProperty(0);
 	private final DoubleProperty textHeight1MProperty = new SimpleDoubleProperty(0);

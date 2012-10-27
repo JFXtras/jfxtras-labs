@@ -26,8 +26,6 @@
  */
 package jfxtras.labs.scene.control;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -36,16 +34,17 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import jfxtras.labs.scene.control.Agenda.AppointmentGroup;
 import jfxtras.labs.scene.control.Agenda.CalendarRange;
 
@@ -302,15 +301,33 @@ public class AgendaTrial2 extends Application {
 		lCalendarPicker.setStyle("-fx-padding: 10px;");
 		lCalendarPicker.calendarProperty().bindBidirectional(lAgenda.displayedCalendar());
 		
-		ImageView lImageView = new ImageView(new Image(this.getClass().getResourceAsStream("Bert frown-300gray.png")));
-		lImageView.getStyleClass().add("TheImage");
+//		ImageView lImageView = new ImageView(new Image(this.getClass().getResourceAsStream("Bert frown-300gray.png")));
+//		lImageView.getStyleClass().add("TheImage");
         
         // create scene
         BorderPane lBorderPane = new BorderPane();
         lBorderPane.setCenter(lAgenda);
         VBox lVBox = new VBox(10.0);
         lVBox.getChildren().add(lCalendarPicker);
+        
 //        lVBox.getChildren().add(lImageView);
+        
+//        lImageView.opacityProperty().set(0.0);
+//        FadeTransition ft = new FadeTransition(Duration.millis(3000), lImageView);
+//        ft.setFromValue(0.0);
+//        ft.setToValue(1.0);
+//        ft.delayProperty().set(Duration.millis(2000));
+//        ft.play();
+        
+//        Timeline lTimeline = new Timeline();
+//        lImageView.opacityProperty().set(0.0);
+//        final KeyValue lKeyValueOpacity = new KeyValue(lImageView.opacityProperty(), 1.0);
+//        final KeyFrame lKeyFrame1 = new KeyFrame(Duration.millis(500), lKeyValueOpacity);
+//        lTimeline.getKeyFrames().addAll(lKeyFrame1);
+//        lTimeline.delayProperty().set(Duration.millis(2000));
+//        lTimeline.play();
+        
+//        lVBox.getChildren().add(new ToggleButton("test"));
         lBorderPane.setLeft(lVBox);
         
 		Scene scene = new Scene(lBorderPane, 1000, 600);
