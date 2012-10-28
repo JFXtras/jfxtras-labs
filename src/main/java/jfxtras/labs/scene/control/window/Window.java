@@ -156,17 +156,21 @@ public class Window extends Control {
             @Override
             public void changed(ObservableValue<? extends Bounds> ov, Bounds t, Bounds t1) {
 
-                if (t1.equals(t)) {
-                    return;
+                if (getParent() != null) {
+
+                    if (t1.equals(t)) {
+                        return;
+                    }
+
+                    getParent().requestLayout();
+
+                    double x = Math.max(0, getLayoutX());
+                    double y = Math.max(0, getLayoutY());
+
+                    setLayoutX(x);
+                    setLayoutY(y);
+
                 }
-
-                getParent().requestLayout();
-
-                double x = Math.max(0, getLayoutX());
-                double y = Math.max(0, getLayoutY());
-
-                setLayoutX(x);
-                setLayoutY(y);
             }
         });
 
