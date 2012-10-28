@@ -716,7 +716,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				// the width is the remaining width (subtracting the wholeday appointments) divided by the number of tracks in the cluster
 				double lW = (dayContentWidthProperty.get() - (wholedayAppointmentPanes.size() * wholedayAppointmentWidth)) * (1.0 / (((double)lAppointmentPane.clusterOwner.clusterTracks.size())));
 				// all but the most right appointment get 50% extra width, so they underlap the next track 
-				if (lAppointmentPane.clusterTrackIdx < lAppointmentPane.clusterOwner.clusterTracks.size() - 1) lW *= 1.5;
+				if (lAppointmentPane.clusterTrackIdx < lAppointmentPane.clusterOwner.clusterTracks.size() - 1) lW *= 1.75;
 				lAppointmentPane.setPrefWidth(lW);
 				
 				// the height is determing by the duration projected against the total dayHeight (being 24 hours)
@@ -1330,8 +1330,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 
 					// place the rectangle
 					AbstractAppointmentPane.this.setCursor(Cursor.MOVE);
-					double lX = NodeUtil.screenX(AbstractAppointmentPane.this) - NodeUtil.screenX(AgendaWeekSkin.this);
-					double lY = NodeUtil.screenY(AbstractAppointmentPane.this) - NodeUtil.screenY(AgendaWeekSkin.this);
+					double lX = NodeUtil.screenX(AbstractAppointmentPane.this) - NodeUtil.screenX(dragPane);
+					double lY = NodeUtil.screenY(AbstractAppointmentPane.this) - NodeUtil.screenY(dragPane);
 					dragRectangle = new Rectangle(lX, lY, AbstractAppointmentPane.this.getWidth(), (AbstractAppointmentPane.this.appointment.isWholeDay() ? titleCalendarHeightProperty.get() : AbstractAppointmentPane.this.getHeight()) );
 					dragRectangle.getStyleClass().add("GhostRectangle");
 					dragPane.getChildren().add(dragRectangle);
@@ -1357,8 +1357,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					
 					double lDeltaX = mouseEvent.getScreenX() - startX;
 					double lDeltaY = mouseEvent.getScreenY() - startY;
-					double lX = NodeUtil.screenX(AbstractAppointmentPane.this) - NodeUtil.screenX(AgendaWeekSkin.this) + lDeltaX;
-					double lY = NodeUtil.screenY(AbstractAppointmentPane.this) - NodeUtil.screenY(AgendaWeekSkin.this) + lDeltaY;
+					double lX = NodeUtil.screenX(AbstractAppointmentPane.this) - NodeUtil.screenX(dragPane) + lDeltaX;
+					double lY = NodeUtil.screenY(AbstractAppointmentPane.this) - NodeUtil.screenY(dragPane) + lDeltaY;
 					dragRectangle.setX(lX);
 					dragRectangle.setY(lY);
 					

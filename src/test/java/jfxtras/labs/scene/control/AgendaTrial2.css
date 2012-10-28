@@ -114,6 +114,16 @@
     -fx-padding: 0;
 }
 
+.ListSpinner .left-arrow { 
+    -fx-shape: "M8,-8 L0,0 L8,8 L8,5 L4,0 L8,-5 Z";
+    -fx-scale-shape: false;
+}
+.ListSpinner .right-arrow { 
+    -fx-shape: "M0,-8 L8,0 L0,8 L0,5 L4,0 L0,-5 Z";
+    -fx-scale-shape: false;
+}
+
+
 .TheImage {
 	-fx-image: url("Duke_Wave-300.png");
 	-fx-translate-x: 10px;
