@@ -104,11 +104,13 @@ public class Agenda extends Control
 			@Override
 			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Appointment> changes)
 			{
-// this causes a IllegalStateException (this is intended to replace the TODO line in the skin)				
-//				for (Appointment lAppointment : changes.getRemoved())
-//				{
-//					selectedAppointments.remove(lAppointment);
-//				}
+				while (changes.next())
+				{
+					for (Appointment lAppointment : changes.getRemoved())
+					{
+						selectedAppointments.remove(lAppointment);
+					}
+				}
 			} 
 		});
 	}

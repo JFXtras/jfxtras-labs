@@ -34,19 +34,24 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import jfxtras.labs.scene.control.Agenda.AppointmentGroup;
 import jfxtras.labs.scene.control.Agenda.CalendarRange;
 
 /**
  * @author Tom Eugelink
  */
-public class AgendaTrial1 extends Application {
+public class AgendaTrial2 extends Application {
 	
     public static void main(String[] args) {
         launch(args);       
@@ -249,8 +254,7 @@ public class AgendaTrial1 extends Application {
 			.withAppointmentGroup(lAppointmentGroupMap.get("group0" + (new Random().nextInt(3) + 1)));
 			
 			lAgenda.appointments().add(lAppointment);
-		}
-		
+		}		
 
 		// update range
 		final AtomicBoolean lSkippedFirstRangeChange = new AtomicBoolean(false);		
@@ -268,7 +272,7 @@ public class AgendaTrial1 extends Application {
 				
 				// add a whole bunch of random appointments
 				lAgenda.appointments().clear();
-				for (int i = 0; i < 20; i++)
+				for (int i = 0; i < 10; i++)
 				{
 					Calendar lFirstDayOfWeekCalendar = getFirstDayOfWeekCalendar(lAgenda.getLocale(), lAgenda.getDisplayedCalendar());
 					
@@ -293,17 +297,41 @@ public class AgendaTrial1 extends Application {
 			}
 		});
 		
-		HBox lHBox = new HBox();
-		CalendarTextField lCalendarTextField = new CalendarTextField();
-		lCalendarTextField.valueProperty().bindBidirectional(lAgenda.displayedCalendar());		
-        lHBox.getChildren().add(lCalendarTextField);
+		CalendarPicker lCalendarPicker = new CalendarPicker();
+		lCalendarPicker.setStyle("-fx-padding: 10px;");
+		lCalendarPicker.calendarProperty().bindBidirectional(lAgenda.displayedCalendar());
+		
+//		ImageView lImageView = new ImageView(new Image(this.getClass().getResourceAsStream("Bert frown-300gray.png")));
+//		lImageView.getStyleClass().add("TheImage");
         
         // create scene
         BorderPane lBorderPane = new BorderPane();
         lBorderPane.setCenter(lAgenda);
-        lBorderPane.setBottom(lHBox);
-        //lBorderPane.setLeft(new Label("AAAAAAA"));
-        Scene scene = new Scene(lBorderPane, 900, 900);
+        VBox lVBox = new VBox(10.0);
+        lVBox.getChildren().add(lCalendarPicker);
+        
+//        lVBox.getChildren().add(lImageView);
+        
+//        lImageView.opacityProperty().set(0.0);
+//        FadeTransition ft = new FadeTransition(Duration.millis(3000), lImageView);
+//        ft.setFromValue(0.0);
+//        ft.setToValue(1.0);
+//        ft.delayProperty().set(Duration.millis(2000));
+//        ft.play();
+        
+//        Timeline lTimeline = new Timeline();
+//        lImageView.opacityProperty().set(0.0);
+//        final KeyValue lKeyValueOpacity = new KeyValue(lImageView.opacityProperty(), 1.0);
+//        final KeyFrame lKeyFrame1 = new KeyFrame(Duration.millis(500), lKeyValueOpacity);
+//        lTimeline.getKeyFrames().addAll(lKeyFrame1);
+//        lTimeline.delayProperty().set(Duration.millis(2000));
+//        lTimeline.play();
+        
+//        lVBox.getChildren().add(new ToggleButton("test"));
+        lBorderPane.setLeft(lVBox);
+        
+		Scene scene = new Scene(lBorderPane, 1000, 600);
+        scene.getStylesheets().addAll(this.getClass().getResource(this.getClass().getSimpleName() + ".css").toExternalForm());
 
         // create stage
         stage.setTitle("Agenda");

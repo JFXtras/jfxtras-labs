@@ -200,7 +200,9 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		Calendar lEndCalendar = null;
 		for (int i = 0; i < 7; i++)
 		{
-			weekPane.dayPanes.get(i).calendarObjectProperty.set( (Calendar)lCalendar.clone() );
+			// set the calendar
+			DayPane lDayPane = weekPane.dayPanes.get(i); 
+			lDayPane.calendarObjectProperty.set( (Calendar)lCalendar.clone() );
 			if (i== 6) lEndCalendar = (Calendar)lCalendar.clone();
 			lCalendar.add(Calendar.DATE, 1);
 		}		
@@ -226,12 +228,21 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		dateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, getSkinnable().getLocale());
 		
 		// force redraw the dayHeaders by reassigning the calendar
-		for (DayPane lDay : weekPane.dayPanes)
+		int lCnt = 0;
+		for (DayPane lDayPane : weekPane.dayPanes)
 		{
-			if (lDay.calendarObjectProperty.get() != null)
+			if (lDayPane.calendarObjectProperty.get() != null)
 			{
-				lDay.calendarObjectProperty.set( (Calendar)lDay.calendarObjectProperty.get().clone() );
+				lDayPane.calendarObjectProperty.set( (Calendar)lDayPane.calendarObjectProperty.get().clone() );
 			}
+
+			// set weekend class
+			String lWeekendOrWeekday = isWeekdayWeekend(lCnt) ? "weekend" : "weekday";
+			lDayPane.getStyleClass().removeAll("weekend", "weekday");
+			lDayPane.getStyleClass().add(lWeekendOrWeekday);			
+			lDayPane.dayHeaderPane.calendarText.getStyleClass().removeAll("weekend", "weekday");
+			lDayPane.dayHeaderPane.calendarText.getStyleClass().add(lWeekendOrWeekday);
+			lCnt++;
 		}
 	}
 	private SimpleDateFormat dayOfWeekDateFormat = null;
@@ -356,7 +367,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			
 			// set label
 			calendarText = new Text("?");
-			double lX = (dayWidthProperty.get() - calendarText.prefWidth(0)) / 2;
+			calendarText.getStyleClass().add("Calendar");
+//			double lX = (dayWidthProperty.get() - calendarText.prefWidth(0)) / 2;
 			calendarText.setX( padding ); // align left
 			calendarText.setY( calendarText.prefHeight(0) );
 			Rectangle lClip = new Rectangle(0,0,0,0);
@@ -517,7 +529,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				// hour text
 				{
 					Text t = new Text(lHour + ":00");
-					t.xProperty().bind(timeWidthProperty.subtract(t.getBoundsInParent().getWidth()));
+					t.xProperty().bind(timeWidthProperty.subtract(t.getBoundsInParent().getWidth()).subtract(timeColumnWhitespace / 2));
 					t.yProperty().bind(hourHeighProperty.multiply(lHour));
 					t.setTranslateY(t.getBoundsInParent().getHeight()); // move it under the line
 					t.getStyleClass().add("HourLabel");
@@ -704,7 +716,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				// the width is the remaining width (subtracting the wholeday appointments) divided by the number of tracks in the cluster
 				double lW = (dayContentWidthProperty.get() - (wholedayAppointmentPanes.size() * wholedayAppointmentWidth)) * (1.0 / (((double)lAppointmentPane.clusterOwner.clusterTracks.size())));
 				// all but the most right appointment get 50% extra width, so they underlap the next track 
-				if (lAppointmentPane.clusterTrackIdx < lAppointmentPane.clusterOwner.clusterTracks.size() - 1) lW *= 1.5;
+				if (lAppointmentPane.clusterTrackIdx < lAppointmentPane.clusterOwner.clusterTracks.size() - 1) lW *= 1.75;
 				lAppointmentPane.setPrefWidth(lW);
 				
 				// the height is determing by the duration projected against the total dayHeight (being 24 hours)
@@ -770,10 +782,12 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		 */
 		public void setupAppointments()
 		{
+			// remember for animation
+			final List<RegularAppointmentPane> lOldRegularAppointmentPanes = new ArrayList<RegularAppointmentPane>(regularAppointmentPanes); 
+			final List<WholedayAppointmentPane> lOldWholedayAppointmentPanes = new ArrayList<WholedayAppointmentPane>(wholedayAppointmentPanes); 
+
 			// clear
-			getChildren().removeAll(regularAppointmentPanes);
 			regularAppointmentPanes.clear();
-			getChildren().removeAll(wholedayAppointmentPanes);
 			wholedayAppointmentPanes.clear();			
 			if (calendarObjectProperty.get() == null) return;
 			
@@ -864,12 +878,17 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				// for debug  System.out.println("----"); for (int i = 0; i < lClusterOwner.clusterTracks.size(); i++) { System.out.println(i + ": " + lClusterOwner.clusterTracks.get(i) ); } System.out.println("----");
 			}
 			
-			// and layout
-			getChildren().addAll(wholedayAppointmentPanes);
-			getChildren().addAll(regularAppointmentPanes);
 			// laying out the appointments is fairly complex, so we use listeners and a relayout method instead of binding
 			relayout();
-			
+
+			// and swap the appointments; old ones out, new ones in
+			// TODO: animation? we could move the old appointments to the equivalent positions on the drag pane, then animate them to their new positions, remove thge old, and insert the new ones.
+			// however, this needs to be cross-days, so it cannot be done here (this is only one day), but after the complete setupAppointments()
+			getChildren().removeAll(lOldRegularAppointmentPanes);
+			getChildren().removeAll(lOldWholedayAppointmentPanes);
+			getChildren().addAll(wholedayAppointmentPanes);
+			getChildren().addAll(regularAppointmentPanes);
+
 			// we're done, now have the header updated
 			dayHeaderPane.setupAppointments();
 		}
@@ -1311,8 +1330,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 
 					// place the rectangle
 					AbstractAppointmentPane.this.setCursor(Cursor.MOVE);
-					double lX = NodeUtil.screenX(AbstractAppointmentPane.this) - NodeUtil.screenX(AgendaWeekSkin.this);
-					double lY = NodeUtil.screenY(AbstractAppointmentPane.this) - NodeUtil.screenY(AgendaWeekSkin.this);
+					double lX = NodeUtil.screenX(AbstractAppointmentPane.this) - NodeUtil.screenX(dragPane);
+					double lY = NodeUtil.screenY(AbstractAppointmentPane.this) - NodeUtil.screenY(dragPane);
 					dragRectangle = new Rectangle(lX, lY, AbstractAppointmentPane.this.getWidth(), (AbstractAppointmentPane.this.appointment.isWholeDay() ? titleCalendarHeightProperty.get() : AbstractAppointmentPane.this.getHeight()) );
 					dragRectangle.getStyleClass().add("GhostRectangle");
 					dragPane.getChildren().add(dragRectangle);
@@ -1338,8 +1357,8 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 					
 					double lDeltaX = mouseEvent.getScreenX() - startX;
 					double lDeltaY = mouseEvent.getScreenY() - startY;
-					double lX = NodeUtil.screenX(AbstractAppointmentPane.this) - NodeUtil.screenX(AgendaWeekSkin.this) + lDeltaX;
-					double lY = NodeUtil.screenY(AbstractAppointmentPane.this) - NodeUtil.screenY(AgendaWeekSkin.this) + lDeltaY;
+					double lX = NodeUtil.screenX(AbstractAppointmentPane.this) - NodeUtil.screenX(dragPane) + lDeltaX;
+					double lY = NodeUtil.screenY(AbstractAppointmentPane.this) - NodeUtil.screenY(dragPane) + lDeltaY;
 					dragRectangle.setX(lX);
 					dragRectangle.setY(lY);
 					
@@ -1511,6 +1530,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	{
 		{
 			nowLine.getStyleClass().add("Now");
+			nowLine.setHeight(3);
 		}
 		
 		@Override
@@ -1525,22 +1545,32 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			for (DayPane lDayPane : weekPane.dayPanes)
 			{
 				// if the calendar of the day is the same day as now
-				if (isSameDay(lDayPane.calendarObjectProperty.get(), lNow))
+				if (isSameDay(lDayPane.calendarObjectProperty.get(), lNow) == false)
 				{
+					// not today
+					lDayPane.getStyleClass().remove("today");					
+				}
+				else
+				{
+					// today
+					if (lDayPane.getStyleClass().contains("today") == false) 
+					{
+						lDayPane.getStyleClass().add("today");
+					}
 					lFound = true;
 					
 					// add if not present
 					if (weekPane.getChildren().contains(nowLine) == false)
 					{
 						weekPane.getChildren().add(nowLine);
+						nowLine.xProperty().bind(lDayPane.layoutXProperty());
 					}
 
 					// place it
 					int lOffsetY = (lNow.get(Calendar.HOUR_OF_DAY) * 60) + lNow.get(Calendar.MINUTE);
-					nowLine.setX(lDayPane.getLayoutX());
 					nowLine.setY(dayHeightProperty.get() / (24 * 60) * lOffsetY );
-					nowLine.setHeight(3);
-					nowLine.setWidth(dayWidthProperty.get());	
+					if (nowLine.widthProperty().isBound() == false) nowLine.widthProperty().bind(dayWidthProperty);	
+
 				}
 				
 				// display history
@@ -1743,7 +1773,6 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				@Override public void handle(MouseEvent evt)
 				{
 					lPopup.hide();
-					getSkinnable().selectedAppointments().remove(abstractAppointmentPane.appointment); // TODO: we should make sure this happens in the control when the appointment is remove from the appointments collection
 					getSkinnable().appointments().remove(abstractAppointmentPane.appointment);
 					// refresh is done via the collection events
 				}
@@ -1822,6 +1851,30 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	// SUPPORT
 
 	/**
+	 * check if a certain weekday name is a certain day-of-the-week
+	 */
+	protected boolean isWeekday(int idx, int weekdaynr)
+	{
+		// setup the dayLabels
+		// Calendar.SUNDAY = 1 and Calendar.SATURDAY = 7
+		Calendar lCalendar = new java.util.GregorianCalendar(2009, 6, 4 + getSkinnable().getDisplayedCalendar().getFirstDayOfWeek()); // july 5th 2009 is a Sunday
+		lCalendar.add(java.util.Calendar.DATE, idx);
+		int lDayOfWeek = lCalendar.get(java.util.Calendar.DAY_OF_WEEK);
+
+		// check
+		return (lDayOfWeek == weekdaynr);
+	}
+
+	/**
+	 * check if a certain weekday name is a certain day-of-the-week
+	 */
+	protected boolean isWeekdayWeekend(int idx) 
+	{
+		return (isWeekday(idx, java.util.Calendar.SATURDAY) || isWeekday(idx, java.util.Calendar.SUNDAY));
+	}
+	
+
+	/**
 	 * 
 	 */
 	private void calculateSizes()
@@ -1844,12 +1897,11 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		headerHeightProperty.set( titleCalendarHeightProperty.get() + (highestNumberOfWholedayAppointmentsProperty.get() * wholedayTitleHeightProperty.get()) );
 
 		// time column
-		int lTimeColumnWhitespace = 10;
-		timeWidthProperty.set( new Text("88:88").getBoundsInParent().getWidth() + lTimeColumnWhitespace );
+		timeWidthProperty.set( new Text("88:88").getBoundsInParent().getWidth() + timeColumnWhitespace );
 		
 		// day columns
-		dayFirstColumnXProperty.set( timeWidthProperty.get() + lTimeColumnWhitespace );
-		dayWidthProperty.set( (getSkinnable().getWidth() - timeWidthProperty.get() - lScrollbarSize) / 7 ); // 7 days per week
+		dayFirstColumnXProperty.set( timeWidthProperty.get() );
+		dayWidthProperty.set( (getSkinnable().getWidth() - timeWidthProperty.get() - lScrollbarSize ) / 7 ); // 7 days per week
 		if (weekScrollPane.viewportBoundsProperty().get() != null) 
 		{
 			dayWidthProperty.set( (weekScrollPane.viewportBoundsProperty().get().getWidth() - timeWidthProperty.get()) / 7 ); // 7 days per week
@@ -1875,6 +1927,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		}
 	}
 	private final double padding = 3;
+	private final double timeColumnWhitespace = 10.0;
 	private final double wholedayAppointmentWidth = 5;
 	private final IntegerProperty highestNumberOfWholedayAppointmentsProperty = new SimpleIntegerProperty(0);
 	private final DoubleProperty textHeight1MProperty = new SimpleDoubleProperty(0);
@@ -1899,11 +1952,12 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		Calendar lLocalCalendar = Calendar.getInstance(getSkinnable().getLocale());
 		int lFirstDayOfWeek = lLocalCalendar.getFirstDayOfWeek();
 		
-		// now get the displayed calendar
+		// get the displayed calendar
 		Calendar lDisplayedCalendar = getSkinnable().getDisplayedCalendar();
+		if (lDisplayedCalendar == null) return null;
 		
-		// this is the first day of week calendar
-		Calendar lFirstDayOfWeekCalendar = (Calendar)getSkinnable().getDisplayedCalendar().clone();
+		// work towards the first day of week calendar
+		Calendar lFirstDayOfWeekCalendar = (Calendar)lDisplayedCalendar.clone();
 		
 		// if not on the first day of the week, correct with the appropriate amount
 		lFirstDayOfWeekCalendar.add(Calendar.DATE, lFirstDayOfWeek - lFirstDayOfWeekCalendar.get(Calendar.DAY_OF_WEEK));
