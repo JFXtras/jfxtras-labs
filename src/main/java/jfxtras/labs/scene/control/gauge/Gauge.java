@@ -45,6 +45,7 @@ import javafx.scene.shape.Rectangle;
 import jfxtras.labs.scene.control.gauge.Radial.ForegroundType;
 
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -1518,6 +1519,18 @@ public abstract class Gauge extends Control {
         gaugeModel.addSection(SECTION);
     }
 
+    public final void addAllSections(final Section... SECTIONS) {
+        for (Section section : SECTIONS) {
+            gaugeModel.addSection(section);
+        }
+    }
+
+    public final void addAllSections(final List<Section> SECTIONS) {
+        for (Section section : SECTIONS) {
+            gaugeModel.addSection(section);
+        }
+    }
+
     public final void removeSection(final Section SECTION) {
         gaugeModel.removeSection(SECTION);
     }
@@ -1590,6 +1603,18 @@ public abstract class Gauge extends Control {
 
     public final void addArea(final Section AREA) {
         gaugeModel.addArea(AREA);
+    }
+
+    public final void addAllAreas(final Section... AREAS) {
+        for (Section area : AREAS) {
+            gaugeModel.addArea(area);
+        }
+    }
+
+    public final void addAllAreas(final List<Section> AREAS) {
+        for (Section area : AREAS) {
+            gaugeModel.addArea(area);
+        }
     }
 
     public final void removeArea(final Section AREA) {

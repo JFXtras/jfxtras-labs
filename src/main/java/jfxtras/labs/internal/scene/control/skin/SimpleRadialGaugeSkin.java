@@ -377,36 +377,36 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
         control = null;
     }
 
-    @Override protected double computePrefWidth(final double PREF_WIDTH) {
+    @Override protected double computePrefWidth(final double PREF_HEIGHT) {
         double prefWidth = 200;
-        if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
+        if (PREF_HEIGHT != -1) {
+            prefWidth = Math.max(0, PREF_HEIGHT - getInsets().getLeft() - getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
 
-    @Override protected double computePrefHeight(final double PREF_HEIGHT) {
+    @Override protected double computePrefHeight(final double PREF_WIDTH) {
         double prefHeight = 200;
-        if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
+        if (PREF_WIDTH != -1) {
+            prefHeight = Math.max(0, PREF_WIDTH - getInsets().getTop() - getInsets().getBottom());
         }
         return super.computePrefHeight(prefHeight);
     }
 
-    @Override protected double computeMinWidth(final double MIN_WIDTH) {
-        return super.computeMinWidth(Math.max(50, MIN_WIDTH - getInsets().getLeft() - getInsets().getRight()));
+    @Override protected double computeMinWidth(final double MIN_HEIGHT) {
+        return super.computeMinWidth(Math.max(50, MIN_HEIGHT - getInsets().getLeft() - getInsets().getRight()));
     }
 
-    @Override protected double computeMinHeight(final double MIN_HEIGHT) {
-        return super.computeMinHeight(Math.max(50, MIN_HEIGHT - getInsets().getTop() - getInsets().getBottom()));
+    @Override protected double computeMinHeight(final double MIN_WIDTH) {
+        return super.computeMinHeight(Math.max(50, MIN_WIDTH - getInsets().getTop() - getInsets().getBottom()));
     }
 
-    @Override protected double computeMaxWidth(final double MAX_WIDTH) {
-        return super.computeMaxWidth(Math.max(200, MAX_WIDTH - getInsets().getLeft() - getInsets().getRight()));
+    @Override protected double computeMaxWidth(final double MAX_HEIGHT) {
+        return super.computeMaxWidth(Math.max(200, MAX_HEIGHT - getInsets().getLeft() - getInsets().getRight()));
     }
 
-    @Override protected double computeMaxHeight(final double MAX_HEIGHT) {
-        return super.computeMaxHeight(Math.max(200, MAX_HEIGHT - getInsets().getTop() - getInsets().getBottom()));
+    @Override protected double computeMaxHeight(final double MAX_WIDTH) {
+        return super.computeMaxHeight(Math.max(200, MAX_WIDTH - getInsets().getTop() - getInsets().getBottom()));
     }
 
     private void updateNumberFormat() {
