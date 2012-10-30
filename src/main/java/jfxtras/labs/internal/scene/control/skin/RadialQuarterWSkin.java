@@ -577,8 +577,10 @@ public class RadialQuarterWSkin extends GaugeSkinBase<RadialQuarterW, RadialQuar
             drawCircularTrend(control, trend, gaugeBounds);
         } else if ("GAUGE_MODEL".equals(PROPERTY)) {
             addBindings();
+            repaint();
         } else if ("STYLE_MODEL".equals(PROPERTY)) {
             addBindings();
+            repaint();
         } else if ("THRESHOLD_EXCEEDED".equals(PROPERTY)) {
             if(control.isThresholdExceeded()) {
                 ledTimer.start();

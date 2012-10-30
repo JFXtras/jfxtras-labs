@@ -618,8 +618,10 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
             isDirty = true;
         } else if ("GAUGE_MODEL".equals(PROPERTY)) {
             addBindings();
+            repaint();
         } else if ("STYLE_MODEL".equals(PROPERTY)) {
             addBindings();
+            repaint();
         } else if ("THRESHOLD_EXCEEDED".equals(PROPERTY)) {
             if(control.isThresholdExceeded()) {
                 ledTimer.start();

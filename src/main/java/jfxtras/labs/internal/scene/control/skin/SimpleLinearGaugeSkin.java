@@ -318,7 +318,6 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
                     bar.setEndX(control.getBarWidth() + ((gaugeValue.get() - control.getMinValue()) * stepsize));
                     break;
             }
-
             if (control.isCanvasMode()) {
                 for (Section section : control.getSections()) {
                     if ((gaugeValue.get() - control.getMinValue()) > section.getStart() && (gaugeValue.get() - control.getMinValue()) < section.getStop()) {

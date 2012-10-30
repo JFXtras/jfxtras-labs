@@ -86,6 +86,16 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
         control     = CONTROL;
         initialized = false;
         isDirty     = false;
+        zero        = new Path();
+        one         = new Path();
+        two         = new Path();
+        three       = new Path();
+        four        = new Path();
+        five        = new Path();
+        six         = new Path();
+        seven       = new Path();
+        eight       = new Path();
+        nine        = new Path();
         hatch       = new Path();
         numbers     = new Group();
         tube        = new Group();
@@ -326,7 +336,7 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
 
         Color colorOff = Color.color(0.2, 0.2, 0.2, 0.6);
 
-        one = new Path();
+        one.getElements().clear();
         one.setFillRule(FillRule.EVEN_ODD);
         one.getElements().add(new MoveTo(0.4883720930232558 * WIDTH, 0.296551724137931 * HEIGHT));
         one.getElements().add(new CubicCurveTo(0.4883720930232558 * WIDTH, 0.2896551724137931 * HEIGHT,
@@ -351,7 +361,7 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
         one.setFill(null);
         one.setStroke(colorOff);
 
-        zero = new Path();
+        zero.getElements().clear();
         zero.setFillRule(FillRule.EVEN_ODD);
         zero.getElements().add(new MoveTo(0.2441860465116279 * WIDTH, 0.5862068965517241 * HEIGHT));
         zero.getElements().add(new CubicCurveTo(0.2441860465116279 * WIDTH, 0.43448275862068964 * HEIGHT,
@@ -370,7 +380,7 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
         zero.setFill(null);
         zero.setStroke(colorOff);
 
-        two = new Path();
+        two.getElements().clear();
         two.setFillRule(FillRule.EVEN_ODD);
         two.getElements().add(new MoveTo(0.23255813953488372 * WIDTH, 0.47586206896551725 * HEIGHT));
         two.getElements().add(new CubicCurveTo(0.23255813953488372 * WIDTH, 0.47586206896551725 * HEIGHT,
@@ -413,7 +423,7 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
         two.setFill(null);
         two.setStroke(colorOff);
 
-        three = new Path();
+        three.getElements().clear();
         three.setFillRule(FillRule.EVEN_ODD);
         three.getElements().add(new MoveTo(0.23255813953488372 * WIDTH, 0.31724137931034485 * HEIGHT));
         three.getElements().add(new LineTo(0.7674418604651163 * WIDTH, 0.31724137931034485 * HEIGHT));
@@ -449,7 +459,7 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
         three.setFill(null);
         three.setStroke(colorOff);
 
-        six = new Path();
+        six.getElements().clear();
         six.setFillRule(FillRule.EVEN_ODD);
         six.getElements().add(new MoveTo(0.5232558139534884 * WIDTH, 0.2827586206896552 * HEIGHT));
         six.getElements().add(new LineTo(0.27906976744186046 * WIDTH, 0.5793103448275863 * HEIGHT));
@@ -470,7 +480,7 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
         six.setFill(null);
         six.setStroke(colorOff);
 
-        four = new Path();
+        four.getElements().clear();
         four.setFillRule(FillRule.EVEN_ODD);
         four.getElements().add(new MoveTo(0.7790697674418605 * WIDTH, 0.6827586206896552 * HEIGHT));
         four.getElements().add(new LineTo(0.2441860465116279 * WIDTH, 0.6827586206896552 * HEIGHT));
@@ -487,7 +497,7 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
         four.setFill(null);
         four.setStroke(colorOff);
 
-        nine = new Path();
+        nine.getElements().clear();
         nine.setFillRule(FillRule.EVEN_ODD);
         nine.getElements().add(new MoveTo(0.5465116279069767 * WIDTH, 0.8620689655172413 * HEIGHT));
         nine.getElements().add(new LineTo(0.7674418604651163 * WIDTH, 0.5310344827586206 * HEIGHT));
@@ -508,7 +518,7 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
         nine.setFill(null);
         nine.setStroke(colorOff);
 
-        five = new Path();
+        five.getElements().clear();
         five.setFillRule(FillRule.EVEN_ODD);
         five.getElements().add(new MoveTo(0.7093023255813954 * WIDTH, 0.32413793103448274 * HEIGHT));
         five.getElements().add(new LineTo(0.313953488372093 * WIDTH, 0.32413793103448274 * HEIGHT));
@@ -555,7 +565,7 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
         five.setFill(null);
         five.setStroke(colorOff);
 
-        eight = new Path();
+        eight.getElements().clear();
         eight.setFillRule(FillRule.EVEN_ODD);
         eight.getElements().add(new MoveTo(0.20930232558139536 * WIDTH, 0.7034482758620689 * HEIGHT));
         eight.getElements().add(new CubicCurveTo(0.20930232558139536 * WIDTH, 0.6137931034482759 * HEIGHT,
@@ -588,7 +598,7 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
         eight.setFill(null);
         eight.setStroke(colorOff);
 
-        seven = new Path();
+        seven.getElements().clear();
         seven.setFillRule(FillRule.EVEN_ODD);
         seven.getElements().add(new MoveTo(0.22093023255813954 * WIDTH, 0.30344827586206896 * HEIGHT));
         seven.getElements().add(new LineTo(0.7906976744186046 * WIDTH, 0.296551724137931 * HEIGHT));

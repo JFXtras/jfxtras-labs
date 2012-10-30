@@ -460,8 +460,10 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             repaint();
         } else if ("GAUGE_MODEL".equals(PROPERTY)) {
             addBindings();
+            repaint();
         } else if ("STYLE_MODEL".equals(PROPERTY)) {
             addBindings();
+            repaint();
         } else if ("PREF_WIDTH".equals(PROPERTY)) {
             repaint();
         } else if ("PREF_HEIGHT".equals(PROPERTY)) {

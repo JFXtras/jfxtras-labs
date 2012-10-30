@@ -516,7 +516,6 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             if (!control.isGlowVisible()) {
                 glowOn.setOpacity(0.0);
             }
-
         } else if ("GLOW_ON".equals(PROPERTY)) {
             if (glowOff.isVisible() && control.isGlowOn()) {
                 glowOn.setOpacity(1.0);
@@ -525,7 +524,6 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
                 glowOff.setVisible(true);
                 glowOn.setOpacity(0.0);
             }
-
         } else if ("PULSATING_GLOW".equals(PROPERTY)) {
             if (control.isPulsatingGlow() && control.isGlowVisible()) {
                 if (!glowOn.isVisible()) {
@@ -539,7 +537,6 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
                 glowPulse.stop();
                 glowOn.setOpacity(0.0);
             }
-
         } else if ("TICKMARKS".equals(PROPERTY)) {
             drawTickmarks();
         } else if ("MIN_MEASURED_VALUE".equals(PROPERTY)) {
@@ -550,7 +547,6 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
                 // horizontal
                 minMeasured.setTranslateX(Math.abs((control.getMinMeasuredValue() - control.getMinValue()) * stepsize));
             }
-
         } else if ("MAX_MEASURED_VALUE".equals(PROPERTY)) {
             if (control.getPrefWidth() <= control.getPrefHeight()) {
                 // vertical
@@ -563,8 +559,10 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             isDirty = true;
         } else if ("GAUGE_MODEL".equals(PROPERTY)) {
             addBindings();
+            repaint();
         } else if ("STYLE_MODEL".equals(PROPERTY)) {
             addBindings();
+            repaint();
         } else if ("AREAS".equals(PROPERTY)) {
 
         } else if ("SECTIONS".equals(PROPERTY)) {
