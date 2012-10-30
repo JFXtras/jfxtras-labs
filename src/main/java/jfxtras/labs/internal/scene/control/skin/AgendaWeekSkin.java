@@ -25,6 +25,7 @@
  */
 // TODO: refactor the layout code in showMenu
 // TODO: manual edit of all properties, location, description
+// TODO: why does the "horizontal scrollbar" whitespace appear when viewport > min required? JFX bug?
 // TODO: concept of tasks; appointment with only a start date (not whole day). Rendered as a line. 
 // TODO: dropping an area event in the header and then back into the day; take the location of the drop into account as the start time (instead of the last start time)
 // TODO: drop a wholeday in the day, drag it down so it spans two days, drag it in the header again, drag it back to the day again: height = 0 
@@ -275,15 +276,16 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		// we use a borderpane
 		borderPane = new BorderPane();
 		
-		// center
+		// borderpane center
 		weekPane = new WeekPane();
 		weekScrollPane = ScrollPaneBuilder.create()
 			.content(weekPane)
 			.hbarPolicy(ScrollBarPolicy.NEVER)
+			.fitToWidth(true)
 			.pannable(false) // panning would conflict with creating a new appointment
 			.build();
 		borderPane.setCenter(weekScrollPane);
-		// bind the size of the week to the scrollpane's viewport
+		// bind to the scrollpane's viewport
 		weekScrollPane.viewportBoundsProperty().addListener(new InvalidationListener()
 		{
 			@Override
@@ -294,8 +296,10 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			}
 		});
 		
-		// top: header have to be created after the week, because there is a binding to days
+		// borderpane top: header has to be created after the content, because there is a binding
 		weekHeaderPane = new WeekHeaderPane();
+		weekHeaderPane.prefWidthProperty().bind(weekPane.widthProperty()); // same width as the weekpane
+		weekHeaderPane.prefHeightProperty().bind(headerHeightProperty);
 		weekHeaderPane.setTranslateX(1); // correct for the scrollpane
 		borderPane.setTop(weekHeaderPane);
 		
@@ -1901,7 +1905,6 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		
 		// day columns
 		dayFirstColumnXProperty.set( timeWidthProperty.get() );
-		dayWidthProperty.set( (getSkinnable().getWidth() - timeWidthProperty.get() - lScrollbarSize ) / 7 ); // 7 days per week
 		if (weekScrollPane.viewportBoundsProperty().get() != null) 
 		{
 			dayWidthProperty.set( (weekScrollPane.viewportBoundsProperty().get().getWidth() - timeWidthProperty.get()) / 7 ); // 7 days per week
@@ -1917,14 +1920,6 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		}
 		dayHeightProperty.set(hourHeighProperty.get() * 24);
 		durationInMSPerPixelProperty.set( (24 * 60 * 60 * 1000) / dayHeightProperty.get() );
-		
-		// if the viewport is active
-		if (weekScrollPane.viewportBoundsProperty() != null && weekScrollPane.viewportBoundsProperty().get() != null)
-		{
-			// make sure the border pane uses these sizes
-			weekHeaderPane.setPrefSize(weekScrollPane.viewportBoundsProperty().get().getWidth(), headerHeightProperty.get());
-			weekPane.setPrefSize(weekScrollPane.viewportBoundsProperty().get().getWidth(), 24 * hourHeighProperty.get());				
-		}
 	}
 	private final double padding = 3;
 	private final double timeColumnWhitespace = 10.0;
