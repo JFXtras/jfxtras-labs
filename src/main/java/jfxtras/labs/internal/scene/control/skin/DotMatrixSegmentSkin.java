@@ -125,8 +125,7 @@ public class DotMatrixSegmentSkin extends SkinBase<DotMatrixSegment, DotMatrixSe
         }
         if (control.getScene() != null) {
             updateCharacter();
-            getChildren().clear();
-            getChildren().add(dots);
+            getChildren().setAll(dots);
         }
         isDirty = false;
 

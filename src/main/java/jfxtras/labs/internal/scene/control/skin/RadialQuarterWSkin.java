@@ -620,7 +620,6 @@ public class RadialQuarterWSkin extends GaugeSkinBase<RadialQuarterW, RadialQuar
             setTranslateY(framelessOffset.getY());
             center         = new Point2D(gaugeBounds.getWidth() * 0.735, gaugeBounds.getHeight() * 0.5);
             rotationCenter = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getHeight() * 0.735);
-            getChildren().clear();
             drawCircularFrame(control, frame, gaugeBounds);
             drawCircularBackground(control, background, gaugeBounds);
             drawCircularTrend(control, trend, gaugeBounds);
@@ -644,7 +643,7 @@ public class RadialQuarterWSkin extends GaugeSkinBase<RadialQuarterW, RadialQuar
                 addDropShadow(control, knobs, pointerShadow);
             }
 
-            getChildren().addAll(frame,
+            getChildren().setAll(frame,
                 background,
                 trend,
                 sections,

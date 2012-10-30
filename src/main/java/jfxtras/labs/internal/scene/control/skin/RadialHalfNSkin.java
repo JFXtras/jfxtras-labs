@@ -660,7 +660,6 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
             setTranslateX(framelessOffset.getX());
             setTranslateY(framelessOffset.getY());
             center = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getHeight() / 1.3);
-            getChildren().clear();
             drawFrame();
             drawBackground();
             drawCircularTrend(control, trend, gaugeBounds);
@@ -687,7 +686,7 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
                 addDropShadow(control, knobs, pointerShadow);
             }
 
-            getChildren().addAll(frame,
+            getChildren().setAll(frame,
                 background,
                 sections,
                 areas,

@@ -130,8 +130,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         }
         if (control.getScene() != null) {
             updateCharacter();
-            getChildren().clear();
-            getChildren().add(segments);
+            getChildren().setAll(segments);
         }
         isDirty = false;
 

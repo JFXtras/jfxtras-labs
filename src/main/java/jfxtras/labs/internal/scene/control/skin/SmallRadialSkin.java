@@ -266,8 +266,7 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
             init();
         }
         drawGauge();
-        getChildren().clear();
-        getChildren().add(smallRadial);
+        getChildren().setAll(smallRadial);
         isDirty = false;
         super.layoutChildren();
     }

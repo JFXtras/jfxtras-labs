@@ -137,9 +137,8 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
             init();
         }
         if (control.getScene() != null) {
-            getChildren().clear();
             drawStars();
-            getChildren().addAll(starContainer);
+            getChildren().setAll(starContainer);
         }
         isDirty = false;
 

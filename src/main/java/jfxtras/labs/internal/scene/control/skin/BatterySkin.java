@@ -154,15 +154,13 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
             init();
         }
         if (control.getScene() != null) {
-            getChildren().clear();
-
             drawBackground();
             drawMain();
             drawForeground();
 
-            getChildren().addAll(background,
-                main,
-                foreground);
+            getChildren().setAll(background,
+                                 main,
+                                 foreground);
         }
         isDirty = false;
 

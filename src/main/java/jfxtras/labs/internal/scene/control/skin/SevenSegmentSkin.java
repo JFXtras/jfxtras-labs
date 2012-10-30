@@ -124,8 +124,7 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
         }
         if (control.getScene() != null) {
             updateCharacter();
-            getChildren().clear();
-            getChildren().add(segments);
+            getChildren().setAll(segments);
         }
         isDirty = false;
 

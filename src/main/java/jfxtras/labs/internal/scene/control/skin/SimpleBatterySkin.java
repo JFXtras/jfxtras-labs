@@ -147,11 +147,10 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
             init();
         }
         if (control.getScene() != null) {
-            getChildren().clear();
             drawBackground();
             drawMain();
             drawForeground();
-            getChildren().addAll(background,
+            getChildren().setAll(background,
                 main,
                 foreground);
         }

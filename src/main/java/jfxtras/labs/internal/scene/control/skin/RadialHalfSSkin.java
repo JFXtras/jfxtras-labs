@@ -658,7 +658,6 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
             setTranslateX(framelessOffset.getX());
             setTranslateY(framelessOffset.getY());
             center = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getWidth() * 0.15);
-            getChildren().clear();
             drawFrame();
             drawBackground();
             drawCircularTrend(control, trend, gaugeBounds);
@@ -689,28 +688,28 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
                 addDropShadow(control, knobs, pointerShadow);
             }
 
-            getChildren().addAll(frame,
-                background,
-                sections,
-                areas,
-                trend,
-                ledOff,
-                ledOn,
-                userLedOff,
-                userLedOn,
-                titleAndUnit,
-                tickmarks,
-                threshold,
-                glowOff,
-                glowOn,
-                pointerShadow,
-                bargraphOff,
-                bargraphOn,
-                minMeasured,
-                maxMeasured,
-                markers,
-                knobsShadow,
-                foreground);
+            getChildren().setAll(frame,
+                                background,
+                                sections,
+                                areas,
+                                trend,
+                                ledOff,
+                                ledOn,
+                                userLedOff,
+                                userLedOn,
+                                titleAndUnit,
+                                tickmarks,
+                                threshold,
+                                glowOff,
+                                glowOn,
+                                pointerShadow,
+                                bargraphOff,
+                                bargraphOn,
+                                minMeasured,
+                                maxMeasured,
+                                markers,
+                                knobsShadow,
+                                foreground);
         }
         isDirty = false;
 

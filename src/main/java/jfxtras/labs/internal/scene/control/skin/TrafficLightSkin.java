@@ -175,9 +175,8 @@ public class TrafficLightSkin extends SkinBase<TrafficLight, TrafficLightBehavio
             init();
         }
         if (control.getScene() != null) {
-            getChildren().clear();
             drawTrafficLight();
-            getChildren().add(trafficlight);
+            getChildren().setAll(trafficlight);
         }
         isDirty = false;
 

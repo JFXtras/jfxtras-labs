@@ -203,9 +203,8 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
             init();
         }
         if (control.getScene() != null) {
-            getChildren().clear();
             drawLed();
-            getChildren().add(bargraph);
+            getChildren().setAll(bargraph);
         }
         isDirty = false;
 

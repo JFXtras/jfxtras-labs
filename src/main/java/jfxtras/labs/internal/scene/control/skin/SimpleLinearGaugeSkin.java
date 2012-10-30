@@ -352,13 +352,12 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
         if (!initialized) {
             init();
         }
-        getChildren().clear();
         if (control.isCanvasMode()) {
             drawCanvasGauge(ctx);
-            getChildren().addAll(canvas);
+            getChildren().setAll(canvas);
         } else {
             drawNodeGauge();
-            getChildren().addAll(gauge);
+            getChildren().setAll(gauge);
         }
 
         isDirty = false;

@@ -593,8 +593,6 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             setTranslateX(framelessOffset.getX());
             setTranslateY(framelessOffset.getY());
 
-            getChildren().clear();
-
             drawFrame();
             drawBackground();
             drawTitleAndUnit();
@@ -612,7 +610,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             drawBar();
             drawForeground();
 
-            getChildren().addAll(frame,
+            getChildren().setAll(frame,
                                  background,
                                  ledOff,
                                  ledOn,

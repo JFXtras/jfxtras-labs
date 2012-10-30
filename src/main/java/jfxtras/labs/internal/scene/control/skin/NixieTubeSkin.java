@@ -155,10 +155,9 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
             init();
         }
         if (control.getScene() != null) {
-            getChildren().clear();
             drawNumbers();
             drawTube();
-            getChildren().addAll(numbers, tube);
+            getChildren().setAll(numbers, tube);
         }
         isDirty = false;
 

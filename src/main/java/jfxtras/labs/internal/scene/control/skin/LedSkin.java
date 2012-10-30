@@ -143,9 +143,8 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
             init();
         }
         if (control.getScene() != null) {
-            getChildren().clear();
             drawLed();
-            getChildren().addAll(led);
+            getChildren().setAll(led);
         }
         isDirty = false;
         super.layoutChildren();

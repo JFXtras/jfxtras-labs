@@ -851,7 +851,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             setTranslateX(framelessOffset.getX());
             setTranslateY(framelessOffset.getY());
             center = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getHeight() * 0.5);
-            getChildren().clear();
             drawCircularFrame(control, frame, gaugeBounds);
             drawCircularBackground(control, background, gaugeBounds);
             drawCircularTrend(control, trend, gaugeBounds);
@@ -880,7 +879,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 addDropShadow(control, knobs, pointerShadow);
             }
 
-            getChildren().addAll(frame,
+            getChildren().setAll(frame,
                 background,
                 histogram,
                 trend,

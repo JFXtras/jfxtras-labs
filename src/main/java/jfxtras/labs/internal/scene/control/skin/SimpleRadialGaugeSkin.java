@@ -353,15 +353,14 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
         if (!initialized) {
             init();
         }
-        getChildren().clear();
         if (control.isCanvasMode()) {
             alertIndicator.setLayoutX((size - alertIndicator.getWidth()) * 0.5);
             alertIndicator.setLayoutY(size * 0.6);
             drawCanvasGauge(ctx);
-            getChildren().addAll(canvas, alertIndicator);
+            getChildren().setAll(canvas, alertIndicator);
         } else {
             drawNodeGauge();
-            getChildren().addAll(gauge);
+            getChildren().setAll(gauge);
         }
 
         isDirty = false;

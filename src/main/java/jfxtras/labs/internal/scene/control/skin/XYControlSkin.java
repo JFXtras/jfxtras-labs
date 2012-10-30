@@ -321,7 +321,6 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         final double BUTTON_SIZE = 0.0909090909 * SIZE;
         final Font   FONT        = Font.font("Verdana", FontWeight.NORMAL, 0.055 * AREA_SIZE);
 
-        getChildren().clear();
         getStyleClass().setAll("xy-control");
 
         Pane pane = new Pane();
@@ -351,7 +350,7 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         yAxis.setFill(null);
         yAxis.setStroke(Color.rgb(38, 38, 38));
 
-        area.getChildren().addAll(areaFrame, areaBackground, xAxis, yAxis);
+        area.getChildren().setAll(areaFrame, areaBackground, xAxis, yAxis);
         area.relocate(0, 0);
         pane.getChildren().add(area);
 
@@ -459,7 +458,7 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         thumb.relocate(AREA_SIZE / 2 - 5, AREA_SIZE / 2 - 5);
         pane.getChildren().add(thumb);
 
-        getChildren().addAll(pane);
+        getChildren().setAll(pane);
     }
 
     private Group createArrow(final Direction DIRECTION, final double SIZE) {

@@ -114,9 +114,8 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
             init();
         }
         if (control.getScene() != null) {
-            getChildren().clear();
             drawIndicator();
-            getChildren().addAll(indicator);
+            getChildren().setAll(indicator);
         }
         isDirty = false;
 

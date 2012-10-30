@@ -123,10 +123,9 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
             init();
         }
         if (control.getScene() != null) {
-            getChildren().clear();
             drawCircles();
             drawSelectedCircles();
-            getChildren().addAll(circles, selectedCircles);
+            getChildren().setAll(circles, selectedCircles);
         }
         isDirty = false;
 

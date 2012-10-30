@@ -226,12 +226,11 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
             init();
         }
         if (control.getScene() != null) {
-            getChildren().clear();
             drawBackground();
             drawFixture();
             drawFlip();
             drawFrame();
-            getChildren().addAll(background,
+            getChildren().setAll(background,
                 fixture,
                 flip,
                 frame);
