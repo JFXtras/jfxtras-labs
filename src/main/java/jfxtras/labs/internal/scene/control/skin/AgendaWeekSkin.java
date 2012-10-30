@@ -313,7 +313,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		borderPane.prefHeightProperty().bind(dragPane.heightProperty());
 		
 		// add to self
-		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control		
+		getStyleClass().add(getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control		
 		getChildren().add(dragPane);
 		
 		// load the close icon
@@ -372,7 +372,6 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			// set label
 			calendarText = new Text("?");
 			calendarText.getStyleClass().add("Calendar");
-//			double lX = (dayWidthProperty.get() - calendarText.prefWidth(0)) / 2;
 			calendarText.setX( padding ); // align left
 			calendarText.setY( calendarText.prefHeight(0) );
 			Rectangle lClip = new Rectangle(0,0,0,0);
@@ -439,6 +438,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 			// remove all appointments and create new ones
 			getChildren().removeAll(appointmentHeaderPanes);
 			appointmentHeaderPanes.clear();
+			
 			// for all wholeday appointments on the day pane, create a header appointment pane as well
 			for (WholedayAppointmentPane lAppointmentPane : dayPane.wholedayAppointmentPanes)  
 			{
@@ -726,6 +726,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 				// the height is determing by the duration projected against the total dayHeight (being 24 hours)
 				double lH = (dayHeightProperty.get() / (24 * 60) * (lAppointmentPane.durationInMS / 1000 / 60) );
 				// the height has a minimum size, in order to be able to render sensibly
+				// if (lH < textHeight1MProperty.get() + padding) lH = textHeight1MProperty.get() + padding; 
 				if (lH < 2 * padding) lH = 2 * padding; 
 				lAppointmentPane.setPrefHeight(lH);
 			}

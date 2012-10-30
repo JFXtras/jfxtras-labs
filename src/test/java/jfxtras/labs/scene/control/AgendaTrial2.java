@@ -233,7 +233,7 @@ public class AgendaTrial2 extends Application {
 				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay + 1))
 				.withSummary("all day")
 				.withDescription("A description3")
-				.withAppointmentGroup(lAppointmentGroupMap.get("group03"))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group22"))
 				.withWholeDay(true)
 		);
 		final String lIpsum = "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus";
@@ -250,7 +250,7 @@ public class AgendaTrial2 extends Application {
 			.withEndTime(lEnd)
 			.withSummary(lIpsum.substring(0, new Random().nextInt(50)))
 			.withDescription(lIpsum.substring(0, 10 + new Random().nextInt(lIpsum.length() - 10)))
-			.withAppointmentGroup(lAppointmentGroupMap.get("group0" + (new Random().nextInt(3) + 1)));
+			.withAppointmentGroup(lAppointmentGroupMap.get("group1" + (new Random().nextInt(3) + 1)));
 			
 			lAgenda.appointments().add(lAppointment);
 		}		
@@ -296,10 +296,12 @@ public class AgendaTrial2 extends Application {
 			}
 		});
 		
+		// calendar picker
 		CalendarPicker lCalendarPicker = new CalendarPicker();
-		lCalendarPicker.setStyle("-fx-padding: 10px;");
+		lCalendarPicker.setId("myCalendarPicker");
 		lCalendarPicker.calendarProperty().bindBidirectional(lAgenda.displayedCalendar());
 		
+		// image
 //		ImageView lImageView = new ImageView();
 		ImageView lImageView = new ImageView(new Image(this.getClass().getResourceAsStream("Bert frown-300gray.png")));
 		lImageView.getStyleClass().add("TheImage");
@@ -363,8 +365,8 @@ public class AgendaTrial2 extends Application {
 			lFirstDayOfWeekCalendar.add(Calendar.DATE, -7);
 		}
 		while ( lFirstDayOfWeekCalendar.get(Calendar.YEAR) < lDisplayedCalendar.get(Calendar.YEAR)
-				 || (lFirstDayOfWeekCalendar.get(Calendar.YEAR) == lDisplayedCalendar.get(Calendar.YEAR) && lFirstDayOfWeekCalendar.get(Calendar.WEEK_OF_YEAR) < lDisplayedCalendar.get(Calendar.WEEK_OF_YEAR))
-				  )
+			 || (lFirstDayOfWeekCalendar.get(Calendar.YEAR) == lDisplayedCalendar.get(Calendar.YEAR) && lFirstDayOfWeekCalendar.get(Calendar.WEEK_OF_YEAR) < lDisplayedCalendar.get(Calendar.WEEK_OF_YEAR))
+			  )
 		{
 			lFirstDayOfWeekCalendar.add(Calendar.DATE, 7);
 		}

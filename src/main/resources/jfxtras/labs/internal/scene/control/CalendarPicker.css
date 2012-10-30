@@ -6,7 +6,7 @@
 .CalendarPickerControlSkin { 
 }
 
-.CalendarPicker .weekday-label {
+.CalendarPickerControlSkin .weekday-label {
 	-fx-alignment: CENTER;
 }
 

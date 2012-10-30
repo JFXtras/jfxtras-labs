@@ -1,3 +1,8 @@
+/* some whitespace */
+#myCalendarPicker {
+	-fx-padding: 10px;
+}
+
 /* calendar picker day buttons */
 .CalendarPicker .day-button {
     -fx-padding: 5 12 5 12;   
@@ -39,8 +44,15 @@
 }
 
 /* focus */
-.CalendarPicker .day-button:focused
-{
+.CalendarPicker .day-button:focused {
+    -fx-border-color: black;
+    -fx-border-width: 2px;
+    -fx-border-style: segments(1, 1);
+    -fx-background-insets: 0 0 0 0, 0, 1, 2;   
+}
+
+/* selected */
+.CalendarPicker .day-button:selected {
     -fx-border-color: black;
     -fx-border-width: 2px;
     -fx-border-style: segments(1, 1);
@@ -55,22 +67,32 @@
 /* ------------ */
 
 /* let's give it some room on the top */
-.AgendaWeekSkin {
-    -fx-padding: 5 0 0 0;   
+.Agenda {
+    -fx-padding: 10px;   
 }
 
-/* make the border go away */
-.AgendaWeekSkin .scroll-pane {
-    -fx-background-colorx: transparent;
+/* make the border go away 
+.Agenda .scroll-pane {
+    -fx-background-color: transparent;
+}
+*/
+
+.screen {
+    -fx-background-color: #eeeeee;
 }
 
-/* increase header */
-.AgendaWeekSkin .DayHeader .Calendar {
-    -fx-font-size: 13pt;
+/* increase header font */
+.Agenda .DayHeader .Calendar {
+    -fx-font-size: 12pt;
+}
+
+/* highlight weekend */
+.Agenda .DayHeader .weekend { 
+	-fx-font-weight: bold;
 }
 
 /* lose border in header */
-.AgendaWeekSkin .DayHeader {
+.Agenda .DayHeader {
 	-fx-border-color:transparent;
 }
 
@@ -114,14 +136,6 @@
 
 /* ---------- */
 
-.screen {
-    -fx-background-color: #eeeeee;
-}
-
-/* reenable border in header */
-
-/* ---------- */
-
 /* largers arrows */
 .ListSpinner .left-arrow { 
     -fx-shape: "M8,-8 L0,0 L8,8 L8,5 L4,0 L8,-5 Z";
@@ -138,7 +152,7 @@
 /* no gradient popup */
 .AgendaWeekSkin_popup {
     -fx-padding: 5;   
-    -fx-border-color: #aaaaaa;
+    -fx-border-color: #555555;
     -fx-background-radius: 0;
  
     -fx-background-color: #cccccc;
@@ -149,7 +163,7 @@
 
 /* ---------- */
 
-/* duke approves */
+/* the duke approves */
 .TheImage {
 	-fx-image: url("Duke_Wave-300.png");
 	-fx-translate-x: 20px;

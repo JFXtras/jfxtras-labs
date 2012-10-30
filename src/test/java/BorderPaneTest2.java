@@ -20,7 +20,7 @@ public class BorderPaneTest2 extends Application
 	public void start(Stage stage) 
 	{
 		// setup contents
-		contentPane.setPrefHeight(400);
+		contentPane.setPrefHeight(400); // fixed height
 		
 		// create scrollpane
 		scrollPane = ScrollPaneBuilder.create()
