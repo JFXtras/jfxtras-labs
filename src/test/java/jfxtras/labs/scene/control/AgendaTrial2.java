@@ -35,7 +35,6 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javafx.animation.FadeTransition;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -301,23 +300,25 @@ public class AgendaTrial2 extends Application {
 		lCalendarPicker.setStyle("-fx-padding: 10px;");
 		lCalendarPicker.calendarProperty().bindBidirectional(lAgenda.displayedCalendar());
 		
-//		ImageView lImageView = new ImageView(new Image(this.getClass().getResourceAsStream("Bert frown-300gray.png")));
-//		lImageView.getStyleClass().add("TheImage");
+//		ImageView lImageView = new ImageView();
+		ImageView lImageView = new ImageView(new Image(this.getClass().getResourceAsStream("Bert frown-300gray.png")));
+		lImageView.getStyleClass().add("TheImage");
         
         // create scene
         BorderPane lBorderPane = new BorderPane();
+        lBorderPane.getStyleClass().add("screen");
         lBorderPane.setCenter(lAgenda);
         VBox lVBox = new VBox(10.0);
         lVBox.getChildren().add(lCalendarPicker);
         
-//        lVBox.getChildren().add(lImageView);
+        lVBox.getChildren().add(lImageView);
         
-//        lImageView.opacityProperty().set(0.0);
-//        FadeTransition ft = new FadeTransition(Duration.millis(3000), lImageView);
-//        ft.setFromValue(0.0);
-//        ft.setToValue(1.0);
-//        ft.delayProperty().set(Duration.millis(2000));
-//        ft.play();
+        lImageView.opacityProperty().set(0.0);
+        FadeTransition ft = new FadeTransition(Duration.millis(3000), lImageView);
+        ft.setFromValue(0.0);
+        ft.setToValue(1.0);
+        ft.delayProperty().set(Duration.millis(2000));
+        ft.play();
         
 //        Timeline lTimeline = new Timeline();
 //        lImageView.opacityProperty().set(0.0);
