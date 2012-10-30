@@ -34,7 +34,7 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javafx.animation.FadeTransition;
+import javafx.animation.FadeTransitionBuilder;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -59,10 +59,58 @@ public class AgendaTrial2 extends Application {
 	@Override
 	public void start(Stage stage) {
 
-        // add a node
+        // create agenda
 		final Agenda lAgenda = new Agenda();		
-    	//lAgenda.setLocale(new java.util.Locale("de")); // weeks starts on monday
 		
+		// calendar picker
+		CalendarPicker lCalendarPicker = new CalendarPicker();
+		lCalendarPicker.setCalendar(Calendar.getInstance()); // today
+		
+		// bind picker to agenda
+		lAgenda.displayedCalendar().bind(lCalendarPicker.calendarProperty());
+		
+		// image
+//		ImageView lImageView = new ImageView();
+		ImageView lImageView = new ImageView(new Image(this.getClass().getResourceAsStream("Bert frown-300gray.png")));
+		lImageView.setId("TheImage");
+        
+        // layout scene
+        BorderPane lBorderPane = new BorderPane();
+        lBorderPane.setCenter(lAgenda);
+	        VBox lVBox = new VBox();
+	        lVBox.getChildren().add(lCalendarPicker);        
+	        lVBox.getChildren().add(lImageView);
+        lBorderPane.setLeft(lVBox);
+        lBorderPane.getStyleClass().add("screen");
+        
+        // appear animation on image
+        lImageView.opacityProperty().set(0.0); // hide image
+        FadeTransitionBuilder.create()
+        	.node(lImageView)
+        	.delay(Duration.millis(2000))
+        	.fromValue(0.0)
+        	.toValue(1.0)
+        	.duration(Duration.millis(2000))
+        	.build()
+        	.play();
+        
+        // setup scene
+		Scene scene = new Scene(lBorderPane, 1000, 600);
+		
+		// load custom CSS
+        scene.getStylesheets().addAll(this.getClass().getResource(this.getClass().getSimpleName() + ".css").toExternalForm());
+
+        // create stage
+        stage.setTitle("Agenda");
+        stage.setScene(scene);
+        stage.show();	
+
+        
+        
+        
+        
+        
+        
 		// setup appointment groups
 		final Map<String, Agenda.AppointmentGroup> lAppointmentGroupMap = new TreeMap<String, Agenda.AppointmentGroup>();
 		lAppointmentGroupMap.put("group00", new Agenda.AppointmentGroupImpl().withStyleClass("group0"));
@@ -295,53 +343,18 @@ public class AgendaTrial2 extends Application {
 				return null;
 			}
 		});
-		
-		// calendar picker
-		CalendarPicker lCalendarPicker = new CalendarPicker();
-		lCalendarPicker.setId("myCalendarPicker");
-		lCalendarPicker.calendarProperty().bindBidirectional(lAgenda.displayedCalendar());
-		
-		// image
-//		ImageView lImageView = new ImageView();
-		ImageView lImageView = new ImageView(new Image(this.getClass().getResourceAsStream("Bert frown-300gray.png")));
-		lImageView.getStyleClass().add("TheImage");
-        
-        // create scene
-        BorderPane lBorderPane = new BorderPane();
-        lBorderPane.getStyleClass().add("screen");
-        lBorderPane.setCenter(lAgenda);
-        VBox lVBox = new VBox(10.0);
-        lVBox.getChildren().add(lCalendarPicker);
-        
-        lVBox.getChildren().add(lImageView);
-        
-        lImageView.opacityProperty().set(0.0);
-        FadeTransition ft = new FadeTransition(Duration.millis(3000), lImageView);
-        ft.setFromValue(0.0);
-        ft.setToValue(1.0);
-        ft.delayProperty().set(Duration.millis(2000));
-        ft.play();
-        
-//        Timeline lTimeline = new Timeline();
-//        lImageView.opacityProperty().set(0.0);
-//        final KeyValue lKeyValueOpacity = new KeyValue(lImageView.opacityProperty(), 1.0);
-//        final KeyFrame lKeyFrame1 = new KeyFrame(Duration.millis(500), lKeyValueOpacity);
-//        lTimeline.getKeyFrames().addAll(lKeyFrame1);
-//        lTimeline.delayProperty().set(Duration.millis(2000));
-//        lTimeline.play();
-        
-//        lVBox.getChildren().add(new ToggleButton("test"));
-        lBorderPane.setLeft(lVBox);
-        
-		Scene scene = new Scene(lBorderPane, 1000, 600);
-        scene.getStylesheets().addAll(this.getClass().getResource(this.getClass().getSimpleName() + ".css").toExternalForm());
-
-        // create stage
-        stage.setTitle("Agenda");
-        stage.setScene(scene);
-        stage.show();	
     }
 	
+//  Timeline lTimeline = new Timeline();
+//  lImageView.opacityProperty().set(0.0);
+//  final KeyValue lKeyValueOpacity = new KeyValue(lImageView.opacityProperty(), 1.0);
+//  final KeyFrame lKeyFrame1 = new KeyFrame(Duration.millis(500), lKeyValueOpacity);
+//  lTimeline.getKeyFrames().addAll(lKeyFrame1);
+//  lTimeline.delayProperty().set(Duration.millis(2000));
+//  lTimeline.play();
+  
+//  lVBox.getChildren().add(new ToggleButton("test"));
+
 	/**
 	 * get the calendar for the first day of the week
 	 */

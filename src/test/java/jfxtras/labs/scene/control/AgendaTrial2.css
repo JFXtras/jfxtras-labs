@@ -1,5 +1,5 @@
 /* some whitespace */
-#myCalendarPicker {
+.CalendarPicker {
 	-fx-padding: 10px;
 }
 
@@ -166,7 +166,7 @@
 /* ---------- */
 
 /* duke approves */
-.TheImage {
+#TheImage {
 	-fx-image: url("Duke_Wave-300.png");
 	-fx-translate-x: 20px;
 	-fx-translate-y: 20px;
