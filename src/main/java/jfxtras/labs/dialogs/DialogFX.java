@@ -28,6 +28,7 @@ package jfxtras.labs.dialogs;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -122,10 +123,19 @@ public final class DialogFX extends Stage {
         buttonLabels = labels;
         
         for (int i=0; i<labels.size(); i++) {
-            Button btn = new Button(labels.get(i));
+            final Button btn = new Button(labels.get(i));
             
             btn.setDefaultButton(i==defaultBtn);
             btn.setCancelButton(i==cancelBtn);
+            
+            if ( i == defaultBtn ) {
+                Platform.runLater( new Runnable() {
+                    @Override
+                    public void run() {
+                        btn.requestFocus();
+                    }
+                } );
+            }
             
             buttonCancel = cancelBtn;
             
