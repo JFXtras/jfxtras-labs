@@ -37,7 +37,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javafx.animation.FadeTransitionBuilder;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -62,16 +61,15 @@ public class AgendaTrial2 extends Application {
         // create agenda
 		final Agenda lAgenda = new Agenda();		
 		
-		// calendar picker
+		// create calendar picker
 		CalendarPicker lCalendarPicker = new CalendarPicker();
-		lCalendarPicker.setCalendar(Calendar.getInstance()); // today
+		lCalendarPicker.setCalendar(Calendar.getInstance()); // set to today
 		
 		// bind picker to agenda
 		lAgenda.displayedCalendar().bind(lCalendarPicker.calendarProperty());
 		
 		// image
-//		ImageView lImageView = new ImageView();
-		ImageView lImageView = new ImageView(new Image(this.getClass().getResourceAsStream("Bert frown-300gray.png")));
+		ImageView lImageView = new ImageView();
 		lImageView.setId("TheImage");
         
         // layout scene
@@ -82,17 +80,6 @@ public class AgendaTrial2 extends Application {
 	        lVBox.getChildren().add(lImageView);
         lBorderPane.setLeft(lVBox);
         lBorderPane.getStyleClass().add("screen");
-        
-        // appear animation on image
-        lImageView.opacityProperty().set(0.0); // hide image
-        FadeTransitionBuilder.create()
-        	.node(lImageView)
-        	.delay(Duration.millis(2000))
-        	.fromValue(0.0)
-        	.toValue(1.0)
-        	.duration(Duration.millis(2000))
-        	.build()
-        	.play();
         
         // setup scene
 		Scene scene = new Scene(lBorderPane, 1000, 600);
@@ -105,6 +92,17 @@ public class AgendaTrial2 extends Application {
         stage.setScene(scene);
         stage.show();	
 
+        
+        // appear animation on image
+        lImageView.opacityProperty().set(0.0); // hide image
+        FadeTransitionBuilder.create()
+        	.node(lImageView)
+        	.delay(Duration.millis(2000))
+        	.fromValue(0.0)
+        	.toValue(1.0)
+        	.duration(Duration.millis(2000))
+        	.build()
+        	.play();
         
         
         

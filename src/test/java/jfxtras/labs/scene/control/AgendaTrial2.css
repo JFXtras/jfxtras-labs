@@ -1,9 +1,9 @@
-/* some whitespace */
+/* * some whitespace */
 .CalendarPicker {
 	-fx-padding: 10px;
 }
 
-/* calendar picker day buttons */
+/* * calendar picker day buttons */
 .CalendarPicker .day-button {
     -fx-padding: 5 12 5 12;   
     -fx-border-style: null; 
@@ -15,7 +15,7 @@
     -fx-text-fill: black;
 }
 
-/* calendar picker spinners */
+/* * calendar picker spinners */
 .CalendarPicker .ListSpinner {
     -fx-padding: 5 12 5 12;   
     -fx-border-style: null; 
@@ -27,7 +27,7 @@
     -fx-text-fill: black;
 }
 
-/* weekday label whitespace */
+/* * weekday label whitespace */
 .CalendarPicker .weekday-label {
     -fx-padding: 5 0 0 0;   
 }
@@ -43,7 +43,12 @@
     -fx-font-size: 13pt;
 }
 
-/* focus */
+/* highlight today */
+.CalendarPicker .today {
+    -fx-background-color: #aaaaaa;
+}
+
+/* * focus */
 .CalendarPicker .day-button:focused
 {
     -fx-border-color: black;
@@ -61,29 +66,19 @@
     -fx-background-insets: 0 0 0 0, 0, 1, 2;   
 }
 
-/* highlight today */
-.CalendarPicker .today {
-    -fx-background-color: #aaaaaa;
-}
-
 /* ------------ */
 
-/* let's give it some room on the top */
+/* * let's give it some room */
 .Agenda {
     -fx-padding: 10px;   
 }
 
-/* make the border go away 
-.Agenda .scroll-pane {
-    -fx-background-color: transparent;
-}
-*/
-
+/* * screen background */
 .screen {
     -fx-background-color: #eeeeee;
 }
 
-/* increase header font */
+/* * increase header font */
 .Agenda .DayHeader .Calendar {
     -fx-font-size: 12pt;
 }
@@ -100,7 +95,7 @@
 
 /* ------------ */
 
-/* ungradient scrollbar */
+/* * ungradient scrollbar */
 .scroll-bar {
     -fx-skin: "com.sun.javafx.scene.control.skin.ScrollBarSkin";
     -fx-background-color: null !important;
@@ -138,7 +133,7 @@
 
 /* ---------- */
 
-/* largers arrows */
+/* larger arrows */
 .ListSpinner .left-arrow { 
     -fx-shape: "M8,-8 L0,0 L8,8 L8,5 L4,0 L8,-5 Z";
     -fx-scale-shape: false;
