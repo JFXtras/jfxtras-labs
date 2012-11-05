@@ -90,6 +90,14 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
             control.setPrefSize(noOfStars * 32, 32);
         }
 
+        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
+            control.setMinSize(noOfStars * 8, noOfStars * 8);
+        }
+
+        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
+            control.setMaxSize(noOfStars * 256, noOfStars * 256);
+        }
+
         // Register listeners
         registerChangeListener(control.prefWidthProperty(), "PREF_WIDTH");
         registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");

@@ -78,6 +78,14 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
             control.setPrefSize(40, 56);
         }
 
+        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
+            control.setMinSize(8, 11);
+        }
+
+        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
+            control.setMaxSize(400, 560);
+        }
+
         createSegments();
         updateCharacter();
 

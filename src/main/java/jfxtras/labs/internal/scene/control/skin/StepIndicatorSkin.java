@@ -81,6 +81,14 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
             control.setPrefSize(noOfCircles * 60 + (noOfCircles - 1) * 20, 60);
         }
 
+        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
+            control.setMinSize(noOfCircles * 6 + (noOfCircles - 1) * 2, 6);
+        }
+
+        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
+            control.setMaxSize(noOfCircles * 600 + (noOfCircles - 1) * 200, 600);
+        }
+
         // Register listeners
         registerChangeListener(control.prefWidthProperty(), "PREF_WIDTH");
         registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");

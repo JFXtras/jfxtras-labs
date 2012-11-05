@@ -217,6 +217,15 @@ public class RadialHalfSSkin extends GaugeSkinBase<RadialHalfS, RadialHalfSBehav
         if (control.getPrefWidth() < 0 || control.getPrefHeight() < 0) {
             control.setPrefSize(PREF_SIZE.getWidth(), PREF_SIZE.getHeight());
         }
+
+        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
+            control.setMinSize(50, 50);
+        }
+
+        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
+            control.setMaxSize(1024, 1024);
+        }
+
         control.recalcRange();
 
         glowColors.clear();

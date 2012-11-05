@@ -88,6 +88,14 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
             control.setPrefSize(16, 16);
         }
 
+        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
+            control.setMinSize(5, 5);
+        }
+
+        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
+            control.setMaxSize(1024, 1024);
+        }
+
         led.getStyleClass().setAll("led");
 
         // Register listeners
