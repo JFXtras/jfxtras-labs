@@ -28,6 +28,9 @@
 package jfxtras.labs.util;
 
 import javafx.animation.Interpolator;
+import javafx.beans.binding.DoubleBinding;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -428,5 +431,33 @@ public class Util {
     public static Paint applyBrushedMetalBackground(final Shape SHAPE, final Color TEXTURE_COLOR) {
         final BrushedMetalPaint PAINT = new BrushedMetalPaint(TEXTURE_COLOR);
         return PAINT.apply(SHAPE);
+    }
+
+    public static DoubleBinding getMaxSquareSizeBinding(final DoubleProperty WIDTH_PROPERTY, final DoubleProperty HEIGHT_PROPERTY) {
+        final DoubleBinding MAX_SQUARE_SIZE = new DoubleBinding() {
+            {
+                super.bind(WIDTH_PROPERTY, HEIGHT_PROPERTY);
+            }
+
+            @Override protected double computeValue() {
+                final double VALUE = WIDTH_PROPERTY.get() < HEIGHT_PROPERTY.get() ? WIDTH_PROPERTY.get() : HEIGHT_PROPERTY.get();
+                return VALUE;
+            }
+        };
+        return MAX_SQUARE_SIZE;
+    }
+
+    public static DoubleBinding getMaxSquareSizeBinding(final ReadOnlyDoubleProperty WIDTH_PROPERTY, final ReadOnlyDoubleProperty HEIGHT_PROPERTY) {
+        final DoubleBinding MAX_SQUARE_SIZE = new DoubleBinding() {
+            {
+                super.bind(WIDTH_PROPERTY, HEIGHT_PROPERTY);
+            }
+
+            @Override protected double computeValue() {
+                double VALUE = WIDTH_PROPERTY.get() < HEIGHT_PROPERTY.get() ? WIDTH_PROPERTY.get() : HEIGHT_PROPERTY.get();
+                return VALUE;
+            }
+        };
+        return MAX_SQUARE_SIZE;
     }
 }
