@@ -180,6 +180,18 @@ public class Agenda extends Control
 	public void setCreateAppointmentCallback(Callback<CalendarRange, Appointment> value) { this.createAppointmentCallbackObjectProperty.setValue(value); }
 	public Agenda withCreateAppointmentCallback(Callback<CalendarRange, Appointment> value) { setCreateAppointmentCallback(value); return this; }
 	
+	/** editAppointmentCallback:
+	 * Agenda has a default popup, but maybe you want to do something yourself.
+	 * If so, you need to set this callback method and open your own window.
+	 * Because Agenda does not dictate a event/callback in the implementation of appointment, it has no way of being informed of changes on the appointment.
+	 * So when the custom edit is done, make sure that control gets updated, if this does not happen automatically through any of the existing listeners, then call refresh(). 
+	 */
+	public ObjectProperty<Callback<Appointment, Void>> editAppointmentCallbackProperty() { return editAppointmentCallbackObjectProperty; }
+	final private ObjectProperty<Callback<Appointment, Void>> editAppointmentCallbackObjectProperty = new SimpleObjectProperty<Callback<Appointment, Void>>(this, "editAppointmentCallback", null);
+	public Callback<Appointment, Void> getEditAppointmentCallback() { return this.editAppointmentCallbackObjectProperty.getValue(); }
+	public void setEditAppointmentCallback(Callback<Appointment, Void> value) { this.editAppointmentCallbackObjectProperty.setValue(value); }
+	public Agenda withEditAppointmentCallback(Callback<Appointment, Void> value) { setEditAppointmentCallback(value); return this; }
+	
 	/**
 	 * A Calendar range
 	 */
@@ -196,6 +208,19 @@ public class Agenda extends Control
 		
 		public Calendar getEndCalendar() { return end; }
 		Calendar end; 
+	}
+	
+	/**
+	 * Force the agenda to completely refresh itself
+	 */
+	public void refresh()
+	{
+		((AgendaSkin)getSkin()).refresh();
+	}
+	
+	public static interface AgendaSkin
+	{
+		public void refresh();
 	}
 
 	// ==================================================================================================================

@@ -6,7 +6,7 @@
 .AgendaWeekSkin { 
 }
 
-.AgendaWeekSkin .WeekPane {
+.AgendaWeekSkin .Week {
 	-fx-background-color: WHITE;
 }
 
@@ -136,7 +136,7 @@
 	-fx-fill: #FFFFFF70;
 }
 
-.AgendaWeekSkin_popup {
+.AgendaPopup {
 	-fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
 	-fx-background-insets: 0 0 -1 0,0,1,2;
 	-fx-background-radius: 5,5,4,3;
@@ -144,10 +144,10 @@
 	-fx-text-fill: -fx-text-base-color;
 }
 
-.AgendaWeekSkin_popup .AppointmentGroups {
+.AgendaPopup .AppointmentGroups {
 }
 
-.AgendaWeekSkin_popup .AppointmentGroup {
+.AgendaPopup .AppointmentGroup {
 	-fx-border-color: WHITE;
 	-fx-border-width: 1px;
 }

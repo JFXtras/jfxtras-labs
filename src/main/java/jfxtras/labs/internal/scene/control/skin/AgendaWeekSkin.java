@@ -23,7 +23,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// TODO: refactor the layout code in showMenu
 // TODO: manual edit of all properties, location, description
 // TODO: why does the "horizontal scrollbar" whitespace appear when viewport > min required? JFX bug?
 // TODO: concept of tasks; appointment with only a start date (not whole day). Rendered as a line. 
@@ -79,6 +78,7 @@ import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.WindowEvent;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import jfxtras.labs.animation.Timer;
 import jfxtras.labs.internal.scene.control.behavior.AgendaBehavior;
@@ -93,6 +93,7 @@ import com.sun.javafx.scene.control.skin.SkinBase;
  * @author Tom Eugelink
  */
 public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
+implements Agenda.AgendaSkin
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -211,7 +212,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		// place the now line
 		nowUpdateRunnable.run(); 
 		
-		// tell the skin what range is displayed, so it can update the appointments
+		// tell the control what range is displayed, so it can update the appointments
 		if (getSkinnable().getCalendarRangeCallback() != null)
 		{
 			Agenda.CalendarRange lCalendarRange = new Agenda.CalendarRange(lStartCalendar, lEndCalendar);
@@ -264,6 +265,17 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		nowUpdateRunnable.run(); // set the history
 	}
 
+	/**
+	 * 
+	 */
+	public void refresh()
+	{
+		refreshLocale();
+		assignCalendarToTheDayPanes();
+		setupAppointments();
+		setOrRemoveSelected();
+		nowUpdateRunnable.run(); 
+	}
 	
 	// ==================================================================================================================
 	// DRAW
@@ -505,7 +517,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		 */
 		public WeekPane()
 		{
-			getStyleClass().add("WeekPane");
+			getStyleClass().add("Week");
 			
 			// draw hours
 			for (int lHour = 0; lHour < 24; lHour++)
@@ -1623,6 +1635,14 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 	 */
 	private void showMenu(MouseEvent evt, final AbstractAppointmentPane abstractAppointmentPane)
 	{
+		// has the client done his own popup?
+		Callback<Appointment, Void> lEditCallback = getSkinnable().getEditAppointmentCallback();
+		if (lEditCallback != null)
+		{
+			lEditCallback.call(abstractAppointmentPane.appointment);
+			return;
+		}
+		
 		// create popup
 		final Popup lPopup = new Popup();
 		lPopup.setAutoFix(true);
@@ -1638,7 +1658,7 @@ public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
 		});
 
 		BorderPane lBorderPane = new BorderPane();
-		lBorderPane.getStyleClass().add(this.getClass().getSimpleName() + "_popup");
+		lBorderPane.getStyleClass().add(getSkinnable().getClass().getSimpleName() + "Popup");
 		lPopup.getContent().add(lBorderPane);
 		
 		// close icon

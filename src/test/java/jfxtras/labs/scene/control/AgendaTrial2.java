@@ -36,15 +36,22 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javafx.animation.FadeTransitionBuilder;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import jfxtras.labs.scene.control.Agenda.Appointment;
 import jfxtras.labs.scene.control.Agenda.AppointmentGroup;
 import jfxtras.labs.scene.control.Agenda.CalendarRange;
+import jfxtras.labs.util.NodeUtil;
 
 /**
  * @author Tom Eugelink
@@ -69,7 +76,7 @@ public class AgendaTrial2 extends Application {
 		lAgenda.displayedCalendar().bind(lCalendarPicker.calendarProperty());
 		
 		// image
-		ImageView lImageView = new ImageView();
+		final ImageView lImageView = new ImageView();
 		lImageView.setId("TheImage");
         
         // layout scene
@@ -104,10 +111,31 @@ public class AgendaTrial2 extends Application {
         	.build()
         	.play();
         
-        
-        
-        
-        
+        lAgenda.editAppointmentCallbackProperty().set(new Callback<Agenda.Appointment, Void>()
+		{
+			@Override
+			public Void call(final Appointment appointment)
+			{
+				// create popup
+				final Popup lPopup = new Popup();
+				Button lButton = new Button("Close custom popup");
+				lButton.setPrefWidth(lImageView.getImage().getWidth());
+				lButton.setPrefHeight(lImageView.getImage().getHeight());
+				lButton.setOnAction(new EventHandler<ActionEvent>()
+				{
+					@Override
+					public void handle(ActionEvent evt)
+					{
+						lPopup.hide();
+						appointment.setSummary("custom popup");
+						lAgenda.refresh();
+					}
+				});
+				lPopup.getContent().add(lButton);
+				lPopup.show(lImageView, NodeUtil.screenX(lImageView), NodeUtil.screenY(lImageView));
+				return null;
+			}
+		});
         
 		// setup appointment groups
 		final Map<String, Agenda.AppointmentGroup> lAppointmentGroupMap = new TreeMap<String, Agenda.AppointmentGroup>();

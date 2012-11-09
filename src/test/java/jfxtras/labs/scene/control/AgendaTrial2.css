@@ -147,7 +147,7 @@
 /* ---------- */
 
 /* no gradient popup */
-.AgendaWeekSkin_popup {
+.AgendaPopup {
     -fx-padding: 5;   
     -fx-border-color: #555555;
     -fx-background-radius: 0;
@@ -165,4 +165,8 @@
 	-fx-image: url("Duke_Wave-300.png");
 	-fx-translate-x: 20px;
 	-fx-translate-y: 20px;
+}
+
+.Agenda .Weekx {
+	-fx-background-image: url("Duke_Wave-300.png");
 }
