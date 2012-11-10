@@ -95,7 +95,7 @@ public class AgendaTrial2 extends Application {
         scene.getStylesheets().addAll(this.getClass().getResource(this.getClass().getSimpleName() + ".css").toExternalForm());
 
         // create stage
-        stage.setTitle("Agenda");
+        stage.setTitle(this.getClass().getSimpleName());
         stage.setScene(scene);
         stage.show();	
 

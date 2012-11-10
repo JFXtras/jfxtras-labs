@@ -127,7 +127,7 @@ public class CalendarTimeTextFieldTrial1 extends Application {
         Scene scene = new Scene(lHBox, 800, 600);
 
         // create stage
-        stage.setTitle("CalendarTextBox");
+        stage.setTitle(this.getClass().getSimpleName());
         stage.setScene(scene);
         stage.show();
     }
