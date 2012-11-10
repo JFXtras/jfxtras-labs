@@ -1,6 +1,7 @@
 package jfxtras.labs.scene.layout;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Priority;
@@ -21,8 +22,9 @@ public class VBoxTrial1 extends Application
 		lVBox.add(new Button("short"), new VBox.C().vgrow(Priority.ALWAYS));
 		lVBox.add(new Button("medium length"), new VBox.C().vgrow(Priority.ALWAYS));
 		lVBox.add(new Button("a longer description in order to test things"), new VBox.C().vgrow(Priority.ALWAYS));
-		Button b = new Button("old style");
-		lVBox.getChildren().add(b);
+		lVBox.add(new Button("margin 5 grow"), new VBox.C().margin(new Insets(5.0)).vgrow(Priority.ALWAYS));
+		lVBox.getChildren().add(new Button("old style"));
+		lVBox.add(new Button("margin 20"), new VBox.C().margin(new Insets(20.0)));
 				
         // setup scene
 		Scene scene = new Scene(lVBox, 300, 200);

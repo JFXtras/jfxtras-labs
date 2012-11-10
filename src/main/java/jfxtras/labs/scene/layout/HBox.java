@@ -6,21 +6,21 @@ import javafx.collections.ListChangeListener;
 import javafx.scene.Node;
 
 /**
- * A drop-in replace ment for JavaFX's VBox using layout constraints.
+ * A drop-in replace ment for JavaFX's HBox using layout constraints.
  * So instead of:
- * 	VBox lVBox = new VBox(5.0);		
+ * 	HBox lHBox = new HBox(5.0);		
  * 	Button b1 = new Button("short");
- * 	lVBox.getChildren().add(b1);
- * 	VBox.setVgrow(b1, Priority.ALWAYS); 
+ * 	lHBox.getChildren().add(b1);
+ * 	HBox.setHgrow(b1, Priority.ALWAYS); 
  *
  * You can write:
- * 	VBox lVBox = new VBox(5.0);		
- *  lVBox.add(new Button("short"), new VBox.C().vgrow(Priority.ALWAYS));
+ * 	HBox lHBox = new HBox(5.0);		
+ *  lHBox.add(new Button("short"), new HBox.C().hgrow(Priority.ALWAYS));
  * 
  * @author Tom Eugelink
  *
  */
-public class VBox extends javafx.scene.layout.VBox
+public class HBox extends javafx.scene.layout.HBox
 {
 	// ========================================================================================================================================================
 	// Constructors
@@ -28,7 +28,7 @@ public class VBox extends javafx.scene.layout.VBox
 	/**
 	 * 
 	 */
-	public VBox()
+	public HBox()
 	{
 		super();
 		construct();
@@ -38,7 +38,7 @@ public class VBox extends javafx.scene.layout.VBox
 	 * 
 	 * @param spacing
 	 */
-	public VBox(double spacing)
+	public HBox(double spacing)
 	{
 		super(spacing);
 		construct();
@@ -74,7 +74,7 @@ public class VBox extends javafx.scene.layout.VBox
 	 * @param value
 	 * @return
 	 */
-	public VBox withSpacing(double value)
+	public HBox withSpacing(double value)
 	{
 		super.setSpacing(value);
 		return this;
@@ -90,13 +90,13 @@ public class VBox extends javafx.scene.layout.VBox
 	 */
 	public static class C extends LayoutUtil.C
 	{
-		// vgrow
-		public C vgrow(javafx.scene.layout.Priority value) { this.priority = value; return this; }
+		// hgrow
+		public C hgrow(javafx.scene.layout.Priority value) { this.priority = value; return this; }
 		private javafx.scene.layout.Priority priority = null;
 		
 		// margin
 		public C margin(javafx.geometry.Insets value) { this.margin= value; return this; }
-		javafx.geometry.Insets margin = null;
+		private javafx.geometry.Insets margin = null;
 	}
 	
 	/**
@@ -116,12 +116,12 @@ public class VBox extends javafx.scene.layout.VBox
 		// apply constraints
 		if (lC.priority != null) 
 		{
-			LayoutUtil.setMaxWidth(node, lC);
-			javafx.scene.layout.VBox.setVgrow(node, lC.priority);
+			LayoutUtil.setMaxHeight(node, lC);
+			javafx.scene.layout.HBox.setHgrow(node, lC.priority);
 		}
 		if (lC.margin != null) 
 		{
-			javafx.scene.layout.VBox.setMargin(node, lC.margin);
+			javafx.scene.layout.HBox.setMargin(node, lC.margin);
 		}
 	}
 	
