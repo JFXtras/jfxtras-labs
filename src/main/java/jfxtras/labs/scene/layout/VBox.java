@@ -6,7 +6,7 @@ import javafx.collections.ListChangeListener;
 import javafx.scene.Node;
 
 /**
- * A drop-in replace ment for JavaFX's VBox using layout constraints.
+ * A drop-in replacement for JavaFX's VBox using layout constraints.
  * So instead of:
  * 	VBox lVBox = new VBox(5.0);		
  * 	Button b1 = new Button("short");
@@ -88,7 +88,7 @@ public class VBox extends javafx.scene.layout.VBox
 	 * The layout constraints
 	 *
 	 */
-	public static class C extends LayoutUtil.C
+	public static class C extends LayoutUtil.C<C>
 	{
 		// vgrow
 		public C vgrow(javafx.scene.layout.Priority value) { this.priority = value; return this; }
@@ -116,7 +116,7 @@ public class VBox extends javafx.scene.layout.VBox
 		// apply constraints
 		if (lC.priority != null) 
 		{
-			LayoutUtil.setMaxWidth(node, lC);
+			LayoutUtil.overrideMaxWidth(node, lC);
 			javafx.scene.layout.VBox.setVgrow(node, lC.priority);
 		}
 		if (lC.margin != null) 

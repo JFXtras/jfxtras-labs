@@ -24,10 +24,11 @@ public class VBoxTrial1 extends Application
 		lVBox.add(new Button("a longer description in order to test things"), new VBox.C().vgrow(Priority.ALWAYS));
 		lVBox.add(new Button("margin 5 grow"), new VBox.C().margin(new Insets(5.0)).vgrow(Priority.ALWAYS));
 		lVBox.getChildren().add(new Button("old style"));
-		lVBox.add(new Button("margin 20"), new VBox.C().margin(new Insets(20.0)));
+		lVBox.add(new Button("margin 20 nogrow"), new VBox.C().margin(new Insets(20.0)));
+		lVBox.add(new Button("grow maxwidth 150"), new VBox.C().vgrow(Priority.ALWAYS).maxWidth(150.0));
 				
         // setup scene
-		Scene scene = new Scene(lVBox, 300, 200);
+		Scene scene = new Scene(lVBox, 300, 400);
 		
         // create stage
         stage.setTitle(this.getClass().getSimpleName());

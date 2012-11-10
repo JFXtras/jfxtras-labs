@@ -6,7 +6,7 @@ import javafx.collections.ListChangeListener;
 import javafx.scene.Node;
 
 /**
- * A drop-in replace ment for JavaFX's HBox using layout constraints.
+ * A drop-in replacement for JavaFX's HBox using layout constraints.
  * So instead of:
  * 	HBox lHBox = new HBox(5.0);		
  * 	Button b1 = new Button("short");
@@ -88,7 +88,7 @@ public class HBox extends javafx.scene.layout.HBox
 	 * The layout constraints
 	 *
 	 */
-	public static class C extends LayoutUtil.C
+	public static class C extends LayoutUtil.C<C>
 	{
 		// hgrow
 		public C hgrow(javafx.scene.layout.Priority value) { this.priority = value; return this; }
@@ -116,7 +116,7 @@ public class HBox extends javafx.scene.layout.HBox
 		// apply constraints
 		if (lC.priority != null) 
 		{
-			LayoutUtil.setMaxHeight(node, lC);
+			LayoutUtil.overrideMaxHeight(node, lC);
 			javafx.scene.layout.HBox.setHgrow(node, lC.priority);
 		}
 		if (lC.margin != null) 
