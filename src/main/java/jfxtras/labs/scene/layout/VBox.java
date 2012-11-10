@@ -2,6 +2,7 @@ package jfxtras.labs.scene.layout;
 
 import java.util.WeakHashMap;
 
+import javafx.collections.ListChangeListener;
 import javafx.scene.Node;
 
 /**
@@ -30,6 +31,7 @@ public class VBox extends javafx.scene.layout.VBox
 	public VBox()
 	{
 		super();
+		construct();
 	}
 	
 	/**
@@ -39,6 +41,28 @@ public class VBox extends javafx.scene.layout.VBox
 	public VBox(double spacing)
 	{
 		super(spacing);
+		construct();
+	}
+
+	/**
+	 * 
+	 */
+	private void construct()
+	{
+		getChildren().addListener(new ListChangeListener<Node>()
+		{
+			@Override
+			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Node> changes)
+			{
+				while (changes.next())
+				{
+					for (Node lNode : changes.getAddedSubList())
+					{
+						applyConstraints(lNode);
+					}
+				}
+			}
+		});
 	}
 	
 	
@@ -69,9 +93,6 @@ public class VBox extends javafx.scene.layout.VBox
 		
 		// add node
 		getChildren().add(node);
-		
-		// apply the constraints
-		applyConstraints(node);
 	}
 
 	/**
@@ -122,7 +143,7 @@ public class VBox extends javafx.scene.layout.VBox
 	{
 		// get constraints
 		C lC = cMap.get(node);
-		if (lC == null) throw new IllegalStateException("No constraints for node " + node);
+		if (lC == null) return; // old style is also allowed (for easy migration)
 		
 		// sanatize the node
 		LayoutUtil.sanatizeNodeReset(node);
