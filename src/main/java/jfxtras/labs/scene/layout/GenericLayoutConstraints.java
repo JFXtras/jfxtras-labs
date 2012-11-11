@@ -2,7 +2,7 @@ package jfxtras.labs.scene.layout;
 
 import javafx.scene.Node;
 
-public class GenericLayoutConstraints
+class GenericLayoutConstraints
 {
 	/**
 	 * The layout constraints

@@ -93,9 +93,9 @@ public class VBox extends javafx.scene.layout.VBox
 	public static class C extends GenericLayoutConstraints.C<C>
 	{
 		// vgrow
-		public C vgrow(javafx.scene.layout.Priority value) { this.priority = value; return this; }
-		private javafx.scene.layout.Priority priority = null;
-		private javafx.scene.layout.Priority priorityReset = null;
+		public C vgrow(javafx.scene.layout.Priority value) { this.vgrow = value; return this; }
+		private javafx.scene.layout.Priority vgrow = null;
+		private javafx.scene.layout.Priority vgrowReset = null;
 		
 		// margin
 		public C margin(javafx.geometry.Insets value) { this.margin= value; return this; }
@@ -108,7 +108,7 @@ public class VBox extends javafx.scene.layout.VBox
 		protected void rememberResetValues(Node node)
 		{
 			super.rememberResetValues(node);
-			priorityReset = javafx.scene.layout.VBox.getVgrow(node);
+			vgrowReset = javafx.scene.layout.VBox.getVgrow(node);
 			marginReset = javafx.scene.layout.VBox.getMargin(node);
 		}
 		
@@ -122,8 +122,8 @@ public class VBox extends javafx.scene.layout.VBox
 			super.apply(node);
 
 			// apply constraints
-			if (priority != null) GenericLayoutConstraints.overrideMaxWidth(node, this);
-			javafx.scene.layout.VBox.setVgrow(node, priority != null ? priority : priorityReset);
+			if (vgrow != null) GenericLayoutConstraints.overrideMaxWidth(node, this);
+			javafx.scene.layout.VBox.setVgrow(node, vgrow != null ? vgrow : vgrowReset);
 			javafx.scene.layout.VBox.setMargin(node, margin != null ? margin : marginReset);
 		}
 	}

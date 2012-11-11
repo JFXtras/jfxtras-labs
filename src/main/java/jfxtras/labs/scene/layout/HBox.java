@@ -94,12 +94,12 @@ public class HBox extends javafx.scene.layout.HBox
 	public static class C extends GenericLayoutConstraints.C<C>
 	{
 		// hgrow
-		public C hgrow(javafx.scene.layout.Priority value) { this.priority = value; return this; }
-		private javafx.scene.layout.Priority priority = null;
-		private javafx.scene.layout.Priority priorityReset = null;
+		public C hgrow(javafx.scene.layout.Priority value) { this.hgrow = value; return this; }
+		private javafx.scene.layout.Priority hgrow = null;
+		private javafx.scene.layout.Priority hgrowReset = null;
 		
 		// margin
-		public C margin(javafx.geometry.Insets value) { this.margin= value; return this; }
+		public C margin(javafx.geometry.Insets value) { this.margin = value; return this; }
 		private javafx.geometry.Insets margin = null;
 		private javafx.geometry.Insets marginReset = null;
 		
@@ -109,7 +109,7 @@ public class HBox extends javafx.scene.layout.HBox
 		protected void rememberResetValues(Node node)
 		{
 			super.rememberResetValues(node);
-			priorityReset = javafx.scene.layout.HBox.getHgrow(node);
+			hgrowReset = javafx.scene.layout.HBox.getHgrow(node);
 			marginReset = javafx.scene.layout.HBox.getMargin(node);
 		}
 		
@@ -123,8 +123,8 @@ public class HBox extends javafx.scene.layout.HBox
 			super.apply(node);
 
 			// apply constraints
-			if (priority != null) GenericLayoutConstraints.overrideMaxHeight(node, this);
-			javafx.scene.layout.HBox.setHgrow(node, priority != null ? priority : priorityReset);
+			if (hgrow != null) GenericLayoutConstraints.overrideMaxHeight(node, this);
+			javafx.scene.layout.HBox.setHgrow(node, hgrow != null ? hgrow : hgrowReset);
 			javafx.scene.layout.HBox.setMargin(node, margin != null ? margin : marginReset);
 		}
 	}
