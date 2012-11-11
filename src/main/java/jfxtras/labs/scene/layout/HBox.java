@@ -16,7 +16,9 @@ import javafx.scene.Node;
  * You can write:
  * 	HBox lHBox = new HBox(5.0);		
  *  lHBox.add(new Button("short"), new HBox.C().hgrow(Priority.ALWAYS));
- * 
+ *
+ * This class is not a reimplementation of HBox, but only applies a different API.
+ *   
  * @author Tom Eugelink
  *
  */
@@ -58,7 +60,8 @@ public class HBox extends javafx.scene.layout.HBox
 				{
 					for (Node lNode : changes.getAddedSubList())
 					{
-						applyConstraints(lNode);
+						C lC = cMap.get(lNode);
+						if (lC != null) lC.apply(lNode);
 					}
 				}
 			}
@@ -88,40 +91,41 @@ public class HBox extends javafx.scene.layout.HBox
 	 * The layout constraints
 	 *
 	 */
-	public static class C extends LayoutUtil.C<C>
+	public static class C extends GenericLayoutConstraints.C<C>
 	{
 		// hgrow
 		public C hgrow(javafx.scene.layout.Priority value) { this.priority = value; return this; }
 		private javafx.scene.layout.Priority priority = null;
+		private javafx.scene.layout.Priority priorityReset = null;
 		
 		// margin
 		public C margin(javafx.geometry.Insets value) { this.margin= value; return this; }
 		private javafx.geometry.Insets margin = null;
-	}
-	
-	/**
-	 * 
-	 * @param node
-	 */
-	private void applyConstraints(Node node)
-	{
-		// get constraints
-		C lC = cMap.get(node);
-		if (lC == null) return; // old style is also allowed (for easy migration)
+		private javafx.geometry.Insets marginReset = null;
 		
-		// sanatize the node
-		LayoutUtil.resetSizesToDefault(node);
-		LayoutUtil.applyConstraints(node,  lC);
-
-		// apply constraints
-		if (lC.priority != null) 
+		/**
+		 * @param node
+		 */
+		protected void rememberResetValues(Node node)
 		{
-			LayoutUtil.overrideMaxHeight(node, lC);
-			javafx.scene.layout.HBox.setHgrow(node, lC.priority);
+			super.rememberResetValues(node);
+			priorityReset = javafx.scene.layout.HBox.getHgrow(node);
+			marginReset = javafx.scene.layout.HBox.getMargin(node);
 		}
-		if (lC.margin != null) 
+		
+		/**
+		 * 
+		 * @param node
+		 */
+		protected void apply(Node node)
 		{
-			javafx.scene.layout.HBox.setMargin(node, lC.margin);
+			// sanatize the node
+			super.apply(node);
+
+			// apply constraints
+			if (priority != null) GenericLayoutConstraints.overrideMaxHeight(node, this);
+			javafx.scene.layout.HBox.setHgrow(node, priority != null ? priority : priorityReset);
+			javafx.scene.layout.HBox.setMargin(node, margin != null ? margin : marginReset);
 		}
 	}
 	
@@ -146,6 +150,7 @@ public class HBox extends javafx.scene.layout.HBox
 	{
 		// remember constraints
 		cMap.put(node, c);
+		c.rememberResetValues(node);
 		
 		// add node
 		getChildren().add(node);
@@ -171,6 +176,7 @@ public class HBox extends javafx.scene.layout.HBox
 	{
 		// remember constraints
 		cMap.put(node, c);
+		c.rememberResetValues(node);
 	}
 
 	/**

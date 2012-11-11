@@ -2,7 +2,7 @@ package jfxtras.labs.scene.layout;
 
 import javafx.scene.Node;
 
-public class LayoutUtil
+public class GenericLayoutConstraints
 {
 	/**
 	 * The layout constraints
@@ -13,65 +13,76 @@ public class LayoutUtil
 		// minWidth
 		public T minWidth(double value) { this.minWidth = value; return (T)this; }
 		double minWidth = -1;
+		double minWidthReset = UNKNOWN;
 		
 		// prefWidth
 		public T prefWidth(double value) { this.prefWidth = value; return (T)this; }
 		double prefWidth = -1;
+		double prefWidthReset = UNKNOWN;
 		
 		// maxWidth
 		public T maxWidth(double value) { this.maxWidth = value; return (T)this; }
 		double maxWidth = -1;
-		
+		double maxWidthReset = UNKNOWN;
+
 		// minHeight
 		public T minHeight(double value) { this.minHeight = value; return (T)this; }
 		double minHeight = -1;
-		
+		double minHeightReset = UNKNOWN;
+
 		// prefHeight
 		public T prefHeight(double value) { this.prefHeight = value; return (T)this; }
 		double prefHeight = -1;
+		double prefHeightReset = UNKNOWN;
 		
 		// maxHeight
 		public T maxHeight(double value) { this.maxHeight = value; return (T)this; }
 		double maxHeight = -1;
-	}
-	
-	/**
-	 * 
-	 * @param node
-	 * @param c
-	 */
-	static public void applyConstraints(Node node, C c)
-	{
-		if (node instanceof javafx.scene.control.Control)
-		{
-			javafx.scene.control.Control lControl = (javafx.scene.control.Control)node;
-			if (c.minWidth >= 0) lControl.setMinWidth(c.minWidth);
-			if (c.prefWidth >= 0) lControl.setMinWidth(c.prefWidth);
-			if (c.maxWidth >= 0) lControl.setMinWidth(c.maxWidth);
-			if (c.minHeight >= 0) lControl.setMinHeight(c.minHeight);
-			if (c.prefHeight >= 0) lControl.setMinHeight(c.prefHeight);
-			if (c.maxHeight >= 0) lControl.setMinHeight(c.maxHeight);
-		}
-	}
-	
-	/**
-	 * 
-	 */
-	static public void resetSizesToDefault(Node node)
-	{
-		// just to prevent problems
-		if (node == null) return;
+		double maxHeightReset = UNKNOWN;
 		
-		// make things go away
-		if ( node instanceof javafx.scene.control.Button
-		  || node instanceof javafx.scene.control.ToggleButton
-		   )
+		/**
+		 * @param node
+		 */
+		protected void rememberResetValues(Node node)
 		{
-			javafx.scene.control.Control lControl = (javafx.scene.control.Control)node;
-			lControl.setMaxWidth(lControl.getPrefWidth());
-			lControl.setMaxHeight(lControl.getPrefHeight());
+			if (node instanceof javafx.scene.control.Control)
+			{
+				javafx.scene.control.Control lControl = (javafx.scene.control.Control)node;
+				
+				// setup the reset values on the first apply
+				if (minWidthReset == UNKNOWN) minWidthReset = lControl.getMinWidth();
+				if (prefWidthReset == UNKNOWN) prefWidthReset = lControl.getPrefWidth();
+				if (maxWidthReset == UNKNOWN) maxWidthReset = lControl.getMaxWidth();
+				if (minHeightReset == UNKNOWN) minHeightReset = lControl.getMinHeight();
+				if (prefHeightReset == UNKNOWN) prefHeightReset = lControl.getPrefHeight();
+				if (maxHeightReset == UNKNOWN) maxHeightReset = lControl.getMaxHeight();
+			}
 		}
+		
+		/**
+		 * @param node
+		 */
+		protected void apply(Node node)
+		{
+			if (node instanceof javafx.scene.control.Control)
+			{
+				javafx.scene.control.Control lControl = (javafx.scene.control.Control)node;
+				
+				// setup the reset values on the first apply
+				rememberResetValues(lControl);
+				
+				// either set or reset values
+				lControl.setMinWidth(minWidth >= 0 ? minWidth : minWidthReset);
+				lControl.setPrefWidth(prefWidth >= 0 ? prefWidth : prefWidthReset);
+				lControl.setMaxWidth(maxWidth >= 0 ? maxWidth : maxWidthReset);
+				lControl.setMinHeight(minHeight >= 0 ? minHeight : minHeightReset);
+				lControl.setPrefHeight(prefHeight >= 0 ? prefHeight : prefHeightReset);
+				lControl.setMaxHeight(maxHeight >= 0 ? maxHeight : maxHeightReset);
+			}
+		}
+		
 	}
+	static final double UNKNOWN = -1234;
 	
 	/**
 	 * 

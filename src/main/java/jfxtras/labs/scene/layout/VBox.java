@@ -16,6 +16,8 @@ import javafx.scene.Node;
  * You can write:
  * 	VBox lVBox = new VBox(5.0);		
  *  lVBox.add(new Button("short"), new VBox.C().vgrow(Priority.ALWAYS));
+ *  
+ * This class is not a reimplementation of VBox, but only applies a different API.
  * 
  * @author Tom Eugelink
  *
@@ -58,7 +60,8 @@ public class VBox extends javafx.scene.layout.VBox
 				{
 					for (Node lNode : changes.getAddedSubList())
 					{
-						applyConstraints(lNode);
+						C lC = cMap.get(lNode);
+						if (lC != null) lC.apply(lNode);
 					}
 				}
 			}
@@ -86,42 +89,42 @@ public class VBox extends javafx.scene.layout.VBox
 	
 	/**
 	 * The layout constraints
-	 *
 	 */
-	public static class C extends LayoutUtil.C<C>
+	public static class C extends GenericLayoutConstraints.C<C>
 	{
 		// vgrow
 		public C vgrow(javafx.scene.layout.Priority value) { this.priority = value; return this; }
 		private javafx.scene.layout.Priority priority = null;
+		private javafx.scene.layout.Priority priorityReset = null;
 		
 		// margin
 		public C margin(javafx.geometry.Insets value) { this.margin= value; return this; }
 		javafx.geometry.Insets margin = null;
-	}
-	
-	/**
-	 * 
-	 * @param node
-	 */
-	private void applyConstraints(Node node)
-	{
-		// get constraints
-		C lC = cMap.get(node);
-		if (lC == null) return; // old style is also allowed (for easy migration)
+		javafx.geometry.Insets marginReset = null;
 		
-		// sanatize the node
-		LayoutUtil.resetSizesToDefault(node);
-		LayoutUtil.applyConstraints(node,  lC);
-
-		// apply constraints
-		if (lC.priority != null) 
+		/**
+		 * @param node
+		 */
+		protected void rememberResetValues(Node node)
 		{
-			LayoutUtil.overrideMaxWidth(node, lC);
-			javafx.scene.layout.VBox.setVgrow(node, lC.priority);
+			super.rememberResetValues(node);
+			priorityReset = javafx.scene.layout.VBox.getVgrow(node);
+			marginReset = javafx.scene.layout.VBox.getMargin(node);
 		}
-		if (lC.margin != null) 
+		
+		/**
+		 * 
+		 * @param node
+		 */
+		protected void apply(Node node)
 		{
-			javafx.scene.layout.VBox.setMargin(node, lC.margin);
+			// sanatize the node
+			super.apply(node);
+
+			// apply constraints
+			if (priority != null) GenericLayoutConstraints.overrideMaxWidth(node, this);
+			javafx.scene.layout.VBox.setVgrow(node, priority != null ? priority : priorityReset);
+			javafx.scene.layout.VBox.setMargin(node, margin != null ? margin : marginReset);
 		}
 	}
 	
@@ -129,9 +132,10 @@ public class VBox extends javafx.scene.layout.VBox
 	 * The collection of layout constraints
 	 */
 	private WeakHashMap<Node, C> cMap = new WeakHashMap<>();
-	
+
 	/**
-	 * Add
+	 * 
+	 * @param node
 	 */
 	public void add(Node node)
 	{
@@ -140,12 +144,15 @@ public class VBox extends javafx.scene.layout.VBox
 	}
 
 	/**
-	 * Add
+	 * 
+	 * @param node
+	 * @param c
 	 */
 	public void add(Node node, C c)
 	{
 		// remember constraints
 		cMap.put(node, c);
+		c.rememberResetValues(node);
 		
 		// add node
 		getChildren().add(node);
@@ -165,12 +172,15 @@ public class VBox extends javafx.scene.layout.VBox
 	}
 
 	/**
-	 * set constraint without adding the node (in case the node might end up here because of an animation or something) 
+	 * set constraint without adding the node (in case the node might end up here because of an animation or something)
+	 * @param node
+	 * @param c
 	 */
 	public void setConstraint(Node node, C c)
 	{
 		// remember constraints
 		cMap.put(node, c);
+		c.rememberResetValues(node);
 	}
 
 	/**
