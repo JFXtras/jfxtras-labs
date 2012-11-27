@@ -29,6 +29,7 @@ package jfxtras.labs.util;
 import javafx.geometry.Bounds;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcTo;
+import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.CubicCurve;
@@ -93,9 +94,38 @@ public class ShapeConverter {
     }
 
     private static String convertArc(final Arc ARC) {
-        final StringBuilder fxPath = new StringBuilder();
-        fxPath.append("A ").append(ARC.getCenterX()).append(" ").append(ARC.getCenterY()).append(" ")
-              .append(ARC.getRadiusX()).append(" ").append(ARC.getRadiusY());
+        StringBuilder fxPath = new StringBuilder();
+        double centerX    = ARC.getCenterX();
+        double centerY    = ARC.getCenterY();
+        double radiusX    = ARC.getRadiusX();
+        double radiusY    = ARC.getRadiusY();
+        double startAngle = ARC.getStartAngle();
+        double length     = ARC.getLength();
+        double alpha      = ARC.getLength() + startAngle;
+        startAngle        = Math.toRadians(startAngle);
+        alpha             = Math.toRadians(alpha);
+        double phiOffset  = Math.toRadians(-90); // -90 needed for JavaFX
+
+        double startX = centerX + Math.cos(phiOffset) * radiusX * Math.cos(startAngle) + Math.sin(-phiOffset) * radiusY * Math.sin(startAngle);
+        double startY = centerY + Math.sin(phiOffset) * radiusX * Math.cos(startAngle) + Math.cos(phiOffset) * radiusY * Math.sin(startAngle);
+
+        double endX   = centerX + Math.cos(phiOffset) * radiusX * Math.cos(alpha) + Math.sin(-phiOffset) * radiusY * Math.sin(alpha);
+        double endY   = centerY + Math.sin(phiOffset) * radiusX * Math.cos(alpha) + Math.cos(phiOffset) * radiusY * Math.sin(alpha);
+
+        int xAxisRot  = 0;
+        int largeArc  = (length > 180) ? 1 : 0;
+        int sweep     = (length > 0) ? 1 : 0;
+
+        fxPath.append("M ").append(centerX).append(" ").append(centerY).append(" ");
+        if (ArcType.ROUND == ARC.getType()) {
+            fxPath.append("h ").append(startX - centerX).append(" v ").append(startY - centerY);
+        }
+        fxPath.append("A ").append(radiusX).append(" ").append(radiusY).append(" ")
+              .append(xAxisRot).append(" ").append(largeArc).append(" ").append(sweep).append(" ")
+              .append(endX).append(" ").append(endY).append(" ");
+        if (ArcType.CHORD == ARC.getType() || ArcType.ROUND == ARC.getType()) {
+            fxPath.append("Z");
+        }
         return fxPath.toString();
     }
 
