@@ -59,6 +59,7 @@ import java.util.List;
  * Time: 12:03
  */
 public class ShapeConverter {
+    private static final double KAPPA = 0.5522847498307935;
 
     public static StringBuilder shapeToCssPath(final Shape SHAPE) {
         final StringBuilder fxPath = new StringBuilder();
@@ -86,14 +87,14 @@ public class ShapeConverter {
         return fxPath;
     }
 
-    private static String convertLine(final Line LINE) {
+    public static String convertLine(final Line LINE) {
         final StringBuilder fxPath = new StringBuilder();
         fxPath.append("M ").append(LINE.getStartX()).append(" ").append(LINE.getStartY()).append(" ")
               .append("L ").append(LINE.getEndX()).append(" ").append(LINE.getEndY());
         return fxPath.toString();
     }
 
-    private static String convertArc(final Arc ARC) {
+    public static String convertArc(final Arc ARC) {
         StringBuilder fxPath = new StringBuilder();
         double centerX    = ARC.getCenterX();
         double centerY    = ARC.getCenterY();
@@ -129,7 +130,7 @@ public class ShapeConverter {
         return fxPath.toString();
     }
 
-    private static String convertQuadCurve(final QuadCurve QUAD_CURVE) {
+    public static String convertQuadCurve(final QuadCurve QUAD_CURVE) {
         final StringBuilder fxPath = new StringBuilder();
         fxPath.append("M ").append(QUAD_CURVE.getStartX()).append(" ").append(QUAD_CURVE.getStartY()).append(" ")
               .append("Q ").append(QUAD_CURVE.getControlX()).append(" ").append(QUAD_CURVE.getControlY())
@@ -137,7 +138,7 @@ public class ShapeConverter {
         return fxPath.toString();
     }
 
-    private static String convertCubicCurve(final CubicCurve CUBIC_CURVE) {
+    public static String convertCubicCurve(final CubicCurve CUBIC_CURVE) {
         final StringBuilder fxPath = new StringBuilder();
         fxPath.append("M ").append(CUBIC_CURVE.getStartX()).append(" ").append(CUBIC_CURVE.getStartY()).append(" ")
               .append("C ").append(CUBIC_CURVE.getControlX1()).append(" ").append(CUBIC_CURVE.getControlY1()).append(" ")
@@ -146,7 +147,7 @@ public class ShapeConverter {
         return fxPath.toString();
     }
 
-    private static String convertRectangle(final Rectangle RECTANGLE) {
+    public static String convertRectangle(final Rectangle RECTANGLE) {
         final StringBuilder fxPath = new StringBuilder();
         final Bounds        bounds = RECTANGLE.getBoundsInLocal();
         if (RECTANGLE.getArcWidth() != 0 && RECTANGLE.getArcHeight() != 0) {
@@ -178,9 +179,8 @@ public class ShapeConverter {
         return fxPath.toString();
     }
 
-    private static String convertCircle(final Circle CIRCLE) {
+    public static String convertCircle(final Circle CIRCLE) {
         final StringBuilder fxPath = new StringBuilder();
-        final double KAPPA            = 0.5522847498307935;
         final double CENTER_X         = CIRCLE.getCenterX() == 0 ? CIRCLE.getRadius() : CIRCLE.getCenterX();
         final double CENTER_Y         = CIRCLE.getCenterY() == 0 ? CIRCLE.getRadius() : CIRCLE.getCenterY();
         final double RADIUS           = CIRCLE.getRadius();
@@ -208,9 +208,8 @@ public class ShapeConverter {
         return fxPath.toString();
     }
 
-    private static String convertEllipse(final Ellipse ELLIPSE) {
+    public static String convertEllipse(final Ellipse ELLIPSE) {
         final StringBuilder fxPath = new StringBuilder();
-        final double KAPPA              = 0.5522847498307935;
         final double CENTER_X           = ELLIPSE.getCenterX() == 0 ? ELLIPSE.getRadiusX() : ELLIPSE.getCenterX();
         final double CENTER_Y           = ELLIPSE.getCenterY() == 0 ? ELLIPSE.getRadiusY() : ELLIPSE.getCenterY();
         final double RADIUS_X           = ELLIPSE.getRadiusX();
@@ -240,7 +239,7 @@ public class ShapeConverter {
         return fxPath.toString();
     }
 
-    private static String convertPath(final Path PATH) {
+    public static String convertPath(final Path PATH) {
         final StringBuilder fxPath = new StringBuilder();
         for (PathElement element : PATH.getElements()) {
             if (MoveTo.class.equals(element.getClass())) {
@@ -284,17 +283,17 @@ public class ShapeConverter {
         return fxPath.toString();
     }
 
-    private static String convertPolygon(final Polygon POLYGON) {
+    public static String convertPolygon(final Polygon POLYGON) {
         final StringBuilder fxPath = new StringBuilder();
-        if (POLYGON.getPoints().size() % 2 == 0) {
-            int          noOfCoordinates = POLYGON.getPoints().size();
+        final int           size   = POLYGON.getPoints().size();
+        if (size % 2 == 0) {
             List<Double> coordinates     = POLYGON.getPoints();
-            for (int i = 0 ; i < noOfCoordinates ; i += 2) {
+            for (int i = 0 ; i < size ; i += 2) {
                 fxPath.append(i == 0 ? "M " : "L ")
                       .append(coordinates.get(i)).append(" ").append(coordinates.get(i + 1)).append(" ");
             }
-            if (Double.compare(coordinates.get(0), coordinates.get(noOfCoordinates - 2)) == 0 &&
-                Double.compare(coordinates.get(1), coordinates.get(noOfCoordinates - 1)) == 0) {
+            if (Double.compare(coordinates.get(0), coordinates.get(size - 2)) == 0 &&
+                Double.compare(coordinates.get(1), coordinates.get(size - 1)) == 0) {
                 fxPath.append("Z");
             }
         }
