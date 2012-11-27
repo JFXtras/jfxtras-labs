@@ -157,8 +157,8 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
 
     // ******************** Drawing related ***********************************
     private void updateIndicator() {
-        main.setStyle("-fx-indicator-inner-color: " + Util.createCssColor(control.getInnerColor()) +
-                      "-fx-indicator-outer-color: " + Util.createCssColor(control.getOuterColor()));
+        main.setStyle("-fx-indicator-inner-color: " + Util.colorToCssColor(control.getInnerColor()) +
+                      "-fx-indicator-outer-color: " + Util.colorToCssColor(control.getOuterColor()));
         mainGlow.setColor(control.getInnerColor());
     }
 
@@ -167,8 +167,8 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
         final double WIDTH = SIZE;
         final double HEIGHT = SIZE;
 
-        indicator.setStyle("-fx-indicator-inner-color: " + Util.createCssColor(control.getInnerColor()) +
-                           "-fx-indicator-outer-color: " + Util.createCssColor(control.getOuterColor()));
+        indicator.setStyle("-fx-indicator-inner-color: " + Util.colorToCssColor(control.getInnerColor()) +
+                           "-fx-indicator-outer-color: " + Util.colorToCssColor(control.getOuterColor()));
 
         indicator.getChildren().clear();
 
@@ -195,8 +195,8 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
         INNER_FRAME.getStyleClass().add("indicator-inner-frame-fill");
 
         main = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.38 * WIDTH);
-        main.setStyle("-fx-indicator-inner-color: " + Util.createCssColor(control.getInnerColor()) +
-                      "-fx-indicator-outer-color: " + Util.createCssColor(control.getOuterColor()));
+        main.setStyle("-fx-indicator-inner-color: " + Util.colorToCssColor(control.getInnerColor()) +
+                      "-fx-indicator-outer-color: " + Util.colorToCssColor(control.getOuterColor()));
         main.getStyleClass().add("indicator-main-fill");
 
         final InnerShadow MAIN_INNER_SHADOW = new InnerShadow();

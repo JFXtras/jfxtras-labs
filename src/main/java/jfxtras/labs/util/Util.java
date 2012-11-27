@@ -47,8 +47,18 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.Stop;
+import javafx.scene.shape.ArcTo;
 import javafx.scene.shape.ArcType;
+import javafx.scene.shape.ClosePath;
+import javafx.scene.shape.CubicCurveTo;
+import javafx.scene.shape.HLineTo;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.PathElement;
+import javafx.scene.shape.QuadCurveTo;
 import javafx.scene.shape.Shape;
+import javafx.scene.shape.VLineTo;
 import jfxtras.labs.scene.control.gauge.GradientLookup;
 
 import java.util.Random;
@@ -64,7 +74,51 @@ public class Util {
 
     private static final SnapshotParameters SNAPSHOT_PARAMETER = SnapshotParametersBuilder.create().fill(Color.TRANSPARENT).build();
 
-    public static String createCssColor(final Color COLOR) {
+    public static String pathToFxPath(final Path PATH) {
+        StringBuilder fxPath = new StringBuilder();
+        for (PathElement element : PATH.getElements()) {
+            if (MoveTo.class.equals(element.getClass())) {
+                fxPath.append("M ");
+                fxPath.append(((MoveTo) element).getX()).append(" ");
+                fxPath.append(((MoveTo) element).getY()).append(" ");
+            } else if (LineTo.class.equals(element.getClass())) {
+                fxPath.append("L ");
+                fxPath.append(((LineTo) element).getX()).append(" ");
+                fxPath.append(((LineTo) element).getY()).append(" ");
+            } else if (CubicCurveTo.class.equals(element.getClass())) {
+                fxPath.append("C ");
+                fxPath.append(((CubicCurveTo) element).getX()).append(" ");
+                fxPath.append(((CubicCurveTo) element).getY()).append(" ");
+                fxPath.append(((CubicCurveTo) element).controlX1Property()).append(" ");
+                fxPath.append(((CubicCurveTo) element).controlY1Property()).append(" ");
+                fxPath.append(((CubicCurveTo) element).controlX2Property()).append(" ");
+                fxPath.append(((CubicCurveTo) element).controlY2Property()).append(" ");
+            } else if (QuadCurveTo.class.equals(element.getClass())) {
+                fxPath.append("Q ");
+                fxPath.append(((QuadCurveTo) element).getX()).append(" ");
+                fxPath.append(((QuadCurveTo) element).getY()).append(" ");
+                fxPath.append(((QuadCurveTo) element).controlXProperty()).append(" ");
+                fxPath.append(((QuadCurveTo) element).controlYProperty()).append(" ");
+            } else if (ArcTo.class.equals(element.getClass())) {
+                fxPath.append("A ");
+                fxPath.append(((ArcTo) element).getX()).append(" ");
+                fxPath.append(((ArcTo) element).getY()).append(" ");
+                fxPath.append(((ArcTo) element).getRadiusX()).append(" ");
+                fxPath.append(((ArcTo) element).getRadiusY()).append(" ");
+            } else if (HLineTo.class.equals(element.getClass())) {
+                fxPath.append("H ");
+                fxPath.append(((HLineTo) element).getX()).append(" ");
+            } else if (VLineTo.class.equals(element.getClass())) {
+                fxPath.append("V ");
+                fxPath.append(((VLineTo) element).getY()).append(" ");
+            } else if (ClosePath.class.equals(element.getClass())) {
+                fxPath.append("Z");
+            }
+        }
+        return fxPath.toString();
+    }
+
+    public static String colorToCssColor(final Color COLOR) {
         final StringBuilder CSS_COLOR = new StringBuilder(19);
         CSS_COLOR.append("rgba(");
         CSS_COLOR.append((int) (COLOR.getRed() * 255));
@@ -78,7 +132,7 @@ public class Util {
         return CSS_COLOR.toString();
     }
 
-    public static String createWebColor(final Color COLOR) {
+    public static String colorToWebColor(final Color COLOR) {
         String red = Integer.toHexString((int)(COLOR.getRed() * 255));
         if (red.length() == 1) red = "0" + red;
         String green = Integer.toHexString((int)(COLOR.getGreen() * 255));

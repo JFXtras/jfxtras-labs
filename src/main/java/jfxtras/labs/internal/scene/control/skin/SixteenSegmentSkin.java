@@ -172,8 +172,8 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
 
     // ******************** Drawing related ***********************************
     public void updateCharacter() {
-        segments.setStyle("-fx-segment-color-on: " + Util.createCssColor(control.getColor()) +
-                          "-fx-segment-color-off: " + Util.createCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
+        segments.setStyle("-fx-segment-color-on: " + Util.colorToCssColor(control.getColor()) +
+                          "-fx-segment-color-off: " + Util.colorToCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
         final int ASCII = control.getCharacter().isEmpty() ? 20 : control.getCharacter().toUpperCase().charAt(0);
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setRadius(0.05 * control.getPrefWidth());
@@ -229,8 +229,8 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         final double WIDTH = control.getPrefWidth();
         final double HEIGHT = control.getPrefHeight();
 
-        segments.setStyle("-fx-segment-color-on: " + Util.createCssColor(control.getColor()) +
-                          "-fx-segment-color-off: " + Util.createCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
+        segments.setStyle("-fx-segment-color-on: " + Util.colorToCssColor(control.getColor()) +
+                          "-fx-segment-color-off: " + Util.colorToCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
 
         segments.getChildren().clear();
 

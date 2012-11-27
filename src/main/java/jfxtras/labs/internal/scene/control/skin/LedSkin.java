@@ -144,12 +144,10 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
     }
 
     @Override public void layoutChildren() {
-        if (!isDirty) {
-        return;
-        }
-        if (!initialized) {
-            init();
-        }
+        if (!isDirty) return;
+
+        if (!initialized) init();
+
         if (control.getScene() != null) {
             drawLed();
             getChildren().setAll(led);
@@ -189,12 +187,10 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
         final double WIDTH  = SIZE;
         final double HEIGHT = SIZE;
 
-        led.getChildren().clear();
-        led.setStyle("-fx-led: " + Util.createCssColor(control.getColor()));
+        led.setStyle("-fx-led: " + Util.colorToCssColor(control.getColor()));
 
         final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
-        led.getChildren().add(IBOUNDS);
 
         final Shape LED_FRAME;
         final Shape LED_OFF;
@@ -232,11 +228,11 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
 
         LED_OFF.getStyleClass().clear();
         LED_OFF.getStyleClass().add("off");
-        LED_OFF.setStyle("-fx-led: " + Util.createCssColor(control.getColor()));
+        LED_OFF.setStyle("-fx-led: " + Util.colorToCssColor(control.getColor()));
 
         ledOn.getStyleClass().clear();
         ledOn.getStyleClass().add("on");
-        ledOn.setStyle("-fx-led: " + Util.createCssColor(control.getColor()));
+        ledOn.setStyle("-fx-led: " + Util.colorToCssColor(control.getColor()));
         ledOn.setVisible(control.isOn());
 
         HIGHLIGHT.getStyleClass().add("highlight");
@@ -262,7 +258,8 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
         GLOW.setInput(INNER_SHADOW);
         ledOn.setEffect(GLOW);
 
-        led.getChildren().addAll(LED_FRAME,
+        led.getChildren().setAll(IBOUNDS,
+                                 LED_FRAME,
                                  LED_OFF,
                                  ledOn,
                                  HIGHLIGHT);

@@ -1081,7 +1081,7 @@ public class StyleModel {
     public final String getTextureColorString() {
         final StringBuilder COLOR_STRING = new StringBuilder(30);
         COLOR_STRING.append("-fx-texture: ");
-        COLOR_STRING.append(Util.createCssColor(getTextureColor()));
+        COLOR_STRING.append(Util.colorToCssColor(getTextureColor()));
         return COLOR_STRING.toString();
     }
 
@@ -1101,7 +1101,7 @@ public class StyleModel {
     public final String getSimpleGradientBaseColorString() {
         final StringBuilder COLOR_STRING = new StringBuilder(30);
         COLOR_STRING.append("-fx-simplegradient-base: ");
-        COLOR_STRING.append(Util.createCssColor(getSimpleGradientBaseColor()));
+        COLOR_STRING.append(Util.colorToCssColor(getSimpleGradientBaseColor()));
         return COLOR_STRING.toString();
     }
 

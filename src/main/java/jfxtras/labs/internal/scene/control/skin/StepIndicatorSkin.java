@@ -191,9 +191,9 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
 
         circles.getChildren().clear();
 
-        circles.setStyle("-fx-step-indicator-selected-inner-frame-fill: " + Util.createCssColor(control.getColor().darker()) +
-                         "-fx-step-indicator-selected-inner-background-fill: " + Util.createCssColor(control.getColor()) +
-                         "-fx-step-indicator-selected-text-fill: " + Util.createCssColor(control.getColor().darker().darker()) +
+        circles.setStyle("-fx-step-indicator-selected-inner-frame-fill: " + Util.colorToCssColor(control.getColor().darker()) +
+                         "-fx-step-indicator-selected-inner-background-fill: " + Util.colorToCssColor(control.getColor()) +
+                         "-fx-step-indicator-selected-text-fill: " + Util.colorToCssColor(control.getColor().darker().darker()) +
                          "-fx-step-indicator-inner-frame-fill: rgb(158, 158, 158);" +
                          "-fx-step-indicator-inner-background-fill: rgb(244, 244, 244);" +
                          "-fx-step-indicator-stroke: transparent");
@@ -301,9 +301,9 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
         IBOUNDS.setOpacity(0.0);
         selectedCircles.getChildren().add(IBOUNDS);
 
-        selectedCircles.setStyle("-fx-step-indicator-selected-inner-frame-fill: " + Util.createCssColor(control.getColor().darker()) +
-                                 "-fx-step-indicator-selected-inner-background-fill: " + Util.createCssColor(control.getColor()) +
-                                 "-fx-step-indicator-selected-text-fill: " + Util.createCssColor(control.getColor().darker().darker()) +
+        selectedCircles.setStyle("-fx-step-indicator-selected-inner-frame-fill: " + Util.colorToCssColor(control.getColor().darker()) +
+                                 "-fx-step-indicator-selected-inner-background-fill: " + Util.colorToCssColor(control.getColor()) +
+                                 "-fx-step-indicator-selected-text-fill: " + Util.colorToCssColor(control.getColor().darker().darker()) +
                                  "-fx-step-indicator-inner-frame-fill: rgb(158, 158, 158);" +
                                  "-fx-step-indicator-inner-background-fill: rgb(244, 244, 244);" +
                                  "-fx-step-indicator-stroke: transparent");

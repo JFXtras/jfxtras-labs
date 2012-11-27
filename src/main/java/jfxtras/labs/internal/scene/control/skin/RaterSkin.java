@@ -223,10 +223,10 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
         for (int i = 0 ; i < stars.size() ; i++) {
             styleBuilder.setLength(0);
             if (i < rating) {
-                styleBuilder.append("-fx-rater-bright-color: " + Util.createCssColor(control.getBrightColor()));
-                styleBuilder.append("-fx-rater-dark-color: " + Util.createCssColor(control.getDarkColor()));
+                styleBuilder.append("-fx-rater-bright-color: " + Util.colorToCssColor(control.getBrightColor()));
+                styleBuilder.append("-fx-rater-dark-color: " + Util.colorToCssColor(control.getDarkColor()));
                 if (i <= currentMouseOverIndex - 1) {
-                    styleBuilder.append("-fx-rater-stroke: " + Util.createCssColor(control.getBrightColor()));
+                    styleBuilder.append("-fx-rater-stroke: " + Util.colorToCssColor(control.getBrightColor()));
                 } else {
                     styleBuilder.append("-fx-rater-stroke: transparent;");
                 }
@@ -234,7 +234,7 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
                 styleBuilder.append("-fx-rater-bright-color: white;");
                 styleBuilder.append("-fx-rater-dark-color: rgb(204, 204, 204);");
                 if (i <= currentMouseOverIndex - 1) {
-                    styleBuilder.append("-fx-rater-stroke: " + Util.createCssColor(control.getBrightColor()));
+                    styleBuilder.append("-fx-rater-stroke: " + Util.colorToCssColor(control.getBrightColor()));
                 } else {
                     styleBuilder.append("-fx-rater-stroke: transparent;");
                 }
@@ -248,14 +248,14 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
         for (int i = 0 ; i < stars.size() ; i++) {
             styleBuilder.setLength(0);
             if (i < rating) {
-                styleBuilder.append("-fx-rater-bright-color: " + Util.createCssColor(control.getBrightColor()));
-                styleBuilder.append("-fx-rater-dark-color: " + Util.createCssColor(control.getDarkColor()));
+                styleBuilder.append("-fx-rater-bright-color: " + Util.colorToCssColor(control.getBrightColor()));
+                styleBuilder.append("-fx-rater-dark-color: " + Util.colorToCssColor(control.getDarkColor()));
             } else {
                 styleBuilder.append("-fx-rater-bright-color: white;");
                 styleBuilder.append("-fx-rater-dark-color: rgb(204, 204, 204);");
             }
             if (i < currentMouseOverIndex) {
-                styleBuilder.append("-fx-rater-stroke: " + Util.createCssColor(control.getBrightColor()));
+                styleBuilder.append("-fx-rater-stroke: " + Util.colorToCssColor(control.getBrightColor()));
             } else {
                 styleBuilder.append("-fx-rater-stroke: transparent;");
             }
@@ -269,8 +269,8 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
         for (int i = 0 ; i < stars.size() ; i++) {
             styleBuilder.setLength(0);
             if (i < rating) {
-                styleBuilder.append("-fx-rater-bright-color: " + Util.createCssColor(control.getBrightColor()));
-                styleBuilder.append("-fx-rater-dark-color: " + Util.createCssColor(control.getDarkColor()));
+                styleBuilder.append("-fx-rater-bright-color: " + Util.colorToCssColor(control.getBrightColor()));
+                styleBuilder.append("-fx-rater-dark-color: " + Util.colorToCssColor(control.getDarkColor()));
             } else {
                 styleBuilder.append("-fx-rater-bright-color: white;");
                 styleBuilder.append("-fx-rater-dark-color: rgb(204, 204, 204);");
@@ -288,8 +288,8 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
         final Group STAR = new Group();
 
         if (SELECTED) {
-            STAR.setStyle("-fx-rater-bright-color: " + Util.createCssColor(control.getBrightColor()) +
-                          "-fx-rater-dark-color: " + Util.createCssColor(control.getDarkColor()) +
+            STAR.setStyle("-fx-rater-bright-color: " + Util.colorToCssColor(control.getBrightColor()) +
+                          "-fx-rater-dark-color: " + Util.colorToCssColor(control.getDarkColor()) +
                           "-fx-rater-stroke: transparent");
         } else {
             STAR.setStyle("-fx-rater-bright-color: white;" +
