@@ -116,8 +116,8 @@ public class Util {
             }
         } else if (Circle.class.equals(SHAPE.getClass())) {
             final double KAPPA            = 0.5522847498307935;
-            final double CENTER_X         = ((Circle) SHAPE).getCenterX();
-            final double CENTER_Y         = ((Circle) SHAPE).getCenterY();
+            final double CENTER_X         = ((Circle) SHAPE).getCenterX() == 0 ? ((Circle) SHAPE).getRadius() : ((Circle) SHAPE).getCenterX();
+            final double CENTER_Y         = ((Circle) SHAPE).getCenterY() == 0 ? ((Circle) SHAPE).getRadius() : ((Circle) SHAPE).getCenterY();
             final double RADIUS           = ((Circle) SHAPE).getRadius();
             final double CONTROL_DISTANCE = RADIUS * KAPPA;
             // Move to first point
@@ -142,12 +142,12 @@ public class Util {
             fxPath.append("Z");
         } else if (Ellipse.class.equals(SHAPE.getClass())) {
             final double KAPPA            = 0.5522847498307935;
-            final double CENTER_X         = ((Ellipse) SHAPE).getCenterX();
-            final double CENTER_Y         = ((Ellipse) SHAPE).getCenterY();
+            final double CENTER_X         = ((Ellipse) SHAPE).getCenterX() == 0 ? ((Ellipse) SHAPE).getRadiusX() : ((Ellipse) SHAPE).getCenterX();
+            final double CENTER_Y         = ((Ellipse) SHAPE).getCenterY() == 0 ? ((Ellipse) SHAPE).getRadiusY() : ((Ellipse) SHAPE).getCenterY();
             final double RADIUS_X         = ((Ellipse) SHAPE).getRadiusX();
             final double RADIUS_Y         = ((Ellipse) SHAPE).getRadiusY();
-            final double  CONTROL_DISTANCE_X = RADIUS_X * KAPPA;
-            final double  CONTROL_DISTANCE_Y = RADIUS_Y * KAPPA;
+            final double CONTROL_DISTANCE_X = RADIUS_X * KAPPA;
+            final double CONTROL_DISTANCE_Y = RADIUS_Y * KAPPA;
             // Move to first point
             fxPath.append("M ").append(CENTER_X).append(" ").append(CENTER_Y - RADIUS_Y).append(" ");
             // 1. quadrant
