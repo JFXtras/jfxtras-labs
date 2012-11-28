@@ -863,6 +863,10 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         trendRising.getElements().add(new LineTo(0.20454545454545456 * WIDTH, 0.9375 * HEIGHT));
         trendRising.getElements().add(new LineTo(0.18181818181818182 * WIDTH, 0.8541666666666666 * HEIGHT));
         trendRising.getElements().add(new ClosePath());
+        trendRising.getStyleClass().clear();
+        trendRising.getStyleClass().add("lcd");
+        trendRising.getStyleClass().add(control.getLcdDesign().CSS);
+        trendRising.getStyleClass().add("lcd-text");
         trendRising.setVisible(false);
 
         trendSteady = new Path();
@@ -885,6 +889,10 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         trendFalling.getElements().add(new LineTo(0.20454545454545456 * WIDTH, 0.8125 * HEIGHT));
         trendFalling.getElements().add(new LineTo(0.18181818181818182 * WIDTH, 0.8958333333333334 * HEIGHT));
         trendFalling.getElements().add(new ClosePath());
+        trendFalling.getStyleClass().clear();
+        trendFalling.getStyleClass().add("lcd");
+        trendFalling.getStyleClass().add(control.getLcdDesign().CSS);
+        trendFalling.getStyleClass().add("lcd-text");
         trendFalling.setVisible(false);
 
         trendDown = new Path();
