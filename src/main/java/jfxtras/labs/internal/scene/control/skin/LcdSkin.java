@@ -109,7 +109,9 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
     private DoubleProperty       currentLcdValue;
     private FadeTransition       glowPulse;
     private Path                 trendUp;
+    private Path                 trendRising;
     private Path                 trendSteady;
+    private Path                 trendFalling;
     private Path                 trendDown;
     private List<Shape>          bargraph;
     private Transition           toValueAnimation;
@@ -854,6 +856,15 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         trendUp.getStyleClass().add("lcd-text");
         trendUp.setVisible(false);
 
+        trendRising = new Path();
+        trendRising.setFillRule(FillRule.EVEN_ODD);
+        trendRising.getElements().add(new MoveTo(0.18181818181818182 * WIDTH, 0.8541666666666666 * HEIGHT));
+        trendRising.getElements().add(new LineTo(0.24242424242424243 * WIDTH, 0.8125 * HEIGHT));
+        trendRising.getElements().add(new LineTo(0.20454545454545456 * WIDTH, 0.9375 * HEIGHT));
+        trendRising.getElements().add(new LineTo(0.18181818181818182 * WIDTH, 0.8541666666666666 * HEIGHT));
+        trendRising.getElements().add(new ClosePath());
+        trendRising.setVisible(false);
+
         trendSteady = new Path();
         trendSteady.setFillRule(FillRule.EVEN_ODD);
         trendSteady.getElements().add(new MoveTo(0.18181818181818182 * WIDTH, 0.8125 * HEIGHT));
@@ -866,6 +877,15 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         trendSteady.getStyleClass().add(control.getLcdDesign().CSS);
         trendSteady.getStyleClass().add("lcd-text");
         trendSteady.setVisible(false);
+
+        trendFalling = new Path();
+        trendFalling.setFillRule(FillRule.EVEN_ODD);
+        trendFalling.getElements().add(new MoveTo(0.18181818181818182 * WIDTH, 0.8958333333333334 * HEIGHT));
+        trendFalling.getElements().add(new LineTo(0.24242424242424243 * WIDTH, 0.9375 * HEIGHT));
+        trendFalling.getElements().add(new LineTo(0.20454545454545456 * WIDTH, 0.8125 * HEIGHT));
+        trendFalling.getElements().add(new LineTo(0.18181818181818182 * WIDTH, 0.8958333333333334 * HEIGHT));
+        trendFalling.getElements().add(new ClosePath());
+        trendFalling.setVisible(false);
 
         trendDown = new Path();
         trendDown.setFillRule(FillRule.EVEN_ODD);
@@ -1240,22 +1260,44 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             switch (control.getTrend()) {
                 case UP:
                     trendUp.setVisible(true);
+                    trendRising.setVisible(false);
                     trendSteady.setVisible(false);
+                    trendFalling.setVisible(false);
+                    trendDown.setVisible(false);
+                    break;
+                case RISING:
+                    trendUp.setVisible(false);
+                    trendRising.setVisible(true);
+                    trendSteady.setVisible(false);
+                    trendFalling.setVisible(false);
                     trendDown.setVisible(false);
                     break;
                 case STEADY:
                     trendUp.setVisible(false);
+                    trendRising.setVisible(false);
                     trendSteady.setVisible(true);
+                    trendFalling.setVisible(false);
+                    trendDown.setVisible(false);
+                    break;
+                case FALLING:
+                    trendUp.setVisible(false);
+                    trendRising.setVisible(false);
+                    trendSteady.setVisible(false);
+                    trendFalling.setVisible(true);
                     trendDown.setVisible(false);
                     break;
                 case DOWN:
                     trendUp.setVisible(false);
+                    trendRising.setVisible(false);
                     trendSteady.setVisible(false);
+                    trendFalling.setVisible(false);
                     trendDown.setVisible(true);
                     break;
                 default:
                     trendUp.setVisible(false);
+                    trendRising.setVisible(false);
                     trendSteady.setVisible(false);
+                    trendFalling.setVisible(false);
                     trendDown.setVisible(false);
                     break;
             }
