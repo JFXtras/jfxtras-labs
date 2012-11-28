@@ -402,7 +402,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
                     lcdThresholdIndicator.setVisible(control.isThresholdExceeded());
                 }
 
-                drawLcdContent();
+                updateLcdContent();
 
                 if (!control.getSections().isEmpty()) {
                     for (Section section : control.getSections()) {
@@ -466,12 +466,12 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
                 glowOn.setOpacity(0.0);
             }
         } else if ("TREND".equals(PROPERTY)) {
-            drawLcdContent();
+            updateLcdContent();
         } else if ("BACKGROUND_VISIBILITY".equals(PROPERTY)) {
             repaint();
         } else if ("GAUGE_MODEL".equals(PROPERTY)) {
             addBindings();
-            repaint();
+            //repaint();
         } else if ("STYLE_MODEL".equals(PROPERTY)) {
             addBindings();
             repaint();
@@ -761,7 +761,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
 
 
     // ******************** Drawing *******************************************
-    public void drawGlowOn() {
+    private void drawGlowOn() {
         final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
         final double WIDTH = control.getPrefWidth();
         final double HEIGHT = control.getPrefHeight();
@@ -789,7 +789,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         glowOn.setCache(true);
     }
 
-    public void drawLcd() {
+    private void drawLcd() {
         final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
         final double WIDTH = control.getPrefWidth();
         final double HEIGHT = control.getPrefHeight();
@@ -1155,6 +1155,8 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
 
             lcd.getChildren().add(BAR_GRAPH_OFF);
             lcd.getChildren().addAll(bargraph);
+
+
         }
 
         // Add lcd title string if visible
@@ -1180,7 +1182,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         lcd.setCache(true);
     }
 
-    public void drawLcdContent() {
+    private void drawLcdContent() {
         final double SIZE   = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
         final double WIDTH  = control.getPrefWidth();
         final double HEIGHT = control.getPrefHeight();
@@ -1311,8 +1313,134 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
                                             lcdMaxMeasuredValue,
                                             lcdFormerValue,
                                             trendUp,
+                                            trendRising,
                                             trendSteady,
+                                            trendFalling,
                                             trendDown);
+        }
+    }
+
+    private void updateLcdContent() {
+        final double SIZE   = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+        final double WIDTH  = control.getPrefWidth();
+        final double HEIGHT = control.getPrefHeight();
+
+        lcdContent.getChildren().clear();
+
+        final Rectangle IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
+        IBOUNDS.setOpacity(0.0);
+        IBOUNDS.setStroke(null);
+        lcdContent.getChildren().add(IBOUNDS);
+
+        final Rectangle LCD_MAIN = new Rectangle(1.0, 1.0, WIDTH - 2.0, HEIGHT - 2.0);
+
+        // Update the lcd value
+        if (control.isClockMode()) {
+            lcdValueString.setText(lcdClockValue.get());
+        } else {
+            switch (control.getLcdNumberSystem()) {
+                case HEXADECIMAL:
+                    lcdValueString.setText(Integer.toHexString((int) currentLcdValue.get()).toUpperCase());
+                    break;
+
+                case OCTAL:
+                    lcdValueString.setText(Integer.toOctalString((int) currentLcdValue.get()).toUpperCase());
+                    break;
+
+                case DECIMAL:
+
+                default:
+                    lcdValueString.setText(formatLcdValue(currentLcdValue.get(), control.getLcdDecimals()));
+                    break;
+            }
+            lcdNumberSystem.setText(control.getLcdNumberSystem().toString());
+            lcdNumberSystem.setX(WIDTH - lcdNumberSystem.getLayoutBounds().getWidth() - 0.0416666667 * SIZE);
+            lcdNumberSystem.setY(LCD_MAIN.getLayoutY() + LCD_MAIN.getHeight() - 0.0416666667 * SIZE);
+
+            if (!isNoOfDigitsValid()) {
+                lcdValueString.setText("-E-");
+            }
+        }
+
+        if (control.isLcdUnitVisible() && !control.isClockMode()) {
+            lcdValueString.setX((LCD_MAIN.getX() + (LCD_MAIN.getWidth() - lcdValueString.getLayoutBounds().getWidth()) - lcdValueOffsetRight));
+        } else {
+            lcdValueString.setX((WIDTH - lcdValueString.getLayoutBounds().getWidth()) - lcdValueOffsetRight);
+        }
+        lcdValueString.setY(SIZE - (lcdValueString.getLayoutBounds().getHeight() * lcdDigitalFontSizeFactor) / 2.0);
+
+        if (control.isBargraphVisible() && !bargraph.isEmpty()) {
+            int activeBargraphSegments = (int) ((currentLcdValue.get() - (long) currentLcdValue.get()) * 20);
+            for (int i = 0 ; i < 20 ; i++) {
+                if (i <= activeBargraphSegments) {
+                    bargraph.get(i).setVisible(true);
+                } else {
+                    bargraph.get(i).setVisible(false);
+                }
+            }
+        }
+
+        // Update the title
+        lcdTitle.setText(control.getTitle());
+
+        // Update the min measured value
+        lcdMinMeasuredValue.setText(formatLcdValue(control.getMinMeasuredValue(), control.getLcdMinMeasuredValueDecimals()));
+
+        // Update the max measured value
+        lcdMaxMeasuredValue.setText(formatLcdValue(control.getMaxMeasuredValue(), control.getLcdMaxMeasuredValueDecimals()));
+        lcdMaxMeasuredValue.setX(WIDTH - lcdMaxMeasuredValue.getLayoutBounds().getWidth() - 0.0416666667 * SIZE);
+
+        // Update the former lcd value
+        lcdFormerValue.setText(formatLcdValue(formerValue, control.getLcdDecimals()));
+        lcdFormerValue.setX((WIDTH - lcdFormerValue.getLayoutBounds().getWidth()) / 2.0);
+        lcdFormerValue.setFontSmoothingType(FontSmoothingType.LCD);
+
+        // Update the trend markers
+        if (control.isTrendVisible()) {
+            switch (control.getTrend()) {
+                case UP:
+                    trendUp.setVisible(true);
+                    trendRising.setVisible(false);
+                    trendSteady.setVisible(false);
+                    trendFalling.setVisible(false);
+                    trendDown.setVisible(false);
+                    break;
+                case RISING:
+                    trendUp.setVisible(false);
+                    trendRising.setVisible(true);
+                    trendSteady.setVisible(false);
+                    trendFalling.setVisible(false);
+                    trendDown.setVisible(false);
+                    break;
+                case STEADY:
+                    trendUp.setVisible(false);
+                    trendRising.setVisible(false);
+                    trendSteady.setVisible(true);
+                    trendFalling.setVisible(false);
+                    trendDown.setVisible(false);
+                    break;
+                case FALLING:
+                    trendUp.setVisible(false);
+                    trendRising.setVisible(false);
+                    trendSteady.setVisible(false);
+                    trendFalling.setVisible(true);
+                    trendDown.setVisible(false);
+                    break;
+                case DOWN:
+                    trendUp.setVisible(false);
+                    trendRising.setVisible(false);
+                    trendSteady.setVisible(false);
+                    trendFalling.setVisible(false);
+                    trendDown.setVisible(true);
+                    break;
+                default:
+                    trendUp.setVisible(false);
+                    trendRising.setVisible(false);
+                    trendSteady.setVisible(false);
+                    trendFalling.setVisible(false);
+                    trendDown.setVisible(false);
+                    break;
+            }
         }
     }
 
