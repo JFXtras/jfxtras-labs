@@ -60,6 +60,7 @@ import java.util.List;
 public class GaugeModel {
     private DoubleProperty               value;
     private DoubleProperty               realValue;
+    private DoubleProperty               formerValue;
     private BooleanProperty              valueAnimationEnabled;
     private DoubleProperty               animationDuration;
     private DoubleProperty               redrawTolerance;
@@ -89,6 +90,7 @@ public class GaugeModel {
     public GaugeModel() {
         value                           = new SimpleDoubleProperty(0);
         realValue                       = new SimpleDoubleProperty(0);
+        formerValue                     = new SimpleDoubleProperty(0);
         valueAnimationEnabled           = new SimpleBooleanProperty(true);
         animationDuration               = new SimpleDoubleProperty(800);
         redrawTolerance                 = new SimpleDoubleProperty(0);
@@ -166,6 +168,7 @@ public class GaugeModel {
     }
 
     public final void setValue(final double VALUE) {
+        formerValue.set(value.get());
         if (isEndlessMode()) {
             value.set(VALUE % getRange());
             realValue.set(VALUE);
@@ -186,6 +189,14 @@ public class GaugeModel {
 
     public final ReadOnlyDoubleProperty realValueProperty() {
         return realValue;
+    }
+
+    public final double getFormerValue() {
+        return formerValue.get();
+    }
+
+    public final ReadOnlyDoubleProperty formerValueProperty() {
+        return formerValue;
     }
 
     public final boolean isValueAnimationEnabled() {

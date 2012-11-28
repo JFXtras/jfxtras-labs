@@ -462,6 +462,14 @@ public abstract class Gauge extends Control {
         return gaugeModel.realValueProperty();
     }
 
+    public final double getFormerValue() {
+        return gaugeModel.getFormerValue();
+    }
+
+    public final ReadOnlyDoubleProperty formerValueProperty() {
+        return gaugeModel.formerValueProperty();
+    }
+
     public final boolean isValueAnimationEnabled() {
         return gaugeModel.isValueAnimationEnabled();
     }
