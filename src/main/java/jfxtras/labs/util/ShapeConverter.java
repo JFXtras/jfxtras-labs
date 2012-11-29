@@ -64,7 +64,7 @@ import java.util.List;
 public class ShapeConverter {
     private static final double KAPPA = 0.5522847498307935;
 
-    public static String shapeToCssPath(final Shape SHAPE) {
+    public static String shapeToSvgString(final Shape SHAPE) {
         final StringBuilder fxPath = new StringBuilder();
         if (Line.class.equals(SHAPE.getClass())) {
             fxPath.append(convertLine((Line) SHAPE));
@@ -95,7 +95,7 @@ public class ShapeConverter {
     }
 
     public static SVGPath shapeToSvgPath(final Shape SHAPE) {
-        return SVGPathBuilder.create().content(shapeToCssPath(SHAPE)).build();
+        return SVGPathBuilder.create().content(shapeToSvgString(SHAPE)).build();
     }
 
     public static String convertLine(final Line LINE) {
