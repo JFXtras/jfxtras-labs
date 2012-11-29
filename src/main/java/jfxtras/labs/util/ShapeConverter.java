@@ -42,6 +42,7 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Polyline;
 import javafx.scene.shape.QuadCurve;
 import javafx.scene.shape.QuadCurveTo;
 import javafx.scene.shape.Rectangle;
@@ -61,7 +62,7 @@ import java.util.List;
 public class ShapeConverter {
     private static final double KAPPA = 0.5522847498307935;
 
-    public static StringBuilder shapeToCssPath(final Shape SHAPE) {
+    public static String shapeToCssPath(final Shape SHAPE) {
         final StringBuilder fxPath = new StringBuilder();
         if (Line.class.equals(SHAPE.getClass())) {
             fxPath.append(convertLine((Line) SHAPE));
@@ -83,8 +84,10 @@ public class ShapeConverter {
             fxPath.append(convertPath((Path) SHAPE));
         } else if (Polygon.class.equals(SHAPE.getClass())) {
             fxPath.append(convertPolygon((Polygon) SHAPE));
+        } else if (Polyline.class.equals(SHAPE.getCacheHint())) {
+            fxPath.append(convertPolyline((Polyline) SHAPE));
         }
-        return fxPath;
+        return fxPath.toString();
     }
 
     public static String convertLine(final Line LINE) {
@@ -158,22 +161,23 @@ public class ShapeConverter {
                   .append("V ").append(bounds.getMinY()).append(" ")
                   .append("Z");
         } else {
-            double x      = bounds.getMinX();
-            double y      = bounds.getMinY();
-            double width  = bounds.getWidth();
-            double height = bounds.getHeight();
-            double radius = Math.max(RECTANGLE.getArcWidth(), RECTANGLE.getArcHeight());
-            double r      = x + width;
-            double b      = y + height;
-            fxPath.append("M ").append(x + radius).append(" ").append(y).append(" ")
-                  .append("L ").append(r - radius).append(" ").append(y).append(" ")
-                  .append("Q ").append(r).append(" ").append(y).append(" ").append(r).append(" ").append(y + radius).append(" ")
-                  .append("L ").append(r).append(" ").append(y + height - radius).append(" ")
-                  .append("Q ").append(r).append(" ").append(b).append(" ").append(r - radius).append(" ").append(b).append(" ")
-                  .append("L ").append(x + radius).append(" ").append(b).append(" ")
-                  .append("Q ").append(x).append(" ").append(b).append(" ").append(x).append(" ").append(b - radius).append(" ")
-                  .append("L ").append(x).append(" ").append(y + radius).append(" ")
-                  .append("Q ").append(x).append(" ").append(y).append(" ").append(x + radius).append(" ").append(y).append(" ")
+            double x         = bounds.getMinX();
+            double y         = bounds.getMinY();
+            double width     = bounds.getWidth();
+            double height    = bounds.getHeight();
+            double arcWidth  = RECTANGLE.getArcWidth();
+            double arcHeight = RECTANGLE.getArcHeight();
+            double r         = x + width;
+            double b         = y + height;
+            fxPath.append("M ").append(x + arcWidth).append(" ").append(y).append(" ")
+                  .append("L ").append(r - arcWidth).append(" ").append(y).append(" ")
+                  .append("Q ").append(r).append(" ").append(y).append(" ").append(r).append(" ").append(y + arcHeight).append(" ")
+                  .append("L ").append(r).append(" ").append(y + height - arcHeight).append(" ")
+                  .append("Q ").append(r).append(" ").append(b).append(" ").append(r - arcWidth).append(" ").append(b).append(" ")
+                  .append("L ").append(x + arcWidth).append(" ").append(b).append(" ")
+                  .append("Q ").append(x).append(" ").append(b).append(" ").append(x).append(" ").append(b - arcHeight).append(" ")
+                  .append("L ").append(x).append(" ").append(y + arcHeight).append(" ")
+                  .append("Q ").append(x).append(" ").append(y).append(" ").append(x + arcWidth).append(" ").append(y).append(" ")
                   .append("Z");
         }
         return fxPath.toString();
@@ -292,9 +296,19 @@ public class ShapeConverter {
                 fxPath.append(i == 0 ? "M " : "L ")
                       .append(coordinates.get(i)).append(" ").append(coordinates.get(i + 1)).append(" ");
             }
-            if (Double.compare(coordinates.get(0), coordinates.get(size - 2)) == 0 &&
-                Double.compare(coordinates.get(1), coordinates.get(size - 1)) == 0) {
-                fxPath.append("Z");
+            fxPath.append("Z");
+        }
+        return fxPath.toString();
+    }
+
+    public static String convertPolyline(final Polyline POLYLINE) {
+        final StringBuilder fxPath = new StringBuilder();
+        final int           size   = POLYLINE.getPoints().size();
+        if (size % 2 == 0) {
+            List<Double> coordinates     = POLYLINE.getPoints();
+            for (int i = 0 ; i < size ; i += 2) {
+                fxPath.append(i == 0 ? "M " : "L ")
+                      .append(coordinates.get(i)).append(" ").append(coordinates.get(i + 1)).append(" ");
             }
         }
         return fxPath.toString();
