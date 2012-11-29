@@ -45,7 +45,7 @@ import com.sun.javafx.collections.ObservableListWrapper;
  * @author Hendrik Ebbers
  * 
  */
-public class GridPaginationHelper<T, U extends GridView<T>> {
+public class GridPaginationHelper<T> {
 
 	private Pagination pagination;
 
@@ -64,27 +64,18 @@ public class GridPaginationHelper<T, U extends GridView<T>> {
 	private DoubleProperty verticalCellSpacing;
 
 	private ChangeListener<Number> defaultUpdateListener;
-	
-	@SuppressWarnings("unchecked")
-	public GridPaginationHelper(Pagination pagination,
-			final ObservableList<T> items,
-			Callback<GridView<T>, GridCell<T>> gridCellFactory) throws InstantiationException, IllegalAccessException {
-		this(pagination, items, gridCellFactory, (Class<U>) GridView.class);
-	}
 
 	public GridPaginationHelper(Pagination pagination,
 			final ObservableList<T> items,
-			Callback<GridView<T>, GridCell<T>> gridCellFactory,
-			final Class<U> gridViewClass) throws InstantiationException, IllegalAccessException {
+			Callback<GridView<T>, GridCell<T>> gridCellFactory) {
 		this.pagination = pagination;
 		this.items = items;
 		this.gridCellFactory = gridCellFactory;
-		
+
 		defaultUpdateListener = new ChangeListener<Number>() {
 
 			@Override
-			public void changed(
-					ObservableValue<? extends Number> arg0,
+			public void changed(ObservableValue<? extends Number> arg0,
 					Number arg1, Number arg2) {
 				update();
 			}
@@ -95,11 +86,7 @@ public class GridPaginationHelper<T, U extends GridView<T>> {
 			@Override
 			public Node call(Integer arg0) {
 				GridView<T> gridView = null;
-				try {
-					gridView = gridViewClass.newInstance();
-				} catch (InstantiationException | IllegalAccessException e) {
-					throw new RuntimeException(e);
-				}
+				gridView = new GridView<>();
 				int startIndex = getCellStartIndexForPage(arg0);
 				ObservableList<T> currentItems = new ObservableListWrapper<>(
 						items.subList(
@@ -110,29 +97,38 @@ public class GridPaginationHelper<T, U extends GridView<T>> {
 				gridView.setItems(currentItems);
 				gridView.setCellFactory(GridPaginationHelper.this.gridCellFactory);
 
-				gridView.cellHeightProperty().bind(GridPaginationHelper.this.cellHeightProperty());
-				gridView.cellWidthProperty().bind(GridPaginationHelper.this.cellWidthProperty());
-				gridView.horizontalCellSpacingProperty().bind(GridPaginationHelper.this.horizontalCellSpacingProperty());
-				gridView.verticalCellSpacingProperty().bind(GridPaginationHelper.this.verticalCellSpacingProperty());
-				
-				
-				
-				gridView.cellHeightProperty().addListener(defaultUpdateListener);
+				gridView.cellHeightProperty().bind(
+						GridPaginationHelper.this.cellHeightProperty());
+				gridView.cellWidthProperty().bind(
+						GridPaginationHelper.this.cellWidthProperty());
+				gridView.horizontalCellSpacingProperty().bind(
+						GridPaginationHelper.this
+								.horizontalCellSpacingProperty());
+				gridView.verticalCellSpacingProperty()
+						.bind(GridPaginationHelper.this
+								.verticalCellSpacingProperty());
+
+				gridView.cellHeightProperty()
+						.addListener(defaultUpdateListener);
 				gridView.cellWidthProperty().addListener(defaultUpdateListener);
-				gridView.horizontalCellSpacingProperty().addListener(defaultUpdateListener);
-				gridView.verticalCellSpacingProperty().addListener(defaultUpdateListener);
-				
+				gridView.horizontalCellSpacingProperty().addListener(
+						defaultUpdateListener);
+				gridView.verticalCellSpacingProperty().addListener(
+						defaultUpdateListener);
+
 				return gridView;
 			}
 		};
 
-		//TODO: this is a hack...
-		U dummyGridView = gridViewClass.newInstance();
+		// TODO: this is a hack...
+		GridView<T> dummyGridView = new GridView<>();
 		cellHeightProperty().setValue(dummyGridView.getCellHeight());
 		cellWidthProperty().setValue(dummyGridView.getCellWidth());
-		verticalCellSpacingProperty().setValue(dummyGridView.getVerticalCellSpacing());
-		horizontalCellSpacingProperty().setValue(dummyGridView.getHorizontalCellSpacing());
-		
+		verticalCellSpacingProperty().setValue(
+				dummyGridView.getVerticalCellSpacing());
+		horizontalCellSpacingProperty().setValue(
+				dummyGridView.getHorizontalCellSpacing());
+
 		items.addListener(new ListChangeListener<T>() {
 
 			@Override
@@ -142,19 +138,21 @@ public class GridPaginationHelper<T, U extends GridView<T>> {
 			}
 		});
 
-		//TODO: http://javafx-jira.kenai.com/browse/RT-21118
+		// TODO: http://javafx-jira.kenai.com/browse/RT-21118
 		pagination.widthProperty().addListener(defaultUpdateListener);
 
-		//TODO: http://javafx-jira.kenai.com/browse/RT-21118
+		// TODO: http://javafx-jira.kenai.com/browse/RT-21118
 		pagination.heightProperty().addListener(defaultUpdateListener);
 
 		pagination.setPageFactory(pageFactory);
 	}
 
 	private void update() {
-		int firstCellOnPage = calcMaxVisibleCellsPerPage() * pagination.getCurrentPageIndex();
+		int firstCellOnPage = calcMaxVisibleCellsPerPage()
+				* pagination.getCurrentPageIndex();
 		pagination.setPageCount(calcPageCount());
-		pagination.setCurrentPageIndex((int) Math.floor(firstCellOnPage / calcMaxVisibleCellsPerPage()));
+		pagination.setCurrentPageIndex((int) Math.floor(firstCellOnPage
+				/ calcMaxVisibleCellsPerPage()));
 	}
 
 	private int calcMaxVisibleCellsPerPage() {
@@ -162,15 +160,17 @@ public class GridPaginationHelper<T, U extends GridView<T>> {
 	}
 
 	private int computeMaxRowsPerPage() {
-		double cellHeight = getCellHeight() + getVerticalCellSpacing() + getVerticalCellSpacing();
+		double cellHeight = getCellHeight() + getVerticalCellSpacing()
+				+ getVerticalCellSpacing();
 		return (int) Math.floor((pagination.getHeight() - 64) / cellHeight);
 	}
-	
+
 	private int computeMaxCellsInOneRow() {
-		double cellWidth = getHorizontalCellSpacing() + getCellWidth() + getHorizontalCellSpacing();
+		double cellWidth = getHorizontalCellSpacing() + getCellWidth()
+				+ getHorizontalCellSpacing();
 		return (int) Math.floor(pagination.getWidth() / cellWidth);
 	}
-	
+
 	private int getCellStartIndexForPage(int pageIndex) {
 		return calcMaxVisibleCellsPerPage() * pageIndex;
 	}
