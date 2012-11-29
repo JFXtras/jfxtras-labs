@@ -46,6 +46,8 @@ import javafx.scene.shape.Polyline;
 import javafx.scene.shape.QuadCurve;
 import javafx.scene.shape.QuadCurveTo;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.SVGPath;
+import javafx.scene.shape.SVGPathBuilder;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.VLineTo;
 import javafx.scene.text.Text;
@@ -84,10 +86,16 @@ public class ShapeConverter {
             fxPath.append(convertPath((Path) SHAPE));
         } else if (Polygon.class.equals(SHAPE.getClass())) {
             fxPath.append(convertPolygon((Polygon) SHAPE));
-        } else if (Polyline.class.equals(SHAPE.getCacheHint())) {
+        } else if (Polyline.class.equals(SHAPE.getClass())) {
             fxPath.append(convertPolyline((Polyline) SHAPE));
+        } else if (SVGPath.class.equals(SHAPE.getClass())) {
+            fxPath.append(((SVGPath) SHAPE).getContent());
         }
         return fxPath.toString();
+    }
+
+    public static SVGPath shapeToSvgPath(final Shape SHAPE) {
+        return SVGPathBuilder.create().content(shapeToCssPath(SHAPE)).build();
     }
 
     public static String convertLine(final Line LINE) {
