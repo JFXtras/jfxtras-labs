@@ -37,6 +37,8 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -66,6 +68,7 @@ public class CalendarTextFieldTrial1 extends Application {
 			{
 				lGridPane.add(new Label("default"), 0, lRowIdx);
 				CalendarTextField lCalendarTextField = new CalendarTextField();
+				lCalendarTextField.setTooltip(new Tooltip("custom tooltip"));
 				lGridPane.add(lCalendarTextField, 1, lRowIdx);
 				
 				final TextField lValueTextField = new TextField();
@@ -116,7 +119,7 @@ public class CalendarTextFieldTrial1 extends Application {
 				lCalendarTextField.setValue(null);
 			}
 			
-	        // preset value wuth time
+	        // preset value with time
 			{
 				lGridPane.add(new Label("preset value"), 0, lRowIdx);
 				CalendarTextField lCalendarTextField = new CalendarTextField();
@@ -129,10 +132,12 @@ public class CalendarTextFieldTrial1 extends Application {
 			lHBox.getChildren().add(lGridPane);
 		}
 			
-		
         // create scene
         Scene scene = new Scene(lHBox, 800, 600);
 
+		// load custom CSS
+        scene.getStylesheets().addAll(this.getClass().getResource(this.getClass().getSimpleName() + ".css").toExternalForm());
+		
         // create stage
         stage.setTitle(this.getClass().getSimpleName());
         stage.setScene(scene);

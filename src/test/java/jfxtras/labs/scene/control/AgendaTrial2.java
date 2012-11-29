@@ -45,7 +45,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import jfxtras.labs.scene.control.Agenda.Appointment;
