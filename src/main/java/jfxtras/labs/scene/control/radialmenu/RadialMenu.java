@@ -311,7 +311,7 @@ public class RadialMenu extends Group implements EventHandler<MouseEvent> {
 	    if (!item.isSelected()) {
 		this.hideRadialMenu();
 	    }
-
+	    event.consume();
 	}
     }
 
