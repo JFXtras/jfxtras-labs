@@ -207,6 +207,15 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
         if (control.getPrefWidth() < 0 || control.getPrefHeight() < 0) {
             control.setPrefSize(PREF_SIZE.getWidth(), PREF_SIZE.getHeight());
         }
+
+        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
+            control.setMinSize(50, 50);
+        }
+
+        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
+            control.setMaxSize(1024, 1024);
+        }
+
         control.recalcRange();
 
         glowColors.clear();
@@ -579,8 +588,10 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
             drawCircularTrend(control, trend, gaugeBounds);
         } else if ("GAUGE_MODEL".equals(PROPERTY)) {
             addBindings();
+            repaint();
         } else if ("STYLE_MODEL".equals(PROPERTY)) {
             addBindings();
+            repaint();
         } else if ("THRESHOLD_EXCEEDED".equals(PROPERTY)) {
             if(control.isThresholdExceeded()) {
                 ledTimer.start();
@@ -620,7 +631,6 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
             setTranslateY(framelessOffset.getY());
             center         = new Point2D(gaugeBounds.getWidth() * 0.265, gaugeBounds.getHeight() * 0.5);
             rotationCenter = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getHeight() * 0.735);
-            getChildren().clear();
             drawCircularFrame(control, frame, gaugeBounds);
             drawCircularBackground(control, background, gaugeBounds);
             drawCircularTrend(control, trend, gaugeBounds);
@@ -644,26 +654,26 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
                 addDropShadow(control, knobs, pointerShadow);
             }
 
-            getChildren().addAll(frame,
-                background,
-                trend,
-                sections,
-                areas,
-                ledOff,
-                ledOn,
-                userLedOff,
-                userLedOn,
-                titleAndUnit,
-                tickmarks,
-                threshold,
-                glowOff,
-                glowOn,
-                minMeasured,
-                maxMeasured,
-                markers,
-                pointerShadow,
-                knobsShadow,
-                foreground);
+            getChildren().setAll(frame,
+                                background,
+                                trend,
+                                sections,
+                                areas,
+                                ledOff,
+                                ledOn,
+                                userLedOff,
+                                userLedOn,
+                                titleAndUnit,
+                                tickmarks,
+                                threshold,
+                                glowOff,
+                                glowOn,
+                                minMeasured,
+                                maxMeasured,
+                                markers,
+                                pointerShadow,
+                                knobsShadow,
+                                foreground);
         }
         isDirty = false;
 

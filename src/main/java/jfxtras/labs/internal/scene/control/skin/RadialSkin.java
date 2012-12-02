@@ -267,6 +267,15 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
         if (control.getPrefWidth() < 0 || control.getPrefHeight() < 0) {
             control.setPrefSize(PREF_SIZE.getWidth(), PREF_SIZE.getHeight());
         }
+
+        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
+            control.setMinSize(50, 50);
+        }
+
+        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
+            control.setMaxSize(1024, 1024);
+        }
+
         control.recalcRange();
 
         glowColors.clear();
@@ -798,8 +807,10 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             histogramInterval = control.histogramDataPeriodInMinutesProperty().get() * 60000000000l / 100l;
         } else if ("GAUGE_MODEL".equals(PROPERTY)) {
             addBindings();
+            repaint();
         } else if ("STYLE_MODEL".equals(PROPERTY)) {
             addBindings();
+            repaint();
         } else if ("THRESHOLD_EXCEEDED".equals(PROPERTY)) {
             if(control.isThresholdExceeded()) {
                 ledTimer.start();
@@ -849,7 +860,6 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
             setTranslateX(framelessOffset.getX());
             setTranslateY(framelessOffset.getY());
             center = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getHeight() * 0.5);
-            getChildren().clear();
             drawCircularFrame(control, frame, gaugeBounds);
             drawCircularBackground(control, background, gaugeBounds);
             drawCircularTrend(control, trend, gaugeBounds);
@@ -878,7 +888,7 @@ public class RadialSkin extends GaugeSkinBase<Radial, RadialBehavior> {
                 addDropShadow(control, knobs, pointerShadow);
             }
 
-            getChildren().addAll(frame,
+            getChildren().setAll(frame,
                 background,
                 histogram,
                 trend,

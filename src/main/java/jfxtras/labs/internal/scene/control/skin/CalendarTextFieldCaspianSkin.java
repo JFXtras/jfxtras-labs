@@ -164,14 +164,17 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 			}
 		});
 		// bind the textField's tooltip to our (so it will show up) and give it a default value describing the mutation features
-		// TODO: internationalize the tooltip
-		textField.tooltipProperty().bind(getSkinnable().tooltipProperty()); 
-		getSkinnable().setTooltip(new Tooltip("Type a date or use # for today, or +/-<number>[d|w|m|y] for delta's (for example: -3m for minus 3 months)\nUse cursor up and down plus optional shift (week), ctrl (month) or alt (year) for quick keyboard changes."));
+		textField.tooltipProperty().bindBidirectional(getSkinnable().tooltipProperty()); 
+		if (getSkinnable().getTooltip() == null)
+		{
+			// TODO: internationalize the tooltip
+			getSkinnable().setTooltip(new Tooltip("Type a date or use # for today, or +/-<number>[d|w|m|y] for delta's (for example: -3m for minus 3 months)\nUse cursor up and down plus optional shift (week), ctrl (month) or alt (year) for quick keyboard changes."));
+		}
         textField.promptTextProperty().bind(getSkinnable().promptTextProperty());
 
 		// the icon
-		Image lImage = new Image(this.getClass().getResourceAsStream(this.getClass().getSimpleName() + "Icon.png"));
-		imageView = new ImageView(lImage);
+        imageView = new ImageView();
+		imageView.getStyleClass().add("icon");
 		imageView.setPickOnBounds(true);
 		imageView.setOnMouseClicked(new EventHandler<MouseEvent>()
 		{

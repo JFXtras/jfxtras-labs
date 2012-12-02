@@ -146,6 +146,14 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
             control.setPrefSize(121, 121);
         }
 
+        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
+            control.setMinSize(50, 50);
+        }
+
+        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
+            control.setMaxSize(1024, 1024);
+        }
+
         ledOn.setVisible(false);
 
         // Register listeners
@@ -266,8 +274,7 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
             init();
         }
         drawGauge();
-        getChildren().clear();
-        getChildren().add(smallRadial);
+        getChildren().setAll(smallRadial);
         isDirty = false;
         super.layoutChildren();
     }

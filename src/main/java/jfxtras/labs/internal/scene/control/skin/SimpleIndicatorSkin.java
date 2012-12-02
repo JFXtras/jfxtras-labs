@@ -73,6 +73,14 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
             control.setPrefSize(48, 48);
         }
 
+        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
+            control.setMinSize(16, 16);
+        }
+
+        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
+            control.setMaxSize(1024, 1024);
+        }
+
         // Register listeners
         registerChangeListener(control.prefWidthProperty(), "PREF_WIDTH");
         registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");
@@ -114,9 +122,8 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
             init();
         }
         if (control.getScene() != null) {
-            getChildren().clear();
             drawIndicator();
-            getChildren().addAll(indicator);
+            getChildren().setAll(indicator);
         }
         isDirty = false;
 
@@ -150,8 +157,8 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
 
     // ******************** Drawing related ***********************************
     private void updateIndicator() {
-        main.setStyle("-fx-indicator-inner-color: " + Util.createCssColor(control.getInnerColor()) +
-                      "-fx-indicator-outer-color: " + Util.createCssColor(control.getOuterColor()));
+        main.setStyle("-fx-indicator-inner-color: " + Util.colorToCssColor(control.getInnerColor()) +
+                      "-fx-indicator-outer-color: " + Util.colorToCssColor(control.getOuterColor()));
         mainGlow.setColor(control.getInnerColor());
     }
 
@@ -160,8 +167,8 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
         final double WIDTH = SIZE;
         final double HEIGHT = SIZE;
 
-        indicator.setStyle("-fx-indicator-inner-color: " + Util.createCssColor(control.getInnerColor()) +
-                           "-fx-indicator-outer-color: " + Util.createCssColor(control.getOuterColor()));
+        indicator.setStyle("-fx-indicator-inner-color: " + Util.colorToCssColor(control.getInnerColor()) +
+                           "-fx-indicator-outer-color: " + Util.colorToCssColor(control.getOuterColor()));
 
         indicator.getChildren().clear();
 
@@ -188,8 +195,8 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
         INNER_FRAME.getStyleClass().add("indicator-inner-frame-fill");
 
         main = new Circle(0.5 * WIDTH, 0.5 * HEIGHT, 0.38 * WIDTH);
-        main.setStyle("-fx-indicator-inner-color: " + Util.createCssColor(control.getInnerColor()) +
-                      "-fx-indicator-outer-color: " + Util.createCssColor(control.getOuterColor()));
+        main.setStyle("-fx-indicator-inner-color: " + Util.colorToCssColor(control.getInnerColor()) +
+                      "-fx-indicator-outer-color: " + Util.colorToCssColor(control.getOuterColor()));
         main.getStyleClass().add("indicator-main-fill");
 
         final InnerShadow MAIN_INNER_SHADOW = new InnerShadow();

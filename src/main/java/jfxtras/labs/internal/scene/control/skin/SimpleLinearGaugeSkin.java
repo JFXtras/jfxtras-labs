@@ -132,6 +132,15 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
         if (control.getPrefWidth() < 0 | control.getPrefHeight() < 0) {
             control.setPrefSize(200, 100);
         }
+
+        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
+            control.setMinSize(20, 10);
+        }
+
+        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
+            control.setMaxSize(800, 400);
+        }
+
         center = new Point2D(control.getPrefWidth() / 2, control.getPrefHeight() / 2);
 
         // Register listeners
@@ -174,7 +183,7 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
 
         if (control.isCanvasMode()) {
             for (Section section : control.getSections()) {
-                if (gaugeValue.get() > section.getStart() && gaugeValue.get() < section.getStop()) {
+                if ((gaugeValue.get() - control.getMinValue()) > section.getStart() && (gaugeValue.get() - control.getMinValue()) < section.getStop()) {
                     barGradientStops = new Stop[] {
                         new Stop(0, Color.TRANSPARENT),
                         new Stop(0.8, section.getColor().darker()),
@@ -291,7 +300,7 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
         } else if ("GAUGE_VALUE".equals(PROPERTY)) {
             if (!control.getSections().isEmpty()) {
                 for (Section section : control.getSections()) {
-                    if (gaugeValue.get() > section.getStart() && gaugeValue.get() < section.getStop()) {
+                    if ((gaugeValue.get() - control.getMinValue()) > section.getStart() && (gaugeValue.get() - control.getMinValue()) < section.getStop()) {
                         updateBarColor(section.getColor());
                         break;
                     } else {
@@ -299,22 +308,28 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
                     }
                 }
             }
+            if (control.isThresholdBehaviorInverted() && gaugeValue.doubleValue() < control.getThreshold()) {
+                control.setThresholdExceeded(true);
+            } else if (!control.isThresholdBehaviorInverted() && gaugeValue.doubleValue() > control.getThreshold()) {
+                control.setThresholdExceeded(true);
+            } else {
+                control.setThresholdExceeded(false);
+            }
             valueText.setText(valueFormat.format(gaugeValue.get()));
             switch (orientation) {
                 case VERTICAL:
                     valueText.setLayoutX((width - valueText.getLayoutBounds().getWidth()) / 2);
-                    bar.setEndY(height - control.getBarWidth() - (gaugeValue.get() * stepsize));
+                    bar.setEndY(height - control.getBarWidth() - ((gaugeValue.get() - control.getMinValue()) * stepsize));
                     break;
                 case HORIZONTAL:
                 default:
                     valueText.setLayoutX((width - valueText.getLayoutBounds().getWidth()) / 2);
-                    bar.setEndX(control.getBarWidth() + (gaugeValue.get() * stepsize));
+                    bar.setEndX(control.getBarWidth() + ((gaugeValue.get() - control.getMinValue()) * stepsize));
                     break;
             }
-
             if (control.isCanvasMode()) {
                 for (Section section : control.getSections()) {
-                    if (gaugeValue.get() > section.getStart() && gaugeValue.get() < section.getStop()) {
+                    if ((gaugeValue.get() - control.getMinValue()) > section.getStart() && (gaugeValue.get() - control.getMinValue()) < section.getStop()) {
                         barGradientStops = new Stop[] {
                             new Stop(0, Color.TRANSPARENT),
                             new Stop(0.8, section.getColor().darker()),
@@ -346,13 +361,12 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
         if (!initialized) {
             init();
         }
-        getChildren().clear();
         if (control.isCanvasMode()) {
             drawCanvasGauge(ctx);
-            getChildren().addAll(canvas);
+            getChildren().setAll(canvas);
         } else {
             drawNodeGauge();
-            getChildren().addAll(gauge);
+            getChildren().setAll(gauge);
         }
 
         isDirty = false;
@@ -502,13 +516,13 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
                 bar.setStartX(BAR_BACKGROUND.getStartX());
                 bar.setStartY(BAR_BACKGROUND.getStartY());
                 bar.setEndX(BAR_BACKGROUND.getEndX());
-                bar.setEndY(BAR_BACKGROUND.getStartY() - (gaugeValue.get() * stepsize));
+                bar.setEndY(BAR_BACKGROUND.getStartY() - ((gaugeValue.get() - control.getMinValue()) * stepsize));
                 break;
             case HORIZONTAL:
             default:
                 bar.setStartX(BAR_BACKGROUND.getStartX());
                 bar.setStartY(BAR_BACKGROUND.getStartY());
-                bar.setEndX(control.getBarWidth() + (gaugeValue.get() * stepsize));
+                bar.setEndX(control.getBarWidth() + ((gaugeValue.get() - control.getMinValue()) * stepsize));
                 bar.setEndY(BAR_BACKGROUND.getEndY());
                 break;
         }
@@ -516,7 +530,7 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
         bar.setSmooth(true);
         if (!control.getSections().isEmpty()) {
             for (Section section : control.getSections()) {
-                if (gaugeValue.get() > section.getStart() && gaugeValue.get() < section.getStop()) {
+                if ((gaugeValue.get() - control.getMinValue()) > section.getStart() && (gaugeValue.get() - control.getMinValue()) < section.getStop()) {
                     updateBarColor(section.getColor());
                     break;
                 } else {
@@ -621,9 +635,9 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
             CTX.setLineCap(StrokeLineCap.BUTT);
         }
         if (Orientation.VERTICAL == orientation) {
-            CTX.strokeLine(center.getX(), height - control.getBarWidth(), center.getX(), control.getBarWidth() + valueText.getLayoutBounds().getHeight() + 5 + control.getBarWidth() / 2 - (gaugeValue.get() * stepsize));
+            CTX.strokeLine(center.getX(), height - control.getBarWidth(), center.getX(), control.getBarWidth() + valueText.getLayoutBounds().getHeight() + 5 + control.getBarWidth() / 2 - ((gaugeValue.get() - control.getMinValue()) * stepsize));
         } else {
-            CTX.strokeLine(control.getBarWidth(), center.getY(), width - control.getBarWidth() + (gaugeValue.get() * stepsize), center.getY());
+            CTX.strokeLine(control.getBarWidth(), center.getY(), width - control.getBarWidth() + ((gaugeValue.get() - control.getMinValue()) * stepsize), center.getY());
         }
 
         if (control.isValueLabelVisible()) {

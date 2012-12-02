@@ -90,6 +90,14 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
             control.setPrefSize(noOfStars * 32, 32);
         }
 
+        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
+            control.setMinSize(noOfStars * 8, noOfStars * 8);
+        }
+
+        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
+            control.setMaxSize(noOfStars * 256, noOfStars * 256);
+        }
+
         // Register listeners
         registerChangeListener(control.prefWidthProperty(), "PREF_WIDTH");
         registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");
@@ -137,9 +145,8 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
             init();
         }
         if (control.getScene() != null) {
-            getChildren().clear();
             drawStars();
-            getChildren().addAll(starContainer);
+            getChildren().setAll(starContainer);
         }
         isDirty = false;
 
@@ -216,10 +223,10 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
         for (int i = 0 ; i < stars.size() ; i++) {
             styleBuilder.setLength(0);
             if (i < rating) {
-                styleBuilder.append("-fx-rater-bright-color: " + Util.createCssColor(control.getBrightColor()));
-                styleBuilder.append("-fx-rater-dark-color: " + Util.createCssColor(control.getDarkColor()));
+                styleBuilder.append("-fx-rater-bright-color: " + Util.colorToCssColor(control.getBrightColor()));
+                styleBuilder.append("-fx-rater-dark-color: " + Util.colorToCssColor(control.getDarkColor()));
                 if (i <= currentMouseOverIndex - 1) {
-                    styleBuilder.append("-fx-rater-stroke: " + Util.createCssColor(control.getBrightColor()));
+                    styleBuilder.append("-fx-rater-stroke: " + Util.colorToCssColor(control.getBrightColor()));
                 } else {
                     styleBuilder.append("-fx-rater-stroke: transparent;");
                 }
@@ -227,7 +234,7 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
                 styleBuilder.append("-fx-rater-bright-color: white;");
                 styleBuilder.append("-fx-rater-dark-color: rgb(204, 204, 204);");
                 if (i <= currentMouseOverIndex - 1) {
-                    styleBuilder.append("-fx-rater-stroke: " + Util.createCssColor(control.getBrightColor()));
+                    styleBuilder.append("-fx-rater-stroke: " + Util.colorToCssColor(control.getBrightColor()));
                 } else {
                     styleBuilder.append("-fx-rater-stroke: transparent;");
                 }
@@ -241,14 +248,14 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
         for (int i = 0 ; i < stars.size() ; i++) {
             styleBuilder.setLength(0);
             if (i < rating) {
-                styleBuilder.append("-fx-rater-bright-color: " + Util.createCssColor(control.getBrightColor()));
-                styleBuilder.append("-fx-rater-dark-color: " + Util.createCssColor(control.getDarkColor()));
+                styleBuilder.append("-fx-rater-bright-color: " + Util.colorToCssColor(control.getBrightColor()));
+                styleBuilder.append("-fx-rater-dark-color: " + Util.colorToCssColor(control.getDarkColor()));
             } else {
                 styleBuilder.append("-fx-rater-bright-color: white;");
                 styleBuilder.append("-fx-rater-dark-color: rgb(204, 204, 204);");
             }
             if (i < currentMouseOverIndex) {
-                styleBuilder.append("-fx-rater-stroke: " + Util.createCssColor(control.getBrightColor()));
+                styleBuilder.append("-fx-rater-stroke: " + Util.colorToCssColor(control.getBrightColor()));
             } else {
                 styleBuilder.append("-fx-rater-stroke: transparent;");
             }
@@ -262,8 +269,8 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
         for (int i = 0 ; i < stars.size() ; i++) {
             styleBuilder.setLength(0);
             if (i < rating) {
-                styleBuilder.append("-fx-rater-bright-color: " + Util.createCssColor(control.getBrightColor()));
-                styleBuilder.append("-fx-rater-dark-color: " + Util.createCssColor(control.getDarkColor()));
+                styleBuilder.append("-fx-rater-bright-color: " + Util.colorToCssColor(control.getBrightColor()));
+                styleBuilder.append("-fx-rater-dark-color: " + Util.colorToCssColor(control.getDarkColor()));
             } else {
                 styleBuilder.append("-fx-rater-bright-color: white;");
                 styleBuilder.append("-fx-rater-dark-color: rgb(204, 204, 204);");
@@ -281,8 +288,8 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
         final Group STAR = new Group();
 
         if (SELECTED) {
-            STAR.setStyle("-fx-rater-bright-color: " + Util.createCssColor(control.getBrightColor()) +
-                          "-fx-rater-dark-color: " + Util.createCssColor(control.getDarkColor()) +
+            STAR.setStyle("-fx-rater-bright-color: " + Util.colorToCssColor(control.getBrightColor()) +
+                          "-fx-rater-dark-color: " + Util.colorToCssColor(control.getDarkColor()) +
                           "-fx-rater-stroke: transparent");
         } else {
             STAR.setStyle("-fx-rater-bright-color: white;" +

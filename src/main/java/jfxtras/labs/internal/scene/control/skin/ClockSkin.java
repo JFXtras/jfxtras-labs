@@ -167,6 +167,14 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
             control.setPrefSize(200, 200);
         }
 
+        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
+            control.setMinSize(50, 50);
+        }
+
+        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
+            control.setMaxSize(1024, 1024);
+        }
+
         if (control.getBrightBackgroundPaint() == null) {
             control.setBrightBackgroundPaint(new RadialGradient(0, 0,
                                                                 getPrefWidth() / 2, getPrefHeight() / 2,
@@ -297,13 +305,12 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
             init();
         }
         if (control.getScene() != null) {
-            getChildren().clear();
             drawClock();
             drawMinutePointer();
             drawHourPointer();
             drawSecondPointer();
             drawShadows();
-            getChildren().addAll(clock,
+            getChildren().setAll(clock,
                 minutePointerShadow,
                 hourPointerShadow,
                 secondPointerShadow);
@@ -321,20 +328,20 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         control = null;
     }
 
-    @Override protected double computePrefWidth(final double PREF_WIDTH) {
-        double prefWidth = 127;
-        if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
-        }
-        return super.computePrefWidth(prefWidth);
-    }
-
-    @Override protected double computePrefHeight(final double PREF_HEIGHT) {
-        double prefHeight = 127;
+    @Override protected double computePrefWidth(final double PREF_HEIGHT) {
+        double prefHeight = 200;
         if (PREF_HEIGHT != -1) {
             prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
+    }
+
+    @Override protected double computePrefHeight(final double PREF_WIDTH) {
+        double prefWidth = 200;
+        if (PREF_WIDTH != -1) {
+            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
+        }
+        return super.computePrefWidth(prefWidth);
     }
 
     private void setTime() {
@@ -379,8 +386,8 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
 
     // ******************** Drawing related ***********************************
     public void drawClock() {
-        final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
-        final double WIDTH = SIZE;
+        final double SIZE   = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+        final double WIDTH  = SIZE;
         final double HEIGHT = SIZE;
 
         clock.getChildren().clear();
@@ -548,8 +555,8 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
     }
 
     public void drawMinutePointer() {
-        final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
-        final double WIDTH = SIZE;
+        final double SIZE   = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+        final double WIDTH  = SIZE;
         final double HEIGHT = SIZE;
 
         minutePointer.getChildren().clear();
@@ -610,8 +617,8 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
     }
 
     public void drawHourPointer() {
-        final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
-        final double WIDTH = SIZE;
+        final double SIZE   = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+        final double WIDTH  = SIZE;
         final double HEIGHT = SIZE;
 
         hourPointer.getChildren().clear();
@@ -671,8 +678,8 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
     }
 
     public void drawSecondPointer() {
-        final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
-        final double WIDTH = SIZE;
+        final double SIZE   = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
+        final double WIDTH  = SIZE;
         final double HEIGHT = SIZE;
 
         secondPointer.getChildren().clear();
@@ -680,6 +687,7 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         final Shape IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
         IBOUNDS.setOpacity(0.0);
         secondPointer.getChildren().add(IBOUNDS);
+
         Path second;
         switch (control.getClockStyle()) {
             case IOS6:
@@ -726,7 +734,7 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
         secondPointer.getChildren().add(second);
         if (control.getClockStyle() == Clock.ClockStyle.STANDARD) {
             final Rectangle SECOND_FLOUR = new Rectangle(0.49606299212598426 * WIDTH, 0.06299212598425197 * HEIGHT,
-                                                        0.007874015748031496 * WIDTH, 0.03937007874015748 * HEIGHT);
+                                                         0.007874015748031496 * WIDTH, 0.03937007874015748 * HEIGHT);
             SECOND_FLOUR.setArcWidth(0.007874015748031496 * WIDTH);
             SECOND_FLOUR.setArcHeight(0.007874015748031496 * HEIGHT);
             final Paint SECONDFLOUR_FILL = Color.color(0.8039215686, 0.8549019608, 0.5921568627, 1);

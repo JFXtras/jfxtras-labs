@@ -81,6 +81,14 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
             control.setPrefSize(noOfCircles * 60 + (noOfCircles - 1) * 20, 60);
         }
 
+        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
+            control.setMinSize(noOfCircles * 6 + (noOfCircles - 1) * 2, 6);
+        }
+
+        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
+            control.setMaxSize(noOfCircles * 600 + (noOfCircles - 1) * 200, 600);
+        }
+
         // Register listeners
         registerChangeListener(control.prefWidthProperty(), "PREF_WIDTH");
         registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");
@@ -123,10 +131,9 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
             init();
         }
         if (control.getScene() != null) {
-            getChildren().clear();
             drawCircles();
             drawSelectedCircles();
-            getChildren().addAll(circles, selectedCircles);
+            getChildren().setAll(circles, selectedCircles);
         }
         isDirty = false;
 
@@ -184,9 +191,9 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
 
         circles.getChildren().clear();
 
-        circles.setStyle("-fx-step-indicator-selected-inner-frame-fill: " + Util.createCssColor(control.getColor().darker()) +
-                         "-fx-step-indicator-selected-inner-background-fill: " + Util.createCssColor(control.getColor()) +
-                         "-fx-step-indicator-selected-text-fill: " + Util.createCssColor(control.getColor().darker().darker()) +
+        circles.setStyle("-fx-step-indicator-selected-inner-frame-fill: " + Util.colorToCssColor(control.getColor().darker()) +
+                         "-fx-step-indicator-selected-inner-background-fill: " + Util.colorToCssColor(control.getColor()) +
+                         "-fx-step-indicator-selected-text-fill: " + Util.colorToCssColor(control.getColor().darker().darker()) +
                          "-fx-step-indicator-inner-frame-fill: rgb(158, 158, 158);" +
                          "-fx-step-indicator-inner-background-fill: rgb(244, 244, 244);" +
                          "-fx-step-indicator-stroke: transparent");
@@ -294,9 +301,9 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
         IBOUNDS.setOpacity(0.0);
         selectedCircles.getChildren().add(IBOUNDS);
 
-        selectedCircles.setStyle("-fx-step-indicator-selected-inner-frame-fill: " + Util.createCssColor(control.getColor().darker()) +
-                                 "-fx-step-indicator-selected-inner-background-fill: " + Util.createCssColor(control.getColor()) +
-                                 "-fx-step-indicator-selected-text-fill: " + Util.createCssColor(control.getColor().darker().darker()) +
+        selectedCircles.setStyle("-fx-step-indicator-selected-inner-frame-fill: " + Util.colorToCssColor(control.getColor().darker()) +
+                                 "-fx-step-indicator-selected-inner-background-fill: " + Util.colorToCssColor(control.getColor()) +
+                                 "-fx-step-indicator-selected-text-fill: " + Util.colorToCssColor(control.getColor().darker().darker()) +
                                  "-fx-step-indicator-inner-frame-fill: rgb(158, 158, 158);" +
                                  "-fx-step-indicator-inner-background-fill: rgb(244, 244, 244);" +
                                  "-fx-step-indicator-stroke: transparent");

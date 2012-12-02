@@ -267,6 +267,7 @@ public class AgendaTrial1 extends Application {
 				}
 				
 				// add a whole bunch of random appointments
+				lAgenda.appointments().clear();
 				for (int i = 0; i < 20; i++)
 				{
 					Calendar lFirstDayOfWeekCalendar = getFirstDayOfWeekCalendar(lAgenda.getLocale(), lAgenda.getDisplayedCalendar());
@@ -305,7 +306,7 @@ public class AgendaTrial1 extends Application {
         Scene scene = new Scene(lBorderPane, 900, 900);
 
         // create stage
-        stage.setTitle("Agenda");
+        stage.setTitle(this.getClass().getSimpleName());
         stage.setScene(scene);
         stage.show();	
     }

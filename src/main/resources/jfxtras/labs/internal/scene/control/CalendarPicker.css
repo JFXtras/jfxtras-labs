@@ -3,24 +3,22 @@
 	-fx-skin: "jfxtras.labs.internal.scene.control.skin.CalendarPickerControlSkin";
 }
 
-/* style level 
 .CalendarPickerControlSkin { 
 }
-*/
 
-/* weekday 
-.CalendarPickerControlSkin .weekday { 
+.CalendarPickerControlSkin .weekday-label {
+	-fx-alignment: CENTER;
 }
-*/
+
+.CalendarPickerControlSkin .non-weekend { 
+}
 
 .CalendarPickerControlSkin .weekend { 
 	-fx-text-fill: -fx-accent;
 }
 
-/* day
-.CalendarPickerControlSkin .day { 
+.CalendarPickerControlSkin .day-button { 
 }
-*/
 
 /* highlight today */
 .CalendarPickerControlSkin .today { 

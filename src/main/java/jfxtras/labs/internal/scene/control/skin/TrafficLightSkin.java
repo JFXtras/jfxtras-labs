@@ -119,6 +119,14 @@ public class TrafficLightSkin extends SkinBase<TrafficLight, TrafficLightBehavio
             control.setPrefSize(80, 200);
         }
 
+        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
+            control.setMinSize(20, 50);
+        }
+
+        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
+            control.setMaxSize(800, 2000);
+        }
+
         // Register listeners
         registerChangeListener(control.redOnProperty(), "RED");
         registerChangeListener(control.redBlinkingProperty(), "RED_BLINKING");
@@ -175,9 +183,8 @@ public class TrafficLightSkin extends SkinBase<TrafficLight, TrafficLightBehavio
             init();
         }
         if (control.getScene() != null) {
-            getChildren().clear();
             drawTrafficLight();
-            getChildren().add(trafficlight);
+            getChildren().setAll(trafficlight);
         }
         isDirty = false;
 

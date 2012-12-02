@@ -98,7 +98,7 @@ public class Section {
         filledArea                = new SimpleObjectProperty<Shape>(FILLED_AREA);
         paint                     = new SimpleObjectProperty<Paint>(COLOR);
         text                      = new SimpleStringProperty(TEXT);
-        cssColor                  = new SimpleStringProperty(Util.createCssColor(COLOR));
+        cssColor                  = new SimpleStringProperty(Util.colorToCssColor(COLOR));
     }
 
 
@@ -134,7 +134,7 @@ public class Section {
     public final void setColor(final Color COLOR) {
         color.set(COLOR);
         transparentColor.set(Color.color(COLOR.getRed(), COLOR.getGreen(), COLOR.getBlue(), 0.25));
-        cssColor.set(Util.createCssColor(COLOR));
+        cssColor.set(Util.colorToCssColor(COLOR));
     }
 
     public final ObjectProperty<Color> colorProperty() {

@@ -135,6 +135,14 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
             control.setPrefSize(132, 227);
         }
 
+        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
+            control.setMinSize(13, 22);
+        }
+
+        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
+            control.setMaxSize(660, 1135);
+        }
+
         rotate.setAxis(Rotate.X_AXIS);
         rotate.setPivotY(control.getPrefHeight() * 0.4625550661);
 
@@ -226,12 +234,11 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
             init();
         }
         if (control.getScene() != null) {
-            getChildren().clear();
             drawBackground();
             drawFixture();
             drawFlip();
             drawFrame();
-            getChildren().addAll(background,
+            getChildren().setAll(background,
                 fixture,
                 flip,
                 frame);

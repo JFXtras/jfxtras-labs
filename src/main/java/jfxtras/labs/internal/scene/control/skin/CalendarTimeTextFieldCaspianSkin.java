@@ -45,7 +45,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Popup;
 import jfxtras.labs.internal.scene.control.behavior.CalendarTimeTextFieldBehavior;
@@ -160,14 +159,17 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 			}
 		});
 		// bind the textField's tooltip to our (so it will show up) and give it a default value describing the mutation features
-		// TODO: internationalize the tooltip
-		textField.tooltipProperty().bind(getSkinnable().tooltipProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
-		getSkinnable().setTooltip(new Tooltip("Type a time or use # for now, or +/-<number>[h|m] for delta's (for example: -3m for minus 3 minutes)\nUse cursor up and down plus optional ctrl (hour) for quick keyboard changes."));
+		textField.tooltipProperty().bindBidirectional(getSkinnable().tooltipProperty()); 
+		if (getSkinnable().getTooltip() == null)
+		{
+			// TODO: internationalize the tooltip
+			getSkinnable().setTooltip(new Tooltip("Type a time or use # for now, or +/-<number>[h|m] for delta's (for example: -3m for minus 3 minutes)\nUse cursor up and down plus optional ctrl (hour) for quick keyboard changes."));
+		}
         textField.promptTextProperty().bind(getSkinnable().promptTextProperty());
 
 		// the icon
-		Image lImage = new Image(this.getClass().getResourceAsStream(this.getClass().getSimpleName() + "Icon.png"));
-		imageView = new ImageView(lImage);
+		imageView = new ImageView();
+		imageView.getStyleClass().add("icon");
 		imageView.setPickOnBounds(true);
 		imageView.setOnMouseClicked(new EventHandler<MouseEvent>()
 		{
@@ -180,7 +182,7 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 				showPopup(evt);
 			}
 		});
-		
+
 		// construct a gridpane: one row, two columns
 		gridPane = new GridPane();
 		gridPane.setHgap(3);

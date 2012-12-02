@@ -60,6 +60,7 @@ import java.util.List;
 public class GaugeModel {
     private DoubleProperty               value;
     private DoubleProperty               realValue;
+    private DoubleProperty               formerValue;
     private BooleanProperty              valueAnimationEnabled;
     private DoubleProperty               animationDuration;
     private DoubleProperty               redrawTolerance;
@@ -89,6 +90,7 @@ public class GaugeModel {
     public GaugeModel() {
         value                           = new SimpleDoubleProperty(0);
         realValue                       = new SimpleDoubleProperty(0);
+        formerValue                     = new SimpleDoubleProperty(0);
         valueAnimationEnabled           = new SimpleBooleanProperty(true);
         animationDuration               = new SimpleDoubleProperty(800);
         redrawTolerance                 = new SimpleDoubleProperty(0);
@@ -166,6 +168,7 @@ public class GaugeModel {
     }
 
     public final void setValue(final double VALUE) {
+        formerValue.set(value.get());
         if (isEndlessMode()) {
             value.set(VALUE % getRange());
             realValue.set(VALUE);
@@ -186,6 +189,14 @@ public class GaugeModel {
 
     public final ReadOnlyDoubleProperty realValueProperty() {
         return realValue;
+    }
+
+    public final double getFormerValue() {
+        return formerValue.get();
+    }
+
+    public final ReadOnlyDoubleProperty formerValueProperty() {
+        return formerValue;
     }
 
     public final boolean isValueAnimationEnabled() {
@@ -577,18 +588,12 @@ public class GaugeModel {
     }
 
     public final void setSections(final Section... SECTION_ARRAY) {
-        sections.clear();
-        for (final Section SECTION : SECTION_ARRAY) {
-            sections.add(new Section(SECTION.getStart(), SECTION.getStop(), SECTION.getColor(), SECTION.getText()));
-        }
+        sections.setAll(SECTION_ARRAY);
         fireGaugeModelEvent();
     }
 
     public final void setSections(final List<Section> SECTIONS) {
-        sections.clear();
-        for (final Section SECTION : SECTIONS) {
-            sections.add(new Section(SECTION.getStart(), SECTION.getStop(), SECTION.getColor(), SECTION.getText()));
-        }
+        sections.setAll(SECTIONS);
         fireGaugeModelEvent();
     }
 
@@ -617,18 +622,12 @@ public class GaugeModel {
     }
 
     public final void setAreas(final Section... AREA_ARRAY) {
-        areas.clear();
-        for (final Section AREA : AREA_ARRAY) {
-            areas.add(new Section(AREA.getStart(), AREA.getStop(), AREA.getColor(), AREA.getText()));
-        }
+        areas.setAll(AREA_ARRAY);
         fireGaugeModelEvent();
     }
 
     public final void setAreas(final List<Section> AREAS) {
-        areas.clear();
-        for (final Section AREA : AREAS) {
-            areas.add(new Section(AREA.getStart(), AREA.getStop(), AREA.getColor(), AREA.getText()));
-        }
+        areas.setAll(AREAS);
         fireGaugeModelEvent();
     }
 
@@ -657,18 +656,12 @@ public class GaugeModel {
     }
 
     public final void setTickMarkSections(final Section... SECTIONS_ARRAY) {
-        tickMarkSections.clear();
-        for (final Section SECTION : SECTIONS_ARRAY) {
-            tickMarkSections.add(new Section(SECTION.getStart(), SECTION.getStop(), SECTION.getColor(), SECTION.getText()));
-        }
+        tickMarkSections.setAll(SECTIONS_ARRAY);
         fireGaugeModelEvent();
     }
 
     public final void setTickMarkSections(final List<Section> SECTIONS) {
-        tickMarkSections.clear();
-        for (final Section SECTION : SECTIONS) {
-            tickMarkSections.add(new Section(SECTION.getStart(), SECTION.getStop(), SECTION.getColor(), SECTION.getText()));
-        }
+        tickMarkSections.setAll(SECTIONS);
         fireGaugeModelEvent();
     }
 
@@ -697,18 +690,12 @@ public class GaugeModel {
     }
 
     public final void setMarkers(final Marker... MARKER_ARRAY) {
-        markers.clear();
-        for (final Marker MARKER : MARKER_ARRAY) {
-            markers.add(new Marker(MARKER.getValue(), MARKER.getColor(), MARKER.getText(), MARKER.isVisible()));
-        }
+        markers.setAll(MARKER_ARRAY);
         fireGaugeModelEvent();
     }
 
     public final void setMarkers(final List<Marker> MARKERS) {
-        markers.clear();
-        for (final Marker MARKER : MARKERS) {
-            markers.add(new Marker(MARKER.getValue(), MARKER.getColor(), MARKER.getText(), MARKER.isVisible()));
-        }
+        markers.setAll(MARKERS);
         fireGaugeModelEvent();
     }
 

@@ -152,9 +152,9 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 
 		// month spinner
 		List<String> lMonthLabels = getMonthLabels();
-		monthXSpinner = new ListSpinner<String>(lMonthLabels).withIndex(Calendar.getInstance().get(Calendar.MONTH)).withCyclic(Boolean.TRUE);
+		monthListSpinner = new ListSpinner<String>(lMonthLabels).withIndex(Calendar.getInstance().get(Calendar.MONTH)).withCyclic(Boolean.TRUE);
 		// on cycle overflow to year
-		monthXSpinner.setOnCycle(new EventHandler<ListSpinner.CycleEvent>()
+		monthListSpinner.setOnCycle(new EventHandler<ListSpinner.CycleEvent>()
 		{
 			@Override
 			public void handle(CycleEvent evt)
@@ -162,17 +162,17 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 				// if we've cycled down
 				if (evt.cycledDown()) 
 				{
-					yearXSpinner.increment();
+					yearListSpinner.increment();
 				}
 				else 
 				{
-					yearXSpinner.decrement();				
+					yearListSpinner.decrement();				
 				}
 					 
 			}
 		});
 		// if the value changed, update the displayed calendar
-		monthXSpinner.valueProperty().addListener(new ChangeListener<String>()
+		monthListSpinner.valueProperty().addListener(new ChangeListener<String>()
 		{
 			@Override
 			public void changed(ObservableValue arg0, String arg1, String arg2)
@@ -180,12 +180,12 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 				setDisplayedCalendarFromSpinners();
 			}
 		});
-		lGridPane.add(monthXSpinner, 0, 0, 5, 1); // col, row, hspan, vspan
+		lGridPane.add(monthListSpinner, 1, 0, 4, 1); // col, row, hspan, vspan
 		
 		// year spinner
-		yearXSpinner = new ListSpinner<Integer>(new ListSpinnerIntegerList()).withValue(Calendar.getInstance().get(Calendar.YEAR));
+		yearListSpinner = new ListSpinner<Integer>(new ListSpinnerIntegerList()).withValue(Calendar.getInstance().get(Calendar.YEAR));
 		// if the value changed, update the displayed calendar
-		yearXSpinner.valueProperty().addListener(new ChangeListener<Integer>()
+		yearListSpinner.valueProperty().addListener(new ChangeListener<Integer>()
 		{
 			@Override
 			public void changed(ObservableValue observableValue, Integer oldValue, Integer newValue)
@@ -193,7 +193,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 				setDisplayedCalendarFromSpinners();
 			}
 		});
-		lGridPane.add(yearXSpinner, 5, 0, 3, 1); // col, row, hspan, vspan
+		lGridPane.add(yearListSpinner, 5, 0, 3, 1); // col, row, hspan, vspan
 		
 		// double click here to show today
 		Label lTodayLabel = new Label("   ");
@@ -214,7 +214,8 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			// create buttons
 			Label lLabel = new Label("" + i);
 			// style class is set together with the label
-			lLabel.setAlignment(Pos.CENTER);
+			lLabel.getStyleClass().add("weekday-label"); 
+			lLabel.setMaxWidth(Integer.MAX_VALUE); // this is one of those times; why the @#$@#$@#$ do I need to specify this in order to make the damn label centered?
 			
 			// add it
 			lGridPane.add(lLabel, i + 1, 1);  // col, row
@@ -225,7 +226,6 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 
 			// remember it
 			weekdayLabels.add(lLabel);
-			lLabel.setAlignment(Pos.BASELINE_CENTER); // TODO: not working
 		}
 		
 		// weeknumber labels
@@ -252,7 +252,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		{
 			// create buttons
 			ToggleButton lToggleButton = new ToggleButton("" + i);
-			lToggleButton.getStyleClass().add("day");
+			lToggleButton.getStyleClass().add("day-button");
 			lToggleButton.selectedProperty().addListener(toggleButtonSelectedPropertyChangeListener); // for minimal memory usage, use a single listener
 			lToggleButton.onMouseReleasedProperty().set(toggleButtonMouseReleasedPropertyEventHandler); // for minimal memory usage, use a single listener
 			lToggleButton.onKeyReleasedProperty().set(toggleButtonKeyReleasedPropertyEventHandler); // for minimal memory usage, use a single listener
@@ -281,8 +281,8 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
 		getChildren().add(lGridPane);
 	}
-	private ListSpinner<String> monthXSpinner = null;
-	private ListSpinner<Integer> yearXSpinner = null;
+	private ListSpinner<String> monthListSpinner = null;
+	private ListSpinner<Integer> yearListSpinner = null;
 	final private List<Label> weekdayLabels = new ArrayList<Label>();
 	final private List<Label> weeknumberLabels = new ArrayList<Label>();
 	final private List<ToggleButton> dayButtons = new ArrayList<ToggleButton>();
@@ -483,8 +483,8 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	private void setDisplayedCalendarFromSpinners()
 	{
 		// get spinner values
-		int lYear = yearXSpinner.getValue().intValue();
-		int lMonth = monthXSpinner.getIndex();
+		int lYear = yearListSpinner.getValue().intValue();
+		int lMonth = monthListSpinner.getIndex();
 		
 		// get new calendar to display
 		Calendar lCalendar = (Calendar)getDisplayedCalendar().clone();
@@ -536,10 +536,10 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		// get the value for the corresponding index and set that
 		List<String> lMonthLabels = getMonthLabels();
 		String lMonthLabel = lMonthLabels.get( lCalendar.get(Calendar.MONTH) ); 
-		monthXSpinner.setValue( lMonthLabel );
+		monthListSpinner.setValue( lMonthLabel );
 		
 		// set value
-		yearXSpinner.setValue(lCalendar.get(Calendar.YEAR));
+		yearListSpinner.setValue(lCalendar.get(Calendar.YEAR));
 		
 	}
 	
@@ -556,8 +556,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		{
 			Label lLabel = weekdayLabels.get(i);
 			lLabel.setText( lWeekdayLabels.get(i) );
-			lLabel.getStyleClass().remove("weekend");
-			lLabel.getStyleClass().remove("weekday");
+			lLabel.getStyleClass().removeAll("weekend", "weekday");
 			lLabel.getStyleClass().add(isWeekdayWeekend(i) ? "weekend" : "weekday"); 
 		}
 	}

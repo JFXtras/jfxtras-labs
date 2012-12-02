@@ -103,6 +103,14 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
             control.setPrefSize(16, 16);
         }
 
+        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
+            control.setMinSize(16, 16);
+        }
+
+        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
+            control.setMaxSize(1024, 1024);
+        }
+
         // Register listeners
         registerChangeListener(control.prefWidthProperty(), "PREF_WIDTH");
         registerChangeListener(control.prefHeightProperty(), "PREF_HEIGHT");
@@ -203,9 +211,8 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
             init();
         }
         if (control.getScene() != null) {
-            getChildren().clear();
             drawLed();
-            getChildren().add(bargraph);
+            getChildren().setAll(bargraph);
         }
         isDirty = false;
 

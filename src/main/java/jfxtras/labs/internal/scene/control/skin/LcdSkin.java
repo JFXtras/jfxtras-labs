@@ -109,7 +109,9 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
     private DoubleProperty       currentLcdValue;
     private FadeTransition       glowPulse;
     private Path                 trendUp;
+    private Path                 trendRising;
     private Path                 trendSteady;
+    private Path                 trendFalling;
     private Path                 trendDown;
     private List<Shape>          bargraph;
     private Transition           toValueAnimation;
@@ -200,6 +202,15 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         if (control.getPrefWidth() < 0 || control.getPrefHeight() < 0) {
             control.setPrefSize(PREF_SIZE.getWidth(), PREF_SIZE.getHeight());
         }
+
+        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
+            control.setMinSize(50, 50);
+        }
+
+        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
+            control.setMaxSize(1024, 1024);
+        }
+
         glowColors.clear();
         final Color GLOW_COLOR = control.getGlowColor();
         glowColors.add(Color.hsb(GLOW_COLOR.getHue(), 0.46, 0.96, 0.0));
@@ -460,8 +471,10 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             repaint();
         } else if ("GAUGE_MODEL".equals(PROPERTY)) {
             addBindings();
+            repaint();
         } else if ("STYLE_MODEL".equals(PROPERTY)) {
             addBindings();
+            repaint();
         } else if ("PREF_WIDTH".equals(PROPERTY)) {
             repaint();
         } else if ("PREF_HEIGHT".equals(PROPERTY)) {
@@ -490,12 +503,11 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             init();
         }
         if (control.getScene() != null) {
-            getChildren().clear();
             drawGlowOn();
             drawLcd();
             drawLcdContent();
 
-            getChildren().addAll(minMeasured,
+            getChildren().setAll(minMeasured,
                 maxMeasured,
                 lcd,
                 glowOn,
@@ -749,7 +761,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
 
 
     // ******************** Drawing *******************************************
-    public void drawGlowOn() {
+    private void drawGlowOn() {
         final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
         final double WIDTH = control.getPrefWidth();
         final double HEIGHT = control.getPrefHeight();
@@ -777,7 +789,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         glowOn.setCache(true);
     }
 
-    public void drawLcd() {
+    private void drawLcd() {
         final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
         final double WIDTH = control.getPrefWidth();
         final double HEIGHT = control.getPrefHeight();
@@ -844,6 +856,19 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         trendUp.getStyleClass().add("lcd-text");
         trendUp.setVisible(false);
 
+        trendRising = new Path();
+        trendRising.setFillRule(FillRule.EVEN_ODD);
+        trendRising.getElements().add(new MoveTo(0.18181818181818182 * WIDTH, 0.8541666666666666 * HEIGHT));
+        trendRising.getElements().add(new LineTo(0.24242424242424243 * WIDTH, 0.8125 * HEIGHT));
+        trendRising.getElements().add(new LineTo(0.20454545454545456 * WIDTH, 0.9375 * HEIGHT));
+        trendRising.getElements().add(new LineTo(0.18181818181818182 * WIDTH, 0.8541666666666666 * HEIGHT));
+        trendRising.getElements().add(new ClosePath());
+        trendRising.getStyleClass().clear();
+        trendRising.getStyleClass().add("lcd");
+        trendRising.getStyleClass().add(control.getLcdDesign().CSS);
+        trendRising.getStyleClass().add("lcd-text");
+        trendRising.setVisible(false);
+
         trendSteady = new Path();
         trendSteady.setFillRule(FillRule.EVEN_ODD);
         trendSteady.getElements().add(new MoveTo(0.18181818181818182 * WIDTH, 0.8125 * HEIGHT));
@@ -856,6 +881,19 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         trendSteady.getStyleClass().add(control.getLcdDesign().CSS);
         trendSteady.getStyleClass().add("lcd-text");
         trendSteady.setVisible(false);
+
+        trendFalling = new Path();
+        trendFalling.setFillRule(FillRule.EVEN_ODD);
+        trendFalling.getElements().add(new MoveTo(0.18181818181818182 * WIDTH, 0.8958333333333334 * HEIGHT));
+        trendFalling.getElements().add(new LineTo(0.24242424242424243 * WIDTH, 0.9375 * HEIGHT));
+        trendFalling.getElements().add(new LineTo(0.20454545454545456 * WIDTH, 0.8125 * HEIGHT));
+        trendFalling.getElements().add(new LineTo(0.18181818181818182 * WIDTH, 0.8958333333333334 * HEIGHT));
+        trendFalling.getElements().add(new ClosePath());
+        trendFalling.getStyleClass().clear();
+        trendFalling.getStyleClass().add("lcd");
+        trendFalling.getStyleClass().add(control.getLcdDesign().CSS);
+        trendFalling.getStyleClass().add("lcd-text");
+        trendFalling.setVisible(false);
 
         trendDown = new Path();
         trendDown.setFillRule(FillRule.EVEN_ODD);
@@ -1125,6 +1163,8 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
 
             lcd.getChildren().add(BAR_GRAPH_OFF);
             lcd.getChildren().addAll(bargraph);
+
+
         }
 
         // Add lcd title string if visible
@@ -1150,7 +1190,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         lcd.setCache(true);
     }
 
-    public void drawLcdContent() {
+    private void drawLcdContent() {
         final double SIZE   = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
         final double WIDTH  = control.getPrefWidth();
         final double HEIGHT = control.getPrefHeight();
@@ -1230,22 +1270,44 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
             switch (control.getTrend()) {
                 case UP:
                     trendUp.setVisible(true);
+                    trendRising.setVisible(false);
                     trendSteady.setVisible(false);
+                    trendFalling.setVisible(false);
+                    trendDown.setVisible(false);
+                    break;
+                case RISING:
+                    trendUp.setVisible(false);
+                    trendRising.setVisible(true);
+                    trendSteady.setVisible(false);
+                    trendFalling.setVisible(false);
                     trendDown.setVisible(false);
                     break;
                 case STEADY:
                     trendUp.setVisible(false);
+                    trendRising.setVisible(false);
                     trendSteady.setVisible(true);
+                    trendFalling.setVisible(false);
+                    trendDown.setVisible(false);
+                    break;
+                case FALLING:
+                    trendUp.setVisible(false);
+                    trendRising.setVisible(false);
+                    trendSteady.setVisible(false);
+                    trendFalling.setVisible(true);
                     trendDown.setVisible(false);
                     break;
                 case DOWN:
                     trendUp.setVisible(false);
+                    trendRising.setVisible(false);
                     trendSteady.setVisible(false);
+                    trendFalling.setVisible(false);
                     trendDown.setVisible(true);
                     break;
                 default:
                     trendUp.setVisible(false);
+                    trendRising.setVisible(false);
                     trendSteady.setVisible(false);
+                    trendFalling.setVisible(false);
                     trendDown.setVisible(false);
                     break;
             }
@@ -1259,7 +1321,9 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
                                             lcdMaxMeasuredValue,
                                             lcdFormerValue,
                                             trendUp,
+                                            trendRising,
                                             trendSteady,
+                                            trendFalling,
                                             trendDown);
         }
     }

@@ -97,7 +97,7 @@ public class CalendarPickerTrial1 extends Application {
         Scene scene = new Scene(lVBox, 300, 300);
 
         // create stage
-        stage.setTitle("CalendarPicker");
+        stage.setTitle(this.getClass().getSimpleName());
         stage.setScene(scene);
         stage.show();	
     }
