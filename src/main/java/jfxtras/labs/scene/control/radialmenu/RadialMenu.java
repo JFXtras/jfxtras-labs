@@ -25,69 +25,81 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control;
+package jfxtras.labs.scene.control.radialmenu;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.FadeTransitionBuilder;
+import javafx.animation.ParallelTransition;
+import javafx.animation.ParallelTransitionBuilder;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Paint;
+import javafx.util.Duration;
 
-/**
- * This class represent a radial menu that can display its item (see
- * {@link RadialMenuItem} in a radial layout. General properties are available
- * on the radialMenu while item specific ones can be set on item construction.
- * 
- * @author MrLoNee (http://www.mrlonee.com)
- * 
- */
-public class RadialMenu extends Group {
+public class RadialMenu extends Group implements EventHandler<MouseEvent> {
 
     protected List<RadialMenuItem> items = new ArrayList<RadialMenuItem>();
-
     protected DoubleProperty innerRadius;
     protected DoubleProperty radius;
     protected DoubleProperty offset;
     protected DoubleProperty initialAngle;
-    protected Paint backgroundFill;
-    protected Paint backgroundMouseOnFill;
-    protected Paint strokeFill;
+    protected ObjectProperty<Paint> backgroundFill;
+    protected ObjectProperty<Paint> backgroundMouseOnFill;
+    protected ObjectProperty<Paint> strokeFill;
     protected BooleanProperty clockwise;
     protected BooleanProperty backgroundVisible;;
     protected BooleanProperty strokeVisible;
     protected Node graphic;
 
     public Paint getBackgroundFill() {
-	return this.backgroundFill;
+	return this.backgroundFill.get();
     }
 
     public void setBackgroundFill(final Paint backgroundFill) {
-	this.backgroundFill = backgroundFill;
+	this.backgroundFill.set(backgroundFill);
+    }
+
+    public ObjectProperty<Paint> backgroundFillProperty() {
+	return this.backgroundFill;
     }
 
     public Paint getBackgroundMouseOnFill() {
-	return this.backgroundMouseOnFill;
+	return this.backgroundMouseOnFill.get();
     }
 
     public void setBackgroundMouseOnFill(final Paint backgroundMouseOnFill) {
-	this.backgroundMouseOnFill = backgroundMouseOnFill;
+	this.backgroundMouseOnFill.set(backgroundMouseOnFill);
+    }
+
+    public ObjectProperty<Paint> backgroundMouseOnFillProperty() {
+	return this.backgroundMouseOnFill;
     }
 
     public Paint getStrokeFill() {
-	return this.strokeFill;
+	return this.strokeFill.get();
     }
 
     public void setStrokeFill(final Paint strokeFill) {
-	this.strokeFill = strokeFill;
+	this.strokeFill.set(strokeFill);
+    }
+
+    public ObjectProperty<Paint> strokeFillProperty() {
+	return this.strokeFill;
     }
 
     public Node getGraphic() {
@@ -178,9 +190,10 @@ public class RadialMenu extends Group {
 	this.radius = new SimpleDoubleProperty(radius);
 	this.offset = new SimpleDoubleProperty(offset);
 	this.clockwise = new SimpleBooleanProperty(clockwise);
-	this.backgroundFill = bgFill;
-	this.backgroundMouseOnFill = bgMouseOnFill;
-	this.strokeFill = strokeFill;
+	this.backgroundFill = new SimpleObjectProperty<Paint>(bgFill);
+	this.backgroundMouseOnFill = new SimpleObjectProperty<Paint>(
+		bgMouseOnFill);
+	this.strokeFill = new SimpleObjectProperty<Paint>(strokeFill);
 
 	this.strokeVisible = new SimpleBooleanProperty(true);
 	this.backgroundVisible = new SimpleBooleanProperty(true);
@@ -228,45 +241,32 @@ public class RadialMenu extends Group {
     }
 
     public void setBackgroundColor(final Paint color) {
-	this.backgroundFill = color;
-
-	for (final RadialMenuItem item : this.items) {
-	    item.setBackgroundColor(color);
-	}
+	this.backgroundFill.set(color);
     }
 
     public void setBackgroundMouseOnColor(final Paint color) {
-	this.backgroundMouseOnFill = color;
-
-	for (final RadialMenuItem item : this.items) {
-	    item.setBackgroundMouseOnColor(color);
-	}
+	this.backgroundMouseOnFill.set(color);
     }
 
     public void setStrokeColor(final Paint color) {
-	this.strokeFill = color;
-
-	for (final RadialMenuItem item : this.items) {
-	    item.setStrokeColor(color);
-	}
+	this.strokeFill.set(color);
     }
 
     public void setClockwise(final boolean clockwise) {
 	this.clockwise.set(clockwise);
-
-	for (final RadialMenuItem item : this.items) {
-	    item.setClockwise(clockwise);
-	}
     }
 
     public void addMenuItem(final RadialMenuItem item) {
-	item.setBackgroundColor(this.backgroundFill);
-	item.setBackgroundMouseOnColor(this.backgroundMouseOnFill);
+	item.visibleProperty().bind(this.visibleProperty());
+	item.backgroundColorProperty().bind(this.backgroundFill);
+	item.backgroundMouseOnColorProperty().bind(this.backgroundMouseOnFill);
 	item.innerRadiusProperty().bind(this.innerRadius);
 	item.radiusProperty().bind(this.radius);
 	item.offsetProperty().bind(this.offset);
-	item.setStrokeColor(this.strokeFill);
-	item.setClockwise(this.clockwise.get());
+	item.strokeColorProperty().bind(this.strokeFill);
+	item.clockwiseProperty().bind(this.clockwise);
+	item.backgroundVisibleProperty().bind(this.backgroundVisible);
+	item.strokeVisibleProperty().bind(this.strokeVisible);
 	this.items.add(item);
 	this.getChildren().add(item);
 	double angleOffset = this.initialAngle.get();
@@ -274,24 +274,63 @@ public class RadialMenu extends Group {
 	    it.setStartAngle(angleOffset);
 	    angleOffset = angleOffset + item.getMenuSize();
 	}
-    }
-
-    public List<RadialMenuItem> getMenuItems() {
-	return this.items;
+	item.setOnMouseClicked(this);
     }
 
     public void removeMenuItem(final RadialMenuItem item) {
 	this.items.remove(item);
 	this.getChildren().remove(item);
-
+	item.visibleProperty().unbind();
+	item.backgroundColorProperty().unbind();
+	item.backgroundMouseOnColorProperty().unbind();
 	item.innerRadiusProperty().unbind();
 	item.radiusProperty().unbind();
 	item.offsetProperty().unbind();
+	item.strokeColorProperty().unbind();
+	item.clockwiseProperty().unbind();
+	item.backgroundVisibleProperty().unbind();
+	item.strokeVisibleProperty().unbind();
+	item.removeEventHandler(MouseEvent.MOUSE_CLICKED, this);
     }
 
     public void removeMenuItem(final int itemIndex) {
-	final RadialMenuItem item = this.items.remove(itemIndex);
-	this.getChildren().remove(item);
+	final RadialMenuItem item = this.items.get(itemIndex);
+	this.removeMenuItem(item);
+    }
+
+    @Override
+    public void handle(final MouseEvent event) {
+	if (event.getButton() == MouseButton.PRIMARY) {
+	    final RadialMenuItem item = (RadialMenuItem) event.getSource();
+	    item.setSelected(!item.isSelected());
+	    for (final RadialMenuItem it : this.items) {
+		if (it != item) {
+		    it.setSelected(false);
+		}
+	    }
+	    if (!item.isSelected()) {
+		this.hideRadialMenu();
+	    }
+
+	}
+    }
+
+    private void hideRadialMenu() {
+
+	final FadeTransition fade = FadeTransitionBuilder.create().node(this)
+		.fromValue(1).toValue(0).duration(Duration.millis(300))
+		.onFinished(new EventHandler<ActionEvent>() {
+
+		    @Override
+		    public void handle(final ActionEvent arg0) {
+			RadialMenu.this.setVisible(false);
+		    }
+		}).build();
+
+	final ParallelTransition transition = ParallelTransitionBuilder
+		.create().children(fade).build();
+
+	transition.play();
     }
 
 }
