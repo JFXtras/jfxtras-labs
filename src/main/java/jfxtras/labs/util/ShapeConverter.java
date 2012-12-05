@@ -145,7 +145,7 @@ public class ShapeConverter {
         final StringBuilder fxPath = new StringBuilder();
         fxPath.append("M ").append(QUAD_CURVE.getStartX()).append(" ").append(QUAD_CURVE.getStartY()).append(" ")
               .append("Q ").append(QUAD_CURVE.getControlX()).append(" ").append(QUAD_CURVE.getControlY())
-              .append(QUAD_CURVE.getEndX()).append(" ").append(QUAD_CURVE.endYProperty());
+              .append(QUAD_CURVE.getEndX()).append(" ").append(QUAD_CURVE.getEndY());
         return fxPath.toString();
     }
 
@@ -266,16 +266,16 @@ public class ShapeConverter {
                 fxPath.append("C ")
                       .append(((CubicCurveTo) element).getX()).append(" ")
                       .append(((CubicCurveTo) element).getY()).append(" ")
-                      .append(((CubicCurveTo) element).controlX1Property()).append(" ")
-                      .append(((CubicCurveTo) element).controlY1Property()).append(" ")
-                      .append(((CubicCurveTo) element).controlX2Property()).append(" ")
-                      .append(((CubicCurveTo) element).controlY2Property()).append(" ");
+                      .append(((CubicCurveTo) element).getControlX1()).append(" ")
+                      .append(((CubicCurveTo) element).getControlY1()).append(" ")
+                      .append(((CubicCurveTo) element).getControlX2()).append(" ")
+                      .append(((CubicCurveTo) element).getControlY2()).append(" ");
             } else if (QuadCurveTo.class.equals(element.getClass())) {
                 fxPath.append("Q ")
                       .append(((QuadCurveTo) element).getX()).append(" ")
                       .append(((QuadCurveTo) element).getY()).append(" ")
-                      .append(((QuadCurveTo) element).controlXProperty()).append(" ")
-                      .append(((QuadCurveTo) element).controlYProperty()).append(" ");
+                      .append(((QuadCurveTo) element).getControlX()).append(" ")
+                      .append(((QuadCurveTo) element).getControlY()).append(" ");
             } else if (ArcTo.class.equals(element.getClass())) {
                 fxPath.append("A ")
                       .append(((ArcTo) element).getX()).append(" ")
