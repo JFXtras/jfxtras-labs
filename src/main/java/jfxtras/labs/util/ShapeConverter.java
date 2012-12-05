@@ -81,7 +81,8 @@ public class ShapeConverter {
         } else if (Ellipse.class.equals(SHAPE.getClass())) {
             fxPath.append(convertEllipse((Ellipse) SHAPE));
         } else if (Text.class.equals(SHAPE.getClass())) {
-
+            Path path = (Path)(Shape.subtract(SHAPE, new Rectangle(0, 0)));
+            fxPath.append(convertPath(path));
         } else if (Path.class.equals(SHAPE.getClass())) {
             fxPath.append(convertPath((Path) SHAPE));
         } else if (Polygon.class.equals(SHAPE.getClass())) {
@@ -264,18 +265,18 @@ public class ShapeConverter {
                       .append(((LineTo) element).getY()).append(" ");
             } else if (CubicCurveTo.class.equals(element.getClass())) {
                 fxPath.append("C ")
-                      .append(((CubicCurveTo) element).getX()).append(" ")
-                      .append(((CubicCurveTo) element).getY()).append(" ")
                       .append(((CubicCurveTo) element).getControlX1()).append(" ")
                       .append(((CubicCurveTo) element).getControlY1()).append(" ")
                       .append(((CubicCurveTo) element).getControlX2()).append(" ")
-                      .append(((CubicCurveTo) element).getControlY2()).append(" ");
+                      .append(((CubicCurveTo) element).getControlY2()).append(" ")
+                      .append(((CubicCurveTo) element).getX()).append(" ")
+                      .append(((CubicCurveTo) element).getY()).append(" ");
             } else if (QuadCurveTo.class.equals(element.getClass())) {
                 fxPath.append("Q ")
-                      .append(((QuadCurveTo) element).getX()).append(" ")
-                      .append(((QuadCurveTo) element).getY()).append(" ")
                       .append(((QuadCurveTo) element).getControlX()).append(" ")
-                      .append(((QuadCurveTo) element).getControlY()).append(" ");
+                      .append(((QuadCurveTo) element).getControlY()).append(" ")
+                      .append(((QuadCurveTo) element).getX()).append(" ")
+                      .append(((QuadCurveTo) element).getY()).append(" ");
             } else if (ArcTo.class.equals(element.getClass())) {
                 fxPath.append("A ")
                       .append(((ArcTo) element).getX()).append(" ")
