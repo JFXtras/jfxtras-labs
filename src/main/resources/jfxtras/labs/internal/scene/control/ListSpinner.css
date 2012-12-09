@@ -19,7 +19,7 @@
 	-fx-background-radius: 6.4, 5, 4, 3;	
 }
 
-.ListSpinner .value { 
+.ListSpinner .valuePane { 
 	-fx-padding: 0.0em 0.2em 0.0em 0.2em;
 }
 

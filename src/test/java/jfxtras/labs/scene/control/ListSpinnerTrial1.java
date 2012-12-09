@@ -239,7 +239,7 @@ public class ListSpinnerTrial1 extends Application {
 			// arrow position
 			{
 				lGridPane.add(new Label("HORIZONTAL LEADING"), 0, lRowIdx);
-				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.LEADING);
+				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
@@ -266,6 +266,12 @@ public class ListSpinnerTrial1 extends Application {
 				lGridPane.add(new Label("VERTICAL SPLIT"), 0, lRowIdx);
 				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.SPLIT);
 				lGridPane.add(lSpinner, 1, lRowIdx++);
+			}
+			{
+				lGridPane.add(new Label("CSS"), 0, lRowIdx);
+				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.LEADING);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
+				lSpinner.setId("TheSpinner");
 			}
 			{
 				lGridPane.add(new Label("HORIZONTAL LEADING"), 0, lRowIdx);
@@ -297,6 +303,12 @@ public class ListSpinnerTrial1 extends Application {
 				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.SPLIT).withEditable(true);
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
+			{
+				lGridPane.add(new Label("CSS"), 0, lRowIdx);
+				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withEditable(true);
+				lGridPane.add(lSpinner, 1, lRowIdx++);
+				lSpinner.setId("TheEditableSpinner");
+			}
 			
 			lHBox.getChildren().add(lGridPane);
 		}
@@ -305,6 +317,9 @@ public class ListSpinnerTrial1 extends Application {
 		// create scene
         Scene scene = new Scene(lHBox, 800, 600);
         
+		// load custom CSS
+        scene.getStylesheets().addAll(this.getClass().getResource(this.getClass().getSimpleName() + ".css").toExternalForm());
+		
         // create stage
         stage.setTitle(this.getClass().getSimpleName());
         stage.setScene(scene);

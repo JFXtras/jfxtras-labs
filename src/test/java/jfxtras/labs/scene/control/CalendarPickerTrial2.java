@@ -15,7 +15,7 @@ import javafx.stage.Stage;
  * @author Michael Paus and Tom Eugelink
  *
  */
-public class CalendarPickerTrail2 extends Application {
+public class CalendarPickerTrial2 extends Application {
 	
     public static void main(String[] args) {
     	launch(args);       

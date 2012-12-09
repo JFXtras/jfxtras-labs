@@ -36,6 +36,11 @@ import javafx.scene.control.Control;
  * A textField with displays a calendar (time) with a icon to popup the CalendarTimePicker
  * The calendar is (and should) be treated as immutable. That means the setter is not used, but when a value is changed a new instance (clone) is put in the calendar property.
  * 
+ * To change the icon use:
+ * .CalendarTimeTextField .icon  {
+ *     -fx-image: url("AlternateCalendarIcon.jpg");
+ * }
+ * 
  * @author Tom Eugelink
  */
 public class CalendarTimeTextField extends Control
