@@ -42,6 +42,11 @@ import javafx.scene.control.Control;
  * The calendar is (and should) be treated as immutable. That means the setter is not used, but when a value is changed a new instance (clone) is put in the calendar property.
  * Features relative mutation options, like -1 or -1d for yesterday, -1m for minus one month, +1w, +2y. # is today.
  * 
+ * To change the icon use:
+ * .CalendarTextField .icon  {
+ *     -fx-image: url("AlternateCalendarIcon.jpg");
+ * }
+ *
  * @author Tom Eugelink
  */
 public class CalendarTextField extends Control

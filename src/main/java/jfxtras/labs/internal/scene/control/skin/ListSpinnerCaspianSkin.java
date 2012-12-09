@@ -359,6 +359,8 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpin
 			// use the cell factory
 			Node lNode = getSkinnable().getCellFactory().call(getSkinnable());
 			valueGroup.setCenter( lNode );
+			if (lNode.getStyleClass().contains("value") == false) lNode.getStyleClass().add("value");
+			if (lNode.getStyleClass().contains("readonly") == false) lNode.getStyleClass().add("readonly");
 		}
 		else
 		{
@@ -366,6 +368,9 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpin
 			if (textField == null) 
 			{
 				textField = new TextField();
+				textField.getStyleClass().add("value");
+				textField.getStyleClass().add("editable");
+				
 				// process text entry
 				textField.focusedProperty().addListener(new InvalidationListener()
 				{			

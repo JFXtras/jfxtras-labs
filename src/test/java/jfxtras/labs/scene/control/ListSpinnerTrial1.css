@@ -1,0 +1,15 @@
+#TheSpinner .value { 
+	-fx-text-fill: RED;
+}
+
+#TheEditableSpinner .value { 
+	-fx-text-fill: RED;
+}
+
+.ListSpinnerx .readonly { 
+	-fx-font-weight: bold;
+}
+
+.ListSpinnerx .editable { 
+	-fx-font-weight: bold;
+}

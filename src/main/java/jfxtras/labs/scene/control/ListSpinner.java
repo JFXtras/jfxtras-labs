@@ -58,6 +58,13 @@ import javafx.util.StringConverter;
  * 
  * http://openjdk.java.net/projects/openjfx/ux/spinner/index.html
  * 
+ * You can style the text in the control using CSS like so:
+ * .ListSpinner .value { 
+ *	-fx-font-weight: bold;
+ * }
+ * 
+ * The "value" class applies to the text in both readonly and editable spinners. Use "readonly" or "editable" to style either mode specifically.
+ *    
  * @author Tom Eugelink
  */
 public class ListSpinner<T> extends Control
