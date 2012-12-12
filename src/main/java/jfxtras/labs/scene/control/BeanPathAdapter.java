@@ -1,9 +1,10 @@
 package jfxtras.labs.scene.control;
 
 import java.io.Serializable;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
@@ -1040,9 +1041,9 @@ public class BeanPathAdapter<B> {
 		}
 
 		/**
-		 * {@link BeanPathAdapter.FieldBean#performOperation(String, String,
+		 * @see BeanPathAdapter.FieldBean#performOperation(String, String,
 		 *      ReadOnlyObjectWrapper, Class, String, Observable, Class,
-		 *      SelectionModel, FieldProperty, FieldBeanOperation)}
+		 *      SelectionModel, FieldProperty, FieldBeanOperation)
 		 */
 		public <K, V> FieldProperty<?, ?, ?> performOperation(
 				final String fieldPath,
@@ -1127,10 +1128,10 @@ public class BeanPathAdapter<B> {
 				final FieldBeanOperation operation) {
 			final String[] fieldNames = fieldPath.split("\\" + PATH_SEPARATOR);
 			final boolean isField = fieldNames.length == 1;
-			final String pKey = isField ? fieldNames[0] : "";
-			if (isField && getFieldProperties().containsKey(pKey)) {
+			final String pkey = isField ? fieldNames[0] : "";
+			if (isField && getFieldProperties().containsKey(pkey)) {
 				final FieldProperty<BT, ?, ?> fp = getFieldProperties().get(
-						pKey);
+						pkey);
 				performOperation(fp, observable, propertyValueClass, operation);
 				return fp;
 			} else if (!isField && getFieldBeans().containsKey(fieldNames[0])) {
@@ -1629,17 +1630,17 @@ public class BeanPathAdapter<B> {
 		@Override
 		public void set(final Object v) {
 			try {
-				final Object cv = fieldHandle.get();
+				final Object cv = fieldHandle.getAccessor().invoke();
 				final Class<?> clazz = cv != null ? cv.getClass() : fieldHandle
 						.getFieldType();
 				if (v != null
 						&& (Collection.class.isAssignableFrom(v.getClass()) || Map.class
 								.isAssignableFrom(v.getClass()))) {
-					fieldHandle.set(v);
+					fieldHandle.getSetter().invoke(v);
 					postSet(cv);
 				} else if (isDirty || cv != v) {
 					final Object val = FieldStringConverter.coerce(v, clazz);
-					fieldHandle.set(val);
+					fieldHandle.getSetter().invoke(val);
 					postSet(cv);
 				}
 			} catch (final Throwable t) {
@@ -1698,7 +1699,7 @@ public class BeanPathAdapter<B> {
 				Collection<?> items = (Collection<?>) getDirty();
 				if (items == null) {
 					items = new LinkedHashSet<>();
-					fieldHandle.set(items);
+					fieldHandle.getSetter().invoke(items);
 				}
 				syncCollectionValues(items, false, null, null, null);
 			} else if (isMap()) {
@@ -1706,7 +1707,7 @@ public class BeanPathAdapter<B> {
 				Map<?, ?> items = (Map<?, ?>) getDirty();
 				if (items == null) {
 					items = new HashMap<>();
-					fieldHandle.set(items);
+					fieldHandle.getSetter().invoke(items);
 				}
 				syncCollectionValues(items, false, null, null, null);
 			} else {
@@ -2437,7 +2438,7 @@ public class BeanPathAdapter<B> {
 		 */
 		public Object getDirty() {
 			try {
-				return fieldHandle.get();
+				return fieldHandle.getAccessor().invoke();
 			} catch (final Throwable t) {
 				throw new RuntimeException("Unable to get dirty value", t);
 			}
@@ -2670,10 +2671,8 @@ public class BeanPathAdapter<B> {
 			DFLTS.put(BigDecimal.class, BigDecimal.valueOf(0D));
 		}
 		private final String fieldName;
-		// private Method accessor;
-		// private Method setter;
-		private Method accessor;
-		private Method setter;
+		private MethodHandle accessor;
+		private MethodHandle setter;
 		private final Class<F> declaredFieldType;
 		private T target;
 		private boolean hasDefaultDerived;
@@ -2682,7 +2681,7 @@ public class BeanPathAdapter<B> {
 		 * Constructor
 		 * 
 		 * @param target
-		 *            the {@link #getTarget()} for the {@link Method}s
+		 *            the {@link #getTarget()} for the {@link MethodHandle}s
 		 * @param fieldName
 		 *            the field name defined in the {@link #getTarget()}
 		 * @param declaredFieldType
@@ -2694,15 +2693,15 @@ public class BeanPathAdapter<B> {
 			this.fieldName = fieldName;
 			this.declaredFieldType = declaredFieldType;
 			this.target = target;
-			updateMethods();
+			updateMethodHandles();
 		}
 
 		/**
 		 * Updates the {@link #getAccessor()} and {@link #getSetter()} using the
 		 * current {@link #getTarget()} and {@link #getFieldName()}.
-		 * {@link Method}s are immutable so new ones are created.
+		 * {@link MethodHandle}s are immutable so new ones are created.
 		 */
-		protected void updateMethods() {
+		protected void updateMethodHandles() {
 			this.accessor = buildAccessorWithLikelyPrefixes(getTarget(),
 					getFieldName());
 			this.setter = buildSetter(getAccessor(), getTarget(),
@@ -2711,7 +2710,7 @@ public class BeanPathAdapter<B> {
 
 		/**
 		 * Gets the {@link #buildAccessorWithLikelyPrefixes(Object, String)}
-		 * {@link Method#getReturnType()}
+		 * {@link MethodHandle#type()}
 		 * 
 		 * @param target
 		 *            the accessor target
@@ -2721,26 +2720,26 @@ public class BeanPathAdapter<B> {
 		 */
 		public static Class<?> getAccessorType(final Object target,
 				final String fieldName) {
-			return buildAccessorWithLikelyPrefixes(target, fieldName)
-					.getReturnType();
+			return buildAccessorWithLikelyPrefixes(target, fieldName).type()
+					.returnType();
 		}
 
 		/**
-		 * Attempts to build a {@link Method} accessor for the field name using
-		 * common prefixes used for methods to access a field
+		 * Attempts to build a {@link MethodHandle} accessor for the field name
+		 * using common prefixes used for methods to access a field
 		 * 
 		 * @param target
 		 *            the target object that the accessor is for
 		 * @param fieldName
 		 *            the field name that the accessor is for
-		 * @return the accessor {@link Method}
+		 * @return the accessor {@link MethodHandle}
 		 * @throws NoSuchMethodException
 		 *             thrown when an accessor cannot be found for the field
 		 */
-		protected static Method buildAccessorWithLikelyPrefixes(
+		protected static MethodHandle buildAccessorWithLikelyPrefixes(
 				final Object target, final String fieldName) {
-			final Method mh = buildAccessor(target, fieldName, "get", "is",
-					"has", "use");
+			final MethodHandle mh = buildAccessor(target, fieldName, "get",
+					"is", "has", "use");
 			if (mh == null) {
 				// throw new NoSuchMethodException(fieldName + " on " + target);
 				throw new IllegalArgumentException(fieldName + " on " + target);
@@ -2749,24 +2748,31 @@ public class BeanPathAdapter<B> {
 		}
 
 		/**
-		 * Attempts to build a {@link Method} accessor for the field name using
-		 * common prefixes used for methods to access a field
+		 * Attempts to build a {@link MethodHandle} accessor for the field name
+		 * using common prefixes used for methods to access a field
 		 * 
 		 * @param target
 		 *            the target object that the accessor is for
 		 * @param fieldName
 		 *            the field name that the accessor is for
-		 * @return the accessor {@link Method}
+		 * @return the accessor {@link MethodHandle}
 		 * @param fieldNamePrefix
 		 *            the prefix of the method for the field name
-		 * @return the accessor {@link Method}
+		 * @return the accessor {@link MethodHandle}
 		 */
-		protected static Method buildAccessor(final Object target,
+		protected static MethodHandle buildAccessor(final Object target,
 				final String fieldName, final String... fieldNamePrefix) {
 			final String accessorName = buildMethodName(fieldNamePrefix[0],
 					fieldName);
 			try {
-				return target.getClass().getDeclaredMethod(accessorName);
+				return MethodHandles
+						.lookup()
+						.findVirtual(
+								target.getClass(),
+								accessorName,
+								MethodType.methodType(target.getClass()
+										.getMethod(accessorName)
+										.getReturnType())).bindTo(target);
 			} catch (final NoSuchMethodException e) {
 				return fieldNamePrefix.length <= 1 ? null : buildAccessor(
 						target, fieldName, Arrays.copyOfRange(fieldNamePrefix,
@@ -2778,7 +2784,7 @@ public class BeanPathAdapter<B> {
 		}
 
 		/**
-		 * Builds a setter {@link Method}
+		 * Builds a setter {@link MethodHandle}
 		 * 
 		 * @param accessor
 		 *            the field's accesssor that will be used as the parameter
@@ -2787,14 +2793,18 @@ public class BeanPathAdapter<B> {
 		 *            the target object that the setter is for
 		 * @param fieldName
 		 *            the field name that the setter is for
-		 * @return the setter {@link Method}
+		 * @return the setter {@link MethodHandle}
 		 */
-		protected static Method buildSetter(final Method accessor,
+		protected static MethodHandle buildSetter(final MethodHandle accessor,
 				final Object target, final String fieldName) {
 			try {
-				final Method mh1 = target.getClass().getDeclaredMethod(
-						buildMethodName("set", fieldName),
-						accessor.getReturnType());
+				final MethodHandle mh1 = MethodHandles
+						.lookup()
+						.findVirtual(
+								target.getClass(),
+								buildMethodName("set", fieldName),
+								MethodType.methodType(void.class, accessor
+										.type().returnType())).bindTo(target);
 				return mh1;
 			} catch (final Throwable t) {
 				throw new IllegalArgumentException("Unable to resolve setter "
@@ -2832,15 +2842,16 @@ public class BeanPathAdapter<B> {
 			}
 			final Class<?> clazz = PRIMS.containsKey(valueOfClass) ? PRIMS
 					.get(valueOfClass) : valueOfClass;
-			Method mh1 = null;
+			MethodHandle mh1 = null;
 			try {
-				mh1 = clazz.getDeclaredMethod("valueOf", String.class);
+				mh1 = MethodHandles.lookup().findStatic(clazz, "valueOf",
+						MethodType.methodType(clazz, String.class));
 			} catch (final Throwable t) {
 				// class doesn't support it- do nothing
 			}
 			if (mh1 != null) {
 				try {
-					return (VT) mh1.invoke(null, value);
+					return (VT) mh1.invoke(value);
 				} catch (final Throwable t) {
 					throw new IllegalArgumentException(String.format(
 							"Unable to invoke valueOf on %1$s using %2$s",
@@ -2910,7 +2921,7 @@ public class BeanPathAdapter<B> {
 			F derived = null;
 			try {
 				derived = deriveValueFromAccessor();
-				getSetter().invoke(getTarget(), derived);
+				getSetter().invoke(derived);
 			} catch (final Throwable t) {
 				throw new RuntimeException(String.format(
 						"Unable to set %1$s on %2$s", derived, getTarget()), t);
@@ -2920,11 +2931,11 @@ public class BeanPathAdapter<B> {
 
 		/**
 		 * Gets an accessor's return target value obtained by calling the
-		 * accessor's {@link Method#invoke(Object, Object...)} method. When the
+		 * accessor's {@link MethodHandle#invoke(Object...)} method. When the
 		 * value returned is <code>null</code> an attempt will be made to
 		 * instantiate it using either by using a default value from
 		 * {@link #DFLTS} (for primatives) or {@link Class#newInstance()} on the
-		 * accessor's {@link Method#getReturnType()} method.
+		 * accessor's {@link MethodType#returnType()} method.
 		 * 
 		 * @return the accessor's return target value
 		 */
@@ -2932,7 +2943,7 @@ public class BeanPathAdapter<B> {
 		protected F deriveValueFromAccessor() {
 			F targetValue = null;
 			try {
-				targetValue = (F) getAccessor().invoke(getTarget());
+				targetValue = (F) getAccessor().invoke();
 			} catch (final Throwable t) {
 				targetValue = null;
 			}
@@ -2941,8 +2952,8 @@ public class BeanPathAdapter<B> {
 					if (DFLTS.containsKey(getFieldType())) {
 						targetValue = (F) DFLTS.get(getFieldType());
 					} else {
-						final Class<F> clazz = (Class<F>) getAccessor()
-								.getReturnType();
+						final Class<F> clazz = (Class<F>) getAccessor().type()
+								.returnType();
 						if (List.class.isAssignableFrom(clazz)) {
 							targetValue = (F) new ArrayList<>();
 						} else if (Set.class.isAssignableFrom(clazz)) {
@@ -2961,8 +2972,8 @@ public class BeanPathAdapter<B> {
 					throw new IllegalArgumentException(
 							String.format(
 									"Unable to get accessor return instance for %1$s using %2$s.",
-									getAccessor(), getAccessor()
-											.getReturnType()));
+									getAccessor(), getAccessor().type()
+											.returnType()));
 				}
 			} else {
 				hasDefaultDerived = false;
@@ -2981,7 +2992,7 @@ public class BeanPathAdapter<B> {
 				return;
 			}
 			this.target = target;
-			updateMethods();
+			updateMethodHandles();
 		}
 
 		public T getTarget() {
@@ -2995,50 +3006,15 @@ public class BeanPathAdapter<B> {
 		/**
 		 * @return the getter
 		 */
-		private Method getAccessor() {
+		protected MethodHandle getAccessor() {
 			return accessor;
 		}
 
 		/**
 		 * @return the setter
 		 */
-		private Method getSetter() {
+		protected MethodHandle getSetter() {
 			return setter;
-		}
-
-		/**
-		 * Gets the {@link #getTaget()} value via
-		 * {@link Method#invoke(Object, Object...)}
-		 * 
-		 * @return the {@link #getTarget()} value
-		 * @throws InvocationTargetException
-		 *             from {@link Method#invoke(Object, Object...)}
-		 * @throws IllegalArgumentException
-		 *             from {@link Method#invoke(Object, Object...)}
-		 * @throws IllegalAccessException
-		 *             from {@link Method#invoke(Object, Object...)}
-		 */
-		public Object get() throws IllegalAccessException,
-				IllegalArgumentException, InvocationTargetException {
-			return getAccessor().invoke(getTarget());
-		}
-
-		/**
-		 * Sets the {@link #getTarget()} value via
-		 * {@link Method#invoke(Object, Object...)}
-		 * 
-		 * @param value
-		 *            the value to set
-		 * @throws InvocationTargetException
-		 *             from {@link Method#invoke(Object, Object...)}
-		 * @throws IllegalArgumentException
-		 *             from {@link Method#invoke(Object, Object...)}
-		 * @throws IllegalAccessException
-		 *             from {@link Method#invoke(Object, Object...)}
-		 */
-		public void set(final Object value) throws IllegalAccessException,
-				IllegalArgumentException, InvocationTargetException {
-			getSetter().invoke(getTarget(), value);
 		}
 
 		/**
@@ -3053,7 +3029,7 @@ public class BeanPathAdapter<B> {
 		 *         value
 		 */
 		public Class<?> getFieldType() {
-			return getAccessor().getReturnType();
+			return getAccessor().type().returnType();
 		}
 
 		/**
