@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -34,6 +33,8 @@ import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
@@ -833,6 +834,7 @@ public class BeanPathAdapter<B> {
 		private static final long serialVersionUID = 7397535724568852021L;
 		private final Map<String, FieldBean<BT, ?>> fieldBeans = new HashMap<>();
 		private final Map<String, FieldProperty<BT, ?, ?>> fieldProperties = new HashMap<>();
+		private final Map<String, FieldProperty<BT, ?, ?>> fieldSelectionProperties = new HashMap<>();
 		private final Map<Class<?>, FieldStringConverter<?>> stringConverters = new HashMap<>();
 		private FieldHandle<PT, BT> fieldHandle;
 		private final FieldBean<?, PT> parent;
@@ -931,6 +933,11 @@ public class BeanPathAdapter<B> {
 			if (getFieldProperties().containsKey(pkey)) {
 				getFieldProperties().get(pkey).setTarget(
 						fieldProperty.getBean());
+			} else if (getFieldSelectionProperties().containsKey(pkey)) {
+				getFieldSelectionProperties().get(pkey).setTarget(
+						fieldProperty.getBean());
+			} else if (fieldProperty.hasItemMaster()) {
+				getFieldSelectionProperties().put(pkey, fieldProperty);
 			} else {
 				getFieldProperties().put(pkey, fieldProperty);
 			}
@@ -946,10 +953,12 @@ public class BeanPathAdapter<B> {
 
 		/**
 		 * Sets the bean of the {@link FieldBean} and it's underlying
-		 * {@link #getFieldBeans()} and {@link #getFieldProperties()}
+		 * {@link #getFieldBeans()}, {@link #getFieldProperties()}, and
+		 * {@link #getFieldSelectionProperties()}
 		 * 
 		 * @see #setParentBean(Object)
 		 * @param bean
+		 *            the bean to set
 		 */
 		public void setBean(final BT bean) {
 			if (bean == null) {
@@ -960,6 +969,14 @@ public class BeanPathAdapter<B> {
 					.entrySet()) {
 				fn.getValue().setParentBean(getBean());
 			}
+			// selections need to be set before non-selections so that item
+			// master listeners in the selection properties will have the
+			// updated values by the time changes are detected on the item
+			// masters
+			for (final Map.Entry<String, FieldProperty<BT, ?, ?>> fp : getFieldSelectionProperties()
+					.entrySet()) {
+				fp.getValue().setTarget(getBean());
+			}
 			for (final Map.Entry<String, FieldProperty<BT, ?, ?>> fp : getFieldProperties()
 					.entrySet()) {
 				fp.getValue().setTarget(getBean());
@@ -968,7 +985,8 @@ public class BeanPathAdapter<B> {
 
 		/**
 		 * Binds a parent bean to the {@link FieldBean} and it's underlying
-		 * {@link #getFieldBeans()} and {@link #getFieldProperties()}
+		 * {@link #getFieldBeans()}, {@link #getFieldProperties()}, and
+		 * {@link #getFieldSelectionProperties()}
 		 * 
 		 * @see #setBean(Object)
 		 * @param bean
@@ -1129,9 +1147,13 @@ public class BeanPathAdapter<B> {
 			final String[] fieldNames = fieldPath.split("\\" + PATH_SEPARATOR);
 			final boolean isField = fieldNames.length == 1;
 			final String pkey = isField ? fieldNames[0] : "";
-			if (isField && getFieldProperties().containsKey(pkey)) {
-				final FieldProperty<BT, ?, ?> fp = getFieldProperties().get(
-						pkey);
+			final boolean isFieldProp = isField
+					&& getFieldProperties().containsKey(pkey);
+			final boolean isFieldSelProp = isField && !isFieldProp
+					&& getFieldSelectionProperties().containsKey(pkey);
+			if (isFieldProp || isFieldSelProp) {
+				final FieldProperty<BT, ?, ?> fp = isFieldSelProp ? getFieldSelectionProperties()
+						.get(pkey) : getFieldProperties().get(pkey);
 				performOperation(fp, observable, propertyValueClass, operation);
 				return fp;
 			} else if (!isField && getFieldBeans().containsKey(fieldNames[0])) {
@@ -1225,38 +1247,38 @@ public class BeanPathAdapter<B> {
 								(StringConverter<T>) getFieldStringConverter(observableValueClass));
 					}
 				}
-			} else if (fp.getObservableCollection() != null
+			} else if (fp.getCollectionObservable() != null
 					&& observable != null
-					&& fp.getObservableCollection() != observable) {
+					&& fp.getCollectionObservable() != observable) {
 				// handle scenario where multiple observable collections/maps
 				// are being bound to the same field property
 				if (operation == FieldBeanOperation.UNBIND) {
 					Bindings.unbindContentBidirectional(
-							fp.getObservableCollection(), observable);
+							fp.getCollectionObservable(), observable);
 				} else if (operation == FieldBeanOperation.BIND) {
 					if (FieldProperty.isObservableList(observable)
 							&& fp.isObservableList()) {
 						Bindings.bindContentBidirectional(
 								(ObservableList<Object>) observable,
 								(ObservableList<Object>) fp
-										.getObservableCollection());
+										.getCollectionObservable());
 					} else if (FieldProperty.isObservableSet(observable)
 							&& fp.isObservableSet()) {
 						Bindings.bindContentBidirectional(
 								(ObservableSet<Object>) observable,
 								(ObservableSet<Object>) fp
-										.getObservableCollection());
+										.getCollectionObservable());
 					} else if (FieldProperty.isObservableMap(observable)
 							&& fp.isObservableMap()) {
 						Bindings.bindContentBidirectional(
 								(ObservableMap<Object, Object>) observable,
 								(ObservableMap<Object, Object>) fp
-										.getObservableCollection());
+										.getCollectionObservable());
 					} else {
 						throw new UnsupportedOperationException(
 								String.format(
 										"Incompatible observable collection/map types cannot be bound %1$s and %2$s",
-										fp.getObservableCollection(),
+										fp.getCollectionObservable(),
 										observable));
 					}
 				}
@@ -1281,20 +1303,6 @@ public class BeanPathAdapter<B> {
 		}
 
 		/**
-		 * Determines if the {@link FieldBean} contains a field with the
-		 * specified name
-		 * 
-		 * @param fieldName
-		 *            the field name to check for
-		 * @return true when the field exists
-		 */
-		public boolean hasField(final String fieldName) {
-			return getFieldBeans().containsKey(fieldName)
-					|| getFieldProperties().containsKey(
-							getFieldProperties().get(fieldName));
-		}
-
-		/**
 		 * @return the parent {@link FieldBean} (null when the {@link FieldBean}
 		 *         is root)
 		 */
@@ -1304,6 +1312,7 @@ public class BeanPathAdapter<B> {
 
 		/**
 		 * @see #getFieldProperties()
+		 * @see #getFieldSelectionProperties()
 		 * @return the {@link Map} of fields that belong to the
 		 *         {@link FieldBean} that are not a {@link FieldProperty}, but
 		 *         rather exist as a {@link FieldBean} that may or may not
@@ -1314,10 +1323,12 @@ public class BeanPathAdapter<B> {
 		}
 
 		/**
+		 * @see #getFieldSelectionProperties()
 		 * @see #getFieldBeans()
 		 * @return the {@link Map} of fields that belong to the
 		 *         {@link FieldBean} that are not {@link FieldBean}s, but rather
-		 *         exist as a {@link FieldProperty}
+		 *         exist as a {@link FieldProperty} and are not
+		 *         {@link #getFieldSelectionProperties()}
 		 */
 		protected Map<String, FieldProperty<BT, ?, ?>> getFieldProperties() {
 			return fieldProperties;
@@ -1325,6 +1336,19 @@ public class BeanPathAdapter<B> {
 
 		/**
 		 * @see #getFieldProperties()
+		 * @see #getFieldBeans()
+		 * @return the {@link Map} of fields that belong to the
+		 *         {@link FieldBean} that are not {@link FieldBean}s, but rather
+		 *         exist as a {@link FieldProperty} that are not
+		 *         {@link #getFieldProperties()}
+		 */
+		protected Map<String, FieldProperty<BT, ?, ?>> getFieldSelectionProperties() {
+			return fieldSelectionProperties;
+		}
+
+		/**
+		 * @see #getFieldProperties()
+		 * @see #getFieldSelectionProperties()
 		 * @return the {@link FieldProperty} with the given name that belongs to
 		 *         the {@link FieldBean} (null when the name does not exist)
 		 */
@@ -1332,6 +1356,8 @@ public class BeanPathAdapter<B> {
 				final String proptertyName) {
 			if (getFieldProperties().containsKey(proptertyName)) {
 				return getFieldProperties().get(proptertyName);
+			} else if (getFieldSelectionProperties().containsKey(proptertyName)) {
+				return getFieldSelectionProperties().get(proptertyName);
 			}
 			return null;
 		}
@@ -1502,7 +1528,7 @@ public class BeanPathAdapter<B> {
 	 */
 	public static class FieldProperty<BT, T, PT> extends ObjectPropertyBase<PT>
 			implements ListChangeListener<Object>, SetChangeListener<Object>,
-			MapChangeListener<Object, Object> {
+			MapChangeListener<Object, Object>, ChangeListener<Object> {
 
 		private final ReadOnlyObjectWrapper<FieldPathValue> fieldPathValue;
 		private final String fullPath;
@@ -1581,6 +1607,10 @@ public class BeanPathAdapter<B> {
 			this.collectionItemPath = collectionItemPath;
 			this.collectionType = collectionType;
 			this.collectionSelectionModel = (SelectionModel<Object>) collectionSelectionModel;
+			if (this.collectionSelectionModel != null
+					&& this.itemMaster != null) {
+				this.itemMaster.addListener(this);
+			}
 			setDerived();
 		}
 
@@ -1662,9 +1692,11 @@ public class BeanPathAdapter<B> {
 		 *             operation
 		 */
 		protected final void postSet(final Object prevValue) throws Throwable {
-			populateObservableCollection();
-			invalidated();
-			fireValueChangedEvent();
+			final Boolean colChanged = populateObservableCollection();
+			if (colChanged == null || colChanged) {
+				invalidated();
+				fireValueChangedEvent();
+			}
 			isDirty = false;
 			// all collection/map item value changes will be captured at the
 			// collection/map level
@@ -1693,28 +1725,32 @@ public class BeanPathAdapter<B> {
 		 *             {@link #collectionType}
 		 * @return true when the collection has been populated
 		 */
-		private boolean populateObservableCollection() throws Throwable {
+		private Boolean populateObservableCollection() throws Throwable {
+			final Observable oc = getCollectionObservable();
+			Boolean changed = null;
 			if (isList() || isSet()) {
-				addRemoveCollectionListener(false);
+				addRemoveCollectionListener(oc, false);
 				Collection<?> items = (Collection<?>) getDirty();
 				if (items == null) {
 					items = new LinkedHashSet<>();
 					fieldHandle.getSetter().invoke(items);
 				}
-				syncCollectionValues(items, false, null, null, null);
+				changed = syncCollectionValues(items, false, false, null, null,
+						null);
 			} else if (isMap()) {
-				addRemoveCollectionListener(false);
+				addRemoveCollectionListener(oc, false);
 				Map<?, ?> items = (Map<?, ?>) getDirty();
 				if (items == null) {
 					items = new HashMap<>();
 					fieldHandle.getSetter().invoke(items);
 				}
-				syncCollectionValues(items, false, null, null, null);
+				changed = syncCollectionValues(items, false, false, null, null,
+						null);
 			} else {
-				return false;
+				return changed;
 			}
-			addRemoveCollectionListener(true);
-			return true;
+			addRemoveCollectionListener(oc, true);
+			return changed;
 		}
 
 		/**
@@ -1731,6 +1767,9 @@ public class BeanPathAdapter<B> {
 		 *            {@link FieldProperty} collection, false when
 		 *            synchronization needs to occur on the {@link Observable}
 		 *            collection
+		 * @param fromItemMasterChange
+		 *            true when the synchronization is from a change made to the
+		 *            {@link #itemMaster}
 		 * @param listChange
 		 *            any {@link ListChangeListener.Change}
 		 * @param setChange
@@ -1742,12 +1781,20 @@ public class BeanPathAdapter<B> {
 		 */
 		@SuppressWarnings("unchecked")
 		private boolean syncCollectionValues(final Object values,
-				final boolean toField,
+				final boolean toField, final boolean fromItemMasterChange,
 				final ListChangeListener.Change<?> listChange,
 				final SetChangeListener.Change<?> setChange,
 				final MapChangeListener.Change<?, ?> mapChange) {
 			boolean changed = false;
 			if (isDirtyCollection) {
+				return changed;
+			}
+			if (collectionSelectionModel != null
+					&& itemMaster != null
+					&& itemMaster.isDirtyCollection
+					&& (listChange != null || setChange != null || mapChange != null)) {
+				// selections shouldn't get synchronized while the item master
+				// is in the middle of getting synchronized
 				return changed;
 			}
 			try {
@@ -2023,15 +2070,7 @@ public class BeanPathAdapter<B> {
 			if (collectionSelectionModel == null) {
 				return;
 			}
-			// TODO : collection selections are called later to give items a
-			// chance to update, but this causes change notification timing to
-			// be sightly off
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					collectionSelectionModel.select(value);
-				}
-			});
+			collectionSelectionModel.select(value);
 		}
 
 		/**
@@ -2349,51 +2388,54 @@ public class BeanPathAdapter<B> {
 		/**
 		 * Adds/Removes the {@link FieldProperty} as a collection listener
 		 * 
+		 * @param observable
+		 *            the {@link Observable} collection/map to listen for
+		 *            changes on
 		 * @param add
 		 *            true to add, false to remove
 		 */
-		protected void addRemoveCollectionListener(final boolean add) {
-			if ((this.isCollectionListening && add)
-					|| (this.isCollectionListening && !add)) {
+		protected void addRemoveCollectionListener(final Observable observable,
+				final boolean add) {
+			final boolean isCol = getCollectionObservable() == observable;
+			if (isCol
+					&& ((this.isCollectionListening && add) || (this.isCollectionListening && !add))) {
 				return;
 			}
-			if (this.collectionObservable.get() instanceof ObservableList) {
-				final ObservableList<?> ol = ((ObservableList<?>) this.collectionObservable
-						.get());
+			Boolean change = null;
+			if (observable instanceof ObservableList) {
+				final ObservableList<?> ol = (ObservableList<?>) observable;
 				if (add) {
 					ol.addListener(this);
-					this.isCollectionListening = true;
+					change = true;
 				} else {
 					ol.removeListener(this);
-					this.isCollectionListening = false;
+					change = false;
 				}
-			} else if (this.collectionObservable.get() instanceof ObservableSet) {
-				final ObservableSet<?> os = ((ObservableSet<?>) this.collectionObservable
-						.get());
+			} else if (observable instanceof ObservableSet) {
+				final ObservableSet<?> os = (ObservableSet<?>) observable;
 				if (add) {
 					os.addListener(this);
-					this.isCollectionListening = true;
+					change = true;
 				} else {
 					os.removeListener(this);
-					this.isCollectionListening = false;
+					change = false;
 				}
-			} else if (this.collectionObservable.get() instanceof ObservableMap) {
-				final ObservableMap<?, ?> om = ((ObservableMap<?, ?>) this.collectionObservable
-						.get());
+			} else if (observable instanceof ObservableMap) {
+				final ObservableMap<?, ?> om = (ObservableMap<?, ?>) observable;
 				if (add) {
 					om.addListener(this);
-					this.isCollectionListening = true;
+					change = true;
 				} else {
 					om.removeListener(this);
-					this.isCollectionListening = false;
+					change = false;
 				}
-			} else if (this.collectionObservable.get() == null) {
+			} else if (observable == null) {
 				throw new IllegalStateException(String.format(
 						"Observable collection/map bound to %1$s (item path: %2$s) "
 								+ "has been garbage collected",
 						this.fieldHandle.getFieldName(),
-						this.collectionItemPath,
-						this.collectionObservable.get(), this.getFieldType()));
+						this.collectionItemPath, observable,
+						this.getFieldType()));
 			} else {
 				throw new UnsupportedOperationException(String.format(
 						"%1$s (item path: %2$s) of type \"%4$s\" "
@@ -2401,27 +2443,21 @@ public class BeanPathAdapter<B> {
 								+ "observable collection/map type... "
 								+ "Found observable: %3$s",
 						this.fieldHandle.getFieldName(),
-						this.collectionItemPath,
-						this.collectionObservable.get(), this.getFieldType()));
+						this.collectionItemPath, observable,
+						this.getFieldType()));
+			}
+			if (isCol && change != null) {
+				this.isCollectionListening = change;
 			}
 		}
 
 		/**
-		 * {@inheritDoc}
+		 * Detects {@link #itemMaster} changes for selection synchronization
 		 */
 		@Override
-		public final void onChanged(
-				MapChangeListener.Change<? extends Object, ? extends Object> change) {
-			syncCollectionValues(getDirty(), true, null, null, change);
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public final void onChanged(
-				SetChangeListener.Change<? extends Object> change) {
-			syncCollectionValues(getDirty(), true, null, change, null);
+		public void changed(final ObservableValue<? extends Object> observable,
+				final Object oldValue, final Object newValue) {
+			syncCollectionValues(getDirty(), false, true, null, null, null);
 		}
 
 		/**
@@ -2430,7 +2466,25 @@ public class BeanPathAdapter<B> {
 		@Override
 		public final void onChanged(
 				ListChangeListener.Change<? extends Object> change) {
-			syncCollectionValues(getDirty(), true, change, null, null);
+			syncCollectionValues(getDirty(), true, false, change, null, null);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public final void onChanged(
+				SetChangeListener.Change<? extends Object> change) {
+			syncCollectionValues(getDirty(), true, false, null, change, null);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public final void onChanged(
+				MapChangeListener.Change<? extends Object, ? extends Object> change) {
+			syncCollectionValues(getDirty(), true, false, null, null, change);
 		}
 
 		/**
@@ -2520,7 +2574,7 @@ public class BeanPathAdapter<B> {
 		 *         {@link ObservableList}
 		 */
 		protected boolean isObservableList() {
-			return isObservableList(getObservableCollection());
+			return isObservableList(getCollectionObservable());
 		}
 
 		/**
@@ -2528,7 +2582,7 @@ public class BeanPathAdapter<B> {
 		 *         {@link ObservableSet}
 		 */
 		protected boolean isObservableSet() {
-			return isObservableSet(getObservableCollection());
+			return isObservableSet(getCollectionObservable());
 		}
 
 		/**
@@ -2536,7 +2590,7 @@ public class BeanPathAdapter<B> {
 		 *         {@link ObservableMap}
 		 */
 		protected boolean isObservableMap() {
-			return isObservableMap(getObservableCollection());
+			return isObservableMap(getCollectionObservable());
 		}
 
 		/**
@@ -2619,8 +2673,16 @@ public class BeanPathAdapter<B> {
 		 *         collection has been garbage collected or the
 		 *         {@link FieldProperty} does not represent a collection)
 		 */
-		protected Observable getObservableCollection() {
+		protected Observable getCollectionObservable() {
 			return this.collectionObservable.get();
+		}
+
+		/**
+		 * @return true when the {@link FieldProperty} has an item master that
+		 *         it's using to reference {@link #get()} for
+		 */
+		public boolean hasItemMaster() {
+			return this.itemMaster != null;
 		}
 	}
 
