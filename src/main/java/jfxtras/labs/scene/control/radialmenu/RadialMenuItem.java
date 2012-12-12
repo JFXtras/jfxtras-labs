@@ -1,28 +1,28 @@
 /**
- * Copyright (c) 2012, JFXtras
- *   All rights reserved.
- *
- *   Redistribution and use in source and binary forms, with or without
- *   modification, are permitted provided that the following conditions are met:
- *       * Redistributions of source code must retain the above copyright
- *         notice, this list of conditions and the following disclaimer.
- *       * Redistributions in binary form must reproduce the above copyright
- *         notice, this list of conditions and the following disclaimer in the
- *         documentation and/or other materials provided with the distribution.
- *       * Neither the name of the <organization> nor the
- *         names of its contributors may be used to endorse or promote products
- *         derived from this software without specific prior written permission.
- *
- *   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- *   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- *   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- *   DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
- *   DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- *   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- *   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- *   ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * Copyright (c) 2011, JFXtras
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the <organization> nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package jfxtras.labs.scene.control.radialmenu;
@@ -40,6 +40,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.ArcTo;
 import javafx.scene.shape.FillRule;
@@ -59,8 +60,6 @@ public class RadialMenuItem extends Group implements ChangeListener<Object> {
 
     protected DoubleProperty offset = new SimpleDoubleProperty();
 
-    protected Paint computedBackgroundFill;
-
     protected ObjectProperty<Paint> backgroundMouseOnColor = new SimpleObjectProperty<Paint>();
 
     protected ObjectProperty<Paint> backgroundColor = new SimpleObjectProperty<Paint>();
@@ -73,6 +72,8 @@ public class RadialMenuItem extends Group implements ChangeListener<Object> {
     protected BooleanProperty clockwise = new SimpleBooleanProperty();
 
     protected ObjectProperty<Paint> strokeColor = new SimpleObjectProperty<Paint>();
+
+    protected ObjectProperty<Paint> strokeMouseOnColor = new SimpleObjectProperty<Paint>();
 
     protected MoveTo moveTo;
 
@@ -131,6 +132,7 @@ public class RadialMenuItem extends Group implements ChangeListener<Object> {
 	this.backgroundColor.addListener(this);
 	this.strokeColor.addListener(this);
 	this.backgroundMouseOnColor.addListener(this);
+	this.strokeMouseOnColor.addListener(this);
 	this.startAngle.addListener(this);
 
 	this.path = new Path();
@@ -230,6 +232,10 @@ public class RadialMenuItem extends Group implements ChangeListener<Object> {
 	return this.backgroundMouseOnColor;
     }
 
+    ObjectProperty<Paint> strokeMouseOnColorProperty() {
+	return this.strokeMouseOnColor;
+    }
+
     ObjectProperty<Paint> backgroundColorProperty() {
 	return this.backgroundColor;
     }
@@ -264,7 +270,7 @@ public class RadialMenuItem extends Group implements ChangeListener<Object> {
 
     public void setGraphic(final Node graphic) {
 	if (this.graphic != null) {
-	    this.getChildren().remove(graphic);
+	    this.getChildren().remove(this.graphic);
 	}
 	this.graphic = graphic;
 	if (this.graphic != null) {
@@ -288,9 +294,12 @@ public class RadialMenuItem extends Group implements ChangeListener<Object> {
 		.setFill(this.backgroundVisible.get() ? (this.mouseOn
 			&& this.backgroundMouseOnColor.get() != null ? this.backgroundMouseOnColor
 			.get() : this.backgroundColor.get())
-			: null);
-	this.path.setStroke(this.strokeVisible.get() ? this.strokeColor.get()
-		: null);
+			: Color.TRANSPARENT);
+	this.path
+		.setStroke(this.strokeVisible.get() ? (this.mouseOn
+			&& this.strokeMouseOnColor.get() != null ? this.strokeMouseOnColor
+			.get() : this.strokeColor.get())
+			: Color.TRANSPARENT);
 
 	this.path.setFillRule(FillRule.EVEN_ODD);
 
