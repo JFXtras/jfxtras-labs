@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -296,18 +298,20 @@ import javafx.util.StringConverter;
  * 
  * </li>
  * <li>
- * <b>Listening for global field value changes:</b>
+ * <b>Listening for global changes:</b>
  * 
  * <pre>
  * final BeanPathAdapter&lt;Person&gt; personPA = new BeanPathAdapter&lt;&gt;(person);
+ * // use the following to eliminate unwanted notifications
+ * // personPA.removeFieldPathValueTypes(FieldPathValueType.BEAN_CHANGE, ...)
  * personPA.fieldPathValueProperty().addListener(
  * 		new ChangeListener&lt;FieldPathValue&gt;() {
  * 			&#064;Override
  * 			public void changed(
  * 					final ObservableValue&lt;? extends FieldPathValue&gt; observable,
  * 					final FieldPathValue oldValue, final FieldPathValue newValue) {
- * 				System.out.println(&quot;Value changed from path: &quot; + oldValue
- * 						+ &quot; to path: &quot; + newValue);
+ * 				System.out.println(&quot;Value changed from: &quot; + oldValue + &quot; to: &quot;
+ * 						+ newValue);
  * 			}
  * 		});
  * </pre>
@@ -330,7 +334,7 @@ public class BeanPathAdapter<B> {
 	public static final char PATH_SEPARATOR = '.';
 	public static final char COLLECTION_ITEM_PATH_SEPARATOR = '#';
 	private FieldBean<Void, B> root;
-	private ReadOnlyObjectWrapper<FieldPathValue> fieldPathValue = new ReadOnlyObjectWrapper<>();
+	private FieldPathValueProperty fieldPathValueProperty = new FieldPathValueProperty();
 
 	/**
 	 * Constructor
@@ -411,13 +415,13 @@ public class BeanPathAdapter<B> {
 		if (selectionModelItemMasterPath != null
 				&& !selectionModelItemMasterPath.isEmpty()) {
 			itemMaster = getRoot().performOperation(
-					selectionModelItemMasterPath, fieldPathValue, list,
-					listValueType, itemFieldPath, itemFieldPathType, null,
-					null, FieldBeanOperation.CREATE_OR_FIND);
+					selectionModelItemMasterPath, list, listValueType,
+					itemFieldPath, itemFieldPathType, null, null,
+					FieldBeanOperation.CREATE_OR_FIND);
 		}
-		getRoot().performOperation(fieldPath, fieldPathValue, list,
-				listValueType, itemFieldPath, itemFieldPathType,
-				selectionModel, itemMaster, FieldBeanOperation.BIND);
+		getRoot().performOperation(fieldPath, list, listValueType,
+				itemFieldPath, itemFieldPathType, selectionModel, itemMaster,
+				FieldBeanOperation.BIND);
 	}
 
 	/**
@@ -465,13 +469,13 @@ public class BeanPathAdapter<B> {
 		if (selectionModelItemMasterPath != null
 				&& !selectionModelItemMasterPath.isEmpty()) {
 			itemMaster = getRoot().performOperation(
-					selectionModelItemMasterPath, fieldPathValue, set,
-					setValueType, itemFieldPath, itemFieldPathType, null, null,
+					selectionModelItemMasterPath, set, setValueType,
+					itemFieldPath, itemFieldPathType, null, null,
 					FieldBeanOperation.CREATE_OR_FIND);
 		}
-		getRoot().performOperation(fieldPath, fieldPathValue, set,
-				setValueType, itemFieldPath, itemFieldPathType, selectionModel,
-				itemMaster, FieldBeanOperation.BIND);
+		getRoot().performOperation(fieldPath, set, setValueType, itemFieldPath,
+				itemFieldPathType, selectionModel, itemMaster,
+				FieldBeanOperation.BIND);
 	}
 
 	/**
@@ -519,13 +523,13 @@ public class BeanPathAdapter<B> {
 		if (selectionModelItemMasterPath != null
 				&& !selectionModelItemMasterPath.isEmpty()) {
 			itemMaster = getRoot().performOperation(
-					selectionModelItemMasterPath, fieldPathValue, map,
-					mapValueType, itemFieldPath, itemFieldPathType, null, null,
+					selectionModelItemMasterPath, map, mapValueType,
+					itemFieldPath, itemFieldPathType, null, null,
 					FieldBeanOperation.CREATE_OR_FIND);
 		}
-		getRoot().performOperation(fieldPath, fieldPathValue, map,
-				mapValueType, itemFieldPath, itemFieldPathType, selectionModel,
-				itemMaster, FieldBeanOperation.BIND);
+		getRoot().performOperation(fieldPath, map, mapValueType, itemFieldPath,
+				itemFieldPathType, selectionModel, itemMaster,
+				FieldBeanOperation.BIND);
 	}
 
 	/**
@@ -553,7 +557,7 @@ public class BeanPathAdapter<B> {
 					"Unable to determine property value class for %1$s "
 							+ "and declared type %2$s", property, propertyType));
 		}
-		getRoot().performOperation(fieldPath, fieldPathValue, property, clazz,
+		getRoot().performOperation(fieldPath, property, clazz,
 				FieldBeanOperation.BIND);
 	}
 
@@ -569,7 +573,7 @@ public class BeanPathAdapter<B> {
 	 */
 	public <T> void unBindBidirectional(final String fieldPath,
 			final Property<T> property) {
-		getRoot().performOperation(fieldPath, fieldPathValue, property, null,
+		getRoot().performOperation(fieldPath, property, null,
 				FieldBeanOperation.UNBIND);
 	}
 
@@ -593,9 +597,14 @@ public class BeanPathAdapter<B> {
 			throw new NullPointerException();
 		}
 		if (getRoot() == null) {
-			this.root = new FieldBean<>(null, bean, null);
+			this.root = new FieldBean<>(null, bean, null,
+					fieldPathValueProperty);
 		} else {
 			getRoot().setBean(bean);
+		}
+		if (hasFieldPathValueTypes(FieldPathValueType.BEAN_CHANGE)) {
+			fieldPathValueProperty.set(new FieldPathValue(null, getBean(),
+					getBean(), FieldPathValueType.BEAN_CHANGE));
 		}
 	}
 
@@ -607,11 +616,16 @@ public class BeanPathAdapter<B> {
 	}
 
 	/**
+	 * @see #addFieldPathValueTypes(FieldPathValueType...)
+	 * @see #removeFieldPathValueTypes(FieldPathValueType...)
+	 * @see #hasFieldPathValueTypes(FieldPathValueType...)
 	 * @return the {@link ReadOnlyObjectProperty} that contains the last path
-	 *         that was changed in the {@link BeanPathAdapter}
+	 *         that was changed in the {@link BeanPathAdapter}. For
+	 *         notifications for items bound using content bindings
+	 *         (collections/maps)
 	 */
 	public final ReadOnlyObjectProperty<FieldPathValue> fieldPathValueProperty() {
-		return fieldPathValue.getReadOnlyProperty();
+		return fieldPathValueProperty.getReadOnlyProperty();
 	}
 
 	/**
@@ -653,6 +667,102 @@ public class BeanPathAdapter<B> {
 	}
 
 	/**
+	 * Adds {@link FieldPathValueType}(s) {@link FieldPathValueType}(s) that
+	 * {@link #notifyProperty()} will use
+	 * 
+	 * @param types
+	 *            the {@link FieldPathValueType} to add
+	 */
+	public void addFieldPathValueTypes(final FieldPathValueType... types) {
+		fieldPathValueProperty.addRemoveTypes(true, types);
+	}
+
+	/**
+	 * Removes {@link FieldPathValueType}(s) {@link FieldPathValueType}(s) that
+	 * {@link #notifyProperty()} will use
+	 * 
+	 * @param types
+	 *            the {@link FieldPathValueType}(s) to remove
+	 */
+	public void removeFieldPathValueTypes(final FieldPathValueType... types) {
+		fieldPathValueProperty.addRemoveTypes(false, types);
+	}
+
+	/**
+	 * Determines if the {@link FieldPathValueType}(s) are being used by the
+	 * {@link #notifyProperty()}
+	 * 
+	 * @param types
+	 *            the {@link FieldPathValueType}(s) to check for
+	 * @return true if all of the specified {@link FieldPathValueType}(s) exist
+	 */
+	public boolean hasFieldPathValueTypes(final FieldPathValueType... types) {
+		return fieldPathValueProperty.hasTypes(types);
+	}
+
+	/**
+	 * The {@link ReadOnlyObjectWrapper} that contains the last path that was
+	 * changed in the {@link BeanPathAdapter}
+	 */
+	static class FieldPathValueProperty extends
+			ReadOnlyObjectWrapper<FieldPathValue> {
+
+		private final Set<FieldPathValueType> types;
+
+		/**
+		 * Constructor
+		 */
+		public FieldPathValueProperty() {
+			super();
+			this.types = new HashSet<>();
+			addRemoveTypes(true, FieldPathValueType.values());
+		}
+
+		/**
+		 * Adds/Removes {@link FieldPathValueType}(s)
+		 * 
+		 * @param add
+		 *            true to add, false to remove
+		 * @param types
+		 *            the {@link FieldPathValueType}(s) to add/remove
+		 */
+		public void addRemoveTypes(final boolean add,
+				final FieldPathValueType... types) {
+			if (types.length <= 0) {
+				return;
+			}
+			if (add) {
+				Collections.addAll(this.types, types);
+			} else {
+				for (final FieldPathValueType t : types) {
+					this.types.remove(t);
+				}
+			}
+		}
+
+		/**
+		 * Determines if the {@link #getTypes()} has all of the specified
+		 * {@link FieldPathValueType}(s)
+		 * 
+		 * @param types
+		 *            the {@link FieldPathValueType}(s) to check for
+		 * @return true if all of the specified {@link FieldPathValueType}(s)
+		 *         exist
+		 */
+		public boolean hasTypes(final FieldPathValueType... types) {
+			if (types.length <= 0) {
+				return false;
+			}
+			for (final FieldPathValueType type : types) {
+				if (!this.types.contains(type)) {
+					return false;
+				}
+			}
+			return true;
+		}
+	}
+
+	/**
 	 * Field {@link #getPath()}/{@link #getValue()}
 	 */
 	public static class FieldPathValue {
@@ -660,7 +770,7 @@ public class BeanPathAdapter<B> {
 		private final String path;
 		private final Object bean;
 		private final Object value;
-		private final boolean fromSelection;
+		private final FieldPathValueType type;
 
 		/**
 		 * Constructor
@@ -671,38 +781,22 @@ public class BeanPathAdapter<B> {
 		 *            the {@link #getBean()}
 		 * @param value
 		 *            the {@link #getValue()}
+		 * @param fromItemRemoval
+		 *            the {@link #isFromItemRemoval()}
+		 * @param fromItemSelection
+		 *            the {@link #isFromItemSelection()}
 		 */
 		public FieldPathValue(final String path, final Object bean,
-				final Object value) {
+				final Object value, final FieldPathValueType type) {
 			this.path = path;
 			this.bean = bean;
 			this.value = value;
-			this.fromSelection = false;
-		}
-
-		/**
-		 * Constructor
-		 * 
-		 * @param path
-		 *            the {@link #getPath()}
-		 * @param bean
-		 *            the {@link #getBean()}
-		 * @param value
-		 *            the {@link #getValue()}
-		 * @param fromSelection
-		 *            the {@link #fromSelection}
-		 */
-		public FieldPathValue(final String path, final Object bean,
-				final Object value, final boolean fromSelection) {
-			this.path = path;
-			this.bean = bean;
-			this.value = value;
-			this.fromSelection = fromSelection;
+			this.type = type;
 		}
 
 		/**
 		 * Generates a hash code using {@link #getPath()}, {@link #getBean()},
-		 * {@link #getValue()}, and {@link #isFromSelection()}
+		 * {@link #getValue()}, and {@link #isFromItemSelection()}
 		 * 
 		 * @return the hash code
 		 */
@@ -713,13 +807,13 @@ public class BeanPathAdapter<B> {
 			result = prime * result + ((bean == null) ? 0 : bean.hashCode());
 			result = prime * result + ((path == null) ? 0 : path.hashCode());
 			result = prime * result + ((value == null) ? 0 : value.hashCode());
-			result = prime * result + (fromSelection ? 1231 : 1237);
+			result = prime * result + ((type == null) ? 0 : type.hashCode());
 			return result;
 		}
 
 		/**
 		 * Determines equality based upon {@link #getPath()}, {@link #getBean()}
-		 * , {@link #getValue()}, and {@link #isFromSelection()}
+		 * , {@link #getValue()}, and {@link #isFromItemSelection()}
 		 * 
 		 * @param obj
 		 *            the {@link Object} to check for equality
@@ -758,7 +852,7 @@ public class BeanPathAdapter<B> {
 			} else if (!value.equals(other.value)) {
 				return false;
 			}
-			if (fromSelection != other.fromSelection) {
+			if (type != other.type) {
 				return false;
 			}
 			return true;
@@ -770,8 +864,8 @@ public class BeanPathAdapter<B> {
 		@Override
 		public String toString() {
 			return FieldPathValue.class.getSimpleName() + " [path=" + path
-					+ ", value=" + value + ", fromSelection=" + fromSelection
-					+ ", bean=" + bean + "]";
+					+ ", value=" + value + ", type=" + type + ", bean=" + bean
+					+ "]";
 		}
 
 		/**
@@ -799,12 +893,36 @@ public class BeanPathAdapter<B> {
 		}
 
 		/**
-		 * @return true when the {@link FieldPathValue} is from a selection
-		 *         change
+		 * @return the {@link FieldPathValueType}
 		 */
-		public boolean isFromSelection() {
-			return fromSelection;
+		public FieldPathValueType getType() {
+			return type;
 		}
+	}
+
+	/**
+	 * {@link FieldPathValue} types used for {@link FieldPathValueProperty}
+	 * changes
+	 */
+	public static enum FieldPathValueType {
+		/**
+		 * Root bean change (from a {@link BeanPathAdapter#setBean(Object)}
+		 * operation)
+		 */
+		BEAN_CHANGE,
+		/**
+		 * General field binding change (not from a
+		 * {@link BeanPathAdapter#setBean(Object)} operation)
+		 */
+		FIELD_CHANGE,
+		/** Item added via content binding */
+		CONTENT_ITEM_ADD,
+		/** Item removed via content binding */
+		CONTENT_ITEM_REMOVE,
+		/** Selection item added via content binding */
+		CONTENT_ITEM_ADD_SELECT,
+		/** Selection item removed via content binding */
+		CONTENT_ITEM_REMOVE_SELECT;
 	}
 
 	/**
@@ -832,6 +950,7 @@ public class BeanPathAdapter<B> {
 	protected static class FieldBean<PT, BT> implements Serializable {
 
 		private static final long serialVersionUID = 7397535724568852021L;
+		private final FieldPathValueProperty notifyProperty;
 		private final Map<String, FieldBean<BT, ?>> fieldBeans = new HashMap<>();
 		private final Map<String, FieldProperty<BT, ?, ?>> fieldProperties = new HashMap<>();
 		private final Map<String, FieldProperty<BT, ?, ?>> fieldSelectionProperties = new HashMap<>();
@@ -847,12 +966,17 @@ public class BeanPathAdapter<B> {
 		 *            the parent {@link FieldBean} (should not be null)
 		 * @param fieldHandle
 		 *            the {@link FieldHandle} (should not be null)
+		 * @param notifyProperty
+		 *            the {@link FieldPathValueProperty} that will be set every
+		 *            time the {@link FieldBean#setBean(Object)} is changed
 		 */
 		protected FieldBean(final FieldBean<?, PT> parent,
-				final FieldHandle<PT, BT> fieldHandle) {
+				final FieldHandle<PT, BT> fieldHandle,
+				final FieldPathValueProperty notifyProperty) {
 			this.parent = parent;
 			this.fieldHandle = fieldHandle;
 			this.bean = this.fieldHandle.setDerivedValueFromAccessor();
+			this.notifyProperty = notifyProperty;
 			if (getParent() != null) {
 				getParent().addFieldBean(this);
 			}
@@ -872,14 +996,19 @@ public class BeanPathAdapter<B> {
 		 * @param fieldName
 		 *            the field name of the parent {@link FieldBean} for which
 		 *            the new {@link FieldBean} is for
+		 * @param notifyProperty
+		 *            the {@link FieldPathValueProperty} that will be set every
+		 *            time the {@link FieldBean#setBean(Object)} is changed
 		 */
 		protected FieldBean(final FieldBean<?, PT> parent, final BT bean,
-				final String fieldName) {
+				final String fieldName,
+				final FieldPathValueProperty notifyProperty) {
 			if (bean == null) {
 				throw new NullPointerException("Bean cannot be null");
 			}
 			this.parent = parent;
 			this.bean = bean;
+			this.notifyProperty = notifyProperty;
 			this.fieldHandle = getParent() != null ? createFieldHandle(
 					getParent().getBean(), bean, fieldName) : null;
 			if (getParent() != null) {
@@ -904,6 +1033,14 @@ public class BeanPathAdapter<B> {
 				final BT bean, final String fieldName) {
 			return new FieldHandle<PT, BT>(parentBean, fieldName,
 					(Class<BT>) getBean().getClass());
+		}
+
+		/**
+		 * @see #setParentBean(Object)
+		 * @return the bean that the {@link FieldBean} represents
+		 */
+		public BT getBean() {
+			return bean;
 		}
 
 		/**
@@ -941,14 +1078,6 @@ public class BeanPathAdapter<B> {
 			} else {
 				getFieldProperties().put(pkey, fieldProperty);
 			}
-		}
-
-		/**
-		 * @see #setParentBean(Object)
-		 * @return the bean that the {@link FieldBean} represents
-		 */
-		public BT getBean() {
-			return bean;
 		}
 
 		/**
@@ -1005,77 +1134,70 @@ public class BeanPathAdapter<B> {
 
 		/**
 		 * @see BeanPathAdapter.FieldBean#performOperation(String, String,
-		 *      ReadOnlyObjectWrapper, Class, String, Observable, Class,
-		 *      SelectionModel, FieldProperty, FieldBeanOperation)
+		 *      Class, String, Observable, Class, SelectionModel, FieldProperty,
+		 *      FieldBeanOperation)
 		 */
 		public <T> FieldProperty<?, ?, ?> performOperation(
-				final String fieldPath,
-				final ReadOnlyObjectWrapper<FieldPathValue> fieldPathValueProperty,
-				final Property<T> property, final Class<T> propertyValueClass,
+				final String fieldPath, final Property<T> property,
+				final Class<T> propertyValueClass,
 				final FieldBeanOperation operation) {
-			return performOperation(fieldPath, fieldPath,
-					fieldPathValueProperty, propertyValueClass, null,
-					(Observable) property, null, null, null, operation);
+			return performOperation(fieldPath, fieldPath, propertyValueClass,
+					null, (Observable) property, null, null, null, operation);
 		}
 
 		/**
 		 * @see BeanPathAdapter.FieldBean#performOperation(String, String,
-		 *      ReadOnlyObjectWrapper, Class, String, Observable, Class,
-		 *      SelectionModel, FieldProperty, FieldBeanOperation)
+		 *      Class, String, Observable, Class, SelectionModel, FieldProperty,
+		 *      FieldBeanOperation)
 		 */
 		public <T> FieldProperty<?, ?, ?> performOperation(
-				final String fieldPath,
-				final ReadOnlyObjectWrapper<FieldPathValue> fieldPathValueProperty,
-				final ObservableList<T> observableList,
+				final String fieldPath, final ObservableList<T> observableList,
 				final Class<T> listValueClass, final String collectionItemPath,
 				final Class<?> collectionItemPathType,
 				final SelectionModel<T> selectionModel,
 				final FieldProperty<?, ?, ?> itemMaster,
 				final FieldBeanOperation operation) {
-			return performOperation(fieldPath, fieldPath,
-					fieldPathValueProperty, listValueClass, collectionItemPath,
-					(Observable) observableList, collectionItemPathType,
-					selectionModel, itemMaster, operation);
+			return performOperation(fieldPath, fieldPath, listValueClass,
+					collectionItemPath, (Observable) observableList,
+					collectionItemPathType, selectionModel, itemMaster,
+					operation);
 		}
 
 		/**
 		 * @see BeanPathAdapter.FieldBean#performOperation(String, String,
-		 *      ReadOnlyObjectWrapper, Class, String, Observable, Class,
-		 *      SelectionModel, FieldProperty, FieldBeanOperation)
+		 *      Class, String, Observable, Class, SelectionModel, FieldProperty,
+		 *      FieldBeanOperation)
 		 */
 		public <T> FieldProperty<?, ?, ?> performOperation(
-				final String fieldPath,
-				final ReadOnlyObjectWrapper<FieldPathValue> fieldPathValueProperty,
-				final ObservableSet<T> observableSet,
+				final String fieldPath, final ObservableSet<T> observableSet,
 				final Class<T> setValueClass, final String collectionItemPath,
 				final Class<?> collectionItemPathType,
 				final SelectionModel<T> selectionModel,
 				final FieldProperty<?, ?, ?> itemMaster,
 				final FieldBeanOperation operation) {
-			return performOperation(fieldPath, fieldPath,
-					fieldPathValueProperty, setValueClass, collectionItemPath,
-					(Observable) observableSet, collectionItemPathType,
-					selectionModel, itemMaster, operation);
+			return performOperation(fieldPath, fieldPath, setValueClass,
+					collectionItemPath, (Observable) observableSet,
+					collectionItemPathType, selectionModel, itemMaster,
+					operation);
 		}
 
 		/**
 		 * @see BeanPathAdapter.FieldBean#performOperation(String, String,
-		 *      ReadOnlyObjectWrapper, Class, String, Observable, Class,
-		 *      SelectionModel, FieldProperty, FieldBeanOperation)
+		 *      Class, String, Observable, Class, SelectionModel, FieldProperty,
+		 *      FieldBeanOperation)
 		 */
 		public <K, V> FieldProperty<?, ?, ?> performOperation(
 				final String fieldPath,
-				final ReadOnlyObjectWrapper<FieldPathValue> fieldPathValueProperty,
 				final ObservableMap<K, V> observableMap,
 				final Class<V> mapValueClass, final String collectionItemPath,
 				final Class<?> collectionItemPathType,
 				final SelectionModel<V> selectionModel,
 				final FieldProperty<?, ?, ?> itemMaster,
 				final FieldBeanOperation operation) {
-			return performOperation(fieldPath, fieldPath,
-					fieldPathValueProperty, mapValueClass, collectionItemPath,
-					(Observable) observableMap, collectionItemPathType,
-					selectionModel, itemMaster, operation);
+			return performOperation(fieldPath, fieldPath, mapValueClass,
+					collectionItemPath, (Observable) observableMap,
+					collectionItemPathType, selectionModel, itemMaster,
+					operation);
 		}
 
 		/**
@@ -1100,9 +1222,6 @@ public class BeanPathAdapter<B> {
 		 *            should not be used in initial method invocation)
 		 * @param fieldPath
 		 *            the <code>.</code> separated field names
-		 * @param fieldPathValueProperty
-		 *            the {@link ReadOnlyObjectWrapper} that will be set when a
-		 *            {@link FieldProperty#set(Object)} is performed
 		 * @param propertyValueClass
 		 *            the class of the {@link Property} value type (only needed
 		 *            when binding)
@@ -1135,9 +1254,7 @@ public class BeanPathAdapter<B> {
 		 *         {@link FieldProperty}
 		 */
 		protected <T> FieldProperty<?, ?, ?> performOperation(
-				final String fullFieldPath,
-				final String fieldPath,
-				final ReadOnlyObjectWrapper<FieldPathValue> fieldPathValueProperty,
+				final String fullFieldPath, final String fieldPath,
 				final Class<T> propertyValueClass,
 				final String collectionItemPath, final Observable observable,
 				final Class<?> collectionItemType,
@@ -1161,10 +1278,9 @@ public class BeanPathAdapter<B> {
 				final String nextFieldPath = fieldPath.substring(fieldPath
 						.indexOf(fieldNames[1]));
 				return getFieldBeans().get(fieldNames[0]).performOperation(
-						fullFieldPath, nextFieldPath, fieldPathValueProperty,
-						propertyValueClass, collectionItemPath, observable,
-						collectionItemType, selectionModel, itemMaster,
-						operation);
+						fullFieldPath, nextFieldPath, propertyValueClass,
+						collectionItemPath, observable, collectionItemType,
+						selectionModel, itemMaster, operation);
 			} else if (operation != FieldBeanOperation.UNBIND) {
 				// add a new bean/property chain
 				if (isField) {
@@ -1172,16 +1288,16 @@ public class BeanPathAdapter<B> {
 							getBean(), fieldNames[0]);
 					final FieldProperty<BT, ?, ?> childProp = new FieldProperty<>(
 							getBean(), fullFieldPath, fieldNames[0],
-							fieldPathValueProperty,
+							notifyProperty,
 							propertyValueClass == fieldClass ? fieldClass
 									: Object.class, collectionItemPath,
 							observable, collectionItemType, selectionModel,
 							itemMaster);
 					addOrUpdateFieldProperty(childProp);
 					return performOperation(fullFieldPath, fieldNames[0],
-							fieldPathValueProperty, propertyValueClass,
-							collectionItemPath, observable, collectionItemType,
-							selectionModel, itemMaster, operation);
+							propertyValueClass, collectionItemPath, observable,
+							collectionItemType, selectionModel, itemMaster,
+							operation);
 				} else {
 					// create a handle to set the bean as a child of the current
 					// bean
@@ -1190,15 +1306,14 @@ public class BeanPathAdapter<B> {
 					final FieldHandle<BT, Object> pfh = new FieldHandle<>(
 							getBean(), fieldNames[0], Object.class);
 					final FieldBean<BT, ?> childBean = new FieldBean<>(this,
-							pfh);
+							pfh, notifyProperty);
 					// progress to the next child field/bean in the path chain
 					final String nextFieldPath = fieldPath.substring(fieldPath
 							.indexOf(fieldNames[1]));
 					return childBean.performOperation(fullFieldPath,
-							nextFieldPath, fieldPathValueProperty,
-							propertyValueClass, collectionItemPath, observable,
-							collectionItemType, selectionModel, itemMaster,
-							operation);
+							nextFieldPath, propertyValueClass,
+							collectionItemPath, observable, collectionItemType,
+							selectionModel, itemMaster, operation);
 				}
 			}
 			return null;
@@ -1530,7 +1645,7 @@ public class BeanPathAdapter<B> {
 			implements ListChangeListener<Object>, SetChangeListener<Object>,
 			MapChangeListener<Object, Object>, ChangeListener<Object> {
 
-		private final ReadOnlyObjectWrapper<FieldPathValue> fieldPathValue;
+		private final FieldPathValueProperty notifyProperty;
 		private final String fullPath;
 		private final FieldHandle<BT, T> fieldHandle;
 		private boolean isDirty;
@@ -1552,10 +1667,10 @@ public class BeanPathAdapter<B> {
 		 *            {@link FieldProperty}
 		 * @param fieldName
 		 *            the name of the field within the bean
-		 * @param fieldPathValueProperty
-		 *            the {@link ReadOnlyObjectWrapper} that will be set every
+		 * @param notifyProperty
+		 *            the {@link FieldPathValueProperty} that will be set every
 		 *            time the {@link FieldProperty#setValue(Object)} is
-		 *            performed
+		 *            performed or an item within the value is changed
 		 * @param declaredFieldType
 		 *            the declared {@link Class} of the field
 		 * @param collectionItemPath
@@ -1585,11 +1700,9 @@ public class BeanPathAdapter<B> {
 		 *            the {@link SelectionModel} can select from
 		 */
 		@SuppressWarnings("unchecked")
-		protected FieldProperty(
-				final BT bean,
-				final String fullPath,
+		protected FieldProperty(final BT bean, final String fullPath,
 				final String fieldName,
-				final ReadOnlyObjectWrapper<FieldPathValue> fieldPathValueProperty,
+				final FieldPathValueProperty notifyProperty,
 				final Class<T> declaredFieldType,
 				final String collectionItemPath,
 				final Observable collectionObservable,
@@ -1598,7 +1711,7 @@ public class BeanPathAdapter<B> {
 				final FieldProperty<?, ?, ?> itemMaster) {
 			super();
 			this.fullPath = fullPath;
-			this.fieldPathValue = fieldPathValueProperty;
+			this.notifyProperty = notifyProperty;
 			this.fieldHandle = new FieldHandle<BT, T>(bean, fieldName,
 					declaredFieldType);
 			this.itemMaster = itemMaster;
@@ -1697,17 +1810,25 @@ public class BeanPathAdapter<B> {
 				invalidated();
 				fireValueChangedEvent();
 			}
-			isDirty = false;
-			// all collection/map item value changes will be captured at the
-			// collection/map level
-			if (fieldPathValue != null
-					&& fullPath.indexOf(COLLECTION_ITEM_PATH_SEPARATOR) < 0) {
-				final Object cv = getDirty();
-				if ((cv == null && prevValue != null)
-						|| (cv != null && !cv.equals(prevValue))) {
-					fieldPathValue.set(new FieldPathValue(fullPath, getBean(),
-							cv));
+			try {
+				// all collection/map item value changes will be captured at the
+				// collection/map level unless the collection/map level types
+				// are not registered (in which case a normal change will be
+				// evaluated
+				if (!isDirty
+						&& (fullPath.indexOf(COLLECTION_ITEM_PATH_SEPARATOR) < 0 || (notifyProperty
+								.hasTypes(FieldPathValueType.FIELD_CHANGE)
+								&& !hasFieldPathValueTypeAddOrRemove(true) && !hasFieldPathValueTypeAddOrRemove(false)))) {
+					final Object cv = getDirty();
+					if ((cv == null && prevValue != null)
+							|| (cv != null && !cv.equals(prevValue))) {
+						notifyProperty
+								.set(new FieldPathValue(fullPath, getBean(),
+										cv, FieldPathValueType.FIELD_CHANGE));
+					}
 				}
+			} finally {
+				isDirty = false;
 			}
 		}
 
@@ -1921,22 +2042,18 @@ public class BeanPathAdapter<B> {
 			int i = -1;
 			final boolean isOcList = List.class.isAssignableFrom(oc.getClass());
 			for (final Object item : fromCol) {
-				missing = !oc.contains(item);
-				changed = !changed ? missing : changed;
-				fp = updateCollectionItemBean(++i, item, null);
+				fp = genFieldProperty(item, null);
 				fpv = fp != null ? fp.getDirty() : item;
+				missing = !oc.contains(fpv);
+				changed = !changed ? missing : changed;
 				if (collectionSelectionModel == null) {
 					if (isOcList) {
-						((List<Object>) oc).add(i, fpv);
+						((List<Object>) oc).add(++i, fpv);
 					} else {
 						oc.add(fpv);
 					}
 				} else {
 					selectCollectionValue(fpv);
-				}
-				if (missing && fieldPathValue != null) {
-					fieldPathValue
-							.set(newSyncCollectionFieldPathValue(fp, fpv));
 				}
 			}
 			return changed;
@@ -1963,18 +2080,14 @@ public class BeanPathAdapter<B> {
 			Object fpv;
 			int i = -1;
 			for (final Object item : fromCol) {
-				missing = !oc.containsKey(i) || !item.equals(oc.get(i));
-				changed = !changed ? missing : changed;
-				fp = updateCollectionItemBean(++i, item, null);
+				fp = genFieldProperty(item, null);
 				fpv = fp != null ? fp.getDirty() : item;
+				missing = !oc.containsValue(fpv);
+				changed = !changed ? missing : changed;
 				if (collectionSelectionModel == null) {
-					oc.put(i, fpv);
+					oc.put(++i, fpv);
 				} else {
 					selectCollectionValue(fpv);
-				}
-				if (missing && fieldPathValue != null) {
-					fieldPathValue
-							.set(newSyncCollectionFieldPathValue(fp, fpv));
 				}
 			}
 			return changed;
@@ -2001,22 +2114,18 @@ public class BeanPathAdapter<B> {
 			int i = -1;
 			final boolean isOcList = List.class.isAssignableFrom(oc.getClass());
 			for (final Object item : fromMap.values()) {
-				missing = !oc.contains(item);
-				changed = !changed ? missing : changed;
-				fp = updateCollectionItemBean(++i, item, null);
+				fp = genFieldProperty(item, null);
 				fpv = fp != null ? fp.getDirty() : item;
+				missing = !oc.contains(fpv);
+				changed = !changed ? missing : changed;
 				if (collectionSelectionModel == null) {
 					if (isOcList) {
-						((List<Object>) oc).add(i, fpv);
+						((List<Object>) oc).add(++i, fpv);
 					} else {
 						oc.add(fpv);
 					}
 				} else {
 					selectCollectionValue(fpv);
-				}
-				if (missing && fieldPathValue != null) {
-					fieldPathValue
-							.set(newSyncCollectionFieldPathValue(fp, fpv));
 				}
 			}
 			return changed;
@@ -2042,19 +2151,14 @@ public class BeanPathAdapter<B> {
 			Object fpv;
 			int i = -1;
 			for (final Map.Entry<Object, Object> item : fromMap.entrySet()) {
-				missing = !oc.containsKey(item.getKey())
-						|| !item.getValue().equals(oc.get(item.getKey()));
+				fp = genFieldProperty(item.getValue(), null);
+				fpv = fp != null ? fp.getDirty() : item.getValue();
+				missing = !oc.containsValue(fpv);
 				changed = !changed ? missing : changed;
-				fp = updateCollectionItemBean(++i, item, null);
-				fpv = fp != null ? fp.getDirty() : item;
 				if (collectionSelectionModel == null) {
-					oc.put(i, fpv);
+					oc.put(++i, fpv);
 				} else {
 					selectCollectionValue(fpv);
-				}
-				if (missing && fieldPathValue != null) {
-					fieldPathValue
-							.set(newSyncCollectionFieldPathValue(fp, fpv));
 				}
 			}
 			return changed;
@@ -2092,17 +2196,25 @@ public class BeanPathAdapter<B> {
 			final List<FieldPathValue> fvs = new ArrayList<>();
 			FieldProperty<?, ?, ?> fp;
 			Object fpv;
-			int i = -1;
 			final List<Object> nc = new ArrayList<>();
 			for (final Object item : oc) {
 				if (item != null) {
-					missing = !toCol.contains(item);
-					changed = !changed ? missing : changed;
-					fp = updateCollectionItemBean(++i, null, item);
+					fp = genFieldProperty(null, item);
 					fpv = fp == null ? item : fp.getBean();
+					missing = !toCol.contains(fpv);
+					changed = !changed ? missing : changed;
 					nc.add(fpv);
-					if (missing && fieldPathValue != null) {
-						fvs.add(newSyncCollectionFieldPathValue(fp, fpv));
+					if (missing && hasFieldPathValueTypeAddOrRemove(true)) {
+						fvs.add(newSyncCollectionFieldPathValue(fp, fpv, true));
+					}
+				}
+			}
+			if (hasFieldPathValueTypeAddOrRemove(false)) {
+				for (final Object item : toCol) {
+					if (!nc.contains(item)) {
+						fp = genFieldProperty(item, null);
+						fpv = fp == null ? item : fp.getBean();
+						fvs.add(newSyncCollectionFieldPathValue(fp, fpv, false));
 					}
 				}
 			}
@@ -2135,13 +2247,22 @@ public class BeanPathAdapter<B> {
 			final Map<Object, Object> nc = new HashMap<>();
 			for (final Object item : oc) {
 				if (item != null) {
-					missing = !toMap.containsValue(item);
-					changed = !changed ? missing : changed;
-					fp = updateCollectionItemBean(++i, null, item);
+					fp = genFieldProperty(null, item);
 					fpv = fp == null ? item : fp.getBean();
-					nc.put(i, fpv);
-					if (missing && fieldPathValue != null) {
-						fvs.add(newSyncCollectionFieldPathValue(fp, fpv));
+					missing = !toMap.containsValue(fpv);
+					changed = !changed ? missing : changed;
+					nc.put(++i, fpv);
+					if (missing && hasFieldPathValueTypeAddOrRemove(true)) {
+						fvs.add(newSyncCollectionFieldPathValue(fp, fpv, true));
+					}
+				}
+			}
+			if (hasFieldPathValueTypeAddOrRemove(false)) {
+				for (final Object item : toMap.values()) {
+					if (!nc.containsValue(item)) {
+						fp = genFieldProperty(item, null);
+						fpv = fp == null ? item : fp.getBean();
+						fvs.add(newSyncCollectionFieldPathValue(fp, fpv, false));
 					}
 				}
 			}
@@ -2171,17 +2292,25 @@ public class BeanPathAdapter<B> {
 			final List<FieldPathValue> fvs = new ArrayList<>();
 			FieldProperty<?, ?, ?> fp;
 			Object fpv;
-			int i = -1;
 			final List<Object> nc = new ArrayList<>();
 			for (final Map.Entry<Object, Object> item : oc.entrySet()) {
 				if (item != null && item.getValue() != null) {
-					missing = !toCol.contains(item.getValue());
-					changed = !changed ? missing : changed;
-					fp = updateCollectionItemBean(++i, null, item.getValue());
+					fp = genFieldProperty(null, item.getValue());
 					fpv = fp == null ? item.getValue() : fp.getBean();
+					missing = !toCol.contains(fpv);
+					changed = !changed ? missing : changed;
 					nc.add(fpv);
-					if (missing && fieldPathValue != null) {
-						fvs.add(newSyncCollectionFieldPathValue(fp, fpv));
+					if (missing && hasFieldPathValueTypeAddOrRemove(true)) {
+						fvs.add(newSyncCollectionFieldPathValue(fp, fpv, true));
+					}
+				}
+			}
+			if (hasFieldPathValueTypeAddOrRemove(false)) {
+				for (final Object item : toCol) {
+					if (!nc.contains(item)) {
+						fp = genFieldProperty(item, null);
+						fpv = fp == null ? item : fp.getBean();
+						fvs.add(newSyncCollectionFieldPathValue(fp, fpv, false));
 					}
 				}
 			}
@@ -2215,15 +2344,22 @@ public class BeanPathAdapter<B> {
 			final Map<Object, Object> nc = new HashMap<>();
 			for (final Map.Entry<Object, Object> item : oc.entrySet()) {
 				if (item != null && item.getValue() != null) {
-					missing = !toMap.containsKey(item.getValue())
-							|| !item.getValue()
-									.equals(toMap.get(item.getKey()));
-					changed = !changed ? missing : changed;
-					fp = updateCollectionItemBean(++i, null, item.getValue());
+					fp = genFieldProperty(null, item.getValue());
 					fpv = fp == null ? item.getValue() : fp.getBean();
+					missing = !toMap.containsValue(fpv);
+					changed = !changed ? missing : changed;
 					nc.put(i, fpv);
-					if (missing && fieldPathValue != null) {
-						fvs.add(newSyncCollectionFieldPathValue(fp, fpv));
+					if (missing && hasFieldPathValueTypeAddOrRemove(true)) {
+						fvs.add(newSyncCollectionFieldPathValue(fp, fpv, true));
+					}
+				}
+			}
+			if (hasFieldPathValueTypeAddOrRemove(false)) {
+				for (final Object item : toMap.values()) {
+					if (!nc.containsValue(item)) {
+						fp = genFieldProperty(item, null);
+						fpv = fp == null ? item : fp.getBean();
+						fvs.add(newSyncCollectionFieldPathValue(fp, fpv, false));
 					}
 				}
 			}
@@ -2242,41 +2378,72 @@ public class BeanPathAdapter<B> {
 		 *            the {@link FieldProperty} (optional)
 		 * @param fpv
 		 *            the {@link FieldProperty#getValue()}
+		 * @param isAdd
+		 *            true when adding an item
 		 * @return the {@link FieldPathValue}
 		 */
 		protected FieldPathValue newSyncCollectionFieldPathValue(
-				final FieldProperty<?, ?, ?> fp, final Object fpv) {
-			if (fp == null) {
-				return new FieldPathValue(fullPath, getBean(), fpv,
-						itemMaster != null);
+				final FieldProperty<?, ?, ?> fp, final Object fpv,
+				final boolean isAdd) {
+			FieldPathValueType type;
+			if (collectionSelectionModel != null) {
+				type = isAdd ? FieldPathValueType.CONTENT_ITEM_ADD_SELECT
+						: FieldPathValueType.CONTENT_ITEM_REMOVE_SELECT;
 			} else {
-				return new FieldPathValue(fp.fullPath, fp.getBean(), fpv,
-						itemMaster != null);
+				type = isAdd ? FieldPathValueType.CONTENT_ITEM_ADD
+						: FieldPathValueType.CONTENT_ITEM_REMOVE;
+			}
+			if (fp == null) {
+				return new FieldPathValue(fullPath, getBean(), fpv, type);
+			} else {
+				return new FieldPathValue(fp.fullPath, fp.getBean(), fpv, type);
 			}
 		}
 
 		/**
+		 * Determines if the {@link FieldPathValueProperty} is registered for
+		 * adds or removals
+		 * 
+		 * @param add
+		 *            true to check for add, false to check for remove
+		 * @return true when the {@link FieldPathValueProperty} is registered
+		 *         for the add or remove
+		 */
+		protected boolean hasFieldPathValueTypeAddOrRemove(final boolean add) {
+			return (add && collectionSelectionModel != null && notifyProperty
+					.hasTypes(FieldPathValueType.CONTENT_ITEM_ADD_SELECT))
+					|| (add && collectionSelectionModel == null && notifyProperty
+							.hasTypes(FieldPathValueType.CONTENT_ITEM_ADD))
+					|| (!add && collectionSelectionModel != null && notifyProperty
+							.hasTypes(FieldPathValueType.CONTENT_ITEM_REMOVE_SELECT))
+					|| (!add && collectionSelectionModel == null && notifyProperty
+							.hasTypes(FieldPathValueType.CONTENT_ITEM_REMOVE));
+		}
+
+		/**
 		 * Sets a {@link Collection} of {@link FieldPathValue}(s) on the
-		 * {@link #fieldPathValue}
+		 * {@link #notifyProperty}
 		 * 
 		 * @param fieldPathValues
 		 *            the {@link Collection} of {@link FieldPathValue}(s) to set
 		 */
 		protected void setFieldPathValues(
 				final Collection<FieldPathValue> fieldPathValues) {
-			if (fieldPathValue != null) {
+			if (notifyProperty != null) {
 				for (final FieldPathValue o : fieldPathValues) {
-					fieldPathValue.set(o);
+					notifyProperty.set(o);
 				}
 			}
 		}
 
 		/**
-		 * Creates/Updates a collection item value of the {@link FieldProperty}
-		 * for the {@link #getCollectionItemPath()}
+		 * Generates a {@link FieldProperty} using the specified bean and sets
+		 * the optional value on the bean (when the value is not null). The
+		 * returned {@link FieldProperty} will contain the same value instance
+		 * contained with the item master. When the item master is not available
+		 * an attempt will be made to get the item value from the
+		 * {@link #getDirty()} collection/map.
 		 * 
-		 * @param index
-		 *            the index of the collection item to update
 		 * @param itemBeanValue
 		 *            the collection {@link FieldBean} value to add/update. when
 		 *            {@code null} the existing {@link FieldBean} value will
@@ -2290,9 +2457,8 @@ public class BeanPathAdapter<B> {
 		 * @return the {@link FieldProperty} for the collection item (null when
 		 *         none is required)
 		 */
-		protected FieldProperty<?, ?, ?> updateCollectionItemBean(
-				final int index, final Object itemBeanValue,
-				final Object itemBeanPropertyValue) {
+		protected FieldProperty<?, ?, ?> genFieldProperty(
+				final Object itemBeanValue, final Object itemBeanPropertyValue) {
 			try {
 				// simple collection items that do not have a path do not
 				// require an update
@@ -2357,11 +2523,11 @@ public class BeanPathAdapter<B> {
 				final Object bean) {
 			FieldBean<Void, Object> fb;
 			FieldProperty<?, ?, ?> fp;
-			fb = new FieldBean<>(null, bean, null);
+			fb = new FieldBean<>(null, bean, null, notifyProperty);
 			fp = fb.performOperation(fullPath + COLLECTION_ITEM_PATH_SEPARATOR
-					+ collectionItemPath, collectionItemPath, fieldPathValue,
-					Object.class, null, null, null, collectionSelectionModel,
-					null, FieldBeanOperation.CREATE_OR_FIND);
+					+ collectionItemPath, collectionItemPath, Object.class,
+					null, null, null, collectionSelectionModel, null,
+					FieldBeanOperation.CREATE_OR_FIND);
 			return fp;
 		}
 
@@ -2369,8 +2535,6 @@ public class BeanPathAdapter<B> {
 		 * Updates the underlying collection item value
 		 * 
 		 * @see #updateCollectionItemBean(int, Object, Object)
-		 * @param index
-		 *            the index of the collection item to update
 		 * @param itemBeanPropertyValue
 		 *            the collection {@link FieldBean}'s {@link FieldProperty}
 		 *            value to add/update
@@ -2378,10 +2542,10 @@ public class BeanPathAdapter<B> {
 		 *         it's own bean path, the <code>
 		 *         itemBeanPropertyValue</code> when it does not
 		 */
-		protected Object updateCollectionItemProperty(final int index,
+		protected Object updateCollectionItemProperty(
 				final Object itemBeanPropertyValue) {
-			final FieldProperty<?, ?, ?> fp = updateCollectionItemBean(index,
-					null, itemBeanPropertyValue);
+			final FieldProperty<?, ?, ?> fp = genFieldProperty(null,
+					itemBeanPropertyValue);
 			return fp == null ? itemBeanPropertyValue : fp.getBean();
 		}
 
