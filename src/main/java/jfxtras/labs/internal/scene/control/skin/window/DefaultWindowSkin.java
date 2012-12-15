@@ -24,7 +24,6 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package jfxtras.labs.internal.scene.control.skin.window;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
@@ -50,8 +49,6 @@ import javafx.util.Duration;
 import jfxtras.labs.scene.control.window.Window;
 import jfxtras.labs.scene.control.window.WindowIcon;
 
-
-
 /**
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
@@ -75,12 +72,11 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
     private TitleBar titleBar;
     private Window control;
     private Pane root = new Pane();
-    private double contentScale = 1.0;
     private double oldHeight;
     private Timeline minimizeTimeLine;
 
     public DefaultWindowSkin(Window w) {
-        super(w, new BehaviorBase<Window>(w));
+        super(w, new BehaviorBase<>(w));
         this.control = w;
         titleBar = new TitleBar(control);
         titleBar.setTitle("");
@@ -104,13 +100,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
             @Override
             public void onChanged(ListChangeListener.Change<? extends WindowIcon> change) {
                 while (change.next()) {
-                    if (change.wasPermutated()) {
-                        for (int i = change.getFrom(); i < change.getTo(); ++i) {
-                            //permutate
-                        }
-                    } else if (change.wasUpdated()) {
-                        //update item
-                    } else {
+                    if (!change.wasPermutated() && !change.wasUpdated()) {
                         if (change.wasRemoved()) {
                             for (WindowIcon i : change.getRemoved()) {
                                 titleBar.removeLeftIcon(i);
@@ -129,13 +119,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
             @Override
             public void onChanged(ListChangeListener.Change<? extends WindowIcon> change) {
                 while (change.next()) {
-                    if (change.wasPermutated()) {
-                        for (int i = change.getFrom(); i < change.getTo(); ++i) {
-                            //permutate
-                        }
-                    } else if (change.wasUpdated()) {
-                        //update item
-                    } else {
+                    if (!change.wasPermutated() && !change.wasUpdated()) {
                         if (change.wasRemoved()) {
                             for (WindowIcon i : change.getRemoved()) {
                                 titleBar.removeRightIcon(i);
@@ -187,17 +171,17 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
 
                 minimizeTimeLine.statusProperty().addListener(
                         new ChangeListener<Animation.Status>() {
-                            @Override
-                            public void changed(ObservableValue<? extends Status> ov, Status oldStatus, Status newStatus) {
+                    @Override
+                    public void changed(ObservableValue<? extends Status> ov, Status oldStatus, Status newStatus) {
 
-                                if (newStatus == Status.STOPPED) {
-                                    minimizeTimeLine = null;
-                                    if (newValue) {
-                                        control.getContentPane().setVisible(false);
-                                    }
-                                }
+                        if (newStatus == Status.STOPPED) {
+                            minimizeTimeLine = null;
+                            if (newValue) {
+                                control.getContentPane().setVisible(false);
                             }
-                        });
+                        }
+                    }
+                });
 
                 minimizeTimeLine.play();
             }
@@ -255,13 +239,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
             @Override
             public void onChanged(Change<? extends String> change) {
                 while (change.next()) {
-                    if (change.wasPermutated()) {
-                        for (int i = change.getFrom(); i < change.getTo(); ++i) {
-                            //permutate
-                        }
-                    } else if (change.wasUpdated()) {
-                        //update item
-                    } else {
+                    if (!change.wasPermutated() && !change.wasUpdated()) {
                         if (change.wasRemoved()) {
                             for (String i : change.getRemoved()) {
                                 titleBar.getStylesheets().remove(i);
@@ -315,11 +293,6 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
                 final double parentScaleY = n.getParent().
                         localToSceneTransformProperty().getValue().getMyy();
 
-                final double scaleX = n.localToSceneTransformProperty().
-                        getValue().getMxx();
-                final double scaleY = n.localToSceneTransformProperty().
-                        getValue().getMyy();
-
                 Bounds boundsInScene =
                         control.localToScene(control.getBoundsInLocal());
 
@@ -330,24 +303,19 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
                 double offsetY = event.getSceneY() - mouseY;
 
                 if (resizeMode == ResizeMode.NONE) {
+                    if (control.isMovable()) {
+                        nodeX += offsetX;
+                        nodeY += offsetY;
 
-                    nodeX += offsetX;
-                    nodeY += offsetY;
+                        double scaledX = nodeX * 1 / parentScaleX;
+                        double scaledY = nodeY * 1 / parentScaleY;
 
-                    double scaledX = nodeX * 1 / parentScaleX;
-                    double scaledY = nodeY * 1 / parentScaleY;
+                        n.setLayoutX(scaledX);
+                        n.setLayoutY(scaledY);
 
-                    n.setLayoutX(scaledX);
-                    n.setLayoutY(scaledY);
-
-                    dragging = true;
-
+                        dragging = true;
+                    }
                 } else {
-
-                    double width = n.getBoundsInLocal().getMaxX()
-                            - n.getBoundsInLocal().getMinX();
-                    double height = n.getBoundsInLocal().getMaxY()
-                            - n.getBoundsInLocal().getMinY();
 
                     if (RESIZE_TOP) {
 //                        System.out.println("TOP");
@@ -439,7 +407,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
             @Override
             public void handle(MouseEvent t) {
 
-                if (control.isMinimized()) {
+                if (control.isMinimized() || !control.isResizableWindow()) {
 
                     RESIZE_TOP = false;
                     RESIZE_LEFT = false;
@@ -453,14 +421,11 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
 
                 final Node n = control;
 
-                final double parentScaleX = n.getParent().localToSceneTransformProperty().getValue().getMxx();
-                final double parentScaleY = n.getParent().localToSceneTransformProperty().getValue().getMyy();
-
                 final double scaleX = n.localToSceneTransformProperty().getValue().getMxx();
                 final double scaleY = n.localToSceneTransformProperty().getValue().getMyy();
 
                 final double border = control.getResizableBorderWidth() * scaleX;
-                
+
                 double diffMinX = Math.abs(n.getLayoutBounds().getMinX() - t.getX() + getInsets().getLeft());
                 double diffMinY = Math.abs(n.getLayoutBounds().getMinY() - t.getY() + getInsets().getTop());
                 double diffMaxX = Math.abs(n.getLayoutBounds().getMaxX() - t.getX() - getInsets().getRight());
@@ -709,6 +674,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
         }
     }
 }
+
 class TitleBar extends HBox {
 
     public static final String DEFAULT_STYLE_CLASS = "window-titlebar";
@@ -781,8 +747,8 @@ class TitleBar extends HBox {
         originalTitleWidth = getLabel().getBoundsInParent().getWidth();
 
         double maxIconWidth = Math.max(
-                        leftIconPane.getWidth(), rightIconPane.getWidth());
-        
+                leftIconPane.getWidth(), rightIconPane.getWidth());
+
         if (originalTitleWidth
                 + maxIconWidth * 2 + offset >= getWidth()) {
             getLabel().setText("...");
