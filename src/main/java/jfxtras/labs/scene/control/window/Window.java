@@ -84,11 +84,20 @@ public class Window extends Control {
      */
     private BooleanProperty minimizeProperty = new SimpleBooleanProperty();
     /**
+     * Resize property (defines whether is the window resizeable,performed by
+     * skin)
+     */
+    private BooleanProperty resizableProperty = new SimpleBooleanProperty(true);
+    /**
+     * Resize property (defines whether is the window movable,performed by
+     * skin)
+     */
+    private BooleanProperty movableProperty = new SimpleBooleanProperty(true);
+    /**
      * Content pane property. The content pane is the pane that is responsible
      * for showing user defined nodes/content.
      */
-    private Property<Pane> contentPaneProperty =
-            new SimpleObjectProperty<Pane>();
+    private Property<Pane> contentPaneProperty = new SimpleObjectProperty<>();
     /**
      * List of icons shown on the left. TODO replace left/right with more
      * generic position property?
@@ -99,8 +108,7 @@ public class Window extends Control {
      * List of icons shown on the right. TODO replace left/right with more
      * generic position property?
      */
-    private ObservableList<WindowIcon> rightIcons =
-            FXCollections.observableArrayList();
+    private ObservableList<WindowIcon> rightIcons = FXCollections.observableArrayList();
     /**
      * Defines the width of the border /area where the user can grab the window
      * and resize it.
@@ -116,18 +124,18 @@ public class Window extends Control {
      * defines the action that shall be performed before the window is closed.
      */
     private ObjectProperty<EventHandler<ActionEvent>> onCloseActionProperty =
-            new SimpleObjectProperty<EventHandler<ActionEvent>>();
+            new SimpleObjectProperty<>();
     /**
      * defines the action that shall be performed after the window has been
      * closed.
      */
     private ObjectProperty<EventHandler<ActionEvent>> onClosedActionProperty =
-            new SimpleObjectProperty<EventHandler<ActionEvent>>();
+            new SimpleObjectProperty<>();
     /**
      * defines the transition that shall be played when closing the window.
      */
     private ObjectProperty<Transition> closeTransitionProperty =
-            new SimpleObjectProperty<Transition>();
+            new SimpleObjectProperty<>();
 
     /**
      * Constructor.
@@ -147,7 +155,6 @@ public class Window extends Control {
     }
 
     private void init() {
-
         getStyleClass().setAll(DEFAULT_STYLE_CLASS);
         setContentPane(new StackPane());
 
@@ -341,6 +348,63 @@ public class Window extends Control {
      */
     public BooleanProperty minimizedProperty() {
         return minimizeProperty;
+    }
+
+    /**
+     * Defines whether this window shall be resizeable by the user.
+     *
+     * @param v the state to set
+     */
+    public void setResizableWindow(Boolean v) {
+        resizableProperty.set(v);
+    }
+
+    /**
+     * Indicates whether the window is resizeable by the user.
+     *
+     * @return <code>true</code> if the window is resizeable; <code>false</code>
+     * otherwise
+     */
+    public boolean isResizableWindow() {
+        return resizableProperty.get();
+    }
+
+    /**
+     * Returns the resize property.
+     *
+     * @return the minimize property
+     */
+    public BooleanProperty resizeableWindowProperty() {
+        return resizableProperty;
+    }
+    
+    
+    /**
+     * Defines whether this window shall be movable.
+     *
+     * @param v the state to set
+     */
+    public void setMovable(Boolean v) {
+        movableProperty.set(v);
+    }
+
+    /**
+     * Indicates whether the window is movable.
+     *
+     * @return <code>true</code> if the window is movable; <code>false</code>
+     * otherwise
+     */
+    public boolean isMovable() {
+        return movableProperty.get();
+    }
+
+    /**
+     * Returns the movable property.
+     *
+     * @return the minimize property
+     */
+    public BooleanProperty movableProperty() {
+        return movableProperty;
     }
 
     /**

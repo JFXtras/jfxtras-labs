@@ -24,7 +24,6 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package jfxtras.labs.internal.scene.control.skin.window;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
@@ -49,8 +48,6 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import jfxtras.labs.scene.control.window.Window;
 import jfxtras.labs.scene.control.window.WindowIcon;
-
-
 
 /**
  *
@@ -80,7 +77,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
     private Timeline minimizeTimeLine;
 
     public DefaultWindowSkin(Window w) {
-        super(w, new BehaviorBase<Window>(w));
+        super(w, new BehaviorBase<>(w));
         this.control = w;
         titleBar = new TitleBar(control);
         titleBar.setTitle("");
@@ -330,7 +327,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
                 double offsetY = event.getSceneY() - mouseY;
 
                 if (resizeMode == ResizeMode.NONE) {
-
+                    if (control.isMovable()) {
                     nodeX += offsetX;
                     nodeY += offsetY;
 
@@ -341,7 +338,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
                     n.setLayoutY(scaledY);
 
                     dragging = true;
-
+                    }
                 } else {
 
                     double width = n.getBoundsInLocal().getMaxX()
@@ -439,7 +436,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
             @Override
             public void handle(MouseEvent t) {
 
-                if (control.isMinimized()) {
+                if (control.isMinimized() || !control.isResizableWindow()) {
 
                     RESIZE_TOP = false;
                     RESIZE_LEFT = false;
@@ -709,6 +706,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
         }
     }
 }
+
 class TitleBar extends HBox {
 
     public static final String DEFAULT_STYLE_CLASS = "window-titlebar";
