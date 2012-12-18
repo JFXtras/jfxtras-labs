@@ -243,23 +243,6 @@ public class BeanPathAdapterTrial1 extends Application {
 		return beanBox;
 	}
 
-	public HBox createRoleField(String rolePath) {
-		HBox cont = new HBox();
-		final Role r1 = new Role();
-		final Role r2 = new Role();
-		r1.setName("User");
-		r1.setDescription("General user role");
-		r2.setName("Admin");
-		r2.setDescription("Administrator role");
-		ComboBox<Role> cb = new ComboBox<>();
-		cb.setPromptText("Select Role");
-		cb.getItems().addAll(r1, r2);
-		cb.setValue(r1);
-		personPA.bindBidirectional(rolePath, cb.valueProperty(), Role.class);
-		cont.getChildren().addAll(new Label(rolePath + " = "), cb);
-		return cont;
-	}
-
 	public VBox updateListView(HBox langBox, String label) {
 		@SuppressWarnings("unchecked")
 		final ListView<String> listView = (ListView<String>) langBox
