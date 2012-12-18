@@ -360,7 +360,6 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
 
                         double newHeight = control.getPrefHeight() + yDiff;
 
-
                         if (newHeight > control.minHeight(0)) {
                             control.setLayoutY(control.getLayoutY() - yDiff);
                             control.setPrefHeight(newHeight);
@@ -377,9 +376,12 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
 
                         double newWidth = control.getPrefWidth() + xDiff;
 
-                        if (newWidth > control.minWidth(0)) {
+                        if (newWidth > Math.max(control.minWidth(0),
+                                control.getContentPane().minWidth(0))) {
                             control.setLayoutX(control.getLayoutX() - xDiff);
                             control.setPrefWidth(newWidth);
+                        } else {
+                            //
                         }
                     }
 
@@ -410,7 +412,9 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
                         double newWidth = xDiff;
 
                         newWidth = Math.max(
-                                newWidth, control.minWidth(0));
+                                newWidth,
+                                Math.max(control.getContentPane().minWidth(0),
+                                control.minWidth(0)));
 
                         if (newWidth < control.maxWidth(0)) {
                             control.setPrefWidth(newWidth);
