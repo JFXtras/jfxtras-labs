@@ -277,7 +277,8 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
     }
 
     private void initMouseEventHandlers() {
-        control.onMousePressedProperty().set(new EventHandler<MouseEvent>() {
+
+        onMousePressedProperty().set(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
 
@@ -297,11 +298,12 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
                 if (control.isMoveToFront()) {
                     control.toFront();
                 }
+
             }
         });
 
         //Event Listener for MouseDragged
-        control.onMouseDraggedProperty().set(new EventHandler<MouseEvent>() {
+        onMouseDraggedProperty().set(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
 
@@ -328,16 +330,16 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
 
                 if (resizeMode == ResizeMode.NONE) {
                     if (control.isMovable()) {
-                    nodeX += offsetX;
-                    nodeY += offsetY;
+                        nodeX += offsetX;
+                        nodeY += offsetY;
 
-                    double scaledX = nodeX * 1 / parentScaleX;
-                    double scaledY = nodeY * 1 / parentScaleY;
+                        double scaledX = nodeX * 1 / parentScaleX;
+                        double scaledY = nodeY * 1 / parentScaleY;
 
-                    n.setLayoutX(scaledX);
-                    n.setLayoutY(scaledY);
+                        n.setLayoutX(scaledX);
+                        n.setLayoutY(scaledY);
 
-                    dragging = true;
+                        dragging = true;
                     }
                 } else {
 
@@ -419,20 +421,19 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
                 mouseX = event.getSceneX();
                 mouseY = event.getSceneY();
 
-
-                event.consume();
-            }
+            } // end handle(..)
         });
 
-        control.onMouseClickedProperty().set(new EventHandler<MouseEvent>() {
+        onMouseClickedProperty().set(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
 
                 dragging = false;
+
             }
         });
 
-        control.onMouseMovedProperty().set(new EventHandler<MouseEvent>() {
+        onMouseMovedProperty().set(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent t) {
 
@@ -457,7 +458,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
                 final double scaleY = n.localToSceneTransformProperty().getValue().getMyy();
 
                 final double border = control.getResizableBorderWidth() * scaleX;
-                
+
                 double diffMinX = Math.abs(n.getLayoutBounds().getMinX() - t.getX() + getInsets().getLeft());
                 double diffMinY = Math.abs(n.getLayoutBounds().getMinY() - t.getY() + getInsets().getTop());
                 double diffMaxX = Math.abs(n.getLayoutBounds().getMaxX() - t.getX() - getInsets().getRight());
@@ -779,8 +780,8 @@ class TitleBar extends HBox {
         originalTitleWidth = getLabel().getBoundsInParent().getWidth();
 
         double maxIconWidth = Math.max(
-                        leftIconPane.getWidth(), rightIconPane.getWidth());
-        
+                leftIconPane.getWidth(), rightIconPane.getWidth());
+
         if (originalTitleWidth
                 + maxIconWidth * 2 + offset >= getWidth()) {
             getLabel().setText("...");

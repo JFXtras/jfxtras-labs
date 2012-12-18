@@ -48,7 +48,7 @@ public class NodeUtil {
      * @param n the node to remove
      *
      * @throws IllegalArgumentException if an unsupported parent class has been
-     * specified
+     * specified or the parent is <code>null</code>
      */
     public static void removeFromParent(Node n) {
         if (n.getParent() instanceof Group) {
@@ -56,7 +56,7 @@ public class NodeUtil {
         } else if (n.getParent() instanceof Region) {
             ((Pane) n.getParent()).getChildren().remove(n);
         } else {
-            throw new IllegalArgumentException("Unsupported parent class!");
+            throw new IllegalArgumentException("Unsupported parent: " + n.getParent());
         }
     }
 
@@ -67,7 +67,7 @@ public class NodeUtil {
      * @param n node
      *
      * @throws IllegalArgumentException if an unsupported parent class has been
-     * specified
+     * specified or the parent is <code>null</code>
      */
     public static void addToParent(Parent p, Node n) {
         if (p instanceof Group) {
@@ -75,7 +75,7 @@ public class NodeUtil {
         } else if (p instanceof Pane) {
             ((Pane) p).getChildren().add(n);
         } else {
-            throw new IllegalArgumentException("Unsupported parent class!");
+            throw new IllegalArgumentException("Unsupported parent: " + n.getParent());
         }
     }
 
