@@ -502,7 +502,6 @@ implements Agenda.AgendaSkin
 			historicalVisualizer = new HistoricalVisualizer(this);
 			getChildren().add(historicalVisualizer);
 		}
-		final Rectangle historicalVisualizer;
 	}
 	
 	/**
@@ -1090,8 +1089,8 @@ implements Agenda.AgendaSkin
 				lTimeText.getStyleClass().add("AppointmentTimeLabel");
 				lTimeText.setX( menuIcon.getWidth() + padding );
 				lTimeText.setY(lTimeText.prefHeight(0) / 2);
-// TODO: clipping height does not work 
-				Rectangle lClip = new Rectangle(0,0,0,0);
+				// add a clip to mask out all except the first line
+				Rectangle lClip = new Rectangle(0,-1 * lTimeText.getY(),0,0);
 				lClip.widthProperty().bind(widthProperty().subtract(padding));
 				lClip.heightProperty().bind(textHeightAppointmentTimeLabelProperty);
 				lTimeText.setClip(lClip);
@@ -1106,9 +1105,10 @@ implements Agenda.AgendaSkin
 			}
 			
 			// history visualizer
-// TODO: does not overlap the whole text			
-			historicalVisualizer = new HistoricalVisualizer(this);
-			getChildren().add(historicalVisualizer);
+// TODO: does not overlap the whole text, because the text may be outside the "window"
+//       we should also make the title text semi transparent			
+//			historicalVisualizer = new HistoricalVisualizer(this);
+//			getChildren().add(historicalVisualizer);
 		}
 		
 		/**
@@ -1389,7 +1389,6 @@ implements Agenda.AgendaSkin
 		}
 		final DayPane dayPane;
 		
-		Rectangle historicalVisualizer = null;
 		Calendar start = null;
 		String startAsString = null;
 		Calendar end = null;
@@ -1606,7 +1605,8 @@ implements Agenda.AgendaSkin
 		double startY = 0;
 		boolean dragEventHasOccurred = false;
 		Rectangle menuIcon = null;
-		
+		Rectangle historicalVisualizer = null;
+
 //		public String describe()
 //		{
 //			// strings
@@ -1682,13 +1682,15 @@ implements Agenda.AgendaSkin
 					int lOffsetY = (lNow.get(Calendar.HOUR_OF_DAY) * 60) + lNow.get(Calendar.MINUTE);
 					nowLine.setY(dayHeightProperty.get() / (24 * 60) * lOffsetY );
 					if (nowLine.widthProperty().isBound() == false) nowLine.widthProperty().bind(dayWidthProperty);	
-
 				}
 				
 				// display history
 				for (AbstractClusteredDayAppointmentPane lAppointmentPane : lDayPane.clusteredAppointmentPanes)
 				{
-					lAppointmentPane.historicalVisualizer.setVisible( lAppointmentPane.start.before(lNow));
+					if (lAppointmentPane.historicalVisualizer != null)
+					{
+						lAppointmentPane.historicalVisualizer.setVisible( lAppointmentPane.start.before(lNow));
+					}
 				}
 				for (WholedayAppointmentPane lAppointmentPane : lDayPane.wholedayAppointmentPanes)
 				{
@@ -1795,30 +1797,33 @@ implements Agenda.AgendaSkin
 		});
 		lEndCalendarTextField.setVisible(abstractAppointmentPane.appointment.getEndTime() != null);
 		// wholeday
-		final CheckBox lWholedayCheckBox = new CheckBox("Wholeday");
-		lWholedayCheckBox.selectedProperty().set(abstractAppointmentPane.appointment.isWholeDay());
-		lMenuVBox.getChildren().add(lWholedayCheckBox);
-		lWholedayCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>()
+		if ((abstractAppointmentPane.appointment.isWholeDay() != null && abstractAppointmentPane.appointment.isWholeDay() == true) || abstractAppointmentPane.appointment.getEndTime() != null)
 		{
-			@Override
-			public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldValue, Boolean newValue)
+			final CheckBox lWholedayCheckBox = new CheckBox("Wholeday");
+			lWholedayCheckBox.selectedProperty().set(abstractAppointmentPane.appointment.isWholeDay());
+			lMenuVBox.getChildren().add(lWholedayCheckBox);
+			lWholedayCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>()
 			{
-				abstractAppointmentPane.appointment.setWholeDay(newValue);
-				if (newValue == true) 
+				@Override
+				public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldValue, Boolean newValue)
 				{
-					abstractAppointmentPane.appointment.setEndTime(null);
+					abstractAppointmentPane.appointment.setWholeDay(newValue);
+					if (newValue == true) 
+					{
+						abstractAppointmentPane.appointment.setEndTime(null);
+					}
+					else
+					{
+						Calendar lEndTime = (Calendar)abstractAppointmentPane.appointment.getStartTime().clone();
+						lEndTime.add(Calendar.MINUTE, 30);
+						abstractAppointmentPane.appointment.setEndTime(lEndTime);
+						lEndCalendarTextField.setValue(abstractAppointmentPane.appointment.getEndTime());
+					}
+					lEndCalendarTextField.setVisible(abstractAppointmentPane.appointment.getEndTime() != null);
+					// refresh is done upon popup close
 				}
-				else
-				{
-					Calendar lEndTime = (Calendar)abstractAppointmentPane.appointment.getStartTime().clone();
-					lEndTime.add(Calendar.MINUTE, 30);
-					abstractAppointmentPane.appointment.setEndTime(lEndTime);
-					lEndCalendarTextField.setValue(abstractAppointmentPane.appointment.getEndTime());
-				}
-				lEndCalendarTextField.setVisible(abstractAppointmentPane.appointment.getEndTime() != null);
-				// refresh is done upon popup close
-			}
-		});
+			});
+		}
 		// event handling
 		lStartCalendarTextField.valueProperty().addListener(new ChangeListener<Calendar>()
 		{
@@ -2003,9 +2008,19 @@ implements Agenda.AgendaSkin
 		double lScrollbarSize = new ScrollBar().getWidth();
 		textHeightProperty.set( new Text("X").getBoundsInParent().getHeight() );
 		{
-			Text lAppointmentTimeText = new Text("X");
+			final Text lAppointmentTimeText = new Text("X");
 			lAppointmentTimeText.getStyleClass().add("AppointmentTimeLabel");
 			textHeightAppointmentTimeLabelProperty.set( lAppointmentTimeText.getBoundsInParent().getHeight() );
+//			lAppointmentTimeText.boundsInParentProperty().addListener(new InvalidationListener()
+//			{
+//				@Override
+//				public void invalidated(Observable arg0)
+//				{
+//System.out.println("!!! " + lAppointmentTimeText.getBoundsInParent().getHeight());					
+//					textHeightAppointmentTimeLabelProperty.set( lAppointmentTimeText.getBoundsInParent().getHeight() );
+//				}
+//			});
+//			getChildren().add(lAppointmentTimeText);
 		}
 		
 		// header
