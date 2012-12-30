@@ -483,6 +483,10 @@ implements Agenda.AgendaSkin
 			// for debugging setStyle("-fx-border-color:GREEN;-fx-border-width:4px;");
 			getStyleClass().add("Appointment");
 			getStyleClass().add(appointment.getAppointmentGroup().getStyleClass());
+			
+			// historical visualizer
+			historicalVisualizer = new HistoricalVisualizer(this);
+			getChildren().add(historicalVisualizer);
 
 			// add a text node
 			Text lSummaryText = new Text(appointment.getSummary());
@@ -497,10 +501,6 @@ implements Agenda.AgendaSkin
 			
 			// add the menu header
 			getChildren().add(menuIcon);
-			
-			// historical visualizer
-			historicalVisualizer = new HistoricalVisualizer(this);
-			getChildren().add(historicalVisualizer);
 		}
 	}
 	
@@ -996,6 +996,23 @@ implements Agenda.AgendaSkin
 			this.startAsString = timeFormat.format(this.start.getTime());
 			this.endAsString = timeFormat.format(this.end.getTime());
 			
+			// duration dragger
+			if (isLastAreaOfAppointment == true)
+			{
+				durationDragger = new DurationDragger(this);
+				getChildren().add(durationDragger);
+			}
+			
+			// add the menu header
+			if (appointment.isWholeDay() == false) 
+			{
+				getChildren().add(menuIcon);
+			}
+			
+			// history visualizer
+			historicalVisualizer = new HistoricalVisualizer(this);
+			getChildren().add(historicalVisualizer);
+			
 			// add the duration as text
 			Text lTimeText = new Text(startAsString + "-" + endAsString);
 			{
@@ -1021,23 +1038,6 @@ implements Agenda.AgendaSkin
 				lSummaryText.setClip(lClip);
 				getChildren().add(lSummaryText);			
 			}
-			
-			// duration dragger
-			if (isLastAreaOfAppointment == true)
-			{
-				durationDragger = new DurationDragger(this);
-				getChildren().add(durationDragger);
-			}
-			
-			// add the menu header
-			if (appointment.isWholeDay() == false) 
-			{
-				getChildren().add(menuIcon);
-			}
-			
-			// history visualizer
-			historicalVisualizer = new HistoricalVisualizer(this);
-			getChildren().add(historicalVisualizer);
 		}
 		
 		/**
@@ -1083,6 +1083,10 @@ implements Agenda.AgendaSkin
 			this.startAsString = timeFormat.format(this.start.getTime());
 			this.endAsString = "";
 			
+			// history visualizer
+			historicalVisualizer = new HistoricalVisualizer(this);
+			getChildren().add(historicalVisualizer);
+			
 			// add the duration as text
 			Text lTimeText = new Text(startAsString + " " + appointment.getSummary());
 			{
@@ -1103,12 +1107,6 @@ implements Agenda.AgendaSkin
 			{
 				getChildren().add(menuIcon);
 			}
-			
-			// history visualizer
-// TODO: does not overlap the whole text, because the text may be outside the "window"
-//       we should also make the title text semi transparent			
-//			historicalVisualizer = new HistoricalVisualizer(this);
-//			getChildren().add(historicalVisualizer);
 		}
 		
 		/**
@@ -1544,11 +1542,7 @@ implements Agenda.AgendaSkin
 								// no longer whole day
 								lAppointment.setWholeDay(false);
 							}
-							else
 							{
-								// duration
-								long lDurationInMS = lAppointment.getEndTime().getTimeInMillis() - lAppointment.getStartTime().getTimeInMillis();
-								
 								// calculate new start
 								Calendar lStartCalendar = copyYMD(lDroppedOnCalendar, (Calendar)lAppointment.getStartTime().clone());
 	
@@ -1559,13 +1553,18 @@ implements Agenda.AgendaSkin
 								while (isSameDay(lStartCalendar, lDroppedOnCalendar) == false && lStartCalendar.before(lDroppedOnCalendar)) { lStartCalendar.add(Calendar.MINUTE, 1);  }// the delta may have pushed it out of today 
 								while (isSameDay(lStartCalendar, lDroppedOnCalendar) == false && lStartCalendar.after(lDroppedOnCalendar)) { lStartCalendar.add(Calendar.MINUTE, -1);  }// the delta may have pushed it out of today
 								
-								// calculate
-								Calendar lEndCalendar = (Calendar)lStartCalendar.clone();
-								lEndCalendar.add(Calendar.MILLISECOND, (int)lDurationInMS);
+								// duration -> enddate (take tasks -which have no enddate- into account)
+								Calendar lEndCalendar = null;
+								if (lAppointment.getEndTime() != null)
+								{
+									long lDurationInMS = lAppointment.getEndTime().getTimeInMillis() - lAppointment.getStartTime().getTimeInMillis();
+									lEndCalendar = (Calendar)lStartCalendar.clone();
+									lEndCalendar.add(Calendar.MILLISECOND, (int)lDurationInMS);
+								}
 								
-								// set the new enddate
+								// set dates
 								lAppointment.setStartTime(lStartCalendar);
-								lAppointment.setEndTime(lEndCalendar);
+								lAppointment.setEndTime(lEndCalendar);								
 							}
 						}
 					}
@@ -1687,10 +1686,7 @@ implements Agenda.AgendaSkin
 				// display history
 				for (AbstractClusteredDayAppointmentPane lAppointmentPane : lDayPane.clusteredAppointmentPanes)
 				{
-					if (lAppointmentPane.historicalVisualizer != null)
-					{
-						lAppointmentPane.historicalVisualizer.setVisible( lAppointmentPane.start.before(lNow));
-					}
+					lAppointmentPane.historicalVisualizer.setVisible( lAppointmentPane.start.before(lNow));
 				}
 				for (WholedayAppointmentPane lAppointmentPane : lDayPane.wholedayAppointmentPanes)
 				{
