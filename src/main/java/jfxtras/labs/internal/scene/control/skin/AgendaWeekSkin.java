@@ -81,6 +81,7 @@ import jfxtras.labs.internal.scene.control.behavior.AgendaBehavior;
 import jfxtras.labs.scene.control.Agenda;
 import jfxtras.labs.scene.control.Agenda.Appointment;
 import jfxtras.labs.scene.control.CalendarTextField;
+import jfxtras.labs.scene.control.CalendarTimePicker;
 import jfxtras.labs.util.NodeUtil;
 
 import com.sun.javafx.scene.control.skin.SkinBase;
@@ -1084,17 +1085,24 @@ implements Agenda.AgendaSkin
 			getChildren().add(historicalVisualizer);
 			
 			// add the duration as text
-			Text lTimeText = new Text(startAsString + " " + appointment.getSummary());
+			final Text lTimeText = new Text(startAsString + " " + appointment.getSummary());
 			{
 				lTimeText.getStyleClass().add("AppointmentTimeLabel");
 				lTimeText.setX( menuIcon.getWidth() + padding );
 				lTimeText.setY(lTimeText.prefHeight(0) / 2);
-				// add a clip to mask out all except the first line
-				Rectangle lClip = new Rectangle(0,-1 * lTimeText.getY(),0,0);
-				lClip.widthProperty().bind(widthProperty().subtract(padding));
-				lClip.heightProperty().bind(textHeightAppointmentTimeLabelProperty);
-				lTimeText.setClip(lClip);
 				lTimeText.wrappingWidthProperty().bind(widthProperty().subtract(padding));
+				// add a clip to mask out all except the first line
+				lTimeText.fontProperty().addListener(new InvalidationListener()
+				{
+					@Override
+					public void invalidated(Observable arg0)
+					{
+						Rectangle lClip = new Rectangle();
+						lClip.widthProperty().bind(widthProperty().subtract(padding));
+						lClip.heightProperty().set( lTimeText.fontProperty().getValue().getSize() );
+						lTimeText.setClip(lClip);
+					}
+				});
 				getChildren().add(lTimeText);
 			}
 			
@@ -1829,19 +1837,23 @@ implements Agenda.AgendaSkin
 				}
 				else
 				{
-					// calculate duration
-					long lDurationInMS = abstractAppointmentPane.appointment.getEndTime().getTimeInMillis() - abstractAppointmentPane.appointment.getStartTime().getTimeInMillis();
+					// remember
+					Calendar lOldStart = abstractAppointmentPane.appointment.getStartTime();
 					
 					// set
 					abstractAppointmentPane.appointment.setStartTime(newValue);
 					
 					// end date
-					Calendar lEndCalendar = (Calendar)abstractAppointmentPane.appointment.getStartTime().clone();
-					lEndCalendar.add(Calendar.MILLISECOND, (int)lDurationInMS);
-					abstractAppointmentPane.appointment.setEndTime(lEndCalendar);
-					
-					// update field
-					lEndCalendarTextField.setValue(abstractAppointmentPane.appointment.getEndTime());
+					if (abstractAppointmentPane.appointment.getEndTime() != null)
+					{
+						long lDurationInMS = abstractAppointmentPane.appointment.getEndTime().getTimeInMillis() - lOldStart.getTimeInMillis();
+						Calendar lEndCalendar = (Calendar)abstractAppointmentPane.appointment.getStartTime().clone();
+						lEndCalendar.add(Calendar.MILLISECOND, (int)lDurationInMS);
+						abstractAppointmentPane.appointment.setEndTime(lEndCalendar);
+						
+						// update field
+						lEndCalendarTextField.setValue(abstractAppointmentPane.appointment.getEndTime());
+					}
 					
 					// refresh is done upon popup close
 				}
@@ -1999,21 +2011,6 @@ implements Agenda.AgendaSkin
 		// generic
 		double lScrollbarSize = new ScrollBar().getWidth();
 		textHeightProperty.set( new Text("X").getBoundsInParent().getHeight() );
-		{
-			final Text lAppointmentTimeText = new Text("X");
-			lAppointmentTimeText.getStyleClass().add("AppointmentTimeLabel");
-			textHeightAppointmentTimeLabelProperty.set( lAppointmentTimeText.getBoundsInParent().getHeight() );
-//			lAppointmentTimeText.boundsInParentProperty().addListener(new InvalidationListener()
-//			{
-//				@Override
-//				public void invalidated(Observable arg0)
-//				{
-//System.out.println("!!! " + lAppointmentTimeText.getBoundsInParent().getHeight());					
-//					textHeightAppointmentTimeLabelProperty.set( lAppointmentTimeText.getBoundsInParent().getHeight() );
-//				}
-//			});
-//			getChildren().add(lAppointmentTimeText);
-		}
 		
 		// header
 		highestNumberOfWholedayAppointmentsProperty.set(0);
@@ -2054,7 +2051,6 @@ implements Agenda.AgendaSkin
 	private final double wholedayAppointmentWidth = 5;
 	private final IntegerProperty highestNumberOfWholedayAppointmentsProperty = new SimpleIntegerProperty(0);
 	private final DoubleProperty textHeightProperty = new SimpleDoubleProperty(0);
-	private final DoubleProperty textHeightAppointmentTimeLabelProperty = new SimpleDoubleProperty(0);
 	private final DoubleProperty titleCalendarHeightProperty = new SimpleDoubleProperty(0);
 	private final DoubleProperty headerHeightProperty = new SimpleDoubleProperty(0);
 	private final DoubleProperty wholedayTitleHeightProperty = new SimpleDoubleProperty(0);

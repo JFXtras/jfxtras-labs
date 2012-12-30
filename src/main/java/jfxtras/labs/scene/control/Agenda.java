@@ -132,7 +132,14 @@ public class Agenda extends Control
 	 * In month skin, the month containing this date.
 	 */
 	public ObjectProperty<Calendar> displayedCalendar() { return displayedCalendarObjectProperty; }
-	private final ObjectProperty<Calendar> displayedCalendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "displayedCalendar", Calendar.getInstance());
+	private final ObjectProperty<Calendar> displayedCalendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "displayedCalendar", Calendar.getInstance())
+	{
+		public void set(Calendar value)
+		{
+			if (value == null) throw new NullPointerException("Null not allowed");
+			super.set(value);
+		}
+	};
 	public Calendar getDisplayedCalendar() { return displayedCalendarObjectProperty.getValue(); }
 	public void setDisplayedCalendar(Calendar value) { displayedCalendarObjectProperty.setValue(value); }
 	public Agenda withDisplayedCalendar(Calendar value) { setDisplayedCalendar(value); return this; }
