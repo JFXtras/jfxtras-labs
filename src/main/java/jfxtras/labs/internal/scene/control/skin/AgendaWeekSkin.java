@@ -23,18 +23,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// TODO: manual edit of all properties, location, description
-// TODO: why does the "horizontal scrollbar" whitespace appear when viewport > min required? JFX bug?
-// TODO: concept of tasks; appointment with only a start date (not whole day). Rendered as a line. 
+// TODO: if an appointment has no used columns to the right, it may span those columns 
+// TODO: single day view
+// TODO: how to do a confirm before delete? 
 // TODO: dropping an area event in the header and then back into the day; take the location of the drop into account as the start time (instead of the last start time)
 // TODO: drop a wholeday in the day, drag it down so it spans two days, drag it in the header again, drag it back to the day again: height = 0 
 // TODO: allow dragging on day spanning events on the not-the-first areas
-// TODO: undo feature on all actions (remove, add, ...)
-// TODO: should we use an intermediate appointment in the popup and have an ok button which copies all data (vs calling the setters directly)?
-// TODO: single day view
-// TODO: reminders?
-// TODO: callbacks to check if a delete is ok, etc
-// TODO: repeating appointments; is that something we want to do or are we letting the provider of the appointments handle that?
+// TODO: why does the "horizontal scrollbar" whitespace appear when viewport > min required? JFX bug?
+// TODO: create an appointment provider that does repeating appointments, reminders and undo's 
 package jfxtras.labs.internal.scene.control.skin;
 
 import java.text.SimpleDateFormat;

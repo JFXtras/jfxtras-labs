@@ -89,7 +89,14 @@ public class CalendarPicker extends Control
 	
 	/** calendar: */
 	public ObjectProperty<Calendar> calendarProperty() { return calendarObjectProperty; }
-	final private ObjectProperty<Calendar> calendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar");
+	final private ObjectProperty<Calendar> calendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar")
+	{
+		public void set(Calendar value)
+		{
+			if (value == null) throw new NullPointerException("Null not allowed");
+			super.set(value);
+		}
+	};
 	public Calendar getCalendar() { return calendarObjectProperty.getValue(); }
 	public void setCalendar(Calendar value) { calendarObjectProperty.setValue(value); }
 	public CalendarPicker withCalendar(Calendar value) { setCalendar(value); return this; } 

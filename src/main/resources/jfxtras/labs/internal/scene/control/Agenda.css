@@ -128,7 +128,7 @@
 }
 
 .AgendaWeekSkin .Now {
-	-fx-fill: RED;
+	-fx-fill: #FF000088;
 	-fx-stroke: WHITE;
 }
 .AgendaWeekSkin .History {
