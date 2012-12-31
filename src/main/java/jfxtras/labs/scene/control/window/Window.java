@@ -327,7 +327,7 @@ public class Window extends Control {
      *
      * @param v the state to set
      */
-    public void setMinimized(Boolean v) {
+    public void setMinimized(boolean v) {
         minimizeProperty.set(v);
     }
 
@@ -355,7 +355,7 @@ public class Window extends Control {
      *
      * @param v the state to set
      */
-    public void setResizableWindow(Boolean v) {
+    public void setResizableWindow(boolean v) {
         resizableProperty.set(v);
     }
 
@@ -384,7 +384,7 @@ public class Window extends Control {
      *
      * @param v the state to set
      */
-    public void setMovable(Boolean v) {
+    public void setMovable(boolean v) {
         movableProperty.set(v);
     }
 
