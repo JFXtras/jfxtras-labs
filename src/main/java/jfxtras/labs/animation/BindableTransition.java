@@ -2,6 +2,7 @@ package jfxtras.labs.animation;
 
 import javafx.animation.Transition;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.util.Duration;
 
@@ -26,7 +27,7 @@ public class BindableTransition extends Transition {
 	}
 
 	
-	public DoubleProperty fractionProperty() {
+	public ReadOnlyDoubleProperty fractionProperty() {
 		return fraction;
 	}
 }
