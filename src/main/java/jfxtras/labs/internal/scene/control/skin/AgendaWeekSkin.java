@@ -39,6 +39,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -80,6 +81,7 @@ import jfxtras.labs.animation.Timer;
 import jfxtras.labs.internal.scene.control.behavior.AgendaBehavior;
 import jfxtras.labs.scene.control.Agenda;
 import jfxtras.labs.scene.control.Agenda.Appointment;
+import jfxtras.labs.scene.control.CalendarPicker;
 import jfxtras.labs.scene.control.CalendarTextField;
 import jfxtras.labs.scene.control.CalendarTimePicker;
 import jfxtras.labs.util.NodeUtil;
@@ -2068,36 +2070,24 @@ implements Agenda.AgendaSkin
 	 */
 	protected Calendar getFirstDayOfWeekCalendar()
 	{
+		Locale locale = getSkinnable().getLocale();
+		Calendar c = getSkinnable().getDisplayedCalendar();
+		
 		// result
-		Calendar lLocalCalendar = Calendar.getInstance(getSkinnable().getLocale());
-		int lFirstDayOfWeek = lLocalCalendar.getFirstDayOfWeek();
-		
-		// get the displayed calendar
-		Calendar lDisplayedCalendar = getSkinnable().getDisplayedCalendar();
-		if (lDisplayedCalendar == null) return null;
-		
-		// work towards the first day of week calendar
-		Calendar lFirstDayOfWeekCalendar = (Calendar)lDisplayedCalendar.clone();
-		
-		// if not on the first day of the week, correct with the appropriate amount
-		lFirstDayOfWeekCalendar.add(Calendar.DATE, lFirstDayOfWeek - lFirstDayOfWeekCalendar.get(Calendar.DAY_OF_WEEK));
-		
-		// make sure we are in the same week
-		while ( lFirstDayOfWeekCalendar.get(Calendar.YEAR) > lDisplayedCalendar.get(Calendar.YEAR)
-			 || (lFirstDayOfWeekCalendar.get(Calendar.YEAR) == lDisplayedCalendar.get(Calendar.YEAR) && lFirstDayOfWeekCalendar.get(Calendar.WEEK_OF_YEAR) > lDisplayedCalendar.get(Calendar.WEEK_OF_YEAR))
-			  )
+		int lFirstDayOfWeek = Calendar.getInstance(locale).getFirstDayOfWeek();
+		int lCurrentDayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+		int lDelta = 0;
+		if (lFirstDayOfWeek <= lCurrentDayOfWeek)
 		{
-			lFirstDayOfWeekCalendar.add(Calendar.DATE, -7);
+			lDelta = -lCurrentDayOfWeek + lFirstDayOfWeek;
 		}
-		while ( lFirstDayOfWeekCalendar.get(Calendar.YEAR) < lDisplayedCalendar.get(Calendar.YEAR)
-		     || (lFirstDayOfWeekCalendar.get(Calendar.YEAR) == lDisplayedCalendar.get(Calendar.YEAR) && lFirstDayOfWeekCalendar.get(Calendar.WEEK_OF_YEAR) < lDisplayedCalendar.get(Calendar.WEEK_OF_YEAR))
-		      )
+		else
 		{
-			lFirstDayOfWeekCalendar.add(Calendar.DATE, 7);
+			lDelta = -lCurrentDayOfWeek - (7-lFirstDayOfWeek);
 		}
-		
-		// done
-		return lFirstDayOfWeekCalendar;
+		c = ((Calendar)c.clone());
+		c.add(Calendar.DATE, lDelta);
+		return c;
 	}
 
 	/**

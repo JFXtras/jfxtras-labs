@@ -383,34 +383,23 @@ public class AgendaTrial2 extends Application {
 	/**
 	 * get the calendar for the first day of the week
 	 */
-	static private Calendar getFirstDayOfWeekCalendar(Locale locale, Calendar lDisplayedCalendar)
+	static private Calendar getFirstDayOfWeekCalendar(Locale locale, Calendar c)
 	{
 		// result
-		Calendar lLocalCalendar = Calendar.getInstance(locale);
-		int lFirstDayOfWeek = lLocalCalendar.getFirstDayOfWeek();
-		
-		// this is the first day of week calendar
-		Calendar lFirstDayOfWeekCalendar = (Calendar)lDisplayedCalendar.clone();
-		
-		// if not on the first day of the week, correct with the appropriate amount
-		lFirstDayOfWeekCalendar.add(Calendar.DATE, lFirstDayOfWeek - lFirstDayOfWeekCalendar.get(Calendar.DAY_OF_WEEK));
-		
-		// make sure we are in the same week
-		while ( lFirstDayOfWeekCalendar.get(Calendar.YEAR) > lDisplayedCalendar.get(Calendar.YEAR)
-			 || (lFirstDayOfWeekCalendar.get(Calendar.YEAR) == lDisplayedCalendar.get(Calendar.YEAR) && lFirstDayOfWeekCalendar.get(Calendar.WEEK_OF_YEAR) > lDisplayedCalendar.get(Calendar.WEEK_OF_YEAR))
-			  )
+		int lFirstDayOfWeek = Calendar.getInstance(locale).getFirstDayOfWeek();
+		int lCurrentDayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+		int lDelta = 0;
+		if (lFirstDayOfWeek <= lCurrentDayOfWeek)
 		{
-			lFirstDayOfWeekCalendar.add(Calendar.DATE, -7);
+			lDelta = -lCurrentDayOfWeek + lFirstDayOfWeek;
 		}
-		while ( lFirstDayOfWeekCalendar.get(Calendar.YEAR) < lDisplayedCalendar.get(Calendar.YEAR)
-			 || (lFirstDayOfWeekCalendar.get(Calendar.YEAR) == lDisplayedCalendar.get(Calendar.YEAR) && lFirstDayOfWeekCalendar.get(Calendar.WEEK_OF_YEAR) < lDisplayedCalendar.get(Calendar.WEEK_OF_YEAR))
-			  )
+		else
 		{
-			lFirstDayOfWeekCalendar.add(Calendar.DATE, 7);
+			lDelta = -lCurrentDayOfWeek - (7-lFirstDayOfWeek);
 		}
-		
-		// done
-		return lFirstDayOfWeekCalendar;
+		c = ((Calendar)c.clone());
+		c.add(Calendar.DATE, lDelta);
+		return c;
 	}
 
 }
