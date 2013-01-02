@@ -72,18 +72,26 @@ public class GridViewSkin<T> extends SkinBase<GridView<T>, GridViewBehavior<T>> 
 				while (change.next()) {
 					int start = change.getFrom();
 					int end = change.getTo();
-					for (int i = start; i < end; i++) {
-						if (change.wasAdded()) {
-							addCell(i);
-						} else if (change.wasPermutated()) {
-							// TODO: what to do know??
-							updateAllCells();
-						} else if (change.wasRemoved()) {
+
+					if (change.wasReplaced() || change.wasAdded()
+							|| change.wasPermutated() || change.wasUpdated()) {
+						for (int i = start; i < end; i++) {
+							if (change.wasReplaced()) {
+								replaceCell(i);
+							} else if (change.wasAdded()) {
+								addCell(i);
+							} else if (change.wasPermutated()) {
+								// TODO: what to do know??
+								updateAllCells();
+							} else if (change.wasRemoved()) {
+								removeCell(i);
+							} else if (change.wasUpdated()) {
+								updateCell(i);
+							}
+						}
+					} else if (change.wasRemoved()) {
+						for (int i = start; i <= end; i++) {
 							removeCell(i);
-						} else if (change.wasReplaced()) {
-							replaceCell(i);
-						} else if (change.wasUpdated()) {
-							updateCell(i);
 						}
 					}
 				}
@@ -126,7 +134,7 @@ public class GridViewSkin<T> extends SkinBase<GridView<T>, GridViewBehavior<T>> 
 		getChildren().clear();
 		ObservableList<T> items = getSkinnable().getItems();
 		if (items != null) {
-			
+
 			for (int index = 0; index < items.size(); index++) {
 				T item = items.get(index);
 				GridCell<T> cell = createCell();
@@ -140,7 +148,7 @@ public class GridViewSkin<T> extends SkinBase<GridView<T>, GridViewBehavior<T>> 
 
 	private void removeCell(int index) {
 		getChildren().remove(index);
-		//TODO: Update Index for all following cells
+		// TODO: Update Index for all following cells
 		requestLayout();
 	}
 
@@ -161,7 +169,7 @@ public class GridViewSkin<T> extends SkinBase<GridView<T>, GridViewBehavior<T>> 
 		cell.setItem(item);
 		cell.updateIndex(index);
 		getChildren().add(index, cell);
-		//TODO: Update Index for all following cells
+		// TODO: Update Index for all following cells
 		requestLayout();
 	}
 
@@ -185,40 +193,45 @@ public class GridViewSkin<T> extends SkinBase<GridView<T>, GridViewBehavior<T>> 
 		double currentWidth = getWidth();
 		double cellWidth = getSkinnable().getCellWidth();
 		double cellHeight = getSkinnable().getCellHeight();
-		double horizontalCellSpacing = getSkinnable().getHorizontalCellSpacing();
+		double horizontalCellSpacing = getSkinnable()
+				.getHorizontalCellSpacing();
 		double verticalCellSpacing = getSkinnable().getVerticalCellSpacing();
-		
+
 		double xPos = 0;
 		double yPos = 0;
-		
-		HPos currentHorizontalAlignment = getSkinnable().getHorizontalAlignment(); 
-		if(currentHorizontalAlignment != null) {
-			if(currentHorizontalAlignment.equals(HPos.CENTER)) {
+
+		HPos currentHorizontalAlignment = getSkinnable()
+				.getHorizontalAlignment();
+		if (currentHorizontalAlignment != null) {
+			if (currentHorizontalAlignment.equals(HPos.CENTER)) {
 				xPos = (currentWidth % computeCellWidth()) / 2;
-			} else if(currentHorizontalAlignment.equals(HPos.RIGHT)) {
+			} else if (currentHorizontalAlignment.equals(HPos.RIGHT)) {
 				xPos = currentWidth % computeCellWidth();
 			}
 		}
-		
+
 		for (Node child : getChildren()) {
 			if (xPos + horizontalCellSpacing + cellWidth
 					+ horizontalCellSpacing > currentWidth) {
 				// new line
 				xPos = 0;
-				if(currentHorizontalAlignment != null) {
-					if(currentHorizontalAlignment.equals(HPos.CENTER)) {
+				if (currentHorizontalAlignment != null) {
+					if (currentHorizontalAlignment.equals(HPos.CENTER)) {
 						xPos = (currentWidth % computeCellWidth()) / 2;
-					} else if(currentHorizontalAlignment.equals(HPos.RIGHT)) {
+					} else if (currentHorizontalAlignment.equals(HPos.RIGHT)) {
 						xPos = currentWidth % computeCellWidth();
 					}
 				}
-				
+
 				yPos = yPos + verticalCellSpacing + cellHeight
 						+ verticalCellSpacing;
 			}
-			child.relocate(xPos + horizontalCellSpacing, yPos + verticalCellSpacing);
+			child.relocate(xPos + horizontalCellSpacing, yPos
+					+ verticalCellSpacing);
 			child.resize(cellWidth, cellHeight);
-			xPos = xPos + horizontalCellSpacing + cellWidth + horizontalCellSpacing;;
+			xPos = xPos + horizontalCellSpacing + cellWidth
+					+ horizontalCellSpacing;
+			;
 		}
 	}
 
@@ -232,13 +245,13 @@ public class GridViewSkin<T> extends SkinBase<GridView<T>, GridViewBehavior<T>> 
 				+ getSkinnable().horizontalCellSpacingProperty().doubleValue()
 				+ getSkinnable().horizontalCellSpacingProperty().doubleValue();
 	}
-	
+
 	protected double computeCellHeight() {
 		return getSkinnable().cellHeightProperty().doubleValue()
 				+ getSkinnable().verticalCellSpacingProperty().doubleValue()
 				+ getSkinnable().verticalCellSpacingProperty().doubleValue();
 	}
-	
+
 	@Override
 	protected double computeMinHeight(double width) {
 		return computeCellHeight();
@@ -262,16 +275,16 @@ public class GridViewSkin<T> extends SkinBase<GridView<T>, GridViewBehavior<T>> 
 	@Override
 	protected double computePrefHeight(double width) {
 		int maxCellsInRow = computeMaxCellsInRow(width);
-		int rowCount = (int) Math.floor((double) getSkinnable().getItems().size()
-				/ (double) maxCellsInRow);
+		int rowCount = (int) Math.floor((double) getSkinnable().getItems()
+				.size() / (double) maxCellsInRow);
 		return rowCount * computeCellHeight();
 	}
 
 	@Override
 	protected double computePrefWidth(double height) {
 		int maxCellsInColumn = computeMaxCellsInColumn(height);
-		int columnCount = (int) Math.floor((double) getSkinnable().getItems().size()
-				/ (double) maxCellsInColumn);
+		int columnCount = (int) Math.floor((double) getSkinnable().getItems()
+				.size() / (double) maxCellsInColumn);
 		return columnCount * computeCellWidth();
 	}
 
@@ -279,25 +292,26 @@ public class GridViewSkin<T> extends SkinBase<GridView<T>, GridViewBehavior<T>> 
 		int maxCellsInRow = computeMaxCellsInRow();
 		return itemIndex / maxCellsInRow;
 	}
-	
+
 	public int computeColumnIndexForItem(int itemIndex) {
 		int maxCellsInRow = computeMaxCellsInRow();
 		return itemIndex % maxCellsInRow;
 	}
-	
+
 	public int computeMaxCellsInRow() {
 		return computeMaxCellsInRow(getWidth());
 	}
-	
+
 	public int computeCurrentRowCount() {
-		return (int)Math.ceil((double)getSkinnable().getItems().size() / (double)computeMaxCellsInRow());
+		return (int) Math.ceil((double) getSkinnable().getItems().size()
+				/ (double) computeMaxCellsInRow());
 	}
-	
+
 	public int computeMaxCellsInRow(double width) {
-		return Math.max((int)Math.floor(width / computeCellWidth()), 1);
+		return Math.max((int) Math.floor(width / computeCellWidth()), 1);
 	}
 
 	public int computeMaxCellsInColumn(double height) {
-		return Math.max((int)Math.floor(height / computeCellHeight()), 1);
+		return Math.max((int) Math.floor(height / computeCellHeight()), 1);
 	}
 }
