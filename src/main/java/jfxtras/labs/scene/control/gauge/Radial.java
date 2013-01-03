@@ -75,13 +75,12 @@ public final class Radial extends Gauge {
 
     public Radial(final GaugeModel GAUGE_MODEL, final StyleModel STYLE_MODEL) {
         super(GAUGE_MODEL, STYLE_MODEL);
+        getStyleClass().setAll(DEFAULT_STYLE_CLASS);
         histogramVisible             = new SimpleBooleanProperty(false);
         histogramColor               = new SimpleObjectProperty<Color>(Color.AQUAMARINE);
         histogramLineWidth           = new SimpleDoubleProperty(1.0);
         histogramCreationEnabled     = new SimpleBooleanProperty(false);
         histogramDataPeriodInMinutes = new SimpleIntegerProperty(5);
-
-        getStyleClass().setAll(DEFAULT_STYLE_CLASS);
     }
 
 

@@ -88,6 +88,48 @@ public class Util {
         return "#" + red + green + blue;
     }
 
+    /**
+     * Converts hex color string to color
+     * supported formats
+     * 0xRRGGBB
+     * 0xRRGGBBAA
+     * #RRGGBB
+     * #RRGGBBAA
+     * RRGGBB
+     * RRGGBBAA
+     * @param COLOR
+     * @return color given by hex string
+     */
+    public static Color webColorToColor(final String COLOR) {
+        int    red;
+        int    green;
+        int    blue;
+        double alpha = 1.0;
+        if (COLOR.startsWith("0x")) {
+            red   = Integer.valueOf(COLOR.substring(2, 4), 16);
+            green = Integer.valueOf(COLOR.substring(4, 6), 16);
+            blue  = Integer.valueOf(COLOR.substring(6, 8), 16);
+            if (COLOR.length() > 8) {
+                alpha = 1.0 / 255.0 * (double) (Integer.valueOf(COLOR.substring(8, 10), 16));
+            }
+        } else if (COLOR.startsWith("#")) {
+            red   = Integer.valueOf(COLOR.substring(1, 3), 16);
+            green = Integer.valueOf(COLOR.substring(3, 5), 16);
+            blue  = Integer.valueOf(COLOR.substring(5, 7), 16);
+            if (COLOR.length() > 7) {
+                alpha = 1.0 / 255.0 * (double) (Integer.valueOf(COLOR.substring(7, 9), 16));
+            }
+        } else {
+            red   = Integer.valueOf(COLOR.substring(0, 2), 16);
+            green = Integer.valueOf(COLOR.substring(2, 4), 16);
+            blue  = Integer.valueOf(COLOR.substring(4, 6), 16);
+            if (COLOR.length() > 6) {
+                alpha = 1.0 / 255.0 * (double) (Integer.valueOf(COLOR.substring(6, 8), 16));
+            }
+        }
+        return Color.rgb(red, green, blue, alpha);
+    }
+
     public static Color biLinearInterpolateColor(final Color COLOR_UL, final Color COLOR_UR, final Color COLOR_LL, final Color COLOR_LR, final float FRACTION_X, final float FRACTION_Y) {
         final Color INTERPOLATED_COLOR_X1 = (Color) Interpolator.LINEAR.interpolate(COLOR_UL, COLOR_UR, FRACTION_X);
         final Color INTERPOLATED_COLOR_X2 = (Color) Interpolator.LINEAR.interpolate(COLOR_LL, COLOR_LR, FRACTION_X);

@@ -37,6 +37,7 @@ import javafx.beans.property.StringProperty;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javafx.util.Builder;
+import jfxtras.labs.util.Util;
 
 import java.util.HashMap;
 
@@ -73,6 +74,11 @@ public class SectionBuilder implements Builder<Section> {
 
     public final SectionBuilder color(final Color COLOR) {
         properties.put("color", new SimpleObjectProperty<Color>(COLOR));
+        return this;
+    }
+
+    public final SectionBuilder color(final String COLOR) {
+        properties.put("color", new SimpleObjectProperty<Color>(Util.webColorToColor(COLOR)));
         return this;
     }
 
