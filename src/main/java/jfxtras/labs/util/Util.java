@@ -62,19 +62,19 @@ import java.util.Random;
  */
 public class Util {
 
-    private static final SnapshotParameters SNAPSHOT_PARAMETER = SnapshotParametersBuilder.create().fill(Color.TRANSPARENT).build();
+    /**************************************************************************
+     *                                                                        *
+     * Color related utilities                                                *
+     *                                                                        *
+     *************************************************************************/
 
     public static String colorToCssColor(final Color COLOR) {
         final StringBuilder CSS_COLOR = new StringBuilder(19);
         CSS_COLOR.append("rgba(");
-        CSS_COLOR.append((int) (COLOR.getRed() * 255));
-        CSS_COLOR.append(", ");
-        CSS_COLOR.append((int) (COLOR.getGreen() * 255));
-        CSS_COLOR.append(", ");
-        CSS_COLOR.append((int) (COLOR.getBlue() * 255));
-        CSS_COLOR.append(", ");
-        CSS_COLOR.append(COLOR.getOpacity());
-        CSS_COLOR.append(");");
+        CSS_COLOR.append((int) (COLOR.getRed() * 255)).append(", ");
+        CSS_COLOR.append((int) (COLOR.getGreen() * 255)).append(", ");
+        CSS_COLOR.append((int) (COLOR.getBlue() * 255)).append(", ");
+        CSS_COLOR.append(COLOR.getOpacity()).append(");");
         return CSS_COLOR.toString();
     }
 
@@ -130,6 +130,76 @@ public class Util {
         return Color.rgb(red, green, blue, alpha);
     }
 
+    public static double[] HSLtoRGB(double hue, double saturation, double luminance) {
+        double normalizedHue = ((hue % 360) + 360) %360;
+        hue = normalizedHue / 360;
+        double q;
+        if (luminance < 0.5) {
+            q = luminance * (1 + saturation);
+        } else {
+            q = (luminance + saturation) - (saturation * luminance);
+        }
+        double p     = 2 * luminance - q;
+        double red   = Math.max(0, HueToRGB(p, q, hue + (1.0f / 3.0f)));
+        double green = Math.max(0, HueToRGB(p, q, hue));
+        double blue  = Math.max(0, HueToRGB(p, q, hue - (1.0f / 3.0f)));
+
+        return new double[]{red, green, blue};
+    }
+
+    public static double[] RGBtoHSL(double red, double green, double blue) {
+        //  Minimum and Maximum RGB values are used in the HSL calculations
+        double min = Math.min(red, Math.min(green, blue));
+        double max = Math.max(red, Math.max(green, blue));
+
+        //  Calculate the Hue
+        double hue = 0;
+        if (max == min) {
+            hue = 0;
+        } else if (max == red) {
+            hue = (( (green - blue) / (max - min) / 6.0) + 1) % 1;
+        } else if (max == green) {
+            hue = ( (blue - red) / (max - min) / 6.0) + 1.0 / 3.0;
+        } else if (max == blue) {
+            hue = ( (red - green) / (max - min) / 6.0) + 2.0 / 3.0;
+        }
+        hue *= 360;
+
+        //  Calculate the Luminance
+        double luminance = (max + min) / 2;
+
+        //  Calculate the Saturation
+        double saturation;
+        if (Double.compare(max,min) == 0) {
+            saturation = 0;
+        } else if (luminance <= 0.5) {
+            saturation = (max - min) / (max + min);
+        } else {
+            saturation = (max - min) / (2 - max - min);
+        }
+
+        return new double[]{ hue, saturation, luminance };
+    }
+
+    private static double HueToRGB(final double P, final double Q, double hue) {
+        if (hue < 0) {
+            hue += 1;
+        }
+        if (hue > 1 ) {
+            hue -= 1;
+        }
+        if (6 * hue < 1) {
+            return P + ((Q - P) * 6 * hue);
+        }
+        if (2 * hue < 1 ) {
+            return  Q;
+        }
+        if (3 * hue < 2) {
+            return P + ( (Q - P) * 6 * ((2.0 / 3.0) - hue) );
+        }
+        return P;
+    }
+
     public static Color biLinearInterpolateColor(final Color COLOR_UL, final Color COLOR_UR, final Color COLOR_LL, final Color COLOR_LR, final float FRACTION_X, final float FRACTION_Y) {
         final Color INTERPOLATED_COLOR_X1 = (Color) Interpolator.LINEAR.interpolate(COLOR_UL, COLOR_UR, FRACTION_X);
         final Color INTERPOLATED_COLOR_X2 = (Color) Interpolator.LINEAR.interpolate(COLOR_LL, COLOR_LR, FRACTION_X);
@@ -150,10 +220,6 @@ public class Util {
         return new Color(red, green, blue, COLOR.getOpacity());
     }
 
-    public static double clamp(final double MIN, final double MAX, final double VALUE) {
-        return VALUE < MIN ? MIN : (VALUE > MAX ? MAX : VALUE);
-    }
-
     public static double colorDistance(final Color COLOR1, final Color COLOR2) {
         final double DELTA_R = COLOR2.getRed() - COLOR1.getRed();
         final double DELTA_G = COLOR2.getGreen() - COLOR1.getGreen();
@@ -171,10 +237,24 @@ public class Util {
         return !isDark(COLOR);
     }
 
+
+    /**************************************************************************
+     *                                                                        *
+     * Snapshot related utilities                                             *
+     *                                                                        *
+     *************************************************************************/
+    private static final SnapshotParameters SNAPSHOT_PARAMETER = SnapshotParametersBuilder.create().fill(Color.TRANSPARENT).build();
     public static Image takeSnapshot(final Node NODE) {
         WritableImage img = new WritableImage((int) NODE.getLayoutBounds().getWidth(), (int) NODE.getLayoutBounds().getHeight());
         return NODE.snapshot(SNAPSHOT_PARAMETER, img);
     }
+
+
+    /**************************************************************************
+     *                                                                        *
+     * Conical canvas gradient related utilities                              *
+     *                                                                        *
+     *************************************************************************/
 
     public static Canvas createConicalGradient(final Shape SHAPE, final Stop[] STOPS, final double ROTATION_OFFSET) {
                 final Canvas CANVAS = new Canvas(SHAPE.getLayoutBounds().getWidth(), SHAPE.getLayoutBounds().getHeight());
@@ -222,6 +302,13 @@ public class Util {
             }
         }
     }
+
+
+    /**************************************************************************
+     *                                                                        *
+     * Image pattern related utilities                                        *
+     *                                                                        *
+     *************************************************************************/
 
     public static ImagePattern createCarbonPattern() {
         final double WIDTH        = 12;
@@ -475,6 +562,13 @@ public class Util {
         return PAINT.apply(SHAPE);
     }
 
+
+    /**************************************************************************
+     *                                                                        *
+     * Misc utilities                                                         *
+     *                                                                        *
+     *************************************************************************/
+
     public static DoubleBinding getMaxSquareSizeBinding(final DoubleProperty WIDTH_PROPERTY, final DoubleProperty HEIGHT_PROPERTY) {
         final DoubleBinding MAX_SQUARE_SIZE = new DoubleBinding() {
             {
@@ -501,5 +595,11 @@ public class Util {
             }
         };
         return MAX_SQUARE_SIZE;
+    }
+
+    public static double clamp(final double MIN, final double MAX, final double VALUE) {
+        if (VALUE < MIN) return MIN;
+        if (VALUE > MAX) return MAX;
+        return VALUE;
     }
 }
