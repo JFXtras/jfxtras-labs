@@ -41,13 +41,18 @@ import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Glow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import jfxtras.labs.scene.control.window.SelectableNode;
 import jfxtras.labs.scene.control.window.Window;
 import jfxtras.labs.scene.control.window.WindowIcon;
+import jfxtras.labs.util.WindowUtil;
 
 /**
  *
@@ -274,6 +279,21 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
         });
 
 
+        control.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
+
+                if (newValue) {
+                    DropShadow shadow = new DropShadow(20, Color.WHITE);
+                    Glow effect = new Glow(0.5);
+                    shadow.setInput(effect);
+                    control.setEffect(shadow);
+                } else {
+                    control.setEffect(null);
+                }
+            }
+        });
+
     }
 
     private void initMouseEventHandlers() {
@@ -338,6 +358,24 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
 
                         n.setLayoutX(scaledX);
                         n.setLayoutY(scaledY);
+
+                        for (SelectableNode sN : WindowUtil.getDefaultClipboard().getSelectedItems()) {
+                            if (sN == control) {
+                                continue;
+                            }
+
+                            Window selectedWindow = (Window) sN;
+                            if (sN instanceof Window && control.getParent().equals(selectedWindow.getParent())) {
+
+//                                final double windowParentScaleX = selectedWindow.getParent().
+//                                        localToSceneTransformProperty().getValue().getMxx();
+//                                final double windowParentScaleY = selectedWindow.getParent().
+//                                        localToSceneTransformProperty().getValue().getMyy();
+
+                                selectedWindow.setLayoutX(selectedWindow.getLayoutX() + offsetX / parentScaleX);
+                                selectedWindow.setLayoutY(selectedWindow.getLayoutY() + offsetY / parentScaleY);
+                            }
+                        }
 
                         dragging = true;
                     }

@@ -53,7 +53,7 @@ public class NodeUtil {
     public static void removeFromParent(Node n) {
         if (n.getParent() instanceof Group) {
             ((Group) n.getParent()).getChildren().remove(n);
-        } else if (n.getParent() instanceof Region) {
+        } else if (n.getParent() instanceof Pane) {
             ((Pane) n.getParent()).getChildren().remove(n);
         } else {
             throw new IllegalArgumentException("Unsupported parent: " + n.getParent());
@@ -75,7 +75,7 @@ public class NodeUtil {
         } else if (p instanceof Pane) {
             ((Pane) p).getChildren().add(n);
         } else {
-            throw new IllegalArgumentException("Unsupported parent: " + n.getParent());
+            throw new IllegalArgumentException("Unsupported parent: " + p);
         }
     }
 
@@ -116,4 +116,29 @@ public class NodeUtil {
 
         return null;
     }
+    
+    public static List<Node> nodesWithParent(Parent p, List<Node> nodes) {
+        List<Node> result = new ArrayList<>();
+        
+        for(Node n : nodes) {
+            if (p.equals(n.getParent())) {
+                result.add(n);
+            }
+        }
+        
+        return result;
+    }
+    
+    public static List<Node> nodesThatImplement(List<Node> nodes, Class<?> cls) {
+        List<Node> result = new ArrayList<>();
+        
+        for(Node n : nodes) {
+            if (cls.isAssignableFrom(n.getClass())) {
+                result.add(n);
+            }
+        }
+        
+        return result;
+    } 
+    
 }

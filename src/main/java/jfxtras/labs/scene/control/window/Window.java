@@ -33,6 +33,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -59,7 +60,7 @@ import jfxtras.labs.util.NodeUtil;
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
-public class Window extends Control {
+public class Window extends Control implements SelectableNode {
 
     /**
      * Default css style.
@@ -89,8 +90,7 @@ public class Window extends Control {
      */
     private BooleanProperty resizableProperty = new SimpleBooleanProperty(true);
     /**
-     * Resize property (defines whether is the window movable,performed by
-     * skin)
+     * Resize property (defines whether is the window movable,performed by skin)
      */
     private BooleanProperty movableProperty = new SimpleBooleanProperty(true);
     /**
@@ -136,6 +136,14 @@ public class Window extends Control {
      */
     private ObjectProperty<Transition> closeTransitionProperty =
             new SimpleObjectProperty<>();
+    /**
+     * Selected property (defines whether this window is selected.
+     */
+    private BooleanProperty selectedProperty = new SimpleBooleanProperty(false);
+    /**
+     * Selectable property (defines whether this window is selectable.
+     */
+    private BooleanProperty selectableProperty = new SimpleBooleanProperty(true);
 
     /**
      * Constructor.
@@ -377,8 +385,7 @@ public class Window extends Control {
     public BooleanProperty resizeableWindowProperty() {
         return resizableProperty;
     }
-    
-    
+
     /**
      * Defines whether this window shall be movable.
      *
@@ -574,5 +581,47 @@ public class Window extends Control {
      */
     public Transition getCloseTransition() {
         return closeTransitionProperty.get();
+    }
+
+    @Override
+    public boolean requestSelection(boolean select) {
+        
+        if (!select) {
+            selectedProperty.set(false);
+        }
+
+        if (isSelectable()) {
+            selectedProperty.set(select);
+            System.out.println("selected!");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @return the selectableProperty
+     */
+    public BooleanProperty selectableProperty() {
+        return selectableProperty;
+    }
+
+    public void setSelectable(Boolean selectable) {
+        selectableProperty.set(selectable);
+    }
+
+    public boolean isSelectable() {
+        return selectableProperty.get();
+    }
+
+    /**
+     * @return the selectedProperty
+     */
+    public ReadOnlyBooleanProperty selectedProperty() {
+        return selectedProperty;
+    }
+
+    public boolean isSelected() {
+        return selectedProperty.get();
     }
 }
