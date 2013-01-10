@@ -315,11 +315,15 @@ class RectangleSelectionControllerImpl {
 
     public void performDragBegin(
             Parent root, MouseEvent event) {
+        
+        if (rectangle.getParent()!=null) {
+            return;
+        }
 
         // record the current mouse X and Y position on Node
         firstX = event.getSceneX();
         firstY = event.getSceneY();
-
+        
         NodeUtil.addToParent(root, rectangle);
 
         rectangle.setWidth(0);

@@ -359,25 +359,30 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
                         n.setLayoutX(scaledX);
                         n.setLayoutY(scaledY);
 
-                        for (SelectableNode sN : WindowUtil.getDefaultClipboard().getSelectedItems()) {
-                            if (sN == control) {
-                                continue;
-                            }
+                        dragging = true;
 
-                            Window selectedWindow = (Window) sN;
-                            if (sN instanceof Window && control.getParent().equals(selectedWindow.getParent())) {
+                        // move all selected windows
+                        if (control.isSelected()) {
+                            for (SelectableNode sN : WindowUtil.getDefaultClipboard().getSelectedItems()) {
+                                if (sN == control) {
+                                    continue;
+                                }
 
-//                                final double windowParentScaleX = selectedWindow.getParent().
-//                                        localToSceneTransformProperty().getValue().getMxx();
-//                                final double windowParentScaleY = selectedWindow.getParent().
-//                                        localToSceneTransformProperty().getValue().getMyy();
+                                Window selectedWindow = (Window) sN;
+                                if (sN instanceof Window && control.getParent().equals(selectedWindow.getParent())) {
 
-                                selectedWindow.setLayoutX(selectedWindow.getLayoutX() + offsetX / parentScaleX);
-                                selectedWindow.setLayoutY(selectedWindow.getLayoutY() + offsetY / parentScaleY);
+                                    final double windowParentScaleX = selectedWindow.getParent().
+                                            localToSceneTransformProperty().getValue().getMxx();
+                                    final double windowParentScaleY = selectedWindow.getParent().
+                                            localToSceneTransformProperty().getValue().getMyy();
+
+                                    selectedWindow.setLayoutX(selectedWindow.getLayoutX() + offsetX / windowParentScaleX);
+                                    selectedWindow.setLayoutY(selectedWindow.getLayoutY() + offsetY / windowParentScaleY);
+                                }
                             }
                         }
 
-                        dragging = true;
+
                     }
                 } else {
 
