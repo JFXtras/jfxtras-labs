@@ -198,12 +198,21 @@ public class Window extends Control implements SelectableNode {
                             Animation.Status oldValue, Animation.Status newValue) {
 
                         if (newValue == Animation.Status.STOPPED) {
+                            
+                            // we don't fire action events twice
+                            if (Window.this.getParent() == null) {
+                                return;
+                            }
 
                             if (getOnCloseAction() != null) {
                                 getOnCloseAction().handle(new ActionEvent(this, Window.this));
                             }
 
-                            NodeUtil.removeFromParent(Window.this);
+                            // if someone manually removed us from parent, we don't
+                            // do anything
+                            if (Window.this.getParent() != null) {
+                                NodeUtil.removeFromParent(Window.this);
+                            }
 
                             if (getOnClosedAction() != null) {
                                 getOnClosedAction().handle(new ActionEvent(this, Window.this));
@@ -481,10 +490,23 @@ public class Window extends Control implements SelectableNode {
      * Closes this window.
      */
     public void close() {
+
+
+        // if already closed, we do nothing 
+        if (this.getParent() == null) {
+            return;
+        }
+
         if (getCloseTransition() != null) {
             getCloseTransition().play();
         } else {
+            if (getOnCloseAction() != null) {
+                getOnCloseAction().handle(new ActionEvent(this, Window.this));
+            }
             NodeUtil.removeFromParent(Window.this);
+            if (getOnClosedAction() != null) {
+                getOnClosedAction().handle(new ActionEvent(this, Window.this));
+            }
         }
     }
 
@@ -585,7 +607,7 @@ public class Window extends Control implements SelectableNode {
 
     @Override
     public boolean requestSelection(boolean select) {
-        
+
         if (!select) {
             selectedProperty.set(false);
         }
