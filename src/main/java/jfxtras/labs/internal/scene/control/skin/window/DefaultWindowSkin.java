@@ -348,41 +348,46 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
                 double offsetX = event.getSceneX() - mouseX;
                 double offsetY = event.getSceneY() - mouseY;
 
-                if (resizeMode == ResizeMode.NONE) {
-                    if (control.isMovable()) {
-                        nodeX += offsetX;
-                        nodeY += offsetY;
+                if (resizeMode == ResizeMode.NONE && control.isMovable()) {
 
-                        double scaledX = nodeX * 1 / parentScaleX;
-                        double scaledY = nodeY * 1 / parentScaleY;
+                    nodeX += offsetX;
+                    nodeY += offsetY;
 
-                        n.setLayoutX(scaledX);
-                        n.setLayoutY(scaledY);
+                    double scaledX = nodeX * 1 / parentScaleX;
+                    double scaledY = nodeY * 1 / parentScaleY;
 
-                        dragging = true;
+                    double offsetForAllX = scaledX - n.getLayoutX();
+                    double offsetForAllY = scaledY - n.getLayoutY();
 
-                        // move all selected windows
-                        if (control.isSelected()) {
-                            for (SelectableNode sN : WindowUtil.getDefaultClipboard().getSelectedItems()) {
-                                if (sN == control) {
-                                    continue;
-                                }
+                    n.setLayoutX(scaledX);
+                    n.setLayoutY(scaledY);
 
-                                Window selectedWindow = (Window) sN;
-                                if (sN instanceof Window && control.getParent().equals(selectedWindow.getParent())) {
+                    dragging = true;
 
-                                    final double windowParentScaleX = selectedWindow.getParent().
-                                            localToSceneTransformProperty().getValue().getMxx();
-                                    final double windowParentScaleY = selectedWindow.getParent().
-                                            localToSceneTransformProperty().getValue().getMyy();
+                    // move all selected windows
+                    if (control.isSelected()) {
 
-                                    selectedWindow.setLayoutX(selectedWindow.getLayoutX() + offsetX / windowParentScaleX);
-                                    selectedWindow.setLayoutY(selectedWindow.getLayoutY() + offsetY / windowParentScaleY);
-                                }
+                        for (SelectableNode sN : WindowUtil.
+                                getDefaultClipboard().getSelectedItems()) {
+
+                            if (sN == control
+                                    || !(sN instanceof Window)) {
+                                continue;
                             }
-                        }
 
+                            Window selectedWindow = (Window) sN;
 
+                            if (control.getParent().
+                                    equals(selectedWindow.getParent())) {
+
+                                selectedWindow.setLayoutX(
+                                        selectedWindow.getLayoutX()
+                                        + offsetForAllX);
+                                selectedWindow.setLayoutY(
+                                        selectedWindow.getLayoutY()
+                                        + offsetForAllY);
+                            }
+                        } // end for sN
                     }
                 } else {
 
