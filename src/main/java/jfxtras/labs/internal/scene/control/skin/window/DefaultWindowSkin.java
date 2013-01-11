@@ -278,7 +278,6 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
             }
         });
 
-
         control.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
@@ -286,14 +285,13 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
                 if (newValue) {
                     DropShadow shadow = new DropShadow(20, Color.WHITE);
                     Glow effect = new Glow(0.5);
-                    shadow.setInput(effect);
-                    control.setEffect(shadow);
+//                    shadow.setInput(effect);
+                    control.setEffect(effect);
                 } else {
                     control.setEffect(null);
                 }
             }
         });
-
     }
 
     private void initMouseEventHandlers() {
@@ -319,6 +317,9 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
                     control.toFront();
                 }
 
+                if (control.isSelected()) {
+                    selectedWindowsToFront();
+                }
             }
         });
 
@@ -366,29 +367,9 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
 
                     // move all selected windows
                     if (control.isSelected()) {
-
-                        for (SelectableNode sN : WindowUtil.
-                                getDefaultClipboard().getSelectedItems()) {
-
-                            if (sN == control
-                                    || !(sN instanceof Window)) {
-                                continue;
-                            }
-
-                            Window selectedWindow = (Window) sN;
-
-                            if (control.getParent().
-                                    equals(selectedWindow.getParent())) {
-
-                                selectedWindow.setLayoutX(
-                                        selectedWindow.getLayoutX()
-                                        + offsetForAllX);
-                                selectedWindow.setLayoutY(
-                                        selectedWindow.getLayoutY()
-                                        + offsetForAllY);
-                            }
-                        } // end for sN
+                        dragSelectedWindows(offsetForAllX, offsetForAllY);
                     }
+
                 } else {
 
                     double width = n.getBoundsInLocal().getMaxX()
@@ -591,6 +572,52 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
 //                event.consume();
 //            }
 //        });
+    }
+
+    // TODO move from skin to behavior class (a lot of other stuff here too)
+    private void selectedWindowsToFront() {
+        for (SelectableNode sN : WindowUtil.
+                getDefaultClipboard().getSelectedItems()) {
+
+            if (sN == control
+                    || !(sN instanceof Window)) {
+                continue;
+            }
+
+            Window selectedWindow = (Window) sN;
+
+            if (control.getParent().
+                    equals(selectedWindow.getParent())
+                    && selectedWindow.isMoveToFront()) {
+                
+                selectedWindow.toFront();
+            }
+        } // end for sN
+    }
+
+    // TODO move from skin to behavior class (a lot of other stuff here too)
+    private void dragSelectedWindows(double offsetForAllX, double offsetForAllY) {
+        for (SelectableNode sN : WindowUtil.
+                getDefaultClipboard().getSelectedItems()) {
+
+            if (sN == control
+                    || !(sN instanceof Window)) {
+                continue;
+            }
+
+            Window selectedWindow = (Window) sN;
+
+            if (control.getParent().
+                    equals(selectedWindow.getParent())) {
+
+                selectedWindow.setLayoutX(
+                        selectedWindow.getLayoutX()
+                        + offsetForAllX);
+                selectedWindow.setLayoutY(
+                        selectedWindow.getLayoutY()
+                        + offsetForAllY);
+            }
+        } // end for sN
     }
 
     /**
