@@ -592,7 +592,6 @@ public class Window extends Control implements SelectableNode {
 
         if (isSelectable()) {
             selectedProperty.set(select);
-            System.out.println("selected!");
             return true;
         } else {
             return false;

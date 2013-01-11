@@ -28,6 +28,7 @@ package jfxtras.labs.scene.control.window;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import jfxtras.labs.util.WindowUtil;
 
 /**
  *
@@ -36,8 +37,12 @@ import javafx.event.EventHandler;
 public class MinimizeIcon extends WindowIcon {
 
     public static final String DEFAULT_STYLE_CLASS = "window-minimize-icon";
+    
+    private Window w;
 
     public MinimizeIcon(final Window w) {
+        
+        this.w = w;
 
         getStyleClass().setAll(DEFAULT_STYLE_CLASS);
 
@@ -46,7 +51,31 @@ public class MinimizeIcon extends WindowIcon {
             public void handle(ActionEvent t) {
 
                w.setMinimized(!w.isMinimized());
+               
+               if (w.isSelected()) {
+                   minimizeSelectedWindows();
+               }
             }
         });
+    }
+    
+    // TODO move from skin to behavior class (a lot of other stuff here too)
+    private void minimizeSelectedWindows() {
+        for (SelectableNode sN : WindowUtil.
+                getDefaultClipboard().getSelectedItems()) {
+
+            if (sN == w
+                    || !(sN instanceof Window)) {
+                continue;
+            }
+
+            Window selectedWindow = (Window) sN;
+
+            if (w.getParent().
+                    equals(selectedWindow.getParent())) {
+                
+                selectedWindow.setMinimized(!selectedWindow.isMinimized());
+            }
+        } // end for sN
     }
 }
