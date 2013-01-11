@@ -38,12 +38,50 @@ public class MouseControlUtil {
 
         makeDraggable(n, null, null);
     }
-    
+
+    /**
+     * Adds a selection rectangle gesture to the specified parent node.
+     *
+     * A rectangle node must be specified that is used to indicate the selection
+     * area.
+     *
+     * <p><b>Note:</b></p>
+     *
+     * To support selection a node must implement the
+     * {@link jfxtras.labs.scene.control.window.SelectableNode}
+     * interface.
+     * @param root parent node
+     * @param rect selectionn rectangle
+     * 
+     * @see jfxtras.labs.scene.control.window.Clipboard
+     * @see jfxtras.labs.util.WindowUtil#getDefaultClipboard() 
+     */
     public static void addSelectionRectangleGesture(final Parent root,
             final Rectangle rect) {
         addSelectionRectangleGesture(root, rect, null, null, null);
     }
 
+    /**
+     * Adds a selection rectangle gesture to the specified parent node.
+     *
+     * A rectangle node must be specified that is used to indicate the selection
+     * area.
+     *
+     * <p><b>Note:</b></p>
+     *
+     * To support selection a node must implement the
+     * {@link jfxtras.labs.scene.control.window.SelectableNode}
+     * interface.
+     * 
+     * @param root parent node
+     * @param rect selectionn rectangle
+     * @param dragHandler additional drag handler (optional, may be <code>null</code>)
+     * @param pressHandler additional press handler (optional, may be <code>null</code>)
+     * @param releaseHandler additional release handler (optional, may be <code>null</code>)
+     * 
+     * @see jfxtras.labs.scene.control.window.Clipboard
+     * @see jfxtras.labs.util.WindowUtil#getDefaultClipboard() 
+     */
     public static void addSelectionRectangleGesture(final Parent root,
             final Rectangle rect,
             EventHandler<MouseEvent> dragHandler,
@@ -247,9 +285,8 @@ class RectangleSelectionControllerImpl {
         this.rectangle = rect;
 
         this.root = root;
-        
-        root.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 
+        root.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent t) {
                 WindowUtil.getDefaultClipboard().unselectAll();
@@ -286,7 +323,7 @@ class RectangleSelectionControllerImpl {
 
     public void performDrag(
             Parent root, MouseEvent event) {
-        
+
         final double parentScaleX = root.
                 localToSceneTransformProperty().getValue().getMxx();
         final double parentScaleY = root.
@@ -307,23 +344,23 @@ class RectangleSelectionControllerImpl {
         double width = Math.abs(secondX - firstX);
         double height = Math.abs(secondY - firstY);
 
-        rectangle.setX(x/parentScaleX);
-        rectangle.setY(y/parentScaleY);
-        rectangle.setWidth(width/parentScaleX);
-        rectangle.setHeight(height/parentScaleY);
+        rectangle.setX(x / parentScaleX);
+        rectangle.setY(y / parentScaleY);
+        rectangle.setWidth(width / parentScaleX);
+        rectangle.setHeight(height / parentScaleY);
     }
 
     public void performDragBegin(
             Parent root, MouseEvent event) {
-        
-        if (rectangle.getParent()!=null) {
+
+        if (rectangle.getParent() != null) {
             return;
         }
 
         // record the current mouse X and Y position on Node
         firstX = event.getSceneX();
         firstY = event.getSceneY();
-        
+
         NodeUtil.addToParent(root, rectangle);
 
         rectangle.setWidth(0);
