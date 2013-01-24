@@ -162,7 +162,7 @@ public class ShapeConverter {
     public static String convertRectangle(final Rectangle RECTANGLE) {
         final StringBuilder fxPath = new StringBuilder();
         final Bounds        bounds = RECTANGLE.getBoundsInLocal();
-        if (RECTANGLE.getArcWidth() != 0 && RECTANGLE.getArcHeight() != 0) {
+        if (Double.compare(RECTANGLE.getArcWidth(), 0.0) == 0 && Double.compare(RECTANGLE.getArcHeight(), 0.0) == 0) {
             fxPath.append("M ").append(bounds.getMinX()).append(" ").append(bounds.getMinY()).append(" ")
                   .append("H ").append(bounds.getMaxX()).append(" ")
                   .append("V ").append(bounds.getMaxY()).append(" ")
