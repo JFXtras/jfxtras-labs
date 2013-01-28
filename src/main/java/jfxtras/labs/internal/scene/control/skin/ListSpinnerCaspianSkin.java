@@ -63,6 +63,8 @@ import com.sun.javafx.scene.control.skin.SkinBase;
  */
 public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpinnerBehavior<T>>
 {
+	// TODO: vertical centering 
+	
 	// ==================================================================================================================
 	// CONSTRUCTOR
 	

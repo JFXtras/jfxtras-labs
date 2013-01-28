@@ -48,6 +48,7 @@ import javafx.util.StringConverter;
 
 /**
  * This is a spinner, showing one value at a time from a list.
+ * This value is set and retrieved from the value property.
  * Basically a spinner shows a list of values and can do "next" or "previous" on this.
  * 
  * A spinner can be editable, the user can then type a value instead of selecting it.
@@ -69,6 +70,7 @@ import javafx.util.StringConverter;
  */
 public class ListSpinner<T> extends Control
 {
+	// TODO: implement SelectionModel?
 	// ==================================================================================================================
 	// CONSTRUCTOR
 

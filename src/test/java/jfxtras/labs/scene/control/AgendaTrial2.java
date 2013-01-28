@@ -26,6 +26,8 @@
  */
 package jfxtras.labs.scene.control;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -92,6 +94,13 @@ public class AgendaTrial2 extends Application {
 		
 		// load custom CSS
         scene.getStylesheets().addAll(this.getClass().getResource(this.getClass().getSimpleName() + ".css").toExternalForm());
+//        try
+//		{
+////    		File f = new File("/Documents and Settings/User/My Documents/jfxtras-styles/src/jmetro/JMetroLightTheme.css");
+//    		File f = new File("/Documents and Settings/User/My Documents/jfxtras-styles/src/jmetro/JMetroDarkTheme.css");
+//			scene.getStylesheets().addAll(f.toURI().toURL().toExternalForm());
+//		}
+//		catch (MalformedURLException e) { e.printStackTrace(); }
 
         // create stage
         stage.setTitle(this.getClass().getSimpleName());
