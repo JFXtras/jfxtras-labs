@@ -45,6 +45,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import jfxtras.labs.internal.scene.control.skin.ListSpinnerCaspianSkin;
 
 /**
  * This is a spinner, showing one value at a time from a list.
@@ -65,7 +66,7 @@ import javafx.util.StringConverter;
  * 
  * The "value" class applies to the text in both readonly and editable spinners. Use "readonly" or "editable" to style either mode specifically.
  *    
- * @author Tom Eugelink
+ * @author Tom Eugelink, Pedro Duque Vieira
  */
 public class ListSpinner<T> extends Control
 {
@@ -150,7 +151,8 @@ public class ListSpinner<T> extends Control
 	{
 		// setup the CSS
 		// the -fx-skin attribute in the CSS sets which Skin class is used
-		this.getStyleClass().add(this.getClass().getSimpleName());
+		//this.getStyleClass().add(this.getClass().getSimpleName());
+                this.getStyleClass().add(ListSpinnerCaspianSkin.CSS_CLASS_NAME);
 		
 		// react to changes of the value
 		this.valueObjectProperty.addListener(new ChangeListener<T>()
@@ -228,7 +230,7 @@ public class ListSpinner<T> extends Control
 	 */
 	@Override protected String getUserAgentStylesheet()
 	{
-		return this.getClass().getResource("/jfxtras/labs/internal/scene/control/" + this.getClass().getSimpleName() + ".css").toString();
+            return this.getClass().getResource(this.getClass().getSimpleName() + ".css").toString();
 	}
 	
 	// ==================================================================================================================
