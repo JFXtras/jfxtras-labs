@@ -49,36 +49,22 @@ public class ToggleGroupValue<T> extends ToggleGroup
 				}
 				else
 				{
-					T lValue = toggleToValue.get(lToggle);
+					T lValue = (T)lToggle.getUserData();
 					valueObjectProperty.set( lValue );
 				}
 			}
 		});
 	}
-	private final Map<Toggle, T> toggleToValue = new HashMap<>();
-	private final Map<T, Toggle> valueToToggle = new HashMap<>();
 	
 	/**
-	 * 
+	 * Convenience method for toggle's setToggleGroup and setUserData.
 	 * @param toggle
 	 * @param value
 	 */
 	public void add(Toggle toggle, T value)
 	{
 		toggle.setToggleGroup(this);
-		toggleToValue.put(toggle, value);
-		valueToToggle.put(value, toggle);
-	}
-	
-	/**
-	 * 
-	 * @param toggle
-	 */
-	public void remove(Toggle toggle)
-	{
-		toggle.setToggleGroup(null);
-		T lValue = toggleToValue.remove(toggle);
-		valueToToggle.remove(lValue);
+		toggle.setUserData(value);
 	}
 	
 	/** Value: */
@@ -89,12 +75,19 @@ public class ToggleGroupValue<T> extends ToggleGroup
 		{
 			// do it
 			super.set(value);
-			
-			// set toggle if required
-			Toggle lToggle = valueToToggle.get(value);
-			if (getSelectedToggle() != lToggle)
+
+			// scan all toggles
+			for (Toggle lToggle : getToggles())
 			{
-				selectToggle(lToggle);
+				// if user data is equal 
+				if (lToggle.getUserData() != null && lToggle.getUserData().equals(value))
+				{
+					// set toggle if required
+					if (getSelectedToggle() != lToggle)
+					{
+						selectToggle(lToggle);
+					}
+				}
 			}
 		}
 	};
