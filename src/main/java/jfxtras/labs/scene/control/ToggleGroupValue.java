@@ -76,6 +76,14 @@ public class ToggleGroupValue<T> extends ToggleGroup
 			// do it
 			super.set(value);
 
+			// if null
+			if (value == null)
+			{
+				// deselect
+				selectToggle(null);
+				return;
+			}
+
 			// scan all toggles
 			for (Toggle lToggle : getToggles())
 			{
@@ -86,6 +94,7 @@ public class ToggleGroupValue<T> extends ToggleGroup
 					if (getSelectedToggle() != lToggle)
 					{
 						selectToggle(lToggle);
+						return;
 					}
 				}
 			}
