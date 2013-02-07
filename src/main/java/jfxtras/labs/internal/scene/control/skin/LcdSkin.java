@@ -261,6 +261,9 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         registerChangeListener(control.backgroundVisibleProperty(), "BACKGROUND_VISIBILITY");
         registerChangeListener(control.clockModeProperty(), "CLOCK_MODE");
         registerChangeListener(lcdClockValue, "CLOCK_VALUE");
+        registerChangeListener(control.titleProperty(), "LCD");
+        registerChangeListener(control.unitProperty(), "LCD");
+        registerChangeListener(control.lcdUnitProperty(), "LCD");
 
         currentLcdValue.set(control.getLcdValue());
 

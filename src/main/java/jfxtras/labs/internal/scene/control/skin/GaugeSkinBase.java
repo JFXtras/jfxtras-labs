@@ -117,6 +117,9 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         registerChangeListener(CONTROL.lcdNumberSystemProperty(), "LCD");
         registerChangeListener(CONTROL.lcdValueFontProperty(), "LCD");
         registerChangeListener(CONTROL.lcdBackgroundVisibleProperty(), "LCD");
+        registerChangeListener(CONTROL.titleProperty(), "LCD");
+        registerChangeListener(CONTROL.unitProperty(), "LCD");
+        registerChangeListener(CONTROL.lcdUnitProperty(), "LCD");
         registerChangeListener(CONTROL.userLedBlinkingProperty(), "USER_LED_BLINKING");
         registerChangeListener(CONTROL.ledBlinkingProperty(), "LED_BLINKING");
         registerChangeListener(CONTROL.glowColorProperty(), "GLOW_COLOR");

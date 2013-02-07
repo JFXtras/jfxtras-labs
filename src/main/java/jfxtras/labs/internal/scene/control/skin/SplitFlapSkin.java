@@ -290,7 +290,18 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
             currentAngle = 0;
             upper.getTransforms().clear();
             upperText.getTransforms().clear();
-            lowerNextText.getTransforms().clear();
+            lowerNextText.getTransforms().clear();            currentSelectionIndex++;
+            if (currentSelectionIndex >= selectedSet.size()) {
+                currentSelectionIndex = 0;
+            }
+            nextSelectionIndex = currentSelectionIndex + 1;
+            if (nextSelectionIndex >= selectedSet.size()) {
+                nextSelectionIndex = 0;
+            }
+            if (selectedSet.get(currentSelectionIndex).equals(control.getText())) {
+                timer.stop();
+                flipping = false;
+            }
             lowerNextText.setVisible(false);
             lowerFlipVert.setAxis(Rotate.X_AXIS);
             lowerFlipVert.setPivotY(control.getPrefHeight() * 0.4625550661);
