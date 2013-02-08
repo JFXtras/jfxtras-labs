@@ -45,6 +45,7 @@ import javafx.scene.shape.Rectangle;
 import jfxtras.labs.scene.control.gauge.Radial.ForegroundType;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.Locale;
 
@@ -138,9 +139,7 @@ public abstract class Gauge extends Control {
         private final DecimalFormat DF;
 
         private NumberFormat(final String FORMAT_STRING) {
-            Locale.setDefault(new Locale("en", "US"));
-
-            DF = new DecimalFormat(FORMAT_STRING);
+            DF = new DecimalFormat(FORMAT_STRING,new DecimalFormatSymbols(Locale.US));
         }
 
         public String format(final Number NUMBER) {
