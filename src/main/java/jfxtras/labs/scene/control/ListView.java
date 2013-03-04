@@ -6,6 +6,13 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 
+/**
+ * Drop in replacement for ListView. Adds some handy features like a two-way bindable selectedItem.
+ * 
+ * @author Tom Eugelink
+ *
+ * @param <T>
+ */
 public class ListView<T> extends javafx.scene.control.ListView<T>
 {
 	// =====================================================================================================
