@@ -1275,8 +1275,8 @@ public class BeanPathAdapter<B> {
 				return fp;
 			} else if (!isField && getFieldBeans().containsKey(fieldNames[0])) {
 				// progress to the next child field/bean in the path chain
-				final String nextFieldPath = fieldPath.substring(fieldPath
-						.indexOf(fieldNames[1]));
+				final String nextFieldPath = fieldPath.replaceFirst(
+						fieldNames[0] + PATH_SEPARATOR, "");
 				return getFieldBeans().get(fieldNames[0]).performOperation(
 						fullFieldPath, nextFieldPath, propertyValueClass,
 						collectionItemPath, observable, collectionItemType,
