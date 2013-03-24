@@ -84,7 +84,7 @@ import java.util.Locale;
  * Time: 09:30
  * To change this template use File | Settings | File Templates.
  */
-public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> {
+public class SmallRadialSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<SmallRadial, SmallRadialBehavior> {
     private SmallRadial     control;
     private Group           smallRadial;
     private Path            pointer;
@@ -263,25 +263,25 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
 
     public final void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        if (!initialized) {
-            init();
-        }
-        drawGauge();
-        getChildren().setAll(smallRadial);
-        isDirty = false;
-        super.layoutChildren();
-    }
-
-    @Override public final SmallRadial getSkinnable() {
-        return control;
-    }
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        if (!initialized) {
+//            init();
+//        }
+//        drawGauge();
+//        getChildren().setAll(smallRadial);
+//        isDirty = false;
+//        super.layoutChildren();
+//    }
+//
+//    @Override public final SmallRadial getSkinnable() {
+//        return control;
+//    }
 
     @Override public final void dispose() {
         control = null;
@@ -290,7 +290,7 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
     @Override protected double computePrefWidth(final double PREF_HEIGHT) {
         double prefHeight = 121;
         if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getLeft() - getInsets().getRight());
+            prefHeight = Math.max(0, PREF_HEIGHT - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefHeight);
     }
@@ -298,25 +298,25 @@ public class SmallRadialSkin extends SkinBase<SmallRadial, SmallRadialBehavior> 
     @Override protected double computePrefHeight(final double PREF_WIDTH) {
         double prefWidth = 121;
         if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getTop() - getInsets().getBottom());
+            prefWidth = Math.max(0, PREF_WIDTH - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefHeight(prefWidth);
     }
 
     @Override protected double computeMinWidth(final double MIN_HEIGHT) {
-        return super.computeMinWidth(Math.max(121, MIN_HEIGHT - getInsets().getLeft() - getInsets().getRight()));
+        return super.computeMinWidth(Math.max(121, MIN_HEIGHT - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight()));
     }
 
     @Override protected double computeMinHeight(final double MIN_WIDTH) {
-        return super.computeMinHeight(Math.max(121, MIN_WIDTH - getInsets().getTop() - getInsets().getBottom()));
+        return super.computeMinHeight(Math.max(121, MIN_WIDTH - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom()));
     }
 
     @Override protected double computeMaxWidth(final double MAX_HEIGHT) {
-        return super.computeMaxWidth(Math.max(121, MAX_HEIGHT - getInsets().getLeft() - getInsets().getRight()));
+        return super.computeMaxWidth(Math.max(121, MAX_HEIGHT - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight()));
     }
 
     @Override protected double computeMaxHeight(final double MAX_WIDTH) {
-        return super.computeMaxHeight(Math.max(121, MAX_WIDTH - getInsets().getTop() - getInsets().getBottom()));
+        return super.computeMaxHeight(Math.max(121, MAX_WIDTH - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom()));
     }
 
     private void updateNumberFormat() {

@@ -652,76 +652,76 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
 
     public void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        adjustLcdFont();
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            calcGaugeBounds();
-            setTranslateX(framelessOffset.getX());
-            setTranslateY(framelessOffset.getY());
-            center = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getHeight() * 0.265);
-            drawCircularFrame(control, frame, gaugeBounds);
-            drawCircularBackground(control, background, gaugeBounds);
-            drawCircularTrend(control, trend, gaugeBounds);
-            updateSections();
-            drawCircularSections(control, sections, gaugeBounds);
-            updateAreas();
-            drawCircularAreas(control, areas, gaugeBounds);
-            drawTitleAndUnit();
-            drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
-            drawCircularLed(control, ledOff, ledOn, gaugeBounds);
-            drawCircularUserLed(control, userLedOff, userLedOn, gaugeBounds);
-            drawThreshold();
-            drawCircularGlowOff(glowOff, gaugeBounds);
-            drawCircularGlowOn(control, glowOn, glowColors, gaugeBounds);
-            drawMinMeasuredIndicator();
-            drawMaxMeasuredIndicator();
-            drawCircularLcd(control, lcd, gaugeBounds);
-            drawLcdContent();
-            drawPointer();
-            drawCircularKnobs(control, knobs, center, gaugeBounds);
-            drawCircularForeground(control, foreground, gaugeBounds);
-            if (control.isPointerShadowEnabled() && !control.isPointerGlowEnabled()) {
-                addDropShadow(control, knobs, pointerShadow);
-            }
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        adjustLcdFont();
+//        if (!initialized) {
+//            init();
+//        }
+//        if (control.getScene() != null) {
+//            calcGaugeBounds();
+//            setTranslateX(framelessOffset.getX());
+//            setTranslateY(framelessOffset.getY());
+//            center = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getHeight() * 0.265);
+//            drawCircularFrame(control, frame, gaugeBounds);
+//            drawCircularBackground(control, background, gaugeBounds);
+//            drawCircularTrend(control, trend, gaugeBounds);
+//            updateSections();
+//            drawCircularSections(control, sections, gaugeBounds);
+//            updateAreas();
+//            drawCircularAreas(control, areas, gaugeBounds);
+//            drawTitleAndUnit();
+//            drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
+//            drawCircularLed(control, ledOff, ledOn, gaugeBounds);
+//            drawCircularUserLed(control, userLedOff, userLedOn, gaugeBounds);
+//            drawThreshold();
+//            drawCircularGlowOff(glowOff, gaugeBounds);
+//            drawCircularGlowOn(control, glowOn, glowColors, gaugeBounds);
+//            drawMinMeasuredIndicator();
+//            drawMaxMeasuredIndicator();
+//            drawCircularLcd(control, lcd, gaugeBounds);
+//            drawLcdContent();
+//            drawPointer();
+//            drawCircularKnobs(control, knobs, center, gaugeBounds);
+//            drawCircularForeground(control, foreground, gaugeBounds);
+//            if (control.isPointerShadowEnabled() && !control.isPointerGlowEnabled()) {
+//                addDropShadow(control, knobs, pointerShadow);
+//            }
+//
+//            getChildren().setAll(frame,
+//                background,
+//                trend,
+//                sections,
+//                areas,
+//                ledOff,
+//                ledOn,
+//                userLedOff,
+//                userLedOn,
+//                titleAndUnit,
+//                tickmarks,
+//                threshold,
+//                glowOff,
+//                glowOn,
+//                minMeasured,
+//                maxMeasured,
+//                markers,
+//                lcd,
+//                lcdContent,
+//                pointerShadow,
+//                knobsShadow,
+//                foreground);
+//        }
+//        isDirty = false;
+//
+//        super.layoutChildren();
+//    }
 
-            getChildren().setAll(frame,
-                background,
-                trend,
-                sections,
-                areas,
-                ledOff,
-                ledOn,
-                userLedOff,
-                userLedOn,
-                titleAndUnit,
-                tickmarks,
-                threshold,
-                glowOff,
-                glowOn,
-                minMeasured,
-                maxMeasured,
-                markers,
-                lcd,
-                lcdContent,
-                pointerShadow,
-                knobsShadow,
-                foreground);
-        }
-        isDirty = false;
-
-        super.layoutChildren();
-    }
-
-    @Override public RadialQuarterS getSkinnable() {
+    public RadialQuarterS getControl() {
         return control;
     }
 
@@ -732,7 +732,7 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
     @Override protected double computePrefWidth(final double HEIGHT) {
         double prefWidth = PREF_SIZE.getWidth();
         if (HEIGHT != -1) {
-            prefWidth = Math.max(0, HEIGHT - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, HEIGHT - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
@@ -740,25 +740,25 @@ public class RadialQuarterSSkin extends GaugeSkinBase<RadialQuarterS, RadialQuar
     @Override protected double computePrefHeight(final double WIDTH) {
         double prefHeight = PREF_SIZE.getHeight();
         if (WIDTH != -1) {
-            prefHeight = Math.max(0, WIDTH - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, WIDTH - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
     }
 
     @Override protected double computeMinWidth(final double WIDTH) {
-        return super.computeMinWidth(Math.max(MIN_SIZE.getWidth(), WIDTH - getInsets().getLeft() - getInsets().getRight()));
+        return super.computeMinWidth(Math.max(MIN_SIZE.getWidth(), WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight()));
     }
 
     @Override protected double computeMinHeight(final double HEIGHT) {
-        return super.computeMinHeight(Math.max(MIN_SIZE.getHeight(), HEIGHT - getInsets().getTop() - getInsets().getBottom()));
+        return super.computeMinHeight(Math.max(MIN_SIZE.getHeight(), HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom()));
     }
 
     @Override protected double computeMaxWidth(final double WIDTH) {
-        return super.computeMaxWidth(Math.max(MAX_SIZE.getWidth(), WIDTH - getInsets().getLeft() - getInsets().getRight()));
+        return super.computeMaxWidth(Math.max(MAX_SIZE.getWidth(), WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight()));
     }
 
     @Override protected double computeMaxHeight(final double HEIGHT) {
-        return super.computeMaxHeight(Math.max(MAX_SIZE.getHeight(), HEIGHT - getInsets().getTop() - getInsets().getBottom()));
+        return super.computeMaxHeight(Math.max(MAX_SIZE.getHeight(), HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom()));
     }
 
     private String formatLcdValue(final double VALUE) {

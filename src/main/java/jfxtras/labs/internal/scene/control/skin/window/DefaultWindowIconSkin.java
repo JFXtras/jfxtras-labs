@@ -28,6 +28,8 @@
 package jfxtras.labs.internal.scene.control.skin.window;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
+
 import javafx.scene.control.SkinBase;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -40,14 +42,14 @@ import jfxtras.labs.scene.control.window.WindowIcon;
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
-public class DefaultWindowIconSkin extends SkinBase<WindowIcon, BehaviorBase<WindowIcon>> {
+public class DefaultWindowIconSkin extends BehaviorSkinBase<WindowIcon, BehaviorBase<WindowIcon>> {
 
     public DefaultWindowIconSkin(final WindowIcon c) {
         super(c, new BehaviorBase<WindowIcon>(c));
 
-        setCursor(Cursor.DEFAULT);
+        getSkinnable().setCursor(Cursor.DEFAULT);
         
-        onMouseClickedProperty().set(new EventHandler<MouseEvent>() {
+        getSkinnable().onMouseClickedProperty().set(new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent t) {

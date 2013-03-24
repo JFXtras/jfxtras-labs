@@ -54,7 +54,7 @@ import java.util.List;
  * Date: 16.02.12
  * Time: 11:30
  */
-public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> {
+public class LedBargraphSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<LedBargraph, LedBargraphBehavior> {
     public static final long PEAK_TIMEOUT = 1500000000l;
     private LedBargraph control;
     private boolean          isDirty;
@@ -200,26 +200,26 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
 
     public final void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            drawLed();
-            getChildren().setAll(bargraph);
-        }
-        isDirty = false;
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        if (!initialized) {
+//            init();
+//        }
+//        if (control.getScene() != null) {
+//            drawLed();
+//            getChildren().setAll(bargraph);
+//        }
+//        isDirty = false;
+//
+//        super.layoutChildren();
+//    }
 
-        super.layoutChildren();
-    }
-
-    @Override public final LedBargraph getSkinnable() {
+    public final LedBargraph getControl() {
         return control;
     }
 
@@ -230,7 +230,7 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
     @Override protected double computePrefWidth(final double PREF_WIDTH) {
         double prefWidth = 16;
         if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, PREF_WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
@@ -238,7 +238,7 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
     @Override protected double computePrefHeight(final double PREF_HEIGHT) {
         double prefHeight = 16;
         if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, PREF_HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
     }

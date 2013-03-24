@@ -41,7 +41,7 @@ public class GridCell<T> extends IndexedCell<T> {
 	}
 	
 	public void setCssDependency() {
-		setSkinClassName(GridCellSkin.class.getName());
+//		setSkinClassName(GridCellSkin.class.getName());
 	}
 	
 	@Override

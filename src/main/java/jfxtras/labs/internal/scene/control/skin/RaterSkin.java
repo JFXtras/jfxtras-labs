@@ -57,7 +57,7 @@ import java.util.List;
  * Date: 07.03.12
  * Time: 10:17
  */
-public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
+public class RaterSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<Rater, RaterBehavior> {
     private Rater       control;
     private boolean     isDirty;
     private boolean     initialized;
@@ -134,26 +134,26 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
 
     public final void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            drawStars();
-            getChildren().setAll(starContainer);
-        }
-        isDirty = false;
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        if (!initialized) {
+//            init();
+//        }
+//        if (control.getScene() != null) {
+//            drawStars();
+//            getChildren().setAll(starContainer);
+//        }
+//        isDirty = false;
+//
+//        super.layoutChildren();
+//    }
 
-        super.layoutChildren();
-    }
-
-    @Override public final Rater getSkinnable() {
+    public final Rater getControl() {
         return control;
     }
 
@@ -164,7 +164,7 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
     @Override protected double computePrefWidth(final double PREF_WIDTH) {
         double prefWidth = 160;
         if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, PREF_WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
@@ -172,7 +172,7 @@ public class RaterSkin extends SkinBase<Rater, RaterBehavior> {
     @Override protected double computePrefHeight(final double PREF_HEIGHT) {
         double prefHeight = 32;
         if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, PREF_HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
     }

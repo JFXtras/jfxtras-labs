@@ -45,7 +45,7 @@ import javafx.scene.control.SkinBase;
  * @author Hendrik Ebbers
  * 
  */
-public class GridViewSkin<T> extends SkinBase<GridView<T>, GridViewBehavior<T>> {
+public class GridViewSkin<T> extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<GridView<T>, GridViewBehavior<T>> {
 
 	private ListChangeListener<T> itemsListener;
 
@@ -61,7 +61,7 @@ public class GridViewSkin<T> extends SkinBase<GridView<T>, GridViewBehavior<T>> 
 			@Override
 			public void changed(ObservableValue<? extends Number> arg0,
 					Number arg1, Number arg2) {
-				requestLayout();
+				getSkinnable().requestLayout();
 			}
 
 		};
@@ -143,13 +143,13 @@ public class GridViewSkin<T> extends SkinBase<GridView<T>, GridViewBehavior<T>> 
 				getChildren().add(cell);
 			}
 		}
-		requestLayout();
+		getSkinnable().requestLayout();
 	}
 
 	private void removeCell(int index) {
 		getChildren().remove(index);
 		// TODO: Update Index for all following cells
-		requestLayout();
+		getSkinnable().requestLayout();
 	}
 
 	private void replaceCell(int index) {
@@ -170,7 +170,7 @@ public class GridViewSkin<T> extends SkinBase<GridView<T>, GridViewBehavior<T>> 
 		cell.updateIndex(index);
 		getChildren().add(index, cell);
 		// TODO: Update Index for all following cells
-		requestLayout();
+		getSkinnable().requestLayout();
 	}
 
 	private GridCell<T> createCell() {
@@ -187,58 +187,60 @@ public class GridViewSkin<T> extends SkinBase<GridView<T>, GridViewBehavior<T>> 
 		return new DefaultGridCell<T>();
 	}
 
-	@Override
-	protected void layoutChildren() {
-		super.layoutChildren();
-		double currentWidth = getWidth();
-		double cellWidth = getSkinnable().getCellWidth();
-		double cellHeight = getSkinnable().getCellHeight();
-		double horizontalCellSpacing = getSkinnable()
-				.getHorizontalCellSpacing();
-		double verticalCellSpacing = getSkinnable().getVerticalCellSpacing();
+// remove compilation problem
+//	@Override
+//	protected void layoutChildren() {
+//		super.layoutChildren();
+//		double currentWidth = getWidth();
+//		double cellWidth = getSkinnable().getCellWidth();
+//		double cellHeight = getSkinnable().getCellHeight();
+//		double horizontalCellSpacing = getSkinnable()
+//				.getHorizontalCellSpacing();
+//		double verticalCellSpacing = getSkinnable().getVerticalCellSpacing();
+//
+//		double xPos = 0;
+//		double yPos = 0;
+//
+//		HPos currentHorizontalAlignment = getSkinnable()
+//				.getHorizontalAlignment();
+//		if (currentHorizontalAlignment != null) {
+//			if (currentHorizontalAlignment.equals(HPos.CENTER)) {
+//				xPos = (currentWidth % computeCellWidth()) / 2;
+//			} else if (currentHorizontalAlignment.equals(HPos.RIGHT)) {
+//				xPos = currentWidth % computeCellWidth();
+//			}
+//		}
+//
+//		for (Node child : getChildren()) {
+//			if (xPos + horizontalCellSpacing + cellWidth
+//					+ horizontalCellSpacing > currentWidth) {
+//				// new line
+//				xPos = 0;
+//				if (currentHorizontalAlignment != null) {
+//					if (currentHorizontalAlignment.equals(HPos.CENTER)) {
+//						xPos = (currentWidth % computeCellWidth()) / 2;
+//					} else if (currentHorizontalAlignment.equals(HPos.RIGHT)) {
+//						xPos = currentWidth % computeCellWidth();
+//					}
+//				}
+//
+//				yPos = yPos + verticalCellSpacing + cellHeight
+//						+ verticalCellSpacing;
+//			}
+//			child.relocate(xPos + horizontalCellSpacing, yPos
+//					+ verticalCellSpacing);
+//			child.resize(cellWidth, cellHeight);
+//			xPos = xPos + horizontalCellSpacing + cellWidth
+//					+ horizontalCellSpacing;
+//			;
+//		}
+//	}
 
-		double xPos = 0;
-		double yPos = 0;
-
-		HPos currentHorizontalAlignment = getSkinnable()
-				.getHorizontalAlignment();
-		if (currentHorizontalAlignment != null) {
-			if (currentHorizontalAlignment.equals(HPos.CENTER)) {
-				xPos = (currentWidth % computeCellWidth()) / 2;
-			} else if (currentHorizontalAlignment.equals(HPos.RIGHT)) {
-				xPos = currentWidth % computeCellWidth();
-			}
-		}
-
-		for (Node child : getChildren()) {
-			if (xPos + horizontalCellSpacing + cellWidth
-					+ horizontalCellSpacing > currentWidth) {
-				// new line
-				xPos = 0;
-				if (currentHorizontalAlignment != null) {
-					if (currentHorizontalAlignment.equals(HPos.CENTER)) {
-						xPos = (currentWidth % computeCellWidth()) / 2;
-					} else if (currentHorizontalAlignment.equals(HPos.RIGHT)) {
-						xPos = currentWidth % computeCellWidth();
-					}
-				}
-
-				yPos = yPos + verticalCellSpacing + cellHeight
-						+ verticalCellSpacing;
-			}
-			child.relocate(xPos + horizontalCellSpacing, yPos
-					+ verticalCellSpacing);
-			child.resize(cellWidth, cellHeight);
-			xPos = xPos + horizontalCellSpacing + cellWidth
-					+ horizontalCellSpacing;
-			;
-		}
-	}
-
-	@Override
-	public Orientation getContentBias() {
-		return Orientation.HORIZONTAL;
-	}
+// remove compilation problem
+//	@Override
+//	public Orientation getContentBias() {
+//		return Orientation.HORIZONTAL;
+//	}
 
 	protected double computeCellWidth() {
 		return getSkinnable().cellWidthProperty().doubleValue()
@@ -299,7 +301,7 @@ public class GridViewSkin<T> extends SkinBase<GridView<T>, GridViewBehavior<T>> 
 	}
 
 	public int computeMaxCellsInRow() {
-		return computeMaxCellsInRow(getWidth());
+		return computeMaxCellsInRow(getSkinnable().getWidth());
 	}
 
 	public int computeCurrentRowCount() {

@@ -48,7 +48,7 @@ import jfxtras.labs.util.Util;
  * Date: 11.02.12
  * Time: 13:59
  */
-public class LedSkin extends SkinBase<Led, LedBehavior> {
+public class LedSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<Led, LedBehavior> {
     public static final long BLINK_INTERVAL = 500000000l;
     private Led              control;
     private boolean          isDirty;
@@ -140,23 +140,24 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
 
     public final void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) return;
+// removing compilation problem
+//    @Override public void layoutChildren() {
+//        if (!isDirty) return;
+//
+//        if (!initialized) init();
+//
+//        if (control.getScene() != null) {
+//            drawLed();
+//            getChildren().setAll(led);
+//        }
+//        isDirty = false;
+//        super.layoutChildren();
+//    }
 
-        if (!initialized) init();
-
-        if (control.getScene() != null) {
-            drawLed();
-            getChildren().setAll(led);
-        }
-        isDirty = false;
-        super.layoutChildren();
-    }
-
-    @Override public final Led getSkinnable() {
+    public final Led getControl() {
         return control;
     }
 
@@ -167,7 +168,7 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
     @Override protected double computePrefWidth(final double PREF_WIDTH) {
         double prefWidth = 20;
         if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, PREF_WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
@@ -175,7 +176,7 @@ public class LedSkin extends SkinBase<Led, LedBehavior> {
     @Override protected double computePrefHeight(final double PREF_HEIGHT) {
         double prefHeight = 20;
         if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, PREF_HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
     }

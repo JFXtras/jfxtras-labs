@@ -27,6 +27,8 @@
 package jfxtras.labs.internal.scene.control.skin.window;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
+
 import javafx.scene.control.SkinBase;
 import javafx.animation.Animation;
 import javafx.animation.Animation.Status;
@@ -58,7 +60,7 @@ import jfxtras.labs.util.WindowUtil;
  *
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
-public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
+public class DefaultWindowSkin extends BehaviorSkinBase<Window, BehaviorBase<Window>> {
 
     private double mouseX;
     private double mouseY;
@@ -296,7 +298,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
 
     private void initMouseEventHandlers() {
 
-        onMousePressedProperty().set(new EventHandler<MouseEvent>() {
+    	getSkinnable().onMousePressedProperty().set(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
 
@@ -324,7 +326,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
         });
 
         //Event Listener for MouseDragged
-        onMouseDraggedProperty().set(new EventHandler<MouseEvent>() {
+    	getSkinnable().onMouseDraggedProperty().set(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
 
@@ -380,7 +382,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
                     if (RESIZE_TOP) {
 //                        System.out.println("TOP");
 
-                        double insetOffset = getInsets().getTop() / 2;
+                        double insetOffset = getSkinnable().getInsets().getTop() / 2;
 
                         double yDiff =
                                 sceneY / parentScaleY
@@ -397,7 +399,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
                     if (RESIZE_LEFT) {
 //                        System.out.println("LEFT");
 
-                        double insetOffset = getInsets().getLeft() / 2;
+                        double insetOffset = getSkinnable().getInsets().getLeft() / 2;
 
                         double xDiff = sceneX / parentScaleX
                                 + insetOffset
@@ -417,7 +419,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
                     if (RESIZE_BOTTOM) {
 //                        System.out.println("BOTTOM");
 
-                        double insetOffset = getInsets().getBottom() / 2;
+                        double insetOffset = getSkinnable().getInsets().getBottom() / 2;
 
                         double yDiff = event.getSceneY() / parentScaleY
                                 - sceneY / parentScaleY - insetOffset;
@@ -433,7 +435,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
                     }
                     if (RESIZE_RIGHT) {
 
-                        double insetOffset = getInsets().getRight() / 2;
+                        double insetOffset = getSkinnable().getInsets().getRight() / 2;
 
                         double xDiff = event.getSceneX() / parentScaleX
                                 - sceneX / parentScaleY - insetOffset;
@@ -457,7 +459,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
             } // end handle(..)
         });
 
-        onMouseClickedProperty().set(new EventHandler<MouseEvent>() {
+    	getSkinnable().onMouseClickedProperty().set(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
 
@@ -466,7 +468,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
             }
         });
 
-        onMouseMovedProperty().set(new EventHandler<MouseEvent>() {
+    	getSkinnable().onMouseMovedProperty().set(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent t) {
 
@@ -492,15 +494,15 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
 
                 final double border = control.getResizableBorderWidth() * scaleX;
 
-                double diffMinX = Math.abs(n.getLayoutBounds().getMinX() - t.getX() + getInsets().getLeft());
-                double diffMinY = Math.abs(n.getLayoutBounds().getMinY() - t.getY() + getInsets().getTop());
-                double diffMaxX = Math.abs(n.getLayoutBounds().getMaxX() - t.getX() - getInsets().getRight());
-                double diffMaxY = Math.abs(n.getLayoutBounds().getMaxY() - t.getY() - getInsets().getBottom());
+                double diffMinX = Math.abs(n.getLayoutBounds().getMinX() - t.getX() + getSkinnable().getInsets().getLeft());
+                double diffMinY = Math.abs(n.getLayoutBounds().getMinY() - t.getY() + getSkinnable().getInsets().getTop());
+                double diffMaxX = Math.abs(n.getLayoutBounds().getMaxX() - t.getX() - getSkinnable().getInsets().getRight());
+                double diffMaxY = Math.abs(n.getLayoutBounds().getMaxY() - t.getY() - getSkinnable().getInsets().getBottom());
 
-                boolean left = diffMinX * scaleX < Math.max(border, getInsets().getLeft() / 2 * scaleX);
-                boolean top = diffMinY * scaleY < Math.max(border, getInsets().getTop() / 2 * scaleY);
-                boolean right = diffMaxX * scaleX < Math.max(border, getInsets().getRight() / 2 * scaleX);
-                boolean bottom = diffMaxY * scaleY < Math.max(border, getInsets().getBottom() / 2 * scaleY);
+                boolean left = diffMinX * scaleX < Math.max(border, getSkinnable().getInsets().getLeft() / 2 * scaleX);
+                boolean top = diffMinY * scaleY < Math.max(border, getSkinnable().getInsets().getTop() / 2 * scaleY);
+                boolean right = diffMaxX * scaleX < Math.max(border, getSkinnable().getInsets().getRight() / 2 * scaleX);
+                boolean bottom = diffMaxY * scaleY < Math.max(border, getSkinnable().getInsets().getBottom() / 2 * scaleY);
 
                 RESIZE_TOP = false;
                 RESIZE_LEFT = false;
@@ -687,45 +689,45 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
         this.scaleIncrement = scaleIncrement;
     }
 
-    @Override
-    protected void layoutChildren() {
-
-        super.layoutChildren();
-
-        root.relocate(0, 0);
-        root.resize(root.getWidth()
-                + getInsets().getLeft() + getInsets().getRight(),
-                root.getHeight()
-                + getInsets().getTop() + getInsets().getBottom());
-
-        titleBar.relocate(0, 0);
-        double titleBarWidth = titleBar.prefWidth(0);
-        double windowWidth = root.getWidth();
-
-        if (titleBarWidth > windowWidth) {
-            setWidth(titleBarWidth);
-        }
-
-        double newTitleBarWidth =
-                Math.max(
-                titleBarWidth,
-                windowWidth);
-
-        titleBar.resize(newTitleBarWidth, titleBar.prefHeight(0));
-
-        double leftAndRight = getInsets().getLeft() + getInsets().getRight();
-        double topAndBottom = getInsets().getTop() + getInsets().getBottom();
-
-        control.getContentPane().relocate(
-                getInsets().getLeft(),
-                titleBar.prefHeight(0));
-
-        control.getContentPane().resize(
-                root.getWidth() - leftAndRight,
-                root.getHeight() - getInsets().getBottom() - titleBar.prefHeight(0));
-
-        titleBar.layoutChildren();
-    }
+//    @Override
+//    protected void layoutChildren() {
+//
+//        super.layoutChildren();
+//
+//        root.relocate(0, 0);
+//        root.resize(root.getWidth()
+//                + getSkinnable().getInsets().getLeft() + getSkinnable().getInsets().getRight(),
+//                root.getHeight()
+//                + getSkinnable().getInsets().getTop() + getSkinnable().getInsets().getBottom());
+//
+//        titleBar.relocate(0, 0);
+//        double titleBarWidth = titleBar.prefWidth(0);
+//        double windowWidth = root.getWidth();
+//
+//        if (titleBarWidth > windowWidth) {
+//            setWidth(titleBarWidth);
+//        }
+//
+//        double newTitleBarWidth =
+//                Math.max(
+//                titleBarWidth,
+//                windowWidth);
+//
+//        titleBar.resize(newTitleBarWidth, titleBar.prefHeight(0));
+//
+//        double leftAndRight = getSkinnable().getInsets().getLeft() + getSkinnable().getInsets().getRight();
+//        double topAndBottom = getSkinnable().getInsets().getTop() + getSkinnable().getInsets().getBottom();
+//
+//        control.getContentPane().relocate(
+//                getSkinnable().getInsets().getLeft(),
+//                titleBar.prefHeight(0));
+//
+//        control.getContentPane().resize(
+//                root.getWidth() - leftAndRight,
+//                root.getHeight() - getSkinnable().getInsets().getBottom() - titleBar.prefHeight(0));
+//
+//        titleBar.layoutChildren();
+//    }
 
     @Override
     protected double computeMinWidth(double d) {
@@ -752,7 +754,7 @@ public class DefaultWindowSkin extends SkinBase<Window, BehaviorBase<Window>> {
 
         if (!control.isMinimized() && control.getContentPane().isVisible()) {
             minHeight += control.getContentPane().minHeight(d)
-                    + getInsets().getBottom();
+                    + getSkinnable().getInsets().getBottom();
         }
 
         result = Math.max(result, minHeight);
@@ -899,8 +901,9 @@ class TitleBar extends HBox {
         result = Math.max(result,
                 iconWidth
                 //                + getLabel().prefWidth(h)
-                + getInsets().getLeft()
-                + getInsets().getRight());
+//                + getSkinnable().getInsets().getLeft()
+//                + getSkinnable().getInsets().getRight()
+                );
 
         return result + iconSpacing * 2 + offset;
     }
@@ -914,14 +917,14 @@ class TitleBar extends HBox {
     protected void layoutChildren() {
         super.layoutChildren();
 
-        leftIconPane.resizeRelocate(getInsets().getLeft(), getInsets().getTop(),
-                leftIconPane.prefWidth(USE_PREF_SIZE),
-                getHeight() - getInsets().getTop() - getInsets().getBottom());
-
-        rightIconPane.resize(rightIconPane.prefWidth(USE_PREF_SIZE),
-                getHeight() - getInsets().getTop() - getInsets().getBottom());
-        rightIconPane.relocate(getWidth() - rightIconPane.getWidth() - getInsets().getRight(),
-                getInsets().getTop());
+//        leftIconPane.resizeRelocate(getSkinnable().getInsets().getLeft(), getSkinnable().getInsets().getTop(),
+//                leftIconPane.prefWidth(USE_PREF_SIZE),
+//                getHeight() - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
+//
+//        rightIconPane.resize(rightIconPane.prefWidth(USE_PREF_SIZE),
+//                getHeight() - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
+//        rightIconPane.relocate(getWidth() - rightIconPane.getWidth() - getSkinnable().getInsets().getRight(),
+//                getSkinnable().getInsets().getTop());
     }
 
     /**

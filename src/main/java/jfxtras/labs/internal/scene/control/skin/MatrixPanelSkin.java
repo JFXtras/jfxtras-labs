@@ -67,7 +67,7 @@ import jfxtras.labs.util.Util;
  * Modified by Jose Pereda Llamas <jperedadnr>
  * On : 23-jun-2012, 11:47:23
  */
-public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> {
+public class MatrixPanelSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<MatrixPanel, MatrixPanelBehavior> {
     private static final Rectangle PREF_SIZE = new Rectangle(170, 350);
 
     
@@ -184,8 +184,8 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
             init();
         }
         calcGaugeBounds();
-        setTranslateX(framelessOffset.getX());
-        setTranslateY(framelessOffset.getY());
+        getSkinnable().setTranslateX(framelessOffset.getX());
+        getSkinnable().setTranslateY(framelessOffset.getY());
         getChildren().clear();
         drawFrame();
         drawBackground();
@@ -202,14 +202,14 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
         isDirty = false;
     }
 
-    @Override public void layoutChildren() {
-        if (isDirty) {
-            paint();
-        }
-        super.layoutChildren();
-    }
+//    @Override public void layoutChildren() {
+//        if (isDirty) {
+//            paint();
+//        }
+//        super.layoutChildren();
+//    }
 
-    @Override public MatrixPanel getSkinnable() {
+    public MatrixPanel getControl() {
         return control;
     }
 
@@ -220,7 +220,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
     @Override protected double computePrefWidth(final double WIDTH) {
         double prefWidth = PREF_SIZE.getWidth();
         if (WIDTH != -1) {
-            prefWidth = Math.max(0, WIDTH - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
@@ -228,7 +228,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
     @Override protected double computePrefHeight(final double HEIGHT) {
         double prefHeight = PREF_SIZE.getHeight();
         if (HEIGHT != -1) {
-            prefHeight = Math.max(0, HEIGHT - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefHeight(prefHeight);
     }

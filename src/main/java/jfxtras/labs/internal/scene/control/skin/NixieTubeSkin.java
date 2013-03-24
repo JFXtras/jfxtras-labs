@@ -56,7 +56,7 @@ import jfxtras.labs.scene.control.gauge.NixieTube;
  * Date: 24.02.12
  * Time: 20:14
  */
-public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
+public class NixieTubeSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<NixieTube, NixieTubeBehavior> {
     private NixieTube    control;
     private boolean      isDirty;
     private boolean      initialized;
@@ -152,27 +152,27 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
 
     public final void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            drawNumbers();
-            drawTube();
-            getChildren().setAll(numbers, tube);
-        }
-        isDirty = false;
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        if (!initialized) {
+//            init();
+//        }
+//        if (control.getScene() != null) {
+//            drawNumbers();
+//            drawTube();
+//            getChildren().setAll(numbers, tube);
+//        }
+//        isDirty = false;
+//
+//        super.layoutChildren();
+//    }
 
-        super.layoutChildren();
-    }
-
-    @Override public final NixieTube getSkinnable() {
+    public final NixieTube getControl() {
         return control;
     }
 
@@ -183,7 +183,7 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
     @Override protected double computePrefWidth(final double PREF_WIDTH) {
         double prefWidth = 86;
         if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, PREF_WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
@@ -191,7 +191,7 @@ public class NixieTubeSkin extends SkinBase<NixieTube, NixieTubeBehavior> {
     @Override protected double computePrefHeight(final double PREF_HEIGHT) {
         double prefHeight = 145;
         if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, PREF_HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
     }

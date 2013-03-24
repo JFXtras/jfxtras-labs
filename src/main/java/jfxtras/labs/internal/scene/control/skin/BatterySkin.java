@@ -27,6 +27,8 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
+import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
+
 import javafx.scene.control.SkinBase;
 import javafx.application.Platform;
 import javafx.scene.Group;
@@ -57,7 +59,7 @@ import jfxtras.labs.scene.control.gauge.GradientLookup;
  * Date: 23.03.12
  * Time: 11:07
  */
-public class BatterySkin extends SkinBase<Battery> {
+public class BatterySkin extends BehaviorSkinBase<Battery, BatteryBehavior> {
     private Battery        control;
     private boolean        isDirty;
     private boolean        initialized;
@@ -75,7 +77,7 @@ public class BatterySkin extends SkinBase<Battery> {
 
     // ******************** Constructors **************************************
     public BatterySkin(final Battery CONTROL) {
-        super(CONTROL);//, new BatteryBehavior(CONTROL));
+        super(CONTROL, new BatteryBehavior(CONTROL));
         control           = CONTROL;
         initialized       = false;
         isDirty           = false;
@@ -151,31 +153,32 @@ public class BatterySkin extends SkinBase<Battery> {
 
     public void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            drawBackground();
-            drawMain();
-            drawForeground();
+// Removing the compilation problem so a release can be build    
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        if (!initialized) {
+//            init();
+//        }
+//        if (control.getScene() != null) {
+//            drawBackground();
+//            drawMain();
+//            drawForeground();
+//
+//            getChildren().setAll(background,
+//                                 main,
+//                                 foreground);
+//        }
+//        isDirty = false;
+//
+//        super.layoutChildren();
+//    }
 
-            getChildren().setAll(background,
-                                 main,
-                                 foreground);
-        }
-        isDirty = false;
-
-        super.layoutChildren();
-    }
-
-    @Override public final Battery getSkinnable() {
+    public final Battery getControl() {
         return control;
     }
 
@@ -186,7 +189,7 @@ public class BatterySkin extends SkinBase<Battery> {
     @Override protected double computePrefWidth(final double PREF_WIDTH) {
         double prefWidth = 255;
         if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, PREF_WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
@@ -194,7 +197,7 @@ public class BatterySkin extends SkinBase<Battery> {
     @Override protected double computePrefHeight(final double PREF_HEIGHT) {
         double prefHeight = 255;
         if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, PREF_HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
     }

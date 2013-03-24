@@ -26,8 +26,10 @@
  */
 package jfxtras.labs.util.grid;
 
-import com.sun.javafx.css.StyleableDoubleProperty;
-import com.sun.javafx.css.StyleableProperty;
+import javafx.css.CssMetaData;
+import javafx.css.Styleable;
+import javafx.css.StyleableDoubleProperty;
+import javafx.css.StyleableProperty;
 
 /**
  * 
@@ -49,7 +51,7 @@ public class SimpleStyleableDoubleProperty extends StyleableDoubleProperty {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	@Override
+//	@Override
 	public StyleableProperty getStyleableProperty() {
 		return property;
 	}
@@ -62,6 +64,13 @@ public class SimpleStyleableDoubleProperty extends StyleableDoubleProperty {
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public CssMetaData<? extends Styleable, Number> getCssMetaData()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -56,7 +56,7 @@ import jfxtras.labs.scene.control.gauge.SimpleBattery;
  * Date: 30.03.12
  * Time: 09:19
  */
-public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBehavior> {
+public class SimpleBatterySkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<SimpleBattery, SimpleBatteryBehavior> {
     private SimpleBattery  control;
     private boolean        isDirty;
     private boolean        initialized;
@@ -144,30 +144,30 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
 
     public final void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            drawBackground();
-            drawMain();
-            drawForeground();
-            getChildren().setAll(background,
-                main,
-                foreground);
-        }
-        isDirty = false;
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        if (!initialized) {
+//            init();
+//        }
+//        if (control.getScene() != null) {
+//            drawBackground();
+//            drawMain();
+//            drawForeground();
+//            getChildren().setAll(background,
+//                main,
+//                foreground);
+//        }
+//        isDirty = false;
+//
+//        super.layoutChildren();
+//    }
 
-        super.layoutChildren();
-    }
-
-    @Override public final SimpleBattery getSkinnable() {
+    public final SimpleBattery getControl() {
         return control;
     }
 
@@ -178,7 +178,7 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
     @Override protected double computePrefWidth(final double PREF_WIDTH) {
         double prefWidth = 128;
         if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, PREF_WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
@@ -186,7 +186,7 @@ public class SimpleBatterySkin extends SkinBase<SimpleBattery, SimpleBatteryBeha
     @Override protected double computePrefHeight(final double PREF_HEIGHT) {
         double prefHeight = 128;
         if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, PREF_HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
     }

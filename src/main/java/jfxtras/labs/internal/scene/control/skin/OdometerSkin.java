@@ -65,7 +65,7 @@ import java.util.List;
  * Date: 16.03.12
  * Time: 15:24
  */
-public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
+public class OdometerSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<Odometer, OdometerBehavior> {
     private Odometer   control;
     private boolean    isDirty;
     private boolean    initialized;
@@ -149,10 +149,10 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
                 }
             }
         } else if ("NO_OF_DIGITS".equals(PROPERTY)) {
-            control.setPrefSize(0.5925925925925926 * getPrefHeight() * (control.getNoOfDigits() + control.getNoOfDecimals()), getPrefHeight());
+            control.setPrefSize(0.5925925925925926 * getSkinnable().getPrefHeight() * (control.getNoOfDigits() + control.getNoOfDecimals()), getSkinnable().getPrefHeight());
             repaint();
         } else if ("NO_OF_DECIMALS".equals(PROPERTY)) {
-            control.setPrefSize(0.5925925925925926 * getPrefHeight() * (control.getNoOfDigits() + control.getNoOfDecimals()), getPrefHeight());
+            control.setPrefSize(0.5925925925925926 * getSkinnable().getPrefHeight() * (control.getNoOfDigits() + control.getNoOfDecimals()), getSkinnable().getPrefHeight());
             repaint();
         } else if ("DECIMAL_COLOR".equals(PROPERTY)) {
             repaint();
@@ -175,35 +175,35 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
 
     public final void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            font = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/droidsansmono.ttf"), (0.85 * control.getPrefHeight()));
-            setClip(new Rectangle(0, 1, control.getPrefWidth(), control.getPrefHeight()));
-            getChildren().clear();
-            drawBackground();
-            setupDials();
-            drawForeground();
-            getChildren().add(background);
-            for (Dial dial : listOfDials) {
-                getChildren().addAll(dial.getNextNumberGroup(), dial.getCurrentNumberGroup());
-            }
-            getChildren().add(foreground);
-        }
-        isDirty = false;
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        if (!initialized) {
+//            init();
+//        }
+//        if (control.getScene() != null) {
+//            font = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/droidsansmono.ttf"), (0.85 * control.getPrefHeight()));
+//            setClip(new Rectangle(0, 1, control.getPrefWidth(), control.getPrefHeight()));
+//            getChildren().clear();
+//            drawBackground();
+//            setupDials();
+//            drawForeground();
+//            getChildren().add(background);
+//            for (Dial dial : listOfDials) {
+//                getChildren().addAll(dial.getNextNumberGroup(), dial.getCurrentNumberGroup());
+//            }
+//            getChildren().add(foreground);
+//        }
+//        isDirty = false;
+//
+//        super.layoutChildren();
+//    }
 
-        super.layoutChildren();
-    }
-
-    @Override public final Odometer getSkinnable() {
+    public final Odometer getControl() {
         return control;
     }
 

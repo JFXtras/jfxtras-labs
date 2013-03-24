@@ -53,7 +53,7 @@ import java.util.Map;
  * Date: 13.03.12
  * Time: 11:27
  */
-public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentBehavior> {
+public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<SixteenSegment, SixteenSegmentBehavior> {
     private SixteenSegment                     control;
     private boolean                            isDirty;
     private boolean                            initialized;
@@ -126,28 +126,28 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
 
     public final void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            updateCharacter();
-            getChildren().setAll(segments);
-        }
-        isDirty = false;
-
-        super.layoutChildren();
-    }
-
-    @Override public final SixteenSegment getSkinnable() {
-        return control;
-    }
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        if (!initialized) {
+//            init();
+//        }
+//        if (control.getScene() != null) {
+//            updateCharacter();
+//            getChildren().setAll(segments);
+//        }
+//        isDirty = false;
+//
+//        super.layoutChildren();
+//    }
+//
+//    @Override public final SixteenSegment getSkinnable() {
+//        return control;
+//    }
 
     @Override public final void dispose() {
         control = null;
@@ -156,7 +156,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
     @Override protected double computePrefWidth(final double PREF_WIDTH) {
         double prefWidth = 40;
         if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, PREF_WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
@@ -164,7 +164,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
     @Override protected double computePrefHeight(final double PREF_HEIGHT) {
         double prefHeight = 56;
         if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, PREF_HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
     }
@@ -182,6 +182,7 @@ public class SixteenSegmentSkin extends SkinBase<SixteenSegment, SixteenSegmentB
         final String ON_STYLE = control.isPlainColor() ? "sixteen-segment-plain-on" : "sixteen-segment-on";
 
         if (control.getCustomSegmentMapping().isEmpty()) {
+        	
             for (SixteenSegment.Segment segment : segmentMap.keySet()) {
                 if (control.getSegmentMapping().containsKey(ASCII)) {
                     if (control.getSegmentMapping().get(ASCII).contains(segment)) {

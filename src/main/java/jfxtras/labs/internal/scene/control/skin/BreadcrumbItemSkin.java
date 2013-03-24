@@ -45,7 +45,7 @@ import jfxtras.labs.scene.control.BreadcrumbItem;
  *
  * @author Thierry Wasylczenko
  */
-public class BreadcrumbItemSkin extends SkinBase<BreadcrumbItem, BehaviorBase<BreadcrumbItem>> {
+public class BreadcrumbItemSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<BreadcrumbItem, BehaviorBase<BreadcrumbItem>> {
 
     private class BreadcrumbItemMouseHandler implements EventHandler<MouseEvent> {
 

@@ -57,7 +57,7 @@ import jfxtras.labs.scene.control.gauge.TrafficLight;
  * Date: 20.02.12
  * Time: 20:52
  */
-public class TrafficLightSkin extends SkinBase<TrafficLight, TrafficLightBehavior> {
+public class TrafficLightSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<TrafficLight, TrafficLightBehavior> {
     public static final long BLINK_INTERVAL = 500000000l;
     private TrafficLight control;
     private boolean        isDirty;
@@ -172,28 +172,28 @@ public class TrafficLightSkin extends SkinBase<TrafficLight, TrafficLightBehavio
 
     public final void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            drawTrafficLight();
-            getChildren().setAll(trafficlight);
-        }
-        isDirty = false;
-
-        super.layoutChildren();
-    }
-
-    @Override public final TrafficLight getSkinnable() {
-        return control;
-    }
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        if (!initialized) {
+//            init();
+//        }
+//        if (control.getScene() != null) {
+//            drawTrafficLight();
+//            getChildren().setAll(trafficlight);
+//        }
+//        isDirty = false;
+//
+//        super.layoutChildren();
+//    }
+//
+//    @Override public final TrafficLight getSkinnable() {
+//        return control;
+//    }
 
     @Override public final void dispose() {
         control = null;
@@ -202,7 +202,7 @@ public class TrafficLightSkin extends SkinBase<TrafficLight, TrafficLightBehavio
     @Override protected double computePrefWidth(final double PREF_WIDTH) {
         double prefWidth = 80;
         if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, PREF_WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
@@ -210,7 +210,7 @@ public class TrafficLightSkin extends SkinBase<TrafficLight, TrafficLightBehavio
     @Override protected double computePrefHeight(final double PREF_HEIGHT) {
         double prefHeight = 200;
         if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, PREF_HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
     }

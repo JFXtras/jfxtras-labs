@@ -79,7 +79,7 @@ import java.util.TimeZone;
  * Date: 12.03.12
  * Time: 12:44
  */
-public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
+public class ClockSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<Clock, ClockBehavior> {
     private static final long     INTERVAL = 50000000l;
     private static final Calendar CAL      = Calendar.getInstance();
     private Clock                 control;
@@ -177,15 +177,15 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
 
         if (control.getBrightBackgroundPaint() == null) {
             control.setBrightBackgroundPaint(new RadialGradient(0, 0,
-                                                                getPrefWidth() / 2, getPrefHeight() / 2,
-                                                                getPrefWidth() / 2, false, CycleMethod.NO_CYCLE,
+                                                                getSkinnable().getPrefWidth() / 2, getSkinnable().getPrefHeight() / 2,
+                                                                getSkinnable().getPrefWidth() / 2, false, CycleMethod.NO_CYCLE,
                                                                 new Stop(0, Color.rgb(191, 207, 197)),
                                                                 new Stop(0.7, Color.rgb(226, 239, 229)),
                                                                 new Stop(1.0, Color.rgb(199, 216, 206))));
         }
         if (control.getDarkBackgroundPaint() == null) {
                     control.setDarkBackgroundPaint(new LinearGradient(0, 0,
-                                                                      0, getPrefHeight(),
+                                                                      0, getSkinnable().getPrefHeight(),
                                                                       false, CycleMethod.NO_CYCLE,
                                                                       new Stop(0, Color.rgb(0, 0, 0)),
                                                                       new Stop(1.0, Color.rgb(0, 0, 0))));
@@ -294,33 +294,34 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
 
     public void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
+    
+// removing compilation problem
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        if (!initialized) {
+//            init();
+//        }
+//        if (control.getScene() != null) {
+//            drawClock();
+//            drawMinutePointer();
+//            drawHourPointer();
+//            drawSecondPointer();
+//            drawShadows();
+//            getChildren().setAll(clock,
+//                minutePointerShadow,
+//                hourPointerShadow,
+//                secondPointerShadow);
+//        }
+//        isDirty = false;
+//
+//        super.layoutChildren();
+//    }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            drawClock();
-            drawMinutePointer();
-            drawHourPointer();
-            drawSecondPointer();
-            drawShadows();
-            getChildren().setAll(clock,
-                minutePointerShadow,
-                hourPointerShadow,
-                secondPointerShadow);
-        }
-        isDirty = false;
-
-        super.layoutChildren();
-    }
-
-    @Override public final Clock getSkinnable() {
+    public final Clock getControl() {
         return control;
     }
 
@@ -331,7 +332,7 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
     @Override protected double computePrefWidth(final double PREF_HEIGHT) {
         double prefHeight = 200;
         if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, PREF_HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
     }
@@ -339,7 +340,7 @@ public class ClockSkin extends SkinBase<Clock, ClockBehavior> {
     @Override protected double computePrefHeight(final double PREF_WIDTH) {
         double prefWidth = 200;
         if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, PREF_WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }

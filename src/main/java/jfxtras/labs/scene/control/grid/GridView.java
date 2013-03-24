@@ -36,13 +36,13 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.WritableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.css.StyleableObjectProperty;
+import javafx.css.StyleableProperty;
 import javafx.geometry.HPos;
 import javafx.scene.control.Control;
 import javafx.util.Callback;
 import jfxtras.labs.util.grid.SimpleStyleableDoubleProperty;
 
-import com.sun.javafx.css.StyleableObjectProperty;
-import com.sun.javafx.css.StyleableProperty;
 import com.sun.javafx.css.converters.EnumConverter;
 import com.sun.javafx.css.converters.SizeConverter;
 
@@ -86,11 +86,11 @@ public class GridView<T> extends Control {
 	}
 
 	public final DoubleProperty horizontalCellSpacingProperty() {
-		if (horizontalCellSpacing == null) {
-			horizontalCellSpacing = new SimpleStyleableDoubleProperty(this,
-					"horizontalCellSpacing",
-					StyleableProperties.HORIZONTAL_CELL_SPACING);
-		}
+//		if (horizontalCellSpacing == null) {
+//			horizontalCellSpacing = new SimpleStyleableDoubleProperty(this,
+//					"horizontalCellSpacing",
+//					StyleableProperties.HORIZONTAL_CELL_SPACING);
+//		}
 		return horizontalCellSpacing;
 	}
 
@@ -103,19 +103,19 @@ public class GridView<T> extends Control {
 	}
 
 	public final DoubleProperty verticalCellSpacingProperty() {
-		if (verticalCellSpacing == null) {
-			verticalCellSpacing = new SimpleStyleableDoubleProperty(this,
-					"verticalCellSpacing",
-					StyleableProperties.VERTICAL_CELL_SPACING);
-		}
+//		if (verticalCellSpacing == null) {
+//			verticalCellSpacing = new SimpleStyleableDoubleProperty(this,
+//					"verticalCellSpacing",
+//					StyleableProperties.VERTICAL_CELL_SPACING);
+//		}
 		return verticalCellSpacing;
 	}
 
 	public final DoubleProperty cellWidthProperty() {
-		if (cellWidth == null) {
-			cellWidth = new SimpleStyleableDoubleProperty(this, "cellWidth",
-					StyleableProperties.CELL_WIDTH);
-		}
+//		if (cellWidth == null) {
+//			cellWidth = new SimpleStyleableDoubleProperty(this, "cellWidth",
+//					StyleableProperties.CELL_WIDTH);
+//		}
 		return cellWidth;
 	}
 
@@ -128,10 +128,10 @@ public class GridView<T> extends Control {
 	}
 
 	public final DoubleProperty cellHeightProperty() {
-		if (cellHeight == null) {
-			cellHeight = new SimpleStyleableDoubleProperty(this, "cellHeight",
-					StyleableProperties.CELL_HEIGHT);
-		}
+//		if (cellHeight == null) {
+//			cellHeight = new SimpleStyleableDoubleProperty(this, "cellHeight",
+//					StyleableProperties.CELL_HEIGHT);
+//		}
 		return cellHeight;
 	}
 
@@ -144,26 +144,26 @@ public class GridView<T> extends Control {
 	}
 
 	public final ObjectProperty<HPos> horizontalAlignmentProperty() {
-		if (horizontalAlignment == null) {
-			horizontalAlignment = new StyleableObjectProperty<HPos>(HPos.CENTER) {
-
-				@SuppressWarnings("rawtypes")
-				@Override
-				public StyleableProperty getStyleableProperty() {
-					return StyleableProperties.HORIZONTAL_ALIGNMENT;
-				}
-
-				@Override
-				public Object getBean() {
-					return GridView.this;
-				}
-
-				@Override
-				public String getName() {
-					return "horizontalAlignment";
-				}
-			};
-		}
+//		if (horizontalAlignment == null) {
+//			horizontalAlignment = new StyleableObjectProperty<HPos>(HPos.CENTER) {
+//
+//				@SuppressWarnings("rawtypes")
+//				@Override
+//				public StyleableProperty getStyleableProperty() {
+//					return StyleableProperties.HORIZONTAL_ALIGNMENT;
+//				}
+//
+//				@Override
+//				public Object getBean() {
+//					return GridView.this;
+//				}
+//
+//				@Override
+//				public String getName() {
+//					return "horizontalAlignment";
+//				}
+//			};
+//		}
 		return horizontalAlignment;
 	}
 
@@ -214,103 +214,103 @@ public class GridView<T> extends Control {
 	@SuppressWarnings({ "rawtypes", "deprecation" })
 	private static class StyleableProperties {
 
-		private static final StyleableProperty<GridView, HPos> HORIZONTAL_ALIGNMENT = new StyleableProperty<GridView, HPos>(
-				"-fx-horizontal-alignment", new EnumConverter<HPos>(HPos.class),
-				HPos.CENTER) {
-
-			@Override
-			public boolean isSettable(GridView n) {
-				return n.horizontalAlignment == null || !n.horizontalAlignment.isBound();
-			}
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public WritableValue<HPos> getWritableValue(GridView n) {
-				return n.horizontalAlignmentProperty();
-			}
-
-			@Override
-			public HPos getInitialValue(GridView n) {
-				return HPos.CENTER;
-			}
-		};
-
-		private static final StyleableProperty<GridView, Number> CELL_WIDTH = new StyleableProperty<GridView, Number>(
-				"-fx-cell-width", SizeConverter.getInstance(), 64.0) {
-
-			@Override
-			public boolean isSettable(GridView n) {
-				return n.cellWidth == null || !n.cellWidth.isBound();
-			}
-
-			@Override
-			public WritableValue<Number> getWritableValue(GridView n) {
-				return n.cellWidthProperty();
-			}
-		};
-
-		private static final StyleableProperty<GridView, Number> CELL_HEIGHT = new StyleableProperty<GridView, Number>(
-				"-fx-cell-height", SizeConverter.getInstance(), 64.0) {
-
-			@Override
-			public boolean isSettable(GridView n) {
-				return n.cellHeight == null || !n.cellHeight.isBound();
-			}
-
-			@Override
-			public WritableValue<Number> getWritableValue(GridView n) {
-				return n.cellHeightProperty();
-			}
-		};
-
-		private static final StyleableProperty<GridView, Number> HORIZONTAL_CELL_SPACING = new StyleableProperty<GridView, Number>(
-				"-fx-horizontal-cell-spacing", SizeConverter.getInstance(),
-				12.0) {
-
-			@Override
-			public boolean isSettable(GridView n) {
-				return n.horizontalCellSpacing == null
-						|| !n.horizontalCellSpacing.isBound();
-			}
-
-			@Override
-			public WritableValue<Number> getWritableValue(GridView n) {
-				return n.horizontalCellSpacingProperty();
-			}
-		};
-
-		private static final StyleableProperty<GridView, Number> VERTICAL_CELL_SPACING = new StyleableProperty<GridView, Number>(
-				"-fx-vertical-cell-spacing", SizeConverter.getInstance(), 12.0) {
-
-			@Override
-			public boolean isSettable(GridView n) {
-				return n.verticalCellSpacing == null
-						|| !n.verticalCellSpacing.isBound();
-			}
-
-			@Override
-			public WritableValue<Number> getWritableValue(GridView n) {
-				return n.verticalCellSpacingProperty();
-			}
-		};
-
-		private static final List<StyleableProperty> STYLEABLES;
-		static {
-			final List<StyleableProperty> styleables = new ArrayList<StyleableProperty>(
-					Control.impl_CSS_STYLEABLES());
-			Collections.addAll(styleables, HORIZONTAL_ALIGNMENT, CELL_HEIGHT, CELL_WIDTH,
-					HORIZONTAL_CELL_SPACING, VERTICAL_CELL_SPACING);
-			STYLEABLES = Collections.unmodifiableList(styleables);
-		}
+//		private static final StyleableProperty<GridView, HPos> HORIZONTAL_ALIGNMENT = new StyleableProperty<GridView, HPos>(
+//				"-fx-horizontal-alignment", new EnumConverter<HPos>(HPos.class),
+//				HPos.CENTER) {
+//
+//			@Override
+//			public boolean isSettable(GridView n) {
+//				return n.horizontalAlignment == null || !n.horizontalAlignment.isBound();
+//			}
+//
+//			@SuppressWarnings("unchecked")
+//			@Override
+//			public WritableValue<HPos> getWritableValue(GridView n) {
+//				return n.horizontalAlignmentProperty();
+//			}
+//
+//			@Override
+//			public HPos getInitialValue(GridView n) {
+//				return HPos.CENTER;
+//			}
+//		};
+//
+//		private static final StyleableProperty<GridView, Number> CELL_WIDTH = new StyleableProperty<GridView, Number>(
+//				"-fx-cell-width", SizeConverter.getInstance(), 64.0) {
+//
+//			@Override
+//			public boolean isSettable(GridView n) {
+//				return n.cellWidth == null || !n.cellWidth.isBound();
+//			}
+//
+//			@Override
+//			public WritableValue<Number> getWritableValue(GridView n) {
+//				return n.cellWidthProperty();
+//			}
+//		};
+//
+//		private static final StyleableProperty<GridView, Number> CELL_HEIGHT = new StyleableProperty<GridView, Number>(
+//				"-fx-cell-height", SizeConverter.getInstance(), 64.0) {
+//
+//			@Override
+//			public boolean isSettable(GridView n) {
+//				return n.cellHeight == null || !n.cellHeight.isBound();
+//			}
+//
+//			@Override
+//			public WritableValue<Number> getWritableValue(GridView n) {
+//				return n.cellHeightProperty();
+//			}
+//		};
+//
+//		private static final StyleableProperty<GridView, Number> HORIZONTAL_CELL_SPACING = new StyleableProperty<GridView, Number>(
+//				"-fx-horizontal-cell-spacing", SizeConverter.getInstance(),
+//				12.0) {
+//
+//			@Override
+//			public boolean isSettable(GridView n) {
+//				return n.horizontalCellSpacing == null
+//						|| !n.horizontalCellSpacing.isBound();
+//			}
+//
+//			@Override
+//			public WritableValue<Number> getWritableValue(GridView n) {
+//				return n.horizontalCellSpacingProperty();
+//			}
+//		};
+//
+//		private static final StyleableProperty<GridView, Number> VERTICAL_CELL_SPACING = new StyleableProperty<GridView, Number>(
+//				"-fx-vertical-cell-spacing", SizeConverter.getInstance(), 12.0) {
+//
+//			@Override
+//			public boolean isSettable(GridView n) {
+//				return n.verticalCellSpacing == null
+//						|| !n.verticalCellSpacing.isBound();
+//			}
+//
+//			@Override
+//			public WritableValue<Number> getWritableValue(GridView n) {
+//				return n.verticalCellSpacingProperty();
+//			}
+//		};
+//
+//		private static final List<StyleableProperty> STYLEABLES;
+//		static {
+//			final List<StyleableProperty> styleables = new ArrayList<StyleableProperty>(
+//					Control.impl_CSS_STYLEABLES());
+//			Collections.addAll(styleables, HORIZONTAL_ALIGNMENT, CELL_HEIGHT, CELL_WIDTH,
+//					HORIZONTAL_CELL_SPACING, VERTICAL_CELL_SPACING);
+//			STYLEABLES = Collections.unmodifiableList(styleables);
+//		}
 	}
 
-	@SuppressWarnings("rawtypes")
-	public static List<StyleableProperty> impl_CSS_STYLEABLES() {
-		return GridView.StyleableProperties.STYLEABLES;
-	}
+//	@SuppressWarnings("rawtypes")
+//	public static List<StyleableProperty> impl_CSS_STYLEABLES() {
+//		return GridView.StyleableProperties.STYLEABLES;
+//	}
 
-	@SuppressWarnings("rawtypes")
-	public List<StyleableProperty> impl_getStyleableProperties() {
-		return impl_CSS_STYLEABLES();
-	}
+//	@SuppressWarnings("rawtypes")
+//	public List<StyleableProperty> impl_getStyleableProperties() {
+//		return impl_CSS_STYLEABLES();
+//	}
 }

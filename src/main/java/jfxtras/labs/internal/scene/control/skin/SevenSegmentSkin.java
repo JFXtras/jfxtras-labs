@@ -53,7 +53,7 @@ import java.util.Map;
  * Date: 23.04.12
  * Time: 08:12
  */
-public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavior> {
+public class SevenSegmentSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<SevenSegment, SevenSegmentBehavior> {
     private SevenSegment                     control;
     private boolean                          isDirty;
     private boolean                          initialized;
@@ -120,26 +120,26 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
 
     public final void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            updateCharacter();
-            getChildren().setAll(segments);
-        }
-        isDirty = false;
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        if (!initialized) {
+//            init();
+//        }
+//        if (control.getScene() != null) {
+//            updateCharacter();
+//            getChildren().setAll(segments);
+//        }
+//        isDirty = false;
+//
+//        super.layoutChildren();
+//    }
 
-        super.layoutChildren();
-    }
-
-    @Override public final SevenSegment getSkinnable() {
+    public final SevenSegment getControl() {
         return control;
     }
 
@@ -150,7 +150,7 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
     @Override protected double computePrefWidth(final double PREF_WIDTH) {
         double prefWidth = 40;
         if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, PREF_WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
@@ -158,7 +158,7 @@ public class SevenSegmentSkin extends SkinBase<SevenSegment, SevenSegmentBehavio
     @Override protected double computePrefHeight(final double PREF_HEIGHT) {
         double prefHeight = 56;
         if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, PREF_HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
     }

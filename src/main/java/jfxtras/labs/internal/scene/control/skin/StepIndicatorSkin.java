@@ -55,7 +55,7 @@ import jfxtras.labs.util.Util;
  * Date: 21.03.12
  * Time: 11:52
  */
-public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBehavior> {
+public class StepIndicatorSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<StepIndicator, StepIndicatorBehavior> {
     private StepIndicator control;
     private boolean       isDirty;
     private boolean       initialized;
@@ -120,29 +120,29 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
 
     public final void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            drawCircles();
-            drawSelectedCircles();
-            getChildren().setAll(circles, selectedCircles);
-        }
-        isDirty = false;
-
-        super.layoutChildren();
-    }
-
-    @Override public final StepIndicator getSkinnable() {
-        return control;
-    }
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        if (!initialized) {
+//            init();
+//        }
+//        if (control.getScene() != null) {
+//            drawCircles();
+//            drawSelectedCircles();
+//            getChildren().setAll(circles, selectedCircles);
+//        }
+//        isDirty = false;
+//
+//        super.layoutChildren();
+//    }
+//
+//    @Override public final StepIndicator getSkinnable() {
+//        return control;
+//    }
 
     @Override public final void dispose() {
         control = null;
@@ -151,7 +151,7 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
     @Override protected double computePrefWidth(final double PREF_WIDTH) {
         double prefWidth = 200;
         if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, PREF_WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
@@ -159,7 +159,7 @@ public class StepIndicatorSkin extends SkinBase<StepIndicator, StepIndicatorBeha
     @Override protected double computePrefHeight(final double PREF_HEIGHT) {
         double prefHeight = 60;
         if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, PREF_HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
     }

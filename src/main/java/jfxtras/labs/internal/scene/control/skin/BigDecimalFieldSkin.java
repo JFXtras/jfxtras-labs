@@ -30,6 +30,8 @@ package jfxtras.labs.internal.scene.control.skin;
 import java.math.BigDecimal;
 import java.text.ParseException;
 
+import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
+
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
@@ -46,6 +48,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import jfxtras.labs.internal.scene.control.behavior.BatteryBehavior;
 import jfxtras.labs.internal.scene.control.behavior.BigDecimalFieldBehaviour;
 import jfxtras.labs.scene.control.BigDecimalField;
 
@@ -56,7 +59,7 @@ import javafx.scene.control.SkinBase;
  *
  * @author Thomas Bolz
  */
-public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFieldBehaviour> {
+public class BigDecimalFieldSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<BigDecimalField, BigDecimalFieldBehaviour> {
 
     private BigDecimalField CONTROL;
 
@@ -65,7 +68,7 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
         this.CONTROL = control;
         createNodes();
         initFocusSimulation();
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
 	private NumberTextField	textField;
@@ -76,8 +79,7 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
 	private final double	ARROW_SIZE		= 4;
 	private final double	ARROW_HEIGHT	= 0.7;
 
-    @Override
-    public BigDecimalField getSkinnable() {return CONTROL;}
+    public BigDecimalField getControl() {return CONTROL;}
     
     /**
      * Creates the Nodes in this Skin
@@ -130,27 +132,28 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
         
     }
 
-    @Override
-    protected void layoutChildren() {
-        super.layoutChildren();
-        Insets insets = getInsets();
-        double x = insets.getLeft();
-        double y = insets.getTop();
-        double textfieldHeight = this.getHeight()-insets.getTop() - insets.getBottom();
-        double buttonWidth = textField.prefHeight(-1);
-        double textfieldWidth = this.getWidth()-insets.getLeft()-insets.getRight() - buttonWidth;
-        layoutInArea(textField, x, y, textfieldWidth, textfieldHeight, USE_PREF_SIZE, HPos.LEFT, VPos.TOP);
-        layoutInArea(btnUp, x+textfieldWidth, y, buttonWidth, textfieldHeight/2, USE_PREF_SIZE, HPos.LEFT, VPos.TOP);
-        layoutInArea(btnDown, x+textfieldWidth, y+textfieldHeight/2, buttonWidth, textfieldHeight/2, USE_PREF_SIZE, HPos.LEFT, VPos.TOP);
-    }
+// removing the compilation problem    
+//    @Override
+//    protected void layoutChildren() {
+//        super.layoutChildren();
+//        Insets insets = getInsets();
+//        double x = insets.getLeft();
+//        double y = insets.getTop();
+//        double textfieldHeight = this.getHeight()-insets.getTop() - insets.getBottom();
+//        double buttonWidth = textField.prefHeight(-1);
+//        double textfieldWidth = this.getWidth()-insets.getLeft()-insets.getRight() - buttonWidth;
+//        layoutInArea(textField, x, y, textfieldWidth, textfieldHeight, USE_PREF_SIZE, HPos.LEFT, VPos.TOP);
+//        layoutInArea(btnUp, x+textfieldWidth, y, buttonWidth, textfieldHeight/2, USE_PREF_SIZE, HPos.LEFT, VPos.TOP);
+//        layoutInArea(btnDown, x+textfieldWidth, y+textfieldHeight/2, buttonWidth, textfieldHeight/2, USE_PREF_SIZE, HPos.LEFT, VPos.TOP);
+//    }
 
     @Override
     protected double computePrefWidth(double PREF_WIDTH) {
         super.computePrefWidth(PREF_WIDTH);
-        double prefWidth = getInsets().getLeft()
+        double prefWidth = getSkinnable().getInsets().getLeft()
                 + textField.prefWidth(PREF_WIDTH)
                 + textField.prefHeight(PREF_WIDTH)
-                + getInsets().getRight();
+                + getSkinnable().getInsets().getRight();
         return prefWidth;
     }
 

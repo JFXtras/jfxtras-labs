@@ -38,7 +38,7 @@ import jfxtras.labs.scene.control.BreadcrumbItem;
  *
  * @author Thierry Wasylczenko
  */
-public class BreadcrumbBarSkin extends SkinBase<BreadcrumbBar, BehaviorBase<BreadcrumbBar>> {
+public class BreadcrumbBarSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<BreadcrumbBar, BehaviorBase<BreadcrumbBar>> {
 
     private HBox itemsBox = new HBox();
 

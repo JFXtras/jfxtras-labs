@@ -351,30 +351,30 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
 
     public final void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        if (!initialized) {
-            init();
-        }
-        if (control.isCanvasMode()) {
-            drawCanvasGauge(ctx);
-            getChildren().setAll(canvas);
-        } else {
-            drawNodeGauge();
-            getChildren().setAll(gauge);
-        }
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        if (!initialized) {
+//            init();
+//        }
+//        if (control.isCanvasMode()) {
+//            drawCanvasGauge(ctx);
+//            getChildren().setAll(canvas);
+//        } else {
+//            drawNodeGauge();
+//            getChildren().setAll(gauge);
+//        }
+//
+//        isDirty = false;
+//
+//        super.layoutChildren();
+//    }
 
-        isDirty = false;
-
-        super.layoutChildren();
-    }
-
-    @Override public final SimpleLinearGauge getSkinnable() {
+    public final SimpleLinearGauge getControl() {
         return control;
     }
 
@@ -385,7 +385,7 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
     @Override protected double computePrefWidth(final double PREF_WIDTH) {
         double prefWidth = 200;
         if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, PREF_WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
@@ -393,25 +393,25 @@ public class SimpleLinearGaugeSkin extends GaugeSkinBase<SimpleLinearGauge, Simp
     @Override protected double computePrefHeight(final double PREF_HEIGHT) {
         double prefHeight = 100;
         if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, PREF_HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefHeight(prefHeight);
     }
 
     @Override protected double computeMinWidth(final double MIN_WIDTH) {
-        return super.computeMinWidth(Math.max(50, MIN_WIDTH - getInsets().getLeft() - getInsets().getRight()));
+        return super.computeMinWidth(Math.max(50, MIN_WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight()));
     }
 
     @Override protected double computeMinHeight(final double MIN_HEIGHT) {
-        return super.computeMinHeight(Math.max(50, MIN_HEIGHT - getInsets().getTop() - getInsets().getBottom()));
+        return super.computeMinHeight(Math.max(50, MIN_HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom()));
     }
 
     @Override protected double computeMaxWidth(final double MAX_WIDTH) {
-        return super.computeMaxWidth(Math.max(200, MAX_WIDTH - getInsets().getLeft() - getInsets().getRight()));
+        return super.computeMaxWidth(Math.max(200, MAX_WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight()));
     }
 
     @Override protected double computeMaxHeight(final double MAX_HEIGHT) {
-        return super.computeMaxHeight(Math.max(200, MAX_HEIGHT - getInsets().getTop() - getInsets().getBottom()));
+        return super.computeMaxHeight(Math.max(200, MAX_HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom()));
     }
 
     private void updateNumberFormat() {

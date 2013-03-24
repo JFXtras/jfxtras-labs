@@ -85,7 +85,7 @@ import java.util.ArrayList;
  * Date: 17.01.12
  * Time: 09:03
  */
-public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase<C>> extends SkinBase<C, B> {
+public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase<C>> extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<C, B> {
     private long blinkInterval = 500000000l;
 
 
@@ -180,16 +180,17 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         return getSkinnable().prefHeight(HEIGHT);
     }
 
-    @Override protected void layoutChildren() {
-        final Insets padding = getInsets();
-
-        final double x = padding.getLeft();
-        final double y = padding.getTop();
-        final double w = getWidth() - (padding.getLeft() + padding.getRight());
-        final double h = getHeight() - (padding.getTop() + padding.getBottom());
-
-        //layoutGauge(x, y, w, h);
-    }
+// removing compilation problems    
+//    @Override protected void layoutChildren() {
+//        final Insets padding = getInsets();
+//
+//        final double x = padding.getLeft();
+//        final double y = padding.getTop();
+//        final double w = getWidth() - (padding.getLeft() + padding.getRight());
+//        final double h = getHeight() - (padding.getTop() + padding.getBottom());
+//
+//        //layoutGauge(x, y, w, h);
+//    }
 
 
     // ******************** Methods *******************************************

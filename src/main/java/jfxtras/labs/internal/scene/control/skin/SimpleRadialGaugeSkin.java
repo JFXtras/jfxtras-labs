@@ -352,34 +352,34 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
 
     public final void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        if (!initialized) {
-            init();
-        }
-        if (control.isCanvasMode()) {
-            alertIndicator.setLayoutX((size - alertIndicator.getWidth()) * 0.5);
-            alertIndicator.setLayoutY(size * 0.6);
-            drawCanvasGauge(ctx);
-            getChildren().setAll(canvas, alertIndicator);
-        } else {
-            drawNodeGauge();
-            getChildren().setAll(gauge);
-        }
-
-        isDirty = false;
-
-        super.layoutChildren();
-    }
-
-    @Override public final SimpleRadialGauge getSkinnable() {
-        return control;
-    }
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        if (!initialized) {
+//            init();
+//        }
+//        if (control.isCanvasMode()) {
+//            alertIndicator.setLayoutX((size - alertIndicator.getWidth()) * 0.5);
+//            alertIndicator.setLayoutY(size * 0.6);
+//            drawCanvasGauge(ctx);
+//            getChildren().setAll(canvas, alertIndicator);
+//        } else {
+//            drawNodeGauge();
+//            getChildren().setAll(gauge);
+//        }
+//
+//        isDirty = false;
+//
+//        super.layoutChildren();
+//    }
+//
+//    @Override public final SimpleRadialGauge getSkinnable() {
+//        return control;
+//    }
 
     @Override public final void dispose() {
         control = null;
@@ -388,7 +388,7 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
     @Override protected double computePrefWidth(final double PREF_HEIGHT) {
         double prefWidth = 200;
         if (PREF_HEIGHT != -1) {
-            prefWidth = Math.max(0, PREF_HEIGHT - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, PREF_HEIGHT - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
@@ -396,25 +396,25 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
     @Override protected double computePrefHeight(final double PREF_WIDTH) {
         double prefHeight = 200;
         if (PREF_WIDTH != -1) {
-            prefHeight = Math.max(0, PREF_WIDTH - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, PREF_WIDTH - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefHeight(prefHeight);
     }
 
     @Override protected double computeMinWidth(final double MIN_HEIGHT) {
-        return super.computeMinWidth(Math.max(50, MIN_HEIGHT - getInsets().getLeft() - getInsets().getRight()));
+        return super.computeMinWidth(Math.max(50, MIN_HEIGHT - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight()));
     }
 
     @Override protected double computeMinHeight(final double MIN_WIDTH) {
-        return super.computeMinHeight(Math.max(50, MIN_WIDTH - getInsets().getTop() - getInsets().getBottom()));
+        return super.computeMinHeight(Math.max(50, MIN_WIDTH - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom()));
     }
 
     @Override protected double computeMaxWidth(final double MAX_HEIGHT) {
-        return super.computeMaxWidth(Math.max(200, MAX_HEIGHT - getInsets().getLeft() - getInsets().getRight()));
+        return super.computeMaxWidth(Math.max(200, MAX_HEIGHT - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight()));
     }
 
     @Override protected double computeMaxHeight(final double MAX_WIDTH) {
-        return super.computeMaxHeight(Math.max(200, MAX_WIDTH - getInsets().getTop() - getInsets().getBottom()));
+        return super.computeMaxHeight(Math.max(200, MAX_WIDTH - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom()));
     }
 
     private void updateNumberFormat() {

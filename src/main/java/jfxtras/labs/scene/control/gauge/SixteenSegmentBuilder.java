@@ -51,94 +51,94 @@ import java.util.Map;
  * Date: 13.03.12
  * Time: 15:35
  */
-public class SixteenSegmentBuilder<B extends SixteenSegmentBuilder<B>> extends ControlBuilder<B> implements Builder<SixteenSegment> {
-    private HashMap<String, Property> properties = new HashMap<String, Property>();
-
-
-    // ******************** Constructors **************************************
-    protected SixteenSegmentBuilder() {};
-
-
-    // ******************** Methods *******************************************
-    public static final SixteenSegmentBuilder create() {
-        return new SixteenSegmentBuilder();
-    }
-
-    public final SixteenSegmentBuilder character(final String CHARACTER) {
-        properties.put("character", new SimpleStringProperty(CHARACTER));
-        return this;
-    }
-
-    public final SixteenSegmentBuilder character(final Character CHARACTER) {
-        properties.put("charCharacter", new SimpleObjectProperty<Character>(CHARACTER));
-        return this;
-    }
-
-    public final SixteenSegmentBuilder dotOn(final boolean DOT_ON) {
-        properties.put("dotOn", new SimpleBooleanProperty(DOT_ON));
-        return this;
-    }
-
-    public final SixteenSegmentBuilder customSegmentMapping(final Map<Integer, List<SixteenSegment.Segment>> CUSTOM_SEGMENT_MAPPING) {
-        properties.put("customSegmentMapping", new SimpleObjectProperty<Map<Integer, List<SixteenSegment.Segment>>>(CUSTOM_SEGMENT_MAPPING));
-        return this;
-    }
-
-    public final SixteenSegmentBuilder color(final Color COLOR) {
-        properties.put("color", new SimpleObjectProperty<Color>(COLOR));
-        return this;
-    }
-
-    public final SixteenSegmentBuilder plainColor(final boolean PLAIN_COLOR) {
-        properties.put("plainColor", new SimpleBooleanProperty(PLAIN_COLOR));
-        return this;
-    }
-
-    @Override public final B prefWidth(final double PREF_WIDTH) {
-        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-        return (B)this;
-    }
-
-    @Override public final B prefHeight(final double PREF_HEIGHT) {
-        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-        return (B)this;
-    }
-
-    @Override public final B layoutX(final double LAYOUT_X) {
-            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
-            return (B)this;
-        }
-
-    @Override public final B layoutY(final double LAYOUT_Y) {
-        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
-        return (B)this;
-    }
-
-    @Override public final SixteenSegment build() {
-        final SixteenSegment CONTROL = new SixteenSegment();
-        for (String key : properties.keySet()) {
-            if ("character".equals(key)) {
-                CONTROL.setCharacter(((StringProperty) properties.get(key)).get());
-            } else if ("charCharacter".equals(key)) {
-                CONTROL.setCharacter(((ObjectProperty<Character>) properties.get(key)).get());
-            } else if ("dotOn".equals(key)) {
-                CONTROL.setDotOn(((BooleanProperty) properties.get(key)).get());
-            } else if ("customSegmentMapping".equals(key)) {
-                CONTROL.setCustomSegmentMapping(((ObjectProperty<Map<Integer, List<SixteenSegment.Segment>>>) properties.get(key)).get());
-            } else if ("color".equals(key)) {
-                CONTROL.setColor(((ObjectProperty<Color>) properties.get(key)).get());
-            } else if ("plainColor".equals(key)) {
-                CONTROL.setPlainColor(((BooleanProperty) properties.get(key)).get());
-            }  else if ("prefWidth".equals(key)) {
-                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
-            } else if ("prefHeight".equals(key)) {
-                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
-            } else if ("layoutX".equals(key)) {
-                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
-            } else if ("layoutY".equals(key)) {
-                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
-            }
-        }
-        return CONTROL;
-    }
+public class SixteenSegmentBuilder { //<B extends SixteenSegmentBuilder<B>> extends ControlBuilder<B> implements Builder<SixteenSegment> {
+//    private HashMap<String, Property> properties = new HashMap<String, Property>();
+//
+//
+//    // ******************** Constructors **************************************
+//    protected SixteenSegmentBuilder() {};
+//
+//
+//    // ******************** Methods *******************************************
+//    public static final SixteenSegmentBuilder create() {
+//        return new SixteenSegmentBuilder();
+//    }
+//
+//    public final SixteenSegmentBuilder character(final String CHARACTER) {
+//        properties.put("character", new SimpleStringProperty(CHARACTER));
+//        return this;
+//    }
+//
+//    public final SixteenSegmentBuilder character(final Character CHARACTER) {
+//        properties.put("charCharacter", new SimpleObjectProperty<Character>(CHARACTER));
+//        return this;
+//    }
+//
+//    public final SixteenSegmentBuilder dotOn(final boolean DOT_ON) {
+//        properties.put("dotOn", new SimpleBooleanProperty(DOT_ON));
+//        return this;
+//    }
+//
+//    public final SixteenSegmentBuilder customSegmentMapping(final Map<Integer, List<SixteenSegment.Segment>> CUSTOM_SEGMENT_MAPPING) {
+//        properties.put("customSegmentMapping", new SimpleObjectProperty<Map<Integer, List<SixteenSegment.Segment>>>(CUSTOM_SEGMENT_MAPPING));
+//        return this;
+//    }
+//
+//    public final SixteenSegmentBuilder color(final Color COLOR) {
+//        properties.put("color", new SimpleObjectProperty<Color>(COLOR));
+//        return this;
+//    }
+//
+//    public final SixteenSegmentBuilder plainColor(final boolean PLAIN_COLOR) {
+//        properties.put("plainColor", new SimpleBooleanProperty(PLAIN_COLOR));
+//        return this;
+//    }
+//
+//    @Override public final B prefWidth(final double PREF_WIDTH) {
+//        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
+//        return (B)this;
+//    }
+//
+//    @Override public final B prefHeight(final double PREF_HEIGHT) {
+//        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
+//        return (B)this;
+//    }
+//
+//    @Override public final B layoutX(final double LAYOUT_X) {
+//            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
+//            return (B)this;
+//        }
+//
+//    @Override public final B layoutY(final double LAYOUT_Y) {
+//        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
+//        return (B)this;
+//    }
+//
+//    @Override public final SixteenSegment build() {
+//        final SixteenSegment CONTROL = new SixteenSegment();
+//        for (String key : properties.keySet()) {
+//            if ("character".equals(key)) {
+//                CONTROL.setCharacter(((StringProperty) properties.get(key)).get());
+//            } else if ("charCharacter".equals(key)) {
+//                CONTROL.setCharacter(((ObjectProperty<Character>) properties.get(key)).get());
+//            } else if ("dotOn".equals(key)) {
+//                CONTROL.setDotOn(((BooleanProperty) properties.get(key)).get());
+//            } else if ("customSegmentMapping".equals(key)) {
+//                CONTROL.setCustomSegmentMapping(((ObjectProperty<Map<Integer, List<SixteenSegment.Segment>>>) properties.get(key)).get());
+//            } else if ("color".equals(key)) {
+//                CONTROL.setColor(((ObjectProperty<Color>) properties.get(key)).get());
+//            } else if ("plainColor".equals(key)) {
+//                CONTROL.setPlainColor(((BooleanProperty) properties.get(key)).get());
+//            }  else if ("prefWidth".equals(key)) {
+//                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
+//            } else if ("prefHeight".equals(key)) {
+//                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
+//            } else if ("layoutX".equals(key)) {
+//                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
+//            } else if ("layoutY".equals(key)) {
+//                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
+//            }
+//        }
+//        return CONTROL;
+//    }
 }

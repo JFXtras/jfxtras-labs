@@ -587,63 +587,63 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
 
     public void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            calcGaugeBounds();
-            setTranslateX(framelessOffset.getX());
-            setTranslateY(framelessOffset.getY());
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        if (!initialized) {
+//            init();
+//        }
+//        if (control.getScene() != null) {
+//            calcGaugeBounds();
+//            setTranslateX(framelessOffset.getX());
+//            setTranslateY(framelessOffset.getY());
+//
+//            drawFrame();
+//            drawBackground();
+//            drawTitleAndUnit();
+//            drawTickmarks();
+//            drawLed();
+//            drawUserLed();
+//            drawThreshold();
+//            drawGlowOff();
+//            drawGlowOn();
+//            drawMinMeasuredIndicator();
+//            drawMaxMeasuredIndicator();
+//            drawIndicators();
+//            drawLcd();
+//            drawLcdContent();
+//            drawBar();
+//            drawForeground();
+//
+//            getChildren().setAll(frame,
+//                                 background,
+//                                 ledOff,
+//                                 ledOn,
+//                                 userLedOff,
+//                                 userLedOn,
+//                                 titleAndUnit,
+//                                 tickmarks,
+//                                 threshold,
+//                                 glowOff,
+//                                 glowOn,
+//                                 minMeasured,
+//                                 maxMeasured,
+//                                 markers,
+//                                 lcd,
+//                                 lcdContent,
+//                                 bar,
+//                                 foreground);
+//        }
+//        isDirty = false;
+//
+//        super.layoutChildren();
+//    }
 
-            drawFrame();
-            drawBackground();
-            drawTitleAndUnit();
-            drawTickmarks();
-            drawLed();
-            drawUserLed();
-            drawThreshold();
-            drawGlowOff();
-            drawGlowOn();
-            drawMinMeasuredIndicator();
-            drawMaxMeasuredIndicator();
-            drawIndicators();
-            drawLcd();
-            drawLcdContent();
-            drawBar();
-            drawForeground();
-
-            getChildren().setAll(frame,
-                                 background,
-                                 ledOff,
-                                 ledOn,
-                                 userLedOff,
-                                 userLedOn,
-                                 titleAndUnit,
-                                 tickmarks,
-                                 threshold,
-                                 glowOff,
-                                 glowOn,
-                                 minMeasured,
-                                 maxMeasured,
-                                 markers,
-                                 lcd,
-                                 lcdContent,
-                                 bar,
-                                 foreground);
-        }
-        isDirty = false;
-
-        super.layoutChildren();
-    }
-
-    @Override public Linear getSkinnable() {
+    public Linear getControl() {
         return control;
     }
 
@@ -653,7 +653,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
 
     @Override protected double computePrefWidth(final double WIDTH) {
         double prefWidth;
-        if (WIDTH < getPrefHeight()) {
+        if (WIDTH < getSkinnable().getPrefHeight()) {
             // vertical
             prefWidth = PREF_SIZE.getWidth();
         } else {
@@ -661,14 +661,14 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             prefWidth = PREF_SIZE.getHeight();
         }
         if (WIDTH != -1) {
-            prefWidth = Math.max(0, WIDTH - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
 
     @Override protected double computePrefHeight(final double HEIGHT) {
         double prefHeight;
-        if (HEIGHT < getPrefHeight()) {
+        if (HEIGHT < getSkinnable().getPrefHeight()) {
             // vertical
             prefHeight = PREF_SIZE.getHeight();
         } else {
@@ -676,14 +676,14 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
             prefHeight = PREF_SIZE.getWidth();
         }
         if (HEIGHT != -1) {
-            prefHeight = Math.max(0, HEIGHT - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefHeight(prefHeight);
     }
 
     @Override protected double computeMinWidth(final double WIDTH) {
         double minWidth;
-        if (getPrefWidth() < getPrefHeight()) {
+        if (getSkinnable().getPrefWidth() < getSkinnable().getPrefHeight()) {
             // vertical
             minWidth = Math.max(MIN_SIZE.getWidth(), WIDTH);
         } else {
@@ -695,7 +695,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
 
     @Override protected double computeMinHeight(final double HEIGHT) {
         double minHeight;
-        if (getPrefWidth() < getPrefHeight()) {
+        if (getSkinnable().getPrefWidth() < getSkinnable().getPrefHeight()) {
             // vertical
             minHeight = Math.max(MIN_SIZE.getHeight(), HEIGHT);
         } else {
@@ -707,7 +707,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
 
     @Override protected double computeMaxWidth(final double WIDTH) {
         double maxWidth;
-        if (getPrefWidth() < getPrefHeight()) {
+        if (getSkinnable().getPrefWidth() < getSkinnable().getPrefHeight()) {
             // vertical
             maxWidth = Math.max(MAX_SIZE.getWidth(), WIDTH);
         } else {
@@ -719,7 +719,7 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
 
     @Override protected double computeMaxHeight(final double HEIGHT) {
         double maxHeight;
-        if (getPrefWidth() < getPrefHeight()) {
+        if (getSkinnable().getPrefWidth() < getSkinnable().getPrefHeight()) {
             // vertical
             maxHeight = Math.max(MAX_SIZE.getHeight(), HEIGHT);
         } else {

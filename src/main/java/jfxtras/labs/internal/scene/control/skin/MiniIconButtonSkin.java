@@ -89,29 +89,29 @@ public class MiniIconButtonSkin extends ButtonSkin {
         addChangeListeners();
     }
 
-    @Override
-    protected void layoutChildren() {
-
-        // layouts the other children
-        super.layoutChildren();
-
-        // layouts the mini icon
-        final MiniIconButton miniIconButton = (MiniIconButton)getSkinnable();
-        final ImageView miniIcon = miniIconButton.getMiniIcon();
-
-        final double width = getWidth();
-        final double height = getHeight();
-        final double top = 0.0;
-        final double left = 0.0;
-        final double baselineOffset = getBaselineOffset();
-
-        final Pos childAlignment = StackPane.getAlignment(miniIcon);
-        layoutInArea(miniIcon, left, top,
-                width, height,
-                baselineOffset, getMargin(miniIcon),
-                childAlignment != null ? childAlignment.getHpos() : getAlignment().getHpos(),
-                childAlignment != null ? childAlignment.getVpos() : getAlignment().getVpos());
-    }
+//    @Override
+//    protected void layoutChildren() {
+//
+//        // layouts the other children
+//        super.layoutChildren();
+//
+//        // layouts the mini icon
+//        final MiniIconButton miniIconButton = (MiniIconButton)getSkinnable();
+//        final ImageView miniIcon = miniIconButton.getMiniIcon();
+//
+//        final double width = getWidth();
+//        final double height = getHeight();
+//        final double top = 0.0;
+//        final double left = 0.0;
+//        final double baselineOffset = getBaselineOffset();
+//
+//        final Pos childAlignment = StackPane.getAlignment(miniIcon);
+//        layoutInArea(miniIcon, left, top,
+//                width, height,
+//                baselineOffset, getMargin(miniIcon),
+//                childAlignment != null ? childAlignment.getHpos() : getAlignment().getHpos(),
+//                childAlignment != null ? childAlignment.getVpos() : getAlignment().getVpos());
+//    }
 
     /**
      * adds the change listeners to the {@link MiniIconButton} properties
@@ -127,7 +127,7 @@ public class MiniIconButtonSkin extends ButtonSkin {
                 configureJumping(miniIconButton);
                 configureBlinking(miniIconButton);
                 startAnimation(miniIconButton);
-                requestLayout();
+                getSkinnable().requestLayout();
             }
         });
 
@@ -137,7 +137,7 @@ public class MiniIconButtonSkin extends ButtonSkin {
                                 final MiniIconButton.AnimationType oldAnimationType,
                                 final MiniIconButton.AnimationType newAnimationType) {
                 startAnimation(miniIconButton);
-                requestLayout();
+                getSkinnable().requestLayout();
             }
         });
 
@@ -147,7 +147,7 @@ public class MiniIconButtonSkin extends ButtonSkin {
                                 final Pos oldPosition,
                                 final Pos newPosition) {
                 StackPane.setAlignment(miniIconButton.getMiniIcon(), newPosition);
-                requestLayout();
+                getSkinnable().requestLayout();
             }
         });
 
@@ -163,7 +163,7 @@ public class MiniIconButtonSkin extends ButtonSkin {
                 configureBlinking(miniIconButton);
                 calculateAndSetNewMiniIconSize(miniIconButton);
                 startAnimation(miniIconButton);
-                requestLayout();
+                getSkinnable().requestLayout();
             }
         });
 
@@ -175,7 +175,7 @@ public class MiniIconButtonSkin extends ButtonSkin {
                 stopAnimation(miniIconButton);
                 calculateAndSetNewMiniIconSize(miniIconButton);
                 startAnimation(miniIconButton);
-                requestLayout();
+                getSkinnable().requestLayout();
             }
         });
     }
@@ -240,23 +240,23 @@ public class MiniIconButtonSkin extends ButtonSkin {
      */
     private void addImageViewSizeBindings() {
         final MiniIconButton miniIconButton = (MiniIconButton)getSkinnable();
-        widthProperty().addListener(new ChangeListener() {
+        getSkinnable().widthProperty().addListener(new ChangeListener() {
             @Override
             public void changed(final ObservableValue o,
                                 final Object oldVal,
                                 final Object newVal) {
                 calculateAndSetNewMiniIconSize(miniIconButton);
-                requestLayout();
+                getSkinnable().requestLayout();
             }
         });
 
-        heightProperty().addListener(new ChangeListener() {
+        getSkinnable().heightProperty().addListener(new ChangeListener() {
             @Override
             public void changed(final ObservableValue o,
                                 final Object oldVal,
                                 final Object newVal) {
                 calculateAndSetNewMiniIconSize(miniIconButton);
-                requestLayout();
+                getSkinnable().requestLayout();
             }
         });
     }
@@ -271,8 +271,8 @@ public class MiniIconButtonSkin extends ButtonSkin {
         final ImageView miniIcon = miniIconButton.getMiniIcon();
 
         // multiply the button width and height with the ratio
-        final double buttonWidth = getWidth() * miniIconButton.getMiniIconRatio();
-        final double buttonHeight = getHeight() * miniIconButton.getMiniIconRatio();
+        final double buttonWidth = getSkinnable().getWidth() * miniIconButton.getMiniIconRatio();
+        final double buttonHeight = getSkinnable().getHeight() * miniIconButton.getMiniIconRatio();
 
         double fitWidth = buttonWidth;
         double fitHeight = buttonHeight;

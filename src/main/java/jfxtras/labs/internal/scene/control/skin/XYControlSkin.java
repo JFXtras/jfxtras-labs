@@ -66,7 +66,7 @@ import jfxtras.labs.scene.control.gauge.XYControl;
  * Date: 10.05.12
  * Time: 12:55
  */
-public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
+public class XYControlSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<XYControl, XYControlBehavior> {
     private XYControl    control;
     private EventHandler handler;
     private StackPane    area;
@@ -189,7 +189,7 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         initialized    = false;
         isDirty        = false;
 
-        getStyleClass().add("xy-control");
+        getSkinnable().getStyleClass().add("xy-control");
 
         init();
     }
@@ -225,7 +225,7 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         thumb.addEventFilter(MouseEvent.MOUSE_PRESSED, handler);
         thumb.addEventFilter(MouseEvent.MOUSE_DRAGGED, handler);
         thumb.addEventFilter(MouseEvent.MOUSE_RELEASED, handler);
-        addEventFilter(ScrollEvent.SCROLL, handler);
+        getSkinnable().addEventFilter(ScrollEvent.SCROLL, handler);
         initialized = true;
         repaint();
     }
@@ -279,27 +279,27 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
 
     public final void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            drawControl();
-        }
-        isDirty = false;
-
-        super.layoutChildren();
-    }
-
-    @Override public final XYControl getSkinnable() {
-        return control;
-    }
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        if (!initialized) {
+//            init();
+//        }
+//        if (control.getScene() != null) {
+//            drawControl();
+//        }
+//        isDirty = false;
+//
+//        super.layoutChildren();
+//    }
+//
+//    @Override public final XYControl getSkinnable() {
+//        return control;
+//    }
 
     @Override public final void dispose() {
         control = null;
@@ -308,7 +308,7 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
     @Override protected double computePrefWidth(final double PREF_WIDTH) {
         double prefWidth = 220;
         if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, PREF_WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
@@ -316,7 +316,7 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
     @Override protected double computePrefHeight(final double PREF_HEIGHT) {
         double prefHeight = 220;
         if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, PREF_HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
     }
@@ -329,7 +329,7 @@ public class XYControlSkin extends SkinBase<XYControl, XYControlBehavior> {
         final double BUTTON_SIZE = 0.0909090909 * SIZE;
         final Font   FONT        = Font.font("Verdana", FontWeight.NORMAL, 0.055 * AREA_SIZE);
 
-        getStyleClass().setAll("xy-control");
+        getSkinnable().getStyleClass().setAll("xy-control");
 
         Pane pane = new Pane();
         pane.getStyleClass().setAll("xy-control");

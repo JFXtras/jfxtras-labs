@@ -48,7 +48,7 @@ import jfxtras.labs.util.Util;
  * Date: 06.03.12
  * Time: 13:53
  */
-public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicatorBehavior> {
+public class SimpleIndicatorSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<SimpleIndicator, SimpleIndicatorBehavior> {
     private SimpleIndicator control;
     private boolean         isDirty;
     private boolean         initialized;
@@ -111,26 +111,26 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
 
     public final void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            drawIndicator();
-            getChildren().setAll(indicator);
-        }
-        isDirty = false;
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        if (!initialized) {
+//            init();
+//        }
+//        if (control.getScene() != null) {
+//            drawIndicator();
+//            getChildren().setAll(indicator);
+//        }
+//        isDirty = false;
+//
+//        super.layoutChildren();
+//    }
 
-        super.layoutChildren();
-    }
-
-    @Override public final SimpleIndicator getSkinnable() {
+    public final SimpleIndicator getControl() {
         return control;
     }
 
@@ -141,7 +141,7 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
     @Override protected double computePrefWidth(final double PREF_WIDTH) {
         double prefWidth = 250;
         if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, PREF_WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
@@ -149,7 +149,7 @@ public class SimpleIndicatorSkin extends SkinBase<SimpleIndicator, SimpleIndicat
     @Override protected double computePrefHeight(final double PREF_HEIGHT) {
         double prefHeight = 250;
         if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, PREF_HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
     }

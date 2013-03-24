@@ -49,94 +49,94 @@ import java.util.HashMap;
  * Date: 31.07.12
  * Time: 06:43
  */
-public class TickMarkBuilder<B extends TickMarkBuilder<B>> extends ControlBuilder<B> implements Builder<TickMark> {
-    private HashMap<String, Property> properties = new HashMap<String, Property>();
-
-
-    // ******************** Constructors **************************************
-    protected TickMarkBuilder() {};
-
-
-    // ******************** Methods *******************************************
-    public static final TickMarkBuilder create() {
-            return new TickMarkBuilder();
-        }
-
-    public final TickMarkBuilder type(final TickMark.Type TYPE) {
-        properties.put("type", new SimpleObjectProperty<TickMark.Type>(TYPE));
-        return this;
-    }
-
-    public final TickMarkBuilder indicator(final TickMark.Indicator INDICATOR) {
-        properties.put("indicator", new SimpleObjectProperty<TickMark.Indicator>(INDICATOR));
-        return this;
-    }
-
-    public final TickMarkBuilder indicatorColor(final Color INDICATOR_COLOR) {
-        properties.put("indicatorColor", new SimpleObjectProperty<Color>(INDICATOR_COLOR));
-        return this;
-    }
-
-    public final TickMarkBuilder indicatorVisible(final boolean INDICATOR_VISIBLE) {
-        properties.put("indicatorVisible", new SimpleBooleanProperty(INDICATOR_VISIBLE));
-        return this;
-    }
-
-    public final TickMarkBuilder label(final String LABEL) {
-        properties.put("label", new SimpleStringProperty(LABEL));
-        return this;
-    }
-
-    public final TickMarkBuilder labelColor(final Color LABEL_COLOR) {
-        properties.put("labelColor", new SimpleObjectProperty<Color>(LABEL_COLOR));
-        return this;
-    }
-
-    public final TickMarkBuilder labelVisible(final boolean LABEL_VISIBLE) {
-        properties.put("labelVisible", new SimpleBooleanProperty(LABEL_VISIBLE));
-        return this;
-    }
-
-    public final TickMarkBuilder labelFont(final Font LABEL_FONT) {
-        properties.put("labelFont", new SimpleObjectProperty<Font>(LABEL_FONT));
-        return this;
-    }
-
-    public final TickMarkBuilder labelFontSizeFactor(final double LABEL_FONT_SIZE_FACTOR) {
-        properties.put("labelFontSizeFactor", new SimpleDoubleProperty(LABEL_FONT_SIZE_FACTOR));
-        return this;
-    }
-
-    public final TickMarkBuilder tickLabelOrientation(final TickMark.TickLabelOrientation TICK_LABEL_ORIENTATION) {
-        properties.put("tickLabelOrientation", new SimpleObjectProperty<TickMark.TickLabelOrientation>(TICK_LABEL_ORIENTATION));
-        return this;
-    }
-
-    @Override public TickMark build() {
-        final TickMark CONTROL = new TickMark();
-        for (String key : properties.keySet()) {
-            if ("type".equals(key)) {
-                CONTROL.setType(((ObjectProperty<TickMark.Type>) properties.get(key)).get());
-            } else if ("indicator".equals(key)) {
-                CONTROL.setIndicator(((ObjectProperty<TickMark.Indicator>) properties.get(key)).get());
-            } else if ("indicatorColor".equals(key)) {
-                CONTROL.setIndicatorColor(((ObjectProperty<Color>) properties.get(key)).get());
-            } else if ("indicatorVisible".equals(key)) {
-                CONTROL.setIndicatorVisible(((BooleanProperty) properties.get(key)).get());
-            } else if ("label".equals(key)) {
-                CONTROL.setLabel(((StringProperty) properties.get(key)).get());
-            } else if ("labelColor".equals(key)) {
-                CONTROL.setLabelColor(((ObjectProperty<Color>) properties.get(key)).get());
-            } else if ("labelVisible".equals(key)) {
-                CONTROL.setLabelVisible(((BooleanProperty) properties.get(key)).get());
-            } else if ("labelFont".equals(key)) {
-                CONTROL.setLabelFont(((ObjectProperty<Font>) properties.get(key)).get());
-            } else if ("labelFontSizeFactor".equals(key)) {
-                CONTROL.setLabelFontSizeFactor(((DoubleProperty) properties.get(key)).get());
-            } else if ("tickLabelOrientation".equals(key)) {
-                CONTROL.setTickLabelOrientation(((ObjectProperty<TickMark.TickLabelOrientation>) properties.get(key)).get());
-            }
-        }
-        return CONTROL;
-    }
+public class TickMarkBuilder { //<B extends TickMarkBuilder<B>> extends ControlBuilder<B> implements Builder<TickMark> {
+//    private HashMap<String, Property> properties = new HashMap<String, Property>();
+//
+//
+//    // ******************** Constructors **************************************
+//    protected TickMarkBuilder() {};
+//
+//
+//    // ******************** Methods *******************************************
+//    public static final TickMarkBuilder create() {
+//            return new TickMarkBuilder();
+//        }
+//
+//    public final TickMarkBuilder type(final TickMark.Type TYPE) {
+//        properties.put("type", new SimpleObjectProperty<TickMark.Type>(TYPE));
+//        return this;
+//    }
+//
+//    public final TickMarkBuilder indicator(final TickMark.Indicator INDICATOR) {
+//        properties.put("indicator", new SimpleObjectProperty<TickMark.Indicator>(INDICATOR));
+//        return this;
+//    }
+//
+//    public final TickMarkBuilder indicatorColor(final Color INDICATOR_COLOR) {
+//        properties.put("indicatorColor", new SimpleObjectProperty<Color>(INDICATOR_COLOR));
+//        return this;
+//    }
+//
+//    public final TickMarkBuilder indicatorVisible(final boolean INDICATOR_VISIBLE) {
+//        properties.put("indicatorVisible", new SimpleBooleanProperty(INDICATOR_VISIBLE));
+//        return this;
+//    }
+//
+//    public final TickMarkBuilder label(final String LABEL) {
+//        properties.put("label", new SimpleStringProperty(LABEL));
+//        return this;
+//    }
+//
+//    public final TickMarkBuilder labelColor(final Color LABEL_COLOR) {
+//        properties.put("labelColor", new SimpleObjectProperty<Color>(LABEL_COLOR));
+//        return this;
+//    }
+//
+//    public final TickMarkBuilder labelVisible(final boolean LABEL_VISIBLE) {
+//        properties.put("labelVisible", new SimpleBooleanProperty(LABEL_VISIBLE));
+//        return this;
+//    }
+//
+//    public final TickMarkBuilder labelFont(final Font LABEL_FONT) {
+//        properties.put("labelFont", new SimpleObjectProperty<Font>(LABEL_FONT));
+//        return this;
+//    }
+//
+//    public final TickMarkBuilder labelFontSizeFactor(final double LABEL_FONT_SIZE_FACTOR) {
+//        properties.put("labelFontSizeFactor", new SimpleDoubleProperty(LABEL_FONT_SIZE_FACTOR));
+//        return this;
+//    }
+//
+//    public final TickMarkBuilder tickLabelOrientation(final TickMark.TickLabelOrientation TICK_LABEL_ORIENTATION) {
+//        properties.put("tickLabelOrientation", new SimpleObjectProperty<TickMark.TickLabelOrientation>(TICK_LABEL_ORIENTATION));
+//        return this;
+//    }
+//
+//    @Override public TickMark build() {
+//        final TickMark CONTROL = new TickMark();
+//        for (String key : properties.keySet()) {
+//            if ("type".equals(key)) {
+//                CONTROL.setType(((ObjectProperty<TickMark.Type>) properties.get(key)).get());
+//            } else if ("indicator".equals(key)) {
+//                CONTROL.setIndicator(((ObjectProperty<TickMark.Indicator>) properties.get(key)).get());
+//            } else if ("indicatorColor".equals(key)) {
+//                CONTROL.setIndicatorColor(((ObjectProperty<Color>) properties.get(key)).get());
+//            } else if ("indicatorVisible".equals(key)) {
+//                CONTROL.setIndicatorVisible(((BooleanProperty) properties.get(key)).get());
+//            } else if ("label".equals(key)) {
+//                CONTROL.setLabel(((StringProperty) properties.get(key)).get());
+//            } else if ("labelColor".equals(key)) {
+//                CONTROL.setLabelColor(((ObjectProperty<Color>) properties.get(key)).get());
+//            } else if ("labelVisible".equals(key)) {
+//                CONTROL.setLabelVisible(((BooleanProperty) properties.get(key)).get());
+//            } else if ("labelFont".equals(key)) {
+//                CONTROL.setLabelFont(((ObjectProperty<Font>) properties.get(key)).get());
+//            } else if ("labelFontSizeFactor".equals(key)) {
+//                CONTROL.setLabelFontSizeFactor(((DoubleProperty) properties.get(key)).get());
+//            } else if ("tickLabelOrientation".equals(key)) {
+//                CONTROL.setTickLabelOrientation(((ObjectProperty<TickMark.TickLabelOrientation>) properties.get(key)).get());
+//            }
+//        }
+//        return CONTROL;
+//    }
 }

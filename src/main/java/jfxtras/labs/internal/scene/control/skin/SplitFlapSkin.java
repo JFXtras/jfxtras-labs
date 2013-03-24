@@ -63,7 +63,7 @@ import java.util.ArrayList;
  * Date: 23.02.12
  * Time: 09:12
  */
-public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
+public class SplitFlapSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<SplitFlap, SplitFlapBehavior> {
     private SplitFlap         control;
     private static double     MIN_FLIP_TIME = 16666666.6666667; // 60 fps
     private final AudioClip   SOUND1 = new AudioClip(getClass().getResource("/jfxtras/labs/scene/control/gauge/flap.mp3").toExternalForm());
@@ -223,34 +223,34 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
 
     public final void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            drawBackground();
-            drawFixture();
-            drawFlip();
-            drawFrame();
-            getChildren().setAll(background,
-                fixture,
-                flip,
-                frame);
-        }
-        isDirty = false;
-
-        super.layoutChildren();
-    }
-
-    @Override public final SplitFlap getSkinnable() {
-        return control;
-    }
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        if (!initialized) {
+//            init();
+//        }
+//        if (control.getScene() != null) {
+//            drawBackground();
+//            drawFixture();
+//            drawFlip();
+//            drawFrame();
+//            getChildren().setAll(background,
+//                fixture,
+//                flip,
+//                frame);
+//        }
+//        isDirty = false;
+//
+//        super.layoutChildren();
+//    }
+//
+//    @Override public final SplitFlap getSkinnable() {
+//        return control;
+//    }
 
     @Override public final void dispose() {
         control = null;
@@ -259,7 +259,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
     @Override protected double computePrefWidth(final double PREF_WIDTH) {
         double prefWidth = 132;
         if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, PREF_WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
@@ -267,7 +267,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
     @Override protected double computePrefHeight(final double PREF_HEIGHT) {
         double prefHeight = 227;
         if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, PREF_HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
     }
@@ -396,7 +396,7 @@ public class SplitFlapSkin extends SkinBase<SplitFlap, SplitFlapBehavior> {
             upperNextText.setText(selectedSet.get(currentSelectionIndex));
             lowerNextText.setText(selectedSet.get(currentSelectionIndex));
             if (selectedSet.get(currentSelectionIndex).length() > 1) {
-                double textOffset = 0.1057268722 * getPrefHeight();
+                double textOffset = 0.1057268722 * getSkinnable().getPrefHeight();
                 upperText.setX(textOffset);
                 lowerText.setX(textOffset);
                 upperNextText.setX(textOffset);

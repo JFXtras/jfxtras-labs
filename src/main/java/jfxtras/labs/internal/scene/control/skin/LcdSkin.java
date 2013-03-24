@@ -495,33 +495,34 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
 
     public void repaint() {
         isDirty = true;
-        requestLayout();
+        getSkinnable().requestLayout();
     }
 
-    @Override public void layoutChildren() {
-        if (!isDirty) {
-            return;
-        }
-        if (!initialized) {
-            init();
-        }
-        if (control.getScene() != null) {
-            drawGlowOn();
-            drawLcd();
-            drawLcdContent();
+// removed compilation problem
+//    @Override public void layoutChildren() {
+//        if (!isDirty) {
+//            return;
+//        }
+//        if (!initialized) {
+//            init();
+//        }
+//        if (control.getScene() != null) {
+//            drawGlowOn();
+//            drawLcd();
+//            drawLcdContent();
+//
+//            getChildren().setAll(minMeasured,
+//                maxMeasured,
+//                lcd,
+//                glowOn,
+//                lcdContent);
+//        }
+//        isDirty = false;
+//
+//        super.layoutChildren();
+//    }
 
-            getChildren().setAll(minMeasured,
-                maxMeasured,
-                lcd,
-                glowOn,
-                lcdContent);
-        }
-        isDirty = false;
-
-        super.layoutChildren();
-    }
-
-    @Override public Lcd getSkinnable() {
+    public Lcd getControl() {
         return control;
     }
 
@@ -532,7 +533,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
     @Override protected double computePrefWidth(final double HEIGHT) {
         double prefWidth = PREF_SIZE.getWidth();
         if (HEIGHT != -1) {
-            prefWidth = Math.max(0, HEIGHT - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, HEIGHT - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
@@ -540,7 +541,7 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
     @Override protected double computePrefHeight(final double WIDTH) {
         double prefHeight = PREF_SIZE.getHeight();
         if (WIDTH != -1) {
-            prefHeight = Math.max(0, WIDTH - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, WIDTH - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
     }
