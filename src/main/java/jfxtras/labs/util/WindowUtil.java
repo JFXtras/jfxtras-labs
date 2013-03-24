@@ -17,7 +17,7 @@ import jfxtras.labs.scene.control.window.SelectableNode;
  * This class contains several methods for managing window nodes (selection
  * etc.).
  *
- * @author Michael Hoffer <info@michaelhoffer.de>
+ * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class WindowUtil {
 
@@ -46,7 +46,7 @@ public class WindowUtil {
 /**
  * Default clipboard implementation.
  * 
- * @author Michael Hoffer <info@michaelhoffer.de>
+ * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 class ClipboardImpl implements Clipboard {
 

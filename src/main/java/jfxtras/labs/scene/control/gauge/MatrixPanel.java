@@ -39,7 +39,7 @@ import javafx.scene.paint.Color;
  * User: hansolo
  * Date: 09.01.12
  * Time: 18:02
- * Modified by Jose Pereda Llamas <jperedadnr>
+ * Modified by Jose Pereda Llamas &lt;jperedadnr&gt;
  * On : 23-jun-2012, 11:47:23
  */
 public class MatrixPanel extends Control {

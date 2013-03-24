@@ -58,7 +58,7 @@ import jfxtras.labs.util.NodeUtil;
  * applications. See <a href=https://github.com/miho/VFXWindows-Samples>
  * https://github.com/miho/VFXWindows-Samples</a> for sample code.
  *
- * @author Michael Hoffer <info@michaelhoffer.de>
+ * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class Window extends Control implements SelectableNode {
 

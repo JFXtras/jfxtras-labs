@@ -18,7 +18,7 @@ import javafx.scene.transform.Scale;
 /**
  * Scales content to always fit in the bounds of this pane. Useful for workflows
  * with lots of windows.
- * @author Michael Hoffer <info@michaelhoffer.de>
+ * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class ScalableContentPane extends Region {
 

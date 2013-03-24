@@ -1286,7 +1286,7 @@ public class BeanPathAdapter<B> {
 				if (isField) {
 					final Class<?> fieldClass = FieldHandle.getAccessorType(
 							getBean(), fieldNames[0]);
-					final FieldProperty<BT, ?, ?> childProp = new FieldProperty<>(
+					final FieldProperty<BT, ?, ?> childProp = new FieldProperty/*won't compile in JDK8: <>*/(
 							getBean(), fullFieldPath, fieldNames[0],
 							notifyProperty,
 							propertyValueClass == fieldClass ? fieldClass

@@ -32,6 +32,10 @@ task wrapper(type: Wrapper) {
     gradleVersion = '1.5-rc-3'
 }
 
+javadoc {
+    failOnError = false
+}
+
 signArchives.onlyIf {
       project.hasProperty('signing.keyId')
 }

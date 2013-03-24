@@ -12,7 +12,7 @@ import javafx.event.EventHandler;
 /**
  * A simple event handler group.
  * 
- * @author Michael Hoffer <info@michaelhoffer.de>
+ * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class EventHandlerGroup<T extends Event> implements EventHandler<T> {
 

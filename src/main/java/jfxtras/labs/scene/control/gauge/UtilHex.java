@@ -38,7 +38,7 @@ import java.util.MissingResourceException;
 
 
 /**
- * @author Jose Pereda Llamas <jperedadnr>
+ * @author Jose Pereda Llamas &lt;jperedadnr&gt;
  *         Created on : 23-jun-2012, 14:49:58
  */
 public class UtilHex {

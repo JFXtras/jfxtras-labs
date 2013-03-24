@@ -18,7 +18,7 @@ import jfxtras.labs.util.WindowUtil;
  * This is a utility class that provides methods for mouse gesture control.
  * Currently, it can be used to make nodes draggable.
  *
- * @author Michael Hoffer <info@michaelhoffer.de>
+ * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class MouseControlUtil {
 

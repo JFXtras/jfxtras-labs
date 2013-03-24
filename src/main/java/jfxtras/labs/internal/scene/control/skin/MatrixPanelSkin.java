@@ -64,7 +64,7 @@ import jfxtras.labs.util.Util;
  * User: hansolo
  * Date: 09.01.12
  * Time: 18:04
- * Modified by Jose Pereda Llamas <jperedadnr>
+ * Modified by Jose Pereda Llamas &lt;jperedadnr&gt;
  * On : 23-jun-2012, 11:47:23
  */
 public class MatrixPanelSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<MatrixPanel, MatrixPanelBehavior> {
