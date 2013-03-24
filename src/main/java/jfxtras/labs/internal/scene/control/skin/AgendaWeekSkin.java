@@ -59,6 +59,7 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.ScrollPaneBuilder;
+import javafx.scene.control.SkinBase;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -78,20 +79,15 @@ import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import jfxtras.labs.animation.Timer;
-import jfxtras.labs.internal.scene.control.behavior.AgendaBehavior;
 import jfxtras.labs.scene.control.Agenda;
 import jfxtras.labs.scene.control.Agenda.Appointment;
-import jfxtras.labs.scene.control.CalendarPicker;
 import jfxtras.labs.scene.control.CalendarTextField;
-import jfxtras.labs.scene.control.CalendarTimePicker;
 import jfxtras.labs.util.NodeUtil;
-
-import com.sun.javafx.scene.control.skin.SkinBase;
 
 /**
  * @author Tom Eugelink
  */
-public class AgendaWeekSkin extends SkinBase<Agenda, AgendaBehavior>
+public class AgendaWeekSkin extends SkinBase<Agenda>
 implements Agenda.AgendaSkin
 {
 	// ==================================================================================================================
@@ -102,7 +98,7 @@ implements Agenda.AgendaSkin
 	 */
 	public AgendaWeekSkin(Agenda control)
 	{
-		super(control, new AgendaBehavior(control));
+		super(control);//, new AgendaBehavior(control));
 		construct();
 	}
 
@@ -316,15 +312,15 @@ implements Agenda.AgendaSkin
 		
 		// create a transparent pane where dragging an appointment is visualized 
 		dragPane = new Pane();
-		dragPane.prefWidthProperty().bind(widthProperty()); // the drag pane is the same size as the whole skin
-		dragPane.prefHeightProperty().bind(heightProperty());
+		dragPane.prefWidthProperty().bind(getSkinnable().widthProperty()); // the drag pane is the same size as the whole skin
+		dragPane.prefHeightProperty().bind(getSkinnable().heightProperty());
 		// the borderpane is placed in the drag pane and sized to match 
 		dragPane.getChildren().add(borderPane);
 		borderPane.prefWidthProperty().bind(dragPane.widthProperty());
 		borderPane.prefHeightProperty().bind(dragPane.heightProperty());
 		
 		// add to self
-		getStyleClass().add(getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control		
+		getSkinnable().getStyleClass().add(getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control		
 		getChildren().add(dragPane);
 		
 		// load the close icon

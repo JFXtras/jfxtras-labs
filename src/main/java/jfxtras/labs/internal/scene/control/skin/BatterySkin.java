@@ -27,7 +27,7 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import com.sun.javafx.scene.control.skin.SkinBase;
+import javafx.scene.control.SkinBase;
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
@@ -57,7 +57,7 @@ import jfxtras.labs.scene.control.gauge.GradientLookup;
  * Date: 23.03.12
  * Time: 11:07
  */
-public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
+public class BatterySkin extends SkinBase<Battery> {
     private Battery        control;
     private boolean        isDirty;
     private boolean        initialized;
@@ -75,7 +75,7 @@ public class BatterySkin extends SkinBase<Battery, BatteryBehavior> {
 
     // ******************** Constructors **************************************
     public BatterySkin(final Battery CONTROL) {
-        super(CONTROL, new BatteryBehavior(CONTROL));
+        super(CONTROL);//, new BatteryBehavior(CONTROL));
         control           = CONTROL;
         initialized       = false;
         isDirty           = false;

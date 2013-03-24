@@ -38,7 +38,7 @@ import jfxtras.labs.scene.control.grid.GridCell;
 import jfxtras.labs.scene.control.grid.GridView;
 import jfxtras.labs.scene.control.grid.cell.DefaultGridCell;
 
-import com.sun.javafx.scene.control.skin.SkinBase;
+import javafx.scene.control.SkinBase;
 
 /**
  * 

@@ -62,14 +62,14 @@ import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.ListSpinner.CycleEvent;
 import jfxtras.labs.scene.control.ListSpinnerIntegerList;
 
-import com.sun.javafx.scene.control.skin.SkinBase;
+import javafx.scene.control.SkinBase;
 
 /**
  * This skin uses regular JavaFX controls
  * @author Tom Eugelink
  *
  */
-public class LocalDatePickerControlSkin extends SkinBase<LocalDatePicker, LocalDatePickerBehavior>
+public class LocalDatePickerControlSkin extends SkinBase<LocalDatePicker>
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -79,7 +79,7 @@ public class LocalDatePickerControlSkin extends SkinBase<LocalDatePicker, LocalD
 	 */
 	public LocalDatePickerControlSkin(LocalDatePicker control)
 	{
-		super(control, new LocalDatePickerBehavior(control));
+		super(control);//, new LocalDatePickerBehavior(control));
 		construct();
 	}
 
@@ -314,7 +314,7 @@ public class LocalDatePickerControlSkin extends SkinBase<LocalDatePicker, LocalD
 		}
 
 		// add to self
-		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
+		getSkinnable().getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
 		getChildren().add(lGridPane);
 	}
 	private ListSpinner<String> monthXSpinner = null;

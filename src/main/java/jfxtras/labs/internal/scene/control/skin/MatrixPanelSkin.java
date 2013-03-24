@@ -27,7 +27,7 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import com.sun.javafx.scene.control.skin.SkinBase;
+import javafx.scene.control.SkinBase;
 import java.util.*;
 import javafx.animation.AnimationTimer;
 import javafx.animation.PauseTransition;

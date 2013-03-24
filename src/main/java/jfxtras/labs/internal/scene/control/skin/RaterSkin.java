@@ -27,7 +27,7 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import com.sun.javafx.scene.control.skin.SkinBase;
+import javafx.scene.control.SkinBase;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;

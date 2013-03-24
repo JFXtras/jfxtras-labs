@@ -38,7 +38,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.internal.scene.control.behavior.CalendarPickerBehavior;
 import jfxtras.labs.scene.control.CalendarPicker;
 
-import com.sun.javafx.scene.control.skin.SkinBase;
+import javafx.scene.control.SkinBase;
 
 /**
  * This class contains common code to support skins that shows a month at once.
@@ -48,7 +48,7 @@ import com.sun.javafx.scene.control.skin.SkinBase;
  *
  * @param <S> the actual skin class, so fluent methods return the correct class (see "return (S)this;")
  */
-abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<CalendarPicker, CalendarPickerBehavior>
+abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<CalendarPicker>
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -58,7 +58,7 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 	 */
 	public CalendarPickerMonthlySkinAbstract(CalendarPicker control)
 	{
-		super(control, new CalendarPickerBehavior(control));
+		super(control);//, new CalendarPickerBehavior(control));
 		construct();
 	}
 

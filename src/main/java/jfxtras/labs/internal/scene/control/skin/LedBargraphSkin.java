@@ -27,7 +27,7 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import com.sun.javafx.scene.control.skin.SkinBase;
+import javafx.scene.control.SkinBase;
 import jfxtras.labs.internal.scene.control.behavior.LedBargraphBehavior;
 import jfxtras.labs.scene.control.gauge.LedBargraph;
 import jfxtras.labs.scene.control.gauge.Led;

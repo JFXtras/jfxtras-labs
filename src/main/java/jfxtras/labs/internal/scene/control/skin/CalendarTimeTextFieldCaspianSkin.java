@@ -52,7 +52,7 @@ import jfxtras.labs.scene.control.CalendarTimePicker;
 import jfxtras.labs.scene.control.CalendarTimeTextField;
 import jfxtras.labs.util.NodeUtil;
 
-import com.sun.javafx.scene.control.skin.SkinBase;
+import javafx.scene.control.SkinBase;
 
 /**
  * 
@@ -60,7 +60,7 @@ import com.sun.javafx.scene.control.skin.SkinBase;
  * 
  * Possible extension: drop down list or grid for quick selection
  */
-public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextField, CalendarTimeTextFieldBehavior>
+public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextField>
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -70,7 +70,7 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 	 */
 	public CalendarTimeTextFieldCaspianSkin(CalendarTimeTextField control)
 	{
-		super(control, new CalendarTimeTextFieldBehavior(control));
+		super(control);//, new CalendarTimeTextFieldBehavior(control));
 		construct();
 		// show where the skin is loaded from (for debugging in Ensemble) System.out.println("!!! " + this.getClass().getProtectionDomain().getCodeSource().getLocation());
 	}
@@ -193,11 +193,11 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 		gridPane.getColumnConstraints().addAll(column0); // first column gets any extra width
 		
 		// add to self
-		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
+		getSkinnable().getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
 		getChildren().add(gridPane);
 		
 		// focus
-		this.focusedProperty().addListener(new ChangeListener<Boolean>()
+		getSkinnable().focusedProperty().addListener(new ChangeListener<Boolean>()
 		{
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue)

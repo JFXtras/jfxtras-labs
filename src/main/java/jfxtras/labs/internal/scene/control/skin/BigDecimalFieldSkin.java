@@ -49,7 +49,7 @@ import javafx.scene.shape.Path;
 import jfxtras.labs.internal.scene.control.behavior.BigDecimalFieldBehaviour;
 import jfxtras.labs.scene.control.BigDecimalField;
 
-import com.sun.javafx.scene.control.skin.SkinBase;
+import javafx.scene.control.SkinBase;
 
 /**
  * Skin implementation for {@link BigDecimalField}.

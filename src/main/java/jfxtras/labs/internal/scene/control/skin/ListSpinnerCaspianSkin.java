@@ -53,7 +53,7 @@ import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.ListSpinner.ArrowDirection;
 import jfxtras.labs.scene.control.ListSpinner.ArrowPosition;
 
-import com.sun.javafx.scene.control.skin.SkinBase;
+import javafx.scene.control.SkinBase;
 
 /**
  * 
@@ -61,7 +61,7 @@ import com.sun.javafx.scene.control.skin.SkinBase;
  * 
  * Possible extension: drop down list or grid for quick selection
  */
-public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpinnerBehavior<T>>
+public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>>
 {
 	// TODO: vertical centering 
 	
@@ -73,9 +73,11 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpin
 	 */
 	public ListSpinnerCaspianSkin(ListSpinner<T> control)
 	{
-		super(control, new ListSpinnerBehavior<T>(control));
+		super(control);//, new ListSpinnerBehavior<T>(control));
+		listSpinnerBehavior = new ListSpinnerBehavior<T>(control);
 		construct();
 	}
+	final private ListSpinnerBehavior<T> listSpinnerBehavior;
 
 	/*
 	 * 
@@ -279,7 +281,7 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpin
 		});
 		
 		// add to self
-		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
+		getSkinnable().getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
 		getChildren().add(gridPane); 
 	}
 	private Region decrementArrow = null;
@@ -438,7 +440,7 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpin
 		String lText = textField.getText();
 
 		// process it
-		getBehavior().parse(lText);
+		listSpinnerBehavior.parse(lText);
 		
 		// refresh
 		refreshValue();

@@ -44,13 +44,13 @@ import javafx.scene.text.Text;
 import jfxtras.labs.internal.scene.control.behavior.CalendarTimePickerBehavior;
 import jfxtras.labs.scene.control.CalendarTimePicker;
 
-import com.sun.javafx.scene.control.skin.SkinBase;
+import javafx.scene.control.SkinBase;
 
 /**
  * @author Tom Eugelink
  *
  */
-public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, CalendarTimePickerBehavior>
+public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker>
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -60,7 +60,7 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 	 */
 	public CalendarTimePickerSkin(CalendarTimePicker control)
 	{
-		super(control, new CalendarTimePickerBehavior(control));
+		super(control);//, new CalendarTimePickerBehavior(control));
 		construct();
 	}
 
@@ -172,7 +172,7 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker, Calenda
 		refreshLayout();
 		
 		// add self as CSS style
-		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control		
+		getSkinnable().getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control		
 	}
 	final private Slider hourScrollSlider = new Slider();
 	final private Slider minuteScrollSlider = new Slider();

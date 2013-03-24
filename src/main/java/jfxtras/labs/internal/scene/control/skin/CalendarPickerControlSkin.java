@@ -278,7 +278,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		}
 		
 		// add to self
-		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
+		getSkinnable().getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
 		getChildren().add(lGridPane);
 	}
 	private ListSpinner<String> monthListSpinner = null;
