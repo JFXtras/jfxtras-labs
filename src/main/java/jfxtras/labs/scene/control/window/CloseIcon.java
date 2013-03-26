@@ -32,7 +32,7 @@ import javafx.event.EventHandler;
 
 /**
  *
- * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
+ * @author Michael Hoffer <info@michaelhoffer.de>
  */
 public class CloseIcon extends WindowIcon {
 

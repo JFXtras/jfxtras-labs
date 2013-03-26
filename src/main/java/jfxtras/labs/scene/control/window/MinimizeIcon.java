@@ -32,7 +32,7 @@ import jfxtras.labs.util.WindowUtil;
 
 /**
  *
- * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
+ * @author Michael Hoffer <info@michaelhoffer.de>
  */
 public class MinimizeIcon extends WindowIcon {
 

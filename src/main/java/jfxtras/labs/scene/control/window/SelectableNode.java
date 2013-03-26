@@ -8,7 +8,7 @@ package jfxtras.labs.scene.control.window;
  * A node must implement this interface to be selectable. Usually, nodes/windows
  * are selected via selection rectangle gesture.
  *
- * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
+ * @author Michael Hoffer <info@michaelhoffer.de>
  *
  * @see
  * jfxtras.labs.util.event.MouseControlUtil#addSelectionRectangleGesture(javafx.scene.Parent,

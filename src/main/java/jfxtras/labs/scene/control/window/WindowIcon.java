@@ -37,7 +37,7 @@ import javafx.scene.control.Control;
  * performed on the window. Usually, icons are shown in the titlebar of a window
  * and react on clicking gestures.
  *
- * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
+ * @author Michael Hoffer <info@michaelhoffer.de>
  */
 public class WindowIcon extends Control {
 

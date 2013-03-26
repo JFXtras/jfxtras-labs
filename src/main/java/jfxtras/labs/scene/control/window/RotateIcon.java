@@ -34,7 +34,7 @@ import javafx.util.Duration;
 
 /**
  *
- * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
+ * @author Michael Hoffer <info@michaelhoffer.de>
  */
 public class RotateIcon extends WindowIcon {
 
