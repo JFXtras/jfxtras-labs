@@ -27,35 +27,42 @@
 
 package jfxtras.labs.internal.scene.control.skin.window;
 
-import com.sun.javafx.scene.control.behavior.BehaviorBase;
-import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
 
-import javafx.scene.control.SkinBase;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
+import javafx.scene.control.SkinBase;
 import javafx.scene.input.MouseEvent;
 import jfxtras.labs.scene.control.window.WindowIcon;
 
 
 /**
  *
- * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
+ * @author Michael Hoffer <info@michaelhoffer.de>
  */
-public class DefaultWindowIconSkin extends BehaviorSkinBase<WindowIcon, BehaviorBase<WindowIcon>> {
+public class DefaultWindowIconSkin extends SkinBase<WindowIcon> {
 
     public DefaultWindowIconSkin(final WindowIcon c) {
-        super(c, new BehaviorBase<WindowIcon>(c));
+        super(c);
 
-        getSkinnable().setCursor(Cursor.DEFAULT);
+        getNode().setCursor(Cursor.DEFAULT);
+
+        // JDK 7 code
+//        getNode().onMouseClickedProperty().set(new EventHandler<MouseEvent>() {
+//
+//            @Override
+//            public void handle(MouseEvent t) {
+//                if (c.getOnAction()!=null) {
+//                    c.getOnAction().handle(new ActionEvent(t, c));
+//                }
+//            }
+//        });
         
-        getSkinnable().onMouseClickedProperty().set(new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(MouseEvent t) {
-                if (c.getOnAction()!=null) {
-                    c.getOnAction().handle(new ActionEvent(t, c));
-                }
+        // JDK 8 code
+        getNode().onMouseClickedProperty().set(
+                (EventHandler<MouseEvent>) (MouseEvent t) -> {
+            if (c.getOnAction()!=null) {
+                c.getOnAction().handle(new ActionEvent(t, c));
             }
         });
     }
