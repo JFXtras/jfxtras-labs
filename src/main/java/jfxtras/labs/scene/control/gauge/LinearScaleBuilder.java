@@ -33,8 +33,6 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.scene.control.ControlBuilder;
-import javafx.util.Builder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,83 +44,83 @@ import java.util.Map;
  * Date: 27.07.12
  * Time: 17:10
  */
-public class LinearScaleBuilder { //<B extends LinearScaleBuilder<B>> extends ControlBuilder<B> implements Builder<LinearScale> {
-//    private Map<String, Property> properties = new HashMap<String, Property>();
-//
-//
-//    // ******************** Constructors **************************************
-//    protected LinearScaleBuilder() {}
-//
-//
-//    // ******************** Methods *******************************************
-//    public static LinearScaleBuilder create() {
-//        return new LinearScaleBuilder();
-//    }
-//
-//    public final LinearScaleBuilder minValue(final double MIN_VALUE) {
-//        properties.put("minValue", new SimpleDoubleProperty(MIN_VALUE));
-//        return this;
-//    }
-//
-//    public final LinearScaleBuilder maxValue(final double MAX_VALUE) {
-//        properties.put("maxValue", new SimpleDoubleProperty(MAX_VALUE));
-//        return this;
-//    }
-//
-//    public final LinearScaleBuilder niceScaling(final boolean NICE_SCALING) {
-//        properties.put("niceScaling", new SimpleBooleanProperty(NICE_SCALING));
-//        return this;
-//    }
-//
-//    public final LinearScaleBuilder maxNoOfMajorTicks(final int MAX_NO_OF_MAJOR_TICKS) {
-//        properties.put("maxNoOfMajorTicks", new SimpleIntegerProperty(MAX_NO_OF_MAJOR_TICKS));
-//        return this;
-//    }
-//
-//    public final LinearScaleBuilder maxNoOfMinorTicks(final int MAX_NO_OF_MINOR_TICKS) {
-//        properties.put("maxNoOfMinorTicks", new SimpleIntegerProperty(MAX_NO_OF_MINOR_TICKS));
-//        return this;
-//    }
-//
-//    public final LinearScaleBuilder majorTickSpacing(final double MAJOR_TICK_SPACING) {
-//        properties.put("majorTickSpacing", new SimpleDoubleProperty(MAJOR_TICK_SPACING));
-//        return this;
-//    }
-//
-//    public final LinearScaleBuilder minorTickSpacing(final double MINOR_TICK_SPACING) {
-//        properties.put("minorTickSpacing", new SimpleDoubleProperty(MINOR_TICK_SPACING));
-//        return this;
-//    }
-//
-//    public final LinearScaleBuilder tightScale(final boolean TIGHT_SCALE) {
-//        properties.put("tightScale", new SimpleBooleanProperty(TIGHT_SCALE));
-//        return this;
-//    }
-//
-//    public final LinearScaleBuilder largeNumberScale(final boolean LARGE_NUMBER_SCALE) {
-//        properties.put("largeNumberScale", new SimpleBooleanProperty(LARGE_NUMBER_SCALE));
-//        return this;
-//    }
-//
-//    public LinearScale build() {
-//        final LinearScale CONTROL = new LinearScale();
-//        for (String key : properties.keySet()) {
-//            if ("minValue".equals(key)) {
-//                CONTROL.setMinValue(((DoubleProperty) properties.get(key)).get());
-//            } else if ("maxValue".equals(key)) {
-//                CONTROL.setMaxValue(((DoubleProperty) properties.get(key)).get());
-//            } else if ("niceScaling".equals(key)) {
-//                CONTROL.setNiceScaling(((BooleanProperty) properties.get(key)).get());
-//            } else if ("maxNoOfMajorTicks".equals(key)) {
-//                CONTROL.setMaxNoOfMajorTicks(((IntegerProperty) properties.get(key)).get());
-//            } else if ("maxNoOfMinorTicks".equals(key)) {
-//                CONTROL.setMaxNoOfMinorTicks(((IntegerProperty) properties.get(key)).get());
-//            } else if ("tightScale".equals(key)) {
-//                CONTROL.setTightScale(((BooleanProperty) properties.get(key)).get());
-//            } else if ("largeNumberScale".equals(key)) {
-//                CONTROL.setLargeNumberScale(((BooleanProperty) properties.get(key)).get());
-//            }
-//        }
-//        return CONTROL;
-//    }
+public class LinearScaleBuilder<B extends LinearScaleBuilder<B>> {
+    private Map<String, Property> properties = new HashMap<String, Property>();
+
+
+    // ******************** Constructors **************************************
+    protected LinearScaleBuilder() {}
+
+
+    // ******************** Methods *******************************************
+    public static LinearScaleBuilder create() {
+        return new LinearScaleBuilder();
+    }
+
+    public final LinearScaleBuilder minValue(final double MIN_VALUE) {
+        properties.put("minValue", new SimpleDoubleProperty(MIN_VALUE));
+        return this;
+    }
+
+    public final LinearScaleBuilder maxValue(final double MAX_VALUE) {
+        properties.put("maxValue", new SimpleDoubleProperty(MAX_VALUE));
+        return this;
+    }
+
+    public final LinearScaleBuilder niceScaling(final boolean NICE_SCALING) {
+        properties.put("niceScaling", new SimpleBooleanProperty(NICE_SCALING));
+        return this;
+    }
+
+    public final LinearScaleBuilder maxNoOfMajorTicks(final int MAX_NO_OF_MAJOR_TICKS) {
+        properties.put("maxNoOfMajorTicks", new SimpleIntegerProperty(MAX_NO_OF_MAJOR_TICKS));
+        return this;
+    }
+
+    public final LinearScaleBuilder maxNoOfMinorTicks(final int MAX_NO_OF_MINOR_TICKS) {
+        properties.put("maxNoOfMinorTicks", new SimpleIntegerProperty(MAX_NO_OF_MINOR_TICKS));
+        return this;
+    }
+
+    public final LinearScaleBuilder majorTickSpacing(final double MAJOR_TICK_SPACING) {
+        properties.put("majorTickSpacing", new SimpleDoubleProperty(MAJOR_TICK_SPACING));
+        return this;
+    }
+
+    public final LinearScaleBuilder minorTickSpacing(final double MINOR_TICK_SPACING) {
+        properties.put("minorTickSpacing", new SimpleDoubleProperty(MINOR_TICK_SPACING));
+        return this;
+    }
+
+    public final LinearScaleBuilder tightScale(final boolean TIGHT_SCALE) {
+        properties.put("tightScale", new SimpleBooleanProperty(TIGHT_SCALE));
+        return this;
+    }
+
+    public final LinearScaleBuilder largeNumberScale(final boolean LARGE_NUMBER_SCALE) {
+        properties.put("largeNumberScale", new SimpleBooleanProperty(LARGE_NUMBER_SCALE));
+        return this;
+    }
+
+    public LinearScale build() {
+        final LinearScale CONTROL = new LinearScale();
+        for (String key : properties.keySet()) {
+            if ("minValue".equals(key)) {
+                CONTROL.setMinValue(((DoubleProperty) properties.get(key)).get());
+            } else if ("maxValue".equals(key)) {
+                CONTROL.setMaxValue(((DoubleProperty) properties.get(key)).get());
+            } else if ("niceScaling".equals(key)) {
+                CONTROL.setNiceScaling(((BooleanProperty) properties.get(key)).get());
+            } else if ("maxNoOfMajorTicks".equals(key)) {
+                CONTROL.setMaxNoOfMajorTicks(((IntegerProperty) properties.get(key)).get());
+            } else if ("maxNoOfMinorTicks".equals(key)) {
+                CONTROL.setMaxNoOfMinorTicks(((IntegerProperty) properties.get(key)).get());
+            } else if ("tightScale".equals(key)) {
+                CONTROL.setTightScale(((BooleanProperty) properties.get(key)).get());
+            } else if ("largeNumberScale".equals(key)) {
+                CONTROL.setLargeNumberScale(((BooleanProperty) properties.get(key)).get());
+            }
+        }
+        return CONTROL;
+    }
 }

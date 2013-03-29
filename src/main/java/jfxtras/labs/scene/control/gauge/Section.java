@@ -62,31 +62,24 @@ public class Section {
     public Section() {
         this(-1, -1, Color.RED, "");
     }
-
     public Section(final double START, final double STOP, final Color COLOR) {
         this(START, STOP, COLOR, "");
     }
-
     public Section(final double START, final double STOP, final Color COLOR, final String TEXT) {
         this(START, STOP, COLOR, COLOR.brighter().brighter(), null, null, TEXT);
     }
-
     public Section(final double START, final double STOP, final Color COLOR, final Color HIGHLIGHT_COLOR) {
         this(START, STOP, COLOR, HIGHLIGHT_COLOR, null, null, "");
     }
-
     public Section(final double START, final double STOP, final Color COLOR, final Color HIGHLIGHT_COLOR, final String TEXT) {
         this(START, STOP, COLOR, HIGHLIGHT_COLOR, null, null, TEXT);
     }
-
     public Section(final double START, final double STOP, final Color COLOR, final Arc FILLED_AREA) {
         this(START, STOP, COLOR, null, FILLED_AREA);
     }
-
     public Section(final double START, final double STOP, final Color COLOR, final Shape SECTION_AREA, final Arc FILLED_AREA) {
         this(START, STOP, COLOR, COLOR.brighter().brighter(), SECTION_AREA, FILLED_AREA, "");
     }
-
     public Section(final double START, final double STOP, final Color COLOR, final Color HIGHLIGHT_COLOR, final Shape SECTION_AREA, final Shape FILLED_AREA, final String TEXT) {
         start                     = new SimpleDoubleProperty(START);
         stop                      = new SimpleDoubleProperty(STOP);
@@ -106,11 +99,9 @@ public class Section {
     public final double getStart() {
         return start.get();
     }
-
     public final void setStart(final double START) {
         start.set(START);
     }
-
     public final DoubleProperty startProperty() {
         return start;
     }
@@ -118,11 +109,9 @@ public class Section {
     public final double getStop() {
         return stop.get();
     }
-
     public final void setStop(final double STOP) {
         stop.set(STOP);
     }
-
     public final DoubleProperty stopProperty() {
         return stop;
     }
@@ -130,13 +119,11 @@ public class Section {
     public final Color getColor() {
         return color.get();
     }
-
     public final void setColor(final Color COLOR) {
         color.set(COLOR);
         transparentColor.set(Color.color(COLOR.getRed(), COLOR.getGreen(), COLOR.getBlue(), 0.25));
         cssColor.set(Util.colorToCssColor(COLOR));
     }
-
     public final ObjectProperty<Color> colorProperty() {
         return color;
     }
@@ -144,7 +131,6 @@ public class Section {
     public final Color getTransparentColor() {
         return transparentColor.get();
     }
-
     public final ObjectProperty<Color> transparentColorProperty() {
         return transparentColor;
     }
@@ -152,7 +138,6 @@ public class Section {
     public final Color getHighlightColor() {
         return highlightColor.get();
     }
-
     public final void setHighlightColor(final Color COLOR) {
         highlightColor.set(COLOR);
         transparentHighlightColor.set(Color.color(COLOR.getRed(), COLOR.getGreen(), COLOR.getBlue(), 0.5));
@@ -161,11 +146,9 @@ public class Section {
     public final ObjectProperty<Color> highlightColorProperty() {
         return highlightColor;
     }
-
     public final Color getTransparentHighlightColor() {
         return transparentHighlightColor.get();
     }
-
     public final ObjectProperty<Color> transparentHighlightColorProperty() {
         return transparentHighlightColor;
     }
@@ -173,7 +156,6 @@ public class Section {
     public final String getCssColor() {
         return cssColor.get();
     }
-
     public final StringProperty cssColorProperty() {
         return cssColor;
     }
@@ -181,11 +163,9 @@ public class Section {
     public final Shape getSectionArea() {
         return sectionArea.get();
     }
-
     public final void setSectionArea(final Shape SECTION_AREA) {
         sectionArea.set(SECTION_AREA);
     }
-
     public final ObjectProperty<Shape> sectionAreaProperty() {
         return sectionArea;
     }
@@ -193,11 +173,9 @@ public class Section {
     public final Shape getFilledArea() {
         return filledArea.get();
     }
-
     public final void setFilledArea(final Shape FILLED_AREA) {
         filledArea.set(FILLED_AREA);
     }
-
     public final ObjectProperty<Shape> filledAreaProperty() {
         return filledArea;
     }
@@ -205,11 +183,9 @@ public class Section {
     public final String getText() {
         return text.get();
     }
-
     public final void setText(final String TEXT) {
         text.set(TEXT);
     }
-
     public final StringProperty textProperty() {
         return text;
     }
@@ -217,11 +193,9 @@ public class Section {
     public final Paint getPaint() {
         return paint.get();
     }
-
     public final void setPaint(final Paint PAINT) {
         paint.set(PAINT);
     }
-
     public final ObjectProperty<Paint> paintProperty() {
         return paint;
     }

@@ -38,7 +38,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
-import javafx.util.Builder;
 
 import java.util.HashMap;
 
@@ -49,73 +48,73 @@ import java.util.HashMap;
  * Date: 09.03.12
  * Time: 16:26
  */
-public class NixieTubeBuilder { //<B extends NixieTubeBuilder<B>> extends ControlBuilder<B> implements Builder<NixieTube> {
-//    private HashMap<String, Property> properties = new HashMap<String, Property>();
-//
-//
-//    // ******************** Constructors **************************************
-//    protected NixieTubeBuilder() {};
-//
-//
-//    // ******************** Methods *******************************************
-//    public static final NixieTubeBuilder create() {
-//        return new NixieTubeBuilder();
-//    }
-//
-//    public final NixieTubeBuilder glowColor(final Color GLOW_COLOR) {
-//        properties.put("glowColor", new SimpleObjectProperty<Color>(GLOW_COLOR));
-//        return this;
-//    }
-//
-//    public final NixieTubeBuilder number(final String NUMBER) {
-//        properties.put("number", new SimpleStringProperty(NUMBER));
-//        return this;
-//    }
-//
-//    public final NixieTubeBuilder number(final int NUMBER) {
-//        properties.put("intNumber", new SimpleIntegerProperty(NUMBER));
-//        return this;
-//    }
-//
-//    @Override public final B prefWidth(final double PREF_WIDTH) {
-//        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-//        return (B)this;
-//    }
-//
-//    @Override public final B prefHeight(final double PREF_HEIGHT) {
-//        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-//        return (B)this;
-//    }
-//
-//    @Override public final B layoutX(final double LAYOUT_X) {
-//            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
-//            return (B)this;
-//        }
-//
-//    @Override public final B layoutY(final double LAYOUT_Y) {
-//        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
-//        return (B)this;
-//    }
-//
-//    @Override public final NixieTube build() {
-//        final NixieTube CONTROL = new NixieTube();
-//        for (String key : properties.keySet()) {
-//            if ("glowColor".equals(key)) {
-//                CONTROL.setGlowColor(((ObjectProperty<Color>) properties.get(key)).get());
-//            } else if ("number".equals(key)) {
-//                CONTROL.setNumber(((StringProperty) properties.get(key)).get());
-//            } else if ("intNumber".equals(key)) {
-//                CONTROL.setNumber(((IntegerProperty) properties.get(key)).get());
-//            }  else if ("prefWidth".equals(key)) {
-//                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
-//            } else if ("prefHeight".equals(key)) {
-//                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
-//            } else if ("layoutX".equals(key)) {
-//                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
-//            } else if ("layoutY".equals(key)) {
-//                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
-//            }
-//        }
-//        return CONTROL;
-//    }
+public class NixieTubeBuilder <B extends NixieTubeBuilder<B>> extends ControlBuilder<B> {
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
+
+
+    // ******************** Constructors **************************************
+    protected NixieTubeBuilder() {};
+
+
+    // ******************** Methods *******************************************
+    public static final NixieTubeBuilder create() {
+        return new NixieTubeBuilder();
+    }
+
+    public final NixieTubeBuilder glowColor(final Color GLOW_COLOR) {
+        properties.put("glowColor", new SimpleObjectProperty<Color>(GLOW_COLOR));
+        return this;
+    }
+
+    public final NixieTubeBuilder number(final String NUMBER) {
+        properties.put("number", new SimpleStringProperty(NUMBER));
+        return this;
+    }
+
+    public final NixieTubeBuilder number(final int NUMBER) {
+        properties.put("intNumber", new SimpleIntegerProperty(NUMBER));
+        return this;
+    }
+
+    @Override public final B prefWidth(final double PREF_WIDTH) {
+        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
+        return (B)this;
+    }
+
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
+        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
+        return (B)this;
+    }
+
+    @Override public final B layoutX(final double LAYOUT_X) {
+            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
+            return (B)this;
+        }
+
+    @Override public final B layoutY(final double LAYOUT_Y) {
+        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
+        return (B)this;
+    }
+
+    @Override public final NixieTube build() {
+        final NixieTube CONTROL = new NixieTube();
+        for (String key : properties.keySet()) {
+            if ("glowColor".equals(key)) {
+                CONTROL.setGlowColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("number".equals(key)) {
+                CONTROL.setNumber(((StringProperty) properties.get(key)).get());
+            } else if ("intNumber".equals(key)) {
+                CONTROL.setNumber(((IntegerProperty) properties.get(key)).get());
+            }  else if ("prefWidth".equals(key)) {
+                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
+            } else if ("prefHeight".equals(key)) {
+                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
+            } else if ("layoutX".equals(key)) {
+                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
+            } else if ("layoutY".equals(key)) {
+                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
+            }
+        }
+        return CONTROL;
+    }
 }

@@ -40,7 +40,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
-import javafx.util.Builder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -53,101 +52,101 @@ import java.util.Map;
  * Date: 23.04.12
  * Time: 08:40
  */
-public class SevenSegmentBuilder { //<B extends SevenSegmentBuilder<B>> extends ControlBuilder<B> implements Builder<SevenSegment> {
-//    private HashMap<String, Property> properties = new HashMap<String, Property>();
-//
-//
-//    // ******************** Constructors **************************************
-//    protected SevenSegmentBuilder() {};
-//
-//
-//    // ******************** Methods *******************************************
-//    public static final SevenSegmentBuilder create() {
-//        return new SevenSegmentBuilder();
-//    }
-//
-//    public final SevenSegmentBuilder character(final String CHARACTER) {
-//        properties.put("character", new SimpleStringProperty(CHARACTER));
-//        return this;
-//    }
-//
-//    public final SevenSegmentBuilder character(final Character CHARACTER) {
-//        properties.put("charCharacter", new SimpleObjectProperty<Character>(CHARACTER));
-//        return this;
-//    }
-//
-//    public final SevenSegmentBuilder character(final int CHARACTER) {
-//        properties.put("intCharacter", new SimpleIntegerProperty(CHARACTER));
-//        return this;
-//    }
-//
-//    public final SevenSegmentBuilder dotOn(final boolean DOT_ON) {
-//        properties.put("dotOn", new SimpleBooleanProperty(DOT_ON));
-//        return this;
-//    }
-//
-//    public final SevenSegmentBuilder customSegmentMapping(final Map<Integer, List<SevenSegment.Segment>> CUSTOM_SEGMENT_MAPPING) {
-//        properties.put("customSegmentMapping", new SimpleObjectProperty<Map<Integer, List<SevenSegment.Segment>>>(CUSTOM_SEGMENT_MAPPING));
-//        return this;
-//    }
-//
-//    public final SevenSegmentBuilder color(final Color COLOR) {
-//        properties.put("color", new SimpleObjectProperty<Color>(COLOR));
-//        return this;
-//    }
-//
-//    public final SevenSegmentBuilder plainColor(final boolean PLAIN_COLOR) {
-//        properties.put("plainColor", new SimpleBooleanProperty(PLAIN_COLOR));
-//        return this;
-//    }
-//
-//    @Override public final B prefWidth(final double PREF_WIDTH) {
-//        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-//        return (B)this;
-//    }
-//
-//    @Override public final B prefHeight(final double PREF_HEIGHT) {
-//        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-//        return (B)this;
-//    }
-//
-//    @Override public final B layoutX(final double LAYOUT_X) {
-//            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
-//            return (B)this;
-//        }
-//
-//    @Override public final B layoutY(final double LAYOUT_Y) {
-//        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
-//        return (B)this;
-//    }
-//
-//    @Override public final SevenSegment build() {
-//        final SevenSegment CONTROL = new SevenSegment();
-//        for (String key : properties.keySet()) {
-//            if ("character".equals(key)) {
-//                CONTROL.setCharacter(((StringProperty) properties.get(key)).get());
-//            } else if ("charCharacter".equals(key)) {
-//                CONTROL.setCharacter(((ObjectProperty<Character>) properties.get(key)).get());
-//            } else if ("intCharacter".equals(key)) {
-//                CONTROL.setCharacter(((IntegerProperty) properties.get(key)).get());
-//            } else if ("dotOn".equals(key)) {
-//                CONTROL.setDotOn(((BooleanProperty) properties.get(key)).get());
-//            } else if ("customSegmentMapping".equals(key)) {
-//                CONTROL.setCustomSegmentMapping(((ObjectProperty<Map<Integer, List<SevenSegment.Segment>>>) properties.get(key)).get());
-//            } else if ("color".equals(key)) {
-//                CONTROL.setColor(((ObjectProperty<Color>) properties.get(key)).get());
-//            } else if ("plainColor".equals(key)) {
-//                CONTROL.setPlainColor(((BooleanProperty) properties.get(key)).get());
-//            }  else if ("prefWidth".equals(key)) {
-//                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
-//            } else if ("prefHeight".equals(key)) {
-//                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
-//            } else if ("layoutX".equals(key)) {
-//                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
-//            } else if ("layoutY".equals(key)) {
-//                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
-//            }
-//        }
-//        return CONTROL;
-//    }
+public class SevenSegmentBuilder <B extends SevenSegmentBuilder<B>> extends ControlBuilder<B> {
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
+
+
+    // ******************** Constructors **************************************
+    protected SevenSegmentBuilder() {};
+
+
+    // ******************** Methods *******************************************
+    public static final SevenSegmentBuilder create() {
+        return new SevenSegmentBuilder();
+    }
+
+    public final SevenSegmentBuilder character(final String CHARACTER) {
+        properties.put("character", new SimpleStringProperty(CHARACTER));
+        return this;
+    }
+
+    public final SevenSegmentBuilder character(final Character CHARACTER) {
+        properties.put("charCharacter", new SimpleObjectProperty<Character>(CHARACTER));
+        return this;
+    }
+
+    public final SevenSegmentBuilder character(final int CHARACTER) {
+        properties.put("intCharacter", new SimpleIntegerProperty(CHARACTER));
+        return this;
+    }
+
+    public final SevenSegmentBuilder dotOn(final boolean DOT_ON) {
+        properties.put("dotOn", new SimpleBooleanProperty(DOT_ON));
+        return this;
+    }
+
+    public final SevenSegmentBuilder customSegmentMapping(final Map<Integer, List<SevenSegment.Segment>> CUSTOM_SEGMENT_MAPPING) {
+        properties.put("customSegmentMapping", new SimpleObjectProperty<Map<Integer, List<SevenSegment.Segment>>>(CUSTOM_SEGMENT_MAPPING));
+        return this;
+    }
+
+    public final SevenSegmentBuilder color(final Color COLOR) {
+        properties.put("color", new SimpleObjectProperty<Color>(COLOR));
+        return this;
+    }
+
+    public final SevenSegmentBuilder plainColor(final boolean PLAIN_COLOR) {
+        properties.put("plainColor", new SimpleBooleanProperty(PLAIN_COLOR));
+        return this;
+    }
+
+    @Override public final B prefWidth(final double PREF_WIDTH) {
+        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
+        return (B)this;
+    }
+
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
+        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
+        return (B)this;
+    }
+
+    @Override public final B layoutX(final double LAYOUT_X) {
+            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
+            return (B)this;
+        }
+
+    @Override public final B layoutY(final double LAYOUT_Y) {
+        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
+        return (B)this;
+    }
+
+    @Override public final SevenSegment build() {
+        final SevenSegment CONTROL = new SevenSegment();
+        for (String key : properties.keySet()) {
+            if ("character".equals(key)) {
+                CONTROL.setCharacter(((StringProperty) properties.get(key)).get());
+            } else if ("charCharacter".equals(key)) {
+                CONTROL.setCharacter(((ObjectProperty<Character>) properties.get(key)).get());
+            } else if ("intCharacter".equals(key)) {
+                CONTROL.setCharacter(((IntegerProperty) properties.get(key)).get());
+            } else if ("dotOn".equals(key)) {
+                CONTROL.setDotOn(((BooleanProperty) properties.get(key)).get());
+            } else if ("customSegmentMapping".equals(key)) {
+                CONTROL.setCustomSegmentMapping(((ObjectProperty<Map<Integer, List<SevenSegment.Segment>>>) properties.get(key)).get());
+            } else if ("color".equals(key)) {
+                CONTROL.setColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("plainColor".equals(key)) {
+                CONTROL.setPlainColor(((BooleanProperty) properties.get(key)).get());
+            }  else if ("prefWidth".equals(key)) {
+                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
+            } else if ("prefHeight".equals(key)) {
+                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
+            } else if ("layoutX".equals(key)) {
+                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
+            } else if ("layoutY".equals(key)) {
+                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
+            }
+        }
+        return CONTROL;
+    }
 }

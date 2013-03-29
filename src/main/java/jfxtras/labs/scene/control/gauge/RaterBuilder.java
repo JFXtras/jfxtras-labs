@@ -36,7 +36,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
-import javafx.util.Builder;
 
 import java.util.HashMap;
 
@@ -47,80 +46,80 @@ import java.util.HashMap;
  * Date: 09.03.12
  * Time: 16:20
  */
-public class RaterBuilder { //<B extends RaterBuilder<B>> extends ControlBuilder<B> implements Builder<Rater> {
-//    private HashMap<String, Property> properties = new HashMap<String, Property>();
-//
-//
-//    // ******************** Constructors **************************************
-//    protected RaterBuilder() {};
-//
-//
-//    // ******************** Methods *******************************************
-//    public static final RaterBuilder create() {
-//        return new RaterBuilder();
-//    }
-//
-//    public final RaterBuilder noOfStars(final int NO_OF_STARS) {
-//        properties.put("noOfStars", new SimpleIntegerProperty(NO_OF_STARS));
-//        return this;
-//    }
-//
-//    public final RaterBuilder brightColor(final Color BRIGHT_COLOR) {
-//        properties.put("brightColor", new SimpleObjectProperty<Color>(BRIGHT_COLOR));
-//        return this;
-//    }
-//
-//    public final RaterBuilder darkColor(final Color DARK_COLOR) {
-//        properties.put("darkColor", new SimpleObjectProperty<Color>(DARK_COLOR));
-//        return this;
-//    }
-//
-//    public final RaterBuilder rating(final int RATING) {
-//        properties.put("rating", new SimpleIntegerProperty(RATING));
-//        return this;
-//    }
-//
-//    @Override public final B prefWidth(final double PREF_WIDTH) {
-//        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-//        return (B)this;
-//    }
-//
-//    @Override public final B prefHeight(final double PREF_HEIGHT) {
-//        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-//        return (B)this;
-//    }
-//
-//    @Override public final B layoutX(final double LAYOUT_X) {
-//            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
-//            return (B)this;
-//        }
-//
-//    @Override public final B layoutY(final double LAYOUT_Y) {
-//        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
-//        return (B)this;
-//    }
-//
-//    @Override public final Rater build() {
-//        final Rater CONTROL = new Rater();
-//        for (String key : properties.keySet()) {
-//            if ("noOfStars".equals(key)) {
-//                CONTROL.setNoOfStars(((IntegerProperty) properties.get(key)).get());
-//            } else if ("brightColor".equals(key)) {
-//                CONTROL.setBrightColor(((ObjectProperty<Color>) properties.get(key)).get());
-//            } else if ("darkColor".equals(key)) {
-//                CONTROL.setDarkColor(((ObjectProperty<Color>) properties.get(key)).get());
-//            } else if ("rating".equals(key)) {
-//                CONTROL.setRating(((IntegerProperty) properties.get(key)).get());
-//            } else if ("prefWidth".equals(key)) {
-//                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
-//            } else if ("prefHeight".equals(key)) {
-//                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
-//            } else if ("layoutX".equals(key)) {
-//                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
-//            } else if ("layoutY".equals(key)) {
-//                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
-//            }
-//        }
-//        return CONTROL;
-//    }
+public class RaterBuilder <B extends RaterBuilder<B>> extends ControlBuilder<B> {
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
+
+
+    // ******************** Constructors **************************************
+    protected RaterBuilder() {};
+
+
+    // ******************** Methods *******************************************
+    public static final RaterBuilder create() {
+        return new RaterBuilder();
+    }
+
+    public final RaterBuilder noOfStars(final int NO_OF_STARS) {
+        properties.put("noOfStars", new SimpleIntegerProperty(NO_OF_STARS));
+        return this;
+    }
+
+    public final RaterBuilder brightColor(final Color BRIGHT_COLOR) {
+        properties.put("brightColor", new SimpleObjectProperty<Color>(BRIGHT_COLOR));
+        return this;
+    }
+
+    public final RaterBuilder darkColor(final Color DARK_COLOR) {
+        properties.put("darkColor", new SimpleObjectProperty<Color>(DARK_COLOR));
+        return this;
+    }
+
+    public final RaterBuilder rating(final int RATING) {
+        properties.put("rating", new SimpleIntegerProperty(RATING));
+        return this;
+    }
+
+    @Override public final B prefWidth(final double PREF_WIDTH) {
+        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
+        return (B)this;
+    }
+
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
+        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
+        return (B)this;
+    }
+
+    @Override public final B layoutX(final double LAYOUT_X) {
+            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
+            return (B)this;
+        }
+
+    @Override public final B layoutY(final double LAYOUT_Y) {
+        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
+        return (B)this;
+    }
+
+    @Override public final Rater build() {
+        final Rater CONTROL = new Rater();
+        for (String key : properties.keySet()) {
+            if ("noOfStars".equals(key)) {
+                CONTROL.setNoOfStars(((IntegerProperty) properties.get(key)).get());
+            } else if ("brightColor".equals(key)) {
+                CONTROL.setBrightColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("darkColor".equals(key)) {
+                CONTROL.setDarkColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("rating".equals(key)) {
+                CONTROL.setRating(((IntegerProperty) properties.get(key)).get());
+            } else if ("prefWidth".equals(key)) {
+                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
+            } else if ("prefHeight".equals(key)) {
+                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
+            } else if ("layoutX".equals(key)) {
+                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
+            } else if ("layoutY".equals(key)) {
+                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
+            }
+        }
+        return CONTROL;
+    }
 }

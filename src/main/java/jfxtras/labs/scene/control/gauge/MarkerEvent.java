@@ -39,25 +39,12 @@ import javafx.event.EventType;
  * Time: 11:59
  */
 public class MarkerEvent extends Event {
-    public enum Type {
-        OVER_RUN,
-        UNDER_RUN
-    }
-    private final Type TYPE;
+    public static final EventType<MarkerEvent> MARKER_OVER_RUN  = new EventType(ANY, "MARKER_OVER_RUN");
+    public static final EventType<MarkerEvent> MARKER_UNDER_RUN = new EventType(ANY, "MARKER_UNDER_RUN");
 
 
     // ******************** Constructors **************************************
-    public MarkerEvent() {
-        super(new EventType<MarkerEvent>());
-        this.TYPE = Type.OVER_RUN;
-    }
-
-    public MarkerEvent(final Object SOURCE, final EventTarget TARGET, final Type TYPE) {
-        super(SOURCE, TARGET, new EventType<MarkerEvent>());
-        this.TYPE = TYPE;
-    }
-
-    public Type getType() {
-        return TYPE;
+    public MarkerEvent(final Object SOURCE, final EventTarget TARGET, final EventType EVENT_TYPE) {
+        super(SOURCE, TARGET, EVENT_TYPE);
     }
 }

@@ -27,8 +27,6 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.scene.control.SkinBase;
-import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
@@ -198,9 +196,9 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
         if (CONTROL.isMarkersVisible() && !CONTROL.getMarkers().isEmpty()) {
             for (Marker marker : CONTROL.getMarkers()) {
                 if (OLD_VALUE < marker.getValue() && NEW_VALUE > marker.getValue()) {
-                    marker.fireMarkerEvent(new MarkerEvent(CONTROL, null, MarkerEvent.Type.OVER_RUN));
+                    marker.fireMarkerEvent(new MarkerEvent(CONTROL, null, MarkerEvent.MARKER_OVER_RUN));
                 } else if (OLD_VALUE > marker.getValue() && NEW_VALUE < marker.getValue()) {
-                    marker.fireMarkerEvent(new MarkerEvent(CONTROL, null, MarkerEvent.Type.UNDER_RUN));
+                    marker.fireMarkerEvent(new MarkerEvent(CONTROL, null, MarkerEvent.MARKER_UNDER_RUN));
                 }
             }
         }

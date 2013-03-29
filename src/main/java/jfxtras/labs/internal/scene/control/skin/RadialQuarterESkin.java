@@ -618,67 +618,66 @@ public class RadialQuarterESkin extends GaugeSkinBase<RadialQuarterE, RadialQuar
         getSkinnable().requestLayout();
     }
 
-//    @Override public void layoutChildren() {
-//        if (!isDirty) {
-//            return;
-//        }
-//        if (!initialized) {
-//            init();
-//        }
-//        if (control.getScene() != null) {
-//            calcGaugeBounds();
-//            setTranslateX(framelessOffset.getX());
-//            setTranslateY(framelessOffset.getY());
-//            center         = new Point2D(gaugeBounds.getWidth() * 0.265, gaugeBounds.getHeight() * 0.5);
-//            rotationCenter = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getHeight() * 0.735);
-//            drawCircularFrame(control, frame, gaugeBounds);
-//            drawCircularBackground(control, background, gaugeBounds);
-//            drawCircularTrend(control, trend, gaugeBounds);
-//            updateSections();
-//            drawCircularSections(control, sections, gaugeBounds);
-//            updateAreas();
-//            drawCircularAreas(control, areas, gaugeBounds);
-//            drawTitleAndUnit();
-//            drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
-//            drawCircularLed(control, ledOff, ledOn, gaugeBounds);
-//            drawCircularUserLed(control, userLedOff, userLedOn, gaugeBounds);
-//            drawThreshold();
-//            drawCircularGlowOff(glowOff, gaugeBounds);
-//            drawCircularGlowOn(control, glowOn, glowColors, gaugeBounds);
-//            drawMinMeasuredIndicator();
-//            drawMaxMeasuredIndicator();
-//            drawPointer();
-//            drawCircularKnobs(control, knobs, center, gaugeBounds);
-//            drawCircularForeground(control, foreground, gaugeBounds);
-//            if (control.isPointerShadowEnabled() && !control.isPointerGlowEnabled()) {
-//                addDropShadow(control, knobs, pointerShadow);
-//            }
-//
-//            getChildren().setAll(frame,
-//                                background,
-//                                trend,
-//                                sections,
-//                                areas,
-//                                ledOff,
-//                                ledOn,
-//                                userLedOff,
-//                                userLedOn,
-//                                titleAndUnit,
-//                                tickmarks,
-//                                threshold,
-//                                glowOff,
-//                                glowOn,
-//                                minMeasured,
-//                                maxMeasured,
-//                                markers,
-//                                pointerShadow,
-//                                knobsShadow,
-//                                foreground);
-//        }
-//        isDirty = false;
-//
-//        super.layoutChildren();
-//    }
+    @Override public void layoutChildren(double x, double y, double w, double h) {
+        super.layoutChildren(x, y, w, h);
+        if (!isDirty) {
+            return;
+        }
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            calcGaugeBounds();
+            control.setTranslateX(framelessOffset.getX());
+            control.setTranslateY(framelessOffset.getY());
+            center         = new Point2D(gaugeBounds.getWidth() * 0.265, gaugeBounds.getHeight() * 0.5);
+            rotationCenter = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getHeight() * 0.735);
+            drawCircularFrame(control, frame, gaugeBounds);
+            drawCircularBackground(control, background, gaugeBounds);
+            drawCircularTrend(control, trend, gaugeBounds);
+            updateSections();
+            drawCircularSections(control, sections, gaugeBounds);
+            updateAreas();
+            drawCircularAreas(control, areas, gaugeBounds);
+            drawTitleAndUnit();
+            drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
+            drawCircularLed(control, ledOff, ledOn, gaugeBounds);
+            drawCircularUserLed(control, userLedOff, userLedOn, gaugeBounds);
+            drawThreshold();
+            drawCircularGlowOff(glowOff, gaugeBounds);
+            drawCircularGlowOn(control, glowOn, glowColors, gaugeBounds);
+            drawMinMeasuredIndicator();
+            drawMaxMeasuredIndicator();
+            drawPointer();
+            drawCircularKnobs(control, knobs, center, gaugeBounds);
+            drawCircularForeground(control, foreground, gaugeBounds);
+            if (control.isPointerShadowEnabled() && !control.isPointerGlowEnabled()) {
+                addDropShadow(control, knobs, pointerShadow);
+            }
+
+            getChildren().setAll(frame,
+                                background,
+                                trend,
+                                sections,
+                                areas,
+                                ledOff,
+                                ledOn,
+                                userLedOff,
+                                userLedOn,
+                                titleAndUnit,
+                                tickmarks,
+                                threshold,
+                                glowOff,
+                                glowOn,
+                                minMeasured,
+                                maxMeasured,
+                                markers,
+                                pointerShadow,
+                                knobsShadow,
+                                foreground);
+        }
+        isDirty = false;
+    }
 
     public RadialQuarterE getControl() {
         return control;

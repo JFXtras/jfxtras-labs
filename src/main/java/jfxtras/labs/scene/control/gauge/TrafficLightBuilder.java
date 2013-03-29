@@ -33,7 +33,6 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.control.ControlBuilder;
-import javafx.util.Builder;
 
 import java.util.HashMap;
 
@@ -44,101 +43,101 @@ import java.util.HashMap;
  * Date: 09.03.12
  * Time: 16:12
  */
-public class TrafficLightBuilder { //<B extends TrafficLightBuilder<B>> extends ControlBuilder<B> implements Builder<TrafficLight> {
-//    private HashMap<String, Property> properties = new HashMap<String, Property>();
-//
-//
-//    // ******************** Constructors **************************************
-//    protected TrafficLightBuilder() {};
-//
-//
-//    // ******************** Methods *******************************************
-//    public static final TrafficLightBuilder create() {
-//        return new TrafficLightBuilder();
-//    }
-//
-//    public final TrafficLightBuilder redOn(final boolean RED_ON) {
-//        properties.put("redOn", new SimpleBooleanProperty(RED_ON));
-//        return this;
-//    }
-//
-//    public final TrafficLightBuilder redBlinking(final boolean RED_BLINKING) {
-//        properties.put("redBlinking", new SimpleBooleanProperty(RED_BLINKING));
-//        return this;
-//    }
-//
-//    public final TrafficLightBuilder yellowOn(final boolean YELLOW_ON) {
-//        properties.put("yellowOn", new SimpleBooleanProperty(YELLOW_ON));
-//        return this;
-//    }
-//
-//    public final TrafficLightBuilder yellowBlinking(final boolean YELLOW_BLINKING) {
-//        properties.put("yellowBlinking", new SimpleBooleanProperty(YELLOW_BLINKING));
-//        return this;
-//    }
-//
-//    public final TrafficLightBuilder greenOn(final boolean GREEN_ON) {
-//        properties.put("greenOn", new SimpleBooleanProperty(GREEN_ON));
-//        return this;
-//    }
-//
-//    public final TrafficLightBuilder greenBlinking(final boolean GREEN_BLINKING) {
-//        properties.put("greenBlinking", new SimpleBooleanProperty(GREEN_BLINKING));
-//        return this;
-//    }
-//
-//    public final TrafficLightBuilder darkBackground(final boolean DARK_BACKGROUND) {
-//        properties.put("darkBackground", new SimpleBooleanProperty(DARK_BACKGROUND));
-//        return this;
-//    }
-//
-//    @Override public final B prefWidth(final double PREF_WIDTH) {
-//        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-//        return (B)this;
-//    }
-//
-//    @Override public final B prefHeight(final double PREF_HEIGHT) {
-//        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-//        return (B)this;
-//    }
-//
-//    @Override public final B layoutX(final double LAYOUT_X) {
-//            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
-//            return (B)this;
-//        }
-//
-//    @Override public final B layoutY(final double LAYOUT_Y) {
-//        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
-//        return (B)this;
-//    }
-//
-//    @Override public final TrafficLight build() {
-//        final TrafficLight CONTROL = new TrafficLight();
-//        for (String key : properties.keySet()) {
-//            if ("redOn".equals(key)) {
-//                CONTROL.setRedOn(((BooleanProperty) properties.get(key)).get());
-//            } else if ("redBlinking".equals(key)) {
-//                CONTROL.setRedBlinking(((BooleanProperty) properties.get(key)).get());
-//            } else if ("yellowOn".equals(key)) {
-//                CONTROL.setYellowOn(((BooleanProperty) properties.get(key)).get());
-//            } else if ("yellowBlinking".equals(key)) {
-//                CONTROL.setYellowBlinking(((BooleanProperty) properties.get(key)).get());
-//            } else if ("greenOn".equals(key)) {
-//                CONTROL.setGreenOn(((BooleanProperty) properties.get(key)).get());
-//            } else if ("greenBlinking".equals(key)) {
-//                CONTROL.setGreenBlinking(((BooleanProperty) properties.get(key)).get());
-//            } else if ("darkBackground".equals(key)) {
-//                CONTROL.setDarkBackground(((BooleanProperty) properties.get(key)).get());
-//            }  else if ("prefWidth".equals(key)) {
-//                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
-//            } else if ("prefHeight".equals(key)) {
-//                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
-//            } else if ("layoutX".equals(key)) {
-//                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
-//            } else if ("layoutY".equals(key)) {
-//                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
-//            }
-//        }
-//        return CONTROL;
-//    }
+public class TrafficLightBuilder <B extends TrafficLightBuilder<B>> extends ControlBuilder<B> {
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
+
+
+    // ******************** Constructors **************************************
+    protected TrafficLightBuilder() {};
+
+
+    // ******************** Methods *******************************************
+    public static final TrafficLightBuilder create() {
+        return new TrafficLightBuilder();
+    }
+
+    public final TrafficLightBuilder redOn(final boolean RED_ON) {
+        properties.put("redOn", new SimpleBooleanProperty(RED_ON));
+        return this;
+    }
+
+    public final TrafficLightBuilder redBlinking(final boolean RED_BLINKING) {
+        properties.put("redBlinking", new SimpleBooleanProperty(RED_BLINKING));
+        return this;
+    }
+
+    public final TrafficLightBuilder yellowOn(final boolean YELLOW_ON) {
+        properties.put("yellowOn", new SimpleBooleanProperty(YELLOW_ON));
+        return this;
+    }
+
+    public final TrafficLightBuilder yellowBlinking(final boolean YELLOW_BLINKING) {
+        properties.put("yellowBlinking", new SimpleBooleanProperty(YELLOW_BLINKING));
+        return this;
+    }
+
+    public final TrafficLightBuilder greenOn(final boolean GREEN_ON) {
+        properties.put("greenOn", new SimpleBooleanProperty(GREEN_ON));
+        return this;
+    }
+
+    public final TrafficLightBuilder greenBlinking(final boolean GREEN_BLINKING) {
+        properties.put("greenBlinking", new SimpleBooleanProperty(GREEN_BLINKING));
+        return this;
+    }
+
+    public final TrafficLightBuilder darkBackground(final boolean DARK_BACKGROUND) {
+        properties.put("darkBackground", new SimpleBooleanProperty(DARK_BACKGROUND));
+        return this;
+    }
+
+    @Override public final B prefWidth(final double PREF_WIDTH) {
+        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
+        return (B)this;
+    }
+
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
+        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
+        return (B)this;
+    }
+
+    @Override public final B layoutX(final double LAYOUT_X) {
+            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
+            return (B)this;
+        }
+
+    @Override public final B layoutY(final double LAYOUT_Y) {
+        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
+        return (B)this;
+    }
+
+    @Override public final TrafficLight build() {
+        final TrafficLight CONTROL = new TrafficLight();
+        for (String key : properties.keySet()) {
+            if ("redOn".equals(key)) {
+                CONTROL.setRedOn(((BooleanProperty) properties.get(key)).get());
+            } else if ("redBlinking".equals(key)) {
+                CONTROL.setRedBlinking(((BooleanProperty) properties.get(key)).get());
+            } else if ("yellowOn".equals(key)) {
+                CONTROL.setYellowOn(((BooleanProperty) properties.get(key)).get());
+            } else if ("yellowBlinking".equals(key)) {
+                CONTROL.setYellowBlinking(((BooleanProperty) properties.get(key)).get());
+            } else if ("greenOn".equals(key)) {
+                CONTROL.setGreenOn(((BooleanProperty) properties.get(key)).get());
+            } else if ("greenBlinking".equals(key)) {
+                CONTROL.setGreenBlinking(((BooleanProperty) properties.get(key)).get());
+            } else if ("darkBackground".equals(key)) {
+                CONTROL.setDarkBackground(((BooleanProperty) properties.get(key)).get());
+            }  else if ("prefWidth".equals(key)) {
+                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
+            } else if ("prefHeight".equals(key)) {
+                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
+            } else if ("layoutX".equals(key)) {
+                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
+            } else if ("layoutY".equals(key)) {
+                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
+            }
+        }
+        return CONTROL;
+    }
 }

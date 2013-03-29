@@ -39,7 +39,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Orientation;
 import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
-import javafx.util.Builder;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -51,109 +50,109 @@ import java.util.LinkedList;
  * Date: 09.03.12
  * Time: 16:37
  */
-public class LedBargraphBuilder { //<B extends LedBargraphBuilder<B>> extends ControlBuilder<B> implements Builder<LedBargraph> {
-//    private HashMap<String, Property> properties = new HashMap<String, Property>();
-//
-//
-//    // ******************** Constructors **************************************
-//    protected LedBargraphBuilder() {};
-//
-//
-//    // ******************** Methods *******************************************
-//    public static final LedBargraphBuilder create() {
-//        return new LedBargraphBuilder();
-//    }
-//
-//    public final LedBargraphBuilder noOfLeds(final int NO_OF_LEDS) {
-//        properties.put("noOfLeds", new SimpleIntegerProperty(NO_OF_LEDS));
-//        return this;
-//    }
-//
-//    public final LedBargraphBuilder ledType(final Led.Type LED_TYPE) {
-//        properties.put("ledType", new SimpleObjectProperty<Led.Type>(LED_TYPE));
-//        return this;
-//    }
-//
-//    public final LedBargraphBuilder orientation(final Orientation ORIENTATION) {
-//        properties.put("orientation", new SimpleObjectProperty<Orientation>(ORIENTATION));
-//        return this;
-//    }
-//
-//    public final LedBargraphBuilder peakValueVisible(final boolean PEAK_VALUE_VISIBLE) {
-//        properties.put("peakValueVisible", new SimpleBooleanProperty(PEAK_VALUE_VISIBLE));
-//        return this;
-//    }
-//
-//    public final LedBargraphBuilder ledSize(final double LED_SIZE) {
-//        properties.put("ledSize", new SimpleDoubleProperty(LED_SIZE));
-//        return this;
-//    }
-//
-//    public final LedBargraphBuilder ledColors(final LinkedList<Color> LED_COLORS) {
-//        properties.put("ledColors", new SimpleObjectProperty<LinkedList<Color>>(LED_COLORS));
-//        return this;
-//    }
-//
-//    public final LedBargraphBuilder ledColor(final int INDEX, final Color COLOR) {
-//        properties.put("ledColorIndex", new SimpleIntegerProperty(INDEX));
-//        properties.put("ledColor", new SimpleObjectProperty<Color>(COLOR));
-//        return this;
-//    }
-//
-//    public final LedBargraphBuilder value(final double VALUE) {
-//        properties.put("value", new SimpleDoubleProperty(VALUE));
-//        return this;
-//    }
-//
-//    @Override public final B prefWidth(final double PREF_WIDTH) {
-//        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-//        return (B)this;
-//    }
-//
-//    @Override public final B prefHeight(final double PREF_HEIGHT) {
-//        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-//        return (B)this;
-//    }
-//
-//    @Override public final B layoutX(final double LAYOUT_X) {
-//            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
-//            return (B)this;
-//        }
-//
-//    @Override public final B layoutY(final double LAYOUT_Y) {
-//        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
-//        return (B)this;
-//    }
-//
-//    @Override public final LedBargraph build() {
-//        final LedBargraph CONTROL = new LedBargraph();
-//        for (String key : properties.keySet()) {
-//            if ("noOfLeds".equals(key)) {
-//                CONTROL.setNoOfLeds(((IntegerProperty) properties.get(key)).get());
-//            } else if ("ledType".equals(key)) {
-//                CONTROL.setLedType(((ObjectProperty<Led.Type>) properties.get(key)).get());
-//            } else if ("orientation".equals(key)) {
-//                CONTROL.setOrientation(((ObjectProperty<Orientation>) properties.get(key)).get());
-//            } else if ("peakValueVisible".equals(key)) {
-//                CONTROL.setPeakValueVisible(((BooleanProperty) properties.get(key)).get());
-//            } else if ("ledSize".equals(key)) {
-//                CONTROL.setLedSize(((DoubleProperty) properties.get(key)).get());
-//            } else if ("ledColors".equals(key)) {
-//                CONTROL.setLedColors(((ObjectProperty<LinkedList<Color>>) properties.get(key)).get());
-//            } else if ("ledColor".equals(key)) {
-//                CONTROL.setLedColor(((IntegerProperty) properties.get("ledColorIndex")).get(), ((ObjectProperty<Color>) properties.get(key)).get());
-//            } else if ("value".equals(key)) {
-//                CONTROL.setValue(((DoubleProperty) properties.get(key)).get());
-//            }  else if ("prefWidth".equals(key)) {
-//                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
-//            } else if ("prefHeight".equals(key)) {
-//                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
-//            } else if ("layoutX".equals(key)) {
-//                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
-//            } else if ("layoutY".equals(key)) {
-//                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
-//            }
-//        }
-//        return CONTROL;
-//    }
+public class LedBargraphBuilder <B extends LedBargraphBuilder<B>> extends ControlBuilder<B> {
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
+
+
+    // ******************** Constructors **************************************
+    protected LedBargraphBuilder() {};
+
+
+    // ******************** Methods *******************************************
+    public static final LedBargraphBuilder create() {
+        return new LedBargraphBuilder();
+    }
+
+    public final LedBargraphBuilder noOfLeds(final int NO_OF_LEDS) {
+        properties.put("noOfLeds", new SimpleIntegerProperty(NO_OF_LEDS));
+        return this;
+    }
+
+    public final LedBargraphBuilder ledType(final Led.Type LED_TYPE) {
+        properties.put("ledType", new SimpleObjectProperty<Led.Type>(LED_TYPE));
+        return this;
+    }
+
+    public final LedBargraphBuilder orientation(final Orientation ORIENTATION) {
+        properties.put("orientation", new SimpleObjectProperty<Orientation>(ORIENTATION));
+        return this;
+    }
+
+    public final LedBargraphBuilder peakValueVisible(final boolean PEAK_VALUE_VISIBLE) {
+        properties.put("peakValueVisible", new SimpleBooleanProperty(PEAK_VALUE_VISIBLE));
+        return this;
+    }
+
+    public final LedBargraphBuilder ledSize(final double LED_SIZE) {
+        properties.put("ledSize", new SimpleDoubleProperty(LED_SIZE));
+        return this;
+    }
+
+    public final LedBargraphBuilder ledColors(final LinkedList<Color> LED_COLORS) {
+        properties.put("ledColors", new SimpleObjectProperty<LinkedList<Color>>(LED_COLORS));
+        return this;
+    }
+
+    public final LedBargraphBuilder ledColor(final int INDEX, final Color COLOR) {
+        properties.put("ledColorIndex", new SimpleIntegerProperty(INDEX));
+        properties.put("ledColor", new SimpleObjectProperty<Color>(COLOR));
+        return this;
+    }
+
+    public final LedBargraphBuilder value(final double VALUE) {
+        properties.put("value", new SimpleDoubleProperty(VALUE));
+        return this;
+    }
+
+    @Override public final B prefWidth(final double PREF_WIDTH) {
+        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
+        return (B)this;
+    }
+
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
+        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
+        return (B)this;
+    }
+
+    @Override public final B layoutX(final double LAYOUT_X) {
+            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
+            return (B)this;
+        }
+
+    @Override public final B layoutY(final double LAYOUT_Y) {
+        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
+        return (B)this;
+    }
+
+    @Override public final LedBargraph build() {
+        final LedBargraph CONTROL = new LedBargraph();
+        for (String key : properties.keySet()) {
+            if ("noOfLeds".equals(key)) {
+                CONTROL.setNoOfLeds(((IntegerProperty) properties.get(key)).get());
+            } else if ("ledType".equals(key)) {
+                CONTROL.setLedType(((ObjectProperty<Led.Type>) properties.get(key)).get());
+            } else if ("orientation".equals(key)) {
+                CONTROL.setOrientation(((ObjectProperty<Orientation>) properties.get(key)).get());
+            } else if ("peakValueVisible".equals(key)) {
+                CONTROL.setPeakValueVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("ledSize".equals(key)) {
+                CONTROL.setLedSize(((DoubleProperty) properties.get(key)).get());
+            } else if ("ledColors".equals(key)) {
+                CONTROL.setLedColors(((ObjectProperty<LinkedList<Color>>) properties.get(key)).get());
+            } else if ("ledColor".equals(key)) {
+                CONTROL.setLedColor(((IntegerProperty) properties.get("ledColorIndex")).get(), ((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("value".equals(key)) {
+                CONTROL.setValue(((DoubleProperty) properties.get(key)).get());
+            }  else if ("prefWidth".equals(key)) {
+                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
+            } else if ("prefHeight".equals(key)) {
+                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
+            } else if ("layoutX".equals(key)) {
+                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
+            } else if ("layoutY".equals(key)) {
+                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
+            }
+        }
+        return CONTROL;
+    }
 }

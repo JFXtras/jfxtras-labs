@@ -30,6 +30,7 @@ package jfxtras.labs.scene.control.gauge;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ObjectPropertyBase;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -73,26 +74,21 @@ public class Marker {
 
 
     // ******************** Event handling ************************************
-    public final ObjectProperty<EventHandler<MarkerEvent>> onMarkerEventProperty() {
-        return onMarkerEvent;
-    }
-
-    public final void setOnMarkerEvent(final EventHandler<MarkerEvent> HANDLER) {
-        onMarkerEventProperty().set(HANDLER);
-    }
-
-    public final EventHandler<MarkerEvent> getOnMarkerEvent() {
-        return onMarkerEventProperty().get();
-    }
-
-    private ObjectProperty<EventHandler<MarkerEvent>> onMarkerEvent = new SimpleObjectProperty<EventHandler<MarkerEvent>>();
-
-    public void fireMarkerEvent(final MarkerEvent MARKER_EVENT) {
-        final EventHandler<MarkerEvent> MARKER_EVENT_HANDLER = getOnMarkerEvent();
-        if (MARKER_EVENT_HANDLER != null) {
-            MARKER_EVENT_HANDLER.handle(MARKER_EVENT);
+    public final ObjectProperty<EventHandler<MarkerEvent>> onMarkerEventProperty() { return onMarkerEvent; }
+    public final void setOnMarkerEvent(EventHandler<MarkerEvent> value) { onMarkerEventProperty().set(value); }
+    public final EventHandler<MarkerEvent> getOnMarkerEvent() { return onMarkerEventProperty().get(); }
+    private ObjectProperty<EventHandler<MarkerEvent>> onMarkerEvent = new ObjectPropertyBase<EventHandler<MarkerEvent>>() {
+        @Override public Object getBean() { return this; }
+        @Override public String getName() { return "onMarkerEvent";}
+    };
+    public void fireMarkerEvent(final MarkerEvent EVENT) {
+        final EventHandler<MarkerEvent> HANDLER = getOnMarkerEvent();
+        if (HANDLER != null) {
+            HANDLER.handle(EVENT);
         }
     }
+
+
 
 
     // ******************** Methods *******************************************

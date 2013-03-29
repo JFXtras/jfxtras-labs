@@ -656,71 +656,70 @@ public class RadialHalfNSkin extends GaugeSkinBase<RadialHalfN, RadialHalfNBehav
         getSkinnable().requestLayout();
     }
 
-//    @Override public void layoutChildren() {
-//        if (!isDirty) {
-//            return;
-//        }
-//        if (!initialized) {
-//            init();
-//        }
-//        if (control.getScene() != null) {
-//            calcGaugeBounds();
-//            setTranslateX(framelessOffset.getX());
-//            setTranslateY(framelessOffset.getY());
-//            center = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getHeight() / 1.3);
-//            drawFrame();
-//            drawBackground();
-//            drawCircularTrend(control, trend, gaugeBounds);
-//            updateSections();
-//            drawSections();
-//            updateAreas();
-//            drawAreas();
-//            drawTitleAndUnit();
-//            drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
-//            drawCircularLed(control, ledOff, ledOn, gaugeBounds);
-//            drawCircularUserLed(control, userLedOff, userLedOn, gaugeBounds);
-//            drawThreshold();
-//            drawGlowOff();
-//            drawGlowOn();
-//            drawMinMeasuredIndicator();
-//            drawMaxMeasuredIndicator();
-//            drawIndicators();
-//            drawPointer();
-//            drawCircularBargraph(control, bargraphOff, noOfLeds, ledsOff, false, true, center, gaugeBounds);
-//            drawCircularBargraph(control, bargraphOn, noOfLeds, ledsOn, true, false, center, gaugeBounds);
-//            drawCircularKnobs(control, knobs, center, gaugeBounds);
-//            drawForeground();
-//            if (control.isPointerShadowEnabled() && !control.isPointerGlowEnabled()) {
-//                addDropShadow(control, knobs, pointerShadow);
-//            }
-//
-//            getChildren().setAll(frame,
-//                background,
-//                sections,
-//                areas,
-//                trend,
-//                ledOff,
-//                ledOn,
-//                userLedOff,
-//                userLedOn,
-//                titleAndUnit,
-//                tickmarks,
-//                threshold,
-//                glowOff,
-//                glowOn,
-//                pointerShadow,
-//                bargraphOff,
-//                bargraphOn,
-//                minMeasured,
-//                maxMeasured,
-//                markers,
-//                knobsShadow,
-//                foreground);
-//        }
-//        isDirty = false;
-//
-//        super.layoutChildren();
-//    }
+    @Override public void layoutChildren(double x, double y, double w, double h) {
+        super.layoutChildren(x, y, w, h);
+        if (!isDirty) {
+            return;
+        }
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            calcGaugeBounds();
+            control.setTranslateX(framelessOffset.getX());
+            control.setTranslateY(framelessOffset.getY());
+            center = new Point2D(gaugeBounds.getWidth() * 0.5, gaugeBounds.getHeight() / 1.3);
+            drawFrame();
+            drawBackground();
+            drawCircularTrend(control, trend, gaugeBounds);
+            updateSections();
+            drawSections();
+            updateAreas();
+            drawAreas();
+            drawTitleAndUnit();
+            drawCircularTickmarks(control, tickmarks, center, gaugeBounds);
+            drawCircularLed(control, ledOff, ledOn, gaugeBounds);
+            drawCircularUserLed(control, userLedOff, userLedOn, gaugeBounds);
+            drawThreshold();
+            drawGlowOff();
+            drawGlowOn();
+            drawMinMeasuredIndicator();
+            drawMaxMeasuredIndicator();
+            drawIndicators();
+            drawPointer();
+            drawCircularBargraph(control, bargraphOff, noOfLeds, ledsOff, false, true, center, gaugeBounds);
+            drawCircularBargraph(control, bargraphOn, noOfLeds, ledsOn, true, false, center, gaugeBounds);
+            drawCircularKnobs(control, knobs, center, gaugeBounds);
+            drawForeground();
+            if (control.isPointerShadowEnabled() && !control.isPointerGlowEnabled()) {
+                addDropShadow(control, knobs, pointerShadow);
+            }
+
+            getChildren().setAll(frame,
+                background,
+                sections,
+                areas,
+                trend,
+                ledOff,
+                ledOn,
+                userLedOff,
+                userLedOn,
+                titleAndUnit,
+                tickmarks,
+                threshold,
+                glowOff,
+                glowOn,
+                pointerShadow,
+                bargraphOff,
+                bargraphOn,
+                minMeasured,
+                maxMeasured,
+                markers,
+                knobsShadow,
+                foreground);
+        }
+        isDirty = false;
+    }
 
     public RadialHalfN getControl() {
         return control;

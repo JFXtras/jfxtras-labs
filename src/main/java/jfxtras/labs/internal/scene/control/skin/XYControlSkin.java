@@ -27,7 +27,6 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.scene.control.SkinBase;
 import com.sun.javafx.scene.traversal.Direction;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -282,20 +281,19 @@ public class XYControlSkin extends com.sun.javafx.scene.control.skin.BehaviorSki
         getSkinnable().requestLayout();
     }
 
-//    @Override public void layoutChildren() {
-//        if (!isDirty) {
-//            return;
-//        }
-//        if (!initialized) {
-//            init();
-//        }
-//        if (control.getScene() != null) {
-//            drawControl();
-//        }
-//        isDirty = false;
-//
-//        super.layoutChildren();
-//    }
+    @Override public void layoutChildren(double x, double y, double w, double h) {
+        super.layoutChildren(x, y, w, h);
+        if (!isDirty) {
+            return;
+        }
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            drawControl();
+        }
+        isDirty = false;
+    }
 //
 //    @Override public final XYControl getSkinnable() {
 //        return control;

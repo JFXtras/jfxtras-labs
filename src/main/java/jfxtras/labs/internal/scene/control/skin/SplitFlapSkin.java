@@ -27,7 +27,6 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.scene.control.SkinBase;
 import javafx.animation.AnimationTimer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -226,31 +225,26 @@ public class SplitFlapSkin extends com.sun.javafx.scene.control.skin.BehaviorSki
         getSkinnable().requestLayout();
     }
 
-//    @Override public void layoutChildren() {
-//        if (!isDirty) {
-//            return;
-//        }
-//        if (!initialized) {
-//            init();
-//        }
-//        if (control.getScene() != null) {
-//            drawBackground();
-//            drawFixture();
-//            drawFlip();
-//            drawFrame();
-//            getChildren().setAll(background,
-//                fixture,
-//                flip,
-//                frame);
-//        }
-//        isDirty = false;
-//
-//        super.layoutChildren();
-//    }
-//
-//    @Override public final SplitFlap getSkinnable() {
-//        return control;
-//    }
+    @Override public void layoutChildren(double x, double y, double w, double h) {
+        super.layoutChildren(x, y, w, h);
+        if (!isDirty) {
+            return;
+        }
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            drawBackground();
+            drawFixture();
+            drawFlip();
+            drawFrame();
+            getChildren().setAll(background,
+                fixture,
+                flip,
+                frame);
+        }
+        isDirty = false;
+    }
 
     @Override public final void dispose() {
         control = null;
@@ -290,7 +284,10 @@ public class SplitFlapSkin extends com.sun.javafx.scene.control.skin.BehaviorSki
             currentAngle = 0;
             upper.getTransforms().clear();
             upperText.getTransforms().clear();
-            lowerNextText.getTransforms().clear();            currentSelectionIndex++;
+
+            /* Following lines removed due to PullRequest
+            lowerNextText.getTransforms().clear();
+            currentSelectionIndex++;
             if (currentSelectionIndex >= selectedSet.size()) {
                 currentSelectionIndex = 0;
             }
@@ -302,6 +299,9 @@ public class SplitFlapSkin extends com.sun.javafx.scene.control.skin.BehaviorSki
                 timer.stop();
                 flipping = false;
             }
+            */
+
+            lowerNextText.getTransforms().clear();
             lowerNextText.setVisible(false);
             lowerFlipVert.setAxis(Rotate.X_AXIS);
             lowerFlipVert.setPivotY(control.getPrefHeight() * 0.4625550661);

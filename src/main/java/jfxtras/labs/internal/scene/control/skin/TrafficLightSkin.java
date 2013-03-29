@@ -27,7 +27,6 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.scene.control.SkinBase;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
@@ -175,21 +174,20 @@ public class TrafficLightSkin extends com.sun.javafx.scene.control.skin.Behavior
         getSkinnable().requestLayout();
     }
 
-//    @Override public void layoutChildren() {
-//        if (!isDirty) {
-//            return;
-//        }
-//        if (!initialized) {
-//            init();
-//        }
-//        if (control.getScene() != null) {
-//            drawTrafficLight();
-//            getChildren().setAll(trafficlight);
-//        }
-//        isDirty = false;
-//
-//        super.layoutChildren();
-//    }
+    @Override public void layoutChildren(double x, double y, double w, double h) {
+        super.layoutChildren(x, y, w, h);
+        if (!isDirty) {
+            return;
+        }
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            drawTrafficLight();
+            getChildren().setAll(trafficlight);
+        }
+        isDirty = false;
+    }
 //
 //    @Override public final TrafficLight getSkinnable() {
 //        return control;

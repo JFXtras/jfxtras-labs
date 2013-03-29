@@ -40,7 +40,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
-import javafx.util.Builder;
 
 import java.util.HashMap;
 
@@ -51,122 +50,122 @@ import java.util.HashMap;
  * Date: 12.04.12
  * Time: 14:48
  */
-public class SplitFlapBuilder { //<B extends SplitFlapBuilder<B>> extends ControlBuilder<B> implements Builder<SplitFlap> {
-//    private HashMap<String, Property> properties = new HashMap<String, Property>();
-//
-//
-//    // ******************** Constructors **************************************
-//    protected SplitFlapBuilder() {};
-//
-//
-//    // ******************** Methods *******************************************
-//    public static final SplitFlapBuilder create() {
-//        return new SplitFlapBuilder();
-//    }
-//
-//    public final SplitFlapBuilder textColor(final Color TEXT_COLOR) {
-//        properties.put("textColor", new SimpleObjectProperty<Color>(TEXT_COLOR));
-//        return this;
-//    }
-//
-//    public final SplitFlapBuilder color(final Color COLOR) {
-//        properties.put("color", new SimpleObjectProperty<Color>(COLOR));
-//        return this;
-//    }
-//
-//    public final SplitFlapBuilder text(final String TEXT) {
-//        properties.put("text", new SimpleStringProperty(TEXT));
-//        return this;
-//    }
-//
-//    public final SplitFlapBuilder selection(final String[] SELECTION) {
-//        properties.put("selection", new SimpleObjectProperty<String[]>(SELECTION));
-//        return this;
-//    }
-//
-//    public final SplitFlapBuilder soundOn(final boolean SOUND_ON) {
-//        properties.put("soundOn", new SimpleBooleanProperty(SOUND_ON));
-//        return this;
-//    }
-//
-//    public final SplitFlapBuilder sound(final SplitFlap.Sound SOUND) {
-//        properties.put("sound", new SimpleObjectProperty<SplitFlap.Sound>(SOUND));
-//        return this;
-//    }
-//
-//    public final SplitFlapBuilder frameVisible(final boolean FRAME_VISIBLE) {
-//        properties.put("frameVisible", new SimpleBooleanProperty(FRAME_VISIBLE));
-//        return this;
-//    }
-//
-//    public final SplitFlapBuilder backgroundVisible(final boolean BACKGROUND_VISIBLE) {
-//        properties.put("backgroundVisible", new SimpleBooleanProperty(BACKGROUND_VISIBLE));
-//        return this;
-//    }
-//
-//    public final SplitFlapBuilder interactive(final boolean INTERACTIVE) {
-//        properties.put("interactive", new SimpleBooleanProperty(INTERACTIVE));
-//        return this;
-//    }
-//
-//    public final SplitFlapBuilder flipTimeInMs(final long FLIP_TIME_IN_MS) {
-//        properties.put("flipTimeInMs", new SimpleLongProperty(FLIP_TIME_IN_MS));
-//        return this;
-//    }
-//
-//    @Override public final B prefWidth(final double PREF_WIDTH) {
-//        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-//        return (B)this;
-//    }
-//
-//    @Override public final B prefHeight(final double PREF_HEIGHT) {
-//        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-//        return (B)this;
-//    }
-//
-//    @Override public final B layoutX(final double LAYOUT_X) {
-//            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
-//            return (B)this;
-//        }
-//
-//    @Override public final B layoutY(final double LAYOUT_Y) {
-//        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
-//        return (B)this;
-//    }
-//
-//    @Override public final SplitFlap build() {
-//        final SplitFlap CONTROL = new SplitFlap();
-//        for (String key : properties.keySet()) {
-//            if ("textColor".equals(key)) {
-//                CONTROL.setTextColor(((ObjectProperty<Color>) properties.get(key)).get());
-//            } else if ("color".equals(key)) {
-//                CONTROL.setColor(((ObjectProperty<Color>) properties.get(key)).get());
-//            } else if ("text".equals(key)) {
-//                CONTROL.setText(((StringProperty) properties.get(key)).get());
-//            } else if ("selection".equals(key)) {
-//                CONTROL.setSelection(((SimpleObjectProperty<String[]>) properties.get(key)).get());
-//            } else if ("soundOn".equals(key)) {
-//                CONTROL.setSoundOn(((BooleanProperty) properties.get(key)).get());
-//            } else if ("sound".equals(key)) {
-//                CONTROL.setSound(((ObjectProperty<SplitFlap.Sound>) properties.get(key)).get());
-//            } else if ("frameVisible".equals(key)) {
-//                CONTROL.setFrameVisible(((BooleanProperty) properties.get(key)).get());
-//            } else if ("backgroundVisible".equals(key)) {
-//                CONTROL.setBackgroundVisible(((BooleanProperty) properties.get(key)).get());
-//            } else if ("interactive".equals(key)) {
-//                CONTROL.setInteractive(((BooleanProperty) properties.get(key)).get());
-//            } else if ("flipTimeInMs".equals(key)) {
-//                CONTROL.setFlipTimeInMs(((LongProperty) properties.get(key)).get());
-//            }  else if ("prefWidth".equals(key)) {
-//                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
-//            } else if ("prefHeight".equals(key)) {
-//                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
-//            } else if ("layoutX".equals(key)) {
-//                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
-//            } else if ("layoutY".equals(key)) {
-//                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
-//            }
-//        }
-//        return CONTROL;
-//    }
+public class SplitFlapBuilder <B extends SplitFlapBuilder<B>> extends ControlBuilder<B> {
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
+
+
+    // ******************** Constructors **************************************
+    protected SplitFlapBuilder() {};
+
+
+    // ******************** Methods *******************************************
+    public static final SplitFlapBuilder create() {
+        return new SplitFlapBuilder();
+    }
+
+    public final SplitFlapBuilder textColor(final Color TEXT_COLOR) {
+        properties.put("textColor", new SimpleObjectProperty<Color>(TEXT_COLOR));
+        return this;
+    }
+
+    public final SplitFlapBuilder color(final Color COLOR) {
+        properties.put("color", new SimpleObjectProperty<Color>(COLOR));
+        return this;
+    }
+
+    public final SplitFlapBuilder text(final String TEXT) {
+        properties.put("text", new SimpleStringProperty(TEXT));
+        return this;
+    }
+
+    public final SplitFlapBuilder selection(final String[] SELECTION) {
+        properties.put("selection", new SimpleObjectProperty<String[]>(SELECTION));
+        return this;
+    }
+
+    public final SplitFlapBuilder soundOn(final boolean SOUND_ON) {
+        properties.put("soundOn", new SimpleBooleanProperty(SOUND_ON));
+        return this;
+    }
+
+    public final SplitFlapBuilder sound(final SplitFlap.Sound SOUND) {
+        properties.put("sound", new SimpleObjectProperty<SplitFlap.Sound>(SOUND));
+        return this;
+    }
+
+    public final SplitFlapBuilder frameVisible(final boolean FRAME_VISIBLE) {
+        properties.put("frameVisible", new SimpleBooleanProperty(FRAME_VISIBLE));
+        return this;
+    }
+
+    public final SplitFlapBuilder backgroundVisible(final boolean BACKGROUND_VISIBLE) {
+        properties.put("backgroundVisible", new SimpleBooleanProperty(BACKGROUND_VISIBLE));
+        return this;
+    }
+
+    public final SplitFlapBuilder interactive(final boolean INTERACTIVE) {
+        properties.put("interactive", new SimpleBooleanProperty(INTERACTIVE));
+        return this;
+    }
+
+    public final SplitFlapBuilder flipTimeInMs(final long FLIP_TIME_IN_MS) {
+        properties.put("flipTimeInMs", new SimpleLongProperty(FLIP_TIME_IN_MS));
+        return this;
+    }
+
+    @Override public final B prefWidth(final double PREF_WIDTH) {
+        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
+        return (B)this;
+    }
+
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
+        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
+        return (B)this;
+    }
+
+    @Override public final B layoutX(final double LAYOUT_X) {
+            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
+            return (B)this;
+        }
+
+    @Override public final B layoutY(final double LAYOUT_Y) {
+        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
+        return (B)this;
+    }
+
+    @Override public final SplitFlap build() {
+        final SplitFlap CONTROL = new SplitFlap();
+        for (String key : properties.keySet()) {
+            if ("textColor".equals(key)) {
+                CONTROL.setTextColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("color".equals(key)) {
+                CONTROL.setColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("text".equals(key)) {
+                CONTROL.setText(((StringProperty) properties.get(key)).get());
+            } else if ("selection".equals(key)) {
+                CONTROL.setSelection(((SimpleObjectProperty<String[]>) properties.get(key)).get());
+            } else if ("soundOn".equals(key)) {
+                CONTROL.setSoundOn(((BooleanProperty) properties.get(key)).get());
+            } else if ("sound".equals(key)) {
+                CONTROL.setSound(((ObjectProperty<SplitFlap.Sound>) properties.get(key)).get());
+            } else if ("frameVisible".equals(key)) {
+                CONTROL.setFrameVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("backgroundVisible".equals(key)) {
+                CONTROL.setBackgroundVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("interactive".equals(key)) {
+                CONTROL.setInteractive(((BooleanProperty) properties.get(key)).get());
+            } else if ("flipTimeInMs".equals(key)) {
+                CONTROL.setFlipTimeInMs(((LongProperty) properties.get(key)).get());
+            }  else if ("prefWidth".equals(key)) {
+                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
+            } else if ("prefHeight".equals(key)) {
+                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
+            } else if ("layoutX".equals(key)) {
+                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
+            } else if ("layoutY".equals(key)) {
+                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
+            }
+        }
+        return CONTROL;
+    }
 }

@@ -27,7 +27,6 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.scene.control.SkinBase;
 import javafx.scene.Group;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.paint.Color;
@@ -124,22 +123,20 @@ public class DotMatrixSegmentSkin extends com.sun.javafx.scene.control.skin.Beha
         getSkinnable().requestLayout();
     }
 
-// removing compilation problems
-//    @Override public void layoutChildren() {
-//        if (!isDirty) {
-//            return;
-//        }
-//        if (!initialized) {
-//            init();
-//        }
-//        if (control.getScene() != null) {
-//            updateCharacter();
-//            getChildren().setAll(dots);
-//        }
-//        isDirty = false;
-//
-//        super.layoutChildren();
-//    }
+    @Override public void layoutChildren(double x, double y, double w, double h) {
+        super.layoutChildren(x, y, w, h);
+        if (!isDirty) {
+            return;
+        }
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            updateCharacter();
+            getChildren().setAll(dots);
+        }
+        isDirty = false;
+    }
 
     public final DotMatrixSegment getControl() {
         return control;

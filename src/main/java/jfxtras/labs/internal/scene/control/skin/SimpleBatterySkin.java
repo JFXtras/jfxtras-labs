@@ -27,7 +27,6 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.scene.control.SkinBase;
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
@@ -147,25 +146,24 @@ public class SimpleBatterySkin extends com.sun.javafx.scene.control.skin.Behavio
         getSkinnable().requestLayout();
     }
 
-//    @Override public void layoutChildren() {
-//        if (!isDirty) {
-//            return;
-//        }
-//        if (!initialized) {
-//            init();
-//        }
-//        if (control.getScene() != null) {
-//            drawBackground();
-//            drawMain();
-//            drawForeground();
-//            getChildren().setAll(background,
-//                main,
-//                foreground);
-//        }
-//        isDirty = false;
-//
-//        super.layoutChildren();
-//    }
+    @Override public void layoutChildren(double x, double y, double w, double h) {
+        super.layoutChildren(x, y , w, h);
+        if (!isDirty) {
+            return;
+        }
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            drawBackground();
+            drawMain();
+            drawForeground();
+            getChildren().setAll(background,
+                main,
+                foreground);
+        }
+        isDirty = false;
+    }
 
     public final SimpleBattery getControl() {
         return control;

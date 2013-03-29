@@ -36,7 +36,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
-import javafx.util.Builder;
 
 import java.util.HashMap;
 
@@ -47,73 +46,73 @@ import java.util.HashMap;
  * Date: 09.03.12
  * Time: 16:04
  */
-public class SimpleIndicatorBuilder { //<B extends SimpleIndicatorBuilder<B>> extends ControlBuilder<B> implements Builder<SimpleIndicator> {
-//    private HashMap<String, Property> properties = new HashMap<String, Property>();
-//
-//
-//    // ******************** Constructors **************************************
-//    protected SimpleIndicatorBuilder() {};
-//
-//
-//    // ******************** Methods *******************************************
-//    public static final SimpleIndicatorBuilder create() {
-//        return new SimpleIndicatorBuilder();
-//    }
-//
-//    public final SimpleIndicatorBuilder innerColor(final Color INNER_COLOR) {
-//        properties.put("innerColor", new SimpleObjectProperty<Color>(INNER_COLOR));
-//        return this;
-//    }
-//
-//    public final SimpleIndicatorBuilder outerColor(final Color OUTER_COLOR) {
-//        properties.put("outerColor", new SimpleObjectProperty<Color>(OUTER_COLOR));
-//        return this;
-//    }
-//
-//    public final SimpleIndicatorBuilder glowVisible(final boolean GLOW_VISIBLE) {
-//        properties.put("glowVisible", new SimpleBooleanProperty(GLOW_VISIBLE));
-//        return this;
-//    }
-//
-//    @Override public final B prefWidth(final double PREF_WIDTH) {
-//        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-//        return (B)this;
-//    }
-//
-//    @Override public final B prefHeight(final double PREF_HEIGHT) {
-//        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-//        return (B)this;
-//    }
-//
-//    @Override public final B layoutX(final double LAYOUT_X) {
-//            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
-//            return (B)this;
-//        }
-//
-//    @Override public final B layoutY(final double LAYOUT_Y) {
-//        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
-//        return (B)this;
-//    }
-//
-//    @Override public final SimpleIndicator build() {
-//        final SimpleIndicator CONTROL = new SimpleIndicator();
-//        for (String key : properties.keySet()) {
-//            if ("innerColor".equals(key)) {
-//                CONTROL.setInnerColor(((ObjectProperty<Color>) properties.get(key)).get());
-//            } else if ("outerColor".equals(key)) {
-//                CONTROL.setOuterColor(((ObjectProperty<Color>) properties.get(key)).get());
-//            } else if ("glowVisible".equals(key)) {
-//                CONTROL.setGlowVisible(((BooleanProperty) properties.get(key)).get());
-//            } else if ("prefWidth".equals(key)) {
-//                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
-//            } else if ("prefHeight".equals(key)) {
-//                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
-//            } else if ("layoutX".equals(key)) {
-//                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
-//            } else if ("layoutY".equals(key)) {
-//                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
-//            }
-//        }
-//        return CONTROL;
-//    }
+public class SimpleIndicatorBuilder <B extends SimpleIndicatorBuilder<B>> extends ControlBuilder<B> {
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
+
+
+    // ******************** Constructors **************************************
+    protected SimpleIndicatorBuilder() {};
+
+
+    // ******************** Methods *******************************************
+    public static final SimpleIndicatorBuilder create() {
+        return new SimpleIndicatorBuilder();
+    }
+
+    public final SimpleIndicatorBuilder innerColor(final Color INNER_COLOR) {
+        properties.put("innerColor", new SimpleObjectProperty<Color>(INNER_COLOR));
+        return this;
+    }
+
+    public final SimpleIndicatorBuilder outerColor(final Color OUTER_COLOR) {
+        properties.put("outerColor", new SimpleObjectProperty<Color>(OUTER_COLOR));
+        return this;
+    }
+
+    public final SimpleIndicatorBuilder glowVisible(final boolean GLOW_VISIBLE) {
+        properties.put("glowVisible", new SimpleBooleanProperty(GLOW_VISIBLE));
+        return this;
+    }
+
+    @Override public final B prefWidth(final double PREF_WIDTH) {
+        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
+        return (B)this;
+    }
+
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
+        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
+        return (B)this;
+    }
+
+    @Override public final B layoutX(final double LAYOUT_X) {
+            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
+            return (B)this;
+        }
+
+    @Override public final B layoutY(final double LAYOUT_Y) {
+        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
+        return (B)this;
+    }
+
+    @Override public final SimpleIndicator build() {
+        final SimpleIndicator CONTROL = new SimpleIndicator();
+        for (String key : properties.keySet()) {
+            if ("innerColor".equals(key)) {
+                CONTROL.setInnerColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("outerColor".equals(key)) {
+                CONTROL.setOuterColor(((ObjectProperty<Color>) properties.get(key)).get());
+            } else if ("glowVisible".equals(key)) {
+                CONTROL.setGlowVisible(((BooleanProperty) properties.get(key)).get());
+            } else if ("prefWidth".equals(key)) {
+                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
+            } else if ("prefHeight".equals(key)) {
+                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
+            } else if ("layoutX".equals(key)) {
+                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
+            } else if ("layoutY".equals(key)) {
+                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
+            }
+        }
+        return CONTROL;
+    }
 }

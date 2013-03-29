@@ -498,29 +498,27 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         getSkinnable().requestLayout();
     }
 
-// removed compilation problem
-//    @Override public void layoutChildren() {
-//        if (!isDirty) {
-//            return;
-//        }
-//        if (!initialized) {
-//            init();
-//        }
-//        if (control.getScene() != null) {
-//            drawGlowOn();
-//            drawLcd();
-//            drawLcdContent();
-//
-//            getChildren().setAll(minMeasured,
-//                maxMeasured,
-//                lcd,
-//                glowOn,
-//                lcdContent);
-//        }
-//        isDirty = false;
-//
-//        super.layoutChildren();
-//    }
+    @Override public void layoutChildren(double x, double y, double w, double h) {
+        super.layoutChildren(x, y, w, h);
+        if (!isDirty) {
+            return;
+        }
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            drawGlowOn();
+            drawLcd();
+            drawLcdContent();
+
+            getChildren().setAll(minMeasured,
+                maxMeasured,
+                lcd,
+                glowOn,
+                lcdContent);
+        }
+        isDirty = false;
+    }
 
     public Lcd getControl() {
         return control;

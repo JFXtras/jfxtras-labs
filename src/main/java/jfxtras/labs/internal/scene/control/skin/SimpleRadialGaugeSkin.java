@@ -355,31 +355,26 @@ public class SimpleRadialGaugeSkin extends GaugeSkinBase<SimpleRadialGauge, Simp
         getSkinnable().requestLayout();
     }
 
-//    @Override public void layoutChildren() {
-//        if (!isDirty) {
-//            return;
-//        }
-//        if (!initialized) {
-//            init();
-//        }
-//        if (control.isCanvasMode()) {
-//            alertIndicator.setLayoutX((size - alertIndicator.getWidth()) * 0.5);
-//            alertIndicator.setLayoutY(size * 0.6);
-//            drawCanvasGauge(ctx);
-//            getChildren().setAll(canvas, alertIndicator);
-//        } else {
-//            drawNodeGauge();
-//            getChildren().setAll(gauge);
-//        }
-//
-//        isDirty = false;
-//
-//        super.layoutChildren();
-//    }
-//
-//    @Override public final SimpleRadialGauge getSkinnable() {
-//        return control;
-//    }
+    @Override public void layoutChildren(double x, double y, double w, double h) {
+        super.layoutChildren(x, y, w, h);
+        if (!isDirty) {
+            return;
+        }
+        if (!initialized) {
+            init();
+        }
+        if (control.isCanvasMode()) {
+            alertIndicator.setLayoutX((size - alertIndicator.getWidth()) * 0.5);
+            alertIndicator.setLayoutY(size * 0.6);
+            drawCanvasGauge(ctx);
+            getChildren().setAll(canvas, alertIndicator);
+        } else {
+            drawNodeGauge();
+            getChildren().setAll(gauge);
+        }
+
+        isDirty = false;
+    }
 
     @Override public final void dispose() {
         control = null;

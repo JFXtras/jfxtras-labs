@@ -27,7 +27,6 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.scene.control.SkinBase;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.ParallelTransition;
@@ -178,30 +177,29 @@ public class OdometerSkin extends com.sun.javafx.scene.control.skin.BehaviorSkin
         getSkinnable().requestLayout();
     }
 
-//    @Override public void layoutChildren() {
-//        if (!isDirty) {
-//            return;
-//        }
-//        if (!initialized) {
-//            init();
-//        }
-//        if (control.getScene() != null) {
-//            font = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/droidsansmono.ttf"), (0.85 * control.getPrefHeight()));
-//            setClip(new Rectangle(0, 1, control.getPrefWidth(), control.getPrefHeight()));
-//            getChildren().clear();
-//            drawBackground();
-//            setupDials();
-//            drawForeground();
-//            getChildren().add(background);
-//            for (Dial dial : listOfDials) {
-//                getChildren().addAll(dial.getNextNumberGroup(), dial.getCurrentNumberGroup());
-//            }
-//            getChildren().add(foreground);
-//        }
-//        isDirty = false;
-//
-//        super.layoutChildren();
-//    }
+    @Override public void layoutChildren(double x, double y, double w, double h) {
+        super.layoutChildren(x, y, w, h);
+        if (!isDirty) {
+            return;
+        }
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            font = Font.loadFont(getClass().getResourceAsStream("/jfxtras/labs/scene/control/gauge/droidsansmono.ttf"), (0.85 * control.getPrefHeight()));
+            control.setClip(new Rectangle(0, 1, control.getPrefWidth(), control.getPrefHeight()));
+            getChildren().clear();
+            drawBackground();
+            setupDials();
+            drawForeground();
+            getChildren().add(background);
+            for (Dial dial : listOfDials) {
+                getChildren().addAll(dial.getNextNumberGroup(), dial.getCurrentNumberGroup());
+            }
+            getChildren().add(foreground);
+        }
+        isDirty = false;
+    }
 
     public final Odometer getControl() {
         return control;

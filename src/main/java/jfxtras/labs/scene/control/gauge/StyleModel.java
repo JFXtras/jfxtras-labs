@@ -30,6 +30,7 @@ package jfxtras.labs.scene.control.gauge;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ObjectPropertyBase;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -217,39 +218,29 @@ public class StyleModel {
 
 
     // ******************** Event handling ************************************
-    public final ObjectProperty<EventHandler<StyleModelEvent>> onStyleModelEventProperty() {
-        return onStyleModelEvent;
-    }
-
-    public final void setOnStyleModelEvent(final EventHandler<StyleModelEvent> HANDLER) {
-        onStyleModelEventProperty().set(HANDLER);
-    }
-
-    public final EventHandler<StyleModelEvent> getOnStyleModelEvent() {
-        return onStyleModelEventProperty().get();
-    }
-
-    private ObjectProperty<EventHandler<StyleModelEvent>> onStyleModelEvent = new SimpleObjectProperty<EventHandler<StyleModelEvent>>();
-
-    public void fireStyleModelEvent() {
-        final EventHandler<StyleModelEvent> VIEW_MODEL_EVENT_HANDLER = getOnStyleModelEvent();
-        if (VIEW_MODEL_EVENT_HANDLER != null) {
-            final StyleModelEvent STYLE_MODEL_EVENT = new StyleModelEvent();
-            VIEW_MODEL_EVENT_HANDLER.handle(STYLE_MODEL_EVENT);
+    public final ObjectProperty<EventHandler<StyleModelEvent>> onStyleModelChangedProperty() { return onStyleModelChanged; }
+    public final void setOnStyleModelChanged(EventHandler<StyleModelEvent> value) { onStyleModelChangedProperty().set(value); }
+    public final EventHandler<StyleModelEvent> getOnStyleModelChanged() { return onStyleModelChangedProperty().get(); }
+    private ObjectProperty<EventHandler<StyleModelEvent>> onStyleModelChanged = new ObjectPropertyBase<EventHandler<StyleModelEvent>>() {
+        @Override public Object getBean() { return this; }
+        @Override public String getName() { return "onStyleModelChanged";}
+    };
+    public void fireStyleModelEvent(final StyleModelEvent EVENT) {
+        final EventHandler<StyleModelEvent> HANDLER = getOnStyleModelChanged();
+        if (HANDLER != null) {
+            HANDLER.handle(EVENT);
         }
     }
-
+    
 
     // ******************** Methods *******************************************
     public final boolean isBargraph() {
         return bargraph.get();
     }
-
     public final void setBargraph(final boolean BARGRAPH) {
         bargraph.set(BARGRAPH);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty bargraphProperty() {
         return bargraph;
     }
@@ -257,12 +248,10 @@ public class StyleModel {
     public final boolean isMinMeasuredValueVisible() {
         return minMeasuredValueVisible.get();
     }
-
     public final void setMinMeasuredValueVisible(final boolean MIN_MEASURED_VALUE_VISIBLE) {
         minMeasuredValueVisible.set(MIN_MEASURED_VALUE_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty minMeasuredValueVisibleProperty() {
         return minMeasuredValueVisible;
     }
@@ -270,12 +259,10 @@ public class StyleModel {
     public final boolean isMaxMeasuredValueVisible() {
         return maxMeasuredValueVisible.get();
     }
-
     public final void setMaxMeasuredValueVisible(final boolean MAX_MEASURED_VALUE_VISIBLE) {
         maxMeasuredValueVisible.set(MAX_MEASURED_VALUE_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty maxMeasuredValueVisibleProperty() {
         return maxMeasuredValueVisible;
     }
@@ -283,12 +270,10 @@ public class StyleModel {
     public final boolean isThresholdVisible() {
         return thresholdVisible.get();
     }
-
     public final void setThresholdVisible(final boolean THRESHOLD_VISIBLE) {
         thresholdVisible.set(THRESHOLD_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty thresholdVisibleProperty() {
         return thresholdVisible;
     }
@@ -296,12 +281,10 @@ public class StyleModel {
     public final Gauge.ThresholdColor getThresholdColor() {
         return thresholdColor.get();
     }
-
     public final void setThresholdColor(final Gauge.ThresholdColor THRESHOLD_COLOR) {
         thresholdColor.set(THRESHOLD_COLOR);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Gauge.ThresholdColor> thresholdColorProperty() {
         return thresholdColor;
     }
@@ -309,12 +292,10 @@ public class StyleModel {
     public final Gauge.FrameDesign getFrameDesign() {
         return frameDesign.get();
     }
-
     public final void setFrameDesign(final Gauge.FrameDesign FRAME_DESIGN) {
         frameDesign.set(FRAME_DESIGN);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Gauge.FrameDesign> frameDesignProperty() {
         return frameDesign;
     }
@@ -322,12 +303,10 @@ public class StyleModel {
     public final Color getFrameBaseColor() {
         return frameBaseColor.get();
     }
-
     public final void setFrameBaseColor(final Color FRAME_BASE_COLOR) {
         frameBaseColor.set(FRAME_BASE_COLOR);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Color> frameBaseColorProperty() {
         return frameBaseColor;
     }
@@ -335,12 +314,10 @@ public class StyleModel {
     public final boolean isFrameVisible() {
         return frameVisible.get();
     }
-
     public final void setFrameVisible(final boolean FRAME_VISIBLE) {
         frameVisible.set(FRAME_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty frameVisibleProperty() {
         return frameVisible;
     }
@@ -348,12 +325,10 @@ public class StyleModel {
     public final Gauge.BackgroundDesign getBackgroundDesign() {
         return backgroundDesign.get();
     }
-
     public final void setBackgroundDesign(final Gauge.BackgroundDesign BACKGROUND_DESIGN) {
         backgroundDesign.set(BACKGROUND_DESIGN);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Gauge.BackgroundDesign> backgroundDesignProperty() {
         return backgroundDesign;
     }
@@ -361,12 +336,10 @@ public class StyleModel {
     public final boolean isBackgroundVisible() {
         return backgroundVisible.get();
     }
-
     public final void setBackgroundVisible(final boolean BACKGROUND_VISIBLE) {
         backgroundVisible.set(BACKGROUND_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty backgroundVisibleProperty() {
         return backgroundVisible;
     }
@@ -374,12 +347,10 @@ public class StyleModel {
     public final Gauge.KnobDesign getKnobDesign() {
         return knobDesign.get();
     }
-
     public final void setKnobDesign(final Gauge.KnobDesign KNOB_DESIGN) {
         knobDesign.set(KNOB_DESIGN);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Gauge.KnobDesign> knobDesignProperty() {
         return knobDesign;
     }
@@ -387,12 +358,10 @@ public class StyleModel {
     public final Gauge.KnobColor getKnobColor() {
         return knobColor.get();
     }
-
     public final void setKnobColor(final Gauge.KnobColor KNOB_COLOR) {
         knobColor.set(KNOB_COLOR);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Gauge.KnobColor> knobColorProperty() {
         return knobColor;
     }
@@ -400,12 +369,10 @@ public class StyleModel {
     public final boolean getKnobsVisible() {
         return knobsVisible.get();
     }
-
     public final void setKnobsVisible(final boolean KNOBS_VISIBLE) {
         knobsVisible.set(KNOBS_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty knobsVisibleProperty() {
         return knobsVisible;
     }
@@ -413,12 +380,10 @@ public class StyleModel {
     public final Gauge.PointerType getPointerType() {
         return pointerType.get();
     }
-
     public final void setPointerType(final Gauge.PointerType POINTER_TYPE) {
         pointerType.set(POINTER_TYPE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Gauge.PointerType> pointerTypeProperty() {
         return pointerType;
     }
@@ -426,12 +391,10 @@ public class StyleModel {
     public final ColorDef getValueColor() {
         return valueColor.get();
     }
-
     public final void setValueColor(final ColorDef VALUE_COLOR) {
         valueColor.set(VALUE_COLOR);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<ColorDef> valueColorProperty() {
         return valueColor;
     }
@@ -439,12 +402,10 @@ public class StyleModel {
     public final boolean isPointerGlowEnabled() {
         return pointerGlowEnabled.get();
     }
-
     public final void setPointerGlowEnabled(final boolean POINTER_GLOW_ENABLED) {
         pointerGlowEnabled.set(POINTER_GLOW_ENABLED);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty pointerGlowEnabledProperty() {
         return pointerGlowEnabled;
     }
@@ -452,12 +413,10 @@ public class StyleModel {
     public final boolean isPointerShadowEnabled() {
         return pointerShadowEnabled.get();
     }
-
     public final void setPointerShadowEnabled(final boolean POINTER_SHADOW_ENABLED) {
         pointerShadowEnabled.set(POINTER_SHADOW_ENABLED);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty pointerShadowEnabledProperty() {
         return pointerShadowEnabled;
     }
@@ -465,12 +424,10 @@ public class StyleModel {
     public final boolean isLedVisible() {
         return ledVisible.get();
     }
-
     public final void setLedVisible(final boolean LED_VISIBLE) {
         ledVisible.set(LED_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty ledVisibleProperty() {
         return ledVisible;
     }
@@ -478,12 +435,10 @@ public class StyleModel {
     public final LedColor getLedColor() {
         return ledColor.get();
     }
-
     public final void setLedColor(final LedColor LED_COLOR) {
         ledColor.set(LED_COLOR);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<LedColor> ledColorProperty() {
         return ledColor;
     }
@@ -491,12 +446,10 @@ public class StyleModel {
     public final boolean isLedBlinking() {
         return ledBlinking.get();
     }
-
     public final void setLedBlinking(final boolean LED_BLINKING) {
         ledBlinking.set(LED_BLINKING);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty ledBlinkingProperty() {
         return ledBlinking;
     }
@@ -504,12 +457,10 @@ public class StyleModel {
     public final boolean isUserLedVisible() {
         return userLedVisible.get();
     }
-
     public final void setUserLedVisible(final boolean USER_LED_VISIBLE) {
         userLedVisible.set(USER_LED_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty userLedVisibleProperty() {
         return userLedVisible;
     }
@@ -517,12 +468,10 @@ public class StyleModel {
     public final LedColor getUserLedColor() {
         return userLedColor.get();
     }
-
     public final void setUserLedColor(final LedColor USER_LED_COLOR) {
         userLedColor.set(USER_LED_COLOR);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<LedColor> userLedColorProperty() {
         return userLedColor;
     }
@@ -530,12 +479,10 @@ public class StyleModel {
     public final boolean isUserLedOn() {
         return userLedOn.get();
     }
-
     public final void setUserLedOn(final boolean USER_LED_ON) {
         userLedOn.set(USER_LED_ON);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty userLedOnProperty() {
         return userLedOn;
     }
@@ -543,12 +490,10 @@ public class StyleModel {
     public final boolean isUserLedBlinking() {
         return userLedBlinking.get();
     }
-
     public final void setUserLedBlinking(final boolean USER_LED_BLINKING) {
         userLedBlinking.set(USER_LED_BLINKING);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty userLedBlinkingProperty() {
         return userLedBlinking;
     }
@@ -556,12 +501,10 @@ public class StyleModel {
     public final String getTitleFont() {
         return titleFont.get();
     }
-
     public final void setTitleFont(final String TITLE_FONT) {
         titleFont.set(TITLE_FONT);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final StringProperty titleFontProperty() {
         return titleFont;
     }
@@ -569,12 +512,10 @@ public class StyleModel {
     public final String getUnitFont() {
         return unitFont.get();
     }
-
     public final void setUnitFont(final String UNIT_FONT) {
         unitFont.set(UNIT_FONT);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final StringProperty unitFontProperty() {
         return unitFont;
     }
@@ -582,12 +523,10 @@ public class StyleModel {
     public final Radial.ForegroundType getForegroundType() {
         return foregroundType.get();
     }
-
     public final void setForegroundType(final Radial.ForegroundType FOREGROUND_TYPE) {
         foregroundType.set(FOREGROUND_TYPE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Radial.ForegroundType> foregroundTypeProperty() {
         return foregroundType;
     }
@@ -595,12 +534,10 @@ public class StyleModel {
     public final boolean isForegroundVisible() {
         return foregroundVisible.get();
     }
-
     public final void setForegroundVisible(final boolean FOREGROUND_VISIBLE) {
         foregroundVisible.set(FOREGROUND_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty foregroundVisibleProperty() {
         return foregroundVisible;
     }
@@ -608,12 +545,10 @@ public class StyleModel {
     public final boolean isLcdThresholdVisible() {
         return lcdThresholdVisible.get();
     }
-
     public final void setLcdThresholdVisible(final boolean LCD_THRESHOLD_VISIBLE) {
         lcdThresholdVisible.set(LCD_THRESHOLD_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty lcdThresholdVisibleProperty() {
         return lcdThresholdVisible;
     }
@@ -621,12 +556,10 @@ public class StyleModel {
     public final LcdDesign getLcdDesign() {
         return lcdDesign.get();
     }
-
     public final void setLcdDesign(final LcdDesign LCD_Design) {
         lcdDesign.set(LCD_Design);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty lcdDesignProperty() {
         return lcdDesign;
     }
@@ -634,12 +567,10 @@ public class StyleModel {
     public final boolean isLcdVisible() {
         return lcdVisible.get();
     }
-
     public final void setLcdVisible(final boolean LCD_VISIBLE) {
         lcdVisible.set(LCD_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty lcdVisibleProperty() {
         return lcdVisible;
     }
@@ -647,12 +578,10 @@ public class StyleModel {
     public final boolean getLcdUnitVisible() {
         return lcdUnitVisible.get();
     }
-
     public final void setLcdUnitVisible(final boolean LCD_UNIT_STRING_VISIBLE) {
         lcdUnitVisible.set(LCD_UNIT_STRING_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty lcdUnitVisibleProperty() {
         return lcdUnitVisible;
     }
@@ -660,12 +589,10 @@ public class StyleModel {
     public final String getLcdUnitFont() {
         return lcdUnitFont.get();
     }
-
     public final void setLcdUnitFont(final String UNIT_FONT) {
         lcdUnitFont.set(UNIT_FONT);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final StringProperty lcdUnitFontProperty() {
         return lcdUnitFont;
     }
@@ -673,12 +600,10 @@ public class StyleModel {
     public final String getLcdTitleFont() {
         return lcdTitleFont.get();
     }
-
     public final void setLcdTitleFont(final String TITLE_FONT) {
         lcdTitleFont.set(TITLE_FONT);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final StringProperty lcdTitleFontProperty() {
         return lcdTitleFont;
     }
@@ -686,12 +611,10 @@ public class StyleModel {
     public final Gauge.LcdFont getLcdValueFont() {
         return lcdValueFont.get();
     }
-
     public final void setLcdValueFont(final Gauge.LcdFont VALUE_FONT) {
         lcdValueFont.set(VALUE_FONT);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Gauge.LcdFont> lcdValueFontProperty() {
         return lcdValueFont;
     }
@@ -699,13 +622,11 @@ public class StyleModel {
     public final int getLcdDecimals() {
         return lcdDecimals.get();
     }
-
     public final void setLcdDecimals(final int LCD_DECIMALS) {
         final int DECIMALS = LCD_DECIMALS > 5 ? 5 : (LCD_DECIMALS < 0 ? 0 : LCD_DECIMALS);
         lcdDecimals.set(DECIMALS);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final IntegerProperty lcdDecimalsProperty() {
         return lcdDecimals;
     }
@@ -713,12 +634,10 @@ public class StyleModel {
     public final boolean isLcdNumberSystemVisible() {
         return lcdNumberSystemVisible.get();
     }
-
     public final void setLcdNumberSystemVisible(final boolean LCD_NUMBER_SYSTEM_VISIBLE) {
         lcdNumberSystemVisible.set(LCD_NUMBER_SYSTEM_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty lcdNumberSystemVisibleProperty() {
         return lcdNumberSystemVisible;
     }
@@ -726,12 +645,10 @@ public class StyleModel {
     public final boolean isLcdBlinking() {
         return lcdBlinking.get();
     }
-
     public final void setLcdBlinking(final boolean LCD_BLINKING) {
         lcdBlinking.set(LCD_BLINKING);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty lcdBlinkingProperty() {
         return lcdBlinking;
     }
@@ -739,12 +656,10 @@ public class StyleModel {
     public final boolean isLcdBackgroundVisible() {
         return lcdBackgroundVisible.get();
     }
-
     public final void setLcdBackgroundVisible(final boolean LCD_BACKGROUND_VISIBLE) {
         lcdBackgroundVisible.set(LCD_BACKGROUND_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty lcdBackgroundVisibleProperty() {
         return lcdBackgroundVisible;
     }
@@ -752,12 +667,10 @@ public class StyleModel {
     public final boolean isGlowVisible() {
         return glowVisible.get();
     }
-
     public final void setGlowVisible(final boolean GLOW_VISIBLE) {
         glowVisible.set(GLOW_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty glowVisibleProperty() {
         return glowVisible;
     }
@@ -765,12 +678,10 @@ public class StyleModel {
     public final Color getGlowColor() {
         return glowColor.get();
     }
-
     public final void setGlowColor(final Color GLOW_COLOR) {
         glowColor.set(GLOW_COLOR);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Color> glowColorProperty() {
         return glowColor;
     }
@@ -778,12 +689,10 @@ public class StyleModel {
     public final boolean isGlowOn() {
         return glowOn.get();
     }
-
     public final void setGlowOn(final boolean GLOW_ON) {
         glowOn.set(GLOW_ON);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty glowOnProperty() {
         return glowOn;
     }
@@ -791,12 +700,10 @@ public class StyleModel {
     public final boolean isPulsatingGlow() {
         return pulsatingGlow.get();
     }
-
     public final void setPulsatingGlow(final boolean PULSATING_GLOW) {
         pulsatingGlow.set(PULSATING_GLOW);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty pulsatingGlowProperty() {
         return pulsatingGlow;
     }
@@ -804,12 +711,10 @@ public class StyleModel {
     public final boolean isTickmarksVisible() {
         return tickmarksVisible.get();
     }
-
     public final void setTickmarksVisible(final boolean TICKMARKS_VISIBLE) {
         tickmarksVisible.set(TICKMARKS_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty tickmarksVisibleProperty() {
         return tickmarksVisible;
     }
@@ -817,12 +722,10 @@ public class StyleModel {
     public final boolean isMajorTicksVisible() {
         return majorTicksVisible.get();
     }
-
     public final void setMajorTicksVisible(final boolean MAJOR_TICKS_VISIBLE) {
         majorTicksVisible.set(MAJOR_TICKS_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty majorTicksVisibleProperty() {
         return majorTicksVisible;
     }
@@ -830,12 +733,10 @@ public class StyleModel {
     public final TickmarkType getMajorTickmarkType() {
         return majorTickmarkType.get();
     }
-
     public final void setMajorTickmarkType(final TickmarkType TICKMARK_TYPE) {
         majorTickmarkType.set(TICKMARK_TYPE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<TickmarkType> majorTickmarkTypeProperty() {
         return majorTickmarkType;
     }
@@ -843,12 +744,10 @@ public class StyleModel {
     public final Color getMajorTickmarkColor() {
         return majorTickmarkColor.get();
     }
-
     public final void setMajorTickmarkColor(final Color MAJOR_TICKMARK_COLOR) {
         majorTickmarkColor.set(MAJOR_TICKMARK_COLOR);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Color> majorTickmarkColorProperty() {
         return majorTickmarkColor;
     }
@@ -856,12 +755,10 @@ public class StyleModel {
     public final boolean isMajorTickmarkColorEnabled() {
         return majorTickmarkColorEnabled.get();
     }
-
     public final void setMajorTickmarkColorEnabled(final boolean MAJOR_TICKMARK_COLOR_ENABLED) {
         majorTickmarkColorEnabled.set(MAJOR_TICKMARK_COLOR_ENABLED);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty majorTickmarkColorEnabledProperty() {
         return majorTickmarkColorEnabled;
     }
@@ -869,12 +766,10 @@ public class StyleModel {
     public final boolean isMinorTicksVisible() {
         return minorTicksVisible.get();
     }
-
     public final void setMinorTicksVisible(final boolean MINOR_TICKS_VISIBLE) {
         minorTicksVisible.set(MINOR_TICKS_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty minorTicksVisibleProperty() {
         return minorTicksVisible;
     }
@@ -882,12 +777,10 @@ public class StyleModel {
     public final Color getMinorTickmarkColor() {
         return minorTickmarkColor.get();
     }
-
     public final void setMinorTickmarkColor(final Color MINOR_TICKMARK_COLOR) {
         minorTickmarkColor.set(MINOR_TICKMARK_COLOR);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Color> minorTickmarkColorProperty() {
         return minorTickmarkColor;
     }
@@ -895,12 +788,10 @@ public class StyleModel {
     public final boolean isMinorTickmarkColorEnabled() {
         return minorTickmarkColorEnabled.get();
     }
-
     public final void setMinorTickmarkColorEnabled(final boolean MINOR_TICKMARK_COLOR_ENABLED) {
         minorTickmarkColorEnabled.set(MINOR_TICKMARK_COLOR_ENABLED);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty minorTickmarkColorEnabledProperty() {
         return minorTickmarkColorEnabled;
     }
@@ -908,12 +799,10 @@ public class StyleModel {
     public final boolean isTickLabelsVisible() {
         return tickLabelsVisible.get();
     }
-
     public final void setTickLabelsVisible(final boolean TICKLABELS_VISIBLE) {
         tickLabelsVisible.set(TICKLABELS_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty ticklabelsVisibleProperty() {
         return tickLabelsVisible;
     }
@@ -921,12 +810,10 @@ public class StyleModel {
     public final Gauge.TicklabelOrientation getTickLabelOrientation() {
         return tickLabelOrientation.get();
     }
-
     public final void setTickLabelOrientation(final Gauge.TicklabelOrientation TICKLABEL_ORIENTATION) {
         tickLabelOrientation.set(TICKLABEL_ORIENTATION);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Gauge.TicklabelOrientation> tickLabelOrientationProperty() {
         return tickLabelOrientation;
     }
@@ -934,12 +821,10 @@ public class StyleModel {
     public final Gauge.NumberFormat getTickLabelNumberFormat() {
         return tickLabelNumberFormat.get();
     }
-
     public final void setTickLabelNumberFormat(final Gauge.NumberFormat TICKLABEL_NUMBER_FORMAT) {
         tickLabelNumberFormat.set(TICKLABEL_NUMBER_FORMAT);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Gauge.NumberFormat> tickLabelNumberFormatProperty() {
         return tickLabelNumberFormat;
     }
@@ -947,12 +832,10 @@ public class StyleModel {
     public final Point2D getTickmarksOffset() {
         return tickmarksOffset.get();
     }
-
     public final void setTickmarksOffset(final Point2D TICKMARKS_OFFSET) {
         tickmarksOffset.set(TICKMARKS_OFFSET);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Point2D> tickmarksOffsetProperty() {
         return tickmarksOffset;
     }
@@ -960,12 +843,10 @@ public class StyleModel {
     public final boolean isTickmarkGlowEnabled() {
         return tickmarkGlowEnabled.get();
     }
-
     public final void setTickmarkGlowEnabled(final boolean TICKMARK_GLOW_ENABLED) {
         tickmarkGlowEnabled.set(TICKMARK_GLOW_ENABLED);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty tickmarkGlowEnabledProperty() {
         return tickmarkGlowEnabled;
     }
@@ -973,12 +854,10 @@ public class StyleModel {
     public final Color getTickmarkGlowColor() {
         return tickmarkGlowColor.get();
     }
-
     public final void setTickmarkGlowColor(final Color TICKMARK_GLOW_COLOR) {
         tickmarkGlowColor.set(TICKMARK_GLOW_COLOR);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Color> tickmarkGlowColorProperty() {
         return tickmarkGlowColor;
     }
@@ -986,12 +865,10 @@ public class StyleModel {
     public final boolean isSectionsVisible() {
         return sectionsVisible.get();
     }
-
     public final void setSectionsVisible(final boolean SECTIONS_VISIBLE) {
         sectionsVisible.set(SECTIONS_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty sectionsVisibleProperty() {
         return sectionsVisible;
     }
@@ -999,12 +876,10 @@ public class StyleModel {
     public final boolean isExpandedSections() {
         return expandedSections.get();
     }
-
     public final void setExpandedSections(final boolean EXPANDED_SECTIONS) {
         expandedSections.set(EXPANDED_SECTIONS);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty expandedSectionsProperty() {
         return expandedSections;
     }
@@ -1012,12 +887,10 @@ public class StyleModel {
     public final boolean isSectionsHighlighting() {
         return sectionsHighlighting.get();
     }
-
     public final void setSectionsHighlighting(final boolean SECTIONS_HIGHLIGHTING) {
         sectionsHighlighting.set(SECTIONS_HIGHLIGHTING);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty sectionsHighlightingProperty() {
         return sectionsHighlighting;
     }
@@ -1025,12 +898,10 @@ public class StyleModel {
     public final boolean isShowSectionTickmarksOnly() {
         return showSectionTickmarksOnly.get();
     }
-
     public final void setShowSectionTickmarksOnly(final boolean SHOW_SECTION_TICKMARKS_ONLY) {
         showSectionTickmarksOnly.set(SHOW_SECTION_TICKMARKS_ONLY);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty showSectionTickmarksOnlyProperty() {
         return showSectionTickmarksOnly;
     }
@@ -1038,12 +909,10 @@ public class StyleModel {
     public final boolean isAreasVisible() {
         return areasVisible.get();
     }
-
     public final void setAreasVisible(final boolean AREAS_VISIBLE) {
         areasVisible.set(AREAS_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty areasVisibleProperty() {
         return areasVisible;
     }
@@ -1051,12 +920,10 @@ public class StyleModel {
     public final boolean isAreasHighlighting() {
         return areasHighlighting.get();
     }
-
     public final void setAreasHighlighting(final boolean AREAS_HIGHLIGHTING) {
         areasHighlighting.set(AREAS_HIGHLIGHTING);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty areasHighlightingProperty() {
         return areasHighlighting;
     }
@@ -1064,12 +931,10 @@ public class StyleModel {
     public final boolean isMarkersVisible() {
         return markersVisible.get();
     }
-
     public final void setMarkersVisible(final boolean MARKERS_VISIBLE) {
         markersVisible.set(MARKERS_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty markersVisibleProperty() {
         return markersVisible;
     }
@@ -1077,27 +942,23 @@ public class StyleModel {
     public final Color getTextureColor() {
         return textureColor.get();
     }
-
     public final String getTextureColorString() {
         final StringBuilder COLOR_STRING = new StringBuilder(30);
         COLOR_STRING.append("-fx-texture: ");
         COLOR_STRING.append(Util.colorToCssColor(getTextureColor()));
         return COLOR_STRING.toString();
     }
-
     public final void setTextureColor(final Color TEXTURE_COLOR) {
         textureColor.set(TEXTURE_COLOR);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
 
     public final ObjectProperty<Color> textureColorProperty() {
         return textureColor;
     }
-
     public final Color getSimpleGradientBaseColor() {
         return simpleGradientBaseColor.get();
     }
-
     public final String getSimpleGradientBaseColorString() {
         final StringBuilder COLOR_STRING = new StringBuilder(30);
         COLOR_STRING.append("-fx-simplegradient-base: ");
@@ -1107,128 +968,109 @@ public class StyleModel {
 
     public final void setSimpleGradientBaseColor(final Color SIMPLE_GRADIENT_BASE_COLOR) {
         simpleGradientBaseColor.set(SIMPLE_GRADIENT_BASE_COLOR);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Color> simpleGradientBaseColorProperty() {
         return simpleGradientBaseColor;
     }
-
     public final boolean isTitleVisible() {
         return titleVisible.get();
     }
 
     public final void setTitleVisible(final boolean TITLE_VISIBLE) {
         titleVisible.set(TITLE_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty titleVisibleProperty() {
         return titleVisible;
     }
-
     public final boolean isUnitVisible() {
         return unitVisible.get();
     }
 
     public final void setUnitVisible(final boolean UNIT_VISIBLE) {
         unitVisible.set(UNIT_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty unitVisibleProperty() {
         return unitVisible;
     }
-
     public final boolean isTrendVisible() {
         return trendVisible.get();
     }
 
     public final void setTrendVisible(final boolean TREND_VISIBLE) {
         trendVisible.set(TREND_VISIBLE);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final BooleanProperty trendVisibleProperty() {
         return trendVisible;
     }
-
     public final Color getTrendUpColor() {
         return trendUpColor.get();
     }
 
     public final void setTrendUpColor(final Color TREND_UP_COLOR) {
         trendUpColor.set(TREND_UP_COLOR);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Color> trendUpColorProperty() {
         return trendUpColor;
     }
-
     public final Color getTrendRisingColor() {
         return trendRisingColor.get();
     }
 
     public final void setTrendRisingColor(final Color TREND_RISING_COLOR) {
         trendRisingColor.set(TREND_RISING_COLOR);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Color> trendRisingColorProperty() {
         return trendRisingColor;
     }
-
     public final Color getTrendSteadyColor() {
             return trendSteadyColor.get();
     }
 
     public final void setTrendSteadyColor(final Color TREND_STEADY_COLOR) {
         trendSteadyColor.set(TREND_STEADY_COLOR);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Color> trendSteadyColorProperty() {
         return trendSteadyColor;
     }
-
     public final Color getTrendFallingColor() {
         return trendFallingColor.get();
     }
 
     public final void setTrendFallingColor(final Color TREND_FALLING_COLOR) {
         trendFallingColor.set(TREND_FALLING_COLOR);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Color> trendFallingColorProperty() {
         return trendFallingColor;
     }
-
     public final Color getTrendDownColor() {
         return trendDownColor.get();
     }
 
     public final void setTrendDownColor(final Color TREND_DOWN_COLOR) {
         trendDownColor.set(TREND_DOWN_COLOR);
-        fireStyleModelEvent();
+        fireStyleModelEvent(new StyleModelEvent(this, null));
     }
-
     public final ObjectProperty<Color> trendDownColorProperty() {
         return trendDownColor;
     }
 
 
-    // ******************** Internal classes **********************************
-    public class StyleModelEvent extends Event {
+    // ******************** Internal classes **********************************    
+    public static class StyleModelEvent extends Event {
+        public static final EventType<StyleModelEvent> STYLE_MODEL_CHANGED  = new EventType(ANY, "STYLE_MODEL_CHANGED");
 
-        // ******************** Constructors **************************************
-        public StyleModelEvent() {
-            super(new EventType<StyleModelEvent>());
+        // ******************* Constructors ***************************************
+        public StyleModelEvent(final Object SOURCE, final EventTarget TARGET) {
+            super(SOURCE, TARGET, STYLE_MODEL_CHANGED);
         }
 
-        public StyleModelEvent(final Object source, final EventTarget target) {
-            super(source, target, new EventType<StyleModelEvent>());
-        }
     }
 }

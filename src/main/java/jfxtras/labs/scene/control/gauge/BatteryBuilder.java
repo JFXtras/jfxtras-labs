@@ -36,7 +36,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Stop;
-import javafx.util.Builder;
 
 import java.util.HashMap;
 
@@ -47,80 +46,80 @@ import java.util.HashMap;
  * Date: 23.03.12
  * Time: 15:58
  */
-public class BatteryBuilder { //<B extends BatteryBuilder<B>> extends ControlBuilder<B> implements Builder<Battery> {
-//    private HashMap<String, Property> properties = new HashMap<String, Property>();
-//
-//
-//    // ******************** Constructors **************************************
-//    protected BatteryBuilder() {};
-//
-//
-//    // ******************** Methods *******************************************
-//    public static final BatteryBuilder create() {
-//        return new BatteryBuilder();
-//    }
-//
-//    public final BatteryBuilder charging(final boolean CHARGING) {
-//        properties.put("charging", new SimpleBooleanProperty(CHARGING));
-//        return this;
-//    }
-//
-//    public final BatteryBuilder chargeIndicator(final Battery.ChargeIndicator CHARGE_INDICATOR) {
-//        properties.put("chargeIndicator", new SimpleObjectProperty<Battery.ChargeIndicator>(CHARGE_INDICATOR));
-//        return this;
-//    }
-//
-//    public final BatteryBuilder chargingLevel(final double CHARGING_LEVEL) {
-//        properties.put("chargingLevel", new SimpleDoubleProperty(CHARGING_LEVEL));
-//        return this;
-//    }
-//
-//    public final BatteryBuilder levelColors(final Stop[] LEVEL_COLORS) {
-//        properties.put("levelColors", new SimpleObjectProperty<Stop[]>(LEVEL_COLORS));
-//        return this;
-//    }
-//
-//    @Override public final B prefWidth(final double PREF_WIDTH) {
-//        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
-//        return (B)this;
-//    }
-//
-//    @Override public final B prefHeight(final double PREF_HEIGHT) {
-//        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
-//        return (B)this;
-//    }
-//
-//    @Override public final B layoutX(final double LAYOUT_X) {
-//            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
-//            return (B)this;
-//        }
-//
-//    @Override public final B layoutY(final double LAYOUT_Y) {
-//        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
-//        return (B)this;
-//    }
-//
-//    @Override public final Battery build() {
-//        final Battery CONTROL = new Battery();
-//        for (String key : properties.keySet()) {
-//            if ("charging".equals(key)) {
-//                CONTROL.setCharging(((BooleanProperty) properties.get(key)).get());
-//            } else if ("chargeIndicator".equals(key)) {
-//                CONTROL.setChargeIndicator(((ObjectProperty<Battery.ChargeIndicator>) properties.get(key)).get());
-//            } else if ("chargingLevel".equals(key)) {
-//                CONTROL.setChargingLevel(((DoubleProperty) properties.get(key)).get());
-//            } else if ("levelColors".equals(key)) {
-//                CONTROL.setLevelColors(((ObjectProperty<Stop[]>) properties.get(key)).get());
-//            }  else if ("prefWidth".equals(key)) {
-//                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
-//            } else if ("prefHeight".equals(key)) {
-//                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
-//            } else if ("layoutX".equals(key)) {
-//                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
-//            } else if ("layoutY".equals(key)) {
-//                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
-//            }
-//        }
-//        return CONTROL;
-//    }
+public class BatteryBuilder <B extends BatteryBuilder<B>> extends ControlBuilder<B> {
+    private HashMap<String, Property> properties = new HashMap<String, Property>();
+
+
+    // ******************** Constructors **************************************
+    protected BatteryBuilder() {};
+
+
+    // ******************** Methods *******************************************
+    public static final BatteryBuilder create() {
+        return new BatteryBuilder();
+    }
+
+    public final BatteryBuilder charging(final boolean CHARGING) {
+        properties.put("charging", new SimpleBooleanProperty(CHARGING));
+        return this;
+    }
+
+    public final BatteryBuilder chargeIndicator(final Battery.ChargeIndicator CHARGE_INDICATOR) {
+        properties.put("chargeIndicator", new SimpleObjectProperty<Battery.ChargeIndicator>(CHARGE_INDICATOR));
+        return this;
+    }
+
+    public final BatteryBuilder chargingLevel(final double CHARGING_LEVEL) {
+        properties.put("chargingLevel", new SimpleDoubleProperty(CHARGING_LEVEL));
+        return this;
+    }
+
+    public final BatteryBuilder levelColors(final Stop[] LEVEL_COLORS) {
+        properties.put("levelColors", new SimpleObjectProperty<Stop[]>(LEVEL_COLORS));
+        return this;
+    }
+
+    @Override public final B prefWidth(final double PREF_WIDTH) {
+        properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
+        return (B)this;
+    }
+
+    @Override public final B prefHeight(final double PREF_HEIGHT) {
+        properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
+        return (B)this;
+    }
+
+    @Override public final B layoutX(final double LAYOUT_X) {
+            properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
+            return (B)this;
+        }
+
+    @Override public final B layoutY(final double LAYOUT_Y) {
+        properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
+        return (B)this;
+    }
+
+    @Override public final Battery build() {
+        final Battery CONTROL = new Battery();
+        for (String key : properties.keySet()) {
+            if ("charging".equals(key)) {
+                CONTROL.setCharging(((BooleanProperty) properties.get(key)).get());
+            } else if ("chargeIndicator".equals(key)) {
+                CONTROL.setChargeIndicator(((ObjectProperty<Battery.ChargeIndicator>) properties.get(key)).get());
+            } else if ("chargingLevel".equals(key)) {
+                CONTROL.setChargingLevel(((DoubleProperty) properties.get(key)).get());
+            } else if ("levelColors".equals(key)) {
+                CONTROL.setLevelColors(((ObjectProperty<Stop[]>) properties.get(key)).get());
+            }  else if ("prefWidth".equals(key)) {
+                CONTROL.setPrefWidth(((DoubleProperty) properties.get(key)).get());
+            } else if ("prefHeight".equals(key)) {
+                CONTROL.setPrefHeight(((DoubleProperty) properties.get(key)).get());
+            } else if ("layoutX".equals(key)) {
+                CONTROL.setLayoutX(((DoubleProperty) properties.get(key)).get());
+            } else if ("layoutY".equals(key)) {
+                CONTROL.setLayoutY(((DoubleProperty) properties.get(key)).get());
+            }
+        }
+        return CONTROL;
+    }
 }
