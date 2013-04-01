@@ -167,8 +167,10 @@ public class DotMatrixSegmentSkin extends SkinBase<DotMatrixSegment, DotMatrixSe
 
     // ******************** Drawing related ***********************************
     public void updateCharacter() {
-        dots.setStyle("-fx-segment-color-on: " + Util.colorToCssColor(control.getColor()) +
-                      "-fx-segment-color-off: " + Util.colorToCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
+        String dotStyle = "-fx-segment-color-on: " + Util.colorToCssColor(control.getColor()) +
+                      "-fx-segment-color-off: " + Util.colorToCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075));
+        // I think it has no effect because of the getStyleClass().clear() later
+        //dots.setStyle(dotStyle);
         final int ASCII = control.getCharacter().isEmpty() ? 20 : control.getCharacter().toUpperCase().charAt(0);
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setRadius(0.05 * control.getPrefWidth());
@@ -181,6 +183,7 @@ public class DotMatrixSegmentSkin extends SkinBase<DotMatrixSegment, DotMatrixSe
                 if (control.getDotMapping().containsKey(ASCII)) {
                     if (control.getDotMapping().get(ASCII).contains(dot)) {
                         dotMap.get(dot).getStyleClass().clear();
+                        dotMap.get(dot).setStyle(dotStyle);
                         dotMap.get(dot).getStyleClass().add(ON_STYLE);
                         dotMap.get(dot).setEffect(INNER_SHADOW);
                     } else {
