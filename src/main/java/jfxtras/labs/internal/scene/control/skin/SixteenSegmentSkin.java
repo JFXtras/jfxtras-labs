@@ -213,8 +213,7 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
             }
         }
         if (control.isDotOn()) {
-            segmentMap.get(SixteenSegment.Segment.DOT).getStyleClass().clear();
-            segmentMap.get(SixteenSegment.Segment.DOT).getStyleClass().add(ON_STYLE);
+            segmentMap.get(SixteenSegment.Segment.DOT).getStyleClass().setAll(ON_STYLE);
             segmentMap.get(SixteenSegment.Segment.DOT).setEffect(INNER_SHADOW);
         }
     }

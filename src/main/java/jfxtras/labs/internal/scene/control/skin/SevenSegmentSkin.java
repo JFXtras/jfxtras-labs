@@ -182,16 +182,14 @@ public class SevenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavior
             for (SevenSegment.Segment segment : segmentMap.keySet()) {
                 if (control.getSegmentMapping().containsKey(ASCII)) {
                     if (control.getSegmentMapping().get(ASCII).contains(segment)) {
-                        segmentMap.get(segment).getStyleClass().clear();
-                        segmentMap.get(segment).getStyleClass().add(ON_STYLE);
+                        segmentMap.get(segment).getStyleClass().setAll(ON_STYLE);
                         segmentMap.get(segment).setEffect(INNER_SHADOW);
                     } else {
-                        segmentMap.get(segment).getStyleClass().clear();
-                        segmentMap.get(segment).getStyleClass().add("off");
+                        segmentMap.get(segment).getStyleClass().setAll("off");
                         segmentMap.get(segment).setEffect(null);
                     }
                 } else {
-                    segmentMap.get(segment).getStyleClass().add("off");
+                    segmentMap.get(segment).getStyleClass().setAll("off");
                     segmentMap.get(segment).setEffect(null);
                 }
             }
@@ -199,24 +197,20 @@ public class SevenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavior
             for (SevenSegment.Segment segment : segmentMap.keySet()) {
                 if (control.getCustomSegmentMapping().containsKey(ASCII)) {
                     if (control.getCustomSegmentMapping().get(ASCII).contains(segment)) {
-                        segmentMap.get(segment).getStyleClass().clear();
-                        segmentMap.get(segment).getStyleClass().add(ON_STYLE);
+                        segmentMap.get(segment).getStyleClass().setAll(ON_STYLE);
                         segmentMap.get(segment).setEffect(INNER_SHADOW);
                     } else {
-                        segmentMap.get(segment).getStyleClass().clear();
-                        segmentMap.get(segment).getStyleClass().add("off");
+                        segmentMap.get(segment).getStyleClass().setAll("off");
                         segmentMap.get(segment).setEffect(null);
                     }
                 } else {
-                    segmentMap.get(segment).getStyleClass().clear();
-                    segmentMap.get(segment).getStyleClass().add("off");
+                    segmentMap.get(segment).getStyleClass().setAll("off");
                     segmentMap.get(segment).setEffect(null);
                 }
             }
         }
         if (control.isDotOn()) {
-            segmentMap.get(SevenSegment.Segment.DOT).getStyleClass().clear();
-            segmentMap.get(SevenSegment.Segment.DOT).getStyleClass().add(ON_STYLE);
+            segmentMap.get(SevenSegment.Segment.DOT).getStyleClass().setAll(ON_STYLE);
             segmentMap.get(SevenSegment.Segment.DOT).setEffect(INNER_SHADOW);
         }
     }

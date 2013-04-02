@@ -204,7 +204,6 @@ public class DotMatrixSegmentSkin extends com.sun.javafx.scene.control.skin.Beha
                         dotMap.get(dot).setEffect(null);
                     }
                 } else {
-                    //dotMap.get(dot).getStyleClass().clear();
                     dotMap.get(dot).getStyleClass().setAll("off");
                     dotMap.get(dot).setEffect(null);
                 }
