@@ -27,7 +27,6 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.scene.control.SkinBase;
 import javafx.scene.Group;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.paint.Color;
@@ -108,7 +107,7 @@ public class SevenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavior
         if ("CHARACTER".equals(PROPERTY)) {
             updateCharacter();
         } else if ("COLOR".equals(PROPERTY)) {
-            updateCharacter();
+            updateSegmentColor();
         } else if ("PLAIN_COLOR".equals(PROPERTY)) {
             updateCharacter();
         } else if ("CUSTOM_MAPPING".equals(PROPERTY)) {
@@ -123,21 +122,20 @@ public class SevenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavior
         getSkinnable().requestLayout();
     }
 
-//    @Override public void layoutChildren() {
-//        if (!isDirty) {
-//            return;
-//        }
-//        if (!initialized) {
-//            init();
-//        }
-//        if (control.getScene() != null) {
-//            updateCharacter();
-//            getChildren().setAll(segments);
-//        }
-//        isDirty = false;
-//
-//        super.layoutChildren();
-//    }
+    @Override public void layoutChildren(double x, double y, double w, double h) {
+        super.layoutChildren(x, y, w, h);
+        if (!isDirty) {
+            return;
+        }
+        if (!initialized) {
+            init();
+        }
+        if (control.getScene() != null) {
+            updateCharacter();
+            getChildren().setAll(segments);
+        }
+        isDirty = false;
+    }
 
     public final SevenSegment getControl() {
         return control;
@@ -165,15 +163,20 @@ public class SevenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavior
 
 
     // ******************** Drawing related ***********************************
-    public void updateCharacter() {
-        segments.setStyle("-fx-segment-color-on: " + Util.colorToCssColor(control.getColor()) +
-                          "-fx-segment-color-off: " + Util.colorToCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
+    private void updateSegmentColor() {
+        control.setStyle("-fx-segment-color-on: " + Util.colorToCssColor(control.getColor()) +
+                         "-fx-segment-color-off: " + Util.colorToCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
+    }
+
+    private void updateCharacter() {
+        updateSegmentColor();
+
         final int ASCII = control.getCharacter().isEmpty() ? 20 : control.getCharacter().toUpperCase().charAt(0);
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setRadius(0.05 * control.getPrefWidth());
         INNER_SHADOW.setColor(Color.hsb(control.getColor().getHue(), control.getColor().getSaturation(), 0.2));
 
-        final String ON_STYLE = control.isPlainColor() ? "seven-segment-plain-on" : "seven-segment-on";
+        final String ON_STYLE = control.isPlainColor() ? "plain-on" : "on";
 
         if (control.getCustomSegmentMapping().isEmpty()) {
             for (SevenSegment.Segment segment : segmentMap.keySet()) {
@@ -184,11 +187,11 @@ public class SevenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavior
                         segmentMap.get(segment).setEffect(INNER_SHADOW);
                     } else {
                         segmentMap.get(segment).getStyleClass().clear();
-                        segmentMap.get(segment).getStyleClass().add("seven-segment-off");
+                        segmentMap.get(segment).getStyleClass().add("off");
                         segmentMap.get(segment).setEffect(null);
                     }
                 } else {
-                    segmentMap.get(segment).getStyleClass().add("seven-segment-off");
+                    segmentMap.get(segment).getStyleClass().add("off");
                     segmentMap.get(segment).setEffect(null);
                 }
             }
@@ -201,12 +204,12 @@ public class SevenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavior
                         segmentMap.get(segment).setEffect(INNER_SHADOW);
                     } else {
                         segmentMap.get(segment).getStyleClass().clear();
-                        segmentMap.get(segment).getStyleClass().add("seven-segment-off");
+                        segmentMap.get(segment).getStyleClass().add("off");
                         segmentMap.get(segment).setEffect(null);
                     }
                 } else {
                     segmentMap.get(segment).getStyleClass().clear();
-                    segmentMap.get(segment).getStyleClass().add("seven-segment-off");
+                    segmentMap.get(segment).getStyleClass().add("off");
                     segmentMap.get(segment).setEffect(null);
                 }
             }
@@ -218,12 +221,11 @@ public class SevenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavior
         }
     }
 
-    public void createSegments() {
-        final double WIDTH = control.getPrefWidth();
+    private void createSegments() {
+        final double WIDTH  = control.getPrefWidth();
         final double HEIGHT = control.getPrefHeight();
 
-        segments.setStyle("-fx-segment-color-on: " + Util.colorToCssColor(control.getColor()) +
-                          "-fx-segment-color-off: " + Util.colorToCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
+        updateSegmentColor();
 
         segments.getChildren().clear();
 
@@ -243,7 +245,6 @@ public class SevenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavior
         A.getElements().add(new LineTo(0.13973799126637554 * WIDTH, 0.0));
         A.getElements().add(new LineTo(0.11790393013100436 * WIDTH, 0.014925373134328358 * HEIGHT));
         A.getElements().add(new ClosePath());
-        A.getStyleClass().add("seven-segment-off");
         segmentMap.put(SevenSegment.Segment.A, A);
 
         final Path B = new Path();
@@ -257,7 +258,6 @@ public class SevenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavior
         B.getElements().add(new LineTo(0.8209606986899564 * WIDTH, 0.07462686567164178 * HEIGHT));
         B.getElements().add(new LineTo(0.8951965065502183 * WIDTH, 0.023880597014925373 * HEIGHT));
         B.getElements().add(new ClosePath());
-        B.getStyleClass().add("seven-segment-off");
         segmentMap.put(SevenSegment.Segment.B, B);
 
         final Path C = new Path();
@@ -270,7 +270,6 @@ public class SevenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavior
         C.getElements().add(new LineTo(0.7685589519650655 * WIDTH, 0.5432835820895522 * HEIGHT));
         C.getElements().add(new LineTo(0.8296943231441049 * WIDTH, 0.5014925373134328 * HEIGHT));
         C.getElements().add(new ClosePath());
-        C.getStyleClass().add("seven-segment-off");
         segmentMap.put(SevenSegment.Segment.C, C);
 
         final Path D = new Path();
@@ -285,7 +284,6 @@ public class SevenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavior
         D.getElements().add(new LineTo(0.7991266375545851 * WIDTH, 0.982089552238806 * HEIGHT));
         D.getElements().add(new LineTo(0.7205240174672489 * WIDTH, 0.9283582089552239 * HEIGHT));
         D.getElements().add(new ClosePath());
-        D.getStyleClass().add("seven-segment-off");
         segmentMap.put(SevenSegment.Segment.D, D);
 
         final Path E = new Path();
@@ -299,7 +297,6 @@ public class SevenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavior
         E.getElements().add(new LineTo(0.10043668122270742 * WIDTH, 0.9253731343283582 * HEIGHT));
         E.getElements().add(new LineTo(0.03056768558951965 * WIDTH, 0.9761194029850746 * HEIGHT));
         E.getElements().add(new ClosePath());
-        E.getStyleClass().add("seven-segment-off");
         segmentMap.put(SevenSegment.Segment.E, E);
 
         final Path F = new Path();
@@ -312,7 +309,6 @@ public class SevenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavior
         F.getElements().add(new LineTo(0.08733624454148471 * WIDTH, 0.03283582089552239 * HEIGHT));
         F.getElements().add(new LineTo(0.1091703056768559 * WIDTH, 0.01791044776119403 * HEIGHT));
         F.getElements().add(new ClosePath());
-        F.getStyleClass().add("seven-segment-off");
         segmentMap.put(SevenSegment.Segment.F, F);
 
         final Path G = new Path();
@@ -325,12 +321,14 @@ public class SevenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavior
         G.getElements().add(new LineTo(0.1572052401746725 * WIDTH, 0.5373134328358209 * HEIGHT));
         G.getElements().add(new LineTo(0.7729257641921398 * WIDTH, 0.5373134328358209 * HEIGHT));
         G.getElements().add(new ClosePath());
-        G.getStyleClass().add("seven-segment-off");
         segmentMap.put(SevenSegment.Segment.G, G);
 
         final Circle DOT = new Circle(0.9301310043668122 * WIDTH, 0.9522388059701492 * HEIGHT, 0.06986899563318777 * WIDTH);
-        DOT.getStyleClass().add("seven-segment-off");
         segmentMap.put(SevenSegment.Segment.DOT, DOT);
+
+        for (Shape shape : segmentMap.values()) {
+            shape.getStyleClass().add("off");
+        }
 
         segments.getChildren().addAll(A,
                                       B,

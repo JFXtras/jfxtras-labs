@@ -48,7 +48,7 @@ import java.util.Map;
  * Time: 12:15
  */
 public class DotMatrixSegmentSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<DotMatrixSegment, DotMatrixSegmentBehavior> {
-    private DotMatrixSegment control;
+    private DotMatrixSegment                 control;
     private boolean                          isDirty;
     private boolean                          initialized;
     private Group                            dots;
@@ -165,8 +165,8 @@ public class DotMatrixSegmentSkin extends com.sun.javafx.scene.control.skin.Beha
 
     // ******************** Drawing related ***********************************
     private void updateSegmentColor() {
-        dots.setStyle("-fx-segment-color-on: " + Util.colorToCssColor(control.getColor()) +
-                      "-fx-segment-color-off: " + Util.colorToCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
+        control.setStyle("-fx-segment-color-on: " + Util.colorToCssColor(control.getColor()) +
+                         "-fx-segment-color-off: " + Util.colorToCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
     }
 
     private void updateCharacter() {
