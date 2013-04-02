@@ -178,19 +178,23 @@ public class DotMatrixSegmentSkin extends SkinBase<DotMatrixSegment, DotMatrixSe
         INNER_SHADOW.setRadius(0.05 * control.getPrefWidth());
         INNER_SHADOW.setColor(Color.hsb(control.getColor().getHue(), control.getColor().getSaturation(), 0.2));
 
+        final String CURRENT_STYLE = control.getStyle();
         final String ON_STYLE = control.isPlainColor() ? "plain-on" : "on";
 
         if (control.getCustomDotMapping().isEmpty()) {
             for (DotMatrixSegment.Dot dot : dotMap.keySet()) {
                 if (control.getDotMapping().containsKey(ASCII)) {
                     if (control.getDotMapping().get(ASCII).contains(dot)) {
+                        dotMap.get(dot).setStyle(CURRENT_STYLE);
                         dotMap.get(dot).getStyleClass().setAll(ON_STYLE);
                         dotMap.get(dot).setEffect(INNER_SHADOW);
                     } else {
+                        dotMap.get(dot).setStyle(CURRENT_STYLE);
                         dotMap.get(dot).getStyleClass().setAll("off");
                         dotMap.get(dot).setEffect(null);
                     }
                 } else {
+                    dotMap.get(dot).setStyle(CURRENT_STYLE);
                     dotMap.get(dot).getStyleClass().setAll("off");
                     dotMap.get(dot).setEffect(null);
                 }
@@ -199,13 +203,16 @@ public class DotMatrixSegmentSkin extends SkinBase<DotMatrixSegment, DotMatrixSe
             for (DotMatrixSegment.Dot dot : dotMap.keySet()) {
                 if (control.getCustomDotMapping().containsKey(ASCII)) {
                     if (control.getCustomDotMapping().get(ASCII).contains(dot)) {
+                        dotMap.get(dot).setStyle(CURRENT_STYLE);
                         dotMap.get(dot).getStyleClass().setAll(ON_STYLE);
                         dotMap.get(dot).setEffect(INNER_SHADOW);
                     } else {
+                        dotMap.get(dot).setStyle(CURRENT_STYLE);
                         dotMap.get(dot).getStyleClass().setAll("off");
                         dotMap.get(dot).setEffect(null);
                     }
                 } else {
+                    dotMap.get(dot).setStyle(CURRENT_STYLE);
                     dotMap.get(dot).getStyleClass().setAll("off");
                     dotMap.get(dot).setEffect(null);
                 }
