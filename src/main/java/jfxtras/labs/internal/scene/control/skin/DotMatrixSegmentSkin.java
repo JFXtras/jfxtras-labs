@@ -167,8 +167,8 @@ public class DotMatrixSegmentSkin extends SkinBase<DotMatrixSegment, DotMatrixSe
 
     // ******************** Drawing related ***********************************
     private void updateSegmentColor() {
-        dots.setStyle("-fx-segment-color-on: " + Util.colorToCssColor(control.getColor()) +
-                      "-fx-segment-color-off: " + Util.colorToCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
+        control.setStyle("-fx-segment-color-on: " + Util.colorToCssColor(control.getColor()) +
+                         "-fx-segment-color-off: " + Util.colorToCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
     }
 
     private void updateCharacter() {
@@ -206,8 +206,7 @@ public class DotMatrixSegmentSkin extends SkinBase<DotMatrixSegment, DotMatrixSe
                         dotMap.get(dot).setEffect(null);
                     }
                 } else {
-                    dotMap.get(dot).getStyleClass().clear();
-                    dotMap.get(dot).getStyleClass().add("off");
+                    dotMap.get(dot).getStyleClass().setAll("off");
                     dotMap.get(dot).setEffect(null);
                 }
             }
@@ -215,7 +214,7 @@ public class DotMatrixSegmentSkin extends SkinBase<DotMatrixSegment, DotMatrixSe
     }
 
     private final void createDots() {
-        final double WIDTH = control.getPrefWidth();
+        final double WIDTH  = control.getPrefWidth();
         final double HEIGHT = control.getPrefHeight();
 
         updateSegmentColor();
@@ -336,39 +335,39 @@ public class DotMatrixSegmentSkin extends SkinBase<DotMatrixSegment, DotMatrixSe
         }
 
         dots.getChildren().addAll(D57,
-            D47,
-            D37,
-            D27,
-            D17,
-            D56,
-            D46,
-            D36,
-            D26,
-            D16,
-            D55,
-            D45,
-            D35,
-            D25,
-            D15,
-            D54,
-            D44,
-            D34,
-            D24,
-            D14,
-            D53,
-            D43,
-            D33,
-            D23,
-            D13,
-            D52,
-            D42,
-            D32,
-            D22,
-            D12,
-            D51,
-            D41,
-            D31,
-            D21,
-            D11);
+                                D47,
+                                D37,
+                                D27,
+                                D17,
+                                D56,
+                                D46,
+                                D36,
+                                D26,
+                                D16,
+                                D55,
+                                D45,
+                                D35,
+                                D25,
+                                D15,
+                                D54,
+                                D44,
+                                D34,
+                                D24,
+                                D14,
+                                D53,
+                                D43,
+                                D33,
+                                D23,
+                                D13,
+                                D52,
+                                D42,
+                                D32,
+                                D22,
+                                D12,
+                                D51,
+                                D41,
+                                D31,
+                                D21,
+                                D11);
     }
 }

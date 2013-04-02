@@ -267,17 +267,17 @@
 /************************************************************
 * Definition of SixteenSegment fills                        *
 ************************************************************/
-.sixteen-segment-on {
+.sixteen-segment .on {
     -fx-fill  : radial-gradient(focus-angle 0deg, focus-distance 0%, center 50% 50%, radius 50%, derive(-fx-segment-color-on, +30%) 0%, -fx-segment-color-on 50%, derive(-fx-segment-color-on, -30%) 100%);
     -fx-stroke: transparent;
 }
 
-.sixteen-segment-plain-on {
+.sixteen-segment .plain-on {
     -fx-fill  : -fx-segment-color-on;
     -fx-stroke: transparent;
 }
 
-.sixteen-segment-off {
+.sixteen-segment .off {
     -fx-fill  : -fx-segment-color-off;
     -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.65), 1, 0.5, 0, 0);
     -fx-stroke: transparent;
@@ -286,17 +286,17 @@
 /************************************************************
 * Definition of SevenSegment fills                          *
 ************************************************************/
-.seven-segment-on {
+.seven-segment .on {
     -fx-fill  : radial-gradient(focus-angle 0deg, focus-distance 0%, center 50% 50%, radius 50%, derive(-fx-segment-color-on, +30%) 0%, -fx-segment-color-on 50%, derive(-fx-segment-color-on, -30%) 100%);
     -fx-stroke: transparent;
 }
 
-.seven-segment-plain-on {
+.seven-segment .plain-on {
     -fx-fill  : -fx-segment-color-on;
     -fx-stroke: transparent;
 }
 
-.seven-segment-off {
+.seven-segment .off {
     -fx-fill  : -fx-segment-color-off;
     -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.65), 1, 0.5, 0, 0);
     -fx-stroke: transparent;
@@ -321,6 +321,7 @@
     -fx-effect: innershadow(gaussian, black, 1, 1.0, 0, 0);
     -fx-stroke: transparent;
 }
+
 
 /************************************************************
 * Definition of StepIndicator fills                         *
