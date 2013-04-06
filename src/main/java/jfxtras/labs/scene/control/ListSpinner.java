@@ -28,6 +28,8 @@ package jfxtras.labs.scene.control;
 
 import java.util.Arrays;
 
+import com.sun.javafx.collections.ObservableListWrapper;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -111,9 +113,18 @@ public class ListSpinner<T> extends Control
 	/**
 	 * @param list
 	 */
-	public ListSpinner(java.util.List<T> list)
+	public ListSpinner(final java.util.List<T> list)
 	{
-		this( FXCollections.observableList(list) );
+// The observableListWrapper that is returned by this call has its own implementation of indexOf that iterates over the value.
+// The optimized indexOf in ListSpinnerIntegerList is never reached.
+//		this( FXCollections.observableList(list) );
+		this( new ObservableListWrapper<T>(list)
+		{
+			@Override public int indexOf(Object arg0)
+			{
+				return list.indexOf(arg0);
+			}
+		});
 	}
 
 	/**
