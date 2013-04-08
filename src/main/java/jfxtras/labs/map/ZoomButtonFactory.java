@@ -2,6 +2,7 @@ package jfxtras.labs.map;
 
 import java.io.InputStream;
 
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -32,5 +33,5 @@ abstract class ZoomButtonFactory {
     
     abstract String getImagePath();
     
-    abstract EventHandler getEventHandler();
+    abstract EventHandler<ActionEvent> getEventHandler();
 }

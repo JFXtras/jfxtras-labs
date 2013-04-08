@@ -20,7 +20,7 @@ class ZoomOutButtonFactory extends ZoomButtonFactory{
     }
 
     @Override
-    EventHandler getEventHandler() {
+    EventHandler<ActionEvent> getEventHandler() {
         return  new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
