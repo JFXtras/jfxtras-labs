@@ -79,6 +79,8 @@ public class BingAerialTileSource extends AbstractTileSource {
                 case "CoverageArea":
                     inCoverage = true;
                     break;
+                default:
+                    break;
             }
         }
 

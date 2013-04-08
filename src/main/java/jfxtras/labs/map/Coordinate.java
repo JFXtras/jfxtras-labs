@@ -16,7 +16,12 @@ import java.io.Serializable;
  */
 public class Coordinate implements Serializable {
     
-    private transient Point2D.Double data;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3681333609178265369L;
+	
+	private transient Point2D.Double data;
 
     /**
      * Constructor for the coordinate

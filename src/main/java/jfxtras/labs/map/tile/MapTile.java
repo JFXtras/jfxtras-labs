@@ -31,9 +31,9 @@ import javafx.scene.image.ImageView;
 
 public class MapTile {
 
-    private static Image delayImage;
+    private static volatile Image delayImage;
 
-    private static Image errorImage;
+    private static volatile Image errorImage;
 
     private static final String HTTP = "http:";
 
@@ -171,7 +171,7 @@ public class MapTile {
         return zoom;
     }
 
-    public void setImage(Image image) {
+    private void setImage(Image image) {
         this.imageView.setImage(image);
     }
     
