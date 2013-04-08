@@ -13,14 +13,6 @@ import org.junit.Test;
  */
 public class MapTileTest {
 	
-	private class LocalTileSource extends AbstractTileSource{
-
-		public LocalTileSource(String base_url) {
-			super("Test", base_url);
-			
-		}
-	}
-
 	@Test
 	public void testUnknownLocalImage() {
 		TileSource tileSource = new LocalTileSource(null);

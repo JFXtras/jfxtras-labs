@@ -1,5 +1,4 @@
 //==============================================================================
-//   map is a Java library for parsing raw weather data
 //   Copyright (C) 2012 Jeffrey L Smith
 //
 //  This library is free software; you can redistribute it and/or
@@ -21,6 +20,12 @@
 //==============================================================================
 package jfxtras.labs.map.tile;
 
+/**
+ * A repository for the map tiles.
+ * 
+ * @author jsmith.carlsbad@gmail.com
+ *
+ */
 public class MapTileRepository {
 
     protected TileSource tileSource;
@@ -36,10 +41,6 @@ public class MapTileRepository {
         }
         MapTile tile = new MapTile(tileSource, tilex, tiley, zoom);
         return tile;
-    }
-
-    public TileSource getTileLayerSource() {
-        return tileSource;
     }
 
     public TileSource getTileSource() {
