@@ -171,10 +171,6 @@ public class MapTile {
         return zoom;
     }
 
-    public ImageView getImage() {
-        return imageView;
-    }
-
     public void setImage(Image image) {
         this.imageView.setImage(image);
     }
