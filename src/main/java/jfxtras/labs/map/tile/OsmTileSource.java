@@ -57,18 +57,4 @@ public class OsmTileSource {
             return MAP_OSMA + "/" + osmaSuffix;
         }
     }
-
-    public static class TilesAtHome extends OsmaSource {
-
-        public TilesAtHome() {
-            super("TilesAtHome", "tile");
-        }
-    }
-
-    public static class Maplint extends OsmaSource {
-
-        public Maplint() {
-            super("Maplint", "maplint");
-        }
-    }
 }

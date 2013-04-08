@@ -51,8 +51,8 @@ public class MapPaneTrial1 extends Application {
 	// System.setProperty("java.net.useSystemProxies", "true");
 	// }
 
-	final TileSource[] TileSources = new TileSource[] {
-			new OsmTileSource.Mapnik(), new OsmTileSource.TilesAtHome(),
+	final TileSource[] tileSources = new TileSource[] {
+			new OsmTileSource.Mapnik(), 
 			new OsmTileSource.CycleMap(), new TilePyramidSource(),
 			new BingAerialTileSource() };
 
@@ -69,7 +69,7 @@ public class MapPaneTrial1 extends Application {
 		primaryStage.setTitle("Map Demo");
 		StackPane root = new StackPane();
 
-		final MapPane map = new MapPane(TileSources[0]);
+		final MapPane map = new MapPane(tileSources[3]);
 
 		map.setMonochromeMode(false);
 		map.setMapBounds(0, 0, 800, 600);
