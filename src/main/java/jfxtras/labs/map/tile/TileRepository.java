@@ -26,20 +26,23 @@ package jfxtras.labs.map.tile;
  * @author jsmith.carlsbad@gmail.com
  *
  */
-public class MapTileRepository {
+public class TileRepository {
 
     protected TileSource tileSource;
 
-    public MapTileRepository(TileSource source) {
+    public TileRepository(TileSource source) {
         tileSource = source;
     }
 
-    public MapTile getTile(int tilex, int tiley, int zoom) {
+    public Tile getTile(int tilex, int tiley, int zoom) {
         int max = (1 << zoom);
         if (tilex < 0 || tilex >= max || tiley < 0 || tiley >= max) {
             return null;
         }
-        MapTile tile = new MapTile(tileSource, tilex, tiley, zoom);
+        String location = tileSource.getTileUrl(zoom, tilex, tiley);
+        Tile tile = new Tile(location);
+        tile.loadImage();
+        
         return tile;
     }
 

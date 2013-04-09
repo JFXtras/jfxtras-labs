@@ -1,5 +1,4 @@
 //==============================================================================
-//   map is a Java library for parsing raw weather data
 //   Copyright (C) 2012 Jeffrey L Smith
 //
 //  This library is free software; you can redistribute it and/or
@@ -21,20 +20,28 @@
 //==============================================================================
 package jfxtras.labs.map.tile;
 
+/**
+ * This is a tile source for file based tiles
+ * @author jsmith
+ *
+ */
 public class TilePyramidSource extends AbstractTileSource {
 
-    private String tilesRoot = "GEOTILES";
+    private static final String TILES_ROOT = "GEOTILES";
     private String tilesRootDir;
     
     private int minZoom;
     private int maxZoom;
-
+    
     public TilePyramidSource() {
-        super("Tile Pyramid", "/");
-        
-        tilesRootDir = System.getenv(tilesRoot);
-        
-        this.minZoom = 0;
+        this(System.getenv(TILES_ROOT));
+    }
+    
+    public TilePyramidSource(String tilesRootDir){
+    	super("Tile Pyramid", "/");
+    	this.tilesRootDir = tilesRootDir;
+    	
+    	this.minZoom = 0;
         this.maxZoom = 16;
     }
 

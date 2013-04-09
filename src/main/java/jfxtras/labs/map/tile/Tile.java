@@ -1,5 +1,4 @@
 //==============================================================================
-//   map is a Java library for parsing raw weather data
 //   Copyright (C) 2012 Jeffrey L Smith
 //
 //  This library is free software; you can redistribute it and/or
@@ -22,14 +21,20 @@
 package jfxtras.labs.map.tile;
 
 import java.io.File;
-import java.io.IOException;
 import javafx.animation.AnimationTimer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public class MapTile {
+/**
+ * This class is a wrapper for the image for a map tile.<br/>
+ * It is also responsible for loading the image from the source.
+ * 
+ * @author jsmith
+ *
+ */
+public class Tile {
 
     private static volatile Image delayImage;
 
@@ -43,30 +48,20 @@ public class MapTile {
 
     private ImageView imageView;
 
-    protected TileSource source;
-
-    protected int xtile;
-
-    protected int ytile;
-
-    protected int zoom;
-
     protected String tileLocation;
 
-    public MapTile(TileSource source, int xtile, int ytile, int zoom, Image image) {
-        this(source, xtile, ytile, zoom);
+    public Tile(String tileLocation, Image image) {
+        this(tileLocation);
         this.imageView.setImage(image);
     }
 
-    public MapTile(TileSource source, int xtile, int ytile, int zoom) {
+    public Tile(String tileLocation) {
         imageView = new ImageView();
-        this.source = source;
-        this.xtile = xtile;
-        this.ytile = ytile;
-        this.zoom = zoom;
-        this.tileLocation = source.getTileUrl(zoom, xtile, ytile);
-
-        if (this.tileLocation.startsWith(HTTP)) {
+        this.tileLocation = tileLocation;
+    }
+    
+    public void loadImage(){
+    	if (tileLocation.startsWith(HTTP)) {
             loadFromHttp();
         } else {
             loadFromFile();
@@ -74,19 +69,40 @@ public class MapTile {
     }
 
     private void loadFromHttp() {
-        this.imageView.setImage(getDelayImage());
-        this.imageView.setFitWidth(DIM);
-        this.imageView.setFitHeight(DIM);
+        imageView.setImage(getDelayImage());
+        imageView.setFitWidth(DIM);
+        imageView.setFitHeight(DIM);
 
-        this.loadImage(this.tileLocation);
+        final Image img = new Image(tileLocation, true);
+
+        //You can add a specific action when each frame is started.
+        final AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long l) {
+                rotateImageView();
+            }
+        };
+
+        timer.start();
+
+        img.progressProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue ov, Number old_val, Number new_val) {
+                if (new_val.doubleValue() == COMPLETE) {
+                    timer.stop();
+                    resetImageView();
+                    setImage(img);
+                }
+            }
+        });
     }
 
     private void loadFromFile() {
-        File file = new File(this.tileLocation);
+        File file = new File(tileLocation);
         if (file.exists()) {
-            this.imageView.setImage(new Image(file.toURI().toString()));
+            imageView.setImage(new Image(file.toURI().toString()));
         } else {
-            this.imageView.setImage(getErrorImage());
+            imageView.setImage(getErrorImage());
         }
     }
 
@@ -114,61 +130,9 @@ public class MapTile {
         imageView.setRotate(0);
     }
 
-    private void loadImage(String url) {
-
-        final Image img = new Image(url, true);
-
-        //You can add a specific action when each frame is started.
-        final AnimationTimer timer = new AnimationTimer() {
-            @Override
-            public void handle(long l) {
-                rotateImageView();
-            }
-        };
-
-        timer.start();
-
-        img.progressProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue ov, Number old_val, Number new_val) {
-                if (new_val.doubleValue() == COMPLETE) {
-                    timer.stop();
-                    resetImageView();
-                    setImage(img);
-                }
-            }
-        });
-
-    }
-
-    public String getUrl() throws IOException {
-        return source.getTileUrl(zoom, xtile, ytile);
-    }
 
     public ImageView getImageView() {
         return imageView;
-    }
-
-    public TileSource getSource() {
-        return source;
-    }
-
-    /**
-     * @return tile number on the x axis of this tile
-     */
-    public int getXtile() {
-        return xtile;
-    }
-
-    /**
-     * @return tile number on the y axis of this tile
-     */
-    public int getYtile() {
-        return ytile;
-    }
-
-    public int getZoom() {
-        return zoom;
     }
 
     private void setImage(Image image) {

@@ -21,8 +21,8 @@
 //==============================================================================
 package jfxtras.labs.map;
 
-import jfxtras.labs.map.tile.MapTile;
-import jfxtras.labs.map.tile.MapTileRepository;
+import jfxtras.labs.map.tile.Tile;
+import jfxtras.labs.map.tile.TileRepository;
 import jfxtras.labs.map.render.MapLineable;
 import jfxtras.labs.map.render.MapMarkable;
 import jfxtras.labs.map.render.MapOverlayable;
@@ -64,7 +64,7 @@ public final class MapPane extends Pane implements MapControlable {
 
     private TileSource tileSource;
 
-    private MapTileRepository tileRepository;
+    private TileRepository tileRepository;
 
     private static final Point[] move = {new Point(1, 0), new Point(0, 1), new Point(-1, 0), new Point(0, -1)};
 
@@ -162,7 +162,7 @@ public final class MapPane extends Pane implements MapControlable {
         cursorLocationVisible = new SimpleBooleanProperty(true);
 
         this.tileSource = ts;
-        tileRepository = new MapTileRepository(tileSource);
+        tileRepository = new TileRepository(tileSource);
 
         mapMarkerList = new ArrayList<>();
         mapPolygonList = new ArrayList<>();
@@ -665,7 +665,7 @@ public final class MapPane extends Pane implements MapControlable {
                 for (int j = 0; j < x; j++) {
                     if (x_min <= posx && posx <= x_max && y_min <= posy && posy <= y_max) {
                         // tile is visible
-                        MapTile tile = tileRepository.getTile(tilex, tiley, zoom);
+                        Tile tile = tileRepository.getTile(tilex, tiley, zoom);
                         if (tile != null) {
                             painted = true;
 
