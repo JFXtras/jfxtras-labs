@@ -315,7 +315,7 @@ public final class MapPane extends Pane implements MapControlable {
             if (oldZoom != zoom) {
                 zoomChanged(oldZoom);
             }
-            if (Math.abs(zoomSlider.getValue() - zoom) < ZOOM_DIFF) {
+            if (Math.abs(zoomSlider.getValue() - zoom) > ZOOM_DIFF) {
                 zoomSlider.setValue(zoom);
             }
         } finally {
