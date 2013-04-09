@@ -20,37 +20,89 @@
 //==============================================================================
 package jfxtras.labs.map.tile;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * A repository for the map tiles.
  * 
  * @author jsmith.carlsbad@gmail.com
- *
+ * 
  */
 public class TileRepository {
 
-    protected TileSource tileSource;
+	private TileSource tileSource;
 
-    public TileRepository(TileSource source) {
-        tileSource = source;
-    }
+	private Map<String, TileInfo> cache;
+	
+	private long expire;
+	
+	/**
+	 * Default expire time for the cache: one hour.
+	 */
+	public static final long DEFAULT_EXPIRE = 60 * 60 * 1000;
+	
+	public TileRepository(TileSource source) {
+		tileSource = source;
+		cache = new ConcurrentHashMap<>();
+		expire = DEFAULT_EXPIRE;
+	}
 
-    public Tile getTile(int tilex, int tiley, int zoom) {
-        int max = (1 << zoom);
-        if (tilex < 0 || tilex >= max || tiley < 0 || tiley >= max) {
-            return null;
-        }
-        String location = tileSource.getTileUrl(zoom, tilex, tiley);
-        Tile tile = new Tile(location);
-        tile.loadImage();
-        
-        return tile;
-    }
+	public Tile getTile(int tilex, int tiley, int zoom) {
+		Tile tile = null;
 
-    public TileSource getTileSource() {
-        return tileSource;
-    }
+		if (isValid(tilex, tiley, zoom)) {
 
-    public void setTileSource(TileSource tileSource) {
-        this.tileSource = tileSource;
-    }
+			String location = tileSource.getTileUrl(zoom, tilex, tiley);
+			
+			cleanupCache();
+			
+			TileInfo info = cache.get(location);
+			
+
+			if (info != null) {
+				tile = new Tile(location, info.getImage());
+			} else {
+				tile = new Tile(location);
+				tile.loadImage(cache);
+			}
+		}
+
+		return tile;
+	}
+
+	/**
+	 * Checks the expiration of images in the cache, and removes them eventually.
+	 * @param location
+	 */
+	private void cleanupCache() {
+		
+		for(Entry<String, TileInfo> entry : cache.entrySet()){
+			TileInfo info = entry.getValue();
+			long current = System.currentTimeMillis();
+			if(current - info.getTimeStamp() > expire){
+				cache.remove(entry.getKey());
+			}
+		}
+	}
+
+	private boolean isValid(int tilex, int tiley, int zoom) {
+		int max = (1 << zoom);
+		return !(tilex < 0 || tilex >= max || tiley < 0 || tiley >= max);
+	}
+
+	public TileSource getTileSource() {
+		return tileSource;
+	}
+
+	public void setTileSource(TileSource tileSource) {
+		this.tileSource = tileSource;
+	}
+	
+	public void setExpire(long expire) {
+		this.expire = expire;
+	}
 }

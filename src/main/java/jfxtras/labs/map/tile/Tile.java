@@ -21,6 +21,8 @@
 package jfxtras.labs.map.tile;
 
 import java.io.File;
+import java.util.Map;
+
 import javafx.animation.AnimationTimer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -48,7 +50,9 @@ public class Tile {
 
     private ImageView imageView;
 
-    protected String tileLocation;
+    private String tileLocation;
+    
+    private Map<String, TileInfo> cache;
 
     public Tile(String tileLocation, Image image) {
         this(tileLocation);
@@ -60,7 +64,8 @@ public class Tile {
         this.tileLocation = tileLocation;
     }
     
-    public void loadImage(){
+    void loadImage(Map<String, TileInfo> cache){
+    	this.cache = cache;
     	if (tileLocation.startsWith(HTTP)) {
             loadFromHttp();
         } else {
@@ -100,7 +105,8 @@ public class Tile {
     private void loadFromFile() {
         File file = new File(tileLocation);
         if (file.exists()) {
-            imageView.setImage(new Image(file.toURI().toString()));
+            Image image = new Image(file.toURI().toString());
+			setImage(image);
         } else {
             imageView.setImage(getErrorImage());
         }
@@ -136,7 +142,13 @@ public class Tile {
     }
 
     private void setImage(Image image) {
-        this.imageView.setImage(image);
+        imageView.setImage(image);
+        
+        if(cache != null){
+        	long timeStamp = System.currentTimeMillis();
+        	TileInfo info = new TileInfo(timeStamp, image);
+        	cache.put(tileLocation, info);
+        }
     }
     
 }
