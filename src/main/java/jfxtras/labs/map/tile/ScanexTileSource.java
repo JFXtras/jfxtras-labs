@@ -1,5 +1,6 @@
 package jfxtras.labs.map.tile;
 
+import jfxtras.labs.map.Coordinate;
 import jfxtras.labs.map.Mercator;
 
 public class ScanexTileSource extends AbstractTileSource {
@@ -118,4 +119,5 @@ public class ScanexTileSource extends AbstractTileSource {
     public double tileXToLon(int x, int zoom) {
         return (x / Math.pow(2.0, zoom - 1) - 1) * (90 * EQUATOR) / RADIUS_E / Math.PI;
     }
+    
 }

@@ -40,6 +40,8 @@ import jfxtras.labs.map.render.MapLineable;
 import jfxtras.labs.map.render.DefaultMapLine;
 import jfxtras.labs.map.render.ImageMapMarker;
 import jfxtras.labs.map.render.MapMarkable;
+import jfxtras.labs.map.tile.CycleMapTileSource;
+import jfxtras.labs.map.tile.MapnikTileSource;
 
 /**
  * 
@@ -52,9 +54,8 @@ public class MapPaneTrial1 extends Application {
 	// }
 
 	final TileSource[] tileSources = new TileSource[] {
-			new OsmTileSource.Mapnik(), 
-			new OsmTileSource.CycleMap(), new TilePyramidSource(),
-			new BingAerialTileSource() };
+			new MapnikTileSource(), new CycleMapTileSource(), 
+            new TilePyramidSource(), new BingAerialTileSource() };
 
 	/**
 	 * @param args
@@ -69,7 +70,7 @@ public class MapPaneTrial1 extends Application {
 		primaryStage.setTitle("Map Demo");
 		StackPane root = new StackPane();
 
-		final MapPane map = new MapPane(tileSources[3]);
+		final MapPane map = new MapPane(tileSources[0]);
 
 		map.setMapBounds(0, 0, 800, 600);
 		map.setMapGridVisible(true);

@@ -94,17 +94,17 @@ public abstract class AbstractTileSource implements TileSource {
 
     @Override
     public String getAttributionText(int zoom, Coordinate topLeft, Coordinate botRight) {
-        return "© OpenStreetMap contributors, CC-BY-SA ";
+        return "";
     }
 
     @Override
     public String getAttributionLinkURL() {
-        return "http://openstreetmap.org/";
+        return "";
     }
 
     @Override
     public String getTermsOfUseURL() {
-        return "http://www.openstreetmap.org/copyright";
+        return "";
     }
 
     @Override

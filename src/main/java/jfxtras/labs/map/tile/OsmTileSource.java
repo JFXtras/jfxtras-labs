@@ -1,60 +1,30 @@
 package jfxtras.labs.map.tile;
 
-public class OsmTileSource {
+import jfxtras.labs.map.Coordinate;
 
-    public static class Mapnik extends AbstractTileSource {
-
-        private static final String MAP_MAPNIK = "http://tile.openstreetmap.org";
-
-        public Mapnik() {
-            super("Mapnik", MAP_MAPNIK);
-        }
+public class OsmTileSource extends AbstractTileSource {
+    
+    public OsmTileSource(String name, String base_url) {
+        super(name, base_url, null);
     }
 
-    public static class CycleMap extends AbstractTileSource {
-
-        private static final String PATTERN = "http://%s.tile.opencyclemap.org/cycle";
-
-        private static final String[] SERVER = {"a", "b", "c"};
-
-        private int serverNumber = 0;
-
-        public CycleMap() {
-            super("OSM Cycle Map", PATTERN);
-        }
-
-        @Override
-        public String getBaseUrl() {
-            String url = String.format(this.baseUrl, new Object[]{SERVER[serverNumber]});
-            serverNumber = (serverNumber + 1) % SERVER.length;
-            return url;
-        }
-
-        @Override
-        public int getMaxZoom() {
-            return 17;
-        }
+    public OsmTileSource(String name, String base_url, String attr_img_url) {
+        super(name, base_url, attr_img_url);
     }
 
-    public static abstract class OsmaSource extends AbstractTileSource {
+    
+    @Override
+    public String getAttributionText(int zoom, Coordinate topLeft, Coordinate botRight) {
+        return "© OpenStreetMap contributors, CC-BY-SA ";
+    }
 
-        private static final String MAP_OSMA = "http://tah.openstreetmap.org/Tiles";
+    @Override
+    public String getAttributionLinkURL() {
+        return "http://openstreetmap.org/";
+    }
 
-        private String osmaSuffix;
-
-        public OsmaSource(String name, String osmaSuffix) {
-            super(name, MAP_OSMA);
-            this.osmaSuffix = osmaSuffix;
-        }
-
-        @Override
-        public int getMaxZoom() {
-            return 17;
-        }
-
-        @Override
-        public String getBaseUrl() {
-            return MAP_OSMA + "/" + osmaSuffix;
-        }
+    @Override
+    public String getTermsOfUseURL() {
+        return "http://www.openstreetmap.org/copyright";
     }
 }

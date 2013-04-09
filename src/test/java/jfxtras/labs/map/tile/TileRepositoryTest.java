@@ -18,9 +18,10 @@ public class TileRepositoryTest {
 	@Test
 	public void testRemoteSource() {
 
-		TileSource[] tileSources = new TileSource[] {
-				new OsmTileSource.Mapnik(), new OsmTileSource.CycleMap(),
-				new BingAerialTileSource() };
+		final TileSource[] tileSources = new TileSource[] {
+			new MapnikTileSource(), new CycleMapTileSource(), 
+            new TilePyramidSource(), new BingAerialTileSource() };
+        
 		for (TileSource tileSource : tileSources) {
 			verify(tileSource);
 		}
