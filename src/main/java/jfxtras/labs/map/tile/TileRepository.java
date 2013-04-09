@@ -20,8 +20,6 @@
 //==============================================================================
 package jfxtras.labs.map.tile;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * A repository for the map tiles.
  * 
  * @author jsmith.carlsbad@gmail.com
+ * @author Mario Schroeder
  * 
  */
 public class TileRepository {
@@ -56,12 +55,10 @@ public class TileRepository {
 
 		if (isValid(tilex, tiley, zoom)) {
 
-			String location = tileSource.getTileUrl(zoom, tilex, tiley);
-			
 			cleanupCache();
 			
+            String location = tileSource.getTileUrl(zoom, tilex, tiley);
 			TileInfo info = cache.get(location);
-			
 
 			if (info != null) {
 				tile = new Tile(location, info.getImage());
@@ -102,6 +99,10 @@ public class TileRepository {
 		this.tileSource = tileSource;
 	}
 	
+    /**
+     * Set the time difference when a image in the cache expires.
+     * @param expire difference as long
+     */
 	public void setExpire(long expire) {
 		this.expire = expire;
 	}
