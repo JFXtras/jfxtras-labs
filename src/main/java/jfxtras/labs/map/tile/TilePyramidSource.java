@@ -25,7 +25,7 @@ package jfxtras.labs.map.tile;
  * @author jsmith
  *
  */
-public class TilePyramidSource extends AbstractTileSource {
+public class TilePyramidSource extends DefaultTileSource {
 
     private static final String TILES_ROOT = "GEOTILES";
     private String tilesRootDir;

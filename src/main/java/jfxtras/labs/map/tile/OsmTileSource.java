@@ -2,7 +2,7 @@ package jfxtras.labs.map.tile;
 
 import jfxtras.labs.map.Coordinate;
 
-public class OsmTileSource extends AbstractTileSource {
+public class OsmTileSource extends DefaultTileSource {
     
     public OsmTileSource(String name, String base_url) {
         super(name, base_url, null);

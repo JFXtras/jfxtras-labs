@@ -1,9 +1,8 @@
 package jfxtras.labs.map.tile;
 
-import jfxtras.labs.map.Coordinate;
 import jfxtras.labs.map.Mercator;
 
-public class ScanexTileSource extends AbstractTileSource {
+public class ScanexTileSource extends DefaultTileSource {
 
     private static String API_KEY = "4018C5A9AECAD8868ED5DEB2E41D09F7";
 

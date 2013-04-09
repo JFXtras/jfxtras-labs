@@ -4,7 +4,7 @@ package jfxtras.labs.map.tile;
  *
  * @author Mario Schröder
  */
-public class CycleMapTileSource extends OsmTileSource {
+public class CycleMapOsmTileSource extends OsmTileSource {
 
     private static final String PATTERN = "http://%s.tile.opencyclemap.org/cycle";
 
@@ -12,7 +12,7 @@ public class CycleMapTileSource extends OsmTileSource {
 
     private int serverNumber = 0;
 
-    public CycleMapTileSource() {
+    public CycleMapOsmTileSource() {
         super("OSM Cycle Map", PATTERN);
     }
 

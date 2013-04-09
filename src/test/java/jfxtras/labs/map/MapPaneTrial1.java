@@ -40,8 +40,8 @@ import jfxtras.labs.map.render.MapLineable;
 import jfxtras.labs.map.render.DefaultMapLine;
 import jfxtras.labs.map.render.ImageMapMarker;
 import jfxtras.labs.map.render.MapMarkable;
-import jfxtras.labs.map.tile.CycleMapTileSource;
-import jfxtras.labs.map.tile.MapnikTileSource;
+import jfxtras.labs.map.tile.CycleMapOsmTileSource;
+import jfxtras.labs.map.tile.MapnikOsmTileSource;
 
 /**
  * 
@@ -54,7 +54,7 @@ public class MapPaneTrial1 extends Application {
 	// }
 
 	final TileSource[] tileSources = new TileSource[] {
-			new MapnikTileSource(), new CycleMapTileSource(), 
+			new MapnikOsmTileSource(), new CycleMapOsmTileSource(), 
             new TilePyramidSource(), new BingAerialTileSource() };
 
 	/**

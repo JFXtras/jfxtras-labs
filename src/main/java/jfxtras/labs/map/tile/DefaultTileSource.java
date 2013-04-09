@@ -11,17 +11,17 @@ import javafx.scene.image.Image;
  * Abstract parent for tile sources.
  * @author Mario Schröder
  */
-public abstract class AbstractTileSource implements TileSource {
+public class DefaultTileSource implements TileSource {
 
     protected String name;
     protected String baseUrl;
     protected String attrImgUrl;
 
-    public AbstractTileSource(String name, String base_url) {
+    public DefaultTileSource(String name, String base_url) {
         this(name, base_url, null);
     }
 
-    public AbstractTileSource(String name, String base_url, String attr_img_url) {
+    public DefaultTileSource(String name, String base_url, String attr_img_url) {
         this.name = name;
         this.baseUrl = base_url;
         attrImgUrl = attr_img_url;

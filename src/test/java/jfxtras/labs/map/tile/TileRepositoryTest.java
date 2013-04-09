@@ -19,14 +19,14 @@ public class TileRepositoryTest {
 	public void testRemoteSource() {
 
 		final TileSource[] tileSources = new TileSource[] {
-			new MapnikTileSource(), new CycleMapTileSource(), 
-            new TilePyramidSource(), new BingAerialTileSource() };
+			new MapnikOsmTileSource(), new CycleMapOsmTileSource(), 
+            new TilePyramidSource(), new BingAerialTileSource()};
         
 		for (TileSource tileSource : tileSources) {
 			verify(tileSource);
 		}
 	}
-
+    
 	@Test
 	public void testLocalSource() {
 		verify(new TilePyramidSource(null));
