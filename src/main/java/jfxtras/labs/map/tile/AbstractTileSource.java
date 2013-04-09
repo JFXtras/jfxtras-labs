@@ -7,6 +7,10 @@ import jfxtras.labs.map.Coordinate;
 import java.io.IOException;
 import javafx.scene.image.Image;
 
+/**
+ * Abstract parent for tile sources.
+ * @author Mario Schröder
+ */
 public abstract class AbstractTileSource implements TileSource {
 
     protected String name;

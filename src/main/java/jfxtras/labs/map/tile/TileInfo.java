@@ -24,7 +24,7 @@ import javafx.scene.image.Image;
 /**
  * This class keeps the timestamp and image together.
  * 
- * @author Mario Schroeder
+ * @author Mario Schröder
  * 
  */
 class TileInfo {

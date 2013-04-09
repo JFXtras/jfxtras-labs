@@ -5,7 +5,7 @@ import jfxtras.labs.map.MapControlable;
 /**
  * Common interface for renderable objects.
  * 
- * @author msc
+ * @author Mario Schröder
  */
 public interface Renderable {
 

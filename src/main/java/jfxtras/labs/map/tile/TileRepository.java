@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * A repository for the map tiles.
  * 
  * @author jsmith.carlsbad@gmail.com
- * @author Mario Schroeder
+ * @author Mario Schröder
  * 
  */
 public class TileRepository {

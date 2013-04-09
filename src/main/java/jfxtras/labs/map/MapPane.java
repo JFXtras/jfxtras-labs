@@ -1,5 +1,4 @@
 //==============================================================================
-//   map is a Java library for parsing raw weather data
 //   Copyright (C) 2012 Jeffrey L Smith
 //
 //  This library is free software; you can redistribute it and/or
@@ -58,6 +57,7 @@ import javafx.scene.text.Text;
 /**
  *
  * @author smithjel
+ * @author Mario Schroeder
  */
 public final class MapPane extends Pane implements MapControlable {
     private static final double ZOOM_DIFF = .01;

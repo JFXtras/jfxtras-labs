@@ -20,6 +20,10 @@ abstract class ZoomButtonFactory {
         this.controlable = controlable;
     }
     
+    /**
+     * Creates a new instance of a button.
+     * @return {@link Button}
+     */
     Button create(){
         
         Button btn = new Button();
