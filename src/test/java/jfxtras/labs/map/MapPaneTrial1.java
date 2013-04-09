@@ -71,7 +71,6 @@ public class MapPaneTrial1 extends Application {
 
 		final MapPane map = new MapPane(tileSources[3]);
 
-		map.setMonochromeMode(false);
 		map.setMapBounds(0, 0, 800, 600);
 		map.setMapGridVisible(true);
 

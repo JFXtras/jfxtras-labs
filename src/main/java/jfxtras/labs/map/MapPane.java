@@ -130,7 +130,7 @@ public final class MapPane extends Pane implements MapControlable {
 
     private SimpleBooleanProperty cursorLocationVisible;
 
-    private SimpleBooleanProperty setMonochromeMode = new SimpleBooleanProperty(true);
+    private SimpleBooleanProperty monochromeMode = new SimpleBooleanProperty();
 
     private SimpleIntegerProperty mapY;
 
@@ -672,7 +672,7 @@ public final class MapPane extends Pane implements MapControlable {
                             tile.getImageView().translateXProperty().set(posx);
                             tile.getImageView().translateYProperty().set(posy);
 
-                            if (this.setMonochromeMode.get() == true) {
+                            if (this.monochromeMode.get() == true) {
                                 ColorAdjust monochrome = new ColorAdjust();
                                 monochrome.setSaturation(-1);
                                 monochrome.setContrast(-0.3);
@@ -888,12 +888,12 @@ public final class MapPane extends Pane implements MapControlable {
     }
 
     public void setMonochromeMode(boolean val) {
-        this.setMonochromeMode.set(val);
+        this.monochromeMode.set(val);
         renderControl();
     }
 
     public boolean isMonochromeMode() {
-        return this.setMonochromeMode.get();
+        return this.monochromeMode.get();
     }
 
     public void setMapMarkersVisible(boolean val) {
