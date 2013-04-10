@@ -16,26 +16,32 @@ import org.junit.Test;
 public class TileRepositoryTest {
 
 	@Test
-	public void testRemoteSource() {
+	public void testOsmSource() {
 
-		final TileSource[] tileSources = new TileSource[] {
-			new MapnikOsmTileSource(), new CycleMapOsmTileSource(), 
-            new TilePyramidSource(), new BingAerialTileSource()};
-        
-		for (TileSource tileSource : tileSources) {
-			verify(tileSource);
+		TileSourceFactory factory = new OsmTileSourceFactory();
+		for (OsmType type : OsmType.values()) {
+			verify(factory.create(type.name()));
 		}
 	}
-    
+
+	@Test
+	public void testBingSource() {
+
+		TileSourceFactory factory = new BingTileSourceFactory();
+		verify(factory.create(null));
+	}
+
 	@Test
 	public void testLocalSource() {
-		verify(new TilePyramidSource(null));
-		verify(new TilePyramidSource(getClass().getResource("test").getFile()));
+		TileSourceFactory factory = new LocalTileSourceFactory();
+		verify(factory.create(null));
+		verify(factory.create(getClass().getResource("test").getFile()));
 	}
-	
+
 	@Test
-	public void testWithIllegalArgs(){
-		TileRepository classUnderTest = new TileRepository(new TilePyramidSource(null));
+	public void testWithIllegalArgs() {
+		TileSourceFactory factory = new LocalTileSourceFactory();
+		TileRepository classUnderTest = new TileRepository(factory.create(null));
 		Tile tile = classUnderTest.getTile(-1, 0, 0);
 		assertNull(tile);
 		tile = classUnderTest.getTile(0, -1, 0);
@@ -51,5 +57,5 @@ public class TileRepositoryTest {
 		assertNotNull(imageView);
 		assertNotNull(imageView.getImage());
 	}
-	
+
 }

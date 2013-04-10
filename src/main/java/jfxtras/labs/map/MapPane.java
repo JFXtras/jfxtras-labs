@@ -27,7 +27,6 @@ import jfxtras.labs.map.render.MapMarkable;
 import jfxtras.labs.map.render.MapOverlayable;
 import jfxtras.labs.map.render.MapPolygonable;
 import jfxtras.labs.map.tile.TileSource;
-import jfxtras.labs.map.tile.TilePyramidSource;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
@@ -137,10 +136,6 @@ public final class MapPane extends Pane implements MapControlable {
     private SimpleBooleanProperty mapVehiclesVisible = new SimpleBooleanProperty(true);
 
     private SimpleBooleanProperty mapPolygonsVisible = new SimpleBooleanProperty(true);
-
-    public MapPane() {
-        this(new TilePyramidSource());
-    }
 
     public MapPane(TileSource ts) {
         this(ts, 0, 0, 400, 400, 11);
@@ -576,7 +571,7 @@ public final class MapPane extends Pane implements MapControlable {
         if (zoom > tileSource.getMaxZoom()) {
             setZoom(tileSource.getMaxZoom());
         }
-        boolean requireAttr = tileSource.requiresAttribution();
+        boolean requireAttr = tileSource.isAttributionRequired();
         if (requireAttr) {
             attrImage = tileSource.getAttributionImage();
             attrTermsUrl = new Text(tileSource.getTermsOfUseURL());
@@ -734,7 +729,7 @@ public final class MapPane extends Pane implements MapControlable {
 
     private void renderAttribution() {
 
-        if (tileSource.requiresAttribution()) {
+        if (tileSource.isAttributionRequired()) {
 
             // Draw attribution text
             if (attrTermsUrl != null) {

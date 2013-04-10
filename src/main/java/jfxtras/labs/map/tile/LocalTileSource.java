@@ -22,47 +22,24 @@ package jfxtras.labs.map.tile;
 
 /**
  * This is a tile source for file based tiles
+ *
  * @author jsmith
  *
  */
-public class TilePyramidSource extends DefaultTileSource {
+class LocalTileSource extends DefaultTileSource {
 
-    private static final String TILES_ROOT = "GEOTILES";
     private String tilesRootDir;
-    
-    private int minZoom;
-    private int maxZoom;
-    
-    public TilePyramidSource() {
-        this(System.getenv(TILES_ROOT));
+
+    public LocalTileSource(String name, String base_url) {
+        super(name, base_url);
     }
-    
-    public TilePyramidSource(String tilesRootDir){
-    	super("Tile Pyramid", "/");
-    	this.tilesRootDir = tilesRootDir;
-    	
-    	this.minZoom = 0;
-        this.maxZoom = 16;
+
+    void setTilesRootDir(String tilesRootDir) {
+        this.tilesRootDir = tilesRootDir;
     }
 
     @Override
     public String getTileUrl(int zoom, int tilex, int tiley) {
         return tilesRootDir + "/" + getTilePath(zoom, tilex, tiley);
     }
-    
-    @Override
-    public int getMinZoom() {
-        return minZoom;
-    }
-    
-    @Override
-    public int getMaxZoom() {
-        return maxZoom;
-    }
-    
-    @Override
-    public boolean requiresAttribution() {
-        return false;
-    }
-    
 }

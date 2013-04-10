@@ -19,13 +19,13 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-public class BingAerialTileSource extends DefaultTileSource {
+class BingTileSource extends DefaultTileSource {
 
     private static String API_KEY = "Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU";
 
     private static volatile Future<List<Attribution>> attributions;
 
-    public BingAerialTileSource() {
+    public BingTileSource() {
         super("Bing Aerial Maps", "http://ecn.t2.tiles.virtualearth.net/tiles/");
 
         if (attributions == null) {
@@ -142,24 +142,14 @@ public class BingAerialTileSource extends DefaultTileSource {
     }
 
     @Override
-    public int getMaxZoom() {
-        return 22;
-    }
-
-    @Override
-    public String getExtension() {
-        return ("jpeg");
-    }
-
-    @Override
     public String getTilePath(int zoom, int tilex, int tiley) {
 
         String quadtree = computeQuadTree(zoom, tilex, tiley);
-        return "/tiles/a" + quadtree + "." + getExtension() + "?g=587";
+        return "/tiles/a" + quadtree + "." + getTileType() + "?g=587";
     }
 
     @Override
-    public boolean requiresAttribution() {
+    public boolean isAttributionRequired() {
         return true;
     }
 

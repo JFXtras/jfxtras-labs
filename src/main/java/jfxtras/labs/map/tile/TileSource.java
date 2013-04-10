@@ -65,7 +65,7 @@ public interface TileSource {
     /**
      * @return True if the tile source requires attribution in text or image form.
      */
-    public boolean requiresAttribution();
+    public boolean isAttributionRequired();
 
     /**
      * @param zoom The optional zoom level for the view.

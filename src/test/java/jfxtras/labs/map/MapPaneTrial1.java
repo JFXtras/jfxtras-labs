@@ -32,16 +32,15 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import jfxtras.labs.map.tile.OsmTileSourceFactory;
+import jfxtras.labs.map.tile.OsmType;
 import jfxtras.labs.map.tile.TileSource;
-import jfxtras.labs.map.tile.BingAerialTileSource;
 import jfxtras.labs.map.tile.OsmTileSource;
-import jfxtras.labs.map.tile.TilePyramidSource;
+import jfxtras.labs.map.tile.TileSourceFactory;
 import jfxtras.labs.map.render.MapLineable;
 import jfxtras.labs.map.render.DefaultMapLine;
 import jfxtras.labs.map.render.ImageMapMarker;
 import jfxtras.labs.map.render.MapMarkable;
-import jfxtras.labs.map.tile.CycleMapOsmTileSource;
-import jfxtras.labs.map.tile.MapnikOsmTileSource;
 
 /**
  * 
@@ -53,9 +52,6 @@ public class MapPaneTrial1 extends Application {
 	// System.setProperty("java.net.useSystemProxies", "true");
 	// }
 
-	final TileSource[] tileSources = new TileSource[] {
-			new MapnikOsmTileSource(), new CycleMapOsmTileSource(), 
-            new TilePyramidSource(), new BingAerialTileSource() };
 
 	/**
 	 * @param args
@@ -70,7 +66,8 @@ public class MapPaneTrial1 extends Application {
 		primaryStage.setTitle("Map Demo");
 		StackPane root = new StackPane();
 
-		final MapPane map = new MapPane(tileSources[0]);
+		TileSourceFactory factory = new OsmTileSourceFactory();
+		final MapPane map = new MapPane(factory.create(OsmType.Landscape.name()));
 
 		map.setMapBounds(0, 0, 800, 600);
 		map.setMapGridVisible(true);

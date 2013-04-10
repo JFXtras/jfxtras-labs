@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package jfxtras.labs.map.tile;
 
@@ -9,13 +9,26 @@ import javafx.scene.image.Image;
 
 /**
  * Abstract parent for tile sources.
+ *
  * @author Mario Schröder
  */
 public class DefaultTileSource implements TileSource {
 
+    public static final String PNG_EXT = "png";
+
     protected String name;
+
     protected String baseUrl;
+
     protected String attrImgUrl;
+
+    private int minZoom;
+
+    private int maxZoom = 18;
+
+    private String extension = PNG_EXT;
+
+    private boolean attributionRequired = true;
 
     public DefaultTileSource(String name, String base_url) {
         this(name, base_url, null);
@@ -34,23 +47,19 @@ public class DefaultTileSource implements TileSource {
 
     @Override
     public int getMaxZoom() {
-        return 18;
+        return maxZoom;
     }
 
     @Override
     public int getMinZoom() {
-        return 0;
-    }
-
-    public String getExtension() {
-        return "png";
+        return minZoom;
     }
 
     /**
      * @throws IOException when subclass cannot return the tile URL
      */
     public String getTilePath(int zoom, int tilex, int tiley) {
-        return "/" + zoom + "/" + tilex + "/" + tiley + "." + getExtension();
+        return "/" + zoom + "/" + tilex + "/" + tiley + "." + getTileType();
     }
 
     public String getBaseUrl() {
@@ -69,7 +78,7 @@ public class DefaultTileSource implements TileSource {
 
     @Override
     public String getTileType() {
-        return "png";
+        return extension;
     }
 
     @Override
@@ -81,15 +90,14 @@ public class DefaultTileSource implements TileSource {
     public Image getAttributionImage() {
         if (attrImgUrl != null) {
             return new Image(attrImgUrl, true);
-        }
-        else {
+        } else {
             return null;
         }
     }
 
     @Override
-    public boolean requiresAttribution() {
-        return true;
+    public boolean isAttributionRequired() {
+        return attributionRequired;
     }
 
     @Override
@@ -129,5 +137,21 @@ public class DefaultTileSource implements TileSource {
     public double tileXToLon(int x, int zoom) {
 //        return OsmMercator.XToLon( x,zoom);
         return x * 45.0 / Math.pow(2.0, zoom - 3) - 180.0;
+    }
+
+    protected final void setMinZoom(int minZoom) {
+        this.minZoom = minZoom;
+    }
+
+    protected final void setMaxZoom(int maxZoom) {
+        this.maxZoom = maxZoom;
+    }
+
+    public void setTileType(String extension) {
+        this.extension = extension;
+    }
+
+    public void setAttributionRequired(boolean required) {
+        this.attributionRequired = required;
     }
 }
