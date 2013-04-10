@@ -603,12 +603,7 @@ public final class MapPane extends Pane implements MapControlable {
         clipMask.setTranslateX(-mapX.get());
         clipMask.setTranslateY(-mapY.get());
 
-
-        if (this.showZoomControls.get() == true) {
-            setZoomContolsVisible(true);
-        } else {
-            setZoomContolsVisible(false);
-        }
+        setZoomContolsVisible(showZoomControls.get());
 
         if (start_top) {
             if (start_left) {
@@ -675,7 +670,7 @@ public final class MapPane extends Pane implements MapControlable {
                             if (tileGridVisible.get()) {
                                 tilesGroup.getChildren().add(createGrid(posx, posy, tilesize));
                             }
-                            
+
                             tilesGroup.getChildren().add(tile.getImageView());
                         }
                     }
