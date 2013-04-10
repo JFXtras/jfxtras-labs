@@ -1,8 +1,8 @@
 package jfxtras.labs.map.tile;
 
 /**
- *
- * @author msc
+ * Factory for a tile source which is based on files.
+ * @author Mario Schöder
  */
 public class LocalTileSourceFactory extends TileSourceFactory {
     
