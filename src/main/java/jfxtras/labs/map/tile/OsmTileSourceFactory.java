@@ -1,7 +1,7 @@
 package jfxtras.labs.map.tile;
 
 /**
- *
+ * Factory for OSM based tile sources.
  * @author Mario Schröder
  */
 public class OsmTileSourceFactory extends TileSourceFactory {
@@ -9,9 +9,9 @@ public class OsmTileSourceFactory extends TileSourceFactory {
     private static final int ZOOM = 17;
 
     @Override
-    public OsmTileSource create(String type) {
+    public DefaultTileSource create(String type) {
 
-        OsmTileSource osm = new OsmTileSource("Mapnik", "http://tile.openstreetmap.org");
+        DefaultTileSource osm = new DefaultTileSource("Mapnik", "http://tile.openstreetmap.org");
         if (type != null) {
             String typeName = type.toLowerCase();
             switch (typeName) {
@@ -28,14 +28,18 @@ public class OsmTileSourceFactory extends TileSourceFactory {
                 //keep Mapnik
             }
         }
+        
+        osm.setAttributionLinkURL("http://openstreetmap.org/");
+        osm.setTermsOfUserURL("http://www.openstreetmap.org/copyright");
+        osm.setAttributionText("© OpenStreetMap contributors, CC-BY-SA ");
 
         return osm;
     }
 
-    private OsmTileSource createExtended(String name, String baseUrl) {
+    private DefaultTileSource createExtended(String name, String baseUrl) {
 
-        OsmTileSource osm = new OsmTileSource(name, baseUrl);
-        osm.setUrlBuilder(new OsmTileUrlBuilder());
+        DefaultTileSource osm = new DefaultTileSource(name, baseUrl);
+        osm.setUrlBuilder(new AlternateOsmTileUrlBuilder());
         osm.setMaxZoom(ZOOM);
 
         return osm;

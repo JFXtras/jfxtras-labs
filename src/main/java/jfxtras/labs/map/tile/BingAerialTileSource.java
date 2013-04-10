@@ -19,13 +19,13 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-class BingTileSource extends DefaultTileSource {
+class BingAerialTileSource extends DefaultTileSource {
 
     private static String API_KEY = "Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU";
 
     private static volatile Future<List<Attribution>> attributions;
 
-    public BingTileSource() {
+    public BingAerialTileSource() {
         super("Bing Aerial Maps", "http://ecn.t2.tiles.virtualearth.net/tiles/");
 
         if (attributions == null) {
@@ -149,26 +149,8 @@ class BingTileSource extends DefaultTileSource {
     }
 
     @Override
-    public boolean isAttributionRequired() {
-        return true;
-    }
-
-    @Override
     public Image getAttributionImage() {
         return new Image(getClass().getResourceAsStream("bing_maps.png"));
-    }
-
-    @Override
-    public String getAttributionLinkURL() {
-        //return "http://bing.com/maps"
-        // FIXME: I've set attributionLinkURL temporarily to ToU URL to comply with bing ToU
-        // (the requirement is that we have such a link at the bottom of the window)
-        return "http://go.microsoft.com/?linkid=9710837";
-    }
-
-    @Override
-    public String getTermsOfUseURL() {
-        return "http://opengeodata.org/microsoft-imagery-details";
     }
 
     @Override

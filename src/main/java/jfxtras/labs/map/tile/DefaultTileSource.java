@@ -30,6 +30,14 @@ public class DefaultTileSource implements TileSource {
 
     private boolean attributionRequired = true;
 
+    private TileUrlBuildable urlBuilder;
+
+    private String termsOfUserURL;
+
+    private String attributionLinkURL;
+
+    private String attributionText;
+
     public DefaultTileSource(String name, String base_url) {
         this(name, base_url, null);
     }
@@ -62,8 +70,21 @@ public class DefaultTileSource implements TileSource {
         return "/" + zoom + "/" + tilex + "/" + tiley + "." + getTileType();
     }
 
+    public void setUrlBuilder(TileUrlBuildable urlBuilder) {
+        this.urlBuilder = urlBuilder;
+    }
+
     public String getBaseUrl() {
-        return this.baseUrl;
+
+        String url;
+
+        if (urlBuilder != null) {
+            url = urlBuilder.build(baseUrl);
+        } else {
+            url = baseUrl;
+        }
+
+        return url;
     }
 
     @Override
@@ -102,17 +123,29 @@ public class DefaultTileSource implements TileSource {
 
     @Override
     public String getAttributionText(int zoom, Coordinate topLeft, Coordinate botRight) {
-        return "";
+        return attributionText;
+    }
+
+    public void setAttributionText(String attributionText) {
+        this.attributionText = attributionText;
     }
 
     @Override
     public String getAttributionLinkURL() {
-        return "";
+        return attributionLinkURL;
+    }
+
+    public void setAttributionLinkURL(String attributionLinkURL) {
+        this.attributionLinkURL = attributionLinkURL;
     }
 
     @Override
     public String getTermsOfUseURL() {
-        return "";
+        return termsOfUserURL;
+    }
+
+    public void setTermsOfUserURL(String termsOfUserURL) {
+        this.termsOfUserURL = termsOfUserURL;
     }
 
     @Override
