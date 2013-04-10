@@ -59,6 +59,7 @@ import javafx.scene.text.Text;
  * @author Mario Schroeder
  */
 public final class MapPane extends Pane implements MapControlable {
+
     private static final double ZOOM_DIFF = .01;
 
     private TileSource tileSource;
@@ -599,8 +600,8 @@ public final class MapPane extends Pane implements MapControlable {
         boolean start_top = diff_top < diff_bottom;
 
         tilesGroup.getChildren().clear();
-        clipMask.setTranslateX(-(this.mapX.get()));
-        clipMask.setTranslateY(-(this.mapY.get()));
+        clipMask.setTranslateX(-mapX.get());
+        clipMask.setTranslateY(-mapY.get());
 
 
         if (this.showZoomControls.get() == true) {
@@ -667,28 +668,15 @@ public final class MapPane extends Pane implements MapControlable {
                             tile.getImageView().translateXProperty().set(posx);
                             tile.getImageView().translateYProperty().set(posy);
 
-                            if (this.monochromeMode.get() == true) {
-                                ColorAdjust monochrome = new ColorAdjust();
-                                monochrome.setSaturation(-1);
-                                monochrome.setContrast(-0.3);
-                                monochrome.setBrightness(-0.3);
-                                tile.getImageView().setEffect(monochrome);
+                            if (monochromeMode.get()) {
+                                setMonochromeEffect(tile);
                             }
 
+                            if (tileGridVisible.get()) {
+                                tilesGroup.getChildren().add(createGrid(posx, posy, tilesize));
+                            }
+                            
                             tilesGroup.getChildren().add(tile.getImageView());
-
-                            if (tileGridVisible.get() == true) {
-                                Path path = new Path();
-                                path.getElements().add(new MoveTo(posx, posy));
-                                path.getElements().add(new LineTo(posx + tilesize, posy));
-                                path.getElements().add(new LineTo(posx + tilesize, posy + tilesize));
-                                path.getElements().add(new LineTo(posx, posy + tilesize));
-                                path.getElements().add(new LineTo(posx, posy));
-                                path.setStrokeWidth(1);
-                                path.setStroke(Color.BLACK);
-
-                                tilesGroup.getChildren().add(path);
-                            }
                         }
                     }
                     Point p = move[iMove];
@@ -700,6 +688,29 @@ public final class MapPane extends Pane implements MapControlable {
                 iMove = (iMove + 1) % move.length;
             }
         }
+    }
+
+    private void setMonochromeEffect(Tile tile) {
+
+        ColorAdjust monochrome = new ColorAdjust();
+        monochrome.setSaturation(-1);
+        monochrome.setContrast(-0.3);
+        monochrome.setBrightness(-0.3);
+        tile.getImageView().setEffect(monochrome);
+    }
+
+    protected Path createGrid(int posx, int posy, int tilesize) {
+
+        Path path = new Path();
+        path.getElements().add(new MoveTo(posx, posy));
+        path.getElements().add(new LineTo(posx + tilesize, posy));
+        path.getElements().add(new LineTo(posx + tilesize, posy + tilesize));
+        path.getElements().add(new LineTo(posx, posy + tilesize));
+        path.getElements().add(new LineTo(posx, posy));
+        path.setStrokeWidth(1);
+        path.setStroke(Color.BLACK);
+
+        return path;
     }
 
     private void renderOverlays() {
