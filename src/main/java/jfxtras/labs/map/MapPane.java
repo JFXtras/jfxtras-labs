@@ -191,34 +191,53 @@ public final class MapPane extends Pane implements MapControlable {
         getChildren().add(tilesGroup);
         getChildren().add(zoomControlsVbox);
         getChildren().add(cursorLocationText);
+        
+        addResizeListeners();
+    }
+    
+    private void addResizeListeners(){
+    	widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue,
+            		Number newValue) {
+                setMapWidth(newValue.doubleValue());
+            }
+        });
+        heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue,
+            		Number newValue) {
+                setMapHeight(newValue.doubleValue());
+            }
+        });
     }
 
     private void buildMapBounds(int x, int y, int width, int height) {
         mapX = new SimpleIntegerProperty(x);
-        mapX.addListener(new ChangeListener() {
+        mapX.addListener(new ChangeListener<Number>() {
             @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                int val = (int) newValue;
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                int val = newValue.intValue();
                 setLayoutX(val);
                 clipMask.setLayoutX(val);
             }
         });
 
         mapY = new SimpleIntegerProperty(y);
-        mapY.addListener(new ChangeListener() {
+        mapY.addListener(new ChangeListener<Number>() {
             @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                int val = (int) newValue;
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                int val = newValue.intValue();
                 setLayoutY(val);
                 clipMask.setLayoutY(val);
             }
         });
 
         mapWidth = new SimpleIntegerProperty(width);
-        mapWidth.addListener(new ChangeListener() {
+        mapWidth.addListener(new ChangeListener<Number>() {
             @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                int val = (int) newValue;
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                int val = newValue.intValue();
                 setMinWidth(val);
                 setMaxWidth(val);
                 setPrefWidth(val);
@@ -229,10 +248,10 @@ public final class MapPane extends Pane implements MapControlable {
         });
 
         mapHeight = new SimpleIntegerProperty(height);
-        mapHeight.addListener(new ChangeListener() {
+        mapHeight.addListener(new ChangeListener<Number>() {
             @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                int val = (int) newValue;
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                int val = newValue.intValue();
                 setMinHeight(val);
                 setMaxHeight(val);
                 setPrefHeight(val);
@@ -270,8 +289,8 @@ public final class MapPane extends Pane implements MapControlable {
         zoomControlsVbox.getChildren().add(zoomInButton);
         zoomControlsVbox.getChildren().add(zoomSlider);
         zoomControlsVbox.getChildren().add(zoomOutButton);
-        zoomControlsVbox.setLayoutX(10);
-        zoomControlsVbox.setLayoutY(10);
+        zoomControlsVbox.setLayoutX(-mapX.get() + 10);
+        zoomControlsVbox.setLayoutY(-mapY.get() + 20);
 
         ignoreRepaint = false;
     }
@@ -831,7 +850,7 @@ public final class MapPane extends Pane implements MapControlable {
         return this.mapY.get();
     }
 
-    public void setMapWidth(double val) {
+    private void setMapWidth(double val) {
         mapWidth.set((int) val);
     }
 
@@ -839,7 +858,7 @@ public final class MapPane extends Pane implements MapControlable {
         return mapWidth.get();
     }
 
-    public void setMapHeight(double val) {
+    private void setMapHeight(double val) {
         mapHeight.set((int) val);
     }
 

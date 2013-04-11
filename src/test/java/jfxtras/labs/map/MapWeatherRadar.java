@@ -65,15 +65,15 @@ public class MapWeatherRadar implements MapOverlayable {
 //    Line 4: NEGATIVE of y-dimension of a pixel in map units
 //    Line 5: x-coordinate of center of upper left pixel
 //    Line 6: y-coordinate of center of upper left pixel
-    public MapWeatherRadar(String url, int img_width, int img_height, int refresh_interval, Coordinate UpperLeftCoord,
-        Coordinate LowerRightCoord) {
+    public MapWeatherRadar(String url, int img_width, int img_height, int refresh_interval, Coordinate upperLeftCoord,
+        Coordinate lowerRightCoord) {
         super();
         radarImgUrl = url;
         radarImgWidth = img_width;
         radarImgHeight = img_height;
         refreshInterval = refresh_interval;
-        upperLeftCoord = UpperLeftCoord;
-        lowerRightCoord = LowerRightCoord;
+        this.upperLeftCoord = upperLeftCoord;
+        this.lowerRightCoord = lowerRightCoord;
 
         scaleView = new ImageView(new Image("jfxtras/labs/map/weather_radar_scale.png"));
 
@@ -138,7 +138,7 @@ public class MapWeatherRadar implements MapOverlayable {
         viewer.getTilesGroup().getChildren().add(radarView);
 
         double scaleX = 8; //viewer.widthProperty().get() - 40;
-        double scaleY = 220; //viewer.heightProperty().get() - 350;
+        double scaleY = 250; //viewer.heightProperty().get() - 350;
 
         scaleView.setX(scaleX);
         scaleView.setY(scaleY);
