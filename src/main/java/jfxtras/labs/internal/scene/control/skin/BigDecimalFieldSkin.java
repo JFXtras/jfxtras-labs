@@ -30,7 +30,6 @@ package jfxtras.labs.internal.scene.control.skin;
 import java.math.BigDecimal;
 import java.text.ParseException;
 
-import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -41,6 +40,8 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
+import javafx.scene.control.Control;
+import javafx.scene.control.SkinBase;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -48,23 +49,20 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import jfxtras.labs.internal.scene.control.behavior.BatteryBehavior;
-import jfxtras.labs.internal.scene.control.behavior.BigDecimalFieldBehaviour;
 import jfxtras.labs.scene.control.BigDecimalField;
 
-import javafx.scene.control.SkinBase;
 
 /**
  * Skin implementation for {@link BigDecimalField}.
  *
  * @author Thomas Bolz
  */
-public class BigDecimalFieldSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<BigDecimalField, BigDecimalFieldBehaviour> {
+public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
 
     private BigDecimalField CONTROL;
 
 	public BigDecimalFieldSkin(BigDecimalField control) {
-        super(control, new BigDecimalFieldBehaviour(control));
+        super(control);
         this.CONTROL = control;
         createNodes();
         initFocusSimulation();
@@ -132,7 +130,23 @@ public class BigDecimalFieldSkin extends com.sun.javafx.scene.control.skin.Behav
         
     }
 
-// removing the compilation problem    
+    @Override
+    protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
+        super.layoutChildren(contentX, contentY, contentWidth, contentHeight); //To change body of generated methods, choose Tools | Templates.
+        Insets insets = getSkinnable().getInsets();
+        double x = insets.getLeft();
+        double y = insets.getTop();
+//        double textfieldHeight = this.getSkinnable().getHeight() -insets.getTop() - insets.getBottom();
+        double textfieldHeight = contentHeight;
+        double buttonWidth = textField.prefHeight(-1);
+        Insets buttonInsets = btnDown.getInsets();
+        double textfieldWidth = this.getSkinnable().getWidth()-insets.getLeft()-insets.getRight() - buttonWidth - buttonInsets.getLeft() - buttonInsets.getRight();
+        layoutInArea(textField, x, y, textfieldWidth, textfieldHeight, Control.USE_PREF_SIZE, HPos.LEFT, VPos.TOP);
+        layoutInArea(btnUp, x+textfieldWidth+buttonInsets.getLeft(), y, buttonWidth, textfieldHeight/2, Control.USE_PREF_SIZE, HPos.LEFT, VPos.TOP);
+        layoutInArea(btnDown, x+textfieldWidth+buttonInsets.getLeft(), y+textfieldHeight/2, buttonWidth, textfieldHeight/2, Control.USE_PREF_SIZE, HPos.LEFT, VPos.TOP);
+  }
+
+    
 //    @Override
 //    protected void layoutChildren() {
 //        super.layoutChildren();
@@ -153,9 +167,21 @@ public class BigDecimalFieldSkin extends com.sun.javafx.scene.control.skin.Behav
         double prefWidth = getSkinnable().getInsets().getLeft()
                 + textField.prefWidth(PREF_WIDTH)
                 + textField.prefHeight(PREF_WIDTH)
+                + btnUp.getInsets().getLeft() + btnUp.getInsets().getRight()
                 + getSkinnable().getInsets().getRight();
         return prefWidth;
     }
+
+    @Override
+    protected double computePrefHeight(double PREF_HEIGHT) {
+        super.computePrefHeight(PREF_HEIGHT);
+        double prefHeight = getSkinnable().getInsets().getTop() 
+                + textField.prefHeight(PREF_HEIGHT)
+                +getSkinnable().getInsets().getBottom();
+        return prefHeight;
+    }
+    
+    
 
     
     
