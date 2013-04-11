@@ -16,6 +16,8 @@ public class DefaultTileSource implements TileSource {
 
     public static final String PNG_EXT = "png";
 
+    public static final int DEFAULT_TILE_SIZE = 256;
+
     protected String name;
 
     protected String baseUrl;
@@ -104,7 +106,7 @@ public class DefaultTileSource implements TileSource {
 
     @Override
     public int getTileSize() {
-        return 256;
+        return DEFAULT_TILE_SIZE;
     }
 
     @Override

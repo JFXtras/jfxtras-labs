@@ -26,84 +26,90 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A repository for the map tiles.
- * 
+ *
  * @author jsmith.carlsbad@gmail.com
  * @author Mario Schröder
- * 
+ *
  */
 public class TileRepository {
 
-	private TileSource tileSource;
+    private TileSource tileSource;
 
-	private Map<String, TileInfo> cache;
-	
-	private long expire;
-	
-	/**
-	 * Default expire time for the cache: one hour.
-	 */
-	public static final long DEFAULT_EXPIRE = 60 * 60 * 1000;
-	
-	public TileRepository(TileSource source) {
-		tileSource = source;
-		cache = new ConcurrentHashMap<>();
-		expire = DEFAULT_EXPIRE;
-	}
+    private Map<String, TileInfo> cache;
 
-	public Tile getTile(int tilex, int tiley, int zoom) {
-		Tile tile = null;
+    private long expire;
 
-		if (isValid(tilex, tiley, zoom)) {
+    /**
+     * Default expire time for the cache: one hour.
+     */
+    public static final long DEFAULT_EXPIRE = 60 * 60 * 1000;
 
-			cleanupCache();
-			
+    public TileRepository(TileSource source) {
+        tileSource = source;
+        cache = new ConcurrentHashMap<>();
+        expire = DEFAULT_EXPIRE;
+    }
+
+    public Tile getTile(int tilex, int tiley, int zoom) {
+        Tile tile = null;
+
+        if (isValid(tilex, tiley, zoom)) {
+
+            cleanupCache();
+
             String location = tileSource.getTileUrl(zoom, tilex, tiley);
-			TileInfo info = cache.get(location);
+            TileInfo info = cache.get(location);
 
-			if (info != null) {
-				tile = new Tile(location, info.getImage());
-			} else {
-				tile = new Tile(location);
-				tile.loadImage(cache);
-			}
-		}
+            if (info != null) {
+                tile = new Tile(location, info.getImage());
+            } else {
+                tile = new Tile(location);
+                tile.loadImage(cache);
+            }
+        }
 
-		return tile;
-	}
+        return tile;
+    }
 
-	/**
-	 * Checks the expiration of images in the cache, and removes them eventually.
-	 * @param location
-	 */
-	private void cleanupCache() {
-		
-		for(Entry<String, TileInfo> entry : cache.entrySet()){
-			TileInfo info = entry.getValue();
-			long current = System.currentTimeMillis();
-			if(current - info.getTimeStamp() > expire){
-				cache.remove(entry.getKey());
-			}
-		}
-	}
+    /**
+     * Checks the expiration of images in the cache, and removes them eventually.
+     *
+     * @param location
+     */
+    private void cleanupCache() {
 
-	private boolean isValid(int tilex, int tiley, int zoom) {
-		int max = (1 << zoom);
-		return !(tilex < 0 || tilex >= max || tiley < 0 || tiley >= max);
-	}
+        for (Entry<String, TileInfo> entry : cache.entrySet()) {
+            TileInfo info = entry.getValue();
+            long current = System.currentTimeMillis();
+            if (current - info.getTimeStamp() > expire) {
+                cache.remove(entry.getKey());
+            }
+        }
+    }
 
-	public TileSource getTileSource() {
-		return tileSource;
-	}
+    private boolean isValid(int tilex, int tiley, int zoom) {
+        boolean valid = false;
+        if (tileSource != null) {
+            int max = (1 << zoom);
+            valid = !(tilex < 0 || tilex >= max || tiley < 0 || tiley >= max);
+        }
+        return valid;
+    }
 
-	public void setTileSource(TileSource tileSource) {
-		this.tileSource = tileSource;
-	}
-	
+    public TileSource getTileSource() {
+        return tileSource;
+    }
+
+    public void setTileSource(TileSource tileSource) {
+        this.tileSource = tileSource;
+    }
+
     /**
      * Set the time difference when a image in the cache expires.
+     *
      * @param expire difference as long
      */
-	public void setExpire(long expire) {
-		this.expire = expire;
-	}
+    public void setExpire(long expire) {
+        this.expire = expire;
+    }
 }

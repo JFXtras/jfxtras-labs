@@ -2,7 +2,7 @@ package jfxtras.labs.map.tile;
 
 /**
  * Parent class for all {@link TileSource} factories.
- * @author msc
+ * @author Mario Schröder
  */
 public abstract class TileSourceFactory {
     

@@ -62,11 +62,17 @@ public final class MapPane extends Pane implements MapControlable {
 
     private static final double ZOOM_DIFF = .01;
 
+    private static final int INITIAL_ZOOM = 11;
+
+    private static final int SIZE = 400;
+
+    private static final int START = 0;
+
     private TileSource tileSource;
 
     private TileRepository tileRepository;
 
-    private static final Point[] move = {new Point(1, 0), new Point(0, 1), new Point(-1, 0), new Point(0, -1)};
+    private static final Point[] movePoints = {new Point(1, 0), new Point(0, 1), new Point(-1, 0), new Point(0, -1)};
 
     private List<MapMarkable> mapMarkerList;
 
@@ -139,13 +145,12 @@ public final class MapPane extends Pane implements MapControlable {
     private SimpleBooleanProperty mapPolygonsVisible = new SimpleBooleanProperty(true);
 
     public MapPane(TileSource ts) {
-        this(ts, 0, 0, 400, 400, 11);
+        this(ts, START, START, SIZE, SIZE, INITIAL_ZOOM);
     }
 
-    public MapPane(TileSource ts, int x, int y, int width, int height, int initial_zoom) {
-
-        cursorLocationText = new Text("");
-
+    public MapPane(TileSource ts, int x, int y, int width, int height, int zoom) {
+        this.tileSource = ts;
+        this.zoom = zoom;
 
         TilesMouseHandler handler = new TilesMouseHandler(this);
         tilesGroup = new Group();
@@ -157,7 +162,6 @@ public final class MapPane extends Pane implements MapControlable {
         tileGridVisible = new SimpleBooleanProperty(false);
         cursorLocationVisible = new SimpleBooleanProperty(true);
 
-        this.tileSource = ts;
         tileRepository = new TileRepository(tileSource);
 
         mapMarkerList = new ArrayList<>();
@@ -166,18 +170,18 @@ public final class MapPane extends Pane implements MapControlable {
         mapOverlayList = new ArrayList<>();
 
         buildZoomControls();
-
-        zoom = initial_zoom;
-
-        setMinSize(tileSource.getTileSize(), tileSource.getTileSize());
+        
+        int tileSize = tileSource.getTileSize();
+        setMinSize(tileSize, tileSize);
         setPrefSize(width, height);
         setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 
-        setDisplayPositionByLatLon(0, 0, 3);
+        setDisplayPositionByLatLon(START, START, 3);
 
         DropShadow ds = new DropShadow();
         ds.setOffsetY(3.0f);
         ds.setColor(Color.BLACK);
+        cursorLocationText = new Text("");
         cursorLocationText.setEffect(ds);
         cursorLocationText.setFontSmoothingType(FontSmoothingType.LCD);
 
@@ -335,8 +339,8 @@ public final class MapPane extends Pane implements MapControlable {
                 x_min = Math.min(x_min, x);
                 y_min = Math.min(y_min, y);
             }
-            int height = (int) Math.max(0, getMapHeight());
-            int width = (int) Math.max(0, getMapWidth());
+            int height = (int) Math.max(START, getMapHeight());
+            int width = (int) Math.max(START, getMapWidth());
             int newZoom = mapZoomMax;
             int x = x_max - x_min;
             int y = y_max - y_min;
@@ -363,8 +367,8 @@ public final class MapPane extends Pane implements MapControlable {
             int y_max = Integer.MIN_VALUE;
             int mapZoomMax = getTileSource().getMaxZoom();
 
-            int height = (int) Math.max(0, getMapHeight());
-            int width = (int) Math.max(0, getMapWidth());
+            int height = (int) Math.max(START, getMapHeight());
+            int width = (int) Math.max(START, getMapWidth());
             int newZoom = mapZoomMax;
             int x = x_max - x_min;
             int y = y_max - y_min;
@@ -415,7 +419,7 @@ public final class MapPane extends Pane implements MapControlable {
         x -= center.x - getMapWidth() / 2;
         y -= center.y - getMapHeight() / 2;
         if (checkOutside) {
-            if (x < 0 || y < 0 || x > getMapWidth() || y > getMapHeight()) {
+            if (x < START || y < START || x > getMapWidth() || y > getMapHeight()) {
                 return null;
             }
         }
@@ -615,7 +619,7 @@ public final class MapPane extends Pane implements MapControlable {
             if (start_left) {
                 iMove = 1;
             } else {
-                iMove = 0;
+                iMove = START;
             }
         }
 
@@ -646,14 +650,14 @@ public final class MapPane extends Pane implements MapControlable {
 
         // paint the tiles in a spiral, starting from center of the map
         boolean painted = true;
-        int x = 0;
+        int x = START;
         while (painted) {
             painted = false;
-            for (int i = 0; i < 4; i++) {
-                if (i % 2 == 0) {
+            for (int i = START; i < 4; i++) {
+                if (i % 2 == START) {
                     x++;
                 }
-                for (int j = 0; j < x; j++) {
+                for (int j = START; j < x; j++) {
                     if (x_min <= posx && posx <= x_max && y_min <= posy && posy <= y_max) {
                         // tile is visible
                         Tile tile = tileRepository.getTile(tilex, tiley, zoom);
@@ -674,13 +678,13 @@ public final class MapPane extends Pane implements MapControlable {
                             tilesGroup.getChildren().add(tile.getImageView());
                         }
                     }
-                    Point p = move[iMove];
+                    Point p = movePoints[iMove];
                     posx += p.x * tilesize;
                     posy += p.y * tilesize;
                     tilex += p.x;
                     tiley += p.y;
                 }
-                iMove = (iMove + 1) % move.length;
+                iMove = (iMove + 1) % movePoints.length;
             }
         }
     }

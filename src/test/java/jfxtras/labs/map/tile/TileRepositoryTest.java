@@ -14,6 +14,14 @@ import org.junit.Test;
  * 
  */
 public class TileRepositoryTest {
+    
+    @Test
+    public void testWithNull(){
+        
+        TileRepository classUnderTest = new TileRepository(null);
+		Tile tile = classUnderTest.getTile(1, 1, 1);
+		assertNull(tile);
+    }
 
 	@Test
 	public void testOsmSource() {
@@ -33,6 +41,7 @@ public class TileRepositoryTest {
 
 	@Test
 	public void testLocalSource() {
+        
 		TileSourceFactory factory = new LocalTileSourceFactory();
 		verify(factory.create(null));
 		verify(factory.create(getClass().getResource("test").getFile()));
@@ -40,6 +49,7 @@ public class TileRepositoryTest {
 
 	@Test
 	public void testWithIllegalArgs() {
+        
 		TileSourceFactory factory = new LocalTileSourceFactory();
 		TileRepository classUnderTest = new TileRepository(factory.create());
 		Tile tile = classUnderTest.getTile(-1, 0, 0);
@@ -49,6 +59,7 @@ public class TileRepositoryTest {
 	}
 
 	private void verify(TileSource tileSource) {
+        
 		TileRepository classUnderTest = new TileRepository(tileSource);
 		Tile tile = classUnderTest.getTile(1, 1, 1);
 		assertNotNull(tile);
