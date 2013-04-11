@@ -599,7 +599,13 @@ public final class MapPane extends Pane implements MapControlable {
         if (zoom > tileSource.getMaxZoom()) {
             setZoom(tileSource.getMaxZoom());
         }
-        boolean requireAttr = tileSource.isAttributionRequired();
+        
+        renderControl();
+    }
+
+    protected void renderControl() {
+    	
+    	boolean requireAttr = tileSource.isAttributionRequired();
         if (requireAttr) {
             attrImage = tileSource.getAttributionImage();
             attrTermsUrl = new Text(tileSource.getTermsOfUseURL());
@@ -607,10 +613,6 @@ public final class MapPane extends Pane implements MapControlable {
             attrImage = null;
             attrTermsUrl = null;
         }
-        renderControl();
-    }
-
-    protected void renderControl() {
 
         int iMove;
         int tilesize = tileSource.getTileSize();
