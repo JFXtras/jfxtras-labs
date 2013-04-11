@@ -70,11 +70,11 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
     }
 
 	private NumberTextField	textField;
-	private StackPane		btnUp;
-	private StackPane		btnDown;
-	private Path			arrowUp;
-	private Path			arrowDown;
-	private final double	ARROW_SIZE		= 4;
+	private StackPane	btnUp;
+	private StackPane	btnDown;
+	private Path		arrowUp;
+	private Path		arrowDown;
+	private final double	ARROW_SIZE	= 4;
 	private final double	ARROW_HEIGHT	= 0.7;
 
     public BigDecimalField getControl() {return CONTROL;}
@@ -136,7 +136,6 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
         Insets insets = getSkinnable().getInsets();
         double x = insets.getLeft();
         double y = insets.getTop();
-//        double textfieldHeight = this.getSkinnable().getHeight() -insets.getTop() - insets.getBottom();
         double textfieldHeight = contentHeight;
         double buttonWidth = textField.prefHeight(-1);
         Insets buttonInsets = btnDown.getInsets();
@@ -147,27 +146,12 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
   }
 
     
-//    @Override
-//    protected void layoutChildren() {
-//        super.layoutChildren();
-//        Insets insets = getInsets();
-//        double x = insets.getLeft();
-//        double y = insets.getTop();
-//        double textfieldHeight = this.getHeight()-insets.getTop() - insets.getBottom();
-//        double buttonWidth = textField.prefHeight(-1);
-//        double textfieldWidth = this.getWidth()-insets.getLeft()-insets.getRight() - buttonWidth;
-//        layoutInArea(textField, x, y, textfieldWidth, textfieldHeight, USE_PREF_SIZE, HPos.LEFT, VPos.TOP);
-//        layoutInArea(btnUp, x+textfieldWidth, y, buttonWidth, textfieldHeight/2, USE_PREF_SIZE, HPos.LEFT, VPos.TOP);
-//        layoutInArea(btnDown, x+textfieldWidth, y+textfieldHeight/2, buttonWidth, textfieldHeight/2, USE_PREF_SIZE, HPos.LEFT, VPos.TOP);
-//    }
-
     @Override
     protected double computePrefWidth(double PREF_WIDTH) {
         super.computePrefWidth(PREF_WIDTH);
         double prefWidth = getSkinnable().getInsets().getLeft()
                 + textField.prefWidth(PREF_WIDTH)
                 + textField.prefHeight(PREF_WIDTH)
-                + btnUp.getInsets().getLeft() + btnUp.getInsets().getRight()
                 + getSkinnable().getInsets().getRight();
         return prefWidth;
     }
