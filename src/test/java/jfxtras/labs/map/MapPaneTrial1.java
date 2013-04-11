@@ -68,7 +68,6 @@ public class MapPaneTrial1 extends Application {
 		final MapPane map = new MapPane(factory.create(OsmType.Landscape.name()));
 
 		map.setMapBounds(0, 0, 800, 600);
-		map.setMapGridVisible(true);
 
 		String BASE_URL = "http://radar.weather.gov/ridge";
 		final String radarImgUrl = BASE_URL + "/RadarImg/N0R/NKX_N0R_0.gif";
