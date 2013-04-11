@@ -22,6 +22,7 @@ package jfxtras.labs.map.tile;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -77,8 +78,9 @@ public class TileRepository {
      * @param location
      */
     private void cleanupCache() {
-
-        for (Entry<String, TileInfo> entry : cache.entrySet()) {
+        
+        Set<Entry<String, TileInfo>> entries = cache.entrySet();
+        for (Entry<String, TileInfo> entry : entries) {
             TileInfo info = entry.getValue();
             long current = System.currentTimeMillis();
             if (current - info.getTimeStamp() > expire) {
@@ -102,6 +104,7 @@ public class TileRepository {
 
     public void setTileSource(TileSource tileSource) {
         this.tileSource = tileSource;
+        cache.clear();
     }
 
     /**
