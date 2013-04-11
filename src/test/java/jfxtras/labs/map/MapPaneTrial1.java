@@ -1,5 +1,4 @@
 //==============================================================================
-//   map is a Java library for parsing raw weather data
 //   Copyright (C) 2012 Jeffrey L Smith
 //
 //  This library is free software; you can redistribute it and/or
@@ -102,7 +101,7 @@ public class MapPaneTrial1 extends Application {
 		MapLineable mapLine = new DefaultMapLine(coordinates);
 		map.addMapLine(mapLine);
 
-		map.setDisplayPositionByLatLon(32.81729, -117.215905, 9);
+		map.setDisplayPositionByLatLon(32.81729, -117.215905);
 
 		Scene scene = createScene(root, map);
 

@@ -62,7 +62,7 @@ public final class MapPane extends Pane implements MapControlable {
 
     private static final double ZOOM_DIFF = .01;
 
-    private static final int INITIAL_ZOOM = 11;
+    private static final int INITIAL_ZOOM = 9;
 
     private static final int SIZE = 400;
 
@@ -176,7 +176,7 @@ public final class MapPane extends Pane implements MapControlable {
         setPrefSize(width, height);
         setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 
-        setDisplayPositionByLatLon(START, START, 3);
+        setDisplayPositionByLatLon(START, START);
 
         DropShadow ds = new DropShadow();
         ds.setOffsetY(3.0f);
@@ -281,6 +281,10 @@ public final class MapPane extends Pane implements MapControlable {
         this.mapY.set(y);
         this.mapWidth.set(width);
         this.mapHeight.set(height);
+    }
+    
+    public void setDisplayPositionByLatLon(double lat, double lon) {
+        setDisplayPositionByLatLon(lat, lon, zoom);
     }
 
     public void setDisplayPositionByLatLon(double lat, double lon, int zoom) {
