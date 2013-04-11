@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012, JFXtras
+ * Copyright (c) 2013, JFXtras
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,7 @@ import javafx.util.Builder;
 
 /**
  *
- * @author Mark Heckler (mark.heckler@gmail.com, @HecklerMark)
+ * @author Mark Heckler (mark.heckler@gmail.com, @MkHeck)
  */
 public class MonologFXButtonBuilder { //<B extends MonologFXButtonBuilder<B>> extends ControlBuilder<B> implements Builder<MonologFXButton> {
 //    private HashMap<String, Property> properties = new HashMap<>();

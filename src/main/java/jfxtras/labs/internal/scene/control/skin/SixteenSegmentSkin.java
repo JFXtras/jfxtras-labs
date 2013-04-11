@@ -109,7 +109,7 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
         if ("CHARACTER".equals(PROPERTY)) {
             updateCharacter();
         } else if ("COLOR".equals(PROPERTY)) {
-            updateCharacter();
+            updateSegmentColor();
         } else if ("PLAIN_COLOR".equals(PROPERTY)) {
             updateCharacter();
         } else if ("CUSTOM_MAPPING".equals(PROPERTY)) {
@@ -142,10 +142,6 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
         }
         isDirty = false;
     }
-//
-//    @Override public final SixteenSegment getSkinnable() {
-//        return control;
-//    }
 
     @Override public final void dispose() {
         control = null;
@@ -169,32 +165,34 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
 
 
     // ******************** Drawing related ***********************************
-    public void updateCharacter() {
-        segments.setStyle("-fx-segment-color-on: " + Util.colorToCssColor(control.getColor()) +
-                          "-fx-segment-color-off: " + Util.colorToCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
+    private void updateSegmentColor() {
+        control.setStyle("-fx-segment-color-on: " + Util.colorToCssColor(control.getColor()) +
+                         "-fx-segment-color-off: " + Util.colorToCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
+    }
+
+    private void updateCharacter() {
+        updateSegmentColor();
+
         final int ASCII = control.getCharacter().isEmpty() ? 20 : control.getCharacter().toUpperCase().charAt(0);
         final InnerShadow INNER_SHADOW = new InnerShadow();
         INNER_SHADOW.setRadius(0.05 * control.getPrefWidth());
         INNER_SHADOW.setColor(Color.hsb(control.getColor().getHue(), control.getColor().getSaturation(), 0.2));
 
-        final String ON_STYLE = control.isPlainColor() ? "sixteen-segment-plain-on" : "sixteen-segment-on";
+        final String ON_STYLE = control.isPlainColor() ? "plain-on" : "on";
 
         if (control.getCustomSegmentMapping().isEmpty()) {
         	
             for (SixteenSegment.Segment segment : segmentMap.keySet()) {
                 if (control.getSegmentMapping().containsKey(ASCII)) {
                     if (control.getSegmentMapping().get(ASCII).contains(segment)) {
-                        segmentMap.get(segment).getStyleClass().clear();
-                        segmentMap.get(segment).getStyleClass().add(ON_STYLE);
+                        segmentMap.get(segment).getStyleClass().setAll(ON_STYLE);
                         segmentMap.get(segment).setEffect(INNER_SHADOW);
                     } else {
-                        segmentMap.get(segment).getStyleClass().clear();
-                        segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
+                        segmentMap.get(segment).getStyleClass().setAll("off");
                         segmentMap.get(segment).setEffect(null);
                     }
                 } else {
-                    segmentMap.get(segment).getStyleClass().clear();
-                    segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
+                    segmentMap.get(segment).getStyleClass().setAll("off");
                     segmentMap.get(segment).setEffect(null);
                 }
             }
@@ -202,34 +200,29 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
             for (SixteenSegment.Segment segment : segmentMap.keySet()) {
                 if (control.getCustomSegmentMapping().containsKey(ASCII)) {
                     if (control.getCustomSegmentMapping().get(ASCII).contains(segment)) {
-                        segmentMap.get(segment).getStyleClass().clear();
-                        segmentMap.get(segment).getStyleClass().add(ON_STYLE);
+                        segmentMap.get(segment).getStyleClass().setAll(ON_STYLE);
                         segmentMap.get(segment).setEffect(INNER_SHADOW);
                     } else {
-                        segmentMap.get(segment).getStyleClass().clear();
-                        segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
+                        segmentMap.get(segment).getStyleClass().setAll("off");
                         segmentMap.get(segment).setEffect(null);
                     }
                 } else {
-                    segmentMap.get(segment).getStyleClass().clear();
-                    segmentMap.get(segment).getStyleClass().add("sixteen-segment-off");
+                    segmentMap.get(segment).getStyleClass().setAll("off");
                     segmentMap.get(segment).setEffect(null);
                 }
             }
         }
         if (control.isDotOn()) {
-            segmentMap.get(SixteenSegment.Segment.DOT).getStyleClass().clear();
-            segmentMap.get(SixteenSegment.Segment.DOT).getStyleClass().add(ON_STYLE);
+            segmentMap.get(SixteenSegment.Segment.DOT).getStyleClass().setAll(ON_STYLE);
             segmentMap.get(SixteenSegment.Segment.DOT).setEffect(INNER_SHADOW);
         }
     }
 
-    public void createSegments() {
-        final double WIDTH = control.getPrefWidth();
+    private void createSegments() {
+        final double WIDTH  = control.getPrefWidth();
         final double HEIGHT = control.getPrefHeight();
 
-        segments.setStyle("-fx-segment-color-on: " + Util.colorToCssColor(control.getColor()) +
-                          "-fx-segment-color-off: " + Util.colorToCssColor(Color.color(control.getColor().getRed(), control.getColor().getGreen(), control.getColor().getBlue(), 0.075)));
+        updateSegmentColor();
 
         segments.getChildren().clear();
 
@@ -249,7 +242,6 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
         A1.getElements().add(new LineTo(0.13389121338912133 * WIDTH, 0.03188405797101449 * HEIGHT));
         A1.getElements().add(new LineTo(0.13389121338912133 * WIDTH, 0.028985507246376812 * HEIGHT));
         A1.getElements().add(new ClosePath());
-        A1.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.A1, A1);
 
         final Path A2 = new Path();
@@ -264,7 +256,6 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
         A2.getElements().add(new LineTo(0.8702928870292888 * WIDTH, 0.034782608695652174 * HEIGHT));
         A2.getElements().add(new LineTo(0.8702928870292888 * WIDTH, 0.03188405797101449 * HEIGHT));
         A2.getElements().add(new ClosePath());
-        A2.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.A2, A2);
 
         final Path B = new Path();
@@ -278,7 +269,6 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
         B.getElements().add(new LineTo(0.8075313807531381 * WIDTH, 0.08695652173913043 * HEIGHT));
         B.getElements().add(new LineTo(0.8786610878661087 * WIDTH, 0.03768115942028986 * HEIGHT));
         B.getElements().add(new ClosePath());
-        B.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.B, B);
 
         final Path C = new Path();
@@ -291,7 +281,6 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
         C.getElements().add(new LineTo(0.7573221757322176 * WIDTH, 0.5420289855072464 * HEIGHT));
         C.getElements().add(new LineTo(0.8158995815899581 * WIDTH, 0.5014492753623189 * HEIGHT));
         C.getElements().add(new ClosePath());
-        C.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.C, C);
 
         final Path D2 = new Path();
@@ -306,7 +295,6 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
         D2.getElements().add(new LineTo(0.4811715481171548 * WIDTH, 0.9159420289855073 * HEIGHT));
         D2.getElements().add(new LineTo(0.7112970711297071 * WIDTH, 0.9159420289855073 * HEIGHT));
         D2.getElements().add(new ClosePath());
-        D2.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.D2, D2);
 
         final Path D1 = new Path();
@@ -321,7 +309,6 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
         D1.getElements().add(new LineTo(0.12552301255230125 * WIDTH, 0.9159420289855073 * HEIGHT));
         D1.getElements().add(new LineTo(0.3682008368200837 * WIDTH, 0.9159420289855073 * HEIGHT));
         D1.getElements().add(new ClosePath());
-        D1.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.D1, D1);
 
         final Path E = new Path();
@@ -335,7 +322,6 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
         E.getElements().add(new LineTo(0.11715481171548117 * WIDTH, 0.9130434782608695 * HEIGHT));
         E.getElements().add(new LineTo(0.0502092050209205 * WIDTH, 0.9623188405797102 * HEIGHT));
         E.getElements().add(new ClosePath());
-        E.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.E, E);
 
         final Path F = new Path();
@@ -348,7 +334,6 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
         F.getElements().add(new LineTo(0.10460251046025104 * WIDTH, 0.0463768115942029 * HEIGHT));
         F.getElements().add(new LineTo(0.12552301255230125 * WIDTH, 0.03188405797101449 * HEIGHT));
         F.getElements().add(new ClosePath());
-        F.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.F, F);
 
         final Path G = new Path();
@@ -361,7 +346,6 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
         G.getElements().add(new LineTo(0.19665271966527198 * WIDTH, 0.20579710144927535 * HEIGHT));
         G.getElements().add(new LineTo(0.20920502092050208 * WIDTH, 0.08695652173913043 * HEIGHT));
         G.getElements().add(new ClosePath());
-        G.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.G, G);
 
         final Path H = new Path();
@@ -375,7 +359,6 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
         H.getElements().add(new LineTo(0.4476987447698745 * WIDTH, 0.08695652173913043 * HEIGHT));
         H.getElements().add(new LineTo(0.502092050209205 * WIDTH, 0.05507246376811594 * HEIGHT));
         H.getElements().add(new ClosePath());
-        H.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.H, H);
 
         final Path J = new Path();
@@ -388,7 +371,6 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
         J.getElements().add(new LineTo(0.7280334728033473 * WIDTH, 0.13333333333333333 * HEIGHT));
         J.getElements().add(new LineTo(0.799163179916318 * WIDTH, 0.08695652173913043 * HEIGHT));
         J.getElements().add(new ClosePath());
-        J.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.J, J);
 
         final Path K = new Path();
@@ -401,7 +383,6 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
         K.getElements().add(new LineTo(0.5188284518828452 * WIDTH, 0.5362318840579711 * HEIGHT));
         K.getElements().add(new LineTo(0.46443514644351463 * WIDTH, 0.4985507246376812 * HEIGHT));
         K.getElements().add(new ClosePath());
-        K.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.K, K);
 
         final Path L = new Path();
@@ -416,7 +397,6 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
         L.getElements().add(new LineTo(0.6778242677824268 * WIDTH, 0.8753623188405797 * HEIGHT));
         L.getElements().add(new LineTo(0.7154811715481172 * WIDTH, 0.9130434782608695 * HEIGHT));
         L.getElements().add(new ClosePath());
-        L.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.L, L);
 
         final Path M = new Path();
@@ -430,7 +410,6 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
         M.getElements().add(new LineTo(0.4769874476987448 * WIDTH, 0.9130434782608695 * HEIGHT));
         M.getElements().add(new LineTo(0.4225941422594142 * WIDTH, 0.9478260869565217 * HEIGHT));
         M.getElements().add(new ClosePath());
-        M.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.M, M);
 
         final Path N = new Path();
@@ -445,7 +424,6 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
         N.getElements().add(new LineTo(0.19665271966527198 * WIDTH, 0.8666666666666667 * HEIGHT));
         N.getElements().add(new LineTo(0.12552301255230125 * WIDTH, 0.9130434782608695 * HEIGHT));
         N.getElements().add(new ClosePath());
-        N.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.N, N);
 
         final Path P = new Path();
@@ -458,12 +436,14 @@ public class SixteenSegmentSkin extends com.sun.javafx.scene.control.skin.Behavi
         P.getElements().add(new LineTo(0.17154811715481172 * WIDTH, 0.5362318840579711 * HEIGHT));
         P.getElements().add(new LineTo(0.11715481171548117 * WIDTH, 0.4985507246376812 * HEIGHT));
         P.getElements().add(new ClosePath());
-        P.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.P, P);
 
         final Circle DOT = new Circle(0.9121338912133892 * WIDTH, 0.9391304347826087 * HEIGHT, 0.06694560669456066 * WIDTH);
-        DOT.getStyleClass().add("sixteen-segment-off");
         segmentMap.put(SixteenSegment.Segment.DOT, DOT);
+
+        for (Shape shape : segmentMap.values()) {
+            shape.getStyleClass().add("off");
+        }
 
         segments.getChildren().addAll(A1,
                                       A2,

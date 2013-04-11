@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012, JFXtras
+ * Copyright (c) 2013, JFXtras
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -47,7 +48,7 @@ import javafx.stage.StageStyle;
 
 /**
  *
- * @author Mark Heckler (mark.heckler@gmail.com, @HecklerMark)
+ * @author Mark Heckler (mark.heckler@gmail.com, @MkHeck)
  */
 public class MonologFX extends Stage {
     /**
@@ -67,7 +68,6 @@ public class MonologFX extends Stage {
     public enum ButtonAlignment { LEFT, RIGHT, CENTER };
 
     private Type type;
-    private Stage stage;
     private Scene scene;
     private BorderPane pane = new BorderPane();
     private ImageView icon = new ImageView();
@@ -100,7 +100,6 @@ public class MonologFX extends Stage {
     }
     
     private void addOKButton() {
-        // Replace with Builder once complete!
         MonologFXButton okBtn = new MonologFXButton();
         okBtn.setType(MonologFXButton.Type.OK);
         okBtn.setLabel("_OK");
@@ -118,7 +117,6 @@ public class MonologFX extends Stage {
          * assign default/cancel Yes/No buttons using the full addButtons()
          * method if required. You have the power!
          */
-        // Replace with Builder once complete!
         MonologFXButton yesBtn = new MonologFXButton();
         yesBtn.setType(MonologFXButton.Type.YES);
         yesBtn.setLabel("_Yes");
@@ -127,7 +125,6 @@ public class MonologFX extends Stage {
         
         addButton(yesBtn);
         
-        // Replace with Builder once complete!
         MonologFXButton noBtn = new MonologFXButton();
         noBtn.setType(MonologFXButton.Type.NO);
         noBtn.setLabel("_No");
@@ -181,7 +178,9 @@ public class MonologFX extends Stage {
                         break;
                     }
                 }
-                stage.close();
+
+                // Close the dialog
+                ((Stage) ((Node) evt.getSource()).getScene().getWindow()).close();
             }
         });
         
@@ -206,11 +205,11 @@ public class MonologFX extends Stage {
     }
     
     private void initDialog(Type t) {
-        stage = new Stage(StageStyle.UTILITY);
+        this.initStyle(StageStyle.UTILITY);
         
         setType(t);
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setMaxWidth(Screen.getPrimary().getVisualBounds().getWidth() / 2);
+        this.initModality(Modality.APPLICATION_MODAL);
+        this.setMaxWidth(Screen.getPrimary().getVisualBounds().getWidth() / 2);        
     }
     
     private void loadIconFromResource(String fileName) {
@@ -248,7 +247,7 @@ public class MonologFX extends Stage {
      * @param isModal Boolean. A true value = APPLICATION_MODAL, false = NONE.
      */
     public void setModal(boolean isModal) {
-        stage.initModality((isModal ? Modality.APPLICATION_MODAL : Modality.NONE));
+        this.initModality((isModal ? Modality.APPLICATION_MODAL : Modality.NONE));
     }
     
     /**
@@ -257,7 +256,7 @@ public class MonologFX extends Stage {
      * @param title String containing the text to place in the title bar.
      */
     public void setTitleText(String title) {
-        stage.setTitle(title);
+        this.setTitle(title);
     }
     
     /**
@@ -268,6 +267,11 @@ public class MonologFX extends Stage {
      */
     public void setType(Type typeToSet) {
         type = typeToSet;
+    }
+    
+    public void setPos(double x, double y) {
+        this.setX(x);
+        this.setY(y);
     }
     
     private void populateStage() {
@@ -317,15 +321,12 @@ public class MonologFX extends Stage {
         switch (buttonAlignment) {
             case LEFT:
                 buttonBox.setAlignment(Pos.CENTER_LEFT);
-                //BorderPane.setAlignment(buttonBox, Pos.CENTER_LEFT);
                 break;
             case CENTER:
                 buttonBox.setAlignment(Pos.CENTER);
-                //BorderPane.setAlignment(buttonBox, Pos.CENTER);
                 break;
             case RIGHT:
                 buttonBox.setAlignment(Pos.CENTER_RIGHT);
-                //BorderPane.setAlignment(buttonBox, Pos.CENTER_RIGHT);
                 break;
         }
 
@@ -341,7 +342,7 @@ public class MonologFX extends Stage {
                 System.err.println(ex.getMessage());
             }
         }
-        stage.setScene(scene);
+        this.setScene(scene);
     }
     
     /**
@@ -359,10 +360,14 @@ public class MonologFX extends Stage {
             }
         }
         
-        stage.setResizable(false);
-        stage.sizeToScene();
-        stage.centerOnScreen();
-        stage.showAndWait();
+        this.setResizable(false);
+        this.sizeToScene();        
+        
+        if (!(this.getX() > -1 && this.getY() > -1)) {
+            this.centerOnScreen();
+        }
+        
+        this.showAndWait();
         if ( buttonSelected == -1 ) {
             /* If a different type of button is designated the "cancel button",
              * e.g. a MonologFXButton.Type.NO button, return that one;
