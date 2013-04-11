@@ -3,7 +3,7 @@ package jfxtras.labs.map.tile;
 /**
  * Factory for a tile source to the bing server.
  *
- * @author msc
+ * @author Mario Schröder
  */
 public class BingTileSourceFactory extends TileSourceFactory {
 
@@ -27,6 +27,8 @@ public class BingTileSourceFactory extends TileSourceFactory {
         // FIXME: I've set attributionLinkURL temporarily to ToU URL to comply with bing ToU
         // (the requirement is that we have such a link at the bottom of the window)
         tileSource.setAttributionLinkURL("http://go.microsoft.com/?linkid=9710837");
+        
+        tileSource.setAttributionRequired(true);
         
         return tileSource;
     }
