@@ -7,6 +7,12 @@ package jfxtras.labs.map.tile;
 public abstract class TileSourceFactory {
     
     /**
+     * Creates a new tile source.
+     * @return new {@link TileSource}
+     */
+    public abstract TileSource create();
+    
+    /**
      * Creates a new tile source based on the given type.<br/>
      * The type can be null.
      * 

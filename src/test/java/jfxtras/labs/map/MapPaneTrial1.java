@@ -34,8 +34,6 @@ import javafx.stage.Stage;
 
 import jfxtras.labs.map.tile.OsmTileSourceFactory;
 import jfxtras.labs.map.tile.OsmType;
-import jfxtras.labs.map.tile.TileSource;
-import jfxtras.labs.map.tile.OsmTileSource;
 import jfxtras.labs.map.tile.TileSourceFactory;
 import jfxtras.labs.map.render.MapLineable;
 import jfxtras.labs.map.render.DefaultMapLine;

@@ -10,6 +10,11 @@ public class BingTileSourceFactory extends TileSourceFactory {
     private static final int ZOOM = 22;
 
     private static final String EXT = "jpeg";
+    
+     @Override
+    public TileSource create() {
+        return create(null);
+    }
 
     @Override
     public TileSource create(String type) {

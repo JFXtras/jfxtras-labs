@@ -41,7 +41,7 @@ public class TileRepositoryTest {
 	@Test
 	public void testWithIllegalArgs() {
 		TileSourceFactory factory = new LocalTileSourceFactory();
-		TileRepository classUnderTest = new TileRepository(factory.create(null));
+		TileRepository classUnderTest = new TileRepository(factory.create());
 		Tile tile = classUnderTest.getTile(-1, 0, 0);
 		assertNull(tile);
 		tile = classUnderTest.getTile(0, -1, 0);
