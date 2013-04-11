@@ -21,6 +21,9 @@ class ZoomSliderFactory {
     Slider create() {
         Slider slider = new Slider();
         slider.setOrientation(Orientation.VERTICAL);
+        slider.setShowTickLabels(true);
+        slider.setShowTickMarks(true);
+        slider.setMajorTickUnit(1.0);
         
         slider.setMin(ZoomBounds.Min.getValue());
         slider.setMax(controlable.getTileSource().getMaxZoom());

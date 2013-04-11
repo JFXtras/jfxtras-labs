@@ -65,9 +65,8 @@ class TilesMouseHandler {
 
     private String builLocationString(double lat, double lon) {
         StringBuilder builder = new StringBuilder();
-        builder.append("Cursor Latitude: ").append(String.format("%2.5f", lat));
+        builder.append("Latitude: ").append(String.format("%2.5f", lat));
         builder.append(" Longitude: ").append(String.format("%3.6f", lon));
-        builder.append(" Zoom Level:").append(controlable.getZoom());
         return builder.toString();
     }
 
