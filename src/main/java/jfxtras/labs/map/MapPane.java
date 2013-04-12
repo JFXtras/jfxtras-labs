@@ -147,8 +147,9 @@ public final class MapPane extends Pane implements MapControlable {
         this.tileSource = ts;
         this.zoom = zoom;
         
-        TilesMouseHandler handler = new TilesMouseHandler(this);
+        
         tilesGroup = new Group();
+        TilesMouseHandler handler = new TilesMouseHandler(this);
         handler.setEventPublisher(tilesGroup);
 
         buildMapBounds(x, y);

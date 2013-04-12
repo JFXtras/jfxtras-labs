@@ -10,15 +10,15 @@ import javafx.scene.control.Slider;
  *
  * @author Mario Schröder
  */
-class ZoomSliderFactory {
+public class ZoomSliderFactory {
 
     private MapControlable controlable;
 
-    ZoomSliderFactory(MapControlable controlable) {
+    public ZoomSliderFactory(MapControlable controlable) {
         this.controlable = controlable;
     }
 
-    Slider create() {
+    protected Slider create() {
         Slider slider = new Slider();
         slider.setOrientation(Orientation.VERTICAL);
         slider.setShowTickLabels(true);

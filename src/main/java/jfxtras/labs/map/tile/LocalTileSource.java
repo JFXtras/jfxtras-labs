@@ -26,7 +26,7 @@ package jfxtras.labs.map.tile;
  * @author jsmith
  *
  */
-class LocalTileSource extends DefaultTileSource {
+public class LocalTileSource extends DefaultTileSource {
 
     private String tilesRootDir;
 

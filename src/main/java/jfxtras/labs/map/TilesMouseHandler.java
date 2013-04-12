@@ -13,13 +13,13 @@ import javafx.scene.text.Text;
  *
  * @author Mario Schröder
  */
-class TilesMouseHandler {
+public class TilesMouseHandler {
 
     private MapControlable controlable;
 
     private boolean adjusted;
 
-    TilesMouseHandler(MapControlable controlable) {
+    public TilesMouseHandler(MapControlable controlable) {
         this.controlable = controlable;
     }
 
@@ -28,7 +28,7 @@ class TilesMouseHandler {
      *
      * @param tilesGroup
      */
-    void setEventPublisher(final Group tilesGroup) {
+    public void setEventPublisher(final Group tilesGroup) {
 
         tilesGroup.setOnScroll(new ScrollEventAdapter());
 
@@ -63,7 +63,13 @@ class TilesMouseHandler {
         }
     }
 
-    private String builLocationString(double lat, double lon) {
+    /**
+     * Build the string which displays the current location of the cursor.
+     * @param lat the value of latitude
+     * @param lon the value of the longitude
+     * @return string which will be displayed on the map
+     */
+    protected String builLocationString(double lat, double lon) {
         StringBuilder builder = new StringBuilder();
         builder.append("Latitude: ").append(String.format("%2.5f", lat));
         builder.append(" Longitude: ").append(String.format("%3.6f", lon));
