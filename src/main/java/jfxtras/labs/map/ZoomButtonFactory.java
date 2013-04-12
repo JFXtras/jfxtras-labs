@@ -12,11 +12,11 @@ import javafx.scene.image.ImageView;
  * Factory for zoom buttons.
  * @author Mario Schröder
  */
-abstract class ZoomButtonFactory {
+public abstract class ZoomButtonFactory {
 	
     protected MapControlable controlable;
 
-    ZoomButtonFactory(MapControlable controlable) {
+    public ZoomButtonFactory(MapControlable controlable) {
         this.controlable = controlable;
     }
     
@@ -24,7 +24,7 @@ abstract class ZoomButtonFactory {
      * Creates a new instance of a button.
      * @return {@link Button}
      */
-    Button create(){
+    public Button create(){
         
         Button btn = new Button();
         InputStream stream = getClass().getResourceAsStream(getImagePath());
@@ -35,7 +35,7 @@ abstract class ZoomButtonFactory {
         return btn;
     }
     
-    abstract String getImagePath();
+    protected abstract String getImagePath();
     
-    abstract EventHandler<ActionEvent> getEventHandler();
+    protected abstract EventHandler<ActionEvent> getEventHandler();
 }

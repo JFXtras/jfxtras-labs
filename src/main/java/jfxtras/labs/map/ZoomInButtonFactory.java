@@ -8,19 +8,19 @@ import javafx.event.EventHandler;
  * 
  * @author Mario Schröder
  */
-class ZoomInButtonFactory extends ZoomButtonFactory{
+public class ZoomInButtonFactory extends ZoomButtonFactory{
 
     public ZoomInButtonFactory(MapControlable controlable) {
         super(controlable);
     }
     
     @Override
-    String getImagePath() {
+    protected String getImagePath() {
         return "plus.png";
     }
 
     @Override
-    EventHandler<ActionEvent> getEventHandler() {
+    protected EventHandler<ActionEvent> getEventHandler() {
         return new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
