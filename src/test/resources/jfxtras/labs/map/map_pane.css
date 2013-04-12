@@ -1,0 +1,13 @@
+/* 
+    Document   : JFXMapPaneDemo
+    Created on : Aug 16, 2012, 7:19:05 PM
+    Author     : smithjel
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.scene {
+    -fx-background-color: linear-gradient(white,#DDDDDD);
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: left bottom;
+}
