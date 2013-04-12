@@ -97,11 +97,6 @@ public final class MapPane extends Pane implements MapControlable {
 
     private VBox zoomControlsVbox;
 
-    // Attribution
-    private Image attrImage;
-
-    private Text attrTermsUrl;
-
     private boolean ignoreRepaint;
 
     private Rectangle clipMask = new Rectangle();
@@ -145,18 +140,18 @@ public final class MapPane extends Pane implements MapControlable {
     private SimpleBooleanProperty mapPolygonsVisible = new SimpleBooleanProperty(true);
 
     public MapPane(TileSource ts) {
-        this(ts, START, START, SIZE, SIZE, INITIAL_ZOOM);
+        this(ts, START, START, 800, 600, INITIAL_ZOOM);
     }
 
     public MapPane(TileSource ts, int x, int y, int width, int height, int zoom) {
         this.tileSource = ts;
         this.zoom = zoom;
-
+        
         TilesMouseHandler handler = new TilesMouseHandler(this);
         tilesGroup = new Group();
         handler.setEventPublisher(tilesGroup);
 
-        buildMapBounds(x, y, width, height);
+        buildMapBounds(x, y);
 
         mapMarkersVisible = new SimpleBooleanProperty(true);
         tileGridVisible = new SimpleBooleanProperty(false);
@@ -173,7 +168,6 @@ public final class MapPane extends Pane implements MapControlable {
         
         int tileSize = tileSource.getTileSize();
         setMinSize(tileSize, tileSize);
-        setPrefSize(width, height);
         setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 
         setDisplayPositionByLatLon(START, START);
@@ -193,6 +187,10 @@ public final class MapPane extends Pane implements MapControlable {
         getChildren().add(cursorLocationText);
         
         addResizeListeners();
+        
+        setPrefSize(width, height);
+        setMinWidth(width);
+        setMinHeight(height);
     }
     
     private void addResizeListeners(){
@@ -212,7 +210,7 @@ public final class MapPane extends Pane implements MapControlable {
         });
     }
 
-    private void buildMapBounds(int x, int y, int width, int height) {
+    private void buildMapBounds(int x, int y) {
         mapX = new SimpleIntegerProperty(x);
         mapX.addListener(new ChangeListener<Number>() {
             @Override
@@ -233,7 +231,7 @@ public final class MapPane extends Pane implements MapControlable {
             }
         });
 
-        mapWidth = new SimpleIntegerProperty(width);
+        mapWidth = new SimpleIntegerProperty(SIZE);
         mapWidth.addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -247,7 +245,7 @@ public final class MapPane extends Pane implements MapControlable {
             }
         });
 
-        mapHeight = new SimpleIntegerProperty(height);
+        mapHeight = new SimpleIntegerProperty(SIZE);
         mapHeight.addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -605,15 +603,6 @@ public final class MapPane extends Pane implements MapControlable {
 
     protected void renderControl() {
     	
-    	boolean requireAttr = tileSource.isAttributionRequired();
-        if (requireAttr) {
-            attrImage = tileSource.getAttributionImage();
-            attrTermsUrl = new Text(tileSource.getTermsOfUseURL());
-        } else {
-            attrImage = null;
-            attrTermsUrl = null;
-        }
-
         int iMove;
         int tilesize = tileSource.getTileSize();
 
@@ -765,9 +754,13 @@ public final class MapPane extends Pane implements MapControlable {
     private void renderAttribution() {
 
         if (tileSource.isAttributionRequired()) {
+            
+            String termsUrl = tileSource.getTermsOfUseURL();
+            Image attrImage = tileSource.getAttributionImage();
 
             // Draw attribution text
-            if (attrTermsUrl != null) {
+            if (termsUrl != null) {
+                Text attrTermsUrl = new Text(termsUrl);
                 DropShadow ds = new DropShadow();
                 ds.setOffsetY(3.0f);
                 ds.setColor(Color.BLACK); // Color.color(0.4f, 0.4f, 0.4f));

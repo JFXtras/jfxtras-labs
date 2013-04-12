@@ -37,6 +37,7 @@ import jfxtras.labs.map.render.DefaultMapLine;
 import jfxtras.labs.map.render.ImageMapMarker;
 import jfxtras.labs.map.render.MapLineable;
 import jfxtras.labs.map.render.MapMarkable;
+import jfxtras.labs.map.tile.BingTileSourceFactory;
 import jfxtras.labs.map.tile.OsmTileSourceFactory;
 import jfxtras.labs.map.tile.OsmType;
 import jfxtras.labs.map.tile.TileSourceFactory;
@@ -59,7 +60,7 @@ public class MapPaneTrial1 extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-    	
+
         int RadarImgWidth = 600;
         int RadarImgHeight = 500;
         double RadarImgXpixelStep = 0.00856977982954547;
@@ -68,17 +69,17 @@ public class MapPaneTrial1 extends Application {
         double ul_Lon = -119.60764942516;
         double lr_Lat = ul_Lat + (RadarImgHeight * RadarImgYpixelStep);
         double lr_Lon = ul_Lon + (RadarImgWidth * RadarImgXpixelStep);
-        
+
         Coordinate upperLeftCoord = new Coordinate(ul_Lat, ul_Lon);
         Coordinate lowerRightCoord = new Coordinate(lr_Lat, lr_Lon);
-    	
+
         primaryStage.setTitle("Map Demo");
-        
+
         final TileSourceFactory factory = new OsmTileSourceFactory();
         String tsName = OsmType.Mapnik.name();
-        
-		final MapPane map = new MapPane(factory.create(tsName));
-		
+
+        final MapPane map = new MapPane(factory.create(tsName));
+
         final String radarImgUrl = "http://radar.weather.gov/ridge/RadarImg/N0R/NKX_N0R_0.gif";
 
         MapWeatherRadar yumaRadar = new MapWeatherRadar(radarImgUrl, 600, 550,
@@ -88,7 +89,7 @@ public class MapPaneTrial1 extends Application {
         List<Coordinate> coordinates = new ArrayList<>();
         coordinates.add(upperLeftCoord);
         coordinates.add(lowerRightCoord);
-        
+
         MapAirspace airspace = new MapAirspace(coordinates);
         map.addMapPolygon(airspace);
 
@@ -103,43 +104,55 @@ public class MapPaneTrial1 extends Application {
         map.setDisplayPositionByLatLon(32.81729, -117.215905);
 
         ComboBox<String> comboBox = new ComboBox<>();
-        for(OsmType type : OsmType.values()){
-        	comboBox.getItems().add(type.name());
+
+        for (OsmType type : OsmType.values()) {
+            comboBox.getItems().add(type.name());
         }
+
+        final String bing = "Bing Aerial";
+        comboBox.getItems().add(bing);
+
         comboBox.getSelectionModel().select(tsName);
         comboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> arg0,
+                String oldVal, String newVal) {
 
-			@Override
-			public void changed(ObservableValue<? extends String> arg0,
-					String oldVal, String newVal) {
-				
-				map.setTileSource(factory.create(newVal));
-			}
-		});
-        
+                TileSourceFactory fac;
+                if (newVal.equals(bing)) {
+                    fac = new BingTileSourceFactory();
+                }
+                else {
+                    fac = factory;
+                }
+                map.setTileSource(fac.create(newVal));
+
+            }
+        });
+
         final ToolBar toolBar = new ToolBar(comboBox);
-        
+
         BorderPane borderPan = new BorderPane();
-        
+
         Scene scene = createScene(borderPan);
         scene.widthProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-            		Number newValue) {
-            	map.setMinWidth(newValue.doubleValue());
+                Number newValue) {
+                map.setMinWidth(newValue.doubleValue());
             }
         });
         scene.heightProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-            		Number newValue) {
-            	map.setMinHeight(newValue.doubleValue() - toolBar.getHeight());
+                Number newValue) {
+                map.setMinHeight(newValue.doubleValue() - toolBar.getHeight());
             }
         });
-        
+
         borderPan.setTop(toolBar);
         borderPan.setCenter(map);
-        
+
         primaryStage.setScene(scene);
         primaryStage.show();
     }
