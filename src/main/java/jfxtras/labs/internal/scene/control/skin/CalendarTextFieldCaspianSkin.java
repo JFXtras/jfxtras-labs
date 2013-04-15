@@ -26,6 +26,7 @@
  */
 package jfxtras.labs.internal.scene.control.skin;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -286,13 +287,42 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 			}
 			else
 			{
-				// parse using the formatter
-				Date lDate = getSkinnable().getDateFormat().parse( lText );
-				Calendar lCalendar = Calendar.getInstance(); // TODO: how to get the correct locale
-				lCalendar.setTime(lDate);
+				Calendar lCalendar = getSkinnable().getValue();
+				java.text.ParseException lParseException = null;
+				try
+				{
+					// parse using the formatter
+					Date lDate = getSkinnable().getDateFormat().parse( lText );
+					lCalendar = Calendar.getInstance(); // TODO: how to get the correct locale
+					lCalendar.setTime(lDate);
+				}
+				catch (java.text.ParseException e)
+				{	
+					// remember the exception					
+					lParseException = e;
+					
+					// the formatter failed, let's try the alternates
+					for (DateFormat lDateFormat : getSkinnable().getDateFormats())
+					{
+						try
+						{
+							// parse using the formatter
+							Date lDate = lDateFormat.parse( lText );
+							lCalendar = Calendar.getInstance(); // TODO: how to get the correct locale
+							lCalendar.setTime(lDate);
+							lParseException = null; // parsing was succesful, clear the exception
+							break; // exit the for loop
+						}
+						catch (java.text.ParseException e2) {} // we can safely ignore this
+					}
+				}
 				
 				// set the value
 				getSkinnable().setValue(lCalendar);
+				refreshValue();
+				
+				// rethrow initial exception if all parsing failed 
+				if (lParseException != null) throw lParseException;
 			}
 		}
 		catch (Throwable t) 
