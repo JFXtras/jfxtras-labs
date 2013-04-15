@@ -129,6 +129,17 @@ public class CalendarTextFieldTrial1 extends Application {
 				lCalendarTextField.valueProperty().set(Calendar.getInstance()); // set a value
 			}
 			
+	        // alternate parsers
+			{
+				lGridPane.add(new Label("alternate parser"), 0, lRowIdx);
+				CalendarTextField lCalendarTextField = new CalendarTextField();
+				lCalendarTextField.dateFormatsProperty().add(new SimpleDateFormat("yyyy-MM-dd"));
+				lCalendarTextField.dateFormatsProperty().add(new SimpleDateFormat("yyyyMMdd"));
+				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
+				
+				lCalendarTextField.valueProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
+			}
+			
 			lHBox.getChildren().add(lGridPane);
 		}
 			
