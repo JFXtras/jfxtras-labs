@@ -34,8 +34,8 @@ public class MapPaneTest {
 	public void testCenterCoordinate() {
 		Coordinate coord = classUnderTest.getCenterCoordinate();
 		assertNotNull(coord);
-		assertEquals(COOR_VAL, coord.getLat(), COOR_DIFF);
-		assertEquals(COOR_VAL, coord.getLon(), COOR_DIFF);
+		assertEquals(COOR_VAL, coord.getLatitude(), COOR_DIFF);
+		assertEquals(COOR_VAL, coord.getLongitude(), COOR_DIFF);
 	}
 	
 	@Test
@@ -43,8 +43,8 @@ public class MapPaneTest {
 		Point p = new Point(1,1);
 		Coordinate coord = classUnderTest.getCoordinate(p);
 		assertNotNull(coord);
-		assertEquals(1.5489, coord.getLat(), COOR_DIFF);
-		assertEquals(0.4531, coord.getLon(), COOR_DIFF);
+		assertEquals(1.5489, coord.getLatitude(), COOR_DIFF);
+		assertEquals(0.4531, coord.getLongitude(), COOR_DIFF);
 	}
 	
 	@Test

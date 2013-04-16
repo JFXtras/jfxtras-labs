@@ -165,8 +165,8 @@ class BingAerialTileSource extends DefaultTileSource {
             StringBuilder a = new StringBuilder();
             for (Attribution attr : attributions.get()) {
                 if (zoom <= attr.maxZoom && zoom >= attr.minZoom) {
-                    if (topLeft.getLon() < attr.max.getLon() && botRight.getLon() > attr.min.getLon()
-                        && topLeft.getLat() > attr.min.getLat() && botRight.getLat() < attr.max.getLat()) {
+                    if (topLeft.getLongitude() < attr.max.getLongitude() && botRight.getLongitude() > attr.min.getLongitude()
+                        && topLeft.getLatitude() > attr.min.getLatitude() && botRight.getLatitude() < attr.max.getLatitude()) {
                         a.append(attr.attribution);
                         a.append(" ");
                     }

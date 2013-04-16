@@ -451,7 +451,7 @@ public final class MapPane extends Pane implements MapControlable {
     // Calculates the position on the map of a given coordinate
     @Override
     public Point getMapPoint(Coordinate coord) {
-        return getMapPoint(coord.getLat(), coord.getLon(), false);
+        return getMapPoint(coord.getLatitude(), coord.getLongitude(), false);
     }
 
     @Override
@@ -491,7 +491,7 @@ public final class MapPane extends Pane implements MapControlable {
             return;
         }
         Coordinate zoomPos = getCoordinate(mapPoint);
-        setDisplayPositionByLatLon(mapPoint, zoomPos.getLat(), zoomPos.getLon(), zoom);
+        setDisplayPositionByLatLon(mapPoint, zoomPos.getLatitude(), zoomPos.getLongitude(), zoom);
     }
 
     @Override

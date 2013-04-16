@@ -86,7 +86,7 @@ public class DefaultMapLine implements MapLineable {
         polyline.setEffect(dropShadow);
 
         for (Coordinate coordinate : coordinates) {
-            Point p = viewer.getMapPoint(coordinate.getLat(), coordinate.getLon(), false);
+            Point p = viewer.getMapPoint(coordinate.getLatitude(), coordinate.getLongitude(), false);
             polyline.getPoints().add((double) p.x);
             polyline.getPoints().add((double) p.y);
         }

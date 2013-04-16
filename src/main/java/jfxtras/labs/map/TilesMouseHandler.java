@@ -55,7 +55,7 @@ public class TilesMouseHandler {
     private void updateCursorLocationText(Coordinate mouseLocation) {
         Text cursorLocationText = controlable.getCursorLocationText();
 
-        cursorLocationText.setText(builLocationString(mouseLocation.getLat(), mouseLocation.getLon()));
+        cursorLocationText.setText(builLocationString(mouseLocation.getLatitude(), mouseLocation.getLongitude()));
 
         if (!adjusted) {
             controlable.adjustCursorLocationText();
