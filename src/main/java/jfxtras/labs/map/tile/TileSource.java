@@ -97,4 +97,6 @@ public interface TileSource {
     public double tileYToLat(int y, int zoom);
 
     public double tileXToLon(int x, int zoom);
+
+    void setApiKey(String apiKey);
 }

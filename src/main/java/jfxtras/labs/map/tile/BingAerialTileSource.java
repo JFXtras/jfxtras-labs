@@ -3,6 +3,7 @@ package jfxtras.labs.map.tile;
 import jfxtras.labs.map.Coordinate;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -20,8 +21,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 class BingAerialTileSource extends DefaultTileSource {
-
-    private static String API_KEY = "Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU";
 
     private static volatile Future<List<Attribution>> attributions;
 
@@ -118,10 +117,12 @@ class BingAerialTileSource extends DefaultTileSource {
     }
 
     private List<Attribution> loadAttributionText() {
+        
+        List<Attribution> attr = null;
+        
         try {
-            URL u = new URL("http://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial/0,0?zl=1&mapVersion=v1&key="
-                + API_KEY + "&include=ImageryProviders&output=xml");
-            URLConnection conn = u.openConnection();
+            URL url = buildUrl();
+            URLConnection conn = url.openConnection();
 
             // This is not JOSM! Do not use anything other than standard JRE classes within this package!
             // See package.html for details
@@ -133,12 +134,12 @@ class BingAerialTileSource extends DefaultTileSource {
             AttrHandler handler = new AttrHandler();
             parser.setContentHandler(handler);
             parser.parse(new InputSource(stream));
-            //System.err.println("Added " + handler.attributions.size() + " attributions.");
-            return handler.attributions;
+
+            attr = handler.attributions;
         } catch (IOException | SAXException e) {
             e.printStackTrace();
         }
-        return null;
+        return attr;
     }
 
     @Override
@@ -193,5 +194,12 @@ class BingAerialTileSource extends DefaultTileSource {
             k.append(digit);
         }
         return k.toString();
+    }
+    
+    private URL buildUrl() throws MalformedURLException {
+        StringBuilder builder = new StringBuilder();
+        builder.append("http://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial/0,0?zl=1&mapVersion=v1&key=");
+        builder.append(getApiKey()).append("&include=ImageryProviders&output=xml");
+        return new URL(builder.toString());
     }
 }

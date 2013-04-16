@@ -39,6 +39,7 @@ public class DefaultTileSource implements TileSource {
     private String attributionLinkURL;
 
     private String attributionText;
+    protected String apiKey;
 
     public DefaultTileSource(String name, String base_url) {
         this(name, base_url, null);
@@ -188,5 +189,14 @@ public class DefaultTileSource implements TileSource {
 
     public void setAttributionRequired(boolean required) {
         this.attributionRequired = required;
+    }
+
+    protected String getApiKey() {
+        return apiKey;
+    }
+
+    @Override
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 }

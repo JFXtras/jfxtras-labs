@@ -40,6 +40,7 @@ import jfxtras.labs.map.render.MapMarkable;
 import jfxtras.labs.map.tile.BingTileSourceFactory;
 import jfxtras.labs.map.tile.OsmTileSourceFactory;
 import jfxtras.labs.map.tile.OsmType;
+import jfxtras.labs.map.tile.TileSource;
 import jfxtras.labs.map.tile.TileSourceFactory;
 
 /**
@@ -47,6 +48,8 @@ import jfxtras.labs.map.tile.TileSourceFactory;
  * @author smithjel
  */
 public class MapPaneTrial1 extends Application {
+    
+    private static String BING_KEY = "Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU";
 
     // static { // use system proxy settings when standalone application
     // System.setProperty("java.net.useSystemProxies", "true");
@@ -118,14 +121,17 @@ public class MapPaneTrial1 extends Application {
             public void changed(ObservableValue<? extends String> arg0,
                 String oldVal, String newVal) {
 
-                TileSourceFactory fac;
+                TileSource ts;
                 if (newVal.equals(bing)) {
-                    fac = new BingTileSourceFactory();
+                    TileSourceFactory fac = new BingTileSourceFactory();
+                    ts = fac.create();
+                    ts.setApiKey(BING_KEY);
                 }
                 else {
-                    fac = factory;
+                    ts = factory.create(newVal);
                 }
-                map.setTileSource(fac.create(newVal));
+                
+                map.setTileSource(ts);
 
             }
         });
