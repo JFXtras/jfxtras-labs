@@ -119,6 +119,16 @@ public class CalendarTimeTextFieldTrial1 extends Application {
 				lCalendarTimeTextField.setValue(null);
 			}
 			
+	        // disabled
+			{
+				lGridPane.add(new Label("disabled"), 0, lRowIdx);
+				CalendarTimeTextField lCalendarTimeTextField = new CalendarTimeTextField();
+				lCalendarTimeTextField.disableProperty().set(true);
+				lGridPane.add(lCalendarTimeTextField, 1, lRowIdx++);
+				
+				lCalendarTimeTextField.valueProperty().set(new GregorianCalendar(2011, 2, 01, 13, 45, 30)); // set a value
+			}
+			
 			lHBox.getChildren().add(lGridPane);
 		}
 			

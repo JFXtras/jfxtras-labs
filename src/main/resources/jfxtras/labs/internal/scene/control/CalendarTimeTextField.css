@@ -7,6 +7,10 @@
 	-fx-image: url("skin/CalendarTimeTextFieldCaspianSkinIcon.png");
 }
 
+.CalendarTimeTextFieldCaspianSkin .icon:disabled  {
+	-fx-image: url("skin/CalendarTimeTextFieldCaspianSkinIconDisabled.png");
+}
+
 .CalendarTimeTextFieldCaspianSkin_popup {
 	-fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
 	-fx-background-insets: 0 0 -1 0,0,1,2;
