@@ -2,10 +2,6 @@ package jfxtras.labs.map;
 
 //License: GPL. Copyright 2009 by Stefan Zeller
 import java.awt.geom.Point2D;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
 /**
  * This class encapsulates a Point2D.Double and provide access
