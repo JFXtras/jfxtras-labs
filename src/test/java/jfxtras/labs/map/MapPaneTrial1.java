@@ -38,6 +38,7 @@ import jfxtras.labs.map.render.ImageMapMarker;
 import jfxtras.labs.map.render.MapLineable;
 import jfxtras.labs.map.render.MapMarkable;
 import jfxtras.labs.map.tile.BingTileSourceFactory;
+import jfxtras.labs.map.tile.BingType;
 import jfxtras.labs.map.tile.OsmTileSourceFactory;
 import jfxtras.labs.map.tile.OsmType;
 import jfxtras.labs.map.tile.TileSource;
@@ -107,14 +108,13 @@ public class MapPaneTrial1 extends Application {
         map.setDisplayPositionByLatLon(32.81729, -117.215905);
 
         ComboBox<String> comboBox = new ComboBox<>();
-
         for (OsmType type : OsmType.values()) {
-            comboBox.getItems().add(type.name());
+            comboBox.getItems().add(type.toString());
         }
-
-        final String bing = "Bing Aerial";
-        comboBox.getItems().add(bing);
-
+        for(BingType type : BingType.values()){
+        	comboBox.getItems().add(type.toString());
+        }
+        
         comboBox.getSelectionModel().select(tsName);
         comboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -122,9 +122,9 @@ public class MapPaneTrial1 extends Application {
                 String oldVal, String newVal) {
 
                 TileSource ts;
-                if (newVal.equals(bing)) {
+                if (newVal.toLowerCase().startsWith("bing")) {
                     TileSourceFactory fac = new BingTileSourceFactory();
-                    ts = fac.create();
+                    ts = fac.create(newVal);
                     ts.setApiKey(BING_KEY);
                 }
                 else {

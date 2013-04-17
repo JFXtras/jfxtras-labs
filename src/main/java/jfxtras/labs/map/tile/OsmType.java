@@ -1,12 +1,7 @@
-/*
- * (C) Copyright Dilax Intelcom GmbH.
- * 
- *  All Rights Reserved.
- */
 package jfxtras.labs.map.tile;
 
 /**
- * This enum contains values of already provided OSM layer types.
+ * This enum contains values of already provided osm tile types.
  * @author Mario Schröder
  */
 public enum OsmType {

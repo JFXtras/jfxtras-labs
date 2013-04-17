@@ -11,7 +11,11 @@ public class OsmTileSourceFactory extends TileSourceFactory {
 
     @Override
     public TileSource create() {
-        return create(OsmType.Mapnik.name());
+        return create(OsmType.Mapnik);
+    }
+    
+    public TileSource create(OsmType type){
+        return create(type.name());
     }
 
     @Override

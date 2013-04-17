@@ -39,6 +39,7 @@ public class DefaultTileSource implements TileSource {
     private String attributionLinkURL;
 
     private String attributionText;
+
     protected String apiKey;
 
     public DefaultTileSource(String name, String base_url) {
