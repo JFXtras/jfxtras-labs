@@ -8,14 +8,13 @@ public enum BingType {
     
     Bing("Bing"), BingAerial("Bing Aerial");
     
-    private String val;
+    private final String description;
     
-    private BingType(String val){
-        this.val = val;
+    private BingType(final String val){
+        this.description = val;
     }
 
-    @Override
-    public String toString() {
-        return val;
-    }
+	public String getDescription() {
+		return description;
+	}
 }
