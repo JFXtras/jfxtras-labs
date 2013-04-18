@@ -783,8 +783,8 @@ public final class MapPane extends Pane implements MapControlable {
                 ds.setOffsetY(3.0f);
                 ds.setColor(Color.BLACK);
                 attImgView.setEffect(ds);
-                attImgView.setLayoutX(mapWidth.get() - attrImage.getWidth());
-                attImgView.setLayoutY((mapHeight.doubleValue() - 8) - (1.4 * attrImage.getHeight()));
+                attImgView.setLayoutX(8);
+                attImgView.setLayoutY((mapHeight.doubleValue()) - (1.2 * attrImage.getHeight()));
                 tilesGroup.getChildren().add(attImgView);
             }
         }
