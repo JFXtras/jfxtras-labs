@@ -47,14 +47,6 @@ public interface TileSource {
      */
     public String getTileUrl(int zoom, int tilex, int tiley);
 
-    /**
-     * Specifies the tile image type. For tiles rendered by Mapnik or
-     * Osmarenderer this is usually <code>"png"</code>.
-     *
-     * @return file extension of the tile image type
-     */
-    public String getTileType();
-
     
     /**
      * Specifies how large each tile is.

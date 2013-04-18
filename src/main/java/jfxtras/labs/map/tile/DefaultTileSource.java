@@ -16,10 +16,6 @@ public class DefaultTileSource implements TileSource {
 
     public static final int DEFAULT_TILE_SIZE = 256;
 
-    protected static final String SLASH = "/";
-
-    protected static final String DOT = ".";
-
     protected String name;
 
     protected String baseUrl;
@@ -103,11 +99,6 @@ public class DefaultTileSource implements TileSource {
     @Override
     public String toString() {
         return getName();
-    }
-
-    @Override
-    public String getTileType() {
-        return tilePathBuilder.getTileType();
     }
 
     @Override
