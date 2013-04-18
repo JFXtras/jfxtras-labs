@@ -112,7 +112,7 @@ public class MapPaneTrial1 extends Application {
             comboBox.getItems().add(type.toString());
         }
         for(BingType type : BingType.values()){
-        	comboBox.getItems().add(type.toString());
+        	comboBox.getItems().add(type.getDescription());
         }
         
         comboBox.getSelectionModel().select(tsName);
