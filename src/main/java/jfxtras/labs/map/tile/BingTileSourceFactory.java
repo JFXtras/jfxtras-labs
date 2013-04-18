@@ -7,9 +7,10 @@ package jfxtras.labs.map.tile;
  */
 public class BingTileSourceFactory extends TileSourceFactory<BingType> {
 
-    private static final int ZOOM = 22;
+    private static final int ZOOM = 21;
 
     private static final String EXT = "jpeg";
+
     private static final String TILE_URL = "http://ecn.t2.tiles.virtualearth.net/tiles/";
 
     @Override
@@ -21,13 +22,13 @@ public class BingTileSourceFactory extends TileSourceFactory<BingType> {
     public TileSource create(BingType type) {
 
         BingTileSource tileSource;
-        
-        if(BingType.Aerial.equals(type)){
-                tileSource = new BingTileSource("Bing Aerial Maps", TILE_URL);
-                tileSource.setTilePath("tiles/a");
-        }else{
-                tileSource = new BingTileSource("Bing Maps", TILE_URL);
-                tileSource.setTilePath("tiles/r");
+
+        if (BingType.Aerial.equals(type)) {
+            tileSource = new BingTileSource("Bing Aerial Maps", TILE_URL);
+            tileSource.setTilePath("tiles/a");
+        } else {
+            tileSource = new BingTileSource("Bing Maps", TILE_URL);
+            tileSource.setTilePath("tiles/r");
         }
 
         tileSource.setMaxZoom(ZOOM);
