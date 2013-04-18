@@ -25,7 +25,7 @@ public class MapPaneTest {
 
 	@Before
 	public void setUp() throws Exception {
-		TileSourceFactory factory = new LocalTileSourceFactory();
+		TileSourceFactory<String> factory = new LocalTileSourceFactory();
 		classUnderTest = new MapPane(factory.create());
 		classUnderTest.setDisplayPositionByLatLon(COOR_VAL, COOR_VAL);
 	}

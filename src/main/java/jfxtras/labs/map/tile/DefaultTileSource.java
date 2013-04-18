@@ -14,9 +14,11 @@ import javafx.scene.image.Image;
  */
 public class DefaultTileSource implements TileSource {
 
-    public static final String PNG_EXT = "png";
-
     public static final int DEFAULT_TILE_SIZE = 256;
+
+    protected static final String SLASH = "/";
+
+    protected static final String DOT = ".";
 
     protected String name;
 
@@ -28,11 +30,11 @@ public class DefaultTileSource implements TileSource {
 
     private int maxZoom = 18;
 
-    private String extension = PNG_EXT;
-
     private boolean attributionRequired = true;
 
     private TileUrlBuildable urlBuilder;
+    
+    private TilePathBuildable tilePathBuilder;
 
     private String termsOfUserURL;
 
@@ -50,6 +52,7 @@ public class DefaultTileSource implements TileSource {
         this.name = name;
         this.baseUrl = base_url;
         attrImgUrl = attr_img_url;
+        tilePathBuilder = new DefaultTilePathBuilder();
     }
 
     @Override
@@ -71,7 +74,8 @@ public class DefaultTileSource implements TileSource {
      * @throws IOException when subclass cannot return the tile URL
      */
     public String getTilePath(int zoom, int tilex, int tiley) {
-        return "/" + zoom + "/" + tilex + "/" + tiley + "." + getTileType();
+        
+        return tilePathBuilder.buildPath(zoom, tilex, tiley);
     }
 
     public void setUrlBuilder(TileUrlBuildable urlBuilder) {
@@ -103,7 +107,7 @@ public class DefaultTileSource implements TileSource {
 
     @Override
     public String getTileType() {
-        return extension;
+        return tilePathBuilder.getTileType();
     }
 
     @Override
@@ -184,10 +188,6 @@ public class DefaultTileSource implements TileSource {
         this.maxZoom = maxZoom;
     }
 
-    public void setTileType(String extension) {
-        this.extension = extension;
-    }
-
     public void setAttributionRequired(boolean required) {
         this.attributionRequired = required;
     }
@@ -199,4 +199,9 @@ public class DefaultTileSource implements TileSource {
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
     }
+
+    public void setTilePathBuilder(TilePathBuildable tilePathBuilder) {
+        this.tilePathBuilder = tilePathBuilder;
+    }
+    
 }

@@ -24,8 +24,6 @@ class BingTileSource extends DefaultTileSource {
 
     private static volatile Future<List<Attribution>> attributions;
     
-    private String tilePath;
-
     public BingTileSource(String name, String base_url) {
         super(name, base_url);
         
@@ -142,33 +140,7 @@ class BingTileSource extends DefaultTileSource {
             e.printStackTrace();
         }
         return attr;
-    }
-
-    @Override
-    public String getTilePath(int zoom, int tilex, int tiley) {
-
-        String quadtree = computeQuadTree(zoom, tilex, tiley);
-        StringBuilder builder = new StringBuilder();
-        builder.append(tilePath).append(quadtree).append(".").append(getTileType()).append("?g=587");
-        return builder.toString();
-    }
-    
-    private String computeQuadTree(int zoom, int tilex, int tiley) {
-        StringBuilder k = new StringBuilder();
-        for (int i = zoom; i > 0; i--) {
-            char digit = 48;
-            int mask = 1 << (i - 1);
-            if ((tilex & mask) != 0) {
-                digit += 1;
-            }
-            if ((tiley & mask) != 0) {
-                digit += 2;
-            }
-            k.append(digit);
-        }
-        return k.toString();
-    }
-    
+    }   
 
     @Override
     public Image getAttributionImage() {
@@ -206,9 +178,5 @@ class BingTileSource extends DefaultTileSource {
         builder.append("http://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial/0,0?zl=1&mapVersion=v1&key=");
         builder.append(getApiKey()).append("&include=ImageryProviders&output=xml");
         return new URL(builder.toString());
-    }
-
-    void setTilePath(String tilePath) {
-        this.tilePath = tilePath;
     }
 }

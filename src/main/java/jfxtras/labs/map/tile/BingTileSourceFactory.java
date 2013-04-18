@@ -27,19 +27,22 @@ public class BingTileSourceFactory extends TileSourceFactory<BingType> {
     @Override
     public TileSource create(BingType type) {
 
-        BingTileSource tileSource;
+        DefaultTileSource tileSource;
+        
+        BingTilePathBuilder tilePathBuilder = new BingTilePathBuilder();
+        tilePathBuilder.setTileType(EXT);
 
         if (BingType.Aerial.equals(type)) {
             tileSource = new BingTileSource("Bing Aerial Maps", TILE_URL);
-            tileSource.setTilePath("tiles/a");
+            tilePathBuilder.setTilePath("tiles/a");
         } else {
             tileSource = new BingTileSource("Bing Maps", TILE_URL);
-            tileSource.setTilePath("tiles/r");
+            tilePathBuilder.setTilePath("tiles/r");
         }
 
+        tileSource.setTilePathBuilder(tilePathBuilder);
         tileSource.setApiKey(apiKey);
         tileSource.setMaxZoom(ZOOM);
-        tileSource.setTileType(EXT);
         tileSource.setTermsOfUserURL("http://opengeodata.org/microsoft-imagery-details");
 
         // FIXME: I've set attributionLinkURL temporarily to ToU URL to comply with bing ToU
