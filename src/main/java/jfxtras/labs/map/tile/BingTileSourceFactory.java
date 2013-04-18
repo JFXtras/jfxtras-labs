@@ -12,7 +12,13 @@ public class BingTileSourceFactory extends TileSourceFactory<BingType> {
     private static final String EXT = "jpeg";
 
     private static final String TILE_URL = "http://ecn.t2.tiles.virtualearth.net/tiles/";
+    
+    private String apiKey;
 
+    public BingTileSourceFactory(String apiKey) {
+        this.apiKey = apiKey;
+    }
+    
     @Override
     public TileSource create() {
         return create(BingType.Map);
@@ -31,6 +37,7 @@ public class BingTileSourceFactory extends TileSourceFactory<BingType> {
             tileSource.setTilePath("tiles/r");
         }
 
+        tileSource.setApiKey(apiKey);
         tileSource.setMaxZoom(ZOOM);
         tileSource.setTileType(EXT);
         tileSource.setTermsOfUserURL("http://opengeodata.org/microsoft-imagery-details");

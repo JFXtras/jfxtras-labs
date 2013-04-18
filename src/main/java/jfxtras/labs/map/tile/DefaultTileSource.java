@@ -196,7 +196,6 @@ public class DefaultTileSource implements TileSource {
         return apiKey;
     }
 
-    @Override
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
     }

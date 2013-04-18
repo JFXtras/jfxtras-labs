@@ -128,10 +128,9 @@ public class MapPaneTrial1 extends Application {
                 String name = newVal.split(" ")[1];
                 TileSource ts;
                 if (newVal.startsWith(BING)) {
-                    TileSourceFactory<BingType> fac = new BingTileSourceFactory();
+                    TileSourceFactory<BingType> fac = new BingTileSourceFactory(BING_KEY);
                     BingType type = BingType.valueOf(name);
                     ts = fac.create(type);
-                    ts.setApiKey(BING_KEY);
                 } else {
                     OsmType type = OsmType.valueOf(name);
                     ts = factory.create(type);
