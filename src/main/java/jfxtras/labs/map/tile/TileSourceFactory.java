@@ -4,7 +4,7 @@ package jfxtras.labs.map.tile;
  * Parent class for all {@link TileSource} factories.
  * @author Mario Schröder
  */
-public abstract class TileSourceFactory {
+public abstract class TileSourceFactory<T> {
     
     /**
      * Creates a new tile source.
@@ -18,5 +18,5 @@ public abstract class TileSourceFactory {
      * 
      * @return new {@link TileSource}
      */
-    public abstract TileSource create(String type);
+    public abstract TileSource create(T type);
 }

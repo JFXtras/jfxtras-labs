@@ -5,7 +5,7 @@ package jfxtras.labs.map.tile;
  *
  * @author Mario Schröder
  */
-public class BingTileSourceFactory extends TileSourceFactory {
+public class BingTileSourceFactory extends TileSourceFactory<BingType> {
 
     private static final int ZOOM = 22;
 
@@ -14,23 +14,15 @@ public class BingTileSourceFactory extends TileSourceFactory {
 
     @Override
     public TileSource create() {
-        return create(BingType.Bing);
-    }
-    
-    public TileSource create(BingType type){
-        return create(type.name());
+        return create(BingType.Map);
     }
 
     @Override
-    public TileSource create(String type) {
+    public TileSource create(BingType type) {
 
         BingTileSource tileSource;
         
-        if(type == null){
-            type = "";
-        }
-        
-        if(type.toLowerCase().contains("aerial")){
+        if(BingType.Aerial.equals(type)){
                 tileSource = new BingTileSource("Bing Aerial Maps", TILE_URL);
                 tileSource.setTilePath("tiles/a");
         }else{
