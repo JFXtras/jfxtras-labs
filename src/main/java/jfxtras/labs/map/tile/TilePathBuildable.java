@@ -14,6 +14,8 @@ public interface TilePathBuildable {
      * png image
      */
     String PNG_EXT = "png";
+    
+    String JPEG_EXT = "jpeg";
 
     String buildPath(int zoom, int tilex, int tiley);
 

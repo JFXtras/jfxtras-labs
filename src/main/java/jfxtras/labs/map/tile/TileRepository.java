@@ -24,6 +24,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.image.Image;
 
 /**
  * A repository for the map tiles.
@@ -65,7 +68,8 @@ public class TileRepository {
                 tile = new Tile(location, info.getImage());
             } else {
                 tile = new Tile(location);
-                tile.loadImage(cache);
+                tile.imageLoadedProperty().addListener(new ImageLoadedListener(location, tile));
+                tile.loadImage();
             }
         }
 
@@ -78,7 +82,7 @@ public class TileRepository {
      * @param location
      */
     private void cleanupCache() {
-        
+
         Set<Entry<String, TileInfo>> entries = cache.entrySet();
         for (Entry<String, TileInfo> entry : entries) {
             TileInfo info = entry.getValue();
@@ -114,5 +118,32 @@ public class TileRepository {
      */
     public void setExpire(long expire) {
         this.expire = expire;
+    }
+
+    private class ImageLoadedListener implements ChangeListener<Boolean> {
+
+        private String location;
+
+        private Tile tile;
+
+        public ImageLoadedListener(String location, Tile tile) {
+            this.location = location;
+            this.tile = tile;
+        }
+
+        @Override
+        public void changed(
+            ObservableValue<? extends Boolean> ov, Boolean oldVal, Boolean newVal) {
+            if (newVal.booleanValue()) {
+                addImage(location, tile.getImageView().getImage());
+            }
+        }
+
+        private void addImage(String tileLocation, Image image) {
+
+            long timeStamp = System.currentTimeMillis();
+            TileInfo info = new TileInfo(timeStamp, image);
+            cache.put(tileLocation, info);
+        }
     }
 }

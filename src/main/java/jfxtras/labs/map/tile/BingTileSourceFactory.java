@@ -9,7 +9,6 @@ public class BingTileSourceFactory extends TileSourceFactory<BingType> {
 
     private static final int ZOOM = 21;
 
-    private static final String EXT = "jpeg";
 
     private static final String TILE_URL = "http://ecn.t2.tiles.virtualearth.net/tiles/";
     
@@ -30,7 +29,6 @@ public class BingTileSourceFactory extends TileSourceFactory<BingType> {
         DefaultTileSource tileSource;
         
         BingTilePathBuilder tilePathBuilder = new BingTilePathBuilder();
-        tilePathBuilder.setTileType(EXT);
 
         if (BingType.Aerial.equals(type)) {
             tileSource = new BingTileSource("Bing Aerial Maps", TILE_URL);

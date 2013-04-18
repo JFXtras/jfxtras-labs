@@ -13,7 +13,7 @@ public abstract class AbstractTilePathBuilder implements TilePathBuildable{
     }
     
     @Override
-    public void setTileType(String tileType) {
+    public final void setTileType(String tileType) {
         this.tileType = tileType;
     }
     

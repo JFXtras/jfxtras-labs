@@ -21,9 +21,9 @@
 package jfxtras.labs.map.tile;
 
 import java.io.File;
-import java.util.Map;
 
 import javafx.animation.AnimationTimer;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.image.Image;
@@ -52,7 +52,7 @@ public class Tile {
 
     private String tileLocation;
     
-    private Map<String, TileInfo> cache;
+    private SimpleBooleanProperty imageLoadedProperty;
 
     public Tile(String tileLocation, Image image) {
         this(tileLocation);
@@ -62,10 +62,12 @@ public class Tile {
     public Tile(String tileLocation) {
         imageView = new ImageView();
         this.tileLocation = tileLocation;
+        imageLoadedProperty = new SimpleBooleanProperty();
     }
     
-    void loadImage(Map<String, TileInfo> cache){
-    	this.cache = cache;
+    
+    public void loadImage(){
+        imageLoadedProperty.set(false);
     	if (tileLocation.startsWith(HTTP)) {
             loadFromHttp();
         } else {
@@ -96,7 +98,7 @@ public class Tile {
                 if (new_val.doubleValue() == COMPLETE) {
                     timer.stop();
                     resetImageView();
-                    setImage(img);
+                    setLoadedImage(img);
                 }
             }
         });
@@ -106,7 +108,7 @@ public class Tile {
         File file = new File(tileLocation);
         if (file.exists()) {
             Image image = new Image(file.toURI().toString());
-			setImage(image);
+            setLoadedImage(image);
         } else {
             imageView.setImage(getErrorImage());
         }
@@ -141,14 +143,13 @@ public class Tile {
         return imageView;
     }
 
-    private void setImage(Image image) {
-        imageView.setImage(image);
-        
-        if(cache != null){
-        	long timeStamp = System.currentTimeMillis();
-        	TileInfo info = new TileInfo(timeStamp, image);
-        	cache.put(tileLocation, info);
-        }
-    }
     
+    public SimpleBooleanProperty imageLoadedProperty() {
+        return imageLoadedProperty;
+    }
+
+    private void setLoadedImage(Image image) {
+        imageView.setImage(image);
+        imageLoadedProperty.set(true);
+    }
 }

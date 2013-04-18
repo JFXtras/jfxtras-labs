@@ -7,6 +7,10 @@ package jfxtras.labs.map.tile;
 public class BingTilePathBuilder extends AbstractTilePathBuilder{
     
     private String tilePath;
+
+    public BingTilePathBuilder() {
+        setTileType(JPEG_EXT);
+    }
    
     @Override
     public String buildPath(int zoom, int tilex, int tiley) {
