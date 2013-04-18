@@ -1,7 +1,5 @@
 package jfxtras.labs.map.tile;
 
-import static jfxtras.labs.map.tile.DefaultTileSource.SLASH;
-
 /**
  *
  * @author Mario Schröder
