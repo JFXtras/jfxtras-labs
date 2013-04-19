@@ -66,4 +66,12 @@ public interface MapControlable {
     Point getMapPoint(double lat, double lon, boolean checkOutside);
 
     Group getTilesGroup();
+
+    int getMapHeight();
+
+    int getMapWidth();
+
+    int getMapX();
+
+    int getMapY();
 }
