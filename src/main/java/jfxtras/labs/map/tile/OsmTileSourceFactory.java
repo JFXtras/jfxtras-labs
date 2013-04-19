@@ -5,7 +5,7 @@ package jfxtras.labs.map.tile;
  *
  * @author Mario Schröder
  */
-public class OsmTileSourceFactory extends TileSourceFactory<OsmType> {
+public class OsmTileSourceFactory implements TileSourceFactory<OsmType> {
 
     private static final int ZOOM = 17;
 
@@ -35,7 +35,7 @@ public class OsmTileSourceFactory extends TileSourceFactory<OsmType> {
 
         tileSource.setAttributionLinkURL("http://openstreetmap.org/");
         tileSource.setTermsOfUserURL("http://www.openstreetmap.org/copyright");
-        tileSource.setAttributionText("© OpenStreetMap contributors, CC-BY-SA ");
+//        tileSource.setAttributionText("© OpenStreetMap contributors, CC-BY-SA ");
 
         return tileSource;
     }

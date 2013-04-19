@@ -5,7 +5,7 @@ package jfxtras.labs.map.tile;
  *
  * @author Mario Schöder
  */
-public class LocalTileSourceFactory extends TileSourceFactory<String> {
+public class LocalTileSourceFactory implements TileSourceFactory<String> {
 
     private static final int ZOOM = 16;
 

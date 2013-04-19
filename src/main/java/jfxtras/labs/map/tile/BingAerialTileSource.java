@@ -20,11 +20,11 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-class BingTileSource extends DefaultTileSource {
+class BingAerialTileSource extends DefaultTileSource {
 
     private static volatile Future<List<Attribution>> attributions;
     
-    public BingTileSource(String name, String base_url) {
+    public BingAerialTileSource(String name, String base_url) {
         super(name, base_url);
         
         if (attributions == null) {
@@ -143,18 +143,15 @@ class BingTileSource extends DefaultTileSource {
     }   
 
     @Override
-    public Image getAttributionImage() {
-        return new Image(getClass().getResourceAsStream("bing_maps.png"));
-    }
-
-    @Override
     public String getAttributionText(int zoom, Coordinate topLeft, Coordinate botRight) {
+        
+        String text;
         try {
             if (!attributions.isDone()) {
-                return "Loading Bing attribution data...";
+                text = "Loading Bing attribution data...";
             }
             if (attributions.get() == null) {
-                return "Error loading Bing attribution data";
+                text = "Error loading Bing attribution data";
             }
             StringBuilder a = new StringBuilder();
             for (Attribution attr : attributions.get()) {
@@ -166,11 +163,11 @@ class BingTileSource extends DefaultTileSource {
                     }
                 }
             }
-            return a.toString();
+            text = a.toString();
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+           text = e.getMessage();
         }
-        return "Error loading Bing attribution data";
+        return text;
     }
     
     private URL buildUrl() throws MalformedURLException {

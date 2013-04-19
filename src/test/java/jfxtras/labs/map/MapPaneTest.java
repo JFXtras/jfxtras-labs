@@ -40,11 +40,28 @@ public class MapPaneTest {
 	
 	@Test
 	public void testGetCoordinate(){
-		Point p = new Point(1,1);
+		classUnderTest.setDisplayPositionByLatLon(32.81729, -117.215905);
+		int x = classUnderTest.getMapX();
+		int y = classUnderTest.getMapY();
+		assertEquals(0, x);
+		assertEquals(0, y);
+		
+		Point p = new Point(x,y);
 		Coordinate coord = classUnderTest.getCoordinate(p);
 		assertNotNull(coord);
-		assertEquals(1.5489, coord.getLatitude(), COOR_DIFF);
-		assertEquals(0.4531, coord.getLongitude(), COOR_DIFF);
+		assertEquals(33.28, coord.getLatitude(), COOR_DIFF);
+		assertEquals(-117.767, coord.getLongitude(), COOR_DIFF);
+		
+		int width = classUnderTest.getMapWidth();
+		int height = classUnderTest.getMapHeight();
+		assertEquals(400, width);
+		assertEquals(400, height);
+		
+		p = new Point(width, height);
+		coord = classUnderTest.getCoordinate(p);
+		assertNotNull(coord);
+		assertEquals(32.3568, coord.getLatitude(), COOR_DIFF);
+		assertEquals(-116.6693, coord.getLongitude(), COOR_DIFF);
 	}
 	
 	@Test

@@ -756,12 +756,16 @@ public final class MapPane extends Pane implements MapControlable {
 
         if (tileSource.isAttributionRequired()) {
             
-            String termsUrl = tileSource.getTermsOfUseURL();
+            //TODO calculate coordinates
+            Coordinate topLeft = getCoordinate(getMapX(), getMapY());
+            Coordinate bottomRight = getCoordinate(getMapWidth(), getMapHeight());
+            
+            String attrTxt = tileSource.getAttributionText(zoom, topLeft, bottomRight);
             Image attrImage = tileSource.getAttributionImage();
 
             // Draw attribution text
-            if (termsUrl != null) {
-                Text attrTermsUrl = new Text(termsUrl);
+            if (attrTxt != null) {
+                Text attrTermsUrl = new Text(attrTxt);
                 DropShadow ds = new DropShadow();
                 ds.setOffsetY(3.0f);
                 ds.setColor(Color.BLACK); // Color.color(0.4f, 0.4f, 0.4f));
@@ -846,19 +850,19 @@ public final class MapPane extends Pane implements MapControlable {
         return this.mapY.get();
     }
 
-    private void setMapWidth(double val) {
+    public void setMapWidth(double val) {
         mapWidth.set((int) val);
     }
 
-    private int getMapWidth() {
+    public int getMapWidth() {
         return mapWidth.get();
     }
 
-    private void setMapHeight(double val) {
+    public void setMapHeight(double val) {
         mapHeight.set((int) val);
     }
 
-    private int getMapHeight() {
+    public int getMapHeight() {
         return mapHeight.get();
     }
 

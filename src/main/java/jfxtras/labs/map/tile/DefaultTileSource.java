@@ -20,7 +20,7 @@ public class DefaultTileSource implements TileSource {
 
     protected String baseUrl;
 
-    protected String attrImgUrl;
+    private Image attributionImage;
 
     private int minZoom;
 
@@ -41,13 +41,9 @@ public class DefaultTileSource implements TileSource {
     protected String apiKey;
 
     public DefaultTileSource(String name, String base_url) {
-        this(name, base_url, null);
-    }
-
-    public DefaultTileSource(String name, String base_url, String attr_img_url) {
-        this.name = name;
+    	this.name = name;
         this.baseUrl = base_url;
-        attrImgUrl = attr_img_url;
+        
         tilePathBuilder = new DefaultTilePathBuilder();
     }
 
@@ -108,14 +104,14 @@ public class DefaultTileSource implements TileSource {
 
     @Override
     public Image getAttributionImage() {
-        if (attrImgUrl != null) {
-            return new Image(attrImgUrl, true);
-        } else {
-            return null;
-        }
-    }
+		return attributionImage;
+	}
 
-    @Override
+	public void setAttributionImage(Image attributionImage) {
+		this.attributionImage = attributionImage;
+	}
+
+	@Override
     public boolean isAttributionRequired() {
         return attributionRequired;
     }
@@ -194,5 +190,6 @@ public class DefaultTileSource implements TileSource {
     public void setTilePathBuilder(TilePathBuildable tilePathBuilder) {
         this.tilePathBuilder = tilePathBuilder;
     }
+    
     
 }
