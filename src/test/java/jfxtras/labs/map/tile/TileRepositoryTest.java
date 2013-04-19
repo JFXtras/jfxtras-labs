@@ -26,23 +26,25 @@ public class TileRepositoryTest {
 	@Test
 	public void testOsmSource() {
 
-		TileSourceFactory factory = new OsmTileSourceFactory();
+		TileSourceFactory<OsmType> factory = new OsmTileSourceFactory();
 		for (OsmType type : OsmType.values()) {
-			verify(factory.create(type.name()));
+			verify(factory.create(type));
 		}
 	}
 
 	@Test
 	public void testBingSource() {
 
-		TileSourceFactory factory = new BingTileSourceFactory();
-		verify(factory.create(null));
+		TileSourceFactory<BingType> factory = new BingTileSourceFactory(null);
+		for (BingType type : BingType.values()) {
+			verify(factory.create(type));
+		}
 	}
 
 	@Test
 	public void testLocalSource() {
         
-		TileSourceFactory factory = new LocalTileSourceFactory();
+		TileSourceFactory<String> factory = new LocalTileSourceFactory();
 		verify(factory.create(null));
 		verify(factory.create(getClass().getResource("test").getFile()));
 	}
@@ -50,7 +52,7 @@ public class TileRepositoryTest {
 	@Test
 	public void testWithIllegalArgs() {
         
-		TileSourceFactory factory = new LocalTileSourceFactory();
+		TileSourceFactory<String> factory = new LocalTileSourceFactory();
 		TileRepository classUnderTest = new TileRepository(factory.create());
 		Tile tile = classUnderTest.getTile(-1, 0, 0);
 		assertNull(tile);

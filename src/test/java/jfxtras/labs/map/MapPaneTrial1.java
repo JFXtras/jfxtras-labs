@@ -38,8 +38,10 @@ import jfxtras.labs.map.render.ImageMapMarker;
 import jfxtras.labs.map.render.MapLineable;
 import jfxtras.labs.map.render.MapMarkable;
 import jfxtras.labs.map.tile.BingTileSourceFactory;
+import jfxtras.labs.map.tile.BingType;
 import jfxtras.labs.map.tile.OsmTileSourceFactory;
 import jfxtras.labs.map.tile.OsmType;
+import jfxtras.labs.map.tile.TileSource;
 import jfxtras.labs.map.tile.TileSourceFactory;
 
 /**
@@ -47,6 +49,12 @@ import jfxtras.labs.map.tile.TileSourceFactory;
  * @author smithjel
  */
 public class MapPaneTrial1 extends Application {
+    
+    private static String BING_KEY = "Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU";
+    
+    private static final String OSM = "OSM";
+    
+    private static final String BING = "Bing";
 
     // static { // use system proxy settings when standalone application
     // System.setProperty("java.net.useSystemProxies", "true");
@@ -75,10 +83,10 @@ public class MapPaneTrial1 extends Application {
 
         primaryStage.setTitle("Map Demo");
 
-        final TileSourceFactory factory = new OsmTileSourceFactory();
-        String tsName = OsmType.Mapnik.name();
+        final TileSourceFactory<OsmType> factory = new OsmTileSourceFactory();
+        OsmType osmType = OsmType.Mapnik;
 
-        final MapPane map = new MapPane(factory.create(tsName));
+        final MapPane map = new MapPane(factory.create(osmType));
 
         final String radarImgUrl = "http://radar.weather.gov/ridge/RadarImg/N0R/NKX_N0R_0.gif";
 
@@ -104,28 +112,31 @@ public class MapPaneTrial1 extends Application {
         map.setDisplayPositionByLatLon(32.81729, -117.215905);
 
         ComboBox<String> comboBox = new ComboBox<>();
-
         for (OsmType type : OsmType.values()) {
-            comboBox.getItems().add(type.name());
+            comboBox.getItems().add(OSM + " " + type.toString());
         }
-
-        final String bing = "Bing Aerial";
-        comboBox.getItems().add(bing);
-
-        comboBox.getSelectionModel().select(tsName);
+        for(BingType type : BingType.values()){
+        	comboBox.getItems().add(BING + " " + type.toString());
+        }
+        
+        comboBox.getSelectionModel().select(osmType.toString());
         comboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> arg0,
                 String oldVal, String newVal) {
 
-                TileSourceFactory fac;
-                if (newVal.equals(bing)) {
-                    fac = new BingTileSourceFactory();
+                String name = newVal.split(" ")[1];
+                TileSource ts;
+                if (newVal.startsWith(BING)) {
+                    TileSourceFactory<BingType> fac = new BingTileSourceFactory(BING_KEY);
+                    BingType type = BingType.valueOf(name);
+                    ts = fac.create(type);
+                } else {
+                    OsmType type = OsmType.valueOf(name);
+                    ts = factory.create(type);
                 }
-                else {
-                    fac = factory;
-                }
-                map.setTileSource(fac.create(newVal));
+                
+                map.setTileSource(ts);
 
             }
         });

@@ -3,6 +3,7 @@ package jfxtras.labs.map.tile;
 import jfxtras.labs.map.Coordinate;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -21,13 +22,11 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 class BingAerialTileSource extends DefaultTileSource {
 
-    private static String API_KEY = "Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU";
-
     private static volatile Future<List<Attribution>> attributions;
-
-    public BingAerialTileSource() {
-        super("Bing Aerial Maps", "http://ecn.t2.tiles.virtualearth.net/tiles/");
-
+    
+    public BingAerialTileSource(String name, String base_url) {
+        super(name, base_url);
+        
         if (attributions == null) {
             attributions = Executors.newSingleThreadExecutor().submit(new Callable<List<Attribution>>() {
                 @Override
@@ -118,10 +117,12 @@ class BingAerialTileSource extends DefaultTileSource {
     }
 
     private List<Attribution> loadAttributionText() {
+        
+        List<Attribution> attr = null;
+        
         try {
-            URL u = new URL("http://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial/0,0?zl=1&mapVersion=v1&key="
-                + API_KEY + "&include=ImageryProviders&output=xml");
-            URLConnection conn = u.openConnection();
+            URL url = buildUrl();
+            URLConnection conn = url.openConnection();
 
             // This is not JOSM! Do not use anything other than standard JRE classes within this package!
             // See package.html for details
@@ -133,65 +134,46 @@ class BingAerialTileSource extends DefaultTileSource {
             AttrHandler handler = new AttrHandler();
             parser.setContentHandler(handler);
             parser.parse(new InputSource(stream));
-            //System.err.println("Added " + handler.attributions.size() + " attributions.");
-            return handler.attributions;
+
+            attr = handler.attributions;
         } catch (IOException | SAXException e) {
             e.printStackTrace();
         }
-        return null;
-    }
-
-    @Override
-    public String getTilePath(int zoom, int tilex, int tiley) {
-
-        String quadtree = computeQuadTree(zoom, tilex, tiley);
-        return "/tiles/a" + quadtree + "." + getTileType() + "?g=587";
-    }
-
-    @Override
-    public Image getAttributionImage() {
-        return new Image(getClass().getResourceAsStream("bing_maps.png"));
-    }
+        return attr;
+    }   
 
     @Override
     public String getAttributionText(int zoom, Coordinate topLeft, Coordinate botRight) {
+        
+        String text;
         try {
             if (!attributions.isDone()) {
-                return "Loading Bing attribution data...";
+                text = "Loading Bing attribution data...";
             }
             if (attributions.get() == null) {
-                return "Error loading Bing attribution data";
+                text = "Error loading Bing attribution data";
             }
             StringBuilder a = new StringBuilder();
             for (Attribution attr : attributions.get()) {
                 if (zoom <= attr.maxZoom && zoom >= attr.minZoom) {
-                    if (topLeft.getLon() < attr.max.getLon() && botRight.getLon() > attr.min.getLon()
-                        && topLeft.getLat() > attr.min.getLat() && botRight.getLat() < attr.max.getLat()) {
+                    if (topLeft.getLongitude() < attr.max.getLongitude() && botRight.getLongitude() > attr.min.getLongitude()
+                        && topLeft.getLatitude() > attr.min.getLatitude() && botRight.getLatitude() < attr.max.getLatitude()) {
                         a.append(attr.attribution);
                         a.append(" ");
                     }
                 }
             }
-            return a.toString();
+            text = a.toString();
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+           text = e.getMessage();
         }
-        return "Error loading Bing attribution data";
+        return text;
     }
-
-    static String computeQuadTree(int zoom, int tilex, int tiley) {
-        StringBuilder k = new StringBuilder();
-        for (int i = zoom; i > 0; i--) {
-            char digit = 48;
-            int mask = 1 << (i - 1);
-            if ((tilex & mask) != 0) {
-                digit += 1;
-            }
-            if ((tiley & mask) != 0) {
-                digit += 2;
-            }
-            k.append(digit);
-        }
-        return k.toString();
+    
+    private URL buildUrl() throws MalformedURLException {
+        StringBuilder builder = new StringBuilder();
+        builder.append("http://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial/0,0?zl=1&mapVersion=v1&key=");
+        builder.append(getApiKey()).append("&include=ImageryProviders&output=xml");
+        return new URL(builder.toString());
     }
 }

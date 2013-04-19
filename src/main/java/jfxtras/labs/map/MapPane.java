@@ -22,10 +22,12 @@ package jfxtras.labs.map;
 
 import jfxtras.labs.map.tile.Tile;
 import jfxtras.labs.map.tile.TileRepository;
+import jfxtras.labs.map.render.LicenseRenderer;
 import jfxtras.labs.map.render.MapLineable;
 import jfxtras.labs.map.render.MapMarkable;
 import jfxtras.labs.map.render.MapOverlayable;
 import jfxtras.labs.map.render.MapPolygonable;
+import jfxtras.labs.map.render.Renderable;
 import jfxtras.labs.map.tile.TileSource;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -40,8 +42,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -451,7 +451,7 @@ public final class MapPane extends Pane implements MapControlable {
     // Calculates the position on the map of a given coordinate
     @Override
     public Point getMapPoint(Coordinate coord) {
-        return getMapPoint(coord.getLat(), coord.getLon(), false);
+        return getMapPoint(coord.getLatitude(), coord.getLongitude(), false);
     }
 
     @Override
@@ -491,7 +491,7 @@ public final class MapPane extends Pane implements MapControlable {
             return;
         }
         Coordinate zoomPos = getCoordinate(mapPoint);
-        setDisplayPositionByLatLon(mapPoint, zoomPos.getLat(), zoomPos.getLon(), zoom);
+        setDisplayPositionByLatLon(mapPoint, zoomPos.getLatitude(), zoomPos.getLongitude(), zoom);
     }
 
     @Override
@@ -755,38 +755,8 @@ public final class MapPane extends Pane implements MapControlable {
     private void renderAttribution() {
 
         if (tileSource.isAttributionRequired()) {
-            
-            String termsUrl = tileSource.getTermsOfUseURL();
-            Image attrImage = tileSource.getAttributionImage();
-
-            // Draw attribution text
-            if (termsUrl != null) {
-                Text attrTermsUrl = new Text(termsUrl);
-                DropShadow ds = new DropShadow();
-                ds.setOffsetY(3.0f);
-                ds.setColor(Color.BLACK); // Color.color(0.4f, 0.4f, 0.4f));
-                attrTermsUrl.setEffect(ds);
-                attrTermsUrl.setFontSmoothingType(FontSmoothingType.LCD);
-                attrTermsUrl.setFill(Color.BLUE);
-
-                tilesGroup.getChildren().add(attrTermsUrl);
-
-                double strwidth = attrTermsUrl.getBoundsInParent().getWidth();
-                attrTermsUrl.setLayoutX((double) (mapWidth.get() - strwidth));
-                attrTermsUrl.setLayoutY(mapHeight.doubleValue() - 8);
-            }
-
-            // Draw attribution logo
-            if (attrImage != null) {
-                ImageView attImgView = new ImageView(attrImage);
-                DropShadow ds = new DropShadow();
-                ds.setOffsetY(3.0f);
-                ds.setColor(Color.BLACK); // Color.color(0.4f, 0.4f, 0.4f));
-                attImgView.setEffect(ds);
-                attImgView.setLayoutX(mapWidth.get() - attrImage.getWidth());
-                attImgView.setLayoutY((mapHeight.doubleValue() - 8) - (1.4 * attrImage.getHeight()));
-                tilesGroup.getChildren().add(attImgView);
-            }
+            Renderable renderer = new LicenseRenderer();
+            renderer.render(this);
         }
     }
 
@@ -834,6 +804,7 @@ public final class MapPane extends Pane implements MapControlable {
         this.mapX.set(val);
     }
 
+    @Override
     public int getMapX() {
         return this.mapX.get();
     }
@@ -842,23 +813,26 @@ public final class MapPane extends Pane implements MapControlable {
         this.mapY.set(val);
     }
 
+    @Override
     public int getMapY() {
         return this.mapY.get();
     }
 
-    private void setMapWidth(double val) {
+    public void setMapWidth(double val) {
         mapWidth.set((int) val);
     }
 
-    private int getMapWidth() {
+    @Override
+    public int getMapWidth() {
         return mapWidth.get();
     }
 
-    private void setMapHeight(double val) {
+    public void setMapHeight(double val) {
         mapHeight.set((int) val);
     }
 
-    private int getMapHeight() {
+    @Override
+    public int getMapHeight() {
         return mapHeight.get();
     }
 

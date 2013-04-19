@@ -14,25 +14,23 @@ import javafx.scene.image.Image;
  */
 public class DefaultTileSource implements TileSource {
 
-    public static final String PNG_EXT = "png";
-
     public static final int DEFAULT_TILE_SIZE = 256;
 
     protected String name;
 
     protected String baseUrl;
 
-    protected String attrImgUrl;
+    private Image attributionImage;
 
     private int minZoom;
 
     private int maxZoom = 18;
 
-    private String extension = PNG_EXT;
-
     private boolean attributionRequired = true;
 
     private TileUrlBuildable urlBuilder;
+    
+    private TilePathBuildable tilePathBuilder;
 
     private String termsOfUserURL;
 
@@ -40,14 +38,13 @@ public class DefaultTileSource implements TileSource {
 
     private String attributionText;
 
-    public DefaultTileSource(String name, String base_url) {
-        this(name, base_url, null);
-    }
+    protected String apiKey;
 
-    public DefaultTileSource(String name, String base_url, String attr_img_url) {
-        this.name = name;
+    public DefaultTileSource(String name, String base_url) {
+    	this.name = name;
         this.baseUrl = base_url;
-        attrImgUrl = attr_img_url;
+        
+        tilePathBuilder = new DefaultTilePathBuilder();
     }
 
     @Override
@@ -69,7 +66,8 @@ public class DefaultTileSource implements TileSource {
      * @throws IOException when subclass cannot return the tile URL
      */
     public String getTilePath(int zoom, int tilex, int tiley) {
-        return "/" + zoom + "/" + tilex + "/" + tiley + "." + getTileType();
+        
+        return tilePathBuilder.buildPath(zoom, tilex, tiley);
     }
 
     public void setUrlBuilder(TileUrlBuildable urlBuilder) {
@@ -100,25 +98,20 @@ public class DefaultTileSource implements TileSource {
     }
 
     @Override
-    public String getTileType() {
-        return extension;
-    }
-
-    @Override
     public int getTileSize() {
         return DEFAULT_TILE_SIZE;
     }
 
     @Override
     public Image getAttributionImage() {
-        if (attrImgUrl != null) {
-            return new Image(attrImgUrl, true);
-        } else {
-            return null;
-        }
-    }
+		return attributionImage;
+	}
 
-    @Override
+	public void setAttributionImage(Image attributionImage) {
+		this.attributionImage = attributionImage;
+	}
+
+	@Override
     public boolean isAttributionRequired() {
         return attributionRequired;
     }
@@ -182,11 +175,21 @@ public class DefaultTileSource implements TileSource {
         this.maxZoom = maxZoom;
     }
 
-    public void setTileType(String extension) {
-        this.extension = extension;
-    }
-
     public void setAttributionRequired(boolean required) {
         this.attributionRequired = required;
     }
+
+    protected String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    public void setTilePathBuilder(TilePathBuildable tilePathBuilder) {
+        this.tilePathBuilder = tilePathBuilder;
+    }
+    
+    
 }
