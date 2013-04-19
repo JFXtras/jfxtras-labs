@@ -35,7 +35,8 @@ public class BingTileSourceFactory extends ApiKeyTileSourceFactory<BingType> {
         } else {
             tileSource = new DefaultTileSource("Bing Maps", TILE_URL);
             tilePathBuilder.setTilePath("tiles/r");
-            tileSource.setAttributionText("© Nokia © Microsoft ");
+            //FIXME is it possible to get this information from a web service?
+            tileSource.setAttributionText("© 2012 Nokia  © 2013 Microsoft Corporation");
         }
 
         tileSource.setTilePathBuilder(tilePathBuilder);
