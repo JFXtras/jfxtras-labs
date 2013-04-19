@@ -32,10 +32,7 @@ public class OsmTileSourceFactory implements TileSourceFactory<OsmType> {
             default:
                 tileSource = new DefaultTileSource("Mapnik", "http://tile.openstreetmap.org");
         }
-
-        tileSource.setAttributionLinkURL("http://openstreetmap.org/");
-        tileSource.setTermsOfUserURL("http://www.openstreetmap.org/copyright");
-//        tileSource.setAttributionText("© OpenStreetMap contributors, CC-BY-SA ");
+        tileSource.setAttributionRequired(false);
 
         return tileSource;
     }

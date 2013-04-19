@@ -22,10 +22,12 @@ package jfxtras.labs.map;
 
 import jfxtras.labs.map.tile.Tile;
 import jfxtras.labs.map.tile.TileRepository;
+import jfxtras.labs.map.render.LicenseRenderer;
 import jfxtras.labs.map.render.MapLineable;
 import jfxtras.labs.map.render.MapMarkable;
 import jfxtras.labs.map.render.MapOverlayable;
 import jfxtras.labs.map.render.MapPolygonable;
+import jfxtras.labs.map.render.Renderable;
 import jfxtras.labs.map.tile.TileSource;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -40,8 +42,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -755,42 +755,8 @@ public final class MapPane extends Pane implements MapControlable {
     private void renderAttribution() {
 
         if (tileSource.isAttributionRequired()) {
-            
-            //TODO calculate coordinates
-            Coordinate topLeft = getCoordinate(getMapX(), getMapY());
-            Coordinate bottomRight = getCoordinate(getMapWidth(), getMapHeight());
-            
-            String attrTxt = tileSource.getAttributionText(zoom, topLeft, bottomRight);
-            Image attrImage = tileSource.getAttributionImage();
-
-            // Draw attribution text
-            if (attrTxt != null) {
-                Text attrTermsUrl = new Text(attrTxt);
-                DropShadow ds = new DropShadow();
-                ds.setOffsetY(3.0f);
-                ds.setColor(Color.BLACK); // Color.color(0.4f, 0.4f, 0.4f));
-                attrTermsUrl.setEffect(ds);
-                attrTermsUrl.setFontSmoothingType(FontSmoothingType.LCD);
-                attrTermsUrl.setFill(Color.BLUE);
-
-                tilesGroup.getChildren().add(attrTermsUrl);
-
-                double strwidth = attrTermsUrl.getBoundsInParent().getWidth();
-                attrTermsUrl.setLayoutX((double) (mapWidth.get() - strwidth));
-                attrTermsUrl.setLayoutY(mapHeight.doubleValue() - 8);
-            }
-
-            // Draw attribution logo
-            if (attrImage != null) {
-                ImageView attImgView = new ImageView(attrImage);
-                DropShadow ds = new DropShadow();
-                ds.setOffsetY(3.0f);
-                ds.setColor(Color.BLACK);
-                attImgView.setEffect(ds);
-                attImgView.setLayoutX(8);
-                attImgView.setLayoutY((mapHeight.doubleValue()) - (1.2 * attrImage.getHeight()));
-                tilesGroup.getChildren().add(attImgView);
-            }
+            Renderable renderer = new LicenseRenderer();
+            renderer.render(this);
         }
     }
 
@@ -838,6 +804,7 @@ public final class MapPane extends Pane implements MapControlable {
         this.mapX.set(val);
     }
 
+    @Override
     public int getMapX() {
         return this.mapX.get();
     }
@@ -846,6 +813,7 @@ public final class MapPane extends Pane implements MapControlable {
         this.mapY.set(val);
     }
 
+    @Override
     public int getMapY() {
         return this.mapY.get();
     }
@@ -854,6 +822,7 @@ public final class MapPane extends Pane implements MapControlable {
         mapWidth.set((int) val);
     }
 
+    @Override
     public int getMapWidth() {
         return mapWidth.get();
     }
@@ -862,6 +831,7 @@ public final class MapPane extends Pane implements MapControlable {
         mapHeight.set((int) val);
     }
 
+    @Override
     public int getMapHeight() {
         return mapHeight.get();
     }
