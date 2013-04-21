@@ -31,6 +31,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import sun.util.calendar.CalendarUtils;
+
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
@@ -67,7 +69,7 @@ public class CalendarPicker extends Control
 	{
 		// setup the CSS
 		// the -fx-skin attribute in the CSS sets which Skin class is used
-		this.getStyleClass().add(this.getClass().getSimpleName());
+		this.getStyleClass().add(CalendarPicker.class.getSimpleName());
 		
 		// construct properties
 		constructCalendar();
@@ -81,7 +83,7 @@ public class CalendarPicker extends Control
 	 */
 	@Override protected String getUserAgentStylesheet()
 	{
-		return this.getClass().getResource("/jfxtras/labs/internal/scene/control/" + this.getClass().getSimpleName() + ".css").toString();
+		return this.getClass().getResource("/jfxtras/labs/internal/scene/control/" + CalendarPicker.class.getSimpleName() + ".css").toString();
 	}
 	
 	// ==================================================================================================================

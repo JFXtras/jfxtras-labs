@@ -410,8 +410,8 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 
 		// select or deselect
 		List<Calendar> lCalendars = getSkinnable().calendars();
-		boolean lSelect = !contains(lCalendars, lToggledCalendar);  
-		if (lSelect) 
+		Calendar lFoundCalendar = find(lCalendars, lToggledCalendar); // find solely on YMD not HMS 
+		if (lFoundCalendar == null) // if not found 
 		{
 			// only add if not present
 			lCalendars.add(lToggledCalendar);
@@ -468,7 +468,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		else 
 		{
 			// remove
-			lCalendars.remove(lToggledCalendar);
+			lCalendars.remove(lFoundCalendar);
 			iLastSelected = null;
 		}
 		
@@ -661,7 +661,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 				int lIdx = lFirstOfMonthIdx + i - 1;
 	
 				// is selected
-				boolean lSelected = contains(lCalendars, lCalendar);  
+				boolean lSelected = (find(lCalendars, lCalendar) != null);  
 				dayButtons.get(lIdx).setSelected( lSelected );
 			}
 		}
@@ -678,7 +678,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	 * @param calendar
 	 * @return
 	 */
-	private boolean contains(List<Calendar> calendars, Calendar calendar)
+	private Calendar find(List<Calendar> calendars, Calendar calendar)
 	{
 		for (Calendar c : calendars)
 		{
@@ -687,9 +687,9 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			  && c.get(Calendar.DATE) == calendar.get(Calendar.DATE)
 			   )
 			{
-				return true;
+				return c;
 			}
 		}
-		return false;
+		return null;
 	}
 }
