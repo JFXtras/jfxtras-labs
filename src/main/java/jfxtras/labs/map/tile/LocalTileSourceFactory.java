@@ -3,7 +3,7 @@ package jfxtras.labs.map.tile;
 /**
  * Factory for a tile source which is based on files.
  *
- * @author Mario Schöder
+ * @author Mario Schoeder
  */
 public class LocalTileSourceFactory implements TileSourceFactory<String> {
 
