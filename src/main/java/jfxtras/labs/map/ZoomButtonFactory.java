@@ -10,7 +10,7 @@ import javafx.scene.image.ImageView;
 
 /**
  * Factory for zoom buttons.
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public abstract class ZoomButtonFactory {
 	

@@ -9,7 +9,7 @@ import jfxtras.labs.map.MapControlable;
 
 /**
  *
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 abstract class AbstractMapMarker implements MapMarkable {
 

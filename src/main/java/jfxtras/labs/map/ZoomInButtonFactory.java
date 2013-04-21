@@ -6,7 +6,7 @@ import javafx.event.EventHandler;
 /**
  * Factory for the zoom in button.
  * 
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public class ZoomInButtonFactory extends ZoomButtonFactory{
 

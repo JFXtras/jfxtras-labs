@@ -3,7 +3,7 @@ package jfxtras.labs.map.tile;
 /**
  * Factory for OSM based tile sources.
  *
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public class OsmTileSourceFactory implements TileSourceFactory<OsmType> {
 

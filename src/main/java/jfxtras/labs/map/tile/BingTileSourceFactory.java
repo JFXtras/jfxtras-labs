@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 /**
  * Factory for a tile source to the bing server.
  *
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public class BingTileSourceFactory extends ApiKeyTileSourceFactory<BingType> {
 
@@ -36,7 +36,7 @@ public class BingTileSourceFactory extends ApiKeyTileSourceFactory<BingType> {
             tileSource = new DefaultTileSource("Bing Maps", TILE_URL);
             tilePathBuilder.setTilePath("tiles/r");
             //FIXME is it possible to get this information from a web service?
-            tileSource.setAttributionText("© 2012 Nokia  © 2013 Microsoft Corporation");
+            tileSource.setAttributionText("(C) 2012 Nokia  (C) 2013 Microsoft Corporation");
         }
 
         tileSource.setTilePathBuilder(tilePathBuilder);

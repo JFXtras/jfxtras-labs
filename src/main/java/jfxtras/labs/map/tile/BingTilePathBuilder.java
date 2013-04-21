@@ -2,7 +2,7 @@ package jfxtras.labs.map.tile;
 
 /**
  *
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public class BingTilePathBuilder extends AbstractTilePathBuilder{
     

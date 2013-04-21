@@ -8,7 +8,7 @@ import jfxtras.labs.map.tile.TileSource;
 /**
  * Interface to control the map widget.
  *
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public interface MapControlable {
 

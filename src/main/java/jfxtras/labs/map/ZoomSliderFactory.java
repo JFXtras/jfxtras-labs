@@ -8,7 +8,7 @@ import javafx.scene.control.Slider;
 /**
  * Factory for the zoom slider.
  *
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public class ZoomSliderFactory {
 
