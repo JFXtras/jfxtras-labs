@@ -5,12 +5,8 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 
 buildscript {
-    final javafxHome = System.env['JAVAFX_HOME']
-    if (javafxHome) {
-      ext.javafxJar = "${javafxHome}/rt/lib/jfxrt.jar"
-    } else {
-      final javaHome = System.env['JAVA_HOME']
-      if (javaHome)
+    final javaHome = System.env['JAVA_HOME']
+    if (javaHome) {
         ext.javafxJar = "${javaHome}/jre/lib/jfxrt.jar"
     }
 
