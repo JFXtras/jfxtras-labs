@@ -47,9 +47,7 @@ public interface MapControlable {
      */
     Coordinate getCoordinate(int mapPointX, int mapPointY);
     
-    void setCursorLocationText(String text);
-
-    boolean isCursorLocationVisible();
+    void setCursorLocationText(double x, double y);
 
     boolean isIgnoreRepaint();
 
@@ -73,4 +71,6 @@ public interface MapControlable {
     int getMapX();
 
     int getMapY();
+
+    void setCursorLocationVisible(boolean val);
 }

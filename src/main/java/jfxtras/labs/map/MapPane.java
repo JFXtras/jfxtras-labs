@@ -131,7 +131,7 @@ public final class MapPane extends Pane implements MapControlable {
 
     private SimpleBooleanProperty tileGridVisible;
 
-    private SimpleBooleanProperty cursorLocationVisible;
+    private boolean cursorLocationVisible;
 
     private SimpleBooleanProperty monochromeMode = new SimpleBooleanProperty();
 
@@ -140,6 +140,8 @@ public final class MapPane extends Pane implements MapControlable {
     private SimpleBooleanProperty mapVehiclesVisible = new SimpleBooleanProperty(true);
 
     private SimpleBooleanProperty mapPolygonsVisible = new SimpleBooleanProperty(true);
+    
+    private CoordinateStringFormater formater;
 
     public MapPane(TileSource ts) {
         this(ts, START, START, 800, 600, INITIAL_ZOOM);
@@ -148,7 +150,7 @@ public final class MapPane extends Pane implements MapControlable {
     public MapPane(TileSource ts, int x, int y, int width, int height, int zoom) {
         this.tileSource = ts;
         this.zoom = zoom;
-
+        this.cursorLocationVisible = true;
 
         tilesGroup = new Group();
         TilesMouseHandler handler = new TilesMouseHandler(this);
@@ -158,7 +160,6 @@ public final class MapPane extends Pane implements MapControlable {
 
         mapMarkersVisible = new SimpleBooleanProperty(true);
         tileGridVisible = new SimpleBooleanProperty(false);
-        cursorLocationVisible = new SimpleBooleanProperty(true);
 
         tileRepository = new TileRepository(tileSource);
 
@@ -195,6 +196,8 @@ public final class MapPane extends Pane implements MapControlable {
         setPrefSize(width, height);
         setMinWidth(width);
         setMinHeight(height);
+        
+        formater = new CoordinateStringFormater();
     }
 
     private void addResizeListeners() {
@@ -263,6 +266,15 @@ public final class MapPane extends Pane implements MapControlable {
             }
         });
     }
+
+    @Override
+    public void setCursorLocationText(double x, double y) {
+        if(cursorLocationVisible){
+            Coordinate coord = getCoordinate((int)x, (int)y);
+            cursorLocationText.setText(formater.format(coord));
+        }
+    }
+
 
     @Override
     public void adjustCursorLocationText() {
@@ -793,11 +805,6 @@ public final class MapPane extends Pane implements MapControlable {
         return moving;
     }
 
-    @Override
-    public boolean isCursorLocationVisible() {
-        return cursorLocationVisible.get();
-    }
-
     public void setMapX(int val) {
         this.mapX.set(val);
     }
@@ -910,8 +917,9 @@ public final class MapPane extends Pane implements MapControlable {
         return this.tileGridVisible.get();
     }
 
+    @Override
     public void setCursorLocationVisible(boolean val) {
-        this.cursorLocationVisible.set(val);
+        this.cursorLocationVisible = val;
     }
 
     @Override
@@ -927,10 +935,5 @@ public final class MapPane extends Pane implements MapControlable {
     @Override
     public Group getTilesGroup() {
         return tilesGroup;
-    }
-
-    @Override
-    public void setCursorLocationText(String text) {
-        cursorLocationText.setText(text);
     }
 }

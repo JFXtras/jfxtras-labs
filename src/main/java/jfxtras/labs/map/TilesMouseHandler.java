@@ -6,7 +6,6 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.text.Text;
 
 /**
  * This class adds mouse handling for a widget that displays tiles.
@@ -44,36 +43,22 @@ public class TilesMouseHandler {
 
     private void updateCursorLocationText(ScrollEvent me) {
 
-        updateCursorLocationText(controlable.getCoordinate((int) me.getX(), (int) me.getY()));
+        updateCursorLocationText(me.getX(), me.getY());
     }
 
     private void updateCursorLocationText(MouseEvent me) {
 
-        updateCursorLocationText(controlable.getCoordinate((int) me.getX(), (int) me.getY()));
+        updateCursorLocationText(me.getX(), me.getY());
     }
 
-    private void updateCursorLocationText(Coordinate mouseLocation) {
+    private void updateCursorLocationText(double x, double y) {
         
-//        Text cursorLocationText = controlable.getCursorLocationText();
-        controlable.setCursorLocationText(builLocationString(mouseLocation.getLatitude(), mouseLocation.getLongitude()));
+        controlable.setCursorLocationText(x, y);
 
         if (!adjusted) {
             controlable.adjustCursorLocationText();
             adjusted = true;
         }
-    }
-
-    /**
-     * Build the string which displays the current location of the cursor.
-     * @param lat the value of latitude
-     * @param lon the value of the longitude
-     * @return string which will be displayed on the map
-     */
-    protected String builLocationString(double lat, double lon) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Latitude: ").append(String.format("%2.5f", lat));
-        builder.append(" Longitude: ").append(String.format("%3.6f", lon));
-        return builder.toString();
     }
 
     private void moveMap(MouseEvent me) {
@@ -165,7 +150,7 @@ public class TilesMouseHandler {
                 Point p = new Point((int) me.getX(), (int) me.getY());
                 moveMap(p);
                 controlable.setLastDragPoint(p);
-            } else if (controlable.isCursorLocationVisible()) {
+            } else {
                 updateCursorLocationText(me);
             }
 
