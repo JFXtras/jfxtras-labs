@@ -622,13 +622,10 @@ public final class MapPane extends Pane implements MapControlable {
         int iMove;
         int tilesize = tileSource.getTileSize();
 
-        int off_x = (center.x % tilesize);
-        int off_y = (center.y % tilesize);
-
-        int diff_left = off_x;
-        int diff_right = tilesize - off_x;
-        int diff_top = off_y;
-        int diff_bottom = tilesize - off_y;
+        int diff_left = (center.x % tilesize);
+        int diff_right = tilesize - diff_left;
+        int diff_top = (center.y % tilesize);
+        int diff_bottom = tilesize - diff_top;
 
         boolean start_left = diff_left < diff_right;
         boolean start_top = diff_top < diff_bottom;
@@ -653,7 +650,7 @@ public final class MapPane extends Pane implements MapControlable {
             }
         }
 
-        renderTiles(tilesize, off_x, off_y, iMove);
+        renderTiles(tilesize, diff_left, diff_top, iMove);
 
         renderOverlays();
         renderPolygons();
@@ -664,19 +661,16 @@ public final class MapPane extends Pane implements MapControlable {
 
     private void renderTiles(int tilesize, int off_x, int off_y, int iMove) {
 
-        int tilex = (center.x / tilesize);
-        int tiley = (center.y / tilesize);
-
-        int w2 = (int) (getMapWidth() / 2);
-        int h2 = (int) (getMapHeight() / 2);
-        int posx = w2 - off_x;
-        int posy = h2 - off_y;
-
-        // calculate the visibility borders
-        int x_min = -tilesize;
-        int y_min = -tilesize;
         int x_max = (int) getMapWidth();
         int y_max = (int) getMapHeight();
+
+        int x_min = -tilesize, y_min = -tilesize;
+        
+        int posx = (x_max / 2) - off_x;
+        int posy = (y_max / 2) - off_y;
+        
+        int tilex = (center.x / tilesize);
+        int tiley = (center.y / tilesize);
 
         // paint the tiles in a spiral, starting from center of the map
         boolean painted = true;
