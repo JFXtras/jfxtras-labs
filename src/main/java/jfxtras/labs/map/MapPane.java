@@ -68,6 +68,8 @@ public final class MapPane extends Pane implements MapControlable {
 
     private static final int START = 0;
 
+    private static final String STYLE_LOC = "cursorLocation";
+
     private TileSource tileSource;
 
     private TileRepository tileRepository;
@@ -146,8 +148,8 @@ public final class MapPane extends Pane implements MapControlable {
     public MapPane(TileSource ts, int x, int y, int width, int height, int zoom) {
         this.tileSource = ts;
         this.zoom = zoom;
-        
-        
+
+
         tilesGroup = new Group();
         TilesMouseHandler handler = new TilesMouseHandler(this);
         handler.setEventPublisher(tilesGroup);
@@ -166,7 +168,7 @@ public final class MapPane extends Pane implements MapControlable {
         mapOverlayList = new ArrayList<>();
 
         buildZoomControls();
-        
+
         int tileSize = tileSource.getTileSize();
         setMinSize(tileSize, tileSize);
         setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
@@ -177,6 +179,7 @@ public final class MapPane extends Pane implements MapControlable {
         ds.setOffsetY(3.0f);
         ds.setColor(Color.BLACK);
         cursorLocationText = new Text("");
+        cursorLocationText.setId(STYLE_LOC);
         cursorLocationText.setEffect(ds);
         cursorLocationText.setFontSmoothingType(FontSmoothingType.LCD);
 
@@ -186,26 +189,26 @@ public final class MapPane extends Pane implements MapControlable {
         getChildren().add(tilesGroup);
         getChildren().add(zoomControlsVbox);
         getChildren().add(cursorLocationText);
-        
+
         addResizeListeners();
-        
+
         setPrefSize(width, height);
         setMinWidth(width);
         setMinHeight(height);
     }
-    
-    private void addResizeListeners(){
-    	widthProperty().addListener(new ChangeListener<Number>() {
+
+    private void addResizeListeners() {
+        widthProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-            		Number newValue) {
+                Number newValue) {
                 setMapWidth(newValue.doubleValue());
             }
         });
         heightProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-            		Number newValue) {
+                Number newValue) {
                 setMapHeight(newValue.doubleValue());
             }
         });
@@ -300,7 +303,7 @@ public final class MapPane extends Pane implements MapControlable {
         this.mapWidth.set(width);
         this.mapHeight.set(height);
     }
-    
+
     public void setDisplayPositionByLatLon(double lat, double lon) {
         setDisplayPositionByLatLon(lat, lon, zoom);
     }
@@ -598,12 +601,12 @@ public final class MapPane extends Pane implements MapControlable {
         if (zoom > tileSource.getMaxZoom()) {
             setZoom(tileSource.getMaxZoom());
         }
-        
+
         renderControl();
     }
 
     protected void renderControl() {
-    	
+
         int iMove;
         int tilesize = tileSource.getTileSize();
 

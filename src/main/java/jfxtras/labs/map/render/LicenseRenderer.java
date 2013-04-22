@@ -24,33 +24,39 @@ import javafx.scene.text.FontSmoothingType;
 
 /**
  * This class displays copy right informations on the map
+ *
  * @author Mario Schröder
  *
  */
-public class LicenseRenderer implements Renderable{
+public class LicenseRenderer implements Renderable {
 
-	@Override
-	public void render(MapControlable mapController) {
-		
-		TileSource tileSource = mapController.getTileSource();
-		Group tilesGroup = mapController.getTilesGroup();
-		
+    private static final String STYLE_RIGHTS = "copyRight";
+
+    public static final String STYLE_TERMS = "termsOfUse";
+
+    @Override
+    public void render(MapControlable mapController) {
+
+        TileSource tileSource = mapController.getTileSource();
+        Group tilesGroup = mapController.getTilesGroup();
+
         int x = mapController.getMapX();
         int y = mapController.getMapY();
         int width = mapController.getMapWidth();
         int height = mapController.getMapHeight();
-        
-		Coordinate topLeft = mapController.getCoordinate(x, y);
+
+        Coordinate topLeft = mapController.getCoordinate(x, y);
         Coordinate bottomRight = mapController.getCoordinate(width, height);
         String attrTxt = tileSource.getAttributionText(mapController.getZoom(), topLeft, bottomRight);
         // Draw attribution text
         if (attrTxt != null) {
             Text attrText = createLicenseText(attrTxt);
-            tilesGroup.getChildren().add(attrText);
+            attrText.setId(STYLE_RIGHTS);
 
             double strwidth = attrText.getBoundsInParent().getWidth();
             attrText.setLayoutX(width - strwidth);
             attrText.setLayoutY(height - 8);
+            tilesGroup.getChildren().add(attrText);
         }
 
         Image attrImage = tileSource.getAttributionImage();
@@ -65,35 +71,37 @@ public class LicenseRenderer implements Renderable{
             attImgView.setLayoutY(height - (1.8 * attrImage.getHeight()));
             tilesGroup.getChildren().add(attImgView);
         }
-        
+
         String termsOfUse = tileSource.getTermsOfUseURL();
-        if(termsOfUse != null){
-        	Text termsText = createLicenseText("Terms Of Use");
+        if (termsOfUse != null) {
+            Text termsText = createLicenseText("Terms Of Use");
             termsText.setUnderline(true);
-        	tilesGroup.getChildren().add(termsText);
-        	
-        	termsText.setLayoutX(8);
-        	termsText.setLayoutY(height - 8);
-            
+            termsText.setId(STYLE_TERMS);
+
+            termsText.setLayoutX(8);
+            termsText.setLayoutY(height - 8);
+
             termsText.setOnMouseEntered(new MouseEnteredAdapter(termsText));
             termsText.setOnMouseClicked(new MouseClickedAdapter(termsOfUse));
-        }
-		
-	}
 
-	private Text createLicenseText(String attrTxt) {
-		Text txt = new Text(attrTxt);
-		DropShadow ds = new DropShadow();
-		ds.setOffsetY(3.0f);
-		ds.setColor(Color.BLACK);
-		txt.setEffect(ds);
-		txt.setFontSmoothingType(FontSmoothingType.LCD);
-		txt.setFill(Color.WHITE);
-		return txt;
-	}
-    
+            tilesGroup.getChildren().add(termsText);
+        }
+
+    }
+
+    private Text createLicenseText(String attrTxt) {
+        Text txt = new Text(attrTxt);
+        DropShadow ds = new DropShadow();
+        ds.setOffsetY(3.0f);
+        ds.setColor(Color.BLACK);
+        txt.setEffect(ds);
+        txt.setFontSmoothingType(FontSmoothingType.LCD);
+        txt.setFill(Color.WHITE);
+        return txt;
+    }
+
     private class MouseClickedAdapter implements EventHandler<MouseEvent> {
-        
+
         private String url;
 
         MouseClickedAdapter(String termsOfUse) {
@@ -107,12 +115,12 @@ public class LicenseRenderer implements Renderable{
                 Desktop.getDesktop().browse(u);
             } catch (URISyntaxException | IOException ex) {
                 Logger.getLogger(getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
-            } 
+            }
         }
     }
-    
+
     private class MouseEnteredAdapter implements EventHandler<MouseEvent> {
-        
+
         private Text text;
 
         MouseEnteredAdapter(Text text) {
@@ -123,6 +131,5 @@ public class LicenseRenderer implements Renderable{
         public void handle(MouseEvent t) {
             text.setCursor(Cursor.HAND);
         }
-        
     }
 }

@@ -6,8 +6,14 @@
         Purpose of the stylesheet follows.
 */
 
-.scene {
-    -fx-background-color: linear-gradient(white,#DDDDDD);
-    -fx-background-repeat: no-repeat;
-    -fx-background-position: left bottom;
+#cursorLocation {
+    -fx-fill: darkslategray;
+}
+
+#termsOfUse {
+    -fx-fill: blue;
+}
+
+#copyRight {
+    -fx-fill: lemonchiffon;
 }
