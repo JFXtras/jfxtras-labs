@@ -268,7 +268,7 @@ public final class MapPane extends Pane implements MapControlable {
     public void adjustCursorLocationText() {
         double strwidth = cursorLocationText.getBoundsInParent().getWidth();
         double x = (double) ((getMapWidth() / 2) - (strwidth / 2));
-        int y = getMapHeight() - 24;
+        int y = getMapHeight() - 28;
 
         cursorLocationText.setLayoutX(x);
         cursorLocationText.setLayoutY(y);
@@ -794,11 +794,6 @@ public final class MapPane extends Pane implements MapControlable {
     }
 
     @Override
-    public Text getCursorLocationText() {
-        return cursorLocationText;
-    }
-
-    @Override
     public boolean isCursorLocationVisible() {
         return cursorLocationVisible.get();
     }
@@ -932,5 +927,10 @@ public final class MapPane extends Pane implements MapControlable {
     @Override
     public Group getTilesGroup() {
         return tilesGroup;
+    }
+
+    @Override
+    public void setCursorLocationText(String text) {
+        cursorLocationText.setText(text);
     }
 }

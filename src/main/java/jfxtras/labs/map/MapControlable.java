@@ -2,7 +2,6 @@ package jfxtras.labs.map;
 
 import java.awt.Point;
 import javafx.scene.Group;
-import javafx.scene.text.Text;
 import jfxtras.labs.map.tile.TileSource;
 
 /**
@@ -47,8 +46,8 @@ public interface MapControlable {
      *
      */
     Coordinate getCoordinate(int mapPointX, int mapPointY);
-
-    Text getCursorLocationText();
+    
+    void setCursorLocationText(String text);
 
     boolean isCursorLocationVisible();
 

@@ -55,6 +55,10 @@ public class MapPaneTrial1 extends Application {
     private static final String OSM = "OSM";
     
     private static final String BING = "Bing";
+    
+    private static final String DEFAULT_CSS = "map_pane.css";
+    
+    private static final String IMG_CSS = "img_map_pane.css";
 
     // static { // use system proxy settings when standalone application
     // System.setProperty("java.net.useSystemProxies", "true");
@@ -110,7 +114,9 @@ public class MapPaneTrial1 extends Application {
         map.addMapLine(mapLine);
 
         map.setDisplayPositionByLatLon(32.81729, -117.215905);
-
+        
+        BorderPane borderPan = new BorderPane();
+        final Scene scene = createScene(borderPan);
         ComboBox<String> comboBox = new ComboBox<>();
         for (OsmType type : OsmType.values()) {
             comboBox.getItems().add(OSM + " " + type.toString());
@@ -131,6 +137,9 @@ public class MapPaneTrial1 extends Application {
                     TileSourceFactory<BingType> fac = new BingTileSourceFactory(BING_KEY);
                     BingType type = BingType.valueOf(name);
                     ts = fac.create(type);
+                    if(type.equals(BingType.Aerial)){
+                        setStyle(scene, IMG_CSS);
+                    }
                 } else {
                     OsmType type = OsmType.valueOf(name);
                     ts = factory.create(type);
@@ -142,10 +151,6 @@ public class MapPaneTrial1 extends Application {
         });
 
         final ToolBar toolBar = new ToolBar(comboBox);
-
-        BorderPane borderPan = new BorderPane();
-
-        Scene scene = createScene(borderPan);
         scene.widthProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue,
@@ -170,9 +175,12 @@ public class MapPaneTrial1 extends Application {
 
     private Scene createScene(Pane root) {
         Scene scene = new Scene(root, 800, 600);
-        scene.getStylesheets().add(
-            MapPaneTrial1.class.getResource("map_pane.css")
-            .toExternalForm());
+        setStyle(scene, DEFAULT_CSS);
         return scene;
+    }
+
+    private void setStyle(Scene scene, String css) {
+        scene.getStylesheets().add(getClass().getResource(css)
+            .toExternalForm());
     }
 }
