@@ -69,6 +69,7 @@ public class LicenseRenderer implements Renderable{
         String termsOfUse = tileSource.getTermsOfUseURL();
         if(termsOfUse != null){
         	Text termsText = createLicenseText("Terms Of Use");
+            termsText.setUnderline(true);
         	tilesGroup.getChildren().add(termsText);
         	
         	termsText.setLayoutX(8);
@@ -87,7 +88,7 @@ public class LicenseRenderer implements Renderable{
 		ds.setColor(Color.BLACK);
 		txt.setEffect(ds);
 		txt.setFontSmoothingType(FontSmoothingType.LCD);
-		txt.setFill(Color.BLUE);
+		txt.setFill(Color.WHITE);
 		return txt;
 	}
     
