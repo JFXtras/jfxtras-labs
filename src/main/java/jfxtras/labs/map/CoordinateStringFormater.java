@@ -12,6 +12,13 @@ package jfxtras.labs.map;
  */
 public class CoordinateStringFormater {
     
+    private String coordinateInfo;
+
+    public CoordinateStringFormater() {
+        
+        coordinateInfo = "Latitude: %2.5f Longitude: %3.6f";
+    }
+    
     /**
      * Build the string which displays the current location of the cursor.
      * @param coordinate the value of coordinate
@@ -28,9 +35,7 @@ public class CoordinateStringFormater {
      * @return string which will be displayed on the map
      */
     protected String format(double lat, double lon) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Latitude: ").append(String.format("%2.5f", lat));
-        builder.append(" Longitude: ").append(String.format("%3.6f", lon));
-        return builder.toString();
+
+        return String.format(coordinateInfo, lat, lon);
     }
 }
