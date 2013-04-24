@@ -23,10 +23,10 @@ import org.xml.sax.helpers.XMLReaderFactory;
 class BingAerialTileSource extends DefaultTileSource {
 
     private static volatile Future<List<Attribution>> attributions;
-    
+
     public BingAerialTileSource(String name, String base_url) {
         super(name, base_url);
-        
+
         if (attributions == null) {
             attributions = Executors.newSingleThreadExecutor().submit(new Callable<List<Attribution>>() {
                 @Override
@@ -117,9 +117,9 @@ class BingAerialTileSource extends DefaultTileSource {
     }
 
     private List<Attribution> loadAttributionText() {
-        
+
         List<Attribution> attr = null;
-        
+
         try {
             URL url = buildUrl();
             URLConnection conn = url.openConnection();
@@ -140,36 +140,38 @@ class BingAerialTileSource extends DefaultTileSource {
             e.printStackTrace();
         }
         return attr;
-    }   
+    }
 
     @Override
     public String getAttributionText(int zoom, Coordinate topLeft, Coordinate botRight) {
-        
+
         String text;
         try {
             if (!attributions.isDone()) {
                 text = "Loading Bing attribution data...";
-            }
-            if (attributions.get() == null) {
+            } else if (attributions.get() == null) {
                 text = "Error loading Bing attribution data";
-            }
-            StringBuilder a = new StringBuilder();
-            for (Attribution attr : attributions.get()) {
-                if (zoom <= attr.maxZoom && zoom >= attr.minZoom) {
-                    if (topLeft.getLongitude() < attr.max.getLongitude() && botRight.getLongitude() > attr.min.getLongitude()
-                        && topLeft.getLatitude() > attr.min.getLatitude() && botRight.getLatitude() < attr.max.getLatitude()) {
-                        a.append(attr.attribution);
-                        a.append(" ");
+            } else {
+                StringBuilder builder = new StringBuilder();
+                for (Attribution attr : attributions.get()) {
+                    if (zoom <= attr.maxZoom && zoom >= attr.minZoom) {
+                        if (topLeft.getLongitude() < attr.max.getLongitude() && botRight.getLongitude() > attr.min.
+                            getLongitude()
+                            && topLeft.getLatitude() > attr.min.getLatitude() && botRight.getLatitude() < attr.max.
+                            getLatitude()) {
+                            builder.append(attr.attribution);
+                            builder.append(" ");
+                        }
                     }
                 }
+                text = builder.toString();
             }
-            text = a.toString();
         } catch (InterruptedException | ExecutionException e) {
-           text = e.getMessage();
+            text = e.getMessage();
         }
         return text;
     }
-    
+
     private URL buildUrl() throws MalformedURLException {
         StringBuilder builder = new StringBuilder();
         builder.append("http://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial/0,0?zl=1&mapVersion=v1&key=");
