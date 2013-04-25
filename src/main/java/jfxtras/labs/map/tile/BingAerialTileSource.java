@@ -36,6 +36,62 @@ class BingAerialTileSource extends DefaultTileSource {
         }
     }
 
+    private List<Attribution> loadAttributionText() {
+
+        List<Attribution> attr = null;
+
+        try {
+            URL url = buildUrl();
+            URLConnection conn = url.openConnection();
+
+            // This is not JOSM! Do not use anything other than standard JRE classes within this package!
+            // See package.html for details
+            //conn.setConnectTimeout(Main.pref.getInteger("imagery.bing.load-attribution-text.timeout", 4000));
+
+            InputStream stream = conn.getInputStream();
+
+            XMLReader parser = XMLReaderFactory.createXMLReader();
+            AttrHandler handler = new AttrHandler();
+            parser.setContentHandler(handler);
+            parser.parse(new InputSource(stream));
+
+            attr = handler.attributions;
+        } catch (IOException | SAXException e) {
+            e.printStackTrace();
+        }
+        return attr;
+    }
+
+    private URL buildUrl() throws MalformedURLException {
+        StringBuilder builder = new StringBuilder();
+        builder.append("http://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial/0,0?zl=1&mapVersion=v1");
+        builder.append("&include=ImageryProviders&output=xml");
+        builder.append("&key=").append(getApiKey());
+        return new URL(builder.toString());
+    }
+
+    @Override
+    public String getAttributionText(int zoom, Coordinate topLeft, Coordinate botRight) {
+
+        String text;
+        try {
+            if (!attributions.isDone()) {
+                text = "Loading Bing attribution data...";
+            } else if (attributions.get() == null) {
+                text = "Error loading Bing attribution data";
+            } else {
+                AttributtionStringBuilder builder = new AttributtionStringBuilder(zoom, topLeft, botRight);
+                for (Attribution attr : attributions.get()) {
+                    builder.append(attr);
+                }
+                text = builder.toString();
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            text = e.getMessage();
+        }
+        return text;
+    }
+
     private static class AttrHandler extends DefaultHandler {
 
         private String string;
@@ -99,61 +155,5 @@ class BingAerialTileSource extends DefaultTileSource {
             }
             string = "";
         }
-    }
-
-    private List<Attribution> loadAttributionText() {
-
-        List<Attribution> attr = null;
-
-        try {
-            URL url = buildUrl();
-            URLConnection conn = url.openConnection();
-
-            // This is not JOSM! Do not use anything other than standard JRE classes within this package!
-            // See package.html for details
-            //conn.setConnectTimeout(Main.pref.getInteger("imagery.bing.load-attribution-text.timeout", 4000));
-
-            InputStream stream = conn.getInputStream();
-
-            XMLReader parser = XMLReaderFactory.createXMLReader();
-            AttrHandler handler = new AttrHandler();
-            parser.setContentHandler(handler);
-            parser.parse(new InputSource(stream));
-
-            attr = handler.attributions;
-        } catch (IOException | SAXException e) {
-            e.printStackTrace();
-        }
-        return attr;
-    }
-
-    @Override
-    public String getAttributionText(int zoom, Coordinate topLeft, Coordinate botRight) {
-
-        String text;
-        try {
-            if (!attributions.isDone()) {
-                text = "Loading Bing attribution data...";
-            } else if (attributions.get() == null) {
-                text = "Error loading Bing attribution data";
-            } else {
-                AttributtionStringBuilder builder = new AttributtionStringBuilder(zoom, topLeft, botRight);
-                for (Attribution attr : attributions.get()) {
-                    builder.append(attr);
-                }
-                text = builder.toString();
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            text = e.getMessage();
-        }
-        return text;
-    }
-
-    private URL buildUrl() throws MalformedURLException {
-        StringBuilder builder = new StringBuilder();
-        builder.append("http://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial/0,0?zl=1&mapVersion=v1");
-        builder.append("&include=ImageryProviders&output=xml");
-        builder.append("&key=").append(getApiKey());
-        return new URL(builder.toString());
     }
 }
