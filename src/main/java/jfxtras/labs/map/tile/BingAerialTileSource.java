@@ -12,7 +12,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import javafx.scene.image.Image;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -138,19 +137,9 @@ class BingAerialTileSource extends DefaultTileSource {
             } else if (attributions.get() == null) {
                 text = "Error loading Bing attribution data";
             } else {
-                StringBuilder builder = new StringBuilder();
+                AttributtionStringBuilder builder = new AttributtionStringBuilder(zoom, topLeft, botRight);
                 for (Attribution attr : attributions.get()) {
-                    if (zoom <= attr.getMaxZoom() && zoom >= attr.getMinZoom()) {
-                        if (topLeft.getLongitude() < attr.getMax().getLongitude() && botRight.getLongitude() > attr.
-                            getMin().
-                            getLongitude()
-                            && topLeft.getLatitude() > attr.getMin().getLatitude() && botRight.getLatitude() < attr.
-                            getMax().
-                            getLatitude()) {
-                            builder.append(attr.getText());
-                            builder.append(" ");
-                        }
-                    }
+                    builder.append(attr);
                 }
                 text = builder.toString();
             }
