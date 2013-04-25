@@ -37,20 +37,6 @@ class BingAerialTileSource extends DefaultTileSource {
         }
     }
 
-    private static class Attribution {
-
-        String attribution;
-
-        int minZoom;
-
-        int maxZoom;
-
-        Coordinate min;
-
-        Coordinate max;
-
-    }
-
     private static class AttrHandler extends DefaultHandler {
 
         private String string;
@@ -93,11 +79,11 @@ class BingAerialTileSource extends DefaultTileSource {
             if ("ImageryProvider".equals(tagName)) {
                 attributions.add(curr);
             } else if ("Attribution".equals(tagName)) {
-                curr.attribution = string;
+                curr.setText(string);
             } else if (inCoverage && "ZoomMin".equals(tagName)) {
-                curr.minZoom = Integer.parseInt(string);
+                curr.setMinZoom(Integer.parseInt(string));
             } else if (inCoverage && "ZoomMax".equals(tagName)) {
-                curr.maxZoom = Integer.parseInt(string);
+                curr.setMaxZoom(Integer.parseInt(string));
             } else if (inCoverage && "SouthLatitude".equals(tagName)) {
                 southLat = Double.parseDouble(string);
             } else if (inCoverage && "NorthLatitude".equals(tagName)) {
@@ -107,8 +93,8 @@ class BingAerialTileSource extends DefaultTileSource {
             } else if (inCoverage && "WestLongitude".equals(tagName)) {
                 westLon = Double.parseDouble(string);
             } else if ("BoundingBox".equals(tagName)) {
-                curr.min = new Coordinate(southLat, westLon);
-                curr.max = new Coordinate(northLat, eastLon);
+                curr.setMin(new Coordinate(southLat, westLon));
+                curr.setMax(new Coordinate(northLat, eastLon));
             } else if ("CoverageArea".equals(tagName)) {
                 inCoverage = false;
             }
@@ -154,12 +140,14 @@ class BingAerialTileSource extends DefaultTileSource {
             } else {
                 StringBuilder builder = new StringBuilder();
                 for (Attribution attr : attributions.get()) {
-                    if (zoom <= attr.maxZoom && zoom >= attr.minZoom) {
-                        if (topLeft.getLongitude() < attr.max.getLongitude() && botRight.getLongitude() > attr.min.
+                    if (zoom <= attr.getMaxZoom() && zoom >= attr.getMinZoom()) {
+                        if (topLeft.getLongitude() < attr.getMax().getLongitude() && botRight.getLongitude() > attr.
+                            getMin().
                             getLongitude()
-                            && topLeft.getLatitude() > attr.min.getLatitude() && botRight.getLatitude() < attr.max.
+                            && topLeft.getLatitude() > attr.getMin().getLatitude() && botRight.getLatitude() < attr.
+                            getMax().
                             getLatitude()) {
-                            builder.append(attr.attribution);
+                            builder.append(attr.getText());
                             builder.append(" ");
                         }
                     }
@@ -174,8 +162,9 @@ class BingAerialTileSource extends DefaultTileSource {
 
     private URL buildUrl() throws MalformedURLException {
         StringBuilder builder = new StringBuilder();
-        builder.append("http://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial/0,0?zl=1&mapVersion=v1&key=");
-        builder.append(getApiKey()).append("&include=ImageryProviders&output=xml");
+        builder.append("http://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial/0,0?zl=1&mapVersion=v1");
+        builder.append("&include=ImageryProviders&output=xml");
+        builder.append("&key=").append(getApiKey());
         return new URL(builder.toString());
     }
 }
