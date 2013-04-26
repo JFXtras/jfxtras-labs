@@ -85,7 +85,7 @@ public class BingTileSourceFactory extends ApiKeyTileSourceFactory<BingType> {
             handler = new BingImageMetadataHandler();
             url = buildMetadataUrl(IMG_METADATA);
         } else {
-            handler = new BingMetadataHandler();
+            handler = new BingMapMetadataHandler();
             url = buildMetadataUrl(MAP_METADATA);
         }
 

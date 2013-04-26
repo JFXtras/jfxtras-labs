@@ -19,8 +19,7 @@ public class BingImageMetadataHandler extends BingMetadataHandler {
     private double westLon;
 
     private boolean inCoverage = false;
-
-
+    
     @Override
     public void startElement(String uri, String stripped, String tagName, Attributes attrs) throws SAXException {
         switch (tagName) {
@@ -62,4 +61,5 @@ public class BingImageMetadataHandler extends BingMetadataHandler {
         }
         text = "";
     }
+
 }
