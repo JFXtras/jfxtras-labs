@@ -3,7 +3,7 @@ package jfxtras.labs.map.tile;
 import jfxtras.labs.map.Coordinate;
 
 /**
- *
+ * Builder for attributions.
  * @author Mario Schröder
  */
 class AttributtionStringBuilder {
@@ -22,12 +22,15 @@ class AttributtionStringBuilder {
     }
 
     void append(Attribution attr) {
-        if (zoom <= attr.getMaxZoom() && zoom >= attr.getMinZoom()) {
+        
+        if(attr.getMaxZoom() == Integer.MAX_VALUE){
+            appendText(attr);
+            
+        } else if (zoom <= attr.getMaxZoom() && zoom >= attr.getMinZoom()) {
             if (isMaxLongitudeGreater(attr) && isMinLongitudeSmaller(attr)
                 && isMinLatitudeSmaller(attr) && isMaxLatitudeGreater(attr)) {
 
-                builder.append(attr.getText());
-                builder.append(" ");
+                appendText(attr);
             }
         }
     }
@@ -51,5 +54,9 @@ class AttributtionStringBuilder {
     @Override
     public String toString() {
         return builder.toString();
+    }
+
+    private void appendText(Attribution attr) {
+        builder.append(attr.getText()).append(" ");
     }
 }

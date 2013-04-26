@@ -50,7 +50,7 @@ import jfxtras.labs.map.tile.TileSourceFactory;
  */
 public class MapPaneTrial1 extends Application {
     
-    private static String BING_KEY = "Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU";
+    private static final String BING_KEY = "Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU";
     
     private static final String OSM = "OSM";
     
