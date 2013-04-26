@@ -1,4 +1,4 @@
-package jfxtras.labs.map.tile;
+package jfxtras.labs.map.tile.attribution;
 
 import jfxtras.labs.map.Coordinate;
 
@@ -6,7 +6,7 @@ import jfxtras.labs.map.Coordinate;
  *
  * @author Mario Schröder
  */
-class Attribution {
+public class Attribution {
 
     private String text;
 
@@ -22,39 +22,39 @@ class Attribution {
         return text;
     }
 
-    void setText(String text) {
+    public void setText(String text) {
         this.text = text;
     }
 
-    int getMinZoom() {
+    public int getMinZoom() {
         return minZoom;
     }
 
-    void setMinZoom(int minZoom) {
+    public void setMinZoom(int minZoom) {
         this.minZoom = minZoom;
     }
 
-    int getMaxZoom() {
+    public int getMaxZoom() {
         return maxZoom;
     }
 
-    void setMaxZoom(int maxZoom) {
+    public void setMaxZoom(int maxZoom) {
         this.maxZoom = maxZoom;
     }
 
-    Coordinate getMin() {
+    public Coordinate getMin() {
         return min;
     }
 
-    void setMin(Coordinate min) {
+    public void setMin(Coordinate min) {
         this.min = min;
     }
 
-    Coordinate getMax() {
+    public Coordinate getMax() {
         return max;
     }
 
-    void setMax(Coordinate max) {
+    public void setMax(Coordinate max) {
         this.max = max;
     }
 }

@@ -1,4 +1,4 @@
-package jfxtras.labs.map.tile;
+package jfxtras.labs.map.tile.attribution;
 
 import jfxtras.labs.map.Coordinate;
 
@@ -6,7 +6,7 @@ import jfxtras.labs.map.Coordinate;
  * Builder for attributions.
  * @author Mario Schröder
  */
-class AttributtionStringBuilder {
+public class AttributtionStringBuilder {
 
     private StringBuilder builder;
 
@@ -14,14 +14,14 @@ class AttributtionStringBuilder {
 
     private Coordinate topLeft, bottomRight;
 
-    AttributtionStringBuilder(int zoom, Coordinate topLeft, Coordinate bottomRight) {
+    public AttributtionStringBuilder(int zoom, Coordinate topLeft, Coordinate bottomRight) {
         builder = new StringBuilder();
         this.zoom = zoom;
         this.topLeft = topLeft;
         this.bottomRight = bottomRight;
     }
 
-    void append(Attribution attr) {
+    public void append(Attribution attr) {
         
         if(attr.getMaxZoom() == Integer.MAX_VALUE){
             appendText(attr);

@@ -1,4 +1,4 @@
-package jfxtras.labs.map.tile;
+package jfxtras.labs.map.tile.attribution;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,21 +14,18 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * Loads the attributions for the bing map.
  * @author Mario Schröder
  */
-class BingAttributionLoader {
+public class BingAttributionLoader {
 
-    private String metadataUrl;
+    private BingMetaDataHandler handler;
 
-    private BingMetadataHandler handler;
-
-    BingAttributionLoader(String metadataUrl, BingMetadataHandler handler) {
+    public BingAttributionLoader(BingMetaDataHandler handler) {
         this.handler = handler;
-        this.metadataUrl = metadataUrl;
     }
 
-    List<Attribution> load() {
+    public List<Attribution> load() {
 
         try {
-            URL url = new URL(metadataUrl);
+            URL url = new URL(handler.getMetaDataUrl());
             URLConnection conn = url.openConnection();
 
             InputStream stream = conn.getInputStream();

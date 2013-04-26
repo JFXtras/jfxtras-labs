@@ -1,4 +1,4 @@
-package jfxtras.labs.map.tile;
+package jfxtras.labs.map.tile.attribution;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,7 +10,9 @@ import org.xml.sax.SAXException;
  *
  * @author Mario Schröder
  */
-class BingMapMetadataHandler extends BingMetadataHandler {
+public class BingMapMetaDataHandler extends BingMetaDataHandler {
+    
+    private static final String METADATA = "http://dev.virtualearth.net/REST/V1/Imagery/Copyright/en-us/Road/1/0/0/0/0?output=xml&dir=0&key=";
 
     private static final String CR_PATTERN = "\\S\\s\\d+\\s\\w+";
 
@@ -24,7 +26,8 @@ class BingMapMetadataHandler extends BingMetadataHandler {
 
     private boolean isCopyRight;
 
-    BingMapMetadataHandler() {
+    public BingMapMetaDataHandler(String apiKey) {
+        super(apiKey);
         pattern = Pattern.compile(CR_PATTERN);
     }
 
@@ -94,6 +97,11 @@ class BingMapMetadataHandler extends BingMetadataHandler {
         attribution = createAttribution();
         attribution.setText(copyRight + " Corporation");
         attributions.add(attribution);
+    }
+
+    @Override
+    public String getMetaData() {
+        return METADATA;
     }
 
 }

@@ -1,5 +1,10 @@
 package jfxtras.labs.map.tile;
 
+import jfxtras.labs.map.tile.attribution.BingMapMetaDataHandler;
+import jfxtras.labs.map.tile.attribution.BingAttributionLoader;
+import jfxtras.labs.map.tile.attribution.BingMetaDataHandler;
+import jfxtras.labs.map.tile.attribution.BingImageMetaDataHandler;
+import jfxtras.labs.map.tile.attribution.Attribution;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +22,6 @@ public class BingTileSourceFactory extends ApiKeyTileSourceFactory<BingType> {
     private static final int ZOOM = 21;
 
     private static final String TILE_URL = "http://ecn.t2.tiles.virtualearth.net/tiles/";
-
-    private static final String IMG_METADATA = "http://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial/0,0?zl=1&mapVersion=v1&include=ImageryProviders&output=xml&key=";
-
-    private static final String MAP_METADATA = "http://dev.virtualearth.net/REST/V1/Imagery/Copyright/en-us/Road/1/0/0/0/0?output=xml&dir=0&key=";
 
     public BingTileSourceFactory(String apiKey) {
         super(apiKey);
@@ -78,24 +79,15 @@ public class BingTileSourceFactory extends ApiKeyTileSourceFactory<BingType> {
 
     private List<Attribution> loadAttributions(BingType type) {
 
-        String url;
-        BingMetadataHandler handler;
+        BingMetaDataHandler handler;
 
         if (BingType.Aerial.equals(type)) {
-            handler = new BingImageMetadataHandler();
-            url = buildMetadataUrl(IMG_METADATA);
+            handler = new BingImageMetaDataHandler(getApiKey());
         } else {
-            handler = new BingMapMetadataHandler();
-            url = buildMetadataUrl(MAP_METADATA);
+            handler = new BingMapMetaDataHandler(getApiKey());
         }
 
-        BingAttributionLoader loader = new BingAttributionLoader(url, handler);
+        BingAttributionLoader loader = new BingAttributionLoader(handler);
         return loader.load();
-    }
-
-    private String buildMetadataUrl(String urlString) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(urlString).append(getApiKey());
-        return builder.toString();
     }
 }

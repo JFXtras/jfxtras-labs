@@ -50,8 +50,6 @@ import jfxtras.labs.map.tile.TileSourceFactory;
  */
 public class MapPaneTrial1 extends Application {
     
-    private static final String BING_KEY = "Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU";
-    
     private static final String OSM = "OSM";
     
     private static final String BING = "Bing";
@@ -134,7 +132,7 @@ public class MapPaneTrial1 extends Application {
                 String name = newVal.split(" ")[1];
                 TileSource ts;
                 if (newVal.startsWith(BING)) {
-                    TileSourceFactory<BingType> fac = new BingTileSourceFactory(BING_KEY);
+                    TileSourceFactory<BingType> fac = new BingTileSourceFactory(ApiKeys.Bing.toString());
                     BingType type = BingType.valueOf(name);
                     ts = fac.create(type);
                     if(type.equals(BingType.Aerial)){

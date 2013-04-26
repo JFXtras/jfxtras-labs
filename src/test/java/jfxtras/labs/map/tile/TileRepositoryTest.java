@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import javafx.scene.image.ImageView;
+import jfxtras.labs.map.ApiKeys;
 
 import org.junit.Test;
 
@@ -15,8 +16,6 @@ import org.junit.Test;
  */
 public class TileRepositoryTest {
 	
-	private static final String BING_KEY = "Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU";
-    
     @Test
     public void testWithNull(){
         
@@ -36,8 +35,7 @@ public class TileRepositoryTest {
 
 	@Test
 	public void testBingSource() {
-
-		TileSourceFactory<BingType> factory = new BingTileSourceFactory(BING_KEY);
+		TileSourceFactory<BingType> factory = new BingTileSourceFactory(ApiKeys.Bing.toString());
 		for (BingType type : BingType.values()) {
 			verify(factory.create(type));
 		}

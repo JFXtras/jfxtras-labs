@@ -1,4 +1,4 @@
-package jfxtras.labs.map.tile;
+package jfxtras.labs.map.tile.attribution;
 
 import jfxtras.labs.map.Coordinate;
 import org.xml.sax.Attributes;
@@ -8,7 +8,9 @@ import org.xml.sax.SAXException;
  * Metadata XML handler for bing images.
  * @author Mario Schröder
  */
-public class BingImageMetadataHandler extends BingMetadataHandler {
+public class BingImageMetaDataHandler extends BingMetaDataHandler {
+    
+    private static final String METADATA = "http://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial/0,0?zl=1&mapVersion=v1&include=ImageryProviders&output=xml&key=";
 
     private double southLat;
 
@@ -19,6 +21,10 @@ public class BingImageMetadataHandler extends BingMetadataHandler {
     private double westLon;
 
     private boolean inCoverage = false;
+
+    public BingImageMetaDataHandler(String apiKey) {
+        super(apiKey);
+    }
     
     @Override
     public void startElement(String uri, String stripped, String tagName, Attributes attrs) throws SAXException {
@@ -60,6 +66,11 @@ public class BingImageMetadataHandler extends BingMetadataHandler {
             inCoverage = false;
         }
         text = "";
+    }
+
+    @Override
+    public String getMetaData() {
+        return METADATA;
     }
 
 }

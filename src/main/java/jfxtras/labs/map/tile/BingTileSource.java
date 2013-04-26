@@ -1,5 +1,7 @@
 package jfxtras.labs.map.tile;
 
+import jfxtras.labs.map.tile.attribution.AttributtionStringBuilder;
+import jfxtras.labs.map.tile.attribution.Attribution;
 import java.util.List;
 import jfxtras.labs.map.Coordinate;
 
