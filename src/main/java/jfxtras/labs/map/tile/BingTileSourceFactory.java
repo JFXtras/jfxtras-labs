@@ -1,6 +1,8 @@
 package jfxtras.labs.map.tile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javafx.scene.image.Image;
 
 /**
@@ -9,6 +11,8 @@ import javafx.scene.image.Image;
  * @author Mario Schröder
  */
 public class BingTileSourceFactory extends ApiKeyTileSourceFactory<BingType> {
+    
+    private Map<BingType, List<Attribution>> attrMap;
 
     private static final int ZOOM = 21;
 
@@ -20,6 +24,7 @@ public class BingTileSourceFactory extends ApiKeyTileSourceFactory<BingType> {
 
     public BingTileSourceFactory(String apiKey) {
         super(apiKey);
+        attrMap = new HashMap<>();
     }
 
     @Override
@@ -33,7 +38,7 @@ public class BingTileSourceFactory extends ApiKeyTileSourceFactory<BingType> {
         BingTileSource tileSource;
 
         BingTilePathBuilder tilePathBuilder = new BingTilePathBuilder();
-        List<Attribution> attributions = loadAttributions(type);
+        List<Attribution> attributions = getAttributions(type);
 
         if (BingType.Aerial.equals(type)) {
             tileSource = new BingTileSource("Bing Aerial Maps", TILE_URL);
@@ -62,6 +67,16 @@ public class BingTileSourceFactory extends ApiKeyTileSourceFactory<BingType> {
         return tileSource;
     }
 
+    private List<Attribution> getAttributions(BingType type) {
+
+        List<Attribution> attr = attrMap.get(type);
+        if(attr == null){
+            attr = loadAttributions(type);
+            attrMap.put(type, attr);
+        }
+        return attr;
+    }
+    
     private List<Attribution> loadAttributions(BingType type) {
 
         String url;
@@ -76,8 +91,7 @@ public class BingTileSourceFactory extends ApiKeyTileSourceFactory<BingType> {
         }
 
         BingAttributionLoader loader = new BingAttributionLoader(url, handler);
-        loader.load();
-        return loader.getAttributions();
+        return loader.load();
     }
 
     private String buildMetadataUrl(String urlString) {

@@ -11,7 +11,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
- *
+ * Loads the attributions for the bing map.
  * @author Mario Schröder
  */
 class BingAttributionLoader {
@@ -25,7 +25,7 @@ class BingAttributionLoader {
         this.metadataUrl = metadataUrl;
     }
 
-    void load() {
+    List<Attribution> load() {
 
         try {
             URL url = new URL(metadataUrl);
@@ -40,9 +40,7 @@ class BingAttributionLoader {
         } catch (IOException | SAXException e) {
             e.printStackTrace();
         }
-    }
-
-    List<Attribution> getAttributions() {
+        
         return handler.getAttributions();
     }
 
