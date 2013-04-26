@@ -11,7 +11,7 @@ import javafx.scene.image.Image;
  * @author Mario Schröder
  */
 public class BingTileSourceFactory extends ApiKeyTileSourceFactory<BingType> {
-    
+
     private Map<BingType, List<Attribution>> attrMap;
 
     private static final int ZOOM = 21;
@@ -20,7 +20,7 @@ public class BingTileSourceFactory extends ApiKeyTileSourceFactory<BingType> {
 
     private static final String IMG_METADATA = "http://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial/0,0?zl=1&mapVersion=v1&include=ImageryProviders&output=xml&key=";
 
-    private static final String MAP_METADATA = "http://dev.virtualearth.net/REST/V1/Imagery/Copyright/en-us/Road/14/0/0/0/0?output=xml&dir=0&key=";
+    private static final String MAP_METADATA = "http://dev.virtualearth.net/REST/V1/Imagery/Copyright/en-us/Road/1/0/0/0/0?output=xml&dir=0&key=";
 
     public BingTileSourceFactory(String apiKey) {
         super(apiKey);
@@ -57,7 +57,6 @@ public class BingTileSourceFactory extends ApiKeyTileSourceFactory<BingType> {
         Image image = new Image(getClass().getResourceAsStream("bing_maps.png"));
         tileSource.setAttributionImage(image);
 
-
         // FIXME: I've set attributionLinkURL temporarily to ToU URL to comply with bing ToU
         // (the requirement is that we have such a link at the bottom of the window)
         tileSource.setAttributionLinkURL("http://go.microsoft.com/?linkid=9710837");
@@ -70,13 +69,13 @@ public class BingTileSourceFactory extends ApiKeyTileSourceFactory<BingType> {
     private List<Attribution> getAttributions(BingType type) {
 
         List<Attribution> attr = attrMap.get(type);
-        if(attr == null){
+        if (attr == null) {
             attr = loadAttributions(type);
             attrMap.put(type, attr);
         }
         return attr;
     }
-    
+
     private List<Attribution> loadAttributions(BingType type) {
 
         String url;
