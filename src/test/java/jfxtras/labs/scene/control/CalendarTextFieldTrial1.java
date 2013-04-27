@@ -42,6 +42,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 /**
  * @author Tom Eugelink
@@ -87,11 +88,20 @@ public class CalendarTextFieldTrial1 extends Application {
 			
 	        // preset value
 			{
-				lGridPane.add(new Label("preset value"), 0, lRowIdx);
+				lGridPane.add(new Label("preset value with parse error"), 0, lRowIdx);
 				CalendarTextField lCalendarTextField = new CalendarTextField();
 				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
 				
 				lCalendarTextField.valueProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
+				lCalendarTextField.parseErrorCallbackProperty().set(new Callback<Throwable, Void>()
+				{
+					@Override
+					public Void call(Throwable t)
+					{
+						System.out.println("parse error: " + t.getMessage());
+						return null;
+					}
+				});
 			}
 			
 	        // programmatically set to null

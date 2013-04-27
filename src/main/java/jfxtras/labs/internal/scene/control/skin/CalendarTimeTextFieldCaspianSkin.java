@@ -287,8 +287,14 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 		}
 		catch (Throwable t) 
 		{ 
-			// TODO: show error in popup
-			t.printStackTrace();
+			// handle the exception
+			// TODO: implement a default handler (show in popup / validation icon) 
+			if (getSkinnable().getParseErrorCallback() != null) {
+				getSkinnable().getParseErrorCallback().call(t);
+			}
+			else {
+				t.printStackTrace();
+			}
 		} 
 	}
 	

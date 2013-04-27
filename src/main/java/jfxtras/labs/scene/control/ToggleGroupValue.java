@@ -54,6 +54,7 @@ public class ToggleGroupValue<T> extends ToggleGroup
 				}
 			}
 		});
+// totally dummy listener just which prevents the other to get unregistered		
 valueProperty().addListener(new InvalidationListener()
 {
 	@Override
@@ -81,7 +82,7 @@ valueProperty().addListener(new InvalidationListener()
 	{
 		public void set(T value)
 		{
-System.out.println("set " + value);			
+//System.out.println("set " + value);			
 			// do it
 			super.set(value);
 
