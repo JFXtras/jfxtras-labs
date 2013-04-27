@@ -42,6 +42,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Control;
+import javafx.util.Callback;
+import jfxtras.labs.scene.control.Agenda.Appointment;
 
 /**
  * A textField with displays a calendar (date) with a icon to popup the CalendarPicker
@@ -151,6 +153,16 @@ public class CalendarTextField extends Control
 	public ObservableList<DateFormat> getDateFormats() { return dateFormatsProperty.getValue(); }
 	public void setDateFormats(ObservableList<DateFormat> value) { dateFormatsProperty.setValue(value); }
 	public CalendarTextField withDateFormat(ObservableList<DateFormat> value) { setDateFormats(value); return this; }
+
+	/** parse error callback:
+	 * If something did not parse correctly, you may handle it. 
+	 * Otherwise the exception will be logged on the console.
+	 */
+	public ObjectProperty<Callback<Throwable, Void>> parseErrorCallbackProperty() { return parseErrorCallbackObjectProperty; }
+	final private ObjectProperty<Callback<Throwable, Void>> parseErrorCallbackObjectProperty = new SimpleObjectProperty<Callback<Throwable, Void>>(this, "parseErrorCallback", null);
+	public Callback<Throwable, Void> getParseErrorCallback() { return this.parseErrorCallbackObjectProperty.getValue(); }
+	public void setParseErrorCallback(Callback<Throwable, Void> value) { this.parseErrorCallbackObjectProperty.setValue(value); }
+	public CalendarTextField withParseErrorCallback(Callback<Throwable, Void> value) { setParseErrorCallback(value); return this; }
 
 
 	// ==================================================================================================================
