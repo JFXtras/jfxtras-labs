@@ -17,9 +17,9 @@ buildscript {
       }
     } catch (MissingPropertyException mpe) {
       println """
-                 |  Please set the environment variable JAVAFX_HOME
-                 |  to the directory that contains rt/lib/jfxrt.jar
-                 |  of JavaFX version ${jfxtras_requiredJavaFxVersion}.\n""".stripMargin()
+                 |  Please set the environment variable JAVA_HOME
+                 |  to the directory that contains jre/lib/jfxrt.jar
+                 |  of JavaFX version ${jfxtras_requiredJavaFxVersion}.\n""".stripMargin() 
       System.exit 1
     }
 }
