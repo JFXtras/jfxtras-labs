@@ -28,14 +28,22 @@ package jfxtras.labs.scene.control;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.control.Control;
+import javafx.util.Callback;
+import jfxtras.labs.scene.control.Agenda.Appointment;
 
 /**
  * A textField with displays a calendar (date) with a icon to popup the CalendarPicker
@@ -138,6 +146,24 @@ public class CalendarTextField extends Control
 			}
 		});
 	}
+
+	/** DateFormats: a list of alternate dateFormats used for parsing */
+	public ListProperty<DateFormat> dateFormatsProperty() { return dateFormatsProperty; }
+	ListProperty<DateFormat> dateFormatsProperty = new SimpleListProperty<DateFormat>(javafx.collections.FXCollections.observableList(new ArrayList<DateFormat>()));
+	public ObservableList<DateFormat> getDateFormats() { return dateFormatsProperty.getValue(); }
+	public void setDateFormats(ObservableList<DateFormat> value) { dateFormatsProperty.setValue(value); }
+	public CalendarTextField withDateFormat(ObservableList<DateFormat> value) { setDateFormats(value); return this; }
+
+	/** parse error callback:
+	 * If something did not parse correctly, you may handle it. 
+	 * Otherwise the exception will be logged on the console.
+	 */
+	public ObjectProperty<Callback<Throwable, Void>> parseErrorCallbackProperty() { return parseErrorCallbackObjectProperty; }
+	final private ObjectProperty<Callback<Throwable, Void>> parseErrorCallbackObjectProperty = new SimpleObjectProperty<Callback<Throwable, Void>>(this, "parseErrorCallback", null);
+	public Callback<Throwable, Void> getParseErrorCallback() { return this.parseErrorCallbackObjectProperty.getValue(); }
+	public void setParseErrorCallback(Callback<Throwable, Void> value) { this.parseErrorCallbackObjectProperty.setValue(value); }
+	public CalendarTextField withParseErrorCallback(Callback<Throwable, Void> value) { setParseErrorCallback(value); return this; }
+
 
 	// ==================================================================================================================
 	// EVENTS

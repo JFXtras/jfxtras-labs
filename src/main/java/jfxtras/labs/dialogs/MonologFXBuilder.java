@@ -30,9 +30,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -41,7 +43,7 @@ import javafx.util.Builder;
 
 /**
  *
- * @author Mark Heckler (mark.heckler@gmail.com, @HecklerMark)
+ * @author Mark Heckler (mark.heckler@gmail.com, @MkHeck)
  */
 public class MonologFXBuilder<B extends MonologFXBuilder<B>> extends ControlBuilder<B> implements Builder<MonologFX> {
     private HashMap<String, Property> properties = new HashMap<>();
@@ -127,6 +129,26 @@ public class MonologFXBuilder<B extends MonologFXBuilder<B>> extends ControlBuil
     }
 
     /**
+     * Sets x coordinate of the MonologFX dialog (if centering is not desired).
+     * 
+     * @param X_COORD Double representing the x coordinate to use for display.
+     */
+    public final MonologFXBuilder X(final double X_COORD) {
+        properties.put("xCoord", new SimpleDoubleProperty(X_COORD));
+        return this;
+    }
+
+    /**
+     * Sets y coordinate of the MonologFX dialog (if centering is not desired).
+     * 
+     * @param Y_COORD Double representing the y coordinate to use for display.
+     */
+    public final MonologFXBuilder Y(final double Y_COORD) {
+        properties.put("yCoord", new SimpleDoubleProperty(Y_COORD));
+        return this;
+    }
+
+    /**
      * Allows developer to add stylesheet(s) for MonologFX dialog, supplementing 
      * or overriding existing styling.
      * 
@@ -166,6 +188,12 @@ public class MonologFXBuilder<B extends MonologFXBuilder<B>> extends ControlBuil
                     break;
                 case "titleText":
                     CONTROL.setTitleText(((StringProperty) properties.get(key)).get());
+                    break;
+                case "xCoord":
+                    CONTROL.setX(((DoubleProperty) properties.get(key)).get());
+                    break;
+                case "yCoord":
+                    CONTROL.setY(((DoubleProperty) properties.get(key)).get());
                     break;
             }
         }

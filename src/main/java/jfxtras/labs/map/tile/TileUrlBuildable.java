@@ -2,7 +2,7 @@ package jfxtras.labs.map.tile;
 
 /**
  * Interface for a tile server url builder.
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public interface TileUrlBuildable {
     

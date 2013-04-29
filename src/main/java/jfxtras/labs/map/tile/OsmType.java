@@ -2,7 +2,7 @@ package jfxtras.labs.map.tile;
 
 /**
  * This enum contains values of already provided osm tile types.
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public enum OsmType {
     

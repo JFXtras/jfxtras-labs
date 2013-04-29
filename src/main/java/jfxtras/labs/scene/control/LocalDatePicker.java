@@ -26,6 +26,7 @@
  */
 package jfxtras.labs.scene.control;
 
+import java.util.Calendar;
 import java.util.Locale;
 
 import javafx.beans.property.ObjectProperty;
@@ -40,16 +41,12 @@ import javax.time.calendar.LocalDate;
 
 /**
  * LocalDate (JSR-310) picker component.
- * This is the basis implementation using the new date API JSR-310.
- * The picker can be put in three modes, SINGLE for selecting one date, RANGE of a continguous range and MULTIPLE for free selection of dates.
- * A single property "localDate" is present, which is most usable in single mode.
- * A observable list "localDates" is present, which is most usable in range or multiple mode. 
- * In this mode the "localDate" will hold the last selected date.
- * There is a CalendarPicker component for backward compatibility.
+ * This is an extention of the CalendarPicker adding the new date API JSR-310.
+ * Since Calendar will not be removed from the JDK, too many applications use it, this approach of extending CalendarPicker is the most flexible one. 
  * 
  * @author Tom Eugelink
  */
-public class LocalDatePicker extends Control
+public class LocalDatePicker extends CalendarPicker
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -77,108 +74,123 @@ public class LocalDatePicker extends Control
 	 */
 	private void construct()
 	{
-		// setup the CSS
-		// the -fx-skin attribute in the CSS sets which Skin class is used
-		this.getStyleClass().add(DEFAULT_STYLE_CLASS);
-		
 		// construct properties
 		constructLocalDate();
 		constructLocalDates();
 	}
 
-	/**
-	 * Return the path to the CSS file so things are setup right
-	 */
-	@Override protected String getUserAgentStylesheet()
-	{
-		return this.getClass().getResource("/jfxtras/labs/internal/scene/control/" + DEFAULT_STYLE_CLASS + ".css").toString();
-	}
-    private static final String DEFAULT_STYLE_CLASS = LocalDatePicker.class.getSimpleName();
-	
 	// ==================================================================================================================
 	// PROPERTIES
 	
 	/** LocalDate: */
-	public final /* this final was added under heavy objection */ ObjectProperty<LocalDate> localDateProperty() { return localDateObjectProperty; }
+	public ObjectProperty<LocalDate> localDateProperty() { return localDateObjectProperty; }
 	private final ObjectProperty<LocalDate> localDateObjectProperty = new SimpleObjectProperty<LocalDate>(this, "localDate");
-	public final /* this final was added under heavy objection */ LocalDate getLocalDate() { return localDateObjectProperty.getValue(); }
-	public final /* this final was added under heavy objection */ void setLocalDate(LocalDate value) { localDateObjectProperty.setValue(value); }
+	public LocalDate getLocalDate() { return localDateObjectProperty.getValue(); }
+	public void setLocalDate(LocalDate value) { localDateObjectProperty.setValue(value); }
 	public LocalDatePicker withLocalDate(LocalDate value) { setLocalDate(value); return this; } 
 	private void constructLocalDate()
 	{
 		// if this value is changed by binding, make sure related things are updated
+		calendarProperty().addListener(new ChangeListener<Calendar>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
+			{
+				localDateProperty().set(createLocalDateFromCalendar(newValue));
+			} 
+		});
+		
+		// if the inherited value is changed, make sure calendar is updated
 		localDateProperty().addListener(new ChangeListener<LocalDate>()
 		{
 			@Override
 			public void changed(ObservableValue<? extends LocalDate> observableValue, LocalDate oldValue, LocalDate newValue)
 			{
-				// if the new value is set to null, remove the old value
-				if (oldValue != null && newValue == null) {
-					localDates().remove(oldValue);
-				}
-				if (newValue != null && localDates().contains(newValue) == false) {
-					localDates().add(newValue);
-				}
+				calendarProperty().set( newValue == null ? null : createCalendarFromLocalDate(newValue));
 			} 
 		});
 	}
 
 	/** LocalDates: */
-	public final /* this final was added under heavy objection */ ObservableList<LocalDate> localDates() { return localDates; }
+	public ObservableList<LocalDate> localDates() { return localDates; }
 	private final ObservableList<LocalDate> localDates =  javafx.collections.FXCollections.observableArrayList();
 	private void constructLocalDates()
 	{
-		// make sure the singled out LocalDate is 
+		// forward changes 
+		calendars().addListener(new ListChangeListener<Calendar>() 
+		{
+			@Override
+			public void onChanged(ListChangeListener.Change<? extends Calendar> change)
+			{
+				while (change.next())
+				{
+					 for (Calendar lCalendar : change.getRemoved()) 
+					 {
+						 LocalDate lLocalDate = createLocalDateFromCalendar(lCalendar);
+                         if (localDates().contains(lLocalDate)) localDates().remove(lLocalDate);
+                     }
+                     for (Calendar lCalendar : change.getAddedSubList()) 
+                     {
+						 LocalDate lLocalDate = createLocalDateFromCalendar(lCalendar);
+						 if (localDates().contains(lLocalDate) == false) localDates().add(lLocalDate);
+                     }				
+				}
+			} 
+		});
+		// handle changes 
 		localDates().addListener(new ListChangeListener<LocalDate>() 
 		{
 			@Override
 			public void onChanged(ListChangeListener.Change<? extends LocalDate> change)
 			{
-				// update the localDate
-				if (localDates.size() == 0)
+				while (change.next())
 				{
-					// clear date
-					setLocalDate(null);
-				}
-				else
-				{
-					// set the last one
-					setLocalDate(localDates.get(localDates.size() - 1));
+					 for (LocalDate lLocalDate : change.getRemoved()) 
+					 {
+						 Calendar lCalendar = createCalendarFromLocalDate(lLocalDate);
+                         if (calendars().contains(lCalendar)) calendars().remove(lCalendar);
+                     }
+                     for (LocalDate lLocalDate : change.getAddedSubList()) 
+                     {
+						 Calendar lCalendar = createCalendarFromLocalDate(lLocalDate);
+						 if (calendars().contains(lCalendar) == false) calendars().add(lCalendar);
+                     }				
 				}
 			} 
 		});
 	}
 
-	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc */
-	public ObjectProperty<Locale> localeProperty() { return iLocaleObjectProperty; }
-	volatile private ObjectProperty<Locale> iLocaleObjectProperty = new SimpleObjectProperty<Locale>(this, "locale", Locale.getDefault());
-	public final /* this final was added under heavy objection */ Locale getLocale() { return iLocaleObjectProperty.getValue(); }
-	public final /* this final was added under heavy objection */ void setLocale(Locale value) { iLocaleObjectProperty.setValue(value); }
-	public LocalDatePicker withLocale(Locale value) { setLocale(value); return (LocalDatePicker)this; } 
-	
-	/** Mode: single, range or multiple */
-	public final /* this final was added under heavy objection */ ObjectProperty<Mode> modeProperty() { return modeObjectProperty; }
-	private final SimpleObjectProperty<Mode> modeObjectProperty = new SimpleObjectProperty<Mode>(this, "mode", Mode.SINGLE)
+	// ==================================================================================================================
+	// SUPPORT
+
+	/**
+	 * 
+	 * @param localDate
+	 * @return
+	 */
+	private Calendar createCalendarFromLocalDate(LocalDate localDate)
 	{
-		public void invalidated()
-		{
-			// do super
-			super.invalidated();
-			
-			// update the collection; remove excessive LocalDates
-			while (modeObjectProperty.getValue() == Mode.SINGLE && localDates().size() > 1) {
-				localDates().remove(localDates().size() - 1);
-			}
-		}
-		
-		public void set(Mode value)
-		{
-			if (value == null) throw new NullPointerException("Null not allowed");
-			super.set(value);
-		}
-	};
-	public final /* this final was added under heavy objection */ Mode getMode() { return modeObjectProperty.getValue(); }
-	public final /* this final was added under heavy objection */ void setMode(Mode value) { modeObjectProperty.setValue(value); }
-	public LocalDatePicker withMode(Mode value) { setMode(value); return this; } 
-	public enum Mode { SINGLE, MULTIPLE, RANGE };
+		if (localDate == null) return null;
+		Calendar lCalendar = Calendar.getInstance(getLocale());
+		lCalendar.set(Calendar.YEAR, localDate.getYear());
+		lCalendar.set(Calendar.MONTH, localDate.getMonthOfYear().getValue() - 1);
+		lCalendar.set(Calendar.DATE, localDate.getDayOfMonth());
+		lCalendar.set(Calendar.HOUR_OF_DAY, 0);
+		lCalendar.set(Calendar.MINUTE, 0);
+		lCalendar.set(Calendar.SECOND, 0);
+		lCalendar.set(Calendar.MILLISECOND, 0);
+		return lCalendar;
+	}
+	
+	/**
+	 * 
+	 * @param calendar
+	 * @return
+	 */
+	private LocalDate createLocalDateFromCalendar(Calendar calendar)
+	{
+		if (calendar == null) return null;
+		LocalDate lLocalDate = LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DATE));
+		return lLocalDate;
+	}
 }

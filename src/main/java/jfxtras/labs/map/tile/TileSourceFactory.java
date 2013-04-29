@@ -2,7 +2,7 @@ package jfxtras.labs.map.tile;
 
 /**
  * Interface for all {@link TileSource} factories.
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public interface TileSourceFactory<T> {
     

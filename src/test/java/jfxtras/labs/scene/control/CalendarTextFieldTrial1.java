@@ -42,6 +42,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 /**
  * @author Tom Eugelink
@@ -87,18 +88,27 @@ public class CalendarTextFieldTrial1 extends Application {
 			
 	        // preset value
 			{
-				lGridPane.add(new Label("preset value"), 0, lRowIdx);
+				lGridPane.add(new Label("preset value with parse error"), 0, lRowIdx);
 				CalendarTextField lCalendarTextField = new CalendarTextField();
 				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
 				
 				lCalendarTextField.valueProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
+				lCalendarTextField.parseErrorCallbackProperty().set(new Callback<Throwable, Void>()
+				{
+					@Override
+					public Void call(Throwable t)
+					{
+						System.out.println("parse error: " + t.getMessage());
+						return null;
+					}
+				});
 			}
 			
 	        // programmatically set to null
 			{
 				lGridPane.add(new Label("programatically to null"), 0, lRowIdx);
 				CalendarTextField lCalendarTextField = new CalendarTextField();
-				lCalendarTextField.setPromptText("type calendar here");
+				lCalendarTextField.setPromptText("type date here");
 				lGridPane.add(lCalendarTextField, 1, lRowIdx);
 				
 				final TextField lValueTextField = new TextField();
@@ -127,6 +137,48 @@ public class CalendarTextFieldTrial1 extends Application {
 				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
 				
 				lCalendarTextField.valueProperty().set(Calendar.getInstance()); // set a value
+			}
+			
+	        // alternate parsers
+			{
+				lGridPane.add(new Label("alternate parser"), 0, lRowIdx);
+				CalendarTextField lCalendarTextField = new CalendarTextField();
+				lCalendarTextField.dateFormatsProperty().add(new SimpleDateFormat("yyyy-MM-dd"));
+				lCalendarTextField.dateFormatsProperty().add(new SimpleDateFormat("yyyyMMdd"));
+				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
+				
+				lCalendarTextField.valueProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
+			}
+			
+	        // disabled
+			{
+				lGridPane.add(new Label("custom icon disabled"), 0, lRowIdx);
+				CalendarTextField lCalendarTextField = new CalendarTextField();
+				lCalendarTextField.disableProperty().set(true);
+				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
+				
+				lCalendarTextField.valueProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
+			}
+			
+	        // custom icon
+			{
+				lGridPane.add(new Label("custom icon"), 0, lRowIdx);
+				CalendarTextField lCalendarTextField = new CalendarTextField();
+				lCalendarTextField.setId("custom");
+				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
+				
+				lCalendarTextField.valueProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
+			}
+			
+	        // custom icon disabled
+			{
+				lGridPane.add(new Label("custom icon disabled"), 0, lRowIdx);
+				CalendarTextField lCalendarTextField = new CalendarTextField();
+				lCalendarTextField.setId("custom");
+				lCalendarTextField.disableProperty().set(true);
+				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
+				
+				lCalendarTextField.valueProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
 			}
 			
 			lHBox.getChildren().add(lGridPane);

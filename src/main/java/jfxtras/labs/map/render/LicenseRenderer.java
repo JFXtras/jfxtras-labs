@@ -24,8 +24,7 @@ import javafx.scene.text.FontSmoothingType;
 
 /**
  * This class displays copy right informations on the map
- *
- * @author Mario Schröder
+ * @author Mario Schroeder
  *
  */
 public class LicenseRenderer implements Renderable {

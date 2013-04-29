@@ -43,7 +43,8 @@ import javafx.scene.control.Control;
 
 /**
  * Calendar picker component
- * The calendar is (and should) be treated as immutable. That means the setter is not used, but when a value is changed a new instance (clone) is put in the calendar property.
+ * The calendar is (and should) be treated as immutable. That means the setter of Calendar is not used to modify its value, but each time a new instance (clone) is put in the calendar property.
+ * So you cannot rely that exactly the same Calendar object that was set or added will be stored and returned.
  * 
  * @author Tom Eugelink
  */
@@ -67,7 +68,7 @@ public class CalendarPicker extends Control
 	{
 		// setup the CSS
 		// the -fx-skin attribute in the CSS sets which Skin class is used
-		this.getStyleClass().add(this.getClass().getSimpleName());
+		this.getStyleClass().add(CalendarPicker.class.getSimpleName());
 		
 		// construct properties
 		constructCalendar();
@@ -81,7 +82,7 @@ public class CalendarPicker extends Control
 	 */
 	@Override protected String getUserAgentStylesheet()
 	{
-		return this.getClass().getResource("/jfxtras/labs/internal/scene/control/" + this.getClass().getSimpleName() + ".css").toString();
+		return this.getClass().getResource("/jfxtras/labs/internal/scene/control/" + CalendarPicker.class.getSimpleName() + ".css").toString();
 	}
 	
 	// ==================================================================================================================

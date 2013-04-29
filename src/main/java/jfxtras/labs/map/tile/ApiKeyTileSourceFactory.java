@@ -2,7 +2,7 @@ package jfxtras.labs.map.tile;
 
 /**
  * This is a parent class for factories where a API key for the {@link TileSource} is required.
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public abstract class ApiKeyTileSourceFactory<T> implements TileSourceFactory<T>{
     

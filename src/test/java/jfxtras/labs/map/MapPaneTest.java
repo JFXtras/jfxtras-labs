@@ -12,7 +12,7 @@ import org.junit.Test;
 
 /**
  * Unit test for the map pane.
- * @author Mario Schröder
+ * @author Mario Schroeder
  *
  */
 public class MapPaneTest {

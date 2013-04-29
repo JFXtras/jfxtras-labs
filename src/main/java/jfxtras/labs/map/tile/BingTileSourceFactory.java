@@ -13,7 +13,7 @@ import javafx.scene.image.Image;
 /**
  * Factory for a tile source to the bing server.
  *
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public class BingTileSourceFactory extends ApiKeyTileSourceFactory<BingType> {
 

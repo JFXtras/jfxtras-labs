@@ -31,6 +31,7 @@ import java.util.Calendar;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Control;
+import javafx.util.Callback;
 
 /**
  * A textField with displays a calendar (time) with a icon to popup the CalendarTimePicker
@@ -108,6 +109,17 @@ public class CalendarTimeTextField extends Control
 	public String getPromptText() { return promptTextObjectProperty.get(); }
 	public void setPromptText(String value) { promptTextObjectProperty.set(value); }
 	public CalendarTimeTextField withPromptText(String value) { setPromptText(value); return this; }
+
+	/** parse error callback:
+	 * If something did not parse correctly, you may handle it. 
+	 * Otherwise the exception will be logged on the console.
+	 */
+	public ObjectProperty<Callback<Throwable, Void>> parseErrorCallbackProperty() { return parseErrorCallbackObjectProperty; }
+	final private ObjectProperty<Callback<Throwable, Void>> parseErrorCallbackObjectProperty = new SimpleObjectProperty<Callback<Throwable, Void>>(this, "parseErrorCallback", null);
+	public Callback<Throwable, Void> getParseErrorCallback() { return this.parseErrorCallbackObjectProperty.getValue(); }
+	public void setParseErrorCallback(Callback<Throwable, Void> value) { this.parseErrorCallbackObjectProperty.setValue(value); }
+	public CalendarTimeTextField withParseErrorCallback(Callback<Throwable, Void> value) { setParseErrorCallback(value); return this; }
+
 
 	// ==================================================================================================================
 	// EVENTS

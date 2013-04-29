@@ -3,7 +3,7 @@ package jfxtras.labs.map.tile;
 /**
  * This class builds the urls to an osm tiles server.
  * 
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public class AlternateOsmTileUrlBuilder implements TileUrlBuildable{
     

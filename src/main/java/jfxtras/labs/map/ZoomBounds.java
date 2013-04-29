@@ -3,7 +3,7 @@ package jfxtras.labs.map;
 /**
  * Values for minimum and maximum zoom.
  * 
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 enum ZoomBounds {
     

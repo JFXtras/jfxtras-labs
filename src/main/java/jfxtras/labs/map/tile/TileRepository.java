@@ -32,7 +32,7 @@ import javafx.scene.image.Image;
  * A repository for the map tiles.
  *
  * @author jsmith.carlsbad@gmail.com
- * @author Mario Schröder
+ * @author Mario Schroeder
  *
  */
 public class TileRepository {

@@ -54,6 +54,15 @@ public class ToggleGroupValue<T> extends ToggleGroup
 				}
 			}
 		});
+// totally dummy listener just which prevents the other to get unregistered		
+valueProperty().addListener(new InvalidationListener()
+{
+	@Override
+	public void invalidated(Observable arg0)
+	{
+		System.out.println("value invalidated " + valueObjectProperty);
+	}
+});
 	}
 	
 	/**
@@ -73,6 +82,7 @@ public class ToggleGroupValue<T> extends ToggleGroup
 	{
 		public void set(T value)
 		{
+//System.out.println("set " + value);			
 			// do it
 			super.set(value);
 

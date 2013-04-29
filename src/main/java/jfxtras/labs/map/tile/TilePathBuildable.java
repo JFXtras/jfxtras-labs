@@ -2,7 +2,7 @@ package jfxtras.labs.map.tile;
 
 /**
  * Interface for builders which construct the path to the tile.
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public interface TilePathBuildable {
 

@@ -1,3 +1,13 @@
-.CalendarTextField .icon  {
+#custom .icon  {
 	-fx-image: url("AlternateCalendarIcon.jpg");
+}
+.xCalendarTextField .icon  {
+	-fx-image: url("AlternateCalendarIcon.jpg");
+}
+
+#custom .icon:disabled  {
+	-fx-image: url("AlternateCalendarIconDisabled.jpg");
+}
+.xCalendarTextField .icon:disabled  {
+	-fx-image: url("AlternateCalendarIconDisabled.jpg");
 }
