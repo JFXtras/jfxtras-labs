@@ -1,8 +1,3 @@
-/*
- * (C) Copyright Dilax Intelcom GmbH.
- * 
- *  All Rights Reserved.
- */
 package jfxtras.labs.map;
 
 /**
