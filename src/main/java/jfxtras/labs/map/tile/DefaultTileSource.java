@@ -1,6 +1,3 @@
-/**
- *
- */
 package jfxtras.labs.map.tile;
 
 import jfxtras.labs.map.Coordinate;
