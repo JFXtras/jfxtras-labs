@@ -4,7 +4,7 @@ import jfxtras.labs.map.Coordinate;
 
 /**
  *
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public class Attribution {
 

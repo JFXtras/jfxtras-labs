@@ -4,7 +4,7 @@ import jfxtras.labs.map.Coordinate;
 
 /**
  * Builder for attributions.
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public class AttributtionStringBuilder {
 

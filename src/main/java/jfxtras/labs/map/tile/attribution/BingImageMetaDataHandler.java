@@ -6,7 +6,7 @@ import org.xml.sax.SAXException;
 
 /**
  * Metadata XML handler for bing images.
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public class BingImageMetaDataHandler extends BingMetaDataHandler {
     

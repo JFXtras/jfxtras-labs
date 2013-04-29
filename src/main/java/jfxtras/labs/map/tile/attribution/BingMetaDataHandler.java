@@ -7,7 +7,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Parent class for bing metadata handling.
- * @author msc
+ * @author Mario Schroeder
  */
 public abstract class BingMetaDataHandler extends DefaultHandler {
 

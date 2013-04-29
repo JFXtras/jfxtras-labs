@@ -8,7 +8,7 @@ import org.xml.sax.SAXException;
 /**
  * Metadata XML handler for bin map.
  *
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public class BingMapMetaDataHandler extends BingMetaDataHandler {
     

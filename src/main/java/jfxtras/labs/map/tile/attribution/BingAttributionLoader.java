@@ -12,7 +12,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * Loads the attributions for the bing map.
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public class BingAttributionLoader {
 
