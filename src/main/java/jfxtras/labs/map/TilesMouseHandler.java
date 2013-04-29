@@ -10,7 +10,7 @@ import javafx.scene.input.ScrollEvent;
 /**
  * This class adds mouse handling for a widget that displays tiles.
  *
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public class TilesMouseHandler {
 

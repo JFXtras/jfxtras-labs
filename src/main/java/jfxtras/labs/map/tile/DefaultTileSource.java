@@ -7,7 +7,7 @@ import javafx.scene.image.Image;
 /**
  * Abstract parent for tile sources.
  *
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public class DefaultTileSource implements TileSource {
 
