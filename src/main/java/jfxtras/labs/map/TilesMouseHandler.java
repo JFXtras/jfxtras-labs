@@ -38,7 +38,7 @@ public class TilesMouseHandler {
         tilesGroup.setOnMousePressed(new MousePressedAdapter());
         tilesGroup.setOnMouseReleased(new MouseReleasedAdapter());
         tilesGroup.setOnMouseDragged(new MouseDraggedAdapter(tilesGroup));
-        tilesGroup.setOnMouseDragReleased(new MouseDragReleasedAdapter());
+        tilesGroup.setOnMouseDragReleased(new MouseDragReleasedAdapter(tilesGroup));
     }
 
     private void updateCursorLocationText(ScrollEvent me) {
@@ -170,10 +170,17 @@ public class TilesMouseHandler {
     }
 
     private class MouseDragReleasedAdapter implements EventHandler<MouseEvent> {
+        
+        private Group tilesGroup;
 
+        MouseDragReleasedAdapter(Group tilesGroup) {
+            this.tilesGroup = tilesGroup;
+        }
+        
         @Override
         public void handle(MouseEvent me) {
 
+            tilesGroup.setCursor(Cursor.CROSSHAIR);
             if (controlable.isMovementEnabled() && controlable.isMoving()) {
                 moveMap(me);
             }

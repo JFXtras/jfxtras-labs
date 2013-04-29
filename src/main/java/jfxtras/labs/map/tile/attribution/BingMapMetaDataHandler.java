@@ -12,7 +12,7 @@ import org.xml.sax.SAXException;
  */
 public class BingMapMetaDataHandler extends BingMetaDataHandler {
     
-    private static final String METADATA = "http://dev.virtualearth.net/REST/V1/Imagery/Copyright/en-us/Road/1/0/0/0/0?output=xml&dir=0&key=";
+    private static final String METADATA = "http://dev.virtualearth.net/REST/V1/Imagery/Copyright/en-us/Road/1/0/0/0/0?output=xml&dir=0";
 
     private static final String CR_PATTERN = "\\S\\s\\d+\\s\\w+";
 
@@ -100,8 +100,8 @@ public class BingMapMetaDataHandler extends BingMetaDataHandler {
     }
 
     @Override
-    public String getMetaData() {
-        return METADATA;
+    public String getMetaData(String key) {
+        return METADATA + key;
     }
 
 }

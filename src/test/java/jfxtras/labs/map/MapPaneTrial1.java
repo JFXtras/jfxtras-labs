@@ -132,7 +132,8 @@ public class MapPaneTrial1 extends Application {
                 String name = newVal.split(" ")[1];
                 TileSource ts;
                 if (newVal.startsWith(BING)) {
-                    TileSourceFactory<BingType> fac = new BingTileSourceFactory(ApiKeys.Bing.toString());
+                    String key = ApiKeys.Bing.toString();
+                    TileSourceFactory<BingType> fac = new BingTileSourceFactory(key);
                     BingType type = BingType.valueOf(name);
                     ts = fac.create(type);
                     if(type.equals(BingType.Aerial)){

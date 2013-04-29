@@ -34,11 +34,20 @@ public abstract class BingMetaDataHandler extends DefaultHandler {
         text = new String(ch, start, length);
     }
     
+    /**
+     * This method returns the string to the metadata url including the api key.
+     * @return url to metadata as string
+     */
     public String getMetaDataUrl(){
-        return getMetaData() + apiKey;
+        return getMetaData("&key="+ apiKey);
     }
 
-    protected abstract String getMetaData();
+    /**
+     * This method needs to return the path to the metadata with the api key appended.
+     * Sample: http://dev.xy.com/meta/xxx&key=uvwxyz
+     * @return path to metadata as string
+     */
+    protected abstract String getMetaData(String keyToAppend);
 
     
 }

@@ -10,7 +10,7 @@ import org.xml.sax.SAXException;
  */
 public class BingImageMetaDataHandler extends BingMetaDataHandler {
     
-    private static final String METADATA = "http://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial/0,0?zl=1&mapVersion=v1&include=ImageryProviders&output=xml&key=";
+    private static final String METADATA = "http://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial/0,0?zl=1&mapVersion=v1&include=ImageryProviders&output=xml";
 
     private double southLat;
 
@@ -69,8 +69,8 @@ public class BingImageMetaDataHandler extends BingMetaDataHandler {
     }
 
     @Override
-    public String getMetaData() {
-        return METADATA;
+    public String getMetaData(String key) {
+        return METADATA + key;
     }
 
 }
