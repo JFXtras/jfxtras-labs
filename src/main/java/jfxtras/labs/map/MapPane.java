@@ -68,6 +68,8 @@ public final class MapPane extends Pane implements MapControlable {
 
     private static final int START = 0;
 
+    private static final String STYLE_LOC = "cursorLocation";
+
     private TileSource tileSource;
 
     private TileRepository tileRepository;
@@ -129,7 +131,7 @@ public final class MapPane extends Pane implements MapControlable {
 
     private SimpleBooleanProperty tileGridVisible;
 
-    private SimpleBooleanProperty cursorLocationVisible;
+    private boolean cursorLocationVisible;
 
     private SimpleBooleanProperty monochromeMode = new SimpleBooleanProperty();
 
@@ -138,6 +140,8 @@ public final class MapPane extends Pane implements MapControlable {
     private SimpleBooleanProperty mapVehiclesVisible = new SimpleBooleanProperty(true);
 
     private SimpleBooleanProperty mapPolygonsVisible = new SimpleBooleanProperty(true);
+    
+    private CoordinateStringFormater formater;
 
     public MapPane(TileSource ts) {
         this(ts, START, START, 800, 600, INITIAL_ZOOM);
@@ -146,8 +150,8 @@ public final class MapPane extends Pane implements MapControlable {
     public MapPane(TileSource ts, int x, int y, int width, int height, int zoom) {
         this.tileSource = ts;
         this.zoom = zoom;
-        
-        
+        this.cursorLocationVisible = true;
+
         tilesGroup = new Group();
         TilesMouseHandler handler = new TilesMouseHandler(this);
         handler.setEventPublisher(tilesGroup);
@@ -156,7 +160,6 @@ public final class MapPane extends Pane implements MapControlable {
 
         mapMarkersVisible = new SimpleBooleanProperty(true);
         tileGridVisible = new SimpleBooleanProperty(false);
-        cursorLocationVisible = new SimpleBooleanProperty(true);
 
         tileRepository = new TileRepository(tileSource);
 
@@ -166,7 +169,7 @@ public final class MapPane extends Pane implements MapControlable {
         mapOverlayList = new ArrayList<>();
 
         buildZoomControls();
-        
+
         int tileSize = tileSource.getTileSize();
         setMinSize(tileSize, tileSize);
         setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
@@ -177,6 +180,7 @@ public final class MapPane extends Pane implements MapControlable {
         ds.setOffsetY(3.0f);
         ds.setColor(Color.BLACK);
         cursorLocationText = new Text("");
+        cursorLocationText.setId(STYLE_LOC);
         cursorLocationText.setEffect(ds);
         cursorLocationText.setFontSmoothingType(FontSmoothingType.LCD);
 
@@ -186,26 +190,28 @@ public final class MapPane extends Pane implements MapControlable {
         getChildren().add(tilesGroup);
         getChildren().add(zoomControlsVbox);
         getChildren().add(cursorLocationText);
-        
+
         addResizeListeners();
-        
+
         setPrefSize(width, height);
         setMinWidth(width);
         setMinHeight(height);
+        
+        formater = new CoordinateStringFormater();
     }
-    
-    private void addResizeListeners(){
-    	widthProperty().addListener(new ChangeListener<Number>() {
+
+    private void addResizeListeners() {
+        widthProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-            		Number newValue) {
+                Number newValue) {
                 setMapWidth(newValue.doubleValue());
             }
         });
         heightProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-            		Number newValue) {
+                Number newValue) {
                 setMapHeight(newValue.doubleValue());
             }
         });
@@ -262,10 +268,19 @@ public final class MapPane extends Pane implements MapControlable {
     }
 
     @Override
+    public void setCursorLocationText(double x, double y) {
+        if(cursorLocationVisible){
+            Coordinate coord = getCoordinate((int)x, (int)y);
+            cursorLocationText.setText(formater.format(coord));
+        }
+    }
+
+
+    @Override
     public void adjustCursorLocationText() {
         double strwidth = cursorLocationText.getBoundsInParent().getWidth();
         double x = (double) ((getMapWidth() / 2) - (strwidth / 2));
-        int y = getMapHeight() - 24;
+        int y = getMapHeight() - 28;
 
         cursorLocationText.setLayoutX(x);
         cursorLocationText.setLayoutY(y);
@@ -300,7 +315,7 @@ public final class MapPane extends Pane implements MapControlable {
         this.mapWidth.set(width);
         this.mapHeight.set(height);
     }
-    
+
     public void setDisplayPositionByLatLon(double lat, double lon) {
         setDisplayPositionByLatLon(lat, lon, zoom);
     }
@@ -598,22 +613,19 @@ public final class MapPane extends Pane implements MapControlable {
         if (zoom > tileSource.getMaxZoom()) {
             setZoom(tileSource.getMaxZoom());
         }
-        
+
         renderControl();
     }
 
     protected void renderControl() {
-    	
+
         int iMove;
         int tilesize = tileSource.getTileSize();
 
-        int off_x = (center.x % tilesize);
-        int off_y = (center.y % tilesize);
-
-        int diff_left = off_x;
-        int diff_right = tilesize - off_x;
-        int diff_top = off_y;
-        int diff_bottom = tilesize - off_y;
+        int diff_left = (center.x % tilesize);
+        int diff_right = tilesize - diff_left;
+        int diff_top = (center.y % tilesize);
+        int diff_bottom = tilesize - diff_top;
 
         boolean start_left = diff_left < diff_right;
         boolean start_top = diff_top < diff_bottom;
@@ -638,7 +650,7 @@ public final class MapPane extends Pane implements MapControlable {
             }
         }
 
-        renderTiles(tilesize, off_x, off_y, iMove);
+        renderTiles(tilesize, diff_left, diff_top, iMove);
 
         renderOverlays();
         renderPolygons();
@@ -649,19 +661,16 @@ public final class MapPane extends Pane implements MapControlable {
 
     private void renderTiles(int tilesize, int off_x, int off_y, int iMove) {
 
-        int tilex = (center.x / tilesize);
-        int tiley = (center.y / tilesize);
-
-        int w2 = (int) (getMapWidth() / 2);
-        int h2 = (int) (getMapHeight() / 2);
-        int posx = w2 - off_x;
-        int posy = h2 - off_y;
-
-        // calculate the visibility borders
-        int x_min = -tilesize;
-        int y_min = -tilesize;
         int x_max = (int) getMapWidth();
         int y_max = (int) getMapHeight();
+
+        int x_min = -tilesize, y_min = -tilesize;
+        
+        int posx = (x_max / 2) - off_x;
+        int posy = (y_max / 2) - off_y;
+        
+        int tilex = (center.x / tilesize);
+        int tiley = (center.y / tilesize);
 
         // paint the tiles in a spiral, starting from center of the map
         boolean painted = true;
@@ -790,16 +799,6 @@ public final class MapPane extends Pane implements MapControlable {
         return moving;
     }
 
-    @Override
-    public Text getCursorLocationText() {
-        return cursorLocationText;
-    }
-
-    @Override
-    public boolean isCursorLocationVisible() {
-        return cursorLocationVisible.get();
-    }
-
     public void setMapX(int val) {
         this.mapX.set(val);
     }
@@ -912,8 +911,9 @@ public final class MapPane extends Pane implements MapControlable {
         return this.tileGridVisible.get();
     }
 
+    @Override
     public void setCursorLocationVisible(boolean val) {
-        this.cursorLocationVisible.set(val);
+        this.cursorLocationVisible = val;
     }
 
     @Override

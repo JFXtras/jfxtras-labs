@@ -6,8 +6,12 @@
         Purpose of the stylesheet follows.
 */
 
+#cursorLocation {
+    -fx-fill: white;
+}
+
 #termsOfUse {
-    -fx-fill: blue;
+    -fx-fill: white;
 }
 
 #copyRight {
