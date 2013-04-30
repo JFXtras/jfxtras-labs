@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public class BingAttributionLoaderTest {
 

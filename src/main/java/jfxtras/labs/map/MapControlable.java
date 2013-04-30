@@ -34,12 +34,6 @@ public interface MapControlable {
 
     void setLastDragPoint(Point point);
 
-    void setMoving(boolean moving);
-
-    boolean isMoving();
-
-    boolean isMovementEnabled();
-
     /**
      * Converts the relative pixel coordinate (regarding the top left corner of the displayed map) into a latitude /
      * longitude coordinate
