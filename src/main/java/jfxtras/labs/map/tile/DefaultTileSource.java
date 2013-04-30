@@ -19,9 +19,9 @@ public class DefaultTileSource implements TileSource {
 
     private Image attributionImage;
 
-    private int minZoom = 1;
+    private int minZoom = ZoomBounds.Min.getValue();
 
-    private int maxZoom = 18;
+    private int maxZoom = ZoomBounds.MAX.getValue();
 
     private boolean attributionRequired = true;
 

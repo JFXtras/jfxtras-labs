@@ -7,7 +7,7 @@ package jfxtras.labs.map.tile;
  */
 public class OsmTileSourceFactory implements TileSourceFactory<OsmType> {
 
-    private static final int ZOOM = 17;
+    private static final int ZOOM = 18;
 
     @Override
     public TileSource create() {
@@ -33,6 +33,7 @@ public class OsmTileSourceFactory implements TileSourceFactory<OsmType> {
                 tileSource = new DefaultTileSource("Mapnik", "http://tile.openstreetmap.org");
         }
         tileSource.setAttributionRequired(false);
+        tileSource.setMaxZoom(ZOOM);
 
         return tileSource;
     }
@@ -41,8 +42,6 @@ public class OsmTileSourceFactory implements TileSourceFactory<OsmType> {
 
         DefaultTileSource osm = new DefaultTileSource(name, baseUrl);
         osm.setUrlBuilder(new AlternateOsmTileUrlBuilder());
-        osm.setMaxZoom(ZOOM);
-
         return osm;
     }
 }

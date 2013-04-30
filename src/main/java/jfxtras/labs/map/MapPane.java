@@ -20,6 +20,7 @@
 //==============================================================================
 package jfxtras.labs.map;
 
+import jfxtras.labs.map.tile.ZoomBounds;
 import jfxtras.labs.map.tile.Tile;
 import jfxtras.labs.map.tile.TileRepository;
 import jfxtras.labs.map.render.LicenseRenderer;
@@ -332,7 +333,7 @@ public final class MapPane extends Pane implements MapControlable {
 
     public void setDisplayPosition(Point mapPoint, int x, int y, int zoom) {
 
-        if (zoom > getTileSource().getMaxZoom() || zoom < ZoomBounds.Min.getValue()) {
+        if (zoom > tileSource.getMaxZoom() || zoom < tileSource.getMinZoom()) {
             return;
         }
 

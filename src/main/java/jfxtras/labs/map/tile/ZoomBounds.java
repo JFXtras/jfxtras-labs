@@ -1,11 +1,11 @@
-package jfxtras.labs.map;
+package jfxtras.labs.map.tile;
 
 /**
  * Values for minimum and maximum zoom.
  * 
  * @author Mario Schroeder
  */
-enum ZoomBounds {
+public enum ZoomBounds {
     
     MAX(22), Min(1);
     
