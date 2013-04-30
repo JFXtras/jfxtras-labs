@@ -6,7 +6,8 @@ package jfxtras.labs.map;
  */
 public enum ApiKeys {
     
-    Bing("Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU");
+    Bing("Arzdiw4nlOJzRwOz__qailc8NiR31Tt51dN2D7cm57NrnceZnCpgOkmJhNpGoppU"),
+    Google("AIzaSyAmCmg-WFIv0EAjK54N7Oq9rXNT02BHOUw");
     
     private String value;
 

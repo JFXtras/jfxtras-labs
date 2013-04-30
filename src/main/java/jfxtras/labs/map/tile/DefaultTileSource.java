@@ -19,7 +19,7 @@ public class DefaultTileSource implements TileSource {
 
     private Image attributionImage;
 
-    private int minZoom;
+    private int minZoom = 1;
 
     private int maxZoom = 18;
 
@@ -41,7 +41,7 @@ public class DefaultTileSource implements TileSource {
     	this.name = name;
         this.baseUrl = base_url;
         
-        tilePathBuilder = new DefaultTilePathBuilder();
+        tilePathBuilder = new OsmTilePathBuilder();
     }
 
     @Override

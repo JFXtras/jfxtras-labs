@@ -9,6 +9,8 @@ public interface TilePathBuildable {
     String SLASH = "/";
 
     String DOT = ".";
+    
+    String AMPERSAND = "&";
 
     /**
      * png image

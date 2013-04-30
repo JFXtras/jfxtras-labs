@@ -62,6 +62,7 @@ public class TileRepository {
             cleanupCache();
 
             String location = tileSource.getTileUrl(zoom, tilex, tiley);
+            System.err.println(location);
             TileInfo info = cache.get(location);
 
             if (info != null) {

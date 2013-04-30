@@ -7,7 +7,7 @@ package jfxtras.labs.map;
  */
 enum ZoomBounds {
     
-    MAX(22), Min(0);
+    MAX(22), Min(1);
     
     private int value;
 
