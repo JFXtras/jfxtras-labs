@@ -109,10 +109,6 @@ public final class MapPane extends Pane implements MapControlable {
 
     private Point lastDragPoint = new Point();
 
-    private boolean moving = false;
-
-    private boolean movementEnabled = true;
-
     private SimpleIntegerProperty mapX;
 
     private SimpleIntegerProperty mapWidth;
@@ -770,16 +766,6 @@ public final class MapPane extends Pane implements MapControlable {
     }
 
     @Override
-    public boolean isMovementEnabled() {
-        return movementEnabled;
-    }
-
-    // Enables or disables moap movement via the mouse.
-    public void setMovementEnabled(boolean movementEnabled) {
-        this.movementEnabled = movementEnabled;
-    }
-
-    @Override
     public Point getLastDragPoint() {
         return lastDragPoint;
     }
@@ -787,16 +773,6 @@ public final class MapPane extends Pane implements MapControlable {
     @Override
     public void setLastDragPoint(Point point) {
         this.lastDragPoint = point;
-    }
-
-    @Override
-    public void setMoving(boolean moving) {
-        this.moving = moving;
-    }
-
-    @Override
-    public boolean isMoving() {
-        return moving;
     }
 
     public void setMapX(int val) {
