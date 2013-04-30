@@ -25,9 +25,10 @@ public class ZoomSliderFactory {
         slider.setShowTickMarks(true);
         slider.setMajorTickUnit(1.0);
         
-        slider.setMin(controlable.getTileSource().getMinZoom());
+        int minZoom = controlable.getTileSource().getMinZoom();
+        slider.setValue(minZoom);
+        slider.setMin(minZoom);
         slider.setMax(controlable.getTileSource().getMaxZoom());
-        slider.setValue(ZoomBounds.Min.getValue());
 
         slider.setPrefSize(30, 150);
 

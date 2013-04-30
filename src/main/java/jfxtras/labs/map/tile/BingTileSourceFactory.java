@@ -19,7 +19,7 @@ public class BingTileSourceFactory extends ApiKeyTileSourceFactory<BingType> {
 
     private Map<BingType, List<Attribution>> attrMap;
 
-    private static final int ZOOM = 21;
+    private static final int ZOOM = 19;
 
     private static final String TILE_URL = "http://ecn.t2.tiles.virtualearth.net/tiles/";
 
