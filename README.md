@@ -4,7 +4,7 @@ _A project for experimenting with new controls and other useful JavaFX extension
 
 Building with Gradle
 --------------------
-* Set your environment variable JAVAFX_HOME to the directory that contains rt/lib/jfxrt.jar.
+* Set your environment variable JAVA_HOME to the directory that contains jre/lib/jfxrt.jar.
 * cd jfxtras-labs
 * gradlew build
 
