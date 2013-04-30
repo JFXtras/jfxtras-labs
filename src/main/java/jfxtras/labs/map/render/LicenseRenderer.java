@@ -24,6 +24,7 @@ import javafx.scene.text.FontSmoothingType;
 
 /**
  * This class displays copy right informations on the map
+ *
  * @author Mario Schroeder
  *
  */
@@ -43,10 +44,12 @@ public class LicenseRenderer implements Renderable {
         int y = mapController.getMapY();
         int width = mapController.getMapWidth();
         int height = mapController.getMapHeight();
-
+        int yText = height - 8;
+        
         Coordinate topLeft = mapController.getCoordinate(x, y);
         Coordinate bottomRight = mapController.getCoordinate(width, height);
         String attrTxt = tileSource.getAttributionText(mapController.getZoom(), topLeft, bottomRight);
+
         // Draw attribution text
         if (attrTxt != null) {
             Text attrText = createLicenseText(attrTxt);
@@ -54,7 +57,7 @@ public class LicenseRenderer implements Renderable {
 
             double strwidth = attrText.getBoundsInParent().getWidth();
             attrText.setLayoutX(width - strwidth);
-            attrText.setLayoutY(height - 8);
+            attrText.setLayoutY(yText);
             tilesGroup.getChildren().add(attrText);
         }
 
@@ -67,7 +70,7 @@ public class LicenseRenderer implements Renderable {
             ds.setColor(Color.BLACK);
             attImgView.setEffect(ds);
             attImgView.setLayoutX(8);
-            attImgView.setLayoutY(height - (1.8 * attrImage.getHeight()));
+            attImgView.setLayoutY(yText - (attrImage.getHeight() + 15));
             tilesGroup.getChildren().add(attImgView);
         }
 
@@ -78,7 +81,7 @@ public class LicenseRenderer implements Renderable {
             termsText.setId(STYLE_TERMS);
 
             termsText.setLayoutX(8);
-            termsText.setLayoutY(height - 8);
+            termsText.setLayoutY(yText);
 
             termsText.setOnMouseEntered(new MouseEnteredAdapter(termsText));
             termsText.setOnMouseClicked(new MouseClickedAdapter(termsOfUse));
