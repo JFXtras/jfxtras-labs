@@ -36,7 +36,7 @@ public class TilesMouseHandler {
         tilesGroup.setOnMouseMoved(new MouseMovedAdapter());
         tilesGroup.setOnMouseClicked(new MouseClickedAdapter());
         tilesGroup.setOnMousePressed(new MousePressedAdapter());
-        tilesGroup.setOnMouseReleased(new MouseReleasedAdapter());
+        tilesGroup.setOnMouseReleased(new MouseReleasedAdapter(tilesGroup));
         tilesGroup.setOnMouseDragged(new MouseDraggedAdapter(tilesGroup));
         tilesGroup.setOnMouseDragReleased(new MouseDragReleasedAdapter(tilesGroup));
     }
@@ -52,7 +52,7 @@ public class TilesMouseHandler {
     }
 
     private void updateCursorLocationText(double x, double y) {
-        
+
         controlable.setCursorLocationText(x, y);
 
         if (!adjusted) {
@@ -107,7 +107,6 @@ public class TilesMouseHandler {
         public void handle(MouseEvent me) {
             if (me.isPrimaryButtonDown()) {
                 controlable.setLastDragPoint(null);
-                controlable.setMoving(true);
             }
         }
     }
@@ -158,32 +157,32 @@ public class TilesMouseHandler {
     }
 
     private class MouseReleasedAdapter implements EventHandler<MouseEvent> {
+        private Group tilesGroup;
+
+        MouseReleasedAdapter(Group tilesGroup) {
+            this.tilesGroup = tilesGroup;
+        }
 
         @Override
         public void handle(MouseEvent me) {
-            if (controlable.isMoving()) {
-                moveMap(me);
-                controlable.setLastDragPoint(null);
-                controlable.setMoving(false);
-            }
+            tilesGroup.setCursor(Cursor.CROSSHAIR);
+            moveMap(me);
+            controlable.setLastDragPoint(null);
         }
     }
 
     private class MouseDragReleasedAdapter implements EventHandler<MouseEvent> {
-        
+
         private Group tilesGroup;
 
         MouseDragReleasedAdapter(Group tilesGroup) {
             this.tilesGroup = tilesGroup;
         }
-        
+
         @Override
         public void handle(MouseEvent me) {
-
             tilesGroup.setCursor(Cursor.CROSSHAIR);
-            if (controlable.isMovementEnabled() && controlable.isMoving()) {
-                moveMap(me);
-            }
+            moveMap(me);
         }
     }
 
@@ -197,13 +196,12 @@ public class TilesMouseHandler {
 
         @Override
         public void handle(MouseEvent me) {
-            if (controlable.isMovementEnabled() && controlable.isMoving() && me.isPrimaryButtonDown()) {
+            if (me.isPrimaryButtonDown()) {
                 tilesGroup.setCursor(Cursor.MOVE);
                 Point point = controlable.getLastDragPoint();
                 if (point == null) {
                     Point p = new Point((int) me.getX(), (int) me.getY());
                     controlable.setLastDragPoint(p);
-                    controlable.setMoving(true);
                 }
             }
         }
