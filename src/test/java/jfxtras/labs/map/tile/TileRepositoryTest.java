@@ -40,15 +40,7 @@ public class TileRepositoryTest {
 			verify(factory.create(type));
 		}
 	}
-    
-    @Test
-	public void testGoogleSource() {
-		TileSourceFactory<GoogleType> factory = new GoogleTileSourceFactory(ApiKeys.Bing.toString());
-		for (GoogleType type : GoogleType.values()) {
-			verify(factory.create(type));
-		}
-	}
-
+  
 	@Test
 	public void testLocalSource() {
         

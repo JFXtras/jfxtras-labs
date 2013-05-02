@@ -39,8 +39,6 @@ import jfxtras.labs.map.render.MapLineable;
 import jfxtras.labs.map.render.MapMarkable;
 import jfxtras.labs.map.tile.BingTileSourceFactory;
 import jfxtras.labs.map.tile.BingType;
-import jfxtras.labs.map.tile.GoogleTileSourceFactory;
-import jfxtras.labs.map.tile.GoogleType;
 import jfxtras.labs.map.tile.OsmTileSourceFactory;
 import jfxtras.labs.map.tile.OsmType;
 import jfxtras.labs.map.tile.TileSource;
@@ -55,8 +53,6 @@ public class MapPaneTrial1 extends Application {
     private static final String OSM = "OSM";
     
     private static final String BING = "Bing";
-    
-    private static final String GOOGLE = "Google";
     
     private static final String DEFAULT_CSS = "map_pane.css";
     
@@ -138,11 +134,6 @@ public class MapPaneTrial1 extends Application {
                     if(type.equals(BingType.Aerial)){
                         setStyle(scene, IMG_CSS);
                     }
-                } else if(newVal.startsWith(GOOGLE)){
-                    String key = ApiKeys.Google.toString();
-                    TileSourceFactory<GoogleType> fac = new GoogleTileSourceFactory(key);
-                    GoogleType type = GoogleType.valueOf(name);
-                    ts = fac.create(type);
                 } else {
                     OsmType type = OsmType.valueOf(name);
                     ts = factory.create(type);
@@ -195,8 +186,6 @@ public class MapPaneTrial1 extends Application {
         for(BingType type : BingType.values()){
             comboBox.getItems().add(BING + " " + type.toString());
         }
-        for(GoogleType type : GoogleType.values()){
-            comboBox.getItems().add(GOOGLE + " " + type.toString());
-        }
+       
     }
 }
