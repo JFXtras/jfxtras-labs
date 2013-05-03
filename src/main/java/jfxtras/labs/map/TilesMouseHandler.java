@@ -1,6 +1,7 @@
 package jfxtras.labs.map;
 
 import java.awt.Point;
+
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
@@ -34,11 +35,9 @@ public class TilesMouseHandler {
         tilesGroup.setOnMouseEntered(new MouseEnterAdapter(tilesGroup));
         tilesGroup.setOnMouseExited(new MouseExitAdapter(tilesGroup));
         tilesGroup.setOnMouseMoved(new MouseMovedAdapter());
-        tilesGroup.setOnMouseClicked(new MouseClickedAdapter());
         tilesGroup.setOnMousePressed(new MousePressedAdapter());
         tilesGroup.setOnMouseReleased(new MouseReleasedAdapter(tilesGroup));
         tilesGroup.setOnMouseDragged(new MouseDraggedAdapter(tilesGroup));
-        tilesGroup.setOnMouseDragReleased(new MouseDragReleasedAdapter(tilesGroup));
     }
 
     private void updateCursorLocationText(ScrollEvent me) {
@@ -74,30 +73,25 @@ public class TilesMouseHandler {
         }
     }
 
+    private void setLastDragPoint(MouseEvent me) {
+        Point p = new Point((int) me.getX(), (int) me.getY());
+        controlable.setLastDragPoint(p);
+    }
+
     private class ScrollEventAdapter implements EventHandler<ScrollEvent> {
 
         @Override
         public void handle(ScrollEvent se) {
             if (se.getDeltaY() > 0) {
-                if (controlable.getZoom() < ZoomBounds.MAX.getValue()) {
+                if (controlable.getZoom() < controlable.getTileSource().getMaxZoom()) {
                     controlable.zoomIn(new Point((int) se.getX(), (int) se.getY()));
                     updateCursorLocationText(se);
                 }
-            } else if (controlable.getZoom() > ZoomBounds.Min.getValue()) {
+            } else if (controlable.getZoom() > controlable.getTileSource().getMinZoom()) {
                 controlable.zoomOut(new Point((int) se.getX(), (int) se.getY()));
                 updateCursorLocationText(se);
             }
 
-        }
-    }
-
-    private class MouseClickedAdapter implements EventHandler<MouseEvent> {
-
-        @Override
-        public void handle(MouseEvent me) {
-            if (me.isSecondaryButtonDown()) {
-                controlable.zoomIn(new Point((int) me.getX(), (int) me.getY()));
-            }
         }
     }
 
@@ -106,7 +100,7 @@ public class TilesMouseHandler {
         @Override
         public void handle(MouseEvent me) {
             if (me.isPrimaryButtonDown()) {
-                controlable.setLastDragPoint(null);
+                controlable.setLastDragPoint(new Point((int) me.getX(), (int) me.getY()));
             }
         }
     }
@@ -145,10 +139,7 @@ public class TilesMouseHandler {
         @Override
         public void handle(MouseEvent me) {
             if (me.isPrimaryButtonDown()) {
-
-                Point p = new Point((int) me.getX(), (int) me.getY());
-                moveMap(p);
-                controlable.setLastDragPoint(p);
+                setLastDragPoint(me);
             } else {
                 updateCursorLocationText(me);
             }
@@ -157,6 +148,7 @@ public class TilesMouseHandler {
     }
 
     private class MouseReleasedAdapter implements EventHandler<MouseEvent> {
+
         private Group tilesGroup;
 
         MouseReleasedAdapter(Group tilesGroup) {
@@ -168,21 +160,6 @@ public class TilesMouseHandler {
             tilesGroup.setCursor(Cursor.CROSSHAIR);
             moveMap(me);
             controlable.setLastDragPoint(null);
-        }
-    }
-
-    private class MouseDragReleasedAdapter implements EventHandler<MouseEvent> {
-
-        private Group tilesGroup;
-
-        MouseDragReleasedAdapter(Group tilesGroup) {
-            this.tilesGroup = tilesGroup;
-        }
-
-        @Override
-        public void handle(MouseEvent me) {
-            tilesGroup.setCursor(Cursor.CROSSHAIR);
-            moveMap(me);
         }
     }
 
@@ -200,8 +177,7 @@ public class TilesMouseHandler {
                 tilesGroup.setCursor(Cursor.MOVE);
                 Point point = controlable.getLastDragPoint();
                 if (point == null) {
-                    Point p = new Point((int) me.getX(), (int) me.getY());
-                    controlable.setLastDragPoint(p);
+                    setLastDragPoint(me);
                 }
             }
         }

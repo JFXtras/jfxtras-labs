@@ -116,12 +116,7 @@ public class MapPaneTrial1 extends Application {
         BorderPane borderPan = new BorderPane();
         final Scene scene = createScene(borderPan);
         ComboBox<String> comboBox = new ComboBox<>();
-        for (OsmType type : OsmType.values()) {
-            comboBox.getItems().add(OSM + " " + type.toString());
-        }
-        for(BingType type : BingType.values()){
-        	comboBox.getItems().add(BING + " " + type.toString());
-        }
+        addItems(comboBox);
         
         comboBox.getSelectionModel().select(osmType.toString());
         comboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
@@ -181,5 +176,16 @@ public class MapPaneTrial1 extends Application {
     private void setStyle(Scene scene, String css) {
         scene.getStylesheets().add(getClass().getResource(css)
             .toExternalForm());
+    }
+
+    private void addItems(
+        ComboBox<String> comboBox) {
+        for (OsmType type : OsmType.values()) {
+            comboBox.getItems().add(OSM + " " + type.toString());
+        }
+        for(BingType type : BingType.values()){
+            comboBox.getItems().add(BING + " " + type.toString());
+        }
+       
     }
 }
