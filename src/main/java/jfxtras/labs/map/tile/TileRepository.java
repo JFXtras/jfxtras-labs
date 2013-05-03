@@ -35,7 +35,7 @@ import javafx.scene.image.Image;
  * @author Mario Schroeder
  *
  */
-public class TileRepository {
+public class TileRepository implements TileCacheable{
 
     private TileSource tileSource;
 
@@ -54,6 +54,7 @@ public class TileRepository {
         expire = DEFAULT_EXPIRE;
     }
 
+    @Override
     public Tile getTile(int tilex, int tiley, int zoom) {
         Tile tile = null;
 
@@ -102,10 +103,12 @@ public class TileRepository {
         return valid;
     }
 
+    @Override
     public TileSource getTileSource() {
         return tileSource;
     }
 
+    @Override
     public void setTileSource(TileSource tileSource) {
         this.tileSource = tileSource;
         cache.clear();
