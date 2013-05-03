@@ -137,7 +137,7 @@ public final class MapPane extends Pane implements MapControlable {
     private SimpleBooleanProperty mapVehiclesVisible = new SimpleBooleanProperty(true);
 
     private SimpleBooleanProperty mapPolygonsVisible = new SimpleBooleanProperty(true);
-    
+
     private CoordinateStringFormater formater;
 
     public MapPane(TileSource ts) {
@@ -193,7 +193,7 @@ public final class MapPane extends Pane implements MapControlable {
         setPrefSize(width, height);
         setMinWidth(width);
         setMinHeight(height);
-        
+
         formater = new CoordinateStringFormater();
     }
 
@@ -266,12 +266,11 @@ public final class MapPane extends Pane implements MapControlable {
 
     @Override
     public void setCursorLocationText(double x, double y) {
-        if(cursorLocationVisible){
-            Coordinate coord = getCoordinate((int)x, (int)y);
+        if (cursorLocationVisible) {
+            Coordinate coord = getCoordinate((int) x, (int) y);
             cursorLocationText.setText(formater.format(coord));
         }
     }
-
 
     @Override
     public void adjustCursorLocationText() {
@@ -616,6 +615,18 @@ public final class MapPane extends Pane implements MapControlable {
 
     protected void renderControl() {
 
+        renderTiles();
+
+        setZoomContolsVisible(showZoomControls.get());
+
+        renderOverlays();
+        renderPolygons();
+        renderMarkers();
+
+        renderAttribution();
+    }
+
+    private void renderTiles() {
         int iMove;
         int tilesize = tileSource.getTileSize();
 
@@ -630,8 +641,6 @@ public final class MapPane extends Pane implements MapControlable {
         tilesGroup.getChildren().clear();
         clipMask.setTranslateX(-mapX.get());
         clipMask.setTranslateY(-mapY.get());
-
-        setZoomContolsVisible(showZoomControls.get());
 
         if (start_top) {
             if (start_left) {
@@ -648,12 +657,6 @@ public final class MapPane extends Pane implements MapControlable {
         }
 
         renderTiles(tilesize, diff_left, diff_top, iMove);
-
-        renderOverlays();
-        renderPolygons();
-        renderMarkers();
-
-        renderAttribution();
     }
 
     private void renderTiles(int tilesize, int off_x, int off_y, int iMove) {
@@ -662,10 +665,10 @@ public final class MapPane extends Pane implements MapControlable {
         int y_max = (int) getMapHeight();
 
         int x_min = -tilesize, y_min = -tilesize;
-        
+
         int posx = (x_max / 2) - off_x;
         int posy = (y_max / 2) - off_y;
-        
+
         int tilex = (center.x / tilesize);
         int tiley = (center.y / tilesize);
 
