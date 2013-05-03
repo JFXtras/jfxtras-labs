@@ -182,7 +182,6 @@ public final class MapPane extends Pane implements MapControlable {
         cursorLocationText.setFontSmoothingType(FontSmoothingType.LCD);
 
         clipMask.setFill(Color.WHITE);
-
         tilesGroup.setClip(clipMask);
         getChildren().add(tilesGroup);
         getChildren().add(zoomControlsVbox);
@@ -639,8 +638,6 @@ public final class MapPane extends Pane implements MapControlable {
         boolean start_top = diff_top < diff_bottom;
 
         tilesGroup.getChildren().clear();
-        clipMask.setTranslateX(-mapX.get());
-        clipMask.setTranslateY(-mapY.get());
 
         if (start_top) {
             if (start_left) {
