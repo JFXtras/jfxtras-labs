@@ -21,8 +21,6 @@
 package jfxtras.labs.map;
 
 import jfxtras.labs.map.tile.ZoomBounds;
-import jfxtras.labs.map.tile.Tile;
-import jfxtras.labs.map.tile.TileRepository;
 import jfxtras.labs.map.render.LicenseRenderer;
 import jfxtras.labs.map.render.MapLineable;
 import jfxtras.labs.map.render.MapMarkable;
@@ -41,18 +39,17 @@ import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
-import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
+import jfxtras.labs.map.render.TileRenderer;
+import jfxtras.labs.map.tile.TileCacheable;
+import jfxtras.labs.map.tile.TileRepository;
 
 /**
  *
@@ -71,11 +68,7 @@ public final class MapPane extends Pane implements MapControlable {
 
     private static final String STYLE_LOC = "cursorLocation";
 
-    private TileSource tileSource;
-
-    private TileRepository tileRepository;
-
-    private static final Point[] movePoints = {new Point(1, 0), new Point(0, 1), new Point(-1, 0), new Point(0, -1)};
+    private TileRenderer tileRenderer;
 
     private List<MapMarkable> mapMarkerList;
 
@@ -126,11 +119,7 @@ public final class MapPane extends Pane implements MapControlable {
 
     private SimpleBooleanProperty mapMarkersVisible;
 
-    private SimpleBooleanProperty tileGridVisible;
-
     private boolean cursorLocationVisible;
-
-    private SimpleBooleanProperty monochromeMode = new SimpleBooleanProperty();
 
     private SimpleIntegerProperty mapY;
 
@@ -144,8 +133,7 @@ public final class MapPane extends Pane implements MapControlable {
         this(ts, START, START, 800, 600, INITIAL_ZOOM);
     }
 
-    public MapPane(TileSource ts, int x, int y, int width, int height, int zoom) {
-        this.tileSource = ts;
+    public MapPane(TileSource tileSource, int x, int y, int width, int height, int zoom) {
         this.zoom = zoom;
         this.cursorLocationVisible = true;
 
@@ -156,9 +144,9 @@ public final class MapPane extends Pane implements MapControlable {
         buildMapBounds(x, y);
 
         mapMarkersVisible = new SimpleBooleanProperty(true);
-        tileGridVisible = new SimpleBooleanProperty(false);
 
-        tileRepository = new TileRepository(tileSource);
+        TileCacheable tileCache = new TileRepository(tileSource);
+        tileRenderer = new TileRenderer(tileCache);
 
         mapMarkerList = new ArrayList<>();
         mapPolygonList = new ArrayList<>();
@@ -331,7 +319,7 @@ public final class MapPane extends Pane implements MapControlable {
 
     public void setDisplayPosition(Point mapPoint, int x, int y, int zoom) {
 
-        if (zoom > tileSource.getMaxZoom() || zoom < tileSource.getMinZoom()) {
+        if (zoom > getTileSource().getMaxZoom() || zoom < getTileSource().getMinZoom()) {
             return;
         }
 
@@ -600,8 +588,7 @@ public final class MapPane extends Pane implements MapControlable {
         if (minZoom < ZoomBounds.Min.getValue()) {
             throw new IllegalArgumentException("Minumim zoom level too low");
         }
-        this.tileSource = tileSource;
-        tileRepository.setTileSource(tileSource);
+        tileRenderer.setTileSource(tileSource);
         zoomSlider.setMin(tileSource.getMinZoom());
         zoomSlider.setMax(tileSource.getMaxZoom());
 
@@ -614,7 +601,7 @@ public final class MapPane extends Pane implements MapControlable {
 
     protected void renderControl() {
 
-        renderTiles();
+        renderMap();
 
         setZoomContolsVisible(showZoomControls.get());
 
@@ -625,121 +612,18 @@ public final class MapPane extends Pane implements MapControlable {
         renderAttribution();
     }
 
-    private void renderTiles() {
-        int iMove;
-        int tilesize = tileSource.getTileSize();
+    protected void renderMap() {
 
-        int diff_left = (center.x % tilesize);
-        int diff_right = tilesize - diff_left;
-        int diff_top = (center.y % tilesize);
-        int diff_bottom = tilesize - diff_top;
-
-        boolean start_left = diff_left < diff_right;
-        boolean start_top = diff_top < diff_bottom;
-
-        tilesGroup.getChildren().clear();
-
-        if (start_top) {
-            if (start_left) {
-                iMove = 2;
-            } else {
-                iMove = 3;
-            }
-        } else {
-            if (start_left) {
-                iMove = 1;
-            } else {
-                iMove = START;
-            }
-        }
-
-        renderTiles(tilesize, diff_left, diff_top, iMove);
+        tileRenderer.render(this);
     }
 
-    private void renderTiles(int tilesize, int off_x, int off_y, int iMove) {
-
-        int x_max = (int) getMapWidth();
-        int y_max = (int) getMapHeight();
-
-        int x_min = -tilesize, y_min = -tilesize;
-
-        int posx = (x_max / 2) - off_x;
-        int posy = (y_max / 2) - off_y;
-
-        int tilex = (center.x / tilesize);
-        int tiley = (center.y / tilesize);
-
-        // paint the tiles in a spiral, starting from center of the map
-        boolean painted = true;
-        int x = START;
-        while (painted) {
-            painted = false;
-            for (int i = START; i < 4; i++) {
-                if (i % 2 == START) {
-                    x++;
-                }
-                for (int j = START; j < x; j++) {
-                    if (x_min <= posx && posx <= x_max && y_min <= posy && posy <= y_max) {
-                        // tile is visible
-                        Tile tile = tileRepository.getTile(tilex, tiley, zoom);
-                        if (tile != null) {
-                            painted = true;
-
-                            tile.getImageView().translateXProperty().set(posx);
-                            tile.getImageView().translateYProperty().set(posy);
-
-                            if (monochromeMode.get()) {
-                                setMonochromeEffect(tile);
-                            }
-
-                            if (tileGridVisible.get()) {
-                                tilesGroup.getChildren().add(createGrid(posx, posy, tilesize));
-                            }
-
-                            tilesGroup.getChildren().add(tile.getImageView());
-                        }
-                    }
-                    Point p = movePoints[iMove];
-                    posx += p.x * tilesize;
-                    posy += p.y * tilesize;
-                    tilex += p.x;
-                    tiley += p.y;
-                }
-                iMove = (iMove + 1) % movePoints.length;
-            }
-        }
-    }
-
-    private void setMonochromeEffect(Tile tile) {
-
-        ColorAdjust monochrome = new ColorAdjust();
-        monochrome.setSaturation(-1);
-        monochrome.setContrast(-0.3);
-        monochrome.setBrightness(-0.3);
-        tile.getImageView().setEffect(monochrome);
-    }
-
-    protected Path createGrid(int posx, int posy, int tilesize) {
-
-        Path path = new Path();
-        path.getElements().add(new MoveTo(posx, posy));
-        path.getElements().add(new LineTo(posx + tilesize, posy));
-        path.getElements().add(new LineTo(posx + tilesize, posy + tilesize));
-        path.getElements().add(new LineTo(posx, posy + tilesize));
-        path.getElements().add(new LineTo(posx, posy));
-        path.setStrokeWidth(1);
-        path.setStroke(Color.BLACK);
-
-        return path;
-    }
-
-    private void renderOverlays() {
+    protected void renderOverlays() {
         for (MapOverlayable overlay : mapOverlayList) {
             overlay.render(this);
         }
     }
 
-    private void renderPolygons() {
+    protected void renderPolygons() {
         if (mapPolygonsVisible.get() && mapPolygonList != null) {
             for (MapPolygonable polygon : mapPolygonList) {
                 polygon.render(this);
@@ -747,7 +631,7 @@ public final class MapPane extends Pane implements MapControlable {
         }
     }
 
-    private void renderMarkers() {
+    protected void renderMarkers() {
         if (mapMarkersVisible.get() && mapMarkerList != null) {
             for (MapMarkable marker : mapMarkerList) {
                 marker.render(this);
@@ -758,9 +642,9 @@ public final class MapPane extends Pane implements MapControlable {
         }
     }
 
-    private void renderAttribution() {
+    protected void renderAttribution() {
 
-        if (tileSource.isAttributionRequired()) {
+        if (getTileSource().isAttributionRequired()) {
             Renderable renderer = new LicenseRenderer();
             renderer.render(this);
         }
@@ -862,30 +746,13 @@ public final class MapPane extends Pane implements MapControlable {
     }
 
     public void setMonochromeMode(boolean val) {
-        this.monochromeMode.set(val);
+        tileRenderer.setMonoChrome(val);
         renderControl();
     }
 
-    public boolean isMonochromeMode() {
-        return this.monochromeMode.get();
-    }
-
-    public void setMapMarkersVisible(boolean val) {
-        this.tileGridVisible.set(val);
+    public void setTileGridVisible(boolean val) {
+        tileRenderer.setTileGridVisible(val);
         renderControl();
-    }
-
-    public boolean isMapMarkersVisible() {
-        return this.tileGridVisible.get();
-    }
-
-    public void setMapGridVisible(boolean val) {
-        this.tileGridVisible.set(val);
-        renderControl();
-    }
-
-    public boolean isMapGridVisible() {
-        return this.tileGridVisible.get();
     }
 
     @Override
@@ -895,7 +762,7 @@ public final class MapPane extends Pane implements MapControlable {
 
     @Override
     public TileSource getTileSource() {
-        return tileRepository.getTileSource();
+        return tileRenderer.getTileSource();
     }
 
     @Override
@@ -906,5 +773,10 @@ public final class MapPane extends Pane implements MapControlable {
     @Override
     public Group getTilesGroup() {
         return tilesGroup;
+    }
+
+    @Override
+    public Point getCenter() {
+        return center;
     }
 }
