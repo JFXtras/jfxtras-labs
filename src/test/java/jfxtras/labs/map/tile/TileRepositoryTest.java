@@ -40,7 +40,7 @@ public class TileRepositoryTest {
 			verify(factory.create(type));
 		}
 	}
-
+  
 	@Test
 	public void testLocalSource() {
         

@@ -7,9 +7,17 @@ package jfxtras.labs.map.tile;
  */
 public class AlternateOsmTileUrlBuilder implements TileUrlBuildable{
     
-    private final static String[] SERVERS = {"a", "b", "c"};
+    private String[] servers;
     
     private int serverNumber = 0;
+
+    public AlternateOsmTileUrlBuilder() {
+        servers = new String[]{"a", "b", "c"};
+    }
+
+    public void setServers(String[] servers) {
+        this.servers = servers;
+    }
     
     /**
      * This method builds the url.
@@ -27,8 +35,8 @@ public class AlternateOsmTileUrlBuilder implements TileUrlBuildable{
      */
     @Override
     public String build(String baseUrl){
-        String url = String.format(baseUrl, new Object[]{SERVERS[serverNumber]});
-        serverNumber = (serverNumber + 1) % SERVERS.length;
+        String url = String.format(baseUrl, new Object[]{servers[serverNumber]});
+        serverNumber = (serverNumber + 1) % servers.length;
         return url;
     }
     
