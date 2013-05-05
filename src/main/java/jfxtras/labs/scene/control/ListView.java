@@ -1,10 +1,13 @@
 package jfxtras.labs.scene.control;
 
+import com.sun.javafx.scene.control.skin.ListViewSkin;
+
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
+import jfxtras.labs.internal.scene.control.skin.ListViewSkinJFXtras;
 
 /**
  * Drop in replacement for ListView. Adds some handy features like a two-way bindable selectedItem.
@@ -42,7 +45,22 @@ public class ListView<T> extends javafx.scene.control.ListView<T>
 	 */
 	private void construct()
 	{
+		// use a custom skin to enable refreshin
+		setStyle("-fx-skin: \"jfxtras.labs.internal.scene.control.skin.ListViewSkinJFXtras\";");
+		
+		// construct the properties
 		constructSelectedItem();
+	}
+	
+	// =====================================================================================================
+	// REFRESH
+	
+	/**
+	 * Force the contents to be refreshed
+	 */
+	public void refresh()
+	{
+		((ListViewSkinJFXtras<T>)getSkin()).refresh();
 	}
 	
 	
