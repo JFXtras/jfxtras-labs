@@ -7,7 +7,7 @@ import jfxtras.labs.map.Coordinate;
 
 /**
  * {@link TileSource} for bing maps.
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public class BingTileSource extends DefaultTileSource {
 

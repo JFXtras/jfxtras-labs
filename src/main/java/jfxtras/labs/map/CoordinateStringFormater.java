@@ -3,7 +3,7 @@ package jfxtras.labs.map;
 /**
  * This class formats the string which contains coordinates.
  * 
- * @author Mario Schröder
+ * @author Mario Schroeder
  */
 public class CoordinateStringFormater {
     
