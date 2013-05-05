@@ -3,7 +3,7 @@ package jfxtras.labs.internal.scene.control.skin;
 import com.sun.javafx.scene.control.skin.ListViewSkin;
 
 /**
- * We need to use a custom skin, so we can access the protected handleControlPropertyChanged method.
+ * We need to use a custom skin, so we can access the protected flow variable.
  * @author Tom Eugelink
  *
  */
@@ -16,7 +16,7 @@ public class ListViewSkinJFXtras<T> extends ListViewSkin<T>
 
 	public void refresh()
 	{
-		// make it recreated all the cells
-		super.handleControlPropertyChanged("CELL_FACTORY");
+		// make the skin recreate all the cells
+		flow.recreateCells();
 	}
 }
