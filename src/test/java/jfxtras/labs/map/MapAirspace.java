@@ -74,14 +74,14 @@ public class MapAirspace implements MapPolygonable {
 
     @Override
     public void render(MapControlable viewer) {
-        int nPoints = this.coordinates.size();
+        int nPoints = coordinates.size();
         Path path = new Path();
         Polyline polyline = new Polyline();
-        Coordinate c0 = this.coordinates.get(0);
+        Coordinate c0 = coordinates.get(0);
         Point p0 = viewer.getMapPoint( c0 );
         path.getElements().add( new MoveTo( p0.x, p0.y ) );
         for (int p = 0; p < nPoints; p++ ) {
-            Coordinate coordinate = this.coordinates.get(p);
+            Coordinate coordinate = coordinates.get(p);
             Point point = viewer.getMapPoint( coordinate );
             path.getElements().add(new LineTo(point.x, point.y));
             polyline.getPoints().add((double)point.x);
@@ -117,7 +117,6 @@ public class MapAirspace implements MapPolygonable {
         polyline.setEffect(ds);
         
         viewer.getTilesGroup().getChildren().add(polyline);
-        
     }
     
 }

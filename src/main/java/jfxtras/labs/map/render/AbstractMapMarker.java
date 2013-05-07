@@ -1,7 +1,11 @@
 package jfxtras.labs.map.render;
 
 import java.awt.Point;
+import java.util.List;
+
+import javafx.collections.ObservableList;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 
@@ -42,11 +46,18 @@ abstract class AbstractMapMarker implements MapMarkable {
         
         Point postion = mapController.getMapPoint(lat, lon, true);
         if(postion != null){
-            doRender(mapController.getTilesGroup(), postion);
+            Group tilesGroup = mapController.getTilesGroup();
+            ObservableList<Node> children = tilesGroup.getChildren();
+			List<? extends Node> nodes = createChildren(postion);
+			for(Node node : nodes){
+				if(!children.contains(node)){
+					children.add(node);
+				}
+			}
         }
     }
     
-    abstract void doRender(Group group, Point position);
+    abstract List<? extends Node> createChildren(Point position);
     
     public void setLat(double val) {
         this.lat = val;

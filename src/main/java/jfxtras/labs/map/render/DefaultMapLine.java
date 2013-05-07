@@ -91,6 +91,7 @@ public class DefaultMapLine implements MapLineable {
             polyline.getPoints().add((double) p.y);
         }
         viewer.getTilesGroup().getChildren().add(polyline);
+        
     }
 
     @Override

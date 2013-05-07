@@ -1,6 +1,9 @@
 package jfxtras.labs.map.render;
 
 import java.awt.Point;
+import java.util.Collections;
+import java.util.List;
+
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
@@ -52,10 +55,10 @@ public class SimpleMapMarker extends AbstractMapMarker {
     }
 
     @Override
-    void doRender(Group group, Point position) {
+    List<? extends Node> createChildren(Point position){
         sphere.setTranslateX(position.x - this.radius);
         sphere.setTranslateY(position.y - this.radius);
-        group.getChildren().add(sphere);
+        return Collections.singletonList(sphere);
     }
 
     @Override
