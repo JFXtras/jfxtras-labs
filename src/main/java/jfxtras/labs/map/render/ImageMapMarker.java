@@ -22,6 +22,9 @@
 package jfxtras.labs.map.render;
 
 import java.awt.Point;
+import java.util.Collections;
+import java.util.List;
+
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
@@ -73,7 +76,7 @@ public class ImageMapMarker extends AbstractMapMarker{
     }
 
     @Override
-    void doRender(Group group, Point position) {
+    List<? extends Node> createChildren(Point position) {
         int size_w = (int) imageView.getImage().getWidth();
         int size_h = (int) imageView.getImage().getHeight();
 
@@ -81,8 +84,7 @@ public class ImageMapMarker extends AbstractMapMarker{
         imageView.setTranslateY(position.y - (size_h / 2));
         imageView.setRotate(rotate);
 
-        group.getChildren().add(imageView);
-
+        return Collections.singletonList(imageView);
     }
 
     @Override

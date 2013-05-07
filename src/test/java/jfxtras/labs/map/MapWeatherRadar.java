@@ -24,8 +24,10 @@ package jfxtras.labs.map;
 import java.awt.Point;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -36,119 +38,121 @@ import javafx.util.Duration;
 import jfxtras.labs.map.render.MapOverlayable;
 
 /**
- *
+ * 
  * @author smithjel
  */
 public class MapWeatherRadar implements MapOverlayable {
 
-    private Image radarImg;
+	private Image radarImg;
 
-    private ImageView radarView;
+	private ImageView radarView;
 
-    private String radarImgUrl;
+	private String radarImgUrl;
 
-    private int radarImgHeight;
+	private int radarImgHeight;
 
-    private int radarImgWidth;
+	private int radarImgWidth;
 
-    private ImageView scaleView;
+	private ImageView scaleView;
 
-    private int refreshInterval;
+	private int refreshInterval;
 
-    private Coordinate upperLeftCoord;
+	private Coordinate upperLeftCoord;
 
-    private Coordinate lowerRightCoord;
+	private Coordinate lowerRightCoord;
 
-//    Line 1: x-dimension of a pixel in map units
-//    Line 2: rotation parameter
-//    Line 3: rotation parameter
-//    Line 4: NEGATIVE of y-dimension of a pixel in map units
-//    Line 5: x-coordinate of center of upper left pixel
-//    Line 6: y-coordinate of center of upper left pixel
-    public MapWeatherRadar(String url, int img_width, int img_height, int refresh_interval, Coordinate upperLeftCoord,
-        Coordinate lowerRightCoord) {
-        super();
-        radarImgUrl = url;
-        radarImgWidth = img_width;
-        radarImgHeight = img_height;
-        refreshInterval = refresh_interval;
-        this.upperLeftCoord = upperLeftCoord;
-        this.lowerRightCoord = lowerRightCoord;
+	// Line 1: x-dimension of a pixel in map units
+	// Line 2: rotation parameter
+	// Line 3: rotation parameter
+	// Line 4: NEGATIVE of y-dimension of a pixel in map units
+	// Line 5: x-coordinate of center of upper left pixel
+	// Line 6: y-coordinate of center of upper left pixel
+	public MapWeatherRadar(String url, int img_width, int img_height,
+			int refresh_interval, Coordinate upperLeftCoord,
+			Coordinate lowerRightCoord) {
+		super();
+		radarImgUrl = url;
+		radarImgWidth = img_width;
+		radarImgHeight = img_height;
+		refreshInterval = refresh_interval;
+		this.upperLeftCoord = upperLeftCoord;
+		this.lowerRightCoord = lowerRightCoord;
 
-        scaleView = new ImageView(new Image("jfxtras/labs/map/weather_radar_scale.png"));
+		scaleView = new ImageView(new Image(
+				"jfxtras/labs/map/weather_radar_scale.png"));
+		DropShadow ds2 = new DropShadow();
+		ds2.setOffsetX(10.0);
+		ds2.setOffsetY(8.0);
+		scaleView.setEffect(ds2);
 
-        radarImg = new Image(radarImgUrl, radarImgWidth, radarImgHeight, true, true);
-        radarView = new ImageView(radarImg);
+		radarImg = new Image(radarImgUrl, radarImgWidth, radarImgHeight, true,
+				true);
+		radarView = new ImageView(radarImg);
+		DropShadow dropShadow = new DropShadow();
+		dropShadow.setOffsetX(10.0);
+		dropShadow.setOffsetY(8.0);
+		radarView.setEffect(dropShadow);
 
-        Timeline radarUpdateTimer = new Timeline(new KeyFrame(Duration.seconds(this.refreshInterval),
-            new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                radarImg = new Image(radarImgUrl, radarImgWidth, radarImgHeight, true, true);
-                radarView.setImage(radarImg);
-            }
-        }));
-        radarUpdateTimer.setCycleCount(Timeline.INDEFINITE);
-        radarUpdateTimer.play();
-    }
+		Timeline radarUpdateTimer = new Timeline(new KeyFrame(
+				Duration.seconds(this.refreshInterval),
+				new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						radarImg = new Image(radarImgUrl, radarImgWidth,
+								radarImgHeight, true, true);
+						radarView.setImage(radarImg);
+					}
+				}));
+		radarUpdateTimer.setCycleCount(Timeline.INDEFINITE);
+		radarUpdateTimer.play();
+	}
 
-    @Override
-    public Image getImage() {
-        return radarImg;
-    }
+	@Override
+	public Image getImage() {
+		return radarImg;
+	}
 
-    @Override
-    public void setImage(Image newimg) {
-        radarImg = newimg;
-    }
+	@Override
+	public void setImage(Image newimg) {
+		radarImg = newimg;
+	}
 
-    @Override
-    public void render(MapControlable viewer) {
+	@Override
+	public void render(MapControlable viewer) {
 
-        Point ptUL = viewer.getMapPoint(this.upperLeftCoord);
-        Point ptLR = viewer.getMapPoint(this.lowerRightCoord);
+		ObservableList<Node> children = viewer.getTilesGroup().getChildren();
+		addRadarView(viewer, children);
+		addScaleView(children);
 
-        double imgX = viewer.getMapPoint(this.upperLeftCoord).x;
-        double imgY = viewer.getMapPoint(this.upperLeftCoord).y;
-        double imgW = ptLR.x - ptUL.x;
-        double imgH = ptLR.y - ptUL.y;
+	}
 
-        boolean debug_placement = false;
+	private void addRadarView(MapControlable viewer,
+			ObservableList<Node> children) {
 
-        if (debug_placement) {
-            Rectangle r = new Rectangle();
-            r.setX(imgX);
-            r.setY(imgY);
-            r.setWidth(imgW);
-            r.setHeight(imgH);
-            r.setFill(Color.LIGHTGRAY);
-            viewer.getTilesGroup().getChildren().add(r);
-        }
+		Point ptUL = viewer.getMapPoint(upperLeftCoord);
+		Point ptLR = viewer.getMapPoint(lowerRightCoord);
 
-        radarView.setX(imgX);
-        radarView.setY(imgY);
-        radarView.setFitWidth(imgW);
-        radarView.setFitHeight(imgH);
+		double imgX = viewer.getMapPoint(upperLeftCoord).x;
+		double imgY = viewer.getMapPoint(upperLeftCoord).y;
+		double imgW = ptLR.x - ptUL.x;
+		double imgH = ptLR.y - ptUL.y;
 
-        DropShadow dropShadow = new DropShadow();
-        dropShadow.setOffsetX(10.0);
-        dropShadow.setOffsetY(8.0);
-        radarView.setEffect(dropShadow);
+		radarView.setX(imgX);
+		radarView.setY(imgY);
+		radarView.setFitWidth(imgW);
+		radarView.setFitHeight(imgH);
 
-        viewer.getTilesGroup().getChildren().add(radarView);
+		children.add(radarView);
+	}
 
-        double scaleX = 8; //viewer.widthProperty().get() - 40;
-        double scaleY = 250; //viewer.heightProperty().get() - 350;
+	private void addScaleView(ObservableList<Node> children) {
 
-        scaleView.setX(scaleX);
-        scaleView.setY(scaleY);
+		double scaleX = 8; // viewer.widthProperty().get() - 40;
+		double scaleY = 250; // viewer.heightProperty().get() - 350;
 
-        DropShadow ds2 = new DropShadow();
-        ds2.setOffsetX(10.0);
-        ds2.setOffsetY(8.0);
-        scaleView.setEffect(ds2);
+		scaleView.setX(scaleX);
+		scaleView.setY(scaleY);
 
-        viewer.getTilesGroup().getChildren().add(scaleView);
-
-    }
+		children.add(scaleView);
+	}
 }
