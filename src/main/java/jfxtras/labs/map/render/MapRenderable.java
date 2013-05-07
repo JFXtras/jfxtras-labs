@@ -3,7 +3,7 @@ package jfxtras.labs.map.render;
 import jfxtras.labs.map.MapControlable;
 
 /**
- * Interface for the map.
+ * Interface for the map renderer.
  * 
  * @author Mario Schroeder
  */
