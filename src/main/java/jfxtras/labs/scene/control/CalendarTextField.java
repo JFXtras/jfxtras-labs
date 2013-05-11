@@ -104,9 +104,13 @@ public class CalendarTextField extends Control
 	public void setValue(Calendar value) { valueObjectProperty.setValue(value); }
 	public CalendarTextField withValue(Calendar value) { setValue(value); return this; }
 
-	/** DateFormat: */
-	private final DateFormat dateFormat = SimpleDateFormat.getDateInstance();
-	private final DateFormat dateTimeFormat = SimpleDateFormat.getDateTimeInstance();
+	/** 
+	 * The DateFormat used to render/parse the date in the textfield.
+	 * The control uses the system default for date or datetime, and automatically switches between showing time or not depending on the ShowTime property.
+	 * If the DateFormat property has been set manually, this behavior is disabled and the user is responsible for setting this correct DateFormat.     
+	 */
+	static private final DateFormat dateFormat = SimpleDateFormat.getDateInstance();
+	static private final DateFormat dateTimeFormat = SimpleDateFormat.getDateTimeInstance();
 	public ObjectProperty<DateFormat> dateFormatProperty() { return dateFormatObjectProperty; }
 	final private ObjectProperty<DateFormat> dateFormatObjectProperty = new SimpleObjectProperty<DateFormat>(this, "dateFormat", dateFormat);
 	public DateFormat getDateFormat() { return dateFormatObjectProperty.getValue(); }
@@ -127,7 +131,10 @@ public class CalendarTextField extends Control
 	public void setPromptText(String value) { promptTextObjectProperty.set(value); }
 	public CalendarTextField withPromptText(String value) { setPromptText(value); return this; }
 
-	/** ShowTime: only applicable in SINGLE mode */
+	/** 
+	 * ShowTime is used to setup the popup CalendarPicker correctly and also updates the DateFormat property accordingly.
+	 * Once the DateFormat has been set manually, changes to ShowTime will no longer automatically update DateFormat.  
+	 */
 	public ObjectProperty<Boolean> showTimeProperty() { return showTimeObjectProperty; }
 	volatile private ObjectProperty<Boolean> showTimeObjectProperty = new SimpleObjectProperty<Boolean>(this, "showTime", false);
 	public Boolean getShowTime() { return showTimeObjectProperty.getValue(); }
