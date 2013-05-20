@@ -56,7 +56,8 @@ public class CalendarTimeTextFieldTrial1 extends Application {
 	public void start(Stage stage) {
 
 		HBox lHBox = new HBox();
-
+		CalendarTimeTextField lFocusRequestingCalendarTimeTextField = null;
+		
 		{
 			GridPane lGridPane = new GridPane();
 			lGridPane.setVgap(5.0);
@@ -102,6 +103,9 @@ public class CalendarTimeTextFieldTrial1 extends Application {
 						return null;
 					}
 				});
+				
+				// for setting focus
+				lFocusRequestingCalendarTimeTextField = lCalendarTimeTextField;
 			}
 			
 	        // programmatically set to null
@@ -150,6 +154,9 @@ public class CalendarTimeTextFieldTrial1 extends Application {
         stage.setTitle(this.getClass().getSimpleName());
         stage.setScene(scene);
         stage.show();
+        
+        // set focus
+        lFocusRequestingCalendarTimeTextField.requestFocus();
     }
 	
 	/*

@@ -38,7 +38,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -58,7 +57,8 @@ public class CalendarTextFieldTrial1 extends Application {
 	public void start(Stage stage) {
 
 		HBox lHBox = new HBox();
-
+		CalendarTextField lFocusRequestingCalendarTextField = null;
+		
 		{
 			GridPane lGridPane = new GridPane();
 			lGridPane.setVgap(5.0);
@@ -102,6 +102,9 @@ public class CalendarTextFieldTrial1 extends Application {
 						return null;
 					}
 				});
+				
+				// test requesting focus
+				lFocusRequestingCalendarTextField = lCalendarTextField;
 			}
 			
 	        // programmatically set to null
@@ -131,7 +134,7 @@ public class CalendarTextFieldTrial1 extends Application {
 			
 	        // preset value with time
 			{
-				lGridPane.add(new Label("preset value"), 0, lRowIdx);
+				lGridPane.add(new Label("preset value with time"), 0, lRowIdx);
 				CalendarTextField lCalendarTextField = new CalendarTextField();
 				lCalendarTextField.showTimeProperty().set(true);
 				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
@@ -194,6 +197,7 @@ public class CalendarTextFieldTrial1 extends Application {
         stage.setTitle(this.getClass().getSimpleName());
         stage.setScene(scene);
         stage.show();
+		lFocusRequestingCalendarTextField.requestFocus();
     }
 	
 	/*

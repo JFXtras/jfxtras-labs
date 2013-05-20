@@ -30,6 +30,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
@@ -95,6 +96,9 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 			}
 		});
 		refreshValue();
+		
+		// focus
+		initFocusSimulation();
 	}
 	
 	/*
@@ -107,6 +111,32 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 		String s = c == null ? "" : getSkinnable().getDateFormat().format( c.getTime() );
 		textField.setText( s );
 	}
+	
+	/**
+	 * When the control is focus, forward the focus to the textfield
+	 */
+    private void initFocusSimulation() {
+    	
+
+    	getSkinnable().focusedProperty().addListener(new ChangeListener<Boolean>() 
+		{
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean wasFocused, Boolean isFocused) 
+			{
+				if (isFocused) 
+				{
+                	Platform.runLater(new Runnable() 
+                	{
+						@Override
+						public void run() 
+						{
+							textField.requestFocus();
+						}
+					});
+				}
+			}
+		});
+    }
 	
 	// ==================================================================================================================
 	// DRAW
