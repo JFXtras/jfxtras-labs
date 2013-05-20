@@ -133,6 +133,68 @@ public class CalendarTimeTextFieldTrial1 extends Application {
 				lCalendarTimeTextField.setValue(null);
 			}
 			
+	        // DateFormat
+			{
+				lGridPane.add(new Label("date format"), 0, lRowIdx);
+				CalendarTimeTextField lCalendarTimeTextField = new CalendarTimeTextField();
+				lCalendarTimeTextField.setDateFormat(new SimpleDateFormat("HH:mm:ss.SSS"));
+				lGridPane.add(lCalendarTimeTextField, 1, lRowIdx);
+				
+				final TextField lValueTextField = new TextField();
+				lCalendarTimeTextField.valueProperty().addListener(new ChangeListener<Calendar>()
+				{
+					@Override
+					public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
+					{
+						lValueTextField.setText(quickFormatCalendar(newValue));
+					}
+				});
+				lValueTextField.setText(quickFormatCalendar(lCalendarTimeTextField.getValue()));
+				lValueTextField.setDisable(true);
+				lGridPane.add(lValueTextField, 2, lRowIdx++);
+				
+				// process an error
+				lCalendarTimeTextField.parseErrorCallbackProperty().set(new Callback<Throwable, Void>()
+				{
+					@Override
+					public Void call(Throwable t)
+					{
+						System.out.println("parse error: " + t.getMessage());
+						return null;
+					}
+				});
+
+				// set
+				lCalendarTimeTextField.setValue(Calendar.getInstance());
+			}
+						
+	        // DateFormats
+			{
+				lGridPane.add(new Label("multiple date formats"), 0, lRowIdx);
+				CalendarTimeTextField lCalendarTimeTextField = new CalendarTimeTextField();
+				lCalendarTimeTextField.setDateFormat(new SimpleDateFormat("HH:mm:ss"));
+				lCalendarTimeTextField.dateFormatsProperty().add(new SimpleDateFormat("HH:mm:ss.SSS"));
+				lCalendarTimeTextField.dateFormatsProperty().add(new SimpleDateFormat("HH:mm"));
+				lCalendarTimeTextField.dateFormatsProperty().add(new SimpleDateFormat("HH"));
+				lGridPane.add(lCalendarTimeTextField, 1, lRowIdx);
+				
+				final TextField lValueTextField = new TextField();
+				lCalendarTimeTextField.valueProperty().addListener(new ChangeListener<Calendar>()
+				{
+					@Override
+					public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
+					{
+						lValueTextField.setText(quickFormatCalendar(newValue));
+					}
+				});
+				lValueTextField.setText(quickFormatCalendar(lCalendarTimeTextField.getValue()));
+				lValueTextField.setDisable(true);
+				lGridPane.add(lValueTextField, 2, lRowIdx++);
+				
+				// set
+				lCalendarTimeTextField.setValue(Calendar.getInstance());
+			}
+			
 	        // disabled
 			{
 				lGridPane.add(new Label("disabled"), 0, lRowIdx);
