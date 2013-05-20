@@ -24,6 +24,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+/*
+ * TODO: is there a better way to link ShowTime from the DateFormat?
+ * - How about having a separate TimeFormat, if it is null, ShowTime is false? 
+ *   Actual DateFormat would be Date + Time format. 
+ *   -> The date-time separator would be a problem.
+ */
 package jfxtras.labs.scene.control;
 
 import java.text.DateFormat;
@@ -133,7 +139,7 @@ public class CalendarTextField extends Control
 
 	/** 
 	 * ShowTime is used to setup the popup CalendarPicker correctly and also updates the DateFormat property accordingly.
-	 * Once the DateFormat has been set manually, changes to ShowTime will no longer automatically update DateFormat.  
+	 * Once the DateFormat has been set manually, changes to ShowTime will no longer automatically update DateFormat.
 	 */
 	public ObjectProperty<Boolean> showTimeProperty() { return showTimeObjectProperty; }
 	volatile private ObjectProperty<Boolean> showTimeObjectProperty = new SimpleObjectProperty<Boolean>(this, "showTime", false);

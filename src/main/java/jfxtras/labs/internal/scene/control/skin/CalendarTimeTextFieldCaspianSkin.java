@@ -28,6 +28,7 @@ package jfxtras.labs.internal.scene.control.skin;
 
 import java.util.Calendar;
 
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
@@ -94,6 +95,9 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 			}
 		});
 		refreshValue();
+		
+		// focus
+		initFocusSimulation();
 	}
 	
 	/*
@@ -107,6 +111,33 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 		textField.setText( s );
 	}
 	
+	/**
+	 * When the control is focus, forward the focus to the textfield
+	 */
+    private void initFocusSimulation() {
+    	
+
+    	getSkinnable().focusedProperty().addListener(new ChangeListener<Boolean>() 
+		{
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean wasFocused, Boolean isFocused) 
+			{
+				if (isFocused) 
+				{
+                	Platform.runLater(new Runnable() 
+                	{
+						@Override
+						public void run() 
+						{
+							textField.requestFocus();
+						}
+					});
+				}
+			}
+		});
+    }
+	
+
 	// ==================================================================================================================
 	// DRAW
 	
