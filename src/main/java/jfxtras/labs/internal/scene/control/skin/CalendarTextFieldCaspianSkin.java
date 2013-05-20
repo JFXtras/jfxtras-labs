@@ -29,6 +29,7 @@ package jfxtras.labs.internal.scene.control.skin;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -185,8 +186,8 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 					int lField = Calendar.DATE;
 					if (keyEvent.isShiftDown() == false && keyEvent.isControlDown()) lField = Calendar.MONTH;
 					if (keyEvent.isShiftDown() == false && keyEvent.isAltDown()) lField = Calendar.YEAR;
-					if (keyEvent.isShiftDown() == true && keyEvent.isControlDown() && getSkinnable().showTimeProperty().get()) lField = Calendar.HOUR_OF_DAY;
-					if (keyEvent.isShiftDown() == true && keyEvent.isAltDown() && getSkinnable().showTimeProperty().get()) lField = Calendar.MINUTE;
+					if (keyEvent.isShiftDown() == true && keyEvent.isControlDown() && isShowingTime()) lField = Calendar.HOUR_OF_DAY;
+					if (keyEvent.isShiftDown() == true && keyEvent.isAltDown() && isShowingTime()) lField = Calendar.MINUTE;
 					lCalendar.add(lField, keyEvent.getCode() == KeyCode.UP ? 1 : -1);
 					
 					// set it
@@ -247,7 +248,6 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 		// prep the picker
 		calendarPicker = new CalendarPicker();
 		calendarPicker.setMode(CalendarPicker.Mode.SINGLE);
-		calendarPicker.showTimeProperty().bind(getSkinnable().showTimeProperty());
 		// bind our properties to the picker's 
 		Bindings.bindBidirectional(calendarPicker.localeProperty(), getSkinnable().localeProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
 		Bindings.bindBidirectional(calendarPicker.calendarProperty(), getSkinnable().valueProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
@@ -256,7 +256,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 			@Override
 			public void changed(ObservableValue<? extends Calendar> observable, Calendar oldValue, Calendar newValue)
 			{
-				if (popup != null && getSkinnable().showTimeProperty().get() == false) 
+				if (popup != null && isShowingTime() == false) 
 				{
 					popup.hide(); popup = null;
 				}
@@ -368,6 +368,19 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 		} 
 	}
 	
+	/**
+	 * Detect if the control is showing time or not
+	 * This is done by formatting a date with contains a time and checking the formatted string if the values for time are present 
+	 * @return
+	 */
+	private boolean isShowingTime()
+	{
+		String lDateAsString = getSkinnable().dateFormatProperty().get().format(DATE_WITH_TIME);
+		return lDateAsString.contains("2");
+	}
+	
+	final static Date DATE_WITH_TIME = new GregorianCalendar(1111,0,1,2,2,2).getTime();
+	
 	/*
 	 * 
 	 */
@@ -384,9 +397,10 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 			BorderPane lBorderPane = new BorderPane();
 			lBorderPane.getStyleClass().add(this.getClass().getSimpleName() + "_popup");
 			lBorderPane.setCenter(calendarPicker);
+			calendarPicker.showTimeProperty().set( isShowingTime() );
 			
 			// add a close button
-			if (getSkinnable().showTimeProperty().get() == true)
+			if (isShowingTime() == true)
 			{
 				ImageView lImageView = new ImageView(closeIconImage);
 				lImageView.setPickOnBounds(true);

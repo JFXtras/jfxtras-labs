@@ -136,7 +136,7 @@ public class CalendarTextFieldTrial1 extends Application {
 			{
 				lGridPane.add(new Label("preset value with time"), 0, lRowIdx);
 				CalendarTextField lCalendarTextField = new CalendarTextField();
-				lCalendarTextField.showTimeProperty().set(true);
+				lCalendarTextField.dateFormatProperty().set(SimpleDateFormat.getDateTimeInstance());
 				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
 				
 				lCalendarTextField.valueProperty().set(Calendar.getInstance()); // set a value

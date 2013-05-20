@@ -1779,12 +1779,12 @@ implements Agenda.AgendaSkin
 		// time
 		lMenuVBox.getChildren().add(new Text("Time:"));
 		// start
-		final CalendarTextField lStartCalendarTextField = new CalendarTextField().withShowTime(true);
+		final CalendarTextField lStartCalendarTextField = new CalendarTextField().withDateFormat(SimpleDateFormat.getDateTimeInstance());
 		lStartCalendarTextField.setLocale(getSkinnable().getLocale());
 		lStartCalendarTextField.setValue(abstractAppointmentPane.appointment.getStartTime());
 		lMenuVBox.getChildren().add(lStartCalendarTextField);
 		// end
-		final CalendarTextField lEndCalendarTextField = new CalendarTextField().withShowTime(true);
+		final CalendarTextField lEndCalendarTextField = new CalendarTextField().withDateFormat(SimpleDateFormat.getDateTimeInstance());
 		lEndCalendarTextField.setLocale(getSkinnable().getLocale());
 		lEndCalendarTextField.setValue(abstractAppointmentPane.appointment.getEndTime());
 		lMenuVBox.getChildren().add(lEndCalendarTextField);

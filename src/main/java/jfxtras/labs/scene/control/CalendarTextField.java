@@ -24,12 +24,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/*
- * TODO: is there a better way to link ShowTime from the DateFormat?
- * - How about having a separate TimeFormat, if it is null, ShowTime is false? 
- *   Actual DateFormat would be Date + Time format. 
- *   -> The date-time separator would be a problem.
- */
 package jfxtras.labs.scene.control;
 
 import java.text.DateFormat;
@@ -42,18 +36,13 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.util.Callback;
-import jfxtras.labs.scene.control.Agenda.Appointment;
 
 /**
  * A textField with displays a calendar (date) with a icon to popup the CalendarPicker
- * The calendar is (and should) be treated as immutable. That means the setter is not used, but when a value is changed a new instance (clone) is put in the calendar property.
+ * The calendar is (and should) be treated as immutable. That means the Calendar's setters are not used, but when a value is changed a new instance (clone) is put in the calendar property.
  * Features relative mutation options, like -1 or -1d for yesterday, -1m for minus one month, +1w, +2y. # is today.
  * 
  * To change the icon use:
@@ -61,6 +50,8 @@ import jfxtras.labs.scene.control.Agenda.Appointment;
  *     -fx-image: url("AlternateCalendarIcon.jpg");
  * }
  *
+ * The textField can also show time by specifying a DateFormat accordingly, e.g. setDateFormat(SimpleDateFormat.getDateTimeInstance());
+ * 
  * @author Tom Eugelink
  */
 public class CalendarTextField extends Control
@@ -87,9 +78,6 @@ public class CalendarTextField extends Control
 		
 		// this is apparently needed for good focus behavior
 		setFocusTraversable(false);
-		
-		// construct properties
-		constructShowTimeProperty();
 	}
 
 	/**
@@ -112,13 +100,10 @@ public class CalendarTextField extends Control
 
 	/** 
 	 * The DateFormat used to render/parse the date in the textfield.
-	 * The control uses the system default for date or datetime, and automatically switches between showing time or not depending on the ShowTime property.
-	 * If the DateFormat property has been set manually, this behavior is disabled and the user is responsible for setting this correct DateFormat.     
+	 * It is allow to show time as well for example by SimpleDateFormat.getDateTimeInstance().
 	 */
-	static private final DateFormat dateFormat = SimpleDateFormat.getDateInstance();
-	static private final DateFormat dateTimeFormat = SimpleDateFormat.getDateTimeInstance();
 	public ObjectProperty<DateFormat> dateFormatProperty() { return dateFormatObjectProperty; }
-	final private ObjectProperty<DateFormat> dateFormatObjectProperty = new SimpleObjectProperty<DateFormat>(this, "dateFormat", dateFormat);
+	final private ObjectProperty<DateFormat> dateFormatObjectProperty = new SimpleObjectProperty<DateFormat>(this, "dateFormat", SimpleDateFormat.getDateInstance());
 	public DateFormat getDateFormat() { return dateFormatObjectProperty.getValue(); }
 	public void setDateFormat(DateFormat value) { dateFormatObjectProperty.setValue(value); }
 	public CalendarTextField withDateFormat(DateFormat value) { setDateFormat(value); return this; }
@@ -136,29 +121,6 @@ public class CalendarTextField extends Control
 	public String getPromptText() { return promptTextObjectProperty.get(); }
 	public void setPromptText(String value) { promptTextObjectProperty.set(value); }
 	public CalendarTextField withPromptText(String value) { setPromptText(value); return this; }
-
-	/** 
-	 * ShowTime is used to setup the popup CalendarPicker correctly and also updates the DateFormat property accordingly.
-	 * Once the DateFormat has been set manually, changes to ShowTime will no longer automatically update DateFormat.
-	 */
-	public ObjectProperty<Boolean> showTimeProperty() { return showTimeObjectProperty; }
-	volatile private ObjectProperty<Boolean> showTimeObjectProperty = new SimpleObjectProperty<Boolean>(this, "showTime", false);
-	public Boolean getShowTime() { return showTimeObjectProperty.getValue(); }
-	public void setShowTime(Boolean value) { showTimeObjectProperty.setValue(value); }
-	public CalendarTextField withShowTime(Boolean value) { setShowTime(value); return (CalendarTextField)this; } 
-	private void constructShowTimeProperty()
-	{
-		showTimeObjectProperty.addListener(new ChangeListener<Boolean>()
-		{
-			@Override
-			public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldValue, Boolean newValue)
-			{
-				// change to show time
-				if (newValue == true && getDateFormat() == dateFormat) setDateFormat(dateTimeFormat);
-				if (newValue == false && getDateFormat() == dateTimeFormat) setDateFormat(dateFormat);
-			}
-		});
-	}
 
 	/** DateFormats: a list of alternate dateFormats used for parsing */
 	public ListProperty<DateFormat> dateFormatsProperty() { return dateFormatsProperty; }
