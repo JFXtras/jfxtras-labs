@@ -68,7 +68,7 @@ public class CalendarTimePicker extends Control
 	 */
 	@Override protected String getUserAgentStylesheet()
 	{
-		return this.getClass().getResource("/jfxtras/labs/internal/scene/control/" + this.getClass().getSimpleName() + ".css").toString();
+		return this.getClass().getResource("/jfxtras/labs/internal/scene/control/" + CalendarTimePicker.class.getSimpleName() + ".css").toString();
 	}
 	
 	// ==================================================================================================================
@@ -102,22 +102,7 @@ public class CalendarTimePicker extends Control
 	public void setMinuteStep(Integer value) { minuteStepProperty.setValue(value); }
 	public CalendarTimePicker withMinuteStep(Integer value) { setMinuteStep(value); return this; } 
 
-	/** ShowLabels */
-	public ObjectProperty<Boolean> showLabelsProperty() { return showLabelsProperty; }
-	final private SimpleObjectProperty<Boolean> showLabelsProperty = new SimpleObjectProperty<Boolean>(this, "showLabels", false)
-	{
-		public void set(Boolean value)
-		{
-			if (value == null) throw new NullPointerException("showLabels cannot be null");
-			super.set(value);
-		}		
-	};
-	public Boolean getShowLabels() { return showLabelsProperty.getValue(); }
-	public void setShowLabels(Boolean value) { showLabelsProperty.setValue(value); }
-	public CalendarTimePicker withShowLabels(Boolean value) { setShowLabels(value); return this; } 
 
-	// TODO: add showTimeLabels, but the labels make the layout jump
-	
 	// ==================================================================================================================
 	// SUPPORT
 	

@@ -26,7 +26,7 @@
  */
 package jfxtras.labs.internal.scene.control.behavior;
 
-import jfxtras.labs.scene.control.LocalDatePicker;
+import jfxtras.labs.scene.control.LocalDateTimePicker;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
 
@@ -35,7 +35,7 @@ import com.sun.javafx.scene.control.behavior.BehaviorBase;
  * @author Tom Eugelink
  *
  */
-public class LocalDatePickerBehavior extends BehaviorBase<LocalDatePicker>
+public class LocalDatePickerBehavior extends BehaviorBase<LocalDateTimePicker>
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -44,7 +44,7 @@ public class LocalDatePickerBehavior extends BehaviorBase<LocalDatePicker>
 	 * 
 	 * @param control
 	 */
-	public LocalDatePickerBehavior(LocalDatePicker control)
+	public LocalDatePickerBehavior(LocalDateTimePicker control)
 	{
 		super(control);
 	}

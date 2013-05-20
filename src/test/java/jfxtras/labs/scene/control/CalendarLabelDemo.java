@@ -63,9 +63,9 @@ public class CalendarLabelDemo extends Application {
         root.setVgap(10);
         root.setPadding(new Insets(10, 10, 10, 10));
         final CalendarTextField calendarField = new CalendarTextField();
-        calendarField.setValue(new GregorianCalendar());
+        calendarField.setCalendar(new GregorianCalendar());
         final CalendarLabel calendarLabel = new CalendarLabel();
-        calendarLabel.valueProperty().bind(calendarField.valueProperty());
+        calendarLabel.valueProperty().bind(calendarField.calendarProperty());
         root.addRow(1, new Label("CalendarTextField:"), calendarField);
         root.addRow(2, new Label("CalendarLabel"), calendarLabel);
         Button btnSetUKFormat = new Button("MEDIUM UK DateFormat");

@@ -88,7 +88,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 		createNodes();
 		
 		// react to value changes in the model
-		getSkinnable().valueProperty().addListener(new ChangeListener<Calendar>()
+		getSkinnable().calendarProperty().addListener(new ChangeListener<Calendar>()
 		{
 			@Override
 			public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
@@ -108,7 +108,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 	private void refreshValue()
 	{
 		// write out to textfield
-		Calendar c = getSkinnable().getValue();
+		Calendar c = getSkinnable().getCalendar();
 		String s = c == null ? "" : getSkinnable().getDateFormat().format( c.getTime() );
 		textField.setText( s );
 	}
@@ -179,7 +179,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 					parse();
 					
 					// get the calendar to modify
-					Calendar lCalendar = (Calendar)getSkinnable().getValue().clone();
+					Calendar lCalendar = (Calendar)getSkinnable().getCalendar().clone();
 					
 					// modify
 					int lField = Calendar.DATE;
@@ -190,7 +190,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 					lCalendar.add(lField, keyEvent.getCode() == KeyCode.UP ? 1 : -1);
 					
 					// set it
-					getSkinnable().setValue(lCalendar);
+					getSkinnable().setCalendar(lCalendar);
 				}
 			}
 		});
@@ -236,7 +236,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 		calendarPicker.setMode(CalendarPicker.Mode.SINGLE);
 		// bind our properties to the picker's 
 		Bindings.bindBidirectional(calendarPicker.localeProperty(), getSkinnable().localeProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
-		Bindings.bindBidirectional(calendarPicker.calendarProperty(), getSkinnable().valueProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
+		Bindings.bindBidirectional(calendarPicker.calendarProperty(), getSkinnable().calendarProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
 		calendarPicker.calendarProperty().addListener(new ChangeListener<Calendar>()
 		{
 			@Override
@@ -270,7 +270,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 			lText = lText.trim();
 			if (lText.length() == 0) 
 			{
-				getSkinnable().setValue(null);
+				getSkinnable().setCalendar(null);
 				return;
 			}
 			
@@ -290,20 +290,20 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 				
 				// parse the delta
 				int lDelta = Integer.parseInt(lText);
-				Calendar lCalendar = (Calendar)getSkinnable().getValue().clone(); // TODO locale
+				Calendar lCalendar = (Calendar)getSkinnable().getCalendar().clone(); // TODO locale
 				lCalendar.add(lUnit, lDelta);
 				
 				// set the value
-				getSkinnable().setValue(lCalendar);
+				getSkinnable().setCalendar(lCalendar);
 			}
 			else if (lText.equals("#"))
 			{
 				// set the value
-				getSkinnable().setValue(Calendar.getInstance()); // TODO locale
+				getSkinnable().setCalendar(Calendar.getInstance()); // TODO locale
 			}
 			else
 			{
-				Calendar lCalendar = getSkinnable().getValue();
+				Calendar lCalendar = getSkinnable().getCalendar();
 				java.text.ParseException lParseException = null;
 				try
 				{
@@ -334,7 +334,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 				}
 				
 				// set the value
-				getSkinnable().setValue(lCalendar);
+				getSkinnable().setCalendar(lCalendar);
 				refreshValue();
 				
 				// rethrow initial exception if all parsing failed 

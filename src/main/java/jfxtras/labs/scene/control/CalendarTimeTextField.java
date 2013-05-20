@@ -84,18 +84,18 @@ public class CalendarTimeTextField extends Control
 	 */
 	@Override protected String getUserAgentStylesheet()
 	{
-		return this.getClass().getResource("/jfxtras/labs/internal/scene/control/" + this.getClass().getSimpleName() + ".css").toString();
+		return this.getClass().getResource("/jfxtras/labs/internal/scene/control/" + CalendarTimeTextField.class.getSimpleName() + ".css").toString();
 	}
 	
 	// ==================================================================================================================
 	// PROPERTIES
 	
 	/** Value: */
-	public ObjectProperty<Calendar> valueProperty() { return valueObjectProperty; }
-	final private ObjectProperty<Calendar> valueObjectProperty = new SimpleObjectProperty<Calendar>(this, "value", null);
-	public Calendar getValue() { return valueObjectProperty.getValue(); }
-	public void setValue(Calendar value) { valueObjectProperty.setValue(value); }
-	public CalendarTimeTextField withValue(Calendar value) { setValue(value); return this; }
+	public ObjectProperty<Calendar> calendarProperty() { return calendarObjectProperty; }
+	final private ObjectProperty<Calendar> calendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar", null);
+	public Calendar getCalendar() { return calendarObjectProperty.getValue(); }
+	public void setCalendar(Calendar value) { calendarObjectProperty.setValue(value); }
+	public CalendarTimeTextField withCalendar(Calendar value) { setCalendar(value); return this; }
 
 	/** 
 	 * The DateFormat used to render/parse the date in the textfield.

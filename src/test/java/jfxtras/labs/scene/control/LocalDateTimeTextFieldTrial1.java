@@ -28,7 +28,6 @@ package jfxtras.labs.scene.control;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -43,10 +42,12 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import javax.time.calendar.LocalDateTime;
+
 /**
  * @author Tom Eugelink
  */
-public class CalendarTextFieldTrial1 extends Application {
+public class LocalDateTimeTextFieldTrial1 extends Application {
 	
     public static void main(String[] args) {
     	//java.util.Locale.setDefault(new java.util.Locale("de")); // weeks starts on monday
@@ -57,7 +58,7 @@ public class CalendarTextFieldTrial1 extends Application {
 	public void start(Stage stage) {
 
 		HBox lHBox = new HBox();
-		CalendarTextField lFocusRequestingCalendarTextField = null;
+		LocalDateTimeTextField lFocusRequestingLocalDateTimeTextField = null;
 		
 		{
 			GridPane lGridPane = new GridPane();
@@ -68,20 +69,20 @@ public class CalendarTextFieldTrial1 extends Application {
 	        // default textfield
 			{
 				lGridPane.add(new Label("default"), 0, lRowIdx);
-				CalendarTextField lCalendarTextField = new CalendarTextField();
-				lCalendarTextField.setTooltip(new Tooltip("custom tooltip"));
-				lGridPane.add(lCalendarTextField, 1, lRowIdx);
+				LocalDateTimeTextField lLocalDateTimeTextField = new LocalDateTimeTextField();
+				lLocalDateTimeTextField.setTooltip(new Tooltip("custom tooltip"));
+				lGridPane.add(lLocalDateTimeTextField, 1, lRowIdx);
 				
 				final TextField lValueTextField = new TextField();
-				lCalendarTextField.calendarProperty().addListener(new ChangeListener<Calendar>()
+				lLocalDateTimeTextField.localDateTimeProperty().addListener(new ChangeListener<LocalDateTime>()
 				{
 					@Override
-					public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
+					public void changed(ObservableValue<? extends LocalDateTime> observableValue, LocalDateTime oldValue, LocalDateTime newValue)
 					{
-						lValueTextField.setText(CalendarPicker.quickFormatCalendar(newValue));
+						lValueTextField.setText("" + newValue);
 					}
 				});
-				lValueTextField.setText(CalendarPicker.quickFormatCalendar(lCalendarTextField.getCalendar()));
+				lValueTextField.setText("" + lLocalDateTimeTextField.getLocalDateTime());
 				lValueTextField.setDisable(true);
 				lGridPane.add(lValueTextField, 2, lRowIdx++);
 			}
@@ -89,11 +90,11 @@ public class CalendarTextFieldTrial1 extends Application {
 	        // preset value
 			{
 				lGridPane.add(new Label("preset value with parse error"), 0, lRowIdx);
-				CalendarTextField lCalendarTextField = new CalendarTextField();
-				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
+				LocalDateTimeTextField lLocalDateTimeTextField = new LocalDateTimeTextField();
+				lGridPane.add(lLocalDateTimeTextField, 1, lRowIdx++);
 				
-				lCalendarTextField.calendarProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
-				lCalendarTextField.parseErrorCallbackProperty().set(new Callback<Throwable, Void>()
+				lLocalDateTimeTextField.localDateTimeProperty().set(LocalDateTime.of(2011, 2, 01, 21, 22, 23)); // set a value
+				lLocalDateTimeTextField.parseErrorCallbackProperty().set(new Callback<Throwable, Void>()
 				{
 					@Override
 					public Void call(Throwable t)
@@ -104,84 +105,84 @@ public class CalendarTextFieldTrial1 extends Application {
 				});
 				
 				// test requesting focus
-				lFocusRequestingCalendarTextField = lCalendarTextField;
+				lFocusRequestingLocalDateTimeTextField = lLocalDateTimeTextField;
 			}
 			
 	        // programmatically set to null
 			{
 				lGridPane.add(new Label("programatically to null"), 0, lRowIdx);
-				CalendarTextField lCalendarTextField = new CalendarTextField();
-				lCalendarTextField.setPromptText("type date here");
-				lGridPane.add(lCalendarTextField, 1, lRowIdx);
+				LocalDateTimeTextField lLocalDateTimeTextField = new LocalDateTimeTextField();
+				lLocalDateTimeTextField.setPromptText("type date here");
+				lGridPane.add(lLocalDateTimeTextField, 1, lRowIdx);
 				
 				final TextField lValueTextField = new TextField();
-				lCalendarTextField.calendarProperty().addListener(new ChangeListener<Calendar>()
+				lLocalDateTimeTextField.localDateTimeProperty().addListener(new ChangeListener<LocalDateTime>()
 				{
 					@Override
-					public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
+					public void changed(ObservableValue<? extends LocalDateTime> observableValue, LocalDateTime oldValue, LocalDateTime newValue)
 					{
-						lValueTextField.setText(CalendarPicker.quickFormatCalendar(newValue));
+						lValueTextField.setText("" + newValue);
 					}
 				});
-				lValueTextField.setText(CalendarPicker.quickFormatCalendar(lCalendarTextField.getCalendar()));
+				lValueTextField.setText("" + lLocalDateTimeTextField.getLocalDateTime());
 				lValueTextField.setDisable(true);
 				lGridPane.add(lValueTextField, 2, lRowIdx++);
 				
 				// set
-				lCalendarTextField.setCalendar(Calendar.getInstance());
-				lCalendarTextField.setCalendar(null);
+				lLocalDateTimeTextField.setCalendar(Calendar.getInstance());
+				lLocalDateTimeTextField.setCalendar(null);
 			}
 			
 	        // preset value with time
 			{
 				lGridPane.add(new Label("preset value with time"), 0, lRowIdx);
-				CalendarTextField lCalendarTextField = new CalendarTextField();
-				lCalendarTextField.dateFormatProperty().set(SimpleDateFormat.getDateTimeInstance());
-				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
+				LocalDateTimeTextField lLocalDateTimeTextField = new LocalDateTimeTextField();
+				lLocalDateTimeTextField.dateFormatProperty().set(SimpleDateFormat.getDateTimeInstance());
+				lGridPane.add(lLocalDateTimeTextField, 1, lRowIdx++);
 				
-				lCalendarTextField.calendarProperty().set(Calendar.getInstance()); // set a value
+				lLocalDateTimeTextField.localDateTimeProperty().set(LocalDateTime.now()); // set a value
 			}
 			
 	        // alternate parsers
 			{
 				lGridPane.add(new Label("alternate parser"), 0, lRowIdx);
-				CalendarTextField lCalendarTextField = new CalendarTextField();
-				lCalendarTextField.dateFormatsProperty().add(new SimpleDateFormat("yyyy-MM-dd"));
-				lCalendarTextField.dateFormatsProperty().add(new SimpleDateFormat("yyyyMMdd"));
-				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
+				LocalDateTimeTextField lLocalDateTimeTextField = new LocalDateTimeTextField();
+				lLocalDateTimeTextField.dateFormatsProperty().add(new SimpleDateFormat("yyyy-MM-dd"));
+				lLocalDateTimeTextField.dateFormatsProperty().add(new SimpleDateFormat("yyyyMMdd"));
+				lGridPane.add(lLocalDateTimeTextField, 1, lRowIdx++);
 				
-				lCalendarTextField.calendarProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
+				lLocalDateTimeTextField.localDateTimeProperty().set(LocalDateTime.of(2011, 2, 01, 21, 22, 23)); // set a value
 			}
 			
 	        // disabled
 			{
 				lGridPane.add(new Label("custom icon disabled"), 0, lRowIdx);
-				CalendarTextField lCalendarTextField = new CalendarTextField();
-				lCalendarTextField.disableProperty().set(true);
-				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
+				LocalDateTimeTextField lLocalDateTimeTextField = new LocalDateTimeTextField();
+				lLocalDateTimeTextField.disableProperty().set(true);
+				lGridPane.add(lLocalDateTimeTextField, 1, lRowIdx++);
 				
-				lCalendarTextField.calendarProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
+				lLocalDateTimeTextField.localDateTimeProperty().set(LocalDateTime.of(2011, 2, 01, 21, 22, 23)); // set a value
 			}
 			
 	        // custom icon
 			{
 				lGridPane.add(new Label("custom icon"), 0, lRowIdx);
-				CalendarTextField lCalendarTextField = new CalendarTextField();
-				lCalendarTextField.setId("custom");
-				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
+				LocalDateTimeTextField lLocalDateTimeTextField = new LocalDateTimeTextField();
+				lLocalDateTimeTextField.setId("custom");
+				lGridPane.add(lLocalDateTimeTextField, 1, lRowIdx++);
 				
-				lCalendarTextField.calendarProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
+				lLocalDateTimeTextField.localDateTimeProperty().set(LocalDateTime.of(2011, 2, 01, 21, 22, 23)); // set a value
 			}
 			
 	        // custom icon disabled
 			{
 				lGridPane.add(new Label("custom icon disabled"), 0, lRowIdx);
-				CalendarTextField lCalendarTextField = new CalendarTextField();
-				lCalendarTextField.setId("custom");
-				lCalendarTextField.disableProperty().set(true);
-				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
+				LocalDateTimeTextField lLocalDateTimeTextField = new LocalDateTimeTextField();
+				lLocalDateTimeTextField.setId("custom");
+				lLocalDateTimeTextField.disableProperty().set(true);
+				lGridPane.add(lLocalDateTimeTextField, 1, lRowIdx++);
 				
-				lCalendarTextField.calendarProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
+				lLocalDateTimeTextField.localDateTimeProperty().set(LocalDateTime.of(2011, 2, 01, 21, 22, 23)); // set a value
 			}
 			
 			lHBox.getChildren().add(lGridPane);
@@ -191,23 +192,12 @@ public class CalendarTextFieldTrial1 extends Application {
         Scene scene = new Scene(lHBox, 800, 600);
 
 		// load custom CSS
-        scene.getStylesheets().addAll(this.getClass().getResource(this.getClass().getSimpleName() + ".css").toExternalForm());
+        //scene.getStylesheets().addAll(this.getClass().getResource(this.getClass().getSimpleName() + ".css").toExternalForm());
 		
         // create stage
         stage.setTitle(this.getClass().getSimpleName());
         stage.setScene(scene);
         stage.show();
-		lFocusRequestingCalendarTextField.requestFocus();
+		lFocusRequestingLocalDateTimeTextField.requestFocus();
     }
-	
-	/*
-	 * 
-	 */
-	static protected String quickFormatCalendar(Calendar value)
-	{
-		SimpleDateFormat lSimpleDateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG);
-		lSimpleDateFormat.applyPattern("yyyy-MM-dd");
-		return value == null ? "null" : lSimpleDateFormat.format(value.getTime());
-	}
-
 }
