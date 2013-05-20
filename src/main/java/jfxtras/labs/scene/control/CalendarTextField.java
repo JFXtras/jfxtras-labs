@@ -122,7 +122,7 @@ public class CalendarTextField extends Control
 	public void setPromptText(String value) { promptTextObjectProperty.set(value); }
 	public CalendarTextField withPromptText(String value) { setPromptText(value); return this; }
 
-	/** DateFormats: a list of alternate dateFormats used for parsing */
+	/** DateFormats: a list of alternate dateFormats used for parsing only */
 	public ListProperty<DateFormat> dateFormatsProperty() { return dateFormatsProperty; }
 	ListProperty<DateFormat> dateFormatsProperty = new SimpleListProperty<DateFormat>(javafx.collections.FXCollections.observableList(new ArrayList<DateFormat>()));
 	public ObservableList<DateFormat> getDateFormats() { return dateFormatsProperty.getValue(); }

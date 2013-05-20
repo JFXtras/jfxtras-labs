@@ -24,9 +24,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+/*
+ * Possible extension: drop down list or grid for quick selection
+ */
 package jfxtras.labs.internal.scene.control.skin;
 
+import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -56,10 +61,9 @@ import jfxtras.labs.util.NodeUtil;
 import javafx.scene.control.SkinBase;
 
 /**
- * 
+ * Allows editing the time in a text field.
+ * Format is hardcoded to HH:MM:SS.mmm, but  
  * @author Tom Eugelink
- * 
- * Possible extension: drop down list or grid for quick selection
  */
 public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextField>
 {
@@ -107,16 +111,15 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 	{
 		// write out to textfield
 		Calendar c = getSkinnable().getValue();
-		String s = CalendarTimePickerSkin.calendarTimeToText(c);
+		String s = c == null ? "" : getSkinnable().getDateFormat().format(c.getTime());
 		textField.setText( s );
 	}
 	
 	/**
 	 * When the control is focus, forward the focus to the textfield
 	 */
-    private void initFocusSimulation() {
-    	
-
+    private void initFocusSimulation() 
+    {
     	getSkinnable().focusedProperty().addListener(new ChangeListener<Boolean>() 
 		{
 			@Override
@@ -227,19 +230,6 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 		getSkinnable().getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
 		getChildren().add(gridPane);
 		
-		// focus
-		getSkinnable().focusedProperty().addListener(new ChangeListener<Boolean>()
-		{
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue)
-			{
-				if (newValue == true)
-				{
-					textField.requestFocus();
-				}
-			}
-		});
-		
 		// prep the picker
 		TimePicker = new CalendarTimePicker();
 		// bind our properties to the picker's 
@@ -299,21 +289,42 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 			}
 			else
 			{
-				// parse using the formatter
-				int lIdx = lText.indexOf(":");
-				if (lIdx > 0)
+				Calendar lCalendar = getSkinnable().getValue();
+				java.text.ParseException lParseException = null;
+				try
 				{
-					int lHour = Integer.parseInt(lText.substring(0, lIdx));
-					int lMinute = Integer.parseInt(lText.substring(lIdx + 1));
-					Calendar lCalendar = (getSkinnable().getValue() != null ? (Calendar)getSkinnable().getValue().clone() : Calendar.getInstance());
-					lCalendar.set(Calendar.HOUR_OF_DAY, lHour);
-					lCalendar.set(Calendar.MINUTE, lMinute);
-					getSkinnable().setValue( CalendarTimePickerSkin.blockMinutesToStep(lCalendar, getSkinnable().getMinuteStep()) );
+					// parse using the formatter
+					Date lDate = getSkinnable().getDateFormat().parse( lText );
+					lCalendar = Calendar.getInstance(); // TODO: how to get the correct locale
+					lCalendar.setTime(lDate);
 				}
-				else 
-				{
-					refreshValue();
+				catch (java.text.ParseException e)
+				{	
+					// remember the exception					
+					lParseException = e;
+					
+					// the formatter failed, let's try the alternates
+					for (DateFormat lDateFormat : getSkinnable().getDateFormats())
+					{
+						try
+						{
+							// parse using the formatter
+							Date lDate = lDateFormat.parse( lText );
+							lCalendar = Calendar.getInstance(); // TODO: how to get the correct locale
+							lCalendar.setTime(lDate);
+							lParseException = null; // parsing was succesful, clear the exception
+							break; // exit the for loop
+						}
+						catch (java.text.ParseException e2) {} // we can safely ignore this
+					}
 				}
+				
+				// set the value
+				getSkinnable().setValue(lCalendar);
+				refreshValue();
+				
+				// rethrow initial exception if all parsing failed 
+				if (lParseException != null) throw lParseException;
 			}
 		}
 		catch (Throwable t) 

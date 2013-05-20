@@ -116,9 +116,8 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField>
 	/**
 	 * When the control is focus, forward the focus to the textfield
 	 */
-    private void initFocusSimulation() {
-    	
-
+    private void initFocusSimulation() 
+    {
     	getSkinnable().focusedProperty().addListener(new ChangeListener<Boolean>() 
 		{
 			@Override
@@ -231,19 +230,6 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField>
 		// add to self
 		getSkinnable().getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
 		getChildren().add(gridPane);
-		
-		// focus
-		getSkinnable().focusedProperty().addListener(new ChangeListener<Boolean>()
-		{
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue)
-			{
-				if (newValue == true)
-				{
-					textField.requestFocus();
-				}
-			}
-		});
 		
 		// prep the picker
 		calendarPicker = new CalendarPicker();
@@ -378,8 +364,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField>
 		String lDateAsString = getSkinnable().dateFormatProperty().get().format(DATE_WITH_TIME);
 		return lDateAsString.contains("2");
 	}
-	
-	final static Date DATE_WITH_TIME = new GregorianCalendar(1111,0,1,2,2,2).getTime();
+	private final static Date DATE_WITH_TIME = new GregorianCalendar(1111,0,1,2,2,2).getTime();
 	
 	/*
 	 * 

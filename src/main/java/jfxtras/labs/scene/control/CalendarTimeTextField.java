@@ -26,12 +26,21 @@
  */
 package jfxtras.labs.scene.control;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
+import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 import javafx.util.Callback;
+import jfxtras.labs.scene.control.CalendarPicker.Mode;
 
 /**
  * A textField with displays a calendar (time) with a icon to popup the CalendarTimePicker
@@ -88,13 +97,32 @@ public class CalendarTimeTextField extends Control
 	public void setValue(Calendar value) { valueObjectProperty.setValue(value); }
 	public CalendarTimeTextField withValue(Calendar value) { setValue(value); return this; }
 
+	/** 
+	 * The DateFormat used to render/parse the date in the textfield.
+	 * It is allow to show time as well for example by SimpleDateFormat.getDateTimeInstance().
+	 */
+	public ObjectProperty<DateFormat> dateFormatProperty() { return dateFormatObjectProperty; }
+	final private ObjectProperty<DateFormat> dateFormatObjectProperty = new SimpleObjectProperty<DateFormat>(this, "dateFormat", new SimpleDateFormat("HH:mm"))
+	{
+		public void set(DateFormat value)
+		{
+			String lFormattedDate = value.format(DATE_WITH_TIME);
+			// the date has 000 for milliseconds, so that will never generate a "1"
+			if (lFormattedDate.contains("1")) throw new IllegalArgumentException("The date format may only show time");
+			super.set(value);
+		}
+	};
+	public DateFormat getDateFormat() { return dateFormatObjectProperty.getValue(); }
+	public void setDateFormat(DateFormat value) { dateFormatObjectProperty.setValue(value); }
+	public CalendarTimeTextField withDateFormat(DateFormat value) { setDateFormat(value); return this; }
+	private final static Date DATE_WITH_TIME = new GregorianCalendar(1111,0,1,2,2,2).getTime();
+
 	/** MinuteStep */
 	public ObjectProperty<Integer> minuteStepProperty() { return minuteStepProperty; }
 	final private SimpleObjectProperty<Integer> minuteStepProperty = new SimpleObjectProperty<Integer>(this, "minuteStep", 1);
 	public Integer getMinuteStep() { return minuteStepProperty.getValue(); }
 	public void setMinuteStep(Integer value) { minuteStepProperty.setValue(value); }
 	public CalendarTimeTextField withMinuteStep(Integer value) { setMinuteStep(value); return this; } 
-
 
 	/** ShowLabels */
 	public ObjectProperty<Boolean> showLabelsProperty() { return showLabelsProperty; }
@@ -119,6 +147,13 @@ public class CalendarTimeTextField extends Control
 	public Callback<Throwable, Void> getParseErrorCallback() { return this.parseErrorCallbackObjectProperty.getValue(); }
 	public void setParseErrorCallback(Callback<Throwable, Void> value) { this.parseErrorCallbackObjectProperty.setValue(value); }
 	public CalendarTimeTextField withParseErrorCallback(Callback<Throwable, Void> value) { setParseErrorCallback(value); return this; }
+
+	/** DateFormats: a list of alternate dateFormats used for parsing only */
+	public ListProperty<DateFormat> dateFormatsProperty() { return dateFormatsProperty; }
+	ListProperty<DateFormat> dateFormatsProperty = new SimpleListProperty<DateFormat>(javafx.collections.FXCollections.observableList(new ArrayList<DateFormat>()));
+	public ObservableList<DateFormat> getDateFormats() { return dateFormatsProperty.getValue(); }
+	public void setDateFormats(ObservableList<DateFormat> value) { dateFormatsProperty.setValue(value); }
+	public CalendarTimeTextField withDateFormat(ObservableList<DateFormat> value) { setDateFormats(value); return this; }
 
 
 	// ==================================================================================================================
