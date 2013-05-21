@@ -61,7 +61,7 @@ public class OptimizableContentPane extends StackPane {
      * Constructor.
      */
     public OptimizableContentPane() {
-        this.optimizationRule = new DefaultOptimizationRuleImpl();
+        this.optimizationRule = new DefaultOptimizationRule();
 
         localToSceneTransformProperty().addListener(new ChangeListener<Transform>() {
             @Override
