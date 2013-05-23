@@ -1779,16 +1779,16 @@ implements Agenda.AgendaSkin
 		// time
 		lMenuVBox.getChildren().add(new Text("Time:"));
 		// start
-		final CalendarTextField lStartCalendarTextField = new CalendarTextField().withShowTime(true);
+		final CalendarTextField lStartCalendarTextField = new CalendarTextField().withDateFormat(SimpleDateFormat.getDateTimeInstance());
 		lStartCalendarTextField.setLocale(getSkinnable().getLocale());
-		lStartCalendarTextField.setValue(abstractAppointmentPane.appointment.getStartTime());
+		lStartCalendarTextField.setCalendar(abstractAppointmentPane.appointment.getStartTime());
 		lMenuVBox.getChildren().add(lStartCalendarTextField);
 		// end
-		final CalendarTextField lEndCalendarTextField = new CalendarTextField().withShowTime(true);
+		final CalendarTextField lEndCalendarTextField = new CalendarTextField().withDateFormat(SimpleDateFormat.getDateTimeInstance());
 		lEndCalendarTextField.setLocale(getSkinnable().getLocale());
-		lEndCalendarTextField.setValue(abstractAppointmentPane.appointment.getEndTime());
+		lEndCalendarTextField.setCalendar(abstractAppointmentPane.appointment.getEndTime());
 		lMenuVBox.getChildren().add(lEndCalendarTextField);
-		lEndCalendarTextField.valueProperty().addListener(new ChangeListener<Calendar>()
+		lEndCalendarTextField.calendarProperty().addListener(new ChangeListener<Calendar>()
 		{
 			@Override
 			public void changed(ObservableValue<? extends Calendar> arg0, Calendar oldValue, Calendar newValue)
@@ -1819,7 +1819,7 @@ implements Agenda.AgendaSkin
 						Calendar lEndTime = (Calendar)abstractAppointmentPane.appointment.getStartTime().clone();
 						lEndTime.add(Calendar.MINUTE, 30);
 						abstractAppointmentPane.appointment.setEndTime(lEndTime);
-						lEndCalendarTextField.setValue(abstractAppointmentPane.appointment.getEndTime());
+						lEndCalendarTextField.setCalendar(abstractAppointmentPane.appointment.getEndTime());
 					}
 					lEndCalendarTextField.setVisible(abstractAppointmentPane.appointment.getEndTime() != null);
 					// refresh is done upon popup close
@@ -1827,7 +1827,7 @@ implements Agenda.AgendaSkin
 			});
 		}
 		// event handling
-		lStartCalendarTextField.valueProperty().addListener(new ChangeListener<Calendar>()
+		lStartCalendarTextField.calendarProperty().addListener(new ChangeListener<Calendar>()
 		{
 			@Override
 			public void changed(ObservableValue<? extends Calendar> arg0, Calendar oldValue, Calendar newValue)
@@ -1854,7 +1854,7 @@ implements Agenda.AgendaSkin
 						abstractAppointmentPane.appointment.setEndTime(lEndCalendar);
 						
 						// update field
-						lEndCalendarTextField.setValue(abstractAppointmentPane.appointment.getEndTime());
+						lEndCalendarTextField.setCalendar(abstractAppointmentPane.appointment.getEndTime());
 					}
 					
 					// refresh is done upon popup close

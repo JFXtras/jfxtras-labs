@@ -7,6 +7,7 @@ import java.lang.invoke.MethodType;
 import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,10 +31,12 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.MapProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ObjectPropertyBase;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -333,6 +336,10 @@ public class BeanPathAdapter<B> {
 
 	public static final char PATH_SEPARATOR = '.';
 	public static final char COLLECTION_ITEM_PATH_SEPARATOR = '#';
+	public static final DateFormat SDF = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ssz");
+	private final ObjectProperty<DateFormat> dateFormatProperty = new SimpleObjectProperty<DateFormat>(
+			SDF);
 	private FieldBean<Void, B> root;
 	private FieldPathValueProperty fieldPathValueProperty = new FieldPathValueProperty();
 
@@ -598,7 +605,7 @@ public class BeanPathAdapter<B> {
 		}
 		if (getRoot() == null) {
 			this.root = new FieldBean<>(null, bean, null,
-					fieldPathValueProperty);
+					fieldPathValueProperty, dateFormatProperty());
 		} else {
 			getRoot().setBean(bean);
 		}
@@ -613,6 +620,32 @@ public class BeanPathAdapter<B> {
 	 */
 	protected final FieldBean<Void, B> getRoot() {
 		return this.root;
+	}
+
+	/**
+	 * Sets the {@link #dateFormatProperty()} value
+	 * 
+	 * @param df
+	 *            the {@link DateFormat} to set
+	 */
+	public void setDateFormat(final DateFormat df) {
+		dateFormatProperty().set(df);
+	}
+
+	/**
+	 * @return the {@link #dateFormatProperty()} value
+	 */
+	public DateFormat getDateFormat() {
+		return dateFormatProperty().get();
+	}
+
+	/**
+	 * @return the {@link DateFormat} {@link ObjectProperty} used for
+	 *         {@link Date} / {@link Calendar} conversions (defaults to
+	 *         {@link BeanPathAdapter#SDF})
+	 */
+	public ObjectProperty<DateFormat> dateFormatProperty() {
+		return dateFormatProperty;
 	}
 
 	/**
@@ -929,9 +962,7 @@ public class BeanPathAdapter<B> {
 	 * {@link FieldBean} operations
 	 */
 	public static enum FieldBeanOperation {
-		BIND,
-		UNBIND,
-		CREATE_OR_FIND;
+		BIND, UNBIND, CREATE_OR_FIND;
 	}
 
 	/**
@@ -951,6 +982,7 @@ public class BeanPathAdapter<B> {
 
 		private static final long serialVersionUID = 7397535724568852021L;
 		private final FieldPathValueProperty notifyProperty;
+		private final ObjectProperty<DateFormat> dfp;
 		private final Map<String, FieldBean<BT, ?>> fieldBeans = new HashMap<>();
 		private final Map<String, FieldProperty<BT, ?, ?>> fieldProperties = new HashMap<>();
 		private final Map<String, FieldProperty<BT, ?, ?>> fieldSelectionProperties = new HashMap<>();
@@ -969,14 +1001,19 @@ public class BeanPathAdapter<B> {
 		 * @param notifyProperty
 		 *            the {@link FieldPathValueProperty} that will be set every
 		 *            time the {@link FieldBean#setBean(Object)} is changed
+		 * @param dfp
+		 *            the {@link DateFormat} {@link ObjectProperty} used for
+		 *            {@link Date} / {@link Calendar} conversions
 		 */
 		protected FieldBean(final FieldBean<?, PT> parent,
 				final FieldHandle<PT, BT> fieldHandle,
-				final FieldPathValueProperty notifyProperty) {
+				final FieldPathValueProperty notifyProperty,
+				final ObjectProperty<DateFormat> dfp) {
 			this.parent = parent;
 			this.fieldHandle = fieldHandle;
 			this.bean = this.fieldHandle.setDerivedValueFromAccessor();
 			this.notifyProperty = notifyProperty;
+			this.dfp = dfp;
 			if (getParent() != null) {
 				getParent().addFieldBean(this);
 			}
@@ -999,16 +1036,21 @@ public class BeanPathAdapter<B> {
 		 * @param notifyProperty
 		 *            the {@link FieldPathValueProperty} that will be set every
 		 *            time the {@link FieldBean#setBean(Object)} is changed
+		 * @param dfp
+		 *            the {@link DateFormat} {@link ObjectProperty} used for
+		 *            {@link Date} / {@link Calendar} conversions
 		 */
 		protected FieldBean(final FieldBean<?, PT> parent, final BT bean,
 				final String fieldName,
-				final FieldPathValueProperty notifyProperty) {
+				final FieldPathValueProperty notifyProperty,
+				final ObjectProperty<DateFormat> dfp) {
 			if (bean == null) {
 				throw new NullPointerException("Bean cannot be null");
 			}
 			this.parent = parent;
 			this.bean = bean;
 			this.notifyProperty = notifyProperty;
+			this.dfp = dfp;
 			this.fieldHandle = getParent() != null ? createFieldHandle(
 					getParent().getBean(), bean, fieldName) : null;
 			if (getParent() != null) {
@@ -1292,7 +1334,7 @@ public class BeanPathAdapter<B> {
 							propertyValueClass == fieldClass ? fieldClass
 									: Object.class, collectionItemPath,
 							observable, collectionItemType, selectionModel,
-							itemMaster);
+							itemMaster, dfp);
 					addOrUpdateFieldProperty(childProp);
 					return performOperation(fullFieldPath, fieldNames[0],
 							propertyValueClass, collectionItemPath, observable,
@@ -1306,7 +1348,7 @@ public class BeanPathAdapter<B> {
 					final FieldHandle<BT, Object> pfh = new FieldHandle<>(
 							getBean(), fieldNames[0], Object.class);
 					final FieldBean<BT, ?> childBean = new FieldBean<>(this,
-							pfh, notifyProperty);
+							pfh, notifyProperty, dfp);
 					// progress to the next child field/bean in the path chain
 					final String nextFieldPath = fieldPath.substring(fieldPath
 							.indexOf(fieldNames[1]));
@@ -1492,7 +1534,7 @@ public class BeanPathAdapter<B> {
 						.get(targetClass);
 			} else {
 				final FieldStringConverter<FCT> fsc = new FieldStringConverter<>(
-						targetClass);
+						targetClass, dfp);
 				stringConverters.put(targetClass, fsc);
 				return fsc;
 			}
@@ -1511,8 +1553,7 @@ public class BeanPathAdapter<B> {
 	 */
 	protected static class FieldStringConverter<T> extends StringConverter<T> {
 
-		public static final SimpleDateFormat SDF = new SimpleDateFormat(
-				"yyyy-MM-dd'T'HH:mm:ssz");
+		private final ObjectProperty<DateFormat> dfp;
 		private final Class<T> targetClass;
 
 		/**
@@ -1521,8 +1562,13 @@ public class BeanPathAdapter<B> {
 		 * @param targetClass
 		 *            the class that the {@link FieldStringConverter} is
 		 *            targeting
+		 * @param dfp
+		 *            the {@link DateFormat} {@link ObjectProperty} used for
+		 *            {@link Date} / {@link Calendar} conversions
 		 */
-		public FieldStringConverter(final Class<T> targetClass) {
+		public FieldStringConverter(final Class<T> targetClass,
+				final ObjectProperty<DateFormat> dfp) {
+			this.dfp = dfp;
 			this.targetClass = targetClass;
 		}
 
@@ -1539,7 +1585,7 @@ public class BeanPathAdapter<B> {
 		 */
 		@Override
 		public String toString(final T object) {
-			return coerceToString(object);
+			return coerceToString(object, dfp.get());
 		}
 
 		/**
@@ -1554,9 +1600,11 @@ public class BeanPathAdapter<B> {
 		 * 
 		 * @param v
 		 *            the value to coerce
+		 * @param df
+		 *            the {@link DateFormat} to use (when needed)
 		 * @return the coerced value (null when value failed to be coerced)
 		 */
-		public static <VT> String coerceToString(final VT v) {
+		public static <VT> String coerceToString(final VT v, final DateFormat df) {
 			String cv = null;
 			if (v != null
 					&& SelectionModel.class.isAssignableFrom(v.getClass())) {
@@ -1567,7 +1615,7 @@ public class BeanPathAdapter<B> {
 							.isAssignableFrom(v.getClass()))) {
 				final Date date = Date.class.isAssignableFrom(v.getClass()) ? (Date) v
 						: ((Calendar) v).getTime();
-				cv = SDF.format(date);
+				cv = df.format(date);
 			} else if (v != null) {
 				cv = v.toString();
 			}
@@ -1646,6 +1694,7 @@ public class BeanPathAdapter<B> {
 			MapChangeListener<Object, Object>, ChangeListener<Object> {
 
 		private final FieldPathValueProperty notifyProperty;
+		private final ObjectProperty<DateFormat> dfp;
 		private final String fullPath;
 		private final FieldHandle<BT, T> fieldHandle;
 		private boolean isDirty;
@@ -1698,6 +1747,9 @@ public class BeanPathAdapter<B> {
 		 * @param itemMaster
 		 *            the {@link FieldProperty} that contains the item(s) that
 		 *            the {@link SelectionModel} can select from
+		 * @param dfp
+		 *            the {@link DateFormat} {@link ObjectProperty} used for
+		 *            {@link Date} / {@link Calendar} conversions
 		 */
 		@SuppressWarnings("unchecked")
 		protected FieldProperty(final BT bean, final String fullPath,
@@ -1708,8 +1760,10 @@ public class BeanPathAdapter<B> {
 				final Observable collectionObservable,
 				final Class<?> collectionType,
 				final SelectionModel<?> collectionSelectionModel,
-				final FieldProperty<?, ?, ?> itemMaster) {
+				final FieldProperty<?, ?, ?> itemMaster,
+				final ObjectProperty<DateFormat> dfp) {
 			super();
+			this.dfp = dfp;
 			this.fullPath = fullPath;
 			this.notifyProperty = notifyProperty;
 			this.fieldHandle = new FieldHandle<BT, T>(bean, fieldName,
@@ -1736,7 +1790,8 @@ public class BeanPathAdapter<B> {
 			try {
 				final Object dv = getDirty();
 				if (dv != null && getDeclaredFieldType() != getFieldType()) {
-					return (PT) FieldStringConverter.coerceToString(dv);
+					return (PT) FieldStringConverter.coerceToString(dv,
+							dfp.get());
 				}
 				return (PT) dv;
 			} catch (final Throwable t) {
@@ -2523,7 +2578,7 @@ public class BeanPathAdapter<B> {
 				final Object bean) {
 			FieldBean<Void, Object> fb;
 			FieldProperty<?, ?, ?> fp;
-			fb = new FieldBean<>(null, bean, null, notifyProperty);
+			fb = new FieldBean<>(null, bean, null, notifyProperty, dfp);
 			fp = fb.performOperation(fullPath + COLLECTION_ITEM_PATH_SEPARATOR
 					+ collectionItemPath, collectionItemPath, Object.class,
 					null, null, null, collectionSelectionModel, null,

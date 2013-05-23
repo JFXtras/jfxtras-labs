@@ -84,9 +84,11 @@ public class BigDecimalFieldDemo extends Application {
         final BigDecimalField disabledField = new BigDecimalField();
         disabledField.setDisable(true);
         root.addRow(5, new Label("disabled field"), disabledField);
-        root.addRow(6, new Label("regular TextField"), new TextField("1.000,1234"));
+        TextField regularTextField;
+        root.addRow(6, new Label("regular TextField"), regularTextField= new TextField("1.000,1234"));
         root.addRow(7, new Label("with promptText"), promptText);
-        root.addRow(8, new Label("CalendarTextField"), new CalendarTextField());
+        CalendarTextField calendarField;
+        root.addRow(8, new Label("CalendarTextField"), calendarField = new CalendarTextField());
         root.addRow(9, new Label("ComboBox"), ComboBoxBuilder
         		.create()
         		.editable(true)
@@ -130,6 +132,7 @@ public class BigDecimalFieldDemo extends Application {
 //        String path = NumberSpinnerDemo2.class.getResource("number_spinner.css").toExternalForm();
 //        System.out.println("path=" + path);
 //        scene.getStylesheets().add(path);
+        decimalFormat.requestFocus();
         primaryStage.setScene(scene);
         primaryStage.show();
     }

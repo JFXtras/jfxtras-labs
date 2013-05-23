@@ -29,7 +29,9 @@ package jfxtras.labs.internal.scene.control.skin;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
@@ -86,7 +88,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 		createNodes();
 		
 		// react to value changes in the model
-		getSkinnable().valueProperty().addListener(new ChangeListener<Calendar>()
+		getSkinnable().calendarProperty().addListener(new ChangeListener<Calendar>()
 		{
 			@Override
 			public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
@@ -95,6 +97,9 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 			}
 		});
 		refreshValue();
+		
+		// focus
+		initFocusSimulation();
 	}
 	
 	/*
@@ -103,10 +108,35 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 	private void refreshValue()
 	{
 		// write out to textfield
-		Calendar c = getSkinnable().getValue();
+		Calendar c = getSkinnable().getCalendar();
 		String s = c == null ? "" : getSkinnable().getDateFormat().format( c.getTime() );
 		textField.setText( s );
 	}
+	
+	/**
+	 * When the control is focus, forward the focus to the textfield
+	 */
+    private void initFocusSimulation() 
+    {
+    	getSkinnable().focusedProperty().addListener(new ChangeListener<Boolean>() 
+		{
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean wasFocused, Boolean isFocused) 
+			{
+				if (isFocused) 
+				{
+                	Platform.runLater(new Runnable() 
+                	{
+						@Override
+						public void run() 
+						{
+							textField.requestFocus();
+						}
+					});
+				}
+			}
+		});
+    }
 	
 	// ==================================================================================================================
 	// DRAW
@@ -149,18 +179,18 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 					parse();
 					
 					// get the calendar to modify
-					Calendar lCalendar = (Calendar)getSkinnable().getValue().clone();
+					Calendar lCalendar = (Calendar)getSkinnable().getCalendar().clone();
 					
 					// modify
 					int lField = Calendar.DATE;
 					if (keyEvent.isShiftDown() == false && keyEvent.isControlDown()) lField = Calendar.MONTH;
 					if (keyEvent.isShiftDown() == false && keyEvent.isAltDown()) lField = Calendar.YEAR;
-					if (keyEvent.isShiftDown() == true && keyEvent.isControlDown() && getSkinnable().showTimeProperty().get()) lField = Calendar.HOUR_OF_DAY;
-					if (keyEvent.isShiftDown() == true && keyEvent.isAltDown() && getSkinnable().showTimeProperty().get()) lField = Calendar.MINUTE;
+					if (keyEvent.isShiftDown() == true && keyEvent.isControlDown() && isShowingTime()) lField = Calendar.HOUR_OF_DAY;
+					if (keyEvent.isShiftDown() == true && keyEvent.isAltDown() && isShowingTime()) lField = Calendar.MINUTE;
 					lCalendar.add(lField, keyEvent.getCode() == KeyCode.UP ? 1 : -1);
 					
 					// set it
-					getSkinnable().setValue(lCalendar);
+					getSkinnable().setCalendar(lCalendar);
 				}
 			}
 		});
@@ -201,32 +231,18 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
 		getChildren().add(gridPane);
 		
-		// focus
-		this.focusedProperty().addListener(new ChangeListener<Boolean>()
-		{
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue)
-			{
-				if (newValue == true)
-				{
-					textField.requestFocus();
-				}
-			}
-		});
-		
 		// prep the picker
 		calendarPicker = new CalendarPicker();
 		calendarPicker.setMode(CalendarPicker.Mode.SINGLE);
-		calendarPicker.showTimeProperty().bind(getSkinnable().showTimeProperty());
 		// bind our properties to the picker's 
 		Bindings.bindBidirectional(calendarPicker.localeProperty(), getSkinnable().localeProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
-		Bindings.bindBidirectional(calendarPicker.calendarProperty(), getSkinnable().valueProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
+		Bindings.bindBidirectional(calendarPicker.calendarProperty(), getSkinnable().calendarProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
 		calendarPicker.calendarProperty().addListener(new ChangeListener<Calendar>()
 		{
 			@Override
 			public void changed(ObservableValue<? extends Calendar> observable, Calendar oldValue, Calendar newValue)
 			{
-				if (popup != null && getSkinnable().showTimeProperty().get() == false) 
+				if (popup != null && isShowingTime() == false) 
 				{
 					popup.hide(); popup = null;
 				}
@@ -254,7 +270,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 			lText = lText.trim();
 			if (lText.length() == 0) 
 			{
-				getSkinnable().setValue(null);
+				getSkinnable().setCalendar(null);
 				return;
 			}
 			
@@ -274,20 +290,20 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 				
 				// parse the delta
 				int lDelta = Integer.parseInt(lText);
-				Calendar lCalendar = (Calendar)getSkinnable().getValue().clone(); // TODO locale
+				Calendar lCalendar = (Calendar)getSkinnable().getCalendar().clone(); // TODO locale
 				lCalendar.add(lUnit, lDelta);
 				
 				// set the value
-				getSkinnable().setValue(lCalendar);
+				getSkinnable().setCalendar(lCalendar);
 			}
 			else if (lText.equals("#"))
 			{
 				// set the value
-				getSkinnable().setValue(Calendar.getInstance()); // TODO locale
+				getSkinnable().setCalendar(Calendar.getInstance()); // TODO locale
 			}
 			else
 			{
-				Calendar lCalendar = getSkinnable().getValue();
+				Calendar lCalendar = getSkinnable().getCalendar();
 				java.text.ParseException lParseException = null;
 				try
 				{
@@ -318,7 +334,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 				}
 				
 				// set the value
-				getSkinnable().setValue(lCalendar);
+				getSkinnable().setCalendar(lCalendar);
 				refreshValue();
 				
 				// rethrow initial exception if all parsing failed 
@@ -338,6 +354,18 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 		} 
 	}
 	
+	/**
+	 * Detect if the control is showing time or not
+	 * This is done by formatting a date with contains a time and checking the formatted string if the values for time are present 
+	 * @return
+	 */
+	private boolean isShowingTime()
+	{
+		String lDateAsString = getSkinnable().dateFormatProperty().get().format(DATE_WITH_TIME);
+		return lDateAsString.contains("2");
+	}
+	private final static Date DATE_WITH_TIME = new GregorianCalendar(1111,0,1,2,2,2).getTime();
+	
 	/*
 	 * 
 	 */
@@ -354,9 +382,10 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 			BorderPane lBorderPane = new BorderPane();
 			lBorderPane.getStyleClass().add(this.getClass().getSimpleName() + "_popup");
 			lBorderPane.setCenter(calendarPicker);
+			calendarPicker.showTimeProperty().set( isShowingTime() );
 			
 			// add a close button
-			if (getSkinnable().showTimeProperty().get() == true)
+			if (isShowingTime() == true)
 			{
 				ImageView lImageView = new ImageView(closeIconImage);
 				lImageView.setPickOnBounds(true);

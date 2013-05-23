@@ -36,18 +36,13 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.util.Callback;
-import jfxtras.labs.scene.control.Agenda.Appointment;
 
 /**
  * A textField with displays a calendar (date) with a icon to popup the CalendarPicker
- * The calendar is (and should) be treated as immutable. That means the setter is not used, but when a value is changed a new instance (clone) is put in the calendar property.
+ * The calendar is (and should) be treated as immutable. That means the Calendar's setters are not used, but when a value is changed a new instance (clone) is put in the calendar property.
  * Features relative mutation options, like -1 or -1d for yesterday, -1m for minus one month, +1w, +2y. # is today.
  * 
  * To change the icon use:
@@ -55,6 +50,8 @@ import jfxtras.labs.scene.control.Agenda.Appointment;
  *     -fx-image: url("AlternateCalendarIcon.jpg");
  * }
  *
+ * The textField can also show time by specifying a DateFormat accordingly, e.g. setDateFormat(SimpleDateFormat.getDateTimeInstance());
+ * 
  * @author Tom Eugelink
  */
 public class CalendarTextField extends Control
@@ -81,9 +78,6 @@ public class CalendarTextField extends Control
 		
 		// this is apparently needed for good focus behavior
 		setFocusTraversable(false);
-		
-		// construct properties
-		constructShowTimeProperty();
 	}
 
 	/**
@@ -91,24 +85,25 @@ public class CalendarTextField extends Control
 	 */
 	@Override protected String getUserAgentStylesheet()
 	{
-		return this.getClass().getResource("/jfxtras/labs/internal/scene/control/" + this.getClass().getSimpleName() + ".css").toString();
+		return this.getClass().getResource("/jfxtras/labs/internal/scene/control/" + CalendarTextField.class.getSimpleName() + ".css").toString();
 	}
 	
 	// ==================================================================================================================
 	// PROPERTIES
 	
-	/** Value: */
-	public ObjectProperty<Calendar> valueProperty() { return valueObjectProperty; }
-	final private ObjectProperty<Calendar> valueObjectProperty = new SimpleObjectProperty<Calendar>(this, "value", null);
-	public Calendar getValue() { return valueObjectProperty.getValue(); }
-	public void setValue(Calendar value) { valueObjectProperty.setValue(value); }
-	public CalendarTextField withValue(Calendar value) { setValue(value); return this; }
+	/** Calendar: */
+	public ObjectProperty<Calendar> calendarProperty() { return calendarObjectProperty; }
+	final private ObjectProperty<Calendar> calendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar", null);
+	public Calendar getCalendar() { return calendarObjectProperty.getValue(); }
+	public void setCalendar(Calendar value) { calendarObjectProperty.setValue(value); }
+	public CalendarTextField withCalendar(Calendar value) { setCalendar(value); return this; }
 
-	/** DateFormat: */
-	private final DateFormat dateFormat = SimpleDateFormat.getDateInstance();
-	private final DateFormat dateTimeFormat = SimpleDateFormat.getDateTimeInstance();
+	/** 
+	 * The DateFormat used to render/parse the date in the textfield.
+	 * It is allow to show time as well for example by SimpleDateFormat.getDateTimeInstance().
+	 */
 	public ObjectProperty<DateFormat> dateFormatProperty() { return dateFormatObjectProperty; }
-	final private ObjectProperty<DateFormat> dateFormatObjectProperty = new SimpleObjectProperty<DateFormat>(this, "dateFormat", dateFormat);
+	final private ObjectProperty<DateFormat> dateFormatObjectProperty = new SimpleObjectProperty<DateFormat>(this, "dateFormat", SimpleDateFormat.getDateInstance());
 	public DateFormat getDateFormat() { return dateFormatObjectProperty.getValue(); }
 	public void setDateFormat(DateFormat value) { dateFormatObjectProperty.setValue(value); }
 	public CalendarTextField withDateFormat(DateFormat value) { setDateFormat(value); return this; }
@@ -127,27 +122,7 @@ public class CalendarTextField extends Control
 	public void setPromptText(String value) { promptTextObjectProperty.set(value); }
 	public CalendarTextField withPromptText(String value) { setPromptText(value); return this; }
 
-	/** ShowTime: only applicable in SINGLE mode */
-	public ObjectProperty<Boolean> showTimeProperty() { return showTimeObjectProperty; }
-	volatile private ObjectProperty<Boolean> showTimeObjectProperty = new SimpleObjectProperty<Boolean>(this, "showTime", false);
-	public Boolean getShowTime() { return showTimeObjectProperty.getValue(); }
-	public void setShowTime(Boolean value) { showTimeObjectProperty.setValue(value); }
-	public CalendarTextField withShowTime(Boolean value) { setShowTime(value); return (CalendarTextField)this; } 
-	private void constructShowTimeProperty()
-	{
-		showTimeObjectProperty.addListener(new ChangeListener<Boolean>()
-		{
-			@Override
-			public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldValue, Boolean newValue)
-			{
-				// change to show time
-				if (newValue == true && getDateFormat() == dateFormat) setDateFormat(dateTimeFormat);
-				if (newValue == false && getDateFormat() == dateTimeFormat) setDateFormat(dateFormat);
-			}
-		});
-	}
-
-	/** DateFormats: a list of alternate dateFormats used for parsing */
+	/** DateFormats: a list of alternate dateFormats used for parsing only */
 	public ListProperty<DateFormat> dateFormatsProperty() { return dateFormatsProperty; }
 	ListProperty<DateFormat> dateFormatsProperty = new SimpleListProperty<DateFormat>(javafx.collections.FXCollections.observableList(new ArrayList<DateFormat>()));
 	public ObservableList<DateFormat> getDateFormats() { return dateFormatsProperty.getValue(); }

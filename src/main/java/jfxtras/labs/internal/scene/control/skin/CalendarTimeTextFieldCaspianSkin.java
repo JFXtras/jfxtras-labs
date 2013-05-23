@@ -24,10 +24,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+/*
+ * Possible extension: drop down list or grid for quick selection
+ */
 package jfxtras.labs.internal.scene.control.skin;
 
+import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
@@ -55,10 +61,9 @@ import jfxtras.labs.util.NodeUtil;
 import com.sun.javafx.scene.control.skin.SkinBase;
 
 /**
- * 
+ * Allows editing the time in a text field.
+ * Format is hardcoded to HH:MM:SS.mmm, but  
  * @author Tom Eugelink
- * 
- * Possible extension: drop down list or grid for quick selection
  */
 public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextField, CalendarTimeTextFieldBehavior>
 {
@@ -84,7 +89,7 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 		createNodes();
 		
 		// react to value changes in the model
-		getSkinnable().valueProperty().addListener(new InvalidationListener() // invalidation is also fired if there is no change (which is the case if a time if blocked to the existing time), but the text must be refreshed
+		getSkinnable().calendarProperty().addListener(new InvalidationListener() // invalidation is also fired if there is no change (which is the case if a time if blocked to the existing time), but the text must be refreshed
 		{
 			
 			@Override
@@ -94,6 +99,9 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 			}
 		});
 		refreshValue();
+		
+		// focus
+		initFocusSimulation();
 	}
 	
 	/*
@@ -102,11 +110,37 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 	private void refreshValue()
 	{
 		// write out to textfield
-		Calendar c = getSkinnable().getValue();
-		String s = CalendarTimePickerSkin.calendarTimeToText(c);
+		Calendar c = getSkinnable().getCalendar();
+		String s = c == null ? "" : getSkinnable().getDateFormat().format(c.getTime());
 		textField.setText( s );
 	}
 	
+	/**
+	 * When the control is focus, forward the focus to the textfield
+	 */
+    private void initFocusSimulation() 
+    {
+    	getSkinnable().focusedProperty().addListener(new ChangeListener<Boolean>() 
+		{
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean wasFocused, Boolean isFocused) 
+			{
+				if (isFocused) 
+				{
+                	Platform.runLater(new Runnable() 
+                	{
+						@Override
+						public void run() 
+						{
+							textField.requestFocus();
+						}
+					});
+				}
+			}
+		});
+    }
+	
+
 	// ==================================================================================================================
 	// DRAW
 	
@@ -147,14 +181,14 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 					parse();
 					
 					// get the calendar to modify
-					Calendar lCalendar = (Calendar)getSkinnable().getValue().clone();
+					Calendar lCalendar = (Calendar)getSkinnable().getCalendar().clone();
 					
 					// modify
 					if (keyEvent.isControlDown()) lCalendar.add(Calendar.HOUR_OF_DAY, keyEvent.getCode() == KeyCode.UP ? 1 : -1);
 					else lCalendar.add(Calendar.MINUTE, keyEvent.getCode() == KeyCode.UP ? getSkinnable().getMinuteStep() : -1 * getSkinnable().getMinuteStep());
 					
 					// set it
-					getSkinnable().setValue( CalendarTimePickerSkin.blockMinutesToStep(lCalendar, getSkinnable().getMinuteStep()) );
+					getSkinnable().setCalendar( CalendarTimePickerSkin.blockMinutesToStep(lCalendar, getSkinnable().getMinuteStep()) );
 				}
 			}
 		});
@@ -196,25 +230,11 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
 		getChildren().add(gridPane);
 		
-		// focus
-		this.focusedProperty().addListener(new ChangeListener<Boolean>()
-		{
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue)
-			{
-				if (newValue == true)
-				{
-					textField.requestFocus();
-				}
-			}
-		});
-		
 		// prep the picker
 		TimePicker = new CalendarTimePicker();
 		// bind our properties to the picker's 
-		Bindings.bindBidirectional(TimePicker.calendarProperty(), getSkinnable().valueProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
+		Bindings.bindBidirectional(TimePicker.calendarProperty(), getSkinnable().calendarProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
 		Bindings.bindBidirectional(TimePicker.minuteStepProperty(), getSkinnable().minuteStepProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
-		Bindings.bindBidirectional(TimePicker.showLabelsProperty(), getSkinnable().showLabelsProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
 		
 		// close icon
 		closeIconImage = new Image(this.getClass().getResourceAsStream(this.getClass().getSimpleName() + "CloseWindowIcon.png"));
@@ -237,7 +257,7 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 			lText = lText.trim();
 			if (lText.length() == 0) 
 			{
-				getSkinnable().setValue(null);
+				getSkinnable().setCalendar(null);
 				return;
 			}
 			
@@ -255,34 +275,55 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 				
 				// parse the delta
 				int lDelta = Integer.parseInt(lText);
-				Calendar lCalendar = (Calendar)getSkinnable().getValue().clone(); // TODO locale
+				Calendar lCalendar = (Calendar)getSkinnable().getCalendar().clone(); // TODO locale
 				lCalendar.add(lUnit, lDelta);
 				
 				// set the value
-				getSkinnable().setValue( CalendarTimePickerSkin.blockMinutesToStep(lCalendar, getSkinnable().getMinuteStep()) );
+				getSkinnable().setCalendar( CalendarTimePickerSkin.blockMinutesToStep(lCalendar, getSkinnable().getMinuteStep()) );
 			}
 			else if (lText.equals("#"))
 			{
 				// set the value
-				getSkinnable().setValue( CalendarTimePickerSkin.blockMinutesToStep(Calendar.getInstance(), getSkinnable().getMinuteStep()) ); // TODO locale
+				getSkinnable().setCalendar( CalendarTimePickerSkin.blockMinutesToStep(Calendar.getInstance(), getSkinnable().getMinuteStep()) ); // TODO locale
 			}
 			else
 			{
-				// parse using the formatter
-				int lIdx = lText.indexOf(":");
-				if (lIdx > 0)
+				Calendar lCalendar = getSkinnable().getCalendar();
+				java.text.ParseException lParseException = null;
+				try
 				{
-					int lHour = Integer.parseInt(lText.substring(0, lIdx));
-					int lMinute = Integer.parseInt(lText.substring(lIdx + 1));
-					Calendar lCalendar = (getSkinnable().getValue() != null ? (Calendar)getSkinnable().getValue().clone() : Calendar.getInstance());
-					lCalendar.set(Calendar.HOUR_OF_DAY, lHour);
-					lCalendar.set(Calendar.MINUTE, lMinute);
-					getSkinnable().setValue( CalendarTimePickerSkin.blockMinutesToStep(lCalendar, getSkinnable().getMinuteStep()) );
+					// parse using the formatter
+					Date lDate = getSkinnable().getDateFormat().parse( lText );
+					lCalendar = Calendar.getInstance(); // TODO: how to get the correct locale
+					lCalendar.setTime(lDate);
 				}
-				else 
-				{
-					refreshValue();
+				catch (java.text.ParseException e)
+				{	
+					// remember the exception					
+					lParseException = e;
+					
+					// the formatter failed, let's try the alternates
+					for (DateFormat lDateFormat : getSkinnable().getDateFormats())
+					{
+						try
+						{
+							// parse using the formatter
+							Date lDate = lDateFormat.parse( lText );
+							lCalendar = Calendar.getInstance(); // TODO: how to get the correct locale
+							lCalendar.setTime(lDate);
+							lParseException = null; // parsing was succesful, clear the exception
+							break; // exit the for loop
+						}
+						catch (java.text.ParseException e2) {} // we can safely ignore this
+					}
 				}
+				
+				// set the value
+				getSkinnable().setCalendar(lCalendar);
+				refreshValue();
+				
+				// rethrow initial exception if all parsing failed 
+				if (lParseException != null) throw lParseException;
 			}
 		}
 		catch (Throwable t) 

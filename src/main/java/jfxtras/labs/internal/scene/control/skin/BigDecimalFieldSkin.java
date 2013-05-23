@@ -30,6 +30,7 @@ package jfxtras.labs.internal.scene.control.skin;
 import java.math.BigDecimal;
 import java.text.ParseException;
 
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
@@ -162,7 +163,22 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
 	 * 
 	 */
     private void initFocusSimulation() {
+    	
 
+    	CONTROL.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov,
+					Boolean wasFocused, Boolean isFocused) {
+				if (isFocused) {
+                	Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							textField.requestFocus();
+						}
+					});
+				}
+			}
+		});
     	// If the TextField gains/loses focus the style of the CONTROL is changed
 		textField.focusedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override

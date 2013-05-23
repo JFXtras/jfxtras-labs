@@ -41,7 +41,7 @@ import javafx.scene.control.Label;
  */
 public class BigDecimalLabel extends Label {
 
-    private ObjectProperty<BigDecimal> number = new SimpleObjectProperty();
+    private ObjectProperty<BigDecimal> number = new SimpleObjectProperty<BigDecimal>();
 
     public final BigDecimal getNumber() {
         return number.get();
@@ -55,7 +55,7 @@ public class BigDecimalLabel extends Label {
         return number;
     }
 
-    final private ObjectProperty<NumberFormat> format = new SimpleObjectProperty();
+    final private ObjectProperty<NumberFormat> format = new SimpleObjectProperty<NumberFormat>();
     public NumberFormat getFormat() {return format.getValue();}
     public final void setFormat(NumberFormat value) {format.set(value);}
     public ObjectProperty<NumberFormat> formatProperty() {return format;}
@@ -82,17 +82,34 @@ public class BigDecimalLabel extends Label {
 
             @Override
             public void changed(ObservableValue<? extends BigDecimal> observable, BigDecimal oldValue, BigDecimal newValue) {
-                setText(getFormat().format(getNumber()));
+                setText(getFormattedString());
             }
+
         });
+        
         // Text is formatted and displayed if the underlying number or format changes.
         formatProperty().addListener(new ChangeListener<NumberFormat>() {
 
             @Override
             public void changed(ObservableValue<? extends NumberFormat> observable, NumberFormat olValue, NumberFormat newValue) {
-                setText(getFormat().format(getNumber()));
+                setText(getFormattedString());
             }
 
         });
     }
+    
+    private String getFormattedString() {
+    	if(getNumber() == null || getFormat() == null) {
+    		return null;
+    	}
+    	try {
+    		String formattedString = getFormat().format(getNumber());
+    		return formattedString;
+		} catch (Exception e) {
+			setText("n/a");
+			e.printStackTrace();
+			return null;
+		}
+    }
+
 }

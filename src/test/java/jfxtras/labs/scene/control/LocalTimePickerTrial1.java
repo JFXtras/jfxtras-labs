@@ -27,74 +27,27 @@
 package jfxtras.labs.scene.control;
 
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import javax.time.calendar.LocalDate;
 
 /**
  * @author Tom Eugelink
  */
-public class LocalDatePickerTrial1 extends Application {
+public class LocalTimePickerTrial1 extends Application {
 	
-    public static void main(String[] args) {    	
-//    	java.util.Locale.setDefault(new java.util.Locale("de")); // weeks starts on monday
+    public static void main(String[] args) {
         launch(args);       
     }
 
 	@Override
-	public void start(Stage stage) 
-	{
-		VBox lVBox = new VBox();
-		lVBox.setSpacing(25);
-		
-        // add a node
-		final LocalDatePicker lLocalDatePicker = new LocalDatePicker();
-        lVBox.getChildren().add(lLocalDatePicker);
-        
-		// textfield
-        {
-			final TextField lTextField = new TextField();
-			lTextField.setEditable(false);
-	        lLocalDatePicker.localDateProperty().addListener(new ChangeListener<LocalDate>()
-			{
-				@Override
-				public void changed(ObservableValue<? extends LocalDate> localDateProperty, LocalDate oldValue, LocalDate newValue)
-				{
-					lTextField.setText(newValue == null ? "null" : newValue.toString());
-				}
-			});
-	        lVBox.getChildren().add(lTextField);
-        }
-        
-		// textfield
-        {
-			final TextField lTextField = new TextField();
-			lTextField.setEditable(false);
-	        lLocalDatePicker.localDates().addListener(new ListChangeListener<LocalDate>()
-	        {
-				@Override
-				public void onChanged(javafx.collections.ListChangeListener.Change<? extends LocalDate> arg0)
-				{
-					lTextField.setText(lLocalDatePicker.localDates().toString());
-				}
-	        });
-	        lVBox.getChildren().add(lTextField);
-        }
-        
-        // setup
-		lLocalDatePicker.setLocalDate(LocalDate.of(2011, 06, 01)); // set a value
-//		lLocalDatePicker.setMode(LocalDatePicker.Mode.RANGE);
-		lLocalDatePicker.setMode(LocalDatePicker.Mode.MULTIPLE);
-//		lLocalDatePicker.setMode(null);
+	public void start(Stage stage) {
 
-		// create scene
-        Scene scene = new Scene(lVBox, 300, 300);
+        // add a node
+		LocalTimePicker lTimePicker = new LocalTimePicker();	
+//		lTimePicker.setMinuteStep(5);
+        
+        // create scene
+        Scene scene = new Scene(lTimePicker, 900, 100);
 
         // create stage
         stage.setTitle(this.getClass().getSimpleName());
