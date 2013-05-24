@@ -24,8 +24,8 @@ public class ZoomInButtonFactory extends ZoomButtonFactory{
         return new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                if (!controlable.isIgnoreRepaint()) {
-                    controlable.zoomIn();
+                if (!zoomable.isIgnoreRepaint()) {
+                    zoomable.zoomIn();
                 }
             }
         };
