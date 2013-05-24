@@ -776,7 +776,6 @@ public final class MapPane extends Pane implements MapControlable {
 		renderControl();
 	}
 
-	@Override
 	public void setCursorLocationVisible(boolean val) {
 		this.cursorLocationVisible = val;
 	}

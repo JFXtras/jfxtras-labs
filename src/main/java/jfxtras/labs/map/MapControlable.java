@@ -9,19 +9,7 @@ import jfxtras.labs.map.tile.TileSource;
  *
  * @author Mario Schroeder
  */
-public interface MapControlable {
-
-    int getZoom();
-
-    void setZoom(int zoom);
-
-    void zoomIn();
-
-    void zoomIn(Point point);
-
-    void zoomOut();
-
-    void zoomOut(Point mapPoint);
+public interface MapControlable extends Zoomable{
 
     /**
      * Moves the map to the given coordinates so that x and y is in the center.
@@ -34,8 +22,6 @@ public interface MapControlable {
     void setLastDragPoint(Point point);
 
     void setCursorLocationText(double x, double y);
-
-    boolean isIgnoreRepaint();
 
     void adjustCursorLocationText();
 
@@ -74,6 +60,4 @@ public interface MapControlable {
     int getMapX();
 
     int getMapY();
-
-    void setCursorLocationVisible(boolean val);
 }
