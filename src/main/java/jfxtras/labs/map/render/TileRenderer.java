@@ -60,31 +60,12 @@ public class TileRenderer implements MapRenderable {
 
 		TileSource tileSource = tileCache.getTileSource();
 
-		int iMove;
+		int iMove = 2;
 		int tilesize = tileSource.getTileSize();
 		Point center = mapController.getCenter();
 
 		int diff_left = (center.x % tilesize);
-		int diff_right = tilesize - diff_left;
 		int diff_top = (center.y % tilesize);
-		int diff_bottom = tilesize - diff_top;
-
-		boolean start_left = diff_left < diff_right;
-		boolean start_top = diff_top < diff_bottom;
-
-		if (start_top) {
-			if (start_left) {
-				iMove = 2;
-			} else {
-				iMove = 3;
-			}
-		} else {
-			if (start_left) {
-				iMove = 1;
-			} else {
-				iMove = START;
-			}
-		}
 
 		int zoom = mapController.getZoom();
 

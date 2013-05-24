@@ -14,10 +14,10 @@ import javafx.scene.image.ImageView;
  */
 public abstract class ZoomButtonFactory {
 	
-    protected MapControlable controlable;
+    protected Zoomable zoomable;
 
-    public ZoomButtonFactory(MapControlable controlable) {
-        this.controlable = controlable;
+    public ZoomButtonFactory(Zoomable zoomable) {
+        this.zoomable = zoomable;
     }
     
     /**
