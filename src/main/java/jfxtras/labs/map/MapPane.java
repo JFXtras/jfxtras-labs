@@ -314,8 +314,8 @@ public final class MapPane extends Pane implements MapControlable {
 	}
 
 	public void setDisplayPositionByLatLon(double lat, double lon, int zoom) {
-		setDisplayPositionByLatLon(new Point((int) (getMapWidth() / 2),
-				(int) (getMapHeight() / 2)), lat, lon, zoom);
+        Point point = new Point((int) (getMapWidth() / 2), (int) (getMapHeight() / 2));
+		setDisplayPositionByLatLon(point, lat, lon, zoom);
 	}
 
 	public void setDisplayPositionByLatLon(Point mapPoint, double lat,
@@ -326,8 +326,8 @@ public final class MapPane extends Pane implements MapControlable {
 	}
 
 	public void setDisplayPosition(int x, int y, int zoom) {
-		setDisplayPosition(new Point((int) (getMapWidth() / 2),
-				(int) (getMapHeight() / 2)), x, y, zoom);
+        Point point = new Point((int) (getMapWidth() / 2), (int) (getMapHeight() / 2));
+		setDisplayPosition(point, x, y, zoom);
 	}
 
 	public void setDisplayPosition(Point mapPoint, int x, int y, int zoom) {
