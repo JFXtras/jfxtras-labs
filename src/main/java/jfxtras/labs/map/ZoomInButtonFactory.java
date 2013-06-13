@@ -10,7 +10,7 @@ import javafx.event.EventHandler;
  */
 public class ZoomInButtonFactory extends ZoomButtonFactory{
 
-    public ZoomInButtonFactory(MapControlable controlable) {
+    public ZoomInButtonFactory(Zoomable controlable) {
         super(controlable);
     }
     
