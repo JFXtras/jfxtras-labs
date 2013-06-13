@@ -17,7 +17,7 @@ public class TilesMouseHandler {
 
     private MapControlable controlable;
     
-    private Point lastDragPoint = new Point();
+    private Point lastDragPoint = null;
 
     private boolean adjusted;
 
@@ -37,7 +37,6 @@ public class TilesMouseHandler {
         tilesGroup.setOnMouseEntered(new MouseEnterAdapter(tilesGroup));
         tilesGroup.setOnMouseExited(new MouseExitAdapter(tilesGroup));
         tilesGroup.setOnMouseMoved(new MouseMovedAdapter());
-        tilesGroup.setOnMousePressed(new MousePressedAdapter());
         tilesGroup.setOnMouseReleased(new MouseReleasedAdapter(tilesGroup));
         tilesGroup.setOnMouseDragged(new MouseDraggedAdapter(tilesGroup));
     }
@@ -92,16 +91,6 @@ public class TilesMouseHandler {
                 updateCursorLocationText(se);
             }
 
-        }
-    }
-
-    private class MousePressedAdapter implements EventHandler<MouseEvent> {
-
-        @Override
-        public void handle(MouseEvent me) {
-            if (me.isPrimaryButtonDown()) {
-                setLastDragPoint(me);
-            }
         }
     }
 
