@@ -19,13 +19,9 @@ public interface MapControlable extends Zoomable{
      */
     void moveMap(int x, int y);
 
-    void setLastDragPoint(Point point);
-
     void setCursorLocationText(double x, double y);
 
     void adjustCursorLocationText();
-
-    Point getLastDragPoint();
 
     /**
      * Calculates the position on the map of a given coordinate
