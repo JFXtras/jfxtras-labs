@@ -89,6 +89,7 @@ public class MapPaneTrial1 extends Application {
         OsmType osmType = OsmType.Mapnik;
 
         final MapPane map = new MapPane(factory.create(osmType));
+        map.setTileGridVisible(true);
 
         final String radarImgUrl = "http://radar.weather.gov/ridge/RadarImg/N0R/NKX_N0R_0.gif";
 
