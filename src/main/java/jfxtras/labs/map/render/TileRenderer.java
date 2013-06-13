@@ -24,10 +24,15 @@ import jfxtras.labs.map.tile.TileSource;
  */
 public class TileRenderer implements MapRenderable {
 
-	private static final Point[] movePoints = { new Point(1, 0),
-			new Point(0, 1), new Point(-1, 0), new Point(0, -1) };
-
+	/**
+	 * stroke width
+	 */
+	private static final double WIDTH = 0.4;
+	
 	private static final int START = 0;
+
+	private static final Point[] directions = { new Point(1, 0),
+			new Point(0, 1), new Point(-1, 0), new Point(0, -1) };
 
 	private final TileCacheable tileCache;
 
@@ -95,19 +100,16 @@ public class TileRenderer implements MapRenderable {
 						Tile tile = tileCache.getTile(tilex, tiley, zoom);
 						if (tile != null) {
 							added = true;
-
-							TileImage tileImage = new TileImage(
-									tile.getImageView(), posx, posy);
-							tileImages.add(tileImage);
+							tileImages.add(new TileImage(tile.getImageView(), posx, posy));
 						}
 					}
-					Point next = movePoints[iMove];
+					Point next = directions[iMove];
 					posx += next.x * tilesize;
 					posy += next.y * tilesize;
 					tilex += next.x;
 					tiley += next.y;
 				}
-				iMove = (iMove + 1) % movePoints.length;
+				iMove = (iMove + 1) % directions.length;
 			}
 		}
 
@@ -130,7 +132,8 @@ public class TileRenderer implements MapRenderable {
 
 			imageView.translateXProperty().set(posx);
 			imageView.translateYProperty().set(posy);
-
+			tilesGroup.getChildren().add(imageView);
+			
 			if (monoChrome) {
 				setMonochromeEffect(imageView);
 			}
@@ -138,8 +141,6 @@ public class TileRenderer implements MapRenderable {
 			if (tileGridVisible) {
 				tilesGroup.getChildren().add(createGrid(posx, posy, tilesize));
 			}
-
-			tilesGroup.getChildren().add(imageView);
 		}
 	}
 
@@ -160,7 +161,7 @@ public class TileRenderer implements MapRenderable {
 		path.getElements().add(new LineTo(posx + tilesize, posy + tilesize));
 		path.getElements().add(new LineTo(posx, posy + tilesize));
 		path.getElements().add(new LineTo(posx, posy));
-		path.setStrokeWidth(1);
+		path.setStrokeWidth(WIDTH);
 		path.setStroke(Color.BLACK);
 
 		return path;
