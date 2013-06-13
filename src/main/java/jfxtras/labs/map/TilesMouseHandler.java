@@ -16,6 +16,8 @@ import javafx.scene.input.ScrollEvent;
 public class TilesMouseHandler {
 
     private MapControlable controlable;
+    
+    private Point lastDragPoint = new Point();
 
     private boolean adjusted;
 
@@ -65,7 +67,6 @@ public class TilesMouseHandler {
     }
 
     private void moveMap(Point p) {
-        Point lastDragPoint = controlable.getLastDragPoint();
         if (lastDragPoint != null) {
             int diffx = lastDragPoint.x - p.x;
             int diffy = lastDragPoint.y - p.y;
@@ -74,8 +75,7 @@ public class TilesMouseHandler {
     }
 
     private void setLastDragPoint(MouseEvent me) {
-        Point p = new Point((int) me.getX(), (int) me.getY());
-        controlable.setLastDragPoint(p);
+        lastDragPoint = new Point((int) me.getX(), (int) me.getY());
     }
 
     private class ScrollEventAdapter implements EventHandler<ScrollEvent> {
@@ -100,7 +100,7 @@ public class TilesMouseHandler {
         @Override
         public void handle(MouseEvent me) {
             if (me.isPrimaryButtonDown()) {
-                controlable.setLastDragPoint(new Point((int) me.getX(), (int) me.getY()));
+                setLastDragPoint(me);
             }
         }
     }
@@ -159,7 +159,7 @@ public class TilesMouseHandler {
         public void handle(MouseEvent me) {
             tilesGroup.setCursor(Cursor.CROSSHAIR);
             moveMap(me);
-            controlable.setLastDragPoint(null);
+            lastDragPoint = null;
         }
     }
 
@@ -175,8 +175,7 @@ public class TilesMouseHandler {
         public void handle(MouseEvent me) {
             if (me.isPrimaryButtonDown()) {
                 tilesGroup.setCursor(Cursor.MOVE);
-                Point point = controlable.getLastDragPoint();
-                if (point == null) {
+                if (lastDragPoint == null) {
                     setLastDragPoint(me);
                 }
             }

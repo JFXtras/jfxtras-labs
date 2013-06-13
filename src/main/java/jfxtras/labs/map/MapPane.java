@@ -101,8 +101,6 @@ public final class MapPane extends Pane implements MapControlable {
 
     private Text cursorLocationText;
 
-    private Point lastDragPoint = new Point();
-
     private SimpleIntegerProperty mapX;
 
     private SimpleIntegerProperty mapWidth;
@@ -666,16 +664,6 @@ public final class MapPane extends Pane implements MapControlable {
             Renderable renderer = new LicenseRenderer();
             renderer.render(this);
         }
-    }
-
-    @Override
-    public Point getLastDragPoint() {
-        return lastDragPoint;
-    }
-
-    @Override
-    public void setLastDragPoint(Point point) {
-        this.lastDragPoint = point;
     }
 
     public void setMapX(int val) {
