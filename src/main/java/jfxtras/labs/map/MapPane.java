@@ -93,8 +93,6 @@ public final class MapPane extends Pane implements MapControlable {
 
     private VBox zoomControlsVbox;
 
-    private boolean ignoreRepaint;
-
     private Rectangle clipMask = new Rectangle();
 
     private Group tilesGroup;
@@ -279,8 +277,6 @@ public final class MapPane extends Pane implements MapControlable {
 
     protected void buildZoomControls() {
 
-        ignoreRepaint = true;
-
         ZoomSliderFactory zoomSliderFactory = new ZoomSliderFactory(this);
         zoomSlider = zoomSliderFactory.create();
 
@@ -296,8 +292,6 @@ public final class MapPane extends Pane implements MapControlable {
         zoomControlsVbox.getChildren().add(zoomOutButton);
         zoomControlsVbox.setLayoutX(-mapX.get() + 10);
         zoomControlsVbox.setLayoutY(-mapY.get() + 20);
-
-        ignoreRepaint = false;
     }
 
     public void setMapBounds(int x, int y, int width, int height) {
@@ -337,7 +331,6 @@ public final class MapPane extends Pane implements MapControlable {
             p.x = x - mapPoint.x + (int) (getMapWidth() / 2);
             p.y = y - mapPoint.y + (int) (getMapHeight() / 2);
             center = p;
-            ignoreRepaint = true;
             try {
                 int oldZoom = this.zoom;
                 this.zoom = zoom;
@@ -348,7 +341,6 @@ public final class MapPane extends Pane implements MapControlable {
                     zoomSlider.setValue(zoom);
                 }
             } finally {
-                ignoreRepaint = false;
                 renderControl();
             }
         }
@@ -768,11 +760,6 @@ public final class MapPane extends Pane implements MapControlable {
     @Override
     public TileSource getTileSource() {
         return tileRenderer.getTileSource();
-    }
-
-    @Override
-    public boolean isIgnoreRepaint() {
-        return ignoreRepaint;
     }
 
     @Override
