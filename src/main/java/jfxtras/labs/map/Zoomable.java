@@ -19,8 +19,6 @@ public interface Zoomable {
 
     void zoomOut();
     
-    boolean isIgnoreRepaint();
-
     void zoomOut(Point mapPoint);
     
 }

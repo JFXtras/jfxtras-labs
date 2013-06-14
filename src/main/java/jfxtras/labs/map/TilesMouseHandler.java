@@ -17,7 +17,7 @@ public class TilesMouseHandler {
 
     private MapControlable controlable;
     
-    private Point lastDragPoint = null;
+    private Point lastDragPoint;
 
     private boolean adjusted;
 
