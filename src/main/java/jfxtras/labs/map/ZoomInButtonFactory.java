@@ -5,15 +5,15 @@ import javafx.event.EventHandler;
 
 /**
  * Factory for the zoom in button.
- * 
+ *
  * @author Mario Schroeder
  */
-public class ZoomInButtonFactory extends ZoomButtonFactory{
+public class ZoomInButtonFactory extends ZoomButtonFactory {
 
     public ZoomInButtonFactory(Zoomable controlable) {
         super(controlable);
     }
-    
+
     @Override
     protected String getImagePath() {
         return "plus.png";
@@ -24,11 +24,8 @@ public class ZoomInButtonFactory extends ZoomButtonFactory{
         return new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                if (!zoomable.isIgnoreRepaint()) {
-                    zoomable.zoomIn();
-                }
+                zoomable.zoomIn();
             }
         };
     }
-    
 }

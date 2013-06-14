@@ -5,15 +5,15 @@ import javafx.event.EventHandler;
 
 /**
  * Factory for the zoom out button.
- * 
+ *
  * @author Mario Schroeder
  */
-public class ZoomOutButtonFactory extends ZoomButtonFactory{
+public class ZoomOutButtonFactory extends ZoomButtonFactory {
 
     public ZoomOutButtonFactory(Zoomable controlable) {
         super(controlable);
     }
-    
+
     @Override
     protected String getImagePath() {
         return "minus.png";
@@ -21,14 +21,11 @@ public class ZoomOutButtonFactory extends ZoomButtonFactory{
 
     @Override
     protected EventHandler<ActionEvent> getEventHandler() {
-        return  new EventHandler<ActionEvent>() {
+        return new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                if (!zoomable.isIgnoreRepaint()) {
-                    zoomable.zoomOut();
-                }
+                zoomable.zoomOut();
             }
         };
     }
-    
 }
