@@ -2,6 +2,7 @@ package jfxtras.labs.map.render;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javafx.scene.Group;
@@ -11,7 +12,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import javafx.scene.text.Text;
 import jfxtras.labs.map.MapControlable;
 import jfxtras.labs.map.tile.Tile;
 import jfxtras.labs.map.tile.TileCacheable;
@@ -22,7 +22,7 @@ import jfxtras.labs.map.tile.TileSource;
  * 
  * @author Mario Schroeder
  */
-public class TileRenderer implements MapRenderable {
+public class TileRenderer implements TileRenderable {
 
 	/**
 	 * stroke width
@@ -39,21 +39,19 @@ public class TileRenderer implements MapRenderable {
 	private boolean monoChrome;
 
 	private boolean tileGridVisible;
+	
+	private List<TileImage> tileImages;
 
 	public TileRenderer(TileCacheable tileCache) {
 		this.tileCache = tileCache;
+		this.tileImages = Collections.emptyList();
 	}
 
 	@Override
-	public boolean render(MapControlable mapController) {
+	public int prepareTiles(MapControlable mapController) {
 
-		boolean changed = false;
-		List<TileImage> tileImages = loadTiles(mapController);
-		if (!tileImages.isEmpty()) {
-			renderTileImages(mapController, tileImages);
-			changed = true;
-		}
-		return changed;
+		tileImages = loadTiles(mapController);
+		return tileImages.size();
 	}
 
 	/**
@@ -61,16 +59,13 @@ public class TileRenderer implements MapRenderable {
 	 */
 	private List<TileImage> loadTiles(MapControlable mapController) {
 
-		List<TileImage> tileImages = new ArrayList<>();
+		List<TileImage> tiles = new ArrayList<>();
 
 		TileSource tileSource = tileCache.getTileSource();
 
 		int iMove = 2;
 		int tilesize = tileSource.getTileSize();
 		Point center = mapController.getCenter();
-
-		int diff_left = (center.x % tilesize);
-		int diff_top = (center.y % tilesize);
 
 		int zoom = mapController.getZoom();
 
@@ -79,8 +74,8 @@ public class TileRenderer implements MapRenderable {
 
 		int x_min = -tilesize, y_min = -tilesize;
 
-		int posx = (x_max / 2) - diff_left;
-		int posy = (y_max / 2) - diff_top;
+		int posx = getInitialPositionX(tilesize, center, x_max);
+		int posy = getInitialPositionY(tilesize, center, y_max);
 
 		int tilex = (center.x / tilesize);
 		int tiley = (center.y / tilesize);
@@ -100,7 +95,10 @@ public class TileRenderer implements MapRenderable {
 						Tile tile = tileCache.getTile(tilex, tiley, zoom);
 						if (tile != null) {
 							added = true;
-							tileImages.add(new TileImage(tile.getImageView(), posx, posy));
+							TileImage tileImage = new TileImage(tile.getImageView(), posx, posy);
+							tileImage.setTileX(tilex);
+							tileImage.setTileY(tiley);
+							tiles.add(tileImage);
 						}
 					}
 					Point next = directions[iMove];
@@ -113,23 +111,77 @@ public class TileRenderer implements MapRenderable {
 			}
 		}
 
-		return tileImages;
+		Collections.sort(tiles);
+		return tiles;
+	}
+
+	private int getInitialPositionY(int tilesize, Point center, int y_max) {
+		int diff_top = (center.y % tilesize);
+		return (y_max / 2) - diff_top;
+	}
+
+	private int getInitialPositionX(int tilesize, Point center, int x_max) {
+		int diff_left = (center.x % tilesize);
+		return (x_max / 2) - diff_left;
+	}
+
+	@Override
+	public void doRender(MapControlable mapController) {
+		renderTileImages(mapController, tileImages);
 	}
 
 	private void renderTileImages(MapControlable mapController,
 			List<TileImage> tileImages) {
-
+		
 		int tilesize = tileCache.getTileSource().getTileSize();
 
 		Group tilesGroup = mapController.getTilesGroup();
+		
+		int zoom = mapController.getZoom();
+		double tiles = Math.pow(2, zoom) * Math.pow(2, zoom);
+		
+		if(((int)tiles) == tileImages.size()){
+			mapController.setMapToCenter();
+			
+			int x_max = mapController.getMapWidth();
+			int y_max = mapController.getMapHeight();
+			Point center = new Point(x_max/2, y_max/2);
+			
+			int firstPosX = center.x - tilesize;//(x_max / 2) - diff_left;
+			int firstPosY = center.y - tilesize;//(y_max / 2) - diff_top;
+			for(TileImage tileImage : tileImages){
+				int tileX = tileImage.getTileX();
+				int calcPosX = firstPosX + (tileX * tilesize);
+				int tileY = tileImage.getTileY();
+				int calcPosY = firstPosY + (tileY * tilesize);
+				tileImage.setPosX(calcPosX);
+				tileImage.setPosY(calcPosY);
+			}
+		}
+		
+		renderTiles(tileImages, tilesize, tilesGroup);
+	}
+	
+	private Point[] getBounds(List<TileImage> tileImages, int tilesize){
+		TileImage min = Collections.min(tileImages);
+		TileImage max = Collections.max(tileImages);
+		Point[] bounds = new Point[2];
+		bounds[0] = new Point(min.getPosX(), min.getPosY());
+		bounds[1] = new Point(max.getPosX() + tilesize, max.getPosY() + tilesize);
+		return bounds;
+	}
+
+	private void renderTiles(List<TileImage> tileImages, int tilesize,
+			Group tilesGroup) {
+		
 		tilesGroup.getChildren().clear();
-
+		
 		for (TileImage tileImage : tileImages) {
-
+			
 			ImageView imageView = tileImage.getImageView();
 			int posx = tileImage.getPosX();
 			int posy = tileImage.getPosY();
-
+			
 			imageView.translateXProperty().set(posx);
 			imageView.translateYProperty().set(posy);
 			tilesGroup.getChildren().add(imageView);
@@ -188,11 +240,13 @@ public class TileRenderer implements MapRenderable {
 	 * This class combines the image view with the position.
 	 * 
 	 */
-	private class TileImage {
+	private class TileImage implements Comparable<TileImage>{
 
 		private ImageView imageView;
 
 		private int posX, posY;
+		
+		private int tileX, tileY;
 
 		TileImage(ImageView imageView, int posX, int posY) {
 			super();
@@ -211,6 +265,39 @@ public class TileRenderer implements MapRenderable {
 
 		int getPosY() {
 			return posY;
+		}
+		
+		void setPosX(int posX) {
+			this.posX = posX;
+		}
+
+		void setPosY(int posY) {
+			this.posY = posY;
+		}
+
+		int getTileX() {
+			return tileX;
+		}
+
+		void setTileX(int tileX) {
+			this.tileX = tileX;
+		}
+
+		int getTileY() {
+			return tileY;
+		}
+
+		void setTileY(int tileY) {
+			this.tileY = tileY;
+		}
+
+		@Override
+		public int compareTo(TileImage other) {
+			return (this.tileX < other.tileX) ? -1 :
+				    (this.tileX > other.tileX) ? +1 :
+				    (this.tileY < other.tileY) ? -1 :
+				    (this.tileY > other.tileY) ? +1 :
+				    0;
 		}
 
 	}

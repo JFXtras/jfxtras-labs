@@ -106,8 +106,7 @@ public class MapPaneTrial1 extends Application {
 
         Image image = new Image(getClass().getResourceAsStream("plus.png"));
         map.addMapMarker(new ImageMapMarker(image, ul_Lat, ul_Lon, 25));
-        MapMarkable marker = new ImageMapMarker(image, lr_Lat, lr_Lon, 1.0);
-        map.addMapMarker(marker);
+        map.addMapMarker(new ImageMapMarker(image, lr_Lat, lr_Lon, 1.0));
 
         MapLineable mapLine = new DefaultMapLine(coordinates);
         map.addMapLine(mapLine);
