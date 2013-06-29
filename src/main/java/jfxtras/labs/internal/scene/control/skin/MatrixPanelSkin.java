@@ -27,8 +27,6 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.scene.control.SkinBase;
-import java.util.*;
 import javafx.animation.AnimationTimer;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -45,10 +43,22 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
-import javafx.scene.effect.*;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.*;
-import javafx.scene.shape.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.ClosePath;
+import javafx.scene.shape.CubicCurveTo;
+import javafx.scene.shape.FillRule;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 import jfxtras.labs.internal.scene.control.behavior.MatrixPanelBehavior;
 import jfxtras.labs.scene.control.gauge.Content;
@@ -57,6 +67,13 @@ import jfxtras.labs.scene.control.gauge.MatrixPanel;
 import jfxtras.labs.scene.control.gauge.UtilHex;
 import jfxtras.labs.util.ConicalGradient;
 import jfxtras.labs.util.Util;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 /**
@@ -69,7 +86,12 @@ import jfxtras.labs.util.Util;
  */
 public class MatrixPanelSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<MatrixPanel, MatrixPanelBehavior> {
     private static final Rectangle PREF_SIZE = new Rectangle(170, 350);
-
+    private static final double      PREFERRED_WIDTH  = 170;
+    private static final double      PREFERRED_HEIGHT = 350;
+    private static final double      MINIMUM_WIDTH    = 17;
+    private static final double      MINIMUM_HEIGHT   = 35;
+    private static final double      MAXIMUM_WIDTH    = 1700;
+    private static final double      MAXIMUM_HEIGHT   = 3500;
     
     private MatrixPanel         control;
     private Rectangle           gaugeBounds;
@@ -111,8 +133,21 @@ public class MatrixPanelSkin extends com.sun.javafx.scene.control.skin.BehaviorS
 
     // ******************** Initialization ************************************
     private void init() {
-        if (control.getPrefWidth() < 0 || control.getPrefHeight() < 0) {
-            control.setPrefSize(PREF_SIZE.getWidth(), PREF_SIZE.getHeight());
+        if (Double.compare(getSkinnable().getPrefWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getPrefHeight(), 0.0) <= 0 ||
+            Double.compare(getSkinnable().getWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getHeight(), 0.0) <= 0) {
+            if (getSkinnable().getPrefWidth() > 0 && getSkinnable().getPrefHeight() > 0) {
+                getSkinnable().setPrefSize(getSkinnable().getPrefWidth(), getSkinnable().getPrefHeight());
+            } else {
+                getSkinnable().setPrefSize(PREFERRED_WIDTH, PREFERRED_HEIGHT);
+            }
+        }
+
+        if (Double.compare(getSkinnable().getMinWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getMinHeight(), 0.0) <= 0) {
+            getSkinnable().setMinSize(MINIMUM_WIDTH, MINIMUM_HEIGHT);
+        }
+
+        if (Double.compare(getSkinnable().getMaxWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getMaxHeight(), 0.0) <= 0) {
+            getSkinnable().setMaxSize(MAXIMUM_WIDTH, MAXIMUM_HEIGHT);
         }
         ledWidth.bind(control.ledWidthProperty());
         ledHeight.bind(control.ledHeightProperty());
@@ -217,20 +252,33 @@ public class MatrixPanelSkin extends com.sun.javafx.scene.control.skin.BehaviorS
         control = null;
     }
 
-    @Override protected double computePrefWidth(final double WIDTH) {
-        double prefWidth = PREF_SIZE.getWidth();
-        if (WIDTH != -1) {
-            prefWidth = Math.max(0, WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
-        }
-        return super.computePrefWidth(prefWidth);
+    @Override protected double computeMinWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMinWidth(Math.max(MINIMUM_HEIGHT, HEIGHT - TOP_INSET - BOTTOM_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
+    }
+    @Override protected double computeMinHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMinHeight(Math.max(MINIMUM_WIDTH, WIDTH - LEFT_INSET - RIGHT_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
 
-    @Override protected double computePrefHeight(final double HEIGHT) {
-        double prefHeight = PREF_SIZE.getHeight();
+    @Override protected double computeMaxWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMaxWidth(Math.min(MAXIMUM_HEIGHT, HEIGHT - TOP_INSET - BOTTOM_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
+    }
+    @Override protected double computeMaxHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMaxHeight(Math.min(MAXIMUM_WIDTH, WIDTH - LEFT_INSET - RIGHT_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
+    }
+
+    @Override protected double computePrefWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        double prefHeight = PREFERRED_HEIGHT;
         if (HEIGHT != -1) {
-            prefHeight = Math.max(0, HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
+            prefHeight = Math.max(0, HEIGHT - TOP_INSET - BOTTOM_INSET);
         }
-        return super.computePrefHeight(prefHeight);
+        return super.computePrefWidth(prefHeight, TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
+    }
+    @Override protected double computePrefHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        double prefWidth = PREFERRED_WIDTH;
+        if (WIDTH != -1) {
+            prefWidth = Math.max(0, WIDTH - LEFT_INSET - RIGHT_INSET);
+        }
+        return super.computePrefHeight(prefWidth, TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
 
     private void calcGaugeBounds() {

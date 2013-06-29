@@ -36,7 +36,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
 
 import java.util.HashMap;
@@ -50,7 +49,7 @@ import java.util.Map;
  * Date: 13.03.12
  * Time: 15:35
  */
-public class SixteenSegmentBuilder <B extends SixteenSegmentBuilder<B>> extends ControlBuilder<B> {
+public class SixteenSegmentBuilder <B extends SixteenSegmentBuilder<B>> {
     private HashMap<String, Property> properties = new HashMap<String, Property>();
 
 
@@ -93,27 +92,27 @@ public class SixteenSegmentBuilder <B extends SixteenSegmentBuilder<B>> extends 
         return this;
     }
 
-    @Override public final B prefWidth(final double PREF_WIDTH) {
+    public final B prefWidth(final double PREF_WIDTH) {
         properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
         return (B)this;
     }
 
-    @Override public final B prefHeight(final double PREF_HEIGHT) {
+    public final B prefHeight(final double PREF_HEIGHT) {
         properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
         return (B)this;
     }
 
-    @Override public final B layoutX(final double LAYOUT_X) {
+    public final B layoutX(final double LAYOUT_X) {
             properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
             return (B)this;
         }
 
-    @Override public final B layoutY(final double LAYOUT_Y) {
+    public final B layoutY(final double LAYOUT_Y) {
         properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
         return (B)this;
     }
 
-    @Override public final SixteenSegment build() {
+    public final SixteenSegment build() {
         final SixteenSegment CONTROL = new SixteenSegment();
         for (String key : properties.keySet()) {
             if ("character".equals(key)) {

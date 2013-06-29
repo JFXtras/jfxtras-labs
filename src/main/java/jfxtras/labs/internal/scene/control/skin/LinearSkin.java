@@ -87,9 +87,12 @@ import java.util.ArrayList;
  * Time: 18:04
  */
 public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
-    private static final Rectangle MIN_SIZE  = new Rectangle(25, 50);
-    private static final Rectangle PREF_SIZE = new Rectangle(170, 340);
-    private static final Rectangle MAX_SIZE  = new Rectangle(512, 1024);
+    private static final double      PREFERRED_WIDTH  = 170;
+    private static final double      PREFERRED_HEIGHT = 340;
+    private static final double      MINIMUM_WIDTH    = 25;
+    private static final double      MINIMUM_HEIGHT   = 50;
+    private static final double      MAXIMUM_WIDTH    = 512;
+    private static final double      MAXIMUM_HEIGHT   = 1024;
     private Linear           control;
     private Rectangle        gaugeBounds;
     private Point2D          framelessOffset;
@@ -216,17 +219,23 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
 
     // ******************** Initialization ************************************
     private void init() {
-        if (control.getPrefWidth() < 0 || control.getPrefHeight() < 0) {
-            control.setPrefSize(PREF_SIZE.getWidth(), PREF_SIZE.getHeight());
+        if (Double.compare(getSkinnable().getPrefWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getPrefHeight(), 0.0) <= 0 ||
+            Double.compare(getSkinnable().getWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getHeight(), 0.0) <= 0) {
+            if (getSkinnable().getPrefWidth() > 0 && getSkinnable().getPrefHeight() > 0) {
+                getSkinnable().setPrefSize(getSkinnable().getPrefWidth(), getSkinnable().getPrefHeight());
+            } else {
+                getSkinnable().setPrefSize(PREFERRED_WIDTH, PREFERRED_HEIGHT);
+            }
         }
 
-        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
-            control.setMinSize(50, 50);
+        if (Double.compare(getSkinnable().getMinWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getMinHeight(), 0.0) <= 0) {
+            getSkinnable().setMinSize(MINIMUM_WIDTH, MINIMUM_HEIGHT);
         }
 
-        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
-            control.setMaxSize(1024, 1024);
+        if (Double.compare(getSkinnable().getMaxWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getMaxHeight(), 0.0) <= 0) {
+            getSkinnable().setMaxSize(MAXIMUM_WIDTH, MAXIMUM_HEIGHT);
         }
+
 
         control.recalcRange();
 
@@ -651,82 +660,33 @@ public class LinearSkin extends GaugeSkinBase<Linear, LinearBehavior> {
         control = null;
     }
 
-    @Override protected double computePrefWidth(final double WIDTH) {
-        double prefWidth;
-        if (WIDTH < getSkinnable().getPrefHeight()) {
-            // vertical
-            prefWidth = PREF_SIZE.getWidth();
-        } else {
-            // horizontal
-            prefWidth = PREF_SIZE.getHeight();
-        }
-        if (WIDTH != -1) {
-            prefWidth = Math.max(0, WIDTH - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
-        }
-        return super.computePrefWidth(prefWidth);
+    @Override protected double computeMinWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMinWidth(Math.max(MINIMUM_HEIGHT, HEIGHT - TOP_INSET - BOTTOM_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
+    }
+    @Override protected double computeMinHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMinHeight(Math.max(MINIMUM_WIDTH, WIDTH - LEFT_INSET - RIGHT_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
 
-    @Override protected double computePrefHeight(final double HEIGHT) {
-        double prefHeight;
-        if (HEIGHT < getSkinnable().getPrefHeight()) {
-            // vertical
-            prefHeight = PREF_SIZE.getHeight();
-        } else {
-            // horizontal
-            prefHeight = PREF_SIZE.getWidth();
-        }
+    @Override protected double computeMaxWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMaxWidth(Math.min(MAXIMUM_HEIGHT, HEIGHT - TOP_INSET - BOTTOM_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
+    }
+    @Override protected double computeMaxHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMaxHeight(Math.min(MAXIMUM_WIDTH, WIDTH - LEFT_INSET - RIGHT_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
+    }
+
+    @Override protected double computePrefWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        double prefHeight = PREFERRED_HEIGHT;
         if (HEIGHT != -1) {
-            prefHeight = Math.max(0, HEIGHT - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
+            prefHeight = Math.max(0, HEIGHT - TOP_INSET - BOTTOM_INSET);
         }
-        return super.computePrefHeight(prefHeight);
+        return super.computePrefWidth(prefHeight, TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
-
-    @Override protected double computeMinWidth(final double WIDTH) {
-        double minWidth;
-        if (getSkinnable().getPrefWidth() < getSkinnable().getPrefHeight()) {
-            // vertical
-            minWidth = Math.max(MIN_SIZE.getWidth(), WIDTH);
-        } else {
-            // horizontal
-            minWidth = Math.max(MIN_SIZE.getHeight(), WIDTH);
+    @Override protected double computePrefHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        double prefWidth = PREFERRED_WIDTH;
+        if (WIDTH != -1) {
+            prefWidth = Math.max(0, WIDTH - LEFT_INSET - RIGHT_INSET);
         }
-        return super.computeMinWidth(minWidth);
-    }
-
-    @Override protected double computeMinHeight(final double HEIGHT) {
-        double minHeight;
-        if (getSkinnable().getPrefWidth() < getSkinnable().getPrefHeight()) {
-            // vertical
-            minHeight = Math.max(MIN_SIZE.getHeight(), HEIGHT);
-        } else {
-            // horizontal
-            minHeight = Math.max(MIN_SIZE.getWidth(), HEIGHT);
-        }
-        return super.computeMinHeight(minHeight);
-    }
-
-    @Override protected double computeMaxWidth(final double WIDTH) {
-        double maxWidth;
-        if (getSkinnable().getPrefWidth() < getSkinnable().getPrefHeight()) {
-            // vertical
-            maxWidth = Math.max(MAX_SIZE.getWidth(), WIDTH);
-        } else {
-            // horizontal
-            maxWidth = Math.max(MAX_SIZE.getHeight(), WIDTH);
-        }
-        return super.computeMaxWidth(maxWidth);
-    }
-
-    @Override protected double computeMaxHeight(final double HEIGHT) {
-        double maxHeight;
-        if (getSkinnable().getPrefWidth() < getSkinnable().getPrefHeight()) {
-            // vertical
-            maxHeight = Math.max(MAX_SIZE.getHeight(), HEIGHT);
-        } else {
-            // horizontal
-            maxHeight = Math.max(MAX_SIZE.getWidth(), HEIGHT);
-        }
-        return super.computeMaxHeight(maxHeight);
+        return super.computePrefHeight(prefWidth, TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
 
     private String formatLcdValue(final double VALUE) {

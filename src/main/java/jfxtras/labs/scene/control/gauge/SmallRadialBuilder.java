@@ -37,7 +37,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
 
 import java.util.HashMap;
@@ -51,7 +50,7 @@ import java.util.List;
  * Time: 09:30
  * To change this template use File | Settings | File Templates.
  */
-public class SmallRadialBuilder <B extends SmallRadialBuilder<B>> extends ControlBuilder<B> {
+public class SmallRadialBuilder <B extends SmallRadialBuilder<B>> {
     private HashMap<String, Property> properties = new HashMap<String, Property>();
 
 
@@ -164,27 +163,27 @@ public class SmallRadialBuilder <B extends SmallRadialBuilder<B>> extends Contro
         return this;
     }
 
-    @Override public final B prefWidth(final double PREF_WIDTH) {
+    public final B prefWidth(final double PREF_WIDTH) {
         properties.put("PREF_WIDTH", new SimpleDoubleProperty(PREF_WIDTH));
         return (B)this;
     }
 
-    @Override public final B prefHeight(final double PREF_HEIGHT) {
+    public final B prefHeight(final double PREF_HEIGHT) {
         properties.put("PREF_HEIGHT", new SimpleDoubleProperty(PREF_HEIGHT));
         return (B)this;
     }
 
-    @Override public final B layoutX(final double LAYOUT_X) {
+    public final B layoutX(final double LAYOUT_X) {
         properties.put("LAYOUT_X", new SimpleDoubleProperty(LAYOUT_X));
         return (B)this;
     }
 
-    @Override public final B layoutY(final double LAYOUT_Y) {
+    public final B layoutY(final double LAYOUT_Y) {
         properties.put("LAYOUT_Y", new SimpleDoubleProperty(LAYOUT_Y));
         return (B)this;
     }
 
-    @Override public final SmallRadial build() {
+    public final SmallRadial build() {
         final SmallRadial CONTROL = new SmallRadial();
         for (String key : properties.keySet()) {
             if ("GAUGE_MODEL".equals(key)) {

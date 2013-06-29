@@ -78,7 +78,12 @@ import java.util.List;
  * Time: 07:45
  */
 public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
-    private static final Rectangle PREF_SIZE = new Rectangle(132, 48);
+    private static final double      PREFERRED_WIDTH  = 132;
+    private static final double      PREFERRED_HEIGHT = 48;
+    private static final double      MINIMUM_WIDTH    = 13;
+    private static final double      MINIMUM_HEIGHT   = 5;
+    private static final double      MAXIMUM_WIDTH    = 1320;
+    private static final double      MAXIMUM_HEIGHT   = 480;
     private AnimationTimer       lcdBlinkingTimer;
     private AnimationTimer       thresholdTimer;
     private Lcd                  control;
@@ -199,16 +204,21 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
 
     // ******************** Initialization ************************************
     private void init() {
-        if (control.getPrefWidth() < 0 || control.getPrefHeight() < 0) {
-            control.setPrefSize(PREF_SIZE.getWidth(), PREF_SIZE.getHeight());
+        if (Double.compare(getSkinnable().getPrefWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getPrefHeight(), 0.0) <= 0 ||
+            Double.compare(getSkinnable().getWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getHeight(), 0.0) <= 0) {
+            if (getSkinnable().getPrefWidth() > 0 && getSkinnable().getPrefHeight() > 0) {
+                getSkinnable().setPrefSize(getSkinnable().getPrefWidth(), getSkinnable().getPrefHeight());
+            } else {
+                getSkinnable().setPrefSize(PREFERRED_WIDTH, PREFERRED_HEIGHT);
+            }
         }
 
-        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
-            control.setMinSize(50, 50);
+        if (Double.compare(getSkinnable().getMinWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getMinHeight(), 0.0) <= 0) {
+            getSkinnable().setMinSize(MINIMUM_WIDTH, MINIMUM_HEIGHT);
         }
 
-        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
-            control.setMaxSize(1024, 1024);
+        if (Double.compare(getSkinnable().getMaxWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getMaxHeight(), 0.0) <= 0) {
+            getSkinnable().setMaxSize(MAXIMUM_WIDTH, MAXIMUM_HEIGHT);
         }
 
         glowColors.clear();
@@ -528,20 +538,33 @@ public class LcdSkin extends GaugeSkinBase<Lcd, LcdBehavior> {
         control = null;
     }
 
-    @Override protected double computePrefWidth(final double HEIGHT) {
-        double prefWidth = PREF_SIZE.getWidth();
-        if (HEIGHT != -1) {
-            prefWidth = Math.max(0, HEIGHT - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
-        }
-        return super.computePrefWidth(prefWidth);
+    @Override protected double computeMinWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMinWidth(Math.max(MINIMUM_HEIGHT, HEIGHT - TOP_INSET - BOTTOM_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
+    }
+    @Override protected double computeMinHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMinHeight(Math.max(MINIMUM_WIDTH, WIDTH - LEFT_INSET - RIGHT_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
 
-    @Override protected double computePrefHeight(final double WIDTH) {
-        double prefHeight = PREF_SIZE.getHeight();
-        if (WIDTH != -1) {
-            prefHeight = Math.max(0, WIDTH - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
+    @Override protected double computeMaxWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMaxWidth(Math.min(MAXIMUM_HEIGHT, HEIGHT - TOP_INSET - BOTTOM_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
+    }
+    @Override protected double computeMaxHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMaxHeight(Math.min(MAXIMUM_WIDTH, WIDTH - LEFT_INSET - RIGHT_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
+    }
+
+    @Override protected double computePrefWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        double prefHeight = PREFERRED_HEIGHT;
+        if (HEIGHT != -1) {
+            prefHeight = Math.max(0, HEIGHT - TOP_INSET - BOTTOM_INSET);
         }
-        return super.computePrefWidth(prefHeight);
+        return super.computePrefWidth(prefHeight, TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
+    }
+    @Override protected double computePrefHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        double prefWidth = PREFERRED_WIDTH;
+        if (WIDTH != -1) {
+            prefWidth = Math.max(0, WIDTH - LEFT_INSET - RIGHT_INSET);
+        }
+        return super.computePrefHeight(prefWidth, TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
 
     private String formatLcdValue(final double VALUE, final int DECIMALS) {

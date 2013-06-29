@@ -38,7 +38,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.control.ControlBuilder;
 
 import java.util.HashMap;
 
@@ -49,7 +48,7 @@ import java.util.HashMap;
  * Date: 14.03.12
  * Time: 15:34
  */
-public class LcdBuilder <B extends LcdBuilder<B>> extends ControlBuilder<B> {
+public class LcdBuilder <B extends LcdBuilder<B>> {
     private HashMap<String, Property> properties = new HashMap<String, Property>();
 
 
@@ -197,27 +196,27 @@ public class LcdBuilder <B extends LcdBuilder<B>> extends ControlBuilder<B> {
         return this;
     }
 
-    @Override public final B prefWidth(final double PREF_WIDTH) {
+    public final B prefWidth(final double PREF_WIDTH) {
         properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
         return (B)this;
     }
 
-    @Override public final B prefHeight(final double PREF_HEIGHT) {
+    public final B prefHeight(final double PREF_HEIGHT) {
         properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
         return (B)this;
     }
 
-    @Override public final B layoutX(final double LAYOUT_X) {
+    public final B layoutX(final double LAYOUT_X) {
             properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
             return (B)this;
         }
 
-    @Override public final B layoutY(final double LAYOUT_Y) {
+    public final B layoutY(final double LAYOUT_Y) {
         properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
         return (B)this;
     }
 
-    @Override public final Lcd build() {
+    public final Lcd build() {
         final Lcd CONTROL = new Lcd();
         for (String key : properties.keySet()) {
             if("styleModel".equals(key)) {

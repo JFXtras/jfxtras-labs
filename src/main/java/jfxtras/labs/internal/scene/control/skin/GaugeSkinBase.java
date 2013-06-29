@@ -85,7 +85,12 @@ import java.util.ArrayList;
  */
 public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase<C>> extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<C, B> {
     private long blinkInterval = 500000000l;
-
+    private static final double MINIMUM_WIDTH    = 10;
+    private static final double MINIMUM_HEIGHT   = 10;
+    private static final double MAXIMUM_WIDTH    = 10;
+    private static final double MAXIMUM_HEIGHT   = 10;
+    private static final double PREFERRED_WIDTH  = 10;
+    private static final double PREFERRED_HEIGHT = 10;
 
     // ******************** Constructors **************************************
     public GaugeSkinBase(final C CONTROL, final B BEHAVIOR) {
@@ -153,42 +158,35 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
     }
 
 
-     // ******************** Skin Layout **************************************
-    @Override protected double computeMinWidth(final double WIDTH) {
-        return getSkinnable().prefWidth(WIDTH);
+    // ******************** Skin Layout **************************************
+    @Override protected double computeMinWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMinWidth(Math.max(MINIMUM_HEIGHT, HEIGHT - TOP_INSET - BOTTOM_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
+    }
+    @Override protected double computeMinHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMinHeight(Math.max(MINIMUM_WIDTH, WIDTH - LEFT_INSET - RIGHT_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
 
-    @Override protected double computeMinHeight(final double HEIGHT) {
-        return getSkinnable().prefHeight(HEIGHT);
+    @Override protected double computeMaxWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMaxWidth(Math.min(MAXIMUM_HEIGHT, HEIGHT - TOP_INSET - BOTTOM_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
+    }
+    @Override protected double computeMaxHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMaxHeight(Math.min(MAXIMUM_WIDTH, WIDTH - LEFT_INSET - RIGHT_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
 
-    @Override protected double computePrefWidth(final double WIDTH) {
-        return getSkinnable().prefWidth(WIDTH);
+    @Override protected double computePrefWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        double prefHeight = PREFERRED_HEIGHT;
+        if (HEIGHT != -1) {
+            prefHeight = Math.max(0, HEIGHT - TOP_INSET - BOTTOM_INSET);
+        }
+        return super.computePrefWidth(prefHeight, TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
-
-    @Override protected double computePrefHeight(final double HEIGHT) {
-        return getSkinnable().prefHeight(HEIGHT);
+    @Override protected double computePrefHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        double prefWidth = PREFERRED_WIDTH;
+        if (WIDTH != -1) {
+            prefWidth = Math.max(0, WIDTH - LEFT_INSET - RIGHT_INSET);
+        }
+        return super.computePrefHeight(prefWidth, TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
-
-    @Override protected double computeMaxWidth(final double WIDTH) {
-        return getSkinnable().prefWidth(WIDTH);
-    }
-
-    @Override protected double computeMaxHeight(final double HEIGHT) {
-        return getSkinnable().prefHeight(HEIGHT);
-    }
-
-// removing compilation problems    
-//    @Override protected void layoutChildren() {
-//        final Insets padding = getInsets();
-//
-//        final double x = padding.getLeft();
-//        final double y = padding.getTop();
-//        final double w = getWidth() - (padding.getLeft() + padding.getRight());
-//        final double h = getHeight() - (padding.getTop() + padding.getBottom());
-//
-//        //layoutGauge(x, y, w, h);
-//    }
 
 
     // ******************** Methods *******************************************
@@ -215,8 +213,8 @@ public abstract class GaugeSkinBase<C extends Gauge, B extends GaugeBehaviorBase
 
     // ******************** Drawing *******************************************
     protected void drawCircularFrame(final Gauge control, final Group FRAME, final Rectangle GAUGE_BOUNDS) {
-        final double SIZE = GAUGE_BOUNDS.getWidth() <= GAUGE_BOUNDS.getHeight() ? GAUGE_BOUNDS.getWidth() : GAUGE_BOUNDS.getHeight();
-        final double WIDTH = SIZE;
+        final double SIZE   = GAUGE_BOUNDS.getWidth() <= GAUGE_BOUNDS.getHeight() ? GAUGE_BOUNDS.getWidth() : GAUGE_BOUNDS.getHeight();
+        final double WIDTH  = SIZE;
         final double HEIGHT = SIZE;
 
         FRAME.getChildren().clear();

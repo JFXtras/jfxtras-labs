@@ -38,7 +38,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
 
 import java.util.HashMap;
@@ -51,7 +50,7 @@ import java.util.List;
  * Date: 05.03.12
  * Time: 10:03
  */
-public class GaugeBuilder <B extends GaugeBuilder<B>> extends ControlBuilder<B> {
+public class GaugeBuilder <B extends GaugeBuilder<B>> {
     // ******************** Variable definitions ******************************
     private HashMap<String, Property> gaugeProperties = new HashMap<String, Property>();
     private HashMap<String, Property> styleProperties = new HashMap<String, Property>();
@@ -337,7 +336,6 @@ public class GaugeBuilder <B extends GaugeBuilder<B>> extends ControlBuilder<B> 
                 Lcd lcd = new Lcd(gaugeModel, styleModel);
                 if (prefWidth != -1) {lcd.setPrefWidth(prefWidth); }
                 if (prefHeight != -1) {lcd.setPrefHeight(prefHeight);}
-                super.applyTo(lcd);
                 return lcd;
             case LINEAR:
                 Linear linear = new Linear(gaugeModel, styleModel);
@@ -345,49 +343,42 @@ public class GaugeBuilder <B extends GaugeBuilder<B>> extends ControlBuilder<B> 
                 if (prefHeight != -1) {linear.setPrefHeight(prefHeight);}
                 if (layoutX != -1) {linear.setLayoutX(layoutX);}
                 if (layoutY != -1) {linear.setLayoutY(layoutY);}
-                super.applyTo(linear);
                 return linear;
             case RADIAL_HALF_N:
                 RadialHalfN radialHalfN = new RadialHalfN(gaugeModel, styleModel);
                 radialHalfN.setPrefSize(SIZE, SIZE);
                 if (layoutX != -1) {radialHalfN.setLayoutX(layoutX);}
                 if (layoutY != -1) {radialHalfN.setLayoutY(layoutY);}
-                super.applyTo(radialHalfN);
                 return radialHalfN;
             case RADIAL_HALF_S:
                 RadialHalfS radialHalfS = new RadialHalfS(gaugeModel, styleModel);
                 radialHalfS.setPrefSize(SIZE, SIZE);
                 if (layoutX != -1) {radialHalfS.setLayoutX(layoutX);}
                 if (layoutY != -1) {radialHalfS.setLayoutY(layoutY);}
-                super.applyTo(radialHalfS);
                 return radialHalfS;
             case RADIAL_QUARTER_N:
                 RadialQuarterN radialQuarterN = new RadialQuarterN(gaugeModel, styleModel);
                 radialQuarterN.setPrefSize(SIZE, SIZE);
                 if (layoutX != -1) {radialQuarterN.setLayoutX(layoutX);}
                 if (layoutY != -1) {radialQuarterN.setLayoutY(layoutY);}
-                super.applyTo(radialQuarterN);
                 return radialQuarterN;
             case RADIAL_QUARTER_E:
                 RadialQuarterE radialQuarterE = new RadialQuarterE(gaugeModel, styleModel);
                 radialQuarterE.setPrefSize(SIZE, SIZE);
                 if (layoutX != -1) {radialQuarterE.setLayoutX(layoutX);}
                 if (layoutY != -1) {radialQuarterE.setLayoutY(layoutY);}
-                super.applyTo(radialQuarterE);
                 return radialQuarterE;
             case RADIAL_QUARTER_S:
                 RadialQuarterS radialQuarterS = new RadialQuarterS(gaugeModel, styleModel);
                 radialQuarterS.setPrefSize(SIZE, SIZE);
                 if (layoutX != -1) {radialQuarterS.setLayoutX(layoutX);}
                 if (layoutY != -1) {radialQuarterS.setLayoutY(layoutY);}
-                super.applyTo(radialQuarterS);
                 return radialQuarterS;
             case RADIAL_QUARTER_W:
                 RadialQuarterW radialQuarterW = new RadialQuarterW(gaugeModel, styleModel);
                 radialQuarterW.setPrefSize(SIZE, SIZE);
                 if (layoutX != -1) {radialQuarterW.setLayoutX(layoutX);}
                 if (layoutY != -1) {radialQuarterW.setLayoutY(layoutY);}
-                super.applyTo(radialQuarterW);
                 return radialQuarterW;
             case SIMPLE_RADIAL_GAUGE:
                 SimpleRadialGauge simpleRadialGauge = new SimpleRadialGauge(gaugeModel);
@@ -395,7 +386,6 @@ public class GaugeBuilder <B extends GaugeBuilder<B>> extends ControlBuilder<B> 
                 simpleRadialGauge.setRadialRange(Gauge.RadialRange.RADIAL_300);
                 if (layoutX != -1) {simpleRadialGauge.setLayoutX(layoutX);}
                 if (layoutY != -1) {simpleRadialGauge.setLayoutY(layoutY);}
-                super.applyTo(simpleRadialGauge);
                 return simpleRadialGauge;
             case SIMPLE_LINEAR_GAUGE:
                 SimpleLinearGauge simpleLinearGauge = new SimpleLinearGauge();
@@ -403,7 +393,6 @@ public class GaugeBuilder <B extends GaugeBuilder<B>> extends ControlBuilder<B> 
                 if (prefHeight != -1) {simpleLinearGauge.setPrefHeight(prefHeight);}
                 if (layoutX != -1) {simpleLinearGauge.setLayoutX(layoutX);}
                 if (layoutY != -1) {simpleLinearGauge.setLayoutY(layoutY);}
-                super.applyTo(simpleLinearGauge);
                 return simpleLinearGauge;
             case RADIAL:
             default:
@@ -418,7 +407,6 @@ public class GaugeBuilder <B extends GaugeBuilder<B>> extends ControlBuilder<B> 
                 radial.setPrefSize(SIZE, SIZE);
                 if (layoutX != -1) {radial.setLayoutX(layoutX);}
                 if (layoutY != -1) {radial.setLayoutY(layoutY);}
-                super.applyTo(radial);
                 return radial;
         }
     }
@@ -595,22 +583,22 @@ public class GaugeBuilder <B extends GaugeBuilder<B>> extends ControlBuilder<B> 
         return this;
     }
 
-    @Override public final B prefWidth(final double WIDTH) {
+    public final B prefWidth(final double WIDTH) {
         gaugeProperties.put("prefWidth", new SimpleDoubleProperty(WIDTH));
         return (B)this;
     }
 
-    @Override public final B prefHeight(final double HEIGHT) {
+    public final B prefHeight(final double HEIGHT) {
         gaugeProperties.put("prefHeight", new SimpleDoubleProperty(HEIGHT));
         return (B)this;
     }
 
-    @Override public final B layoutX(final double LAYOUT_X) {
+    public final B layoutX(final double LAYOUT_X) {
             gaugeProperties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
             return (B)this;
         }
 
-    @Override public final B layoutY(final double LAYOUT_Y) {
+    public final B layoutY(final double LAYOUT_Y) {
         gaugeProperties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
         return (B)this;
     }

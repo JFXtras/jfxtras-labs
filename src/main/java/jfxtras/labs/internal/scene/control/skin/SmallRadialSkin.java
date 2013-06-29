@@ -84,6 +84,12 @@ import java.util.Locale;
  * To change this template use File | Settings | File Templates.
  */
 public class SmallRadialSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<SmallRadial, SmallRadialBehavior> {
+    private static final double      PREFERRED_WIDTH  = 200;
+    private static final double      PREFERRED_HEIGHT = 200;
+    private static final double      MINIMUM_WIDTH    = 25;
+    private static final double      MINIMUM_HEIGHT   = 25;
+    private static final double      MAXIMUM_WIDTH    = 1024;
+    private static final double      MAXIMUM_HEIGHT   = 1024;
     private SmallRadial     control;
     private Group           smallRadial;
     private Path            pointer;
@@ -141,16 +147,21 @@ public class SmallRadialSkin extends com.sun.javafx.scene.control.skin.BehaviorS
     }
 
     private void init() {
-        if (control.getPrefWidth() < 0 | control.getPrefHeight() < 0) {
-            control.setPrefSize(121, 121);
+        if (Double.compare(getSkinnable().getPrefWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getPrefHeight(), 0.0) <= 0 ||
+            Double.compare(getSkinnable().getWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getHeight(), 0.0) <= 0) {
+            if (getSkinnable().getPrefWidth() > 0 && getSkinnable().getPrefHeight() > 0) {
+                getSkinnable().setPrefSize(getSkinnable().getPrefWidth(), getSkinnable().getPrefHeight());
+            } else {
+                getSkinnable().setPrefSize(PREFERRED_WIDTH, PREFERRED_HEIGHT);
+            }
         }
 
-        if (control.getMinWidth() < 0 | control.getMinHeight() < 0) {
-            control.setMinSize(50, 50);
+        if (Double.compare(getSkinnable().getMinWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getMinHeight(), 0.0) <= 0) {
+            getSkinnable().setMinSize(MINIMUM_WIDTH, MINIMUM_HEIGHT);
         }
 
-        if (control.getMaxWidth() < 0 | control.getMaxHeight() < 0) {
-            control.setMaxSize(1024, 1024);
+        if (Double.compare(getSkinnable().getMaxWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getMaxHeight(), 0.0) <= 0) {
+            getSkinnable().setMaxSize(MAXIMUM_WIDTH, MAXIMUM_HEIGHT);
         }
 
         ledOn.setVisible(false);
@@ -286,36 +297,33 @@ public class SmallRadialSkin extends com.sun.javafx.scene.control.skin.BehaviorS
         control = null;
     }
 
-    @Override protected double computePrefWidth(final double PREF_HEIGHT) {
-        double prefHeight = 121;
-        if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight());
+    @Override protected double computeMinWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMinWidth(Math.max(MINIMUM_HEIGHT, HEIGHT - TOP_INSET - BOTTOM_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
+    }
+    @Override protected double computeMinHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMinHeight(Math.max(MINIMUM_WIDTH, WIDTH - LEFT_INSET - RIGHT_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
+    }
+
+    @Override protected double computeMaxWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMaxWidth(Math.min(MAXIMUM_HEIGHT, HEIGHT - TOP_INSET - BOTTOM_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
+    }
+    @Override protected double computeMaxHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        return super.computeMaxHeight(Math.min(MAXIMUM_WIDTH, WIDTH - LEFT_INSET - RIGHT_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
+    }
+
+    @Override protected double computePrefWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        double prefHeight = PREFERRED_HEIGHT;
+        if (HEIGHT != -1) {
+            prefHeight = Math.max(0, HEIGHT - TOP_INSET - BOTTOM_INSET);
         }
-        return super.computePrefWidth(prefHeight);
+        return super.computePrefWidth(prefHeight, TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
-
-    @Override protected double computePrefHeight(final double PREF_WIDTH) {
-        double prefWidth = 121;
-        if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom());
+    @Override protected double computePrefHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+        double prefWidth = PREFERRED_WIDTH;
+        if (WIDTH != -1) {
+            prefWidth = Math.max(0, WIDTH - LEFT_INSET - RIGHT_INSET);
         }
-        return super.computePrefHeight(prefWidth);
-    }
-
-    @Override protected double computeMinWidth(final double MIN_HEIGHT) {
-        return super.computeMinWidth(Math.max(121, MIN_HEIGHT - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight()));
-    }
-
-    @Override protected double computeMinHeight(final double MIN_WIDTH) {
-        return super.computeMinHeight(Math.max(121, MIN_WIDTH - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom()));
-    }
-
-    @Override protected double computeMaxWidth(final double MAX_HEIGHT) {
-        return super.computeMaxWidth(Math.max(121, MAX_HEIGHT - getSkinnable().getInsets().getLeft() - getSkinnable().getInsets().getRight()));
-    }
-
-    @Override protected double computeMaxHeight(final double MAX_WIDTH) {
-        return super.computeMaxHeight(Math.max(121, MAX_WIDTH - getSkinnable().getInsets().getTop() - getSkinnable().getInsets().getBottom()));
+        return super.computePrefHeight(prefWidth, TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
 
     private void updateNumberFormat() {

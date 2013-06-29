@@ -34,7 +34,6 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.control.ControlBuilder;
 import javafx.scene.paint.Color;
 
 import java.util.HashMap;
@@ -46,7 +45,7 @@ import java.util.HashMap;
  * Date: 22.03.12
  * Time: 11:28
  */
-public class StepIndicatorBuilder <B extends StepIndicatorBuilder<B>> extends ControlBuilder<B> {
+public class StepIndicatorBuilder <B extends StepIndicatorBuilder<B>> {
     private HashMap<String, Property> properties = new HashMap<String, Property>();
 
 
@@ -74,27 +73,27 @@ public class StepIndicatorBuilder <B extends StepIndicatorBuilder<B>> extends Co
         return this;
     }
 
-    @Override public final B prefWidth(final double PREF_WIDTH) {
+    public final B prefWidth(final double PREF_WIDTH) {
         properties.put("prefWidth", new SimpleDoubleProperty(PREF_WIDTH));
         return (B)this;
     }
 
-    @Override public final B prefHeight(final double PREF_HEIGHT) {
+    public final B prefHeight(final double PREF_HEIGHT) {
         properties.put("prefHeight", new SimpleDoubleProperty(PREF_HEIGHT));
         return (B)this;
     }
 
-    @Override public final B layoutX(final double LAYOUT_X) {
+    public final B layoutX(final double LAYOUT_X) {
             properties.put("layoutX", new SimpleDoubleProperty(LAYOUT_X));
             return (B)this;
         }
 
-    @Override public final B layoutY(final double LAYOUT_Y) {
+    public final B layoutY(final double LAYOUT_Y) {
         properties.put("layoutY", new SimpleDoubleProperty(LAYOUT_Y));
         return (B)this;
     }
 
-    @Override public final StepIndicator build() {
+    public final StepIndicator build() {
         final StepIndicator CONTROL = new StepIndicator();
         for (String key : properties.keySet()) {
             if ("noOfSteps".equals(key)) {
