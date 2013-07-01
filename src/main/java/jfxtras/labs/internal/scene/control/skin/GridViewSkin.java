@@ -255,27 +255,27 @@ public class GridViewSkin<T> extends com.sun.javafx.scene.control.skin.BehaviorS
 	}
 
 	@Override
-	protected double computeMinHeight(double width) {
+	protected double computeMinHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
 		return computeCellHeight();
 	}
 
 	@Override
-	protected double computeMinWidth(double height) {
+	protected double computeMinWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
 		return computeCellWidth();
 	}
 
 	@Override
-	protected double computeMaxHeight(double width) {
+	protected double computeMaxHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
 		return Double.MAX_VALUE;
 	}
 
 	@Override
-	protected double computeMaxWidth(double height) {
+	protected double computeMaxWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
 		return Double.MAX_VALUE;
 	}
 
 	@Override
-	protected double computePrefHeight(double width) {
+	protected double computePrefHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
 		int maxCellsInRow = computeMaxCellsInRow(width);
 		int rowCount = (int) Math.floor((double) getSkinnable().getItems()
 				.size() / (double) maxCellsInRow);
@@ -283,7 +283,7 @@ public class GridViewSkin<T> extends com.sun.javafx.scene.control.skin.BehaviorS
 	}
 
 	@Override
-	protected double computePrefWidth(double height) {
+	protected double computePrefWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
 		int maxCellsInColumn = computeMaxCellsInColumn(height);
 		int columnCount = (int) Math.floor((double) getSkinnable().getItems()
 				.size() / (double) maxCellsInColumn);

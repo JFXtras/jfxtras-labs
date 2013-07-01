@@ -685,12 +685,12 @@ public class DefaultWindowSkin extends SkinBase<Window> {
     }
 
     @Override
-    protected double computeMinWidth(double d) {
+    protected double computeMinWidth(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
 
-        double result = root.minWidth(d);
+        double result = root.minWidth(width);
         
-        double minWidth = Math.max(titleBar.prefWidth(d),
-                control.getContentPane().minWidth(d)+ getSkinnable().getInsets().getRight()); 
+        double minWidth = Math.max(titleBar.prefWidth(width),
+                control.getContentPane().minWidth(width)+ getSkinnable().getInsets().getRight()); 
         
         result = Math.max(result,minWidth);
 
@@ -698,20 +698,20 @@ public class DefaultWindowSkin extends SkinBase<Window> {
     }
 
     @Override
-    protected double computePrefWidth(double d) {
+    protected double computePrefWidth(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
 
-        return computeMinWidth(d);
+        return computeMinWidth(width, topInset, rightInset, bottomInset, leftInset);
     }
 
     @Override
-    protected double computeMinHeight(double d) {
+    protected double computeMinHeight(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
 
-        double result = root.minHeight(d);
+        double result = root.minHeight(height);
 
-        double minHeight = titleBar.prefHeight(d);
+        double minHeight = titleBar.prefHeight(height);
 
         if (!control.isMinimized() && control.getContentPane().isVisible()) {
-            minHeight += control.getContentPane().minHeight(d)
+            minHeight += control.getContentPane().minHeight(height)
                     + getSkinnable().getInsets().getBottom();
         }
 

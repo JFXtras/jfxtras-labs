@@ -147,8 +147,8 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
 
     
     @Override
-    protected double computePrefWidth(double PREF_WIDTH) {
-        super.computePrefWidth(PREF_WIDTH);
+    protected double computePrefWidth(double PREF_WIDTH, double topInset, double rightInset, double bottomInset, double leftInset) {
+        super.computePrefWidth(PREF_WIDTH, topInset, rightInset, bottomInset, leftInset);
         double prefWidth = getSkinnable().getInsets().getLeft()
                 + textField.prefWidth(PREF_WIDTH)
                 + textField.prefHeight(PREF_WIDTH)
@@ -157,8 +157,8 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
     }
 
     @Override
-    protected double computePrefHeight(double PREF_HEIGHT) {
-        super.computePrefHeight(PREF_HEIGHT);
+    protected double computePrefHeight(double PREF_HEIGHT, double topInset, double rightInset, double bottomInset, double leftInset) {
+        super.computePrefHeight(PREF_HEIGHT, topInset, rightInset, bottomInset, leftInset);
         double prefHeight = getSkinnable().getInsets().getTop() 
                 + textField.prefHeight(PREF_HEIGHT)
                 +getSkinnable().getInsets().getBottom();
