@@ -81,16 +81,14 @@ public class TilesMouseHandler {
 
         @Override
         public void handle(ScrollEvent se) {
+        	
+        	Point p = new Point((int) se.getX(), (int) se.getY());
             if (se.getDeltaY() > 0) {
-                if (controlable.getZoom() < controlable.getTileSource().getMaxZoom()) {
-                    controlable.zoomIn(new Point((int) se.getX(), (int) se.getY()));
-                    updateCursorLocationText(se);
-                }
-            } else if (controlable.getZoom() > controlable.getTileSource().getMinZoom()) {
-                controlable.zoomOut(new Point((int) se.getX(), (int) se.getY()));
-                updateCursorLocationText(se);
+                controlable.zoomIn(p);
+            } else {
+                controlable.zoomOut(p);
             }
-
+            updateCursorLocationText(se);
         }
     }
 

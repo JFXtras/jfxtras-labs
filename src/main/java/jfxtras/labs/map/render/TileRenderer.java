@@ -137,28 +137,6 @@ public class TileRenderer implements TileRenderable {
 
 		Group tilesGroup = mapController.getTilesGroup();
 		
-		int zoom = mapController.getZoom();
-		double tiles = Math.pow(2, zoom) * Math.pow(2, zoom);
-		
-		if(((int)tiles) == tileImages.size()){
-			mapController.setMapToCenter();
-			
-			int x_max = mapController.getMapWidth();
-			int y_max = mapController.getMapHeight();
-			Point center = new Point(x_max/2, y_max/2);
-			
-			int firstPosX = center.x - tilesize;//(x_max / 2) - diff_left;
-			int firstPosY = center.y - tilesize;//(y_max / 2) - diff_top;
-			for(TileImage tileImage : tileImages){
-				int tileX = tileImage.getTileX();
-				int calcPosX = firstPosX + (tileX * tilesize);
-				int tileY = tileImage.getTileY();
-				int calcPosY = firstPosY + (tileY * tilesize);
-				tileImage.setPosX(calcPosX);
-				tileImage.setPosY(calcPosY);
-			}
-		}
-		
 		renderTiles(tileImages, tilesize, tilesGroup);
 	}
 	
@@ -266,25 +244,9 @@ public class TileRenderer implements TileRenderable {
 		int getPosY() {
 			return posY;
 		}
-		
-		void setPosX(int posX) {
-			this.posX = posX;
-		}
-
-		void setPosY(int posY) {
-			this.posY = posY;
-		}
-
-		int getTileX() {
-			return tileX;
-		}
 
 		void setTileX(int tileX) {
 			this.tileX = tileX;
-		}
-
-		int getTileY() {
-			return tileY;
 		}
 
 		void setTileY(int tileY) {

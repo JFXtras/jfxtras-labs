@@ -57,5 +57,4 @@ public interface MapControlable extends Zoomable{
 
     int getMapY();
     
-    void setMapToCenter();
 }

@@ -51,6 +51,8 @@ import jfxtras.labs.map.render.TileRenderer;
 import jfxtras.labs.map.tile.TileCacheable;
 import jfxtras.labs.map.tile.TileRepository;
 
+import static java.lang.Math.pow;
+
 /**
  * 
  * @author smithjel
@@ -131,6 +133,8 @@ public final class MapPane extends Pane implements MapControlable {
 			true);
 
 	private CoordinateStringFormater formater;
+
+	private int tilesCount;
 
 	public MapPane(TileSource ts) {
 		this(ts, START, START, 800, 600, INITIAL_ZOOM);
@@ -497,6 +501,12 @@ public final class MapPane extends Pane implements MapControlable {
 	public void zoomOut(Point mapPoint) {
 		setZoom(zoom - 1, mapPoint);
 	}
+	
+	@Override
+	public void setZoom(int zoom) {
+		Point mapPoint = new Point((int) (getMapWidth() / 2), (int) (getMapHeight() / 2));
+		setZoom(zoom, mapPoint);
+	}
 
 	public void setZoom(int zoom, Point mapPoint) {
 		if (zoom > getTileSource().getMaxZoom()
@@ -504,14 +514,30 @@ public final class MapPane extends Pane implements MapControlable {
 			return;
 		}
 		Coordinate zoomPos = getCoordinate(mapPoint);
+		
 		setDisplayPositionByLatLon(mapPoint, zoomPos.getLatitude(),
 				zoomPos.getLongitude(), zoom);
+		
+		centerMap();
 	}
-
-	@Override
-	public void setZoom(int zoom) {
-		setZoom(zoom, new Point((int) (getMapWidth() / 2),
-				(int) (getMapHeight() / 2)));
+	
+	/**
+	 * centers the map when necessary
+	 */
+	private void centerMap(){
+		if(zoom <= getTileSource().getMinZoom() && mapInBounds()){
+			setDisplayPositionByLatLon(0,0);
+        }
+	}
+	
+	/**
+	 * Check if the map is within the boundaries of the window. 
+	 * 
+	 * @return true when the actual map is within the boundaries of the window
+	 */
+	private boolean mapInBounds(){
+		double tiles = pow(2, zoom) * pow(2, zoom);
+		return (int)tiles == tilesCount;
 	}
 
 	protected void zoomChanged(int oldZoom) {
@@ -636,7 +662,7 @@ public final class MapPane extends Pane implements MapControlable {
 	protected boolean renderMap() {
 
 		boolean updated = false;
-		int tilesCount = tileRenderer.prepareTiles(this);
+		tilesCount = tileRenderer.prepareTiles(this);
 		
 		if (tilesCount > 0) {
 			tileRenderer.doRender(this);
@@ -646,12 +672,6 @@ public final class MapPane extends Pane implements MapControlable {
 		return updated;
 	}
 	
-	public void setMapToCenter(){
-		ignoreRepaint = true;
-		setDisplayPositionByLatLon(0,0);
-		ignoreRepaint = false;
-	}
-
 	protected void renderOverlays() {
 		for (MapOverlayable overlay : mapOverlayList) {
 			overlay.render(this);
