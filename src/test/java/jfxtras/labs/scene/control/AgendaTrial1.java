@@ -307,7 +307,7 @@ public class AgendaTrial1 extends Application {
 		
 		HBox lHBox = new HBox();
 		CalendarTextField lCalendarTextField = new CalendarTextField();
-		lCalendarTextField.valueProperty().bindBidirectional(lAgenda.displayedCalendar());		
+		lCalendarTextField.calendarProperty().bindBidirectional(lAgenda.displayedCalendar());		
         lHBox.getChildren().add(lCalendarTextField);
         
         // create scene
