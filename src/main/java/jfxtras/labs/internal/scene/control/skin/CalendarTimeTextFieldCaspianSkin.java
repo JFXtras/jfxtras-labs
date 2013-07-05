@@ -288,42 +288,38 @@ public class CalendarTimeTextFieldCaspianSkin extends SkinBase<CalendarTimeTextF
 			}
 			else
 			{
-				Calendar lCalendar = getSkinnable().getCalendar();
-				java.text.ParseException lParseException = null;
 				try
 				{
-					// parse using the formatter
-					Date lDate = getSkinnable().getDateFormat().parse( lText );
-					lCalendar = Calendar.getInstance(); // TODO: how to get the correct locale
-					lCalendar.setTime(lDate);
-				}
-				catch (java.text.ParseException e)
-				{	
-					// remember the exception					
-					lParseException = e;
-					
-					// the formatter failed, let's try the alternates
+					Calendar lCalendar = getSkinnable().getCalendar();
+					Date lDate = null;
+					// First we're going to try the parsers in the list.
+					// The user is free to decide to sequence here, if we would try the default first, that would not be the case.
 					for (DateFormat lDateFormat : getSkinnable().getDateFormats())
 					{
 						try
 						{
 							// parse using the formatter
-							Date lDate = lDateFormat.parse( lText );
-							lCalendar = Calendar.getInstance(); // TODO: how to get the correct locale
-							lCalendar.setTime(lDate);
-							lParseException = null; // parsing was succesful, clear the exception
+							lDate = lDateFormat.parse( lText );
 							break; // exit the for loop
 						}
-						catch (java.text.ParseException e2) {} // we can safely ignore this
+						catch (java.text.ParseException e2) {} // we can safely ignore this, since we will fall back to the default formatter in the end
 					}
+					if (lDate == null) 
+					{
+						// parse using the default formatter
+						lDate = getSkinnable().getDateFormat().parse( lText );
+					}
+					
+					// set the value (the parse with the default formatter either succeeded or threw an exception, skipping this code)
+					lCalendar = Calendar.getInstance(); // TODO: how to get the correct locale
+					lCalendar.setTime(lDate);
+					getSkinnable().setCalendar(lCalendar);
 				}
-				
-				// set the value
-				getSkinnable().setCalendar(lCalendar);
-				refreshValue();
-				
-				// rethrow initial exception if all parsing failed 
-				if (lParseException != null) throw lParseException;
+				finally
+				{
+					// always refresh
+					refreshValue();
+				}
 			}
 		}
 		catch (Throwable t) 
