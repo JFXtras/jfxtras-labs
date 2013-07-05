@@ -472,6 +472,8 @@ public final class MapPane extends Pane implements MapControlable {
 
 	@Override
 	public void moveMap(int x, int y) {
+		
+		//TODO check if the next location of the map is within the boundaries.
 		center.x += x;
 		center.y += y;
 		renderControl();
@@ -525,7 +527,7 @@ public final class MapPane extends Pane implements MapControlable {
 	 * centers the map when necessary
 	 */
 	private void centerMap(){
-		if(zoom <= getTileSource().getMinZoom() && mapInBounds()){
+		if(zoom <= getTileSource().getMinZoom() && loadedTilesEqualsAvailable()){
 			setDisplayPositionByLatLon(0,0);
         }
 	}
@@ -535,9 +537,23 @@ public final class MapPane extends Pane implements MapControlable {
 	 * 
 	 * @return true when the actual map is within the boundaries of the window
 	 */
+	//TODO use it for map moving
 	private boolean mapInBounds(){
-		double tiles = pow(2, zoom) * pow(2, zoom);
-		return (int)tiles == tilesCount;
+		Point[] bounds = tileRenderer.getBounds();
+		int w = getMapWidth();
+		int h = getMapHeight();
+		Point ul = bounds[0];
+		Point lr = bounds[1];
+		return ul.getX() >= 0 && ul.getY() >= 0 && lr.getX() <= w && lr.getY() <= h;
+	}
+	
+	/**
+	 * Check if the number of actual loaded tiles is equal to the available tile per zoom.
+	 * @return
+	 */
+	private boolean loadedTilesEqualsAvailable(){
+		double available = pow(2, zoom) * pow(2, zoom);
+		return (int)available == tilesCount;
 	}
 
 	protected void zoomChanged(int oldZoom) {
@@ -665,7 +681,7 @@ public final class MapPane extends Pane implements MapControlable {
 		tilesCount = tileRenderer.prepareTiles(this);
 		
 		if (tilesCount > 0) {
-			tileRenderer.doRender(this);
+			tileRenderer.doRender(tilesGroup);
 			updated = true;
 		}
 		

@@ -1,6 +1,10 @@
 package jfxtras.labs.map.render;
 
 
+import java.awt.Point;
+
+import javafx.scene.Group;
+
 import jfxtras.labs.map.MapControlable;
 
 /**
@@ -18,5 +22,19 @@ public interface TileRenderable {
 	 */
 	int prepareTiles(MapControlable mapController);
 	
-	void doRender(MapControlable mapController);
+	/**
+	 * Gets the bounds of all tiles to be painted. <br/>
+	 * The first point in the array is the upper left corner.<br/>
+	 * The second point is the lower right corner.
+	 * 
+	 * @return points of the upper left and lower right corner
+	 */
+	Point[] getBounds();
+	
+	/**
+	 * Renders all tiles which are loaded before.
+	 * 
+	 * @param mapController
+	 */
+	void doRender(Group tilesGroup);
 }
