@@ -8,7 +8,7 @@ import javafx.collections.ObservableList;
 
 /**
  *
- * @author Michael Hoffer <info@michaelhoffer.de>
+ * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public interface Clipboard {
     public boolean select(SelectableNode n, boolean selected);

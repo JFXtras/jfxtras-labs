@@ -46,7 +46,7 @@ import javafx.scene.transform.Transform;
  * visible can still cause serious performance issues. In combination with 
  * {@link ScalableContentPane} a user interface can use multiple levels of
  * detail (LOD).
- * @author Michael Hoffer <info@michaelhoffer.de>
+ * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class OptimizableContentPane extends StackPane {
 

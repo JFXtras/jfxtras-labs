@@ -16,7 +16,7 @@ import javafx.scene.transform.Transform;
  * <code>min(width,height)</code> to optimize,e.g., to decide whether to
  * visualize the children of the pane (see {@link OptimizableContentPane}).
  *
- * @author Michael Hoffer <info@michaelhoffer.de>
+ * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class DefaultOptimizationRule implements OptimizationRule {
 

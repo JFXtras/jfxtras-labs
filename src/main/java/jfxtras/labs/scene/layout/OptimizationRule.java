@@ -31,7 +31,7 @@ import javafx.scene.transform.Transform;
 /**
  * Optimization rule for {@link OptimizableContentPane}.
  *
- * @author Michael Hoffer <info@michaelhoffer.de>
+ * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public interface OptimizationRule {
 

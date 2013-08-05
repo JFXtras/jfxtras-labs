@@ -58,7 +58,7 @@ import jfxtras.labs.util.NodeUtil;
  * applications. See <a href=https://github.com/miho/VFXWindows-Samples>
  * https://github.com/miho/VFXWindows-Samples</a> for sample code.
  *
- * @author Michael Hoffer <info@michaelhoffer.de>
+ * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class Window extends Control implements SelectableNode {
 
@@ -144,6 +144,8 @@ public class Window extends Control implements SelectableNode {
      * Selectable property (defines whether this window is selectable.
      */
     private BooleanProperty selectableProperty = new SimpleBooleanProperty(true);
+    private BooleanProperty boundsListenerEnabledProperty = new SimpleBooleanProperty(true);
+    private ChangeListener<Bounds> boundsListener;
 
     /**
      * Constructor.
@@ -167,7 +169,7 @@ public class Window extends Control implements SelectableNode {
         setContentPane(new StackPane());
 
         // TODO ugly to do this in control? probably violates pattern rules?
-        boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
+        boundsListener = new ChangeListener<Bounds>() {
             @Override
             public void changed(ObservableValue<? extends Bounds> ov, Bounds t, Bounds t1) {
 
@@ -187,6 +189,18 @@ public class Window extends Control implements SelectableNode {
 
                 }
             }
+        };
+        
+        boundsListenerEnabledProperty.addListener(new ChangeListener<Boolean>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue) {
+                    boundsInParentProperty().addListener(boundsListener);
+                } else {
+                    boundsInParentProperty().removeListener(boundsListener);
+                }
+            }
         });
 
         closeTransitionProperty.addListener(new ChangeListener<Transition>() {
@@ -198,7 +212,7 @@ public class Window extends Control implements SelectableNode {
                             Animation.Status oldValue, Animation.Status newValue) {
 
                         if (newValue == Animation.Status.STOPPED) {
-                            
+
                             // we don't fire action events twice
                             if (Window.this.getParent() == null) {
                                 return;
@@ -646,4 +660,18 @@ public class Window extends Control implements SelectableNode {
         return selectedProperty.get();
     }
 
+    /**
+     * @return the boundsListenerEnabledProperty
+     */
+    public BooleanProperty boundsListenerEnabledProperty() {
+        return boundsListenerEnabledProperty;
+    }
+    
+    public void setBoundsListenerEnabled(boolean state) {
+        boundsListenerEnabledProperty().set(state);
+    }
+    
+    public boolean getBoundsListenerEnabled() {
+        return boundsListenerEnabledProperty.get();
+    }
 }

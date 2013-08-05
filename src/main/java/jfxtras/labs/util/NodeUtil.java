@@ -55,7 +55,7 @@ public class NodeUtil {
             ((Group) n.getParent()).getChildren().remove(n);
         } else if (n.getParent() instanceof Pane) {
             ((Pane) n.getParent()).getChildren().remove(n);
-        } else {
+        } else if (n.getParent() != null) { // we ignore if node has no parent
             throw new IllegalArgumentException("Unsupported parent: " + n.getParent());
         }
     }
@@ -116,29 +116,28 @@ public class NodeUtil {
 
         return null;
     }
-    
+
     public static List<Node> nodesWithParent(Parent p, List<Node> nodes) {
         List<Node> result = new ArrayList<>();
-        
-        for(Node n : nodes) {
+
+        for (Node n : nodes) {
             if (p.equals(n.getParent())) {
                 result.add(n);
             }
         }
-        
+
         return result;
     }
-    
+
     public static List<Node> nodesThatImplement(List<Node> nodes, Class<?> cls) {
         List<Node> result = new ArrayList<>();
-        
-        for(Node n : nodes) {
+
+        for (Node n : nodes) {
             if (cls.isAssignableFrom(n.getClass())) {
                 result.add(n);
             }
         }
-        
+
         return result;
-    } 
-    
+    }
 }
