@@ -73,7 +73,7 @@ public class CalendarTextFieldTrial1 extends Application {
 				lGridPane.add(lCalendarTextField, 1, lRowIdx);
 				
 				final TextField lValueTextField = new TextField();
-				lCalendarTextField.valueProperty().addListener(new ChangeListener<Calendar>()
+				lCalendarTextField.calendarProperty().addListener(new ChangeListener<Calendar>()
 				{
 					@Override
 					public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
@@ -81,7 +81,7 @@ public class CalendarTextFieldTrial1 extends Application {
 						lValueTextField.setText(CalendarPicker.quickFormatCalendar(newValue));
 					}
 				});
-				lValueTextField.setText(CalendarPicker.quickFormatCalendar(lCalendarTextField.getValue()));
+				lValueTextField.setText(CalendarPicker.quickFormatCalendar(lCalendarTextField.getCalendar()));
 				lValueTextField.setDisable(true);
 				lGridPane.add(lValueTextField, 2, lRowIdx++);
 			}
@@ -92,7 +92,7 @@ public class CalendarTextFieldTrial1 extends Application {
 				CalendarTextField lCalendarTextField = new CalendarTextField();
 				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
 				
-				lCalendarTextField.valueProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
+				lCalendarTextField.calendarProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
 				lCalendarTextField.parseErrorCallbackProperty().set(new Callback<Throwable, Void>()
 				{
 					@Override
@@ -115,7 +115,7 @@ public class CalendarTextFieldTrial1 extends Application {
 				lGridPane.add(lCalendarTextField, 1, lRowIdx);
 				
 				final TextField lValueTextField = new TextField();
-				lCalendarTextField.valueProperty().addListener(new ChangeListener<Calendar>()
+				lCalendarTextField.calendarProperty().addListener(new ChangeListener<Calendar>()
 				{
 					@Override
 					public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
@@ -123,13 +123,13 @@ public class CalendarTextFieldTrial1 extends Application {
 						lValueTextField.setText(CalendarPicker.quickFormatCalendar(newValue));
 					}
 				});
-				lValueTextField.setText(CalendarPicker.quickFormatCalendar(lCalendarTextField.getValue()));
+				lValueTextField.setText(CalendarPicker.quickFormatCalendar(lCalendarTextField.getCalendar()));
 				lValueTextField.setDisable(true);
 				lGridPane.add(lValueTextField, 2, lRowIdx++);
 				
 				// set
-				lCalendarTextField.setValue(Calendar.getInstance());
-				lCalendarTextField.setValue(null);
+				lCalendarTextField.setCalendar(Calendar.getInstance());
+				lCalendarTextField.setCalendar(null);
 			}
 			
 	        // preset value with time
@@ -139,7 +139,7 @@ public class CalendarTextFieldTrial1 extends Application {
 				lCalendarTextField.dateFormatProperty().set(SimpleDateFormat.getDateTimeInstance());
 				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
 				
-				lCalendarTextField.valueProperty().set(Calendar.getInstance()); // set a value
+				lCalendarTextField.calendarProperty().set(Calendar.getInstance()); // set a value
 			}
 			
 	        // alternate parsers
@@ -150,7 +150,7 @@ public class CalendarTextFieldTrial1 extends Application {
 				lCalendarTextField.dateFormatsProperty().add(new SimpleDateFormat("yyyyMMdd"));
 				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
 				
-				lCalendarTextField.valueProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
+				lCalendarTextField.calendarProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
 			}
 			
 	        // disabled
@@ -160,7 +160,7 @@ public class CalendarTextFieldTrial1 extends Application {
 				lCalendarTextField.disableProperty().set(true);
 				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
 				
-				lCalendarTextField.valueProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
+				lCalendarTextField.calendarProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
 			}
 			
 	        // custom icon
@@ -170,7 +170,7 @@ public class CalendarTextFieldTrial1 extends Application {
 				lCalendarTextField.setId("custom");
 				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
 				
-				lCalendarTextField.valueProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
+				lCalendarTextField.calendarProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
 			}
 			
 	        // custom icon disabled
@@ -181,7 +181,7 @@ public class CalendarTextFieldTrial1 extends Application {
 				lCalendarTextField.disableProperty().set(true);
 				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
 				
-				lCalendarTextField.valueProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
+				lCalendarTextField.calendarProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
 			}
 			
 			lHBox.getChildren().add(lGridPane);

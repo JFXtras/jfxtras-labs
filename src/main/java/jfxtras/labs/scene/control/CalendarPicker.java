@@ -31,8 +31,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import sun.util.calendar.CalendarUtils;
-
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;

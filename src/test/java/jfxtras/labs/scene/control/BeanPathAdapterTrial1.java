@@ -455,7 +455,7 @@ public class BeanPathAdapterTrial1 extends Application {
 			ctrl = tf;
 		} else if (controlType == CalendarTextField.class) {
 			final CalendarTextField ctf = new CalendarTextField();
-			personPA.bindBidirectional(path, ctf.valueProperty(),
+			personPA.bindBidirectional(path, ctf.calendarProperty(),
 					Calendar.class);
 			ctrl = ctf;
 		} else if (controlType == ListSpinner.class) {

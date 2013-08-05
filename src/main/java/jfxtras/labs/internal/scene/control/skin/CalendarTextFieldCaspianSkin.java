@@ -88,7 +88,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField>
 		createNodes();
 		
 		// react to value changes in the model
-		getSkinnable().valueProperty().addListener(new ChangeListener<Calendar>()
+		getSkinnable().calendarProperty().addListener(new ChangeListener<Calendar>()
 		{
 			@Override
 			public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
@@ -108,7 +108,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField>
 	private void refreshValue()
 	{
 		// write out to textfield
-		Calendar c = getSkinnable().getValue();
+		Calendar c = getSkinnable().getCalendar();
 		String s = c == null ? "" : getSkinnable().getDateFormat().format( c.getTime() );
 		textField.setText( s );
 	}
@@ -179,7 +179,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField>
 					parse();
 					
 					// get the calendar to modify
-					Calendar lCalendar = (Calendar)getSkinnable().getValue().clone();
+					Calendar lCalendar = (Calendar)getSkinnable().getCalendar().clone();
 					
 					// modify
 					int lField = Calendar.DATE;
@@ -190,7 +190,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField>
 					lCalendar.add(lField, keyEvent.getCode() == KeyCode.UP ? 1 : -1);
 					
 					// set it
-					getSkinnable().setValue(lCalendar);
+					getSkinnable().setCalendar(lCalendar);
 				}
 			}
 		});
@@ -236,7 +236,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField>
 		calendarPicker.setMode(CalendarPicker.Mode.SINGLE);
 		// bind our properties to the picker's 
 		Bindings.bindBidirectional(calendarPicker.localeProperty(), getSkinnable().localeProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
-		Bindings.bindBidirectional(calendarPicker.calendarProperty(), getSkinnable().valueProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
+		Bindings.bindBidirectional(calendarPicker.calendarProperty(), getSkinnable().calendarProperty()); // order is important, because the value of the first field is overwritten initially with the value of the last field
 		calendarPicker.calendarProperty().addListener(new ChangeListener<Calendar>()
 		{
 			@Override
@@ -270,7 +270,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField>
 			lText = lText.trim();
 			if (lText.length() == 0) 
 			{
-				getSkinnable().setValue(null);
+				getSkinnable().setCalendar(null);
 				return;
 			}
 			
@@ -290,55 +290,51 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField>
 				
 				// parse the delta
 				int lDelta = Integer.parseInt(lText);
-				Calendar lCalendar = (Calendar)getSkinnable().getValue().clone(); // TODO locale
+				Calendar lCalendar = (Calendar)getSkinnable().getCalendar().clone(); // TODO locale
 				lCalendar.add(lUnit, lDelta);
 				
 				// set the value
-				getSkinnable().setValue(lCalendar);
+				getSkinnable().setCalendar(lCalendar);
 			}
 			else if (lText.equals("#"))
 			{
 				// set the value
-				getSkinnable().setValue(Calendar.getInstance()); // TODO locale
+				getSkinnable().setCalendar(Calendar.getInstance()); // TODO locale
 			}
 			else
 			{
-				Calendar lCalendar = getSkinnable().getValue();
-				java.text.ParseException lParseException = null;
 				try
 				{
-					// parse using the formatter
-					Date lDate = getSkinnable().getDateFormat().parse( lText );
-					lCalendar = Calendar.getInstance(); // TODO: how to get the correct locale
-					lCalendar.setTime(lDate);
-				}
-				catch (java.text.ParseException e)
-				{	
-					// remember the exception					
-					lParseException = e;
-					
-					// the formatter failed, let's try the alternates
+					Calendar lCalendar = getSkinnable().getCalendar();
+					Date lDate = null;
+					// First we're going to try the parsers in the list.
+					// The user is free to decide to sequence here, if we would try the default first, that would not be the case.
 					for (DateFormat lDateFormat : getSkinnable().getDateFormats())
 					{
 						try
 						{
 							// parse using the formatter
-							Date lDate = lDateFormat.parse( lText );
-							lCalendar = Calendar.getInstance(); // TODO: how to get the correct locale
-							lCalendar.setTime(lDate);
-							lParseException = null; // parsing was succesful, clear the exception
+							lDate = lDateFormat.parse( lText );
 							break; // exit the for loop
 						}
-						catch (java.text.ParseException e2) {} // we can safely ignore this
+						catch (java.text.ParseException e2) {} // we can safely ignore this, since we will fall back to the default formatter in the end
 					}
+					if (lDate == null) 
+					{
+						// parse using the default formatter
+						lDate = getSkinnable().getDateFormat().parse( lText );
+					}
+					
+					// set the value (the parse with the default formatter either succeeded or threw an exception, skipping this code)
+					lCalendar = Calendar.getInstance(); // TODO: how to get the correct locale
+					lCalendar.setTime(lDate);
+					getSkinnable().setCalendar(lCalendar);
 				}
-				
-				// set the value
-				getSkinnable().setValue(lCalendar);
-				refreshValue();
-				
-				// rethrow initial exception if all parsing failed 
-				if (lParseException != null) throw lParseException;
+				finally
+				{
+					// always refresh
+					refreshValue();
+				}
 			}
 		}
 		catch (Throwable t) 
