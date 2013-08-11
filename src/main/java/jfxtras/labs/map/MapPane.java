@@ -28,6 +28,8 @@ import jfxtras.labs.map.render.MapOverlayable;
 import jfxtras.labs.map.render.MapPolygonable;
 import jfxtras.labs.map.render.Renderable;
 import jfxtras.labs.map.tile.TileSource;
+
+import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +53,6 @@ import jfxtras.labs.map.render.TileRenderer;
 import jfxtras.labs.map.tile.TileCacheable;
 import jfxtras.labs.map.tile.TileRepository;
 
-import static java.lang.Math.pow;
-
 /**
  * 
  * @author smithjel
@@ -71,6 +71,8 @@ public final class MapPane extends Pane implements MapControlable {
 	private static final String STYLE_LOC = "cursorLocation";
 
 	private TileRenderer tileRenderer;
+	
+	private MapEdgeVisibilityChecker mapEdgeVisibilityChecker;
 
 	private List<MapMarkable> mapMarkerList;
 
@@ -86,6 +88,9 @@ public final class MapPane extends Pane implements MapControlable {
 
 	// Current zoom level
 	private int zoom;
+	
+	//previous zoom level
+	private int previousZoom;
 
 	private Slider zoomSlider;
 
@@ -134,8 +139,6 @@ public final class MapPane extends Pane implements MapControlable {
 
 	private CoordinateStringFormater formater;
 
-	private int tilesCount;
-
 	public MapPane(TileSource ts) {
 		this(ts, START, START, 800, 600, INITIAL_ZOOM);
 	}
@@ -155,6 +158,7 @@ public final class MapPane extends Pane implements MapControlable {
 
 		TileCacheable tileCache = new TileRepository(tileSource);
 		tileRenderer = new TileRenderer(tileCache);
+		mapEdgeVisibilityChecker = new MapEdgeVisibilityChecker(tileRenderer);
 
 		mapMarkerList = new ArrayList<>();
 		mapPolygonList = new ArrayList<>();
@@ -501,24 +505,25 @@ public final class MapPane extends Pane implements MapControlable {
 
 	@Override
 	public void zoomOut(Point mapPoint) {
+		
 		setZoom(zoom - 1, mapPoint);
 	}
 	
 	@Override
-	public void setZoom(int zoom) {
+	public void setZoom(int nextZoom) {
 		Point mapPoint = new Point((int) (getMapWidth() / 2), (int) (getMapHeight() / 2));
-		setZoom(zoom, mapPoint);
+		setZoom(nextZoom, mapPoint);
 	}
 
-	public void setZoom(int zoom, Point mapPoint) {
-		if (zoom > getTileSource().getMaxZoom()
-				|| zoom < getTileSource().getMinZoom() || zoom == this.zoom) {
+	private void setZoom(int nextZoom, Point mapPoint) {
+		if (nextZoom > getTileSource().getMaxZoom()
+				|| nextZoom < getTileSource().getMinZoom() || nextZoom == this.zoom) {
 			return;
 		}
 		Coordinate zoomPos = getCoordinate(mapPoint);
 		
 		setDisplayPositionByLatLon(mapPoint, zoomPos.getLatitude(),
-				zoomPos.getLongitude(), zoom);
+				zoomPos.getLongitude(), nextZoom);
 		
 		centerMap();
 	}
@@ -527,33 +532,15 @@ public final class MapPane extends Pane implements MapControlable {
 	 * centers the map when necessary
 	 */
 	private void centerMap(){
-		if(zoom <= getTileSource().getMinZoom() && loadedTilesEqualsAvailable()){
+		if(zoom < previousZoom && isEdgeVisible()){
 			setDisplayPositionByLatLon(0,0);
         }
+		previousZoom = zoom;
 	}
 	
-	/**
-	 * Check if the map is within the boundaries of the window. 
-	 * 
-	 * @return true when the actual map is within the boundaries of the window
-	 */
-	//TODO use it for map moving
-	private boolean mapInBounds(){
-		Point[] bounds = tileRenderer.getBounds();
-		int w = getMapWidth();
-		int h = getMapHeight();
-		Point ul = bounds[0];
-		Point lr = bounds[1];
-		return ul.getX() >= 0 && ul.getY() >= 0 && lr.getX() <= w && lr.getY() <= h;
-	}
-	
-	/**
-	 * Check if the number of actual loaded tiles is equal to the available tile per zoom.
-	 * @return
-	 */
-	private boolean loadedTilesEqualsAvailable(){
-		double available = pow(2, zoom) * pow(2, zoom);
-		return (int)available == tilesCount;
+	private boolean isEdgeVisible() {
+		Dimension dim = new Dimension(getMapWidth(), getMapHeight());
+		return mapEdgeVisibilityChecker.isAnyVisible(dim);
 	}
 
 	protected void zoomChanged(int oldZoom) {
@@ -678,7 +665,7 @@ public final class MapPane extends Pane implements MapControlable {
 	protected boolean renderMap() {
 
 		boolean updated = false;
-		tilesCount = tileRenderer.prepareTiles(this);
+		int tilesCount = tileRenderer.prepareTiles(this);
 		
 		if (tilesCount > 0) {
 			tileRenderer.doRender(tilesGroup);
@@ -833,5 +820,11 @@ public final class MapPane extends Pane implements MapControlable {
 	@Override
 	public Point getCenter() {
 		return center;
+	}
+	
+	@Override
+	public boolean isMapMoveable(){
+		Dimension dim = new Dimension(getMapWidth(), getMapHeight());
+		return !mapEdgeVisibilityChecker.isAllVisible(dim);
 	}
 }

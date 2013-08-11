@@ -57,4 +57,10 @@ public interface MapControlable extends Zoomable{
 
     int getMapY();
     
+    /**
+     * This method should return <code>true</code> if the map can be moved otherwise false.
+     * @return
+     */
+    boolean isMapMoveable();
+    
 }

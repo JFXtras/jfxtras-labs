@@ -10,162 +10,162 @@ import javafx.scene.input.ScrollEvent;
 
 /**
  * This class adds mouse handling for a widget that displays tiles.
- *
+ * 
  * @author Mario Schroeder
  */
 public class TilesMouseHandler {
 
-    private MapControlable controlable;
-    
-    private Point lastDragPoint;
+	private MapControlable controlable;
 
-    private boolean adjusted;
+	private Point lastDragPoint;
 
-    public TilesMouseHandler(MapControlable controlable) {
-        this.controlable = controlable;
-    }
+	private boolean adjusted;
 
-    /**
-     * Sets that object, which publishers mouse events.
-     *
-     * @param tilesGroup
-     */
-    public void setEventPublisher(final Group tilesGroup) {
+	public TilesMouseHandler(MapControlable controlable) {
+		this.controlable = controlable;
+	}
 
-        tilesGroup.setOnScroll(new ScrollEventAdapter());
+	/**
+	 * Sets that object, which publishers mouse events.
+	 * 
+	 * @param tilesGroup
+	 */
+	public void setEventPublisher(final Group tilesGroup) {
 
-        tilesGroup.setOnMouseEntered(new MouseEnterAdapter(tilesGroup));
-        tilesGroup.setOnMouseExited(new MouseExitAdapter(tilesGroup));
-        tilesGroup.setOnMouseMoved(new MouseMovedAdapter());
-        tilesGroup.setOnMouseReleased(new MouseReleasedAdapter(tilesGroup));
-        tilesGroup.setOnMouseDragged(new MouseDraggedAdapter(tilesGroup));
-    }
+		tilesGroup.setOnScroll(new ScrollEventAdapter());
 
-    private void updateCursorLocationText(ScrollEvent me) {
+		tilesGroup.setOnMouseEntered(new MouseEnterAdapter(tilesGroup));
+		tilesGroup.setOnMouseExited(new MouseExitAdapter(tilesGroup));
+		tilesGroup.setOnMouseMoved(new MouseMovedAdapter());
+		tilesGroup.setOnMouseReleased(new MouseReleasedAdapter(tilesGroup));
+		tilesGroup.setOnMouseDragged(new MouseDraggedAdapter(tilesGroup));
+	}
 
-        updateCursorLocationText(me.getX(), me.getY());
-    }
+	private void updateCursorLocationText(ScrollEvent me) {
 
-    private void updateCursorLocationText(MouseEvent me) {
+		updateCursorLocationText(me.getX(), me.getY());
+	}
 
-        updateCursorLocationText(me.getX(), me.getY());
-    }
+	private void updateCursorLocationText(MouseEvent me) {
 
-    private void updateCursorLocationText(double x, double y) {
+		updateCursorLocationText(me.getX(), me.getY());
+	}
 
-        controlable.setCursorLocationText(x, y);
+	private void updateCursorLocationText(double x, double y) {
 
-        if (!adjusted) {
-            controlable.adjustCursorLocationText();
-            adjusted = true;
-        }
-    }
+		controlable.setCursorLocationText(x, y);
 
-    private void moveMap(MouseEvent me) {
-        moveMap(new Point((int) me.getX(), (int) me.getY()));
-    }
+		if (!adjusted) {
+			controlable.adjustCursorLocationText();
+			adjusted = true;
+		}
+	}
 
-    private void moveMap(Point p) {
-        if (lastDragPoint != null) {
-            int diffx = lastDragPoint.x - p.x;
-            int diffy = lastDragPoint.y - p.y;
-            controlable.moveMap(diffx, diffy);
-        }
-    }
+	private void moveMap(MouseEvent me) {
+		moveMap(new Point((int) me.getX(), (int) me.getY()));
+	}
 
-    private void setLastDragPoint(MouseEvent me) {
-        lastDragPoint = new Point((int) me.getX(), (int) me.getY());
-    }
+	private void moveMap(Point p) {
+		if (lastDragPoint != null && controlable.isMapMoveable()) {
+			int diffx = lastDragPoint.x - p.x;
+			int diffy = lastDragPoint.y - p.y;
+			controlable.moveMap(diffx, diffy);
+		}
+	}
 
-    private class ScrollEventAdapter implements EventHandler<ScrollEvent> {
+	private void setLastDragPoint(MouseEvent me) {
+		lastDragPoint = new Point((int) me.getX(), (int) me.getY());
+	}
 
-        @Override
-        public void handle(ScrollEvent se) {
-        	
-        	Point p = new Point((int) se.getX(), (int) se.getY());
-            if (se.getDeltaY() > 0) {
-                controlable.zoomIn(p);
-            } else {
-                controlable.zoomOut(p);
-            }
-            updateCursorLocationText(se);
-        }
-    }
+	private class ScrollEventAdapter implements EventHandler<ScrollEvent> {
 
-    private class MouseEnterAdapter implements EventHandler<MouseEvent> {
+		@Override
+		public void handle(ScrollEvent se) {
 
-        private Group group;
+			Point p = new Point((int) se.getX(), (int) se.getY());
+			if (se.getDeltaY() > 0) {
+				controlable.zoomIn(p);
+			} else {
+				controlable.zoomOut(p);
+			}
+			updateCursorLocationText(se);
+		}
+	}
 
-        MouseEnterAdapter(Group group) {
-            this.group = group;
-        }
+	private class MouseEnterAdapter implements EventHandler<MouseEvent> {
 
-        @Override
-        public void handle(MouseEvent e) {
-            group.setCursor(Cursor.CROSSHAIR);
-            updateCursorLocationText(e);
-        }
-    }
+		private Group group;
 
-    private static class MouseExitAdapter implements EventHandler<MouseEvent> {
+		MouseEnterAdapter(Group group) {
+			this.group = group;
+		}
 
-        private Group group;
+		@Override
+		public void handle(MouseEvent e) {
+			group.setCursor(Cursor.CROSSHAIR);
+			updateCursorLocationText(e);
+		}
+	}
 
-        MouseExitAdapter(Group group) {
-            this.group = group;
-        }
+	private static class MouseExitAdapter implements EventHandler<MouseEvent> {
 
-        @Override
-        public void handle(MouseEvent e) {
-            group.setCursor(Cursor.DEFAULT);
-        }
-    }
+		private Group group;
 
-    private class MouseMovedAdapter implements EventHandler<MouseEvent> {
+		MouseExitAdapter(Group group) {
+			this.group = group;
+		}
 
-        @Override
-        public void handle(MouseEvent me) {
-            if (me.isPrimaryButtonDown()) {
-                setLastDragPoint(me);
-            } else {
-                updateCursorLocationText(me);
-            }
+		@Override
+		public void handle(MouseEvent e) {
+			group.setCursor(Cursor.DEFAULT);
+		}
+	}
 
-        }
-    }
+	private class MouseMovedAdapter implements EventHandler<MouseEvent> {
 
-    private class MouseReleasedAdapter implements EventHandler<MouseEvent> {
+		@Override
+		public void handle(MouseEvent me) {
+			if (me.isPrimaryButtonDown()) {
+				setLastDragPoint(me);
+			} else {
+				updateCursorLocationText(me);
+			}
 
-        private Group tilesGroup;
+		}
+	}
 
-        MouseReleasedAdapter(Group tilesGroup) {
-            this.tilesGroup = tilesGroup;
-        }
+	private class MouseReleasedAdapter implements EventHandler<MouseEvent> {
 
-        @Override
-        public void handle(MouseEvent me) {
-            tilesGroup.setCursor(Cursor.CROSSHAIR);
-            moveMap(me);
-            lastDragPoint = null;
-        }
-    }
+		private Group tilesGroup;
 
-    private class MouseDraggedAdapter implements EventHandler<MouseEvent> {
+		MouseReleasedAdapter(Group tilesGroup) {
+			this.tilesGroup = tilesGroup;
+		}
 
-        private Group tilesGroup;
+		@Override
+		public void handle(MouseEvent me) {
+			tilesGroup.setCursor(Cursor.CROSSHAIR);
+			moveMap(me);
+			lastDragPoint = null;
+		}
+	}
 
-        MouseDraggedAdapter(Group tilesGroup) {
-            this.tilesGroup = tilesGroup;
-        }
+	private class MouseDraggedAdapter implements EventHandler<MouseEvent> {
 
-        @Override
-        public void handle(MouseEvent me) {
-            if (me.isPrimaryButtonDown()) {
-                tilesGroup.setCursor(Cursor.MOVE);
-                if (lastDragPoint == null) {
-                    setLastDragPoint(me);
-                }
-            }
-        }
-    }
+		private Group tilesGroup;
+
+		MouseDraggedAdapter(Group tilesGroup) {
+			this.tilesGroup = tilesGroup;
+		}
+
+		@Override
+		public void handle(MouseEvent me) {
+			if (me.isPrimaryButtonDown()) {
+				tilesGroup.setCursor(Cursor.MOVE);
+				if (lastDragPoint == null) {
+					setLastDragPoint(me);
+				}
+			}
+		}
+	}
 }

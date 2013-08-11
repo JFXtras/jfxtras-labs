@@ -46,7 +46,7 @@ public class TileRenderer implements TileRenderable {
 	private boolean tileGridVisible;
 
 	private List<TileImage> tileImages;
-	
+
 	private static final TileComparator TILE_COMPARATOR = new TileComparator();
 
 	public TileRenderer(TileCacheable tileCache) {
@@ -63,14 +63,17 @@ public class TileRenderer implements TileRenderable {
 
 	@Override
 	public Point[] getBounds() {
-		TileImage min = min(tileImages, TILE_COMPARATOR);
-		TileImage max = max(tileImages, TILE_COMPARATOR);
+		Point[] bounds = new Point[0];
+		if (!tileImages.isEmpty()) {
+			TileImage min = min(tileImages, TILE_COMPARATOR);
+			TileImage max = max(tileImages, TILE_COMPARATOR);
 
-		int tilesize = getTileSize();
-		Point[] bounds = new Point[2];
-		bounds[0] = new Point(min.getPosX(), min.getPosY());
-		bounds[1] = new Point(max.getPosX() + tilesize, max.getPosY()
-				+ tilesize);
+			int tilesize = getTileSize();
+			bounds = new Point[2];
+			bounds[0] = new Point(min.getPosX(), min.getPosY());
+			bounds[1] = new Point(max.getPosX() + tilesize, max.getPosY()
+					+ tilesize);
+		}
 		return bounds;
 	}
 
@@ -151,7 +154,7 @@ public class TileRenderer implements TileRenderable {
 
 	@Override
 	public void doRender(Group tilesGroup) {
-		
+
 		int tilesize = getTileSize();
 
 		tilesGroup.getChildren().clear();
@@ -255,8 +258,8 @@ public class TileRenderer implements TileRenderable {
 			this.tileY = tileY;
 		}
 	}
-	
-	private static class TileComparator implements Comparator<TileImage>{
+
+	private static class TileComparator implements Comparator<TileImage> {
 
 		@Override
 		public int compare(TileImage left, TileImage right) {
@@ -265,7 +268,7 @@ public class TileRenderer implements TileRenderable {
 							: (left.tileY < right.tileY) ? -1
 									: (left.tileY > right.tileY) ? +1 : 0;
 		}
-		
+
 	}
 
 }
