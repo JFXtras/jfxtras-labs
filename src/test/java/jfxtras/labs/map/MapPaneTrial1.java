@@ -90,6 +90,7 @@ public class MapPaneTrial1 extends Application {
 
         final MapPane map = new MapPane(factory.create(osmType));
         map.setTileGridVisible(true);
+        map.setZoom(6);
 
         final String radarImgUrl = "http://radar.weather.gov/ridge/RadarImg/N0R/NKX_N0R_0.gif";
 
