@@ -17,7 +17,7 @@ public class TilesMouseHandler {
 
 	private MapControlable controlable;
 
-	private Point lastDragPoint;
+	private Point dragStartPoint;
 
 	private boolean adjusted;
 
@@ -66,15 +66,19 @@ public class TilesMouseHandler {
 	}
 
 	private void moveMap(Point p) {
-		if (lastDragPoint != null && controlable.isMapMoveable()) {
-			int diffx = lastDragPoint.x - p.x;
-			int diffy = lastDragPoint.y - p.y;
+		if (dragStartPoint != null) {
+			int diffx = dragStartPoint.x - p.x;
+			int diffy = dragStartPoint.y - p.y;
 			controlable.moveMap(diffx, diffy);
 		}
 	}
 
-	private void setLastDragPoint(MouseEvent me) {
-		lastDragPoint = new Point((int) me.getX(), (int) me.getY());
+	private void setDragStartPoint(MouseEvent me) {
+		dragStartPoint = new Point((int) me.getX(), (int) me.getY());
+	}
+
+	private boolean isMoveable() {
+		return controlable.isMapMoveable();
 	}
 
 	private class ScrollEventAdapter implements EventHandler<ScrollEvent> {
@@ -126,7 +130,7 @@ public class TilesMouseHandler {
 		@Override
 		public void handle(MouseEvent me) {
 			if (me.isPrimaryButtonDown()) {
-				setLastDragPoint(me);
+				setDragStartPoint(me);
 			} else {
 				updateCursorLocationText(me);
 			}
@@ -145,8 +149,10 @@ public class TilesMouseHandler {
 		@Override
 		public void handle(MouseEvent me) {
 			tilesGroup.setCursor(Cursor.CROSSHAIR);
-			moveMap(me);
-			lastDragPoint = null;
+			if (isMoveable()) {
+				moveMap(me);
+				dragStartPoint = null;
+			}
 		}
 	}
 
@@ -160,10 +166,10 @@ public class TilesMouseHandler {
 
 		@Override
 		public void handle(MouseEvent me) {
-			if (me.isPrimaryButtonDown()) {
+			if (me.isPrimaryButtonDown() && isMoveable()) {
 				tilesGroup.setCursor(Cursor.MOVE);
-				if (lastDragPoint == null) {
-					setLastDragPoint(me);
+				if (dragStartPoint == null) {
+					setDragStartPoint(me);
 				}
 			}
 		}

@@ -328,13 +328,13 @@ public final class MapPane extends Pane implements MapControlable {
 		setDisplayPosition(mapPoint, x, y, zoom);
 	}
 
-	public void setDisplayPosition(int x, int y, int zoom) {
+	private void setDisplayPosition(int x, int y, int zoom) {
 		Point point = new Point((int) (getMapWidth() / 2),
 				(int) (getMapHeight() / 2));
 		setDisplayPosition(point, x, y, zoom);
 	}
 
-	public void setDisplayPosition(Point mapPoint, int x, int y, int zoom) {
+	private void setDisplayPosition(Point mapPoint, int x, int y, int zoom) {
 
 		if (zoom >= getTileSource().getMinZoom()
 				&& zoom <= getTileSource().getMaxZoom()) {
@@ -540,7 +540,7 @@ public final class MapPane extends Pane implements MapControlable {
 	
 	private boolean isEdgeVisible() {
 		Dimension dim = new Dimension(getMapWidth(), getMapHeight());
-		return mapEdgeVisibilityChecker.isAnyVisible(dim);
+		return mapEdgeVisibilityChecker.isAllVisible(dim);
 	}
 
 	protected void zoomChanged(int oldZoom) {
