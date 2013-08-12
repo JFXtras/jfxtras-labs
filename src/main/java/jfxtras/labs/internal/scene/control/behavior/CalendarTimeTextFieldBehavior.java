@@ -29,6 +29,8 @@ package jfxtras.labs.internal.scene.control.behavior;
 import jfxtras.labs.scene.control.CalendarTimeTextField;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.behavior.KeyBinding;
+import java.util.ArrayList;
 
 /**
  * 
@@ -46,7 +48,7 @@ public class CalendarTimeTextFieldBehavior extends BehaviorBase<CalendarTimeText
 	 */
 	public CalendarTimeTextFieldBehavior(CalendarTimeTextField control)
 	{
-		super(control);
+		super(control,new ArrayList<KeyBinding>());
 		construct();
 	}
 	

@@ -28,6 +28,8 @@
 package jfxtras.labs.internal.scene.control.behavior;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.behavior.KeyBinding;
+import java.util.ArrayList;
 import jfxtras.labs.scene.control.gauge.XYControl;
 
 
@@ -41,7 +43,7 @@ public class XYControlBehavior extends BehaviorBase<XYControl> {
     private XYControl control;
 
     public XYControlBehavior(final XYControl CONTROL) {
-        super(CONTROL);
+        super(CONTROL,new ArrayList<KeyBinding>());
         control = CONTROL;
     }
 }

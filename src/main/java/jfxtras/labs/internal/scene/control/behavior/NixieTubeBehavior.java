@@ -28,6 +28,8 @@
 package jfxtras.labs.internal.scene.control.behavior;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.behavior.KeyBinding;
+import java.util.ArrayList;
 import jfxtras.labs.scene.control.gauge.NixieTube;
 
 
@@ -41,6 +43,6 @@ public class NixieTubeBehavior extends BehaviorBase<NixieTube> {
 
     // ******************** Constructors **************************************
     public NixieTubeBehavior(final NixieTube CONTROL) {
-        super(CONTROL);
+        super(CONTROL,new ArrayList<KeyBinding>());
     }
 }

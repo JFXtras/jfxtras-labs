@@ -29,6 +29,8 @@ package jfxtras.labs.internal.scene.control.behavior;
 import jfxtras.labs.scene.control.grid.GridCell;
 
 import com.sun.javafx.scene.control.behavior.CellBehaviorBase;
+import com.sun.javafx.scene.control.behavior.KeyBinding;
+import java.util.ArrayList;
 
 /**
  * 
@@ -37,6 +39,6 @@ import com.sun.javafx.scene.control.behavior.CellBehaviorBase;
  */
 public class GridCellBehavior<T> extends CellBehaviorBase<GridCell<T>> {
 	public GridCellBehavior(GridCell<T> control) {
-		super(control);
+		super(control,new ArrayList<KeyBinding>());
 	}
 }

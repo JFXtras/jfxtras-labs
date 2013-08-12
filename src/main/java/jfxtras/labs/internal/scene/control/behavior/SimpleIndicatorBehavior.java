@@ -28,6 +28,8 @@
 package jfxtras.labs.internal.scene.control.behavior;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.behavior.KeyBinding;
+import java.util.ArrayList;
 import jfxtras.labs.scene.control.gauge.SimpleIndicator;
 
 
@@ -40,6 +42,6 @@ import jfxtras.labs.scene.control.gauge.SimpleIndicator;
 public class SimpleIndicatorBehavior extends BehaviorBase<SimpleIndicator> {
 
     public SimpleIndicatorBehavior(final SimpleIndicator CONTROL) {
-        super(CONTROL);
+        super(CONTROL,new ArrayList<KeyBinding>());
     }
 }
