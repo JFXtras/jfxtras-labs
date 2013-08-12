@@ -27,6 +27,7 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.behavior.KeyBinding;
 import javafx.scene.control.SkinBase;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +76,7 @@ public class BreadcrumbItemSkin extends com.sun.javafx.scene.control.skin.Behavi
     }
     
     public BreadcrumbItemSkin(BreadcrumbItem c) {
-        super(c, new BehaviorBase<BreadcrumbItem>(c));
+        super(c, new BehaviorBase<BreadcrumbItem>(c,new ArrayList<KeyBinding>()));
 
         HBox box = new HBox();
         

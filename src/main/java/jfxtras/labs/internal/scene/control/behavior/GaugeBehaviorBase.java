@@ -28,6 +28,8 @@
 package jfxtras.labs.internal.scene.control.behavior;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.behavior.KeyBinding;
+import java.util.ArrayList;
 import jfxtras.labs.scene.control.gauge.Gauge;
 import javafx.scene.input.MouseEvent;
 
@@ -42,7 +44,7 @@ public class GaugeBehaviorBase<C extends Gauge> extends BehaviorBase<C> {
 
     // ******************** Constructors **************************************
     public GaugeBehaviorBase(final C CONTROL) {
-        super(CONTROL);
+        super(CONTROL,new ArrayList<KeyBinding>());
     }
 
 

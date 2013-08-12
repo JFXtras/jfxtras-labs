@@ -28,6 +28,8 @@
 package jfxtras.labs.internal.scene.control.behavior;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.behavior.KeyBinding;
+import java.util.ArrayList;
 import jfxtras.labs.scene.control.gauge.TrafficLight;
 
 
@@ -40,6 +42,6 @@ import jfxtras.labs.scene.control.gauge.TrafficLight;
 public class TrafficLightBehavior extends BehaviorBase<TrafficLight> {
 
     public TrafficLightBehavior(final TrafficLight CONTROL) {
-        super(CONTROL);
+        super(CONTROL,new ArrayList<KeyBinding>());
     }
 }

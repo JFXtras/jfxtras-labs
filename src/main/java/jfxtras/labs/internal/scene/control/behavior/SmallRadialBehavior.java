@@ -27,6 +27,8 @@
 package jfxtras.labs.internal.scene.control.behavior;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.behavior.KeyBinding;
+import java.util.ArrayList;
 import jfxtras.labs.scene.control.gauge.SmallRadial;
 
 
@@ -40,6 +42,6 @@ import jfxtras.labs.scene.control.gauge.SmallRadial;
 public class SmallRadialBehavior extends BehaviorBase<SmallRadial> {
 
     public SmallRadialBehavior(final SmallRadial CONTROL) {
-        super(CONTROL);
+        super(CONTROL,new ArrayList<KeyBinding>());
     }
 }

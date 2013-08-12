@@ -29,6 +29,8 @@ package jfxtras.labs.internal.scene.control.behavior;
 import jfxtras.labs.scene.control.Agenda;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.behavior.KeyBinding;
+import java.util.ArrayList;
 
 /**
  * 
@@ -46,6 +48,6 @@ public class AgendaBehavior extends BehaviorBase<Agenda>
 	 */
 	public AgendaBehavior(Agenda control)
 	{
-		super(control);
+		super(control, new ArrayList<KeyBinding>());
 	}
 }

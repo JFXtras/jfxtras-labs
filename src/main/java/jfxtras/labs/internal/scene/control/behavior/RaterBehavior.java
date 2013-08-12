@@ -28,6 +28,8 @@
 package jfxtras.labs.internal.scene.control.behavior;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.behavior.KeyBinding;
+import java.util.ArrayList;
 import javafx.scene.input.MouseEvent;
 import jfxtras.labs.internal.scene.control.skin.RaterSkin;
 import jfxtras.labs.scene.control.gauge.Rater;
@@ -42,7 +44,7 @@ import jfxtras.labs.scene.control.gauge.Rater;
 public class RaterBehavior extends BehaviorBase<Rater> {
 
     public RaterBehavior(final Rater CONTROL) {
-        super(CONTROL);
+        super(CONTROL,new ArrayList<KeyBinding>());
     }
 
     @Override public void mousePressed(final MouseEvent EVENT) {

@@ -28,6 +28,8 @@
 package jfxtras.labs.internal.scene.control.behavior;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.behavior.KeyBinding;
+import java.util.ArrayList;
 import javafx.scene.input.MouseEvent;
 import jfxtras.labs.internal.scene.control.skin.SplitFlapSkin;
 import jfxtras.labs.scene.control.gauge.SplitFlap;
@@ -42,6 +44,6 @@ import jfxtras.labs.scene.control.gauge.SplitFlap;
 public class SplitFlapBehavior extends BehaviorBase<SplitFlap> {
 
     public SplitFlapBehavior(final SplitFlap CONTROL) {
-        super(CONTROL);
+        super(CONTROL,new ArrayList<KeyBinding>());
     }
 }
