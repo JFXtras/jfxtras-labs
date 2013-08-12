@@ -29,6 +29,8 @@ package jfxtras.labs.internal.scene.control.behavior;
 import jfxtras.labs.scene.control.CalendarPicker;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.behavior.KeyBinding;
+import java.util.ArrayList;
 
 /**
  * 
@@ -46,6 +48,6 @@ public class CalendarPickerBehavior extends BehaviorBase<CalendarPicker>
 	 */
 	public CalendarPickerBehavior(CalendarPicker control)
 	{
-		super(control);
+		super(control,new ArrayList<KeyBinding>());
 	}
 }

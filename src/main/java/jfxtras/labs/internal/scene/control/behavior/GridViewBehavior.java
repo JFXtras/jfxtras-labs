@@ -29,6 +29,8 @@ package jfxtras.labs.internal.scene.control.behavior;
 import jfxtras.labs.scene.control.grid.GridView;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.behavior.KeyBinding;
+import java.util.ArrayList;
 
 /**
  * 
@@ -37,6 +39,6 @@ import com.sun.javafx.scene.control.behavior.BehaviorBase;
  */
 public class GridViewBehavior<T> extends BehaviorBase<GridView<T>> {
     public GridViewBehavior(GridView<T> control) {
-        super(control);
+        super(control,new ArrayList<KeyBinding>());
     }
 }

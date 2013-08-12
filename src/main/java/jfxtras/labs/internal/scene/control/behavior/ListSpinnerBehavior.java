@@ -53,7 +53,7 @@ public class ListSpinnerBehavior<T> extends BehaviorBase<ListSpinner<T>>
 	 */
 	public ListSpinnerBehavior(ListSpinner<T> control)
 	{
-		super(control);
+		super(control,KEY_BINDINGS);
 		construct();
 	}
 	
@@ -146,11 +146,6 @@ public class ListSpinnerBehavior<T> extends BehaviorBase<ListSpinner<T>>
 		KEY_BINDINGS.add(new KeyBinding(KeyCode.LEFT, EVENT_PREVIOUS));
 		KEY_BINDINGS.add(new KeyBinding(KeyCode.RIGHT, EVENT_NEXT));
 		KEY_BINDINGS.addAll(TRAVERSAL_BINDINGS);
-	}
-	
-	@Override protected List<KeyBinding> createKeyBindings() 
-	{		
-		return KEY_BINDINGS;
 	}
 	
 	@Override protected void callAction(String name) {

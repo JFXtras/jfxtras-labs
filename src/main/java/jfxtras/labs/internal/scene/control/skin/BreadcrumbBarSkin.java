@@ -27,7 +27,8 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
-import javafx.scene.control.SkinBase;
+import com.sun.javafx.scene.control.behavior.KeyBinding;
+import java.util.ArrayList;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ListChangeListener.Change;
 import javafx.scene.layout.HBox;
@@ -43,7 +44,7 @@ public class BreadcrumbBarSkin extends com.sun.javafx.scene.control.skin.Behavio
     private HBox itemsBox = new HBox();
 
     public BreadcrumbBarSkin(BreadcrumbBar c) {
-        super(c, new BehaviorBase<BreadcrumbBar>(c));
+        super(c, new BehaviorBase<BreadcrumbBar>(c,new ArrayList<KeyBinding>()));
 
         c.itemsProperty().get().addListener(new ListChangeListener<BreadcrumbItem>() {
             @Override
@@ -51,7 +52,7 @@ public class BreadcrumbBarSkin extends com.sun.javafx.scene.control.skin.Behavio
                 while (c.next()) {
                     if (c.wasRemoved()) {
                         itemsBox.getChildren().removeAll(c.getRemoved());
-                    } else if(c.wasAdded()) {
+                    } else if (c.wasAdded()) {
                         itemsBox.getChildren().addAll(c.getAddedSubList());
                     }
                 }
