@@ -73,16 +73,16 @@ public final class MapPane extends Pane implements MapTileable {
 	private static final String STYLE_LOC = "cursorLocation";
 
 	private TileRenderer tileRenderer;
-	
+
 	private MapEdgeVisibilityChecker mapEdgeVisibilityChecker;
 
-	private List<MapMarkable> mapMarkerList;
+	private List<MapMarkable> mapMarkerList = new ArrayList<>();
 
-	private List<MapPolygonable> mapPolygonList;
+	private List<MapPolygonable> mapPolygonList = new ArrayList<>();
 
-	private List<MapLineable> mapLineList;
+	private List<MapLineable> mapLineList = new ArrayList<>();
 
-	private List<MapOverlayable> mapOverlayList;
+	private List<MapOverlayable> mapOverlayList = new ArrayList<>();
 
 	// X&Y position of the center of this map on the world
 	// in screen pixels for the current zoom level.
@@ -91,7 +91,7 @@ public final class MapPane extends Pane implements MapTileable {
 	// Current zoom level
 	private int zoom;
 	
-	//previous zoom level
+	// previous zoom level
 	private int previousZoom;
 
 	private Slider zoomSlider;
@@ -127,9 +127,10 @@ public final class MapPane extends Pane implements MapTileable {
 	private SimpleBooleanProperty showZoomControls = new SimpleBooleanProperty(
 			true);
 
-	private SimpleBooleanProperty mapMarkersVisible;
+	private SimpleBooleanProperty mapMarkersVisible = new SimpleBooleanProperty(
+			true);;
 
-	private boolean cursorLocationVisible;
+	private boolean cursorLocationVisible = true;
 
 	private SimpleIntegerProperty mapY;
 
@@ -148,32 +149,17 @@ public final class MapPane extends Pane implements MapTileable {
 	public MapPane(TileSource tileSource, int x, int y, int width, int height,
 			int zoom) {
 		this.zoom = zoom;
-		this.cursorLocationVisible = true;
+		formater = new CoordinateStringFormater();
 
 		tilesGroup = new Group();
-		TilesMouseHandler handler = new TilesMouseHandler(this);
-		handler.setEventPublisher(tilesGroup);
-
-		buildMapBounds(x, y);
-
-		mapMarkersVisible = new SimpleBooleanProperty(true);
 
 		TileCacheable tileCache = new TileRepository(tileSource);
 		tileRenderer = new TileRenderer(tileCache);
 		mapEdgeVisibilityChecker = new MapEdgeVisibilityChecker(tileRenderer);
 
-		mapMarkerList = new ArrayList<>();
-		mapPolygonList = new ArrayList<>();
-		mapLineList = new ArrayList<>();
-		mapOverlayList = new ArrayList<>();
-
-		buildZoomControls();
-
 		int tileSize = tileSource.getTileSize();
 		setMinSize(tileSize, tileSize);
 		setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-
-		setDisplayPositionByLatLon(START, START);
 
 		DropShadow ds = new DropShadow();
 		ds.setOffsetY(3.0f);
@@ -183,6 +169,9 @@ public final class MapPane extends Pane implements MapTileable {
 		cursorLocationText.setEffect(ds);
 		cursorLocationText.setFontSmoothingType(FontSmoothingType.LCD);
 
+		buildMapBounds(x, y);
+		buildZoomControls();
+		
 		clipMask.setFill(Color.WHITE);
 		tilesGroup.setClip(clipMask);
 		getChildren().add(tilesGroup);
@@ -194,8 +183,14 @@ public final class MapPane extends Pane implements MapTileable {
 		setPrefSize(width, height);
 		setMinWidth(width);
 		setMinHeight(height);
+		
+		centerMap();
 
-		formater = new CoordinateStringFormater();
+		setTilesMouseHandler(new TilesMouseHandler());
+	}
+
+	public final void setTilesMouseHandler(TilesMouseHandler handler) {
+		handler.setEventPublisher(this);
 	}
 
 	private void addResizeListeners() {
@@ -277,7 +272,6 @@ public final class MapPane extends Pane implements MapTileable {
 		}
 	}
 
-
 	@Override
 	public void adjustCursorLocationText() {
 		double strwidth = cursorLocationText.getBoundsInParent().getWidth();
@@ -321,14 +315,13 @@ public final class MapPane extends Pane implements MapTileable {
 	public void setDisplayPositionByLatLon(double lat, double lon, int zoom) {
 		setDisplayPositionByLatLon(createMapCenterPoint(), lat, lon, zoom);
 	}
-	
+
 	private void setDisplayPosition(int x, int y, int zoom) {
 		setDisplayPosition(createMapCenterPoint(), x, y, zoom);
 	}
 
 	private Point createMapCenterPoint() {
-		return new Point((int) (getMapWidth() / 2),
-				(int) (getMapHeight() / 2));
+		return new Point((int) (getMapWidth() / 2), (int) (getMapHeight() / 2));
 	}
 
 	public void setDisplayPositionByLatLon(Point mapPoint, double lat,
@@ -345,7 +338,7 @@ public final class MapPane extends Pane implements MapTileable {
 
 			// Get the plain tile number
 			moveCenter(mapPoint, x, y);
-			
+
 			try {
 				int oldZoom = this.zoom;
 				this.zoom = zoom;
@@ -432,11 +425,22 @@ public final class MapPane extends Pane implements MapTileable {
 
 	@Override
 	public void moveMap(int x, int y) {
-		
-		//TODO check if the next location of the map is within the boundaries.
+
 		center.x += x;
 		center.y += y;
 		renderControl();
+		
+		if(isEdgeVisible()){
+			centerMap();
+		}
+	}
+	
+	/**
+	 * centers the map when necessary
+	 */
+	public final void centerMap() {
+
+		setDisplayPositionByLatLon(START, START);
 	}
 
 	@Override
@@ -461,10 +465,10 @@ public final class MapPane extends Pane implements MapTileable {
 
 	@Override
 	public void zoomOut(Point mapPoint) {
-		
+
 		setZoom(zoom - 1, mapPoint);
 	}
-	
+
 	@Override
 	public void setZoom(int nextZoom) {
 		Point mapPoint = createMapCenterPoint();
@@ -473,27 +477,17 @@ public final class MapPane extends Pane implements MapTileable {
 
 	private void setZoom(int nextZoom, Point mapPoint) {
 		if (nextZoom > getTileSource().getMaxZoom()
-				|| nextZoom < getTileSource().getMinZoom() || nextZoom == this.zoom) {
+				|| nextZoom < getTileSource().getMinZoom()
+				|| nextZoom == this.zoom) {
 			return;
 		}
 		Coordinate zoomPos = getCoordinate(mapPoint);
-		
+
 		setDisplayPositionByLatLon(mapPoint, zoomPos.getLatitude(),
 				zoomPos.getLongitude(), nextZoom);
-		
-		centerMap();
-	}
-	
-	private Coordinate getCoordinate(Point p) {
-		return toCoordinate(p, this);
-	}
-	
-	/**
-	 * centers the map when necessary
-	 */
-	private void centerMap(){
+
 		if(zoom < previousZoom && isEdgeVisible()){
-			setDisplayPositionByLatLon(0,0);
+			centerMap();
         }
 		previousZoom = zoom;
 	}
@@ -501,6 +495,10 @@ public final class MapPane extends Pane implements MapTileable {
 	private boolean isEdgeVisible() {
 		Dimension dim = new Dimension(getMapWidth(), getMapHeight());
 		return mapEdgeVisibilityChecker.isAllVisible(dim);
+	}
+
+	private Coordinate getCoordinate(Point p) {
+		return toCoordinate(p, this);
 	}
 
 	protected void zoomChanged(int oldZoom) {
@@ -626,15 +624,15 @@ public final class MapPane extends Pane implements MapTileable {
 
 		boolean updated = false;
 		int tilesCount = tileRenderer.prepareTiles(this);
-		
+
 		if (tilesCount > 0) {
 			tileRenderer.doRender(tilesGroup);
 			updated = true;
 		}
-		
+
 		return updated;
 	}
-	
+
 	protected void renderOverlays() {
 		for (MapOverlayable overlay : mapOverlayList) {
 			overlay.render(this);
@@ -691,7 +689,7 @@ public final class MapPane extends Pane implements MapTileable {
 	}
 
 	@Override
-	public int getMapWidth() {		
+	public int getMapWidth() {
 		return mapWidth.get();
 	}
 
@@ -781,9 +779,9 @@ public final class MapPane extends Pane implements MapTileable {
 	public Point getCenter() {
 		return center;
 	}
-	
+
 	@Override
-	public boolean isMapMoveable(){
+	public boolean isMapMoveable() {
 		Dimension dim = new Dimension(getMapWidth(), getMapHeight());
 		return !mapEdgeVisibilityChecker.isAllVisible(dim);
 	}

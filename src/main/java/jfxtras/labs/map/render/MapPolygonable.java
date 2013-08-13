@@ -23,6 +23,7 @@ package jfxtras.labs.map.render;
 
 import java.util.List;
 import javafx.scene.paint.Color;
+import jfxtras.labs.map.Coordinate;
 
 public interface MapPolygonable extends Renderable{
     
@@ -31,7 +32,7 @@ public interface MapPolygonable extends Renderable{
      * 
      * @return Latitude/Longitude pairs
      */
-    public List getCoordinates();
+    public List<Coordinate> getCoordinates();
     
     public Color getOutlineColor();
     

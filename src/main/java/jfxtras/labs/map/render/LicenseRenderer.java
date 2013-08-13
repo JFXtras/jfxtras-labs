@@ -17,7 +17,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import jfxtras.labs.map.Coordinate;
-import jfxtras.labs.map.MapControlable;
 import jfxtras.labs.map.MapTileable;
 import jfxtras.labs.map.tile.TileSource;
 

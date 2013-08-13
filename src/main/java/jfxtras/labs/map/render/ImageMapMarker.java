@@ -25,7 +25,6 @@ import java.awt.Point;
 import java.util.Collections;
 import java.util.List;
 
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Light.Distant;

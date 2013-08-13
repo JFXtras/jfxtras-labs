@@ -15,25 +15,26 @@ import javafx.scene.input.ScrollEvent;
  */
 public class TilesMouseHandler {
 
-	private CursorLocationable controlable;
+	private MapTileable map;
 
 	private Point dragStartPoint;
 
 	private boolean adjusted;
 
-	public TilesMouseHandler(CursorLocationable controlable) {
-		this.controlable = controlable;
-	}
+	
 
 	/**
 	 * Sets that object, which publishers mouse events.
 	 * 
 	 * @param tilesGroup
 	 */
-	public void setEventPublisher(final Group tilesGroup) {
+	public void setEventPublisher(MapTileable map) {
+		this.map = map;
+		addListeners(map.getTilesGroup());
+	}
 
+	protected void addListeners(Group tilesGroup) {
 		tilesGroup.setOnScroll(new ScrollEventAdapter());
-
 		tilesGroup.setOnMouseEntered(new MouseEnterAdapter(tilesGroup));
 		tilesGroup.setOnMouseExited(new MouseExitAdapter(tilesGroup));
 		tilesGroup.setOnMouseMoved(new MouseMovedAdapter());
@@ -53,10 +54,10 @@ public class TilesMouseHandler {
 
 	private void updateCursorLocationText(double x, double y) {
 
-		controlable.setCursorLocationText(x, y);
+		map.setCursorLocationText(x, y);
 
 		if (!adjusted) {
-			controlable.adjustCursorLocationText();
+			map.adjustCursorLocationText();
 			adjusted = true;
 		}
 	}
@@ -69,7 +70,7 @@ public class TilesMouseHandler {
 		if (dragStartPoint != null) {
 			int diffx = dragStartPoint.x - p.x;
 			int diffy = dragStartPoint.y - p.y;
-			controlable.moveMap(diffx, diffy);
+			map.moveMap(diffx, diffy);
 		}
 	}
 
@@ -78,7 +79,7 @@ public class TilesMouseHandler {
 	}
 
 	private boolean isMoveable() {
-		return controlable.isMapMoveable();
+		return map.isMapMoveable();
 	}
 
 	private class ScrollEventAdapter implements EventHandler<ScrollEvent> {
@@ -88,9 +89,9 @@ public class TilesMouseHandler {
 
 			Point p = new Point((int) se.getX(), (int) se.getY());
 			if (se.getDeltaY() > 0) {
-				controlable.zoomIn(p);
+				map.zoomIn(p);
 			} else {
-				controlable.zoomOut(p);
+				map.zoomOut(p);
 			}
 			updateCursorLocationText(se);
 		}
