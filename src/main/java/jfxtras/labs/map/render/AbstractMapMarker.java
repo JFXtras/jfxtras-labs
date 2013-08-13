@@ -1,5 +1,6 @@
 package jfxtras.labs.map.render;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.util.List;
 
@@ -9,7 +10,11 @@ import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 
+import jfxtras.labs.map.Coordinate;
 import jfxtras.labs.map.MapControlable;
+import jfxtras.labs.map.MapTileable;
+
+import static jfxtras.labs.map.CoordinatesConverter.*;
 
 /**
  *
@@ -42,9 +47,9 @@ abstract class AbstractMapMarker implements MapMarkable {
     }
 
     @Override
-    public void render(MapControlable mapController) {
+    public void render(MapTileable mapController) {
         
-        Point postion = mapController.getMapPoint(lat, lon, true);
+        Point postion = getPoint(mapController);
         if(postion != null){
             Group tilesGroup = mapController.getTilesGroup();
             ObservableList<Node> children = tilesGroup.getChildren();
@@ -55,6 +60,14 @@ abstract class AbstractMapMarker implements MapMarkable {
 				}
 			}
         }
+    }
+    
+    private Point getPoint(MapControlable mapController){
+    	Dimension dim = new Dimension(mapController.getMapWidth(), mapController.getMapHeight());
+    	Point center = mapController.getCenter();
+    	int zoom = mapController.getZoom();
+    	Coordinate coordinate = new Coordinate(lat, lon);
+    	return toMapPoint(coordinate, center, dim, zoom);
     }
     
     abstract List<? extends Node> createChildren(Point position);

@@ -53,12 +53,14 @@ import jfxtras.labs.map.render.TileRenderer;
 import jfxtras.labs.map.tile.TileCacheable;
 import jfxtras.labs.map.tile.TileRepository;
 
+import static jfxtras.labs.map.CoordinatesConverter.*;
+
 /**
  * 
  * @author smithjel
  * @author Mario Schroeder
  */
-public final class MapPane extends Pane implements MapControlable {
+public final class MapPane extends Pane implements MapTileable {
 
 	private static final double ZOOM_DIFF = .01;
 
@@ -270,10 +272,11 @@ public final class MapPane extends Pane implements MapControlable {
 	@Override
 	public void setCursorLocationText(double x, double y) {
 		if (cursorLocationVisible) {
-			Coordinate coord = getCoordinate((int) x, (int) y);
+			Coordinate coord = getCoordinate(new Point((int) x, (int) y));
 			cursorLocationText.setText(formater.format(coord));
 		}
 	}
+
 
 	@Override
 	public void adjustCursorLocationText() {
@@ -316,9 +319,16 @@ public final class MapPane extends Pane implements MapControlable {
 	}
 
 	public void setDisplayPositionByLatLon(double lat, double lon, int zoom) {
-		Point point = new Point((int) (getMapWidth() / 2),
+		setDisplayPositionByLatLon(createMapCenterPoint(), lat, lon, zoom);
+	}
+	
+	private void setDisplayPosition(int x, int y, int zoom) {
+		setDisplayPosition(createMapCenterPoint(), x, y, zoom);
+	}
+
+	private Point createMapCenterPoint() {
+		return new Point((int) (getMapWidth() / 2),
 				(int) (getMapHeight() / 2));
-		setDisplayPositionByLatLon(point, lat, lon, zoom);
 	}
 
 	public void setDisplayPositionByLatLon(Point mapPoint, double lat,
@@ -328,16 +338,10 @@ public final class MapPane extends Pane implements MapControlable {
 		setDisplayPosition(mapPoint, x, y, zoom);
 	}
 
-	private void setDisplayPosition(int x, int y, int zoom) {
-		Point point = new Point((int) (getMapWidth() / 2),
-				(int) (getMapHeight() / 2));
-		setDisplayPosition(point, x, y, zoom);
-	}
-
 	private void setDisplayPosition(Point mapPoint, int x, int y, int zoom) {
 
-		if (zoom >= getTileSource().getMinZoom()
-				&& zoom <= getTileSource().getMaxZoom()) {
+		if (zoom >= tileRenderer.getTileSource().getMinZoom()
+				&& zoom <= tileRenderer.getTileSource().getMaxZoom()) {
 
 			// Get the plain tile number
 			moveCenter(mapPoint, x, y);
@@ -426,54 +430,6 @@ public final class MapPane extends Pane implements MapControlable {
 		}
 	}
 
-	/**
-	 * Calculates the latitude/longitude coordinate of the center of the
-	 * currently displayed map area.
-	 * 
-	 */
-	public Coordinate getCenterCoordinate() {
-		double lon = Mercator.xToLon(center.x, zoom);
-		double lat = Mercator.yToLat(center.y, zoom);
-		return new Coordinate(lat, lon);
-	}
-
-	// Converts the relative pixel coordinate (regarding the top left corner of
-	// the displayed map) into a latitude / longitude coordinate
-	public Coordinate getCoordinate(Point mapPoint) {
-		return getCoordinate(mapPoint.x, mapPoint.y);
-	}
-
-	@Override
-	public Coordinate getCoordinate(int mapPointX, int mapPointY) {
-		int x = (int) (center.x + mapPointX - getMapWidth() / 2);
-		int y = (int) (center.y + mapPointY - getMapHeight() / 2);
-		double lon = Mercator.xToLon(x, zoom);
-		double lat = Mercator.yToLat(y, zoom);
-		return new Coordinate(lat, lon);
-	}
-
-	// Calculates the position on the map of a given coordinate
-	@Override
-	public Point getMapPoint(double lat, double lon, boolean checkOutside) {
-		int x = Mercator.lonToX(lon, zoom);
-		int y = Mercator.latToY(lat, zoom);
-		x -= center.x - getMapWidth() / 2;
-		y -= center.y - getMapHeight() / 2;
-		if (checkOutside) {
-			if (x < START || y < START || x > getMapWidth()
-					|| y > getMapHeight()) {
-				return null;
-			}
-		}
-		return new Point(x, y);
-	}
-
-	// Calculates the position on the map of a given coordinate
-	@Override
-	public Point getMapPoint(Coordinate coord) {
-		return getMapPoint(coord.getLatitude(), coord.getLongitude(), false);
-	}
-
 	@Override
 	public void moveMap(int x, int y) {
 		
@@ -511,7 +467,7 @@ public final class MapPane extends Pane implements MapControlable {
 	
 	@Override
 	public void setZoom(int nextZoom) {
-		Point mapPoint = new Point((int) (getMapWidth() / 2), (int) (getMapHeight() / 2));
+		Point mapPoint = createMapCenterPoint();
 		setZoom(nextZoom, mapPoint);
 	}
 
@@ -526,6 +482,10 @@ public final class MapPane extends Pane implements MapControlable {
 				zoomPos.getLongitude(), nextZoom);
 		
 		centerMap();
+	}
+	
+	private Coordinate getCoordinate(Point p) {
+		return toCoordinate(p, this);
 	}
 	
 	/**

@@ -36,6 +36,8 @@ import javafx.scene.shape.Polyline;
 
 import jfxtras.labs.map.render.MapPolygonable;
 
+import static jfxtras.labs.map.CoordinatesConverter.*;
+
 /**
  *
  * @author smithjel
@@ -73,16 +75,16 @@ public class MapAirspace implements MapPolygonable {
     }
 
     @Override
-    public void render(MapControlable viewer) {
+    public void render(MapTileable viewer) {
         int nPoints = coordinates.size();
         Path path = new Path();
         Polyline polyline = new Polyline();
         Coordinate c0 = coordinates.get(0);
-        Point p0 = viewer.getMapPoint( c0 );
+        Point p0 = toMapPoint( c0, viewer );
         path.getElements().add( new MoveTo( p0.x, p0.y ) );
         for (int p = 0; p < nPoints; p++ ) {
             Coordinate coordinate = coordinates.get(p);
-            Point point = viewer.getMapPoint( coordinate );
+            Point point = toMapPoint( coordinate , viewer );
             path.getElements().add(new LineTo(point.x, point.y));
             polyline.getPoints().add((double)point.x);
             polyline.getPoints().add((double)point.y);

@@ -32,7 +32,9 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.shape.StrokeType;
 import jfxtras.labs.map.Coordinate;
-import jfxtras.labs.map.MapControlable;
+import jfxtras.labs.map.MapTileable;
+
+import static jfxtras.labs.map.CoordinatesConverter.*;
 
 /**
  *
@@ -68,7 +70,7 @@ public class DefaultMapLine implements MapLineable {
     }
 
     @Override
-    public void render(MapControlable viewer) {
+    public void render(MapTileable viewer) {
         Polyline polyline = new Polyline();
 
         polyline.setStrokeType(StrokeType.CENTERED);
@@ -84,9 +86,10 @@ public class DefaultMapLine implements MapLineable {
         dropShadow.setOffsetY(10);
         dropShadow.setColor(Color.rgb(50, 50, 50, 0.7));
         polyline.setEffect(dropShadow);
+        
 
         for (Coordinate coordinate : coordinates) {
-            Point p = viewer.getMapPoint(coordinate.getLatitude(), coordinate.getLongitude(), false);
+            Point p = toMapPoint(coordinate, viewer);
             polyline.getPoints().add((double) p.x);
             polyline.getPoints().add((double) p.y);
         }

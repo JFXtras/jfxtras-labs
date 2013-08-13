@@ -12,9 +12,9 @@ import javafx.scene.control.Slider;
  */
 public class ZoomSliderFactory {
 
-    private MapControlable controlable;
+    private MapTileable controlable;
 
-    public ZoomSliderFactory(MapControlable controlable) {
+    public ZoomSliderFactory(MapTileable controlable) {
         this.controlable = controlable;
     }
 

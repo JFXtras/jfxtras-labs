@@ -36,7 +36,6 @@ import javafx.stage.Stage;
 import jfxtras.labs.map.render.DefaultMapLine;
 import jfxtras.labs.map.render.ImageMapMarker;
 import jfxtras.labs.map.render.MapLineable;
-import jfxtras.labs.map.render.MapMarkable;
 import jfxtras.labs.map.tile.BingTileSourceFactory;
 import jfxtras.labs.map.tile.BingType;
 import jfxtras.labs.map.tile.OsmTileSourceFactory;

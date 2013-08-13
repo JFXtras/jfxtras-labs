@@ -37,6 +37,8 @@ import javafx.util.Duration;
 
 import jfxtras.labs.map.render.MapOverlayable;
 
+import static jfxtras.labs.map.CoordinatesConverter.*;
+
 /**
  * 
  * @author smithjel
@@ -118,7 +120,7 @@ public class MapWeatherRadar implements MapOverlayable {
 	}
 
 	@Override
-	public void render(MapControlable viewer) {
+	public void render(MapTileable viewer) {
 
 		ObservableList<Node> children = viewer.getTilesGroup().getChildren();
 		addRadarView(viewer, children);
@@ -129,11 +131,11 @@ public class MapWeatherRadar implements MapOverlayable {
 	private void addRadarView(MapControlable viewer,
 			ObservableList<Node> children) {
 
-		Point ptUL = viewer.getMapPoint(upperLeftCoord);
-		Point ptLR = viewer.getMapPoint(lowerRightCoord);
+		Point ptUL = toMapPoint(upperLeftCoord, viewer);
+		Point ptLR = toMapPoint(lowerRightCoord, viewer);
 
-		double imgX = viewer.getMapPoint(upperLeftCoord).x;
-		double imgY = viewer.getMapPoint(upperLeftCoord).y;
+		double imgX = toMapPoint(upperLeftCoord, viewer).x;
+		double imgY = toMapPoint(upperLeftCoord, viewer).y;
 		double imgW = ptLR.x - ptUL.x;
 		double imgH = ptLR.y - ptUL.y;
 

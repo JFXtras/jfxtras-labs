@@ -8,7 +8,7 @@ import javafx.scene.Group;
 import jfxtras.labs.map.MapControlable;
 
 /**
- * Interface for the map renderer.
+ * Interface for the tile renderer.
  * 
  * @author Mario Schroeder
  */

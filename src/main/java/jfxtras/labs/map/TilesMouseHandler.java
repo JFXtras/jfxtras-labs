@@ -15,13 +15,13 @@ import javafx.scene.input.ScrollEvent;
  */
 public class TilesMouseHandler {
 
-	private MapControlable controlable;
+	private CursorLocationable controlable;
 
 	private Point dragStartPoint;
 
 	private boolean adjusted;
 
-	public TilesMouseHandler(MapControlable controlable) {
+	public TilesMouseHandler(CursorLocationable controlable) {
 		this.controlable = controlable;
 	}
 
