@@ -226,20 +226,19 @@ public class ListSpinnerTrial1 extends Application {
 						.withEditable(true)
 						.withStringConverter(StringConverterFactory.forInteger())
 						;
-//Button lButton = new Button("test");
-//lButton.onMouseClickedProperty().set(new EventHandler<MouseEvent>()
-//{
-//	@Override
-//	public void handle(MouseEvent arg0)
-//	{
-//		System.out.println("!!! " + ((ListSpinnerCaspianSkin)lSpinner.getSkin()).getArrowDirection() );
-//		System.out.println("!!! " + ((ListSpinnerCaspianSkin)lSpinner.getSkin()).getValueAlignment() );
-//		lSpinner.setStyle("-fxx-value-alignment:BOTTOM_RIGHT; -fxx-arrow-direction:VERTICAL;");
-//		System.out.println("!!! " + ((ListSpinnerCaspianSkin)lSpinner.getSkin()).getArrowDirection() );
-//		System.out.println("!!! " + ((ListSpinnerCaspianSkin)lSpinner.getSkin()).getValueAlignment() );
-//	}
-//});
-//lGridPane.add(lButton, 2, lRowIdx);
+				
+				Button lButton = new Button("change CSS");
+				lButton.onMouseClickedProperty().set(new EventHandler<MouseEvent>()
+				{
+					@Override
+					public void handle(MouseEvent arg0)
+					{
+						//lSpinner.setStyle("-fxx-arrow-position:SPLIT;");
+						//lSpinner.setStyle("-fxx-arrow-direction:VERTICAL;;");
+						lSpinner.setStyle("-fxx-value-alignment:CENTER_LEFT; -fxx-arrow-direction:VERTICAL; -fxx-arrow-position:SPLIT;");
+					}
+				});
+				lGridPane.add(lButton, 2, lRowIdx);
 				
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}

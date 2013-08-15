@@ -147,11 +147,10 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpin
 	final private StyleableObjectProperty<ArrowPosition> arrowPositionObjectProperty = new StyleableObjectProperty<ArrowPosition>(ArrowPosition.TRAILING) {
 
 		@Override 
-		public void invalidated() 
+		protected void invalidated() 
 		{
-			super.invalidated();
-			setArrowHorizontalOrVerticalCSSClass();
 			layoutGridPane();
+			super.invalidated();
 		}
 		
         @Override
@@ -198,11 +197,11 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpin
 	final private StyleableObjectProperty<ArrowDirection> arrowDirectionObjectProperty = new StyleableObjectProperty<ArrowDirection>(ArrowDirection.HORIZONTAL) {
 
 		@Override 
-		public void invalidated() 
+		protected void invalidated() 
 		{
-			super.invalidated();
 			setArrowHorizontalOrVerticalCSSClass();
 			layoutGridPane();
+			super.invalidated();
 		}
 		
         @Override
@@ -249,10 +248,10 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpin
 	final private StyleableObjectProperty<Pos> valueAlignmentObjectProperty = new StyleableObjectProperty<Pos>(Pos.CENTER_LEFT) {
 
 		@Override 
-		public void invalidated() 
+		protected void invalidated() 
 		{
-			super.invalidated();
 			alignValue();
+			super.invalidated();
 		}
 		
         @Override
