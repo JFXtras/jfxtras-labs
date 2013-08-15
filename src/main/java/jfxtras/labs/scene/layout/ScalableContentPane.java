@@ -4,7 +4,10 @@
  */
 package jfxtras.labs.scene.layout;
 
+
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -12,15 +15,16 @@ import javafx.collections.ListChangeListener;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
+import static javafx.scene.layout.Region.USE_PREF_SIZE;
 import javafx.scene.transform.Scale;
 
 /**
  * Scales content to always fit in the bounds of this pane. Useful for workflows
  * with lots of windows.
+ *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-public class ScalableContentPane extends Region {
+public class ScalableContentPane extends Pane {
 
     private Scale contentScaleTransform;
     private Property<Pane> contentPaneProperty =
@@ -29,6 +33,16 @@ public class ScalableContentPane extends Region {
     private double contentScaleHeight = 1.0;
     private boolean aspectScale = true;
     private boolean autoRescale = true;
+    private static boolean applyJDK7Fix = false;
+    private DoubleProperty minScaleXProperty = new SimpleDoubleProperty(Double.MIN_VALUE);
+    private DoubleProperty maxScaleXProperty = new SimpleDoubleProperty(Double.MAX_VALUE);
+    private DoubleProperty minScaleYProperty = new SimpleDoubleProperty(Double.MIN_VALUE);
+    private DoubleProperty maxScaleYProperty = new SimpleDoubleProperty(Double.MAX_VALUE);
+
+    static {
+        // JDK7 fix:
+        applyJDK7Fix = System.getProperty("java.version").startsWith("1.7");
+    }
 
     /**
      * Constructor.
@@ -38,6 +52,15 @@ public class ScalableContentPane extends Region {
 
         setPrefWidth(USE_PREF_SIZE);
         setPrefHeight(USE_PREF_SIZE);
+
+        needsLayoutProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
+                if (t1) {
+                    computeScale();
+                }
+            }
+        });
     }
 
     /**
@@ -49,6 +72,7 @@ public class ScalableContentPane extends Region {
 
     /**
      * Defines the content pane of this scalable pane.
+     *
      * @param contentPane pane to define
      */
     public final void setContentPane(Pane contentPane) {
@@ -64,10 +88,13 @@ public class ScalableContentPane extends Region {
         getContentPane().getTransforms().add(getContentScaleTransform());
 
         getChildren().add(contentPane);
+
+//        getContentPane().setStyle("-fx-border-color: red; -fx-border-width: 1;");
     }
 
     /**
      * Returns the content pane property.
+     *
      * @return the content pane property
      */
     public Property<Pane> contentPaneProperty() {
@@ -76,6 +103,7 @@ public class ScalableContentPane extends Region {
 
     /**
      * Returns the content scale transform.
+     *
      * @return the content scale transform
      */
     public final Scale getContentScaleTransform() {
@@ -87,12 +115,20 @@ public class ScalableContentPane extends Region {
 
         super.layoutChildren();
 
-        double realWidth =
-                Math.max(getWidth(),
-                getContentPane().prefWidth(0));
 
-        double realHeigh = Math.max(getHeight(),
-                getContentPane().prefHeight(0));
+    }
+
+    private void computeScale() {
+        double realWidth =
+                getContentPane().prefWidth(getHeight());
+
+        double realHeigh =
+                getContentPane().prefHeight(getWidth());
+
+        if (applyJDK7Fix) {
+//            realWidth += 0.01;
+            realHeigh += 0.01; // does not paint without it
+        }
 
         double leftAndRight = getInsets().getLeft() + getInsets().getRight();
         double topAndBottom = getInsets().getTop() + getInsets().getBottom();
@@ -105,14 +141,23 @@ public class ScalableContentPane extends Region {
         contentScaleWidth = contentWidth / realWidth;
         contentScaleHeight = contentHeight / realHeigh;
 
+        contentScaleWidth = Math.max(contentScaleWidth, getMinScaleX());
+        contentScaleWidth = Math.min(contentScaleWidth, getMaxScaleX());
+
+        contentScaleHeight = Math.max(contentScaleHeight, getMinScaleY());
+        contentScaleHeight = Math.min(contentScaleHeight, getMaxScaleY());
+
         if (isAspectScale()) {
             double scale = Math.min(contentScaleWidth, contentScaleHeight);
-            contentScaleWidth = scale;
-            contentScaleHeight = scale;
-        }
 
-        getContentScaleTransform().setX(contentScaleWidth);
-        getContentScaleTransform().setY(contentScaleHeight);
+            getContentScaleTransform().setX(scale);
+            getContentScaleTransform().setY(scale);
+
+//            System.out.println("scale: " + scale);
+        } else {
+            getContentScaleTransform().setX(contentScaleWidth);
+            getContentScaleTransform().setY(contentScaleHeight);
+        }
 
         getContentPane().relocate(
                 getInsets().getLeft(), getInsets().getTop());
@@ -120,6 +165,10 @@ public class ScalableContentPane extends Region {
         getContentPane().resize(
                 (contentWidth) / contentScaleWidth,
                 (contentHeight) / contentScaleHeight);
+    }
+
+    public void requestScale() {
+        computeScale();
     }
 
     @Override
@@ -160,7 +209,10 @@ public class ScalableContentPane extends Region {
             @Override
             public void changed(ObservableValue<? extends Bounds> ov, Bounds t, Bounds t1) {
                 if (isAutoRescale()) {
+                    setNeedsLayout(false);
+                    getContentPane().requestLayout();
                     requestLayout();
+
                 }
             }
         };
@@ -169,15 +221,17 @@ public class ScalableContentPane extends Region {
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
                 if (isAutoRescale()) {
+                    setNeedsLayout(false);
+                    getContentPane().requestLayout();
                     requestLayout();
+
                 }
             }
         };
 
         getContentPane().getChildren().addListener(new ListChangeListener<Node>() {
             @Override
-            public void onChanged(Change<? extends Node> c) {
-
+            public void onChanged(ListChangeListener.Change<? extends Node> c) {
 
                 while (c.next()) {
                     if (c.wasPermutated()) {
@@ -208,8 +262,9 @@ public class ScalableContentPane extends Region {
 
     /**
      * Defines whether to keep aspect ration when scaling content.
+     *
      * @return <code>true</code> if keeping aspect ratio of the content;
-     *         <code>false</code> otherwise
+     * <code>false</code> otherwise
      */
     public boolean isAspectScale() {
         return aspectScale;
@@ -217,6 +272,7 @@ public class ScalableContentPane extends Region {
 
     /**
      * Defines whether to keep aspect ration of the content.
+     *
      * @param aspectScale the state to set
      */
     public void setAspectScale(boolean aspectScale) {
@@ -225,8 +281,9 @@ public class ScalableContentPane extends Region {
 
     /**
      * Indicates whether content is automatically scaled.
+     *
      * @return <code>true</code> if content is automatically scaled;
-     *         <code>false</code> otherwise
+     * <code>false</code> otherwise
      */
     public boolean isAutoRescale() {
         return autoRescale;
@@ -234,9 +291,58 @@ public class ScalableContentPane extends Region {
 
     /**
      * Defines whether to automatically rescale content.
+     *
      * @param autoRescale the state to set
      */
     public void setAutoRescale(boolean autoRescale) {
         this.autoRescale = autoRescale;
+    }
+
+    public DoubleProperty minScaleXProperty() {
+        return minScaleXProperty;
+    }
+
+    public DoubleProperty minScaleYProperty() {
+        return minScaleYProperty;
+    }
+
+    public DoubleProperty maxScaleXProperty() {
+        return maxScaleXProperty;
+    }
+
+    public DoubleProperty maxScaleYProperty() {
+        return maxScaleYProperty;
+    }
+
+    public double getMinScaleX() {
+        return minScaleXProperty().get();
+    }
+
+    public double getMaxScaleX() {
+        return maxScaleXProperty().get();
+    }
+
+    public double getMinScaleY() {
+        return minScaleYProperty().get();
+    }
+
+    public double getMaxScaleY() {
+        return maxScaleYProperty().get();
+    }
+
+    public void setMinScaleX(double s) {
+        minScaleXProperty().set(s);
+    }
+
+    public void setMaxScaleX(double s) {
+        maxScaleXProperty().set(s);
+    }
+
+    public void setMinScaleY(double s) {
+        minScaleYProperty().set(s);
+    }
+
+    public void setMaxScaleY(double s) {
+        maxScaleYProperty().set(s);
     }
 }
