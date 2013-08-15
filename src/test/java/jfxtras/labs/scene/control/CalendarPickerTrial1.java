@@ -43,7 +43,7 @@ import javafx.stage.Stage;
 public class CalendarPickerTrial1 extends Application {
 	
     public static void main(String[] args) {
-    	//java.util.Locale.setDefault(new java.util.Locale("de")); // weeks starts on monday
+    	java.util.Locale.setDefault(new java.util.Locale("de")); // weeks starts on monday
         launch(args);       
     }
 
@@ -96,6 +96,9 @@ public class CalendarPickerTrial1 extends Application {
 		// create scene
         Scene scene = new Scene(lVBox, 300, 300);
 
+		// load custom CSS
+        scene.getStylesheets().addAll(this.getClass().getResource(this.getClass().getSimpleName() + ".css").toExternalForm());
+		
         // create stage
         stage.setTitle(this.getClass().getSimpleName());
         stage.setScene(scene);

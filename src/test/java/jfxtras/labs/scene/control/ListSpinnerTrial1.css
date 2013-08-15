@@ -2,6 +2,11 @@
 	-fx-text-fill: RED;
 }
 
+#TheEditableSpinner {
+	-fxx-arrow-position:SPLIT;	
+	-fxx-arrow-direction:VERTICAL;	
+}
+
 #TheEditableSpinner .value { 
 	-fx-text-fill: RED;
 }

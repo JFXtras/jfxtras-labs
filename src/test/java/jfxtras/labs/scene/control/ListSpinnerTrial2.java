@@ -7,7 +7,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import jfxtras.labs.scene.control.ListSpinner.ArrowDirection;
 import jfxtras.labs.util.StringConverterFactory;
 
 public class ListSpinnerTrial2 extends Application
@@ -27,7 +26,7 @@ public class ListSpinnerTrial2 extends Application
 		segmentSpinner.setValue(500);
 		segmentSpinner.setEditable(true);
 		segmentSpinner.setStringConverter(StringConverterFactory.forInteger());
-		segmentSpinner.setArrowDirection(ArrowDirection.VERTICAL);
+		segmentSpinner.withStyle("-fxx-arrow-direction:VERTICAL;");
 		segmentSpinner.setMaxWidth(60);
 		segmentSpinner.addCallbackProperty().set(new Callback<Integer, Integer>()
 		{

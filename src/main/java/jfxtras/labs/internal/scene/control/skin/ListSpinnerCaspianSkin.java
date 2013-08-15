@@ -26,10 +26,14 @@
  */
 package jfxtras.labs.internal.scene.control.skin;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.value.WritableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
@@ -50,9 +54,10 @@ import javafx.util.Duration;
 import jfxtras.labs.animation.Timer;
 import jfxtras.labs.internal.scene.control.behavior.ListSpinnerBehavior;
 import jfxtras.labs.scene.control.ListSpinner;
-import jfxtras.labs.scene.control.ListSpinner.ArrowDirection;
-import jfxtras.labs.scene.control.ListSpinner.ArrowPosition;
 
+import com.sun.javafx.css.StyleableObjectProperty;
+import com.sun.javafx.css.StyleableProperty;
+import com.sun.javafx.css.converters.EnumConverter;
 import com.sun.javafx.scene.control.skin.SkinBase;
 
 /**
@@ -86,10 +91,10 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpin
 		createNodes();
 		
 		// react to value changes in the model
-		getSkinnable().editableProperty().addListener(new ChangeListener<Boolean>()
+		getSkinnable().editableProperty().addListener(new InvalidationListener()
 		{
 			@Override
-			public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2)
+			public void invalidated(Observable arg0)
 			{
 				replaceValueNode();
 			}
@@ -97,40 +102,22 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpin
 		replaceValueNode();
 		
 		// react to value changes in the model
-		getSkinnable().valueProperty().addListener(new ChangeListener<T>()
+		getSkinnable().valueProperty().addListener(new InvalidationListener()
 		{
 			@Override
-			public void changed(ObservableValue<? extends T> observableValue, T oldValue, T newValue)
+			public void invalidated(Observable arg0)
 			{
 				refreshValue();
 			}
 		});
 		refreshValue();
 		
-		// react to value changes in the model
-		getSkinnable().arrowDirectionProperty().addListener(new ChangeListener<ListSpinner.ArrowDirection>()
-		{
-			@Override
-			public void changed(ObservableValue<? extends ArrowDirection> observableValue, ArrowDirection oldValue, ArrowDirection newValue)
-			{
-				setArrowCSS();
-				layoutGridPane();
-			}
-		});
-		setArrowCSS();
+		// arrows
+		setArrowHorizontalOrVerticalCSSClass();
 		layoutGridPane();
 		
-		// react to value changes in the model
-		getSkinnable().alignmentProperty().addListener(new ChangeListener<Pos>()
-		{
-			@Override
-			public void changed(ObservableValue<? extends Pos> observableValue, Pos oldValue, Pos newValue)
-			{
-				alignValue();
-			}
-		});
+		// value
 		alignValue();
-		
 	}
 	
 	/*
@@ -152,6 +139,180 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpin
 		}
 	}
 	
+	// ==================================================================================================================
+	// StyleableProperties
+	
+	/** ArrowPosition: */
+	public ObjectProperty<ArrowPosition> arrowPositionProperty() { return this.arrowPositionObjectProperty; }
+	final private StyleableObjectProperty<ArrowPosition> arrowPositionObjectProperty = new StyleableObjectProperty<ArrowPosition>(ArrowPosition.TRAILING) {
+
+		@Override 
+		public void invalidated() 
+		{
+			super.invalidated();
+			setArrowHorizontalOrVerticalCSSClass();
+			layoutGridPane();
+		}
+		
+        @Override
+		public void set(ArrowPosition value)
+		{
+			if (value == null) throw new NullPointerException("Null not allowed as the value for arrowPosition");
+			super.set(value);
+		}
+        
+        @Override
+        public StyleableProperty<ListSpinnerCaspianSkin,ArrowPosition> getStyleableProperty() {
+            return ARROW_POSITION;
+        }
+
+        @Override
+        public Object getBean() {
+            return ListSpinnerCaspianSkin.this;
+        }
+
+        @Override
+        public String getName() {
+            return "arrowPosition";
+        }
+    };			
+	public ArrowPosition getArrowPosition() { return this.arrowPositionObjectProperty.getValue(); }
+	public void setArrowPosition(ArrowPosition value) { this.arrowPositionObjectProperty.setValue(value); }
+	public ListSpinnerCaspianSkin<T> withArrowPosition(ArrowPosition value) { setArrowPosition(value); return this; }
+	public enum ArrowPosition {LEADING, TRAILING, SPLIT}	
+    private static final StyleableProperty<ListSpinnerCaspianSkin,ArrowPosition> ARROW_POSITION = new StyleableProperty<ListSpinnerCaspianSkin,ArrowPosition>("-fxx-arrow-position", new EnumConverter<ArrowPosition>(ArrowPosition.class), ArrowPosition.TRAILING) 
+	{
+        @Override
+        public boolean isSettable(ListSpinnerCaspianSkin owner) {
+            return !owner.arrowPositionObjectProperty.isBound();
+        }
+
+        @Override
+        public WritableValue<ArrowPosition> getWritableValue(ListSpinnerCaspianSkin owner) {
+            return owner.arrowPositionProperty();
+        }
+    };
+    
+	/** ArrowDirection: */
+	public ObjectProperty<ArrowDirection> arrowDirectionProperty() { return this.arrowDirectionObjectProperty; }
+	final private StyleableObjectProperty<ArrowDirection> arrowDirectionObjectProperty = new StyleableObjectProperty<ArrowDirection>(ArrowDirection.HORIZONTAL) {
+
+		@Override 
+		public void invalidated() 
+		{
+			super.invalidated();
+			setArrowHorizontalOrVerticalCSSClass();
+			layoutGridPane();
+		}
+		
+        @Override
+		public void set(ArrowDirection value)
+		{
+			if (value == null) throw new NullPointerException("Null not allowed as the value for arrowDirection");
+			super.set(value);
+		}
+        
+        @Override
+        public StyleableProperty<ListSpinnerCaspianSkin,ArrowDirection> getStyleableProperty() {
+            return ARROW_DIRECTION;
+        }
+
+        @Override
+        public Object getBean() {
+            return ListSpinnerCaspianSkin.this;
+        }
+
+        @Override
+        public String getName() {
+            return "arrowDirection";
+        }
+    };			
+	public ArrowDirection getArrowDirection() { return this.arrowDirectionObjectProperty.getValue(); }
+	public void setArrowDirection(ArrowDirection value) { this.arrowDirectionObjectProperty.setValue(value); }
+	public ListSpinnerCaspianSkin<T> withArrowDirection(ArrowDirection value) { setArrowDirection(value); return this; }
+	public enum ArrowDirection {VERTICAL, HORIZONTAL}	
+    private static final StyleableProperty<ListSpinnerCaspianSkin,ArrowDirection> ARROW_DIRECTION = new StyleableProperty<ListSpinnerCaspianSkin,ArrowDirection>("-fxx-arrow-direction", new EnumConverter<ArrowDirection>(ArrowDirection.class), ArrowDirection.HORIZONTAL) 
+	{
+        @Override
+        public boolean isSettable(ListSpinnerCaspianSkin owner) {
+            return !owner.arrowDirectionObjectProperty.isBound();
+        }
+
+        @Override
+        public WritableValue<ArrowDirection> getWritableValue(ListSpinnerCaspianSkin owner) {
+            return owner.arrowDirectionProperty();
+        }
+    };
+    
+	/** ValueAlignment: */
+	public ObjectProperty<Pos> valueAlignmentProperty() { return this.valueAlignmentObjectProperty; }
+	final private StyleableObjectProperty<Pos> valueAlignmentObjectProperty = new StyleableObjectProperty<Pos>(Pos.CENTER_LEFT) {
+
+		@Override 
+		public void invalidated() 
+		{
+			super.invalidated();
+			alignValue();
+		}
+		
+        @Override
+		public void set(Pos value)
+		{
+			if (value == null) throw new NullPointerException("Null not allowed as the value for value alignment");
+			super.set(value);
+		}
+        
+        @Override
+        public StyleableProperty<ListSpinnerCaspianSkin,Pos> getStyleableProperty() {
+            return VALUE_ALIGNMENT;
+        }
+
+        @Override
+        public Object getBean() {
+            return ListSpinnerCaspianSkin.this;
+        }
+
+        @Override
+        public String getName() {
+            return "valueAlignment";
+        }
+    };			
+	public Pos getValueAlignment() { return this.valueAlignmentObjectProperty.getValue(); }
+	public void setValueAlignment(Pos value) { this.valueAlignmentObjectProperty.setValue(value); }
+	public ListSpinnerCaspianSkin<T> withAlignment(Pos value) { setValueAlignment(value); return this; }
+    private static final StyleableProperty<ListSpinnerCaspianSkin,Pos> VALUE_ALIGNMENT = new StyleableProperty<ListSpinnerCaspianSkin,Pos>("-fxx-value-alignment", new EnumConverter<Pos>(Pos.class), Pos.CENTER_LEFT) 
+	{
+        @Override
+        public boolean isSettable(ListSpinnerCaspianSkin owner) {
+            return !owner.valueAlignmentObjectProperty.isBound();
+        }
+
+        @Override
+        public WritableValue<Pos> getWritableValue(ListSpinnerCaspianSkin owner) {
+            return owner.valueAlignmentProperty();
+        }
+    };
+    
+    // ----------------------------
+    // communicate the styleables
+    
+    /**
+     * 
+     */
+    @Override
+    @Deprecated
+    public List<StyleableProperty> impl_getStyleableProperties() 
+    {
+        if (STYLEABLES == null) 
+        {
+            final List<StyleableProperty> styleables = new ArrayList<StyleableProperty>(super.impl_getStyleableProperties());
+            Collections.addAll(styleables, ARROW_POSITION, ARROW_DIRECTION, VALUE_ALIGNMENT);
+            STYLEABLES = Collections.unmodifiableList(styleables);
+        }
+        return STYLEABLES;
+    }
+    private static List<StyleableProperty> STYLEABLES;
+            
 	// ==================================================================================================================
 	// DRAW
 	
@@ -406,7 +567,7 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpin
 		        });
 				
 				// alignment
-				textField.alignmentProperty().bind(getSkinnable().alignmentProperty());
+				textField.alignmentProperty().bind(valueAlignmentProperty());
 			}
 			valueGroup.setCenter(textField);
 		}
@@ -422,7 +583,7 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpin
 	private void alignValue()
 	{
 		// valueGroup always only holds one child (the value)
-		BorderPane.setAlignment(valueGroup.getChildren().get(0), getSkinnable().alignmentProperty().getValue());
+		BorderPane.setAlignment(valueGroup.getChildren().get(0), valueAlignmentProperty().getValue());
 	}
 	
 	// ==================================================================================================================
@@ -451,8 +612,8 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpin
 	private void layoutGridPane()
 	{
 		// get the things we decide on
-		ArrowDirection lArrowDirection = getSkinnable().getArrowDirection();
-		ArrowPosition lArrowPosition = getSkinnable().getArrowPosition();
+		ArrowDirection lArrowDirection = getArrowDirection();
+		ArrowPosition lArrowPosition = getArrowPosition();
 		
 		// get helper values
 		ColumnConstraints lColumnValue = new ColumnConstraints(valueGroup.getMinWidth(), valueGroup.getPrefWidth(), Double.MAX_VALUE);
@@ -544,9 +705,9 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpin
 	/**
 	 * Set the CSS according to the direction of the arrows, so the correct arrows are shown
 	 */
-	private void setArrowCSS()
+	private void setArrowHorizontalOrVerticalCSSClass()
 	{
-		if (getSkinnable().getArrowDirection().equals(ListSpinner.ArrowDirection.HORIZONTAL))
+		if (getArrowDirection().equals(ArrowDirection.HORIZONTAL))
 		{
 			decrementArrow.getStyleClass().add("left-arrow");
 			incrementArrow.getStyleClass().add("right-arrow");
