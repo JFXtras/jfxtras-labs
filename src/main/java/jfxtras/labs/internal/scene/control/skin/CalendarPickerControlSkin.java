@@ -153,6 +153,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		// month spinner
 		List<String> lMonthLabels = getMonthLabels();
 		monthListSpinner = new ListSpinner<String>(lMonthLabels).withIndex(Calendar.getInstance().get(Calendar.MONTH)).withCyclic(Boolean.TRUE);
+		monthListSpinner.getStyleClass().add("MonthSpinner");
 		// on cycle overflow to year
 		monthListSpinner.setOnCycle(new EventHandler<ListSpinner.CycleEvent>()
 		{
@@ -184,6 +185,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		
 		// year spinner
 		yearListSpinner = new ListSpinner<Integer>(new ListSpinnerIntegerList()).withValue(Calendar.getInstance().get(Calendar.YEAR));
+		yearListSpinner.getStyleClass().add("YearSpinner");
 		// if the value changed, update the displayed calendar
 		yearListSpinner.valueProperty().addListener(new ChangeListener<Integer>()
 		{

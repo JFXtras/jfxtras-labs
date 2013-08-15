@@ -561,7 +561,7 @@ implements Agenda.AgendaSkin
 				lDay.prefWidthProperty().bind(dayWidthProperty);
 				lDay.prefHeightProperty().bind(dayHeightProperty);
 				getChildren().add(lDay);
-				
+
 				// remember
 				dayPanes.add(lDay);
 			}

@@ -24,3 +24,8 @@
 .CalendarPickerControlSkin .today { 
 	-fx-color: DARKGRAY; 
 }
+
+.CalendarPicker .ListSpinner { 
+/*	-fxx-arrow-position:SPLIT; */
+/*	-fxx-arrow-direction:VERTICAL; */
+}

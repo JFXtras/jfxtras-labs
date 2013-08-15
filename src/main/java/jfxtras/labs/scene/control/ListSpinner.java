@@ -39,9 +39,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventTarget;
 import javafx.event.EventType;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
@@ -61,14 +59,21 @@ import javafx.util.StringConverter;
  * 
  * You can style the text in the control using CSS like so:
  * .ListSpinner .value { 
- *	-fx-font-weight: bold;
+ *	 -fx-font-weight: bold;
+ * }
+ * 
+ * You can style the default skin using CSS like so:
+ * .ListSpinner { 
+ *	 -fxx-arrow-position:SPLIT;                // LEADING, TRAILING, SPLIT
+ *   -fxx-arrow-direction:VERTICAL;            // VERTICAL, HORIZONTAL
+ *   -fxx-value-alignment:CENTER_RIGHT;        // All the value of javafx.geometry.Pos
  * }
  * 
  * The "value" class applies to the text in both readonly and editable spinners. Use "readonly" or "editable" to style either mode specifically.
  *    
  * @author Tom Eugelink
  */
-public class ListSpinner<T> extends Control
+public class ListSpinner<T> extends jfxtras.labs.scene.control.Control<ListSpinner<T>>
 {
 	// TODO: implement SelectionModel?
 	// ==================================================================================================================
@@ -336,56 +341,13 @@ public class ListSpinner<T> extends Control
 	public void setStringConverter(StringConverter<T> value) { this.stringConverterObjectProperty.setValue(value); }
 	public ListSpinner<T> withStringConverter(StringConverter<T> value) { setStringConverter(value); return this; }
 
-	/** ArrowDirection: */
-	public ObjectProperty<ArrowDirection> arrowDirectionProperty() { return this.arrowDirectionObjectProperty; }
-	final private ObjectProperty<ArrowDirection> arrowDirectionObjectProperty = new SimpleObjectProperty<ArrowDirection>(this, "arrowDirection", ArrowDirection.HORIZONTAL)
-	{
-		public void set(ArrowDirection value)
-		{
-			if (value == null) throw new NullPointerException("Null not allowed as the value for arrowDirection");
-			super.set(value);
-		}
-	};
-	public ArrowDirection getArrowDirection() { return this.arrowDirectionObjectProperty.getValue(); }
-	public void setArrowDirection(ArrowDirection value) { this.arrowDirectionObjectProperty.setValue(value); }
-	public ListSpinner<T> withArrowDirection(ArrowDirection value) { setArrowDirection(value); return this; }
-	public enum ArrowDirection {VERTICAL, HORIZONTAL}
-	
-	/** ArrowPosition: */
-	public ObjectProperty<ArrowPosition> arrowPositionProperty() { return this.arrowPositionObjectProperty; }
-	final private ObjectProperty<ArrowPosition> arrowPositionObjectProperty = new SimpleObjectProperty<ArrowPosition>(this, "arrowPosition", ArrowPosition.TRAILING)
-	{
-		public void set(ArrowPosition value)
-		{
-			if (value == null) throw new NullPointerException("Null not allowed as the value for arrowPosition");
-			super.set(value);
-		}
-	};			
-	public ArrowPosition getArrowPosition() { return this.arrowPositionObjectProperty.getValue(); }
-	public void setArrowPosition(ArrowPosition value) { this.arrowPositionObjectProperty.setValue(value); }
-	public ListSpinner<T> withArrowPosition(ArrowPosition value) { setArrowPosition(value); return this; }
-	public enum ArrowPosition {LEADING, TRAILING, SPLIT}
-	
-	/** Alignment: only applicable in non edit mode */
-	public ObjectProperty<Pos> alignmentProperty() { return this.alignmentObjectProperty; }
-	final private ObjectProperty<Pos> alignmentObjectProperty = new SimpleObjectProperty<Pos>(this, "alignment", Pos.CENTER_LEFT)
-	{
-		public void set(Pos value)
-		{
-			if (value == null) throw new NullPointerException("Null not allowed as the value for alignment");
-			super.set(value);
-		}
-	};			
-	public Pos isAlignment() { return this.alignmentObjectProperty.getValue(); }
-	public void setAlignment(Pos value) { this.alignmentObjectProperty.setValue(value); }
-	public ListSpinner<T> withAlignment(Pos value) { setAlignment(value); return this; }
-
 	/** AddCallback: */
 	public ObjectProperty<Callback<T, Integer>> addCallbackProperty() { return this.addCallbackObjectProperty; }
 	final private ObjectProperty<Callback<T, Integer>> addCallbackObjectProperty = new SimpleObjectProperty<Callback<T, Integer>>(this, "addCallback", null);
 	public Callback<T, Integer> getAddCallback() { return this.addCallbackObjectProperty.getValue(); }
 	public void setAddCallback(Callback<T, Integer> value) { this.addCallbackObjectProperty.setValue(value); }
 	public ListSpinner<T> withAddCallback(Callback<T, Integer> value) { setAddCallback(value); return this; }
+
 
 	// ==================================================================================================================
 	// StringConverter
