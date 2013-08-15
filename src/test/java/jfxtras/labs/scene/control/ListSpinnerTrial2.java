@@ -26,7 +26,7 @@ public class ListSpinnerTrial2 extends Application
 		segmentSpinner.setValue(500);
 		segmentSpinner.setEditable(true);
 		segmentSpinner.setStringConverter(StringConverterFactory.forInteger());
-		segmentSpinner.withStyle("-fxx-arrow-direction:VERTICAL;");
+		segmentSpinner.setStyle("-fxx-arrow-direction:VERTICAL;");
 		segmentSpinner.setMaxWidth(60);
 		segmentSpinner.addCallbackProperty().set(new Callback<Integer, Integer>()
 		{

@@ -40,6 +40,7 @@ import javafx.event.EventHandler;
 import javafx.event.EventTarget;
 import javafx.event.EventType;
 import javafx.scene.Node;
+import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
@@ -69,11 +70,12 @@ import javafx.util.StringConverter;
  *   -fxx-value-alignment:CENTER_RIGHT;        // All the value of javafx.geometry.Pos
  * }
  * 
- * The "value" class applies to the text in both readonly and editable spinners. Use "readonly" or "editable" to style either mode specifically.
+ * The "value" class applies to the text in both readonly and editable spinners. 
+ * Use "readonly" or "editable" to style either mode specifically.
  *    
  * @author Tom Eugelink
  */
-public class ListSpinner<T> extends jfxtras.labs.scene.control.Control<ListSpinner<T>>
+public class ListSpinner<T> extends Control
 {
 	// TODO: implement SelectionModel?
 	// ==================================================================================================================
