@@ -181,10 +181,10 @@ public class MapPaneTrial1 extends Application {
     private void addItems(
         ComboBox<String> comboBox) {
         for (OsmType type : OsmType.values()) {
-            comboBox.getItems().add(OSM + " " + type.toString());
+            comboBox.getItems().add(type.toString());
         }
         for(BingType type : BingType.values()){
-            comboBox.getItems().add(BING + " " + type.toString());
+            comboBox.getItems().add(type.toString());
         }
        
     }

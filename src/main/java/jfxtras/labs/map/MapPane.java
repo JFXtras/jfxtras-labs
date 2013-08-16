@@ -33,6 +33,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
+
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
@@ -43,7 +44,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -60,7 +60,7 @@ import static jfxtras.labs.map.CoordinatesConverter.*;
  * @author smithjel
  * @author Mario Schroeder
  */
-public final class MapPane extends Pane implements MapTileable {
+public final class MapPane extends Pane implements MapTileable{
 
 	private static final double ZOOM_DIFF = .01;
 
@@ -110,11 +110,13 @@ public final class MapPane extends Pane implements MapTileable {
 
 	private Text cursorLocationText;
 
-	private SimpleIntegerProperty mapX;
+	private SimpleIntegerProperty mapX = new SimpleIntegerProperty(START);
+	
+	private SimpleIntegerProperty mapY = new SimpleIntegerProperty(START);
 
-	private SimpleIntegerProperty mapWidth;
+	private SimpleIntegerProperty mapWidth = new SimpleIntegerProperty(SIZE);
 
-	private SimpleIntegerProperty mapHeight;
+	private SimpleIntegerProperty mapHeight = new SimpleIntegerProperty(SIZE);
 
 	private SimpleIntegerProperty trailTime = new SimpleIntegerProperty(30);
 
@@ -128,11 +130,9 @@ public final class MapPane extends Pane implements MapTileable {
 			true);
 
 	private SimpleBooleanProperty mapMarkersVisible = new SimpleBooleanProperty(
-			true);;
+			true);
 
 	private boolean cursorLocationVisible = true;
-
-	private SimpleIntegerProperty mapY;
 
 	private SimpleBooleanProperty mapVehiclesVisible = new SimpleBooleanProperty(
 			true);
@@ -143,10 +143,10 @@ public final class MapPane extends Pane implements MapTileable {
 	private CoordinateStringFormater formater;
 
 	public MapPane(TileSource ts) {
-		this(ts, START, START, 800, 600, INITIAL_ZOOM);
+		this(ts, 800, 600, INITIAL_ZOOM);
 	}
 
-	public MapPane(TileSource tileSource, int x, int y, int width, int height,
+	public MapPane(TileSource tileSource, int width, int height,
 			int zoom) {
 		this.zoom = zoom;
 		formater = new CoordinateStringFormater();
@@ -159,7 +159,6 @@ public final class MapPane extends Pane implements MapTileable {
 
 		int tileSize = tileSource.getTileSize();
 		setMinSize(tileSize, tileSize);
-		setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 
 		DropShadow ds = new DropShadow();
 		ds.setOffsetY(3.0f);
@@ -169,7 +168,6 @@ public final class MapPane extends Pane implements MapTileable {
 		cursorLocationText.setEffect(ds);
 		cursorLocationText.setFontSmoothingType(FontSmoothingType.LCD);
 
-		buildMapBounds(x, y);
 		buildZoomControls();
 		
 		clipMask.setFill(Color.WHITE);
@@ -178,11 +176,9 @@ public final class MapPane extends Pane implements MapTileable {
 		getChildren().add(zoomControlsVbox);
 		getChildren().add(cursorLocationText);
 
-		addResizeListeners();
+		addSizeListeners();
 
 		setPrefSize(width, height);
-		setMinWidth(width);
-		setMinHeight(height);
 		
 		centerMap();
 
@@ -193,7 +189,7 @@ public final class MapPane extends Pane implements MapTileable {
 		handler.setEventPublisher(this);
 	}
 
-	private void addResizeListeners() {
+	private void addSizeListeners() {
 		widthProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable,
@@ -208,10 +204,7 @@ public final class MapPane extends Pane implements MapTileable {
 				setMapHeight(newValue.doubleValue());
 			}
 		});
-	}
-
-	private void buildMapBounds(int x, int y) {
-		mapX = new SimpleIntegerProperty(x);
+		
 		mapX.addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable,
@@ -222,7 +215,6 @@ public final class MapPane extends Pane implements MapTileable {
 			}
 		});
 
-		mapY = new SimpleIntegerProperty(y);
 		mapY.addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable,
@@ -233,7 +225,6 @@ public final class MapPane extends Pane implements MapTileable {
 			}
 		});
 
-		mapWidth = new SimpleIntegerProperty(SIZE);
 		mapWidth.addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable,
@@ -248,7 +239,6 @@ public final class MapPane extends Pane implements MapTileable {
 			}
 		});
 
-		mapHeight = new SimpleIntegerProperty(SIZE);
 		mapHeight.addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable,
@@ -785,4 +775,5 @@ public final class MapPane extends Pane implements MapTileable {
 		Dimension dim = new Dimension(getMapWidth(), getMapHeight());
 		return !mapEdgeVisibilityChecker.isAllVisible(dim);
 	}
+
 }
