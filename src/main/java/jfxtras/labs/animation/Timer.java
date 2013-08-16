@@ -62,10 +62,11 @@ public class Timer
 	public Timer(boolean isDaemon, final Runnable runnable)
 	{
 		this.runnable = runnable;
-		timer = new java.util.Timer(isDaemon);
+		this.isDaemon = isDaemon;
 	}
 	final private Runnable runnable;
-	final private java.util.Timer timer;
+	final private boolean isDaemon;
+	volatile private java.util.Timer timer;
 	
 	// ==================================================================================================================
 	// PROPERTIES
@@ -116,6 +117,9 @@ public class Timer
 				}
 			}
 		};
+		if (timer == null) {
+			timer = new java.util.Timer(isDaemon);
+		}
 		timer.schedule(lTimerTask, (long)this.delayObjectProperty.getValue().toMillis(), (long)this.cycleDurationObjectProperty.getValue().toMillis());
 		
 		// remember for future reference
@@ -135,6 +139,10 @@ public class Timer
 		if (lTimerTask != null)
 		{
 			lTimerTask.cancel();
+		}
+		if (timer != null) {
+			timer.cancel();
+			timer = null;
 		}
 		
 		// for chaining
