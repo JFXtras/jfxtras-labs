@@ -88,7 +88,7 @@ public class TileRenderer implements TileRenderable {
 		int iMove = 2;
 		Point center = mapController.getCenter();
 
-		int zoom = mapController.getZoom();
+		int zoom = mapController.zoomProperty().get();
 
 		int x_max = mapController.getMapWidth();
 		int y_max = mapController.getMapHeight();

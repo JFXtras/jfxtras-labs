@@ -63,11 +63,8 @@ abstract class AbstractMapMarker implements MapMarkable {
     }
     
     private Point getPoint(MapControlable mapController){
-    	Dimension dim = new Dimension(mapController.getMapWidth(), mapController.getMapHeight());
-    	Point center = mapController.getCenter();
-    	int zoom = mapController.getZoom();
     	Coordinate coordinate = new Coordinate(lat, lon);
-    	return toMapPoint(coordinate, center, dim, zoom);
+    	return toMapPoint(coordinate, mapController);
     }
     
     abstract List<? extends Node> createChildren(Point position);

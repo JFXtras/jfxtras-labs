@@ -17,9 +17,13 @@ public class CoordinatesConverter {
 
 	private static final int START = 0;
 	
+	private static int getZoom(Zoomable zoomable){
+		return zoomable.zoomProperty().get();
+	}
+	
 	public static Coordinate toCoordinate(Point mapPoint, MapControlable controller) {
 		Dimension dim = new Dimension(controller.getMapWidth(), controller.getMapHeight());
-		return toCoordinate(mapPoint, controller.getCenter(), dim, controller.getZoom());
+		return toCoordinate(mapPoint, controller.getCenter(), dim, getZoom(controller));
 	}
 
 	/**
@@ -43,7 +47,7 @@ public class CoordinatesConverter {
 	
 	public static Point toMapPoint(Coordinate coordinate, MapControlable controller){
 		Dimension dim = new Dimension(controller.getMapWidth(), controller.getMapHeight());
-		return toMapPoint(coordinate, controller.getCenter(), dim, controller.getZoom());
+		return toMapPoint(coordinate, controller.getCenter(), dim, getZoom(controller));
 	}
 
 	/**

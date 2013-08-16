@@ -52,7 +52,7 @@ public class LicenseRenderer implements Renderable {
         
         Coordinate topLeft = toCoordinate(new Point(x,y), viewer);
         Coordinate bottomRight = toCoordinate(new Point(width, height), viewer);
-        String attrTxt = tileSource.getAttributionText(viewer.getZoom(), topLeft, bottomRight);
+        String attrTxt = tileSource.getAttributionText(viewer.zoomProperty().get(), topLeft, bottomRight);
 
         // Draw attribution text
         if (attrTxt != null) {
