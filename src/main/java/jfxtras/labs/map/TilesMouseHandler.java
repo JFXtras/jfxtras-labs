@@ -19,9 +19,7 @@ public class TilesMouseHandler {
 
 	private Point dragStartPoint;
 
-	private boolean adjusted;
-
-	
+	private boolean adjusted;	
 
 	/**
 	 * Sets that object, which publishers mouse events.

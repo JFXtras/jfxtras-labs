@@ -1,6 +1,5 @@
 package jfxtras.labs.map.render;
 
-import java.awt.Dimension;
 import java.awt.Point;
 import java.util.List;
 

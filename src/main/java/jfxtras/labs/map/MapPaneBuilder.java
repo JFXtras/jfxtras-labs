@@ -18,7 +18,11 @@ public class MapPaneBuilder implements Builder<MapPane>{
 		TileSourceFactory<OsmType> factory = new OsmTileSourceFactory();
         OsmType osmType = OsmType.Mapnik;
 
-        return new MapPane(factory.create(osmType));
+        MapPane mapPane = new MapPane(factory.create(osmType));
+        ZoomControlFactory zoomControlFactory = new ZoomControlFactory();
+        mapPane.getChildren().add(zoomControlFactory.create(mapPane));
+        
+		return mapPane;
 	}
 	
 }

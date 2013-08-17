@@ -34,7 +34,7 @@ public class ZoomSliderFactory {
         slider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-                zoomable.zoomProperty().set(new_val.intValue());
+                zoomable.setZoom(new_val.intValue());
             }
         });
 

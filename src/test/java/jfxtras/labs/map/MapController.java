@@ -23,10 +23,14 @@ public class MapController {
 	@FXML
 	private MapPane map;
 	
+	
 	@FXML
 	public void mapTypeChanged(ActionEvent event){
-		TileSource tileSource = createTileSource(mapType.getValue());
+		Object value = mapType.getValue();
+		TileSource tileSource = createTileSource(value);
 		map.setTileSource(tileSource);
+		
+		updateStyleSheet(value);
 	}
 
 	private TileSource createTileSource(Object value){
@@ -45,5 +49,15 @@ public class MapController {
         }
         
         return tileSource;
+	}
+	
+	private void updateStyleSheet(Object value) {
+		String css = "map_pane.css";
+		if(value.equals(BingType.Aerial)){
+			css = "img_map_pane.css";
+		}
+		map.getStylesheets().clear();
+		map.getStylesheets().add(getClass().getResource(css)
+	            .toExternalForm());
 	}
 }

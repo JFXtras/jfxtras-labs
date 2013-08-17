@@ -17,7 +17,6 @@ public interface Zoomable {
     
     SimpleIntegerProperty zoomProperty();
     
-    @Deprecated
     void setZoom(int zoom);
 
     void zoomIn();

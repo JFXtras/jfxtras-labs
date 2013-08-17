@@ -1,0 +1,22 @@
+/* 
+    Document   : JFXMapPaneDemo
+    Created on : Aug 17, 2013
+    Author     : Mario Schroeder
+    Description: stylesheet for the map scene
+*/
+
+#toolBar {
+    -fx-base: #505359;
+    -fx-background: #505359;
+    -fx-shadow-highlight-color: transparent;
+    -fx-spacing: 5;
+    -fx-padding: 4 4 4 4;
+    -fx-background-color: linear (0%,0%) to (0%,100%) stops
+                (0%,#919398)
+                (4%,#919398)
+                (4.1%,#666970)
+                (66%,#494d53)
+                (94%,#3c3f46)
+                (94.1%,#515151);
+}
+

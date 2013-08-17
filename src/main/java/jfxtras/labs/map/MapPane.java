@@ -153,12 +153,9 @@ public final class MapPane extends Pane implements MapTileable {
 		cursorLocationText.setEffect(ds);
 		cursorLocationText.setFontSmoothingType(FontSmoothingType.LCD);
 
-		buildZoomControls();
-
 		clipMask.setFill(Color.WHITE);
 		tilesGroup.setClip(clipMask);
 		getChildren().add(tilesGroup);
-		getChildren().add(buildZoomControls());
 		getChildren().add(cursorLocationText);
 
 		addSizeListeners();
@@ -255,15 +252,6 @@ public final class MapPane extends Pane implements MapTileable {
 
 		cursorLocationText.setLayoutX(x);
 		cursorLocationText.setLayoutY(y);
-	}
-
-	protected Pane buildZoomControls() {
-
-		Pane zoomControl = new ZoomControl(this);
-		zoomControl.setLayoutX(10);
-		zoomControl.setLayoutY(20);
-
-		return zoomControl;
 	}
 
 	public void setMapBounds(int x, int y, int width, int height) {
@@ -442,8 +430,11 @@ public final class MapPane extends Pane implements MapTileable {
 			if (nextZoom < previousZoom && isEdgeVisible()) {
 				centerMap();
 			}
-			zoom.set(nextZoom);
-			previousZoom = nextZoom;
+			
+			if(nextZoom != zoom.get()){
+				zoom.set(nextZoom);
+				previousZoom = nextZoom;
+			}
 		}
 	}
 
@@ -731,4 +722,7 @@ public final class MapPane extends Pane implements MapTileable {
 		return getTileSource().getMaxZoom();
 	}
 
+	public void setIgnoreRepaint(boolean ignoreRepaint) {
+		this.ignoreRepaint = ignoreRepaint;
+	}
 }

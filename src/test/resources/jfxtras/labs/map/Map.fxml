@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import java.lang.*?>
+<?import java.net.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -13,7 +14,7 @@
 	fx:id="container" fx:controller="jfxtras.labs.map.MapController"
 	prefWidth="600" prefHeight="800">
     <top>
-        <ToolBar fx:id="toolBar">
+        <ToolBar id="toolBar" fx:id="toolBar">
             <ComboBox fx:id="mapType" onAction="#mapTypeChanged">
              	<items>
 					<FXCollections fx:factory="observableArrayList">
@@ -34,4 +35,8 @@
     <center>
         <MapPane fx:id="map"/>
     </center>
+    
+    <stylesheets>
+      <URL value="@map_pane.css" />
+    </stylesheets>
 </BorderPane>
