@@ -10,8 +10,8 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 
 import jfxtras.labs.map.Coordinate;
-import jfxtras.labs.map.MapControlable;
-import jfxtras.labs.map.MapTileable;
+import jfxtras.labs.map.Moveable;
+import jfxtras.labs.map.MapTilesourceable;
 
 import static jfxtras.labs.map.CoordinatesConverter.*;
 
@@ -46,7 +46,7 @@ abstract class AbstractMapMarker implements MapMarkable {
     }
 
     @Override
-    public void render(MapTileable mapController) {
+    public void render(MapTilesourceable mapController) {
         
         Point postion = getPoint(mapController);
         if(postion != null){
@@ -61,7 +61,7 @@ abstract class AbstractMapMarker implements MapMarkable {
         }
     }
     
-    private Point getPoint(MapControlable mapController){
+    private Point getPoint(Moveable mapController){
     	Coordinate coordinate = new Coordinate(lat, lon);
     	return toMapPoint(coordinate, mapController);
     }

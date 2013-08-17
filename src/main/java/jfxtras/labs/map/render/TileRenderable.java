@@ -5,7 +5,7 @@ import java.awt.Point;
 
 import javafx.scene.Group;
 
-import jfxtras.labs.map.MapControlable;
+import jfxtras.labs.map.Moveable;
 
 /**
  * Interface for the tile renderer.
@@ -20,7 +20,7 @@ public interface TileRenderable {
 	 * @param mapController
 	 * @return the implementation should return the number of actual tiles
 	 */
-	int prepareTiles(MapControlable mapController);
+	int prepareTiles(Moveable mapController);
 	
 	/**
 	 * Gets the bounds of all tiles to be painted. <br/>

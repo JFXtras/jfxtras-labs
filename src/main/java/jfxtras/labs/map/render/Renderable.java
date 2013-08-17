@@ -1,6 +1,6 @@
 package jfxtras.labs.map.render;
 
-import jfxtras.labs.map.MapTileable;
+import jfxtras.labs.map.MapTilesourceable;
 
 /**
  * Interface for additional layers on the map.
@@ -14,6 +14,6 @@ public interface Renderable {
      *
      * @param mapController
      */
-    void render(MapTileable viewer);
+    void render(MapTilesourceable viewer);
     
 }

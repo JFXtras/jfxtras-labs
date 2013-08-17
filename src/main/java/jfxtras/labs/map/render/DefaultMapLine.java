@@ -32,7 +32,7 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.shape.StrokeType;
 import jfxtras.labs.map.Coordinate;
-import jfxtras.labs.map.MapTileable;
+import jfxtras.labs.map.MapTilesourceable;
 
 import static jfxtras.labs.map.CoordinatesConverter.*;
 
@@ -70,7 +70,7 @@ public class DefaultMapLine implements MapLineable {
     }
 
     @Override
-    public void render(MapTileable viewer) {
+    public void render(MapTilesourceable viewer) {
         Polyline polyline = new Polyline();
 
         polyline.setStrokeType(StrokeType.CENTERED);

@@ -118,7 +118,7 @@ public class MapWeatherRadar implements MapOverlayable {
 	}
 
 	@Override
-	public void render(MapTileable viewer) {
+	public void render(MapTilesourceable viewer) {
 
 		ObservableList<Node> children = viewer.getTilesGroup().getChildren();
 		addRadarView(viewer, children);
@@ -126,7 +126,7 @@ public class MapWeatherRadar implements MapOverlayable {
 
 	}
 
-	private void addRadarView(MapControlable viewer,
+	private void addRadarView(Moveable viewer,
 			ObservableList<Node> children) {
 
 		Point ptUL = toMapPoint(upperLeftCoord, viewer);

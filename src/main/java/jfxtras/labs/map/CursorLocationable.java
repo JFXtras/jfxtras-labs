@@ -7,7 +7,7 @@ package jfxtras.labs.map;
  * @author Mario Schroeder
  *
  */
-public interface CursorLocationable extends MapControlable{
+public interface CursorLocationable extends Moveable{
 	
 	void setCursorLocationText(double x, double y);
 

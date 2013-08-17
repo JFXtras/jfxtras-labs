@@ -10,7 +10,7 @@ import jfxtras.labs.map.tile.TileSourceFactory;
  * @author Mario Schroeder
  *
  */
-public class MapPaneBuilder implements Builder<MapPane>{
+public class MapBuilder implements Builder<MapPane>{
 
 	@Override
 	public MapPane build() {
@@ -18,11 +18,11 @@ public class MapPaneBuilder implements Builder<MapPane>{
 		TileSourceFactory<OsmType> factory = new OsmTileSourceFactory();
         OsmType osmType = OsmType.Mapnik;
 
-        MapPane mapPane = new MapPane(factory.create(osmType));
+        MapPane map = new MapPane(factory.create(osmType));
         ZoomControlFactory zoomControlFactory = new ZoomControlFactory();
-        mapPane.getChildren().add(zoomControlFactory.create(mapPane));
+        map.getChildren().add(zoomControlFactory.create(map));
         
-		return mapPane;
+		return map;
 	}
 	
 }

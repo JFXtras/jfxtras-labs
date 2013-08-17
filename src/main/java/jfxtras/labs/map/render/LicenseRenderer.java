@@ -17,7 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import jfxtras.labs.map.Coordinate;
-import jfxtras.labs.map.MapTileable;
+import jfxtras.labs.map.MapTilesourceable;
 import jfxtras.labs.map.tile.TileSource;
 
 import javafx.scene.paint.Color;
@@ -38,7 +38,7 @@ public class LicenseRenderer implements Renderable {
     public static final String STYLE_TERMS = "termsOfUse";
 
     @Override
-    public void render(MapTileable viewer) {
+    public void render(MapTilesourceable viewer) {
 
         TileSource tileSource = viewer.getTileSource();
         Group tilesGroup = viewer.getTilesGroup();

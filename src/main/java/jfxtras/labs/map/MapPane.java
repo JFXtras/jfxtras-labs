@@ -56,7 +56,7 @@ import static jfxtras.labs.map.CoordinatesConverter.*;
  * @author smithjel
  * @author Mario Schroeder
  */
-public final class MapPane extends Pane implements MapTileable {
+public final class MapPane extends Pane implements MapTilesourceable {
 
 	private static final int INITIAL_ZOOM = 9;
 
@@ -112,8 +112,6 @@ public final class MapPane extends Pane implements MapTileable {
 	private SimpleBooleanProperty mapRoutesVisible = new SimpleBooleanProperty(
 			true);
 
-	private SimpleBooleanProperty showZoomControls = new SimpleBooleanProperty(
-			true);
 
 	private SimpleBooleanProperty mapMarkersVisible = new SimpleBooleanProperty(
 			true);
@@ -380,6 +378,7 @@ public final class MapPane extends Pane implements MapTileable {
 	/**
 	 * centers the map when necessary
 	 */
+	@Override
 	public final void centerMap() {
 
 		setDisplayPositionByLatLon(START, START);
@@ -457,10 +456,6 @@ public final class MapPane extends Pane implements MapTileable {
 		renderControl();
 	}
 
-	public List<MapMarkable> getMapMarkerList() {
-		return mapMarkerList;
-	}
-
 	public void removeMapOverlay(MapOverlayable overlay) {
 		mapOverlayList.remove(overlay);
 		renderControl();
@@ -520,8 +515,6 @@ public final class MapPane extends Pane implements MapTileable {
 			throw new IllegalArgumentException("Minumim zoom level too low");
 		}
 		tileRenderer.setTileSource(tileSource);
-		// zoomSlider.setMin(tileSource.getMinZoom());
-		// zoomSlider.setMax(tileSource.getMaxZoom());
 
 		if (zoom.get() > tileSource.getMaxZoom()) {
 			setZoom(tileSource.getMaxZoom());
@@ -657,15 +650,6 @@ public final class MapPane extends Pane implements MapTileable {
 
 	public boolean isMapRoutesVisible() {
 		return this.mapRoutesVisible.get();
-	}
-
-	public void setShowZoomControls(boolean val) {
-		this.showZoomControls.set(val);
-		renderControl();
-	}
-
-	public boolean isShowZoomControls() {
-		return this.showZoomControls.get();
 	}
 
 	public void setMapTrailsVisible(boolean val) {

@@ -3,11 +3,11 @@ package jfxtras.labs.map;
 import java.awt.Point;
 
 /**
- * Interface to control the map widget.
+ * This interface defines methods to move the map.
  *
  * @author Mario Schroeder
  */
-public interface MapControlable extends Zoomable{
+public interface Moveable extends Zoomable{
 
     /**
      * Moves the map to the given coordinates so that x and y is in the center.
@@ -25,9 +25,9 @@ public interface MapControlable extends Zoomable{
     Point getCenter();
 
     int getMapHeight();
-
+    
     int getMapWidth();
-
+    
     int getMapX();
 
     int getMapY();
@@ -37,5 +37,10 @@ public interface MapControlable extends Zoomable{
      * @return
      */
     boolean isMapMoveable();
+    
+    /**
+     * Centers the map: latitude and longitude are zero.
+     */
+    void centerMap();
     
 }

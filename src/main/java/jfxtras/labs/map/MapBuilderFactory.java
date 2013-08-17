@@ -9,11 +9,11 @@ import javafx.util.BuilderFactory;
  * @author Mario Schroeder
  *
  */
-public class MapPaneBuilderFactory implements BuilderFactory {
+public class MapBuilderFactory implements BuilderFactory {
 	
 	private JavaFXBuilderFactory defaultBuilderFactory = new JavaFXBuilderFactory();
 	
-	private MapPaneBuilder builder = new MapPaneBuilder();
+	private MapBuilder builder = new MapBuilder();
 
 	@Override
 	public Builder<?> getBuilder(Class<?> type) {

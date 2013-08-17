@@ -4,11 +4,11 @@ import javafx.scene.Group;
 import jfxtras.labs.map.tile.TileSource;
 
 /**
- * This interface provides method to deal with tiles of the map.
- * @author mario
+ * This interface defines methods to deal with tiles of the map.
+ * @author Mario Schroeder
  *
  */
-public interface MapTileable extends CursorLocationable{
+public interface MapTilesourceable extends CursorLocationable{
 	
 	Group getTilesGroup();
 

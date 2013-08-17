@@ -29,7 +29,7 @@ public class MapTrial extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("Map.fxml"), null,
-				new MapPaneBuilderFactory());
+				new MapBuilderFactory());
 
 		Scene scene = new Scene(root);
 		// TODO find a way that the map automatic resizes without the need to

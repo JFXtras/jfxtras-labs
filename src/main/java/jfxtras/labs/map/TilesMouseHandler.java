@@ -15,7 +15,7 @@ import javafx.scene.input.ScrollEvent;
  */
 public class TilesMouseHandler {
 
-	private MapTileable map;
+	private MapTilesourceable map;
 
 	private Point dragStartPoint;
 
@@ -26,7 +26,7 @@ public class TilesMouseHandler {
 	 * 
 	 * @param tilesGroup
 	 */
-	public void setEventPublisher(MapTileable map) {
+	public void setEventPublisher(MapTilesourceable map) {
 		this.map = map;
 		addListeners(map.getTilesGroup());
 	}

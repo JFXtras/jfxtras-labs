@@ -17,7 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import jfxtras.labs.map.MapControlable;
+import jfxtras.labs.map.Moveable;
 import jfxtras.labs.map.tile.Tile;
 import jfxtras.labs.map.tile.TileCacheable;
 import jfxtras.labs.map.tile.TileSource;
@@ -55,7 +55,7 @@ public class TileRenderer implements TileRenderable {
 	}
 
 	@Override
-	public int prepareTiles(MapControlable mapController) {
+	public int prepareTiles(Moveable mapController) {
 
 		tileImages = loadTiles(mapController);
 		return tileImages.size();
@@ -80,7 +80,7 @@ public class TileRenderer implements TileRenderable {
 	/**
 	 * Load the tiles in a spiral, starting from center of the map.
 	 */
-	private List<TileImage> loadTiles(MapControlable mapController) {
+	private List<TileImage> loadTiles(Moveable mapController) {
 
 		List<TileImage> tiles = new ArrayList<>();
 
