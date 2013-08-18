@@ -90,7 +90,7 @@ public class MapTrial extends Application {
 		coordinates.add(lowerRightCoord);
 
 		MapAirspace airspace = new MapAirspace(coordinates);
-		map.addMapPolygon(airspace);
+//		map.addMapPolygon(airspace);
 
 		Image image = new Image(getClass().getResourceAsStream("plus.png"));
 		map.addMapMarker(new ImageMapMarker(image, ul_Lat, ul_Lon, 25));

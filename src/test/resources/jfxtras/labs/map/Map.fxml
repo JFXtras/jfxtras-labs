@@ -5,6 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.collections.FXCollections?>
 <?import jfxtras.labs.map.MapPane?>
 <?import jfxtras.labs.map.tile.OsmType?>
@@ -29,7 +30,15 @@
 				<value>
         			<OsmType fx:value="Mapnik" />
     			</value>
+    			<tooltip>
+        			<Tooltip text="change map type"/>
+    			</tooltip>
             </ComboBox>
+            <Button id="btnCenter" fx:id="btnCenter" onAction="#centerMap">
+            	<tooltip>
+        			<Tooltip text="center the map"/>
+    			</tooltip>
+            </Button>
         </ToolBar>
     </top>
     <center>

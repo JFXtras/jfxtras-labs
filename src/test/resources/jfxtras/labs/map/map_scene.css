@@ -1,5 +1,4 @@
 /* 
-    Document   : JFXMapPaneDemo
     Created on : Aug 17, 2013
     Author     : Mario Schroeder
     Description: stylesheet for the map scene
@@ -20,3 +19,9 @@
                 (94.1%,#515151);
 }
 
+#btnCenter {          
+    -fx-background-image: url("plus.png");
+    -fx-background-size: 14 14;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position:center;   
+}

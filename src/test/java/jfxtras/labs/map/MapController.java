@@ -32,6 +32,12 @@ public class MapController {
 		
 		updateStyleSheet(value);
 	}
+	
+	@FXML
+	public void centerMap(ActionEvent event){
+
+		map.centerMap();
+	}
 
 	private TileSource createTileSource(Object value){
 		
