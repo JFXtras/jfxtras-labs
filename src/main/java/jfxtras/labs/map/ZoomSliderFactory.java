@@ -12,10 +12,10 @@ import javafx.scene.control.Slider;
  */
 public class ZoomSliderFactory {
 
-    private MapControlable controlable;
+    private Zoomable zoomable;
 
-    public ZoomSliderFactory(MapControlable controlable) {
-        this.controlable = controlable;
+    public ZoomSliderFactory(Zoomable zoomable) {
+        this.zoomable = zoomable;
     }
 
     protected Slider create() {
@@ -25,17 +25,16 @@ public class ZoomSliderFactory {
         slider.setShowTickMarks(true);
         slider.setMajorTickUnit(1.0);
         
-        int minZoom = controlable.getTileSource().getMinZoom();
-        slider.setValue(minZoom);
-        slider.setMin(minZoom);
-        slider.setMax(controlable.getTileSource().getMaxZoom());
+        slider.setValue(zoomable.zoomProperty().get());
+        slider.setMin(zoomable.getMinZoom());
+        slider.setMax(zoomable.getMaxZoom());
 
         slider.setPrefSize(30, 150);
 
         slider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-                controlable.setZoom(new_val.intValue());
+                zoomable.setZoom(new_val.intValue());
             }
         });
 

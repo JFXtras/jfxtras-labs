@@ -9,7 +9,11 @@ import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 
-import jfxtras.labs.map.MapControlable;
+import jfxtras.labs.map.Coordinate;
+import jfxtras.labs.map.Moveable;
+import jfxtras.labs.map.MapTilesourceable;
+
+import static jfxtras.labs.map.CoordinatesConverter.*;
 
 /**
  *
@@ -42,9 +46,9 @@ abstract class AbstractMapMarker implements MapMarkable {
     }
 
     @Override
-    public void render(MapControlable mapController) {
+    public void render(MapTilesourceable mapController) {
         
-        Point postion = mapController.getMapPoint(lat, lon, true);
+        Point postion = getPoint(mapController);
         if(postion != null){
             Group tilesGroup = mapController.getTilesGroup();
             ObservableList<Node> children = tilesGroup.getChildren();
@@ -55,6 +59,11 @@ abstract class AbstractMapMarker implements MapMarkable {
 				}
 			}
         }
+    }
+    
+    private Point getPoint(Moveable mapController){
+    	Coordinate coordinate = new Coordinate(lat, lon);
+    	return toMapPoint(coordinate, mapController);
     }
     
     abstract List<? extends Node> createChildren(Point position);

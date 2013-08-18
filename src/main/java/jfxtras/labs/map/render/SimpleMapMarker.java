@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.util.Collections;
 import java.util.List;
 
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.RadialGradient;
