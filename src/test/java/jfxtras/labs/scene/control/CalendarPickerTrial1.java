@@ -96,6 +96,9 @@ public class CalendarPickerTrial1 extends Application {
 		// create scene
         Scene scene = new Scene(lVBox, 300, 300);
 
+        // load custom CSS
+        scene.getStylesheets().addAll(this.getClass().getResource(this.getClass().getSimpleName() + ".css").toExternalForm());
+		
         // create stage
         stage.setTitle(this.getClass().getSimpleName());
         stage.setScene(scene);

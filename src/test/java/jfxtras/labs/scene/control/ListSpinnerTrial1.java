@@ -31,17 +31,19 @@ import java.math.BigInteger;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import jfxtras.labs.scene.control.ListSpinner.ArrowDirection;
-import jfxtras.labs.scene.control.ListSpinner.ArrowPosition;
+import jfxtras.labs.internal.scene.control.skin.ListSpinnerCaspianSkin;
 import jfxtras.labs.util.StringConverterFactory;
 
 /**
@@ -176,54 +178,67 @@ public class ListSpinnerTrial1 extends Application {
 			}
 			{
 				lGridPane.add(new Label("align right"), 0, lRowIdx);
-				ListSpinner<String> lSpinner = new ListSpinner<String>( "a", "b", "c", "d", "e" )
-					.withAlignment(Pos.CENTER_RIGHT)
-					;
+				ListSpinner<String> lSpinner = new ListSpinner<String>( "a", "b", "c", "d", "e" );
+				lSpinner.setStyle("-fxx-value-alignment:CENTER_RIGHT;");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("align right"), 0, lRowIdx);
 				ListSpinner<String> lSpinner = new ListSpinner<String>( "a", "b", "c", "d", "e" )
-					.withAlignment(Pos.CENTER_RIGHT)
 					.withEditable(true)
 					.withStringConverter(StringConverterFactory.forString())
 					;
+				lSpinner.setStyle("-fxx-value-alignment:CENTER_RIGHT;");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Integer range 0..100 with %"), 0, lRowIdx);
 				ListSpinner<Integer> lSpinner = new ListSpinner<Integer>(0, 100)
 						.withPostfix("%")
-						.withAlignment(Pos.CENTER_RIGHT)
 						;
+				lSpinner.setStyle("-fxx-value-alignment:CENTER_RIGHT;");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Integer range 0..100 with %"), 0, lRowIdx);
 				ListSpinner<Integer> lSpinner = new ListSpinner<Integer>(0, 100)
 						.withPostfix("%")
-						.withAlignment(Pos.CENTER_RIGHT)
 						.withEditable(true)
 						.withStringConverter(StringConverterFactory.forInteger())
 						;
+				lSpinner.setStyle("-fxx-value-alignment:CENTER_RIGHT;");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Integer currency 0..100"), 0, lRowIdx);
 				ListSpinner<Integer> lSpinner = new ListSpinner<Integer>(0, 100)
 						.withPrefix("$ ")
-						.withAlignment(Pos.CENTER_RIGHT)
 						;
+				lSpinner.setStyle("-fxx-value-alignment:CENTER_RIGHT;");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("Integer currency 0..100"), 0, lRowIdx);
-				ListSpinner<Integer> lSpinner = new ListSpinner<Integer>(0, 100)
+				final ListSpinner<Integer> lSpinner = new ListSpinner<Integer>(0, 100)
 						.withPrefix("$ ")
-						.withAlignment(Pos.CENTER_RIGHT)
 						.withEditable(true)
 						.withStringConverter(StringConverterFactory.forInteger())
 						;
+				lSpinner.setStyle("-fxx-value-alignment:CENTER_RIGHT;");
+				
+				Button lButton = new Button("change CSS");
+				lButton.onMouseClickedProperty().set(new EventHandler<MouseEvent>()
+				{
+					@Override
+					public void handle(MouseEvent arg0)
+					{
+						//lSpinner.setStyle("-fxx-arrow-position:SPLIT;");
+						//lSpinner.setStyle("-fxx-arrow-direction:VERTICAL;;");
+						lSpinner.setStyle("-fxx-value-alignment:CENTER_LEFT; -fxx-arrow-direction:VERTICAL; -fxx-arrow-position:SPLIT;");
+					}
+				});
+				lGridPane.add(lButton, 2, lRowIdx);
+				
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			
@@ -238,74 +253,92 @@ public class ListSpinnerTrial1 extends Application {
 
 			// arrow position
 			{
-				lGridPane.add(new Label("HORIZONTAL LEADING"), 0, lRowIdx);
+				lGridPane.add(new Label("DEFAULT"), 0, lRowIdx);
 				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
+				lGridPane.add(new Label("HORIZONTAL LEADING"), 0, lRowIdx);
+				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c");
+				lSpinner.setStyle("-fxx-arrow-direction:HORIZONTAL; -fxx-arrow-position:LEADING;");
+				lGridPane.add(lSpinner, 1, lRowIdx++);
+			}
+			{
 				lGridPane.add(new Label("HORIZONTAL TRAILING"), 0, lRowIdx);
-				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.TRAILING);
+				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c");
+				lSpinner.setStyle("-fxx-arrow-direction:HORIZONTAL; -fxx-arrow-position:TRAILING;");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("HORIZONTAL SPLIT"), 0, lRowIdx);
-				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.SPLIT);
+				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c");
+				lSpinner.setStyle("-fxx-arrow-direction:HORIZONTAL; -fxx-arrow-position:SPLIT;");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("VERTICAL LEADING"), 0, lRowIdx);
-				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.LEADING);
+				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c");
+				lSpinner.setStyle("-fxx-arrow-direction:VERTICAL; -fxx-arrow-position:LEADING;");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("VERTICAL TRAILING"), 0, lRowIdx);
-				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.TRAILING);
+				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c");
+				lSpinner.setStyle("-fxx-arrow-direction:VERTICAL; -fxx-arrow-position:TRAILING;");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("VERTICAL SPLIT"), 0, lRowIdx);
-				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.SPLIT);
+				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c");
+				lSpinner.setStyle("-fxx-arrow-direction:VERTICAL; -fxx-arrow-position:SPLIT;");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("CSS"), 0, lRowIdx);
-				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.LEADING);
+				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 				lSpinner.setId("TheSpinner");
 			}
 			{
 				lGridPane.add(new Label("HORIZONTAL LEADING"), 0, lRowIdx);
-				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.LEADING).withEditable(true);
+				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withEditable(true);
+				lSpinner.setStyle("-fxx-arrow-direction:HORIZONTAL; -fxx-arrow-position:LEADING;");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("HORIZONTAL TRAILING"), 0, lRowIdx);
-				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.TRAILING).withEditable(true);
+				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withEditable(true);
+				lSpinner.setStyle("-fxx-arrow-direction:HORIZONTAL; -fxx-arrow-position:TRAILING;");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("HORIZONTAL SPLIT"), 0, lRowIdx);
-				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.HORIZONTAL).withArrowPosition(ArrowPosition.SPLIT).withEditable(true);
+				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withEditable(true);
+				lSpinner.setStyle("-fxx-arrow-direction:HORIZONTAL; -fxx-arrow-position:SPLIT;");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("VERTICAL LEADING"), 0, lRowIdx);
-				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.LEADING).withEditable(true);
+				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withEditable(true);
+				lSpinner.setStyle("-fxx-arrow-direction:VERTICAL; -fxx-arrow-position:LEADING;");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("VERTICAL TRAILING"), 0, lRowIdx);
-				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.TRAILING).withEditable(true);
+				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withEditable(true);
+				lSpinner.setStyle("-fxx-arrow-direction:VERTICAL; -fxx-arrow-position:TRAILING;");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
 				lGridPane.add(new Label("VERTICAL SPLIT"), 0, lRowIdx);
-				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withArrowDirection(ArrowDirection.VERTICAL).withArrowPosition(ArrowPosition.SPLIT).withEditable(true);
+				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withEditable(true);
+				lSpinner.setStyle("-fxx-arrow-direction:VERTICAL; -fxx-arrow-position:SPLIT;");
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 			}
 			{
-				lGridPane.add(new Label("CSS"), 0, lRowIdx);
-				ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withEditable(true);
+				lGridPane.add(new Label("CSS SPLIT"), 0, lRowIdx);
+				final ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c").withEditable(true);
+				
 				lGridPane.add(lSpinner, 1, lRowIdx++);
 				lSpinner.setId("TheEditableSpinner");
 			}
