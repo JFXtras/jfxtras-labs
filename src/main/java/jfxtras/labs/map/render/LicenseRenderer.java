@@ -1,6 +1,7 @@
 package jfxtras.labs.map.render;
 
 import java.awt.Desktop;
+import java.awt.Point;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -16,11 +17,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import jfxtras.labs.map.Coordinate;
-import jfxtras.labs.map.MapControlable;
+import jfxtras.labs.map.MapTilesourceable;
 import jfxtras.labs.map.tile.TileSource;
 
 import javafx.scene.paint.Color;
 import javafx.scene.text.FontSmoothingType;
+
+import static jfxtras.labs.map.CoordinatesConverter.*;
 
 /**
  * This class displays copy right informations on the map
@@ -35,20 +38,21 @@ public class LicenseRenderer implements Renderable {
     public static final String STYLE_TERMS = "termsOfUse";
 
     @Override
-    public void render(MapControlable mapController) {
+    public void render(MapTilesourceable viewer) {
 
-        TileSource tileSource = mapController.getTileSource();
-        Group tilesGroup = mapController.getTilesGroup();
+        TileSource tileSource = viewer.getTileSource();
+        Group tilesGroup = viewer.getTilesGroup();
 
-        int x = mapController.getMapX();
-        int y = mapController.getMapY();
-        int width = mapController.getMapWidth();
-        int height = mapController.getMapHeight();
+        int x = viewer.getMapX();
+        int y = viewer.getMapY();
+        int width = viewer.getMapWidth();
+        int height = viewer.getMapHeight();
         int yText = height - 8;
         
-        Coordinate topLeft = mapController.getCoordinate(x, y);
-        Coordinate bottomRight = mapController.getCoordinate(width, height);
-        String attrTxt = tileSource.getAttributionText(mapController.getZoom(), topLeft, bottomRight);
+        
+        Coordinate topLeft = toCoordinate(new Point(x,y), viewer);
+        Coordinate bottomRight = toCoordinate(new Point(width, height), viewer);
+        String attrTxt = tileSource.getAttributionText(viewer.zoomProperty().get(), topLeft, bottomRight);
 
         // Draw attribution text
         if (attrTxt != null) {

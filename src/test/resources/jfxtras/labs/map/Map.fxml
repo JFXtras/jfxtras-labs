@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.collections.FXCollections?>
+<?import jfxtras.labs.map.MapPane?>
+<?import jfxtras.labs.map.tile.OsmType?>
+<?import jfxtras.labs.map.tile.BingType?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+	fx:id="container" fx:controller="jfxtras.labs.map.MapController"
+	prefWidth="600" prefHeight="800">
+    <top>
+        <ToolBar id="toolBar" fx:id="toolBar">
+            <ComboBox fx:id="mapType" onAction="#mapTypeChanged">
+             	<items>
+					<FXCollections fx:factory="observableArrayList">
+						<OsmType fx:value="Mapnik" />
+						<OsmType fx:value="CycleMap" />
+						<OsmType fx:value="Transport" />
+						<OsmType fx:value="Landscape" />
+						<BingType fx:value="Map" />
+						<BingType fx:value="Aerial" />
+					</FXCollections>
+				</items>
+				<value>
+        			<OsmType fx:value="Mapnik" />
+    			</value>
+    			<tooltip>
+        			<Tooltip text="change map type"/>
+    			</tooltip>
+            </ComboBox>
+            <Button id="btnCenter" fx:id="btnCenter" onAction="#centerMap">
+            	<tooltip>
+        			<Tooltip text="center the map"/>
+    			</tooltip>
+            </Button>
+        </ToolBar>
+    </top>
+    <center>
+        <MapPane fx:id="map"/>
+    </center>
+    
+    <stylesheets>
+      <URL value="@map_pane.css" />
+    </stylesheets>
+</BorderPane>
