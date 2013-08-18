@@ -471,7 +471,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		renderControl();
 	}
 
-	public List<MapPolygonable> getMapRectangleList() {
+	public List<MapPolygonable> getMapPolygonList() {
 		return mapPolygonList;
 	}
 

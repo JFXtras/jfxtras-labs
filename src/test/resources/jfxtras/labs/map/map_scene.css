@@ -20,7 +20,7 @@
 }
 
 #btnCenter {          
-    -fx-background-image: url("plus.png");
+    -fx-background-image: url("center-map.png");
     -fx-background-size: 14 14;
     -fx-background-repeat: no-repeat;
     -fx-background-position:center;   

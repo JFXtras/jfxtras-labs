@@ -17,7 +17,7 @@ import javafx.scene.layout.VBox;
  */
 public class ZoomControlFactory {
 
-	protected static final double ZOOM_DIFF = .01;
+	private static final String ZOOM_LEVEL = "Zoom to level ";
 
 	protected Zoomable zoomable;
 
@@ -40,6 +40,8 @@ public class ZoomControlFactory {
 		zoomButtonFactory = new ZoomOutButtonFactory(zoomable);
 		zoomOutButton = zoomButtonFactory.create();
 		
+		setTooltip(zoomable.zoomProperty().get());
+		
 		zoomable.zoomProperty().addListener(new ZoomChangeListener());
 
 		Pane pane = new VBox();
@@ -53,16 +55,23 @@ public class ZoomControlFactory {
 		return pane;
 	}
 
+	private void setTooltip(int zoom) {
+		zoomSlider.setTooltip(new Tooltip("Zoom level " + zoom));
+		zoomInButton.setTooltip(new Tooltip(ZOOM_LEVEL + (zoom + 1)));
+		zoomOutButton.setTooltip(new Tooltip(ZOOM_LEVEL + (zoom - 1)));
+	}
+
 	private class ZoomChangeListener implements ChangeListener<Number> {
 
+		private static final double ZOOM_DIFF = .01;
+		
 		@Override
 		public void changed(ObservableValue<? extends Number> observable,
 				Number oldValue, Number newValue) {
 			int zoom = newValue.intValue();
-			zoomSlider.setTooltip(new Tooltip("Zoom level " + zoom));
-			zoomInButton.setTooltip(new Tooltip("Zoom to level " + (zoom + 1)));
-			zoomOutButton
-					.setTooltip(new Tooltip("Zoom to level " + (zoom - 1)));
+			
+			setTooltip(zoom);
+			
 			zoomOutButton.setDisable(!(zoom > zoomable.getMinZoom()));
 			zoomInButton.setDisable(!(zoom < zoomable.getMaxZoom()));
 
