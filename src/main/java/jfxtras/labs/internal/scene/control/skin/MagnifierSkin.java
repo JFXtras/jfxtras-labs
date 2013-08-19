@@ -5,14 +5,10 @@ package jfxtras.labs.internal.scene.control.skin;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.PerspectiveCameraBuilder;
@@ -82,19 +78,19 @@ public class MagnifierSkin extends SkinBase<Magnifier, MagnifierBehavior> {
 		final BooleanProperty scopeLinesVisibleProperty = getSkinnable().scopeLinesVisibleProperty();
 
 		// Adding listener to control "radiusProperty" to add the value to "localRadius".
-		getSkinnable().radiusProperty().addListener(new ChangeListener<Number>() {
+		getSkinnable().radiusProperty().addListener(new InvalidationListener() {
 			@Override
-			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number r) {
-				localRadius.set(r.doubleValue());
+			public void invalidated(Observable arg0) {
+				localRadius.set(getSkinnable().getRadius());
 			}
 		});
 		localRadius.set(getSkinnable().getRadius());
 
 		// Adding listener to control "scaleFactorProperty" to add the value to "localScaleFactor".
-		getSkinnable().scaleFactorProperty().addListener(new ChangeListener<Number>() {
+		getSkinnable().scaleFactorProperty().addListener(new InvalidationListener() {
 			@Override
-			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number r) {
-				localScaleFactor.set(r.doubleValue());
+			public void invalidated(Observable arg0) {
+				localScaleFactor.set(getSkinnable().getScaleFactor());
 			}
 		});
 		localScaleFactor.set(getSkinnable().getScaleFactor());
@@ -116,17 +112,8 @@ public class MagnifierSkin extends SkinBase<Magnifier, MagnifierBehavior> {
 
 		final StackPane mainContent = StackPaneBuilder.create().build();
 		final Circle frame = CircleBuilder.create().styleClass("magnifier-frame").build();
-		frame.radiusProperty().bind(new DoubleBinding() {
-			{
-				bind(localRadius, frameWidthProperty);
-			}
-
-			@Override
-			protected double computeValue() {
-				return localRadius.get() + frameWidthProperty.get();
-			}
-		});
-
+		frame.radiusProperty().bind(localRadius.add(frameWidthProperty));
+		
 		final Circle cClip = CircleBuilder.create().build();
 		cClip.radiusProperty().bind(localRadius);
 		cClip.translateXProperty().bind(localRadius);
@@ -155,9 +142,9 @@ public class MagnifierSkin extends SkinBase<Magnifier, MagnifierBehavior> {
 		final StackPane mask = new StackPane();
 		getChildren().add(mask);
 		final SimpleBooleanProperty maskFlag = new SimpleBooleanProperty(true);
-		getChildren().addListener(new ListChangeListener<Node>() {
+		getChildren().addListener(new InvalidationListener() {
 			@Override
-			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Node> param) {
+			public void invalidated(Observable arg0) {
 				if (getSkinnable().isActive() && maskFlag.get()) {
 					maskFlag.set(false);
 					getChildren().remove(mask);
@@ -203,10 +190,10 @@ public class MagnifierSkin extends SkinBase<Magnifier, MagnifierBehavior> {
 		};
 
 		// Adding listener to activateProperty.
-		getSkinnable().activeProperty().addListener(new ChangeListener<Boolean>() {
+		getSkinnable().activeProperty().addListener(new InvalidationListener() {
 			@Override
-			public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean activate) {
-				if (activate) {
+			public void invalidated(Observable arg0) {
+				if (getSkinnable().isActive()) {
 					addEventFilter(MouseEvent.MOUSE_ENTERED, enteredEvent);
 					addEventFilter(MouseEvent.MOUSE_EXITED, exitedEvent);
 					addEventFilter(MouseEvent.MOUSE_MOVED, movedEvent);
