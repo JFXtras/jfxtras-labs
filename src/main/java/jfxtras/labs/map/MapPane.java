@@ -24,7 +24,6 @@ import jfxtras.labs.map.tile.ZoomBounds;
 import jfxtras.labs.map.render.LicenseRenderer;
 import jfxtras.labs.map.render.MapLineable;
 import jfxtras.labs.map.render.MapMarkable;
-import jfxtras.labs.map.render.MapOverlayable;
 import jfxtras.labs.map.render.MapPolygonable;
 import jfxtras.labs.map.render.Renderable;
 import jfxtras.labs.map.tile.TileSource;
@@ -38,6 +37,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
@@ -48,8 +49,9 @@ import javafx.scene.text.Text;
 import jfxtras.labs.map.render.TileRenderer;
 import jfxtras.labs.map.tile.TileCacheable;
 import jfxtras.labs.map.tile.TileRepository;
-
+import static javafx.collections.FXCollections.*;
 import static jfxtras.labs.map.CoordinatesConverter.*;
+
 
 /**
  * 
@@ -68,19 +70,13 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	private TileRenderer tileRenderer;
 
-	private MapEdgeVisibilityChecker mapEdgeVisibilityChecker;
+	private MapEdgeChecker mapEdgeChecker;
 
-	private List<MapMarkable> mapMarkerList = new ArrayList<>();
-
-	private List<MapPolygonable> mapPolygonList = new ArrayList<>();
-
-	private List<MapLineable> mapLineList = new ArrayList<>();
-
-	private List<MapOverlayable> mapOverlayList = new ArrayList<>();
+	private ObservableList<Renderable> mapLayers = observableArrayList();
 
 	// X&Y position of the center of this map on the world
 	// in screen pixels for the current zoom level.
-	private Point center;
+	private Point center = new Point();
 
 	// Current zoom level
 	private SimpleIntegerProperty zoom;
@@ -104,27 +100,17 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	private SimpleIntegerProperty mapHeight = new SimpleIntegerProperty(SIZE);
 
-	private SimpleIntegerProperty trailTime = new SimpleIntegerProperty(30);
-
-	private SimpleBooleanProperty mapTrailsVisible = new SimpleBooleanProperty(
-			true);
-
-	private SimpleBooleanProperty mapRoutesVisible = new SimpleBooleanProperty(
-			true);
-
-
 	private SimpleBooleanProperty mapMarkersVisible = new SimpleBooleanProperty(
 			true);
 
 	private boolean cursorLocationVisible = true;
 
-	private SimpleBooleanProperty mapVehiclesVisible = new SimpleBooleanProperty(
-			true);
-
 	private SimpleBooleanProperty mapPolygonsVisible = new SimpleBooleanProperty(
 			true);
 
 	private CoordinateStringFormater formater;
+	
+	private boolean tilesPrepared;
 
 	public MapPane(TileSource ts) {
 		this(ts, 800, 600, INITIAL_ZOOM);
@@ -138,7 +124,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 		TileCacheable tileCache = new TileRepository(tileSource);
 		tileRenderer = new TileRenderer(tileCache);
-		mapEdgeVisibilityChecker = new MapEdgeVisibilityChecker(tileRenderer);
+		mapEdgeChecker = new MapEdgeChecker(tileRenderer);
 
 		int tileSize = tileSource.getTileSize();
 		setMinSize(tileSize, tileSize);
@@ -156,6 +142,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		getChildren().add(tilesGroup);
 		getChildren().add(cursorLocationText);
 
+		addRenderChangeListener();
 		addSizeListeners();
 
 		setPrefSize(width, height);
@@ -167,6 +154,14 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	public final void setTilesMouseHandler(TilesMouseHandler handler) {
 		handler.setEventPublisher(this);
+	}
+	
+	private void addRenderChangeListener(){
+		RenderChangeListener listener = new RenderChangeListener();
+		mapLayers.addListener(listener);
+		
+		mapMarkersVisible.addListener(listener);
+		mapPolygonsVisible.addListener(listener);
 	}
 
 	private void addSizeListeners() {
@@ -295,20 +290,20 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	}
 
 	private void moveCenter(Point mapPoint, int x, int y) {
-		Point p = new Point();
-		p.x = x - mapPoint.x + (int) (getMapWidth() / 2);
-		p.y = y - mapPoint.y + (int) (getMapHeight() / 2);
-		center = p;
+		center.x = x - mapPoint.x + (int) (getMapWidth() / 2);
+		center.y = y - mapPoint.y + (int) (getMapHeight() / 2);
 	}
 
 	public void setDisplayToFitMapMarkers() {
-		if (mapMarkerList != null && !mapMarkerList.isEmpty()) {
+		List<MapMarkable> markers = getMapMarkers();
+		if (!markers.isEmpty()) {
 			int x_min = Integer.MAX_VALUE;
 			int y_min = Integer.MAX_VALUE;
 			int x_max = Integer.MIN_VALUE;
 			int y_max = Integer.MIN_VALUE;
 			int mapZoomMax = getTileSource().getMaxZoom();
-			for (MapMarkable marker : mapMarkerList) {
+			
+			for (MapMarkable marker : markers) {
 				int x = Mercator.lonToX(marker.getLon(), mapZoomMax);
 				int y = Mercator.latToY(marker.getLat(), mapZoomMax);
 				x_max = Math.max(x_max, x);
@@ -316,13 +311,13 @@ public final class MapPane extends Pane implements MapTilesourceable {
 				x_min = Math.min(x_min, x);
 				y_min = Math.min(y_min, y);
 			}
+			
 			int height = (int) Math.max(START, getMapHeight());
 			int width = (int) Math.max(START, getMapWidth());
 			int newZoom = mapZoomMax;
 			int x = x_max - x_min;
 			int y = y_max - y_min;
 			while (x > width || y > height) {
-				// System.out.println("zoom: " + zoom + " -> " + x + " " + y);
 				newZoom--;
 				x >>= 1;
 				y >>= 1;
@@ -336,8 +331,19 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		}
 	}
 
+	private List<MapMarkable> getMapMarkers() {
+		List<MapMarkable> markers = new ArrayList<>();
+		//a bit ugly to filter out by instance of
+		for(Renderable layer : mapLayers){
+			if(layer instanceof MapMarkable){
+				markers.add((MapMarkable)layer);
+			}
+		}
+		return markers;
+	}
+
 	public void setDisplayToFitMapRectangle() {
-		if (mapPolygonList != null && !mapPolygonList.isEmpty()) {
+		if (!mapLayers.isEmpty()) {
 			int x_min = Integer.MAX_VALUE;
 			int y_min = Integer.MAX_VALUE;
 			int x_max = Integer.MIN_VALUE;
@@ -366,13 +372,27 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	@Override
 	public void moveMap(int x, int y) {
 
+		Point previous = new Point(center);
 		center.x += x;
 		center.y += y;
+		
+		if(prepareTiles() > 0 && !isOnEdge()){
+			tilesPrepared = true;
+		}else{
+			center = previous;
+			prepareTiles();
+		}
+		
 		renderControl();
 
 		if (isEdgeVisible()) {
 			centerMap();
 		}
+	}
+	
+	private boolean isOnEdge(){
+		Dimension dim = new Dimension(getMapWidth(), getMapHeight());
+		return mapEdgeChecker.isOnEdge(dim);
 	}
 
 	/**
@@ -439,7 +459,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	private boolean isEdgeVisible() {
 		Dimension dim = new Dimension(getMapWidth(), getMapHeight());
-		return mapEdgeVisibilityChecker.isAllVisible(dim);
+		return mapEdgeChecker.isAllVisible(dim);
 	}
 
 	private Coordinate getCoordinate(Point p) {
@@ -448,61 +468,14 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	public void setMapMarkerVisible(boolean mapMarkersVisible) {
 		this.mapMarkersVisible.set(mapMarkersVisible);
-		renderControl();
 	}
 
-	public void setMapMarkerList(List<MapMarkable> mapMarkerList) {
-		this.mapMarkerList = mapMarkerList;
-		renderControl();
+	public void removeMapLayer(Renderable layer) {
+		mapLayers.remove(layer);
 	}
 
-	public void removeMapOverlay(MapOverlayable overlay) {
-		mapOverlayList.remove(overlay);
-		renderControl();
-	}
-
-	public void addMapOverlay(MapOverlayable overlay) {
-		mapOverlayList.add(overlay);
-		renderControl();
-	}
-
-	public void setMapPolygonList(List<MapPolygonable> mapPolygonList) {
-		this.mapPolygonList = mapPolygonList;
-		renderControl();
-	}
-
-	public List<MapPolygonable> getMapPolygonList() {
-		return mapPolygonList;
-	}
-
-	public void addMapLine(MapLineable line) {
-		mapLineList.add(line);
-		renderControl();
-	}
-
-	public void removeMapMarker(MapLineable line) {
-		mapLineList.remove(line);
-		renderControl();
-	}
-
-	public void addMapMarker(MapMarkable marker) {
-		mapMarkerList.add(marker);
-		renderControl();
-	}
-
-	public void removeMapMarker(MapMarkable marker) {
-		mapMarkerList.remove(marker);
-		renderControl();
-	}
-
-	public void addMapPolygon(MapPolygonable polygon) {
-		mapPolygonList.add(polygon);
-		renderControl();
-	}
-
-	public void removeMapPolygon(MapPolygonable polygon) {
-		mapPolygonList.remove(polygon);
-		renderControl();
+	public void addMapLayer(Renderable layer) {
+		mapLayers.add(layer);
 	}
 
 	public void setTileSource(TileSource tileSource) {
@@ -530,10 +503,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 			if (changed) {
 
-				renderOverlays();
-				renderPolygons();
-				renderMarkers();
-
+				renderMapLayers();
 				renderAttribution();
 			}
 		}
@@ -542,39 +512,42 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	protected boolean renderMap() {
 
 		boolean updated = false;
-		int tilesCount = tileRenderer.prepareTiles(this);
 
-		if (tilesCount > 0) {
+		if(!tilesPrepared){
+			if (prepareTiles() > 0) {
+				tileRenderer.doRender(tilesGroup);
+				updated = true;
+			}
+		}else{
 			tileRenderer.doRender(tilesGroup);
 			updated = true;
 		}
+		
+		tilesPrepared = false;
 
 		return updated;
 	}
-
-	protected void renderOverlays() {
-		for (MapOverlayable overlay : mapOverlayList) {
-			overlay.render(this);
-		}
+	
+	private int prepareTiles(){
+		return tileRenderer.prepareTiles(this);
 	}
 
-	protected void renderPolygons() {
-		if (mapPolygonsVisible.get() && mapPolygonList != null) {
-			for (MapPolygonable polygon : mapPolygonList) {
-				polygon.render(this);
+	protected void renderMapLayers() {
+		for (Renderable overlay : mapLayers) {
+			if(isEnabled(overlay)){
+				overlay.render(this);
 			}
 		}
 	}
-
-	protected void renderMarkers() {
-		if (mapMarkersVisible.get() && mapMarkerList != null) {
-			for (MapMarkable marker : mapMarkerList) {
-				marker.render(this);
-			}
-			for (MapLineable line : mapLineList) {
-				line.render(this);
-			}
+	
+	protected boolean isEnabled(Renderable renderable){
+		boolean enabled = true;
+		if((renderable instanceof MapPolygonable && !isMapPolygonsVisible())){
+			enabled = false;
+		}else if(renderable instanceof MapMarkable || renderable instanceof MapLineable){
+			enabled = mapMarkersVisible.get();
 		}
+		return enabled;
 	}
 
 	protected void renderAttribution() {
@@ -621,44 +594,12 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		return mapHeight.get();
 	}
 
-	public void setTrailTime(int val) {
-		this.trailTime.set(val);
-	}
-
-	public void setMapVehiclesVisible(boolean val) {
-		this.mapVehiclesVisible.set(val);
-		renderControl();
-	}
-
-	public boolean isMapVehiclesVisible() {
-		return this.mapVehiclesVisible.get();
-	}
-
 	public void setMapPolygonsVisible(boolean val) {
 		this.mapPolygonsVisible.set(val);
-		renderControl();
 	}
 
 	public boolean isMapPolygonsVisible() {
 		return this.mapPolygonsVisible.get();
-	}
-
-	public void setMapRoutesVisible(boolean val) {
-		this.mapRoutesVisible.set(val);
-		renderControl();
-	}
-
-	public boolean isMapRoutesVisible() {
-		return this.mapRoutesVisible.get();
-	}
-
-	public void setMapTrailsVisible(boolean val) {
-		this.mapTrailsVisible.set(val);
-		renderControl();
-	}
-
-	public boolean isMapTrailsVisible() {
-		return this.mapTrailsVisible.get();
 	}
 
 	public void setMonochromeMode(boolean val) {
@@ -693,7 +634,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	@Override
 	public boolean isMapMoveable() {
 		Dimension dim = new Dimension(getMapWidth(), getMapHeight());
-		return !mapEdgeVisibilityChecker.isAllVisible(dim);
+		return !mapEdgeChecker.isAllVisible(dim);
 	}
 
 	@Override
@@ -708,5 +649,19 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	public void setIgnoreRepaint(boolean ignoreRepaint) {
 		this.ignoreRepaint = ignoreRepaint;
+	}
+	
+	private class RenderChangeListener implements ListChangeListener<Renderable>, ChangeListener<Boolean>{
+
+		@Override
+		public void onChanged(Change<? extends Renderable> change) {
+			renderControl();
+		}
+		
+		@Override
+		public void changed(ObservableValue<? extends Boolean> observable,
+				Boolean oldVal, Boolean newVal) {
+			renderControl();
+		}
 	}
 }
