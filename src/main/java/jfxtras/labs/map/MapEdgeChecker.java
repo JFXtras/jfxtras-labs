@@ -11,12 +11,36 @@ import jfxtras.labs.map.render.TileRenderable;
  * @author Mario Schroeder
  *
  */
-class MapEdgeVisibilityChecker {
+class MapEdgeChecker {
+	
+	/**minimum with of the border required still to be visible*/
+	private static final int MIN = 100;
 	
 	private TileRenderable tileRenderer;
 	
-	MapEdgeVisibilityChecker(TileRenderable tileRenderer) {
+	MapEdgeChecker(TileRenderable tileRenderer) {
 		this.tileRenderer = tileRenderer;
+	}
+	
+	boolean isOnEdge(Dimension dim){
+		return isOnLeftEdge(dim) || isOnRightEdge(dim) 
+				|| isOnTopEdge(dim) || isOnBottomEdge(dim);
+	}
+	
+	boolean isOnLeftEdge(Dimension dim){
+		return isEdgeVisible(new OnLeftEdge(), dim);
+	}
+	
+	boolean isOnRightEdge(Dimension dim){
+		return isEdgeVisible(new OnRightEdge(), dim);
+	}
+	
+	boolean isOnTopEdge(Dimension dim){
+		return isEdgeVisible(new OnTopEdge(), dim);
+	}
+	
+	boolean isOnBottomEdge(Dimension dim){
+		return isEdgeVisible(new OnBottomEdge(), dim);
 	}
 	
 	/**
@@ -111,6 +135,38 @@ class MapEdgeVisibilityChecker {
 		@Override
 		public boolean isVisible(Point[] bounds, Dimension dimension) {
 			return bounds[1].getY() < dimension.getHeight();
+		}
+	}
+	
+	private static class OnLeftEdge implements MapEdgeVisibility {
+
+		@Override
+		public boolean isVisible(Point[] bounds, Dimension dimension) {
+			return bounds[1].getX() < MIN;
+		}
+	}
+	
+	private static class OnRightEdge implements MapEdgeVisibility {
+
+		@Override
+		public boolean isVisible(Point[] bounds, Dimension dimension) {
+			return bounds[0].getX() > dimension.getWidth() - MIN;
+		}
+	}
+	
+	private static class OnTopEdge implements MapEdgeVisibility {
+
+		@Override
+		public boolean isVisible(Point[] bounds, Dimension dimension) {
+			return bounds[1].getY() < MIN;
+		}
+	}
+	
+	private static class OnBottomEdge implements MapEdgeVisibility {
+
+		@Override
+		public boolean isVisible(Point[] bounds, Dimension dimension) {
+			return bounds[0].getY() > dimension.getHeight() - MIN;
 		}
 	}
 	

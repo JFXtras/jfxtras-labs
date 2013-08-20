@@ -79,27 +79,27 @@ public class MapTrial extends Application {
 		Coordinate upperLeftCoord = new Coordinate(ul_Lat, ul_Lon);
 		Coordinate lowerRightCoord = new Coordinate(lr_Lat, lr_Lon);
 
-		String radarImgUrl = "http://radar.weather.gov/ridge/RadarImg/N0R/NKX_N0R_0.gif";
-
-		MapWeatherRadar yumaRadar = new MapWeatherRadar(radarImgUrl, 600, 550,
-				120, upperLeftCoord, lowerRightCoord);
-		map.addMapOverlay(yumaRadar);
-
 		List<Coordinate> coordinates = new ArrayList<>();
 		coordinates.add(upperLeftCoord);
 		coordinates.add(lowerRightCoord);
 
 		MapAirspace airspace = new MapAirspace(coordinates);
-//		map.addMapPolygon(airspace);
+		map.addMapLayer(airspace);
 
 		Image image = new Image(getClass().getResourceAsStream("plus.png"));
-		map.addMapMarker(new ImageMapMarker(image, ul_Lat, ul_Lon, 25));
-		map.addMapMarker(new ImageMapMarker(image, lr_Lat, lr_Lon, 1.0));
+		map.addMapLayer(new ImageMapMarker(image, ul_Lat, ul_Lon, 25));
+		map.addMapLayer(new ImageMapMarker(image, lr_Lat, lr_Lon, 1.0));
 
 		MapLineable mapLine = new DefaultMapLine(coordinates);
-		map.addMapLine(mapLine);
+		map.addMapLayer(mapLine);
 
 		map.setDisplayPositionByLatLon(32.81729, -117.215905);
+		
+		String radarImgUrl = "http://radar.weather.gov/ridge/RadarImg/N0R/NKX_N0R_0.gif";
+
+		MapWeatherRadar yumaRadar = new MapWeatherRadar(radarImgUrl, 600, 550,
+				120, upperLeftCoord, lowerRightCoord);
+		map.addMapLayer(yumaRadar);
 		
 		map.setIgnoreRepaint(false); //enabling painting
 	}
