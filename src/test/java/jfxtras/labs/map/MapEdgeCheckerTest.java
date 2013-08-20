@@ -59,7 +59,7 @@ public class MapEdgeCheckerTest {
 	
 	@Test
 	public void testOnEdge(){
-		Point[] bounds = new Point[]{new Point(370,370), new Point(410,410)};
+		Point[] bounds = new Point[]{new Point(250,250), new Point(300,300)};
 		when(tileRenderer.getBounds()).thenReturn(bounds);
 		assertFalse(classUnderTest.isOnRightEdge(dim));
 		assertFalse(classUnderTest.isOnLeftEdge(dim));
