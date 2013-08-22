@@ -47,7 +47,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
 import jfxtras.labs.map.render.TileRenderer;
-import jfxtras.labs.map.tile.TileCacheable;
+import jfxtras.labs.map.tile.TilesProvideable;
 import jfxtras.labs.map.tile.TileRepository;
 import static javafx.collections.FXCollections.*;
 import static jfxtras.labs.map.CoordinatesConverter.*;
@@ -122,8 +122,8 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 		tilesGroup = new Group();
 
-		TileCacheable tileCache = new TileRepository(tileSource);
-		tileRenderer = new TileRenderer(tileCache);
+		TilesProvideable repo = new TileRepository(tileSource);
+		tileRenderer = new TileRenderer(repo);
 		mapEdgeChecker = new MapEdgeChecker(tileRenderer);
 
 		int tileSize = tileSource.getTileSize();

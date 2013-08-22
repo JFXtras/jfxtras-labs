@@ -9,7 +9,6 @@ import static java.util.Collections.min;
 import static java.util.Collections.max;
 import static java.util.Collections.sort;
 import static java.util.Collections.emptyList;
-
 import javafx.scene.Group;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
@@ -18,8 +17,12 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import jfxtras.labs.map.Moveable;
+import jfxtras.labs.map.tile.DefaultTilesLoader;
 import jfxtras.labs.map.tile.Tile;
-import jfxtras.labs.map.tile.TileCacheable;
+import jfxtras.labs.map.tile.TilesProvideable;
+import jfxtras.labs.map.tile.TileImageComparator;
+import jfxtras.labs.map.tile.TileImage;
+import jfxtras.labs.map.tile.TilesLoadable;
 import jfxtras.labs.map.tile.TileSource;
 
 /**
@@ -33,23 +36,19 @@ public class TileRenderer implements TileRenderable {
 	 * stroke width
 	 */
 	private static final double WIDTH = 0.4;
-
-	private static final int START = 0;
-
-	private static final Point[] directions = { new Point(1, 0),
-			new Point(0, 1), new Point(-1, 0), new Point(0, -1) };
-
-	private final TileCacheable tileCache;
+	
+	private TileImageComparator tileComparator = new TileImageComparator();
 
 	private boolean monoChrome;
 
 	private boolean tileGridVisible;
 
 	private List<TileImage> tileImages;
+	
+	private final TilesProvideable tileCache;
 
-	private static final TileComparator TILE_COMPARATOR = new TileComparator();
 
-	public TileRenderer(TileCacheable tileCache) {
+	public TileRenderer(TilesProvideable tileCache) {
 		this.tileCache = tileCache;
 		this.tileImages = emptyList();
 	}
@@ -65,8 +64,8 @@ public class TileRenderer implements TileRenderable {
 	public Point[] getBounds() {
 		Point[] bounds = new Point[0];
 		if (!tileImages.isEmpty()) {
-			TileImage min = min(tileImages, TILE_COMPARATOR);
-			TileImage max = max(tileImages, TILE_COMPARATOR);
+			TileImage min = min(tileImages, tileComparator);
+			TileImage max = max(tileImages, tileComparator);
 
 			int tilesize = getTileSize();
 			bounds = new Point[2];
@@ -82,59 +81,8 @@ public class TileRenderer implements TileRenderable {
 	 */
 	private List<TileImage> loadTiles(Moveable mapController) {
 
-		List<TileImage> tiles = new ArrayList<>();
-
-		int tilesize = getTileSize();
-		int iMove = 2;
-		Point center = mapController.getCenter();
-
-		int zoom = mapController.zoomProperty().get();
-
-		int x_max = mapController.getMapWidth();
-		int y_max = mapController.getMapHeight();
-
-		int x_min = -tilesize, y_min = -tilesize;
-
-		int posx = getInitialPositionX(tilesize, center, x_max);
-		int posy = getInitialPositionY(tilesize, center, y_max);
-
-		int tilex = (center.x / tilesize);
-		int tiley = (center.y / tilesize);
-
-		boolean added = true;
-		int x = START;
-		while (added) {
-			added = false;
-			for (int i = START; i < 4; i++) {
-				if (i % 2 == START) {
-					x++;
-				}
-				for (int j = START; j < x; j++) {
-					if (x_min <= posx && posx <= x_max && y_min <= posy
-							&& posy <= y_max) {
-						// tile is visible
-						Tile tile = tileCache.getTile(tilex, tiley, zoom);
-						if (tile != null) {
-							added = true;
-							TileImage tileImage = new TileImage(
-									tile.getImageView(), posx, posy);
-							tileImage.setTileX(tilex);
-							tileImage.setTileY(tiley);
-							tiles.add(tileImage);
-						}
-					}
-					Point next = directions[iMove];
-					posx += next.x * tilesize;
-					posy += next.y * tilesize;
-					tilex += next.x;
-					tiley += next.y;
-				}
-				iMove = (iMove + 1) % directions.length;
-			}
-		}
-
-		sort(tiles, TILE_COMPARATOR);
-		return tiles;
+		TilesLoadable tileLoader = new DefaultTilesLoader(tileCache);
+		return tileLoader.loadTiles(mapController);
 	}
 
 	private int getTileSize() {
@@ -142,15 +90,6 @@ public class TileRenderer implements TileRenderable {
 		return tileSource.getTileSize();
 	}
 
-	private int getInitialPositionY(int tilesize, Point center, int y_max) {
-		int diff_top = (center.y % tilesize);
-		return (y_max / 2) - diff_top;
-	}
-
-	private int getInitialPositionX(int tilesize, Point center, int x_max) {
-		int diff_left = (center.x % tilesize);
-		return (x_max / 2) - diff_left;
-	}
 
 	@Override
 	public void doRender(Group tilesGroup) {
@@ -216,59 +155,6 @@ public class TileRenderer implements TileRenderable {
 
 	public void setTileGridVisible(boolean tileGridVisible) {
 		this.tileGridVisible = tileGridVisible;
-	}
-
-	/**
-	 * 
-	 * This class combines the image view with the position.
-	 * 
-	 */
-	private class TileImage {
-
-		private ImageView imageView;
-
-		private int posX, posY;
-
-		private int tileX, tileY;
-
-		TileImage(ImageView imageView, int posX, int posY) {
-			super();
-			this.imageView = imageView;
-			this.posX = posX;
-			this.posY = posY;
-		}
-
-		ImageView getImageView() {
-			return imageView;
-		}
-
-		int getPosX() {
-			return posX;
-		}
-
-		int getPosY() {
-			return posY;
-		}
-
-		void setTileX(int tileX) {
-			this.tileX = tileX;
-		}
-
-		void setTileY(int tileY) {
-			this.tileY = tileY;
-		}
-	}
-
-	private static class TileComparator implements Comparator<TileImage> {
-
-		@Override
-		public int compare(TileImage left, TileImage right) {
-			return (left.tileX < right.tileX) ? -1
-					: (left.tileX > right.tileX) ? +1
-							: (left.tileY < right.tileY) ? -1
-									: (left.tileY > right.tileY) ? +1 : 0;
-		}
-
 	}
 
 }

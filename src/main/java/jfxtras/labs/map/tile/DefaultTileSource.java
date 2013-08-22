@@ -154,13 +154,11 @@ public class DefaultTileSource implements TileSource {
 
     @Override
     public double tileYToLat(int y, int zoom) {
-//        return OsmMercator.YToLat( y, zoom);
         return Math.atan(Math.sinh(Math.PI - (Math.PI * y / Math.pow(2.0, zoom - 1)))) * 180 / Math.PI;
     }
 
     @Override
     public double tileXToLon(int x, int zoom) {
-//        return OsmMercator.XToLon( x,zoom);
         return x * 45.0 / Math.pow(2.0, zoom - 3) - 180.0;
     }
 

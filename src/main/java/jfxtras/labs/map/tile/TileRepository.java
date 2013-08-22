@@ -20,10 +20,6 @@
 //==============================================================================
 package jfxtras.labs.map.tile;
 
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.image.Image;
@@ -35,27 +31,19 @@ import javafx.scene.image.Image;
  * @author Mario Schroeder
  *
  */
-public class TileRepository implements TileCacheable{
+public class TileRepository implements TilesProvideable{
 
     private TileSource tileSource;
 
-    private Map<String, TileInfo> cache;
-
-    private long expire;
-
-    /**
-     * Default expire time for the cache: one hour.
-     */
-    public static final long DEFAULT_EXPIRE = 60 * 60 * 1000;
+    private TileInfoCache cache = new TileInfoCache();
 
     public TileRepository(TileSource source) {
         tileSource = source;
-        cache = new ConcurrentHashMap<>();
-        expire = DEFAULT_EXPIRE;
+        cache = new TileInfoCache();
     }
 
     @Override
-    public Tile getTile(int tilex, int tiley, int zoom) {
+    public Tile findTile(int tilex, int tiley, int zoom) {
         Tile tile = null;
 
         if (isValid(tilex, tiley, zoom)) {
@@ -68,14 +56,20 @@ public class TileRepository implements TileCacheable{
             if (info != null) {
                 tile = new Tile(location, info.getImage());
             } else {
-                tile = new Tile(location);
-                tile.imageLoadedProperty().addListener(new ImageLoadedListener(location, tile));
-                tile.loadImage();
+                tile = load(location);
             }
         }
 
         return tile;
     }
+
+	private Tile load(String location) {
+		Tile tile = new Tile(location);
+		ChangeListener<Boolean> listener = new ImageLoadedListener(location, tile);
+		tile.imageLoadedProperty().addListener(listener);
+		tile.loadImage();
+		return tile;
+	}
 
     /**
      * Checks the expiration of images in the cache, and removes them eventually.
@@ -84,14 +78,7 @@ public class TileRepository implements TileCacheable{
      */
     private void cleanupCache() {
 
-        Set<Entry<String, TileInfo>> entries = cache.entrySet();
-        for (Entry<String, TileInfo> entry : entries) {
-            TileInfo info = entry.getValue();
-            long current = System.currentTimeMillis();
-            if (current - info.getTimeStamp() > expire) {
-                cache.remove(entry.getKey());
-            }
-        }
+        cache.cleanup();
     }
 
     private boolean isValid(int tilex, int tiley, int zoom) {
@@ -120,7 +107,7 @@ public class TileRepository implements TileCacheable{
      * @param expire difference as long
      */
     public void setExpire(long expire) {
-        this.expire = expire;
+        cache.setExpire(expire);
     }
 
     private class ImageLoadedListener implements ChangeListener<Boolean> {
