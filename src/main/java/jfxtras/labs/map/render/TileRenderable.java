@@ -4,7 +4,6 @@ package jfxtras.labs.map.render;
 import java.awt.Point;
 
 import javafx.scene.Group;
-
 import jfxtras.labs.map.Moveable;
 
 /**
@@ -36,5 +35,17 @@ public interface TileRenderable {
 	 * 
 	 * @param mapController
 	 */
-	void doRender(Group tilesGroup);
+	void render(Group tilesGroup);
+	
+	/**
+	 * Turn monochrome mode on/off.
+	 * @param val
+	 */
+	void setMonoChrome(boolean val);
+	
+	/**
+	 * Turn tiles grid on/off.
+	 * @param val
+	 */
+	void setTileGridVisible(boolean val);
 }

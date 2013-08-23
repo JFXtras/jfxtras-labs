@@ -26,6 +26,7 @@ import jfxtras.labs.map.render.MapLineable;
 import jfxtras.labs.map.render.MapMarkable;
 import jfxtras.labs.map.render.MapPolygonable;
 import jfxtras.labs.map.render.Renderable;
+import jfxtras.labs.map.render.TileRenderable;
 import jfxtras.labs.map.tile.TileSource;
 
 import java.awt.Dimension;
@@ -67,8 +68,10 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	private static final int START = 0;
 
 	private static final String STYLE_LOC = "cursorLocation";
+	
+	private TilesProvideable tilesProvider;
 
-	private TileRenderer tileRenderer;
+	private TileRenderable tileRenderer;
 
 	private MapEdgeChecker mapEdgeChecker;
 
@@ -122,8 +125,8 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 		tilesGroup = new Group();
 
-		TilesProvideable repo = new TileRepository(tileSource);
-		tileRenderer = new TileRenderer(repo);
+		tilesProvider = new TileRepository(tileSource);
+		tileRenderer = new TileRenderer(tilesProvider);
 		mapEdgeChecker = new MapEdgeChecker(tileRenderer);
 
 		int tileSize = tileSource.getTileSize();
@@ -279,8 +282,8 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	private void setDisplayPosition(Point mapPoint, int x, int y, int zoom) {
 
-		if (zoom >= tileRenderer.getTileSource().getMinZoom()
-				&& zoom <= tileRenderer.getTileSource().getMaxZoom()) {
+		if (zoom >= tilesProvider.getTileSource().getMinZoom()
+				&& zoom <= tilesProvider.getTileSource().getMaxZoom()) {
 
 			// Get the plain tile number
 			moveCenter(mapPoint, x, y);
@@ -487,7 +490,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		if (minZoom < ZoomBounds.Min.getValue()) {
 			throw new IllegalArgumentException("Minumim zoom level too low");
 		}
-		tileRenderer.setTileSource(tileSource);
+		tilesProvider.setTileSource(tileSource);
 
 		if (zoom.get() > tileSource.getMaxZoom()) {
 			setZoom(tileSource.getMaxZoom());
@@ -515,11 +518,11 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 		if(!tilesPrepared){
 			if (prepareTiles() > 0) {
-				tileRenderer.doRender(tilesGroup);
+				tileRenderer.render(tilesGroup);
 				updated = true;
 			}
 		}else{
-			tileRenderer.doRender(tilesGroup);
+			tileRenderer.render(tilesGroup);
 			updated = true;
 		}
 		
@@ -618,7 +621,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	@Override
 	public TileSource getTileSource() {
-		return tileRenderer.getTileSource();
+		return tilesProvider.getTileSource();
 	}
 
 	@Override

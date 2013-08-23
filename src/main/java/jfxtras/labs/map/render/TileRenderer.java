@@ -1,13 +1,10 @@
 package jfxtras.labs.map.render;
 
 import java.awt.Point;
-import java.util.Comparator;
 import java.util.List;
-import java.util.ArrayList;
 
 import static java.util.Collections.min;
 import static java.util.Collections.max;
-import static java.util.Collections.sort;
 import static java.util.Collections.emptyList;
 import javafx.scene.Group;
 import javafx.scene.effect.ColorAdjust;
@@ -18,7 +15,6 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import jfxtras.labs.map.Moveable;
 import jfxtras.labs.map.tile.DefaultTilesLoader;
-import jfxtras.labs.map.tile.Tile;
 import jfxtras.labs.map.tile.TilesProvideable;
 import jfxtras.labs.map.tile.TileImageComparator;
 import jfxtras.labs.map.tile.TileImage;
@@ -92,7 +88,7 @@ public class TileRenderer implements TileRenderable {
 
 
 	@Override
-	public void doRender(Group tilesGroup) {
+	public void render(Group tilesGroup) {
 
 		int tilesize = getTileSize();
 
@@ -139,14 +135,6 @@ public class TileRenderer implements TileRenderable {
 		path.setStroke(Color.BLACK);
 
 		return path;
-	}
-
-	public void setTileSource(TileSource tileSource) {
-		tileCache.setTileSource(tileSource);
-	}
-
-	public TileSource getTileSource() {
-		return tileCache.getTileSource();
 	}
 
 	public void setMonoChrome(boolean monoChrome) {
