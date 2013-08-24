@@ -29,6 +29,7 @@ public class CalendarPickerTrial2 extends Application {
 		String lName = this.getClass().getSimpleName() + ".xml";
 		URL lURL = this.getClass().getResource(lName);
 		System.out.println("loading FXML " + lName + " -> " + lURL);
+		if (lURL == null) throw new IllegalStateException("FXML file not found");
 		AnchorPane lRoot = (AnchorPane)FXMLLoader.load(lURL);
 
         // create scene
