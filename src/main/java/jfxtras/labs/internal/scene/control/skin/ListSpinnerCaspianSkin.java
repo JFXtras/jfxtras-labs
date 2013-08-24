@@ -233,19 +233,19 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>>
         {
             private static final CssMetaData<ListSpinner, ArrowPosition> ARROW_POSITION = new CssMetaData<ListSpinner, ArrowPosition>("-fxx-arrow-position", new EnumConverter<ArrowPosition>(ArrowPosition.class), ArrowPosition.TRAILING ) 
             {
-                @Override public boolean isSettable(ListSpinner n) { return true; } //(n.alignment == null || !n.alignment.isBound()); }
-                @Override public StyleableProperty<ArrowPosition> getStyleableProperty(ListSpinner n) { return (StyleableProperty<ArrowPosition>) ((ListSpinnerCaspianSkin)n.getSkin()).arrowPositionProperty(); }
+                @Override public boolean isSettable(ListSpinner n) { return !((ListSpinnerCaspianSkin)n.getSkin()).arrowPositionProperty().isBound(); }
+                @Override public StyleableProperty<ArrowPosition> getStyleableProperty(ListSpinner n) { return (StyleableProperty<ArrowPosition>)((ListSpinnerCaspianSkin)n.getSkin()).arrowPositionProperty(); }
             };
             
             private static final CssMetaData<ListSpinner, ArrowDirection> ARROW_DIRECTION = new CssMetaData<ListSpinner, ArrowDirection>("-fxx-arrow-direction", new EnumConverter<ArrowDirection>(ArrowDirection.class), ArrowDirection.HORIZONTAL ) 
             {
-                @Override public boolean isSettable(ListSpinner n) { return true; } //(n.alignment == null || !n.alignment.isBound()); }
+                @Override public boolean isSettable(ListSpinner n) { return !((ListSpinnerCaspianSkin)n.getSkin()).arrowDirectionProperty().isBound(); }
                 @Override public StyleableProperty<ArrowDirection> getStyleableProperty(ListSpinner n) { return (StyleableProperty<ArrowDirection>) ((ListSpinnerCaspianSkin)n.getSkin()).arrowDirectionProperty(); }
             };
             
             private static final CssMetaData<ListSpinner, Pos> VALUE_ALIGNMENT = new CssMetaData<ListSpinner, Pos>("-fxx-value-alignment", new EnumConverter<Pos>(Pos.class), Pos.CENTER_LEFT ) 
             {
-                @Override public boolean isSettable(ListSpinner n) { return true; } //(n.alignment == null || !n.alignment.isBound()); }
+                @Override public boolean isSettable(ListSpinner n) { return !((ListSpinnerCaspianSkin)n.getSkin()).valueAlignmentProperty().isBound(); }
                 @Override public StyleableProperty<Pos> getStyleableProperty(ListSpinner n) { return (StyleableProperty<Pos>) ((ListSpinnerCaspianSkin)n.getSkin()).valueAlignmentProperty(); }
             };
             
