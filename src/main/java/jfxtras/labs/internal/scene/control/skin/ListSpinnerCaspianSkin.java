@@ -212,19 +212,13 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpin
 		}
         
         @Override
-        public StyleableProperty<ListSpinnerCaspianSkin,ArrowDirection> getStyleableProperty() {
-            return ARROW_DIRECTION;
-        }
+        public StyleableProperty<ListSpinnerCaspianSkin,ArrowDirection> getStyleableProperty() { return ARROW_DIRECTION; }
 
         @Override
-        public Object getBean() {
-            return ListSpinnerCaspianSkin.this;
-        }
+        public Object getBean() { return ListSpinnerCaspianSkin.this; }
 
         @Override
-        public String getName() {
-            return "arrowDirection";
-        }
+        public String getName() { return "arrowDirection"; }
     };			
 	public ArrowDirection getArrowDirection() { return this.arrowDirectionObjectProperty.getValue(); }
 	public void setArrowDirection(ArrowDirection value) { this.arrowDirectionObjectProperty.setValue(value); }
@@ -233,12 +227,14 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpin
     private static final StyleableProperty<ListSpinnerCaspianSkin,ArrowDirection> ARROW_DIRECTION = new StyleableProperty<ListSpinnerCaspianSkin,ArrowDirection>("-fxx-arrow-direction", new EnumConverter<ArrowDirection>(ArrowDirection.class), ArrowDirection.HORIZONTAL) 
 	{
         @Override
-        public boolean isSettable(ListSpinnerCaspianSkin owner) {
+        public boolean isSettable(ListSpinnerCaspianSkin owner) 
+        {
             return !owner.arrowDirectionObjectProperty.isBound();
         }
 
         @Override
-        public WritableValue<ArrowDirection> getWritableValue(ListSpinnerCaspianSkin owner) {
+        public WritableValue<ArrowDirection> getWritableValue(ListSpinnerCaspianSkin owner) 
+        {
             return owner.arrowDirectionProperty();
         }
     };
@@ -262,19 +258,13 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpin
 		}
         
         @Override
-        public StyleableProperty<ListSpinnerCaspianSkin,Pos> getStyleableProperty() {
-            return VALUE_ALIGNMENT;
-        }
+        public StyleableProperty<ListSpinnerCaspianSkin,Pos> getStyleableProperty() { return VALUE_ALIGNMENT; }
 
         @Override
-        public Object getBean() {
-            return ListSpinnerCaspianSkin.this;
-        }
+        public Object getBean() { return ListSpinnerCaspianSkin.this; }
 
         @Override
-        public String getName() {
-            return "valueAlignment";
-        }
+        public String getName() { return "valueAlignment"; }
     };			
 	public Pos getValueAlignment() { return this.valueAlignmentObjectProperty.getValue(); }
 	public void setValueAlignment(Pos value) { this.valueAlignmentObjectProperty.setValue(value); }
@@ -282,12 +272,14 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>, ListSpin
     private static final StyleableProperty<ListSpinnerCaspianSkin,Pos> VALUE_ALIGNMENT = new StyleableProperty<ListSpinnerCaspianSkin,Pos>("-fxx-value-alignment", new EnumConverter<Pos>(Pos.class), Pos.CENTER_LEFT) 
 	{
         @Override
-        public boolean isSettable(ListSpinnerCaspianSkin owner) {
+        public boolean isSettable(ListSpinnerCaspianSkin owner) 
+        {
             return !owner.valueAlignmentObjectProperty.isBound();
         }
 
         @Override
-        public WritableValue<Pos> getWritableValue(ListSpinnerCaspianSkin owner) {
+        public WritableValue<Pos> getWritableValue(ListSpinnerCaspianSkin owner) 
+        {
             return owner.valueAlignmentProperty();
         }
     };
