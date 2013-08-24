@@ -31,11 +31,14 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import sun.misc.Launcher;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import jfxtras.labs.fxml.JFXtrasBuilderFactory;
 
 /**
  * @author Tom Eugelink
@@ -54,7 +57,7 @@ public class CalendarTextFieldTrial2 extends Application {
 		String lName = this.getClass().getSimpleName() + ".xml";
 		URL lURL = this.getClass().getResource(lName);
 		System.out.println("loading FXML " + lName + " -> " + lURL);
-    	Pane lRoot = (Pane)FXMLLoader.load(lURL);
+    	Pane lRoot = (Pane)FXMLLoader.load(lURL, null, new JFXtrasBuilderFactory());
 
         // create scene
         Scene scene = new Scene(lRoot, 800, 300);
