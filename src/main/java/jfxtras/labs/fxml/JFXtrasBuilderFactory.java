@@ -2,6 +2,7 @@ package jfxtras.labs.fxml;
 
 //import java.util.ServiceLoader;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ServiceLoader;
 
 import javafx.fxml.JavaFXBuilderFactory;
@@ -31,16 +32,25 @@ public class JFXtrasBuilderFactory implements BuilderFactory {
      * 
      */
     @Override
-    public Builder<?> getBuilder(Class<?> aClass) {
+    public Builder<?> getBuilder(Class<?> clazz) {
     	
     	// try the ServiceLoader configured classes
     	for (BuilderService builderService : builderServiceLoader) {
-    		if (builderService.hasBuilderFor(aClass)) {
-    			return builderService.createBuilder();
+    		if (builderService.isBuilderFor(clazz)) {
+    			try
+				{
+					return builderService.getClass().getConstructor(new Class<?>[]{}).newInstance(new Object[]{});
+				}
+				catch (NoSuchMethodException e) { throw new RuntimeException(e); }
+				catch (SecurityException e) { throw new RuntimeException(e); }
+				catch (InstantiationException e) { throw new RuntimeException(e); }
+				catch (IllegalAccessException e) { throw new RuntimeException(e); }
+				catch (IllegalArgumentException e) { throw new RuntimeException(e); }
+				catch (InvocationTargetException e) { throw new RuntimeException(e); }
     		}
         }
     	
     	// fall back to default
-        return javaFXBuilderFactory.getBuilder(aClass);
+        return javaFXBuilderFactory.getBuilder(clazz);
     }
 }

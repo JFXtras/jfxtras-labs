@@ -13,7 +13,7 @@ import jfxtras.labs.scene.control.CalendarTextField;
  * @author Tom Eugelink
  *
  */
-public class CalendarTextFieldBuilder implements Builder<CalendarTextField>, BuilderService
+public class CalendarTextFieldBuilder implements BuilderService<CalendarTextField>
 {
 	/** DateFormat */
 	public String getDateFormat() { return null; } // dummy, just to make it Java Bean compatible
@@ -22,7 +22,7 @@ public class CalendarTextFieldBuilder implements Builder<CalendarTextField>, Bui
 
 	/** Locale */
 	public String getLocale() { return null; } // dummy, just to make it Java Bean compatible
-	public void setLocale(String value) { iLocale = iLocale.forLanguageTag(value); }
+	public void setLocale(String value) { iLocale = Locale.forLanguageTag(value); }
 	private Locale iLocale = null;
 
 	/** PromptText */
@@ -44,7 +44,7 @@ public class CalendarTextFieldBuilder implements Builder<CalendarTextField>, Bui
 	private ObservableList<DateFormat> iDateFormats = null;
 
 	/**
-	 * 
+	 * Implementation of Builder interface
 	 */
 	@Override
 	public CalendarTextField build()
@@ -57,15 +57,12 @@ public class CalendarTextFieldBuilder implements Builder<CalendarTextField>, Bui
 		return lCalendarTextField;
 	}
 	
+	/**
+	 * Implementation of BuilderService interface
+	 */
 	@Override
-	public boolean hasBuilderFor(Class clazz)
+	public boolean isBuilderFor(Class<?> clazz)
 	{
 		return CalendarTextField.class.isAssignableFrom(clazz);
-	}
-	
-	@Override
-	public Builder createBuilder()
-	{
-		return new CalendarTextFieldBuilder();
 	}
 }
