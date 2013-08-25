@@ -1,4 +1,4 @@
-package jfxtras.labs.fxml;
+package jfxtras.fxml;
 
 import javafx.util.Builder;
 
