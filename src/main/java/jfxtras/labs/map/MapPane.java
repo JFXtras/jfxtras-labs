@@ -379,6 +379,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		center.x += x;
 		center.y += y;
 		
+		//TODO check on edge
 		if(prepareTiles() > 0 && !isOnEdge()){
 			tilesPrepared = true;
 		}else{

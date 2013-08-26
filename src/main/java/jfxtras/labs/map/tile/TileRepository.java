@@ -20,10 +20,6 @@
 //==============================================================================
 package jfxtras.labs.map.tile;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.image.Image;
-
 /**
  * A repository for the map tiles.
  *
@@ -43,42 +39,25 @@ public class TileRepository implements TilesProvideable{
     }
 
     @Override
-    public Tile findTile(int tilex, int tiley, int zoom) {
+    public Tile getTile(int tilex, int tiley, int zoom) {
         Tile tile = null;
 
         if (isValid(tilex, tiley, zoom)) {
-
-            cleanupCache();
-
-            String location = tileSource.getTileUrl(zoom, tilex, tiley);
-            TileInfo info = cache.get(location);
-
-            if (info != null) {
-                tile = new Tile(location, info.getImage());
-            } else {
-                tile = load(location);
-            }
+        	
+        	String location = getLocation(zoom, tilex, tiley);
+            tile = loadTile(location, new CacheTileLoadCommand(cache));
         }
 
         return tile;
     }
-
-	private Tile load(String location) {
-		Tile tile = new Tile(location);
-		ChangeListener<Boolean> listener = new ImageLoadedListener(location, tile);
-		tile.imageLoadedProperty().addListener(listener);
-		tile.loadImage();
-		return tile;
-	}
-
-    /**
-     * Checks the expiration of images in the cache, and removes them eventually.
-     *
-     * @param location
-     */
-    private void cleanupCache() {
-
-        cache.cleanup();
+    
+    private String getLocation(int zoom, int tilex, int tiley){
+    	return tileSource.getTileUrl(zoom, tilex, tiley);
+    }
+    
+    private Tile loadTile(String location, TileLoadCommand command){
+    	cache.cleanup();
+        return command.execute(location);
     }
 
     private boolean isValid(int tilex, int tiley, int zoom) {
@@ -108,32 +87,5 @@ public class TileRepository implements TilesProvideable{
      */
     public void setExpire(long expire) {
         cache.setExpire(expire);
-    }
-
-    private class ImageLoadedListener implements ChangeListener<Boolean> {
-
-        private String location;
-
-        private Tile tile;
-
-        public ImageLoadedListener(String location, Tile tile) {
-            this.location = location;
-            this.tile = tile;
-        }
-
-        @Override
-        public void changed(
-            ObservableValue<? extends Boolean> ov, Boolean oldVal, Boolean newVal) {
-            if (newVal.booleanValue()) {
-                addImage(location, tile.getImageView().getImage());
-            }
-        }
-
-        private void addImage(String tileLocation, Image image) {
-
-            long timeStamp = System.currentTimeMillis();
-            TileInfo info = new TileInfo(timeStamp, image);
-            cache.put(tileLocation, info);
-        }
     }
 }

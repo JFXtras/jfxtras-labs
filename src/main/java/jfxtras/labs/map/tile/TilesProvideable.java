@@ -15,7 +15,7 @@ public interface TilesProvideable {
 	 * @param zoom the zoom level
 	 * @return the {@link Tile} or null if arguments are invalid.
 	 */
-    Tile findTile(int tilex, int tiley, int zoom);
+    Tile getTile(int tilex, int tiley, int zoom);
 
     TileSource getTileSource();
 

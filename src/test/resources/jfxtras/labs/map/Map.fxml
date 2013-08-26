@@ -8,8 +8,8 @@
 <?import javafx.scene.image.*?>
 <?import javafx.collections.FXCollections?>
 <?import jfxtras.labs.map.MapPane?>
-<?import jfxtras.labs.map.tile.OsmType?>
-<?import jfxtras.labs.map.tile.BingType?>
+<?import jfxtras.labs.map.tile.osm.OsmType?>
+<?import jfxtras.labs.map.tile.bing.BingType?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
 	fx:id="container" fx:controller="jfxtras.labs.map.MapController"

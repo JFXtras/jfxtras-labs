@@ -5,6 +5,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import javafx.scene.image.ImageView;
 import jfxtras.labs.map.ApiKeys;
+import jfxtras.labs.map.tile.bing.BingTileSourceFactory;
+import jfxtras.labs.map.tile.bing.BingType;
+import jfxtras.labs.map.tile.local.LocalTileSourceFactory;
+import jfxtras.labs.map.tile.osm.OsmTileSourceFactory;
+import jfxtras.labs.map.tile.osm.OsmType;
 
 import org.junit.Test;
 
@@ -20,7 +25,7 @@ public class TileRepositoryTest {
     public void testWithNull(){
         
         TileRepository classUnderTest = new TileRepository(null);
-		Tile tile = classUnderTest.findTile(1, 1, 1);
+		Tile tile = classUnderTest.getTile(1, 1, 1);
 		assertNull(tile);
     }
 
@@ -54,16 +59,16 @@ public class TileRepositoryTest {
         
 		TileSourceFactory<String> factory = new LocalTileSourceFactory();
 		TileRepository classUnderTest = new TileRepository(factory.create());
-		Tile tile = classUnderTest.findTile(-1, 0, 0);
+		Tile tile = classUnderTest.getTile(-1, 0, 0);
 		assertNull(tile);
-		tile = classUnderTest.findTile(0, -1, 0);
+		tile = classUnderTest.getTile(0, -1, 0);
 		assertNull(tile);
 	}
 
 	private void verify(TileSource tileSource) {
         
 		TileRepository classUnderTest = new TileRepository(tileSource);
-		Tile tile = classUnderTest.findTile(1, 1, 1);
+		Tile tile = classUnderTest.getTile(1, 1, 1);
 		assertNotNull(tile);
 		assertEquals(tileSource, classUnderTest.getTileSource());
 		ImageView imageView = tile.getImageView();

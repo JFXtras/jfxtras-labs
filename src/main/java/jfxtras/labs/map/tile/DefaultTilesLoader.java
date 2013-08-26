@@ -22,10 +22,10 @@ public class DefaultTilesLoader implements TilesLoadable {
 	private static final Point[] directions = { new Point(1, 0),
 		new Point(0, 1), new Point(-1, 0), new Point(0, -1) };
 
-	private final TilesProvideable repo;
+	private final TilesProvideable provider;
 	
-	public DefaultTilesLoader(TilesProvideable repo) {
-		this.repo = repo;
+	public DefaultTilesLoader(TilesProvideable provider) {
+		this.provider = provider;
 	}
 
 	@Override
@@ -86,11 +86,11 @@ public class DefaultTilesLoader implements TilesLoadable {
 	}
 	
 	private Tile getTile(int zoom, int tilex, int tiley) {
-		return repo.findTile(tilex, tiley, zoom);
+		return provider.getTile(tilex, tiley, zoom);
 	}
 	
 	private int getTileSize() {
-		return repo.getTileSource().getTileSize();
+		return provider.getTileSource().getTileSize();
 	}
 
 	private int getInitialPositionY(int tilesize, Point center, int y_max) {

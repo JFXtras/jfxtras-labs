@@ -1,8 +1,16 @@
 package jfxtras.labs.map.tile.attribution;
 
 import java.util.List;
+
 import jfxtras.labs.map.ApiKeys;
+import jfxtras.labs.map.tile.Attribution;
+import jfxtras.labs.map.tile.bing.BingAttributionLoader;
+import jfxtras.labs.map.tile.bing.BingImageMetaDataHandler;
+import jfxtras.labs.map.tile.bing.BingMapMetaDataHandler;
+import jfxtras.labs.map.tile.bing.BingMetaDataHandler;
+
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**

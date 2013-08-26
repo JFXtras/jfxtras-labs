@@ -1,7 +1,10 @@
 package jfxtras.labs.map.tile;
 
 import jfxtras.labs.map.Coordinate;
+import jfxtras.labs.map.tile.osm.OsmTilePathBuilder;
+
 import java.io.IOException;
+
 import javafx.scene.image.Image;
 
 /**
@@ -166,7 +169,7 @@ public class DefaultTileSource implements TileSource {
         this.minZoom = minZoom;
     }
 
-    protected final void setMaxZoom(int maxZoom) {
+    public final void setMaxZoom(int maxZoom) {
         this.maxZoom = maxZoom;
     }
 
