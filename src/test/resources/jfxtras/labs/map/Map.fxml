@@ -39,6 +39,11 @@
         			<Tooltip text="center the map"/>
     			</tooltip>
             </Button>
+            <Button id="btnRefresh" fx:id="btnRefresh" onAction="#refreshMap">
+            	<tooltip>
+        			<Tooltip text="refresh the map"/>
+    			</tooltip>
+            </Button>
         </ToolBar>
     </top>
     <center>

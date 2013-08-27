@@ -23,7 +23,6 @@ public class MapController {
 	@FXML
 	private MapPane map;
 	
-	
 	@FXML
 	public void mapTypeChanged(ActionEvent event){
 		Object value = mapType.getValue();
@@ -37,6 +36,11 @@ public class MapController {
 	public void centerMap(ActionEvent event){
 
 		map.centerMap();
+	}
+	
+	@FXML
+	public void refreshMap(ActionEvent event){
+		throw new UnsupportedOperationException("Not yet implemented");
 	}
 
 	private TileSource createTileSource(Object value){

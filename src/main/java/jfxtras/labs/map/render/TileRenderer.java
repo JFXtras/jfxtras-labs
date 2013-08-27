@@ -64,9 +64,7 @@ public class TileRenderer implements TileRenderable {
 		provider.setStrategy(new RefreshLoadStrategy());
 		TilesLoadable tileLoader = new TilesLoader(provider);
 		tileImages = tileLoader.loadTiles(mapController);
-		if(tileImages.isEmpty()){
-			render(mapController.getTilesGroup());
-		}
+		render(mapController.getTilesGroup());
 	}
 		
 	@Override
