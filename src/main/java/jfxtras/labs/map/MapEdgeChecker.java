@@ -14,7 +14,7 @@ import jfxtras.labs.map.render.TileRenderable;
 class MapEdgeChecker {
 	
 	/**minimum with of the border required still to be visible*/
-	private static final int MIN = 100;
+	private static final int MIN = 20;
 	
 	private TileRenderable tileRenderer;
 	
