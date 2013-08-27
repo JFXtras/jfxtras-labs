@@ -14,12 +14,14 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import jfxtras.labs.map.Moveable;
-import jfxtras.labs.map.tile.DefaultTilesLoader;
-import jfxtras.labs.map.tile.TilesProvideable;
+import jfxtras.labs.map.tile.CacheLoadStrategy;
+import jfxtras.labs.map.tile.RefreshLoadStrategy;
+import jfxtras.labs.map.tile.TileProvideable;
 import jfxtras.labs.map.tile.TileImageComparator;
 import jfxtras.labs.map.tile.TileImage;
 import jfxtras.labs.map.tile.TilesLoadable;
 import jfxtras.labs.map.tile.TileSource;
+import jfxtras.labs.map.tile.TilesLoader;
 
 /**
  * Rendered for map tiles.
@@ -41,21 +43,32 @@ public class TileRenderer implements TileRenderable {
 
 	private List<TileImage> tileImages;
 	
-	private final TilesProvideable tileCache;
+	private final TileProvideable provider;
 
 
-	public TileRenderer(TilesProvideable tileCache) {
-		this.tileCache = tileCache;
+	public TileRenderer(TileProvideable provider) {
+		this.provider = provider;
 		this.tileImages = emptyList();
 	}
 
 	@Override
 	public int prepareTiles(Moveable mapController) {
-
-		tileImages = loadTiles(mapController);
+		provider.setStrategy(new CacheLoadStrategy());
+		TilesLoadable tileLoader = new TilesLoader(provider);
+		tileImages = tileLoader.loadTiles(mapController);
 		return tileImages.size();
 	}
-
+	
+	@Override
+	public void refresh(Moveable mapController) {
+		provider.setStrategy(new RefreshLoadStrategy());
+		TilesLoadable tileLoader = new TilesLoader(provider);
+		tileImages = tileLoader.loadTiles(mapController);
+		if(tileImages.isEmpty()){
+			render(mapController.getTilesGroup());
+		}
+	}
+		
 	@Override
 	public Point[] getBounds() {
 		Point[] bounds = new Point[0];
@@ -72,20 +85,10 @@ public class TileRenderer implements TileRenderable {
 		return bounds;
 	}
 
-	/**
-	 * Load the tiles in a spiral, starting from center of the map.
-	 */
-	private List<TileImage> loadTiles(Moveable mapController) {
-
-		TilesLoadable tileLoader = new DefaultTilesLoader(tileCache);
-		return tileLoader.loadTiles(mapController);
-	}
-
 	private int getTileSize() {
-		TileSource tileSource = tileCache.getTileSource();
+		TileSource tileSource = provider.getTileSource();
 		return tileSource.getTileSize();
 	}
-
 
 	@Override
 	public void render(Group tilesGroup) {
@@ -109,7 +112,7 @@ public class TileRenderer implements TileRenderable {
 			}
 
 			if (tileGridVisible) {
-				tilesGroup.getChildren().add(createGrid(posx, posy, tilesize));
+				tilesGroup.getChildren().add(createBorder(posx, posy, tilesize));
 			}
 		}
 	}
@@ -123,7 +126,7 @@ public class TileRenderer implements TileRenderable {
 		imageView.setEffect(monochrome);
 	}
 
-	protected Path createGrid(int posx, int posy, int tilesize) {
+	protected Path createBorder(int posx, int posy, int tilesize) {
 
 		Path path = new Path();
 		path.getElements().add(new MoveTo(posx, posy));

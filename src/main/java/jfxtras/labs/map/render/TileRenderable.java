@@ -38,6 +38,12 @@ public interface TileRenderable {
 	void render(Group tilesGroup);
 	
 	/**
+	 * Reloads all tile which currently visible.
+	 * @param mapController
+	 */
+	void refresh(Moveable mapController);
+	
+	/**
 	 * Turn monochrome mode on/off.
 	 * @param val
 	 */

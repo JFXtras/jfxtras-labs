@@ -27,25 +27,27 @@ package jfxtras.labs.map.tile;
  * @author Mario Schroeder
  *
  */
-public class TileRepository implements TilesProvideable{
+public class TileRepository implements TileProvideable{
 
     private TileSource tileSource;
 
     private TileInfoCache cache = new TileInfoCache();
+    
+    private TileLoadStrategy strategy = new CacheLoadStrategy();
 
     public TileRepository(TileSource source) {
         tileSource = source;
-        cache = new TileInfoCache();
+        strategy.setCache(cache);
     }
 
-    @Override
+	@Override
     public Tile getTile(int tilex, int tiley, int zoom) {
         Tile tile = null;
 
         if (isValid(tilex, tiley, zoom)) {
         	
         	String location = getLocation(zoom, tilex, tiley);
-            tile = loadTile(location, new CacheTileLoadCommand(cache));
+            tile = loadTile(location, strategy);
         }
 
         return tile;
@@ -55,9 +57,9 @@ public class TileRepository implements TilesProvideable{
     	return tileSource.getTileUrl(zoom, tilex, tiley);
     }
     
-    private Tile loadTile(String location, TileLoadCommand command){
+    private Tile loadTile(String location, TileLoadStrategy strategy){
     	cache.cleanup();
-        return command.execute(location);
+        return strategy.execute(location);
     }
 
     private boolean isValid(int tilex, int tiley, int zoom) {
@@ -68,6 +70,22 @@ public class TileRepository implements TilesProvideable{
         }
         return valid;
     }
+    
+    @Override
+    public TileLoadStrategy getStrategy() {
+		return strategy;
+	}
+
+    @Override
+	public final void setStrategy(TileLoadStrategy strategy) {
+    	if(strategy == null){
+    		throw new IllegalArgumentException("The strategy can not be null!");
+    	}
+    	if(!this.strategy.equals(strategy)){
+    		this.strategy = strategy;
+    		this.strategy.setCache(cache);
+    	}
+	}
 
     @Override
     public TileSource getTileSource() {

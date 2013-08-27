@@ -48,7 +48,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
 import jfxtras.labs.map.render.TileRenderer;
-import jfxtras.labs.map.tile.TilesProvideable;
+import jfxtras.labs.map.tile.TileProvideable;
 import jfxtras.labs.map.tile.TileRepository;
 import static javafx.collections.FXCollections.*;
 import static jfxtras.labs.map.CoordinatesConverter.*;
@@ -69,7 +69,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	private static final String STYLE_LOC = "cursorLocation";
 	
-	private TilesProvideable tilesProvider;
+	private TileProvideable tilesProvider;
 
 	private TileRenderable tileRenderer;
 
@@ -379,7 +379,6 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		center.x += x;
 		center.y += y;
 		
-		//TODO check on edge
 		if(prepareTiles() > 0 && !isOnEdge()){
 			tilesPrepared = true;
 		}else{
