@@ -1,7 +1,5 @@
 package jfxtras.labs.fxml;
 
-//import java.util.ServiceLoader;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.ServiceLoader;
 
@@ -48,6 +46,7 @@ public class JFXtrasBuilderFactory implements BuilderFactory {
     		if (builderService.isBuilderFor(clazz)) {
     			try
 				{
+    				// create a new instance, because we cannot reuse this one (it is only created once)
 					return builderService.getClass().getConstructor(new Class<?>[]{}).newInstance(new Object[]{});
 				}
 				catch (NoSuchMethodException e) { throw new RuntimeException(e); }

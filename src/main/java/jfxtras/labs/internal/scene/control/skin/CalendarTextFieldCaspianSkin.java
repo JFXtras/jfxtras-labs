@@ -30,6 +30,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -51,6 +52,8 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Popup;
+import jfxtras.labs.animation.canned.CachedTimelineTransition;
+import jfxtras.labs.animation.canned.FadeInTransition;
 import jfxtras.labs.internal.scene.control.behavior.CalendarTextFieldBehavior;
 import jfxtras.labs.scene.control.CalendarPicker;
 import jfxtras.labs.scene.control.CalendarTextField;
@@ -401,10 +404,24 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 		
 		// show it just below the textfield
 		popup.show(textField, NodeUtil.screenX(getSkinnable()), NodeUtil.screenY(getSkinnable()) + textField.getHeight());
-		
+if (animatingAtomicBoolean.getAndSet(true) == false) {		
+	popup.getContent().get(0).opacityProperty().set(0);		
+	final CachedTimelineTransition lCachedTimelineTransition = new FadeInTransition(popup.getContent().get(0));
+	lCachedTimelineTransition.onFinishedProperty().set(new EventHandler<ActionEvent>()
+	{
+		@Override
+		public void handle(ActionEvent arg0)
+		{
+			animatingAtomicBoolean.set(false);
+		}
+	});
+	lCachedTimelineTransition.play();
+}
+
 		// move the focus over
 		// TODO: not working
 		calendarPicker.requestFocus();
 	}
 	private Popup popup = null;
+	private final AtomicBoolean animatingAtomicBoolean = new AtomicBoolean(false);
 }
