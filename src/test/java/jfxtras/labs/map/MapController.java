@@ -40,7 +40,7 @@ public class MapController {
 	
 	@FXML
 	public void refreshMap(ActionEvent event){
-		throw new UnsupportedOperationException("Not yet implemented");
+		map.refereshMap();
 	}
 
 	private TileSource createTileSource(Object value){

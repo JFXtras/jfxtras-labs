@@ -560,6 +560,12 @@ public final class MapPane extends Pane implements MapTilesourceable {
 			renderer.render(this);
 		}
 	}
+	
+	public void refereshMap(){
+		tileRenderer.refresh(this);
+		renderMapLayers();
+		renderAttribution();
+	}
 
 	public void setMapX(int val) {
 		this.mapX.set(val);
