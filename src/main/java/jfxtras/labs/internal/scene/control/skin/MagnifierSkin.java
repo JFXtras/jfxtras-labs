@@ -113,7 +113,7 @@ public class MagnifierSkin extends SkinBase<Magnifier, MagnifierBehavior> {
 		final StackPane mainContent = StackPaneBuilder.create().build();
 		final Circle frame = CircleBuilder.create().styleClass("magnifier-frame").build();
 		frame.radiusProperty().bind(localRadius.add(frameWidthProperty));
-		
+
 		final Circle cClip = CircleBuilder.create().build();
 		cClip.radiusProperty().bind(localRadius);
 		cClip.translateXProperty().bind(localRadius);
@@ -137,22 +137,6 @@ public class MagnifierSkin extends SkinBase<Magnifier, MagnifierBehavior> {
 
 		final Popup popUp = new Popup();
 		popUp.getContent().add(mainContent);
-
-		// Adding mask implementation. The below code is responsible to not access the contents when magnifier is shown.
-		final StackPane mask = new StackPane();
-		getChildren().add(mask);
-		final SimpleBooleanProperty maskFlag = new SimpleBooleanProperty(true);
-		getChildren().addListener(new InvalidationListener() {
-			@Override
-			public void invalidated(Observable arg0) {
-				if (getSkinnable().isActive() && maskFlag.get()) {
-					maskFlag.set(false);
-					getChildren().remove(mask);
-					getChildren().add(mask);
-					maskFlag.set(true);
-				}
-			}
-		});
 
 		final EventHandler<MouseEvent> enteredEvent = new EventHandler<MouseEvent>() {
 			@Override
@@ -189,6 +173,9 @@ public class MagnifierSkin extends SkinBase<Magnifier, MagnifierBehavior> {
 			}
 		};
 
+		// Adding mask implementation. The below code is responsible to not access the contents when magnifier is shown.
+		final StackPane mask = new StackPane();
+
 		// Adding listener to activateProperty.
 		getSkinnable().activeProperty().addListener(new InvalidationListener() {
 			@Override
@@ -214,9 +201,6 @@ public class MagnifierSkin extends SkinBase<Magnifier, MagnifierBehavior> {
 			addEventFilter(MouseEvent.MOUSE_ENTERED, enteredEvent);
 			addEventFilter(MouseEvent.MOUSE_EXITED, exitedEvent);
 			addEventFilter(MouseEvent.MOUSE_MOVED, movedEvent);
-			if (!getChildren().contains(mask)) {
-				getChildren().add(mask);
-			}
 		}
 
 		// Adding listener to contentProperty.
@@ -224,11 +208,11 @@ public class MagnifierSkin extends SkinBase<Magnifier, MagnifierBehavior> {
 			@Override
 			public void invalidated(Observable arg0) {
 				getChildren().clear();
-				getChildren().add(getSkinnable().getContent());
+				getChildren().addAll(getSkinnable().getContent(), mask);
 			}
 		});
 		if (getSkinnable().getContent() != null) {
-			getChildren().add(getSkinnable().getContent());
+			getChildren().addAll(getSkinnable().getContent(), mask);
 		}
 
 		// Handling scroll behavior.
@@ -239,18 +223,18 @@ public class MagnifierSkin extends SkinBase<Magnifier, MagnifierBehavior> {
 				if (e.isControlDown() && getSkinnable().isScalableOnScroll()) {
 					double delta = e.getDeltaY();
 					double newValue = localScaleFactor.get();
-			        if (delta > 0) { // Increasing the zoom.
-			        	newValue = newValue + ZOOM_DELTA;
+					if (delta > 0) { // Increasing the zoom.
+						newValue = newValue + ZOOM_DELTA;
 						if (newValue > ZOOM_MAX) {
-				            newValue = ZOOM_MAX;
-				        }
+							newValue = ZOOM_MAX;
+						}
 					} else if (delta < 0) { // Decreasing the zoom.
 						newValue = newValue - ZOOM_DELTA;
 						if (newValue < ZOOM_MIN) {
-				            newValue = ZOOM_MIN;
-				        }
+							newValue = ZOOM_MIN;
+						}
 					}
-			        localScaleFactor.set(newValue);
+					localScaleFactor.set(newValue);
 					takeSnap(prevX.get(), prevY.get());
 				}
 				// If scrolled with ALT key press

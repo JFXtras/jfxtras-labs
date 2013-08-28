@@ -40,27 +40,34 @@
 	-fx-font-family:arial;
 }
 
-.toggle-button-with-bg,.toggle-button-with-bg .label .text,.toggle-button-with-bg .text{
+.sample-button,.sample-button .label, .sample-button-selected,.sample-button-selected .label {
 	-fx-cursor:hand;
 	-fx-background-color: transparent;
-	-fx-font-family: 'Arial';
-	-fx-text-fill: #404648 !important;
-	-fx-fill: #404648 !important;
-	-fx-font-size: 14px !important;
-	-fx-font-weight: bold;
-	-fx-padding: 2px 10px 0px 10px !important;
+	-fx-background-radius: 12px;
+	-fx-padding: 2px 6px 2px 6px !important;
 }
 
-.toggle-button-with-bg:selected,.toggle-button-with-bg:selected .text {
+.sample-button-selected{
 	-fx-cursor:hand;
 	-fx-background-color: #404A4C !important;
-	-fx-background-radius: 30;
+	-fx-background-radius: 12px;
+	-fx-padding: 2px 6px 2px 6px !important;
+}
+
+.sample-button .label{
+	-fx-text-fill: #404648;
+	-fx-fill: #404648;
+	-fx-font-family: 'Arial';
+	-fx-font-size: 14px !important;
+	-fx-font-weight: bold;
+}
+
+.sample-button-selected .label{
+	-fx-text-fill: #FFFFFF !important;
 	-fx-fill: #FFFFFF !important;
 	-fx-font-family: 'Arial';
+	-fx-font-size: 14px !important;
 	-fx-font-weight: bold;
-	-fx-font-size: 14px;
-	-fx-padding: 2px 10px 0px 10px !important;
-	-fx-background-insets: -1.4, 0, 1, 1;
 }
 
 .formBox{
