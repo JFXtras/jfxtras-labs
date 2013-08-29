@@ -1,7 +1,10 @@
-package jfxtras.labs.map.tile.attribution;
+package jfxtras.labs.map.tile.bing;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import jfxtras.labs.map.tile.Attribution;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 

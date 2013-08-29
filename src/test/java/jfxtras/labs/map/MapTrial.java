@@ -83,6 +83,7 @@ public class MapTrial extends Application {
 		coordinates.add(upperLeftCoord);
 		coordinates.add(lowerRightCoord);
 
+
 //		MapAirspace airspace = new MapAirspace(coordinates);
 //		map.addMapLayer(airspace);
 

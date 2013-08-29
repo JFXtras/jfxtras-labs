@@ -20,14 +20,6 @@
 //==============================================================================
 package jfxtras.labs.map.tile;
 
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.image.Image;
-
 /**
  * A repository for the map tiles.
  *
@@ -35,63 +27,39 @@ import javafx.scene.image.Image;
  * @author Mario Schroeder
  *
  */
-public class TileRepository implements TileCacheable{
+public class TileRepository implements TileProvideable{
 
     private TileSource tileSource;
 
-    private Map<String, TileInfo> cache;
-
-    private long expire;
-
-    /**
-     * Default expire time for the cache: one hour.
-     */
-    public static final long DEFAULT_EXPIRE = 60 * 60 * 1000;
+    private TileInfoCache cache = new TileInfoCache();
+    
+    private TileLoadStrategy strategy = new CacheLoadStrategy();
 
     public TileRepository(TileSource source) {
         tileSource = source;
-        cache = new ConcurrentHashMap<>();
-        expire = DEFAULT_EXPIRE;
+        strategy.setCache(cache);
     }
 
-    @Override
+	@Override
     public Tile getTile(int tilex, int tiley, int zoom) {
         Tile tile = null;
 
         if (isValid(tilex, tiley, zoom)) {
-
-            cleanupCache();
-
-            String location = tileSource.getTileUrl(zoom, tilex, tiley);
-            TileInfo info = cache.get(location);
-
-            if (info != null) {
-                tile = new Tile(location, info.getImage());
-            } else {
-                tile = new Tile(location);
-                tile.imageLoadedProperty().addListener(new ImageLoadedListener(location, tile));
-                tile.loadImage();
-            }
+        	
+        	String location = getLocation(zoom, tilex, tiley);
+            tile = loadTile(location, strategy);
         }
 
         return tile;
     }
-
-    /**
-     * Checks the expiration of images in the cache, and removes them eventually.
-     *
-     * @param location
-     */
-    private void cleanupCache() {
-
-        Set<Entry<String, TileInfo>> entries = cache.entrySet();
-        for (Entry<String, TileInfo> entry : entries) {
-            TileInfo info = entry.getValue();
-            long current = System.currentTimeMillis();
-            if (current - info.getTimeStamp() > expire) {
-                cache.remove(entry.getKey());
-            }
-        }
+    
+    private String getLocation(int zoom, int tilex, int tiley){
+    	return tileSource.getTileUrl(zoom, tilex, tiley);
+    }
+    
+    private Tile loadTile(String location, TileLoadStrategy strategy){
+    	cache.cleanup();
+        return strategy.execute(location);
     }
 
     private boolean isValid(int tilex, int tiley, int zoom) {
@@ -102,6 +70,22 @@ public class TileRepository implements TileCacheable{
         }
         return valid;
     }
+    
+    @Override
+    public TileLoadStrategy getStrategy() {
+		return strategy;
+	}
+
+    @Override
+	public final void setStrategy(TileLoadStrategy strategy) {
+    	if(strategy == null){
+    		throw new IllegalArgumentException("The strategy can not be null!");
+    	}
+    	if(!this.strategy.equals(strategy)){
+    		this.strategy = strategy;
+    		this.strategy.setCache(cache);
+    	}
+	}
 
     @Override
     public TileSource getTileSource() {
@@ -120,33 +104,6 @@ public class TileRepository implements TileCacheable{
      * @param expire difference as long
      */
     public void setExpire(long expire) {
-        this.expire = expire;
-    }
-
-    private class ImageLoadedListener implements ChangeListener<Boolean> {
-
-        private String location;
-
-        private Tile tile;
-
-        public ImageLoadedListener(String location, Tile tile) {
-            this.location = location;
-            this.tile = tile;
-        }
-
-        @Override
-        public void changed(
-            ObservableValue<? extends Boolean> ov, Boolean oldVal, Boolean newVal) {
-            if (newVal.booleanValue()) {
-                addImage(location, tile.getImageView().getImage());
-            }
-        }
-
-        private void addImage(String tileLocation, Image image) {
-
-            long timeStamp = System.currentTimeMillis();
-            TileInfo info = new TileInfo(timeStamp, image);
-            cache.put(tileLocation, info);
-        }
+        cache.setExpire(expire);
     }
 }

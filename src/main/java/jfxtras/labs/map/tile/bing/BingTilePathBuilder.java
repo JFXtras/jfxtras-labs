@@ -1,4 +1,6 @@
-package jfxtras.labs.map.tile;
+package jfxtras.labs.map.tile.bing;
+
+import jfxtras.labs.map.tile.AbstractTilePathBuilder;
 
 /**
  *

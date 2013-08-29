@@ -50,7 +50,7 @@ public class Tile {
 
     private ImageView imageView;
 
-    private String tileLocation;
+    private String location;
     
     private SimpleBooleanProperty imageLoadedProperty;
 
@@ -61,14 +61,14 @@ public class Tile {
 
     public Tile(String tileLocation) {
         imageView = new ImageView();
-        this.tileLocation = tileLocation;
+        this.location = tileLocation;
         imageLoadedProperty = new SimpleBooleanProperty();
     }
     
     
     public void loadImage(){
         imageLoadedProperty.set(false);
-    	if (tileLocation.startsWith(HTTP)) {
+    	if (location.startsWith(HTTP)) {
             loadFromHttp();
         } else {
             loadFromFile();
@@ -80,7 +80,7 @@ public class Tile {
         imageView.setFitWidth(DIM);
         imageView.setFitHeight(DIM);
 
-        final Image img = new Image(tileLocation, true);
+        final Image img = new Image(location, true);
 
         //You can add a specific action when each frame is started.
         final AnimationTimer timer = new AnimationTimer() {
@@ -105,7 +105,7 @@ public class Tile {
     }
 
     private void loadFromFile() {
-        File file = new File(tileLocation);
+        File file = new File(location);
         if (file.exists()) {
             Image image = new Image(file.toURI().toString());
             setLoadedImage(image);
@@ -138,13 +138,15 @@ public class Tile {
         imageView.setRotate(0);
     }
 
-
     public ImageView getImageView() {
         return imageView;
     }
 
-    
-    public SimpleBooleanProperty imageLoadedProperty() {
+    public String getLocation() {
+		return location;
+	}
+
+	public SimpleBooleanProperty imageLoadedProperty() {
         return imageLoadedProperty;
     }
 

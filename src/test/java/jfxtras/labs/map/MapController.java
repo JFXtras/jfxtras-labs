@@ -3,12 +3,12 @@ package jfxtras.labs.map;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
-import jfxtras.labs.map.tile.BingTileSourceFactory;
-import jfxtras.labs.map.tile.BingType;
-import jfxtras.labs.map.tile.OsmTileSourceFactory;
-import jfxtras.labs.map.tile.OsmType;
 import jfxtras.labs.map.tile.TileSource;
 import jfxtras.labs.map.tile.TileSourceFactory;
+import jfxtras.labs.map.tile.bing.BingTileSourceFactory;
+import jfxtras.labs.map.tile.bing.BingType;
+import jfxtras.labs.map.tile.osm.OsmTileSourceFactory;
+import jfxtras.labs.map.tile.osm.OsmType;
 
 /**
  * 
@@ -23,7 +23,6 @@ public class MapController {
 	@FXML
 	private MapPane map;
 	
-	
 	@FXML
 	public void mapTypeChanged(ActionEvent event){
 		Object value = mapType.getValue();
@@ -37,6 +36,11 @@ public class MapController {
 	public void centerMap(ActionEvent event){
 
 		map.centerMap();
+	}
+	
+	@FXML
+	public void refreshMap(ActionEvent event){
+		map.refereshMap();
 	}
 
 	private TileSource createTileSource(Object value){

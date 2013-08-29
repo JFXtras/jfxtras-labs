@@ -1,15 +1,11 @@
 package jfxtras.labs.map.render;
 
 import java.awt.Point;
-import java.util.Comparator;
 import java.util.List;
-import java.util.ArrayList;
 
 import static java.util.Collections.min;
 import static java.util.Collections.max;
-import static java.util.Collections.sort;
 import static java.util.Collections.emptyList;
-
 import javafx.scene.Group;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
@@ -18,9 +14,14 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import jfxtras.labs.map.Moveable;
-import jfxtras.labs.map.tile.Tile;
-import jfxtras.labs.map.tile.TileCacheable;
+import jfxtras.labs.map.tile.CacheLoadStrategy;
+import jfxtras.labs.map.tile.RefreshLoadStrategy;
+import jfxtras.labs.map.tile.TileProvideable;
+import jfxtras.labs.map.tile.TileImageComparator;
+import jfxtras.labs.map.tile.TileImage;
+import jfxtras.labs.map.tile.TilesLoadable;
 import jfxtras.labs.map.tile.TileSource;
+import jfxtras.labs.map.tile.TilesLoader;
 
 /**
  * Rendered for map tiles.
@@ -33,40 +34,45 @@ public class TileRenderer implements TileRenderable {
 	 * stroke width
 	 */
 	private static final double WIDTH = 0.4;
-
-	private static final int START = 0;
-
-	private static final Point[] directions = { new Point(1, 0),
-			new Point(0, 1), new Point(-1, 0), new Point(0, -1) };
-
-	private final TileCacheable tileCache;
+	
+	private TileImageComparator tileComparator = new TileImageComparator();
 
 	private boolean monoChrome;
 
 	private boolean tileGridVisible;
 
 	private List<TileImage> tileImages;
+	
+	private final TileProvideable provider;
 
-	private static final TileComparator TILE_COMPARATOR = new TileComparator();
 
-	public TileRenderer(TileCacheable tileCache) {
-		this.tileCache = tileCache;
+	public TileRenderer(TileProvideable provider) {
+		this.provider = provider;
 		this.tileImages = emptyList();
 	}
 
 	@Override
 	public int prepareTiles(Moveable mapController) {
-
-		tileImages = loadTiles(mapController);
+		provider.setStrategy(new CacheLoadStrategy());
+		TilesLoadable tileLoader = new TilesLoader(provider);
+		tileImages = tileLoader.loadTiles(mapController);
 		return tileImages.size();
 	}
-
+	
+	@Override
+	public void refresh(Moveable mapController) {
+		provider.setStrategy(new RefreshLoadStrategy());
+		TilesLoadable tileLoader = new TilesLoader(provider);
+		tileImages = tileLoader.loadTiles(mapController);
+		render(mapController.getTilesGroup());
+	}
+		
 	@Override
 	public Point[] getBounds() {
 		Point[] bounds = new Point[0];
 		if (!tileImages.isEmpty()) {
-			TileImage min = min(tileImages, TILE_COMPARATOR);
-			TileImage max = max(tileImages, TILE_COMPARATOR);
+			TileImage min = min(tileImages, tileComparator);
+			TileImage max = max(tileImages, tileComparator);
 
 			int tilesize = getTileSize();
 			bounds = new Point[2];
@@ -77,83 +83,13 @@ public class TileRenderer implements TileRenderable {
 		return bounds;
 	}
 
-	/**
-	 * Load the tiles in a spiral, starting from center of the map.
-	 */
-	private List<TileImage> loadTiles(Moveable mapController) {
-
-		List<TileImage> tiles = new ArrayList<>();
-
-		int tilesize = getTileSize();
-		int iMove = 2;
-		Point center = mapController.getCenter();
-
-		int zoom = mapController.zoomProperty().get();
-
-		int x_max = mapController.getMapWidth();
-		int y_max = mapController.getMapHeight();
-
-		int x_min = -tilesize, y_min = -tilesize;
-
-		int posx = getInitialPositionX(tilesize, center, x_max);
-		int posy = getInitialPositionY(tilesize, center, y_max);
-
-		int tilex = (center.x / tilesize);
-		int tiley = (center.y / tilesize);
-
-		boolean added = true;
-		int x = START;
-		while (added) {
-			added = false;
-			for (int i = START; i < 4; i++) {
-				if (i % 2 == START) {
-					x++;
-				}
-				for (int j = START; j < x; j++) {
-					if (x_min <= posx && posx <= x_max && y_min <= posy
-							&& posy <= y_max) {
-						// tile is visible
-						Tile tile = tileCache.getTile(tilex, tiley, zoom);
-						if (tile != null) {
-							added = true;
-							TileImage tileImage = new TileImage(
-									tile.getImageView(), posx, posy);
-							tileImage.setTileX(tilex);
-							tileImage.setTileY(tiley);
-							tiles.add(tileImage);
-						}
-					}
-					Point next = directions[iMove];
-					posx += next.x * tilesize;
-					posy += next.y * tilesize;
-					tilex += next.x;
-					tiley += next.y;
-				}
-				iMove = (iMove + 1) % directions.length;
-			}
-		}
-
-		sort(tiles, TILE_COMPARATOR);
-		return tiles;
-	}
-
 	private int getTileSize() {
-		TileSource tileSource = tileCache.getTileSource();
+		TileSource tileSource = provider.getTileSource();
 		return tileSource.getTileSize();
 	}
 
-	private int getInitialPositionY(int tilesize, Point center, int y_max) {
-		int diff_top = (center.y % tilesize);
-		return (y_max / 2) - diff_top;
-	}
-
-	private int getInitialPositionX(int tilesize, Point center, int x_max) {
-		int diff_left = (center.x % tilesize);
-		return (x_max / 2) - diff_left;
-	}
-
 	@Override
-	public void doRender(Group tilesGroup) {
+	public void render(Group tilesGroup) {
 
 		int tilesize = getTileSize();
 
@@ -174,7 +110,7 @@ public class TileRenderer implements TileRenderable {
 			}
 
 			if (tileGridVisible) {
-				tilesGroup.getChildren().add(createGrid(posx, posy, tilesize));
+				tilesGroup.getChildren().add(createBorder(posx, posy, tilesize));
 			}
 		}
 	}
@@ -188,7 +124,7 @@ public class TileRenderer implements TileRenderable {
 		imageView.setEffect(monochrome);
 	}
 
-	protected Path createGrid(int posx, int posy, int tilesize) {
+	protected Path createBorder(int posx, int posy, int tilesize) {
 
 		Path path = new Path();
 		path.getElements().add(new MoveTo(posx, posy));
@@ -202,73 +138,12 @@ public class TileRenderer implements TileRenderable {
 		return path;
 	}
 
-	public void setTileSource(TileSource tileSource) {
-		tileCache.setTileSource(tileSource);
-	}
-
-	public TileSource getTileSource() {
-		return tileCache.getTileSource();
-	}
-
 	public void setMonoChrome(boolean monoChrome) {
 		this.monoChrome = monoChrome;
 	}
 
 	public void setTileGridVisible(boolean tileGridVisible) {
 		this.tileGridVisible = tileGridVisible;
-	}
-
-	/**
-	 * 
-	 * This class combines the image view with the position.
-	 * 
-	 */
-	private class TileImage {
-
-		private ImageView imageView;
-
-		private int posX, posY;
-
-		private int tileX, tileY;
-
-		TileImage(ImageView imageView, int posX, int posY) {
-			super();
-			this.imageView = imageView;
-			this.posX = posX;
-			this.posY = posY;
-		}
-
-		ImageView getImageView() {
-			return imageView;
-		}
-
-		int getPosX() {
-			return posX;
-		}
-
-		int getPosY() {
-			return posY;
-		}
-
-		void setTileX(int tileX) {
-			this.tileX = tileX;
-		}
-
-		void setTileY(int tileY) {
-			this.tileY = tileY;
-		}
-	}
-
-	private static class TileComparator implements Comparator<TileImage> {
-
-		@Override
-		public int compare(TileImage left, TileImage right) {
-			return (left.tileX < right.tileX) ? -1
-					: (left.tileX > right.tileX) ? +1
-							: (left.tileY < right.tileY) ? -1
-									: (left.tileY > right.tileY) ? +1 : 0;
-		}
-
 	}
 
 }

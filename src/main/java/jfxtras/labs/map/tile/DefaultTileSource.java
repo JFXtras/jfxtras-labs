@@ -1,7 +1,10 @@
 package jfxtras.labs.map.tile;
 
 import jfxtras.labs.map.Coordinate;
+import jfxtras.labs.map.tile.osm.OsmTilePathBuilder;
+
 import java.io.IOException;
+
 import javafx.scene.image.Image;
 
 /**
@@ -154,13 +157,11 @@ public class DefaultTileSource implements TileSource {
 
     @Override
     public double tileYToLat(int y, int zoom) {
-//        return OsmMercator.YToLat( y, zoom);
         return Math.atan(Math.sinh(Math.PI - (Math.PI * y / Math.pow(2.0, zoom - 1)))) * 180 / Math.PI;
     }
 
     @Override
     public double tileXToLon(int x, int zoom) {
-//        return OsmMercator.XToLon( x,zoom);
         return x * 45.0 / Math.pow(2.0, zoom - 3) - 180.0;
     }
 
@@ -168,7 +169,7 @@ public class DefaultTileSource implements TileSource {
         this.minZoom = minZoom;
     }
 
-    protected final void setMaxZoom(int maxZoom) {
+    public final void setMaxZoom(int maxZoom) {
         this.maxZoom = maxZoom;
     }
 
