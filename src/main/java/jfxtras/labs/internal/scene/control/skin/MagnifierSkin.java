@@ -1,5 +1,28 @@
 /**
- * 
+ * Copyright (c) 2011, JFXtras
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the <organization> nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package jfxtras.labs.internal.scene.control.skin;
 
@@ -113,7 +136,7 @@ public class MagnifierSkin extends SkinBase<Magnifier, MagnifierBehavior> {
 		final StackPane mainContent = StackPaneBuilder.create().build();
 		final Circle frame = CircleBuilder.create().styleClass("magnifier-frame").build();
 		frame.radiusProperty().bind(localRadius.add(frameWidthProperty));
-		
+
 		final Circle cClip = CircleBuilder.create().build();
 		cClip.radiusProperty().bind(localRadius);
 		cClip.translateXProperty().bind(localRadius);
@@ -137,22 +160,6 @@ public class MagnifierSkin extends SkinBase<Magnifier, MagnifierBehavior> {
 
 		final Popup popUp = new Popup();
 		popUp.getContent().add(mainContent);
-
-		// Adding mask implementation. The below code is responsible to not access the contents when magnifier is shown.
-		final StackPane mask = new StackPane();
-		getChildren().add(mask);
-		final SimpleBooleanProperty maskFlag = new SimpleBooleanProperty(true);
-		getChildren().addListener(new InvalidationListener() {
-			@Override
-			public void invalidated(Observable arg0) {
-				if (getSkinnable().isActive() && maskFlag.get()) {
-					maskFlag.set(false);
-					getChildren().remove(mask);
-					getChildren().add(mask);
-					maskFlag.set(true);
-				}
-			}
-		});
 
 		final EventHandler<MouseEvent> enteredEvent = new EventHandler<MouseEvent>() {
 			@Override
@@ -189,6 +196,9 @@ public class MagnifierSkin extends SkinBase<Magnifier, MagnifierBehavior> {
 			}
 		};
 
+		// Adding mask implementation. The below code is responsible to not access the contents when magnifier is shown.
+		final StackPane mask = new StackPane();
+
 		// Adding listener to activateProperty.
 		getSkinnable().activeProperty().addListener(new InvalidationListener() {
 			@Override
@@ -214,9 +224,6 @@ public class MagnifierSkin extends SkinBase<Magnifier, MagnifierBehavior> {
 			addEventFilter(MouseEvent.MOUSE_ENTERED, enteredEvent);
 			addEventFilter(MouseEvent.MOUSE_EXITED, exitedEvent);
 			addEventFilter(MouseEvent.MOUSE_MOVED, movedEvent);
-			if (!getChildren().contains(mask)) {
-				getChildren().add(mask);
-			}
 		}
 
 		// Adding listener to contentProperty.
@@ -224,11 +231,11 @@ public class MagnifierSkin extends SkinBase<Magnifier, MagnifierBehavior> {
 			@Override
 			public void invalidated(Observable arg0) {
 				getChildren().clear();
-				getChildren().add(getSkinnable().getContent());
+				getChildren().addAll(getSkinnable().getContent(), mask);
 			}
 		});
 		if (getSkinnable().getContent() != null) {
-			getChildren().add(getSkinnable().getContent());
+			getChildren().addAll(getSkinnable().getContent(), mask);
 		}
 
 		// Handling scroll behavior.
@@ -239,18 +246,18 @@ public class MagnifierSkin extends SkinBase<Magnifier, MagnifierBehavior> {
 				if (e.isControlDown() && getSkinnable().isScalableOnScroll()) {
 					double delta = e.getDeltaY();
 					double newValue = localScaleFactor.get();
-			        if (delta > 0) { // Increasing the zoom.
-			        	newValue = newValue + ZOOM_DELTA;
+					if (delta > 0) { // Increasing the zoom.
+						newValue = newValue + ZOOM_DELTA;
 						if (newValue > ZOOM_MAX) {
-				            newValue = ZOOM_MAX;
-				        }
+							newValue = ZOOM_MAX;
+						}
 					} else if (delta < 0) { // Decreasing the zoom.
 						newValue = newValue - ZOOM_DELTA;
 						if (newValue < ZOOM_MIN) {
-				            newValue = ZOOM_MIN;
-				        }
+							newValue = ZOOM_MIN;
+						}
 					}
-			        localScaleFactor.set(newValue);
+					localScaleFactor.set(newValue);
 					takeSnap(prevX.get(), prevY.get());
 				}
 				// If scrolled with ALT key press
