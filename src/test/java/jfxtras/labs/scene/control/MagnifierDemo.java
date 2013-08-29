@@ -1,7 +1,9 @@
 package jfxtras.labs.scene.control;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javafx.application.Application;
@@ -11,11 +13,11 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -28,9 +30,6 @@ import javafx.scene.control.LabelBuilder;
 import javafx.scene.control.RadioButtonBuilder;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleButtonBuilder;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -81,7 +80,6 @@ public class MagnifierDemo extends Application {
 
 	final DecimalFormat df = new DecimalFormat("##.#");
 	final Map<Integer, Node> samples = new HashMap<>();
-	final ToggleGroup group = new ToggleGroup();
 	final StackPane container = new StackPane();
 	private final Label tooltipText = LabelBuilder.create().wrapText(true).build();
 	private Popup tooltipPopup;
@@ -159,23 +157,36 @@ public class MagnifierDemo extends Application {
 		return p;
 	}
 
-	protected ToggleButton getButton(String txt, final int num) {
-		final ToggleButton btn = ToggleButtonBuilder.create().text(txt).styleClass("toggle-button-with-bg").toggleGroup(group)
-				.translateY(7).maxHeight(20).build();
-		btn.setOnAction(new EventHandler<ActionEvent>() {
+	private List<StackPane> buttonsList = new ArrayList<>();
+	private int currentBtn = -1;
+	protected Node getButton(String text, final int id) {
+		final StackPane sp = new StackPane();
+		sp.getStyleClass().add("sample-button");
+		sp.getChildren().add(new Label(text));
+		buttonsList.add(sp);
+		sp.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
-			public void handle(ActionEvent paramT) {
-				if (!btn.isSelected()) {
-					btn.setSelected(true);
-				} else {
-					showContent(num);
+			public void handle(MouseEvent arg0) {
+				if (id != currentBtn) {
+					showSample(sp, id);
 				}
 			}
 		});
-		if (num == 1) {
-			btn.fire();
+		if (id == 1) {
+			showSample(sp, id);
 		}
-		return btn;
+		return new Group(sp);
+	}
+
+	private void showSample(StackPane sp, int id) {
+		for (StackPane btn : buttonsList) {
+			btn.getStyleClass().removeAll("sample-button-selected", "sample-button");
+			btn.getStyleClass().add("sample-button");
+		}
+		sp.getStyleClass().remove("sample-button");
+		sp.getStyleClass().add("sample-button-selected");
+		currentBtn = id;
+		showContent(id);
 	}
 
 	protected void showContent(int num) {
