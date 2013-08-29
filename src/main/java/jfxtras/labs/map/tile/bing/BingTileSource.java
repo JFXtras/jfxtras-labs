@@ -1,8 +1,12 @@
-package jfxtras.labs.map.tile;
+package jfxtras.labs.map.tile.bing;
 
-import jfxtras.labs.map.tile.attribution.AttributtionStringBuilder;
-import jfxtras.labs.map.tile.attribution.Attribution;
+import jfxtras.labs.map.tile.Attribution;
+import jfxtras.labs.map.tile.AttributtionStringBuilder;
+import jfxtras.labs.map.tile.DefaultTileSource;
+import jfxtras.labs.map.tile.TileSource;
+
 import java.util.List;
+
 import jfxtras.labs.map.Coordinate;
 
 /**

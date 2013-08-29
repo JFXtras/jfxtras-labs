@@ -148,7 +148,7 @@ public class TilesMouseHandler {
 		@Override
 		public void handle(MouseEvent me) {
 			tilesGroup.setCursor(Cursor.CROSSHAIR);
-			if (isMoveable()) {
+			if(isMoveable()){
 				moveMap(me);
 				dragStartPoint = null;
 			}

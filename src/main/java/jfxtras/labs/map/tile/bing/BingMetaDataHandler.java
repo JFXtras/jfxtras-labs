@@ -1,7 +1,10 @@
-package jfxtras.labs.map.tile.attribution;
+package jfxtras.labs.map.tile.bing;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import jfxtras.labs.map.tile.Attribution;
+
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 

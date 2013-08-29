@@ -5,6 +5,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import javafx.scene.image.ImageView;
 import jfxtras.labs.map.ApiKeys;
+import jfxtras.labs.map.tile.bing.BingTileSourceFactory;
+import jfxtras.labs.map.tile.bing.BingType;
+import jfxtras.labs.map.tile.local.LocalTileSourceFactory;
+import jfxtras.labs.map.tile.osm.OsmTileSourceFactory;
+import jfxtras.labs.map.tile.osm.OsmType;
 
 import org.junit.Test;
 

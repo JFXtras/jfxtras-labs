@@ -2,6 +2,8 @@ package jfxtras.labs.map;
 
 import java.awt.Point;
 
+import javafx.scene.Group;
+
 /**
  * This interface defines methods to move the map.
  *
@@ -42,5 +44,7 @@ public interface Moveable extends Zoomable{
      * Centers the map: latitude and longitude are zero.
      */
     void centerMap();
+    
+	Group getTilesGroup();
     
 }

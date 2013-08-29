@@ -1,4 +1,6 @@
-package jfxtras.labs.map.tile;
+package jfxtras.labs.map.tile.osm;
+
+import jfxtras.labs.map.tile.TileUrlBuildable;
 
 /**
  * This class builds the urls to an osm tiles server.

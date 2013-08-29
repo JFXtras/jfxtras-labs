@@ -18,7 +18,9 @@
 //  For more information, please email jsmith.carlsbad@gmail.com
 //    
 //==============================================================================
-package jfxtras.labs.map.tile;
+package jfxtras.labs.map.tile.local;
+
+import jfxtras.labs.map.tile.DefaultTileSource;
 
 /**
  * This is a tile source for file based tiles

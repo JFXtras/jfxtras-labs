@@ -1,4 +1,8 @@
-package jfxtras.labs.map.tile;
+package jfxtras.labs.map.tile.osm;
+
+import jfxtras.labs.map.tile.DefaultTileSource;
+import jfxtras.labs.map.tile.TileSource;
+import jfxtras.labs.map.tile.TileSourceFactory;
 
 /**
  * Factory for OSM based tile sources.

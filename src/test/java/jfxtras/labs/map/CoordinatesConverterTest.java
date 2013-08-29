@@ -5,8 +5,8 @@ import static org.junit.Assert.*;
 import java.awt.Dimension;
 import java.awt.Point;
 
-import jfxtras.labs.map.tile.LocalTileSourceFactory;
 import jfxtras.labs.map.tile.TileSourceFactory;
+import jfxtras.labs.map.tile.local.LocalTileSourceFactory;
 
 import org.junit.Before;
 import org.junit.Test;
