@@ -1,13 +1,13 @@
-package jfxtras.labs.map.tile;
+package jfxtras.labs.map.tile.bing;
 
-import jfxtras.labs.map.tile.attribution.BingMapMetaDataHandler;
-import jfxtras.labs.map.tile.attribution.BingAttributionLoader;
-import jfxtras.labs.map.tile.attribution.BingMetaDataHandler;
-import jfxtras.labs.map.tile.attribution.BingImageMetaDataHandler;
-import jfxtras.labs.map.tile.attribution.Attribution;
+import jfxtras.labs.map.tile.ApiKeyTileSourceFactory;
+import jfxtras.labs.map.tile.Attribution;
+import jfxtras.labs.map.tile.TileSource;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javafx.scene.image.Image;
 
 /**

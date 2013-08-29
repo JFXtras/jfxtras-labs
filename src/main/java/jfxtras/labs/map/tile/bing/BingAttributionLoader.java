@@ -1,10 +1,13 @@
-package jfxtras.labs.map.tile.attribution;
+package jfxtras.labs.map.tile.bing;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
+
+import jfxtras.labs.map.tile.Attribution;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;

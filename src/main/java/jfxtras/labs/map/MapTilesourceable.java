@@ -1,6 +1,5 @@
 package jfxtras.labs.map;
 
-import javafx.scene.Group;
 import jfxtras.labs.map.tile.TileSource;
 
 /**
@@ -10,8 +9,6 @@ import jfxtras.labs.map.tile.TileSource;
  */
 public interface MapTilesourceable extends CursorLocationable{
 	
-	Group getTilesGroup();
-
     TileSource getTileSource();
 
 }

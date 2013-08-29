@@ -1,4 +1,4 @@
-package jfxtras.labs.map.tile;
+package jfxtras.labs.map.tile.bing;
 
 /**
  * This enum contains values of already provided bing tile types.

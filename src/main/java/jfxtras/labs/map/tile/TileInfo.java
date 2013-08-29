@@ -22,7 +22,7 @@ package jfxtras.labs.map.tile;
 import javafx.scene.image.Image;
 
 /**
- * This class keeps the timestamp and image together.
+ * This class keeps the time stamp and image together.
  * 
  * @author Mario Schroeder
  * 
@@ -39,8 +39,8 @@ class TileInfo {
 	}
 
     /**
-     * Returns the time stampe when the image was loaded.
-     * @return time in milli seconds
+     * Returns the time stamp when the image was loaded.
+     * @return time in milliseconds
      */
 	long getTimeStamp() {
 		return timeStamp;

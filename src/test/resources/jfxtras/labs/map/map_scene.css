@@ -5,8 +5,7 @@
 */
 
 #toolBar {
-    -fx-base: #505359;
-    -fx-background: #505359;
+    -fx-base: #bbbbcc;
     -fx-shadow-highlight-color: transparent;
     -fx-spacing: 5;
     -fx-padding: 4 4 4 4;
@@ -14,6 +13,13 @@
 
 #btnCenter {          
     -fx-background-image: url("center-map.png");
+    -fx-background-size: 14 14;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position:center;   
+}
+
+#btnRefresh {          
+    -fx-background-image: url("view-refresh.png");
     -fx-background-size: 14 14;
     -fx-background-repeat: no-repeat;
     -fx-background-position:center;   

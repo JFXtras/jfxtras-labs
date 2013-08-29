@@ -1,9 +1,9 @@
 package jfxtras.labs.map;
 
 import javafx.util.Builder;
-import jfxtras.labs.map.tile.OsmTileSourceFactory;
-import jfxtras.labs.map.tile.OsmType;
 import jfxtras.labs.map.tile.TileSourceFactory;
+import jfxtras.labs.map.tile.osm.OsmTileSourceFactory;
+import jfxtras.labs.map.tile.osm.OsmType;
 
 /**
  * 

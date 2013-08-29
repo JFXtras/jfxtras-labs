@@ -1,4 +1,4 @@
-package jfxtras.labs.map.tile;
+package jfxtras.labs.map.tile.osm;
 
 /**
  * This enum contains values of already provided osm tile types.

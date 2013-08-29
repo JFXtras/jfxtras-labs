@@ -1,14 +1,12 @@
 package jfxtras.labs.map.tile;
 
 /**
- * Interface for a tile cache.
+ * Interface to set and get the {@link TileSource}.
  *
  * @author Mario Schroeder
  */
-public interface TileCacheable {
-
-    Tile getTile(int tilex, int tiley, int zoom);
-
+public interface TilesSourceAccessable {
+	
     TileSource getTileSource();
 
     void setTileSource(TileSource tileSource);

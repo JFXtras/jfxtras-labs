@@ -1,4 +1,7 @@
-package jfxtras.labs.map.tile;
+package jfxtras.labs.map.tile.local;
+
+import jfxtras.labs.map.tile.TileSource;
+import jfxtras.labs.map.tile.TileSourceFactory;
 
 /**
  * Factory for a tile source which is based on files.
