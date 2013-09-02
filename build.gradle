@@ -17,7 +17,10 @@ dependencies {
 
 apply {
   from 'gradle/mavenCentralDeploy.gradle'
+    // from 'http://gradle-plugins.mihosoft.eu/latest/vlicenseheader.gradle'
 }
+
+// repairHeaders.licenseHeaderText = new File(projectDir,"license-template.txt")
 
 task buildTimestamped(type: Copy, dependsOn: 'build') {
     from 'build/libs'
