@@ -11,21 +11,21 @@ buildscript {
     }
 
     try {
-      println "JavaFX runtime jar: ${ext.javafxJar}"
-      dependencies {
-        classpath files(ext.javafxJar)
-      }
+        println "JavaFX runtime jar: ${ext.javafxJar}"
+        dependencies {
+            classpath files(ext.javafxJar)
+        }
     } catch (MissingPropertyException mpe) {
-      println """
+        println """
                  |  Please set the environment variable JAVA_HOME
                  |  to the directory that contains jre/lib/jfxrt.jar
                  |  of JavaFX version ${jfxtras_requiredJavaFxVersion}.\n""".stripMargin() 
-      System.exit 1
+        System.exit 1
     }
 }
 
 repositories {
-	mavenRepo urls: "https://oss.sonatype.org/content/repositories/snapshots/"
+    mavenRepo urls: "https://oss.sonatype.org/content/repositories/snapshots/"
     mavenCentral()
 }
 
@@ -36,8 +36,11 @@ dependencies {
 }
 
 apply {
-  from 'gradle/mavenCentralDeploy.gradle'
+    from 'gradle/mavenCentralDeploy.gradle'
+    // from 'http://gradle-plugins.mihosoft.eu/latest/vlicenseheader.gradle'
 }
+
+// repairHeaders.licenseHeaderText = new File(projectDir,"license-template.txt")
 
 task buildTimestamped(type: Copy, dependsOn: 'build') {
     from 'build/libs'
@@ -53,11 +56,11 @@ task wrapper(type: Wrapper) {
 }
 
 signArchives.onlyIf {
-      project.hasProperty('signing.keyId')
+    project.hasProperty('signing.keyId')
 }
 
 uploadArchives.onlyIf {
-      project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')
+    project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')
 }
 
 task copyToLib(type: Copy) {
