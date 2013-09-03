@@ -1,5 +1,7 @@
 /**
- * Copyright (c) 2011, JFXtras
+ * RadialMenu.java
+ *
+ * Copyright (c) 2011-2013, JFXtras
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
