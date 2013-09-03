@@ -1,5 +1,7 @@
 /**
- * Copyright (c) 2011, JFXtras
+ * LocalDateTimePicker.java
+ *
+ * Copyright (c) 2011-2013, JFXtras
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -24,6 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package jfxtras.labs.scene.control;
 
 import java.util.Calendar;
