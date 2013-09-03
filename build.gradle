@@ -5,6 +5,14 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 
 buildscript {
+    
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots"
+        }
+    }
+    
     final javaHome = System.env['JAVA_HOME']
     if (javaHome) {
         ext.javafxJar = "${javaHome}/jre/lib/jfxrt.jar"
@@ -14,6 +22,9 @@ buildscript {
         println "JavaFX runtime jar: ${ext.javafxJar}"
         dependencies {
             classpath files(ext.javafxJar)
+            
+            // vrl license header plugin
+            classpath "eu.mihosoft.vrl.vlicense-header-util.gradle:vlicense-header-plugin:0.1-r2-SNAPSHOT"
         }
     } catch (MissingPropertyException mpe) {
         println """
@@ -24,10 +35,16 @@ buildscript {
     }
 }
 
+// apply vrl license header plugin
+if (!project.plugins.findPlugin(eu.mihosoft.vrl.vlicenseheaderutil.gradle.VLicenseHeaderPlugin)) {
+    project.apply(plugin: eu.mihosoft.vrl.vlicenseheaderutil.gradle.VLicenseHeaderPlugin)
+}
+
 repositories {
     mavenRepo urls: "https://oss.sonatype.org/content/repositories/snapshots/"
     mavenCentral()
 }
+
 
 dependencies {
     compile     files(ext.javafxJar, "lib/jsr-310-ri-0.6.3.jar", "lib/jsr-310-TZDB-all-0.6.3.jar")
@@ -37,10 +54,10 @@ dependencies {
 
 apply {
     from 'gradle/mavenCentralDeploy.gradle'
-    // from 'http://gradle-plugins.mihosoft.eu/latest/vlicenseheader.gradle'
 }
 
-// repairHeaders.licenseHeaderText = new File(projectDir,"license-template.txt")
+// license template (will be used as header in all Java source files)
+repairHeaders.licenseHeaderText = new File(projectDir,"license-template.txt")
 
 task buildTimestamped(type: Copy, dependsOn: 'build') {
     from 'build/libs'
