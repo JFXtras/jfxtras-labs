@@ -1,8 +1,5 @@
 package jfxtras.labs.scene.control;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;

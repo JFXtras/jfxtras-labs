@@ -68,7 +68,7 @@ public class CalendarTimePicker extends Control
 	 */
 	@Override protected String getUserAgentStylesheet()
 	{
-		return this.getClass().getResource("/jfxtras/labs/internal/scene/control/" + this.getClass().getSimpleName() + ".css").toString();
+		return this.getClass().getResource("/jfxtras/labs/internal/scene/control/" + CalendarTimePicker.class.getSimpleName() + ".css").toExternalForm();
 	}
 	
 	// ==================================================================================================================

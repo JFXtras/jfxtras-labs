@@ -84,7 +84,7 @@ public class CalendarTimeTextField extends Control
 	 */
 	@Override protected String getUserAgentStylesheet()
 	{
-		return this.getClass().getResource("/jfxtras/labs/internal/scene/control/" + this.getClass().getSimpleName() + ".css").toString();
+		return this.getClass().getResource("/jfxtras/labs/internal/scene/control/" + CalendarTimeTextField.class.getSimpleName() + ".css").toExternalForm();
 	}
 	
 	// ==================================================================================================================
