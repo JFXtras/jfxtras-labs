@@ -29,8 +29,6 @@
 
 package jfxtras.labs.scene.control;
 
-import com.sun.javafx.scene.control.skin.ListViewSkin;
-
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
