@@ -29,6 +29,7 @@ package jfxtras.labs.scene.control;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -148,6 +149,16 @@ public class CalendarTextFieldTrial1 extends Application {
 				CalendarTextField lCalendarTextField = new CalendarTextField();
 				lCalendarTextField.dateFormatsProperty().add(new SimpleDateFormat("yyyy-MM-dd"));
 				lCalendarTextField.dateFormatsProperty().add(new SimpleDateFormat("yyyyMMdd"));
+				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
+				
+				lCalendarTextField.calendarProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
+			}
+			
+	        // locale DE
+			{
+				lGridPane.add(new Label("locale DE"), 0, lRowIdx);
+				CalendarTextField lCalendarTextField = new CalendarTextField();
+				lCalendarTextField.setLocale(Locale.GERMAN);				
 				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
 				
 				lCalendarTextField.calendarProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value

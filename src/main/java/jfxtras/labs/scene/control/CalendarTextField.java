@@ -98,22 +98,40 @@ public class CalendarTextField extends Control
 	public void setCalendar(Calendar value) { calendarObjectProperty.setValue(value); }
 	public CalendarTextField withCalendar(Calendar value) { setCalendar(value); return this; }
 
+	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc */
+	public ObjectProperty<Locale> localeProperty() { return localeObjectProperty; }
+	final private ObjectProperty<Locale> localeObjectProperty = new SimpleObjectProperty<Locale>(Locale.getDefault())
+	{
+		public void set(Locale value)
+		{
+			super.set(value);
+			if (dateFormatManual == false)
+			{
+				setDateFormat( SimpleDateFormat.getDateInstance(DateFormat.LONG, value) );
+			}
+		}
+	};
+	public Locale getLocale() { return localeObjectProperty.getValue(); }
+	public void setLocale(Locale value) { localeObjectProperty.setValue(value); }
+	public CalendarTextField withLocale(Locale value) { setLocale(value); return this; } 
+	
 	/** 
 	 * The DateFormat used to render/parse the date in the textfield.
 	 * It is allow to show time as well for example by SimpleDateFormat.getDateTimeInstance().
 	 */
 	public ObjectProperty<DateFormat> dateFormatProperty() { return dateFormatObjectProperty; }
-	final private ObjectProperty<DateFormat> dateFormatObjectProperty = new SimpleObjectProperty<DateFormat>(this, "dateFormat", SimpleDateFormat.getDateInstance());
+	final private ObjectProperty<DateFormat> dateFormatObjectProperty = new SimpleObjectProperty<DateFormat>(this, "dateFormat", SimpleDateFormat.getDateInstance(DateFormat.LONG, getLocale()))
+	{
+		public void set(DateFormat value)
+		{
+			super.set(value);
+			dateFormatManual = true;
+		}
+	};
 	public DateFormat getDateFormat() { return dateFormatObjectProperty.getValue(); }
 	public void setDateFormat(DateFormat value) { dateFormatObjectProperty.setValue(value); }
 	public CalendarTextField withDateFormat(DateFormat value) { setDateFormat(value); return this; }
-
-	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc */
-	public ObjectProperty<Locale> localeProperty() { return localeObjectProperty; }
-	final private ObjectProperty<Locale> localeObjectProperty = new SimpleObjectProperty<Locale>(Locale.getDefault());
-	public Locale getLocale() { return localeObjectProperty.getValue(); }
-	public void setLocale(Locale value) { localeObjectProperty.setValue(value); }
-	public CalendarTextField withLocale(Locale value) { setLocale(value); return this; } 
+	private boolean dateFormatManual = false;
 	
 	/** PromptText: */
 	public ObjectProperty<String> promptTextProperty() { return promptTextObjectProperty; }

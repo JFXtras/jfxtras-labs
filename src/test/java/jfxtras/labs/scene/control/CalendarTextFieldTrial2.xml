@@ -5,6 +5,7 @@
 <VBox xmlns:fx="http://javafx.com/fxml">
     <children>
         <CalendarTextField/>
-        <CalendarTextField fx:id="test" dateFormat="yyyy-MM-dd HH:mm:ss" locale="DE" dateFormats="yyyy-MM-dd, yyyy-MM, yyyy" promptText="test"/>
+        <CalendarTextField fx:id="test" dateFormat="yyyy-MM-dd HH:mm:ss" dateFormats="yyyy-MM-dd, yyyy-MM, yyyy" promptText="test"/>
+        <CalendarTextField locale="DE"/>
     </children>
 </VBox>

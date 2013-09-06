@@ -179,7 +179,9 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField>
 					parse();
 					
 					// get the calendar to modify
-					Calendar lCalendar = (Calendar)getSkinnable().getCalendar().clone();
+					Calendar lCalendar = getSkinnable().getCalendar();
+					if (lCalendar == null) return;
+					lCalendar = (Calendar)lCalendar.clone();
 					
 					// modify
 					int lField = Calendar.DATE;
