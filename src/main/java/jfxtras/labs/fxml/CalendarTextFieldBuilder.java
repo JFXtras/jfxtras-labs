@@ -31,6 +31,8 @@ package jfxtras.labs.fxml;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javafx.collections.FXCollections;
@@ -45,11 +47,6 @@ import jfxtras.labs.scene.control.CalendarTextField;
  */
 public class CalendarTextFieldBuilder implements BuilderService<CalendarTextField>
 {
-	/** DateFormat */
-	public String getDateFormat() { return null; } // dummy, just to make it Java Bean compatible
-	public void setDateFormat(String value) { iDateFormat = new SimpleDateFormat(value); }
-	private SimpleDateFormat iDateFormat = null;
-
 	/** Locale */
 	public String getLocale() { return null; } // dummy, just to make it Java Bean compatible
 	public void setLocale(String value) { iLocale = Locale.forLanguageTag(value); }
@@ -60,18 +57,23 @@ public class CalendarTextFieldBuilder implements BuilderService<CalendarTextFiel
 	public void setPromptText(String value) { iPromptText = value; }
 	private String iPromptText = null;
 
+	/** DateFormat */
+	public String getDateFormat() { return null; } // dummy, just to make it Java Bean compatible
+	public void setDateFormat(String value) { iDateFormat = value; }
+	private String iDateFormat = null;
+
 	/** DateFormats */
 	public String getDateFormats() { return null; } // dummy, just to make it Java Bean compatible
 	public void setDateFormats(String value) 
 	{  
 		String[] lParts = value.split(",");
-		iDateFormats = FXCollections.observableArrayList();
+		iDateFormats = new ArrayList<>();
 		for (String lPart : lParts) 
 		{
-			iDateFormats.add( new SimpleDateFormat(lPart.trim()) );
+			iDateFormats.add( lPart.trim() );
 		}
 	}
-	private ObservableList<DateFormat> iDateFormats = null;
+	private List<String> iDateFormats = null;
 
 	/**
 	 * Implementation of Builder interface
@@ -79,11 +81,20 @@ public class CalendarTextFieldBuilder implements BuilderService<CalendarTextFiel
 	@Override
 	public CalendarTextField build()
 	{
+		Locale lLocale = (iLocale == null ? Locale.getDefault() : iLocale);
 		CalendarTextField lCalendarTextField = new CalendarTextField();
-		if (iDateFormat != null) lCalendarTextField.setDateFormat(iDateFormat);
+		if (iDateFormat != null) lCalendarTextField.setDateFormat(new SimpleDateFormat(iDateFormat, lLocale));
 		if (iLocale != null) lCalendarTextField.setLocale(iLocale);
 		if (iPromptText != null) lCalendarTextField.setPromptText(iPromptText);
-		if (iDateFormats != null) lCalendarTextField.setDateFormats(iDateFormats);
+		if (iDateFormats != null) 
+		{
+			ObservableList<DateFormat> lDateFormats = FXCollections.observableArrayList();
+			for (String lPart : iDateFormats) 
+			{
+				lDateFormats.add( new SimpleDateFormat(lPart.trim(), lLocale) );
+			}
+			lCalendarTextField.setDateFormats(lDateFormats);
+		}
 		return lCalendarTextField;
 	}
 	
