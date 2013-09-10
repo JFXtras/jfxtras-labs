@@ -8,7 +8,7 @@ JavaFX 2.2 - JDK 7
 ```git checkout 2.2```
 
 JavaFX 8 - JDK 8
-```git checkout 2.2```
+```git checkout 8.0```
 
 Install/Build
 --------------------
@@ -29,4 +29,6 @@ example ```JAVA_HOME=/usr/lib/jvm/default-java/``` in .bashrc
 test ```file $JAVA_HOME/jre/lib/jfxrt.jar``` Unix
 sometimes ```jre/lib/jfxrt.jar``` placed in ```jre/lib/ext/jfxrt.jar``` you can make symlink
 
-## [Issue](https://github.com/JFXtras/jfxtras-labs/issues)
+
+### Please make [Issue](https://github.com/JFXtras/jfxtras-labs/issues) if have problem with build (write linux/windows/OSX version, JDK version/build, log file with errors)
+
