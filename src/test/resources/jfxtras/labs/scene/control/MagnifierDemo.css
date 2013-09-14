@@ -1,0 +1,112 @@
+/******************************************************************************
+ * Css file for demo of Magnifier Control
+ * @author : SaiPradeepDandem
+ * 
+ ******************************************************************************/
+.titleLabel {
+	-fx-font-size:38px;
+	-fx-text-fill:#F1EBDF;
+	-fx-font-family:Arial;
+}
+
+.headerSeparator {
+	-fx-background-color:#F1EBDF;
+}
+
+.subTitleLabel {
+	-fx-font-size:18px;
+	-fx-text-fill:#F1EBDF;
+	-fx-font-family:Arial;
+}
+
+.headerBg {
+	-fx-background-color:linear-gradient(to right, #002C45, #03547F, #002C45);
+}
+
+.bodyBg {
+	-fx-background-color:linear-gradient(to right, #DFD9C1, #F1EBDF, #DFD9C1);
+	-fx-border-color:#FFFFFF;
+	-fx-border-width:1px 0px 1px 0px;
+}
+
+.footerBg {
+	-fx-background-color:linear-gradient(to right, #002C45, #03547F, #002C45);
+}
+
+.sectionHeading {
+	-fx-font-weight:bold;
+	-fx-font-size:18px;
+	-fx-text-fill:brown;
+	-fx-font-family:arial;
+}
+
+.sample-button,.sample-button .label, .sample-button-selected,.sample-button-selected .label {
+	-fx-cursor:hand;
+	-fx-background-color: transparent;
+	-fx-background-radius: 12px;
+	-fx-padding: 2px 6px 2px 6px !important;
+}
+
+.sample-button-selected{
+	-fx-cursor:hand;
+	-fx-background-color: #404A4C !important;
+	-fx-background-radius: 12px;
+	-fx-padding: 2px 6px 2px 6px !important;
+}
+
+.sample-button .label{
+	-fx-text-fill: #404648;
+	-fx-fill: #404648;
+	-fx-font-family: 'Arial';
+	-fx-font-size: 14px !important;
+	-fx-font-weight: bold;
+}
+
+.sample-button-selected .label{
+	-fx-text-fill: #FFFFFF !important;
+	-fx-fill: #FFFFFF !important;
+	-fx-font-family: 'Arial';
+	-fx-font-size: 14px !important;
+	-fx-font-weight: bold;
+}
+
+.formBox{
+	-fx-border-color:#ABABAB;
+	-fx-border-width:1px;
+	-fx-border-style:solid ;
+	-fx-background-radius: 10;
+	-fx-border-radius: 10;
+	-fx-background-color:#EAEAEA;
+	-fx-effect: dropshadow( gaussian , grey , 15, 0.5 , 0 , 0 );
+}
+
+.formTitle{
+	-fx-font-weight:bold;
+	-fx-font-size:18px;
+	-fx-font-family:arial;	
+}
+
+.note{
+	-fx-font-size:14px;
+	-fx-text-fill:brown;
+	-fx-font-family:Arial;
+	-fx-font-style:italic;
+}
+
+.divider{
+	-fx-background-color:linear-gradient(to bottom, #DFD9C1, grey, #DFD9C1);
+}
+.helpIcon{
+	-fx-border-width:1px;
+	-fx-border-color:#FF2A00;
+	-fx-background-color:#FFFFFF,#E89222;
+	-fx-background-insets:0,1;
+	-fx-font-size:10px;
+	-fx-font-weight:bold;
+	-fx-cursor: hand;
+}
+.doc-tool-tip{
+	-fx-background-color:#B7DCEA, #A1D4E7, #FFFFFF;
+	-fx-background-insets:0, 1, 2;
+	-fx-padding:7px;
+}
