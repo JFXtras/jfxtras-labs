@@ -33,17 +33,32 @@ import java.util.Comparator;
 
 /**
  * Compares tiles based on tileX & tileY fields.
+ * 
  * @author Mario Schroeder
- *
+ * 
  */
 public class TileImageComparator implements Comparator<TileImage> {
 
-	@Override
-	public int compare(TileImage left, TileImage right) {
-		return (left.getTileX() < right.getTileY()) ? -1
-				: (left.getTileX() > right.getTileY()) ? +1
-						: (left.getTileY() < right.getTileY()) ? -1
-								: (left.getTileY() > right.getTileY()) ? +1 : 0;
-	}
+    private static final int EQ = 0;
+    private static final int HIGH = +1;
+    private static final int LOW = -1;
+
+    @Override
+    public int compare(TileImage left, TileImage right) {
+
+        if (left.getTileY() < right.getTileY()) {
+            return LOW;
+        }
+        if (left.getTileY() > right.getTileY()) {
+            return HIGH;
+        }
+        if (left.getTileX() < right.getTileX()) {
+            return LOW;
+        }
+        if (left.getTileX() > right.getTileX()) {
+            return HIGH;
+        }
+        return EQ;
+    }
 
 }
