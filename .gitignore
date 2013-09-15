@@ -24,3 +24,5 @@ build.xml
 /_lib
 /gradlew_release.cmd
 /gradle_localOverride.cmd
+/gradlew_updateWrapper.cmd
+/gradlew_repairHeaders.cmd

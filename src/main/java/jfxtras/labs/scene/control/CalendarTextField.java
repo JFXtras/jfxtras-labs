@@ -29,6 +29,7 @@
 
 package jfxtras.labs.scene.control;
 
+import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -101,7 +102,10 @@ public class CalendarTextField extends Control
 	public void setCalendar(Calendar value) { calendarObjectProperty.setValue(value); }
 	public CalendarTextField withCalendar(Calendar value) { setCalendar(value); return this; }
 
-	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc */
+	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc
+	 * If possible, the locale will be derived from the DateFormat when it is set. 
+	 * Since it is not formally possible to extract the Locale from a DateFormat, the coder is responsible for making sure the dateformat's Locale and this Locale are the same.  
+	 */
 	public ObjectProperty<Locale> localeProperty() { return localeObjectProperty; }
 	final private ObjectProperty<Locale> localeObjectProperty = new SimpleObjectProperty<Locale>(Locale.getDefault())
 	{
@@ -110,7 +114,7 @@ public class CalendarTextField extends Control
 			super.set(value);
 			if (dateFormatManual == false)
 			{
-				setDateFormat( SimpleDateFormat.getDateInstance(DateFormat.LONG, value) );
+				setDateFormat( SimpleDateFormat.getDateInstance(DateFormat.MEDIUM, value) );
 			}
 		}
 	};
@@ -123,12 +127,29 @@ public class CalendarTextField extends Control
 	 * It is allow to show time as well for example by SimpleDateFormat.getDateTimeInstance().
 	 */
 	public ObjectProperty<DateFormat> dateFormatProperty() { return dateFormatObjectProperty; }
-	final private ObjectProperty<DateFormat> dateFormatObjectProperty = new SimpleObjectProperty<DateFormat>(this, "dateFormat", SimpleDateFormat.getDateInstance(DateFormat.LONG, getLocale()))
+	final private ObjectProperty<DateFormat> dateFormatObjectProperty = new SimpleObjectProperty<DateFormat>(this, "dateFormat", SimpleDateFormat.getDateInstance(DateFormat.MEDIUM, getLocale()))
 	{
 		public void set(DateFormat value)
 		{
 			super.set(value);
 			dateFormatManual = true;
+			
+			// see if we can extract the locale
+			if (value != null) 
+			{
+				try 
+				{
+	                Field field = value.getClass().getDeclaredField("locale");
+	                field.setAccessible(true);
+	                Locale lLocale = (Locale)field.get(value);
+	                if (lLocale != null) 
+	                {
+	                	setLocale(lLocale);
+	                }
+	            } 
+				catch (NoSuchFieldException e) { } // ignored on purpose 
+				catch (IllegalAccessException e) { } // ignored on purpose
+			}
 		}
 	};
 	public DateFormat getDateFormat() { return dateFormatObjectProperty.getValue(); }

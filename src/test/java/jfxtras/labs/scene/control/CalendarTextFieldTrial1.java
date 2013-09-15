@@ -37,8 +37,11 @@ import java.util.Locale;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -159,12 +162,33 @@ public class CalendarTextFieldTrial1 extends Application {
 			
 	        // locale DE
 			{
-				lGridPane.add(new Label("locale DE"), 0, lRowIdx);
+				lGridPane.add(new Label("locale FR"), 0, lRowIdx);
 				CalendarTextField lCalendarTextField = new CalendarTextField();
-				lCalendarTextField.setLocale(Locale.GERMAN);				
+				lCalendarTextField.setLocale(Locale.FRANCE);				
 				lGridPane.add(lCalendarTextField, 1, lRowIdx++);
 				
 				lCalendarTextField.calendarProperty().set(new GregorianCalendar(2011, 2, 01)); // set a value
+			}
+			
+	        // locale DE button
+			{
+				lGridPane.add(new Label("locale FR"), 0, lRowIdx);
+				final CalendarTextField lCalendarTextField = new CalendarTextField();
+				lCalendarTextField.setLocale(Locale.FRANCE);				
+				lGridPane.add(lCalendarTextField, 1, lRowIdx);
+				
+				Button lButton = new Button("set");
+				lButton.onMouseClickedProperty().set(new EventHandler<Event>()
+				{
+					@Override
+					public void handle(Event arg0)
+					{
+						lCalendarTextField.setCalendar(new GregorianCalendar(2011, 2, 01));
+					}
+				});
+				lGridPane.add(lButton, 2, lRowIdx++);
+				
+				lCalendarTextField.calendarProperty().set(new GregorianCalendar()); // set a value
 			}
 			
 	        // disabled
