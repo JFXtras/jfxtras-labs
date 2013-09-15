@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.util.Duration;
 
 /**
- * A simple Transition thats fraction property can be bound to any other properties. See {@link BindableTransitionTrial}
+ * A simple Transition thats fraction property can be bound to any other properties. 
  * 
  * @author hendrikebbers
  *
