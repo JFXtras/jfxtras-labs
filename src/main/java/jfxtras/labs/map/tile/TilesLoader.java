@@ -46,7 +46,7 @@ public class TilesLoader implements TilesLoadable {
 	
 	private static final int START = 0;
 	
-	private TileImageComparator tileComparator = new TileImageComparator();
+	private TileOrderComparator tileComparator = new TileOrderComparator();
 	
 	private static final Point[] directions = { new Point(1, 0),
 		new Point(0, 1), new Point(-1, 0), new Point(0, -1) };

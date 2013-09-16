@@ -1,5 +1,5 @@
 /**
- * TileImageComparator.java
+ * TileOrderComparator.java
  *
  * Copyright (c) 2011-2013, JFXtras
  * All rights reserved.
@@ -33,17 +33,23 @@ import java.util.Comparator;
 
 /**
  * Compares tiles based on tileX & tileY fields.
+ * 
  * @author Mario Schroeder
- *
+ * 
  */
-public class TileImageComparator implements Comparator<TileImage> {
+public class TileOrderComparator implements Comparator<TileImage> {
 
-	@Override
-	public int compare(TileImage left, TileImage right) {
-		return (left.getTileX() < right.getTileY()) ? -1
-				: (left.getTileX() > right.getTileY()) ? +1
-						: (left.getTileY() < right.getTileY()) ? -1
-								: (left.getTileY() > right.getTileY()) ? +1 : 0;
-	}
+    private static final int EQ = 0;
+    private static final int HIGH = 1;
+    private static final int LOW = -1;
+
+    @Override
+    public int compare(TileImage left, TileImage right) {
+        
+        return (left.getTileY() < right.getTileY()) ? LOW : 
+            (left.getTileY() > right.getTileY()) ? HIGH : 
+            (left.getTileX() < right.getTileX()) ? LOW :
+            (left.getTileX() > right.getTileX()) ? HIGH : EQ;
+    }
 
 }
