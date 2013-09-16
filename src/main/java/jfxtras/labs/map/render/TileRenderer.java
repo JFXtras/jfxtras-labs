@@ -46,7 +46,7 @@ import jfxtras.labs.map.Moveable;
 import jfxtras.labs.map.tile.CacheLoadStrategy;
 import jfxtras.labs.map.tile.RefreshLoadStrategy;
 import jfxtras.labs.map.tile.TileProvideable;
-import jfxtras.labs.map.tile.TileImageComparator;
+import jfxtras.labs.map.tile.TileOrderComparator;
 import jfxtras.labs.map.tile.TileImage;
 import jfxtras.labs.map.tile.TilesLoadable;
 import jfxtras.labs.map.tile.TileSource;
@@ -64,7 +64,7 @@ public class TileRenderer implements TileRenderable {
 	 */
 	private static final double WIDTH = 0.4;
 	
-	private TileImageComparator tileComparator = new TileImageComparator();
+	private TileOrderComparator tileComparator = new TileOrderComparator();
 
 	private boolean monoChrome;
 

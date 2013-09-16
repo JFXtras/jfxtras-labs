@@ -1,5 +1,5 @@
 /**
- * TileImageComparator.java
+ * TileOrderComparator.java
  *
  * Copyright (c) 2011-2013, JFXtras
  * All rights reserved.
@@ -37,28 +37,19 @@ import java.util.Comparator;
  * @author Mario Schroeder
  * 
  */
-public class TileImageComparator implements Comparator<TileImage> {
+public class TileOrderComparator implements Comparator<TileImage> {
 
     private static final int EQ = 0;
-    private static final int HIGH = +1;
+    private static final int HIGH = 1;
     private static final int LOW = -1;
 
     @Override
     public int compare(TileImage left, TileImage right) {
-
-        if (left.getTileY() < right.getTileY()) {
-            return LOW;
-        }
-        if (left.getTileY() > right.getTileY()) {
-            return HIGH;
-        }
-        if (left.getTileX() < right.getTileX()) {
-            return LOW;
-        }
-        if (left.getTileX() > right.getTileX()) {
-            return HIGH;
-        }
-        return EQ;
+        
+        return (left.getTileY() < right.getTileY()) ? LOW : 
+            (left.getTileY() > right.getTileY()) ? HIGH : 
+            (left.getTileX() < right.getTileX()) ? LOW :
+            (left.getTileX() > right.getTileX()) ? HIGH : EQ;
     }
 
 }

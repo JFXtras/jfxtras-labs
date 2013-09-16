@@ -1,5 +1,5 @@
 /**
- * TileImageComparatorTest.java
+ * TileOrderComparatorTest.java
  *
  * Copyright (c) 2011-2013, JFXtras
  * All rights reserved.
@@ -37,15 +37,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class TileImageComparatorTest {
+public class TileOrderComparatorTest {
     
-    private TileImageComparator classUnderTest;
+    private TileOrderComparator classUnderTest;
     
     private TileImage left, right;
     
     @Before
     public void setUp() throws Exception {
-        classUnderTest = new TileImageComparator();
+        classUnderTest = new TileOrderComparator();
         left = new TileImage(null, 0, 0);
         right = new TileImage(null, 0, 0);
     }
