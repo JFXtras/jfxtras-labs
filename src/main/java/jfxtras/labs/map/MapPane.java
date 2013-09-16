@@ -651,10 +651,8 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	@Override
 	public boolean isMapMoveable() {
-		//FIXME: returns false, even when one edge of the map is not visible
-//		Dimension dim = new Dimension(getMapWidth(), getMapHeight());
-//		return !mapEdgeChecker.isAllVisible(dim);
-		return true;
+		Dimension dim = new Dimension(getMapWidth(), getMapHeight());
+		return !mapEdgeChecker.isAllVisible(dim);
 	}
 
 	@Override
