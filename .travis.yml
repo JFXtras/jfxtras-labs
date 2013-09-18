@@ -1,6 +1,7 @@
 language: java
 before_install:
   - "export DISPLAY=:99.0"
+  - "export TERM=dumb"
   - "sh -e /etc/init.d/xvfb start"
 jdk:
   - oraclejdk7
