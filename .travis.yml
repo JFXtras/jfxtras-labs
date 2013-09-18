@@ -3,5 +3,8 @@ before_install:
   - "export DISPLAY=:99.0"
   - "export TERM=dumb"
   - "sh -e /etc/init.d/xvfb start"
+script: gradle clean check --info
+after_script:
+  - "cat ./build/test-results/*.xml"
 jdk:
   - oraclejdk7
