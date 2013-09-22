@@ -33,6 +33,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import javafx.scene.image.ImageView;
+import jfxtras.labs.JavaFXPlatformAbstractTest;
 import jfxtras.labs.map.ApiKeys;
 import jfxtras.labs.map.tile.bing.BingTileSourceFactory;
 import jfxtras.labs.map.tile.bing.BingType;
@@ -40,6 +41,7 @@ import jfxtras.labs.map.tile.local.LocalTileSourceFactory;
 import jfxtras.labs.map.tile.osm.OsmTileSourceFactory;
 import jfxtras.labs.map.tile.osm.OsmType;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -48,8 +50,7 @@ import org.junit.Test;
  * @author Mario Schroeder
  * 
  */
-public class TileRepositoryTest {
-	
+public class TileRepositoryTest extends JavaFXPlatformAbstractTest {
     @Test
     public void testWithNull(){
         
