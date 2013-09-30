@@ -32,6 +32,8 @@ package jfxtras.labs.internal.scene.control.skin;
 import java.math.BigDecimal;
 import java.text.ParseException;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -49,6 +51,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.util.Duration;
 import jfxtras.labs.internal.scene.control.behavior.BigDecimalFieldBehaviour;
 import jfxtras.labs.scene.control.BigDecimalField;
 
@@ -78,6 +81,7 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
 	private Path			arrowDown;
 	private final double	ARROW_SIZE		= 4;
 	private final double	ARROW_HEIGHT	= 0.7;
+	private Timeline		timeline;
 
     @Override
     public BigDecimalField getSkinnable() {return CONTROL;}
@@ -116,21 +120,57 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
         //
         // Mouse Handler for buttons
         //
-        btnUp.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        timeline = new Timeline();
+        final EventHandler<ActionEvent> btnUpHandler = new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    CONTROL.increment();
+                }
+        };
+        btnUp.setOnMousePressed(new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent arg0) {
-                CONTROL.increment();
+                    final KeyFrame kf = new KeyFrame(Duration.millis(200), btnUpHandler);
+                    timeline.getKeyFrames().clear();
+                    timeline.getKeyFrames().add(kf);
+                    timeline.setCycleCount(Timeline.INDEFINITE);
+                    timeline.play();
+                    btnUpHandler.handle(null);
             }
         });
-        btnDown.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        btnUp.setOnMouseReleased(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    timeline.stop();
+                }
+        });
 
+
+        final EventHandler<ActionEvent> btnDownHandler = new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                   CONTROL.decrement();
+                }
+        };
+        btnDown.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent arg0) {
-                CONTROL.decrement();
+                   final KeyFrame kf = new KeyFrame(Duration.millis(200), btnDownHandler);
+                   timeline.getKeyFrames().clear();
+                   timeline.getKeyFrames().add(kf);
+                   timeline.setCycleCount(Timeline.INDEFINITE);
+                   timeline.play();
+                   btnDownHandler.handle(null);
             }
         });
-        
+        btnDown.setOnMouseReleased(new EventHandler<MouseEvent>() {
+          @Override
+          public void handle(MouseEvent mouseEvent) {
+                   timeline.stop();
+            }
+       });
+
     }
 
     @Override
