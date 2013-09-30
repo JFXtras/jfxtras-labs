@@ -131,7 +131,8 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
 
             @Override
             public void handle(MouseEvent arg0) {
-                    final KeyFrame kf = new KeyFrame(Duration.millis(200), btnUpHandler);
+                    final KeyFrame kf = new KeyFrame(Duration.millis(50), btnUpHandler);
+                    timeline.setDelay(Duration.millis(500));
                     timeline.getKeyFrames().clear();
                     timeline.getKeyFrames().add(kf);
                     timeline.setCycleCount(Timeline.INDEFINITE);
@@ -156,7 +157,8 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField, BigDecimalFie
         btnDown.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent arg0) {
-                   final KeyFrame kf = new KeyFrame(Duration.millis(200), btnDownHandler);
+                   final KeyFrame kf = new KeyFrame(Duration.millis(50), btnDownHandler);
+                   timeline.setDelay(Duration.millis(500));
                    timeline.getKeyFrames().clear();
                    timeline.getKeyFrames().add(kf);
                    timeline.setCycleCount(Timeline.INDEFINITE);
