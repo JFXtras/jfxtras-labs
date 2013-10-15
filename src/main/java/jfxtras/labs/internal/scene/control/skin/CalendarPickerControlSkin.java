@@ -427,12 +427,6 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			{
 				lCalendars.remove(0);
 			}
-			// MULTIPLE: do nothing, just add the new one
-			//           if shift is pressed, behave like RANGE below
-			while (getSkinnable().getMode() == CalendarPicker.Mode.SINGLE && lCalendars.size() > 1) 
-			{
-				lCalendars.remove(0);
-			}
 			// RANGE: if shift is not pressed, behave like single
 			//        if shift is pressed, also add the dates between 
 			while (getSkinnable().getMode() == CalendarPicker.Mode.RANGE && shiftIsPressed == false && lCalendars.size() > 1) 
@@ -470,12 +464,12 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			// remember
 			iLastSelected = (Calendar)lToggledCalendar.clone();
 		}
-		else 
-		{
-			// remove
-			lCalendars.remove(lFoundCalendar);
-			iLastSelected = null;
-		}
+        else if(getSkinnable().isDeselectEnabled())
+        {
+            // remove
+            lCalendars.remove(lFoundCalendar);
+            iLastSelected = null;
+        }
 		
 		// make sure the buttons are toggled correctly
 		refreshDayButtonToggleState();
