@@ -36,7 +36,9 @@ import java.util.Locale;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -53,17 +55,18 @@ import javafx.scene.control.Control;
  */
 public class CalendarPicker extends Control
 {
+    private BooleanProperty enableDeselectProperty = new SimpleBooleanProperty();
 	// ==================================================================================================================
 	// CONSTRUCTOR
 	
 	/**
-	 * 
+	 * Default constructor
 	 */
 	public CalendarPicker()
 	{
 		construct();
 	}
-	
+
 	/*
 	 * 
 	 */
@@ -209,8 +212,21 @@ public class CalendarPicker extends Control
 	volatile private ObjectProperty<Boolean> showTimeObjectProperty = new SimpleObjectProperty<Boolean>(this, "showTime", false);
 	public Boolean getShowTime() { return showTimeObjectProperty.getValue(); }
 	public void setShowTime(Boolean value) { showTimeObjectProperty.setValue(value); }
-	public CalendarPicker withShowTime(Boolean value) { setShowTime(value); return (CalendarPicker)this; } 
-	
+	public CalendarPicker withShowTime(Boolean value) { setShowTime(value); return (CalendarPicker)this; }
+
+    public BooleanProperty enableDeselectProperty() { return enableDeselectProperty; }
+    /**
+     * @return true if the user can deselect the date
+     */
+    public boolean isDeselectEnabled() {
+        return enableDeselectProperty.get();
+    }
+
+    public void setEnableDeselect(boolean enableDeselect) {
+        enableDeselectProperty.set(enableDeselect);
+    }
+
+    public CalendarPicker withEnableDeselect(boolean value) { setEnableDeselect(value); return this; }
 
 	// ==================================================================================================================
 	// SUPPORT
