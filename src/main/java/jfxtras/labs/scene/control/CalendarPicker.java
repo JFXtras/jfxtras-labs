@@ -53,16 +53,23 @@ import javafx.scene.control.Control;
  */
 public class CalendarPicker extends Control
 {
+    private boolean deselectEnabled = true;
 	// ==================================================================================================================
 	// CONSTRUCTOR
 	
 	/**
-	 * 
+	 * Default constructor
 	 */
 	public CalendarPicker()
 	{
 		construct();
 	}
+
+    public CalendarPicker(boolean enableDeSelect)
+    {
+        this.deselectEnabled = enableDeSelect;
+        construct();
+    }
 	
 	/*
 	 * 
@@ -209,8 +216,18 @@ public class CalendarPicker extends Control
 	volatile private ObjectProperty<Boolean> showTimeObjectProperty = new SimpleObjectProperty<Boolean>(this, "showTime", false);
 	public Boolean getShowTime() { return showTimeObjectProperty.getValue(); }
 	public void setShowTime(Boolean value) { showTimeObjectProperty.setValue(value); }
-	public CalendarPicker withShowTime(Boolean value) { setShowTime(value); return (CalendarPicker)this; } 
-	
+	public CalendarPicker withShowTime(Boolean value) { setShowTime(value); return (CalendarPicker)this; }
+
+    /**
+     * @return true if the user can deselect the date
+     */
+    public boolean isDeselectEnabled() {
+        return deselectEnabled;
+    }
+
+    public void setDeselectEnabled(boolean deselectEnabled) {
+        this.deselectEnabled = deselectEnabled;
+    }
 
 	// ==================================================================================================================
 	// SUPPORT
