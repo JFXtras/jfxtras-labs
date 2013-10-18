@@ -433,6 +433,8 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			{
 				lCalendars.remove(0);
 			}
+			// MULTIPLE: simply toggles without any consequence to other buttons, unless:
+			// MULTIPLE & RANGE with shift pressed: create a series using the previous selected button 
 			if ((getSkinnable().getMode() == CalendarPicker.Mode.MULTIPLE || getSkinnable().getMode() == CalendarPicker.Mode.RANGE) && shiftIsPressed == true) 
 			{
 				// we muust have a last selected			
