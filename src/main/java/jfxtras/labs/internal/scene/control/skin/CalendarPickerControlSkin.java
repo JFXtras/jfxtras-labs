@@ -466,7 +466,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			// remember
 			iLastSelected = (Calendar)lToggledCalendar.clone();
 		}
-        else if(getSkinnable().isDeselectEnabled())
+        else if(lCalendars.size() > 1 || getSkinnable().getAllowNull())
         {
             // remove
             lCalendars.remove(lFoundCalendar);

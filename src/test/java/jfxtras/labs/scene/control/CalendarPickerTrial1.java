@@ -94,7 +94,8 @@ public class CalendarPickerTrial1 extends Application {
 		lCalendarPicker.setCalendar(new java.util.GregorianCalendar(2011, 06, 01)); // set a value
 //		lCalendarPicker.setMode(CalendarPicker.Mode.RANGE);
 		lCalendarPicker.setMode(CalendarPicker.Mode.MULTIPLE);
-        lCalendarPicker.setShowTime(true);
+//        lCalendarPicker.setShowTime(true);
+		lCalendarPicker.setAllowNull(false);
 
 		// create scene
         Scene scene = new Scene(lVBox, 300, 300);
