@@ -465,13 +465,13 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			// remember
 			iLastSelected = (Calendar)lToggledCalendar.clone();
 		}
-		else 
-		{
-			// remove
-			lCalendars.remove(lFoundCalendar);
-			iLastSelected = null;
-		}
-		
+        else if(lCalendars.size() > 1 || getSkinnable().getAllowNull())
+        {
+            // remove
+            lCalendars.remove(lFoundCalendar);
+            iLastSelected = null;
+        }
+
 		// make sure the buttons are toggled correctly
 		refreshDayButtonToggleState();
 	}

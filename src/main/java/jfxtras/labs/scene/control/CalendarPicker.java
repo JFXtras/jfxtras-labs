@@ -33,7 +33,9 @@ import java.util.Locale;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -89,8 +91,15 @@ public class CalendarPicker extends Control
 	// PROPERTIES
 	
 	/** calendar: */
+	final private ObjectProperty<Calendar> calendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar")
+	{
+		public void set(Calendar value)
+		{
+			if (value == null && getAllowNull() == false) throw new NullPointerException("Null not allowed");
+			super.set(value);
+		}
+	};
 	public ObjectProperty<Calendar> calendarProperty() { return calendarObjectProperty; }
-	final private ObjectProperty<Calendar> calendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar");
 	public Calendar getCalendar() { return calendarObjectProperty.getValue(); }
 	public void setCalendar(Calendar value) { calendarObjectProperty.setValue(value); }
 	public CalendarPicker withCalendar(Calendar value) { setCalendar(value); return this; } 
@@ -121,7 +130,7 @@ public class CalendarPicker extends Control
 	private void constructCalendars()
 	{
 		// make sure the singled out calendar is 
-		calendars().addListener(new ListChangeListener<Calendar>() 
+		calendars.addListener(new ListChangeListener<Calendar>() 
 		{
 			@Override
 			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Calendar> change)
@@ -206,8 +215,24 @@ public class CalendarPicker extends Control
 	volatile private ObjectProperty<Boolean> showTimeObjectProperty = new SimpleObjectProperty<Boolean>(this, "showTime", false);
 	public Boolean getShowTime() { return showTimeObjectProperty.getValue(); }
 	public void setShowTime(Boolean value) { showTimeObjectProperty.setValue(value); }
-	public CalendarPicker withShowTime(Boolean value) { setShowTime(value); return (CalendarPicker)this; } 
-	
+	public CalendarPicker withShowTime(Boolean value) { setShowTime(value); return (CalendarPicker)this; }
+
+	/** is null allowed */
+    volatile private BooleanProperty allowNullProperty = new SimpleBooleanProperty(this, "allowNull", true)
+    {
+		public void set(boolean value)
+		{
+			super.set(value);
+			if (value == true && getCalendar() == null)
+			{
+				setCalendar(Calendar.getInstance());
+			}
+		}
+	};
+    public BooleanProperty allowNullProperty() { return allowNullProperty; }
+    public boolean getAllowNull() { return allowNullProperty.get(); }
+    public void setAllowNull(boolean allowNull) { allowNullProperty.set(allowNull); }
+    public CalendarPicker withAllowNull(boolean value) { setAllowNull(value); return this; }
 
 	// ==================================================================================================================
 	// SUPPORT

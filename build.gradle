@@ -19,27 +19,6 @@ buildscript {
 			classpath "eu.mihosoft.vrl.vlicense-header-util.gradle:vlicense-header-plugin:0.1-r2-SNAPSHOT"
 		}
     }
-    
-    final javaHome = System.env['JAVA_HOME']
-    if (javaHome) {
-        ext.javafxJar = "${javaHome}/jre/lib/jfxrt.jar"
-    }
-
-    try {
-        println "JavaFX runtime jar: ${ext.javafxJar}"
-        dependencies {
-            classpath files(ext.javafxJar)
-            
-            // vrl license header plugin
-            classpath "eu.mihosoft.vrl.vlicense-header-util.gradle:vlicense-header-plugin:0.1-r2-SNAPSHOT"
-        }
-    } catch (MissingPropertyException mpe) {
-        println """
-                 |  Please set the environment variable JAVA_HOME
-                 |  to the directory that contains jre/lib/jfxrt.jar
-                 |  of JavaFX version ${jfxtras_requiredJavaFxVersion}.\n""".stripMargin() 
-        System.exit 1
-    }
 }
 
 // apply vrl license header plugin
@@ -54,7 +33,7 @@ repositories {
 
 
 dependencies {
-    compile     files(ext.javafxJar, "lib/jsr-310-ri-0.6.3.jar", "lib/jsr-310-TZDB-all-0.6.3.jar")
+    compile     files("lib/jsr-310-ri-0.6.3.jar", "lib/jsr-310-TZDB-all-0.6.3.jar")
     testCompile  "junit:junit:${jfxtras_junitVersion}","org.mockito:mockito-all:1.9.5"
     testCompile  "net.java.jemmy:JemmyFX:0.9.3-SNAPSHOT"
 }
