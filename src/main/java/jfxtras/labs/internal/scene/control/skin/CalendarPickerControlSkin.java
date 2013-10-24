@@ -40,6 +40,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -121,7 +122,16 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 				refresh();
 			} 
 		});
-		
+
+        // react to changes in the locale
+        getSkinnable().localeProperty().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+                monthListSpinner.setItems(FXCollections.observableArrayList(getMonthLabels()));
+                refresh();
+            }
+        });
+
 		// update the data
 		refresh();
 	}
