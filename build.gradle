@@ -33,7 +33,6 @@ repositories {
 
 
 dependencies {
-    compile     files("lib/jsr-310-ri-0.6.3.jar", "lib/jsr-310-TZDB-all-0.6.3.jar")
     testCompile  "junit:junit:${jfxtras_junitVersion}","org.mockito:mockito-all:1.9.5"
     testCompile  "net.java.jemmy:JemmyFX:0.9.3-SNAPSHOT"
 }
