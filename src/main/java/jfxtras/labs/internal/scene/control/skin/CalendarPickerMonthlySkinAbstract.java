@@ -69,15 +69,15 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 	{
 		// set displayed date
 		setDisplayedCalendar(Calendar.getInstance());
-		
-		// react to changes in the locale 
-		getSkinnable().localeProperty().addListener(new InvalidationListener() 
+
+		// react to changes in the locale
+		getSkinnable().localeProperty().addListener(new InvalidationListener()
 		{
 			@Override
 			public void invalidated(Observable observable)
 			{
 				refreshLocale();
-			} 
+			}
 		});
 		refreshLocale();
 	}
@@ -111,7 +111,7 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 		displayedCalendarObjectProperty.setValue(derriveDisplayedCalendar(value)); 
 	}
 	public S withDisplayedCalendar(Calendar value) { setDisplayedCalendar(value); return (S)this; } 
-	private Calendar derriveDisplayedCalendar(Calendar lDisplayedCalendar)
+	protected Calendar derriveDisplayedCalendar(Calendar lDisplayedCalendar)
 	{
 		// done
 		if (lDisplayedCalendar == null) return null;
@@ -134,9 +134,9 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 	{
 		// create the formatter to use
 		simpleDateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG, getSkinnable().getLocale());
-		
-		// update the displayed calendar
-		setDisplayedCalendar(getDisplayedCalendar());
+//
+//        // change the locale in the displayed calendar
+//        displayedCalendarObjectProperty.set(derriveDisplayedCalendar(getDisplayedCalendar()));
 	}
 
 	//
