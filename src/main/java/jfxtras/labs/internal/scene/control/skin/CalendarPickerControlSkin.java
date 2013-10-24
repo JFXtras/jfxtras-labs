@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javafx.collections.FXCollections;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
@@ -125,6 +126,15 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			} 
 		});
 		
+        // react to changes in the locale
+        getSkinnable().localeProperty().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+                monthListSpinner.setItems(FXCollections.observableArrayList(getMonthLabels()));
+                refresh();
+            }
+        });
+
 		// update the data
 		refresh();
 	}
