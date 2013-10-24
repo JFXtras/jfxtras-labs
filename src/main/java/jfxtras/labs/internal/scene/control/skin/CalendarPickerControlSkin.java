@@ -131,6 +131,9 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
             @Override
             public void invalidated(Observable observable) {
                 monthListSpinner.setItems(FXCollections.observableArrayList(getMonthLabels()));
+
+                // force change the locale in the displayed calendar
+                displayedCalendar().set(derriveDisplayedCalendar(getDisplayedCalendar()));
                 refresh();
             }
         });

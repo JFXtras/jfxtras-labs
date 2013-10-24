@@ -114,7 +114,7 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 		displayedCalendarObjectProperty.setValue(derriveDisplayedCalendar(value)); 
 	}
 	public S withDisplayedCalendar(Calendar value) { setDisplayedCalendar(value); return (S)this; } 
-	private Calendar derriveDisplayedCalendar(Calendar lDisplayedCalendar)
+	protected Calendar derriveDisplayedCalendar(Calendar lDisplayedCalendar)
 	{
 		// done
 		if (lDisplayedCalendar == null) return null;
