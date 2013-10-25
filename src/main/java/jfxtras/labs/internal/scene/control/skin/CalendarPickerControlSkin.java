@@ -533,6 +533,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	private void refresh()
 	{
 		disabledCalendarsCallback();
+		highlightedCalendarsCallback();
 		refreshSpinner();
 		refreshWeekdayLabels();
 		refreshWeeknumberLabels();
@@ -642,6 +643,16 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			else
 			{
 				lToggleButton.getStyleClass().remove("today");
+			}
+			
+			// highligh
+			if (highlightedCalendars != null && highlightedCalendars.contains(lCalendar))
+			{
+				lToggleButton.getStyleClass().add("highlight");
+			}
+			else
+			{
+				lToggleButton.getStyleClass().remove("highlight");
 			}
 		}
 

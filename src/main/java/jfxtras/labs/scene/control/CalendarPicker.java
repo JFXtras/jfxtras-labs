@@ -250,7 +250,17 @@ public class CalendarPicker extends Control
 	public void setDisabledCalendarsCallback(Callback<CalendarRange, List<Calendar>> value) { this.disabledCalendarsCallbackObjectProperty.setValue(value); }
 	public CalendarPicker withdisabledCalendarsCallback(Callback<CalendarRange, List<Calendar>> value) { setDisabledCalendarsCallback(value); return this; }
 	
-
+	/** highlightCalendarsCallback:
+	 * This callback is called whenever the displayed range changes. 
+	 * The parameter holds the start and end dates and the returned list should contain all dates within that ranges that are to be highlighted.  
+	 * The begin and end date is inclusive.
+	 */
+	public ObjectProperty<Callback<CalendarRange, List<Calendar>>> highlightedCalendarsCallbackProperty() { return highlightedCalendarsCallbackObjectProperty; }
+	final private ObjectProperty<Callback<CalendarRange, List<Calendar>>> highlightedCalendarsCallbackObjectProperty = new SimpleObjectProperty<Callback<CalendarRange, List<Calendar>>>(this, "highlightedCalendarsCallback", null);
+	public Callback<CalendarRange, List<Calendar>> getHighlightedCalendarsCallback() { return this.highlightedCalendarsCallbackObjectProperty.getValue(); }
+	public void setHighlightedCalendarsCallback(Callback<CalendarRange, List<Calendar>> value) { this.highlightedCalendarsCallbackObjectProperty.setValue(value); }
+	public CalendarPicker withHighlightedCalendarsCallback(Callback<CalendarRange, List<Calendar>> value) { setHighlightedCalendarsCallback(value); return this; }
+	
 	/**
 	 * A Calendar range
 	 */

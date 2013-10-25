@@ -25,6 +25,12 @@
 	-fx-color: DARKGRAY; 
 }
 
+/* highlight today */
+.CalendarPickerControlSkin .highlight { 
+	-fx-font-weight: bold;
+	-fx-font-style: italic;
+}
+
 .CalendarPicker .ListSpinner { 
 /*	-fxx-arrow-position:SPLIT; */
 /*	-fxx-arrow-direction:VERTICAL; */
