@@ -45,6 +45,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
+import javafx.util.Callback;
 
 /**
  * Calendar picker component
@@ -236,10 +237,16 @@ public class CalendarPicker extends Control
     public boolean getAllowNull() { return allowNullProperty.get(); }
     public void setAllowNull(boolean allowNull) { allowNullProperty.set(allowNull); }
     public CalendarPicker withAllowNull(boolean value) { setAllowNull(value); return this; }
+    
+    /** callback to disable calendar items */
+    private Callback<Calendar, List<Integer>> disableCallback;
+	public Callback<Calendar, List<Integer>> getDisableCallback() { return disableCallback; }
+	public void setDisableCallback(Callback<Calendar, List<Integer>> disableCallback) { this.disableCallback = disableCallback; }
+    public boolean hasDisableCallback() { return disableCallback != null; }
 
 	// ==================================================================================================================
 	// SUPPORT
-	
+    
 	/**
 	 * 
 	 */
