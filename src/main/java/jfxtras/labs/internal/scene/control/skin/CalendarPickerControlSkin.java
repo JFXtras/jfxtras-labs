@@ -580,7 +580,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	/*
 	 * 
 	 */
-	private void refreshDayButtonsVisibilityAndLabel()
+	public void refreshDayButtonsVisibilityAndLabel()
 	{
 		// setup the buttons [0..(6*7)-1]
 		// displayed calendar always points to the 1st of the month
@@ -627,6 +627,12 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			else
 			{
 				lToggleButton.getStyleClass().remove("today");
+			}
+			
+			// disable button according to callback return value
+			if(getSkinnable().hasDisableCallback())
+			{
+				lToggleButton.setDisable(getSkinnable().getDisableCallback().call(lCalendar));
 			}
 		}
 
