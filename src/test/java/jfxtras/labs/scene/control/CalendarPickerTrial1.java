@@ -111,6 +111,22 @@ public class CalendarPickerTrial1 extends Application {
 			}
 		});
 		
+		// test highlightinbg calendars
+		lCalendarPicker.highlightedCalendarsCallbackProperty().set(new Callback<CalendarRange, List<Calendar>>() 
+		{
+			@Override
+			public List<Calendar> call(CalendarRange calendarRange) 
+			{
+				List<Calendar> lCalendars = new ArrayList<>();
+				Calendar lCalendar = calendarRange.getEndCalendar();
+				lCalendar.add(Calendar.DATE, -1);
+				lCalendars.add((Calendar)lCalendar.clone());
+				lCalendar.add(Calendar.DATE, -1);
+				lCalendars.add((Calendar)lCalendar.clone());
+				return lCalendars;
+			}
+		});
+		
 		// create scene
         Scene scene = new Scene(lVBox, 300, 300);
 

@@ -157,11 +157,8 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 	{
 		if (getSkinnable().disabledCalendarsCallbackProperty().get() != null) {
 			// start and end
-			Calendar lStartCalendar = (Calendar)getDisplayedCalendar().clone();
-			Calendar lEndCalendar = (Calendar)getDisplayedCalendar().clone();
-			lEndCalendar.add(java.util.Calendar.MONTH, 1);
-			lEndCalendar.set(java.util.Calendar.DATE, 1);
-			lEndCalendar.add(java.util.Calendar.DATE, -1);
+			Calendar lStartCalendar = periodStartCalendar(); 
+			Calendar lEndCalendar = periodEndCalendar();
 			List<Calendar> calendars = getSkinnable().disabledCalendarsCallbackProperty().get().call(new CalendarPicker.CalendarRange(lStartCalendar, lEndCalendar));
 			
 			// process result
@@ -175,6 +172,51 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 		}
 	}
 	protected List<Calendar> disabledCalendars = Collections.emptyList();
+	
+	/**
+	 * 
+	 */
+	protected void highlightedCalendarsCallback()
+	{
+		if (getSkinnable().highlightedCalendarsCallbackProperty().get() != null) {
+			// start and end
+			Calendar lStartCalendar = periodStartCalendar(); 
+			Calendar lEndCalendar = periodEndCalendar();
+			List<Calendar> calendars = getSkinnable().highlightedCalendarsCallbackProperty().get().call(new CalendarPicker.CalendarRange(lStartCalendar, lEndCalendar));
+			
+			// process result
+			if (calendars == null) {
+				highlightedCalendars = Collections.emptyList();
+			}
+			else {
+				highlightedCalendars = new ArrayList<>();
+				highlightedCalendars.addAll(calendars);
+			}
+		}
+	}
+	protected List<Calendar> highlightedCalendars = Collections.emptyList();
+
+	/**
+	 * 
+	 * @return
+	 */
+	protected Calendar periodStartCalendar()
+	{
+		return (Calendar)getDisplayedCalendar().clone();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	protected Calendar periodEndCalendar()
+	{
+		Calendar lEndCalendar = (Calendar)getDisplayedCalendar().clone();
+		lEndCalendar.add(java.util.Calendar.MONTH, 1);
+		lEndCalendar.set(java.util.Calendar.DATE, 1);
+		lEndCalendar.add(java.util.Calendar.DATE, -1);
+		return lEndCalendar;				
+	}
 	
 	/**
 	 * get the weekday labels starting with the weekday that is the first-day-of-the-week according to the locale in the displayed calendar
