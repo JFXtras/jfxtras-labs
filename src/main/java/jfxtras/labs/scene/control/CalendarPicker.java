@@ -45,6 +45,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
+import javafx.util.Callback;
+import jfxtras.labs.scene.control.Agenda.CalendarRange;
 
 /**
  * Calendar picker component
@@ -236,6 +238,36 @@ public class CalendarPicker extends Control
     public boolean getAllowNull() { return allowNullProperty.get(); }
     public void setAllowNull(boolean allowNull) { allowNullProperty.set(allowNull); }
     public CalendarPicker withAllowNull(boolean value) { setAllowNull(value); return this; }
+
+	/** disabledCalendarsCallback:
+	 * This callback is called whenever the displayed range changes. 
+	 * The parameter holds the start and end dates and the returned list should contain all dates within that ranges that are to be disabled.  
+	 * The begin and end date is inclusive.
+	 */
+	public ObjectProperty<Callback<CalendarRange, List<Calendar>>> disabledCalendarsCallbackProperty() { return disabledCalendarsCallbackObjectProperty; }
+	final private ObjectProperty<Callback<CalendarRange, List<Calendar>>> disabledCalendarsCallbackObjectProperty = new SimpleObjectProperty<Callback<CalendarRange, List<Calendar>>>(this, "disabledCalendarsCallback", null);
+	public Callback<CalendarRange, List<Calendar>> getDisabledCalendarsCallback() { return this.disabledCalendarsCallbackObjectProperty.getValue(); }
+	public void setDisabledCalendarsCallback(Callback<CalendarRange, List<Calendar>> value) { this.disabledCalendarsCallbackObjectProperty.setValue(value); }
+	public CalendarPicker withdisabledCalendarsCallback(Callback<CalendarRange, List<Calendar>> value) { setDisabledCalendarsCallback(value); return this; }
+	
+
+	/**
+	 * A Calendar range
+	 */
+	static public class CalendarRange
+	{
+		public CalendarRange(Calendar start, Calendar end)
+		{
+			this.start = start;
+			this.end = end;
+		}
+		
+		public Calendar getStartCalendar() { return start; }
+		final Calendar start;
+		
+		public Calendar getEndCalendar() { return end; }
+		final Calendar end; 
+	}
 
 	// ==================================================================================================================
 	// SUPPORT
