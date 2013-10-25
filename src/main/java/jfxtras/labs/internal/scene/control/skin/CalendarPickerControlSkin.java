@@ -599,7 +599,12 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		
 		// set the month buttons
 		int lDaysInMonth = determineDaysInMonth();
+		List<Integer> lDisabledDays = Collections.emptyList();
 		Calendar lCalendar = (Calendar)getDisplayedCalendar().clone();
+		if(getSkinnable().hasDisableCallback())
+		{
+			lDisabledDays = getSkinnable().getDisableCallback().call(lCalendar);
+		}
 		for (int i = 1; i <= lDaysInMonth; i++)
 		{
 			// set the date
@@ -629,11 +634,8 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 				lToggleButton.getStyleClass().remove("today");
 			}
 			
-			// disable button according to callback return value
-			if(getSkinnable().hasDisableCallback())
-			{
-				lToggleButton.setDisable(getSkinnable().getDisableCallback().call(lCalendar));
-			}
+			// disable button if the day is in the list of disabled days
+			lToggleButton.setDisable(lDisabledDays.contains(lCalendar.get(java.util.Calendar.DATE)));
 		}
 
 		// hide the trailing buttons

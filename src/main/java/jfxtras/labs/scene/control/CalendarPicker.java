@@ -239,9 +239,9 @@ public class CalendarPicker extends Control
     public CalendarPicker withAllowNull(boolean value) { setAllowNull(value); return this; }
     
     /** callback to disable calendar items */
-    private Callback<Calendar, Boolean> disableCallback;
-	public Callback<Calendar, Boolean> getDisableCallback() { return disableCallback; }
-	public void setDisableCallback(Callback<Calendar, Boolean> disableCallback) { this.disableCallback = disableCallback; }
+    private Callback<Calendar, List<Integer>> disableCallback;
+	public Callback<Calendar, List<Integer>> getDisableCallback() { return disableCallback; }
+	public void setDisableCallback(Callback<Calendar, List<Integer>> disableCallback) { this.disableCallback = disableCallback; }
     public boolean hasDisableCallback() { return disableCallback != null; }
 
 	// ==================================================================================================================
