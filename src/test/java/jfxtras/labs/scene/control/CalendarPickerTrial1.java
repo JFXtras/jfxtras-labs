@@ -26,7 +26,9 @@
  */
 package jfxtras.labs.scene.control;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -36,6 +38,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import jfxtras.labs.scene.control.CalendarPicker.CalendarRange;
 
 /**
  * @author Tom Eugelink
@@ -94,6 +98,19 @@ public class CalendarPickerTrial1 extends Application {
 //        lCalendarPicker.setShowTime(true);
 		lCalendarPicker.setAllowNull(false);
 
+		// test disabling calendars
+		lCalendarPicker.disabledCalendarsCallbackProperty().set(new Callback<CalendarRange, List<Calendar>>() 
+		{
+			@Override
+			public List<Calendar> call(CalendarRange calendarRange) 
+			{
+				List<Calendar> lCalendars = new ArrayList<>();
+				//lCalendars.add(calendarRange.getStartCalendar());
+				lCalendars.add(calendarRange.getEndCalendar());
+				return lCalendars;
+			}
+		});
+		
 		// create scene
         Scene scene = new Scene(lVBox, 300, 300);
 

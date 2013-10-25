@@ -211,10 +211,10 @@ public class Agenda extends Control
 		}
 		
 		public Calendar getStartCalendar() { return start; }
-		Calendar start;
+		final Calendar start;
 		
 		public Calendar getEndCalendar() { return end; }
-		Calendar end; 
+		final Calendar end; 
 	}
 	
 	/**

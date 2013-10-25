@@ -29,6 +29,8 @@ package jfxtras.labs.internal.scene.control.skin;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javafx.beans.InvalidationListener;
@@ -130,6 +132,9 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 		return lCalendar;
 	}
 
+	/**
+	 * 
+	 */
 	private void refreshLocale()
 	{
 		// create the formatter to use
@@ -144,6 +149,32 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 	
 	// ==================================================================================================================
 	// SUPPORT
+
+	/**
+	 * 
+	 */
+	protected void disabledCalendarsCallback()
+	{
+		if (getSkinnable().disabledCalendarsCallbackProperty().get() != null) {
+			// start and end
+			Calendar lStartCalendar = (Calendar)getDisplayedCalendar().clone();
+			Calendar lEndCalendar = (Calendar)getDisplayedCalendar().clone();
+			lEndCalendar.add(java.util.Calendar.MONTH, 1);
+			lEndCalendar.set(java.util.Calendar.DATE, 1);
+			lEndCalendar.add(java.util.Calendar.DATE, -1);
+			List<Calendar> calendars = getSkinnable().disabledCalendarsCallbackProperty().get().call(new CalendarPicker.CalendarRange(lStartCalendar, lEndCalendar));
+			
+			// process result
+			if (calendars == null) {
+				disabledCalendars = Collections.emptyList();
+			}
+			else {
+				disabledCalendars = new ArrayList<>();
+				disabledCalendars.addAll(calendars);
+			}
+		}
+	}
+	protected List<Calendar> disabledCalendars = Collections.emptyList();
 	
 	/**
 	 * get the weekday labels starting with the weekday that is the first-day-of-the-week according to the locale in the displayed calendar
