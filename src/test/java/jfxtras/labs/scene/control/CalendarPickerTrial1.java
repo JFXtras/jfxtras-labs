@@ -99,31 +99,26 @@ public class CalendarPickerTrial1 extends Application {
 		lCalendarPicker.setAllowNull(false);
 
 		// test disabling calendars
-		lCalendarPicker.disabledCalendarsCallbackProperty().set(new Callback<CalendarRange, List<Calendar>>() 
+		lCalendarPicker.calendarRangeCallbackProperty().set(new Callback<CalendarRange, Void>() 
 		{
 			@Override
-			public List<Calendar> call(CalendarRange calendarRange) 
+			public Void call(CalendarRange calendarRange) 
 			{
-				List<Calendar> lCalendars = new ArrayList<>();
-				//lCalendars.add(calendarRange.getStartCalendar());
-				lCalendars.add(calendarRange.getEndCalendar());
-				return lCalendars;
-			}
-		});
-		
-		// test highlightinbg calendars
-		lCalendarPicker.highlightedCalendarsCallbackProperty().set(new Callback<CalendarRange, List<Calendar>>() 
-		{
-			@Override
-			public List<Calendar> call(CalendarRange calendarRange) 
-			{
-				List<Calendar> lCalendars = new ArrayList<>();
-				Calendar lCalendar = calendarRange.getEndCalendar();
+				Calendar lCalendar = (Calendar)calendarRange.getEndCalendar().clone();
+				
+				// disabled
+				lCalendarPicker.disabledCalendars().clear();
 				lCalendar.add(Calendar.DATE, -1);
-				lCalendars.add((Calendar)lCalendar.clone());
+				lCalendarPicker.disabledCalendars().add((Calendar)lCalendar.clone());
+				
+				// highlighted
+				lCalendarPicker.highlightedCalendars().clear();
 				lCalendar.add(Calendar.DATE, -1);
-				lCalendars.add((Calendar)lCalendar.clone());
-				return lCalendars;
+				lCalendarPicker.highlightedCalendars().add((Calendar)lCalendar.clone());
+				lCalendar.add(Calendar.DATE, -1);
+				lCalendarPicker.highlightedCalendars().add((Calendar)lCalendar.clone());
+				
+				return null;
 			}
 		});
 		

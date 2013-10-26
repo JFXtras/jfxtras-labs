@@ -236,28 +236,24 @@ public class CalendarPicker extends Control
     public void setAllowNull(boolean allowNull) { allowNullProperty.set(allowNull); }
     public CalendarPicker withAllowNull(boolean value) { setAllowNull(value); return this; }
 
-	/** disabledCalendarsCallback:
-	 * This callback is called whenever the displayed range changes. 
-	 * The parameter holds the start and end dates and the returned list should contain all dates within that ranges that are to be disabled.  
-	 * The begin and end date is inclusive.
+	/** disabledCalendars: */
+	public ObservableList<Calendar> disabledCalendars() { return disabledCalendars; }
+	final private ObservableList<Calendar> disabledCalendars =  javafx.collections.FXCollections.observableArrayList();
+
+	/** highlightedCalendars: */
+	public ObservableList<Calendar> highlightedCalendars() { return highlightedCalendars; }
+	final private ObservableList<Calendar> highlightedCalendars =  javafx.collections.FXCollections.observableArrayList();
+
+	/** calendarRangeCallback: 
+	 * This callback allows a developer to limit the amount of calendars put in any of the collections.
+	 * It is called just before a new range is being displayed, so the developer can change the values in the collections like highlighted or disabled. 
 	 */
-	public ObjectProperty<Callback<CalendarRange, List<Calendar>>> disabledCalendarsCallbackProperty() { return disabledCalendarsCallbackObjectProperty; }
-	final private ObjectProperty<Callback<CalendarRange, List<Calendar>>> disabledCalendarsCallbackObjectProperty = new SimpleObjectProperty<Callback<CalendarRange, List<Calendar>>>(this, "disabledCalendarsCallback", null);
-	public Callback<CalendarRange, List<Calendar>> getDisabledCalendarsCallback() { return this.disabledCalendarsCallbackObjectProperty.getValue(); }
-	public void setDisabledCalendarsCallback(Callback<CalendarRange, List<Calendar>> value) { this.disabledCalendarsCallbackObjectProperty.setValue(value); }
-	public CalendarPicker withdisabledCalendarsCallback(Callback<CalendarRange, List<Calendar>> value) { setDisabledCalendarsCallback(value); return this; }
-	
-	/** highlightCalendarsCallback:
-	 * This callback is called whenever the displayed range changes. 
-	 * The parameter holds the start and end dates and the returned list should contain all dates within that ranges that are to be highlighted.  
-	 * The begin and end date is inclusive.
-	 */
-	public ObjectProperty<Callback<CalendarRange, List<Calendar>>> highlightedCalendarsCallbackProperty() { return highlightedCalendarsCallbackObjectProperty; }
-	final private ObjectProperty<Callback<CalendarRange, List<Calendar>>> highlightedCalendarsCallbackObjectProperty = new SimpleObjectProperty<Callback<CalendarRange, List<Calendar>>>(this, "highlightedCalendarsCallback", null);
-	public Callback<CalendarRange, List<Calendar>> getHighlightedCalendarsCallback() { return this.highlightedCalendarsCallbackObjectProperty.getValue(); }
-	public void setHighlightedCalendarsCallback(Callback<CalendarRange, List<Calendar>> value) { this.highlightedCalendarsCallbackObjectProperty.setValue(value); }
-	public CalendarPicker withHighlightedCalendarsCallback(Callback<CalendarRange, List<Calendar>> value) { setHighlightedCalendarsCallback(value); return this; }
-	
+	public ObjectProperty<Callback<CalendarRange, Void>> calendarRangeCallbackProperty() { return calendarRangeCallbackObjectProperty; }
+	final private ObjectProperty<Callback<CalendarRange, Void>> calendarRangeCallbackObjectProperty = new SimpleObjectProperty<Callback<CalendarRange, Void>>(this, "calendarRangeCallback", null);
+	public Callback<CalendarRange, Void> getCalendarRangeCallback() { return this.calendarRangeCallbackObjectProperty.getValue(); }
+	public void setCalendarRangeCallback(Callback<CalendarRange, Void> value) { this.calendarRangeCallbackObjectProperty.setValue(value); }
+	public CalendarPicker withCalendarRangeCallback(Callback<CalendarRange, Void> value) { setCalendarRangeCallback(value); return this; }
+		
 	/**
 	 * A Calendar range
 	 */
