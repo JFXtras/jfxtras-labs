@@ -42,6 +42,11 @@ public class ZoomInButtonFactory extends ZoomButtonFactory {
     public ZoomInButtonFactory(Zoomable controlable) {
         super(controlable);
     }
+    
+	@Override
+	protected String getId() {
+		return "btnZoomIn";
+	}
 
     @Override
     protected String getImagePath() {
