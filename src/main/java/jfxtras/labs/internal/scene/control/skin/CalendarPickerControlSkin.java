@@ -532,8 +532,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	 */
 	private void refresh()
 	{
-		disabledCalendarsCallback();
-		highlightedCalendarsCallback();
+		calendarRangeCallback();
 		refreshSpinner();
 		refreshWeekdayLabels();
 		refreshWeeknumberLabels();
@@ -597,6 +596,10 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	 */
 	private void refreshDayButtonsVisibilityAndLabel()
 	{
+		// prep
+		List<Calendar> highlightedCalendars = getSkinnable().highlightedCalendars();
+		List<Calendar> disabledCalendars = getSkinnable().disabledCalendars();
+		
 		// setup the buttons [0..(6*7)-1]
 		// displayed calendar always points to the 1st of the month
 		int lFirstOfMonthIdx = determineFirstOfMonthDayOfWeek();

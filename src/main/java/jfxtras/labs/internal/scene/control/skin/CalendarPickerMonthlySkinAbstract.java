@@ -156,48 +156,15 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 	/**
 	 * 
 	 */
-	protected void disabledCalendarsCallback()
+	protected void calendarRangeCallback()
 	{
-		if (getSkinnable().disabledCalendarsCallbackProperty().get() != null) {
+		if (getSkinnable().calendarRangeCallbackProperty().get() != null) {
 			// start and end
 			Calendar lStartCalendar = periodStartCalendar(); 
 			Calendar lEndCalendar = periodEndCalendar();
-			List<Calendar> calendars = getSkinnable().disabledCalendarsCallbackProperty().get().call(new CalendarPicker.CalendarRange(lStartCalendar, lEndCalendar));
-			
-			// process result
-			if (calendars == null) {
-				disabledCalendars = Collections.emptyList();
-			}
-			else {
-				disabledCalendars = new ArrayList<>();
-				disabledCalendars.addAll(calendars);
-			}
+			getSkinnable().calendarRangeCallbackProperty().get().call(new CalendarPicker.CalendarRange(lStartCalendar, lEndCalendar));
 		}
 	}
-	protected List<Calendar> disabledCalendars = Collections.emptyList();
-	
-	/**
-	 * 
-	 */
-	protected void highlightedCalendarsCallback()
-	{
-		if (getSkinnable().highlightedCalendarsCallbackProperty().get() != null) {
-			// start and end
-			Calendar lStartCalendar = periodStartCalendar(); 
-			Calendar lEndCalendar = periodEndCalendar();
-			List<Calendar> calendars = getSkinnable().highlightedCalendarsCallbackProperty().get().call(new CalendarPicker.CalendarRange(lStartCalendar, lEndCalendar));
-			
-			// process result
-			if (calendars == null) {
-				highlightedCalendars = Collections.emptyList();
-			}
-			else {
-				highlightedCalendars = new ArrayList<>();
-				highlightedCalendars.addAll(calendars);
-			}
-		}
-	}
-	protected List<Calendar> highlightedCalendars = Collections.emptyList();
 
 	/**
 	 * 
