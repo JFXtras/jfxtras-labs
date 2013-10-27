@@ -27,6 +27,7 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -96,6 +97,12 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField>
 				refreshValue();
 			}
 		});
+        getSkinnable().dateFormatProperty().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(javafx.beans.Observable observable) {
+                refreshValue();
+            }
+        });
 		refreshValue();
 		
 		// focus
