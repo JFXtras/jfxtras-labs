@@ -38,24 +38,32 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.css.CssMetaData;
+import javafx.css.Styleable;
+import javafx.css.StyleableObjectProperty;
+import javafx.css.StyleableProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.SkinBase;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
+import jfxtras.labs.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import jfxtras.labs.scene.control.CalendarPicker;
 import jfxtras.labs.scene.control.CalendarTimePicker;
 import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.ListSpinner.CycleEvent;
 import jfxtras.labs.scene.control.ListSpinnerIntegerList;
+
+import com.sun.javafx.css.converters.EnumConverter;
 
 /**
  * This skin uses regular JavaFX controls
@@ -83,6 +91,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	{
 		// setup component
 		createNodes();
+		layoutNodes();
 		
 		// start listening to changes
 		// if the calendar changes, the display calendar will jump to show that
@@ -142,8 +151,79 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	// ==================================================================================================================
 	// PROPERTIES
 	
-
 	// ==================================================================================================================
+	// StyleableProperties
+	
+	/** ShowWeeknumbers: */
+    /**
+     * showWeeknumbers
+     */
+    public final ObjectProperty<ShowWeeknumbers> showWeeknumbersProperty()
+    {
+        if (showWeeknumbers == null)
+        {
+            showWeeknumbers = new StyleableObjectProperty<ShowWeeknumbers>(ShowWeeknumbers.YES)
+            {
+                @Override public void invalidated()
+                {
+                    layoutNodes();
+                }
+
+                @Override public CssMetaData<CalendarPicker,ShowWeeknumbers> getCssMetaData() { return StyleableProperties.SHOW_WEEKNUMBERS; }
+                @Override public Object getBean() { return CalendarPickerControlSkin.this; }
+                @Override public String getName() { return "showWeeknumbers"; }
+            };
+        }
+        return showWeeknumbers;
+    }
+    private ObjectProperty<ShowWeeknumbers> showWeeknumbers = null;
+    public final void setShowWeeknumbers(ShowWeeknumbers value) { showWeeknumbersProperty().set(value); }
+    public final ShowWeeknumbers getShowWeeknumbers() { return showWeeknumbers == null ? ShowWeeknumbers.YES : showWeeknumbers.get(); }
+    public final CalendarPickerControlSkin withShowWeeknumbers(ShowWeeknumbers value) { setShowWeeknumbers(value); return this; }
+    public enum ShowWeeknumbers {YES, NO}
+    
+    // ----------------------------
+    // communicate the styleables
+
+    private static class StyleableProperties
+    {
+        private static final CssMetaData<CalendarPicker, ShowWeeknumbers> SHOW_WEEKNUMBERS = new CssMetaData<CalendarPicker, ShowWeeknumbers>("-fxx-show-weeknumbers", new EnumConverter<ShowWeeknumbers>(ShowWeeknumbers.class), ShowWeeknumbers.YES )
+        {
+            @Override public boolean isSettable(CalendarPicker n) { return !((CalendarPickerControlSkin)n.getSkin()).showWeeknumbersProperty().isBound(); }
+            @Override public StyleableProperty<ShowWeeknumbers> getStyleableProperty(CalendarPicker n) { return (StyleableProperty<ShowWeeknumbers>)((CalendarPickerControlSkin)n.getSkin()).showWeeknumbersProperty(); }
+        };
+
+        private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES;
+        static
+        {
+            final List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<CssMetaData<? extends Styleable, ?>>(SkinBase.getClassCssMetaData());
+            styleables.add(SHOW_WEEKNUMBERS);
+            STYLEABLES = Collections.unmodifiableList(styleables);
+        }
+    }
+
+    /**
+     * @return The CssMetaData associated with this class, which may include the
+     * CssMetaData of its super classes.
+     */
+    public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData()
+    {
+        return StyleableProperties.STYLEABLES;
+    }
+
+    /**
+     * This method should delegate to {@link javafx.scene.Node#getClassCssMetaData()} so that
+     * a Node's CssMetaData can be accessed without the need for reflection.
+     * @return The CssMetaData associated with this node, which may include the
+     * CssMetaData of its super classes.
+     */
+    public List<CssMetaData<? extends Styleable, ?>> getCssMetaData()
+    {
+        return getClassCssMetaData();
+    }
+
+
+    // ==================================================================================================================
 	// DRAW
 	
 	/**
@@ -151,17 +231,11 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	 */
 	private void createNodes()
 	{
-		// the result
-		GridPane lGridPane = new GridPane();
-		lGridPane.setVgap(2.0);
-		lGridPane.setHgap(2.0);
-		
 		// setup the grid so all weekday togglebuttons will grow, but the weeknumbers do not
 		ColumnConstraints lColumnConstraintsAlwaysGrow = new ColumnConstraints();
 		lColumnConstraintsAlwaysGrow.setHgrow(Priority.ALWAYS);
 		ColumnConstraints lColumnConstraintsNeverGrow = new ColumnConstraints();
 		lColumnConstraintsNeverGrow.setHgrow(Priority.NEVER);
-		lGridPane.getColumnConstraints().addAll(lColumnConstraintsNeverGrow, lColumnConstraintsAlwaysGrow, lColumnConstraintsAlwaysGrow, lColumnConstraintsAlwaysGrow, lColumnConstraintsAlwaysGrow, lColumnConstraintsAlwaysGrow, lColumnConstraintsAlwaysGrow, lColumnConstraintsAlwaysGrow);
 
 		// month spinner
 		List<String> lMonthLabels = getMonthLabels();
@@ -193,7 +267,6 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 				setDisplayedCalendarFromSpinners();
 			}
 		});
-		lGridPane.add(monthListSpinner, 1, 0, 4, 1); // col, row, hspan, vspan
 		
 		// year spinner
 		yearListSpinner = new ListSpinner<Integer>(new ListSpinnerIntegerList()).withValue(Calendar.getInstance().get(Calendar.YEAR));
@@ -206,11 +279,10 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 				setDisplayedCalendarFromSpinners();
 			}
 		});
-		lGridPane.add(yearListSpinner, 5, 0, 3, 1); // col, row, hspan, vspan
 		
 		// double click here to show today
-		Label lTodayLabel = new Label("   ");
-		lTodayLabel.onMouseClickedProperty().set(new EventHandler<MouseEvent>()
+		todayLabel = new Label("   ");
+		todayLabel.onMouseClickedProperty().set(new EventHandler<MouseEvent>()
 		{
 			@Override
 			public void handle(MouseEvent event)
@@ -219,7 +291,6 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 				setDisplayedCalendarToToday();
 			}
 		});
-		lGridPane.add(lTodayLabel, 0, 1);  // col, row
 		
 		// weekday labels
 		for (int i = 0; i < 7; i++)
@@ -229,9 +300,6 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			// style class is set together with the label
 			lLabel.getStyleClass().add("weekday-label"); 
 			lLabel.setMaxWidth(Integer.MAX_VALUE); // this is one of those times; why the @#$@#$@#$ do I need to specify this in order to make the damn label centered?
-			
-			// add it
-			lGridPane.add(lLabel, i + 1, 1);  // col, row
 			
 			// remember the column it is associated with
 			lLabel.setUserData(Integer.valueOf(i));
@@ -255,9 +323,6 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			// remember the row it is associated with
 			lLabel.setUserData(Integer.valueOf(i));
 			lLabel.onMouseClickedProperty().set(weeknumerLabelMouseClickedPropertyEventHandler);
-
-			// first of a row: add the weeknumber
-			lGridPane.add(weeknumberLabels.get(i), 0, i + 2);  // col, row
 		}
 		
 		// setup: 6 rows of 7 days per week (which is the maximum number of buttons required in the worst case layout)
@@ -274,7 +339,6 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			booleanPropertyToDayToggleButtonMap.put(lToggleButton.selectedProperty(), lToggleButton);
 			
 			// add it
-			lGridPane.add(lToggleButton, (i % 7) + 1, (i / 7) + 2);  // col, row
 			lToggleButton.setMaxWidth(Double.MAX_VALUE); // make the button grow to fill a GridPane's cell
 			lToggleButton.setAlignment(Pos.BASELINE_CENTER);
 			
@@ -286,16 +350,16 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		// TODO: this is done upon construction, we need to make this dynamic based on Mode and showTime
 		if (getSkinnable().getMode().equals(CalendarPicker.Mode.SINGLE) && getSkinnable().showTimeProperty().get() == true)
 		{
-			lGridPane.add(timePicker, 1, 8, 7, 1); // col, row, hspan, vspan
 			Bindings.bindBidirectional(timePicker.calendarProperty(), getSkinnable().calendarProperty()); 
 		}
 		
 		// add to self
-		getSkinnable().getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
-		getChildren().add(lGridPane);
+        getSkinnable().getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
 	}
+	// the result
 	private ListSpinner<String> monthListSpinner = null;
 	private ListSpinner<Integer> yearListSpinner = null;
+	private Label todayLabel = new Label("   ");
 	final private List<Label> weekdayLabels = new ArrayList<Label>();
 	final private List<Label> weeknumberLabels = new ArrayList<Label>();
 	final private List<ToggleButton> dayButtons = new ArrayList<ToggleButton>();
@@ -380,6 +444,77 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		}
 	};
 		
+	/**
+	 * construct the nodes
+	 */
+	private void layoutNodes()
+	{
+		getChildren().clear();
+		
+		// the result
+		GridPane gridPane = new GridPane();
+		gridPane = new GridPane();
+		gridPane.setVgap(2.0);
+		gridPane.setHgap(2.0);
+		//gridPane.setPadding(new javafx.geometry.Insets(0,0,0,0));
+		//gridPane.gridLinesVisibleProperty().set(true);
+		getChildren().add(gridPane);
+		
+		// show weeknumbers
+		boolean lShowWeeknumbers = ShowWeeknumbers.YES.equals( getShowWeeknumbers() );
+		int lWeeknumbersCols = (lShowWeeknumbers ? 1 : 0);
+		 
+		// setup the grid so all weekday togglebuttons will grow, but the weeknumbers do not
+		ColumnConstraints lColumnConstraintsAlwaysGrow = new ColumnConstraints();
+		lColumnConstraintsAlwaysGrow.setHgrow(Priority.ALWAYS);
+		ColumnConstraints lColumnConstraintsNeverGrow = new ColumnConstraints();
+		lColumnConstraintsNeverGrow.setHgrow(Priority.NEVER);
+		if (lShowWeeknumbers) 
+		{
+			gridPane.getColumnConstraints().addAll(lColumnConstraintsNeverGrow);
+		}
+		gridPane.getColumnConstraints().addAll(lColumnConstraintsAlwaysGrow, lColumnConstraintsAlwaysGrow, lColumnConstraintsAlwaysGrow, lColumnConstraintsAlwaysGrow, lColumnConstraintsAlwaysGrow, lColumnConstraintsAlwaysGrow, lColumnConstraintsAlwaysGrow);
+
+		// month spinner
+		gridPane.add(monthListSpinner, new GridPane.C().col(lWeeknumbersCols).row(0).colSpan(4).rowSpan(1));
+		
+		// year spinner
+		gridPane.add(yearListSpinner, new GridPane.C().col(lWeeknumbersCols + 4).row(0).colSpan(3).rowSpan(1));
+		
+		// double click here to show today
+		if (lShowWeeknumbers) {
+			gridPane.add(todayLabel, new GridPane.C().col(0).row(1));
+		}		
+		
+		// weekday labels
+		for (int i = 0; i < 7; i++)
+		{
+			gridPane.add(weekdayLabels.get(i), new GridPane.C().col(lWeeknumbersCols + i).row(1));
+		}
+		
+		// weeknumber labels
+		if (lShowWeeknumbers) 
+		{
+			for (int i = 0; i < 6; i++)
+			{
+				gridPane.add(weeknumberLabels.get(i), new GridPane.C().col(0).row(i + 2).margin(new javafx.geometry.Insets(0,0,0,0)));
+			}
+		}
+		
+		// setup: 6 rows of 7 days per week (which is the maximum number of buttons required in the worst case layout)
+		for (int i = 0; i < 6 * 7; i++)
+		{
+			gridPane.add(dayButtons.get(i), new GridPane.C().col(lWeeknumbersCols + (i % 7)).row((i / 7) + 2));
+		}
+
+		// add timepicker
+		// TODO: this is done upon construction, we need to make this dynamic based on Mode and showTime
+		if (getSkinnable().getMode().equals(CalendarPicker.Mode.SINGLE) && getSkinnable().showTimeProperty().get() == true)
+		{
+			gridPane.add(timePicker, new GridPane.C().col(lWeeknumbersCols).row(8).colSpan(7).rowSpan(1));
+		}
+	}
+
 	/**
 	 * 
 	 * @param toggleButton
@@ -571,7 +706,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			Label lLabel = weekdayLabels.get(i);
 			lLabel.setText( lWeekdayLabels.get(i) );
 			lLabel.getStyleClass().removeAll("weekend", "weekday");
-			lLabel.getStyleClass().add(isWeekdayWeekend(i) ? "weekend" : "weekday"); 
+			lLabel.getStyleClass().add(isWeekdayWeekend(i) ? "weekend" : "weekday");
 		}
 	}
 	
@@ -586,7 +721,8 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		// set them
 		for (int i = 0; i < lWeeknumbers.size(); i++)
 		{
-			weeknumberLabels.get(i).setText( (lWeeknumbers.get(i).intValue() < 10 ? "0" : "") + lWeeknumbers.get(i).toString() );
+			Label lLabel = weeknumberLabels.get(i);
+			lLabel.setText( (lWeeknumbers.get(i).intValue() < 10 ? "0" : "") + lWeeknumbers.get(i).toString() );
 		}
 	}
 	

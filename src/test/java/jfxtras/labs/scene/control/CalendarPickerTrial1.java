@@ -36,7 +36,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
+import jfxtras.labs.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.scene.control.CalendarPicker.CalendarRange;
@@ -59,7 +59,7 @@ public class CalendarPickerTrial1 extends Application {
 		
         // add a node
 		final CalendarPicker lCalendarPicker = new CalendarPicker();
-		lVBox.getChildren().add(lCalendarPicker);
+		lVBox.add(lCalendarPicker);
         
 		// textfield
         {
