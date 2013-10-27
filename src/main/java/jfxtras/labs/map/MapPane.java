@@ -162,6 +162,9 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		centerMap();
 
 		setTilesMouseHandler(new TilesMouseHandler());
+		
+		clipMask.setWidth(Double.MAX_VALUE);
+		clipMask.setHeight(Double.MAX_VALUE);
 	}
 
 	public final void setTilesMouseHandler(TilesMouseHandler handler) {
@@ -220,7 +223,6 @@ public final class MapPane extends Pane implements MapTilesourceable {
 				setMinWidth(val);
 				setMaxWidth(val);
 				setPrefWidth(val);
-				clipMask.setWidth(val);
 				adjustCursorLocationText();
 				renderControl();
 			}
@@ -234,7 +236,6 @@ public final class MapPane extends Pane implements MapTilesourceable {
 				setMinHeight(val);
 				setMaxHeight(val);
 				setPrefHeight(val);
-				clipMask.setHeight(val);
 				adjustCursorLocationText();
 				renderControl();
 			}

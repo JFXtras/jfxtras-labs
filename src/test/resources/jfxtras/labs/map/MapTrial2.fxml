@@ -13,7 +13,7 @@
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
 	fx:id="container" fx:controller="jfxtras.labs.map.MapController"
-	prefWidth="600" prefHeight="800">
+	prefWidth="600" prefHeight="600">
     <top>
         <ToolBar id="toolBar" fx:id="toolBar">
             <ComboBox fx:id="mapType" onAction="#mapTypeChanged">
@@ -47,7 +47,7 @@
         </ToolBar>
     </top>
     <center>
-        <MapPane fx:id="map"/>
+       	<MapPane fx:id="map"/>
     </center>
     
     <stylesheets>
