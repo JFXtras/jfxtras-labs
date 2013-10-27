@@ -228,9 +228,9 @@ public class CalendarPicker extends Control
 		public void set(boolean value)
 		{
 			super.set(value);
-			if (value == true && getCalendar() == null)
+			if (value == false && getCalendar() == null)
 			{
-				setCalendar(Calendar.getInstance());
+				setCalendar(Calendar.getInstance(getLocale()));
 			}
 		}
 	};

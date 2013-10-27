@@ -102,6 +102,12 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField, Ca
 				refreshValue();
 			}
 		});
+        getSkinnable().dateFormatProperty().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(javafx.beans.Observable observable) {
+                refreshValue();
+            }
+        });
 		refreshValue();
 		
 		// focus

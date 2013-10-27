@@ -145,7 +145,15 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
             }
         });
 
-		// update the data
+        // react to changes in the locale
+        getSkinnable().showTimeProperty().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+                layoutNodes();
+            }
+        });
+        
+        // update the data
 		refresh();
 	}
 	
@@ -352,11 +360,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		}
 
 		// add timepicker
-		// TODO: this is done upon construction, we need to make this dynamic based on Mode and showTime
-		if (getSkinnable().getMode().equals(CalendarPicker.Mode.SINGLE) && getSkinnable().showTimeProperty().get() == true)
-		{
-			Bindings.bindBidirectional(timePicker.calendarProperty(), getSkinnable().calendarProperty()); 
-		}
+		Bindings.bindBidirectional(timePicker.calendarProperty(), getSkinnable().calendarProperty()); 
 		
 		// add to self
 		this.getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
@@ -513,7 +517,6 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		}
 
 		// add timepicker
-		// TODO: this is done upon construction, we need to make this dynamic based on Mode and showTime
 		if (getSkinnable().getMode().equals(CalendarPicker.Mode.SINGLE) && getSkinnable().showTimeProperty().get() == true)
 		{
 			gridPane.add(timePicker, new GridPane.C().col(lWeeknumbersCols).row(8).colSpan(7).rowSpan(1));
