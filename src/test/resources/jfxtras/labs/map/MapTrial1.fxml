@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.collections.FXCollections?>
+<?import jfxtras.labs.map.MapPane?>
+<?import jfxtras.labs.map.tile.osm.OsmType?>
+<?import jfxtras.labs.map.tile.bing.BingType?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+	fx:id="container"
+	prefWidth="600" prefHeight="600">
+
+   	<MapPane fx:id="map"/>
+    
+    <stylesheets>
+      <URL value="@map_pane.css" />
+    </stylesheets>
+</VBox>
