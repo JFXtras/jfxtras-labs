@@ -89,20 +89,8 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField>
 		createNodes();
 		
 		// react to value changes in the model
-		getSkinnable().calendarProperty().addListener(new ChangeListener<Calendar>()
-		{
-			@Override
-			public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
-			{
-				refreshValue();
-			}
-		});
-        getSkinnable().dateFormatProperty().addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(javafx.beans.Observable observable) {
-                refreshValue();
-            }
-        });
+		getSkinnable().calendarProperty().addListener( (observableValue, oldValue, newValue) -> { refreshValue(); });
+        getSkinnable().dateFormatProperty().addListener( (observableValue, oldValue, newValue) -> { refreshValue(); });
 		refreshValue();
 		
 		// focus
