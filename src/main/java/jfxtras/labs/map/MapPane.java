@@ -220,9 +220,6 @@ public final class MapPane extends Pane implements MapTilesourceable {
 			public void changed(ObservableValue<? extends Number> observable,
 					Number oldValue, Number newValue) {
 				int val = newValue.intValue();
-				setMinWidth(val);
-				setMaxWidth(val);
-				setPrefWidth(val);
 				adjustCursorLocationText();
 				renderControl();
 			}
@@ -233,9 +230,6 @@ public final class MapPane extends Pane implements MapTilesourceable {
 			public void changed(ObservableValue<? extends Number> observable,
 					Number oldValue, Number newValue) {
 				int val = newValue.intValue();
-				setMinHeight(val);
-				setMaxHeight(val);
-				setPrefHeight(val);
 				adjustCursorLocationText();
 				renderControl();
 			}

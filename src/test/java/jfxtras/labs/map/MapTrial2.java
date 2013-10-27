@@ -72,13 +72,6 @@ public class MapTrial2 extends Application {
 		map.setTileGridVisible(true);
 		
 		scene.getStylesheets().add(getClass().getResource("map_scene.css").toExternalForm());
-		scene.widthProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observable,
-					Number oldValue, Number newValue) {
-				map.setMinWidth(newValue.doubleValue());
-			}
-		});
 		scene.heightProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable,
