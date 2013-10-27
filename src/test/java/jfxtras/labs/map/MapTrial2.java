@@ -33,14 +33,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import jfxtras.labs.map.render.DefaultMapLine;
 import jfxtras.labs.map.render.ImageMapMarker;
@@ -62,9 +58,7 @@ public class MapTrial2 extends Application {
 				new MapBuilderFactory());
 
 		Scene scene = new Scene(root);
-		// TODO find a way that the map automatic resizes without the need to
-		// add listeners
-		final ToolBar toolBar = (ToolBar) root.lookup("#toolBar");
+		
 		final MapPane map = (MapPane) root.lookup("#map");
 		
 		addLayers(map);
@@ -72,15 +66,8 @@ public class MapTrial2 extends Application {
 		map.setTileGridVisible(true);
 		
 		scene.getStylesheets().add(getClass().getResource("map_scene.css").toExternalForm());
-		scene.heightProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observable,
-					Number oldValue, Number newValue) {
-				map.setMinHeight(newValue.doubleValue() - toolBar.getHeight());
-			}
-		});
 
-		stage.setTitle("FXML Map");
+		stage.setTitle("Map Trial 2");
 
 		stage.setScene(scene);
 		stage.show();
