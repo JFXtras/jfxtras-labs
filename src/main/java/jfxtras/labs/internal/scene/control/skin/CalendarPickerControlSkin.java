@@ -153,6 +153,24 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
             }
         });
         
+        // react to changes in the disabled calendars
+        getSkinnable().disabledCalendars().addListener(new ListChangeListener<Calendar>(){
+			@Override
+			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Calendar> arg0) {
+				refreshDayButtonsVisibilityAndLabel();
+			}
+        	
+        });
+        
+        // react to changes in the highlighted calendars
+        getSkinnable().highlightedCalendars().addListener(new ListChangeListener<Calendar>(){
+			@Override
+			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Calendar> arg0) {
+				refreshDayButtonsVisibilityAndLabel();
+			}
+        	
+        });
+        
         // update the data
 		refresh();
 	}
@@ -683,6 +701,9 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	 */
 	private void refreshSpinner()
 	{
+		// no updating while in callback, because we will update all in one go afterwards
+		if (calendarRangeCallbackAtomicInteger.get() !=0) return;
+		
 		// get calendar
 		Calendar lCalendar = (Calendar)getDisplayedCalendar();
 
@@ -701,6 +722,9 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	 */
 	private void refreshWeekdayLabels()
 	{
+		// no updating while in callback, because we will update all in one go afterwards
+		if (calendarRangeCallbackAtomicInteger.get() !=0) return;
+		
 		// get labels
 		List<String> lWeekdayLabels = getWeekdayLabels();
 		
@@ -719,6 +743,9 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	 */
 	private void refreshWeeknumberLabels()
 	{
+		// no updating while in callback, because we will update all in one go afterwards
+		if (calendarRangeCallbackAtomicInteger.get() !=0) return;
+		
 		// get labels
 		List<Integer> lWeeknumbers = getWeeknumbers();
 		
@@ -735,6 +762,9 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	 */
 	private void refreshDayButtonsVisibilityAndLabel()
 	{
+		// no updating while in callback, because we will update all in one go afterwards
+		if (calendarRangeCallbackAtomicInteger.get() !=0) return;
+		
 		// prep
 		List<Calendar> highlightedCalendars = getSkinnable().highlightedCalendars();
 		List<Calendar> disabledCalendars = getSkinnable().disabledCalendars();
@@ -810,6 +840,9 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	 */
 	private void refreshDayButtonToggleState()
 	{
+		// no updating while in callback, because we will update all in one go afterwards
+		if (calendarRangeCallbackAtomicInteger.get() !=0) return;
+		
 		iRefreshingSelection.addAndGet(1);
 		try
 		{

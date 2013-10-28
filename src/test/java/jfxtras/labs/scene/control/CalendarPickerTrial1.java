@@ -94,6 +94,36 @@ public class CalendarPickerTrial1 extends Application {
 	        lVBox.getChildren().add(lTextField);
         }
 
+		// textfield
+        {
+			final TextField lTextField = new TextField();
+			lTextField.setEditable(false);
+	        lCalendarPicker.disabledCalendars().addListener(new ListChangeListener<Calendar>()
+	        {
+				@Override
+				public void onChanged(javafx.collections.ListChangeListener.Change<? extends Calendar> arg0)
+				{
+					lTextField.setText(CalendarPicker.quickFormatCalendar(lCalendarPicker.disabledCalendars()));
+				}
+	        });
+	        lVBox.getChildren().add(lTextField);
+        }
+
+		// textfield
+        {
+			final TextField lTextField = new TextField();
+			lTextField.setEditable(false);
+	        lCalendarPicker.highlightedCalendars().addListener(new ListChangeListener<Calendar>()
+	        {
+				@Override
+				public void onChanged(javafx.collections.ListChangeListener.Change<? extends Calendar> arg0)
+				{
+					lTextField.setText(CalendarPicker.quickFormatCalendar(lCalendarPicker.highlightedCalendars()));
+				}
+	        });
+	        lVBox.getChildren().add(lTextField);
+        }
+
         // setup
 		lCalendarPicker.setCalendar(new java.util.GregorianCalendar(2011, 06, 01)); // set a value
 //		lCalendarPicker.setMode(CalendarPicker.Mode.RANGE);
@@ -126,7 +156,7 @@ public class CalendarPickerTrial1 extends Application {
 		});
 		
 		// create scene
-        Scene scene = new Scene(lVBox, 300, 300);
+        Scene scene = new Scene(lVBox, 300, 500);
 
 		// load custom CSS
         scene.getStylesheets().addAll(this.getClass().getResource(this.getClass().getSimpleName() + ".css").toExternalForm());

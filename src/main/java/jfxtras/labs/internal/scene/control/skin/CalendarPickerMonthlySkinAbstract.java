@@ -35,6 +35,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -162,9 +163,18 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 			// start and end
 			Calendar lStartCalendar = periodStartCalendar(); 
 			Calendar lEndCalendar = periodEndCalendar();
-			getSkinnable().calendarRangeCallbackProperty().get().call(new CalendarPicker.CalendarRange(lStartCalendar, lEndCalendar));
+			try
+			{
+				calendarRangeCallbackAtomicInteger.incrementAndGet();
+				getSkinnable().calendarRangeCallbackProperty().get().call(new CalendarPicker.CalendarRange(lStartCalendar, lEndCalendar));
+			}
+			finally
+			{
+				calendarRangeCallbackAtomicInteger.decrementAndGet();
+			}
 		}
 	}
+	protected final AtomicInteger calendarRangeCallbackAtomicInteger = new AtomicInteger(0);
 
 	/**
 	 * 
