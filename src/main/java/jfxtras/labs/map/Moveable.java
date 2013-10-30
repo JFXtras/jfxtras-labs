@@ -49,7 +49,9 @@ public interface Moveable extends Zoomable{
     void moveMap(int x, int y);
 
     /**
-     * This method returns the center of the map as a point.
+     * This method returns the center of the map as a point.<br/>
+     * X&Y position of the center of this map on the world
+	 * in screen pixels for the current zoom level.
      *
      * @return the center as point
      */
