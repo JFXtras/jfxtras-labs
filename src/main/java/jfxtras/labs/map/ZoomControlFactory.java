@@ -55,6 +55,8 @@ public class ZoomControlFactory {
 	private Button zoomInButton;
 
 	private Button zoomOutButton;
+	
+	private boolean ignore;
 
 	public Pane create(Zoomable zoomable) {
 		
@@ -62,6 +64,8 @@ public class ZoomControlFactory {
 
 		ZoomSliderFactory zoomSliderFactory = new ZoomSliderFactory(zoomable);
 		zoomSlider = zoomSliderFactory.create();
+		
+		zoomSlider.valueProperty().addListener(new ZoomSliderChangeListener(zoomable));
 
 		ZoomButtonFactory zoomButtonFactory = new ZoomInButtonFactory(zoomable);
 		zoomInButton = zoomButtonFactory.create();
@@ -105,10 +109,28 @@ public class ZoomControlFactory {
 			zoomInButton.setDisable(!(zoom < zoomable.getMaxZoom()));
 
 			if (Math.abs(zoomSlider.getValue() - zoom) > ZOOM_DIFF) {
+				ignore = true;
 				zoomSlider.setValue(zoom);
+				ignore = false;
 			}
 		}
 
+	}
+	
+	private class ZoomSliderChangeListener implements ChangeListener<Number> {
+		
+		private Zoomable zoomable;
+		
+		public ZoomSliderChangeListener(Zoomable zoomable) {
+			this.zoomable = zoomable;
+		}
+		
+        @Override
+        public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+            if(!ignore){
+            	zoomable.setZoom(new_val.intValue());
+            }
+        }
 	}
 
 }

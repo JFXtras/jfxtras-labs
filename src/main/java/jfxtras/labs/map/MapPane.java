@@ -104,10 +104,6 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	private Text cursorLocationText;
 
-	private SimpleIntegerProperty mapX = new SimpleIntegerProperty(START);
-
-	private SimpleIntegerProperty mapY = new SimpleIntegerProperty(START);
-
 	private SimpleIntegerProperty mapWidth = new SimpleIntegerProperty(SIZE);
 
 	private SimpleIntegerProperty mapHeight = new SimpleIntegerProperty(SIZE);
@@ -195,26 +191,6 @@ public final class MapPane extends Pane implements MapTilesourceable {
 			}
 		});
 
-		mapX.addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observable,
-					Number oldValue, Number newValue) {
-				int val = newValue.intValue();
-				setLayoutX(val);
-				clipMask.setLayoutX(val);
-			}
-		});
-
-		mapY.addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observable,
-					Number oldValue, Number newValue) {
-				int val = newValue.intValue();
-				setLayoutY(val);
-				clipMask.setLayoutY(val);
-			}
-		});
-
 		mapWidth.addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable,
@@ -252,13 +228,6 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		cursorLocationText.setLayoutY(y);
 	}
 
-	public void setMapBounds(int x, int y, int width, int height) {
-		this.mapX.set(x);
-		this.mapY.set(y);
-		this.mapWidth.set(width);
-		this.mapHeight.set(height);
-	}
-
 	public void setDisplayPositionByLatLon(double lat, double lon) {
 		setDisplayPositionByLatLon(lat, lon, zoom.get());
 	}
@@ -289,6 +258,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 			// Get the plain tile number
 			moveCenter(mapPoint, x, y);
+			previousZoom = this.zoom.get();
 			this.zoom.set(zoom);
 			renderControl();
 		}
@@ -389,10 +359,6 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		}
 		
 		renderControl();
-
-		if (isEdgeVisible()) {
-			centerMap();
-		}
 	}
 	
 	private boolean isOnEdge(){
@@ -451,14 +417,9 @@ public final class MapPane extends Pane implements MapTilesourceable {
 			setDisplayPositionByLatLon(mapPoint, zoomPos.getLatitude(),
 					zoomPos.getLongitude(), nextZoom);
 
-			if (nextZoom < previousZoom && isEdgeVisible()) {
-				centerMap();
-			}
-			
-			if(nextZoom != zoom.get()){
-				zoom.set(nextZoom);
-				previousZoom = nextZoom;
-			}
+//			if (nextZoom < previousZoom && isEdgeVisible()) {
+//				centerMap();
+//			}
 		}
 	}
 
@@ -567,24 +528,6 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		tileRenderer.refresh(this);
 		renderMapLayers();
 		renderAttribution();
-	}
-
-	public void setMapX(int val) {
-		this.mapX.set(val);
-	}
-
-	@Override
-	public int getMapX() {
-		return this.mapX.get();
-	}
-
-	public void setMapY(int val) {
-		this.mapY.set(val);
-	}
-
-	@Override
-	public int getMapY() {
-		return this.mapY.get();
 	}
 
 	public void setMapWidth(double val) {

@@ -60,13 +60,6 @@ public class ZoomSliderFactory {
 
         slider.setPrefSize(30, 150);
 
-        slider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-                zoomable.setZoom(new_val.intValue());
-            }
-        });
-
         return slider;
     }
 }
