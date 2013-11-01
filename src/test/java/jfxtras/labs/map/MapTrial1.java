@@ -51,7 +51,8 @@ public class MapTrial1 extends Application {
 				new MapBuilderFactory());
 		
 		MapPane map = (MapPane) root.lookup("#map");
-		map.setZoom(3);
+		map.setZoom(5);
+		map.setDisplayPositionByLatLon(48, 0);
 
 		Scene scene = new Scene(root);
 		
@@ -60,7 +61,6 @@ public class MapTrial1 extends Application {
 		stage.setScene(scene);
 		stage.show();
 		
-//		stage.setResizable(false);
 	}
 
 }
