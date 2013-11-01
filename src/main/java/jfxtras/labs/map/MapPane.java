@@ -72,7 +72,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	private static final int INITIAL_ZOOM = 9;
 
-	private static final int SIZE = 400;
+	private static final int SIZE = 600;
 
 	private static final int START = 0;
 
@@ -121,7 +121,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	private boolean tilesPrepared;
 
 	public MapPane(TileSource ts) {
-		this(ts, 800, 600, INITIAL_ZOOM);
+		this(ts, SIZE, SIZE, INITIAL_ZOOM);
 	}
 
 	public MapPane(TileSource tileSource, int width, int height, int zoom) {
@@ -367,7 +367,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	}
 
 	/**
-	 * centers the map when necessary
+	 * centers the map
 	 */
 	@Override
 	public final void centerMap() {
@@ -425,7 +425,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	private boolean isEdgeVisible() {
 		Dimension dim = new Dimension(getMapWidth(), getMapHeight());
-		return mapEdgeChecker.isAllVisible(dim);
+		return mapEdgeChecker.isAnyVisible(dim);
 	}
 
 	private Coordinate getCoordinate(Point p) {
