@@ -62,7 +62,6 @@ import jfxtras.labs.map.tile.TileRepository;
 import static javafx.collections.FXCollections.*;
 import static jfxtras.labs.map.CoordinatesConverter.*;
 
-
 /**
  * 
  * @author smithjel
@@ -77,7 +76,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	private static final int START = 0;
 
 	private static final String STYLE_LOC = "cursorLocation";
-	
+
 	private TileProvideable tilesProvider;
 
 	private TileRenderable tileRenderer;
@@ -92,9 +91,6 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	// Current zoom level
 	private SimpleIntegerProperty zoom;
-
-	// previous zoom level
-	private int previousZoom;
 
 	private boolean ignoreRepaint;
 
@@ -117,8 +113,10 @@ public final class MapPane extends Pane implements MapTilesourceable {
 			true);
 
 	private CoordinateStringFormater formater;
-	
+
 	private boolean tilesPrepared;
+
+	private Coordinate zoomCoordinate;
 
 	public MapPane(TileSource ts) {
 		this(ts, SIZE, SIZE, INITIAL_ZOOM);
@@ -158,7 +156,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		centerMap();
 
 		setTilesMouseHandler(new TilesMouseHandler());
-		
+
 		clipMask.setWidth(Double.MAX_VALUE);
 		clipMask.setHeight(Double.MAX_VALUE);
 	}
@@ -166,11 +164,11 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	public final void setTilesMouseHandler(TilesMouseHandler handler) {
 		handler.setEventPublisher(this);
 	}
-	
-	private void addRenderChangeListener(){
+
+	private void addRenderChangeListener() {
 		RenderChangeListener listener = new RenderChangeListener();
 		mapLayers.addListener(listener);
-		
+
 		mapMarkersVisible.addListener(listener);
 		mapPolygonsVisible.addListener(listener);
 	}
@@ -252,13 +250,9 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	}
 
 	private void setDisplayPosition(Point mapPoint, int x, int y, int zoom) {
-
-		if (zoom >= tilesProvider.getTileSource().getMinZoom()
-				&& zoom <= tilesProvider.getTileSource().getMaxZoom()) {
-
+		if (isValidZoom(zoom)) {
 			// Get the plain tile number
 			moveCenter(mapPoint, x, y);
-			previousZoom = this.zoom.get();
 			this.zoom.set(zoom);
 			renderControl();
 		}
@@ -277,7 +271,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 			int x_max = Integer.MIN_VALUE;
 			int y_max = Integer.MIN_VALUE;
 			int mapZoomMax = getTileSource().getMaxZoom();
-			
+
 			for (MapMarkable marker : markers) {
 				int x = Mercator.lonToX(marker.getLon(), mapZoomMax);
 				int y = Mercator.latToY(marker.getLat(), mapZoomMax);
@@ -286,7 +280,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 				x_min = Math.min(x_min, x);
 				y_min = Math.min(y_min, y);
 			}
-			
+
 			int height = (int) Math.max(START, getMapHeight());
 			int width = (int) Math.max(START, getMapWidth());
 			int newZoom = mapZoomMax;
@@ -308,10 +302,10 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	private List<MapMarkable> getMapMarkers() {
 		List<MapMarkable> markers = new ArrayList<>();
-		//a bit ugly to filter out by instance of
-		for(Renderable layer : mapLayers){
-			if(layer instanceof MapMarkable){
-				markers.add((MapMarkable)layer);
+		// a bit ugly to filter out by instance of
+		for (Renderable layer : mapLayers) {
+			if (layer instanceof MapMarkable) {
+				markers.add((MapMarkable) layer);
 			}
 		}
 		return markers;
@@ -346,22 +340,22 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	@Override
 	public void moveMap(int x, int y) {
-
+		zoomCoordinate = null;
 		Point previous = new Point(center);
 		center.x += x;
 		center.y += y;
-		
-		if(prepareTiles() > 0 && !isOnEdge()){
+
+		if (prepareTiles() > 0 && !isOnEdge()) {
 			tilesPrepared = true;
-		}else{
+		} else {
 			center = previous;
 			prepareTiles();
 		}
-		
+
 		renderControl();
 	}
-	
-	private boolean isOnEdge(){
+
+	private boolean isOnEdge() {
 		Dimension dim = new Dimension(getMapWidth(), getMapHeight());
 		return mapEdgeChecker.isOnEdge(dim);
 	}
@@ -371,7 +365,6 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	 */
 	@Override
 	public final void centerMap() {
-
 		setDisplayPositionByLatLon(START, START);
 	}
 
@@ -382,45 +375,57 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	@Override
 	public void zoomIn() {
-		setZoom(zoom.get() + 1);
+		updateZoom(zoom.get() + 1);
 	}
 
 	@Override
 	public void zoomIn(Point mapPoint) {
-
 		updateZoom(zoom.get() + 1, mapPoint);
 	}
 
 	@Override
 	public void zoomOut() {
-		setZoom(zoom.get() - 1);
+		updateZoom(zoom.get() - 1);
 	}
 
 	@Override
 	public void zoomOut(Point mapPoint) {
-
 		updateZoom(zoom.get() - 1, mapPoint);
 	}
 
 	@Override
 	public void setZoom(int nextZoom) {
-
 		Point mapPoint = createMapCenterPoint();
 		updateZoom(nextZoom, mapPoint);
 	}
 
+	private void updateZoom(int nextZoom) {
+		Point mapPoint = createMapCenterPoint();
+		if (zoomCoordinate == null) {
+			zoomCoordinate = getCoordinate(mapPoint);
+		}
+		updateZoom(nextZoom, mapPoint, zoomCoordinate);
+	}
+
 	private void updateZoom(int nextZoom, Point mapPoint) {
-		if (nextZoom <= getMaxZoom() && nextZoom >= getMinZoom()) {
+		zoomCoordinate = null;
+		Coordinate zoomPos = getCoordinate(mapPoint);
+		updateZoom(nextZoom, mapPoint, zoomPos);
+	}
 
-			Coordinate zoomPos = getCoordinate(mapPoint);
-
+	private void updateZoom(int nextZoom, Point mapPoint, Coordinate zoomPos) {
+		if (isValidZoom(nextZoom)) {
 			setDisplayPositionByLatLon(mapPoint, zoomPos.getLatitude(),
 					zoomPos.getLongitude(), nextZoom);
 
-//			if (nextZoom < previousZoom && isEdgeVisible()) {
-//				centerMap();
-//			}
+			if (isEdgeVisible()) {
+				centerMap();
+			}
 		}
+	}
+
+	private boolean isValidZoom(int nextZoom) {
+		return nextZoom <= getMaxZoom() && nextZoom >= getMinZoom();
 	}
 
 	private boolean isEdgeVisible() {
@@ -479,38 +484,39 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 		boolean updated = false;
 
-		if(!tilesPrepared){
+		if (!tilesPrepared) {
 			if (prepareTiles() > 0) {
 				tileRenderer.render(tilesGroup);
 				updated = true;
 			}
-		}else{
+		} else {
 			tileRenderer.render(tilesGroup);
 			updated = true;
 		}
-		
+
 		tilesPrepared = false;
 
 		return updated;
 	}
-	
-	private int prepareTiles(){
+
+	private int prepareTiles() {
 		return tileRenderer.prepareTiles(this);
 	}
 
 	protected void renderMapLayers() {
 		for (Renderable overlay : mapLayers) {
-			if(isEnabled(overlay)){
+			if (isEnabled(overlay)) {
 				overlay.render(this);
 			}
 		}
 	}
-	
-	protected boolean isEnabled(Renderable renderable){
+
+	protected boolean isEnabled(Renderable renderable) {
 		boolean enabled = true;
-		if((renderable instanceof MapPolygonable && !isMapPolygonsVisible())){
+		if ((renderable instanceof MapPolygonable && !isMapPolygonsVisible())) {
 			enabled = false;
-		}else if(renderable instanceof MapMarkable || renderable instanceof MapLineable){
+		} else if (renderable instanceof MapMarkable
+				|| renderable instanceof MapLineable) {
 			enabled = mapMarkersVisible.get();
 		}
 		return enabled;
@@ -523,8 +529,8 @@ public final class MapPane extends Pane implements MapTilesourceable {
 			renderer.render(this);
 		}
 	}
-	
-	public void refereshMap(){
+
+	public void refereshMap() {
 		tileRenderer.refresh(this);
 		renderMapLayers();
 		renderAttribution();
@@ -604,14 +610,15 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	public void setIgnoreRepaint(boolean ignoreRepaint) {
 		this.ignoreRepaint = ignoreRepaint;
 	}
-	
-	private class RenderChangeListener implements ListChangeListener<Renderable>, ChangeListener<Boolean>{
+
+	private class RenderChangeListener implements
+			ListChangeListener<Renderable>, ChangeListener<Boolean> {
 
 		@Override
 		public void onChanged(Change<? extends Renderable> change) {
 			renderControl();
 		}
-		
+
 		@Override
 		public void changed(ObservableValue<? extends Boolean> observable,
 				Boolean oldVal, Boolean newVal) {
