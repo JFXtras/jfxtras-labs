@@ -539,7 +539,7 @@ public class Window extends Control implements SelectableNode {
      * Defines the action that shall be performed after the window has been
      * closed.
      *
-     * @param onClosedActionProperty the action to set
+     * @param onClosedAction the action to set
      */
     public void setOnClosedAction(EventHandler<ActionEvent> onClosedAction) {
         this.onClosedActionProperty.set(onClosedAction);
@@ -571,7 +571,7 @@ public class Window extends Control implements SelectableNode {
      * Defines the action that shall be performed before the window will be
      * closed.
      *
-     * @param onClosedActionProperty the action to set
+     * @param onClosedAction the action to set
      */
     public void setOnCloseAction(EventHandler<ActionEvent> onClosedAction) {
         this.onCloseActionProperty.set(onClosedAction);
