@@ -32,6 +32,10 @@ package jfxtras.labs.map.tile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+
+import java.io.File;
+import java.net.URL;
+
 import javafx.scene.image.ImageView;
 import jfxtras.labs.JavaFXPlatformAbstractTest;
 import jfxtras.labs.map.ApiKeys;
@@ -41,7 +45,6 @@ import jfxtras.labs.map.tile.local.LocalTileSourceFactory;
 import jfxtras.labs.map.tile.osm.OsmTileSourceFactory;
 import jfxtras.labs.map.tile.osm.OsmType;
 
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -81,7 +84,17 @@ public class TileRepositoryTest extends JavaFXPlatformAbstractTest {
         
 		TileSourceFactory<String> factory = new LocalTileSourceFactory();
 		verify(factory.create(null));
-		verify(factory.create(getClass().getResource("test").getFile()));
+		
+		String root = getClass().getResource(".").getFile();
+		String propTiles = System.getProperty("tiles.source");
+		if(propTiles != null && !propTiles.trim().isEmpty()){
+			root = propTiles;
+		}
+		File dir = new File(root, "tiles");
+		TileSource tileSource = factory.create(dir.getPath());
+		verify(tileSource);
+		assertEquals(2, tileSource.getMinZoom());
+		assertEquals(6, tileSource.getMaxZoom());
 	}
 
 	@Test
