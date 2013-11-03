@@ -66,6 +66,9 @@ public class ZoomControlFactory {
 		zoomSlider = zoomSliderFactory.create();
 		
 		zoomSlider.valueProperty().addListener(new ZoomSliderChangeListener(zoomable));
+		
+		zoomable.minZoomProperty().addListener(new ZoomMinChangeListener());
+		zoomable.maxZoomProperty().addListener(new ZoomMaxChangeListener());
 
 		ZoomButtonFactory zoomButtonFactory = new ZoomInButtonFactory(zoomable);
 		zoomInButton = zoomButtonFactory.create();
@@ -105,8 +108,8 @@ public class ZoomControlFactory {
 			
 			setTooltip(zoom);
 			
-			zoomOutButton.setDisable(!(zoom > zoomable.getMinZoom()));
-			zoomInButton.setDisable(!(zoom < zoomable.getMaxZoom()));
+			zoomOutButton.setDisable(!(zoom > zoomable.minZoomProperty().get()));
+			zoomInButton.setDisable(!(zoom < zoomable.maxZoomProperty().get()));
 
 			if (Math.abs(zoomSlider.getValue() - zoom) > ZOOM_DIFF) {
 				ignore = true;
@@ -114,7 +117,24 @@ public class ZoomControlFactory {
 				ignore = false;
 			}
 		}
+	}
+	
+	private class ZoomMinChangeListener implements ChangeListener<Number> {
 
+		@Override
+		public void changed(ObservableValue<? extends Number> ov,
+				Number oldVal, Number newVal) {
+			zoomSlider.setMin(newVal.doubleValue());
+		}
+	}
+	
+	private class ZoomMaxChangeListener implements ChangeListener<Number> {
+		
+		@Override
+		public void changed(ObservableValue<? extends Number> ov,
+				Number oldVal, Number newVal) {
+			zoomSlider.setMax(newVal.doubleValue());
+		}
 	}
 	
 	private class ZoomSliderChangeListener implements ChangeListener<Number> {

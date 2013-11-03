@@ -40,9 +40,9 @@ import javafx.beans.property.SimpleIntegerProperty;
  */
 public interface Zoomable {
 	
-    int getMinZoom();
+    SimpleIntegerProperty minZoomProperty();
     
-    int getMaxZoom();
+    SimpleIntegerProperty maxZoomProperty();
     
     SimpleIntegerProperty zoomProperty();
     

@@ -34,7 +34,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.File;
-import java.net.URL;
 
 import javafx.scene.image.ImageView;
 import jfxtras.labs.JavaFXPlatformAbstractTest;
@@ -93,8 +92,8 @@ public class TileRepositoryTest extends JavaFXPlatformAbstractTest {
 		File dir = new File(root, "tiles");
 		TileSource tileSource = factory.create(dir.getPath());
 		verify(tileSource);
-		assertEquals(2, tileSource.getMinZoom());
-		assertEquals(6, tileSource.getMaxZoom());
+		assertEquals(6, tileSource.getMinZoom());
+		assertEquals(8, tileSource.getMaxZoom());
 	}
 
 	@Test

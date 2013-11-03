@@ -36,7 +36,7 @@ package jfxtras.labs.map.tile;
  */
 public enum ZoomBounds {
     
-    MAX(22), Min(1);
+    MAX(22), MIN(1);
     
     private int value;
 

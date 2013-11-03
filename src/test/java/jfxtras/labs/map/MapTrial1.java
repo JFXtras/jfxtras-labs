@@ -29,11 +29,16 @@
 
 package jfxtras.labs.map;
 
+import java.io.File;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import jfxtras.labs.map.tile.TileSource;
+import jfxtras.labs.map.tile.TileSourceFactory;
+import jfxtras.labs.map.tile.local.LocalTileSourceFactory;
 
 /**
  * 
@@ -51,8 +56,20 @@ public class MapTrial1 extends Application {
 				new MapBuilderFactory());
 		
 		MapPane map = (MapPane) root.lookup("#map");
-		map.setZoom(5);
-		map.setDisplayPositionByLatLon(48, 0);
+		
+		TileSourceFactory<String> factory = new LocalTileSourceFactory();
+		
+		String rootDir = getClass().getResource("tile").getFile();
+		String propTiles = System.getProperty("tiles.source");
+		if(propTiles != null && !propTiles.trim().isEmpty()){
+			rootDir = propTiles;
+		}
+		File dir = new File(rootDir, "tiles");
+		TileSource tileSource = factory.create(dir.getPath());
+		map.setTileSource(tileSource);
+		
+		map.setZoom(6);
+		map.setDisplayPositionByLatLon(52.370197, 4.890444);
 
 		Scene scene = new Scene(root);
 		

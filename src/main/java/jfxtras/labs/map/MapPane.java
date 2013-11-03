@@ -91,6 +91,10 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	// Current zoom level
 	private SimpleIntegerProperty zoom;
+	
+	private SimpleIntegerProperty minZoom = new SimpleIntegerProperty(ZoomBounds.MIN.getValue());
+	
+	private SimpleIntegerProperty maxZoom = new SimpleIntegerProperty(ZoomBounds.MAX.getValue());
 
 	private boolean ignoreRepaint;
 
@@ -129,6 +133,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		tilesGroup = new Group();
 
 		tilesProvider = new TileRepository(tileSource);
+		setZoomBounds(tileSource);
 		tileRenderer = new TileRenderer(tilesProvider);
 		mapEdgeChecker = new MapEdgeChecker(tileRenderer);
 
@@ -193,6 +198,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable,
 					Number oldValue, Number newValue) {
+				clipMask.setWidth((Integer)newValue);
 				adjustCursorLocationText();
 				renderControl();
 			}
@@ -202,6 +208,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable,
 					Number oldValue, Number newValue) {
+				clipMask.setHeight((Integer)newValue);
 				adjustCursorLocationText();
 				renderControl();
 			}
@@ -455,11 +462,11 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		if (maxZoom > ZoomBounds.MAX.getValue()) {
 			throw new IllegalArgumentException("Maximum zoom level too high");
 		}
-		if (minZoom < ZoomBounds.Min.getValue()) {
+		if (minZoom < ZoomBounds.MIN.getValue()) {
 			throw new IllegalArgumentException("Minumim zoom level too low");
 		}
 		tilesProvider.setTileSource(tileSource);
-
+		setZoomBounds(tileSource);
 		if (zoom.get() > tileSource.getMaxZoom()) {
 			setZoom(tileSource.getMaxZoom());
 		}
@@ -596,19 +603,30 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		Dimension dim = new Dimension(getMapWidth(), getMapHeight());
 		return !mapEdgeChecker.isAllVisible(dim);
 	}
-
-	@Override
-	public int getMinZoom() {
-		return getTileSource().getMinZoom();
+	
+	private int getMinZoom() {
+		return minZoomProperty().get();
 	}
 
-	@Override
-	public int getMaxZoom() {
-		return getTileSource().getMaxZoom();
+	public SimpleIntegerProperty minZoomProperty() {
+		return minZoom;
+	}
+	
+	private int getMaxZoom() {
+		return maxZoomProperty().get();
+	}
+
+	public SimpleIntegerProperty maxZoomProperty() {
+		return maxZoom;
 	}
 
 	public void setIgnoreRepaint(boolean ignoreRepaint) {
 		this.ignoreRepaint = ignoreRepaint;
+	}
+	
+	private void setZoomBounds(TileSource tileSource){
+		minZoom.set(getTileSource().getMinZoom());
+		maxZoom.set(getTileSource().getMaxZoom());
 	}
 
 	private class RenderChangeListener implements

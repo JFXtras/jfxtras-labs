@@ -29,8 +29,6 @@
 
 package jfxtras.labs.map;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Slider;
 
@@ -55,8 +53,8 @@ public class ZoomSliderFactory {
         slider.setMajorTickUnit(1.0);
         
         slider.setValue(zoomable.zoomProperty().get());
-        slider.setMin(zoomable.getMinZoom());
-        slider.setMax(zoomable.getMaxZoom());
+        slider.setMin(zoomable.minZoomProperty().get());
+        slider.setMax(zoomable.maxZoomProperty().get());
 
         slider.setPrefSize(30, 150);
 

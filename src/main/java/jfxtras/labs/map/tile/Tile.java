@@ -119,7 +119,7 @@ public class Tile {
             Image image = new Image(file.toURI().toString());
             setLoadedImage(image);
         } else {
-            imageView.setImage(getErrorImage());
+//            imageView.setImage(getErrorImage());
         }
     }
 

@@ -13,7 +13,7 @@
 
 <VBox xmlns:fx="http://javafx.com/fxml"
 	fx:id="container"
-	prefWidth="600" prefHeight="600">
+	prefWidth="440" prefHeight="440">
 
    	<MapPane fx:id="map"/>
     
