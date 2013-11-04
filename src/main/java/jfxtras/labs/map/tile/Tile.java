@@ -30,8 +30,6 @@
 package jfxtras.labs.map.tile;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.SimpleBooleanProperty;
