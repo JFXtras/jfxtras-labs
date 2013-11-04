@@ -92,7 +92,7 @@ public class TileRepositoryTest extends JavaFXPlatformAbstractTest {
 		File dir = new File(root, "tiles");
 		TileSource tileSource = factory.create(dir.getPath());
 		verify(tileSource);
-		assertEquals(6, tileSource.getMinZoom());
+		assertEquals(7, tileSource.getMinZoom());
 		assertEquals(8, tileSource.getMaxZoom());
 	}
 

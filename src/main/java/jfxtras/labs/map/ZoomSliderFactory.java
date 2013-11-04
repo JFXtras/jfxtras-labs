@@ -51,12 +51,14 @@ public class ZoomSliderFactory {
         slider.setShowTickLabels(true);
         slider.setShowTickMarks(true);
         slider.setMajorTickUnit(1.0);
+        slider.setMinorTickCount(0);
+        slider.setSnapToTicks(true);
         
         slider.setValue(zoomable.zoomProperty().get());
         slider.setMin(zoomable.minZoomProperty().get());
         slider.setMax(zoomable.maxZoomProperty().get());
 
-        slider.setPrefSize(30, 150);
+//        slider.setPrefSize(30, 150);
 
         return slider;
     }

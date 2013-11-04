@@ -36,6 +36,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import jfxtras.labs.map.tile.DefaultTileSource;
 
@@ -92,7 +94,7 @@ public class LocalTileSource extends DefaultTileSource {
                 dirs.add(path.getFileName().toString());
             }
         } catch (IOException ex) {
-        	ex.printStackTrace();
+        	Logger.getLogger(getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
         }
     	return dirs;
     }
