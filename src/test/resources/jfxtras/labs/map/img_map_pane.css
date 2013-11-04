@@ -16,3 +16,17 @@
 #copyRight {
     -fx-fill: lemonchiffon;
 }
+
+.btnZoom {
+	-fx-background-color: transparent;
+	-fx-border-color: #888888;
+	-fx-border-radius: 10;
+}
+
+.btnZoom:hover {
+	-fx-border-color: #bbbbbb;
+}
+
+.btnZoom:armed {
+	-fx-border-color: #ffffff;
+}

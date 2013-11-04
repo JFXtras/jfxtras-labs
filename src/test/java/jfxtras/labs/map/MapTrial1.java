@@ -1,5 +1,5 @@
 /**
- * Zoomable.java
+ * MapTrial.java
  *
  * Copyright (c) 2011-2013, JFXtras
  * All rights reserved.
@@ -29,31 +29,55 @@
 
 package jfxtras.labs.map;
 
-import java.awt.Point;
+import java.io.File;
 
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import jfxtras.labs.map.tile.TileSource;
+import jfxtras.labs.map.tile.TileSourceFactory;
+import jfxtras.labs.map.tile.local.LocalTileSourceFactory;
 
 /**
- * Interface which defines methods for zoom.
  * 
  * @author Mario Schroeder
  */
-public interface Zoomable {
-	
-    SimpleIntegerProperty minZoomProperty();
-    
-    SimpleIntegerProperty maxZoomProperty();
-    
-    SimpleIntegerProperty zoomProperty();
-    
-    void setZoom(int zoom);
+public class MapTrial1 extends Application {
 
-    void zoomIn();
+	public static void main(String[] args) {
+		Application.launch(MapTrial1.class, args);
+	}
 
-    void zoomIn(Point point);
+	@Override
+	public void start(Stage stage) throws Exception {
+		Parent root = FXMLLoader.load(getClass().getResource("MapTrial1.fxml"), null,
+				new MapBuilderFactory());
+		
+		MapPane map = (MapPane) root.lookup("#map");
+		
+		TileSourceFactory<String> factory = new LocalTileSourceFactory();
+		
+		String rootDir = getClass().getResource("tile").getFile();
+		String propTiles = System.getProperty("tiles.source");
+		if(propTiles != null && !propTiles.trim().isEmpty()){
+			rootDir = propTiles;
+		}
+		File dir = new File(rootDir, "tiles");
+		TileSource tileSource = factory.create(dir.getPath());
+		map.setTileSource(tileSource);
+		
+		map.setZoom(7);
+		map.setDisplayPositionByLatLon(52.4, 5.9);
 
-    void zoomOut();
-    
-    void zoomOut(Point mapPoint);
-    
+		Scene scene = new Scene(root);
+		
+		stage.setTitle("Map Trial 1");
+		
+		stage.setScene(scene);
+		stage.show();
+		
+	}
+
 }

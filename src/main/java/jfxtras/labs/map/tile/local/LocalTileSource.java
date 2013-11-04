@@ -29,18 +29,29 @@
 
 package jfxtras.labs.map.tile.local;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import jfxtras.labs.map.tile.DefaultTileSource;
 
 /**
  * This is a tile source for file based tiles
  *
+ * @author Mario Schroeder
  * @author jsmith
  *
  */
 public class LocalTileSource extends DefaultTileSource {
 
     private String tilesRootDir;
-
+    
     public LocalTileSource(String name, String base_url) {
         super(name, base_url);
     }
@@ -51,6 +62,40 @@ public class LocalTileSource extends DefaultTileSource {
 
     @Override
     public String getTileUrl(int zoom, int tilex, int tiley) {
-        return tilesRootDir + "/" + getTilePath(zoom, tilex, tiley);
+        return tilesRootDir + File.separator + getTilePath(zoom, tilex, tiley);
+    }
+    
+    @Override
+    public int getMinZoom() {
+    	int zoom = super.getMinZoom();
+    	LinkedList<String> dirs = listZoomDirs();
+    	if(!dirs.isEmpty()){
+    		zoom = Integer.parseInt(dirs.getFirst());
+    	}
+    	return zoom;
+    }
+    
+    @Override
+    public int getMaxZoom() {
+    	int zoom = super.getMaxZoom();
+    	LinkedList<String> dirs = listZoomDirs();
+    	if(!dirs.isEmpty()){
+    		zoom = Integer.parseInt(dirs.getLast());
+    	}
+    	return zoom;
+    }
+    
+    private LinkedList<String> listZoomDirs(){
+    	LinkedList<String> dirs = new LinkedList<>();
+    	Path root = Paths.get(tilesRootDir);
+    	try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(root)) {
+            for (Path path : directoryStream) {
+            	//TODO check if the name is a number
+                dirs.add(path.getFileName().toString());
+            }
+        } catch (IOException ex) {
+        	Logger.getLogger(getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
+        }
+    	return dirs;
     }
 }

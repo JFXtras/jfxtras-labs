@@ -29,8 +29,6 @@
 
 package jfxtras.labs.map;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Slider;
 
@@ -53,19 +51,12 @@ public class ZoomSliderFactory {
         slider.setShowTickLabels(true);
         slider.setShowTickMarks(true);
         slider.setMajorTickUnit(1.0);
+        slider.setMinorTickCount(0);
+        slider.setSnapToTicks(true);
         
         slider.setValue(zoomable.zoomProperty().get());
-        slider.setMin(zoomable.getMinZoom());
-        slider.setMax(zoomable.getMaxZoom());
-
-        slider.setPrefSize(30, 150);
-
-        slider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-                zoomable.setZoom(new_val.intValue());
-            }
-        });
+        slider.setMin(zoomable.minZoomProperty().get());
+        slider.setMax(zoomable.maxZoomProperty().get());
 
         return slider;
     }

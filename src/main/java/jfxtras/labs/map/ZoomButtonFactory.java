@@ -29,12 +29,9 @@
 
 package jfxtras.labs.map;
 
-import java.io.InputStream;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
@@ -56,15 +53,33 @@ public abstract class ZoomButtonFactory {
     public Button create(){
         
         Button btn = new Button();
-        InputStream stream = getClass().getResourceAsStream(getImagePath());
-		Image image = new Image(stream);
-        btn.setGraphic(new ImageView(image));
+        btn.getStyleClass().add("btnZoom");
+        btn.setId(getId());
+		btn.setGraphic(createImageView());
         btn.setOnAction(getEventHandler());
         
         return btn;
     }
     
+    private ImageView createImageView(){
+    	return new ImageView(getClass().getResource(getImagePath()).toExternalForm());
+    }
+    
+    /**
+     * The implementation should return the id of the button, which can be used for styling.
+     * @return {@link String}
+     */
+    protected abstract String getId();
+    
+    /**
+     * The implementation of this method should return the path to an image. 
+     * @return {@link String}
+     */
     protected abstract String getImagePath();
     
+    /**
+     * The implementation of this method should return the actual action.
+     * @return {@link EventHandler}
+     */
     protected abstract EventHandler<ActionEvent> getEventHandler();
 }

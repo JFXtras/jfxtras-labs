@@ -24,3 +24,17 @@
     -fx-background-repeat: no-repeat;
     -fx-background-position:center;   
 }
+
+.btnZoom {
+	-fx-background-color: transparent;
+	-fx-border-color: #333333;
+	-fx-border-radius: 10;
+}
+
+.btnZoom:hover {
+	-fx-border-color: grey;
+}
+
+.btnZoom:armed {
+	-fx-border-color: lightgrey;
+}

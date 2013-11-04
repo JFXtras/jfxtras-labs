@@ -118,8 +118,6 @@ public class Tile {
         if (file.exists()) {
             Image image = new Image(file.toURI().toString());
             setLoadedImage(image);
-        } else {
-            imageView.setImage(getErrorImage());
         }
     }
 
@@ -129,13 +127,6 @@ public class Tile {
     	}
     	return delayImage;
     }
-    
-    private Image getErrorImage() {
-		if(errorImage == null){
-			errorImage = new Image(getClass().getResourceAsStream("error.png"));
-		}
-		return errorImage;
-	}
 
 	private void rotateImageView() {
         double angle = imageView.getRotate();

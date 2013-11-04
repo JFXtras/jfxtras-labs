@@ -62,7 +62,9 @@ import static jfxtras.labs.map.CoordinatesConverter.*;
  */
 public class LicenseRenderer implements Renderable {
 
-    private static final String STYLE_RIGHTS = "copyRight";
+    private static final Point TOP_LEFT_MAP = new Point(0,0);
+
+	private static final String STYLE_RIGHTS = "copyRight";
 
     public static final String STYLE_TERMS = "termsOfUse";
 
@@ -72,14 +74,11 @@ public class LicenseRenderer implements Renderable {
         TileSource tileSource = viewer.getTileSource();
         Group tilesGroup = viewer.getTilesGroup();
 
-        int x = viewer.getMapX();
-        int y = viewer.getMapY();
         int width = viewer.getMapWidth();
         int height = viewer.getMapHeight();
         int yText = height - 8;
         
-        
-        Coordinate topLeft = toCoordinate(new Point(x,y), viewer);
+        Coordinate topLeft = toCoordinate(TOP_LEFT_MAP, viewer);
         Coordinate bottomRight = toCoordinate(new Point(width, height), viewer);
         String attrTxt = tileSource.getAttributionText(viewer.zoomProperty().get(), topLeft, bottomRight);
 

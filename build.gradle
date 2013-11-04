@@ -88,3 +88,7 @@ task copyToLib(type: Copy) {
     into "_lib"
     from configurations.testCompile
 }
+
+test {
+	systemProperty 'tiles.source', 'build/resources/test/jfxtras/labs/map/tile'
+}

@@ -55,6 +55,8 @@ public class ZoomControlFactory {
 	private Button zoomInButton;
 
 	private Button zoomOutButton;
+	
+	private boolean ignore;
 
 	public Pane create(Zoomable zoomable) {
 		
@@ -62,6 +64,11 @@ public class ZoomControlFactory {
 
 		ZoomSliderFactory zoomSliderFactory = new ZoomSliderFactory(zoomable);
 		zoomSlider = zoomSliderFactory.create();
+		
+		zoomSlider.valueProperty().addListener(new ZoomSliderChangeListener(zoomable));
+		
+		zoomable.minZoomProperty().addListener(new ZoomMinChangeListener());
+		zoomable.maxZoomProperty().addListener(new ZoomMaxChangeListener());
 
 		ZoomButtonFactory zoomButtonFactory = new ZoomInButtonFactory(zoomable);
 		zoomInButton = zoomButtonFactory.create();
@@ -101,14 +108,49 @@ public class ZoomControlFactory {
 			
 			setTooltip(zoom);
 			
-			zoomOutButton.setDisable(!(zoom > zoomable.getMinZoom()));
-			zoomInButton.setDisable(!(zoom < zoomable.getMaxZoom()));
+			zoomOutButton.setDisable(!(zoom > zoomable.minZoomProperty().get()));
+			zoomInButton.setDisable(!(zoom < zoomable.maxZoomProperty().get()));
 
 			if (Math.abs(zoomSlider.getValue() - zoom) > ZOOM_DIFF) {
+				ignore = true;
 				zoomSlider.setValue(zoom);
+				ignore = false;
 			}
 		}
+	}
+	
+	private class ZoomMinChangeListener implements ChangeListener<Number> {
 
+		@Override
+		public void changed(ObservableValue<? extends Number> ov,
+				Number oldVal, Number newVal) {
+			zoomSlider.setMin(newVal.doubleValue());
+		}
+	}
+	
+	private class ZoomMaxChangeListener implements ChangeListener<Number> {
+		
+		@Override
+		public void changed(ObservableValue<? extends Number> ov,
+				Number oldVal, Number newVal) {
+			zoomSlider.setMax(newVal.doubleValue());
+		}
+	}
+	
+	private class ZoomSliderChangeListener implements ChangeListener<Number> {
+		
+		private Zoomable zoomable;
+		
+		public ZoomSliderChangeListener(Zoomable zoomable) {
+			this.zoomable = zoomable;
+		}
+		
+        @Override
+        public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+            if(!ignore){
+            	zoomable.setZoom(new_val.intValue());
+            }
+        }
 	}
 
 }
