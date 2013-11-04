@@ -58,8 +58,6 @@ public class ZoomSliderFactory {
         slider.setMin(zoomable.minZoomProperty().get());
         slider.setMax(zoomable.maxZoomProperty().get());
 
-//        slider.setPrefSize(30, 150);
-
         return slider;
     }
 }
