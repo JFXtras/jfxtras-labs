@@ -27,7 +27,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.map.tile.attribution;
+package jfxtras.labs.map.tile.bing;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -39,12 +39,7 @@ import java.util.List;
 import jfxtras.labs.JavaFXPlatformAbstractTest;
 import jfxtras.labs.map.ApiKeys;
 import jfxtras.labs.map.tile.Attribution;
-import jfxtras.labs.map.tile.bing.BingAttributionLoader;
-import jfxtras.labs.map.tile.bing.BingImageMetaDataHandler;
-import jfxtras.labs.map.tile.bing.BingMapMetaDataHandler;
-import jfxtras.labs.map.tile.bing.BingMetaDataHandler;
 
-import org.junit.Before;
 import org.junit.Test;
 
 /**
