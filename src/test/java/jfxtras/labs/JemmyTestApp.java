@@ -1,5 +1,5 @@
 /**
- * JavaFXPlatformAbstractTest.java
+ * JemmyTestApp.java
  *
  * Copyright (c) 2011-2013, JFXtras
  * All rights reserved.
@@ -27,29 +27,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package jfxtras.labs;
 
-import java.util.concurrent.CountDownLatch;
+import javafx.application.Application;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-import javafx.embed.swing.JFXPanel;
+/**
+ * This is a stub application for Jemmy tests, which allows to add and remove children.
+ * @author Mario Schroeder
+ *
+ */
+public class JemmyTestApp extends Application {
+	
+	private static final int SIZE = 300;
+	
+	private static VBox parent = new VBox();
 
-import javax.swing.SwingUtilities;
+	@Override
+	public void start(Stage stage) throws Exception {
+        Scene scene = new Scene(parent);
+        stage.setScene(scene);
+        
+        stage.setWidth(SIZE);
+        stage.setHeight(300);
+        
+        stage.show();
+	}
 
-import org.junit.BeforeClass;
+	/**
+	 * Adds a child to the parent.
+	 * @param content
+	 */
+	public static void addContent(Node content) {
+		parent.getChildren().add(content);
+	}
 
-public class JavaFXPlatformAbstractTest {
-    @BeforeClass public static final void initJavaFXPlatform() {
-        final CountDownLatch latch = new CountDownLatch(1);
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new JFXPanel(); // initializes JavaFX environment
-                latch.countDown();
-            }
-        });
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-        }
-    }
+	/**
+	 * Removes a child.
+	 * @param content
+	 */
+	public static void removeContent(Node content) {
+		parent.getChildren().remove(content);
+	}
 }

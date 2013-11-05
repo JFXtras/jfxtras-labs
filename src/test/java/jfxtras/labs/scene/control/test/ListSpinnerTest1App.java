@@ -48,10 +48,7 @@ public class ListSpinnerTest1App  extends Application {
         VBox box = new VBox();
         Scene scene = new Scene(box);
 
-        ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c")
-        		.withEditable(true).withStringConverter(StringConverterFactory.forString())
-				.withCyclic(true)
-				;
+        ListSpinner<String> lSpinner = ListSpinnerTestFactory.create();
         
         box.getChildren().add(lSpinner);
 

@@ -1,5 +1,5 @@
 /**
- * JavaFXPlatformAbstractTest.java
+ * AbstractJemmyTest.java
  *
  * Copyright (c) 2011-2013, JFXtras
  * All rights reserved.
@@ -30,26 +30,73 @@
 
 package jfxtras.labs;
 
-import java.util.concurrent.CountDownLatch;
-
-import javafx.embed.swing.JFXPanel;
-
-import javax.swing.SwingUtilities;
-
+import org.jemmy.fx.AppExecutor;
+import org.jemmy.fx.SceneDock;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 
-public class JavaFXPlatformAbstractTest {
-    @BeforeClass public static final void initJavaFXPlatform() {
-        final CountDownLatch latch = new CountDownLatch(1);
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new JFXPanel(); // initializes JavaFX environment
-                latch.countDown();
-            }
-        });
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-        }
-    }
+import javafx.application.Platform;
+import javafx.scene.Node;
+
+/**
+ * Parent class for all Jemmy tests which allows us to run several test in a complete build.
+ * @author Mario Schroeder
+ *
+ */
+public abstract class AbstractJemmyTest {
+	
+	private Node testContent;
+	
+	private SceneDock sceneDock;
+	
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		AppExecutor.executeNoBlock(JemmyTestApp.class);
+	}
+	
+	@Before
+	public void setUp() {
+		sceneDock = new SceneDock();
+		
+		Platform.runLater(new Runnable() {
+	        @Override
+	        public void run() {
+	        	JemmyTestApp.addContent(getTestContent());
+	        }
+	   });
+		
+	}
+	
+	@After
+	public void shutDown() throws Exception {
+		Thread.sleep(1000);
+		Platform.runLater(new Runnable() {
+	        @Override
+	        public void run() {
+	        	JemmyTestApp.removeContent(getTestContent());
+	        }
+	   });
+	}
+	
+	private Node getTestContent(){
+		if(testContent == null){
+			testContent = createTestContent();
+		}
+		return testContent;
+	}
+	
+	/**
+	 * Return the wrapper to interact with the scene.
+	 * @return {@link SceneDock}
+	 */
+	protected SceneDock getSceneDock() {
+		return sceneDock;
+	}
+
+	/**
+	 * This method should create the actual content for test purpose.
+	 * @return the node for testing
+	 */
+	protected abstract Node createTestContent();
 }

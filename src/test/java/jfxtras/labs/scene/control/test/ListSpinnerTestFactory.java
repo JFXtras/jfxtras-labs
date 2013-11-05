@@ -1,5 +1,5 @@
 /**
- * JavaFXPlatformAbstractTest.java
+ * ListSpinnerTestFactory.java
  *
  * Copyright (c) 2011-2013, JFXtras
  * All rights reserved.
@@ -27,29 +27,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package jfxtras.labs.scene.control.test;
 
-package jfxtras.labs;
+import jfxtras.labs.scene.control.ListSpinner;
+import jfxtras.labs.util.StringConverterFactory;
 
-import java.util.concurrent.CountDownLatch;
+/**
+ * Simple factory for the list spinner tests.
+ * @author Mario Schroeder
+ *
+ */
+class ListSpinnerTestFactory {
+	
+	private ListSpinnerTestFactory(){
+	}
 
-import javafx.embed.swing.JFXPanel;
-
-import javax.swing.SwingUtilities;
-
-import org.junit.BeforeClass;
-
-public class JavaFXPlatformAbstractTest {
-    @BeforeClass public static final void initJavaFXPlatform() {
-        final CountDownLatch latch = new CountDownLatch(1);
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new JFXPanel(); // initializes JavaFX environment
-                latch.countDown();
-            }
-        });
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-        }
-    }
+	static ListSpinner<String> create() {
+		return new ListSpinner<String>("a", "b", "c")
+        		.withEditable(true).withStringConverter(StringConverterFactory.forString())
+				.withCyclic(true);
+	}
 }

@@ -1,5 +1,5 @@
 /**
- * MapTrial.java
+ * MapTrial2.java
  *
  * Copyright (c) 2011-2013, JFXtras
  * All rights reserved.

@@ -30,46 +30,22 @@
 package jfxtras.labs.scene.control.test;
 
 import javafx.scene.Node;
+import jfxtras.labs.AbstractJemmyTest;
 import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.test.jemmy.SpinnerWrap;
 
 import org.jemmy.control.Wrap;
-import org.jemmy.fx.AppExecutor;
 import org.jemmy.fx.ByStyleClass;
 import org.jemmy.fx.Root;
 import org.jemmy.timing.State;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  *
  * @author shura
  */
-public class ListSpinnerTest1 {
-
-    public ListSpinnerTest1() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        AppExecutor.executeNoBlock(ListSpinnerTest1App.class);
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
+public class ListSpinnerTest1 extends AbstractJemmyTest{
 
     @Test
     public void select() throws InterruptedException {
@@ -112,5 +88,11 @@ public class ListSpinnerTest1 {
 				return lSpinnerWrapper.getControl().getValue();
         }}, "c");
     }
+
+
+	@Override
+	protected Node createTestContent() {
+		return ListSpinnerTestFactory.create();
+	}
 
 }
