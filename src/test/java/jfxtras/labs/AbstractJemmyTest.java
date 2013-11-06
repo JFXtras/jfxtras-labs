@@ -106,6 +106,6 @@ public abstract class AbstractJemmyTest {
     protected abstract Node createTestContent();
 
     protected static boolean isHeadless() {
-        return GraphicsEnvironment.isHeadless();
+        return true;//GraphicsEnvironment.isHeadless();
     }
 }
