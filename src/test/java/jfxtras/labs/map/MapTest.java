@@ -45,6 +45,8 @@ import org.jemmy.fx.control.ControlDock;
 import org.jemmy.fx.control.SliderDock;
 import org.junit.Test;
 
+import static java.awt.GraphicsEnvironment.isHeadless;
+
 /**
  * Map Test.
  *
@@ -67,35 +69,37 @@ public class MapTest extends AbstractJemmyTest {
 
     @Test
     public void testZoom() {
+        if (!isHeadless()) {
+            assertEquals(7, getSlider().getValue(), 0.0);
+            assertFalse((Boolean) getZoomInButton().isDisable());
+            assertTrue((Boolean) getZoomOutButton().isDisable());
 
-//        assertEquals(7, getSlider().getValue(), 0.0);
-//        assertFalse((Boolean) getZoomInButton().isDisable());
-//        assertTrue((Boolean) getZoomOutButton().isDisable());
-//
-//        getZoomInButton().mouse().click();
-//
-//        assertEquals(8, getSlider().getValue(), 0.0);
-//        assertTrue((Boolean) getZoomInButton().isDisable());
-//        assertFalse((Boolean) getZoomOutButton().isDisable());
-//
-//        getZoomOutButton().mouse().click();
-//
-//        assertEquals(7, getSlider().getValue(), 0.0);
-//        assertFalse((Boolean) getZoomInButton().isDisable());
-//        assertTrue((Boolean) getZoomOutButton().isDisable());
+            getZoomInButton().mouse().click();
 
+            assertEquals(8, getSlider().getValue(), 0.0);
+            assertTrue((Boolean) getZoomInButton().isDisable());
+            assertFalse((Boolean) getZoomOutButton().isDisable());
+
+            getZoomOutButton().mouse().click();
+
+            assertEquals(7, getSlider().getValue(), 0.0);
+            assertFalse((Boolean) getZoomInButton().isDisable());
+            assertTrue((Boolean) getZoomOutButton().isDisable());
+        }
     }
 
     @Test
     public void testMove() throws InterruptedException {
-//        getSceneDock().mouse().move(new Point(50, 50));
-//        TextDock text = new TextDock(getSceneDock().asParent());
-//        String txtBefore = text.getText();
-//
-//        getSceneDock().drag().dnd(new Point(100, 50));
-//
-//        String txtAfter = text.getText();
-//        assertFalse("The coordinates should be different.", txtBefore.equals(txtAfter));
+        if (!isHeadless()) {
+            getSceneDock().mouse().move(new Point(50, 50));
+            TextDock text = new TextDock(getSceneDock().asParent());
+            String txtBefore = text.getText();
+
+            getSceneDock().drag().dnd(new Point(100, 50));
+
+            String txtAfter = text.getText();
+            assertFalse("The coordinates should be different.", txtBefore.equals(txtAfter));
+        }
     }
 
     @Override

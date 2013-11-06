@@ -38,6 +38,8 @@ import org.jemmy.timing.State;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static java.awt.GraphicsEnvironment.isHeadless;
+
 /**
  *
  * @author shura
@@ -46,55 +48,57 @@ public class ListSpinnerTest1 extends AbstractJemmyTest {
 
     @Test
     public void select() throws InterruptedException {
-        // get the control
-//        org.jemmy.interfaces.Parent<Node> lParent = Root.ROOT.lookup().as(org.jemmy.interfaces.Parent.class, Node.class);
-//        Wrap<? extends ListSpinner> lControlWrapper = lParent.lookup(ListSpinner.class).wrap();
-//        // hack: the lookup only knows controls and their wrappers that are in JemmyFX; this lines creates the unknown SpinnerWrapper by ripping data from the ControlWrapper 
-//        final SpinnerWrap<ListSpinner<String>> lSpinnerWrapper = new SpinnerWrap<ListSpinner<String>>(lControlWrapper.getEnvironment(), lControlWrapper.getControl());
-//        Wrap lDecArrowWrapper = lSpinnerWrapper.as(org.jemmy.interfaces.Parent.class, Node.class).lookup(new ByStyleClass<Node>("left-arrow")).wrap();
-//        Wrap lIncArrowWrapper = lSpinnerWrapper.as(org.jemmy.interfaces.Parent.class, Node.class).lookup(new ByStyleClass<Node>("right-arrow")).wrap();
-//
-//        // check to see what the current value is
-//        Assert.assertEquals("a", lSpinnerWrapper.getControl().getValue());
-//
-//        // select next
-//        lIncArrowWrapper.mouse().click(1);
-//        lSpinnerWrapper.waitState(new State<String>() {
-//            @Override
-//            public String reached() {
-//                return lSpinnerWrapper.getControl().getValue();
-//            }
-//        }, "b");
-//
-//        // select next
-//        lIncArrowWrapper.mouse().click(1);
-//        lSpinnerWrapper.waitState(new State<String>() {
-//            @Override
-//            public String reached() {
-//                return lSpinnerWrapper.getControl().getValue();
-//            }
-//        }, "c");
-//
-//        // select next (cyclic)
-//        lIncArrowWrapper.mouse().click(1);
-//        lSpinnerWrapper.waitState(new State<String>() {
-//            @Override
-//            public String reached() {
-//                return lSpinnerWrapper.getControl().getValue();
-//            }
-//        }, "a");
-//
-//
-//        // type "b"
-//        lSpinnerWrapper.as(org.jemmy.interfaces.Text.class).clear();
-//        lSpinnerWrapper.as(org.jemmy.interfaces.Text.class).type("b");
-//        lIncArrowWrapper.mouse().click(1); // we need a way to move the focus so the contents of the textfield are processed
-//        lSpinnerWrapper.waitState(new State<String>() {
-//            @Override
-//            public String reached() {
-//                return lSpinnerWrapper.getControl().getValue();
-//            }
-//        }, "c");
+        if (!isHeadless()) {
+            // get the control
+            org.jemmy.interfaces.Parent<Node> lParent = Root.ROOT.lookup().as(org.jemmy.interfaces.Parent.class, Node.class);
+            Wrap<? extends ListSpinner> lControlWrapper = lParent.lookup(ListSpinner.class).wrap();
+            // hack: the lookup only knows controls and their wrappers that are in JemmyFX; this lines creates the unknown SpinnerWrapper by ripping data from the ControlWrapper 
+            final SpinnerWrap<ListSpinner<String>> lSpinnerWrapper = new SpinnerWrap<ListSpinner<String>>(lControlWrapper.getEnvironment(), lControlWrapper.getControl());
+            Wrap lDecArrowWrapper = lSpinnerWrapper.as(org.jemmy.interfaces.Parent.class, Node.class).lookup(new ByStyleClass<Node>("left-arrow")).wrap();
+            Wrap lIncArrowWrapper = lSpinnerWrapper.as(org.jemmy.interfaces.Parent.class, Node.class).lookup(new ByStyleClass<Node>("right-arrow")).wrap();
+
+            // check to see what the current value is
+            Assert.assertEquals("a", lSpinnerWrapper.getControl().getValue());
+
+            // select next
+            lIncArrowWrapper.mouse().click(1);
+            lSpinnerWrapper.waitState(new State<String>() {
+                @Override
+                public String reached() {
+                    return lSpinnerWrapper.getControl().getValue();
+                }
+            }, "b");
+
+            // select next
+            lIncArrowWrapper.mouse().click(1);
+            lSpinnerWrapper.waitState(new State<String>() {
+                @Override
+                public String reached() {
+                    return lSpinnerWrapper.getControl().getValue();
+                }
+            }, "c");
+
+            // select next (cyclic)
+            lIncArrowWrapper.mouse().click(1);
+            lSpinnerWrapper.waitState(new State<String>() {
+                @Override
+                public String reached() {
+                    return lSpinnerWrapper.getControl().getValue();
+                }
+            }, "a");
+
+
+            // type "b"
+            lSpinnerWrapper.as(org.jemmy.interfaces.Text.class).clear();
+            lSpinnerWrapper.as(org.jemmy.interfaces.Text.class).type("b");
+            lIncArrowWrapper.mouse().click(1); // we need a way to move the focus so the contents of the textfield are processed
+            lSpinnerWrapper.waitState(new State<String>() {
+                @Override
+                public String reached() {
+                    return lSpinnerWrapper.getControl().getValue();
+                }
+            }, "c");
+        }
     }
 
     @Override

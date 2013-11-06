@@ -35,6 +35,8 @@ import org.junit.BeforeClass;
 import javafx.application.Platform;
 import javafx.scene.Node;
 
+import static java.awt.GraphicsEnvironment.isHeadless;
+
 /**
  * Parent class for all Jemmy tests which allows us to run several test in a
  * complete build.
@@ -49,31 +51,36 @@ public abstract class AbstractJemmyTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-//        AppExecutor.executeNoBlock(JemmyTestApp.class);
+        if (!isHeadless()) {
+            AppExecutor.executeNoBlock(JemmyTestApp.class);
+        }
     }
 
     @Before
     public void setUp() {
-//        sceneDock = new SceneDock();
-//
-//        Platform.runLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                JemmyTestApp.addContent(getTestContent());
-//            }
-//        });
+        if (!isHeadless()) {
+            sceneDock = new SceneDock();
 
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    JemmyTestApp.addContent(getTestContent());
+                }
+            });
+        }
     }
 
     @After
     public void shutDown() throws Exception {
-//        Thread.sleep(1000);
-//        Platform.runLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                JemmyTestApp.removeContent(getTestContent());
-//            }
-//        });
+        if (!isHeadless()) {
+            Thread.sleep(1000);
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    JemmyTestApp.removeContent(getTestContent());
+                }
+            });
+        }
     }
 
     private Node getTestContent() {
@@ -98,5 +105,4 @@ public abstract class AbstractJemmyTest {
      * @return the node for testing
      */
     protected abstract Node createTestContent();
-    
 }
