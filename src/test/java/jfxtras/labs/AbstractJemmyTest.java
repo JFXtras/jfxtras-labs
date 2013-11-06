@@ -26,7 +26,6 @@
  */
 package jfxtras.labs;
 
-import java.awt.GraphicsEnvironment;
 import org.jemmy.fx.AppExecutor;
 import org.jemmy.fx.SceneDock;
 import org.junit.After;
@@ -50,36 +49,31 @@ public abstract class AbstractJemmyTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        if (!isHeadless()) {
-            AppExecutor.executeNoBlock(JemmyTestApp.class);
-        }
+//        AppExecutor.executeNoBlock(JemmyTestApp.class);
     }
 
     @Before
     public void setUp() {
-        if (!isHeadless()) {
-            sceneDock = new SceneDock();
+//        sceneDock = new SceneDock();
+//
+//        Platform.runLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                JemmyTestApp.addContent(getTestContent());
+//            }
+//        });
 
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    JemmyTestApp.addContent(getTestContent());
-                }
-            });
-        }
     }
 
     @After
     public void shutDown() throws Exception {
-        if (!isHeadless()) {
-            Thread.sleep(1000);
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    JemmyTestApp.removeContent(getTestContent());
-                }
-            });
-        }
+//        Thread.sleep(1000);
+//        Platform.runLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                JemmyTestApp.removeContent(getTestContent());
+//            }
+//        });
     }
 
     private Node getTestContent() {
@@ -104,8 +98,5 @@ public abstract class AbstractJemmyTest {
      * @return the node for testing
      */
     protected abstract Node createTestContent();
-
-    protected static boolean isHeadless() {
-        return true;//GraphicsEnvironment.isHeadless();
-    }
+    
 }
