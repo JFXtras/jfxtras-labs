@@ -119,8 +119,8 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	private CoordinateStringFormater formater;
 
 	private boolean tilesPrepared;
-
-	private Coordinate zoomCoordinate;
+	
+	private ZoomCoordinateCache zoomCoordinateCache;
 
 	public MapPane(TileSource ts) {
 		this(ts, SIZE, SIZE, INITIAL_ZOOM);
@@ -347,7 +347,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	@Override
 	public void moveMap(int x, int y) {
-		clearZoomCoordinate();
+		zoomCoordinateCache.clear();
 		
 		Point previous = new Point(center);
 		center.x += x;
@@ -409,28 +409,15 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	private void updateZoom(int nextZoom) {
 		Point mapPoint = createMapCenterPoint();
-		storeZoomCoordinate();
-		updateZoom(nextZoom, mapPoint, zoomCoordinate);
+		updateZoom(nextZoom, mapPoint, zoomCoordinateCache.getZoomCoordinate());
 	}
 
 	private void updateZoom(int nextZoom, Point mapPoint) {
-		clearZoomCoordinate();
+		zoomCoordinateCache.clear();
 		Coordinate zoomPos = getCoordinate(mapPoint);
 		updateZoom(nextZoom, mapPoint, zoomPos);
 	}
 	
-	//store the coordinate where the zoom started
-	private void storeZoomCoordinate(){
-		Point mapPoint = createMapCenterPoint();
-		if (zoomCoordinate == null) {
-			zoomCoordinate = getCoordinate(mapPoint);
-		}
-	}
-	
-	private void clearZoomCoordinate() {
-		zoomCoordinate = null;
-	}
-
 	private void updateZoom(int nextZoom, Point mapPoint, Coordinate zoomPos) {
 		if (isValidZoom(nextZoom)) {
 			setDisplayPositionByLatLon(mapPoint, zoomPos.getLatitude(),
@@ -656,5 +643,23 @@ public final class MapPane extends Pane implements MapTilesourceable {
 				Boolean oldVal, Boolean newVal) {
 			renderControl();
 		}
+	}
+	
+	//store the coordinate where the zoom started
+	private class ZoomCoordinateCache{
+		
+		private Coordinate zoomCoordinate;
+		
+		Coordinate getZoomCoordinate(){
+			if (zoomCoordinate == null) {
+				zoomCoordinate = getCoordinate(createMapCenterPoint());
+			}
+			return zoomCoordinate;
+		}
+		
+		void clear() {
+			zoomCoordinate = null;
+		}
+		
 	}
 }
