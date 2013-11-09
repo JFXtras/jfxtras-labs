@@ -59,7 +59,8 @@ public class ZoomOutButtonFactory extends ZoomButtonFactory {
             @Override
             public void handle(ActionEvent e) {
             	int val = zoomable.zoomProperty().get();
-                zoomable.updateZoom(val - 1);
+//                zoomable.updateZoom(val - 1);
+            	zoomable.zoomProperty().set(val - 1);
             }
         };
     }
