@@ -129,7 +129,9 @@ public class ZoomControlFactory {
 		@Override
 		public void changed(ObservableValue<? extends Number> ov,
 				Number oldVal, Number newVal) {
+			ignore = true;
 			zoomSlider.setMin(newVal.doubleValue());
+			ignore = false;
 		}
 	}
 	
@@ -138,7 +140,9 @@ public class ZoomControlFactory {
 		@Override
 		public void changed(ObservableValue<? extends Number> ov,
 				Number oldVal, Number newVal) {
+			ignore = true;
 			zoomSlider.setMax(newVal.doubleValue());
+			ignore = false;
 		}
 	}
 	

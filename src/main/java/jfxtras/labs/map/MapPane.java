@@ -347,7 +347,8 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	@Override
 	public void moveMap(int x, int y) {
-		zoomCoordinate = null;
+		clearZoomCoordinate();
+		
 		Point previous = new Point(center);
 		center.x += x;
 		center.y += y;
@@ -408,16 +409,26 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	private void updateZoom(int nextZoom) {
 		Point mapPoint = createMapCenterPoint();
-		if (zoomCoordinate == null) {
-			zoomCoordinate = getCoordinate(mapPoint);
-		}
+		storeZoomCoordinate();
 		updateZoom(nextZoom, mapPoint, zoomCoordinate);
 	}
 
 	private void updateZoom(int nextZoom, Point mapPoint) {
-		zoomCoordinate = null;
+		clearZoomCoordinate();
 		Coordinate zoomPos = getCoordinate(mapPoint);
 		updateZoom(nextZoom, mapPoint, zoomPos);
+	}
+	
+	//store the coordinate where the zoom started
+	private void storeZoomCoordinate(){
+		Point mapPoint = createMapCenterPoint();
+		if (zoomCoordinate == null) {
+			zoomCoordinate = getCoordinate(mapPoint);
+		}
+	}
+	
+	private void clearZoomCoordinate() {
+		zoomCoordinate = null;
 	}
 
 	private void updateZoom(int nextZoom, Point mapPoint, Coordinate zoomPos) {
@@ -467,8 +478,11 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		}
 		tilesProvider.setTileSource(tileSource);
 		setZoomBounds(tileSource);
-		if (zoom.get() > tileSource.getMaxZoom()) {
-			setZoom(tileSource.getMaxZoom());
+		//set zoom according to max or min available zoom
+		if (zoom.get() > maxZoom) {
+			setZoom(maxZoom);
+		}else if(zoom.get() < minZoom){
+			setZoom(minZoom);
 		}
 
 		renderControl();
