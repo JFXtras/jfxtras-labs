@@ -241,10 +241,6 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		setDisplayPositionByLatLon(createMapCenterPoint(), lat, lon, zoom.get());
 	}
 
-	private void setDisplayPosition(int x, int y, int zoom) {
-		setDisplayPosition(createMapCenterPoint(), x, y, zoom);
-	}
-
 	private Point createMapCenterPoint() {
 		return new Point((int) (getMapWidth() / 2), (int) (getMapHeight() / 2));
 	}
@@ -255,12 +251,16 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		int y = Mercator.latToY(lat, zoom);
 		setDisplayPosition(mapPoint, x, y, zoom);
 	}
+	
+	private void setDisplayPosition(int x, int y, int zoom) {
+		setDisplayPosition(createMapCenterPoint(), x, y, zoom);
+	}
 
 	private void setDisplayPosition(Point mapPoint, int x, int y, int zoom) {
 		if (isValidZoom(zoom)) {
 			// Get the plain tile number
 			moveCenter(mapPoint, x, y);
-			this.zoom.set(zoom);
+//			this.zoom.set(zoom);
 			renderControl();
 		}
 	}
@@ -393,8 +393,9 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	}
 
 	public void setZoom(int nextZoom) {
-		Point mapPoint = createMapCenterPoint();
-		updateZoom(nextZoom, mapPoint);
+//		Point mapPoint = createMapCenterPoint();
+//		updateZoom(nextZoom, mapPoint);
+		zoom.set(nextZoom);
 	}
 
 	@Override
@@ -643,9 +644,10 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		private Coordinate zoomCoordinate;
 		
 		Coordinate getZoomCoordinate(){
-			if (zoomCoordinate == null) {
-				zoomCoordinate = getCoordinate(createMapCenterPoint());
-			}
+//			if (zoomCoordinate == null) {
+				Point p = createMapCenterPoint();
+				zoomCoordinate = getCoordinate(p);
+//			}
 			return zoomCoordinate;
 		}
 		
@@ -660,7 +662,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		@Override
 		public void changed(ObservableValue<? extends Number> ov,
 				Number oldVal, Number newVal) {
-			
+			updateZoom(newVal.intValue());
 		}
 		
 	}

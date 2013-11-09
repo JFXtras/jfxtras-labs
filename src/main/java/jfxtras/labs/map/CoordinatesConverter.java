@@ -52,7 +52,9 @@ public class CoordinatesConverter {
 	
 	public static Coordinate toCoordinate(Point mapPoint, Moveable controller) {
 		Dimension dim = new Dimension(controller.getMapWidth(), controller.getMapHeight());
-		return toCoordinate(mapPoint, controller.getCenter(), dim, getZoom(controller));
+		Point center = controller.getCenter();
+		int zoom = getZoom(controller);
+		return toCoordinate(mapPoint, center, dim, zoom);
 	}
 
 	/**
