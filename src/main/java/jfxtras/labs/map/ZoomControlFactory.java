@@ -157,7 +157,7 @@ public class ZoomControlFactory {
         @Override
         public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
             if(!ignore){
-            	zoomable.setZoom(new_val.intValue());
+            	zoomable.updateZoom(new_val.intValue());
             }
         }
 	}

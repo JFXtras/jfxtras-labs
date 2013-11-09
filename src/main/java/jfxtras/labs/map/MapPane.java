@@ -120,7 +120,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	private boolean tilesPrepared;
 	
-	private ZoomCoordinateCache zoomCoordinateCache;
+	private ZoomCoordinateCache zoomCoordinateCache = new ZoomCoordinateCache();
 
 	public MapPane(TileSource ts) {
 		this(ts, SIZE, SIZE, INITIAL_ZOOM);
@@ -234,11 +234,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	}
 
 	public void setDisplayPositionByLatLon(double lat, double lon) {
-		setDisplayPositionByLatLon(lat, lon, zoom.get());
-	}
-
-	public void setDisplayPositionByLatLon(double lat, double lon, int zoom) {
-		setDisplayPositionByLatLon(createMapCenterPoint(), lat, lon, zoom);
+		setDisplayPositionByLatLon(createMapCenterPoint(), lat, lon, zoom.get());
 	}
 
 	private void setDisplayPosition(int x, int y, int zoom) {
@@ -249,7 +245,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		return new Point((int) (getMapWidth() / 2), (int) (getMapHeight() / 2));
 	}
 
-	public void setDisplayPositionByLatLon(Point mapPoint, double lat,
+	private void setDisplayPositionByLatLon(Point mapPoint, double lat,
 			double lon, int zoom) {
 		int x = Mercator.lonToX(lon, zoom);
 		int y = Mercator.latToY(lat, zoom);
@@ -374,6 +370,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	@Override
 	public final void centerMap() {
 		setDisplayPositionByLatLon(START, START);
+		zoomCoordinateCache.clear();
 	}
 
 	@Override
@@ -382,18 +379,8 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	}
 
 	@Override
-	public void zoomIn() {
-		updateZoom(zoom.get() + 1);
-	}
-
-	@Override
 	public void zoomIn(Point mapPoint) {
 		updateZoom(zoom.get() + 1, mapPoint);
-	}
-
-	@Override
-	public void zoomOut() {
-		updateZoom(zoom.get() - 1);
 	}
 
 	@Override
@@ -401,13 +388,13 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		updateZoom(zoom.get() - 1, mapPoint);
 	}
 
-	@Override
 	public void setZoom(int nextZoom) {
 		Point mapPoint = createMapCenterPoint();
 		updateZoom(nextZoom, mapPoint);
 	}
 
-	private void updateZoom(int nextZoom) {
+	@Override
+	public void updateZoom(int nextZoom) {
 		Point mapPoint = createMapCenterPoint();
 		updateZoom(nextZoom, mapPoint, zoomCoordinateCache.getZoomCoordinate());
 	}
@@ -424,7 +411,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 					zoomPos.getLongitude(), nextZoom);
 
 			if (isEdgeVisible()) {
-				centerMap();
+//				centerMap();
 			}
 		}
 	}
@@ -471,6 +458,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		}else if(zoom.get() < minZoom){
 			setZoom(minZoom);
 		}
+		zoomCoordinateCache.clear();
 
 		renderControl();
 	}
