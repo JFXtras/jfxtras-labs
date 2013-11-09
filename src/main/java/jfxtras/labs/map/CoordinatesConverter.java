@@ -78,7 +78,9 @@ public class CoordinatesConverter {
 	
 	public static Point toMapPoint(Coordinate coordinate, Moveable controller){
 		Dimension dim = new Dimension(controller.getMapWidth(), controller.getMapHeight());
-		return toMapPoint(coordinate, controller.getCenter(), dim, getZoom(controller));
+		Point center = controller.getCenter();
+		int zoom = getZoom(controller);
+		return toMapPoint(coordinate, center, dim, zoom);
 	}
 
 	/**
