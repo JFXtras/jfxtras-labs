@@ -121,6 +121,8 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	private boolean tilesPrepared;
 	
 	private ZoomCoordinateCache zoomCoordinateCache = new ZoomCoordinateCache();
+	
+	private ZoomChangeListener zoomChangeListener = new ZoomChangeListener();
 
 	public MapPane(TileSource ts) {
 		this(ts, SIZE, SIZE, INITIAL_ZOOM);
@@ -164,6 +166,8 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 		clipMask.setWidth(Double.MAX_VALUE);
 		clipMask.setHeight(Double.MAX_VALUE);
+		
+		this.zoom.addListener(zoomChangeListener);
 	}
 
 	public final void setTilesMouseHandler(TilesMouseHandler handler) {
@@ -647,6 +651,16 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		
 		void clear() {
 			zoomCoordinate = null;
+		}
+		
+	}
+	
+	private class ZoomChangeListener implements ChangeListener<Number>{
+
+		@Override
+		public void changed(ObservableValue<? extends Number> ov,
+				Number oldVal, Number newVal) {
+			
 		}
 		
 	}
