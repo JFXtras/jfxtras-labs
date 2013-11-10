@@ -433,6 +433,11 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	private Coordinate getCoordinate(Point p) {
 		return toCoordinate(p, this);
 	}
+	
+	private Coordinate getCoordinate(Point p, int zoom) {
+		Dimension dim = new Dimension(getMapWidth(), getMapHeight());
+		return toCoordinate(p, center, dim, zoom);
+	}
 
 	public void setMapMarkerVisible(boolean mapMarkersVisible) {
 		this.mapMarkersVisible.set(mapMarkersVisible);
@@ -644,11 +649,15 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		private Coordinate zoomCoordinate;
 		
 		Coordinate getZoomCoordinate(){
-//			if (zoomCoordinate == null) {
+			if (zoomCoordinate == null) {
 				Point p = createMapCenterPoint();
 				zoomCoordinate = getCoordinate(p);
-//			}
+			}
 			return zoomCoordinate;
+		}
+		
+		void setZoomCoordinate(Coordinate coordinate){
+			this.zoomCoordinate = coordinate;
 		}
 		
 		void clear() {
@@ -662,7 +671,11 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		@Override
 		public void changed(ObservableValue<? extends Number> ov,
 				Number oldVal, Number newVal) {
-			updateZoom(newVal.intValue());
+			if(oldVal != null){
+				Coordinate c = getCoordinate(createMapCenterPoint(), oldVal.intValue());
+				zoomCoordinateCache.setZoomCoordinate(c);
+				updateZoom(newVal.intValue());
+			}
 		}
 		
 	}

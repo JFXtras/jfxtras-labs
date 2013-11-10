@@ -50,6 +50,7 @@ public class CoordinatesConverter {
 		return zoomable.zoomProperty().get();
 	}
 	
+	@Deprecated
 	public static Coordinate toCoordinate(Point mapPoint, Moveable controller) {
 		Dimension dim = new Dimension(controller.getMapWidth(), controller.getMapHeight());
 		Point center = controller.getCenter();
