@@ -30,8 +30,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.io.File;
-import java.util.logging.Logger;
 
 import javafx.scene.image.ImageView;
 import jfxtras.labs.JavaFXPlatformAbstractTest;
@@ -42,7 +40,6 @@ import jfxtras.labs.map.tile.local.LocalTileSourceFactory;
 import jfxtras.labs.map.tile.osm.OsmTileSourceFactory;
 import jfxtras.labs.map.tile.osm.OsmType;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -79,7 +76,6 @@ public class TileRepositoryTest extends JavaFXPlatformAbstractTest {
     }
 
     @Test
-    @Ignore
     public void testLocalSource() {
 
         TileSourceFactory<String> factory = new LocalTileSourceFactory();
