@@ -36,9 +36,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.control.ListSpinner;
-import jfxtras.labs.util.StringConverterFactory;
 
-public class ListSpinnerTest1App  extends Application {
+public class ListSpinnerTrial  extends Application {
     public static void main(String[] args) throws AWTException {
         launch(args);
     }

@@ -37,12 +37,12 @@ import jfxtras.labs.util.StringConverterFactory;
  * @author Mario Schroeder
  *
  */
-class ListSpinnerTestFactory {
+public class ListSpinnerTestFactory {
 	
 	private ListSpinnerTestFactory(){
 	}
 
-	static ListSpinner<String> create() {
+	public static ListSpinner<String> create() {
 		return new ListSpinner<String>("a", "b", "c")
         		.withEditable(true).withStringConverter(StringConverterFactory.forString())
 				.withCyclic(true);

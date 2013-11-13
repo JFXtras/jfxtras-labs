@@ -24,12 +24,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package jfxtras.labs.scene.control.test;
+package jfxtras.labs.jemmy.spinner;
 
 import javafx.scene.Node;
-import jfxtras.labs.AbstractJemmyTest;
+import jfxtras.labs.jemmy.AbstractJemmyTest;
 import jfxtras.labs.scene.control.ListSpinner;
-import jfxtras.labs.scene.control.test.jemmy.SpinnerWrap;
+import jfxtras.labs.scene.control.test.ListSpinnerTestFactory;
 
 import org.jemmy.control.Wrap;
 import org.jemmy.fx.ByStyleClass;
@@ -44,7 +44,8 @@ import static java.awt.GraphicsEnvironment.isHeadless;
  *
  * @author shura
  */
-public class ListSpinnerTest1 extends AbstractJemmyTest {
+public class ListSpinnerTest extends AbstractJemmyTest {
+
 
     @Test
     public void select() throws InterruptedException {

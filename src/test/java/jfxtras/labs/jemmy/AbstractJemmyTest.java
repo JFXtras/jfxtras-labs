@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package jfxtras.labs;
+package jfxtras.labs.jemmy;
 
 import org.jemmy.fx.AppExecutor;
 import org.jemmy.fx.SceneDock;
@@ -34,7 +34,6 @@ import org.junit.BeforeClass;
 
 import javafx.application.Platform;
 import javafx.scene.Node;
-
 import static java.awt.GraphicsEnvironment.isHeadless;
 
 /**
@@ -48,13 +47,17 @@ public abstract class AbstractJemmyTest {
 
     private Node testContent;
     private SceneDock sceneDock;
-
+    
+    private static boolean jemmyStarted;
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
-        if (!isHeadless()) {
+        if (!isHeadless() && ! jemmyStarted) {
             AppExecutor.executeNoBlock(JemmyTestApp.class);
+            jemmyStarted = true;
         }
     }
+
 
     @Before
     public void setUp() {
@@ -71,9 +74,8 @@ public abstract class AbstractJemmyTest {
     }
 
     @After
-    public void shutDown() throws Exception {
+    public void shutDown() {
         if (!isHeadless()) {
-            Thread.sleep(1000);
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
