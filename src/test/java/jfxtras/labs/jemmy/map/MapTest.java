@@ -25,7 +25,7 @@ package jfxtras.labs.jemmy.map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
+import static org.junit.Assume.assumeTrue;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -44,7 +44,6 @@ import org.jemmy.fx.control.SliderDock;
 import org.junit.Test;
 
 import static java.awt.GraphicsEnvironment.isHeadless;
-import org.junit.Ignore;
 
 /**
  * Map Test.
@@ -52,7 +51,6 @@ import org.junit.Ignore;
  * @author Mario Schroeder
  *
  */
-@Ignore
 public class MapTest extends AbstractJemmyTest {
 
     private ControlDock getZoomInButton() {
@@ -69,37 +67,37 @@ public class MapTest extends AbstractJemmyTest {
 
     @Test
     public void testZoom() {
-        if (!isHeadless()) {
-            assertEquals(7, getSlider().getValue(), 0.0);
-            assertFalse((Boolean) getZoomInButton().isDisable());
-            assertTrue((Boolean) getZoomOutButton().isDisable());
+        assumeTrue(!isHeadless());
+        
+        assertEquals(7, getSlider().getValue(), 0.0);
+        assertFalse((Boolean) getZoomInButton().isDisable());
+        assertTrue((Boolean) getZoomOutButton().isDisable());
 
-            getZoomInButton().mouse().click();
+        getZoomInButton().mouse().click();
 
-            assertEquals(8, getSlider().getValue(), 0.0);
-            assertTrue((Boolean) getZoomInButton().isDisable());
-            assertFalse((Boolean) getZoomOutButton().isDisable());
+        assertEquals(8, getSlider().getValue(), 0.0);
+        assertTrue((Boolean) getZoomInButton().isDisable());
+        assertFalse((Boolean) getZoomOutButton().isDisable());
 
-            getZoomOutButton().mouse().click();
+        getZoomOutButton().mouse().click();
 
-            assertEquals(7, getSlider().getValue(), 0.0);
-            assertFalse((Boolean) getZoomInButton().isDisable());
-            assertTrue((Boolean) getZoomOutButton().isDisable());
-        }
+        assertEquals(7, getSlider().getValue(), 0.0);
+        assertFalse((Boolean) getZoomInButton().isDisable());
+        assertTrue((Boolean) getZoomOutButton().isDisable()); 
     }
 
     @Test
     public void testMove() throws InterruptedException {
-        if (!isHeadless()) {
-            getSceneDock().mouse().move(new Point(50, 50));
-            TextDock text = new TextDock(getSceneDock().asParent());
-            String txtBefore = text.getText();
+    	assumeTrue(!isHeadless());
+    	
+        getSceneDock().mouse().move(new Point(50, 50));
+        TextDock text = new TextDock(getSceneDock().asParent());
+        String txtBefore = text.getText();
 
-            getSceneDock().drag().dnd(new Point(100, 50));
+        getSceneDock().drag().dnd(new Point(100, 50));
 
-            String txtAfter = text.getText();
-            assertFalse("The coordinates should be different.", txtBefore.equals(txtAfter));
-        }
+        String txtAfter = text.getText();
+        assertFalse("The coordinates should be different.", txtBefore.equals(txtAfter));
     }
 
     @Override
