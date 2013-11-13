@@ -29,9 +29,7 @@ package jfxtras.labs.map.tile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-
-import java.io.File;
-import java.util.logging.Logger;
+import static org.junit.Assume.*;
 
 import javafx.scene.image.ImageView;
 import jfxtras.labs.JavaFXPlatformAbstractTest;
@@ -42,7 +40,6 @@ import jfxtras.labs.map.tile.local.LocalTileSourceFactory;
 import jfxtras.labs.map.tile.osm.OsmTileSourceFactory;
 import jfxtras.labs.map.tile.osm.OsmType;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -79,7 +76,6 @@ public class TileRepositoryTest extends JavaFXPlatformAbstractTest {
     }
 
     @Test
-    @Ignore
     public void testLocalSource() {
 
         TileSourceFactory<String> factory = new LocalTileSourceFactory();
@@ -87,13 +83,12 @@ public class TileRepositoryTest extends JavaFXPlatformAbstractTest {
         Tile tile = classUnderTest.getTile(1, 1, 1);
         assertNotNull(tile);
         assertNull(tile.getImageView().getImage());
-
-        TileSource tileSource = factory.create(TilePathLookup.getPath());
+        
+        String path = TilePathLookup.getPath();
+        TileSource tileSource = factory.create(path);
         classUnderTest = new TileRepository(tileSource);
-        tile = classUnderTest.getTile(65, 40, 7);
-        assertNotNull(tile);
-        assertNotNull(tile.getImageView().getImage());
-        assertEquals(7, tileSource.getMinZoom());
+        assumeNotNull(classUnderTest.getTile(65, 40, 7));
+        assumeTrue(tileSource.getMinZoom() == 7);
         assertEquals(8, tileSource.getMaxZoom());
     }
 
