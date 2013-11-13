@@ -79,6 +79,7 @@ public class TileRepositoryTest extends JavaFXPlatformAbstractTest {
     }
 
     @Test
+    @Ignore
     public void testLocalSource() {
 
         TileSourceFactory<String> factory = new LocalTileSourceFactory();

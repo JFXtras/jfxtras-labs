@@ -44,6 +44,7 @@ import org.jemmy.fx.control.SliderDock;
 import org.junit.Test;
 
 import static java.awt.GraphicsEnvironment.isHeadless;
+import org.junit.Ignore;
 
 /**
  * Map Test.
@@ -51,6 +52,7 @@ import static java.awt.GraphicsEnvironment.isHeadless;
  * @author Mario Schroeder
  *
  */
+@Ignore
 public class MapTest extends AbstractJemmyTest {
 
     private ControlDock getZoomInButton() {
