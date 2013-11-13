@@ -27,7 +27,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control.test.jemmy;
+package jfxtras.labs.jemmy.spinner;
 import org.jemmy.control.Wrap;
 import org.jemmy.env.Environment;
 import org.jemmy.interfaces.Parent;
@@ -67,8 +67,8 @@ public class SpinnerDock  extends org.jemmy.fx.control.ControlDock {
 	}
 	/**Returns wrap*/
 	@Override
-	public jfxtras.labs.scene.control.test.jemmy.SpinnerWrap<? extends jfxtras.labs.scene.control.ListSpinner> wrap() {
-		return (jfxtras.labs.scene.control.test.jemmy.SpinnerWrap<? extends jfxtras.labs.scene.control.ListSpinner>)super.wrap();
+	public jfxtras.labs.jemmy.spinner.SpinnerWrap<? extends jfxtras.labs.scene.control.ListSpinner> wrap() {
+		return (jfxtras.labs.jemmy.spinner.SpinnerWrap<? extends jfxtras.labs.scene.control.ListSpinner>)super.wrap();
 	}
 	/**Allows to use as <code>org.jemmy.interfaces.Selectable</code>*/
 	public org.jemmy.interfaces.Selectable asSelectable() {

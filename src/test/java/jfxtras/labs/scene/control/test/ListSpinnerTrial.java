@@ -1,5 +1,5 @@
 /**
- * MapTrial1.java
+ * ListSpinnerTest1App.java
  *
  * Copyright (c) 2011-2013, JFXtras
  * All rights reserved.
@@ -27,57 +27,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.map;
+package jfxtras.labs.scene.control.test;
 
-import java.io.File;
+import java.awt.AWTException;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import jfxtras.labs.map.tile.TileSource;
-import jfxtras.labs.map.tile.TileSourceFactory;
-import jfxtras.labs.map.tile.local.LocalTileSourceFactory;
+import jfxtras.labs.scene.control.ListSpinner;
 
-/**
- * 
- * @author Mario Schroeder
- */
-public class MapTrial1 extends Application {
+public class ListSpinnerTrial  extends Application {
+    public static void main(String[] args) throws AWTException {
+        launch(args);
+    }
 
-	public static void main(String[] args) {
-		Application.launch(MapTrial1.class, args);
-	}
+    @Override
+    public void start(Stage stage) throws Exception {
+        VBox box = new VBox();
+        Scene scene = new Scene(box);
 
-	@Override
-	public void start(Stage stage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("MapTrial1.fxml"), null,
-				new MapBuilderFactory());
-		
-		MapPane map = (MapPane) root.lookup("#map");
-		
-		TileSourceFactory<String> factory = new LocalTileSourceFactory();
-		
-		String rootDir = getClass().getResource("tile").getFile();
-		String propTiles = System.getProperty("tiles.source");
-		if(propTiles != null && !propTiles.trim().isEmpty()){
-			rootDir = propTiles;
-		}
-		File dir = new File(rootDir, "tiles");
-		TileSource tileSource = factory.create(dir.getPath());
-		map.setTileSource(tileSource);
-		
-		map.setZoom(7);
-		map.setDisplayPositionByLatLon(52.4, 5.9);
+        ListSpinner<String> lSpinner = ListSpinnerTestFactory.create();
+        
+        box.getChildren().add(lSpinner);
 
-		Scene scene = new Scene(root);
-		
-		stage.setTitle("Map Trial 1");
-		
-		stage.setScene(scene);
-		stage.show();
-		
-	}
+        stage.setScene(scene);
 
+        stage.setWidth(300);
+        stage.setHeight(300);
+
+        stage.show();
+    }
 }

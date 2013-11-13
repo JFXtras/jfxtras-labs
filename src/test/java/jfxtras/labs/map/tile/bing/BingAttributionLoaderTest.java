@@ -1,5 +1,5 @@
 /**
- * ListSpinnerTest1App.java
+ * BingAttributionLoaderTest.java
  *
  * Copyright (c) 2011-2013, JFXtras
  * All rights reserved.
@@ -27,39 +27,52 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control.test;
+package jfxtras.labs.map.tile.bing;
 
-import java.awt.AWTException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import jfxtras.labs.scene.control.ListSpinner;
-import jfxtras.labs.util.StringConverterFactory;
+import java.util.List;
 
-public class ListSpinnerTest1App  extends Application {
-    public static void main(String[] args) throws AWTException {
-        launch(args);
+import jfxtras.labs.JavaFXPlatformAbstractTest;
+import jfxtras.labs.map.ApiKeys;
+import jfxtras.labs.map.tile.Attribution;
+
+import org.junit.Test;
+
+/**
+ *
+ * @author Mario Schroeder
+ */
+public class BingAttributionLoaderTest extends JavaFXPlatformAbstractTest {
+    /**
+     * Test of load method, of class BingAttributionLoader.
+     */
+    @Test
+    public void testLoadMapMetadata() {
+
+        BingMetaDataHandler handler = new BingMapMetaDataHandler(ApiKeys.Bing.toString());
+
+        BingAttributionLoader classUnderTest = new BingAttributionLoader(handler);
+        List<Attribution> result = classUnderTest.load();
+        assertNotNull(result);
+        assertEquals(2, result.size());
     }
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        VBox box = new VBox();
-        Scene scene = new Scene(box);
+    /**
+     * Test of load method, of class BingAttributionLoader.
+     */
+    @Test
+    public void testLoadImageMetadata() {
 
-        ListSpinner<String> lSpinner = new ListSpinner<String>("a", "b", "c")
-        		.withEditable(true).withStringConverter(StringConverterFactory.forString())
-				.withCyclic(true)
-				;
-        
-        box.getChildren().add(lSpinner);
+        BingMetaDataHandler handler = new BingImageMetaDataHandler(ApiKeys.Bing.toString());
 
-        stage.setScene(scene);
-
-        stage.setWidth(300);
-        stage.setHeight(300);
-
-        stage.show();
+        BingAttributionLoader classUnderTest = new BingAttributionLoader(handler);
+        List<Attribution> result = classUnderTest.load();
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertTrue(result.size() > 2);
     }
 }

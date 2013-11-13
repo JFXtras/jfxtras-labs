@@ -27,7 +27,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control.test.jemmy;
+package jfxtras.labs.jemmy.spinner;
 
 import java.util.List;
 

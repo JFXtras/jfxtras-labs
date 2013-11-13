@@ -77,6 +77,7 @@ public class ZoomControlFactory {
 		zoomOutButton = zoomButtonFactory.create();
 		
 		setTooltip(zoomable.zoomProperty().get());
+		updateButtons(zoomable.zoomProperty().get());
 		
 		zoomable.zoomProperty().addListener(new ZoomChangeListener());
 
@@ -96,6 +97,11 @@ public class ZoomControlFactory {
 		zoomInButton.setTooltip(new Tooltip(ZOOM_LEVEL + (zoom + 1)));
 		zoomOutButton.setTooltip(new Tooltip(ZOOM_LEVEL + (zoom - 1)));
 	}
+	
+	private void updateButtons(int zoom) {
+		zoomOutButton.setDisable(!(zoom > zoomable.minZoomProperty().get()));
+		zoomInButton.setDisable(!(zoom < zoomable.maxZoomProperty().get()));
+	}
 
 	private class ZoomChangeListener implements ChangeListener<Number> {
 
@@ -108,8 +114,7 @@ public class ZoomControlFactory {
 			
 			setTooltip(zoom);
 			
-			zoomOutButton.setDisable(!(zoom > zoomable.minZoomProperty().get()));
-			zoomInButton.setDisable(!(zoom < zoomable.maxZoomProperty().get()));
+			updateButtons(zoom);
 
 			if (Math.abs(zoomSlider.getValue() - zoom) > ZOOM_DIFF) {
 				ignore = true;
