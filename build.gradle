@@ -90,5 +90,5 @@ task copyToLib(type: Copy) {
 }
 
 test {
-	systemProperty 'tiles.source', 'build/resources/test/jfxtras/labs/map/tile'
+	systemProperty 'tiles.source', './build/resources/test/jfxtras/labs/map/tile'
 }
