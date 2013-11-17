@@ -34,10 +34,12 @@ import java.util.HashMap;
 import java.util.List;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -47,11 +49,12 @@ import javafx.util.Builder;
 /**
  *
  * @author Mark Heckler (mark.heckler@gmail.com, @MkHeck)
+ * @param <B>
  */
 public class MonologFXBuilder<B extends MonologFXBuilder<B>> extends ControlBuilder<B> implements Builder<MonologFX> {
-    private HashMap<String, Property> properties = new HashMap<>();
-    private List<MonologFXButton> buttons = new ArrayList<>();
-    private List<String> stylesheets = new ArrayList<>();
+    private final HashMap<String, Property> properties = new HashMap<>();
+    private final List<MonologFXButton> buttons = new ArrayList<>();
+    private final List<String> stylesheets = new ArrayList<>();
  
     protected MonologFXBuilder() {
     }
@@ -77,6 +80,18 @@ public class MonologFXBuilder<B extends MonologFXBuilder<B>> extends ControlBuil
         return this;
     }
 
+    /**
+     * Public method used to add a button to a MonologFX dialog.
+     * 
+     * @param BUTTON A MonologFXButton object.
+     * 
+     * @see MonologFXButton
+     */
+    public final MonologFXBuilder displayTime(final int DISPLAYTIME) {
+        properties.put("displayTime", new SimpleIntegerProperty(DISPLAYTIME));
+        return this;
+    }
+    
     /**
      * Sets the type of MonologFX dialog box to build/display.
      * 
@@ -182,6 +197,9 @@ public class MonologFXBuilder<B extends MonologFXBuilder<B>> extends ControlBuil
                     break;
                 case "alignbuttons":
                     CONTROL.setButtonAlignment(((ObjectProperty<MonologFX.ButtonAlignment>) properties.get(key)).get());
+                    break;
+                case "displayTime":
+                    CONTROL.setDisplayTime(((IntegerProperty) properties.get(key)).get());
                     break;
                 case "message":
                     CONTROL.setMessage(((StringProperty) properties.get(key)).get());
