@@ -980,7 +980,11 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
                 /*
                  * SPRAY Effect. Number of new leds showed in each step
                  */
-                iterLeds=brightLeds.size()/advance;
+                if(brightLeds.size()>0){
+                    iterLeds=brightLeds.size()/advance;
+                } else {
+                    iterLeds=0;
+                }
             }
         }
                 
@@ -991,7 +995,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel, MatrixPanelBehavior> 
             *  the content is visible and it isn't in pause
             */
             if (now > lastUpdate + realLapse*1000000 && 
-                visibleContent[iContent].getValue() && 
+                iContent<visibleContent.length && visibleContent[iContent].getValue() && 
                 incrPos.intValue()==1) {  
 
                 /*

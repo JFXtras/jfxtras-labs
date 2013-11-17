@@ -1167,7 +1167,7 @@ public class MatrixPanel extends Control {
             dotString = new boolean[height][(width + GAP) * TEXT.length()];
             for (int i = 0; i < TEXT.length(); i++) {
 
-                int decChar = String.valueOf(TEXT.charAt(i)).getBytes()[0];
+                int decChar =  Integer.parseInt(UtilHex.dec2hexStr((int)TEXT.charAt(i)),16);
 
                 for (IDD let : values) {
                     if (let.getDecLetra() == decChar) {
