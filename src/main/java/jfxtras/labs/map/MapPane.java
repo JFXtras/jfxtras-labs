@@ -119,8 +119,10 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	private CoordinateStringFormater formater;
 
 	private boolean tilesPrepared;
-
-	private Coordinate zoomCoordinate;
+	
+	private ZoomCoordinateCache zoomCoordinateCache = new ZoomCoordinateCache();
+	
+	private ZoomChangeListener zoomChangeListener = new ZoomChangeListener();
 
 	public MapPane(TileSource ts) {
 		this(ts, SIZE, SIZE, INITIAL_ZOOM);
@@ -164,6 +166,8 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 		clipMask.setWidth(Double.MAX_VALUE);
 		clipMask.setHeight(Double.MAX_VALUE);
+		
+		this.zoom.addListener(zoomChangeListener);
 	}
 
 	public final void setTilesMouseHandler(TilesMouseHandler handler) {
@@ -234,33 +238,29 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	}
 
 	public void setDisplayPositionByLatLon(double lat, double lon) {
-		setDisplayPositionByLatLon(lat, lon, zoom.get());
-	}
-
-	public void setDisplayPositionByLatLon(double lat, double lon, int zoom) {
-		setDisplayPositionByLatLon(createMapCenterPoint(), lat, lon, zoom);
-	}
-
-	private void setDisplayPosition(int x, int y, int zoom) {
-		setDisplayPosition(createMapCenterPoint(), x, y, zoom);
+		setDisplayPositionByLatLon(createMapCenterPoint(), lat, lon, zoom.get());
 	}
 
 	private Point createMapCenterPoint() {
 		return new Point((int) (getMapWidth() / 2), (int) (getMapHeight() / 2));
 	}
 
-	public void setDisplayPositionByLatLon(Point mapPoint, double lat,
+	private void setDisplayPositionByLatLon(Point mapPoint, double lat,
 			double lon, int zoom) {
 		int x = Mercator.lonToX(lon, zoom);
 		int y = Mercator.latToY(lat, zoom);
 		setDisplayPosition(mapPoint, x, y, zoom);
+	}
+	
+	private void setDisplayPosition(int x, int y, int zoom) {
+		setDisplayPosition(createMapCenterPoint(), x, y, zoom);
 	}
 
 	private void setDisplayPosition(Point mapPoint, int x, int y, int zoom) {
 		if (isValidZoom(zoom)) {
 			// Get the plain tile number
 			moveCenter(mapPoint, x, y);
-			this.zoom.set(zoom);
+//			this.zoom.set(zoom);
 			renderControl();
 		}
 	}
@@ -347,7 +347,8 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	@Override
 	public void moveMap(int x, int y) {
-		zoomCoordinate = null;
+		zoomCoordinateCache.clear();
+		
 		Point previous = new Point(center);
 		center.x += x;
 		center.y += y;
@@ -373,6 +374,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	@Override
 	public final void centerMap() {
 		setDisplayPositionByLatLon(START, START);
+		zoomCoordinateCache.clear();
 	}
 
 	@Override
@@ -381,18 +383,8 @@ public final class MapPane extends Pane implements MapTilesourceable {
 	}
 
 	@Override
-	public void zoomIn() {
-		updateZoom(zoom.get() + 1);
-	}
-
-	@Override
 	public void zoomIn(Point mapPoint) {
 		updateZoom(zoom.get() + 1, mapPoint);
-	}
-
-	@Override
-	public void zoomOut() {
-		updateZoom(zoom.get() - 1);
 	}
 
 	@Override
@@ -400,33 +392,28 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		updateZoom(zoom.get() - 1, mapPoint);
 	}
 
-	@Override
-	public void setZoom(int nextZoom) {
-		Point mapPoint = createMapCenterPoint();
-		updateZoom(nextZoom, mapPoint);
+	private void setZoom(int nextZoom) {
+		zoom.set(nextZoom);
 	}
 
 	private void updateZoom(int nextZoom) {
 		Point mapPoint = createMapCenterPoint();
-		if (zoomCoordinate == null) {
-			zoomCoordinate = getCoordinate(mapPoint);
-		}
-		updateZoom(nextZoom, mapPoint, zoomCoordinate);
+		updateZoom(nextZoom, mapPoint, zoomCoordinateCache.getZoomCoordinate());
 	}
 
 	private void updateZoom(int nextZoom, Point mapPoint) {
-		zoomCoordinate = null;
+		zoomCoordinateCache.clear();
 		Coordinate zoomPos = getCoordinate(mapPoint);
 		updateZoom(nextZoom, mapPoint, zoomPos);
 	}
-
+	
 	private void updateZoom(int nextZoom, Point mapPoint, Coordinate zoomPos) {
 		if (isValidZoom(nextZoom)) {
 			setDisplayPositionByLatLon(mapPoint, zoomPos.getLatitude(),
 					zoomPos.getLongitude(), nextZoom);
 
 			if (isEdgeVisible()) {
-				centerMap();
+//				centerMap();
 			}
 		}
 	}
@@ -442,6 +429,11 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
 	private Coordinate getCoordinate(Point p) {
 		return toCoordinate(p, this);
+	}
+	
+	private Coordinate getCoordinate(Point p, int zoom) {
+		Dimension dim = new Dimension(getMapWidth(), getMapHeight());
+		return toCoordinate(p, center, dim, zoom);
 	}
 
 	public void setMapMarkerVisible(boolean mapMarkersVisible) {
@@ -467,9 +459,13 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		}
 		tilesProvider.setTileSource(tileSource);
 		setZoomBounds(tileSource);
-		if (zoom.get() > tileSource.getMaxZoom()) {
-			setZoom(tileSource.getMaxZoom());
+		//set zoom according to max or min available zoom
+		if (zoom.get() > maxZoom) {
+			setZoom(maxZoom);
+		}else if(zoom.get() < minZoom){
+			setZoom(minZoom);
 		}
+		zoomCoordinateCache.clear();
 
 		renderControl();
 	}
@@ -642,5 +638,44 @@ public final class MapPane extends Pane implements MapTilesourceable {
 				Boolean oldVal, Boolean newVal) {
 			renderControl();
 		}
+	}
+	
+	//store the coordinate where the zoom started
+	private class ZoomCoordinateCache{
+		
+		private Coordinate zoomCoordinate;
+		
+		Coordinate getZoomCoordinate(){
+			if (zoomCoordinate == null) {
+				Point p = createMapCenterPoint();
+				zoomCoordinate = getCoordinate(p);
+			}
+			return zoomCoordinate;
+		}
+		
+		void setZoomCoordinate(Coordinate coordinate){
+			this.zoomCoordinate = coordinate;
+		}
+		
+		void clear() {
+			zoomCoordinate = null;
+		}
+		
+	}
+	
+	private class ZoomChangeListener implements ChangeListener<Number>{
+
+		@Override
+		public void changed(ObservableValue<? extends Number> ov,
+				Number oldVal, Number newVal) {
+			if(oldVal != null){
+				int oldZoomVal = oldVal.intValue();
+				Coordinate c = getCoordinate(createMapCenterPoint(), oldZoomVal);
+				zoomCoordinateCache.setZoomCoordinate(c);
+				int newZoomVal = newVal.intValue();
+				updateZoom(newZoomVal);
+			}
+		}
+		
 	}
 }

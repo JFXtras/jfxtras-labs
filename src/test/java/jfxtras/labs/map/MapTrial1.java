@@ -68,8 +68,8 @@ public class MapTrial1 extends Application {
 		TileSource tileSource = factory.create(dir.getPath());
 		map.setTileSource(tileSource);
 		
-		map.setZoom(7);
 		map.setDisplayPositionByLatLon(52.4, 5.9);
+		map.zoomProperty().set(7);
 
 		Scene scene = new Scene(root);
 		
