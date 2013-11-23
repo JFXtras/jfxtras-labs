@@ -165,7 +165,7 @@ public class Agenda extends Control
 	 * Example:
 		lAgenda.createAppointmentCallbackProperty().set(new Callback&lt;Agenda.CalendarRange, Appointment&gt;()
 		{
-			@Override
+            &#064;Override
 			public Void call(CalendarRange calendarRange)
 			{
 				return new Agenda.AppointmentImpl()

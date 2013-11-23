@@ -4,6 +4,12 @@ apply plugin: 'signing'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
+// Needed until Gradle supports class-scanning for Java 8
+tasks.withType(Test) {
+    scanForTestClasses = false
+    include "**/*Test.class"
+    include "**/*Test1.class"
+}
 
 buildscript {
     

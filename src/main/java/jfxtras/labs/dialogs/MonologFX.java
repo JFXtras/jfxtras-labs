@@ -401,8 +401,9 @@ public class MonologFX {
      * 
      * @return The type of the button pressed.
      * 
-     * @see MonologFXButton.Type, show()
-     * 
+     * @see MonologFXButton.Type
+     * @see #show()
+     *
      * @deprecated Please use show() instead.
      */
     public MonologFXButton.Type showDialog() {
