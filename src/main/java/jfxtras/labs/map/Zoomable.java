@@ -47,12 +47,6 @@ public interface Zoomable {
     SimpleIntegerProperty zoomProperty();
     
     /**
-     * Updates the value of the zoom.
-     * @param zoom
-     */
-    void updateZoom(int zoom);
-
-    /**
      * zoom in at specific point
      * @param point
      */

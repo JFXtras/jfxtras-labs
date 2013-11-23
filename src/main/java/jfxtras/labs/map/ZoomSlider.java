@@ -33,31 +33,31 @@ import javafx.geometry.Orientation;
 import javafx.scene.control.Slider;
 
 /**
- * Factory for the zoom slider.
+ * The zoom slider.
  *
  * @author Mario Schroeder
  */
-public class ZoomSliderFactory {
+public class ZoomSlider extends Slider{
 
-    private Zoomable zoomable;
 
-    public ZoomSliderFactory(Zoomable zoomable) {
-        this.zoomable = zoomable;
+    public ZoomSlider(Zoomable zoomable) {
+        
+        setOrientation(Orientation.VERTICAL);
+        setShowTickLabels(true);
+        setShowTickMarks(true);
+        setSnapToTicks(true);
+        setMajorTickUnit(1.0);
+        setMinorTickCount(0);
+        setBlockIncrement(1);
+        
+        setValue(zoomable.zoomProperty().get());
+        setMin(zoomable.minZoomProperty().get());
+        setMax(zoomable.maxZoomProperty().get());
     }
 
-    protected Slider create() {
-        Slider slider = new Slider();
-        slider.setOrientation(Orientation.VERTICAL);
-        slider.setShowTickLabels(true);
-        slider.setShowTickMarks(true);
-        slider.setMajorTickUnit(1.0);
-        slider.setMinorTickCount(0);
-        slider.setSnapToTicks(true);
-        
-        slider.setValue(zoomable.zoomProperty().get());
-        slider.setMin(zoomable.minZoomProperty().get());
-        slider.setMax(zoomable.maxZoomProperty().get());
-
-        return slider;
+    public void adjustScale(double min, double max){
+    	double diff = max-min;
+		setPrefHeight(diff*5);
+		
     }
 }

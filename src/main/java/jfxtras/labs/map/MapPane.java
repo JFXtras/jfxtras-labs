@@ -392,14 +392,11 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		updateZoom(zoom.get() - 1, mapPoint);
 	}
 
-	public void setZoom(int nextZoom) {
-//		Point mapPoint = createMapCenterPoint();
-//		updateZoom(nextZoom, mapPoint);
+	private void setZoom(int nextZoom) {
 		zoom.set(nextZoom);
 	}
 
-	@Override
-	public void updateZoom(int nextZoom) {
+	private void updateZoom(int nextZoom) {
 		Point mapPoint = createMapCenterPoint();
 		updateZoom(nextZoom, mapPoint, zoomCoordinateCache.getZoomCoordinate());
 	}
@@ -672,9 +669,11 @@ public final class MapPane extends Pane implements MapTilesourceable {
 		public void changed(ObservableValue<? extends Number> ov,
 				Number oldVal, Number newVal) {
 			if(oldVal != null){
-				Coordinate c = getCoordinate(createMapCenterPoint(), oldVal.intValue());
+				int oldZoomVal = oldVal.intValue();
+				Coordinate c = getCoordinate(createMapCenterPoint(), oldZoomVal);
 				zoomCoordinateCache.setZoomCoordinate(c);
-				updateZoom(newVal.intValue());
+				int newZoomVal = newVal.intValue();
+				updateZoom(newZoomVal);
 			}
 		}
 		
