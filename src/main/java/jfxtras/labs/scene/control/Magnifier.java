@@ -321,8 +321,10 @@ public class Magnifier extends Control {
 	
 	/**
 	 * Controls the magnifier whether to activate or not.
+	 * <ul>
 	 * <li> {@code true} Shows the magnified viewer on mouse over and does not allow to access the content inside the control.</li>
 	 * <li> {@code false} Does not show the magnified viewer on mouse over and can access the content inside the control.</li>
+	 * </ul>
 	 * <p>Default value is {@code true}</p>.
 	 * 
 	 * @see #setActive(boolean)
@@ -362,9 +364,11 @@ public class Magnifier extends Control {
 	
 	/**
 	 * Controls the magnifier whether to scale the content on mouse scroll or not. Content is scaled only when the mouse is scrolled in
-	 * combination with CTRL key press. 
+	 * combination with CTRL key press.
+	 * <ul>
 	 * <li> {@code true} Allows the content to scale when mouse is scrolled in combination with CTRL key press.</li>
 	 * <li> {@code false} Does not allow the content to scale when mouse is scrolled.</li>
+	 * </ul>
 	 * <p>Default value is {@code false}</p>.
 	 * 
 	 * @see #setScalableOnScroll(boolean)
@@ -404,9 +408,11 @@ public class Magnifier extends Control {
 	
 	/**
 	 * Controls the magnifier whether to resize the viewer on mouse scroll or not. The viewer is resized only when the mouse is scrolled in
-	 * combination with ALT key press. 
+	 * combination with ALT key press.
+	 * <ul>
 	 * <li> {@code true} Allows the viewer to resize when mouse is scrolled in combination with ALT key press.</li>
 	 * <li> {@code false} Does not allow the viewer to resize when mouse is scrolled.</li>
+	 * </ul>
 	 * <p>Default value is {@code false}</p>.
 	 * 
 	 * @see #setResizableOnScroll(boolean)

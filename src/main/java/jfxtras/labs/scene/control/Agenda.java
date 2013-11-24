@@ -9,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the <organization> nor the
+ *     * Neither the name of the organization nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  * 
@@ -39,14 +39,11 @@ import javafx.scene.control.Control;
 import javafx.util.Callback;
 
 /**
- * Agenda control
- * This controls renders appointments in a schedule. 
- * Normally this would be called a Calendar, but since there are controls like CalendarPicker, this would be confusing. 
- * Hence the name "Agenda".
+ * This controls renders appointments similar to Google Calendar.
+ * Normally this would be called a Calendar, but since there are controls like CalendarPicker, this would be confusing, hence the name "Agenda".
  * 
  * The control has a list of appointments and a calendar (date) that should be displayed.
- * The skin will use the calendar to display the appropriate day, week, month or year (depending on which skin is active).
- * The skin will then scan the list of appointments and display those that are visible.
+ * The skin will use the calendar to display the appropriate time frames and then it scans the list of appointments and display those that are visible.
  * 
  * You could provide all available appointments in one big list, but that may be a bit memory heavy.
  * An alternative is to register to the displayedCalendar property and upon change update the appointment collection.
@@ -150,8 +147,8 @@ public class Agenda extends Control
 
 	/** calendarRangeCallback: 
 	 * Appointments should match:
-	 * - start date >= range start 
-	 * - end date <= range end
+	 * - start date &gt;= range start
+	 * - end date &lt;= range end
 	 */
 	public ObjectProperty<Callback<CalendarRange, Void>> calendarRangeCallbackProperty() { return calendarRangeCallbackObjectProperty; }
 	final private ObjectProperty<Callback<CalendarRange, Void>> calendarRangeCallbackObjectProperty = new SimpleObjectProperty<Callback<CalendarRange, Void>>(this, "calendarRangeCallback", null);
@@ -166,9 +163,9 @@ public class Agenda extends Control
 	 * Null may be returned to indicate that no appointment was created.
 	 * 
 	 * Example:
-		lAgenda.createAppointmentCallbackProperty().set(new Callback<Agenda.CalendarRange, Appointment>()
+		lAgenda.createAppointmentCallbackProperty().set(new Callback&lt;Agenda.CalendarRange, Appointment&gt;()
 		{
-			@Override
+            &#064;Override
 			public Void call(CalendarRange calendarRange)
 			{
 				return new Agenda.AppointmentImpl()
@@ -211,10 +208,10 @@ public class Agenda extends Control
 		}
 		
 		public Calendar getStartCalendar() { return start; }
-		Calendar start;
+		final Calendar start;
 		
 		public Calendar getEndCalendar() { return end; }
-		Calendar end; 
+		final Calendar end; 
 	}
 	
 	/**

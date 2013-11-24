@@ -33,13 +33,17 @@ import java.util.Locale;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
+import javafx.util.Callback;
+import jfxtras.labs.scene.control.Agenda.CalendarRange;
 
 /**
  * Calendar picker component
@@ -89,8 +93,15 @@ public class CalendarPicker extends Control
 	// PROPERTIES
 	
 	/** calendar: */
+	final private ObjectProperty<Calendar> calendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar")
+	{
+		public void set(Calendar value)
+		{
+			if (value == null && getAllowNull() == false) throw new NullPointerException("Null not allowed");
+			super.set(value);
+		}
+	};
 	public ObjectProperty<Calendar> calendarProperty() { return calendarObjectProperty; }
-	final private ObjectProperty<Calendar> calendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar");
 	public Calendar getCalendar() { return calendarObjectProperty.getValue(); }
 	public void setCalendar(Calendar value) { calendarObjectProperty.setValue(value); }
 	public CalendarPicker withCalendar(Calendar value) { setCalendar(value); return this; } 
@@ -121,7 +132,7 @@ public class CalendarPicker extends Control
 	private void constructCalendars()
 	{
 		// make sure the singled out calendar is 
-		calendars().addListener(new ListChangeListener<Calendar>() 
+		calendars.addListener(new ListChangeListener<Calendar>() 
 		{
 			@Override
 			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Calendar> change)
@@ -206,8 +217,60 @@ public class CalendarPicker extends Control
 	volatile private ObjectProperty<Boolean> showTimeObjectProperty = new SimpleObjectProperty<Boolean>(this, "showTime", false);
 	public Boolean getShowTime() { return showTimeObjectProperty.getValue(); }
 	public void setShowTime(Boolean value) { showTimeObjectProperty.setValue(value); }
-	public CalendarPicker withShowTime(Boolean value) { setShowTime(value); return (CalendarPicker)this; } 
-	
+	public CalendarPicker withShowTime(Boolean value) { setShowTime(value); return (CalendarPicker)this; }
+
+	/** is null allowed */
+    volatile private BooleanProperty allowNullProperty = new SimpleBooleanProperty(this, "allowNull", true)
+    {
+		public void set(boolean value)
+		{
+			super.set(value);
+			if (value == false && getCalendar() == null)
+			{
+				setCalendar(Calendar.getInstance(getLocale()));
+			}
+		}
+	};
+    public BooleanProperty allowNullProperty() { return allowNullProperty; }
+    public boolean getAllowNull() { return allowNullProperty.get(); }
+    public void setAllowNull(boolean allowNull) { allowNullProperty.set(allowNull); }
+    public CalendarPicker withAllowNull(boolean value) { setAllowNull(value); return this; }
+
+	/** disabledCalendars: */
+	public ObservableList<Calendar> disabledCalendars() { return disabledCalendars; }
+	final private ObservableList<Calendar> disabledCalendars =  javafx.collections.FXCollections.observableArrayList();
+
+	/** highlightedCalendars: */
+	public ObservableList<Calendar> highlightedCalendars() { return highlightedCalendars; }
+	final private ObservableList<Calendar> highlightedCalendars =  javafx.collections.FXCollections.observableArrayList();
+
+	/** calendarRangeCallback: 
+	 * This callback allows a developer to limit the amount of calendars put in any of the collections.
+	 * It is called just before a new range is being displayed, so the developer can change the values in the collections like highlighted or disabled. 
+	 */
+	public ObjectProperty<Callback<CalendarRange, Void>> calendarRangeCallbackProperty() { return calendarRangeCallbackObjectProperty; }
+	final private ObjectProperty<Callback<CalendarRange, Void>> calendarRangeCallbackObjectProperty = new SimpleObjectProperty<Callback<CalendarRange, Void>>(this, "calendarRangeCallback", null);
+	public Callback<CalendarRange, Void> getCalendarRangeCallback() { return this.calendarRangeCallbackObjectProperty.getValue(); }
+	public void setCalendarRangeCallback(Callback<CalendarRange, Void> value) { this.calendarRangeCallbackObjectProperty.setValue(value); }
+	public CalendarPicker withCalendarRangeCallback(Callback<CalendarRange, Void> value) { setCalendarRangeCallback(value); return this; }
+		
+	/**
+	 * A Calendar range
+	 */
+	static public class CalendarRange
+	{
+		public CalendarRange(Calendar start, Calendar end)
+		{
+			this.start = start;
+			this.end = end;
+		}
+		
+		public Calendar getStartCalendar() { return start; }
+		final Calendar start;
+		
+		public Calendar getEndCalendar() { return end; }
+		final Calendar end; 
+	}
 
 	// ==================================================================================================================
 	// SUPPORT

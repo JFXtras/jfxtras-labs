@@ -27,6 +27,7 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -88,14 +89,8 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField>
 		createNodes();
 		
 		// react to value changes in the model
-		getSkinnable().calendarProperty().addListener(new ChangeListener<Calendar>()
-		{
-			@Override
-			public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
-			{
-				refreshValue();
-			}
-		});
+		getSkinnable().calendarProperty().addListener( (observableValue, oldValue, newValue) -> { refreshValue(); });
+        getSkinnable().dateFormatProperty().addListener( (observableValue, oldValue, newValue) -> { refreshValue(); });
 		refreshValue();
 		
 		// focus

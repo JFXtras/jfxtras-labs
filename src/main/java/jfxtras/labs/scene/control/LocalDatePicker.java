@@ -35,9 +35,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Control;
+import java.time.LocalDate;
 
-import javax.time.calendar.LocalDate;
 
 /**
  * LocalDate (JSR-310) picker component.
@@ -173,7 +172,7 @@ public class LocalDatePicker extends CalendarPicker
 		if (localDate == null) return null;
 		Calendar lCalendar = Calendar.getInstance(getLocale());
 		lCalendar.set(Calendar.YEAR, localDate.getYear());
-		lCalendar.set(Calendar.MONTH, localDate.getMonthOfYear().getValue() - 1);
+		lCalendar.set(Calendar.MONTH, localDate.getMonthValue() - 1);
 		lCalendar.set(Calendar.DATE, localDate.getDayOfMonth());
 		lCalendar.set(Calendar.HOUR_OF_DAY, 0);
 		lCalendar.set(Calendar.MINUTE, 0);

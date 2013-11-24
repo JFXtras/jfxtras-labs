@@ -135,7 +135,7 @@ public class ContentBuilder implements Builder<Content> {
     
     /**
      * Set the name of the bmp image 
-     * @see #type(Content.Type Content.Type.IMAGE)
+     * see type(Content.Type Content.Type.IMAGE)
      * @param BMP_NAME Two options for a valid name of a BMP image, with or without ".bmp" extension: 
      * <ul><li>It should be already in the source (relative to matrixPanel package)</li>
      * <li>or a full valid path should be added to the name in case it has be loaded from an external resource</li></ul>
@@ -147,7 +147,7 @@ public class ContentBuilder implements Builder<Content> {
     
     /**
      * Set the text string
-     * @see #type(Content.Type Content.Type.TEXT)
+     * see type(Content.Type Content.Type.TEXT)
      * @param TXT_CONTENT Insert the string of text to be displayed, it will be showed in one line. In case
      * it is too long, a SCROLL effect is recommended. 
      */
@@ -157,7 +157,7 @@ public class ContentBuilder implements Builder<Content> {
     }
     /**
      * Set the font for the text
-     * @see #type(Content.Type Content.Type.TEXT)
+     *see type(Content.Type Content.Type.TEXT)
      * @param FONT Select the font for the text to be displayed. Several proportional dotted fonts are available, 
      * all of them named with the <i>Width</i> and <i>Height</i> used for each character. 
      * Check MatrixPanel to insert missing characters to the list.
@@ -169,11 +169,13 @@ public class ContentBuilder implements Builder<Content> {
     
     /**
      * Set the gap between characters
-     * @see #type(Content.Type Content.Type.TEXT)
+     *see type(Content.Type Content.Type.TEXT)
      * @param FONT_GAP Select the gap between the characters: 
-     * <ul><li><i>Gap.NULL</i>: No space will be used between consecutive characters</li>
+     * <ul>
+	 * <li><i>Gap.NULL</i>: No space will be used between consecutive characters</li>
      * <li><i>Gap.SIMPLE</i>: One LED will be used as gap between consecutive characters</li>
      * <li><i>Gap.DOUBLE</i>: Two LEDs will be used as gap between consecutive characters</li>
+	 * </ul>
      */
     public final ContentBuilder fontGap(final Content.Gap FONT_GAP) {
         properties.put("fontGap", new SimpleObjectProperty<Content.Gap>(FONT_GAP));
@@ -182,12 +184,14 @@ public class ContentBuilder implements Builder<Content> {
     
      /**
       * Set the align of the text
-      * @see #type(Content.Type Content.Type.TEXT)
+      *see type(Content.Type Content.Type.TEXT)
       * @see #effect(Content.Effect)
       * @param TXT_ALIGN Select how to align the string of text
-      * <ul><li>Align.LEFT: Align the text to the left of the area</li>
+      * <ul>
+	  * <li>Align.LEFT: Align the text to the left of the area</li>
       * <li>Align.CENTER: Align the text to the center of the area</li>
-      * <li>Align.LEFT: Align the text to the right of the area</li></ul>
+      * <li>Align.LEFT: Align the text to the right of the area</li>
+	  * </ul>
       * <p>In case of long string of text, to display the whole string select a Scroll effect 
       * opposite to the selected align. 
       */
@@ -221,7 +225,7 @@ public class ContentBuilder implements Builder<Content> {
      * Set the action after the animation effect
      * @see #effect(Content.Effect)
      * @see #pause(Integer)
-     * @param POST_EFFECT Select the action after the animation effect has finished: 
+     * param POST_EFFECT Select the action after the animation effect has finished:
      * <ul><li><i>PostEffect.STOP</i>: the content will remain in its position.</li>
      * <li><i>PostEffect.REPEAT</i>: the content will be animated again.</li>
      * <li><i>PostEffect.PAUSE</i>: the content will remain in its position for a specificied time (see <i>pause</i>,
@@ -234,7 +238,7 @@ public class ContentBuilder implements Builder<Content> {
     
     /** 
      * Set the pause time after the effect
-     * @see #postEffect(Content.PostEffect Content.PostEffect.PAUSE)
+     * see #postEffect(Content.PostEffect Content.PostEffect.PAUSE)
      * @see #order(Content.RotationOrder)
      * @param PAUSE Insert the time in milliseconds that the content will be showed in its final position, before
      * the selected effect starts again, or the content is replaced by other in the same area (see <i>order</i>).
@@ -259,12 +263,15 @@ public class ContentBuilder implements Builder<Content> {
      * Set the order in which the contents are alternatated
      * @see #clear(Boolean)
      * @param ORDER Select <i>RotationOrder.Single</i> for a unique content in its area. 
-     * <p>In case two different contents should be displayed alternately in the very same area, select:
+     * <p>In case two different contents should be displayed alternately in the very same area, select:</p>
      * <ul><li><i>RotationOrder.FIRST</i>: for the first content to be displayed, with its own effect and postEffect 
      * (other than PostEffect.STOP)</li>
      * <li><i>RotationOrder.SECOND</i>: for the second content to be displayed, with its own effect and postEffect 
      * (other than PostEffect.STOP)</li>
-     * <p>To erase the area before displaying the next content, select clear<i>(true)</i> to prevent mixing contents.
+	 * </ul>
+	 * <p>
+     * To erase the area before displaying the next content, select clear<i>(true)</i> to prevent mixing contents.
+	 * </p>
      */
     public final ContentBuilder order(final Content.RotationOrder ORDER) {
         properties.put("order", new SimpleObjectProperty<Content.RotationOrder>(ORDER));

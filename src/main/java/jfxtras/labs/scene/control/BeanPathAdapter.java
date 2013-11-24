@@ -177,8 +177,8 @@ import javafx.util.StringConverter;
  * we can bind "allHobbies" and "hobbies" to the Hobby "name"s // for each Hobby
  * in the items/selections (respectively) to/from // a ListView wich will only
  * contain the String name of each Hobby // as it's items and selections Person
- * person = new Person(); BeanPathAdapter<Person> personPA = new
- * BeanPathAdapter<>(person); ListView<String> lv = new ListView<>(); 
+ * person = new Person(); BeanPathAdapter&lt;Person&gt; personPA = new
+ * BeanPathAdapter&lt;&gt;(person); ListView&lt;String&gt; lv = new ListView&lt;&gt;();
  * // bind items 
  * personPA.bindContentBidirectional("allHobbies", "name", Hobby.class,
  * 		lv.getItems(), String.class, null, null);
@@ -668,7 +668,7 @@ public class BeanPathAdapter<B> {
 
 	/**
 	 * Adds {@link FieldPathValueType}(s) {@link FieldPathValueType}(s) that
-	 * {@link #notifyProperty()} will use
+	 * {link notifyProperty()} will use
 	 * 
 	 * @param types
 	 *            the {@link FieldPathValueType} to add
@@ -679,7 +679,7 @@ public class BeanPathAdapter<B> {
 
 	/**
 	 * Removes {@link FieldPathValueType}(s) {@link FieldPathValueType}(s) that
-	 * {@link #notifyProperty()} will use
+	 * {link notifyProperty()} will use
 	 * 
 	 * @param types
 	 *            the {@link FieldPathValueType}(s) to remove
@@ -690,7 +690,7 @@ public class BeanPathAdapter<B> {
 
 	/**
 	 * Determines if the {@link FieldPathValueType}(s) are being used by the
-	 * {@link #notifyProperty()}
+	 * {link notifyProperty()}
 	 * 
 	 * @param types
 	 *            the {@link FieldPathValueType}(s) to check for
@@ -741,7 +741,7 @@ public class BeanPathAdapter<B> {
 		}
 
 		/**
-		 * Determines if the {@link #getTypes()} has all of the specified
+		 * Determines if the {link getTypes()} has all of the specified
 		 * {@link FieldPathValueType}(s)
 		 * 
 		 * @param types
@@ -781,10 +781,7 @@ public class BeanPathAdapter<B> {
 		 *            the {@link #getBean()}
 		 * @param value
 		 *            the {@link #getValue()}
-		 * @param fromItemRemoval
-		 *            the {@link #isFromItemRemoval()}
-		 * @param fromItemSelection
-		 *            the {@link #isFromItemSelection()}
+		 * @param type
 		 */
 		public FieldPathValue(final String path, final Object bean,
 				final Object value, final FieldPathValueType type) {
@@ -796,7 +793,7 @@ public class BeanPathAdapter<B> {
 
 		/**
 		 * Generates a hash code using {@link #getPath()}, {@link #getBean()},
-		 * {@link #getValue()}, and {@link #isFromItemSelection()}
+		 * {@link #getValue()}, and {link isFromItemSelection()}
 		 * 
 		 * @return the hash code
 		 */
@@ -813,7 +810,7 @@ public class BeanPathAdapter<B> {
 
 		/**
 		 * Determines equality based upon {@link #getPath()}, {@link #getBean()}
-		 * , {@link #getValue()}, and {@link #isFromItemSelection()}
+		 * , {@link #getValue()}, and {link isFromItemSelection()}
 		 * 
 		 * @param obj
 		 *            the {@link Object} to check for equality
@@ -2534,7 +2531,7 @@ public class BeanPathAdapter<B> {
 		/**
 		 * Updates the underlying collection item value
 		 * 
-		 * @see #updateCollectionItemBean(int, Object, Object)
+		 * see updateCollectionItemBean(int, Object, Object)
 		 * @param itemBeanPropertyValue
 		 *            the collection {@link FieldBean}'s {@link FieldProperty}
 		 *            value to add/update
@@ -2959,8 +2956,6 @@ public class BeanPathAdapter<B> {
 		 * @param fieldName
 		 *            the field name that the accessor is for
 		 * @return the accessor {@link MethodHandle}
-		 * @throws NoSuchMethodException
-		 *             thrown when an accessor cannot be found for the field
 		 */
 		protected static MethodHandle buildAccessorWithLikelyPrefixes(
 				final Object target, final String fieldName) {

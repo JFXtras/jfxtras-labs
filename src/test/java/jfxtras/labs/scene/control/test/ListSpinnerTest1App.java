@@ -27,6 +27,7 @@ package jfxtras.labs.scene.control.test;
 import java.awt.AWTException;
 
 import javafx.application.Application;
+import javafx.scene.control.Button;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -49,6 +50,7 @@ public class ListSpinnerTest1App  extends Application {
 				;
         
         box.getChildren().add(lSpinner);
+        box.getChildren().add(new Button("focus helper"));
 
         stage.setScene(scene);
 

@@ -9,9 +9,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class BindableTransitionTrial 
-{ /* fails during build
-extends Application {
+public class BindableTransitionTrial extends Application {
 
 	public static void main(String[] args) {
 		launch();
@@ -39,5 +37,4 @@ extends Application {
 		primaryStage.setScene(myScene);
 		primaryStage.show();
 	}
-*/
 }
