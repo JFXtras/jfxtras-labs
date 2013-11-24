@@ -1,4 +1,5 @@
 language: java
+cache: false
 before_install:
   - "export DISPLAY=:99.0"
   - "export TERM=dumb"
