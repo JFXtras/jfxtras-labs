@@ -17,9 +17,9 @@ buildscript {
 	
     repositories {
         mavenCentral()
-        maven {
-            url "https://oss.sonatype.org/content/repositories/snapshots"
-        }
+		maven { url "http://oss.sonatype.org/content/repositories/releases/" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        
 		dependencies {
 			classpath "eu.mihosoft.vrl.vlicense-header-util:VLicenseHeaderUtil:0.1-r2-SNAPSHOT"
 			classpath "eu.mihosoft.vrl.vlicense-header-util.gradle:vlicense-header-plugin:0.1-r2-SNAPSHOT"
@@ -33,7 +33,8 @@ if (!project.plugins.findPlugin(eu.mihosoft.vrl.vlicenseheaderutil.gradle.VLicen
 }
 
 repositories {
-    mavenRepo urls: "https://oss.sonatype.org/content/repositories/snapshots/"
+	maven { url "http://oss.sonatype.org/content/repositories/releases/" }
+    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
     mavenCentral()
 }
 
