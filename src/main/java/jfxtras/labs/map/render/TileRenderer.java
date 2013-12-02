@@ -167,10 +167,12 @@ public class TileRenderer implements TileRenderable {
 		return path;
 	}
 
+        @Override
 	public void setMonoChrome(boolean monoChrome) {
 		this.monoChrome = monoChrome;
 	}
 
+        @Override
 	public void setTileGridVisible(boolean tileGridVisible) {
 		this.tileGridVisible = tileGridVisible;
 	}
