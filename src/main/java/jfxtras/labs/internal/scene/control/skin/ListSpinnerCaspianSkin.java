@@ -678,9 +678,13 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>>
 		{
 			decrementArrow.getStyleClass().add("left-arrow");
 			incrementArrow.getStyleClass().add("right-arrow");
+			decrementArrow.getStyleClass().remove("down-arrow");
+			incrementArrow.getStyleClass().remove("up-arrow");
 		}
 		else
 		{
+			decrementArrow.getStyleClass().remove("left-arrow");
+			incrementArrow.getStyleClass().remove("right-arrow");
 			decrementArrow.getStyleClass().add("down-arrow");
 			incrementArrow.getStyleClass().add("up-arrow");
 		}
