@@ -802,7 +802,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			lToggleButton.getStyleClass().remove("weekend");
 			lToggleButton.getStyleClass().remove("weekday");
 			lToggleButton.getStyleClass().add(isWeekdayWeekend(lIdx % 7) ? "weekend" : "weekday"); 
-			lToggleButton.setDisable( disabledCalendars != null && disabledCalendars.contains(lCalendar) );
+			lToggleButton.setDisable( disabledCalendars != null && find(disabledCalendars, lCalendar) != null );
 			
 			// make the corresponding weeklabel visible
 			weeknumberLabels.get(lIdx / 7).setVisible(true);
@@ -818,7 +818,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			}
 			
 			// highligh
-			if (highlightedCalendars != null && highlightedCalendars.contains(lCalendar))
+			if (highlightedCalendars != null && find(highlightedCalendars, lCalendar) != null)
 			{
 				lToggleButton.getStyleClass().add("highlight");
 			}
