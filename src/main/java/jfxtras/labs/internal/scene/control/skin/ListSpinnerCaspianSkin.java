@@ -50,16 +50,14 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.*;
+import jfxtras.labs.scene.layout.VBox;
+import jfxtras.labs.scene.layout.HBox;
 import javafx.util.Duration;
 import jfxtras.labs.animation.Timer;
 import jfxtras.labs.internal.scene.control.behavior.ListSpinnerBehavior;
 import jfxtras.labs.scene.control.ListSpinner;
+import jfxtras.labs.scene.layout.GridPane;
 
 /**
  * 
@@ -117,7 +115,7 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>>
 
             // react to value changes in the model
             setArrowCSS();
-            layoutGridPane();
+            layout();
 
             // react to value changes in the model
             alignValue();		
@@ -157,7 +155,7 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>>
                     @Override public void invalidated()
                     {
                         setArrowCSS();
-                        layoutGridPane();
+                        layout();
                     }
                     
                     @Override public CssMetaData<ListSpinner,ArrowPosition> getCssMetaData() { return StyleableProperties.ARROW_POSITION; }
@@ -185,7 +183,7 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>>
                     @Override public void invalidated()
                     {
                         setArrowCSS();
-                        layoutGridPane();
+                        layout();
                     }
                     
                     @Override public CssMetaData<ListSpinner,ArrowDirection> getCssMetaData() { return StyleableProperties.ARROW_DIRECTION; }
@@ -293,127 +291,131 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>>
 		// left arrow
 		decrementArrow = new Region();
 		decrementArrow.getStyleClass().add("idle");
+		decrementArrow.setMinSize(8, 8);
 
 		// place holder for showing the value
-		valueGroup = new BorderPane();
-		valueGroup.getStyleClass().add("valuePane");
+		valueHolderNode = new BorderPane();
+		valueHolderNode.getStyleClass().add("valuePane");
+		//valueHolderNode.setStyle("-fx-border-color: white;");
 		
 		// right arrow
 		incrementArrow = new Region();
 		incrementArrow.getStyleClass().add("idle");
+		incrementArrow.setMinSize(8, 8);
 
-		// construct a gridpane
-		gridPane = new GridPane();
+		// construct a placeholder node
+		skinNode = new BorderPane();
+		skinNode.setCenter(valueHolderNode);
 
 		// we're not catching the mouse events on the individual children, but let it bubble up to the parent and handle it there, this makes our life much more simple
 		// process mouse clicks
-		gridPane.setOnMouseClicked(new EventHandler<MouseEvent>()
+		skinNode.setOnMouseClicked(new EventHandler<MouseEvent>()
 		{
 			@Override public void handle(MouseEvent evt)
 			{
-				// if click was the in the greater vicinity of the decrement arrow
-				if (mouseEventOverArrow(evt, decrementArrow))
-				{
-					// left
-					unclickArrows();
-					decrementArrow.getStyleClass().add("clicked");
-					getSkinnable().decrement();
-					unclickTimer.restart();
-					return;
-				}
-				
-				// if click was the in the greater vicinity of the increment arrow
-				if (mouseEventOverArrow(evt, incrementArrow))
-				{
-					// right
-					unclickArrows();
-					incrementArrow.getStyleClass().add("clicked");
-					getSkinnable().increment();
-					unclickTimer.restart();
-					return;
-				}
+			// if click was the in the greater vicinity of the decrement arrow
+			if (mouseEventOverArrow(evt, decrementArrow))
+			{
+				// left
+				unclickArrows();
+				decrementArrow.getStyleClass().add("clicked");
+				getSkinnable().decrement();
+				unclickTimer.restart();
+				return;
+			}
+
+			// if click was the in the greater vicinity of the increment arrow
+			if (mouseEventOverArrow(evt, incrementArrow))
+			{
+				// right
+				unclickArrows();
+				incrementArrow.getStyleClass().add("clicked");
+				getSkinnable().increment();
+				unclickTimer.restart();
+				return;
+			}
 			}
 		});
 		// process mouse holds
-		gridPane.setOnMousePressed(new EventHandler<MouseEvent>()
+		skinNode.setOnMousePressed(new EventHandler<MouseEvent>()
 		{
 			@Override public void handle(MouseEvent evt)
 			{
-				// if click was the in the greater vicinity of the decrement arrow
-				if (mouseEventOverArrow(evt, decrementArrow))
-				{
-					// left
-					decrementArrow.getStyleClass().add("clicked");
-					repeatDecrementClickTimer.restart();
-					return;
-				}
-				
-				// if click was the in the greater vicinity of the increment arrow
-				if (mouseEventOverArrow(evt, incrementArrow))
-				{
-					// right
-					incrementArrow.getStyleClass().add("clicked");
-					repeatIncrementClickTimer.restart();
-					return;
-				}
+			// if click was the in the greater vicinity of the decrement arrow
+			if (mouseEventOverArrow(evt, decrementArrow))
+			{
+				// left
+				decrementArrow.getStyleClass().add("clicked");
+				repeatDecrementClickTimer.restart();
+				return;
+			}
+
+			// if click was the in the greater vicinity of the increment arrow
+			if (mouseEventOverArrow(evt, incrementArrow))
+			{
+				// right
+				incrementArrow.getStyleClass().add("clicked");
+				repeatIncrementClickTimer.restart();
+				return;
+			}
 			}
 		});
-		gridPane.setOnMouseReleased(new EventHandler<MouseEvent>()
+		skinNode.setOnMouseReleased(new EventHandler<MouseEvent>()
 		{
 			@Override public void handle(MouseEvent evt)
 			{
-				unclickArrows();
-				repeatDecrementClickTimer.stop();
-				repeatIncrementClickTimer.stop();
+			unclickArrows();
+			repeatDecrementClickTimer.stop();
+			repeatIncrementClickTimer.stop();
 			}
 		});
-		gridPane.setOnMouseExited(new EventHandler<MouseEvent>()
+		skinNode.setOnMouseExited(new EventHandler<MouseEvent>()
 		{
 			@Override public void handle(MouseEvent evt)
 			{
-				unclickArrows();
-				repeatDecrementClickTimer.stop();
-				repeatIncrementClickTimer.stop();
+			unclickArrows();
+			repeatDecrementClickTimer.stop();
+			repeatIncrementClickTimer.stop();
 			}
 		});
 		// mouse wheel
-		gridPane.setOnScroll(new EventHandler<ScrollEvent>()
+		skinNode.setOnScroll(new EventHandler<ScrollEvent>()
 		{
 			@Override
 			public void handle(ScrollEvent evt)
 			{
-				// if click was the in the greater vicinity of the decrement arrow
-				if (evt.getDeltaY() < 0 || evt.getDeltaX() < 0)
-				{
-					// left
-					unclickArrows();
-					decrementArrow.getStyleClass().add("clicked");
-					getSkinnable().decrement();
-					unclickTimer.restart();
-					return;
-				}
-				
-				// if click was the in the greater vicinity of the increment arrow
-				if (evt.getDeltaY() > 0 || evt.getDeltaX() > 0)
-				{
-					// right
-					unclickArrows();
-					incrementArrow.getStyleClass().add("clicked");
-					getSkinnable().increment();
-					unclickTimer.restart();
-					return;
-				}
+			// if click was the in the greater vicinity of the decrement arrow
+			if (evt.getDeltaY() < 0 || evt.getDeltaX() < 0)
+			{
+				// left
+				unclickArrows();
+				decrementArrow.getStyleClass().add("clicked");
+				getSkinnable().decrement();
+				unclickTimer.restart();
+				return;
+			}
+
+			// if click was the in the greater vicinity of the increment arrow
+			if (evt.getDeltaY() > 0 || evt.getDeltaX() > 0)
+			{
+				// right
+				unclickArrows();
+				incrementArrow.getStyleClass().add("clicked");
+				getSkinnable().increment();
+				unclickTimer.restart();
+				return;
+			}
 			}
 		});
 		
 		// add to self
 		getSkinnable().getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
-		getChildren().add(gridPane); 
+		getChildren().add(skinNode);
 	}
 	private Region decrementArrow = null;
 	private Region incrementArrow = null;
-	private GridPane gridPane = null;
-	private BorderPane valueGroup;
+	private BorderPane skinNode = null;
+	private BorderPane valueHolderNode;
 	
 	// timer to remove the click styling on the arrows after a certain delay
 	final private Timer unclickTimer = new Timer(new Runnable()
@@ -421,7 +423,7 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>>
 		@Override
 		public void run()
 		{
-			unclickArrows();
+		unclickArrows();
 		}
 	}).withDelay(Duration.millis(100)).withRepeats(false);
 
@@ -431,7 +433,7 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>>
 		@Override
 		public void run()
 		{
-			getSkinnable().decrement();
+		getSkinnable().decrement();
 		}
 	}).withDelay(Duration.millis(500)).withCycleDuration(Duration.millis(50));
 	
@@ -441,7 +443,7 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>>
 		@Override
 		public void run()
 		{
-			getSkinnable().increment();
+		getSkinnable().increment();
 		}
 	}).withDelay(Duration.millis(500)).withCycleDuration(Duration.millis(50));
 
@@ -481,14 +483,15 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>>
 	private void replaceValueNode()
 	{
 		// clear
-		valueGroup.getChildren().clear();
+		valueHolderNode.getChildren().clear();
 		
 		// if not editable
 		if (getSkinnable().isEditable() == false)
 		{
 			// use the cell factory
 			Node lNode = getSkinnable().getCellFactory().call(getSkinnable());
-			valueGroup.setCenter( lNode );
+			//lNode.setStyle("-fx-border-color: blue;");
+			valueHolderNode.setCenter(lNode);
 			if (lNode.getStyleClass().contains("value") == false) lNode.getStyleClass().add("value");
 			if (lNode.getStyleClass().contains("readonly") == false) lNode.getStyleClass().add("readonly");
 		}
@@ -536,7 +539,8 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>>
 				// alignment
 				textField.alignmentProperty().bind(valueAlignmentProperty());
 			}
-			valueGroup.setCenter(textField);
+			valueHolderNode.setCenter(textField);
+			//textField.setStyle("-fx-border-color: blue;");
 		}
 		
 		// align
@@ -549,8 +553,8 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>>
 	 */
 	private void alignValue()
 	{
-		// valueGroup always only holds one child (the value)
-		BorderPane.setAlignment(valueGroup.getChildren().get(0), valueAlignmentProperty().getValue());
+		// valueHolderNode always only holds one child (the value)
+		BorderPane.setAlignment(valueHolderNode.getChildren().get(0), valueAlignmentProperty().getValue());
 	}
 	
 	// ==================================================================================================================
@@ -576,95 +580,80 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>>
 	/**
 	 * Lays out the spinner, depending on the location and direction of the arrows.
 	 */
-	private void layoutGridPane()
+	private void layout()
 	{
 		// get the things we decide on
 		ArrowDirection lArrowDirection = getArrowDirection();
 		ArrowPosition lArrowPosition = getArrowPosition();
 		
 		// get helper values
-		ColumnConstraints lColumnValue = new ColumnConstraints(valueGroup.getMinWidth(), valueGroup.getPrefWidth(), Double.MAX_VALUE);
+		ColumnConstraints lColumnValue = new ColumnConstraints(valueHolderNode.getMinWidth(), valueHolderNode.getPrefWidth(), Double.MAX_VALUE);
 		lColumnValue.setHgrow(Priority.ALWAYS);
 		ColumnConstraints lColumnArrow = new ColumnConstraints(10);
 		
 		// get helper values
-		RowConstraints lRowValue = new RowConstraints(valueGroup.getMinHeight(), valueGroup.getPrefHeight(), Double.MAX_VALUE);
+		RowConstraints lRowValue = new RowConstraints(valueHolderNode.getMinHeight(), valueHolderNode.getPrefHeight(), Double.MAX_VALUE);
 		lRowValue.setVgrow(Priority.ALWAYS);
 		RowConstraints lRowArrow = new RowConstraints(10);
 
-		// clear the grid
-		gridPane.getChildren().clear();
-		gridPane.getColumnConstraints().clear();
-		gridPane.getRowConstraints().clear();
-		//gridPane.setGridLinesVisible(true);
-		
+		// create the grid
+		skinNode.getChildren().clear();
+		skinNode.setCenter(valueHolderNode);
+
 		if (lArrowDirection == ArrowDirection.HORIZONTAL)
 		{
 			if (lArrowPosition == ArrowPosition.LEADING)
 			{
-				// construct a gridpane: one row, three columns: arrow, arrow, value
-				gridPane.setHgap(3);
-				gridPane.setVgap(0);
-				gridPane.add(decrementArrow, 0, 0);
-				gridPane.add(incrementArrow, 1, 0);
-				gridPane.add(valueGroup, 2, 0);
-				gridPane.getColumnConstraints().addAll(lColumnArrow, lColumnArrow, lColumnValue);
+				HBox lHBox = new HBox(0);
+				lHBox.add(decrementArrow, new HBox.C().hgrow(Priority.ALWAYS));
+				lHBox.add(incrementArrow, new HBox.C().hgrow(Priority.ALWAYS));
+				skinNode.setLeft(lHBox);
+				BorderPane.setAlignment(lHBox, Pos.CENTER_LEFT);
+				//lHBox.setStyle("-fx-border-color: blue;");
 			}
 			if (lArrowPosition == ArrowPosition.TRAILING)
 			{
-				// construct a gridpane: one row, three columns: value, arrow, arrow
-				gridPane.setHgap(3);
-				gridPane.setVgap(0);
-				gridPane.add(valueGroup, 0, 0);
-				gridPane.add(decrementArrow, 1, 0);
-				gridPane.add(incrementArrow, 2, 0);
-				gridPane.getColumnConstraints().addAll(lColumnValue, lColumnArrow, lColumnArrow);
+				HBox lHBox = new HBox(0);
+				lHBox.add(decrementArrow, new HBox.C().hgrow(Priority.ALWAYS));
+				lHBox.add(incrementArrow, new HBox.C().hgrow(Priority.ALWAYS));
+				skinNode.setRight(lHBox);
+				BorderPane.setAlignment(lHBox, Pos.CENTER_RIGHT);
+				//lHBox.setStyle("-fx-border-color: blue;");
 			}
 			if (lArrowPosition == ArrowPosition.SPLIT)
 			{
-				// construct a gridpane: one row, three columns: arrow, value, arrow
-				gridPane.setHgap(3);
-				gridPane.setVgap(0);
-				gridPane.add(decrementArrow, 0, 0);
-				gridPane.add(valueGroup, 1, 0);
-				gridPane.add(incrementArrow, 2, 0);
-				gridPane.getColumnConstraints().addAll(lColumnArrow, lColumnValue, lColumnArrow);
+				skinNode.setLeft(decrementArrow);
+				skinNode.setRight(incrementArrow);
+				BorderPane.setAlignment(decrementArrow, Pos.CENTER_LEFT);
+				BorderPane.setAlignment(incrementArrow, Pos.CENTER_RIGHT);
 			}
 		}
 		if (lArrowDirection == ArrowDirection.VERTICAL)
 		{
 			if (lArrowPosition == ArrowPosition.LEADING)
 			{
-				// construct a gridpane: two rows, two columns: arrows on top, value
-				gridPane.setHgap(3);
-				gridPane.setVgap(0);
-				gridPane.add(incrementArrow, 0, 0);
-				gridPane.add(decrementArrow, 0, 1);
-				gridPane.add(valueGroup, 1, 0, 1, 2);
-				gridPane.getColumnConstraints().addAll(lColumnArrow, lColumnValue); 
-				gridPane.getRowConstraints().addAll(lRowArrow, lRowArrow);
+				VBox lVBox = new VBox(0);
+				lVBox.add(incrementArrow, new VBox.C().vgrow(Priority.ALWAYS));
+				lVBox.add(decrementArrow, new VBox.C().vgrow(Priority.ALWAYS));
+				skinNode.setLeft(lVBox);
+				BorderPane.setAlignment(lVBox, Pos.CENTER_LEFT);
+				//lVBox.setStyle("-fx-border-color: blue;");
 			}
 			if (lArrowPosition == ArrowPosition.TRAILING)
 			{
-				// construct a gridpane: two rows, two columns: value, arrows on top
-				gridPane.setHgap(3);
-				gridPane.setVgap(0);
-				gridPane.add(valueGroup, 0, 0, 1, 2);
-				gridPane.add(incrementArrow, 1, 0);
-				gridPane.add(decrementArrow, 1, 1);
-				gridPane.getColumnConstraints().addAll(lColumnValue, lColumnArrow); 
-				gridPane.getRowConstraints().addAll(lRowArrow, lRowArrow);
+				VBox lVBox = new VBox(0);
+				lVBox.add(incrementArrow, new VBox.C().vgrow(Priority.ALWAYS));
+				lVBox.add(decrementArrow, new VBox.C().vgrow(Priority.ALWAYS));
+				skinNode.setRight(lVBox);
+				BorderPane.setAlignment(lVBox, Pos.CENTER_RIGHT);
+				//lVBox.setStyle("-fx-border-color: blue;");
 			}
 			if (lArrowPosition == ArrowPosition.SPLIT)
 			{
-				// construct a gridpane: three rows, one columns: arrow, value, arrow
-				gridPane.setHgap(3);
-				gridPane.setVgap(0);
-				gridPane.add(incrementArrow, 0, 0);
-				gridPane.add(valueGroup, 0, 1);
-				gridPane.add(decrementArrow, 0, 2);
-				gridPane.getColumnConstraints().addAll(lColumnValue); 
-				gridPane.getRowConstraints().addAll(lRowArrow, lRowValue, lRowArrow);
+				skinNode.setTop(incrementArrow);
+				skinNode.setBottom(decrementArrow);
+				BorderPane.setAlignment(incrementArrow, Pos.TOP_CENTER);
+				BorderPane.setAlignment(decrementArrow, Pos.BOTTOM_CENTER);
 			}
 		}
 	}
