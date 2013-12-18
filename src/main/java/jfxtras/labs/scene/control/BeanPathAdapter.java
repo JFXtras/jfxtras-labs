@@ -615,6 +615,23 @@ public class BeanPathAdapter<B> {
 		}
 	}
 
+	private final ObjectProperty<B>  beanProp = new SimpleObjectProperty<>();
+	{
+		beanProp.addListener( new ChangeListener<B>()
+		{
+			@Override
+			public void changed( ObservableValue<? extends B> observable, B oldValue, B newValue )
+			{
+				setBean( newValue );
+			}
+		} );
+	}
+	
+	public ObjectProperty<B> beanProperty()
+	{
+		return beanProp; 
+	}
+
 	/**
 	 * @return the root/top level {@link FieldBean}
 	 */
