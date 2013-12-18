@@ -600,19 +600,7 @@ public class BeanPathAdapter<B> {
 	 *            the bean to set
 	 */
 	public void setBean(final B bean) {
-		if (bean == null) {
-			throw new NullPointerException();
-		}
-		if (getRoot() == null) {
-			this.root = new FieldBean<>(null, bean, null,
-					fieldPathValueProperty, dateFormatProperty());
-		} else {
-			getRoot().setBean(bean);
-		}
-		if (hasFieldPathValueTypes(FieldPathValueType.BEAN_CHANGE)) {
-			fieldPathValueProperty.set(new FieldPathValue(null, getBean(),
-					getBean(), FieldPathValueType.BEAN_CHANGE));
-		}
+		beanProp.set( bean );
 	}
 
 	private final ObjectProperty<B>  beanProp = new SimpleObjectProperty<>();
@@ -622,7 +610,19 @@ public class BeanPathAdapter<B> {
 			@Override
 			public void changed( ObservableValue<? extends B> observable, B oldValue, B newValue )
 			{
-				setBean( newValue );
+				if (bean == null) {
+					throw new NullPointerException();
+				}
+				if (getRoot() == null) {
+					this.root = new FieldBean<>(null, bean, null,
+							fieldPathValueProperty, dateFormatProperty());
+				} else {
+					getRoot().setBean(bean);
+				}
+				if (hasFieldPathValueTypes(FieldPathValueType.BEAN_CHANGE)) {
+					fieldPathValueProperty.set(new FieldPathValue(null, getBean(),
+							getBean(), FieldPathValueType.BEAN_CHANGE));
+				}
 			}
 		} );
 	}
