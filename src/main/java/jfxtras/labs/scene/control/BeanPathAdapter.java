@@ -614,7 +614,7 @@ public class BeanPathAdapter<B> {
 					throw new NullPointerException();
 				}
 				if (getRoot() == null) {
-					this.root = new FieldBean<>(null, newBean, null,
+					BeanPathAdapter.this.root = new FieldBean<>(null, newBean, null,
 							fieldPathValueProperty, dateFormatProperty());
 				} else {
 					getRoot().setBean(newBean);
