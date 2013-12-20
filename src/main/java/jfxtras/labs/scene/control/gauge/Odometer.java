@@ -240,9 +240,22 @@ public class Odometer extends Control {
         }
     }
 
-    public final int getDialPosition(int dial) {
+    /*public final int getDialPosition(int dial) {
         double pow = Math.pow(10, dial);
         return (int) Math.floor((rotations.get() % pow) / (pow / 10));
+    }*/
+//[Micro-]Optimization: refactored with integer arithmethic instead of FP. Approx. x20 performance increase.
+    /**
+     * @param dial 1-based dial index
+     * @return digit value
+     */
+    public final int getDialPosition(int dial)
+    {
+        int pow = 1;
+        --dial;//now zero-based
+        for (int i = dial; i > 0; --i)
+            pow *= 10;
+        return  rotations.get() / pow % 10;
     }
 
     @Override public void setPrefSize(final double WIDTH, final double HEIGHT) {
