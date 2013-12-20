@@ -608,16 +608,16 @@ public class BeanPathAdapter<B> {
 		beanProp.addListener( new ChangeListener<B>()
 		{
 			@Override
-			public void changed( ObservableValue<? extends B> observable, B oldValue, B newValue )
+			public void changed( ObservableValue<? extends B> observable, B oldBean, B newBean )
 			{
-				if (bean == null) {
+				if (newBean == null) {
 					throw new NullPointerException();
 				}
 				if (getRoot() == null) {
-					this.root = new FieldBean<>(null, bean, null,
+					this.root = new FieldBean<>(null, newBean, null,
 							fieldPathValueProperty, dateFormatProperty());
 				} else {
-					getRoot().setBean(bean);
+					getRoot().setBean(newBean);
 				}
 				if (hasFieldPathValueTypes(FieldPathValueType.BEAN_CHANGE)) {
 					fieldPathValueProperty.set(new FieldPathValue(null, getBean(),
