@@ -79,12 +79,12 @@ public class LocalDateTimePickerTrial1 extends Application {
         {
 			final TextField lTextField = new TextField();
 			lTextField.setEditable(false);
-	        lLocalDateTimePicker.localDates().addListener(new ListChangeListener<LocalDateTime>()
+	        lLocalDateTimePicker.localDateTimes().addListener(new ListChangeListener<LocalDateTime>()
 	        {
 				@Override
 				public void onChanged(javafx.collections.ListChangeListener.Change<? extends LocalDateTime> arg0)
 				{
-					lTextField.setText(lLocalDateTimePicker.localDates().toString());
+					lTextField.setText(lLocalDateTimePicker.localDateTimes().toString());
 				}
 	        });
 	        lVBox.getChildren().add(lTextField);
