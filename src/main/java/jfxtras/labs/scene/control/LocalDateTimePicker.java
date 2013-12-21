@@ -113,8 +113,8 @@ public class LocalDateTimePicker extends CalendarPicker
 	}
 
 	/** LocalDateTimes: */
-	public ObservableList<LocalDateTime> localDates() { return localDates; }
-	private final ObservableList<LocalDateTime> localDates =  javafx.collections.FXCollections.observableArrayList();
+	public ObservableList<LocalDateTime> localDateTimes() { return localDateTimes; }
+	private final ObservableList<LocalDateTime> localDateTimes =  javafx.collections.FXCollections.observableArrayList();
 	private void constructLocalDateTimes()
 	{
 		// forward changes 
@@ -128,36 +128,119 @@ public class LocalDateTimePicker extends CalendarPicker
 					 for (Calendar lCalendar : change.getRemoved()) 
 					 {
 						 LocalDateTime lLocalDateTime = DateTimeUtil.createLocalDateTimeFromCalendar(lCalendar);
-                         if (localDates().contains(lLocalDateTime)) localDates().remove(lLocalDateTime);
+                         if (localDateTimes().contains(lLocalDateTime)) localDateTimes().remove(lLocalDateTime);
                      }
                      for (Calendar lCalendar : change.getAddedSubList()) 
                      {
 						 LocalDateTime lLocalDateTime = DateTimeUtil.createLocalDateTimeFromCalendar(lCalendar);
-						 if (localDates().contains(lLocalDateTime) == false) localDates().add(lLocalDateTime);
+						 if (localDateTimes().contains(lLocalDateTime) == false) localDateTimes().add(lLocalDateTime);
                      }				
 				}
 			} 
 		});
 		// handle changes 
-		localDates().addListener(new ListChangeListener<LocalDateTime>() 
+		localDateTimes().addListener(new ListChangeListener<LocalDateTime>() {
+			@Override
+			public void onChanged(ListChangeListener.Change<? extends LocalDateTime> change) {
+				while (change.next()) {
+					for (LocalDateTime lLocalDateTime : change.getRemoved()) {
+						Calendar lCalendar = DateTimeUtil.createCalendarFromLocalDateTime(lLocalDateTime, getLocale());
+						if (calendars().contains(lCalendar)) calendars().remove(lCalendar);
+					}
+					for (LocalDateTime lLocalDateTime : change.getAddedSubList()) {
+						Calendar lCalendar = DateTimeUtil.createCalendarFromLocalDateTime(lLocalDateTime, getLocale());
+						if (calendars().contains(lCalendar) == false) calendars().add(lCalendar);
+					}
+				}
+			}
+		});
+	}
+
+	/** highlightedLocalDateTimes: */
+	public ObservableList<LocalDateTime> highlightedLocalDateTimes() { return localDateTimes; }
+	private final ObservableList<LocalDateTime> highlightedLocalDateTimes =  javafx.collections.FXCollections.observableArrayList();
+	private void constructHighlightedLocalDateTimes()
+	{
+		// forward changes
+		highlightedCalendars().addListener(new ListChangeListener<Calendar>()
 		{
 			@Override
-			public void onChanged(ListChangeListener.Change<? extends LocalDateTime> change)
+			public void onChanged(ListChangeListener.Change<? extends Calendar> change)
 			{
 				while (change.next())
 				{
-					 for (LocalDateTime lLocalDateTime : change.getRemoved()) 
-					 {
-						 Calendar lCalendar = DateTimeUtil.createCalendarFromLocalDateTime(lLocalDateTime, getLocale());
-                         if (calendars().contains(lCalendar)) calendars().remove(lCalendar);
-                     }
-                     for (LocalDateTime lLocalDateTime : change.getAddedSubList()) 
-                     {
-						 Calendar lCalendar = DateTimeUtil.createCalendarFromLocalDateTime(lLocalDateTime, getLocale());
-						 if (calendars().contains(lCalendar) == false) calendars().add(lCalendar);
-                     }				
+					for (Calendar lCalendar : change.getRemoved())
+					{
+						LocalDateTime lLocalDateTime = DateTimeUtil.createLocalDateTimeFromCalendar(lCalendar);
+						if (highlightedLocalDateTimes().contains(lLocalDateTime)) highlightedLocalDateTimes().remove(lLocalDateTime);
+					}
+					for (Calendar lCalendar : change.getAddedSubList())
+					{
+						LocalDateTime lLocalDateTime = DateTimeUtil.createLocalDateTimeFromCalendar(lCalendar);
+						if (highlightedLocalDateTimes().contains(lLocalDateTime) == false) highlightedLocalDateTimes().add(lLocalDateTime);
+					}
 				}
-			} 
+			}
+		});
+		// handle changes
+		highlightedLocalDateTimes().addListener(new ListChangeListener<LocalDateTime>() {
+			@Override
+			public void onChanged(ListChangeListener.Change<? extends LocalDateTime> change) {
+				while (change.next()) {
+					for (LocalDateTime lLocalDateTime : change.getRemoved()) {
+						Calendar lCalendar = DateTimeUtil.createCalendarFromLocalDateTime(lLocalDateTime, getLocale());
+						if (highlightedLocalDateTimes().contains(lCalendar)) highlightedCalendars().remove(lCalendar);
+					}
+					for (LocalDateTime lLocalDateTime : change.getAddedSubList()) {
+						Calendar lCalendar = DateTimeUtil.createCalendarFromLocalDateTime(lLocalDateTime, getLocale());
+						if (highlightedLocalDateTimes().contains(lCalendar) == false) highlightedCalendars().add(lCalendar);
+					}
+				}
+			}
+		});
+	}
+
+	/** disabledLocalDateTimes: */
+	public ObservableList<LocalDateTime> disabledLocalDateTimes() { return localDateTimes; }
+	private final ObservableList<LocalDateTime> disabledLocalDateTimes =  javafx.collections.FXCollections.observableArrayList();
+	private void constructDisabledLocalDateTimes()
+	{
+		// forward changes
+		disabledCalendars().addListener(new ListChangeListener<Calendar>()
+		{
+			@Override
+			public void onChanged(ListChangeListener.Change<? extends Calendar> change)
+			{
+				while (change.next())
+				{
+					for (Calendar lCalendar : change.getRemoved())
+					{
+						LocalDateTime lLocalDateTime = DateTimeUtil.createLocalDateTimeFromCalendar(lCalendar);
+						if (disabledLocalDateTimes().contains(lLocalDateTime)) disabledLocalDateTimes().remove(lLocalDateTime);
+					}
+					for (Calendar lCalendar : change.getAddedSubList())
+					{
+						LocalDateTime lLocalDateTime = DateTimeUtil.createLocalDateTimeFromCalendar(lCalendar);
+						if (disabledLocalDateTimes().contains(lLocalDateTime) == false) disabledLocalDateTimes().add(lLocalDateTime);
+					}
+				}
+			}
+		});
+		// handle changes
+		disabledLocalDateTimes().addListener(new ListChangeListener<LocalDateTime>() {
+			@Override
+			public void onChanged(ListChangeListener.Change<? extends LocalDateTime> change) {
+				while (change.next()) {
+					for (LocalDateTime lLocalDateTime : change.getRemoved()) {
+						Calendar lCalendar = DateTimeUtil.createCalendarFromLocalDateTime(lLocalDateTime, getLocale());
+						if (disabledLocalDateTimes().contains(lCalendar)) disabledCalendars().remove(lCalendar);
+					}
+					for (LocalDateTime lLocalDateTime : change.getAddedSubList()) {
+						Calendar lCalendar = DateTimeUtil.createCalendarFromLocalDateTime(lLocalDateTime, getLocale());
+						if (disabledLocalDateTimes().contains(lCalendar) == false) disabledCalendars().add(lCalendar);
+					}
+				}
+			}
 		});
 	}
 
