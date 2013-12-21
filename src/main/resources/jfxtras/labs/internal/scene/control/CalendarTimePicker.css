@@ -2,6 +2,9 @@
 .CalendarTimePicker { 
 	-fx-skin: "jfxtras.labs.internal.scene.control.skin.CalendarTimePickerSkin";
 }
+.LocalTimePicker {
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.CalendarTimePickerSkin";
+}
 
 /* skin level 
 .CalendarTimePickerSkin { 

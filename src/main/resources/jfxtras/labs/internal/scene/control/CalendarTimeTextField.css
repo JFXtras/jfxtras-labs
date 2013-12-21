@@ -2,6 +2,9 @@
 .CalendarTimeTextField { 
 	-fx-skin: "jfxtras.labs.internal.scene.control.skin.CalendarTimeTextFieldCaspianSkin";
 }
+.LocalTimeTextField {
+    -fx-skin: "jfxtras.labs.internal.scene.control.skin.CalendarTimeTextFieldCaspianSkin";
+}
 
 .CalendarTimeTextFieldCaspianSkin .icon  {
 	-fx-image: url("skin/CalendarTimeTextFieldCaspianSkinIcon.png");
