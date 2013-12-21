@@ -348,7 +348,7 @@ public class ListSpinnerTrial1 extends Application {
 		
 		
 		// create scene
-        Scene scene = new Scene(lHBox, 800, 600);
+        Scene scene = new Scene(lHBox, 800, 800);
         
 		// load custom CSS
         scene.getStylesheets().addAll(this.getClass().getResource(this.getClass().getSimpleName() + ".css").toExternalForm());

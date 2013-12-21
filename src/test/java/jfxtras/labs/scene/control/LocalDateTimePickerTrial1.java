@@ -1,5 +1,7 @@
 /**
- * Copyright (c) 2011, JFXtras
+ * LocalDateTimePickerTrial1.java
+ *
+ * Copyright (c) 2011-2013, JFXtras
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -24,6 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package jfxtras.labs.scene.control;
 
 import javafx.application.Application;
@@ -35,12 +38,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * @author Tom Eugelink
  */
-public class LocalDatePickerTrial1 extends Application {
+public class LocalDateTimePickerTrial1 extends Application {
 	
     public static void main(String[] args) {    	
 //    	java.util.Locale.setDefault(new java.util.Locale("de")); // weeks starts on monday
@@ -54,17 +57,17 @@ public class LocalDatePickerTrial1 extends Application {
 		lVBox.setSpacing(25);
 		
         // add a node
-		final LocalDatePicker lLocalDatePicker = new LocalDatePicker();
-        lVBox.getChildren().add(lLocalDatePicker);
+		final LocalDateTimePicker lLocalDateTimePicker = new LocalDateTimePicker();
+        lVBox.getChildren().add(lLocalDateTimePicker);
         
 		// textfield
         {
 			final TextField lTextField = new TextField();
 			lTextField.setEditable(false);
-	        lLocalDatePicker.localDateProperty().addListener(new ChangeListener<LocalDate>()
+	        lLocalDateTimePicker.localDateTimeProperty().addListener(new ChangeListener<LocalDateTime>()
 			{
 				@Override
-				public void changed(ObservableValue<? extends LocalDate> localDateProperty, LocalDate oldValue, LocalDate newValue)
+				public void changed(ObservableValue<? extends LocalDateTime> localDateProperty, LocalDateTime oldValue, LocalDateTime newValue)
 				{
 					lTextField.setText(newValue == null ? "null" : newValue.toString());
 				}
@@ -76,22 +79,22 @@ public class LocalDatePickerTrial1 extends Application {
         {
 			final TextField lTextField = new TextField();
 			lTextField.setEditable(false);
-	        lLocalDatePicker.localDates().addListener(new ListChangeListener<LocalDate>()
+	        lLocalDateTimePicker.localDates().addListener(new ListChangeListener<LocalDateTime>()
 	        {
 				@Override
-				public void onChanged(javafx.collections.ListChangeListener.Change<? extends LocalDate> arg0)
+				public void onChanged(javafx.collections.ListChangeListener.Change<? extends LocalDateTime> arg0)
 				{
-					lTextField.setText(lLocalDatePicker.localDates().toString());
+					lTextField.setText(lLocalDateTimePicker.localDates().toString());
 				}
 	        });
 	        lVBox.getChildren().add(lTextField);
         }
         
         // setup
-		lLocalDatePicker.setLocalDate(LocalDate.of(2011, 06, 01)); // set a value
-//		lLocalDatePicker.setMode(LocalDatePicker.Mode.RANGE);
-		lLocalDatePicker.setMode(LocalDatePicker.Mode.MULTIPLE);
-//		lLocalDatePicker.setMode(null);
+		lLocalDateTimePicker.setLocalDateTime(LocalDateTime.of(2011, 06, 01, 0, 0, 0)); // set a value
+//		lLocalDateTimePicker.setMode(LocalDateTimePicker.Mode.RANGE);
+		lLocalDateTimePicker.setMode(LocalDateTimePicker.Mode.MULTIPLE);
+//		lLocalDateTimePicker.setMode(null);
 
 		// create scene
         Scene scene = new Scene(lVBox, 300, 300);

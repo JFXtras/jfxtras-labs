@@ -291,7 +291,6 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>>
 		// left arrow
 		decrementArrow = new Region();
 		decrementArrow.getStyleClass().add("idle");
-		decrementArrow.setMinSize(8, 8);
 
 		// place holder for showing the value
 		valueHolderNode = new BorderPane();
@@ -301,7 +300,6 @@ public class ListSpinnerCaspianSkin<T> extends SkinBase<ListSpinner<T>>
 		// right arrow
 		incrementArrow = new Region();
 		incrementArrow.getStyleClass().add("idle");
-		incrementArrow.setMinSize(8, 8);
 
 		// construct a placeholder node
 		skinNode = new BorderPane();

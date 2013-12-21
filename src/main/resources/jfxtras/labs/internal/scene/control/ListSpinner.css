@@ -26,18 +26,22 @@
 .ListSpinner .left-arrow { 
     -fx-shape: "M4,-4 L0,0 L4,4 Z";
     -fx-scale-shape: false;
+    -fx-padding: 8;
 }
 .ListSpinner .right-arrow { 
     -fx-shape: "M0,-4 L4,0 L0,4 Z";
     -fx-scale-shape: false;
+    -fx-padding: 8;
 }
 .ListSpinner .down-arrow { 
     -fx-shape: "M-4,-2 L0,2 L4,-2 Z";
     -fx-scale-shape: false;
+    -fx-padding: 8;
 }
 .ListSpinner .up-arrow { 
     -fx-shape: "M4,2 L-4,2 L0,-2 Z";
     -fx-scale-shape: false;
+    -fx-padding: 8;
 }
 .ListSpinner .idle {
     -fx-background-color: -fx-mark-color;

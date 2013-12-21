@@ -1,5 +1,7 @@
 /**
- * Copyright (c) 2011, JFXtras
+ * LocalDateTimePicker.java
+ *
+ * Copyright (c) 2011-2013, JFXtras
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -24,10 +26,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package jfxtras.labs.scene.control;
 
 import java.util.Calendar;
-import java.util.Locale;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -35,17 +37,19 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import java.time.LocalDate;
 
+import java.time.LocalDateTime;
+
+import jfxtras.labs.util.DateTimeUtil;
 
 /**
- * LocalDate (JSR-310) picker component.
- * This is an extention of the CalendarPicker adding the new date API JSR-310.
+ * LocalDateTime (JSR-310) picker component.
+ * This is an extension of the CalendarPicker adding the new date API JSR-310.
  * Since Calendar will not be removed from the JDK, too many applications use it, this approach of extending CalendarPicker is the most flexible one. 
  * 
  * @author Tom Eugelink
  */
-public class LocalDatePicker extends CalendarPicker
+public class LocalDateTimePicker extends CalendarPicker
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -53,19 +57,19 @@ public class LocalDatePicker extends CalendarPicker
 	/**
 	 * 
 	 */
-	public LocalDatePicker()
+	public LocalDateTimePicker()
 	{
 		construct();
 	}
 
 	/**
 	 * 
-	 * @param localDate
+	 * @param localDateTime
 	 */
-	public LocalDatePicker(LocalDate localDate)
+	public LocalDateTimePicker(LocalDateTime localDateTime)
 	{
 		construct();
-		setLocalDate(localDate);
+		setLocalDateTime(localDateTime);
 	}
 	
 	/*
@@ -74,20 +78,20 @@ public class LocalDatePicker extends CalendarPicker
 	private void construct()
 	{
 		// construct properties
-		constructLocalDate();
-		constructLocalDates();
+		constructLocalDateTime();
+		constructLocalDateTimes();
 	}
 
 	// ==================================================================================================================
 	// PROPERTIES
 	
-	/** LocalDate: */
-	public ObjectProperty<LocalDate> localDateProperty() { return localDateObjectProperty; }
-	private final ObjectProperty<LocalDate> localDateObjectProperty = new SimpleObjectProperty<LocalDate>(this, "localDate");
-	public LocalDate getLocalDate() { return localDateObjectProperty.getValue(); }
-	public void setLocalDate(LocalDate value) { localDateObjectProperty.setValue(value); }
-	public LocalDatePicker withLocalDate(LocalDate value) { setLocalDate(value); return this; } 
-	private void constructLocalDate()
+	/** LocalDateTime: */
+	public ObjectProperty<LocalDateTime> localDateTimeProperty() { return localDateTimeObjectProperty; }
+	private final ObjectProperty<LocalDateTime> localDateTimeObjectProperty = new SimpleObjectProperty<LocalDateTime>(this, "localDateTime");
+	public LocalDateTime getLocalTimeDateTime() { return localDateTimeObjectProperty.getValue(); }
+	public void setLocalDateTime(LocalDateTime value) { localDateTimeObjectProperty.setValue(value); }
+	public LocalDateTimePicker withLocalDateTime(LocalDateTime value) { setLocalDateTime(value); return this; }
+	private void constructLocalDateTime()
 	{
 		// if this value is changed by binding, make sure related things are updated
 		calendarProperty().addListener(new ChangeListener<Calendar>()
@@ -95,25 +99,23 @@ public class LocalDatePicker extends CalendarPicker
 			@Override
 			public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
 			{
-				localDateProperty().set(createLocalDateFromCalendar(newValue));
+				localDateTimeProperty().set(DateTimeUtil.createLocalDateTimeFromCalendar(newValue));
 			} 
 		});
 		
 		// if the inherited value is changed, make sure calendar is updated
-		localDateProperty().addListener(new ChangeListener<LocalDate>()
-		{
+		localDateTimeProperty().addListener(new ChangeListener<LocalDateTime>() {
 			@Override
-			public void changed(ObservableValue<? extends LocalDate> observableValue, LocalDate oldValue, LocalDate newValue)
-			{
-				calendarProperty().set( newValue == null ? null : createCalendarFromLocalDate(newValue));
-			} 
+			public void changed(ObservableValue<? extends LocalDateTime> observableValue, LocalDateTime oldValue, LocalDateTime newValue) {
+				calendarProperty().set(newValue == null ? null : DateTimeUtil.createCalendarFromLocalDateTime(newValue, getLocale()));
+			}
 		});
 	}
 
-	/** LocalDates: */
-	public ObservableList<LocalDate> localDates() { return localDates; }
-	private final ObservableList<LocalDate> localDates =  javafx.collections.FXCollections.observableArrayList();
-	private void constructLocalDates()
+	/** LocalDateTimes: */
+	public ObservableList<LocalDateTime> localDates() { return localDates; }
+	private final ObservableList<LocalDateTime> localDates =  javafx.collections.FXCollections.observableArrayList();
+	private void constructLocalDateTimes()
 	{
 		// forward changes 
 		calendars().addListener(new ListChangeListener<Calendar>() 
@@ -125,33 +127,33 @@ public class LocalDatePicker extends CalendarPicker
 				{
 					 for (Calendar lCalendar : change.getRemoved()) 
 					 {
-						 LocalDate lLocalDate = createLocalDateFromCalendar(lCalendar);
-                         if (localDates().contains(lLocalDate)) localDates().remove(lLocalDate);
+						 LocalDateTime lLocalDateTime = DateTimeUtil.createLocalDateTimeFromCalendar(lCalendar);
+                         if (localDates().contains(lLocalDateTime)) localDates().remove(lLocalDateTime);
                      }
                      for (Calendar lCalendar : change.getAddedSubList()) 
                      {
-						 LocalDate lLocalDate = createLocalDateFromCalendar(lCalendar);
-						 if (localDates().contains(lLocalDate) == false) localDates().add(lLocalDate);
+						 LocalDateTime lLocalDateTime = DateTimeUtil.createLocalDateTimeFromCalendar(lCalendar);
+						 if (localDates().contains(lLocalDateTime) == false) localDates().add(lLocalDateTime);
                      }				
 				}
 			} 
 		});
 		// handle changes 
-		localDates().addListener(new ListChangeListener<LocalDate>() 
+		localDates().addListener(new ListChangeListener<LocalDateTime>() 
 		{
 			@Override
-			public void onChanged(ListChangeListener.Change<? extends LocalDate> change)
+			public void onChanged(ListChangeListener.Change<? extends LocalDateTime> change)
 			{
 				while (change.next())
 				{
-					 for (LocalDate lLocalDate : change.getRemoved()) 
+					 for (LocalDateTime lLocalDateTime : change.getRemoved()) 
 					 {
-						 Calendar lCalendar = createCalendarFromLocalDate(lLocalDate);
+						 Calendar lCalendar = DateTimeUtil.createCalendarFromLocalDateTime(lLocalDateTime, getLocale());
                          if (calendars().contains(lCalendar)) calendars().remove(lCalendar);
                      }
-                     for (LocalDate lLocalDate : change.getAddedSubList()) 
+                     for (LocalDateTime lLocalDateTime : change.getAddedSubList()) 
                      {
-						 Calendar lCalendar = createCalendarFromLocalDate(lLocalDate);
+						 Calendar lCalendar = DateTimeUtil.createCalendarFromLocalDateTime(lLocalDateTime, getLocale());
 						 if (calendars().contains(lCalendar) == false) calendars().add(lCalendar);
                      }				
 				}
@@ -162,34 +164,4 @@ public class LocalDatePicker extends CalendarPicker
 	// ==================================================================================================================
 	// SUPPORT
 
-	/**
-	 * 
-	 * @param localDate
-	 * @return
-	 */
-	private Calendar createCalendarFromLocalDate(LocalDate localDate)
-	{
-		if (localDate == null) return null;
-		Calendar lCalendar = Calendar.getInstance(getLocale());
-		lCalendar.set(Calendar.YEAR, localDate.getYear());
-		lCalendar.set(Calendar.MONTH, localDate.getMonthValue() - 1);
-		lCalendar.set(Calendar.DATE, localDate.getDayOfMonth());
-		lCalendar.set(Calendar.HOUR_OF_DAY, 0);
-		lCalendar.set(Calendar.MINUTE, 0);
-		lCalendar.set(Calendar.SECOND, 0);
-		lCalendar.set(Calendar.MILLISECOND, 0);
-		return lCalendar;
-	}
-	
-	/**
-	 * 
-	 * @param calendar
-	 * @return
-	 */
-	private LocalDate createLocalDateFromCalendar(Calendar calendar)
-	{
-		if (calendar == null) return null;
-		LocalDate lLocalDate = LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DATE));
-		return lLocalDate;
-	}
 }
