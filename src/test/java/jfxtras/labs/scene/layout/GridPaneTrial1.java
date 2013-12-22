@@ -1,6 +1,7 @@
 package jfxtras.labs.scene.layout;
 
 import javafx.application.Application;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
@@ -22,42 +23,28 @@ public class GridPaneTrial1 extends Application
 	@Override
 	public void start(Stage stage) 
 	{
-		GridPane grid = new GridPane()
-			.withHGap(10)
-			.withVGap(10)
-			.withPadding(new Insets(0, 10, 0, 10));
+		GridPane gridPane = new GridPane()
+			.withHGap(5)
+			.withVGap(5)
+			.withPadding(new Insets(10, 10, 10, 10))
+			.withGridLinesVisible(true);
 
-	    // Category in column 2, row 1
-	    Text category = new Text("Sales:");
-	    category.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-	    grid.add(category, new GridPane.C().col(1).row(0)); 
+	    gridPane.add(new Text("SingleCell"), new GridPane.C().col(1).row(0));
+		gridPane.add(new Text("RIGHT"), new GridPane.C().col(2).row(0).halignment(HPos.RIGHT));
 
-	    // Title in column 3, row 1
-	    Text chartTitle = new Text("Current Year");
-	    chartTitle.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-	    grid.add(chartTitle, new GridPane.C().col(2).row(0));
+		gridPane.add(new Text("Span2Row\nSpan2Row\nSpan2Row"), new GridPane.C().col(0).row(0).colSpan(1).rowSpan(2));
 
-	    // Subtitle in columns 2-3, row 2
-	    grid.add(new Text("Goods and Services"), new GridPane.C().col(1).row(1).colSpan(2).rowSpan(1));
+	    gridPane.add(new Text("Span2Columns Span2Columns"), new GridPane.C().col(1).row(1).colSpan(2).rowSpan(1));
 
-	    // House icon in column 1, rows 1-2
-	    Rectangle lRectangle1 = new Rectangle(50,50);
-	    lRectangle1.setFill(Color.RED);
-	    grid.add(lRectangle1, new GridPane.C().col(0).row(0).colSpan(1).rowSpan(2)); 
+		gridPane.add(new Text("Single"), new GridPane.C().col(0).row(2));
+		gridPane.add(new Text("Span2Col2RowCenter\nSpan2Col2RowCenter\nSpan2Col2RowCenter\nSpan2Col2RowCenter\nSpan2Col2RowCenter"), new GridPane.C().col(1).row(2).colSpan(2).rowSpan(2).halignment(HPos.CENTER));
 
-	    // Left label in column 1 (bottom), row 3
-	    grid.add(new Text("Goods\n80%"), new GridPane.C().col(0).row(2).valignment(VPos.BOTTOM)); 
+		gridPane.add(new Text("BOTTOM"), new GridPane.C().col(0).row(3).valignment(VPos.BOTTOM));
 
-	    // Chart in columns 2-3, row 3
-	    Rectangle lRectangle2 = new Rectangle(150,100);
-	    lRectangle2.setFill(Color.BLUE);
-	    grid.add(lRectangle2, new GridPane.C().col(1).row(2).colSpan(2).rowSpan(1)); 
-
-	    // Right label in column 4 (top), row 3
-	    grid.add(new Text("Services\n20%"), new GridPane.C().col(3).row(2).valignment(VPos.TOP));
+	    gridPane.add(new Text("TOP"), new GridPane.C().col(3).row(3).valignment(VPos.TOP));
 	    
         // setup scene
-		Scene scene = new Scene(grid, 800, 200);
+		Scene scene = new Scene(gridPane, 800, 200);
 		
         // create stage
         stage.setTitle(this.getClass().getSimpleName());
