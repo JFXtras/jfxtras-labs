@@ -1,30 +1,28 @@
-/**
- * OdometerSkin.java
+/*
+ * Copyright (c) 2012, JFXtras
+ *   All rights reserved.
  *
- * Copyright (c) 2011-2013, JFXtras
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the <organization> nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *   Redistribution and use in source and binary forms, with or without
+ *   modification, are permitted provided that the following conditions are met:
+ *       * Redistributions of source code must retain the above copyright
+ *         notice, this list of conditions and the following disclaimer.
+ *       * Redistributions in binary form must reproduce the above copyright
+ *         notice, this list of conditions and the following disclaimer in the
+ *         documentation and/or other materials provided with the distribution.
+ *       * Neither the name of the <organization> nor the
+ *         names of its contributors may be used to endorse or promote products
+ *         derived from this software without specific prior written permission.
+ *
+ *   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *   DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ *   DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ *   ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package jfxtras.labs.internal.scene.control.skin;
@@ -62,10 +60,10 @@ import java.util.List;
 
 
 /**
- * Created by
- * User: hansolo
- * Date: 16.03.12
- * Time: 15:24
+ * @author hansolo
+ * @author Unai Vivi
+ * @version 2.2-r6
+ * @since 2012-03-16
  */
 public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
     private Odometer   control;
@@ -84,7 +82,7 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
         initialized = false;
         isDirty     = false;
         foreground  = new Group();
-        listOfDials = new LinkedList<Dial>();
+        listOfDials = new LinkedList<>();
         background  = new Group();
         init();
     }
@@ -124,54 +122,59 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
     // ******************** Methods *******************************************
     @Override protected void handleControlPropertyChanged(final String PROPERTY) {
         super.handleControlPropertyChanged(PROPERTY);
-        if ("ROTATION_PRESET".equals(PROPERTY)) {
-            String rot = Integer.toString(control.getRotations());
-            int noOfDials = control.getNoOfDigits() + control.getNoOfDecimals();
-            if (rot.length() > noOfDials) {
-                rot = rot.substring(rot.length() - noOfDials);
-            } else if (rot.length() < noOfDials) {
-                StringBuilder rotSB = new StringBuilder(noOfDials);
-                for (int i = 0 ; i < (noOfDials - rot.length()) ; i++) {
-                    rotSB.append("0");
-                }
-                rotSB.append(rot);
-                rot = rotSB.toString();
-            }
-            int index = listOfDials.size() - 1;
+        switch (PROPERTY)
+        {
+            case "ROTATION_PRESET":
+                String rot = Integer.toString(control.getRotations());
+                int noOfDials = control.getNoOfDigits() + control.getNoOfDecimals();
+                if (rot.length() > noOfDials) {
+                    rot = rot.substring(rot.length() - noOfDials);
+                } else if (rot.length() < noOfDials) {
+                    StringBuilder rotSB = new StringBuilder(noOfDials);
+                    for (int i = 0 ; i < (noOfDials - rot.length()) ; i++) {
+                        rotSB.append("0");
+                    }
+                    rotSB.append(rot);
+                    rot = rotSB.toString();
+                }   int index = listOfDials.size() - 1;
             for (final char c : rot.toCharArray()) {
                 listOfDials.get(index).setToNumber(Integer.parseInt(String.valueOf(c)));
                 index--;
-            }
-        } else if ("ROTATION".equals(PROPERTY)) {
-            for (int i = 1 ; i < (control.getNoOfDigits() + control.getNoOfDecimals() + 1) ; i++) {
-                if (control.getRotations() == 0) {
-                    listOfDials.get(i - 1).reset();
-                } else {
-                    listOfDials.get(i - 1).setNumber(control.getDialPosition(i));
-                }
-            }
-        } else if ("NO_OF_DIGITS".equals(PROPERTY)) {
-            control.setPrefSize(0.5925925925925926 * getPrefHeight() * (control.getNoOfDigits() + control.getNoOfDecimals()), getPrefHeight());
-            repaint();
-        } else if ("NO_OF_DECIMALS".equals(PROPERTY)) {
-            control.setPrefSize(0.5925925925925926 * getPrefHeight() * (control.getNoOfDigits() + control.getNoOfDecimals()), getPrefHeight());
-            repaint();
-        } else if ("DECIMAL_COLOR".equals(PROPERTY)) {
-            repaint();
-        } else if ("COLOR".equals(PROPERTY)) {
-            repaint();
-        } else if ("PREF_WIDTH".equals(PROPERTY)) {
-            double prefHeight = (control.getPrefWidth() / (control.getNoOfDigits() + control.getNoOfDecimals())) * 1.6875;
-            if (Double.compare(control.getPrefHeight(), prefHeight) != 0) {
-                control.setPrefHeight(prefHeight);
-            }
-            repaint();
-        } else if ("PREF_HEIGHT".equals(PROPERTY)) {
-            double prefWidth = control.getPrefHeight() * 0.5925925925925926 * (control.getNoOfDigits() + control.getNoOfDecimals());
-            if (Double.compare(control.getPrefWidth(), prefWidth) != 0) {
-                control.setPrefWidth(prefWidth);
-            }
-            repaint();
+            }   break;
+            case "ROTATION":
+                for (int i = 0 ; i < (control.getNoOfDigits() + control.getNoOfDecimals()) ; i++) {
+//                if (control.getRotations() == 0) {
+//                    listOfDials.get(i - 1).reset();
+//                } else {
+                    listOfDials.get(i).setDigit(control.getDialPosition(i+1));
+//                }
+                }   break;
+            case "NO_OF_DIGITS":
+                control.setPrefSize(0.5925925925925926 * getPrefHeight() * (control.getNoOfDigits() + control.getNoOfDecimals()), getPrefHeight());
+                repaint();
+                break;
+            case "NO_OF_DECIMALS":
+                control.setPrefSize(0.5925925925925926 * getPrefHeight() * (control.getNoOfDigits() + control.getNoOfDecimals()), getPrefHeight());
+                repaint();
+                break;
+            case "DECIMAL_COLOR":
+                repaint();
+                break;
+            case "COLOR":
+                repaint();
+                break;
+            case "PREF_WIDTH":
+                double prefHeight = (control.getPrefWidth() / (control.getNoOfDigits() + control.getNoOfDecimals())) * 1.6875;
+                if (Double.compare(control.getPrefHeight(), prefHeight) != 0) {
+                    control.setPrefHeight(prefHeight);
+                }   repaint();
+                break;
+            case "PREF_HEIGHT":
+                double prefWidth = control.getPrefHeight() * 0.5925925925925926 * (control.getNoOfDigits() + control.getNoOfDecimals());
+                if (Double.compare(control.getPrefWidth(), prefWidth) != 0) {
+                    control.setPrefWidth(prefWidth);
+                }   repaint();
+                break;
         }
     }
 
@@ -383,6 +386,36 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
             nextNumber.setText(number == 9 ? "0" : Integer.toString(number + 1));
             currentNumberGroup.setTranslateY(0);
             currentNumber.setText(Integer.toString(number));
+        }
+
+        /**
+         * Invoke to set this Dial's digit to the value specified in finalDigit.
+         * @param finalDigit New digit value
+         * @param currentDigit [Ghost parameter, used for recursion. Do not populate.]
+         */
+        private void setDigit(final int finalDigit, int... currentDigit)
+        {
+            if(currentDigit.length==0)
+                Dial.this.setDigit(finalDigit, Integer.parseInt(currentNumber.getText()));
+            else
+            {
+                final int digit=currentDigit[0];
+                if(finalDigit==digit)
+                    return;
+                nextNumberGroup.setTranslateY(-control.getPrefHeight());
+                nextNumber.setText(Integer.toString((digit + 1) % 10));
+                currentNumberGroup.setTranslateY(0);
+                currentNumber.setText(Integer.toString(digit));
+                parallel.setOnFinished(new EventHandler<ActionEvent>()
+                {
+                    @Override
+                    public void handle(ActionEvent t)
+                    {
+                        Dial.this.setDigit(finalDigit, (digit + 1) % 10);
+                    }
+                });
+                parallel.play();
+            }
         }
     }
 }
