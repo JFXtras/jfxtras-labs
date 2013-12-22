@@ -391,9 +391,9 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
         }
 
         /**
-         * Invoke to set this Dial's digit to the value specified in finalDigit.
+         * Invoke to set this {@link Dial}'s digit to the value specified in <code>finalDigit</code>.
          * @param finalDigit New digit value
-         * @param currentDigit [Ghost parameter, used for recursion. Do not populate.]
+         * @param currentDigit <i>Ghost parameter, used for recursion. Do not populate.</i>
          */
         private void setDigit(final int finalDigit, int... currentDigit)
         {
