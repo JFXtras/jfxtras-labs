@@ -1,30 +1,28 @@
-/**
- * Odometer.java
+/*
+ * Copyright (c) 2012, JFXtras
+ *   All rights reserved.
  *
- * Copyright (c) 2011-2013, JFXtras
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the <organization> nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *   Redistribution and use in source and binary forms, with or without
+ *   modification, are permitted provided that the following conditions are met:
+ *       * Redistributions of source code must retain the above copyright
+ *         notice, this list of conditions and the following disclaimer.
+ *       * Redistributions in binary form must reproduce the above copyright
+ *         notice, this list of conditions and the following disclaimer in the
+ *         documentation and/or other materials provided with the distribution.
+ *       * Neither the name of the <organization> nor the
+ *         names of its contributors may be used to endorse or promote products
+ *         derived from this software without specific prior written permission.
+ *
+ *   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *   DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ *   DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ *   ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package jfxtras.labs.scene.control.gauge;
@@ -44,10 +42,10 @@ import javafx.scene.paint.Color;
 
 
 /**
- * Created by
- * User: hansolo
- * Date: 16.03.12
- * Time: 15:24
+ * @author hansolo
+ * @author Unai Vivi
+ * @version 2.2-r6
+ * @since 2012-03-16
  */
 public class Odometer extends Control {
     private static final String   DEFAULT_STYLE_CLASS = "odometer";
@@ -71,10 +69,10 @@ public class Odometer extends Control {
     }
 
     public Odometer(final int NO_OF_DIGITS) {
-        color              = new SimpleObjectProperty<Color>(Color.rgb(240, 240, 240));
-        decimalColor       = new SimpleObjectProperty<Color>(Color.rgb(220, 0, 0));
-        numberColor        = new SimpleObjectProperty<Color>(Color.BLACK);
-        numberDecimalColor = new SimpleObjectProperty<Color>(Color.WHITE);
+        color              = new SimpleObjectProperty<>(Color.rgb(240, 240, 240));
+        decimalColor       = new SimpleObjectProperty<>(Color.rgb(220, 0, 0));
+        numberColor        = new SimpleObjectProperty<>(Color.BLACK);
+        numberDecimalColor = new SimpleObjectProperty<>(Color.WHITE);
         noOfDigits         = new SimpleIntegerProperty(NO_OF_DIGITS < 0 ? 1 : NO_OF_DIGITS);
         noOfDecimals       = new SimpleIntegerProperty(0);
         interval           = new SimpleLongProperty(1000);
@@ -95,7 +93,6 @@ public class Odometer extends Control {
 
         getStyleClass().add(DEFAULT_STYLE_CLASS);
     }
-
 
     // ******************** Methods *******************************************
     public final Color getColor() {
@@ -162,11 +159,48 @@ public class Odometer extends Control {
         return rotations.get();
     }
 
-    /*
+    /**
+     * Invoke to set the {@link Odometer}'s digits to the numerical value specified in <code>ROTATIONS</code>.
+     * If the <i>n</i> rightmost digits of the constructed are decimals, then the <i>n</i>
+     * rightmost digits in <code>ROTATIONS</code> will be considered as such.
+     * <hr>
+     * <b>Usage example:</b>
+     * <pre>
+     * final Odometer o = OdometerBuilder.create()
+     *              .noOfDecimals(1)
+     *              .noOfDigits(7)
+     *              .color(Color.DARKSLATEGREY)
+     *              .numberColor(Color.WHITE)
+     *              .interval(100).build();
+     * for (int i = 0; i < 200; i++)
+     * {
+     *     final int sWait = i*2;
+     *     Task<Void> t = new Task<Void>()
+     *     {
+     *         protected Void call()
+     *         {
+     *             try{Thread.sleep(sWait);}
+     *             catch(InterruptedException ie){}
+     *             Platform.runLater(new Runnable()
+     *                 {
+     *                     public void run()
+     *                     {
+     *                         o.setRotations((int) (Math.random() * 100_000_000));
+     *                     }
+     *                 }
+     *         }
+     *     };
+     *     Thread th = new Thread(t, "number instance");
+     *     th.setDaemon(true);
+     *     th.start();
+     * }
+     * </pre>
+     * <hr>
+     * @param ROTATIONS New numerical value for the {@link Odometer}
+     */
     public final void setRotations(final int ROTATIONS) {
         rotations.set(ROTATIONS);
     }
-    */
 
     public final ReadOnlyIntegerProperty rotationsProperty() {
         return rotations;
@@ -244,13 +278,12 @@ public class Odometer extends Control {
         double pow = Math.pow(10, dial);
         return (int) Math.floor((rotations.get() % pow) / (pow / 10));
     }*/
-//[Micro-]Optimization: refactored with integer arithmethic instead of FP. Approx. x20 performance increase.
     /**
      * @param dial 1-based dial index
      * @return digit value
      */
     public final int getDialPosition(int dial)
-    {
+    {//[Micro-]Optimization: refactored with integer arithmetic instead of FP. Approx. x20 performance increase.
         int pow = 1;
         --dial;//now zero-based
         for (int i = dial; i > 0; --i)
