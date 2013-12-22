@@ -121,10 +121,10 @@
 }
 
 .AgendaWeekSkin .Selected { 
-	-fx-color: -fx-focused-base;
+	-xfx-color: -fx-focused-base;
 	-fx-background-color: -fx-focus-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
 	-fx-background-insets: -1.4, 0, 1, 2;
-	-fx-background-radius: 6.4, 5, 4, 3;	
+	-fx-background-radius: 6.4, 5, 4, 3;
 }
 
 .AgendaWeekSkin .Now {
@@ -144,8 +144,10 @@
 	-fx-text-fill: -fx-text-base-color;
 }
 
+/* empty block causes an IndexOutOfBoundsException
 .AgendaPopup .AppointmentGroups {
 }
+*/
 
 .AgendaPopup .AppointmentGroup {
 	-fx-border-color: WHITE;
