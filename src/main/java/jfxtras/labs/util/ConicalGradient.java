@@ -208,7 +208,7 @@ public class ConicalGradient {
 		double y      = SHAPE.getLayoutBounds().getMinY();
 		double width  = SHAPE.getLayoutBounds().getWidth();
 		double height = SHAPE.getLayoutBounds().getHeight();
-		center        = new Point2D(width / 2.0, width / 2.0);
+		center        = new Point2D(width / 2.0, height / 2.0);
 		return new ImagePattern(getImage(width, height), x, y, width, height, false);
     }
 }

@@ -133,10 +133,10 @@ public class Content {
                    final Effect EFFECT, final PostEffect POSTEFFECT, final int PAUSE, final int SPEED, 
                    final RotationOrder ORDER, final boolean CLEAR){
         
-        color    = new SimpleObjectProperty<MatrixColor>(COLOR);
-        type    = new SimpleObjectProperty<Type>(TYPE);
-        origin  = new SimpleObjectProperty<Point2D>(ORIGIN);
-        area    = new SimpleObjectProperty<Rectangle>(RECT);
+        color    = new SimpleObjectProperty<>(COLOR);
+        type    = new SimpleObjectProperty<>(TYPE);
+        origin  = new SimpleObjectProperty<>(ORIGIN);
+        area    = new SimpleObjectProperty<>(RECT);
         if(type.get().equals(Type.IMAGE)) {
             bmpName = new SimpleStringProperty(BMP_TXT_CONTENT);
             txtContent = new SimpleStringProperty("");
@@ -146,11 +146,11 @@ public class Content {
             bmpName = new SimpleStringProperty("");
             txtContent = new SimpleStringProperty(BMP_TXT_CONTENT);
         }
-        matrixFont = new SimpleObjectProperty<MatrixFont>(VOID_MATRIX_FONT_NAME);
-        fontGap    = new SimpleObjectProperty<Gap>(VOID_GAP);
-        txtAlign   = new SimpleObjectProperty<Align>(TXT_ALIGN);
-        effect     = new SimpleObjectProperty<Effect>(EFFECT);
-        postEffect = new SimpleObjectProperty<PostEffect>(POSTEFFECT);
+        matrixFont = new SimpleObjectProperty<>(VOID_MATRIX_FONT_NAME);
+        fontGap    = new SimpleObjectProperty<>(VOID_GAP);
+        txtAlign   = new SimpleObjectProperty<>(TXT_ALIGN);
+        effect     = new SimpleObjectProperty<>(EFFECT);
+        postEffect = new SimpleObjectProperty<>(POSTEFFECT);
         pause      = new SimpleIntegerProperty(PAUSE);
         lapse      = new SimpleIntegerProperty(SPEED);
         order      = new SimpleObjectProperty<RotationOrder>(ORDER);

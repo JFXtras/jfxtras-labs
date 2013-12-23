@@ -32,7 +32,9 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
+import javafx.scene.control.Skin;
 import javafx.scene.paint.Color;
+import jfxtras.labs.internal.scene.control.skin.MatrixPanelSkin;
 
 /**
  * Created by
@@ -973,12 +975,28 @@ public class MatrixPanel extends Control {
         }
     }
     
+    public static enum FrameDesign {
+        BLACK_METAL("frame-design-blackmetal"),
+        SHINY_METAL("frame-design-shinymetal"),
+        CHROME("frame-design-chrome"),
+        GLOSSY_METAL("frame-design-glossymetal"),
+        DARK_GLOSSY("frame-design-darkglossy"),
+        CUSTOM_DESIGN("frame-design-custom");
+
+        public final String CSS;
+
+        FrameDesign(final String CSS) {
+            this.CSS = CSS;
+        }
+    }
+    
     private static final String                 DEFAULT_STYLE_CLASS = "matrix-panel";
     private IntegerProperty                     ledWidth;
     private IntegerProperty                     ledHeight;
     private ObservableList<Content>             contents;
-    private ObjectProperty<Gauge.FrameDesign>   frameDesign;
+    private ObjectProperty<FrameDesign>         frameDesign;
     private ObjectProperty<Color>               frameBaseColor;
+    private ObjectProperty<String>              frameCustomPath;
     private BooleanProperty                     frameVisible;
     
     // ******************** Constructors **************************************
@@ -994,8 +1012,9 @@ public class MatrixPanel extends Control {
         contents    = FXCollections.observableArrayList();
         ledWidth    = new SimpleIntegerProperty(1);
         ledHeight   = new SimpleIntegerProperty(1);
-        frameDesign = new SimpleObjectProperty<Gauge.FrameDesign>(Gauge.FrameDesign.GLOSSY_METAL);
-        frameBaseColor = new SimpleObjectProperty<Color>(Color.rgb(160, 160, 160));
+        frameDesign = new SimpleObjectProperty<>(FrameDesign.GLOSSY_METAL);
+        frameBaseColor = new SimpleObjectProperty<>(Color.rgb(160, 160, 160));
+        frameCustomPath = new SimpleObjectProperty<>("/matrixpanel/black.jpg");
         frameVisible= new SimpleBooleanProperty(true);        
     }
 
@@ -1081,15 +1100,15 @@ public class MatrixPanel extends Control {
     }
 
     // ******************** Gauge related *************************************
-    public final Gauge.FrameDesign getFrameDesign() {
+    public final FrameDesign getFrameDesign() {
         return frameDesign.get();
     }
 
-    public final void setFrameDesign(final Gauge.FrameDesign FRAME_DESIGN) {
+    public final void setFrameDesign(final FrameDesign FRAME_DESIGN) {
         frameDesign.set(FRAME_DESIGN);
     }
 
-    public final ObjectProperty<Gauge.FrameDesign> frameDesignProperty() {
+    public final ObjectProperty<FrameDesign> frameDesignProperty() {
         return frameDesign;
     }
 
@@ -1099,6 +1118,22 @@ public class MatrixPanel extends Control {
 
     public final void setFrameBaseColor(final Color FRAME_BASE_COLOR) {
         frameBaseColor.set(FRAME_BASE_COLOR);
+    }
+    
+    public final ObjectProperty<Color> frameBaseColorProperty() {
+        return frameBaseColor;
+    }
+
+    public final String getFrameCustomPath() {
+        return frameCustomPath.get();
+    }
+
+    public final void setFrameCustomPath(final String FRAME_CUSTOM_PATH) {
+        frameCustomPath.set(FRAME_CUSTOM_PATH);
+    }
+    
+    public final ObjectProperty<String> frameCustomPathProperty() {
+        return frameCustomPath;
     }
 
     public final boolean isFrameVisible() {
@@ -1114,8 +1149,12 @@ public class MatrixPanel extends Control {
     }
     
     // ******************** Style related *************************************
-    @Override public String getUserAgentStylesheet() {
-        return getClass().getResource("matrixpanel.css").toExternalForm();
+    @Override protected Skin createDefaultSkin() {
+        return new MatrixPanelSkin(this);
+    }
+
+    @Override protected String getUserAgentStylesheet() {
+        return getClass().getResource(getClass().getSimpleName().toLowerCase() + ".css").toExternalForm();
     }
 
 

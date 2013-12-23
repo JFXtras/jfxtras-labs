@@ -27,6 +27,7 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
+import java.io.File;
 import javafx.animation.AnimationTimer;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -34,46 +35,37 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
-import javafx.scene.Group;
-import javafx.scene.effect.BlurType;
-import javafx.scene.effect.InnerShadow;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.ClosePath;
-import javafx.scene.shape.CubicCurveTo;
-import javafx.scene.shape.FillRule;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.util.Duration;
-import jfxtras.labs.internal.scene.control.behavior.MatrixPanelBehavior;
 import jfxtras.labs.scene.control.gauge.Content;
 import jfxtras.labs.scene.control.gauge.Content.MatrixColor;
 import jfxtras.labs.scene.control.gauge.MatrixPanel;
 import jfxtras.labs.scene.control.gauge.UtilHex;
 import jfxtras.labs.util.ConicalGradient;
-import jfxtras.labs.util.Util;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import javafx.scene.control.Skin;
+import javafx.scene.control.SkinBase;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 
 
 /**
@@ -84,62 +76,46 @@ import java.util.Map;
  * Modified by Jose Pereda Llamas &lt;jperedadnr&gt;
  * On : 23-jun-2012, 11:47:23
  */
-public class MatrixPanelSkin extends com.sun.javafx.scene.control.skin.BehaviorSkinBase<MatrixPanel, MatrixPanelBehavior> {
-    private static final Rectangle PREF_SIZE = new Rectangle(170, 350);
+public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<MatrixPanel> {
     private static final double      PREFERRED_WIDTH  = 170;
     private static final double      PREFERRED_HEIGHT = 350;
     private static final double      MINIMUM_WIDTH    = 17;
     private static final double      MINIMUM_HEIGHT   = 35;
     private static final double      MAXIMUM_WIDTH    = 1700;
     private static final double      MAXIMUM_HEIGHT   = 3500;
-    
-    private MatrixPanel         control;
-    private Rectangle           gaugeBounds;
-    private Point2D             framelessOffset;
-    private Group               frame;
-    private Group               background;
-    private Group               matrix;
-    private Group               foreground;
-    private boolean             isDirty;
-    private boolean             initialized;
-    private IntegerProperty     ledWidth;
-    private IntegerProperty     ledHeight;
-    private Group               dots;
-    private ObservableList<Content> contents;
-    private Map<Integer, Shape> dotMap;
-    private BooleanProperty[]   visibleContent=null;
-    private final int           toneScale=85;
-    private final Color         COLOR_OFF = Color.rgb(39, 39, 39,0.25);
-                    
+    private static double            aspectRatio      = PREFERRED_HEIGHT / PREFERRED_WIDTH;
+    private double                   width;
+    private double                   height;
+    private Pane                     pane;
+    private Region                   main;
+    private Region                   mainFrameOut;
+    private Region                   mainFrame;
+    private Region                   mainFrameIn;
+    private Region                   mainForeground;
+    private Pane                     dots;
+    private Map<Integer, Shape>      dotMap;
+    private int                      iDots;
+    private double                   radio=0d;
+    private final int                toneScale=85;
+    private BooleanProperty[]        visibleContent=null;
+    private final Color              COLOR_OFF = Color.rgb(39, 39, 39,0.25);
+    private ObservableList<Content>  contents;
+    private String                   jpgFrame;
+    private Background               fillFrame;
     // ******************** Constructors **************************************
     public MatrixPanelSkin(final MatrixPanel CONTROL) {
-        super(CONTROL, new MatrixPanelBehavior(CONTROL));
-        control = CONTROL;
-        gaugeBounds = new Rectangle(800, 600);
-        framelessOffset = new Point2D(0, 0);
-        frame = new Group();
-        background = new Group();
-        matrix = new Group();
-        foreground = new Group();
-        ledWidth = new SimpleIntegerProperty(0);
-        ledHeight = new SimpleIntegerProperty(0);
-        dots = new Group();
+        super(CONTROL);
         
-        isDirty = false;
-        initialized = false;
         init();
+        initGraphics();
+        registerListeners();
     }
-
 
     // ******************** Initialization ************************************
     private void init() {
         if (Double.compare(getSkinnable().getPrefWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getPrefHeight(), 0.0) <= 0 ||
             Double.compare(getSkinnable().getWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getHeight(), 0.0) <= 0) {
-            if (getSkinnable().getPrefWidth() > 0 && getSkinnable().getPrefHeight() > 0) {
-                getSkinnable().setPrefSize(getSkinnable().getPrefWidth(), getSkinnable().getPrefHeight());
-            } else {
-                getSkinnable().setPrefSize(PREFERRED_WIDTH, PREFERRED_HEIGHT);
-            }
+            setSize();
         }
 
         if (Double.compare(getSkinnable().getMinWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getMinHeight(), 0.0) <= 0) {
@@ -149,109 +125,157 @@ public class MatrixPanelSkin extends com.sun.javafx.scene.control.skin.BehaviorS
         if (Double.compare(getSkinnable().getMaxWidth(), 0.0) <= 0 || Double.compare(getSkinnable().getMaxHeight(), 0.0) <= 0) {
             getSkinnable().setMaxSize(MAXIMUM_WIDTH, MAXIMUM_HEIGHT);
         }
-        ledWidth.bind(control.ledWidthProperty());
-        ledHeight.bind(control.ledHeightProperty());
 
-        contents = control.getContents();
-
-        addBindings();
-        addListeners();
-
-        initialized = true;
-        paint();
-    }
-
-    private void addBindings() {
-        if (frame.visibleProperty().isBound()) {
-            frame.visibleProperty().unbind();
+        if (getSkinnable().getPrefWidth() != PREFERRED_WIDTH || getSkinnable().getPrefHeight() != PREFERRED_HEIGHT) {
+            aspectRatio = getSkinnable().getPrefHeight() / getSkinnable().getPrefWidth();
         }
-        frame.visibleProperty().bind(control.frameVisibleProperty());       
-
+        
+        contents = getSkinnable().getContents();
     }
 
-    private void addListeners() {
-        control.prefWidthProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                isDirty = true;
-            }
-        });
+    private void initGraphics() {
+        main = new Region();
+        main.getStyleClass().setAll("main");
+        main.setOpacity(1);
+        
+        mainFrameOut = new Region();
+        
+        mainFrame = new Region();
+        mainFrameIn = new Region();
+        setStyle();
+        
+        setDots();
+        
+        mainForeground = new Region();
+        mainForeground.getStyleClass().setAll("frontFrame");
+        mainForeground.setOpacity(1);
+        
+        pane = new Pane();
+        pane.getChildren().setAll(main,mainFrameOut,mainFrame,mainFrameIn,dots,mainForeground);
+        pane.setCache(true);
 
-        control.prefHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                isDirty = true;
-            }
-        });
+        pane.getChildren().stream().filter((n) -> n instanceof Pane).
+                forEach((n) -> iDots=pane.getChildren().indexOf(n) );
+        getChildren().setAll(pane);
 
-        ledHeight.addListener(new ChangeListener<Number>() {
-            @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                isDirty = true;
-            }
-        });
-        ledWidth.addListener(new ChangeListener<Number>() {
-            @Override public void changed(final ObservableValue<? extends Number> ov, final Number oldValue, final Number newValue) {
-                isDirty = true;
-            }
-        });
-              
-        contents.addListener(new ListChangeListener(){
-            @Override public void onChanged(ListChangeListener.Change c) {
-//                System.out.println("Change");
-                updatePanel();                
-            }            
-        });
-
+        gradient();
+        updateMatrixPanel();
+        
     }
-
-    @Override protected void handleControlPropertyChanged(final String PROPERTY) {
-        super.handleControlPropertyChanged(PROPERTY);
-        if ("FRAME_DESIGN".equals(PROPERTY)) {
-            drawFrame();
-
-        } else if ("SIMPLE_GRADIENT_BASE".equals(PROPERTY)) {
-            isDirty = true;
+    
+    private void setSize(){
+        if (getSkinnable().getPrefWidth() > 0 && getSkinnable().getPrefHeight() > 0) {
+            if(getSkinnable().getLedWidth()>0 && getSkinnable().getLedHeight()>0){
+                double scale=Math.min(getSkinnable().getPrefWidth()/getSkinnable().getLedWidth(),
+                                      getSkinnable().getPrefHeight()/getSkinnable().getLedHeight());
+                /*
+                ASPECT RATIO: DEPENDS ON LEDS ARRAY ASPECT RATIO
+                */
+                getSkinnable().setPrefSize(getSkinnable().getLedWidth()*scale,getSkinnable().getLedHeight()*scale);
+            }
+            else{
+                getSkinnable().setPrefSize(getSkinnable().getPrefWidth(), getSkinnable().getPrefHeight());
+            }
+        } else {
+            getSkinnable().setPrefSize(PREFERRED_WIDTH, PREFERRED_HEIGHT);
         }
     }
-
-
-    // ******************** Methods *******************************************
-    public void paint() {
-        if (!initialized) {
-            init();
+    
+    private void setStyle(){
+        if(!getSkinnable().isFrameVisible()){
+            mainFrameOut.getStyleClass().removeAll("mainFrameOut");
+            mainFrame.getStyleClass().removeAll("glossy-metal","dark-glossy","gradient");
+            mainFrameIn.getStyleClass().setAll("gradient-in");
+            return;
         }
-        calcGaugeBounds();
-        getSkinnable().setTranslateX(framelessOffset.getX());
-        getSkinnable().setTranslateY(framelessOffset.getY());
-        getChildren().clear();
-        drawFrame();
-        drawBackground();
-        drawPanel();
-        drawForeground();
-        
-        getChildren().addAll(frame,
-            background,
-            matrix,
-            foreground);
-        
-        updatePanel();
-        
-        isDirty = false;
+        switch (getSkinnable().getFrameDesign()) {
+            case GLOSSY_METAL:
+                mainFrame.getStyleClass().setAll("glossy-metal");
+                mainFrameOut.getStyleClass().setAll("mainFrameOut");
+                mainFrameIn.getStyleClass().remove("gradient-in");
+                break;
+            case DARK_GLOSSY:
+                mainFrame.getStyleClass().setAll("dark-glossy");
+                mainFrameOut.getStyleClass().setAll("mainFrameOut");
+                mainFrameIn.getStyleClass().remove("gradient-in");
+                break;
+            case CHROME:
+                mainFrame.getStyleClass().setAll("gradient");
+                mainFrameIn.getStyleClass().setAll("gradient-in");
+                break;
+            case BLACK_METAL:
+                mainFrame.getStyleClass().setAll("gradient");
+                mainFrameIn.getStyleClass().setAll("gradient-in");
+                break;
+            case SHINY_METAL:
+                mainFrame.getStyleClass().setAll("gradient");
+                mainFrameIn.getStyleClass().setAll("gradient-in");
+                break;
+            case CUSTOM_DESIGN:
+                mainFrameIn.getStyleClass().setAll("gradient-in");
+                break;
+        }
+    }
+    
+    private void setDots(){
+        dots = new Pane();
+        dotMap = new HashMap<>(getSkinnable().ledWidthProperty().intValue() * getSkinnable().ledHeightProperty().intValue());
+        for (int i = 0; i < getSkinnable().ledHeightProperty().intValue(); i++) {
+            for (int j = 0; j < getSkinnable().ledWidthProperty().intValue(); j++) {
+                Circle circ = new Circle(radio);
+                circ.getStyleClass().setAll("led-off");
+                dotMap.put(new Integer(j + i * getSkinnable().ledWidthProperty().intValue()), circ);
+                dots.getChildren().add(circ);
+            }
+        }      
+        dots.setCache(true);
+        if(pane!=null && pane.getChildren().size()>0){
+            pane.getChildren().remove(iDots);
+            pane.getChildren().add(iDots, dots);
+        }
     }
 
-//    @Override public void layoutChildren() {
-//        if (isDirty) {
-//            paint();
-//        }
-//        super.layoutChildren();
-//    }
-
-    public MatrixPanel getControl() {
-        return control;
+    private void registerListeners() {
+        getSkinnable().widthProperty().addListener(o -> handleControlPropertyChanged("RESIZE") );
+        getSkinnable().heightProperty().addListener(o -> handleControlPropertyChanged("RESIZE") );
+        getSkinnable().prefWidthProperty().addListener(o -> handleControlPropertyChanged("PREF_SIZE") );
+        getSkinnable().prefHeightProperty().addListener(o -> handleControlPropertyChanged("PREF_SIZE") );
+        getSkinnable().ledWidthProperty().addListener(o -> handleControlPropertyChanged("UPDATE") );
+        getSkinnable().ledHeightProperty().addListener(o -> handleControlPropertyChanged("UPDATE") );
+        getSkinnable().frameVisibleProperty().addListener(o -> handleControlPropertyChanged("STYLE") );
+        getSkinnable().frameDesignProperty().addListener(o -> handleControlPropertyChanged("STYLE") );
+        getSkinnable().frameBaseColorProperty().addListener(o -> handleControlPropertyChanged("STYLE") );
+        
+        getSkinnable().getStyleClass().addListener((ListChangeListener.Change<? extends String> change) -> {
+            resize();
+            updateMatrixPanel();
+        });
+        getSkinnable().getContents().addListener((ListChangeListener.Change<? extends Content> c) -> {
+            updateMatrixPanel();            
+        });
     }
 
-    @Override public void dispose() {
-        control = null;
+    protected void handleControlPropertyChanged(final String PROPERTY) {    
+        switch (PROPERTY) {
+            case "UPDATE":
+                setDots();
+                setSize();
+                resize();
+                updateMatrixPanel();  
+                break;
+            case "STYLE":
+                setStyle();
+                gradient();
+                break;
+            case "RESIZE":
+                resize();
+                break;
+            case "PREF_SIZE":
+                aspectRatio = getSkinnable().getPrefHeight() / getSkinnable().getPrefWidth();
+                break;
+        }
     }
-
+    
     @Override protected double computeMinWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
         return super.computeMinWidth(Math.max(MINIMUM_HEIGHT, HEIGHT - TOP_INSET - BOTTOM_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
@@ -280,394 +304,185 @@ public class MatrixPanelSkin extends com.sun.javafx.scene.control.skin.BehaviorS
         }
         return super.computePrefHeight(prefWidth, TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
-
-    private void calcGaugeBounds() {
-        
-        /*
-         * CONTROL ASPECTRATIO == MATRIX ASPECTRATIO
-         */
-        if(control.getPrefWidth()==0){
-            control.setPrefWidth(800);
-        }
-        if(control.getPrefHeight()==0){
-            control.setPrefHeight(600);
-        }
-        
-        if(control.getLedHeight()>0 && control.getLedWidth()>0){
-            double scale=Math.min(control.getPrefWidth()/((double)control.getLedWidth()),
-                            control.getPrefHeight()/((double)control.getLedHeight()));
-            control.setPrefWidth(scale*control.getLedWidth());
-            control.setPrefHeight(scale*control.getLedHeight());
-        }
-
-            
-//        if (control.isFrameVisible()) {
-            
-            gaugeBounds.setWidth(control.getPrefWidth());
-            gaugeBounds.setHeight(control.getPrefHeight());
-            framelessOffset = new Point2D(0, 0);
-//        } else {
-//            final double SIZE = control.getPrefWidth() < control.getPrefHeight() ? control.getPrefWidth() : control.getPrefHeight();
-//            gaugeBounds.setWidth(control.getPrefWidth() + SIZE * 0.168224299 + 2);
-//            gaugeBounds.setHeight(control.getPrefHeight() + SIZE * 0.168224299 + 2);
-//            framelessOffset = new Point2D(-SIZE * 0.0841121495 - 1, -SIZE * 0.0841121495 - 1);
-//        }
-    }
-
-
-    // ******************** Drawing *******************************************
-    public void drawFrame() {
-        final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
-        final double WIDTH = gaugeBounds.getWidth();
-        final double HEIGHT = gaugeBounds.getHeight();
-
-        frame.getChildren().clear();
-
-        final Rectangle SUBTRACT = new Rectangle(0.0841121495 * SIZE + 1, 0.0841121495 * SIZE + 1,
-            WIDTH - (2 * 0.0841121495 * SIZE) - 2, HEIGHT - (2 * 0.0841121495 * SIZE) - 2);
-        SUBTRACT.setArcWidth(0.05 * SIZE);
-        SUBTRACT.setArcHeight(0.05 * SIZE);
-
-        final Rectangle OUTER_FRAME = new Rectangle(0.0, 0.0,
-            WIDTH, HEIGHT);
-        OUTER_FRAME.setArcWidth(0.09333333333333334 * SIZE);
-        OUTER_FRAME.setArcHeight(0.09333333333333334 * SIZE);
-        OUTER_FRAME.setFill(Color.color(0.5176470588, 0.5176470588, 0.5176470588, 1));
-        OUTER_FRAME.setStroke(null);
-        frame.getChildren().add(OUTER_FRAME);
-
-        final Rectangle MAIN_FRAME = new Rectangle(1, 1, WIDTH - 2, HEIGHT - 2);
-        MAIN_FRAME.setArcWidth(0.08 * SIZE);
-        MAIN_FRAME.setArcHeight(0.08 * SIZE);
-        MAIN_FRAME.setStroke(null);
-
-        final Rectangle INNER_FRAME = new Rectangle(0.0841121495 * SIZE, 0.0841121495 * SIZE,
-            WIDTH - (2 * 0.0841121495 * SIZE), HEIGHT - (2 * 0.0841121495 * SIZE));
-        INNER_FRAME.setArcWidth(0.05 * SIZE);
-        INNER_FRAME.setArcHeight(0.05 * SIZE);
-        INNER_FRAME.setFill(Color.color(0.6, 0.6, 0.6, 0.8));
-        INNER_FRAME.setStroke(null);
-
-        final ImageView IMAGE_VIEW;
-        switch (control.getFrameDesign()) {
-            case BLACK_METAL:
-                ConicalGradient bmGradient = new ConicalGradient(new Point2D(MAIN_FRAME.getLayoutBounds().getWidth() / 2,
-                                                                             MAIN_FRAME.getLayoutBounds().getHeight() / 2),
+    
+    private void gradient(){
+        width  = getSkinnable().getWidth();
+        height = getSkinnable().getHeight();
+        if(getSkinnable().isFrameVisible()){
+            Platform.runLater(()->{
+                Image image = null;   
+                switch (getSkinnable().getFrameDesign()) {
+                    case BLACK_METAL:
+                        ConicalGradient bmGradient = new ConicalGradient(new Point2D(width/2d,height/2d),
+                                                                     new Stop(0.0000, Color.rgb(254, 254, 254)),
+                                                                     new Stop(0.1250, Color.rgb(0, 0, 0)),
+                                                                     new Stop(0.3472, Color.rgb(153, 153, 153)),
+                                                                     new Stop(0.5000, Color.rgb(0, 0, 0)),
+                                                                     new Stop(0.6805, Color.rgb(153, 153, 153)),
+                                                                     new Stop(0.8750, Color.rgb(0, 0, 0)),
+                                                                     new Stop(1.0000, Color.rgb(254, 254, 254)));
+                        image = bmGradient.apply(new Rectangle(width,height)).getImage();
+                        break;
+                    case CHROME:
+                        ConicalGradient cmGradient = new ConicalGradient(new Point2D(width/2d,height/2d),
+                                                                     new Stop(0.00, Color.WHITE),
+                                                                     new Stop(0.09, Color.WHITE),
+                                                                     new Stop(0.12, Color.rgb(136, 136, 138)),
+                                                                     new Stop(0.16, Color.rgb(164, 185, 190)),
+                                                                     new Stop(0.25, Color.rgb(158, 179, 182)),
+                                                                     new Stop(0.29, Color.rgb(112, 112, 112)),
+                                                                     new Stop(0.33, Color.rgb(221, 227, 227)),
+                                                                     new Stop(0.38, Color.rgb(155, 176, 179)),
+                                                                     new Stop(0.48, Color.rgb(156, 176, 177)),
+                                                                     new Stop(0.52, Color.rgb(254, 255, 255)),
+                                                                     new Stop(0.63, Color.WHITE),
+                                                                     new Stop(0.68, Color.rgb(156, 180, 180)),
+                                                                     new Stop(0.80, Color.rgb(198, 209, 211)),
+                                                                     new Stop(0.83, Color.rgb(246, 248, 247)),
+                                                                     new Stop(0.87, Color.rgb(204, 216, 216)),
+                                                                     new Stop(0.97, Color.rgb(164, 188, 190)),
+                                                                     new Stop(1.00, Color.WHITE));
+                        image = cmGradient.apply(new Rectangle(width,height)).getImage();
+                        break;
+                    case SHINY_METAL:
+                        Color c=getSkinnable().getFrameBaseColor();
+                        ConicalGradient smGradient = new ConicalGradient(new Point2D(width/2d,height/2d),
                                                                  new Stop(0.0000, Color.rgb(254, 254, 254)),
-                                                                 new Stop(0.1250, Color.rgb(0, 0, 0)),
-                                                                 new Stop(0.3472, Color.rgb(153, 153, 153)),
-                                                                 new Stop(0.5000, Color.rgb(0, 0, 0)),
-                                                                 new Stop(0.6805, Color.rgb(153, 153, 153)),
-                                                                 new Stop(0.8750, Color.rgb(0, 0, 0)),
+                                                                 new Stop(0.1250, darker(c, 0.15)),
+                                                                 new Stop(0.2500, c.darker()),
+                                                                 new Stop(0.3472, c.brighter()),
+                                                                 new Stop(0.5000, c.darker().darker()),
+                                                                 new Stop(0.6527, c.brighter()),
+                                                                 new Stop(0.7500, c.darker()),
+                                                                 new Stop(0.8750, darker(c, 0.15)),
                                                                  new Stop(1.0000, Color.rgb(254, 254, 254)));
-                MAIN_FRAME.setFill(bmGradient.apply(MAIN_FRAME));
-                MAIN_FRAME.setStroke(null);
-                frame.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
-                break;
-            case SHINY_METAL:
-                ConicalGradient smGradient = new ConicalGradient(new Point2D(MAIN_FRAME.getLayoutBounds().getWidth() / 2,
-                                                                             MAIN_FRAME.getLayoutBounds().getHeight() / 2),
-                                                                 new Stop(0.0000, Color.rgb(254, 254, 254)),
-                                                                 new Stop(0.1250, Util.darker(control.getFrameBaseColor(), 0.15)),
-                                                                 new Stop(0.2500, control.getFrameBaseColor().darker()),
-                                                                 new Stop(0.3472, control.getFrameBaseColor().brighter()),
-                                                                 new Stop(0.5000, control.getFrameBaseColor().darker().darker()),
-                                                                 new Stop(0.6527, control.getFrameBaseColor().brighter()),
-                                                                 new Stop(0.7500, control.getFrameBaseColor().darker()),
-                                                                 new Stop(0.8750, Util.darker(control.getFrameBaseColor(), 0.15)),
-                                                                 new Stop(1.0000, Color.rgb(254, 254, 254)));
-                MAIN_FRAME.setFill(smGradient.apply(MAIN_FRAME));
-                MAIN_FRAME.setStroke(null);
-                frame.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
-                break;
-            case CHROME:
-                ConicalGradient cmGradient = new ConicalGradient(new Point2D(MAIN_FRAME.getLayoutBounds().getWidth() / 2,
-                                                                             MAIN_FRAME.getLayoutBounds().getHeight() / 2),
-                                                                 new Stop(0.00, Color.WHITE),
-                                                                 new Stop(0.09, Color.WHITE),
-                                                                 new Stop(0.12, Color.rgb(136, 136, 138)),
-                                                                 new Stop(0.16, Color.rgb(164, 185, 190)),
-                                                                 new Stop(0.25, Color.rgb(158, 179, 182)),
-                                                                 new Stop(0.29, Color.rgb(112, 112, 112)),
-                                                                 new Stop(0.33, Color.rgb(221, 227, 227)),
-                                                                 new Stop(0.38, Color.rgb(155, 176, 179)),
-                                                                 new Stop(0.48, Color.rgb(156, 176, 177)),
-                                                                 new Stop(0.52, Color.rgb(254, 255, 255)),
-                                                                 new Stop(0.63, Color.WHITE),
-                                                                 new Stop(0.68, Color.rgb(156, 180, 180)),
-                                                                 new Stop(0.80, Color.rgb(198, 209, 211)),
-                                                                 new Stop(0.83, Color.rgb(246, 248, 247)),
-                                                                 new Stop(0.87, Color.rgb(204, 216, 216)),
-                                                                 new Stop(0.97, Color.rgb(164, 188, 190)),
-                                                                 new Stop(1.00, Color.WHITE));
-                MAIN_FRAME.setFill(cmGradient.apply(MAIN_FRAME));
-                MAIN_FRAME.setStroke(null);
-                frame.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
-                break;
-            case GLOSSY_METAL:
-                MAIN_FRAME.setFill(new LinearGradient(0.4714285714285714 * WIDTH, 0.014285714285714285 * HEIGHT,
-                    0.47142857142857153 * WIDTH, 0.9785714285714285 * HEIGHT,
-                    false, CycleMethod.NO_CYCLE,
-                    new Stop(0.0, Color.color(0.9764705882, 0.9764705882, 0.9764705882, 1)),
-                    new Stop(0.1, Color.color(0.7843137255, 0.7647058824, 0.7490196078, 1)),
-                    new Stop(0.26, Color.WHITE),
-                    new Stop(0.73, Color.color(0.1137254902, 0.1137254902, 0.1137254902, 1)),
-                    new Stop(1.0, Color.color(0.8196078431, 0.8196078431, 0.8196078431, 1))));
-                final Rectangle GLOSSY2 = new Rectangle(0.08571428571428572 * WIDTH, 0.08571428571428572 * HEIGHT,
-                    0.8285714285714286 * WIDTH, 0.8285714285714286 * HEIGHT);
-                GLOSSY2.setArcWidth(0.05714285714285714 * SIZE);
-                GLOSSY2.setArcHeight(0.05714285714285714 * SIZE);
-                GLOSSY2.setFill(new LinearGradient(0, GLOSSY2.getLayoutBounds().getMinY(),
-                    0, GLOSSY2.getLayoutBounds().getMaxY(),
-                    false, CycleMethod.NO_CYCLE,
-                    new Stop(0.0, Color.color(0.9764705882, 0.9764705882, 0.9764705882, 1.0)),
-                    new Stop(0.23, Color.color(0.7843137255, 0.7647058824, 0.7490196078, 1.0)),
-                    new Stop(0.36, Color.color(1.0, 1.0, 1.0, 1.0)),
-                    new Stop(0.59, Color.color(0.1137254902, 0.1137254902, 0.1137254902, 1.0)),
-                    new Stop(0.76, Color.color(0.7843137255, 0.7607843137, 0.7529411765, 1.0)),
-                    new Stop(1.0, Color.color(0.8196078431, 0.8196078431, 0.8196078431, 1.0))));
-                final Rectangle GLOSSY3 = new Rectangle(INNER_FRAME.getX() - 2, INNER_FRAME.getY() - 2, INNER_FRAME.getWidth() + 4, INNER_FRAME.getHeight() + 4);
-                GLOSSY3.setArcWidth(INNER_FRAME.getArcWidth() + 1);
-                GLOSSY3.setArcHeight(INNER_FRAME.getArcHeight() + 1);
-                GLOSSY3.setFill(Color.web("#F6F6F6"));
-                final Rectangle GLOSSY4 = new Rectangle(GLOSSY3.getX() + 2, GLOSSY3.getY() + 2, GLOSSY3.getWidth() - 4, GLOSSY3.getHeight() - 4);
-                GLOSSY4.setArcWidth(GLOSSY3.getArcWidth() - 1);
-                GLOSSY4.setArcHeight(GLOSSY3.getArcHeight() - 1);
-                GLOSSY4.setFill(Color.web("#333333"));
-                frame.getChildren().addAll(MAIN_FRAME, GLOSSY2, GLOSSY3, GLOSSY4);
-                break;
-            case DARK_GLOSSY:
-                MAIN_FRAME.setFill(new LinearGradient(0.8551401869158879 * WIDTH, 0.14953271028037382 * HEIGHT,
-                    0.15794611761513314 * WIDTH, 0.8467267795811287 * HEIGHT,
-                    false, CycleMethod.NO_CYCLE,
-                    new Stop(0.0, Color.color(0.3254901961, 0.3254901961, 0.3254901961, 1)),
-                    new Stop(0.08, Color.color(0.9960784314, 0.9960784314, 1, 1)),
-                    new Stop(0.52, Color.color(0, 0, 0, 1)),
-                    new Stop(0.55, Color.color(0.0196078431, 0.0235294118, 0.0196078431, 1)),
-                    new Stop(0.84, Color.color(0.9725490196, 0.9803921569, 0.9764705882, 1)),
-                    new Stop(0.99, Color.color(0.3254901961, 0.3254901961, 0.3254901961, 1)),
-                    new Stop(1.0, Color.color(0.3254901961, 0.3254901961, 0.3254901961, 1))));
-                final Rectangle DARK_GLOSSY2 = new Rectangle(0.08571428571428572 * WIDTH, 0.08571428571428572 * HEIGHT,
-                    0.8285714285714286 * WIDTH, 0.8285714285714286 * HEIGHT);
-                DARK_GLOSSY2.setArcWidth(0.05714285714285714 * SIZE);
-                DARK_GLOSSY2.setArcHeight(0.05714285714285714 * SIZE);
-                DARK_GLOSSY2.setFill(new LinearGradient(0.5 * WIDTH, 0.014018691588785047 * HEIGHT,
-                    0.5 * WIDTH, 0.985981308411215 * HEIGHT,
-                    false, CycleMethod.NO_CYCLE,
-                    new Stop(0.0, Color.color(0.2588235294, 0.2588235294, 0.2588235294, 1)),
-                    new Stop(0.42, Color.color(0.2588235294, 0.2588235294, 0.2588235294, 1)),
-                    new Stop(1.0, Color.color(0.0509803922, 0.0509803922, 0.0509803922, 1))));
-                DARK_GLOSSY2.setStroke(null);
-
-                final Rectangle DARK_GLOSSY3 = new Rectangle(MAIN_FRAME.getX(), MAIN_FRAME.getY(),
-                    MAIN_FRAME.getWidth(), MAIN_FRAME.getHeight() * 0.5);
-                DARK_GLOSSY3.setArcWidth(MAIN_FRAME.getArcWidth());
-                DARK_GLOSSY3.setArcHeight(MAIN_FRAME.getArcHeight());
-                DARK_GLOSSY3.setFill(new LinearGradient(0.5 * WIDTH, 0.014018691588785047 * HEIGHT,
-                    0.5 * WIDTH, 0.5280373831775701 * HEIGHT,
-                    false, CycleMethod.NO_CYCLE,
-                    new Stop(0.0, Color.color(1, 1, 1, 1)),
-                    new Stop(0.26, Color.color(1, 1, 1, 1)),
-                    new Stop(0.26009998, Color.color(1, 1, 1, 1)),
-                    new Stop(1.0, Color.color(1, 1, 1, 0))));
-                DARK_GLOSSY3.setStroke(null);
-
-                final Rectangle DARK_GLOSSY4 = new Rectangle(INNER_FRAME.getX() - 2, INNER_FRAME.getY() - 2,
-                    INNER_FRAME.getWidth() + 4, INNER_FRAME.getHeight() + 4);
-                DARK_GLOSSY4.setArcWidth(INNER_FRAME.getArcWidth() + 1);
-                DARK_GLOSSY4.setArcHeight(INNER_FRAME.getArcHeight() + 1);
-                DARK_GLOSSY4.setFill(new LinearGradient(0.8037383177570093 * WIDTH, 0.1822429906542056 * HEIGHT,
-                    0.18584594354259637 * WIDTH, 0.8001353648686187 * HEIGHT,
-                    false, CycleMethod.NO_CYCLE,
-                    new Stop(0.0, Color.color(0.6745098039, 0.6745098039, 0.6784313725, 1)),
-                    new Stop(0.08, Color.color(0.9960784314, 0.9960784314, 1, 1)),
-                    new Stop(0.52, Color.color(0, 0, 0, 1)),
-                    new Stop(0.55, Color.color(0.0196078431, 0.0235294118, 0.0196078431, 1)),
-                    new Stop(0.91, Color.color(0.9725490196, 0.9803921569, 0.9764705882, 1)),
-                    new Stop(0.99, Color.color(0.6980392157, 0.6980392157, 0.6980392157, 1)),
-                    new Stop(1.0, Color.color(0.6980392157, 0.6980392157, 0.6980392157, 1))));
-                DARK_GLOSSY4.setStroke(null);
-                frame.getChildren().addAll(MAIN_FRAME, DARK_GLOSSY2, DARK_GLOSSY3, DARK_GLOSSY4);
-                break;
-            default:
-                IMAGE_VIEW = new ImageView();
-                IMAGE_VIEW.setVisible(false);
-                MAIN_FRAME.getStyleClass().add(control.getFrameDesign().CSS);
-                MAIN_FRAME.setStroke(null);
-                frame.getChildren().addAll(MAIN_FRAME, INNER_FRAME);
-                break;
-        }
-        frame.setCache(true);
-    }
-
-    public void drawBackground() {
-        final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
-        final double WIDTH = gaugeBounds.getWidth();
-        final double HEIGHT = gaugeBounds.getHeight();
-
-        background.getChildren().clear();
-
-        final Rectangle IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
-        IBOUNDS.setOpacity(0.0);
-        IBOUNDS.setStroke(null);
-        background.getChildren().add(IBOUNDS);
-
-        final InnerShadow INNER_SHADOW = new InnerShadow();
-        INNER_SHADOW.setWidth(0.2 * SIZE);
-        INNER_SHADOW.setHeight(0.2 * SIZE);
-        INNER_SHADOW.setColor(Color.color(0, 0, 0, 1.0));
-        INNER_SHADOW.setBlurType(BlurType.GAUSSIAN);
-
-        final LinearGradient HL_GRADIENT = new LinearGradient(0, 0, WIDTH, 0, false, CycleMethod.NO_CYCLE,
-            new Stop(0.0, Color.color(0.0, 0.0, 0.0, 0.6)),
-            new Stop(0.4, Color.color(0.0, 0.0, 0.0, 0.0)),
-            new Stop(0.6, Color.color(0.0, 0.0, 0.0, 0.0)),
-            new Stop(1.0, Color.color(0.0, 0.0, 0.0, 0.6)));
-
-        final Rectangle BACKGROUND = new Rectangle(0.0841121495 * SIZE + 1, 0.0841121495 * SIZE + 1,
-            WIDTH - (2 * 0.0841121495 * SIZE) - 2, HEIGHT - (2 * 0.0841121495 * SIZE) - 2);
-        BACKGROUND.setArcWidth(0.05 * SIZE);
-        BACKGROUND.setArcHeight(0.05 * SIZE);
-        BACKGROUND.setStroke(null);
-
-        final Rectangle CLIP_SHAPE = new Rectangle(0.0841121495 * SIZE + 1, 0.0841121495 * SIZE + 1,
-            WIDTH - (2 * 0.0841121495 * SIZE) - 2, HEIGHT - (2 * 0.0841121495 * SIZE) - 2);
-        CLIP_SHAPE.setArcWidth(0.05 * SIZE);
-        CLIP_SHAPE.setArcHeight(0.05 * SIZE);
-
-        
-//        BACKGROUND.setStyle(control.getSimpleGradientBaseColorString());
-//        BACKGROUND.getStyleClass().add(control.getBackgroundDesign().CSS_BACKGROUND);
-        BACKGROUND.setEffect(INNER_SHADOW);
-        background.getChildren().addAll(BACKGROUND);
-
-
-        
-        background.setCache(true);
-    }
-
-    public void drawForeground() {
-        final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
-        final double WIDTH = gaugeBounds.getWidth();
-        final double HEIGHT = gaugeBounds.getHeight();
-
-        foreground.getChildren().clear();
-
-        final Insets INSETS = new Insets(0.0841121495 * SIZE + 2, WIDTH - 0.0841121495 * SIZE - 2, HEIGHT - 0.0841121495 * SIZE - 2, 0.0841121495 * SIZE + 2);
-        final Rectangle IBOUNDS = new Rectangle(0, 0, WIDTH, HEIGHT);
-        IBOUNDS.setOpacity(0.0);
-        IBOUNDS.setStroke(null);
-        foreground.getChildren().addAll(IBOUNDS);
-
-        final Path FOREGROUND = new Path();
-        final Point2D START;
-        final Point2D STOP;
-        // Highlight
-        if (WIDTH >= HEIGHT) {
-            // Horizontal glass effect
-            FOREGROUND.setFillRule(FillRule.EVEN_ODD);
-            FOREGROUND.getElements().add(new MoveTo(INSETS.getLeft(), INSETS.getBottom()));
-            FOREGROUND.getElements().add(new LineTo(INSETS.getRight(), INSETS.getBottom()));
-            FOREGROUND.getElements().add(new CubicCurveTo(INSETS.getRight(), INSETS.getBottom(),
-                INSETS.getRight() - 13, 0.7 * HEIGHT,
-                INSETS.getRight() - 13, 0.5 * HEIGHT));
-            FOREGROUND.getElements().add(new CubicCurveTo(INSETS.getRight() - 13, 0.3 * HEIGHT,
-                INSETS.getRight(), INSETS.getTop(),
-                INSETS.getRight(), INSETS.getTop()));
-            FOREGROUND.getElements().add(new LineTo(INSETS.getLeft(), INSETS.getTop()));
-            FOREGROUND.getElements().add(new CubicCurveTo(INSETS.getLeft(), INSETS.getTop(),
-                INSETS.getLeft() + 13, 0.3 * HEIGHT,
-                INSETS.getLeft() + 13, 0.5 * HEIGHT));
-            FOREGROUND.getElements().add(new CubicCurveTo(INSETS.getLeft() + 13, 0.7 * HEIGHT,
-                INSETS.getLeft(), INSETS.getBottom(),
-                INSETS.getLeft(), INSETS.getBottom()));
-            FOREGROUND.getElements().add(new ClosePath());
-            START = new Point2D(0, FOREGROUND.getLayoutBounds().getMaxY());
-            STOP = new Point2D(0, FOREGROUND.getLayoutBounds().getMinY());
+                        image = smGradient.apply(new Rectangle(width,height)).getImage();
+                        break;
+                    case CUSTOM_DESIGN:
+                        // load image
+                        String pathJpg=getSkinnable().getFrameCustomPath();
+                        // 1. from jar or url
+                        if(pathJpg!=null && (pathJpg.contains("http") || pathJpg.startsWith("/"))){
+                            image=new Image(pathJpg);
+                        }
+                        // 2. from local file
+                        else if(pathJpg!=null){
+                            File file = new File(pathJpg);
+                            if(file.exists()){
+                                image=new Image(file.toURI().toString());
+                            } else {
+                                //3. from resource
+                                image=new Image(MatrixPanel.class.getResource(pathJpg).toExternalForm());
+                            }
+                        }
+                        break;
+                }
+                if(image!=null){
+                    fillFrame=new Background(new BackgroundImage(image, 
+                                            BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, 
+                                            BackgroundPosition.CENTER, new BackgroundSize(width,height,false,false,false,true)));
+                }
+                resize();
+            });
         } else {
-            // Vertical glass effect
-            FOREGROUND.setFillRule(FillRule.EVEN_ODD);
-            FOREGROUND.getElements().add(new MoveTo(INSETS.getLeft(), INSETS.getTop()));
-            FOREGROUND.getElements().add(new LineTo(INSETS.getLeft(), INSETS.getBottom()));
-            FOREGROUND.getElements().add(new CubicCurveTo(INSETS.getLeft(), INSETS.getBottom(),
-                0.3 * WIDTH, INSETS.getBottom() - 13,
-                0.5 * WIDTH, INSETS.getBottom() - 13));
-            FOREGROUND.getElements().add(new CubicCurveTo(0.7 * WIDTH, INSETS.getBottom() - 13,
-                INSETS.getRight(), INSETS.getBottom(),
-                INSETS.getRight(), INSETS.getBottom()));
-            FOREGROUND.getElements().add(new LineTo(INSETS.getRight(), INSETS.getTop()));
-            FOREGROUND.getElements().add(new CubicCurveTo(INSETS.getRight(), INSETS.getTop(),
-                0.7 * WIDTH, INSETS.getTop() + 13,
-                0.5 * WIDTH, INSETS.getTop() + 13));
-            FOREGROUND.getElements().add(new CubicCurveTo(0.3 * WIDTH, INSETS.getTop() + 13,
-                INSETS.getLeft(), INSETS.getTop(),
-                INSETS.getLeft(), INSETS.getTop()));
-            FOREGROUND.getElements().add(new ClosePath());
-            START = new Point2D(FOREGROUND.getLayoutBounds().getMinX(), 0);
-            STOP = new Point2D(FOREGROUND.getLayoutBounds().getMaxX(), 0);
+            resize();
+        }
+    }
+    private void resize() {
+        width  = getSkinnable().getWidth();
+        height = getSkinnable().getHeight();
+        if (aspectRatio * width > height) {
+            width = 1 / (aspectRatio / height);
+        } else if (1 / (aspectRatio / height) > width) {
+            height = aspectRatio * width;
         }
 
-        final LinearGradient GRADIENT = new LinearGradient(START.getX(), START.getY(),
-            STOP.getX(), STOP.getY(),
-            false, CycleMethod.NO_CYCLE,
-            new Stop(0.0, Color.color(1, 1, 1, 0)),
-            new Stop(0.06, Color.color(1, 1, 1, 0)),
-            new Stop(0.07, Color.color(1, 1, 1, 0)),
-            new Stop(0.12, Color.color(1, 1, 1, 0.05)),
-            new Stop(0.17, Color.color(1, 1, 1, 0.0)),
-            new Stop(0.18, Color.color(1, 1, 1, 0)),
-            new Stop(0.23, Color.color(1, 1, 1, 0.02)),
-            new Stop(0.30, Color.color(1, 1, 1, 0.0)),
-            new Stop(0.8, Color.color(1, 1, 1, 0)),
-            new Stop(0.84, Color.color(1, 1, 1, 0.08)),
-            new Stop(0.93, Color.color(1, 1, 1, 0.18)),
-            new Stop(0.94, Color.color(1, 1, 1, 0.20)),
-            new Stop(0.96, Color.color(1, 1, 1, 0.10)),
-            new Stop(0.97, Color.color(1, 1, 1, 0)),
-            new Stop(1.0, Color.color(1, 1, 1, 0)));
-        FOREGROUND.setFill(GRADIENT);
-        FOREGROUND.setStroke(null);
-
-        foreground.getChildren().addAll(FOREGROUND);
-        foreground.setCache(true);
-    }
-
-    private double radio=0d;
-    
-    public void drawPanel() {
-        final double SIZE = gaugeBounds.getWidth() <= gaugeBounds.getHeight() ? gaugeBounds.getWidth() : gaugeBounds.getHeight();
-        final double WIDTH = gaugeBounds.getWidth() - 2 * (0.0841121495 * SIZE + 5);
-        final double HEIGHT = gaugeBounds.getHeight() - 2 * (0.0841121495 * SIZE + 5);
-
-        matrix.getChildren().clear();
-
-        final Shape IBOUNDS = new Rectangle(0.0841121495 * SIZE + 5, 0.0841121495 * SIZE + 5, WIDTH, HEIGHT);
-        IBOUNDS.setOpacity(0.0);
-        IBOUNDS.setStroke(null);
-        matrix.getChildren().add(IBOUNDS);
-
-        radio = WIDTH / (3d * ledWidth.doubleValue() + 1);
-        double gapW = radio;
-        double gapH = (HEIGHT - 2d * radio * ledHeight.doubleValue()) / (ledHeight.doubleValue() + 1);
-        dots.getChildren().clear();
-
-        dotMap = new HashMap<Integer, Shape>(ledWidth.intValue() * ledHeight.intValue());
-
-        for (int i = 0; i < ledHeight.intValue(); i++) {
-            for (int j = 0; j < ledWidth.intValue(); j++) {
-                Circle circ = new Circle(0.0841121495 * SIZE + 5 + gapW + radio + j * (gapW + 2d * radio), 
-                                         0.0841121495 * SIZE + 5 + gapH + radio + i * (gapH + 2d * radio), 
-                                         radio, Color.DARKGREY);
-                circ.setFill(COLOR_OFF);
-                dotMap.put(new Integer(j + i * ledWidth.intValue()), circ);
-
-                dots.getChildren().add(circ);
+        if (width > 0 && height > 0) {
+            double size=Math.min(width,height);
+            main.setPrefSize(width, height);            
+            mainFrameOut.setPrefSize(width, height);
+            mainFrame.setPrefSize(width, height);
+            mainFrameIn.setPrefSize(width, height);
+            if(getSkinnable().isFrameVisible()){
+                mainFrameOut.setStyle("-fx-background-radius: "+(0.09333333333*size/2d)+";");
+                switch (getSkinnable().getFrameDesign()) {
+                    case GLOSSY_METAL:
+                        mainFrame.setStyle("-fx-background-radius: "+(0.08*size/2d)+", "+(0.05*size/2d+1d)+", "+(0.05*size/2d)+";"+
+                                           "-fx-background-insets: 1, "+(0.0841121495 *size-2d)+", "+(0.0841121495 *size)+";");
+                        break;
+                    case DARK_GLOSSY:
+                        mainFrame.setStyle("-fx-background-radius: "+(0.08*size/2d)+", "+(0.08*size/2d)+", "+(0.05*size/2d+1d)+", "+(0.05*size/2d)+";"+
+                                           "-fx-background-insets: 1, 1, "+(0.0841121495 *size-2d)+", "+(0.0841121495 *size)+";");
+                        break;
+                    case BLACK_METAL:
+                    case CHROME:
+                    case SHINY_METAL:
+                    case CUSTOM_DESIGN:
+                        Rectangle rectFrame=new Rectangle(width,height);
+                        rectFrame.setArcHeight(0.08*size); rectFrame.setArcWidth(0.08*size);
+                        if(fillFrame!=null){
+                            Platform.runLater(()-> mainFrame.setBackground(fillFrame) );
+                        }
+                        mainFrame.setShape(rectFrame);
+                        mainFrameIn.setStyle("-fx-background-radius: "+(0.06*size/2d+1d)+", "+(0.05*size/2d)+";"+
+                                           "-fx-background-insets: "+(0.0841121495 *size-2d)+", "+(0.0841121495 *size)+";");
+                        break;
+                    default:
+                        Rectangle rect=new Rectangle(width,height);
+                        rect.setArcHeight(0.08*size); rect.setArcWidth(0.08*size);
+                        mainFrame.setShape(rect);
+                        mainFrame.setStyle("-fx-background-image: url(\""+jpgFrame+"\");\n" +
+                                           "-fx-background-position: center center;\n" +
+                                           "-fx-background-repeat: no-repeat;\n" +
+                                           "-fx-background-size: cover");
+                        mainFrameIn.setStyle("-fx-background-radius: "+(0.06*size/2d+1d)+", "+(0.05*size/2d)+";"+
+                                           "-fx-background-insets: "+(0.0841121495 *size-2d)+", "+(0.0841121495 *size)+";");
+                        break;
+                }
+            } else {
+                mainFrame.setStyle("-fx-background-image: null; -fx-background-color: null;");
+                mainFrameIn.setStyle("-fx-background-radius: "+(0.06*size/2d+1d)+", "+(0.05*size/2d)+";"+
+                                     "-fx-background-insets: "+(0.0841121495 *size-2d)+", "+(0.0841121495 *size)+";");
             }
+            radio=(width-2d*(0.0841121495*size+5d))/(3d*getSkinnable().ledWidthProperty().doubleValue()+1);
+            double gapH = (height-2d*(0.0841121495*size+5d)-2d*radio*getSkinnable().ledHeightProperty().doubleValue())/(getSkinnable().ledHeightProperty().doubleValue()+1);
+            for (int i = 0; i < getSkinnable().ledHeightProperty().intValue(); i++) {
+                for (int j = 0; j < getSkinnable().ledWidthProperty().intValue(); j++) {
+                    Circle c=(Circle)dots.getChildren().get(i*getSkinnable().ledWidthProperty().intValue()+j);
+                    c.setTranslateX(0.0841121495 * size + 5d + 2d*radio + j * 3d * radio);
+                    c.setTranslateY(0.0841121495 * size + 5d + gapH + radio + i * (gapH + 2d * radio));
+                    c.setRadius(radio);
+                }
+            }
+            
+            mainForeground.setPrefSize(width-2d*(0.0841121495 * size + 2d), height-2d*(0.0841121495 * size + 2d));
+            mainForeground.setTranslateX(0.0841121495 * size + 2d);
+            mainForeground.setTranslateY(0.0841121495 * size + 2d);
+            
         }
-        dots.setCache(true);
-        matrix.getChildren().add(dots);
     }
-    
+
+    public static Color darker(final Color COLOR, final double FRACTION) {
+        double red   = clamp(0, 1, COLOR.getRed() * (1.0 - FRACTION));
+        double green = clamp(0, 1, COLOR.getGreen() * (1.0 - FRACTION));
+        double blue  = clamp(0, 1, COLOR.getBlue() * (1.0 - FRACTION));
+        return new Color(red, green, blue, COLOR.getOpacity());
+    }
+
+    public static Color brighter(final Color COLOR, final double FRACTION) {
+        double red   = clamp(0, 1, COLOR.getRed() * (1.0 + FRACTION));
+        double green = clamp(0, 1, COLOR.getGreen() * (1.0 + FRACTION));
+        double blue  = clamp(0, 1, COLOR.getBlue() * (1.0 + FRACTION));
+        return new Color(red, green, blue, COLOR.getOpacity());
+    }
+    public static double clamp(final double MIN, final double MAX, final double VALUE) {
+        if (VALUE < MIN) return MIN;
+        if (VALUE > MAX) return MAX;
+        return VALUE;
+    }
+    /***************
+     *** CONTENT ***
+     ***************/
     private final int LED_COLUMN    = 0;
     private final int LED_ROW       = 1;
     private final int LED_INTENSITY = 2;
@@ -688,8 +503,7 @@ public class MatrixPanelSkin extends com.sun.javafx.scene.control.skin.BehaviorS
      */
     private ArrayList<Animation> Anim=null;
     
-       
-    public void updatePanel() {
+    public void updateMatrixPanel() {
 //        System.out.println("updatePanel "+contents.size());
         if (contents == null) {
             return;
@@ -698,184 +512,153 @@ public class MatrixPanelSkin extends com.sun.javafx.scene.control.skin.BehaviorS
         stop();
         
         // run as thread
-        Platform.runLater(new Runnable(){
-
-            @Override
-            public void run() {
-                /*
-                 * status of the full matrix of visible leds
-                 * 0: off
-                 * 1: tone low  ( 85)
-                 * 2: tone mid  (170)
-                 * 3: tone high (255)
-                 */
-
-                /*
-                 * FIRST: GET IMAGE RAW DATA AND FILL THE LEDS IN ITS AREA
-                 */
-                int contAreas = 0;
-                fullAreas = new ArrayList<int[][]>();
-                pairs=new ArrayList<ContentPair>();
-                visibleArea = new Rectangle[contents.size()];
-                for (final Content content : contents) {
-                    int x0 = (int) content.getOrigin().getX() + (int) content.getArea().getX();
-                    int y0 = (int) content.getOrigin().getY() + (int) content.getArea().getY();
-                    int maxX = Math.min((int) content.getArea().getWidth(), ledWidth.intValue());
-                    int maxY = Math.min((int) content.getArea().getHeight(), ledHeight.intValue());
-                    visibleArea[contAreas] = new Rectangle(Math.max(x0, 0), Math.max(y0, 0), maxX, maxY);
-
-                    if (content.getType().equals(Content.Type.IMAGE)) {
-                        UtilHex img = new UtilHex();
-                        img.convertsBmp(content.getBmpName(), 65, 190, true,true,true);
-
-                        String sBytes = img.getRawData();
-                        if (sBytes != null) {
-                            String[] v = sBytes.split("\\s");
-                            final int levels = 3;
-                            //final int bmpWidth = UtilHex.word2Int(v[6], v[7]);
-                            final int bmpHeight = UtilHex.word2Int(v[8], v[9]);
-                            final int tamLineaBMT = (int)(UtilHex.dword2Long(v[20],v[21], v[22], v[23]) / bmpHeight / levels / 3); // en bytes
-                            int pos = 32;
-                            final int[][] area = new int[bmpHeight][tamLineaBMT * 8];
-                            final int[] colors={(content.getColor().equals(MatrixColor.RED) || content.getColor().equals(MatrixColor.YELLOW) || content.getColor().equals(MatrixColor.RGB))?1:0,
-                                                (content.getColor().equals(MatrixColor.GREEN) || content.getColor().equals(MatrixColor.YELLOW) || content.getColor().equals(MatrixColor.RGB))?1:0,
-                                                (content.getColor().equals(MatrixColor.BLUE) || content.getColor().equals(MatrixColor.RGB))?1:0};
-                            for (int j = 0; j < levels; j++) { // leds: [RED k=0]0-1-2-3, [GREEN k=1]0-10-20-30, [BLUE k=2] 0-100-200-300
-                                for(int k=0; k<3; k++){ // 3 colors
-                                    for (int fila = 0; fila < bmpHeight; fila++) {
-                                        for (int i = 0; i < tamLineaBMT; i++) { // recorrido por cada byte de cada fila
-                                            String bits = UtilHex.hex2bin(v[pos++]); // contiene la fila de 8 bits
-                                            for (int m = 0; m < 8; m++) {
-                                                area[fila][i * 8 + m] += (bits.substring(m, m + 1).equalsIgnoreCase("1") ? 1 : 0)*Math.pow(10,k)*colors[k];
-                                            }
+        Platform.runLater(() -> {
+            int contAreas = 0;
+            fullAreas = new ArrayList<>();
+            pairs=new ArrayList<>();
+            visibleArea = new Rectangle[contents.size()];
+            for (final Content content : contents) {
+                int x0 = (int) content.getOrigin().getX() + (int) content.getArea().getX();
+                int y0 = (int) content.getOrigin().getY() + (int) content.getArea().getY();
+                int maxX = Math.min((int) content.getArea().getWidth(), getSkinnable().ledWidthProperty().intValue());
+                int maxY = Math.min((int) content.getArea().getHeight(), getSkinnable().ledHeightProperty().intValue());
+                visibleArea[contAreas] = new Rectangle(Math.max(x0, 0), Math.max(y0, 0), maxX, maxY);
+                
+                if (content.getType().equals(Content.Type.IMAGE)) {
+                    UtilHex img = new UtilHex();
+                    img.convertsBmp(content.getBmpName(), 65, 190, true,true,true);
+                    
+                    String sBytes = img.getRawData();
+                    if (sBytes != null) {
+                        String[] v = sBytes.split("\\s");
+                        final int levels = 3;
+                        //final int bmpWidth = UtilHex.word2Int(v[6], v[7]);
+                        final int bmpHeight = UtilHex.word2Int(v[8], v[9]);
+                        final int tamLineaBMT = (int)(UtilHex.dword2Long(v[20],v[21], v[22], v[23]) / bmpHeight / levels / 3); // en bytes
+                        int pos = 32;
+                        final int[][] area = new int[bmpHeight][tamLineaBMT * 8];
+                        final int[] colors={(content.getColor().equals(MatrixColor.RED) || content.getColor().equals(MatrixColor.YELLOW) || content.getColor().equals(MatrixColor.RGB))?1:0,
+                            (content.getColor().equals(MatrixColor.GREEN) || content.getColor().equals(MatrixColor.YELLOW) || content.getColor().equals(MatrixColor.RGB))?1:0,
+                            (content.getColor().equals(MatrixColor.BLUE) || content.getColor().equals(MatrixColor.RGB))?1:0};
+                        for (int j = 0; j < levels; j++) { // leds: [RED k=0]0-1-2-3, [GREEN k=1]0-10-20-30, [BLUE k=2] 0-100-200-300
+                            for(int k=0; k<3; k++){ // 3 colors
+                                for (int fila = 0; fila < bmpHeight; fila++) {
+                                    for (int i = 0; i < tamLineaBMT; i++) { // recorrido por cada byte de cada fila
+                                        String bits = UtilHex.hex2bin(v[pos++]); // contiene la fila de 8 bits
+                                        for (int m = 0; m < 8; m++) {
+                                            area[fila][i * 8 + m] += (bits.substring(m, m + 1).equalsIgnoreCase("1") ? 1 : 0)*Math.pow(10,k)*colors[k];
                                         }
                                     }
                                 }                        
                             }
-                            fullAreas.add(contAreas,area);
                         }
-                        else{
-                            fullAreas.add(contAreas,null);
-                        }
-                    } else if (content.getType().equals(Content.Type.TEXT)) {
-                        MatrixPanel.DotFont dotF = new MatrixPanel.DotFont(content.getTxtContent(), content.getMatrixFont(), content.getFontGap().getGapWidth());
-                        boolean[][] bDots = dotF.getDotString();
-                        if (bDots != null) {
-                            final int color=(content.getColor().equals(MatrixColor.RED)?3:
-                                            (content.getColor().equals(MatrixColor.GREEN)?30:
-                                            (content.getColor().equals(MatrixColor.BLUE)?300:
-                                            (content.getColor().equals(MatrixColor.YELLOW)?33:333))));
-                            final int[][] area = new int[bDots.length][bDots[0].length];
-                            for (int fila = 0; fila < bDots.length; fila++) {
-                                for (int j = 0; j < bDots[fila].length; j++) {
-                                    area[fila][j] = ((bDots[fila][j]) ? color : 0);
-                                }
-                            }
-                            fullAreas.add(contAreas,area);
-                        }
-                        else{
-                            fullAreas.add(contAreas,null);
-                        }
+                        fullAreas.add(contAreas,area);
                     }
-                    contAreas += 1;
-
-                }
-                /*
-                 * SECOND: CHECK FOR CONTENT PAIRS
-                 */
-                for (final Content content1 : contents) {            
-                    if(content1.getOrder().equals(Content.RotationOrder.FIRST)){
-                        final int iContent1=contents.indexOf(content1);
-                        for (final Content content2 : contents) {            
-                            final int iContent2=contents.indexOf(content2);
-                            if(content2.getOrder().equals(Content.RotationOrder.SECOND) &&
-                                    content1.getArea().getBoundsInLocal().equals(content2.getArea().getBoundsInLocal())){
-                                ContentPair pair=new ContentPair(iContent1,iContent2);
-                                pairs.add(pair);
-                                break;
+                    else{
+                        fullAreas.add(contAreas,null);
+                    }
+                } else if (content.getType().equals(Content.Type.TEXT)) {
+                    MatrixPanel.DotFont dotF = new MatrixPanel.DotFont(content.getTxtContent(), content.getMatrixFont(), content.getFontGap().getGapWidth());
+                    boolean[][] bDots = dotF.getDotString();
+                    if (bDots != null) {
+                        final int color=(content.getColor().equals(MatrixColor.RED)?3:
+                                (content.getColor().equals(MatrixColor.GREEN)?30:
+                                (content.getColor().equals(MatrixColor.BLUE)?300:
+                                (content.getColor().equals(MatrixColor.YELLOW)?33:333))));
+                        final int[][] area = new int[bDots.length][bDots[0].length];
+                        for (int fila = 0; fila < bDots.length; fila++) {
+                            for (int j = 0; j < bDots[fila].length; j++) {
+                                area[fila][j] = ((bDots[fila][j]) ? color : 0);
                             }
                         }
+                        fullAreas.add(contAreas,area);
+                    }
+                    else{
+                        fullAreas.add(contAreas,null);
                     }
                 }
-
-        //        // Create the dark inner shadow on the bottom
-        //        InnerShadow innerShadow = InnerShadowBuilder.create()
-        //                                                    .offsetY(1)
-        //                                                    .radius(1)
-        //                                                    .color(Color.color(0, 0, 0, 0.65))
-        //                                                    .blurType(BlurType.GAUSSIAN)
-        //                                                    .build();
-        //
-        //        // Create the bright inner glow on the top
-        //        InnerShadow innerGlow = InnerShadowBuilder.create()
-        //                                                .offsetY(1)
-        //                                                .radius(1)
-        //                                                .color(Color.color(1, 1, 1, 0.65))
-        //                                                .blurType(BlurType.GAUSSIAN)
-        //                                                .input(innerShadow)
-        //                                                .build();
-        //
-        //        // Create the drop shadow on the outside
-        //        final DropShadow dropShadow = DropShadowBuilder.create()
-        //                                                .radius(1)
-        //                                                .color(Color.color(0, 0, 0, 0.65))
-        //                                                .blurType(BlurType.GAUSSIAN)
-        //                                                .input(innerGlow)
-        //                                                .build();
-
-
-                /*
-                 * THIRD: DISPLAY WITH/OUT ANIMATION
-                 */
-
-                // bind content display to paired content
-                visibleContent=new SimpleBooleanProperty[contents.size()];
-                // clear screen
-                for(Shape entry:dotMap.values()){
-                    ((Circle)entry).setFill(COLOR_OFF);
-                }
-
-                Anim=new ArrayList<Animation>();
-
-                for (final Content content : contents) {
-
-                    final int iContent=contents.indexOf(content);
-                    /*
-                     * Create ANIMATION for each content, if content is not null
-                     */
-                    if(fullAreas.get(iContent)!=null){
-                        Animation iAnim=new Animation(iContent, content);
-                        iAnim.initAnimation();
-                        Anim.add(iAnim);
+                contAreas += 1;
+                
+            }
+            /*
+            * SECOND: CHECK FOR CONTENT PAIRS
+            */
+            for (final Content content1 : contents) {
+                if(content1.getOrder().equals(Content.RotationOrder.FIRST)){
+                    final int iContent1=contents.indexOf(content1);
+                    for (final Content content2 : contents) {
+                        final int iContent2=contents.indexOf(content2);
+                        if(content2.getOrder().equals(Content.RotationOrder.SECOND) &&
+                                content1.getArea().getBoundsInLocal().equals(content2.getArea().getBoundsInLocal())){
+                            ContentPair pair=new ContentPair(iContent1,iContent2);
+                            pairs.add(pair);
+                            break;
+                        }
                     }
-                }        
-
-                /*
-                 * START ANIMATIONS AT THE SAME TIME
-                 */
-                for (final Animation a : Anim) {
-                    a.start();
                 }
-            }            
+            }
+            
+            //        // Create the dark inner shadow on the bottom
+            //        InnerShadow innerShadow = InnerShadowBuilder.create()
+            //                                                    .offsetY(1)
+            //                                                    .radius(1)
+            //                                                    .color(Color.color(0, 0, 0, 0.65))
+            //                                                    .blurType(BlurType.GAUSSIAN)
+            //                                                    .build();
+            //
+            //        // Create the bright inner glow on the top
+            //        InnerShadow innerGlow = InnerShadowBuilder.create()
+            //                                                .offsetY(1)
+            //                                                .radius(1)
+            //                                                .color(Color.color(1, 1, 1, 0.65))
+            //                                                .blurType(BlurType.GAUSSIAN)
+            //                                                .input(innerShadow)
+            //                                                .build();
+            //
+            //        // Create the drop shadow on the outside
+            //        final DropShadow dropShadow = DropShadowBuilder.create()
+            //                                                .radius(1)
+            //                                                .color(Color.color(0, 0, 0, 0.65))
+            //                                                .blurType(BlurType.GAUSSIAN)
+            //                                                .input(innerGlow)
+            //                                                .build();
+
+            
+            /*
+            * THIRD: DISPLAY WITH/OUT ANIMATION
+            */
+            
+            // bind content display to paired content
+            visibleContent=new SimpleBooleanProperty[contents.size()];
+            dotMap.values().stream().forEach((entry) ->  ((Circle)entry).setFill(COLOR_OFF) );
+            
+            Anim=new ArrayList<>();
+            contents.stream().forEach((content) -> {
+                final int iContent=contents.indexOf(content);
+                if (fullAreas.get(iContent)!=null) {
+                    Animation iAnim=new Animation(iContent, content);
+                    iAnim.initAnimation();
+                    Anim.add(iAnim);
+                }
+            });
+            Anim.stream().forEach((a) -> a.start() );            
         });
     }
     
     public void stop(){
         if(Anim!=null){
-            for (final Animation a : Anim) {
-                a.stop();
-            }
+            Anim.stream().forEach((a) -> a.stop() );
             Anim.clear();
             Anim=null;
         }
     }
-
+    
     private class Animation extends AnimationTimer{
         private long lastUpdate=0l;
         private boolean bBlink=false; // heartbit
         private int contBlink=0;
         private int iter=0;        
-        private int iContent;
+        private final int iContent;
         private Content content=null;
         private int oriX, oriY, endX, endY;
         private int areaWidth, areaHeight;
@@ -992,15 +775,15 @@ public class MatrixPanelSkin extends com.sun.javafx.scene.control.skin.BehaviorS
              * Effect.SPRAY
              */
             if(content.getEffect().equals(Content.Effect.SPRAY)){
-                brightLeds = new LinkedHashMap<Integer,int[]>();
-                arrBrightLeds=new ArrayList<int[]>();
+                brightLeds = new LinkedHashMap<>();
+                arrBrightLeds=new ArrayList<>();
                 
                 // list of brighting LEDs: column j, row i, intensity val
                 for (int i = oriY; i < endY; i++) {
                     for (int j = oriX; j < endX; j++) {
-                        Integer dot = new Integer(j + i * ledWidth.intValue());
+                        Integer dot = new Integer(j + i * getSkinnable().ledWidthProperty().intValue());
                         if (dotMap.get(dot) != null) {
-                            int val = 0;
+                            int val;
                             if (j + posX.intValue() >= oriX && j + posX.intValue() < contentWidth + oriX &&
                                 i + posY.intValue() >= oriY && i + posY.intValue() < contentHeight + oriY) {
                                 val = contentArea[i + posY.intValue() - oriY][j + posX.intValue() - oriX];
@@ -1050,14 +833,14 @@ public class MatrixPanelSkin extends com.sun.javafx.scene.control.skin.BehaviorS
                         final int toneB=(int)(led[LED_INTENSITY]/100);
                         final int toneG=(int)((led[LED_INTENSITY]-toneB*100)/10);
                         final int toneR=(int)(led[LED_INTENSITY]-toneB*100-toneG*10);
-                        Integer dot = new Integer(led[LED_COLUMN] + led[LED_ROW] * ledWidth.intValue());
+                        Integer dot = new Integer(led[LED_COLUMN] + led[LED_ROW] * getSkinnable().ledWidthProperty().intValue());
                         ((Circle)dotMap.get(dot)).setFill(Color.rgb(toneScale*toneR, toneScale*toneG, toneScale*toneB));
                         iter=(iter<brightLeds.size()-1)?iter+1:iter;
                     }                            
                 } else {
                     for (int j = oriX; j < endX; j++) {
                         for (int i = oriY; i < endY; i++) {
-                            Integer dot = new Integer(j + i * ledWidth.intValue());
+                            Integer dot = new Integer(j + i * getSkinnable().ledWidthProperty().intValue());
                             if (dotMap.get(dot) != null) {
                                 int pos=posX.intValue();
                                 if(content.getEffect().equals(Content.Effect.MIRROR)){
@@ -1163,31 +946,27 @@ public class MatrixPanelSkin extends com.sun.javafx.scene.control.skin.BehaviorS
                             t.setDuration(Duration.millis(content.getPause()));
 //                            System.out.println("Start pause content "+iContent);
                         }
-                        t.setOnFinished(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent event) {
-//                                System.out.println("End pause content "+iContent);
-                                incrPos.setValue(1);
-
-                                // clear screen
-                                if(content.getClear() || content.getEffect().equals(Content.Effect.SPRAY)){
-                                    for (int i = oriY; i < endY; i++) {
-                                        for (int j = oriX; j < endX; j++) {
-                                            Integer dot = new Integer(j + i * ledWidth.intValue());
-                                            ((Circle)dotMap.get(dot)).setFill(COLOR_OFF);
-                                        }
+                        t.setOnFinished((ActionEvent event) -> {
+                            incrPos.setValue(1);
+                            
+                            // clear screen
+                            if(content.getClear() || content.getEffect().equals(Content.Effect.SPRAY)){
+                                for (int i = oriY; i < endY; i++) {
+                                    for (int j = oriX; j < endX; j++) {
+                                        Integer dot = new Integer(j + i * getSkinnable().ledWidthProperty().intValue());
+                                        ((Circle)dotMap.get(dot)).setFill(COLOR_OFF);
                                     }
                                 }
-
-                                if(!content.getOrder().equals(Content.RotationOrder.SINGLE)){
-                                    // at the end of the content display, allow paired content to be displayed
-                                    for(ContentPair pair: pairs){
-                                        if(pair.isInPair(iContent)){                                                    
-                                            visibleContent[pair.getFirstIndex()].setValue(!pair.isVisibleFirst());
-                                            visibleContent[pair.getSecondIndex()].setValue(!pair.isVisibleSecond());                                            
-                                            pairs.get(pairs.indexOf(pair)).changeIndex();
-                                            break;
-                                        }
+                            }
+                            
+                            if(!content.getOrder().equals(Content.RotationOrder.SINGLE)){
+                                // at the end of the content display, allow paired content to be displayed
+                                for(ContentPair pair: pairs){
+                                    if(pair.isInPair(iContent)){
+                                        visibleContent[pair.getFirstIndex()].setValue(!pair.isVisibleFirst());
+                                        visibleContent[pair.getSecondIndex()].setValue(!pair.isVisibleSecond());
+                                        pairs.get(pairs.indexOf(pair)).changeIndex();
+                                        break;
                                     }                                
                                 }
                             }
@@ -1204,7 +983,6 @@ public class MatrixPanelSkin extends com.sun.javafx.scene.control.skin.BehaviorS
         
         
     }
-    
     private static class ContentPair {
 
         private int indexFirst;
