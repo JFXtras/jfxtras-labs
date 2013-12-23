@@ -54,14 +54,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ScrollBar;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
-import javafx.scene.control.ScrollPaneBuilder;
-import javafx.scene.control.SkinBase;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -1755,7 +1749,7 @@ implements Agenda.AgendaSkin
 		BorderPane lBorderPane = new BorderPane();
 		lBorderPane.getStyleClass().add(getSkinnable().getClass().getSimpleName() + "Popup");
 		lPopup.getContent().add(lBorderPane);
-		
+
 		// close icon
 		ImageView lImageView = new ImageView(closeIconImage);
 		lImageView.setPickOnBounds(true);
@@ -1763,7 +1757,7 @@ implements Agenda.AgendaSkin
 		{
 			@Override public void handle(MouseEvent evt)
 			{
-				lPopup.hide(); 
+				lPopup.hide();
 			}
 		});
 		lBorderPane.setRight(lImageView);
@@ -1806,7 +1800,7 @@ implements Agenda.AgendaSkin
 				public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldValue, Boolean newValue)
 				{
 					abstractAppointmentPane.appointment.setWholeDay(newValue);
-					if (newValue == true) 
+					if (newValue == true)
 					{
 						abstractAppointmentPane.appointment.setEndTime(null);
 					}
@@ -1837,10 +1831,10 @@ implements Agenda.AgendaSkin
 				{
 					// remember
 					Calendar lOldStart = abstractAppointmentPane.appointment.getStartTime();
-					
+
 					// set
 					abstractAppointmentPane.appointment.setStartTime(newValue);
-					
+
 					// end date
 					if (abstractAppointmentPane.appointment.getEndTime() != null)
 					{
@@ -1848,16 +1842,16 @@ implements Agenda.AgendaSkin
 						Calendar lEndCalendar = (Calendar)abstractAppointmentPane.appointment.getStartTime().clone();
 						lEndCalendar.add(Calendar.MILLISECOND, (int)lDurationInMS);
 						abstractAppointmentPane.appointment.setEndTime(lEndCalendar);
-						
+
 						// update field
 						lEndCalendarTextField.setCalendar(abstractAppointmentPane.appointment.getEndTime());
 					}
-					
+
 					// refresh is done upon popup close
 				}
 			}
 		});
-		
+
 		// summary
 		lMenuVBox.getChildren().add(new Text("Summary:"));
 		TextField lSummaryTextField = new TextField();
@@ -1872,7 +1866,7 @@ implements Agenda.AgendaSkin
 			}
 		});
 		lMenuVBox.getChildren().add(lSummaryTextField);
-		
+
 		// location
 		lMenuVBox.getChildren().add(new Text("Location:"));
 		TextField lLocationTextField = new TextField();
@@ -1887,7 +1881,7 @@ implements Agenda.AgendaSkin
 			}
 		});
 		lMenuVBox.getChildren().add(lLocationTextField);
-		
+
 		// actions
 		lMenuVBox.getChildren().add(new Text("Actions:"));
 		HBox lHBox = new HBox();
@@ -1907,7 +1901,7 @@ implements Agenda.AgendaSkin
 			Tooltip.install(lImageButton, new Tooltip("Delete"));
 			lHBox.getChildren().add(lImageButton);
 		}
-		
+
 		// construct a area of appointment groups
 		lMenuVBox.getChildren().add(new Text("Group:"));
 		GridPane lAppointmentGroupGridPane = new GridPane();
@@ -1919,15 +1913,15 @@ implements Agenda.AgendaSkin
 		for (Agenda.AppointmentGroup lAppointmentGroup : getSkinnable().appointmentGroups())
 		{
 			// create the appointment group
-			final Pane lPane = new Pane();			
+			final Pane lPane = new Pane();
 			lPane.setPrefSize(15, 15);
 			lPane.getStyleClass().addAll("AppointmentGroup", lAppointmentGroup.getStyleClass());
 			lAppointmentGroupGridPane.add(lPane, lCnt % 10, lCnt / 10 );
 			lCnt++;
-			
+
 			// tooltip
 			Tooltip.install(lPane, new Tooltip(lAppointmentGroup.getDescription()));
-			 
+
 			// mouse reactions
 			lPane.setOnMouseEntered(new EventHandler<MouseEvent>()
 			{
@@ -1935,7 +1929,7 @@ implements Agenda.AgendaSkin
 				public void handle(MouseEvent mouseEvent)
 				{
 					if (!mouseEvent.isPrimaryButtonDown())
-					{						
+					{
 						mouseEvent.consume();
 						lPane.setCursor(Cursor.HAND);
 					}
@@ -1953,17 +1947,17 @@ implements Agenda.AgendaSkin
 					}
 				}
 			});
-			final Agenda.AppointmentGroup lAppointmentGroupFinal = lAppointmentGroup; 
+			final Agenda.AppointmentGroup lAppointmentGroupFinal = lAppointmentGroup;
 			lPane.setOnMouseClicked(new EventHandler<MouseEvent>()
 			{
 				@Override
 				public void handle(MouseEvent mouseEvent)
 				{
 					mouseEvent.consume();
-					
+
 					// assign appointment group
 					abstractAppointmentPane.appointment.setAppointmentGroup(lAppointmentGroupFinal);
-					
+
 					// refresh is done upon popup close
 					lPopup.hide();
 				}

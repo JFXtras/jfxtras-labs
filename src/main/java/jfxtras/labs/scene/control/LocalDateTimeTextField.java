@@ -41,9 +41,9 @@ import java.time.LocalDateTime;
 import jfxtras.labs.util.DateTimeUtil;
 
 /**
- * LocalDateTime (JSR-310) text field component.
- * This is an extension of the CalendarTextField adding the new date API JSR-310.
- * Since Calendar will not be removed from the JDK, too many applications use it, this approach of extending CalendarTextField is the most flexible one. 
+ * LocalDateTime (JSR-310) text field component.<br>
+ * This is an extension of the CalendarTextField adding the new date API JSR-310.<br>
+ * Since Calendar will not be removed from the JDK, too many applications use it, this approach of extending CalendarTextField is the most flexible one at this time. Do not assume that the calendar properties will be available in this control.<br>
  * 
  * @author Tom Eugelink
  */

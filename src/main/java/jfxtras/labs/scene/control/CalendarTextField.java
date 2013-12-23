@@ -40,6 +40,9 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 import javafx.util.Callback;
 
+// TODO: add disabled and highlighted and connect to popup Calendar's
+// TODO: add null allowed and connect to popup Calendar's
+
 /**
  * A textField with displays a calendar (date) with a icon to popup the CalendarPicker
  * The calendar is (and should) be treated as immutable. That means the Calendar's setters are not used, but when a value is changed a new instance (clone) is put in the calendar property.
