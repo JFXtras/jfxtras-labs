@@ -30,6 +30,7 @@ package jfxtras.labs.scene.control.gauge;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -140,7 +141,44 @@ public class UtilHex {
         String ss1 = ("00000000".substring(0, 8 - s1.length())).concat(s1);
         return ss1;
     }
+    
+    /*
+        Looks in a jar in the classhpath, extracts the bmp file to a temporary folder
+        and returns its absolute path
+    */
 
+    public static String getBmpFromJar(String jarPathBmpFile){
+        /*
+        Extract file from Jar to System Temporal folder
+        */
+        String temp = System.getProperty("java.io.tmpdir");
+        File dir = new File(temp+File.separator+"tempJarFolder");  
+        if(!dir.isDirectory()){
+            dir.mkdirs();
+        }
+        
+        InputStream is=UtilHex.class.getResourceAsStream(jarPathBmpFile);
+        String path="";
+        try {
+            File dstfile=new File(dir,"\\"+jarPathBmpFile);
+//            dstfile.deleteOnExit();
+            if(!dstfile.getParentFile().isDirectory()){
+                dstfile.getParentFile().mkdirs();
+            }
+            try (FileOutputStream fos = new FileOutputStream(dstfile)) {
+                int b;
+                while((b = is.read()) != -1){
+                    fos.write(b);
+                }
+                path=dstfile.getAbsolutePath();
+            } 
+        } 
+        catch (IOException e) { 
+             System.out.println("Error with image "+jarPathBmpFile+": "+e.getMessage());
+        }
+        return path;
+    }
+    
     /*
     * Converts BMP format into a BMT file
     * Levels: [0-255]
@@ -169,13 +207,18 @@ public class UtilHex {
             (colorB) ? 1 : 0
         }; // R-G-B
 
-        final String fullpathBmp=(pathBmp.endsWith(".bmp")?pathBmp:pathBmp.concat(".bmp"));
+        String fullpathBmp=(pathBmp.endsWith(".bmp")?pathBmp:pathBmp.concat(".bmp"));
         
         InputStream bmpStream=null;
         
-        // Try load bmp from jar
+        
         try {	
-            bmpStream = getClass().getResourceAsStream( fullpathBmp );            
+            // Try load bmp from this jar
+            bmpStream = getClass().getResourceAsStream( fullpathBmp );  
+            if(bmpStream!=null){ 
+                // Try load bmp from another jar if the path is provided
+                fullpathBmp = getBmpFromJar(pathBmp);
+            }
         }
         catch(MissingResourceException mre){	            
         }
