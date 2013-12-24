@@ -808,13 +808,10 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			weeknumberLabels.get(lIdx / 7).setVisible(true);
 
 			// highlight today
+			lToggleButton.getStyleClass().remove("today");
 			if (isToday(lCalendar))
 			{
 				lToggleButton.getStyleClass().add("today");
-			}	
-			else
-			{
-				lToggleButton.getStyleClass().remove("today");
 			}
 			
 			// highligh
