@@ -27,3 +27,4 @@ build.xml
 /gradlew_updateWrapper.cmd
 /gradlew_repairHeaders.cmd
 /gradlew_install.cmd
+/*.png

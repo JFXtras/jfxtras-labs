@@ -93,7 +93,10 @@ public class CalendarTextField extends Control
 	
 	// ==================================================================================================================
 	// PROPERTIES
-	
+
+	/** Id */
+	public CalendarTextField withId(String value) { setId(value); return this; }
+
 	/** Calendar: */
 	public ObjectProperty<Calendar> calendarProperty() { return calendarObjectProperty; }
 	final private ObjectProperty<Calendar> calendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar", null);

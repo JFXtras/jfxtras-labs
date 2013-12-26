@@ -91,7 +91,10 @@ public class CalendarPicker extends Control
 	
 	// ==================================================================================================================
 	// PROPERTIES
-	
+
+	/** Id */
+	public CalendarPicker withId(String value) { setId(value); return this; }
+
 	/** calendar: */
 	final private ObjectProperty<Calendar> calendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar")
 	{

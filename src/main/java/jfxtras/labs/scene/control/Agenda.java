@@ -89,7 +89,10 @@ public class Agenda extends Control
 	
 	// ==================================================================================================================
 	// PROPERTIES
-	
+
+	/** Id */
+	public Agenda withId(String value) { setId(value); return this; }
+
 	/** Appointments: */
 	public ObservableList<Appointment> appointments() { return appointments; }
 	final private ObservableList<Appointment> appointments =  javafx.collections.FXCollections.observableArrayList();

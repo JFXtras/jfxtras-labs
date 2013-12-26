@@ -73,7 +73,10 @@ public class CalendarTimePicker extends Control
 	
 	// ==================================================================================================================
 	// PROPERTIES
-	
+
+	/** Id */
+	public CalendarTimePicker withId(String value) { setId(value); return this; }
+
 	/** calendar: */
 	public ObjectProperty<Calendar> calendarProperty() { return calendarObjectProperty; }
 	final private ObjectProperty<Calendar> calendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "calendar", Calendar.getInstance())

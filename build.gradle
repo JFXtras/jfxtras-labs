@@ -41,7 +41,7 @@ repositories {
 
 dependencies {
     testCompile  "junit:junit:${jfxtras_junitVersion}","org.mockito:mockito-all:1.9.5"
-    testCompile  "net.java.jemmy:JemmyFX:0.9.3-SNAPSHOT"
+    testCompile  "org.loadui:testFx:3.0.0-beta1"
 }
 
 apply {

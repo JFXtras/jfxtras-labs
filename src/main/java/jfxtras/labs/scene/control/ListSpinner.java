@@ -237,7 +237,10 @@ public class ListSpinner<T> extends Control
 	
 	// ==================================================================================================================
 	// PROPERTIES
-	
+
+	/** Id */
+	public ListSpinner<T> withId(String value) { setId(value); return this; }
+
 	/** Value: */
 	public ObjectProperty<T> valueProperty() { return this.valueObjectProperty; }
 	final private ObjectProperty<T> valueObjectProperty = new SimpleObjectProperty<T>(this, "value", null)
