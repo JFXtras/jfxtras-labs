@@ -244,6 +244,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
         getSkinnable().ledHeightProperty().addListener(o -> handleControlPropertyChanged("UPDATE") );
         getSkinnable().frameVisibleProperty().addListener(o -> handleControlPropertyChanged("STYLE") );
         getSkinnable().frameDesignProperty().addListener(o -> handleControlPropertyChanged("STYLE") );
+        getSkinnable().frameCustomPathProperty().addListener(o -> handleControlPropertyChanged("STYLE") );
         getSkinnable().frameBaseColorProperty().addListener(o -> handleControlPropertyChanged("STYLE") );
         
         getSkinnable().getStyleClass().addListener((ListChangeListener.Change<? extends String> change) -> {
