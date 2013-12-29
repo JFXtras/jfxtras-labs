@@ -153,7 +153,7 @@ public class Content {
         postEffect = new SimpleObjectProperty<>(POSTEFFECT);
         pause      = new SimpleIntegerProperty(PAUSE);
         lapse      = new SimpleIntegerProperty(SPEED);
-        order      = new SimpleObjectProperty<RotationOrder>(ORDER);
+        order      = new SimpleObjectProperty<>(ORDER);
         clear      = new SimpleBooleanProperty(CLEAR);
         
     }

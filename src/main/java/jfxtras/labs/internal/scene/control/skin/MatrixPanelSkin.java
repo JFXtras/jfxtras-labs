@@ -36,7 +36,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
@@ -51,10 +50,13 @@ import jfxtras.labs.scene.control.gauge.MatrixPanel;
 import jfxtras.labs.scene.control.gauge.UtilHex;
 import jfxtras.labs.util.ConicalGradient;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import javafx.scene.control.Skin;
 import javafx.scene.control.SkinBase;
@@ -66,6 +68,8 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import jfxtras.labs.scene.control.gauge.Content.RotationOrder;
+import jfxtras.labs.util.Util;
 
 
 /**
@@ -99,7 +103,6 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
     private final int                toneScale=85;
     private BooleanProperty[]        visibleContent=null;
     private final Color              COLOR_OFF = Color.rgb(39, 39, 39,0.25);
-    private ObservableList<Content>  contents;
     private String                   jpgFrame;
     private Background               fillFrame;
     // ******************** Constructors **************************************
@@ -129,8 +132,6 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
         if (getSkinnable().getPrefWidth() != PREFERRED_WIDTH || getSkinnable().getPrefHeight() != PREFERRED_HEIGHT) {
             aspectRatio = getSkinnable().getPrefHeight() / getSkinnable().getPrefWidth();
         }
-        
-        contents = getSkinnable().getContents();
     }
 
     private void initGraphics() {
@@ -159,7 +160,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
         getChildren().setAll(pane);
 
         gradient();
-        updateMatrixPanel();
+        createContents();
         
     }
     
@@ -222,8 +223,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
         dotMap = new HashMap<>(getSkinnable().ledWidthProperty().intValue() * getSkinnable().ledHeightProperty().intValue());
         for (int i = 0; i < getSkinnable().ledHeightProperty().intValue(); i++) {
             for (int j = 0; j < getSkinnable().ledWidthProperty().intValue(); j++) {
-                Circle circ = new Circle(radio);
-                circ.getStyleClass().setAll("led-off");
+                Circle circ = new Circle(radio,COLOR_OFF);
                 dotMap.put(new Integer(j + i * getSkinnable().ledWidthProperty().intValue()), circ);
                 dots.getChildren().add(circ);
             }
@@ -249,10 +249,36 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
         
         getSkinnable().getStyleClass().addListener((ListChangeListener.Change<? extends String> change) -> {
             resize();
-            updateMatrixPanel();
+            createContents();
         });
-        getSkinnable().getContents().addListener((ListChangeListener.Change<? extends Content> c) -> {
-            updateMatrixPanel();            
+        getSkinnable().getContents().addListener((ListChangeListener.Change<? extends Content> change) -> {
+            while(change.next()){
+                if(change.wasAdded() || change.wasRemoved()){
+                    createContents();
+                }
+            }
+        });
+        getSkinnable().getContents().stream().forEach((Content t)->{
+            final int iContent=getSkinnable().getContents().indexOf(t);
+            t.colorProperty().addListener((o)-> handleContentPropertyChanged("CREATE",iContent)); 
+            t.originProperty().addListener((o)-> handleContentPropertyChanged("CREATE",iContent)); 
+            t.areaProperty().addListener((o)-> handleContentPropertyChanged("CREATE",iContent)); 
+            t.bmpNameProperty().addListener((o)-> {
+                if(byteAreas!=null && byteAreas.size()>iContent && byteAreas.get(iContent)!=null){
+                    byteAreas.set(iContent,null);
+                }
+                handleContentPropertyChanged("CREATE",iContent);
+            }); 
+            t.txtContentProperty().addListener((o)-> handleContentPropertyChanged("CREATE",iContent)); 
+            t.matrixFontProperty().addListener((o)-> handleContentPropertyChanged("CREATE",iContent)); 
+            t.fontGapProperty().addListener((o)-> handleContentPropertyChanged("CREATE",iContent)); 
+            t.txtAlignProperty().addListener((o)-> handleContentPropertyChanged("CREATE",iContent)); 
+            t.effectProperty().addListener((o)->handleContentPropertyChanged("ANIMATE",iContent)); 
+            t.pauseProperty().addListener((o)->handleContentPropertyChanged("ANIMATE",iContent)); 
+            t.postEffectProperty().addListener((o)->handleContentPropertyChanged("ANIMATE",iContent)); 
+            t.lapseProperty().addListener((o)->handleContentPropertyChanged("ANIMATE",iContent)); 
+            t.clearProperty().addListener((o)->handleContentPropertyChanged("ANIMATE",iContent)); 
+            t.orderProperty().addListener((o)->handleContentPropertyChanged("PAIRS",iContent)); 
         });
     }
 
@@ -262,7 +288,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
                 setDots();
                 setSize();
                 resize();
-                updateMatrixPanel();  
+                createContents();  
                 break;
             case "STYLE":
                 setStyle();
@@ -274,6 +300,33 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
             case "PREF_SIZE":
                 aspectRatio = getSkinnable().getPrefHeight() / getSkinnable().getPrefWidth();
                 break;
+        }
+    }
+    
+    protected void handleContentPropertyChanged(final String PROPERTY, final int iContent) {    
+        switch (PROPERTY) {
+            case "CREATE":
+                Platform.runLater(() -> {
+                    initializeContent(iContent);
+                    animContent(iContent);
+                    Anim.get(iContent).start();
+                });
+                break;
+            case "ANIMATE":
+                Platform.runLater(() -> {
+                    animContent(iContent);
+                    Anim.get(iContent).start();
+                });
+                break;
+            case "PAIRS":
+                checkPairs();
+                Anim.stream().forEach((a) -> a.stop() );
+                Platform.runLater(() -> {
+                    getSkinnable().getContents().stream().forEach(c->{
+                        animContent(getSkinnable().getContents().indexOf(c));
+                    });     
+                    Anim.stream().forEach((a) -> a.start() );
+                });
         }
     }
     
@@ -349,13 +402,13 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
                         Color c=getSkinnable().getFrameBaseColor();
                         ConicalGradient smGradient = new ConicalGradient(new Point2D(width/2d,height/2d),
                                                                  new Stop(0.0000, Color.rgb(254, 254, 254)),
-                                                                 new Stop(0.1250, darker(c, 0.15)),
+                                                                 new Stop(0.1250, Util.darker(c, 0.15)),
                                                                  new Stop(0.2500, c.darker()),
                                                                  new Stop(0.3472, c.brighter()),
                                                                  new Stop(0.5000, c.darker().darker()),
                                                                  new Stop(0.6527, c.brighter()),
                                                                  new Stop(0.7500, c.darker()),
-                                                                 new Stop(0.8750, darker(c, 0.15)),
+                                                                 new Stop(0.8750, Util.darker(c, 0.15)),
                                                                  new Stop(1.0000, Color.rgb(254, 254, 254)));
                         image = smGradient.apply(new Rectangle(width,height)).getImage();
                         break;
@@ -463,24 +516,6 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
         }
     }
 
-    public static Color darker(final Color COLOR, final double FRACTION) {
-        double red   = clamp(0, 1, COLOR.getRed() * (1.0 - FRACTION));
-        double green = clamp(0, 1, COLOR.getGreen() * (1.0 - FRACTION));
-        double blue  = clamp(0, 1, COLOR.getBlue() * (1.0 - FRACTION));
-        return new Color(red, green, blue, COLOR.getOpacity());
-    }
-
-    public static Color brighter(final Color COLOR, final double FRACTION) {
-        double red   = clamp(0, 1, COLOR.getRed() * (1.0 + FRACTION));
-        double green = clamp(0, 1, COLOR.getGreen() * (1.0 + FRACTION));
-        double blue  = clamp(0, 1, COLOR.getBlue() * (1.0 + FRACTION));
-        return new Color(red, green, blue, COLOR.getOpacity());
-    }
-    public static double clamp(final double MIN, final double MAX, final double VALUE) {
-        if (VALUE < MIN) return MIN;
-        if (VALUE > MAX) return MAX;
-        return VALUE;
-    }
     /***************
      *** CONTENT ***
      ***************/
@@ -491,6 +526,10 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
      * full area required for each content, even not visible
      */
     private ArrayList<int[][]> fullAreas = null;
+    /*
+     * Contains collection of images bytes, to avoid reprocessing BMPs
+     */
+    private ArrayList<byte[]> byteAreas = null;
     /*
      * visible AREAS in the panel, one per content
      */
@@ -504,153 +543,161 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
      */
     private ArrayList<Animation> Anim=null;
     
-    public void updateMatrixPanel() {
-//        System.out.println("updatePanel "+contents.size());
-        if (contents == null) {
-            return;
-        }
+    public void createContents() {
         // stop previous animations, if any
         stop();
+        // reset leds
+        dotMap.values().stream().forEach((c) -> c.setFill(COLOR_OFF) );
         
-        // run as thread
+        List<Content> contents=getSkinnable().getContents();
+        
+        if (0 == contents.size()) {
+            return;
+        }
+        
+        fullAreas = new ArrayList<>();
+        byteAreas = new ArrayList<>();
+        visibleArea = new Rectangle[contents.size()];
+        Anim=new ArrayList<>();
+        visibleContent=new SimpleBooleanProperty[contents.size()];
+            
+        checkPairs();
+        
+        /* Initialize and animate every Content */
         Platform.runLater(() -> {
-            int contAreas = 0;
-            fullAreas = new ArrayList<>();
-            pairs=new ArrayList<>();
-            visibleArea = new Rectangle[contents.size()];
-            for (final Content content : contents) {
-                int x0 = (int) content.getOrigin().getX() + (int) content.getArea().getX();
-                int y0 = (int) content.getOrigin().getY() + (int) content.getArea().getY();
-                int maxX = Math.min((int) content.getArea().getWidth(), getSkinnable().ledWidthProperty().intValue());
-                int maxY = Math.min((int) content.getArea().getHeight(), getSkinnable().ledHeightProperty().intValue());
-                visibleArea[contAreas] = new Rectangle(Math.max(x0, 0), Math.max(y0, 0), maxX, maxY);
-                
-                if (content.getType().equals(Content.Type.IMAGE)) {
-                    UtilHex img = new UtilHex();
-                    img.convertsBmp(content.getBmpName(), 65, 190, true,true,true);
-                    
-                    String sBytes = img.getRawData();
-                    if (sBytes != null) {
-                        String[] v = sBytes.split("\\s");
-                        final int levels = 3;
-                        //final int bmpWidth = UtilHex.word2Int(v[6], v[7]);
-                        final int bmpHeight = UtilHex.word2Int(v[8], v[9]);
-                        final int tamLineaBMT = (int)(UtilHex.dword2Long(v[20],v[21], v[22], v[23]) / bmpHeight / levels / 3); // en bytes
-                        int pos = 32;
-                        final int[][] area = new int[bmpHeight][tamLineaBMT * 8];
-                        final int[] colors={(content.getColor().equals(MatrixColor.RED) || content.getColor().equals(MatrixColor.YELLOW) || content.getColor().equals(MatrixColor.RGB))?1:0,
-                            (content.getColor().equals(MatrixColor.GREEN) || content.getColor().equals(MatrixColor.YELLOW) || content.getColor().equals(MatrixColor.RGB))?1:0,
-                            (content.getColor().equals(MatrixColor.BLUE) || content.getColor().equals(MatrixColor.RGB))?1:0};
-                        for (int j = 0; j < levels; j++) { // leds: [RED k=0]0-1-2-3, [GREEN k=1]0-10-20-30, [BLUE k=2] 0-100-200-300
-                            for(int k=0; k<3; k++){ // 3 colors
-                                for (int fila = 0; fila < bmpHeight; fila++) {
-                                    for (int i = 0; i < tamLineaBMT; i++) { // recorrido por cada byte de cada fila
-                                        String bits = UtilHex.hex2bin(v[pos++]); // contiene la fila de 8 bits
-                                        for (int m = 0; m < 8; m++) {
-                                            area[fila][i * 8 + m] += (bits.substring(m, m + 1).equalsIgnoreCase("1") ? 1 : 0)*Math.pow(10,k)*colors[k];
-                                        }
-                                    }
-                                }                        
-                            }
-                        }
-                        fullAreas.add(contAreas,area);
-                    }
-                    else{
-                        fullAreas.add(contAreas,null);
-                    }
-                } else if (content.getType().equals(Content.Type.TEXT)) {
-                    MatrixPanel.DotFont dotF = new MatrixPanel.DotFont(content.getTxtContent(), content.getMatrixFont(), content.getFontGap().getGapWidth());
-                    boolean[][] bDots = dotF.getDotString();
-                    if (bDots != null) {
-                        final int color=(content.getColor().equals(MatrixColor.RED)?3:
-                                (content.getColor().equals(MatrixColor.GREEN)?30:
-                                (content.getColor().equals(MatrixColor.BLUE)?300:
-                                (content.getColor().equals(MatrixColor.YELLOW)?33:333))));
-                        final int[][] area = new int[bDots.length][bDots[0].length];
-                        for (int fila = 0; fila < bDots.length; fila++) {
-                            for (int j = 0; j < bDots[fila].length; j++) {
-                                area[fila][j] = ((bDots[fila][j]) ? color : 0);
-                            }
-                        }
-                        fullAreas.add(contAreas,area);
-                    }
-                    else{
-                        fullAreas.add(contAreas,null);
-                    }
-                }
-                contAreas += 1;
-                
-            }
-            /*
-            * SECOND: CHECK FOR CONTENT PAIRS
-            */
-            for (final Content content1 : contents) {
-                if(content1.getOrder().equals(Content.RotationOrder.FIRST)){
-                    final int iContent1=contents.indexOf(content1);
-                    for (final Content content2 : contents) {
-                        final int iContent2=contents.indexOf(content2);
-                        if(content2.getOrder().equals(Content.RotationOrder.SECOND) &&
-                                content1.getArea().getBoundsInLocal().equals(content2.getArea().getBoundsInLocal())){
-                            ContentPair pair=new ContentPair(iContent1,iContent2);
-                            pairs.add(pair);
-                            break;
-                        }
-                    }
-                }
-            }
-            
-            //        // Create the dark inner shadow on the bottom
-            //        InnerShadow innerShadow = InnerShadowBuilder.create()
-            //                                                    .offsetY(1)
-            //                                                    .radius(1)
-            //                                                    .color(Color.color(0, 0, 0, 0.65))
-            //                                                    .blurType(BlurType.GAUSSIAN)
-            //                                                    .build();
-            //
-            //        // Create the bright inner glow on the top
-            //        InnerShadow innerGlow = InnerShadowBuilder.create()
-            //                                                .offsetY(1)
-            //                                                .radius(1)
-            //                                                .color(Color.color(1, 1, 1, 0.65))
-            //                                                .blurType(BlurType.GAUSSIAN)
-            //                                                .input(innerShadow)
-            //                                                .build();
-            //
-            //        // Create the drop shadow on the outside
-            //        final DropShadow dropShadow = DropShadowBuilder.create()
-            //                                                .radius(1)
-            //                                                .color(Color.color(0, 0, 0, 0.65))
-            //                                                .blurType(BlurType.GAUSSIAN)
-            //                                                .input(innerGlow)
-            //                                                .build();
-
-            
-            /*
-            * THIRD: DISPLAY WITH/OUT ANIMATION
-            */
-            
-            // bind content display to paired content
-            visibleContent=new SimpleBooleanProperty[contents.size()];
-            dotMap.values().stream().forEach((entry) ->  ((Circle)entry).setFill(COLOR_OFF) );
-            
-            Anim=new ArrayList<>();
-            contents.stream().forEach((content) -> {
+            contents.stream().forEach(content -> {
                 final int iContent=contents.indexOf(content);
-                if (fullAreas.get(iContent)!=null) {
-                    Animation iAnim=new Animation(iContent, content);
-                    iAnim.initAnimation();
-                    Anim.add(iAnim);
-                }
+                initializeContent(iContent);
+                animContent(iContent);
             });
-            Anim.stream().forEach((a) -> a.start() );            
+            Anim.stream().forEach((a) -> a.start());            
         });
     }
     
-    public void stop(){
+    private void initializeContent(int iContent){
+        
+        if(iContent<Anim.size()){
+            Anim.get(iContent).stop();
+        } 
+        if(iContent<fullAreas.size()){
+            clearArea(iContent);
+            fullAreas.remove(iContent);
+        }
+        
+        final Content content=getSkinnable().getContents().get(iContent);
+        
+        int x0 = (int) content.getOrigin().getX() + (int) content.getArea().getX();
+        int y0 = (int) content.getOrigin().getY() + (int) content.getArea().getY();
+        int maxX = Math.min((int) content.getArea().getWidth(), getSkinnable().ledWidthProperty().intValue());
+        int maxY = Math.min((int) content.getArea().getHeight(), getSkinnable().ledHeightProperty().intValue());
+        visibleArea[iContent] = new Rectangle(Math.max(x0, 0), Math.max(y0, 0), maxX, maxY);
+
+        if (content.getType().equals(Content.Type.IMAGE)) {
+            byte[] sBytes=null;
+            if(iContent<fullAreas.size() && byteAreas!=null && byteAreas.get(iContent)!=null){
+                sBytes=byteAreas.get(iContent);
+            } else {
+                UtilHex img = new UtilHex();
+                img.convertsBmp(content.getBmpName(), 65, 190, true,true,true);
+                sBytes = img.getRawData();
+                byteAreas.add(iContent,sBytes);
+                img.resetRawData();
+            }
+            if (sBytes != null) {
+                final int levels = 3;
+                final int bmpHeight = UtilHex.bytes2int(new byte[]{sBytes[8],sBytes[9]});
+                final int tamLineaBMT = UtilHex.bytes2int(new byte[]{sBytes[20],sBytes[21],sBytes[22],sBytes[23]}) / bmpHeight / levels / 3; // en bytes
+                int pos = 32;
+                final int[][] area = new int[bmpHeight][tamLineaBMT * 8];
+                final int[] colors={(content.getColor().equals(MatrixColor.RED) || content.getColor().equals(MatrixColor.YELLOW) || content.getColor().equals(MatrixColor.RGB))?1:0,
+                    (content.getColor().equals(MatrixColor.GREEN) || content.getColor().equals(MatrixColor.YELLOW) || content.getColor().equals(MatrixColor.RGB))?1:0,
+                    (content.getColor().equals(MatrixColor.BLUE) || content.getColor().equals(MatrixColor.RGB))?1:0};
+                for (int j = 0; j < levels; j++) { // leds: [RED k=0]0-1-2-3, [GREEN k=1]0-10-20-30, [BLUE k=2] 0-100-200-300
+                    for(int k=0; k<3; k++){ // 3 colors
+                        for (int fila = 0; fila < bmpHeight; fila++) {
+                            for (int i = 0; i < tamLineaBMT; i++) { // recorrido por cada byte de cada fila
+                                BitSet bs=BitSet.valueOf(new byte[]{sBytes[pos++]}); 
+                                for (int m = 0; m < 8; m++) {
+                                    area[fila][i * 8 + m] += (bs.get(7-m)?1:0)*Math.pow(10,k)*colors[k];
+                                }
+                            }
+                        }                        
+                    }
+                }
+                fullAreas.add(iContent,area);
+            }
+            else{
+                System.out.println("Error, image null: "+content.getBmpName());
+                fullAreas.add(iContent,null);
+                byteAreas.add(iContent,null);
+            }
+        } else if (content.getType().equals(Content.Type.TEXT)) {
+            MatrixPanel.DotFont dotF = new MatrixPanel.DotFont(content.getTxtContent(), content.getMatrixFont(), content.getFontGap().getGapWidth());
+            boolean[][] bDots = dotF.getDotString();
+            if (bDots != null) {
+                final int color=(content.getColor().equals(MatrixColor.RED)?3:
+                        (content.getColor().equals(MatrixColor.GREEN)?30:
+                        (content.getColor().equals(MatrixColor.BLUE)?300:
+                        (content.getColor().equals(MatrixColor.YELLOW)?33:333))));
+                final int[][] area = new int[bDots.length][bDots[0].length];
+                for (int fila = 0; fila < bDots.length; fila++) {
+                    for (int j = 0; j < bDots[fila].length; j++) {
+                        area[fila][j] = ((bDots[fila][j]) ? color : 0);
+                    }
+                }
+                fullAreas.add(iContent,area);
+            }
+            else{
+                fullAreas.add(iContent,null);
+            }
+            byteAreas.add(iContent,null);
+        }
+    }
+    
+    private void clearArea(int iContent){
+        for (int i = (int) visibleArea[iContent].getY(); i < (int) visibleArea[iContent].getHeight(); i++) {
+            for (int j = (int)visibleArea[iContent].getX(); j < (int) visibleArea[iContent].getWidth(); j++) {
+                Integer dot = new Integer(j + i * getSkinnable().ledWidthProperty().intValue());
+                if (dotMap.get(dot) != null) {
+                    ((Circle)dotMap.get(dot)).setFill(COLOR_OFF);
+                }
+            }
+        }
+    }
+    
+    private void animContent(int iContent){
+        if(iContent<Anim.size()){
+            Anim.get(iContent).stop();
+            Anim.remove(iContent);
+        } 
+        Animation iAnim=new Animation(iContent);
+        iAnim.initAnimation();
+        Anim.add(iContent,iAnim);
+    }
+    
+    private void checkPairs(){
+        /* Check for Content Pairs */
+        pairs=new ArrayList<>();
+        getSkinnable().getContents().stream().filter(c -> c.getOrder()==RotationOrder.FIRST)
+        .forEach((Content content1) -> {
+            getSkinnable().getContents().stream().filter(c -> c.getOrder()==RotationOrder.SECOND)
+            .forEach((Content content2) -> {
+                if(content1.getArea().getBoundsInLocal().equals(content2.getArea().getBoundsInLocal())){
+                    pairs.add(new ContentPair(getSkinnable().getContents().indexOf(content1),
+                                              getSkinnable().getContents().indexOf(content2)));
+                }
+            });
+        });
+    }
+    private void stop(){
         if(Anim!=null){
             Anim.stream().forEach((a) -> a.stop() );
             Anim.clear();
             Anim=null;
+        }
+        if(fullAreas!=null){
+            fullAreas.clear();
+            fullAreas=null;
         }
     }
     
@@ -665,7 +712,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
         private int areaWidth, areaHeight;
         private int contentWidth, contentHeight;
         private IntegerProperty posX, posY, posXIni, posYIni;
-        private int[][] contentArea=null;
+//        private int[][] contentArea=null;
         private int realLapse, advance, limX, limitBlink, iterLeds;
         private boolean isBlinkEffect;
         
@@ -673,23 +720,25 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
         private ArrayList<int[]> arrBrightLeds=null;
         private IntegerProperty incrPos=null;
         
-        public Animation(int iContent, Content theContent){
+        private PauseTransition pTrans=null;
+        
+        public Animation(int iContent){
             
             this.iContent=iContent;
-            this.content=theContent;
+            this.content=getSkinnable().getContents().get(iContent);
             
             // bind posX/posY increment (1) to allow for pause time (0) for each content
             incrPos=new SimpleIntegerProperty(1);
             
             visibleContent[iContent]=new SimpleBooleanProperty(true); // SINGLE && FIRST
-            if(content.getOrder().equals(Content.RotationOrder.SECOND)){
+            if(content!=null && content.getOrder().equals(Content.RotationOrder.SECOND)){
                 visibleContent[iContent].setValue(false);
             }
             
         }
         
         public void initAnimation(){
-            this.contentArea = fullAreas.get(iContent);            
+//            this.contentArea = fullAreas.get(iContent);            
 
             oriX = (int) visibleArea[iContent].getX();
             oriY = (int) visibleArea[iContent].getY();
@@ -701,116 +750,128 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
             /*
             * Total dimensions of area of the content
             */
-            contentWidth = contentArea[0].length;
-            contentHeight = contentArea.length;
-            
+            if(fullAreas!=null && fullAreas.get(iContent)!=null){
+                contentWidth =fullAreas.get(iContent)[0].length;
+                contentHeight = fullAreas.get(iContent).length;
+            }
             /*
             * START LOCATION OF CONTENT
             */
             posXIni= new SimpleIntegerProperty(0);
             posYIni = new SimpleIntegerProperty(0);
-
-            // content at its final position
-            posYIni.set(0);
-            if(content.getTxtAlign().equals(Content.Align.LEFT)){
-                posXIni.set(0);
-                // SCROLL_RIGHT: +cW-cW, SCROLL_LEFT: -aW+aW=0, MIRROR: -cW/2+cW/2
-                limX=0; 
-            } else if(content.getTxtAlign().equals(Content.Align.CENTER)){
-                posXIni.set(contentWidth/2-areaWidth/2);
-                //SCROLL_RIGHT: +cW-(aW/2+cW/2) SCROLL_LEFT: -aW+(aW/2+fW/2), MIRROR: -aW/2+cW/2
-                limX=-areaWidth/2+contentWidth/2; 
-            } else if(content.getTxtAlign().equals(Content.Align.RIGHT)){
-                posXIni.set(contentWidth-areaWidth);
-                //SCROLL_RIGHT: +cW-aW, SCROLL_LEFT: -aW+cW=0, MIRROR: cW/2-aW + cW/2
-                limX=contentWidth-areaWidth; 
-            }
-            
-            // moved first if neccessary to start the scrolling effect
-            if (content.getEffect().equals(Content.Effect.SCROLL_RIGHT)){
-                // content to the left of the visible area
-                posXIni.set(contentWidth);
-            } else if (content.getEffect().equals(Content.Effect.SCROLL_LEFT)){
-                // content to the right of the visible area
-                posXIni.set(-areaWidth);
-            } else if (content.getEffect().equals(Content.Effect.SCROLL_UP)){
-                // content to the bottom of the visible area
-                posYIni.set(-areaHeight);
-            } else if (content.getEffect().equals(Content.Effect.SCROLL_DOWN)){
-                // content to the top of the visible area
-                posYIni.set(contentHeight);
-            } else if (content.getEffect().equals(Content.Effect.MIRROR)){
-                // content to the center of the visible area
+            if(content!=null && !content.getEffect().equals(Content.Effect.NONE)){
+                // content at its final position
+                posYIni.set(0);
                 if(content.getTxtAlign().equals(Content.Align.LEFT)){
-                    posXIni.set(-contentWidth/2);
+                    posXIni.set(0);
+                    // SCROLL_RIGHT: +cW-cW, SCROLL_LEFT: -aW+aW=0, MIRROR: -cW/2+cW/2
+                    limX=0; 
                 } else if(content.getTxtAlign().equals(Content.Align.CENTER)){
-                    posXIni.set(0-areaWidth/2);
+                    posXIni.set(contentWidth/2-areaWidth/2);
+                    //SCROLL_RIGHT: +cW-(aW/2+cW/2) SCROLL_LEFT: -aW+(aW/2+fW/2), MIRROR: -aW/2+cW/2
+                    limX=-areaWidth/2+contentWidth/2; 
                 } else if(content.getTxtAlign().equals(Content.Align.RIGHT)){
-                    posXIni.set(contentWidth/2-areaWidth);
+                    posXIni.set(contentWidth-areaWidth);
+                    //SCROLL_RIGHT: +cW-aW, SCROLL_LEFT: -aW+cW=0, MIRROR: cW/2-aW + cW/2
+                    limX=contentWidth-areaWidth; 
                 }
-            } 
-            
+
+                // moved first if neccessary to start the scrolling effect
+                if (content.getEffect().equals(Content.Effect.SCROLL_RIGHT)){
+                    // content to the left of the visible area
+                    posXIni.set(contentWidth);
+                } else if (content.getEffect().equals(Content.Effect.SCROLL_LEFT)){
+                    // content to the right of the visible area
+                    posXIni.set(-areaWidth);
+                } else if (content.getEffect().equals(Content.Effect.SCROLL_UP)){
+                    // content to the bottom of the visible area
+                    posYIni.set(-areaHeight);
+                } else if (content.getEffect().equals(Content.Effect.SCROLL_DOWN)){
+                    // content to the top of the visible area
+                    posYIni.set(contentHeight);
+                } else if (content.getEffect().equals(Content.Effect.MIRROR)){
+                    // content to the center of the visible area
+                    if(content.getTxtAlign().equals(Content.Align.LEFT)){
+                        posXIni.set(-contentWidth/2);
+                    } else if(content.getTxtAlign().equals(Content.Align.CENTER)){
+                        posXIni.set(0-areaWidth/2);
+                    } else if(content.getTxtAlign().equals(Content.Align.RIGHT)){
+                        posXIni.set(contentWidth/2-areaWidth);
+                    }
+                } 
+            }
             // +1,-1 to make the translation ot the content, 0 to pause it
             posX = new SimpleIntegerProperty(posXIni.get());
             posY = new SimpleIntegerProperty(posYIni.get());
             
             // speed = gap of ms to refresh the matrixPanel
-            realLapse = (content.getLapse() >= 250)?content.getLapse():250;
+            realLapse = (content!=null && content.getLapse() >= 250)?content.getLapse():250;
             
-            if(content.getLapse()>0){
-                advance=realLapse/content.getLapse(); // horizontal advance per step (int). 
+            if(content!=null && content.getLapse()>0){
+                // leds advance per step (int), lower lapse, bigger advance:
+                advance=realLapse/content.getLapse(); 
                 realLapse=advance*content.getLapse();
             }
             else{
                 advance=10;
             }
+            if(content!=null && !content.getEffect().equals(Content.Effect.NONE)){
             
-            isBlinkEffect=(content.getEffect().equals(Content.Effect.BLINK) || 
-                            content.getEffect().equals(Content.Effect.BLINK_4) ||
-                            content.getEffect().equals(Content.Effect.BLINK_10));
-            limitBlink=(content.getEffect().equals(Content.Effect.BLINK)?10000: 
-                        (content.getEffect().equals(Content.Effect.BLINK_4)?7:
-                         (content.getEffect().equals(Content.Effect.BLINK_10)?19:0)));
-
-            /*
-             * Effect.SPRAY
-             */
-            if(content.getEffect().equals(Content.Effect.SPRAY)){
-                brightLeds = new LinkedHashMap<>();
-                arrBrightLeds=new ArrayList<>();
-                
-                // list of brighting LEDs: column j, row i, intensity val
-                for (int i = oriY; i < endY; i++) {
-                    for (int j = oriX; j < endX; j++) {
-                        Integer dot = new Integer(j + i * getSkinnable().ledWidthProperty().intValue());
-                        if (dotMap.get(dot) != null) {
-                            int val;
-                            if (j + posX.intValue() >= oriX && j + posX.intValue() < contentWidth + oriX &&
-                                i + posY.intValue() >= oriY && i + posY.intValue() < contentHeight + oriY) {
-                                val = contentArea[i + posY.intValue() - oriY][j + posX.intValue() - oriX];
-                                if(val>0){
-                                    int[] led={j,i,val};
-                                    arrBrightLeds.add(led);
-                                }
-                            } 
-                        }
-                    }
-                }
-                
-                // RANDOMIZE ArrayList 
-                Collections.shuffle(arrBrightLeds);
-                
-                // Create map with shuffled list
-                final Iterator<int[]> vIter = arrBrightLeds.iterator();
-                for (int k=0; k<arrBrightLeds.size(); k++){
-                    brightLeds.put(k, vIter.next());
-                }
-                arrBrightLeds.clear();
+                isBlinkEffect=(content.getEffect().equals(Content.Effect.BLINK) || 
+                                content.getEffect().equals(Content.Effect.BLINK_4) ||
+                                content.getEffect().equals(Content.Effect.BLINK_10));
+                limitBlink=(content.getEffect().equals(Content.Effect.BLINK)?10000: 
+                            (content.getEffect().equals(Content.Effect.BLINK_4)?7:
+                             (content.getEffect().equals(Content.Effect.BLINK_10)?19:0)));
 
                 /*
-                 * SPRAY Effect. Number of new leds showed in each step
+                 * Effect.SPRAY
                  */
-                iterLeds=brightLeds.size()/advance;
+                if(content.getEffect().equals(Content.Effect.SPRAY)){
+                    brightLeds = new LinkedHashMap<>();
+                    arrBrightLeds=new ArrayList<>();
+                    int[][] contentArea= fullAreas.get(iContent); 
+                    // list of brighting LEDs: column j, row i, intensity val
+                    for (int i = oriY; i < endY; i++) {
+                        for (int j = oriX; j < endX; j++) {
+                            Integer dot = new Integer(j + i * getSkinnable().ledWidthProperty().intValue());
+                            if (dotMap.get(dot) != null) {
+                                int val;
+                                if (j + posX.intValue() >= oriX && j + posX.intValue() < contentWidth + oriX &&
+                                    i + posY.intValue() >= oriY && i + posY.intValue() < contentHeight + oriY) {
+                                    val = contentArea[i + posY.intValue() - oriY][j + posX.intValue() - oriX];
+                                    if(val>0){
+                                        int[] led={j,i,val};
+                                        arrBrightLeds.add(led);
+                                    }
+                                } 
+                            }
+                        }
+                    }
+
+                    // RANDOMIZE ArrayList 
+                    Collections.shuffle(arrBrightLeds);
+
+                    // Create map with shuffled list
+                    final Iterator<int[]> vIter = arrBrightLeds.iterator();
+                    for (int k=0; k<arrBrightLeds.size(); k++){
+                        brightLeds.put(k, vIter.next());
+                    }
+                    arrBrightLeds.clear();
+
+                    /*
+                     * SPRAY Effect. Number of new leds showed in each step
+                     */
+                    if(brightLeds.size()>0){
+                        if(content!=null && content.getLapse()>0){
+                            iterLeds=brightLeds.size()/content.getLapse();
+                        } else {
+                            iterLeds=brightLeds.size()/10;
+                        }
+                    } else {
+                        iterLeds=0;
+                    }
+                }
             }
         }
                 
@@ -821,8 +882,8 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
             *  the content is visible and it isn't in pause
             */
             if (now > lastUpdate + realLapse*1000000 && 
-                visibleContent[iContent].getValue() && 
-                incrPos.intValue()==1) {  
+                content!=null && iContent<visibleContent.length && 
+                visibleContent[iContent].getValue() && incrPos.intValue()==1) {  
 
                 /*
                 *  check only the visible area
@@ -839,6 +900,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
                         iter=(iter<brightLeds.size()-1)?iter+1:iter;
                     }                            
                 } else {
+                    int[][] contentArea= fullAreas.get(iContent); 
                     for (int j = oriX; j < endX; j++) {
                         for (int i = oriY; i < endY; i++) {
                             Integer dot = new Integer(j + i * getSkinnable().ledWidthProperty().intValue());
@@ -870,6 +932,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
                             }
                         }
                     }
+                    contentArea=null;
                 }
                 /*
                  * INCREMENT TRASLATION OF CONTENT 
@@ -897,11 +960,21 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
                         posX.set(posX.intValue() + advance*incrPos.getValue());
                     }                    
                 } else if (content.getEffect().equals(Content.Effect.SCROLL_DOWN)) {
-                    posY.set(posY.intValue() - incrPos.getValue());
-                    endRotation = (posY.intValue() < 0); // fullHeight-fullHeight
+                    endRotation = (posY.intValue() <= 0); // fullHeight-fullHeight
+                    if(posY.intValue() - advance*incrPos.getValue() <= 0){ 
+                        posY.set(0);
+                    }
+                    else{
+                        posY.set(posY.intValue() - advance*incrPos.getValue());
+                    }
                 } else if (content.getEffect().equals(Content.Effect.SCROLL_UP)) {
-                    posY.set(posY.intValue() + incrPos.getValue());
-                    endRotation = (posY.intValue() > 0); // -areaHeight+areaHeight
+                    endRotation = (posY.intValue() >= 0); // -areaHeight+areaHeight
+                    if(posY.intValue() + advance*incrPos.getValue() >= 0){ 
+                        posY.set(0);
+                    }
+                    else{
+                        posY.set(posY.intValue() + advance*incrPos.getValue());
+                    } 
                 } else if (isBlinkEffect){
                     if(contBlink==limitBlink){
                         endRotation=true;
@@ -939,19 +1012,17 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
                         /*
                         * PAUSE BETWEEN ROTATIONS
                         */
-                        PauseTransition t=new PauseTransition();
+                        pTrans=new PauseTransition();
                         if(content.getPostEffect().equals(Content.PostEffect.REPEAT)){
-                            t.setDuration(Duration.millis(10));
-//                            System.out.println("repeat content "+iContent);  
+                            pTrans.setDuration(Duration.millis(10));
                         } else{
-                            t.setDuration(Duration.millis(content.getPause()));
-//                            System.out.println("Start pause content "+iContent);
+                            pTrans.setDuration(Duration.millis(content.getPause()));
                         }
-                        t.setOnFinished((ActionEvent event) -> {
+                        pTrans.setOnFinished((ActionEvent event) -> {
                             incrPos.setValue(1);
                             
                             // clear screen
-                            if(content.getClear() || content.getEffect().equals(Content.Effect.SPRAY)){
+                            if(content!=null && (content.getClear() || content.getEffect().equals(Content.Effect.SPRAY))){
                                 for (int i = oriY; i < endY; i++) {
                                     for (int j = oriX; j < endX; j++) {
                                         Integer dot = new Integer(j + i * getSkinnable().ledWidthProperty().intValue());
@@ -960,7 +1031,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
                                 }
                             }
                             
-                            if(!content.getOrder().equals(Content.RotationOrder.SINGLE)){
+                            if(content!=null && !content.getOrder().equals(Content.RotationOrder.SINGLE)){
                                 // at the end of the content display, allow paired content to be displayed
                                 for(ContentPair pair: pairs){
                                     if(pair.isInPair(iContent)){
@@ -972,9 +1043,8 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
                                 }
                             }
                         });                                        
-                        t.playFromStart();                                
+                        pTrans.playFromStart();                                
                     }
-
 
                 }
                 //System.out.println((now-lastUpdate)/1000000);
@@ -982,6 +1052,22 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
             }
         }
         
+        @Override
+        public void stop(){
+            if(brightLeds!=null){
+                brightLeds.clear();
+                brightLeds=null;
+            }
+            if(arrBrightLeds!=null){
+                arrBrightLeds.clear();
+                arrBrightLeds=null;
+            }
+            if(pTrans!=null){
+                pTrans.stop();
+                pTrans=null;
+            }
+            content=null;
+        }
         
     }
     private static class ContentPair {
@@ -993,7 +1079,7 @@ public class MatrixPanelSkin extends SkinBase<MatrixPanel> implements Skin<Matri
         public ContentPair(int index1, int index2) {
             indexFirst=index1;
             bVisibleFirst=true;
-            indexSecond=index2;            
+            indexSecond=index2; 
         }
         
         public void setFirstIndex(int index){
