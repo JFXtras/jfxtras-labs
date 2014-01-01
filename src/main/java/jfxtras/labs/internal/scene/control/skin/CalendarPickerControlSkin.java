@@ -103,13 +103,13 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			{
 				if (getSkinnable().getCalendar() != null) 
 				{
-					setDisplayedCalendar(getSkinnable().getCalendar());
+					getSkinnable().setDisplayedCalendar(getSkinnable().getCalendar());
 				}
 			} 
 		});
 		if (getSkinnable().getCalendar() != null) 
 		{
-			setDisplayedCalendar(getSkinnable().getCalendar());
+			getSkinnable().setDisplayedCalendar(getSkinnable().getCalendar());
 		}
 		
 		// if the calendars change, the selection must be refreshed
@@ -122,16 +122,6 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			} 
 		});
 		
-		// if the displayed calendar changes, the screen must be refreshed
-		displayedCalendar().addListener(new InvalidationListener()
-		{
-			@Override
-			public void invalidated(Observable arg0)
-			{
-				refresh();
-			} 
-		});
-
         // react to changes in the locale
         getSkinnable().localeProperty().addListener(new InvalidationListener() {
             @Override
@@ -139,7 +129,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
                 monthListSpinner.setItems(FXCollections.observableArrayList(getMonthLabels()));
 
                 // force change the locale in the displayed calendar
-                displayedCalendar().set(derriveDisplayedCalendar(getDisplayedCalendar()));
+                getSkinnable().displayedCalendar().set( (Calendar)getSkinnable().getDisplayedCalendar().clone() );
                 refresh();
             }
         });
@@ -174,14 +164,30 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 	
 	// ==================================================================================================================
 	// PROPERTIES
-	
+
+	/**
+	 * This skin has the displayed date always pointing to the first of the month
+	 * @param displayedCalendar
+	 * @return
+	 */
+	protected Calendar deriveDisplayedCalendar(Calendar displayedCalendar)
+	{
+		// always the 1st of the month, without time
+		Calendar lCalendar = Calendar.getInstance(getSkinnable().getLocale());
+		lCalendar.set(Calendar.DATE, 1);
+		lCalendar.set(Calendar.MONTH, displayedCalendar.get(Calendar.MONTH));
+		lCalendar.set(Calendar.YEAR, displayedCalendar.get(Calendar.YEAR));
+		lCalendar.set(Calendar.HOUR_OF_DAY, 0);
+		lCalendar.set(Calendar.MINUTE, 0);
+		lCalendar.set(Calendar.SECOND, 0);
+		lCalendar.set(Calendar.MILLISECOND, 0);
+		return lCalendar;
+	}
+
 	// ==================================================================================================================
 	// StyleableProperties
 	
 	/** ShowWeeknumbers: */
-    /**
-     * showWeeknumbers
-     */
     public final ObjectProperty<ShowWeeknumbers> showWeeknumbersProperty()
     {
         if (showWeeknumbers == null)
@@ -550,9 +556,9 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		int lDayOfMonth = lDayToggleButtonIdx - lFirstOfMonthIdx + 1;
 
 		// create calendar representing the date that was toggled
-		Calendar lToggledCalendar = (Calendar)getDisplayedCalendar().clone();
-		lToggledCalendar.set(Calendar.YEAR, getDisplayedCalendar().get(Calendar.YEAR));
-		lToggledCalendar.set(Calendar.MONTH, getDisplayedCalendar().get(Calendar.MONTH));
+		Calendar lToggledCalendar = (Calendar)getSkinnable().getDisplayedCalendar().clone();
+		lToggledCalendar.set(Calendar.YEAR, getSkinnable().getDisplayedCalendar().get(Calendar.YEAR));
+		lToggledCalendar.set(Calendar.MONTH, getSkinnable().getDisplayedCalendar().get(Calendar.MONTH));
 		lToggledCalendar.set(Calendar.DATE, lDayOfMonth);
 		
 		// include time
@@ -655,12 +661,12 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		int lMonth = monthListSpinner.getIndex();
 		
 		// get new calendar to display
-		Calendar lCalendar = (Calendar)getDisplayedCalendar().clone();
+		Calendar lCalendar = (Calendar)getSkinnable().getDisplayedCalendar().clone();
 		lCalendar.set(Calendar.YEAR, lYear);
 		lCalendar.set(Calendar.MONTH, lMonth);
 		
 		// set it
-		setDisplayedCalendar(lCalendar);
+		getSkinnable().setDisplayedCalendar(lCalendar);
 	}
 	
 
@@ -673,18 +679,18 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		Calendar lTodayCalendar = Calendar.getInstance();
 		
 		// get new calendar to display
-		Calendar lCalendar = (Calendar)getDisplayedCalendar().clone();
+		Calendar lCalendar = (Calendar)getSkinnable().getDisplayedCalendar().clone();
 		lCalendar.set(Calendar.YEAR, lTodayCalendar.get(Calendar.YEAR));
 		lCalendar.set(Calendar.MONTH, lTodayCalendar.get(Calendar.MONTH));
 		
 		// set it
-		setDisplayedCalendar(lCalendar);
+		getSkinnable().setDisplayedCalendar(lCalendar);
 	}
 	
 	/**
 	 * refresh all
 	 */
-	private void refresh()
+	protected void refresh()
 	{
 		calendarRangeCallback();
 		refreshSpinner();
@@ -703,7 +709,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		if (calendarRangeCallbackAtomicInteger.get() !=0) return;
 		
 		// get calendar
-		Calendar lCalendar = (Calendar)getDisplayedCalendar();
+		Calendar lCalendar = (Calendar)getSkinnable().getDisplayedCalendar();
 
 		// get the value for the corresponding index and set that
 		List<String> lMonthLabels = getMonthLabels();
@@ -784,7 +790,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		
 		// set the month buttons
 		int lDaysInMonth = determineDaysInMonth();
-		Calendar lCalendar = (Calendar)getDisplayedCalendar().clone();
+		Calendar lCalendar = (Calendar)getSkinnable().getDisplayedCalendar().clone();
 		for (int i = 1; i <= lDaysInMonth; i++)
 		{
 			// set the date
@@ -844,7 +850,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			
 			// set the month buttons
 			int lDaysInMonth = determineDaysInMonth();
-			Calendar lCalendar = (Calendar)getDisplayedCalendar().clone();
+			Calendar lCalendar = (Calendar)getSkinnable().getDisplayedCalendar().clone();
 			for (int i = 1; i <= lDaysInMonth; i++)
 			{
 				// set the date

@@ -275,6 +275,17 @@ public class CalendarPicker extends Control
 		final Calendar end; 
 	}
 
+	/**
+	 * DisplayedCalendar:
+	 * Yoy may set this value, but it is also overwritten by other logic and the skin. Do not assume you have total control.
+	 * The calendar should not be modified using any of its add or set methods (it should be considered immutable)
+	 */
+	public ObjectProperty<Calendar> displayedCalendar() { return displayedCalendarObjectProperty; }
+	volatile private ObjectProperty<Calendar> displayedCalendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "displayedCalendar");
+	public Calendar getDisplayedCalendar() { return displayedCalendarObjectProperty.getValue(); }
+	public void setDisplayedCalendar(Calendar value) { displayedCalendarObjectProperty.setValue(value); }
+	public CalendarPicker withDisplayedCalendar(Calendar value) { setDisplayedCalendar(value); return this; }
+
 	// ==================================================================================================================
 	// SUPPORT
 	

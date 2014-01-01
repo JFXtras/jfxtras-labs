@@ -71,7 +71,36 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 	private void construct()
 	{
 		// set displayed date
-		setDisplayedCalendar(Calendar.getInstance());
+//		getSkinnable().setDisplayedCalendar(Calendar.getInstance());
+
+
+		// if the displayed calendar changes, the screen must be refreshed
+		getSkinnable().displayedCalendar().addListener(new InvalidationListener()
+		{
+			@Override
+			public void invalidated(Observable observale)
+			{
+				// adapt to our needs
+				Calendar lDisplayedCalendar = getSkinnable().getDisplayedCalendar();
+				if ( (myDisplayedCalendar == null && lDisplayedCalendar != null)
+				  || myDisplayedCalendar.equals(lDisplayedCalendar) == false
+				   )
+				{
+					// modify the calender the way we like it
+					Calendar lCalendar = deriveDisplayedCalendar(lDisplayedCalendar);
+
+					// assign it
+					myDisplayedCalendar = lCalendar;
+					getSkinnable().displayedCalendar().set(lCalendar);
+
+					// wait for this change to report itself
+					return;
+				}
+
+				// update
+				refresh();
+			}
+		});
 
 		// react to changes in the locale
 		getSkinnable().localeProperty().addListener(new InvalidationListener()
@@ -84,55 +113,12 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 		});
 		refreshLocale();
 	}
+	private Calendar myDisplayedCalendar = null;
 	
 
 	// ==================================================================================================================
 	// PROPERTIES
 	
-	/** 
-	 * DisplayedCalendar: this calendar always points to the first of the month being shown, 
-	 * it also is used to determine first-day-of-week, weekday labels, etc
-	 * The calendar should not be modified using any of its add or set methods (it should be considered immutable)  
-	 */
-	public ObjectProperty<Calendar> displayedCalendar() { return displayedCalendarObjectProperty; }
-	volatile private ObjectProperty<Calendar> displayedCalendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "displayedCalendar");
-	public Calendar getDisplayedCalendar() { return displayedCalendarObjectProperty.getValue(); }
-	public void setDisplayedCalendar(Calendar value)  
-	{
-		Calendar lValue = getDisplayedCalendar();
-		
-		// we need to explicitly break out if the YMD are equals (because we generate new Calendars which is because Calendars are mutable - bah), else we end up in an endless loop
-		if ( value != null && lValue != null 
-		  && value.get(Calendar.YEAR) == lValue.get(Calendar.YEAR)
-		  && value.get(Calendar.MONTH) == lValue.get(Calendar.MONTH)
-		  && value.get(Calendar.DATE) == lValue.get(Calendar.DATE))
-		{
-			return;
-		}
-		
-		// set value
-		displayedCalendarObjectProperty.setValue(derriveDisplayedCalendar(value)); 
-	}
-	public S withDisplayedCalendar(Calendar value) { setDisplayedCalendar(value); return (S)this; } 
-	protected Calendar derriveDisplayedCalendar(Calendar lDisplayedCalendar)
-	{
-		// done
-		if (lDisplayedCalendar == null) return null;
-		
-		// always the 1st of the month, without time
-		Calendar lCalendar = Calendar.getInstance(getSkinnable().getLocale());
-		lCalendar.set(Calendar.DATE, 1);
-		lCalendar.set(Calendar.MONTH, lDisplayedCalendar.get(Calendar.MONTH));
-		lCalendar.set(Calendar.YEAR, lDisplayedCalendar.get(Calendar.YEAR));
-		lCalendar.set(Calendar.HOUR_OF_DAY, 0);
-		lCalendar.set(Calendar.MINUTE, 0);
-		lCalendar.set(Calendar.SECOND, 0);
-		lCalendar.set(Calendar.MILLISECOND, 0);
-		
-		// done
-		return lCalendar;
-	}
-
 	/**
 	 * 
 	 */
@@ -140,16 +126,17 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 	{
 		// create the formatter to use
 		simpleDateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG, getSkinnable().getLocale());
-//
-//        // change the locale in the displayed calendar
-//        displayedCalendarObjectProperty.set(derriveDisplayedCalendar(getDisplayedCalendar()));
 	}
-
-	//
 	private SimpleDateFormat simpleDateFormat = null;
 	
 	// ==================================================================================================================
 	// SUPPORT
+
+	// modify the displayed date to match our requirements (meaning same locale, etc)
+	abstract protected Calendar deriveDisplayedCalendar(Calendar displayedCalendar);
+
+	// refresh the skin
+	abstract protected void refresh();
 
 	/**
 	 * 
@@ -179,7 +166,7 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 	 */
 	protected Calendar periodStartCalendar()
 	{
-		return (Calendar)getDisplayedCalendar().clone();
+		return (Calendar)getSkinnable().getDisplayedCalendar().clone();
 	}
 	
 	/**
@@ -188,7 +175,7 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 	 */
 	protected Calendar periodEndCalendar()
 	{
-		Calendar lEndCalendar = (Calendar)getDisplayedCalendar().clone();
+		Calendar lEndCalendar = (Calendar)getSkinnable().getDisplayedCalendar().clone();
 		lEndCalendar.add(java.util.Calendar.MONTH, 1);
 		lEndCalendar.set(java.util.Calendar.DATE, 1);
 		lEndCalendar.add(java.util.Calendar.DATE, -1);
@@ -210,7 +197,7 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 		for (int i = 0; i < 7; i++)
 		{
 			// next
-			lCalendar.set(java.util.Calendar.DATE, 4 + getDisplayedCalendar().getFirstDayOfWeek() + i);
+			lCalendar.set(java.util.Calendar.DATE, 4 + getSkinnable().getDisplayedCalendar().getFirstDayOfWeek() + i);
 
 			// assign day
 			lWeekdayLabels.add( simpleDateFormat.format(lCalendar.getTime()));
@@ -229,7 +216,7 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 		List<Integer> lWeekLabels = new ArrayList<Integer>();
 
 		// setup the weekLabels
-		Calendar lCalendar = (Calendar)getDisplayedCalendar().clone();
+		Calendar lCalendar = (Calendar)getSkinnable().getDisplayedCalendar().clone();
 		for (int i = 0; i <= 5; i++)
 		{
 			// set label
@@ -274,7 +261,7 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 	{
 		// setup the dayLabels
 		// Calendar.SUNDAY = 1 and Calendar.SATURDAY = 7
-		Calendar lCalendar = new java.util.GregorianCalendar(2009, 6, 4 + getDisplayedCalendar().getFirstDayOfWeek()); // july 5th 2009 is a Sunday
+		Calendar lCalendar = new java.util.GregorianCalendar(2009, 6, 4 + getSkinnable().getDisplayedCalendar().getFirstDayOfWeek()); // july 5th 2009 is a Sunday
 		lCalendar.add(java.util.Calendar.DATE, idx);
 		int lDayOfWeek = lCalendar.get(java.util.Calendar.DAY_OF_WEEK);
 
@@ -296,8 +283,8 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 	protected int determineFirstOfMonthDayOfWeek()
 	{
 		// determine with which button to start
-		int lFirstDayOfWeek = getDisplayedCalendar().getFirstDayOfWeek();
-		int lFirstOfMonthIdx = getDisplayedCalendar().get(java.util.Calendar.DAY_OF_WEEK) - lFirstDayOfWeek;
+		int lFirstDayOfWeek = getSkinnable().getDisplayedCalendar().getFirstDayOfWeek();
+		int lFirstOfMonthIdx = getSkinnable().getDisplayedCalendar().get(java.util.Calendar.DAY_OF_WEEK) - lFirstDayOfWeek;
 		if (lFirstOfMonthIdx < 0) lFirstOfMonthIdx += 7;
 		return lFirstOfMonthIdx;
 	}
@@ -308,7 +295,7 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 	protected int determineDaysInMonth()
 	{
 		// determine the number of days in the month
-		Calendar lCalendar = (Calendar)getDisplayedCalendar().clone();
+		Calendar lCalendar = (Calendar)getSkinnable().getDisplayedCalendar().clone();
 		lCalendar.add(java.util.Calendar.MONTH, 1);
 		lCalendar.set(java.util.Calendar.DATE, 1);
 		lCalendar.add(java.util.Calendar.DATE, -1);
