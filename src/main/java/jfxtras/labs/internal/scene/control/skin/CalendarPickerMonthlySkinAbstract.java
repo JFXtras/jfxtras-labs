@@ -70,10 +70,6 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 	 */
 	private void construct()
 	{
-		// set displayed date
-//		getSkinnable().setDisplayedCalendar(Calendar.getInstance());
-
-
 		// if the displayed calendar changes, the screen must be refreshed
 		getSkinnable().displayedCalendar().addListener(new InvalidationListener()
 		{

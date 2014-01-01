@@ -79,6 +79,7 @@ public class CalendarPicker extends Control
 		constructCalendars();
 		constructLocale();
 //		constructMode();
+		constructDisplayedCalendar();
 	}
 
 	/**
@@ -285,6 +286,10 @@ public class CalendarPicker extends Control
 	public Calendar getDisplayedCalendar() { return displayedCalendarObjectProperty.getValue(); }
 	public void setDisplayedCalendar(Calendar value) { displayedCalendarObjectProperty.setValue(value); }
 	public CalendarPicker withDisplayedCalendar(Calendar value) { setDisplayedCalendar(value); return this; }
+	private void constructDisplayedCalendar()
+	{
+		setDisplayedCalendar(Calendar.getInstance());
+	}
 
 	// ==================================================================================================================
 	// SUPPORT
