@@ -78,7 +78,6 @@ public class CalendarPicker extends Control
 		constructCalendar();
 		constructCalendars();
 		constructLocale();
-//		constructMode();
 		constructDisplayedCalendar();
 	}
 
@@ -199,22 +198,6 @@ public class CalendarPicker extends Control
 	public Mode getMode() { return modeObjectProperty.getValue(); }
 	public void setMode(Mode value) { modeObjectProperty.setValue(value); }
 	public CalendarPicker withMode(Mode value) { setMode(value); return this; } 
-	// construct property
-//	private void constructMode()
-//	{
-//		// if this value is changed by binding, make sure related things are updated
-//		modeProperty().addListener(new ChangeListener<Mode>()
-//		{
-//			@Override
-//			public void changed(ObservableValue<? extends Mode> observableValue, Mode oldValue, Mode newValue)
-//			{
-//				// update the collection; remove excessive calendars
-//				while (getMode() == Mode.SINGLE && calendars().size() > 1) {
-//					calendars().remove(calendars().size() - 1);
-//				}
-//			} 
-//		});
-//	}
 
 	/** ShowTime: only applicable in SINGLE mode */
 	public ObjectProperty<Boolean> showTimeProperty() { return showTimeObjectProperty; }
