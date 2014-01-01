@@ -27,6 +27,7 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import java.util.BitSet;
 import java.util.List;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -1014,7 +1015,7 @@ public class MatrixPanel extends Control {
         ledHeight   = new SimpleIntegerProperty(1);
         frameDesign = new SimpleObjectProperty<>(FrameDesign.GLOSSY_METAL);
         frameBaseColor = new SimpleObjectProperty<>(Color.rgb(160, 160, 160));
-        frameCustomPath = new SimpleObjectProperty<>("/matrixpanel/black.jpg");
+        frameCustomPath = new SimpleObjectProperty<>("");
         frameVisible= new SimpleBooleanProperty(true);        
     }
 
@@ -1204,7 +1205,7 @@ public class MatrixPanel extends Control {
             dotString = new boolean[height][(width + GAP) * TEXT.length()];
             for (int i = 0; i < TEXT.length(); i++) {
 
-                int decChar = String.valueOf(TEXT.charAt(i)).getBytes()[0];
+                int decChar = Integer.parseInt(UtilHex.dec2hexStr((int)TEXT.charAt(i)),16);
 
                 for (IDD let : values) {
                     if (let.getDecLetra() == decChar) {
@@ -1214,10 +1215,9 @@ public class MatrixPanel extends Control {
                         for (int j = 0; j < bytes * width; j += bytes) {
                             for(int b=0; b<bytes; b++){
                                 // binaryValue of column, b 8 leds
-                                String binV = UtilHex.hex2bin(hxV[j + b]);
-
+                                BitSet bs=BitSet.valueOf(UtilHex.toBytes(hxV[j + b])); 
                                 for (int k = 8*b; k < Math.min(8*(b+1),height); k++) {
-                                    dotString[k][j / bytes + (width + GAP) * i] = (binV.charAt(k - 8*b) == '1');
+                                    dotString[k][j / bytes + (width + GAP) * i] = bs.get(7-k+8*b);
                                 }
                             }
                         }

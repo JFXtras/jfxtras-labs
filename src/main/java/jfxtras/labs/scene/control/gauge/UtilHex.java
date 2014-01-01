@@ -33,8 +33,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.BitSet;
 import java.util.MissingResourceException;
 
 
@@ -49,24 +48,28 @@ public class UtilHex {
     public UtilHex() {
     }
 
+    public static int bytes2int(byte[] bytes){
+        int ret=0;
+        for (int i=0; i<bytes.length; i++) {
+            ret <<= 8;
+            ret |= (int)bytes[i] & 0xFF;
+        }
+        return ret;
+    }
     public static byte[] toBytes(String hexString) {
-        String[] bytes = hexString.split("\\s");
-        return toBytes(bytes);
+        return toBytes(hexString.split("\\s"));
     }
 
     public static byte[] toBytes(String[] bytes) {
-        List<Byte> list = new ArrayList<Byte>();
+        byte[] result = new byte[bytes.length];
+        int i=0;
         for (String bStr : bytes) {
             int n = 0;
             if (!(bStr.equals("0") || bStr.equals("00"))) {
                 n = Byte.parseByte(bStr.substring(0, 1), 16);
                 n = 16 * n + Byte.parseByte(bStr.substring(1), 16);
             }
-            list.add(new Byte((byte) n));
-        }
-        byte[] result = new byte[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            result[i] = list.get(i);
+            result[i++]=(byte) n;
         }
         return result;
     }
@@ -81,7 +84,8 @@ public class UtilHex {
         return ss1.substring(0,2).concat(" ").concat(ss1.substring(2,4)).
                     concat(" ").concat(ss1.substring(4,6)).concat(" ").concat(ss1.substring(6,8));
         
-    }public static String long2Word(long l, boolean bLastSB) {
+    }
+    public static String long2Word(long l, boolean bLastSB) {
         String s1 = Long.toHexString(l);
         String ss1 = ("0000".substring(0, 4 - s1.length())).concat(s1);
         //orden lsb:
@@ -89,10 +93,6 @@ public class UtilHex {
             return ss1.substring(2, 4).concat(" ").concat(ss1.substring(0, 2));
         }
         return ss1.substring(0, 2).concat(" ").concat(ss1.substring(2, 4));
-    }
-
-    public static String dec2hexStr(byte b) {
-        return Integer.toString((b & 0xff) + 0x100, 16).substring(1).toUpperCase();
     }
 
     public static String dec2hexStr(int b) {
@@ -103,45 +103,6 @@ public class UtilHex {
         return Integer.toHexString(Integer.parseInt(s, 2));
     }
 
-    public static String bytes2String(byte[] theBytes) {
-        String out = "";
-        for (int i = 0; i < theBytes.length; i++) {
-            out = out.concat(dec2hexStr(theBytes[i]));
-            if (i < theBytes.length - 1) {
-                out = out.concat(" ");
-            }
-        }
-        return out;
-    }
-
-    public static int word2Int(String s1, String s2) {
-        String ss1 = ("00".substring(0, 2 - s1.length())).concat(s1);
-        String ss2 = ss1.concat(("00".substring(0, 2 - s2.length())).concat(s2));
-        return Integer.parseInt(ss2, 16);
-    }
-    public static long dword2Long(String s1, String s2, String s3, String s4) {
-        String ss1=("00".substring(0,2-s1.length())).concat(s1);
-        String ss2=ss1.concat(("00".substring(0,2-s2.length())).concat(s2));
-        String ss3=ss2.concat(("00".substring(0,2-s3.length())).concat(s3));
-        String ss4=ss3.concat(("00".substring(0,2-s4.length())).concat(s4));
-        return Long.parseLong(ss4, 16);
-    }
-    
-    public static int hex2Decimal(String s) {
-        int decimal = Integer.parseInt(s, 16);
-        return decimal;
-    }
-
-    public static String String2Binary(String s) {
-        return Integer.toBinaryString(hex2Decimal(s));
-    }
-
-    public static String hex2bin(String s) {
-        String s1 = String2Binary(s);
-        String ss1 = ("00000000".substring(0, 8 - s1.length())).concat(s1);
-        return ss1;
-    }
-    
     /*
         Looks in a jar in the classhpath, extracts the bmp file to a temporary folder
         and returns its absolute path
@@ -211,7 +172,6 @@ public class UtilHex {
         
         InputStream bmpStream=null;
         
-        
         try {	
             // Try load bmp from this jar
             bmpStream = getClass().getResourceAsStream( fullpathBmp );  
@@ -238,29 +198,33 @@ public class UtilHex {
             }
 
             if (bFound) {
-
                 // 2. Get hex string with rawdata
-                String mem = bmp.BMP2MemoriaGrafica();
-                
-                this.rawData = toBytes(mem);
-
+                rawData = bmp.BMP2MemoriaGrafica();
                 return true;
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Error with "+fullpathBmp+": "+e.getMessage());
+        } finally {
+            if(bmpStream!=null){
+                try{
+                    bmpStream.close();
+                } catch (IOException ioe){}
+            }
+            bmp.reset();
         }
-
+        
         return false;
     }
 
-    public String getRawData() {
-        if (rawData == null) {
-            return null;
-        }
-        return bytes2String(rawData);
+    public byte[] getRawData() {
+        return rawData;
     }
 
+    public void resetRawData(){
+        rawData=null;
+    }
+    
     private class jBMP2Panel {
 
         /*
@@ -331,6 +295,12 @@ public class UtilHex {
             } catch (IOException ex) {
                 System.out.append("Error reading bmp file");
                 return false;
+            } finally {
+                if(fis!=null){
+                    try{
+                        fis.close();
+                    } catch (IOException ioe){}
+                }
             }
 
             return true;
@@ -533,10 +503,10 @@ public class UtilHex {
             }
         }
 
-        public String BMP2MemoriaGrafica() {
-            // color number of lines padded with zeroes to be a multiple of one bytes (de 8)
+        public byte[] BMP2MemoriaGrafica() {
+            // color number of lines padded with zeroes to be a multiple of one bytes (x 8)
             int colSize = ((int) (width / 8) + (width % 8 > 0 ? 1 : 0)) * 8;
-            // Scan line is padded with zeroes to be a multiple of two bytes (de 16)
+            // Scan line is padded with zeroes to be a multiple of two bytes (x 16)
             int lineSize = ((int) (width / 16) + (width % 16 > 0 ? 1 : 0)) * 16;
 
             long tam = 32l + levels * lineSize * height * numColors / 8;
@@ -551,81 +521,50 @@ public class UtilHex {
             mem = mem.concat("00 00 00 00 00 00 01 00 ").concat(long2Dword(tam - 32,false)).concat(" ");
             mem = mem.concat(long2Dword(tam,false)).concat(" 00 00 00 00");
 
+            byte[] head=toBytes(mem);
+            byte[] raw = new byte[(int)tam];
+            int cont=0;
+            for(byte h:head){
+                raw[cont++]=h;
+            }
             for (int k = 0; k < levels; k++) {
-                String[][] planos = getPanelRawData(tonos[k]);
+                byte[][] planos = getPanelRawData(tonos[k]);
                 for (int i = 0; i < numColors; i++) {
-                    for (int j = 0; j < planos[i].length; j++) {
-                        mem = mem.concat(" ").concat(planos[i][j]);
+                    for (byte h : planos[i]) {
+                       raw[cont++]=h;
                     }
                 }
             }
-            return mem;
-        }
-
-        public String[] getMemoriaGrafica(int tonoMax) {
-            String[] mem = new String[3];
-            String[][] planos = getPanelRawData(tonoMax);
-            for (int i = 0; i < 3; i++) {
-                mem[i] = "";
-                for (int j = 0; j < planos[i].length; j++) {
-                    mem[i] = mem[i].concat(planos[i][j]);
-
-                    if (j > 0 && (j + 1) % 8 == 0) {
-                        mem[i] = mem[i].concat("#");
-                    } else if (j < planos[i].length - 1) {
-                        mem[i] = mem[i].concat(" ");
-                    }
-                }
-            }
-
-            return mem;
+            return raw;
         }
 
         // transforms bmp to rawData, without header, three splitted planes, according tonoMax
-        private String[][] getPanelRawData(int tonoMax) {
-            int coloresPorPixel = 3; // 3 color planes in bmp 
+        private byte[][] getPanelRawData(int tonoMax) {
 
             int tam = scanLineSize; // (bmp row size, bytes, eg. 74) x 3
             int colSize = ((int) (width / 8) + (width % 8 > 0 ? 1 : 0)) * 8; // bytes multiple of 8, eg. 80
             int lineSize = ((int) (width / 16) + (width % 16 > 0 ? 1 : 0)) * 16; // bytes multiple of 16, eg. 80
 
-            //string of hexadecimals
-            String[][] panelData = new String[coloresPorPixel][height * lineSize / 8];
+            byte[][] panelData = new byte[numColors][height * lineSize / 8];
 
-            int[] swapBMP = {
-                2,
-                1,
-                0
-            }; //  bmp: BLUE-GREEN-RED, swap->R,G,B
+            int[] swapBMP = {2,1,0}; //  bmp: BLUE-GREEN-RED, swap->R,G,B
 
-            for (int k = 0; k < coloresPorPixel; k++) {
+            for (int k = 0; k < numColors; k++) {
                 int iPlano = swapBMP[k];
                 // plane k
                 int pos = 0;
-                String lastBit = "";
                 for (int j = height - 1; j >= 0; j--) {      // bmp row, from bottom to top
-                    for (int i = k; i < lineSize * coloresPorPixel + k; i += coloresPorPixel * 8) { // columna del bmp
-                        String bits = "";
+                    for (int i = k; i < lineSize * numColors + k; i += numColors * 8) { // columna del bmp
+                        BitSet bs=new BitSet(8);
                         for (int m = 0; m < 8; m++) {
-                            if (i + m * coloresPorPixel < tam) {
-                                if ((m_RawData[i + m * coloresPorPixel + j * tam] & 0xff) >= tonoMax) {
-                                    bits = bits.concat("1");
-                                    lastBit = "1";
-                                } else {
-                                    bits = bits.concat("0");
-                                    lastBit = "0";
+                            if (i + m * numColors < tam) {
+                                if ((m_RawData[i + m * numColors + j * tam] & 0xff) >= tonoMax) {
+                                    bs.set(7-m);
                                 }
-                            } else if (i + m * coloresPorPixel < colSize * coloresPorPixel) {
-                                bits = bits.concat("0");  // filled with 0 last colSize
-                            } else if (i + m * coloresPorPixel < lineSize * coloresPorPixel) {
-                                bits = bits.concat("0"); // filled with 0 last gap colSize to lineSize
                             }
                         }
                         if (pos < lineSize * height / 8) {
-                            String s1 = bin2Hex(bits);
-                            String ss1 = ("00".substring(0, 2 - s1.length())).concat(s1);
-
-                            panelData[iPlano][pos++] = ss1;
+                            panelData[iPlano][pos++] = (bs.toByteArray().length>0)? bs.toByteArray()[0]: 0;
                         }
                     }
                 }
@@ -660,6 +599,21 @@ public class UtilHex {
             return (short) ((b2 << 8) + b1);
         }
 
+        public void reset(){
+            r=null;
+            g=null;
+            b=null;
+            byteData=null;
+            intData=null;
+            if(is!=null){
+                try{
+                    is.close();
+                    is=null;
+                } catch (IOException ioe){}
+            }
+            m_RawData=null;
+            System.gc();
+        }
     }
 
 }
