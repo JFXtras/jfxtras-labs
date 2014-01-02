@@ -50,7 +50,8 @@ import jfxtras.labs.map.tile.DefaultTileSource;
  */
 public class LocalTileSource extends DefaultTileSource {
 
-    private String tilesRootDir;
+    private static final String DIGIT = "\\d+";
+	private String tilesRootDir;
     
     public LocalTileSource(String name, String base_url) {
         super(name, base_url);
@@ -77,7 +78,7 @@ public class LocalTileSource extends DefaultTileSource {
     
     @Override
     public int getMaxZoom() {
-    	int zoom = super.getMaxZoom();
+    	int zoom = super.getMinZoom();
     	LinkedList<String> dirs = listZoomDirs();
     	if(!dirs.isEmpty()){
     		zoom = Integer.parseInt(dirs.getLast());
@@ -87,15 +88,21 @@ public class LocalTileSource extends DefaultTileSource {
     
     private LinkedList<String> listZoomDirs(){
     	LinkedList<String> dirs = new LinkedList<>();
-    	Path root = Paths.get(tilesRootDir);
-    	try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(root)) {
-            for (Path path : directoryStream) {
-            	//TODO check if the name is a number
-                dirs.add(path.getFileName().toString());
-            }
-        } catch (IOException ex) {
-        	Logger.getLogger(getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
-        }
+    	
+    	if(tilesRootDir != null){
+    		Path root = Paths.get(tilesRootDir);
+    		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(root)) {
+    			for (Path path : directoryStream) {
+    				String name = path.getFileName().toString();
+    				if(name.matches(DIGIT)){
+    					dirs.add(name);
+    				}
+    			}
+    		} catch (IOException ex) {
+    			Logger.getLogger(getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
+    		}
+    	}
+    	
     	return dirs;
     }
 }
