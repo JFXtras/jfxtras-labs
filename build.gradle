@@ -11,6 +11,10 @@ tasks.withType(Test) {
     include "**/*Test1.class"
 }
 
+configurations {
+    asciidoclet
+}
+
 buildscript {
     
 	artifactId="jfxtras-labs"
@@ -42,6 +46,12 @@ repositories {
 dependencies {
     testCompile  "junit:junit:${jfxtras_junitVersion}","org.mockito:mockito-all:1.9.5"
     testCompile  "org.loadui:testFx:3.0.0-beta1"
+	asciidoclet 'org.asciidoctor:asciidoclet:0.+'
+}
+
+javadoc {
+    options.docletpath = configurations.asciidoclet.files.asType(List)
+    options.doclet = 'org.asciidoctor.Asciidoclet'
 }
 
 apply {

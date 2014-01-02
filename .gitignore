@@ -28,3 +28,4 @@ build.xml
 /gradlew_repairHeaders.cmd
 /gradlew_install.cmd
 /*.png
+/gradlew_javadoc.cmd

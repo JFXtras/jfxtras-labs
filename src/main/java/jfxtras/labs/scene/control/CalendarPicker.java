@@ -46,7 +46,8 @@ import javafx.util.Callback;
 import jfxtras.labs.scene.control.Agenda.CalendarRange;
 
 /**
- * Calendar picker component
+ * = Calendar picker component
+ *
  * The calendar is (and should) be treated as immutable. That means the setter of Calendar is not used to modify its value, but each time a new instance (clone) is put in the calendar property.
  * So you cannot rely that exactly the same Calendar object that was set or added will be stored and returned.
  * 

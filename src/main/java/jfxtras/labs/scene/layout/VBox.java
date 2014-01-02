@@ -7,16 +7,22 @@ import javafx.scene.Node;
 
 /**
  * A drop-in replacement for JavaFX's VBox using layout constraints.
- * So instead of:<br>
- * 	VBox lVBox = new VBox(5.0);<br>
- * 	Button b1 = new Button("short");<br>
- * 	lVBox.getChildren().add(b1);<br>
- * 	VBox.setVgrow(b1, Priority.ALWAYS);<br>
- *<br>
- * You can write:<br>
- * 	VBox lVBox = new VBox(5.0);<br>
- *  lVBox.add(new Button("short"), new VBox.C().vgrow(Priority.ALWAYS));<br>
- *<br>
+ * So instead of:
+ * [source,java]
+ * --
+ * 	VBox lVBox = new VBox(5.0);
+ * 	Button b1 = new Button("short");
+ * 	lVBox.getChildren().add(b1);
+ * 	VBox.setVgrow(b1, Priority.ALWAYS);
+ * --
+ *
+ * You can write:
+ * [source,java]
+ * --
+ *	VBox lVBox = new VBox(5.0);
+ *	lVBox.add(new Button("short"), new VBox.C().vgrow(Priority.ALWAYS));
+ * --
+ *
  * This class is not a reimplementation of VBox, but only applies a different API.
  * 
  * @author Tom Eugelink
