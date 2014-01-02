@@ -49,8 +49,6 @@ public class Tile {
 
     private static volatile Image delayImage;
 
-    private static volatile Image errorImage;
-
     private static final String HTTP = "http:";
 
     private static final double COMPLETE = 1.0;

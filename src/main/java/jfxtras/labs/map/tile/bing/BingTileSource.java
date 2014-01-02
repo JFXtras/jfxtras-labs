@@ -29,6 +29,7 @@
 
 package jfxtras.labs.map.tile.bing;
 
+import java.util.ArrayList;
 import jfxtras.labs.map.tile.Attribution;
 import jfxtras.labs.map.tile.AttributtionStringBuilder;
 import jfxtras.labs.map.tile.DefaultTileSource;
@@ -44,7 +45,7 @@ import jfxtras.labs.map.Coordinate;
  */
 public class BingTileSource extends DefaultTileSource {
 
-    private List<Attribution> attributions;
+    private List<Attribution> attributions = new ArrayList<>();
 
     public BingTileSource(String name, String base_url) {
         super(name, base_url);

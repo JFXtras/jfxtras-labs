@@ -83,17 +83,20 @@ public class TileRenderer implements TileRenderable {
 	@Override
 	public int prepareTiles(Moveable mapController) {
 		provider.setStrategy(new CacheLoadStrategy());
-		TilesLoadable tileLoader = new TilesLoader(provider);
-		tileImages = tileLoader.loadTiles(mapController);
+		loadTiles(mapController);
 		return tileImages.size();
 	}
 	
 	@Override
 	public void refresh(Moveable mapController) {
 		provider.setStrategy(new RefreshLoadStrategy());
+		loadTiles(mapController);
+		render(mapController.getTilesGroup());
+	}
+	
+	private void loadTiles(Moveable mapController) {
 		TilesLoadable tileLoader = new TilesLoader(provider);
 		tileImages = tileLoader.loadTiles(mapController);
-		render(mapController.getTilesGroup());
 	}
 		
 	@Override
@@ -167,10 +170,12 @@ public class TileRenderer implements TileRenderable {
 		return path;
 	}
 
+    @Override
 	public void setMonoChrome(boolean monoChrome) {
 		this.monoChrome = monoChrome;
 	}
 
+    @Override
 	public void setTileGridVisible(boolean tileGridVisible) {
 		this.tileGridVisible = tileGridVisible;
 	}
