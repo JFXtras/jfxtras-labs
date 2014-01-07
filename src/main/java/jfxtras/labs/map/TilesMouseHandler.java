@@ -98,6 +98,8 @@ public class TilesMouseHandler {
 			int diffx = dragStartPoint.x - p.x;
 			int diffy = dragStartPoint.y - p.y;
 			map.moveMap(diffx, diffy);
+			
+			dragStartPoint = null;
 		}
 	}
 
@@ -157,12 +159,7 @@ public class TilesMouseHandler {
 
 		@Override
 		public void handle(MouseEvent me) {
-			if (me.isPrimaryButtonDown()) {
-				setDragStartPoint(me);
-			} else {
-				updateCursorLocationText(me);
-			}
-
+			updateCursorLocationText(me);
 		}
 	}
 
@@ -179,7 +176,6 @@ public class TilesMouseHandler {
 			tilesGroup.setCursor(Cursor.CROSSHAIR);
 			if(isMoveable()){
 				moveMap(me);
-				dragStartPoint = null;
 			}
 		}
 	}
@@ -194,7 +190,7 @@ public class TilesMouseHandler {
 
 		@Override
 		public void handle(MouseEvent me) {
-			if (me.isPrimaryButtonDown() && isMoveable()) {
+			if (isMoveable()) {
 				tilesGroup.setCursor(Cursor.MOVE);
 				if (dragStartPoint == null) {
 					setDragStartPoint(me);
