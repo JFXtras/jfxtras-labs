@@ -45,8 +45,11 @@ if (!project.plugins.findPlugin(eu.mihosoft.vrl.vlicenseheaderutil.gradle.VLicen
 }
 
 repositories {
-    mavenRepo urls: "https://oss.sonatype.org/content/repositories/snapshots/"
     mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+    
 }
 
 
