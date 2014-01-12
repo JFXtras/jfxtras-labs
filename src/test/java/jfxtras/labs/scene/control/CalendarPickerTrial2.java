@@ -26,7 +26,7 @@ public class CalendarPickerTrial2 extends Application {
 	throws IOException
 	{
     	// load FXML
-		String lName = this.getClass().getSimpleName() + ".xml";
+		String lName = this.getClass().getSimpleName() + ".fxml";
 		URL lURL = this.getClass().getResource(lName);
 		System.out.println("loading FXML " + lName + " -> " + lURL);
 		if (lURL == null) throw new IllegalStateException("FXML file not found");

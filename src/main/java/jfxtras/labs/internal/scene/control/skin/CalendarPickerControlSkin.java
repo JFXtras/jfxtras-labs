@@ -95,60 +95,41 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		
 		// start listening to changes
 		// if the calendar changes, the display calendar will jump to show that
-		getSkinnable().calendarProperty().addListener(new InvalidationListener()
-		{
-			
-			@Override
-			public void invalidated(Observable arg0)
-			{
-				if (getSkinnable().getCalendar() != null) 
-				{
-					getSkinnable().setDisplayedCalendar(getSkinnable().getCalendar());
-				}
-			} 
+		getSkinnable().calendarProperty().addListener( (InvalidationListener) observable -> {
+			if (getSkinnable().getCalendar() != null) {
+				getSkinnable().setDisplayedCalendar(getSkinnable().getCalendar());
+			}
 		});
-		if (getSkinnable().getCalendar() != null) 
-		{
+		if (getSkinnable().getCalendar() != null) {
 			getSkinnable().setDisplayedCalendar(getSkinnable().getCalendar());
 		}
 		
 		// if the calendars change, the selection must be refreshed
-		getSkinnable().calendars().addListener(new ListChangeListener<Calendar>()  
-		{
-			@Override
-			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Calendar> arg0)
-			{
-				refreshDayButtonToggleState();
-			} 
+		getSkinnable().calendars().addListener( (InvalidationListener) observable -> {
+			refreshDayButtonToggleState();
 		});
 		
         // react to changes in the locale
-        getSkinnable().localeProperty().addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable observable) {
-                monthListSpinner.setItems(FXCollections.observableArrayList(getMonthLabels()));
+        getSkinnable().localeProperty().addListener( (InvalidationListener) observable -> {
+			monthListSpinner.setItems(FXCollections.observableArrayList(getMonthLabels()));
 
-                // force change the locale in the displayed calendar
-                getSkinnable().displayedCalendar().set( (Calendar)getSkinnable().getDisplayedCalendar().clone() );
-                refresh();
-            }
+			// force change the locale in the displayed calendar
+			getSkinnable().displayedCalendar().set( (Calendar)getSkinnable().getDisplayedCalendar().clone() );
+			refresh();
         });
 
         // react to changes in the locale
-        getSkinnable().showTimeProperty().addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable observable) {
-                layoutNodes();
-            }
+        getSkinnable().showTimeProperty().addListener( (InvalidationListener) observable -> {
+            layoutNodes();
         });
 
         // react to changes in the disabled calendars
-        getSkinnable().disabledCalendars().addListener(new ListChangeListener<Calendar>(){
+        getSkinnable().disabledCalendars().addListener( new ListChangeListener<Calendar>(){
 			@Override
-			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Calendar> arg0) {
+			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Calendar> change) {
 				refreshDayButtonsVisibilityAndLabel();
 			}
-        });
+	    });
         
         // react to changes in the highlighted calendars
         getSkinnable().highlightedCalendars().addListener(new ListChangeListener<Calendar>(){
@@ -156,9 +137,14 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Calendar> arg0) {
 				refreshDayButtonsVisibilityAndLabel();
 			}
-        });
-        
-        // update the data
+   	     });
+
+		// react to changes in the displayed calendar
+		getSkinnable().displayedCalendar().addListener( (InvalidationListener) observable -> {
+			refresh();
+		});
+
+		// update the data
 		refresh();
 	}
 	
@@ -360,6 +346,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		{
 			// create buttons
 			ToggleButton lToggleButton = new ToggleButton("" + i);
+			lToggleButton.setId("day" + i);
 			lToggleButton.getStyleClass().add("day-button");
 			lToggleButton.selectedProperty().addListener(toggleButtonSelectedPropertyChangeListener); // for minimal memory usage, use a single listener
 			lToggleButton.onMouseReleasedProperty().set(toggleButtonMouseReleasedPropertyEventHandler); // for minimal memory usage, use a single listener
@@ -610,7 +597,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			}
 			if ((getSkinnable().getMode() == CalendarPicker.Mode.MULTIPLE || getSkinnable().getMode() == CalendarPicker.Mode.RANGE) && shiftIsPressed == true) 
 			{
-				// we muust have a last selected			
+				// we must have a last selected
 				if (iLastSelected != null) 
 				{
 					// get the other calendar and make sure other <= toggle

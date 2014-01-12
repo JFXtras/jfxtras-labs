@@ -54,13 +54,13 @@ public class CalendarTextFieldTrial2 extends Application {
 	public void start(Stage stage) throws IOException {
 
     	// load FXML
-		String lName = this.getClass().getSimpleName() + ".xml";
+		String lName = this.getClass().getSimpleName() + ".fxml";
 		URL lURL = this.getClass().getResource(lName);
 		System.out.println("loading FXML " + lName + " -> " + lURL);
     	Pane lRoot = (Pane)FXMLLoader.load(lURL, null, new JFXtrasBuilderFactory());
 
         // create scene
-        Scene scene = new Scene(lRoot, 800, 300);
+        Scene scene = new Scene(lRoot);
         
         // create stage
         stage.setTitle(this.getClass().getSimpleName());

@@ -70,47 +70,45 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 	 */
 	private void construct()
 	{
-		// if the displayed calendar changes, the screen must be refreshed
-		getSkinnable().displayedCalendar().addListener(new InvalidationListener()
-		{
-			@Override
-			public void invalidated(Observable observale)
-			{
-				// adapt to our needs
-				Calendar lDisplayedCalendar = getSkinnable().getDisplayedCalendar();
-				if ( (myDisplayedCalendar == null && lDisplayedCalendar != null)
-				  || myDisplayedCalendar.equals(lDisplayedCalendar) == false
-				   )
-				{
-					// modify the calender the way we like it
-					Calendar lCalendar = deriveDisplayedCalendar(lDisplayedCalendar);
-
-					// assign it
-					myDisplayedCalendar = lCalendar;
-					getSkinnable().displayedCalendar().set(lCalendar);
-
-					// wait for this change to report itself
-					return;
-				}
-
-				// update
-				refresh();
-			}
-		});
-
 		// react to changes in the locale
-		getSkinnable().localeProperty().addListener(new InvalidationListener()
-		{
-			@Override
-			public void invalidated(Observable observable)
-			{
-				refreshLocale();
-			}
+		getSkinnable().localeProperty().addListener( (InvalidationListener) observable -> {
+			refreshLocale();
 		});
 		refreshLocale();
+
+		// modify the calendar the way we like it
+		derivedDisplayedCalendar(); // this must be done before installing the listener, otherwise the refresh will be called to early
+		getSkinnable().displayedCalendar().addListener( (InvalidationListener) observable -> {
+			// adapt to our needs
+			Calendar lDisplayedCalendar = getSkinnable().getDisplayedCalendar();
+			if ((myDisplayedCalendar == null && lDisplayedCalendar != null)
+				|| myDisplayedCalendar.equals(lDisplayedCalendar) == false
+				) {
+				derivedDisplayedCalendar();
+
+				// wait for this change to report itself (but then not enter this if statement)
+				return;
+			}
+
+			// update
+			refresh();
+		});
 	}
 	private Calendar myDisplayedCalendar = null;
-	
+
+	/**
+	 *
+	 */
+	private void derivedDisplayedCalendar() {
+		// modify the calender the way we like it
+		Calendar lDisplayedCalendar = getSkinnable().getDisplayedCalendar();
+		Calendar lCalendar = deriveDisplayedCalendar(lDisplayedCalendar);
+
+		// assign it
+		myDisplayedCalendar = lCalendar;
+		getSkinnable().displayedCalendar().set(lCalendar);
+
+	}
 
 	// ==================================================================================================================
 	// PROPERTIES
@@ -124,7 +122,8 @@ abstract public class CalendarPickerMonthlySkinAbstract<S> extends SkinBase<Cale
 		simpleDateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG, getSkinnable().getLocale());
 	}
 	private SimpleDateFormat simpleDateFormat = null;
-	
+
+
 	// ==================================================================================================================
 	// SUPPORT
 

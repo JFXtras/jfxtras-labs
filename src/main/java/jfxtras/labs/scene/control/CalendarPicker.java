@@ -119,11 +119,13 @@ public class CalendarPicker extends Control
 			public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
 			{
 				// if the new value is set to null, remove the old value
-				if (newValue != null && calendars().contains(newValue) == false) {
-					calendars().add(newValue);
-				}
-				if (oldValue != null) {
-					calendars().remove(oldValue);
+				if (getMode().equals(Mode.SINGLE)) {
+					if (newValue != null && calendars().contains(newValue) == false) {
+						calendars().add(newValue);
+					}
+					if (oldValue != null) {
+						calendars().remove(oldValue);
+					}
 				}
 			} 
 		});
@@ -141,22 +143,24 @@ public class CalendarPicker extends Control
 			@Override
 			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Calendar> change)
 			{
-				// if the active calendar is not longer in calendars, select another
-				if (!calendars().contains(getCalendar())) 
-				{
-					// if there are other left
-					if (calendars().size() > 0) 
-					{
-						// select the first
-						setCalendar( calendars().get(0) );
+				// if this is an add
+				while (change.next()) {
+					for (Calendar lCalendar : change.getRemoved()) {
+						// if there are other left
+						if (calendars().size() > 0) {
+							// select the first
+							setCalendar( calendars().get(0) );
+						}
+						else  {
+							// clear it
+							setCalendar(null);
+						}
 					}
-					else 
-					{
-						// clear it
-						setCalendar(null);
+					for (Calendar lCalendar : change.getAddedSubList()) {
+						setCalendar( lCalendar );
 					}
 				}
-			} 
+			}
 		});
 	}
 
@@ -272,7 +276,8 @@ public class CalendarPicker extends Control
 	public CalendarPicker withDisplayedCalendar(Calendar value) { setDisplayedCalendar(value); return this; }
 	private void constructDisplayedCalendar()
 	{
-		setDisplayedCalendar(Calendar.getInstance());
+		// init here, so deriveDisplayedCalendar in the skin will modify it accordingly
+		setDisplayedCalendar(Calendar.getInstance(getLocale()));
 	}
 
 	// ==================================================================================================================
