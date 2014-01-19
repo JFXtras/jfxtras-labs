@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -118,8 +119,8 @@ public class CalendarPicker extends Control
 			@Override
 			public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
 			{
-				// if the new value is set to null, remove the old value
-				if (getMode().equals(Mode.SINGLE)) {
+				if (modifyingCalendersAtomicInteger.get() == 0) {
+					// if the new value is set to null, remove the old value
 					if (newValue != null && calendars().contains(newValue) == false) {
 						calendars().add(newValue);
 					}
@@ -143,26 +144,33 @@ public class CalendarPicker extends Control
 			@Override
 			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Calendar> change)
 			{
-				// if this is an add
-				while (change.next()) {
-					for (Calendar lCalendar : change.getRemoved()) {
-						// if there are other left
-						if (calendars().size() > 0) {
-							// select the first
-							setCalendar( calendars().get(0) );
+				modifyingCalendersAtomicInteger.addAndGet(1);
+				try {
+					// if this is an add
+					while (change.next()) {
+						for (Calendar lCalendar : change.getRemoved()) {
+							// if there are other left
+							if (calendars().size() > 0) {
+								// select the first
+								setCalendar( calendars().get(0) );
+							}
+							else  {
+								// clear it
+								setCalendar(null);
+							}
 						}
-						else  {
-							// clear it
-							setCalendar(null);
+						for (Calendar lCalendar : change.getAddedSubList()) {
+							setCalendar( lCalendar );
 						}
 					}
-					for (Calendar lCalendar : change.getAddedSubList()) {
-						setCalendar( lCalendar );
-					}
+				}
+				finally {
+					modifyingCalendersAtomicInteger.addAndGet(-1);
 				}
 			}
 		});
 	}
+	final private AtomicInteger modifyingCalendersAtomicInteger = new AtomicInteger(0);
 
 	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc */
 	public ObjectProperty<Locale> localeProperty() { return localeObjectProperty; }

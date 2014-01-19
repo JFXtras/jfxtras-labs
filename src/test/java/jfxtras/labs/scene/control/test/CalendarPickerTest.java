@@ -17,6 +17,9 @@ import java.util.GregorianCalendar;
  */
 public class CalendarPickerTest extends GuiTest {
 
+	/**
+	 * 
+	 */
 	public Parent getRootNode()
 	{
 		VBox box = new VBox();
@@ -29,6 +32,9 @@ public class CalendarPickerTest extends GuiTest {
 	}
 	private CalendarPicker calendarPicker = null;
 
+	/**
+	 * 
+	 */
 	@Test
 	public void defaultModeIsSingleSelectWithNulls()
 	{
@@ -40,18 +46,26 @@ public class CalendarPickerTest extends GuiTest {
 
 		// the selected value should be set
 		Assert.assertEquals("2013-01-01", CalendarPicker.quickFormatCalendar(calendarPicker.getCalendar()));
-		Assert.assertEquals(1, calendarPicker.calendars().size());
-		Assert.assertEquals("2013-01-01", CalendarPicker.quickFormatCalendar(calendarPicker.calendars().get(0)));
+		Assert.assertEquals("1x [2013-01-01]", CalendarPicker.quickFormatCalendar(calendarPicker.calendars()));
 
 		// click the 2nd of January
 		click("#day3");
 
 		// the selected value should be changed, and because of single mode, it is also the only one in calendars
 		Assert.assertEquals("2013-01-02", CalendarPicker.quickFormatCalendar(calendarPicker.getCalendar()));
-		Assert.assertEquals(1, calendarPicker.calendars().size());
-		Assert.assertEquals("2013-01-02", CalendarPicker.quickFormatCalendar(calendarPicker.calendars().get(0)));
+		Assert.assertEquals("1x [2013-01-02]", CalendarPicker.quickFormatCalendar(calendarPicker.calendars()));
+
+		// click the 2nd of January again
+		click("#day3");
+
+		// the selected value should be changed, and because of single mode, it is also the only one in calendars
+		Assert.assertNull(calendarPicker.getCalendar());
+		Assert.assertEquals("0x []", CalendarPicker.quickFormatCalendar(calendarPicker.calendars()));
 	}
 
+	/**
+	 * 
+	 */
 	@Test
 	public void multipleModeWithNull()
 	{
@@ -66,15 +80,68 @@ public class CalendarPickerTest extends GuiTest {
 
 		// the selected value should be set
 		Assert.assertEquals("2013-01-01", CalendarPicker.quickFormatCalendar(calendarPicker.getCalendar()));
-		Assert.assertEquals(1, calendarPicker.calendars().size());
 		Assert.assertEquals("1x [2013-01-01]", CalendarPicker.quickFormatCalendar(calendarPicker.calendars()));
 
 		// click the 2nd of January
 		click("#day3");
 
-		// the selected value should be changed, and because of single mode, it is also the only one in calendars
+		// the selected value should be changed, and because of multiple mode, there are two in calendars
 		Assert.assertEquals("2013-01-02", CalendarPicker.quickFormatCalendar(calendarPicker.getCalendar()));
-		Assert.assertEquals(2, calendarPicker.calendars().size());
 		Assert.assertEquals("2x [2013-01-01,2013-01-02]", CalendarPicker.quickFormatCalendar(calendarPicker.calendars()));
+
+		// click the 4th of January
+		click("#day5");
+
+		// the selected value should be changed, and because of multiple mode, there are three in calendars
+		Assert.assertEquals("2013-01-04", CalendarPicker.quickFormatCalendar(calendarPicker.getCalendar()));
+		Assert.assertEquals("3x [2013-01-01,2013-01-02,2013-01-04]", CalendarPicker.quickFormatCalendar(calendarPicker.calendars()));
+
+		// click the 2nd of January (unselecting it)
+		click("#day3");
+
+		// the selected value should be changed, and because of multiple mode, there are two in calendars
+		Assert.assertEquals("2013-01-01", CalendarPicker.quickFormatCalendar(calendarPicker.getCalendar()));
+		Assert.assertEquals("2x [2013-01-01,2013-01-04]", CalendarPicker.quickFormatCalendar(calendarPicker.calendars()));
+
+		// click the 1st of January (unselecting it)
+		click("#day2");
+
+		// the selected value should be changed, and because of multiple mode, there are two in calendars
+		Assert.assertEquals("2013-01-04", CalendarPicker.quickFormatCalendar(calendarPicker.getCalendar()));
+		Assert.assertEquals("1x [2013-01-04]", CalendarPicker.quickFormatCalendar(calendarPicker.calendars()));
+
+		// click the 4th of January (unselecting it)
+		click("#day5");
+
+		// the selected value should be changed, and because of single mode, it is also the only one in calendars
+		Assert.assertNull(calendarPicker.getCalendar());
+		Assert.assertEquals("0x []", CalendarPicker.quickFormatCalendar(calendarPicker.calendars()));
+	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public void rangeModeWithNull()
+	{
+		// change calendarPicker's setting
+		calendarPicker.setMode(CalendarPicker.Mode.RANGE);
+
+		// default value is null
+		Assert.assertNull(calendarPicker.getCalendar());
+
+		// click the 1st of January
+		click("#day2");
+
+		// the selected value should be set
+		Assert.assertEquals("2013-01-01", CalendarPicker.quickFormatCalendar(calendarPicker.getCalendar()));
+		Assert.assertEquals("1x [2013-01-01]", CalendarPicker.quickFormatCalendar(calendarPicker.calendars()));
+
+//		// shift click the 3rd of January
+//		click("#day4");
+//
+//		// the selected value should be set
+//		Assert.assertEquals("2013-01-03", CalendarPicker.quickFormatCalendar(calendarPicker.getCalendar()));
+//		Assert.assertEquals("3x [2013-01-01,2013-01-02,2013-01-03]", CalendarPicker.quickFormatCalendar(calendarPicker.calendars()));
 	}
 }
