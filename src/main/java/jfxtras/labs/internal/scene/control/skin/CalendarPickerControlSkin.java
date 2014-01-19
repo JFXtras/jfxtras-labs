@@ -574,52 +574,39 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 		Calendar lFoundCalendar = find(lCalendars, lToggledCalendar); // find solely on YMD not HMS 
 		if (lFoundCalendar == null) // if not found 
 		{
-			// only add if not present
-			lCalendars.add(lToggledCalendar);
-			
 			// make sure it adheres to the mode
 			// SINGLE: clear all but the last selected
-			while (getSkinnable().getMode() == CalendarPicker.Mode.SINGLE && lCalendars.size() > 1) 
-			{
-				lCalendars.remove(0);
-			}
-			// MULTIPLE: do nothing, just add the new one
-			//           if shift is pressed, behave like RANGE below
-			while (getSkinnable().getMode() == CalendarPicker.Mode.SINGLE && lCalendars.size() > 1) 
-			{
-				lCalendars.remove(0);
-			}
 			// RANGE: if shift is not pressed, behave like single
-			//        if shift is pressed, also add the dates between 
-			while (getSkinnable().getMode() == CalendarPicker.Mode.RANGE && shiftIsPressed == false && lCalendars.size() > 1) 
-			{
-				lCalendars.remove(0);
+			if ( getSkinnable().getMode() == CalendarPicker.Mode.SINGLE 
+			  || (getSkinnable().getMode() == CalendarPicker.Mode.RANGE && shiftIsPressed == false)
+			   ) {
+				while (lCalendars.size() > 0) {
+					lCalendars.remove(0);
+				}
+				lCalendars.add(lToggledCalendar);
 			}
-			if ((getSkinnable().getMode() == CalendarPicker.Mode.MULTIPLE || getSkinnable().getMode() == CalendarPicker.Mode.RANGE) && shiftIsPressed == true) 
-			{
+			if ( getSkinnable().getMode() == CalendarPicker.Mode.MULTIPLE  && shiftIsPressed == false ) {
+				lCalendars.add(lToggledCalendar);
+			}
+			if ( (getSkinnable().getMode() == CalendarPicker.Mode.MULTIPLE || getSkinnable().getMode() == CalendarPicker.Mode.RANGE) 
+			  && shiftIsPressed == true
+			   ) {
 				// we must have a last selected
 				if (iLastSelected != null) 
 				{
 					// get the other calendar and make sure other <= toggle
 					Calendar lOtherCalendar = iLastSelected;
-					if (lOtherCalendar.after(lToggledCalendar))
-					{
-						Calendar lSwap = lOtherCalendar;
-						lOtherCalendar = lToggledCalendar;
-						lToggledCalendar = lSwap;
-					}
+					int lDirection = (lOtherCalendar.after(lToggledCalendar) ? -1 : 1);
 					
 					// walk towards the toggled date and add all in between
 					Calendar lWalker = (Calendar)lOtherCalendar.clone(); // the @#$#@$@# calendars are mutable
-					lWalker.add(Calendar.DATE, 1);
-					while (lWalker.before(lToggledCalendar))
+					lWalker.add(Calendar.DATE, lDirection);
+					while (lWalker.equals(lToggledCalendar) == false)
 					{
 						lCalendars.add((Calendar)lWalker.clone()); // the @#$#@$@# calendars are mutable
-						lWalker.add(Calendar.DATE, 1);
+						lWalker.add(Calendar.DATE, lDirection);
 					}
-					
-					// let's have a nice collection
-					Collections.sort(lCalendars);
+					lCalendars.add(lToggledCalendar);
 				}
 			}
 			

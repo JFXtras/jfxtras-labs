@@ -232,12 +232,11 @@ public class CalendarPickerTest extends GuiTest {
 		Assert.assertEquals("2013-01-10", CalendarPicker.quickFormatCalendar(calendarPicker.getCalendar()));
 		Assert.assertEquals("1x [2013-01-10]", CalendarPicker.quickFormatCalendar(calendarPicker.calendars()));
 
-		// shift click the 5th of January (extending the range)
+		// shift click the 5th of January (selecting a range downwards)
 		press(KeyCode.SHIFT).click("#day6").release(KeyCode.SHIFT);
 
 		// the last selected value should be set 
-		// TODO: 2013-01-05 & sorted down calendars?
-		Assert.assertEquals("2013-01-10", CalendarPicker.quickFormatCalendar(calendarPicker.getCalendar()));
-		Assert.assertEquals("6x [2013-01-05,2013-01-06,2013-01-07,2013-01-08,2013-01-09,2013-01-10]", CalendarPicker.quickFormatCalendar(calendarPicker.calendars()));
+		Assert.assertEquals("2013-01-05", CalendarPicker.quickFormatCalendar(calendarPicker.getCalendar()));
+		Assert.assertEquals("6x [2013-01-10,2013-01-09,2013-01-08,2013-01-07,2013-01-06,2013-01-05]", CalendarPicker.quickFormatCalendar(calendarPicker.calendars()));
 	}
 }
