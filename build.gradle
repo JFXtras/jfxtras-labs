@@ -17,8 +17,6 @@ configurations {
 
 buildscript {
     
-	artifactId="jfxtras-labs"
-	
     repositories {
         mavenCentral()
 		maven { url "http://oss.sonatype.org/content/repositories/releases/" }

@@ -120,12 +120,14 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker>
 	private void createNodes()
 	{
 		// two sliders
+		hourScrollSlider.setId("hourSlider");
 		hourScrollSlider.minProperty().set(00);
 		hourScrollSlider.maxProperty().set(23);
 //		hourScrollSlider.setShowTickLabels(true);
 //		hourScrollSlider.setShowTickMarks(true);
 		hourScrollSlider.setMajorTickUnit(12);
 		hourScrollSlider.setMinorTickCount(3);
+		minuteScrollSlider.setId("minuteSlider");
 		minuteScrollSlider.minProperty().set(00);
 		minuteScrollSlider.maxProperty().set(59);
 //		minuteScrollSlider.setShowTickLabels(true);

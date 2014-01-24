@@ -4,6 +4,11 @@ import org.loadui.testfx.GuiTest;
 
 import javafx.scene.input.KeyCode;
 
+/**
+ * 
+ * @author tbee
+ * https://github.com/SmartBear/TestFX/blob/master/src/main/java/org/loadui/testfx/GuiTest.java
+ */
 public abstract class JFXtrasGuiTest extends org.loadui.testfx.GuiTest {
 	
 	/**
