@@ -74,6 +74,16 @@ public class TestUtil {
 	
 	/**
 	 * 
+	 */
+	static public String quickFormatCalendarAsDateTime(Calendar value) {
+		if (value == null) return "null";
+		SimpleDateFormat lSimpleDateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG);
+		lSimpleDateFormat.applyPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+		return value == null ? "null" : lSimpleDateFormat.format(value.getTime());
+	}
+	
+	/**
+	 * 
 	 * @param value
 	 * @return
 	 */
@@ -82,7 +92,7 @@ public class TestUtil {
 		String s = "[";
 		for (Calendar lCalendar : value)
 		{
-			if (s.length() > 1) s += ",";
+			if (s.length() > 1) s += ", ";
 			s += quickFormatCalendarAsDate(lCalendar);
 		}
 		s += "]";
@@ -107,7 +117,8 @@ public class TestUtil {
 	 * 
 	 */
 	static public void waitForPaintPulse() {
-		PlatformUtil.runAndWait( () -> {
-		});
+//		PlatformUtil.runAndWait( () -> {
+//		});
+		sleep(100);
 	}
 }

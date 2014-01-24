@@ -80,6 +80,9 @@ public class LocalDateTimePicker extends CalendarPicker
 		// construct properties
 		constructLocalDateTime();
 		constructLocalDateTimes();
+		constructHighlightedLocalDateTimes();
+		constructDisabledLocalDateTimes();
+		constructDisplayedLocalDateTime();		
 	}
 
 	// ==================================================================================================================
@@ -88,7 +91,7 @@ public class LocalDateTimePicker extends CalendarPicker
 	/** LocalDateTime: */
 	public ObjectProperty<LocalDateTime> localDateTimeProperty() { return localDateTimeObjectProperty; }
 	private final ObjectProperty<LocalDateTime> localDateTimeObjectProperty = new SimpleObjectProperty<LocalDateTime>(this, "localDateTime");
-	public LocalDateTime getLocalTimeDateTime() { return localDateTimeObjectProperty.getValue(); }
+	public LocalDateTime getLocalDateTime() { return localDateTimeObjectProperty.getValue(); }
 	public void setLocalDateTime(LocalDateTime value) { localDateTimeObjectProperty.setValue(value); }
 	public LocalDateTimePicker withLocalDateTime(LocalDateTime value) { setLocalDateTime(value); return this; }
 	private void constructLocalDateTime()
@@ -128,11 +131,14 @@ public class LocalDateTimePicker extends CalendarPicker
 					 for (Calendar lCalendar : change.getRemoved()) 
 					 {
 						 LocalDateTime lLocalDateTime = DateTimeUtil.createLocalDateTimeFromCalendar(lCalendar);
+// TODO: not everything is removed. why?						 
+System.out.println("removing " + lLocalDateTime  +  " from " + localDateTimes());						 
                          if (localDateTimes().contains(lLocalDateTime)) localDateTimes().remove(lLocalDateTime);
                      }
                      for (Calendar lCalendar : change.getAddedSubList()) 
                      {
 						 LocalDateTime lLocalDateTime = DateTimeUtil.createLocalDateTimeFromCalendar(lCalendar);
+System.out.println("add " + lLocalDateTime  +  " to " + localDateTimes());						 
 						 if (localDateTimes().contains(lLocalDateTime) == false) localDateTimes().add(lLocalDateTime);
                      }				
 				}
@@ -157,7 +163,7 @@ public class LocalDateTimePicker extends CalendarPicker
 	}
 
 	/** highlightedLocalDateTimes: */
-	public ObservableList<LocalDateTime> highlightedLocalDateTimes() { return localDateTimes; }
+	public ObservableList<LocalDateTime> highlightedLocalDateTimes() { return highlightedLocalDateTimes; }
 	private final ObservableList<LocalDateTime> highlightedLocalDateTimes =  javafx.collections.FXCollections.observableArrayList();
 	private void constructHighlightedLocalDateTimes()
 	{
@@ -201,7 +207,7 @@ public class LocalDateTimePicker extends CalendarPicker
 	}
 
 	/** disabledLocalDateTimes: */
-	public ObservableList<LocalDateTime> disabledLocalDateTimes() { return localDateTimes; }
+	public ObservableList<LocalDateTime> disabledLocalDateTimes() { return disabledLocalDateTimes; }
 	private final ObservableList<LocalDateTime> disabledLocalDateTimes =  javafx.collections.FXCollections.observableArrayList();
 	private void constructDisabledLocalDateTimes()
 	{
@@ -240,6 +246,33 @@ public class LocalDateTimePicker extends CalendarPicker
 						if (disabledLocalDateTimes().contains(lCalendar) == false) disabledCalendars().add(lCalendar);
 					}
 				}
+			}
+		});
+	}
+
+	/** DisplayedLocalDateTime: */
+	public ObjectProperty<LocalDateTime> displayedLocalDateTimeProperty() { return displayedLocalDateTimeObjectProperty; }
+	private final ObjectProperty<LocalDateTime> displayedLocalDateTimeObjectProperty = new SimpleObjectProperty<LocalDateTime>(this, "displayedLocalDateTime");
+	public LocalDateTime getDisplayedLocalDateTime() { return displayedLocalDateTimeObjectProperty.getValue(); }
+	public void setDisplayedLocalDateTime(LocalDateTime value) { displayedLocalDateTimeObjectProperty.setValue(value); }
+	public LocalDateTimePicker withDisplayedLocalDateTime(LocalDateTime value) { setDisplayedLocalDateTime(value); return this; }
+	private void constructDisplayedLocalDateTime()
+	{
+		// if this value is changed by binding, make sure related things are updated
+		displayedCalendar().addListener(new ChangeListener<Calendar>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
+			{
+				displayedLocalDateTimeProperty().set(DateTimeUtil.createLocalDateTimeFromCalendar(newValue));
+			} 
+		});
+		
+		// if the inherited value is changed, make sure calendar is updated
+		displayedLocalDateTimeProperty().addListener(new ChangeListener<LocalDateTime>() {
+			@Override
+			public void changed(ObservableValue<? extends LocalDateTime> observableValue, LocalDateTime oldValue, LocalDateTime newValue) {
+				displayedCalendar().set(newValue == null ? null : DateTimeUtil.createCalendarFromLocalDateTime(newValue, getLocale()));
 			}
 		});
 	}
