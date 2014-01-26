@@ -32,7 +32,6 @@ package jfxtras.labs.map;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
-import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -46,11 +45,13 @@ import javafx.scene.layout.VBox;
  */
 public class ZoomControlFactory {
 
+	private static final int GAP = 5;
+
 	private static final String ZOOM_LEVEL = "Zoom to level ";
 
 	protected Zoomable zoomable;
 
-	private Slider zoomSlider;
+	private ZoomSlider zoomSlider;
 
 	private Button zoomInButton;
 
@@ -62,8 +63,7 @@ public class ZoomControlFactory {
 		
 		this.zoomable = zoomable;
 
-		ZoomSliderFactory zoomSliderFactory = new ZoomSliderFactory(zoomable);
-		zoomSlider = zoomSliderFactory.create();
+		zoomSlider = new ZoomSlider(zoomable);
 		
 		zoomSlider.valueProperty().addListener(new ZoomSliderChangeListener(zoomable));
 		
@@ -81,7 +81,7 @@ public class ZoomControlFactory {
 		
 		zoomable.zoomProperty().addListener(new ZoomChangeListener());
 
-		Pane pane = new VBox();
+		Pane pane = new VBox(GAP);
 		pane.getChildren().add(zoomInButton);
 		pane.getChildren().add(zoomSlider);
 		pane.getChildren().add(zoomOutButton);
@@ -129,7 +129,11 @@ public class ZoomControlFactory {
 		@Override
 		public void changed(ObservableValue<? extends Number> ov,
 				Number oldVal, Number newVal) {
-			zoomSlider.setMin(newVal.doubleValue());
+			ignore = true;
+			double min = newVal.doubleValue();
+			zoomSlider.adjustScale(min, zoomSlider.getMax());
+			zoomSlider.setMin(min);
+			ignore = false;
 		}
 	}
 	
@@ -138,7 +142,11 @@ public class ZoomControlFactory {
 		@Override
 		public void changed(ObservableValue<? extends Number> ov,
 				Number oldVal, Number newVal) {
-			zoomSlider.setMax(newVal.doubleValue());
+			ignore = true;
+			double max = newVal.doubleValue();
+			zoomSlider.adjustScale(zoomSlider.getMin(), max);
+			zoomSlider.setMax(max);
+			ignore = false;
 		}
 	}
 	
@@ -151,9 +159,10 @@ public class ZoomControlFactory {
 		}
 		
         @Override
-        public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+        public void changed(ObservableValue<? extends Number> ov, Number oldVal, Number newVal) {
             if(!ignore){
-            	zoomable.setZoom(new_val.intValue());
+            	int newZoom = newVal.intValue();
+ 				zoomable.zoomProperty().set(newZoom);
             }
         }
 	}

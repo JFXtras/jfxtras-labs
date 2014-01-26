@@ -79,16 +79,19 @@ public class TileRepositoryTest extends JavaFXPlatformAbstractTest {
     public void testLocalSource() {
 
         TileSourceFactory<String> factory = new LocalTileSourceFactory();
-        TileRepository classUnderTest = new TileRepository(factory.create(null));
+        TileSource tileSource = factory.create(null);
+        TileRepository classUnderTest = new TileRepository(tileSource);
         Tile tile = classUnderTest.getTile(1, 1, 1);
         assertNotNull(tile);
         assertNull(tile.getImageView().getImage());
+        assertEquals(1, tileSource.getMinZoom());
+        assertEquals(1, tileSource.getMaxZoom());
         
         String path = TilePathLookup.getPath();
-        TileSource tileSource = factory.create(path);
+        tileSource = factory.create(path);
         classUnderTest = new TileRepository(tileSource);
         assumeNotNull(classUnderTest.getTile(65, 40, 7));
-        assumeTrue(tileSource.getMinZoom() == 7);
+        assertEquals(7, tileSource.getMinZoom());
         assertEquals(8, tileSource.getMaxZoom());
     }
 

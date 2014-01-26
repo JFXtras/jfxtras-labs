@@ -134,7 +134,7 @@ public class LicenseRenderer implements Renderable {
         return txt;
     }
 
-    private class MouseClickedAdapter implements EventHandler<MouseEvent> {
+    private static class MouseClickedAdapter implements EventHandler<MouseEvent> {
 
         private String url;
 
@@ -153,7 +153,7 @@ public class LicenseRenderer implements Renderable {
         }
     }
 
-    private class MouseEnteredAdapter implements EventHandler<MouseEvent> {
+    private static class MouseEnteredAdapter implements EventHandler<MouseEvent> {
 
         private Text text;
 

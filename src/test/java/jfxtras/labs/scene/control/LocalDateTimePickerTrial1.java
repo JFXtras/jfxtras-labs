@@ -64,7 +64,7 @@ public class LocalDateTimePickerTrial1 extends Application {
         {
 			final TextField lTextField = new TextField();
 			lTextField.setEditable(false);
-	        lLocalDateTimePicker.localDateProperty().addListener(new ChangeListener<LocalDateTime>()
+	        lLocalDateTimePicker.localDateTimeProperty().addListener(new ChangeListener<LocalDateTime>()
 			{
 				@Override
 				public void changed(ObservableValue<? extends LocalDateTime> localDateProperty, LocalDateTime oldValue, LocalDateTime newValue)

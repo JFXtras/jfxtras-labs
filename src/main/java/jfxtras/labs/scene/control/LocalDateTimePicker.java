@@ -86,10 +86,10 @@ public class LocalDateTimePicker extends CalendarPicker
 	// PROPERTIES
 	
 	/** LocalDateTime: */
-	public ObjectProperty<LocalDateTime> localDateProperty() { return localDateObjectProperty; }
-	private final ObjectProperty<LocalDateTime> localDateObjectProperty = new SimpleObjectProperty<LocalDateTime>(this, "localDate");
-	public LocalDateTime getLocalDateTime() { return localDateObjectProperty.getValue(); }
-	public void setLocalDateTime(LocalDateTime value) { localDateObjectProperty.setValue(value); }
+	public ObjectProperty<LocalDateTime> localDateTimeProperty() { return localDateTimeObjectProperty; }
+	private final ObjectProperty<LocalDateTime> localDateTimeObjectProperty = new SimpleObjectProperty<LocalDateTime>(this, "localDateTime");
+	public LocalDateTime getLocalDateTime() { return localDateTimeObjectProperty.getValue(); }
+	public void setLocalDateTime(LocalDateTime value) { localDateTimeObjectProperty.setValue(value); }
 	public LocalDateTimePicker withLocalDateTime(LocalDateTime value) { setLocalDateTime(value); return this; } 
 	private void constructLocalDateTime()
 	{
@@ -99,12 +99,12 @@ public class LocalDateTimePicker extends CalendarPicker
 			@Override
 			public void changed(ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue)
 			{
-				localDateProperty().set(DateTimeUtil.createLocalDateTimeFromCalendar(newValue));
+				localDateTimeProperty().set(DateTimeUtil.createLocalDateTimeFromCalendar(newValue));
 			} 
 		});
 		
 		// if the inherited value is changed, make sure calendar is updated
-		localDateProperty().addListener(new ChangeListener<LocalDateTime>()
+		localDateTimeProperty().addListener(new ChangeListener<LocalDateTime>()
 		{
 			@Override
 			public void changed(ObservableValue<? extends LocalDateTime> observableValue, LocalDateTime oldValue, LocalDateTime newValue)
