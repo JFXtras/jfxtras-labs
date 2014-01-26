@@ -45,6 +45,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 import javafx.util.Callback;
 import jfxtras.labs.scene.control.Agenda.CalendarRange;
+import jfxtras.labs.test.TestUtil;
 
 /**
  * = Calendar picker component
@@ -149,14 +150,17 @@ public class CalendarPicker extends Control
 					// if this is an add
 					while (change.next()) {
 						for (Calendar lCalendar : change.getRemoved()) {
-							// if there are other left
-							if (calendars().size() > 0) {
-								// select the first
-								setCalendar( calendars().get(0) );
-							}
-							else  {
-								// clear it
-								setCalendar(null);
+							// if the calendar to be removed is the active one
+							if (lCalendar.equals(getCalendar())) {
+								// if there are other left
+								if (calendars().size() > 0) {
+									// select the first
+									setCalendar( calendars().get(0) );
+								}
+								else  {
+									// clear it
+									setCalendar(null);
+								}
 							}
 						}
 						for (Calendar lCalendar : change.getAddedSubList()) {
@@ -286,31 +290,5 @@ public class CalendarPicker extends Control
 	{
 		// init here, so deriveDisplayedCalendar in the skin will modify it accordingly
 		setDisplayedCalendar(Calendar.getInstance(getLocale()));
-	}
-
-	// ==================================================================================================================
-	// SUPPORT
-	
-	/**
-	 * 
-	 */
-	static public String quickFormatCalendar(Calendar value)
-	{
-		if (value == null) return "null";
-		SimpleDateFormat lSimpleDateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG);
-		lSimpleDateFormat.applyPattern("yyyy-MM-dd");
-		return value == null ? "null" : lSimpleDateFormat.format(value.getTime());
-	}
-	static public String quickFormatCalendar(List<Calendar> value)
-	{
-		if (value == null) return "null";
-		String s = value.size() + "x [";
-		for (Calendar lCalendar : value)
-		{
-			if (s.endsWith("[") == false) s += ",";
-			s += quickFormatCalendar(lCalendar);
-		}
-		s += "]";
-		return s;
 	}
 }

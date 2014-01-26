@@ -102,19 +102,19 @@ public class CalendarPickerTest extends JFXtrasGuiTest {
 		// click the 2nd of January (unselecting it)
 		click("#day3");
 
-		// the first value in the list should be selected
-		Assert.assertEquals("2013-01-01", TestUtil.quickFormatCalendarAsDate(calendarPicker.getCalendar()));
+		// since the selected calendar was not unselected, it stays the samt
+		Assert.assertEquals("2013-01-04", TestUtil.quickFormatCalendarAsDate(calendarPicker.getCalendar()));
 		Assert.assertEquals("[2013-01-01, 2013-01-04]", TestUtil.quickFormatCalendarsAsDate(calendarPicker.calendars()));
 
-		// click the 1st of January (unselecting it)
-		click("#day2");
+		// click the 4st of January (unselecting it)
+		click("#day5");
 
 		// the first value in the list should be selected
-		Assert.assertEquals("2013-01-04", TestUtil.quickFormatCalendarAsDate(calendarPicker.getCalendar()));
-		Assert.assertEquals("[2013-01-04]", TestUtil.quickFormatCalendarsAsDate(calendarPicker.calendars()));
+		Assert.assertEquals("2013-01-01", TestUtil.quickFormatCalendarAsDate(calendarPicker.getCalendar()));
+		Assert.assertEquals("[2013-01-01]", TestUtil.quickFormatCalendarsAsDate(calendarPicker.calendars()));
 
-		// click the 4th of January (unselecting it)
-		click("#day5");
+		// click the 1th of January (unselecting it)
+		click("#day2");
 
 		// the first value in the list should be selected
 		Assert.assertNull(calendarPicker.getCalendar());
@@ -157,8 +157,8 @@ public class CalendarPickerTest extends JFXtrasGuiTest {
 		// click the 2nd of January (unselecting it)
 		click("#day3");
 
-		// the first value in the list should be selected
-		Assert.assertEquals("2013-01-01", TestUtil.quickFormatCalendarAsDate(calendarPicker.getCalendar()));
+		// since the selected calendar was not unselected, it stays the samt
+		Assert.assertEquals("2013-01-05", TestUtil.quickFormatCalendarAsDate(calendarPicker.getCalendar()));
 		Assert.assertEquals("[2013-01-01, 2013-01-03, 2013-01-05]", TestUtil.quickFormatCalendarsAsDate(calendarPicker.calendars()));
 	}
 	

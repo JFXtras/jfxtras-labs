@@ -62,6 +62,7 @@ import jfxtras.labs.scene.control.CalendarTimePicker;
 import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.ListSpinner.CycleEvent;
 import jfxtras.labs.scene.control.ListSpinnerIntegerList;
+import jfxtras.labs.test.TestUtil;
 
 import com.sun.javafx.css.converters.EnumConverter;
 

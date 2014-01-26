@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
+import com.sun.javafx.tk.Toolkit;
+
 import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
@@ -99,6 +101,23 @@ public class TestUtil {
 		return s;
 	}
 	
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 */
+	static public String quickFormatCalendarsAsDateTime(List<Calendar> value) {
+		if (value == null) return "null";
+		String s = "[";
+		for (Calendar lCalendar : value)
+		{
+			if (s.length() > 1) s += ", ";
+			s += quickFormatCalendarAsDateTime(lCalendar);
+		}
+		s += "]";
+		return s;
+	}
+	
 	
 	/**
 	 * 
@@ -117,8 +136,8 @@ public class TestUtil {
 	 * 
 	 */
 	static public void waitForPaintPulse() {
-//		PlatformUtil.runAndWait( () -> {
-//		});
-		sleep(100);
+		PlatformUtil.runAndWait( () -> {
+			Toolkit.getToolkit().firePulse();
+		});
 	}
 }

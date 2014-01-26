@@ -43,7 +43,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import jfxtras.labs.internal.scene.control.behavior.CalendarTimePickerBehavior;
 import jfxtras.labs.scene.control.CalendarTimePicker;
-
+import jfxtras.labs.test.TestUtil;
 import javafx.scene.control.SkinBase;
 
 /**
@@ -141,7 +141,9 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker>
 				Calendar lCalendar = (Calendar)getSkinnable().getCalendar();
 				lCalendar = (lCalendar == null ? Calendar.getInstance() : (Calendar)lCalendar.clone());
 				lCalendar.set(Calendar.HOUR_OF_DAY, newValue.intValue());
-				getSkinnable().setCalendar(lCalendar);
+				if (lCalendar.equals(getSkinnable().getCalendar()) == false) {
+					getSkinnable().setCalendar(lCalendar);
+				}
 			}
 		});
 		minuteScrollSlider.valueProperty().addListener(new ChangeListener<Number>()
@@ -162,7 +164,9 @@ public class CalendarTimePickerSkin extends SkinBase<CalendarTimePicker>
 				}
 				lCalendar.set(Calendar.MINUTE, lMinutes);
 				lCalendar = blockMinutesToStep(lCalendar, getSkinnable().getMinuteStep());
-				getSkinnable().setCalendar(lCalendar);
+				if (lCalendar.equals(getSkinnable().getCalendar()) == false) {
+					getSkinnable().setCalendar(lCalendar);
+				}
 			}
 		});
 		

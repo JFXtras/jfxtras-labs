@@ -131,15 +131,16 @@ public class LocalDateTimePicker extends CalendarPicker
 					 for (Calendar lCalendar : change.getRemoved()) 
 					 {
 						 LocalDateTime lLocalDateTime = DateTimeUtil.createLocalDateTimeFromCalendar(lCalendar);
-// TODO: not everything is removed. why?						 
-System.out.println("removing " + lLocalDateTime  +  " from " + localDateTimes());						 
-                         if (localDateTimes().contains(lLocalDateTime)) localDateTimes().remove(lLocalDateTime);
+                         if (localDateTimes().contains(lLocalDateTime)) {
+                        	 localDateTimes().remove(lLocalDateTime);
+                         }
                      }
                      for (Calendar lCalendar : change.getAddedSubList()) 
                      {
 						 LocalDateTime lLocalDateTime = DateTimeUtil.createLocalDateTimeFromCalendar(lCalendar);
-System.out.println("add " + lLocalDateTime  +  " to " + localDateTimes());						 
-						 if (localDateTimes().contains(lLocalDateTime) == false) localDateTimes().add(lLocalDateTime);
+						 if (localDateTimes().contains(lLocalDateTime) == false) {
+							 localDateTimes().add(lLocalDateTime);
+						 }
                      }				
 				}
 			} 
