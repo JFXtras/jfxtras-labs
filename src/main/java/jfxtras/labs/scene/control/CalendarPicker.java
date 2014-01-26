@@ -26,9 +26,7 @@
  */
 package jfxtras.labs.scene.control;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -44,8 +42,6 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 import javafx.util.Callback;
-import jfxtras.labs.scene.control.Agenda.CalendarRange;
-import jfxtras.labs.test.TestUtil;
 
 /**
  * = Calendar picker component

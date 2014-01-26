@@ -33,18 +33,15 @@ import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
+import javafx.scene.control.SkinBase;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import jfxtras.labs.internal.scene.control.behavior.CalendarTimePickerBehavior;
 import jfxtras.labs.scene.control.CalendarTimePicker;
-import jfxtras.labs.test.TestUtil;
-import javafx.scene.control.SkinBase;
 
 /**
  * @author Tom Eugelink

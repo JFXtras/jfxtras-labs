@@ -29,6 +29,7 @@
 
 package jfxtras.labs.scene.control;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 
 import javafx.beans.property.ObjectProperty;
@@ -37,9 +38,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-
-import java.time.LocalDateTime;
-
 import jfxtras.labs.util.DateTimeUtil;
 
 /**

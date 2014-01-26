@@ -35,7 +35,6 @@ import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -55,14 +54,13 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
-import jfxtras.labs.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import jfxtras.labs.scene.control.CalendarPicker;
 import jfxtras.labs.scene.control.CalendarTimePicker;
 import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.control.ListSpinner.CycleEvent;
 import jfxtras.labs.scene.control.ListSpinnerIntegerList;
-import jfxtras.labs.test.TestUtil;
+import jfxtras.labs.scene.layout.GridPane;
 
 import com.sun.javafx.css.converters.EnumConverter;
 
