@@ -29,3 +29,4 @@ build.xml
 /gradlew_install.cmd
 /*.png
 /gradlew_javadoc.cmd
+/gradlew_test.cmd

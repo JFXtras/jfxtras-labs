@@ -295,4 +295,92 @@ public class CalendarPickerTest extends JFXtrasGuiTest {
 		release(MouseButton.PRIMARY);
 		Assert.assertEquals("2013-01-01T16:18:56.000", TestUtil.quickFormatCalendarAsDateTime(calendarPicker.getCalendar()));
 	}
+	
+	/**
+	 * 
+	 */
+	@Test
+	public void notNullWhileNull()
+	{
+		// default value is null
+		Assert.assertNull(calendarPicker.getCalendar());
+
+		PlatformUtil.runAndWait( () -> {
+			// show time
+			calendarPicker.setAllowNull(false);
+		});
+		
+		// not null, so it defaults to now
+		Assert.assertEquals( TestUtil.quickFormatCalendarAsDate(Calendar.getInstance()), TestUtil.quickFormatCalendarAsDate(calendarPicker.getCalendar()));
+		Assert.assertEquals("[" + TestUtil.quickFormatCalendarAsDate(Calendar.getInstance()) + "]", TestUtil.quickFormatCalendarsAsDate(calendarPicker.calendars()));
+	}
+
+	
+	/**
+	 * 
+	 */
+	@Test
+	public void notNullWhileSet()
+	{
+		// default value is null
+		Assert.assertNull(calendarPicker.getCalendar());
+
+		// click the 1st of January
+		click("#day2");
+
+		// first of January
+		Assert.assertEquals("2013-01-01", TestUtil.quickFormatCalendarAsDate(calendarPicker.getCalendar()));		
+
+		PlatformUtil.runAndWait( () -> {
+			// show time
+			calendarPicker.setAllowNull(false);
+		});
+		
+		// click the 1st of January again (which would unselect in allow null mode)
+		click("#day2");
+
+		// first of January
+		Assert.assertEquals("2013-01-01", TestUtil.quickFormatCalendarAsDate(calendarPicker.getCalendar()));		
+	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public void navigateYear()
+	{
+		// January 2013 is shown
+		Assert.assertEquals("2013-01-01", TestUtil.quickFormatCalendarAsDate(calendarPicker.getDisplayedCalendar()));
+		
+		// click next in year
+		click("#yearListSpinner .right-arrow");
+
+		// January 2014 is shown
+		Assert.assertEquals("2014-01-01", TestUtil.quickFormatCalendarAsDate(calendarPicker.getDisplayedCalendar()));
+		
+		// click next in month
+		click("#monthListSpinner .right-arrow");
+
+		// Feb 2014 is shown
+		Assert.assertEquals("2014-02-01", TestUtil.quickFormatCalendarAsDate(calendarPicker.getDisplayedCalendar()));
+		
+		// click 2x prev in month
+		click("#monthListSpinner .left-arrow");
+		click("#monthListSpinner .left-arrow");
+
+		// Dec 2013 is shown
+		Assert.assertEquals("2013-12-01", TestUtil.quickFormatCalendarAsDate(calendarPicker.getDisplayedCalendar()));
+
+		// click prev in year
+		click("#yearListSpinner .left-arrow");
+
+		// Dec 2012 is shown
+		Assert.assertEquals("2012-12-01", TestUtil.quickFormatCalendarAsDate(calendarPicker.getDisplayedCalendar()));
+		
+		// click next in year
+		click("#monthListSpinner .right-arrow");
+
+		// Jan 2013 is shown
+		Assert.assertEquals("2013-01-01", TestUtil.quickFormatCalendarAsDate(calendarPicker.getDisplayedCalendar()));
+	}
 }

@@ -297,4 +297,96 @@ public class LocalDateTimePickerTest extends JFXtrasGuiTest {
 		release(MouseButton.PRIMARY);
 		Assert.assertEquals("2013-01-01T16:18:56", localDateTimePicker.getLocalDateTime().toString());
 	}
+	
+	
+	/**
+	 * 
+	 */
+	@Test
+	public void notNullWhileNull()
+	{
+		// default value is null
+		Assert.assertNull(localDateTimePicker.getLocalDateTime());
+
+		PlatformUtil.runAndWait( () -> {
+			// show time
+			localDateTimePicker.setAllowNull(false);
+		});
+		
+		// not null caused a value to be set, which defaults to now 
+		// These asserts will be green about 99.9999% of the time, because we only check on the date, not the time. Only when a date transition occurs exactly between the setAllowNull and the assert will they fail.
+		Assert.assertEquals( TestUtil.quickFormatCalendarAsDate(Calendar.getInstance()), localDateTimePicker.getLocalDateTime().toLocalDate().toString());
+		Assert.assertEquals(1, localDateTimePicker.localDateTimes().size());
+		Assert.assertEquals(TestUtil.quickFormatCalendarAsDate(Calendar.getInstance()), localDateTimePicker.localDateTimes().get(0).toLocalDate().toString());
+	}
+
+	
+	/**
+	 * 
+	 */
+	@Test
+	public void notNullWhileSet()
+	{
+		// default value is null
+		Assert.assertNull(localDateTimePicker.getLocalDateTime());
+
+		// click the 1st of January
+		click("#day2");
+
+		// first of January
+		Assert.assertEquals("2013-01-01T00:00", localDateTimePicker.getLocalDateTime().toString());		
+
+		PlatformUtil.runAndWait( () -> {
+			// show time
+			localDateTimePicker.setAllowNull(false);
+		});
+		
+		// click the 1st of January again (which would unselect in allow null mode)
+		click("#day2");
+
+		// first of January
+		Assert.assertEquals("2013-01-01T00:00", localDateTimePicker.getLocalDateTime().toString());		
+	}
+
+
+	/**
+	 * 
+	 */
+	@Test
+	public void navigateYear()
+	{
+		// Jan 2013 is shown
+		Assert.assertEquals("2013-01-01T00:00", localDateTimePicker.getDisplayedLocalDateTime().toString());
+		
+		// click next in year
+		click("#yearListSpinner .right-arrow");
+
+		// Jan 2014 is shown
+		Assert.assertEquals("2014-01-01T00:00", localDateTimePicker.getDisplayedLocalDateTime().toString());
+		
+		// click next in month
+		click("#monthListSpinner .right-arrow");
+
+		// Feb 2014 is shown
+		Assert.assertEquals("2014-02-01T00:00", localDateTimePicker.getDisplayedLocalDateTime().toString());
+		
+		// click 2x prev in month
+		click("#monthListSpinner .left-arrow");
+		click("#monthListSpinner .left-arrow");
+
+		// Dec 2013 is shown
+		Assert.assertEquals("2013-12-01T00:00", localDateTimePicker.getDisplayedLocalDateTime().toString());
+
+		// click prev in year
+		click("#yearListSpinner .left-arrow");
+
+		// Dec 2012 is shown
+		Assert.assertEquals("2012-12-01T00:00", localDateTimePicker.getDisplayedLocalDateTime().toString());
+		
+		// click next in year
+		click("#monthListSpinner .right-arrow");
+
+		// Jan 2013 is shown
+		Assert.assertEquals("2013-01-01T00:00", localDateTimePicker.getDisplayedLocalDateTime().toString());
+	}
 }

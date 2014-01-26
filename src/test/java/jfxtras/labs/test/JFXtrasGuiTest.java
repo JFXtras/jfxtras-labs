@@ -1,5 +1,6 @@
 package jfxtras.labs.test;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.loadui.testfx.GuiTest;
 
@@ -12,7 +13,8 @@ import javafx.scene.input.KeyCode;
  * @author tbee
  * https://github.com/SmartBear/TestFX/blob/master/src/main/java/org/loadui/testfx/GuiTest.java
  */
-public class JFXtrasGuiTest extends org.loadui.testfx.GuiTest {
+@Ignore
+abstract public class JFXtrasGuiTest extends org.loadui.testfx.GuiTest {
 	
 	/**
 	 * At least one runnable method is required for any class extending GuiTest
