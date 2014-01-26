@@ -43,7 +43,7 @@ import javafx.util.Builder;
 
 /**
  *
- * @author Mark Heckler (mark.heckler@gmail.com, @HecklerMark)
+ * @author Mark Heckler (mark.heckler@gmail.com, @MkHeck)
  */
 public class MonologFXButtonBuilder<B extends MonologFXButtonBuilder<B>> extends ControlBuilder<B> implements Builder<MonologFXButton> {
     private HashMap<String, Property> properties = new HashMap<>();

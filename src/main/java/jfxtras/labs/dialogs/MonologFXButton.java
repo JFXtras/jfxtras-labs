@@ -40,7 +40,7 @@ import javafx.scene.image.ImageView;
 
 /**
  *
- * @author Mark Heckler (mark.heckler@gmail.com, @HecklerMark)
+ * @author Mark Heckler (mark.heckler@gmail.com, @MkHeck)
  */
 public class MonologFXButton {
 
