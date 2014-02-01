@@ -26,6 +26,8 @@
  */
 package jfxtras.labs.internal.scene.control.skin;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -55,6 +57,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
+import jfxtras.labs.css.converters.SimpleDateFormatConverter;
 import jfxtras.labs.scene.control.CalendarPicker;
 import jfxtras.labs.scene.control.CalendarTimePicker;
 import jfxtras.labs.scene.control.ListSpinner;
@@ -177,7 +180,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
     {
         if (showWeeknumbers == null)
         {
-            showWeeknumbers = new StyleableObjectProperty<ShowWeeknumbers>(ShowWeeknumbers.YES)
+            showWeeknumbers = new StyleableObjectProperty<ShowWeeknumbers>(SHOW_WEEKNUMBERS_DEFAULT)
             {
                 @Override public void invalidated()
                 {
@@ -193,19 +196,51 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
     }
     private ObjectProperty<ShowWeeknumbers> showWeeknumbers = null;
     public final void setShowWeeknumbers(ShowWeeknumbers value) { showWeeknumbersProperty().set(value); }
-    public final ShowWeeknumbers getShowWeeknumbers() { return showWeeknumbers == null ? ShowWeeknumbers.YES : showWeeknumbers.get(); }
+    public final ShowWeeknumbers getShowWeeknumbers() { return showWeeknumbers == null ? SHOW_WEEKNUMBERS_DEFAULT : showWeeknumbers.get(); }
     public final CalendarPickerControlSkin withShowWeeknumbers(ShowWeeknumbers value) { setShowWeeknumbers(value); return this; }
     public enum ShowWeeknumbers {YES, NO}
+    static private final ShowWeeknumbers SHOW_WEEKNUMBERS_DEFAULT = ShowWeeknumbers.YES;
+    
+	/** LabelDateFormat: */
+    public final ObjectProperty<DateFormat> labelDateFormatProperty()
+    {
+        if (labelDateFormat == null)
+        {
+            labelDateFormat = new StyleableObjectProperty<DateFormat>(LABEL_DATEFORMAT_DEFAULT)
+            {
+                @Override public void invalidated()
+                {
+                    refreshDayButtonsVisibilityAndLabel();
+                }
+
+                @Override public CssMetaData<CalendarPicker,DateFormat> getCssMetaData() { return StyleableProperties.LABEL_DATEFORMAT; }
+                @Override public Object getBean() { return CalendarPickerControlSkin.this; }
+                @Override public String getName() { return "labelDateFormat"; }
+            };
+        }
+        return labelDateFormat;
+    }
+    private ObjectProperty<DateFormat> labelDateFormat = null;
+    public final void setLabelDateFormat(DateFormat value) { labelDateFormatProperty().set(value); }
+    public final DateFormat getLabelDateFormat() { return labelDateFormat == null ? LABEL_DATEFORMAT_DEFAULT : labelDateFormat.get(); }
+    public final CalendarPickerControlSkin withLabelDateFormat(DateFormat value) { setLabelDateFormat(value); return this; }
+    static private final SimpleDateFormat LABEL_DATEFORMAT_DEFAULT = new SimpleDateFormat("d");
     
     // ----------------------------
     // communicate the styleables
 
     private static class StyleableProperties
     {
-        private static final CssMetaData<CalendarPicker, ShowWeeknumbers> SHOW_WEEKNUMBERS = new CssMetaData<CalendarPicker, ShowWeeknumbers>("-fxx-show-weeknumbers", new EnumConverter<ShowWeeknumbers>(ShowWeeknumbers.class), ShowWeeknumbers.YES )
+        private static final CssMetaData<CalendarPicker, ShowWeeknumbers> SHOW_WEEKNUMBERS = new CssMetaData<CalendarPicker, ShowWeeknumbers>("-fxx-show-weeknumbers", new EnumConverter<ShowWeeknumbers>(ShowWeeknumbers.class), SHOW_WEEKNUMBERS_DEFAULT )
         {
             @Override public boolean isSettable(CalendarPicker n) { return !((CalendarPickerControlSkin)n.getSkin()).showWeeknumbersProperty().isBound(); }
             @Override public StyleableProperty<ShowWeeknumbers> getStyleableProperty(CalendarPicker n) { return (StyleableProperty<ShowWeeknumbers>)((CalendarPickerControlSkin)n.getSkin()).showWeeknumbersProperty(); }
+        };
+
+        private static final CssMetaData<CalendarPicker, DateFormat> LABEL_DATEFORMAT = new CssMetaData<CalendarPicker, DateFormat>("-fxx-label-dateformat", new SimpleDateFormatConverter(), LABEL_DATEFORMAT_DEFAULT )
+        {
+            @Override public boolean isSettable(CalendarPicker n) { return !((CalendarPickerControlSkin)n.getSkin()).showWeeknumbersProperty().isBound(); }
+            @Override public StyleableProperty<DateFormat> getStyleableProperty(CalendarPicker n) { return (StyleableProperty<DateFormat>)((CalendarPickerControlSkin)n.getSkin()).labelDateFormatProperty(); }
         };
 
         private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES;
@@ -213,6 +248,7 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
         {
             final List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<CssMetaData<? extends Styleable, ?>>(SkinBase.getClassCssMetaData());
             styleables.add(SHOW_WEEKNUMBERS);
+            styleables.add(LABEL_DATEFORMAT);
             STYLEABLES = Collections.unmodifiableList(styleables);
         }
     }
@@ -777,7 +813,8 @@ public class CalendarPickerControlSkin extends CalendarPickerMonthlySkinAbstract
 			// update the button
 			ToggleButton lToggleButton = dayButtons.get(lIdx); 
 			lToggleButton.setVisible(true);
-			lToggleButton.setText("" + i);
+			lToggleButton.setText(getLabelDateFormat().format(lCalendar.getTime()));
+			lToggleButton.setAlignment(Pos.BASELINE_CENTER);
 			lToggleButton.getStyleClass().removeAll("weekend", "weekday");
 			lToggleButton.getStyleClass().add(isWeekdayWeekend(lIdx % 7) ? "weekend" : "weekday"); 
 			lToggleButton.setDisable( disabledCalendars != null && find(disabledCalendars, lCalendar) != null );

@@ -69,7 +69,12 @@ task buildTimestamped(type: Copy, dependsOn: 'build') {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.9'
+    gradleVersion = '1.10'
+}
+
+test {
+  // the ANT plugin Gradle is using runs any class ending on *Test as a test
+  exclude 'jfxtras/labs/test/JFXtrasGuiTest.class'
 }
 
 signArchives.onlyIf {

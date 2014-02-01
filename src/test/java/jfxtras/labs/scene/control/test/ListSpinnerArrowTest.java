@@ -1,19 +1,19 @@
 package jfxtras.labs.scene.control.test;
 
-import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 import jfxtras.labs.internal.scene.control.skin.ListSpinnerCaspianSkin;
 import jfxtras.labs.scene.control.ListSpinner;
+import jfxtras.labs.test.JFXtrasGuiTest;
 import jfxtras.labs.util.PlatformUtil;
+
 import org.junit.Assert;
 import org.junit.Test;
-import org.loadui.testfx.GuiTest;
 
 /**
  * Created by tbee on 26-12-13.
  */
-public class ListSpinnerArrowTest extends GuiTest {
+public class ListSpinnerArrowTest extends JFXtrasGuiTest {
 
 	public Parent getRootNode()
 	{

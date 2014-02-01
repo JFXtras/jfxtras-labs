@@ -1,31 +1,15 @@
 package jfxtras.labs.test;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.loadui.testfx.GuiTest;
-
-import javafx.scene.Parent;
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
+
+import org.loadui.testfx.GuiTest;
 
 /**
  * 
  * @author tbee
  * https://github.com/SmartBear/TestFX/blob/master/src/main/java/org/loadui/testfx/GuiTest.java
  */
-@Ignore
 abstract public class JFXtrasGuiTest extends org.loadui.testfx.GuiTest {
-	
-	/**
-	 * At least one runnable method is required for any class extending GuiTest
-	 */
-	@Test
-	public void dummy() { }
-	@Override
-	protected Parent getRootNode() {
-		return new Label();
-	}
-	
 	
 	/**
 	 * Click with a qualifier pressed
