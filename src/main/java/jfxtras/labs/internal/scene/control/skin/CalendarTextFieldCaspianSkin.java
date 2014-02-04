@@ -204,15 +204,11 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField>
         imageView = new ImageView();
 		imageView.getStyleClass().add("icon");
 		imageView.setPickOnBounds(true);
-		imageView.setOnMouseClicked(new EventHandler<MouseEvent>()
-		{
-			@Override public void handle(MouseEvent evt)
-			{
-				if (textField.focusedProperty().get() == true) {
-					parse();
-				}
-				showPopup(evt);
+		imageView.setOnMouseClicked( (evt) -> {
+			if (textField.focusedProperty().get() == true) {
+				parse();
 			}
+			showPopup(evt);
 		});
 		
 		// construct a gridpane: one row, two columns
