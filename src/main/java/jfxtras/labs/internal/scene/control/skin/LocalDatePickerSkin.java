@@ -37,7 +37,7 @@ import jfxtras.labs.scene.control.LocalDatePicker;
 import jfxtras.labs.util.DateTimeUtil;
 
 /**
- * This skin uses regular JavaFX controls
+ * This skin reusese CalendarPicker
  * @author Tom Eugelink
  *
  */
@@ -67,19 +67,27 @@ public class LocalDatePickerSkin extends SkinBase<LocalDatePicker>
 		getSkinnable().localeProperty().bindBidirectional( calendarPicker.localeProperty() );
 		getSkinnable().allowNullProperty().bindBidirectional( calendarPicker.allowNullProperty() );
 		getSkinnable().styleProperty().bindBidirectional( calendarPicker.styleProperty() );
+		calendarPicker.getStyleClass().addAll(getSkinnable().getClass().getSimpleName());
+		calendarPicker.getStyleClass().addAll(getSkinnable().getStyleClass());
 		bindMode();
 		bindLocalDate();
 		bindLocalDates();
+		bindHighlightedLocalDates();
+		bindDisabledLocalDates();
+		bindDisplayedLocalDate();
 	}
+	
+	// ==================================================================================================================
+	// BINDING
 	
 	private void bindLocalDate()
 	{
-		// if this value is changed by binding, make sure related things are updated
+		// forward changes from calendar
 		calendarPicker.calendarProperty().addListener( (ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue) -> {
 			getSkinnable().localDateProperty().set(DateTimeUtil.createLocalDateFromCalendar(newValue)); 
 		});
 		
-		// if the localDate value is changed, make sure calendar is updated
+		// forward changes to calendar
 		getSkinnable().localDateProperty().addListener( (ObservableValue<? extends LocalDate> observableValue, LocalDate oldValue, LocalDate newValue) -> {
 			calendarPicker.calendarProperty().set(newValue == null ? null : DateTimeUtil.createCalendarFromLocalDate(newValue, calendarPicker.getLocale()));
 		});
@@ -107,6 +115,7 @@ public class LocalDatePickerSkin extends SkinBase<LocalDatePicker>
 				}
 			}
 		});
+		
 		// forward changes to calendar
 		getSkinnable().localDateTimes().addListener( (ListChangeListener.Change<? extends LocalDate> change) -> {
 			while (change.next()) {
@@ -126,10 +135,9 @@ public class LocalDatePickerSkin extends SkinBase<LocalDatePicker>
 		});
 	}
 
-
 	private void bindMode()
 	{
-		// if this value is changed by binding, make sure related things are updated
+		// forward changes from calendar
 		calendarPicker.modeProperty().addListener( (ObservableValue<? extends CalendarPicker.Mode> observableValue, CalendarPicker.Mode oldValue, CalendarPicker.Mode newValue) -> {
 			if (newValue == CalendarPicker.Mode.SINGLE) {
 				getSkinnable().modeProperty().set(LocalDatePicker.Mode.SINGLE); 
@@ -142,7 +150,7 @@ public class LocalDatePickerSkin extends SkinBase<LocalDatePicker>
 			}
 		});
 		
-		// if the localDate value is changed, make sure calendar is updated
+		// forward changes to calendar
 		getSkinnable().modeProperty().addListener( (ObservableValue<? extends LocalDatePicker.Mode> observableValue, LocalDatePicker.Mode oldValue, LocalDatePicker.Mode newValue) -> {
 			if (newValue == LocalDatePicker.Mode.SINGLE) {
 				calendarPicker.modeProperty().set(CalendarPicker.Mode.SINGLE); 
@@ -156,6 +164,114 @@ public class LocalDatePickerSkin extends SkinBase<LocalDatePicker>
 		});
 	}
 
+	private void bindHighlightedLocalDates()
+	{
+		// initial values
+		for (LocalDate lLocalDate : getSkinnable().highlightedLocalDates()) {
+			Calendar lCalendar = DateTimeUtil.createCalendarFromLocalDate(lLocalDate, calendarPicker.getLocale());
+			calendarPicker.highlightedCalendars().add(lCalendar);
+		}
+		
+		// forward changes from calendar
+		calendarPicker.highlightedCalendars().addListener( (ListChangeListener.Change<? extends Calendar> change) -> {
+			while (change.next())
+			{
+				for (Calendar lCalendar : change.getRemoved())
+				{
+					LocalDate lLocalDate = DateTimeUtil.createLocalDateFromCalendar(lCalendar);
+					if (getSkinnable().highlightedLocalDates().contains(lLocalDate)) {
+						getSkinnable().highlightedLocalDates().remove(lLocalDate);
+					}
+				}
+				for (Calendar lCalendar : change.getAddedSubList())
+				{
+					LocalDate lLocalDate = DateTimeUtil.createLocalDateFromCalendar(lCalendar);
+					if (getSkinnable().highlightedLocalDates().contains(lLocalDate) == false) {
+						getSkinnable().highlightedLocalDates().add(lLocalDate);
+					}
+				}
+			}
+		});
+		
+		// forward changes to calendar
+		getSkinnable().highlightedLocalDates().addListener( (ListChangeListener.Change<? extends LocalDate> change) -> {
+			while (change.next()) {
+				for (LocalDate lLocalDate : change.getRemoved()) {
+					Calendar lCalendar = DateTimeUtil.createCalendarFromLocalDate(lLocalDate, calendarPicker.getLocale());
+					if (calendarPicker.highlightedCalendars().contains(lCalendar)) {
+						calendarPicker.highlightedCalendars().remove(lCalendar);
+					}
+				}
+				for (LocalDate lLocalDate : change.getAddedSubList()) {
+					Calendar lCalendar = DateTimeUtil.createCalendarFromLocalDate(lLocalDate, calendarPicker.getLocale());
+					if (calendarPicker.highlightedCalendars().contains(lCalendar) == false) {
+						calendarPicker.highlightedCalendars().add(lCalendar);
+					}
+				}
+			}
+		});		
+	}
+
+	private void bindDisabledLocalDates()
+	{
+		// initial values
+		for (LocalDate lLocalDate : getSkinnable().disabledLocalDates()) {
+			Calendar lCalendar = DateTimeUtil.createCalendarFromLocalDate(lLocalDate, calendarPicker.getLocale());
+			calendarPicker.disabledCalendars().add(lCalendar);
+		}
+		
+		// forward changes from calendar
+		calendarPicker.disabledCalendars().addListener( (ListChangeListener.Change<? extends Calendar> change) -> {
+			while (change.next())
+			{
+				for (Calendar lCalendar : change.getRemoved())
+				{
+					LocalDate lLocalDate = DateTimeUtil.createLocalDateFromCalendar(lCalendar);
+					if (getSkinnable().disabledLocalDates().contains(lLocalDate)) {
+						getSkinnable().disabledLocalDates().remove(lLocalDate);
+					}
+				}
+				for (Calendar lCalendar : change.getAddedSubList())
+				{
+					LocalDate lLocalDate = DateTimeUtil.createLocalDateFromCalendar(lCalendar);
+					if (getSkinnable().disabledLocalDates().contains(lLocalDate) == false) {
+						getSkinnable().disabledLocalDates().add(lLocalDate);
+					}
+				}
+			}
+		});
+		
+		// forward changes to calendar
+		getSkinnable().disabledLocalDates().addListener( (ListChangeListener.Change<? extends LocalDate> change) -> {
+			while (change.next()) {
+				for (LocalDate lLocalDate : change.getRemoved()) {
+					Calendar lCalendar = DateTimeUtil.createCalendarFromLocalDate(lLocalDate, calendarPicker.getLocale());
+					if (calendarPicker.disabledCalendars().contains(lCalendar)) {
+						calendarPicker.disabledCalendars().remove(lCalendar);
+					}
+				}
+				for (LocalDate lLocalDate : change.getAddedSubList()) {
+					Calendar lCalendar = DateTimeUtil.createCalendarFromLocalDate(lLocalDate, calendarPicker.getLocale());
+					if (calendarPicker.disabledCalendars().contains(lCalendar) == false) {
+						calendarPicker.disabledCalendars().add(lCalendar);
+					}
+				}
+			}
+		});		
+	}
+
+	private void bindDisplayedLocalDate()
+	{
+		// forward changes from calendar
+		calendarPicker.displayedCalendar().addListener( (ObservableValue<? extends Calendar> observableValue, Calendar oldValue, Calendar newValue) -> {
+			getSkinnable().displayedLocalDateProperty().set(DateTimeUtil.createLocalDateFromCalendar(newValue)); 
+		});
+		
+		// forward changes to calendar
+		getSkinnable().displayedLocalDateProperty().addListener( (ObservableValue<? extends LocalDate> observableValue, LocalDate oldValue, LocalDate newValue) -> {
+			calendarPicker.displayedCalendar().set(newValue == null ? null : DateTimeUtil.createCalendarFromLocalDate(newValue, calendarPicker.getLocale()));
+		});
+	}
 
     // ==================================================================================================================
 	// DRAW
@@ -167,12 +283,8 @@ public class LocalDatePickerSkin extends SkinBase<LocalDatePicker>
 	{
 		// setup the grid so all weekday togglebuttons will grow, but the weeknumbers do not
 		calendarPicker = new CalendarPicker();
+		getChildren().add(calendarPicker);
 		
-		// the result
-		BorderPane lBorderPane = new BorderPane();
-		lBorderPane.setCenter(calendarPicker);
-		getChildren().add(lBorderPane);
-
 		// setup CSS
         getSkinnable().getStyleClass().add(this.getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control
 	}
