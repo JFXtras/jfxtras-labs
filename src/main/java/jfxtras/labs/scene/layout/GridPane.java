@@ -206,11 +206,11 @@ public class GridPane extends javafx.scene.layout.GridPane
 			javafx.scene.layout.GridPane.setRowSpan(node, rowSpan);
 			javafx.scene.layout.GridPane.setColumnSpan(node, colSpan);
 			javafx.scene.layout.GridPane.setMargin(node, margin != null ? margin : marginReset);
-			if (hgrow != null) GenericLayoutConstraints.overrideMaxHeight(node, this);
+			if (hgrow != null) GenericLayoutConstraints.overrideMaxWidth(node, this);
 			javafx.scene.layout.GridPane.setHalignment(node, halignment != null ? halignment : halignmentReset);
 			javafx.scene.layout.GridPane.setHgrow(node, hgrow != null ? hgrow : hgrowReset);
 			javafx.scene.layout.GridPane.setValignment(node, valignment != null ? valignment : valignmentReset);
-			if (vgrow != null) GenericLayoutConstraints.overrideMaxWidth(node, this);
+			if (vgrow != null) GenericLayoutConstraints.overrideMaxHeight(node, this);
 			javafx.scene.layout.GridPane.setVgrow(node, vgrow != null ? vgrow : vgrowReset);
 		}
 	}
