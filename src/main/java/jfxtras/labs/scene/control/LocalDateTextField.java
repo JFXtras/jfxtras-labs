@@ -1,5 +1,5 @@
 /**
- * LocalDateTimeTextField.java
+ * LocalDateTextField.java
  *
  * Copyright (c) 2011-2013, JFXtras
  * All rights reserved.
@@ -29,13 +29,13 @@
 
 package jfxtras.labs.scene.control;
 
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Locale;
 import javafx.beans.property.ListProperty;
@@ -44,17 +44,17 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 import javafx.util.Callback;
-import jfxtras.labs.internal.scene.control.skin.LocalDateTimeTextFieldSkin;
+import jfxtras.labs.internal.scene.control.skin.LocalDateTextFieldSkin;
 
 
 /**
- * LocalDateTime (JSR-310) text field component.<br>
+ * LocalDate (JSR-310) text field component.<br>
  * This is an extension of the CalendarTextField adding the new date API JSR-310.<br>
  * Since Calendar will not be removed from the JDK, too many applications use it, this approach of extending CalendarTextField is the most flexible one at this time. Do not assume that the calendar properties will be available in this control.<br>
  * 
  * @author Tom Eugelink
  */
-public class LocalDateTimeTextField extends Control
+public class LocalDateTextField extends Control
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -62,19 +62,19 @@ public class LocalDateTimeTextField extends Control
 	/**
 	 * 
 	 */
-	public LocalDateTimeTextField()
+	public LocalDateTextField()
 	{
 		construct();
 	}
 
 	/**
 	 * 
-	 * @param localDateTime
+	 * @param localDate
 	 */
-	public LocalDateTimeTextField(LocalDateTime localDateTime)
+	public LocalDateTextField(LocalDate localDate)
 	{
 		construct();
-		setLocalDateTime(localDateTime);
+		setLocalDate(localDate);
 	}
 	
 	/*
@@ -83,27 +83,28 @@ public class LocalDateTimeTextField extends Control
 	private void construct()
 	{
 	}
-
+	
 	@Override public Skin createDefaultSkin() {
-		return new LocalDateTimeTextFieldSkin(this);
+		return new LocalDateTextFieldSkin(this);
 	}
 
+	
 	// ==================================================================================================================
 	// PROPERTIES
 	
-	/** LocalDateTime: */
-	public ObjectProperty<LocalDateTime> localDateTimeProperty() { return localDateTimeObjectProperty; }
-	private final ObjectProperty<LocalDateTime> localDateTimeObjectProperty = new SimpleObjectProperty<LocalDateTime>(this, "localDateTime");
-	public LocalDateTime getLocalDateTime() { return localDateTimeObjectProperty.getValue(); }
-	public void setLocalDateTime(LocalDateTime value) { localDateTimeObjectProperty.setValue(value); }
-	public LocalDateTimeTextField withLocalDateTime(LocalDateTime value) { setLocalDateTime(value); return this; } 
+	/** LocalDate: */
+	public ObjectProperty<LocalDate> localDateProperty() { return localDateObjectProperty; }
+	private final ObjectProperty<LocalDate> localDateObjectProperty = new SimpleObjectProperty<LocalDate>(this, "localDate");
+	public LocalDate getLocalDate() { return localDateObjectProperty.getValue(); }
+	public void setLocalDate(LocalDate value) { localDateObjectProperty.setValue(value); }
+	public LocalDateTextField withLocalDate(LocalDate value) { setLocalDate(value); return this; } 
 
 	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc */
 	public ObjectProperty<Locale> localeProperty() { return localeObjectProperty; }
 	final private ObjectProperty<Locale> localeObjectProperty = new SimpleObjectProperty<Locale>(Locale.getDefault());
 	public Locale getLocale() { return localeObjectProperty.getValue(); }
 	public void setLocale(Locale value) { localeObjectProperty.setValue(value); }
-	public LocalDateTimeTextField withLocale(Locale value) { setLocale(value); return this; } 
+	public LocalDateTextField withLocale(Locale value) { setLocale(value); return this; } 
 
 	// TODO: this should be the DateTime formatter
 	/** 
@@ -114,21 +115,21 @@ public class LocalDateTimeTextField extends Control
 	final private ObjectProperty<DateFormat> dateFormatObjectProperty = new SimpleObjectProperty<DateFormat>(this, "dateFormat", SimpleDateFormat.getDateInstance(DateFormat.LONG, getLocale()));
 	public DateFormat getDateFormat() { return dateFormatObjectProperty.getValue(); }
 	public void setDateFormat(DateFormat value) { dateFormatObjectProperty.setValue(value); }
-	public LocalDateTimeTextField withDateFormat(DateFormat value) { setDateFormat(value); return this; }
+	public LocalDateTextField withDateFormat(DateFormat value) { setDateFormat(value); return this; }
 	
 	/** DateFormats: a list of alternate dateFormats used for parsing only */
 	public ListProperty<DateFormat> dateFormatsProperty() { return dateFormatsProperty; }
 	ListProperty<DateFormat> dateFormatsProperty = new SimpleListProperty<DateFormat>(javafx.collections.FXCollections.observableList(new ArrayList<DateFormat>()));
 	public ObservableList<DateFormat> getDateFormats() { return dateFormatsProperty.getValue(); }
 	public void setDateFormats(ObservableList<DateFormat> value) { dateFormatsProperty.setValue(value); }
-	public LocalDateTimeTextField withDateFormat(ObservableList<DateFormat> value) { setDateFormats(value); return this; }
+	public LocalDateTextField withDateFormat(ObservableList<DateFormat> value) { setDateFormats(value); return this; }
 
 	/** PromptText: */
 	public ObjectProperty<String> promptTextProperty() { return promptTextObjectProperty; }
 	final private ObjectProperty<String> promptTextObjectProperty = new SimpleObjectProperty<String>(this, "promptText", null);
 	public String getPromptText() { return promptTextObjectProperty.get(); }
 	public void setPromptText(String value) { promptTextObjectProperty.set(value); }
-	public LocalDateTimeTextField withPromptText(String value) { setPromptText(value); return this; }
+	public LocalDateTextField withPromptText(String value) { setPromptText(value); return this; }
 
 	/** parse error callback:
 	 * If something did not parse correctly, you may handle it. 
@@ -138,8 +139,8 @@ public class LocalDateTimeTextField extends Control
 	final private ObjectProperty<Callback<Throwable, Void>> parseErrorCallbackObjectProperty = new SimpleObjectProperty<Callback<Throwable, Void>>(this, "parseErrorCallback", null);
 	public Callback<Throwable, Void> getParseErrorCallback() { return this.parseErrorCallbackObjectProperty.getValue(); }
 	public void setParseErrorCallback(Callback<Throwable, Void> value) { this.parseErrorCallbackObjectProperty.setValue(value); }
-	public LocalDateTimeTextField withParseErrorCallback(Callback<Throwable, Void> value) { setParseErrorCallback(value); return this; }
-	
+	public LocalDateTextField withParseErrorCallback(Callback<Throwable, Void> value) { setParseErrorCallback(value); return this; }
+
 	// ==================================================================================================================
 	// SUPPORT
 }

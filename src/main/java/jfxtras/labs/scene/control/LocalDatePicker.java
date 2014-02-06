@@ -108,15 +108,6 @@ public class LocalDatePicker extends Control
 	{
 	}
 
-//	/**
-//	 * Return the path to the CSS file so things are setup right
-//	 */
-//	@Override protected String getUserAgentStylesheet()
-//	{
-//		return this.getClass().getResource("/jfxtras/labs/internal/scene/control/" + LocalDatePicker.class.getSimpleName() + ".css").toExternalForm();
-//	}
-	
-	
 	@Override public Skin createDefaultSkin() {
 		return new LocalDatePickerSkin(this);
 	}
@@ -165,7 +156,6 @@ public class LocalDatePicker extends Control
     public boolean getAllowNull() { return allowNullProperty.get(); }
     public void setAllowNull(boolean allowNull) { allowNullProperty.set(allowNull); }
     public LocalDatePicker withAllowNull(boolean value) { setAllowNull(value); return this; }
-
 
 	/** highlightedLocalDates: */
 	public ObservableList<LocalDate> highlightedLocalDates() { return highlightedLocalDates; }

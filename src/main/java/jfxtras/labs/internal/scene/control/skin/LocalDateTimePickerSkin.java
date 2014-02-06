@@ -26,21 +26,16 @@
  */
 package jfxtras.labs.internal.scene.control.skin;
 
-import java.time.LocalDate;
-import java.util.Calendar;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
 import javafx.scene.control.SkinBase;
 import jfxtras.labs.scene.control.CalendarPicker;
-import jfxtras.labs.scene.control.LocalDatePicker;
-import jfxtras.labs.util.DateTimeUtil;
+import jfxtras.labs.scene.control.LocalDateTimePicker;
 
 /**
  * This skin reuses CalendarPicker
  * @author Tom Eugelink
  *
  */
-public class LocalDatePickerSkin extends SkinBase<LocalDatePicker>
+public class LocalDateTimePickerSkin extends SkinBase<LocalDateTimePicker>
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -48,7 +43,7 @@ public class LocalDatePickerSkin extends SkinBase<LocalDatePicker>
 	/**
 	 * 
 	 */
-	public LocalDatePickerSkin(LocalDatePicker control)
+	public LocalDateTimePickerSkin(LocalDateTimePicker control)
 	{
 		super(control);
 		construct();
@@ -70,46 +65,15 @@ public class LocalDatePickerSkin extends SkinBase<LocalDatePicker>
 		// bind specifics
 		getSkinnable().localeProperty().bindBidirectional( calendarPicker.localeProperty() );
 		getSkinnable().allowNullProperty().bindBidirectional( calendarPicker.allowNullProperty() );
-		DateTimeToCalendarHelper.syncLocalDate(calendarPicker.calendarProperty(), getSkinnable().localDateProperty(), calendarPicker.localeProperty());
-		DateTimeToCalendarHelper.syncLocalDate(calendarPicker.displayedCalendar(), getSkinnable().displayedLocalDateProperty(), calendarPicker.localeProperty());
-		DateTimeToCalendarHelper.syncLocalDates(calendarPicker.calendars(), getSkinnable().localDateTimes(), calendarPicker.localeProperty());
-		DateTimeToCalendarHelper.syncLocalDates(calendarPicker.highlightedCalendars(), getSkinnable().highlightedLocalDates(), calendarPicker.localeProperty());
-		DateTimeToCalendarHelper.syncLocalDates(calendarPicker.disabledCalendars(), getSkinnable().disabledLocalDates(), calendarPicker.localeProperty());
-		syncMode();
+		DateTimeToCalendarHelper.syncLocalDateTime(calendarPicker.calendarProperty(), getSkinnable().localDateTimeProperty(), calendarPicker.localeProperty());
+		DateTimeToCalendarHelper.syncLocalDateTime(calendarPicker.displayedCalendar(), getSkinnable().displayedLocalDateTimeProperty(), calendarPicker.localeProperty());
+		DateTimeToCalendarHelper.syncLocalDateTimes(calendarPicker.highlightedCalendars(), getSkinnable().highlightedLocalDateTimes(), calendarPicker.localeProperty());
+		DateTimeToCalendarHelper.syncLocalDateTimes(calendarPicker.disabledCalendars(), getSkinnable().disabledLocalDateTimes(), calendarPicker.localeProperty());
 	}
 	
 	// ==================================================================================================================
 	// BINDING
 	
-	private void syncMode()
-	{
-		// forward changes from calendar
-		calendarPicker.modeProperty().addListener( (ObservableValue<? extends CalendarPicker.Mode> observableValue, CalendarPicker.Mode oldValue, CalendarPicker.Mode newValue) -> {
-			if (newValue == CalendarPicker.Mode.SINGLE) {
-				getSkinnable().modeProperty().set(LocalDatePicker.Mode.SINGLE); 
-			}
-			if (newValue == CalendarPicker.Mode.RANGE) {
-				getSkinnable().modeProperty().set(LocalDatePicker.Mode.RANGE); 
-			}
-			if (newValue == CalendarPicker.Mode.MULTIPLE) {
-				getSkinnable().modeProperty().set(LocalDatePicker.Mode.MULTIPLE); 
-			}
-		});
-		
-		// forward changes to calendar
-		getSkinnable().modeProperty().addListener( (ObservableValue<? extends LocalDatePicker.Mode> observableValue, LocalDatePicker.Mode oldValue, LocalDatePicker.Mode newValue) -> {
-			if (newValue == LocalDatePicker.Mode.SINGLE) {
-				calendarPicker.modeProperty().set(CalendarPicker.Mode.SINGLE); 
-			}
-			if (newValue == LocalDatePicker.Mode.RANGE) {
-				calendarPicker.modeProperty().set(CalendarPicker.Mode.RANGE); 
-			}
-			if (newValue == LocalDatePicker.Mode.MULTIPLE) {
-				calendarPicker.modeProperty().set(CalendarPicker.Mode.MULTIPLE); 
-			}
-		});
-	}
-
     // ==================================================================================================================
 	// DRAW
 	
@@ -119,7 +83,7 @@ public class LocalDatePickerSkin extends SkinBase<LocalDatePicker>
 	private void createNodes()
 	{
 		// setup the grid so all weekday togglebuttons will grow, but the weeknumbers do not
-		calendarPicker = new CalendarPicker();
+		calendarPicker = new CalendarPicker().withShowTime(true);
 		getChildren().add(calendarPicker);
 		
 		// setup CSS
