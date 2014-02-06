@@ -1,7 +1,7 @@
 /**
  * LocalDateTimeTextField.java
  *
- * Copyright (c) 2011-2013, JFXtras
+ * Copyright (c) 2011-2014, JFXtras
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -11,7 +11,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the <organization> nor the
+ *     * Neither the name of the organization nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  * 
@@ -48,9 +48,8 @@ import jfxtras.labs.internal.scene.control.skin.LocalDateTimeTextFieldSkin;
 
 
 /**
- * LocalDateTime (JSR-310) text field component.<br>
- * This is an extension of the CalendarTextField adding the new date API JSR-310.<br>
- * Since Calendar will not be removed from the JDK, too many applications use it, this approach of extending CalendarTextField is the most flexible one at this time. Do not assume that the calendar properties will be available in this control.<br>
+ * LocalDateTime (JSR-310) text field component.
+ * This component allows selecting of one date time.
  * 
  * @author Tom Eugelink
  */

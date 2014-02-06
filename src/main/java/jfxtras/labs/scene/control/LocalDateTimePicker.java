@@ -1,7 +1,7 @@
 /**
  * LocalDateTimePicker.java
  *
- * Copyright (c) 2011-2013, JFXtras
+ * Copyright (c) 2011-2014, JFXtras
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -11,7 +11,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the <organization> nor the
+ *     * Neither the name of the organization nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  * 
@@ -42,9 +42,8 @@ import javafx.scene.control.Skin;
 import jfxtras.labs.internal.scene.control.skin.LocalDateTimePickerSkin;
 
 /**
- * LocalDateTime (JSR-310) picker component.<br>
- * This is an extension of the CalendarPicker adding the new date API JSR-310.<br>
- * Since Calendar will not be removed from the JDK, too many applications use it, this approach of extending CalendarPicker is the most flexible one at this time. Do not assume that the calendar properties will be available in this control.<br>
+ * LocalDateTime (JSR-310) picker component.
+ * This component allows selecting of one date time.
  * 
  * @author Tom Eugelink
  */
@@ -102,7 +101,7 @@ public class LocalDateTimePicker extends Control
 
 	/** DisplayedLocalDateTime: */
 	public ObjectProperty<LocalDateTime> displayedLocalDateTimeProperty() { return displayedLocalDateTimeObjectProperty; }
-	private final ObjectProperty<LocalDateTime> displayedLocalDateTimeObjectProperty = new SimpleObjectProperty<LocalDateTime>(this, "displayedLocalDateTime");
+	private final ObjectProperty<LocalDateTime> displayedLocalDateTimeObjectProperty = new SimpleObjectProperty<LocalDateTime>(this, "displayedLocalDateTime", LocalDateTime.now());
 	public LocalDateTime getDisplayedLocalDateTime() { return displayedLocalDateTimeObjectProperty.getValue(); }
 	public void setDisplayedLocalDateTime(LocalDateTime value) { displayedLocalDateTimeObjectProperty.setValue(value); }
 	public LocalDateTimePicker withDisplayedLocalDateTime(LocalDateTime value) { setDisplayedLocalDateTime(value); return this; }
