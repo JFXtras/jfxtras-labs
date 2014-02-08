@@ -26,7 +26,6 @@
  */
 package jfxtras.labs.map;
 
-import jfxtras.labs.map.ZoomPoint.Direction;
 import jfxtras.labs.map.tile.ZoomBounds;
 import jfxtras.labs.map.render.LicenseRenderer;
 import jfxtras.labs.map.render.MapLineable;
@@ -43,7 +42,6 @@ import java.util.List;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -83,7 +81,6 @@ public final class MapPane extends Pane implements MapTilesourceable {
     private SimpleIntegerProperty zoom;
     private SimpleIntegerProperty minZoom = new SimpleIntegerProperty(ZoomBounds.MIN.getValue());
     private SimpleIntegerProperty maxZoom = new SimpleIntegerProperty(ZoomBounds.MAX.getValue());
-    private SimpleObjectProperty<ZoomPoint> zoomPointProp = new SimpleObjectProperty<>(null);
     private boolean ignoreRepaint;
     private Rectangle clipMask = new Rectangle();
     private Group tilesGroup;
@@ -102,7 +99,6 @@ public final class MapPane extends Pane implements MapTilesourceable {
     private boolean tilesPrepared;
     private ZoomCoordinateCache zoomCoordinateCache = new ZoomCoordinateCache();
     private ZoomChangeListener zoomChangeListener = new ZoomChangeListener();
-    private ZoomPointChangeListener zoomPointChangeListener = new ZoomPointChangeListener();
 
     public MapPane(TileSource ts) {
         this(ts, SIZE, SIZE, INITIAL_ZOOM);
@@ -148,7 +144,6 @@ public final class MapPane extends Pane implements MapTilesourceable {
         clipMask.setHeight(Double.MAX_VALUE);
 
         this.zoom.addListener(zoomChangeListener);
-        this.zoomPointProp.addListener(zoomPointChangeListener);
     }
 
     public final void setTilesMouseHandler(TilesMouseHandler handler) {
@@ -328,7 +323,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
     @Override
     public void moveMap(int x, int y) {
         zoomCoordinateCache.clear();
-
+        
         Point previous = new Point(center);
         center.x += x;
         center.y += y;
@@ -375,12 +370,6 @@ public final class MapPane extends Pane implements MapTilesourceable {
     private void updateZoom(int nextZoom) {
         Point mapPoint = createMapCenterPoint();
         updateZoom(nextZoom, mapPoint, zoomCoordinateCache.getZoomCoordinate());
-    }
-
-    private void updateZoom(int nextZoom, Point mapPoint) {
-        zoomCoordinateCache.clear();
-        Coordinate zoomPos = getCoordinate(mapPoint);
-        updateZoom(nextZoom, mapPoint, zoomPos);
     }
 
     private void updateZoom(int nextZoom, Point mapPoint, Coordinate zoomPos) {
@@ -604,11 +593,6 @@ public final class MapPane extends Pane implements MapTilesourceable {
     public SimpleIntegerProperty maxZoomProperty() {
         return maxZoom;
     }
-    
-    @Override
-	public SimpleObjectProperty<ZoomPoint> zoomPointProperty() {
-		return zoomPointProp;
-	}
 
 	/**
      * This method can be used to avoid refresh when a bunch of properties is changed.
@@ -673,15 +657,5 @@ public final class MapPane extends Pane implements MapTilesourceable {
                 updateZoom(newZoomVal);
             }
         }
-    }
-    
-    private class ZoomPointChangeListener implements ChangeListener<ZoomPoint> {
-
-		@Override
-		public void changed(ObservableValue<? extends ZoomPoint> ov,
-				ZoomPoint oldVal, ZoomPoint newVal) {
-				updateZoom(zoom.get() + newVal.getDirection().getValue(), newVal);
-		}
-    	
     }
 }

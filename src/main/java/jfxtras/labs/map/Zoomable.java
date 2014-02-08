@@ -29,10 +29,7 @@
 
 package jfxtras.labs.map;
 
-import java.awt.Point;
-
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
 
 /**
  * Interface which defines methods for zoom.
@@ -58,11 +55,5 @@ public interface Zoomable {
 	 * @return {@link SimpleIntegerProperty}
 	 */
     SimpleIntegerProperty zoomProperty();
-    
-    /**
-     * Zoom property for a specific point.
-     * @return
-     */
-    SimpleObjectProperty<ZoomPoint> zoomPointProperty();
     
 }
