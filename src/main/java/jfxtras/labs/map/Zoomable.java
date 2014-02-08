@@ -29,6 +29,8 @@
 
 package jfxtras.labs.map;
 
+import java.awt.Point;
+
 import javafx.beans.property.SimpleIntegerProperty;
 
 /**
@@ -56,4 +58,7 @@ public interface Zoomable {
 	 */
     SimpleIntegerProperty zoomProperty();
     
+    void zoomIn(Point mapPoint);
+    
+    void zoomOut(Point mapPoint);
 }

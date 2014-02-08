@@ -366,6 +366,23 @@ public final class MapPane extends Pane implements MapTilesourceable {
     private void setZoom(int nextZoom) {
         zoom.set(nextZoom);
     }
+    
+	@Override
+	public void zoomIn(Point mapPoint) {
+		updateZoom(zoom.get() + 1, mapPoint);
+	}
+
+	@Override
+	public void zoomOut(Point mapPoint) {
+		updateZoom(zoom.get() - 1, mapPoint);
+	}
+	
+	private void updateZoom(int nextZoom, Point mapPoint) {
+		zoomCoordinateCache.clear();
+		this.zoom.set(nextZoom);
+		Coordinate zoomPos = getCoordinate(mapPoint);
+		updateZoom(nextZoom, mapPoint, zoomPos);
+	}
 
     private void updateZoom(int nextZoom) {
         Point mapPoint = createMapCenterPoint();

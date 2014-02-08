@@ -116,9 +116,16 @@ public class TilesMouseHandler {
 		@Override
 		public void handle(ScrollEvent se) {
 			
-			int val = map.zoomProperty().get();
-			int d = (se.getDeltaY() > 0.0) ? 1 : -1; 
-			map.zoomProperty().set(val + d);
+			Point p = new Point((int) se.getX(), (int) se.getY());
+			if (se.getDeltaY() > 0) {
+				map.zoomIn(p);
+			} else {
+				map.zoomOut(p);
+			}
+			
+//			int val = map.zoomProperty().get();
+//			int d = (se.getDeltaY() > 0.0) ? 1 : -1; 
+//			map.zoomProperty().set(val + d);
 			
 			updateCursorLocationText(se);
 		}
