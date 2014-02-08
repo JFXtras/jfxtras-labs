@@ -32,6 +32,7 @@ package jfxtras.labs.map;
 import java.awt.Point;
 
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 /**
  * Interface which defines methods for zoom.
@@ -40,22 +41,28 @@ import javafx.beans.property.SimpleIntegerProperty;
  */
 public interface Zoomable {
 	
+	/**
+	 * The minimum possible zoom value.
+	 * @return {@link SimpleIntegerProperty}
+	 */
     SimpleIntegerProperty minZoomProperty();
     
+    /**
+	 * The maximum possible zoom value.
+	 * @return {@link SimpleIntegerProperty}
+	 */
     SimpleIntegerProperty maxZoomProperty();
     
+    /**
+	 * The current zoom value.
+	 * @return {@link SimpleIntegerProperty}
+	 */
     SimpleIntegerProperty zoomProperty();
     
     /**
-     * zoom in at specific point
-     * @param point
+     * Zoom property for a specific point.
+     * @return
      */
-    void zoomIn(Point point);
-
-    /**
-     * zoom out at specific point
-     * @param point
-     */
-    void zoomOut(Point mapPoint);
+    SimpleObjectProperty<ZoomPoint> zoomPointProperty();
     
 }
