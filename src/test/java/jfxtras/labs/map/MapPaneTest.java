@@ -41,8 +41,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
- * 
- * @author Mario
+ * Unit Test for {@link MapPane}
+ * @author Mario Schroeder
  *
  */
 public class MapPaneTest {
