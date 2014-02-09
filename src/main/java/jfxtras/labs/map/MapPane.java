@@ -540,7 +540,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
     }
 
     /**
-     * Renders a a frame around the tiles which will be display as a grid for all tiles.
+     * Renders a frame around the tiles which will be display as a grid for all tiles.
      * @param val if set to <code>true</code> a grid is added.
      */
     public void setTileGridVisible(boolean val) {
