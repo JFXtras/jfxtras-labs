@@ -133,8 +133,8 @@ public class CalendarTextField extends Control
 	{
 		public void set(DateFormat value)
 		{
-			super.set(value);
-			dateFormatManual = true;
+			super.set( value != null ? value : SimpleDateFormat.getDateInstance(DateFormat.LONG, getLocale()));
+			dateFormatManual = (value != null);
 		}
 	};
 	public DateFormat getDateFormat() { return dateFormatObjectProperty.getValue(); }

@@ -30,7 +30,6 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -55,7 +54,6 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Popup;
-import jfxtras.labs.internal.scene.control.behavior.CalendarTextFieldBehavior;
 import jfxtras.labs.scene.control.CalendarPicker;
 import jfxtras.labs.scene.control.CalendarTextField;
 import jfxtras.labs.util.NodeUtil;
@@ -375,6 +373,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField>
 			lBorderPane.getStyleClass().add(this.getClass().getSimpleName() + "_popup");
 			lBorderPane.setCenter(calendarPicker);
 			calendarPicker.showTimeProperty().set( isShowingTime() );
+			calendarPicker.getStyleClass().addAll(getSkinnable().getStyleClass()); // copy any styleclasses over (this is required for composition in the DateTime controls)
 			
 			// add a close button
 			if (isShowingTime() == true)

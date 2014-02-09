@@ -29,12 +29,15 @@
 
 package jfxtras.labs.util;
 
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Locale;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 public class DateTimeUtil
 {
@@ -126,5 +129,51 @@ public class DateTimeUtil
 		if (calendar == null) return null;
 		LocalTime lLocalTime = LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND), calendar.get(Calendar.MILLISECOND) * 1000000);
 		return lLocalTime;
+	}
+	
+	/*
+	 *
+	 */
+	public static Date createDateFromLocalDate(LocalDate localDate) {
+		if (localDate == null) {
+			return null;
+		}
+		Instant lInstant = localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+		Date lDate = Date.from(lInstant);
+		return lDate;
+	}
+	
+	/**
+	 * 
+	 */
+	public static LocalDate createLocaleDateFromDate(Date date) {
+		if (date == null) {
+			return null;
+		}
+		LocalDate lLocalDate = LocalDateTime.ofInstant( date.toInstant(), ZoneId.systemDefault() ).toLocalDate();
+		return lLocalDate;
+	}
+	
+	/*
+	 *
+	 */
+	public static Date createDateFromLocalDateTime(LocalDateTime localDateTime) {
+		if (localDateTime == null) {
+			return null;
+		}
+		Instant lInstant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();
+		Date lDate = Date.from(lInstant);
+		return lDate;
+	}
+	
+	/**
+	 * 
+	 */
+	public static LocalDateTime createLocaleDateTimeFromDate(Date date) {
+		if (date == null) {
+			return null;
+		}
+		LocalDateTime lLocalDateTime = LocalDateTime.ofInstant( date.toInstant(), ZoneId.systemDefault() );
+		return lLocalDateTime;
 	}
 }

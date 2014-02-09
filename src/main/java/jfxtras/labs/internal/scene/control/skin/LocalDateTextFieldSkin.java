@@ -1,7 +1,5 @@
 /**
- * LocalDateTextFieldSkin.java
- *
- * Copyright (c) 2011-2014, JFXtras
+ * Copyright (c) 2011, JFXtras
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -11,7 +9,7 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the organization nor the
+ *     * Neither the name of the <organization> nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  * 
@@ -26,7 +24,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package jfxtras.labs.internal.scene.control.skin;
 
 import javafx.scene.control.SkinBase;
@@ -64,14 +61,17 @@ public class LocalDateTextFieldSkin extends SkinBase<LocalDateTextField>
 		calendarTextField.getStyleClass().addAll(getSkinnable().getClass().getSimpleName());
 		calendarTextField.getStyleClass().addAll(getSkinnable().getStyleClass());
 		getSkinnable().styleProperty().bindBidirectional( calendarTextField.styleProperty() );
-		
+		// TODO: somehow warp .LocalDatePicker to .CalendarPicker, because right now .LocalDatePicker { -fxx-show-weeknumbers:NO; } is not working
+
 		// bind it up
 		getSkinnable().localeProperty().bindBidirectional( calendarTextField.localeProperty() );
-		getSkinnable().dateFormatProperty().bindBidirectional( calendarTextField.dateFormatProperty() );
-		getSkinnable().dateFormatsProperty().bindBidirectional( calendarTextField.dateFormatsProperty() );
 		getSkinnable().promptTextProperty().bindBidirectional( calendarTextField.promptTextProperty() );
 		getSkinnable().parseErrorCallbackProperty().bindBidirectional( calendarTextField.parseErrorCallbackProperty() );
 		DateTimeToCalendarHelper.syncLocalDate(calendarTextField.calendarProperty(), getSkinnable().localDateProperty(), calendarTextField.localeProperty());
+		
+		// formatter(s) require special attention
+		DateTimeToCalendarHelper.syncDateTimeFormatter(calendarTextField.dateFormatProperty(), getSkinnable().dateTimeFormatterProperty());
+		DateTimeToCalendarHelper.syncDateTimeFormatters(calendarTextField.dateFormatsProperty(), getSkinnable().dateTimeFormattersProperty());
 	}
 	
     // ==================================================================================================================

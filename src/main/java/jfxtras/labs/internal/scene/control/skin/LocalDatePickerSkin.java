@@ -29,14 +29,10 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import java.time.LocalDate;
-import java.util.Calendar;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
 import javafx.scene.control.SkinBase;
 import jfxtras.labs.scene.control.CalendarPicker;
 import jfxtras.labs.scene.control.LocalDatePicker;
-import jfxtras.labs.util.DateTimeUtil;
 
 /**
  * This skin reuses CalendarPicker

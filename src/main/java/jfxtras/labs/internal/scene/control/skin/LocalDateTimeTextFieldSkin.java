@@ -66,17 +66,19 @@ public class LocalDateTimeTextFieldSkin extends SkinBase<LocalDateTimeTextField>
 		calendarTextField.getStyleClass().addAll(getSkinnable().getClass().getSimpleName());
 		calendarTextField.getStyleClass().addAll(getSkinnable().getStyleClass());
 		getSkinnable().styleProperty().bindBidirectional( calendarTextField.styleProperty() );
-		
+
 		// bind it up
 		getSkinnable().localeProperty().bindBidirectional( calendarTextField.localeProperty() );
-		getSkinnable().dateFormatProperty().bindBidirectional( calendarTextField.dateFormatProperty() );
-		getSkinnable().dateFormatsProperty().bindBidirectional( calendarTextField.dateFormatsProperty() );
 		getSkinnable().promptTextProperty().bindBidirectional( calendarTextField.promptTextProperty() );
 		getSkinnable().parseErrorCallbackProperty().bindBidirectional( calendarTextField.parseErrorCallbackProperty() );
 		DateTimeToCalendarHelper.syncLocalDateTime(calendarTextField.calendarProperty(), getSkinnable().localDateTimeProperty(), calendarTextField.localeProperty());
+		
+		// formatter(s) require special attention
+		DateTimeToCalendarHelper.syncDateTimeFormatter(calendarTextField.dateFormatProperty(), getSkinnable().dateTimeFormatterProperty());
+		DateTimeToCalendarHelper.syncDateTimeFormatters(calendarTextField.dateFormatsProperty(), getSkinnable().dateTimeFormattersProperty());
 	}
 	
-    // ==================================================================================================================
+	// ==================================================================================================================
 	// DRAW
 	
 	/**
