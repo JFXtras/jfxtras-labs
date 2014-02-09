@@ -1,7 +1,7 @@
 /**
- * CursorLocationable.java
+ * ZoomPoint.java
  *
- * Copyright (c) 2011-2013, JFXtras
+ * Copyright (c) 2011-2014, JFXtras
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -29,17 +29,54 @@
 
 package jfxtras.labs.map;
 
+import java.awt.Point;
+
 /**
- * This interface defines methods to update the location information 
- * of the cursor.
- * 
+ * This point class contains additional information about the zoom direction.
  * @author Mario Schroeder
  *
  */
-public interface CursorLocationable extends Moveable{
+class ZoomPoint extends Point {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6112809442344097400L;
 	
-	void setCursorLocationText(double x, double y);
+	enum Direction {
+		IN(1), OUT(-1);
+		
+		private int val;
+		
+		private Direction(int val){
+			this.val = val;
+		}
+		
+		int getValue(){
+			return val;
+		}
+	};
 
-    void adjustCursorLocationText();
+	private Direction direction;
+	
+	public ZoomPoint() {
+		super();
+	}
 
+	public ZoomPoint(int x, int y) {
+		super(x, y);
+	}
+
+	public ZoomPoint(Point p) {
+		super(p);
+	}
+
+	Direction getDirection() {
+		return direction;
+	}
+
+	void setDirection(Direction direction) {
+		this.direction = direction;
+	}
+	
 }
