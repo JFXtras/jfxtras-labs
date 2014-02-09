@@ -1,7 +1,7 @@
 /**
- * CoordinatesConverterTest.java
+ * MapPaneTest.java
  *
- * Copyright (c) 2011-2013, JFXtras
+ * Copyright (c) 2011-2014, JFXtras
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -29,52 +29,58 @@
 
 package jfxtras.labs.map;
 
-import static org.junit.Assert.*;
-
-import java.awt.Dimension;
 import java.awt.Point;
 
+import jfxtras.labs.map.ZoomPoint.Direction;
+import jfxtras.labs.map.tile.TileSource;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 /**
- * Unit test for the map pane.
- * @author Mario Schroeder
+ * 
+ * @author Mario
  *
  */
-public class CoordinatesConverterTest {
+public class MapPaneTest {
+
+	private MapPane classUnderTest;
 	
-	private static final double COOR_DIFF = 0.003;
-	
-	private static final int ZOOM = 6;
-	
-	private Point center;
-	
-	private Dimension dim;
+	private TileSource tileSource;
 	
 	@Before
-	public void setUp(){
-		center = new Point(200,200);
-		dim = new Dimension(400, 400);
+	public void setUp() {
+		tileSource = mock(TileSource.class);
+		when(tileSource.getMaxZoom()).thenReturn(20);
+		when(tileSource.getTileSize()).thenReturn(256);
+		
+		classUnderTest = new MapPane(tileSource);
 	}
 	
 	@Test
-	public void testToCoordinate(){
-
-		Coordinate coord = CoordinatesConverter.toCoordinate(new Point(8192,8192), center, dim, ZOOM);
-		assertNotNull(coord);
-		assertEquals(-0.0, coord.getLatitude(), COOR_DIFF);
-		assertEquals(0.0, coord.getLongitude(), COOR_DIFF);
+	public void testZoomChange(){
+		int expected = 12;
+		classUnderTest.zoomProperty().set(expected);
+		assertEquals(expected, classUnderTest.zoomProperty().get());
 	}
 	
 	@Test
-	public void testToMapPoint(){
-		Coordinate coord = new Coordinate(0, 0);
-		Point p = CoordinatesConverter.toMapPoint(coord, center, dim, ZOOM);
-		assertNotNull(p);
-		assertEquals(8192, p.x, COOR_DIFF);
-		assertEquals(8192, p.y, COOR_DIFF);
+	public void testZoomPointChange(){
+		int initial = classUnderTest.zoomProperty().get();
+		ZoomPoint zp = new ZoomPoint(10,10);
+		zp.setDirection(Direction.IN);
+		
+		classUnderTest.zoomPointProperty().set(zp);
+		assertEquals(initial + 1, classUnderTest.zoomProperty().get());
 	}
-
+	
+	@Test
+	public void testMoveMap(){
+		Point initial = classUnderTest.getCenter();
+		classUnderTest.moveMap(5, 5);
+		assertFalse(classUnderTest.getCenter().equals(initial));
+	}
 }
