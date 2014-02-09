@@ -56,7 +56,9 @@ public class TileRepository implements TileProvideable{
         if (isValid(tilex, tiley, zoom)) {
         	
         	String location = getLocation(zoom, tilex, tiley);
-            tile = loadTile(location, strategy);
+        	if(location != null) {
+        		tile = loadTile(location, strategy);
+        	}
         }
 
         return tile;

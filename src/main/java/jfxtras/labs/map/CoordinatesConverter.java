@@ -51,8 +51,8 @@ public class CoordinatesConverter {
 	}
 	
 	public static Coordinate toCoordinate(Point mapPoint, Moveable controller) {
-		Dimension dim = new Dimension(controller.getMapWidth(), controller.getMapHeight());
 		Point center = controller.getCenter();
+		Dimension dim = new Dimension(controller.getMapWidth(), controller.getMapHeight());
 		int zoom = getZoom(controller);
 		return toCoordinate(mapPoint, center, dim, zoom);
 	}

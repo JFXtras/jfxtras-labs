@@ -1,7 +1,7 @@
 /**
- * TileLoadStrategy.java
+ * MapPaneTest.java
  *
- * Copyright (c) 2011-2013, JFXtras
+ * Copyright (c) 2011-2014, JFXtras
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,16 +27,60 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.map.tile;
+package jfxtras.labs.map;
+
+import java.awt.Point;
+
+import jfxtras.labs.map.ZoomPoint.Direction;
+import jfxtras.labs.map.tile.TileSource;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
- * Interface to load the tiles.
+ * Unit Test for {@link MapPane}
  * @author Mario Schroeder
  *
  */
-public interface TileLoadStrategy {
+public class MapPaneTest {
 
-	Tile execute(String location);
+	private MapPane classUnderTest;
 	
-	void setCache(TileInfoCache cache);
+	private TileSource tileSource;
+	
+	@Before
+	public void setUp() {
+		tileSource = mock(TileSource.class);
+		when(tileSource.getMaxZoom()).thenReturn(20);
+		when(tileSource.getTileSize()).thenReturn(256);
+		
+		classUnderTest = new MapPane(tileSource);
+	}
+	
+	@Test
+	public void testZoomChange(){
+		int expected = 12;
+		classUnderTest.zoomProperty().set(expected);
+		assertEquals(expected, classUnderTest.zoomProperty().get());
+	}
+	
+	@Test
+	public void testZoomPointChange(){
+		int initial = classUnderTest.zoomProperty().get();
+		ZoomPoint zp = new ZoomPoint(10,10);
+		zp.setDirection(Direction.IN);
+		
+		classUnderTest.zoomPointProperty().set(zp);
+		assertEquals(initial + 1, classUnderTest.zoomProperty().get());
+	}
+	
+	@Test
+	public void testMoveMap(){
+		Point initial = classUnderTest.getCenter();
+		classUnderTest.moveMap(5, 5);
+		assertFalse(classUnderTest.getCenter().equals(initial));
+	}
 }

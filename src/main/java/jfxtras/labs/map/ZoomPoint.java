@@ -1,7 +1,7 @@
 /**
- * TileLoadStrategy.java
+ * ZoomPoint.java
  *
- * Copyright (c) 2011-2013, JFXtras
+ * Copyright (c) 2011-2014, JFXtras
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,16 +27,56 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.map.tile;
+package jfxtras.labs.map;
+
+import java.awt.Point;
 
 /**
- * Interface to load the tiles.
+ * This point class contains additional information about the zoom direction.
  * @author Mario Schroeder
  *
  */
-public interface TileLoadStrategy {
+class ZoomPoint extends Point {
 
-	Tile execute(String location);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6112809442344097400L;
 	
-	void setCache(TileInfoCache cache);
+	enum Direction {
+		IN(1), OUT(-1);
+		
+		private int val;
+		
+		private Direction(int val){
+			this.val = val;
+		}
+		
+		int getValue(){
+			return val;
+		}
+	};
+
+	private Direction direction;
+	
+	public ZoomPoint() {
+		super();
+	}
+
+	public ZoomPoint(int x, int y) {
+		super(x, y);
+	}
+
+	public ZoomPoint(Point p) {
+		super(p);
+	}
+
+	Direction getDirection() {
+		return direction;
+	}
+
+	void setDirection(Direction direction) {
+		this.direction = direction;
+	}
+	
 }

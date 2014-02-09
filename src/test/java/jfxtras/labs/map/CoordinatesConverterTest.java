@@ -34,8 +34,6 @@ import static org.junit.Assert.*;
 import java.awt.Dimension;
 import java.awt.Point;
 
-import jfxtras.labs.map.tile.TileSourceFactory;
-import jfxtras.labs.map.tile.local.LocalTileSourceFactory;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -77,7 +75,6 @@ public class CoordinatesConverterTest {
 		assertNotNull(p);
 		assertEquals(8192, p.x, COOR_DIFF);
 		assertEquals(8192, p.y, COOR_DIFF);
-
 	}
 
 }

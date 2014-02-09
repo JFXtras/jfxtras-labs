@@ -36,6 +36,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import jfxtras.labs.map.ZoomPoint.Direction;
 
 /**
  * This class adds mouse handling for a widget that displays tiles.
@@ -116,12 +117,13 @@ public class TilesMouseHandler {
 		@Override
 		public void handle(ScrollEvent se) {
 
-			Point p = new Point((int) se.getX(), (int) se.getY());
-			if (se.getDeltaY() > 0) {
-				map.zoomIn(p);
-			} else {
-				map.zoomOut(p);
-			}
+			map.zoomPointProperty().set(null);
+			
+			ZoomPoint p = new ZoomPoint((int) se.getX(), (int) se.getY());
+			double delta = se.getDeltaY();
+			p.setDirection((delta > 0.0) ? Direction.IN : Direction.OUT);
+			map.zoomPointProperty().set(p);
+			
 			updateCursorLocationText(se);
 		}
 	}
