@@ -50,6 +50,7 @@ public class MapPaneTest {
 	private MapPane classUnderTest;
 	
 	private TileSource tileSource;
+
 	
 	@Before
 	public void setUp() {
@@ -58,23 +59,44 @@ public class MapPaneTest {
 		when(tileSource.getTileSize()).thenReturn(256);
 		
 		classUnderTest = new MapPane(tileSource);
+		classUnderTest.setDisplayPositionByLatLon(32.81729, -117.215905);
 	}
 	
 	@Test
 	public void testZoomChange(){
-		int expected = 12;
-		classUnderTest.zoomProperty().set(expected);
-		assertEquals(expected, classUnderTest.zoomProperty().get());
+		Point center = classUnderTest.getCenter();
+		int w = classUnderTest.getMapWidth();
+		int h = classUnderTest.getMapHeight();
+		
+		int zoom = classUnderTest.zoomProperty().get();
+		assertEquals(MapPane.INITIAL_ZOOM, zoom);
+		
+		//nothing should change
+		classUnderTest.zoomProperty().set(MapPane.INITIAL_ZOOM);
+		zoom = classUnderTest.zoomProperty().get();
+		assertEquals(MapPane.INITIAL_ZOOM, zoom);
+		
+		zoom = 12;
+		classUnderTest.zoomProperty().set(zoom);
+		
+		assertEquals(zoom, classUnderTest.zoomProperty().get());
+		assertEquals(center, classUnderTest.getCenter());
+		assertEquals(w, classUnderTest.getMapWidth());
+		assertEquals(h, classUnderTest.getMapHeight());
 	}
 	
 	@Test
 	public void testZoomPointChange(){
-		int initial = classUnderTest.zoomProperty().get();
-		ZoomPoint zp = new ZoomPoint(10,10);
+		int w = classUnderTest.getMapWidth();
+		int h = classUnderTest.getMapHeight();
+		
+		ZoomPoint zp = new ZoomPoint(200, 200);
 		zp.setDirection(Direction.IN);
 		
 		classUnderTest.zoomPointProperty().set(zp);
-		assertEquals(initial + 1, classUnderTest.zoomProperty().get());
+		assertEquals(MapPane.INITIAL_ZOOM + 1, classUnderTest.zoomProperty().get());
+		assertEquals(w, classUnderTest.getMapWidth());
+		assertEquals(h, classUnderTest.getMapHeight());
 	}
 	
 	@Test

@@ -29,8 +29,6 @@
 
 package jfxtras.labs.map;
 
-import java.awt.Point;
-
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 

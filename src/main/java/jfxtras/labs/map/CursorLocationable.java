@@ -38,8 +38,16 @@ package jfxtras.labs.map;
  */
 public interface CursorLocationable extends Moveable{
 	
+	/**
+	 * Set the location of the cursor.
+	 * @param x
+	 * @param y
+	 */
 	void setCursorLocationText(double x, double y);
 
+	/**
+	 * This method adjusts the location of the cursors text when the dimension changes.
+	 */
     void adjustCursorLocationText();
 
 }
