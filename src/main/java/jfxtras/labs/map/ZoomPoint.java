@@ -38,11 +38,11 @@ import java.awt.Point;
  */
 class ZoomPoint extends Point {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 6112809442344097400L;
 	
+	/**
+	 * Zooming in or out
+	 */
 	enum Direction {
 		IN(1), OUT(-1);
 		

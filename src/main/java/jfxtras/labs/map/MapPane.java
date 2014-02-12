@@ -61,47 +61,58 @@ import static javafx.collections.FXCollections.*;
 import static jfxtras.labs.map.CoordinatesConverter.*;
 
 /**
- *
+ * A component to display a map for a given {@link TileSource}. <br/>
+ * The tiles can be either provided by a server or loaded from a local file system.
+ * 
  * @author smithjel
  * @author Mario Schroeder
  */
-public final class MapPane extends Pane implements MapTilesourceable {
+public class MapPane extends Pane implements MapTilesourceable {
 
-    private static final int INITIAL_ZOOM = 9;
     private static final int SIZE = 600;
     private static final int START = 0;
     private static final String STYLE_LOC = "cursorLocation";
+    
+    /** the default starting zoom level */
+    static final int INITIAL_ZOOM = 9;
+    
     private TileProvideable tilesProvider;
     private TileRenderable tileRenderer;
     private MapEdgeChecker mapEdgeChecker;
     private ObservableList<Renderable> mapLayers = observableArrayList();
-    // X&Y position of the center of this map on the world
-    // in screen pixels for the current zoom level.
+    /** 
+     * X&Y position of the center of this map on the world
+     * in screen pixels for the current zoom level.
+     */
     private Point center = new Point();
-    // Current zoom level
+    /** Current zoom level */
     private SimpleIntegerProperty zoom;
+    /** the minimum possible zoom level */
     private SimpleIntegerProperty minZoom = new SimpleIntegerProperty(ZoomBounds.MIN.getValue());
+    /** the maximum possible zoom level */
     private SimpleIntegerProperty maxZoom = new SimpleIntegerProperty(ZoomBounds.MAX.getValue());
     private SimpleObjectProperty<ZoomPoint> zoomPointProp = new SimpleObjectProperty<>(null);
-    private boolean ignoreRepaint;
     private Rectangle clipMask = new Rectangle();
-    private Group tilesGroup;
+    private Group tilesGroup = new Group();
     private Text cursorLocationText;
     private SimpleIntegerProperty mapWidth = new SimpleIntegerProperty(SIZE);
     private SimpleIntegerProperty mapHeight = new SimpleIntegerProperty(SIZE);
-    private SimpleBooleanProperty mapMarkersVisible = new SimpleBooleanProperty(
-            true);
-    private boolean cursorLocationVisible = true;
-    private SimpleBooleanProperty mapPolygonsVisible = new SimpleBooleanProperty(
-            true);
-    private CoordinateStringFormater formater;
-    /**
-     * This field is true when tiles where loaded.
-     */
-    private boolean tilesPrepared;
+    private SimpleBooleanProperty mapMarkersVisible = new SimpleBooleanProperty(true);
+    private SimpleBooleanProperty mapPolygonsVisible = new SimpleBooleanProperty(true);
+    private CoordinateStringFormater formater = new CoordinateStringFormater();
     private ZoomChangeListener zoomChangeListener = new ZoomChangeListener();
     private ZoomPointChangeListener zoomPointChangeListener = new ZoomPointChangeListener();
-    private Coordinate zoomCoordinate; //coordinate where the zoom started
+    /** coordinate where the zoom started */
+    private Coordinate zoomCoordinate; 
+    
+    private int oldZoom;
+    /** when set to true listener for zoom changed will be ignored */
+    private boolean ignoreZoom;
+    /** avoid refresh when set to true*/
+    private boolean ignoreRepaint;
+    private boolean cursorLocationVisible = true;
+    /** true when tiles where loaded. */
+    private boolean tilesPrepared;
 
     public MapPane(TileSource ts) {
         this(ts, SIZE, SIZE, INITIAL_ZOOM);
@@ -109,10 +120,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
     public MapPane(TileSource tileSource, int width, int height, int zoom) {
         this.zoom = new SimpleIntegerProperty(zoom);
-        formater = new CoordinateStringFormater();
-
-        tilesGroup = new Group();
-
+        
         tilesProvider = new TileRepository(tileSource);
         setZoomBounds();
         tileRenderer = new TileRenderer(tilesProvider);
@@ -237,11 +245,14 @@ public final class MapPane extends Pane implements MapTilesourceable {
         setDisplayPosition(createMapCenterPoint(), x, y, zoom);
     }
 
-    private void setDisplayPosition(Point mapPoint, int x, int y, int zoom) {
-        if (isValidZoom(zoom)) {
-            // Get the plain tile number
+    private void setDisplayPosition(Point mapPoint, int x, int y, int nextZoom) {
+        if (isValidZoom(nextZoom)) {
             moveCenter(mapPoint, x, y);
-            renderControl();
+            
+            //finally set the new zoom value
+			setZoom(nextZoom);
+			
+			renderControl();
         }
     }
 
@@ -370,20 +381,34 @@ public final class MapPane extends Pane implements MapTilesourceable {
 
     private void setZoom(int nextZoom) {
     	if(isValidZoom(nextZoom)){
+    		ignoreZoom = true;
     		zoom.set(nextZoom);
+    		ignoreZoom = false;
     	}
     }
 
-    private void updateZoom(int nextZoom, Point mapPoint, Coordinate zoomPos) {
-        if (isValidZoom(nextZoom)) {
-            setDisplayPositionByLatLon(mapPoint, zoomPos.getLatitude(),
-                    zoomPos.getLongitude(), nextZoom);
-        }
-    }
 
     private boolean isValidZoom(int nextZoom) {
-        return nextZoom <= getMaxZoom() && nextZoom >= getMinZoom();
+        return nextZoom != oldZoom && nextZoom <= getMaxZoom() && nextZoom >= getMinZoom();
     }
+    
+    private void updateZoom(int nextZoom, Point mapPoint) {
+       if(isValidZoom(nextZoom)){
+    	   Coordinate zoomPos = null;
+    	   //prefer field if it was set before
+    	   if(zoomCoordinate != null){
+    		   zoomPos = zoomCoordinate;
+    	   }else{
+    		   zoomPos = getCoordinate(mapPoint, oldZoom);
+    	   }
+    	   setDisplayPositionByLatLon(mapPoint, zoomPos.getLatitude(), zoomPos.getLongitude(), nextZoom);
+       }
+    }
+
+    private void updateZoom(int zoom) {
+    	updateZoom(zoom, new Point((int) (getMapWidth() / 2), (int) (getMapHeight() / 2)));
+    }
+
 
     private Coordinate getCoordinate(Point p, int zoom) {
         Dimension dim = new Dimension(getMapWidth(), getMapHeight());
@@ -500,7 +525,7 @@ public final class MapPane extends Pane implements MapTilesourceable {
     }
 
     /**
-     * Reloads the hole map, incded additional layers and attribution.
+     * Reloads the hole map, include additional layers and attribution.
      */
     public void refereshMap() {
         tileRenderer.refresh(this);
@@ -604,6 +629,9 @@ public final class MapPane extends Pane implements MapTilesourceable {
         this.ignoreRepaint = ignoreRepaint;
     }
 
+    /**
+     * update min and max zoom
+     */
     private void setZoomBounds() {
         minZoom.set(getTileSource().getMinZoom());
         maxZoom.set(getTileSource().getMaxZoom());
@@ -624,35 +652,47 @@ public final class MapPane extends Pane implements MapTilesourceable {
         }
     }
 
-
+    /**
+     * Listener class when the zoom value changes.
+     * @author Mario
+     *
+     */
     private class ZoomChangeListener implements ChangeListener<Number> {
 
 		@Override
         public void changed(ObservableValue<? extends Number> ov,
                 Number oldVal, Number newVal) {
-            if (oldVal != null) {
-                int oldZoom = oldVal.intValue();
+            if (oldVal != null && !ignoreZoom) {
+                oldZoom = oldVal.intValue();
                 int nextZoom = newVal.intValue();
-                Point mapPoint = createMapCenterPoint();
+                
                 if(zoomCoordinate == null) {
+                	Point mapPoint = createMapCenterPoint();
                 	zoomCoordinate = getCoordinate(mapPoint, oldZoom);
                 }
-                updateZoom(nextZoom, mapPoint, zoomCoordinate);
+                
+            	updateZoom(nextZoom);
             }
         }
     }
     
+    /**
+     * Listener class whne the zoom to point value changes.
+     * @author Mario
+     *
+     */
     private class ZoomPointChangeListener implements ChangeListener<ZoomPoint> {
 
 		@Override
 		public void changed(ObservableValue<? extends ZoomPoint> ov,
 				ZoomPoint oldVal, ZoomPoint newVal) {
 			if(newVal != null) {
-				zoomCoordinate = null;
+				oldZoom = zoom.get();
 				int nextZoom = zoom.get() + newVal.getDirection().getValue();
-				setZoom(nextZoom);
-				Coordinate c = getCoordinate(newVal, nextZoom);
-		        updateZoom(nextZoom, newVal, c);
+				
+				zoomCoordinate = null;
+				
+				updateZoom(nextZoom, newVal);
 			}
 		}
     }

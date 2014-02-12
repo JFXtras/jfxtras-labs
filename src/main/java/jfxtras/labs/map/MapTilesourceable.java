@@ -38,6 +38,10 @@ import jfxtras.labs.map.tile.TileSource;
  */
 public interface MapTilesourceable extends CursorLocationable{
 	
+	/**
+	 * This method returns the used {@link TileSource}.
+	 * @return
+	 */
     TileSource getTileSource();
 
 }
