@@ -26,7 +26,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
-
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import jfxtras.labs.jemmy.AbstractJemmyTest;
@@ -41,6 +40,7 @@ import org.jemmy.Point;
 import org.jemmy.fx.TextDock;
 import org.jemmy.fx.control.ControlDock;
 import org.jemmy.fx.control.SliderDock;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static java.awt.GraphicsEnvironment.isHeadless;
@@ -66,6 +66,7 @@ public class MapTest extends AbstractJemmyTest {
     }
 
     @Test
+    @Ignore
     public void testZoom() {
         assumeTrue(!isHeadless());
         
