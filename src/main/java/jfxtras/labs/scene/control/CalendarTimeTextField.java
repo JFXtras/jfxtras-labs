@@ -121,7 +121,7 @@ public class CalendarTimeTextField extends Control
 	public DateFormat getDateFormat() { return dateFormatObjectProperty.getValue(); }
 	public void setDateFormat(DateFormat value) { dateFormatObjectProperty.setValue(value); }
 	public CalendarTimeTextField withDateFormat(DateFormat value) { setDateFormat(value); return this; }
-	private final static Date DATE_WITH_TIME = new GregorianCalendar(1111,0,1,2,2,2).getTime();
+	private final static Date DATE_WITH_TIME = new GregorianCalendar(1111,0,1,22,33,44).getTime();
 
 	/** MinuteStep */
 	public ObjectProperty<Integer> minuteStepProperty() { return minuteStepProperty; }
@@ -130,7 +130,7 @@ public class CalendarTimeTextField extends Control
 	public void setMinuteStep(Integer value) { minuteStepProperty.setValue(value); }
 	public CalendarTimeTextField withMinuteStep(Integer value) { setMinuteStep(value); return this; } 
 
-	/** ShowLabels */
+	/** TODO: move to skin ShowLabels */
 	public ObjectProperty<Boolean> showLabelsProperty() { return showLabelsProperty; }
 	final private SimpleObjectProperty<Boolean> showLabelsProperty = new SimpleObjectProperty<Boolean>(this, "showLabels", true);
 	public Boolean getShowLabels() { return showLabelsProperty.getValue(); }

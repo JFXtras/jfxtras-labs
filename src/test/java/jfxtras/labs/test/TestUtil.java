@@ -33,31 +33,85 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import com.sun.javafx.tk.Toolkit;
-
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.Pane;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
 import jfxtras.labs.util.PlatformUtil;
+
+import com.sun.javafx.tk.Toolkit;
 
 public class TestUtil {
 
 	/**
 	 * 
-	 * @param n
-	 * @return
+	 * @param s
 	 */
-	static public void scanHierarchy(Node n) {
+	static public void printHierarchy(Stage s) {
 		StringBuilder lStringBuilder = new StringBuilder();
-		scanHierarchy(lStringBuilder, n, 0);
+		lStringBuilder.append("Stage\n|   Scene (window=" + s.getScene().getWindow() + ")");
+		printHierarchy(lStringBuilder, s.getScene().getRoot(), 2);
 		if (lStringBuilder.length() > 0) {
 			lStringBuilder.append("\n");
 		}
 		System.out.println(lStringBuilder.toString());
 	}
-	static public void scanHierarchy(StringBuilder stringBuilder, Node n, int offset) {
+	
+	/**
+	 * 
+	 * @param s
+	 */
+	static public void printHierarchy(Scene s) {
+		StringBuilder lStringBuilder = new StringBuilder();
+		lStringBuilder.append("Scene (window=" + s.getWindow() + ")");
+		printHierarchy(lStringBuilder, s.getRoot(), 1);
+		if (lStringBuilder.length() > 0) {
+			lStringBuilder.append("\n");
+		}
+		System.out.println(lStringBuilder.toString());
+	}
+	
+	/**
+	 * 
+	 * @param s
+	 */
+	static public void printHierarchy(Popup p) {
+		StringBuilder lStringBuilder = new StringBuilder();
+		lStringBuilder.append("Popup (owner=" + p.getOwnerNode() + ")");
+		for (Object lChild : p.getContent()) {
+			printHierarchy(lStringBuilder, (Node)lChild, 1);
+		}
+		if (lStringBuilder.length() > 0) {
+			lStringBuilder.append("\n");
+		}
+		System.out.println(lStringBuilder.toString());
+	}
+	
+	/**
+	 * 
+	 * @param n
+	 * @return
+	 */
+	static public void printHierarchy(Node n) {
+		StringBuilder lStringBuilder = new StringBuilder();
+		printHierarchy(lStringBuilder, n, 0);
+		if (lStringBuilder.length() > 0) {
+			lStringBuilder.append("\n");
+		}
+		System.out.println(lStringBuilder.toString());
+	}
+	
+	/**
+	 * 
+	 * @param stringBuilder
+	 * @param n
+	 * @param offset
+	 */
+	static private void printHierarchy(StringBuilder stringBuilder, Node n, int offset) {
 		if (stringBuilder.length() > 0) {
 			stringBuilder.append("\n");
 		}
@@ -81,14 +135,14 @@ public class TestUtil {
 			if (lSkin instanceof SkinBase) {
 				SkinBase lSkinBase = (SkinBase)lSkin;
 				for (Object lChild : lSkinBase.getChildren()) {
-					scanHierarchy(stringBuilder, (Node)lChild, offset + 1);
+					printHierarchy(stringBuilder, (Node)lChild, offset + 1);
 				}
 			}
 		}
 		else if (n instanceof Pane) {
 			Pane lPane = (Pane)n;
 			for (Node lChild : lPane.getChildren()) {
-				scanHierarchy(stringBuilder, lChild, offset + 1);
+				printHierarchy(stringBuilder, lChild, offset + 1);
 			}
 		}
 	}

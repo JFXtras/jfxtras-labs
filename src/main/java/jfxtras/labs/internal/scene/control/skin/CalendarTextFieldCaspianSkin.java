@@ -42,6 +42,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.SkinBase;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -56,9 +57,11 @@ import javafx.scene.layout.Priority;
 import javafx.stage.Popup;
 import jfxtras.labs.scene.control.CalendarPicker;
 import jfxtras.labs.scene.control.CalendarTextField;
+import jfxtras.labs.scene.control.LocalDatePicker;
+import jfxtras.labs.scene.control.LocalDateTextField;
+import jfxtras.labs.scene.control.LocalDateTimePicker;
+import jfxtras.labs.scene.control.LocalDateTimeTextField;
 import jfxtras.labs.util.NodeUtil;
-
-import javafx.scene.control.SkinBase;
 
 /**
  * 
@@ -197,7 +200,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField>
 		if (getSkinnable().getTooltip() == null)
 		{
 			// TODO: internationalize the tooltip
-			getSkinnable().setTooltip(new Tooltip("Type a date or use # for today, or +/-<number>[d|w|m|y] for delta's (for example: -3m for minus 3 months)\nUse cursor up and down plus optional shift (week), ctrl (month) or alt (year) for quick keyboard changes."));
+			getSkinnable().setTooltip(new Tooltip("Type a date or use # for today, or +/-<number>[d|w|m|y] for delta's (for example: -3m for minus 3 months)/nUse cursor up and down plus optional shift (week), ctrl (month) or alt (year) for quick keyboard changes."));
 		}
         textField.promptTextProperty().bind(getSkinnable().promptTextProperty());
 
@@ -364,16 +367,37 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField>
 		// create popup
 		if (popup == null)
 		{
+			// TODO: replace with PopupControl because that is styleable (see C:/Users/user/Documents/openjfx/8.0rt/modules/controls/src/main/java/com/sun/javafx/scene/control/skin/ComboBoxPopupControl.java)
+//			popup = new PopupControl() {
+//
+//	            @Override public Styleable getStyleableParent() {
+//	                return CalendarTextFieldCaspianSkin.this.getSkinnable();
+//	            }
+//	            {
+//	                setSkin(new Skin<Skinnable>() {
+//	                    @Override public Skinnable getSkinnable() { return CalendarTextFieldCaspianSkin.this.getSkinnable(); }
+//	                    @Override public Node getNode() { return lBorderPane; }
+//	                    @Override public void dispose() { }
+//	                });
+//	                getScene().getRoot().impl_processCSS(true);
+//	            }
+//	        };
 			popup = new Popup();
 			popup.setAutoFix(true);
 			popup.setAutoHide(true);
 			popup.setHideOnEscape(true);
-			
 			BorderPane lBorderPane = new BorderPane();
 			lBorderPane.getStyleClass().add(this.getClass().getSimpleName() + "_popup");
 			lBorderPane.setCenter(calendarPicker);
 			calendarPicker.showTimeProperty().set( isShowingTime() );
-			calendarPicker.getStyleClass().addAll(getSkinnable().getStyleClass()); // copy any styleclasses over (this is required for composition in the DateTime controls)
+			
+			// because the Java 8 DateTime classes use the CalendarPicker, we need to add some specific CSS classes here to support seamless CSS
+			if (getSkinnable().getStyleClass().contains(LocalDateTextField.class.getSimpleName())) {
+				calendarPicker.getStyleClass().addAll(LocalDatePicker.class.getSimpleName());
+			}
+			if (getSkinnable().getStyleClass().contains(LocalDateTimeTextField.class.getSimpleName())) {
+				calendarPicker.getStyleClass().addAll(LocalDateTimePicker.class.getSimpleName());
+			}
 			
 			// add a close button
 			if (isShowingTime() == true)
@@ -396,7 +420,7 @@ public class CalendarTextFieldCaspianSkin extends SkinBase<CalendarTextField>
 		
 		// show it just below the textfield
 		popup.show(textField, NodeUtil.screenX(getSkinnable()), NodeUtil.screenY(getSkinnable()) + textField.getHeight());
-		
+
 		// move the focus over
 		// TODO: not working
 		calendarPicker.requestFocus();
