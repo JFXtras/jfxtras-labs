@@ -29,13 +29,19 @@
 
 package jfxtras.labs.scene.control.test;
 
+import java.util.Calendar;
+
+import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import jfxtras.labs.scene.control.CalendarTextField;
 import jfxtras.labs.test.JFXtrasGuiTest;
+import jfxtras.labs.test.TestUtil;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.loadui.testfx.exceptions.NoNodesFoundException;
 
 /**
  * Created by tbee on 26-12-13.
@@ -68,9 +74,45 @@ public class CalendarTextFieldTest extends JFXtrasGuiTest {
 		click(".icon");
 		
 		// click the last day in the first week (this is always clickable)
-		click("#day6");
+		click(".today");
 		
-		// there should now be a value in the textfield
-		Assert.assertNotNull(calendarTextField.getCalendar());
+		// now should be the value in the textfield
+		Assert.assertEquals(TestUtil.quickFormatCalendarAsDate(Calendar.getInstance()), TestUtil.quickFormatCalendarAsDate(calendarTextField.getCalendar()));
+	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public void openPopupAndCloseOnEscape()
+	{
+		// popup should be closed
+//		assertPopupIsNotVisible();
+		
+		// open the popup
+		click(".icon");
+		
+		// popup should be open
+		Assert.assertNotNull(find("#day6"));
+		
+		// send esc
+		press(KeyCode.ESCAPE);
+		
+		// popup should be closed
+//		assertPopupIsNotVisible();
+	}
+	
+	private void assertPopupIsNotVisible() {
+		TestUtil.sleep(2000);
+		TestUtil.waitForPaintPulse();
+		// popup should be closed
+		try {
+			Node n = find("#day6"); // last day of first week is always enabled
+			System.out.println(">" + n.isVisible());
+			Assert.assertTrue("Exception expected", false);
+		}
+		catch (NoNodesFoundException e) {
+			// this is expected
+		}
 	}
 }
