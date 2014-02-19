@@ -29,11 +29,6 @@
 
 package jfxtras.labs.scene.control;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
-
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -41,13 +36,14 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBoxBuilder;
-import javafx.scene.control.Label;
-import javafx.scene.control.LabelBuilder;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 
 /**
@@ -88,7 +84,8 @@ public class BigDecimalFieldDemo extends Application {
         root.addRow(5, new Label("disabled field"), disabledField);
         root.addRow(6, new Label("regular TextField"), new TextField("1.000,1234"));
         root.addRow(7, new Label("with promptText"), promptText);
-        root.addRow(8, new Label("CalendarTextField"), new CalendarTextField());
+        CalendarTextField calendarTextField = new CalendarTextField();
+        root.addRow(8, new Label("CalendarTextField"), calendarTextField);
         root.addRow(9, new Label("ComboBox"), ComboBoxBuilder
         		.create()
         		.editable(true)
@@ -127,6 +124,13 @@ public class BigDecimalFieldDemo extends Application {
             }
         });
         root.addRow(11, new Label(), button);
+        BigDecimalLabel bigDecimalLabel = new BigDecimalLabel();
+        bigDecimalLabel.numberProperty().bind(defaultSpinner.numberProperty());
+        root.addRow(12, new Label("BigDecimalLabel"), bigDecimalLabel);
+
+        CalendarLabel calendarLabel = new CalendarLabel();
+        calendarLabel.valueProperty().bind(calendarTextField.calendarProperty());
+        root.addRow(13, new Label("CalendarLabel"), calendarLabel);
 
         Scene scene = new Scene(root);
 //        String path = NumberSpinnerDemo2.class.getResource("number_spinner.css").toExternalForm();
