@@ -30,8 +30,11 @@
 package jfxtras.labs.scene.control;
 
 import javafx.application.Application;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -41,8 +44,10 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Calendar;
 import java.util.Locale;
 
 
@@ -61,7 +66,9 @@ public class BigDecimalFieldDemo extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("JavaFX Spinner Demo");
+        primaryStage.setTitle("JavaFX BigDecimalField Demo");
+        ObjectProperty<DateFormat> dateFormatProperty = new SimpleObjectProperty<DateFormat>(DateFormat.getDateInstance());
+        ObjectProperty<NumberFormat> numberFormatProperty = new SimpleObjectProperty<NumberFormat>(NumberFormat.getNumberInstance());
         GridPane root = new GridPane();
         root.setHgap(10);
         root.setVgap(10);
@@ -86,11 +93,12 @@ public class BigDecimalFieldDemo extends Application {
         root.addRow(7, new Label("with promptText"), promptText);
         CalendarTextField calendarTextField = new CalendarTextField();
         root.addRow(8, new Label("CalendarTextField"), calendarTextField);
-        root.addRow(9, new Label("ComboBox"), ComboBoxBuilder
-        		.create()
-        		.editable(true)
-        		.build()
-        	);
+        ComboBox<Locale> cmbLocales = new ComboBox<>(FXCollections.observableArrayList(Locale.GERMANY, Locale.UK, Locale.FRANCE));
+        cmbLocales.setOnAction(event->{
+            dateFormatProperty.set(DateFormat.getDateInstance(DateFormat.MEDIUM, cmbLocales.getValue()));
+            numberFormatProperty.set(NumberFormat.getNumberInstance(cmbLocales.getValue()));
+        });
+        root.addRow(9, new Label("Locale"), cmbLocales);
 
         root.addRow(10, new Label("Field with boundaries (0,100%)"), 
         		BigDecimalFieldBuilder.create()
@@ -120,22 +128,21 @@ public class BigDecimalFieldDemo extends Application {
                 localizedCurrency.setNumber(new BigDecimal(Math.random() * 1000));
                 disabledField.setNumber(new BigDecimal(Math.random() * 1000));
                 promptText.setNumber(null);
-//                defaultSpinner.dumpSizes();
+                calendarTextField.setCalendar(Calendar.getInstance());
             }
         });
         root.addRow(11, new Label(), button);
         BigDecimalLabel bigDecimalLabel = new BigDecimalLabel();
         bigDecimalLabel.numberProperty().bind(defaultSpinner.numberProperty());
+        bigDecimalLabel.formatProperty().bind(numberFormatProperty);
         root.addRow(12, new Label("BigDecimalLabel"), bigDecimalLabel);
 
         CalendarLabel calendarLabel = new CalendarLabel();
         calendarLabel.valueProperty().bind(calendarTextField.calendarProperty());
+        calendarLabel.formatProperty().bind(dateFormatProperty);
         root.addRow(13, new Label("CalendarLabel"), calendarLabel);
 
         Scene scene = new Scene(root);
-//        String path = NumberSpinnerDemo2.class.getResource("number_spinner.css").toExternalForm();
-//        System.out.println("path=" + path);
-//        scene.getStylesheets().add(path);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
