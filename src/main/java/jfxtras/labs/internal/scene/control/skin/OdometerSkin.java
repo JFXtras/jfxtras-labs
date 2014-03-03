@@ -62,10 +62,10 @@ import java.util.List;
 
 
 /**
- * Created by
- * User: hansolo
- * Date: 16.03.12
- * Time: 15:24
+ * @author hansolo
+ * @author Unai Vivi
+ * @version 2.2-r6
+ * @since 2012-03-16
  */
 public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
     private Odometer   control;
@@ -84,7 +84,7 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
         initialized = false;
         isDirty     = false;
         foreground  = new Group();
-        listOfDials = new LinkedList<Dial>();
+        listOfDials = new LinkedList<>();
         background  = new Group();
         init();
     }
@@ -143,13 +143,13 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
                 index--;
             }
         } else if ("ROTATION".equals(PROPERTY)) {
-            for (int i = 1 ; i < (control.getNoOfDigits() + control.getNoOfDecimals() + 1) ; i++) {
-                if (control.getRotations() == 0) {
-                    listOfDials.get(i - 1).reset();
-                } else {
-                    listOfDials.get(i - 1).setNumber(control.getDialPosition(i));
+                for (int i = 0 ; i < (control.getNoOfDigits() + control.getNoOfDecimals()) ; i++) {
+//                if (control.getRotations() == 0) {
+//                    listOfDials.get(i - 1).reset();
+//                } else {
+                    listOfDials.get(i).setDigit(control.getDialPosition(i+1));
+//                }
                 }
-            }
         } else if ("NO_OF_DIGITS".equals(PROPERTY)) {
             control.setPrefSize(0.5925925925925926 * getPrefHeight() * (control.getNoOfDigits() + control.getNoOfDecimals()), getPrefHeight());
             repaint();
@@ -383,6 +383,36 @@ public class OdometerSkin extends SkinBase<Odometer, OdometerBehavior> {
             nextNumber.setText(number == 9 ? "0" : Integer.toString(number + 1));
             currentNumberGroup.setTranslateY(0);
             currentNumber.setText(Integer.toString(number));
+        }
+
+        /**
+         * Invoke to set this {@link Dial}'s digit to the value specified in <code>finalDigit</code>.
+         * @param finalDigit New digit value
+         * @param currentDigit <i>Ghost parameter, used for recursion. Do not populate.</i>
+         */
+        private void setDigit(final int finalDigit, int... currentDigit)
+        {
+            if(currentDigit.length==0)
+                Dial.this.setDigit(finalDigit, Integer.parseInt(currentNumber.getText()));
+            else
+            {
+                final int digit=currentDigit[0];
+                if(finalDigit==digit)
+                    return;
+                nextNumberGroup.setTranslateY(-control.getPrefHeight());
+                nextNumber.setText(Integer.toString((digit + 1) % 10));
+                currentNumberGroup.setTranslateY(0);
+                currentNumber.setText(Integer.toString(digit));
+                parallel.setOnFinished(new EventHandler<ActionEvent>()
+                {
+                    @Override
+                    public void handle(ActionEvent t)
+                    {
+                        Dial.this.setDigit(finalDigit, (digit + 1) % 10);
+                    }
+                });
+                parallel.play();
+            }
         }
     }
 }
