@@ -29,10 +29,12 @@
 
 package jfxtras.labs.internal.scene.control.behavior;
 
+import java.util.ArrayList;
+
+import jfxtras.labs.scene.control.gauge.MatrixPanel;
+
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
 import com.sun.javafx.scene.control.behavior.KeyBinding;
-import java.util.ArrayList;
-import jfxtras.labs.scene.control.gauge.MatrixPanel;
 
 
 /**

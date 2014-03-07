@@ -31,6 +31,7 @@ package jfxtras.labs.util;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.scene.control.window.Clipboard;

@@ -29,6 +29,8 @@
 
 package jfxtras.labs.util;
 
+import java.util.Random;
+
 import javafx.animation.Interpolator;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
@@ -52,8 +54,6 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Shape;
 import jfxtras.labs.scene.control.gauge.GradientLookup;
-
-import java.util.Random;
 
 
 /**

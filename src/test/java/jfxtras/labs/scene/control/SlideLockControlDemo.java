@@ -29,16 +29,6 @@
 
 package jfxtras.labs.scene.control;
 
-import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.LinearGradientBuilder;
-import javafx.scene.paint.Stop;
-import javafx.stage.Stage;
 
 /**
  *

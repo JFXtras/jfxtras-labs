@@ -33,15 +33,10 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.geometry.HPos;
-import javafx.geometry.Orientation;
-import javafx.scene.Node;
 import jfxtras.labs.internal.scene.control.behavior.GridViewBehavior;
 import jfxtras.labs.scene.control.grid.GridCell;
 import jfxtras.labs.scene.control.grid.GridView;
 import jfxtras.labs.scene.control.grid.cell.DefaultGridCell;
-
-import javafx.scene.control.SkinBase;
 
 /**
  * 

@@ -29,12 +29,11 @@
 
 package jfxtras.labs.scene.control.gauge;
 
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Stop;
-
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Stop;
 
 
 /**

@@ -32,7 +32,6 @@ package jfxtras.labs.internal.scene.control.skin;
 import java.math.BigDecimal;
 import java.text.ParseException;
 
-
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;

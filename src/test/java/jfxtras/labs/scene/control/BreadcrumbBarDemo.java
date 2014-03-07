@@ -40,8 +40,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
-import jfxtras.labs.scene.control.BreadcrumbBar;
-import jfxtras.labs.scene.control.BreadcrumbItem;
 import jfxtras.labs.util.BreadcrumbBarEventHandler;
 
 /*

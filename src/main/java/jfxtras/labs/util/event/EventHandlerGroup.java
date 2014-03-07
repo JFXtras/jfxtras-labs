@@ -31,6 +31,7 @@ package jfxtras.labs.util.event;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
 import javafx.event.Event;
 import javafx.event.EventHandler;
 

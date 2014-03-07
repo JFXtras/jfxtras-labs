@@ -29,17 +29,6 @@
 
 package jfxtras.labs.dialogs;
 
-import java.util.HashMap;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.scene.Node;
-import javafx.scene.control.ControlBuilder;
-import javafx.util.Builder;
 
 /**
  *

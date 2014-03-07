@@ -32,11 +32,11 @@ package jfxtras.labs.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 
 /**
  * Utility class that provides methods to simplify node handling. Possible use

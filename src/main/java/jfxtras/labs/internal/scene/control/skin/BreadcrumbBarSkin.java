@@ -29,14 +29,15 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import com.sun.javafx.scene.control.behavior.BehaviorBase;
-import com.sun.javafx.scene.control.behavior.KeyBinding;
 import java.util.ArrayList;
+
 import javafx.collections.ListChangeListener;
-import javafx.collections.ListChangeListener.Change;
 import javafx.scene.layout.HBox;
 import jfxtras.labs.scene.control.BreadcrumbBar;
 import jfxtras.labs.scene.control.BreadcrumbItem;
+
+import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.behavior.KeyBinding;
 
 /**
  *

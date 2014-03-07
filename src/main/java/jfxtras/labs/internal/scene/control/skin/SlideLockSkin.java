@@ -30,6 +30,8 @@
 package jfxtras.labs.internal.scene.control.skin;
 
 
+import static jfxtras.labs.scene.control.SlideLock.PREFERRED_HEIGHT;
+import static jfxtras.labs.scene.control.SlideLock.PREFERRED_WIDTH;
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -39,7 +41,11 @@ import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TouchEvent;
 import javafx.scene.layout.Region;
-import javafx.scene.paint.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.LinearGradientBuilder;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.RadialGradientBuilder;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.RectangleBuilder;
 import javafx.scene.shape.SVGPath;
@@ -48,9 +54,6 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.ScaleBuilder;
 import jfxtras.labs.scene.control.SlideLock;
-
-import static jfxtras.labs.scene.control.SlideLock.PREFERRED_HEIGHT;
-import static jfxtras.labs.scene.control.SlideLock.PREFERRED_WIDTH;
 
 /**
  * This represents the actual drawing of the slide to unlock control. All mouse and touch event handlers are

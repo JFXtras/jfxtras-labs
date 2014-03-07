@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2011-2014, JFXtras
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *     * Neither the name of the organization nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -30,21 +30,24 @@
 package jfxtras.labs.scene.control;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Calendar;
 import java.util.Locale;
 
 import javafx.application.Application;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBoxBuilder;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.LabelBuilder;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -52,6 +55,8 @@ import jfxtras.scene.control.CalendarTextField;
 
 
 /**
+ * Small JavaFX app that showcases the usage of {@link jfxtras.labs.scene.control.BigDecimalField},
+ * {@link jfxtras.labs.scene.control.BigDecimalLabel} and {@link CalendarLabel}.
  *
  * @author Thomas Bolz
  */
@@ -66,7 +71,9 @@ public class BigDecimalFieldDemo extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("JavaFX Spinner Demo");
+        primaryStage.setTitle("JavaFX BigDecimalField Demo");
+        ObjectProperty<DateFormat> dateFormatProperty = new SimpleObjectProperty<>(DateFormat.getDateInstance());
+        ObjectProperty<NumberFormat> numberFormatProperty = new SimpleObjectProperty<>(NumberFormat.getNumberInstance());
         GridPane root = new GridPane();
         root.setHgap(10);
         root.setVgap(10);
@@ -78,33 +85,34 @@ public class BigDecimalFieldDemo extends Application {
         final BigDecimalField promptText = new BigDecimalField();
         promptText.setNumber(null);
         promptText.setPromptText("Enter something");
-        Label label1;
-        root.addRow(1, new Label("default"), defaultSpinner, label1 = LabelBuilder.create().build());
-//        label1.textProperty().bind(Bindings.convert(defaultSpinner.numberProperty()));
-        root.addRow(2, new Label("custom decimal format"), decimalFormat);
-        root.addRow(3, new Label("percent"), percent);
-        root.addRow(4, new Label("localized currency"), localizedCurrency);
+        int rowIndex = 1;
+        root.addRow(rowIndex++, new Label("default"), defaultSpinner);
+        root.addRow(rowIndex++, new Label("custom decimal format"), decimalFormat);
+        root.addRow(rowIndex++, new Label("percent"), percent);
+        root.addRow(rowIndex++, new Label("localized currency"), localizedCurrency);
         final BigDecimalField disabledField = new BigDecimalField();
         disabledField.setDisable(true);
-        root.addRow(5, new Label("disabled field"), disabledField);
-        root.addRow(6, new Label("regular TextField"), new TextField("1.000,1234"));
-        root.addRow(7, new Label("with promptText"), promptText);
-        root.addRow(8, new Label("CalendarTextField"), new CalendarTextField());
-        root.addRow(9, new Label("ComboBox"), ComboBoxBuilder
-        		.create()
-        		.editable(true)
-        		.build()
-        	);
+        root.addRow(rowIndex++, new Label("disabled field"), disabledField);
+        root.addRow(rowIndex++, new Label("regular TextField"), new TextField("1.000,1234"));
+        root.addRow(rowIndex++, new Label("with promptText"), promptText);
+        CalendarTextField calendarTextField = new CalendarTextField();
+        root.addRow(rowIndex++, new Label("CalendarTextField"), calendarTextField);
+        ComboBox<Locale> cmbLocales = new ComboBox<>(FXCollections.observableArrayList(Locale.GERMANY, Locale.UK, Locale.FRANCE));
+        cmbLocales.setOnAction(event -> {
+            dateFormatProperty.set(DateFormat.getDateInstance(DateFormat.MEDIUM, cmbLocales.getValue()));
+            numberFormatProperty.set(NumberFormat.getNumberInstance(cmbLocales.getValue()));
+        });
+        root.addRow(rowIndex++, new Label("Locale"), cmbLocales);
 
-        root.addRow(10, new Label("Field with boundaries (0,100%)"), 
-        		BigDecimalFieldBuilder.create()
-            	.number(new BigDecimal("0.1"))
-            	.minValue(BigDecimal.ZERO)
-            	.maxValue(BigDecimal.ONE)
-            	.stepwidth(new BigDecimal("0.01"))
-            	.format(DecimalFormat.getPercentInstance())
-            	.build()
-        	);
+        root.addRow(rowIndex++, new Label("Field with boundaries (0,100%)"),
+                BigDecimalFieldBuilder.create()
+                        .number(new BigDecimal("0.1"))
+                        .minValue(BigDecimal.ZERO)
+                        .maxValue(BigDecimal.ONE)
+                        .stepwidth(new BigDecimal("0.01"))
+                        .format(DecimalFormat.getPercentInstance())
+                        .build()
+        );
 
         promptText.numberProperty().addListener(new ChangeListener<BigDecimal>() {
             @Override
@@ -114,25 +122,27 @@ public class BigDecimalFieldDemo extends Application {
         });
 
         Button button = new Button("Reset fields");
-        button.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent arg0) {
-                defaultSpinner.setNumber(new BigDecimal(Math.random() * 1000));
-                decimalFormat.setNumber(new BigDecimal(Math.random() * 1000));
-                percent.setNumber(new BigDecimal(Math.random()));
-                localizedCurrency.setNumber(new BigDecimal(Math.random() * 1000));
-                disabledField.setNumber(new BigDecimal(Math.random() * 1000));
-                promptText.setNumber(null);
-//                defaultSpinner.dumpSizes();
-            }
+        button.setOnAction((ActionEvent event) -> {
+            defaultSpinner.setNumber(new BigDecimal(Math.random() * 1000));
+            decimalFormat.setNumber(new BigDecimal(Math.random() * 1000));
+            percent.setNumber(new BigDecimal(Math.random()));
+            localizedCurrency.setNumber(new BigDecimal(Math.random() * 1000));
+            disabledField.setNumber(new BigDecimal(Math.random() * 1000));
+            promptText.setNumber(null);
+            calendarTextField.setCalendar(Calendar.getInstance());
         });
-        root.addRow(11, new Label(), button);
+        root.addRow(rowIndex++, new Label(), button);
+        BigDecimalLabel bigDecimalLabel = new BigDecimalLabel();
+        bigDecimalLabel.numberProperty().bind(defaultSpinner.numberProperty());
+        bigDecimalLabel.formatProperty().bind(numberFormatProperty);
+        root.addRow(rowIndex++, new Label("BigDecimalLabel"), bigDecimalLabel);
+
+        CalendarLabel calendarLabel = new CalendarLabel();
+        calendarLabel.valueProperty().bind(calendarTextField.calendarProperty());
+        calendarLabel.formatProperty().bind(dateFormatProperty);
+        root.addRow(rowIndex++, new Label("CalendarLabel"), calendarLabel);
 
         Scene scene = new Scene(root);
-//        String path = NumberSpinnerDemo2.class.getResource("number_spinner.css").toExternalForm();
-//        System.out.println("path=" + path);
-//        scene.getStylesheets().add(path);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

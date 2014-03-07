@@ -31,6 +31,7 @@ package jfxtras.labs.scene.control;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -85,7 +86,7 @@ public class BigDecimalLabel extends Label {
 
             @Override
             public void changed(ObservableValue<? extends BigDecimal> observable, BigDecimal oldValue, BigDecimal newValue) {
-                setText(getFormat().format(getNumber()));
+                setText(getFormattedString());
             }
         });
         // Text is formatted and displayed if the underlying number or format changes.
@@ -93,9 +94,23 @@ public class BigDecimalLabel extends Label {
 
             @Override
             public void changed(ObservableValue<? extends NumberFormat> observable, NumberFormat olValue, NumberFormat newValue) {
-                setText(getFormat().format(getNumber()));
+                setText(getFormattedString());
             }
 
         });
     }
+    private String getFormattedString() {
+        if(getNumber() == null || getFormat() == null) {
+            return null;
+        }
+        try {
+            String formattedString = getFormat().format(getNumber());
+            return formattedString;
+        } catch (Exception e) {
+            setText("n/a");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

@@ -30,6 +30,7 @@
 package jfxtras.labs.scene.control;
 
 import java.util.ArrayList;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -39,7 +40,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ListChangeListener.Change;
 import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.image.Image;

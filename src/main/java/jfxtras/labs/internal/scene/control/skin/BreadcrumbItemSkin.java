@@ -29,11 +29,9 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import com.sun.javafx.scene.control.behavior.BehaviorBase;
-import com.sun.javafx.scene.control.behavior.KeyBinding;
-import javafx.scene.control.SkinBase;
 import java.util.ArrayList;
 import java.util.List;
+
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -44,6 +42,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.SVGPath;
 import jfxtras.labs.scene.control.BreadcrumbItem;
+
+import com.sun.javafx.scene.control.behavior.BehaviorBase;
+import com.sun.javafx.scene.control.behavior.KeyBinding;
 
 /**
  *

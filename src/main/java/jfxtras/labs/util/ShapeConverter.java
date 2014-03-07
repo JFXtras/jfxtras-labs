@@ -29,6 +29,8 @@
 
 package jfxtras.labs.util;
 
+import java.util.List;
+
 import javafx.geometry.Bounds;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcTo;
@@ -54,8 +56,6 @@ import javafx.scene.shape.SVGPathBuilder;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.VLineTo;
 import javafx.scene.text.Text;
-
-import java.util.List;
 
 
 /**

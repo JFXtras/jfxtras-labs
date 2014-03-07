@@ -30,7 +30,6 @@
 package jfxtras.labs.scene.control.grid;
 
 import javafx.scene.control.IndexedCell;
-import jfxtras.labs.internal.scene.control.skin.GridCellSkin;
 
 /**
  * 

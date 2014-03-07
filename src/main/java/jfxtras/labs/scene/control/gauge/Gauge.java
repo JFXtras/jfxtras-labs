@@ -29,14 +29,14 @@
 
 package jfxtras.labs.scene.control.gauge;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+
 import javafx.geometry.Point2D;
 import javafx.scene.control.Control;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
 
 
 /**

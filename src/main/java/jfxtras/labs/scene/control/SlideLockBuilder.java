@@ -29,12 +29,6 @@
 
 package jfxtras.labs.scene.control;
 
-import javafx.beans.property.*;
-import javafx.scene.control.ControlBuilder;
-import javafx.scene.paint.Paint;
-import javafx.util.Builder;
-
-import java.util.HashMap;
 
 /**
  * Represents the Slide lock control's builder (pattern) for convenient object creation.

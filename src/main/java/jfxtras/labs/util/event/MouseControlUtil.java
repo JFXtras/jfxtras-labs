@@ -34,7 +34,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 import jfxtras.labs.scene.control.window.SelectableNode;
 import jfxtras.labs.util.NodeUtil;
 import jfxtras.labs.util.WindowUtil;
