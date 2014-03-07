@@ -35,7 +35,7 @@ import org.loadui.testfx.GuiTest;
 
 /**
  * 
- * @author tbee
+ * @author Tom Eugelink
  * https://github.com/SmartBear/TestFX/blob/master/src/main/java/org/loadui/testfx/GuiTest.java
  */
 abstract public class JFXtrasGuiTest extends org.loadui.testfx.GuiTest {

@@ -68,6 +68,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import jfxtras.labs.scene.control.BeanPathAdapter.FieldPathValue;
+import jfxtras.scene.control.CalendarTextField;
+import jfxtras.scene.control.ListSpinner;
 
 public class BeanPathAdapterTrial1 extends Application {
 

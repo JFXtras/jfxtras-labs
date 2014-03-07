@@ -77,7 +77,7 @@ public class TestUtil {
 	
 	/**
 	 * 
-	 * @param s
+	 * @param p
 	 */
 	static public void printHierarchy(Popup p) {
 		StringBuilder lStringBuilder = new StringBuilder();
@@ -94,7 +94,6 @@ public class TestUtil {
 	/**
 	 * 
 	 * @param n
-	 * @return
 	 */
 	static public void printHierarchy(Node n) {
 		StringBuilder lStringBuilder = new StringBuilder();

@@ -29,17 +29,14 @@
 
 package jfxtras.labs.util;
 
-import javafx.application.Platform;
-
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+
+import javafx.application.Platform;
 
 /**
- * Created by tbee on 26-12-13.
+ * Created by Tom Eugelink on 26-12-13.
  */
 public class PlatformUtil {
 
