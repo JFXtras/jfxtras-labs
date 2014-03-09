@@ -18,6 +18,7 @@ configurations {
 buildscript {
     
     repositories {
+		mavenLocal()
         mavenCentral()
 		maven { url "http://oss.sonatype.org/content/repositories/releases/" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
@@ -37,6 +38,7 @@ if (!project.plugins.findPlugin(eu.mihosoft.vrl.vlicenseheaderutil.gradle.VLicen
 repositories {
 	maven { url "http://oss.sonatype.org/content/repositories/releases/" }
     maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
+	mavenLocal()
     mavenCentral()
 }
 
