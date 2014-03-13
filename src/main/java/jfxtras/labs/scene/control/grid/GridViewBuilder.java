@@ -58,7 +58,7 @@ public class GridViewBuilder<B extends GridViewBuilder<B,T>, T> implements
 	};
 
 	public static final <T, U extends GridViewBuilder<U,T>> GridViewBuilder<U, T> create(Class<T> cls) {
-		return new GridViewBuilder<>();
+		return new GridViewBuilder<U,T>();
 	}
 
 	public final GridViewBuilder<B,T> items(ObservableList<T> items) {
