@@ -14,9 +14,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
-import jfxtras.labs.scene.layout.RadialPane;
+import jfxtras.labs.scene.layout.CircularPane;
 
-public class RadialPaneTrail extends Application {
+public class CircularPaneTrail extends Application {
 
     public static void main(String[] args) {
         launch(args);       
@@ -28,7 +28,7 @@ public class RadialPaneTrail extends Application {
 		HBox lHBox = new HBox(0);
 		
 		{
-			RadialPane lRadialPane = new RadialPane();
+			CircularPane lRadialPane = new CircularPane();
 			// lRadialPane.setStyle("-fx-border-color:red;");
 			lRadialPane.setStartAngle(2 * Math.PI / 12);
 			final List<Label> labels = new ArrayList<>();
@@ -68,7 +68,7 @@ public class RadialPaneTrail extends Application {
 		}
 		
 		{
-			RadialPane lRadialPane = new RadialPane();
+			CircularPane lRadialPane = new CircularPane();
 			// lRadialPane.setStyle("-fx-border-color:red;");
 			final List<Label> labels = new ArrayList<>();
 			final List<Circle> circles = new ArrayList<>();
@@ -94,7 +94,7 @@ public class RadialPaneTrail extends Application {
 		}
 		
 		{
-			RadialPane lRadialPane = new RadialPane();
+			CircularPane lRadialPane = new CircularPane();
 			// lRadialPane.setStyle("-fx-border-color:red;");
 			final List<Label> labels = new ArrayList<>();
 			final List<Circle> circles = new ArrayList<>();

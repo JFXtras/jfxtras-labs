@@ -17,16 +17,16 @@ import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
 // http://www.guigarage.com/2012/11/custom-ui-controls-with-javafx-part-2/
-public class RadialPane extends Pane {
+public class CircularPane extends Pane {
 
 	/** StartAngle: the startAngle is used to determine the starting position; default = 0 = north (top) */
 	public ObjectProperty<Double> startAngleProperty() { return iStartAngleObjectProperty; }
 	final private ObjectProperty<Double> iStartAngleObjectProperty = new SimpleObjectProperty<Double>(this, "startAngle", 0.0);
 	public Double getStartAngle() { return iStartAngleObjectProperty.getValue(); }
 	public void setStartAngle(Double value) { iStartAngleObjectProperty.setValue(value); }
-	public RadialPane withStartAngle(Double value) { setStartAngle(value); return this; } 
+	public CircularPane withStartAngle(Double value) { setStartAngle(value); return this; } 
 
-	public RadialPane withId(String v) { setId(v); return this; }
+	public CircularPane withId(String v) { setId(v); return this; }
 	
     @Override 
     protected double computeMinWidth(double height) {
@@ -66,10 +66,10 @@ public class RadialPane extends Pane {
     protected void layoutChildren() {
     	if (layingoutChilderen.get() > 0) {
     		return;
-    	}
-    	System.out.println("layoutChildren");
+    	}    	
     	layingoutChilderen.addAndGet(1);
     	try {
+    		
 	    	// get the nodes we need to render
 	    	List<Node> nodes = getManagedChildren();
 	    	if (nodes.size() == 0) {
@@ -89,43 +89,42 @@ public class RadialPane extends Pane {
 	    		final double lY = (lPaneHeight / 2) + (lPaneHeight / 2 * Math.cos(lAngle));
 	    		double lW = calculateNodeWidth(lNode);
 	    		double lH = calculateNodeHeight(lNode);
-//	    		lNode.resizeRelocate( (lPaneWidth / 2), (lPaneHeight / 2), lW, lH);
-//	    		lNode.setLayoutX(lX);
-//	    		lNode.setLayoutY(lY);
-//	    		lNode.setLayoutX(0);
-//	    		lNode.setLayoutY(0);
-	    		if (initial) {
-		    		lNode.setLayoutX( (lPaneWidth / 2) );
-		    		lNode.setLayoutY( (lPaneHeight / 2) );
-		    		initial = false;
-	    		}
 	    		lNode.resize(lW, lH);
-
-	    		// has the X and Y changed?
-	    		if ( (Math.abs(lNode.getLayoutX() - lX) > 0.001)
-	    		  || (Math.abs(lNode.getLayoutY() - lY) > 0.001)
-	    		   ) {
-	    			   
-		    		// while the animation is running, don't touch the children
-		        	layingoutChilderen.addAndGet(1);
-		    		new Transition() {
-		    			
-		    			{
-		    				setCycleDuration(Duration.millis(500));
-		    				setAutoReverse(false);
-		    				setCycleCount(1);
-		    				setOnFinished( (event) -> {
-		    			    	layingoutChilderen.addAndGet(-1);
-		    				});
-		    			}
-						
-						@Override
-						protected void interpolate(double progress) {
-				    		lNode.setLayoutX(lX * progress);
-				    		lNode.setLayoutY(lY * progress);
-						}
-					}.playFromStart();
-	    		}
+	    		lNode.setLayoutX(lX);
+	    		lNode.setLayoutY(lY);
+	    		
+	    		
+//	    		if (initial) {
+//		    		lNode.setLayoutX( (lPaneWidth / 2) );
+//		    		lNode.setLayoutY( (lPaneHeight / 2) );
+//		    		initial = false;
+//	    		}
+//
+//	    		// has the X and Y changed?
+//	    		if ( (Math.abs(lNode.getLayoutX() - lX) > 0.001)
+//	    		  || (Math.abs(lNode.getLayoutY() - lY) > 0.001)
+//	    		   ) {
+//	    			   
+//		    		// while the animation is running, don't touch the children
+//		        	layingoutChilderen.addAndGet(1);
+//		    		new Transition() {
+//		    			
+//		    			{
+//		    				setCycleDuration(Duration.millis(500));
+//		    				setAutoReverse(false);
+//		    				setCycleCount(1);
+//		    				setOnFinished( (event) -> {
+//		    			    	layingoutChilderen.addAndGet(-1);
+//		    				});
+//		    			}
+//						
+//						@Override
+//						protected void interpolate(double progress) {
+//				    		lNode.setLayoutX(lX * progress);
+//				    		lNode.setLayoutY(lY * progress);
+//						}
+//					}.playFromStart();
+//	    		}
 	    		   
 				// next
 	        	lAngle += lAngleStep;
@@ -139,16 +138,13 @@ public class RadialPane extends Pane {
     boolean initial = true;
     
 	private double determineMaxSize(List<Node> nodes) {
-		// prepare layout
-		double lMaximumSize = 0; // either width or height
+		double lMaximumSize = 0; // diameter of the emcompassing circle
 		for (Node lNode : nodes) {
 			double lWidth = calculateNodeWidth(lNode);
-			if (lWidth > lMaximumSize) {
-				lMaximumSize = lWidth;
-			}
 			double lHeight = calculateNodeHeight(lNode);
-			if (lHeight > lMaximumSize) {
-				lMaximumSize = lHeight;
+			double lSize = Math.sqrt( (lWidth * lWidth) + (lHeight * lHeight) );
+			if (lSize > lMaximumSize) {
+				lMaximumSize = lSize;
 			}
 		}
 //		System.out.println(getId() + " lMaximumSize= " + lMaximumSize);
