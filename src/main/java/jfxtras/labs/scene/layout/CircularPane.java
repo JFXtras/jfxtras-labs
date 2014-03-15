@@ -30,36 +30,55 @@ public class CircularPane extends Pane {
 	
     @Override 
     protected double computeMinWidth(double height) {
-    	return computePrefWidth(0);
+    	return computePrefWidth(-1);
     }
 
     @Override 
     protected double computeMinHeight(double width) {
-    	return computePrefHeight(0);
+    	return computePrefHeight(-1);
     }
 
     @Override 
     protected double computePrefWidth(double height) {
-    	double lMaximumSize = determineMaxSize(getManagedChildren());
-    	double lSize = 5 * lMaximumSize;
-    	return lSize;
+//    	double lMaximumSize = determineMaxSize(getManagedChildren());
+//    	double lSize = 5 * lMaximumSize;
+//    	return lSize;
+    	
+    	List<Node> nodes = getManagedChildren();
+    	double lMaximumSize = determineMaxSize(nodes);
+    	if (nodes.size() == 0) {
+    		return 0;
+    	}
+    	if (nodes.size() == 1) {
+    		return lMaximumSize;
+    	}
+    	if (nodes.size() == 2) {
+    		return 2 * lMaximumSize;
+    	}
+//    	double lDiameter = lMaximumSize / Math.sin( 2*Math.PI / nodes.size() );
+//    	lDiameter += lMaximumSize;
+    	
+    	double lDiameter = ((2 * nodes.size() * lMaximumSize) / (2 * Math.PI)) + lMaximumSize;
+    	
+    	return lDiameter;
     }
 
     @Override 
     protected double computePrefHeight(double width) {
-    	double lMaximumSize = determineMaxSize(getManagedChildren());
-    	double lSize = 5 * lMaximumSize;
-    	return lSize;
+//    	double lMaximumSize = determineMaxSize(getManagedChildren());
+//    	double lSize = 5 * lMaximumSize;
+//    	return lSize;
+    	return computePrefWidth(-1);
     }
 
     @Override 
     protected double computeMaxWidth(double height) {
-    	return computePrefWidth(0);
+    	return computePrefWidth(-1);
     }
 
     @Override 
     protected double computeMaxHeight(double width) {
-    	return computePrefHeight(0);
+    	return computePrefHeight(-1);
     }
 
     @Override 
@@ -85,46 +104,48 @@ public class CircularPane extends Pane {
 	    	double lAngleStep = -2 * Math.PI / nodes.size();
 	    	double lAngle = Math.PI - getStartAngle();
 	    	for (final Node lNode : nodes) {
-	    		final double lX = (lPaneWidth / 2) + (lPaneWidth / 2 * Math.sin(lAngle));
-	    		final double lY = (lPaneHeight / 2) + (lPaneHeight / 2 * Math.cos(lAngle));
+	    		final double lX = (lPaneWidth / 2) + (lMaximumSize / 2) + (lPaneWidth / 2 * Math.sin(lAngle));
+	    		final double lY = (lPaneHeight / 2) + (lMaximumSize / 2) + (lPaneHeight / 2 * Math.cos(lAngle));
 	    		double lW = calculateNodeWidth(lNode);
 	    		double lH = calculateNodeHeight(lNode);
 	    		lNode.resize(lW, lH);
-	    		lNode.setLayoutX(lX);
-	    		lNode.setLayoutY(lY);
+//	    		lNode.setLayoutX(lX);
+//	    		lNode.setLayoutY(lY);
 	    		
 	    		
-//	    		if (initial) {
-//		    		lNode.setLayoutX( (lPaneWidth / 2) );
-//		    		lNode.setLayoutY( (lPaneHeight / 2) );
-//		    		initial = false;
-//	    		}
-//
-//	    		// has the X and Y changed?
-//	    		if ( (Math.abs(lNode.getLayoutX() - lX) > 0.001)
-//	    		  || (Math.abs(lNode.getLayoutY() - lY) > 0.001)
-//	    		   ) {
-//	    			   
-//		    		// while the animation is running, don't touch the children
-//		        	layingoutChilderen.addAndGet(1);
-//		    		new Transition() {
-//		    			
-//		    			{
-//		    				setCycleDuration(Duration.millis(500));
-//		    				setAutoReverse(false);
-//		    				setCycleCount(1);
-//		    				setOnFinished( (event) -> {
-//		    			    	layingoutChilderen.addAndGet(-1);
-//		    				});
-//		    			}
-//						
-//						@Override
-//						protected void interpolate(double progress) {
-//				    		lNode.setLayoutX(lX * progress);
-//				    		lNode.setLayoutY(lY * progress);
-//						}
-//					}.playFromStart();
-//	    		}
+	    		final double lXi = (lPaneWidth / 2) + (lMaximumSize / 2);
+	    		final double lYi = (lPaneWidth / 2) + (lMaximumSize / 2);
+	    		if (initial) {
+		    		lNode.setLayoutX( lXi );
+		    		lNode.setLayoutY( lYi );
+		    		initial = false;
+	    		}
+
+	    		// has the X and Y changed?
+	    		if ( (Math.abs(lNode.getLayoutX() - lX) > 0.001)
+	    		  || (Math.abs(lNode.getLayoutY() - lY) > 0.001)
+	    		   ) {
+	    			   
+		    		// while the animation is running, don't touch the children
+		        	layingoutChilderen.addAndGet(1);
+		    		new Transition() {
+		    			
+		    			{
+		    				setCycleDuration(Duration.millis(500));
+		    				setAutoReverse(false);
+		    				setCycleCount(1);
+		    				setOnFinished( (event) -> {
+		    			    	layingoutChilderen.addAndGet(-1);
+		    				});
+		    			}
+						
+						@Override
+						protected void interpolate(double progress) {
+				    		lNode.setLayoutX( lX + ((lXi - lX) * (1-progress)));
+				    		lNode.setLayoutY( lY + ((lYi - lY) * (1-progress)));
+						}
+					}.playFromStart();
+	    		}
 	    		   
 				// next
 	        	lAngle += lAngleStep;
