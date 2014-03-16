@@ -25,12 +25,12 @@ public class CircularPaneTrail extends Application {
 	@Override
 	public void start(Stage stage) {
 		
-		HBox lHBox = new HBox(0);
+		HBox lHBox = new HBox(20);
 		
 		{
-			CircularPane lRadialPane = new CircularPane();
-			// lRadialPane.setStyle("-fx-border-color:red;");
-			lRadialPane.setStartAngle(2 * Math.PI / 12);
+			CircularPane lCircularPane = new CircularPane();
+			//lCircularPane.setStyle("-fx-border-color:red;");
+			lCircularPane.setStartAngle(360.0 / 12);
 			final List<Label> labels = new ArrayList<>();
 			final List<Circle> circles = new ArrayList<>();
 			final AtomicReference<Circle> lastFocus = new AtomicReference<>();
@@ -62,14 +62,14 @@ public class CircularPaneTrail extends Application {
 				lStackPane.setId("" + i);
 				lStackPane.getChildren().add(c);
 				lStackPane.getChildren().add(t);
-				lRadialPane.getChildren().add(lStackPane);
+				lCircularPane.getChildren().add(lStackPane);
 			}
-			lHBox.getChildren().add(lRadialPane);
+			lHBox.getChildren().add(lCircularPane);
 		}
 		
 		{
-			CircularPane lRadialPane = new CircularPane();
-			// lRadialPane.setStyle("-fx-border-color:red;");
+			CircularPane lCircularPane = new CircularPane();
+			//lCircularPane.setStyle("-fx-border-color:red;");
 			final List<Label> labels = new ArrayList<>();
 			final List<Circle> circles = new ArrayList<>();
 			final AtomicReference<Circle> lastFocus = new AtomicReference<>();
@@ -83,10 +83,10 @@ public class CircularPaneTrail extends Application {
 				StackPane lStackPane = new StackPane();
 				lStackPane.getChildren().add(c);
 				lStackPane.getChildren().add(t);
-				lRadialPane.getChildren().add(lStackPane);
+				lCircularPane.getChildren().add(lStackPane);
 			}
 			StackPane lStackPane = new StackPane();
-			lStackPane.getChildren().add(lRadialPane);
+			lStackPane.getChildren().add(lCircularPane);
 			Label l = new Label("M");
 			l.getStyleClass().add("center");
 			lStackPane.getChildren().add(l);
@@ -94,8 +94,8 @@ public class CircularPaneTrail extends Application {
 		}
 		
 		{
-			CircularPane lRadialPane = new CircularPane();
-			// lRadialPane.setStyle("-fx-border-color:red;");
+			CircularPane lCircularPane = new CircularPane();
+			//lCircularPane.setStyle("-fx-border-color:red;");
 			final List<Label> labels = new ArrayList<>();
 			final List<Circle> circles = new ArrayList<>();
 			final AtomicReference<Circle> lastFocus = new AtomicReference<>();
@@ -109,44 +109,58 @@ public class CircularPaneTrail extends Application {
 				StackPane lStackPane = new StackPane();
 				lStackPane.getChildren().add(c);
 				lStackPane.getChildren().add(t);
-				lRadialPane.getChildren().add(lStackPane);
+				lCircularPane.getChildren().add(lStackPane);
 			}
 			StackPane lStackPane = new StackPane();
-			lStackPane.getChildren().add(lRadialPane);
+			lStackPane.getChildren().add(lCircularPane);
 			Label l = new Label("S");
 			l.getStyleClass().add("center");
 			lStackPane.getChildren().add(l);
 			lHBox.add(lStackPane);
 		}
 		
-//		{
-//			RadialPane lRadialPane = new RadialPane();
-//			// lRadialPane.setStyle("-fx-border-color:red;");
-//			for (int i = 0; i < 12; i++) {
-//				lRadialPane.getChildren().add(new javafx.scene.control.Button("" + i));
-//			}
-//			lHBox.getChildren().add(lRadialPane);
-//		}
-//		
-//		{
-//			RadialPane lRadialPane = new RadialPane();
-//			lRadialPane.setMinSize(200,  200);
-//			// lRadialPane.setStyle("-fx-border-color:red;");
-//			for (int i = 0; i < 8; i++) {
-//				lRadialPane.getChildren().add(new javafx.scene.shape.Circle(10));
-//			}
-//			lHBox.getChildren().add(lRadialPane);
-//		}
-//		
-//		{
-//			RadialPane lRadialPane = new RadialPane();
-//			// lRadialPane.setStyle("-fx-border-color:red;");
-//			for (int i = 0; i < 8; i++) {
-//				lRadialPane.getChildren().add(new javafx.scene.shape.Circle(5 + i));
-//			}
-//			lHBox.getChildren().add(lRadialPane);
-//		}
+		{
+			CircularPane lCircularPane = new CircularPane();
+			//lCircularPane.setStyle("-fx-border-color:red;");
+			for (int i = 0; i < 12; i++) {
+				//lCircularPane.getChildren().add(new javafx.scene.control.Button("" + i));
+				lCircularPane.getChildren().add(new javafx.scene.control.Button("XX"));
+			}
+			lHBox.getChildren().add(lCircularPane);
+		}
+		
+		{
+			CircularPane lCircularPane = new CircularPane();
+			lCircularPane.setMinSize(200,  200);
+			//lCircularPane.setStyle("-fx-border-color:red;");
+			for (int i = 0; i < 8; i++) {
+				javafx.scene.shape.Circle c = new javafx.scene.shape.Circle(10);
+				lCircularPane.getChildren().add(c);
+			}
+			lHBox.getChildren().add(lCircularPane);
+		}
+		
+		{
+			CircularPane lCircularPane = new CircularPane();
+			//lCircularPane.setStyle("-fx-border-color:red;");
+			for (int i = 0; i < 8; i++) {
+				javafx.scene.shape.Circle c = new javafx.scene.shape.Circle(5 + i);
+				lCircularPane.getChildren().add(c);
+			}
+			lHBox.getChildren().add(lCircularPane);
+		}
 
+		{
+			CircularPane lCircularPane = new CircularPane();
+			//lCircularPane.setStyle("-fx-border-color:red;");
+			for (int i = 0; i < 8; i++) {
+				javafx.scene.shape.Rectangle c = new javafx.scene.shape.Rectangle(5 + (2*i), 5 + (2*i));
+				c.setRotate(45);
+				lCircularPane.getChildren().add(c);
+			}
+			lHBox.getChildren().add(lCircularPane);
+		}
+		
         // setup scene
 		Scene scene = new Scene(lHBox);
 		scene.getStylesheets().add(this.getClass().getName().replace(".", "/") + ".css");

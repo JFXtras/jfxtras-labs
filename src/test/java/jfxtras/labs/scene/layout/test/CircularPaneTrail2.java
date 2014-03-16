@@ -26,7 +26,8 @@ public class CircularPaneTrail2 extends Application {
 			CircularPane lCircularPane = new CircularPane();
 			lCircularPane.setStyle("-fx-border-color:black;");
 			for (int i = 0; i < j; i++) {
-				lCircularPane.getChildren().add(new javafx.scene.shape.Circle(10));
+				javafx.scene.shape.Circle c = new javafx.scene.shape.Circle(10);
+				lCircularPane.getChildren().add(c);
 			}
 			lHBox.getChildren().add(lCircularPane);
 			if (lHBox.prefWidth(-1) > 1000) {
