@@ -186,6 +186,18 @@ public class CircularPaneTrail extends Application {
 			lHBox.getChildren().add(lCircularPane);
 		}
 		
+		
+		{
+			CircularPane lCircularPane = new CircularPane();
+			lCircularPane.setStyle("-fx-border-color:red;");
+			lCircularPane.setShowDebug(lShowDebug);
+			for (int i = 0; i < 10; i++) {
+				javafx.scene.shape.Rectangle c = new javafx.scene.shape.Rectangle(20, 20);
+				c.setRotate(i * 10);
+				lCircularPane.getChildren().add(c);
+			}
+			lHBox.getChildren().add(lCircularPane);
+		}
         // setup scene
 		Scene scene = new Scene(lHBox);
 		scene.getStylesheets().add(this.getClass().getName().replace(".", "/") + ".css");

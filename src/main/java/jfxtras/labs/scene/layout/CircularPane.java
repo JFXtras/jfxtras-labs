@@ -154,7 +154,7 @@ public class CircularPane extends Pane {
 	    			continue;
 	    		}
 	    		
-	    		Bounds lBounds = lNode.getBoundsInParent();
+	    		Bounds lBounds = lNode.layoutBoundsProperty().get();
 	    		 
 	    		final double lX = (lPaneWidth / 2) // from the center 
 	    				        + (lPaneWidth / 2 * Math.sin(lAngle)) // determine the position on the chain
