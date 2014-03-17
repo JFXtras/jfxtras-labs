@@ -83,7 +83,9 @@ public class CircularPane extends Pane {
     	if (numberOfNodes == 2) {
     		return 2 * lMaximumSize;
     	}
-    	double lDiameter = ((2 * numberOfNodes * lMaximumSize) / (2 * Math.PI)) + lMaximumSize;
+    	// determine the size of the circle where the centre of the bead would be placed on 
+    	double lDiameter = lMaximumSize / Math.sin(2 * Math.PI / numberOfNodes / 2);
+    	lDiameter += lMaximumSize; // but of course we need the outer circle
     	return lDiameter;
     }
 
@@ -94,12 +96,12 @@ public class CircularPane extends Pane {
 
     @Override 
     protected double computePrefWidth(double height) {
-    	return computeMinWidth(-1) * 1.0; // TODO: 10% whitespace
+    	return computeMinWidth(-1);
     }
 
     @Override 
     protected double computePrefHeight(double width) {
-    	return computeMinHeight(-1) * 1.0; // TODO: 10% whitespace
+    	return computeMinHeight(-1);
     }
 
     @Override 
@@ -147,7 +149,7 @@ public class CircularPane extends Pane {
 	    	double lAngleStep = -2 * Math.PI / numberOfNodes;
 	    	double lAngle = Math.PI - degreesToRadials(getStartAngle());
 	    	for (final Node lNode : nodes) {
-	    		// beads are not laid out directly
+	    		// beads are not laid out directly, through their associated node
 	    		if (lNode instanceof Bead) {
 	    			continue;
 	    		}
@@ -177,8 +179,14 @@ public class CircularPane extends Pane {
 	    		lNode.resize(lW, lH);
 	    		
 	    		// place on the right spot immediately
-	    		lNode.setLayoutX( lX + ((lBeadWidth - lW) / 2) - (lNode instanceof Parent ? 0 : lBounds.getMinX()) ); // correct primitives with their bounds (primitives have their centre at 0,0, so minX is < 0)
-	    		lNode.setLayoutY( lY + ((lBeadWidth - lH) / 2) - (lNode instanceof Parent ? 0 : lBounds.getMinY()) ); // correct primitives with their bounds (primitives have their centre at 0,0, so minX is < 0)
+	    		lNode.setLayoutX( lX 
+	    				       + ((lBeadWidth - lW) / 2) 
+	    				       - (lNode instanceof Parent ? 0 : lBounds.getMinX()) // correct primitives with their bounds (primitives have their centre at 0,0, so minX is < 0) 
+	    				       ); 
+	    		lNode.setLayoutY( lY 
+	    				        + ((lBeadWidth - lH) / 2) 
+	    				        - (lNode instanceof Parent ? 0 : lBounds.getMinY()) // correct primitives with their bounds (primitives have their centre at 0,0, so minX is < 0) 
+	    				        ); 
 	    		
 
 	    		// animate from the center
