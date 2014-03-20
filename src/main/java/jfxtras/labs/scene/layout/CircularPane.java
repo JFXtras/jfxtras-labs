@@ -123,17 +123,17 @@ public class CircularPane extends Pane {
     @Override 
     protected double computeMaxWidth(double height) {
     	// In 'normal' layout logic these computed sizes would denote an ability or preference.
-    	// Min would indicate the minimal size the node or layout is able to render itself, 
-    	// Pref the preferred size, 
-    	// and Max the maximum size a node is ABLE to render itself.
+    	// - Min would indicate the minimal size the node or layout is able to render itself, 
+    	// - Pref the preferred size a node would like to have, 
+    	// - and Max the maximum size a node is ABLE to render itself.
     	//
-    	// If a node were given more space to render itself, without any further instructions from the user (layout / pane), it should still stick to its preferred size, because that is its preferred size after all.
+    	// If a node were given more space to render itself, without any further instructions from the user (through layout constraints), 
+    	// it should still stick to its preferred size, because that after all is its preferred size.
     	//
-    	// However, in JavaFX Max does not denote an ability, but an intent / preference.
-    	// If a node indicates it has a max of, say, Double.MAX_VALUE (as CircularPane should do, because it is able to render itself on that size),
-    	// the Pane implementations in JavaFX will actually make CircularPane grow into additional space, instead of keeping its preferred size.
-    	// In my opinion this is wrong, but unfortunately the way things are in JavaFX.
-    	// 
+    	// However, in JavaFX Max does not denote an ability, but is seen as an intent / preference.
+    	// If a node indicates it has a max of, say, Double.MAX_VALUE (as CircularPane should do, because it is able to render itself that size),
+    	// the Pane implementations in JavaFX will actually make CircularPane always grow into any additional space, instead of keeping its preferred size.
+    	// In my opinion this is wrong, but unfortunately this is the way things are in JavaFX.
     	// Therefore the Max size is the preferred size. 
     	return computeChainDiameter(SIZE.PREF);
     }
