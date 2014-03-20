@@ -16,7 +16,7 @@ import javafx.scene.shape.Circle;
 
 
 /**
- * This pane lays it childeren out in a circle.
+ * This pane lays it children out in a circle.
  * 
  * In order to understand how to tune this pane, it is important to understand how it does its places its children.
  * Placing nodes on a circle in essence is not that difficult; a circle is 360 degrees, so each node is spaced 360 / n degrees apart, the real challenge is to determine how large the circle must be.
@@ -40,6 +40,10 @@ import javafx.scene.shape.Circle;
 public class CircularPane extends Pane {
 
 	private enum SIZE { MIN, PREF, MAX }
+
+	
+	// ==========================================================================================================================================================================================================================================
+	// properties
 
 	/** Id */
 	public CircularPane withId(String v) { setId(v); return this; }
@@ -92,35 +96,57 @@ public class CircularPane extends Pane {
 	public void setShowDebug(Paint value) { iShowDebugObjectProperty.setValue(value); }
 	public CircularPane withShowDebug(Paint value) { setShowDebug(value); return this; } 
 
+	
+	// ==========================================================================================================================================================================================================================================
+	// computer size
+	
     @Override 
     protected double computeMinWidth(double height) {
-    	return computeSize(SIZE.PREF);
+    	return computeChainDiameter(SIZE.MIN);
     }
 
     @Override 
     protected double computeMinHeight(double width) {
-    	return computeSize(SIZE.PREF);
+    	return computeChainDiameter(SIZE.MIN);
     }
 
     @Override 
     protected double computePrefWidth(double height) {
-    	return computeSize(SIZE.PREF);
+    	return computeChainDiameter(SIZE.PREF);
     }
 
     @Override 
     protected double computePrefHeight(double width) {
-    	return computeSize(SIZE.PREF);
+    	return computeChainDiameter(SIZE.PREF);
     }
 
     @Override 
     protected double computeMaxWidth(double height) {
-    	return computeSize(SIZE.PREF);
+    	// In 'normal' layout logic these computed sizes would denote an ability or preference.
+    	// Min would indicate the minimal size the node or layout is able to render itself, 
+    	// Pref the preferred size, 
+    	// and Max the maximum size a node is ABLE to render itself.
+    	//
+    	// If a node were given more space to render itself, without any further instructions from the user (layout / pane), it should still stick to its preferred size, because that is its preferred size after all.
+    	//
+    	// However, in JavaFX Max does not denote an ability, but an intent / preference.
+    	// If a node indicates it has a max of, say, Double.MAX_VALUE (as CircularPane should do, because it is able to render itself on that size),
+    	// the Pane implementations in JavaFX will actually make CircularPane grow into additional space, instead of keeping its preferred size.
+    	// In my opinion this is wrong, but unfortunately the way things are in JavaFX.
+    	// 
+    	// Therefore the Max size is the preferred size. 
+    	return computeChainDiameter(SIZE.PREF);
     }
 
     @Override 
     protected double computeMaxHeight(double width) {
-    	return computeSize(SIZE.PREF);
+    	// For an explanation, see computerMaxWidth
+    	return computeChainDiameter(SIZE.PREF);
     }
+
+	
+	// ==========================================================================================================================================================================================================================================
+	// layout
 
     @Override 
     protected void layoutChildren() {
@@ -144,10 +170,10 @@ public class CircularPane extends Pane {
 	    	
 	    	double lMaximumSize = 0;
 	    	if (getChildrenAreCircular()) {
-	    		lMaximumSize = determineMaxWidthHeight(nodes, SIZE.PREF);
+	    		lMaximumSize = determineBeadDiameterUsingWidthOrHeight(nodes, SIZE.PREF);
 	    	}
 	    	else {
-	    		lMaximumSize = determineMaxDiameter(nodes, SIZE.PREF);
+	    		lMaximumSize = determineBeadDiameterUsingTheDiagonal(nodes, SIZE.PREF);
 	    	}
 	    	double lBeadWidth = lMaximumSize; 
 	    	
@@ -164,7 +190,7 @@ public class CircularPane extends Pane {
 	    		
 	    		Bounds lBounds = lNode.layoutBoundsProperty().get();
 	    		 
-	    		final double lX = (lPaneWidth / 2) // from the center 
+	    		final double lX = (lPaneWidth / 2) // from the center
 	    				        + (lPaneWidth / 2 * Math.sin(degreesToRadials(lAngle))) // determine the position on the chain
 	    				        ;
 	    		final double lY = (lPaneHeight / 2) 
@@ -182,8 +208,8 @@ public class CircularPane extends Pane {
 	    		}	    		
 
 	    		// now place the node
-	    		double lW = calculateNodeWidth(lNode);
-	    		double lH = calculateNodeHeight(lNode);
+	    		double lW = calculateNodeWidth(lNode, SIZE.PREF);
+	    		double lH = calculateNodeHeight(lNode, SIZE.PREF);
 	    		lNode.resize(lW, lH);
 	    		
 	    		// place on the right spot immediately
@@ -241,8 +267,12 @@ public class CircularPane extends Pane {
     	}
     }
     private AtomicInteger layingoutChilderen = new AtomicInteger(0);
-	Map<Node, Bead> nodeToBeadMap = new WeakHashMap<>();
-    boolean initial = true;
+	private final Map<Node, Bead> nodeToBeadMap = new WeakHashMap<>();
+//    private boolean initial = true;
+
+	
+	// ==========================================================================================================================================================================================================================================
+	// support
     
     private class Bead extends Circle {
     	public Bead() {
@@ -252,16 +282,16 @@ public class CircularPane extends Pane {
     	}
     }
     
-    private double computeSize(SIZE size) {
+    private double computeChainDiameter(SIZE size) {
     	List<Node> nodes = getManagedChildren();
     	nodes.removeAll(nodeToBeadMap.values());
     	int numberOfNodes = nodes.size();
     	double lMaximumSize = 0;
     	if (getChildrenAreCircular()) {
-    		lMaximumSize = determineMaxWidthHeight(nodes, size);
+    		lMaximumSize = determineBeadDiameterUsingWidthOrHeight(nodes, size);
     	}
     	else {
-    		lMaximumSize = determineMaxDiameter(nodes, size);
+    		lMaximumSize = determineBeadDiameterUsingTheDiagonal(nodes, size);
     	}
     	if (numberOfNodes == 0) {
     		return 0;
@@ -278,7 +308,7 @@ public class CircularPane extends Pane {
     	return lDiameter;
     }
 
-	private double determineMaxWidthHeight(List<Node> nodes, SIZE size) {
+	private double determineBeadDiameterUsingWidthOrHeight(List<Node> nodes, SIZE size) {
 		double lMaximumSize = 0; 
 		for (Node lNode : nodes) {
 			if (lNode instanceof Bead) {
@@ -296,7 +326,7 @@ public class CircularPane extends Pane {
 		return lMaximumSize;
 	}
     
-	private double determineMaxDiameter(List<Node> nodes, SIZE size) {
+	private double determineBeadDiameterUsingTheDiagonal(List<Node> nodes, SIZE size) {
 		double lMaximumSize = 0; 
 		for (Node lNode : nodes) {
 			if (lNode instanceof Bead) {
@@ -332,15 +362,31 @@ public class CircularPane extends Pane {
     	return n.prefHeight(-1);
     }
     
-    private double calculateNodeWidth(Node n) {
-    	return n.prefWidth(-1);
-    }
-    
-    private double calculateNodeHeight(Node n) {
-    	return n.prefHeight(-1);
-    }
-    
     private double degreesToRadials(double d) {
     	return d / 360 * 2 * Math.PI;
     }
+    
+    private double marginLeft() {
+        double startAngle = getStartAngle();
+        double arc = getArc();
+        double endAngle = startAngle + arc;
+        double chainWidth = computeChainDiameter(SIZE.PREF);
+        double chainCenterX = chainWidth / 2;
+        
+        // if left most point of circle is part of the arc, then the margin is 0
+        if (startAngle <= 270 &&  endAngle >= 270) {
+            return 0;
+        }
+        
+        // determine X of both angles
+        final double lStartX = chainCenterX + (chainWidth / 2 * Math.sin(degreesToRadials(startAngle)));
+        final double lEndX = chainCenterX + (chainWidth / 2 * Math.sin(degreesToRadials(endAngle)));
+        
+        // what is the lowest value
+        double lX = chainCenterX;
+        lX = Math.min(lStartX, lX);
+        lX = Math.min(lEndX, lX);
+        return lX;
+    }
+
 }
