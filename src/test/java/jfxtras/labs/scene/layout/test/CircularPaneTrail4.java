@@ -2,12 +2,13 @@ package jfxtras.labs.scene.layout.test;
 
 
 import javafx.application.Application;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.layout.CircularPane;
-import jfxtras.scene.layout.HBox;
 
 public class CircularPaneTrail4 extends Application {
 
@@ -18,11 +19,13 @@ public class CircularPaneTrail4 extends Application {
 	@Override
 	public void start(Stage stage) {
 
-		VBox lVBox = new VBox();		
-		HBox lHBox = new HBox(0);
-		lVBox.getChildren().add(lHBox);
-
-		for (int j = 1; j < 360; j += 15)
+		FlowPane lFlowPane = new FlowPane();
+	    lFlowPane.setVgap(20);
+	    lFlowPane.setHgap(20);
+	    Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+	    lFlowPane.setPrefWrapLength(primaryScreenBounds.getWidth());
+	     
+		for (int j = 0; j < 360; j += 10)
 		{
 			CircularPane lCircularPane = new CircularPane();
 			lCircularPane.setStyle("-fx-border-color:black;");
@@ -30,19 +33,15 @@ public class CircularPaneTrail4 extends Application {
 			lCircularPane.setStartAngle( (double)j );
 			lCircularPane.setArc(90.0);
 			for (int i = 0; i < 10; i++) {
-				javafx.scene.shape.Rectangle c = new javafx.scene.shape.Rectangle(10,10);
+				javafx.scene.shape.Rectangle c = new javafx.scene.shape.Rectangle(15,15);
 				//c.setStroke(Color.RED);
 				lCircularPane.getChildren().add(c);
 			}
-			lHBox.getChildren().add(lCircularPane);
-			if (lHBox.prefWidth(-1) > 1500) {
-				lHBox = new HBox(0);
-				lVBox.getChildren().add(lHBox);
-			}
+			lFlowPane.getChildren().add(lCircularPane);
 		}
 
         // setup scene
-		Scene scene = new Scene(lVBox);
+		Scene scene = new Scene(lFlowPane);
 		scene.getStylesheets().add(this.getClass().getName().replace(".", "/") + ".css");
 		
         // create stage
