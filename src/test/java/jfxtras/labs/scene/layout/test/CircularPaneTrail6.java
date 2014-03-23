@@ -20,13 +20,13 @@ public class CircularPaneTrail6 extends Application {
 		HBox lHBox = new HBox();
 		
 		CircularPane lCircularPane = new CircularPane();
-		lCircularPane.setStyle("-fx-border-color:black;");
-		lCircularPane.setShowDebug(Color.GREEN);
-		lCircularPane.setStartAngle(30.0); 
+//		lCircularPane.setStyle("-fx-border-color:black;");
+//		lCircularPane.setShowDebug(Color.GREEN);
+//		lCircularPane.setStartAngle(30.0); 
 		for (int i = 0; i < 20; i++) {
-			javafx.scene.shape.Rectangle c = new javafx.scene.shape.Rectangle(10,10);
-			//c.setStroke(Color.RED);
-			lCircularPane.getChildren().add(c);
+//			javafx.scene.shape.Rectangle c = new javafx.scene.shape.Rectangle(10,10);
+//			lCircularPane.getChildren().add(c);
+			lCircularPane.getChildren().add(new javafx.scene.control.Button("XX"));
 		}
 		lHBox.add(lCircularPane);
 
