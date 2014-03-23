@@ -106,65 +106,29 @@ public class CircularPane extends Pane {
 	
     @Override 
     protected double computeMinWidth(double height) {
-//    	return computeChainDiameter(SIZE.MIN);
-return computePrefWidth(-1);
+    	ClipInfo lClipInfo = computePossiblyClippedWidth(Size.MIN);
+		return lClipInfo.clippedSize;
     }
 
     @Override 
     protected double computeMinHeight(double width) {
-//    	return computeChainDiameter(Size.MIN);
-return computePrefHeight(-1);
+    	ClipInfo lClipInfo = computePossiblyClippedHeight(Size.MIN);
+		return lClipInfo.clippedSize;
     }
 
     @Override 
     protected double computePrefWidth(double height) {
-    	prefWidth = Math.ceil(computeChainDiameter(Size.PREF));
-    	//System.out.println(getId() + ": computePrefWidth prefWidth=" + prefWidth);
-
-    	prefClippedLeft = Math.floor(clipLeft(prefWidth));
-    	//System.out.println(getId() + ": computePrefWidth prefClippedLeft=" + prefClippedLeft);
-
-		prefClippedRight = Math.floor(clipRight(prefWidth));
-		//System.out.println(getId() + ": computePrefWidth prefClippedRight=" + prefClippedRight);
-
-    	prefClippedWidth = Math.ceil(prefWidth - prefClippedLeft - prefClippedRight);
-    	//System.out.println(getId() + ": computePrefWidth prefClippedWidth=" + prefClippedWidth + " ***");
-
-		widthFactor = prefWidth / prefClippedWidth;
-		//System.out.println(getId() + ": computePrefWidth widthFactor=" + widthFactor);
-
-    	return prefClippedWidth;
+    	prefWidthClipInfo = computePossiblyClippedWidth(Size.PREF);
+		return prefWidthClipInfo.clippedSize;
     }
-    private double prefWidth = 0.0;
-    private double prefClippedLeft = 0.0;
-    private double prefClippedRight = 0.0;
-    private double prefClippedWidth = 0.0;
-    private double widthFactor = 1.0;
+    private ClipInfo prefWidthClipInfo = null;
 
     @Override 
     protected double computePrefHeight(double width) {
-    	prefHeight = Math.ceil(computeChainDiameter(Size.PREF));
-    	//System.out.println(getId() + ": computePrefHeight prefHeight=" + prefHeight);
-
-    	prefClippedTop = Math.floor(clipTop(prefHeight));
-    	//System.out.println(getId() + ": computePrefHeight prefClippedTop=" + prefClippedTop);
-
-		prefClippedBottom = Math.floor(clipBottom(prefHeight));
-		//System.out.println(getId() + ": computePrefHeight prefClippedBottom=" + prefClippedBottom);
-
-    	prefClippedHeight = Math.ceil(prefHeight - prefClippedTop - prefClippedBottom);
-    	//System.out.println(getId() + ": computePrefHeight prefClippedHeight=" + prefClippedHeight + " ***");
-
-		heightFactor = prefHeight / prefClippedHeight;
-		//System.out.println(getId() + ": computePrefHeight HeightFactor=" + heightFactor);
-
-    	return prefClippedHeight;
+    	prefHeightClipInfo = computePossiblyClippedHeight(Size.PREF);
+		return prefHeightClipInfo.clippedSize;
     }
-    private double prefHeight = 0.0;
-    private double prefClippedTop = 0.0;
-    private double prefClippedBottom = 0.0;
-    private double prefClippedHeight = 0.0;
-    private double heightFactor = 1.0;
+    private ClipInfo prefHeightClipInfo = null;
 
     @Override 
     protected double computeMaxWidth(double height) {
@@ -181,18 +145,17 @@ return computePrefHeight(-1);
     	// the Pane implementations in JavaFX will actually make CircularPane always grow into any additional space, instead of keeping its preferred size.
     	// In my opinion this is wrong, but unfortunately this is the way things are in JavaFX.
     	// Therefore the Max size is the preferred size. 
-//    	return computeChainDiameter(Size.PREF);
-return computePrefWidth(-1);
+    	ClipInfo lClipInfo = computePossiblyClippedWidth(Size.PREF);
+		return lClipInfo.clippedSize;
     }
 
     @Override 
     protected double computeMaxHeight(double width) {
     	// For an explanation, see computerMaxWidth
-//    	return computeChainDiameter(Size.PREF);
-return computePrefHeight(-1);
+    	ClipInfo lClipInfo = computePossiblyClippedHeight(Size.PREF);
+		return lClipInfo.clippedSize;
     }
 
-	
 	// ==========================================================================================================================================================================================================================================
 	// layout
 
@@ -225,10 +188,10 @@ return computePrefHeight(-1);
 	    	// But in order to do the calculations, we need to reverse engineer the available possibly clipped width & height to the full size
 	    	double lLayoutWidth = getWidth(); // System.out.println(getId() + ": layout layoutWidth=" + lLayoutWidth);	    
 			double lLayoutHeight = getHeight(); // System.out.println(getId() + ": layout lLayoutHeight=" + lLayoutHeight);
-	    	double lUnclippedWidth = lLayoutWidth * widthFactor; // System.out.println(getId() + ": layout unclippedWidth=" + lUnclippedWidth);
-			double lUnclippedHeight = lLayoutHeight * heightFactor; // System.out.println(getId() + ": layout lUnclippedHeight=" + lUnclippedHeight);
-			double lClipLeft = prefClippedLeft * (lUnclippedWidth / prefWidth); // System.out.println(getId() + ": layout clipLeft=" + lClipLeft);		
-			double lClipTop = prefClippedTop * (lUnclippedHeight / prefHeight); // System.out.println(getId() + ": layout lClipTop=" + lClipTop);
+	    	double lUnclippedWidth = lLayoutWidth * prefWidthClipInfo.clippedToFullSizeFactor; // System.out.println(getId() + ": layout unclippedWidth=" + lUnclippedWidth);
+			double lUnclippedHeight = lLayoutHeight * prefHeightClipInfo.clippedToFullSizeFactor; // System.out.println(getId() + ": layout lUnclippedHeight=" + lUnclippedHeight);
+			double lClipLeft = prefWidthClipInfo.clipBefore * (lUnclippedWidth / prefWidthClipInfo.fullSize); // System.out.println(getId() + ": layout clipLeft=" + lClipLeft);		
+			double lClipTop = prefHeightClipInfo.clipBefore * (lUnclippedHeight / prefHeightClipInfo.fullSize); // System.out.println(getId() + ": layout lClipTop=" + lClipTop);
 
 			// prepare the layout loop
 			// chain goes through the center of the beads, so on both sides 1/2 a bead must be subtracted
@@ -336,6 +299,34 @@ return computePrefHeight(-1);
 	
 	// ==========================================================================================================================================================================================================================================
 	// support
+
+    private ClipInfo computePossiblyClippedWidth(Size size) {
+    	ClipInfo lClipInfo = new ClipInfo();
+		lClipInfo.fullSize = Math.ceil(computeChainDiameter(size));
+		lClipInfo.clipBefore = Math.floor(clipLeft(lClipInfo.fullSize, size));
+		lClipInfo.clipAfter = Math.floor(clipRight(lClipInfo.fullSize, size));
+		lClipInfo.clippedSize = Math.ceil(lClipInfo.fullSize - lClipInfo.clipBefore - lClipInfo.clipAfter);
+		lClipInfo.clippedToFullSizeFactor = lClipInfo.fullSize / lClipInfo.clippedSize;
+		return lClipInfo;
+    }
+
+    private ClipInfo computePossiblyClippedHeight(Size size) {
+    	ClipInfo lClipInfo = new ClipInfo();
+		lClipInfo.fullSize = Math.ceil(computeChainDiameter(size));
+		lClipInfo.clipBefore = Math.floor(clipTop(lClipInfo.fullSize, size));
+		lClipInfo.clipAfter = Math.floor(clipBottom(lClipInfo.fullSize, size));
+		lClipInfo.clippedSize = Math.ceil(lClipInfo.fullSize - lClipInfo.clipBefore - lClipInfo.clipAfter);
+		lClipInfo.clippedToFullSizeFactor = lClipInfo.fullSize / lClipInfo.clippedSize;
+		return lClipInfo;
+    }
+    
+    private class ClipInfo {
+    	double fullSize;
+    	double clipBefore;
+    	double clipAfter;
+    	double clippedSize;
+    	double clippedToFullSizeFactor;
+    }
 
 	private List<Node> getManagedChildrenWithoutBeads() {
     	List<Node> nodes = new ArrayList<>(getManagedChildren());
@@ -460,14 +451,9 @@ return computePrefHeight(-1);
     	return n.prefHeight(-1);
     }
     
-    private double degreesToRadials(double d) {
-    	double r = (d % 360) / 360 * 2 * Math.PI;
-    	return r;
-    }
-    
-    private double clipLeft(double width) {
+    private double clipLeft(double width, Size size) {
     	// prepare
-    	double lBeadDiameter = determineBeadDiameter(Size.PREF);    	
+    	double lBeadDiameter = determineBeadDiameter(size);    	
         double lChainDiameter = width - lBeadDiameter;
 
         double startAngle = getStartAngle360();
@@ -489,9 +475,9 @@ return computePrefHeight(-1);
         return lX;
     }
 
-    private double clipRight(double width) {
+    private double clipRight(double width, Size size) {
     	// prepare
-    	double lBeadDiameter = determineBeadDiameter(Size.PREF);    	
+    	double lBeadDiameter = determineBeadDiameter(size);    	
         double lChainDiameter = width - lBeadDiameter;
 
         double startAngle = getStartAngle360();
@@ -516,9 +502,9 @@ return computePrefHeight(-1);
         return lX;
     }
     
-    private double clipTop(double height) {
+    private double clipTop(double height, Size size) {
     	// prepare
-    	double lBeadDiameter = determineBeadDiameter(Size.PREF);    	
+    	double lBeadDiameter = determineBeadDiameter(size);    	
         double lChainDiameter = height - lBeadDiameter;
 
         double startAngle = getStartAngle360();
@@ -543,9 +529,9 @@ return computePrefHeight(-1);
         return lY;
     }
     
-    private double clipBottom(double height) {
+    private double clipBottom(double height, Size size) {
     	// prepare
-    	double lBeadDiameter = determineBeadDiameter(Size.PREF);    	
+    	double lBeadDiameter = determineBeadDiameter(size);    	
         double lChainDiameter = height - lBeadDiameter;
 
         double startAngle = getStartAngle360();
@@ -571,5 +557,10 @@ return computePrefHeight(-1);
         // determine offset from the bottom
         lY = lChainDiameter - lY;
         return lY;
+    }
+    
+    private double degreesToRadials(double d) {
+    	double r = (d % 360) / 360 * 2 * Math.PI;
+    	return r;
     }
 }
