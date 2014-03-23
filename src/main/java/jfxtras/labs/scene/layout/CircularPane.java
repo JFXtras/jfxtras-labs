@@ -17,9 +17,9 @@ import javafx.scene.shape.Circle;
 
 
 /**
- * This pane lays it children out in a circle.
+ * This pane lays it children out in a circle or part of a circle (arc).
  * 
- * In order to understand how to tune this pane, it is important to understand how it does its places its children.
+ * In order to understand how to use this pane, it is important to understand how it places its children.
  * Placing nodes on a circle in essence is not that difficult; a circle is 360 degrees, so each node is spaced 360 / n degrees apart, the real challenge is to determine how large the circle must be.
  * Nodes in JavaFX are rectangles with a width and a height, but for calculating in a circle the rectangular shape is impractical. 
  * So CircularPane treats its child nodes as circles, or for better visualization: as beads on a chain.
@@ -32,8 +32,9 @@ import javafx.scene.shape.Circle;
  * But the childrenAreCircles property allows the user to inform CircularPane than all the children are circular (or smaller), so it can then use the width or height to calculate the encompassing circle.  
  *
  * CircularPane segments the 360 degrees in equal parts; 360 / number of children. 
- * The largest bead determines the distance from the origin to where it fits in a segment, and this determines the size of the circle.
- * By setting a debug color, the beads will be drawn.
+ * The largest bead determines the distance from the origin to where it fits in a segment, and this determines the size of the chain.
+ * 
+ * By setting a debug color, the beads will be drawn and will clarify the layout.
  * 
  * @author Tom Eugelink
  *
