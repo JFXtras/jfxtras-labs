@@ -250,11 +250,11 @@ public class CircularPane extends Pane {
 	    		double lH = calculateNodeHeight(lNode, Size.PREF);
 	    		// if we are rendered smaller than the preferred, scale down to min gracefully
 	    		if (lPrefToMinFactor < 1.0) {
+	    			// width
 		    		lW *= lPrefToMinFactor;
 		    		double lMinW = calculateNodeWidth(lNode, Size.MIN);
 		    		lW = Math.max(lW, lMinW);
-	    		}
-	    		if (lPrefToMinFactor < 1.0) {
+		    		// height
 		    		lH *= lPrefToMinFactor;
 		    		double lMinH = calculateNodeHeight(lNode, Size.MIN);
 		    		lH = Math.max(lH, lMinH);
