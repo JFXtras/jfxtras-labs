@@ -180,11 +180,6 @@ public class CircularPane extends Pane {
 	    	}
 	    	int numberOfNodes = nodes.size() - nodeToBeadMap.size();
 	    	
-	    	// determine the basic size we layout with
-	    	// TODO: when to use SIZE.MIN?
-	    	double lBeadDiameter = determineBeadDiameter(Size.PREF);
-	    	//System.out.println(getId() + ": layout lBeadDiameter=" + lBeadDiameter);	    	
-
 	    	// So we get a certain width & height assigned, and in this space we must render the nodes
 	    	// But in order to do the calculations, we need to reverse engineer the available possibly clipped width & height to the full size
 	    	double lLayoutWidth = getWidth(); // System.out.println(getId() + ": layout layoutWidth=" + lLayoutWidth);	    
@@ -193,6 +188,29 @@ public class CircularPane extends Pane {
 			double lUnclippedHeight = lLayoutHeight * prefHeightClipInfo.clippedToFullSizeFactor; // System.out.println(getId() + ": layout lUnclippedHeight=" + lUnclippedHeight);
 			double lClipLeft = prefWidthClipInfo.clipBefore * (lUnclippedWidth / prefWidthClipInfo.fullSize); // System.out.println(getId() + ": layout clipLeft=" + lClipLeft);		
 			double lClipTop = prefHeightClipInfo.clipBefore * (lUnclippedHeight / prefHeightClipInfo.fullSize); // System.out.println(getId() + ": layout lClipTop=" + lClipTop);
+
+    		// if we are rendered smaller than the preferred, we slowly scale down to the min instead of jumping
+			double lPrefToMinWidthFactor = 1.0;
+    		if (lLayoutWidth < prefWidthClipInfo.clippedSize) {
+    			lPrefToMinWidthFactor = lLayoutWidth / prefWidthClipInfo.clippedSize;
+    		}
+			double lPrefToMinHeightFactor = 1.0;
+    		if (lLayoutHeight < prefHeightClipInfo.clippedSize) {
+    			lPrefToMinHeightFactor = lLayoutHeight / prefHeightClipInfo.clippedSize;
+    		}
+			double lPrefToMinFactor = Math.min(lPrefToMinWidthFactor, lPrefToMinHeightFactor);
+	    	//System.out.println(getId() + ": layout lPrefToMinFactor=" + lPrefToMinFactor);	    	
+
+    		// determine the bead size we layout with
+	    	double lBeadDiameter = determineBeadDiameter(Size.PREF);
+	    	if (lPrefToMinFactor < 1.0) {
+	    		lBeadDiameter *= lPrefToMinFactor;
+		    	double lBeadDiameterMin = determineBeadDiameter(Size.MIN);
+		    	if (lBeadDiameter < lBeadDiameterMin) {
+		    		lBeadDiameter = lBeadDiameterMin;
+		    	}
+	    	}
+	    	//System.out.println(getId() + ": layout lBeadDiameter=" + lBeadDiameter);	    	
 
 			// prepare the layout loop
 			// chain goes through the center of the beads, so on both sides 1/2 a bead must be subtracted
@@ -227,10 +245,20 @@ public class CircularPane extends Pane {
 		    		lBead.setTranslateY(lBeadDiameter / 2);
 	    		}	    		
 
-	    		// now place the node 
-	    		// TODO: when / how to use MIN?
+	    		// size the node 
 	    		double lW = calculateNodeWidth(lNode, Size.PREF);
 	    		double lH = calculateNodeHeight(lNode, Size.PREF);
+	    		// if we are rendered smaller than the preferred, scale down to min gracefully
+	    		if (lPrefToMinFactor < 1.0) {
+		    		lW *= lPrefToMinFactor;
+		    		double lMinW = calculateNodeWidth(lNode, Size.MIN);
+		    		lW = Math.max(lW, lMinW);
+	    		}
+	    		if (lPrefToMinFactor < 1.0) {
+		    		lH *= lPrefToMinFactor;
+		    		double lMinH = calculateNodeHeight(lNode, Size.MIN);
+		    		lH = Math.max(lH, lMinH);
+	    		}
 	    		lNode.resize(lW, lH);
 	    		
 	    		// place on the right spot
@@ -388,10 +416,10 @@ public class CircularPane extends Pane {
 	private double determineBeadDiameter(Size size) {
 		double lBeadDiameter = 0.0;
 		if (getChildrenAreCircular()) {
-			lBeadDiameter = determineBeadDiameterUsingWidthOrHeight(Size.PREF);
+			lBeadDiameter = determineBeadDiameterUsingWidthOrHeight(size);
 		}
 		else {
-			lBeadDiameter = determineBeadDiameterUsingTheDiagonal(Size.PREF);
+			lBeadDiameter = determineBeadDiameterUsingTheDiagonal(size);
 		}
 		return lBeadDiameter;
 	}
