@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2011-2014, JFXtras
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *     * Neither the name of the organization nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -29,9 +29,8 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
-
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
@@ -45,12 +44,15 @@ import javafx.scene.control.Control;
 import javafx.scene.control.SkinBase;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.util.Duration;
 import jfxtras.labs.scene.control.BigDecimalField;
+
+import java.math.BigDecimal;
+import java.text.ParseException;
 
 
 /**
@@ -62,7 +64,7 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
 
     private BigDecimalField CONTROL;
 
-	public BigDecimalFieldSkin(BigDecimalField control) {
+    public BigDecimalFieldSkin(BigDecimalField control) {
         super(control);
         this.CONTROL = control;
         createNodes();
@@ -70,16 +72,17 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
         getSkinnable().requestLayout();
     }
 
-	private NumberTextField	textField;
-	private StackPane	btnUp;
-	private StackPane	btnDown;
-	private Path		arrowUp;
-	private Path		arrowDown;
-	private final double	ARROW_SIZE	= 4;
-	private final double	ARROW_HEIGHT	= 0.7;
+    private NumberTextField	textField;
+    private StackPane	btnUp;
+    private StackPane	btnDown;
+    private Path		arrowUp;
+    private Path		arrowDown;
+    private final double	ARROW_SIZE	= 4;
+    private final double	ARROW_HEIGHT	= 0.7;
+    private Timeline  timeline;
 
     public BigDecimalField getControl() {return CONTROL;}
-    
+
     /**
      * Creates the Nodes in this Skin
      */
@@ -107,28 +110,42 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
         arrowDown.getElements().addAll(new MoveTo(-ARROW_SIZE, 0), new LineTo(0, ARROW_SIZE * ARROW_HEIGHT),
                 new LineTo(ARROW_SIZE, 0));
         btnDown.getChildren().add(arrowDown);
-        
+
 
         this.getChildren().addAll(textField, btnUp, btnDown);
 
         //
         // Mouse Handler for buttons
         //
-        btnUp.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(MouseEvent arg0) {
-                CONTROL.increment();
-            }
+        timeline = new Timeline();
+        final EventHandler<ActionEvent> btnUpHandler = actionEvent -> CONTROL.increment();
+        btnUp.setOnMousePressed(arg0 -> {
+            final KeyFrame kf = new KeyFrame(Duration.millis(50), btnUpHandler);
+            timeline.setDelay(Duration.millis(500));
+            timeline.getKeyFrames().clear();
+            timeline.getKeyFrames().add(kf);
+            timeline.setCycleCount(Timeline.INDEFINITE);
+            timeline.play();
+            btnUpHandler.handle(null);
         });
-        btnDown.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        btnUp.setOnMouseReleased(mouseEvent -> timeline.stop());
 
-            @Override
-            public void handle(MouseEvent arg0) {
-                CONTROL.decrement();
-            }
+
+        final EventHandler<ActionEvent> btnDownHandler = actionEvent -> {
+            CONTROL.decrement();
+        };
+        btnDown.setOnMousePressed(arg0 -> {
+            final KeyFrame kf = new KeyFrame(Duration.millis(50), btnUpHandler);
+            timeline.setDelay(Duration.millis(500));
+            timeline.getKeyFrames().clear();
+            timeline.getKeyFrames().add(kf);
+            timeline.setCycleCount(Timeline.INDEFINITE);
+            timeline.play();
+            btnDownHandler.handle(null);
         });
-        
+        btnDown.setOnMouseReleased(mouseEvent -> timeline.stop());
+
+
     }
 
     @Override
@@ -144,9 +161,9 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
         layoutInArea(textField, x, y, textfieldWidth, textfieldHeight, Control.USE_PREF_SIZE, HPos.LEFT, VPos.TOP);
         layoutInArea(btnUp, x+textfieldWidth+buttonInsets.getLeft(), y, buttonWidth, textfieldHeight/2, Control.USE_PREF_SIZE, HPos.LEFT, VPos.TOP);
         layoutInArea(btnDown, x+textfieldWidth+buttonInsets.getLeft(), y+textfieldHeight/2, buttonWidth, textfieldHeight/2, Control.USE_PREF_SIZE, HPos.LEFT, VPos.TOP);
-  }
+    }
 
-    
+
     @Override
     protected double computePrefWidth(double PREF_WIDTH, double topInset, double rightInset, double bottomInset, double leftInset) {
         super.computePrefWidth(PREF_WIDTH, topInset, rightInset, bottomInset, leftInset);
@@ -160,35 +177,35 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
     @Override
     protected double computePrefHeight(double PREF_HEIGHT, double topInset, double rightInset, double bottomInset, double leftInset) {
         super.computePrefHeight(PREF_HEIGHT, topInset, rightInset, bottomInset, leftInset);
-        double prefHeight = getSkinnable().getInsets().getTop() 
+        double prefHeight = getSkinnable().getInsets().getTop()
                 + textField.prefHeight(PREF_HEIGHT)
                 +getSkinnable().getInsets().getBottom();
         return prefHeight;
     }
-    
-    
 
-    
-    
-	/**
-	 * The BigDecimalField itself is never focused (setFocusTraversable(false),
-	 * but we want it to look focused when the textfield has the focus.
-	 * 
-	 */
+
+
+
+
+    /**
+     * The BigDecimalField itself is never focused (setFocusTraversable(false),
+     * but we want it to look focused when the textfield has the focus.
+     *
+     */
     private void initFocusSimulation() {
 
-    	// If the TextField gains/loses focus the style of the CONTROL is changed
-		textField.focusedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> ov,
-					Boolean wasFocused, Boolean isFocused) {
-				if (isFocused) {
-					CONTROL.getStyleClass().add("big-decimal-field-focused");
-				} else {
-					CONTROL.getStyleClass().remove("big-decimal-field-focused");
-				}
-			}
-		});
+        // If the TextField gains/loses focus the style of the CONTROL is changed
+        textField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> ov,
+                                Boolean wasFocused, Boolean isFocused) {
+                if (isFocused) {
+                    CONTROL.getStyleClass().add("big-decimal-field-focused");
+                } else {
+                    CONTROL.getStyleClass().remove("big-decimal-field-focused");
+                }
+            }
+        });
 
     }
 
@@ -272,11 +289,11 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
                 setText(CONTROL.getText());
             } catch (IllegalArgumentException ex) {
                 // If minValue and/or maxValue are set and the new number is out of these bounds
-            	// keep also the old number
+                // keep also the old number
                 setText(CONTROL.getText());
             }
         }
-        
+
     }
 
 }
