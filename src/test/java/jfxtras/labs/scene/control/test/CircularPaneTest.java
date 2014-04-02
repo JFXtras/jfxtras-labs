@@ -102,7 +102,37 @@ public class CircularPaneTest extends JFXtrasGuiTest {
 		// TODO: this should be 43: Assert.assertEquals(43, circularPane.getHeight(), 0.01);
 		//generateNodeAsserts(circularPane.getChildren());
 		List<NodeAssert> lNodeAsserts = Arrays.asList(new NodeAssert[]{  new NodeAssert(0, 63.78679656440357, 21.5, 15.0, 15.0, javafx.scene.shape.Circle.class)
-	    , new NodeAssert(1, 21.213203435596427, 21.5, 15.0, 15.0, javafx.scene.shape.Circle.class)
+	    	, new NodeAssert(1, 21.213203435596427, 21.5, 15.0, 15.0, javafx.scene.shape.Circle.class)
+		});
+		
+		for (NodeAssert lNodeAssert : lNodeAsserts) {
+			lNodeAssert.assertNode(circularPane.getChildren(), 0.01);
+		}
+	}
+
+	@Test
+	public void twoNodesAt45Degrees() {
+		setLabel("twoNodesAt45Degrees");
+
+		// insert 2 circles
+		PlatformUtil.runAndWait( () -> {
+			circularPane.getChildren().clear();
+			circularPane.setStartAngle(45.0);
+			for (int i = 0; i < 2; i++) {
+				javafx.scene.shape.Circle c = new javafx.scene.shape.Circle(15);
+				circularPane.getChildren().add(c);
+			}
+		});
+		TestUtil.waitForPaintPulse();
+
+		//System.out.println(circularPane.getWidth());
+		//System.out.println(circularPane.getHeight());
+		// TODO: both should be less than 79
+		Assert.assertEquals(79, circularPane.getWidth(), 0.01);
+		Assert.assertEquals(79, circularPane.getHeight(), 0.01);
+		//generateNodeAsserts(circularPane.getChildren());
+		List<NodeAssert> lNodeAsserts = Arrays.asList(new NodeAssert[]{ new NodeAssert(0, 51.55203820042827, 21.44796179957173, 15.0, 15.0, javafx.scene.shape.Circle.class)
+	    	, new NodeAssert(1, 21.447961799571733, 51.55203820042827, 15.0, 15.0, javafx.scene.shape.Circle.class)
 		});
 		
 		for (NodeAssert lNodeAssert : lNodeAsserts) {
