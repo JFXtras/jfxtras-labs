@@ -55,7 +55,8 @@ abstract public class JFXtrasGuiTest extends org.loadui.testfx.GuiTest {
 		for (int i = keyCodes.length - 1; i >=0 ; i--) {
 			release(keyCodes[i]);
 		}
-		return release(keyCode);
+		release(keyCode);
+		return this;
 	}
 
 

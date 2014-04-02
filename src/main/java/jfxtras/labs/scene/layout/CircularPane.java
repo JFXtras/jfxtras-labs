@@ -98,7 +98,7 @@ public class CircularPane extends Pane {
 
 	/** animate: is the layout animating */
 	public ObjectProperty<Boolean> animateProperty() { return animateObjectProperty; }
-	final private ObjectProperty<Boolean> animateObjectProperty = new SimpleObjectProperty<Boolean>(this, "animate", true);
+	final private ObjectProperty<Boolean> animateObjectProperty = new SimpleObjectProperty<Boolean>(this, "animate", false);
 	public Boolean getAnimate() { return animateObjectProperty.getValue(); }
 	public void setAnimate(Boolean value) { animateObjectProperty.setValue(value); }
 	public CircularPane withAnimate(Boolean value) { setAnimate(value); return this; } 
@@ -189,6 +189,7 @@ public class CircularPane extends Pane {
     @Override 
     protected void layoutChildren() {
     	if (layingoutChilderen.get() > 0) {
+    		// TODO: remember and request a relayout once we're done?
     		return;
     	}    	
     	layingoutChilderen.addAndGet(1);

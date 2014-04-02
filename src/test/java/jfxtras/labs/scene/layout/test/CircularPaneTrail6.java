@@ -17,8 +17,6 @@ public class CircularPaneTrail6 extends Application {
 	@Override
 	public void start(Stage stage) {
 
-		HBox lHBox = new HBox();
-		
 		CircularPane lCircularPane = new CircularPane();
 //		lCircularPane.setStyle("-fx-border-color:black;");
 		lCircularPane.setShowDebug(Color.GREEN);
@@ -28,10 +26,9 @@ public class CircularPaneTrail6 extends Application {
 //			lCircularPane.getChildren().add(c);
 			lCircularPane.getChildren().add(new javafx.scene.control.Button("X X X"));
 		}
-		lHBox.add(lCircularPane);
 
         // setup scene
-		Scene scene = new Scene(lHBox);
+		Scene scene = new Scene(lCircularPane);
 		scene.getStylesheets().add(this.getClass().getName().replace(".", "/") + ".css");
 		
         // create stage
