@@ -47,7 +47,7 @@ public class CircularPane extends Pane {
 
 	
 	// ==========================================================================================================================================================================================================================================
-	// properties
+	// PROPERTIES
 
 	/** Id */
 	public CircularPane withId(String v) { setId(v); return this; }
@@ -129,7 +129,7 @@ public class CircularPane extends Pane {
 
 	
 	// ==========================================================================================================================================================================================================================================
-	// computer size
+	// PANE
 	
     @Override 
     protected double computeMinWidth(double height) {
@@ -208,13 +208,13 @@ public class CircularPane extends Pane {
 	    	int numberOfNodes = nodes.size() - nodeToBeadMap.size();
 	    	
 	    	// So we get a certain width & height assigned, and in this space we must render the nodes
-	    	// But in order to do the calculations, we need to reverse engineer the available possibly clipped width & height to the full size
+	    	// But in order to do the calculations, we need to reverse engineer the available (possibly clipped) width & height to the full (unclipped) size
 	    	double lLayoutWidth = getWidth(); // System.out.println(getId() + ": layout layoutWidth=" + lLayoutWidth);	    
 			double lLayoutHeight = getHeight(); // System.out.println(getId() + ": layout lLayoutHeight=" + lLayoutHeight);
-	    	double lUnclippedWidth = lLayoutWidth * prefWidthClipInfo.clippedToFullSizeFactor; // System.out.println(getId() + ": layout unclippedWidth=" + lUnclippedWidth);
-			double lUnclippedHeight = lLayoutHeight * prefHeightClipInfo.clippedToFullSizeFactor; // System.out.println(getId() + ": layout lUnclippedHeight=" + lUnclippedHeight);
-			double lClipLeft = prefWidthClipInfo.clipBefore * (lUnclippedWidth / prefWidthClipInfo.fullSize); // System.out.println(getId() + ": layout clipLeft=" + lClipLeft);		
-			double lClipTop = prefHeightClipInfo.clipBefore * (lUnclippedHeight / prefHeightClipInfo.fullSize); // System.out.println(getId() + ": layout lClipTop=" + lClipTop);
+	    	double lUnclippedWidth = lLayoutWidth * prefWidthClipInfo.clippedToFullSizeFactor; //System.out.println(getId() + ": layout unclippedWidth=" + lUnclippedWidth);
+			double lUnclippedHeight = lLayoutHeight * prefHeightClipInfo.clippedToFullSizeFactor; //System.out.println(getId() + ": layout lUnclippedHeight=" + lUnclippedHeight);
+			double lClipLeft = prefWidthClipInfo.clipBefore * (lUnclippedWidth / prefWidthClipInfo.fullSize); //System.out.println(getId() + ": layout lClipLeft=" + lClipLeft);		
+			double lClipTop = prefHeightClipInfo.clipBefore * (lUnclippedHeight / prefHeightClipInfo.fullSize); //System.out.println(getId() + ": layout lClipTop=" + lClipTop);
 
     		// if we are rendered smaller than the preferred, we slowly scale down to the min instead of jumping
 			double lPrefToMinWidthFactor = 1.0;
@@ -241,21 +241,21 @@ public class CircularPane extends Pane {
 
 			// prepare the layout loop
 			// chain goes through the center of the beads, so on both sides 1/2 a bead must be subtracted
-	    	double lChainWidth = lUnclippedWidth - lBeadDiameter;  
+	    	double lChainWidth = lUnclippedWidth - lBeadDiameter;
 	    	double lChainHeight = lUnclippedHeight - lBeadDiameter;
 	    	double lAngleStep = getArc() / numberOfNodes;
 	    	double lAngle = getStartAngle360();
-	    	// System.out.println(getId() + ": layout startAngle=" + lAngle);	    	
-	    	// int cnt = 0;
+	    	//System.out.println(getId() + ": layout startAngle=" + lAngle);	    	
+	    	//int cnt = 0;
 	    	for (final Node lNode : nodes) {
 	    		
 	    		// calculate the X,Y position on the chain where the bead should be placed
-	    		// System.out.println((cnt++) + " layout startAngle=" + lAngle + " " + lNode);
+	    		//System.out.println(cnt + " layout startAngle=" + lAngle + " " + lNode);
 	    		double lBeadCenterX = calculateX(lChainWidth, lAngle);
 	    		double lBeadCenterY = calculateY(lChainHeight, lAngle);
 	    		double lBeadCenterXClipped = lBeadCenterX - lClipLeft;
 	    		double lBeadCenterYClipped = lBeadCenterY - lClipTop;
-	    		// System.out.println(getId() + ": " + (cnt++) + " layout beadCenter=" + lAngle + " (" + lBeadCenterX + "," + lBeadCenterY + ")" + " -> (" + lBeadCenterXClipped + "," + lBeadCenterYClipped + ")");
+	    		//System.out.println(getId() + ": " + cnt + " layout beadCenter=" + lAngle + " (" + lBeadCenterX + "," + lBeadCenterY + ")" + " -> (" + lBeadCenterXClipped + "," + lBeadCenterYClipped + ")");
 	    		
 	    		// place a bead to show where this node should be
 	    		if (getShowDebug() != null) {
@@ -302,8 +302,7 @@ public class CircularPane extends Pane {
 	    		final double lYClipped = lY - lClipTop;
 	    		lNode.setLayoutX(lXClipped); 
 	    		lNode.setLayoutY(lYClipped); 
-	    		// System.out.println(getId() + ": " + (cnt++) + " layout startAngle=" + lAngle + " (" + lX + "," + lY + ") " + " -> (" + lXClipped + "," + lYClipped + ") " + lW + "x" + lH + " " + lNode);
-	    		
+	    		// System.out.println(getId() + ": " + cnt + " layout startAngle=" + lAngle + " (" + lX + "," + lY + ") " + " -> (" + lXClipped + "," + lYClipped + ") " + lW + "x" + lH + " " + lNode);	    		
 
 	    		// animated?
 	    		if (initial && getAnimate()) {
@@ -327,6 +326,7 @@ public class CircularPane extends Pane {
 	    		
 				// next
 	        	lAngle += lAngleStep;
+	        	//cnt++;
 	    	}
 	    	
 	    	// no longer the initial layout
@@ -387,11 +387,11 @@ public class CircularPane extends Pane {
 
 	
 	// ==========================================================================================================================================================================================================================================
-	// support
+	// SUPPORT
 
     private ClipInfo computePossiblyClippedWidth(Size size) {
     	ClipInfo lClipInfo = new ClipInfo();
-		lClipInfo.fullSize = Math.ceil(computeChainDiameter(size));
+		lClipInfo.fullSize = Math.ceil(computeChainDiameter(size, true));
 		lClipInfo.clipBefore = Math.floor(clipLeft(lClipInfo.fullSize, size));
 		lClipInfo.clipAfter = Math.floor(clipRight(lClipInfo.fullSize, size));
 		lClipInfo.clippedSize = Math.ceil(lClipInfo.fullSize - lClipInfo.clipBefore - lClipInfo.clipAfter);
@@ -401,7 +401,7 @@ public class CircularPane extends Pane {
 
     private ClipInfo computePossiblyClippedHeight(Size size) {
     	ClipInfo lClipInfo = new ClipInfo();
-		lClipInfo.fullSize = Math.ceil(computeChainDiameter(size));
+		lClipInfo.fullSize = Math.ceil(computeChainDiameter(size, false));
 		lClipInfo.clipBefore = Math.floor(clipTop(lClipInfo.fullSize, size));
 		lClipInfo.clipAfter = Math.floor(clipBottom(lClipInfo.fullSize, size));
 		lClipInfo.clippedSize = Math.ceil(lClipInfo.fullSize - lClipInfo.clipBefore - lClipInfo.clipAfter);
@@ -428,7 +428,7 @@ public class CircularPane extends Pane {
 		double lX = (chainDiameter / 2) // from the center
 	              + ( (chainDiameter / 2) * -1 * Math.sin(degreesToRadials(angle + 180))) // determine the position on the chain (-1 = clockwise, 180 = start north)
 	              ;
-		//System.out.println(getId() + ": calculateX chainDiameter=" + chainWidth + " angle=" + angle + " -> " + lX);
+		//System.out.println(getId() + ": calculateX chainDiameter=" + chainDiameter + " angle=" + angle + " -> " + lX);
 		return lX;
 	}
 	
@@ -449,12 +449,14 @@ public class CircularPane extends Pane {
     	}
     }
     
-    private double computeChainDiameter(Size size) {
+    private double computeChainDiameter(Size size, boolean width) {
     	
     	// prepare
     	List<Node> nodes = getManagedChildrenWithoutBeads();
     	int numberOfNodes = nodes.size();
+    	int numberOfNodesForCalculation = (int)Math.ceil(numberOfNodes * (360 / getArc())); // these are the number of nodes as would be placed on the circle if it were 360
     	double lBeadDiameter = determineBeadDiameter(size);    	
+    	// System.out.println(getId() + ": computeChainDiameter numberOfNodes=" + numberOfNodes + ", for calculation=" + numberOfNodesForCalculation);
     	
     	// special situations
     	if (numberOfNodes == 0) {
@@ -463,12 +465,17 @@ public class CircularPane extends Pane {
     	if (numberOfNodes == 1) {
     		return lBeadDiameter;
     	}
-    	if (numberOfNodes == 2) {
+    	if (numberOfNodesForCalculation == 2) {
+    		// 2 beads varies between two extremes: either both beads are vertical or horizontal
+    		//   O
+    		//   O -> OO
+    		//
+    		// We solve this by always assigning maximum width and height, and then clipping away the excess 
     		return 2 * lBeadDiameter;
     	}
     	
     	// determine the size of the circle where the center of the bead would be placed on (Daan's formula) 
-    	double lDiameter = lBeadDiameter / Math.sin(degreesToRadials(360 / (numberOfNodes * (360 / getArc()) ) / 2));
+    	double lDiameter = lBeadDiameter / Math.sin(degreesToRadials(360 / numberOfNodesForCalculation / 2));
     	lDiameter += lBeadDiameter; // but of course we need the outer circle
     	return lDiameter;
     }
@@ -541,15 +548,29 @@ public class CircularPane extends Pane {
     }
     
     private double clipLeft(double width, Size size) {
+
     	// prepare
+    	List<Node> nodes = getManagedChildrenWithoutBeads();
+    	int numberOfNodes = nodes.size();
     	double lBeadDiameter = determineBeadDiameter(size);    	
         double lChainDiameter = width - lBeadDiameter;
-
         double startAngle = getStartAngle360();
         double arc = getArc();
-        double endAngle = startAngle + arc - (arc / getManagedChildrenWithoutBeads().size()); // if we take both extremes we basically render one node too many; it's all about the trees and spaces between the trees in a street
+        double endAngle = startAngle + arc - (arc / numberOfNodes); // if we take both extremes we basically render one node too many; it's all about the trees and spaces between the trees in a street
         //System.out.println(getId() + ": clipLeft startAngle=" + startAngle + " endAngle=" + endAngle);
 
+        // special situations
+        if (numberOfNodes <= 1) {
+        	return 0;
+        }
+        else if (numberOfNodes == 2 && arc == 360.0) {
+        	double lWhiteSpace = ((1.0 - Math.abs(Math.sin(degreesToRadials(startAngle)))) * lBeadDiameter);
+        	return lWhiteSpace / 2;
+        }
+        else if (arc == 360.0) {
+        	return 0;
+        }
+        
         // if left most point of circle is part of the arc, then the clip is 0
         if (startAngle <= 270 &&  endAngle >= 270) {
             return 0;
@@ -565,15 +586,29 @@ public class CircularPane extends Pane {
     }
 
     private double clipRight(double width, Size size) {
+
     	// prepare
+    	List<Node> nodes = getManagedChildrenWithoutBeads();
+    	int numberOfNodes = nodes.size();
     	double lBeadDiameter = determineBeadDiameter(size);    	
         double lChainDiameter = width - lBeadDiameter;
-
         double startAngle = getStartAngle360();
         double arc = getArc();
-        double endAngle = startAngle + arc - (arc / getManagedChildrenWithoutBeads().size()); // if we take both extremes we basically render one node too many; it's all about the trees and spaces between the trees in a street
-        //System.out.println(getId() + ": clipRight startAngle=" + startAngle + " endAngle=" + endAngle);
+        double endAngle = startAngle + arc - (arc / numberOfNodes); // if we take both extremes we basically render one node too many; it's all about the trees and spaces between the trees in a street
+        //System.out.println(getId() + ": clipLeft startAngle=" + startAngle + " endAngle=" + endAngle);
 
+        // special situations
+        if (numberOfNodes <= 1) {
+        	return 0;
+        }
+        else if (numberOfNodes == 2 && arc == 360.0) {
+        	double lWhiteSpace = ((1.0 - Math.abs(Math.sin(degreesToRadials(startAngle)))) * lBeadDiameter);
+        	return lWhiteSpace / 2;
+        }
+        else if (arc == 360.0) {
+        	return 0;
+        }
+        
         // if left most point of circle is part of the arc, then the clip is 0
         if (startAngle <= 90 && endAngle >= 90) {
             return 0;
@@ -592,15 +627,29 @@ public class CircularPane extends Pane {
     }
     
     private double clipTop(double height, Size size) {
+    	
     	// prepare
+    	List<Node> nodes = getManagedChildrenWithoutBeads();
+    	int numberOfNodes = nodes.size();
     	double lBeadDiameter = determineBeadDiameter(size);    	
         double lChainDiameter = height - lBeadDiameter;
-
         double startAngle = getStartAngle360();
         double arc = getArc();
-        double endAngle = startAngle + arc - (arc / getManagedChildrenWithoutBeads().size()); // if we take both extremes we basically render one node too many; it's all about the trees and spaces between the trees in a street
-        //System.out.println(getId() + ": clipTop startAngle=" + startAngle + " endAngle=" + endAngle);
+        double endAngle = startAngle + arc - (arc / numberOfNodes); // if we take both extremes we basically render one node too many; it's all about the trees and spaces between the trees in a street
+        //System.out.println(getId() + ": clipLeft startAngle=" + startAngle + " endAngle=" + endAngle);
 
+        // special situations
+        if (numberOfNodes <= 1) {
+        	return 0;
+        }
+        else if (numberOfNodes == 2 && arc == 360.0) {
+        	double lWhiteSpace = ((1.0 - Math.abs(Math.cos(degreesToRadials(startAngle)))) * lBeadDiameter);
+        	return lWhiteSpace / 2;
+        }
+        else if (arc == 360.0) {
+        	return 0;
+        }
+        
         // if top most point of circle is part of the arc, then the clip is 0
         // the top angle is 0 degrees, the start angle must be before that, so running up to 359.99999
         // the end angle must be after that, so 0 or higher
@@ -619,15 +668,29 @@ public class CircularPane extends Pane {
     }
     
     private double clipBottom(double height, Size size) {
+    	
     	// prepare
+    	List<Node> nodes = getManagedChildrenWithoutBeads();
+    	int numberOfNodes = nodes.size();
     	double lBeadDiameter = determineBeadDiameter(size);    	
         double lChainDiameter = height - lBeadDiameter;
-
         double startAngle = getStartAngle360();
         double arc = getArc();
-        double endAngle = startAngle + arc - (arc / getManagedChildrenWithoutBeads().size()); // if we take both extremes we basically render one node too many; it's all about the trees and spaces between the trees in a street
-        //System.out.println(getId() + ": clipTop startAngle=" + startAngle + " endAngle=" + endAngle);
+        double endAngle = startAngle + arc - (arc / numberOfNodes); // if we take both extremes we basically render one node too many; it's all about the trees and spaces between the trees in a street
+        //System.out.println(getId() + ": clipLeft startAngle=" + startAngle + " endAngle=" + endAngle);
 
+        // special situations
+        if (numberOfNodes <= 1) {
+        	return 0;
+        }
+        else if (numberOfNodes == 2 && arc == 360.0) {
+        	double lWhiteSpace = ((1.0 - Math.abs(Math.cos(degreesToRadials(startAngle)))) * lBeadDiameter);
+        	return lWhiteSpace / 2;
+        }
+        else if (arc == 360.0) {
+        	return 0;
+        }
+        
         // if top most point of circle is part of the arc, then the clip is 0
         // the top angle is 0 degrees, the start angle must be before that, so running up to 359.99999
         // the end angle must be after that, so 0 or higher
@@ -640,7 +703,7 @@ public class CircularPane extends Pane {
         double lStartY = calculateY(lChainDiameter, startAngle); // System.out.println(getId() + ": clipTop startAngle=" + startAngle + " startY=" + lStartY);
         double lEndY = calculateY(lChainDiameter, endAngle); // System.out.println(getId() + ": clipTop endAngle=" + endAngle + " endY=" + lEndY);
         
-        // what is the lowest value
+        // what is the highest value
         double lY = Math.max(lStartY, lEndY);
         
         // determine offset from the bottom
