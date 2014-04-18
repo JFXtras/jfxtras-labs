@@ -96,6 +96,13 @@ public class CircularPane extends Pane {
 	public void setChildrenAreCircular(Boolean value) { childrenAreCircularObjectProperty.setValue(value); }
 	public CircularPane withChildrenAreCircular(Boolean value) { setChildrenAreCircular(value); return this; } 
 
+	/** cutAwayExcessWhitespace: cut away excess whitespace on the outside */
+	public ObjectProperty<Boolean> cutAwayExcessWhitespaceProperty() { return cutAwayExcessWhitespaceObjectProperty; }
+	final private ObjectProperty<Boolean> cutAwayExcessWhitespaceObjectProperty = new SimpleObjectProperty<Boolean>(this, "cutAwayExcessWhitespace", true);
+	public Boolean getCutAwayExcessWhitespace() { return cutAwayExcessWhitespaceObjectProperty.getValue(); }
+	public void setCutAwayExcessWhitespace(Boolean value) { cutAwayExcessWhitespaceObjectProperty.setValue(value); }
+	public CircularPane withCutAwayExcessWhitespace(Boolean value) { setCutAwayExcessWhitespace(value); return this; } 
+
 	/** animate: is the layout animating */
 	public ObjectProperty<Boolean> animateProperty() { return animateObjectProperty; }
 	final private ObjectProperty<Boolean> animateObjectProperty = new SimpleObjectProperty<Boolean>(this, "animate", false);
@@ -549,6 +556,11 @@ public class CircularPane extends Pane {
     
     private double clipLeft(double width, Size size) {
 
+    	// no clipping?
+    	if (getCutAwayExcessWhitespace() == false) {
+    		return 0;    		
+    	}
+    	
     	// prepare
     	List<Node> nodes = getManagedChildrenWithoutBeads();
     	int numberOfNodes = nodes.size();
@@ -587,6 +599,11 @@ public class CircularPane extends Pane {
 
     private double clipRight(double width, Size size) {
 
+    	// no clipping?
+    	if (getCutAwayExcessWhitespace() == false) {
+    		return 0;    		
+    	}
+    	
     	// prepare
     	List<Node> nodes = getManagedChildrenWithoutBeads();
     	int numberOfNodes = nodes.size();
@@ -628,6 +645,11 @@ public class CircularPane extends Pane {
     
     private double clipTop(double height, Size size) {
     	
+    	// no clipping?
+    	if (getCutAwayExcessWhitespace() == false) {
+    		return 0;    		
+    	}
+    	
     	// prepare
     	List<Node> nodes = getManagedChildrenWithoutBeads();
     	int numberOfNodes = nodes.size();
@@ -668,6 +690,11 @@ public class CircularPane extends Pane {
     }
     
     private double clipBottom(double height, Size size) {
+    	
+    	// no clipping?
+    	if (getCutAwayExcessWhitespace() == false) {
+    		return 0;    		
+    	}
     	
     	// prepare
     	List<Node> nodes = getManagedChildrenWithoutBeads();
