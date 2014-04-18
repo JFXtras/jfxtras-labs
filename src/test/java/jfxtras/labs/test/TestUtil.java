@@ -41,9 +41,6 @@ import javafx.scene.control.SkinBase;
 import javafx.scene.layout.Pane;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
-import jfxtras.labs.util.PlatformUtil;
-
-import com.sun.javafx.tk.Toolkit;
 
 public class TestUtil {
 
@@ -212,14 +209,5 @@ public class TestUtil {
 		catch (InterruptedException e) { 
 			throw new RuntimeException(e); 
 		}
-	}
-	
-	/**
-	 * 
-	 */
-	static public void waitForPaintPulse() {
-		PlatformUtil.runAndWait( () -> {
-			Toolkit.getToolkit().firePulse();
-		});
 	}
 }
