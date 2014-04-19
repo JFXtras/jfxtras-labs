@@ -28,7 +28,7 @@ public class CircularPaneTrail5 extends Application {
 //		lCircularPane.setStartAngle(30.0); lCircularPane.setArc(180.0);
 //		lCircularPane.setStartAngle(90.0); lCircularPane.setArc(90.0);
 //		lCircularPane.setStartAngle(120.0); lCircularPane.setArc(90.0);
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 14; i++) {
 			javafx.scene.shape.Rectangle c = new javafx.scene.shape.Rectangle(50,50);
 			//c.setStroke(Color.RED);
 			lCircularPane.getChildren().add(c);
