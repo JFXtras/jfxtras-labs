@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javafx.application.Application;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Priority;
@@ -155,6 +156,15 @@ public class CircularPaneTrail extends Application {
 				lCircularPane.getChildren().add(c);
 			}
 			lHBox.add(lCircularPane);
+			
+//			final Node n = lCircularPane.getChildren().get(0);				
+//			n.layoutXProperty().addListener( (observable) -> {
+//				System.out.println("layoutX=" + n.getLayoutX());
+//			});		
+//			n.layoutYProperty().addListener( (observable) -> {
+//				System.out.println("layoutY=" + n.getLayoutY());
+//			});		
+			
 		}
 		
 		{
@@ -221,6 +231,7 @@ public class CircularPaneTrail extends Application {
 			}
 			lHBox.add(lCircularPane);
 		}
+		
         // setup scene
 		Scene scene = new Scene(lHBox);
 		scene.getStylesheets().add(this.getClass().getName().replace(".", "/") + ".css");
