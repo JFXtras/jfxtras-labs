@@ -30,7 +30,7 @@ public class CircularPaneTrail8 extends Application {
 		{
 			CircularPane lCircularPane = new CircularPane();
 			lCircularPane.setStyle("-fx-border-color:black;");
-			//lCircularPane.setAnimate(true);
+			lCircularPane.setAnimate(true);
 			lCircularPane.setShowDebug(Color.GREEN);
 			lCircularPane.setArc(90.0);
 			for (int i = 0; i < j; i++) {

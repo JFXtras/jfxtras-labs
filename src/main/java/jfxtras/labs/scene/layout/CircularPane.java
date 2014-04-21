@@ -6,16 +6,10 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
 import javafx.animation.Transition;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.geometry.Bounds;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -93,7 +87,21 @@ public class CircularPane extends Pane {
 	public void setArc(Double value) { arcObjectProperty.setValue(value); }
 	public CircularPane withArc(Double value) { setArc(value); return this; }
 
-	/** childrenAreCircular: if all childeren are circular, then we can use a different size */
+	/** gap: space between nodes */
+	public ObjectProperty<Double> gapProperty() { return gapObjectProperty; }
+	final private ObjectProperty<Double> gapObjectProperty = new SimpleObjectProperty<Double>(this, "gap", 0.0) {
+		public void set(Double v) {
+			if (v == null) {
+				throw new IllegalArgumentException(getName() + " cannot be null");
+			}
+			super.set(v);
+		}
+	};
+	public Double getGap() { return gapObjectProperty.getValue(); }
+	public void setGap(Double value) { gapObjectProperty.setValue(value); }
+	public CircularPane withGap(Double value) { setGap(value); return this; }
+
+	/** childrenAreCircular: if all children are circular, then we can use a different size */
 	public ObjectProperty<Boolean> childrenAreCircularProperty() { return childrenAreCircularObjectProperty; }
 	final private ObjectProperty<Boolean> childrenAreCircularObjectProperty = new SimpleObjectProperty<Boolean>(this, "childrenAreCircular", false);
 	public Boolean getChildrenAreCircular() { return childrenAreCircularObjectProperty.getValue(); }
@@ -138,7 +146,6 @@ public class CircularPane extends Pane {
 	public void setShowDebug(Paint value) { showDebugObjectProperty.setValue(value); }
 	public CircularPane withShowDebug(Paint value) { setShowDebug(value); return this; } 
 
-	// TODO: gap property; space between the beads
 	// TODO: are margins & padding taken into account?
 	
 	// ==========================================================================================================================================================================================================================================
@@ -191,11 +198,11 @@ public class CircularPane extends Pane {
     @Override 
     protected void layoutChildren() {
     	
-    	if (layingoutChilderen.get() > 0) {
+    	if (layingoutChildren.get() > 0) {
     		// TODO: remember and request a relayout once we're done?
     		return;
     	}    	
-    	layingoutChilderen.addAndGet(1);
+    	layingoutChildren.addAndGet(1);
     	try {
     		//System.out.println("=============== layoutChildren ");
 
@@ -216,7 +223,7 @@ public class CircularPane extends Pane {
 	    		// position node
 	    		lNode.resizeRelocate(lNodeLayoutInfo.x - lLayoutInfo.clipLeft, lNodeLayoutInfo.y - lLayoutInfo.clipTop, lNodeLayoutInfo.w, lNodeLayoutInfo.h);
 	    		
-	    		// place a bead to show where this node should be
+	    		// add a bead to show where this node boundary is
 	    		if (getShowDebug() != null) {
 	    			
 		    		Bead lBead = new Bead(lLayoutInfo.beadDiameter);
@@ -239,15 +246,16 @@ public class CircularPane extends Pane {
 	    			lAnimated.nodeLayoutInfo = lNodeLayoutInfo;
 	    			lAnimated.originX = (lLayoutInfo.chainDiameter / 2)
   			 	          + ((lLayoutInfo.beadDiameter - lNodeLayoutInfo.w) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
-  			 	           - lLayoutInfo.clipLeft
-  			 	        - lNode.getLayoutBounds().getMinX()
-  			 	        ;	    					
+  			 	          - lLayoutInfo.clipLeft
+  			 	          - lNode.getLayoutBounds().getMinX() // for some reason this must be added, while when setting X&Y without animation it is not needed... Alas 
+  			 	          ;	    					
 	    			lAnimated.originY = (lLayoutInfo.chainDiameter / 2)
   				          + ((lLayoutInfo.beadDiameter - lNodeLayoutInfo.h) / 2)  // add the difference between the bead's size and the node's, so it ends up in the center
-  				           - lLayoutInfo.clipTop
-  				         - lNode.getLayoutBounds().getMinY();
-	    			lNodeLayoutInfo.x +=  - lNode.getLayoutBounds().getMinX();	
-	    			lNodeLayoutInfo.y +=  - lNode.getLayoutBounds().getMinY();	
+  				          - lLayoutInfo.clipTop
+  				          - lNode.getLayoutBounds().getMinY() // for some reason this must be added, while when setting X&Y without animation it is not needed... Alas
+  				          ;
+	    			lNodeLayoutInfo.x += -lNode.getLayoutBounds().getMinX(); // for some reason this must be added, while when setting X&Y without animation it is not needed... Alas	
+	    			lNodeLayoutInfo.y += -lNode.getLayoutBounds().getMinY(); // for some reason this must be added, while when setting X&Y without animation it is not needed... Alas
 	    			animations.add(lAnimated);
 	    			
 	    			// initial position
@@ -264,7 +272,7 @@ public class CircularPane extends Pane {
 			if (animations.size() > 0 ) {
 
 				// while the animation is running, don't touch the children
-	        	layingoutChilderen.addAndGet(1);
+	        	layingoutChildren.addAndGet(1);
 	    		new Transition() {
 	    			// anonymous constructor
 	    			{
@@ -273,7 +281,7 @@ public class CircularPane extends Pane {
 	    				setCycleCount(1);
 	    				setOnFinished( (event) -> {
 							animations.clear();
-	    			    	layingoutChilderen.addAndGet(-1);
+	    			    	layingoutChildren.addAndGet(-1);
 	    				});
 	    			}
 					
@@ -287,10 +295,10 @@ public class CircularPane extends Pane {
 			}
 		}
 		finally {
-	    	layingoutChilderen.addAndGet(-1);
+	    	layingoutChildren.addAndGet(-1);
 		}
     }
-    private AtomicInteger layingoutChilderen = new AtomicInteger(0);
+    private AtomicInteger layingoutChildren = new AtomicInteger(0);
     private boolean initial = true;
 
     
@@ -517,11 +525,11 @@ public class CircularPane extends Pane {
     	}
     	if (numberOfNodesOnFullChain == 2) {
     		// the chain runs through the center of the beads, with only two beads the chain runs through 2x 1/2 a bead
-    		return beadDiameter; 
+    		return beadDiameter + getGap(); 
     	}
     	
     	// determine the size of the circle where the center of the bead would be placed on (Daan's formula) 
-    	double lDiameter = beadDiameter / Math.sin(degreesToRadials(360 / ((double)numberOfNodesOnFullChain) / 2));
+    	double lDiameter = (beadDiameter + getGap()) / Math.sin(degreesToRadials(360 / ((double)numberOfNodesOnFullChain) / 2));
     	return lDiameter;
     }
 
