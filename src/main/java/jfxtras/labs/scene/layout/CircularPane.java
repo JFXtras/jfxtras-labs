@@ -129,11 +129,25 @@ public class CircularPane extends Pane {
 	public void setAnimateDuration(Duration value) { animateDurationObjectProperty.setValue(value); }
 	public CircularPane withAnimateDuration(Duration value) { setAnimateDuration(value); return this; } 
 
-	/** animateInterpolation: calculate the position of a node during the animation (default: move from origin) */
+	/** animateInterpolation: calculate the position of a node during the animation (default: move from origin), use node.relocate to position node (or manually apply layoutBounds.minX/Y) */
 	public ObjectProperty<AnimationInterpolation> animateInterpolationProperty() { return animateInterpolationObjectProperty; }
 	final private ObjectProperty<AnimationInterpolation> animateInterpolationObjectProperty = new SimpleObjectProperty<AnimationInterpolation>(this, "animateInterpolation", (progress, animated) -> {
-		animated.node.setLayoutX( animated.originX + (progress * -animated.originX) + ((animated.nodeLayoutInfo.x - animated.nodeLayoutInfo.layoutInfo.clipLeft) * progress) );
-		animated.node.setLayoutY( animated.originY + (progress * -animated.originY) + ((animated.nodeLayoutInfo.y - animated.nodeLayoutInfo.layoutInfo.clipTop) * progress) );
+		// form origin
+//		double lX = animated.originX + (progress * -animated.originX) + ((animated.nodeLayoutInfo.x - animated.layoutInfo.clipLeft) * progress); 
+//		double lY = animated.originY + (progress * -animated.originY) + ((animated.nodeLayoutInfo.y - animated.layoutInfo.clipTop) * progress);
+
+		// over the arc
+		double lAngle = animated.layoutInfo.startAngle + (progress * animated.nodeLayoutInfo.angle);
+		double lX = animated.calculateX(lAngle)
+                  + ((animated.layoutInfo.beadDiameter - animated.nodeLayoutInfo.w) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
+                  - animated.layoutInfo.clipLeft
+                  ; 
+		double lY = animated.calculateY(lAngle)
+                + ((animated.layoutInfo.beadDiameter - animated.nodeLayoutInfo.h) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
+                - animated.layoutInfo.clipTop
+                ; 
+		
+		animated.node.relocate(lX, lY);
 	});
 	public AnimationInterpolation getAnimateInterpolation() { return animateInterpolationObjectProperty.getValue(); }
 	public void setAnimateInterpolation(AnimationInterpolation value) { animateInterpolationObjectProperty.setValue(value); }
@@ -173,7 +187,7 @@ public class CircularPane extends Pane {
 
     @Override 
     protected double computeMaxWidth(double height) {
-    	// In 'normal' layout logic these computed sizes would denote an ability or preference.
+    	// In 'normal' layout logic these computed sizes would denote an ability.
     	// - Min would indicate the minimal size the node or layout is able to render itself, 
     	// - Pref the preferred size a node would like to have, 
     	// - and Max the maximum size a node is ABLE to render itself.
@@ -181,7 +195,7 @@ public class CircularPane extends Pane {
     	// If a node were given more space to render itself, without any further instructions from the user (through layout constraints), 
     	// it should still stick to its preferred size, because that after all is its preferred size.
     	//
-    	// However, in JavaFX Max does not denote an ability, but is seen as an intent / preference.
+    	// However, in JavaFX Max does not denote an ability, but is seen as an intent.
     	// If a node indicates it has a max of, say, Double.MAX_VALUE (as CircularPane should do, because it is able to render itself that size),
     	// the Pane implementations in JavaFX will actually make CircularPane always grow into any additional space, instead of keeping its preferred size.
     	// In my opinion this is wrong, but unfortunately this is the way things are in JavaFX.
@@ -242,20 +256,17 @@ public class CircularPane extends Pane {
 	
 	    			// create the administration for the animation
 	    			AnimatingNode lAnimated = new AnimatingNode();
+	        		lAnimated.layoutInfo = lLayoutInfo;
 	    			lAnimated.node = lNode;
 	    			lAnimated.nodeLayoutInfo = lNodeLayoutInfo;
 	    			lAnimated.originX = (lLayoutInfo.chainDiameter / 2)
-  			 	          + ((lLayoutInfo.beadDiameter - lNodeLayoutInfo.w) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
   			 	          - lLayoutInfo.clipLeft
   			 	          - lNode.getLayoutBounds().getMinX() // for some reason this must be added, while when setting X&Y without animation it is not needed... Alas 
   			 	          ;	    					
 	    			lAnimated.originY = (lLayoutInfo.chainDiameter / 2)
-  				          + ((lLayoutInfo.beadDiameter - lNodeLayoutInfo.h) / 2)  // add the difference between the bead's size and the node's, so it ends up in the center
   				          - lLayoutInfo.clipTop
   				          - lNode.getLayoutBounds().getMinY() // for some reason this must be added, while when setting X&Y without animation it is not needed... Alas
   				          ;
-	    			lNodeLayoutInfo.x += -lNode.getLayoutBounds().getMinX(); // for some reason this must be added, while when setting X&Y without animation it is not needed... Alas	
-	    			lNodeLayoutInfo.y += -lNode.getLayoutBounds().getMinY(); // for some reason this must be added, while when setting X&Y without animation it is not needed... Alas
 	    			animations.add(lAnimated);
 	    			
 	    			// initial position
@@ -329,13 +340,15 @@ public class CircularPane extends Pane {
 
 		// determine the bead and chain size we layout with
     	// If we have a size, then this is a forced calculation
-    	// If we do not have a size, we use our size to determine how to get there 
+    	// If we do not have a size, we project our (assigned) size to the calculated preferred size to determine how if scaling is needed 
     	double lPrefToMinScaleFactor = 1.0;
     	if (size != null) {
+    		// calculation
     		lLayoutInfo.beadDiameter = determineBeadDiameter(size);
         	lLayoutInfo.chainDiameter = computeChainDiameter(lLayoutInfo.beadDiameter);
     	}
     	else {
+    		// project preferred to the assigned size
     		LayoutInfo lMinLayoutInfo = calculateLayout(MinPrefMax.MIN);
     		LayoutInfo lPrefLayoutInfo = calculateLayout(MinPrefMax.PREF);
     		double lWidth = Math.max( getWidth(), lMinLayoutInfo.clippedWidth);
@@ -369,7 +382,6 @@ public class CircularPane extends Pane {
     		
     		// bead layout
     		NodeLayoutInfo lNodeLayoutInfo = new NodeLayoutInfo();
-    		lNodeLayoutInfo.layoutInfo = lLayoutInfo;
     		lNodeLayoutInfo.angle = lAngle;
     		lLayoutInfo.layoutInfoMap.put(lNode, lNodeLayoutInfo);
     		
@@ -439,7 +451,6 @@ public class CircularPane extends Pane {
     }
     
     public class NodeLayoutInfo {
-    	LayoutInfo layoutInfo;
     	double angle;
     	double beadX;
     	double beadY;
@@ -450,12 +461,19 @@ public class CircularPane extends Pane {
     }
     
     public class AnimatingNode {
+    	LayoutInfo layoutInfo;
     	Node node;
 		NodeLayoutInfo nodeLayoutInfo;
 		double originX;
 		double originY;
-		double targetX;
-		double targetY;
+		
+		double calculateX(double angle) {
+			return CircularPane.calculateX(layoutInfo.chainDiameter, angle);
+		}
+		
+		double calculateY(double angle) {
+			return CircularPane.calculateY(layoutInfo.chainDiameter, angle);
+		}
     }
     final List<AnimatingNode> animations = new ArrayList<>();
     
@@ -474,7 +492,7 @@ public class CircularPane extends Pane {
     	return nodes;
 	}
 	
-	private double calculateX(double chainDiameter, double angle) {
+	static private double calculateX(double chainDiameter, double angle) {
 		angle = angle % 360;
 		double lX = (chainDiameter / 2) // from the center
 	              + ( (chainDiameter / 2) * -1 * Math.sin(degreesToRadials(angle + 180))) // determine the position on the chain (-1 = clockwise, 180 = start north)
@@ -483,7 +501,7 @@ public class CircularPane extends Pane {
 		return lX;
 	}
 	
-	private double calculateY(double chainDiameter, double angle) {
+	static private double calculateY(double chainDiameter, double angle) {
 		angle = angle % 360;
 		double lY = (chainDiameter / 2) // from the center 
 	              + ( (chainDiameter / 2) * Math.cos(degreesToRadials(angle + 180))) // determine the position on the chain (180 = start north)
@@ -494,9 +512,8 @@ public class CircularPane extends Pane {
 	
     private class Bead extends Circle {
     	public Bead(double diameter) {
-    		// TODO: we need to subtract the line width so the bead neatly falls in the available space?
     		super();
-    		setRadius( (diameter - getStrokeWidth()) / 2);
+    		setRadius( (diameter - getStrokeWidth()) / 2); // make the line fall within the allotted room
     		setFill(null);
     		setStroke(getShowDebug());
     	}
@@ -600,7 +617,7 @@ public class CircularPane extends Pane {
     	return n.prefHeight(-1);
     }
     
-    private double degreesToRadials(double d) {
+    static private double degreesToRadials(double d) {
     	double r = (d % 360) / 360 * 2 * Math.PI;
     	return r;
     }
