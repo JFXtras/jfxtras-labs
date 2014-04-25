@@ -29,7 +29,6 @@ public class CircularPaneTrail4 extends Application {
 		{
 			CircularPane lCircularPane = new CircularPane();
 			lCircularPane.setStyle("-fx-border-color:black;");
-			lCircularPane.setAnimate(true);
 			lCircularPane.setShowDebug(Color.GREEN);
 			lCircularPane.setStartAngle( (double)j );
 			lCircularPane.setArc(90.0);

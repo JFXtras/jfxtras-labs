@@ -17,6 +17,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.layout.CircularPane;
+import jfxtras.labs.scene.layout.CircularPane.AnimationLayoutInfo;
 import jfxtras.scene.layout.HBox;
 
 public class CircularPaneTrail extends Application {
@@ -36,8 +37,8 @@ public class CircularPaneTrail extends Application {
 			//lCircularPane.setStyle("-fx-border-color:black;");
 			lCircularPane.setStartAngle(360.0 / 12);
 			//lCircularPane.setChildrenAreCircular(true);
-			lCircularPane.setAnimate(true);
 			lCircularPane.setShowDebug(lShowDebug);
+			lCircularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
 			final List<Label> labels = new ArrayList<>();
 			final List<Circle> circles = new ArrayList<>();
 			final AtomicReference<Circle> lastFocus = new AtomicReference<>();
@@ -78,8 +79,8 @@ public class CircularPaneTrail extends Application {
 			CircularPane lCircularPane = new CircularPane();
 			//lCircularPane.setStyle("-fx-border-color:black;");
 			//lCircularPane.setChildrenAreCircular(true);
-			lCircularPane.setAnimate(true);
 			lCircularPane.setShowDebug(lShowDebug);
+			lCircularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
 			final List<Label> labels = new ArrayList<>();
 			final List<Circle> circles = new ArrayList<>();
 			final AtomicReference<Circle> lastFocus = new AtomicReference<>();
@@ -107,8 +108,8 @@ public class CircularPaneTrail extends Application {
 			CircularPane lCircularPane = new CircularPane();
 			//lCircularPane.setStyle("-fx-border-color:black;");
 			//lCircularPane.setChildrenAreCircular(true);
-			lCircularPane.setAnimate(true);
 			lCircularPane.setShowDebug(lShowDebug);
+			lCircularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
 			final List<Label> labels = new ArrayList<>();
 			final List<Circle> circles = new ArrayList<>();
 			final AtomicReference<Circle> lastFocus = new AtomicReference<>();
@@ -135,8 +136,8 @@ public class CircularPaneTrail extends Application {
 		{
 			CircularPane lCircularPane = new CircularPane().withId("XX");
 			//lCircularPane.setStyle("-fx-border-color:black;");
-			lCircularPane.setAnimate(true);
 			lCircularPane.setShowDebug(lShowDebug);
+			lCircularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
 			for (int i = 0; i < 12; i++) {
 //				lCircularPane.getChildren().add(new javafx.scene.control.Button("" + i));
 				lCircularPane.getChildren().add(new javafx.scene.control.Button("XX"));
@@ -149,8 +150,8 @@ public class CircularPaneTrail extends Application {
 			lCircularPane.setMinSize(200,  200);
 			//lCircularPane.setStyle("-fx-border-color:black;");
 			//lCircularPane.setChildrenAreCircular(true);
-			lCircularPane.setAnimate(true);
 			lCircularPane.setShowDebug(lShowDebug);
+			lCircularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
 			for (int i = 0; i < 8; i++) {
 				javafx.scene.shape.Circle c = new javafx.scene.shape.Circle(10);
 				lCircularPane.getChildren().add(c);
@@ -171,8 +172,8 @@ public class CircularPaneTrail extends Application {
 			CircularPane lCircularPane = new CircularPane();
 			//lCircularPane.setStyle("-fx-border-color:black;");
 			//lCircularPane.setChildrenAreCircular(true);
-			lCircularPane.setAnimate(true);
 			lCircularPane.setShowDebug(lShowDebug);
+			lCircularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
 			for (int i = 0; i < 8; i++) {
 				javafx.scene.shape.Circle c = new javafx.scene.shape.Circle(10);
 				lCircularPane.getChildren().add(c);
@@ -184,8 +185,8 @@ public class CircularPaneTrail extends Application {
 			CircularPane lCircularPane = new CircularPane();
 			//lCircularPane.setStyle("-fx-border-color:black;");
 			//lCircularPane.setChildrenAreCircular(true);
-			lCircularPane.setAnimate(true);
 			lCircularPane.setShowDebug(lShowDebug);
+			lCircularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
 			for (int i = 0; i < 8; i++) {
 				javafx.scene.shape.Circle c = new javafx.scene.shape.Circle(5 + i);
 				lCircularPane.getChildren().add(c);
@@ -196,8 +197,8 @@ public class CircularPaneTrail extends Application {
 		{
 			CircularPane lCircularPane = new CircularPane();
 			//lCircularPane.setStyle("-fx-border-color:black;");
-			lCircularPane.setAnimate(true);
 			lCircularPane.setShowDebug(lShowDebug);
+			lCircularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
 			for (int i = 0; i < 8; i++) {
 				javafx.scene.shape.Rectangle c = new javafx.scene.shape.Rectangle(5 + (2*i), 5 + (2*i));
 				lCircularPane.getChildren().add(c);
@@ -208,8 +209,8 @@ public class CircularPaneTrail extends Application {
 		{
 			CircularPane lCircularPane = new CircularPane();
 			//lCircularPane.setStyle("-fx-border-color:black;");
-			lCircularPane.setAnimate(true);
 			lCircularPane.setShowDebug(lShowDebug);
+			lCircularPane.setAnimationInterpolation(CircularPane::animateFromTheOrigin);
 			for (int i = 0; i < 8; i++) {
 				javafx.scene.shape.Rectangle c = new javafx.scene.shape.Rectangle(5 + (2*i), 5 + (2*i));
 				c.setRotate(45);
@@ -222,8 +223,8 @@ public class CircularPaneTrail extends Application {
 		{
 			CircularPane lCircularPane = new CircularPane();
 			//lCircularPane.setStyle("-fx-border-color:black;");
-			lCircularPane.setAnimate(true);
 			lCircularPane.setShowDebug(lShowDebug);
+			lCircularPane.setAnimationInterpolation(CircularPane::animateFromTheOrigin);
 			for (int i = 0; i < 10; i++) {
 				javafx.scene.shape.Rectangle c = new javafx.scene.shape.Rectangle(20, 20);
 				c.setRotate(i * 10);

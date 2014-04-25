@@ -115,43 +115,19 @@ public class CircularPane extends Pane {
 	public void setClipAwayExcessWhitespace(Boolean value) { clipAwayExcessWhitespaceObjectProperty.setValue(value); }
 	public CircularPane withClipAwayExcessWhitespace(Boolean value) { setClipAwayExcessWhitespace(value); return this; } 
 
-	/** animate: is the layout animating */
-	public ObjectProperty<Boolean> animateProperty() { return animateObjectProperty; }
-	final private ObjectProperty<Boolean> animateObjectProperty = new SimpleObjectProperty<Boolean>(this, "animate", false);
-	public Boolean getAnimate() { return animateObjectProperty.getValue(); }
-	public void setAnimate(Boolean value) { animateObjectProperty.setValue(value); }
-	public CircularPane withAnimate(Boolean value) { setAnimate(value); return this; } 
+	/** animationDuration */
+	public ObjectProperty<Duration> animationDurationProperty() { return animationDurationObjectProperty; }
+	final private ObjectProperty<Duration> animationDurationObjectProperty = new SimpleObjectProperty<Duration>(this, "animationDuration", Duration.millis(500));
+	public Duration getAnimationDuration() { return animationDurationObjectProperty.getValue(); }
+	public void setAnimationDuration(Duration value) { animationDurationObjectProperty.setValue(value); }
+	public CircularPane withAnimationDuration(Duration value) { setAnimationDuration(value); return this; } 
 
-	/** animateDuration */
-	public ObjectProperty<Duration> animateDurationProperty() { return animateDurationObjectProperty; }
-	final private ObjectProperty<Duration> animateDurationObjectProperty = new SimpleObjectProperty<Duration>(this, "animateDuration", Duration.millis(500));
-	public Duration getAnimateDuration() { return animateDurationObjectProperty.getValue(); }
-	public void setAnimateDuration(Duration value) { animateDurationObjectProperty.setValue(value); }
-	public CircularPane withAnimateDuration(Duration value) { setAnimateDuration(value); return this; } 
-
-	/** animateInterpolation: calculate the position of a node during the animation (default: move from origin), use node.relocate to position node (or manually apply layoutBounds.minX/Y) */
-	public ObjectProperty<AnimationInterpolation> animateInterpolationProperty() { return animateInterpolationObjectProperty; }
-	final private ObjectProperty<AnimationInterpolation> animateInterpolationObjectProperty = new SimpleObjectProperty<AnimationInterpolation>(this, "animateInterpolation", (progress, animated) -> {
-		// form origin
-//		double lX = animated.originX + (progress * -animated.originX) + ((animated.nodeLayoutInfo.x - animated.layoutInfo.clipLeft) * progress); 
-//		double lY = animated.originY + (progress * -animated.originY) + ((animated.nodeLayoutInfo.y - animated.layoutInfo.clipTop) * progress);
-
-		// over the arc
-		double lAngle = animated.layoutInfo.startAngle + (progress * animated.nodeLayoutInfo.angle);
-		double lX = animated.calculateX(lAngle)
-                  + ((animated.layoutInfo.beadDiameter - animated.nodeLayoutInfo.w) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
-                  - animated.layoutInfo.clipLeft
-                  ; 
-		double lY = animated.calculateY(lAngle)
-                + ((animated.layoutInfo.beadDiameter - animated.nodeLayoutInfo.h) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
-                - animated.layoutInfo.clipTop
-                ; 
-		
-		animated.node.relocate(lX, lY);
-	});
-	public AnimationInterpolation getAnimateInterpolation() { return animateInterpolationObjectProperty.getValue(); }
-	public void setAnimateInterpolation(AnimationInterpolation value) { animateInterpolationObjectProperty.setValue(value); }
-	public CircularPane withAnimateInterpolation(AnimationInterpolation value) { setAnimateInterpolation(value); return this; } 
+	/** animationInterpolation: calculate the position of a node during the animation (default: move from origin), use node.relocate to position node (or manually apply layoutBounds.minX/Y) */
+	public ObjectProperty<AnimationInterpolation> animationInterpolationProperty() { return animationInterpolationObjectProperty; }
+	final private ObjectProperty<AnimationInterpolation> animationInterpolationObjectProperty = new SimpleObjectProperty<AnimationInterpolation>(this, "animationInterpolation", null);
+	public AnimationInterpolation getAnimationInterpolation() { return animationInterpolationObjectProperty.getValue(); }
+	public void setAnimationInterpolation(AnimationInterpolation value) { animationInterpolationObjectProperty.setValue(value); }
+	public CircularPane withAnimationInterpolation(AnimationInterpolation value) { setAnimationInterpolation(value); return this; } 
 
 	/** debug: show debug hints */
 	public ObjectProperty<Paint> showDebugProperty() { return showDebugObjectProperty; }
@@ -252,10 +228,10 @@ public class CircularPane extends Pane {
 	    		}
 	    		
 	    		// animated?
-	    		if (initial && getAnimate()) {
+	    		if (initial && getAnimationInterpolation() != null) {
 	
 	    			// create the administration for the animation
-	    			AnimatingNode lAnimated = new AnimatingNode();
+	    			AnimationLayoutInfo lAnimated = new AnimationLayoutInfo();
 	        		lAnimated.layoutInfo = lLayoutInfo;
 	    			lAnimated.node = lNode;
 	    			lAnimated.nodeLayoutInfo = lNodeLayoutInfo;
@@ -267,10 +243,10 @@ public class CircularPane extends Pane {
   				          - lLayoutInfo.clipTop
   				          - lNode.getLayoutBounds().getMinY() // for some reason this must be added, while when setting X&Y without animation it is not needed... Alas
   				          ;
-	    			animations.add(lAnimated);
+	    			animationLayoutInfos.add(lAnimated);
 	    			
 	    			// initial position
-					getAnimateInterpolation().interpolate(0.0, lAnimated);
+					getAnimationInterpolation().interpolate(0.0, lAnimated);
 	    		}
 	    	}    	
 	    	
@@ -280,26 +256,26 @@ public class CircularPane extends Pane {
 			}
 			
 			// is there anything to animated?
-			if (animations.size() > 0 ) {
+			if (animationLayoutInfos.size() > 0 ) {
 
 				// while the animation is running, don't touch the children
 	        	layingoutChildren.addAndGet(1);
 	    		new Transition() {
 	    			// anonymous constructor
 	    			{
-	    				setCycleDuration(getAnimateDuration());
+	    				setCycleDuration(getAnimationDuration());
 	    				setAutoReverse(false);
 	    				setCycleCount(1);
 	    				setOnFinished( (event) -> {
-							animations.clear();
+							animationLayoutInfos.clear();
 	    			    	layingoutChildren.addAndGet(-1);
 	    				});
 	    			}
 					
 					@Override
 					protected void interpolate(double progress) {
-						for (AnimatingNode lAnimated : animations) {
-							getAnimateInterpolation().interpolate(progress, lAnimated);
+						for (AnimationLayoutInfo lAnimationLayoutInfo : animationLayoutInfos) {
+							getAnimationInterpolation().interpolate(progress, lAnimationLayoutInfo);
 						}
 					}
 				}.playFromStart();
@@ -434,54 +410,72 @@ public class CircularPane extends Pane {
 	private final Map<Node, Bead> nodeToBeadMap = new WeakHashMap<>();
 	
     public class LayoutInfo {
-    	double startAngle;
-    	double chainDiameter = 0;
-    	double beadDiameter = 0;
-    	double minX = 0;
-    	double minY = 0;
-    	double maxX = 0;
-    	double maxY = 0;
-    	double clipTop = 0;
-    	double clipRight = 0;
-    	double clipBottom = 0;
-    	double clipLeft = 0;
-    	double clippedWidth = 0;
-    	double clippedHeight = 0;
-        Map<Node, NodeLayoutInfo> layoutInfoMap = new WeakHashMap<>();
+    	public double startAngle;
+    	public double chainDiameter = 0;
+    	public double beadDiameter = 0;
+    	public double minX = 0;
+    	public double minY = 0;
+    	public double maxX = 0;
+    	public double maxY = 0;
+    	public double clipTop = 0;
+    	public double clipRight = 0;
+    	public double clipBottom = 0;
+    	public double clipLeft = 0;
+    	public double clippedWidth = 0;
+    	public double clippedHeight = 0;
+    	final public Map<Node, NodeLayoutInfo> layoutInfoMap = new WeakHashMap<>();
     }
     
     public class NodeLayoutInfo {
-    	double angle;
-    	double beadX;
-    	double beadY;
-    	double x;
-    	double y;
-    	double w;
-    	double h;
+    	public double angle;
+    	public double beadX;
+    	public double beadY;
+    	public double x;
+    	public double y;
+    	public double w;
+    	public double h;
     }
     
-    public class AnimatingNode {
-    	LayoutInfo layoutInfo;
-    	Node node;
-		NodeLayoutInfo nodeLayoutInfo;
-		double originX;
-		double originY;
+    public class AnimationLayoutInfo {
+    	public LayoutInfo layoutInfo;
+    	public Node node;
+    	public NodeLayoutInfo nodeLayoutInfo;
+    	public double originX;
+    	public double originY;
 		
-		double calculateX(double angle) {
+    	public double calculateX(double angle) {
 			return CircularPane.calculateX(layoutInfo.chainDiameter, angle);
 		}
 		
-		double calculateY(double angle) {
+    	public double calculateY(double angle) {
 			return CircularPane.calculateY(layoutInfo.chainDiameter, angle);
 		}
     }
-    final List<AnimatingNode> animations = new ArrayList<>();
+    final List<AnimationLayoutInfo> animationLayoutInfos = new ArrayList<>();
     
     @FunctionalInterface
-    interface AnimationInterpolation {
-		public void interpolate(double progress, AnimatingNode animated);    	
+    public interface AnimationInterpolation {
+		public void interpolate(double progress, AnimationLayoutInfo animationLayoutInfo);    	
     }
 
+    static public void animateFromTheOrigin(double progress, AnimationLayoutInfo animationLayoutInfo) {
+		double lX = animationLayoutInfo.originX + (progress * -animationLayoutInfo.originX) + ((animationLayoutInfo.nodeLayoutInfo.x - animationLayoutInfo.layoutInfo.clipLeft) * progress); 
+		double lY = animationLayoutInfo.originY + (progress * -animationLayoutInfo.originY) + ((animationLayoutInfo.nodeLayoutInfo.y - animationLayoutInfo.layoutInfo.clipTop) * progress);
+		animationLayoutInfo.node.relocate(lX, lY);    	
+    }
+    
+    static public void animateOverTheArc(double progress, AnimationLayoutInfo animated) {
+		double lAngle = animated.layoutInfo.startAngle + (progress * animated.nodeLayoutInfo.angle);
+		double lX = animated.calculateX(lAngle)
+                  + ((animated.layoutInfo.beadDiameter - animated.nodeLayoutInfo.w) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
+                  - animated.layoutInfo.clipLeft
+                  ; 
+		double lY = animated.calculateY(lAngle)
+                + ((animated.layoutInfo.beadDiameter - animated.nodeLayoutInfo.h) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
+                - animated.layoutInfo.clipTop
+                ; 
+		animated.node.relocate(lX, lY);    	
+    }
 	
 	// ==========================================================================================================================================================================================================================================
 	// SUPPORT
