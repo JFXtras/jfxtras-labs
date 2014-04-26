@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.layout.CircularPane;
-import jfxtras.scene.layout.HBox;
 
 public class CircularPaneTrail5 extends Application {
 
@@ -17,8 +16,6 @@ public class CircularPaneTrail5 extends Application {
 	@Override
 	public void start(Stage stage) {
 
-		HBox lHBox = new HBox();
-		
 		CircularPane lCircularPane = new CircularPane();
 		lCircularPane.setStyle("-fx-border-color:black;");
 		lCircularPane.setShowDebug(Color.GREEN);
@@ -33,10 +30,9 @@ public class CircularPaneTrail5 extends Application {
 			//c.setStroke(Color.RED);
 			lCircularPane.getChildren().add(c);
 		}
-		lHBox.add(lCircularPane);
 
         // setup scene
-		Scene scene = new Scene(lHBox);
+		Scene scene = new Scene(lCircularPane);
 		scene.getStylesheets().add(this.getClass().getName().replace(".", "/") + ".css");
 		
         // create stage

@@ -1,6 +1,7 @@
 package jfxtras.labs.scene.layout;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -136,8 +137,7 @@ public class CircularPane extends Pane {
 	public void setShowDebug(Paint value) { showDebugObjectProperty.setValue(value); }
 	public CircularPane withShowDebug(Paint value) { setShowDebug(value); return this; } 
 
-	// TODO: are margins & padding taken into account?
-	
+
 	// ==========================================================================================================================================================================================================================================
 	// PANE
 	
@@ -189,7 +189,6 @@ public class CircularPane extends Pane {
     protected void layoutChildren() {
     	
     	if (layingoutChildren.get() > 0) {
-    		// TODO: remember and request a relayout once we're done?
     		return;
     	}    	
     	layingoutChildren.addAndGet(1);
@@ -257,50 +256,39 @@ public class CircularPane extends Pane {
 			
 			// is there anything to animated?
 			if (animationLayoutInfos.size() > 0 ) {
-
-				// while the animation is running, don't touch the children
-	        	layingoutChildren.addAndGet(1);
-	    		new Transition() {
-	    			// anonymous constructor
-	    			{
-	    				setCycleDuration(getAnimationDuration());
-	    				setAutoReverse(false);
-	    				setCycleCount(1);
-	    				setOnFinished( (event) -> {
-							animationLayoutInfos.clear();
-	    			    	layingoutChildren.addAndGet(-1);
-	    				});
-	    			}
-					
-					@Override
-					protected void interpolate(double progress) {
-						for (AnimationLayoutInfo lAnimationLayoutInfo : animationLayoutInfos) {
-							getAnimationInterpolation().interpolate(progress, lAnimationLayoutInfo);
-						}
-					}
-				}.playFromStart();
+				animateIn();
 			}
 		}
 		finally {
 	    	layingoutChildren.addAndGet(-1);
 		}
     }
-    private AtomicInteger layingoutChildren = new AtomicInteger(0);
+    private final AtomicInteger layingoutChildren = new AtomicInteger(0);
     private boolean initial = true;
-
+	private final Map<Node, Bead> nodeToBeadMap = new WeakHashMap<>();
     
+	@Override 
+	public void requestLayout() {
+		// When to clear the calculation cache; will this be enough?
+		calculateLayoutCache.clear();
+		super.requestLayout();
+	}
+	
+
 	// ==========================================================================================================================================================================================================================================
-	// layout
+	// LAYOUT
 
     /**
      * 
      */
     protected LayoutInfo calculateLayout(MinPrefMax size) {
 
-    	// TODO: cache calculations
-    	
-		// layout info
-		LayoutInfo lLayoutInfo = new LayoutInfo();
+		// layout info, it may be cached
+		LayoutInfo lLayoutInfo = calculateLayoutCache.get(size);
+		if (lLayoutInfo != null) {
+			return lLayoutInfo;
+		}
+		lLayoutInfo = new LayoutInfo();
 		
     	// get the nodes we need to render
     	List<Node> nodes = getManagedChildren();
@@ -332,11 +320,11 @@ public class CircularPane extends Pane {
     		lPrefToMinScaleFactor = Math.min( lWidth / lPrefLayoutInfo.clippedWidth,lHeight/ lPrefLayoutInfo.clippedHeight);
         	//System.out.println(getId() + ": layout lPrefScaleFactor=" + lPrefToMinScaleFactor);	    	
         	if (lPrefToMinScaleFactor > 1.0) {
+            	// TODO: should we allow scaling up? (Trail5)
         		lPrefToMinScaleFactor = 1.0;
         	}
     		lLayoutInfo.beadDiameter = lPrefLayoutInfo.beadDiameter * lPrefToMinScaleFactor;
         	lLayoutInfo.chainDiameter = lPrefLayoutInfo.chainDiameter * lPrefToMinScaleFactor;
-        	// TODO: how do we handle scaling up?
     	}
 		//System.out.println("----------------- " + size);
     	//System.out.println(getId() + ": layout lPrefToMinScaleFactor=" + lPrefToMinScaleFactor);	    	
@@ -404,11 +392,17 @@ public class CircularPane extends Pane {
     	lLayoutInfo.clippedHeight = lLayoutInfo.chainDiameter + lLayoutInfo.beadDiameter // the chain runs through the center of the beads, so we need to add 2x 1/2 a bead to get to the encompassing diameter
                                   - lLayoutInfo.clipTop - lLayoutInfo.clipBottom;
     	
-    	// done
+    	// done, cache it
+    	if (size != null) {
+    		calculateLayoutCache.put(size,  lLayoutInfo);
+    	}
     	return lLayoutInfo;
     }
-	private final Map<Node, Bead> nodeToBeadMap = new WeakHashMap<>();
+    private final Map<MinPrefMax, LayoutInfo> calculateLayoutCache = new HashMap<>();
 	
+	/**
+	 * This class holds layout information at pane level
+	 */
     public class LayoutInfo {
     	public double startAngle;
     	public double chainDiameter = 0;
@@ -426,6 +420,9 @@ public class CircularPane extends Pane {
     	final public Map<Node, NodeLayoutInfo> layoutInfoMap = new WeakHashMap<>();
     }
     
+	/**
+	 * This class holds layout information at node level
+	 */
     public class NodeLayoutInfo {
     	public double angle;
     	public double beadX;
@@ -436,6 +433,41 @@ public class CircularPane extends Pane {
     	public double h;
     }
     
+
+	// ==========================================================================================================================================================================================================================================
+	// ANIMATION
+
+    /**
+     * 
+     */
+	private void animateIn() {
+		// while the animation is running, don't touch the children
+		layingoutChildren.addAndGet(1);
+		new Transition() {
+			// anonymous constructor
+			{
+				setCycleDuration(getAnimationDuration());
+				setAutoReverse(false);
+				setCycleCount(1);
+				setOnFinished( (event) -> {
+					animationLayoutInfos.clear();
+			    	layingoutChildren.addAndGet(-1);
+				});
+			}
+			
+			@Override
+			protected void interpolate(double progress) {
+				for (AnimationLayoutInfo lAnimationLayoutInfo : animationLayoutInfos) {
+					getAnimationInterpolation().interpolate(progress, lAnimationLayoutInfo);
+				}
+			}
+		}.playFromStart();
+	}
+
+
+	/**
+	 * This class holds additional layout information for animation.
+	 */
     public class AnimationLayoutInfo {
     	public LayoutInfo layoutInfo;
     	public Node node;
@@ -453,17 +485,32 @@ public class CircularPane extends Pane {
     }
     final List<AnimationLayoutInfo> animationLayoutInfos = new ArrayList<>();
     
+    /**
+     * 
+     * @author user
+     *
+     */
     @FunctionalInterface
     public interface AnimationInterpolation {
 		public void interpolate(double progress, AnimationLayoutInfo animationLayoutInfo);    	
     }
 
+    /**
+     * 
+     * @param progress
+     * @param animationLayoutInfo
+     */
     static public void animateFromTheOrigin(double progress, AnimationLayoutInfo animationLayoutInfo) {
 		double lX = animationLayoutInfo.originX + (progress * -animationLayoutInfo.originX) + ((animationLayoutInfo.nodeLayoutInfo.x - animationLayoutInfo.layoutInfo.clipLeft) * progress); 
 		double lY = animationLayoutInfo.originY + (progress * -animationLayoutInfo.originY) + ((animationLayoutInfo.nodeLayoutInfo.y - animationLayoutInfo.layoutInfo.clipTop) * progress);
 		animationLayoutInfo.node.relocate(lX, lY);    	
     }
     
+    /**
+     * 
+     * @param progress
+     * @param animated
+     */
     static public void animateOverTheArc(double progress, AnimationLayoutInfo animated) {
 		double lAngle = animated.layoutInfo.startAngle + (progress * animated.nodeLayoutInfo.angle);
 		double lX = animated.calculateX(lAngle)

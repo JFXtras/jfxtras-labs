@@ -139,8 +139,10 @@ public class CircularPaneTrail extends Application {
 			lCircularPane.setShowDebug(lShowDebug);
 			lCircularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
 			for (int i = 0; i < 12; i++) {
-//				lCircularPane.getChildren().add(new javafx.scene.control.Button("" + i));
-				lCircularPane.getChildren().add(new javafx.scene.control.Button("XX"));
+				javafx.scene.control.Button b = new javafx.scene.control.Button("XX");
+//				b.setStyle("-fx-padding:10px;");
+				b.setStyle("-fx-margin:10px;");
+				lCircularPane.getChildren().add(b);
 			}
 			lHBox.add(lCircularPane);
 		}
