@@ -35,7 +35,7 @@ public class CircularPaneTrail4 extends Application {
 			for (int i = 0; i < 10; i++) {
 				javafx.scene.shape.Rectangle c = new javafx.scene.shape.Rectangle(15,15);
 				//c.setStroke(Color.RED);
-				lCircularPane.getChildren().add(c);
+				lCircularPane.add(c);
 			}
 			lFlowPane.getChildren().add(lCircularPane);
 		}

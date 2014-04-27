@@ -7,8 +7,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -70,7 +73,7 @@ public class CircularPaneTrail extends Application {
 				lStackPane.setId("" + i);
 				lStackPane.getChildren().add(c);
 				lStackPane.getChildren().add(t);
-				lCircularPane.getChildren().add(lStackPane);
+				lCircularPane.add(lStackPane);
 			}
 			lHBox.add(lCircularPane);
 		}
@@ -94,7 +97,7 @@ public class CircularPaneTrail extends Application {
 				StackPane lStackPane = new StackPane();
 				lStackPane.getChildren().add(c);
 				lStackPane.getChildren().add(t);
-				lCircularPane.getChildren().add(lStackPane);
+				lCircularPane.add(lStackPane);
 			}
 			StackPane lStackPane = new StackPane();
 			lStackPane.getChildren().add(lCircularPane);
@@ -123,7 +126,7 @@ public class CircularPaneTrail extends Application {
 				StackPane lStackPane = new StackPane();
 				lStackPane.getChildren().add(c);
 				lStackPane.getChildren().add(t);
-				lCircularPane.getChildren().add(lStackPane);
+				lCircularPane.add(lStackPane);
 			}
 			StackPane lStackPane = new StackPane();
 			lStackPane.getChildren().add(lCircularPane);
@@ -142,7 +145,7 @@ public class CircularPaneTrail extends Application {
 				javafx.scene.control.Button b = new javafx.scene.control.Button("XX");
 //				b.setStyle("-fx-padding:10px;");
 				b.setStyle("-fx-margin:10px;");
-				lCircularPane.getChildren().add(b);
+				lCircularPane.add(b);
 			}
 			lHBox.add(lCircularPane);
 		}
@@ -156,7 +159,7 @@ public class CircularPaneTrail extends Application {
 			lCircularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
 			for (int i = 0; i < 8; i++) {
 				javafx.scene.shape.Circle c = new javafx.scene.shape.Circle(10);
-				lCircularPane.getChildren().add(c);
+				lCircularPane.add(c);
 			}
 			lHBox.add(lCircularPane);
 			
@@ -178,7 +181,7 @@ public class CircularPaneTrail extends Application {
 			lCircularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
 			for (int i = 0; i < 8; i++) {
 				javafx.scene.shape.Circle c = new javafx.scene.shape.Circle(10);
-				lCircularPane.getChildren().add(c);
+				lCircularPane.add(c);
 			}
 			lHBox.add(lCircularPane, new HBox.C().hgrow(Priority.ALWAYS));
 		}
@@ -191,7 +194,7 @@ public class CircularPaneTrail extends Application {
 			lCircularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
 			for (int i = 0; i < 8; i++) {
 				javafx.scene.shape.Circle c = new javafx.scene.shape.Circle(5 + i);
-				lCircularPane.getChildren().add(c);
+				lCircularPane.add(c);
 			}
 			lHBox.add(lCircularPane);
 		}
@@ -203,7 +206,7 @@ public class CircularPaneTrail extends Application {
 			lCircularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
 			for (int i = 0; i < 8; i++) {
 				javafx.scene.shape.Rectangle c = new javafx.scene.shape.Rectangle(5 + (2*i), 5 + (2*i));
-				lCircularPane.getChildren().add(c);
+				lCircularPane.add(c);
 			}
 			lHBox.add(lCircularPane);
 		}
@@ -216,24 +219,33 @@ public class CircularPaneTrail extends Application {
 			for (int i = 0; i < 8; i++) {
 				javafx.scene.shape.Rectangle c = new javafx.scene.shape.Rectangle(5 + (2*i), 5 + (2*i));
 				c.setRotate(45);
-				lCircularPane.getChildren().add(c);
+				lCircularPane.add(c);
 			}
 			lHBox.add(lCircularPane);
 		}
 		
 		
+		CircularPane lCircularPane = new CircularPane();
 		{
-			CircularPane lCircularPane = new CircularPane();
 			//lCircularPane.setStyle("-fx-border-color:black;");
 			lCircularPane.setShowDebug(lShowDebug);
 			lCircularPane.setAnimationInterpolation(CircularPane::animateFromTheOrigin);
 			for (int i = 0; i < 10; i++) {
 				javafx.scene.shape.Rectangle c = new javafx.scene.shape.Rectangle(20, 20);
 				c.setRotate(i * 10);
-				lCircularPane.getChildren().add(c);
+				lCircularPane.add(c);
 			}
 			lHBox.add(lCircularPane);
 		}
+		
+		Button lButton = new Button("out");
+		lButton.setOnAction( (actionEvent) -> {
+			lCircularPane.animateOut();
+		});
+		lCircularPane.setAnimateOutFinished( (event) -> {
+			lCircularPane.getChildren().clear();
+		});
+		lHBox.getChildren().add(lButton);
 		
         // setup scene
 		Scene scene = new Scene(lHBox);

@@ -30,7 +30,7 @@ public class CircularPaneTrail2 extends Application {
 			lCircularPane.setShowDebug(Color.GREEN);
 			for (int i = 0; i < j; i++) {
 				javafx.scene.shape.Rectangle c = new javafx.scene.shape.Rectangle(20,20);
-				lCircularPane.getChildren().add(c);
+				lCircularPane.add(c);
 			}
 			lHBox.getChildren().add(lCircularPane);
 			if (lHBox.prefWidth(-1) > 1000) {

@@ -10,6 +10,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javafx.animation.Transition;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ListChangeListener;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
@@ -42,8 +45,35 @@ import javafx.util.Duration;
  */
 public class CircularPane extends Pane {
 
+	// TODO: hiding of children? Reserve space? 
+	
 	private enum MinPrefMax { MIN, PREF, MAX }
 
+	
+	// ==========================================================================================================================================================================================================================================
+	// CONSTRUCT
+	
+	public CircularPane() {
+		super();
+		construct();
+	}
+
+	private void construct() {
+		// listen to nodes being removed from the children and clean up our administration
+		getChildren().addListener(new ListChangeListener<Node>(){
+			@Override
+			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Node> changes) {
+				while (changes.next()) {
+					if (changes.wasRemoved()) {
+						for (Node n : changes.getRemoved()) {
+							animationLayoutInfos.remove(n);
+						}
+					}
+				}
+			}
+		});
+	}
+	
 	
 	// ==========================================================================================================================================================================================================================================
 	// PROPERTIES
@@ -130,6 +160,20 @@ public class CircularPane extends Pane {
 	public void setAnimationInterpolation(AnimationInterpolation value) { animationInterpolationObjectProperty.setValue(value); }
 	public CircularPane withAnimationInterpolation(AnimationInterpolation value) { setAnimationInterpolation(value); return this; } 
 
+	/** animateInFinished */
+	public ObjectProperty<EventHandler<ActionEvent>> animateInFinishedProperty() { return animateInFinishedObjectProperty; }
+	final private ObjectProperty<EventHandler<ActionEvent>> animateInFinishedObjectProperty = new SimpleObjectProperty<EventHandler<ActionEvent>>(this, "animateInFinished", null);
+	public EventHandler<ActionEvent> getAnimateInFinished() { return animateInFinishedObjectProperty.getValue(); }
+	public void setAnimateInFinished(EventHandler<ActionEvent> value) { animateInFinishedObjectProperty.setValue(value); }
+	public CircularPane withAnimateInFinished(EventHandler<ActionEvent> value) { setAnimateInFinished(value); return this; } 
+
+	/** animateOutFinished */
+	public ObjectProperty<EventHandler<ActionEvent>> animateOutFinishedProperty() { return animateOutFinishedObjectProperty; }
+	final private ObjectProperty<EventHandler<ActionEvent>> animateOutFinishedObjectProperty = new SimpleObjectProperty<EventHandler<ActionEvent>>(this, "animateOutFinished", null);
+	public EventHandler<ActionEvent> getAnimateOutFinished() { return animateOutFinishedObjectProperty.getValue(); }
+	public void setAnimateOutFinished(EventHandler<ActionEvent> value) { animateOutFinishedObjectProperty.setValue(value); }
+	public CircularPane withAnimateOutFinished(EventHandler<ActionEvent> value) { setAnimateOutFinished(value); return this; } 
+
 	/** debug: show debug hints */
 	public ObjectProperty<Paint> showDebugProperty() { return showDebugObjectProperty; }
 	final private ObjectProperty<Paint> showDebugObjectProperty = new SimpleObjectProperty<Paint>(this, "showDebug", null);
@@ -198,6 +242,7 @@ public class CircularPane extends Pane {
 			// remove all beads
 			getChildren().removeAll(nodeToBeadMap.values());
 			nodeToBeadMap.clear();
+			animationLayoutInfos.clear();
 			
 			// calculate the layout
 			LayoutInfo lLayoutInfo = calculateLayout(null); // null: use the available size instead of a calculated one
@@ -226,35 +271,34 @@ public class CircularPane extends Pane {
 		    		lBead.setTranslateY(lLayoutInfo.beadDiameter / 2);
 	    		}
 	    		
-	    		// animated?
-	    		if (initial && getAnimationInterpolation() != null) {
-	
-	    			// create the administration for the animation
-	    			AnimationLayoutInfo lAnimated = new AnimationLayoutInfo();
-	        		lAnimated.layoutInfo = lLayoutInfo;
-	    			lAnimated.node = lNode;
-	    			lAnimated.nodeLayoutInfo = lNodeLayoutInfo;
-	    			lAnimated.originX = (lLayoutInfo.chainDiameter / 2)
-  			 	          + ((lLayoutInfo.beadDiameter - lNodeLayoutInfo.w) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
-  			 	          ;	    					
-	    			lAnimated.originY = (lLayoutInfo.chainDiameter / 2)
-  			 	          + ((lLayoutInfo.beadDiameter - lNodeLayoutInfo.h) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
-  				          ;
-	    			animationLayoutInfos.add(lAnimated);
-	    			
-	    			// initial position
+    			// create the administration for the animation
+    			AnimationLayoutInfo lAnimated = new AnimationLayoutInfo();
+        		lAnimated.layoutInfo = lLayoutInfo;
+    			lAnimated.node = lNode;
+    			lAnimated.nodeLayoutInfo = lNodeLayoutInfo;
+    			lAnimated.originX = (lLayoutInfo.chainDiameter / 2)
+		 	          + ((lLayoutInfo.beadDiameter - lNodeLayoutInfo.w) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
+		 	          ;	    					
+    			lAnimated.originY = (lLayoutInfo.chainDiameter / 2)
+		 	          + ((lLayoutInfo.beadDiameter - lNodeLayoutInfo.h) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
+			          ;
+    			animationLayoutInfos.put(lNode, lAnimated);
+
+    	    	// are we animating?
+    			if (initial && getAnimationInterpolation() != null) {
+	    			// reposition to the initial position for the animation
 					getAnimationInterpolation().interpolate(0.0, lAnimated);
 	    		}
 	    	}    	
 	    	
+	    	// are we animating?
+			if (initial && getAnimationInterpolation() != null) {
+				animateIn();
+			}
+			
 	    	// no longer the initial layout
 			if (initial) {
 	    		initial = false;
-			}
-			
-			// is there anything to animated?
-			if (animationLayoutInfos.size() > 0 ) {
-				animateIn();
 			}
 		}
 		finally {
@@ -434,11 +478,25 @@ public class CircularPane extends Pane {
 
 	// ==========================================================================================================================================================================================================================================
 	// ANIMATION
+    
+    /**
+     * 
+     */
+	public void animateIn() {
+		animate(1);
+	}
 
     /**
      * 
      */
-	private void animateIn() {
+	public void animateOut() {
+		animate(-1);
+	}
+
+    /**
+     * 
+     */
+	private void animate(int direction) {
 		// while the animation is running, don't touch the children
 		layingoutChildren.addAndGet(1);
 		new Transition() {
@@ -449,20 +507,24 @@ public class CircularPane extends Pane {
 				setAutoReverse(false);
 				setCycleCount(1);
 				setOnFinished( (event) -> {
-					animationLayoutInfos.clear();
 			    	layingoutChildren.addAndGet(-1);
+			    	if (direction > 0 && getAnimateInFinished() != null) {
+			    		getAnimateInFinished().handle(event);
+			    	}
+			    	if (direction < 0 && getAnimateOutFinished() != null) {
+			    		getAnimateOutFinished().handle(event);
+			    	}
 				});
 			}
 			
 			@Override
 			protected void interpolate(double progress) {
-				for (AnimationLayoutInfo lAnimationLayoutInfo : animationLayoutInfos) {
-					getAnimationInterpolation().interpolate(progress, lAnimationLayoutInfo);
+				for (AnimationLayoutInfo lAnimationLayoutInfo : animationLayoutInfos.values()) {
+					getAnimationInterpolation().interpolate( direction > 0 ? progress : 1-progress, lAnimationLayoutInfo);
 				}
 			}
 		}.playFromStart();
 	}
-
 
 	/**
 	 * This class holds additional layout information for animation.
@@ -482,7 +544,7 @@ public class CircularPane extends Pane {
 			return CircularPane.calculateY(layoutInfo.chainDiameter, angle);
 		}
     }
-    final List<AnimationLayoutInfo> animationLayoutInfos = new ArrayList<>();
+    final Map<Node, AnimationLayoutInfo> animationLayoutInfos = new HashMap<>();
     
     /**
      * 
@@ -523,6 +585,14 @@ public class CircularPane extends Pane {
 		animated.node.relocate(lX, lY);    	
     }
 	
+	// ==========================================================================================================================================================================================================================================
+	// CONVENIENCE
+    
+    public void add(Node node) {
+    	getChildren().add(node);
+    }
+
+    
 	// ==========================================================================================================================================================================================================================================
 	// SUPPORT
 
