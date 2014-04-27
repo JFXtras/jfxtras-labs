@@ -16,6 +16,11 @@ import java.util.function.Function;
  *     <li> It doesn't use static methods and it's a simple object you want to keep a reference around </li>
  * </ul>
  * The bind is effective from the constructor until unbind() is called. It is registered as a weaklistener to both properties.
+ * <p>
+ * Much like the oiginal BidirectionalBinding using StringConverter, you can have multiple bidirectional binders active at the same time.
+ * Because they are glorified listeners multiple binders are activated in order of creation.
+ * Still, avoid multiple active binders as the transformations of variables concatenate in usually strange fashion.
+ *
  * Created by carrknight on 4/26/14.
  */
 public class HeterogeneousBidirectionalBinder<A,B> implements ChangeListener<Object>, WeakListener {
@@ -23,8 +28,7 @@ public class HeterogeneousBidirectionalBinder<A,B> implements ChangeListener<Obj
     //the use of WeakReferences here is just to mimic BidirectionalBindings
     private final WeakReference<Property<A>> propertyRef1;
     private final WeakReference<Property<B>> propertyRef2;
-    //here i use Transformer from Apache collection, but that's just such a simple interface i
-    // can re-implement it without having to deal with dependencies
+    //the nice thing about Function<A,B> of java 8 is that I don't need to keep around apache transformer from commons as a dependency
     private final Function<A,B> transformer1To2;
     private final Function<B,A> transformer2To1;
 
@@ -32,7 +36,7 @@ public class HeterogeneousBidirectionalBinder<A,B> implements ChangeListener<Obj
     private boolean updating = false;
 
 
-
+    //use the same hash-code idea of the original BidirectionalBinding, except that i also multiply by the hashcodes of the transformers
     private final int cachedHashCode;
 
     public HeterogeneousBidirectionalBinder(Property<A> property1, Property<B> property2,
@@ -56,25 +60,27 @@ public class HeterogeneousBidirectionalBinder<A,B> implements ChangeListener<Obj
     private void initCheck(Property<A> property1, Property<B> property2,
                            Function<A, B> transformer1To2, Function<B, A> transformer2To1) {
         if(property1 == property2 ||property1 == null || property2 == null )
-            throw new IllegalArgumentException("Properties must be different and null");
+            throw new IllegalArgumentException("Properties must be different and not null");
         if(transformer1To2 == null || transformer2To1 == null  )
             throw new IllegalArgumentException("Transformers can't be null!");
 
 
     }
 
-    protected Property<A> getProperty1() {
+    public Property<A> getProperty1() {
         return propertyRef1.get();
     }
 
-    protected Property<B> getProperty2() {
+    public Property<B> getProperty2() {
         return propertyRef2.get();
     }
 
 
     /**
-     * here i forego generics entirely. Unfortunately I can't implement two typed ChangeListener interfaces, so this is the second best.
-     * Admittely a far worse second, but hey.
+     * This is the core of the binding. It is a method that listens to both properties.
+     * It takes as basis the open source javafx method for BidirectionalBinding (here: http://hg.openjdk.java.net/openjfx/8/master/rt/file/f89b7dc932af/modules/base/src/main/java/com/sun/javafx/binding/BidirectionalBinding.java )
+     * the only main difference is that in this method i called the transformers. It's another unfortunate byproduct of BidirectionalBindings having private constructors.
+     *
      */
     @Override
     public void changed(ObservableValue sourceProperty, Object oldValue, Object newValue) {
@@ -92,29 +98,32 @@ public class HeterogeneousBidirectionalBinder<A,B> implements ChangeListener<Obj
             } else {
                 try {
                     updating = true; //set updating to true to avoid infinite recursion
-                    if (property1 == sourceProperty) {
-                        //grab the value, cast it, transform it and apply it!
-                        A newTypedValue = (A) newValue;
-                        property2.setValue(transformer1To2.apply(newTypedValue));
-                    } else {
-                        B newTypedValue = (B) newValue;
-                        property1.setValue(transformer2To1.apply(newTypedValue));
-                    }
+                    updateProperty(sourceProperty, newValue);
                 } catch (RuntimeException e) {
                     //if we fail, grab the old value, cast it, transform it and apply it.
-                    if (property1 == sourceProperty) {
-                        B oldTypedValue = (B) oldValue;
-                        property1.setValue(transformer2To1.apply(oldTypedValue));
-                    } else {
-                        A oldTypedValue = (A) oldValue;
-                        property2.setValue(transformer1To2.apply(oldTypedValue));
-                    }
+                    updateProperty(sourceProperty,oldValue);
+                    //but in the end just throw a new runtime exception here.
                     throw new RuntimeException(
-                            "Bidirectional binding failed, setting to the previous value", e);
+                            "BidirectionalBinder failed, setting to the previous value", e);
                 } finally {
                     updating = false;
                 }
             }
+        }
+    }
+
+    /**
+     *     a simple helper to update the right property. Called by the change listener method
+     */
+    @SuppressWarnings("unchecked")
+    private void updateProperty(ObservableValue sourceProperty, Object value) {
+        if (getProperty1() == sourceProperty) {
+            //grab the value, cast it, transform it and apply it!
+            A newTypedValue = (A) value;
+            getProperty2().setValue(transformer1To2.apply(newTypedValue));
+        } else {
+            B newTypedValue = (B) value;
+            getProperty1().setValue(transformer2To1.apply(newTypedValue));
         }
     }
 
@@ -146,6 +155,9 @@ public class HeterogeneousBidirectionalBinder<A,B> implements ChangeListener<Obj
     }
 
 
+    /**
+     * equality is just "==".
+     */
     @Override
     public boolean equals(Object o) {
         return this == o;
@@ -169,5 +181,7 @@ public class HeterogeneousBidirectionalBinder<A,B> implements ChangeListener<Obj
                 Objects.equals(this.transformer2To1,that.transformer2To1);
 */
     }
+
+
 }
 
