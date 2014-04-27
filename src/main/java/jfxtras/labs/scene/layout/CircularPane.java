@@ -235,12 +235,10 @@ public class CircularPane extends Pane {
 	    			lAnimated.node = lNode;
 	    			lAnimated.nodeLayoutInfo = lNodeLayoutInfo;
 	    			lAnimated.originX = (lLayoutInfo.chainDiameter / 2)
-  			 	          - lLayoutInfo.clipLeft
-  			 	          - lNode.getLayoutBounds().getMinX() // for some reason this must be added, while when setting X&Y without animation it is not needed... Alas 
+  			 	          + ((lLayoutInfo.beadDiameter - lNodeLayoutInfo.w) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
   			 	          ;	    					
 	    			lAnimated.originY = (lLayoutInfo.chainDiameter / 2)
-  				          - lLayoutInfo.clipTop
-  				          - lNode.getLayoutBounds().getMinY() // for some reason this must be added, while when setting X&Y without animation it is not needed... Alas
+  			 	          + ((lLayoutInfo.beadDiameter - lNodeLayoutInfo.h) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
   				          ;
 	    			animationLayoutInfos.add(lAnimated);
 	    			
@@ -446,6 +444,7 @@ public class CircularPane extends Pane {
 		new Transition() {
 			// anonymous constructor
 			{
+				//setDelay(Duration.millis(5000));
 				setCycleDuration(getAnimationDuration());
 				setAutoReverse(false);
 				setCycleCount(1);
@@ -501,8 +500,8 @@ public class CircularPane extends Pane {
      * @param animationLayoutInfo
      */
     static public void animateFromTheOrigin(double progress, AnimationLayoutInfo animationLayoutInfo) {
-		double lX = animationLayoutInfo.originX + (progress * -animationLayoutInfo.originX) + ((animationLayoutInfo.nodeLayoutInfo.x - animationLayoutInfo.layoutInfo.clipLeft) * progress); 
-		double lY = animationLayoutInfo.originY + (progress * -animationLayoutInfo.originY) + ((animationLayoutInfo.nodeLayoutInfo.y - animationLayoutInfo.layoutInfo.clipTop) * progress);
+		double lX = animationLayoutInfo.originX + (progress * -animationLayoutInfo.originX) + (progress * animationLayoutInfo.nodeLayoutInfo.x) - animationLayoutInfo.layoutInfo.clipLeft; 
+		double lY = animationLayoutInfo.originY + (progress * -animationLayoutInfo.originY) + (progress * animationLayoutInfo.nodeLayoutInfo.y) - animationLayoutInfo.layoutInfo.clipTop;
 		animationLayoutInfo.node.relocate(lX, lY);    	
     }
     
