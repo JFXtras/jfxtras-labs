@@ -10,7 +10,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javafx.animation.Transition;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -49,32 +48,6 @@ public class CircularPane extends Pane {
 	
 	private enum MinPrefMax { MIN, PREF, MAX }
 
-	
-	// ==========================================================================================================================================================================================================================================
-	// CONSTRUCT
-	
-	public CircularPane() {
-		super();
-		construct();
-	}
-
-	private void construct() {
-		// listen to nodes being removed from the children and clean up our administration
-		getChildren().addListener(new ListChangeListener<Node>(){
-			@Override
-			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Node> changes) {
-				while (changes.next()) {
-					if (changes.wasRemoved()) {
-						for (Node n : changes.getRemoved()) {
-							animationLayoutInfos.remove(n);
-						}
-					}
-				}
-			}
-		});
-	}
-	
-	
 	// ==========================================================================================================================================================================================================================================
 	// PROPERTIES
 
@@ -255,7 +228,7 @@ public class CircularPane extends Pane {
 	    		NodeLayoutInfo lNodeLayoutInfo = lLayoutInfo.layoutInfoMap.get(lNode);
 
 	    		// position node
-	    		lNode.resizeRelocate(lNodeLayoutInfo.x - lLayoutInfo.clipLeft, lNodeLayoutInfo.y - lLayoutInfo.clipTop, lNodeLayoutInfo.w, lNodeLayoutInfo.h);
+	    		lNode.resize(lNodeLayoutInfo.w, lNodeLayoutInfo.h);
 	    		
 	    		// add a bead to show where this node boundary is
 	    		if (getShowDebug() != null) {
@@ -272,23 +245,29 @@ public class CircularPane extends Pane {
 	    		}
 	    		
     			// create the administration for the animation
-    			AnimationLayoutInfo lAnimated = new AnimationLayoutInfo();
-        		lAnimated.layoutInfo = lLayoutInfo;
-    			lAnimated.node = lNode;
-    			lAnimated.nodeLayoutInfo = lNodeLayoutInfo;
-    			lAnimated.originX = (lLayoutInfo.chainDiameter / 2)
-		 	          + ((lLayoutInfo.beadDiameter - lNodeLayoutInfo.w) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
-		 	          ;	    					
-    			lAnimated.originY = (lLayoutInfo.chainDiameter / 2)
-		 	          + ((lLayoutInfo.beadDiameter - lNodeLayoutInfo.h) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
-			          ;
-    			animationLayoutInfos.put(lNode, lAnimated);
+    			AnimationLayoutInfo lAnimationLayoutInfo = new AnimationLayoutInfo();
+        		lAnimationLayoutInfo.layoutInfo = lLayoutInfo;
+    			lAnimationLayoutInfo.node = lNode;
+    			lAnimationLayoutInfo.nodeStartX = lNode.getLayoutX() + lNode.getLayoutBounds().getMinX(); // correct what relocate() adds to the X
+    			lAnimationLayoutInfo.nodeStartY = lNode.getLayoutY() + lNode.getLayoutBounds().getMinY(); // correct what relocate() adds to the Y
+    			lAnimationLayoutInfo.nodeLayoutInfo = lNodeLayoutInfo;
+    			lAnimationLayoutInfo.originX = (lLayoutInfo.chainDiameter / 2)
+		 	                                 + ((lLayoutInfo.beadDiameter - lNodeLayoutInfo.w) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
+		 	                                 ;	    					
+    			lAnimationLayoutInfo.originY = (lLayoutInfo.chainDiameter / 2)
+                                             + ((lLayoutInfo.beadDiameter - lNodeLayoutInfo.h) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
+			                                 ;
+    			lAnimationLayoutInfo.initial = initial;
+    			animationLayoutInfos.put(lNode, lAnimationLayoutInfo);
 
     	    	// are we animating?
     			if (initial && getAnimationInterpolation() != null) {
 	    			// reposition to the initial position for the animation
-					getAnimationInterpolation().interpolate(0.0, lAnimated);
+					getAnimationInterpolation().interpolate(0.0, lAnimationLayoutInfo);
 	    		}
+    			else {
+    				lNode.relocate(lNodeLayoutInfo.x - lLayoutInfo.clipLeft, lNodeLayoutInfo.y - lLayoutInfo.clipTop);
+    			}
 	    	}    	
 	    	
 	    	// are we animating?
@@ -530,11 +509,14 @@ public class CircularPane extends Pane {
 	 * This class holds additional layout information for animation.
 	 */
     public class AnimationLayoutInfo {
-    	public LayoutInfo layoutInfo;
     	public Node node;
+    	public LayoutInfo layoutInfo;
     	public NodeLayoutInfo nodeLayoutInfo;
     	public double originX;
     	public double originY;
+    	public double nodeStartX;
+    	public double nodeStartY;
+    	public boolean initial;
 		
     	public double calculateX(double angle) {
 			return CircularPane.calculateX(layoutInfo.chainDiameter, angle);
