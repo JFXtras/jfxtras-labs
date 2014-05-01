@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+
+
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -21,6 +24,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.layout.CircularPane;
 import jfxtras.labs.scene.layout.CircularPane.AnimationLayoutInfo;
+import jfxtras.labs.test.TestUtil;
 import jfxtras.scene.layout.HBox;
 
 public class CircularPaneTrail extends Application {
@@ -80,6 +84,7 @@ public class CircularPaneTrail extends Application {
 		
 		{
 			CircularPane lCircularPane = new CircularPane();
+			lCircularPane.setDiameter(150.0);
 			//lCircularPane.setStyle("-fx-border-color:black;");
 			//lCircularPane.setChildrenAreCircular(true);
 			lCircularPane.setShowDebug(lShowDebug);
@@ -109,6 +114,7 @@ public class CircularPaneTrail extends Application {
 		
 		{
 			CircularPane lCircularPane = new CircularPane();
+			lCircularPane.setDiameter(90.0);
 			//lCircularPane.setStyle("-fx-border-color:black;");
 			//lCircularPane.setChildrenAreCircular(true);
 			lCircularPane.setShowDebug(lShowDebug);
@@ -242,8 +248,12 @@ public class CircularPaneTrail extends Application {
 		lButton.setOnAction( (actionEvent) -> {
 			lCircularPane.animateOut();
 		});
-		lCircularPane.setAnimateOutFinished( (event) -> {
-			lCircularPane.getChildren().clear();
+		lCircularPane.setOnAnimateOutFinished( (event) -> {
+			lCircularPane.setVisible(false);
+			Platform.runLater(() -> {
+				TestUtil.sleep(3000);
+				lCircularPane.setVisible(true);
+			});
 		});
 		lHBox.getChildren().add(lButton);
 		

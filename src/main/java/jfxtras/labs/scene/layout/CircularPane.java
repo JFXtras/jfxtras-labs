@@ -45,6 +45,7 @@ import javafx.util.Duration;
 public class CircularPane extends Pane {
 
 	// TODO: hiding of children? Reserve space? 
+	// TODO: animate between changes in the layout?
 	
 	private enum MinPrefMax { MIN, PREF, MAX }
 
@@ -105,6 +106,13 @@ public class CircularPane extends Pane {
 	public void setGap(Double value) { gapObjectProperty.setValue(value); }
 	public CircularPane withGap(Double value) { setGap(value); return this; }
 
+	/** diameter: diameter of the whole layout */
+	public ObjectProperty<Double> diameterProperty() { return diameterObjectProperty; }
+	final private ObjectProperty<Double> diameterObjectProperty = new SimpleObjectProperty<Double>(this, "diameter", null);
+	public Double getDiameter() { return diameterObjectProperty.getValue(); }
+	public void setDiameter(Double value) { diameterObjectProperty.setValue(value); }
+	public CircularPane withDiameter(Double value) { setDiameter(value); return this; }
+
 	/** childrenAreCircular: if all children are circular, then we can use a different size */
 	public ObjectProperty<Boolean> childrenAreCircularProperty() { return childrenAreCircularObjectProperty; }
 	final private ObjectProperty<Boolean> childrenAreCircularObjectProperty = new SimpleObjectProperty<Boolean>(this, "childrenAreCircular", false);
@@ -136,16 +144,16 @@ public class CircularPane extends Pane {
 	/** animateInFinished */
 	public ObjectProperty<EventHandler<ActionEvent>> animateInFinishedProperty() { return animateInFinishedObjectProperty; }
 	final private ObjectProperty<EventHandler<ActionEvent>> animateInFinishedObjectProperty = new SimpleObjectProperty<EventHandler<ActionEvent>>(this, "animateInFinished", null);
-	public EventHandler<ActionEvent> getAnimateInFinished() { return animateInFinishedObjectProperty.getValue(); }
-	public void setAnimateInFinished(EventHandler<ActionEvent> value) { animateInFinishedObjectProperty.setValue(value); }
-	public CircularPane withAnimateInFinished(EventHandler<ActionEvent> value) { setAnimateInFinished(value); return this; } 
+	public EventHandler<ActionEvent> getOnAnimateInFinished() { return animateInFinishedObjectProperty.getValue(); }
+	public void setOnAnimateInFinished(EventHandler<ActionEvent> value) { animateInFinishedObjectProperty.setValue(value); }
+	public CircularPane witOnhAnimateInFinished(EventHandler<ActionEvent> value) { setOnAnimateInFinished(value); return this; } 
 
 	/** animateOutFinished */
 	public ObjectProperty<EventHandler<ActionEvent>> animateOutFinishedProperty() { return animateOutFinishedObjectProperty; }
 	final private ObjectProperty<EventHandler<ActionEvent>> animateOutFinishedObjectProperty = new SimpleObjectProperty<EventHandler<ActionEvent>>(this, "animateOutFinished", null);
-	public EventHandler<ActionEvent> getAnimateOutFinished() { return animateOutFinishedObjectProperty.getValue(); }
-	public void setAnimateOutFinished(EventHandler<ActionEvent> value) { animateOutFinishedObjectProperty.setValue(value); }
-	public CircularPane withAnimateOutFinished(EventHandler<ActionEvent> value) { setAnimateOutFinished(value); return this; } 
+	public EventHandler<ActionEvent> getOnAnimateOutFinished() { return animateOutFinishedObjectProperty.getValue(); }
+	public void setOnAnimateOutFinished(EventHandler<ActionEvent> value) { animateOutFinishedObjectProperty.setValue(value); }
+	public CircularPane withOnAnimateOutFinished(EventHandler<ActionEvent> value) { setOnAnimateOutFinished(value); return this; } 
 
 	/** debug: show debug hints */
 	public ObjectProperty<Paint> showDebugProperty() { return showDebugObjectProperty; }
@@ -208,7 +216,7 @@ public class CircularPane extends Pane {
     	if (layingoutChildren.get() > 0) {
     		return;
     	}    	
-    	layingoutChildren.addAndGet(1);
+    	layingoutChildren.incrementAndGet();
     	try {
     		//System.out.println("=============== layoutChildren ");
 
@@ -281,7 +289,7 @@ public class CircularPane extends Pane {
 			}
 		}
 		finally {
-	    	layingoutChildren.addAndGet(-1);
+	    	layingoutChildren.decrementAndGet();
 		}
     }
     private final AtomicInteger layingoutChildren = new AtomicInteger(0);
@@ -358,7 +366,7 @@ public class CircularPane extends Pane {
     	lLayoutInfo.minY = lLayoutInfo.chainDiameter + lLayoutInfo.beadDiameter;
     	lLayoutInfo.maxX = 0;
     	lLayoutInfo.maxY = 0;
-    	double lAngleStep = getArc() / numberOfNodes;
+    	lLayoutInfo.angleStep = getArc() / numberOfNodes;
     	double lAngle = getStartAngle360();
     	lLayoutInfo.startAngle = lAngle;
     	//System.out.println(getId() + ": layout startAngle=" + lAngle);	    	
@@ -397,7 +405,7 @@ public class CircularPane extends Pane {
     		lLayoutInfo.maxY = Math.max(lLayoutInfo.maxY, lNodeLayoutInfo.beadY);
     		
 			// next
-        	lAngle += lAngleStep;
+        	lAngle += lLayoutInfo.angleStep;
         	//cnt++;
     	}
     	
@@ -426,6 +434,7 @@ public class CircularPane extends Pane {
 	 */
     public class LayoutInfo {
     	public double startAngle;
+    	public double angleStep;
     	public double chainDiameter = 0;
     	public double beadDiameter = 0;
     	public double minX = 0;
@@ -477,7 +486,7 @@ public class CircularPane extends Pane {
      */
 	private void animate(int direction) {
 		// while the animation is running, don't touch the children
-		layingoutChildren.addAndGet(1);
+		layingoutChildren.incrementAndGet();
 		new Transition() {
 			// anonymous constructor
 			{
@@ -486,12 +495,12 @@ public class CircularPane extends Pane {
 				setAutoReverse(false);
 				setCycleCount(1);
 				setOnFinished( (event) -> {
-			    	layingoutChildren.addAndGet(-1);
-			    	if (direction > 0 && getAnimateInFinished() != null) {
-			    		getAnimateInFinished().handle(event);
+			    	layingoutChildren.decrementAndGet();
+			    	if (direction > 0 && getOnAnimateInFinished() != null) {
+			    		getOnAnimateInFinished().handle(event);
 			    	}
-			    	if (direction < 0 && getAnimateOutFinished() != null) {
-			    		getAnimateOutFinished().handle(event);
+			    	if (direction < 0 && getOnAnimateOutFinished() != null) {
+			    		getOnAnimateOutFinished().handle(event);
 			    	}
 				});
 			}
@@ -619,6 +628,11 @@ public class CircularPane extends Pane {
      */
     private double computeChainDiameter(double beadDiameter) {
 
+    	// force set?
+    	if (getDiameter() != null) {
+    		return getDiameter() - beadDiameter; // the diameter is the outer circle, the chain runs through the bead's centers
+    	}
+    	
     	// prepare
     	List<Node> nodes = getManagedChildrenWithoutBeads();
     	int numberOfNodes = nodes.size();
