@@ -49,6 +49,16 @@ public class CircularPane extends Pane {
 	
 	private enum MinPrefMax { MIN, PREF, MAX }
 
+	public CircularPane() {
+		construct();
+	}
+	
+	private void construct() {
+		constructChildrenAreCircular();
+		constructShowDebug();
+	}
+	
+	
 	// ==========================================================================================================================================================================================================================================
 	// PROPERTIES
 
@@ -118,7 +128,12 @@ public class CircularPane extends Pane {
 	final private ObjectProperty<Boolean> childrenAreCircularObjectProperty = new SimpleObjectProperty<Boolean>(this, "childrenAreCircular", false);
 	public Boolean getChildrenAreCircular() { return childrenAreCircularObjectProperty.getValue(); }
 	public void setChildrenAreCircular(Boolean value) { childrenAreCircularObjectProperty.setValue(value); }
-	public CircularPane withChildrenAreCircular(Boolean value) { setChildrenAreCircular(value); return this; } 
+	public CircularPane withChildrenAreCircular(Boolean value) { setChildrenAreCircular(value); return this; }
+	private void constructChildrenAreCircular() {
+		childrenAreCircularObjectProperty.addListener( (invalidationEvent) -> {
+			requestLayout();
+		});
+	}
 
 	/** clipAwayExcessWhitespace: cut away excess whitespace on the outside */
 	public ObjectProperty<Boolean> clipAwayExcessWhitespaceProperty() { return clipAwayExcessWhitespaceObjectProperty; }
@@ -157,10 +172,20 @@ public class CircularPane extends Pane {
 
 	/** debug: show debug hints */
 	public ObjectProperty<Paint> showDebugProperty() { return showDebugObjectProperty; }
-	final private ObjectProperty<Paint> showDebugObjectProperty = new SimpleObjectProperty<Paint>(this, "showDebug", null);
+	final private ObjectProperty<Paint> showDebugObjectProperty = new SimpleObjectProperty<Paint>(this, "showDebug", null) {
+		public void set(Paint v) {
+			super.set(v);
+			CircularPane.this.requestLayout();
+		}
+	};
 	public Paint getShowDebug() { return showDebugObjectProperty.getValue(); }
 	public void setShowDebug(Paint value) { showDebugObjectProperty.setValue(value); }
 	public CircularPane withShowDebug(Paint value) { setShowDebug(value); return this; } 
+	private void constructShowDebug() {
+		showDebugObjectProperty.addListener( (invalidationEvent) -> {
+			requestLayout();
+		});
+	}
 
 
 	// ==========================================================================================================================================================================================================================================
