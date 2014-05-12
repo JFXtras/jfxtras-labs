@@ -37,6 +37,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -130,6 +131,7 @@ public class BigDecimalFieldDemo extends Application {
             disabledField.setNumber(new BigDecimal(Math.random() * 1000));
             promptText.setNumber(null);
             calendarTextField.setCalendar(Calendar.getInstance());
+            decimalFormat.requestFocus();
         });
         root.addRow(rowIndex++, new Label(), button);
         BigDecimalLabel bigDecimalLabel = new BigDecimalLabel();
@@ -141,7 +143,15 @@ public class BigDecimalFieldDemo extends Application {
         calendarLabel.valueProperty().bind(calendarTextField.calendarProperty());
         calendarLabel.formatProperty().bind(dateFormatProperty);
         root.addRow(rowIndex++, new Label("CalendarLabel"), calendarLabel);
-
+//        defaultSpinner.requestFocus();
+//        calendarTextField.requestFocus();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                decimalFormat.requestFocus();
+            }
+        });
+        decimalFormat.requestFocus();
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();

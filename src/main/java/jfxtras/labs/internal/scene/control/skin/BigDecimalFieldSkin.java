@@ -188,22 +188,25 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
 
 
     /**
-     * The BigDecimalField itself is never focused (setFocusTraversable(false),
-     * but we want it to look focused when the textfield has the focus.
+     * When the CONTROL or the textfield of the Skin gains the focus we make that visible by adding/removing
+     * a CSS style that visually simulates the focus.
      *
      */
     private void initFocusSimulation() {
 
         // If the TextField gains/loses focus the style of the CONTROL is changed
-        textField.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> ov,
-                                Boolean wasFocused, Boolean isFocused) {
-                if (isFocused) {
-                    CONTROL.getStyleClass().add("big-decimal-field-focused");
-                } else {
-                    CONTROL.getStyleClass().remove("big-decimal-field-focused");
-                }
+        CONTROL.focusedProperty().addListener((ov, wasFocused, isFocused) -> {
+            if (isFocused) {
+                CONTROL.getStyleClass().add("big-decimal-field-focused");
+            } else {
+                CONTROL.getStyleClass().remove("big-decimal-field-focused");
+            }
+        });
+        textField.focusedProperty().addListener((ov, wasFocused, isFocused) -> {
+            if (isFocused) {
+                CONTROL.getStyleClass().add("big-decimal-field-focused");
+            } else {
+                CONTROL.getStyleClass().remove("big-decimal-field-focused");
             }
         });
 
