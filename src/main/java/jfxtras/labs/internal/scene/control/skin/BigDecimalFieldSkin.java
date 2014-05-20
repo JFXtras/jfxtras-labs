@@ -135,7 +135,7 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
             CONTROL.decrement();
         };
         btnDown.setOnMousePressed(arg0 -> {
-            final KeyFrame kf = new KeyFrame(Duration.millis(50), btnUpHandler);
+            final KeyFrame kf = new KeyFrame(Duration.millis(50), btnDownHandler);
             timeline.setDelay(Duration.millis(500));
             timeline.getKeyFrames().clear();
             timeline.getKeyFrames().add(kf);
