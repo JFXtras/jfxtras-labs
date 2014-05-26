@@ -31,6 +31,7 @@ package jfxtras.labs.internal.scene.control.skin;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
@@ -197,11 +198,10 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
         // If the TextField gains/loses focus the style of the CONTROL is changed
         CONTROL.focusedProperty().addListener((ov, wasFocused, isFocused) -> {
             if (isFocused) {
-                CONTROL.getStyleClass().add("big-decimal-field-focused");
-            } else {
-                CONTROL.getStyleClass().remove("big-decimal-field-focused");
+                Platform.runLater(() -> textField.requestFocus());
             }
         });
+        // If the TextField gains/loses focus the style of the CONTROL is changed
         textField.focusedProperty().addListener((ov, wasFocused, isFocused) -> {
             if (isFocused) {
                 CONTROL.getStyleClass().add("big-decimal-field-focused");

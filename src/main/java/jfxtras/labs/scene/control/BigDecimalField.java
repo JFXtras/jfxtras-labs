@@ -74,6 +74,7 @@ public class BigDecimalField extends Control {
         minValue = new SimpleObjectProperty<BigDecimal>(this, "minValue");
         format = new SimpleObjectProperty<NumberFormat>(this, "format", NumberFormat.getNumberInstance());
         promptText = new SimpleStringProperty(this, "promptText", "");
+        setFocusTraversable(false);
     }
 
     /**
