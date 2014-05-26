@@ -32,15 +32,22 @@ package jfxtras.labs.scene.control.test;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import jfxtras.labs.scene.control.BigDecimalField;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.loadui.testfx.GuiTest;
+
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.TAB;
+
 /**
  * GUI-Test for {@link jfxtras.labs.scene.control.BigDecimalField}
  * Created by Thomas Bolz on 01.01.14.
@@ -53,47 +60,53 @@ public class BigDecimalFieldTest extends GuiTest {
         nf = NumberFormat.getNumberInstance(Locale.UK);
         nf.setMaximumFractionDigits(2);
         nf.setMinimumFractionDigits(2);
-        bigDecimalField = new BigDecimalField(new BigDecimal(10), new BigDecimal(2), nf);
-        root.getChildren().add(bigDecimalField);
+        bigDecimalField1 = new BigDecimalField(new BigDecimal(10), new BigDecimal(2), nf);
+        bigDecimalField2 = new BigDecimalField(new BigDecimal(20), new BigDecimal(2), nf);
+        root.getChildren().addAll(new VBox(bigDecimalField1, bigDecimalField2));
 
         return root;
     }
 
-    BigDecimalField bigDecimalField;
+    BigDecimalField bigDecimalField1;
+    BigDecimalField bigDecimalField2;
     NumberFormat nf;
     private final String NUMBER = "12345.6789";
 
     @Test
     public void checkArrowButtonsAndStepwidth() {
-        Assert.assertEquals(new BigDecimal(10), bigDecimalField.getNumber());
+        Platform.runLater(() -> bigDecimalField1.requestFocus());
+        sleep(1, TimeUnit.SECONDS);
+        Assert.assertEquals(new BigDecimal(10), bigDecimalField1.getNumber());
 
-        click(bigDecimalField).push(KeyCode.UP);
-        Assert.assertEquals(new BigDecimal(12), bigDecimalField.getNumber());
-        click(bigDecimalField).push(KeyCode.DOWN);
-        click(bigDecimalField).push(KeyCode.DOWN);
-        Assert.assertEquals(new BigDecimal(8), bigDecimalField.getNumber());
+        push(KeyCode.UP);
+        Assert.assertEquals(new BigDecimal(12), bigDecimalField1.getNumber());
+        push(KeyCode.DOWN);
+        push(KeyCode.DOWN);
+        Assert.assertEquals(new BigDecimal(8), bigDecimalField1.getNumber());
     }
-//    @Test
-//    public void checkFormatting() {
-//        click(bigDecimalField);
-//        type(NUMBER);
-//        click(bigDecimalField).push(ENTER);
-//        Assert.assertEquals("12,345.68", bigDecimalField.getText());
-//        Assert.assertEquals(new BigDecimal(NUMBER), bigDecimalField.getNumber());
-//    }
+    @Test
+    public void checkFormatting() {
+        Platform.runLater(() -> bigDecimalField2.requestFocus());
+        sleep(1, TimeUnit.SECONDS);
+        type(NUMBER);
+        push(ENTER);
+        Assert.assertEquals("12,345.68", bigDecimalField2.getText());
+    }
 
-//    @Test
-//    public void checkFormatSwitch() {
-//        click(bigDecimalField);
-//        type(NUMBER);
-//        click(bigDecimalField).push(ENTER);
-//        Assert.assertEquals("12,345.68", bigDecimalField.getText());
-//        nf = NumberFormat.getNumberInstance(Locale.GERMANY);
-//        nf.setMaximumFractionDigits(3);
-//        nf.setMinimumFractionDigits(3);
-//        bigDecimalField.setFormat(nf);
-//        Assert.assertEquals("12.345,679", bigDecimalField.getText());
-//    }
+    @Test
+    public void checkFormatSwitch() {
+        Platform.runLater(() -> bigDecimalField1.requestFocus());
+        sleep(1, TimeUnit.SECONDS);
+        type(NUMBER);
+        push(ENTER);
+        Assert.assertEquals("12,345.68", bigDecimalField1.getText());
+        nf = NumberFormat.getNumberInstance(Locale.GERMANY);
+        nf.setMaximumFractionDigits(3);
+        nf.setMinimumFractionDigits(3);
+        bigDecimalField1.setFormat(nf);
+        Assert.assertEquals("12.345,679", bigDecimalField1.getText());
+    }
+
 }
 
 
