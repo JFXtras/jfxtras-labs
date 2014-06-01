@@ -2,15 +2,20 @@ package jfxtras.labs.scene.control;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ListChangeListener.Change;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Skin;
 import jfxtras.labs.internal.scene.control.skin.CornerMenuSkin;
 
-import com.sun.javafx.collections.TrackableObservableList;
-
+/**
+ * CornerMenu uses CircularPane to render a menu that can be placed in the corner of a screen.
+ * The coder is responsible for placing the menu at the proper location.
+ *  
+ * @author Tom Eugelink
+ *
+ */
 public class CornerMenu extends Control {
 	
 	// ==================================================================================================================
@@ -55,38 +60,7 @@ public class CornerMenu extends Control {
 	public CornerMenu withOrientation(Orientation value) { setOrientation(value); return this; } 
 	
 	// Items
-    private final ObservableList<MenuItem> items = new TrackableObservableList<MenuItem>() {
-        @Override protected void onChanged(Change<MenuItem> c) {
-//            while (c.next()) {
-//                // remove the parent menu from all menu items that have been removed
-//                for (MenuItem item : c.getRemoved()) {
-//                    item.setParentMenu(null);
-//                    item.setParentPopup(null);
-//                }
-//
-//                // set the parent menu to be this menu for all added menu items
-//                for (MenuItem item : c.getAddedSubList()) {
-//                    if (item.getParentMenu() != null) {
-//                        Logging.getControlsLogger().warning("Adding MenuItem " +
-//                                item.getText() + " that has already been added to "
-//                                + item.getParentMenu().getText());
-//                        item.getParentMenu().getItems().remove(item);
-//                    }
-//
-//                    item.setParentMenu(Menu.this);
-//                    item.setParentPopup(getParentPopup());
-//                }
-//            }
-//            if (getItems().size() == 0 && isShowing()) {
-//                showingPropertyImpl().set(false);
-//            }
-        }
-    };
-
-    /**
-     * The items to show within this menu. If this ObservableList is modified at
-     * runtime, the Menu will update as expected.
-     */
+    private final ObservableList<MenuItem> items = FXCollections.observableArrayList(); 
     public final ObservableList<MenuItem> getItems() {
         return items;
     }

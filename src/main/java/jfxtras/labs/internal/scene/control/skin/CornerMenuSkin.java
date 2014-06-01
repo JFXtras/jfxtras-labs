@@ -106,7 +106,7 @@ public class CornerMenuSkin extends SkinBase<CornerMenu>
 			circularPane.setStartAngle(180.0);
 		}
 		else if (CornerMenu.Orientation.BOTTOM_RIGHT.equals(getSkinnable().getOrientation())) {
-			circularPane.setStartAngle(2700.0);
+			circularPane.setStartAngle(270.0);
 		}
 		else if (CornerMenu.Orientation.BOTTOM_LEFT.equals(getSkinnable().getOrientation())) {
 			circularPane.setStartAngle(0.0);
