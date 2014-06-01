@@ -29,23 +29,22 @@
 
 package jfxtras.labs.internal.scene.control.skin;
 
-import javafx.scene.control.Label;
+import java.util.ArrayList;
+
+import javafx.collections.ListChangeListener;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SkinBase;
-import javafx.scene.layout.Region;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.Pane;
 import jfxtras.labs.scene.control.CornerMenu;
 import jfxtras.labs.scene.layout.CircularPane;
 
 /**
  * 
  * @author Tom Eugelink
- * 
- * Possible extension: drop down list or grid for quick selection
  */
 public class CornerMenuSkin extends SkinBase<CornerMenu>
 {
-	// TODO: vertical centering 
-	
 	// ==================================================================================================================
 	// CONSTRUCTOR
 	
@@ -66,13 +65,35 @@ public class CornerMenuSkin extends SkinBase<CornerMenu>
         // setup component
         createNodes();
         
-        // TODO: listen to items and modify circular pane's children accordingly
+        // orientation changes
+        getSkinnable().orientationProperty().addListener( (observable) -> {
+        	setupCircularPane();
+        });
+        
+        // listen to items and modify circular pane's children accordingly
+		getSkinnable().getItems().addListener( (ListChangeListener.Change<? extends MenuItem> change) -> {
+			while (change.next())
+			{
+				for (MenuItem lMenuItem : change.getRemoved())
+				{
+					for (javafx.scene.Node lNode : new ArrayList<javafx.scene.Node>(circularPane.getChildren())) {
+						if (lNode instanceof CornerMenuNode) {
+							CornerMenuNode lCornerMenuNode = (CornerMenuNode)lNode;
+							if (lCornerMenuNode.menuItem == lMenuItem) {
+								circularPane.remove(lCornerMenuNode);
+							}
+						}
+					}
+				}
+				for (MenuItem lMenuItem : change.getAddedSubList()) 
+				{
+					circularPane.add( new CornerMenuNode(lMenuItem) );
+				}
+			}
+		});
+
 	}
 	
-	// ==================================================================================================================
-	// StyleableProperties
-	
-        
 	// ==================================================================================================================
 	// DRAW
 	
@@ -83,13 +104,13 @@ public class CornerMenuSkin extends SkinBase<CornerMenu>
 	 */
 	private void createNodes()
 	{
+		// setup circular pane
 		circularPane = new CircularPane();
 		setupCircularPane();
+		
+		// add the menu items
 		for (MenuItem lMenuItem : getSkinnable().getItems()) {
-			circularPane.add(lMenuItem.getGraphic());
-			lMenuItem.getGraphic().setOnMouseClicked( (eventHandler) -> {
-				lMenuItem.getOnAction().handle(null);
-			});
+			circularPane.add( new CornerMenuNode(lMenuItem) );
 		}
 		
 		// add to self
@@ -110,9 +131,30 @@ public class CornerMenuSkin extends SkinBase<CornerMenu>
 		}
 		else if (CornerMenu.Orientation.BOTTOM_LEFT.equals(getSkinnable().getOrientation())) {
 			circularPane.setStartAngle(0.0);
-		}
+		}		
 		circularPane.setArc(90.0);
-//		circularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
+//		circularPane.setAnimationInterpolation(CircularPane::animateOverTheArc); // there is a bug here in arc mode
 		circularPane.setAnimationInterpolation(CircularPane::animateFromTheOrigin);
+	}
+
+	/* 
+	 * This class renders a MenuItem in CircularPane
+	 */
+	private class CornerMenuNode extends Pane {
+		CornerMenuNode (MenuItem menuItem) {
+			this.menuItem = menuItem;
+			
+			getChildren().add(menuItem.getGraphic());
+
+			if (menuItem.getText() != null && menuItem.getText().length() > 0) {
+				Tooltip t = new Tooltip(menuItem.getText());
+				Tooltip.install(this, t);
+			}
+			
+			setOnMouseClicked( (eventHandler) -> {
+				menuItem.getOnAction().handle(null);
+			});
+		}
+		final MenuItem menuItem;
 	}
 }
