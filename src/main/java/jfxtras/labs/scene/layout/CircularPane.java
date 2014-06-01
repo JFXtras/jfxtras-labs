@@ -49,15 +49,6 @@ public class CircularPane extends Pane {
 	
 	private enum MinPrefMax { MIN, PREF, MAX }
 
-	public CircularPane() {
-		construct();
-	}
-	
-	private void construct() {
-		constructChildrenAreCircular();
-		constructShowDebug();
-	}
-	
 	
 	// ==========================================================================================================================================================================================================================================
 	// PROPERTIES
@@ -68,14 +59,10 @@ public class CircularPane extends Pane {
 	/** StartAngle in degrees: the startAngle is used to determine the starting position; default = 0 = north (top) */
 	public ObjectProperty<Double> startAngleProperty() { return startAngleObjectProperty; }
 	final private ObjectProperty<Double> startAngleObjectProperty = new SimpleObjectProperty<Double>(this, "startAngle", 0.0) {
-		public void set(Double v) {
-			if (v == null) {
-				throw new IllegalArgumentException(getName() + " cannot be null");
-			}
-			if (v < 0.0 || v > 359.0) {
-				throw new IllegalArgumentException(getName() + " must be between 0 and 359");
-			}
-			super.set(v);
+		{ // anonymous constructor
+			addListener( (invalidationEvent) -> {
+				requestLayout();
+			});
 		}
 	};
 	public Double getStartAngle() { return startAngleObjectProperty.getValue(); }
@@ -88,14 +75,10 @@ public class CircularPane extends Pane {
 	/** arc in degrees: the arc is used to determine the end position; default = 360 = north (top) */
 	public ObjectProperty<Double> arcProperty() { return arcObjectProperty; }
 	final private ObjectProperty<Double> arcObjectProperty = new SimpleObjectProperty<Double>(this, "arc", 360.0) {
-		public void set(Double v) {
-			if (v == null) {
-				throw new IllegalArgumentException(getName() + " cannot be null");
-			}
-			if (v < 1.0 || v > 360.0) {
-				throw new IllegalArgumentException(getName() + " must be between 1 and 360");
-			}
-			super.set(v);
+		{ // anonymous constructor
+			addListener( (invalidationEvent) -> {
+				requestLayout();
+			});
 		}
 	};
 	public Double getArc() { return arcObjectProperty.getValue(); }
@@ -105,11 +88,11 @@ public class CircularPane extends Pane {
 	/** gap: space between nodes */
 	public ObjectProperty<Double> gapProperty() { return gapObjectProperty; }
 	final private ObjectProperty<Double> gapObjectProperty = new SimpleObjectProperty<Double>(this, "gap", 0.0) {
-		public void set(Double v) {
-			if (v == null) {
-				throw new IllegalArgumentException(getName() + " cannot be null");
-			}
-			super.set(v);
+		{ // anonymous constructor
+			addListener( (invalidationEvent) -> {
+				requestLayout();
+			});
+			
 		}
 	};
 	public Double getGap() { return gapObjectProperty.getValue(); }
@@ -118,26 +101,39 @@ public class CircularPane extends Pane {
 
 	/** diameter: diameter of the whole layout */
 	public ObjectProperty<Double> diameterProperty() { return diameterObjectProperty; }
-	final private ObjectProperty<Double> diameterObjectProperty = new SimpleObjectProperty<Double>(this, "diameter", null);
+	final private ObjectProperty<Double> diameterObjectProperty = new SimpleObjectProperty<Double>(this, "diameter", null) {
+		{ // anonymous constructor
+			addListener( (invalidationEvent) -> {
+				requestLayout();
+			});
+		}
+	};
 	public Double getDiameter() { return diameterObjectProperty.getValue(); }
 	public void setDiameter(Double value) { diameterObjectProperty.setValue(value); }
 	public CircularPane withDiameter(Double value) { setDiameter(value); return this; }
 
 	/** childrenAreCircular: if all children are circular, then we can use a different size */
 	public ObjectProperty<Boolean> childrenAreCircularProperty() { return childrenAreCircularObjectProperty; }
-	final private ObjectProperty<Boolean> childrenAreCircularObjectProperty = new SimpleObjectProperty<Boolean>(this, "childrenAreCircular", false);
+	final private ObjectProperty<Boolean> childrenAreCircularObjectProperty = new SimpleObjectProperty<Boolean>(this, "childrenAreCircular", false) {
+		{ // anonymous constructor
+			addListener( (invalidationEvent) -> {
+				requestLayout();
+			});
+		}
+	};
 	public Boolean getChildrenAreCircular() { return childrenAreCircularObjectProperty.getValue(); }
 	public void setChildrenAreCircular(Boolean value) { childrenAreCircularObjectProperty.setValue(value); }
 	public CircularPane withChildrenAreCircular(Boolean value) { setChildrenAreCircular(value); return this; }
-	private void constructChildrenAreCircular() {
-		childrenAreCircularObjectProperty.addListener( (invalidationEvent) -> {
-			requestLayout();
-		});
-	}
 
 	/** clipAwayExcessWhitespace: cut away excess whitespace on the outside */
 	public ObjectProperty<Boolean> clipAwayExcessWhitespaceProperty() { return clipAwayExcessWhitespaceObjectProperty; }
-	final private ObjectProperty<Boolean> clipAwayExcessWhitespaceObjectProperty = new SimpleObjectProperty<Boolean>(this, "clipAwayExcessWhitespace", true);
+	final private ObjectProperty<Boolean> clipAwayExcessWhitespaceObjectProperty = new SimpleObjectProperty<Boolean>(this, "clipAwayExcessWhitespace", true) {
+		{ // anonymous constructor
+			addListener( (invalidationEvent) -> {
+				requestLayout();
+			});
+		}
+	};
 	public Boolean getClipAwayExcessWhitespace() { return clipAwayExcessWhitespaceObjectProperty.getValue(); }
 	public void setClipAwayExcessWhitespace(Boolean value) { clipAwayExcessWhitespaceObjectProperty.setValue(value); }
 	public CircularPane withClipAwayExcessWhitespace(Boolean value) { setClipAwayExcessWhitespace(value); return this; } 
@@ -173,19 +169,15 @@ public class CircularPane extends Pane {
 	/** debug: show debug hints */
 	public ObjectProperty<Paint> showDebugProperty() { return showDebugObjectProperty; }
 	final private ObjectProperty<Paint> showDebugObjectProperty = new SimpleObjectProperty<Paint>(this, "showDebug", null) {
-		public void set(Paint v) {
-			super.set(v);
-			CircularPane.this.requestLayout();
+		{ // anonymous constructor
+			addListener( (invalidationEvent) -> {
+				requestLayout();
+			});
 		}
 	};
 	public Paint getShowDebug() { return showDebugObjectProperty.getValue(); }
 	public void setShowDebug(Paint value) { showDebugObjectProperty.setValue(value); }
 	public CircularPane withShowDebug(Paint value) { setShowDebug(value); return this; } 
-	private void constructShowDebug() {
-		showDebugObjectProperty.addListener( (invalidationEvent) -> {
-			requestLayout();
-		});
-	}
 
 
 	// ==========================================================================================================================================================================================================================================
@@ -435,10 +427,10 @@ public class CircularPane extends Pane {
     	}
     	
     	// calculate the clip sizes
-    	lLayoutInfo.clipTop = lLayoutInfo.minY;
-    	lLayoutInfo.clipRight = lLayoutInfo.chainDiameter - lLayoutInfo.maxX;
-    	lLayoutInfo.clipBottom = lLayoutInfo.chainDiameter - lLayoutInfo.maxY;
-    	lLayoutInfo.clipLeft = lLayoutInfo.minX;
+    	lLayoutInfo.clipTop = (getClipAwayExcessWhitespace() ? lLayoutInfo.minY : 0);
+    	lLayoutInfo.clipRight = (getClipAwayExcessWhitespace() ? lLayoutInfo.chainDiameter - lLayoutInfo.maxX : 0);
+    	lLayoutInfo.clipBottom = (getClipAwayExcessWhitespace() ? lLayoutInfo.chainDiameter - lLayoutInfo.maxY : 0);
+    	lLayoutInfo.clipLeft = (getClipAwayExcessWhitespace() ? lLayoutInfo.minX : 0);
     	
     	// calculate size
     	lLayoutInfo.clippedWidth = lLayoutInfo.chainDiameter + lLayoutInfo.beadDiameter // the chain runs through the center of the beads, so we need to add 2x 1/2 a bead to get to the encompassing diameter
@@ -586,26 +578,32 @@ public class CircularPane extends Pane {
     /**
      * 
      * @param progress
-     * @param animated
+     * @param animationLayoutInfo
      */
-    static public void animateOverTheArc(double progress, AnimationLayoutInfo animated) {
-		double lAngle = animated.layoutInfo.startAngle + (progress * animated.nodeLayoutInfo.angle);
-		double lX = animated.calculateX(lAngle)
-                  + ((animated.layoutInfo.beadDiameter - animated.nodeLayoutInfo.w) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
-                  - animated.layoutInfo.clipLeft
+    static public void animateOverTheArc(double progress, AnimationLayoutInfo animationLayoutInfo) {
+		double lAngle = animationLayoutInfo.layoutInfo.startAngle + (progress * animationLayoutInfo.nodeLayoutInfo.angle);
+		double lX = animationLayoutInfo.calculateX(lAngle)
+                  + ((animationLayoutInfo.layoutInfo.beadDiameter - animationLayoutInfo.nodeLayoutInfo.w) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
+                  - animationLayoutInfo.layoutInfo.clipLeft
                   ; 
-		double lY = animated.calculateY(lAngle)
-                + ((animated.layoutInfo.beadDiameter - animated.nodeLayoutInfo.h) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
-                - animated.layoutInfo.clipTop
+		double lY = animationLayoutInfo.calculateY(lAngle)
+                + ((animationLayoutInfo.layoutInfo.beadDiameter - animationLayoutInfo.nodeLayoutInfo.h) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
+                - animationLayoutInfo.layoutInfo.clipTop
                 ; 
-		animated.node.relocate(lX, lY);    	
+		animationLayoutInfo.node.relocate(lX, lY);    	
     }
 	
 	// ==========================================================================================================================================================================================================================================
 	// CONVENIENCE
     
-    public void add(Node node) {
+    public CircularPane add(Node node) {
     	getChildren().add(node);
+    	return this;
+    }
+
+    public CircularPane remove(Node node) {
+    	getChildren().remove(node);
+    	return this;
     }
 
     
