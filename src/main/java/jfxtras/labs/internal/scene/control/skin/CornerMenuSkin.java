@@ -70,6 +70,21 @@ public class CornerMenuSkin extends SkinBase<CornerMenu>
         	setupCircularPane();
         });
         
+        // show or hide
+        getSkinnable().shownProperty().addListener( (observable) -> {
+        	if (getSkinnable().isShown()) {
+				getSkinnable().setVisible(true);
+        		circularPane.animateIn();
+        	}
+        	else {
+        		circularPane.animateOut();
+        		// if no animation, call the event directly
+        		if (circularPane.getAnimationInterpolation() == null) {
+        			circularPane.getOnAnimateOutFinished().handle(null);
+        		}
+        	}
+        });
+        
         // listen to items and modify circular pane's children accordingly
 		getSkinnable().getItems().addListener( (ListChangeListener.Change<? extends MenuItem> change) -> {
 			while (change.next())
@@ -107,6 +122,9 @@ public class CornerMenuSkin extends SkinBase<CornerMenu>
 		// setup circular pane
 		circularPane = new CircularPane();
 		setupCircularPane();
+		circularPane.setOnAnimateOutFinished( (actionEvent) -> {
+			getSkinnable().setVisible(false);
+		});
 		
 		// add the menu items
 		for (MenuItem lMenuItem : getSkinnable().getItems()) {

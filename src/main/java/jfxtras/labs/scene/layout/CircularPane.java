@@ -502,6 +502,11 @@ public class CircularPane extends Pane {
      * 
      */
 	private void animate(int direction) {
+		// no animation configured
+		if (getAnimationInterpolation() == null) {
+			return;
+		}
+		
 		// while the animation is running, don't touch the children
 		layingoutChildren.incrementAndGet();
 		new Transition() {
