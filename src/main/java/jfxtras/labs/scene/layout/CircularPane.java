@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javafx.animation.Interpolator;
 import javafx.animation.Transition;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -16,7 +17,9 @@ import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.util.Duration;
+import jfxtras.test.TestUtil;
 
 
 /**
@@ -240,6 +243,8 @@ public class CircularPane extends Pane {
 			// remove all beads
 			getChildren().removeAll(nodeToBeadMap.values());
 			nodeToBeadMap.clear();
+			getChildren().removeAll(nodeToConnectorMap.values());
+			nodeToConnectorMap.clear();
 			animationLayoutInfos.clear();
 			
 			// calculate the layout
@@ -255,43 +260,37 @@ public class CircularPane extends Pane {
 	    		// position node
 	    		lNode.resize(lNodeLayoutInfo.w, lNodeLayoutInfo.h);
 	    		
-	    		// add a bead to show where this node boundary is
-	    		if (getShowDebug() != null) {
-	    			
-		    		Bead lBead = new Bead(lLayoutInfo.beadDiameter);
-		    		nodeToBeadMap.put(lNode, lBead);
-		    		getChildren().add(lBead);
-		    		
-		    		lBead.setLayoutX(lNodeLayoutInfo.beadX - lLayoutInfo.clipLeft); 
-		    		lBead.setLayoutY(lNodeLayoutInfo.beadY - lLayoutInfo.clipTop);
-		    		// because a JavaFX circle has its origin in the top-left corner, we need to offset half a bead
-		    		lBead.setTranslateX(lLayoutInfo.beadDiameter / 2);  
-		    		lBead.setTranslateY(lLayoutInfo.beadDiameter / 2);
-	    		}
-	    		
     			// create the administration for the animation
     			AnimationLayoutInfo lAnimationLayoutInfo = new AnimationLayoutInfo();
         		lAnimationLayoutInfo.layoutInfo = lLayoutInfo;
     			lAnimationLayoutInfo.node = lNode;
-    			lAnimationLayoutInfo.nodeStartX = lNode.getLayoutX() + lNode.getLayoutBounds().getMinX(); // correct what relocate() adds to the X
-    			lAnimationLayoutInfo.nodeStartY = lNode.getLayoutY() + lNode.getLayoutBounds().getMinY(); // correct what relocate() adds to the Y
+    			lAnimationLayoutInfo.nodeStartX = lNode.getLayoutX() + lNode.getLayoutBounds().getMinX(); // undo what relocate() adds to the X (and thus is included in the value of getLayoutX())
+    			lAnimationLayoutInfo.nodeStartY = lNode.getLayoutY() + lNode.getLayoutBounds().getMinY(); // undo what relocate() adds to the Y (and thus is included in the value of getLayoutY())
     			lAnimationLayoutInfo.nodeLayoutInfo = lNodeLayoutInfo;
-    			lAnimationLayoutInfo.originX = (lLayoutInfo.chainDiameter / 2)
-		 	                                 + ((lLayoutInfo.beadDiameter - lNodeLayoutInfo.w) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
-		 	                                 ;	    					
-    			lAnimationLayoutInfo.originY = (lLayoutInfo.chainDiameter / 2)
-                                             + ((lLayoutInfo.beadDiameter - lNodeLayoutInfo.h) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
-			                                 ;
+    			lAnimationLayoutInfo.originX = (lLayoutInfo.chainDiameter / 2) + (lLayoutInfo.beadDiameter/2) - lLayoutInfo.clipLeft;
+    			lAnimationLayoutInfo.originY = (lLayoutInfo.chainDiameter / 2) + (lLayoutInfo.beadDiameter/2) - lLayoutInfo.clipTop;
     			lAnimationLayoutInfo.initial = initial;
     			animationLayoutInfos.put(lNode, lAnimationLayoutInfo);
 
-    	    	// are we animating?
+	    		// add a bead to show where this node boundary is
+	    		if (getShowDebug() != null) {
+	    			// bead
+		    		Bead lBead = new Bead(lNodeLayoutInfo);
+		    		nodeToBeadMap.put(lNode, lBead);
+		    		getChildren().add(lBead);
+		    		// connector
+		    		Connector lConnector = new Connector(lAnimationLayoutInfo);
+		    		nodeToConnectorMap.put(lNode, lConnector);
+		    		getChildren().add(lConnector);
+	    		}
+
+	    		// are we animating?
     			if (initial && getAnimationInterpolation() != null) {
 	    			// reposition to the initial position for the animation
 					getAnimationInterpolation().interpolate(0.0, lAnimationLayoutInfo);
 	    		}
     			else {
-    				lNode.relocate(lNodeLayoutInfo.x - lLayoutInfo.clipLeft, lNodeLayoutInfo.y - lLayoutInfo.clipTop);
+    				lNode.relocate(lNodeLayoutInfo.x, lNodeLayoutInfo.y);
     			}
 	    	}    	
 	    	
@@ -312,6 +311,7 @@ public class CircularPane extends Pane {
     private final AtomicInteger layingoutChildren = new AtomicInteger(0);
     private boolean initial = true;
 	private final Map<Node, Bead> nodeToBeadMap = new WeakHashMap<>();
+	private final Map<Node, Connector> nodeToConnectorMap = new WeakHashMap<>();
     
 	@Override 
 	public void requestLayout() {
@@ -339,6 +339,7 @@ public class CircularPane extends Pane {
     	// get the nodes we need to render
     	List<Node> nodes = getManagedChildren();
     	nodes.removeAll(nodeToBeadMap.values());
+    	nodes.removeAll(nodeToConnectorMap.values());
     	if (nodes.size() == 0) {
     		// nothing to do
     		return lLayoutInfo;
@@ -384,7 +385,7 @@ public class CircularPane extends Pane {
     	lLayoutInfo.maxX = 0;
     	lLayoutInfo.maxY = 0;
     	lLayoutInfo.angleStep = getArc() / numberOfNodes;
-    	double lAngle = getStartAngle360();
+    	double lAngle = getStartAngle360() + (lLayoutInfo.angleStep / 2);
     	lLayoutInfo.startAngle = lAngle;
     	//System.out.println(getId() + ": layout startAngle=" + lAngle);	    	
     	//int cnt = 0;
@@ -392,34 +393,35 @@ public class CircularPane extends Pane {
     		
     		// bead layout
     		NodeLayoutInfo lNodeLayoutInfo = new NodeLayoutInfo();
+    		lNodeLayoutInfo.layoutInfo = lLayoutInfo;
     		lNodeLayoutInfo.angle = lAngle;
     		lLayoutInfo.layoutInfoMap.put(lNode, lNodeLayoutInfo);
-    		
-    		// calculate the X,Y position on the chain where the bead should be placed
-    		//System.out.println(cnt + " layout startAngle=" + lAngle + " " + lNode);
-    		lNodeLayoutInfo.beadX = calculateX(lLayoutInfo.chainDiameter, lAngle);
-    		lNodeLayoutInfo.beadY = calculateY(lLayoutInfo.chainDiameter, lAngle);
-    		//System.out.println(getId() + ": " + cnt + " layout beadCenter=" + lAngle + " (" + lNodeLayoutInfo.beadX + "," + lNodeLayoutInfo.beadY + ")");
     		
     		// size the node 
     		// if we are rendered smaller than the preferred, scale down to min gracefully
     		lNodeLayoutInfo.w = calculateNodeWidth(lNode, MinPrefMax.PREF) * lPrefToMinScaleFactor;
     		lNodeLayoutInfo.h = calculateNodeHeight(lNode, MinPrefMax.PREF) * lPrefToMinScaleFactor;
     		
+    		// calculate the origin X,Y position on the chain where the bead should be placed
+    		//System.out.println(cnt + " layout startAngle=" + lAngle + " " + lNode);
+    		lNodeLayoutInfo.beadX = calculateX(lLayoutInfo.chainDiameter, lAngle) + (lLayoutInfo.beadDiameter / 2);
+    		lNodeLayoutInfo.beadY = calculateY(lLayoutInfo.chainDiameter, lAngle) + (lLayoutInfo.beadDiameter / 2);
+    		//System.out.println(getId() + ": " + cnt + " layout beadCenter=" + lAngle + " (" + lNodeLayoutInfo.beadX + "," + lNodeLayoutInfo.beadY + ")");
+    		
     		// place on the right spot
     		lNodeLayoutInfo.x = lNodeLayoutInfo.beadX
-    			 	          + ((lLayoutInfo.beadDiameter - lNodeLayoutInfo.w) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
+    			 	          - (lNodeLayoutInfo.w / 2) // add the difference between the bead's size and the node's, so it ends up in the center
     				          ; 
     		lNodeLayoutInfo.y = lNodeLayoutInfo.beadY 
-    				          + ((lLayoutInfo.beadDiameter - lNodeLayoutInfo.h) / 2)  // add the difference between the bead's size and the node's, so it ends up in the center
+    				          - (lNodeLayoutInfo.h / 2)  // add the difference between the bead's size and the node's, so it ends up in the center
     				          ; 
     		//System.out.println(getId() + ": " + cnt + " layout startAngle=" + lAngle + " (" + lNodeLayoutInfo.x + "," + lNodeLayoutInfo.y + ") " + lNodeLayoutInfo.w + "x" + lNodeLayoutInfo.h + " " + lNode);	    		
 
     		// remember the min and max XY
-    		lLayoutInfo.minX = Math.min(lLayoutInfo.minX, lNodeLayoutInfo.beadX);
-    		lLayoutInfo.minY = Math.min(lLayoutInfo.minY, lNodeLayoutInfo.beadY);
-    		lLayoutInfo.maxX = Math.max(lLayoutInfo.maxX, lNodeLayoutInfo.beadX);
-    		lLayoutInfo.maxY = Math.max(lLayoutInfo.maxY, lNodeLayoutInfo.beadY);
+    		lLayoutInfo.minX = Math.min(lLayoutInfo.minX, lNodeLayoutInfo.beadX - (lLayoutInfo.beadDiameter / 2));
+    		lLayoutInfo.minY = Math.min(lLayoutInfo.minY, lNodeLayoutInfo.beadY - (lLayoutInfo.beadDiameter / 2));
+    		lLayoutInfo.maxX = Math.max(lLayoutInfo.maxX, lNodeLayoutInfo.beadX - (lLayoutInfo.beadDiameter / 2));
+    		lLayoutInfo.maxY = Math.max(lLayoutInfo.maxY, lNodeLayoutInfo.beadY - (lLayoutInfo.beadDiameter / 2));
     		
 			// next
         	lAngle += lLayoutInfo.angleStep;
@@ -431,6 +433,13 @@ public class CircularPane extends Pane {
     	lLayoutInfo.clipRight = (getClipAwayExcessWhitespace() ? lLayoutInfo.chainDiameter - lLayoutInfo.maxX : 0);
     	lLayoutInfo.clipBottom = (getClipAwayExcessWhitespace() ? lLayoutInfo.chainDiameter - lLayoutInfo.maxY : 0);
     	lLayoutInfo.clipLeft = (getClipAwayExcessWhitespace() ? lLayoutInfo.minX : 0);
+    	for (Node lNode : nodes) {
+    		NodeLayoutInfo lNodeLayoutInfo = lLayoutInfo.layoutInfoMap.get(lNode);
+    		lNodeLayoutInfo.x -= lLayoutInfo.clipLeft;
+    		lNodeLayoutInfo.y -= lLayoutInfo.clipTop;
+    		lNodeLayoutInfo.beadX -= lLayoutInfo.clipLeft;
+    		lNodeLayoutInfo.beadY -= lLayoutInfo.clipTop;
+    	}    	
     	
     	// calculate size
     	lLayoutInfo.clippedWidth = lLayoutInfo.chainDiameter + lLayoutInfo.beadDiameter // the chain runs through the center of the beads, so we need to add 2x 1/2 a bead to get to the encompassing diameter
@@ -471,6 +480,7 @@ public class CircularPane extends Pane {
 	 * This class holds layout information at node level
 	 */
     public class NodeLayoutInfo {
+    	public LayoutInfo layoutInfo;
     	public double angle;
     	public double beadX;
     	public double beadY;
@@ -516,6 +526,7 @@ public class CircularPane extends Pane {
 				setCycleDuration(getAnimationDuration());
 				setAutoReverse(false);
 				setCycleCount(1);
+				setInterpolator(Interpolator.EASE_OUT);
 				setOnFinished( (event) -> {
 			    	layingoutChildren.decrementAndGet();
 			    	if (direction > 0 && getOnAnimateInFinished() != null) {
@@ -575,8 +586,10 @@ public class CircularPane extends Pane {
      * @param animationLayoutInfo
      */
     static public void animateFromTheOrigin(double progress, AnimationLayoutInfo animationLayoutInfo) {
-		double lX = animationLayoutInfo.originX + (progress * -animationLayoutInfo.originX) + (progress * animationLayoutInfo.nodeLayoutInfo.x) - animationLayoutInfo.layoutInfo.clipLeft; 
-		double lY = animationLayoutInfo.originY + (progress * -animationLayoutInfo.originY) + (progress * animationLayoutInfo.nodeLayoutInfo.y) - animationLayoutInfo.layoutInfo.clipTop;
+    	double lOX = animationLayoutInfo.originX - (animationLayoutInfo.layoutInfo.beadDiameter / 2);
+    	double lOY = animationLayoutInfo.originY - (animationLayoutInfo.layoutInfo.beadDiameter / 2);
+		double lX = lOX + (progress * (animationLayoutInfo.nodeLayoutInfo.x - lOX));
+		double lY = lOY + (progress * (animationLayoutInfo.nodeLayoutInfo.y - lOY));
 		animationLayoutInfo.node.relocate(lX, lY);    	
     }
     
@@ -586,16 +599,16 @@ public class CircularPane extends Pane {
      * @param animationLayoutInfo
      */
     static public void animateOverTheArc(double progress, AnimationLayoutInfo animationLayoutInfo) {
-		double lAngle = animationLayoutInfo.layoutInfo.startAngle + (progress * animationLayoutInfo.nodeLayoutInfo.angle);
-		double lX = animationLayoutInfo.calculateX(lAngle)
-                  + ((animationLayoutInfo.layoutInfo.beadDiameter - animationLayoutInfo.nodeLayoutInfo.w) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
-                  - animationLayoutInfo.layoutInfo.clipLeft
-                  ; 
-		double lY = animationLayoutInfo.calculateY(lAngle)
-                + ((animationLayoutInfo.layoutInfo.beadDiameter - animationLayoutInfo.nodeLayoutInfo.h) / 2) // add the difference between the bead's size and the node's, so it ends up in the center
-                - animationLayoutInfo.layoutInfo.clipTop
-                ; 
-		animationLayoutInfo.node.relocate(lX, lY);    	
+		double lAngle = animationLayoutInfo.layoutInfo.startAngle + (progress * (animationLayoutInfo.nodeLayoutInfo.angle - animationLayoutInfo.layoutInfo.startAngle));
+		double lX = calculateX(animationLayoutInfo.layoutInfo.chainDiameter, lAngle) + (animationLayoutInfo.layoutInfo.beadDiameter / 2)
+			 	  - (animationLayoutInfo.nodeLayoutInfo.w / 2) // add the difference between the bead's size and the node's, so it ends up in the center
+			 	  - animationLayoutInfo.layoutInfo.clipLeft
+				  ; 
+		double lY = calculateY(animationLayoutInfo.layoutInfo.chainDiameter, lAngle) + (animationLayoutInfo.layoutInfo.beadDiameter / 2)
+			 	  - (animationLayoutInfo.nodeLayoutInfo.w / 2) // add the difference between the bead's size and the node's, so it ends up in the center
+			 	  - animationLayoutInfo.layoutInfo.clipTop
+				  ; 
+		animationLayoutInfo.node.relocate(lX, lY);
     }
 	
 	// ==========================================================================================================================================================================================================================================
@@ -618,6 +631,7 @@ public class CircularPane extends Pane {
 	private List<Node> getManagedChildrenWithoutBeads() {
     	List<Node> nodes = new ArrayList<>(getManagedChildren());
     	nodes.removeAll(nodeToBeadMap.values());
+    	nodes.removeAll(nodeToConnectorMap.values());
     	return nodes;
 	}
 	
@@ -640,11 +654,28 @@ public class CircularPane extends Pane {
 	}
 	
     private class Bead extends Circle {
-    	public Bead(double diameter) {
+    	public Bead(NodeLayoutInfo nodeLayoutInfo) {
     		super();
-    		setRadius( (diameter - getStrokeWidth()) / 2); // make the line fall within the allotted room
+    		setRadius( (nodeLayoutInfo.layoutInfo.beadDiameter - getStrokeWidth()) / 2); // make the line fall within the allotted room
     		setFill(null);
     		setStroke(getShowDebug());
+    		setLayoutX(nodeLayoutInfo.beadX - (nodeLayoutInfo.layoutInfo.beadDiameter / 2)); 
+    		setLayoutY(nodeLayoutInfo.beadY - (nodeLayoutInfo.layoutInfo.beadDiameter / 2));
+    		// because a JavaFX circle has its origin in the top-left corner, we need to offset half a bead
+    		setTranslateX(nodeLayoutInfo.layoutInfo.beadDiameter / 2);  
+    		setTranslateY(nodeLayoutInfo.layoutInfo.beadDiameter / 2);
+    	}
+    }
+    private class Connector extends Line {
+    	public Connector(AnimationLayoutInfo animationLayoutInfo) {
+    		super();
+    		setFill(null);
+    		setStroke(getShowDebug());
+    		setStroke(getShowDebug());
+    		setStartX(animationLayoutInfo.originX); 
+    		setStartY(animationLayoutInfo.originY);
+    		setEndX(animationLayoutInfo.nodeLayoutInfo.beadX); 
+    		setEndY(animationLayoutInfo.nodeLayoutInfo.beadY);
     	}
     }
     

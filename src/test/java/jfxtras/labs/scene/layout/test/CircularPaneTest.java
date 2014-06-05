@@ -56,7 +56,7 @@ public class CircularPaneTest extends JFXtrasGuiTest {
 		});
 
 		//generateSource(circularPane);
-		assertWH(circularPane, 42.42, 42.42);
+		assertWH(circularPane, 42.42640687119285, 42.42640687119285);
 		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(6.2132034355964265, 6.2132034355964265, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
 	}
 
@@ -73,9 +73,9 @@ public class CircularPaneTest extends JFXtrasGuiTest {
 		});
 
 		//generateSource(circularPane);
-		assertWH(circularPane, 42.42, 84.85);
-		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(6.2132034355964265, 6.2132034355964265, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(6.21320343559643, 48.63961030678928, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		assertWH(circularPane, 84.8528137423857, 42.42640687119285);
+		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(48.63961030678928, 6.2132034355964265, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(6.2132034355964265, 6.21320343559643, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
 	}
 
 	@Test
@@ -92,9 +92,9 @@ public class CircularPaneTest extends JFXtrasGuiTest {
 		});
 
 		//generateSource(circularPane);
-		assertWH(circularPane, 84.85, 42.42);
-		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(48.63961030678928, 6.2132034355964265, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(6.2132034355964265, 6.21320343559643, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		assertWH(circularPane, 42.42640687119285, 84.8528137423857);
+		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(6.21320343559643, 48.63961030678928, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(6.2132034355964265, 6.2132034355964265, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
 	}
 
 	@Test
@@ -111,14 +111,14 @@ public class CircularPaneTest extends JFXtrasGuiTest {
 		});
 
 		//generateSource(circularPane);
-		assertWH(circularPane, 72.42, 72.42);
-		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(36.21320343559643, 6.2132034355964265, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(6.2132034355964265, 36.21320343559643, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		assertWH(circularPane, 72.42640687119285, 72.42640687119285);
+		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(36.21320343559643, 36.21320343559643, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(6.2132034355964265, 6.2132034355964265, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
 	}
 
 	@Test
 	public void twoNodesAt30Degrees() {
-		setLabel("twoNodesAt45Degrees");
+		setLabel("twoNodesAt30Degrees");
 
 		// insert 2 circles
 		TestUtil.runThenWaitForPaintPulse( () -> {
@@ -130,9 +130,9 @@ public class CircularPaneTest extends JFXtrasGuiTest {
 		});
 
 		//generateSource(circularPane);
-		assertWH(circularPane, 63.63, 79.16);
-		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(27.426406871192853, 6.2132034355964265, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(6.213203435596425, 42.9555495773441, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		assertWH(circularPane, 79.16875301294053, 63.63961030678928);
+		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(42.9555495773441, 27.426406871192846, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(6.2132034355964265, 6.213203435596428, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
 	}
 
 	@Test
@@ -150,9 +150,9 @@ public class CircularPaneTest extends JFXtrasGuiTest {
 		});
 
 		//generateSource(circularPane);
-		assertWH(circularPane, 45.00, 55.98);
-		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(30.0, 15.0, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
-		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(15.0, 40.98076211353316, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
+		assertWH(circularPane, 55.98076211353316, 45.0);
+		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(40.98076211353316, 29.999999999999996, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
+		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(15.0, 15.0, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
 	}
 
 	@Test
@@ -169,10 +169,10 @@ public class CircularPaneTest extends JFXtrasGuiTest {
 		});
 
 		//generateSource(circularPane);
-		assertWH(circularPane, 79.16, 84.85);
-		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(42.95554957734411, 6.2132034355964265, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(42.955549577344115, 48.63961030678928, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(2)).assertXYWH(6.2132034355964265, 27.426406871192853, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		assertWH(circularPane, 79.16875301294053, 84.85281374238573);
+		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(42.9555495773441, 27.426406871192853, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(6.2132034355964265, 48.63961030678929, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(2)).assertXYWH(6.2132034355964265, 6.2132034355964265, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
 	}
 
 	@Test
@@ -188,15 +188,15 @@ public class CircularPaneTest extends JFXtrasGuiTest {
 		});
 
 		//generateSource(circularPane);
-		assertWH(circularPane, 153.29, 153.29); 
-		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(61.645975386273626, 6.2132034355964265, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(100.84286433256493, 22.44908643998233, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(2)).assertXYWH(117.07874733695084, 61.645975386273626, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(3)).assertXYWH(100.84286433256494, 100.84286433256491, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(4)).assertXYWH(61.64597538627363, 117.07874733695084, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(5)).assertXYWH(22.449086439982338, 100.84286433256494, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(6)).assertXYWH(6.2132034355964265, 61.64597538627363, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(7)).assertXYWH(22.44908643998233, 22.449086439982338, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		assertWH(circularPane, 144.85281374238568, 144.8528137423857);
+		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(78.63961030678927, 6.2132034355964265, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(108.63961030678927, 36.213203435596405, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(2)).assertXYWH(108.63961030678927, 78.63961030678931, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(3)).assertXYWH(78.63961030678932, 108.63961030678928, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(4)).assertXYWH(36.21320343559643, 108.63961030678928, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(5)).assertXYWH(6.2132034355964265, 78.63961030678928, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(6)).assertXYWH(6.2132034355964265, 36.213203435596434, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(7)).assertXYWH(36.21320343559642, 6.213203435596434, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
 	}
 
 	@Test
@@ -240,15 +240,15 @@ public class CircularPaneTest extends JFXtrasGuiTest {
 		});
 
 		//generateSource(circularPane);
-		assertWH(circularPane, 108.39, 108.39); 
-		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(54.19688894629129, 15.0, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
-		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(81.91327492162989, 26.48050297095269, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
-		new AssertNode(circularPane.getChildren().get(2)).assertXYWH(93.39377789258259, 54.19688894629129, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
-		new AssertNode(circularPane.getChildren().get(3)).assertXYWH(81.9132749216299, 81.91327492162989, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
-		new AssertNode(circularPane.getChildren().get(4)).assertXYWH(54.196888946291295, 93.39377789258259, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
-		new AssertNode(circularPane.getChildren().get(5)).assertXYWH(26.480502970952696, 81.91327492162989, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
-		new AssertNode(circularPane.getChildren().get(6)).assertXYWH(15.0, 54.196888946291295, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
-		new AssertNode(circularPane.getChildren().get(7)).assertXYWH(26.480502970952692, 26.480502970952696, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
+		assertWH(circularPane, 102.42640687119285, 102.42640687119285);
+		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(66.21320343559643, 15.0, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
+		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(87.42640687119285, 36.213203435596405, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
+		new AssertNode(circularPane.getChildren().get(2)).assertXYWH(87.42640687119285, 66.21320343559643, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
+		new AssertNode(circularPane.getChildren().get(3)).assertXYWH(66.21320343559645, 87.42640687119285, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
+		new AssertNode(circularPane.getChildren().get(4)).assertXYWH(36.21320343559643, 87.42640687119285, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
+		new AssertNode(circularPane.getChildren().get(5)).assertXYWH(15.0, 66.21320343559643, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
+		new AssertNode(circularPane.getChildren().get(6)).assertXYWH(15.0, 36.21320343559643, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
+		new AssertNode(circularPane.getChildren().get(7)).assertXYWH(36.21320343559642, 15.0, 15.0, 15.0, 0.01).assertClass(javafx.scene.shape.Circle.class);
 	}
 	
 	@Test
@@ -265,15 +265,15 @@ public class CircularPaneTest extends JFXtrasGuiTest {
 		});
 
 		//generateSource(circularPane);
-		assertWH(circularPane, 179.4232100700748, 179.4232100700748);
-		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(74.71160503503738, 6.2132034355964265, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(123.14728930644155, 26.275920763633223, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(2)).assertXYWH(143.21000663447836, 74.71160503503738, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(3)).assertXYWH(123.14728930644156, 123.14728930644154, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(4)).assertXYWH(74.7116050350374, 143.21000663447836, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(5)).assertXYWH(26.275920763633238, 123.14728930644156, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(6)).assertXYWH(6.2132034355964265, 74.7116050350374, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(7)).assertXYWH(26.27592076363323, 26.275920763633238, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		assertWH(circularPane, 168.99494936611666, 168.99494936611666);
+		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(95.71067811865473, 6.2132034355964265, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(132.7817459305202, 43.28427124746187, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(2)).assertXYWH(132.78174593052023, 95.71067811865477, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(3)).assertXYWH(95.71067811865478, 132.7817459305202, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(4)).assertXYWH(43.284271247461895, 132.78174593052023, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(5)).assertXYWH(6.2132034355964265, 95.71067811865476, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(6)).assertXYWH(6.2132034355964265, 43.2842712474619, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(7)).assertXYWH(43.28427124746189, 6.213203435596434, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
 	}
 
 
@@ -291,22 +291,22 @@ public class CircularPaneTest extends JFXtrasGuiTest {
 		});
 
 		//generateSource(circularPane);
-		assertWH(circularPane, 120.0, 120.0);
-		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(44.99999999999999, 6.2132034355964265, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(72.42640687119285, 17.573593128807143, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(2)).assertXYWH(83.78679656440357, 44.99999999999999, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(3)).assertXYWH(72.42640687119285, 72.42640687119285, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(4)).assertXYWH(45.0, 83.78679656440357, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(5)).assertXYWH(17.57359312880715, 72.42640687119285, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(6)).assertXYWH(6.2132034355964265, 45.0, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
-		new AssertNode(circularPane.getChildren().get(7)).assertXYWH(17.573593128807147, 17.57359312880715, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		assertWH(circularPane, 114.09506182625597, 114.09506182625597);
+		new AssertNode(circularPane.getChildren().get(0)).assertXYWH(56.890595352840414, 6.2132034355964265, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(1)).assertXYWH(77.88185839065953, 27.204466473415533, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(2)).assertXYWH(77.88185839065954, 56.89059535284043, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(3)).assertXYWH(56.89059535284044, 77.88185839065953, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(4)).assertXYWH(27.204466473415554, 77.88185839065954, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(5)).assertXYWH(6.2132034355964265, 56.89059535284042, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(6)).assertXYWH(6.2132034355964265, 27.204466473415557, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
+		new AssertNode(circularPane.getChildren().get(7)).assertXYWH(27.20446647341555, 6.2132034355964265, 30.0, 30.0, 0.01).assertClass(javafx.scene.shape.Rectangle.class);
 	}
 
 
 	// =============================================================================================================================================================================================================================
 	// SUPPORT
 
-	List<String> EXCLUDED_CLASSES = java.util.Arrays.asList(new String[]{"jfxtras.labs.scene.layout.CircularPane$Bead"});
+	List<String> EXCLUDED_CLASSES = java.util.Arrays.asList(new String[]{"jfxtras.labs.scene.layout.CircularPane$Bead", "jfxtras.labs.scene.layout.CircularPane$Connector"});
 	
 	private void assertWH(CircularPane pane, double w, double h) {
 		Assert.assertEquals(w, pane.getWidth(), 0.01);

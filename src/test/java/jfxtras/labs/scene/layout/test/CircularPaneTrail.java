@@ -6,13 +6,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-
-
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -23,7 +18,6 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.layout.CircularPane;
-import jfxtras.labs.scene.layout.CircularPane.AnimationLayoutInfo;
 import jfxtras.labs.test.TestUtil;
 import jfxtras.scene.layout.HBox;
 
@@ -42,7 +36,7 @@ public class CircularPaneTrail extends Application {
 		{
 			CircularPane lCircularPane = new CircularPane();
 			//lCircularPane.setStyle("-fx-border-color:black;");
-			lCircularPane.setStartAngle(360.0 / 12);
+			lCircularPane.setStartAngle(360.0 / 12 / 2);
 			//lCircularPane.setChildrenAreCircular(true);
 			lCircularPane.setShowDebug(lShowDebug);
 			lCircularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
@@ -84,6 +78,7 @@ public class CircularPaneTrail extends Application {
 		
 		{
 			CircularPane lCircularPane = new CircularPane();
+			lCircularPane.setStartAngle(-360.0 / 12 / 2);
 			lCircularPane.setDiameter(150.0);
 			//lCircularPane.setStyle("-fx-border-color:black;");
 			//lCircularPane.setChildrenAreCircular(true);
@@ -236,6 +231,7 @@ public class CircularPaneTrail extends Application {
 			//lCircularPane.setStyle("-fx-border-color:black;");
 			lCircularPane.setShowDebug(lShowDebug);
 			lCircularPane.setAnimationInterpolation(CircularPane::animateFromTheOrigin);
+//			lCircularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
 			for (int i = 0; i < 10; i++) {
 				javafx.scene.shape.Rectangle c = new javafx.scene.shape.Rectangle(20, 20);
 				c.setRotate(i * 10);
@@ -253,6 +249,7 @@ public class CircularPaneTrail extends Application {
 			Platform.runLater(() -> {
 				TestUtil.sleep(3000);
 				lCircularPane.setVisible(true);
+				lCircularPane.animateIn();
 			});
 		});
 		lHBox.getChildren().add(lButton);
