@@ -122,7 +122,7 @@ public class CornerMenu {
     private ReadOnlyBooleanWrapper shown = new ReadOnlyBooleanWrapper(this, "shown");
 	
     // ----------------------
-    // CircularPane
+    // CircularPane API
     
 	/** animationDuration */
 	public ObjectProperty<Duration> animationDurationProperty() { return animationDurationObjectProperty; }
