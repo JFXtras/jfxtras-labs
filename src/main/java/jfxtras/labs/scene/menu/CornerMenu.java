@@ -2,41 +2,59 @@ package jfxtras.labs.scene.menu;
 
 import java.util.ArrayList;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
+import javafx.util.Duration;
 import jfxtras.labs.scene.layout.CircularPane;
+import jfxtras.labs.scene.layout.CircularPane.AnimationInterpolation;
 import jfxtras.labs.scene.layout.CircularPane.AnimationLayoutInfo;
 
+/**
+ * CornerMenu is a menu is intended to be placed in one of the four corners of a pane.
+ * It will show the provided menu items in a 90 degree arc with the origin in the corner.
+ * It is possible to, and per default will, animate the menu items in and out of view.
+ * The showing and hiding of the menu items can be done automatically based on the mouse pointer location.
+ * 
+ * CornerMenu requires a StackPane to attach itself to. It will add a canvas pane and will position itself according to the specified location.
+ *  
+ * CornerMenu uses CircularPane and this will leak through in the API. 
+ * For example: it is possible to customize the animation, and required interface to implement is the one from CircularPane.
+ * 
+ * @author Tom Eugelink
+ *
+ */
 public class CornerMenu {
-	// TODO: allow the animationInterpolation to be set
-	// TODO: should we always require a StackPane to install upon (in the constructor)? This will make the shown property have a sensible reason to exist
 	
 	// ==================================================================================================================
 	// CONSTRUCTOR
 
 	/**
 	 */
-	public CornerMenu(Orientation orientation, StackPane stackPane)
+	public CornerMenu(Location location, StackPane stackPane, boolean shown)
 	{
-		orientationObjectProperty.set(orientation);
-		construct();
+		locationObjectProperty.set(location);
+		construct(shown);
 		addToStackPane(stackPane);
 	}
 
 	/*
 	 * 
 	 */
-	private void construct()
+	private void construct(boolean shown)
 	{
         // listen to items and modify circular pane's children accordingly
 		getItems().addListener( (ListChangeListener.Change<? extends MenuItem> change) -> {
@@ -59,35 +77,80 @@ public class CornerMenu {
 				}
 			}
 		});	
+		
+		// auto show and hide
+		pane.setOnMouseMoved( (mouseEvent) -> {
+			if (isAutoShowAndHide()) {
+				autoShowOrHide(mouseEvent);
+			}
+		});
+		
+		// default status
+		circularPane.setVisible(shown);
+		setShown(shown);
 	}
 	
 
 	// ==================================================================================================================
 	// PROPERTIES
 	
-	/** Orientation: TOP_LEFT, TOP_RIGHT, BOTTOM_RIGHT, BOTTOM_LEFT */	
-    public ReadOnlyObjectProperty<Orientation> orientationProperty() { 
-    	return new ReadOnlyObjectWrapper<Orientation>(this, "orientation").getReadOnlyProperty();
+	/** Location: TOP_LEFT, TOP_RIGHT, BOTTOM_RIGHT, BOTTOM_LEFT */	
+    public ReadOnlyObjectProperty<Location> locationProperty() { 
+    	return new ReadOnlyObjectWrapper<Location>(this, "location").getReadOnlyProperty();
     }
-	final private SimpleObjectProperty<Orientation> orientationObjectProperty = new SimpleObjectProperty<Orientation>(this, "orientation", Orientation.TOP_LEFT);
-	public static enum Orientation {TOP_LEFT, TOP_RIGHT, BOTTOM_RIGHT, BOTTOM_LEFT}
-	public Orientation getOrientation() { return orientationObjectProperty.getValue(); }
+	final private SimpleObjectProperty<Location> locationObjectProperty = new SimpleObjectProperty<Location>(this, "location", Location.TOP_LEFT);
+	public static enum Location {TOP_LEFT, TOP_RIGHT, BOTTOM_RIGHT, BOTTOM_LEFT}
+	public Location getLocation() { return locationObjectProperty.getValue(); }
 	
-	// Items
+	/** items */
     private final ObservableList<MenuItem> items = FXCollections.observableArrayList(); 
     public final ObservableList<MenuItem> getItems() {
         return items;
     }
     
+	/** AutoShowAndHide: */
+	public BooleanProperty autoShowAndHideProperty() { return this.autoShowAndHideObjectProperty; }
+	final private SimpleBooleanProperty autoShowAndHideObjectProperty = new SimpleBooleanProperty(this, "autoShowAndHide", true);
+	public Boolean isAutoShowAndHide() { return this.autoShowAndHideObjectProperty.getValue(); }
+	public void setAutoShowAndHide(Boolean value) { this.autoShowAndHideObjectProperty.setValue(value); }
+	public CornerMenu withAutoShowAndHide(Boolean value) { setAutoShowAndHide(value); return this; }
+
+	/** shown */
+	public final ReadOnlyBooleanProperty shownProperty() { return shown.getReadOnlyProperty(); }
+    private void setShown(boolean value) { shown.set(value); }
+    public final boolean isShown() { return shownProperty().get(); }
+    private ReadOnlyBooleanWrapper shown = new ReadOnlyBooleanWrapper(this, "shown");
+	
+    // ----------------------
+    // CircularPane
+    
+	/** animationDuration */
+	public ObjectProperty<Duration> animationDurationProperty() { return animationDurationObjectProperty; }
+	final private ObjectProperty<Duration> animationDurationObjectProperty = new SimpleObjectProperty<Duration>(this, "animationDuration", Duration.millis(500));
+	public Duration getAnimationDuration() { return animationDurationObjectProperty.getValue(); }
+	public void setAnimationDuration(Duration value) { animationDurationObjectProperty.setValue(value); }
+	public CornerMenu withAnimationDuration(Duration value) { setAnimationDuration(value); return this; } 
+
+	/** animationInterpolation: calculate the position of a node during the animation (default: move from origin), use node.relocate to position node (or manually apply layoutBounds.minX/Y) */
+	public ObjectProperty<AnimationInterpolation> animationInterpolationProperty() { return animationInterpolationObjectProperty; }
+	final private ObjectProperty<AnimationInterpolation> animationInterpolationObjectProperty = new SimpleObjectProperty<AnimationInterpolation>(this, "animationInterpolation", CornerMenu::animateFromTheOrigin);
+	public AnimationInterpolation getAnimationInterpolation() { return animationInterpolationObjectProperty.getValue(); }
+	public void setAnimationInterpolation(AnimationInterpolation value) { animationInterpolationObjectProperty.setValue(value); }
+	public CornerMenu withAnimationInterpolation(AnimationInterpolation value) { setAnimationInterpolation(value); return this; } 
+
+
+
 	// ==================================================================================================================
 	// ACTION
 	
     public void show() {
+		setShown(true);
 		circularPane.setVisible(true);
 		circularPane.animateIn();
 	}
     
     public void hide() {
+		setShown(false);
 		circularPane.animateOut();
 		// if no animation, call the event directly
 		if (circularPane.getAnimationInterpolation() == null) {
@@ -96,71 +159,90 @@ public class CornerMenu {
     }
 
 	// ==================================================================================================================
-	// SUPPORT
+	// RENDERING
 	
-    final private Pane pane = new Pane();
+    final private CornerMenuCanvas pane = new CornerMenuCanvas();
     final private CircularPane circularPane = new CircularPane();
-    
+
+    /**
+     * 
+     */
+	public void removeFromStackPane() {
+		stackPane.getChildren().remove(pane);
+	}
+	
     /**
      * Install this CornerMenu in a new the top pane
      */
     private void addToStackPane(StackPane stackPane) {
-    	// make sure we have a pane
-      	pane.getChildren().add(circularPane);
-    	
-    	// add the pane to the stack pane
-    	this.stackPane = stackPane;
-    	stackPane.getChildren().add(pane);
     	
     	// positon
     	setupCircularPane();
+    	
+    	// circularPane in pane
+      	pane.getChildren().add(circularPane);
+    	
+    	// pane in stackpane
+    	this.stackPane = stackPane;
+    	stackPane.getChildren().add(pane);
     }
     private StackPane stackPane = null;
     
+    /*
+     * 
+     */
     private void setupCircularPane() {
-//		circularPane.setShowDebug(Color.GREEN);
-		if (CornerMenu.Orientation.TOP_LEFT.equals(getOrientation())) {
+    	// bind it uup
+    	circularPane.animationDurationProperty().bind(this.animationDurationObjectProperty);
+    	circularPane.animationInterpolationProperty().bind(this.animationInterpolationObjectProperty);
+		// circularPane.setShowDebug(javafx.scene.paint.Color.GREEN);
+    	
+    	// setup the corner we are in
+		if (CornerMenu.Location.TOP_LEFT.equals(getLocation())) {
 			circularPane.setStartAngle(90.0);
 		}
-		else if (CornerMenu.Orientation.TOP_RIGHT.equals(getOrientation())) {
+		else if (CornerMenu.Location.TOP_RIGHT.equals(getLocation())) {
 			circularPane.setStartAngle(180.0);
 		}
-		else if (CornerMenu.Orientation.BOTTOM_RIGHT.equals(getOrientation())) {
+		else if (CornerMenu.Location.BOTTOM_RIGHT.equals(getLocation())) {
 			circularPane.setStartAngle(270.0);
 		}
-		else if (CornerMenu.Orientation.BOTTOM_LEFT.equals(getOrientation())) {
+		else if (CornerMenu.Location.BOTTOM_LEFT.equals(getLocation())) {
 			circularPane.setStartAngle(0.0);
 		}		
 		circularPane.setArc(90.0);
-//		circularPane.setAnimationInterpolation(CornerMenu::animateOverTheArc);
-		circularPane.setAnimationInterpolation(CornerMenu::animateFromTheOrigin);
 
+		// setup the position in the pane 
+		if (CornerMenu.Location.TOP_LEFT.equals(getLocation())) {
+			circularPane.setLayoutX(0);
+			circularPane.setLayoutY(0);
+		}
+		else if (CornerMenu.Location.TOP_RIGHT.equals(getLocation())) {
+			circularPane.layoutXProperty().bind( pane.widthProperty().subtract(circularPane.widthProperty()));
+			circularPane.setLayoutY(0);
+		}
+		else if (CornerMenu.Location.BOTTOM_RIGHT.equals(getLocation())) {
+			circularPane.layoutXProperty().bind( pane.widthProperty().subtract(circularPane.widthProperty()));
+			circularPane.layoutYProperty().bind( pane.heightProperty().subtract(circularPane.heightProperty()));
+		}
+		else if (CornerMenu.Location.BOTTOM_LEFT.equals(getLocation())) {
+			circularPane.setLayoutX(0);
+			circularPane.layoutYProperty().bind( pane.heightProperty().subtract(circularPane.heightProperty()));
+		}
+		
+		// setup the animation
 		circularPane.setOnAnimateOutFinished( (actionEvent) -> {
 			circularPane.setVisible(false);
 		});
-
-		// setup the layout 
-    	circularPane.layoutXProperty().unbind();
-    	circularPane.layoutYProperty().unbind();
-		if (CornerMenu.Orientation.TOP_LEFT.equals(getOrientation())) {
-			circularPane.setLayoutX(0);
-			circularPane.setLayoutY(0);
-		}
-		else if (CornerMenu.Orientation.TOP_RIGHT.equals(getOrientation())) {
-			circularPane.layoutXProperty().bind( pane.widthProperty().subtract(circularPane.widthProperty()));
-			circularPane.setLayoutY(0);
-		}
-		else if (CornerMenu.Orientation.BOTTOM_RIGHT.equals(getOrientation())) {
-			circularPane.layoutXProperty().bind( pane.widthProperty().subtract(circularPane.widthProperty()));
-			circularPane.layoutYProperty().bind( pane.heightProperty().subtract(circularPane.heightProperty()));
-		}
-		else if (CornerMenu.Orientation.BOTTOM_LEFT.equals(getOrientation())) {
-			circularPane.setLayoutX(0);
-			circularPane.layoutYProperty().bind( pane.heightProperty().subtract(circularPane.heightProperty()));
-		}
     }
 
-
+    /*
+     * This is the canvas for positioning the circularPane in the correct corner
+     */
+    private class CornerMenuCanvas extends Pane {
+    
+    }
+    
 	/* 
 	 * This class renders a MenuItem in CircularPane
 	 */
@@ -168,24 +250,71 @@ public class CornerMenu {
 		CornerMenuNode (MenuItem menuItem) {
 			this.menuItem = menuItem;
 			
+			// show the graphical part
+			if (menuItem.getGraphic() == null) {
+				throw new NullPointerException("MenuItems in CornerMenu require a graphical part, text is optional");
+			}
 			getChildren().add(menuItem.getGraphic());
 
+			// show the text as a tooltip
 			if (menuItem.getText() != null && menuItem.getText().length() > 0) {
 				Tooltip t = new Tooltip(menuItem.getText());
 				Tooltip.install(this, t);
 			}
 			
+			// react on a mouse click to perform the menu action
 			setOnMouseClicked( (eventHandler) -> {
 				menuItem.getOnAction().handle(null);
 			});
 		}
-		final MenuItem menuItem;
+		final private MenuItem menuItem;
 	}
 	
-	public void removeFromStackPane() {
-		stackPane.getChildren().remove(pane);
+	/*
+	 * 
+	 */
+	private void autoShowOrHide(MouseEvent mouseEvent) {
+		
+		// determine distance from origin
+		double lX = 0;
+		double lY = 0;
+		if (CornerMenu.Location.TOP_LEFT.equals(getLocation())) {
+			lX = mouseEvent.getX();
+			lY = mouseEvent.getY();
+		}
+		else if (CornerMenu.Location.TOP_RIGHT.equals(getLocation())) {
+			lX = pane.getWidth() - mouseEvent.getX();
+			lY = mouseEvent.getY();
+		}
+		else if (CornerMenu.Location.BOTTOM_RIGHT.equals(getLocation())) {
+			lX = pane.getWidth() - mouseEvent.getX();
+			lY = pane.getHeight() - mouseEvent.getY();
+		}
+		else if (CornerMenu.Location.BOTTOM_LEFT.equals(getLocation())) {
+			lX = mouseEvent.getX();
+			lY = pane.getHeight() - mouseEvent.getY();
+		}
+		lX = (lX < 0 ? 0 : lX);
+		lY = (lY < 0 ? 0 : lY);
+		double lDistanceFromOrigin = Math.sqrt( (lX * lX) + (lY * lY) );
+
+		// show or hide as required
+		if (lDistanceFromOrigin < 10 && circularPane.isVisible() == false && circularPane.isAnimatingIn() == false) {
+			show();
+		}
+		if (lDistanceFromOrigin > circularPane.getWidth() && circularPane.isVisible() && circularPane.isAnimatingOut() == false) {
+			hide();
+		}
 	}
 	
+	// ==================================================================================================================
+	// ANIMATION
+	
+	/**
+	 * 
+	 * @param progress
+	 * @param animationLayoutInfo
+	 */
     static public void animateFromTheOrigin(double progress, AnimationLayoutInfo animationLayoutInfo) {
     	// do the calculation
     	CircularPane.animateFromTheOrigin(progress, animationLayoutInfo);
@@ -195,6 +324,11 @@ public class CornerMenu {
     	animationLayoutInfo.node.setRotate(2 * 360 * progress);
     }
 	
+    /**
+     * 
+     * @param progress
+     * @param animationLayoutInfo
+     */
     static public void animateOverTheArc(double progress, AnimationLayoutInfo animationLayoutInfo) {
     	// do the calculation
     	CircularPane.animateOverTheArc(progress, animationLayoutInfo);

@@ -7,19 +7,25 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.control.ButtonBase;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
-import jfxtras.test.TestUtil;
+import jfxtras.labs.scene.menu.CornerMenu.Location;
 
 
 /**
@@ -155,6 +161,24 @@ public class CircularPane extends Pane {
 	public void setAnimationInterpolation(AnimationInterpolation value) { animationInterpolationObjectProperty.setValue(value); }
 	public CircularPane withAnimationInterpolation(AnimationInterpolation value) { setAnimationInterpolation(value); return this; } 
 
+	/** animating */
+	public final ReadOnlyBooleanProperty animatingProperty() { return animating.getReadOnlyProperty(); }
+    private void setAnimating(boolean value) { animating.set(value); }
+    public final boolean isAnimating() { return animatingProperty().get(); }
+    private ReadOnlyBooleanWrapper animating = new ReadOnlyBooleanWrapper(this, "animating");
+	
+	/** animatingIn */
+	public final ReadOnlyBooleanProperty animatingInProperty() { return animatingIn.getReadOnlyProperty(); }
+    private void setAnimatingIn(boolean value) { animatingIn.set(value); }
+    public final boolean isAnimatingIn() { return animatingInProperty().get(); }
+    private ReadOnlyBooleanWrapper animatingIn = new ReadOnlyBooleanWrapper(this, "animatingIn");
+	
+	/** animatingOut */
+	public final ReadOnlyBooleanProperty animatingOutProperty() { return animatingOut.getReadOnlyProperty(); }
+    private void setAnimatingOut(boolean value) { animatingOut.set(value); }
+    public final boolean isAnimatingOut() { return animatingOutProperty().get(); }
+    private ReadOnlyBooleanWrapper animatingOut = new ReadOnlyBooleanWrapper(this, "animatingOut");
+	
 	/** animateInFinished */
 	public ObjectProperty<EventHandler<ActionEvent>> animateInFinishedProperty() { return animateInFinishedObjectProperty; }
 	final private ObjectProperty<EventHandler<ActionEvent>> animateInFinishedObjectProperty = new SimpleObjectProperty<EventHandler<ActionEvent>>(this, "animateInFinished", null);
@@ -511,42 +535,65 @@ public class CircularPane extends Pane {
     /**
      * 
      */
-	private void animate(int direction) {
+	private void animate(double rate) {
 		// no animation configured
 		if (getAnimationInterpolation() == null) {
 			return;
 		}
 		
-		// while the animation is running, don't touch the children
-		layingoutChildren.incrementAndGet();
-		new Transition() {
-			// anonymous constructor
-			{
-				//setDelay(Duration.millis(5000));
-				setCycleDuration(getAnimationDuration());
-				setAutoReverse(false);
-				setCycleCount(1);
-				setInterpolator(Interpolator.EASE_OUT);
-				setOnFinished( (event) -> {
-			    	layingoutChildren.decrementAndGet();
-			    	if (direction > 0 && getOnAnimateInFinished() != null) {
-			    		getOnAnimateInFinished().handle(event);
-			    	}
-			    	if (direction < 0 && getOnAnimateOutFinished() != null) {
-			    		getOnAnimateOutFinished().handle(event);
-			    	}
-				});
-			}
-			
-			@Override
-			protected void interpolate(double progress) {
-				for (AnimationLayoutInfo lAnimationLayoutInfo : animationLayoutInfos.values()) {
-					getAnimationInterpolation().interpolate( direction > 0 ? progress : 1-progress, lAnimationLayoutInfo);
+		if (transition == null) {
+			transition = new Transition() {
+				// anonymous constructor
+				{
+					//setDelay(Duration.millis(5000));
+					setCycleDuration(getAnimationDuration());
+					setAutoReverse(false);
+					setCycleCount(1);
+					setInterpolator(Interpolator.EASE_OUT);
+					setOnFinished( (event) -> {
+						setAnimating(false);
+						setAnimatingIn(false);
+						setAnimatingOut(false);
+				    	layingoutChildren.decrementAndGet();
+				    	if (transition.getRate() > 0 && getOnAnimateInFinished() != null) {
+					    	transition = null;
+				    		getOnAnimateInFinished().handle(event);
+				    	}
+				    	if (transition.getRate() < 0 && getOnAnimateOutFinished() != null) {
+					    	transition = null;
+				    		getOnAnimateOutFinished().handle(event);
+				    	}
+					});
 				}
-			}
-		}.playFromStart();
+				
+				@Override
+				protected void interpolate(double progress) {
+					for (AnimationLayoutInfo lAnimationLayoutInfo : animationLayoutInfos.values()) {
+						getAnimationInterpolation().interpolate( progress, lAnimationLayoutInfo);
+					}
+				}
+			};
+		}
+		
+		// set direction
+		transition.setRate(rate);
+		
+		// if animation not started
+		if (transition.getStatus() != Animation.Status.RUNNING) {
+			
+			// while the animation is running, don't touch the children
+			layingoutChildren.incrementAndGet();
+			setAnimating(true);
+			setAnimatingIn(rate > 0);
+			setAnimatingOut(rate < 0);
+			
+			// start
+			transition.playFrom(transition.getRate() > 0 ? Duration.ZERO : transition.getCycleDuration());
+		}
+		
 	}
-
+	Transition transition = null; 
+	
 	/**
 	 * This class holds additional layout information for animation.
 	 */
