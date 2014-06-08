@@ -25,6 +25,7 @@ import jfxtras.labs.scene.layout.CircularPane;
 import jfxtras.labs.scene.layout.CircularPane.AnimationInterpolation;
 import jfxtras.labs.scene.layout.CircularPane.AnimationLayoutInfo;
 import jfxtras.labs.util.Implements;
+import jfxtras.util.NodeUtil;
 
 /**
  * CircleMenu is a menu is intended to be placed in one of the four corners of a pane.
@@ -128,7 +129,7 @@ public class CircleMenu {
 	 * @param mouseEvent
 	 */
     public void show(MouseEvent mouseEvent) {
-    	show(mouseEvent.getSceneX(), mouseEvent.getSceneY());
+    	show(mouseEvent.getScreenX() - NodeUtil.screenX(pane), mouseEvent.getScreenY() - NodeUtil.screenY(pane));
     }
     
     /**
