@@ -11,6 +11,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ CircularPaneTest.class
               , CornerMenuTest.class
 	          })
-public class AllTests extends jfxtras.scene.control.test.AllTests {
+public class AllTests {
 
 }
