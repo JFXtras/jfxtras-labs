@@ -28,27 +28,27 @@ import jfxtras.labs.util.Implements;
 import jfxtras.util.NodeUtil;
 
 /**
- * CircleMenu is a menu is intended to be placed in one of the four corners of a pane.
+ * CirclePopupMenu is a menu is intended to be placed in one of the four corners of a pane.
  * It will show the provided menu items in a 90 degree arc with the origin in the corner.
  * It is possible to, and per default will, animate the menu items in and out of view.
  * The showing and hiding of the menu items can be done automatically based on the mouse pointer location.
  * 
- * CircleMenu requires a StackPane to attach itself to. It will add a canvas pane and will position itself according to the specified location.
+ * CirclePopupMenu requires a StackPane to attach itself to. It will add a canvas pane and will position itself according to the specified location.
  *  
- * CircleMenu uses CircularPane and this will leak through in the API. 
+ * CirclePopupMenu uses CircularPane and this will leak through in the API. 
  * For example: it is possible to customize the animation, and required interface to implement is the one from CircularPane.
  * 
  * @author Tom Eugelink
  *
  */
-public class CircleMenu {
+public class CirclePopupMenu {
 	
 	// ==================================================================================================================
 	// CONSTRUCTOR
 
 	/**
 	 */
-	public CircleMenu(StackPane stackPane)
+	public CirclePopupMenu(StackPane stackPane)
 	{
 		construct();
 		addToStackPane(stackPane);
@@ -66,17 +66,17 @@ public class CircleMenu {
 				for (MenuItem lMenuItem : change.getRemoved())
 				{
 					for (javafx.scene.Node lNode : new ArrayList<javafx.scene.Node>(circularPane.getChildren())) {
-						if (lNode instanceof CircleMenuNode) {
-							CircleMenuNode lCircleMenuNode = (CircleMenuNode)lNode;
-							if (lCircleMenuNode.menuItem == lMenuItem) {
-								circularPane.remove(lCircleMenuNode);
+						if (lNode instanceof CirclePopupMenuNode) {
+							CirclePopupMenuNode lCirclePopupMenuNode = (CirclePopupMenuNode)lNode;
+							if (lCirclePopupMenuNode.menuItem == lMenuItem) {
+								circularPane.remove(lCirclePopupMenuNode);
 							}
 						}
 					}
 				}
 				for (MenuItem lMenuItem : change.getAddedSubList()) 
 				{
-					circularPane.add( new CircleMenuNode(lMenuItem) );
+					circularPane.add( new CirclePopupMenuNode(lMenuItem) );
 				}
 			}
 		});	
@@ -110,14 +110,14 @@ public class CircleMenu {
 	final private ObjectProperty<Duration> animationDurationObjectProperty = new SimpleObjectProperty<Duration>(this, "animationDuration", Duration.millis(500));
 	public Duration getAnimationDuration() { return animationDurationObjectProperty.getValue(); }
 	public void setAnimationDuration(Duration value) { animationDurationObjectProperty.setValue(value); }
-	public CircleMenu withAnimationDuration(Duration value) { setAnimationDuration(value); return this; } 
+	public CirclePopupMenu withAnimationDuration(Duration value) { setAnimationDuration(value); return this; } 
 
 	/** animationInterpolation: calculate the position of a node during the animation (default: move from origin), use node.relocate to position node (or manually apply layoutBounds.minX/Y) */
 	public ObjectProperty<AnimationInterpolation> animationInterpolationProperty() { return animationInterpolationObjectProperty; }
-	final private ObjectProperty<AnimationInterpolation> animationInterpolationObjectProperty = new SimpleObjectProperty<AnimationInterpolation>(this, "animationInterpolation", CircleMenu::animateFromTheOrigin);
+	final private ObjectProperty<AnimationInterpolation> animationInterpolationObjectProperty = new SimpleObjectProperty<AnimationInterpolation>(this, "animationInterpolation", CirclePopupMenu::animateFromTheOrigin);
 	public AnimationInterpolation getAnimationInterpolation() { return animationInterpolationObjectProperty.getValue(); }
 	public void setAnimationInterpolation(AnimationInterpolation value) { animationInterpolationObjectProperty.setValue(value); }
-	public CircleMenu withAnimationInterpolation(AnimationInterpolation value) { setAnimationInterpolation(value); return this; } 
+	public CirclePopupMenu withAnimationInterpolation(AnimationInterpolation value) { setAnimationInterpolation(value); return this; } 
 
 
 
@@ -157,7 +157,7 @@ public class CircleMenu {
 	// ==================================================================================================================
 	// RENDERING
 	
-    final private CircleMenuCanvas pane = new CircleMenuCanvas();
+    final private CirclePopupMenuCanvas pane = new CirclePopupMenuCanvas();
     final private CircularPane circularPane = new CircularPane();
 
     /**
@@ -168,7 +168,7 @@ public class CircleMenu {
 	}
 	
     /**
-     * Install this CircleMenu in a new the top pane
+     * Install this CirclePopupMenu in a new the top pane
      */
     private void addToStackPane(StackPane stackPane) {
 
@@ -214,21 +214,21 @@ public class CircleMenu {
     /*
      * This is the canvas for positioning the circularPane in the correct corner
      */
-    private class CircleMenuCanvas extends Pane {
+    private class CirclePopupMenuCanvas extends Pane {
     
     }
     
 	/* 
 	 * This class renders a MenuItem in CircularPane
 	 */
-	private class CircleMenuNode extends Pane {
-		CircleMenuNode (MenuItem menuItem) {
+	private class CirclePopupMenuNode extends Pane {
+		CirclePopupMenuNode (MenuItem menuItem) {
 			this.menuItem = menuItem;
 			setId(this.getClass().getSimpleName() + "#" + menuNodeIdAtomicLong.incrementAndGet());
 			
 			// show the graphical part
 			if (menuItem.getGraphic() == null) {
-				throw new NullPointerException("MenuItems in CircleMenu require a graphical part, text is optional");
+				throw new NullPointerException("MenuItems in CirclePopupMenu require a graphical part, text is optional");
 			}
 			getChildren().add(menuItem.getGraphic());
 
