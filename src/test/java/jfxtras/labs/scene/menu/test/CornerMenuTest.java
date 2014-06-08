@@ -29,7 +29,7 @@ import org.junit.Test;
  * @author Tom Eugelink
  *
  */
-public class ControlMenuTest extends JFXtrasGuiTest {
+public class CornerMenuTest extends JFXtrasGuiTest {
 
 	@Override
 	protected Parent getRootNode() {
