@@ -1,6 +1,7 @@
 package jfxtras.labs.scene.menu;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -249,6 +250,7 @@ public class CornerMenu {
 	private class CornerMenuNode extends Pane {
 		CornerMenuNode (MenuItem menuItem) {
 			this.menuItem = menuItem;
+			setId(this.getClass().getSimpleName() + "#" + menuNodeIdAtomicLong.incrementAndGet());
 			
 			// show the graphical part
 			if (menuItem.getGraphic() == null) {
@@ -264,11 +266,14 @@ public class CornerMenu {
 			
 			// react on a mouse click to perform the menu action
 			setOnMouseClicked( (eventHandler) -> {
-				menuItem.getOnAction().handle(null);
+				if (menuItem.getOnAction() != null) {
+					menuItem.getOnAction().handle(null);
+				}
 			});
 		}
 		final private MenuItem menuItem;
 	}
+	private final AtomicLong menuNodeIdAtomicLong = new AtomicLong();
 	
 	/*
 	 * 

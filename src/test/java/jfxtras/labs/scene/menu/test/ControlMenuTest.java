@@ -1,7 +1,10 @@
 package jfxtras.labs.scene.menu.test;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -9,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import jfxtras.labs.scene.layout.CircularPane;
 import jfxtras.labs.scene.menu.CornerMenu;
 import jfxtras.labs.test.JFXtrasGuiTest;
@@ -88,7 +92,6 @@ public class ControlMenuTest extends JFXtrasGuiTest {
 		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(4)).assertXYWH(6.627416997969522, 6.627416997969533, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
 	}
 
-
 	@Test
 	public void bottomRight() {
 		setLabel("bottomRight");
@@ -131,9 +134,34 @@ public class ControlMenuTest extends JFXtrasGuiTest {
 		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(4)).assertXYWH(126.86388834411392, 126.86388834411386, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
 	}
 
+	@Test
+	public void isClickHandled() {
+		setLabel("isClickHandled");
+		
+		// insert 1 circle
+		TestUtil.runThenWaitForPaintPulse( () -> {
+			cornerMenu = new CornerMenu(CornerMenu.Location.TOP_RIGHT, this.stackPane, true)
+				.withAnimationInterpolation(null)
+				.withAutoShowAndHide(false);
+			cornerMenu.getItems().addAll(facebookMenuItem, googleMenuItem, skypeMenuItem, twitterMenuItem, windowsMenuItem);
+		});
+
+		facebookMenuItem.setOnAction(this::handleByIncrementingMenuItemClick); // this should be #1
+		click("#CornerMenuNode#1");
+		click("#CornerMenuNode#2"); // this has no action handler attached
+		Assert.assertEquals(1, menuItemClickAtomicInteger.get());
+	}
+
 	// =============================================================================================================================================================================================================================
 	// SUPPORT
 
+	// implements EventHandler<ActionEvent>
+	public void handleByIncrementingMenuItemClick(ActionEvent actionEvent) {
+		menuItemClickAtomicInteger.incrementAndGet();
+	}
+	private final AtomicInteger menuItemClickAtomicInteger = new AtomicInteger();
+	
+	
 	List<String> EXCLUDED_CLASSES = java.util.Arrays.asList(new String[]{"jfxtras.labs.scene.layout.CircularPane$Bead", "jfxtras.labs.scene.layout.CircularPane$Connector"});
 	
 	private void assertWH(Pane pane, double w, double h) {
