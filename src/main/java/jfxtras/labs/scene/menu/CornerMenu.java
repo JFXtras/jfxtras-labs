@@ -23,6 +23,7 @@ import javafx.util.Duration;
 import jfxtras.labs.scene.layout.CircularPane;
 import jfxtras.labs.scene.layout.CircularPane.AnimationInterpolation;
 import jfxtras.labs.scene.layout.CircularPane.AnimationLayoutInfo;
+import jfxtras.labs.util.Implements;
 
 /**
  * CornerMenu is a menu is intended to be placed in one of the four corners of a pane.
@@ -320,6 +321,7 @@ public class CornerMenu {
 	 * @param progress
 	 * @param animationLayoutInfo
 	 */
+    @Implements(interfaces=CircularPane.AnimationInterpolation.class)
     static public void animateFromTheOrigin(double progress, AnimationLayoutInfo animationLayoutInfo) {
     	// do the calculation
     	CircularPane.animateFromTheOrigin(progress, animationLayoutInfo);
@@ -334,6 +336,7 @@ public class CornerMenu {
      * @param progress
      * @param animationLayoutInfo
      */
+    @Implements(interfaces=CircularPane.AnimationInterpolation.class)
     static public void animateOverTheArc(double progress, AnimationLayoutInfo animationLayoutInfo) {
     	// do the calculation
     	CircularPane.animateOverTheArc(progress, animationLayoutInfo);

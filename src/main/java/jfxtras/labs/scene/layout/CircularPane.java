@@ -26,6 +26,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
 import jfxtras.labs.scene.menu.CornerMenu.Location;
+import jfxtras.labs.util.Implements;
 
 
 /**
@@ -545,11 +546,9 @@ public class CircularPane extends Pane {
 			transition = new Transition() {
 				// anonymous constructor
 				{
-					//setDelay(Duration.millis(5000));
 					setCycleDuration(getAnimationDuration());
 					setAutoReverse(false);
 					setCycleCount(1);
-					setInterpolator(Interpolator.EASE_OUT);
 					setOnFinished( (event) -> {
 						setAnimating(false);
 						setAnimatingIn(false);
@@ -575,7 +574,7 @@ public class CircularPane extends Pane {
 			};
 		}
 		
-		// set direction
+		// set direction (this is done here instead of in the constructor because it may be modified mid-animation)
 		transition.setRate(rate);
 		
 		// if animation not started
@@ -587,7 +586,7 @@ public class CircularPane extends Pane {
 			setAnimatingIn(rate > 0);
 			setAnimatingOut(rate < 0);
 			
-			// start
+			// play forward or backwards
 			transition.playFrom(transition.getRate() > 0 ? Duration.ZERO : transition.getCycleDuration());
 		}
 		
@@ -632,6 +631,7 @@ public class CircularPane extends Pane {
      * @param progress
      * @param animationLayoutInfo
      */
+    @Implements(interfaces=AnimationInterpolation.class)
     static public void animateFromTheOrigin(double progress, AnimationLayoutInfo animationLayoutInfo) {
     	double lOX = animationLayoutInfo.originX - (animationLayoutInfo.layoutInfo.beadDiameter / 2);
     	double lOY = animationLayoutInfo.originY - (animationLayoutInfo.layoutInfo.beadDiameter / 2);
@@ -645,6 +645,7 @@ public class CircularPane extends Pane {
      * @param progress
      * @param animationLayoutInfo
      */
+    @Implements(interfaces=AnimationInterpolation.class)
     static public void animateOverTheArc(double progress, AnimationLayoutInfo animationLayoutInfo) {
 		double lAngle = animationLayoutInfo.layoutInfo.startAngle + (progress * (animationLayoutInfo.nodeLayoutInfo.angle - animationLayoutInfo.layoutInfo.startAngle));
 		double lX = calculateX(animationLayoutInfo.layoutInfo.chainDiameter, lAngle) + (animationLayoutInfo.layoutInfo.beadDiameter / 2)
@@ -664,6 +665,7 @@ public class CircularPane extends Pane {
      * @param progress
      * @param animationLayoutInfo
      */
+    @Implements(interfaces=AnimationInterpolation.class)
     static public void animateAppear(double progress, AnimationLayoutInfo animationLayoutInfo) {
     	animationLayoutInfo.node.setOpacity(progress);
 		animationLayoutInfo.node.relocate(animationLayoutInfo.nodeLayoutInfo.x, animationLayoutInfo.nodeLayoutInfo.y);    	
