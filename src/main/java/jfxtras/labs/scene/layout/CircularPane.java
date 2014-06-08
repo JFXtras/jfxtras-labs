@@ -658,7 +658,18 @@ public class CircularPane extends Pane {
 		animationLayoutInfo.node.relocate(lX, lY);
     }
 	
-	// ==========================================================================================================================================================================================================================================
+
+    /**
+     * 
+     * @param progress
+     * @param animationLayoutInfo
+     */
+    static public void animateAppear(double progress, AnimationLayoutInfo animationLayoutInfo) {
+    	animationLayoutInfo.node.setOpacity(progress);
+		animationLayoutInfo.node.relocate(animationLayoutInfo.nodeLayoutInfo.x, animationLayoutInfo.nodeLayoutInfo.y);    	
+    }
+
+    // ==========================================================================================================================================================================================================================================
 	// CONVENIENCE
     
     public CircularPane add(Node node) {
