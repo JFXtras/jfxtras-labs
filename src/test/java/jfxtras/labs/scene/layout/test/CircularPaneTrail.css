@@ -1,9 +1,13 @@
 .time {
-	-fx-text-fill: white;
+	-fx-text-fill: gray;
 }
 
 .time:hover {
-	-fx-text-fill: red;
+	-fx-text-fill: blue;
+}
+
+.timecircle:hover {
+	-fx-fill: red;
 }
 
 .center {

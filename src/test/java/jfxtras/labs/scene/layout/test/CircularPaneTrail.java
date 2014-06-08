@@ -36,16 +36,17 @@ public class CircularPaneTrail extends Application {
 		{
 			CircularPane lCircularPane = new CircularPane();
 			//lCircularPane.setStyle("-fx-border-color:black;");
-			lCircularPane.setStartAngle(360.0 / 12 / 2);
-			//lCircularPane.setChildrenAreCircular(true);
-			lCircularPane.setShowDebug(lShowDebug);
+			lCircularPane.setStartAngle(360.0 / 12 / 2); // make sure the 12 is on top
+			lCircularPane.setChildrenAreCircular(true);
+			//lCircularPane.setShowDebug(lShowDebug);
 			lCircularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
 			final List<Label> labels = new ArrayList<>();
 			final List<Circle> circles = new ArrayList<>();
 			final AtomicReference<Circle> lastFocus = new AtomicReference<>();
 			final AtomicBoolean isPM = new AtomicBoolean(false);
 			for (int i = 0; i < 12; i++) {
-				javafx.scene.shape.Circle c = new javafx.scene.shape.Circle(10, Color.GRAY);
+				javafx.scene.shape.Circle c = new javafx.scene.shape.Circle(10, Color.TRANSPARENT);
+				c.getStyleClass().add("timecircle");
 				circles.add(c);
 				javafx.scene.control.Label t = new javafx.scene.control.Label("" + (i + 1));
 				t.getStyleClass().add("time");
@@ -73,7 +74,16 @@ public class CircularPaneTrail extends Application {
 				lStackPane.getChildren().add(t);
 				lCircularPane.add(lStackPane);
 			}
-			lHBox.add(lCircularPane);
+			
+			StackPane lStackPane = new StackPane();
+			Circle c = new Circle(1, Color.WHITE);
+			c.radiusProperty().bind(lCircularPane.widthProperty().divide(2.0));
+			lStackPane.getChildren().add(c);
+			lStackPane.getChildren().add(lCircularPane);
+			Label l = new Label("H");
+			l.getStyleClass().add("center");
+			lStackPane.getChildren().add(l);
+			lHBox.add(lStackPane);
 		}
 		
 		{
@@ -81,15 +91,13 @@ public class CircularPaneTrail extends Application {
 			lCircularPane.setStartAngle(-360.0 / 12 / 2);
 			lCircularPane.setDiameter(150.0);
 			//lCircularPane.setStyle("-fx-border-color:black;");
-			//lCircularPane.setChildrenAreCircular(true);
-			lCircularPane.setShowDebug(lShowDebug);
+			lCircularPane.setChildrenAreCircular(true);
+			//lCircularPane.setShowDebug(lShowDebug);
 			lCircularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
 			final List<Label> labels = new ArrayList<>();
 			final List<Circle> circles = new ArrayList<>();
-			final AtomicReference<Circle> lastFocus = new AtomicReference<>();
-			final AtomicBoolean isPM = new AtomicBoolean(false);
 			for (int i = 0; i < 12; i++) {
-				javafx.scene.shape.Circle c = new javafx.scene.shape.Circle(10, Color.GRAY);
+				javafx.scene.shape.Circle c = new javafx.scene.shape.Circle(10, Color.TRANSPARENT);
 				circles.add(c);
 				javafx.scene.control.Label t = new javafx.scene.control.Label("" + (i * 5));
 				t.getStyleClass().add("time");
@@ -100,11 +108,14 @@ public class CircularPaneTrail extends Application {
 				lCircularPane.add(lStackPane);
 			}
 			StackPane lStackPane = new StackPane();
+			Circle c = new Circle(1, Color.WHITE);
+			c.radiusProperty().bind(lCircularPane.widthProperty().divide(2.0));
+			lStackPane.getChildren().add(c);
 			lStackPane.getChildren().add(lCircularPane);
 			Label l = new Label("M");
 			l.getStyleClass().add("center");
 			lStackPane.getChildren().add(l);
-			lHBox.add(lStackPane, new HBox.C().hgrow(Priority.ALWAYS));
+			lHBox.add(lStackPane);
 		}
 		
 		{
