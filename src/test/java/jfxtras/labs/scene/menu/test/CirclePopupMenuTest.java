@@ -116,7 +116,7 @@ public class CirclePopupMenuTest extends JFXtrasGuiTest {
 		// create underlying button
 		AtomicInteger underlyingClickAtomicInteger = new AtomicInteger();
 		TestUtil.runThenWaitForPaintPulse( () -> {
-			Button lUnderlyingButton = new Button("click me");
+			Button lUnderlyingButton = new Button("click me but a bit longer");
 			lUnderlyingButton.setId("UnderlyingButton");
 			stackPane.getChildren().add(1, lUnderlyingButton); // index = 1: below menu, above label
 			lUnderlyingButton.setOnAction((actionEvent) -> {
@@ -129,15 +129,17 @@ public class CirclePopupMenuTest extends JFXtrasGuiTest {
 		click("#UnderlyingButton");
 		Assert.assertEquals(1, underlyingClickAtomicInteger.get());
 
-		// show menu
+		// show menu (positioned over the button)
 		moveMouseToCenter();
-moveBy(50, 0);
 		click(MouseButton.SECONDARY);
-TestUtil.sleep(3000);		
 		
 		// click item that is placed over the button
 		click("#CirclePopupMenuNode#4");
 		Assert.assertFalse(circlePopupMenu.isShown());
+
+		// click underlying button again
+		click("#UnderlyingButton");
+		Assert.assertEquals(2, underlyingClickAtomicInteger.get());
 	}
 
 	// =============================================================================================================================================================================================================================

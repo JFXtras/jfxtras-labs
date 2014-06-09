@@ -81,8 +81,7 @@ public class CornerMenu {
 		});	
 		
 		// auto show and hide
-    	// TODO: this should be done on the canvasPane, but pickOnBounds has to be true then
-		stackPane.setOnMouseMoved( (mouseEvent) -> {
+    	stackPane.addEventFilter(MouseEvent.MOUSE_MOVED, mouseEvent -> {
 			if (isAutoShowAndHide()) {
 				autoShowOrHide(mouseEvent);
 			}

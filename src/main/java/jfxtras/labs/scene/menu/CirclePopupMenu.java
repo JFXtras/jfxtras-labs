@@ -176,8 +176,7 @@ public class CirclePopupMenu {
     private void addToStackPane(StackPane stackPane, MouseButton mouseButton) {
 
     	// react to the right mouse button
-    	// TODO: this should be done on the canvasPane, but pickOnBounds has to be true then
-    	stackPane.setOnMouseClicked( (mouseEvent) -> {
+    	stackPane.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
     		if (mouseButton != null && mouseButton.equals(mouseEvent.getButton())) {
     			if (isShown()) { 
     				hide();
