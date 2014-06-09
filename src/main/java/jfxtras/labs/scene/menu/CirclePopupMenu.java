@@ -3,13 +3,9 @@ package jfxtras.labs.scene.menu;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -28,15 +24,14 @@ import jfxtras.labs.util.Implements;
 import jfxtras.util.NodeUtil;
 
 /**
- * CirclePopupMenu is a menu is intended to be placed in one of the four corners of a pane.
- * It will show the provided menu items in a 90 degree arc with the origin in the corner.
+ * CirclePopupMenu is a menu is intended to pop up at any place in a scene.
+ * It will show the provided menu items in a circle with the origin at the point where the mouse button was clicked.
  * It is possible to, and per default will, animate the menu items in and out of view.
- * The showing and hiding of the menu items can be done automatically based on the mouse pointer location.
  * 
- * CirclePopupMenu requires a StackPane to attach itself to. It will add a canvas pane and will position itself according to the specified location.
+ * CirclePopupMenu requires a StackPane to attach itself to. 
  *  
  * CirclePopupMenu uses CircularPane and this will leak through in the API. 
- * For example: it is possible to customize the animation, and required interface to implement is the one from CircularPane.
+ * For example: it is possible to customize the animation, and the required interface to implement is the one from CircularPane.
  * 
  * @author Tom Eugelink
  *
@@ -47,11 +42,14 @@ public class CirclePopupMenu {
 	// CONSTRUCTOR
 
 	/**
+	 * 
+	 * @param stackPane the stack pane to render upon
+	 * @param mouseButton the mouse button on which the popup is shown (null means the coder will take care of showing and hiding)
 	 */
-	public CirclePopupMenu(StackPane stackPane)
+	public CirclePopupMenu(StackPane stackPane, MouseButton mouseButton)
 	{
 		construct();
-		addToStackPane(stackPane);
+		addToStackPane(stackPane, mouseButton);
 	}
 
 	/*
@@ -80,6 +78,11 @@ public class CirclePopupMenu {
 				}
 			}
 		});	
+		
+		// hide when the mouse move out of the menu
+		circularPane.setOnMouseExited( mouseEvent -> {
+			hide();
+		});
 		
 		// default status
 		circularPane.setVisible(false);
@@ -129,7 +132,7 @@ public class CirclePopupMenu {
 	 * @param mouseEvent
 	 */
     public void show(MouseEvent mouseEvent) {
-    	show(mouseEvent.getScreenX() - NodeUtil.screenX(pane), mouseEvent.getScreenY() - NodeUtil.screenY(pane));
+    	show(mouseEvent.getScreenX() - NodeUtil.screenX(canvasPane), mouseEvent.getScreenY() - NodeUtil.screenY(canvasPane));
     }
     
     /**
@@ -157,25 +160,26 @@ public class CirclePopupMenu {
 	// ==================================================================================================================
 	// RENDERING
 	
-    final private CirclePopupMenuCanvas pane = new CirclePopupMenuCanvas();
+    final private CirclePopupMenuCanvas canvasPane = new CirclePopupMenuCanvas();
     final private CircularPane circularPane = new CircularPane();
 
     /**
      * 
      */
 	public void removeFromStackPane() {
-		stackPane.getChildren().remove(pane);
+		stackPane.getChildren().remove(canvasPane);
 	}
 	
     /**
      * Install this CirclePopupMenu in a new the top pane
      */
-    private void addToStackPane(StackPane stackPane) {
+    private void addToStackPane(StackPane stackPane, MouseButton mouseButton) {
 
     	// react to the right mouse button
+    	// TODO: this should be done on the canvasPane, but pickOnBounds has to be true then
     	stackPane.setOnMouseClicked( (mouseEvent) -> {
-    		if (MouseButton.SECONDARY.equals(mouseEvent.getButton())) {
-    			if (isShown()) { // TODO: and mouse is over circularPane
+    		if (mouseButton != null && mouseButton.equals(mouseEvent.getButton())) {
+    			if (isShown()) { 
     				hide();
     			}
     			else {
@@ -188,11 +192,11 @@ public class CirclePopupMenu {
     	setupCircularPane();
     	
     	// circularPane in pane
-      	pane.getChildren().add(circularPane);
+      	canvasPane.getChildren().add(circularPane);
     	
     	// pane in stackpane
     	this.stackPane = stackPane;
-    	stackPane.getChildren().add(pane);
+    	stackPane.getChildren().add(canvasPane);
     }
     private StackPane stackPane = null;
     
@@ -215,6 +219,9 @@ public class CirclePopupMenu {
      * This is the canvas for positioning the circularPane in the correct corner
      */
     private class CirclePopupMenuCanvas extends Pane {
+    	{ // anonymous constructor
+    		setPickOnBounds(false);
+    	}
     
     }
     

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,13 +12,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import jfxtras.labs.scene.layout.CircularPane;
 import jfxtras.labs.scene.menu.CornerMenu;
 import jfxtras.labs.test.JFXtrasGuiTest;
 import jfxtras.test.AssertNode;
 import jfxtras.test.AssertNode.A;
 import jfxtras.test.TestUtil;
+import jfxtras.util.NodeUtil;
 import jfxtras.util.PlatformUtil;
 
 import org.junit.Assert;
@@ -37,9 +36,11 @@ public class CornerMenuTest extends JFXtrasGuiTest {
 		// use a pane to force the scene large enough
 		stackPane = new StackPane();
 		stackPane.setMinSize(600, 600);
+		
+		// place label
 		label = new Label();
-		label.setLayoutY(stackPane.getMinHeight() - 20);
-		stackPane.getChildren().add(label);		
+		stackPane.getChildren().add(label);
+		
 		return stackPane;
 	}
 	private StackPane stackPane = null;
@@ -155,8 +156,8 @@ public class CornerMenuTest extends JFXtrasGuiTest {
 	}
 
 	@Test
-	public void isClickThrough() {
-		setLabel("isClickHandled");
+	public void isClickedThrough() {
+		setLabel("isClickedThrough");
 		
 		// setup
 		AtomicInteger underlyingClickAtomicInteger = new AtomicInteger();
@@ -178,6 +179,32 @@ public class CornerMenuTest extends JFXtrasGuiTest {
 		click("#UnderlyingButton");
 		Assert.assertEquals(1, underlyingClickAtomicInteger.get());
 	}
+
+
+	@Test
+	public void autoShowAndHide() {
+		setLabel("autoShowAndHide");
+		
+		// setup
+		TestUtil.runThenWaitForPaintPulse( () -> {
+			cornerMenu = new CornerMenu(CornerMenu.Location.TOP_LEFT, this.stackPane, false)
+				.withAnimationInterpolation(null)
+				.withAutoShowAndHide(true);
+			cornerMenu.getItems().addAll(facebookMenuItem, googleMenuItem, skypeMenuItem, twitterMenuItem, windowsMenuItem);
+		});
+
+		// not visible 
+		Assert.assertFalse(cornerMenu.isShown());
+		
+		// move mouse to top left corner
+		moveMouseToLeftCorner();
+		Assert.assertTrue(cornerMenu.isShown());
+		
+		// move mouse to center
+		moveMouseToCenter();
+		Assert.assertFalse(cornerMenu.isShown());
+	}
+
 
 	// =============================================================================================================================================================================================================================
 	// SUPPORT
@@ -213,5 +240,13 @@ public class CornerMenuTest extends JFXtrasGuiTest {
 	private CircularPane findCircularPaneInCornerMenu() {
 		Pane pane = (Pane)this.stackPane.getChildren().get(1);
 		return (CircularPane)pane.getChildren().get(0);		
+	}
+	
+	private void moveMouseToCenter() {
+		move(NodeUtil.screenX(stackPane) + (stackPane.getWidth() / 2), NodeUtil.screenY(stackPane) + (stackPane.getHeight() / 2));
+	}
+	
+	private void moveMouseToLeftCorner() {
+		move(NodeUtil.screenX(stackPane) + 5,  NodeUtil.screenY(stackPane) + 5);
 	}
 }

@@ -81,6 +81,7 @@ public class CornerMenu {
 		});	
 		
 		// auto show and hide
+    	// TODO: this should be done on the canvasPane, but pickOnBounds has to be true then
 		stackPane.setOnMouseMoved( (mouseEvent) -> {
 			if (isAutoShowAndHide()) {
 				autoShowOrHide(mouseEvent);
@@ -163,14 +164,14 @@ public class CornerMenu {
 	// ==================================================================================================================
 	// RENDERING
 	
-    final private CornerMenuCanvas pane = new CornerMenuCanvas();
+    final private CornerMenuCanvas canvasPane = new CornerMenuCanvas();
     final private CircularPane circularPane = new CircularPane();
 
     /**
      * 
      */
 	public void removeFromStackPane() {
-		stackPane.getChildren().remove(pane);
+		stackPane.getChildren().remove(canvasPane);
 	}
 	
     /**
@@ -182,11 +183,11 @@ public class CornerMenu {
     	setupCircularPane();
     	
     	// circularPane in pane
-      	pane.getChildren().add(circularPane);
+      	canvasPane.getChildren().add(circularPane);
     	
     	// pane in stackpane
     	this.stackPane = stackPane;
-    	stackPane.getChildren().add(pane);
+    	stackPane.getChildren().add(canvasPane);
     }
     private StackPane stackPane = null;
     
@@ -220,16 +221,16 @@ public class CornerMenu {
 			circularPane.setLayoutY(0);
 		}
 		else if (CornerMenu.Location.TOP_RIGHT.equals(getLocation())) {
-			circularPane.layoutXProperty().bind( pane.widthProperty().subtract(circularPane.widthProperty()));
+			circularPane.layoutXProperty().bind( canvasPane.widthProperty().subtract(circularPane.widthProperty()));
 			circularPane.setLayoutY(0);
 		}
 		else if (CornerMenu.Location.BOTTOM_RIGHT.equals(getLocation())) {
-			circularPane.layoutXProperty().bind( pane.widthProperty().subtract(circularPane.widthProperty()));
-			circularPane.layoutYProperty().bind( pane.heightProperty().subtract(circularPane.heightProperty()));
+			circularPane.layoutXProperty().bind( canvasPane.widthProperty().subtract(circularPane.widthProperty()));
+			circularPane.layoutYProperty().bind( canvasPane.heightProperty().subtract(circularPane.heightProperty()));
 		}
 		else if (CornerMenu.Location.BOTTOM_LEFT.equals(getLocation())) {
 			circularPane.setLayoutX(0);
-			circularPane.layoutYProperty().bind( pane.heightProperty().subtract(circularPane.heightProperty()));
+			circularPane.layoutYProperty().bind( canvasPane.heightProperty().subtract(circularPane.heightProperty()));
 		}
 		
 		// setup the animation
@@ -292,16 +293,16 @@ public class CornerMenu {
 			lY = mouseEvent.getY();
 		}
 		else if (CornerMenu.Location.TOP_RIGHT.equals(getLocation())) {
-			lX = pane.getWidth() - mouseEvent.getX();
+			lX = canvasPane.getWidth() - mouseEvent.getX();
 			lY = mouseEvent.getY();
 		}
 		else if (CornerMenu.Location.BOTTOM_RIGHT.equals(getLocation())) {
-			lX = pane.getWidth() - mouseEvent.getX();
-			lY = pane.getHeight() - mouseEvent.getY();
+			lX = canvasPane.getWidth() - mouseEvent.getX();
+			lY = canvasPane.getHeight() - mouseEvent.getY();
 		}
 		else if (CornerMenu.Location.BOTTOM_LEFT.equals(getLocation())) {
 			lX = mouseEvent.getX();
-			lY = pane.getHeight() - mouseEvent.getY();
+			lY = canvasPane.getHeight() - mouseEvent.getY();
 		}
 		lX = (lX < 0 ? 0 : lX);
 		lY = (lY < 0 ? 0 : lY);
