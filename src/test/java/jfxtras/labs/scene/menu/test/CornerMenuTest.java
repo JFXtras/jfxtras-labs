@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
@@ -54,7 +55,7 @@ public class CornerMenuTest extends JFXtrasGuiTest {
 	public void topLeft() {
 		setLabel("topLeft");
 		
-		// insert 1 circle
+		// setup
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			cornerMenu = new CornerMenu(CornerMenu.Location.TOP_LEFT, this.stackPane, true)
 				.withAnimationInterpolation(null)
@@ -75,7 +76,7 @@ public class CornerMenuTest extends JFXtrasGuiTest {
 	public void topRight() {
 		setLabel("topRight");
 		
-		// insert 1 circle
+		// setup
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			cornerMenu = new CornerMenu(CornerMenu.Location.TOP_RIGHT, this.stackPane, true)
 				.withAnimationInterpolation(null)
@@ -96,7 +97,7 @@ public class CornerMenuTest extends JFXtrasGuiTest {
 	public void bottomRight() {
 		setLabel("bottomRight");
 		
-		// insert 1 circle
+		// setup
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			cornerMenu = new CornerMenu(CornerMenu.Location.BOTTOM_RIGHT, this.stackPane, true)
 				.withAnimationInterpolation(null)
@@ -117,7 +118,7 @@ public class CornerMenuTest extends JFXtrasGuiTest {
 	public void bottomLeft() {
 		setLabel("bottomLeft");
 		
-		// insert 1 circle
+		// setup
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			cornerMenu = new CornerMenu(CornerMenu.Location.BOTTOM_LEFT, this.stackPane, true)
 				.withAnimationInterpolation(null)
@@ -138,7 +139,7 @@ public class CornerMenuTest extends JFXtrasGuiTest {
 	public void isClickHandled() {
 		setLabel("isClickHandled");
 		
-		// insert 1 circle
+		// setup
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			cornerMenu = new CornerMenu(CornerMenu.Location.TOP_RIGHT, this.stackPane, true)
 				.withAnimationInterpolation(null)
@@ -146,10 +147,36 @@ public class CornerMenuTest extends JFXtrasGuiTest {
 			cornerMenu.getItems().addAll(facebookMenuItem, googleMenuItem, skypeMenuItem, twitterMenuItem, windowsMenuItem);
 		});
 
+		Assert.assertEquals(0, menuItemClickAtomicInteger.get());
 		facebookMenuItem.setOnAction(this::handleByIncrementingMenuItemClick); // this should be #1
 		click("#CornerMenuNode#1");
 		click("#CornerMenuNode#2"); // this has no action handler attached
 		Assert.assertEquals(1, menuItemClickAtomicInteger.get());
+	}
+
+	@Test
+	public void isClickThrough() {
+		setLabel("isClickHandled");
+		
+		// setup
+		AtomicInteger underlyingClickAtomicInteger = new AtomicInteger();
+		TestUtil.runThenWaitForPaintPulse( () -> {
+			Button lUnderlyingButton = new Button("click me");
+			lUnderlyingButton.setId("UnderlyingButton");
+			stackPane.getChildren().add(lUnderlyingButton);
+			lUnderlyingButton.setOnAction((actionEvent) -> {
+				underlyingClickAtomicInteger.incrementAndGet();
+			}); 
+			
+			cornerMenu = new CornerMenu(CornerMenu.Location.TOP_RIGHT, this.stackPane, true)
+				.withAnimationInterpolation(null)
+				.withAutoShowAndHide(false);
+			cornerMenu.getItems().addAll(facebookMenuItem, googleMenuItem, skypeMenuItem, twitterMenuItem, windowsMenuItem);
+		});
+
+		Assert.assertEquals(0, underlyingClickAtomicInteger.get());
+		click("#UnderlyingButton");
+		Assert.assertEquals(1, underlyingClickAtomicInteger.get());
 	}
 
 	// =============================================================================================================================================================================================================================

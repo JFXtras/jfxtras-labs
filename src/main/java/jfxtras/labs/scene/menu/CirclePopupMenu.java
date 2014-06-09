@@ -175,7 +175,7 @@ public class CirclePopupMenu {
     	// react to the right mouse button
     	stackPane.setOnMouseClicked( (mouseEvent) -> {
     		if (MouseButton.SECONDARY.equals(mouseEvent.getButton())) {
-    			if (isShown()) {
+    			if (isShown()) { // TODO: and mouse is over circularPane
     				hide();
     			}
     			else {

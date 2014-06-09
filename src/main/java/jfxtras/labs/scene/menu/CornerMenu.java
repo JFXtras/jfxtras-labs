@@ -49,14 +49,14 @@ public class CornerMenu {
 	public CornerMenu(Location location, StackPane stackPane, boolean shown)
 	{
 		locationObjectProperty.set(location);
-		construct(shown);
+		construct(stackPane, shown);
 		addToStackPane(stackPane);
 	}
 
 	/*
 	 * 
 	 */
-	private void construct(boolean shown)
+	private void construct(StackPane stackPane, boolean shown)
 	{
         // listen to items and modify circular pane's children accordingly
 		getItems().addListener( (ListChangeListener.Change<? extends MenuItem> change) -> {
@@ -81,7 +81,7 @@ public class CornerMenu {
 		});	
 		
 		// auto show and hide
-		pane.setOnMouseMoved( (mouseEvent) -> {
+		stackPane.setOnMouseMoved( (mouseEvent) -> {
 			if (isAutoShowAndHide()) {
 				autoShowOrHide(mouseEvent);
 			}
@@ -242,6 +242,9 @@ public class CornerMenu {
      * This is the canvas for positioning the circularPane in the correct corner
      */
     private class CornerMenuCanvas extends Pane {
+    	{ // anonymous constructor
+    		setPickOnBounds(false);
+    	}
     
     }
     
