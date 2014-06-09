@@ -70,12 +70,12 @@ public class CirclePopupMenuTest extends JFXtrasGuiTest {
 		click(MouseButton.SECONDARY);
 		Assert.assertTrue(circlePopupMenu.isShown());
 		//generateSource();
-		assertWH(findCircularPaneInCirclePopupMenu(), 118.47869355660265, 114.89486277938934);
-		new AssertNode(findCircularPaneInCirclePopupMenu().getChildren().get(0)).assertXYWH(65.86676377627084, 6.627416997969522, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CirclePopupMenu$CirclePopupMenuNode");
-		new AssertNode(findCircularPaneInCirclePopupMenu().getChildren().get(1)).assertXYWH(79.85127655863312, 49.66732176366279, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CirclePopupMenu$CirclePopupMenuNode");
-		new AssertNode(findCircularPaneInCirclePopupMenu().getChildren().get(2)).assertXYWH(43.239346778301325, 76.26744578141981, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CirclePopupMenu$CirclePopupMenuNode");
-		new AssertNode(findCircularPaneInCirclePopupMenu().getChildren().get(3)).assertXYWH(6.627416997969522, 49.66732176366279, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CirclePopupMenu$CirclePopupMenuNode");
-		new AssertNode(findCircularPaneInCirclePopupMenu().getChildren().get(4)).assertXYWH(20.611929780331792, 6.627416997969526, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CirclePopupMenu$CirclePopupMenuNode");
+		assertWH(findCircularPane(), 118.47869355660265, 114.89486277938934);
+		new AssertNode(findCircularPane().getChildren().get(0)).assertXYWH(65.86676377627084, 6.627416997969522, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CirclePopupMenu$CirclePopupMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(1)).assertXYWH(79.85127655863312, 49.66732176366279, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CirclePopupMenu$CirclePopupMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(2)).assertXYWH(43.239346778301325, 76.26744578141981, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CirclePopupMenu$CirclePopupMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(3)).assertXYWH(6.627416997969522, 49.66732176366279, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CirclePopupMenu$CirclePopupMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(4)).assertXYWH(20.611929780331792, 6.627416997969526, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CirclePopupMenu$CirclePopupMenuNode");
 		
 		// move out of the menu
 		moveMouseToLeftCorner();
@@ -166,14 +166,14 @@ public class CirclePopupMenuTest extends JFXtrasGuiTest {
 	}
 
 	private void generateSource() {
-		Pane pane = findCircularPaneInCirclePopupMenu();
+		Pane pane = findCircularPane();
 		System.out.println("> " + label.getText()); 
-		System.out.println("assertWH(findCircularPaneInCirclePopupMenu(), " + pane.getWidth() + ", " + pane.getHeight() + ");");
-		AssertNode.generateSource("findCircularPaneInCirclePopupMenu()", pane.getChildren(), EXCLUDED_CLASSES, false, A.XYWH, A.CLASSNAME);
+		System.out.println("assertWH(findCircularPane(), " + pane.getWidth() + ", " + pane.getHeight() + ");");
+		AssertNode.generateSource("findCircularPane()", pane.getChildren(), EXCLUDED_CLASSES, false, A.XYWH, A.CLASSNAME);
 		TestUtil.sleep(3000);
 	}
 	
-	private CircularPane findCircularPaneInCirclePopupMenu() {
+	private CircularPane findCircularPane() {
 		Pane pane = (Pane)this.stackPane.getChildren().get(1);
 		return (CircularPane)pane.getChildren().get(0);		
 	}

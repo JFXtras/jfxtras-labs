@@ -65,12 +65,12 @@ public class CornerMenuTest extends JFXtrasGuiTest {
 		});
 
 		//generateSource();
-		assertWH(findCircularPaneInCornerMenu(), 165.4913053420834, 165.49130534208345);
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(0)).assertXYWH(126.86388834411386, 6.627416997969533, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(1)).assertXYWH(112.87937556175157, 49.667321763662784, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(2)).assertXYWH(86.2792515439946, 86.2792515439946, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(3)).assertXYWH(49.667321763662784, 112.87937556175163, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(4)).assertXYWH(6.627416997969533, 126.86388834411392, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		assertWH(findCircularPane(), 165.4913053420834, 165.49130534208345);
+		new AssertNode(findCircularPane().getChildren().get(0)).assertXYWH(126.86388834411386, 6.627416997969533, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(1)).assertXYWH(112.87937556175157, 49.667321763662784, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(2)).assertXYWH(86.2792515439946, 86.2792515439946, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(3)).assertXYWH(49.667321763662784, 112.87937556175163, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(4)).assertXYWH(6.627416997969533, 126.86388834411392, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
 	}
 
 	@Test
@@ -86,12 +86,12 @@ public class CornerMenuTest extends JFXtrasGuiTest {
 		});
 
 		//generateSource();
-		assertWH(findCircularPaneInCornerMenu(), 165.49130534208342, 165.49130534208342);
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(0)).assertXYWH(126.86388834411389, 126.86388834411389, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(1)).assertXYWH(83.82398357842062, 112.8793755617516, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(2)).assertXYWH(47.21205379808883, 86.27925154399458, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(3)).assertXYWH(20.611929780331806, 49.66732176366281, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(4)).assertXYWH(6.627416997969522, 6.627416997969533, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		assertWH(findCircularPane(), 165.49130534208342, 165.49130534208342);
+		new AssertNode(findCircularPane().getChildren().get(0)).assertXYWH(126.86388834411389, 126.86388834411389, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(1)).assertXYWH(83.82398357842062, 112.8793755617516, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(2)).assertXYWH(47.21205379808883, 86.27925154399458, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(3)).assertXYWH(20.611929780331806, 49.66732176366281, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(4)).assertXYWH(6.627416997969522, 6.627416997969533, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
 	}
 
 	@Test
@@ -107,12 +107,12 @@ public class CornerMenuTest extends JFXtrasGuiTest {
 		});
 
 		//generateSource();
-		assertWH(findCircularPaneInCornerMenu(), 165.49130534208342, 165.49130534208342);
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(0)).assertXYWH(6.627416997969522, 126.86388834411386, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(1)).assertXYWH(20.611929780331806, 83.82398357842062, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(2)).assertXYWH(47.21205379808882, 47.21205379808883, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(3)).assertXYWH(83.82398357842061, 20.611929780331806, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(4)).assertXYWH(126.86388834411389, 6.627416997969522, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		assertWH(findCircularPane(), 165.49130534208342, 165.49130534208342);
+		new AssertNode(findCircularPane().getChildren().get(0)).assertXYWH(6.627416997969522, 126.86388834411386, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(1)).assertXYWH(20.611929780331806, 83.82398357842062, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(2)).assertXYWH(47.21205379808882, 47.21205379808883, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(3)).assertXYWH(83.82398357842061, 20.611929780331806, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(4)).assertXYWH(126.86388834411389, 6.627416997969522, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
 	}
 
 	@Test
@@ -128,12 +128,12 @@ public class CornerMenuTest extends JFXtrasGuiTest {
 		});
 
 		//generateSource();
-		assertWH(findCircularPaneInCornerMenu(), 165.49130534208345, 165.49130534208342);
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(0)).assertXYWH(6.627416997969533, 6.627416997969522, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(1)).assertXYWH(49.66732176366273, 20.61192978033175, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(2)).assertXYWH(86.2792515439946, 47.21205379808879, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(3)).assertXYWH(112.87937556175163, 83.8239835784206, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
-		new AssertNode(findCircularPaneInCornerMenu().getChildren().get(4)).assertXYWH(126.86388834411392, 126.86388834411386, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		assertWH(findCircularPane(), 165.49130534208345, 165.49130534208342);
+		new AssertNode(findCircularPane().getChildren().get(0)).assertXYWH(6.627416997969533, 6.627416997969522, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(1)).assertXYWH(49.66732176366273, 20.61192978033175, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(2)).assertXYWH(86.2792515439946, 47.21205379808879, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(3)).assertXYWH(112.87937556175163, 83.8239835784206, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
+		new AssertNode(findCircularPane().getChildren().get(4)).assertXYWH(126.86388834411392, 126.86388834411386, 32.0, 32.0, 0.01).assertClassName("jfxtras.labs.scene.menu.CornerMenu$CornerMenuNode");
 	}
 
 	@Test
@@ -230,14 +230,14 @@ public class CornerMenuTest extends JFXtrasGuiTest {
 	}
 
 	private void generateSource() {
-		Pane pane = findCircularPaneInCornerMenu();
+		Pane pane = findCircularPane();
 		System.out.println("> " + label.getText()); 
-		System.out.println("assertWH(findCircularPaneInCornerMenu(), " + pane.getWidth() + ", " + pane.getHeight() + ");");
-		AssertNode.generateSource("findCircularPaneInCornerMenu()", pane.getChildren(), EXCLUDED_CLASSES, false, A.XYWH, A.CLASSNAME);
+		System.out.println("assertWH(findCircularPane(), " + pane.getWidth() + ", " + pane.getHeight() + ");");
+		AssertNode.generateSource("findCircularPane()", pane.getChildren(), EXCLUDED_CLASSES, false, A.XYWH, A.CLASSNAME);
 		TestUtil.sleep(3000);
 	}
 	
-	private CircularPane findCircularPaneInCornerMenu() {
+	private CircularPane findCircularPane() {
 		Pane pane = (Pane)this.stackPane.getChildren().get(1);
 		return (CircularPane)pane.getChildren().get(0);		
 	}
