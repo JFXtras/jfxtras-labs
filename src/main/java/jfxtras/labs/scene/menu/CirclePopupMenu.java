@@ -10,25 +10,27 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.stage.Popup;
 import javafx.util.Duration;
 import jfxtras.labs.scene.layout.CircularPane;
 import jfxtras.labs.scene.layout.CircularPane.AnimationInterpolation;
 import jfxtras.labs.scene.layout.CircularPane.AnimationLayoutInfo;
 import jfxtras.labs.util.Implements;
-import jfxtras.util.NodeUtil;
 
 /**
  * CirclePopupMenu is a menu is intended to pop up at any place in a scene.
  * It will show the provided menu items in a circle with the origin at the point where the mouse button was clicked.
  * It is possible to, and per default will, animate the menu items in and out of view.
  * 
- * CirclePopupMenu requires a StackPane to attach itself to. 
+ * CirclePopupMenu requires a node to attach itself to, most commonly this will be the outer (largest) pane, but it is also possible to register to a specific node.
  *  
  * CirclePopupMenu uses CircularPane and this will leak through in the API. 
  * For example: it is possible to customize the animation, and the required interface to implement is the one from CircularPane.
@@ -43,20 +45,74 @@ public class CirclePopupMenu {
 
 	/**
 	 * 
-	 * @param stackPane the stack pane to render upon
+	 * @param node the node to render upon, this probably should be a Pane
 	 * @param mouseButton the mouse button on which the popup is shown (null means the coder will take care of showing and hiding)
 	 */
-	public CirclePopupMenu(StackPane stackPane, MouseButton mouseButton)
+	public CirclePopupMenu(Node node, MouseButton mouseButton)
 	{
-		construct();
-		addToStackPane(stackPane, mouseButton);
+		construct(node, mouseButton);
 	}
 
 	/*
 	 * 
 	 */
-	private void construct()
+	private void construct(Node node, MouseButton mouseButton)
 	{
+    	// remember node
+    	this.node = node;
+    	
+    	// setup popup
+    	popup.setAutoHide(true);
+    	popup.setHideOnEscape(true);
+    	popup.setOnHiding( windowEvent -> {
+    		hide();
+    	});
+    	
+		// add circularpane to popup
+    	popup.getContent().add(circularPane);
+		
+    	// bind it up
+    	circularPane.animationDurationProperty().bind(this.animationDurationObjectProperty);
+    	circularPane.animationInterpolationProperty().bind(this.animationInterpolationObjectProperty);
+    	circularPane.setPickOnBounds(false);
+		// circularPane.setShowDebug(javafx.scene.paint.Color.GREEN);
+    	
+        // hide when the mouse moves out of the menu
+    	EventHandler<MouseEvent> mouseMovedOutsideCircularPaneEventHandler = mouseEvent -> {
+            if(isShown()) {
+                Bounds screenBounds = circularPane.localToScreen(circularPane.getBoundsInLocal());
+                if(!screenBounds.contains(mouseEvent.getScreenX(), mouseEvent.getScreenY())) {
+                    hide();
+                }
+            }
+        };
+        // register to the scene when node is added there
+    	node.sceneProperty().addListener((observable, oldScene, newScene) -> {
+    	    if(oldScene != null) {
+    	        oldScene.getRoot().removeEventHandler(MouseEvent.MOUSE_MOVED, mouseMovedOutsideCircularPaneEventHandler);
+    	    }
+    	    if(newScene != null) {
+    	        newScene.getRoot().addEventHandler(MouseEvent.MOUSE_MOVED, mouseMovedOutsideCircularPaneEventHandler);
+    	    }
+    	});
+		
+		// setup the animation
+		circularPane.setOnAnimateOutFinished( (actionEvent) -> {
+			popup.hide();
+		});
+		
+    	// react to the mouse button
+    	node.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
+    		if (mouseButton != null && mouseButton.equals(mouseEvent.getButton())) {
+    			if (isShown()) { 
+    				hide();
+    			}
+    			else {
+    				show(mouseEvent);
+    			}
+    		}
+    	});
+    	
     	// listen to items and modify circular pane's children accordingly
 		getItems().addListener( (ListChangeListener.Change<? extends MenuItem> change) -> {
 			while (change.next())
@@ -74,20 +130,17 @@ public class CirclePopupMenu {
 				}
 				for (MenuItem lMenuItem : change.getAddedSubList()) 
 				{
-					circularPane.add( new CirclePopupMenuNode(lMenuItem) );
+					circularPane.add(new CirclePopupMenuNode(lMenuItem) );
 				}
 			}
 		});	
-		
-		// hide when the mouse move out of the menu
-		circularPane.setOnMouseExited( mouseEvent -> {
-			hide();
-		});
-		
+    	
 		// default status
-		circularPane.setVisible(false);
 		setShown(false);
 	}
+	private Node node = null;
+	private Popup popup = new Popup();
+    private CircularPane circularPane = new CircularPane();
 	
 
 	// ==================================================================================================================
@@ -132,7 +185,7 @@ public class CirclePopupMenu {
 	 * @param mouseEvent
 	 */
     public void show(MouseEvent mouseEvent) {
-    	show(mouseEvent.getScreenX() - NodeUtil.screenX(canvasPane), mouseEvent.getScreenY() - NodeUtil.screenY(canvasPane));
+    	show(mouseEvent.getScreenX(), mouseEvent.getScreenY());
     }
     
     /**
@@ -141,11 +194,15 @@ public class CirclePopupMenu {
      * @param y origin of the circle
      */
     public void show(double x, double y) {
-    	circularPane.setLayoutX(x - (circularPane.getWidth() / 2));
-    	circularPane.setLayoutY(y - (circularPane.getHeight() / 2));
-		setShown(true);
-		circularPane.setVisible(true);
+
+    	// show popup
+    	popup.show(node, x - (circularPane.prefWidth(-1) / 2), y - (circularPane.prefHeight(-1) / 2));
+    	
+    	// animated pane in
 		circularPane.animateIn();
+		
+		// set status
+		setShown(true);
 	}
     
     public void hide() {
@@ -160,70 +217,6 @@ public class CirclePopupMenu {
 	// ==================================================================================================================
 	// RENDERING
 	
-    final private CirclePopupMenuCanvas canvasPane = new CirclePopupMenuCanvas();
-    final private CircularPane circularPane = new CircularPane();
-
-    /**
-     * 
-     */
-	public void removeFromStackPane() {
-		stackPane.getChildren().remove(canvasPane);
-	}
-	
-    /**
-     * Install this CirclePopupMenu in a new the top pane
-     */
-    private void addToStackPane(StackPane stackPane, MouseButton mouseButton) {
-
-    	// react to the right mouse button
-    	stackPane.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
-    		if (mouseButton != null && mouseButton.equals(mouseEvent.getButton())) {
-    			if (isShown()) { 
-    				hide();
-    			}
-    			else {
-    				show(mouseEvent);
-    			}
-    		}
-    	});
-
-    	// positon
-    	setupCircularPane();
-    	
-    	// circularPane in pane
-      	canvasPane.getChildren().add(circularPane);
-    	
-    	// pane in stackpane
-    	this.stackPane = stackPane;
-    	stackPane.getChildren().add(canvasPane);
-    }
-    private StackPane stackPane = null;
-    
-    /*
-     * 
-     */
-    private void setupCircularPane() {
-    	// bind it uup
-    	circularPane.animationDurationProperty().bind(this.animationDurationObjectProperty);
-    	circularPane.animationInterpolationProperty().bind(this.animationInterpolationObjectProperty);
-		// circularPane.setShowDebug(javafx.scene.paint.Color.GREEN);
-    	
-		// setup the animation
-		circularPane.setOnAnimateOutFinished( (actionEvent) -> {
-			circularPane.setVisible(false);
-		});
-    }
-
-    /*
-     * This is the canvas for positioning the circularPane in the correct corner
-     */
-    private class CirclePopupMenuCanvas extends Pane {
-    	{ // anonymous constructor
-    		setPickOnBounds(false);
-    	}
-    
-    }
-    
 	/* 
 	 * This class renders a MenuItem in CircularPane
 	 */

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,9 +15,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Popup;
+import javafx.stage.Window;
 import jfxtras.labs.scene.layout.CircularPane;
 import jfxtras.labs.scene.menu.CirclePopupMenu;
 import jfxtras.labs.test.JFXtrasGuiTest;
+import jfxtras.labs.util.Implements;
 import jfxtras.test.AssertNode;
 import jfxtras.test.AssertNode.A;
 import jfxtras.test.TestUtil;
@@ -145,14 +150,11 @@ public class CirclePopupMenuTest extends JFXtrasGuiTest {
 	// =============================================================================================================================================================================================================================
 	// SUPPORT
 
-	// implements EventHandler<ActionEvent>
+	@Implements(interfaces=javafx.event.EventHandler.class)
 	public void handleByIncrementingMenuItemClick(ActionEvent actionEvent) {
 		menuItemClickAtomicInteger.incrementAndGet();
 	}
 	private final AtomicInteger menuItemClickAtomicInteger = new AtomicInteger();
-	
-	
-	List<String> EXCLUDED_CLASSES = java.util.Arrays.asList(new String[]{"jfxtras.labs.scene.layout.CircularPane$Bead", "jfxtras.labs.scene.layout.CircularPane$Connector"});
 	
 	private void assertWH(Pane pane, double w, double h) {
 		Assert.assertEquals(w, pane.getWidth(), 0.01);
@@ -172,10 +174,10 @@ public class CirclePopupMenuTest extends JFXtrasGuiTest {
 		AssertNode.generateSource("findCircularPane()", pane.getChildren(), EXCLUDED_CLASSES, false, A.XYWH, A.CLASSNAME);
 		TestUtil.sleep(3000);
 	}
+	List<String> EXCLUDED_CLASSES = java.util.Arrays.asList(new String[]{"jfxtras.labs.scene.layout.CircularPane$Bead", "jfxtras.labs.scene.layout.CircularPane$Connector"});
 	
 	private CircularPane findCircularPane() {
-		Pane pane = (Pane)this.stackPane.getChildren().get(1);
-		return (CircularPane)pane.getChildren().get(0);		
+		return (CircularPane)findPopup(null).getContent().get(0);
 	}
 	
 	private void moveMouseToCenter() {
@@ -185,4 +187,18 @@ public class CirclePopupMenuTest extends JFXtrasGuiTest {
 	private void moveMouseToLeftCorner() {
 		move(NodeUtil.screenX(stackPane) + 5,  NodeUtil.screenY(stackPane) + 5);
 	}
+	
+	protected Popup findPopup(Node ownedBy) {
+		TestUtil.waitForPaintPulse();
+		for (Window w : getWindows() ) {
+			if (w instanceof Popup) {
+				Popup lPopup = (Popup)w;
+				if (ownedBy == null || ownedBy.equals(lPopup.getOwnerNode())) {
+					return lPopup;
+				}
+			}
+		}
+		return null; 
+	}
+
 }

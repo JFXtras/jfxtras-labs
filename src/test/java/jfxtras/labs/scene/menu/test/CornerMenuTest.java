@@ -15,6 +15,7 @@ import javafx.scene.layout.StackPane;
 import jfxtras.labs.scene.layout.CircularPane;
 import jfxtras.labs.scene.menu.CornerMenu;
 import jfxtras.labs.test.JFXtrasGuiTest;
+import jfxtras.labs.util.Implements;
 import jfxtras.test.AssertNode;
 import jfxtras.test.AssertNode.A;
 import jfxtras.test.TestUtil;
@@ -209,14 +210,11 @@ public class CornerMenuTest extends JFXtrasGuiTest {
 	// =============================================================================================================================================================================================================================
 	// SUPPORT
 
-	// implements EventHandler<ActionEvent>
+	@Implements(interfaces=javafx.event.EventHandler.class)
 	public void handleByIncrementingMenuItemClick(ActionEvent actionEvent) {
 		menuItemClickAtomicInteger.incrementAndGet();
 	}
 	private final AtomicInteger menuItemClickAtomicInteger = new AtomicInteger();
-	
-	
-	List<String> EXCLUDED_CLASSES = java.util.Arrays.asList(new String[]{"jfxtras.labs.scene.layout.CircularPane$Bead", "jfxtras.labs.scene.layout.CircularPane$Connector"});
 	
 	private void assertWH(Pane pane, double w, double h) {
 		Assert.assertEquals(w, pane.getWidth(), 0.01);
@@ -236,6 +234,7 @@ public class CornerMenuTest extends JFXtrasGuiTest {
 		AssertNode.generateSource("findCircularPane()", pane.getChildren(), EXCLUDED_CLASSES, false, A.XYWH, A.CLASSNAME);
 		TestUtil.sleep(3000);
 	}
+	List<String> EXCLUDED_CLASSES = java.util.Arrays.asList(new String[]{"jfxtras.labs.scene.layout.CircularPane$Bead", "jfxtras.labs.scene.layout.CircularPane$Connector"});
 	
 	private CircularPane findCircularPane() {
 		Pane pane = (Pane)this.stackPane.getChildren().get(1);
