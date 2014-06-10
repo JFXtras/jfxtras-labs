@@ -82,7 +82,7 @@ public class CornerMenu {
 		});	
 		
 		// auto show and hide
-		pane.setOnMouseMoved( (mouseEvent) -> {
+        pane.addEventHandler(MouseEvent.MOUSE_MOVED, (mouseEvent) -> {
 			if (isAutoShowAndHide()) {
 				autoShowOrHide(mouseEvent);
 			}
@@ -172,7 +172,6 @@ public class CornerMenu {
 	// ==================================================================================================================
 	// RENDERING
 	
-//    final private CornerMenuCanvas pane = new CornerMenuCanvas();
     final private CircularPane circularPane = new CircularPane();
 
     /**
@@ -231,16 +230,6 @@ public class CornerMenu {
 		});
     }
 
-    /*
-     * This is the canvas for positioning the circularPane in the correct corner
-     */
-    private class CornerMenuCanvas extends Pane {
-    	{ // anonymous constructor
-    		setPickOnBounds(false);
-    	}
-    
-    }
-    
 	/* 
 	 * This class renders a MenuItem in CircularPane
 	 */
