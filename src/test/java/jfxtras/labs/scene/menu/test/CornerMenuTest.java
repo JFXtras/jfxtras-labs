@@ -237,8 +237,7 @@ public class CornerMenuTest extends JFXtrasGuiTest {
 	List<String> EXCLUDED_CLASSES = java.util.Arrays.asList(new String[]{"jfxtras.labs.scene.layout.CircularPane$Bead", "jfxtras.labs.scene.layout.CircularPane$Connector"});
 	
 	private CircularPane findCircularPane() {
-		Pane pane = (Pane)this.stackPane.getChildren().get(1);
-		return (CircularPane)pane.getChildren().get(0);		
+		return (CircularPane)stackPane.getChildren().get(1);		
 	}
 	
 	private void moveMouseToCenter() {

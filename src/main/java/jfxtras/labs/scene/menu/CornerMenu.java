@@ -18,7 +18,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import jfxtras.labs.scene.layout.CircularPane;
 import jfxtras.labs.scene.layout.CircularPane.AnimationInterpolation;
@@ -31,7 +30,7 @@ import jfxtras.labs.util.Implements;
  * It is possible to, and per default will, animate the menu items in and out of view.
  * The showing and hiding of the menu items can be done automatically based on the mouse pointer location.
  * 
- * CornerMenu requires a StackPane to attach itself to. It will add a canvas pane and will position itself according to the specified location.
+ * CornerMenu requires a Pane to attach itself to. 
  *  
  * CornerMenu uses CircularPane and this will leak through in the API. 
  * For example: it is possible to customize the animation, and required interface to implement is the one from CircularPane.
@@ -46,18 +45,19 @@ public class CornerMenu {
 
 	/**
 	 */
-	public CornerMenu(Location location, StackPane stackPane, boolean shown)
+	public CornerMenu(Location location, Pane pane, boolean shown)
 	{
 		locationObjectProperty.set(location);
-		construct(stackPane, shown);
-		addToStackPane(stackPane);
+		construct(pane, shown);
 	}
 
 	/*
 	 * 
 	 */
-	private void construct(StackPane stackPane, boolean shown)
+	private void construct(Pane pane, boolean shown)
 	{
+    	this.pane = pane;
+    	
         // listen to items and modify circular pane's children accordingly
 		getItems().addListener( (ListChangeListener.Change<? extends MenuItem> change) -> {
 			while (change.next())
@@ -78,19 +78,28 @@ public class CornerMenu {
 					circularPane.add( new CornerMenuNode(lMenuItem) );
 				}
 			}
+	    	circularPane.resize(circularPane.prefWidth(-1), circularPane.prefHeight(-1));
 		});	
 		
 		// auto show and hide
-		stackPane.setOnMouseMoved( (mouseEvent) -> {
+		pane.setOnMouseMoved( (mouseEvent) -> {
 			if (isAutoShowAndHide()) {
 				autoShowOrHide(mouseEvent);
 			}
 		});
 		
+    	// circular pane
+    	setupCircularPane();
+    	
+    	// add to pane
+    	pane.getChildren().add(circularPane);
+    	circularPane.setManaged(false);
+		
 		// default status
 		circularPane.setVisible(shown);
 		setShown(shown);
-	}
+    }
+    private Pane pane = null;
 	
 
 	// ==================================================================================================================
@@ -163,38 +172,22 @@ public class CornerMenu {
 	// ==================================================================================================================
 	// RENDERING
 	
-    final private CornerMenuCanvas pane = new CornerMenuCanvas();
+//    final private CornerMenuCanvas pane = new CornerMenuCanvas();
     final private CircularPane circularPane = new CircularPane();
 
     /**
      * 
      */
-	public void removeFromStackPane() {
-		stackPane.getChildren().remove(pane);
+	public void removeFromPane() {
+		pane.getChildren().remove(circularPane);
 	}
 	
-    /**
-     * Install this CornerMenu in a new the top pane
-     */
-    private void addToStackPane(StackPane stackPane) {
-    	
-    	// positon
-    	setupCircularPane();
-    	
-    	// circularPane in pane
-      	pane.getChildren().add(circularPane);
-    	
-    	// pane in stackpane
-    	this.stackPane = stackPane;
-    	stackPane.getChildren().add(pane);
-    }
-    private StackPane stackPane = null;
-    
     /*
      * 
      */
     private void setupCircularPane() {
-    	// bind it uup
+    	
+    	// bind it up
     	circularPane.animationDurationProperty().bind(this.animationDurationObjectProperty);
     	circularPane.animationInterpolationProperty().bind(this.animationInterpolationObjectProperty);
 		// circularPane.setShowDebug(javafx.scene.paint.Color.GREEN);
