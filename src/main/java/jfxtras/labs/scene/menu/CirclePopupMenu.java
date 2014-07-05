@@ -22,8 +22,6 @@ import javafx.stage.Popup;
 import javafx.util.Duration;
 import jfxtras.labs.scene.layout.CircularPane;
 import jfxtras.labs.scene.layout.CircularPane.AnimationInterpolation;
-import jfxtras.labs.scene.layout.CircularPane.AnimationLayoutInfo;
-import jfxtras.labs.util.Implements;
 
 /**
  * CirclePopupMenu is a menu is intended to pop up at any place in a scene.
@@ -170,7 +168,7 @@ public class CirclePopupMenu {
 
 	/** animationInterpolation: calculate the position of a node during the animation (default: move from origin), use node.relocate to position node (or manually apply layoutBounds.minX/Y) */
 	public ObjectProperty<AnimationInterpolation> animationInterpolationProperty() { return animationInterpolationObjectProperty; }
-	final private ObjectProperty<AnimationInterpolation> animationInterpolationObjectProperty = new SimpleObjectProperty<AnimationInterpolation>(this, "animationInterpolation", CirclePopupMenu::animateFromTheOrigin);
+	final private ObjectProperty<AnimationInterpolation> animationInterpolationObjectProperty = new SimpleObjectProperty<AnimationInterpolation>(this, "animationInterpolation", CircularPane::animateFromTheOrigin);
 	public AnimationInterpolation getAnimationInterpolation() { return animationInterpolationObjectProperty.getValue(); }
 	public void setAnimationInterpolation(AnimationInterpolation value) { animationInterpolationObjectProperty.setValue(value); }
 	public CirclePopupMenu withAnimationInterpolation(AnimationInterpolation value) { setAnimationInterpolation(value); return this; } 
@@ -248,30 +246,4 @@ public class CirclePopupMenu {
 		final private MenuItem menuItem;
 	}
 	private final AtomicLong menuNodeIdAtomicLong = new AtomicLong();
-
-	
-	// ==================================================================================================================
-	// ANIMATION
-	
-	/**
-	 * 
-	 * @param progress
-	 * @param animationLayoutInfo
-	 */
-    @Implements(interfaces=CircularPane.AnimationInterpolation.class)
-    static public void animateFromTheOrigin(double progress, AnimationLayoutInfo animationLayoutInfo) {
-    	// do the calculation
-    	CornerMenu.animateFromTheOrigin(progress, animationLayoutInfo);
-    }
-	
-    /**
-     * 
-     * @param progress
-     * @param animationLayoutInfo
-     */
-    @Implements(interfaces=CircularPane.AnimationInterpolation.class)
-    static public void animateOverTheArc(double progress, AnimationLayoutInfo animationLayoutInfo) {
-    	// do the calculation
-    	CornerMenu.animateOverTheArc(progress, animationLayoutInfo);
-    }
 }

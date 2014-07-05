@@ -21,8 +21,6 @@ import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import jfxtras.labs.scene.layout.CircularPane;
 import jfxtras.labs.scene.layout.CircularPane.AnimationInterpolation;
-import jfxtras.labs.scene.layout.CircularPane.AnimationLayoutInfo;
-import jfxtras.labs.util.Implements;
 
 /**
  * CornerMenu is a menu is intended to be placed in one of the four corners of a pane.
@@ -144,7 +142,7 @@ public class CornerMenu {
 
 	/** animationInterpolation: calculate the position of a node during the animation (default: move from origin), use node.relocate to position node (or manually apply layoutBounds.minX/Y) */
 	public ObjectProperty<AnimationInterpolation> animationInterpolationProperty() { return animationInterpolationObjectProperty; }
-	final private ObjectProperty<AnimationInterpolation> animationInterpolationObjectProperty = new SimpleObjectProperty<AnimationInterpolation>(this, "animationInterpolation", CornerMenu::animateFromTheOrigin);
+	final private ObjectProperty<AnimationInterpolation> animationInterpolationObjectProperty = new SimpleObjectProperty<AnimationInterpolation>(this, "animationInterpolation", CircularPane::animateFromTheOrigin);
 	public AnimationInterpolation getAnimationInterpolation() { return animationInterpolationObjectProperty.getValue(); }
 	public void setAnimationInterpolation(AnimationInterpolation value) { animationInterpolationObjectProperty.setValue(value); }
 	public CornerMenu withAnimationInterpolation(AnimationInterpolation value) { setAnimationInterpolation(value); return this; } 
@@ -300,36 +298,4 @@ public class CornerMenu {
 			hide();
 		}
 	}
-	
-	// ==================================================================================================================
-	// ANIMATION
-	
-	/**
-	 * 
-	 * @param progress
-	 * @param animationLayoutInfo
-	 */
-    @Implements(interfaces=CircularPane.AnimationInterpolation.class)
-    static public void animateFromTheOrigin(double progress, AnimationLayoutInfo animationLayoutInfo) {
-    	// do the calculation
-    	CircularPane.animateFromTheOrigin(progress, animationLayoutInfo);
-    	
-    	// add a fade
-    	animationLayoutInfo.node.setOpacity(progress);
-    	animationLayoutInfo.node.setRotate(2 * 360 * progress);
-    }
-	
-    /**
-     * 
-     * @param progress
-     * @param animationLayoutInfo
-     */
-    @Implements(interfaces=CircularPane.AnimationInterpolation.class)
-    static public void animateOverTheArc(double progress, AnimationLayoutInfo animationLayoutInfo) {
-    	// do the calculation
-    	CircularPane.animateOverTheArc(progress, animationLayoutInfo);
-    	
-    	// add a fade
-    	animationLayoutInfo.node.setOpacity(progress);
-    }
 }

@@ -97,7 +97,6 @@ public class CircularPane extends Pane {
 			addListener( (invalidationEvent) -> {
 				requestLayout();
 			});
-			
 		}
 	};
 	public Double getGap() { return gapObjectProperty.getValue(); }
@@ -621,6 +620,10 @@ public class CircularPane extends Pane {
 		public void interpolate(double progress, AnimationLayoutInfo animationLayoutInfo);    	
     }
 
+    
+	// ==========================================================================================================================================================================================================================================
+	// ANIMATION IMPLEMENTATIONS
+    
     /**
      * 
      * @param progress
@@ -633,6 +636,21 @@ public class CircularPane extends Pane {
 		double lX = lOX + (progress * (animationLayoutInfo.nodeLayoutInfo.x - lOX));
 		double lY = lOY + (progress * (animationLayoutInfo.nodeLayoutInfo.y - lOY));
 		animationLayoutInfo.node.relocate(lX, lY);    	
+    }
+	
+	/**
+	 * 
+	 * @param progress
+	 * @param animationLayoutInfo
+	 */
+    @Implements(interfaces=CircularPane.AnimationInterpolation.class)
+    static public void animateFromTheOriginWithFadeRotate(double progress, AnimationLayoutInfo animationLayoutInfo) {
+    	// do the calculation
+    	CircularPane.animateFromTheOrigin(progress, animationLayoutInfo);
+    	
+    	// add a fade
+    	animationLayoutInfo.node.setOpacity(progress);
+    	animationLayoutInfo.node.setRotate(2 * 360 * progress);
     }
     
     /**
@@ -654,6 +672,19 @@ public class CircularPane extends Pane {
 		animationLayoutInfo.node.relocate(lX, lY);
     }
 	
+    /**
+     * 
+     * @param progress
+     * @param animationLayoutInfo
+     */
+    @Implements(interfaces=CircularPane.AnimationInterpolation.class)
+    static public void animateOverTheArcWithFade(double progress, AnimationLayoutInfo animationLayoutInfo) {
+    	// do the calculation
+    	CircularPane.animateOverTheArc(progress, animationLayoutInfo);
+    	
+    	// add a fade
+    	animationLayoutInfo.node.setOpacity(progress);
+    }
 
     /**
      * 
@@ -666,6 +697,7 @@ public class CircularPane extends Pane {
 		animationLayoutInfo.node.relocate(animationLayoutInfo.nodeLayoutInfo.x, animationLayoutInfo.nodeLayoutInfo.y);    	
     }
 
+    
     // ==========================================================================================================================================================================================================================================
 	// CONVENIENCE
     
