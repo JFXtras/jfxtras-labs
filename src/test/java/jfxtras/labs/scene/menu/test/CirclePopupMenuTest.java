@@ -24,7 +24,6 @@ import jfxtras.test.AssertNode;
 import jfxtras.test.AssertNode.A;
 import jfxtras.test.TestUtil;
 import jfxtras.util.NodeUtil;
-import jfxtras.util.PlatformUtil;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -161,7 +160,7 @@ public class CirclePopupMenuTest extends JFXtrasGuiTest {
 	}
 	
 	private void setLabel(String s) {
-		PlatformUtil.runAndWait( () -> {
+		TestUtil.runThenWaitForPaintPulse( () -> {
 			label.setText(s);
 		});
 	}

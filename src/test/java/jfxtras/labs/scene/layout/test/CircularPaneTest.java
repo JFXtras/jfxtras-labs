@@ -11,7 +11,6 @@ import jfxtras.labs.test.JFXtrasGuiTest;
 import jfxtras.test.AssertNode;
 import jfxtras.test.AssertNode.A;
 import jfxtras.test.TestUtil;
-import jfxtras.util.PlatformUtil;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -314,7 +313,7 @@ public class CircularPaneTest extends JFXtrasGuiTest {
 	}
 	
 	private void setLabel(String s) {
-		PlatformUtil.runAndWait( () -> {
+		TestUtil.runThenWaitForPaintPulse( () -> {
 			label.setText(s);
 		});
 	}
