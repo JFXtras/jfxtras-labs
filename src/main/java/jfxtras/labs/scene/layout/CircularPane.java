@@ -271,6 +271,7 @@ public class CircularPane extends Pane {
 
 	    	// position the nodes
 	    	List<Node> nodes = getManagedChildren();
+	    	int idx = 0;
 	    	for (Node lNode : nodes) {
 	    		
 	    		/// get layout
@@ -283,6 +284,7 @@ public class CircularPane extends Pane {
     			AnimationLayoutInfo lAnimationLayoutInfo = new AnimationLayoutInfo();
         		lAnimationLayoutInfo.layoutInfo = lLayoutInfo;
     			lAnimationLayoutInfo.node = lNode;
+    			lAnimationLayoutInfo.idx = idx++;
     			lAnimationLayoutInfo.nodeStartX = lNode.getLayoutX() + lNode.getLayoutBounds().getMinX(); // undo what relocate() adds to the X (and thus is included in the value of getLayoutX())
     			lAnimationLayoutInfo.nodeStartY = lNode.getLayoutY() + lNode.getLayoutBounds().getMinY(); // undo what relocate() adds to the Y (and thus is included in the value of getLayoutY())
     			lAnimationLayoutInfo.nodeLayoutInfo = lNodeLayoutInfo;
@@ -363,7 +365,7 @@ public class CircularPane extends Pane {
     		// nothing to do
     		return lLayoutInfo;
     	}
-    	int numberOfNodes = nodes.size();
+    	lLayoutInfo.numberOfNodes = nodes.size();
     	
     	// First we're going to render like we have a full chain (circle) available
     	// Then we're going to clip away excess white space
@@ -403,7 +405,7 @@ public class CircularPane extends Pane {
     	lLayoutInfo.minY = lLayoutInfo.chainDiameter + lLayoutInfo.beadDiameter;
     	lLayoutInfo.maxX = 0;
     	lLayoutInfo.maxY = 0;
-    	lLayoutInfo.angleStep = getArc() / numberOfNodes;
+    	lLayoutInfo.angleStep = getArc() / lLayoutInfo.numberOfNodes;
     	double lAngle = getStartAngle360() + (lLayoutInfo.angleStep / 2);
     	lLayoutInfo.startAngle = lAngle;
     	//System.out.println(getId() + ": layout startAngle=" + lAngle);	    	
@@ -478,6 +480,7 @@ public class CircularPane extends Pane {
 	 * This class holds layout information at pane level
 	 */
     public class LayoutInfo {
+    	public int numberOfNodes;
     	public double startAngle;
     	public double angleStep;
     	public double chainDiameter = 0;
@@ -592,6 +595,7 @@ public class CircularPane extends Pane {
 	 */
     public class AnimationLayoutInfo {
     	public Node node;
+    	public int idx;
     	public LayoutInfo layoutInfo;
     	public NodeLayoutInfo nodeLayoutInfo;
     	public double originX;
@@ -635,7 +639,32 @@ public class CircularPane extends Pane {
     	double lOY = animationLayoutInfo.originY - (animationLayoutInfo.layoutInfo.beadDiameter / 2);
 		double lX = lOX + (progress * (animationLayoutInfo.nodeLayoutInfo.x - lOX));
 		double lY = lOY + (progress * (animationLayoutInfo.nodeLayoutInfo.y - lOY));
+//System.out.println(animationLayoutInfo.idx + ": x=" + lX + ", y=" + lY);
 		animationLayoutInfo.node.relocate(lX, lY);    	
+    }
+	
+    /**
+     * 
+     * @param progress
+     * @param animationLayoutInfo
+     */
+    @Implements(interfaces=AnimationInterpolation.class)
+    static public void animateSpiralOut(double progress, AnimationLayoutInfo animationLayoutInfo) {
+    	double spreadWindow = 0.4;
+    	double animationWindow = 1.0 - spreadWindow;
+    	double offset = animationLayoutInfo.idx / ((double)animationLayoutInfo.layoutInfo.numberOfNodes) * spreadWindow;
+		
+		double scaledProgress;
+    	if (progress < offset) {
+    		scaledProgress = 0.0;
+    	}
+    	else if (progress >= (offset + animationWindow)) {
+    		scaledProgress = 1.0;
+    	}
+    	else {
+    		scaledProgress = ((progress - offset) / animationWindow);
+    	}
+    	animateFromTheOrigin(scaledProgress, animationLayoutInfo);
     }
 	
 	/**
