@@ -1335,7 +1335,7 @@ public class BeanPathAdapter<B> {
 							pfh, notifyProperty);
 					// progress to the next child field/bean in the path chain
 					final String nextFieldPath = fieldPath.substring(fieldPath
-							.indexOf(fieldNames[1]));
+							.indexOf(PATH_SEPARATOR + fieldNames[1]) + 1);
 					return childBean.performOperation(fullFieldPath,
 							nextFieldPath, propertyValueClass,
 							collectionItemPath, observable, collectionItemType,
@@ -1626,6 +1626,8 @@ public class BeanPathAdapter<B> {
 			} else if (v != null && Date.class.isAssignableFrom(targetClass)) {
 				if (Calendar.class.isAssignableFrom(v.getClass())) {
 					val = (VT) ((Calendar) v).getTime();
+				} else if (java.util.Date.class.isAssignableFrom(v.getClass())) {
+					val = (VT) (Date) v;
 				} else {
 					try {
 						val = (VT) SDF.parse(v.toString());
