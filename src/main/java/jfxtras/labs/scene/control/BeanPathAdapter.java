@@ -629,19 +629,36 @@ public class BeanPathAdapter<B> {
 	 *            the bean to set
 	 */
 	public void setBean(final B bean) {
-		if (bean == null) {
-			throw new NullPointerException();
-		}
-		if (getRoot() == null) {
-			this.root = new FieldBean<>(null, bean, null,
-					fieldPathValueProperty, dateFormatProperty());
-		} else {
-			getRoot().setBean(bean);
-		}
-		if (hasFieldPathValueTypes(FieldPathValueType.BEAN_CHANGE)) {
-			fieldPathValueProperty.set(new FieldPathValue(null, getBean(),
-					getBean(), FieldPathValueType.BEAN_CHANGE));
-		}
+		beanProp.set( bean );
+	}
+
+	private final ObjectProperty<B>  beanProp = new SimpleObjectProperty<>();
+	{
+		beanProp.addListener( new ChangeListener<B>()
+		{
+			@Override
+			public void changed( ObservableValue<? extends B> observable, B oldBean, B newBean )
+			{
+				if (newBean == null) {
+					throw new NullPointerException();
+				}
+				if (getRoot() == null) {
+					BeanPathAdapter.this.root = new FieldBean<>(null, newBean, null,
+							fieldPathValueProperty, dateFormatProperty());
+				} else {
+					getRoot().setBean(newBean);
+				}
+				if (hasFieldPathValueTypes(FieldPathValueType.BEAN_CHANGE)) {
+					fieldPathValueProperty.set(new FieldPathValue(null, getBean(),
+							getBean(), FieldPathValueType.BEAN_CHANGE));
+				}
+			}
+		} );
+	}
+	
+	public ObjectProperty<B> beanProperty()
+	{
+		return beanProp; 
 	}
 
 	/**
