@@ -54,6 +54,21 @@ import javafx.scene.control.Control;
  * {@link #maxValue} are set, values outside these boundaries are not accepted
  * for {@link #number}</li>
  * </ul>
+ * CSS structure is:
+ *  <ul>
+ *      <li>.big-decimal-field
+ *        <ul>
+ *          <li>.text-field</li>
+ *          <li>.arrow-button.arrow-button-up
+ *            <ul>
+ *              <li>.spinner-arrow.spinner-arrow-up</li>
+ *            </ul></li>
+ *          <li>.arrow-button.arrow-button-down
+ *            <ul>
+ *              <li>.spinner-arrow.spinner-arrow-down</li>
+ *            </ul></li>
+ *        </ul></li>
+ *  </ul>
  *
  * @author Thomas Bolz
  */
