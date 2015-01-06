@@ -139,12 +139,16 @@ public class LedBargraphSkin extends SkinBase<LedBargraph, LedBargraphBehavior> 
                 int currentLedPeakIndex = 0;
                 for (int i = 0 ; i < control.getNoOfLeds() ; i++) {
                     if (Double.compare(i * stepSize.doubleValue(), newValue.doubleValue()) <= 0) {
-                        ledList.get(i).setOn(true);
+                        if (newValue.doubleValue() == 0.0) {
+                            ledList.get(i).setOn(false);
+                        } else {
+                            ledList.get(i).setOn(true);
+                        }
                         currentLedPeakIndex = i;
                     } else {
                         ledList.get(i).setOn(false);
                     }
-                    ledList.get(peakLedIndex).setOn(true);
+                    if (control.isPeakValueVisible()) ledList.get(peakLedIndex).setOn(true);
                 }
                 // PeakValue
                 if (control.isPeakValueVisible()) {
