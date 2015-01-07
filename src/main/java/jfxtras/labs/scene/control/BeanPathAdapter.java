@@ -26,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package jfxtras.labs.scene.control;
 
 import java.io.Serializable;
@@ -1397,7 +1396,7 @@ public class BeanPathAdapter<B> {
 							pfh, notifyProperty, dfp);
 					// progress to the next child field/bean in the path chain
 					final String nextFieldPath = fieldPath.substring(fieldPath
-							.indexOf(fieldNames[1]));
+							.indexOf(PATH_SEPARATOR + fieldNames[1]) + 1);
 					return childBean.performOperation(fullFieldPath,
 							nextFieldPath, propertyValueClass,
 							collectionItemPath, observable, collectionItemType,
@@ -1694,6 +1693,8 @@ public class BeanPathAdapter<B> {
 			} else if (v != null && Date.class.isAssignableFrom(targetClass)) {
 				if (Calendar.class.isAssignableFrom(v.getClass())) {
 					val = (VT) ((Calendar) v).getTime();
+				} else if (java.util.Date.class.isAssignableFrom(v.getClass())) {
+					val = (VT) (Date) v;
 				} else {
 					try {
 						val = (VT) SDF.parse(v.toString());
@@ -1849,7 +1850,7 @@ public class BeanPathAdapter<B> {
 		 * Sets the {@link FieldHandle#deriveValueFromAccessor()} value
 		 */
 		protected void setDerived() {
-			final T derived = fieldHandle.deriveValueFromAccessor();
+			final T derived = fieldHandle.deriveValueFromAccessor(true);
 			set(derived);
 		}
 
@@ -3247,7 +3248,7 @@ public class BeanPathAdapter<B> {
 		public F setDerivedValueFromAccessor() {
 			F derived = null;
 			try {
-				derived = deriveValueFromAccessor();
+				derived = deriveValueFromAccessor(false);
 				getSetter().invoke(derived);
 			} catch (final Throwable t) {
 				throw new RuntimeException(String.format(
@@ -3267,7 +3268,7 @@ public class BeanPathAdapter<B> {
 		 * @return the accessor's return target value
 		 */
 		@SuppressWarnings("unchecked")
-		protected F deriveValueFromAccessor() {
+		protected F deriveValueFromAccessor(boolean isNullable) {
 			F targetValue = null;
 			try {
 				targetValue = (F) getAccessor().invoke();
@@ -3291,7 +3292,11 @@ public class BeanPathAdapter<B> {
 								.isAssignableFrom(getFieldType())
 								&& !String.class
 										.isAssignableFrom(getFieldType())) {
-							targetValue = clazz.newInstance();
+							if (isNullable) {
+								targetValue = null;
+							} else {
+								targetValue = clazz.newInstance();
+							}
 						}
 					}
 					hasDefaultDerived = true;
