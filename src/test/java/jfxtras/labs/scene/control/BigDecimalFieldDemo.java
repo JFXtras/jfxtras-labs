@@ -84,8 +84,10 @@ public class BigDecimalFieldDemo extends Application {
         final BigDecimalField percent = new BigDecimalField(BigDecimal.ZERO, new BigDecimal("0.01"), NumberFormat.getPercentInstance());
         final BigDecimalField localizedCurrency = new BigDecimalField(BigDecimal.ZERO, new BigDecimal("0.01"), NumberFormat.getCurrencyInstance(Locale.UK));
         final BigDecimalField promptText = new BigDecimalField();
+        final BigDecimalField cssStyled = new BigDecimalField();
         promptText.setNumber(null);
         promptText.setPromptText("Enter something");
+        cssStyled.getStyleClass().add("css-styled");
         int rowIndex = 1;
         root.addRow(rowIndex++, new Label("default"), defaultSpinner);
         root.addRow(rowIndex++, new Label("custom decimal format"), decimalFormat);
@@ -96,6 +98,7 @@ public class BigDecimalFieldDemo extends Application {
         root.addRow(rowIndex++, new Label("disabled field"), disabledField);
         root.addRow(rowIndex++, new Label("regular TextField"), new TextField("1.000,1234"));
         root.addRow(rowIndex++, new Label("with promptText"), promptText);
+        root.addRow(rowIndex++, new Label("with CSS styling"), cssStyled);
         CalendarTextField calendarTextField = new CalendarTextField();
         root.addRow(rowIndex++, new Label("CalendarTextField"), calendarTextField);
         ComboBox<Locale> cmbLocales = new ComboBox<>(FXCollections.observableArrayList(Locale.GERMANY, Locale.UK, Locale.FRANCE));
@@ -130,6 +133,7 @@ public class BigDecimalFieldDemo extends Application {
             localizedCurrency.setNumber(new BigDecimal(Math.random() * 1000));
             disabledField.setNumber(new BigDecimal(Math.random() * 1000));
             promptText.setNumber(null);
+            cssStyled.setNumber(new BigDecimal(Math.random() * 1000));
             calendarTextField.setCalendar(Calendar.getInstance());
             decimalFormat.requestFocus();
         });
@@ -153,6 +157,7 @@ public class BigDecimalFieldDemo extends Application {
         });
         decimalFormat.requestFocus();
         Scene scene = new Scene(root);
+        scene.getStylesheets().add("jfxtras/labs/scene/control/BigDecimalFieldDemo.css");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

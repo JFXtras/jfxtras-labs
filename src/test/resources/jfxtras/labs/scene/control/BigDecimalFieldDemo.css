@@ -1,0 +1,20 @@
+/******************************************************************************
+ * Css file for demo of Big Decimal Control
+ * @author : Thomas Bolz
+ *
+ ******************************************************************************/
+
+// Big Decimal Field
+.css-styled.big-decimal-field{
+    -fx-effect: dropshadow(one-pass-box, grey, 10, .4, 2, 2);
+    -fx-background-radius: 20 20 20 20;
+}
+.css-styled.big-decimal-field .text-field {
+    -fx-background-radius: 20 0 0 20;
+}
+.css-styled.big-decimal-field .arrow-button-up{
+    -fx-background-radius: 0 20 0 0;
+}
+.css-styled.big-decimal-field .arrow-button-down{
+    -fx-background-radius: 0 0 20 0;
+}
