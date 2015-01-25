@@ -18,3 +18,9 @@
 .css-styled.big-decimal-field .arrow-button-down{
     -fx-background-radius: 0 0 20 0;
 }
+.big-decimal-field .spinner-arrow-up {
+    -fx-stroke: green;
+}
+.big-decimal-field .spinner-arrow-down {
+    -fx-stroke: red;
+}
