@@ -97,8 +97,10 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
         // Button Up
         btnUp = new StackPane();
         btnUp.getStyleClass().add("arrow-button");
+        btnUp.getStyleClass().add("arrow-button-up");
         arrowUp = new Path();
         arrowUp.getStyleClass().add("spinner-arrow");
+        arrowUp.getStyleClass().add("spinner-arrow-up");
         arrowUp.getElements().addAll(new MoveTo(-ARROW_SIZE, 0), new LineTo(0, -ARROW_SIZE * ARROW_HEIGHT),
                 new LineTo(ARROW_SIZE, 0));
         btnUp.getChildren().add(arrowUp);
@@ -106,8 +108,10 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
         // Button Down
         btnDown = new StackPane();
         btnDown.getStyleClass().add("arrow-button");
+        btnDown.getStyleClass().add("arrow-button-down");
         arrowDown = new Path();
         arrowDown.getStyleClass().add("spinner-arrow");
+        arrowDown.getStyleClass().add("spinner-arrow-down");
         arrowDown.getElements().addAll(new MoveTo(-ARROW_SIZE, 0), new LineTo(0, ARROW_SIZE * ARROW_HEIGHT),
                 new LineTo(ARROW_SIZE, 0));
         btnDown.getChildren().add(arrowDown);
