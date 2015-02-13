@@ -1,19 +1,12 @@
 package jfxtras.labs.scene.control.gauge.linear;
 
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
-
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
+import jfxtras.labs.internal.scene.control.skin.gauge.linear.LinearGaugeArcSkin;
 import jfxtras.scene.control.ListSpinner;
-import jfxtras.scene.control.agenda.Agenda;
-import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 public class LinearGauge extends Control {
 
@@ -30,7 +23,11 @@ public class LinearGauge extends Control {
 	 * 
 	 */
 	private void construct() {
+		// pref size
+		setPrefSize(100, 100);
 		
+		// setup the CSS
+		this.getStyleClass().add(LinearGauge.class.getSimpleName());
 	}
 
 
@@ -38,11 +35,11 @@ public class LinearGauge extends Control {
 	 * Return the path to the CSS file so things are setup right
 	 */
 	@Override public String getUserAgentStylesheet() {
-		return ListSpinner.class.getResource("/jfxtras/internal/scene/control/gauge/linear/" + LinearGauge.class.getSimpleName() + ".css").toExternalForm();
+		return ListSpinner.class.getResource("/jfxtras/labs/internal/scene/control/gauge/linear/" + LinearGauge.class.getSimpleName() + ".css").toExternalForm();
 	}
 
 	@Override public Skin<?> createDefaultSkin() {
-		return new jfxtras.labs.internal.scene.control.skin.gauge.linear.LinearGaugeRainbowSkin(this); 
+		return new LinearGaugeArcSkin(this); 
 	}
 	
 	
@@ -74,6 +71,6 @@ public class LinearGauge extends Control {
 	public LinearGauge withMaxValue(double value) { setMaxValue(value); return this; } 
 
 	/** segments: */
-	public ObservableList<Segment> segments() { return segments; }
-	final private ObservableList<Segment> segments =  javafx.collections.FXCollections.observableArrayList();
+	public ObservableList<AbsoluteSegment> segments() { return segments; }
+	final private ObservableList<AbsoluteSegment> segments =  javafx.collections.FXCollections.observableArrayList();
 }

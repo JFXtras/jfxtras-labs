@@ -1,0 +1,7 @@
+.LinearGauge { 
+}
+
+.LinearGauge .segment {
+    -fx-fill: #cccccc;
+    -fx-stroke: #000000;
+}
