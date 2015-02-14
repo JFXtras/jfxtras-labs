@@ -1,15 +1,23 @@
-.LinearGauge { 
-    /* These are the default colors, but they're just a mix of colors. Logic can be applied by assigning on of the colorschemes */
-    -section-color-0    : #888888;
-    -section-color-1    : #f3622d;
-    -section-color-2    : #fba71b;
-    -section-color-3    : #57b757;
-    -section-color-4    : #41a9c9;
-    -section-color-5    : #4258c9;
-    -section-color-6    : #9a42c8;
-    -section-color-7    : #c84164;
-    -section-color-8    : #ffffff;
-    -section-color-9    : #aaaaaa;
+.LinearGauge {
+	-needle-color: #5a615f; 
+    /* These are the default colors, but they're just a mix of colors. Logic can be applied by assigning on of the colorschemes */    
+    -section-color-0: #888888;
+    -section-color-1: #f3622d;
+    -section-color-2: #fba71b;
+    -section-color-3: #57b757;
+    -section-color-4: #41a9c9;
+    -section-color-5: #4258c9;
+    -section-color-6: #9a42c8;
+    -section-color-7: #c84164;
+    -section-color-8: #ffffff;
+    -section-color-9: #aaaaaa;
+}
+
+.needle {
+    -fx-fill:-needle-color;
+    -fx-stroke: white;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: bevel;
 }
 
 .segment {

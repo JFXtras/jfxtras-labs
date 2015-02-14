@@ -2,12 +2,18 @@ package jfxtras.labs.scene.control.gauge.linear;
 
 public class CompleteSegment implements Segment {
 
-	public CompleteSegment(String id, LinearGauge linearGauge) {
+	final private String id;
+	final private LinearGauge linearGauge;
+	
+	public CompleteSegment(LinearGauge linearGauge, String id) {
 		this.id = id;
 		this.linearGauge = linearGauge;
 	}
-	final private String id;
-	final private LinearGauge linearGauge;
+	
+	public CompleteSegment(LinearGauge linearGauge) {
+		this.id = null;
+		this.linearGauge = linearGauge;
+	}
 	
 	/* (non-Javadoc)
 	 * @see jfxtras.labs.scene.control.gauge.linear.Segment#getId()

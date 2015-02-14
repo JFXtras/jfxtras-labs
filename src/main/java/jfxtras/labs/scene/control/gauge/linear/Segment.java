@@ -2,10 +2,10 @@ package jfxtras.labs.scene.control.gauge.linear;
 
 public interface Segment {
 
-	public abstract String getId();
+	double getMinValue();
+	double getMaxValue();
 
-	public abstract double getMinValue();
-
-	public abstract double getMaxValue();
-
+	default String getId() {
+		return null;
+	}
 }

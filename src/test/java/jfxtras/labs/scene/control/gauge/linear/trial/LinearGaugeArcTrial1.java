@@ -63,9 +63,17 @@ public class LinearGaugeArcTrial1 extends Application {
 			final LinearGauge lLinearGauge = new LinearGauge();
 			lLinearGauge.getStyleClass().add("colorscheme-green-to-red-10");
 			for (int i = 0; i < 10; i++) {
-				Segment lSegment = new PercentSegment("id" + i, i * 10.0, (i+1) * 10.0, lLinearGauge);
+				Segment lSegment = new PercentSegment(lLinearGauge, i * 10.0, (i+1) * 10.0);
 				lLinearGauge.segments().add(lSegment);
 			}
+			lFlowPane.getChildren().add(lLinearGauge);
+			lLinearGauge.setStyle("-fx-border-color: #000000;");
+		}
+        
+        // shrunk
+		{
+			final LinearGauge lLinearGauge = new LinearGauge();
+			lLinearGauge.setPrefSize(100.0, 100.0);
 			lFlowPane.getChildren().add(lLinearGauge);
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 		}

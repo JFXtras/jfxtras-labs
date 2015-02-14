@@ -8,6 +8,8 @@ import javafx.scene.control.SkinBase;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.ArcTo;
+import javafx.scene.shape.ClosePath;
+import javafx.scene.shape.CubicCurveTo;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
@@ -16,6 +18,9 @@ import jfxtras.labs.scene.control.gauge.linear.CompleteSegment;
 import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
 import jfxtras.labs.scene.control.gauge.linear.Segment;
 
+/**
+ * Based on Gerrit Grunwald's Enzo SimpleGauge (https://bitbucket.org/hansolo/enzo/src)
+ */
 public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
 
 	// ==================================================================================================================
@@ -48,12 +53,22 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
 		// dial
 		dialPane = new Pane();
 		dialPane.widthProperty().addListener( (observable) -> {
-			drawDial();
+			drawDialPane();
 		});
 		dialPane.heightProperty().addListener( (observable) -> {
-			drawDial();
+			drawDialPane();
 		});
+		
+		// needle
 		needlePane = new Pane();
+		needlePane.widthProperty().addListener( (observable) -> {
+			drawNeedlePane();
+		});
+		needlePane.heightProperty().addListener( (observable) -> {
+			drawNeedlePane();
+		});
+		
+		// overlay
 		overlayPane = new Pane();
 		
 		// we use a stack pane to control the layers
@@ -70,39 +85,95 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
 	private Pane needlePane;
 	private Pane overlayPane;
 
-	private void drawDial() {
+	/**
+	 * 
+	 */
+	private void drawDialPane() {
+		// TBEERNOT: can we optimize the drawing (e.g. when width & height have not changed, skip)
+
+		// we always draw from scratch
 		dialPane.getChildren().clear();
+		
+		// stuff we need
  		double width = dialPane.getWidth();
  		double height = dialPane.getHeight();
  		double controlMinValue = getSkinnable().getMinValue();
  		double controlMaxValue = getSkinnable().getMaxValue();
  		double controlValueRange = controlMaxValue - controlMinValue;
  		
- 		// draw the segments
-		Point2D center = new Point2D(width / 2.0, height * 0.6);
- 		double radius = Math.min(center.getX(), center.getY());
+ 		// determine what segments to draw
  		List<Segment> segments = new ArrayList<Segment>(getSkinnable().segments());
  		if (segments.size() == 0) {
  			segments.add(completeSegment);
  		}
+ 		
+ 		// draw the segments
+		Point2D center = new Point2D(width / 2.0, height * 0.6);
+ 		double outerRadius = Math.min(center.getX(), center.getY());
+		double innerRadius = outerRadius * 0.5;
  		int cnt = 0;
  		for (Segment segment : segments) {
+ 			
+ 			// create a path for this segment
  	 		double segmentMinValue = segment.getMinValue();
  	 		double segmentMaxValue = segment.getMaxValue();
  			double startAngle = (segmentMinValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
  			double endAngle = (segmentMaxValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
- 			dialPane.getChildren().add(drawSegment(center, radius, radius * 0.5, startAngle, endAngle, "segment" + cnt));
+			Path segmentPath = createSegmentPath(center, outerRadius, innerRadius, startAngle, endAngle);
+			dialPane.getChildren().add(segmentPath);
+			
+			// setup CSS on the path
+	        segmentPath.getStyleClass().addAll("segment", "segment" + cnt);
+	        if (segment.getId() != null) {
+	        	segmentPath.setId(segment.getId());
+	        }
+	        
  			cnt++;
  		}
-		//dialPane.getChildren().add(drawSegment(center, radius, radius * 0.5, 0.0, 270.0, "segment1"));
-// 		int n = 10;
-// 		for (int i = 0; i < n; i++) {
-// 			dialPane.getChildren().add(drawSegment(center, radius, radius * 0.5, i * 270.0 / ((double)n), (i + 1) * 270.0 / ((double)n), "segment" + i));
-// 		}
 	}
 	static final private double FULL_ARC_IN_DEGREES = 270.0;
-	final private CompleteSegment completeSegment = new CompleteSegment("default", getSkinnable());
+	final private CompleteSegment completeSegment = new CompleteSegment(getSkinnable());
 
+	private void drawNeedlePane() {
+		// TBEERNOT: can we optimize the drawing (e.g. when width & height have not changed, skip)
+
+ 		// we always draw from scratch
+		needlePane.getChildren().clear();
+		
+		double width = needlePane.getWidth();
+ 		double height = needlePane.getHeight();
+		Point2D center = new Point2D(width / 2.0, height * 0.6);
+ 		double outerRadius = Math.min(center.getX(), center.getY());
+		double size = Math.min(width, height);
+		
+		Path needle = new Path();
+        needle.setFillRule(FillRule.EVEN_ODD);        
+		needle.getStyleClass().add("needle");
+//        needle.getElements().clear();
+        needle.getElements().add(new MoveTo(0.275 * size, 0.5 * size));
+        needle.getElements().add(new CubicCurveTo(0.275 * size, 0.62426575 * size,
+                                                  0.37573425 * size, 0.725 * size,
+                                                  0.5 * size, 0.725 * size));
+        needle.getElements().add(new CubicCurveTo(0.62426575 * size, 0.725 * size,
+                                                  0.725 * size, 0.62426575 * size,
+                                                  0.725 * size, 0.5 * size));
+        needle.getElements().add(new CubicCurveTo(0.725 * size, 0.3891265 * size,
+                                                  0.6448105 * size, 0.296985 * size,
+                                                  0.5392625 * size, 0.2784125 * size));
+        needle.getElements().add(new LineTo(0.5 * size, 0.0225 * size));
+        needle.getElements().add(new LineTo(0.4607375 * size, 0.2784125 * size));
+        needle.getElements().add(new CubicCurveTo(0.3551895 * size, 0.296985 * size,
+                                                  0.275 * size, 0.3891265 * size,
+                                                  0.275 * size, 0.5 * size));
+        needle.getElements().add(new ClosePath());
+        needle.setStrokeWidth(size * 0.025);
+        needlePane.getChildren().add(needle);
+        needle.relocate(50.0, 10.0);
+
+	}
+	// ==================================================================================================================
+	// SUPPORT
+	
 	/**
 	 * 
 	 * @param center
@@ -113,15 +184,15 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
 	 * @param cssClass
 	 * @return
 	 */
-	private Path drawSegment(Point2D center, double outerRadius, double innerRadius, double startAngleInDegrees, double endAngleInDegrees, String cssClass) {
+	private Path createSegmentPath(Point2D center, double outerRadius, double innerRadius, double startAngleInDegrees, double endAngleInDegrees) {
+		
 		// some additional info
 		double angleInDegrees = endAngleInDegrees - startAngleInDegrees;
 		
-		// math uses radians
-		// The angles works counter clockwise, the gauge works clockwise, so * -1
-		// 0 degrees is on the right side of the circle, the gauge starts in the bottom left, so add 90 + 45 degrees to offset that 
-		double startAngleInRadians = Math.toRadians( (startAngleInDegrees) + 135.0); 
-		double endAngleInRadians = Math.toRadians( (endAngleInDegrees) + 135.0);
+		// Java's math uses radians
+		// 0 degrees is on the right side of the circle, the gauge starts in the bottom left, so add 90 + 45 degrees to offset to that. 
+		double startAngleInRadians = Math.toRadians(startAngleInDegrees + 135.0); 
+		double endAngleInRadians = Math.toRadians(endAngleInDegrees + 135.0);
 
 		// calculate the four points of the segment
 		Point2D startOuter = calculatePointOnCircle(center, outerRadius, startAngleInRadians);
@@ -132,7 +203,6 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
 		// create a path to draw the segment with
         Path path = new Path();
         path.setFillRule(FillRule.EVEN_ODD);
-        path.getStyleClass().addAll("segment", cssClass);
 
         // arcs are drawn counter clockwise
         // begin of inner arc
@@ -171,6 +241,7 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
         // leg from end of outer arc to end of inner arc
         path.getElements().add( new LineTo(endInner.getX(), endInner.getY()) );
         
+        // done
         return path;
     }
     

@@ -2,16 +2,24 @@ package jfxtras.labs.scene.control.gauge.linear;
 
 public class PercentSegment implements Segment {
 
-	public PercentSegment(String id, double minPercent, double maxPercent, LinearGauge linearGauge) {
+	final private String id;
+	final private double minPercent;
+	final private double maxPercent;
+	final private LinearGauge linearGauge;
+
+	public PercentSegment(LinearGauge linearGauge, double minPercent, double maxPercent, String id) {
 		this.id = id;
 		this.minPercent = minPercent;
 		this.maxPercent = maxPercent;
 		this.linearGauge = linearGauge;
 	}
-	final private String id;
-	final private double minPercent;
-	final private double maxPercent;
-	final private LinearGauge linearGauge;
+	
+	public PercentSegment(LinearGauge linearGauge, double minPercent, double maxPercent) {
+		this.id = null;
+		this.minPercent = minPercent;
+		this.maxPercent = maxPercent;
+		this.linearGauge = linearGauge;
+	}
 	
 	/* (non-Javadoc)
 	 * @see jfxtras.labs.scene.control.gauge.linear.Segment#getId()
