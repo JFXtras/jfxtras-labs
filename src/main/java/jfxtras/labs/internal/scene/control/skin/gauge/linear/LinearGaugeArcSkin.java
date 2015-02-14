@@ -8,12 +8,12 @@ import javafx.scene.control.SkinBase;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.ArcTo;
-import javafx.scene.shape.ClosePath;
-import javafx.scene.shape.CubicCurveTo;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.StrokeLineJoin;
+import javafx.scene.transform.Rotate;
 import jfxtras.labs.scene.control.gauge.linear.CompleteSegment;
 import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
 import jfxtras.labs.scene.control.gauge.linear.Segment;
@@ -67,6 +67,11 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
 		needlePane.heightProperty().addListener( (observable) -> {
 			drawNeedlePane();
 		});
+		needleRotate = new Rotate(0.0);
+		getSkinnable().valueProperty().addListener( (observable) -> {
+			rotateNeedle();
+		});
+		rotateNeedle();
 		
 		// overlay
 		overlayPane = new Pane();
@@ -84,12 +89,14 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
 	private Pane dialPane;
 	private Pane needlePane;
 	private Pane overlayPane;
+	private Rotate needleRotate;
 
 	/**
 	 * 
 	 */
 	private void drawDialPane() {
 		// TBEERNOT: can we optimize the drawing (e.g. when width & height have not changed, skip)
+		// TBEERNOT: handle that not min <= value <= max
 
 		// we always draw from scratch
 		dialPane.getChildren().clear();
@@ -134,8 +141,18 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
 	static final private double FULL_ARC_IN_DEGREES = 270.0;
 	final private CompleteSegment completeSegment = new CompleteSegment(getSkinnable());
 
+	private void rotateNeedle() {
+ 		double controlMinValue = getSkinnable().getMinValue();
+ 		double controlMaxValue = getSkinnable().getMaxValue();
+ 		double controlValueRange = controlMaxValue - controlMinValue;
+ 		double value = getSkinnable().getValue();
+ 		double angle = (value - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES;
+ 		needleRotate.setAngle(angle);
+	}
+
 	private void drawNeedlePane() {
 		// TBEERNOT: can we optimize the drawing (e.g. when width & height have not changed, skip)
+		// TBEERNOT: handle that not min <= value <= max
 
  		// we always draw from scratch
 		needlePane.getChildren().clear();
@@ -144,32 +161,52 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
  		double height = needlePane.getHeight();
 		Point2D center = new Point2D(width / 2.0, height * 0.6);
  		double outerRadius = Math.min(center.getX(), center.getY());
-		double size = Math.min(width, height);
+		double tipRadius = outerRadius * 0.9;
+		double needleRadius = outerRadius * 0.4;
+		
+		// Java's math uses radians
+		// 0 degrees is on the right side of the circle, the gauge starts in the bottom left, so add 90 + 45 degrees to offset to that. 
+		double startAngleInRadians = Math.toRadians(0.0 - 20.0 + 135.0); 
+		double tipAngleInRadians = Math.toRadians(0.0 + 135.0); 
+		double endAngleInRadians = Math.toRadians(0.0 + 20.0 + 135.0);
+
+		// calculate the two points of the segment
+		Point2D startPoint = calculatePointOnCircle(center, needleRadius, startAngleInRadians);
+		Point2D tipPoint = calculatePointOnCircle(center, tipRadius, tipAngleInRadians);
+		Point2D endPoint = calculatePointOnCircle(center, needleRadius, endAngleInRadians);
 		
 		Path needle = new Path();
         needle.setFillRule(FillRule.EVEN_ODD);        
 		needle.getStyleClass().add("needle");
-//        needle.getElements().clear();
-        needle.getElements().add(new MoveTo(0.275 * size, 0.5 * size));
-        needle.getElements().add(new CubicCurveTo(0.275 * size, 0.62426575 * size,
-                                                  0.37573425 * size, 0.725 * size,
-                                                  0.5 * size, 0.725 * size));
-        needle.getElements().add(new CubicCurveTo(0.62426575 * size, 0.725 * size,
-                                                  0.725 * size, 0.62426575 * size,
-                                                  0.725 * size, 0.5 * size));
-        needle.getElements().add(new CubicCurveTo(0.725 * size, 0.3891265 * size,
-                                                  0.6448105 * size, 0.296985 * size,
-                                                  0.5392625 * size, 0.2784125 * size));
-        needle.getElements().add(new LineTo(0.5 * size, 0.0225 * size));
-        needle.getElements().add(new LineTo(0.4607375 * size, 0.2784125 * size));
-        needle.getElements().add(new CubicCurveTo(0.3551895 * size, 0.296985 * size,
-                                                  0.275 * size, 0.3891265 * size,
-                                                  0.275 * size, 0.5 * size));
-        needle.getElements().add(new ClosePath());
-        needle.setStrokeWidth(size * 0.025);
+		needle.setStrokeLineJoin(StrokeLineJoin.ROUND);
+		
+        // begin of inner arc
+        needle.getElements().add( new MoveTo(startPoint.getX(), startPoint.getY()) );
+        
+        // inner arc to the end point
+        {
+	        ArcTo arcTo = new ArcTo();
+	        arcTo.setX(endPoint.getX());
+	        arcTo.setY(endPoint.getY());
+	        arcTo.setRadiusX(needleRadius);
+	        arcTo.setRadiusY(needleRadius);
+	        arcTo.setLargeArcFlag(true);
+	        arcTo.setSweepFlag(false);
+	        needle.getElements().add(arcTo);
+        }
+        
+        needle.getElements().add(new LineTo(tipPoint.getX(), tipPoint.getY()));
+        needle.getElements().add(new LineTo(startPoint.getX(), startPoint.getY()));
+        
+        needle.setStrokeWidth(needleRadius * 0.15);
+        
+        needleRotate.setPivotX(center.getX());
+        needleRotate.setPivotY(center.getY());
+        needle.getTransforms().setAll(needleRotate); 
+        
         needlePane.getChildren().add(needle);
-        needle.relocate(50.0, 10.0);
 
+//        needle.relocate(0.0, (height - 0.0) / 2.0);
 	}
 	// ==================================================================================================================
 	// SUPPORT
@@ -204,7 +241,6 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
         Path path = new Path();
         path.setFillRule(FillRule.EVEN_ODD);
 
-        // arcs are drawn counter clockwise
         // begin of inner arc
         path.getElements().add( new MoveTo(startInner.getX(), startInner.getY()) );
         
@@ -226,7 +262,7 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
         // leg to begin of outer arc
         path.getElements().add( new LineTo(startOuter.getX(), startOuter.getY()) );
         
-        // outer arc (must be darn in the same direction as the inner arc)
+        // outer arc (must be drawn in the same direction as the inner arc)
         {
 	        ArcTo arcTo = new ArcTo();
 	        arcTo.setX(endOuter.getX());

@@ -66,6 +66,7 @@ public class LinearGaugeArcTrial1 extends Application {
 				Segment lSegment = new PercentSegment(lLinearGauge, i * 10.0, (i+1) * 10.0);
 				lLinearGauge.segments().add(lSegment);
 			}
+			lLinearGauge.setValue(30.0);
 			lFlowPane.getChildren().add(lLinearGauge);
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 		}

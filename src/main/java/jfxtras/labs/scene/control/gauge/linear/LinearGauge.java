@@ -8,6 +8,11 @@ import javafx.scene.control.Skin;
 import jfxtras.labs.internal.scene.control.skin.gauge.linear.LinearGaugeArcSkin;
 import jfxtras.scene.control.ListSpinner;
 
+/**
+ * 
+ * TBEERNOT: Comment about color scheme's in CSS
+ *
+ */
 public class LinearGauge extends Control {
 
 	// ==================================================================================================================
@@ -49,7 +54,6 @@ public class LinearGauge extends Control {
 	// PROPERTIES
 
 	/** value: the currently rendered value */
-	// TODO: validate that min <= value <= max
 	public DoubleProperty valueProperty() { return valueProperty; }
 	final private DoubleProperty valueProperty = new SimpleDoubleProperty(this, "value", 50.0);
 	public double getValue() { return valueProperty.getValue(); }
@@ -57,7 +61,6 @@ public class LinearGauge extends Control {
 	public LinearGauge withValue(double value) { setValue(value); return this; } 
 
 	/** minValue: the lowest value of the gauge */
-	// TODO: validate that min <= value <= max
 	public DoubleProperty minValueProperty() { return minValueProperty; }
 	final private DoubleProperty minValueProperty = new SimpleDoubleProperty(this, "minValue", 0.0);
 	public double getMinValue() { return minValueProperty.getValue(); }
@@ -65,7 +68,6 @@ public class LinearGauge extends Control {
 	public LinearGauge withMinValue(double value) { setMinValue(value); return this; } 
 
 	/** maxValue: the highest value of the gauge */
-	// TODO: validate that min <= value <= max
 	public DoubleProperty maxValueProperty() { return maxValueProperty; }
 	final private DoubleProperty maxValueProperty = new SimpleDoubleProperty(this, "maxValue", 100.0);
 	public double getMaxValue() { return maxValueProperty.getValue(); }
