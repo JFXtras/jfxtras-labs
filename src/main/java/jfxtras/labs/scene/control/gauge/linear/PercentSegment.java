@@ -25,7 +25,7 @@ public class PercentSegment implements Segment {
 	 * @see jfxtras.labs.scene.control.gauge.linear.Segment#getMin()
 	 */
 	@Override
-	public double getMin() {
+	public double getMinValue() {
 		double minValue = linearGauge.getMinValue();
 		double maxValue = linearGauge.getMaxValue();
 		return minValue + ((maxValue - minValue) * minPercent / 100.0);
@@ -35,7 +35,7 @@ public class PercentSegment implements Segment {
 	 * @see jfxtras.labs.scene.control.gauge.linear.Segment#getMax()
 	 */
 	@Override
-	public double getMax() {
+	public double getMaxValue() {
 		double minValue = linearGauge.getMinValue();
 		double maxValue = linearGauge.getMaxValue();
 		return minValue + ((maxValue - minValue) * maxPercent / 100.0);

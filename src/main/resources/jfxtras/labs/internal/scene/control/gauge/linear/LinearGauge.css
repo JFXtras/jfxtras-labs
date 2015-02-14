@@ -1,7 +1,186 @@
 .LinearGauge { 
+    /* These are the default colors, but they're just a mix of colors. Logic can be applied by assigning on of the colorschemes */
+    -section-color-0    : #888888;
+    -section-color-1    : #f3622d;
+    -section-color-2    : #fba71b;
+    -section-color-3    : #57b757;
+    -section-color-4    : #41a9c9;
+    -section-color-5    : #4258c9;
+    -section-color-6    : #9a42c8;
+    -section-color-7    : #c84164;
+    -section-color-8    : #ffffff;
+    -section-color-9    : #aaaaaa;
 }
 
-.LinearGauge .segment {
-    -fx-fill: #cccccc;
-    -fx-stroke: #000000;
+.segment {
+}
+
+.segment0 {
+    -fx-stroke: -section-color-0;
+    -fx-fill: -section-color-0;
+}
+
+.segment1 {
+    -fx-stroke: -section-color-1;
+    -fx-fill: -section-color-1;
+}
+
+.segment2 {
+    -fx-stroke: -section-color-2;
+    -fx-fill: -section-color-2;
+}
+
+.segment3 {
+    -fx-stroke: -section-color-3;
+    -fx-fill: -section-color-3;
+}
+
+.segment4 {
+    -fx-stroke: -section-color-4;
+    -fx-fill: -section-color-4;
+}
+
+.segment5 {
+    -fx-stroke: -section-color-5;
+    -fx-fill: -section-color-5;
+}
+
+.segment6 {
+    -fx-stroke: -section-color-6;
+    -fx-fill: -section-color-6;
+}
+
+.segment7 {
+    -fx-stroke: -section-color-7;
+    -fx-fill: -section-color-7;
+}
+
+.segment8 {
+    -fx-stroke: -section-color-8;
+    -fx-fill: -section-color-8;
+}
+
+.segment9 {
+    -fx-stroke: -section-color-9;
+    -fx-fill: -section-color-9;
+}
+
+/*
+ * Color schemes
+ */
+
+.colorscheme-blue-to-red-5 {
+    -section-color-0: #2976fa;
+    -section-color-1: #29c0fa;
+    -section-color-2: #29fa3d;
+    -section-color-3: #ffd82a;
+    -section-color-4: #ff312a;
+}
+.colorscheme-red-to-blue-5 {
+    -section-color-0: #ff312a;
+    -section-color-1: #ffd82a;
+    -section-color-2: #29fa3d;
+    -section-color-3: #29c0fa;
+    -section-color-4: #2976fa;
+}
+
+
+/* for 6 sections */
+.colorscheme-green-to-darkgreen-6 {
+    -section-color-0: #badf8d;
+    -section-color-1: #95c262;
+    -section-color-2: #80b940;
+    -section-color-3: #67a328;
+    -section-color-4: #36843d;
+    -section-color-5: #11632f;
+}
+.colorscheme-green-to-red-6 {
+    -section-color-0: #11632f;
+    -section-color-1: #36843d;
+    -section-color-2: #80b940;
+    -section-color-3: #f5982b;
+    -section-color-4: #f06129;
+    -section-color-5: #b61f25;
+}
+.colorscheme-red-to-green-6 {
+    -section-color-0: #b61f25;
+    -section-color-1: #f06129;
+    -section-color-2: #f5982b;
+    -section-color-3: #80b940;
+    -section-color-4: #36843d;
+    -section-color-5: #11632f;
+}
+.colorscheme-purple-to-red-6 {
+    -section-color-0: #64266b;
+    -section-color-1: #74255e;
+    -section-color-2: #842551;
+    -section-color-3: #922545;
+    -section-color-4: #a12538;
+    -section-color-5: #b61f25;
+}
+.colorscheme-blue-to-red-6 {
+    -section-color-0: #20bafb;
+    -section-color-1: #23d8a6;
+    -section-color-2: #29fa3d;
+    -section-color-3: #ebfb37;
+    -section-color-4: #fdb42a;
+    -section-color-5: #fb4a1c;
+}
+
+/* for 7 sections */
+.colorscheme-green-to-red-7 {
+    -section-color-0: #0b480d;
+    -section-color-1: #177416;
+    -section-color-2: #77a922;
+    -section-color-3: #f0df31;
+    -section-color-4: #fd8d24;
+    -section-color-5: #fc4a1c;
+    -section-color-6: #fb1419;
+}
+.colorscheme-red-to-green-7 {
+    -section-color-0: #fb1419;
+    -section-color-1: #fc4a1c;
+    -section-color-2: #fd8d24;
+    -section-color-3: #f0df31;
+    -section-color-4: #77a922;
+    -section-color-5: #177416;
+    -section-color-6: #0b480d;
+}
+
+/* for 10 sections */
+.colorscheme-green-to-red-10 {
+    -section-color-0: #97b329;
+    -section-color-1: #aacc2a;
+    -section-color-2: #d4ea35;
+    -section-color-3: #f2de31;
+    -section-color-4: #fccb2e;
+    -section-color-5: #f3a429;
+    -section-color-6: #f18c23;
+    -section-color-7: #f65821;
+    -section-color-8: #f3351f;
+    -section-color-9: #f61319;
+}
+.colorscheme-red-to-green-10 {
+    -section-color-0: #f61319;
+    -section-color-1: #f3351f;
+    -section-color-2: #f65821;
+    -section-color-3: #f18c23;
+    -section-color-4: #f3a429;
+    -section-color-5: #fccb2e;
+    -section-color-6: #f2de31;
+    -section-color-7: #d4ea35;
+    -section-color-8: #aacc2a;
+    -section-color-9: #97b329;
+}
+.colorscheme-purple-to-cyan-10 {
+    -section-color-0: #5b27c8;
+    -section-color-1: #9622b6;
+    -section-color-2: #cc1760;
+    -section-color-3: #c7151a;
+    -section-color-4: #f37e23;
+    -section-color-5: #f6c52d;
+    -section-color-6: #bdd62d;
+    -section-color-7: #5bcc28;
+    -section-color-8: #25cf90;
+    -section-color-9: #22b4c5;
 }

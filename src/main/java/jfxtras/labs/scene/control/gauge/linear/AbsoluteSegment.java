@@ -23,7 +23,7 @@ public class AbsoluteSegment implements Segment {
 	 * @see jfxtras.labs.scene.control.gauge.linear.Segment#getMin()
 	 */
 	@Override
-	public double getMin() {
+	public double getMinValue() {
 		return min;
 	}
 	
@@ -31,7 +31,7 @@ public class AbsoluteSegment implements Segment {
 	 * @see jfxtras.labs.scene.control.gauge.linear.Segment#getMax()
 	 */
 	@Override
-	public double getMax() {
+	public double getMaxValue() {
 		return max;
 	}
 }

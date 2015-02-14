@@ -1,16 +1,20 @@
 package jfxtras.labs.internal.scene.control.skin.gauge.linear;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javafx.geometry.Point2D;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcTo;
 import javafx.scene.shape.FillRule;
-import javafx.scene.shape.HLineTo;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import jfxtras.labs.scene.control.gauge.linear.CompleteSegment;
 import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
+import jfxtras.labs.scene.control.gauge.linear.Segment;
 
 public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
 
@@ -44,10 +48,10 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
 		// dial
 		dialPane = new Pane();
 		dialPane.widthProperty().addListener( (observable) -> {
-			drawSegments();
+			drawDial();
 		});
 		dialPane.heightProperty().addListener( (observable) -> {
-			drawSegments();
+			drawDial();
 		});
 		needlePane = new Pane();
 		overlayPane = new Pane();
@@ -66,98 +70,120 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
 	private Pane needlePane;
 	private Pane overlayPane;
 
-	private void drawSegments() {
+	private void drawDial() {
 		dialPane.getChildren().clear();
  		double width = dialPane.getWidth();
  		double height = dialPane.getHeight();
- 		double radius = Math.min(width / 2, height);
-		dialPane.getChildren().add(drawSegment(width / 2.0, height, radius, 50, 0.0, 180.0));
+ 		double controlMinValue = getSkinnable().getMinValue();
+ 		double controlMaxValue = getSkinnable().getMaxValue();
+ 		double controlValueRange = controlMaxValue - controlMinValue;
+ 		
+ 		// draw the segments
+		Point2D center = new Point2D(width / 2.0, height * 0.6);
+ 		double radius = Math.min(center.getX(), center.getY());
+ 		List<Segment> segments = new ArrayList<Segment>(getSkinnable().segments());
+ 		if (segments.size() == 0) {
+ 			segments.add(completeSegment);
+ 		}
+ 		int cnt = 0;
+ 		for (Segment segment : segments) {
+ 	 		double segmentMinValue = segment.getMinValue();
+ 	 		double segmentMaxValue = segment.getMaxValue();
+ 			double startAngle = (segmentMinValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
+ 			double endAngle = (segmentMaxValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
+ 			dialPane.getChildren().add(drawSegment(center, radius, radius * 0.5, startAngle, endAngle, "segment" + cnt));
+ 			cnt++;
+ 		}
+		//dialPane.getChildren().add(drawSegment(center, radius, radius * 0.5, 0.0, 270.0, "segment1"));
+// 		int n = 10;
+// 		for (int i = 0; i < n; i++) {
+// 			dialPane.getChildren().add(drawSegment(center, radius, radius * 0.5, i * 270.0 / ((double)n), (i + 1) * 270.0 / ((double)n), "segment" + i));
+// 		}
 	}
-	
-	private Path drawSegment(double centerX, double centerY, double outerRadius, double innerRadius, double startAngleDegrees, double endAngleDegrees) {
-		// TBEE: why do I need to swap start and end angle here?
-		double startAngle = degreesToRadials(endAngleDegrees - 180.0); 
-		double endAngle = degreesToRadials(startAngleDegrees - 180.0);
+	static final private double FULL_ARC_IN_DEGREES = 270.0;
+	final private CompleteSegment completeSegment = new CompleteSegment("default", getSkinnable());
+
+	/**
+	 * 
+	 * @param center
+	 * @param outerRadius
+	 * @param innerRadius
+	 * @param startAngleInDegrees
+	 * @param endAngleInDegrees
+	 * @param cssClass
+	 * @return
+	 */
+	private Path drawSegment(Point2D center, double outerRadius, double innerRadius, double startAngleInDegrees, double endAngleInDegrees, String cssClass) {
+		// some additional info
+		double angleInDegrees = endAngleInDegrees - startAngleInDegrees;
 		
-		double startOuterX = centerX + (outerRadius * Math.cos(startAngle));
-		double startOuterY = centerY + (outerRadius * Math.sin(startAngle));
-		double endOuterX = centerX + (outerRadius * Math.cos(endAngle));
-		double endOuterY = centerY + (outerRadius * Math.sin(endAngle));
-		double startInnerX = centerX + (innerRadius * Math.cos(startAngle));
-		double startInnerY = centerY + (innerRadius * Math.sin(startAngle));
-		double endInnerX = centerX + (innerRadius * Math.cos(endAngle));
-		double endInnerY = centerY + (innerRadius * Math.sin(endAngle));
-//		System.out.println("-----");
-//		System.out.println("startOuterX = " + startOuterX);
-//		System.out.println("startOuterY = " + startOuterY);
-//		System.out.println("endOuterX = " + endOuterX);
-//		System.out.println("endOuterY = " + endOuterY);
-//		System.out.println("startInnerX = " + startInnerX);
-//		System.out.println("startInnerY = " + startInnerY);
-//		System.out.println("endInnerX = " + endInnerX);
-//		System.out.println("endInnerY = " + endInnerY);
+		// math uses radians
+		// The angles works counter clockwise, the gauge works clockwise, so * -1
+		// 0 degrees is on the right side of the circle, the gauge starts in the bottom left, so add 90 + 45 degrees to offset that 
+		double startAngleInRadians = Math.toRadians( (startAngleInDegrees) + 135.0); 
+		double endAngleInRadians = Math.toRadians( (endAngleInDegrees) + 135.0);
+
+		// calculate the four points of the segment
+		Point2D startOuter = calculatePointOnCircle(center, outerRadius, startAngleInRadians);
+		Point2D endOuter = calculatePointOnCircle(center, outerRadius, endAngleInRadians);
+		Point2D startInner = calculatePointOnCircle(center, innerRadius, startAngleInRadians);
+		Point2D endInner = calculatePointOnCircle(center, innerRadius, endAngleInRadians);
 		
+		// create a path to draw the segment with
         Path path = new Path();
         path.setFillRule(FillRule.EVEN_ODD);
-        path.getStyleClass().add("segment");
+        path.getStyleClass().addAll("segment", cssClass);
 
+        // arcs are drawn counter clockwise
         // begin of inner arc
-        {
-	        MoveTo moveTo = new MoveTo();
-	        moveTo.setX(startInnerX);
-	        moveTo.setY(startInnerY);
-	        path.getElements().add(moveTo);
-        }
+        path.getElements().add( new MoveTo(startInner.getX(), startInner.getY()) );
         
-        // inner arc
+        // inner arc to the end point
         {
 	        ArcTo arcTo = new ArcTo();
-	        arcTo.setX(endInnerX);
-	        arcTo.setY(endInnerY);
+	        arcTo.setX(endInner.getX());
+	        arcTo.setY(endInner.getY());
 	        arcTo.setRadiusX(innerRadius);
 	        arcTo.setRadiusY(innerRadius);
+	        arcTo.setLargeArcFlag(angleInDegrees > 180.0);
+	        arcTo.setSweepFlag(true);
 	        path.getElements().add(arcTo);
         }
         
-        // begin of inner arc
-        {
-	        MoveTo moveTo = new MoveTo();
-	        moveTo.setX(startInnerX);
-	        moveTo.setY(startInnerY);
-	        path.getElements().add(moveTo);
-        }
+        // restart at the begin of inner arc
+        path.getElements().add( new MoveTo(startInner.getX(), startInner.getY()) );
         
         // leg to begin of outer arc
-        { 
-	        LineTo lineTo = new LineTo();
-	        lineTo.setX(startOuterX);
-	        lineTo.setY(startOuterY);
-	        path.getElements().add(lineTo);
-        }
+        path.getElements().add( new LineTo(startOuter.getX(), startOuter.getY()) );
         
         // outer arc (must be darn in the same direction as the inner arc)
         {
 	        ArcTo arcTo = new ArcTo();
-	        arcTo.setX(endOuterX);
-	        arcTo.setY(endOuterY);
+	        arcTo.setX(endOuter.getX());
+	        arcTo.setY(endOuter.getY());
 	        arcTo.setRadiusX(outerRadius);
 	        arcTo.setRadiusY(outerRadius);
+	        arcTo.setLargeArcFlag(angleInDegrees > 180.0);
+	        arcTo.setSweepFlag(true);
 	        path.getElements().add(arcTo);
         }
 
         // leg from end of outer arc to end of inner arc
-        {
-	        LineTo lineTo = new LineTo();
-	        lineTo.setX(endInnerX);
-	        lineTo.setY(endInnerY);
-	        path.getElements().add(lineTo);
-        }
+        path.getElements().add( new LineTo(endInner.getX(), endInner.getY()) );
         
         return path;
     }
     
-    static private double degreesToRadials(double d) {
-    	double r = d / 360.0 * 2.0 * Math.PI;
-    	return r;
-    }
+	/**
+	 * http://www.mathopenref.com/coordparamcircle.html
+	 * @param center
+	 * @param radius
+	 * @param angle
+	 * @return
+	 */
+	static private Point2D calculatePointOnCircle(Point2D center, double radius, double angle) {
+		double x = center.getX() + (radius * Math.cos(angle));
+		double y = center.getY() + (radius * Math.sin(angle));
+		return new Point2D(x, y);
+	}
 }

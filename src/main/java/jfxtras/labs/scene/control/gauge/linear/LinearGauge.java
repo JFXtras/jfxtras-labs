@@ -23,8 +23,9 @@ public class LinearGauge extends Control {
 	 * 
 	 */
 	private void construct() {
-		// pref size
-		setPrefSize(100, 100);
+		// pref size 
+		// TBEERNOT the skin should determine this
+		setPrefSize(200, 200);
 		
 		// setup the CSS
 		this.getStyleClass().add(LinearGauge.class.getSimpleName());
@@ -35,6 +36,7 @@ public class LinearGauge extends Control {
 	 * Return the path to the CSS file so things are setup right
 	 */
 	@Override public String getUserAgentStylesheet() {
+		// TBEERNOT: can we refactor to a CSS file per skin?
 		return ListSpinner.class.getResource("/jfxtras/labs/internal/scene/control/gauge/linear/" + LinearGauge.class.getSimpleName() + ".css").toExternalForm();
 	}
 
@@ -70,7 +72,10 @@ public class LinearGauge extends Control {
 	public void setMaxValue(double value) { maxValueProperty.setValue(value); }
 	public LinearGauge withMaxValue(double value) { setMaxValue(value); return this; } 
 
-	/** segments: */
-	public ObservableList<AbsoluteSegment> segments() { return segments; }
-	final private ObservableList<AbsoluteSegment> segments =  javafx.collections.FXCollections.observableArrayList();
+	/** segments:
+	 * If you do not provide any segments, a default segment will be drawn.
+	 * But if you provide at least one segment, you are responsible for making sure the segments cover the range of the gauge. 
+	 */
+	public ObservableList<Segment> segments() { return segments; }
+	final private ObservableList<Segment> segments =  javafx.collections.FXCollections.observableArrayList();
 }

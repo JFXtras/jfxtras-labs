@@ -4,8 +4,8 @@ public interface Segment {
 
 	public abstract String getId();
 
-	public abstract double getMin();
+	public abstract double getMinValue();
 
-	public abstract double getMax();
+	public abstract double getMaxValue();
 
 }

@@ -31,9 +31,11 @@ package jfxtras.labs.scene.control.gauge.linear.trial;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
+import jfxtras.labs.scene.control.gauge.linear.PercentSegment;
+import jfxtras.labs.scene.control.gauge.linear.Segment;
 
 /**
  * @author Tom Eugelink
@@ -47,14 +49,30 @@ public class LinearGaugeArcTrial1 extends Application {
 	@Override
 	public void start(Stage stage) {
 
-        // add a node
-		final LinearGauge lLinearGauge = new LinearGauge();		
+		FlowPane lFlowPane = new FlowPane(10, 10);
+		
+        // without segments
+		{
+			final LinearGauge lLinearGauge = new LinearGauge();
+			lFlowPane.getChildren().add(lLinearGauge);
+			lLinearGauge.setStyle("-fx-border-color: #000000;");
+		}
+        
+        // 10 segments
+		{
+			final LinearGauge lLinearGauge = new LinearGauge();
+			lLinearGauge.getStyleClass().add("colorscheme-green-to-red-10");
+			for (int i = 0; i < 10; i++) {
+				Segment lSegment = new PercentSegment("id" + i, i * 10.0, (i+1) * 10.0, lLinearGauge);
+				lLinearGauge.segments().add(lSegment);
+			}
+			lFlowPane.getChildren().add(lLinearGauge);
+			lLinearGauge.setStyle("-fx-border-color: #000000;");
+		}
         
         // create scene
-        BorderPane lBorderPane = new BorderPane();
-        lBorderPane.setCenter(lLinearGauge);
         //lBorderPane.setLeft(new Label("AAAAAAA"));
-        Scene scene = new Scene(lBorderPane, 300, 300);
+        Scene scene = new Scene(lFlowPane, 900, 900);
 
         // create stage
         stage.setTitle(this.getClass().getSimpleName());
@@ -62,3 +80,4 @@ public class LinearGaugeArcTrial1 extends Application {
         stage.show();	
     }
 }
+
