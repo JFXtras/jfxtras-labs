@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.sun.javafx.css.converters.EnumConverter;
-
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -15,12 +13,13 @@ import javafx.css.CssMetaData;
 import javafx.css.SimpleStyleableObjectProperty;
 import javafx.css.Styleable;
 import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcTo;
+import javafx.scene.shape.ArcType;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
@@ -32,7 +31,8 @@ import jfxtras.css.CssMetaDataForSkinProperty;
 import jfxtras.labs.scene.control.gauge.linear.CompleteSegment;
 import jfxtras.labs.scene.control.gauge.linear.Segment;
 import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
-import jfxtras.scene.control.ListSpinner;
+
+import com.sun.javafx.css.converters.EnumConverter;
 
 /**
  * 
@@ -66,36 +66,22 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
      */
     public final ObjectProperty<Animated> animatedProperty() { return animated; }
     private ObjectProperty<Animated> animated = new SimpleStyleableObjectProperty<Animated>(StyleableProperties.ANIMATED, this, "animated", StyleableProperties.ANIMATED.getInitialValue(null)) {
-    	{ // anonymous constructor
-			addListener( (invalidationEvent) -> {
-			});
-		}
+//    	{ // anonymous constructor
+//			addListener( (invalidationEvent) -> {
+//			});
+//		}
     };
     public final void setAnimated(Animated value) { animatedProperty().set(value); }
     public final Animated getAnimated() { return animated.get(); }
     public final SimpleMetroArcGaugeSkin withAnimated(Animated value) { setAnimated(value); return this; }
     public enum Animated {YES, NO}
-    
-//    /**
-//     * animationDuration
-//     */
-//    public final ObjectProperty<Integer> animationDurationProperty() { return animationDuration; }
-//    private ObjectProperty<Integer> animationDuration = new SimpleStyleableObjectProperty<Integer>(StyleableProperties.ANIMATION_DURATION, this, "animationDuration", StyleableProperties.ANIMATION_DURATION.getInitialValue(null)) {
-//    	{ // anonymous constructor
-//			addListener( (invalidationEvent) -> {
-//			});
-//		}
-//    };
-//    public final void setInteger(Integer value) { animationDurationProperty().set(value); }
-//    public final Integer getInteger() { return animationDuration.get(); }
-//    public final SimpleMetroArcGaugeSkin withInteger(Integer value) { setInteger(value); return this; }
-    
 
     // -------------------------
         
     private static class StyleableProperties 
     {
-        private static final CssMetaData<ListSpinner<?>, Animated> ANIMATED = new CssMetaDataForSkinProperty<ListSpinner<?>, SimpleMetroArcGaugeSkin, Animated>("-fxx-animated", new EnumConverter<Animated>(Animated.class), Animated.YES ) {
+    	// TBEERNOT: the first value is animated, even if the CSS is set immediately on construction
+        private static final CssMetaData<SimpleMetroArcGauge, Animated> ANIMATED = new CssMetaDataForSkinProperty<SimpleMetroArcGauge, SimpleMetroArcGaugeSkin, Animated>("-fxx-animated", new EnumConverter<Animated>(Animated.class), Animated.YES ) {
         	@Override 
         	protected ObjectProperty<Animated> getProperty(SimpleMetroArcGaugeSkin s) {
             	return s.animatedProperty();
@@ -106,7 +92,6 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
         static  {
             final List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<CssMetaData<? extends Styleable, ?>>(SkinBase.getClassCssMetaData());
             styleables.add(ANIMATED);
-//            styleables.add(ANIMATION_DURATION);
             STYLEABLES = Collections.unmodifiableList(styleables);                
         }
     }
@@ -154,20 +139,16 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		needlePane.heightProperty().addListener( (observable) -> {
 			drawNeedlePane();
 		});
-		needleRotate = new Rotate(-20.0);
+		needleRotate = new Rotate(-10.0);
 		getSkinnable().valueProperty().addListener( (observable) -> {
-			rotateNeedle();
+			rotateNeedle(true);
 		});
-		rotateNeedle();
-		
-		// overlay
-		overlayPane = new Pane();
+		rotateNeedle(false);
 		
 		// we use a stack pane to control the layers
 		StackPane lStackPane = new StackPane();
 		lStackPane.getChildren().add(dialPane);
 		lStackPane.getChildren().add(needlePane);
-		lStackPane.getChildren().add(overlayPane);
 		getChildren().add(lStackPane);
 		
 		// style
@@ -175,7 +156,6 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	}
 	private Pane dialPane;
 	private Pane needlePane;
-	private Pane overlayPane;
 	private Rotate needleRotate;
 
 	/**
@@ -188,7 +168,7 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		// we always draw from scratch
 		dialPane.getChildren().clear();
 		
-		// stuff we need
+		// preparation
  		double width = dialPane.getWidth();
  		double height = dialPane.getHeight();
  		double controlMinValue = getSkinnable().getMinValue();
@@ -203,8 +183,7 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
  		
  		// draw the segments
 		Point2D center = new Point2D(width / 2.0, height * 0.6);
- 		double outerRadius = Math.min(center.getX(), center.getY());
-		double innerRadius = outerRadius * 0.5;
+ 		double radius = Math.min(center.getX(), center.getY());
  		int cnt = 0;
  		for (Segment segment : segments) {
  			
@@ -213,7 +192,16 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
  	 		double segmentMaxValue = segment.getMaxValue();
  			double startAngle = (segmentMinValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
  			double endAngle = (segmentMaxValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
-			Path segmentPath = createSegmentPath(center, outerRadius, innerRadius, startAngle, endAngle);
+			Path segmentPath = createSegmentPath(center, radius, startAngle, endAngle);
+// TBEERNOT: Replace with single arc node?			
+// 			Arc segmentPath = new Arc();
+// 			segmentPath.setCenterX(center.getX());
+// 			segmentPath.setCenterY(center.getY());
+// 			segmentPath.setRadiusX(radius);
+// 			segmentPath.setRadiusY(radius);
+// 			segmentPath.setStartAngle(200.0 - startAngle);
+// 			segmentPath.setLength(endAngle - startAngle);
+// 			segmentPath.setType(ArcType.ROUND);
 			dialPane.getChildren().add(segmentPath);
 			
 			// setup CSS on the path
@@ -228,7 +216,10 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	static final private double FULL_ARC_IN_DEGREES = 270.0;
 	final private CompleteSegment completeSegment = new CompleteSegment(getSkinnable());
 
-	private void rotateNeedle() {
+	/**
+	 * 
+	 */
+	private void rotateNeedle(boolean allowAnimation) {
  		double controlMinValue = getSkinnable().getMinValue();
  		double controlMaxValue = getSkinnable().getMaxValue();
  		double controlValueRange = controlMaxValue - controlMinValue;
@@ -239,7 +230,7 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
  		// So we need to use the Rotate transformation, which allows to specify the center of rotation.
  		// This however also means that we cannot use RotateTransition, because that manipulates the rotate property of a node (and -as explain above- we couldn't use that).
  		// The only way to animate a Rotate transformation is to use a timeline and keyframes.
- 		if (getAnimated() == Animated.NO) {
+ 		if (allowAnimation == false || Animated.NO.equals(getAnimated())) {
  	 		needleRotate.setAngle(angle);
  		}
  		else {
@@ -259,12 +250,13 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
  		// we always draw from scratch
 		needlePane.getChildren().clear();
 		
+		// preparation
 		double width = needlePane.getWidth();
  		double height = needlePane.getHeight();
 		Point2D center = new Point2D(width / 2.0, height * 0.6);
- 		double outerRadius = Math.min(center.getX(), center.getY());
-		double tipRadius = outerRadius * 0.9;
-		double needleRadius = outerRadius * 0.4;
+ 		double radius = Math.min(center.getX(), center.getY());
+		double tipRadius = radius * 0.9;
+		double needleRadius = radius * 0.5;
 		
 		// Java's math uses radians
 		// 0 degrees is on the right side of the circle (3 o'clock), the gauge starts in the bottom left (about 7 o'clock), so add 90 + 45 degrees to offset to that. 
@@ -307,23 +299,21 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
         needle.getTransforms().setAll(needleRotate); 
         
         needlePane.getChildren().add(needle);
-
-//        needle.relocate(0.0, (height - 0.0) / 2.0);
 	}
+	
 	// ==================================================================================================================
 	// SUPPORT
 	
 	/**
 	 * 
 	 * @param center
-	 * @param outerRadius
-	 * @param innerRadius
+	 * @param radius
 	 * @param startAngleInDegrees
 	 * @param endAngleInDegrees
 	 * @param cssClass
 	 * @return
 	 */
-	private Path createSegmentPath(Point2D center, double outerRadius, double innerRadius, double startAngleInDegrees, double endAngleInDegrees) {
+	private Path createSegmentPath(Point2D center, double radius, double startAngleInDegrees, double endAngleInDegrees) {
 		
 		// some additional info
 		double angleInDegrees = endAngleInDegrees - startAngleInDegrees;
@@ -334,51 +324,34 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		double endAngleInRadians = Math.toRadians(endAngleInDegrees + 135.0);
 
 		// calculate the four points of the segment
-		Point2D startOuter = calculatePointOnCircle(center, outerRadius, startAngleInRadians);
-		Point2D endOuter = calculatePointOnCircle(center, outerRadius, endAngleInRadians);
-		Point2D startInner = calculatePointOnCircle(center, innerRadius, startAngleInRadians);
-		Point2D endInner = calculatePointOnCircle(center, innerRadius, endAngleInRadians);
+		Point2D arcStartPoint2D = calculatePointOnCircle(center, radius, startAngleInRadians);
+		Point2D arcEndPoint2D = calculatePointOnCircle(center, radius, endAngleInRadians);
 		
 		// create a path to draw the segment with
         Path path = new Path();
         path.setFillRule(FillRule.EVEN_ODD);
-
-        // begin of inner arc
-        path.getElements().add( new MoveTo(startInner.getX(), startInner.getY()) );
         
-        // inner arc to the end point
+        // begin of outer arc
+        path.getElements().add( new MoveTo(arcStartPoint2D.getX(), arcStartPoint2D.getY()) );
+      
+        // arc to end of outer arc
         {
 	        ArcTo arcTo = new ArcTo();
-	        arcTo.setX(endInner.getX());
-	        arcTo.setY(endInner.getY());
-	        arcTo.setRadiusX(innerRadius);
-	        arcTo.setRadiusY(innerRadius);
-	        arcTo.setLargeArcFlag(angleInDegrees > 180.0);
-	        arcTo.setSweepFlag(true);
-	        path.getElements().add(arcTo);
-        }
-        
-        // restart at the begin of inner arc
-        path.getElements().add( new MoveTo(startInner.getX(), startInner.getY()) );
-        
-        // leg to begin of outer arc
-        path.getElements().add( new LineTo(startOuter.getX(), startOuter.getY()) );
-        
-        // outer arc (must be drawn in the same direction as the inner arc)
-        {
-	        ArcTo arcTo = new ArcTo();
-	        arcTo.setX(endOuter.getX());
-	        arcTo.setY(endOuter.getY());
-	        arcTo.setRadiusX(outerRadius);
-	        arcTo.setRadiusY(outerRadius);
+	        arcTo.setX(arcEndPoint2D.getX());
+	        arcTo.setY(arcEndPoint2D.getY());
+	        arcTo.setRadiusX(radius);
+	        arcTo.setRadiusY(radius);
 	        arcTo.setLargeArcFlag(angleInDegrees > 180.0);
 	        arcTo.setSweepFlag(true);
 	        path.getElements().add(arcTo);
         }
 
-        // leg from end of outer arc to end of inner arc
-        path.getElements().add( new LineTo(endInner.getX(), endInner.getY()) );
-        
+        // leg from end of arc to center
+        path.getElements().add( new LineTo(center.getX(), center.getY()) );
+      
+        // leg from center to start of arc
+        path.getElements().add( new LineTo(arcStartPoint2D.getX(), arcStartPoint2D.getY()) );
+      
         // done
         return path;
     }
