@@ -1,4 +1,4 @@
-.LinearGauge {
+.SimpleMetroArcGauge {
 	-needle-color: #5a615f; 
     /* These are the default colors, but they're just a mix of colors. Logic can be applied by assigning on of the colorschemes */    
     -section-color-0: #888888;

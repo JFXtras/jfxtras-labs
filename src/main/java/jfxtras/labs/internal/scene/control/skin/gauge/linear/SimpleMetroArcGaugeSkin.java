@@ -1,9 +1,22 @@
 package jfxtras.labs.internal.scene.control.skin.gauge.linear;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import com.sun.javafx.css.converters.EnumConverter;
+
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.beans.property.ObjectProperty;
+import javafx.css.CssMetaData;
+import javafx.css.SimpleStyleableObjectProperty;
+import javafx.css.Styleable;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -14,14 +27,17 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.transform.Rotate;
+import javafx.util.Duration;
+import jfxtras.css.CssMetaDataForSkinProperty;
 import jfxtras.labs.scene.control.gauge.linear.CompleteSegment;
-import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
 import jfxtras.labs.scene.control.gauge.linear.Segment;
+import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
+import jfxtras.scene.control.ListSpinner;
 
 /**
- * Based on Gerrit Grunwald's Enzo SimpleGauge (https://bitbucket.org/hansolo/enzo/src)
+ * 
  */
-public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
+public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -29,8 +45,8 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
 	/**
 	 * 
 	 */
-	public LinearGaugeArcSkin(LinearGauge control) {
-		super(control);//, new ListSpinnerBehavior<T>(control));
+	public SimpleMetroArcGaugeSkin(SimpleMetroArcGauge control) {
+		super(control);
 		construct();
 	}
 
@@ -42,6 +58,77 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
 	}
 	
 	
+	// ==================================================================================================================
+	// StyleableProperties
+	
+    /**
+     * animated
+     */
+    public final ObjectProperty<Animated> animatedProperty() { return animated; }
+    private ObjectProperty<Animated> animated = new SimpleStyleableObjectProperty<Animated>(StyleableProperties.ANIMATED, this, "animated", StyleableProperties.ANIMATED.getInitialValue(null)) {
+    	{ // anonymous constructor
+			addListener( (invalidationEvent) -> {
+			});
+		}
+    };
+    public final void setAnimated(Animated value) { animatedProperty().set(value); }
+    public final Animated getAnimated() { return animated.get(); }
+    public final SimpleMetroArcGaugeSkin withAnimated(Animated value) { setAnimated(value); return this; }
+    public enum Animated {YES, NO}
+    
+//    /**
+//     * animationDuration
+//     */
+//    public final ObjectProperty<Integer> animationDurationProperty() { return animationDuration; }
+//    private ObjectProperty<Integer> animationDuration = new SimpleStyleableObjectProperty<Integer>(StyleableProperties.ANIMATION_DURATION, this, "animationDuration", StyleableProperties.ANIMATION_DURATION.getInitialValue(null)) {
+//    	{ // anonymous constructor
+//			addListener( (invalidationEvent) -> {
+//			});
+//		}
+//    };
+//    public final void setInteger(Integer value) { animationDurationProperty().set(value); }
+//    public final Integer getInteger() { return animationDuration.get(); }
+//    public final SimpleMetroArcGaugeSkin withInteger(Integer value) { setInteger(value); return this; }
+    
+
+    // -------------------------
+        
+    private static class StyleableProperties 
+    {
+        private static final CssMetaData<ListSpinner<?>, Animated> ANIMATED = new CssMetaDataForSkinProperty<ListSpinner<?>, SimpleMetroArcGaugeSkin, Animated>("-fxx-animated", new EnumConverter<Animated>(Animated.class), Animated.YES ) {
+        	@Override 
+        	protected ObjectProperty<Animated> getProperty(SimpleMetroArcGaugeSkin s) {
+            	return s.animatedProperty();
+            }
+        };
+        
+        private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES;
+        static  {
+            final List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<CssMetaData<? extends Styleable, ?>>(SkinBase.getClassCssMetaData());
+            styleables.add(ANIMATED);
+//            styleables.add(ANIMATION_DURATION);
+            STYLEABLES = Collections.unmodifiableList(styleables);                
+        }
+    }
+    
+    /** 
+     * @return The CssMetaData associated with this class, which may include the
+     * CssMetaData of its super classes.
+     */    
+    public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
+        return StyleableProperties.STYLEABLES;
+    }
+
+    /**
+     * This method should delegate to {@link Node#getClassCssMetaData()} so that
+     * a Node's CssMetaData can be accessed without the need for reflection.
+     * @return The CssMetaData associated with this node, which may include the
+     * CssMetaData of its super classes.
+     */
+    public List<CssMetaData<? extends Styleable, ?>> getCssMetaData() {
+        return getClassCssMetaData();
+    }
+        
 	// ==================================================================================================================
 	// DRAW
 	
@@ -67,7 +154,7 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
 		needlePane.heightProperty().addListener( (observable) -> {
 			drawNeedlePane();
 		});
-		needleRotate = new Rotate(0.0);
+		needleRotate = new Rotate(-20.0);
 		getSkinnable().valueProperty().addListener( (observable) -> {
 			rotateNeedle();
 		});
@@ -147,8 +234,23 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
  		double controlValueRange = controlMaxValue - controlMinValue;
  		double value = getSkinnable().getValue();
  		double angle = (value - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES;
- 		needleRotate.setAngle(angle);
+ 		
+ 		// We cannot use node.setRotate(angle), because this rotates always around the center of the node and the needle's rotation center is not the same as the node's center.
+ 		// So we need to use the Rotate transformation, which allows to specify the center of rotation.
+ 		// This however also means that we cannot use RotateTransition, because that manipulates the rotate property of a node (and -as explain above- we couldn't use that).
+ 		// The only way to animate a Rotate transformation is to use a timeline and keyframes.
+ 		if (getAnimated() == Animated.NO) {
+ 	 		needleRotate.setAngle(angle);
+ 		}
+ 		else {
+	        final KeyValue KEY_VALUE = new KeyValue(needleRotate.angleProperty(), angle, Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
+	        final KeyFrame KEY_FRAME = new KeyFrame(Duration.millis(1000), KEY_VALUE);
+	        timeline.getKeyFrames().setAll(KEY_FRAME);
+	        timeline.play();
+ 		}
+
 	}
+	Timeline timeline = new Timeline();
 
 	private void drawNeedlePane() {
 		// TBEERNOT: can we optimize the drawing (e.g. when width & height have not changed, skip)
@@ -165,7 +267,7 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
 		double needleRadius = outerRadius * 0.4;
 		
 		// Java's math uses radians
-		// 0 degrees is on the right side of the circle, the gauge starts in the bottom left, so add 90 + 45 degrees to offset to that. 
+		// 0 degrees is on the right side of the circle (3 o'clock), the gauge starts in the bottom left (about 7 o'clock), so add 90 + 45 degrees to offset to that. 
 		double startAngleInRadians = Math.toRadians(0.0 - 20.0 + 135.0); 
 		double tipAngleInRadians = Math.toRadians(0.0 + 135.0); 
 		double endAngleInRadians = Math.toRadians(0.0 + 20.0 + 135.0);
@@ -198,7 +300,7 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
         needle.getElements().add(new LineTo(tipPoint.getX(), tipPoint.getY()));
         needle.getElements().add(new LineTo(startPoint.getX(), startPoint.getY()));
         
-        needle.setStrokeWidth(needleRadius * 0.15);
+        needle.setStrokeWidth(needleRadius * 0.10);
         
         needleRotate.setPivotX(center.getX());
         needleRotate.setPivotY(center.getY());
@@ -227,7 +329,7 @@ public class LinearGaugeArcSkin extends SkinBase<LinearGauge> {
 		double angleInDegrees = endAngleInDegrees - startAngleInDegrees;
 		
 		// Java's math uses radians
-		// 0 degrees is on the right side of the circle, the gauge starts in the bottom left, so add 90 + 45 degrees to offset to that. 
+		// 0 degrees is on the right side of the circle (3 o'clock), the gauge starts in the bottom left (about 7 o'clock), so add 90 + 45 degrees to offset to that. 
 		double startAngleInRadians = Math.toRadians(startAngleInDegrees + 135.0); 
 		double endAngleInRadians = Math.toRadians(endAngleInDegrees + 135.0);
 

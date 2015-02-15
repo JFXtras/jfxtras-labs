@@ -29,18 +29,22 @@
 
 package jfxtras.labs.scene.control.gauge.linear.trial;
 
+import java.util.Random;
+
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
-import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
+import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
 import jfxtras.labs.scene.control.gauge.linear.PercentSegment;
 import jfxtras.labs.scene.control.gauge.linear.Segment;
+import jfxtras.labs.test.TestUtil;
 
 /**
  * @author Tom Eugelink
  */
-public class LinearGaugeArcTrial1 extends Application {
+public class SimpleMetroArcGaugeTrial1 extends Application {
 	
     public static void main(String[] args) {
         launch(args);       
@@ -53,30 +57,70 @@ public class LinearGaugeArcTrial1 extends Application {
 		
         // without segments
 		{
-			final LinearGauge lLinearGauge = new LinearGauge();
-			lFlowPane.getChildren().add(lLinearGauge);
-			lLinearGauge.setStyle("-fx-border-color: #000000;");
+			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
+			lFlowPane.getChildren().add(lSimpleMetroArcGauge);
+			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000;");
 		}
         
         // 10 segments
 		{
-			final LinearGauge lLinearGauge = new LinearGauge();
-			lLinearGauge.getStyleClass().add("colorscheme-green-to-red-10");
+			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
+			lSimpleMetroArcGauge.getStyleClass().add("colorscheme-green-to-red-10");
 			for (int i = 0; i < 10; i++) {
-				Segment lSegment = new PercentSegment(lLinearGauge, i * 10.0, (i+1) * 10.0);
-				lLinearGauge.segments().add(lSegment);
+				Segment lSegment = new PercentSegment(lSimpleMetroArcGauge, i * 10.0, (i+1) * 10.0);
+				lSimpleMetroArcGauge.segments().add(lSegment);
 			}
-			lLinearGauge.setValue(30.0);
-			lFlowPane.getChildren().add(lLinearGauge);
-			lLinearGauge.setStyle("-fx-border-color: #000000;");
+			lSimpleMetroArcGauge.setValue(30.0);
+			lFlowPane.getChildren().add(lSimpleMetroArcGauge);
+			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000;");
+			
+			Thread t = new Thread( () -> {
+				Random lRandom = new Random();
+				while (1==1) {
+					TestUtil.sleep(2000);
+					Platform.runLater( () -> {
+						lSimpleMetroArcGauge.setValue(lRandom.nextDouble() * 100.0);
+					});
+					
+				}
+			});
+			t.setDaemon(true);
+			t.start();
+		}
+        
+        // 10 segments, not animated
+		{
+			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
+			lSimpleMetroArcGauge.setStyle("-fxx-animated:NO;"); // TBEERNOT: not working
+			lSimpleMetroArcGauge.getStyleClass().add("colorscheme-green-to-red-10");
+			for (int i = 0; i < 10; i++) {
+				Segment lSegment = new PercentSegment(lSimpleMetroArcGauge, i * 10.0, (i+1) * 10.0);
+				lSimpleMetroArcGauge.segments().add(lSegment);
+			}
+			lSimpleMetroArcGauge.setValue(30.0);
+			lFlowPane.getChildren().add(lSimpleMetroArcGauge);
+			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000;");
+			
+			Thread t = new Thread( () -> {
+				Random lRandom = new Random();
+				while (1==1) {
+					TestUtil.sleep(2000);
+					Platform.runLater( () -> {
+						lSimpleMetroArcGauge.setValue(lRandom.nextDouble() * 100.0);
+					});
+					
+				}
+			});
+			t.setDaemon(true);
+			t.start();
 		}
         
         // shrunk
 		{
-			final LinearGauge lLinearGauge = new LinearGauge();
-			lLinearGauge.setPrefSize(100.0, 100.0);
-			lFlowPane.getChildren().add(lLinearGauge);
-			lLinearGauge.setStyle("-fx-border-color: #000000;");
+			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
+			lSimpleMetroArcGauge.setPrefSize(100.0, 100.0);
+			lFlowPane.getChildren().add(lSimpleMetroArcGauge);
+			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000;");
 		}
         
         // create scene
