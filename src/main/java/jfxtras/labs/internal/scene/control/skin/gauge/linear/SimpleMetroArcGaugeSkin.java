@@ -39,6 +39,8 @@ import com.sun.javafx.css.converters.EnumConverter;
  */
 public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 
+	static final private double FULL_ARC_IN_DEGREES = 270.0;
+
 	// ==================================================================================================================
 	// CONSTRUCTOR
 	
@@ -169,8 +171,6 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		dialPane.getChildren().clear();
 		
 		// preparation
- 		double width = dialPane.getWidth();
- 		double height = dialPane.getHeight();
  		double controlMinValue = getSkinnable().getMinValue();
  		double controlMaxValue = getSkinnable().getMaxValue();
  		double controlValueRange = controlMaxValue - controlMinValue;
@@ -182,39 +182,99 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
  		}
  		
  		// draw the segments
-		Point2D center = new Point2D(width / 2.0, height * 0.6);
+		Point2D center = determineCenter();
  		double radius = Math.min(center.getX(), center.getY());
  		int cnt = 0;
  		for (Segment segment : segments) {
  			
- 			// create a path for this segment
+ 			// create an arc for this segment
  	 		double segmentMinValue = segment.getMinValue();
  	 		double segmentMaxValue = segment.getMaxValue();
  			double startAngle = (segmentMinValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
  			double endAngle = (segmentMaxValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
-			Path segmentPath = createSegmentPath(center, radius, startAngle, endAngle);
-// TBEERNOT: Replace with single arc node?			
-// 			Arc segmentPath = new Arc();
-// 			segmentPath.setCenterX(center.getX());
-// 			segmentPath.setCenterY(center.getY());
-// 			segmentPath.setRadiusX(radius);
-// 			segmentPath.setRadiusY(radius);
-// 			segmentPath.setStartAngle(200.0 - startAngle);
-// 			segmentPath.setLength(endAngle - startAngle);
-// 			segmentPath.setType(ArcType.ROUND);
-			dialPane.getChildren().add(segmentPath);
+ 			Arc arc = new Arc();
+ 			arc.setCenterX(center.getX());
+ 			arc.setCenterY(center.getY());
+ 			arc.setRadiusX(radius);
+ 			arc.setRadiusY(radius);
+ 			// 0 degrees is on the right side of the circle (3 o'clock), the gauge starts in the bottom left (about 7 o'clock), so add 90 + 45 degrees to offset to that.
+ 			// The arc draws counter clockwise, so we need to negate to make it clock wise.
+ 			arc.setStartAngle(-1 * (startAngle + 135.0));
+ 			arc.setLength(-1 * (endAngle - startAngle));
+ 			arc.setType(ArcType.ROUND);
+			dialPane.getChildren().add(arc);
 			
 			// setup CSS on the path
-	        segmentPath.getStyleClass().addAll("segment", "segment" + cnt);
+	        arc.getStyleClass().addAll("segment", "segment" + cnt);
 	        if (segment.getId() != null) {
-	        	segmentPath.setId(segment.getId());
+	        	arc.setId(segment.getId());
 	        }
 	        
  			cnt++;
  		}
 	}
-	static final private double FULL_ARC_IN_DEGREES = 270.0;
 	final private CompleteSegment completeSegment = new CompleteSegment(getSkinnable());
+
+	/**
+	 * 
+	 */
+	private void drawNeedlePane() {
+		// TBEERNOT: can we optimize the drawing (e.g. when width & height have not changed, skip)
+		// TBEERNOT: handle that not min <= value <= max
+
+ 		// we always draw from scratch
+		needlePane.getChildren().clear();
+		
+		// preparation
+		Point2D center = determineCenter();
+ 		double radius = Math.min(center.getX(), center.getY());
+		double tipRadius = radius * 0.9;
+		double needleRadius = radius * 0.5;
+		
+		// calculate the important points of the needle
+		Point2D arcStartPoint2D = calculatePointOnCircle(center, needleRadius, 0.0 - 15.0);
+		Point2D arcEndPoint2D = calculatePointOnCircle(center, needleRadius, 0.0 + 15.0);
+		Point2D tipPoint2D = calculatePointOnCircle(center, tipRadius, 0.0);
+		
+		// we use a path to draw the needle
+		Path needle = new Path();
+        needle.setFillRule(FillRule.EVEN_ODD);        
+		needle.getStyleClass().add("needle");
+		needle.setStrokeLineJoin(StrokeLineJoin.ROUND);
+		
+        // begin of arc
+        needle.getElements().add( new MoveTo(arcStartPoint2D.getX(), arcStartPoint2D.getY()) );
+        
+        // arc to the end point
+        {
+	        ArcTo arcTo = new ArcTo();
+	        arcTo.setX(arcEndPoint2D.getX());
+	        arcTo.setY(arcEndPoint2D.getY());
+	        arcTo.setRadiusX(needleRadius);
+	        arcTo.setRadiusY(needleRadius);
+	        arcTo.setLargeArcFlag(true);
+	        arcTo.setSweepFlag(false);
+	        needle.getElements().add(arcTo);
+        }
+        
+        // two lines to the tip
+        needle.getElements().add(new LineTo(tipPoint2D.getX(), tipPoint2D.getY()));
+        needle.getElements().add(new LineTo(arcStartPoint2D.getX(), arcStartPoint2D.getY()));
+        
+        // set the line around the needle; this is relative to the size of the gauge, so it is not set in CSS
+        needle.setStrokeWidth(needleRadius * 0.10);
+        
+        // set to rotate around the center of the gauge
+        needleRotate.setPivotX(center.getX());
+        needleRotate.setPivotY(center.getY());
+        needle.getTransforms().setAll(needleRotate); 
+        
+        // add the needle
+        needlePane.getChildren().add(needle);
+        
+        // TBEERNOT: add the text
+	}
+	
 
 	/**
 	 * 
@@ -234,6 +294,7 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
  	 		needleRotate.setAngle(angle);
  		}
  		else {
+ 			timeline.stop();
 	        final KeyValue KEY_VALUE = new KeyValue(needleRotate.angleProperty(), angle, Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
 	        final KeyFrame KEY_FRAME = new KeyFrame(Duration.millis(1000), KEY_VALUE);
 	        timeline.getKeyFrames().setAll(KEY_FRAME);
@@ -241,131 +302,35 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
  		}
 
 	}
-	Timeline timeline = new Timeline();
+	final private Timeline timeline = new Timeline();
 
-	private void drawNeedlePane() {
-		// TBEERNOT: can we optimize the drawing (e.g. when width & height have not changed, skip)
-		// TBEERNOT: handle that not min <= value <= max
-
- 		// we always draw from scratch
-		needlePane.getChildren().clear();
-		
-		// preparation
-		double width = needlePane.getWidth();
- 		double height = needlePane.getHeight();
-		Point2D center = new Point2D(width / 2.0, height * 0.6);
- 		double radius = Math.min(center.getX(), center.getY());
-		double tipRadius = radius * 0.9;
-		double needleRadius = radius * 0.5;
-		
-		// Java's math uses radians
-		// 0 degrees is on the right side of the circle (3 o'clock), the gauge starts in the bottom left (about 7 o'clock), so add 90 + 45 degrees to offset to that. 
-		double startAngleInRadians = Math.toRadians(0.0 - 20.0 + 135.0); 
-		double tipAngleInRadians = Math.toRadians(0.0 + 135.0); 
-		double endAngleInRadians = Math.toRadians(0.0 + 20.0 + 135.0);
-
-		// calculate the two points of the segment
-		Point2D startPoint = calculatePointOnCircle(center, needleRadius, startAngleInRadians);
-		Point2D tipPoint = calculatePointOnCircle(center, tipRadius, tipAngleInRadians);
-		Point2D endPoint = calculatePointOnCircle(center, needleRadius, endAngleInRadians);
-		
-		Path needle = new Path();
-        needle.setFillRule(FillRule.EVEN_ODD);        
-		needle.getStyleClass().add("needle");
-		needle.setStrokeLineJoin(StrokeLineJoin.ROUND);
-		
-        // begin of inner arc
-        needle.getElements().add( new MoveTo(startPoint.getX(), startPoint.getY()) );
-        
-        // inner arc to the end point
-        {
-	        ArcTo arcTo = new ArcTo();
-	        arcTo.setX(endPoint.getX());
-	        arcTo.setY(endPoint.getY());
-	        arcTo.setRadiusX(needleRadius);
-	        arcTo.setRadiusY(needleRadius);
-	        arcTo.setLargeArcFlag(true);
-	        arcTo.setSweepFlag(false);
-	        needle.getElements().add(arcTo);
-        }
-        
-        needle.getElements().add(new LineTo(tipPoint.getX(), tipPoint.getY()));
-        needle.getElements().add(new LineTo(startPoint.getX(), startPoint.getY()));
-        
-        needle.setStrokeWidth(needleRadius * 0.10);
-        
-        needleRotate.setPivotX(center.getX());
-        needleRotate.setPivotY(center.getY());
-        needle.getTransforms().setAll(needleRotate); 
-        
-        needlePane.getChildren().add(needle);
-	}
-	
 	// ==================================================================================================================
 	// SUPPORT
 	
 	/**
-	 * 
-	 * @param center
-	 * @param radius
-	 * @param startAngleInDegrees
-	 * @param endAngleInDegrees
-	 * @param cssClass
-	 * @return
-	 */
-	private Path createSegmentPath(Point2D center, double radius, double startAngleInDegrees, double endAngleInDegrees) {
-		
-		// some additional info
-		double angleInDegrees = endAngleInDegrees - startAngleInDegrees;
-		
-		// Java's math uses radians
-		// 0 degrees is on the right side of the circle (3 o'clock), the gauge starts in the bottom left (about 7 o'clock), so add 90 + 45 degrees to offset to that. 
-		double startAngleInRadians = Math.toRadians(startAngleInDegrees + 135.0); 
-		double endAngleInRadians = Math.toRadians(endAngleInDegrees + 135.0);
-
-		// calculate the four points of the segment
-		Point2D arcStartPoint2D = calculatePointOnCircle(center, radius, startAngleInRadians);
-		Point2D arcEndPoint2D = calculatePointOnCircle(center, radius, endAngleInRadians);
-		
-		// create a path to draw the segment with
-        Path path = new Path();
-        path.setFillRule(FillRule.EVEN_ODD);
-        
-        // begin of outer arc
-        path.getElements().add( new MoveTo(arcStartPoint2D.getX(), arcStartPoint2D.getY()) );
-      
-        // arc to end of outer arc
-        {
-	        ArcTo arcTo = new ArcTo();
-	        arcTo.setX(arcEndPoint2D.getX());
-	        arcTo.setY(arcEndPoint2D.getY());
-	        arcTo.setRadiusX(radius);
-	        arcTo.setRadiusY(radius);
-	        arcTo.setLargeArcFlag(angleInDegrees > 180.0);
-	        arcTo.setSweepFlag(true);
-	        path.getElements().add(arcTo);
-        }
-
-        // leg from end of arc to center
-        path.getElements().add( new LineTo(center.getX(), center.getY()) );
-      
-        // leg from center to start of arc
-        path.getElements().add( new LineTo(arcStartPoint2D.getX(), arcStartPoint2D.getY()) );
-      
-        // done
-        return path;
-    }
-    
-	/**
 	 * http://www.mathopenref.com/coordparamcircle.html
 	 * @param center
 	 * @param radius
-	 * @param angle
+	 * @param angleInDegrees
 	 * @return
 	 */
-	static private Point2D calculatePointOnCircle(Point2D center, double radius, double angle) {
-		double x = center.getX() + (radius * Math.cos(angle));
-		double y = center.getY() + (radius * Math.sin(angle));
+	static private Point2D calculatePointOnCircle(Point2D center, double radius, double angleInDegrees) {
+		// Java's math uses radians
+		// 0 degrees is on the right side of the circle (3 o'clock), the gauge starts in the bottom left (about 7 o'clock), so add 90 + 45 degrees to offset to that. 
+		double angleInRadians = Math.toRadians(angleInDegrees + 135.0);
+		
+		// calculate point on circle
+		double x = center.getX() + (radius * Math.cos(angleInRadians));
+		double y = center.getY() + (radius * Math.sin(angleInRadians));
 		return new Point2D(x, y);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private Point2D determineCenter() {
+		Point2D center = new Point2D(dialPane.getWidth() / 2.0, dialPane.getHeight() * 0.6);
+		return center;
 	}
 }
