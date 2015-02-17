@@ -17,7 +17,9 @@ import jfxtras.scene.control.ListSpinner;
  * - If no segments are specified a single segment will be drawn.
  * - If segments are specified, the user is responsible for not leaving any gaps.
  * 
- * Based on Gerrit Grunwald's Enzo SimpleGauge (https://bitbucket.org/hansolo/enzo/src)
+ * TBEERNOT: styleable properties
+ * 
+ * This is a blatant but approved copy of Gerrit Grunwald's Enzo SimpleGauge (https://bitbucket.org/hansolo/enzo/src)
  */
 public class SimpleMetroArcGauge extends AbstractLinearGauge<SimpleMetroArcGauge> {
 	

@@ -87,15 +87,10 @@ public class SimpleMetroArcGaugeTrial1 extends Application {
 			gauges.add(lSimpleMetroArcGauge);
 		}
         
-        // 10 segments, not animated
+        // not animated
 		{
 			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
 			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000; -fxx-animated:NO;");
-			lSimpleMetroArcGauge.getStyleClass().add("colorscheme-green-to-red-10");
-			for (int i = 0; i < 10; i++) {
-				Segment lSegment = new PercentSegment(lSimpleMetroArcGauge, i * 10.0, (i+1) * 10.0);
-				lSimpleMetroArcGauge.segments().add(lSegment);
-			}
 			lFlowPane.getChildren().add(lSimpleMetroArcGauge);
 			gauges.add(lSimpleMetroArcGauge);
 		}
@@ -110,12 +105,23 @@ public class SimpleMetroArcGaugeTrial1 extends Application {
 			gauges.add(lSimpleMetroArcGauge);
 		}
         
-        // large range
+        // large range with format
 		{
 			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
 			lSimpleMetroArcGauge.setMinValue(-10.0);
 			lSimpleMetroArcGauge.setMaxValue(1000.0);
 			lSimpleMetroArcGauge.setValue(100.0);
+			lSimpleMetroArcGauge.setStyle("-fx-border-color:#000000; -fxx-value-format:' ##0.0W';");
+			lFlowPane.getChildren().add(lSimpleMetroArcGauge);
+			gauges.add(lSimpleMetroArcGauge);
+		}
+        
+        // negative large range
+		{
+			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
+			lSimpleMetroArcGauge.setMinValue(-1000000.0);
+			lSimpleMetroArcGauge.setMaxValue(100.0);
+			lSimpleMetroArcGauge.setValue(-1000.0);
 			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000;");
 			lFlowPane.getChildren().add(lSimpleMetroArcGauge);
 			gauges.add(lSimpleMetroArcGauge);
