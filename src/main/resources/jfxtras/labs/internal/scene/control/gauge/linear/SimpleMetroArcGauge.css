@@ -20,6 +20,13 @@
     -fx-stroke-line-join: bevel;
 }
 
+.value {
+    -fx-fill: white;
+    -fx-font-size: 48px;
+    -fx-font-weight: bold;
+    /* -fx-font, -fx-font-family, -fx-font-size, , -fx-font-style */
+}
+
 .segment {
 }
 

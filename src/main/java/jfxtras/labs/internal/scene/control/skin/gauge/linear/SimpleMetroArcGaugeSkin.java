@@ -25,7 +25,9 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.StrokeLineJoin;
+import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Scale;
 import javafx.util.Duration;
 import jfxtras.css.CssMetaDataForSkinProperty;
 import jfxtras.labs.scene.control.gauge.linear.CompleteSegment;
@@ -39,6 +41,8 @@ import com.sun.javafx.css.converters.EnumConverter;
  */
 public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 
+	private static final double NEEDLE_ARC_RADIUS_FACTOR = 0.5;
+	private static final double TIP_RADIUS_FACTOR = 0.9;
 	static final private double FULL_ARC_IN_DEGREES = 270.0;
 
 	// ==================================================================================================================
@@ -144,8 +148,14 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		needleRotate = new Rotate(-10.0);
 		getSkinnable().valueProperty().addListener( (observable) -> {
 			rotateNeedle(true);
+			setValueText();
+			positionValueText();
 		});
 		rotateNeedle(false);
+		setValueText();
+		positionValueText();
+		valueText.getStyleClass().add("value");
+		valueText.getTransforms().setAll(valueScale);
 		
 		// we use a stack pane to control the layers
 		StackPane lStackPane = new StackPane();
@@ -159,6 +169,8 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	private Pane dialPane;
 	private Pane needlePane;
 	private Rotate needleRotate;
+	private Text valueText = new Text("...");
+	private Scale valueScale = new Scale(1.0, 1.0);
 
 	/**
 	 * 
@@ -228,12 +240,12 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		// preparation
 		Point2D center = determineCenter();
  		double radius = Math.min(center.getX(), center.getY());
-		double tipRadius = radius * 0.9;
-		double needleRadius = radius * 0.5;
+		double tipRadius = radius * TIP_RADIUS_FACTOR;
+		double arcRadius = radius * NEEDLE_ARC_RADIUS_FACTOR;
 		
 		// calculate the important points of the needle
-		Point2D arcStartPoint2D = calculatePointOnCircle(center, needleRadius, 0.0 - 15.0);
-		Point2D arcEndPoint2D = calculatePointOnCircle(center, needleRadius, 0.0 + 15.0);
+		Point2D arcStartPoint2D = calculatePointOnCircle(center, arcRadius, 0.0 - 15.0);
+		Point2D arcEndPoint2D = calculatePointOnCircle(center, arcRadius, 0.0 + 15.0);
 		Point2D tipPoint2D = calculatePointOnCircle(center, tipRadius, 0.0);
 		
 		// we use a path to draw the needle
@@ -250,8 +262,8 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	        ArcTo arcTo = new ArcTo();
 	        arcTo.setX(arcEndPoint2D.getX());
 	        arcTo.setY(arcEndPoint2D.getY());
-	        arcTo.setRadiusX(needleRadius);
-	        arcTo.setRadiusY(needleRadius);
+	        arcTo.setRadiusX(arcRadius);
+	        arcTo.setRadiusY(arcRadius);
 	        arcTo.setLargeArcFlag(true);
 	        arcTo.setSweepFlag(false);
 	        needle.getElements().add(arcTo);
@@ -262,7 +274,7 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
         needle.getElements().add(new LineTo(arcStartPoint2D.getX(), arcStartPoint2D.getY()));
         
         // set the line around the needle; this is relative to the size of the gauge, so it is not set in CSS
-        needle.setStrokeWidth(needleRadius * 0.10);
+        needle.setStrokeWidth(arcRadius * 0.10);
         
         // set to rotate around the center of the gauge
         needleRotate.setPivotX(center.getX());
@@ -272,7 +284,8 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
         // add the needle
         needlePane.getChildren().add(needle);
         
-        // TBEERNOT: add the text
+        // add the text
+        needlePane.getChildren().add(valueText);
 	}
 	
 
@@ -304,6 +317,56 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	}
 	final private Timeline timeline = new Timeline();
 
+	/**
+	 * 
+	 */
+	private void setValueText() {
+		valueText.setText("" + (int)getSkinnable().getValue());
+	}
+	
+	/**
+	 * 
+	 */
+	private void positionValueText() {
+		
+		// TBEERNOT: CSS property for formatter
+		minValueText.setText("" + (int)getSkinnable().getMinValue());
+		maxValueText.setText("" + (int)getSkinnable().getMaxValue());
+
+		// preparation
+		Point2D center = determineCenter();
+ 		double radius = Math.min(center.getX(), center.getY());
+		double arcRadius = radius * NEEDLE_ARC_RADIUS_FACTOR;
+
+		double minScale = 1.0;
+		{
+			double width = minValueText.getBoundsInParent().getWidth();
+			double height = minValueText.getBoundsInParent().getHeight();
+			minScale = (arcRadius * 0.6) / Math.sqrt((width*width) + (height*height));
+			System.out.println("max = " + minScale);
+		}
+		double maxScale = 1.0;
+		{
+			double width = maxValueText.getBoundsInParent().getWidth();
+			double height = maxValueText.getBoundsInParent().getHeight();
+			maxScale = (arcRadius * 0.6) / Math.sqrt((width*width) + (height*height));
+			System.out.println("max = " + maxScale);
+		}
+		double scale = Math.min(minScale, maxScale);
+		
+		// calculate the scaling to keep it inside the needle
+		valueScale.setX(scale);
+		valueScale.setY(scale);
+		
+		// position in center of needle
+		double width = valueText.getBoundsInParent().getWidth();
+		double height = valueText.getBoundsInParent().getHeight();
+		valueText.setLayoutX(center.getX() - (width  / 2.0)); 
+		valueText.setLayoutY(center.getY() + (height  / 4.0));
+	}
+	final private Text minValueText = new Text("...");
+	final private Text maxValueText = new Text("...");
+	
 	// ==================================================================================================================
 	// SUPPORT
 	

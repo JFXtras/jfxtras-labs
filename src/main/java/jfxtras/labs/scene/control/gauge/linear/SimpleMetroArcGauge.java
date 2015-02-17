@@ -19,7 +19,7 @@ import jfxtras.scene.control.ListSpinner;
  * 
  * Based on Gerrit Grunwald's Enzo SimpleGauge (https://bitbucket.org/hansolo/enzo/src)
  */
-public class SimpleMetroArcGauge extends AbstractLinearGauge {
+public class SimpleMetroArcGauge extends AbstractLinearGauge<SimpleMetroArcGauge> {
 	
 	/**
 	 * Return the path to the CSS file so things are setup right

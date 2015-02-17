@@ -59,6 +59,13 @@ public class SimpleMetroArcGaugeTrial1 extends Application {
 		
 		FlowPane lFlowPane = new FlowPane(10, 10);
 		
+        // without segments static value
+		{
+			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge().withValue(50.0);
+			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000;");
+			lFlowPane.getChildren().add(lSimpleMetroArcGauge);
+		}
+        
         // without segments
 		{
 			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
@@ -103,6 +110,17 @@ public class SimpleMetroArcGaugeTrial1 extends Application {
 			gauges.add(lSimpleMetroArcGauge);
 		}
         
+        // large range
+		{
+			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
+			lSimpleMetroArcGauge.setMinValue(-10.0);
+			lSimpleMetroArcGauge.setMaxValue(1000.0);
+			lSimpleMetroArcGauge.setValue(100.0);
+			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000;");
+			lFlowPane.getChildren().add(lSimpleMetroArcGauge);
+			gauges.add(lSimpleMetroArcGauge);
+		}
+        
         // create scene
         Scene scene = new Scene(lFlowPane, 900, 900);
 
@@ -117,9 +135,11 @@ public class SimpleMetroArcGaugeTrial1 extends Application {
 			while (true) {
 				TestUtil.sleep(2000);
 				Platform.runLater( () -> {
-					double d = lRandom.nextDouble() * 100.0;
+					double d = lRandom.nextDouble();
 					for (SimpleMetroArcGauge g : gauges) {
-						g.setValue(d);
+				 		double minValue = g.getMinValue();
+				 		double maxValue = g.getMaxValue();
+						g.setValue(minValue + (d * (maxValue - minValue)));
 					}
 				});
 				
