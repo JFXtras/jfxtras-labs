@@ -150,26 +150,14 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	 */
 	private void createNodes()
 	{
-		// dial
-		dialPane = new DialPane();
-		
 		// use a stack pane to control the layers
-		StackPane lStackPane = new StackPane();
-		lStackPane.getChildren().add(dialPane);
-		lStackPane.getChildren().add(needlePane);
+		StackPane lStackPane = new StackPane(dialPane, needlePane);
 		getChildren().add(lStackPane);
-
-		// react to changes in the segments
-		getSkinnable().segments().addListener( (ListChangeListener.Change<? extends Segment> change) -> {
-			lStackPane.getChildren().remove(dialPane);
-			dialPane = new DialPane();
-			lStackPane.getChildren().add(0, dialPane);
-		});
 
 		// style
 		getSkinnable().getStyleClass().add(getClass().getSimpleName()); // always add self as style class, because with multiple skins CSS should relate to the skin not the control		
 	}
-	private DialPane dialPane;
+	final private DialPane dialPane = new DialPane();
 	final private NeedlePane needlePane = new NeedlePane();
 
 	// ==================================================================================================================
@@ -177,14 +165,29 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	
 	class DialPane extends Region {
 
-		final private List<Segment> segments = new ArrayList<Segment>(getSkinnable().segments());
+		final private List<Segment> segments = new ArrayList<Segment>();
 		
 		/**
 		 * 
 		 */
 		private DialPane() {
 
+			// react to changes in the segments
+			getSkinnable().segments().addListener( (ListChangeListener.Change<? extends Segment> change) -> {
+				getChildren().clear();
+				createSegments();
+			});
+			createSegments();
+		}
+		
+		/**
+		 * 
+		 */
+		private void createSegments() {
+
 	 		// determine what segments to draw
+			segments.clear();
+			segments.addAll(getSkinnable().segments());
 	 		if (segments.size() == 0) {
 	 			segments.add(new CompleteSegment(getSkinnable()));
 	 		}
@@ -218,7 +221,7 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	 		double controlMaxValue = getSkinnable().getMaxValue();
 	 		double controlValueRange = controlMaxValue - controlMinValue;
 	 		
-	 		// draw the segments
+	 		// layout the segments
 			Point2D center = determineCenter();
 	 		double radius = Math.min(center.getX(), center.getY()) * FULL_ARC_RADIUS_FACTOR;
 	 		int cnt = 0;
@@ -250,6 +253,7 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	
 	class NeedlePane extends Region {
 		
+		final private Path needlePath = new Path();
 		final private Rotate needleRotate = new Rotate(0.0);
 		final private Text valueText = new Text("");
 		final private Scale valueScale = new Scale(1.0, 1.0);
@@ -261,7 +265,7 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		private NeedlePane() {
 	        
 	        // add the needle
-	        getChildren().add(needle);
+	        getChildren().add(needlePath);
 			rotateNeedle(false);
 	        
 	        // value text
@@ -270,24 +274,23 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 			valueText.getTransforms().setAll(valueScale);
 			minmaxValueText.getStyleClass().add("value");
 			getSkinnable().valueProperty().addListener( (observable) -> {
-				needlePane.rotateNeedle(true);
-				needlePane.setValueText();
-				needlePane.positionValueText();
+				rotateNeedle(true);
+				setValueText();
+				positionValueText();
 			});
 			
 	        // min and max value text need to be added to the scene in order to have the CSS applied
 	        getChildren().add(minmaxValueText);
 	        minmaxValueText.setVisible(false);
 			getSkinnable().minValueProperty().addListener( (observable) -> {
-				needlePane.scaleValueText();
-				needlePane.positionValueText();
+				scaleValueText();
+				positionValueText();
 			});
 			getSkinnable().maxValueProperty().addListener( (observable) -> {
-				needlePane.scaleValueText();
-				needlePane.positionValueText();
+				scaleValueText();
+				positionValueText();
 			});
 		}
-		final private Path needle = new Path();
 		
 		/**
 		 * 
@@ -309,13 +312,13 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 			Point2D tipPoint2D = calculatePointOnCircle(center, tipRadius, 0.0);
 			
 			// we use a path to draw the needle
-			needle.getElements().clear();
-	        needle.setFillRule(FillRule.EVEN_ODD);        
-			needle.getStyleClass().add("needle");
-			needle.setStrokeLineJoin(StrokeLineJoin.ROUND);
+			needlePath.getElements().clear();
+	        needlePath.setFillRule(FillRule.EVEN_ODD);        
+			needlePath.getStyleClass().add("needle");
+			needlePath.setStrokeLineJoin(StrokeLineJoin.ROUND);
 			
 	        // begin of arc
-	        needle.getElements().add( new MoveTo(arcStartPoint2D.getX(), arcStartPoint2D.getY()) );
+	        needlePath.getElements().add( new MoveTo(arcStartPoint2D.getX(), arcStartPoint2D.getY()) );
 	        
 	        // arc to the end point
 	        {
@@ -326,20 +329,20 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		        arcTo.setRadiusY(arcRadius);
 		        arcTo.setLargeArcFlag(true);
 		        arcTo.setSweepFlag(false);
-		        needle.getElements().add(arcTo);
+		        needlePath.getElements().add(arcTo);
 	        }
 	        
 	        // two lines to the tip
-	        needle.getElements().add(new LineTo(tipPoint2D.getX(), tipPoint2D.getY()));
-	        needle.getElements().add(new LineTo(arcStartPoint2D.getX(), arcStartPoint2D.getY()));
+	        needlePath.getElements().add(new LineTo(tipPoint2D.getX(), tipPoint2D.getY()));
+	        needlePath.getElements().add(new LineTo(arcStartPoint2D.getX(), arcStartPoint2D.getY()));
 	        
 	        // set the line around the needle; this is relative to the size of the gauge, so it is not set in CSS
-	        needle.setStrokeWidth(arcRadius * 0.10);
+	        needlePath.setStrokeWidth(arcRadius * 0.10);
 	        
 	        // set to rotate around the center of the gauge
 	        needleRotate.setPivotX(center.getX());
 	        needleRotate.setPivotY(center.getY());
-	        needle.getTransforms().setAll(needleRotate);
+	        needlePath.getTransforms().setAll(needleRotate);
 	        
 			setValueText();
 			scaleValueText();
@@ -405,6 +408,23 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		}
 		
 		/**
+		 * Determine how much to scale the Text node containing the value to fill up the needle's circle
+		 * @param radius The radius of the needle
+		 * @param value The value to be rendered
+		 * @return
+		 */
+		private double calculateScaleFactor(double radius, double value) {
+			minmaxValueText.setText(valueFormat(value));
+			double width = minmaxValueText.getBoundsInParent().getWidth();
+			double height = minmaxValueText.getBoundsInParent().getHeight();
+			double diameter = radius * 2.0;
+			// Width and height construct a right angled triangle, where the hypotenuse should be equal to the diameter of the needle's circle.
+			// So apply some Pythagoras...
+			double scaleFactor = diameter / Math.sqrt((width*width) + (height*height));
+			return scaleFactor;
+		}
+		
+		/**
 		 * After having set the value in the Text and determining the scaling, position the Text node in the center of the needle.
 		 */
 		private void positionValueText() {
@@ -445,22 +465,5 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	private Point2D determineCenter() {
 		Point2D center = new Point2D(dialPane.getWidth() / 2.0, dialPane.getHeight() * 0.55);
 		return center;
-	}
-	
-	/**
-	 * Determine how much to scale the Text node containing the value to fill up the needle's circle
-	 * @param radius The radius of the needle
-	 * @param value The value to be rendered
-	 * @return
-	 */
-	private double calculateScaleFactor(double radius, double value) {
-		needlePane.minmaxValueText.setText(valueFormat(value));
-		double width = needlePane.minmaxValueText.getBoundsInParent().getWidth();
-		double height = needlePane.minmaxValueText.getBoundsInParent().getHeight();
-		double diameter = radius * 2.0;
-		// Width and height construct a right angled triangle, where the hypotenuse should be equal to the diameter of the needle's circle.
-		// So apply some Pythagoras...
-		double scaleFactor = diameter / Math.sqrt((width*width) + (height*height));
-		return scaleFactor;
 	}
 }
