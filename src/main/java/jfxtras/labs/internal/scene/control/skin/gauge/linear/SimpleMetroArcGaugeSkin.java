@@ -9,7 +9,9 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.ListChangeListener;
 import javafx.css.CssMetaData;
 import javafx.css.SimpleStyleableObjectProperty;
 import javafx.css.SimpleStyleableStringProperty;
@@ -150,13 +152,19 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	{
 		// dial
 		dialPane = new DialPane();
-		// TBEERNOT: react to changes in the segments
 		
 		// use a stack pane to control the layers
 		StackPane lStackPane = new StackPane();
 		lStackPane.getChildren().add(dialPane);
 		lStackPane.getChildren().add(needlePane);
 		getChildren().add(lStackPane);
+
+		// react to changes in the segments
+		getSkinnable().segments().addListener( (ListChangeListener.Change<? extends Segment> change) -> {
+			lStackPane.getChildren().remove(dialPane);
+			dialPane = new DialPane();
+			lStackPane.getChildren().add(0, dialPane);
+		});
 
 		// style
 		getSkinnable().getStyleClass().add(getClass().getSimpleName()); // always add self as style class, because with multiple skins CSS should relate to the skin not the control		

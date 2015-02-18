@@ -36,7 +36,9 @@ import java.util.Random;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.control.gauge.linear.PercentSegment;
 import jfxtras.labs.scene.control.gauge.linear.Segment;
@@ -134,6 +136,32 @@ public class SimpleMetroArcGaugeTrial1 extends Application {
 			lSimpleMetroArcGauge.setValue(-1000.0);
 			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000;");
 			lFlowPane.getChildren().add(lSimpleMetroArcGauge);
+			gauges.add(lSimpleMetroArcGauge);
+		}
+        
+        // 10 segments, with remove
+		{
+			HBox lHBox = new HBox();
+			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
+			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000;");
+			lSimpleMetroArcGauge.getStyleClass().add("colorscheme-green-to-red-10");
+			for (int i = 0; i < 10; i++) {
+				Segment lSegment = new PercentSegment(lSimpleMetroArcGauge, i * 10.0, (i+1) * 10.0);
+				lSimpleMetroArcGauge.segments().add(lSegment);
+			}
+			lHBox.getChildren().add(lSimpleMetroArcGauge);
+			
+			Button lButton = new Button("X");
+			lButton.setOnAction( (event) -> {
+				if (lSimpleMetroArcGauge.segments().size() > 0) {
+					lSimpleMetroArcGauge.segments().remove(0);
+					System.out.println("removed segment, remaining " + lSimpleMetroArcGauge.segments().size());
+				}
+			});
+			lHBox.getChildren().add(lButton);
+
+			lFlowPane.getChildren().add(lHBox);
+			
 			gauges.add(lSimpleMetroArcGauge);
 		}
         

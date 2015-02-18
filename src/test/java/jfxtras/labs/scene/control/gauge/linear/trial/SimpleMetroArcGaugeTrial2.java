@@ -63,7 +63,6 @@ public class SimpleMetroArcGaugeTrial2 extends Application {
         // 10 segments
 		{
 			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
-			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000;");
 			lSimpleMetroArcGauge.getStyleClass().add("colorscheme-green-to-red-10");
 			for (int i = 0; i < 10; i++) {
 				Segment lSegment = new PercentSegment(lSimpleMetroArcGauge, i * 10.0, (i+1) * 10.0);
