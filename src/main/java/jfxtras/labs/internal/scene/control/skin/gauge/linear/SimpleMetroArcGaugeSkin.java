@@ -18,6 +18,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcTo;
@@ -44,6 +45,7 @@ import com.sun.javafx.css.converters.StringConverter;
  */
 public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 
+	private static final double FULL_ARC_RADIUS_FACTOR = 0.95;
 	private static final double NEEDLE_ARC_RADIUS_FACTOR = 0.5;
 	private static final double TIP_RADIUS_FACTOR = 0.9;
 	static final private double FULL_ARC_IN_DEGREES = 270.0;
@@ -147,47 +149,10 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	private void createNodes()
 	{
 		// dial
-		dialPane = new Pane();
-		dialPane.widthProperty().addListener( (observable) -> {
-			drawDialPane();
-		});
-		dialPane.heightProperty().addListener( (observable) -> {
-			drawDialPane();
-		});
+		dialPane = new DialPane();
+		// TBEERNOT: react to changes in the segments
 		
-		// needle
-		needlePane = new Pane();
-		needlePane.widthProperty().addListener( (observable) -> {
-			drawNeedlePane();
-		});
-		needlePane.heightProperty().addListener( (observable) -> {
-			drawNeedlePane();
-		});
-		needleRotate = new Rotate(0.0);
-		rotateNeedle(false);
-		
-		// value
-		valueText = new Text("");
-		valueScale = new Scale(1.0, 1.0);
-		valueText.getStyleClass().add("value");
-		valueText.getTransforms().setAll(valueScale);
-		minmaxValueText = new Text("");
-		minmaxValueText.getStyleClass().add("value");
-		getSkinnable().valueProperty().addListener( (observable) -> {
-			rotateNeedle(true);
-			setValueText();
-			positionValueText();
-		});
-		getSkinnable().minValueProperty().addListener( (observable) -> {
-			scaleValueText();
-			positionValueText();
-		});
-		getSkinnable().maxValueProperty().addListener( (observable) -> {
-			scaleValueText();
-			positionValueText();
-		});
-		
-		// we use a stack pane to control the layers
+		// use a stack pane to control the layers
 		StackPane lStackPane = new StackPane();
 		lStackPane.getChildren().add(dialPane);
 		lStackPane.getChildren().add(needlePane);
@@ -196,231 +161,252 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		// style
 		getSkinnable().getStyleClass().add(getClass().getSimpleName()); // always add self as style class, because with multiple skins CSS should relate to the skin not the control		
 	}
-	private Pane dialPane;
-	private Pane needlePane;
-	private Rotate needleRotate;
-	private Text valueText;
-	private Scale valueScale;
-	private Text minmaxValueText;
+	private DialPane dialPane;
+	final private NeedlePane needlePane = new NeedlePane();
 
-	/**
-	 * There is no way to detect if some node's CSS has been applied.
-	 * So we cannot determine if valueText may have changed and needs repositioning.
-	 * As a brute force approach it is repositioned in every layout pass.
-	 */
-	@Override
-	protected void layoutChildren(double arg0, double arg1, double arg2, double arg3) {
-		super.layoutChildren(arg0, arg1, arg2, arg3);
-		setValueText();
-		scaleValueText();
-		positionValueText(); 
-	}
+	// ==================================================================================================================
+	// DIAL
+	
+	class DialPane extends Region {
 
-	/**
-	 * 
-	 */
-	private void drawDialPane() {
-		// TBEERNOT: can we optimize the drawing (e.g. when width & height have not changed, skip)
-		// TBEERNOT: handle that not min <= value <= max
-
-		// we always draw from scratch
-		dialPane.getChildren().clear();
+		final private List<Segment> segments = new ArrayList<Segment>(getSkinnable().segments());
 		
-		// preparation
- 		double controlMinValue = getSkinnable().getMinValue();
- 		double controlMaxValue = getSkinnable().getMaxValue();
- 		double controlValueRange = controlMaxValue - controlMinValue;
- 		
- 		// determine what segments to draw
- 		List<Segment> segments = new ArrayList<Segment>(getSkinnable().segments());
- 		if (segments.size() == 0) {
- 			segments.add(completeSegment);
- 		}
- 		
- 		// draw the segments
-		Point2D center = determineCenter();
- 		double radius = Math.min(center.getX(), center.getY());
- 		int cnt = 0;
- 		for (Segment segment : segments) {
- 			
- 			// create an arc for this segment
- 	 		double segmentMinValue = segment.getMinValue();
- 	 		double segmentMaxValue = segment.getMaxValue();
- 			double startAngle = (segmentMinValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
- 			double endAngle = (segmentMaxValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
- 			Arc arc = new Arc();
- 			arc.setCenterX(center.getX());
- 			arc.setCenterY(center.getY());
- 			arc.setRadiusX(radius);
- 			arc.setRadiusY(radius);
- 			// 0 degrees is on the right side of the circle (3 o'clock), the gauge starts in the bottom left (about 7 o'clock), so add 90 + 45 degrees to offset to that.
- 			// The arc draws counter clockwise, so we need to negate to make it clock wise.
- 			arc.setStartAngle(-1 * (startAngle + 135.0));
- 			arc.setLength(-1 * (endAngle - startAngle));
- 			arc.setType(ArcType.ROUND);
-			dialPane.getChildren().add(arc);
+		/**
+		 * 
+		 */
+		private DialPane() {
+
+	 		// determine what segments to draw
+	 		if (segments.size() == 0) {
+	 			segments.add(new CompleteSegment(getSkinnable()));
+	 		}
+	 		
+	 		// create the segments
+	 		int cnt = 0;
+	 		for (Segment segment : segments) {
+	 			
+	 			// create an arc for this segment
+	 			Arc arc = new Arc();
+				getChildren().add(arc);
+				
+				// setup CSS on the path
+		        arc.getStyleClass().addAll("segment", "segment" + cnt);
+		        if (segment.getId() != null) {
+		        	arc.setId(segment.getId());
+		        }
+	 			cnt++;
+	 		}
+		}
+		
+		/**
+		 * 
+		 */
+		@Override
+		protected void layoutChildren() {
+			super.layoutChildren();
 			
-			// setup CSS on the path
-	        arc.getStyleClass().addAll("segment", "segment" + cnt);
-	        if (segment.getId() != null) {
-	        	arc.setId(segment.getId());
+			// preparation
+	 		double controlMinValue = getSkinnable().getMinValue();
+	 		double controlMaxValue = getSkinnable().getMaxValue();
+	 		double controlValueRange = controlMaxValue - controlMinValue;
+	 		
+	 		// draw the segments
+			Point2D center = determineCenter();
+	 		double radius = Math.min(center.getX(), center.getY()) * FULL_ARC_RADIUS_FACTOR;
+	 		int cnt = 0;
+	 		for (Segment segment : segments) {
+	 			
+	 			// layout the arc for this segment
+	 	 		double segmentMinValue = segment.getMinValue();
+	 	 		double segmentMaxValue = segment.getMaxValue();
+	 			double startAngle = (segmentMinValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
+	 			double endAngle = (segmentMaxValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
+	 			Arc arc = (Arc)getChildren().get(cnt);
+	 			arc.setCenterX(center.getX());
+	 			arc.setCenterY(center.getY());
+	 			arc.setRadiusX(radius);
+	 			arc.setRadiusY(radius);
+	 			// 0 degrees is on the right side of the circle (3 o'clock), the gauge starts in the bottom left (about 7 o'clock), so add 90 + 45 degrees to offset to that.
+	 			// The arc draws counter clockwise, so we need to negate to make it clock wise.
+	 			arc.setStartAngle(-1 * (startAngle + 135.0));
+	 			arc.setLength(-1 * (endAngle - startAngle));
+	 			arc.setType(ArcType.ROUND);
+		        
+	 			cnt++;
+	 		}
+		}
+	}
+	
+	// ==================================================================================================================
+	// NEEDLE
+	
+	class NeedlePane extends Region {
+		
+		final private Rotate needleRotate = new Rotate(0.0);
+		final private Text valueText = new Text("");
+		final private Scale valueScale = new Scale(1.0, 1.0);
+		final private Text minmaxValueText = new Text("");
+
+		/**
+		 * 
+		 */
+		private NeedlePane() {
+	        
+	        // add the needle
+	        getChildren().add(needle);
+			rotateNeedle(false);
+	        
+	        // value text
+	        getChildren().add(valueText);
+			valueText.getStyleClass().add("value");
+			valueText.getTransforms().setAll(valueScale);
+			minmaxValueText.getStyleClass().add("value");
+			getSkinnable().valueProperty().addListener( (observable) -> {
+				needlePane.rotateNeedle(true);
+				needlePane.setValueText();
+				needlePane.positionValueText();
+			});
+			
+	        // min and max value text need to be added to the scene in order to have the CSS applied
+	        getChildren().add(minmaxValueText);
+	        minmaxValueText.setVisible(false);
+			getSkinnable().minValueProperty().addListener( (observable) -> {
+				needlePane.scaleValueText();
+				needlePane.positionValueText();
+			});
+			getSkinnable().maxValueProperty().addListener( (observable) -> {
+				needlePane.scaleValueText();
+				needlePane.positionValueText();
+			});
+		}
+		final private Path needle = new Path();
+		
+		/**
+		 * 
+		 */
+		@Override
+		protected void layoutChildren() {
+			super.layoutChildren();
+			// TBEERNOT: can we optimize the drawing (e.g. when width & height have not changed, skip)
+			// TBEERNOT: handle that not min <= value <= max
+			// preparation
+			Point2D center = determineCenter();
+	 		double radius = Math.min(center.getX(), center.getY());
+			double tipRadius = radius * TIP_RADIUS_FACTOR;
+			double arcRadius = radius * NEEDLE_ARC_RADIUS_FACTOR;
+			
+			// calculate the important points of the needle
+			Point2D arcStartPoint2D = calculatePointOnCircle(center, arcRadius, 0.0 - 15.0);
+			Point2D arcEndPoint2D = calculatePointOnCircle(center, arcRadius, 0.0 + 15.0);
+			Point2D tipPoint2D = calculatePointOnCircle(center, tipRadius, 0.0);
+			
+			// we use a path to draw the needle
+			needle.getElements().clear();
+	        needle.setFillRule(FillRule.EVEN_ODD);        
+			needle.getStyleClass().add("needle");
+			needle.setStrokeLineJoin(StrokeLineJoin.ROUND);
+			
+	        // begin of arc
+	        needle.getElements().add( new MoveTo(arcStartPoint2D.getX(), arcStartPoint2D.getY()) );
+	        
+	        // arc to the end point
+	        {
+		        ArcTo arcTo = new ArcTo();
+		        arcTo.setX(arcEndPoint2D.getX());
+		        arcTo.setY(arcEndPoint2D.getY());
+		        arcTo.setRadiusX(arcRadius);
+		        arcTo.setRadiusY(arcRadius);
+		        arcTo.setLargeArcFlag(true);
+		        arcTo.setSweepFlag(false);
+		        needle.getElements().add(arcTo);
 	        }
 	        
- 			cnt++;
- 		}
-	}
-	final private CompleteSegment completeSegment = new CompleteSegment(getSkinnable());
+	        // two lines to the tip
+	        needle.getElements().add(new LineTo(tipPoint2D.getX(), tipPoint2D.getY()));
+	        needle.getElements().add(new LineTo(arcStartPoint2D.getX(), arcStartPoint2D.getY()));
+	        
+	        // set the line around the needle; this is relative to the size of the gauge, so it is not set in CSS
+	        needle.setStrokeWidth(arcRadius * 0.10);
+	        
+	        // set to rotate around the center of the gauge
+	        needleRotate.setPivotX(center.getX());
+	        needleRotate.setPivotY(center.getY());
+	        needle.getTransforms().setAll(needleRotate);
+	        
+			setValueText();
+			scaleValueText();
+			positionValueText(); 
+		}
 
-	/**
-	 * 
-	 */
-	private void drawNeedlePane() {
-		// TBEERNOT: can we optimize the drawing (e.g. when width & height have not changed, skip)
-		// TBEERNOT: handle that not min <= value <= max
+		/**
+		 * @param allowAnimation AllowAnimation is needed only in the first pass during skin construction: the Animated property has not been set at that time, so we do not need if animation is wanted. So the initial rotation is always done unanimated.  
+		 */
+		private void rotateNeedle(boolean allowAnimation) {
+			
+			// preparation
+	 		double controlMinValue = getSkinnable().getMinValue();
+	 		double controlMaxValue = getSkinnable().getMaxValue();
+	 		double controlValueRange = controlMaxValue - controlMinValue;
+	 		double value = getSkinnable().getValue();
+	 		double angle = (value - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES;
+	 		
+	 		// We cannot use node.setRotate(angle), because this rotates always around the center of the node and the needle's rotation center is not the same as the node's center.
+	 		// So we need to use the Rotate transformation, which allows to specify the center of rotation.
+	 		// This however also means that we cannot use RotateTransition, because that manipulates the rotate property of a node (and -as explain above- we couldn't use that).
+	 		// The only way to animate a Rotate transformation is to use a timeline and keyframes.
+	 		if (allowAnimation == false || Animated.NO.equals(getAnimated())) {
+	 	 		needleRotate.setAngle(angle);
+	 		}
+	 		else {
+	 			timeline.stop();
+		        final KeyValue KEY_VALUE = new KeyValue(needleRotate.angleProperty(), angle, Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
+		        final KeyFrame KEY_FRAME = new KeyFrame(Duration.millis(1000), KEY_VALUE);
+		        timeline.getKeyFrames().setAll(KEY_FRAME);
+		        timeline.play();
+	 		}
 
- 		// we always draw from scratch
-		needlePane.getChildren().clear();
+		}
+		final private Timeline timeline = new Timeline();
 		
-		// preparation
-		Point2D center = determineCenter();
- 		double radius = Math.min(center.getX(), center.getY());
-		double tipRadius = radius * TIP_RADIUS_FACTOR;
-		double arcRadius = radius * NEEDLE_ARC_RADIUS_FACTOR;
-		
-		// calculate the important points of the needle
-		Point2D arcStartPoint2D = calculatePointOnCircle(center, arcRadius, 0.0 - 15.0);
-		Point2D arcEndPoint2D = calculatePointOnCircle(center, arcRadius, 0.0 + 15.0);
-		Point2D tipPoint2D = calculatePointOnCircle(center, tipRadius, 0.0);
-		
-		// we use a path to draw the needle
-		Path needle = new Path();
-        needle.setFillRule(FillRule.EVEN_ODD);        
-		needle.getStyleClass().add("needle");
-		needle.setStrokeLineJoin(StrokeLineJoin.ROUND);
-		
-        // begin of arc
-        needle.getElements().add( new MoveTo(arcStartPoint2D.getX(), arcStartPoint2D.getY()) );
-        
-        // arc to the end point
-        {
-	        ArcTo arcTo = new ArcTo();
-	        arcTo.setX(arcEndPoint2D.getX());
-	        arcTo.setY(arcEndPoint2D.getY());
-	        arcTo.setRadiusX(arcRadius);
-	        arcTo.setRadiusY(arcRadius);
-	        arcTo.setLargeArcFlag(true);
-	        arcTo.setSweepFlag(false);
-	        needle.getElements().add(arcTo);
-        }
-        
-        // two lines to the tip
-        needle.getElements().add(new LineTo(tipPoint2D.getX(), tipPoint2D.getY()));
-        needle.getElements().add(new LineTo(arcStartPoint2D.getX(), arcStartPoint2D.getY()));
-        
-        // set the line around the needle; this is relative to the size of the gauge, so it is not set in CSS
-        needle.setStrokeWidth(arcRadius * 0.10);
-        
-        // set to rotate around the center of the gauge
-        needleRotate.setPivotX(center.getX());
-        needleRotate.setPivotY(center.getY());
-        needle.getTransforms().setAll(needleRotate); 
-        
-        // add the needle
-        needlePane.getChildren().add(needle);
-        
-        // add the text
-        needlePane.getChildren().add(valueText);
-        // min and max value text need to be added to the scene in order to have the CSS applied
-        needlePane.getChildren().add(minmaxValueText);
-        minmaxValueText.setVisible(false);
-	}
-	
+		/**
+		 * 
+		 */
+		private void setValueText() {
+			valueText.setText(valueFormat(getSkinnable().getValue()));
+		}
 
-	/**
-	 * @param allowAnimation AllowAnimation is needed only in the first pass during skin construction: the Animated property has not been set at that time, so we do not need if animation is wanted. So the initial rotation is always done unanimated.  
-	 */
-	private void rotateNeedle(boolean allowAnimation) {
+		/**
+		 * The value should automatically fill the needle as much as possible.
+		 * But it should not constantly switch font size, so it cannot be based on the current content of value's Text node.
+		 * So to determine how much the Text node must be scaled, the calculation is based on value's extremes: min and max value.
+		 * The smallest scale factor is the one to use (using the larger would make the other extreme go out of the circle).   
+		 */
+		private void scaleValueText() {
+			
+			// preparation
+			Point2D center = determineCenter();
+	 		double radius = Math.min(center.getX(), center.getY());
+			double arcRadius = radius * NEEDLE_ARC_RADIUS_FACTOR;
+			
+			// use the two extreme's to determine the scaling factor
+			double minScale = calculateScaleFactor(arcRadius, getSkinnable().getMinValue());
+			double maxScale = calculateScaleFactor(arcRadius, getSkinnable().getMaxValue());
+			double scale = Math.min(minScale, maxScale);
+			valueScale.setX(scale);
+			valueScale.setY(scale);
+		}
 		
-		// preparation
- 		double controlMinValue = getSkinnable().getMinValue();
- 		double controlMaxValue = getSkinnable().getMaxValue();
- 		double controlValueRange = controlMaxValue - controlMinValue;
- 		double value = getSkinnable().getValue();
- 		double angle = (value - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES;
- 		
- 		// We cannot use node.setRotate(angle), because this rotates always around the center of the node and the needle's rotation center is not the same as the node's center.
- 		// So we need to use the Rotate transformation, which allows to specify the center of rotation.
- 		// This however also means that we cannot use RotateTransition, because that manipulates the rotate property of a node (and -as explain above- we couldn't use that).
- 		// The only way to animate a Rotate transformation is to use a timeline and keyframes.
- 		if (allowAnimation == false || Animated.NO.equals(getAnimated())) {
- 	 		needleRotate.setAngle(angle);
- 		}
- 		else {
- 			timeline.stop();
-	        final KeyValue KEY_VALUE = new KeyValue(needleRotate.angleProperty(), angle, Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
-	        final KeyFrame KEY_FRAME = new KeyFrame(Duration.millis(1000), KEY_VALUE);
-	        timeline.getKeyFrames().setAll(KEY_FRAME);
-	        timeline.play();
- 		}
-
-	}
-	final private Timeline timeline = new Timeline();
-
-	/**
-	 * 
-	 */
-	private void setValueText() {
-		valueText.setText(valueFormat(getSkinnable().getValue()));
-	}
-	
-	/**
-	 * The value should automatically fill the needle as much as possible.
-	 * But it should not constantly switch font size, so it cannot be based on the current content of value's Text node.
-	 * So to determine how much the Text node must be scaled, the calculation is based on value's extremes: min and max value.
-	 * The smallest scale factor is the one to use (using the larger would make the other extreme go out of the circle).   
-	 */
-	private void scaleValueText() {
-		
-		// preparation
-		Point2D center = determineCenter();
- 		double radius = Math.min(center.getX(), center.getY());
-		double arcRadius = radius * NEEDLE_ARC_RADIUS_FACTOR;
-		
-		// use the two extreme's to determine the scaling factor
-		double minScale = calculateScaleFactor(arcRadius, getSkinnable().getMinValue());
-		double maxScale = calculateScaleFactor(arcRadius, getSkinnable().getMaxValue());
-		double scale = Math.min(minScale, maxScale);
-		valueScale.setX(scale);
-		valueScale.setY(scale);
-	}
-	
-	/**
-	 * Determine how much to scale the Text node containing the value to fill up the needle's circle
-	 * @param radius The radius of the needle
-	 * @param value The value to be rendered
-	 * @return
-	 */
-	private double calculateScaleFactor(double radius, double value) {
-		minmaxValueText.setText(valueFormat(value));
-		double width = minmaxValueText.getBoundsInParent().getWidth();
-		double height = minmaxValueText.getBoundsInParent().getHeight();
-		double diameter = radius * 2.0;
-		// Width and height construct a right angled triangle, where the hypotenuse should be equal to the diameter of the needle's circle.
-		// So apply some Pythagoras...
-		double scaleFactor = diameter / Math.sqrt((width*width) + (height*height));
-		return scaleFactor;
-	}
-	
-	/**
-	 * After having set the value in the Text and determining the scaling, position the Text node in the center of the needle.
-	 */
-	private void positionValueText() {
-		// position in center of needle
-		Point2D center = determineCenter();
-		double width = valueText.getBoundsInParent().getWidth();
-		double height = valueText.getBoundsInParent().getHeight();
-		valueText.setLayoutX(center.getX() - (width  / 2.0)); 
-		valueText.setLayoutY(center.getY() + (height  / 4.0));
+		/**
+		 * After having set the value in the Text and determining the scaling, position the Text node in the center of the needle.
+		 */
+		private void positionValueText() {
+			// position in center of needle
+			Point2D center = determineCenter();
+			double width = valueText.getBoundsInParent().getWidth();
+			double height = valueText.getBoundsInParent().getHeight();
+			valueText.setLayoutX(center.getX() - (width  / 2.0)); 
+			valueText.setLayoutY(center.getY() + (height  / 4.0));
+		}
 	}
 	
 	// ==================================================================================================================
@@ -449,7 +435,24 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	 * @return
 	 */
 	private Point2D determineCenter() {
-		Point2D center = new Point2D(dialPane.getWidth() / 2.0, dialPane.getHeight() * 0.6);
+		Point2D center = new Point2D(dialPane.getWidth() / 2.0, dialPane.getHeight() * 0.55);
 		return center;
+	}
+	
+	/**
+	 * Determine how much to scale the Text node containing the value to fill up the needle's circle
+	 * @param radius The radius of the needle
+	 * @param value The value to be rendered
+	 * @return
+	 */
+	private double calculateScaleFactor(double radius, double value) {
+		needlePane.minmaxValueText.setText(valueFormat(value));
+		double width = needlePane.minmaxValueText.getBoundsInParent().getWidth();
+		double height = needlePane.minmaxValueText.getBoundsInParent().getHeight();
+		double diameter = radius * 2.0;
+		// Width and height construct a right angled triangle, where the hypotenuse should be equal to the diameter of the needle's circle.
+		// So apply some Pythagoras...
+		double scaleFactor = diameter / Math.sqrt((width*width) + (height*height));
+		return scaleFactor;
 	}
 }
