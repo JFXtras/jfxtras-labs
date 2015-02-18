@@ -105,6 +105,16 @@ public class SimpleMetroArcGaugeTrial1 extends Application {
 			gauges.add(lSimpleMetroArcGauge);
 		}
         
+        // larger
+		{
+			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
+			lSimpleMetroArcGauge.setValue(50.0);
+			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000;");
+			lSimpleMetroArcGauge.setPrefSize(300.0, 300.0);
+			lFlowPane.getChildren().add(lSimpleMetroArcGauge);
+			gauges.add(lSimpleMetroArcGauge);
+		}
+        
         // large range with format
 		{
 			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();

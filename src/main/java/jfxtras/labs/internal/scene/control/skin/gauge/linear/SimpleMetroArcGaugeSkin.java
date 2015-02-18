@@ -163,10 +163,20 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		needlePane.heightProperty().addListener( (observable) -> {
 			drawNeedlePane();
 		});
-		needleRotate = new Rotate(-10.0);
+		needleRotate = new Rotate(0.0);
+		rotateNeedle(false);
+		
+		// value
+		valueText = new Text("");
+		valueScale = new Scale(1.0, 1.0);
+		valueText.getStyleClass().add("value");
+		valueText.getTransforms().setAll(valueScale);
+		minmaxValueText = new Text("");
+		minmaxValueText.getStyleClass().add("value");
 		getSkinnable().valueProperty().addListener( (observable) -> {
 			rotateNeedle(true);
 			setValueText();
+			positionValueText();
 		});
 		getSkinnable().minValueProperty().addListener( (observable) -> {
 			scaleValueText();
@@ -176,16 +186,6 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 			scaleValueText();
 			positionValueText();
 		});
-		getSkinnable().valueProperty().addListener( (observable) -> {
-			positionValueText();
-		});
-		rotateNeedle(false);
-		setValueText();
-
-		// setup value text
-		valueText.getStyleClass().add("value");
-		valueText.getTransforms().setAll(valueScale);
-		minmaxValueText.getStyleClass().add("value");
 		
 		// we use a stack pane to control the layers
 		StackPane lStackPane = new StackPane();
@@ -199,8 +199,9 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	private Pane dialPane;
 	private Pane needlePane;
 	private Rotate needleRotate;
-	private Text valueText = new Text("...");
-	private Scale valueScale = new Scale(1.0, 1.0);
+	private Text valueText;
+	private Scale valueScale;
+	private Text minmaxValueText;
 
 	/**
 	 * There is no way to detect if some node's CSS has been applied.
@@ -339,6 +340,8 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	 * 
 	 */
 	private void rotateNeedle(boolean allowAnimation) {
+		
+		// preparation
  		double controlMinValue = getSkinnable().getMinValue();
  		double controlMaxValue = getSkinnable().getMaxValue();
  		double controlValueRange = controlMaxValue - controlMinValue;
@@ -379,21 +382,21 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		Point2D center = determineCenter();
  		double radius = Math.min(center.getX(), center.getY());
 		double arcRadius = radius * NEEDLE_ARC_RADIUS_FACTOR;
-
+		
 		// use the two extreme's to determine the scaling factor
 		double minScale = calculateScaleFactor(arcRadius, getSkinnable().getMinValue());
 		double maxScale = calculateScaleFactor(arcRadius, getSkinnable().getMaxValue());
 		double scale = Math.min(minScale, maxScale);
-scale *= 2.0; // TBEERNOT: this should not be needed
 		valueScale.setX(scale);
 		valueScale.setY(scale);
 	}
 	
 	private double calculateScaleFactor(double radius, double value) {
+		double diameter = radius * 2.0;
 		minmaxValueText.setText(valueFormat(value));
 		double width = minmaxValueText.getBoundsInParent().getWidth();
 		double height = minmaxValueText.getBoundsInParent().getHeight();
-		double scaleFactor = radius / Math.sqrt((width*width) + (height*height));
+		double scaleFactor = diameter / Math.sqrt((width*width) + (height*height));
 		return scaleFactor;
 	}
 	
@@ -405,7 +408,6 @@ scale *= 2.0; // TBEERNOT: this should not be needed
 		valueText.setLayoutX(center.getX() - (width  / 2.0)); 
 		valueText.setLayoutY(center.getY() + (height  / 4.0));
 	}
-	final private Text minmaxValueText = new Text("...");
 	
 	// ==================================================================================================================
 	// SUPPORT
