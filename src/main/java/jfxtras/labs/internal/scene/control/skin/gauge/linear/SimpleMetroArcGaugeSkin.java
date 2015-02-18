@@ -194,7 +194,7 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		getChildren().add(lStackPane);
 
 		// style
-		getSkinnable().getStyleClass().add(getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control		
+		getSkinnable().getStyleClass().add(getClass().getSimpleName()); // always add self as style class, because with multiple skins CSS should relate to the skin not the control		
 	}
 	private Pane dialPane;
 	private Pane needlePane;
@@ -337,7 +337,7 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	
 
 	/**
-	 * 
+	 * @param allowAnimation AllowAnimation is needed only in the first pass during skin construction: the Animated property has not been set at that time, so we do not need if animation is wanted. So the initial rotation is always done unanimated.  
 	 */
 	private void rotateNeedle(boolean allowAnimation) {
 		
@@ -374,7 +374,10 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	}
 	
 	/**
-	 * 
+	 * The value should automatically fill the needle as much as possible.
+	 * But it should not constantly switch font size, so it cannot be based on the current content of value's Text node.
+	 * So to determine how much the Text node must be scaled, the calculation is based on value's extremes: min and max value.
+	 * The smallest scale factor is the one to use (using the larger would make the other extreme go out of the circle).   
 	 */
 	private void scaleValueText() {
 		
@@ -391,15 +394,26 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		valueScale.setY(scale);
 	}
 	
+	/**
+	 * Determine how much to scale the Text node containing the value to fill up the needle's circle
+	 * @param radius The radius of the needle
+	 * @param value The value to be rendered
+	 * @return
+	 */
 	private double calculateScaleFactor(double radius, double value) {
-		double diameter = radius * 2.0;
 		minmaxValueText.setText(valueFormat(value));
 		double width = minmaxValueText.getBoundsInParent().getWidth();
 		double height = minmaxValueText.getBoundsInParent().getHeight();
+		double diameter = radius * 2.0;
+		// Width and height construct a right angled triangle, where the hypotenuse should be equal to the diameter of the needle's circle.
+		// So apply some Pythagoras...
 		double scaleFactor = diameter / Math.sqrt((width*width) + (height*height));
 		return scaleFactor;
 	}
 	
+	/**
+	 * After having set the value in the Text and determining the scaling, position the Text node in the center of the needle.
+	 */
 	private void positionValueText() {
 		// position in center of needle
 		Point2D center = determineCenter();
