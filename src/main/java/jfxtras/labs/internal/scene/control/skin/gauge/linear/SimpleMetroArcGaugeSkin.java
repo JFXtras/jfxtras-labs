@@ -9,7 +9,6 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ListChangeListener;
 import javafx.css.CssMetaData;
@@ -20,7 +19,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcTo;
@@ -49,7 +47,7 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 
 	private static final double FULL_ARC_RADIUS_FACTOR = 0.95;
 	private static final double NEEDLE_ARC_RADIUS_FACTOR = 0.5;
-	private static final double TIP_RADIUS_FACTOR = 0.9;
+	private static final double TIP_RADIUS_FACTOR = 0.87;
 	static final private double FULL_ARC_IN_DEGREES = 270.0;
 
 	// ==================================================================================================================
@@ -60,16 +58,8 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	 */
 	public SimpleMetroArcGaugeSkin(SimpleMetroArcGauge control) {
 		super(control);
-		construct();
+		constructNodes();
 	}
-
-	/*
-	 * 
-	 */
-	private void construct() {
-		createNodes();
-	}
-	
 	
 	// ==================================================================================================================
 	// StyleableProperties
@@ -148,7 +138,7 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	/**
 	 * construct the nodes
 	 */
-	private void createNodes()
+	private void constructNodes()
 	{
 		// use a stack pane to control the layers
 		StackPane lStackPane = new StackPane(dialPane, needlePane);
@@ -162,8 +152,9 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 
 	// ==================================================================================================================
 	// DIAL
+	// TBEERNOT: warning indicator like https://www.youtube.com/watch?v=oAdwQTy4jms
 	
-	class DialPane extends Region {
+	class DialPane extends Pane {
 
 		final private List<Segment> segments = new ArrayList<Segment>();
 		
@@ -184,14 +175,13 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		 * 
 		 */
 		private void createSegments() {
-
 	 		// determine what segments to draw
 			segments.clear();
 			segments.addAll(getSkinnable().segments());
 	 		if (segments.size() == 0) {
 	 			segments.add(new CompleteSegment(getSkinnable()));
 	 		}
-	 		
+
 	 		// create the segments
 	 		int cnt = 0;
 	 		for (Segment segment : segments) {
@@ -221,11 +211,20 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	 		double controlMaxValue = getSkinnable().getMaxValue();
 	 		double controlValueRange = controlMaxValue - controlMinValue;
 	 		
+	 		// validate the segments
+	 		List<Segment> lSegments = segments;
+			String validationMessage = validateSegments();
+			if (validationMessage != null) {
+				System.err.println(validationMessage);
+				lSegments = new ArrayList<Segment>();
+	 			lSegments.add(new CompleteSegment(getSkinnable()));
+			};
+			
 	 		// layout the segments
 			Point2D center = determineCenter();
 	 		double radius = Math.min(center.getX(), center.getY()) * FULL_ARC_RADIUS_FACTOR;
 	 		int cnt = 0;
-	 		for (Segment segment : segments) {
+	 		for (Segment segment : lSegments) {
 	 			
 	 			// layout the arc for this segment
 	 	 		double segmentMinValue = segment.getMinValue();
@@ -248,10 +247,29 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		}
 	}
 	
+	private String validateSegments() {
+ 		double controlMinValue = getSkinnable().getMinValue();
+ 		double controlMaxValue = getSkinnable().getMaxValue();
+
+ 		for (Segment segment : getSkinnable().segments()) {
+ 	 		double segmentMinValue = segment.getMinValue();
+ 	 		double segmentMaxValue = segment.getMaxValue();
+			if (segmentMinValue < controlMinValue) {
+				return String.format("Segments min-value (%f) cannot be less than the controls min-value (%f)", segmentMinValue, controlMinValue);
+			}
+			if (segmentMaxValue > controlMaxValue) {
+				return String.format("Segments max-value (%f) cannot be greater than the controls max-value (%f)", segmentMaxValue, controlMaxValue);
+			}
+ 		}
+ 		return null;
+	}
+	
+	
 	// ==================================================================================================================
 	// NEEDLE
+	// OPTION: Move needle path out into CSS and allow for other needles, like https://www.youtube.com/watch?v=oAdwQTy4jms
 	
-	class NeedlePane extends Region {
+	class NeedlePane extends Pane {
 		
 		final private Path needlePath = new Path();
 		final private Rotate needleRotate = new Rotate(0.0);
@@ -274,6 +292,9 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 			valueText.getTransforms().setAll(valueScale);
 			minmaxValueText.getStyleClass().add("value");
 			getSkinnable().valueProperty().addListener( (observable) -> {
+				if (!validateValue2()) {
+					return;
+				}
 				rotateNeedle(true);
 				setValueText();
 				positionValueText();
@@ -283,10 +304,16 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	        getChildren().add(minmaxValueText);
 	        minmaxValueText.setVisible(false);
 			getSkinnable().minValueProperty().addListener( (observable) -> {
+				if (!validateValue2()) {
+					return;
+				}
 				scaleValueText();
 				positionValueText();
 			});
 			getSkinnable().maxValueProperty().addListener( (observable) -> {
+				if (!validateValue2()) {
+					return;
+				}
 				scaleValueText();
 				positionValueText();
 			});
@@ -298,30 +325,31 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		@Override
 		protected void layoutChildren() {
 			super.layoutChildren();
-			// TBEERNOT: can we optimize the drawing (e.g. when width & height have not changed, skip)
-			// TBEERNOT: handle that not min <= value <= max
-			// preparation
-			Point2D center = determineCenter();
-	 		double radius = Math.min(center.getX(), center.getY());
-			double tipRadius = radius * TIP_RADIUS_FACTOR;
-			double arcRadius = radius * NEEDLE_ARC_RADIUS_FACTOR;
-			
-			// calculate the important points of the needle
-			Point2D arcStartPoint2D = calculatePointOnCircle(center, arcRadius, 0.0 - 15.0);
-			Point2D arcEndPoint2D = calculatePointOnCircle(center, arcRadius, 0.0 + 15.0);
-			Point2D tipPoint2D = calculatePointOnCircle(center, tipRadius, 0.0);
-			
-			// we use a path to draw the needle
-			needlePath.getElements().clear();
-	        needlePath.setFillRule(FillRule.EVEN_ODD);        
-			needlePath.getStyleClass().add("needle");
-			needlePath.setStrokeLineJoin(StrokeLineJoin.ROUND);
-			
-	        // begin of arc
-	        needlePath.getElements().add( new MoveTo(arcStartPoint2D.getX(), arcStartPoint2D.getY()) );
-	        
-	        // arc to the end point
-	        {
+
+			// we only need to layout if the size changes
+			if (previousWidth != getWidth() || previousHeight != getHeight()) {
+				
+				// preparation
+				Point2D center = determineCenter();
+		 		double radius = Math.min(center.getX(), center.getY());
+				double tipRadius = radius * TIP_RADIUS_FACTOR;
+				double arcRadius = radius * NEEDLE_ARC_RADIUS_FACTOR;
+				
+				// calculate the important points of the needle
+				Point2D arcStartPoint2D = calculatePointOnCircle(center, arcRadius, 0.0 - 15.0);
+				Point2D arcEndPoint2D = calculatePointOnCircle(center, arcRadius, 0.0 + 15.0);
+				Point2D tipPoint2D = calculatePointOnCircle(center, tipRadius, 0.0);
+				
+				// we use a path to draw the needle
+				needlePath.getElements().clear();
+		        needlePath.setFillRule(FillRule.EVEN_ODD);        
+				needlePath.getStyleClass().add("needle");
+				needlePath.setStrokeLineJoin(StrokeLineJoin.ROUND);
+				
+		        // begin of arc
+		        needlePath.getElements().add( new MoveTo(arcStartPoint2D.getX(), arcStartPoint2D.getY()) );
+		        
+		        // arc to the end point
 		        ArcTo arcTo = new ArcTo();
 		        arcTo.setX(arcEndPoint2D.getX());
 		        arcTo.setY(arcEndPoint2D.getY());
@@ -330,24 +358,31 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		        arcTo.setLargeArcFlag(true);
 		        arcTo.setSweepFlag(false);
 		        needlePath.getElements().add(arcTo);
-	        }
-	        
-	        // two lines to the tip
-	        needlePath.getElements().add(new LineTo(tipPoint2D.getX(), tipPoint2D.getY()));
-	        needlePath.getElements().add(new LineTo(arcStartPoint2D.getX(), arcStartPoint2D.getY()));
-	        
-	        // set the line around the needle; this is relative to the size of the gauge, so it is not set in CSS
-	        needlePath.setStrokeWidth(arcRadius * 0.10);
-	        
-	        // set to rotate around the center of the gauge
-	        needleRotate.setPivotX(center.getX());
-	        needleRotate.setPivotY(center.getY());
-	        needlePath.getTransforms().setAll(needleRotate);
-	        
-			setValueText();
-			scaleValueText();
-			positionValueText(); 
+		        
+		        // two lines to the tip
+		        needlePath.getElements().add(new LineTo(tipPoint2D.getX(), tipPoint2D.getY()));
+		        needlePath.getElements().add(new LineTo(arcStartPoint2D.getX(), arcStartPoint2D.getY()));
+		        
+		        // set the line around the needle; this is relative to the size of the gauge, so it is not set in CSS
+		        needlePath.setStrokeWidth(arcRadius * 0.10);
+		        
+		        // set to rotate around the center of the gauge
+		        needleRotate.setPivotX(center.getX());
+		        needleRotate.setPivotY(center.getY());
+		        needlePath.getTransforms().setAll(needleRotate);
+		        
+		        // layout value
+				setValueText();
+				scaleValueText();
+				positionValueText();
+
+				// remember
+				previousWidth = getWidth();
+				previousHeight = getHeight();
+			}
 		}
+		private double previousWidth = -1.0;
+		private double previousHeight = -1.0;
 
 		/**
 		 * @param allowAnimation AllowAnimation is needed only in the first pass during skin construction: the Animated property has not been set at that time, so we do not need if animation is wanted. So the initial rotation is always done unanimated.  
@@ -383,6 +418,9 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		 * 
 		 */
 		private void setValueText() {
+			if (!validateValue2()) {
+				return;
+			}
 			valueText.setText(valueFormat(getSkinnable().getValue()));
 		}
 
@@ -435,6 +473,34 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 			valueText.setLayoutX(center.getX() - (width  / 2.0)); 
 			valueText.setLayoutY(center.getY() + (height  / 4.0));
 		}
+	}
+
+	private boolean validateValue2() {
+ 		// validate the segments
+		String validationMessage = validateValue();
+		if (validationMessage != null) {
+			System.err.println(validationMessage);
+			needlePane.valueText.setText("X");
+			needlePane.needleRotate.setAngle(-45.0);
+			return false;
+		};
+		return true;
+	}
+	
+	private String validateValue() {
+ 		double controlMinValue = getSkinnable().getMinValue();
+ 		double controlMaxValue = getSkinnable().getMaxValue();
+ 		double controlValue = getSkinnable().getValue();
+		if (controlMinValue > controlMaxValue) {
+			return String.format("Min-value (%f) cannot be greater than max-value (%f)", controlMinValue, controlMaxValue);
+		}
+		if (controlMinValue > controlValue) {
+			return String.format("Min-value (%f) cannot be greater than-value (%f)", controlMinValue, controlValue);
+		}
+		if (controlValue > controlMaxValue) {
+			return String.format("Value (%f) cannot be greater than max-value (%f)", controlValue, controlMaxValue);
+		}
+		return null;
 	}
 	
 	// ==================================================================================================================

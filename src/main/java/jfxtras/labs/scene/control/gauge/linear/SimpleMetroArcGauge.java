@@ -1,5 +1,6 @@
 package jfxtras.labs.scene.control.gauge.linear;
 
+import javafx.collections.ObservableList;
 import javafx.scene.control.Skin;
 import jfxtras.labs.internal.scene.control.skin.gauge.linear.SimpleMetroArcGaugeSkin;
 import jfxtras.scene.control.ListSpinner;
@@ -23,6 +24,9 @@ import jfxtras.scene.control.ListSpinner;
  */
 public class SimpleMetroArcGauge extends AbstractLinearGauge<SimpleMetroArcGauge> {
 	
+	// ==================================================================================================================
+	// AbstractLinearGauge
+
 	/**
 	 * Return the path to the CSS file so things are setup right
 	 */
@@ -34,4 +38,13 @@ public class SimpleMetroArcGauge extends AbstractLinearGauge<SimpleMetroArcGauge
 		return new SimpleMetroArcGaugeSkin(this); 
 	}
 
+	// ==================================================================================================================
+	// PROPERTIES
+
+	/** segments:
+	 * If you do not provide any segments, a default segment will be drawn.
+	 * But if you provide at least one segment, you are responsible for making sure the segments cover the range of the gauge. 
+	 */
+	public ObservableList<Segment> segments() { return segments; }
+	final private ObservableList<Segment> segments =  javafx.collections.FXCollections.observableArrayList();
 }

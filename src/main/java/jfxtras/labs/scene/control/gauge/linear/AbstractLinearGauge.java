@@ -2,7 +2,6 @@ package jfxtras.labs.scene.control.gauge.linear;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 
@@ -32,14 +31,13 @@ abstract public class AbstractLinearGauge<T> extends Control {
 		this.getStyleClass().add(this.getClass().getSimpleName());
 	}
 
-
 	/**
 	 * Return the path to the CSS file so things are setup right
 	 */
 	@Override abstract public String getUserAgentStylesheet();
 
 	@Override abstract public Skin<?> createDefaultSkin();
-	
+
 	
 	// ==================================================================================================================
 	// PROPERTIES
@@ -65,10 +63,4 @@ abstract public class AbstractLinearGauge<T> extends Control {
 	public void setMaxValue(double value) { maxValueProperty.setValue(value); }
 	public T withMaxValue(double value) { setMaxValue(value); return (T)this; } 
 
-	/** segments:
-	 * If you do not provide any segments, a default segment will be drawn.
-	 * But if you provide at least one segment, you are responsible for making sure the segments cover the range of the gauge. 
-	 */
-	public ObservableList<Segment> segments() { return segments; }
-	final private ObservableList<Segment> segments =  javafx.collections.FXCollections.observableArrayList();
 }

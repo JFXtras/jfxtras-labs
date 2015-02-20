@@ -76,7 +76,14 @@ public class SimpleMetroArcGaugeTrial1 extends Application {
 			gauges.add(lSimpleMetroArcGauge);
 		}
         
-        // 10 segments
+        // broken
+		{
+			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge().withValue(-10.0);
+			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000;");
+			lFlowPane.getChildren().add(lSimpleMetroArcGauge);			
+		}
+
+		// 10 segments
 		{
 			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
 			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000;");
