@@ -43,7 +43,7 @@ import com.sun.javafx.css.converters.StringConverter;
 /**
  * 
  */
-public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
+public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge> {
 
 	private static final double FULL_ARC_RADIUS_FACTOR = 0.95;
 	private static final double NEEDLE_ARC_RADIUS_FACTOR = 0.5;
@@ -292,7 +292,7 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 			valueText.getTransforms().setAll(valueScale);
 			minmaxValueText.getStyleClass().add("value");
 			getSkinnable().valueProperty().addListener( (observable) -> {
-				if (!validateValue2()) {
+				if (!validateValueAndHandleInvalid()) {
 					return;
 				}
 				rotateNeedle(true);
@@ -304,14 +304,14 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 	        getChildren().add(minmaxValueText);
 	        minmaxValueText.setVisible(false);
 			getSkinnable().minValueProperty().addListener( (observable) -> {
-				if (!validateValue2()) {
+				if (!validateValueAndHandleInvalid()) {
 					return;
 				}
 				scaleValueText();
 				positionValueText();
 			});
 			getSkinnable().maxValueProperty().addListener( (observable) -> {
-				if (!validateValue2()) {
+				if (!validateValueAndHandleInvalid()) {
 					return;
 				}
 				scaleValueText();
@@ -418,7 +418,7 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		 * 
 		 */
 		private void setValueText() {
-			if (!validateValue2()) {
+			if (!validateValueAndHandleInvalid()) {
 				return;
 			}
 			valueText.setText(valueFormat(getSkinnable().getValue()));
@@ -475,32 +475,15 @@ public class SimpleMetroArcGaugeSkin extends SkinBase<SimpleMetroArcGauge> {
 		}
 	}
 
-	private boolean validateValue2() {
- 		// validate the segments
+	private boolean validateValueAndHandleInvalid() {
 		String validationMessage = validateValue();
 		if (validationMessage != null) {
-			System.err.println(validationMessage);
+			new Throwable(validationMessage).printStackTrace();
 			needlePane.valueText.setText("X");
 			needlePane.needleRotate.setAngle(-45.0);
 			return false;
 		};
 		return true;
-	}
-	
-	private String validateValue() {
- 		double controlMinValue = getSkinnable().getMinValue();
- 		double controlMaxValue = getSkinnable().getMaxValue();
- 		double controlValue = getSkinnable().getValue();
-		if (controlMinValue > controlMaxValue) {
-			return String.format("Min-value (%f) cannot be greater than max-value (%f)", controlMinValue, controlMaxValue);
-		}
-		if (controlMinValue > controlValue) {
-			return String.format("Min-value (%f) cannot be greater than-value (%f)", controlMinValue, controlValue);
-		}
-		if (controlValue > controlMaxValue) {
-			return String.format("Value (%f) cannot be greater than max-value (%f)", controlValue, controlMaxValue);
-		}
-		return null;
 	}
 	
 	// ==================================================================================================================

@@ -8,14 +8,14 @@ import javafx.scene.control.Skin;
 /**
  * This class contains commonalities for all linear gauges
  */
-abstract public class AbstractLinearGauge<T> extends Control {
+abstract public class LinearGauge<T> extends Control {
 
 	// ==================================================================================================================
 	// CONSTRUCTOR
 
 	/**
 	 */
-	public AbstractLinearGauge() {
+	public LinearGauge() {
 		construct();
 	}
 

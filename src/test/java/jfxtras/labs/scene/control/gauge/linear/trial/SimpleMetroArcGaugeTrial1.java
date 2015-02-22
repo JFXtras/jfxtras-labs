@@ -61,7 +61,14 @@ public class SimpleMetroArcGaugeTrial1 extends Application {
 		
 		FlowPane lFlowPane = new FlowPane(10, 10);
 		
-        // without segments static value
+        // naked
+		{
+			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
+			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000;");
+			lFlowPane.getChildren().add(lSimpleMetroArcGauge);
+		}
+        
+        // without segments, static value
 		{
 			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge().withValue(50.0);
 			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000;");
@@ -87,7 +94,20 @@ public class SimpleMetroArcGaugeTrial1 extends Application {
 		{
 			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
 			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000;");
-			lSimpleMetroArcGauge.getStyleClass().add("colorscheme-green-to-red-10");
+			for (int i = 0; i < 10; i++) {
+				Segment lSegment = new PercentSegment(lSimpleMetroArcGauge, i * 10.0, (i+1) * 10.0);
+				lSimpleMetroArcGauge.segments().add(lSegment);
+			}
+			lFlowPane.getChildren().add(lSimpleMetroArcGauge);
+			gauges.add(lSimpleMetroArcGauge);
+		}
+        
+		// 10 segments, color schema
+		{
+			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
+			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000;");
+//			lSimpleMetroArcGauge.getStyleClass().add("colorscheme-green-to-red-10");
+			lSimpleMetroArcGauge.getStyleClass().add("colorscheme-blue-to-red-5");
 			for (int i = 0; i < 10; i++) {
 				Segment lSegment = new PercentSegment(lSimpleMetroArcGauge, i * 10.0, (i+1) * 10.0);
 				lSimpleMetroArcGauge.segments().add(lSegment);
@@ -161,7 +181,7 @@ public class SimpleMetroArcGaugeTrial1 extends Application {
 			Button lButton = new Button("X");
 			lButton.setOnAction( (event) -> {
 				if (lSimpleMetroArcGauge.segments().size() > 0) {
-					lSimpleMetroArcGauge.segments().remove(0);
+					lSimpleMetroArcGauge.segments().remove(lSimpleMetroArcGauge.segments().size() - 1);
 					System.out.println("removed segment, remaining " + lSimpleMetroArcGauge.segments().size());
 				}
 			});
@@ -173,7 +193,7 @@ public class SimpleMetroArcGaugeTrial1 extends Application {
 		}
         
         // create scene
-        Scene scene = new Scene(lFlowPane, 900, 900);
+        Scene scene = new Scene(lFlowPane, 1500, 900);
 
         // create stage
         stage.setTitle(this.getClass().getSimpleName());

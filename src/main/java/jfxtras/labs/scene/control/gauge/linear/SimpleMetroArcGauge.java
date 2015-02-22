@@ -22,7 +22,7 @@ import jfxtras.scene.control.ListSpinner;
  * 
  * This is a blatant but approved copy of Gerrit Grunwald's Enzo SimpleGauge (https://bitbucket.org/hansolo/enzo/src)
  */
-public class SimpleMetroArcGauge extends AbstractLinearGauge<SimpleMetroArcGauge> {
+public class SimpleMetroArcGauge extends LinearGauge<SimpleMetroArcGauge> {
 	
 	// ==================================================================================================================
 	// AbstractLinearGauge

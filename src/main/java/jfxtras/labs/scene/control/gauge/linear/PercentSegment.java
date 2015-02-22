@@ -5,16 +5,16 @@ public class PercentSegment implements Segment {
 	final private String id;
 	final private double minPercent;
 	final private double maxPercent;
-	final private AbstractLinearGauge linearGauge;
+	final private LinearGauge linearGauge;
 
-	public PercentSegment(AbstractLinearGauge linearGauge, double minPercent, double maxPercent, String id) {
+	public PercentSegment(LinearGauge linearGauge, double minPercent, double maxPercent, String id) {
 		this.id = id;
 		this.minPercent = minPercent;
 		this.maxPercent = maxPercent;
 		this.linearGauge = linearGauge;
 	}
 	
-	public PercentSegment(AbstractLinearGauge linearGauge, double minPercent, double maxPercent) {
+	public PercentSegment(LinearGauge linearGauge, double minPercent, double maxPercent) {
 		this.id = null;
 		this.minPercent = minPercent;
 		this.maxPercent = maxPercent;
