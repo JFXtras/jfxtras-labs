@@ -54,6 +54,7 @@ import jfxtras.labs.scene.control.BigDecimalField;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.text.ParsePosition;
 
 
 /**
@@ -221,6 +222,7 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
      */
     public class NumberTextField extends javafx.scene.control.TextField {
 
+        ParsePosition parsePosition = new ParsePosition(0);
         public NumberTextField() {
             getStyleClass().add("number-text-field");
             initHandlers();
@@ -286,18 +288,26 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
                     CONTROL.setNumber(null);
                     return;
                 }
-                Number parsedNumber = CONTROL.getFormat().parse(input);
-                BigDecimal newValue = new BigDecimal(parsedNumber.toString());
+                Number parsedNumber = CONTROL.getFormat().parse(input, parsePosition);
+                BigDecimal newValue = null;
+                if (input.length() == parsePosition.getIndex()) {
+                    // matched the format
+                    newValue = new BigDecimal(parsedNumber.toString());
+                } else {
+                    // didn't match the format, it may not need formatting
+                    newValue = new BigDecimal(input);
+                }
                 // if parsing succeeded change number in Controller
                 CONTROL.setNumber(newValue);
                 selectAll();
-            } catch (ParseException ex) {
-                // If parsing fails keep old number
-                setText(CONTROL.getText());
             } catch (IllegalArgumentException ex) {
+                // If parsing fails keep old number
+                // OR
                 // If minValue and/or maxValue are set and the new number is out of these bounds
                 // keep also the old number
                 setText(CONTROL.getText());
+            } finally {
+                parsePosition.setIndex(0);
             }
         }
 

@@ -58,18 +58,22 @@ public class BigDecimalFieldTest extends GuiTest {
         StackPane root = new StackPane();
 
         nf = NumberFormat.getNumberInstance(Locale.UK);
+        cf = NumberFormat.getCurrencyInstance(Locale.UK);
         nf.setMaximumFractionDigits(2);
         nf.setMinimumFractionDigits(2);
         bigDecimalField1 = new BigDecimalField(new BigDecimal(10), new BigDecimal(2), nf);
         bigDecimalField2 = new BigDecimalField(new BigDecimal(20), new BigDecimal(2), nf);
-        root.getChildren().addAll(new VBox(bigDecimalField1, bigDecimalField2));
+        bigDecimalField3 = new BigDecimalField(new BigDecimal(30), new BigDecimal(2), cf);
+        root.getChildren().addAll(new VBox(bigDecimalField1, bigDecimalField2, bigDecimalField3));
 
         return root;
     }
 
     BigDecimalField bigDecimalField1;
     BigDecimalField bigDecimalField2;
+    BigDecimalField bigDecimalField3;
     NumberFormat nf;
+    NumberFormat cf;
     private final String NUMBER = "12345.6789";
 
     @Test
@@ -105,6 +109,26 @@ public class BigDecimalFieldTest extends GuiTest {
         nf.setMinimumFractionDigits(3);
         bigDecimalField1.setFormat(nf);
         Assert.assertEquals("12.345,679", bigDecimalField1.getText());
+    }
+    
+    @Test
+    public void checkSpecialFormattingUpDown() {
+        Platform.runLater(() -> bigDecimalField3.requestFocus());
+        sleep(1, TimeUnit.SECONDS);
+        push(KeyCode.UP);
+        Assert.assertEquals("\u00A332.00", bigDecimalField3.getText());
+        push(KeyCode.DOWN);
+        push(KeyCode.DOWN);
+        Assert.assertEquals("\u00A328.00", bigDecimalField3.getText());
+    }
+    
+    @Test
+    public void checkSpecialFormatting() {
+        Platform.runLater(() -> bigDecimalField3.requestFocus());
+        sleep(1, TimeUnit.SECONDS);
+        type(NUMBER);
+        push(ENTER);
+        Assert.assertEquals("\u00A312,345.68", bigDecimalField3.getText());
     }
 
 }
