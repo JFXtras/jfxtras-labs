@@ -147,8 +147,8 @@ public class BigDecimalFieldDemo extends Application {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-//                decimalFormat.requestFocus();
-                defaultSpinner.requestFocus();
+                decimalFormat.requestFocus();
+//                defaultSpinner.requestFocus();
 //                calendarTextField.requestFocus();
             }
         });
