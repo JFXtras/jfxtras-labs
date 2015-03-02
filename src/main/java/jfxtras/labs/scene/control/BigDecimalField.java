@@ -41,6 +41,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Control;
+import javafx.scene.control.Skin;
+import jfxtras.labs.internal.scene.control.skin.BigDecimalFieldSkin;
 
 /**
  * Input field for BigDecimal values. This control has the following features:
@@ -89,7 +91,25 @@ public class BigDecimalField extends Control {
         minValue = new SimpleObjectProperty<BigDecimal>(this, "minValue");
         format = new SimpleObjectProperty<NumberFormat>(this, "format", NumberFormat.getNumberInstance());
         promptText = new SimpleStringProperty(this, "promptText", "");
+
+        initFocusSimulation();
+    }
+
+    /**
+     * Initializes a construct, that mimics the focusedProperty() of e.g. a TextField. The focus is forwarded from the
+     * inner TextField of the underlying Skin-Implementation.
+     */
+    private void initFocusSimulation() {
         setFocusTraversable(false);
+        skinProperty().addListener((observable) -> {
+            Skin<?> skin = getSkin();
+            if (skin instanceof BigDecimalFieldSkin) {
+                BigDecimalFieldSkin bigDecimalFieldSkin = (BigDecimalFieldSkin) skin;
+                bigDecimalFieldSkin.focusForward.addListener((observable2) -> {
+                    super.setFocused(bigDecimalFieldSkin.focusForward.get());
+                });
+            }
+        });
     }
 
     /**
