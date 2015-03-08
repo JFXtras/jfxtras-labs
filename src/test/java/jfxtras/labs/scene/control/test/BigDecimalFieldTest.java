@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2011-2014, JFXtras
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *     * Neither the name of the organization nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -32,9 +32,7 @@ package jfxtras.labs.scene.control.test;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
-import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
@@ -46,7 +44,6 @@ import org.junit.Test;
 import org.loadui.testfx.GuiTest;
 
 import static javafx.scene.input.KeyCode.ENTER;
-import static javafx.scene.input.KeyCode.TAB;
 
 /**
  * GUI-Test for {@link jfxtras.labs.scene.control.BigDecimalField}
@@ -60,51 +57,45 @@ public class BigDecimalFieldTest extends GuiTest {
         nf = NumberFormat.getNumberInstance(Locale.UK);
         nf.setMaximumFractionDigits(2);
         nf.setMinimumFractionDigits(2);
-        bigDecimalField1 = new BigDecimalField(new BigDecimal(10), new BigDecimal(2), nf);
-        bigDecimalField2 = new BigDecimalField(new BigDecimal(20), new BigDecimal(2), nf);
-        root.getChildren().addAll(new VBox(bigDecimalField1, bigDecimalField2));
+        bigDecimalField = new BigDecimalField(new BigDecimal(10), new BigDecimal(2), nf);
+        root.getChildren().addAll(bigDecimalField);
 
         return root;
     }
 
-    BigDecimalField bigDecimalField1;
+    BigDecimalField bigDecimalField;
     BigDecimalField bigDecimalField2;
     NumberFormat nf;
     private final String NUMBER = "12345.6789";
 
     @Test
     public void checkArrowButtonsAndStepwidth() {
-        Platform.runLater(() -> bigDecimalField1.requestFocus());
-        sleep(1, TimeUnit.SECONDS);
-        Assert.assertEquals(new BigDecimal(10), bigDecimalField1.getNumber());
+        Assert.assertEquals(new BigDecimal(10), bigDecimalField.getNumber());
 
         push(KeyCode.UP);
-        Assert.assertEquals(new BigDecimal(12), bigDecimalField1.getNumber());
+        Assert.assertEquals(new BigDecimal(12), bigDecimalField.getNumber());
         push(KeyCode.DOWN);
         push(KeyCode.DOWN);
-        Assert.assertEquals(new BigDecimal(8), bigDecimalField1.getNumber());
+        Assert.assertEquals(new BigDecimal(8), bigDecimalField.getNumber());
     }
+
     @Test
     public void checkFormatting() {
-        Platform.runLater(() -> bigDecimalField2.requestFocus());
-        sleep(1, TimeUnit.SECONDS);
         type(NUMBER);
         push(ENTER);
-        Assert.assertEquals("12,345.68", bigDecimalField2.getText());
+        Assert.assertEquals("12,345.68", bigDecimalField.getText());
     }
 
     @Test
     public void checkFormatSwitch() {
-        Platform.runLater(() -> bigDecimalField1.requestFocus());
-        sleep(1, TimeUnit.SECONDS);
         type(NUMBER);
         push(ENTER);
-        Assert.assertEquals("12,345.68", bigDecimalField1.getText());
+        Assert.assertEquals("12,345.68", bigDecimalField.getText());
         nf = NumberFormat.getNumberInstance(Locale.GERMANY);
         nf.setMaximumFractionDigits(3);
         nf.setMinimumFractionDigits(3);
-        bigDecimalField1.setFormat(nf);
-        Assert.assertEquals("12.345,679", bigDecimalField1.getText());
+        bigDecimalField.setFormat(nf);
+        Assert.assertEquals("12.345,679", bigDecimalField.getText());
     }
 
 }

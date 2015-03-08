@@ -94,7 +94,8 @@ public class BigDecimalFieldDemo extends Application {
         final BigDecimalField disabledField = new BigDecimalField();
         disabledField.setDisable(true);
         root.addRow(rowIndex++, new Label("disabled field"), disabledField);
-        root.addRow(rowIndex++, new Label("regular TextField"), new TextField("1.000,1234"));
+        TextField textField;
+        root.addRow(rowIndex++, new Label("regular TextField"), textField = new TextField("1.000,1234"));
         root.addRow(rowIndex++, new Label("with promptText"), promptText);
         CalendarTextField calendarTextField = new CalendarTextField();
         root.addRow(rowIndex++, new Label("CalendarTextField"), calendarTextField);
@@ -143,14 +144,17 @@ public class BigDecimalFieldDemo extends Application {
         calendarLabel.valueProperty().bind(calendarTextField.calendarProperty());
         calendarLabel.formatProperty().bind(dateFormatProperty);
         root.addRow(rowIndex++, new Label("CalendarLabel"), calendarLabel);
-//        defaultSpinner.requestFocus();
-//        calendarTextField.requestFocus();
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 decimalFormat.requestFocus();
+//                defaultSpinner.requestFocus();
+//                calendarTextField.requestFocus();
             }
         });
+        decimalFormat.focusedProperty().addListener((observableValue, oldValue, newValue) -> System.out.println("focus changed on decimalFormat from " + oldValue + " to " + newValue));
+        calendarTextField.focusedProperty().addListener((observableValue, oldValue, newValue) -> System.out.println("focus changed on calendarTextField from " + oldValue + " to " + newValue));
+        textField.focusedProperty().addListener((observableValue, oldValue, newValue) -> System.out.println("focus changed on textField from " + oldValue + " to " + newValue));
         decimalFormat.requestFocus();
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);

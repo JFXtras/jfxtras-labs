@@ -34,6 +34,8 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -84,12 +86,18 @@ public class BigDecimalFieldSkin extends SkinBase<BigDecimalField> {
 
     public BigDecimalField getControl() {return CONTROL;}
 
+    public BooleanProperty focusForward;
+
     /**
      * Creates the Nodes in this Skin
      */
     private void createNodes() {
         textField = new NumberTextField();
         textField.promptTextProperty().bind(CONTROL.promptTextProperty());
+
+        // Needed for simulating the correct focus behaviour in the CONTROL (solution taken from Tom's CalendarTextField)
+        focusForward = new SimpleBooleanProperty();
+        focusForward.bind(textField.focusedProperty());
 
         //
         // The Buttons are StackPanes with a Path on top
