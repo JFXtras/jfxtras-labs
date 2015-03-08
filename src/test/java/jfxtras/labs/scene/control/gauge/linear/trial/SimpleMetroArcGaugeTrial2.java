@@ -58,7 +58,8 @@ public class SimpleMetroArcGaugeTrial2 extends Application {
 
 		List<SimpleMetroArcGauge> gauges = new ArrayList<SimpleMetroArcGauge>();
 		
-		BorderPane lBorderPane = new BorderPane();;
+		BorderPane lBorderPane = new BorderPane();
+		lBorderPane.setStyle("-fx-background-color: white;");
 		
         // 10 segments
 		{

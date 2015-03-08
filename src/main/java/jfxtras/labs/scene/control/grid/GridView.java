@@ -199,7 +199,7 @@ public class GridView<T> extends Control {
 	}
 
 	@Override
-	protected String getUserAgentStylesheet() {
+	public String getUserAgentStylesheet() {
 		return GridView.class.getResource("gridview.css").toExternalForm();
 	}
 

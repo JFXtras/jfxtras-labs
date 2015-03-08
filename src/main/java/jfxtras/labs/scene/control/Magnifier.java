@@ -103,7 +103,7 @@ public class Magnifier extends Control {
 	 * Return the path to the CSS file so things are setup right
 	 */
 	@Override
-	protected String getUserAgentStylesheet() {
+	public String getUserAgentStylesheet() {
 		return this.getClass().getResource(this.getClass().getSimpleName() + ".css").toString();
 	}
 

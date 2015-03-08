@@ -47,7 +47,7 @@ public class GridCell<T> extends IndexedCell<T> {
 	}
 	
 	@Override
-	protected String getUserAgentStylesheet() {
+	public String getUserAgentStylesheet() {
 		return GridView.class.getResource("gridview.css").toExternalForm();
 	}
 }

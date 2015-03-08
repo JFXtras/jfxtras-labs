@@ -31,6 +31,9 @@ package jfxtras.labs.internal.scene.control.behavior;
 
 import java.util.ArrayList;
 
+import javafx.scene.control.Control;
+import javafx.scene.control.FocusModel;
+import javafx.scene.control.MultipleSelectionModel;
 import jfxtras.labs.scene.control.grid.GridCell;
 
 import com.sun.javafx.scene.control.behavior.CellBehaviorBase;
@@ -44,5 +47,29 @@ import com.sun.javafx.scene.control.behavior.KeyBinding;
 public class GridCellBehavior<T> extends CellBehaviorBase<GridCell<T>> {
 	public GridCellBehavior(GridCell<T> control) {
 		super(control,new ArrayList<KeyBinding>());
+	}
+
+//	@Override
+	protected void edit(GridCell<T> arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+//	@Override
+	protected Control getCellContainer() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+//	@Override
+	protected FocusModel<?> getFocusModel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+//	@Override
+	protected MultipleSelectionModel<?> getSelectionModel() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

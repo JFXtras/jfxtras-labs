@@ -150,7 +150,7 @@ public class SlideLock extends Control {
     }
 
     @Override
-    protected String getUserAgentStylesheet() {
+    public String getUserAgentStylesheet() {
         return getClass().getResource("/jfxtras/labs/scene/control/slidelock.css").toExternalForm();
     }
 

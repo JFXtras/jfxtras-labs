@@ -1162,7 +1162,7 @@ public class MatrixPanel extends Control {
         return new MatrixPanelSkin(this);
     }
 
-    @Override protected String getUserAgentStylesheet() {
+    @Override public String getUserAgentStylesheet() {
         return getClass().getResource(getClass().getSimpleName().toLowerCase() + ".css").toExternalForm();
     }
 
