@@ -37,7 +37,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.control.gauge.linear.PercentSegment;
 import jfxtras.labs.scene.control.gauge.linear.Segment;

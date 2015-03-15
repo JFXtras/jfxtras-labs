@@ -19,6 +19,7 @@ import jfxtras.scene.control.ListSpinner;
  * - If segments are specified, the user is responsible for not leaving any gaps.
  * 
  * TBEERNOT: styleable properties
+ * TBEERNOT: overlapping segments & indicators
  * 
  * This is a blatant but approved copy of Gerrit Grunwald's Enzo SimpleGauge (https://bitbucket.org/hansolo/enzo/src)
  */

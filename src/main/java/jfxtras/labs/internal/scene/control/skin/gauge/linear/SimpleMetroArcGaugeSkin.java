@@ -3,7 +3,9 @@ package jfxtras.labs.internal.scene.control.skin.gauge.linear;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -23,10 +25,13 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcTo;
 import javafx.scene.shape.ArcType;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.SVGPath;
+import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
@@ -156,7 +161,8 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	
 	class DialPane extends Pane {
 
-		final private List<Segment> segments = new ArrayList<Segment>();
+		final private List<Segment> segments = new ArrayList<>();
+		final private Map<Segment, Arc> segmentToArc = new HashMap<>();
 		
 		/**
 		 * 
@@ -169,7 +175,12 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 				createSegments();
 			});
 			createSegments();
+
+			warningIndicator.getStyleClass().add("warning-indicator");
+			errorIndicator.getStyleClass().add("error-indicator");
 		}
+		Circle warningIndicator = new Circle(20.0);
+		Circle errorIndicator = new Circle(20.0);
 		
 		/**
 		 * 
@@ -182,13 +193,15 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 			segments.add(new CompleteSegment(getSkinnable()));
 	 		}
 
-	 		// create the segments
+	 		// create the arcs representing each segment
+	 		segmentToArc.clear();
 	 		int cnt = 0;
 	 		for (Segment segment : segments) {
 	 			
 	 			// create an arc for this segment
 	 			Arc arc = new Arc();
 				getChildren().add(arc);
+				segmentToArc.put(segment, arc);
 				
 				// setup CSS on the path
 		        arc.getStyleClass().addAll("segment", "segment" + cnt);
@@ -197,6 +210,9 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 		        }
 	 			cnt++;
 	 		}
+			
+			getChildren().add(warningIndicator);
+			getChildren().add(errorIndicator);
 		}
 		
 		/**
@@ -242,6 +258,39 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 			arc.setLength(-1 * (endAngle - startAngle));
 	 			arc.setType(ArcType.ROUND);
 		        
+	 			cnt++;
+	 		}
+	 		
+	 		// size & position the indicators
+	 		double indicatorRadius = radius * 0.15;
+	 		double indicatorDiameter = 2 * indicatorRadius;
+	 		warningIndicator.setRadius(indicatorRadius);
+			warningIndicator.layoutXProperty().set(center.getX() - indicatorDiameter);
+			warningIndicator.layoutYProperty().set(center.getY() + radius - indicatorDiameter);
+			errorIndicator.setRadius(indicatorRadius);
+			errorIndicator.layoutXProperty().set(center.getX() + indicatorDiameter);
+			errorIndicator.layoutYProperty().set(center.getY() + radius - indicatorDiameter);
+		}
+
+		/**
+		 * Make segments active
+		 */
+		void activateSegments() {
+	 		// make those segments active that fall under the needle
+			double lValue = getSkinnable().getValue();
+	 		int cnt = 0;
+	 		for (Segment segment : segments) {
+	 			
+	 			// layout the arc for this segment
+	 	 		double segmentMinValue = segment.getMinValue();
+	 	 		double segmentMaxValue = segment.getMaxValue();
+	 	 		String lSegmentActiveId = "segment" + cnt + "-active";
+	 	 		dialPane.getStyleClass().remove(lSegmentActiveId);
+	 	 		segmentToArc.get(segment).getStyleClass().remove("segment-active");
+	 	 		if (segmentMinValue <= lValue && lValue <= segmentMaxValue) {
+		 	 		dialPane.getStyleClass().add(lSegmentActiveId);
+		 	 		segmentToArc.get(segment).getStyleClass().add("segment-active");
+	 	 		}
 	 			cnt++;
 	 		}
 		}
@@ -410,7 +459,9 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 		        timeline.getKeyFrames().setAll(KEY_FRAME);
 		        timeline.play();
 	 		}
-
+	 		
+	 		// make certain segments active because the needle moved
+	 		dialPane.activateSegments();
 		}
 		final private Timeline timeline = new Timeline();
 		
