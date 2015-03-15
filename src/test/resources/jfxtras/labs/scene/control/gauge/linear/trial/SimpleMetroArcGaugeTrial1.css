@@ -1,10 +1,7 @@
-/**
-* test with segment id
-*/ 
-.segment1-active {
+#segmentRelatedIndicators .segment1-active {
 	-warning-indicator-visibility: visible; 
 }
 
-.segment2-active {
+#segmentRelatedIndicators .segment2-active {
 	-error-indicator-visibility: visible; 
 }
