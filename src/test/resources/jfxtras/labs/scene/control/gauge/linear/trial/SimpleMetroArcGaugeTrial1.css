@@ -1,7 +1,15 @@
-#segmentRelatedIndicators .segment1-active {
+#segmentRelatedIndicators .segment1-activex {
 	-warning-indicator-visibility: visible; 
 }
 
-#segmentRelatedIndicators .segment2-active {
+#segmentRelatedIndicators .segment2-activex {
+	-error-indicator-visibility: visible; 
+}
+
+#segmentRelatedIndicators .warningSegment-active {
+	-warning-indicator-visibility: visible; 
+}
+
+#segmentRelatedIndicators .errorSegment-active {
 	-error-indicator-visibility: visible; 
 }

@@ -285,11 +285,18 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 	 		double segmentMinValue = segment.getMinValue();
 	 	 		double segmentMaxValue = segment.getMaxValue();
 	 	 		String lSegmentActiveId = "segment" + cnt + "-active";
+	 	 		String lSegmentIdActiveId = segment.getId() + "-active";
 	 	 		dialPane.getStyleClass().remove(lSegmentActiveId);
 	 	 		segmentToArc.get(segment).getStyleClass().remove("segment-active");
+	 	 		if (segment.getId() != null) {
+		 	 		dialPane.getStyleClass().remove(lSegmentIdActiveId);
+	 	 		}
 	 	 		if (segmentMinValue <= lValue && lValue <= segmentMaxValue) {
 		 	 		dialPane.getStyleClass().add(lSegmentActiveId);
 		 	 		segmentToArc.get(segment).getStyleClass().add("segment-active");
+		 	 		if (segment.getId() != null) {
+			 	 		dialPane.getStyleClass().add(lSegmentIdActiveId);
+		 	 		}
 	 	 		}
 	 			cnt++;
 	 		}

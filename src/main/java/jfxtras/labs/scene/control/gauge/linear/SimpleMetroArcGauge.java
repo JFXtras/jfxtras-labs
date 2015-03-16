@@ -64,6 +64,20 @@ import jfxtras.scene.control.ListSpinner;
  *			lSimpleMetroArcGauge.segments().add(new PercentSegment(lSimpleMetroArcGauge, 50.0, 100.0, "warningSegment"));
  *			lSimpleMetroArcGauge.segments().add(new PercentSegment(lSimpleMetroArcGauge, 75.0, 100.0, "errorSegment"));
  * --
+ * 
+ * Given that the segements have id's, you can also use active classes based on that: 
+ * [source,css]
+ * --
+ *    .warningSegment-active {
+ *        -warning-indicator-visibility: visible; 
+ *     }
+ *    .errorSegment-active {
+ *        -error-indicator-visibility: visible; 
+ *     }
+ * --
+ * 
+ * This should be be confused with the CSS rules based on the id segments (#warningSegment and #errorSegment).
+ *  
  * == Todo
  * TBEERNOT: styleable properties
  * 
