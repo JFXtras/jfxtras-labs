@@ -1,15 +1,15 @@
 #segmentRelatedIndicators .segment1-activex {
-	-warning-indicator-visibility: visible; 
+	-fxx-warning-indicator-visibility: visible; 
 }
 
 #segmentRelatedIndicators .segment2-activex {
-	-error-indicator-visibility: visible; 
+	-fxx-error-indicator-visibility: visible; 
 }
 
-#segmentRelatedIndicators .warningSegment-active {
-	-warning-indicator-visibility: visible; 
+#segmentRelatedIndicators .segment-warningSegment-active {
+	-fxx-warning-indicator-visibility: visible; 
 }
 
-#segmentRelatedIndicators .errorSegment-active {
-	-error-indicator-visibility: visible; 
+#segmentRelatedIndicators .segment-errorSegment-active {
+	-fxx-error-indicator-visibility: visible; 
 }

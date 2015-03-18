@@ -57,6 +57,7 @@ public class SimpleMetroArcGaugeTrial2 extends Application {
 
 		List<SimpleMetroArcGauge> gauges = new ArrayList<SimpleMetroArcGauge>();
 		
+		// the border pane makes it resizeable
 		BorderPane lBorderPane = new BorderPane();
 		lBorderPane.setStyle("-fx-background-color: white;");
 		
@@ -64,6 +65,7 @@ public class SimpleMetroArcGaugeTrial2 extends Application {
 		{
 			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
 			lSimpleMetroArcGauge.getStyleClass().add("colorscheme-green-to-red-10");
+			lSimpleMetroArcGauge.setStyle("-warning-indicator-visibility: visible; -error-indicator-visibility: visible; ");
 			for (int i = 0; i < 10; i++) {
 				Segment lSegment = new PercentSegment(lSimpleMetroArcGauge, i * 10.0, (i+1) * 10.0);
 				lSimpleMetroArcGauge.segments().add(lSegment);

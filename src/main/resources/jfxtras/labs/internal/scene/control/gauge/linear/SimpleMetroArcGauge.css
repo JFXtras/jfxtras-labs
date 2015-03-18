@@ -1,24 +1,24 @@
 .SimpleMetroArcGauge {
     /* These are the variables with their default values (colors), but they're just a mix of colors. Logic can be applied by assigning on of the colorschemes */    
-    -segment0-color: #888888;
-    -segment1-color: #f3622d;
-    -segment2-color: #fba71b;
-    -segment3-color: #57b757;
-    -segment4-color: #41a9c9;
-    -segment5-color: #4258c9;
-    -segment6-color: #9a42c8;
-    -segment7-color: #c84164;
-    -segment8-color: #ffffff;
-    -segment9-color: #aaaaaa;
-	-needle-color: #5a615f;
-	-error-indicator-visibility: hidden; 
-	-error-indicator-color: red; 
-	-warning-indicator-visibility: hidden; 
-	-warning-indicator-color: orange; 
+    -fxx-segment0-color: #888888;
+    -fxx-segment1-color: #f3622d;
+    -fxx-segment2-color: #fba71b;
+    -fxx-segment3-color: #57b757;
+    -fxx-segment4-color: #41a9c9;
+    -fxx-segment5-color: #4258c9;
+    -fxx-segment6-color: #9a42c8;
+    -fxx-segment7-color: #c84164;
+    -fxx-segment8-color: #ffffff;
+    -fxx-segment9-color: #aaaaaa;
+	-fxx-needle-color: #5a615f;
+	-fxx-error-indicator-visibility: hidden; 
+	-fxx-error-indicator-color: red; 
+	-fxx-warning-indicator-visibility: hidden; 
+	-fxx-warning-indicator-color: orange; 
 }
 
 .needle {
-    -fx-fill:-needle-color;
+    -fx-fill:-fxx-needle-color;
     -fx-stroke: white;
     -fx-stroke-line-cap: round;
     -fx-stroke-line-join: bevel;
@@ -31,15 +31,15 @@
 }
 
 .error-indicator {
-	visibility: -error-indicator-visibility;
-	-fx-fill: -error-indicator-color;
-    -fx-stroke: -error-indicator-color;
+	visibility: -fxx-error-indicator-visibility;
+	-fx-fill: -fxx-error-indicator-color;
+    -fx-stroke: -fxx-error-indicator-color;
 }
 
 .warning-indicator {
-	visibility: -warning-indicator-visibility;
-	-fx-fill: -warning-indicator-color;
-    -fx-stroke: -warning-indicator-color;
+	visibility: -fxx-warning-indicator-visibility;
+	-fx-fill: -fxx-warning-indicator-color;
+    -fx-stroke: -fxx-warning-indicator-color;
 }
 
 /**
@@ -47,56 +47,58 @@
  */ 
 
 .segment {
+    -fx-stroke: #888888;
+    -fx-fill: #888888;
 }
 
 .segment0 {
-    -fx-stroke: -segment0-color;
-    -fx-fill: -segment0-color;
+    -fx-stroke: -fxx-segment0-color;
+    -fx-fill: -fxx-segment0-color;
 }
 
 .segment1 {
-    -fx-stroke: -segment1-color;
-    -fx-fill: -segment1-color;
+    -fx-stroke: -fxx-segment1-color;
+    -fx-fill: -fxx-segment1-color;
 }
 
 .segment2 {
-    -fx-stroke: -segment2-color;
-    -fx-fill: -segment2-color;
+    -fx-stroke: -fxx-segment2-color;
+    -fx-fill: -fxx-segment2-color;
 }
 
 .segment3 {
-    -fx-stroke: -segment3-color;
-    -fx-fill: -segment3-color;
+    -fx-stroke: -fxx-segment3-color;
+    -fx-fill: -fxx-segment3-color;
 }
 
 .segment4 {
-    -fx-stroke: -segment4-color;
-    -fx-fill: -segment4-color;
+    -fx-stroke: -fxx-segment4-color;
+    -fx-fill: -fxx-segment4-color;
 }
 
 .segment5 {
-    -fx-stroke: -segment5-color;
-    -fx-fill: -segment5-color;
+    -fx-stroke: -fxx-segment5-color;
+    -fx-fill: -fxx-segment5-color;
 }
 
 .segment6 {
-    -fx-stroke: -segment6-color;
-    -fx-fill: -segment6-color;
+    -fx-stroke: -fxx-segment6-color;
+    -fx-fill: -fxx-segment6-color;
 }
 
 .segment7 {
-    -fx-stroke: -segment7-color;
-    -fx-fill: -segment7-color;
+    -fx-stroke: -fxx-segment7-color;
+    -fx-fill: -fxx-segment7-color;
 }
 
 .segment8 {
-    -fx-stroke: -segment8-color;
-    -fx-fill: -segment8-color;
+    -fx-stroke: -fxx-segment8-color;
+    -fx-fill: -fxx-segment8-color;
 }
 
 .segment9 {
-    -fx-stroke: -segment9-color;
-    -fx-fill: -segment9-color;
+    -fx-stroke: -fxx-segment9-color;
+    -fx-fill: -fxx-segment9-color;
 }
 
 /**
@@ -106,8 +108,8 @@
 /**
  * The segmentX-active are assigned corresponding to the segment that is under the needle (this can be more than if the segments are setup in such a way).
  * This is the place to associate an indicator with a segment, by adding one of these line to the appropriate class:
- *     -error-indicator-visibility: visible; 
- *     -warning-indicator-visibility: visible; 
+ *     -fxx-error-indicator-visibility: visible; 
+ *     -fxx-warning-indicator-visibility: visible; 
  * Interesting is it to have transparent segments, while not visible, these can become active and show an indicator.
  */
  
@@ -149,130 +151,130 @@
  */
 
 .colorscheme-blue-to-red-5 {
-    -segment0-color: #2976fa;
-    -segment1-color: #29c0fa;
-    -segment2-color: #29fa3d;
-    -segment3-color: #ffd82a;
-    -segment4-color: #ff312a;
+    -fxx-segment0-color: #2976fa;
+    -fxx-segment1-color: #29c0fa;
+    -fxx-segment2-color: #29fa3d;
+    -fxx-segment3-color: #ffd82a;
+    -fxx-segment4-color: #ff312a;
 }
 .colorscheme-red-to-blue-5 {
-    -segment0-color: #ff312a;
-    -segment1-color: #ffd82a;
-    -segment2-color: #29fa3d;
-    -segment3-color: #29c0fa;
-    -segment4-color: #2976fa;
+    -fxx-segment0-color: #ff312a;
+    -fxx-segment1-color: #ffd82a;
+    -fxx-segment2-color: #29fa3d;
+    -fxx-segment3-color: #29c0fa;
+    -fxx-segment4-color: #2976fa;
 }
 
 
 /* for 6 sections */
 .colorscheme-green-to-darkgreen-6 {
-    -segment0-color: #badf8d;
-    -segment1-color: #95c262;
-    -segment2-color: #80b940;
-    -segment3-color: #67a328;
-    -segment4-color: #36843d;
-    -segment5-color: #11632f;
+    -fxx-segment0-color: #badf8d;
+    -fxx-segment1-color: #95c262;
+    -fxx-segment2-color: #80b940;
+    -fxx-segment3-color: #67a328;
+    -fxx-segment4-color: #36843d;
+    -fxx-segment5-color: #11632f;
 }
 .colorscheme-green-to-red-6 {
-    -segment0-color: #11632f;
-    -segment1-color: #36843d;
-    -segment2-color: #80b940;
-    -segment3-color: #f5982b;
-    -segment4-color: #f06129;
-    -segment5-color: #b61f25;
+    -fxx-segment0-color: #11632f;
+    -fxx-segment1-color: #36843d;
+    -fxx-segment2-color: #80b940;
+    -fxx-segment3-color: #f5982b;
+    -fxx-segment4-color: #f06129;
+    -fxx-segment5-color: #b61f25;
 }
 .colorscheme-red-to-green-6 {
-    -segment0-color: #b61f25;
-    -segment1-color: #f06129;
-    -segment2-color: #f5982b;
-    -segment3-color: #80b940;
-    -segment4-color: #36843d;
-    -segment5-color: #11632f;
+    -fxx-segment0-color: #b61f25;
+    -fxx-segment1-color: #f06129;
+    -fxx-segment2-color: #f5982b;
+    -fxx-segment3-color: #80b940;
+    -fxx-segment4-color: #36843d;
+    -fxx-segment5-color: #11632f;
 }
 .colorscheme-purple-to-red-6 {
-    -segment0-color: #64266b;
-    -segment1-color: #74255e;
-    -segment2-color: #842551;
-    -segment3-color: #922545;
-    -segment4-color: #a12538;
-    -segment5-color: #b61f25;
+    -fxx-segment0-color: #64266b;
+    -fxx-segment1-color: #74255e;
+    -fxx-segment2-color: #842551;
+    -fxx-segment3-color: #922545;
+    -fxx-segment4-color: #a12538;
+    -fxx-segment5-color: #b61f25;
 }
 .colorscheme-blue-to-red-6 {
-    -segment0-color: #20bafb;
-    -segment1-color: #23d8a6;
-    -segment2-color: #29fa3d;
-    -segment3-color: #ebfb37;
-    -segment4-color: #fdb42a;
-    -segment5-color: #fb4a1c;
+    -fxx-segment0-color: #20bafb;
+    -fxx-segment1-color: #23d8a6;
+    -fxx-segment2-color: #29fa3d;
+    -fxx-segment3-color: #ebfb37;
+    -fxx-segment4-color: #fdb42a;
+    -fxx-segment5-color: #fb4a1c;
 }
 
 /* for 7 sections */
 .colorscheme-green-to-red-7 {
-    -segment0-color: #0b480d;
-    -segment1-color: #177416;
-    -segment2-color: #77a922;
-    -segment3-color: #f0df31;
-    -segment4-color: #fd8d24;
-    -segment5-color: #fc4a1c;
-    -segment6-color: #fb1419;
+    -fxx-segment0-color: #0b480d;
+    -fxx-segment1-color: #177416;
+    -fxx-segment2-color: #77a922;
+    -fxx-segment3-color: #f0df31;
+    -fxx-segment4-color: #fd8d24;
+    -fxx-segment5-color: #fc4a1c;
+    -fxx-segment6-color: #fb1419;
 }
 .colorscheme-red-to-green-7 {
-    -segment0-color: #fb1419;
-    -segment1-color: #fc4a1c;
-    -segment2-color: #fd8d24;
-    -segment3-color: #f0df31;
-    -segment4-color: #77a922;
-    -segment5-color: #177416;
-    -segment6-color: #0b480d;
+    -fxx-segment0-color: #fb1419;
+    -fxx-segment1-color: #fc4a1c;
+    -fxx-segment2-color: #fd8d24;
+    -fxx-segment3-color: #f0df31;
+    -fxx-segment4-color: #77a922;
+    -fxx-segment5-color: #177416;
+    -fxx-segment6-color: #0b480d;
 }
 
 /* for 10 sections */
 .colorscheme-green-to-red-10 {
-    -segment0-color: #97b329;
-    -segment1-color: #aacc2a;
-    -segment2-color: #d4ea35;
-    -segment3-color: #f2de31;
-    -segment4-color: #fccb2e;
-    -segment5-color: #f3a429;
-    -segment6-color: #f18c23;
-    -segment7-color: #f65821;
-    -segment8-color: #f3351f;
-    -segment9-color: #f61319;
+    -fxx-segment0-color: #97b329;
+    -fxx-segment1-color: #aacc2a;
+    -fxx-segment2-color: #d4ea35;
+    -fxx-segment3-color: #f2de31;
+    -fxx-segment4-color: #fccb2e;
+    -fxx-segment5-color: #f3a429;
+    -fxx-segment6-color: #f18c23;
+    -fxx-segment7-color: #f65821;
+    -fxx-segment8-color: #f3351f;
+    -fxx-segment9-color: #f61319;
 }
 .colorscheme-red-to-green-10 {
-    -segment0-color: #f61319;
-    -segment1-color: #f3351f;
-    -segment2-color: #f65821;
-    -segment3-color: #f18c23;
-    -segment4-color: #f3a429;
-    -segment5-color: #fccb2e;
-    -segment6-color: #f2de31;
-    -segment7-color: #d4ea35;
-    -segment8-color: #aacc2a;
-    -segment9-color: #97b329;
+    -fxx-segment0-color: #f61319;
+    -fxx-segment1-color: #f3351f;
+    -fxx-segment2-color: #f65821;
+    -fxx-segment3-color: #f18c23;
+    -fxx-segment4-color: #f3a429;
+    -fxx-segment5-color: #fccb2e;
+    -fxx-segment6-color: #f2de31;
+    -fxx-segment7-color: #d4ea35;
+    -fxx-segment8-color: #aacc2a;
+    -fxx-segment9-color: #97b329;
 }
 .colorscheme-purple-to-cyan-10 {
-    -segment0-color: #5b27c8;
-    -segment1-color: #9622b6;
-    -segment2-color: #cc1760;
-    -segment3-color: #c7151a;
-    -segment4-color: #f37e23;
-    -segment5-color: #f6c52d;
-    -segment6-color: #bdd62d;
-    -segment7-color: #5bcc28;
-    -segment8-color: #25cf90;
-    -segment9-color: #22b4c5;
+    -fxx-segment0-color: #5b27c8;
+    -fxx-segment1-color: #9622b6;
+    -fxx-segment2-color: #cc1760;
+    -fxx-segment3-color: #c7151a;
+    -fxx-segment4-color: #f37e23;
+    -fxx-segment5-color: #f6c52d;
+    -fxx-segment6-color: #bdd62d;
+    -fxx-segment7-color: #5bcc28;
+    -fxx-segment8-color: #25cf90;
+    -fxx-segment9-color: #22b4c5;
 }
 .colorscheme-first-grey-rest-transparent-10 {
-    -segment0-color: #888888;
-    -segment1-color: transparent;
-    -segment2-color: transparent;
-    -segment3-color: transparent;
-    -segment4-color: transparent;
-    -segment5-color: transparent;
-    -segment6-color: transparent;
-    -segment7-color: transparent;
-    -segment8-color: transparent;
-    -segment9-color: transparent;
+    -fxx-segment0-color: #888888;
+    -fxx-segment1-color: transparent;
+    -fxx-segment2-color: transparent;
+    -fxx-segment3-color: transparent;
+    -fxx-segment4-color: transparent;
+    -fxx-segment5-color: transparent;
+    -fxx-segment6-color: transparent;
+    -fxx-segment7-color: transparent;
+    -fxx-segment8-color: transparent;
+    -fxx-segment9-color: transparent;
 }
 

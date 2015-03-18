@@ -192,10 +192,28 @@ public class SimpleMetroArcGaugeTrial1 extends Application {
 			gauges.add(lSimpleMetroArcGauge);
 		}
         
-		// 10 segments, transparent, with segment related indicators
+        
+        // 20 segments
+		{
+			HBox lHBox = new HBox();
+			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
+			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000;");
+			lSimpleMetroArcGauge.getStyleClass().add("colorscheme-green-to-red-10");
+			for (int i = 0; i < 20; i++) {
+				Segment lSegment = new PercentSegment(lSimpleMetroArcGauge, i * 5.0, (i+1) * 5.0);
+				lSimpleMetroArcGauge.segments().add(lSegment);
+			}
+			lHBox.getChildren().add(lSimpleMetroArcGauge);
+
+			lFlowPane.getChildren().add(lHBox);
+			
+			gauges.add(lSimpleMetroArcGauge);
+		}
+        
+		// manually show indicators
 		{
 			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
-			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000; -warning-indicator-visibility: visible; -error-indicator-visibility: visible; ");
+			lSimpleMetroArcGauge.setStyle("-fx-border-color: #000000; -fxx-warning-indicator-visibility: visible; -fxx-error-indicator-visibility: visible; ");
 			lFlowPane.getChildren().add(lSimpleMetroArcGauge);
 			gauges.add(lSimpleMetroArcGauge);
 		}

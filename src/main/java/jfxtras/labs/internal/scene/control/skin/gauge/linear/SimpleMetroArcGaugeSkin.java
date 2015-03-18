@@ -30,8 +30,6 @@ import javafx.scene.shape.FillRule;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import javafx.scene.shape.SVGPath;
-import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
@@ -285,7 +283,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 	 		double segmentMinValue = segment.getMinValue();
 	 	 		double segmentMaxValue = segment.getMaxValue();
 	 	 		String lSegmentActiveId = "segment" + cnt + "-active";
-	 	 		String lSegmentIdActiveId = segment.getId() + "-active";
+	 	 		String lSegmentIdActiveId = "segment-" + segment.getId() + "-active";
 	 	 		dialPane.getStyleClass().remove(lSegmentActiveId);
 	 	 		segmentToArc.get(segment).getStyleClass().remove("segment-active");
 	 	 		if (segment.getId() != null) {

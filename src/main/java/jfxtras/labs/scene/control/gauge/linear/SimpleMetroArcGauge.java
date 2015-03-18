@@ -23,20 +23,35 @@ import jfxtras.scene.control.ListSpinner;
  * === Example
  * [source,java]
  * --
- *			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
- *			lSimpleMetroArcGauge.getStyleClass().add("colorscheme-green-to-red-10");
- *			for (int i = 0; i < 10; i++) {
- *				Segment lSegment = new PercentSegment(lSimpleMetroArcGauge, i * 10.0, (i+1) * 10.0);
- *				lSimpleMetroArcGauge.segments().add(lSegment);
- *			}
+ *     final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
+ *     lSimpleMetroArcGauge.getStyleClass().add("colorscheme-green-to-red-10");
+ *     for (int i = 0; i < 10; i++) {
+ *         Segment lSegment = new PercentSegment(lSimpleMetroArcGauge, i * 10.0, (i+1) * 10.0);
+ *         lSimpleMetroArcGauge.segments().add(lSegment);
+ *     }
+ * --
+ * 
+ * == CSS properties
+ * The gauge supports the following CSS stylable properties:
+ * 
+ * - -fxx-animated: indicate if the gauge is animated with YES or NO.
+ * - -fxx-value-format: a DecimalFormat pattern for rendering the label inside the needle
+ * 
+ * === Example 
+ * [source,css]
+ * --
+ *    #myGauge {
+ *        -fxx-animated: YES; 
+ *        -fxx-value-format:' ##0.0W'; 
+ *     }
  * --
  * 
  * == Indicators
  * This gauge has two indicators: warning and error, they can be made visible through CSS:
  * [source,css]
  * --
- *     -warning-indicator-visibility: visible; 
- *     -error-indicator-visibility: visible;
+ *     -fxx-warning-indicator-visibility: visible; 
+ *     -fxx-error-indicator-visibility: visible;
  * --
  *
  * It is possible to have these indicators become visible based on the needle's value, by means of the segments.
@@ -45,10 +60,10 @@ import jfxtras.scene.control.ListSpinner;
  * [source,css]
  * --
  *    .segment1-active {
- *        -warning-indicator-visibility: visible; 
+ *        -fxx-warning-indicator-visibility: visible; 
  *     }
  *    .segment2-active {
- *        -error-indicator-visibility: visible; 
+ *        -fxx-error-indicator-visibility: visible; 
  *     }
  * --
  * Segments may overlap and can be transparent, there even is a special "colorscheme-first-grey-rest-transparent-10" colorscheme.
@@ -58,30 +73,30 @@ import jfxtras.scene.control.ListSpinner;
  * === Example (using the CSS above)
  * [source,java]
  * --
- *			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
- *			lSimpleMetroArcGauge.getStyleClass().add("colorscheme-first-grey-rest-transparent-10");
- *			lSimpleMetroArcGauge.segments().add(new CompleteSegment(lSimpleMetroArcGauge));
- *			lSimpleMetroArcGauge.segments().add(new PercentSegment(lSimpleMetroArcGauge, 50.0, 100.0, "warningSegment"));
- *			lSimpleMetroArcGauge.segments().add(new PercentSegment(lSimpleMetroArcGauge, 75.0, 100.0, "errorSegment"));
+ *     final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
+ *     lSimpleMetroArcGauge.getStyleClass().add("colorscheme-first-grey-rest-transparent-10");
+ *     lSimpleMetroArcGauge.segments().add(new CompleteSegment(lSimpleMetroArcGauge));
+ *     lSimpleMetroArcGauge.segments().add(new PercentSegment(lSimpleMetroArcGauge, 50.0, 100.0, "warningSegment"));
+ *     lSimpleMetroArcGauge.segments().add(new PercentSegment(lSimpleMetroArcGauge, 75.0, 100.0, "errorSegment"));
  * --
  * 
  * Given that the segements have id's, you can also use active classes based on that: 
  * [source,css]
  * --
- *    .warningSegment-active {
+ *    .segment-warningSegment-active {
  *        -warning-indicator-visibility: visible; 
  *     }
- *    .errorSegment-active {
+ *    .segment-errorSegment-active {
  *        -error-indicator-visibility: visible; 
  *     }
  * --
  * 
- * This should be be confused with the CSS rules based on the id segments (#warningSegment and #errorSegment).
+ * This should not be confused with the CSS rules based on the id of the segments (in the example: #warningSegment and #errorSegment).
  *  
- * == Todo
- * TBEERNOT: styleable properties
- * 
- * This is a blatant but approved copy of Gerrit Grunwald's Enzo SimpleGauge (https://bitbucket.org/hansolo/enzo/src)
+ * == Disclaimer
+ * This is a blatant but approved visual copy of Gerrit Grunwald's Enzo SimpleGauge (https://bitbucket.org/hansolo/enzo/src).
+ * Gerrit describes the Enzo library in his blog like this: _all controls in that library are made for my personal demos and are not production ready._
+ * This control is supposed to be production ready. 
  */
 public class SimpleMetroArcGauge extends LinearGauge<SimpleMetroArcGauge> {
 	
