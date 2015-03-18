@@ -7,8 +7,24 @@ import jfxtras.scene.control.ListSpinner;
 
 /**
  * = SimpleMetroArcGauge
+ * 
  * This gauge is a simple flat possibly colorful (Microsoft Metro) arc shaped gauge.
  * The needle ranges from about 7 o'clock (min) via 12 o'clock to 5 o'clock (max).
+ * 
+ * == CSS properties
+ * The gauge supports the following CSS styleable properties:
+ * 
+ * - -fxx-animated: indicate if the gauge is animated with YES or NO.
+ * - -fxx-value-format: a DecimalFormat pattern for rendering the label inside the needle
+ * 
+ * === Example 
+ * [source,css]
+ * --
+ *    #myGauge {
+ *        -fxx-animated: YES; 
+ *        -fxx-value-format:' ##0.0W'; 
+ *     }
+ * --
  * 
  * == Segments
  * This gauge supports segments:
@@ -28,21 +44,6 @@ import jfxtras.scene.control.ListSpinner;
  *     for (int i = 0; i < 10; i++) {
  *         Segment lSegment = new PercentSegment(lSimpleMetroArcGauge, i * 10.0, (i+1) * 10.0);
  *         lSimpleMetroArcGauge.segments().add(lSegment);
- *     }
- * --
- * 
- * == CSS properties
- * The gauge supports the following CSS stylable properties:
- * 
- * - -fxx-animated: indicate if the gauge is animated with YES or NO.
- * - -fxx-value-format: a DecimalFormat pattern for rendering the label inside the needle
- * 
- * === Example 
- * [source,css]
- * --
- *    #myGauge {
- *        -fxx-animated: YES; 
- *        -fxx-value-format:' ##0.0W'; 
  *     }
  * --
  * 
