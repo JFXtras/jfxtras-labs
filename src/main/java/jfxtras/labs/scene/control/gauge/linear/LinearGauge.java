@@ -47,6 +47,7 @@ abstract public class LinearGauge<T> extends Control {
 	final private DoubleProperty valueProperty = new SimpleDoubleProperty(this, "value", 0.0);
 	public double getValue() { return valueProperty.getValue(); }
 	public void setValue(double value) { valueProperty.setValue(value); }
+	@SuppressWarnings("unchecked")
 	public T withValue(double value) { setValue(value); return (T)this; } 
 
 	/** minValue: the lowest value of the gauge */
@@ -54,6 +55,7 @@ abstract public class LinearGauge<T> extends Control {
 	final private DoubleProperty minValueProperty = new SimpleDoubleProperty(this, "minValue", 0.0);
 	public double getMinValue() { return minValueProperty.getValue(); }
 	public void setMinValue(double value) { minValueProperty.setValue(value); }
+	@SuppressWarnings("unchecked")
 	public T withMinValue(double value) { setMinValue(value); return (T)this; } 
 
 	/** maxValue: the highest value of the gauge */
@@ -61,6 +63,7 @@ abstract public class LinearGauge<T> extends Control {
 	final private DoubleProperty maxValueProperty = new SimpleDoubleProperty(this, "maxValue", 100.0);
 	public double getMaxValue() { return maxValueProperty.getValue(); }
 	public void setMaxValue(double value) { maxValueProperty.setValue(value); }
+	@SuppressWarnings("unchecked")
 	public T withMaxValue(double value) { setMaxValue(value); return (T)this; } 
 
 }

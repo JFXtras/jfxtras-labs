@@ -3,14 +3,14 @@ package jfxtras.labs.scene.control.gauge.linear;
 public class CompleteSegment implements Segment {
 
 	final private String id;
-	final private LinearGauge linearGauge;
+	final private LinearGauge<?> linearGauge;
 	
-	public CompleteSegment(LinearGauge linearGauge, String id) {
+	public CompleteSegment(LinearGauge<?> linearGauge, String id) {
 		this.id = id;
 		this.linearGauge = linearGauge;
 	}
 	
-	public CompleteSegment(LinearGauge linearGauge) {
+	public CompleteSegment(LinearGauge<?> linearGauge) {
 		this.id = null;
 		this.linearGauge = linearGauge;
 	}

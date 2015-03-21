@@ -361,6 +361,8 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 				if (!validateValueAndHandleInvalid()) {
 					return;
 				}
+				rotateNeedle(true); 
+				setValueText(); 
 				scaleValueText();
 				positionValueText();
 			});
@@ -368,6 +370,8 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 				if (!validateValueAndHandleInvalid()) {
 					return;
 				}
+				rotateNeedle(true);
+				setValueText();
 				scaleValueText();
 				positionValueText();
 			});
@@ -535,7 +539,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 		String validationMessage = validateValue();
 		if (validationMessage != null) {
 			new Throwable(validationMessage).printStackTrace();
-			needlePane.valueText.setText("X");
+			needlePane.valueText.setText("");
 			needlePane.needleRotate.setAngle(-45.0);
 			return false;
 		};

@@ -6,7 +6,7 @@ public class AbsoluteSegment implements Segment {
 	final private double min;
 	final private double max;
 
-	public AbsoluteSegment(String id, double min, double max) {
+	public AbsoluteSegment(double min, double max, String id) {
 		this.id = id;
 		this.min = min;
 		this.max = max;

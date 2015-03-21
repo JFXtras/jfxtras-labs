@@ -8,19 +8,19 @@ import jfxtras.scene.control.ListSpinner;
 /**
  * = SimpleMetroArcGauge
  * 
- * This gauge is a simple flat possibly colorful (Microsoft Metro) arc shaped gauge.
- * The needle ranges from about 7 o'clock (min) via 12 o'clock to 5 o'clock (max).
+ * This gauge is a simple flat possibly colorful (Microsoft Metro style) arc shaped gauge.
+ * The needle ranges from about 7 o'clock (min) clockwise to 5 o'clock (max).
  * 
  * == CSS properties
  * The gauge supports the following CSS styleable properties:
  * 
- * - -fxx-animated: indicate if the gauge is animated with YES or NO.
+ * - -fxx-animated: is the gauge animated, YES or NO.
  * - -fxx-value-format: a DecimalFormat pattern for rendering the label inside the needle
  * 
  * === Example 
  * [source,css]
  * --
- *    #myGauge {
+ *     #myGauge {
  *        -fxx-animated: YES; 
  *        -fxx-value-format:' ##0.0W'; 
  *     }
@@ -29,7 +29,7 @@ import jfxtras.scene.control.ListSpinner;
  * == Segments
  * This gauge supports segments:
  * 
- * - Segment colors can be set using CSS classes like "segment0", "segment1", ... , the numeric part is the index of the segment in the segments list.
+ * - Segment colors can be set using CSS classes like "segment0", "segment1", ... , the numeric suffix is the index of the segment in the segments list.
  * - Another option is to specify an segment ID, which can then be used to style the segment in CSS.
  * - The SimpleMetroArcGauge.css per default supports segment classes segment0 - segment9.
  * - The CSS also contains a number of color schemes, like "colorscheme-green-to-red-10" (for 10 segments) which can be activated by assigning the color scheme class to the gauge.
@@ -94,10 +94,28 @@ import jfxtras.scene.control.ListSpinner;
  * 
  * This should not be confused with the CSS rules based on the id of the segments (in the example: #warningSegment and #errorSegment).
  *  
+ * == Color scheme
+ * The CSS defines a number of default color schemes, some of which already were shown in the examples. 
+ * The numeric suffix denotes the number of segments the color schema is for.
+ * 
+ * - colorscheme-blue-to-red-5
+ * - colorscheme-red-to-blue-5
+ * - colorscheme-green-to-darkgreen-6
+ * - colorscheme-green-to-red-6 
+ * - colorscheme-red-to-green-6 
+ * - colorscheme-purple-to-red-6 
+ * - colorscheme-blue-to-red-6 
+ * - colorscheme-green-to-red-7 
+ * - colorscheme-red-to-green-7 
+ * - colorscheme-green-to-red-10 
+ * - colorscheme-red-to-green-10 
+ * - colorscheme-purple-to-cyan-10 
+ * - colorscheme-first-grey-rest-transparent-10
+ *  
  * == Disclaimer
  * This is a blatant but approved visual copy of Gerrit Grunwald's Enzo SimpleGauge (https://bitbucket.org/hansolo/enzo/src).
  * Gerrit describes the Enzo library in his blog like this: _all controls in that library are made for my personal demos and are not production ready._
- * This control is supposed to be production ready. 
+ * The JFXtras control is supposed to be production ready. 
  */
 public class SimpleMetroArcGauge extends LinearGauge<SimpleMetroArcGauge> {
 	
