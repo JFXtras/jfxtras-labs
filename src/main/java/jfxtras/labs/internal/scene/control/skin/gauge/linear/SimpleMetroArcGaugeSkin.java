@@ -346,6 +346,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	        
 	        // add the needle
 	        getChildren().add(needlePath);
+	        needlePath.getStyleClass().add("needle");
 			rotateNeedle(false);
 	        
 	        // value text
