@@ -81,7 +81,15 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
      * valueFormat
      */
     public final SimpleStyleableStringProperty valueFormatProperty() { return valueFormatProperty; }
-    private SimpleStyleableStringProperty valueFormatProperty = new SimpleStyleableStringProperty(StyleableProperties.VALUE_FORMAT_CSSMETADATA, StyleableProperties.VALUE_FORMAT_CSSMETADATA.getInitialValue(null));
+    private SimpleStyleableStringProperty valueFormatProperty = new SimpleStyleableStringProperty(StyleableProperties.VALUE_FORMAT_CSSMETADATA, StyleableProperties.VALUE_FORMAT_CSSMETADATA.getInitialValue(null)) {
+		{ // anonymous constructor
+			addListener( (invalidationEvent) -> {
+				needlePane.setValueText(); 
+				needlePane.scaleValueText();
+				needlePane.positionValueText();
+			});
+		}
+	};
     public final void setValueFormat(String value) { valueFormatProperty.set(value); }
     public final String getValueFormat() { return valueFormatProperty.get(); }
     public final SimpleMetroArcGaugeSkin withValueFormat(String value) { setValueFormat(value); return this; }
