@@ -10,6 +10,16 @@
     -fxx-segment7-color: #c84164;
     -fxx-segment8-color: #ffffff;
     -fxx-segment9-color: #aaaaaa;
+    -fxx-marker0-color: blue;
+    -fxx-marker1-color: blue;
+    -fxx-marker2-color: blue;
+    -fxx-marker3-color: blue;
+    -fxx-marker4-color: blue;
+    -fxx-marker5-color: blue;
+    -fxx-marker6-color: blue;
+    -fxx-marker7-color: blue;
+    -fxx-marker8-color: blue;
+    -fxx-marker9-color: blue;
 	-fxx-needle-color: #5a615f;
 	-fxx-error-indicator-visibility: hidden; 
 	-fxx-error-indicator-color: red; 
@@ -155,33 +165,43 @@
 }
 
 .marker0 {
+    -fx-fill: -fxx-marker0-color;
 }
 
 .marker1 {
+    -fx-fill: -fxx-marker1-color;
 }
 
 .marker2 {
+    -fx-fill: -fxx-marker2-color;
 }
 
 .marker3 {
+    -fx-fill: -fxx-marker3-color;
 }
 
 .marker4 {
+    -fx-fill: -fxx-marker4-color;
 }
 
 .marker5 {
+    -fx-fill: -fxx-marker5-color;
 }
 
 .marker6 {
+    -fx-fill: -fxx-marker6-color;
 }
 
 .marker7 {
+    -fx-fill: -fxx-marker7-color;
 }
 
 .marker8 {
+    -fx-fill: -fxx-marker8-color;
 }
 
 .marker9 {
+    -fx-fill: -fxx-marker9-color;
 }
 
 /***************************************************************************************************************

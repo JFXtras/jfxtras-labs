@@ -132,7 +132,7 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 		setLabel("fourEvenSegments");
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			for (int i = 0; i < 4; i++) {
-				simpleMetroArcGauge.segments().add(new PercentSegment(simpleMetroArcGauge, i * 25.0, (i+1) * 25.0));
+				simpleMetroArcGauge.segments().add(new PercentSegment(simpleMetroArcGauge, i * 25.0, (i+1) * 25.0, "segment-" + i));
 			}
 		});
 		
@@ -144,10 +144,13 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 		}
 		assertNotFind(".segment4");
 		for (int i = 0; i < 4; i++) { generateSegmentSource(".segment" + i); }
+		TestUtil.sleep(3000);
+		// TBEERNOT: why are these lines not validated correctly?
 		new AssertNode(find(".segment0")).assertXYWH(0.0, 0.0, 100.38267517089844, 176.61048889160156, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -135.0, -67.5, 0.01);
 		new AssertNode(find(".segment1")).assertXYWH(0.0, 0.0, 100.0, 110.1483097076416, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -202.5, -67.5, 0.01);
 		new AssertNode(find(".segment2")).assertXYWH(0.0, 0.0, 187.04415893554688, 110.14830207824707, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -270.0, -67.5, 0.01);
-		new AssertNode(find(".segment3")).assertXYWH(0.0, 0.0, 194.05274963378906, 176.61048889160156, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -337.5, -67.5, 0.01);	}
+		new AssertNode(find(".segment3")).assertXYWH(0.0, 0.0, 194.05274963378906, 176.61048889160156, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -337.5, -67.5, 0.01);	
+	}
 
 	
 	@Test
@@ -168,11 +171,14 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 		}
 		assertNotFind(".segment4");
 		for (int i = 0; i < 4; i++) { generateSegmentSource(".segment" + i); }
+		// TBEERNOT: why are these lines not validated correctly?
 		new AssertNode(find(".segment0")).assertXYWH(0.0, 0.0, 103.67220687866211, 139.0930938720703, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -162.0, -13.5, 0.01);
 		new AssertNode(find(".segment1")).assertXYWH(0.0, 0.0, 101.47879028320312, 110.21964263916016, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -189.0, -27.0, 0.01);
 		new AssertNode(find(".segment2")).assertXYWH(0.0, 0.0, 100.0, 110.38131141662598, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -216.0, -54.0, 0.01);
 		new AssertNode(find(".segment3")).assertXYWH(0.0, 0.0, 194.0507049560547, 139.0930938720703, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -270.0, -108.0, 0.01);
 	}
+
+	// TBEERNOT: markers
 
 	// =============================================================================================================================================================================================================================
 	// SUPPORT
@@ -191,20 +197,17 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 	}
 
 	private void generateSource(String classFindExpression) {
-		Node pane = find(classFindExpression);
-		AssertNode.generateSource("find(\"" + classFindExpression + "\")", pane, EXCLUDED_CLASSES, false, A.XYWH);
-		//TestUtil.sleep(3000);
+		Node node = find(classFindExpression);
+		AssertNode.generateSource("find(\"" + classFindExpression + "\")", node, EXCLUDED_CLASSES, false, A.XYWH);
 	}
 
 	private void generateNeedleSource(String classFindExpression) {
-		Node pane = find(classFindExpression);
-		AssertNode.generateSource("find(\"" + classFindExpression + "\")", pane, EXCLUDED_CLASSES, false, A.XYWH, A.ROTATE);
-		//TestUtil.sleep(3000);
+		Node node = find(classFindExpression);
+		AssertNode.generateSource("find(\"" + classFindExpression + "\")", node, EXCLUDED_CLASSES, false, A.XYWH, A.ROTATE);
 	}
 
 	private void generateSegmentSource(String classFindExpression) {
-		Node pane = find(classFindExpression);
-		AssertNode.generateSource("find(\"" + classFindExpression + "\")", pane, EXCLUDED_CLASSES, false, A.XYWH, A.ARC);
-		//TestUtil.sleep(3000);
+		Node node = find(classFindExpression);
+		AssertNode.generateSource("find(\"" + classFindExpression + "\")", node, EXCLUDED_CLASSES, false, A.XYWH, A.ARC);
 	}
 }

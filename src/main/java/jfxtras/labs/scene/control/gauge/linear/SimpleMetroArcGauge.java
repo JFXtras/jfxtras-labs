@@ -27,11 +27,12 @@ import jfxtras.scene.control.ListSpinner;
  * --
  * 
  * == Segments
- * This gauge supports segments:
+ * This gauge supports segments, which are colored parts of the arc over which the needle moves:
  * 
- * - Segment colors can be set using CSS classes like "segment0", "segment1", ... , the numeric suffix is the index of the segment in the segments list.
+ * - Segment styling can be set using CSS classes like "segment0", "segment1", ... , the numeric suffix is the index of the segment in the segments list.
  * - Another option is to specify an segment ID, which can then be used to style the segment in CSS.
  * - The SimpleMetroArcGauge.css per default supports segment classes segment0 - segment9.
+ * - A shortcut is available through -fxx-segment0-color, ..., which can be set in any styleclass (this is used in the color schemes).
  * - The CSS also contains a number of color schemes, like "colorscheme-green-to-red-10" (for 10 segments) which can be activated by assigning the color scheme class to the gauge.
  * - If no segments are specified a single segment will automatically be drawn.
  * - If segments are specified, the user is fully responsible for convering the whole range.
@@ -44,6 +45,24 @@ import jfxtras.scene.control.ListSpinner;
  *     for (int i = 0; i < 10; i++) {
  *         Segment lSegment = new PercentSegment(lSimpleMetroArcGauge, i * 10.0, (i+1) * 10.0);
  *         lSimpleMetroArcGauge.segments().add(lSegment);
+ *     }
+ * --
+ * 
+ * == Marker
+ * This gauge supports markers, which are tiny notches on the arc to mark special values:
+ * 
+ * - Marker styling can be set using CSS classes like "marker0", "marker1", ... , the numeric suffix is the index of the marker in the markers list.
+ * - Another option is to specify an marker ID, which can then be used to style the marker in CSS.
+ * - The SimpleMetroArcGauge.css per default supports marker classes marker0 - marker9.
+ * - A shortcut is available through -fxx-marker0-color, ..., which can be set in any styleclass (this is used in the color schemes).
+ * - Marker colors are also set in the colorschemes.
+ *
+ * === Example
+ * [source,java]
+ * --
+ *     final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
+ *     for (int i = 0; i <= 20; i++) {
+ *         lSimpleMetroArcGauge.markers().add(new PercentMarker(lSimpleMetroArcGauge, i * 5.0));
  *     }
  * --
  * 
@@ -67,7 +86,7 @@ import jfxtras.scene.control.ListSpinner;
  *        -fxx-error-indicator-visibility: visible; 
  *     }
  * --
- * Segments may overlap and can be transparent, there even is a special "colorscheme-first-grey-rest-transparent-10" colorscheme.
+ * Segments may overlap and can be transparent, there is a special "colorscheme-first-grey-rest-transparent-10" colorscheme.
  * Segments could be setup solely to show indicators, for example segment1 could run from 50% to 100% and segment2 from 75% to 100%.
  * If the needle is over segment2, both the warning and error indicator will be visible.
  *
