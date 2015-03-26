@@ -29,34 +29,21 @@
 
 package jfxtras.labs.scene.control.gauge.linear.trial;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
+import jfxtras.labs.scene.control.gauge.linear.PercentSegment;
+import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
+import jfxtras.labs.test.TestUtil;
+import jfxtras.test.AssertNode;
+import jfxtras.test.AssertNode.A;
+import jfxtras.test.JFXtrasGuiTest;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import jfxtras.labs.scene.control.gauge.linear.CompleteSegment;
-import jfxtras.labs.scene.control.gauge.linear.PercentSegment;
-import jfxtras.labs.scene.control.gauge.linear.Segment;
-import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
-import jfxtras.labs.test.TestUtil;
-import jfxtras.scene.layout.CircularPane;
-import jfxtras.test.AssertNode;
-import jfxtras.test.JFXtrasGuiTest;
-import jfxtras.test.AssertNode.A;
 
 /**
  * @author Tom Eugelink

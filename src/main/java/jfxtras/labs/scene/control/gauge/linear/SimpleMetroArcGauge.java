@@ -34,7 +34,7 @@ import jfxtras.scene.control.ListSpinner;
  * - The SimpleMetroArcGauge.css per default supports segment classes segment0 - segment9.
  * - The CSS also contains a number of color schemes, like "colorscheme-green-to-red-10" (for 10 segments) which can be activated by assigning the color scheme class to the gauge.
  * - If no segments are specified a single segment will automatically be drawn.
- * - If segments are specified, the user is fully responsible for convering the whole range (or not, gaps are allowed).
+ * - If segments are specified, the user is fully responsible for convering the whole range.
  *
  * === Example
  * [source,java]
@@ -115,12 +115,12 @@ import jfxtras.scene.control.ListSpinner;
  * == Disclaimer
  * This is a blatant but approved visual copy of Gerrit Grunwald's Enzo SimpleGauge (https://bitbucket.org/hansolo/enzo/src).
  * Gerrit describes the Enzo library in his blog like this: _all controls in that library are made for my personal demos and are not production ready._
- * The JFXtras control is supposed to be production ready. 
+ * This JFXtras control is supposed to be production ready. 
  */
 public class SimpleMetroArcGauge extends LinearGauge<SimpleMetroArcGauge> {
 	
 	// ==================================================================================================================
-	// AbstractLinearGauge
+	// LinearGauge
 
 	/**
 	 * Return the path to the CSS file so things are setup right
@@ -132,14 +132,4 @@ public class SimpleMetroArcGauge extends LinearGauge<SimpleMetroArcGauge> {
 	@Override public Skin<?> createDefaultSkin() {
 		return new SimpleMetroArcGaugeSkin(this); 
 	}
-
-	// ==================================================================================================================
-	// PROPERTIES
-
-	/** segments:
-	 * If you do not provide any segments, a default segment will be drawn.
-	 * But if you provide at least one segment, you are responsible for making sure the segments cover the range of the gauge. 
-	 */
-	public ObservableList<Segment> segments() { return segments; }
-	final private ObservableList<Segment> segments =  javafx.collections.FXCollections.observableArrayList();
 }

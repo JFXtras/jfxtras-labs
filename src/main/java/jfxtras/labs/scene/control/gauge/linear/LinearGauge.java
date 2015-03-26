@@ -2,6 +2,7 @@ package jfxtras.labs.scene.control.gauge.linear;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 
@@ -9,7 +10,7 @@ import javafx.scene.control.Skin;
  * This class contains commonalities for all linear gauges
  */
 abstract public class LinearGauge<T> extends Control {
-
+	
 	// ==================================================================================================================
 	// CONSTRUCTOR
 
@@ -23,17 +24,15 @@ abstract public class LinearGauge<T> extends Control {
 	 * 
 	 */
 	private void construct() {
-		// pref size 
-		// TBEERNOT the skin should determine this
-		setPrefSize(200, 200);
 		
 		// setup the CSS
 		this.getStyleClass().add(this.getClass().getSimpleName());
 	}
+	
 
-	/**
-	 * Return the path to the CSS file so things are setup right
-	 */
+	// ==================================================================================================================
+	// ABSTRACT
+
 	@Override abstract public String getUserAgentStylesheet();
 
 	@Override abstract public Skin<?> createDefaultSkin();
@@ -66,4 +65,11 @@ abstract public class LinearGauge<T> extends Control {
 	@SuppressWarnings("unchecked")
 	public T withMaxValue(double value) { setMaxValue(value); return (T)this; } 
 
+	/** segments */
+	public ObservableList<Segment> segments() { return segments; }
+	final private ObservableList<Segment> segments =  javafx.collections.FXCollections.observableArrayList();
+
+	/** markers */
+	public ObservableList<Marker> markers() { return markers; }
+	final private ObservableList<Marker> markers =  javafx.collections.FXCollections.observableArrayList();
 }

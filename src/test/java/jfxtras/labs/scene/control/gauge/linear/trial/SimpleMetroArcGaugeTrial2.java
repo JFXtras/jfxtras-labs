@@ -38,6 +38,7 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import jfxtras.labs.scene.control.gauge.linear.PercentMarker;
 import jfxtras.labs.scene.control.gauge.linear.PercentSegment;
 import jfxtras.labs.scene.control.gauge.linear.Segment;
 import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
@@ -61,7 +62,7 @@ public class SimpleMetroArcGaugeTrial2 extends Application {
 		BorderPane lBorderPane = new BorderPane();
 		lBorderPane.setStyle("-fx-background-color: white;");
 		
-        // 10 segments
+        // gauge
 		{
 			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
 			lSimpleMetroArcGauge.getStyleClass().add("colorscheme-green-to-red-10");
@@ -70,9 +71,13 @@ public class SimpleMetroArcGaugeTrial2 extends Application {
 				Segment lSegment = new PercentSegment(lSimpleMetroArcGauge, i * 10.0, (i+1) * 10.0);
 				lSimpleMetroArcGauge.segments().add(lSegment);
 			}
+			for (int i = 0; i <= 20; i++) {
+				lSimpleMetroArcGauge.markers().add(new PercentMarker(lSimpleMetroArcGauge, i * 5.0));
+			}
 			lBorderPane.setCenter(lSimpleMetroArcGauge);
 			gauges.add(lSimpleMetroArcGauge);
 		}
+		
         
         // create scene
         Scene scene = new Scene(lBorderPane, 300, 300);

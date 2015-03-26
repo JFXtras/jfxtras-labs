@@ -42,7 +42,7 @@
     -fx-stroke: -fxx-warning-indicator-color;
 }
 
-/**
+/***************************************************************************************************************
  * This are the actual classes being assigned to the segments, they use the variables to obtain their color.
  */ 
 
@@ -105,6 +105,9 @@
  * The segment-active class can be used to modify an segment that is under the needle (this can be more than if the segments are setup in such a way).
  */
  
+.segment-active {
+}
+
 /**
  * The segmentX-active are assigned corresponding to the segment that is under the needle (this can be more than if the segments are setup in such a way).
  * This is the place to associate an indicator with a segment, by adding one of these line to the appropriate class:
@@ -113,9 +116,6 @@
  * Interesting is it to have transparent segments, while not visible, these can become active and show an indicator.
  */
  
-.segment-active {
-}
-
 .segment0-active {
 }
 
@@ -146,7 +146,45 @@
 .segment9-active {
 }
 
-/*
+/***************************************************************************************************************
+ * This are the actual classes being assigned to the marker, they use the variables to obtain their color.
+ */ 
+
+.marker {
+	-fx-fill:blue;
+}
+
+.marker0 {
+}
+
+.marker1 {
+}
+
+.marker2 {
+}
+
+.marker3 {
+}
+
+.marker4 {
+}
+
+.marker5 {
+}
+
+.marker6 {
+}
+
+.marker7 {
+}
+
+.marker8 {
+}
+
+.marker9 {
+}
+
+/***************************************************************************************************************
  * Color schemes, these assign different values to the variables.
  */
 
