@@ -10,16 +10,18 @@
     -fxx-segment7-color: #c84164;
     -fxx-segment8-color: #ffffff;
     -fxx-segment9-color: #aaaaaa;
-    -fxx-marker0-color: blue;
-    -fxx-marker1-color: blue;
-    -fxx-marker2-color: blue;
-    -fxx-marker3-color: blue;
-    -fxx-marker4-color: blue;
-    -fxx-marker5-color: blue;
-    -fxx-marker6-color: blue;
-    -fxx-marker7-color: blue;
-    -fxx-marker8-color: blue;
-    -fxx-marker9-color: blue;
+/* marker color is done by the marker class, since they have a one color to start with   
+    -fxx-marker0-color: #222222;
+    -fxx-marker1-color: #222222;
+    -fxx-marker2-color: #222222;
+    -fxx-marker3-color: #222222;
+    -fxx-marker4-color: #222222;
+    -fxx-marker5-color: #222222;
+    -fxx-marker6-color: #222222;
+    -fxx-marker7-color: #222222;
+    -fxx-marker8-color: #222222;
+    -fxx-marker9-color: #222222;
+*/    
 	-fxx-needle-color: #5a615f;
 	-fxx-error-indicator-visibility: hidden; 
 	-fxx-error-indicator-color: red; 
@@ -161,7 +163,7 @@
  */ 
 
 .marker {
-	-fx-fill:blue;
+	-fx-fill: #222222;
 }
 
 .marker0 {

@@ -155,52 +155,38 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	private void constructNodes()
 	{
 		// use a stack pane to control the layers
-		StackPane lStackPane = new StackPane(dialPane, needlePane);
+		StackPane lStackPane = new StackPane(segmentPane, markerPane, indicatorPane, needlePane);
 		getChildren().add(lStackPane);
 		lStackPane.setPrefSize(200, 200);
 
 		// style
 		getSkinnable().getStyleClass().add(getClass().getSimpleName()); // always add self as style class, because with multiple skins CSS should relate to the skin not the control		
 	}
-	final private DialPane dialPane = new DialPane();
+	final private SegmentPane segmentPane = new SegmentPane();
+	final private MarkerPane markerPane = new MarkerPane();
+	final private IndicatorPane indicatorPane = new IndicatorPane();
 	final private NeedlePane needlePane = new NeedlePane();
 
 	// ==================================================================================================================
-	// DIAL
+	// Segments
 	
-	private class DialPane extends Pane {
+	private class SegmentPane extends Pane {
 
 		final private List<Segment> segments = new ArrayList<>();
 		final private Map<Segment, Arc> segmentToArc = new HashMap<>();
-		final private Map<Marker, SVGPath> markerToSVGPath = new HashMap<>();
 		
 		/**
 		 * 
 		 */
-		private DialPane() {
+		private SegmentPane() {
 
 			// react to changes in the segments
 			getSkinnable().segments().addListener( (ListChangeListener.Change<? extends Segment> change) -> {
-				getChildren().remove(segmentToArc.values());
+				getChildren().clear();
 				createAndAddSegments();
 			});
 			createAndAddSegments();
-
-			// react to changes in the markers
-			getSkinnable().markers().addListener( (ListChangeListener.Change<? extends Marker> change) -> {
-				getChildren().remove(markerToSVGPath.values());
-				createAndAddMarkers();
-			});
-			createAndAddMarkers();
-
-	 		// add the indicators
-			getChildren().add(warningIndicator);
-			getChildren().add(errorIndicator);
-			warningIndicator.getStyleClass().add("warning-indicator");
-			errorIndicator.getStyleClass().add("error-indicator");
 		}
-		private Circle warningIndicator = new Circle(20.0);
-		private Circle errorIndicator = new Circle(20.0);
 		
 		/**
 		 * 
@@ -230,6 +216,102 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 		        }
 	 			segmentCnt++;
 	 		}
+		}
+		
+		/**
+		 * 
+		 */
+		@Override
+		protected void layoutChildren() {
+			super.layoutChildren();
+			
+			// preparation
+	 		double controlMinValue = getSkinnable().getMinValue();
+	 		double controlMaxValue = getSkinnable().getMaxValue();
+	 		double controlValueRange = controlMaxValue - controlMinValue;
+			Point2D center = determineCenter();
+	 		
+	 		// validate the segments
+	 		List<Segment> lSegments = segments;
+			String segmentValidationMessage = validateSegments();
+			if (segmentValidationMessage != null) {
+				System.err.println(segmentValidationMessage);
+				lSegments = new ArrayList<Segment>();
+	 			lSegments.add(new CompleteSegment(getSkinnable()));
+			};
+
+			// layout the segments
+	 		double segmentRadius = Math.min(center.getX(), center.getY()) * FULL_ARC_RADIUS_FACTOR;
+	 		for (Segment segment : lSegments) {
+	 			
+	 			// layout the arc for this segment
+	 	 		double segmentMinValue = segment.getMinValue();
+	 	 		double segmentMaxValue = segment.getMaxValue();
+	 			double startAngle = (segmentMinValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
+	 			double endAngle = (segmentMaxValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
+	 			Arc arc = segmentToArc.get(segment);
+	 			arc.setCenterX(center.getX());
+	 			arc.setCenterY(center.getY());
+	 			arc.setRadiusX(segmentRadius);
+	 			arc.setRadiusY(segmentRadius);
+	 			// 0 degrees is on the right side of the circle (3 o'clock), the gauge starts in the bottom left (about 7 o'clock), so add 90 + 45 degrees to offset to that.
+	 			// The arc draws counter clockwise, so we need to negate to make it clock wise.
+	 			arc.setStartAngle(-1 * (startAngle + 135.0));
+	 			arc.setLength(-1 * (endAngle - startAngle));
+	 			arc.setType(ArcType.ROUND);
+	 		}
+		}
+		
+		/**
+		 * Make segments active
+		 */
+		void activateSegments() {
+	 		// make those segments active that fall under the needle
+			double lValue = getSkinnable().getValue();
+	 		int cnt = 0;
+	 		for (Segment segment : segments) {
+	 			
+	 			// layout the arc for this segment
+	 	 		double segmentMinValue = segment.getMinValue();
+	 	 		double segmentMaxValue = segment.getMaxValue();
+	 	 		String lSegmentActiveId = "segment" + cnt + "-active";
+	 	 		String lSegmentIdActiveId = "segment-" + segment.getId() + "-active";
+	 	 		segmentPane.getStyleClass().remove(lSegmentActiveId);
+	 	 		segmentToArc.get(segment).getStyleClass().remove("segment-active");
+	 	 		if (segment.getId() != null) {
+		 	 		segmentPane.getStyleClass().remove(lSegmentIdActiveId);
+	 	 		}
+	 	 		if (segmentMinValue <= lValue && lValue <= segmentMaxValue) {
+		 	 		segmentPane.getStyleClass().add(lSegmentActiveId);
+		 	 		segmentToArc.get(segment).getStyleClass().add("segment-active");
+		 	 		if (segment.getId() != null) {
+			 	 		segmentPane.getStyleClass().add(lSegmentIdActiveId);
+		 	 		}
+	 	 		}
+	 			cnt++;
+	 		}
+		}
+	}
+	
+	
+	// ==================================================================================================================
+	// Marker
+	
+	private class MarkerPane extends Pane {
+
+		final private Map<Marker, SVGPath> markerToSVGPath = new HashMap<>();
+		
+		/**
+		 * 
+		 */
+		private MarkerPane() {
+
+			// react to changes in the markers
+			getSkinnable().markers().addListener( (ListChangeListener.Change<? extends Marker> change) -> {
+				getChildren().clear();
+				createAndAddMarkers();
+			});
+			createAndAddMarkers();
 		}
 		
 		/**
@@ -278,38 +360,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 		double controlMaxValue = getSkinnable().getMaxValue();
 	 		double controlValueRange = controlMaxValue - controlMinValue;
 			Point2D center = determineCenter();
-	 		
-	 		// validate the segments
-	 		List<Segment> lSegments = segments;
-			String segmentValidationMessage = validateSegments();
-			if (segmentValidationMessage != null) {
-				System.err.println(segmentValidationMessage);
-				lSegments = new ArrayList<Segment>();
-	 			lSegments.add(new CompleteSegment(getSkinnable()));
-			};
-
-			// layout the segments
 	 		double segmentRadius = Math.min(center.getX(), center.getY()) * FULL_ARC_RADIUS_FACTOR;
-	 		for (Segment segment : lSegments) {
-	 			
-	 			// layout the arc for this segment
-	 	 		double segmentMinValue = segment.getMinValue();
-	 	 		double segmentMaxValue = segment.getMaxValue();
-	 			double startAngle = (segmentMinValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
-	 			double endAngle = (segmentMaxValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
-	 			Arc arc = segmentToArc.get(segment);
-	 			arc.setCenterX(center.getX());
-	 			arc.setCenterY(center.getY());
-	 			arc.setRadiusX(segmentRadius);
-	 			arc.setRadiusY(segmentRadius);
-	 			// 0 degrees is on the right side of the circle (3 o'clock), the gauge starts in the bottom left (about 7 o'clock), so add 90 + 45 degrees to offset to that.
-	 			// The arc draws counter clockwise, so we need to negate to make it clock wise.
-	 			arc.setStartAngle(-1 * (startAngle + 135.0));
-	 			arc.setLength(-1 * (endAngle - startAngle));
-	 			arc.setType(ArcType.ROUND);
-	 		}
-	 		
-	 		// ---
 	 		
 	 		// validate the markers
 	 		List<Marker> lMarkers = getSkinnable().markers();
@@ -335,8 +386,39 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 			scale.setX(getWidth() / 300.0); // SVG was created against a sample with 300.0 pixels  
 	 			scale.setY(scale.getX()); 
 	 		}
-	 		
-	 		// ---
+		}
+	}
+	
+	
+	// ==================================================================================================================
+	// Indicators
+	
+	private class IndicatorPane extends Pane {
+
+		/**
+		 * 
+		 */
+		private IndicatorPane() {
+
+	 		// add the indicators
+			getChildren().add(warningIndicator);
+			getChildren().add(errorIndicator);
+			warningIndicator.getStyleClass().add("warning-indicator");
+			errorIndicator.getStyleClass().add("error-indicator");
+		}
+		private Circle warningIndicator = new Circle(20.0);
+		private Circle errorIndicator = new Circle(20.0);
+
+		/**
+		 * 
+		 */
+		@Override
+		protected void layoutChildren() {
+			super.layoutChildren();
+
+			// prepare
+			Point2D center = determineCenter();
+	 		double segmentRadius = Math.min(center.getX(), center.getY()) * FULL_ARC_RADIUS_FACTOR;
 	 		
 	 		// size & position the indicators
 	 		double indicatorRadius = segmentRadius * 0.15;
@@ -348,69 +430,6 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 			errorIndicator.layoutXProperty().set(center.getX() + indicatorDiameter);
 			errorIndicator.layoutYProperty().set(center.getY() + segmentRadius - indicatorDiameter);
 		}
-
-		/**
-		 * Make segments active
-		 */
-		void activateSegments() {
-	 		// make those segments active that fall under the needle
-			double lValue = getSkinnable().getValue();
-	 		int cnt = 0;
-	 		for (Segment segment : segments) {
-	 			
-	 			// layout the arc for this segment
-	 	 		double segmentMinValue = segment.getMinValue();
-	 	 		double segmentMaxValue = segment.getMaxValue();
-	 	 		String lSegmentActiveId = "segment" + cnt + "-active";
-	 	 		String lSegmentIdActiveId = "segment-" + segment.getId() + "-active";
-	 	 		dialPane.getStyleClass().remove(lSegmentActiveId);
-	 	 		segmentToArc.get(segment).getStyleClass().remove("segment-active");
-	 	 		if (segment.getId() != null) {
-		 	 		dialPane.getStyleClass().remove(lSegmentIdActiveId);
-	 	 		}
-	 	 		if (segmentMinValue <= lValue && lValue <= segmentMaxValue) {
-		 	 		dialPane.getStyleClass().add(lSegmentActiveId);
-		 	 		segmentToArc.get(segment).getStyleClass().add("segment-active");
-		 	 		if (segment.getId() != null) {
-			 	 		dialPane.getStyleClass().add(lSegmentIdActiveId);
-		 	 		}
-	 	 		}
-	 			cnt++;
-	 		}
-		}
-	}
-	
-	private String validateSegments() {
- 		double controlMinValue = getSkinnable().getMinValue();
- 		double controlMaxValue = getSkinnable().getMaxValue();
-
- 		for (Segment segment : getSkinnable().segments()) {
- 	 		double segmentMinValue = segment.getMinValue();
- 	 		double segmentMaxValue = segment.getMaxValue();
-			if (segmentMinValue < controlMinValue) {
-				return String.format("Segments min-value (%f) cannot be less than the controls min-value (%f)", segmentMinValue, controlMinValue);
-			}
-			if (segmentMaxValue > controlMaxValue) {
-				return String.format("Segments max-value (%f) cannot be greater than the controls max-value (%f)", segmentMaxValue, controlMaxValue);
-			}
- 		}
- 		return null;
-	}
-	
-	private String validateMarkers() {
- 		double controlMinValue = getSkinnable().getMinValue();
- 		double controlMaxValue = getSkinnable().getMaxValue();
-
- 		for (Marker marker : getSkinnable().markers()) {
- 	 		double markerValue = marker.getValue();
-			if (markerValue < controlMinValue) {
-				return String.format("Marker value (%f) cannot be less than the controls min-value (%f)", markerValue, controlMinValue);
-			}
-			if (markerValue > controlMaxValue) {
-				return String.format("Marker max-value (%f) cannot be greater than the controls max-value (%f)", markerValue, controlMaxValue);
-			}
- 		}
- 		return null;
 	}
 	
 	
@@ -566,7 +585,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 		}
 	 		
 	 		// make certain segments active because the needle moved
-	 		dialPane.activateSegments();
+	 		segmentPane.activateSegments();
 		}
 		final private Timeline timeline = new Timeline();
 		
@@ -668,7 +687,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 * @return
 	 */
 	private Point2D determineCenter() {
-		Point2D center = new Point2D(dialPane.getWidth() / 2.0, dialPane.getHeight() * 0.55);
+		Point2D center = new Point2D(segmentPane.getWidth() / 2.0, segmentPane.getHeight() * 0.55);
 		return center;
 	}
 }

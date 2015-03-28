@@ -240,6 +240,7 @@ public class SimpleMetroArcGaugeTrial1 extends Application {
 				lSimpleMetroArcGauge.markers().add(new PercentMarker(lSimpleMetroArcGauge, i * 5.0));
 			}
 			lFlowPane.getChildren().add(lSimpleMetroArcGauge);
+			gauges.add(lSimpleMetroArcGauge);
 		}
         
         // create scene
