@@ -10,7 +10,6 @@
     -fxx-segment7-color: #c84164;
     -fxx-segment8-color: #ffffff;
     -fxx-segment9-color: #aaaaaa;
-/* marker color is done by the marker class, since they have a one color to start with   
     -fxx-marker0-color: #222222;
     -fxx-marker1-color: #222222;
     -fxx-marker2-color: #222222;
@@ -21,7 +20,6 @@
     -fxx-marker7-color: #222222;
     -fxx-marker8-color: #222222;
     -fxx-marker9-color: #222222;
-*/    
 	-fxx-needle-color: #5a615f;
 	-fxx-error-indicator-visibility: hidden; 
 	-fxx-error-indicator-color: red; 
@@ -164,6 +162,7 @@
 
 .marker {
 	-fx-fill: #222222;
+	-fx-shape: "M 0 0 L -3 -6 L 3 -6 Z";
 }
 
 .marker0 {

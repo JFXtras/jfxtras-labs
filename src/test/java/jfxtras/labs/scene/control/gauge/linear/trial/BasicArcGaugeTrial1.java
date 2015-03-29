@@ -29,21 +29,36 @@
 
 package jfxtras.labs.scene.control.gauge.linear.trial;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
+import jfxtras.labs.scene.control.gauge.linear.CompleteSegment;
 import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
-import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
+import jfxtras.labs.scene.control.gauge.linear.PercentMarker;
+import jfxtras.labs.scene.control.gauge.linear.PercentSegment;
+import jfxtras.labs.scene.control.gauge.linear.Segment;
+import jfxtras.labs.scene.control.gauge.linear.BasicArcGauge;
+import jfxtras.labs.test.TestUtil;
 
 /**
  * @author Tom Eugelink
  */
-public class SimpleMetroArcGaugeTrial1 extends LinearGaugeTrial1 {
+public class BasicArcGaugeTrial1 extends LinearGaugeTrial1 {
 	
     public static void main(String[] args) {
         launch(args);       
     }
 
-	@Override
-	public LinearGauge<?> createLinearGauge() {
-		return new SimpleMetroArcGauge();
-	}
+    public LinearGauge<?> createLinearGauge() {
+    	return new BasicArcGauge();
+    }
 }
 

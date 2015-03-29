@@ -1,8 +1,6 @@
 package jfxtras.labs.internal.scene.control.skin.gauge.linear;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,15 +9,8 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.beans.property.ObjectProperty;
 import javafx.collections.ListChangeListener;
-import javafx.css.CssMetaData;
-import javafx.css.SimpleStyleableObjectProperty;
-import javafx.css.SimpleStyleableStringProperty;
-import javafx.css.Styleable;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
-import javafx.scene.control.SkinBase;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Arc;
@@ -31,25 +22,20 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.SVGPath;
-import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.util.Duration;
-import jfxtras.css.CssMetaDataForSkinProperty;
 import jfxtras.labs.scene.control.gauge.linear.CompleteSegment;
 import jfxtras.labs.scene.control.gauge.linear.Marker;
 import jfxtras.labs.scene.control.gauge.linear.Segment;
 import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
 
-import com.sun.javafx.css.converters.EnumConverter;
-import com.sun.javafx.css.converters.StringConverter;
-
 /**
  * 
  */
-public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge> {
+public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGaugeSkin, SimpleMetroArcGauge> {
 
 	private static final double FULL_ARC_RADIUS_FACTOR = 0.95;
 	private static final double NEEDLE_ARC_RADIUS_FACTOR = 0.5;
@@ -68,85 +54,6 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	}
 	
 	// ==================================================================================================================
-	// StyleableProperties
-	
-    /**
-     * animated
-     */
-    public final ObjectProperty<Animated> animatedProperty() { return animatedProperty; }
-    private ObjectProperty<Animated> animatedProperty = new SimpleStyleableObjectProperty<Animated>(StyleableProperties.ANIMATED_CSSMETADATA, StyleableProperties.ANIMATED_CSSMETADATA.getInitialValue(null));
-    public final void setAnimated(Animated value) { animatedProperty().set(value); }
-    public final Animated getAnimated() { return animatedProperty.get(); }
-    public final SimpleMetroArcGaugeSkin withAnimated(Animated value) { setAnimated(value); return this; }
-    public enum Animated {YES, NO}
-
-    /**
-     * valueFormat
-     */
-    public final SimpleStyleableStringProperty valueFormatProperty() { return valueFormatProperty; }
-    private SimpleStyleableStringProperty valueFormatProperty = new SimpleStyleableStringProperty(StyleableProperties.VALUE_FORMAT_CSSMETADATA, StyleableProperties.VALUE_FORMAT_CSSMETADATA.getInitialValue(null)) {
-		{ // anonymous constructor
-			addListener( (invalidationEvent) -> {
-				needlePane.setValueText(); 
-				needlePane.scaleValueText();
-				needlePane.positionValueText();
-			});
-		}
-	};
-    public final void setValueFormat(String value) { valueFormatProperty.set(value); }
-    public final String getValueFormat() { return valueFormatProperty.get(); }
-    public final SimpleMetroArcGaugeSkin withValueFormat(String value) { setValueFormat(value); return this; }
-    private String valueFormat(double value) {
-    	// TBEERNOT do not create a decimal format every time
-    	return new DecimalFormat(getValueFormat()).format(value);
-    }
-    
-    // -------------------------
-        
-    private static class StyleableProperties 
-    {
-        private static final CssMetaData<SimpleMetroArcGauge, Animated> ANIMATED_CSSMETADATA = new CssMetaDataForSkinProperty<SimpleMetroArcGauge, SimpleMetroArcGaugeSkin, Animated>("-fxx-animated", new EnumConverter<Animated>(Animated.class), Animated.YES ) {
-        	@Override 
-        	protected ObjectProperty<Animated> getProperty(SimpleMetroArcGaugeSkin s) {
-            	return s.animatedProperty;
-            }
-        };
-        
-        private static final CssMetaData<SimpleMetroArcGauge, String> VALUE_FORMAT_CSSMETADATA = new CssMetaDataForSkinProperty<SimpleMetroArcGauge, SimpleMetroArcGaugeSkin, String>("-fxx-value-format", StringConverter.getInstance(), "0" ) {
-        	@Override 
-        	protected SimpleStyleableStringProperty getProperty(SimpleMetroArcGaugeSkin s) {
-            	return s.valueFormatProperty;
-            }
-        };
-        
-        private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES;
-        static  {
-            final List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<CssMetaData<? extends Styleable, ?>>(SkinBase.getClassCssMetaData());
-            styleables.add(ANIMATED_CSSMETADATA);
-            styleables.add(VALUE_FORMAT_CSSMETADATA);
-            STYLEABLES = Collections.unmodifiableList(styleables);                
-        }
-    }
-    
-    /** 
-     * @return The CssMetaData associated with this class, which may include the
-     * CssMetaData of its super classes.
-     */    
-    public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
-        return StyleableProperties.STYLEABLES;
-    }
-
-    /**
-     * This method should delegate to {@link Node#getClassCssMetaData()} so that
-     * a Node's CssMetaData can be accessed without the need for reflection.
-     * @return The CssMetaData associated with this node, which may include the
-     * CssMetaData of its super classes.
-     */
-    public List<CssMetaData<? extends Styleable, ?>> getCssMetaData() {
-        return getClassCssMetaData();
-    }
-        
-	// ==================================================================================================================
 	// DRAW
 	
 	/**
@@ -155,13 +62,14 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	private void constructNodes()
 	{
 		// use a stack pane to control the layers
-		StackPane lStackPane = new StackPane(segmentPane, markerPane, indicatorPane, needlePane);
-		getChildren().add(lStackPane);
-		lStackPane.setPrefSize(200, 200);
+		stackPane.getChildren().addAll(segmentPane, markerPane, indicatorPane, needlePane);
+		getChildren().add(stackPane);
+		stackPane.setPrefSize(200, 200);
 
 		// style
 		getSkinnable().getStyleClass().add(getClass().getSimpleName()); // always add self as style class, because with multiple skins CSS should relate to the skin not the control		
 	}
+	final private StackPane stackPane = new StackPane();
 	final private SegmentPane segmentPane = new SegmentPane();
 	final private MarkerPane markerPane = new MarkerPane();
 	final private IndicatorPane indicatorPane = new IndicatorPane();
@@ -241,7 +149,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 			};
 
 			// layout the segments
-	 		double segmentRadius = Math.min(center.getX(), center.getY()) * FULL_ARC_RADIUS_FACTOR;
+	 		double segmentRadius = calculateRadius() * FULL_ARC_RADIUS_FACTOR;
 	 		for (Segment segment : lSegments) {
 	 			
 	 			// layout the arc for this segment
@@ -360,7 +268,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 		double controlMaxValue = getSkinnable().getMaxValue();
 	 		double controlValueRange = controlMaxValue - controlMinValue;
 			Point2D center = determineCenter();
-	 		double segmentRadius = Math.min(center.getX(), center.getY()) * FULL_ARC_RADIUS_FACTOR;
+	 		double segmentRadius = calculateRadius() * FULL_ARC_RADIUS_FACTOR;
 	 		
 	 		// validate the markers
 	 		List<Marker> lMarkers = getSkinnable().markers();
@@ -418,7 +326,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 
 			// prepare
 			Point2D center = determineCenter();
-	 		double segmentRadius = Math.min(center.getX(), center.getY()) * FULL_ARC_RADIUS_FACTOR;
+	 		double segmentRadius = calculateRadius() * FULL_ARC_RADIUS_FACTOR;
 	 		
 	 		// size & position the indicators
 	 		double indicatorRadius = segmentRadius * 0.15;
@@ -504,7 +412,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 				
 				// preparation
 				Point2D center = determineCenter();
-		 		double radius = Math.min(center.getX(), center.getY());
+		 		double radius = calculateRadius();
 				double tipRadius = radius * TIP_RADIUS_FACTOR;
 				double arcRadius = radius * NEEDLE_ARC_RADIUS_FACTOR;
 				
@@ -608,8 +516,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 		private void scaleValueText() {
 			
 			// preparation
-			Point2D center = determineCenter();
-	 		double radius = Math.min(center.getX(), center.getY());
+	 		double radius = calculateRadius();
 			double arcRadius = radius * NEEDLE_ARC_RADIUS_FACTOR;
 			
 			// use the two extreme's to determine the scaling factor
@@ -686,8 +593,17 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 * 
 	 * @return
 	 */
+	private double calculateRadius() {
+		Point2D center = determineCenter();
+		return Math.min(center.getX(), center.getY());
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
 	private Point2D determineCenter() {
-		Point2D center = new Point2D(segmentPane.getWidth() / 2.0, segmentPane.getHeight() * 0.55);
+		Point2D center = new Point2D(stackPane.getWidth() / 2.0, stackPane.getHeight() * 0.55);
 		return center;
 	}
 }

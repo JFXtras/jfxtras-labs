@@ -1,0 +1,23 @@
+.BasicArcGauge {
+    /* These are the variables with their default values (colors), but they're just a mix of colors. Logic can be applied by assigning on of the colorschemes */    
+    -fxx-backplate-color: #f0f0f0;
+}
+
+.backplate {
+	-fx-fill: -fxx-backplate-color;
+}
+
+.tick {
+}
+
+/***************************************************************************************************************
+ * Color schemes, these assign different values to the variables.
+ */
+
+.colorscheme-light {
+}
+
+
+.colorscheme-dark {
+}
+
