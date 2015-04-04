@@ -55,7 +55,7 @@ import jfxtras.scene.control.ListSpinner;
  * - Another option is to specify an marker ID, which can then be used to style the marker in CSS.
  * - The SimpleMetroArcGauge.css per default supports marker classes marker0 - marker9.
  * - A shortcut is available through -fxx-marker0-color, ..., which can be set in any styleclass (this is used in the color schemes).
- * - Marker colors are also set in the colorschemes.
+ * - Marker colors are also set in the colorschemes.`
  *
  * === Example
  * [source,java]
@@ -66,15 +66,33 @@ import jfxtras.scene.control.ListSpinner;
  *     }
  * --
  * 
+ * Markers can be custom shaped using a SVG shape:
+ * [source,css]
+ * --
+ *     .marker1 {
+ *         -fx-shape: 'M 0 0 L -3 -6 L 3 -6 Z'; 
+ *     } 
+ * --
+ * 
  * == Indicators
- * This gauge has two indicators: warning and error, they can be made visible through CSS:
+ * This gauge has two indicators positions: 0 and 1, located at the bottom between the ends of the arc.
+ * Indicators can be assigned to these position as follows:
+ * [source,java]
+ * --
+ *     final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
+ *     lSimpleMetroArcGauge.indicators().add(new Indicator(0, "warning"));
+ *     lSimpleMetroArcGauge.indicators().add(new Indicator(1, "error"));
+ * --
+ * 
+ * This enables (but does not show!) the indicator at the corresponding locations, the example uses the two predefined indicators "error" and "warning".
+ * Indicators can be made visible by assigning "visible" to the corresponding -fxx-INDICATORID-indicator-visibility variable in CSS, like so:
  * [source,css]
  * --
  *     -fxx-warning-indicator-visibility: visible; 
  *     -fxx-error-indicator-visibility: visible;
  * --
  *
- * It is possible to have these indicators become visible based on the needle's value, by means of the segments.
+ * It is possible to have indicators become visible based on the needle's value, by means of the segments.
  * Suppose the needle is over segment1, then a CSS class named "segment1-active" is added to the node.
  * Using this CSS class an indicator can be made visible, for example:
  * [source,css]
@@ -100,7 +118,7 @@ import jfxtras.scene.control.ListSpinner;
  *     lSimpleMetroArcGauge.segments().add(new PercentSegment(lSimpleMetroArcGauge, 75.0, 100.0, "errorSegment"));
  * --
  * 
- * Given that the segements have id's, you can also use active classes based on that: 
+ * Given that the segements have id's, you can also use active classes based on these id's: 
  * [source,css]
  * --
  *    .segment-warningSegment-active {
@@ -112,6 +130,17 @@ import jfxtras.scene.control.ListSpinner;
  * --
  * 
  * This should not be confused with the CSS rules based on the id of the segments (in the example: #warningSegment and #errorSegment).
+ * 
+ * Custom indicators can be created in CSS by defining a 100x100 SVG shape in CSS, with 0,0 being in the center, and assign an id to it. Similar to the default error indicator:.
+ * [source,css]
+ * --
+ *    .error-indicator {
+ *        visibility: -fxx-error-indicator-visibility;
+ *        -fx-background-color: -fxx-error-indicator-color;
+ *        -fx-shape: 'M-50,0 a50,50 0 1,0 100,0 a50,50 0 1,0 -100,0'; 
+ *        -fx-scale-shape: false; 
+ *    }
+ * --
  *  
  * == Color scheme
  * The CSS defines a number of default color schemes, some of which already were shown in the examples. 

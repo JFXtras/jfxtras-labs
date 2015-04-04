@@ -43,17 +43,20 @@
 
 /***************************************************************************************************************
 /* predefined indicators */
+/* drawing circles in SVG: http://stackoverflow.com/questions/5737975/circle-drawing-with-svgs-arc-path/10477334#10477334 */
 
 .error-indicator {
 	visibility: -fxx-error-indicator-visibility;
-	-fx-fill: -fxx-error-indicator-color;
-    -fx-stroke: transparent;
+	-fx-background-color: -fxx-error-indicator-color;
+	-fx-shape: 'M 50, 50 m -50, 0 a 50,50 0 1,0 100,0 a 50,50 0 1,0 -100,0'; 
+	-fx-scale-shape: false; 
 }
 
 .warning-indicator {
 	visibility: -fxx-warning-indicator-visibility;
-	-fx-fill: -fxx-warning-indicator-color;
-    -fx-stroke: transparent;
+	-fx-background-color: -fxx-warning-indicator-color;
+	-fx-shape: 'M 50, 50 m -50, 0 a 50,50 0 1,0 100,0 a 50,50 0 1,0 -100,0'; 
+	-fx-scale-shape: false; 
 }
 
 /***************************************************************************************************************
@@ -165,48 +168,49 @@
  */ 
 
 .marker {
-	-fx-fill: #222222;
-	-fx-shape: "M 0 0 L -3 -6 L 3 -6 Z";
+	-fx-background-color: #222222;
+	-fx-shape: 'M 0 0 L -3 -6 L 3 -6 Z'; 
+	-fx-scale-shape: false; 
 }
 
 .marker0 {
-    -fx-fill: -fxx-marker0-color;
+    -fx-background-color:: -fxx-marker0-color;
 }
 
 .marker1 {
-    -fx-fill: -fxx-marker1-color;
+    -fx-background-color:: -fxx-marker1-color;
 }
 
 .marker2 {
-    -fx-fill: -fxx-marker2-color;
+    -fx-background-color:: -fxx-marker2-color;
 }
 
 .marker3 {
-    -fx-fill: -fxx-marker3-color;
+    -fx-background-color:: -fxx-marker3-color;
 }
 
 .marker4 {
-    -fx-fill: -fxx-marker4-color;
+    -fx-background-color:: -fxx-marker4-color;
 }
 
 .marker5 {
-    -fx-fill: -fxx-marker5-color;
+    -fx-background-color:: -fxx-marker5-color;
 }
 
 .marker6 {
-    -fx-fill: -fxx-marker6-color;
+    -fx-background-color:: -fxx-marker6-color;
 }
 
 .marker7 {
-    -fx-fill: -fxx-marker7-color;
+    -fx-background-color:: -fxx-marker7-color;
 }
 
 .marker8 {
-    -fx-fill: -fxx-marker8-color;
+    -fx-background-color:: -fxx-marker8-color;
 }
 
 .marker9 {
-    -fx-fill: -fxx-marker9-color;
+    -fx-background-color:: -fxx-marker9-color;
 }
 
 /***************************************************************************************************************

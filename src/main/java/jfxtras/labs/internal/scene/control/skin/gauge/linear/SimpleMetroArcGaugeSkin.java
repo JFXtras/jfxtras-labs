@@ -14,6 +14,7 @@ import javafx.collections.ListChangeListener;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcTo;
@@ -215,7 +216,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	
 	private class MarkerPane extends Pane {
 
-		final private Map<Marker, SVGPath> markerToSVGPath = new HashMap<>();
+		final private Map<Marker, Region> markerToRegion = new HashMap<>();
 		
 		/**
 		 * 
@@ -235,30 +236,29 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 		private void createAndAddMarkers() {
 	 		// create the nodes representing each marker
 			getChildren().clear();
-	 		markerToSVGPath.clear();
+	 		markerToRegion.clear();
 	 		int markerCnt = 0;
 	 		for (Marker marker : getSkinnable().markers()) {
 	 			
 	 			// create an svg path for this marker
-	 			SVGPath svgPath = new SVGPath();
-	 			svgPath.setContent("M 0 0 L -3 -6 L 3 -6 Z"); // TBEERNOT: why wont -fx-shape work?
-				getChildren().add(svgPath);
-				markerToSVGPath.put(marker, svgPath);
+	 			Region region = new Region();
+				getChildren().add(region);
+				markerToRegion.put(marker, region);
 				
 				// setup rotation
 				Rotate rotate = new Rotate(0.0);
 				rotate.setPivotX(0.0);
 				rotate.setPivotY(0.0);
-				svgPath.getTransforms().add(rotate);
+				region.getTransforms().add(rotate);
 				
 				// setup scaling
 				Scale scale = new Scale();
-				svgPath.getTransforms().add(scale);
+				region.getTransforms().add(scale);
 				
 				// setup CSS on the path
-				svgPath.getStyleClass().addAll("marker", "marker" + markerCnt);
+				region.getStyleClass().addAll("marker", "marker" + markerCnt);
 		        if (marker.getId() != null) {
-		        	svgPath.setId(marker.getId());
+		        	region.setId(marker.getId());
 		        }
 	 			markerCnt++;
 	 		}
@@ -292,14 +292,14 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 			// layout the arc for this segment
 	 	 		double markerValue = marker.getValue();
 	 			double angle = (markerValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES;
-	 			SVGPath svgPath = markerToSVGPath.get(marker);
+	 			Region region = markerToRegion.get(marker);
 	 			Point2D markerPoint2D = calculatePointOnCircle(segmentRadius, angle);
-	 			svgPath.setLayoutX(markerPoint2D.getX());
-	 			svgPath.setLayoutY(markerPoint2D.getY());
-	 			Rotate rotate = (Rotate)svgPath.getTransforms().get(0);
+	 			region.setLayoutX(markerPoint2D.getX());
+	 			region.setLayoutY(markerPoint2D.getY());
+	 			Rotate rotate = (Rotate)region.getTransforms().get(0);
 				rotate.setAngle(angle - 135.0); // the angle also determines the rotation	 			
-	 			Scale scale = (Scale)svgPath.getTransforms().get(1);
-	 			scale.setX(2 * radius / 300.0); // SVG was created against a sample with 300.0 pixels  
+	 			Scale scale = (Scale)region.getTransforms().get(1);
+	 			scale.setX(2 * radius / 300.0); // Region was created against a sample with 300.0 pixels  
 	 			scale.setY(scale.getX()); 
 	 		}
 		}
@@ -310,7 +310,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	// Indicators
 	
 	private class IndicatorPane extends Pane {
-		final private Map<Indicator, SVGPath> indicatorToSVGPath = new HashMap<>();
+		final private Map<Indicator, Region> indicatorToRegion = new HashMap<>();
 
 		/**
 		 * 
@@ -330,22 +330,21 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 		private void createAndAddIndicators() {
 	 		// create the nodes representing each marker
 			getChildren().clear();
-			indicatorToSVGPath.clear();
+			indicatorToRegion.clear();
 	 		for (Indicator indicator : getSkinnable().indicators()) {
 	 			
 	 			// create an svg path for this marker
-	 			SVGPath svgPath = new SVGPath();
-	 			svgPath.setContent("M-50,0 a50,50 0 1,0 100,0 a50,50 0 1,0 -100,0"); // TBEERNOT: why wont -fx-shape work?
-				getChildren().add(svgPath);
-				indicatorToSVGPath.put(indicator, svgPath);
+	 			Region region = new Region();
+				getChildren().add(region);
+				indicatorToRegion.put(indicator, region);
 				
 				// setup scaling
 				Scale scale = new Scale();
-				svgPath.getTransforms().add(scale);
+				region.getTransforms().add(scale);
 				
 				// setup CSS on the path
-				svgPath.getStyleClass().addAll("indicator", indicator.getId() + "-indicator");
-	        	svgPath.setId(indicator.getId());
+				region.getStyleClass().addAll("indicator", indicator.getId() + "-indicator");
+	        	region.setId(indicator.getId());
 	 		}
 		}
 
@@ -366,22 +365,22 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 		for (Indicator indicator : getSkinnable().indicators()) {
 	 			
 	 			int idx = indicator.getIdx();
-	 			SVGPath svgPath = indicatorToSVGPath.get(indicator);
-	 			if (svgPath != null) {
+	 			Region region = indicatorToRegion.get(indicator);
+	 			if (region != null) {
 	 				// TBEERNOT: move the indicator code to LinearGauge
 	 				// TBEERNOT: can we do something better than cascades ifs?
 					if (idx == 0 ) {
-				 		svgPath.layoutXProperty().set(centerX.get() - indicatorDiameter);
-				 		svgPath.layoutYProperty().set(centerY.get() + segmentRadius - indicatorDiameter);
+				 		region.layoutXProperty().set(centerX.get() - indicatorDiameter);
+				 		region.layoutYProperty().set(centerY.get() + segmentRadius - indicatorDiameter);
 		 			}
 		 			else if (idx == 1) {
-						svgPath.layoutXProperty().set(centerX.get() + indicatorDiameter);
-						svgPath.layoutYProperty().set(centerY.get() + segmentRadius - indicatorDiameter);
+						region.layoutXProperty().set(centerX.get() + indicatorDiameter);
+						region.layoutYProperty().set(centerY.get() + segmentRadius - indicatorDiameter);
 		 			}
 		 			else {
-		 				System.out.println("The " + getSkinnable().getClass().getSimpleName() + " gauge supports indicators  [0,1], not " + idx);
+		 				System.out.println("The " + getSkinnable().getClass().getSimpleName() + " gauge supports indicators [0,1], not " + idx);
 		 			}
-	 				Scale scale = (Scale)svgPath.getTransforms().get(0);
+	 				Scale scale = (Scale)region.getTransforms().get(0);
 		 			scale.setX(40.0/100.0 * radius/150.0); // SVG is setup on a virtual 100x100 canvas, it is scaled to fit the size of the gauge. For a width of 300 (radius 150) this is 40 pixels
 		 			scale.setY(scale.getX()); 
 	 			}
