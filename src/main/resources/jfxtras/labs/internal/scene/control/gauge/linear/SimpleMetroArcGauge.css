@@ -21,6 +21,7 @@
     -fxx-marker8-color: #222222;
     -fxx-marker9-color: #222222;
 	-fxx-needle-color: #5a615f;
+	/* predefined indicators */
 	-fxx-error-indicator-visibility: hidden; 
 	-fxx-error-indicator-color: red; 
 	-fxx-warning-indicator-visibility: hidden; 
@@ -40,16 +41,19 @@
     -fx-font-weight: bold;
 }
 
+/***************************************************************************************************************
+/* predefined indicators */
+
 .error-indicator {
 	visibility: -fxx-error-indicator-visibility;
 	-fx-fill: -fxx-error-indicator-color;
-    -fx-stroke: -fxx-error-indicator-color;
+    -fx-stroke: transparent;
 }
 
 .warning-indicator {
 	visibility: -fxx-warning-indicator-visibility;
 	-fx-fill: -fxx-warning-indicator-color;
-    -fx-stroke: -fxx-warning-indicator-color;
+    -fx-stroke: transparent;
 }
 
 /***************************************************************************************************************
@@ -124,7 +128,6 @@
  *     -fxx-error-indicator-visibility: visible; 
  *     -fxx-warning-indicator-visibility: visible; 
  * Interesting is it to have transparent segments, while not visible, these can become active and show an indicator.
- */
  
 .segment0-active {
 }
@@ -155,6 +158,7 @@
 
 .segment9-active {
 }
+ */
 
 /***************************************************************************************************************
  * This are the actual classes being assigned to the marker, they use the variables to obtain their color.

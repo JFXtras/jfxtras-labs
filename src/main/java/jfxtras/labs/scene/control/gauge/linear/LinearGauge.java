@@ -72,4 +72,8 @@ abstract public class LinearGauge<T> extends Control {
 	/** markers */
 	public ObservableList<Marker> markers() { return markers; }
 	final private ObservableList<Marker> markers =  javafx.collections.FXCollections.observableArrayList();
+
+	/** indicators */
+	public ObservableList<Indicator> indicators() { return indicators; }
+	final private ObservableList<Indicator> indicators =  javafx.collections.FXCollections.observableArrayList();
 }

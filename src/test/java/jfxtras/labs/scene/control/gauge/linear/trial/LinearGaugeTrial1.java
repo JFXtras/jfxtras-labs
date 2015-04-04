@@ -41,6 +41,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.control.gauge.linear.CompleteSegment;
+import jfxtras.labs.scene.control.gauge.linear.Indicator;
 import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
 import jfxtras.labs.scene.control.gauge.linear.PercentMarker;
 import jfxtras.labs.scene.control.gauge.linear.PercentSegment;
@@ -214,6 +215,8 @@ abstract public class LinearGaugeTrial1 extends Application {
 		// manually show indicators
 		{
 			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			lLinearGauge.indicators().add(new Indicator(0, "warning"));
+			lLinearGauge.indicators().add(new Indicator(1, "error"));
 			lLinearGauge.setStyle("-fx-border-color: #000000; -fxx-warning-indicator-visibility: visible; -fxx-error-indicator-visibility: visible; ");
 			lFlowPane.getChildren().add(lLinearGauge);
 			gauges.add(lLinearGauge);
@@ -222,6 +225,8 @@ abstract public class LinearGaugeTrial1 extends Application {
 		// 10 segments, transparent, with segment related indicators
 		{
 			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			lLinearGauge.indicators().add(new Indicator(0, "warning"));
+			lLinearGauge.indicators().add(new Indicator(1, "error"));
 			lLinearGauge.setId("segmentRelatedIndicators");
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 			lLinearGauge.getStyleClass().add("colorscheme-first-grey-rest-transparent-10");
@@ -245,7 +250,7 @@ abstract public class LinearGaugeTrial1 extends Application {
         
         // create scene
         Scene scene = new Scene(lFlowPane, 1500, 900);
-        //scene.getStylesheets().add(this.getClass().getResource(this.getClass().getSimpleName()+ ".css").toExternalForm());
+        scene.getStylesheets().add(this.getClass().getResource(LinearGaugeTrial1.class.getSimpleName()+ ".css").toExternalForm());
 
         // create stage
         stage.setTitle(this.getClass().getSimpleName());

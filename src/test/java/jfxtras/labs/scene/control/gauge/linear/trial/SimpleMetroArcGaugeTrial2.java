@@ -38,6 +38,7 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import jfxtras.labs.scene.control.gauge.linear.Indicator;
 import jfxtras.labs.scene.control.gauge.linear.PercentMarker;
 import jfxtras.labs.scene.control.gauge.linear.PercentSegment;
 import jfxtras.labs.scene.control.gauge.linear.Segment;
@@ -60,13 +61,13 @@ public class SimpleMetroArcGaugeTrial2 extends Application {
 		
 		// the border pane makes it resizeable
 		BorderPane lBorderPane = new BorderPane();
-		lBorderPane.setStyle("-fx-background-color: white;");
+		lBorderPane.setStyle("-fx-background-color: #eeeeee;");
 		
         // gauge
 		{
 			final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
 			lSimpleMetroArcGauge.getStyleClass().add("colorscheme-green-to-red-10");
-			lSimpleMetroArcGauge.setStyle("-warning-indicator-visibility: visible; -error-indicator-visibility: visible; ");
+			lSimpleMetroArcGauge.setStyle("-fxx-warning-indicator-visibility: visible; -fxx-error-indicator-visibility: visible; ");
 			for (int i = 0; i < 10; i++) {
 				Segment lSegment = new PercentSegment(lSimpleMetroArcGauge, i * 10.0, (i+1) * 10.0);
 				lSimpleMetroArcGauge.segments().add(lSegment);
@@ -74,6 +75,8 @@ public class SimpleMetroArcGaugeTrial2 extends Application {
 			for (int i = 0; i <= 20; i++) {
 				lSimpleMetroArcGauge.markers().add(new PercentMarker(lSimpleMetroArcGauge, i * 5.0));
 			}
+			lSimpleMetroArcGauge.indicators().add(new Indicator(0, "warning"));
+			lSimpleMetroArcGauge.indicators().add(new Indicator(1, "error"));
 			lBorderPane.setCenter(lSimpleMetroArcGauge);
 			gauges.add(lSimpleMetroArcGauge);
 		}
