@@ -148,18 +148,14 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 		double controlMaxValue = getSkinnable().getMaxValue();
 	 		double controlValueRange = controlMaxValue - controlMinValue;
 	 		
-	 		// validate the segments
-	 		List<Segment> lSegments = segments;
-			String segmentValidationMessage = validateSegments();
-			if (segmentValidationMessage != null) {
-				System.err.println(segmentValidationMessage);
-				lSegments = new ArrayList<Segment>();
-	 			lSegments.add(new CompleteSegment(getSkinnable()));
-			};
-
 			// layout the segments
 	 		double segmentRadius = calculateRadius() * FULL_ARC_RADIUS_FACTOR;
-	 		for (Segment segment : lSegments) {
+	 		for (Segment segment : segments) {
+	 			String message = validateSegment(segment);
+	 			if (message != null) {
+	 				System.err.println(message);
+	 				continue;
+	 			}
 	 			
 	 			// layout the arc for this segment
 	 	 		double segmentMinValue = segment.getMinValue();
@@ -167,15 +163,17 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 			double startAngle = (segmentMinValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
 	 			double endAngle = (segmentMaxValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
 	 			Arc arc = segmentToArc.get(segment);
-	 			arc.setCenterX(centerX.get());
-	 			arc.setCenterY(centerY.get());
-	 			arc.setRadiusX(segmentRadius);
-	 			arc.setRadiusY(segmentRadius);
-	 			// 0 degrees is on the right side of the circle (3 o'clock), the gauge starts in the bottom left (about 7 o'clock), so add 90 + 45 degrees to offset to that.
-	 			// The arc draws counter clockwise, so we need to negate to make it clock wise.
-	 			arc.setStartAngle(-1 * (startAngle + 135.0));
-	 			arc.setLength(-1 * (endAngle - startAngle));
-	 			arc.setType(ArcType.ROUND);
+	 			if (arc != null) {
+		 			arc.setCenterX(centerX.get());
+		 			arc.setCenterY(centerY.get());
+		 			arc.setRadiusX(segmentRadius);
+		 			arc.setRadiusY(segmentRadius);
+		 			// 0 degrees is on the right side of the circle (3 o'clock), the gauge starts in the bottom left (about 7 o'clock), so add 90 + 45 degrees to offset to that.
+		 			// The arc draws counter clockwise, so we need to negate to make it clock wise.
+		 			arc.setStartAngle(-1 * (startAngle + 135.0));
+		 			arc.setLength(-1 * (endAngle - startAngle));
+		 			arc.setType(ArcType.ROUND);
+	 			}
 	 		}
 		}
 		

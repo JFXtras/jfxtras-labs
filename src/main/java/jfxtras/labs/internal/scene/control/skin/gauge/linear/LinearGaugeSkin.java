@@ -136,35 +136,51 @@ public class LinearGaugeSkin<T, C extends LinearGauge<?>> extends SkinBase<C> {
 	}
 	
 	protected String validateSegments() {
- 		double controlMinValue = getSkinnable().getMinValue();
- 		double controlMaxValue = getSkinnable().getMaxValue();
-
  		for (Segment segment : getSkinnable().segments()) {
- 	 		double segmentMinValue = segment.getMinValue();
- 	 		double segmentMaxValue = segment.getMaxValue();
-			if (segmentMinValue < controlMinValue) {
-				return String.format("Segments min-value (%f) cannot be less than the controls min-value (%f)", segmentMinValue, controlMinValue);
-			}
-			if (segmentMaxValue > controlMaxValue) {
-				return String.format("Segments max-value (%f) cannot be greater than the controls max-value (%f)", segmentMaxValue, controlMaxValue);
+ 			String message = validateSegment(segment);
+			if (message != null) {
+				return message;
 			}
  		}
  		return null;
 	}
 	
-	protected String validateMarkers() {
+	protected String validateSegment(Segment segment) {
  		double controlMinValue = getSkinnable().getMinValue();
  		double controlMaxValue = getSkinnable().getMaxValue();
 
+ 		double segmentMinValue = segment.getMinValue();
+ 		double segmentMaxValue = segment.getMaxValue();
+		if (segmentMinValue < controlMinValue) {
+			return String.format("Segments min-value (%f) cannot be less than the controls min-value (%f)", segmentMinValue, controlMinValue);
+		}
+		if (segmentMaxValue > controlMaxValue) {
+			return String.format("Segments max-value (%f) cannot be greater than the controls max-value (%f)", segmentMaxValue, controlMaxValue);
+		}
+ 		return null;
+	}
+	
+	protected String validateMarkers() {
  		for (Marker marker : getSkinnable().markers()) {
- 	 		double markerValue = marker.getValue();
-			if (markerValue < controlMinValue) {
-				return String.format("Marker value (%f) cannot be less than the controls min-value (%f)", markerValue, controlMinValue);
-			}
-			if (markerValue > controlMaxValue) {
-				return String.format("Marker max-value (%f) cannot be greater than the controls max-value (%f)", markerValue, controlMaxValue);
+ 			String message = validateMarker(marker);
+			if (message != null) {
+				return message;
 			}
  		}
+ 		return null;
+	}
+
+	protected String validateMarker(Marker marker) {
+ 		double controlMinValue = getSkinnable().getMinValue();
+ 		double controlMaxValue = getSkinnable().getMaxValue();
+
+ 		double markerValue = marker.getValue();
+		if (markerValue < controlMinValue) {
+			return String.format("Marker value (%f) cannot be less than the controls min-value (%f)", markerValue, controlMinValue);
+		}
+		if (markerValue > controlMaxValue) {
+			return String.format("Marker max-value (%f) cannot be greater than the controls max-value (%f)", markerValue, controlMaxValue);
+		}
  		return null;
 	}
 }
