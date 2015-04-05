@@ -77,6 +77,15 @@ abstract public class LinearGaugeTrial1 extends Application {
 			lFlowPane.getChildren().add(lLinearGauge);
 		}
         
+        // without segments, static value
+		{
+			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			lLinearGauge.withValue(100.0);
+			lLinearGauge.setStyle("-fx-border-color: #000000;");
+			lLinearGauge.getStyleClass().add("colorscheme-dark");
+			lFlowPane.getChildren().add(lLinearGauge);
+		}
+        
         // without segments
 		{
 			final LinearGauge<?> lLinearGauge = createLinearGauge();

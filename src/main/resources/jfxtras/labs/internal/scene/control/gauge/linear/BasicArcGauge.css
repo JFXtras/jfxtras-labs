@@ -1,13 +1,62 @@
 .BasicArcGauge {
-    /* These are the variables with their default values (colors), but they're just a mix of colors. Logic can be applied by assigning on of the colorschemes */    
+
+    /* These are the variables with their default values (colors), special combinations can be set by assigning one of the colorschemes */    
     -fxx-backplate-color: #f0f0f0;
+	-fxx-needle-color: #F8907D;
+	-fxx-tick-color: black;
 }
 
 .backplate {
 	-fx-fill: -fxx-backplate-color;
+    -fx-effect: innershadow(two-pass-box, rgba(0, 0, 0, 0.3), 20, 0.0, 0, 20);
 }
 
 .tick {
+}
+
+.needle-standard {
+    -fx-background-color : derive(-fxx-needle-color, -30%),
+    	linear-gradient(to left,
+            derive(-fxx-needle-color, 15%) 0%,
+            derive(-fxx-needle-color, -15%) 100%);
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 0em;
+    -fx-padding: 0;
+    -fx-stroke: transparent;
+    -fx-scale-shape: false;
+    -fx-shape: "M -4 0 L 4 0 L 1 95 L -1 95 Z";
+    
+}
+
+.knob {
+    -fx-background-color : linear-gradient(to bottom,
+                                           white 0%,
+                                           rgb(133, 133, 133) 52%,
+                                           rgb(84, 84, 84) 100%),
+                           linear-gradient(to bottom,
+                                           rgb(204,204,204) 0%,
+                                           rgb(133,133,133) 45%,
+                                           rgb(84,84,84) 100%);
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 0em;
+    -fx-scale-shape      : false;
+    -fx-shape            : "M 0 100 C 0 44.7708 44.7708 0 100 0 C 155.2292 0 200 44.7708 200 100 C 200 155.2292 155.2292 200 100 200 C 44.7708 200 0 155.2292 0 100 Z";
+}
+
+.outerring {
+	-fx-fill: transparent;
+    -fx-stroke: linear-gradient(to bottom,
+                                         rgb(204,204,204) 0%,
+                                         rgb(133,133,133) 26%,
+                                         rgb(84,84,84) 100%);
+}
+
+.innerring {
+	-fx-fill: transparent;
+    -fx-stroke: linear-gradient(to bottom,
+                                         rgb(71,72,72) 0%,
+                                         rgb(110,106,107) 50%,
+                                         rgb(186,185,187) 100%);                                         
 }
 
 /***************************************************************************************************************
@@ -15,9 +64,15 @@
  */
 
 .colorscheme-light {
+    -fxx-backplate-color: #f0f0f0;
+	-fxx-needle-color: #F8907D;
+	-fxx-tick-color: black;
 }
 
 
 .colorscheme-dark {
+    -fxx-backplate-color: #2f2f2f;
+	-fxx-needle-color: #F8907D;
+	-fxx-tick-color: white;
 }
 
