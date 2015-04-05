@@ -13,3 +13,7 @@
 .segment-errorSegment-active {
 	-fxx-error-indicator-visibility: visible; 
 }
+
+.SimpleMetroArcGaugex {
+	-fxx-value-format:' ##0.0C';	
+}

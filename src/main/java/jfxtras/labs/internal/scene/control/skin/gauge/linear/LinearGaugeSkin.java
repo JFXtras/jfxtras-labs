@@ -3,16 +3,24 @@ package jfxtras.labs.internal.scene.control.skin.gauge.linear;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.ListChangeListener;
 import javafx.css.CssMetaData;
 import javafx.css.SimpleStyleableObjectProperty;
 import javafx.css.SimpleStyleableStringProperty;
 import javafx.css.Styleable;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.SkinBase;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
+import javafx.scene.transform.Scale;
 import jfxtras.css.CssMetaDataForSkinProperty;
+import jfxtras.labs.scene.control.gauge.linear.Indicator;
 import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
 import jfxtras.labs.scene.control.gauge.linear.Marker;
 import jfxtras.labs.scene.control.gauge.linear.Segment;
@@ -53,13 +61,13 @@ public class LinearGaugeSkin<T, C extends LinearGauge<?>> extends SkinBase<C> {
      */
     public final SimpleStyleableStringProperty valueFormatProperty() { return valueFormatProperty; }
     private SimpleStyleableStringProperty valueFormatProperty = new SimpleStyleableStringProperty(StyleableProperties.VALUE_FORMAT_CSSMETADATA, StyleableProperties.VALUE_FORMAT_CSSMETADATA.getInitialValue(null)) {
-		{ // anonymous constructor
-			addListener( (invalidationEvent) -> {
-//				needlePane.setValueText(); 
-//				needlePane.scaleValueText();
-//				needlePane.positionValueText();
-			});
-		}
+//		{ // anonymous constructor
+//			addListener( (invalidationEvent) -> {
+//				System.out.println("ValueFormat changed " + valueFormatProperty.get());
+//				System.out.println("Style " + getSkinnable().getStyle());
+//				new Throwable().printStackTrace();
+//			});
+//		}
 	};
     public final void setValueFormat(String value) { valueFormatProperty.set(value); }
     public final String getValueFormat() { return valueFormatProperty.get(); }
@@ -119,6 +127,10 @@ public class LinearGaugeSkin<T, C extends LinearGauge<?>> extends SkinBase<C> {
     // ==================================================================================================================
 	// VALIDATE
 	
+    /**
+     * 
+     * @return
+     */
 	protected String validateValue() {
  		double controlMinValue = getSkinnable().getMinValue();
  		double controlMaxValue = getSkinnable().getMaxValue();
@@ -135,16 +147,11 @@ public class LinearGaugeSkin<T, C extends LinearGauge<?>> extends SkinBase<C> {
 		return null;
 	}
 	
-	protected String validateSegments() {
- 		for (Segment segment : getSkinnable().segments()) {
- 			String message = validateSegment(segment);
-			if (message != null) {
-				return message;
-			}
- 		}
- 		return null;
-	}
-	
+	/**
+	 * 
+	 * @param segment
+	 * @return
+	 */
 	protected String validateSegment(Segment segment) {
  		double controlMinValue = getSkinnable().getMinValue();
  		double controlMaxValue = getSkinnable().getMaxValue();
@@ -159,17 +166,12 @@ public class LinearGaugeSkin<T, C extends LinearGauge<?>> extends SkinBase<C> {
 		}
  		return null;
 	}
-	
-	protected String validateMarkers() {
- 		for (Marker marker : getSkinnable().markers()) {
- 			String message = validateMarker(marker);
-			if (message != null) {
-				return message;
-			}
- 		}
- 		return null;
-	}
 
+	/**
+	 * 
+	 * @param marker
+	 * @return
+	 */
 	protected String validateMarker(Marker marker) {
  		double controlMinValue = getSkinnable().getMinValue();
  		double controlMaxValue = getSkinnable().getMaxValue();
@@ -182,5 +184,77 @@ public class LinearGaugeSkin<T, C extends LinearGauge<?>> extends SkinBase<C> {
 			return String.format("Marker max-value (%f) cannot be greater than the controls max-value (%f)", markerValue, controlMaxValue);
 		}
  		return null;
+	}
+	
+	// ==================================================================================================================
+	// Indicators
+	
+	abstract protected class AbstractIndicatorPane extends Pane {
+		final private Map<Indicator, Region> indicatorToRegion = new HashMap<>();
+
+		/**
+		 * 
+		 */
+		protected AbstractIndicatorPane() {
+
+			// react to changes in the markers
+			getSkinnable().indicators().addListener( (ListChangeListener.Change<? extends Indicator> change) -> {
+				createAndAddIndicators();
+			});
+			createAndAddIndicators();
+		}
+		
+		/**
+		 * 
+		 */
+		private void createAndAddIndicators() {
+	 		// create the nodes representing each marker
+			getChildren().clear();
+			indicatorToRegion.clear();
+	 		for (Indicator indicator : getSkinnable().indicators()) {
+	 			
+	 			// create an svg path for this marker
+	 			Region region = new Region();
+				getChildren().add(region);
+				indicatorToRegion.put(indicator, region);
+				
+				// setup scaling
+				Scale scale = new Scale();
+				region.getTransforms().add(scale);
+				
+				// setup CSS on the path
+				region.getStyleClass().addAll("indicator", indicator.getId() + "-indicator");
+	        	region.setId(indicator.getId());
+	 		}
+		}
+
+		/**
+		 * 
+		 */
+		@Override
+		protected void layoutChildren() {
+			super.layoutChildren();
+
+	 		// size & position the indicators
+	 		double radius = calculateRadius();
+	 		for (Indicator indicator : getSkinnable().indicators()) {
+	 			
+	 			int idx = indicator.getIdx();
+	 			Region region = indicatorToRegion.get(indicator);
+	 			if (region != null) {
+	 				Point2D point2D = calculateLocation(idx);
+					if (point2D != null) {
+				 		region.layoutXProperty().set(point2D.getX());
+				 		region.layoutYProperty().set(point2D.getY());
+		 			}
+	 				Scale scale = (Scale)region.getTransforms().get(0);
+		 			scale.setX(40.0/100.0 * radius/150.0); // SVG is setup on a virtual 100x100 canvas, it is scaled to fit the size of the gauge. For a width of 300 (radius 150) this is 40 pixels
+		 			scale.setY(scale.getX()); 
+	 			}
+	 		}
+		}
+		
+		abstract protected double calculateRadius();
+		abstract protected Point2D calculateLocation(int idx);
 	}
 }

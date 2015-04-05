@@ -2,6 +2,7 @@ package jfxtras.labs.internal.scene.control.skin.gauge.linear;
 
 import com.sun.javafx.animation.TickCalculation;
 
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.CacheHint;
 import javafx.scene.canvas.Canvas;
@@ -44,14 +45,20 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 	 */
 	private void constructNodes()
 	{
+		// style
+		getSkinnable().getStyleClass().add(getClass().getSimpleName()); // always add self as style class, because with multiple skins CSS should relate to the skin not the control		
+
+		// determine center
+		centerX.bind(stackPane.widthProperty().multiply(0.5));
+		centerY.bind(stackPane.heightProperty().multiply(0.5));
+
 		// use a stack pane to control the layers
 		stackPane.getChildren().addAll(backPlatePane, glassPlatePane);
 		getChildren().add(stackPane);
 		stackPane.setPrefSize(200, 200);
-
-		// style
-		getSkinnable().getStyleClass().add(getClass().getSimpleName()); // always add self as style class, because with multiple skins CSS should relate to the skin not the control		
 	}
+	private SimpleDoubleProperty centerX = new SimpleDoubleProperty();
+	private SimpleDoubleProperty centerY = new SimpleDoubleProperty();
 	final private StackPane stackPane = new StackPane();
 	final private BackPlatePane backPlatePane = new BackPlatePane();
 	final private GlassPlatePane glassPlatePane = new GlassPlatePane();
@@ -87,13 +94,12 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 			super.layoutChildren();
 
 			// prep
-			Point2D center = determineCenter();
 			double radius = calculateRadius();
 
 			// position and size the circle
 			double plateRadius = radius * BACKPLATE_RADIUS_FACTOR;
-			backpaneCircle.setCenterX(center.getX());
-			backpaneCircle.setCenterY(center.getY());
+			backpaneCircle.setCenterX(centerX.get());
+			backpaneCircle.setCenterY(centerY.get());
 			backpaneCircle.setRadius(plateRadius);
 			
 			// paint the ticks
@@ -111,19 +117,19 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 			double tickMinorRadius = radius * TICK_MINOR_RADIUS_FACTOR;
             for (int i = 0; i <= 100; i++) { 
             	double angle = FULL_ARC_IN_DEGREES / 100.0 * (double)i; 
-            	Point2D outerPoint2D = calculatePointOnCircle(center, tickOuterRadius, angle);
+            	Point2D outerPoint2D = calculatePointOnCircle(tickOuterRadius, angle);
             	Point2D innerPoint2D = null;
             	
             	if (i % 10 == 0) {
-                	innerPoint2D = calculatePointOnCircle(center, tickMajorRadius, angle);
+                	innerPoint2D = calculatePointOnCircle(tickMajorRadius, angle);
 	            	graphicsContext.setLineWidth(size * 0.0055);
             	}
             	else if (i % 5 == 0) {
-                	innerPoint2D = calculatePointOnCircle(center, tickMinorRadius, angle);
+                	innerPoint2D = calculatePointOnCircle(tickMinorRadius, angle);
 	            	graphicsContext.setLineWidth(size * 0.0035);
             	}
             	else {
-                	innerPoint2D = calculatePointOnCircle(center, tickInnerRadius, angle);
+                	innerPoint2D = calculatePointOnCircle(tickInnerRadius, angle);
 	            	graphicsContext.setLineWidth(size * 0.00225);
             	}
             	graphicsContext.strokeLine(innerPoint2D.getX(), innerPoint2D.getY(), outerPoint2D.getX(), outerPoint2D.getY());
@@ -150,7 +156,6 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 			super.layoutChildren();
 
 			// prep
-			Point2D center = determineCenter();
 			double radius = calculateRadius();
 		}
 	}
@@ -165,14 +170,14 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 	 * @param angleInDegrees
 	 * @return
 	 */
-	static private Point2D calculatePointOnCircle(Point2D center, double radius, double angleInDegrees) {
+	private Point2D calculatePointOnCircle(double radius, double angleInDegrees) {
 		// Java's math uses radians
 		// 0 degrees is on the right side of the circle (3 o'clock), the gauge starts in the bottom left (about 7 o'clock), so add 90 + 45 degrees to offset to that. 
 		double angleInRadians = Math.toRadians(angleInDegrees + 135.0);
 		
 		// calculate point on circle
-		double x = center.getX() + (radius * Math.cos(angleInRadians));
-		double y = center.getY() + (radius * Math.sin(angleInRadians));
+		double x = centerX.get() + (radius * Math.cos(angleInRadians));
+		double y = centerY.get() + (radius * Math.sin(angleInRadians));
 		return new Point2D(x, y);
 	}
 	
@@ -181,16 +186,6 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 	 * @return
 	 */
 	private double calculateRadius() {
-		Point2D center = determineCenter();
-		return Math.min(center.getX(), center.getY());
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	private Point2D determineCenter() {
-		Point2D center = new Point2D(stackPane.getWidth() / 2.0, stackPane.getHeight() / 2.0);
-		return center;
+		return Math.min(centerX.get(), centerY.get());
 	}
 }

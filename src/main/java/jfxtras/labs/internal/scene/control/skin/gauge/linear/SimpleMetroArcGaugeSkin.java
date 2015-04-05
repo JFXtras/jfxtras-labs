@@ -12,7 +12,6 @@ import javafx.animation.Timeline;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Point2D;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
@@ -23,14 +22,12 @@ import javafx.scene.shape.FillRule;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.util.Duration;
 import jfxtras.labs.scene.control.gauge.linear.CompleteSegment;
-import jfxtras.labs.scene.control.gauge.linear.Indicator;
 import jfxtras.labs.scene.control.gauge.linear.Marker;
 import jfxtras.labs.scene.control.gauge.linear.Segment;
 import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
@@ -40,9 +37,10 @@ import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
  */
 public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGaugeSkin, SimpleMetroArcGauge> {
 
-	private static final double FULL_ARC_RADIUS_FACTOR = 0.95;
-	private static final double NEEDLE_ARC_RADIUS_FACTOR = 0.5;
-	private static final double TIP_RADIUS_FACTOR = 0.87;
+	private static final double SEGMENT_RADIUS_FACTOR = 0.95;
+	private static final double NEEDLE_RADIUS_FACTOR = 0.5;
+	private static final double NEEDLE_TIP_RADIUS_FACTOR = 0.87;
+	private static final double MARKER_RADIUS_FACTOR = SEGMENT_RADIUS_FACTOR * 0.15;
 	static final private double FULL_ARC_IN_DEGREES = 270.0;
 
 	// ==================================================================================================================
@@ -76,13 +74,13 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 		getChildren().add(stackPane);
 		stackPane.setPrefSize(200, 200);
 	}
-	private SimpleDoubleProperty centerX = new SimpleDoubleProperty();
-	private SimpleDoubleProperty centerY = new SimpleDoubleProperty();
-	private StackPane stackPane = new StackPane();
-	private SegmentPane segmentPane = new SegmentPane();
-	private MarkerPane markerPane = new MarkerPane();
-	private IndicatorPane indicatorPane = new IndicatorPane();
-	private NeedlePane needlePane = new NeedlePane();
+	final private SimpleDoubleProperty centerX = new SimpleDoubleProperty();
+	final private SimpleDoubleProperty centerY = new SimpleDoubleProperty();
+	final private StackPane stackPane = new StackPane();
+	final private SegmentPane segmentPane = new SegmentPane();
+	final private MarkerPane markerPane = new MarkerPane();
+	final private IndicatorPane indicatorPane = new IndicatorPane();
+	final private NeedlePane needlePane = new NeedlePane();
 	
 
 	// ==================================================================================================================
@@ -149,11 +147,11 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 		double controlValueRange = controlMaxValue - controlMinValue;
 	 		
 			// layout the segments
-	 		double segmentRadius = calculateRadius() * FULL_ARC_RADIUS_FACTOR;
+	 		double segmentRadius = calculateRadius() * SEGMENT_RADIUS_FACTOR;
 	 		for (Segment segment : segments) {
 	 			String message = validateSegment(segment);
 	 			if (message != null) {
-	 				System.err.println(message);
+	 				new Throwable(message).printStackTrace();
 	 				continue;
 	 			}
 	 			
@@ -191,11 +189,13 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 	 		double segmentMaxValue = segment.getMaxValue();
 	 	 		String lSegmentActiveId = "segment" + cnt + "-active";
 	 	 		String lSegmentIdActiveId = "segment-" + segment.getId() + "-active";
+	 	 		// remove classes
 	 	 		getSkinnable().getStyleClass().remove(lSegmentActiveId);
 	 	 		segmentToArc.get(segment).getStyleClass().remove("segment-active");
 	 	 		if (segment.getId() != null) {
 	 	 			getSkinnable().getStyleClass().remove(lSegmentIdActiveId);
 	 	 		}
+	 	 		// add classes if active
 	 	 		if (segmentMinValue <= lValue && lValue <= segmentMaxValue) {
 	 	 			getSkinnable().getStyleClass().add(lSegmentActiveId);
 		 	 		segmentToArc.get(segment).getStyleClass().add("segment-active");
@@ -237,7 +237,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 		markerToRegion.clear();
 	 		int markerCnt = 0;
 	 		for (Marker marker : getSkinnable().markers()) {
-	 			
+
 	 			// create an svg path for this marker
 	 			Region region = new Region();
 				getChildren().add(region);
@@ -274,20 +274,17 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 		double controlMaxValue = getSkinnable().getMaxValue();
 	 		double controlValueRange = controlMaxValue - controlMinValue;
 	 		double radius = calculateRadius();
-			double segmentRadius = radius * FULL_ARC_RADIUS_FACTOR;
+			double segmentRadius = radius * SEGMENT_RADIUS_FACTOR;
 	 		
-	 		// validate the markers
-	 		List<Marker> lMarkers = getSkinnable().markers();
-			String markerValidationMessage = validateMarkers();
-			if (markerValidationMessage != null) {
-				System.err.println(markerValidationMessage);
-				lMarkers = new ArrayList<Marker>();
-			};
-
 			// layout the markers
-	 		for (Marker marker : lMarkers) {
-	 			
-	 			// layout the arc for this segment
+	 		for (Marker marker : getSkinnable().markers()) {
+	 			String message = validateMarker(marker);
+	 			if (message != null) {
+	 				new Throwable(message).printStackTrace();
+	 				continue;
+	 			}
+
+	 			// layout the svg shape 
 	 	 		double markerValue = marker.getValue();
 	 			double angle = (markerValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES;
 	 			Region region = markerToRegion.get(marker);
@@ -297,7 +294,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 			Rotate rotate = (Rotate)region.getTransforms().get(0);
 				rotate.setAngle(angle - 135.0); // the angle also determines the rotation	 			
 	 			Scale scale = (Scale)region.getTransforms().get(1);
-	 			scale.setX(2 * radius / 300.0); // Region was created against a sample with 300.0 pixels  
+	 			scale.setX(2 * radius / 300.0); // SVG shape was created against a sample gauge with 300x300 pixels  
 	 			scale.setY(scale.getX()); 
 	 		}
 		}
@@ -307,82 +304,31 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	// ==================================================================================================================
 	// Indicators
 	
-	private class IndicatorPane extends Pane {
-		final private Map<Indicator, Region> indicatorToRegion = new HashMap<>();
-
-		/**
-		 * 
-		 */
-		private IndicatorPane() {
-
-			// react to changes in the markers
-			getSkinnable().indicators().addListener( (ListChangeListener.Change<? extends Indicator> change) -> {
-				createAndAddIndicators();
-			});
-			createAndAddIndicators();
+	protected class IndicatorPane extends AbstractIndicatorPane {
+		
+		@Override
+		protected double calculateRadius() {
+			return SimpleMetroArcGaugeSkin.this.calculateRadius();
 		}
 		
-		/**
-		 * 
-		 */
-		private void createAndAddIndicators() {
-	 		// create the nodes representing each marker
-			getChildren().clear();
-			indicatorToRegion.clear();
-	 		for (Indicator indicator : getSkinnable().indicators()) {
-	 			
-	 			// create an svg path for this marker
-	 			Region region = new Region();
-				getChildren().add(region);
-				indicatorToRegion.put(indicator, region);
-				
-				// setup scaling
-				Scale scale = new Scale();
-				region.getTransforms().add(scale);
-				
-				// setup CSS on the path
-				region.getStyleClass().addAll("indicator", indicator.getId() + "-indicator");
-	        	region.setId(indicator.getId());
-	 		}
-		}
-
-		/**
-		 * 
-		 */
 		@Override
-		protected void layoutChildren() {
-			super.layoutChildren();
+		protected Point2D calculateLocation(int idx) {
 
 			// prepare
 	 		double radius = calculateRadius();
-			double segmentRadius = radius * FULL_ARC_RADIUS_FACTOR;
-	 		
-	 		// size & position the indicators
-	 		double indicatorRadius = segmentRadius * 0.15;
+			double segmentRadius = radius * SEGMENT_RADIUS_FACTOR;
+			double indicatorRadius = radius * MARKER_RADIUS_FACTOR;
 	 		double indicatorDiameter = 2 * indicatorRadius;
-	 		for (Indicator indicator : getSkinnable().indicators()) {
 	 			
-	 			int idx = indicator.getIdx();
-	 			Region region = indicatorToRegion.get(indicator);
-	 			if (region != null) {
-	 				// TBEERNOT: move the indicator code to LinearGauge
-	 				// TBEERNOT: can we do something better than cascades ifs?
-					if (idx == 0 ) {
-				 		region.layoutXProperty().set(centerX.get() - indicatorDiameter);
-				 		region.layoutYProperty().set(centerY.get() + segmentRadius - indicatorDiameter);
-		 			}
-		 			else if (idx == 1) {
-						region.layoutXProperty().set(centerX.get() + indicatorDiameter);
-						region.layoutYProperty().set(centerY.get() + segmentRadius - indicatorDiameter);
-		 			}
-		 			else {
-		 				System.out.println("The " + getSkinnable().getClass().getSimpleName() + " gauge supports indicators [0,1], not " + idx);
-		 			}
-	 				Scale scale = (Scale)region.getTransforms().get(0);
-		 			scale.setX(40.0/100.0 * radius/150.0); // SVG is setup on a virtual 100x100 canvas, it is scaled to fit the size of the gauge. For a width of 300 (radius 150) this is 40 pixels
-		 			scale.setY(scale.getX()); 
-	 			}
-	 		}
+			// TBEERNOT: can we do something better than cascades ifs?
+			if (idx == 0 ) {
+		 		return new Point2D(centerX.get() - indicatorDiameter, centerY.get() + segmentRadius - indicatorDiameter);
+ 			}
+ 			if (idx == 1) {
+ 				return new Point2D(centerX.get() + indicatorDiameter, centerY.get() + segmentRadius - indicatorDiameter);
+ 			}
+			System.err.println("The " + getSkinnable().getClass().getSimpleName() + " gauge supports indicators [0,1], not " + idx);
+			return null;
 		}
 	}
 	
@@ -408,6 +354,8 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	        // add the needle
 	        getChildren().add(needlePath);
 	        needlePath.getStyleClass().add("needle");
+	        needleRotate.pivotXProperty().bind(centerX);
+	        needleRotate.pivotYProperty().bind(centerY);
 	        
 	        // value text
 	        getChildren().add(valueTextPane);
@@ -463,8 +411,8 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 				
 				// preparation
 		 		double radius = calculateRadius();
-				double tipRadius = radius * TIP_RADIUS_FACTOR;
-				double arcRadius = radius * NEEDLE_ARC_RADIUS_FACTOR;
+				double tipRadius = radius * NEEDLE_TIP_RADIUS_FACTOR;
+				double arcRadius = radius * NEEDLE_RADIUS_FACTOR;
 				
 				// calculate the important points of the needle
 				Point2D arcStartPoint2D = calculatePointOnCircle(arcRadius, 0.0 - 15.0);
@@ -498,8 +446,6 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 		        needlePath.setStrokeWidth(arcRadius * 0.10);
 		        
 		        // set to rotate around the center of the gauge
-		        needleRotate.setPivotX(centerX.get());
-		        needleRotate.setPivotY(centerY.get());
 		        needlePath.getTransforms().setAll(needleRotate);
 		        
 		        // layout value
@@ -566,7 +512,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 			
 			// preparation
 	 		double radius = calculateRadius();
-			double arcRadius = radius * NEEDLE_ARC_RADIUS_FACTOR;
+			double arcRadius = radius * NEEDLE_RADIUS_FACTOR;
 			
 			// use the two extreme's to determine the scaling factor
 			double minScale = calculateScaleFactor(arcRadius, getSkinnable().getMinValue());
