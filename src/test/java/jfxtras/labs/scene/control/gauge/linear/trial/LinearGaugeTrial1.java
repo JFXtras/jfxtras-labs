@@ -54,6 +54,7 @@ import jfxtras.labs.test.TestUtil;
 abstract public class LinearGaugeTrial1 extends Application {
 	
 	public abstract LinearGauge<?> createLinearGauge();
+	public abstract void addDeviatingGauges(List<LinearGauge<?>> gauges, FlowPane lFlowPane);
 	
 	@Override
 	public void start(Stage stage) {
@@ -82,7 +83,6 @@ abstract public class LinearGaugeTrial1 extends Application {
 			final LinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.withValue(100.0);
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
-			lLinearGauge.getStyleClass().add("colorscheme-dark");
 			lFlowPane.getChildren().add(lLinearGauge);
 		}
         
@@ -106,19 +106,6 @@ abstract public class LinearGaugeTrial1 extends Application {
 		{
 			final LinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
-			for (int i = 0; i < 10; i++) {
-				Segment lSegment = new PercentSegment(lLinearGauge, i * 10.0, (i+1) * 10.0);
-				lLinearGauge.segments().add(lSegment);
-			}
-			lFlowPane.getChildren().add(lLinearGauge);
-			gauges.add(lLinearGauge);
-		}
-        
-		// 10 segments, color schema
-		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
-			lLinearGauge.setStyle("-fx-border-color: #000000;");
-			lLinearGauge.getStyleClass().add("colorscheme-green-to-red-10");
 			for (int i = 0; i < 10; i++) {
 				Segment lSegment = new PercentSegment(lLinearGauge, i * 10.0, (i+1) * 10.0);
 				lLinearGauge.segments().add(lSegment);
@@ -182,7 +169,6 @@ abstract public class LinearGaugeTrial1 extends Application {
 			HBox lHBox = new HBox();
 			final LinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
-			lLinearGauge.getStyleClass().add("colorscheme-green-to-red-10");
 			for (int i = 0; i < 10; i++) {
 				Segment lSegment = new PercentSegment(lLinearGauge, i * 10.0, (i+1) * 10.0);
 				lLinearGauge.segments().add(lSegment);
@@ -202,49 +188,6 @@ abstract public class LinearGaugeTrial1 extends Application {
 			
 			gauges.add(lLinearGauge);
 		}
-        
-        
-        // 20 segments
-		{
-			HBox lHBox = new HBox();
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
-			lLinearGauge.setStyle("-fx-border-color: #000000;");
-			lLinearGauge.getStyleClass().add("colorscheme-green-to-red-10");
-			for (int i = 0; i < 20; i++) {
-				Segment lSegment = new PercentSegment(lLinearGauge, i * 5.0, (i+1) * 5.0);
-				lLinearGauge.segments().add(lSegment);
-			}
-			lHBox.getChildren().add(lLinearGauge);
-
-			lFlowPane.getChildren().add(lHBox);
-			
-			gauges.add(lLinearGauge);
-		}
-        
-		// manually show indicators
-		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
-			lLinearGauge.indicators().add(new Indicator(0, "warning"));
-			lLinearGauge.indicators().add(new Indicator(1, "error"));
-			lLinearGauge.setStyle("-fx-border-color: #000000; -fxx-warning-indicator-visibility: visible; -fxx-error-indicator-visibility: visible; ");
-			lFlowPane.getChildren().add(lLinearGauge);
-			gauges.add(lLinearGauge);
-		}
-        
-		// 10 segments, transparent, with segment related indicators
-		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
-			lLinearGauge.indicators().add(new Indicator(0, "warning"));
-			lLinearGauge.indicators().add(new Indicator(1, "error"));
-			lLinearGauge.setId("segmentRelatedIndicators");
-			lLinearGauge.setStyle("-fx-border-color: #000000;");
-			lLinearGauge.getStyleClass().add("colorscheme-first-grey-rest-transparent-10");
-			lLinearGauge.segments().add(new CompleteSegment(lLinearGauge));
-			lLinearGauge.segments().add(new PercentSegment(lLinearGauge, 50.0, 100.0, "warningSegment"));
-			lLinearGauge.segments().add(new PercentSegment(lLinearGauge, 75.0, 100.0, "errorSegment"));
-			lFlowPane.getChildren().add(lLinearGauge);
-			gauges.add(lLinearGauge);
-		}
 
         // markers
 		{
@@ -257,6 +200,8 @@ abstract public class LinearGaugeTrial1 extends Application {
 			gauges.add(lLinearGauge);
 		}
         
+		addDeviatingGauges(gauges, lFlowPane);
+
         // create scene
         Scene scene = new Scene(lFlowPane, 1500, 900);
         scene.getStylesheets().add(this.getClass().getResource(LinearGaugeTrial1.class.getSimpleName()+ ".css").toExternalForm());
@@ -268,6 +213,7 @@ abstract public class LinearGaugeTrial1 extends Application {
         
         // start periodically changing the value of the gauges
 		Thread t = new Thread( () -> {
+			TestUtil.sleep(2000);
 			Random lRandom = new Random();
 			while (true) {
 				TestUtil.sleep(2000);

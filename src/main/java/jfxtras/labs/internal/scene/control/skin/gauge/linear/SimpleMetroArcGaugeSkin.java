@@ -72,7 +72,6 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 		// use a stack pane to control the layers
 		stackPane.getChildren().addAll(segmentPane, markerPane, indicatorPane, needlePane);
 		getChildren().add(stackPane);
-		stackPane.setPrefSize(200, 200);
 	}
 	final private SimpleDoubleProperty centerX = new SimpleDoubleProperty();
 	final private SimpleDoubleProperty centerY = new SimpleDoubleProperty();
@@ -352,16 +351,22 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 				rotateNeedle(true);
 				scaleValueText();
 			});
+			
+			// a hidden text to determine how large the min and max value would be
+			hiddenText.getStyleClass().add("value");
+	        hiddenText.setVisible(false);
+	        getChildren().add(hiddenText);
 
 			// position valueTextPane
 			valueTextPane.layoutXProperty().bind(centerX.subtract( valueTextPane.widthProperty().multiply(0.5).multiply(valueScale.xProperty()) )); 
 			valueTextPane.layoutYProperty().bind(centerY.subtract( valueTextPane.heightProperty().multiply(0.5).multiply(valueScale.yProperty()) ));
-			
+
 			// init
 			rotateNeedle(false);
 			setValueText();
 			scaleValueText();
 		}
+		final private Text hiddenText = new Text("");
 		
 		/**
 		 * 
@@ -493,9 +498,9 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 		 * @return
 		 */
 		private double calculateScaleFactor(double radius, double value) {
-			Point2D size = determineSizeOfValueFormattedText(valueFormat(value));
-			double width = size.getX();
-			double height = size.getY();
+			hiddenText.setText(valueFormat(value));
+			double width = hiddenText.getBoundsInParent().getWidth();
+			double height = hiddenText.getBoundsInParent().getHeight();
 			double diameter = radius * 2.0;
 			// Width and height construct a right angled triangle, where the hypotenuse should be equal to the diameter of the needle's circle.
 			// So apply some Pythagoras...

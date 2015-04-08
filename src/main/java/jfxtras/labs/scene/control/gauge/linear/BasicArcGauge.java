@@ -16,6 +16,13 @@ import jfxtras.scene.control.ListSpinner;
 public class BasicArcGauge extends LinearGauge<BasicArcGauge> {
 	
 	// ==================================================================================================================
+	// Constructor
+	
+	public BasicArcGauge() {
+		setPrefSize(200, 200);
+	}
+
+	// ==================================================================================================================
 	// LinearGauge
 
 	/**

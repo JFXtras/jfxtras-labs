@@ -1,6 +1,5 @@
 package jfxtras.labs.internal.scene.control.skin.gauge.linear;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +12,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.css.CssMetaData;
 import javafx.css.SimpleStyleableObjectProperty;
-import javafx.css.SimpleStyleableStringProperty;
 import javafx.css.Styleable;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;

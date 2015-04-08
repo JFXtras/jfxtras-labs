@@ -29,6 +29,9 @@
 
 package jfxtras.labs.scene.control.gauge.linear.trial;
 
+import java.util.List;
+
+import javafx.scene.layout.FlowPane;
 import jfxtras.labs.scene.control.gauge.linear.BasicArcGauge;
 import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
 
@@ -44,5 +47,18 @@ public class BasicArcGaugeTrial1 extends LinearGaugeTrial1 {
     public LinearGauge<?> createLinearGauge() {
     	return new BasicArcGauge();
     }
+    
+	@Override
+	public void addDeviatingGauges(List<LinearGauge<?>> gauges, FlowPane lFlowPane) {
+        
+        // dark
+		{
+			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			lLinearGauge.setStyle("-fx-border-color: #000000;");
+			lLinearGauge.getStyleClass().add("colorscheme-dark");
+			lFlowPane.getChildren().add(lLinearGauge);
+			gauges.add(lLinearGauge);
+		}
+	}
 }
 

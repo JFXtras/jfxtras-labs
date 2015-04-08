@@ -29,7 +29,15 @@
 
 package jfxtras.labs.scene.control.gauge.linear.trial;
 
+import java.util.List;
+
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import jfxtras.labs.scene.control.gauge.linear.CompleteSegment;
+import jfxtras.labs.scene.control.gauge.linear.Indicator;
 import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
+import jfxtras.labs.scene.control.gauge.linear.PercentSegment;
+import jfxtras.labs.scene.control.gauge.linear.Segment;
 import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
 
 /**
@@ -45,5 +53,65 @@ public class SimpleMetroArcGaugeTrial1 extends LinearGaugeTrial1 {
 	public LinearGauge<?> createLinearGauge() {
 		return new SimpleMetroArcGauge();
 	}
+	
+	@Override
+	public void addDeviatingGauges(List<LinearGauge<?>> gauges, FlowPane lFlowPane) {
+        
+		// 10 segments, color schema
+		{
+			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			lLinearGauge.setStyle("-fx-border-color: #000000;");
+			lLinearGauge.getStyleClass().add("colorscheme-green-to-red-10");
+			for (int i = 0; i < 10; i++) {
+				Segment lSegment = new PercentSegment(lLinearGauge, i * 10.0, (i+1) * 10.0);
+				lLinearGauge.segments().add(lSegment);
+			}
+			lFlowPane.getChildren().add(lLinearGauge);
+			gauges.add(lLinearGauge);
+		}
+        
+        // 20 segments
+		{
+			HBox lHBox = new HBox();
+			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			lLinearGauge.setStyle("-fx-border-color: #000000;");
+			lLinearGauge.getStyleClass().add("colorscheme-green-to-red-10");
+			for (int i = 0; i < 20; i++) {
+				Segment lSegment = new PercentSegment(lLinearGauge, i * 5.0, (i+1) * 5.0);
+				lLinearGauge.segments().add(lSegment);
+			}
+			lHBox.getChildren().add(lLinearGauge);
+
+			lFlowPane.getChildren().add(lHBox);
+			
+			gauges.add(lLinearGauge);
+		}
+        
+		// manually show indicators
+		{
+			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			lLinearGauge.indicators().add(new Indicator(0, "warning"));
+			lLinearGauge.indicators().add(new Indicator(1, "error"));
+			lLinearGauge.setStyle("-fx-border-color: #000000; -fxx-warning-indicator-visibility: visible; -fxx-error-indicator-visibility: visible; ");
+			lFlowPane.getChildren().add(lLinearGauge);
+			gauges.add(lLinearGauge);
+		}
+        
+		// 10 segments, transparent, with segment related indicators
+		{
+			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			lLinearGauge.indicators().add(new Indicator(0, "warning"));
+			lLinearGauge.indicators().add(new Indicator(1, "error"));
+			lLinearGauge.setId("segmentRelatedIndicators");
+			lLinearGauge.setStyle("-fx-border-color: #000000;");
+			lLinearGauge.getStyleClass().add("colorscheme-first-grey-rest-transparent-10");
+			lLinearGauge.segments().add(new CompleteSegment(lLinearGauge));
+			lLinearGauge.segments().add(new PercentSegment(lLinearGauge, 50.0, 100.0, "warningSegment"));
+			lLinearGauge.segments().add(new PercentSegment(lLinearGauge, 75.0, 100.0, "errorSegment"));
+			lFlowPane.getChildren().add(lLinearGauge);
+			gauges.add(lLinearGauge);
+		}
+	}
+
 }
 

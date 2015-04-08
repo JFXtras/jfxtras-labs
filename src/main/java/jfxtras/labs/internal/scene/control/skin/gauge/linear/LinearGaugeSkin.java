@@ -42,7 +42,6 @@ public class LinearGaugeSkin<T, C extends LinearGauge<?>> extends SkinBase<C> {
 	 */
 	public LinearGaugeSkin(C control) {
 		super(control);
-		constructHiddenTextFieldsForSizeDetermination();
 	}
 
 	// ==================================================================================================================
@@ -188,33 +187,6 @@ public class LinearGaugeSkin<T, C extends LinearGauge<?>> extends SkinBase<C> {
  		return null;
 	}
 
-	
-	// ==================================================================================================================
-	// MinMax
-	
-	/**
-	 * 
-	 */
-	private void constructHiddenTextFieldsForSizeDetermination() {
-		minmaxValueText.getStyleClass().add("value");
-        getChildren().add(minmaxValueText);
-        minmaxValueText.setVisible(false);
-	}
-	final private Text minmaxValueText = new Text("");
-
-	/**
-	 * 
-	 * @param formattedText
-	 * @return size (x=width, y=height)
-	 */
-	protected Point2D determineSizeOfValueFormattedText(String formattedText) {
-		minmaxValueText.setText(formattedText);
-		double width = minmaxValueText.getBoundsInParent().getWidth();
-		double height = minmaxValueText.getBoundsInParent().getHeight();
-		Point2D size = new Point2D(width, height);
-		return size;
-	}
-	
 	
 	// ==================================================================================================================
 	// Segments
