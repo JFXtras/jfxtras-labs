@@ -18,6 +18,7 @@ import javafx.scene.Node;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.text.Text;
 import javafx.scene.transform.Scale;
 import jfxtras.css.CssMetaDataForSkinProperty;
 import jfxtras.labs.scene.control.gauge.linear.Indicator;
@@ -41,6 +42,7 @@ public class LinearGaugeSkin<T, C extends LinearGauge<?>> extends SkinBase<C> {
 	 */
 	public LinearGaugeSkin(C control) {
 		super(control);
+		constructHiddenTextFieldsForSizeDetermination();
 	}
 
 	// ==================================================================================================================
@@ -185,7 +187,70 @@ public class LinearGaugeSkin<T, C extends LinearGauge<?>> extends SkinBase<C> {
 		}
  		return null;
 	}
+
 	
+	// ==================================================================================================================
+	// MinMax
+	
+	/**
+	 * 
+	 */
+	private void constructHiddenTextFieldsForSizeDetermination() {
+		minmaxValueText.getStyleClass().add("value");
+        getChildren().add(minmaxValueText);
+        minmaxValueText.setVisible(false);
+	}
+	final private Text minmaxValueText = new Text("");
+
+	/**
+	 * 
+	 * @param formattedText
+	 * @return size (x=width, y=height)
+	 */
+	protected Point2D determineSizeOfValueFormattedText(String formattedText) {
+		minmaxValueText.setText(formattedText);
+		double width = minmaxValueText.getBoundsInParent().getWidth();
+		double height = minmaxValueText.getBoundsInParent().getHeight();
+		Point2D size = new Point2D(width, height);
+		return size;
+	}
+	
+	
+	// ==================================================================================================================
+	// Segments
+
+	/**
+	 * Make segments active
+	 */
+	void activateSegments(Map<Segment, ? extends Node> segmentToNode) {
+ 		// make those segments active that fall under the needle
+		double lValue = getSkinnable().getValue();
+ 		int cnt = 0;
+ 		for (Segment segment : segmentToNode.keySet()) {
+ 			
+ 			// layout the arc for this segment
+ 	 		double segmentMinValue = segment.getMinValue();
+ 	 		double segmentMaxValue = segment.getMaxValue();
+ 	 		String lSegmentActiveId = "segment" + cnt + "-active";
+ 	 		String lSegmentIdActiveId = "segment-" + segment.getId() + "-active";
+ 	 		// remove classes
+ 	 		getSkinnable().getStyleClass().remove(lSegmentActiveId);
+ 	 		segmentToNode.get(segment).getStyleClass().remove("segment-active");
+ 	 		if (segment.getId() != null) {
+ 	 			getSkinnable().getStyleClass().remove(lSegmentIdActiveId);
+ 	 		}
+ 	 		// add classes if active
+ 	 		if (segmentMinValue <= lValue && lValue <= segmentMaxValue) {
+ 	 			getSkinnable().getStyleClass().add(lSegmentActiveId);
+ 	 			segmentToNode.get(segment).getStyleClass().add("segment-active");
+	 	 		if (segment.getId() != null) {
+	 	 			getSkinnable().getStyleClass().add(lSegmentIdActiveId);
+	 	 		}
+ 	 		}
+ 			cnt++;
+ 		}
+	}
+
 	// ==================================================================================================================
 	// Indicators
 	

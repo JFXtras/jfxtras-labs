@@ -174,38 +174,6 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 			}
 	 		}
 		}
-		
-		/**
-		 * Make segments active
-		 */
-		void activateSegments() {
-	 		// make those segments active that fall under the needle
-			double lValue = getSkinnable().getValue();
-	 		int cnt = 0;
-	 		for (Segment segment : segments) {
-	 			
-	 			// layout the arc for this segment
-	 	 		double segmentMinValue = segment.getMinValue();
-	 	 		double segmentMaxValue = segment.getMaxValue();
-	 	 		String lSegmentActiveId = "segment" + cnt + "-active";
-	 	 		String lSegmentIdActiveId = "segment-" + segment.getId() + "-active";
-	 	 		// remove classes
-	 	 		getSkinnable().getStyleClass().remove(lSegmentActiveId);
-	 	 		segmentToArc.get(segment).getStyleClass().remove("segment-active");
-	 	 		if (segment.getId() != null) {
-	 	 			getSkinnable().getStyleClass().remove(lSegmentIdActiveId);
-	 	 		}
-	 	 		// add classes if active
-	 	 		if (segmentMinValue <= lValue && lValue <= segmentMaxValue) {
-	 	 			getSkinnable().getStyleClass().add(lSegmentActiveId);
-		 	 		segmentToArc.get(segment).getStyleClass().add("segment-active");
-		 	 		if (segment.getId() != null) {
-		 	 			getSkinnable().getStyleClass().add(lSegmentIdActiveId);
-		 	 		}
-	 	 		}
-	 			cnt++;
-	 		}
-		}
 	}
 	
 	
@@ -344,7 +312,6 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 		final private Text valueText = new Text("");
 		final private Pane valueTextPane = new StackPane(valueText);
 		final private Scale valueScale = new Scale(1.0, 1.0);
-		final private Text minmaxValueText = new Text("");
 
 		/**
 		 * 
@@ -362,7 +329,6 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 			valueText.getStyleClass().add("value");
 			valueTextPane.getTransforms().setAll(valueScale);
 			// for debugging valueTextPane.setStyle("-fx-border-color: #000000;");
-			minmaxValueText.getStyleClass().add("value");
 			getSkinnable().valueProperty().addListener( (observable) -> {
 				if (!validateValueAndHandleInvalid()) {
 					return;
@@ -372,8 +338,6 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 			});
 			
 	        // min and max value text need to be added to the scene in order to have the CSS applied
-	        getChildren().add(minmaxValueText);
-	        minmaxValueText.setVisible(false);
 			getSkinnable().minValueProperty().addListener( (observable) -> {
 				if (!validateValueAndHandleInvalid()) {
 					return;
@@ -488,7 +452,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 		}
 	 		
 	 		// make certain segments active because the needle moved
-	 		segmentPane.activateSegments();
+	 		activateSegments(segmentPane.segmentToArc);
 		}
 		final private Timeline timeline = new Timeline();
 		
@@ -529,9 +493,9 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 		 * @return
 		 */
 		private double calculateScaleFactor(double radius, double value) {
-			minmaxValueText.setText(valueFormat(value));
-			double width = minmaxValueText.getBoundsInParent().getWidth();
-			double height = minmaxValueText.getBoundsInParent().getHeight();
+			Point2D size = determineSizeOfValueFormattedText(valueFormat(value));
+			double width = size.getX();
+			double height = size.getY();
 			double diameter = radius * 2.0;
 			// Width and height construct a right angled triangle, where the hypotenuse should be equal to the diameter of the needle's circle.
 			// So apply some Pythagoras...
