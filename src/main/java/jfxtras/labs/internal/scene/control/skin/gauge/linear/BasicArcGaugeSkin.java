@@ -2,7 +2,9 @@ package jfxtras.labs.internal.scene.control.skin.gauge.linear;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -10,6 +12,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.collections.ListChangeListener;
 import javafx.css.CssMetaData;
 import javafx.css.SimpleStyleableObjectProperty;
 import javafx.css.Styleable;
@@ -25,6 +28,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -35,6 +40,8 @@ import javafx.scene.transform.Scale;
 import javafx.util.Duration;
 import jfxtras.css.CssMetaDataForSkinProperty;
 import jfxtras.labs.scene.control.gauge.linear.BasicArcGauge;
+import jfxtras.labs.scene.control.gauge.linear.CompleteSegment;
+import jfxtras.labs.scene.control.gauge.linear.Segment;
 
 import com.sun.javafx.css.converters.PaintConverter;
 
@@ -47,6 +54,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 	private static final double RING_INNER_RADIUS_FACTOR = 0.94;
 	private static final double RING_WIDTH_FACTOR = 0.04;
 	private static final double BACKPLATE_RADIUS_FACTOR = 0.95;
+	private static final double SEGMENT_INNER_RADIUS_FACTOR = 0.77;
 	private static final double TICK_OUTER_RADIUS_FACTOR = 0.90;
 	private static final double TICK_INNER_RADIUS_FACTOR = 0.80;
 	private static final double TICK_MINOR_RADIUS_FACTOR = 0.77;
@@ -131,18 +139,120 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 		centerY.bind(stackPane.heightProperty().multiply(0.5));
 
 		// use a stack pane to control the layers
-		stackPane.getChildren().addAll(backPlatePane, needlePane, glassPlatePane);
+		stackPane.getChildren().addAll(segmentPane, backPlatePane, needlePane, glassPlatePane);
 		getChildren().add(stackPane);
 		stackPane.setPrefSize(200, 200);
 	}
 	final private SimpleDoubleProperty centerX = new SimpleDoubleProperty();
 	final private SimpleDoubleProperty centerY = new SimpleDoubleProperty();
 	final private StackPane stackPane = new StackPane();
+	final private SegmentPane segmentPane = new SegmentPane();
 	final private BackPlatePane backPlatePane = new BackPlatePane();
 	final private NeedlePane needlePane = new NeedlePane();
 	final private GlassPlatePane glassPlatePane = new GlassPlatePane();
 	
 
+	// ==================================================================================================================
+	// Segment
+	
+	private class SegmentPane extends Pane {
+		final private Map<Segment, Arc> segmentToArc = new HashMap<>();
+
+		/**
+		 * 
+		 */
+		private SegmentPane() {
+			this.getStyleClass().add("SegmentPane");
+			
+			// backpane
+			backpaneCircle.getStyleClass().addAll("backplate");
+			backpaneCircle.centerXProperty().bind(centerX);
+			backpaneCircle.centerYProperty().bind(centerY);
+            
+			// react to changes in the segments
+			getSkinnable().segments().addListener( (ListChangeListener.Change<? extends Segment> change) -> {
+				createAndAddSegments();
+			});
+			createAndAddSegments();
+		}
+		
+		/**
+		 * 
+		 */
+		private void createAndAddSegments() {
+	 		// determine what segments to draw
+			getChildren().clear();
+			getChildren().addAll(backpaneCircle);
+
+	 		// create the nodes representing each segment
+	 		segmentToArc.clear();
+	 		int segmentCnt = 0;
+	 		for (Segment segment : getSkinnable().segments()) {
+	 			
+	 			// create an arc for this segment
+	 			Arc arc = new Arc();
+				getChildren().add(arc);
+				segmentToArc.put(segment, arc);
+				
+				// setup CSS on the path
+		        arc.getStyleClass().addAll("segment", "segment" + segmentCnt);
+		        if (segment.getId() != null) {
+		        	arc.setId(segment.getId());
+		        }
+	 			segmentCnt++;
+	 		}
+		}
+		final private Circle backpaneCircle = new Circle();
+		
+		/**
+		 * 
+		 */
+		@Override
+		protected void layoutChildren() {
+			super.layoutChildren();
+
+			// prep
+			double radius = calculateRadius(); // radius must be calculated and cannot use bind
+
+			// size the circle
+			double plateRadius = radius * BACKPLATE_RADIUS_FACTOR;
+			backpaneCircle.setRadius(plateRadius);
+			
+			// preparation
+	 		double controlMinValue = getSkinnable().getMinValue();
+	 		double controlMaxValue = getSkinnable().getMaxValue();
+	 		double controlValueRange = controlMaxValue - controlMinValue;
+	 		
+			// layout the segments
+	 		double segmentRadius = calculateRadius() * BACKPLATE_RADIUS_FACTOR;
+	 		for (Segment segment : getSkinnable().segments()) {
+	 			String message = validateSegment(segment);
+	 			if (message != null) {
+	 				new Throwable(message).printStackTrace();
+	 				continue;
+	 			}
+	 			
+	 			// layout the arc for this segment
+	 	 		double segmentMinValue = segment.getMinValue();
+	 	 		double segmentMaxValue = segment.getMaxValue();
+	 			double startAngle = (segmentMinValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
+	 			double endAngle = (segmentMaxValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES; 
+	 			Arc arc = segmentToArc.get(segment);
+	 			if (arc != null) {
+		 			arc.setCenterX(centerX.get());
+		 			arc.setCenterY(centerY.get());
+		 			arc.setRadiusX(segmentRadius);
+		 			arc.setRadiusY(segmentRadius);
+		 			// 0 degrees is on the right side of the circle (3 o'clock), the gauge starts in the bottom left (about 7 o'clock), so add 90 + 45 degrees to offset to that.
+		 			// The arc draws counter clockwise, so we need to negate to make it clock wise.
+		 			arc.setStartAngle(-1 * (startAngle + 135.0));
+		 			arc.setLength(-1 * (endAngle - startAngle));
+		 			arc.setType(ArcType.ROUND);
+	 			}
+	 		}
+		}
+	}
+	
 	// ==================================================================================================================
 	// BackPlate
 	
@@ -155,7 +265,8 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 			this.getStyleClass().add("BackPlatePane");
 			
 			// backpane
-			backpaneCircle.getStyleClass().addAll("backplate");
+//			backpaneCircle.getStyleClass().addAll("backplate");
+			backpaneCircle.setStyle("-fx-fill: -fxx-backplate-color;");
 			backpaneCircle.centerXProperty().bind(centerX);
 			backpaneCircle.centerYProperty().bind(centerY);
 			
@@ -189,7 +300,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 			double radius = calculateRadius(); // radius must be calculated and cannot use bind
 
 			// size the circle
-			double plateRadius = radius * BACKPLATE_RADIUS_FACTOR;
+			double plateRadius = radius * SEGMENT_INNER_RADIUS_FACTOR;
 			backpaneCircle.setRadius(plateRadius);
 			
 			// paint the ticks

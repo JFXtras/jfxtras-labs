@@ -5,6 +5,16 @@
 	-fxx-needle-color: #F8907D;
 	-fxx-tick-color: black;
 	-fxx-knob-color: grey;
+    -fxx-segment0-color: #f61319;
+    -fxx-segment1-color: #f3351f;
+    -fxx-segment2-color: #f65821;
+    -fxx-segment3-color: #f18c23;
+    -fxx-segment4-color: #f3a429;
+    -fxx-segment5-color: #fccb2e;
+    -fxx-segment6-color: #f2de31;
+    -fxx-segment7-color: #d4ea35;
+    -fxx-segment8-color: #aacc2a;
+    -fxx-segment9-color: #97b329;
 }
 
 .backplate {
@@ -59,6 +69,110 @@
                                          rgb(110,106,107) 50%,
                                          rgb(186,185,187) 100%);                                         
 }
+
+/***************************************************************************************************************
+ * This are the actual classes being assigned to the segments, they use the variables to obtain their color.
+ */ 
+
+.segment {
+    -fx-stroke: #888888;
+    -fx-fill: #888888;
+}
+
+.segment0 {
+    -fx-stroke: -fxx-segment0-color;
+    -fx-fill: -fxx-segment0-color;
+}
+
+.segment1 {
+    -fx-stroke: -fxx-segment1-color;
+    -fx-fill: -fxx-segment1-color;
+}
+
+.segment2 {
+    -fx-stroke: -fxx-segment2-color;
+    -fx-fill: -fxx-segment2-color;
+}
+
+.segment3 {
+    -fx-stroke: -fxx-segment3-color;
+    -fx-fill: -fxx-segment3-color;
+}
+
+.segment4 {
+    -fx-stroke: -fxx-segment4-color;
+    -fx-fill: -fxx-segment4-color;
+}
+
+.segment5 {
+    -fx-stroke: -fxx-segment5-color;
+    -fx-fill: -fxx-segment5-color;
+}
+
+.segment6 {
+    -fx-stroke: -fxx-segment6-color;
+    -fx-fill: -fxx-segment6-color;
+}
+
+.segment7 {
+    -fx-stroke: -fxx-segment7-color;
+    -fx-fill: -fxx-segment7-color;
+}
+
+.segment8 {
+    -fx-stroke: -fxx-segment8-color;
+    -fx-fill: -fxx-segment8-color;
+}
+
+.segment9 {
+    -fx-stroke: -fxx-segment9-color;
+    -fx-fill: -fxx-segment9-color;
+}
+
+/**
+ * The segment-active class can be used to modify an segment that is under the needle (this can be more than if the segments are setup in such a way).
+ */
+ 
+.segment-active {
+}
+
+/**
+ * The segmentX-active are assigned corresponding to the segment that is under the needle (this can be more than if the segments are setup in such a way).
+ * This is the place to associate an indicator with a segment, by adding one of these line to the appropriate class:
+ *     -fxx-error-indicator-visibility: visible; 
+ *     -fxx-warning-indicator-visibility: visible; 
+ * Interesting is it to have transparent segments, while not visible, these can become active and show an indicator.
+ 
+.segment0-active {
+}
+
+.segment1-active {
+}
+
+.segment2-active {
+}
+
+.segment3-active {
+}
+
+.segment4-active {
+}
+
+.segment5-active {
+}
+
+.segment6-active {
+}
+
+.segment7-active {
+}
+
+.segment8-active {
+}
+
+.segment9-active {
+}
+ */
 
 /***************************************************************************************************************
  * Color schemes, these assign different values to the variables.
