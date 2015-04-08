@@ -167,6 +167,9 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 			ticksCanvas.layoutYProperty().set(0.0);
 			ticksCanvas.widthProperty().bind(stackPane.widthProperty());
 			ticksCanvas.heightProperty().bind(stackPane.heightProperty());
+			backpaneCircle.fillProperty().addListener( (observable) -> {
+				layoutChildren();
+			});
             
             // add them
 			getChildren().addAll(backpaneCircle, ticksCanvas);
@@ -192,7 +195,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 			// paint the ticks
 			double size = radius * 2.0;
 			GraphicsContext graphicsContext = ticksCanvas.getGraphicsContext2D();
-			graphicsContext.clearRect(0, 0, size, size);
+			graphicsContext.clearRect(0.0, 0.0, ticksCanvas.getWidth(), ticksCanvas.getHeight());
 			graphicsContext.setStroke(getTickColor());
 			double tickInnerRadius = radius * TICK_INNER_RADIUS_FACTOR;
 			double tickOuterRadius = radius * TICK_OUTER_RADIUS_FACTOR;

@@ -59,6 +59,24 @@ public class BasicArcGaugeTrial1 extends LinearGaugeTrial1 {
 			lFlowPane.getChildren().add(lLinearGauge);
 			gauges.add(lLinearGauge);
 		}
+        
+        // green
+		{
+			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			lLinearGauge.setStyle("-fx-border-color: #000000;");
+			lLinearGauge.getStyleClass().add("colorscheme-green");
+			lFlowPane.getChildren().add(lLinearGauge);
+			gauges.add(lLinearGauge);
+		}
+        
+        // red
+		{
+			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			lLinearGauge.setStyle("-fx-border-color: #000000;");
+			lLinearGauge.getStyleClass().add("colorscheme-red");
+			lFlowPane.getChildren().add(lLinearGauge);
+			gauges.add(lLinearGauge);
+		}
 	}
 }
 

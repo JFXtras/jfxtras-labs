@@ -4,6 +4,7 @@
     -fxx-backplate-color: #f0f0f0;
 	-fxx-needle-color: #F8907D;
 	-fxx-tick-color: black;
+	-fxx-knob-color: grey;
 }
 
 .backplate {
@@ -30,13 +31,13 @@
 
 .knob {
     -fx-background-color : linear-gradient(to bottom,
-                                           white 0%,
-                                           rgb(133, 133, 133) 52%,
-                                           rgb(84, 84, 84) 100%),
+                                           derive(-fxx-knob-color, 80%) 0%,
+                                           derive(-fxx-knob-color, 40%) 52%,
+                                           derive(-fxx-knob-color, 0%) 100%),
                            linear-gradient(to bottom,
-                                           rgb(204,204,204) 0%,
-                                           rgb(133,133,133) 45%,
-                                           rgb(84,84,84) 100%);
+                                           derive(-fxx-knob-color, 70%) 0%,
+                                           derive(-fxx-knob-color, 30%) 45%,
+                                           derive(-fxx-knob-color, 0%) 100%);
     -fx-background-insets: 0, 2;
     -fx-background-radius: 0em;
     -fx-scale-shape      : false;
@@ -69,10 +70,24 @@
 	-fxx-tick-color: black;
 }
 
-
 .colorscheme-dark {
     -fxx-backplate-color: #2f2f2f;
 	-fxx-needle-color: #F8907D;
 	-fxx-tick-color: white;
 }
+
+.colorscheme-green {
+    -fxx-backplate-color: #46934E;
+	-fxx-needle-color: white;
+	-fxx-knob-color: #b0b0b0;
+	-fxx-tick-color: #e0e0e0;
+}
+
+.colorscheme-red {
+    -fxx-backplate-color: #AF0000;
+	-fxx-needle-color: white;
+	-fxx-knob-color: #b0b0b0;
+	-fxx-tick-color: #e0e0e0;
+}
+
 
