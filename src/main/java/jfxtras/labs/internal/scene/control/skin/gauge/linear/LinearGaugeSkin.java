@@ -82,16 +82,16 @@ public class LinearGaugeSkin<T, C extends LinearGauge<?>> extends SkinBase<C> {
         
     private static class StyleableProperties 
     {
-        private static final CssMetaData<LinearGauge, Animated> ANIMATED_CSSMETADATA = new CssMetaDataForSkinProperty<LinearGauge, LinearGaugeSkin, Animated>("-fxx-animated", new EnumConverter<Animated>(Animated.class), Animated.YES ) {
+        private static final CssMetaData<LinearGauge<?>, Animated> ANIMATED_CSSMETADATA = new CssMetaDataForSkinProperty<LinearGauge<?>, LinearGaugeSkin<?,?>, Animated>("-fxx-animated", new EnumConverter<Animated>(Animated.class), Animated.YES ) {
         	@Override 
-        	protected ObjectProperty<Animated> getProperty(LinearGaugeSkin s) {
+        	protected ObjectProperty<Animated> getProperty(LinearGaugeSkin<?,?> s) {
             	return s.animatedProperty;
             }
         };
         
-        private static final CssMetaData<LinearGauge, String> VALUE_FORMAT_CSSMETADATA = new CssMetaDataForSkinProperty<LinearGauge	, LinearGaugeSkin, String>("-fxx-value-format", StringConverter.getInstance(), "0" ) {
+        private static final CssMetaData<LinearGauge<?>, String> VALUE_FORMAT_CSSMETADATA = new CssMetaDataForSkinProperty<LinearGauge<?>, LinearGaugeSkin<?,?>, String>("-fxx-value-format", StringConverter.getInstance(), "0" ) {
         	@Override 
-        	protected SimpleStyleableStringProperty getProperty(LinearGaugeSkin s) {
+        	protected SimpleStyleableStringProperty getProperty(LinearGaugeSkin<?,?> s) {
             	return s.valueFormatProperty;
             }
         };
