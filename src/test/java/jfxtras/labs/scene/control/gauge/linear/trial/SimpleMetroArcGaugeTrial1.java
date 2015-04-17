@@ -43,7 +43,7 @@ import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
 /**
  * @author Tom Eugelink
  */
-public class SimpleMetroArcGaugeTrial1 extends LinearGaugeTrial1 {
+public class SimpleMetroArcGaugeTrial1 extends AbstractLinearGaugeTrial1 {
 	
     public static void main(String[] args) {
         launch(args);       

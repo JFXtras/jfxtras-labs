@@ -38,7 +38,7 @@ import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
 /**
  * @author Tom Eugelink
  */
-public class BasicArcGaugeTrial1 extends LinearGaugeTrial1 {
+public class BasicArcGaugeTrial1 extends AbstractLinearGaugeTrial1 {
 	
     public static void main(String[] args) {
         launch(args);       

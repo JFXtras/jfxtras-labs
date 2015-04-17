@@ -1,7 +1,7 @@
 package jfxtras.labs.scene.control.gauge.linear;
 
 import javafx.scene.control.Skin;
-import jfxtras.labs.internal.scene.control.skin.gauge.linear.BasicArcGaugeSkin;
+import jfxtras.labs.internal.scene.control.gauge.linear.skin.BasicArcGaugeSkin;
 import jfxtras.scene.control.ListSpinner;
 
 /**

@@ -40,8 +40,6 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import jfxtras.labs.scene.control.gauge.linear.CompleteSegment;
-import jfxtras.labs.scene.control.gauge.linear.Indicator;
 import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
 import jfxtras.labs.scene.control.gauge.linear.PercentMarker;
 import jfxtras.labs.scene.control.gauge.linear.PercentSegment;
@@ -51,7 +49,7 @@ import jfxtras.labs.test.TestUtil;
 /**
  * @author Tom Eugelink
  */
-abstract public class LinearGaugeTrial1 extends Application {
+abstract public class AbstractLinearGaugeTrial1 extends Application {
 	
 	public abstract LinearGauge<?> createLinearGauge();
 	public abstract void addDeviatingGauges(List<LinearGauge<?>> gauges, FlowPane lFlowPane);
@@ -204,7 +202,8 @@ abstract public class LinearGaugeTrial1 extends Application {
 
         // create scene
         Scene scene = new Scene(lFlowPane, 1500, 900);
-        scene.getStylesheets().add(this.getClass().getResource(LinearGaugeTrial1.class.getSimpleName()+ ".css").toExternalForm());
+        scene.getStylesheets().add(this.getClass().getResource(AbstractLinearGaugeTrial1.class.getSimpleName()+ ".css").toExternalForm());
+        scene.getStylesheets().add(LinearGauge.segmentColorschemeCSSPath());
 
         // create stage
         stage.setTitle(this.getClass().getSimpleName());

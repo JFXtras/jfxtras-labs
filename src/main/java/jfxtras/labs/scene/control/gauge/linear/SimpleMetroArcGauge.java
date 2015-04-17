@@ -1,7 +1,7 @@
 package jfxtras.labs.scene.control.gauge.linear;
 
 import javafx.scene.control.Skin;
-import jfxtras.labs.internal.scene.control.skin.gauge.linear.SimpleMetroArcGaugeSkin;
+import jfxtras.labs.internal.scene.control.gauge.linear.skin.SimpleMetroArcGaugeSkin;
 import jfxtras.scene.control.ListSpinner;
 
 /**
@@ -46,6 +46,7 @@ import jfxtras.scene.control.ListSpinner;
  *         lSimpleMetroArcGauge.segments().add(lSegment);
  *     }
  * --
+ * Note: the color scheme CSS must be manually loaded in the scene! See below.
  * 
  * == Marker
  * This gauge supports markers, which are tiny notches on the arc to mark special values:
@@ -141,8 +142,14 @@ import jfxtras.scene.control.ListSpinner;
  *    }
  * --
  *  
- * == Color scheme
- * The CSS defines a number of default color schemes, some of which already were shown in the examples. 
+ * == Segment color scheme
+ * The CSS defines a number of default color schemes for the segments, some of which already were shown in the examples.
+ * These can be loaded into a scene using:
+ * [source,java]
+ * --
+ *     scene.getStylesheets().add(LinearGauge.segmentColorschemeCSSPath());
+ * --
+ *  
  * The numeric suffix denotes the number of segments the color schema is for.
  * 
  * - colorscheme-blue-to-red-5

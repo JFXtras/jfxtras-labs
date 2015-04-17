@@ -37,19 +37,22 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
+import jfxtras.labs.internal.scene.control.gauge.linear.skin.LinearGaugeSkin;
 import jfxtras.labs.scene.control.gauge.linear.BasicArcGauge;
 import jfxtras.labs.scene.control.gauge.linear.Indicator;
 import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
 import jfxtras.labs.scene.control.gauge.linear.PercentMarker;
 import jfxtras.labs.scene.control.gauge.linear.PercentSegment;
 import jfxtras.labs.scene.control.gauge.linear.Segment;
+import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
 import jfxtras.labs.test.TestUtil;
 
 /**
  * @author Tom Eugelink
  */
-public class BasicArcGaugeTrial2 extends Application {
+public class LinearGaugeTrial extends Application {
 	
     public static void main(String[] args) {
         launch(args);       
@@ -58,35 +61,72 @@ public class BasicArcGaugeTrial2 extends Application {
 	@Override
 	public void start(Stage stage) {
 
-		List<BasicArcGauge> gauges = new ArrayList<BasicArcGauge>();
+		List<LinearGauge<?>> gauges = new ArrayList<>();
 		
 		// the border pane makes it resizeable
-		BorderPane lBorderPane = new BorderPane();
-		lBorderPane.setStyle("-fx-background-color: #eeeeee;");
+		FlowPane lFlowPane = new FlowPane(10.0, 10.0);
+		lFlowPane.setStyle("-fx-background-color: #eeeeee;");
 		
-        // gauge
+		// 10 segments, color schema
+		{
+			final SimpleMetroArcGauge lLinearGauge = new SimpleMetroArcGauge();
+			lLinearGauge.setStyle("-fx-border-color: #000000;");
+			lLinearGauge.getStyleClass().add("colorscheme-green-to-red-10");
+			for (int i = 0; i < 10; i++) {
+				Segment lSegment = new PercentSegment(lLinearGauge, i * 10.0, (i+1) * 10.0);
+				lLinearGauge.segments().add(lSegment);
+			}
+			lFlowPane.getChildren().add(lLinearGauge);
+			gauges.add(lLinearGauge);
+		}
+		
+		// 10 segments, color schema
+		{
+			final SimpleMetroArcGauge lLinearGauge = new SimpleMetroArcGauge();
+			lLinearGauge.setStyle("-fx-border-color: #000000;");
+			lLinearGauge.getStyleClass().add("colorscheme-purple-to-cyan-10");
+			for (int i = 0; i < 10; i++) {
+				Segment lSegment = new PercentSegment(lLinearGauge, i * 10.0, (i+1) * 10.0);
+				lLinearGauge.segments().add(lSegment);
+			}
+			lFlowPane.getChildren().add(lLinearGauge);
+			gauges.add(lLinearGauge);
+		}
+		
+        // BasicArcGauge
 		{
 			final BasicArcGauge lBasicArcGauge = new BasicArcGauge();
-//			lBasicArcGauge.getStyleClass().add("colorscheme-dark");
-			lBasicArcGauge.setStyle("-fxx-warning-indicator-visibility: visible; -fxx-error-indicator-visibility: visible; ");
+			lBasicArcGauge.getStyleClass().add("colorscheme-light");
 			for (int i = 0; i < 10; i++) {
 				Segment lSegment = new PercentSegment(lBasicArcGauge, i * 10.0, (i+1) * 10.0);
 				lBasicArcGauge.segments().add(lSegment);
 			}
-			for (int i = 0; i <= 20; i++) {
-				lBasicArcGauge.markers().add(new PercentMarker(lBasicArcGauge, i * 5.0));
+			lBasicArcGauge.indicators().add(new Indicator(0, "warning"));
+			lBasicArcGauge.indicators().add(new Indicator(1, "error"));
+			lFlowPane.getChildren().add(lBasicArcGauge);
+			gauges.add(lBasicArcGauge);
+		}
+		
+        // BasicArcGauge
+		{
+			final BasicArcGauge lBasicArcGauge = new BasicArcGauge();
+			lBasicArcGauge.getStyleClass().add("colorscheme-dark");
+			lBasicArcGauge.getStyleClass().add("colorscheme-purple-to-cyan-10");
+			for (int i = 0; i < 10; i++) {
+				Segment lSegment = new PercentSegment(lBasicArcGauge, i * 10.0, (i+1) * 10.0);
+				lBasicArcGauge.segments().add(lSegment);
 			}
 			lBasicArcGauge.indicators().add(new Indicator(0, "warning"));
 			lBasicArcGauge.indicators().add(new Indicator(1, "error"));
-			lBorderPane.setCenter(lBasicArcGauge);
+			lFlowPane.getChildren().add(lBasicArcGauge);
 			gauges.add(lBasicArcGauge);
 		}
 		
         
         // create scene
-        Scene scene = new Scene(lBorderPane, 300, 300);
+        Scene scene = new Scene(lFlowPane, 1300, 900);
         scene.getStylesheets().add(LinearGauge.segmentColorschemeCSSPath());
-        
+        		
         // create stage
         stage.setTitle(this.getClass().getSimpleName());
         stage.setScene(scene);
@@ -94,19 +134,15 @@ public class BasicArcGaugeTrial2 extends Application {
         
         // start periodically changing the value of the gauges
 		Thread t = new Thread( () -> {
-//			TestUtil.sleep(2000);
 			Random lRandom = new Random();
 			while (true) {
 				TestUtil.sleep(2000);
 				Platform.runLater( () -> {
 					double d = lRandom.nextDouble();
-					for (BasicArcGauge g : gauges) {
+					for (LinearGauge<?> g : gauges) {
 				 		double minValue = g.getMinValue();
 				 		double maxValue = g.getMaxValue();
 						g.setValue(minValue + (d * (maxValue - minValue)));
-//						if (cnt++ > 3) {
-//							g.getStyleClass().add("colorscheme-dark");
-//						}
 					}
 				});
 			}

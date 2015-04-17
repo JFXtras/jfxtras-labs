@@ -1,3 +1,5 @@
+@import "_segment.css"
+
 .BasicArcGauge {
 
     /* These are the variables with their default values (colors), special combinations can be set by assigning one of the colorschemes */    
@@ -17,15 +19,15 @@
     -fxx-segment9-color: #97b329;
 }
 
-.backplate {
+.BasicArcGauge .backplate {
 	-fx-fill: -fxx-backplate-color;
     -fx-effect: innershadow(two-pass-box, rgba(0, 0, 0, 0.3), 20, 0.0, 0, 20);
 }
 
-.tick {
+.BasicArcGauge .tick {
 }
 
-.needle-standard {
+.BasicArcGauge .needle-standard {
     -fx-background-color : derive(-fxx-needle-color, -30%),
     	linear-gradient(to left,
             derive(-fxx-needle-color, 15%) 0%,
@@ -39,7 +41,7 @@
     
 }
 
-.knob {
+.BasicArcGauge .knob {
     -fx-background-color : linear-gradient(to bottom,
                                            derive(-fxx-knob-color, 80%) 0%,
                                            derive(-fxx-knob-color, 40%) 52%,
@@ -54,7 +56,7 @@
     -fx-shape            : "M 0 100 C 0 44.7708 44.7708 0 100 0 C 155.2292 0 200 44.7708 200 100 C 200 155.2292 155.2292 200 100 200 C 44.7708 200 0 155.2292 0 100 Z";
 }
 
-.outerring {
+.BasicArcGauge .outerring {
 	-fx-fill: transparent;
     -fx-stroke: linear-gradient(to bottom,
                                          rgb(204,204,204) 0%,
@@ -62,7 +64,7 @@
                                          rgb(84,84,84) 100%);
 }
 
-.innerring {
+.BasicArcGauge .innerring {
 	-fx-fill: transparent;
     -fx-stroke: linear-gradient(to bottom,
                                          rgb(71,72,72) 0%,
@@ -74,57 +76,57 @@
  * This are the actual classes being assigned to the segments, they use the variables to obtain their color.
  */ 
 
-.segment {
+.BasicArcGauge .segment {
     -fx-stroke: #888888;
     -fx-fill: #888888;
 }
 
-.segment0 {
+.BasicArcGauge .segment0 {
     -fx-stroke: -fxx-segment0-color;
     -fx-fill: -fxx-segment0-color;
 }
 
-.segment1 {
+.BasicArcGauge .segment1 {
     -fx-stroke: -fxx-segment1-color;
     -fx-fill: -fxx-segment1-color;
 }
 
-.segment2 {
+.BasicArcGauge .segment2 {
     -fx-stroke: -fxx-segment2-color;
     -fx-fill: -fxx-segment2-color;
 }
 
-.segment3 {
+.BasicArcGauge .segment3 {
     -fx-stroke: -fxx-segment3-color;
     -fx-fill: -fxx-segment3-color;
 }
 
-.segment4 {
+.BasicArcGauge .segment4 {
     -fx-stroke: -fxx-segment4-color;
     -fx-fill: -fxx-segment4-color;
 }
 
-.segment5 {
+.BasicArcGauge .segment5 {
     -fx-stroke: -fxx-segment5-color;
     -fx-fill: -fxx-segment5-color;
 }
 
-.segment6 {
+.BasicArcGauge .segment6 {
     -fx-stroke: -fxx-segment6-color;
     -fx-fill: -fxx-segment6-color;
 }
 
-.segment7 {
+.BasicArcGauge .segment7 {
     -fx-stroke: -fxx-segment7-color;
     -fx-fill: -fxx-segment7-color;
 }
 
-.segment8 {
+.BasicArcGauge .segment8 {
     -fx-stroke: -fxx-segment8-color;
     -fx-fill: -fxx-segment8-color;
 }
 
-.segment9 {
+.BasicArcGauge .segment9 {
     -fx-stroke: -fxx-segment9-color;
     -fx-fill: -fxx-segment9-color;
 }
@@ -133,7 +135,7 @@
  * The segment-active class can be used to modify an segment that is under the needle (this can be more than if the segments are setup in such a way).
  */
  
-.segment-active {
+.BasicArcGauge .segment-active {
 }
 
 /**
@@ -143,34 +145,34 @@
  *     -fxx-warning-indicator-visibility: visible; 
  * Interesting is it to have transparent segments, while not visible, these can become active and show an indicator.
  
-.segment0-active {
+.BasicArcGauge .segment0-active {
 }
 
-.segment1-active {
+.BasicArcGauge .segment1-active {
 }
 
-.segment2-active {
+.BasicArcGauge .segment2-active {
 }
 
-.segment3-active {
+.BasicArcGauge .segment3-active {
 }
 
-.segment4-active {
+.BasicArcGauge .segment4-active {
 }
 
-.segment5-active {
+.BasicArcGauge .segment5-active {
 }
 
-.segment6-active {
+.BasicArcGauge .segment6-active {
 }
 
-.segment7-active {
+.BasicArcGauge .segment7-active {
 }
 
-.segment8-active {
+.BasicArcGauge .segment8-active {
 }
 
-.segment9-active {
+.BasicArcGauge .segment9-active {
 }
  */
 
@@ -203,5 +205,3 @@
 	-fxx-knob-color: #b0b0b0;
 	-fxx-tick-color: #e0e0e0;
 }
-
-

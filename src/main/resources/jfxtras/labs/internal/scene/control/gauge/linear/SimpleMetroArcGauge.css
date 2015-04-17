@@ -28,14 +28,14 @@
 	-fxx-warning-indicator-color: orange; 
 }
 
-.needle {
+.SimpleMetroArcGauge .needle {
     -fx-fill:-fxx-needle-color;
     -fx-stroke: white;
     -fx-stroke-line-cap: round;
     -fx-stroke-line-join: bevel;
 }
 
-.value {
+.SimpleMetroArcGauge .value {
     -fx-fill: white;
     -fx-font-size: 64px;
     -fx-font-weight: bold;
@@ -45,14 +45,14 @@
 /* predefined indicators */
 /* drawing circles in SVG: http://stackoverflow.com/questions/5737975/circle-drawing-with-svgs-arc-path/10477334#10477334 */
 
-.error-indicator {
+.SimpleMetroArcGauge .error-indicator {
 	visibility: -fxx-error-indicator-visibility;
 	-fx-background-color: -fxx-error-indicator-color;
 	-fx-shape: 'M 50, 50 m -50, 0 a 50,50 0 1,0 100,0 a 50,50 0 1,0 -100,0'; 
 	-fx-scale-shape: false; 
 }
 
-.warning-indicator {
+.SimpleMetroArcGauge .warning-indicator {
 	visibility: -fxx-warning-indicator-visibility;
 	-fx-background-color: -fxx-warning-indicator-color;
 	-fx-shape: 'M 50, 50 m -50, 0 a 50,50 0 1,0 100,0 a 50,50 0 1,0 -100,0'; 
@@ -63,57 +63,57 @@
  * This are the actual classes being assigned to the segments, they use the variables to obtain their color.
  */ 
 
-.segment {
+.SimpleMetroArcGauge .segment {
     -fx-stroke: #888888;
     -fx-fill: #888888;
 }
 
-.segment0 {
+.SimpleMetroArcGauge .segment0 {
     -fx-stroke: -fxx-segment0-color;
     -fx-fill: -fxx-segment0-color;
 }
 
-.segment1 {
+.SimpleMetroArcGauge .segment1 {
     -fx-stroke: -fxx-segment1-color;
     -fx-fill: -fxx-segment1-color;
 }
 
-.segment2 {
+.SimpleMetroArcGauge .segment2 {
     -fx-stroke: -fxx-segment2-color;
     -fx-fill: -fxx-segment2-color;
 }
 
-.segment3 {
+.SimpleMetroArcGauge .segment3 {
     -fx-stroke: -fxx-segment3-color;
     -fx-fill: -fxx-segment3-color;
 }
 
-.segment4 {
+.SimpleMetroArcGauge .segment4 {
     -fx-stroke: -fxx-segment4-color;
     -fx-fill: -fxx-segment4-color;
 }
 
-.segment5 {
+.SimpleMetroArcGauge .segment5 {
     -fx-stroke: -fxx-segment5-color;
     -fx-fill: -fxx-segment5-color;
 }
 
-.segment6 {
+.SimpleMetroArcGauge .segment6 {
     -fx-stroke: -fxx-segment6-color;
     -fx-fill: -fxx-segment6-color;
 }
 
-.segment7 {
+.SimpleMetroArcGauge .segment7 {
     -fx-stroke: -fxx-segment7-color;
     -fx-fill: -fxx-segment7-color;
 }
 
-.segment8 {
+.SimpleMetroArcGauge .segment8 {
     -fx-stroke: -fxx-segment8-color;
     -fx-fill: -fxx-segment8-color;
 }
 
-.segment9 {
+.SimpleMetroArcGauge .segment9 {
     -fx-stroke: -fxx-segment9-color;
     -fx-fill: -fxx-segment9-color;
 }
@@ -122,7 +122,7 @@
  * The segment-active class can be used to modify an segment that is under the needle (this can be more than if the segments are setup in such a way).
  */
  
-.segment-active {
+.SimpleMetroArcGauge .segment-active {
 }
 
 /**
@@ -132,34 +132,34 @@
  *     -fxx-warning-indicator-visibility: visible; 
  * Interesting is it to have transparent segments, while not visible, these can become active and show an indicator.
  
-.segment0-active {
+.SimpleMetroArcGauge .segment0-active {
 }
 
-.segment1-active {
+.SimpleMetroArcGauge .segment1-active {
 }
 
-.segment2-active {
+.SimpleMetroArcGauge .segment2-active {
 }
 
-.segment3-active {
+.SimpleMetroArcGauge .segment3-active {
 }
 
-.segment4-active {
+.SimpleMetroArcGauge .segment4-active {
 }
 
-.segment5-active {
+.SimpleMetroArcGauge .segment5-active {
 }
 
-.segment6-active {
+.SimpleMetroArcGauge .segment6-active {
 }
 
-.segment7-active {
+.SimpleMetroArcGauge .segment7-active {
 }
 
-.segment8-active {
+.SimpleMetroArcGauge .segment8-active {
 }
 
-.segment9-active {
+.SimpleMetroArcGauge .segment9-active {
 }
  */
 
@@ -167,181 +167,48 @@
  * This are the actual classes being assigned to the marker, they use the variables to obtain their color.
  */ 
 
-.marker {
+.SimpleMetroArcGauge .marker {
 	-fx-background-color: #222222;
 	-fx-shape: 'M 0 0 L -3 -6 L 3 -6 Z'; 
 	-fx-scale-shape: false; 
 }
 
-.marker0 {
+.SimpleMetroArcGauge .marker0 {
     -fx-background-color: -fxx-marker0-color;
 }
 
-.marker1 {
+.SimpleMetroArcGauge .marker1 {
     -fx-background-color: -fxx-marker1-color;
 }
 
-.marker2 {
+.SimpleMetroArcGauge .marker2 {
     -fx-background-color: -fxx-marker2-color;
 }
 
-.marker3 {
+.SimpleMetroArcGauge .marker3 {
     -fx-background-color: -fxx-marker3-color;
 }
 
-.marker4 {
+.SimpleMetroArcGauge .marker4 {
     -fx-background-color: -fxx-marker4-color;
 }
 
-.marker5 {
+.SimpleMetroArcGauge .marker5 {
     -fx-background-color: -fxx-marker5-color;
 }
 
-.marker6 {
+.SimpleMetroArcGauge .marker6 {
     -fx-background-color: -fxx-marker6-color;
 }
 
-.marker7 {
+.SimpleMetroArcGauge .marker7 {
     -fx-background-color: -fxx-marker7-color;
 }
 
-.marker8 {
+.SimpleMetroArcGauge .marker8 {
     -fx-background-color: -fxx-marker8-color;
 }
 
-.marker9 {
+.SimpleMetroArcGauge .marker9 {
     -fx-background-color: -fxx-marker9-color;
 }
-
-/***************************************************************************************************************
- * Color schemes, these assign different values to the variables.
- */
-
-.colorscheme-blue-to-red-5 {
-    -fxx-segment0-color: #2976fa;
-    -fxx-segment1-color: #29c0fa;
-    -fxx-segment2-color: #29fa3d;
-    -fxx-segment3-color: #ffd82a;
-    -fxx-segment4-color: #ff312a;
-}
-.colorscheme-red-to-blue-5 {
-    -fxx-segment0-color: #ff312a;
-    -fxx-segment1-color: #ffd82a;
-    -fxx-segment2-color: #29fa3d;
-    -fxx-segment3-color: #29c0fa;
-    -fxx-segment4-color: #2976fa;
-}
-
-
-/* for 6 sections */
-.colorscheme-green-to-darkgreen-6 {
-    -fxx-segment0-color: #badf8d;
-    -fxx-segment1-color: #95c262;
-    -fxx-segment2-color: #80b940;
-    -fxx-segment3-color: #67a328;
-    -fxx-segment4-color: #36843d;
-    -fxx-segment5-color: #11632f;
-}
-.colorscheme-green-to-red-6 {
-    -fxx-segment0-color: #11632f;
-    -fxx-segment1-color: #36843d;
-    -fxx-segment2-color: #80b940;
-    -fxx-segment3-color: #f5982b;
-    -fxx-segment4-color: #f06129;
-    -fxx-segment5-color: #b61f25;
-}
-.colorscheme-red-to-green-6 {
-    -fxx-segment0-color: #b61f25;
-    -fxx-segment1-color: #f06129;
-    -fxx-segment2-color: #f5982b;
-    -fxx-segment3-color: #80b940;
-    -fxx-segment4-color: #36843d;
-    -fxx-segment5-color: #11632f;
-}
-.colorscheme-purple-to-red-6 {
-    -fxx-segment0-color: #64266b;
-    -fxx-segment1-color: #74255e;
-    -fxx-segment2-color: #842551;
-    -fxx-segment3-color: #922545;
-    -fxx-segment4-color: #a12538;
-    -fxx-segment5-color: #b61f25;
-}
-.colorscheme-blue-to-red-6 {
-    -fxx-segment0-color: #20bafb;
-    -fxx-segment1-color: #23d8a6;
-    -fxx-segment2-color: #29fa3d;
-    -fxx-segment3-color: #ebfb37;
-    -fxx-segment4-color: #fdb42a;
-    -fxx-segment5-color: #fb4a1c;
-}
-
-/* for 7 sections */
-.colorscheme-green-to-red-7 {
-    -fxx-segment0-color: #0b480d;
-    -fxx-segment1-color: #177416;
-    -fxx-segment2-color: #77a922;
-    -fxx-segment3-color: #f0df31;
-    -fxx-segment4-color: #fd8d24;
-    -fxx-segment5-color: #fc4a1c;
-    -fxx-segment6-color: #fb1419;
-}
-.colorscheme-red-to-green-7 {
-    -fxx-segment0-color: #fb1419;
-    -fxx-segment1-color: #fc4a1c;
-    -fxx-segment2-color: #fd8d24;
-    -fxx-segment3-color: #f0df31;
-    -fxx-segment4-color: #77a922;
-    -fxx-segment5-color: #177416;
-    -fxx-segment6-color: #0b480d;
-}
-
-/* for 10 sections */
-.colorscheme-green-to-red-10 {
-    -fxx-segment0-color: #97b329;
-    -fxx-segment1-color: #aacc2a;
-    -fxx-segment2-color: #d4ea35;
-    -fxx-segment3-color: #f2de31;
-    -fxx-segment4-color: #fccb2e;
-    -fxx-segment5-color: #f3a429;
-    -fxx-segment6-color: #f18c23;
-    -fxx-segment7-color: #f65821;
-    -fxx-segment8-color: #f3351f;
-    -fxx-segment9-color: #f61319;
-}
-.colorscheme-red-to-green-10 {
-    -fxx-segment0-color: #f61319;
-    -fxx-segment1-color: #f3351f;
-    -fxx-segment2-color: #f65821;
-    -fxx-segment3-color: #f18c23;
-    -fxx-segment4-color: #f3a429;
-    -fxx-segment5-color: #fccb2e;
-    -fxx-segment6-color: #f2de31;
-    -fxx-segment7-color: #d4ea35;
-    -fxx-segment8-color: #aacc2a;
-    -fxx-segment9-color: #97b329;
-}
-.colorscheme-purple-to-cyan-10 {
-    -fxx-segment0-color: #5b27c8;
-    -fxx-segment1-color: #9622b6;
-    -fxx-segment2-color: #cc1760;
-    -fxx-segment3-color: #c7151a;
-    -fxx-segment4-color: #f37e23;
-    -fxx-segment5-color: #f6c52d;
-    -fxx-segment6-color: #bdd62d;
-    -fxx-segment7-color: #5bcc28;
-    -fxx-segment8-color: #25cf90;
-    -fxx-segment9-color: #22b4c5;
-}
-.colorscheme-first-grey-rest-transparent-10 {
-    -fxx-segment0-color: #888888;
-    -fxx-segment1-color: transparent;
-    -fxx-segment2-color: transparent;
-    -fxx-segment3-color: transparent;
-    -fxx-segment4-color: transparent;
-    -fxx-segment5-color: transparent;
-    -fxx-segment6-color: transparent;
-    -fxx-segment7-color: transparent;
-    -fxx-segment8-color: transparent;
-    -fxx-segment9-color: transparent;
-}
-

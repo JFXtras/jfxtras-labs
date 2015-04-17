@@ -39,6 +39,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.control.gauge.linear.Indicator;
+import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
 import jfxtras.labs.scene.control.gauge.linear.PercentMarker;
 import jfxtras.labs.scene.control.gauge.linear.PercentSegment;
 import jfxtras.labs.scene.control.gauge.linear.Segment;
@@ -84,7 +85,8 @@ public class SimpleMetroArcGaugeTrial2 extends Application {
         
         // create scene
         Scene scene = new Scene(lBorderPane, 300, 300);
-
+        scene.getStylesheets().add(LinearGauge.segmentColorschemeCSSPath());
+        
         // create stage
         stage.setTitle(this.getClass().getSimpleName());
         stage.setScene(scene);

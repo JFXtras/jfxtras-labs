@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
+import jfxtras.labs.internal.scene.control.gauge.linear.skin.LinearGaugeSkin;
 
 /**
  * This class contains commonalities for all linear gauges
@@ -76,4 +77,7 @@ abstract public class LinearGauge<T> extends Control {
 	/** indicators */
 	public ObservableList<Indicator> indicators() { return indicators; }
 	final private ObservableList<Indicator> indicators =  javafx.collections.FXCollections.observableArrayList();
+	public static String segmentColorschemeCSSPath() {
+		return LinearGaugeSkin.class.getResource("/jfxtras/labs/internal/scene/control/gauge/linear/_segment.css").toExternalForm();
+	}
 }

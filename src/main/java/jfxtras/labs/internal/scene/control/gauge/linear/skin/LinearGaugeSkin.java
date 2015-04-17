@@ -1,4 +1,4 @@
-package jfxtras.labs.internal.scene.control.skin.gauge.linear;
+package jfxtras.labs.internal.scene.control.gauge.linear.skin;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
