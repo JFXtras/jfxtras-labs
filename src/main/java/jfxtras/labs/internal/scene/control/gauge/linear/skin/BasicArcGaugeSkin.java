@@ -40,7 +40,6 @@ import javafx.scene.transform.Scale;
 import javafx.util.Duration;
 import jfxtras.css.CssMetaDataForSkinProperty;
 import jfxtras.labs.scene.control.gauge.linear.BasicArcGauge;
-import jfxtras.labs.scene.control.gauge.linear.CompleteSegment;
 import jfxtras.labs.scene.control.gauge.linear.Segment;
 
 import com.sun.javafx.css.converters.PaintConverter;
@@ -54,11 +53,11 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 	private static final double RING_INNER_RADIUS_FACTOR = 0.94;
 	private static final double RING_WIDTH_FACTOR = 0.04;
 	private static final double BACKPLATE_RADIUS_FACTOR = 0.95;
-	private static final double SEGMENT_INNER_RADIUS_FACTOR = 0.77;
 	private static final double TICK_OUTER_RADIUS_FACTOR = 0.90;
 	private static final double TICK_INNER_RADIUS_FACTOR = 0.80;
 	private static final double TICK_MINOR_RADIUS_FACTOR = 0.77;
 	private static final double TICK_MAJOR_RADIUS_FACTOR = 0.75;
+	private static final double SEGMENT_INNER_RADIUS_FACTOR = TICK_INNER_RADIUS_FACTOR;
 	static final private double FULL_ARC_IN_DEGREES = 270.0;
 
 	// ==================================================================================================================
@@ -139,16 +138,18 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 		centerY.bind(stackPane.heightProperty().multiply(0.5));
 
 		// use a stack pane to control the layers
-		stackPane.getChildren().addAll(segmentPane, backPlatePane, needlePane, glassPlatePane);
+		stackPane.getChildren().addAll(segmentPane, backPlatePane, valuePane, needlePane, glassPlatePane);
 		getChildren().add(stackPane);
 		stackPane.setPrefSize(200, 200);
 	}
 	final private SimpleDoubleProperty centerX = new SimpleDoubleProperty();
 	final private SimpleDoubleProperty centerY = new SimpleDoubleProperty();
+	final private SimpleDoubleProperty radius = new SimpleDoubleProperty();
 	final private StackPane stackPane = new StackPane();
 	final private SegmentPane segmentPane = new SegmentPane();
 	final private BackPlatePane backPlatePane = new BackPlatePane();
 	final private NeedlePane needlePane = new NeedlePane();
+	final private ValuePane valuePane = new ValuePane();
 	final private GlassPlatePane glassPlatePane = new GlassPlatePane();
 	
 
@@ -354,6 +355,65 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 		}
 	}
 	
+
+	// ==================================================================================================================
+	// VALUE
+
+	private class ValuePane extends AbstractValuePane {
+
+		/**
+		 * 
+		 */
+		private ValuePane() {
+
+			// position valueTextPane
+			valueTextPane.layoutXProperty().bind(centerX.subtract( valueTextPane.widthProperty().multiply(0.5).multiply(valueScale.xProperty()) )); 
+			valueTextPane.layoutYProperty().bind(centerY
+					.add( radius.multiply(0.60) )
+					.subtract( valueTextPane.heightProperty().multiply(0.5).multiply(valueScale.yProperty() )) 
+					);
+		}
+
+		/**
+		 * The value should automatically fill the needle as much as possible.
+		 * But it should not constantly switch font size, so it cannot be based on the current content of value's Text node.
+		 * So to determine how much the Text node must be scaled, the calculation is based on value's extremes: min and max value.
+		 * The smallest scale factor is the one to use (using the larger would make the other extreme go out of the circle).   
+		 */
+		@Override
+		protected void scaleValueText() {
+			
+			// preparation
+	 		double radius = calculateRadius();
+			
+			// use the two extreme's to determine the scaling factor
+			double minScale = calculateValueTextScaleFactor(radius, getSkinnable().getMinValue());
+			double maxScale = calculateValueTextScaleFactor(radius, getSkinnable().getMaxValue());
+			double scale = Math.min(minScale, maxScale);
+			valueScale.setX(scale);
+			valueScale.setY(scale);
+		}
+		
+		
+		/**
+		 * Determine how much to scale the Text node containing the value to fill up the needle's circle
+		 * @param radius The radius of the needle
+		 * @param value The value to be rendered
+		 * @return
+		 */
+		protected double calculateValueTextScaleFactor(double radius, double value) {
+			hiddenText.setText(valueFormat(value));
+			double width = hiddenText.getBoundsInParent().getWidth();
+			double height = hiddenText.getBoundsInParent().getHeight();
+			// Width and height construct a right angled triangle, where the hypotenuse should be equal to the available room
+			// So apply some Pythagoras...
+			//System.out.println(Math.sqrt((stackPane.getWidth()*stackPane.getWidth()) + (stackPane.getHeight()*stackPane.getHeight())));
+			//System.out.println(Math.sqrt((width*width) + (height*height)));
+			double scaleFactor = radius / Math.sqrt((width*width) + (height*height));
+			return scaleFactor;
+		}
+	}
+
 	// ==================================================================================================================
 	// Needle
 	
@@ -391,7 +451,6 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 					return;
 				}
 				rotateNeedle(true);
-//				setValueText();
 			});
 			
 	        // min and max value text need to be added to the scene in order to have the CSS applied
@@ -400,14 +459,12 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 					return;
 				}
 				rotateNeedle(true); 
-//				scaleValueText();
 			});
 			getSkinnable().maxValueProperty().addListener( (observable) -> {
 				if (!validateValueAndHandleInvalid()) {
 					return;
 				}
 				rotateNeedle(true);
-//				scaleValueText();
 			});
 			rotateNeedle(false);
 		}
@@ -476,12 +533,12 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 		final private Timeline timeline = new Timeline();
 	}
 	
-	private boolean validateValueAndHandleInvalid() {
+	protected boolean validateValueAndHandleInvalid() {
 		String validationMessage = validateValue();
 		if (validationMessage != null) {
 			new Throwable(validationMessage).printStackTrace();
-			if (needlePane != null) {
-//				needlePane.valueText.setText("");
+			if (needlePane != null && valuePane != null) {
+				valuePane.valueText.setText("");
 				needlePane.needleRotate.setAngle(90.0);
 			}
 			return false;
@@ -562,6 +619,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 	 * @return
 	 */
 	private double calculateRadius() {
-		return Math.min(centerX.get(), centerY.get());
+		radius.set( Math.min(centerX.get(), centerY.get()) );
+		return radius.get();
 	}
 }

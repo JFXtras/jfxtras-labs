@@ -6,6 +6,7 @@
     -fxx-backplate-color: #f0f0f0;
 	-fxx-needle-color: #F8907D;
 	-fxx-tick-color: black;
+	-fxx-value-color: #101010;
 	-fxx-knob-color: grey;
     -fxx-segment0-color: #f61319;
     -fxx-segment1-color: #f3351f;
@@ -26,6 +27,13 @@
 
 .BasicArcGauge .tick {
 }
+
+.BasicArcGauge .value {
+    -fx-fill: -fxx-value-color;
+    -fx-font-size: 56px;
+    -fx-font-weight: bold;
+}
+
 
 .BasicArcGauge .needle-standard {
     -fx-background-color : derive(-fxx-needle-color, -30%),
@@ -184,12 +192,14 @@
     -fxx-backplate-color: #f0f0f0;
 	-fxx-needle-color: #F8907D;
 	-fxx-tick-color: black;
+	-fxx-value-color: #101010;
 }
 
 .colorscheme-dark {
     -fxx-backplate-color: #2f2f2f;
 	-fxx-needle-color: #F8907D;
 	-fxx-tick-color: white;
+	-fxx-value-color: #F0F0F0;
 }
 
 .colorscheme-green {
@@ -197,6 +207,7 @@
 	-fxx-needle-color: white;
 	-fxx-knob-color: #b0b0b0;
 	-fxx-tick-color: #e0e0e0;
+	-fxx-value-color: #e0e0e0;
 }
 
 .colorscheme-red {
@@ -204,4 +215,5 @@
 	-fxx-needle-color: white;
 	-fxx-knob-color: #b0b0b0;
 	-fxx-tick-color: #e0e0e0;
+	-fxx-value-color: #e0e0e0;
 }

@@ -18,6 +18,7 @@ import javafx.scene.Node;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Scale;
 import jfxtras.css.CssMetaDataForSkinProperty;
@@ -188,6 +189,103 @@ public class LinearGaugeSkin<T, C extends LinearGauge<?>> extends SkinBase<C> {
 	}
 
 	
+	// ==================================================================================================================
+	// Value
+
+	abstract protected class AbstractValuePane extends Pane {
+		final protected Text valueText = new Text("");
+		final protected Pane valueTextPane = new StackPane(valueText);
+		final protected Scale valueScale = new Scale(1.0, 1.0);
+		final protected Text hiddenText = new Text("");
+
+		/**
+		 * 
+		 */
+		protected AbstractValuePane() {
+	        
+	        // value text
+	        getChildren().add(valueTextPane);
+			valueText.getStyleClass().add("value");
+			valueTextPane.getTransforms().setAll(valueScale);
+			
+			// react to changes
+			getSkinnable().valueProperty().addListener( (observable) -> {
+				if (!validateValueAndHandleInvalid()) {
+					return;
+				}
+				setValueText();
+			});
+			
+	        // min and max value text need to be added to the scene in order to have the CSS applied
+			getSkinnable().minValueProperty().addListener( (observable) -> {
+				if (!validateValueAndHandleInvalid()) {
+					return;
+				}
+				scaleValueText();
+			});
+			getSkinnable().maxValueProperty().addListener( (observable) -> {
+				if (!validateValueAndHandleInvalid()) {
+					return;
+				}
+				scaleValueText();
+			});
+
+			// a hidden text to determine how large the min and max value would be
+			hiddenText.getStyleClass().add("value");
+	        hiddenText.setVisible(false);
+	        getChildren().add(hiddenText);
+
+			// init
+			setValueText();
+			scaleValueText();
+		}
+		
+		/**
+		 * 
+		 */
+		@Override
+		protected void layoutChildren() {
+			super.layoutChildren();
+
+			// we only need to layout if the size changes
+			if (previousWidth != getWidth() || previousHeight != getHeight()) {
+				
+		        // layout value
+				setValueText();
+				scaleValueText();
+
+				// remember
+				previousWidth = getWidth();
+				previousHeight = getHeight();
+			}
+		}
+		private double previousWidth = -1.0;
+		private double previousHeight = -1.0;
+
+		/**
+		 * 
+		 */
+		private void setValueText() {
+			if (!validateValueAndHandleInvalid()) {
+				return;
+			}
+			valueText.setText(valueFormat(getSkinnable().getValue()));
+		}
+
+		/**
+		 * The value should automatically fill the needle as much as possible.
+		 * But it should not constantly switch font size, so it cannot be based on the current content of value's Text node.
+		 * So to determine how much the Text node must be scaled, the calculation is based on value's extremes: min and max value.
+		 * The smallest scale factor is the one to use (using the larger would make the other extreme go out of the circle).   
+		 */
+		protected void scaleValueText() {
+		}
+	}
+	
+	protected boolean validateValueAndHandleInvalid() {
+		return true;
+	}
+
 	// ==================================================================================================================
 	// Segments
 

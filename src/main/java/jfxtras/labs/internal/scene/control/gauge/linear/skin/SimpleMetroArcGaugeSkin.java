@@ -23,7 +23,6 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.StrokeLineJoin;
-import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.util.Duration;
@@ -70,7 +69,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 		centerY.bind(stackPane.heightProperty().multiply(0.55));
 
 		// use a stack pane to control the layers
-		stackPane.getChildren().addAll(segmentPane, markerPane, indicatorPane, needlePane);
+		stackPane.getChildren().addAll(segmentPane, markerPane, indicatorPane, needlePane, valuePane);
 		getChildren().add(stackPane);
 	}
 	final private SimpleDoubleProperty centerX = new SimpleDoubleProperty();
@@ -80,6 +79,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	final private MarkerPane markerPane = new MarkerPane();
 	final private IndicatorPane indicatorPane = new IndicatorPane();
 	final private NeedlePane needlePane = new NeedlePane();
+	final private ValuePane valuePane = new ValuePane();
 	
 
 	// ==================================================================================================================
@@ -308,9 +308,6 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 		
 		final private Path needlePath = new Path();
 		final private Rotate needleRotate = new Rotate(0.0);
-		final private Text valueText = new Text("");
-		final private Pane valueTextPane = new StackPane(valueText);
-		final private Scale valueScale = new Scale(1.0, 1.0);
 
 		/**
 		 * 
@@ -323,17 +320,12 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	        needleRotate.pivotXProperty().bind(centerX);
 	        needleRotate.pivotYProperty().bind(centerY);
 	        
-	        // value text
-	        getChildren().add(valueTextPane);
-			valueText.getStyleClass().add("value");
-			valueTextPane.getTransforms().setAll(valueScale);
 			// for debugging valueTextPane.setStyle("-fx-border-color: #000000;");
 			getSkinnable().valueProperty().addListener( (observable) -> {
 				if (!validateValueAndHandleInvalid()) {
 					return;
 				}
 				rotateNeedle(true);
-				setValueText();
 			});
 			
 	        // min and max value text need to be added to the scene in order to have the CSS applied
@@ -342,31 +334,17 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 					return;
 				}
 				rotateNeedle(true); 
-				scaleValueText();
 			});
 			getSkinnable().maxValueProperty().addListener( (observable) -> {
 				if (!validateValueAndHandleInvalid()) {
 					return;
 				}
 				rotateNeedle(true);
-				scaleValueText();
 			});
 			
-			// a hidden text to determine how large the min and max value would be
-			hiddenText.getStyleClass().add("value");
-	        hiddenText.setVisible(false);
-	        getChildren().add(hiddenText);
-
-			// position valueTextPane
-			valueTextPane.layoutXProperty().bind(centerX.subtract( valueTextPane.widthProperty().multiply(0.5).multiply(valueScale.xProperty()) )); 
-			valueTextPane.layoutYProperty().bind(centerY.subtract( valueTextPane.heightProperty().multiply(0.5).multiply(valueScale.yProperty()) ));
-
 			// init
 			rotateNeedle(false);
-			setValueText();
-			scaleValueText();
 		}
-		final private Text hiddenText = new Text("");
 		
 		/**
 		 * 
@@ -417,10 +395,6 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 		        // set to rotate around the center of the gauge
 		        needlePath.getTransforms().setAll(needleRotate);
 		        
-		        // layout value
-				setValueText();
-				scaleValueText();
-
 				// remember
 				previousWidth = getWidth();
 				previousHeight = getHeight();
@@ -460,15 +434,21 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 		activateSegments(segmentPane.segmentToArc);
 		}
 		final private Timeline timeline = new Timeline();
-		
+	}
+
+	// ==================================================================================================================
+	// VALUE
+
+	private class ValuePane extends AbstractValuePane {
+
 		/**
 		 * 
 		 */
-		private void setValueText() {
-			if (!validateValueAndHandleInvalid()) {
-				return;
-			}
-			valueText.setText(valueFormat(getSkinnable().getValue()));
+		private ValuePane() {
+
+			// position valueTextPane
+			valueTextPane.layoutXProperty().bind(centerX.subtract( valueTextPane.widthProperty().multiply(0.5).multiply(valueScale.xProperty()) )); 
+			valueTextPane.layoutYProperty().bind(centerY.subtract( valueTextPane.heightProperty().multiply(0.5).multiply(valueScale.yProperty()) ));
 		}
 
 		/**
@@ -477,15 +457,16 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 		 * So to determine how much the Text node must be scaled, the calculation is based on value's extremes: min and max value.
 		 * The smallest scale factor is the one to use (using the larger would make the other extreme go out of the circle).   
 		 */
-		private void scaleValueText() {
+		@Override
+		protected void scaleValueText() {
 			
 			// preparation
 	 		double radius = calculateRadius();
 			double arcRadius = radius * NEEDLE_RADIUS_FACTOR;
 			
 			// use the two extreme's to determine the scaling factor
-			double minScale = calculateScaleFactor(arcRadius, getSkinnable().getMinValue());
-			double maxScale = calculateScaleFactor(arcRadius, getSkinnable().getMaxValue());
+			double minScale = calculateValueTextScaleFactor(arcRadius, getSkinnable().getMinValue());
+			double maxScale = calculateValueTextScaleFactor(arcRadius, getSkinnable().getMaxValue());
 			double scale = Math.min(minScale, maxScale);
 			valueScale.setX(scale);
 			valueScale.setY(scale);
@@ -497,7 +478,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 		 * @param value The value to be rendered
 		 * @return
 		 */
-		private double calculateScaleFactor(double radius, double value) {
+		protected double calculateValueTextScaleFactor(double radius, double value) {
 			hiddenText.setText(valueFormat(value));
 			double width = hiddenText.getBoundsInParent().getWidth();
 			double height = hiddenText.getBoundsInParent().getHeight();
@@ -509,12 +490,13 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 		}
 	}
 
-	private boolean validateValueAndHandleInvalid() {
+	@Override
+	protected boolean validateValueAndHandleInvalid() {
 		String validationMessage = validateValue();
 		if (validationMessage != null) {
 			new Throwable(validationMessage).printStackTrace();
-			if (needlePane != null) {
-				needlePane.valueText.setText("");
+			if (needlePane != null && valuePane != null) {
+				valuePane.valueText.setText("");
 				needlePane.needleRotate.setAngle(-45.0);
 			}
 			return false;
