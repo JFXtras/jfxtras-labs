@@ -18,6 +18,16 @@
     -fxx-segment7-color: #d4ea35;
     -fxx-segment8-color: #aacc2a;
     -fxx-segment9-color: #97b329;
+    -fxx-marker0-color: -fxx-tick-color;
+    -fxx-marker1-color: -fxx-tick-color;
+    -fxx-marker2-color: -fxx-tick-color;
+    -fxx-marker3-color: -fxx-tick-color;
+    -fxx-marker4-color: -fxx-tick-color;
+    -fxx-marker5-color: -fxx-tick-color;
+    -fxx-marker6-color: -fxx-tick-color;
+    -fxx-marker7-color: -fxx-tick-color;
+    -fxx-marker8-color: -fxx-tick-color;
+    -fxx-marker9-color: -fxx-tick-color;
 }
 
 .BasicArcGauge .backplate {
@@ -30,7 +40,7 @@
 
 .BasicArcGauge .value {
     -fx-fill: -fxx-value-color;
-    -fx-font-size: 56px;
+    -fx-font-size: 36px;
     -fx-font-weight: bold;
 }
 
@@ -183,6 +193,56 @@
 .BasicArcGauge .segment9-active {
 }
  */
+
+/***************************************************************************************************************
+ * This are the actual classes being assigned to the marker, they use the variables to obtain their color.
+ */ 
+
+.BasicArcGauge .marker {
+	-fx-background-color: -fxx-tick-color;
+	-fx-shape: 'M 0 0 L -3 -6 L 3 -6 Z'; 
+	-fx-scale-shape: false; 
+}
+
+.BasicArcGauge .marker0 {
+    -fx-background-color: -fxx-marker0-color;
+}
+
+.BasicArcGauge .marker1 {
+    -fx-background-color: -fxx-marker1-color;
+}
+
+.BasicArcGauge .marker2 {
+    -fx-background-color: -fxx-marker2-color;
+}
+
+.BasicArcGauge .marker3 {
+    -fx-background-color: -fxx-marker3-color;
+}
+
+.BasicArcGauge .marker4 {
+    -fx-background-color: -fxx-marker4-color;
+}
+
+.BasicArcGauge .marker5 {
+    -fx-background-color: -fxx-marker5-color;
+}
+
+.BasicArcGauge .marker6 {
+    -fx-background-color: -fxx-marker6-color;
+}
+
+.BasicArcGauge .marker7 {
+    -fx-background-color: -fxx-marker7-color;
+}
+
+.BasicArcGauge .marker8 {
+    -fx-background-color: -fxx-marker8-color;
+}
+
+.BasicArcGauge .marker9 {
+    -fx-background-color: -fxx-marker9-color;
+}
 
 /***************************************************************************************************************
  * Color schemes, these assign different values to the variables.

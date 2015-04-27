@@ -40,6 +40,7 @@ import javafx.scene.transform.Scale;
 import javafx.util.Duration;
 import jfxtras.css.CssMetaDataForSkinProperty;
 import jfxtras.labs.scene.control.gauge.linear.BasicArcGauge;
+import jfxtras.labs.scene.control.gauge.linear.Marker;
 import jfxtras.labs.scene.control.gauge.linear.Segment;
 
 import com.sun.javafx.css.converters.PaintConverter;
@@ -58,6 +59,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 	private static final double TICK_MINOR_RADIUS_FACTOR = 0.77;
 	private static final double TICK_MAJOR_RADIUS_FACTOR = 0.75;
 	private static final double SEGMENT_INNER_RADIUS_FACTOR = TICK_INNER_RADIUS_FACTOR;
+	private static final double MARKER_RADIUS_FACTOR = TICK_MAJOR_RADIUS_FACTOR * 0.95;
 	static final private double FULL_ARC_IN_DEGREES = 270.0;
 
 	// ==================================================================================================================
@@ -138,7 +140,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 		centerY.bind(stackPane.heightProperty().multiply(0.5));
 
 		// use a stack pane to control the layers
-		stackPane.getChildren().addAll(segmentPane, backPlatePane, valuePane, needlePane, glassPlatePane);
+		stackPane.getChildren().addAll(segmentPane, backPlatePane, markerPane, valuePane, needlePane, glassPlatePane);
 		getChildren().add(stackPane);
 		stackPane.setPrefSize(200, 200);
 	}
@@ -148,6 +150,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 	final private StackPane stackPane = new StackPane();
 	final private SegmentPane segmentPane = new SegmentPane();
 	final private BackPlatePane backPlatePane = new BackPlatePane();
+	final private MarkerPane markerPane = new MarkerPane();
 	final private NeedlePane needlePane = new NeedlePane();
 	final private ValuePane valuePane = new ValuePane();
 	final private GlassPlatePane glassPlatePane = new GlassPlatePane();
@@ -266,7 +269,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 			this.getStyleClass().add("BackPlatePane");
 			
 			// backpane
-//			backpaneCircle.getStyleClass().addAll("backplate");
+			backpaneCircle.getStyleClass().addAll("backplate");
 			backpaneCircle.setStyle("-fx-fill: -fxx-backplate-color;");
 			backpaneCircle.centerXProperty().bind(centerX);
 			backpaneCircle.centerYProperty().bind(centerY);
@@ -285,6 +288,11 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
             
             // add them
 			getChildren().addAll(backpaneCircle, ticksCanvas);
+			
+			// react to changes in the segments
+			getSkinnable().segments().addListener( (ListChangeListener.Change<? extends Segment> change) -> {
+				requestLayout();
+			});
 		}
 		final private Circle backpaneCircle = new Circle();
 		final private Canvas ticksCanvas = new Canvas();
@@ -301,7 +309,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 			double radius = calculateRadius(); // radius must be calculated and cannot use bind
 
 			// size the circle
-			double plateRadius = radius * SEGMENT_INNER_RADIUS_FACTOR;
+			double plateRadius = radius * (getSkinnable().segments().size() == 0 ? 1.0 : SEGMENT_INNER_RADIUS_FACTOR);
 			backpaneCircle.setRadius(plateRadius);
 			
 			// paint the ticks
@@ -337,7 +345,6 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
             	
             	// major
             	if (i % 10 == 0) {
-//            		double tickValue = getSkinnable().getMinValue() + ((getSkinnable().getMaxValue() - getSkinnable().getMinValue()) * ((double)i) / 100.0);
         			tickText.setFont(Font.font("Verdana", FontWeight.NORMAL, 0.045 * size));
             		 
 	                // Draw text
@@ -357,6 +364,98 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 	
 
 	// ==================================================================================================================
+	// Marker
+	
+	private class MarkerPane extends Pane {
+
+		final private Map<Marker, Region> markerToRegion = new HashMap<>();
+		
+		/**
+		 * 
+		 */
+		private MarkerPane() {
+
+			// react to changes in the markers
+			getSkinnable().markers().addListener( (ListChangeListener.Change<? extends Marker> change) -> {
+				createAndAddMarkers();
+			});
+			createAndAddMarkers();
+		}
+		
+		/**
+		 * 
+		 */
+		private void createAndAddMarkers() {
+	 		// create the nodes representing each marker
+			getChildren().clear();
+	 		markerToRegion.clear();
+	 		int markerCnt = 0;
+	 		for (Marker marker : getSkinnable().markers()) {
+
+	 			// create an svg path for this marker
+	 			Region region = new Region();
+				getChildren().add(region);
+				markerToRegion.put(marker, region);
+				
+				// setup rotation
+				Rotate rotate = new Rotate(0.0);
+				rotate.setPivotX(0.0);
+				rotate.setPivotY(0.0);
+				region.getTransforms().add(rotate);
+				
+				// setup scaling
+				Scale scale = new Scale();
+				region.getTransforms().add(scale);
+				
+				// setup CSS on the path
+				region.getStyleClass().addAll("marker", "marker" + markerCnt);
+		        if (marker.getId() != null) {
+		        	region.setId(marker.getId());
+		        }
+	 			markerCnt++;
+	 		}
+		}
+		
+		/**
+		 * 
+		 */
+		@Override
+		protected void layoutChildren() {
+			super.layoutChildren();
+			
+			// preparation
+	 		double controlMinValue = getSkinnable().getMinValue();
+	 		double controlMaxValue = getSkinnable().getMaxValue();
+	 		double controlValueRange = controlMaxValue - controlMinValue;
+	 		double radius = calculateRadius();
+			double markerRadius = radius * MARKER_RADIUS_FACTOR;
+	 		
+			// layout the markers
+	 		for (Marker marker : getSkinnable().markers()) {
+	 			String message = validateMarker(marker);
+	 			if (message != null) {
+	 				new Throwable(message).printStackTrace();
+	 				continue;
+	 			}
+
+	 			// layout the svg shape 
+	 	 		double markerValue = marker.getValue();
+	 			double angle = (markerValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES;
+	 			Region region = markerToRegion.get(marker);
+	 			Point2D markerPoint2D = calculatePointOnCircle(markerRadius, angle);
+	 			region.setLayoutX(markerPoint2D.getX());
+	 			region.setLayoutY(markerPoint2D.getY());
+	 			Rotate rotate = (Rotate)region.getTransforms().get(0);
+				rotate.setAngle(angle + 45.0); // the angle also determines the rotation	 			
+	 			Scale scale = (Scale)region.getTransforms().get(1);
+	 			scale.setX(2 * radius / 300.0); // SVG shape was created against a sample gauge with 300x300 pixels  
+	 			scale.setY(scale.getX()); 
+	 		}
+		}
+	}
+	
+	
+	// ==================================================================================================================
 	// VALUE
 
 	private class ValuePane extends AbstractValuePane {
@@ -369,7 +468,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 			// position valueTextPane
 			valueTextPane.layoutXProperty().bind(centerX.subtract( valueTextPane.widthProperty().multiply(0.5).multiply(valueScale.xProperty()) )); 
 			valueTextPane.layoutYProperty().bind(centerY
-					.add( radius.multiply(0.60) )
+					.add( radius.multiply(0.65) )
 					.subtract( valueTextPane.heightProperty().multiply(0.5).multiply(valueScale.yProperty() )) 
 					);
 		}
@@ -384,7 +483,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 		protected void scaleValueText() {
 			
 			// preparation
-	 		double radius = calculateRadius();
+	 		double radius = calculateRadius() * 0.70;
 			
 			// use the two extreme's to determine the scaling factor
 			double minScale = calculateValueTextScaleFactor(radius, getSkinnable().getMinValue());
@@ -528,7 +627,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 	 		}
 	 		
 	 		// make certain segments active because the needle moved
-//	 		segmentPane.activateSegments();
+	 		activateSegments(segmentPane.segmentToArc);
 		}
 		final private Timeline timeline = new Timeline();
 	}
@@ -539,7 +638,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 			new Throwable(validationMessage).printStackTrace();
 			if (needlePane != null && valuePane != null) {
 				valuePane.valueText.setText("");
-				needlePane.needleRotate.setAngle(90.0);
+				needlePane.needleRotate.setAngle(0.0);
 			}
 			return false;
 		};

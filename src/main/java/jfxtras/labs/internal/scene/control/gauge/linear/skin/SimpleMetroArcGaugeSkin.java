@@ -74,6 +74,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	}
 	final private SimpleDoubleProperty centerX = new SimpleDoubleProperty();
 	final private SimpleDoubleProperty centerY = new SimpleDoubleProperty();
+	final private SimpleDoubleProperty radius = new SimpleDoubleProperty();
 	final private StackPane stackPane = new StackPane();
 	final private SegmentPane segmentPane = new SegmentPane();
 	final private MarkerPane markerPane = new MarkerPane();
@@ -530,6 +531,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	 * @return
 	 */
 	private double calculateRadius() {
-		return Math.min(centerX.get(), centerY.get());
+		radius.set( Math.min(centerX.get(), centerY.get()) );
+		return radius.get();
 	}
 }

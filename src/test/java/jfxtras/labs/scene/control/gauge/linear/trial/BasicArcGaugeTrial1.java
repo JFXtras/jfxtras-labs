@@ -34,6 +34,7 @@ import java.util.List;
 import javafx.scene.layout.FlowPane;
 import jfxtras.labs.scene.control.gauge.linear.BasicArcGauge;
 import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
+import jfxtras.labs.scene.control.gauge.linear.PercentMarker;
 
 /**
  * @author Tom Eugelink
@@ -56,6 +57,9 @@ public class BasicArcGaugeTrial1 extends AbstractLinearGaugeTrial1 {
 			final LinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 			lLinearGauge.getStyleClass().add("colorscheme-dark");
+			for (int i = 0; i <= 5; i++) {
+				lLinearGauge.markers().add(new PercentMarker(lLinearGauge, i * 20.0));
+			}
 			lFlowPane.getChildren().add(lLinearGauge);
 			gauges.add(lLinearGauge);
 		}
@@ -65,6 +69,9 @@ public class BasicArcGaugeTrial1 extends AbstractLinearGaugeTrial1 {
 			final LinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 			lLinearGauge.getStyleClass().add("colorscheme-green");
+			for (int i = 0; i <= 5; i++) {
+				lLinearGauge.markers().add(new PercentMarker(lLinearGauge, i * 20.0));
+			}
 			lFlowPane.getChildren().add(lLinearGauge);
 			gauges.add(lLinearGauge);
 		}
@@ -74,6 +81,9 @@ public class BasicArcGaugeTrial1 extends AbstractLinearGaugeTrial1 {
 			final LinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 			lLinearGauge.getStyleClass().add("colorscheme-red");
+			for (int i = 0; i <= 5; i++) {
+				lLinearGauge.markers().add(new PercentMarker(lLinearGauge, i * 20.0));
+			}
 			lFlowPane.getChildren().add(lLinearGauge);
 			gauges.add(lLinearGauge);
 		}
