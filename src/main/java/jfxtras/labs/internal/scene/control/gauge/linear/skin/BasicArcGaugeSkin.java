@@ -366,62 +366,10 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 	// ==================================================================================================================
 	// Marker
 	
-	private class MarkerPane extends Pane {
+	private class MarkerPane extends AbstractMarkerPane {
 
-		final private Map<Marker, Region> markerToRegion = new HashMap<>();
-		
-		/**
-		 * 
-		 */
-		private MarkerPane() {
-
-			// react to changes in the markers
-			getSkinnable().markers().addListener( (ListChangeListener.Change<? extends Marker> change) -> {
-				createAndAddMarkers();
-			});
-			createAndAddMarkers();
-		}
-		
-		/**
-		 * 
-		 */
-		private void createAndAddMarkers() {
-	 		// create the nodes representing each marker
-			getChildren().clear();
-	 		markerToRegion.clear();
-	 		int markerCnt = 0;
-	 		for (Marker marker : getSkinnable().markers()) {
-
-	 			// create an svg path for this marker
-	 			Region region = new Region();
-				getChildren().add(region);
-				markerToRegion.put(marker, region);
-				
-				// setup rotation
-				Rotate rotate = new Rotate(0.0);
-				rotate.setPivotX(0.0);
-				rotate.setPivotY(0.0);
-				region.getTransforms().add(rotate);
-				
-				// setup scaling
-				Scale scale = new Scale();
-				region.getTransforms().add(scale);
-				
-				// setup CSS on the path
-				region.getStyleClass().addAll("marker", "marker" + markerCnt);
-		        if (marker.getId() != null) {
-		        	region.setId(marker.getId());
-		        }
-	 			markerCnt++;
-	 		}
-		}
-		
-		/**
-		 * 
-		 */
 		@Override
-		protected void layoutChildren() {
-			super.layoutChildren();
+		protected void positionAndScaleMarker(Marker marker, Rotate rotate, Scale scale) {
 			
 			// preparation
 	 		double controlMinValue = getSkinnable().getMinValue();
@@ -430,27 +378,16 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 	 		double radius = calculateRadius();
 			double markerRadius = radius * MARKER_RADIUS_FACTOR;
 	 		
-			// layout the markers
-	 		for (Marker marker : getSkinnable().markers()) {
-	 			String message = validateMarker(marker);
-	 			if (message != null) {
-	 				new Throwable(message).printStackTrace();
-	 				continue;
-	 			}
-
-	 			// layout the svg shape 
-	 	 		double markerValue = marker.getValue();
-	 			double angle = (markerValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES;
-	 			Region region = markerToRegion.get(marker);
-	 			Point2D markerPoint2D = calculatePointOnCircle(markerRadius, angle);
-	 			region.setLayoutX(markerPoint2D.getX());
-	 			region.setLayoutY(markerPoint2D.getY());
-	 			Rotate rotate = (Rotate)region.getTransforms().get(0);
-				rotate.setAngle(angle + 45.0); // the angle also determines the rotation	 			
-	 			Scale scale = (Scale)region.getTransforms().get(1);
-	 			scale.setX(2 * radius / 300.0); // SVG shape was created against a sample gauge with 300x300 pixels  
-	 			scale.setY(scale.getX()); 
-	 		}
+ 			// layout the svg shape 
+ 	 		double markerValue = marker.getValue();
+ 			double angle = (markerValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES;
+ 			Region region = markerToRegion.get(marker);
+ 			Point2D markerPoint2D = calculatePointOnCircle(markerRadius, angle);
+ 			region.setLayoutX(markerPoint2D.getX());
+ 			region.setLayoutY(markerPoint2D.getY());
+			rotate.setAngle(angle + 45.0); // the angle also determines the rotation	 			
+ 			scale.setX(2 * radius / 300.0); // SVG shape was created against a sample gauge with 300x300 pixels  
+ 			scale.setY(scale.getX()); 
 		}
 	}
 	

@@ -26,6 +26,7 @@ import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.util.Duration;
+import jfxtras.labs.internal.scene.control.gauge.linear.skin.LinearGaugeSkin.AbstractMarkerPane;
 import jfxtras.labs.scene.control.gauge.linear.CompleteSegment;
 import jfxtras.labs.scene.control.gauge.linear.Marker;
 import jfxtras.labs.scene.control.gauge.linear.Segment;
@@ -39,7 +40,8 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	private static final double SEGMENT_RADIUS_FACTOR = 0.95;
 	private static final double NEEDLE_RADIUS_FACTOR = 0.5;
 	private static final double NEEDLE_TIP_RADIUS_FACTOR = 0.87;
-	private static final double MARKER_RADIUS_FACTOR = SEGMENT_RADIUS_FACTOR * 0.15;
+	private static final double MARKER_RADIUS_FACTOR = SEGMENT_RADIUS_FACTOR;
+	private static final double INDICATOR_RADIUS_FACTOR = SEGMENT_RADIUS_FACTOR * 0.15;
 	static final private double FULL_ARC_IN_DEGREES = 270.0;
 
 	// ==================================================================================================================
@@ -180,91 +182,28 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	// ==================================================================================================================
 	// Marker
 	
-	private class MarkerPane extends Pane {
+	private class MarkerPane extends AbstractMarkerPane {
 
-		final private Map<Marker, Region> markerToRegion = new HashMap<>();
-		
-		/**
-		 * 
-		 */
-		private MarkerPane() {
-
-			// react to changes in the markers
-			getSkinnable().markers().addListener( (ListChangeListener.Change<? extends Marker> change) -> {
-				createAndAddMarkers();
-			});
-			createAndAddMarkers();
-		}
-		
-		/**
-		 * 
-		 */
-		private void createAndAddMarkers() {
-	 		// create the nodes representing each marker
-			getChildren().clear();
-	 		markerToRegion.clear();
-	 		int markerCnt = 0;
-	 		for (Marker marker : getSkinnable().markers()) {
-
-	 			// create an svg path for this marker
-	 			Region region = new Region();
-				getChildren().add(region);
-				markerToRegion.put(marker, region);
-				
-				// setup rotation
-				Rotate rotate = new Rotate(0.0);
-				rotate.setPivotX(0.0);
-				rotate.setPivotY(0.0);
-				region.getTransforms().add(rotate);
-				
-				// setup scaling
-				Scale scale = new Scale();
-				region.getTransforms().add(scale);
-				
-				// setup CSS on the path
-				region.getStyleClass().addAll("marker", "marker" + markerCnt);
-		        if (marker.getId() != null) {
-		        	region.setId(marker.getId());
-		        }
-	 			markerCnt++;
-	 		}
-		}
-		
-		/**
-		 * 
-		 */
 		@Override
-		protected void layoutChildren() {
-			super.layoutChildren();
+		protected void positionAndScaleMarker(Marker marker, Rotate rotate, Scale scale) {
 			
 			// preparation
 	 		double controlMinValue = getSkinnable().getMinValue();
 	 		double controlMaxValue = getSkinnable().getMaxValue();
 	 		double controlValueRange = controlMaxValue - controlMinValue;
 	 		double radius = calculateRadius();
-			double segmentRadius = radius * SEGMENT_RADIUS_FACTOR;
+			double markerRadius = radius * MARKER_RADIUS_FACTOR;
 	 		
-			// layout the markers
-	 		for (Marker marker : getSkinnable().markers()) {
-	 			String message = validateMarker(marker);
-	 			if (message != null) {
-	 				new Throwable(message).printStackTrace();
-	 				continue;
-	 			}
-
-	 			// layout the svg shape 
-	 	 		double markerValue = marker.getValue();
-	 			double angle = (markerValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES;
-	 			Region region = markerToRegion.get(marker);
-	 			Point2D markerPoint2D = calculatePointOnCircle(segmentRadius, angle);
-	 			region.setLayoutX(markerPoint2D.getX());
-	 			region.setLayoutY(markerPoint2D.getY());
-	 			Rotate rotate = (Rotate)region.getTransforms().get(0);
-				rotate.setAngle(angle - 135.0); // the angle also determines the rotation	 			
-	 			Scale scale = (Scale)region.getTransforms().get(1);
-	 			scale.setX(2 * radius / 300.0); // SVG shape was created against a sample gauge with 300x300 pixels  
-	 			scale.setY(scale.getX()); 
-	 		}
+ 			// layout the svg shape 
+ 	 		double markerValue = marker.getValue();
+ 			double angle = (markerValue - controlMinValue) / controlValueRange * FULL_ARC_IN_DEGREES;
+ 			Region region = markerToRegion.get(marker);
+ 			Point2D markerPoint2D = calculatePointOnCircle(markerRadius, angle);
+ 			region.setLayoutX(markerPoint2D.getX());
+ 			region.setLayoutY(markerPoint2D.getY());
+			rotate.setAngle(angle - 135.0); // the angle also determines the rotation	 			
+ 			scale.setX(2 * radius / 300.0); // SVG shape was created against a sample gauge with 300x300 pixels  
+ 			scale.setY(scale.getX()); 
 		}
 	}
 	
@@ -285,7 +224,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 			// prepare
 	 		double radius = calculateRadius();
 			double segmentRadius = radius * SEGMENT_RADIUS_FACTOR;
-			double indicatorRadius = radius * MARKER_RADIUS_FACTOR;
+			double indicatorRadius = radius * INDICATOR_RADIUS_FACTOR;
 	 		double indicatorDiameter = 2 * indicatorRadius;
 	 			
 			// TBEERNOT: can we do something better than cascades ifs?
