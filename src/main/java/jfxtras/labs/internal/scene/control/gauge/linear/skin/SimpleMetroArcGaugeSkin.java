@@ -26,7 +26,6 @@ import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.util.Duration;
-import jfxtras.labs.internal.scene.control.gauge.linear.skin.LinearGaugeSkin.AbstractMarkerPane;
 import jfxtras.labs.scene.control.gauge.linear.CompleteSegment;
 import jfxtras.labs.scene.control.gauge.linear.Marker;
 import jfxtras.labs.scene.control.gauge.linear.Segment;
@@ -227,7 +226,7 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 			double indicatorRadius = radius * INDICATOR_RADIUS_FACTOR;
 	 		double indicatorDiameter = 2 * indicatorRadius;
 	 			
-			// TBEERNOT: can we do something better than cascades ifs?
+			// two positions
 			if (idx == 0 ) {
 		 		return new Point2D(centerX.get() - indicatorDiameter, centerY.get() + segmentRadius - indicatorDiameter);
  			}

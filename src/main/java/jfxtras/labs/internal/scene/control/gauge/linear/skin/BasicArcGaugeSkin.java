@@ -39,6 +39,8 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.util.Duration;
 import jfxtras.css.CssMetaDataForSkinProperty;
+import jfxtras.labs.internal.scene.control.gauge.linear.skin.LinearGaugeSkin.AbstractIndicatorPane;
+import jfxtras.labs.internal.scene.control.gauge.linear.skin.SimpleMetroArcGaugeSkin.IndicatorPane;
 import jfxtras.labs.scene.control.gauge.linear.BasicArcGauge;
 import jfxtras.labs.scene.control.gauge.linear.Marker;
 import jfxtras.labs.scene.control.gauge.linear.Segment;
@@ -60,6 +62,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 	private static final double TICK_MAJOR_RADIUS_FACTOR = 0.75;
 	private static final double SEGMENT_INNER_RADIUS_FACTOR = TICK_INNER_RADIUS_FACTOR;
 	private static final double MARKER_RADIUS_FACTOR = TICK_MAJOR_RADIUS_FACTOR * 0.95;
+	private static final double INDICATOR_RADIUS_FACTOR = 0.38;
 	static final private double FULL_ARC_IN_DEGREES = 270.0;
 
 	// ==================================================================================================================
@@ -140,7 +143,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 		centerY.bind(stackPane.heightProperty().multiply(0.5));
 
 		// use a stack pane to control the layers
-		stackPane.getChildren().addAll(segmentPane, backPlatePane, markerPane, valuePane, needlePane, glassPlatePane);
+		stackPane.getChildren().addAll(segmentPane, backPlatePane, markerPane, indicatorPane, valuePane, needlePane, glassPlatePane);
 		getChildren().add(stackPane);
 		stackPane.setPrefSize(200, 200);
 	}
@@ -151,6 +154,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 	final private SegmentPane segmentPane = new SegmentPane();
 	final private BackPlatePane backPlatePane = new BackPlatePane();
 	final private MarkerPane markerPane = new MarkerPane();
+	final private IndicatorPane indicatorPane = new IndicatorPane();
 	final private NeedlePane needlePane = new NeedlePane();
 	final private ValuePane valuePane = new ValuePane();
 	final private GlassPlatePane glassPlatePane = new GlassPlatePane();
@@ -388,6 +392,33 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 			rotate.setAngle(angle + 45.0); // the angle also determines the rotation	 			
  			scale.setX(2 * radius / 300.0); // SVG shape was created against a sample gauge with 300x300 pixels  
  			scale.setY(scale.getX()); 
+		}
+	}
+	
+	
+	// ==================================================================================================================
+	// Indicators
+	
+	protected class IndicatorPane extends AbstractIndicatorPane {
+		
+		@Override
+		protected double calculateRadius() {
+			return BasicArcGaugeSkin.this.calculateRadius() * 0.8;
+		}
+		
+		@Override
+		protected Point2D calculateLocation(int idx) {
+
+			// prepare
+	 		double radius = calculateRadius();
+			double indicatorRadius = radius * INDICATOR_RADIUS_FACTOR;
+	 			
+			// six positions
+			if (idx < 6) {
+				return calculatePointOnCircle(indicatorRadius, idx * FULL_ARC_IN_DEGREES / 5);
+ 			}
+			System.err.println("The " + getSkinnable().getClass().getSimpleName() + " gauge supports indicators [0,4], not " + idx);
+			return null;
 		}
 	}
 	

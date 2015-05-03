@@ -28,6 +28,11 @@
     -fxx-marker7-color: -fxx-tick-color;
     -fxx-marker8-color: -fxx-tick-color;
     -fxx-marker9-color: -fxx-tick-color;
+	/* predefined indicators */
+	-fxx-error-indicator-visibility: hidden; 
+	-fxx-error-indicator-color: red; 
+	-fxx-warning-indicator-visibility: hidden; 
+	-fxx-warning-indicator-color: orange; 
 }
 
 .BasicArcGauge .backplate {
@@ -88,6 +93,25 @@
                                          rgb(71,72,72) 0%,
                                          rgb(110,106,107) 50%,
                                          rgb(186,185,187) 100%);                                         
+}
+
+
+/***************************************************************************************************************
+/* predefined indicators http://www.w3.org/TR/SVG/paths.html */
+/* drawing circles in SVG: http://stackoverflow.com/questions/5737975/circle-drawing-with-svgs-arc-path/10477334#10477334 */
+
+.BasicArcGauge .error-indicator {
+	visibility: -fxx-error-indicator-visibility;
+	-fx-background-color: -fxx-error-indicator-color;
+	-fx-shape: 'M 50, 50 m -50, 0 a 50,50 0 1,0 100,0 a 50,50 0 1,0 -100,0'; 
+	-fx-scale-shape: false; 
+}
+
+.BasicArcGauge .warning-indicator {
+	visibility: -fxx-warning-indicator-visibility;
+	-fx-background-color: -fxx-warning-indicator-color;
+	-fx-shape: 'M 10 100  L 90 100  S 100 100 95 90  L 55 15  S 50 10 45 15  L 5 90  S 0 100 10 100 Z'; 
+	-fx-scale-shape: false; 
 }
 
 /***************************************************************************************************************

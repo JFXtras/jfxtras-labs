@@ -42,7 +42,7 @@
 }
 
 /***************************************************************************************************************
-/* predefined indicators */
+/* predefined indicators http://www.w3.org/TR/SVG/paths.html */
 /* drawing circles in SVG: http://stackoverflow.com/questions/5737975/circle-drawing-with-svgs-arc-path/10477334#10477334 */
 
 .SimpleMetroArcGauge .error-indicator {

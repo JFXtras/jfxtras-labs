@@ -33,6 +33,7 @@ import java.util.List;
 
 import javafx.scene.layout.FlowPane;
 import jfxtras.labs.scene.control.gauge.linear.BasicArcGauge;
+import jfxtras.labs.scene.control.gauge.linear.Indicator;
 import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
 import jfxtras.labs.scene.control.gauge.linear.PercentMarker;
 
@@ -84,6 +85,20 @@ public class BasicArcGaugeTrial1 extends AbstractLinearGaugeTrial1 {
 			for (int i = 0; i <= 5; i++) {
 				lLinearGauge.markers().add(new PercentMarker(lLinearGauge, i * 20.0));
 			}
+			lFlowPane.getChildren().add(lLinearGauge);
+			gauges.add(lLinearGauge);
+		}
+        
+		// manually show indicators
+		{
+			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			lLinearGauge.indicators().add(new Indicator(0, "warning"));
+			lLinearGauge.indicators().add(new Indicator(1, "error"));
+			lLinearGauge.indicators().add(new Indicator(2, "warning"));
+			lLinearGauge.indicators().add(new Indicator(3, "error"));
+			lLinearGauge.indicators().add(new Indicator(4, "warning"));
+			lLinearGauge.indicators().add(new Indicator(5, "error"));
+			lLinearGauge.setStyle("-fx-border-color: #000000; -fxx-warning-indicator-visibility: visible; -fxx-error-indicator-visibility: visible; ");
 			lFlowPane.getChildren().add(lLinearGauge);
 			gauges.add(lLinearGauge);
 		}
