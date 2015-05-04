@@ -451,7 +451,7 @@ public class LinearGaugeSkin<T, C extends LinearGauge<?>> extends SkinBase<C> {
 			super.layoutChildren();
 
 	 		// size & position the indicators
-	 		double radius = calculateRadius();
+	 		double scaleFactor = calculateScaleFactor();
 	 		for (Indicator indicator : getSkinnable().indicators()) {
 	 			
 	 			int idx = indicator.getIdx();
@@ -463,13 +463,13 @@ public class LinearGaugeSkin<T, C extends LinearGauge<?>> extends SkinBase<C> {
 				 		region.layoutYProperty().set(point2D.getY());
 		 			}
 	 				Scale scale = (Scale)region.getTransforms().get(0);
-		 			scale.setX(40.0/100.0 * radius/150.0); // SVG is setup on a virtual 100x100 canvas, it is scaled to fit the size of the gauge. For a width of 300 (radius 150) this is 40 pixels
+		 			scale.setX(scaleFactor); 
 		 			scale.setY(scale.getX()); 
 	 			}
 	 		}
 		}
 		
-		abstract protected double calculateRadius();
+		abstract protected double calculateScaleFactor();
 		abstract protected Point2D calculateLocation(int idx);
 	}
 }

@@ -60,9 +60,10 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 	private static final double TICK_INNER_RADIUS_FACTOR = 0.80;
 	private static final double TICK_MINOR_RADIUS_FACTOR = 0.77;
 	private static final double TICK_MAJOR_RADIUS_FACTOR = 0.75;
+	private static final double LABEL_RADIUS_FACTOR = 0.55;
 	private static final double SEGMENT_INNER_RADIUS_FACTOR = TICK_INNER_RADIUS_FACTOR;
 	private static final double MARKER_RADIUS_FACTOR = TICK_MAJOR_RADIUS_FACTOR * 0.95;
-	private static final double INDICATOR_RADIUS_FACTOR = 0.38;
+	private static final double INDICATOR_RADIUS_FACTOR = 0.30;
 	static final private double FULL_ARC_IN_DEGREES = 270.0;
 
 	// ==================================================================================================================
@@ -352,7 +353,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
         			tickText.setFont(Font.font("Verdana", FontWeight.NORMAL, 0.045 * size));
             		 
 	                // Draw text
-                	Point2D textPoint2D = calculatePointOnCircle(tickMajorRadius * 0.75, angle);
+                	Point2D textPoint2D = calculatePointOnCircle(radius * LABEL_RADIUS_FACTOR, angle);
 	                graphicsContext.save();
 	                graphicsContext.translate(textPoint2D.getX(), textPoint2D.getY());
 	                graphicsContext.setFont(Font.font("Verdana", FontWeight.NORMAL, 0.045 * size));
@@ -402,8 +403,9 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 	protected class IndicatorPane extends AbstractIndicatorPane {
 		
 		@Override
-		protected double calculateRadius() {
-			return BasicArcGaugeSkin.this.calculateRadius() * 0.8;
+		protected double calculateScaleFactor() {
+			// SVG is setup on a virtual 100x100 canvas, it is scaled to fit the size of the gauge. For a width of 300 (radius 150) this is 30 pixels
+			return 30.0/100.0 * BasicArcGaugeSkin.this.calculateRadius()/150.0;
 		}
 		
 		@Override

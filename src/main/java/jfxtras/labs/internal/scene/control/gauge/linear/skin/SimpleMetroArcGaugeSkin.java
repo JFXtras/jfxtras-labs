@@ -213,8 +213,9 @@ public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGauge
 	protected class IndicatorPane extends AbstractIndicatorPane {
 		
 		@Override
-		protected double calculateRadius() {
-			return SimpleMetroArcGaugeSkin.this.calculateRadius();
+		protected double calculateScaleFactor() {
+			// SVG is setup on a virtual 100x100 canvas, it is scaled to fit the size of the gauge. For a width of 300 (radius 150) this is 40 pixels
+			return 40.0/100.0 * SimpleMetroArcGaugeSkin.this.calculateRadius()/150.0;
 		}
 		
 		@Override
