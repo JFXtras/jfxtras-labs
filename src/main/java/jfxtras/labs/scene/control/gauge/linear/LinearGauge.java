@@ -6,6 +6,10 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 import jfxtras.labs.internal.scene.control.gauge.linear.skin.LinearGaugeSkin;
+import jfxtras.labs.scene.control.gauge.linear.elements.Indicator;
+import jfxtras.labs.scene.control.gauge.linear.elements.Label;
+import jfxtras.labs.scene.control.gauge.linear.elements.Marker;
+import jfxtras.labs.scene.control.gauge.linear.elements.Segment;
 
 /**
  * This class contains commonalities for all linear gauges
@@ -65,6 +69,10 @@ abstract public class LinearGauge<T> extends Control {
 	public void setMaxValue(double value) { maxValueProperty.setValue(value); }
 	@SuppressWarnings("unchecked")
 	public T withMaxValue(double value) { setMaxValue(value); return (T)this; } 
+
+	/** labels */
+	public ObservableList<Label> labels() { return labels; }
+	final private ObservableList<Label> labels =  javafx.collections.FXCollections.observableArrayList();
 
 	/** segments */
 	public ObservableList<Segment> segments() { return segments; }

@@ -41,9 +41,9 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
-import jfxtras.labs.scene.control.gauge.linear.PercentMarker;
-import jfxtras.labs.scene.control.gauge.linear.PercentSegment;
-import jfxtras.labs.scene.control.gauge.linear.Segment;
+import jfxtras.labs.scene.control.gauge.linear.elements.PercentMarker;
+import jfxtras.labs.scene.control.gauge.linear.elements.PercentSegment;
+import jfxtras.labs.scene.control.gauge.linear.elements.Segment;
 import jfxtras.labs.test.TestUtil;
 
 /**

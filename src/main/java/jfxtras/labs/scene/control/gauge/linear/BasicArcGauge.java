@@ -2,6 +2,7 @@ package jfxtras.labs.scene.control.gauge.linear;
 
 import javafx.scene.control.Skin;
 import jfxtras.labs.internal.scene.control.gauge.linear.skin.BasicArcGaugeSkin;
+import jfxtras.labs.scene.control.gauge.linear.elements.AbsoluteLabel;
 import jfxtras.scene.control.ListSpinner;
 
 /**
@@ -18,8 +19,16 @@ public class BasicArcGauge extends LinearGauge<BasicArcGauge> {
 	// ==================================================================================================================
 	// Constructor
 	
+	/**
+	 * 
+	 */
 	public BasicArcGauge() {
 		setPrefSize(200, 200);
+		
+		// create the default label
+		for (double d = 0.0; d <= 100.0; d += 10.0) {
+			labels().add(new AbsoluteLabel(d, Math.round(d) + "%"));
+		}
 	}
 
 	// ==================================================================================================================

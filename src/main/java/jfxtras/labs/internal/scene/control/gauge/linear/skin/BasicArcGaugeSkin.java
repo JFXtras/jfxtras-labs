@@ -42,8 +42,9 @@ import jfxtras.css.CssMetaDataForSkinProperty;
 import jfxtras.labs.internal.scene.control.gauge.linear.skin.LinearGaugeSkin.AbstractIndicatorPane;
 import jfxtras.labs.internal.scene.control.gauge.linear.skin.SimpleMetroArcGaugeSkin.IndicatorPane;
 import jfxtras.labs.scene.control.gauge.linear.BasicArcGauge;
-import jfxtras.labs.scene.control.gauge.linear.Marker;
-import jfxtras.labs.scene.control.gauge.linear.Segment;
+import jfxtras.labs.scene.control.gauge.linear.elements.Label;
+import jfxtras.labs.scene.control.gauge.linear.elements.Marker;
+import jfxtras.labs.scene.control.gauge.linear.elements.Segment;
 
 import com.sun.javafx.css.converters.PaintConverter;
 
@@ -347,22 +348,21 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 	            	graphicsContext.setLineWidth(size * 0.00225);
             	}
             	graphicsContext.strokeLine(innerPoint2D.getX(), innerPoint2D.getY(), outerPoint2D.getX(), outerPoint2D.getY());
-            	
-            	// major
-            	if (i % 10 == 0) {
-        			tickText.setFont(Font.font("Verdana", FontWeight.NORMAL, 0.045 * size));
-            		 
-	                // Draw text
-                	Point2D textPoint2D = calculatePointOnCircle(radius * LABEL_RADIUS_FACTOR, angle);
-	                graphicsContext.save();
-	                graphicsContext.translate(textPoint2D.getX(), textPoint2D.getY());
-	                graphicsContext.setFont(Font.font("Verdana", FontWeight.NORMAL, 0.045 * size));
-	                graphicsContext.setTextAlign(TextAlignment.CENTER);
-	                graphicsContext.setTextBaseline(VPos.CENTER);
-	                graphicsContext.setFill(getTickColor());
-	                graphicsContext.fillText(i + "%", 0, 0); // TBEERNOT print value and format
-	                graphicsContext.restore();
-            	}
+            }
+            for (Label lLabel : getSkinnable().labels()) {
+            	double angle = FULL_ARC_IN_DEGREES / 100.0 * lLabel.getValue();            	
+    			tickText.setFont(Font.font("Verdana", FontWeight.NORMAL, 0.045 * size));
+        		 
+                // Draw text
+            	Point2D textPoint2D = calculatePointOnCircle(radius * LABEL_RADIUS_FACTOR, angle);
+                graphicsContext.save();
+                graphicsContext.translate(textPoint2D.getX(), textPoint2D.getY());
+                graphicsContext.setFont(Font.font("Verdana", FontWeight.NORMAL, 0.045 * size));
+                graphicsContext.setTextAlign(TextAlignment.CENTER);
+                graphicsContext.setTextBaseline(VPos.CENTER);
+                graphicsContext.setFill(getTickColor());
+                graphicsContext.fillText(lLabel.getText(), 0, 0); // TBEERNOT print value and format
+                graphicsContext.restore();
             }
 		}
 	}

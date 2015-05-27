@@ -26,10 +26,10 @@ import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.util.Duration;
-import jfxtras.labs.scene.control.gauge.linear.CompleteSegment;
-import jfxtras.labs.scene.control.gauge.linear.Marker;
-import jfxtras.labs.scene.control.gauge.linear.Segment;
 import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
+import jfxtras.labs.scene.control.gauge.linear.elements.CompleteSegment;
+import jfxtras.labs.scene.control.gauge.linear.elements.Marker;
+import jfxtras.labs.scene.control.gauge.linear.elements.Segment;
 
 /**
  * 

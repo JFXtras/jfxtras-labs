@@ -1,4 +1,4 @@
-package jfxtras.labs.scene.control.gauge.linear;
+package jfxtras.labs.scene.control.gauge.linear.elements;
 
 public class AbsoluteMarker implements Marker {
 

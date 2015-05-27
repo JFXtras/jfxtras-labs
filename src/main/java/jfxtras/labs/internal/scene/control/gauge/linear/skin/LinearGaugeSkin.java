@@ -23,10 +23,10 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import jfxtras.css.CssMetaDataForSkinProperty;
-import jfxtras.labs.scene.control.gauge.linear.Indicator;
 import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
-import jfxtras.labs.scene.control.gauge.linear.Marker;
-import jfxtras.labs.scene.control.gauge.linear.Segment;
+import jfxtras.labs.scene.control.gauge.linear.elements.Indicator;
+import jfxtras.labs.scene.control.gauge.linear.elements.Marker;
+import jfxtras.labs.scene.control.gauge.linear.elements.Segment;
 
 import com.sun.javafx.css.converters.EnumConverter;
 import com.sun.javafx.css.converters.StringConverter;

@@ -33,12 +33,12 @@ import java.util.List;
 
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
-import jfxtras.labs.scene.control.gauge.linear.CompleteSegment;
-import jfxtras.labs.scene.control.gauge.linear.Indicator;
 import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
-import jfxtras.labs.scene.control.gauge.linear.PercentSegment;
-import jfxtras.labs.scene.control.gauge.linear.Segment;
 import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
+import jfxtras.labs.scene.control.gauge.linear.elements.CompleteSegment;
+import jfxtras.labs.scene.control.gauge.linear.elements.Indicator;
+import jfxtras.labs.scene.control.gauge.linear.elements.PercentSegment;
+import jfxtras.labs.scene.control.gauge.linear.elements.Segment;
 
 /**
  * @author Tom Eugelink

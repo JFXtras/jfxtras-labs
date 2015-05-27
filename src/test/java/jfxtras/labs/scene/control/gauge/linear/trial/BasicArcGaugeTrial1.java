@@ -33,9 +33,11 @@ import java.util.List;
 
 import javafx.scene.layout.FlowPane;
 import jfxtras.labs.scene.control.gauge.linear.BasicArcGauge;
-import jfxtras.labs.scene.control.gauge.linear.Indicator;
 import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
-import jfxtras.labs.scene.control.gauge.linear.PercentMarker;
+import jfxtras.labs.scene.control.gauge.linear.elements.AbsoluteLabel;
+import jfxtras.labs.scene.control.gauge.linear.elements.Indicator;
+import jfxtras.labs.scene.control.gauge.linear.elements.Label;
+import jfxtras.labs.scene.control.gauge.linear.elements.PercentMarker;
 
 /**
  * @author Tom Eugelink
@@ -102,6 +104,20 @@ public class BasicArcGaugeTrial1 extends AbstractLinearGaugeTrial1 {
 			lFlowPane.getChildren().add(lLinearGauge);
 			gauges.add(lLinearGauge);
 		}
+		
+        // custom labels
+		{
+			final BasicArcGauge lLinearGauge = new BasicArcGauge();
+			lLinearGauge.labels().clear();
+			lLinearGauge.setStyle("-fxx-warning-indicator-visibility: visible; -fxx-error-indicator-visibility: visible; ");
+			for (double d = 0.0; d < 100.0; d += 33.333) {
+				Label lLabel = new AbsoluteLabel(d, Math.round(d) + "%");
+				lLinearGauge.labels().add(lLabel);
+			}
+			lFlowPane.getChildren().add(lLinearGauge);
+			gauges.add(lLinearGauge);
+		}
+
 	}
 }
 
