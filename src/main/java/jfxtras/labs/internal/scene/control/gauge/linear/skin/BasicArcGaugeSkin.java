@@ -39,8 +39,6 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.util.Duration;
 import jfxtras.css.CssMetaDataForSkinProperty;
-import jfxtras.labs.internal.scene.control.gauge.linear.skin.LinearGaugeSkin.AbstractIndicatorPane;
-import jfxtras.labs.internal.scene.control.gauge.linear.skin.SimpleMetroArcGaugeSkin.IndicatorPane;
 import jfxtras.labs.scene.control.gauge.linear.BasicArcGauge;
 import jfxtras.labs.scene.control.gauge.linear.elements.Label;
 import jfxtras.labs.scene.control.gauge.linear.elements.Marker;
@@ -639,9 +637,16 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 			
             // add them
 			getChildren().addAll(outerringCircle, innerringCircle);
+
+			// clip the dropshadow
+			clipCircle.centerXProperty().bind(centerX);
+			clipCircle.centerYProperty().bind(centerY);
+			clipCircle.setRadius(100.0);
+		    setClip(clipCircle);
 		}
 		final private Circle outerringCircle = new Circle();
 		final private Circle innerringCircle = new Circle();
+		final private Circle clipCircle = new Circle();
 		
 		/**
 		 * 
@@ -658,7 +663,9 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 			outerringCircle.setStyle("-fx-stroke-width: " + (radius * RING_WIDTH_FACTOR) + ";");
 			innerringCircle.setRadius(radius * RING_INNER_RADIUS_FACTOR);
 			innerringCircle.setStyle("-fx-stroke-width: " + (radius * RING_WIDTH_FACTOR) + ";");
-			
+			if (outerringCircle.getRadius() > 1.0) {
+				clipCircle.setRadius(outerringCircle.getRadius());
+			}
 		}
 	}
 	

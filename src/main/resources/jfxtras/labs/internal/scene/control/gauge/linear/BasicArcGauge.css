@@ -37,7 +37,6 @@
 
 .BasicArcGauge .backplate {
 	-fx-fill: -fxx-backplate-color;
-    -fx-effect: innershadow(two-pass-box, rgba(0, 0, 0, 0.3), 20, 0.0, 0, 20);
 }
 
 .BasicArcGauge .tick {
@@ -92,7 +91,11 @@
     -fx-stroke: linear-gradient(to bottom,
                                          rgb(71,72,72) 0%,
                                          rgb(110,106,107) 50%,
-                                         rgb(186,185,187) 100%);                                         
+                                         rgb(186,185,187) 100%);
+}
+
+.BasicArcGauge .GlassPlatePane {                                         
+    -fx-effect: dropshadow(two-pass-box, rgba(0, 0, 0, 0.3), 30, 0.3, 0, 10);
 }
 
 

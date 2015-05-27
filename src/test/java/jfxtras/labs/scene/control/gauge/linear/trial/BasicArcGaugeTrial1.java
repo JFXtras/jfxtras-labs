@@ -114,6 +114,7 @@ public class BasicArcGaugeTrial1 extends AbstractLinearGaugeTrial1 {
 				Label lLabel = new AbsoluteLabel(d, Math.round(d) + "%");
 				lLinearGauge.labels().add(lLabel);
 			}
+			lLinearGauge.setStyle("-fx-border-color: #000000; -fxx-warning-indicator-visibility: visible; -fxx-error-indicator-visibility: visible; ");
 			lFlowPane.getChildren().add(lLinearGauge);
 			gauges.add(lLinearGauge);
 		}
