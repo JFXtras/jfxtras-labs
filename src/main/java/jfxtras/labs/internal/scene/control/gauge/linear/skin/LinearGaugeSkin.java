@@ -248,20 +248,10 @@ public class LinearGaugeSkin<T, C extends LinearGauge<?>> extends SkinBase<C> {
 		protected void layoutChildren() {
 			super.layoutChildren();
 
-			// we only need to layout if the size changes
-			if (previousWidth != getWidth() || previousHeight != getHeight()) {
-				
-		        // layout value
-				setValueText();
-				scaleValueText();
-
-				// remember
-				previousWidth = getWidth();
-				previousHeight = getHeight();
-			}
+	        // layout value
+			setValueText();
+			scaleValueText();
 		}
-		private double previousWidth = -1.0;
-		private double previousHeight = -1.0;
 
 		/**
 		 * 
