@@ -113,6 +113,7 @@ public class LinearGaugeSkin<T, C extends LinearGauge<?>> extends SkinBase<C> {
      * CssMetaData of its super classes.
      */    
     public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
+    	System.out.println("getClassCssMetaData");
         return StyleableProperties.STYLEABLES;
     }
 

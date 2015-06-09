@@ -113,7 +113,10 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
      * CssMetaData of its super classes.
      */    
     public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
-        return StyleableProperties.STYLEABLES;
+    	List<CssMetaData<? extends Styleable,?>> classCssMetaData = LinearGaugeSkin.getClassCssMetaData();
+    	classCssMetaData = new ArrayList<CssMetaData<? extends Styleable,?>>(classCssMetaData);
+    	classCssMetaData.addAll(StyleableProperties.STYLEABLES);
+    	return Collections.unmodifiableList(classCssMetaData);
     }
 
     /**

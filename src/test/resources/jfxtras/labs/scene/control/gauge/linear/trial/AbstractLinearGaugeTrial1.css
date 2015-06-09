@@ -18,7 +18,6 @@
 	-fxx-value-format:' ##0.0C';	
 }
 
-// TBEERNOT: this is not working, why?
-.BasicArcGauge {
+.BasicArcGaugex {
 	-fxx-value-format:' ##0.0C';	
 }
