@@ -51,16 +51,16 @@ import com.sun.javafx.css.converters.PaintConverter;
  */
 public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicArcGauge> {
 
-	private static final double RING_OUTER_RADIUS_FACTOR = 0.97;
-	private static final double RING_INNER_RADIUS_FACTOR = 0.94;
+	private static final double RING_OUTER_RADIUS_FACTOR = 0.99;
+	private static final double RING_INNER_RADIUS_FACTOR = 0.96;
 	private static final double RING_WIDTH_FACTOR = 0.04;
-	private static final double BACKPLATE_RADIUS_FACTOR = 0.95;
-	private static final double TICK_OUTER_RADIUS_FACTOR = 0.90;
-	private static final double TICK_INNER_RADIUS_FACTOR = 0.80;
-	private static final double TICK_MINOR_RADIUS_FACTOR = 0.77;
-	private static final double TICK_MAJOR_RADIUS_FACTOR = 0.75;
-	private static final double LABEL_RADIUS_FACTOR = 0.55;
-	private static final double SEGMENT_INNER_RADIUS_FACTOR = TICK_INNER_RADIUS_FACTOR;
+	private static final double BACKPLATE_RADIUS_FACTOR = 0.96;
+	private static final double TICK_OUTER_RADIUS_FACTOR = 0.93;
+	private static final double TICK_INNER_RADIUS_FACTOR = 0.85;
+	private static final double TICK_MINOR_RADIUS_FACTOR = 0.82;
+	private static final double TICK_MAJOR_RADIUS_FACTOR = 0.80;
+	private static final double LABEL_RADIUS_FACTOR = 0.60;
+	private static final double SEGMENT_INNER_RADIUS_FACTOR = TICK_MINOR_RADIUS_FACTOR;
 	private static final double MARKER_RADIUS_FACTOR = TICK_MAJOR_RADIUS_FACTOR * 0.95;
 	private static final double INDICATOR_RADIUS_FACTOR = 0.30;
 	static final private double FULL_ARC_IN_DEGREES = 270.0;
@@ -316,7 +316,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 			double radius = calculateRadius(); // radius must be calculated and cannot use bind
 
 			// size the circle
-			double plateRadius = radius * (getSkinnable().segments().size() == 0 ? 1.0 : SEGMENT_INNER_RADIUS_FACTOR);
+			double plateRadius = radius * (getSkinnable().segments().size() == 0 ? 0.99 : SEGMENT_INNER_RADIUS_FACTOR);
 			backpaneCircle.setRadius(plateRadius);
 			
 			// paint the ticks
@@ -644,7 +644,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 			// clip the dropshadow
 			clipCircle.centerXProperty().bind(centerX);
 			clipCircle.centerYProperty().bind(centerY);
-			clipCircle.setRadius(100.0);
+			clipCircle.setRadius(100.0); // just a dummy initial value
 		    setClip(clipCircle);
 		}
 		final private Circle outerringCircle = new Circle();
@@ -667,7 +667,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 			innerringCircle.setRadius(radius * RING_INNER_RADIUS_FACTOR);
 			innerringCircle.setStyle("-fx-stroke-width: " + (radius * RING_WIDTH_FACTOR) + ";");
 			if (outerringCircle.getRadius() > 1.0) {
-				clipCircle.setRadius(outerringCircle.getRadius());
+				clipCircle.setRadius(this.getWidth() / 2);
 			}
 		}
 	}
