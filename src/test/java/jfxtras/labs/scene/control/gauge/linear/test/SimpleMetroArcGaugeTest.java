@@ -27,7 +27,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jfxtras.labs.scene.control.gauge.linear.trial;
+package jfxtras.labs.scene.control.gauge.linear.test;
 
 import java.util.List;
 
@@ -35,6 +35,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
+import jfxtras.labs.internal.scene.control.gauge.linear.skin.LinearGaugeSkin;
+import jfxtras.labs.internal.scene.control.gauge.linear.skin.SimpleMetroArcGaugeSkin;
 import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
 import jfxtras.labs.scene.control.gauge.linear.elements.Indicator;
 import jfxtras.labs.scene.control.gauge.linear.elements.PercentMarker;
@@ -54,9 +56,11 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 	
 	@Override
 	protected Parent getRootNode() {
-		// use a pane to force the scene large enough, the circular pane is placed top-left
+		// use a pane to force the scene large enough, the gauge is placed top-left
 		Pane lPane = new Pane();
 		lPane.setMinSize(600, 600);
+		
+		// add a small label bottom left for debugging
 		label = new Label();
 		label.setLayoutY(lPane.getMinHeight() - 20);
 		lPane.getChildren().add(label);		
@@ -74,10 +78,14 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 	public void defaultRendering() {
 		setLabel("defaultRendering");
 		
-		// values
+		// default properties
 		Assert.assertEquals(0.0, simpleMetroArcGauge.getMinValue(), 0.01);
 		Assert.assertEquals(0.0, simpleMetroArcGauge.getValue(), 0.01);
 		Assert.assertEquals(100.0, simpleMetroArcGauge.getMaxValue(), 0.01);
+		
+		// default skin properties
+		Assert.assertEquals(LinearGaugeSkin.Animated.YES, ((SimpleMetroArcGaugeSkin)simpleMetroArcGauge.getSkin()).getAnimated());
+		Assert.assertEquals("0", ((SimpleMetroArcGaugeSkin)simpleMetroArcGauge.getSkin()).getValueFormat());
 		
 		// size
 		assertWH(simpleMetroArcGauge, 200.0, 200.0);
@@ -88,6 +96,10 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 		generateSource(".segment0");
 		new AssertNode(find(".segment0")).assertXYWH(0.0, 0.0, 194.05002117156982, 176.61049842834473, 0.01).assertClass(javafx.scene.shape.Arc.class);
 		
+		// assert value text
+		generateValueSource(".value");
+		new AssertNode(find(".value")).assertXYWH(0.0, 69.0625, 36.8125, 16.0625, 0.01).assertTextText("0");
+		
 		// assert the needle
 		generateNeedleSource(".needle");
 		new AssertNode(find(".needle")).assertXYWH(0.0, 0.0, 151.4755096435547, 172.77810668945312, 0.01).assertRotate(99.0, 108.9, 0.0, 0.01).assertClass(javafx.scene.shape.Path.class);
@@ -96,19 +108,30 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 	@Test
 	public void valueRendering() {
 		setLabel("valueRendering");
+		
+		// disable animation so we won't have any timing issues in this test
 		TestUtil.runThenWaitForPaintPulse( () -> {
-			simpleMetroArcGauge.setStyle("-fxx-animation: NO;" + simpleMetroArcGauge.getStyle()); // no animation to prevent timing problems
+			simpleMetroArcGauge.setStyle("-fxx-animated:NO; " + simpleMetroArcGauge.getStyle());
+		});
+		Assert.assertEquals(LinearGaugeSkin.Animated.NO, ((SimpleMetroArcGaugeSkin)simpleMetroArcGauge.getSkin()).getAnimated());
+		
+		// set the value 
+		TestUtil.runThenWaitForPaintPulse( () -> {
 			simpleMetroArcGauge.setValue(45.0);
 		});
 		
-		// values
+		// assert values
 		Assert.assertEquals(0.0, simpleMetroArcGauge.getMinValue(), 0.01);
 		Assert.assertEquals(45.0, simpleMetroArcGauge.getValue(), 0.01);
 		Assert.assertEquals(100.0, simpleMetroArcGauge.getMaxValue(), 0.01);
+
+		// assert value text
+		generateValueSource(".value");
+		new AssertNode(find(".value")).assertXYWH(0.0, 69.0625, 73.625, 16.0625, 0.01).assertTextText("45");
 		
 		// assert the needle
 		generateNeedleSource(".needle");
-		// TBEERNOT: not asserting: new AssertNode(find(".needle")).assertXYWH(0.0, 0.0, 151.4755096435547, 172.77810668945312, 0.01).assertRotate(99.0, 108.9, 0.04862755375879441, 0.01);
+		new AssertNode(find(".needle")).assertXYWH(0.0, 0.0, 151.4755096435547, 172.77810668945312, 0.01).assertRotate(99.0, 108.9, 121.5, 0.01);
 	}
 
 	@Test
@@ -217,6 +240,11 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 	private void generateSource(String classFindExpression) {
 		Node node = find(classFindExpression);
 		AssertNode.generateSource("find(\"" + classFindExpression + "\")", node, EXCLUDED_CLASSES, false, A.XYWH);
+	}
+
+	private void generateValueSource(String classFindExpression) {
+		Node node = find(classFindExpression);
+		AssertNode.generateSource("find(\"" + classFindExpression + "\")", node, EXCLUDED_CLASSES, false, A.XYWH, A.TEXTTEXT);
 	}
 
 	private void generateNeedleSource(String classFindExpression) {

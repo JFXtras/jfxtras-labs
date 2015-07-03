@@ -1,6 +1,6 @@
 package jfxtras.labs;
 
-import jfxtras.labs.scene.control.gauge.linear.trial.SimpleMetroArcGaugeTest;
+import jfxtras.labs.scene.control.gauge.linear.test.SimpleMetroArcGaugeTest;
 import jfxtras.labs.scene.control.test.BigDecimalFieldTest;
 
 import org.junit.runner.RunWith;

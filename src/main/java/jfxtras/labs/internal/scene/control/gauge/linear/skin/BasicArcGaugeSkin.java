@@ -80,7 +80,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 	// StyleableProperties
 	
     /**
-     * animated
+     * tickcolor
      */
     public final ObjectProperty<Paint> tickColorProperty() { return tickColorProperty; }
     private ObjectProperty<Paint> tickColorProperty = new SimpleStyleableObjectProperty<Paint>(StyleableProperties.TICKCOLOR_CSSMETADATA, StyleableProperties.TICKCOLOR_CSSMETADATA.getInitialValue(null));
