@@ -60,8 +60,8 @@ import jfxtras.scene.control.ListSpinner;
  * - Segment styling can be set using CSS classes like "segment0", "segment1", ... , the numeric suffix is the index of the segment in the segments list.
  * - Another option is to specify an segment ID, which can then be used to style the segment in CSS.
  * - The SimpleMetroArcGauge.css per default supports segment classes segment0 - segment9.
- * - A shortcut is available through -fxx-segment0-color, ..., which can be set in any styleclass (this is used in the color schemes).
- * - The CSS also contains a number of color schemes, like "colorscheme-green-to-red-10" (for 10 segments) which can be activated by assigning the color scheme class to the gauge.
+ * - A shortcut is available through -fxx-segment0-color, ..., which can be set in any styleclass (this is used in the colorschemes).
+ * - The CSS also contains a number of colorschemes, like "colorscheme-green-to-red-10" (for 10 segments) which can be activated by assigning the colorscheme class to the gauge.
  * - If no segments are specified a single segment will automatically be drawn.
  * - If segments are specified, the user is fully responsible for convering the whole range.
  *
@@ -75,7 +75,7 @@ import jfxtras.scene.control.ListSpinner;
  *         lSimpleMetroArcGauge.segments().add(lSegment);
  *     }
  * --
- * Note: the color scheme CSS must be manually loaded in the scene! See below.
+ * Note: the colorscheme CSS must be manually loaded in the scene! See below.
  * 
  * == Marker
  * This gauge supports markers, which are tiny notches on the arc to mark special values:
@@ -83,7 +83,7 @@ import jfxtras.scene.control.ListSpinner;
  * - Marker styling can be set using CSS classes like "marker0", "marker1", ... , the numeric suffix is the index of the marker in the markers list.
  * - Another option is to specify an marker ID, which can then be used to style the marker in CSS.
  * - The SimpleMetroArcGauge.css per default supports marker classes marker0 - marker9.
- * - A shortcut is available through -fxx-marker0-color, ..., which can be set in any styleclass (this is used in the color schemes).
+ * - A shortcut is available through -fxx-marker0-color, ..., which can be set in any styleclass (this is used in the colorschemes).
  * - Marker colors are also set in the colorschemes.`
  *
  * === Example
@@ -171,15 +171,15 @@ import jfxtras.scene.control.ListSpinner;
  *    }
  * --
  *  
- * == Segment color scheme
- * The CSS defines a number of default color schemes for the segments, some of which already were shown in the examples.
+ * == Segment colorscheme
+ * The CSS defines a number of default colorschemes for the segments, some of which already were shown in the examples.
  * These can be loaded into a scene using:
  * [source,java]
  * --
  *     scene.getStylesheets().add(LinearGauge.segmentColorschemeCSSPath());
  * --
  *  
- * The numeric suffix denotes the number of segments the color schema is for.
+ * The numeric suffix denotes the number of segments the colorschema is for.
  * 
  * - colorscheme-blue-to-red-5
  * - colorscheme-red-to-blue-5

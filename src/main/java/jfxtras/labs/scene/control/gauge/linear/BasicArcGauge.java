@@ -37,6 +37,203 @@ import jfxtras.scene.control.ListSpinner;
 /**
  * = BasicArcGauge
  * 
+ * This gauge is a simple semi-real world arc shaped gauge, featuring an outer ring with shade effect, ticks with labels, a big textual version of the current indicated value and a long slender needle.
+ * The needle ranges from about 7 o'clock (min) clockwise to 5 o'clock (max).
+ * 
+ * == CSS properties
+ * The gauge supports the following CSS styleable properties:
+ * 
+ * - -fxx-animated: is the gauge animated, YES or NO.
+ * - -fxx-value-format: a DecimalFormat pattern for rendering the label inside the needle
+ * 
+ * === Example 
+ * [source,css]
+ * --
+ *     #myGauge {
+ *        -fxx-animated: YES; 
+ *        -fxx-value-format:' ##0.0W';
+ *        -fxx-tick-color: white; 
+ *     }
+ * --
+ * 
+ * == Colors and colorschemes
+ * The gauge is able to draw in different color settings, by specifying values for the following CSS selectors:
+ * - -fxx-backplate-color
+ * - -fxx-needle-color
+ * - -fxx-tick-color
+ * - -fxx-value-color
+ * - -fxx-knob-color 
+ * - -fxx-tick-color
+ * 
+ * A few ready-to-use colors are available through colorscheme's:
+ * - colorscheme-light
+ * - colorscheme-dark
+ * - colorscheme-green
+ * - colorscheme-red
+ *
+ * === Example
+ * [source,java]
+ * --
+ *     final BasicArcGauge lBasicArcGauge = new BasicArcGauge();
+ *     lBasicArcGauge.getStyleClass().add("colorscheme-green");
+ * --
+ * Note: these colorscheme's co-exist with the segment's colorscheme's.
+ *  
+ * == Labels
+ * This gauge supports labels; the labels collection holds a list of all labels and each of their values.
+ * Per default percentage labels are rendered starting at 0%, stepping up 10% up to and including 100%.
+ * 
+ * === Example
+ * [source,java]
+ * --
+ *     final BasicArcGauge lBasicArcGauge = new BasicArcGauge();
+ *     lBasicArcGauge.labels().clear(); // remove the default labels
+ *     labels().add(new AbsoluteLabel(33.0, "33%"));
+ *     labels().add(new AbsoluteLabel(66.0, "66%"));
+ * --
+ * 
+ * == Segments
+ * This gauge supports segments, which are colored parts of the arc rendered behind the ticks, over which the needle moves:
+ * 
+ * - Segment styling can be set using CSS classes like "segment0", "segment1", ... , the numeric suffix is the index of the segment in the segments list.
+ * - Another option is to specify an segment ID, which can then be used to style the segment in CSS.
+ * - The BasicArcGauge.css per default supports segment classes segment0 - segment9.
+ * - A shortcut is available through -fxx-segment0-color, ..., which can be set in any styleclass (this is used in the colorschemes).
+ * - The CSS also contains a number of colorschemes, like "colorscheme-green-to-red-10" (for 10 segments) which can be activated by assigning the colorscheme class to the gauge.
+ * - If no segments are specified a single segment will automatically be drawn.
+ * - If segments are specified, the user is fully responsible for convering the whole range.
+ *
+ * === Example
+ * [source,java]
+ * --
+ *     final BasicArcGauge lBasicArcGauge = new BasicArcGauge();
+ *     lBasicArcGauge.getStyleClass().add("colorscheme-green-to-red-10");
+ *     for (int i = 0; i < 10; i++) {
+ *         Segment lSegment = new PercentSegment(lBasicArcGauge, i * 10.0, (i+1) * 10.0);
+ *         lBasicArcGauge.segments().add(lSegment);
+ *     }
+ * --
+ * Note: the colorscheme CSS must be manually loaded in the scene! See below.
+ * Note: these colorscheme's co-exist with the needle's colorscheme's.
+ * 
+ * == Marker
+ * This gauge supports markers, which are tiny notches on the arc to mark special values:
+ * 
+ * - Marker styling can be set using CSS classes like "marker0", "marker1", ... , the numeric suffix is the index of the marker in the markers list.
+ * - Another option is to specify an marker ID, which can then be used to style the marker in CSS.
+ * - The BasicArcGauge.css per default supports marker classes marker0 - marker9.
+ * - A shortcut is available through -fxx-marker0-color, ..., which can be set in any styleclass (this is used in the colorschemes).
+ * - Marker colors are also set in the colorschemes.`
+ *
+ * === Example
+ * [source,java]
+ * --
+ *     final BasicArcGauge lBasicArcGauge = new BasicArcGauge();
+ *     for (int i = 0; i <= 20; i++) {
+ *         lBasicArcGauge.markers().add(new PercentMarker(lBasicArcGauge, i * 5.0));
+ *     }
+ * --
+ * 
+ * Markers can be custom shaped using a SVG shape:
+ * [source,css]
+ * --
+ *     .marker1 {
+ *         -fx-shape: 'M 0 0 L -3 -6 L 3 -6 Z'; 
+ *     } 
+ * --
+ * 
+ * == Indicators
+ * This gauge has six indicators positions: 0 up to and including 5, located around the knob.
+ * Indicators can be assigned to these position as follows:
+ * [source,java]
+ * --
+ *     final BasicArcGauge lBasicArcGauge = new BasicArcGauge();
+ *     lBasicArcGauge.indicators().add(new Indicator(0, "warning"));
+ *     lBasicArcGauge.indicators().add(new Indicator(1, "error"));
+ * --
+ * 
+ * This enables (but does not show!) the indicator at the corresponding locations, the example uses the two predefined indicators "error" and "warning".
+ * Indicators can be made visible by assigning "visible" to the corresponding -fxx-INDICATORID-indicator-visibility variable in CSS, like so:
+ * [source,css]
+ * --
+ *     -fxx-warning-indicator-visibility: visible; 
+ *     -fxx-error-indicator-visibility: visible;
+ * --
+ *
+ * It is possible to have indicators become visible based on the needle's value, by means of the segments.
+ * Suppose the needle is over segment1, then a CSS class named "segment1-active" is added to the node.
+ * Using this CSS class an indicator can be made visible, for example:
+ * [source,css]
+ * --
+ *    .segment1-active {
+ *        -fxx-warning-indicator-visibility: visible; 
+ *     }
+ *    .segment2-active {
+ *        -fxx-error-indicator-visibility: visible; 
+ *     }
+ * --
+ * Segments may overlap and can be transparent, there is a special "colorscheme-first-grey-rest-transparent-10" colorscheme.
+ * Segments could be setup solely to show indicators, for example segment1 could run from 50% to 100% and segment2 from 75% to 100%.
+ * If the needle is over segment2, both the warning and error indicator will be visible.
+ *
+ * === Example (using the CSS above)
+ * [source,java]
+ * --
+ *     final BasicArcGauge lBasicArcGauge = new BasicArcGauge();
+ *     lBasicArcGauge.getStyleClass().add("colorscheme-first-grey-rest-transparent-10");
+ *     lBasicArcGauge.segments().add(new CompleteSegment(lBasicArcGauge));
+ *     lBasicArcGauge.segments().add(new PercentSegment(lBasicArcGauge, 50.0, 100.0, "warningSegment"));
+ *     lBasicArcGauge.segments().add(new PercentSegment(lBasicArcGauge, 75.0, 100.0, "errorSegment"));
+ * --
+ * 
+ * Given that the segements have id's, you can also use active classes based on these id's: 
+ * [source,css]
+ * --
+ *    .segment-warningSegment-active {
+ *        -warning-indicator-visibility: visible; 
+ *     }
+ *    .segment-errorSegment-active {
+ *        -error-indicator-visibility: visible; 
+ *     }
+ * --
+ * 
+ * This should not be confused with the CSS rules based on the id of the segments (in the example: #warningSegment and #errorSegment).
+ * 
+ * Custom indicators can be created in CSS by defining a 100x100 SVG shape in CSS, with 0,0 being in the center, and assign an id to it. Similar to the default error indicator:.
+ * [source,css]
+ * --
+ *    .error-indicator {
+ *        visibility: -fxx-error-indicator-visibility;
+ *        -fx-background-color: -fxx-error-indicator-color;
+ *        -fx-shape: 'M-50,0 a50,50 0 1,0 100,0 a50,50 0 1,0 -100,0'; 
+ *        -fx-scale-shape: false; 
+ *    }
+ * --
+ *  
+ * == Segment colorscheme
+ * The CSS defines a number of default colorschemes for the segments, some of which already were shown in the examples.
+ * These can be loaded into a scene using:
+ * [source,java]
+ * --
+ *     scene.getStylesheets().add(LinearGauge.segmentColorschemeCSSPath());
+ * --
+ *  
+ * The numeric suffix denotes the number of segments the colorschema is for.
+ * 
+ * - colorscheme-blue-to-red-5
+ * - colorscheme-red-to-blue-5
+ * - colorscheme-green-to-darkgreen-6
+ * - colorscheme-green-to-red-6 
+ * - colorscheme-red-to-green-6 
+ * - colorscheme-purple-to-red-6 
+ * - colorscheme-blue-to-red-6 
+ * - colorscheme-green-to-red-7 
+ * - colorscheme-red-to-green-7 
+ * - colorscheme-green-to-red-10 
+ * - colorscheme-red-to-green-10 
+ * - colorscheme-purple-to-cyan-10 
+ * - colorscheme-first-grey-rest-transparent-10
+ *  
  *  
  * == Disclaimer
  * This is a blatant but approved visual copy of Gerrit Grunwald's Enzo RadialSteel (https://bitbucket.org/hansolo/enzo/src).
