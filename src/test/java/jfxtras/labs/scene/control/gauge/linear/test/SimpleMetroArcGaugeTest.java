@@ -135,6 +135,34 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 	}
 
 	@Test
+	public void formattedValue() {
+		setLabel("valueRendering");
+		
+		// disable animation so we won't have any timing issues in this test
+		TestUtil.runThenWaitForPaintPulse( () -> {
+			simpleMetroArcGauge.setStyle("-fxx-animated:NO; -fxx-value-format:' ##0.0W';" + simpleMetroArcGauge.getStyle());
+		});
+		Assert.assertEquals(LinearGaugeSkin.Animated.NO, ((SimpleMetroArcGaugeSkin)simpleMetroArcGauge.getSkin()).getAnimated());
+		
+		// assert value text
+		generateValueSource(".value");
+		new AssertNode(find(".value")).assertXYWH(-68.0, 69.0625, 172.9375, 16.0625, 0.01).assertTextText(" 0.0W");
+		
+		// set the value 
+		TestUtil.runThenWaitForPaintPulse( () -> {
+			simpleMetroArcGauge.setValue(45.0);
+		});
+		
+		// assert value text
+		generateValueSource(".value");
+		new AssertNode(find(".value")).assertXYWH(-68.0, 69.0625, 209.75, 16.0625, 0.01).assertTextText(" 45.0W");
+		
+		// assert the needle
+		generateNeedleSource(".needle");
+		new AssertNode(find(".needle")).assertXYWH(0.0, 0.0, 151.4755096435547, 172.77810668945312, 0.01).assertRotate(99.0, 108.9, 121.5, 0.01);
+	}
+
+	@Test
 	public void withIndicators() {
 		setLabel("withIndicators");
 		TestUtil.runThenWaitForPaintPulse( () -> {
@@ -162,15 +190,12 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 		assertWH(simpleMetroArcGauge, 200.0, 200.0);
 		
 		// assert the segments
-		for (int i = 0; i < 4; i++) {
-			assertFind(".segment" + i);
-		}
-		assertNotFind(".segment4");
 		for (int i = 0; i < 4; i++) { generateSegmentSource(".segment" + i); }
 		new AssertNode(find(".segment0")).assertXYWH(0.0, 0.0, 100.38267517089844, 176.61048889160156, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -135.0, -67.5, 0.01);
 		new AssertNode(find(".segment1")).assertXYWH(0.0, 0.0, 100.0, 110.1483097076416, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -202.5, -67.5, 0.01);
 		new AssertNode(find(".segment2")).assertXYWH(0.0, 0.0, 187.04415893554688, 110.14830207824707, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -270.0, -67.5, 0.01);
 		new AssertNode(find(".segment3")).assertXYWH(0.0, 0.0, 194.05274963378906, 176.61048889160156, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -337.5, -67.5, 0.01);	
+		assertNotFind(".segment4");
 	}
 	
 	@Test
@@ -186,15 +211,12 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 		assertWH(simpleMetroArcGauge, 200.0, 200.0);
 		
 		// assert the segments
-		for (int i = 0; i < 4; i++) {
-			assertFind(".segment" + i);
-		}
-		assertNotFind(".segment4");
 		for (int i = 0; i < 4; i++) { generateSegmentSource(".segment" + i); }
 		new AssertNode(find(".segment0")).assertXYWH(0.0, 0.0, 103.67220687866211, 139.0930938720703, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -162.0, -13.5, 0.01);
 		new AssertNode(find(".segment1")).assertXYWH(0.0, 0.0, 101.47879028320312, 110.21964263916016, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -189.0, -27.0, 0.01);
 		new AssertNode(find(".segment2")).assertXYWH(0.0, 0.0, 100.0, 110.38131141662598, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -216.0, -54.0, 0.01);
 		new AssertNode(find(".segment3")).assertXYWH(0.0, 0.0, 194.0507049560547, 139.0930938720703, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -270.0, -108.0, 0.01);
+		assertNotFind(".segment4");
 	}
 
 	@Test
@@ -210,17 +232,16 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 		assertWH(simpleMetroArcGauge, 200.0, 200.0);
 		
 		// assert the segments
-		for (int i = 0; i < 4; i++) {
-			assertFind(".marker" + i);
-		}
-		assertNotFind(".marker4");
 		for (int i = 0; i < 4; i++) { generateMarkerSource(".marker" + i); }
 		new AssertNode(find(".marker0")).assertXYWH(32.496607229405214, 175.4033927705948, 0.0, 0.0, 0.01).assertRotate(0.0, 0.0, -135.0, 0.01).assertScale(0.0, 0.0, 0.66, 0.66, 0.01);  // TBEERNOT: why are width and height 0?
 		new AssertNode(find(".marker1")).assertXYWH(77.04446352935213, 17.448608986598515, 0.0, 0.0, 0.01).assertRotate(0.0, 0.0, -13.5, 0.01).assertScale(0.0, 0.0, 0.66, 0.66, 0.01);
 		new AssertNode(find(".marker2")).assertXYWH(98.99999999999999, 14.850000000000009, 0.0, 0.0, 0.01).assertRotate(0.0, 0.0, 0.0, 0.01).assertScale(0.0, 0.0, 0.66, 0.66, 0.01);
 		new AssertNode(find(".marker3")).assertXYWH(165.50339277059481, 175.4033927705948, 0.0, 0.0, 0.01).assertRotate(0.0, 0.0, 135.0, 0.01).assertScale(0.0, 0.0, 0.66, 0.66, 0.01);
+		assertNotFind(".marker4");
 	}
 
+	// LABELS?
+	
 	// =============================================================================================================================================================================================================================
 	// SUPPORT
 

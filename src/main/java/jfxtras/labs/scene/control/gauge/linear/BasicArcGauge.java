@@ -92,28 +92,7 @@ import jfxtras.scene.control.ListSpinner;
  *     labels().add(new AbsoluteLabel(66.0, "66%"));
  * --
  * 
- * == Segments
- * This gauge supports segments, which are colored parts of the arc rendered behind the ticks, over which the needle moves:
- * 
- * - Segment styling can be set using CSS classes like "segment0", "segment1", ... , the numeric suffix is the index of the segment in the segments list.
- * - Another option is to specify an segment ID, which can then be used to style the segment in CSS.
- * - The BasicArcGauge.css per default supports segment classes segment0 - segment9.
- * - A shortcut is available through -fxx-segment0-color, ..., which can be set in any styleclass (this is used in the colorschemes).
- * - The CSS also contains a number of colorschemes, like "colorscheme-green-to-red-10" (for 10 segments) which can be activated by assigning the colorscheme class to the gauge.
- * - If no segments are specified a single segment will automatically be drawn.
- * - If segments are specified, the user is fully responsible for convering the whole range.
- *
- * === Example
- * [source,java]
- * --
- *     final BasicArcGauge lBasicArcGauge = new BasicArcGauge();
- *     lBasicArcGauge.getStyleClass().add("colorscheme-green-to-red-10");
- *     for (int i = 0; i < 10; i++) {
- *         Segment lSegment = new PercentSegment(lBasicArcGauge, i * 10.0, (i+1) * 10.0);
- *         lBasicArcGauge.segments().add(lSegment);
- *     }
- * --
- * Note: the colorscheme CSS must be manually loaded in the scene! See below.
+ * include::src/main/asciidoc/scene/control/gauge/linear/segments.adoc[]
  * Note: these colorscheme's co-exist with the needle's colorscheme's.
  * 
  * == Marker
@@ -210,30 +189,7 @@ import jfxtras.scene.control.ListSpinner;
  *    }
  * --
  *  
- * == Segment colorscheme
- * The CSS defines a number of default colorschemes for the segments, some of which already were shown in the examples.
- * These can be loaded into a scene using:
- * [source,java]
- * --
- *     scene.getStylesheets().add(LinearGauge.segmentColorschemeCSSPath());
- * --
- *  
- * The numeric suffix denotes the number of segments the colorschema is for.
- * 
- * - colorscheme-blue-to-red-5
- * - colorscheme-red-to-blue-5
- * - colorscheme-green-to-darkgreen-6
- * - colorscheme-green-to-red-6 
- * - colorscheme-red-to-green-6 
- * - colorscheme-purple-to-red-6 
- * - colorscheme-blue-to-red-6 
- * - colorscheme-green-to-red-7 
- * - colorscheme-red-to-green-7 
- * - colorscheme-green-to-red-10 
- * - colorscheme-red-to-green-10 
- * - colorscheme-purple-to-cyan-10 
- * - colorscheme-first-grey-rest-transparent-10
- *  
+ * include::src/main/asciidoc/scene/control/gauge/linear/segmentsColorscheme.adoc[]
  *  
  * == Disclaimer
  * This is a blatant but approved visual copy of Gerrit Grunwald's Enzo RadialSteel (https://bitbucket.org/hansolo/enzo/src).
