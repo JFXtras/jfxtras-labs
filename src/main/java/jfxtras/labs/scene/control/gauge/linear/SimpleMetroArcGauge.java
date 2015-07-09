@@ -40,122 +40,25 @@ import jfxtras.scene.control.ListSpinner;
  * The needle ranges from about 7 o'clock (min) clockwise to 5 o'clock (max).
  * 
  * == CSS properties
- * The gauge supports the following CSS styleable properties:
+ * include::src/main/asciidoc/scene/control/gauge/linear/cssProperties.adoc[]
  * 
- * - -fxx-animated: is the gauge animated, YES or NO.
- * - -fxx-value-format: a DecimalFormat pattern for rendering the label inside the needle
- * 
- * === Example 
- * [source,css]
- * --
- *     #myGauge {
- *        -fxx-animated: YES; 
- *        -fxx-value-format:' ##0.0W'; 
- *     }
- * --
- * 
+ * == Segments
+ * This gauge supports segments, which are colored parts of the arc over which the needle moves:
  * include::src/main/asciidoc/scene/control/gauge/linear/segments.adoc[]
  * 
  * == Marker
- * This gauge supports markers, which are tiny notches on the arc to mark special values:
- * 
- * - Marker styling can be set using CSS classes like "marker0", "marker1", ... , the numeric suffix is the index of the marker in the markers list.
- * - Another option is to specify an marker ID, which can then be used to style the marker in CSS.
- * - The SimpleMetroArcGauge.css per default supports marker classes marker0 - marker9.
- * - A shortcut is available through -fxx-marker0-color, ..., which can be set in any styleclass (this is used in the colorschemes).
- * - Marker colors are also set in the colorschemes.`
- *
- * === Example
- * [source,java]
- * --
- *     final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
- *     for (int i = 0; i <= 20; i++) {
- *         lSimpleMetroArcGauge.markers().add(new PercentMarker(lSimpleMetroArcGauge, i * 5.0));
- *     }
- * --
- * 
- * Markers can be custom shaped using a SVG shape:
- * [source,css]
- * --
- *     .marker1 {
- *         -fx-shape: 'M 0 0 L -3 -6 L 3 -6 Z'; 
- *     } 
- * --
+ * include::src/main/asciidoc/scene/control/gauge/linear/markers.adoc[]
  * 
  * == Indicators
  * This gauge has two indicators positions: 0 and 1, located at the bottom between the ends of the arc.
- * Indicators can be assigned to these position as follows:
- * [source,java]
- * --
- *     final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
- *     lSimpleMetroArcGauge.indicators().add(new Indicator(0, "warning"));
- *     lSimpleMetroArcGauge.indicators().add(new Indicator(1, "error"));
- * --
+ * include::src/main/asciidoc/scene/control/gauge/linear/indicators.adoc[]
  * 
- * This enables (but does not show!) the indicator at the corresponding locations, the example uses the two predefined indicators "error" and "warning".
- * Indicators can be made visible by assigning "visible" to the corresponding -fxx-INDICATORID-indicator-visibility variable in CSS, like so:
- * [source,css]
- * --
- *     -fxx-warning-indicator-visibility: visible; 
- *     -fxx-error-indicator-visibility: visible;
- * --
- *
- * It is possible to have indicators become visible based on the needle's value, by means of the segments.
- * Suppose the needle is over segment1, then a CSS class named "segment1-active" is added to the node.
- * Using this CSS class an indicator can be made visible, for example:
- * [source,css]
- * --
- *    .segment1-active {
- *        -fxx-warning-indicator-visibility: visible; 
- *     }
- *    .segment2-active {
- *        -fxx-error-indicator-visibility: visible; 
- *     }
- * --
- * Segments may overlap and can be transparent, there is a special "colorscheme-first-grey-rest-transparent-10" colorscheme.
- * Segments could be setup solely to show indicators, for example segment1 could run from 50% to 100% and segment2 from 75% to 100%.
- * If the needle is over segment2, both the warning and error indicator will be visible.
- *
- * === Example (using the CSS above)
- * [source,java]
- * --
- *     final SimpleMetroArcGauge lSimpleMetroArcGauge = new SimpleMetroArcGauge();
- *     lSimpleMetroArcGauge.getStyleClass().add("colorscheme-first-grey-rest-transparent-10");
- *     lSimpleMetroArcGauge.segments().add(new CompleteSegment(lSimpleMetroArcGauge));
- *     lSimpleMetroArcGauge.segments().add(new PercentSegment(lSimpleMetroArcGauge, 50.0, 100.0, "warningSegment"));
- *     lSimpleMetroArcGauge.segments().add(new PercentSegment(lSimpleMetroArcGauge, 75.0, 100.0, "errorSegment"));
- * --
- * 
- * Given that the segements have id's, you can also use active classes based on these id's: 
- * [source,css]
- * --
- *    .segment-warningSegment-active {
- *        -warning-indicator-visibility: visible; 
- *     }
- *    .segment-errorSegment-active {
- *        -error-indicator-visibility: visible; 
- *     }
- * --
- * 
- * This should not be confused with the CSS rules based on the id of the segments (in the example: #warningSegment and #errorSegment).
- * 
- * Custom indicators can be created in CSS by defining a 100x100 SVG shape in CSS, with 0,0 being in the center, and assign an id to it. Similar to the default error indicator:.
- * [source,css]
- * --
- *    .error-indicator {
- *        visibility: -fxx-error-indicator-visibility;
- *        -fx-background-color: -fxx-error-indicator-color;
- *        -fx-shape: 'M-50,0 a50,50 0 1,0 100,0 a50,50 0 1,0 -100,0'; 
- *        -fx-scale-shape: false; 
- *    }
- * --
- *  
+ * == Segment colorscheme
  * include::src/main/asciidoc/scene/control/gauge/linear/segmentsColorscheme.adoc[]
  *  
  * == Disclaimer
  * This is a blatant but approved visual copy of Gerrit Grunwald's Enzo SimpleGauge (https://bitbucket.org/hansolo/enzo/src).
- * Gerrit describes the Enzo library in his blog like this: _all controls in that library are made for my personal demos and are not production ready._
- * This JFXtras control is supposed to be production ready. 
+ * include::src/main/asciidoc/scene/control/gauge/linear/disclaimer.adoc[]
  */
 public class SimpleMetroArcGauge extends LinearGauge<SimpleMetroArcGauge> {
 	

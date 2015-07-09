@@ -1,4 +1,3 @@
-== Segment colorscheme
 The CSS defines a number of default colorschemes for the segments, some of which already were shown in the examples.
 These can be loaded into a scene using:
 [source,java]
