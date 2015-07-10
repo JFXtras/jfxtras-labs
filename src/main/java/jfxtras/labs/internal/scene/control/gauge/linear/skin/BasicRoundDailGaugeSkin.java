@@ -68,7 +68,7 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.util.Duration;
 import jfxtras.css.CssMetaDataForSkinProperty;
-import jfxtras.labs.scene.control.gauge.linear.BasicArcGauge;
+import jfxtras.labs.scene.control.gauge.linear.BasicRoundDailGauge;
 import jfxtras.labs.scene.control.gauge.linear.elements.Label;
 import jfxtras.labs.scene.control.gauge.linear.elements.Marker;
 import jfxtras.labs.scene.control.gauge.linear.elements.Segment;
@@ -78,7 +78,7 @@ import com.sun.javafx.css.converters.PaintConverter;
 /**
  * 
  */
-public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicArcGauge> {
+public class BasicRoundDailGaugeSkin extends AbstractLinearGaugeSkin<BasicRoundDailGaugeSkin, BasicRoundDailGauge> {
 
 	private static final double RING_OUTER_RADIUS_FACTOR = 0.99;
 	private static final double RING_INNER_RADIUS_FACTOR = 0.96;
@@ -100,7 +100,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 	/**
 	 * 
 	 */
-	public BasicArcGaugeSkin(BasicArcGauge control) {
+	public BasicRoundDailGaugeSkin(BasicRoundDailGauge control) {
 		super(control);
 		constructNodes();
 	}
@@ -115,16 +115,16 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
     private ObjectProperty<Paint> tickColorProperty = new SimpleStyleableObjectProperty<Paint>(StyleableProperties.TICKCOLOR_CSSMETADATA, StyleableProperties.TICKCOLOR_CSSMETADATA.getInitialValue(null));
     public final void setTickColor(Paint value) { tickColorProperty().set(value); }
     public final Paint getTickColor() { return tickColorProperty.get(); }
-    public final BasicArcGaugeSkin withTickColor(Paint value) { setTickColor(value); return this; }
+    public final BasicRoundDailGaugeSkin withTickColor(Paint value) { setTickColor(value); return this; }
 
 
     // -------------------------
         
     private static class StyleableProperties 
     {
-        private static final CssMetaData<BasicArcGauge, Paint> TICKCOLOR_CSSMETADATA = new CssMetaDataForSkinProperty<BasicArcGauge, BasicArcGaugeSkin, Paint>("-fxx-tick-color", PaintConverter.getInstance(), Color.BLACK ) {
+        private static final CssMetaData<BasicRoundDailGauge, Paint> TICKCOLOR_CSSMETADATA = new CssMetaDataForSkinProperty<BasicRoundDailGauge, BasicRoundDailGaugeSkin, Paint>("-fxx-tick-color", PaintConverter.getInstance(), Color.BLACK ) {
         	@Override 
-        	protected ObjectProperty<Paint> getProperty(BasicArcGaugeSkin s) {
+        	protected ObjectProperty<Paint> getProperty(BasicRoundDailGaugeSkin s) {
             	return s.tickColorProperty;
             }
         };
@@ -142,7 +142,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
      * CssMetaData of its super classes.
      */    
     public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
-    	List<CssMetaData<? extends Styleable,?>> classCssMetaData = LinearGaugeSkin.getClassCssMetaData();
+    	List<CssMetaData<? extends Styleable,?>> classCssMetaData = AbstractLinearGaugeSkin.getClassCssMetaData();
     	classCssMetaData = new ArrayList<CssMetaData<? extends Styleable,?>>(classCssMetaData);
     	classCssMetaData.addAll(StyleableProperties.STYLEABLES);
     	return Collections.unmodifiableList(classCssMetaData);
@@ -435,7 +435,7 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 		@Override
 		protected double calculateScaleFactor() {
 			// SVG is setup on a virtual 100x100 canvas, it is scaled to fit the size of the gauge. For a width of 300 (radius 150) this is 30 pixels
-			return 30.0/100.0 * BasicArcGaugeSkin.this.calculateRadius()/150.0;
+			return 30.0/100.0 * BasicRoundDailGaugeSkin.this.calculateRadius()/150.0;
 		}
 		
 		@Override
@@ -524,9 +524,9 @@ public class BasicArcGaugeSkin extends LinearGaugeSkin<BasicArcGaugeSkin, BasicA
 		private NeedlePane() {
 			this.getStyleClass().add("NeedlePane");
 			
-			// knob
+			// needle
 			needleRegion.setPickOnBounds(false);
-			needleRegion.getStyleClass().setAll("needle-standard");
+			needleRegion.getStyleClass().setAll("needle", "needle-standard");
 			needleRegion.setPrefSize(6.0, 75.0);
 			needleRegion.layoutXProperty().bind(centerX.add( needleRegion.widthProperty().multiply(-0.5) ));
 			needleRegion.layoutYProperty().bind(centerY); //.add( needleRegion.heightProperty().multiply(-1.0) ));

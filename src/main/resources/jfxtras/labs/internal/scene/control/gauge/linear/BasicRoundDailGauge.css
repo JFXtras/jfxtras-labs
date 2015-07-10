@@ -1,6 +1,6 @@
 @import "_segment.css"
 
-.BasicArcGauge {
+.BasicRoundDailGauge {
 
     /* These are the variables with their default values (colors), special combinations can be set by assigning one of the colorschemes */    
     -fxx-backplate-color: #f0f0f0;
@@ -35,21 +35,21 @@
 	-fxx-warning-indicator-color: orange; 
 }
 
-.BasicArcGauge .backplate {
+.BasicRoundDailGauge .backplate {
 	-fx-fill: -fxx-backplate-color;
 }
 
-.BasicArcGauge .tick {
+.BasicRoundDailGauge .tick {
 }
 
-.BasicArcGauge .value {
+.BasicRoundDailGauge .value {
     -fx-fill: -fxx-value-color;
     -fx-font-size: 36px;
     -fx-font-weight: bold;
 }
 
 
-.BasicArcGauge .needle-standard {
+.BasicRoundDailGauge .needle-standard {
     -fx-background-color : derive(-fxx-needle-color, -30%),
     	linear-gradient(to left,
             derive(-fxx-needle-color, 15%) 0%,
@@ -63,7 +63,7 @@
     
 }
 
-.BasicArcGauge .knob {
+.BasicRoundDailGauge .knob {
     -fx-background-color : linear-gradient(to bottom,
                                            derive(-fxx-knob-color, 80%) 0%,
                                            derive(-fxx-knob-color, 40%) 52%,
@@ -78,7 +78,7 @@
     -fx-shape            : "M 0 100 C 0 44.7708 44.7708 0 100 0 C 155.2292 0 200 44.7708 200 100 C 200 155.2292 155.2292 200 100 200 C 44.7708 200 0 155.2292 0 100 Z";
 }
 
-.BasicArcGauge .outerring {
+.BasicRoundDailGauge .outerring {
 	-fx-fill: transparent;
     -fx-stroke: linear-gradient(to bottom,
                                          rgb(204,204,204) 0%,
@@ -86,7 +86,7 @@
                                          rgb(84,84,84) 100%);
 }
 
-.BasicArcGauge .innerring {
+.BasicRoundDailGauge .innerring {
 	-fx-fill: transparent;
     -fx-stroke: linear-gradient(to bottom,
                                          rgb(71,72,72) 0%,
@@ -94,7 +94,7 @@
                                          rgb(186,185,187) 100%);
 }
 
-.BasicArcGauge .GlassPlatePane {                                         
+.BasicRoundDailGauge .GlassPlatePane {                                         
     -fx-effect: dropshadow(two-pass-box, rgba(0, 0, 0, 0.3), 30, 0.3, 0, 10);
 }
 
@@ -103,14 +103,14 @@
 /* predefined indicators http://www.w3.org/TR/SVG/paths.html */
 /* drawing circles in SVG: http://stackoverflow.com/questions/5737975/circle-drawing-with-svgs-arc-path/10477334#10477334 */
 
-.BasicArcGauge .error-indicator {
+.BasicRoundDailGauge .error-indicator {
 	visibility: -fxx-error-indicator-visibility;
 	-fx-background-color: -fxx-error-indicator-color;
 	-fx-shape: 'M 50, 50 m -50, 0 a 50,50 0 1,0 100,0 a 50,50 0 1,0 -100,0'; 
 	-fx-scale-shape: false; 
 }
 
-.BasicArcGauge .warning-indicator {
+.BasicRoundDailGauge .warning-indicator {
 	visibility: -fxx-warning-indicator-visibility;
 	-fx-background-color: -fxx-warning-indicator-color;
 	-fx-shape: 'M 10 100  L 90 100  S 100 100 95 90  L 55 15  S 50 10 45 15  L 5 90  S 0 100 10 100 Z'; 
@@ -121,57 +121,57 @@
  * This are the actual classes being assigned to the segments, they use the variables to obtain their color.
  */ 
 
-.BasicArcGauge .segment {
+.BasicRoundDailGauge .segment {
     -fx-stroke: #888888;
     -fx-fill: #888888;
 }
 
-.BasicArcGauge .segment0 {
+.BasicRoundDailGauge .segment0 {
     -fx-stroke: -fxx-segment0-color;
     -fx-fill: -fxx-segment0-color;
 }
 
-.BasicArcGauge .segment1 {
+.BasicRoundDailGauge .segment1 {
     -fx-stroke: -fxx-segment1-color;
     -fx-fill: -fxx-segment1-color;
 }
 
-.BasicArcGauge .segment2 {
+.BasicRoundDailGauge .segment2 {
     -fx-stroke: -fxx-segment2-color;
     -fx-fill: -fxx-segment2-color;
 }
 
-.BasicArcGauge .segment3 {
+.BasicRoundDailGauge .segment3 {
     -fx-stroke: -fxx-segment3-color;
     -fx-fill: -fxx-segment3-color;
 }
 
-.BasicArcGauge .segment4 {
+.BasicRoundDailGauge .segment4 {
     -fx-stroke: -fxx-segment4-color;
     -fx-fill: -fxx-segment4-color;
 }
 
-.BasicArcGauge .segment5 {
+.BasicRoundDailGauge .segment5 {
     -fx-stroke: -fxx-segment5-color;
     -fx-fill: -fxx-segment5-color;
 }
 
-.BasicArcGauge .segment6 {
+.BasicRoundDailGauge .segment6 {
     -fx-stroke: -fxx-segment6-color;
     -fx-fill: -fxx-segment6-color;
 }
 
-.BasicArcGauge .segment7 {
+.BasicRoundDailGauge .segment7 {
     -fx-stroke: -fxx-segment7-color;
     -fx-fill: -fxx-segment7-color;
 }
 
-.BasicArcGauge .segment8 {
+.BasicRoundDailGauge .segment8 {
     -fx-stroke: -fxx-segment8-color;
     -fx-fill: -fxx-segment8-color;
 }
 
-.BasicArcGauge .segment9 {
+.BasicRoundDailGauge .segment9 {
     -fx-stroke: -fxx-segment9-color;
     -fx-fill: -fxx-segment9-color;
 }
@@ -180,7 +180,7 @@
  * The segment-active class can be used to modify an segment that is under the needle (this can be more than if the segments are setup in such a way).
  */
  
-.BasicArcGauge .segment-active {
+.BasicRoundDailGauge .segment-active {
 }
 
 /**
@@ -190,34 +190,34 @@
  *     -fxx-warning-indicator-visibility: visible; 
  * Interesting is it to have transparent segments, while not visible, these can become active and show an indicator.
  
-.BasicArcGauge .segment0-active {
+.BasicRoundDailGauge .segment0-active {
 }
 
-.BasicArcGauge .segment1-active {
+.BasicRoundDailGauge .segment1-active {
 }
 
-.BasicArcGauge .segment2-active {
+.BasicRoundDailGauge .segment2-active {
 }
 
-.BasicArcGauge .segment3-active {
+.BasicRoundDailGauge .segment3-active {
 }
 
-.BasicArcGauge .segment4-active {
+.BasicRoundDailGauge .segment4-active {
 }
 
-.BasicArcGauge .segment5-active {
+.BasicRoundDailGauge .segment5-active {
 }
 
-.BasicArcGauge .segment6-active {
+.BasicRoundDailGauge .segment6-active {
 }
 
-.BasicArcGauge .segment7-active {
+.BasicRoundDailGauge .segment7-active {
 }
 
-.BasicArcGauge .segment8-active {
+.BasicRoundDailGauge .segment8-active {
 }
 
-.BasicArcGauge .segment9-active {
+.BasicRoundDailGauge .segment9-active {
 }
  */
 
@@ -225,49 +225,49 @@
  * This are the actual classes being assigned to the marker, they use the variables to obtain their color.
  */ 
 
-.BasicArcGauge .marker {
+.BasicRoundDailGauge .marker {
 	-fx-background-color: -fxx-tick-color;
 	-fx-shape: 'M 0 0 L -3 -6 L 3 -6 Z'; 
 	-fx-scale-shape: false; 
 }
 
-.BasicArcGauge .marker0 {
+.BasicRoundDailGauge .marker0 {
     -fx-background-color: -fxx-marker0-color;
 }
 
-.BasicArcGauge .marker1 {
+.BasicRoundDailGauge .marker1 {
     -fx-background-color: -fxx-marker1-color;
 }
 
-.BasicArcGauge .marker2 {
+.BasicRoundDailGauge .marker2 {
     -fx-background-color: -fxx-marker2-color;
 }
 
-.BasicArcGauge .marker3 {
+.BasicRoundDailGauge .marker3 {
     -fx-background-color: -fxx-marker3-color;
 }
 
-.BasicArcGauge .marker4 {
+.BasicRoundDailGauge .marker4 {
     -fx-background-color: -fxx-marker4-color;
 }
 
-.BasicArcGauge .marker5 {
+.BasicRoundDailGauge .marker5 {
     -fx-background-color: -fxx-marker5-color;
 }
 
-.BasicArcGauge .marker6 {
+.BasicRoundDailGauge .marker6 {
     -fx-background-color: -fxx-marker6-color;
 }
 
-.BasicArcGauge .marker7 {
+.BasicRoundDailGauge .marker7 {
     -fx-background-color: -fxx-marker7-color;
 }
 
-.BasicArcGauge .marker8 {
+.BasicRoundDailGauge .marker8 {
     -fx-background-color: -fxx-marker8-color;
 }
 
-.BasicArcGauge .marker9 {
+.BasicRoundDailGauge .marker9 {
     -fx-background-color: -fxx-marker9-color;
 }
 

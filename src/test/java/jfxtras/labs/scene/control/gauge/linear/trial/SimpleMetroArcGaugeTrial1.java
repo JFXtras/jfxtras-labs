@@ -33,7 +33,7 @@ import java.util.List;
 
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
-import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
+import jfxtras.labs.scene.control.gauge.linear.AbstractLinearGauge;
 import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
 import jfxtras.labs.scene.control.gauge.linear.elements.CompleteSegment;
 import jfxtras.labs.scene.control.gauge.linear.elements.Indicator;
@@ -50,16 +50,16 @@ public class SimpleMetroArcGaugeTrial1 extends AbstractLinearGaugeTrial1 {
     }
 
 	@Override
-	public LinearGauge<?> createLinearGauge() {
+	public AbstractLinearGauge<?> createLinearGauge() {
 		return new SimpleMetroArcGauge();
 	}
 	
 	@Override
-	public void addDeviatingGauges(List<LinearGauge<?>> gauges, FlowPane lFlowPane) {
+	public void addDeviatingGauges(List<AbstractLinearGauge<?>> gauges, FlowPane lFlowPane) {
         
 		// 10 segments, color schema
 		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 			lLinearGauge.getStyleClass().add("colorscheme-green-to-red-10");
 			for (int i = 0; i < 10; i++) {
@@ -73,7 +73,7 @@ public class SimpleMetroArcGaugeTrial1 extends AbstractLinearGaugeTrial1 {
         // 20 segments
 		{
 			HBox lHBox = new HBox();
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 			lLinearGauge.getStyleClass().add("colorscheme-green-to-red-10");
 			for (int i = 0; i < 20; i++) {
@@ -89,7 +89,7 @@ public class SimpleMetroArcGaugeTrial1 extends AbstractLinearGaugeTrial1 {
         
 		// manually show indicators
 		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.indicators().add(new Indicator(0, "warning"));
 			lLinearGauge.indicators().add(new Indicator(1, "error"));
 			lLinearGauge.setStyle("-fx-border-color: #000000; -fxx-warning-indicator-visibility: visible; -fxx-error-indicator-visibility: visible; ");
@@ -99,7 +99,7 @@ public class SimpleMetroArcGaugeTrial1 extends AbstractLinearGaugeTrial1 {
         
 		// 10 segments, transparent, with segment related indicators
 		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.indicators().add(new Indicator(0, "warning"));
 			lLinearGauge.indicators().add(new Indicator(1, "error"));
 			lLinearGauge.setId("segmentRelatedIndicators");

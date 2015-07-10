@@ -30,15 +30,15 @@
 package jfxtras.labs.scene.control.gauge.linear;
 
 import javafx.scene.control.Skin;
-import jfxtras.labs.internal.scene.control.gauge.linear.skin.BasicArcGaugeSkin;
+import jfxtras.labs.internal.scene.control.gauge.linear.skin.BasicRoundDailGaugeSkin;
 import jfxtras.labs.scene.control.gauge.linear.elements.AbsoluteLabel;
 import jfxtras.scene.control.ListSpinner;
 
 /**
  * = BasicArcGauge
  * 
- * This gauge is a simple semi-real world arc shaped gauge, featuring an outer ring with shade effect, ticks with labels, a big textual version of the current indicated value and a long slender needle.
- * The needle ranges from about 7 o'clock (min) clockwise to 5 o'clock (max).
+ * This gauge is a simple semi-real round gauge, featuring an outer ring with shade effect, ticks with labels, a big textual version of the current indicated value and a long slender needle.
+ * The needle moves through an arc ranging from about 7 o'clock (min) clockwise to 5 o'clock (max).
  * 
  * == Standard CSS properties
  * include::src/main/asciidoc/scene/control/gauge/linear/cssProperties.adoc[]
@@ -97,7 +97,7 @@ import jfxtras.scene.control.ListSpinner;
  * This is a blatant but approved visual copy of Gerrit Grunwald's Enzo RadialSteel (https://bitbucket.org/hansolo/enzo/src).
  * include::src/main/asciidoc/scene/control/gauge/linear/disclaimer.adoc[]
  */
-public class BasicArcGauge extends LinearGauge<BasicArcGauge> {
+public class BasicRoundDailGauge extends AbstractLinearGauge<BasicRoundDailGauge> {
 	
 	// ==================================================================================================================
 	// Constructor
@@ -105,7 +105,7 @@ public class BasicArcGauge extends LinearGauge<BasicArcGauge> {
 	/**
 	 * 
 	 */
-	public BasicArcGauge() {
+	public BasicRoundDailGauge() {
 		setPrefSize(200, 200);
 		
 		// create the default label
@@ -121,10 +121,10 @@ public class BasicArcGauge extends LinearGauge<BasicArcGauge> {
 	 * Return the path to the CSS file so things are setup right
 	 */
 	@Override public String getUserAgentStylesheet() {
-		return ListSpinner.class.getResource("/jfxtras/labs/internal/scene/control/gauge/linear/" + BasicArcGauge.class.getSimpleName() + ".css").toExternalForm();
+		return ListSpinner.class.getResource("/jfxtras/labs/internal/scene/control/gauge/linear/" + BasicRoundDailGauge.class.getSimpleName() + ".css").toExternalForm();
 	}
 
 	@Override public Skin<?> createDefaultSkin() {
-		return new BasicArcGaugeSkin(this); 
+		return new BasicRoundDailGaugeSkin(this); 
 	}
 }

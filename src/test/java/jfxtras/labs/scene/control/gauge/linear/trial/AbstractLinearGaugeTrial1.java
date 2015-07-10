@@ -40,7 +40,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
+import jfxtras.labs.scene.control.gauge.linear.AbstractLinearGauge;
 import jfxtras.labs.scene.control.gauge.linear.elements.PercentMarker;
 import jfxtras.labs.scene.control.gauge.linear.elements.PercentSegment;
 import jfxtras.labs.scene.control.gauge.linear.elements.Segment;
@@ -51,26 +51,26 @@ import jfxtras.labs.test.TestUtil;
  */
 abstract public class AbstractLinearGaugeTrial1 extends Application {
 	
-	public abstract LinearGauge<?> createLinearGauge();
-	public abstract void addDeviatingGauges(List<LinearGauge<?>> gauges, FlowPane lFlowPane);
+	public abstract AbstractLinearGauge<?> createLinearGauge();
+	public abstract void addDeviatingGauges(List<AbstractLinearGauge<?>> gauges, FlowPane lFlowPane);
 	
 	@Override
 	public void start(Stage stage) {
 
-		List<LinearGauge<?>> gauges = new ArrayList<>();
+		List<AbstractLinearGauge<?>> gauges = new ArrayList<>();
 		
 		FlowPane lFlowPane = new FlowPane(10, 10);
 		
         // naked
 		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 			lFlowPane.getChildren().add(lLinearGauge);
 		}
         
         // without segments, static value
 		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.withValue(50.0);
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 			lFlowPane.getChildren().add(lLinearGauge);
@@ -78,7 +78,7 @@ abstract public class AbstractLinearGaugeTrial1 extends Application {
         
         // without segments, static value
 		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.withValue(100.0);
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 			lFlowPane.getChildren().add(lLinearGauge);
@@ -86,7 +86,7 @@ abstract public class AbstractLinearGaugeTrial1 extends Application {
         
         // without segments
 		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 			lFlowPane.getChildren().add(lLinearGauge);
 			gauges.add(lLinearGauge);
@@ -94,7 +94,7 @@ abstract public class AbstractLinearGaugeTrial1 extends Application {
         
         // broken
 		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.withValue(-10.0);
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 			lFlowPane.getChildren().add(lLinearGauge);			
@@ -102,7 +102,7 @@ abstract public class AbstractLinearGaugeTrial1 extends Application {
 
 		// 10 segments
 		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 			for (int i = 0; i < 10; i++) {
 				Segment lSegment = new PercentSegment(lLinearGauge, i * 10.0, (i+1) * 10.0);
@@ -114,7 +114,7 @@ abstract public class AbstractLinearGaugeTrial1 extends Application {
         
         // not animated
 		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setStyle("-fx-border-color: #000000; -fxx-animated:NO;");
 			lFlowPane.getChildren().add(lLinearGauge);
 			gauges.add(lLinearGauge);
@@ -122,7 +122,7 @@ abstract public class AbstractLinearGaugeTrial1 extends Application {
         
         // shrunk
 		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setValue(50.0);
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 			lLinearGauge.setPrefSize(150.0, 150.0);
@@ -132,7 +132,7 @@ abstract public class AbstractLinearGaugeTrial1 extends Application {
         
         // larger
 		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setValue(50.0);
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 			lLinearGauge.setPrefSize(300.0, 300.0);
@@ -142,7 +142,7 @@ abstract public class AbstractLinearGaugeTrial1 extends Application {
         
         // large range with format
 		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setMinValue(-10.0);
 			lLinearGauge.setMaxValue(1000.0);
 			lLinearGauge.setValue(100.0);
@@ -153,7 +153,7 @@ abstract public class AbstractLinearGaugeTrial1 extends Application {
         
         // negative large range
 		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setMinValue(-1000000.0);
 			lLinearGauge.setMaxValue(100.0);
 			lLinearGauge.setValue(-1000.0);
@@ -165,7 +165,7 @@ abstract public class AbstractLinearGaugeTrial1 extends Application {
         // 10 segments, with remove
 		{
 			HBox lHBox = new HBox();
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 			for (int i = 0; i < 10; i++) {
 				Segment lSegment = new PercentSegment(lLinearGauge, i * 10.0, (i+1) * 10.0);
@@ -189,7 +189,7 @@ abstract public class AbstractLinearGaugeTrial1 extends Application {
 
         // markers
 		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 			for (int i = 0; i <= 20; i++) {
 				lLinearGauge.markers().add(new PercentMarker(lLinearGauge, i * 5.0));
@@ -203,7 +203,7 @@ abstract public class AbstractLinearGaugeTrial1 extends Application {
         // create scene
         Scene scene = new Scene(lFlowPane, 1500, 900);
         scene.getStylesheets().add(this.getClass().getResource(AbstractLinearGaugeTrial1.class.getSimpleName()+ ".css").toExternalForm());
-        scene.getStylesheets().add(LinearGauge.segmentColorschemeCSSPath());
+        scene.getStylesheets().add(AbstractLinearGauge.segmentColorschemeCSSPath());
 
         // create stage
         stage.setTitle(this.getClass().getSimpleName());
@@ -218,7 +218,7 @@ abstract public class AbstractLinearGaugeTrial1 extends Application {
 				TestUtil.sleep(2000);
 				Platform.runLater( () -> {
 					double d = lRandom.nextDouble();
-					for (LinearGauge<?> g : gauges) {
+					for (AbstractLinearGauge<?> g : gauges) {
 				 		double minValue = g.getMinValue();
 				 		double maxValue = g.getMaxValue();
 						g.setValue(minValue + (d * (maxValue - minValue)));

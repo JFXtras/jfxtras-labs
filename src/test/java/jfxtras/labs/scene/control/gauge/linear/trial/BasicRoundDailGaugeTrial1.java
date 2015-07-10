@@ -1,5 +1,5 @@
 /**
- * BasicArcGaugeTrial1.java
+ * BasicRoundDailGaugeTrial1.java
  *
  * Copyright (c) 2011-2015, JFXtras
  * All rights reserved.
@@ -32,8 +32,8 @@ package jfxtras.labs.scene.control.gauge.linear.trial;
 import java.util.List;
 
 import javafx.scene.layout.FlowPane;
-import jfxtras.labs.scene.control.gauge.linear.BasicArcGauge;
-import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
+import jfxtras.labs.scene.control.gauge.linear.BasicRoundDailGauge;
+import jfxtras.labs.scene.control.gauge.linear.AbstractLinearGauge;
 import jfxtras.labs.scene.control.gauge.linear.elements.AbsoluteLabel;
 import jfxtras.labs.scene.control.gauge.linear.elements.Indicator;
 import jfxtras.labs.scene.control.gauge.linear.elements.Label;
@@ -42,22 +42,22 @@ import jfxtras.labs.scene.control.gauge.linear.elements.PercentMarker;
 /**
  * @author Tom Eugelink
  */
-public class BasicArcGaugeTrial1 extends AbstractLinearGaugeTrial1 {
+public class BasicRoundDailGaugeTrial1 extends AbstractLinearGaugeTrial1 {
 	
     public static void main(String[] args) {
         launch(args);       
     }
 
-    public LinearGauge<?> createLinearGauge() {
-    	return new BasicArcGauge();
+    public AbstractLinearGauge<?> createLinearGauge() {
+    	return new BasicRoundDailGauge();
     }
     
 	@Override
-	public void addDeviatingGauges(List<LinearGauge<?>> gauges, FlowPane lFlowPane) {
+	public void addDeviatingGauges(List<AbstractLinearGauge<?>> gauges, FlowPane lFlowPane) {
         
         // dark
 		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 			lLinearGauge.getStyleClass().add("colorscheme-dark");
 			for (int i = 0; i <= 5; i++) {
@@ -69,7 +69,7 @@ public class BasicArcGaugeTrial1 extends AbstractLinearGaugeTrial1 {
         
         // green
 		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 			lLinearGauge.getStyleClass().add("colorscheme-green");
 			for (int i = 0; i <= 5; i++) {
@@ -81,7 +81,7 @@ public class BasicArcGaugeTrial1 extends AbstractLinearGaugeTrial1 {
         
         // red
 		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.setStyle("-fx-border-color: #000000;");
 			lLinearGauge.getStyleClass().add("colorscheme-red");
 			for (int i = 0; i <= 5; i++) {
@@ -93,7 +93,7 @@ public class BasicArcGaugeTrial1 extends AbstractLinearGaugeTrial1 {
         
 		// manually show indicators
 		{
-			final LinearGauge<?> lLinearGauge = createLinearGauge();
+			final AbstractLinearGauge<?> lLinearGauge = createLinearGauge();
 			lLinearGauge.indicators().add(new Indicator(0, "warning"));
 			lLinearGauge.indicators().add(new Indicator(1, "error"));
 			lLinearGauge.indicators().add(new Indicator(2, "warning"));
@@ -107,7 +107,7 @@ public class BasicArcGaugeTrial1 extends AbstractLinearGaugeTrial1 {
 		
         // custom labels
 		{
-			final BasicArcGauge lLinearGauge = new BasicArcGauge();
+			final BasicRoundDailGauge lLinearGauge = new BasicRoundDailGauge();
 			lLinearGauge.labels().clear();
 			lLinearGauge.setStyle("-fxx-warning-indicator-visibility: visible; -fxx-error-indicator-visibility: visible; ");
 			for (double d = 0.0; d < 100.0; d += 33.333) {

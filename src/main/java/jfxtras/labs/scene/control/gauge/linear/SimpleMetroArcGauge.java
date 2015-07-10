@@ -60,7 +60,7 @@ import jfxtras.scene.control.ListSpinner;
  * This is a blatant but approved visual copy of Gerrit Grunwald's Enzo SimpleGauge (https://bitbucket.org/hansolo/enzo/src).
  * include::src/main/asciidoc/scene/control/gauge/linear/disclaimer.adoc[]
  */
-public class SimpleMetroArcGauge extends LinearGauge<SimpleMetroArcGauge> {
+public class SimpleMetroArcGauge extends AbstractLinearGauge<SimpleMetroArcGauge> {
 	
 	// ==================================================================================================================
 	// Constructor

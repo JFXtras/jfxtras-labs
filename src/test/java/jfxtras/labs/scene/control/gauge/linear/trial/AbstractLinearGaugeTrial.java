@@ -38,8 +38,8 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
-import jfxtras.labs.scene.control.gauge.linear.BasicArcGauge;
-import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
+import jfxtras.labs.scene.control.gauge.linear.BasicRoundDailGauge;
+import jfxtras.labs.scene.control.gauge.linear.AbstractLinearGauge;
 import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
 import jfxtras.labs.scene.control.gauge.linear.elements.Indicator;
 import jfxtras.labs.scene.control.gauge.linear.elements.PercentSegment;
@@ -49,7 +49,7 @@ import jfxtras.labs.test.TestUtil;
 /**
  * @author Tom Eugelink
  */
-public class LinearGaugeTrial extends Application {
+public class AbstractLinearGaugeTrial extends Application {
 	
     public static void main(String[] args) {
         launch(args);       
@@ -58,7 +58,7 @@ public class LinearGaugeTrial extends Application {
 	@Override
 	public void start(Stage stage) {
 
-		List<LinearGauge<?>> gauges = new ArrayList<>();
+		List<AbstractLinearGauge<?>> gauges = new ArrayList<>();
 		
 		// the border pane makes it resizeable
 		FlowPane lFlowPane = new FlowPane(10.0, 10.0);
@@ -92,7 +92,7 @@ public class LinearGaugeTrial extends Application {
 		
         // BasicArcGauge
 		{
-			final BasicArcGauge lBasicArcGauge = new BasicArcGauge();
+			final BasicRoundDailGauge lBasicArcGauge = new BasicRoundDailGauge();
 			lBasicArcGauge.getStyleClass().add("colorscheme-light");
 			for (int i = 0; i < 10; i++) {
 				Segment lSegment = new PercentSegment(lBasicArcGauge, i * 10.0, (i+1) * 10.0);
@@ -106,7 +106,7 @@ public class LinearGaugeTrial extends Application {
 		
         // BasicArcGauge
 		{
-			final BasicArcGauge lBasicArcGauge = new BasicArcGauge();
+			final BasicRoundDailGauge lBasicArcGauge = new BasicRoundDailGauge();
 			lBasicArcGauge.getStyleClass().add("colorscheme-dark");
 			lBasicArcGauge.getStyleClass().add("colorscheme-purple-to-cyan-10");
 			for (int i = 0; i < 10; i++) {
@@ -122,7 +122,7 @@ public class LinearGaugeTrial extends Application {
         
         // create scene
         Scene scene = new Scene(lFlowPane, 1300, 900);
-        scene.getStylesheets().add(LinearGauge.segmentColorschemeCSSPath());
+        scene.getStylesheets().add(AbstractLinearGauge.segmentColorschemeCSSPath());
         		
         // create stage
         stage.setTitle(this.getClass().getSimpleName());
@@ -136,7 +136,7 @@ public class LinearGaugeTrial extends Application {
 				TestUtil.sleep(2000);
 				Platform.runLater( () -> {
 					double d = lRandom.nextDouble();
-					for (LinearGauge<?> g : gauges) {
+					for (AbstractLinearGauge<?> g : gauges) {
 				 		double minValue = g.getMinValue();
 				 		double maxValue = g.getMaxValue();
 						g.setValue(minValue + (d * (maxValue - minValue)));

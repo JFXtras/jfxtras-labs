@@ -29,19 +29,19 @@
 
 package jfxtras.labs.scene.control.gauge.linear.elements;
 
-import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
+import jfxtras.labs.scene.control.gauge.linear.AbstractLinearGauge;
 
 public class CompleteSegment implements Segment {
 
 	final private String id;
-	final private LinearGauge<?> linearGauge;
+	final private AbstractLinearGauge<?> linearGauge;
 	
-	public CompleteSegment(LinearGauge<?> linearGauge, String id) {
+	public CompleteSegment(AbstractLinearGauge<?> linearGauge, String id) {
 		this.id = id;
 		this.linearGauge = linearGauge;
 	}
 	
-	public CompleteSegment(LinearGauge<?> linearGauge) {
+	public CompleteSegment(AbstractLinearGauge<?> linearGauge) {
 		this.id = null;
 		this.linearGauge = linearGauge;
 	}

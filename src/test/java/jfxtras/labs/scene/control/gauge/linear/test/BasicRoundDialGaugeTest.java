@@ -1,5 +1,5 @@
 /**
- * SimpleMetroArcGaugeTest.java
+ * BasicRoundDailGaugeTest.java
  *
  * Copyright (c) 2011-2015, JFXtras
  * All rights reserved.
@@ -36,8 +36,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import jfxtras.labs.internal.scene.control.gauge.linear.skin.AbstractLinearGaugeSkin;
-import jfxtras.labs.internal.scene.control.gauge.linear.skin.SimpleMetroArcGaugeSkin;
-import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
+import jfxtras.labs.internal.scene.control.gauge.linear.skin.BasicRoundDailGaugeSkin;
+import jfxtras.labs.scene.control.gauge.linear.BasicRoundDailGauge;
 import jfxtras.labs.scene.control.gauge.linear.elements.Indicator;
 import jfxtras.labs.scene.control.gauge.linear.elements.PercentMarker;
 import jfxtras.labs.scene.control.gauge.linear.elements.PercentSegment;
@@ -52,7 +52,7 @@ import org.junit.Test;
 /**
  * @author Tom Eugelink
  */
-public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
+public class BasicRoundDialGaugeTest extends JFXtrasGuiTest {
 	
 	@Override
 	protected Parent getRootNode() {
@@ -66,12 +66,12 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 		lPane.getChildren().add(label);		
 		
 		// add the circularePane (this is what we want to test)
-		simpleMetroArcGauge = new SimpleMetroArcGauge();
-		lPane.getChildren().add(simpleMetroArcGauge);		
-		simpleMetroArcGauge.setStyle("-fx-border-color:black;");
+		BasicRoundDailGauge = new BasicRoundDailGauge();
+		lPane.getChildren().add(BasicRoundDailGauge);		
+		BasicRoundDailGauge.setStyle("-fx-border-color:black;");
 		return lPane;
 	}
-	private SimpleMetroArcGauge simpleMetroArcGauge = null;
+	private BasicRoundDailGauge BasicRoundDailGauge = null;
 	private Label label = null;
 
 	@Test
@@ -79,30 +79,27 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 		setLabel("defaultRendering");
 		
 		// default properties
-		Assert.assertEquals(0.0, simpleMetroArcGauge.getMinValue(), 0.01);
-		Assert.assertEquals(0.0, simpleMetroArcGauge.getValue(), 0.01);
-		Assert.assertEquals(100.0, simpleMetroArcGauge.getMaxValue(), 0.01);
+		Assert.assertEquals(0.0, BasicRoundDailGauge.getMinValue(), 0.01);
+		Assert.assertEquals(0.0, BasicRoundDailGauge.getValue(), 0.01);
+		Assert.assertEquals(100.0, BasicRoundDailGauge.getMaxValue(), 0.01);
 		
 		// default skin properties
-		Assert.assertEquals(AbstractLinearGaugeSkin.Animated.YES, ((SimpleMetroArcGaugeSkin)simpleMetroArcGauge.getSkin()).getAnimated());
-		Assert.assertEquals("0", ((SimpleMetroArcGaugeSkin)simpleMetroArcGauge.getSkin()).getValueFormat());
+		Assert.assertEquals(AbstractLinearGaugeSkin.Animated.YES, ((BasicRoundDailGaugeSkin)BasicRoundDailGauge.getSkin()).getAnimated());
+		Assert.assertEquals("0", ((BasicRoundDailGaugeSkin)BasicRoundDailGauge.getSkin()).getValueFormat());
 		
 		// size
-		assertWH(simpleMetroArcGauge, 200.0, 200.0);
-		
-		// assert the segments
-		assertFind(".segment0");
-		assertNotFind(".segment1");
-		generateSource(".segment0");
-		new AssertNode(find(".segment0")).assertXYWH(0.0, 0.0, 194.05002117156982, 176.61049842834473, 0.01).assertClass(javafx.scene.shape.Arc.class);
+		assertWH(BasicRoundDailGauge, 200.0, 200.0);
 		
 		// assert value text
 		generateValueSource(".value");
-		new AssertNode(find(".value")).assertXYWH(0.0, 69.0625, 36.8125, 16.0625, 0.01).assertTextText("0");
+		new AssertNode(find(".value")).assertXYWH(0.0, 38.84765625, 20.70703125, 9.03515625, 0.01).assertTextText("0");
 		
 		// assert the needle
 		generateNeedleSource(".needle");
-		new AssertNode(find(".needle")).assertXYWH(0.0, 0.0, 151.4755096435547, 172.77810668945312, 0.01).assertRotate(99.0, 108.9, 0.0, 0.01).assertClass(javafx.scene.shape.Path.class);
+		new AssertNode(find(".needle")).assertXYWH(96.0, 99.0, 6.0, 75.0, 0.01).assertRotate(3.0, 0.0, 45.0, 0.01);
+		
+		// assert the segments
+		assertNotFind(".segment0");
 	}
 
 	@Test
@@ -111,27 +108,27 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 		
 		// disable animation so we won't have any timing issues in this test
 		TestUtil.runThenWaitForPaintPulse( () -> {
-			simpleMetroArcGauge.setStyle("-fxx-animated:NO; " + simpleMetroArcGauge.getStyle());
+			BasicRoundDailGauge.setStyle("-fxx-animated:NO; " + BasicRoundDailGauge.getStyle());
 		});
-		Assert.assertEquals(AbstractLinearGaugeSkin.Animated.NO, ((SimpleMetroArcGaugeSkin)simpleMetroArcGauge.getSkin()).getAnimated());
+		Assert.assertEquals(AbstractLinearGaugeSkin.Animated.NO, ((BasicRoundDailGaugeSkin)BasicRoundDailGauge.getSkin()).getAnimated());
 		
 		// set the value 
 		TestUtil.runThenWaitForPaintPulse( () -> {
-			simpleMetroArcGauge.setValue(45.0);
+			BasicRoundDailGauge.setValue(45.0);
 		});
 		
 		// assert values
-		Assert.assertEquals(0.0, simpleMetroArcGauge.getMinValue(), 0.01);
-		Assert.assertEquals(45.0, simpleMetroArcGauge.getValue(), 0.01);
-		Assert.assertEquals(100.0, simpleMetroArcGauge.getMaxValue(), 0.01);
+		Assert.assertEquals(0.0, BasicRoundDailGauge.getMinValue(), 0.01);
+		Assert.assertEquals(45.0, BasicRoundDailGauge.getValue(), 0.01);
+		Assert.assertEquals(100.0, BasicRoundDailGauge.getMaxValue(), 0.01);
 
 		// assert value text
 		generateValueSource(".value");
-		new AssertNode(find(".value")).assertXYWH(0.0, 69.0625, 73.625, 16.0625, 0.01).assertTextText("45");
+		new AssertNode(find(".value")).assertXYWH(0.0, 38.84765625, 41.4140625, 9.03515625, 0.01).assertTextText("45");
 		
 		// assert the needle
 		generateNeedleSource(".needle");
-		new AssertNode(find(".needle")).assertXYWH(0.0, 0.0, 151.4755096435547, 172.77810668945312, 0.01).assertRotate(99.0, 108.9, 121.5, 0.01);
+		new AssertNode(find(".needle")).assertXYWH(96.0, 99.0, 6.0, 75.0, 0.01).assertRotate(3.0, 0.0, 166.5, 0.01);
 	}
 
 	@Test
@@ -140,38 +137,38 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 		
 		// disable animation so we won't have any timing issues in this test
 		TestUtil.runThenWaitForPaintPulse( () -> {
-			simpleMetroArcGauge.setStyle("-fxx-animated:NO; -fxx-value-format:' ##0.0W';" + simpleMetroArcGauge.getStyle());
+			BasicRoundDailGauge.setStyle("-fxx-animated:NO; -fxx-value-format:' ##0.0W';" + BasicRoundDailGauge.getStyle());
 		});
-		Assert.assertEquals(AbstractLinearGaugeSkin.Animated.NO, ((SimpleMetroArcGaugeSkin)simpleMetroArcGauge.getSkin()).getAnimated());
+		Assert.assertEquals(AbstractLinearGaugeSkin.Animated.NO, ((BasicRoundDailGaugeSkin)BasicRoundDailGauge.getSkin()).getAnimated());
 		
 		// assert value text
 		generateValueSource(".value");
-		new AssertNode(find(".value")).assertXYWH(-68.0, 69.0625, 172.9375, 16.0625, 0.01).assertTextText(" 0.0W");
+		new AssertNode(find(".value")).assertXYWH(-38.0, 38.84765625, 97.27734375, 9.03515625, 0.01).assertTextText(" 0.0W");
 		
 		// set the value 
 		TestUtil.runThenWaitForPaintPulse( () -> {
-			simpleMetroArcGauge.setValue(45.0);
+			BasicRoundDailGauge.setValue(45.0);
 		});
 		
 		// assert value text
 		generateValueSource(".value");
-		new AssertNode(find(".value")).assertXYWH(-68.0, 69.0625, 209.75, 16.0625, 0.01).assertTextText(" 45.0W");
+		new AssertNode(find(".value")).assertXYWH(0.0, 38.84765625, 117.984375, 9.03515625, 0.01).assertTextText(" 45.0W");
 	}
 
 	@Test
 	public void withIndicators() {
 		setLabel("withIndicators");
 		TestUtil.runThenWaitForPaintPulse( () -> {
-			simpleMetroArcGauge.indicators().add(new Indicator(0, "warning"));
-			simpleMetroArcGauge.indicators().add(new Indicator(1, "error"));
-			simpleMetroArcGauge.setStyle("-fxx-warning-indicator-visibility: visible; -fxx-error-indicator-visibility: visible;" + simpleMetroArcGauge.getStyle());
+			BasicRoundDailGauge.indicators().add(new Indicator(0, "warning"));
+			BasicRoundDailGauge.indicators().add(new Indicator(1, "error"));
+			BasicRoundDailGauge.setStyle("-fxx-warning-indicator-visibility: visible; -fxx-error-indicator-visibility: visible;" + BasicRoundDailGauge.getStyle());
 		});
 
 		// assert the indicators visible
 		generateSource(".warning-indicator");
-		new AssertNode(find(".warning-indicator")).assertXYWH(70.785, 174.73499999999999, 0.0, 0.0, 0.01); // TBEERNOT: why are width and height 0?
+		new AssertNode(find(".warning-indicator")).assertXYWH(77.99892859875953, 120.00107140124047, 0.0, 0.0, 0.01);
 		generateSource(".error-indicator");
-		new AssertNode(find(".error-indicator")).assertXYWH(127.215, 174.73499999999999, 0.0, 0.0, 0.01); // TBEERNOT: why are width and height 0?
+		new AssertNode(find(".error-indicator")).assertXYWH(69.66565628432441, 94.35389638830515, 0.0, 0.0, 0.01);
 	}
 	
 	@Test
@@ -179,18 +176,18 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 		setLabel("fourEvenSegments");
 		TestUtil.runThenWaitForPaintPulse( () -> {
 			for (int i = 0; i < 4; i++) {
-				simpleMetroArcGauge.segments().add(new PercentSegment(simpleMetroArcGauge, i * 25.0, (i+1) * 25.0, "segment-" + i));
+				BasicRoundDailGauge.segments().add(new PercentSegment(BasicRoundDailGauge, i * 25.0, (i+1) * 25.0, "segment-" + i));
 			}
 		});
 		
-		assertWH(simpleMetroArcGauge, 200.0, 200.0);
+		assertWH(BasicRoundDailGauge, 200.0, 200.0);
 		
 		// assert the segments
 		for (int i = 0; i < 4; i++) { generateSegmentSource(".segment" + i); }
-		new AssertNode(find(".segment0")).assertXYWH(0.0, 0.0, 100.38267517089844, 176.61048889160156, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -135.0, -67.5, 0.01);
-		new AssertNode(find(".segment1")).assertXYWH(0.0, 0.0, 100.0, 110.1483097076416, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -202.5, -67.5, 0.01);
-		new AssertNode(find(".segment2")).assertXYWH(0.0, 0.0, 187.04415893554688, 110.14830207824707, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -270.0, -67.5, 0.01);
-		new AssertNode(find(".segment3")).assertXYWH(0.0, 0.0, 194.05274963378906, 176.61048889160156, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -337.5, -67.5, 0.01);	
+		new AssertNode(find(".segment0")).assertXYWH(0.0, 0.0, 100.38267517089844, 167.4105224609375, 0.01).assertArcCenterRadiusAngleLength(99.0, 99.0, 95.03999999999999, 95.03999999999999, -135.0, -67.5, 0.01);
+		new AssertNode(find(".segment1")).assertXYWH(0.0, 0.0, 100.0, 100.24829196929932, 0.01).assertArcCenterRadiusAngleLength(99.0, 99.0, 95.03999999999999, 95.03999999999999, -202.5, -67.5, 0.01);
+		new AssertNode(find(".segment2")).assertXYWH(0.0, 0.0, 187.95880126953125, 100.24829864501953, 0.01).assertArcCenterRadiusAngleLength(99.0, 99.0, 95.03999999999999, 95.03999999999999, -270.0, -67.5, 0.01);
+		new AssertNode(find(".segment3")).assertXYWH(0.0, 0.0, 195.0427703857422, 167.4105224609375, 0.01).assertArcCenterRadiusAngleLength(99.0, 99.0, 95.03999999999999, 95.03999999999999, -337.5, -67.5, 0.01);
 		assertNotFind(".segment4");
 	}
 	
@@ -198,20 +195,20 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 	public void fourUnevenSegments() {
 		setLabel("fourUnevenSegments");
 		TestUtil.runThenWaitForPaintPulse( () -> {
-			simpleMetroArcGauge.segments().add(new PercentSegment(simpleMetroArcGauge, 10.0, 15.0));
-			simpleMetroArcGauge.segments().add(new PercentSegment(simpleMetroArcGauge, 20.0, 30.0));
-			simpleMetroArcGauge.segments().add(new PercentSegment(simpleMetroArcGauge, 30.0, 50.0));
-			simpleMetroArcGauge.segments().add(new PercentSegment(simpleMetroArcGauge, 50.0, 90.0));
+			BasicRoundDailGauge.segments().add(new PercentSegment(BasicRoundDailGauge, 10.0, 15.0));
+			BasicRoundDailGauge.segments().add(new PercentSegment(BasicRoundDailGauge, 20.0, 30.0));
+			BasicRoundDailGauge.segments().add(new PercentSegment(BasicRoundDailGauge, 30.0, 50.0));
+			BasicRoundDailGauge.segments().add(new PercentSegment(BasicRoundDailGauge, 50.0, 90.0));
 		});
 
-		assertWH(simpleMetroArcGauge, 200.0, 200.0);
+		assertWH(BasicRoundDailGauge, 200.0, 200.0);
 		
 		// assert the segments
 		for (int i = 0; i < 4; i++) { generateSegmentSource(".segment" + i); }
-		new AssertNode(find(".segment0")).assertXYWH(0.0, 0.0, 103.67220687866211, 139.0930938720703, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -162.0, -13.5, 0.01);
-		new AssertNode(find(".segment1")).assertXYWH(0.0, 0.0, 101.47879028320312, 110.21964263916016, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -189.0, -27.0, 0.01);
-		new AssertNode(find(".segment2")).assertXYWH(0.0, 0.0, 100.0, 110.38131141662598, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -216.0, -54.0, 0.01);
-		new AssertNode(find(".segment3")).assertXYWH(0.0, 0.0, 194.0507049560547, 139.0930938720703, 0.01).assertArcCenterRadiusAngleLength(99.0, 108.9, 94.05, 94.05, -270.0, -108.0, 0.01);
+		new AssertNode(find(".segment0")).assertXYWH(0.0, 0.0, 103.67221260070801, 129.49900817871094, 0.01).assertArcCenterRadiusAngleLength(99.0, 99.0, 95.03999999999999, 95.03999999999999, -162.0, -13.5, 0.01);
+		new AssertNode(find(".segment1")).assertXYWH(0.0, 0.0, 101.47879028320312, 100.31964111328125, 0.01).assertArcCenterRadiusAngleLength(99.0, 99.0, 95.03999999999999, 95.03999999999999, -189.0, -27.0, 0.01);
+		new AssertNode(find(".segment2")).assertXYWH(0.0, 0.0, 100.0, 100.48131656646729, 0.01).assertArcCenterRadiusAngleLength(99.0, 99.0, 95.03999999999999, 95.03999999999999, -216.0, -54.0, 0.01);
+		new AssertNode(find(".segment3")).assertXYWH(0.0, 0.0, 195.04071044921875, 129.49900817871094, 0.01).assertArcCenterRadiusAngleLength(99.0, 99.0, 95.03999999999999, 95.03999999999999, -270.0, -108.0, 0.01);
 		assertNotFind(".segment4");
 	}
 
@@ -219,20 +216,20 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 	public void fourMarkers() {
 		setLabel("fourUnevenSegments");
 		TestUtil.runThenWaitForPaintPulse( () -> {
-			simpleMetroArcGauge.markers().add(new PercentMarker(simpleMetroArcGauge, 0.0));
-			simpleMetroArcGauge.markers().add(new PercentMarker(simpleMetroArcGauge, 45.0));
-			simpleMetroArcGauge.markers().add(new PercentMarker(simpleMetroArcGauge, 50.0));
-			simpleMetroArcGauge.markers().add(new PercentMarker(simpleMetroArcGauge, 100.0));
+			BasicRoundDailGauge.markers().add(new PercentMarker(BasicRoundDailGauge, 0.0));
+			BasicRoundDailGauge.markers().add(new PercentMarker(BasicRoundDailGauge, 45.0));
+			BasicRoundDailGauge.markers().add(new PercentMarker(BasicRoundDailGauge, 50.0));
+			BasicRoundDailGauge.markers().add(new PercentMarker(BasicRoundDailGauge, 100.0));
 		});
 
-		assertWH(simpleMetroArcGauge, 200.0, 200.0);
+		assertWH(BasicRoundDailGauge, 200.0, 200.0);
 		
 		// assert the segments
 		for (int i = 0; i < 4; i++) { generateMarkerSource(".marker" + i); }
-		new AssertNode(find(".marker0")).assertXYWH(32.496607229405214, 175.4033927705948, 0.0, 0.0, 0.01).assertRotate(0.0, 0.0, -135.0, 0.01).assertScale(0.0, 0.0, 0.66, 0.66, 0.01);  // TBEERNOT: why are width and height 0?
-		new AssertNode(find(".marker1")).assertXYWH(77.04446352935213, 17.448608986598515, 0.0, 0.0, 0.01).assertRotate(0.0, 0.0, -13.5, 0.01).assertScale(0.0, 0.0, 0.66, 0.66, 0.01);
-		new AssertNode(find(".marker2")).assertXYWH(98.99999999999999, 14.850000000000009, 0.0, 0.0, 0.01).assertRotate(0.0, 0.0, 0.0, 0.01).assertScale(0.0, 0.0, 0.66, 0.66, 0.01);
-		new AssertNode(find(".marker3")).assertXYWH(165.50339277059481, 175.4033927705948, 0.0, 0.0, 0.01).assertRotate(0.0, 0.0, 135.0, 0.01).assertScale(0.0, 0.0, 0.66, 0.66, 0.01);
+		new AssertNode(find(".marker0")).assertXYWH(45.797285783524174, 152.20271421647584, 0.0, 0.0, 0.01).assertRotate(0.0, 0.0, 45.0, 0.01).assertScale(0.0, 0.0, 0.66, 0.66, 0.01);
+		new AssertNode(find(".marker1")).assertXYWH(81.4355708234817, 25.838887189278807, 0.0, 0.0, 0.01).assertRotate(0.0, 0.0, 166.5, 0.01).assertScale(0.0, 0.0, 0.66, 0.66, 0.01);
+		new AssertNode(find(".marker2")).assertXYWH(98.99999999999999, 23.760000000000005, 0.0, 0.0, 0.01).assertRotate(0.0, 0.0, 180.0, 0.01).assertScale(0.0, 0.0, 0.66, 0.66, 0.01);
+		new AssertNode(find(".marker3")).assertXYWH(152.20271421647584, 152.2027142164758, 0.0, 0.0, 0.01).assertRotate(0.0, 0.0, 315.0, 0.01).assertScale(0.0, 0.0, 0.66, 0.66, 0.01);
 		assertNotFind(".marker4");
 	}
 
@@ -243,7 +240,7 @@ public class SimpleMetroArcGaugeTest extends JFXtrasGuiTest {
 
 	List<String> EXCLUDED_CLASSES = java.util.Arrays.asList();
 	
-	private void assertWH(SimpleMetroArcGauge pane, double w, double h) {
+	private void assertWH(BasicRoundDailGauge pane, double w, double h) {
 		Assert.assertEquals(w, pane.getWidth(), 0.01);
 		Assert.assertEquals(h, pane.getHeight(), 0.01);
 	}

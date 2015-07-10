@@ -29,21 +29,21 @@
 
 package jfxtras.labs.scene.control.gauge.linear.elements;
 
-import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
+import jfxtras.labs.scene.control.gauge.linear.AbstractLinearGauge;
 
 public class PercentMarker implements Marker {
 
 	final private String id;
 	final private double valuePercent;
-	final private LinearGauge<?> linearGauge;
+	final private AbstractLinearGauge<?> linearGauge;
 
-	public PercentMarker(LinearGauge<?> linearGauge, double valuePercent, String id) {
+	public PercentMarker(AbstractLinearGauge<?> linearGauge, double valuePercent, String id) {
 		this.id = id;
 		this.valuePercent = valuePercent;
 		this.linearGauge = linearGauge;
 	}
 	
-	public PercentMarker(LinearGauge<?> linearGauge, double valuePercent) {
+	public PercentMarker(AbstractLinearGauge<?> linearGauge, double valuePercent) {
 		this.id = null;
 		this.valuePercent = valuePercent;
 		this.linearGauge = linearGauge;

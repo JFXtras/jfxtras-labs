@@ -52,7 +52,7 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import jfxtras.css.CssMetaDataForSkinProperty;
-import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
+import jfxtras.labs.scene.control.gauge.linear.AbstractLinearGauge;
 import jfxtras.labs.scene.control.gauge.linear.elements.Indicator;
 import jfxtras.labs.scene.control.gauge.linear.elements.Marker;
 import jfxtras.labs.scene.control.gauge.linear.elements.Segment;
@@ -63,7 +63,7 @@ import com.sun.javafx.css.converters.StringConverter;
 /**
  * 
  */
-public class LinearGaugeSkin<T, C extends LinearGauge<?>> extends SkinBase<C> {
+public class AbstractLinearGaugeSkin<T, C extends AbstractLinearGauge<?>> extends SkinBase<C> {
 
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -71,7 +71,7 @@ public class LinearGaugeSkin<T, C extends LinearGauge<?>> extends SkinBase<C> {
 	/**
 	 * 
 	 */
-	public LinearGaugeSkin(C control) {
+	public AbstractLinearGaugeSkin(C control) {
 		super(control);
 	}
 
@@ -114,16 +114,16 @@ public class LinearGaugeSkin<T, C extends LinearGauge<?>> extends SkinBase<C> {
         
     private static class StyleableProperties 
     {
-        private static final CssMetaData<LinearGauge<?>, Animated> ANIMATED_CSSMETADATA = new CssMetaDataForSkinProperty<LinearGauge<?>, LinearGaugeSkin<?,?>, Animated>("-fxx-animated", new EnumConverter<Animated>(Animated.class), Animated.YES ) {
+        private static final CssMetaData<AbstractLinearGauge<?>, Animated> ANIMATED_CSSMETADATA = new CssMetaDataForSkinProperty<AbstractLinearGauge<?>, AbstractLinearGaugeSkin<?,?>, Animated>("-fxx-animated", new EnumConverter<Animated>(Animated.class), Animated.YES ) {
         	@Override 
-        	protected ObjectProperty<Animated> getProperty(LinearGaugeSkin<?,?> s) {
+        	protected ObjectProperty<Animated> getProperty(AbstractLinearGaugeSkin<?,?> s) {
             	return s.animatedProperty;
             }
         };
         
-        private static final CssMetaData<LinearGauge<?>, String> VALUE_FORMAT_CSSMETADATA = new CssMetaDataForSkinProperty<LinearGauge<?>, LinearGaugeSkin<?,?>, String>("-fxx-value-format", StringConverter.getInstance(), "0" ) {
+        private static final CssMetaData<AbstractLinearGauge<?>, String> VALUE_FORMAT_CSSMETADATA = new CssMetaDataForSkinProperty<AbstractLinearGauge<?>, AbstractLinearGaugeSkin<?,?>, String>("-fxx-value-format", StringConverter.getInstance(), "0" ) {
         	@Override 
-        	protected SimpleStyleableStringProperty getProperty(LinearGaugeSkin<?,?> s) {
+        	protected SimpleStyleableStringProperty getProperty(AbstractLinearGaugeSkin<?,?> s) {
             	return s.valueFormatProperty;
             }
         };

@@ -63,7 +63,7 @@ import jfxtras.labs.scene.control.gauge.linear.elements.Segment;
 /**
  * 
  */
-public class SimpleMetroArcGaugeSkin extends LinearGaugeSkin<SimpleMetroArcGaugeSkin, SimpleMetroArcGauge> {
+public class SimpleMetroArcGaugeSkin extends AbstractLinearGaugeSkin<SimpleMetroArcGaugeSkin, SimpleMetroArcGauge> {
 
 	private static final double SEGMENT_RADIUS_FACTOR = 0.95;
 	private static final double NEEDLE_RADIUS_FACTOR = 0.5;

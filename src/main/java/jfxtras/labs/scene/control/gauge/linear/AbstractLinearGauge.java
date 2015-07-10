@@ -34,7 +34,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
-import jfxtras.labs.internal.scene.control.gauge.linear.skin.LinearGaugeSkin;
+import jfxtras.labs.internal.scene.control.gauge.linear.skin.AbstractLinearGaugeSkin;
 import jfxtras.labs.scene.control.gauge.linear.elements.Indicator;
 import jfxtras.labs.scene.control.gauge.linear.elements.Label;
 import jfxtras.labs.scene.control.gauge.linear.elements.Marker;
@@ -43,14 +43,14 @@ import jfxtras.labs.scene.control.gauge.linear.elements.Segment;
 /**
  * This class contains commonalities for all linear gauges
  */
-abstract public class LinearGauge<T> extends Control {
+abstract public class AbstractLinearGauge<T> extends Control {
 	
 	// ==================================================================================================================
 	// CONSTRUCTOR
 
 	/**
 	 */
-	public LinearGauge() {
+	public AbstractLinearGauge() {
 		construct();
 	}
 
@@ -115,6 +115,6 @@ abstract public class LinearGauge<T> extends Control {
 	public ObservableList<Indicator> indicators() { return indicators; }
 	final private ObservableList<Indicator> indicators =  javafx.collections.FXCollections.observableArrayList();
 	public static String segmentColorschemeCSSPath() {
-		return LinearGaugeSkin.class.getResource("/jfxtras/labs/internal/scene/control/gauge/linear/_segment.css").toExternalForm();
+		return AbstractLinearGaugeSkin.class.getResource("/jfxtras/labs/internal/scene/control/gauge/linear/_segment.css").toExternalForm();
 	}
 }
