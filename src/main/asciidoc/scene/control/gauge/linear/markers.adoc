@@ -9,7 +9,7 @@ This gauge supports markers, which are tiny notches on the arc to mark special v
 [source,java]
 --
     for (int i = 0; i <= 20; i++) {
-        gauge.markers().add(new PercentMarker(gauge, i5.0));
+        gauge.markers().add(new PercentMarker(gauge, i * 5.0));
     }
 --
 
