@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.controller.AppointmentPopupController">
+   <children>
+      <VBox fx:id="vBox" layoutY="7.0" spacing="5.0" styleClass="simple-border" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label text="manage appointment">
+               <styleClass>
+                  <String fx:value="bordered-titled-title" />
+                  <String fx:value="background3" />
+               </styleClass>
+            </Label>
+            <HBox alignment="CENTER_LEFT" spacing="5.0">
+               <children>
+                  <Label text="name" />
+                  <TextField fx:id="nameTextField" HBox.hgrow="ALWAYS" />
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
+            <Label fx:id="appointmentTimeLabel" text="Label" />
+            <HBox spacing="5.0">
+               <children>
+                  <Button fx:id="editAppointmentButton" mnemonicParsing="false" onAction="#handleEditAppointment" prefWidth="93.0" text="Edit" />
+                  <Button fx:id="deleteAppointmentButton" mnemonicParsing="false" onAction="#handleDeleteAppointment" prefWidth="93.0" text="Delete" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+   <styleClass>
+      <String fx:value="background3" />
+      <String fx:value="AgendaPopup" />
+   </styleClass>
+</AnchorPane>
