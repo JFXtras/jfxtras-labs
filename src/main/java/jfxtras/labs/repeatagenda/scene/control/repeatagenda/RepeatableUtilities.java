@@ -88,6 +88,7 @@ public final class RepeatableUtilities {
         return result.get() == ButtonType.OK;
     }
     
+    // TODO - REMOVE BELOW METHOD - ALL CALLS TO DELETE NEED I/O CALLBACKS
     /**
      * Handles deleting an appointment.  If appointment is repeatable displays a dialog
      * to find out if delete is for one, all, or future appointments.
@@ -100,18 +101,18 @@ public final class RepeatableUtilities {
      * @throws ParserConfigurationException 
      */
     public static WindowCloseType deleteAppointments(
-              Collection<Appointment> appointments
-            , RepeatableAppointment appointment
+              RepeatableAppointment appointment
+            , Collection<Appointment> appointments
             , Collection<Repeat> repeats) throws ParserConfigurationException
     {
         return deleteAppointments(
-                appointments
-              , appointment
+                appointment
+              , appointments
               , repeats
               , a -> repeatChangeDialog()
               , a -> confirmDelete(a)
-              , a -> { AppointmentFactory.writeToFile(a); return null; }
-              , r -> { RepeatImpl.writeToFile(r); return null; });
+              , null
+              , null);
     }
     
     /**
@@ -124,8 +125,9 @@ public final class RepeatableUtilities {
      * @return 
      * @throws ParserConfigurationException 
      */
-    public static WindowCloseType deleteAppointments(Collection<Appointment> appointments
-            , Appointment appointmentInput
+    public static WindowCloseType deleteAppointments(
+              Appointment appointmentInput
+            , Collection<Appointment> appointments
             , Collection<Repeat> repeats
             , Callback<RepeatChange[], RepeatChange> changeDialogCallback
             , Callback<String, Boolean> confirmDeleteCallback
@@ -173,9 +175,9 @@ public final class RepeatableUtilities {
                 {
                     writeRepeats = removeOne(appointments, appointment);
                     if (writeRepeats) removeOne(repeat.getAppointments(), appointment);
-                    if (startDate.equals(repeat.getUntil()))
+                    if (startDate.equals(repeat.getUntilLocalDateTime()))
                     { // deleted appointment is on end date, adjust end date and number of appointments
-                        repeat.setUntil(startDate.minusDays(1));
+                        repeat.setUntilLocalDateTime(startDate.minusDays(1));
                         if (repeat.getEndCriteria().equals(EndCriteria.AFTER))
                         { // decrement end after events
                             repeat.setCount(repeat.getCount()-1);
@@ -228,14 +230,14 @@ public final class RepeatableUtilities {
                     {
                         case NEVER: // convert to end ON
                             repeat.setEndCriteria(EndCriteria.UNTIL);
-                            repeat.setUntil(startDate.minusDays(1));
+                            repeat.setUntilLocalDateTime(startDate.minusDays(1));
 //                            repeat.makeEndAfterEventsFromEndOnDate();
                             break;
                         case AFTER: // reduce quantity by deleted quantity
                             repeat.setCount(repeat.getCount() - deletedAppointments);
                             // drop through
                         case UNTIL:
-                            repeat.setUntil(startDate.minusDays(1));
+                            repeat.setUntilLocalDateTime(startDate.minusDays(1));
                             break;
                         default:
                             break;
@@ -353,7 +355,7 @@ public final class RepeatableUtilities {
                          .filter(a -> a.isBefore(startDate))
                          .collect(Collectors.toSet());
                 repeatOriginal.setExceptions(dates);
-                repeatOriginal.setUntil(startDate.minusDays(1));
+                repeatOriginal.setUntilLocalDateTime(startDate.minusDays(1));
                 switch (repeatOriginal.getEndCriteria())
                 {
                 case NEVER:
@@ -524,7 +526,7 @@ public final class RepeatableUtilities {
                 // Modify start and end date for repeat and repeatOld.  Adjust IntervalUnit specific data
                 repeatOld.setEndCriteria(EndCriteria.UNTIL);
                 repeatOld.setCount(null); // criteria changed to ON so null endAfterEvents
-                repeatOld.setUntil(repeatOld.previousValidDate(startDateOld));
+                repeatOld.setUntilLocalDateTime(repeatOld.previousValidDate(startDateOld));
 //                boolean adjustStartDate;
                 switch (repeat.getFrequency())
                 {
@@ -535,8 +537,8 @@ public final class RepeatableUtilities {
 //                    System.out.println("repeat.getEndAfterEvents( " + repeat.getEndAfterEvents() + " " + repeat.getEndOnDate() + " " + dayShift);
                     repeat.adjustDateTime(false, startTemporalAdjuster, endTemporalAdjuster);
 
-                    newLastStartDateTime = repeat.getUntil().with(startTemporalAdjuster);
-                    repeat.setUntil(newLastStartDateTime);
+                    newLastStartDateTime = repeat.getUntilLocalDateTime().with(startTemporalAdjuster);
+                    repeat.setUntilLocalDateTime(newLastStartDateTime);
 //                    if (repeat.getEndCriteria() != EndCriteria.NEVER)
 //                    {
 //                        LocalDateTime newEndOnDate = repeat.getEndOnDate().plusDays(dayShift);
@@ -575,15 +577,15 @@ public final class RepeatableUtilities {
                         repeat.setDayOfWeek(dayOfWeekNew, true);
                     }
                     // Adjust day and time if same day of week as edited day, otherwise just adjust time
-                    final DayOfWeek lastDayOfWeek = repeat.getUntil().getDayOfWeek();
+                    final DayOfWeek lastDayOfWeek = repeat.getUntilLocalDateTime().getDayOfWeek();
                     if (lastDayOfWeek == dayOfWeekNew)
                     { // adjust date and time
-                        newLastStartDateTime = repeat.getUntil().with(startTemporalAdjuster);
-                        repeat.setUntil(newLastStartDateTime);
+                        newLastStartDateTime = repeat.getUntilLocalDateTime().with(startTemporalAdjuster);
+                        repeat.setUntilLocalDateTime(newLastStartDateTime);
                     } else
                     { // adjust time only
-                        newLastStartDateTime = repeat.getUntil().toLocalDate().atTime(startDate.toLocalTime());
-                        repeat.setUntil(newLastStartDateTime);
+                        newLastStartDateTime = repeat.getUntilLocalDateTime().toLocalDate().atTime(startDate.toLocalTime());
+                        repeat.setUntilLocalDateTime(newLastStartDateTime);
                     }
                     
 //                    final LocalDateTime earliestDate = getStartLocalDate();
@@ -673,6 +675,7 @@ public final class RepeatableUtilities {
         
     }
 
+    // TODO - REMOVE BELOW METHOD - ALL CALL TO EDIT NEED I/O CALLBACKS
     /**
      * Edit repeatable appointment.
      * Uses default callbacks for dialog, write appointments and write repeats
@@ -699,8 +702,8 @@ public final class RepeatableUtilities {
               , a -> repeatChangeDialog()
 //              , editedAppointments
 //              , editedRepeats);
-              , a -> { AppointmentFactory.writeToFile(a); return null; }
-              , r -> { RepeatImpl.writeToFile(r); return null; });
+              , null
+              , null);
     }
     
     

@@ -13,9 +13,9 @@ import java.util.TreeSet;
 
 import org.junit.Test;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 /**
@@ -37,7 +37,7 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Appointment madeAppointment = (appointments.size() == 1) ? appointments.get(0) : null;
-        Appointment expectedAppointment = AppointmentFactory.newAppointment()
+        Appointment expectedAppointment = new RepeatableAppointmentImpl()
                 .withStartLocalDateTime(LocalDate.of(2015, 11, 7).atTime(8, 45))
                 .withEndLocalDateTime(LocalDate.of(2015, 11, 7).atTime(10, 15))
                 .withAppointmentGroup(appointmentGroups.get(9))
@@ -68,7 +68,7 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Appointment madeAppointment = (appointments.size() == 1) ? appointments.get(0) : null;
-        Appointment expectedAppointment = AppointmentFactory.newAppointment()
+        Appointment expectedAppointment = new RepeatableAppointmentImpl()
                 .withStartLocalDateTime(LocalDate.of(2015, 12, 17).atTime(8, 45))
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 17).atTime(10, 15))
                 .withAppointmentGroup(appointmentGroups.get(9))
@@ -89,7 +89,7 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
         Iterator<RepeatableAppointment> appointmentIterator = appointments.iterator();
 
         RepeatableAppointment madeAppointment1 = appointmentIterator.next();
-        RepeatableAppointment expectedAppointment1 = AppointmentFactory.newAppointment()
+        RepeatableAppointment expectedAppointment1 = new RepeatableAppointmentImpl()
                 .withStartLocalDateTime(LocalDate.of(2015, 12, 16).atTime(18, 0))
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 16).atTime(18, 45))
                 .withAppointmentGroup(appointmentGroups.get(3))
@@ -99,7 +99,7 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
         assertEquals(expectedAppointment1, madeAppointment1);   
 
         RepeatableAppointment madeAppointment2 = appointmentIterator.next();
-        RepeatableAppointment expectedAppointment2 = AppointmentFactory.newAppointment()
+        RepeatableAppointment expectedAppointment2 = new RepeatableAppointmentImpl()
                 .withStartLocalDateTime(LocalDate.of(2015, 12, 18).atTime(18, 0))
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 18).atTime(18, 45))
                 .withAppointmentGroup(appointmentGroups.get(3))
@@ -123,7 +123,7 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Appointment madeAppointment = (appointments.size() == 1) ? appointments.get(0) : null;
-        Appointment expectedAppointment = AppointmentFactory.newAppointment()
+        Appointment expectedAppointment = new RepeatableAppointmentImpl()
                 .withStartLocalDateTime(LocalDate.of(2015, 12, 17).atTime(8, 45))
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 17).atTime(10, 15))
                 .withAppointmentGroup(appointmentGroups.get(9))
@@ -144,7 +144,7 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
         assertEquals(1, appointments.size());
         
         Appointment madeAppointment2 = appointments.get(0);
-        Appointment expectedAppointment2 = AppointmentFactory.newAppointment()
+        Appointment expectedAppointment2 = new RepeatableAppointmentImpl()
                 .withStartLocalDateTime(LocalDate.of(2016, 1, 21).atTime(8, 45))
                 .withEndLocalDateTime(LocalDate.of(2016, 1, 21).atTime(10, 15))
                 .withAppointmentGroup(appointmentGroups.get(9))

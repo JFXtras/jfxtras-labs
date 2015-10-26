@@ -47,7 +47,8 @@ public class AppointmentPopupController {
             , RepeatableAppointment appointment
             , Collection<Repeat> repeats
             , Pane pane
-//            , LayoutHelp layoutHelp
+
+            //            , LayoutHelp layoutHelp
             , Popup popup) {
 
         this.pane = pane;
@@ -72,7 +73,7 @@ public class AppointmentPopupController {
     @FXML private void handleDeleteAppointment() throws ParserConfigurationException {
         popup.hide();
 //        RepeatableUtilities.deleteAppointments(layoutHelp.skinnable.appointments()
-        RepeatableUtilities.deleteAppointments(appointments, appointment, repeats);
+        RepeatableUtilities.deleteAppointments(appointment, appointments, repeats);
 
 //        layoutHelp.skin.setupAppointments();    // refresh appointment graphics
     }

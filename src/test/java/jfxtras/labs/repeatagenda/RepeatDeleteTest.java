@@ -16,12 +16,12 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Test;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.EndCriteria;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.Frequency;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatFactory;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableUtilities.RepeatChange;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableUtilities.WindowCloseType;
@@ -50,8 +50,8 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
         Appointment selectedAppointment = appointmentIterator.next();
         
         WindowCloseType windowCloseType = RepeatableUtilities.deleteAppointments(
-                appointments
-              , selectedAppointment
+                selectedAppointment
+              , appointments
               , repeats
               , a -> RepeatChange.ONE // delete one appointment
               , a -> true             // Are you sure - true
@@ -61,10 +61,10 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
         assertEquals(2, appointments.size()); // check number of appointments
 
         // Check Repeat
-        RepeatableAppointment a = AppointmentFactory.newAppointment()
+        RepeatableAppointment a = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed2");
-        Repeat expectedRepeat = RepeatFactory.newRepeat()
+        Repeat expectedRepeat = new RepeatImpl(getNewRepeatableAppointment())
                 .withStartLocalDate(LocalDateTime.of(2015, 10, 5, 8, 45))
                 .withDurationInSeconds(5400)
 //                .withStartLocalTime(LocalTime.of(8, 45))
@@ -84,7 +84,7 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
         Iterator<Appointment> appointmentIteratorNew = appointments.iterator();
 
         Appointment editedAppointment1 = appointmentIteratorNew.next();
-        Appointment expectedAppointment1 = AppointmentFactory.newAppointment()
+        Appointment expectedAppointment1 = new RepeatableAppointmentImpl()
                 .withStartLocalDateTime(LocalDate.of(2015, 11, 4).atTime(8, 45))
                 .withEndLocalDateTime(LocalDate.of(2015, 11, 4).atTime(10, 15))
                 .withAppointmentGroup(appointmentGroups.get(3))
@@ -94,7 +94,7 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
         assertEquals(expectedAppointment1, editedAppointment1); // Check to see if repeat-generated appointment changed correctly
                        
         Appointment editedAppointment2 = appointmentIteratorNew.next();
-        Appointment expectedAppointment2 = AppointmentFactory.newAppointment()
+        Appointment expectedAppointment2 = new RepeatableAppointmentImpl()
                 .withStartLocalDateTime(LocalDate.of(2015, 11, 6).atTime(8, 45))
                 .withEndLocalDateTime(LocalDate.of(2015, 11, 6).atTime(10, 15))
                 .withAppointmentGroup(appointmentGroups.get(3))
@@ -125,8 +125,8 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
         Appointment selectedAppointment = appointmentIterator.next();
         
         WindowCloseType windowCloseType = RepeatableUtilities.deleteAppointments(
-                appointments
-              , selectedAppointment
+                selectedAppointment
+              , appointments
               , repeats
               , a -> RepeatChange.ALL // delete one appointment
               , a -> true             // Are you sure - true

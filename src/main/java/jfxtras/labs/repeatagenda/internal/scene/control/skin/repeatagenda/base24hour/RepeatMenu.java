@@ -44,6 +44,7 @@ public class RepeatMenu extends Stage {
             , Collection<Appointment> appointments
             , Collection<Repeat> repeats
             , List<AppointmentGroup> appointmentGroups
+            , Callback<LocalDateTimeRange, Appointment> newAppointmentCallback
             , Callback<Collection<Appointment>, Void> appointmentWriteCallback
             , Callback<Collection<Repeat>, Void> repeatWriteCallback)
     {
@@ -80,6 +81,7 @@ public class RepeatMenu extends Stage {
               , appointments
               , repeats
               , appointmentGroups
+              , newAppointmentCallback
               , appointmentWriteCallback
               , repeatWriteCallback);
         Scene scene = new Scene(appointmentMenu);

@@ -27,11 +27,12 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AlertsAndDialogs;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.EndCriteria;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 public class RepeatableController {
@@ -263,14 +264,14 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
     final ChangeListener<? super LocalDate> endOnDateListener = ((observable, oldSelection, newSelection) ->
     {
         LocalTime endTime = repeat.getStartLocalDate().plusSeconds(repeat.getDurationInSeconds()).toLocalTime();
-        repeat.setUntil(newSelection.atTime(endTime));
+        repeat.setUntilLocalDateTime(newSelection.atTime(endTime));
     });
     endOnRadioButton.selectedProperty().addListener((observable, oldSelection, newSelection) ->
     {
         if (newSelection) {
             if (repeat.getEndCriteria() == EndCriteria.UNTIL)
             { // if Repeat is ON already (initial condition) then set date in picker
-                endOnDatePicker.setValue(repeat.getUntil().toLocalDate());
+                endOnDatePicker.setValue(repeat.getUntilLocalDateTime().toLocalDate());
             }
             repeat.setEndCriteria(EndCriteria.UNTIL); 
             endOnDatePicker.setDisable(false);
@@ -292,15 +293,19 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
  * @param appointment
  * @param dateTimeRange : date range for current agenda skin
  */
-    public void setupData(RepeatableAppointment appointment, LocalDateTimeRange dateTimeRange) {
+    public void setupData(
+            RepeatableAppointment appointment
+          , LocalDateTimeRange dateTimeRange
+          , Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
+    {
 
 //        this.appointment = appointment;
         if (appointment.getRepeat() != null)
         { // get existing repeat
             repeat = appointment.getRepeat();
         } else { // make new repeat
-//            repeat = new Repeat();
-            repeat = RepeatFactory.newRepeat(dateTimeRange);
+            repeat = new Repeat(dateTimeRange, newAppointmentCallback);
+//            repeat = RepeatFactory.newRepeat(dateTimeRange);
             repeat.setDefaults();
             appointment.copyNonDateFieldsInto(repeat.getAppointmentData());
             repeat.setStartLocalDate(appointment.getStartLocalDateTime());

@@ -18,7 +18,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableUtilities;
@@ -93,22 +92,26 @@ public class AppointmentEditController {
             , Collection<Appointment> appointments
             , Collection<Repeat> repeats
             , List<AppointmentGroup> appointmentGroups
-            , Callback<Collection<Appointment>, Void> appointmentCallback
-            , Callback<Collection<Repeat>, Void> repeatCallback)
+            , Callback<LocalDateTimeRange, Appointment> newAppointmentCallback
+            , Callback<Collection<Appointment>, Void> appointmentWriteCallback
+            , Callback<Collection<Repeat>, Void> repeatWriteCallback)
     {
 //        this.layoutHelp = layoutHelp;
         Locale locale = Locale.getDefault();
         this.appointment = (RepeatableAppointment) inputAppointment;
         this.appointments = appointments;
         this.repeats = repeats;
-        this.appointmentCallback = appointmentCallback;
-        this.repeatCallback = repeatCallback;
+        this.appointmentCallback = appointmentWriteCallback;
+        this.repeatCallback = repeatWriteCallback;
 //        repeats = layoutHelp.skinnable.repeats();
 //        appointments = layoutHelp.skinnable.appointments();
 
-        appointmentOld = AppointmentFactory.newAppointment(appointment);
+        RepeatableAppointment appt = (RepeatableAppointment) newAppointmentCallback
+                .call(new LocalDateTimeRange(appointment.getStartLocalDateTime(), appointment.getEndLocalDateTime()));
+        appointment.copyInto(appt);
+//        appointmentOld = AppointmentFactory.newAppointment(appointment);
 
-        repeatableController.setupData(appointment, dateTimeRange);
+        repeatableController.setupData(appointment, dateTimeRange, newAppointmentCallback);
 
         // ***AREN'T THESE BINDINGS DUPLICATES OF ABOVE?****
         nameTextField.setText(appointment.getSummary());

@@ -45,6 +45,13 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
 //    
 
 
+    /**
+     * Constructor with individualAppointments collection and repeats collection provided.
+     * These objects will be automatically be kept current with Agenda's data.
+     * 
+     * @param individualAppointments
+     * @param repeats
+     */
     public RepeatableAgenda(Collection<T> individualAppointments, Collection<Repeat> repeats)
     {
         setIndividualAppointments(individualAppointments);
@@ -91,6 +98,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
                     , appointments()
                     , getRepeats()
                     , appointmentGroups()
+                    , getNewAppointmentCallback()
                     , appointmentWriteCallback   // write appointment callback initialized to null
                     , repeatWriteCallback);      // write repeat callback initialized to null
             repeatMenu.show();

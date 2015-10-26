@@ -40,6 +40,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.Rep
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
+/**
+ * Example RepeatableAppointment implementation that includes some I/O methods
+ * 
+ * @author David Bal
+ *
+ */
 public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<RepeatableAppointmentImpl> implements RepeatableAppointment {
 
 //    /** WholeDay: */
@@ -82,7 +88,7 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
     private static Map<Integer, RepeatImpl> repeatIntegerKeyMap = new HashMap<Integer, RepeatImpl>(); // private map of repeats used to match Repeat objects to appointments
     /** create map of Repeat objects and repeat keys.  Its used to find Repeat objects to attach to Appointment objects.
      * Only used when setting up appointments from file */
-    protected static void setupRepeats(Set<Repeat> set)
+    public static void setupRepeats(Set<Repeat> set)
     {
         Set<RepeatImpl> myRepeats
             = set.stream().map(a -> (RepeatImpl) a).collect(Collectors.toSet());
@@ -205,11 +211,14 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
      */
     public RepeatableAppointmentImpl(RepeatableAppointment appointment)
     {
-        setRepeat(RepeatFactory.newRepeat(appointment.getRepeat()));
+//        setRepeat(RepeatFactory.newRepeat(appointment.getRepeat()));
+//        System.out.println("repeataptimpl getAppts " + appointment.getRepeat().getAppointmentData());
+        setRepeat(new RepeatImpl(appointment.getRepeat()));
 //        MyRepeat newRepeat = RepeatFactory.newRepeat(repeatMap.get(appointment));
 //        repeatMap.put(this, newRepeat);
         appointment.copyInto(this);
     }
+    
     
     public static void writeToFile(Collection<Appointment> appointments, Path file)
     {
@@ -237,7 +246,7 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
 //            }
             Element appointmentElement = doc.createElement("appointment");
 //            Repeat repeat = repeatMap.get(myAppointment);
-            AppointmentFactory.returnConcreteAppointment(myAppointment).marshal(appointmentElement);
+            ((RepeatableAppointmentImpl) myAppointment).marshal(appointmentElement);
             rootElement.appendChild(appointmentElement);
         }
 
@@ -322,7 +331,7 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
      * @throws IOException
      */
     public static Collection<RepeatableAppointment> readFromFile(File file
-            , ObservableList<AppointmentGroup> appointmentGroups
+            , List<AppointmentGroup> appointmentGroups
             , Collection<RepeatableAppointment> appointments)
             throws ParserConfigurationException, SAXException 
     {
@@ -351,7 +360,7 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
                 appointmentAttributes = (HashMap<String, String>) DataUtilities.getAttributes(appointmentNode, "appointment");
                 String appointmentName = DataUtilities.myGet(appointmentAttributes, "summary", file.toString());
                 String errorMessage = ", file: " + file + " summary: " + appointmentName;
-                RepeatableAppointment anAppointment = AppointmentFactory.newAppointment()
+                RepeatableAppointment anAppointment = new RepeatableAppointmentImpl()
                         .unmarshal(appointmentAttributes, expectedKey, errorMessage);
                 Integer i = ((RepeatableAppointmentImpl) anAppointment).getAppointmentGroupIndex();
 //              System.out.println("getAppointmentGroupIndex " + i);
@@ -410,6 +419,7 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
     }
     @Override
     public RepeatableAppointment copyNonDateFieldsInto(RepeatableAppointment appointment) {
+        System.out.println("appointment 5" + appointment);
         List<Integer> s = ((RepeatableAppointmentImpl) appointment).getStudentKeys();
         getStudentKeys().addAll(s);
         return RepeatableAppointment.super.copyNonDateFieldsInto(appointment);

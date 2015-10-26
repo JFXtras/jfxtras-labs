@@ -30,6 +30,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -41,7 +42,7 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
  *  
  * @author David Bal
  */
-public abstract class Repeat {
+public class Repeat {
     
 //    public boolean isEmpty() { return intervalUnit.getValue() == null; }
 
@@ -56,6 +57,14 @@ public abstract class Repeat {
     // Range for which appointments are to be generated.  Should match the dates displayed on the calendar.
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    public void setLocalDateTimeRange(LocalDateTimeRange dateTimeRange)
+    {
+        startDate = dateTimeRange.getStartLocalDateTime();
+        endDate = dateTimeRange.getEndLocalDateTime();
+    }
+    
+    private Callback<LocalDateTimeRange, Appointment> newAppointmentCallback;
+    public Callback<LocalDateTimeRange, Appointment> getNewAppointmentCallback() { return newAppointmentCallback; }
     
     final private ObjectProperty<Frequency> frequency = new SimpleObjectProperty<Frequency>();
     public ObjectProperty<Frequency> frequencyProperty() { return frequency; }
@@ -218,7 +227,7 @@ public abstract class Repeat {
             myDate = validDateIterator.next();
         }
         System.out.println("make end on date " + myDate);
-        setUntil(myDate);
+        setUntilLocalDateTime(myDate);
     }
     /**
      * Find number of events from end date.  Value put into endAfterEvents
@@ -229,8 +238,8 @@ public abstract class Repeat {
             ("Can't Calculate endAfterEvents with " + getEndCriteria() + " criteria");
         int eventCounter = 0;
         LocalDateTime myDate = getStartLocalDate().minusDays(1);
-        System.out.println("makeEndAfterEventsFromEndOnDate " + getUntil());
-        while (myDate.isBefore(getUntil()))
+        System.out.println("makeEndAfterEventsFromEndOnDate " + getUntilLocalDateTime());
+        while (myDate.isBefore(getUntilLocalDateTime()))
         {
             myDate = myDate.with(new NextAppointment());
             eventCounter++;
@@ -238,14 +247,14 @@ public abstract class Repeat {
         count.set(eventCounter);
     }
     
-    final private ObjectProperty<LocalDateTime> until = new SimpleObjectProperty<LocalDateTime>();
-    public ObjectProperty<LocalDateTime> untilProperty() { return until; }
-    public LocalDateTime getUntil() { return until.getValue(); }
-    public void setUntil(LocalDateTime dateTime) { this.until.set(dateTime); }
-    public Repeat withUntil(LocalDateTime dateTime)
+    final private ObjectProperty<LocalDateTime> untilLocalDateTime = new SimpleObjectProperty<LocalDateTime>();
+    public ObjectProperty<LocalDateTime> untilLocalDateTimeProperty() { return untilLocalDateTime; }
+    public LocalDateTime getUntilLocalDateTime() { return untilLocalDateTime.getValue(); }
+    public void setUntilLocalDateTime(LocalDateTime dateTime) { this.untilLocalDateTime.set(dateTime); }
+    public Repeat withUntilLocalDateTime(LocalDateTime dateTime)
     {
         if (getEndCriteria() != EndCriteria.UNTIL) throw new InvalidParameterException("EndCriteria must be set to ON before endOnDate is set");
-        setUntil(dateTime);
+        setUntilLocalDateTime(dateTime);
         return this;
     }
 
@@ -286,7 +295,7 @@ public abstract class Repeat {
     }
     
     /** Appointment-specific data */
-    private RepeatableAppointment appointmentData = AppointmentFactory.newAppointment();
+    private RepeatableAppointment appointmentData = null; //AppointmentFactory.newAppointment();
     public RepeatableAppointment getAppointmentData() { return appointmentData; }
     public void setAppointmentData(RepeatableAppointment appointment) { appointmentData = appointment; }
     public Repeat withAppointmentData(RepeatableAppointment appointment) { setAppointmentData(appointment); return this; }
@@ -295,6 +304,7 @@ public abstract class Repeat {
     /** Appointments generated from this repeat rule.  Objects are a subset of appointments in main appointments list
      * used in the Agenda calendar.  Names myAppointments to differentiate it from main name appointments */
     final private Set<RepeatableAppointment> myAppointments = new HashSet<RepeatableAppointment>();
+
 //    private Set<Appointment> myAppointments;
     public Set<RepeatableAppointment> getAppointments() { return myAppointments; }
     public Repeat withAppointments(Collection<RepeatableAppointment> s) { getAppointments().addAll(s); return this; }
@@ -309,32 +319,68 @@ public abstract class Repeat {
     }
 
     /**
+     * Constructor only with callback, range needed too
+     */
+    protected Repeat(Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
+    {
+        this.newAppointmentCallback = newAppointmentCallback;
+        RepeatableAppointment appt = (RepeatableAppointment) getNewAppointmentCallback()
+                .call(new LocalDateTimeRange(null, null));
+        this.setAppointmentData(appt); // initialize appointmentData
+    }
+    
+    /**
      * Constructor with range - used in factory (new Repeat objects need range to make appointments)
      */
-    public Repeat(LocalDateTimeRange dateTimeRange)
+    public Repeat(LocalDateTimeRange dateTimeRange, Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
     {
+        this(newAppointmentCallback);
         startDate = dateTimeRange.getStartLocalDateTime();
         endDate = dateTimeRange.getEndLocalDateTime();
     }
 
-    /**
-     * Default constructor
-     */
+//    /**
+//     * Constructor with range - used in factory (new Repeat objects need range to make appointments)
+//     * Defaults to one week before and one week after now as range.
+//     */
+//    public Repeat(Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
+//    {
+//        this(new LocalDateTimeRange(LocalDateTime.now().minusWeeks(1), LocalDateTime.now().plusWeeks(1)), newAppointmentCallback);
+//    }
+
+    
+//    /**
+//     * Default constructor
+//     */
     public Repeat() { }
     
+//    /**
+//     * Copy constructor that makes a new object with the parts from an Appointment copied
+//     * 
+//     * @param appointment
+//     * @return
+//     * @throws CloneNotSupportedException
+//     */
+//    public Repeat(Repeat oldRepeat) {
+//        System.out.println("repeat.getAppointmentData() " + oldRepeat.getAppointmentData());
+//        if (oldRepeat != null) {
+//            oldRepeat.copyInto(this);
+//        }
+//    }
+
     /**
-     * Copy constructor that makes a new object with the parts from an Appointment copied
+     * Copy constructor (range comes from copy)
      * 
-     * @param appointment
-     * @return
-     * @throws CloneNotSupportedException
+     * @param oldRepeat
+     * @param newAppointmentCallback
      */
-    public Repeat(Repeat oldRepeat) {
+    public Repeat(Repeat oldRepeat, Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
+    {
+        this(newAppointmentCallback); // setup callback to make new appointments, initialize appointmentData
         if (oldRepeat != null) {
             oldRepeat.copyInto(this);
         }
     }
-
     /**
      * Copy's current object's fields into passed parameter
      * 
@@ -361,7 +407,8 @@ public abstract class Repeat {
 //        repeat.setEndLocalTime(getEndLocalTime());
         if (getEndCriteria() == EndCriteria.AFTER) repeat.setCount(getCount());
         repeat.setEndCriteria(getEndCriteria());
-        repeat.setUntil(getUntil());
+        repeat.setUntilLocalDateTime(getUntilLocalDateTime());
+//        System.out.println("this.getAppointmentData() " + this.getAppointmentData());
         getAppointmentData().copyNonDateFieldsInto(repeat.getAppointmentData());
         getAppointments().stream().forEach(a -> repeat.getAppointments().add(a));
         repeat.startDate = startDate;
@@ -632,19 +679,21 @@ public abstract class Repeat {
      * @param endDateTime
      * @return
      */
-    public Collection<RepeatableAppointment> makeAppointments(LocalDateTime startDateTime, LocalDateTime endDateTime)
+    public Collection<RepeatableAppointment> makeAppointments(
+            LocalDateTime startDateTime
+          , LocalDateTime endDateTime)
     {
         Set<RepeatableAppointment> appointments = new HashSet<RepeatableAppointment>();
         this.endDate = endDateTime;
         this.startDate = startDateTime;
 
         final LocalDateTime myEndDate;
-        if (getUntil() == null) {
+        if (getUntilLocalDateTime() == null) {
             myEndDate = endDateTime;
         } else {
 //            System.out.println(endDate + " " + getEndOnDate());
 //            LocalDateTime endOnDateTime = getEndOnDate().plusDays(1).atStartOfDay().minusNanos(1);
-            myEndDate = (endDateTime.isBefore(getUntil())) ? endDateTime : getUntil();
+            myEndDate = (endDateTime.isBefore(getUntilLocalDateTime())) ? endDateTime : getUntilLocalDateTime();
         }
         LocalDateTime myStartDate = nextValidDateSlow(startDateTime.minusNanos(1));
 //        System.out.println("myStartDate " + myStartDate + " " + myEndDate);
@@ -667,15 +716,25 @@ public abstract class Repeat {
                     .map(myStartDateTime -> {                                                 // make new appointment
 //                        LocalDateTime myStartDateTime = a;
                         LocalDateTime myEndDateTime = myStartDateTime.plusSeconds(getDurationInSeconds());
-                        RepeatableAppointment appt = AppointmentFactory
-                                .newAppointment()
-                                .withStartLocalDateTime(myStartDateTime)
-                                .withEndLocalDateTime(myEndDateTime)
-                                .withRepeat(this)
-                                .withRepeatMade(true)
-                                .withAppointmentGroup(getAppointmentData().getAppointmentGroup())
-                                .withDescription(getAppointmentData().getDescription())
-                                .withSummary(getAppointmentData().getSummary());
+                        RepeatableAppointment appt = (RepeatableAppointment) getNewAppointmentCallback()
+                            .call(new LocalDateTimeRange(myStartDateTime, myEndDateTime));
+//                        appt.setStartLocalDateTime(myStartDateTime);
+//                        appt.setEndLocalDateTime(myEndDateTime);
+                        appt.setRepeat(this);
+                        appt.setRepeatMade(true);
+                        appt.setAppointmentGroup(getAppointmentData().getAppointmentGroup());
+                        appt.setDescription(getAppointmentData().getDescription());
+                        appt.setSummary(getAppointmentData().getSummary());
+
+                            //                        RepeatableAppointment appt = AppointmentFactory
+//                                .newAppointment()
+//                                .withStartLocalDateTime(myStartDateTime)
+//                                .withEndLocalDateTime(myEndDateTime)
+//                                .withRepeat(this)
+//                                .withRepeatMade(true)
+//                                .withAppointmentGroup(getAppointmentData().getAppointmentGroup())
+//                                .withDescription(getAppointmentData().getDescription())
+//                                .withSummary(getAppointmentData().getSummary());
 //                        repeatMap.put(appt, this);
                         return appt;
                     })
@@ -859,7 +918,7 @@ public abstract class Repeat {
                 {
 //                    if (validDateTime.isAfter(endDate.atTime(getStartLocalTime())) || // after displayed date interval
                     if (validDateTime.isAfter(endDate) || // after displayed date interval
-                            validDateTime.isAfter(getUntil())) // after end of repeat rule
+                            validDateTime.isAfter(getUntilLocalDateTime())) // after end of repeat rule
                     { // appointment is invalid - too late
                         invalidAppointments.add(myAppointment);
                         break;
@@ -927,7 +986,7 @@ public abstract class Repeat {
             { // find date
                 final LocalDateTime s = i.next();
 //                System.out.println("getEndOnDate() " + getEndOnDate() + " " + getEndCriteria());
-                if (s.isAfter(getUntil())) break; // exit loop when beyond date without match
+                if (s.isAfter(getUntilLocalDateTime())) break; // exit loop when beyond date without match
                 if (appointmentCounter > 1) break;
                 appointmentCounter++;
             }
@@ -944,7 +1003,7 @@ public abstract class Repeat {
                     getAppointments().clear();
                 } else if (getAppointments().size() == 0)
                 { // make individual appointment because it is not in current date range
-                    appointments.addAll(makeAppointments(getStartLocalDate(), getUntil()));
+                    appointments.addAll(makeAppointments(getStartLocalDate(), getUntilLocalDateTime()));
                     getAppointments().iterator().next().setRepeatMade(false);
                 }
                 return true;
@@ -969,7 +1028,7 @@ public abstract class Repeat {
         while (i.hasNext())
         { // find date
             final LocalDateTime s = i.next();
-            if (s.isAfter(getUntil())) break; // exit loop when beyond date without match
+            if (s.isAfter(getUntilLocalDateTime())) break; // exit loop when beyond date without match
             startDateList.add(s);
         }
         return startDateList.stream();
@@ -1023,7 +1082,7 @@ public abstract class Repeat {
     private boolean isValidAppointment(Appointment myAppointment)
     {
         boolean tooLate = (getEndCriteria() == EndCriteria.NEVER) ? false :
-            myAppointment.getStartLocalDateTime().isAfter(getUntil());
+            myAppointment.getStartLocalDateTime().isAfter(getUntilLocalDateTime());
         if (tooLate) {
             return false;
         } else {
@@ -1209,7 +1268,7 @@ public abstract class Repeat {
         // keep only deletedDates within start and end dates
         final Set<LocalDateTime> dates = getExceptions()
                 .stream()
-                .filter(a -> ! a.isAfter(getUntil()))        // keep dates before and equal to endOnDate
+                .filter(a -> ! a.isAfter(getUntilLocalDateTime()))        // keep dates before and equal to endOnDate
                 .filter(a -> ! a.isBefore(getStartLocalDate()))  // keep dates after and equal to startLocalDate
                 .filter(a -> isValidAppointment(a))      // keep valid dates
                 .collect(Collectors.toSet());                    // make new set
@@ -1222,7 +1281,7 @@ public abstract class Repeat {
               Appointment a = i.next();
               LocalDateTime s = a.getStartLocalDateTime();
               boolean tooEarly = s.isBefore(getStartLocalDate());
-              boolean tooLate = (getEndCriteria() == EndCriteria.NEVER) ? false : s.isAfter(getUntil());
+              boolean tooLate = (getEndCriteria() == EndCriteria.NEVER) ? false : s.isAfter(getUntilLocalDateTime());
               boolean notValid = ! isValidAppointment(a.getStartLocalDateTime());
               if (tooEarly || tooLate || notValid) i.remove();
           }
@@ -1373,7 +1432,7 @@ public abstract class Repeat {
         this.countProperty().unbind();
         this.endCriteriaProperty().unbind();
 //        this.endLocalTimeProperty().unbind();
-        this.untilProperty().unbind();
+        this.untilLocalDateTimeProperty().unbind();
         this.frequencyProperty().unbind();
         this.repeatDayOfMonthProperty().unbind();
         this.repeatDayOfWeekProperty().unbind();

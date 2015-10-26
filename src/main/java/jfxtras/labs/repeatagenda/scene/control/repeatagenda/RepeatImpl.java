@@ -25,11 +25,27 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javafx.util.Callback;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
+/**
+ * Example Repeat implementation that includes some I/O methods
+ * 
+ * @author David Bal
+ *
+ */
 public class RepeatImpl extends Repeat {
 
+    private final static Callback<LocalDateTimeRange, Appointment> NEW_REPEATABLE_APPOINTMENT = range -> 
+    {
+        return new RepeatableAppointmentImpl()
+                .withStartLocalDateTime(range.getStartLocalDateTime())
+                .withEndLocalDateTime(range.getEndLocalDateTime());        
+    };
+
+    
     // TODO - REPLACE WITH UID LIKE iCalendar
     private static int nextKey = 0;
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -44,12 +60,14 @@ public class RepeatImpl extends Repeat {
 
     public RepeatImpl() { }
 
-    public RepeatImpl(LocalDateTimeRange dateTimeRange)
+    public RepeatImpl(LocalDateTimeRange dateTimeRange, Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
     {
-        super(dateTimeRange);
+        super(dateTimeRange, newAppointmentCallback);
     }
     
     public RepeatImpl(Repeat oldRepeat) {
+        super(oldRepeat, NEW_REPEATABLE_APPOINTMENT);
+//        System.out.println("oldRepeat " + oldRepeat);
         if (oldRepeat != null) {
             // Copy any MyRepeat specific fields first
             oldRepeat.copyInto(this);
@@ -67,6 +85,11 @@ public class RepeatImpl extends Repeat {
         }
     }
     
+    public RepeatImpl(Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
+    {
+        super(newAppointmentCallback);
+    }
+
     @Override
     public boolean equals(Object obj) {
         RepeatImpl testObj = (RepeatImpl) obj;
@@ -86,7 +109,8 @@ public class RepeatImpl extends Repeat {
      */
     public static Collection<Repeat> readFromFile(Path inputFile
             , List<AppointmentGroup> appointmentGroups
-            , Collection<Repeat> repeats) throws TransformerException, ParserConfigurationException
+            , Collection<Repeat> repeats
+            , Callback<LocalDateTimeRange, Appointment> newAppointmentCallback) throws TransformerException, ParserConfigurationException
     {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -107,7 +131,7 @@ public class RepeatImpl extends Repeat {
                     {
                         Integer myKey = keyIterator.next();
                         nextKey = Math.max(nextKey, myKey);
-                        Repeat myRepeat = new RepeatImpl().unmarshal((Element) myNodeList.item(n), myKey);
+                        Repeat myRepeat = new RepeatImpl(newAppointmentCallback).unmarshal((Element) myNodeList.item(n), myKey);
                         int i = ((RepeatableAppointmentImpl) myRepeat.getAppointmentData()).getAppointmentGroupIndex();
 //                        System.out.println("i " + i);
 //                        Integer i = myRepeat.getAppointmentData().getAppointmentGroup().getKey();
@@ -190,7 +214,7 @@ public class RepeatImpl extends Repeat {
                 setCount(DataUtilities.myParseInt(DataUtilities.myGet(repeatAttributes, "endAfterEvents", "")));
                 // fall through
             case UNTIL:
-                setUntil(LocalDateTime.parse(DataUtilities.myGet(repeatAttributes, "endOnDate", ""), formatter));
+                setUntilLocalDateTime(LocalDateTime.parse(DataUtilities.myGet(repeatAttributes, "endOnDate", ""), formatter));
                 break;
             default:
                 break;
@@ -198,7 +222,8 @@ public class RepeatImpl extends Repeat {
         
         Element appointmentElement = (Element) myElement.getElementsByTagName("appointment").item(0);   // must be only one appointment element
         Map<String, String> appointmentAttributes = DataUtilities.getAttributes(appointmentElement, "appointment");
-        RepeatableAppointmentImpl appointment = AppointmentFactory.newAppointment().unmarshal(appointmentAttributes, "Repeat appointment settings");
+//        RepeatableAppointmentImpl appointment = AppointmentFactory.newAppointment().unmarshal(appointmentAttributes, "Repeat appointment settings");
+        RepeatableAppointmentImpl appointment = new RepeatableAppointmentImpl().unmarshal(appointmentAttributes, "Repeat appointment settings");
 //        System.out.println("appointment.getAppointmentGroupIndex() " + appointment.getAppointmentGroupIndex());
         setAppointmentData(appointment);
 //        int i = Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "groupIndex", "Repeat appointment settings"));
@@ -261,6 +286,7 @@ public class RepeatImpl extends Repeat {
      */
     public static void writeToFile(Collection<Repeat> repeats)
     {
+        // TODO - FIX PATH PROBLEM
         Path appointmentRepeatsPath = Paths.get(Repeat.class.getResource("").getPath() + "appointmentRepeats.xml");
 //        System.out.println(appointmentRepeatsPath);
         writeToFile(repeats, appointmentRepeatsPath);
@@ -322,14 +348,14 @@ public class RepeatImpl extends Repeat {
 //                if (getEndOnDate() == null) makeEndOnDateFromEndAfterEvents();  // new AFTER repeat rules need end dates calculated.
                 // fall through
             case UNTIL:
-                myElement.setAttribute("endOnDate", getUntil().toString());
+                myElement.setAttribute("endOnDate", getUntilLocalDateTime().toString());
                 break;
             default:
                 break;
         }
         
         Element appointmentElement = doc.createElement("appointment");
-        AppointmentFactory.returnConcreteAppointment(getAppointmentData()).marshal(appointmentElement);
+        ((RepeatableAppointmentImpl) getAppointmentData()).marshal(appointmentElement);
 //        getAppointmentData().marshal(appointmentElement);
         myElement.appendChild(appointmentElement);
         
