@@ -109,8 +109,7 @@ public class RepeatImpl extends Repeat {
      */
     public static Collection<Repeat> readFromFile(Path inputFile
             , List<AppointmentGroup> appointmentGroups
-            , Collection<Repeat> repeats
-            , Callback<LocalDateTimeRange, Appointment> newAppointmentCallback) throws TransformerException, ParserConfigurationException
+            , Collection<Repeat> repeats) throws TransformerException, ParserConfigurationException
     {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -131,7 +130,7 @@ public class RepeatImpl extends Repeat {
                     {
                         Integer myKey = keyIterator.next();
                         nextKey = Math.max(nextKey, myKey);
-                        Repeat myRepeat = new RepeatImpl(newAppointmentCallback).unmarshal((Element) myNodeList.item(n), myKey);
+                        Repeat myRepeat = new RepeatImpl(NEW_REPEATABLE_APPOINTMENT).unmarshal((Element) myNodeList.item(n), myKey);
                         int i = ((RepeatableAppointmentImpl) myRepeat.getAppointmentData()).getAppointmentGroupIndex();
 //                        System.out.println("i " + i);
 //                        Integer i = myRepeat.getAppointmentData().getAppointmentGroup().getKey();

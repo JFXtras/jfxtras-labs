@@ -92,6 +92,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
         
         // Change edit popup to provide one with repeat options
         setEditAppointmentCallback((Appointment appointment) -> {
+            System.out.println("getNewAppointmentCallback() " + getNewAppointmentCallback());
             RepeatMenu repeatMenu = new RepeatMenu(
                     (RepeatableAppointment) appointment
                     , dateTimeRange()

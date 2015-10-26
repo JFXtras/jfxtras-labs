@@ -63,9 +63,17 @@ public class RepeatMenu extends Stage {
         setTitle(AppointmentUtilities.makeAppointmentName(appointment));
         initModality(Modality.APPLICATION_MODAL);
         
-        // LOAD FXML
+//        // LOAD FXML
         FXMLLoader appointmentMenuLoader = new FXMLLoader();
-        appointmentMenuLoader.setLocation(Repeat.class.getResource("internal/scene/control/skin/agenda/base24hour/view/AppointmentEdit.fxml"));
+//        try {
+//            System.out.println(DataUtilities.getResourceListing(RepeatMenu.class, "internal/scene/control/skin/agenda/base24hour/view/AppointmentEdit.fxml"));
+//        } catch (URISyntaxException | IOException e1) {
+//            // TODO Auto-generated catch block
+//            e1.printStackTrace();
+//        }
+//        System.out.println(RepeatMenu.class.getResource("view/AppointmentEdit.fxml"));
+//        System.exit(0);
+        appointmentMenuLoader.setLocation(RepeatMenu.class.getResource("view/AppointmentEdit.fxml"));
         appointmentMenuLoader.setResources(Settings.resources);
         Control appointmentMenu = null;
         try {
