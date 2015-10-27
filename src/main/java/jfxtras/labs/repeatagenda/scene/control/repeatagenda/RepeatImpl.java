@@ -50,15 +50,12 @@ public class RepeatImpl extends Repeat {
     private static int nextKey = 0;
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-
     /** Unique number identifying this Repeat object. */ // TODO - REPLACE WITH UID - like iCalendar
     private Integer key;
     public Integer getKey() { return key; }
     void setKey(Integer value) { key = value; } 
     public RepeatImpl withKey(Integer value) { setKey(value); return this; }
     public boolean hasKey() { return (getKey() != null); } // new Repeat has no key
-
-    public RepeatImpl() { }
 
     public RepeatImpl(LocalDateTimeRange dateTimeRange, Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
     {
@@ -67,21 +64,9 @@ public class RepeatImpl extends Repeat {
     
     public RepeatImpl(Repeat oldRepeat) {
         super(oldRepeat, NEW_REPEATABLE_APPOINTMENT);
-//        System.out.println("oldRepeat " + oldRepeat);
         if (oldRepeat != null) {
             // Copy any MyRepeat specific fields first
             oldRepeat.copyInto(this);
-
-//            Iterator<DayOfWeek> dayOfWeekIterator = Arrays 
-//                    .stream(DayOfWeek.values())
-//                    .limit(7)
-//                    .iterator();
-//            while (dayOfWeekIterator.hasNext())
-//            {
-//                DayOfWeek key = dayOfWeekIterator.next();
-//                boolean b1 = this.getDayOfWeekMap().get(key).get();
-//                System.out.println("copied day of week " + key + " " + b1);
-//            }
         }
     }
     
@@ -116,8 +101,8 @@ public class RepeatImpl extends Repeat {
         try
         {
             Document doc = builder.parse(inputFile.toFile());
-            Map<String, String> rootAttributes = DataUtilities.getAttributes(doc.getFirstChild(), "repeatRules");
-            List<Integer> keys = DataUtilities.myGetList(rootAttributes, "keys", "");
+            Map<String, String> rootAttributes = IOUtilities.getAttributes(doc.getFirstChild(), "repeatRules");
+            List<Integer> keys = IOUtilities.myGetList(rootAttributes, "keys", "");
             Iterator<Integer> keyIterator = keys.iterator();
 
             NodeList myNodeList = doc.getElementsByTagName("repeat");
@@ -164,26 +149,26 @@ public class RepeatImpl extends Repeat {
      */
     private RepeatImpl unmarshal(Element myElement, Integer expectedKey)
     {
-        Map<String, String> repeatAttributes = DataUtilities.getAttributes(myElement, "repeat");
+        Map<String, String> repeatAttributes = IOUtilities.getAttributes(myElement, "repeat");
 
-        setKey(Integer.valueOf(DataUtilities.myGet(repeatAttributes, "key", "")));
+        setKey(Integer.valueOf(IOUtilities.myGet(repeatAttributes, "key", "")));
         if (! (getKey() == expectedKey)) {
 //            Main.log.log(Level.WARNING, "Repeat key does not match expected key. Repeat key = " + getKey()
 //                    + " Expected repeat key = " + expectedKey + ". Using expected repeat key.", new IllegalArgumentException());
         }
-        String intervalUnitString = DataUtilities.myGet(repeatAttributes, "intervalUnit", "");
+        String intervalUnitString = IOUtilities.myGet(repeatAttributes, "intervalUnit", "");
         Frequency myIntervalUnit = Frequency.valueOf(intervalUnitString);
         setFrequency(myIntervalUnit);
-        setInterval(DataUtilities.myParseInt(DataUtilities.myGet(repeatAttributes, "repeatFrequency", "")));
-        String endCriteriaString = DataUtilities.myGet(repeatAttributes, "endCriteria", "");
+        setInterval(IOUtilities.myParseInt(IOUtilities.myGet(repeatAttributes, "repeatFrequency", "")));
+        String endCriteriaString = IOUtilities.myGet(repeatAttributes, "endCriteria", "");
         EndCriteria myEndCriteria = EndCriteria.valueOf(endCriteriaString);
         setEndCriteria(myEndCriteria);
-        setStartLocalDate(myParseLocalDateTime(DataUtilities.myGet(repeatAttributes, "startDate", "")));
-        setDurationInSeconds(Integer.valueOf(DataUtilities.myGet(repeatAttributes, "duration", "")));
+        setStartLocalDate(myParseLocalDateTime(IOUtilities.myGet(repeatAttributes, "startDate", "")));
+        setDurationInSeconds(Integer.valueOf(IOUtilities.myGet(repeatAttributes, "duration", "")));
 //        setStartLocalTime(myParseLocalDateTime(DataUtilities.myGet(repeatAttributes, "startTime", ""), Settings.TIME_FORMAT_AGENDA));
 //        setEndLocalTime(myParseLocalDateTime(DataUtilities.myGet(repeatAttributes, "endTime", ""), Settings.TIME_FORMAT_AGENDA));
         Set<LocalDateTime> exceptionDates = Arrays
-                .stream(DataUtilities.myGet(repeatAttributes, "deletedDates", "").split(" "))
+                .stream(IOUtilities.myGet(repeatAttributes, "deletedDates", "").split(" "))
                 .map(a -> myParseLocalDateTime(a))
                 .collect(Collectors.toSet());
         setExceptions(exceptionDates);
@@ -193,12 +178,12 @@ public class RepeatImpl extends Repeat {
             case DAILY:
                 break;
             case WEEKLY:
-                Arrays.stream(DataUtilities.myGet(repeatAttributes, "daysOfWeek", "").split(" "))
+                Arrays.stream(IOUtilities.myGet(repeatAttributes, "daysOfWeek", "").split(" "))
                       .map(a -> DayOfWeek.valueOf(a))
                       .forEach(a -> getDayOfWeekMap().get(a).set(true));
                 break;
             case MONTHLY:
-                setMonthlyRepeat(MonthlyRepeat.valueOf(DataUtilities.myGet(repeatAttributes, "monthlyRepeat", "")));
+                setMonthlyRepeat(MonthlyRepeat.valueOf(IOUtilities.myGet(repeatAttributes, "monthlyRepeat", "")));
                 break;
             case YEARLY:
                 break;
@@ -210,17 +195,17 @@ public class RepeatImpl extends Repeat {
             case NEVER:
                 break;
             case AFTER:
-                setCount(DataUtilities.myParseInt(DataUtilities.myGet(repeatAttributes, "endAfterEvents", "")));
+                setCount(IOUtilities.myParseInt(IOUtilities.myGet(repeatAttributes, "endAfterEvents", "")));
                 // fall through
             case UNTIL:
-                setUntilLocalDateTime(LocalDateTime.parse(DataUtilities.myGet(repeatAttributes, "endOnDate", ""), formatter));
+                setUntilLocalDateTime(LocalDateTime.parse(IOUtilities.myGet(repeatAttributes, "endOnDate", ""), formatter));
                 break;
             default:
                 break;
         }
         
         Element appointmentElement = (Element) myElement.getElementsByTagName("appointment").item(0);   // must be only one appointment element
-        Map<String, String> appointmentAttributes = DataUtilities.getAttributes(appointmentElement, "appointment");
+        Map<String, String> appointmentAttributes = IOUtilities.getAttributes(appointmentElement, "appointment");
 //        RepeatableAppointmentImpl appointment = AppointmentFactory.newAppointment().unmarshal(appointmentAttributes, "Repeat appointment settings");
         RepeatableAppointmentImpl appointment = new RepeatableAppointmentImpl().unmarshal(appointmentAttributes, "Repeat appointment settings");
 //        System.out.println("appointment.getAppointmentGroupIndex() " + appointment.getAppointmentGroupIndex());
@@ -271,7 +256,7 @@ public class RepeatImpl extends Repeat {
         rootElement.setAttribute("keys", repeatKeys);
 
         try {
-            DataUtilities.writeDocument(doc, writeFile);
+            IOUtilities.writeDocument(doc, writeFile);
         } catch (TransformerException e) {
 //              Main.log.log(Level.SEVERE, "Appointment Repeat file " + writeFile + " can't be written");
             e.printStackTrace();

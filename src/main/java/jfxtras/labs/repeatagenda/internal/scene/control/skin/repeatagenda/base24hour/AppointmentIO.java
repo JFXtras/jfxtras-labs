@@ -20,7 +20,7 @@ import org.xml.sax.SAXException;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.DataUtilities;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.IOUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentGroupImpl;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
@@ -74,7 +74,7 @@ public final class AppointmentIO {
         }
         
         try {
-            DataUtilities.writeDocument(doc, file);
+            IOUtilities.writeDocument(doc, file);
         } catch (TransformerException e) {
 //            Main.log.log(Level.SEVERE, "Can't write appointmentGroups file=" + file, e);
         }
@@ -99,14 +99,14 @@ public final class AppointmentIO {
                     groupNodeCounter++) {
                 Node groupNode = groupNodeList.item(groupNodeCounter);
                 if (groupNode.hasAttributes()) {
-                    groupAttributes = DataUtilities.getAttributes(groupNode, "group");
+                    groupAttributes = IOUtilities.getAttributes(groupNode, "group");
                     
                     int myCount = (appointmentGroupCount.get(groupNodeCounter) == null)
                             ? 0 : appointmentGroupCount.get(groupNodeCounter);
     
                     AppointmentGroupImpl aGroup = new AppointmentGroupImpl()
-                        .withDescription(DataUtilities.myGet(groupAttributes, "name", errorMessage))
-                        .withStyleClass(DataUtilities.myGet(groupAttributes, "style", errorMessage));
+                        .withDescription(IOUtilities.myGet(groupAttributes, "name", errorMessage))
+                        .withStyleClass(IOUtilities.myGet(groupAttributes, "style", errorMessage));
     //                    .withAppointmentCount(myCount);
                     appointmentGroups.add(aGroup);
     

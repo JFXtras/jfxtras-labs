@@ -13,10 +13,9 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
-//makes a group of colored squares used to select appointment group
+/** makes a group of colored squares used to select appointment group */
 public class AppointmentGroupGridPane extends GridPane {
 
-// private LayoutHelp layoutHelp;
  private Pane[] lPane;
  private IntegerProperty appointmentGroupSelected = new SimpleIntegerProperty(-1);
  
@@ -27,35 +26,22 @@ public class AppointmentGroupGridPane extends GridPane {
      setupData(appointment, appointmentGroups);
  }
  
-// public void setupData(Appointment appointment, LayoutHelp layoutHelp) {
  public void setupData(Appointment appointment, List<AppointmentGroup> appointmentGroups)
  {
-     // construct a area of appointment groups
-//     this.layoutHelp = layoutHelp;
-//     getStylesheets().add(layoutHelp.skinnable.getUserAgentStylesheet());
-//     String css = this.getClass().getResource("../Agenda.css").toExternalForm(); 
-//     this.getStylesheets().add(css);
      this.getStyleClass().add("AppointmentGroups");
      this.setHgap(2);
      this.setVgap(2);
-//     lPane = new Pane[layoutHelp.skinnable.appointmentGroups().size()];
      lPane = new Pane[appointmentGroups.size()];
      
      int lCnt = 0;
-//     for (AppointmentGroup lAppointmentGroup : layoutHelp.skinnable.appointmentGroups())
      for (AppointmentGroup lAppointmentGroup : appointmentGroups)
      {
-         // TODO - REMOVE CAST
          lPane[lCnt] = ((RepeatableAgenda.AppointmentGroupImpl) lAppointmentGroup).getIcon();
-         // create the appointment group
-//         lPane[lCnt] = new Pane();
-//         lPane[lCnt].setPrefSize(20, 20);
-//         lPane[lCnt].getStyleClass().addAll("AppointmentGroup", lAppointmentGroup.getStyleClass());
          this.add(lPane[lCnt], lCnt % 12, lCnt / 12 );
 
          // tooltip
          updateToolTip(lCnt, appointmentGroups);
-//         LayoutHelp layoutHelp;
+
          // mouse 
          setupMouseOverAsBusy(lPane[lCnt]);
          lPane[lCnt].setOnMouseClicked( (mouseEvent) ->
@@ -66,12 +52,9 @@ public class AppointmentGroupGridPane extends GridPane {
              // assign appointment group
              AppointmentGroup g = appointmentGroups.get(appointmentGroupSelected.getValue());
              appointment.setAppointmentGroup(g);
-//             layoutHelp.skin.setupAppointments();    // updates all appointments - TODO better to update individual appointment - don't update because other changes may make display wrong
          });
          lCnt++;
      }
-   //int index = layoutHelp.skinnable.appointmentGroups().indexOf(appointment.getAppointmentGroup());
-//     int index = appointment.getAppointmentGroupIndex();
 
      // TODO - REMOVE CAST
      int index = ((RepeatableAgenda.AppointmentGroupImpl) appointment.getAppointmentGroup()).getKey();
@@ -102,8 +85,6 @@ public class AppointmentGroupGridPane extends GridPane {
      AppointmentGroup a = appointmentGroups.get(i);
      if (a.getDescription() != "" && a.getDescription() != null) {
          Tooltip.install(lPane[i], new Tooltip(a.getDescription()));
-//         System.out.println("new tooltip " + a.getDescription());
-//         setLPane(i);
      } 
  }
 
@@ -119,7 +100,8 @@ public class AppointmentGroupGridPane extends GridPane {
      return appointmentGroupSelected.getValue();
  }   
 
- void setupMouseOverAsBusy(final Node node) {
+ void setupMouseOverAsBusy(final Node node)
+ {
      // play with the mouse pointer to show something can be done here
      node.setOnMouseEntered( (mouseEvent) -> {
          if (!mouseEvent.isPrimaryButtonDown()) {                        

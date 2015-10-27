@@ -36,17 +36,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.Rep
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
-
 /**
- * Contains rules for repeatable appointments in agenda
+ * Contains rules for repeatable appointments
  *  
  * @author David Bal
  */
 public class Repeat {
-    
-//    public boolean isEmpty() { return intervalUnit.getValue() == null; }
-
-//    public static Period repeatPeriod = Period.ofWeeks(1);
     
     // TODO - MAKE A WAY TO APPLY MULTIPLE RULES ON TOP OF EACH OTHER - like iCalendar
     // Use RepeatRule interface.  Make implementing class for each rule type.
@@ -63,7 +58,11 @@ public class Repeat {
         endDate = dateTimeRange.getEndLocalDateTime();
     }
     
-    private Callback<LocalDateTimeRange, Appointment> newAppointmentCallback;
+    /**
+     * Repeat doesn't know how to make the new appointments.  Appointment is an interface defined in Agenda.  The callback
+     * produces a new Appointment object of the implemented class.
+     */
+    private Callback<LocalDateTimeRange, Appointment> newAppointmentCallback;   // callback set in constructor
     public Callback<LocalDateTimeRange, Appointment> getNewAppointmentCallback() { return newAppointmentCallback; }
     
     final private ObjectProperty<Frequency> frequency = new SimpleObjectProperty<Frequency>();
@@ -85,6 +84,7 @@ public class Repeat {
     }
     public Repeat withInterval(Integer count) { setInterval(count); return this; }
 
+    /** Map of Days of Week properties */
     final private Map<DayOfWeek, BooleanProperty> dayOfWeekMap = Arrays // Initialized map of all days of the week, each BooleanProperty is false
             .stream(DayOfWeek.values())
             .collect(Collectors.toMap(k -> k, v -> new SimpleBooleanProperty(false)));
@@ -103,7 +103,6 @@ public class Repeat {
             DayOfWeek key = dayOfWeekIterator.next();
             boolean b1 = getDayOfWeekMap().get(key).get();
             boolean b2 = dayOfWeekMap2.get(key).get();
-//            System.out.println("match " + b1 + " " + b2);
             if (b1 != b2) return false;
         }
         return true;
@@ -152,47 +151,26 @@ public class Repeat {
     }
     public Repeat withMonthlyRepeat(MonthlyRepeat monthlyRepeat) { setMonthlyRepeat(monthlyRepeat); return this; }
     
-//    final private ObjectProperty<LocalDate> startLocalDate = new SimpleObjectProperty<LocalDate>();
-//    public ObjectProperty<LocalDate> startLocalDateProperty() { return startLocalDate; }
-//    public LocalDate getStartLocalDate() { return startLocalDate.getValue(); }
-//    public void setStartLocalDate(LocalDate startDate) { this.startLocalDate.set(startDate); }
-//    public Repeat withStartLocalDate(LocalDate startDate) { setStartLocalDate(startDate); return this; }
-
+    /** Start date/time of repeat rule */
     final private ObjectProperty<LocalDateTime> startLocalDate = new SimpleObjectProperty<LocalDateTime>();
     public ObjectProperty<LocalDateTime> startLocalDateProperty() { return startLocalDate; }
     public LocalDateTime getStartLocalDate() { return startLocalDate.getValue(); }
     public void setStartLocalDate(LocalDateTime startDate) { this.startLocalDate.set(startDate); }
     public Repeat withStartLocalDate(LocalDateTime startDate) { setStartLocalDate(startDate); return this; }
     
-//    final private ObjectProperty<LocalTime> startLocalTime = new SimpleObjectProperty<LocalTime>(this, "startLocalTime");
-//    public ObjectProperty<LocalTime> startLocalTimeProperty() { return startLocalTime; }
-//    public LocalTime getStartLocalTime() { return startLocalTime.getValue(); }
-//    public void setStartLocalTime(LocalTime value) { startLocalTime.setValue(value); }
-//    public Repeat withStartLocalTime(LocalTime value) { setStartLocalTime(value); return this; }
-
-    // Seconds duration of appointments
+    /** Seconds duration of appointments */
     final private ObjectProperty<Integer> durationInSeconds = new SimpleObjectProperty<Integer>(this, "durationProperty");
     public ObjectProperty<Integer> durationInSecondsProperty() { return durationInSeconds; }
     public Integer getDurationInSeconds() { return durationInSeconds.getValue(); }
     public void setDurationInSeconds(Integer value) { durationInSeconds.setValue(value); }
     public Repeat withDurationInSeconds(Integer value) { setDurationInSeconds(value); return this; } 
     
-//    final private ObjectProperty<LocalTime> endLocalTime = new SimpleObjectProperty<LocalTime>(this, "endLocalTimeProperty");
-//    public ObjectProperty<LocalTime> endLocalTimeProperty() { return endLocalTime; }
-//    public LocalTime getEndLocalTime() { return endLocalTime.getValue(); }
-//    public void setEndLocalTime(LocalTime value) { endLocalTime.setValue(value); }
-//    public Repeat withEndLocalTime(LocalTime value) { setEndLocalTime(value); return this; } 
-    
     final private ObjectProperty<EndCriteria> endCriteria = new SimpleObjectProperty<EndCriteria>();
     public ObjectProperty<EndCriteria> endCriteriaProperty() { return endCriteria; }
     public EndCriteria getEndCriteria() { return endCriteria.getValue(); }
     public void setEndCriteria(EndCriteria endCriteria) { this.endCriteria.set(endCriteria); }
-//    public Repeat withEndNever() { setEndCriteria(EndCriteria.NEVER); return this; }
     public Repeat withEndCriteria(EndCriteria endCriteria){ setEndCriteria(endCriteria); return this; }
     
-    /**
-     * 
-     */
     final private IntegerProperty count = new SimpleIntegerProperty();
     public Integer getCount() { return count.getValue(); }
     public IntegerProperty countProperty() { return count; }
@@ -226,7 +204,6 @@ public class Repeat {
         {
             myDate = validDateIterator.next();
         }
-        System.out.println("make end on date " + myDate);
         setUntilLocalDateTime(myDate);
     }
     /**
@@ -317,18 +294,7 @@ public class Repeat {
 //  return getAppointmentData().getStartLocalDateTime() == null;
         return getAppointments().size() == 0;
     }
-
-    /**
-     * Constructor only with callback, range needed too
-     */
-    protected Repeat(Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
-    {
-        this.newAppointmentCallback = newAppointmentCallback;
-        RepeatableAppointment appt = (RepeatableAppointment) getNewAppointmentCallback()
-                .call(new LocalDateTimeRange(null, null));
-        this.setAppointmentData(appt); // initialize appointmentData
-    }
-    
+   
     /**
      * Constructor with range - used in factory (new Repeat objects need range to make appointments)
      */
@@ -339,34 +305,6 @@ public class Repeat {
         endDate = dateTimeRange.getEndLocalDateTime();
     }
 
-//    /**
-//     * Constructor with range - used in factory (new Repeat objects need range to make appointments)
-//     * Defaults to one week before and one week after now as range.
-//     */
-//    public Repeat(Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
-//    {
-//        this(new LocalDateTimeRange(LocalDateTime.now().minusWeeks(1), LocalDateTime.now().plusWeeks(1)), newAppointmentCallback);
-//    }
-
-    
-//    /**
-//     * Default constructor
-//     */
-    public Repeat() { }
-    
-//    /**
-//     * Copy constructor that makes a new object with the parts from an Appointment copied
-//     * 
-//     * @param appointment
-//     * @return
-//     * @throws CloneNotSupportedException
-//     */
-//    public Repeat(Repeat oldRepeat) {
-//        System.out.println("repeat.getAppointmentData() " + oldRepeat.getAppointmentData());
-//        if (oldRepeat != null) {
-//            oldRepeat.copyInto(this);
-//        }
-//    }
 
     /**
      * Copy constructor (range comes from copy)
@@ -381,6 +319,19 @@ public class Repeat {
             oldRepeat.copyInto(this);
         }
     }
+
+    /**
+     * Constructor only with callback, range needed too
+     */
+    protected Repeat(Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
+    {
+        this.newAppointmentCallback = newAppointmentCallback;
+        RepeatableAppointment appt = (RepeatableAppointment) getNewAppointmentCallback()
+                .call(new LocalDateTimeRange(null, null));
+        this.setAppointmentData(appt); // initialize appointmentData
+    }
+    
+    // TODO - CONSIDER USING COPY CONSTRUCTOR INSTEAD
     /**
      * Copy's current object's fields into passed parameter
      * 
@@ -639,20 +590,6 @@ public class Repeat {
         getAppointments().addAll(s);
     }
     
-    /**
-     * Make repeat Appointments for already defined start and end dates.  Those values must have already been set by having called 
-     * makeAppointments with startDate and endDate parameters.
-     * 
-     * @param appointments
-     * @return
-     */
-//    public Repeat makeAppointments(Collection<Appointment> appointments)
-//    {
-////        if (startDate == null) startDate = LocalDate.now().minusWeeks(1);
-////        if (endDate == null) endDate = LocalDate.now().plusWeeks(1);
-//        return makeAppointments(appointments, startDate, endDate);
-//    }
-
     /**
      * Make appointments that should exist between startDate and endDate based on Repeat rules.
      * Adds those appointments to the input parameter appointments Collection.

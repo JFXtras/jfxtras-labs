@@ -12,10 +12,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Popup;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableUtilities;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 /**
@@ -58,7 +58,10 @@ public class AppointmentPopupController {
 //        this.layoutHelp = layoutHelp;
         this.popup = popup;
         
-        appointmentTimeLabel.setText(AppointmentUtilities.makeAppointmentTime(appointment));
+        String start = Settings.DATE_FORMAT_AGENDA_START.format(appointment.getStartLocalDateTime());
+        String end = Settings.DATE_FORMAT_AGENDA_END.format(appointment.getEndLocalDateTime());
+        String appointmentTime = start + end + " ";
+        appointmentTimeLabel.setText(appointmentTime);
         nameTextField.setText(appointment.getSummary());
         nameTextField.textProperty().addListener((observable, oldValue, newValue) ->  {
             appointment.setSummary(newValue);

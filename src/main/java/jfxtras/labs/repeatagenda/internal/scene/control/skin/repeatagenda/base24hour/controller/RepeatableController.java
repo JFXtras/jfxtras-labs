@@ -5,6 +5,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.beans.InvalidationListener;
@@ -12,7 +13,11 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -28,7 +33,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AlertsAndDialogs;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.EndCriteria;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
@@ -143,7 +147,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
             if (! isNumber) {
                 String lastValue = frequencySpinner.getValue().toString();
                 frequencySpinner.getEditor().textProperty().set(lastValue);
-                AlertsAndDialogs.notNumberAlert("123");
+                notNumberAlert("123");
             }
         }
     });
@@ -160,7 +164,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
             } else {
                 String lastValue = frequencySpinner.getValue().toString();
                 frequencySpinner.getEditor().textProperty().set(lastValue);
-                AlertsAndDialogs.notNumberAlert("123");
+                notNumberAlert("123");
             }
         }
     });
@@ -238,7 +242,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
             if (! isNumber) {
                 String lastValue = endAfterEventsSpinner.getValue().toString();
                 endAfterEventsSpinner.getEditor().textProperty().set(lastValue);
-                AlertsAndDialogs.notNumberAlert("123");
+                notNumberAlert("123");
             }
         }
     });
@@ -255,7 +259,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
             } else {
                 String lastValue = endAfterEventsSpinner.getValue().toString();
                 endAfterEventsSpinner.getEditor().textProperty().set(lastValue);
-                AlertsAndDialogs.notNumberAlert("123");
+                notNumberAlert("123");
             }
         }
     });
@@ -428,6 +432,17 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
         default:
             break;
         }
+    }
+    
+    private static void notNumberAlert(String validFormat)
+    {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Invalid Number");
+        alert.setHeaderText("Please enter valid numbers.");
+        alert.setContentText("Accepted format: " + validFormat);
+        ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonTypeOk);
+        Optional<ButtonType> result = alert.showAndWait();
     }
 
 }

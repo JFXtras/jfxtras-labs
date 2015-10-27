@@ -20,24 +20,15 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
-// New stage for popup window
+/** New stage for popup window */
 public class RepeatMenu extends Stage {
 
-//    final private AppointmentEditController appointmentEditController;
-//    final private LayoutHelp layoutHelp;
     private BooleanProperty groupNameEdited = new SimpleBooleanProperty(false);
     private BooleanProperty appointmentEdited = new SimpleBooleanProperty(false);
     public BooleanProperty appointmentEditedProperty() { return appointmentEdited; }
-//    private Collection<Appointment> editedAppointments;
     private Iterator<Appointment> editedAppointments; // TODO
     private BooleanProperty repeatEdited = new SimpleBooleanProperty(false);
     public BooleanProperty repeatEditedProperty() { return repeatEdited; }
-
-    //    private Pane pane;
-//    private List<AppointmentGroup> appointmentGroups;
-//    private Collection<Repeat> repeats;
-//    private Collection<Appointment> appointments;
-//    private Appointment appointment;
 
     public RepeatMenu(Appointment appointment
             , LocalDateTimeRange dateTimeRange
@@ -48,38 +39,20 @@ public class RepeatMenu extends Stage {
             , Callback<Collection<Appointment>, Void> appointmentWriteCallback
             , Callback<Collection<Repeat>, Void> repeatWriteCallback)
     {
-////        this.layoutHelp = layoutHelp;
-//        this.pane = pane;
-//        this.appointments = appointments;
-//        this.repeats = repeats;
-//        this.appointmentGroups = appointmentGroups;
-//    }
-//    
-//    public void setup(Appointment appointment)
-//    {
-//        LayoutHelp layoutHelp = data.layoutHelp;
-//        Appointment appointment = data.appointment;
-//        Pane pane = data.pane;
-        setTitle(AppointmentUtilities.makeAppointmentName(appointment));
+        String start = Settings.DATE_FORMAT_AGENDA_START.format(appointment.getStartLocalDateTime());
+        String end = Settings.DATE_FORMAT_AGENDA_END.format(appointment.getEndLocalDateTime());
+        String appointmentTime = start + end + " ";
+        setTitle(appointment.getSummary() + ": " + appointmentTime);
         initModality(Modality.APPLICATION_MODAL);
         
 //        // LOAD FXML
         FXMLLoader appointmentMenuLoader = new FXMLLoader();
-//        try {
-//            System.out.println(DataUtilities.getResourceListing(RepeatMenu.class, "internal/scene/control/skin/agenda/base24hour/view/AppointmentEdit.fxml"));
-//        } catch (URISyntaxException | IOException e1) {
-//            // TODO Auto-generated catch block
-//            e1.printStackTrace();
-//        }
-//        System.out.println(RepeatMenu.class.getResource("view/AppointmentEdit.fxml"));
-//        System.exit(0);
         appointmentMenuLoader.setLocation(RepeatMenu.class.getResource("view/AppointmentEdit.fxml"));
         appointmentMenuLoader.setResources(Settings.resources);
         Control appointmentMenu = null;
         try {
             appointmentMenu = appointmentMenuLoader.load();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         AppointmentEditController appointmentEditController = appointmentMenuLoader.getController();
@@ -106,7 +79,6 @@ public class RepeatMenu extends Stage {
         setOnHidden((windowEvent) -> 
         {
             appointmentEditController.getRepeatableController().removeRepeatBindings();
-
             switch (appointmentEditController.getCloseType())
             {
             case CLOSE_WITH_CHANGE:
@@ -115,34 +87,13 @@ public class RepeatMenu extends Stage {
                     AppointmentIO.writeAppointmentGroups(appointmentGroups, Settings.APPOINTMENT_GROUPS_FILE);
                 }
                 break;
+            default:
+                break;
             }
-//            layoutHelp.skin.setupAppointments();    // refresh appointment graphics
-            System.out.println("RepeatMenuStage refresh " + appointmentEdited.get() + " " +  repeatEdited.get()); // refresh - use callback?
         });
         
         setScene(scene);
-        // show it just below the menu icon
-//        setX(NodeUtil.screenX(pane));
-//        setY(NodeUtil.screenY(pane));
     }
-
-//    public RepeatMenuStage(Appointment a,
-//            Collection<Appointment> appointments,
-//            Collection<Repeat> repeats,
-//            List<AppointmentGroup> appointmentGroups, Pane pane) {
-//        // TODO Auto-generated constructor stub
-//    }
-
-    
-//    public void setAppointmentAndShow(Appointment appointment)
-//    {
-//        
-//        
-//        show();
-//    }
-    
-    
-    
     
 }
  

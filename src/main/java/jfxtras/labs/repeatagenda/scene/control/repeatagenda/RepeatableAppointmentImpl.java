@@ -313,8 +313,8 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
                                          .collect(Collectors.joining(" "));
         myElement.setAttribute("studentKeys", s);
         
-        myElement.setAttribute(endLocalDateTimeProperty().getName(), DataUtilities.myFormatLocalDateTime(getEndLocalDateTime()));
-        myElement.setAttribute(startLocalDateTimeProperty().getName(), DataUtilities.myFormatLocalDateTime(getStartLocalDateTime()));
+        myElement.setAttribute(endLocalDateTimeProperty().getName(), IOUtilities.myFormatLocalDateTime(getEndLocalDateTime()));
+        myElement.setAttribute(startLocalDateTimeProperty().getName(), IOUtilities.myFormatLocalDateTime(getStartLocalDateTime()));
         return myElement;
     }
     
@@ -346,8 +346,8 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
         }
         
         Map<String, String> appointmentAttributes;
-        Map<String, String> rootAttributes = DataUtilities.getAttributes(doc.getFirstChild(), "repeatRules");
-        List<Integer> keys = DataUtilities.myGetList(rootAttributes, "keys", "");
+        Map<String, String> rootAttributes = IOUtilities.getAttributes(doc.getFirstChild(), "repeatRules");
+        List<Integer> keys = IOUtilities.myGetList(rootAttributes, "keys", "");
         Iterator<Integer> keyIterator = keys.iterator();
         
         NodeList appointmentNodeList = doc.getElementsByTagName("appointment");
@@ -357,8 +357,8 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
             if (appointmentNode.hasAttributes())
             {
                 Integer expectedKey = keyIterator.next();
-                appointmentAttributes = (HashMap<String, String>) DataUtilities.getAttributes(appointmentNode, "appointment");
-                String appointmentName = DataUtilities.myGet(appointmentAttributes, "summary", file.toString());
+                appointmentAttributes = (HashMap<String, String>) IOUtilities.getAttributes(appointmentNode, "appointment");
+                String appointmentName = IOUtilities.myGet(appointmentAttributes, "summary", file.toString());
                 String errorMessage = ", file: " + file + " summary: " + appointmentName;
                 RepeatableAppointment anAppointment = new RepeatableAppointmentImpl()
                         .unmarshal(appointmentAttributes, expectedKey, errorMessage);
@@ -376,14 +376,14 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
      */
     public RepeatableAppointmentImpl unmarshal(Map<String, String> appointmentAttributes, String errorMessage)
     {
-        setDescription(DataUtilities.myGet(appointmentAttributes, "description", errorMessage));
-        setAppointmentGroupIndex(Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "groupIndex", errorMessage)));
+        setDescription(IOUtilities.myGet(appointmentAttributes, "description", errorMessage));
+        setAppointmentGroupIndex(Integer.parseInt(IOUtilities.myGet(appointmentAttributes, "groupIndex", errorMessage)));
 //System.out.println("getAppointmentGroupIndex " + getAppointmentGroupIndex());
         //        setLocationKey(Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "locationKey", errorMessage)));
 //        setStaffKeys(DataUtilities.myGetList(appointmentAttributes, "staffKeys", errorMessage));
 //        setStyleKey(Integer.parseInt( DataUtilities.myGet(appointmentAttributes, "styleKey", errorMessage)));
-        setSummary( DataUtilities.myGet(appointmentAttributes, "summary", errorMessage));
-        setWholeDay(DataUtilities.myParseBoolean(DataUtilities.myGet(appointmentAttributes, "wholeDay", errorMessage)));
+        setSummary( IOUtilities.myGet(appointmentAttributes, "summary", errorMessage));
+        setWholeDay(IOUtilities.myParseBoolean(IOUtilities.myGet(appointmentAttributes, "wholeDay", errorMessage)));
 //        System.out.println("groupIndex " + getAppointmentGroupIndex());
 
         return this;
@@ -401,8 +401,8 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
     {
         unmarshal(appointmentAttributes, errorMessage);
   
-        setRepeatKey(DataUtilities.myParseInt(DataUtilities.myGet(appointmentAttributes, "repeatKey", errorMessage)));
-        setKey(Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "key", errorMessage)));
+        setRepeatKey(IOUtilities.myParseInt(IOUtilities.myGet(appointmentAttributes, "repeatKey", errorMessage)));
+        setKey(Integer.parseInt(IOUtilities.myGet(appointmentAttributes, "key", errorMessage)));
         if (! (getKey() == expectedKey)) {
 //            Main.log.log(Level.WARNING, "Appointment key does not match expected key. Appointment key = " + getKey()
 //                    + " Expected appointment key = " + expectedKey + ". Using expected appointment key.", new IllegalArgumentException());
@@ -410,11 +410,11 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
         nextKey = Math.max(nextKey, getKey()) + 1;
         if (hasRepeatKey()) this.myRepeat = (repeatIntegerKeyMap.get(getRepeatKey()));
 //        if (hasRepeatKey()) setRepeat(repeatMap.get(getRepeatKey()));
-        setStudentKeys(DataUtilities.myGetList(appointmentAttributes, "studentKeys", errorMessage));
+        setStudentKeys(IOUtilities.myGetList(appointmentAttributes, "studentKeys", errorMessage));
 
         
-      setEndLocalDateTime(LocalDateTime.parse(DataUtilities.myGet(appointmentAttributes,endLocalDateTime.getName(), errorMessage), Settings.DATE_FORMAT_AGENDA));
-      setStartLocalDateTime(LocalDateTime.parse( DataUtilities.myGet(appointmentAttributes, startLocalDateTime.getName(), errorMessage), Settings.DATE_FORMAT_AGENDA));
+      setEndLocalDateTime(LocalDateTime.parse(IOUtilities.myGet(appointmentAttributes,endLocalDateTime.getName(), errorMessage), Settings.DATE_FORMAT_AGENDA));
+      setStartLocalDateTime(LocalDateTime.parse( IOUtilities.myGet(appointmentAttributes, startLocalDateTime.getName(), errorMessage), Settings.DATE_FORMAT_AGENDA));
       return this;
     }
     @Override
