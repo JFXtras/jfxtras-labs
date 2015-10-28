@@ -39,6 +39,7 @@ public class AppointmentEditController {
     private List<AppointmentGroup> appointmentGroups;
     private Callback<Collection<Appointment>, Void> appointmentWriteCallback;
     private Callback<Collection<Repeat>, Void> repeatWriteCallback;
+    private Callback<Void, Void> refreshCallback;
 //    private LayoutHelp layoutHelp;
 
     // Change properties
@@ -97,7 +98,8 @@ public class AppointmentEditController {
             , Class<? extends Repeat> repeatClass
 //            , Callback<LocalDateTimeRange, Appointment> newAppointmentCallback
             , Callback<Collection<Appointment>, Void> appointmentWriteCallback
-            , Callback<Collection<Repeat>, Void> repeatWriteCallback)
+            , Callback<Collection<Repeat>, Void> repeatWriteCallback
+            , Callback<Void, Void> refreshCallback)
     {
 //        this.layoutHelp = layoutHelp;
         Locale locale = Locale.getDefault();
@@ -106,6 +108,7 @@ public class AppointmentEditController {
         this.repeats = repeats;
         this.appointmentWriteCallback = appointmentWriteCallback;
         this.repeatWriteCallback = repeatWriteCallback;
+        this.refreshCallback = refreshCallback;
 //        repeats = layoutHelp.skinnable.repeats();
 //        appointments = layoutHelp.skinnable.appointments();
 
@@ -125,32 +128,29 @@ public class AppointmentEditController {
         });
         
         descriptionTextArea.setText(appointment.getDescription());
-        descriptionTextArea.textProperty().addListener((observable, oldValue, newValue) ->  {
-             appointment.setDescription(newValue);
-         });
+        descriptionTextArea.textProperty().addListener((obs, oldValue, newValue) ->  appointment.setDescription(newValue));
         
         // START DATE TIME TEXT FIELD
         startTextField.setLocale(locale);
         startTextField.setLocalDateTime(appointment.getStartLocalDateTime());
 
-        //        startTextField.localDateTimeProperty().bindBidirectional(appointment.startLocalDateTimeProperty());
+//        startTextField.localDateTimeProperty().bindBidirectional(appointment.startLocalDateTimeProperty());
 //        startTextField.localDateTimeProperty().addListener(startDateListener);
-//        startTextField.localDateTimeProperty().addListener((observable, oldValue, newValue)
-//                -> appointment.setStartLocalDateTime(newValue));
+        startTextField.localDateTimeProperty().addListener((obs, oldValue, newValue) -> appointment.setStartLocalDateTime(newValue));
 
         // END DATE TIME TEXT FIELD
         endTextField.setLocale(locale);
         endTextField.setLocalDateTime(appointment.getEndLocalDateTime());
         endTextField.setVisible(appointment.getEndLocalDateTime() != null);
 
-        endTextField.localDateTimeProperty().addListener((observable, oldValue, newValue) ->  {
+        endTextField.localDateTimeProperty().addListener((obs, oldValue, newValue) ->  {
             appointment.setEndLocalDateTime(newValue);
         });
         
         // Whole day
         wholeDayCheckBox.selectedProperty().set(appointment.isWholeDay());
 
-        wholeDayCheckBox.selectedProperty().addListener( (observable, oldValue, newValue) ->  {
+        wholeDayCheckBox.selectedProperty().addListener( (obs, oldValue, newValue) ->  {
             appointment.setWholeDay(newValue);
             if (newValue == true) {
                 appointment.setEndLocalDateTime(null);
@@ -195,8 +195,10 @@ public class AppointmentEditController {
         setCloseType(result);
 
         if (getCloseType() == WindowCloseType.CLOSE_WITH_CHANGE) {
+            refreshCallback.call(null);
 //            layoutHelp.skin.setupAppointments();    // refresh appointment graphics
             System.out.println("need to refresh");
+            // use callback? 
         }
     }
     

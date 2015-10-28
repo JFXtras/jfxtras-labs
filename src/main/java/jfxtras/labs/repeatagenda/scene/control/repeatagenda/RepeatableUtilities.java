@@ -33,6 +33,14 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.EndCriteria;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
+/**
+ * Static methods that delete and edit an appointment or repeatable appointments.  Through the
+ * use of callbacks I/O methods are called to write changes to storage as well as system
+ * memory.
+ * 
+ * @author david
+ *
+ */
 public final class RepeatableUtilities {
     
     private RepeatableUtilities() {}
@@ -263,7 +271,8 @@ public final class RepeatableUtilities {
         return (writeAppointments || writeRepeats) ? WindowCloseType.CLOSE_WITH_CHANGE : WindowCloseType.CLOSE_WITHOUT_CHANGE;
     }
 
-    
+    //TODO - STOP USING UPDATEAPPOINTMENTS - INSTEAD CLEAR ALL REPEAT-MADE APPOINTMENTS AND
+    // MAKE NEW ONES - SHOULD BE MUCH EASIER AND LESS ERROR PRONE
     /**
      * Edit appointments with parameters for the callbacks.
      * To do testing the two write callbacks should be set to stubs that do nothing.  Also, the changeDialogCallback
@@ -305,6 +314,7 @@ public final class RepeatableUtilities {
 
         // Make temporal adjusters for time and/or day shift
         final LocalDateTime startDate = appointment.getStartLocalDateTime();
+        System.out.println("start date time " + startDate);
         final LocalDateTime startDateOld = appointmentOld.getStartLocalDateTime();
         final int dayShift = Period.between(startDateOld.toLocalDate(), startDate.toLocalDate()).getDays();
         final int startMinuteShift = (int) Duration.between(appointmentOld.getStartLocalDateTime()

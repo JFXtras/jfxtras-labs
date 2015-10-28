@@ -118,6 +118,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
         // Change edit popup to provide one with repeat options
         setEditAppointmentCallback((Appointment appointment) -> {
             System.out.println("getNewAppointmentCallback() " + getNewAppointmentCallback());
+            Callback<Void, Void> refresh = a -> { this.refresh(); return null; };
             RepeatMenu repeatMenu = new RepeatMenu(
                     (RepeatableAppointment) appointment
                     , dateTimeRange()
@@ -128,7 +129,8 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
                     , repeatClass
 //                    , getNewAppointmentCallback()
                     , appointmentWriteCallback   // write appointment callback initialized to null
-                    , repeatWriteCallback);      // write repeat callback initialized to null
+                    , repeatWriteCallback
+                    , refresh);      // write repeat callback initialized to null
             repeatMenu.show();
             return null;
         });

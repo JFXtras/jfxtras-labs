@@ -40,7 +40,8 @@ public class RepeatMenu extends Stage {
             , Class<? extends Repeat> repeatClass
 //            , Callback<LocalDateTimeRange, Appointment> newAppointmentCallback
             , Callback<Collection<Appointment>, Void> appointmentWriteCallback
-            , Callback<Collection<Repeat>, Void> repeatWriteCallback)
+            , Callback<Collection<Repeat>, Void> repeatWriteCallback
+            , Callback<Void, Void> refreshCallback)
     {
         String start = Settings.DATE_FORMAT_AGENDA_START.format(appointment.getStartLocalDateTime());
         String end = Settings.DATE_FORMAT_AGENDA_END.format(appointment.getEndLocalDateTime());
@@ -69,7 +70,8 @@ public class RepeatMenu extends Stage {
               , repeatClass
 //              , newAppointmentCallback
               , appointmentWriteCallback
-              , repeatWriteCallback);
+              , repeatWriteCallback
+              , refreshCallback);
         Scene scene = new Scene(appointmentMenu);
 
         // data element change bindings

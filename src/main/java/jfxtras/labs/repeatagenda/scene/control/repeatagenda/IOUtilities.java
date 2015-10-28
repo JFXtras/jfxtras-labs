@@ -24,6 +24,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+/**
+ * These methods are used with RepeatImpl and RepeatableAppointmentImpl for reading and
+ * writing appointments and repeat rules to storage.
+ * 
+ * @author david
+ *
+ */
 public class IOUtilities {
 
     /**
