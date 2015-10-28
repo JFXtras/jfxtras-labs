@@ -64,7 +64,7 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
         RepeatableAppointment a = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed2");
-        Repeat expectedRepeat = new RepeatImpl(getNewRepeatableAppointment())
+        Repeat expectedRepeat = new RepeatImpl(RepeatableAppointmentImpl.class)
                 .withStartLocalDate(LocalDateTime.of(2015, 10, 5, 8, 45))
                 .withDurationInSeconds(5400)
 //                .withStartLocalTime(LocalTime.of(8, 45))

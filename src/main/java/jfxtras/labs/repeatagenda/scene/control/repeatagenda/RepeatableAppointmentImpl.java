@@ -85,15 +85,17 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
         
     // TODO - REPALCE WITH UID - from iCalendar
     private static int nextKey = 0;
-    private static Map<Integer, RepeatImpl> repeatIntegerKeyMap = new HashMap<Integer, RepeatImpl>(); // private map of repeats used to match Repeat objects to appointments
+
+    private static int nextUID = 0;
+    private static Map<String, Repeat> repeatUIDKeyMap = new HashMap<String, Repeat>(); // private map of repeats used to match Repeat objects to appointments
     /** create map of Repeat objects and repeat keys.  Its used to find Repeat objects to attach to Appointment objects.
      * Only used when setting up appointments from file */
     public static void setupRepeats(Set<Repeat> set)
     {
-        Set<RepeatImpl> myRepeats
-            = set.stream().map(a -> (RepeatImpl) a).collect(Collectors.toSet());
-        repeatIntegerKeyMap = myRepeats.stream()
-                           .collect(Collectors.toMap(a -> a.getKey(), a -> a));
+        Set<Repeat> myRepeats
+            = set.stream().map(a -> (Repeat) a).collect(Collectors.toSet());
+        repeatUIDKeyMap = myRepeats.stream()
+                           .collect(Collectors.toMap(a -> a.getUID(), a -> a));
     }
     private Repeat myRepeat;
 
@@ -213,7 +215,7 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
     {
 //        setRepeat(RepeatFactory.newRepeat(appointment.getRepeat()));
 //        System.out.println("repeataptimpl getAppts " + appointment.getRepeat().getAppointmentData());
-        setRepeat(new RepeatImpl(appointment.getRepeat()));
+        setRepeat(new RepeatImpl(appointment.getRepeat(), RepeatableAppointmentImpl.class));
 //        MyRepeat newRepeat = RepeatFactory.newRepeat(repeatMap.get(appointment));
 //        repeatMap.put(this, newRepeat);
         appointment.copyInto(this);
@@ -408,7 +410,7 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
 //                    + " Expected appointment key = " + expectedKey + ". Using expected appointment key.", new IllegalArgumentException());
         }
         nextKey = Math.max(nextKey, getKey()) + 1;
-        if (hasRepeatKey()) this.myRepeat = (repeatIntegerKeyMap.get(getRepeatKey()));
+        if (hasRepeatKey()) this.myRepeat = (repeatUIDKeyMap.get(getRepeatKey()));
 //        if (hasRepeatKey()) setRepeat(repeatMap.get(getRepeatKey()));
         setStudentKeys(IOUtilities.myGetList(appointmentAttributes, "studentKeys", errorMessage));
 

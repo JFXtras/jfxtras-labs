@@ -32,11 +32,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.EndCriteria;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
-import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 public class RepeatableController {
@@ -300,17 +299,27 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
     public void setupData(
             RepeatableAppointment appointment
           , LocalDateTimeRange dateTimeRange
-          , Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
+          , Class<? extends RepeatableAppointment> appointmentClass
+          , Class<? extends Repeat> repeatClass)
+//          , Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
     {
 
 //        this.appointment = appointment;
+        System.out.println("appointment.getRepeat() " + appointment.getRepeat() );
         if (appointment.getRepeat() != null)
         { // get existing repeat
             repeat = appointment.getRepeat();
         } else { // make new repeat
-            repeat = new Repeat(dateTimeRange, newAppointmentCallback);
+            repeat = RepeatFactory.newRepeat(repeatClass, dateTimeRange, appointmentClass);
+            System.out.println("new repeat " + repeat );
+//            repeatClass.newInstance();
+//            if (false){
+//            Callback<LocalDateTimeRange, Appointment> newAppointmentCallback = null;
+//            repeat = new RepeatImpl(dateTimeRange, newAppointmentCallback);
+//            }
 //            repeat = RepeatFactory.newRepeat(dateTimeRange);
             repeat.setDefaults();
+            System.out.println("copynondate fields " + appointment + " " + repeat.getAppointmentData());
             appointment.copyNonDateFieldsInto(repeat.getAppointmentData());
             repeat.setStartLocalDate(appointment.getStartLocalDateTime());
 //            repeat.setStartLocalTime(appointment.getStartLocalDateTime().toLocalTime());

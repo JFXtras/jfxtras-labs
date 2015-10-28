@@ -19,6 +19,7 @@ import javafx.scene.control.TextField;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableUtilities.WindowCloseType;
@@ -36,8 +37,8 @@ public class AppointmentEditController {
     private Collection<Appointment> appointments;
     private Collection<Repeat> repeats;
     private List<AppointmentGroup> appointmentGroups;
-    private Callback<Collection<Appointment>, Void> appointmentCallback;
-    private Callback<Collection<Repeat>, Void> repeatCallback;
+    private Callback<Collection<Appointment>, Void> appointmentWriteCallback;
+    private Callback<Collection<Repeat>, Void> repeatWriteCallback;
 //    private LayoutHelp layoutHelp;
 
     // Change properties
@@ -92,7 +93,9 @@ public class AppointmentEditController {
             , Collection<Appointment> appointments
             , Collection<Repeat> repeats
             , List<AppointmentGroup> appointmentGroups
-            , Callback<LocalDateTimeRange, Appointment> newAppointmentCallback
+            , Class<? extends RepeatableAppointment> appointmentClass
+            , Class<? extends Repeat> repeatClass
+//            , Callback<LocalDateTimeRange, Appointment> newAppointmentCallback
             , Callback<Collection<Appointment>, Void> appointmentWriteCallback
             , Callback<Collection<Repeat>, Void> repeatWriteCallback)
     {
@@ -101,17 +104,19 @@ public class AppointmentEditController {
         this.appointment = (RepeatableAppointment) inputAppointment;
         this.appointments = appointments;
         this.repeats = repeats;
-        this.appointmentCallback = appointmentWriteCallback;
-        this.repeatCallback = repeatWriteCallback;
+        this.appointmentWriteCallback = appointmentWriteCallback;
+        this.repeatWriteCallback = repeatWriteCallback;
 //        repeats = layoutHelp.skinnable.repeats();
 //        appointments = layoutHelp.skinnable.appointments();
 
-        RepeatableAppointment appt = (RepeatableAppointment) newAppointmentCallback
-                .call(new LocalDateTimeRange(appointment.getStartLocalDateTime(), appointment.getEndLocalDateTime()));
-        appointment.copyInto(appt);
-//        appointmentOld = AppointmentFactory.newAppointment(appointment);
+        appointmentOld = AppointmentFactory.newAppointment(appointmentClass);
+        System.out.println("appointmentOld new " + appointmentOld);
+//        appointmentOld = (RepeatableAppointment) newAppointmentCallback
+//                .call(new LocalDateTimeRange(appointment.getStartLocalDateTime(), appointment.getEndLocalDateTime()));
+        appointment.copyInto(appointmentOld);
+//        appointmentOld = newAppointmentCallback.call(param)// AppointmentFactory.newAppointment(appointment);
 
-        repeatableController.setupData(appointment, dateTimeRange, newAppointmentCallback);
+        repeatableController.setupData(appointment, dateTimeRange, appointmentClass, repeatClass);
 
         // ***AREN'T THESE BINDINGS DUPLICATES OF ABOVE?****
         nameTextField.setText(appointment.getSummary());
@@ -185,8 +190,8 @@ public class AppointmentEditController {
                         , appointmentOld
                         , appointments
                         , repeats
-                        , appointmentCallback
-                        , repeatCallback);
+                        , appointmentWriteCallback
+                        , repeatWriteCallback);
         setCloseType(result);
 
         if (getCloseType() == WindowCloseType.CLOSE_WITH_CHANGE) {

@@ -5,6 +5,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
@@ -30,8 +31,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.util.Callback;
 import javafx.util.StringConverter;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
@@ -41,29 +42,54 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
  *  
  * @author David Bal
  */
-public class Repeat {
+public abstract class Repeat {
     
     // TODO - MAKE A WAY TO APPLY MULTIPLE RULES ON TOP OF EACH OTHER - like iCalendar
     // Use RepeatRule interface.  Make implementing class for each rule type.
     // Each provides a steam of start dates as output.  Each rule either adds or removes dates from stream.  Make new stream.
     // This class will have a list of RepeatRules to be applied sequentially
     
-    
+//    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
+
     // Range for which appointments are to be generated.  Should match the dates displayed on the calendar.
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    public void setLocalDateTimeRange(LocalDateTimeRange dateTimeRange)
-    {
-        startDate = dateTimeRange.getStartLocalDateTime();
-        endDate = dateTimeRange.getEndLocalDateTime();
-    }
+    public void setLocalDateTimeDisplayRange(LocalDateTimeRange dateTimeRange) { startDate = dateTimeRange.getStartLocalDateTime(); endDate = dateTimeRange.getEndLocalDateTime(); }
+    public Repeat withLocalDateTimeDisplayRange(LocalDateTimeRange dateTimeRange) { setLocalDateTimeDisplayRange(dateTimeRange); return this; }
     
-    /**
-     * Repeat doesn't know how to make the new appointments.  Appointment is an interface defined in Agenda.  The callback
-     * produces a new Appointment object of the implemented class.
-     */
-    private Callback<LocalDateTimeRange, Appointment> newAppointmentCallback;   // callback set in constructor
-    public Callback<LocalDateTimeRange, Appointment> getNewAppointmentCallback() { return newAppointmentCallback; }
+//    // TODO - REPLACE CALLBACKS WITH CLASSES AND NEWINSTANCE
+//    /**
+//     * Repeat doesn't know how to make the new appointments.  Appointment is an interface defined in Agenda.  The callback
+//     * produces a new Appointment object of the implemented class.
+//     */
+//    private Callback<LocalDateTimeRange, Appointment> newAppointmentCallback;   // callback set in constructor
+//    public Callback<LocalDateTimeRange, Appointment> getNewAppointmentCallback() { return newAppointmentCallback; }
+
+    private Class<? extends RepeatableAppointment> appointmentClass;
+    public void setAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { this.appointmentClass = appointmentClass; }
+    public Class<? extends RepeatableAppointment> getAppointmentClass() { return appointmentClass; }
+    public Repeat withAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
+
+    // sequential int key part of UID
+    private static Integer nextKey = 0;
+    private Integer key;
+    Integer getKey() { return key; }
+    void setKey(Integer value) { key = value; } 
+//    public RepeatImpl withKey(Integer value) { setKey(value); return this; }
+//    public boolean hasKey() { return (getKey() != null); } // new Repeat has no key
+    
+    /** Unique identifier */
+    private String UID;
+    public String getUID() { return UID; }
+    public void setUID(String s) { UID = s; }
+    private String UIDGenerator()
+    {
+        String dateTime = formatter.format(LocalDateTime.now());
+        String keyString = getKey().toString();
+        String domain = "jfxtras-agenda";
+        return dateTime + keyString + domain;
+    }
     
     final private ObjectProperty<Frequency> frequency = new SimpleObjectProperty<Frequency>();
     public ObjectProperty<Frequency> frequencyProperty() { return frequency; }
@@ -295,42 +321,54 @@ public class Repeat {
         return getAppointments().size() == 0;
     }
    
-    /**
-     * Constructor with range - used in factory (new Repeat objects need range to make appointments)
-     */
-    public Repeat(LocalDateTimeRange dateTimeRange, Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
-    {
-        this(newAppointmentCallback);
-        startDate = dateTimeRange.getStartLocalDateTime();
-        endDate = dateTimeRange.getEndLocalDateTime();
-    }
-
-
+    public Repeat() { }
+    
+//    /**
+//     * Constructor with range - used in factory (new Repeat objects need range to make appointments)
+//     */
+//    public Repeat(LocalDateTimeRange dateTimeRange, Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
+//    {
+//        this(newAppointmentCallback);
+//        startDate = dateTimeRange.getStartLocalDateTime();
+//        endDate = dateTimeRange.getEndLocalDateTime();
+//    }
+//
+//
     /**
      * Copy constructor (range comes from copy)
      * 
      * @param oldRepeat
      * @param newAppointmentCallback
      */
-    public Repeat(Repeat oldRepeat, Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
+    public Repeat(Repeat oldRepeat, Class<RepeatableAppointmentImpl> appointmentClass)
     {
-        this(newAppointmentCallback); // setup callback to make new appointments, initialize appointmentData
+        this(appointmentClass);
+//        setAppointmentClass(appointmentClass);
+//        RepeatableAppointment appt = AppointmentFactory.newAppointment(appointmentClass);
+//        setAppointmentData(appt); // initialize appointmentData
+//        this(newAppointmentCallback); // setup callback to make new appointments, initialize appointmentData
         if (oldRepeat != null) {
             oldRepeat.copyInto(this);
         }
     }
 
-    /**
-     * Constructor only with callback, range needed too
-     */
-    protected Repeat(Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
-    {
-        this.newAppointmentCallback = newAppointmentCallback;
-        RepeatableAppointment appt = (RepeatableAppointment) getNewAppointmentCallback()
-                .call(new LocalDateTimeRange(null, null));
-        this.setAppointmentData(appt); // initialize appointmentData
-    }
+//    /**
+//     * Constructor only with callback, range needed too
+//     */
+//    protected Repeat(Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
+//    {
+//        this.newAppointmentCallback = newAppointmentCallback;
+//        RepeatableAppointment appt = (RepeatableAppointment) getNewAppointmentCallback()
+//                .call(new LocalDateTimeRange(null, null));
+//        this.setAppointmentData(appt); // initialize appointmentData
+//    }
     
+    public Repeat(Class<? extends RepeatableAppointment> appointmentClass)
+    {
+        setAppointmentClass(appointmentClass);
+        RepeatableAppointment appt = AppointmentFactory.newAppointment(appointmentClass);
+        setAppointmentData(appt); // initialize appointmentData
+    }
     // TODO - CONSIDER USING COPY CONSTRUCTOR INSTEAD
     /**
      * Copy's current object's fields into passed parameter
@@ -653,10 +691,11 @@ public class Repeat {
                     .map(myStartDateTime -> {                                                 // make new appointment
 //                        LocalDateTime myStartDateTime = a;
                         LocalDateTime myEndDateTime = myStartDateTime.plusSeconds(getDurationInSeconds());
-                        RepeatableAppointment appt = (RepeatableAppointment) getNewAppointmentCallback()
-                            .call(new LocalDateTimeRange(myStartDateTime, myEndDateTime));
-//                        appt.setStartLocalDateTime(myStartDateTime);
-//                        appt.setEndLocalDateTime(myEndDateTime);
+                        RepeatableAppointment appt = AppointmentFactory.newAppointment(appointmentClass);
+//                        RepeatableAppointment appt = (RepeatableAppointment) getNewAppointmentCallback()
+//                            .call(new LocalDateTimeRange(myStartDateTime, myEndDateTime));
+                        appt.setStartLocalDateTime(myStartDateTime);
+                        appt.setEndLocalDateTime(myEndDateTime);
                         appt.setRepeat(this);
                         appt.setRepeatMade(true);
                         appt.setAppointmentGroup(getAppointmentData().getAppointmentGroup());
@@ -680,6 +719,7 @@ public class Repeat {
             while (i.hasNext())
             { // Process new appointments
                 final RepeatableAppointment a = i.next();
+                System.out.println("a --- " + a + " " + a.getStartLocalDateTime());
                 System.out.println("times " + a.getStartLocalDateTime().toLocalDate() + " " + (myEndDate));
                 if (a.getStartLocalDateTime().isAfter(myEndDate)) break; // exit loop when at end
 //                System.out.println("add " + a.getStartLocalDateTime());

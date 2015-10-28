@@ -25,62 +25,67 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javafx.util.Callback;
-import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
-import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 /**
- * Example Repeat implementation that includes some I/O methods
+ * Static Repeat I/O methods
  * 
  * @author David Bal
  *
  */
 public class RepeatImpl extends Repeat {
-
-    private final static Callback<LocalDateTimeRange, Appointment> NEW_REPEATABLE_APPOINTMENT = range -> 
-    {
-        return new RepeatableAppointmentImpl()
-                .withStartLocalDateTime(range.getStartLocalDateTime())
-                .withEndLocalDateTime(range.getEndLocalDateTime());        
-    };
-
     
-    // TODO - REPLACE WITH UID LIKE iCalendar
-    private static int nextKey = 0;
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+  private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    /** Unique number identifying this Repeat object. */ // TODO - REPLACE WITH UID - like iCalendar
-    private Integer key;
-    public Integer getKey() { return key; }
-    void setKey(Integer value) { key = value; } 
-    public RepeatImpl withKey(Integer value) { setKey(value); return this; }
-    public boolean hasKey() { return (getKey() != null); } // new Repeat has no key
+    public RepeatImpl() { }
 
-    public RepeatImpl(LocalDateTimeRange dateTimeRange, Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
-    {
-        super(dateTimeRange, newAppointmentCallback);
+public RepeatImpl(Class<RepeatableAppointmentImpl> appointmentClass) {
+    super(appointmentClass);
     }
+
+//    private final static Callback<LocalDateTimeRange, Appointment> NEW_REPEATABLE_APPOINTMENT = range -> 
+//    {
+//        return new RepeatableAppointmentImpl()
+//                .withStartLocalDateTime(range.getStartLocalDateTime())
+//                .withEndLocalDateTime(range.getEndLocalDateTime());        
+//    };
+
     
-    public RepeatImpl(Repeat oldRepeat) {
-        super(oldRepeat, NEW_REPEATABLE_APPOINTMENT);
+//    // TODO - REPLACE WITH UID LIKE iCalendar
+    private static int nextKey = 0;
+//    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+//
+//    /** Unique number identifying this Repeat object. */ // TODO - REPLACE WITH UID - like iCalendar
+//    private Integer key;
+//    public Integer getKey() { return key; }
+//    void setKey(Integer value) { key = value; } 
+//    public RepeatImpl withKey(Integer value) { setKey(value); return this; }
+//    public boolean hasKey() { return (getKey() != null); } // new Repeat has no key
+
+//    public RepeatImpl(LocalDateTimeRange dateTimeRange, Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
+//    {
+//        super(dateTimeRange, newAppointmentCallback);
+//    }
+//    
+    public RepeatImpl(Repeat oldRepeat, Class<RepeatableAppointmentImpl> appointmentClass) {
+        super(oldRepeat, appointmentClass);
         if (oldRepeat != null) {
             // Copy any MyRepeat specific fields first
             oldRepeat.copyInto(this);
         }
     }
-    
-    public RepeatImpl(Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
-    {
-        super(newAppointmentCallback);
-    }
+//    
+//    public RepeatImpl(Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
+//    {
+//        super(newAppointmentCallback);
+//    }
 
-    @Override
-    public boolean equals(Object obj) {
-        RepeatImpl testObj = (RepeatImpl) obj;
-        // Add any equal tests for MyRepeat fields
-        return super.equals(obj);
-    }
+//    @Override
+//    public boolean equals(Object obj) {
+//        RepeatImpl testObj = (RepeatImpl) obj;
+//        // Add any equal tests for MyRepeat fields
+//        return super.equals(obj);
+//    }
     
     /**
      * Reads from a XML file a collection of all repeat rules, adds them to repeats
@@ -115,7 +120,8 @@ public class RepeatImpl extends Repeat {
                     {
                         Integer myKey = keyIterator.next();
                         nextKey = Math.max(nextKey, myKey);
-                        Repeat myRepeat = new RepeatImpl(NEW_REPEATABLE_APPOINTMENT).unmarshal((Element) myNodeList.item(n), myKey);
+                        Repeat myRepeat = new RepeatImpl(RepeatableAppointmentImpl.class)
+                                .unmarshal((Element) myNodeList.item(n), myKey);
                         int i = ((RepeatableAppointmentImpl) myRepeat.getAppointmentData()).getAppointmentGroupIndex();
 //                        System.out.println("i " + i);
 //                        Integer i = myRepeat.getAppointmentData().getAppointmentGroup().getKey();
@@ -147,11 +153,12 @@ public class RepeatImpl extends Repeat {
      * @param myElement: Element with one Repeat object's data
      * @return A Repeat object with all the data fields filled from the Element
      */
-    private RepeatImpl unmarshal(Element myElement, Integer expectedKey)
+    private Repeat unmarshal(Element myElement, Integer expectedKey)
     {
         Map<String, String> repeatAttributes = IOUtilities.getAttributes(myElement, "repeat");
 
-        setKey(Integer.valueOf(IOUtilities.myGet(repeatAttributes, "key", "")));
+        getUID();
+        setUID(IOUtilities.myGet(repeatAttributes, "key", ""));
         if (! (getKey() == expectedKey)) {
 //            Main.log.log(Level.WARNING, "Repeat key does not match expected key. Repeat key = " + getKey()
 //                    + " Expected repeat key = " + expectedKey + ". Using expected repeat key.", new IllegalArgumentException());
@@ -224,11 +231,7 @@ public class RepeatImpl extends Repeat {
      * @throws ParserConfigurationException
      */
     private static void writeToFile(Collection<Repeat> repeats, Path writeFile)
-    {
-        Set<RepeatImpl> myRepeats = repeats
-                .stream()
-                .map(a -> (RepeatImpl) a).collect(Collectors.toSet());
-        
+    {       
         // XML document
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = null;
@@ -244,15 +247,17 @@ public class RepeatImpl extends Repeat {
         doc.appendChild(rootElement);
 
         // loop through each repeat
-        for(RepeatImpl myRepeat : myRepeats)
+        for(Repeat myRepeat : repeats)
         {
-            Node myElement = myRepeat.marshal(doc);
+            Node myElement = ((RepeatImpl) myRepeat).marshal(doc);
             rootElement.appendChild(myElement);
         }
 
-        String repeatKeys = myRepeats
+        String repeatKeys = repeats
                 .stream()
-                .map(a -> a.getKey().toString()).collect(Collectors.joining(" "));
+                .map(a -> (RepeatImpl) a)
+                .map(a -> a.getKey().toString())
+                .collect(Collectors.joining(" "));
         rootElement.setAttribute("keys", repeatKeys);
 
         try {

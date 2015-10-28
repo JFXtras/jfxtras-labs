@@ -69,7 +69,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         RepeatableAppointment a = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(15))
                 .withSummary("Daily Appointment Fixed");
-        Repeat expectedRepeat =  new RepeatImpl(getNewRepeatableAppointment())
+        Repeat expectedRepeat =  new RepeatImpl(RepeatableAppointmentImpl.class)
                 .withStartLocalDate(LocalDateTime.of(2015, 10, 7, 9, 45))
                 .withDurationInSeconds(4500)
 //                .withStartLocalTime(LocalTime.of(9, 45))
@@ -151,7 +151,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         RepeatableAppointment a = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(15))
                 .withSummary("Daily Appointment Fixed");
-        Repeat expectedRepeat = new RepeatImpl(getNewRepeatableAppointment())
+        Repeat expectedRepeat =  new RepeatImpl(RepeatableAppointmentImpl.class)
                 .withStartLocalDate(LocalDateTime.of(2015, 10, 8, 9, 45))
                 .withDurationInSeconds(4500)
 //                .withStartLocalTime(LocalTime.of(9, 45))
@@ -236,7 +236,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         RepeatableAppointment a = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed");
-        Repeat expectedRepeat = new RepeatImpl(getNewRepeatableAppointment())
+        Repeat expectedRepeat =  new RepeatImpl(RepeatableAppointmentImpl.class)
                 .withStartLocalDate(LocalDateTime.of(2015, 10, 8, 15, 45))
                 .withDurationInSeconds(2700)
 //                .withStartLocalTime(LocalTime.of(15, 45))
@@ -331,7 +331,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         RepeatableAppointment a = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed");
-        Repeat expectedRepeat = new RepeatImpl(getNewRepeatableAppointment())
+        Repeat expectedRepeat =  new RepeatImpl(RepeatableAppointmentImpl.class)
                 .withStartLocalDate(LocalDateTime.of(2015, 10, 7, 18, 0))
                 .withDurationInSeconds(2700)
 //                .withStartLocalTime(LocalTime.of(18, 0))
@@ -420,7 +420,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         RepeatableAppointment a = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed");
-        Repeat expectedRepeat = new RepeatImpl(getNewRepeatableAppointment())
+        Repeat expectedRepeat =  new RepeatImpl(RepeatableAppointmentImpl.class)
                 .withStartLocalDate(LocalDateTime.of(2015, 10, 7, 18, 0))
                 .withDurationInSeconds(2700)
 //                .withStartLocalTime(LocalTime.of(18, 0))
@@ -495,7 +495,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         RepeatableAppointment a = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed");
-        Repeat expectedRepeat = new RepeatImpl(getNewRepeatableAppointment())
+        Repeat expectedRepeat = new RepeatImpl(RepeatableAppointmentImpl.class)
                 .withStartLocalDate(LocalDateTime.of(2015, 10, 7, 18, 0))
                 .withDurationInSeconds(2700)
 //                .withStartLocalTime(LocalTime.of(18, 0))
@@ -573,7 +573,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         final RepeatableAppointment a1 = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(10))
                 .withSummary("Changed summary");
-        final Repeat expectedRepeat = new RepeatImpl(getNewRepeatableAppointment())
+        Repeat expectedRepeat = new RepeatImpl(RepeatableAppointmentImpl.class)
                 .withStartLocalDate(LocalDateTime.of(2015, 10, 29, 15, 45))
                 .withDurationInSeconds(2700)
 //                .withStartLocalTime(LocalTime.of(15, 45))
@@ -590,7 +590,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         final RepeatableAppointment a2 = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(15))
                 .withSummary("Daily Appointment Fixed");
-        final Repeat expectedRepeat2 = new RepeatImpl(getNewRepeatableAppointment())
+        Repeat expectedRepeat2 = new RepeatImpl(RepeatableAppointmentImpl.class)
                 .withStartLocalDate(LocalDateTime.of(2015, 10, 7, 8, 45))
                 .withDurationInSeconds(5400)
 //                .withStartLocalTime(LocalTime.of(8, 45))
@@ -674,7 +674,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         RepeatableAppointment a1 = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(12))
                 .withSummary("Changed summary");
-        Repeat expectedRepeat = new RepeatImpl(getNewRepeatableAppointment())
+        Repeat expectedRepeat = new RepeatImpl(RepeatableAppointmentImpl.class)
                 .withStartLocalDate(LocalDateTime.of(2015, 12, 5, 3, 45))
                 .withDurationInSeconds(5100)
 //                .withStartLocalTime(LocalTime.of(3, 45))
@@ -693,7 +693,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         RepeatableAppointment a2 = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed2");
-        Repeat expectedRepeat2 = new RepeatImpl(getNewRepeatableAppointment())
+        Repeat expectedRepeat2 = new RepeatImpl(RepeatableAppointmentImpl.class)
                 .withStartLocalDate(LocalDateTime.of(2015, 10, 5, 8, 45))
                 .withDurationInSeconds(5400)
 //                .withStartLocalTime(LocalTime.of(8, 45))
@@ -786,7 +786,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         RepeatableAppointment a = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(15))
                 .withSummary("Daily Appointment Fixed");
-        Repeat expectedRepeat = new RepeatImpl(getNewRepeatableAppointment())
+        Repeat expectedRepeat = new RepeatImpl(RepeatableAppointmentImpl.class)
                 .withStartLocalDate(LocalDateTime.of(2015, 10, 7, 8, 45))
                 .withDurationInSeconds(5400)
 //                .withStartLocalTime(LocalTime.of(9, 45))
@@ -886,7 +886,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         RepeatableAppointment a = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(15))
                 .withSummary("Daily Appointment Fixed2");
-        final Repeat expectedRepeat = new RepeatImpl(getNewRepeatableAppointment())
+        Repeat expectedRepeat = new RepeatImpl(RepeatableAppointmentImpl.class)
                 .withStartLocalDate(LocalDateTime.of(2015, 10, 18, 8, 0))
                 .withDurationInSeconds(5400)
 //                .withStartLocalTime(LocalTime.of(8, 0))

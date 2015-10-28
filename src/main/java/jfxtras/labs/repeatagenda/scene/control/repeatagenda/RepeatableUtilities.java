@@ -295,6 +295,7 @@ public final class RepeatableUtilities {
         final ResourceBundle resources = Settings.resources;
         final Repeat repeat = appointment.getRepeat(); // repeat with new changes
 //        System.out.println("repeat start " + repeat.getStartLocalTime());
+        System.out.println("appointmentOld " + appointmentOld);
         final Repeat repeatOld = appointmentOld.getRepeat(); // repeat prior to changes
         Set<RepeatableAppointment> editedAppointmentsTemp = new HashSet<RepeatableAppointment>();
         

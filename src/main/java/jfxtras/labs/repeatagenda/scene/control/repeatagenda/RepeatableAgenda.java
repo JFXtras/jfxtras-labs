@@ -1,5 +1,6 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -44,7 +45,21 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
 //    }
 //    
 
+    // Extended repeat class used by the implementor - used to instantiate new repeat objects
+    private Class<? extends Repeat> repeatClass = RepeatImpl.class; // default class, change if other implementation is used
+    Class<? extends Repeat> getRepeatClass() { return repeatClass; }
 
+    // Extended appointment class used by the implementor - used to instantiate new appointment objects
+    private Class<? extends RepeatableAppointment> appointmentClass = RepeatableAppointmentImpl.class; // set to default class, change if using own implementation
+    Class<? extends RepeatableAppointment> getAppointmentClass() { return appointmentClass; }
+
+    // I/O callbacks, must be set to provide functionality, null by default
+    private Callback<Collection<Appointment>, Void> appointmentWriteCallback = null;
+    public void setAppointmentWriteCallback(Callback<Collection<Appointment>, Void> appointmentWriteCallback) { this.appointmentWriteCallback = appointmentWriteCallback; }
+    private Callback<Collection<Repeat>, Void> repeatWriteCallback = null;
+    public void setRepeatWriteCallback(Callback<Collection<Repeat>, Void> repeatWriteCallback) { this.repeatWriteCallback = repeatWriteCallback; }
+
+    
     /**
      * Constructor with individualAppointments collection and repeats collection provided.
      * These objects will be automatically be kept current with Agenda's data.
@@ -52,11 +67,20 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
      * @param individualAppointments
      * @param repeats
      */
-    public RepeatableAgenda(Collection<T> individualAppointments, Collection<Repeat> repeats)
+    public RepeatableAgenda(
+            Collection<T> individualAppointments
+          , Collection<Repeat> repeats
+          , Class<? extends Repeat> repeatClass)
     {
         setIndividualAppointments(individualAppointments);
         setRepeats(repeats);
+        this.repeatClass = repeatClass;
     }
+    
+//    public void setRepeatClass(Class<? extends Repeat> repeatClass)
+//    {
+//        RepeatFactory.repeatClass = repeatClass;
+//    }
     
     public RepeatableAgenda()
     {
@@ -86,7 +110,8 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
                             .collect(Collectors.toSet());
                         getIndividualAppointments().addAll(newIndividualAppointments);
                     }
-                    System.out.println("appointment list changed");
+                    System.out.println("appointment list changed " + individualAppointments.size() + " " + repeats.size());
+                    System.out.println("first repeat " + individualAppointments.iterator().next().getRepeat());
                 }
             });
         
@@ -99,7 +124,9 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
                     , appointments()
                     , getRepeats()
                     , appointmentGroups()
-                    , getNewAppointmentCallback()
+                    , appointmentClass
+                    , repeatClass
+//                    , getNewAppointmentCallback()
                     , appointmentWriteCallback   // write appointment callback initialized to null
                     , repeatWriteCallback);      // write repeat callback initialized to null
             repeatMenu.show();
@@ -109,13 +136,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
 
     private LocalDateTimeRange dateTimeRange; // range of current skin
     public LocalDateTimeRange dateTimeRange() { return dateTimeRange; }
-    
-    // I/O callbacks, must be set to provide functionality, null by default
-    private Callback<Collection<Appointment>, Void> appointmentWriteCallback = null;
-    public void setAppointmentWriteCallback(Callback<Collection<Appointment>, Void> appointmentWriteCallback) { this.appointmentWriteCallback = appointmentWriteCallback; }
-    private Callback<Collection<Repeat>, Void> repeatWriteCallback = null;
-    public void setRepeatWriteCallback(Callback<Collection<Repeat>, Void> repeatWriteCallback) { this.repeatWriteCallback = repeatWriteCallback; }
-    
+        
     // TODO - UPDATE WITH REPEATS
     /** Repeat rules */
     private Collection<Repeat> repeats;
@@ -417,5 +438,45 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
         public AppointmentGroupImpl withKey(int key) {setKey(key); return this; }
         
         }
+    
+    static public class RepeatFactory {
+                
+        public static Repeat newRepeat(
+                Class<? extends Repeat> repeatClass
+              , LocalDateTimeRange dateTimeRange
+              , Class<? extends RepeatableAppointment> appointmentClass)
+        {
+                try {
+                    return repeatClass
+                            .getConstructor(Class.class)
+                            .newInstance(appointmentClass)
+                            .withAppointmentClass(appointmentClass)
+                            .withLocalDateTimeDisplayRange(dateTimeRange);
+                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+                    e.printStackTrace();
+                }
+//            }
+            return null;
+        }
+    }
 
+    static public class AppointmentFactory {
+        
+        public static RepeatableAppointment newAppointment(Class<? extends RepeatableAppointment> appointmentClass)
+        {
+            System.out.println("repeatClass " + appointmentClass);
+
+//            if (appointmentClass != null)
+//            {
+                try {
+                    return appointmentClass.newInstance();
+                } catch (InstantiationException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+//            }
+            return null;
+        }
+    }
+    
+    
 }
