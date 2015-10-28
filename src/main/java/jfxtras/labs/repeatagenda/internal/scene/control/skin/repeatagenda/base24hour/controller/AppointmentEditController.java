@@ -12,6 +12,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
@@ -133,7 +135,14 @@ public class AppointmentEditController {
         // START DATE TIME TEXT FIELD
         startTextField.setLocale(locale);
         startTextField.setLocalDateTime(appointment.getStartLocalDateTime());
-
+        startTextField.setParseErrorCallback( (throwable) -> {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Invalid Date or Time");
+            alert.setContentText("Please enter valid date and time");
+            alert.showAndWait();
+            return null;
+        });
+        
 //        startTextField.localDateTimeProperty().bindBidirectional(appointment.startLocalDateTimeProperty());
 //        startTextField.localDateTimeProperty().addListener(startDateListener);
         startTextField.localDateTimeProperty().addListener((obs, oldValue, newValue) -> appointment.setStartLocalDateTime(newValue));
@@ -141,6 +150,13 @@ public class AppointmentEditController {
         // END DATE TIME TEXT FIELD
         endTextField.setLocale(locale);
         endTextField.setLocalDateTime(appointment.getEndLocalDateTime());
+        endTextField.setParseErrorCallback( (throwable) -> {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Invalid Date or Time");
+            alert.setContentText("Please enter valid date and time");
+            alert.showAndWait();
+            return null;
+        });
         endTextField.setVisible(appointment.getEndLocalDateTime() != null);
 
         endTextField.localDateTimeProperty().addListener((obs, oldValue, newValue) ->  {
