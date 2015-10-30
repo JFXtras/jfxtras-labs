@@ -235,4 +235,5 @@ public abstract class RepeatTestAbstract {
                 .withCount(5)
                 .withAppointmentData(a);
     }
+
 }

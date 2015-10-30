@@ -7,10 +7,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -43,8 +41,7 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
         Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
         LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2015, 11, 8, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
-        Map<Appointment, Repeat> repeatMap = new HashMap<Appointment, Repeat>();
-        Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate, repeatMap);
+        Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Iterator<Appointment> appointmentIterator = appointments.iterator();
         assertEquals(3, appointments.size()); // check number of appointments
@@ -56,7 +53,6 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
                 selectedAppointment
               , appointments
               , repeats
-              , repeatMap
               , a -> RepeatChange.ONE // delete one appointment
               , a -> true             // Are you sure - true
               , null
@@ -93,8 +89,8 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
                 .withEndLocalDateTime(LocalDate.of(2015, 11, 4).atTime(10, 15))
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed2")
-                .withRepeatMade(true);
-//                .withRepeat(repeat);
+                .withRepeatMade(true)
+                .withRepeat(repeat);
         assertEquals(expectedAppointment1, editedAppointment1); // Check to see if repeat-generated appointment changed correctly
                        
         Appointment editedAppointment2 = appointmentIteratorNew.next();
@@ -103,8 +99,8 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
                 .withEndLocalDateTime(LocalDate.of(2015, 11, 6).atTime(10, 15))
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed2")
-                .withRepeatMade(true);
-//                .withRepeat(repeat);
+                .withRepeatMade(true)
+                .withRepeat(repeat);
         assertEquals(expectedAppointment2, editedAppointment2); // Check to see if repeat-generated appointment changed correctly
     }
 
@@ -120,8 +116,7 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
         Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
         LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2015, 11, 8, 0, 0); // tests one week time range
-        Map<Appointment, Repeat> repeatMap = new HashMap<Appointment, Repeat>();
-        Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate, repeatMap);
+        Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Iterator<Appointment> appointmentIterator = appointments.iterator();
         assertEquals(3, appointments.size()); // check number of appointments
@@ -133,7 +128,6 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
                 selectedAppointment
               , appointments
               , repeats
-              , repeatMap
               , a -> RepeatChange.ALL // delete one appointment
               , a -> true             // Are you sure - true
               , null

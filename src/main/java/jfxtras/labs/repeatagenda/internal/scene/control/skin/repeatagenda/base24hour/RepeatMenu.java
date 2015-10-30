@@ -3,7 +3,6 @@ package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base2
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -35,7 +34,7 @@ public class RepeatMenu extends Stage {
             , LocalDateTimeRange dateTimeRange
             , Collection<Appointment> appointments
             , Collection<Repeat> repeats
-            , Map<Appointment, Repeat> repeatMap
+//            , Map<Appointment, Repeat> repeatMap
             , List<AppointmentGroup> appointmentGroups
             , Class<? extends RepeatableAppointment> appointmentClass
             , Class<? extends Repeat> repeatClass
@@ -66,7 +65,7 @@ public class RepeatMenu extends Stage {
               , dateTimeRange
               , appointments
               , repeats
-              , repeatMap
+//              , repeatMap
               , appointmentGroups
               , appointmentClass
               , repeatClass

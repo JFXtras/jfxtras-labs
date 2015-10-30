@@ -6,10 +6,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -36,8 +34,7 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
         List<RepeatableAppointment> appointments = new ArrayList<RepeatableAppointment>();
         LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2015, 11, 8, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
-        Map<Appointment, Repeat> repeatMap = new HashMap<Appointment, Repeat>();
-        Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate, repeatMap);
+        Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Appointment madeAppointment = (appointments.size() == 1) ? appointments.get(0) : null;
         Appointment expectedAppointment = new RepeatableAppointmentImpl()
@@ -45,8 +42,8 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
                 .withEndLocalDateTime(LocalDate.of(2015, 11, 7).atTime(10, 15))
                 .withAppointmentGroup(appointmentGroups.get(9))
                 .withSummary("Monthly Appointment Fixed")
-                .withRepeatMade(true);
-//                .withRepeat(repeat);
+                .withRepeatMade(true)
+                .withRepeat(repeat);
         assertEquals(expectedAppointment, madeAppointment);
         System.out.println("done");
     }
@@ -57,8 +54,7 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
         List<RepeatableAppointment> appointments = new ArrayList<RepeatableAppointment>();
         LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2015, 11, 7, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
-        Map<Appointment, Repeat> repeatMap = new HashMap<Appointment, Repeat>();
-        Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate, repeatMap);
+        Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         assertEquals(0, appointments.size());
     }
@@ -69,8 +65,7 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
         List<RepeatableAppointment> appointments = new ArrayList<RepeatableAppointment>();
         LocalDateTime startDate = LocalDateTime.of(2015, 12, 13, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2015, 12, 20, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
-        Map<Appointment, Repeat> repeatMap = new HashMap<Appointment, Repeat>();
-        Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate, repeatMap);
+        Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Appointment madeAppointment = (appointments.size() == 1) ? appointments.get(0) : null;
         Appointment expectedAppointment = new RepeatableAppointmentImpl()
@@ -78,8 +73,8 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 17).atTime(10, 15))
                 .withAppointmentGroup(appointmentGroups.get(9))
                 .withSummary("Monthly Appointment Fixed2")
-                .withRepeatMade(true);
-//                .withRepeat(repeat);
+                .withRepeatMade(true)
+                .withRepeat(repeat);
         assertEquals(expectedAppointment, madeAppointment);     
     }
     @Test
@@ -89,8 +84,7 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
         Set<RepeatableAppointment> appointments = new TreeSet<RepeatableAppointment>(getAppointmentComparator());
         LocalDateTime startDate = LocalDateTime.of(2015, 12, 13, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2015, 12, 20, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
-        Map<Appointment, Repeat> repeatMap = new HashMap<Appointment, Repeat>();
-        Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate, repeatMap);
+        Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Iterator<RepeatableAppointment> appointmentIterator = appointments.iterator();
 
@@ -100,8 +94,8 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 16).atTime(18, 45))
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed")
-                .withRepeatMade(true);
-//                .withRepeat(repeat);
+                .withRepeatMade(true)
+                .withRepeat(repeat);
         assertEquals(expectedAppointment1, madeAppointment1);   
 
         RepeatableAppointment madeAppointment2 = appointmentIterator.next();
@@ -110,8 +104,8 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 18).atTime(18, 45))
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed")
-                .withRepeatMade(true);
-//                .withRepeat(repeat);
+                .withRepeatMade(true)
+                .withRepeat(repeat);
         assertEquals(expectedAppointment2, madeAppointment2);     
     }
     
@@ -126,8 +120,7 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
         List<RepeatableAppointment> appointments = new ArrayList<RepeatableAppointment>();
         LocalDateTime startDate = LocalDateTime.of(2015, 12, 13, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2015, 12, 20, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
-        Map<Appointment, Repeat> repeatMap = new HashMap<Appointment, Repeat>();
-        Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate, repeatMap);
+        Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Appointment madeAppointment = (appointments.size() == 1) ? appointments.get(0) : null;
         Appointment expectedAppointment = new RepeatableAppointmentImpl()
@@ -135,8 +128,8 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 17).atTime(10, 15))
                 .withAppointmentGroup(appointmentGroups.get(9))
                 .withSummary("Monthly Appointment Fixed2")
-                .withRepeatMade(true);
-//                .withRepeat(repeat);
+                .withRepeatMade(true)
+                .withRepeat(repeat);
         assertEquals(expectedAppointment, madeAppointment);
         
         startDate = LocalDateTime.of(2015, 12, 6, 0, 0);
@@ -146,7 +139,7 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
 
         startDate = LocalDateTime.of(2016, 1, 17, 0, 0);
         endDate = LocalDateTime.of(2016, 1, 24, 0, 0);
-        Collection<RepeatableAppointment> newAppointments2 = repeat.makeAppointments(startDate, endDate, repeatMap);
+        Collection<RepeatableAppointment> newAppointments2 = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments2);
         assertEquals(1, appointments.size());
         
@@ -156,21 +149,21 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
                 .withEndLocalDateTime(LocalDate.of(2016, 1, 21).atTime(10, 15))
                 .withAppointmentGroup(appointmentGroups.get(9))
                 .withSummary("Monthly Appointment Fixed2")
-                .withRepeatMade(true);
-//                .withRepeat(repeat);
+                .withRepeatMade(true)
+                .withRepeat(repeat);
         assertEquals(expectedAppointment2, madeAppointment2); // Check to see if repeat-generated appointment changed correctly
         
         startDate = LocalDateTime.of(2015, 9, 1, 0, 0); // test dates before startDate to confirm doesn't make appointments
         endDate = LocalDateTime.of(2015, 10, 1, 0, 0);
         repeat.removeOutsideRangeAppointments(appointments, startDate, endDate);
-        Collection<RepeatableAppointment> newAppointments3 = repeat.makeAppointments(startDate, endDate, repeatMap);
+        Collection<RepeatableAppointment> newAppointments3 = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments3);
         assertEquals(0, appointments.size());
 
         startDate = LocalDateTime.of(2017, 9, 1, 0, 0); // test dates after endDate to confirm doesn't make appointments
         endDate = LocalDateTime.of(2017, 10, 1, 0, 0);
         repeat.removeOutsideRangeAppointments(appointments, startDate, endDate);
-        Collection<RepeatableAppointment> newAppointments4 = repeat.makeAppointments(startDate, endDate, repeatMap);
+        Collection<RepeatableAppointment> newAppointments4 = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments4);
         assertEquals(0, appointments.size());
     }

@@ -140,22 +140,6 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
     private void setRepeatKey(Integer value) { repeatKey = value; }
     private boolean hasRepeatKey() { return getRepeatKey() != null; }
     
-//    /** Repeat rules, null if an individual appointment */
-//    private Repeat repeat;
-//    public void setRepeat(Repeat repeat) { this.repeat = repeat; }
-//    public Repeat getRepeat() { return repeat; }
-//    public boolean hasRepeat() { return repeat != null; }
-//    public MyAppointment withRepeat(Repeat value) { setRepeat(value); return this; }
-//
-//    /**
-//     * true = a temporary appointment created by a repeat rule
-//     * false = a permanent appointment stored on disk
-//     */
-//    final private BooleanProperty repeatMade = new SimpleBooleanProperty(this, "repeatMade", false);
-//    public BooleanProperty repeatMadeProperty() { return repeatMade; }
-//    public boolean isRepeatMade() { return repeatMade.getValue(); }
-//    public void setRepeatMade(boolean b) {repeatMade.set(b); }
-//    public MyAppointment withRepeatMade(boolean b) {repeatMade.set(b); return this; }
     
     private static Map<Integer, Integer> appointmentGroupCount = new HashMap<Integer, Integer>();
     
@@ -177,17 +161,16 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
     public boolean equals(Object obj) {
         RepeatableAppointmentImpl testObj = (RepeatableAppointmentImpl) obj;
         
-        System.out.println( "myappointment equals " +          getEndLocalDateTime() + " " + (testObj.getEndLocalDateTime())
-            + " " + getEndLocalDateTime().equals(testObj.getEndLocalDateTime())
-            + " " + getStartLocalDateTime().equals(testObj.getStartLocalDateTime()));
+        boolean startEquals = (getStartLocalDateTime() == null) ?
+                (testObj.getStartLocalDateTime() == null) : getStartLocalDateTime().equals(testObj.getStartLocalDateTime());
+        boolean endEquals = (getEndLocalDateTime() == null) ?
+                (testObj.getEndLocalDateTime() == null) : getEndLocalDateTime().equals(testObj.getEndLocalDateTime());
+
+        System.out.println( "myappointment equals " + startEquals + " " + endEquals);
         
-        return super.equals(obj)
-            && getStartLocalDateTime().equals(testObj.getStartLocalDateTime())
-            && getEndLocalDateTime().equals(testObj.getEndLocalDateTime())
-            && getStartLocalDateTime().equals(testObj.getStartLocalDateTime());
+        return super.equals(obj) && startEquals && endEquals;
     }
     
-    @Override
     public boolean repeatFieldsEquals(Object obj) {
 //        System.out.println("MyAppointment repeatFieldsEquals " );
         RepeatableAppointmentImpl testObj = (RepeatableAppointmentImpl) obj;
@@ -211,14 +194,15 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
      * 
      * @param appointment
      */
-    public RepeatableAppointmentImpl(RepeatableAppointment appointment, Map<Appointment, Repeat> repeatMap)
+    public RepeatableAppointmentImpl(RepeatableAppointment appointment)
     {
 //        setRepeat(RepeatFactory.newRepeat(appointment.getRepeat()));
 //        System.out.println("Repeat7 " + repeat);
-        Repeat repeat = repeatMap.get(appointment);
-        Repeat newRepeat = new RepeatImpl(repeat, RepeatableAppointmentImpl.class);
-        repeatMap.put(this, newRepeat);
-//        setRepeat(new RepeatImpl(repeat, RepeatableAppointmentImpl.class));
+//        Repeat repeat = repeatMap.get(appointment);
+//        Repeat newRepeat = new RepeatImpl(repeat, RepeatableAppointmentImpl.class);
+//        repeatMap.put(this, newRepeat);
+        Repeat repeat = appointment.getRepeat();
+        setRepeat(new RepeatImpl(repeat, RepeatableAppointmentImpl.class));
 //        MyRepeat newRepeat = RepeatFactory.newRepeat(repeatMap.get(appointment));
 //        repeatMap.put(this, newRepeat);
         appointment.copyInto(this);
@@ -430,9 +414,6 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
         getStudentKeys().addAll(s);
         return RepeatableAppointment.super.copyNonDateFieldsInto(appointment);
     }
-    
-    
-    // TODO - DO SOMETHING ABOUT THE BELOW STUBS
     @Override
     public Calendar getStartTime() {
         // TODO Auto-generated method stub
@@ -472,11 +453,6 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
     public void setEndZonedDateTime(ZonedDateTime v) {
         // TODO Auto-generated method stub
         
-    }
-    @Override
-    public LocalDateTime getRecurranceLocalDateTime() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import javafx.beans.property.BooleanProperty;
@@ -39,7 +38,7 @@ public class AppointmentEditController {
     public RepeatableAppointment getAppointmentOld() { return appointmentOld; }
     private Collection<Appointment> appointments;
     private Collection<Repeat> repeats;
-    private Map<Appointment, Repeat> repeatMap;
+//    private Map<Appointment, Repeat> repeatMap;
     private Callback<Collection<Appointment>, Void> appointmentWriteCallback;
     private Callback<Collection<Repeat>, Void> repeatWriteCallback;
     private Callback<Void, Void> refreshCallback;
@@ -95,7 +94,7 @@ public class AppointmentEditController {
             , LocalDateTimeRange dateTimeRange
             , Collection<Appointment> appointments
             , Collection<Repeat> repeats
-            , Map<Appointment, Repeat> repeatMap
+//            , Map<Appointment, Repeat> repeatMap
             , List<AppointmentGroup> appointmentGroups
             , Class<? extends RepeatableAppointment> appointmentClass
             , Class<? extends Repeat> repeatClass
@@ -108,7 +107,7 @@ public class AppointmentEditController {
         this.appointment = (RepeatableAppointment) inputAppointment;
         this.appointments = appointments;
         this.repeats = repeats;
-        this.repeatMap = repeatMap;
+//        this.repeatMap = repeatMap;
         this.appointmentWriteCallback = appointmentWriteCallback;
         this.repeatWriteCallback = repeatWriteCallback;
         this.refreshCallback = refreshCallback;
@@ -122,7 +121,7 @@ public class AppointmentEditController {
         appointment.copyInto(appointmentOld);
 //        appointmentOld = newAppointmentCallback.call(param)// AppointmentFactory.newAppointment(appointment);
 
-        repeatableController.setupData(appointment, repeatMap, dateTimeRange, appointmentClass, repeatClass);
+        repeatableController.setupData(appointment, dateTimeRange, appointmentClass, repeatClass);
 
         // ***AREN'T THESE BINDINGS DUPLICATES OF ABOVE?****
         nameTextField.setText(appointment.getSummary());
@@ -207,7 +206,7 @@ public class AppointmentEditController {
                         , appointmentOld
                         , appointments
                         , repeats
-                        , repeatMap
+//                        , repeatMap
                         , appointmentWriteCallback
                         , repeatWriteCallback);
         setCloseType(result);

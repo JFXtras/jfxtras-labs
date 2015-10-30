@@ -2,7 +2,6 @@ package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base2
 
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -28,7 +27,7 @@ public class AppointmentPopupController {
     private Pane pane;
     private Collection<Appointment> appointments;
     private Collection<Repeat> repeats;
-    private Map<Appointment, Repeat> repeatMap;
+//    private Map<Appointment, Repeat> repeatMap;
     private RepeatableAppointment appointment;
     private Popup popup;
     
@@ -47,7 +46,7 @@ public class AppointmentPopupController {
               Collection<Appointment> appointments
             , RepeatableAppointment appointment
             , Collection<Repeat> repeats
-            , Map<Appointment, Repeat> repeatMap
+//            , Map<Appointment, Repeat> repeatMap
             , Pane pane
 
             //            , LayoutHelp layoutHelp
@@ -57,7 +56,7 @@ public class AppointmentPopupController {
         this.appointment = appointment;
         this.appointments = appointments;
         this.repeats = repeats;
-        this.repeatMap = repeatMap;
+//        this.repeatMap = repeatMap;
 //        this.layoutHelp = layoutHelp;
         this.popup = popup;
         
@@ -79,7 +78,7 @@ public class AppointmentPopupController {
     @FXML private void handleDeleteAppointment() throws ParserConfigurationException {
         popup.hide();
 //        RepeatableUtilities.deleteAppointments(layoutHelp.skinnable.appointments()
-        RepeatableUtilities.deleteAppointments(appointment, appointments, repeats, repeatMap);
+        RepeatableUtilities.deleteAppointments(appointment, appointments, repeats);
 
 //        layoutHelp.skin.setupAppointments();    // refresh appointment graphics
     }

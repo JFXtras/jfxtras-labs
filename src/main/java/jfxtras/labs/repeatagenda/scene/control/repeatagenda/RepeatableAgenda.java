@@ -3,10 +3,8 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -52,8 +50,10 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
                     Set<RepeatableAppointment> s = getAppointmentsIndividual() // add individual appointments to repeat, if its a recurrance of a repeat
                             .stream()
                             .map(a -> (RepeatableAppointment) a)
-                            .filter(a -> repeatMap.containsKey(a))
-                            .filter(a -> repeatMap.get(a).equals(this))
+                            .filter(a -> a.getRepeat() != null)
+                            .filter(a -> a.getRepeat().equals(this))
+//                            .filter(a -> repeatMap.containsKey(a))
+//                            .filter(a -> repeatMap.get(a).equals(this))
                             .collect(Collectors.toSet());
                     r.getAppointments().addAll(s);
                 });
@@ -92,8 +92,10 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
                 Set<RepeatableAppointment> s = getAppointmentsIndividual() // add individual appointments to repeat, if its a recurrance of a repeat
                         .stream()
                         .map(a -> (RepeatableAppointment) a)
-                        .filter(a -> repeatMap.containsKey(a))
-                        .filter(a -> repeatMap.get(a).equals(this))
+                        .filter(a -> a.getRepeat() != null)
+                        .filter(a -> a.getRepeat().equals(this))
+//                        .filter(a -> repeatMap.containsKey(a))
+//                        .filter(a -> repeatMap.get(a).equals(this))
                         .collect(Collectors.toSet());
                 r.getAppointments().addAll(s);
             });
@@ -160,7 +162,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
                     , dateTimeRange
                     , appointments()
                     , repeats()
-                    , repeatMap
+//                    , repeatMap
                     , appointmentGroups()
                     , appointmentClass
                     , repeatClass
@@ -183,7 +185,8 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
             { // remove repeat-made appointments, leave individual appointment recurrences
                 Set<RepeatableAppointment> s = r.getAppointments()
                         .stream()
-                        .filter(a -> ! repeatMap.containsKey(a))
+                        .filter(a -> a.getRepeat() == r)
+//                        .filter(a -> ! repeatMap.containsKey(a))
                         .collect(Collectors.toSet());
                 r.getAppointments().removeAll(s);
             });
@@ -191,10 +194,10 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
 //            repeats().stream().forEach(r -> {
 //                r.getAppointments().clear());   
 //            }
-            repeatMap.clear();
+//            repeatMap.clear();
             repeats().stream().forEach(r ->
             { // Make new repeat-made appointments inside range
-                Collection<RepeatableAppointment> newAppointments = r.makeAppointments(startDate, endDate, repeatMap);
+                Collection<RepeatableAppointment> newAppointments = r.makeAppointments(startDate, endDate);
                 appointments().addAll(newAppointments);
             });
             return null; // return argument for the Callback
@@ -215,37 +218,70 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
         return ! appointmentsIndividual.contains(a);
     }
     
-    /** map that matches repeatable appointments to the Repeat that made them */
-    // When repeat-made appointments are made they need to be added to this map
-    private Map<Appointment, Repeat> repeatMap = new HashMap<Appointment, Repeat>();
-    Map<Appointment, Repeat> getRepeatMap() { return repeatMap; }
-    public void setRepeat(Appointment a, Repeat r)
-    {
-        repeatMap.put(a, r);
-    }
-    public Repeat getRepeat(Appointment a)
-    {
-        return repeatMap.get(a);
-    }
+//    /** map that matches repeatable appointments to the Repeat that made them */
+//    // When repeat-made appointments are made they need to be added to this map
+//    private Map<Appointment, Repeat> repeatMap = new HashMap<Appointment, Repeat>();
+//    Map<Appointment, Repeat> getRepeatMap() { return repeatMap; }
+//    public void setRepeat(Appointment a, Repeat r)
+//    {
+//        repeatMap.put(a, r);
+//    }
+//    public Repeat getRepeat(Appointment a)
+//    {
+//        return repeatMap.get(a);
+//    }
     
     static public interface RepeatableAppointment extends Agenda.Appointment
     {
+        // TODO - SHOULD GO TO REGULAR AGENDA
+        /** Unique identifier as defined by iCalendar RFC 5545, 3.8.4.7 */
+        void setUID(String uid);
+        /** Unique identifier as defined by iCalendar RFC 5545, 3.8.4.7 */
+        String getUID();
 
-        boolean isRepeatMade();
-        void setRepeatMade(boolean b);
+        // TODO - SHOULD GO TO REGULAR AGENDA
+        /** Number of times appointment was edited.  Sequence as defined by iCalendar RFC 5545, 3.8.7.4 */
+        void setSequence(int sequence);
+        /** Number of times appointment was edited.  Sequence as defined by iCalendar RFC 5545, 3.8.7.4 */
+        int getSequence();
 
-//        void setRepeat(Repeat repeat);
-//        Repeat getRepeat();
+        // TODO - SHOULD GO TO REGULAR AGENDA
+        /** Last date/time object was revised.  Date-Time Stamp as defined by iCalendar RFC 5545, 3.8.7.2 */
+        void setDTStamp(LocalDateTime dtStamp);
+        /** Last date/time object was revised.  Date-Time Stamp as defined by iCalendar RFC 5545, 3.8.7.2 */
+        LocalDateTime getDTStamp();
 
-        // CAN THIS BE REPLACED WITH EQUALS?
-        boolean repeatFieldsEquals(Object obj); // TODO - CAN THIS BE MADE DEFAULT OR REMOVED?
+        // TODO - SHOULD GO TO REGULAR AGENDA
+        /** Created date/time as defined by iCalendar RFC 5545, 3.8.7.1 */
+        void setCreated(LocalDateTime created);
+        /** Created date/time as defined by iCalendar RFC 5545, 3.8.7.1 */
+        LocalDateTime getCreated();
         
-        // TODO - FOR EDITED REPEATABLE APPOINTMENTS, THIS MARKS WHICH RECURRANCE THIS APPOINTMENT TAKES THE PLACE OF
-        public void setRecurranceLocalDateTime(LocalDateTime t); // If not null, contains the start date and time of recurring appointment this appointment takes the place of
-        public LocalDateTime getRecurranceLocalDateTime();
+        /** Date/time of repeatable appointment this appointment is replacing, if any (as defined by iCalendar RFC 5545, 3.8.4.4) */
+        void setRecurrance(LocalDateTime t); // If not null, contains the start date and time of recurring appointment this appointment takes the place of
+        /** Date/time of repeatable appointment this appointment is replacing, if any (as defined by iCalendar RFC 5545, 3.8.4.4) */
+        LocalDateTime getRecurrance();
 
-        // CAN I REPLACE THE COPY METHODS WITH ONE COPY AND THEN REMOVE WHAT I DON'T WANT?
-        // SHOULD I USE THE FACTORY?
+        /** True if appointment is part of a repeat rule AND has no unique data fields */
+        boolean isRepeatMade();
+        void setRepeatMade(boolean repeatMade);
+
+        /** Repeat rule attached to appointment, if null appointment is individual */
+        void setRepeat(Repeat repeat);
+        Repeat getRepeat();
+
+        
+//        public default Calendar getStartTime() {
+//            throw new RuntimeException("Not implemented");
+//        }
+        
+//        default boolean repeatFieldsEquals(Object obj)
+//        {
+//            return equals(obj);
+//        };
+        
+
+        // Copy methods - required to reverse edit changes when cancel is selected and for editing "this and future" repeatable appointments.
         /**
          * Copies all fields into parameter appointment
          * 
@@ -269,56 +305,44 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
             appointment.setAppointmentGroup(getAppointmentGroup());
             appointment.setDescription(getDescription());
             appointment.setSummary(getSummary());
-//            boolean b1 = getRepeat() == null;
-//            boolean b2 = appointment.getRepeat() == null;
-//            System.out.println("repeats " + b1 + " " + b2);
-//            if (getRepeat() == null) return appointment;
-//            if (appointment.getRepeat() == null)
-//            {
-//                appointment.setRepeat(RepeatFactory.newRepeat(getRepeat()));
-//            } else
-//            {
-//                getRepeat().copyInto(appointment.getRepeat());
-//            }
             return appointment;
         }
         
         /**
          * Copies this Appointment non-time fields into passed appointment
-         * Used when some of fields are unique and should not be copied.
+         * Used on recurrences when some of fields are unique and should not be copied.
          * 
-         * @param appointmentTo
-         * @param appointmentFrom
+         * @param appointment
+         * @param appointmentFromRepeatRule
          * @param repeatMap
          * @return
          */
         default RepeatableAppointment copyNonDateFieldsInto(
-                RepeatableAppointment appointmentTo
-              , RepeatableAppointment appointmentFrom
-              , Map<Appointment, Repeat> repeatMap) {
-            if (appointmentTo.getAppointmentGroup().equals(appointmentFrom.getAppointmentGroup())) {
-                appointmentTo.setAppointmentGroup(getAppointmentGroup());
+                RepeatableAppointment appointment
+              , RepeatableAppointment appointmentFromRepeatRule) {
+            if (appointment.getAppointmentGroup().equals(appointmentFromRepeatRule.getAppointmentGroup())) {
+                appointment.setAppointmentGroup(getAppointmentGroup());
             }
-            if (appointmentTo.getDescription().equals(appointmentFrom.getDescription())) {
-                appointmentTo.setDescription(getDescription());
+            if (appointment.getDescription().equals(appointmentFromRepeatRule.getDescription())) {
+                appointment.setDescription(getDescription());
             }
-            if (appointmentTo.getSummary().equals(appointmentFrom.getSummary())) {
-                appointmentTo.setSummary(getSummary());
+            if (appointment.getSummary().equals(appointmentFromRepeatRule.getSummary())) {
+                appointment.setSummary(getSummary());
             }
-            Repeat repeat = repeatMap.get(appointmentFrom);
-            repeatMap.put(appointmentTo, repeat);
-//            getRepeat().copyInto(appointmentTo.getRepeat());
-            return appointmentTo;
+//            Repeat repeat = repeatMap.get(appointmentFrom);
+//            repeatMap.put(appointmentTo, repeat);
+            getRepeat().copyInto(appointment.getRepeat());
+            return appointment;
         }
     }
 
-    static public abstract class RepeatableAppointmentImplBase<T> {
+    static public class RepeatableAppointmentImplBase<T> {
 
-//        /** Repeat rules, null if an individual appointment */
-//        private Repeat repeat;
-//        public void setRepeat(Repeat repeat) { this.repeat = repeat; }
-//        public Repeat getRepeat() { return repeat; }
-//        public T withRepeat(Repeat value) { setRepeat(value); return (T)this; }
+        /** Repeat rules, null if an individual appointment */
+        private Repeat repeat;
+        public void setRepeat(Repeat repeat) { this.repeat = repeat; }
+        public Repeat getRepeat() { return repeat; }
+        public T withRepeat(Repeat value) { setRepeat(value); return (T)this; }
         
         /**
          * true = a temporary appointment created by a repeat rule
@@ -369,8 +393,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
         public void setAppointmentGroup(AppointmentGroup value) { appointmentGroupObjectProperty.setValue(value); }
         public T withAppointmentGroup(AppointmentGroup value) { setAppointmentGroup(value); return (T)this; }
 
-      // used for Assert methods in testing
-        // TODO - THINK ABOUT ALTERNATIVE TESTING THAT WON'T REQUIRE THIS METHOD
+      // used for unit testing, not needed by implementation
       @Override
       public boolean equals(Object obj) {
           if (obj == this) return true;
@@ -379,26 +402,65 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
           }
           Appointment testObj = (Appointment) obj;
 
-          boolean descriptionEquals = (getDescription() == null)
-                  ? (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
-          boolean locationEquals = (getLocation() == null)
-                  ? (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
-          boolean summaryEquals = (getSummary() == null)
-                  ? (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
-//          boolean repeatEquals = (getRepeat() == null)
-//                  ? (testObj.getRepeat() == null) : getRepeat().equals(testObj.getRepeat());
-          boolean appointmentGroupEquals = (getAppointmentGroup() == null)
-                  ? (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
-           System.out.println("repeat appointment " + descriptionEquals + " " + locationEquals + " " + summaryEquals + " " +  " " + appointmentGroupEquals);
+          boolean descriptionEquals = (getDescription() == null) ?
+                  (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
+          boolean locationEquals = (getLocation() == null) ?
+                  (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
+          boolean summaryEquals = (getSummary() == null) ?
+                  (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
+          boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
+                  (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
+          System.out.println("repeat appointment " + descriptionEquals + " " + locationEquals + " " + summaryEquals + " " +  " " + appointmentGroupEquals);
           return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals;
       }
+ 
+    public void setUID(String uid) {
+        // TODO Auto-generated method stub
+        
+    }
+    public String getUID() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public void setSequence(int sequence) {
+        // TODO Auto-generated method stub
+        
+    }
+    public int getSequence() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+    public void setDTStamp(LocalDateTime dtStamp) {
+        // TODO Auto-generated method stub
+        
+    }
+    public LocalDateTime getDTStamp() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public void setCreated(LocalDateTime created) {
+        // TODO Auto-generated method stub
+        
+    }
+    public LocalDateTime getCreated() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public void setRecurrance(LocalDateTime t) {
+        // TODO Auto-generated method stub
+        
+    }
+    public LocalDateTime getRecurrance() {
+        // TODO Auto-generated method stub
+        return null;
+    }
       
-      /** Checks if fields relevant for the repeat rule (non-time fields) are equal. */
-      // needs to be overridden by any class implementing Appointment or extending AppointmentImplBase
-      // Note: Location field is a problem - I think it should be removed.
-      public boolean repeatFieldsEquals(Object obj) {
-          return equals(obj);
-      }
+//      /** Checks if fields relevant for the repeat rule (non-time fields) are equal. */
+//      // needs to be overridden by any class implementing Appointment or extending AppointmentImplBase
+//      // Note: Location field is a problem - I think it should be removed.
+//      public boolean repeatFieldsEquals(Object obj) {
+//          return equals(obj);
+//      }
     }
     
     /**
