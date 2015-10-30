@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -111,12 +112,14 @@ public final class RepeatableUtilities {
     public static WindowCloseType deleteAppointments(
               RepeatableAppointment appointment
             , Collection<Appointment> appointments
-            , Collection<Repeat> repeats) throws ParserConfigurationException
+            , Collection<Repeat> repeats
+            , Map<Appointment, Repeat> repeatMap) throws ParserConfigurationException
     {
         return deleteAppointments(
                 appointment
               , appointments
               , repeats
+              , repeatMap
               , a -> repeatChangeDialog()
               , a -> confirmDelete(a)
               , null
@@ -137,6 +140,7 @@ public final class RepeatableUtilities {
               Appointment appointmentInput
             , Collection<Appointment> appointments
             , Collection<Repeat> repeats
+            , Map<Appointment, Repeat> repeatMap
             , Callback<RepeatChange[], RepeatChange> changeDialogCallback
             , Callback<String, Boolean> confirmDeleteCallback
             , Callback<Collection<Appointment>, Void> writeAppointmentsCallback
@@ -144,7 +148,8 @@ public final class RepeatableUtilities {
     {
         RepeatableAppointment appointment = (RepeatableAppointment) appointmentInput;
         ResourceBundle resources = Settings.resources;
-        final Repeat repeat = (appointment instanceof RepeatableAppointment) ? ((RepeatableAppointment) appointment).getRepeat() : null;
+//        final Repeat repeat = (appointment instanceof RepeatableAppointment) ? ((RepeatableAppointment) appointment).getRepeat() : null;
+        final Repeat repeat = repeatMap.get(appointment);
         final AppointmentType appointmentType = (repeat == null)
                 ? AppointmentType.INDIVIDUAL : AppointmentType.WITH_EXISTING_REPEAT;
         boolean writeAppointments = false;
@@ -199,8 +204,9 @@ public final class RepeatableUtilities {
             case ALL:
 //                myFilter = (a) -> a.getRepeat() == repeat; // predicate to filter out all appointments with repeat
                 myFilter = (a) -> {
-                    RepeatableAppointment a2 = (RepeatableAppointment) a;
-                    return a2.getRepeat() == repeat; // predicate to filter out all appointments with repeat
+                    return repeatMap.get(a) == repeat;
+//                    RepeatableAppointment a2 = (RepeatableAppointment) a;
+//                    return a2.getRepeat() == repeat; // predicate to filter out all appointments with repeat
                 };
                 matchingAppointments = (int) repeat.streamOfDates().count();
                 matchingAppointmentsString = (repeat.getEndCriteria() == EndCriteria.NEVER)
@@ -221,8 +227,8 @@ public final class RepeatableUtilities {
                 myFilter = (a) ->
                 { // predicate to filter out all appointments with repeat and are equal or after startDate
                     LocalDateTime myDate = a.getStartLocalDateTime();
-                    RepeatableAppointment a2 = (RepeatableAppointment) a;
-                    return ((a2.getRepeat() == repeat) && (myDate.isAfter(startDate) || myDate.equals(startDate)));
+//                    RepeatableAppointment a2 = (RepeatableAppointment) a;
+                    return ((repeatMap.get(a) == repeat) && (! myDate.isBefore(startDate)));
                 };
                 matchingAppointments = (int) repeat
                         .streamOfDates()
@@ -250,7 +256,7 @@ public final class RepeatableUtilities {
                         default:
                             break;
                     }
-                    repeat.updateAppointments(appointments, appointment);
+                    repeat.updateAppointments(appointments, appointment, repeatMap);
                     writeRepeats = true;
                 }
                 break;
@@ -258,7 +264,7 @@ public final class RepeatableUtilities {
                 break;
             }
             // Check if repeat has only one appointment and should become individual
-            if (repeat.oneAppointmentToIndividual(repeats, appointments)) writeAppointments = true;
+            if (repeat.oneAppointmentToIndividual(repeats, repeatMap, appointments)) writeAppointments = true;
             break;
         default:
             break; // shouldn't get here (unknown AppointmentType)
@@ -293,6 +299,7 @@ public final class RepeatableUtilities {
             , RepeatableAppointment appointmentOldInput
             , Collection<Appointment> appointments
             , Collection<Repeat> repeats
+            , Map<Appointment, Repeat> repeatMap
             , Callback<RepeatChange[], RepeatChange> changeDialogCallback
 //            , Collection<RepeatableAppointment> editedAppointments
 //            , Collection<Repeat> editedRepeats)
@@ -301,11 +308,21 @@ public final class RepeatableUtilities {
     {
         RepeatableAppointment appointment = (RepeatableAppointment) appointmentInput;
         RepeatableAppointment appointmentOld = (RepeatableAppointment) appointmentOldInput;
+//        System.out.println("appointmentOld6  " + appointmentOld);
+//        System.exit(0);
+
         final ResourceBundle resources = Settings.resources;
-        final Repeat repeat = appointment.getRepeat(); // repeat with new changes
+//        final Repeat repeat = appointment.getRepeat(); // repeat with new changes
+        final Repeat repeat = repeatMap.get(appointment); // repeat with new changes
 //        System.out.println("repeat start " + repeat.getStartLocalTime());
         System.out.println("appointmentOld " + appointmentOld);
-        final Repeat repeatOld = appointmentOld.getRepeat(); // repeat prior to changes
+        final Repeat repeatOld = repeatMap.get(appointmentOld); // repeat with new changes
+        System.out.println("repeat1 " + repeat.getEndCriteria());
+        System.out.println("repeatOld1 " + repeatOld.getEndCriteria());
+        repeatMap.entrySet().stream().forEach(a -> System.out.println(a.getKey()));
+
+//        System.exit(0);
+//        final Repeat repeatOld = appointmentOld.getRepeat(); // repeat prior to changes
         Set<RepeatableAppointment> editedAppointmentsTemp = new HashSet<RepeatableAppointment>();
         
         final boolean appointmentChanged = ! appointment.equals(appointmentOld);
@@ -360,7 +377,8 @@ public final class RepeatableUtilities {
                 repeats.remove(repeat);
                 break;
             case FUTURE: // change end of repeat to appointment date (I'm not sure what the user expects in this case)
-                final Repeat repeatOriginal = appointmentOld.getRepeat();
+//                final Repeat repeatOriginal = appointmentOld.getRepeat();
+                final Repeat repeatOriginal = repeatMap.get(appointmentOld);
                 final Set<LocalDateTime> dates = repeatOriginal.getExceptions()
                          .stream()
                          .filter(a -> a.isBefore(startDate))
@@ -378,7 +396,7 @@ public final class RepeatableUtilities {
                 default:
                     break;
                 }
-                repeatOriginal.updateAppointments(appointments, appointmentOld); // is appointmentOld correct?
+                repeatOriginal.updateAppointments(appointments, appointmentOld, repeatMap); // is appointmentOld correct?
                 break;
             case CANCEL:
                 return WindowCloseType.CLOSE_WITHOUT_CHANGE;
@@ -391,11 +409,12 @@ public final class RepeatableUtilities {
         case WITH_NEW_REPEAT: // don't display edit dialog - just make appointments
 //            System.out.println("WITH_NEW_REPEAT");
           repeat.unbindAll();
-          appointment.setRepeat(repeat);
+//          appointment.setRepeat(repeat);
+          repeatMap.put(appointment, repeat);
           repeat.getAppointments().add(appointment);
 //          System.out.println(repeat.getStartLocalDate());
 //          System.exit(0);
-          Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments();
+          Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(repeatMap);
           System.out.println("newAppointments " + newAppointments.size() + " " + repeat.getAppointments());
           appointments.addAll(newAppointments);
           appointment.copyNonDateFieldsInto(repeat.getAppointmentData()); // copy any appointment changes (i.e. description, group, location, etc)
@@ -414,10 +433,11 @@ public final class RepeatableUtilities {
             {
             case ONE:
                 appointment.setRepeatMade(false);
-                appointment.setInPlaceOfRecurrance(appointmentOld.getStartLocalDateTime());
+                appointment.setRecurranceLocalDateTime(appointmentOld.getStartLocalDateTime());
                 if (startMinuteShift != 0 || endMinuteShift != 0)
                 { // if appointment has new day or time make it individual
-                    appointment.setRepeat(null); // make appointment individual if time changes
+//                    appointment.setRepeat(null); // make appointment individual if time changes
+                    repeatMap.remove(appointment);
                     repeat.getExceptions().add(startDateOld);
                     editedRepeatsFlag = true;
                 }
@@ -437,7 +457,7 @@ public final class RepeatableUtilities {
 //                    repeat.copyInto(appointment.getRepeat());
                 } else { // copy non-unique appointment changes (i.e. description, group, location, etc)
 //                    appointment.copyInto(repeat.getAppointmentData(), appointmentOld);
-                    repeat.getAppointmentData().copyNonDateFieldsInto(appointment, appointmentOld);
+                    repeat.getAppointmentData().copyNonDateFieldsInto(appointment, appointmentOld, repeatMap);
 //                    repeat.copyAppointmentInto(appointment, appointmentOld);
 //                    appointment.copyInto(repeat.getAppointmentData(), appointmentOld);
                 }
@@ -480,7 +500,7 @@ public final class RepeatableUtilities {
                 }
 //                System.out.println("size1 " + appointments.size());
                 repeat.updateAppointments(appointments, appointment, appointmentOld
-                        , startTemporalAdjuster, endTemporalAdjuster);
+                        , repeatMap, startTemporalAdjuster, endTemporalAdjuster);
                 editedAppointmentsTemp.addAll(repeat
                       .getAppointments()
                       .stream()
@@ -494,17 +514,17 @@ public final class RepeatableUtilities {
                 repeat.unbindAll();
                 // Copy changes to repeat  (i.e. description, group, location, etc)
                 repeat.setStartLocalDate(startDate);
-                System.out.println("startDate2 " + startDate);
                 if (appointment.isRepeatMade())
                 { // copy all appointment changes
                     appointment.copyNonDateFieldsInto(repeat.getAppointmentData());
                 } else { // copy non-unique appointment changes
-                    repeat.getAppointmentData().copyNonDateFieldsInto(appointment, appointmentOld);
+                    repeat.getAppointmentData().copyNonDateFieldsInto(appointment, appointmentOld, repeatMap);
 //                    repeat.copyAppointmentInto(appointment, appointmentOld);
 //                    appointment.copyAppointmentInto(repeat.getAppointmentData(), appointmentOld);
                 }
                 
                 // Split deleted dates between repeat and repeatOld
+                System.out.println("repeatOld.getExceptions() " + repeatOld);
                 repeatOld.getExceptions().clear();
                 final Iterator<LocalDateTime> dateIterator = repeat.getExceptions().iterator();
                 while (dateIterator.hasNext())
@@ -573,7 +593,7 @@ public final class RepeatableUtilities {
 //                    System.out.println("start list");
 //                    appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
 //                    System.out.println("before update " + appointments.size());
-                    repeatOld.updateAppointments(appointments, appointment);
+                    repeatOld.updateAppointments(appointments, appointment, repeatMap);
 //                    appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
 //                    System.out.println("after update " + appointments.size());
 //                    System.out.println(repeat);
@@ -634,7 +654,7 @@ public final class RepeatableUtilities {
 //                System.out.println("appointments1 " + repeat.getAppointments().size());
                 if (repeat.getEndCriteria() != EndCriteria.NEVER) repeat.makeCountFromUntil();
                 repeat.updateAppointments(appointments, appointment, appointmentOld
-                        , startTemporalAdjuster, endTemporalAdjuster);
+                        , repeatMap, startTemporalAdjuster, endTemporalAdjuster);
                 System.out.println("appointments2 " + repeat.getAppointments().size());
                 repeats.add(repeatOld);
 //                appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
@@ -643,12 +663,32 @@ public final class RepeatableUtilities {
 //                System.out.println("repeat.getEndOnDate() " + repeat.getEndOnDate() + " " + repeat.getStartLocalDate());
 //              System.exit(0);                
                 editedRepeatsFlag = true;
-                if (repeatOld.oneAppointmentToIndividual(repeats, appointments)) editedAppointmentsFlag = true;  // Check if any repeats have only one appointment and should become individual
+                if (repeatOld.oneAppointmentToIndividual(repeats, repeatMap, appointments)) editedAppointmentsFlag = true;  // Check if any repeats have only one appointment and should become individual
                 // TODO - CHANGES OF CONVERT TO ONE APPOINTMENT
                 break;
-            case CANCEL: // restore old appointment and repeat rule
+            case CANCEL: // restore old appointment and repeat rule (use copyInto to avoid triggering change listeners)
                 appointmentOld.copyInto(appointment);
-                repeatOld.copyInto(appointment.getRepeat());
+//                repeatOld.copyInto(appointment.getRepeat());
+//              System.out.println("repeatMap.size()- " + repeatMap.size());
+//                repeatMap.put(appointment, repeatOld);
+                repeatMap.remove(appointmentOld);
+                repeatOld.copyInto(repeat);
+//                System.out.println("2repeatMap.size()- " + repeatMap.size());
+//                
+//                Iterator<DayOfWeek> dayOfWeekIterator = Arrays 
+//                        .stream(DayOfWeek.values())
+//                        .limit(7)
+//                        .iterator();
+//                    while (dayOfWeekIterator.hasNext())
+//                    {
+//                        DayOfWeek key = dayOfWeekIterator.next();
+//                        boolean b1 = repeat.getDayOfWeekMap().get(key).get();
+//                        boolean b2 = repeatOld.getDayOfWeekMap().get(key).get();
+//                        System.out.println("day of week " + key + " " + b1 + " " + b2);
+//                    }
+                
+//                System.out.println("repeatMap.size()- " + repeatMap.size());
+//                System.exit(0);
 //              Iterator<DayOfWeek> dayOfWeekIterator = Arrays 
 //              .stream(DayOfWeek.values())
 //              .limit(7)
@@ -664,7 +704,7 @@ public final class RepeatableUtilities {
                 return WindowCloseType.CLOSE_WITHOUT_CHANGE;
             }
             // Check if any repeats have only one appointment and should become individual
-            if (repeat.oneAppointmentToIndividual(repeats, appointments)) editedAppointmentsFlag = true;
+            if (repeat.oneAppointmentToIndividual(repeats, repeatMap, appointments)) editedAppointmentsFlag = true;
             break;
         default:
             throw new InvalidParameterException("Invalid Appointment Type");
@@ -701,7 +741,8 @@ public final class RepeatableUtilities {
               Collection<Appointment> appointments
             , RepeatableAppointment appointment
             , RepeatableAppointment appointmentOld
-            , Collection<Repeat> repeats)
+            , Collection<Repeat> repeats
+            , Map<Appointment, Repeat> repeatMap)
 //            , Collection<RepeatableAppointment> editedAppointments
 //            , Collection<Repeat> editedRepeats)
     {
@@ -710,6 +751,7 @@ public final class RepeatableUtilities {
               , appointmentOld
               , appointments
               , repeats
+              , repeatMap
               , a -> repeatChangeDialog()
 //              , editedAppointments
 //              , editedRepeats);
@@ -733,6 +775,7 @@ public final class RepeatableUtilities {
           , RepeatableAppointment appointmentOld
           , Collection<Appointment> appointments
           , Collection<Repeat> repeats
+          , Map<Appointment, Repeat> repeatMap
           , Callback<Collection<Appointment>, Void> writeAppointmentsCallback
           , Callback<Collection<Repeat>, Void> writeRepeatsCallback)
     {
@@ -741,6 +784,7 @@ public final class RepeatableUtilities {
               , appointmentOld
               , appointments
               , repeats
+              , repeatMap
               , a -> repeatChangeDialog()
               , writeAppointmentsCallback
               , writeRepeatsCallback);

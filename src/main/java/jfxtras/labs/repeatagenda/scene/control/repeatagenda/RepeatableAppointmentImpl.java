@@ -211,11 +211,14 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
      * 
      * @param appointment
      */
-    public RepeatableAppointmentImpl(RepeatableAppointment appointment)
+    public RepeatableAppointmentImpl(RepeatableAppointment appointment, Map<Appointment, Repeat> repeatMap)
     {
 //        setRepeat(RepeatFactory.newRepeat(appointment.getRepeat()));
-//        System.out.println("repeataptimpl getAppts " + appointment.getRepeat().getAppointmentData());
-        setRepeat(new RepeatImpl(appointment.getRepeat(), RepeatableAppointmentImpl.class));
+//        System.out.println("Repeat7 " + repeat);
+        Repeat repeat = repeatMap.get(appointment);
+        Repeat newRepeat = new RepeatImpl(repeat, RepeatableAppointmentImpl.class);
+        repeatMap.put(this, newRepeat);
+//        setRepeat(new RepeatImpl(repeat, RepeatableAppointmentImpl.class));
 //        MyRepeat newRepeat = RepeatFactory.newRepeat(repeatMap.get(appointment));
 //        repeatMap.put(this, newRepeat);
         appointment.copyInto(this);
@@ -308,7 +311,8 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
         
         if (getKey() == null) setKey(nextKey++); // if it has no key (meaning its new) give it the next one
         myElement.setAttribute("key", getKey().toString());
-        myElement.setAttribute("repeatKey", (getRepeat() == null) ? "" : ((RepeatImpl) getRepeat()).getKey().toString());
+        //TODO - FIND A WAY TO PUT REPEAT KEY HERE
+//        myElement.setAttribute("repeatKey", (getRepeat() == null) ? "" : ((RepeatImpl) getRepeat()).getKey().toString());
 //        myElement.setAttribute("repeatKey", (repeat == null) ? "" : ((MyRepeat) repeat).getKey().toString());
         final String s = getStudentKeys().stream()
                                          .map(a -> a.toString())
@@ -468,6 +472,11 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
     public void setEndZonedDateTime(ZonedDateTime v) {
         // TODO Auto-generated method stub
         
+    }
+    @Override
+    public LocalDateTime getRecurranceLocalDateTime() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

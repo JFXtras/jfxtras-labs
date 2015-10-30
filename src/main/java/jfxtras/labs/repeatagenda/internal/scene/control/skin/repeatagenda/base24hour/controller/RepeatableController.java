@@ -5,6 +5,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -36,6 +37,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.EndCriteria;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 public class RepeatableController {
@@ -298,6 +300,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
  */
     public void setupData(
             RepeatableAppointment appointment
+          , Map<Appointment, Repeat> repeatMap
           , LocalDateTimeRange dateTimeRange
           , Class<? extends RepeatableAppointment> appointmentClass
           , Class<? extends Repeat> repeatClass)
@@ -305,10 +308,10 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
     {
 
 //        this.appointment = appointment;
-        System.out.println("appointment.getRepeat() " + appointment.getRepeat() );
-        if (appointment.getRepeat() != null)
+        System.out.println("appointment.getRepeat() " + repeatMap.get(appointment) );
+        if (repeatMap.get(appointment) != null)
         { // get existing repeat
-            repeat = appointment.getRepeat();
+            repeat = repeatMap.get(appointment);
         } else { // make new repeat
             repeat = RepeatFactory.newRepeat(repeatClass, dateTimeRange, appointmentClass);
             System.out.println("new repeat " + repeat );
@@ -351,13 +354,15 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
         repeatableCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
         {
             if (newSelection) {
-                appointment.setRepeat(repeat);
+                repeatMap.put(appointment, repeat);
+//                appointment.setRepeat(repeat);
 //                repeat.getAppointments().add(appointment);
                 setupBindings();
                 repeatableGridPane.setDisable(false);
                 startDatePicker.setDisable(false);
             } else {
-                appointment.setRepeat(null);
+                repeatMap.remove(appointment);
+//                appointment.setRepeat(null);
 //                repeat.getAppointments().remove(appointment);
                 removeBindings();
                 repeatableGridPane.setDisable(true);
@@ -366,7 +371,8 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
         });
 
         // Check repeatable box if appointment has a Repeat
-        repeatableCheckBox.selectedProperty().set(appointment.getRepeat() != null);        
+//        repeatableCheckBox.selectedProperty().set(appointment.getRepeat() != null);        
+        repeatableCheckBox.selectedProperty().set(repeatMap.containsKey(appointment));
     }
     
     private void setupBindings() {

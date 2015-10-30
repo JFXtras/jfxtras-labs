@@ -3,7 +3,10 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -12,10 +15,10 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.RepeatMenu;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
@@ -25,26 +28,40 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
     
     private static String AGENDA_STYLE_CLASS = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
     final public static ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
-    = javafx.collections.FXCollections.observableArrayList(
-            IntStream
-            .range(0, 24)
-            .mapToObj(i -> new RepeatableAgenda.AppointmentGroupImpl()
-                   .withStyleClass("group" + i)
-                   .withKey(i)
-                   .withDescription("group" + (i < 10 ? "0" : "") + i))
-            .collect(Collectors.toList()));
-//    public static ObservableList<AppointmentGroup> defaultAppointmentGroups() {
-//        return javafx.collections.FXCollections.observableArrayList(
-//                IntStream
-//                .range(0, 24)
-//                .mapToObj(i -> new RepeatableAgenda.AppointmentGroupImpl()
-//                       .withStyleClass("group" + i)
-//                       .withKey(i)
-//                       .withDescription("group" + (i < 10 ? "0" : "") + i))
-//                .collect(Collectors.toList()));
-//    }
-//    
+        = javafx.collections.FXCollections.observableArrayList(
+                IntStream
+                .range(0, 24)
+                .mapToObj(i -> new RepeatableAgenda.AppointmentGroupImpl()
+                       .withStyleClass("group" + i)
+                       .withKey(i)
+                       .withDescription("group" + (i < 10 ? "0" : "") + i))
+                .collect(Collectors.toList()));
 
+    private LocalDateTimeRange dateTimeRange; // date range of current skin
+    
+    /** Repeat rules */
+    private Collection<Repeat> repeats;
+    public Collection<Repeat> repeats() { return repeats; }
+    public void setRepeats(Collection<Repeat> repeatRules)
+    {
+        this.repeats = repeatRules;
+        if (getAppointmentsIndividual() != null)
+        { // In cast individual appointments are set first collect individual appointments that are recurrences and add to repeat appointment list
+            repeats().stream().forEach(r ->
+                { // each repeat
+                    Set<RepeatableAppointment> s = getAppointmentsIndividual() // add individual appointments to repeat, if its a recurrance of a repeat
+                            .stream()
+                            .map(a -> (RepeatableAppointment) a)
+                            .filter(a -> repeatMap.containsKey(a))
+                            .filter(a -> repeatMap.get(a).equals(this))
+                            .collect(Collectors.toSet());
+                    r.getAppointments().addAll(s);
+                });
+//            repeats().stream().forEach(a -> a.collectAppointments(getAppointmentsIndividual())); // add individual appointments that have repeat rules to their Repeat objects
+        }
+
+    }
+    
     // Extended repeat class used by the implementor - used to instantiate new repeat objects
     private Class<? extends Repeat> repeatClass = RepeatImpl.class; // default class, change if other implementation is used
     Class<? extends Repeat> getRepeatClass() { return repeatClass; }
@@ -58,7 +75,35 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
     public void setAppointmentWriteCallback(Callback<Collection<Appointment>, Void> appointmentWriteCallback) { this.appointmentWriteCallback = appointmentWriteCallback; }
     private Callback<Collection<Repeat>, Void> repeatWriteCallback = null;
     public void setRepeatWriteCallback(Callback<Collection<Repeat>, Void> repeatWriteCallback) { this.repeatWriteCallback = repeatWriteCallback; }
+    private Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback = null;
+    public void setAppointmentGroupWriteCallback(Callback<Collection<AppointmentGroup>, Void> appointmentWriteCallback) { this.appointmentGroupWriteCallback = appointmentGroupWriteCallback; }
 
+    
+    /** Individual appointments - kept updated with appointments */
+    private Collection<T> appointmentsIndividual = new HashSet<T>(); //FXCollections.observableArrayList();
+    public Collection<T> getAppointmentsIndividual() { return appointmentsIndividual; }
+    public void setIndividualAppointments(Collection<T> list)
+    {
+        appointmentsIndividual = list;
+        if (repeats() != null)
+        { // In cast individual appointments are set first
+            repeats().stream().forEach(r ->
+            { // each repeat
+                Set<RepeatableAppointment> s = getAppointmentsIndividual() // add individual appointments to repeat, if its a recurrance of a repeat
+                        .stream()
+                        .map(a -> (RepeatableAppointment) a)
+                        .filter(a -> repeatMap.containsKey(a))
+                        .filter(a -> repeatMap.get(a).equals(this))
+                        .collect(Collectors.toSet());
+                r.getAppointments().addAll(s);
+            });
+        }
+    }
+//   
+//    /** Repeat-made appointments - kept updated with appointments */
+//    private ObservableList<T> appointmentsRepeatMade = FXCollections.observableArrayList();
+//    public Collection<T> getAppointmentsRepeatMade() { return appointmentsRepeatMade; }
+//    public void setRepeatMadeAppointments(Collection<T> list) { repeatMadeAppointments = list; }
     
     /**
      * Constructor with individualAppointments collection and repeats collection provided.
@@ -72,22 +117,16 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
           , Collection<Repeat> repeats
           , Class<? extends Repeat> repeatClass)
     {
-        setIndividualAppointments(individualAppointments);
+        getAppointmentsIndividual().addAll(individualAppointments);
         setRepeats(repeats);
         this.repeatClass = repeatClass;
     }
-    
-//    public void setRepeatClass(Class<? extends Repeat> repeatClass)
-//    {
-//        RepeatFactory.repeatClass = repeatClass;
-//    }
     
     public RepeatableAgenda()
     {
         // Listen for changes to appointments (additions and deletions)
         appointments().addListener((ListChangeListener.Change<? extends Appointment> change)
             -> {
-                // TODO - UPDATE individualAppointments WHEN NECESSARY - may not be needed
                 while (change.next())
                 {
                     if (change.wasReplaced())
@@ -98,7 +137,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
                                 .filter(a -> ! a.isRepeatMade())
                                 .peek(a -> System.out.println("removed individual " + a.getStartLocalDateTime()))
                                 .collect(Collectors.toSet());
-                            getIndividualAppointments().removeAll(removedIndividualAppointments);
+                            getAppointmentsIndividual().removeAll(removedIndividualAppointments);
                     }
                     if (change.wasAdded())
                     {
@@ -108,125 +147,86 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
                             .filter(a -> ! a.isRepeatMade())
                             .peek(a -> System.out.println("added individual " + a.getStartLocalDateTime()))
                             .collect(Collectors.toSet());
-                        getIndividualAppointments().addAll(newIndividualAppointments);
+                        getAppointmentsIndividual().addAll(newIndividualAppointments);
                     }
-                    System.out.println("appointment list changed " + individualAppointments.size() + " " + repeats.size());
-                    System.out.println("first repeat " + individualAppointments.iterator().next().getRepeat());
                 }
             });
         
         // Change edit popup to provide one with repeat options
-        setEditAppointmentCallback((Appointment appointment) -> {
-            System.out.println("getNewAppointmentCallback() " + getNewAppointmentCallback());
-            RepeatMenu repeatMenu = new RepeatMenu(
+        setEditAppointmentCallback((Appointment appointment) ->
+        {
+            Stage repeatMenu = new RepeatMenu(
                     (RepeatableAppointment) appointment
-                    , dateTimeRange()
+                    , dateTimeRange
                     , appointments()
-                    , getRepeats()
+                    , repeats()
+                    , repeatMap
                     , appointmentGroups()
                     , appointmentClass
                     , repeatClass
-//                    , getNewAppointmentCallback()
                     , appointmentWriteCallback   // write appointment callback initialized to null
+                    , appointmentGroupWriteCallback
                     , repeatWriteCallback // write repeat callback initialized to null
                     , a -> { this.refresh(); return null; }); // refresh agenda
             repeatMenu.show();
             return null;
         });
-    }
-
-    private LocalDateTimeRange dateTimeRange; // range of current skin
-    public LocalDateTimeRange dateTimeRange() { return dateTimeRange; }
-        
-    // TODO - UPDATE WITH REPEATS
-    /** Repeat rules */
-    private Collection<Repeat> repeats;
-    public Collection<Repeat> getRepeats() { return repeats; }
-    public void setRepeats(Collection<Repeat> repeatRules)
-    {
-        this.repeats = repeatRules;
-        if (getIndividualAppointments() != null)
-        {
-            getRepeats().stream().forEach(a -> a.collectAppointments(getIndividualAppointments())); // add individual appointments that have repeat rules to their Repeat objects
-        }
         
         // manage repeat-made appointments when the range changes
         setLocalDateTimeRangeCallback(dateTimeRange -> {
             this.dateTimeRange = dateTimeRange;
             LocalDateTime startDate = dateTimeRange.getStartLocalDateTime();
             LocalDateTime endDate = dateTimeRange.getEndLocalDateTime();
-            System.out.println("dates changed " + startDate + " " + endDate);
-            System.out.println("2agenda.appointments().size() " + appointments().size());
             appointments().removeIf(a -> ((RepeatableAppointment) a).isRepeatMade());
-            getRepeats().stream().forEach(r -> r.getAppointments().clear());
-            getRepeats().stream().forEach(r ->
-            { // Make new repeat-made appointments inside range
-                Collection<RepeatableAppointment> newAppointments = r.makeAppointments(startDate, endDate);
-                appointments().addAll(newAppointments);
-//                agenda.appointments().addAll(newAppointments);
-                System.out.println("newAppointments " + newAppointments.size());
-//                r.removeOutsideRangeAppointments(data.getAppointments());                 // remove outside range appointments
+
+            repeats().stream().forEach(r ->
+            { // remove repeat-made appointments, leave individual appointment recurrences
+                Set<RepeatableAppointment> s = r.getAppointments()
+                        .stream()
+                        .filter(a -> ! repeatMap.containsKey(a))
+                        .collect(Collectors.toSet());
+                r.getAppointments().removeAll(s);
             });
-            System.out.println("3agenda.appointments().size() " + appointments().size());
-//            System.exit(0);
+            
+//            repeats().stream().forEach(r -> {
+//                r.getAppointments().clear());   
+//            }
+            repeatMap.clear();
+            repeats().stream().forEach(r ->
+            { // Make new repeat-made appointments inside range
+                Collection<RepeatableAppointment> newAppointments = r.makeAppointments(startDate, endDate, repeatMap);
+                appointments().addAll(newAppointments);
+            });
             return null; // return argument for the Callback
         });
-
-    }
-
-    // TODO - UPDATE WITH APPOINTMENTS
-    /** Individual appointments - kept updated with appointments*/
-    private Collection<T> individualAppointments = FXCollections.observableArrayList();
-    public Collection<T> getIndividualAppointments() { return individualAppointments; }
-    public void setIndividualAppointments(Collection<T> list)
-    {
-        individualAppointments = list;
-        if (getRepeats() != null)
-        {
-            getRepeats().stream().forEach(a -> a.collectAppointments(getIndividualAppointments())); // add individual appointments that have repeat rules to their Repeat objects
-        }
     }
     
-//    // IO Callbacks
-//    private Callback<Collection<RepeatableAppointment>, Void> writeAppointmentsCallback;
-//    /** Write individual appointment collection callback */
-//    public void setWriteAppointmentsCallback(Callback<Collection<RepeatableAppointment>, Void> callBack) { writeAppointmentsCallback = callBack; }
-//    private Callback<Collection<Repeat>, Void> writeRepeatsCallback;
-//    /** Write repeat collection callback */
-//    public void setWriteRepeatsCallback(Callback<Collection<Repeat>, Void> callBack) { writeRepeatsCallback = callBack; }
-
-//    private ObservableList<RepeatableAppointment> repeatMadeAppointments = FXCollections.observableArrayList();
-//    /** Appointment list - is kept updated with Agenda.appointments */
-//    private ObservableList<Appointment> appointmentItems = FXCollections.observableArrayList();
-//    public void setAppointmentItems(ObservableList<Appointment> items)
-//    { 
-//        this.appointmentItems = items;
-//        items.addListener(listener);
-//    }
-//    public ObservableList<T> getAppointmentItems() { return appointmentItems; }
-//    private final ListChangeListener<RepeatableAppointment> listener = (ListChangeListener<RepeatableAppointment>) change -> {
-//        System.out.println("item change");
-//        while (change.next())
-//        {
-//            for (Appointment myAppointment : change.getAddedSubList())
-//            {
-//                appointments().add(myAppointment);
-//            }
-//            for (Appointment myAppointment : change.getRemoved())
-//            {
-//                appointments().remove(myAppointment);
-//            }
-//        }
-//    };
-//    
-//    public RepeatableAgenda(ObservableList<T> items) {
-//        this.appointmentItems = items;
-//        items.addListener(listener);
-//    }
-//
-//    public RepeatableAgenda() {
-//        appointmentItems.addListener(listener);
-//    }
+    // MAYBE I CAN GET RID OF THE BELOW INTERFACE AND JUST JUST APPOINTMENT
+    // I JUST NEED TO KEEP A LIST OF REPEAT-MADE APPOINTMENTS HERE AND
+    // COPY THEM TO APPOINTMENT LIST
+    
+// i can simulate isRepeatMade by checking to see if is in the list of repeat-made appointmetns
+// I can simulate getRepeat by searching list of repeats for the appointment
+// Are those alternatives too expensive?
+// What do I do about the copy and equals methods?
+    
+    public boolean isRepeatMade(Appointment a)
+    {
+        return ! appointmentsIndividual.contains(a);
+    }
+    
+    /** map that matches repeatable appointments to the Repeat that made them */
+    // When repeat-made appointments are made they need to be added to this map
+    private Map<Appointment, Repeat> repeatMap = new HashMap<Appointment, Repeat>();
+    Map<Appointment, Repeat> getRepeatMap() { return repeatMap; }
+    public void setRepeat(Appointment a, Repeat r)
+    {
+        repeatMap.put(a, r);
+    }
+    public Repeat getRepeat(Appointment a)
+    {
+        return repeatMap.get(a);
+    }
     
     static public interface RepeatableAppointment extends Agenda.Appointment
     {
@@ -234,14 +234,18 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
         boolean isRepeatMade();
         void setRepeatMade(boolean b);
 
-        void setRepeat(Repeat repeat);
-        Repeat getRepeat();
-////        boolean hasRepeat();
+//        void setRepeat(Repeat repeat);
+//        Repeat getRepeat();
+
+        // CAN THIS BE REPLACED WITH EQUALS?
         boolean repeatFieldsEquals(Object obj); // TODO - CAN THIS BE MADE DEFAULT OR REMOVED?
         
         // TODO - FOR EDITED REPEATABLE APPOINTMENTS, THIS MARKS WHICH RECURRANCE THIS APPOINTMENT TAKES THE PLACE OF
-        public void setInPlaceOfRecurrance(LocalDateTime t); // If not null, contains the start date and time of recurring appointment this appointment takes the place of
+        public void setRecurranceLocalDateTime(LocalDateTime t); // If not null, contains the start date and time of recurring appointment this appointment takes the place of
+        public LocalDateTime getRecurranceLocalDateTime();
 
+        // CAN I REPLACE THE COPY METHODS WITH ONE COPY AND THEN REMOVE WHAT I DON'T WANT?
+        // SHOULD I USE THE FACTORY?
         /**
          * Copies all fields into parameter appointment
          * 
@@ -252,17 +256,6 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
             appointment.setEndLocalDateTime(getEndLocalDateTime());
             appointment.setStartLocalDateTime(getStartLocalDateTime());
             copyNonDateFieldsInto(appointment);
-//            Iterator<DayOfWeek> dayOfWeekIterator = Arrays 
-//                    .stream(DayOfWeek.values())
-//                    .limit(7)
-//                    .iterator();
-//                while (dayOfWeekIterator.hasNext())
-//                {
-//                    DayOfWeek key = dayOfWeekIterator.next();
-//                    boolean b1 = this.getRepeat().getDayOfWeekMap().get(key).get();
-//                    boolean b2 = appointment.getRepeat().getDayOfWeekMap().get(key).get();
-//                    System.out.println("copied day of week2 " + key + " " + b1 + " " + b2);
-//                }
             return appointment;
         }
         
@@ -291,35 +284,41 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
         }
         
         /**
-         * Copies this Appointment non-time fields into parameter appointment
+         * Copies this Appointment non-time fields into passed appointment
          * Used when some of fields are unique and should not be copied.
          * 
-         * @param appointment
+         * @param appointmentTo
+         * @param appointmentFrom
+         * @param repeatMap
          * @return
          */
-        default RepeatableAppointment copyNonDateFieldsInto(RepeatableAppointment appointment, RepeatableAppointment appointmentOld) {
-            if (appointment.getAppointmentGroup().equals(appointmentOld.getAppointmentGroup())) {
-                appointment.setAppointmentGroup(getAppointmentGroup());
+        default RepeatableAppointment copyNonDateFieldsInto(
+                RepeatableAppointment appointmentTo
+              , RepeatableAppointment appointmentFrom
+              , Map<Appointment, Repeat> repeatMap) {
+            if (appointmentTo.getAppointmentGroup().equals(appointmentFrom.getAppointmentGroup())) {
+                appointmentTo.setAppointmentGroup(getAppointmentGroup());
             }
-            if (appointment.getDescription().equals(appointmentOld.getDescription())) {
-                appointment.setDescription(getDescription());
+            if (appointmentTo.getDescription().equals(appointmentFrom.getDescription())) {
+                appointmentTo.setDescription(getDescription());
             }
-            if (appointment.getSummary().equals(appointmentOld.getSummary())) {
-                appointment.setSummary(getSummary());
+            if (appointmentTo.getSummary().equals(appointmentFrom.getSummary())) {
+                appointmentTo.setSummary(getSummary());
             }
-            getRepeat().copyInto(appointment.getRepeat());
-//            repeatMap.get(this).copyInto(repeatMap.get(appointment));
-            return appointment;
+            Repeat repeat = repeatMap.get(appointmentFrom);
+            repeatMap.put(appointmentTo, repeat);
+//            getRepeat().copyInto(appointmentTo.getRepeat());
+            return appointmentTo;
         }
     }
 
     static public abstract class RepeatableAppointmentImplBase<T> {
 
-        /** Repeat rules, null if an individual appointment */
-        private Repeat repeat;
-        public void setRepeat(Repeat repeat) { this.repeat = repeat; }
-        public Repeat getRepeat() { return repeat; }
-        public T withRepeat(Repeat value) { setRepeat(value); return (T)this; }
+//        /** Repeat rules, null if an individual appointment */
+//        private Repeat repeat;
+//        public void setRepeat(Repeat repeat) { this.repeat = repeat; }
+//        public Repeat getRepeat() { return repeat; }
+//        public T withRepeat(Repeat value) { setRepeat(value); return (T)this; }
         
         /**
          * true = a temporary appointment created by a repeat rule
@@ -333,7 +332,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
 
         // TODO - FOR EDITED REPEATABLE APPOINTMENTS, THIS MARKS WHICH RECURRANCE THIS APPOINTMENT TAKES THE PLACE OF
         private LocalDateTime inPlaceOfRecurrance; // If not null, contains the start date and time of recurring appointment this appointment takes the place of
-        public void setInPlaceOfRecurrance(LocalDateTime t) { inPlaceOfRecurrance = t; } // If not null, contains the start date and time of recurring appointment this appointment takes the place of
+        public void setRecurranceLocalDateTime(LocalDateTime t) { inPlaceOfRecurrance = t; } // If not null, contains the start date and time of recurring appointment this appointment takes the place of
 
         /** WholeDay: */
         public ObjectProperty<Boolean> wholeDayProperty() { return wholeDayObjectProperty; }
@@ -465,7 +464,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
         
         public static RepeatableAppointment newAppointment(Class<? extends RepeatableAppointment> appointmentClass)
         {
-            System.out.println("repeatClass " + appointmentClass);
+//            System.out.println("repeatClass " + appointmentClass);
 
 //            if (appointmentClass != null)
 //            {

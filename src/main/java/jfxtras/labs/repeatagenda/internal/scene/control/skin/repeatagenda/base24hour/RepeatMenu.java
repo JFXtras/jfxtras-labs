@@ -2,8 +2,8 @@ package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base2
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -25,21 +25,22 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 public class RepeatMenu extends Stage {
 
     private BooleanProperty groupNameEdited = new SimpleBooleanProperty(false);
-    private BooleanProperty appointmentEdited = new SimpleBooleanProperty(false);
-    public BooleanProperty appointmentEditedProperty() { return appointmentEdited; }
-    private Iterator<Appointment> editedAppointments; // TODO
-    private BooleanProperty repeatEdited = new SimpleBooleanProperty(false);
-    public BooleanProperty repeatEditedProperty() { return repeatEdited; }
+//    private BooleanProperty appointmentEdited = new SimpleBooleanProperty(false);
+//    public BooleanProperty appointmentEditedProperty() { return appointmentEdited; }
+//    private Iterator<Appointment> editedAppointments; // TODO
+//    private BooleanProperty repeatEdited = new SimpleBooleanProperty(false);
+//    public BooleanProperty repeatEditedProperty() { return repeatEdited; }
 
     public RepeatMenu(Appointment appointment
             , LocalDateTimeRange dateTimeRange
             , Collection<Appointment> appointments
             , Collection<Repeat> repeats
+            , Map<Appointment, Repeat> repeatMap
             , List<AppointmentGroup> appointmentGroups
             , Class<? extends RepeatableAppointment> appointmentClass
             , Class<? extends Repeat> repeatClass
-//            , Callback<LocalDateTimeRange, Appointment> newAppointmentCallback
             , Callback<Collection<Appointment>, Void> appointmentWriteCallback
+            , Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback
             , Callback<Collection<Repeat>, Void> repeatWriteCallback
             , Callback<Void, Void> refreshCallback)
     {
@@ -65,19 +66,20 @@ public class RepeatMenu extends Stage {
               , dateTimeRange
               , appointments
               , repeats
+              , repeatMap
               , appointmentGroups
               , appointmentClass
               , repeatClass
-//              , newAppointmentCallback
               , appointmentWriteCallback
+//              , appointmentGroupWriteCallback
               , repeatWriteCallback
               , refreshCallback);
         Scene scene = new Scene(appointmentMenu);
 
         // data element change bindings
         groupNameEdited.bindBidirectional(appointmentEditController.groupNameEditedProperty());
-        appointmentEdited.bindBidirectional(appointmentEditController.appointmentEditedProperty());
-        repeatEdited.bindBidirectional(appointmentEditController.repeatEditedProperty());
+//        appointmentEdited.bindBidirectional(appointmentEditController.appointmentEditedProperty());
+//        repeatEdited.bindBidirectional(appointmentEditController.repeatEditedProperty());
 
         // listen for close event
         appointmentEditController.closeTypeProperty().addListener((observable, oldSelection, newSelection) -> close());
@@ -91,7 +93,8 @@ public class RepeatMenu extends Stage {
             case CLOSE_WITH_CHANGE:
                 if (groupNameEdited.getValue()) {    // write group name changes
                     System.out.println("group change write needed");
-                    AppointmentIO.writeAppointmentGroups(appointmentGroups, Settings.APPOINTMENT_GROUPS_FILE);
+                    appointmentGroupWriteCallback.call(appointmentGroups);
+//                    AppointmentIO.writeAppointmentGroups(appointmentGroups, Settings.APPOINTMENT_GROUPS_FILE);
                 }
                 break;
             default:
