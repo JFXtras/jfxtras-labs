@@ -77,6 +77,7 @@
                                     <TextField fx:id="nameTextField" GridPane.columnIndex="1" />
                                     <TextArea fx:id="descriptionTextArea" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="2" />
                                     <Label text="%location" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                                    <TextField fx:id="locationTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                  </children>
                                  <VBox.margin>
                                     <Insets top="3.0" />
@@ -140,45 +141,6 @@
             </AnchorPane>
          </content>
     </Tab>
-      <Tab fx:id="handleSaveButton" closable="false" disable="true" text="%notifications">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                  <VBox layoutX="107.0" layoutY="55.0" prefHeight="567.0" prefWidth="400.0" spacing="7.0" styleClass="simple-border2" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="5.0">
-                     <children>
-                        <VBox styleClass="simple-border">
-                           <VBox.margin>
-                              <Insets top="2.0" />
-                           </VBox.margin>
-                           <children>
-                              <Label text="%notifications">
-                                 <styleClass>
-                                    <String fx:value="bordered-titled-title" />
-                                    <String fx:value="background3" />
-                                 </styleClass>
-                              </Label>
-                              <TableView prefHeight="200.0" prefWidth="200.0">
-                                <columns>
-                                  <TableColumn prefWidth="75.0" text="%type" />
-                                  <TableColumn prefWidth="75.0" text="%number" />
-                                    <TableColumn prefWidth="75.0" text="%interval" />
-                                </columns>
-                              </TableView>
-                           </children>
-                        </VBox>
-                        <Button mnemonicParsing="false" text="%duplicate.event" />
-                        <VBox prefHeight="200.0" prefWidth="100.0" />
-                        <HBox alignment="CENTER">
-                           <children>
-                              <Button fx:id="saveAdvancedButton" mnemonicParsing="false" onAction="#handleCloseButton" text="%save" />
-                           </children>
-                        </HBox>
-                     </children>
-                  </VBox>
-               </children>
-            </AnchorPane>
-        </content>
-      </Tab>
   </tabs>
    <stylesheets>
       <URL value="@../main.css" />

@@ -25,6 +25,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 /**
@@ -39,7 +40,7 @@ public class RepeatImpl extends Repeat {
 
     public RepeatImpl() { }
 
-public RepeatImpl(Class<RepeatableAppointmentImpl> appointmentClass) {
+public RepeatImpl(Class<? extends RepeatableAppointment> appointmentClass) {
     super(appointmentClass);
     }
 
@@ -67,7 +68,7 @@ public RepeatImpl(Class<RepeatableAppointmentImpl> appointmentClass) {
 //        super(dateTimeRange, newAppointmentCallback);
 //    }
 //    
-    public RepeatImpl(Repeat oldRepeat, Class<RepeatableAppointmentImpl> appointmentClass) {
+    public RepeatImpl(Repeat oldRepeat, Class<? extends RepeatableAppointment> appointmentClass) {
         super(oldRepeat, appointmentClass);
         if (oldRepeat != null) {
             // Copy any MyRepeat specific fields first

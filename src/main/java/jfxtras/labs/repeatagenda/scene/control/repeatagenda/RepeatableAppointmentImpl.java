@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,8 +30,8 @@ import org.xml.sax.SAXException;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentGroupImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointmentImplBase;
@@ -47,41 +45,11 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
  *
  */
 public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<RepeatableAppointmentImpl> implements RepeatableAppointment {
-
-//    /** WholeDay: */
-//    public BooleanProperty wholeDayProperty() { return wholeDayObjectProperty; }
-//    final private BooleanProperty wholeDayObjectProperty = new SimpleBooleanProperty(this, "wholeDay", false);
-//    public Boolean isWholeDay() { return wholeDayObjectProperty.getValue(); }
-//    public void setWholeDay(Boolean value) { wholeDayObjectProperty.setValue(value); }
-//    public MyAppointment withWholeDay(Boolean value) { setWholeDay(value); return this; } 
-//    
-//    /** Summary: */
-//    public StringProperty summaryProperty() { return summaryObjectProperty; }
-//    final private StringProperty summaryObjectProperty = new SimpleStringProperty(this, "summary", "");
-//    public String getSummary() { return summaryObjectProperty.getValue(); }
-//    public void setSummary(String value) { summaryObjectProperty.setValue(value); }
-//    public MyAppointment withSummary(String value) { setSummary(value); return this; } 
-//    
-//    /** Description: */
-//    public StringProperty descriptionProperty() { return descriptionObjectProperty; }
-//    final private StringProperty descriptionObjectProperty = new SimpleStringProperty(this, "description", "");
-//    public String getDescription() { return descriptionObjectProperty.getValue(); }
-//    public void setDescription(String value) { descriptionObjectProperty.setValue(value); }
-//    public MyAppointment withDescription(String value) { setDescription(value); return this; } 
-//    
+    
       /** AppointmentGroupIndex: */
     private int appointmentGroupIndex = 0; // only used privately for I/O - later matched up to an appointmentGroup
     int getAppointmentGroupIndex() { return appointmentGroupIndex; }
     private void setAppointmentGroupIndex(Integer value) { appointmentGroupIndex = value; }
-//
-//    /** AppointmentGroup: */
-//    public ObjectProperty<AppointmentGroup> appointmentGroupProperty() { return appointmentGroupObjectProperty; }
-//    final private ObjectProperty<AppointmentGroup> appointmentGroupObjectProperty = new SimpleObjectProperty<AppointmentGroup>(this, "appointmentGroup");
-//    public AppointmentGroup getAppointmentGroup() { return appointmentGroupObjectProperty.getValue(); }
-//    public void setAppointmentGroup(AppointmentGroup value) { appointmentGroupObjectProperty.setValue(value); }
-//    public MyAppointment withAppointmentGroup(AppointmentGroup value) { setAppointmentGroup(value); return this; }
-//    public void assignAppointmentGroup(ObservableList<AppointmentGroup> appointmentGroups) { setAppointmentGroup(appointmentGroups.get(appointmentGroupIndex));  }
-//   
         
     // TODO - REPALCE WITH UID - from iCalendar
     private static int nextKey = 0;
@@ -106,12 +74,26 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
     public boolean hasKey() { return key != null; }
     public RepeatableAppointmentImpl withKey(Integer value) { setKey(value); return this; }
     
-    /** StudentKeys: */
-    final private ObservableList<Integer> studentKeys = FXCollections.observableArrayList();
-    public List<Integer> getStudentKeys() { return studentKeys; }
-    public void setStudentKeys(List<Integer> value) { studentKeys.setAll(value); }
-    public RepeatableAppointmentImpl withStudentKeys(List<Integer> value) { setStudentKeys(value); return this; }
-    public ObservableList<Integer> studentKeysProperty() { return studentKeys; }
+    /** Sample custom data field */
+    public StringProperty customProperty() { return custom; }
+    final private StringProperty custom = new SimpleStringProperty();
+    public String getCustom() { return custom.get(); }
+    public void setCustom(String s) { custom.set(s); }
+    public RepeatableAppointmentImpl withCustom(String s) { setCustom(s); return this; }
+
+//    /** Sample custom data list */
+//    public ObservableList<String> customListProperty() { return customList; }
+//    private ObservableList<String> customList = FXCollections.observableArrayList(Arrays.asList("Bob", "Sue", "Joe"));
+//    public List<String> getCustomList() { return customList; }
+//    public void setCustomList(ObservableList<String> value) { customList = value; }
+//    public RepeatableAppointmentImpl withCustomList(ObservableList<String> value) { setCustomList(value); return this; }
+    
+//    /** StudentKeys: */
+//    public ObservableList<Integer> studentKeysProperty() { return studentKeys; }
+//    final private ObservableList<Integer> studentKeys = FXCollections.observableArrayList();
+//    public List<Integer> getStudentKeys() { return studentKeys; }
+//    public void setStudentKeys(List<Integer> value) { studentKeys.setAll(value); }
+//    public RepeatableAppointmentImpl withStudentKeys(List<Integer> value) { setStudentKeys(value); return this; }
 
 //    /** StaffKeys: */
 //  private ObservableList<Integer> staffKeys = FXCollections.observableArrayList();
@@ -157,27 +139,14 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
     public void setEndLocalDateTime(LocalDateTime value) { endLocalDateTime.setValue(value); }
     public RepeatableAppointmentImpl withEndLocalDateTime(LocalDateTime value) { setEndLocalDateTime(value); return this; } 
     
-    @Override
-    public boolean equals(Object obj) {
-        RepeatableAppointmentImpl testObj = (RepeatableAppointmentImpl) obj;
-        
-        boolean startEquals = (getStartLocalDateTime() == null) ?
-                (testObj.getStartLocalDateTime() == null) : getStartLocalDateTime().equals(testObj.getStartLocalDateTime());
-        boolean endEquals = (getEndLocalDateTime() == null) ?
-                (testObj.getEndLocalDateTime() == null) : getEndLocalDateTime().equals(testObj.getEndLocalDateTime());
-
-        System.out.println( "myappointment equals " + startEquals + " " + endEquals);
-        
-        return super.equals(obj) && startEquals && endEquals;
-    }
     
-    public boolean repeatFieldsEquals(Object obj) {
-//        System.out.println("MyAppointment repeatFieldsEquals " );
-        RepeatableAppointmentImpl testObj = (RepeatableAppointmentImpl) obj;
-        boolean studentKeysEquals = (getStudentKeys() == null)
-                ? (testObj.getStudentKeys() == null) : getStudentKeys().equals(testObj.getStudentKeys());
-        return super.equals(obj) && studentKeysEquals;
-    }
+//    public boolean repeatFieldsEquals(Object obj) {
+////        System.out.println("MyAppointment repeatFieldsEquals " );
+//        RepeatableAppointmentImpl testObj = (RepeatableAppointmentImpl) obj;
+//        boolean studentKeysEquals = (getStudentKeys() == null)
+//                ? (testObj.getStudentKeys() == null) : getStudentKeys().equals(testObj.getStudentKeys());
+//        return super.equals(obj) && studentKeysEquals;
+//    }
     
     //    /** Location: */
 //    // I'M NOT USING THESE
@@ -207,6 +176,31 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
 //        repeatMap.put(this, newRepeat);
         appointment.copyInto(this);
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        RepeatableAppointmentImpl testObj = (RepeatableAppointmentImpl) obj;
+        
+        boolean startEquals = (getStartLocalDateTime() == null) ?
+                (testObj.getStartLocalDateTime() == null) : getStartLocalDateTime().equals(testObj.getStartLocalDateTime());
+        boolean endEquals = (getEndLocalDateTime() == null) ?
+                (testObj.getEndLocalDateTime() == null) : getEndLocalDateTime().equals(testObj.getEndLocalDateTime());
+
+        System.out.println( "myappointment equals " + startEquals + " " + endEquals);
+        
+        return super.equals(obj) && startEquals && endEquals;
+    }
+    
+    @Override
+    public RepeatableAppointment copyNonDateFieldsInto(RepeatableAppointment appointment) {
+//        System.out.println("appointment 5" + appointment);
+        RepeatableAppointmentImpl appointment2 = (RepeatableAppointmentImpl) appointment;
+        appointment2.setCustom(getCustom());
+//        List<String> s = ((RepeatableAppointmentImpl) appointment2).getCustomList();
+//        this.getCustomList().addAll(s);
+        return RepeatableAppointment.super.copyNonDateFieldsInto(appointment);
+    }
+
     
     
     public static void writeToFile(Collection<Appointment> appointments, Path file)
@@ -283,6 +277,7 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
         myElement.setAttribute("wholeDay", Boolean.toString(isWholeDay()));
         myElement.setAttribute("summary", getSummary());
         myElement.setAttribute("description", getDescription());
+        myElement.setAttribute("custom", getCustom());
 //        myElement.setAttribute("locationKey", Integer.toString(getLocationKey()));
 
         // TODO - TRY TO REMOVE CAST TO AppointmentGroupImpl
@@ -298,10 +293,10 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
         //TODO - FIND A WAY TO PUT REPEAT KEY HERE
 //        myElement.setAttribute("repeatKey", (getRepeat() == null) ? "" : ((RepeatImpl) getRepeat()).getKey().toString());
 //        myElement.setAttribute("repeatKey", (repeat == null) ? "" : ((MyRepeat) repeat).getKey().toString());
-        final String s = getStudentKeys().stream()
-                                         .map(a -> a.toString())
-                                         .collect(Collectors.joining(" "));
-        myElement.setAttribute("studentKeys", s);
+//        final String s = this.getCustomList().stream()
+//                                         .map(a -> a.toString())
+//                                         .collect(Collectors.joining(" "));
+//        myElement.setAttribute("customList", s);
         
         myElement.setAttribute(endLocalDateTimeProperty().getName(), IOUtilities.myFormatLocalDateTime(getEndLocalDateTime()));
         myElement.setAttribute(startLocalDateTimeProperty().getName(), IOUtilities.myFormatLocalDateTime(getStartLocalDateTime()));
@@ -372,7 +367,8 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
         //        setLocationKey(Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "locationKey", errorMessage)));
 //        setStaffKeys(DataUtilities.myGetList(appointmentAttributes, "staffKeys", errorMessage));
 //        setStyleKey(Integer.parseInt( DataUtilities.myGet(appointmentAttributes, "styleKey", errorMessage)));
-        setSummary( IOUtilities.myGet(appointmentAttributes, "summary", errorMessage));
+        setSummary(IOUtilities.myGet(appointmentAttributes, "summary", errorMessage));
+        setCustom(IOUtilities.myGet(appointmentAttributes, "custom", errorMessage));
         setWholeDay(IOUtilities.myParseBoolean(IOUtilities.myGet(appointmentAttributes, "wholeDay", errorMessage)));
 //        System.out.println("groupIndex " + getAppointmentGroupIndex());
 
@@ -400,59 +396,12 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
         nextKey = Math.max(nextKey, getKey()) + 1;
         if (hasRepeatKey()) this.myRepeat = (repeatUIDKeyMap.get(getRepeatKey()));
 //        if (hasRepeatKey()) setRepeat(repeatMap.get(getRepeatKey()));
-        setStudentKeys(IOUtilities.myGetList(appointmentAttributes, "studentKeys", errorMessage));
+//        setCustomList(IOUtilities.myGetList(appointmentAttributes, "studentKeys", errorMessage));
 
         
       setEndLocalDateTime(LocalDateTime.parse(IOUtilities.myGet(appointmentAttributes,endLocalDateTime.getName(), errorMessage), Settings.DATE_FORMAT_AGENDA));
       setStartLocalDateTime(LocalDateTime.parse( IOUtilities.myGet(appointmentAttributes, startLocalDateTime.getName(), errorMessage), Settings.DATE_FORMAT_AGENDA));
       return this;
-    }
-    @Override
-    public RepeatableAppointment copyNonDateFieldsInto(RepeatableAppointment appointment) {
-        System.out.println("appointment 5" + appointment);
-        List<Integer> s = ((RepeatableAppointmentImpl) appointment).getStudentKeys();
-        getStudentKeys().addAll(s);
-        return RepeatableAppointment.super.copyNonDateFieldsInto(appointment);
-    }
-    @Override
-    public Calendar getStartTime() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public void setStartTime(Calendar c) {
-        // TODO Auto-generated method stub
-        
-    }
-    @Override
-    public Calendar getEndTime() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public void setEndTime(Calendar c) {
-        // TODO Auto-generated method stub
-        
-    }
-    @Override
-    public ZonedDateTime getStartZonedDateTime() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public void setStartZonedDateTime(ZonedDateTime v) {
-        // TODO Auto-generated method stub
-        
-    }
-    @Override
-    public ZonedDateTime getEndZonedDateTime() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public void setEndZonedDateTime(ZonedDateTime v) {
-        // TODO Auto-generated method stub
-        
     }
 
 }

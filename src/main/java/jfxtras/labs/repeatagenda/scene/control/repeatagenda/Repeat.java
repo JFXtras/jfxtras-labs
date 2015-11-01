@@ -340,7 +340,7 @@ public abstract class Repeat {
      * @param oldRepeat
      * @param newAppointmentCallback
      */
-    public Repeat(Repeat oldRepeat, Class<RepeatableAppointmentImpl> appointmentClass)
+    public Repeat(Repeat oldRepeat, Class<? extends RepeatableAppointment> appointmentClass)
     {
         this(appointmentClass);
 //        setAppointmentClass(appointmentClass);
@@ -620,15 +620,14 @@ public abstract class Repeat {
      * @param appointments
      */
     public void collectAppointments(
-            Collection<? extends RepeatableAppointment> appointments
-          , Map<Appointment, Repeat> repeatMap)
+            Collection<? extends RepeatableAppointment> appointments)
     {
         Set<RepeatableAppointment> s = appointments.stream()
                                          .map(a -> (RepeatableAppointment) a)
-                                         .filter(a -> repeatMap.get(a) != null)
-                                         .filter(a -> repeatMap.get(a).equals(this))
-//                                         .filter(a -> a.getRepeat() != null)
-//                                         .filter(a -> a.getRepeat().equals(this))
+//                                         .filter(a -> repeatMap.get(a) != null)
+//                                         .filter(a -> repeatMap.get(a).equals(this))
+                                         .filter(a -> a.getRepeat() != null)
+                                         .filter(a -> a.getRepeat().equals(this))
                                          .collect(Collectors.toSet());
         getAppointments().addAll(s);
     }

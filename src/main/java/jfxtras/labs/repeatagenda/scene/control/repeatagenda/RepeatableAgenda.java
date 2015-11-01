@@ -2,6 +2,8 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +38,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
                 .collect(Collectors.toList()));
 
     private LocalDateTimeRange dateTimeRange; // date range of current skin
+    public LocalDateTimeRange getDateTimeRange() { return dateTimeRange; }
     
     /** Repeat rules */
     private Collection<Repeat> repeats;
@@ -65,10 +68,12 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
     // Extended repeat class used by the implementor - used to instantiate new repeat objects
     private Class<? extends Repeat> repeatClass = RepeatImpl.class; // default class, change if other implementation is used
     Class<? extends Repeat> getRepeatClass() { return repeatClass; }
+    public void setRepeatClass(Class<? extends Repeat> clazz) { repeatClass = clazz; }
 
     // Extended appointment class used by the implementor - used to instantiate new appointment objects
     private Class<? extends RepeatableAppointment> appointmentClass = RepeatableAppointmentImpl.class; // set to default class, change if using own implementation
     Class<? extends RepeatableAppointment> getAppointmentClass() { return appointmentClass; }
+    public void setAppointmentClass(Class<? extends RepeatableAppointment> clazz) { appointmentClass = clazz; }
 
     // I/O callbacks, must be set to provide functionality, null by default
     private Callback<Collection<Appointment>, Void> appointmentWriteCallback = null;
@@ -283,7 +288,8 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
 
         // Copy methods - required to reverse edit changes when cancel is selected and for editing "this and future" repeatable appointments.
         /**
-         * Copies all fields into parameter appointment
+         * Copies all fields into parameter appointment.
+         * This method must be overridden by an implementing class
          * 
          * @param appointment
          * @return
@@ -297,6 +303,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
         
         /**
          * Copies this Appointment non-time fields into parameter appointment
+         * This method must be overridden by an implementing class
          * 
          * @param appointment
          * @return
@@ -311,6 +318,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
         /**
          * Copies this Appointment non-time fields into passed appointment
          * Used on recurrences when some of fields are unique and should not be copied.
+         * This method must be overridden by an implementing class
          * 
          * @param appointment
          * @param appointmentFromRepeatRule
@@ -320,7 +328,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
         default RepeatableAppointment copyNonDateFieldsInto(
                 RepeatableAppointment appointment
               , RepeatableAppointment appointmentFromRepeatRule) {
-            if (appointment.getAppointmentGroup().equals(appointmentFromRepeatRule.getAppointmentGroup())) {
+            if (((RepeatableAppointmentImplBase<RepeatableAppointmentImpl>) appointment).getAppointmentGroup().equals(appointmentFromRepeatRule.getAppointmentGroup())) {
                 appointment.setAppointmentGroup(getAppointmentGroup());
             }
             if (appointment.getDescription().equals(appointmentFromRepeatRule.getDescription())) {
@@ -454,7 +462,39 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
         // TODO Auto-generated method stub
         return null;
     }
-      
+
+    public Calendar getStartTime() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public void setStartTime(Calendar c) {
+        // TODO Auto-generated method stub
+        
+    }
+    public Calendar getEndTime() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public void setEndTime(Calendar c) {
+        // TODO Auto-generated method stub
+        
+    }
+    public ZonedDateTime getStartZonedDateTime() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public void setStartZonedDateTime(ZonedDateTime v) {
+        // TODO Auto-generated method stub
+        
+    }
+    public ZonedDateTime getEndZonedDateTime() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public void setEndZonedDateTime(ZonedDateTime v) {
+        // TODO Auto-generated method stub
+        
+    }
 //      /** Checks if fields relevant for the repeat rule (non-time fields) are equal. */
 //      // needs to be overridden by any class implementing Appointment or extending AppointmentImplBase
 //      // Note: Location field is a problem - I think it should be removed.

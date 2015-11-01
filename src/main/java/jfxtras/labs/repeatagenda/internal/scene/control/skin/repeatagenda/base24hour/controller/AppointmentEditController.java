@@ -65,6 +65,8 @@ public class AppointmentEditController {
     @FXML private LocalDateTimeTextField endTextField;
     @FXML private AppointmentGroupGridPane appointmentGroupGridPane;
     
+//    @FXML private TextField customTextField;
+    @FXML private TextField locationTextField;
     @FXML private TextField nameTextField;
     @FXML private TextArea descriptionTextArea;
     @FXML private CheckBox wholeDayCheckBox;
@@ -123,11 +125,20 @@ public class AppointmentEditController {
 
         repeatableController.setupData(appointment, dateTimeRange, appointmentClass, repeatClass);
 
-        // ***AREN'T THESE BINDINGS DUPLICATES OF ABOVE?****
         nameTextField.setText(appointment.getSummary());
         nameTextField.textProperty().addListener((observable, oldValue, newValue) ->  {
             appointment.setSummary(newValue);
         });
+
+        locationTextField.setText(appointment.getLocation());
+        locationTextField.textProperty().addListener((observable, oldValue, newValue) ->  {
+            appointment.setLocation(newValue);
+        });
+
+//        customTextField.setText(appointment.getCustom());
+//        customTextField.textProperty().addListener((observable, oldValue, newValue) ->  {
+//            appointment.setCustom(newValue);
+//        });
         
         descriptionTextArea.setText(appointment.getDescription());
         descriptionTextArea.textProperty().addListener((obs, oldValue, newValue) ->  appointment.setDescription(newValue));
