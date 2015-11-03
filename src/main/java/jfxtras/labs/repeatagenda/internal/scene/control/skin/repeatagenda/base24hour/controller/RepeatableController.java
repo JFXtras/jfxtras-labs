@@ -321,7 +321,8 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
             repeat = appointment.getRepeat();
 //            repeat = repeatMap.get(appointment);
         } else { // make new repeat
-            repeat = RepeatFactory.newRepeat(repeatClass, dateTimeRange, appointmentClass);
+            repeat = RepeatFactory.newRepeat(repeatClass, appointmentClass);
+            repeat.setLocalDateTimeDisplayRange(dateTimeRange);
             System.out.println("new repeat " + repeat );
 //            repeatClass.newInstance();
 //            if (false){

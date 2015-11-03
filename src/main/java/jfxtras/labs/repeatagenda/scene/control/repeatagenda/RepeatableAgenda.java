@@ -267,6 +267,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
          * @param appointment
          * @return
          */
+        @Deprecated
         default Appointment2 copyInto(Appointment2 appointment) {
             appointment.setAppointmentGroup(getAppointmentGroup());
             appointment.setDescription(getDescription());
@@ -284,6 +285,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
          * @param repeatMap
          * @return
          */
+        @Deprecated
         default Appointment2 copyInto(Appointment2 appointment, Appointment2 appointmentFromRepeatRule) {
             if (appointment.getAppointmentGroup().equals(appointmentFromRepeatRule.getAppointmentGroup())) {
                 appointment.setAppointmentGroup(getAppointmentGroup());
@@ -305,6 +307,17 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
     /** Contains all the appointment data - no repeatable information */
     static public abstract class AppointmentImplBase2<T> extends Agenda.AppointmentImplBase<T> implements Appointment2
     {
+        AppointmentImplBase2() { }
+        
+        /** Copy constructor */
+        AppointmentImplBase2(Appointment2 a)
+        {
+            setWholeDay(a.isWholeDay());
+            setLocation(a.getLocation());
+            setAppointmentGroup(a.getAppointmentGroup());
+            setDescription(a.getDescription());
+            setSummary(a.getSummary());
+        }
         @Override
         public String getUID() {
             // TODO Auto-generated method stub
@@ -337,8 +350,15 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
      * A class to help you get going using LocalDateTime; all the required methods of the interface are implemented as JavaFX properties 
      */
     static public class AppointmentImplLocal2 extends AppointmentImplBase2<AppointmentImplLocal2> 
-    implements Appointment
+    implements Appointment2
     {
+        public AppointmentImplLocal2() {}
+        
+        public AppointmentImplLocal2(Appointment2 a) {
+            super(a);
+            setEndLocalDateTime(a.getEndLocalDateTime());
+            setStartLocalDateTime(a.getStartLocalDateTime());
+        }
         /** StartDateTime: */
         public ObjectProperty<LocalDateTime> startLocalDateTime() { return startLocalDateTime; }
         final private ObjectProperty<LocalDateTime> startLocalDateTime = new SimpleObjectProperty<LocalDateTime>(this, "startLocalDateTime");
@@ -470,32 +490,40 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
         Repeat getRepeat();
         void setRepeat(Repeat repeat);
 
-        // Copy methods - required to reverse edit changes when cancel is selected and for editing "this and future" repeatable appointments.
-        /**
-         * Copies all fields into parameter appointment.
-         * This method must be overridden by an implementing class
-         * 
-         * @param appointment
-         * @return
-         */
-        default RepeatableAppointment copyInto(RepeatableAppointment appointment)
-        {
-            Appointment2.super.copyInto(appointment);
-            appointment.setEndLocalDateTime(getEndLocalDateTime());
-            appointment.setStartLocalDateTime(getStartLocalDateTime());
-//            System.out.println("copy repeat " + appointment + " " + appointment.getRepeat());
-//            if (getRepeat() != null )
-//            {
-//                getRepeat().copyInto(appointment.getRepeat());
-//            }
-//            super.copyInto(appointment);
-            return appointment;
-        }
+//        // Copy methods - required to reverse edit changes when cancel is selected and for editing "this and future" repeatable appointments.
+//        /**
+//         * Copies all fields into parameter appointment.
+//         * This method must be overridden by an implementing class
+//         * 
+//         * @param appointment
+//         * @return
+//         */
+//        default RepeatableAppointment copyInto(RepeatableAppointment appointment)
+//        {
+//            Appointment2.super.copyInto(appointment);
+//            appointment.setEndLocalDateTime(getEndLocalDateTime());
+//            appointment.setStartLocalDateTime(getStartLocalDateTime());
+////            System.out.println("copy repeat " + appointment + " " + appointment.getRepeat());
+////            if (getRepeat() != null )
+////            {
+////                getRepeat().copyInto(appointment.getRepeat());
+////            }
+////            super.copyInto(appointment);
+//            return appointment;
+//        }
     }
     
     /** Contains appointment data and repeatable information */
     static public abstract class RepeatableAppointmentImplBase<T> extends AppointmentImplBase2<T> implements RepeatableAppointment {
 
+        protected RepeatableAppointmentImplBase() { }
+        
+        /** Copy constructor */
+        protected RepeatableAppointmentImplBase(RepeatableAppointment a)
+        {
+            super(a);
+        }
+        
         /** Repeat rules, null if an individual appointment */
         private Repeat repeat;
         public void setRepeat(Repeat repeat) { this.repeat = repeat; }
@@ -629,22 +657,22 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
     
     static public class RepeatFactory {
                 
-        public static Repeat newRepeat(
-                Class<? extends Repeat> repeatClass
-              , LocalDateTimeRange dateTimeRange
-              , Class<? extends RepeatableAppointment> appointmentClass)
-        {
-                try {
-                    return repeatClass
-                            .getConstructor(Class.class)
-                            .newInstance(appointmentClass)
-                            .withAppointmentClass(appointmentClass)
-                            .withLocalDateTimeDisplayRange(dateTimeRange);
-                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-                    e.printStackTrace();
-                }
-            return null;
-        }
+//        public static Repeat newRepeat(
+//                Class<? extends Repeat> repeatClass
+//              , LocalDateTimeRange dateTimeRange
+//              , Class<? extends RepeatableAppointment> appointmentClass)
+//        {
+//                try {
+//                    return repeatClass
+//                            .getConstructor(Class.class)
+//                            .newInstance(appointmentClass)
+//                            .withAppointmentClass(appointmentClass)
+//                            .withLocalDateTimeDisplayRange(dateTimeRange);
+//                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+//                    e.printStackTrace();
+//                }
+//            return null;
+//        }
         
         public static Repeat newRepeat(Class<? extends Repeat> repeatClass)
         {
@@ -704,13 +732,26 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
         // Returns deep copy of RepeatableAppointment
         public static RepeatableAppointment newRepeatableAppointment(RepeatableAppointment appointment)
         {
-            RepeatableAppointment a = newRepeatableAppointment(appointment.getClass());
-            appointment.copyInto(a);
-            Repeat r = RepeatFactory.newRepeat(appointment.getRepeat().getClass());
-            appointment.getRepeat().copyInto(r);
-            Appointment2 a2 = newAppointment(appointment.getRepeat().getAppointmentData());
-            r.setAppointmentData(a2);
-            a.setRepeat(r);
+            Class<? extends RepeatableAppointment> appointmentClass = appointment.getClass();
+            RepeatableAppointment a = null;
+            try {
+                a = appointmentClass.getConstructor(RepeatableAppointment.class).newInstance(appointment);
+            } catch (InstantiationException | IllegalAccessException
+                    | IllegalArgumentException | InvocationTargetException
+                    | NoSuchMethodException | SecurityException e) {
+                e.printStackTrace();
+            }
+
+//          RepeatableAppointment a = newRepeatableAppointment(appointment.getClass());            
+//            appointment.copyInto(a);
+            if (appointment.getRepeat() != null)
+            {
+                Repeat r = RepeatFactory.newRepeat(appointment.getRepeat().getClass());
+                appointment.getRepeat().copyInto(r);
+                Appointment2 a2 = newAppointment(appointment.getRepeat().getAppointmentData());
+                r.setAppointmentData(a2);
+                a.setRepeat(r);
+            }
             return a;
         }
 
@@ -727,9 +768,28 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
         // Returns deep copy of Appointment2
         public static Appointment2 newAppointment(Appointment2 appointment)
         {
-            Appointment2 a = newAppointment(appointment.getClass());
-            appointment.copyInto(a);
-            return a;
+//            Constructor<?>[] c = appointment.getClass().getConstructors();
+//            System.out.println(c.length);
+//            for (int i=0; i<c.length;i++)
+//            {
+//                System.out.println(c[i]);
+//            }
+//            System.exit(0);
+            try {
+                return appointment.getClass()
+                        .getConstructor(Appointment2.class)
+                        .newInstance(appointment);
+            } catch (InstantiationException | IllegalAccessException
+                    | IllegalArgumentException | InvocationTargetException
+                    | NoSuchMethodException | SecurityException e) {
+                e.printStackTrace();
+            }
+          return appointment;
+
+            
+//            Appointment2 a = newAppointment(appointment.getClass());
+//            appointment.copyInto(a);
+//            return a;
         }
     }
         

@@ -57,6 +57,7 @@ public abstract class Repeat {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     public void setLocalDateTimeDisplayRange(LocalDateTimeRange dateTimeRange) { startDate = dateTimeRange.getStartLocalDateTime(); endDate = dateTimeRange.getEndLocalDateTime(); }
+    public LocalDateTimeRange getLocalDateTimeDisplayRange() { return new LocalDateTimeRange(startDate, endDate); }
     public Repeat withLocalDateTimeDisplayRange(LocalDateTimeRange dateTimeRange) { setLocalDateTimeDisplayRange(dateTimeRange); return this; }
     
 //    // TODO - REPLACE CALLBACKS WITH CLASSES AND NEWINSTANCE
@@ -354,6 +355,34 @@ public abstract class Repeat {
         }
     }
 
+    /**
+     * Copy constructor (range comes from copy)
+     */
+    public Repeat(Repeat r)
+    {
+        setFrequency(getFrequency());
+        setRepeatDayOfMonth(isRepeatDayOfMonth());
+        setRepeatDayOfWeek(isRepeatDayOfWeek());
+        setInterval(getInterval());
+        getDayOfWeekMap().entrySet()
+                         .stream()
+                         .forEach(a -> {
+                             DayOfWeek d = a.getKey();
+                             boolean value = a.getValue().get();
+                             r.setDayOfWeek(d, value);   
+                         });
+        setExceptions(getExceptions());
+        setStartLocalDate(getStartLocalDate());
+        setDurationInSeconds(getDurationInSeconds());
+        if (getEndCriteria() == EndCriteria.AFTER) r.setCount(getCount());
+        setEndCriteria(getEndCriteria());
+        setUntilLocalDateTime(getUntilLocalDateTime());
+        Appointment2 appt = AppointmentFactory.newAppointment(getAppointmentData());
+        setAppointmentData(appt);
+        getAppointments().stream().forEach(a -> r.getAppointments().add(a));
+        setLocalDateTimeDisplayRange(r.getLocalDateTimeDisplayRange());
+    }
+    
 //    /**
 //     * Constructor only with callback, range needed too
 //     */

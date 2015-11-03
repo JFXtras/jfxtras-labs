@@ -320,6 +320,8 @@ public final class RepeatableUtilities {
         final Repeat repeatOld = appointmentOld.getRepeat(); // repeat prior to changes
         Set<RepeatableAppointment> editedAppointmentsTemp = new HashSet<RepeatableAppointment>();
         
+//        System.out.println(appointment + " " + appointmentOld);
+//        System.exit(0);
         final boolean appointmentChanged = ! appointment.equals(appointmentOld);
         final boolean repeatChanged;
         if (repeatOld == null && repeat == null)

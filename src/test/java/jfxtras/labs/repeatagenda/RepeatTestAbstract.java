@@ -18,6 +18,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.Appointment2;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentImplLocal2;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -59,7 +60,7 @@ public abstract class RepeatTestAbstract {
         Appointment2 a1 = new AppointmentImplLocal2()
                 .withAppointmentGroup(appointmentGroups.get(5))
                 .withSummary("Weekly Appointment Variable");
-        return RepeatableAgenda.RepeatFactory.newRepeat(RepeatImpl.class, RepeatableAppointmentImpl.class)
+        return RepeatFactory.newRepeat(RepeatImpl.class, RepeatableAppointmentImpl.class)
 //        return new RepeatImpl(RepeatableAppointmentImpl.class)
                 .withStartLocalDate(LocalDateTime.of(LocalDate.now(), LocalTime.of(hour, minute)))
                 .withDurationInSeconds(7200)

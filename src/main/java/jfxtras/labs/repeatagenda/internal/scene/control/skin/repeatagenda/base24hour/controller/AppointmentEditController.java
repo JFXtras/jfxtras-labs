@@ -116,10 +116,10 @@ public class AppointmentEditController {
 //        repeats = layoutHelp.skinnable.repeats();
 //        appointments = layoutHelp.skinnable.appointments();
 
-        appointmentOld = AppointmentFactory.newRepeatableAppointment(appointmentClass, repeatClass);
+        appointmentOld = AppointmentFactory.newRepeatableAppointment(appointment);
 //        Repeat r = RepeatFactory.newRepeat(repeatClass, dateTimeRange, appointmentClass)
-        appointment.copyInto(appointmentOld);
-        System.out.println("appointmentOld new " + appointmentOld.getRepeat() + " " + appointment.getRepeat());
+//        appointment.copyInto(appointmentOld);
+//        System.out.println("appointmentOld new " + appointmentOld.getRepeat() + " " + appointment.getRepeat());
 
 //        appointmentOld = newAppointmentCallback.call(param)// AppointmentFactory.newAppointment(appointment);
 
