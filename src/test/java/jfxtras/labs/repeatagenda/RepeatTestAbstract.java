@@ -16,6 +16,8 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.Frequency;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.MonthlyRepeat;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.Appointment2;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentImplLocal2;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -54,11 +56,11 @@ public abstract class RepeatTestAbstract {
         int hour = now.getHour();
         hour = (hour < 21) ? hour+3 : Math.max(hour-3,0);
         int minute = now.getMinute();
-        RepeatableAppointment a1 = new RepeatableAppointmentImpl()
+        Appointment2 a1 = new AppointmentImplLocal2()
                 .withAppointmentGroup(appointmentGroups.get(5))
                 .withSummary("Weekly Appointment Variable");
-//        return new RepeatImpl(getNewRepeatableAppointment())
-        return new RepeatImpl(RepeatableAppointmentImpl.class)
+        return RepeatableAgenda.RepeatFactory.newRepeat(RepeatImpl.class, RepeatableAppointmentImpl.class)
+//        return new RepeatImpl(RepeatableAppointmentImpl.class)
                 .withStartLocalDate(LocalDateTime.of(LocalDate.now(), LocalTime.of(hour, minute)))
                 .withDurationInSeconds(7200)
 //                .withStartLocalTime(LocalTime.now().plusHours(3))

@@ -50,23 +50,27 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
                         <Label text="%repeats" GridPane.halignment="RIGHT" />
-                        <ComboBox fx:id="intervalComboBox" prefWidth="150.0" GridPane.columnIndex="1" />
+                        <ComboBox fx:id="frequencyComboBox" prefWidth="150.0" GridPane.columnIndex="1" />
                         <Label text="%repeat.every" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                         <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <children>
-                              <Spinner fx:id="frequencySpinner" />
-                              <Label fx:id="unitLabel" text="%events" />
+                              <Spinner fx:id="intervalSpinner" />
+                              <Label fx:id="frequencyLabel" text="%events" />
                            </children>
                         </HBox>
                         <Label fx:id="weeklyLabel" text="%repeats.on" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
                         <Label text="%starts.on" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
                         <Label text="%ends" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
-                        <Label text="%summary" GridPane.halignment="RIGHT" GridPane.rowIndex="9" GridPane.rowSpan="2" />
+                        <Label text="%summary" GridPane.halignment="RIGHT" GridPane.rowIndex="13" GridPane.rowSpan="2" />
                         <DatePicker fx:id="startDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                        <Label fx:id="repeatSummaryLabel" text="This is a really long summary of a complex appointment" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="9" GridPane.rowSpan="2" />
+                        <Label fx:id="repeatSummaryLabel" text="TODO - This is a really long summary of a complex appointment" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="13" GridPane.rowSpan="2" />
                         <HBox fx:id="weeklyHBox" alignment="CENTER" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                            <children>
                               <CheckBox fx:id="sundayCheckBox" mnemonicParsing="false" text="%sunday.letter" />
@@ -112,6 +116,31 @@
                            </padding>
                         </VBox>
                         <Label fx:id="monthlyLabel" text="%repeat.by" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                        <VBox disable="true" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="9" GridPane.rowSpan="4">
+                           <children>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <ComboBox prefWidth="150.0" />
+                                    <HBox prefWidth="20.0" />
+                                    <Button mnemonicParsing="false" prefWidth="72.0" text="Add" />
+                                 </children>
+                              </HBox>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <ListView prefHeight="200.0" prefWidth="175.0" />
+                                    <Button mnemonicParsing="false" text="Remove" />
+                                 </children>
+                              </HBox>
+                           </children>
+                           <GridPane.margin>
+                              <Insets top="5.0" />
+                           </GridPane.margin>
+                        </VBox>
+                        <Label disable="true" text="TODO exceptions" GridPane.halignment="RIGHT" GridPane.rowIndex="9">
+                           <GridPane.margin>
+                              <Insets top="10.0" />
+                           </GridPane.margin>
+                        </Label>
                      </children>
                   </GridPane>
                </children>

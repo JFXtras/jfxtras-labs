@@ -321,12 +321,22 @@ public final class RepeatableUtilities {
         Set<RepeatableAppointment> editedAppointmentsTemp = new HashSet<RepeatableAppointment>();
         
         final boolean appointmentChanged = ! appointment.equals(appointmentOld);
-        final boolean repeatChanged = (repeat == null) ? false : ! repeat.equals(repeatOld);
+        final boolean repeatChanged;
+        if (repeatOld == null && repeat == null)
+        {
+            repeatChanged = false;
+        } else if ((repeatOld == null && repeat != null) || (repeatOld != null && repeat == null))
+        {
+            repeatChanged = true;
+        } else
+        {
+            repeatChanged = ! repeat.equals(repeatOld);
+        }
         if (! appointmentChanged && ! repeatChanged) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
 
         // Make temporal adjusters for time and/or day shift
         final LocalDateTime startDate = appointment.getStartLocalDateTime();
-        System.out.println("start date time " + startDate);
+//        System.out.println("start date time " + startDate);
         final LocalDateTime startDateOld = appointmentOld.getStartLocalDateTime();
         final int dayShift = Period.between(startDateOld.toLocalDate(), startDate.toLocalDate()).getDays();
         final int startMinuteShift = (int) Duration.between(appointmentOld.getStartLocalDateTime()
@@ -361,46 +371,53 @@ public final class RepeatableUtilities {
             editedAppointmentsTemp.add(appointment);
             break;
         case HAD_REPEAT_BECOMING_INDIVIDUAL:
-//            changeResponse = repeatChangeDialog();
-            changeResponse = changeDialogCallback.call(choices);
-            switch (changeResponse)
+        {
+//            changeResponse = changeDialogCallback.call(choices);
+//            switch (changeResponse)
+//            {
+//            case ONE: // remove repeatKey from appointment, add date to skip dates in repeat, write both
+//                repeatOld.getExceptions().add(startDate);
+//                break;
+//            case ALL: // remove repeatKey from appointment, delete repeat
+//                repeats.remove(repeat);
+//                break;
+//            case FUTURE: // change end of repeat to appointment date (I'm not sure what the user expects in this case)
+//                final Repeat repeatOriginal = appointmentOld.getRepeat();
+//                final Set<LocalDateTime> dates = repeatOriginal.getExceptions()
+//                         .stream()
+//                         .filter(a -> a.isBefore(startDate))
+//                         .collect(Collectors.toSet());
+//                repeatOriginal.setExceptions(dates);
+//                repeatOriginal.setUntilLocalDateTime(startDate.minusDays(1));
+//                switch (repeatOriginal.getEndCriteria())
+//                {
+//                case NEVER:
+//                    repeatOriginal.setEndCriteria(EndCriteria.UNTIL);
+//                    break;
+//                case AFTER:
+//                    repeatOriginal.makeCountFromUntil();
+//                    break;
+//                default:
+//                    break;
+//                }
+//                break;
+//            case CANCEL:
+//                return WindowCloseType.CLOSE_WITHOUT_CHANGE;
+//            }
+
+            Iterator<RepeatableAppointment> appointmentIterator = repeatOld.getAppointments().iterator();
+            while (appointmentIterator.hasNext())
             {
-            case ONE: // remove repeatKey from appointment, add date to skip dates in repeat, write both
-                repeatOld.getExceptions().add(startDate);
-                break;
-            case ALL: // remove repeatKey from appointment, delete repeat
-                repeats.remove(repeat);
-                break;
-            case FUTURE: // change end of repeat to appointment date (I'm not sure what the user expects in this case)
-                final Repeat repeatOriginal = appointmentOld.getRepeat();
-//                final Repeat repeatOriginal = repeatMap.get(appointmentOld);
-                final Set<LocalDateTime> dates = repeatOriginal.getExceptions()
-                         .stream()
-                         .filter(a -> a.isBefore(startDate))
-                         .collect(Collectors.toSet());
-                repeatOriginal.setExceptions(dates);
-                repeatOriginal.setUntilLocalDateTime(startDate.minusDays(1));
-                switch (repeatOriginal.getEndCriteria())
-                {
-                case NEVER:
-                    repeatOriginal.setEndCriteria(EndCriteria.UNTIL);
-                    break;
-                case AFTER:
-                    repeatOriginal.makeCountFromUntil();
-                    break;
-                default:
-                    break;
-                }
-                repeatOriginal.updateAppointments(appointments, appointmentOld); // is appointmentOld correct?
-                break;
-            case CANCEL:
-                return WindowCloseType.CLOSE_WITHOUT_CHANGE;
+                Appointment myAppointment = appointmentIterator.next();
+                if (myAppointment != appointment) removeOne(appointments, myAppointment);
             }
+            repeats.remove(repeatOld);
             appointment.setRepeatMade(false);
             editedRepeatsFlag = true;
             editedAppointmentsFlag = true;
             editedAppointmentsTemp.add(appointment);
             break;
+        }
         case WITH_NEW_REPEAT: // don't display edit dialog - just make appointments
 //            System.out.println("WITH_NEW_REPEAT");
           repeat.unbindAll();
@@ -412,7 +429,7 @@ public final class RepeatableUtilities {
           Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments();
           System.out.println("newAppointments " + newAppointments.size() + " " + repeat.getAppointments());
           appointments.addAll(newAppointments);
-          appointment.copyNonDateFieldsInto(repeat.getAppointmentData()); // copy any appointment changes (i.e. description, group, location, etc)
+          appointment.copyInto(repeat.getAppointmentData()); // copy any appointment changes (i.e. description, group, location, etc)
           repeats.add(repeat);
           appointment.setRepeatMade(true);
           editedRepeatsFlag = true;
@@ -448,11 +465,11 @@ public final class RepeatableUtilities {
                 repeat.unbindAll();
                 if (appointment.isRepeatMade())
                 { // copy all appointment changes (i.e. description, group, location, etc)
-                    appointment.copyNonDateFieldsInto(repeat.getAppointmentData());
+                    appointment.copyInto(repeat.getAppointmentData());
 //                    repeat.copyInto(appointment.getRepeat());
                 } else { // copy non-unique appointment changes (i.e. description, group, location, etc)
 //                    appointment.copyInto(repeat.getAppointmentData(), appointmentOld);
-                    repeat.getAppointmentData().copyNonDateFieldsInto(appointment, appointmentOld);
+                    repeat.getAppointmentData().copyInto(appointment, appointmentOld);
 //                    repeat.copyAppointmentInto(appointment, appointmentOld);
 //                    appointment.copyInto(repeat.getAppointmentData(), appointmentOld);
                 }
@@ -511,9 +528,9 @@ public final class RepeatableUtilities {
                 repeat.setStartLocalDate(startDate);
                 if (appointment.isRepeatMade())
                 { // copy all appointment changes
-                    appointment.copyNonDateFieldsInto(repeat.getAppointmentData());
+                    appointment.copyInto(repeat.getAppointmentData());
                 } else { // copy non-unique appointment changes
-                    repeat.getAppointmentData().copyNonDateFieldsInto(appointment, appointmentOld);
+                    repeat.getAppointmentData().copyInto(appointment, appointmentOld);
 //                    repeat.copyAppointmentInto(appointment, appointmentOld);
 //                    appointment.copyAppointmentInto(repeat.getAppointmentData(), appointmentOld);
                 }

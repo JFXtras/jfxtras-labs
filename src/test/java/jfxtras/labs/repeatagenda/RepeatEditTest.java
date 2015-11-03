@@ -43,17 +43,17 @@ public class RepeatEditTest extends RepeatTestAbstract {
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Iterator<Appointment> appointmentIterator = appointments.iterator();
-        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+//        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
         assertEquals(2, appointments.size()); // check if there are only two appointments
 //        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
-//        System.exit(0);
+
         // select appointment and apply changes
         RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next();
         RepeatableAppointment appointmentOld = new RepeatableAppointmentImpl(selectedAppointment);
         LocalDate date = selectedAppointment.getStartLocalDateTime().toLocalDate();
         selectedAppointment.setStartLocalDateTime(date.atTime(9, 45)); // change start time
         selectedAppointment.setEndLocalDateTime(date.atTime(11, 0)); // change end time
-        System.out.println("selectedAppointment " + selectedAppointment.getStartLocalDateTime());
+//        System.out.println("selectedAppointment " + selectedAppointment.getStartLocalDateTime());
 
         WindowCloseType windowCloseType = RepeatableUtilities.editAppointments(
                 selectedAppointment
@@ -123,12 +123,12 @@ public class RepeatEditTest extends RepeatTestAbstract {
         appointments.addAll(newAppointments);
         Iterator<Appointment> appointmentIterator = appointments.iterator();
         assertEquals(2, appointments.size()); // check if there are only two appointments
-        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+//        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
 
         // select appointment and apply changes
         RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next();
-        System.out.println("selectedAppointment " + selectedAppointment);
-        System.out.println("selectedAppointment.getRepeat() " + selectedAppointment.getRepeat());
+//        System.out.println("selectedAppointment " + selectedAppointment);
+//        System.out.println("selectedAppointment.getRepeat() " + selectedAppointment.getRepeat());
 //        RepeatableAppointment appointmentOld = AppointmentFactory.newAppointment(selectedAppointment);
         RepeatableAppointment appointmentOld = new RepeatableAppointmentImpl(selectedAppointment);
         LocalDate date = selectedAppointment.getStartLocalDateTime().toLocalDate().plusDays(1); // shift all appointments 1 day forward
@@ -144,7 +144,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
               , null
               , null);
         assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
-        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+//        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
         assertEquals(3, appointments.size()); // check if there are only three appointments
 
         // Check Repeat
@@ -324,7 +324,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
               , null
               , null);
         assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
-        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+//        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
         assertEquals(3, appointments.size()); // check number of appointments
 
         // Check Repeat
@@ -663,7 +663,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
               , a -> RepeatChange.FUTURE
               , null
               , null);
-        System.out.println("after edit endOnDate " + repeat.getUntilLocalDateTime());
+//        System.out.println("after edit endOnDate " + repeat.getUntilLocalDateTime());
         assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
 //        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
         assertEquals(3, appointments.size()); // check number of appointments
@@ -860,7 +860,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         LocalDateTime endDate = LocalDateTime.of(2015, 10, 25, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
-        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+//        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
         final Iterator<Appointment> appointmentIterator = appointments.iterator();
         assertEquals(4, appointments.size()); // check number of appointments
 
@@ -879,7 +879,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
               , null
               , null);
         assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
-        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+//        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
         assertEquals(5, appointments.size()); // check number of appointments
 
         // Check Repeat (with changes)
@@ -1012,5 +1012,70 @@ public class RepeatEditTest extends RepeatTestAbstract {
         assertEquals(expectedAppointment2, appointment2); // Check to see if repeat-generated appointment changed correctly        
     }
 
+    /**
+     * Tests changing a daily repeat rule to an individual appointment
+     */
+    @Test
+    public void editRepeatDailyToIndividual()
+    {
+        // Individual Appointment
+        final Repeat repeat = getRepeatDaily2();
+        final List<Repeat> repeats = new ArrayList<Repeat>(Arrays.asList(repeat));
+        final Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
+        LocalDateTime startDate = LocalDateTime.of(2015, 10, 18, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2015, 10, 25, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
+        Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
+        appointments.addAll(newAppointments);
+//        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+        final Iterator<Appointment> appointmentIterator = appointments.iterator();
+        assertEquals(4, appointments.size()); // check number of appointments
+
+        // select appointment and apply changes
+        appointmentIterator.next();
+        final RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next(); // select second appointment
+        final RepeatableAppointment appointmentOld = new RepeatableAppointmentImpl(selectedAppointment);
+        selectedAppointment.setRepeat(null); // remove repeat rule
+//System.out.println("repeats1 " + selectedAppointment.getRepeat() + " " + appointmentOld.getRepeat());
+        WindowCloseType windowCloseType = RepeatableUtilities.editAppointments(
+                selectedAppointment
+              , appointmentOld
+              , appointments
+              , repeats
+              , null
+              , null
+              , null);
+        assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
+//        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+        assertEquals(1, appointments.size()); // check number of appointments
+
+        // Check appointments
+        Iterator<Appointment> appointmentIteratorNew = appointments.iterator();
+
+        final RepeatableAppointment editedAppointment1 = (RepeatableAppointment) appointmentIteratorNew.next();
+        final RepeatableAppointment expectedAppointment1 = new RepeatableAppointmentImpl()
+                .withStartLocalDateTime(LocalDate.of(2015, 10, 20).atTime(8, 00))
+                .withEndLocalDateTime(LocalDate.of(2015, 10, 20).atTime(9, 30))
+                .withAppointmentGroup(appointmentGroups.get(15))
+                .withSummary("Daily Appointment Fixed2")
+                .withRepeatMade(false);
+        assertEquals(expectedAppointment1, editedAppointment1); // Check to see if repeat-generated appointment changed correctly
+
+        
+//        // Check Repeat (with changes)
+//        RepeatableAppointment a = new RepeatableAppointmentImpl()
+//                .withAppointmentGroup(appointmentGroups.get(15))
+//                .withSummary("Daily Appointment Fixed2");
+//        Repeat expectedRepeat = new RepeatImpl(RepeatableAppointmentImpl.class)
+//                .withStartLocalDate(LocalDateTime.of(2015, 10, 18, 8, 0))
+//                .withDurationInSeconds(5400)
+////                .withStartLocalTime(LocalTime.of(8, 0))
+////                .withEndLocalTime(LocalTime.of(9, 30))
+//                .withEndCriteria(EndCriteria.AFTER)
+//                .withFrequency(Frequency.DAILY)
+//                .withInterval(1)
+//                .withCount(5)
+//                .withAppointmentData(a);
+//        assertEquals(expectedRepeat, repeat); // check to see if repeat rule changed correctly
+    }
    
 }

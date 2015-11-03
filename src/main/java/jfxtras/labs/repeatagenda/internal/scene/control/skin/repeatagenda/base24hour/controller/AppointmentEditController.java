@@ -116,11 +116,11 @@ public class AppointmentEditController {
 //        repeats = layoutHelp.skinnable.repeats();
 //        appointments = layoutHelp.skinnable.appointments();
 
-        appointmentOld = AppointmentFactory.newAppointment(appointmentClass);
-        System.out.println("appointmentOld new " + appointmentOld);
-//        appointmentOld = (RepeatableAppointment) newAppointmentCallback
-//                .call(new LocalDateTimeRange(appointment.getStartLocalDateTime(), appointment.getEndLocalDateTime()));
+        appointmentOld = AppointmentFactory.newRepeatableAppointment(appointmentClass, repeatClass);
+//        Repeat r = RepeatFactory.newRepeat(repeatClass, dateTimeRange, appointmentClass)
         appointment.copyInto(appointmentOld);
+        System.out.println("appointmentOld new " + appointmentOld.getRepeat() + " " + appointment.getRepeat());
+
 //        appointmentOld = newAppointmentCallback.call(param)// AppointmentFactory.newAppointment(appointment);
 
         repeatableController.setupData(appointment, dateTimeRange, appointmentClass, repeatClass);
@@ -224,8 +224,9 @@ public class AppointmentEditController {
 
         if (getCloseType() == WindowCloseType.CLOSE_WITH_CHANGE) {
             refreshCallback.call(null);
+            System.out.println("repeat details " + appointment.getRepeat().getFrequency());
 //            layoutHelp.skin.setupAppointments();    // refresh appointment graphics
-            System.out.println("need to refresh");
+//            System.out.println("need to refresh");
             // use callback? 
         }
     }
