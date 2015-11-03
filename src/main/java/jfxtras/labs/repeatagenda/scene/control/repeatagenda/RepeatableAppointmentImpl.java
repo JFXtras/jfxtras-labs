@@ -32,6 +32,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.Appointment2;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentGroupImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointmentImplBase;
@@ -104,20 +105,25 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
     public RepeatableAppointmentImpl withEndLocalDateTime(LocalDateTime value) { setEndLocalDateTime(value); return this; } 
 
     // Constructors
-    public RepeatableAppointmentImpl() { } // used by factory to make new objects
+    public RepeatableAppointmentImpl() {        System.out.println("RepeatableAppointmentImpl empty constructor"); } // used by factory to make new objects
     
     /**
      * Copy constructor
+     * @param <T>
      * 
-     * @param appointment
+     * @param a
      */
-    public RepeatableAppointmentImpl(RepeatableAppointment appointment)
+    public <T extends Appointment2> RepeatableAppointmentImpl(T a)
     {
-        super(appointment);
-        RepeatableAppointmentImpl appointment2 = (RepeatableAppointmentImpl) appointment;
-        setCustom(appointment2.getCustom());
-        setEndLocalDateTime(appointment.getEndLocalDateTime());
-        setStartLocalDateTime(appointment.getStartLocalDateTime());
+        super(a);
+        System.out.println("RepeatableAppointmentImpl constructor");
+        if (a instanceof RepeatableAppointmentImpl)
+        {
+            RepeatableAppointmentImpl appointment = (RepeatableAppointmentImpl) a;
+            setCustom(appointment.getCustom());
+            setEndLocalDateTime(a.getEndLocalDateTime());
+            setStartLocalDateTime(a.getStartLocalDateTime());
+        }
 //        setRepeat(RepeatFactory.newRepeat(appointment.getRepeat()));
 //        System.out.println("Repeat7 " + repeat);
 //        Repeat repeat = repeatMap.get(appointment);

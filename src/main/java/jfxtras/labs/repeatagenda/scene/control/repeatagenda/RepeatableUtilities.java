@@ -431,7 +431,7 @@ public final class RepeatableUtilities {
           Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments();
           System.out.println("newAppointments " + newAppointments.size() + " " + repeat.getAppointments());
           appointments.addAll(newAppointments);
-          appointment.copyInto(repeat.getAppointmentData()); // copy any appointment changes (i.e. description, group, location, etc)
+          appointment.copyFieldsTo(repeat.getAppointmentData()); // copy any appointment changes (i.e. description, group, location, etc)
           repeats.add(repeat);
           appointment.setRepeatMade(true);
           editedRepeatsFlag = true;
@@ -467,7 +467,7 @@ public final class RepeatableUtilities {
                 repeat.unbindAll();
                 if (appointment.isRepeatMade())
                 { // copy all appointment changes (i.e. description, group, location, etc)
-                    appointment.copyInto(repeat.getAppointmentData());
+                    appointment.copyFieldsTo(repeat.getAppointmentData());
 //                    repeat.copyInto(appointment.getRepeat());
                 } else { // copy non-unique appointment changes (i.e. description, group, location, etc)
 //                    appointment.copyInto(repeat.getAppointmentData(), appointmentOld);
@@ -530,7 +530,7 @@ public final class RepeatableUtilities {
                 repeat.setStartLocalDate(startDate);
                 if (appointment.isRepeatMade())
                 { // copy all appointment changes
-                    appointment.copyInto(repeat.getAppointmentData());
+                    appointment.copyFieldsTo(repeat.getAppointmentData());
                 } else { // copy non-unique appointment changes
                     repeat.getAppointmentData().copyInto(appointment, appointmentOld);
 //                    repeat.copyAppointmentInto(appointment, appointmentOld);
@@ -681,7 +681,7 @@ public final class RepeatableUtilities {
                 // TODO - CHANGES OF CONVERT TO ONE APPOINTMENT
                 break;
             case CANCEL: // restore old appointment and repeat rule (use copyInto to avoid triggering change listeners)
-                appointmentOld.copyInto(appointment);
+                appointmentOld.copyFieldsTo(appointment);
                 repeatOld.copyInto(appointment.getRepeat());
 //              System.out.println("repeatMap.size()- " + repeatMap.size());
 //                repeatMap.put(appointment, repeatOld);

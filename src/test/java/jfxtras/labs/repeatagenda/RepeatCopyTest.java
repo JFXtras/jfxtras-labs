@@ -12,7 +12,6 @@ import java.util.TreeSet;
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
@@ -32,20 +31,24 @@ public class RepeatCopyTest extends RepeatTestAbstract
         appointments.addAll(newAppointments);
         Iterator<Appointment> appointmentIterator = appointments.iterator();
         RepeatableAppointment appointment = (RepeatableAppointment) appointmentIterator.next();
-        RepeatableAppointment appointmentCopy = AppointmentFactory.newRepeatableAppointment(appointment);
+        System.out.println("a repeat3 " + appointment.getRepeat());
+//        System.exit(0);
+        RepeatableAppointment appointmentCopy = AppointmentFactory.newAppointment(appointment);
         assertEquals(appointment, appointmentCopy); // check number of appointments
     }
 
     @Test
     public void canCopyNonRepeatableAppointment()
     {
-        RepeatableAppointment appointment = new RepeatableAppointmentImpl()
+//        RepeatableAppointment appointment = new RepeatableAppointmentImpl()
+        RepeatableAppointment appointment = AppointmentFactory.newAppointment(RepeatableAppointmentImpl.class)
                 .withStartLocalDateTime(LocalDate.of(2015, 11, 4).atTime(18, 0))
                 .withEndLocalDateTime(LocalDate.of(2015, 11, 4).atTime(18, 45))
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed")
                 .withRepeatMade(true);
-        RepeatableAppointment appointmentCopy = AppointmentFactory.newRepeatableAppointment(appointment);
+//        System.out.println("a class5 " + appointment.getClass());
+        RepeatableAppointment appointmentCopy = AppointmentFactory.newAppointment(appointment);
         assertEquals(appointment, appointmentCopy); // check number of appointments
     }
     
@@ -53,9 +56,10 @@ public class RepeatCopyTest extends RepeatTestAbstract
     public void canCopyRepeat()
     {
         Repeat repeat = getRepeatWeekly();
-        Repeat repeatCopy = RepeatFactory.newRepeat(RepeatImpl.class, RepeatableAppointmentImpl.class);
-        repeat.copyInto(repeatCopy);
+        Repeat repeatCopy = RepeatFactory.newRepeat(repeat);
         assertEquals(repeat, repeatCopy); // check number of appointments
         
     }
+    
+    
 }

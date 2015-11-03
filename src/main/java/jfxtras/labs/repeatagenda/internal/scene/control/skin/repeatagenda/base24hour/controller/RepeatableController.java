@@ -332,7 +332,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
 //            repeat = RepeatFactory.newRepeat(dateTimeRange);
             repeat.setDefaults();
             System.out.println("copynondate fields " + appointment + " " + repeat.getAppointmentData());
-            appointment.copyInto(repeat.getAppointmentData());
+            appointment.copyFieldsTo(repeat.getAppointmentData());
             repeat.setStartLocalDate(appointment.getStartLocalDateTime());
 //            repeat.setStartLocalTime(appointment.getStartLocalDateTime().toLocalTime());
             int duration = (int) ChronoUnit.SECONDS.between(appointment.getStartLocalDateTime()

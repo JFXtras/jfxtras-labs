@@ -21,10 +21,9 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.RepeatMenu;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.scene.control.agenda.Agenda;
 
-public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
+public class RepeatableAgenda extends Agenda {
     
     private static String AGENDA_STYLE_CLASS = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
     final public static ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
@@ -85,11 +84,12 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
 
     
     /** Individual appointments - kept updated with appointments */
-    private Collection<T> appointmentsIndividual = new HashSet<T>(); //FXCollections.observableArrayList();
-    public Collection<T> getAppointmentsIndividual() { return appointmentsIndividual; }
-    public void setIndividualAppointments(Collection<T> list)
+    private Collection<Appointment> appointmentsIndividual = new HashSet<Appointment>(); //FXCollections.observableArrayList();
+    public Collection<Appointment> getAppointmentsIndividual() { return appointmentsIndividual; }
+    public void setIndividualAppointments(Collection<? extends Appointment> list)
     {
-        appointmentsIndividual = list;
+//        appointmentsIndividual = list;
+        appointmentsIndividual.addAll(list);
         if (repeats() != null)
         { // In cast individual appointments are set first
             repeats().stream().forEach(r ->
@@ -120,7 +120,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
      * @param repeats
      */
     public RepeatableAgenda(
-            Collection<T> individualAppointments
+            Collection<Appointment> individualAppointments
           , Collection<Repeat> repeats
           , Class<? extends Repeat> repeatClass)
     {
@@ -139,8 +139,8 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
                     if (change.wasReplaced())
                     {
                         List<? extends Appointment> removedAppointments = change.getRemoved();
-                        Set<T> removedIndividualAppointments = removedAppointments.stream()
-                                .map(a -> ((T) a))
+                        Set<Appointment> removedIndividualAppointments = removedAppointments.stream()
+                                .map(a -> ((RepeatableAppointment) a))
                                 .filter(a -> ! a.isRepeatMade())
                                 .peek(a -> System.out.println("removed individual " + a.getStartLocalDateTime()))
                                 .collect(Collectors.toSet());
@@ -149,8 +149,8 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
                     if (change.wasAdded())
                     {
                         List<? extends Appointment> addedAppointments = change.getAddedSubList();
-                        Set<T> newIndividualAppointments = addedAppointments.stream()
-                            .map(a -> ((T) a))
+                        Set<Appointment> newIndividualAppointments = addedAppointments.stream()
+                            .map(a -> ((RepeatableAppointment) a))
                             .filter(a -> ! a.isRepeatMade())
                             .peek(a -> System.out.println("added individual " + a.getStartLocalDateTime()))
                             .collect(Collectors.toSet());
@@ -261,18 +261,18 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
         void setCreated(LocalDateTime created);
         
         /**
-         * Copies this Appointment non-time fields into parameter appointment
+         * Copies this Appointment fields into destination parameter
          * This method must be overridden by an implementing class
          * 
-         * @param appointment
+         * @param destination
          * @return
          */
         @Deprecated
-        default Appointment2 copyInto(Appointment2 appointment) {
-            appointment.setAppointmentGroup(getAppointmentGroup());
-            appointment.setDescription(getDescription());
-            appointment.setSummary(getSummary());
-            return appointment;
+        default Appointment2 copyFieldsTo(Appointment2 destination) {
+            destination.setAppointmentGroup(getAppointmentGroup());
+            destination.setDescription(getDescription());
+            destination.setSummary(getSummary());
+            return destination;
         }
         
         /**
@@ -309,15 +309,19 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
     {
         AppointmentImplBase2() { }
         
-        /** Copy constructor */
-        AppointmentImplBase2(Appointment2 a)
+        /** Copy constructor 
+         * @param <U>*/
+        <U extends Appointment> AppointmentImplBase2(U a)
         {
+            System.out.println("AppointmentImplBase2 constructor");
             setWholeDay(a.isWholeDay());
             setLocation(a.getLocation());
             setAppointmentGroup(a.getAppointmentGroup());
             setDescription(a.getDescription());
             setSummary(a.getSummary());
         }
+        
+        // TODO - ADD PROPERTIES FOR NEW FIELDS AND WITH METHODS TOO
         @Override
         public String getUID() {
             // TODO Auto-generated method stub
@@ -354,11 +358,28 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
     {
         public AppointmentImplLocal2() {}
         
-        public AppointmentImplLocal2(Appointment2 a) {
-            super(a);
-            setEndLocalDateTime(a.getEndLocalDateTime());
-            setStartLocalDateTime(a.getStartLocalDateTime());
+        public AppointmentImplLocal2(Appointment2 source) {
+            super(source);
+            System.out.println("AppointmentImplLocal2 constructor");
+            if (source.getStartLocalDateTime() != null) setEndLocalDateTime(source.getEndLocalDateTime());
+            if (source.getEndLocalDateTime() != null) setStartLocalDateTime(source.getStartLocalDateTime());
         }
+
+        /**
+         * Copies this Appointment fields into destination parameter
+         * This method must be overridden by an implementing class
+         * 
+         * @param destination
+         * @return
+         */
+        @Override
+        @Deprecated
+        public Appointment2 copyFieldsTo(Appointment2 destination) {
+            destination.setStartLocalDateTime(getStartLocalDateTime());
+            destination.setEndLocalDateTime(getEndLocalDateTime());
+            return destination;
+        }
+        
         /** StartDateTime: */
         public ObjectProperty<LocalDateTime> startLocalDateTime() { return startLocalDateTime; }
         final private ObjectProperty<LocalDateTime> startLocalDateTime = new SimpleObjectProperty<LocalDateTime>(this, "startLocalDateTime");
@@ -518,10 +539,23 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
 
         protected RepeatableAppointmentImplBase() { }
         
-        /** Copy constructor */
-        protected RepeatableAppointmentImplBase(RepeatableAppointment a)
+        /** Copy constructor 
+         * @param <U>*/
+        protected <U extends Appointment> RepeatableAppointmentImplBase(U a)
         {
             super(a);
+            System.out.println("RepeatableAppointmentImplBase constructor ");
+            if (a instanceof RepeatableAppointmentImplBase<?>)
+            {
+                RepeatableAppointmentImplBase<T> appointment = (RepeatableAppointmentImplBase<T>) a;
+                setRepeatMade(appointment.isRepeatMade());
+                if (appointment.getRepeat() != null)
+                { // If there is a repeat object copy it.
+                    Repeat r = RepeatFactory.newRepeat(appointment.getRepeat());
+//                    System.out.println("RepeatableAppointmentImplBase constructor2 " + appointment.getRepeat());
+                    setRepeat(r);
+                }
+            }
         }
         
         /** Repeat rules, null if an individual appointment */
@@ -563,7 +597,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
                   (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
           boolean repeatEquals = (getRepeat() == null) ?
                   (testObj.getRepeat() == null) : getRepeat().equals(testObj.getRepeat());
-          System.out.println("repeatable appointment " + descriptionEquals + " " + locationEquals + " " + summaryEquals + " " +  " " + appointmentGroupEquals + " " + repeatEquals);
+          System.out.println("repeatable appointment equals1 " + descriptionEquals + " " + locationEquals + " " + summaryEquals + " " +  " " + appointmentGroupEquals + " " + repeatEquals);
           return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals && repeatEquals;
       }
 
@@ -673,7 +707,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
 //                }
 //            return null;
 //        }
-        
+        @Deprecated
         public static Repeat newRepeat(Class<? extends Repeat> repeatClass)
         {
             try {
@@ -684,6 +718,21 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
             return null;
         }
 
+        public static <T extends Repeat> Repeat newRepeat(T source)
+        {
+            try {
+                return (T) source.getClass()
+                        .getConstructor(Repeat.class)
+                        .newInstance(source);
+            } catch (InstantiationException | IllegalAccessException
+                    | IllegalArgumentException | InvocationTargetException
+                    | NoSuchMethodException | SecurityException e) {
+                e.printStackTrace();
+            }
+          return null;
+        }
+
+        @Deprecated
         public static Repeat newRepeat(
                 Class<? extends Repeat> repeatClass
               , Class<? extends RepeatableAppointment> appointmentClass)
@@ -702,60 +751,63 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
     
     static public class AppointmentFactory {
         
-        public static RepeatableAppointment newRepeatableAppointment(
-                Class<? extends RepeatableAppointment> appointmentClass
-              , Class<? extends Repeat> repeatClass)
-        {
-            try {
-                RepeatableAppointment a = appointmentClass.newInstance();
-                Repeat r = RepeatFactory.newRepeat(repeatClass);
-                a.setRepeat(r);
-                return a;
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
+//        @Deprecated
+//        public static RepeatableAppointment newRepeatableAppointment(
+//                Class<? extends RepeatableAppointment> appointmentClass
+//              , Class<? extends Repeat> repeatClass)
+//        {
+//            try {
+//                RepeatableAppointment a = appointmentClass.newInstance();
+//                Repeat r = RepeatFactory.newRepeat(repeatClass);
+//                a.setRepeat(r);
+//                return a;
+//            } catch (InstantiationException | IllegalAccessException e) {
+//                e.printStackTrace();
+//            }
+//            return null;
+//        }
+//
+//        /** Builds an incomplete Appointment object with the Repeat field null - used as data for a repeat object */
+//        // TODO - SHOULD I MAKE A NEW CLASS WITHOUT REPEATS IN IT (APPT DATA)?
+//        @Deprecated
+//        public static RepeatableAppointment newRepeatableAppointment(Class<? extends RepeatableAppointment> appointmentClass)
+//        {
+//            try {
+//                return appointmentClass.newInstance();
+//            } catch (InstantiationException | IllegalAccessException e) {
+//                e.printStackTrace();
+//            }
+//            return null;
+//        }
 
-        /** Builds an incomplete Appointment object with the Repeat field null - used as data for a repeat object */
-        // TODO - SHOULD I MAKE A NEW CLASS WITHOUT REPEATS IN IT (APPT DATA)?
-        public static RepeatableAppointment newRepeatableAppointment(Class<? extends RepeatableAppointment> appointmentClass)
-        {
-            try {
-                return appointmentClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
+//        // Returns deep copy of RepeatableAppointment
+//        public static RepeatableAppointment newRepeatableAppointment(RepeatableAppointment appointment)
+//        {
+//            Class<? extends RepeatableAppointment> appointmentClass = appointment.getClass();
+//            RepeatableAppointment a = null;
+//            try {
+//                a = appointmentClass.getConstructor(RepeatableAppointment.class).newInstance(appointment);
+//            } catch (InstantiationException | IllegalAccessException
+//                    | IllegalArgumentException | InvocationTargetException
+//                    | NoSuchMethodException | SecurityException e) {
+//                e.printStackTrace();
+//            }
+//
+////          RepeatableAppointment a = newRepeatableAppointment(appointment.getClass());            
+////            appointment.copyInto(a);
+//            if (appointment.getRepeat() != null)
+//            {
+//                Repeat r = RepeatFactory.newRepeat(appointment.getRepeat().getClass());
+//                appointment.getRepeat().copyInto(r);
+//                Appointment2 a2 = newAppointment(appointment.getRepeat().getAppointmentData());
+//                r.setAppointmentData(a2);
+//                a.setRepeat(r);
+//            }
+//            return a;
+//        }
 
-        // Returns deep copy of RepeatableAppointment
-        public static RepeatableAppointment newRepeatableAppointment(RepeatableAppointment appointment)
-        {
-            Class<? extends RepeatableAppointment> appointmentClass = appointment.getClass();
-            RepeatableAppointment a = null;
-            try {
-                a = appointmentClass.getConstructor(RepeatableAppointment.class).newInstance(appointment);
-            } catch (InstantiationException | IllegalAccessException
-                    | IllegalArgumentException | InvocationTargetException
-                    | NoSuchMethodException | SecurityException e) {
-                e.printStackTrace();
-            }
-
-//          RepeatableAppointment a = newRepeatableAppointment(appointment.getClass());            
-//            appointment.copyInto(a);
-            if (appointment.getRepeat() != null)
-            {
-                Repeat r = RepeatFactory.newRepeat(appointment.getRepeat().getClass());
-                appointment.getRepeat().copyInto(r);
-                Appointment2 a2 = newAppointment(appointment.getRepeat().getAppointmentData());
-                r.setAppointmentData(a2);
-                a.setRepeat(r);
-            }
-            return a;
-        }
-
-        public static Appointment2 newAppointment(Class<? extends Appointment2> appointmentClass)
+        @Deprecated
+        public static <T extends Appointment2> T newAppointment(Class<T> appointmentClass)
         {
             try {
                 return appointmentClass.newInstance();
@@ -765,32 +817,26 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
             return null;
         }
     
-        // Returns deep copy of Appointment2
-        public static Appointment2 newAppointment(Appointment2 appointment)
+        // Returns deep copy of source
+        public static <T extends Appointment2> T newAppointment(T source)
         {
-//            Constructor<?>[] c = appointment.getClass().getConstructors();
-//            System.out.println(c.length);
-//            for (int i=0; i<c.length;i++)
-//            {
-//                System.out.println(c[i]);
-//            }
-//            System.exit(0);
             try {
-                return appointment.getClass()
-                        .getConstructor(Appointment2.class)
-                        .newInstance(appointment);
+                return (T) source.getClass()
+                        .getConstructor(Appointment2.class) // gets copy constructor
+                        .newInstance(source);               // calls copy constructor
             } catch (InstantiationException | IllegalAccessException
                     | IllegalArgumentException | InvocationTargetException
                     | NoSuchMethodException | SecurityException e) {
                 e.printStackTrace();
             }
-          return appointment;
+          return null;
 
-            
-//            Appointment2 a = newAppointment(appointment.getClass());
-//            appointment.copyInto(a);
-//            return a;
         }
     }
+
+//    public static RepeatableAppointment AppointmentFactory(RepeatableAppointment source) {
+//        
+//        return null;
+//    }
         
 }

@@ -40,9 +40,15 @@ public class RepeatImpl extends Repeat {
 
     public RepeatImpl() { }
 
-public RepeatImpl(Class<? extends RepeatableAppointment> appointmentClass) {
-    super(appointmentClass);
+    public <T extends Repeat> RepeatImpl(T source)
+    {
+        super(source);
+        System.out.println("RepeatInpl constructor");
     }
+    
+    public RepeatImpl(Class<? extends RepeatableAppointment> appointmentClass) {
+        super(appointmentClass);
+        }
 
 //    private final static Callback<LocalDateTimeRange, Appointment> NEW_REPEATABLE_APPOINTMENT = range -> 
 //    {
