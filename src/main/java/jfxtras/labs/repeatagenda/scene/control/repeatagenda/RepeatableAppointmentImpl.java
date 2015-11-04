@@ -45,7 +45,7 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
  * @author David Bal
  *
  */
-public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<RepeatableAppointmentImpl> implements RepeatableAppointment {
+public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<RepeatableAppointmentImpl> {
     
       /** AppointmentGroupIndex: */
     private int appointmentGroupIndex = 0; // only used privately for I/O - later matched up to an appointmentGroup
@@ -105,7 +105,7 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
     public RepeatableAppointmentImpl withEndLocalDateTime(LocalDateTime value) { setEndLocalDateTime(value); return this; } 
 
     // Constructors
-    public RepeatableAppointmentImpl() {        System.out.println("RepeatableAppointmentImpl empty constructor"); } // used by factory to make new objects
+    public RepeatableAppointmentImpl() { }// {        System.out.println("RepeatableAppointmentImpl empty constructor"); } // used by factory to make new objects
     
     /**
      * Copy constructor
@@ -113,53 +113,54 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
      * 
      * @param a
      */
-    public <T extends Appointment2> RepeatableAppointmentImpl(T a)
+    public <T extends Appointment2> RepeatableAppointmentImpl(T appointment)
     {
-        super(a);
+        super(appointment);
         System.out.println("RepeatableAppointmentImpl constructor");
-        if (a instanceof RepeatableAppointmentImpl)
-        {
-            RepeatableAppointmentImpl appointment = (RepeatableAppointmentImpl) a;
-            setCustom(appointment.getCustom());
-            setEndLocalDateTime(a.getEndLocalDateTime());
-            setStartLocalDateTime(a.getStartLocalDateTime());
-        }
-//        setRepeat(RepeatFactory.newRepeat(appointment.getRepeat()));
-//        System.out.println("Repeat7 " + repeat);
-//        Repeat repeat = repeatMap.get(appointment);
-//        Repeat newRepeat = new RepeatImpl(repeat, RepeatableAppointmentImpl.class);
-//        repeatMap.put(this, newRepeat);
-//        Repeat repeat = appointment.getRepeat();
-//        setRepeat(new RepeatImpl(repeat, RepeatableAppointmentImpl.class));
-//        MyRepeat newRepeat = RepeatFactory.newRepeat(repeatMap.get(appointment));
-//        repeatMap.put(this, newRepeat);
-//        appointment.copyInto(this);
+        // TODO - MAYBE USE STATIC COPY SOURCE - DESTINATION
+//        a.copyFieldsTo(this);
+        if (appointment instanceof RepeatableAppointmentImpl) copy((RepeatableAppointmentImpl) appointment, this);
+    }
+    
+    @Override
+    public Appointment2 copyFieldsTo(Appointment2 appointment) {
+        System.out.println("RepeatableAppointmentImpl copyFieldsTo ");
+        if (appointment instanceof RepeatableAppointmentImpl) copy(this, (RepeatableAppointmentImpl) appointment);
+        return super.copyFieldsTo(appointment);
+    }
+    
+    private static void copy(RepeatableAppointmentImpl source, RepeatableAppointmentImpl destination)
+    {
+        destination.setCustom(source.getCustom());
+        destination.setEndLocalDateTime(source.getEndLocalDateTime());
+        destination.setStartLocalDateTime(source.getStartLocalDateTime());
     }
     
     @Override
     public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
         RepeatableAppointmentImpl testObj = (RepeatableAppointmentImpl) obj;
         
-//        System.out.println("test obj3 " + obj);
+//        System.out.println("test obj3 " + getStartLocalDateTime() + " " + getEndLocalDateTime());
+//        System.out.println("test obj3 " + testObj.getStartLocalDateTime() + " " + testObj.getEndLocalDateTime());
+
+        // Start and end date/time will be null if appointment is appointmentData from a repeat object
         boolean startEquals = (getStartLocalDateTime() == null) ?
                 (testObj.getStartLocalDateTime() == null) : getStartLocalDateTime().equals(testObj.getStartLocalDateTime());
         boolean endEquals = (getEndLocalDateTime() == null) ?
                 (testObj.getEndLocalDateTime() == null) : getEndLocalDateTime().equals(testObj.getEndLocalDateTime());
-
-        System.out.println( "RepeatableAppointmentImpl equals " + startEquals + " " + endEquals); // getStartLocalDateTime() + " " + testObj.getStartLocalDateTime() + getEndLocalDateTime() + " " + testObj.getEndLocalDateTime());
-        
-        return super.equals(obj) && startEquals && endEquals;
+        boolean customEquals = (getCustom() == null) ?
+                (testObj.getCustom() == null) : getCustom().equals(testObj.getCustom());
+                
+        System.out.println( "RepeatableAppointmentImpl equals " + startEquals + " " + endEquals + " " + customEquals);
+//        if (getStartLocalDateTime() == null) throw new InvalidParameterException();
+        return super.equals(obj) && startEquals && endEquals && customEquals;
     }
     
-//    @Override
-//    public RepeatableAppointment copyNonDateFieldsInto(RepeatableAppointment appointment) {
-//        System.out.println("appointment5 " + appointment);
-//        RepeatableAppointmentImpl appointment2 = (RepeatableAppointmentImpl) appointment;
-//        appointment2.setCustom(getCustom());
-////        List<String> s = ((RepeatableAppointmentImpl) appointment2).getCustomList();
-////        this.getCustomList().addAll(s);
-//        return RepeatableAppointment.super.copyNonDateFieldsInto(appointment);
-//    }
+
 
     
     

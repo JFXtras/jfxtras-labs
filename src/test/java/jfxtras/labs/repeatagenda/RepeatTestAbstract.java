@@ -4,7 +4,10 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -51,6 +54,7 @@ public abstract class RepeatTestAbstract {
             .collect(Collectors.toList()));
     ObservableList<AppointmentGroup> appointmentGroups = DEFAULT_APPOINTMENT_GROUPS;
     
+    // Sample Repeat Objects
     public Repeat getRepeatWeekly()
     {
         LocalTime now = LocalTime.now();
@@ -118,7 +122,7 @@ public abstract class RepeatTestAbstract {
 
     public Repeat getRepeatDailyFixed()
     {
-        RepeatableAppointment a = new RepeatableAppointmentImpl()
+        Appointment2 a = new AppointmentImplLocal2()
                 .withAppointmentGroup(appointmentGroups.get(15))
                 .withSummary("Daily Appointment Fixed");
         return new RepeatImpl(RepeatableAppointmentImpl.class)
@@ -148,6 +152,16 @@ public abstract class RepeatTestAbstract {
                 .withDayOfWeek(DayOfWeek.WEDNESDAY, true)
                 .withDayOfWeek(DayOfWeek.FRIDAY, true)
                 .withAppointmentData(a1);
+    }
+    public Set<Appointment> getRepeatWeeklyFixedAppointments(LocalDateTime startDate, LocalDateTime endDate)
+    {
+        Repeat repeat = getRepeatWeeklyFixed();
+        Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
+//        LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
+//        LocalDateTime endDate = LocalDateTime.of(2015, 11, 8, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
+        Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
+        appointments.addAll(newAppointments);
+        return appointments;
     }
     
     public Repeat getRepeatWeeklyFixed2()

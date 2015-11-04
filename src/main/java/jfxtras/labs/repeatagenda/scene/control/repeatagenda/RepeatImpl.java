@@ -78,7 +78,7 @@ public class RepeatImpl extends Repeat {
         super(oldRepeat, appointmentClass);
         if (oldRepeat != null) {
             // Copy any MyRepeat specific fields first
-            oldRepeat.copyInto(this);
+            oldRepeat.copyFieldsTo(this);
         }
     }
 //    

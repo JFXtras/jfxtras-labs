@@ -310,7 +310,7 @@ public final class RepeatableUtilities {
 //        System.exit(0);
 
         final ResourceBundle resources = Settings.resources;
-        final Repeat repeat = appointment.getRepeat(); // repeat with new changes
+        Repeat repeat = appointment.getRepeat(); // repeat with new changes
 //        final Repeat repeat = repeatMap.get(appointment); // repeat with new changes
 //        final Repeat repeatOld = repeatMap.get(appointmentOld); // repeat with new changes
 //        System.out.println("repeat1 " + repeat.getEndCriteria());
@@ -460,7 +460,7 @@ public final class RepeatableUtilities {
                 if (repeatOld != null)
                 {
                     repeat.unbindAll();
-                    repeatOld.copyInto(repeat);   // restore original repeat rule
+                    repeatOld.copyFieldsTo(repeat);   // restore original repeat rule
                 }
                 break;
             case ALL:
@@ -570,7 +570,7 @@ public final class RepeatableUtilities {
                 
                 // Modify start and end date for repeat and repeatOld.  Adjust IntervalUnit specific data
                 repeatOld.setEndCriteria(EndCriteria.UNTIL);
-                repeatOld.setCount(null); // criteria changed to ON so null endAfterEvents
+                repeatOld.setCount(0); // criteria changed to ON so 0 count events
                 repeatOld.setUntilLocalDateTime(repeatOld.previousValidDate(startDateOld));
 //                boolean adjustStartDate;
                 switch (repeat.getFrequency())
@@ -682,13 +682,8 @@ public final class RepeatableUtilities {
                 break;
             case CANCEL: // restore old appointment and repeat rule (use copyInto to avoid triggering change listeners)
                 appointmentOld.copyFieldsTo(appointment);
-                repeatOld.copyInto(appointment.getRepeat());
-//              System.out.println("repeatMap.size()- " + repeatMap.size());
-//                repeatMap.put(appointment, repeatOld);
-//                repeatMap.remove(appointmentOld);
-//                repeatOld.copyInto(repeat);
-//                System.out.println("2repeatMap.size()- " + repeatMap.size());
-//                
+               repeatOld.copyFieldsTo(appointment.getRepeat());                  
+            
 //                Iterator<DayOfWeek> dayOfWeekIterator = Arrays 
 //                        .stream(DayOfWeek.values())
 //                        .limit(7)

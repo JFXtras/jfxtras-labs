@@ -69,7 +69,7 @@ public abstract class Repeat {
 //    public Callback<LocalDateTimeRange, Appointment> getNewAppointmentCallback() { return newAppointmentCallback; }
 
     private Class<? extends RepeatableAppointment> appointmentClass;
-    public void setAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { this.appointmentClass = appointmentClass; }
+    private void setAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { this.appointmentClass = appointmentClass; }
     public Class<? extends RepeatableAppointment> getAppointmentClass() { return appointmentClass; }
     public Repeat withAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
 
@@ -93,12 +93,14 @@ public abstract class Repeat {
         return dateTime + keyString + domain;
     }
     
+    /** time period between new appointments (daily, weekly, etc.) */
     final private ObjectProperty<Frequency> frequency = new SimpleObjectProperty<Frequency>();
     public ObjectProperty<Frequency> frequencyProperty() { return frequency; }
     public Frequency getFrequency() { return frequency.getValue(); }
     public void setFrequency(Frequency frequency) { this.frequency.set(frequency); }
     public Repeat withFrequency(Frequency frequency) { setFrequency(frequency); return this; }
     
+    /** number of frequency periods to pass before new appointment */
     final private IntegerProperty interval = new SimpleIntegerProperty(1);
     public Integer getInterval() { return interval.getValue(); }
     public IntegerProperty intervalProperty() { return interval; }
@@ -199,13 +201,23 @@ public abstract class Repeat {
     public void setEndCriteria(EndCriteria endCriteria) { this.endCriteria.set(endCriteria); }
     public Repeat withEndCriteria(EndCriteria endCriteria){ setEndCriteria(endCriteria); return this; }
     
+    /** number of events to occur before repeat rule ends */
     final private IntegerProperty count = new SimpleIntegerProperty();
     public Integer getCount() { return count.getValue(); }
     public IntegerProperty countProperty() { return count; }
     public void setCount(Integer count)
     {
-        this.count.setValue(count);
-        if (count != null) makeUntilFromCount();
+        this.count.set(count);
+        if (count > 0)
+        {
+            if (isValid())
+            {
+                if (count != null) makeUntilFromCount();
+            } else
+            {
+                throw new InvalidParameterException("Repeat rule must be setup before setCount is called.");
+            }
+        }
     }
     public Repeat withCount(Integer endAfterEvents)
     {
@@ -351,7 +363,7 @@ public abstract class Repeat {
 //        setAppointmentData(appt); // initialize appointmentData
 //        this(newAppointmentCallback); // setup callback to make new appointments, initialize appointmentData
         if (oldRepeat != null) {
-            oldRepeat.copyInto(this);
+            oldRepeat.copyFieldsTo(this);
         }
     }
 
@@ -361,29 +373,35 @@ public abstract class Repeat {
      */
     public <T extends Repeat> Repeat(T source)
     {
+        // Maybe I will call copyFieldTo method and keep both.
+        
         System.out.println("Repeat constructor");
-        setFrequency(source.getFrequency());
-        setRepeatDayOfMonth(source.isRepeatDayOfMonth());
-        setRepeatDayOfWeek(source.isRepeatDayOfWeek());
-        setInterval(source.getInterval());
-        source.getDayOfWeekMap().entrySet()
-                         .stream()
-                         .forEach(a -> {
-                             DayOfWeek d = a.getKey();
-                             boolean value = a.getValue().get();
-                             setDayOfWeek(d, value);   
-                         });
-        setExceptions(source.getExceptions());
-        setStartLocalDate(source.getStartLocalDate());
-        setDurationInSeconds(source.getDurationInSeconds());
-        if (getEndCriteria() == EndCriteria.AFTER) setCount(source.getCount());
-        setEndCriteria(source.getEndCriteria());
-        setUntilLocalDateTime(source.getUntilLocalDateTime());
-        System.out.println("here8 " + getDurationInSeconds() + " " + getStartLocalDate());
-        Appointment2 appt = AppointmentFactory.newAppointment(source.getAppointmentData());
-        setAppointmentData(appt);
-        source.getAppointments().stream().forEach(a -> getAppointments().add(a));
-        setLocalDateTimeDisplayRange(source.getLocalDateTimeDisplayRange());
+        copy(source, this);
+//        this.setAppointmentClass(source.getAppointmentClass());
+//        setFrequency(source.getFrequency());
+//        setRepeatDayOfMonth(source.isRepeatDayOfMonth());
+//        setRepeatDayOfWeek(source.isRepeatDayOfWeek());
+//        setInterval(source.getInterval());
+//        source.getDayOfWeekMap().entrySet()
+//                         .stream()
+//                         .forEach(a -> {
+//                             DayOfWeek d = a.getKey();
+//                             boolean value = a.getValue().get();
+//                             setDayOfWeek(d, value);   
+//                         });
+//        setExceptions(source.getExceptions());
+//        setStartLocalDate(source.getStartLocalDate());
+//        setDurationInSeconds(source.getDurationInSeconds());
+//
+//        setUntilLocalDateTime(source.getUntilLocalDateTime());
+////        System.out.println("here8 " + getDurationInSeconds() + " " + getStartLocalDate());
+//        Appointment2 appt = AppointmentFactory.newAppointment(source.getAppointmentData());
+//        setAppointmentData(appt);
+//        source.getAppointments().stream().forEach(a -> getAppointments().add(a));
+//        setLocalDateTimeDisplayRange(source.getLocalDateTimeDisplayRange());
+//        setCount(source.getCount());
+//        setEndCriteria(source.getEndCriteria());
+//        if (getEndCriteria() == EndCriteria.AFTER) setCount(source.getCount());
     }
     
 //    /**
@@ -403,6 +421,37 @@ public abstract class Repeat {
         RepeatableAppointment appt = AppointmentFactory.newAppointment(appointmentClass);
         setAppointmentData(appt); // initialize appointmentData
     }
+    
+    private static void copy(Repeat source, Repeat destination)
+    {
+        destination.setAppointmentClass(source.getAppointmentClass());
+        destination.setFrequency(source.getFrequency());
+        destination.setRepeatDayOfMonth(source.isRepeatDayOfMonth());
+        destination.setRepeatDayOfWeek(source.isRepeatDayOfWeek());
+        destination.setInterval(source.getInterval());
+        source.getDayOfWeekMap().entrySet()
+                         .stream()
+                         .forEach(a -> {
+                             DayOfWeek d = a.getKey();
+                             boolean value = a.getValue().get();
+                             destination.setDayOfWeek(d, value);   
+                         });
+        destination.setExceptions(source.getExceptions());
+        destination.setStartLocalDate(source.getStartLocalDate());
+        destination.setDurationInSeconds(source.getDurationInSeconds());
+//        repeat.setStartLocalDate(getStartLocalDate());
+//        repeat.setEndLocalTime(getEndLocalTime());
+        if (source.getEndCriteria() == EndCriteria.AFTER) destination.setCount(source.getCount());
+        destination.setEndCriteria(source.getEndCriteria());
+        System.out.println("EndCriteria4 " + source.getEndCriteria() + " " + destination.getEndCriteria());
+        destination.setUntilLocalDateTime(source.getUntilLocalDateTime());
+        Appointment2 appt = AppointmentFactory.newAppointment(source.getAppointmentData());
+        destination.setAppointmentData(appt);
+//        getAppointmentData().copyNonDateFieldsInto(repeat.getAppointmentData());
+        source.getAppointments().stream().forEach(a -> destination.getAppointments().add(a));
+        destination.startDate = source.startDate;
+        destination.endDate = source.endDate;
+    }
     // TODO - CONSIDER USING COPY CONSTRUCTOR INSTEAD
     /**
      * Copy's current object's fields into passed parameter
@@ -411,34 +460,36 @@ public abstract class Repeat {
      * @return
      * @throws CloneNotSupportedException
      */
-    public Repeat copyInto(Repeat repeat) {
-        System.out.println("Interval99 " + this.getFrequency() + " " + repeat);
-        repeat.setFrequency(getFrequency());
-        repeat.setRepeatDayOfMonth(isRepeatDayOfMonth());
-        repeat.setRepeatDayOfWeek(isRepeatDayOfWeek());
-        repeat.setInterval(getInterval());
-        getDayOfWeekMap().entrySet()
-                         .stream()
-                         .forEach(a -> {
-                             DayOfWeek d = a.getKey();
-                             boolean value = a.getValue().get();
-                             repeat.setDayOfWeek(d, value);   
-                         });
-        repeat.setExceptions(getExceptions());
-        repeat.setStartLocalDate(getStartLocalDate());
-        repeat.setDurationInSeconds(getDurationInSeconds());
+    @Deprecated
+    public Repeat copyFieldsTo(Repeat repeat) {
+        copy(this, repeat);
+//        System.out.println("Interval99 " + this.getFrequency() + " " + repeat);
+//        repeat.setFrequency(getFrequency());
+//        repeat.setRepeatDayOfMonth(isRepeatDayOfMonth());
+//        repeat.setRepeatDayOfWeek(isRepeatDayOfWeek());
+//        repeat.setInterval(getInterval());
+//        getDayOfWeekMap().entrySet()
+//                         .stream()
+//                         .forEach(a -> {
+//                             DayOfWeek d = a.getKey();
+//                             boolean value = a.getValue().get();
+//                             repeat.setDayOfWeek(d, value);   
+//                         });
+//        repeat.setExceptions(getExceptions());
 //        repeat.setStartLocalDate(getStartLocalDate());
-//        repeat.setEndLocalTime(getEndLocalTime());
-        if (getEndCriteria() == EndCriteria.AFTER) repeat.setCount(getCount());
-        repeat.setEndCriteria(getEndCriteria());
-        repeat.setUntilLocalDateTime(getUntilLocalDateTime());
-//        System.out.println("this.getAppointmentData() " + this.getAppointmentData());
-        Appointment2 appt = AppointmentFactory.newAppointment(getAppointmentData());
-        repeat.setAppointmentData(appt);
-//        getAppointmentData().copyNonDateFieldsInto(repeat.getAppointmentData());
-        getAppointments().stream().forEach(a -> repeat.getAppointments().add(a));
-        repeat.startDate = startDate;
-        repeat.endDate = endDate;
+//        repeat.setDurationInSeconds(getDurationInSeconds());
+////        repeat.setStartLocalDate(getStartLocalDate());
+////        repeat.setEndLocalTime(getEndLocalTime());
+//        if (getEndCriteria() == EndCriteria.AFTER) repeat.setCount(getCount());
+//        repeat.setEndCriteria(getEndCriteria());
+//        repeat.setUntilLocalDateTime(getUntilLocalDateTime());
+////        System.out.println("this.getAppointmentData() " + this.getAppointmentData());
+//        Appointment2 appt = AppointmentFactory.newAppointment(getAppointmentData());
+//        repeat.setAppointmentData(appt);
+////        getAppointmentData().copyNonDateFieldsInto(repeat.getAppointmentData());
+//        getAppointments().stream().forEach(a -> repeat.getAppointments().add(a));
+//        repeat.startDate = startDate;
+//        repeat.endDate = endDate;
         return repeat;
     }
     
@@ -472,12 +523,13 @@ public abstract class Repeat {
 //      }
 
 //        System.out.println("getAppointmentData7 " + getAppointmentData() + " " + testObj.getAppointmentData());
-      boolean repeatEquals = (getAppointmentData() == null) ?
+      boolean appointmentDataEquals = (getAppointmentData() == null) ?
               (testObj.getAppointmentData() == null) : getAppointmentData().equals(testObj.getAppointmentData());
-      
-//        System.out.println(" getEndAfterEvents " + getCount() + " " + testObj.getCount());
-        System.out.println("startTime2 " + this.getStartLocalDate() + " " + testObj.getStartLocalDate());
-        System.out.println("Duration2 " + getDurationInSeconds()+ " " + (testObj.getDurationInSeconds()));
+
+        System.out.println(" getEndCriteria3 " + getEndCriteria() + " " + testObj.getEndCriteria());
+//        System.out.println(" getCount " + getCount() + " " + testObj.getCount());
+//        System.out.println("startTime2 " + this.getStartLocalDate() + " " + testObj.getStartLocalDate());
+//        System.out.println("Duration2 " + getDurationInSeconds()+ " " + (testObj.getDurationInSeconds()));
         System.out.println("repeat equals " + getStartLocalDate().equals(testObj.getStartLocalDate())
             + " " + getDurationInSeconds().equals(testObj.getDurationInSeconds())
             + " " + getCount().equals(testObj.getCount())
@@ -485,7 +537,7 @@ public abstract class Repeat {
             + " " + isRepeatDayOfMonth().equals(testObj.isRepeatDayOfMonth())
             + " " + isRepeatDayOfWeek().equals(testObj.isRepeatDayOfWeek())
             + " " + getInterval().equals(testObj.getInterval())
-            + " " + repeatEquals
+            + " " + appointmentDataEquals
             + " " + dayOfWeekMapEqual(testObj.getDayOfWeekMap())
             + " " + exceptionsEquals(testObj.getExceptions()));
 
@@ -497,7 +549,7 @@ public abstract class Repeat {
             && isRepeatDayOfMonth().equals(testObj.isRepeatDayOfMonth()) 
             && isRepeatDayOfWeek().equals(testObj.isRepeatDayOfWeek())
             && getInterval().equals(testObj.getInterval())
-            && repeatEquals
+            && appointmentDataEquals
             && dayOfWeekMapEqual(testObj.getDayOfWeekMap())
             && exceptionsEquals(testObj.getExceptions());
     }
@@ -511,6 +563,7 @@ public abstract class Repeat {
      */
     public boolean isValid()
     {
+        if ((this.getEndCriteria() == null) || (this.getFrequency() == null) || (this.getStartLocalDate() == null)) return false;
         if (getFrequency() == Frequency.WEEKLY) {
             if (! isWeeklyValid()) return false;
         } else if (getFrequency() == Frequency.MONTHLY) {
@@ -736,6 +789,7 @@ public abstract class Repeat {
                     .map(myStartDateTime -> {                                                 // make new appointment
 //                        LocalDateTime myStartDateTime = a;
                         LocalDateTime myEndDateTime = myStartDateTime.plusSeconds(getDurationInSeconds());
+                        System.out.println("appointmentClass2 " + appointmentClass);
                         RepeatableAppointment appt = AppointmentFactory.newAppointment(appointmentClass);
 //                        RepeatableAppointment appt = (RepeatableAppointment) getNewAppointmentCallback()
 //                            .call(new LocalDateTimeRange(myStartDateTime, myEndDateTime));

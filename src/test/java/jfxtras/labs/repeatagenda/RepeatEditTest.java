@@ -50,6 +50,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
 
         // select appointment and apply changes
         RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next();
+
 //        RepeatableAppointment appointmentOld = new RepeatableAppointmentImpl(selectedAppointment);
         RepeatableAppointment appointmentOld = AppointmentFactory.newAppointment(selectedAppointment);
         LocalDate date = selectedAppointment.getStartLocalDateTime().toLocalDate();
@@ -66,7 +67,8 @@ public class RepeatEditTest extends RepeatTestAbstract {
               , null
               , null);
         assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
-
+//      System.out.println(repeat.getAppointmentData().getStartLocalDateTime());
+//      System.exit(0);
         // Check Repeat
         RepeatableAppointment a = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(15))
@@ -74,8 +76,6 @@ public class RepeatEditTest extends RepeatTestAbstract {
         Repeat expectedRepeat =  new RepeatImpl(RepeatableAppointmentImpl.class)
                 .withStartLocalDate(LocalDateTime.of(2015, 10, 7, 9, 45))
                 .withDurationInSeconds(4500)
-//                .withStartLocalTime(LocalTime.of(9, 45))
-//                .withEndLocalTime(LocalTime.of(11, 0))
                 .withFrequency(Frequency.DAILY)
                 .withInterval(3)
                 .withEndCriteria(EndCriteria.AFTER)
@@ -560,6 +560,9 @@ public class RepeatEditTest extends RepeatTestAbstract {
         final RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next(); // select second appointment
 //        final RepeatableAppointment appointmentOld = new RepeatableAppointmentImpl(selectedAppointment);
         RepeatableAppointment appointmentOld = AppointmentFactory.newAppointment(selectedAppointment);
+//        assertEquals(selectedAppointment.getRepeat(), appointmentOld.getRepeat()); // check if copy is equal
+//        assertEquals(selectedAppointment, appointmentOld); // check if copy is equal
+//        System.exit(0);
         LocalDate date = selectedAppointment.getStartLocalDateTime().toLocalDate().plusDays(1); // shift Wednesday appointments 1 day forward
         selectedAppointment.setStartLocalDateTime(date.atTime(15, 45)); // change start time
         selectedAppointment.setEndLocalDateTime(date.atTime(16, 30)); // change end time
@@ -1005,7 +1008,8 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withEndLocalDateTime(LocalDate.of(2015, 10, 7).atTime(10, 15))
                 .withAppointmentGroup(appointmentGroups.get(9))
                 .withSummary("Monthly Appointment Fixed")
-                .withRepeatMade(true);
+                .withRepeatMade(true)
+                .withRepeat(repeat);
         assertEquals(expectedAppointment, appointment); // Check to see if repeat-generated appointment changed correctly        
 
         // Advance one month later and update, test to see if new repeatable appointment exists
@@ -1020,7 +1024,8 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withEndLocalDateTime(LocalDate.of(2015, 11, 7).atTime(10, 15))
                 .withAppointmentGroup(appointmentGroups.get(9))
                 .withSummary("Monthly Appointment Fixed")
-                .withRepeatMade(true);
+                .withRepeatMade(true)
+                .withRepeat(repeat);
         assertEquals(expectedAppointment2, appointment2); // Check to see if repeat-generated appointment changed correctly        
     }
 
