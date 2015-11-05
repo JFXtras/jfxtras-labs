@@ -32,7 +32,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.StringConverter;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.Appointment2;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -311,11 +310,11 @@ public abstract class Repeat {
         return true;
     }
     
-    /** Appointment-specific data - only uses data fields. Repeat related objects are null */
-    private Appointment2 appointmentData = null; //AppointmentFactory.newAppointment();
-    public Appointment2 getAppointmentData() { return appointmentData; }
-    public void setAppointmentData(Appointment2 appointment) { appointmentData = appointment; }
-    public Repeat withAppointmentData(Appointment2 appointment) { setAppointmentData(appointment); return this; }
+    /** Appointment-specific data - only uses data fields. Repeat related and date/time objects are null */
+    private RepeatableAppointment appointmentData = null; //AppointmentFactory.newAppointment();
+    public RepeatableAppointment getAppointmentData() { return appointmentData; }
+    public void setAppointmentData(RepeatableAppointment appointment) { appointmentData = appointment; }
+    public Repeat withAppointmentData(RepeatableAppointment appointment) { setAppointmentData(appointment); return this; }
 //    public void setAppointmentData(Appointment appointment) { appointment.copyNonDateFieldsInto(appointmentData); }
 
     /** Appointments generated from this repeat rule.  Objects are a subset of appointments in main appointments list
@@ -415,6 +414,13 @@ public abstract class Repeat {
 //        this.setAppointmentData(appt); // initialize appointmentData
 //    }
     
+//    public Repeat(Class<? extends RepeatableAppointment> appointmentClass, Class<? extends AppointmentData> appointmentDataClass)
+//    {
+//        setAppointmentClass(appointmentClass);
+//        AppointmentData appt = AppointmentFactory.newAppointment(appointmentDataClass);
+//        setAppointmentData(appt); // initialize appointmentData
+//    }
+    
     public Repeat(Class<? extends RepeatableAppointment> appointmentClass)
     {
         setAppointmentClass(appointmentClass);
@@ -439,18 +445,18 @@ public abstract class Repeat {
         destination.setExceptions(source.getExceptions());
         destination.setStartLocalDate(source.getStartLocalDate());
         destination.setDurationInSeconds(source.getDurationInSeconds());
-//        repeat.setStartLocalDate(getStartLocalDate());
-//        repeat.setEndLocalTime(getEndLocalTime());
-        if (source.getEndCriteria() == EndCriteria.AFTER) destination.setCount(source.getCount());
-        destination.setEndCriteria(source.getEndCriteria());
-        System.out.println("EndCriteria4 " + source.getEndCriteria() + " " + destination.getEndCriteria());
         destination.setUntilLocalDateTime(source.getUntilLocalDateTime());
-        Appointment2 appt = AppointmentFactory.newAppointment(source.getAppointmentData());
+        RepeatableAppointment appt = AppointmentFactory.newAppointment(source.getAppointmentData());
         destination.setAppointmentData(appt);
-//        getAppointmentData().copyNonDateFieldsInto(repeat.getAppointmentData());
         source.getAppointments().stream().forEach(a -> destination.getAppointments().add(a));
+        destination.setLocalDateTimeDisplayRange(source.getLocalDateTimeDisplayRange());
+//        System.out.println("EndCriteria4 " + source.getCount() + " " + destination.getCount());
+        destination.setEndCriteria(source.getEndCriteria());
+        if (source.getEndCriteria() == EndCriteria.AFTER) destination.setCount(source.getCount());
+        destination.setCount(source.getCount());
         destination.startDate = source.startDate;
         destination.endDate = source.endDate;
+
     }
     // TODO - CONSIDER USING COPY CONSTRUCTOR INSTEAD
     /**
@@ -522,10 +528,11 @@ public abstract class Repeat {
 //          System.out.println("day of week " + key + " " + b1 + " " + b2);
 //      }
 
-//        System.out.println("getAppointmentData7 " + getAppointmentData() + " " + testObj.getAppointmentData());
+        System.out.println("getAppointmentData7 " + getAppointmentData() + " " + testObj.getAppointmentData());
       boolean appointmentDataEquals = (getAppointmentData() == null) ?
               (testObj.getAppointmentData() == null) : getAppointmentData().equals(testObj.getAppointmentData());
-
+System.out.println(appointmentDataEquals + " " + (getAppointmentData() == null) + " " + (testObj.getAppointmentData() == null));
+if (! appointmentDataEquals)              throw new InvalidParameterException(); // APPOINMTENT DATA ARE DIFFERNET TYPES
         System.out.println(" getEndCriteria3 " + getEndCriteria() + " " + testObj.getEndCriteria());
 //        System.out.println(" getCount " + getCount() + " " + testObj.getCount());
 //        System.out.println("startTime2 " + this.getStartLocalDate() + " " + testObj.getStartLocalDate());
@@ -938,6 +945,7 @@ public abstract class Repeat {
             , TemporalAdjuster startTemporalAdjuster
             , TemporalAdjuster endTemporalAdjuster)
     {
+        getAppointments().stream().forEach(a -> System.out.println("st4 " + a.getStartLocalDateTime()));
         // Modify old date time to new, so I can keep as many modified appointments as possible
         getAppointments()
                 .stream()
@@ -985,15 +993,18 @@ public abstract class Repeat {
                 .iterator();
         Set<Appointment> invalidAppointments = new HashSet<Appointment>();
         LocalDateTime validDateTime = validDateTimeIterator.next();
+        getAppointments().stream().forEach(a -> System.out.println("st5 " + a.getClass())); //.getStartLocalDateTime()));
+//        System.exit(0);
         while (appointmentIterator.hasNext())
         {
+//            System.out.println("iterate");
             Appointment myAppointment = appointmentIterator.next();
             LocalDateTime appointmentDateTime = myAppointment.getStartLocalDateTime();
             while (validDateTime.isBefore(appointmentDateTime))
             { // advance valid dates to get to myDateTime
                 validDateTime = validDateTimeIterator.next();
-//                System.out.println("getEndCriteria " + getEndCriteria() + " " + validDateTime + " " + getEndOnDate() + " " + validDateTime.isAfter(endDate.atTime(getStartLocalTime())) + " " + // after displayed date interval
-//                        validDateTime.toLocalDate().isAfter(getEndOnDate()));
+                System.out.println("getEndCriteria " + getEndCriteria() + " " + validDateTime + " " + getUntilLocalDateTime() + " " + validDateTime.isAfter(endDate) + " " + // after displayed date interval
+                        validDateTime.toLocalDate().isAfter(this.getUntilLocalDateTime().toLocalDate()));
                 if (getEndCriteria() != EndCriteria.NEVER)
                 {
 //                    if (validDateTime.isAfter(endDate.atTime(getStartLocalTime())) || // after displayed date interval

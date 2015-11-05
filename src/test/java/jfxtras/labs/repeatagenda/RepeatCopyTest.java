@@ -6,8 +6,10 @@ import static org.junit.Assert.assertTrue;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.junit.Test;
 
@@ -59,9 +61,9 @@ public class RepeatCopyTest extends RepeatTestAbstract
         assertTrue(repeat != repeatCopy); // insure not same reference
     }
     
-    // simulates canceling changes
+    // simulates canceling changes to Repeat rules
     @Test
-    public void canCopyFieldsToRepeatableAppointment()
+    public void canCopyFieldsWithCancel()
     {
         Set<Appointment> appointments = getRepeatWeeklyFixedAppointments(
                 LocalDateTime.of(2015, 11, 1, 0, 0)
@@ -85,6 +87,7 @@ public class RepeatCopyTest extends RepeatTestAbstract
         repeat.setEndCriteria(EndCriteria.UNTIL);
         repeat.setUntilLocalDateTime(LocalDateTime.of(2016, 11, 1, 0, 0));
         
+        
         // Copy original back and check equality
         appointment.copyFieldsTo(appointmentCopy);
 //        System.out.println(appointment.getRepeat().getEndCriteria());
@@ -96,4 +99,36 @@ public class RepeatCopyTest extends RepeatTestAbstract
 
     }
     
+    // simulates canceling changes to appointmentData in Repeat
+    @Test
+    public void canCopyFieldsWithCancel2()
+    {
+        Repeat repeat = getRepeatDailyFixed();
+        Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
+        LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2015, 11, 8, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
+        Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
+        appointments.addAll(newAppointments);
+        
+        // select appointment and apply changes
+        Iterator<Appointment> appointmentIterator = appointments.iterator();
+        RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next();
+        RepeatableAppointment appointmentCopy = AppointmentFactory.newAppointment(selectedAppointment);
+        Repeat repeatCopy = RepeatFactory.newRepeat(repeat);
+        appointmentCopy.setRepeat(repeatCopy);
+        assertEquals(selectedAppointment, appointmentCopy); // check original and restored appointment equality
+        assertEquals(repeat, repeatCopy); // check original and restored appointment equality
+        LocalDate date = selectedAppointment.getStartLocalDateTime().toLocalDate().plusDays(1); // shift all appointments 1 day forward
+        selectedAppointment.setStartLocalDateTime(date.atTime(9, 45)); // change start time
+        selectedAppointment.setEndLocalDateTime(date.atTime(11, 0)); // change end time
+        selectedAppointment.setSummary("Changed summary");
+        selectedAppointment.copyFieldsTo(repeat.getAppointmentData()); // Copy changes to repeat.appointmentData
+        
+        // Copy original back and check equality
+        appointmentCopy.copyFieldsTo(repeat.getAppointmentData());
+        assertEquals(repeat.getAppointmentData(), repeatCopy.getAppointmentData()); // check original and restored appointment equality (should be checked with repeat check, but doing here just to be sure)
+        assertEquals(repeat, repeatCopy); // check original and restored appointment equality
+        assertTrue(repeat != repeatCopy); // ensure not same reference
+
+    }
 }

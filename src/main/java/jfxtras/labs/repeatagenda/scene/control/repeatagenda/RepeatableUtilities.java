@@ -682,7 +682,7 @@ public final class RepeatableUtilities {
                 break;
             case CANCEL: // restore old appointment and repeat rule (use copyInto to avoid triggering change listeners)
                 appointmentOld.copyFieldsTo(appointment);
-               repeatOld.copyFieldsTo(appointment.getRepeat());                  
+               repeatOld.copyFieldsTo(appointment.getRepeat()); // This one may be unnecessary if copy above is deep             
             
 //                Iterator<DayOfWeek> dayOfWeekIterator = Arrays 
 //                        .stream(DayOfWeek.values())

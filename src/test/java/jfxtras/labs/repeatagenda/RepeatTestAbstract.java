@@ -19,8 +19,6 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.Frequency;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.MonthlyRepeat;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.Appointment2;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentImplLocal2;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
@@ -61,7 +59,7 @@ public abstract class RepeatTestAbstract {
         int hour = now.getHour();
         hour = (hour < 21) ? hour+3 : Math.max(hour-3,0);
         int minute = now.getMinute();
-        Appointment2 a1 = new AppointmentImplLocal2()
+        RepeatableAppointment a1 = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(5))
                 .withSummary("Weekly Appointment Variable");
         return RepeatFactory.newRepeat(RepeatImpl.class, RepeatableAppointmentImpl.class)
@@ -122,7 +120,7 @@ public abstract class RepeatTestAbstract {
 
     public Repeat getRepeatDailyFixed()
     {
-        Appointment2 a = new AppointmentImplLocal2()
+        RepeatableAppointment a = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(15))
                 .withSummary("Daily Appointment Fixed");
         return new RepeatImpl(RepeatableAppointmentImpl.class)

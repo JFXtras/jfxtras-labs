@@ -43,10 +43,12 @@ public class RepeatEditTest extends RepeatTestAbstract {
         LocalDateTime endDate = LocalDateTime.of(2015, 11, 8, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
+        
         Iterator<Appointment> appointmentIterator = appointments.iterator();
 //        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
         assertEquals(2, appointments.size()); // check if there are only two appointments
-//        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+//        appointments.stream().forEach(a -> System.out.println(a.getClass()));
+//      System.exit(0);
 
         // select appointment and apply changes
         RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next();
@@ -57,7 +59,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         selectedAppointment.setStartLocalDateTime(date.atTime(9, 45)); // change start time
         selectedAppointment.setEndLocalDateTime(date.atTime(11, 0)); // change end time
 //        System.out.println("selectedAppointment " + selectedAppointment.getStartLocalDateTime());
-
+//        System.out.println("hi9 " + repeat.getAppointmentData().getStartLocalDateTime());
         WindowCloseType windowCloseType = RepeatableUtilities.editAppointments(
                 selectedAppointment
               , appointmentOld
@@ -67,8 +69,8 @@ public class RepeatEditTest extends RepeatTestAbstract {
               , null
               , null);
         assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
-//      System.out.println(repeat.getAppointmentData().getStartLocalDateTime());
-//      System.exit(0);
+      System.out.println(repeat.getAppointmentData().getStartLocalDateTime());
+      System.exit(0);
         // Check Repeat
         RepeatableAppointment a = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(15))

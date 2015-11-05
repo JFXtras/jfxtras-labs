@@ -238,6 +238,96 @@ public class RepeatableAgenda extends Agenda {
 //        return repeatMap.get(a);
 //    }
 
+    /** non-data data fields.  The fields that get copied into repeat-made appointments */
+    static public interface AppointmentData extends Agenda.Appointment
+    {
+        // TODO - SHOULD GO TO REGULAR AGENDA
+        /** Unique identifier as defined by iCalendar RFC 5545, 3.8.4.7 */
+        String getUID();
+        void setUID(String uid);
+        
+        // THESE SHOULDN'T BE HERE - ERROR IN DEFAULTS
+        // ----
+        // Calendar
+        
+        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
+        default Calendar getStartTime() {
+            throw new RuntimeException("Not implemented");
+        }
+        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
+        default void setStartTime(Calendar c) {
+            throw new RuntimeException("Not implemented");
+        }
+        
+        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
+        default Calendar getEndTime() {
+            throw new RuntimeException("Not implemented");
+        }
+        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
+        default void setEndTime(Calendar c) {
+            throw new RuntimeException("Not implemented");
+        }
+        
+        // ----
+        // ZonedDateTime
+        
+        /** This is the replacement of Calendar, if you use ZonedDateTime be aware that the default implementations of the LocalDateTime methods in this interface convert LocalDateTime to ZonedDateTime using a rather crude approach */
+        default ZonedDateTime getStartZonedDateTime() {
+            return DateTimeToCalendarHelper.createZonedDateTimeFromCalendar(getStartTime());
+        }
+        /** This is the replacement of Calendar, if you use ZonedDateTime be aware that the default implementations of the LocalDateTime methods in this interface convert LocalDateTime to ZonedDateTime using a rather crude approach */
+        default void setStartZonedDateTime(ZonedDateTime v) {
+            setStartTime(DateTimeToCalendarHelper.createCalendarFromZonedDateTime(v));
+        }
+        
+        /** This is the replacement of Calendar, if you use ZonedDateTime be aware that the default implementations of the LocalDateTime methods in this interface convert LocalDateTime to ZonedDateTime using a rather crude approach */
+        default ZonedDateTime getEndZonedDateTime() {
+            return DateTimeToCalendarHelper.createZonedDateTimeFromCalendar(getEndTime());
+        }
+        /** End is exclusive */
+        default void setEndZonedDateTime(ZonedDateTime v) {
+            setEndTime(DateTimeToCalendarHelper.createCalendarFromZonedDateTime(v));
+        }
+        
+        // ----
+        // LocalDateTime 
+        
+        /** This is what Agenda uses to render the appointments */
+        default LocalDateTime getStartLocalDateTime() {
+            return getStartZonedDateTime().toLocalDateTime();
+        }
+        /** This is what Agenda uses to render the appointments */
+        default void setStartLocalDateTime(LocalDateTime v) {
+            setStartZonedDateTime(ZonedDateTime.of(v, ZoneId.systemDefault()));
+        }
+        
+        /** This is what Agenda uses to render the appointments */
+        default LocalDateTime getEndLocalDateTime() {
+            return getEndZonedDateTime() == null ? null : getEndZonedDateTime().toLocalDateTime();
+        }
+        /** End is exclusive */
+        default void setEndLocalDateTime(LocalDateTime v) {
+            setEndZonedDateTime(v == null ? null : ZonedDateTime.of(v, ZoneId.systemDefault()));
+        }
+    }
+    
+    static public class RepeatableAppointmentData extends Agenda.AppointmentImplBase<RepeatableAppointmentData> implements AppointmentData
+    {
+        
+        @Override
+        public String getUID() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public void setUID(String uid) {
+            // TODO Auto-generated method stub
+            
+        }
+        
+    }
+    
     /** Contains all the appointment data - no repeatable information
     *   Like Appointment, but contains extra fields - no repeat object */
     static public interface Appointment2 extends Agenda.Appointment
@@ -270,7 +360,7 @@ public class RepeatableAgenda extends Agenda {
          * @return
          */
         @Deprecated
-        default Appointment2 copyFieldsTo(Appointment2 destination) {
+        default Appointment copyFieldsTo(Appointment destination) {
             destination.setAppointmentGroup(getAppointmentGroup());
             destination.setDescription(getDescription());
             destination.setSummary(getSummary());
@@ -288,7 +378,7 @@ public class RepeatableAgenda extends Agenda {
          * @return
          */
         @Deprecated
-        default Appointment2 copyInto(Appointment2 appointment, Appointment2 appointmentFromRepeatRule) {
+        default Appointment copyInto(Appointment appointment, Appointment appointmentFromRepeatRule) {
             if (appointment.getAppointmentGroup().equals(appointmentFromRepeatRule.getAppointmentGroup())) {
                 appointment.setAppointmentGroup(getAppointmentGroup());
             }
@@ -404,7 +494,7 @@ public class RepeatableAgenda extends Agenda {
         
         /** Copy constructor 
          * @param <U>*/
-        <T extends Appointment2> AppointmentImplBase2(T appointment)
+        <T extends Appointment> AppointmentImplBase2(T appointment)
         {
             System.out.println("AppointmentImplBase2 constructor");
             if (appointment instanceof AppointmentImplBase2) copy((AppointmentImplBase2<T>) appointment, this);
@@ -416,7 +506,8 @@ public class RepeatableAgenda extends Agenda {
         }
         
         /** Copy fields from this to input parameter appointment */
-        public Appointment2 copyFieldsTo(Appointment2 appointment) {
+        @Override
+        public Appointment copyFieldsTo(Appointment appointment) {
             System.out.println("RepeatableAppointmentImplBase copyFieldsTo ");
             if (appointment instanceof AppointmentImplBase2) copy(this, (AppointmentImplBase2<T>) appointment);
             return appointment;
@@ -474,11 +565,12 @@ public class RepeatableAgenda extends Agenda {
         
         public AppointmentImplLocal2() {}
         
-        public AppointmentImplLocal2(Appointment2 source) {
+        public AppointmentImplLocal2(Appointment source) {
             super(source);
+            if (source instanceof AppointmentImplLocal2) copy((AppointmentImplLocal2) source, this);
             System.out.println("AppointmentImplLocal2 constructor");
-            if (source.getStartLocalDateTime() != null) setEndLocalDateTime(source.getEndLocalDateTime());
-            if (source.getEndLocalDateTime() != null) setStartLocalDateTime(source.getStartLocalDateTime());
+//            if (source.getStartLocalDateTime() != null) setEndLocalDateTime(source.getEndLocalDateTime());
+//            if (source.getEndLocalDateTime() != null) setStartLocalDateTime(source.getStartLocalDateTime());
         }
 
         /**
@@ -489,12 +581,20 @@ public class RepeatableAgenda extends Agenda {
          * @return
          */
         @Override
-        @Deprecated
-        public Appointment2 copyFieldsTo(Appointment2 destination) {
-            destination.setStartLocalDateTime(getStartLocalDateTime());
-            destination.setEndLocalDateTime(getEndLocalDateTime());
+        public Appointment copyFieldsTo(Appointment destination) {
+            System.out.println("AppointmentImplLocal2 copyFields");
+            if (destination instanceof AppointmentImplLocal2) copy(this, (AppointmentImplLocal2) destination);
+//            destination.setStartLocalDateTime(getStartLocalDateTime());
+//            destination.setEndLocalDateTime(getEndLocalDateTime());
             return destination;
         }
+        
+        /** Copy fields from source to destination */
+        private static void copy(AppointmentImplLocal2 source, AppointmentImplLocal2 destination)
+        {
+            destination.setStartLocalDateTime(source.getStartLocalDateTime());
+            destination.setEndLocalDateTime(source.getEndLocalDateTime());
+        }  
 
         // used for unit testing, not needed by implementation
         @Override
@@ -625,26 +725,29 @@ public class RepeatableAgenda extends Agenda {
 
         /** Copy constructor 
          * @param <U>*/
-        protected <U extends Appointment2> RepeatableAppointmentImplBase(U appointment)
+        protected <U extends Appointment> RepeatableAppointmentImplBase(U source)
         {
-            super(appointment);
+            super(source);
             System.out.println("RepeatableAppointmentImplBase constructor ");
-            if (appointment instanceof RepeatableAppointmentImplBase) copy((RepeatableAppointmentImplBase<T>) appointment, this);
+            if (source instanceof RepeatableAppointmentImplBase) copy((RepeatableAppointmentImplBase<T>) source, this);
         }
         
         /** Copy fields from this to input parameter appointment */
         @Override
-        public Appointment2 copyFieldsTo(Appointment2 appointment) {
+        public Appointment copyFieldsTo(Appointment destination) {
             System.out.println("RepeatableAppointmentImplBase copyFieldsTo ");
-            if (appointment instanceof RepeatableAppointmentImplBase) copy(this, (RepeatableAppointmentImplBase<T>) appointment);
-            return super.copyFieldsTo(appointment);
+            if ((destination instanceof RepeatableAppointmentImplBase) && (((RepeatableAppointment) destination).getRepeat() != null))
+            {
+                copy(this, (RepeatableAppointmentImplBase<T>) destination);
+            }
+            return super.copyFieldsTo(destination);
         }
         
         /** Copy fields from source to destination */
         private static void copy(RepeatableAppointmentImplBase<?> source, RepeatableAppointmentImplBase<?> destination)
         {
-            if (source.getRepeat() != null)
-            {
+            if ((source.getRepeat() != null))
+            { // only copy Repeat if BOTH source and destination have something in repeat
                 Repeat r = RepeatFactory.newRepeat(source.getRepeat());
                 destination.setRepeat(r);
             }
@@ -848,7 +951,7 @@ public class RepeatableAgenda extends Agenda {
 //        }
 
         @Deprecated
-        public static <T extends Appointment2> T newAppointment(Class<T> appointmentClass)
+        public static <T extends Appointment> T newAppointment(Class<T> appointmentClass)
         {
             try {
                 return appointmentClass.newInstance();
@@ -859,11 +962,11 @@ public class RepeatableAgenda extends Agenda {
         }
     
         // Returns deep copy of source
-        public static <T extends Appointment2> T newAppointment(T source)
+        public static <T extends Appointment> T newAppointment(T source)
         {
             try {
                 return (T) source.getClass()
-                        .getConstructor(Appointment2.class) // gets copy constructor
+                        .getConstructor(Appointment.class) // gets copy constructor
                         .newInstance(source);               // calls copy constructor
             } catch (InstantiationException | IllegalAccessException
                     | IllegalArgumentException | InvocationTargetException

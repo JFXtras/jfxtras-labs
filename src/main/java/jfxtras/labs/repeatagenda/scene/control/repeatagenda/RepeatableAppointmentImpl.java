@@ -32,7 +32,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.Appointment2;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentGroupImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointmentImplBase;
@@ -113,27 +112,41 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
      * 
      * @param a
      */
-    public <T extends Appointment2> RepeatableAppointmentImpl(T appointment)
+    public <T extends Appointment> RepeatableAppointmentImpl(T source)
     {
-        super(appointment);
+        super(source);
         System.out.println("RepeatableAppointmentImpl constructor");
         // TODO - MAYBE USE STATIC COPY SOURCE - DESTINATION
 //        a.copyFieldsTo(this);
-        if (appointment instanceof RepeatableAppointmentImpl) copy((RepeatableAppointmentImpl) appointment, this);
+        boolean dateTimeFlag = true;
+        if (source instanceof RepeatableAppointmentImpl) copy((RepeatableAppointmentImpl) source, this, dateTimeFlag);
     }
     
     @Override
-    public Appointment2 copyFieldsTo(Appointment2 appointment) {
+    public Appointment copyFieldsTo(Appointment destination) {
         System.out.println("RepeatableAppointmentImpl copyFieldsTo ");
-        if (appointment instanceof RepeatableAppointmentImpl) copy(this, (RepeatableAppointmentImpl) appointment);
-        return super.copyFieldsTo(appointment);
+        boolean dateTimeFlag = destination.getStartLocalDateTime() != null; // don't copy date/times if they are already null - this indicates the appointment is repeat.appointmentData which only contains non-time data
+        if (destination instanceof RepeatableAppointmentImpl) copy(this, (RepeatableAppointmentImpl) destination, dateTimeFlag);
+        return super.copyFieldsTo(destination);
     }
     
-    private static void copy(RepeatableAppointmentImpl source, RepeatableAppointmentImpl destination)
+    private static void copy(RepeatableAppointmentImpl source, RepeatableAppointmentImpl destination, boolean dateTimeFlag)
     {
         destination.setCustom(source.getCustom());
-        destination.setEndLocalDateTime(source.getEndLocalDateTime());
-        destination.setStartLocalDateTime(source.getStartLocalDateTime());
+        // Only copy date/times if destination already had non-null values (repeat.appointmentData are suppose to stay nulls)
+        if (dateTimeFlag) destination.setStartLocalDateTime(source.getStartLocalDateTime());
+        if (dateTimeFlag) destination.setEndLocalDateTime(source.getEndLocalDateTime());
+//        System.out.println("got a null");
+//        {
+//            destination.setEndLocalDateTime(null);
+//        } else
+//        {
+//            destination.setEndLocalDateTime(source.getEndLocalDateTime());            
+//        }
+//        if (source.getStartLocalDateTime() != null) 
+//            destination.setStartLocalDateTime(source.getStartLocalDateTime());
+//            if (source.getEndLocalDateTime() == null)       System.out.println("got a null set = " + destination.getEndLocalDateTime());
+
     }
     
     @Override
@@ -144,8 +157,8 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
         }
         RepeatableAppointmentImpl testObj = (RepeatableAppointmentImpl) obj;
         
-//        System.out.println("test obj3 " + getStartLocalDateTime() + " " + getEndLocalDateTime());
-//        System.out.println("test obj3 " + testObj.getStartLocalDateTime() + " " + testObj.getEndLocalDateTime());
+        System.out.println("test obj3 " + getStartLocalDateTime() + " " + getEndLocalDateTime());
+        System.out.println("test obj3 " + testObj.getStartLocalDateTime() + " " + testObj.getEndLocalDateTime());
 
         // Start and end date/time will be null if appointment is appointmentData from a repeat object
         boolean startEquals = (getStartLocalDateTime() == null) ?
