@@ -61,7 +61,8 @@ public abstract class RepeatTestAbstract {
         int minute = now.getMinute();
         RepeatableAppointment a1 = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(5))
-                .withSummary("Weekly Appointment Variable");
+                .withSummary("Weekly Appointment Variable")
+                .withDescription("Weekly description");
         return RepeatFactory.newRepeat(RepeatImpl.class, RepeatableAppointmentImpl.class)
 //        return new RepeatImpl(RepeatableAppointmentImpl.class)
                 .withStartLocalDate(LocalDateTime.of(LocalDate.now(), LocalTime.of(hour, minute)))

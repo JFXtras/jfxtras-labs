@@ -446,13 +446,14 @@ public final class RepeatableUtilities {
             switch (changeResponse)
             {
             case ONE:
+                // TODO - NEED TO DECIDE HOW REPEATS KEEP TRACK OF RECURRANCES
                 appointment.setRepeatMade(false);
                 appointment.setRecurrance(appointmentOld.getStartLocalDateTime());
                 if (startMinuteShift != 0 || endMinuteShift != 0)
                 { // if appointment has new day or time make it individual
-                    appointment.setRepeat(null); // make appointment individual if time changes
+//                    appointment.setRepeat(null); // make appointment individual if time changes
 //                    repeatMap.remove(appointment);
-                    repeat.getExceptions().add(startDateOld);
+                    repeat.getExceptions().add(startDateOld); // TODO - THIS MAY BE WRONG - EXCEPTIONS ARE DELETED DATES, THIS IS A RECURRANCE
                     editedRepeatsFlag = true;
                 }
 //                writeAppointments = true;
@@ -471,7 +472,7 @@ public final class RepeatableUtilities {
 //                    repeat.copyInto(appointment.getRepeat());
                 } else { // copy non-unique appointment changes (i.e. description, group, location, etc)
 //                    appointment.copyInto(repeat.getAppointmentData(), appointmentOld);
-                    repeat.getAppointmentData().copyInto(appointment, appointmentOld);
+                    repeat.getAppointmentData().copyNonUniqueFieldsTo(appointment, appointmentOld);
 //                    repeat.copyAppointmentInto(appointment, appointmentOld);
 //                    appointment.copyInto(repeat.getAppointmentData(), appointmentOld);
                 }
@@ -513,6 +514,8 @@ public final class RepeatableUtilities {
                     repeat.adjustDateTime(adjustStartDate, startTemporalAdjuster, endTemporalAdjuster);
                 }
 //                System.out.println("size1 " + appointments.size());
+//                appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+//                System.exit(0);
                 repeat.updateAppointments(appointments, appointment, appointmentOld
                         , startTemporalAdjuster, endTemporalAdjuster);
                 editedAppointmentsTemp.addAll(repeat
@@ -532,7 +535,7 @@ public final class RepeatableUtilities {
                 { // copy all appointment changes
                     appointment.copyFieldsTo(repeat.getAppointmentData());
                 } else { // copy non-unique appointment changes
-                    repeat.getAppointmentData().copyInto(appointment, appointmentOld);
+                    repeat.getAppointmentData().copyNonUniqueFieldsTo(appointment, appointmentOld);
 //                    repeat.copyAppointmentInto(appointment, appointmentOld);
 //                    appointment.copyAppointmentInto(repeat.getAppointmentData(), appointmentOld);
                 }
@@ -682,7 +685,7 @@ public final class RepeatableUtilities {
                 break;
             case CANCEL: // restore old appointment and repeat rule (use copyInto to avoid triggering change listeners)
                 appointmentOld.copyFieldsTo(appointment);
-               repeatOld.copyFieldsTo(appointment.getRepeat()); // This one may be unnecessary if copy above is deep             
+               repeatOld.copyFieldsTo(repeat); // This one may be unnecessary if copy above is deep             
             
 //                Iterator<DayOfWeek> dayOfWeekIterator = Arrays 
 //                        .stream(DayOfWeek.values())
@@ -693,7 +696,7 @@ public final class RepeatableUtilities {
 //                        DayOfWeek key = dayOfWeekIterator.next();
 //                        boolean b1 = repeat.getDayOfWeekMap().get(key).get();
 //                        boolean b2 = repeatOld.getDayOfWeekMap().get(key).get();
-//                        System.out.println("day of week " + key + " " + b1 + " " + b2);
+//                        System.out.println("day of week2 " + key + " " + b1 + " " + b2);
 //                    }
                 
 //                System.out.println("repeatMap.size()- " + repeatMap.size());

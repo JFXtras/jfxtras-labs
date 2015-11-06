@@ -528,12 +528,12 @@ public abstract class Repeat {
 //          System.out.println("day of week " + key + " " + b1 + " " + b2);
 //      }
 
-        System.out.println("getAppointmentData7 " + getAppointmentData() + " " + testObj.getAppointmentData());
+//        System.out.println("getAppointmentData7 " + getAppointmentData() + " " + testObj.getAppointmentData());
       boolean appointmentDataEquals = (getAppointmentData() == null) ?
               (testObj.getAppointmentData() == null) : getAppointmentData().equals(testObj.getAppointmentData());
-System.out.println(appointmentDataEquals + " " + (getAppointmentData() == null) + " " + (testObj.getAppointmentData() == null));
-if (! appointmentDataEquals)              throw new InvalidParameterException(); // APPOINMTENT DATA ARE DIFFERNET TYPES
-        System.out.println(" getEndCriteria3 " + getEndCriteria() + " " + testObj.getEndCriteria());
+//System.out.println(appointmentDataEquals + " " + (getAppointmentData() == null) + " " + (testObj.getAppointmentData() == null));
+//if (! appointmentDataEquals)              throw new InvalidParameterException(); // APPOINMTENT DATA ARE DIFFERNET TYPES
+//        System.out.println(" getEndCriteria3 " + getEndCriteria() + " " + testObj.getEndCriteria());
 //        System.out.println(" getCount " + getCount() + " " + testObj.getCount());
 //        System.out.println("startTime2 " + this.getStartLocalDate() + " " + testObj.getStartLocalDate());
 //        System.out.println("Duration2 " + getDurationInSeconds()+ " " + (testObj.getDurationInSeconds()));
@@ -960,9 +960,11 @@ if (! appointmentDataEquals)              throw new InvalidParameterException();
                     { // copy all changed data
                         getAppointmentData().copyFieldsTo(a);
                     } else { // copy only non-unique data
-                        getAppointmentData().copyInto(a, appointmentOld);
+                        getAppointmentData().copyNonUniqueFieldsTo(a, appointmentOld);
                     }
                 });
+//        getAppointments().stream().forEach(a -> System.out.println("st5 " + a.getStartLocalDateTime()));
+//        System.exit(0);
         updateAppointments(appointments, appointment);
     }
     
@@ -993,7 +995,7 @@ if (! appointmentDataEquals)              throw new InvalidParameterException();
                 .iterator();
         Set<Appointment> invalidAppointments = new HashSet<Appointment>();
         LocalDateTime validDateTime = validDateTimeIterator.next();
-        getAppointments().stream().forEach(a -> System.out.println("st5 " + a.getClass())); //.getStartLocalDateTime()));
+        getAppointments().stream().forEach(a -> System.out.println("st5 " + a.getStartLocalDateTime()));
 //        System.exit(0);
         while (appointmentIterator.hasNext())
         {
@@ -1003,8 +1005,8 @@ if (! appointmentDataEquals)              throw new InvalidParameterException();
             while (validDateTime.isBefore(appointmentDateTime))
             { // advance valid dates to get to myDateTime
                 validDateTime = validDateTimeIterator.next();
-                System.out.println("getEndCriteria " + getEndCriteria() + " " + validDateTime + " " + getUntilLocalDateTime() + " " + validDateTime.isAfter(endDate) + " " + // after displayed date interval
-                        validDateTime.toLocalDate().isAfter(this.getUntilLocalDateTime().toLocalDate()));
+//                System.out.println("getEndCriteria " + getEndCriteria() + " " + validDateTime + " " + getUntilLocalDateTime() + " " + validDateTime.isAfter(endDate) + " " + // after displayed date interval
+//                        validDateTime.toLocalDate().isAfter(this.getUntilLocalDateTime().toLocalDate()));
                 if (getEndCriteria() != EndCriteria.NEVER)
                 {
 //                    if (validDateTime.isAfter(endDate.atTime(getStartLocalTime())) || // after displayed date interval

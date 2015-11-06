@@ -69,8 +69,8 @@ public class RepeatEditTest extends RepeatTestAbstract {
               , null
               , null);
         assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
-      System.out.println(repeat.getAppointmentData().getStartLocalDateTime());
-      System.exit(0);
+//      System.out.println(repeat.getAppointmentData().getStartLocalDateTime());
+//      System.exit(0);
         // Check Repeat
         RepeatableAppointment a = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(15))
@@ -156,7 +156,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         RepeatableAppointment a = new RepeatableAppointmentImpl()
                 .withAppointmentGroup(appointmentGroups.get(15))
                 .withSummary("Daily Appointment Fixed");
-        Repeat expectedRepeat =  new RepeatImpl(RepeatableAppointmentImpl.class)
+        Repeat expectedRepeat = new RepeatImpl(RepeatableAppointmentImpl.class)
                 .withStartLocalDate(LocalDateTime.of(2015, 10, 8, 9, 45))
                 .withDurationInSeconds(4500)
 //                .withStartLocalTime(LocalTime.of(9, 45))
@@ -200,6 +200,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withRepeatMade(true)
                 .withRepeat(repeat);
         assertEquals(expectedAppointment3, editedAppointment3); // Check to see if repeat-generated appointment changed correctly
+        System.out.println("done");
     }
     
     /**
@@ -488,7 +489,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         selectedAppointment.setStartLocalDateTime(date.atTime(15, 45)); // change start time
         selectedAppointment.setEndLocalDateTime(date.atTime(16, 30)); // change end time
         selectedAppointment.setSummary("Changed summary");
-        
+
         WindowCloseType windowCloseType = RepeatableUtilities.editAppointments(
                 selectedAppointment
               , appointmentOld
@@ -834,7 +835,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withAppointmentGroup(appointmentGroups.get(7))
                 .withSummary("Edited Summary")
                 .withRepeatMade(false)
-                .withRepeat(null);
+                .withRepeat(repeat);
         assertEquals(expectedAppointment2, editedAppointment2); // Check to see if repeat-generated appointment changed correctly
 
         RepeatableAppointment editedAppointment3 = (RepeatableAppointment) appointmentIteratorNew.next();

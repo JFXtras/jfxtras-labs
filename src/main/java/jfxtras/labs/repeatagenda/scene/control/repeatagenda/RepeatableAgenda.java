@@ -238,95 +238,95 @@ public class RepeatableAgenda extends Agenda {
 //        return repeatMap.get(a);
 //    }
 
-    /** non-data data fields.  The fields that get copied into repeat-made appointments */
-    static public interface AppointmentData extends Agenda.Appointment
-    {
-        // TODO - SHOULD GO TO REGULAR AGENDA
-        /** Unique identifier as defined by iCalendar RFC 5545, 3.8.4.7 */
-        String getUID();
-        void setUID(String uid);
-        
-        // THESE SHOULDN'T BE HERE - ERROR IN DEFAULTS
-        // ----
-        // Calendar
-        
-        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
-        default Calendar getStartTime() {
-            throw new RuntimeException("Not implemented");
-        }
-        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
-        default void setStartTime(Calendar c) {
-            throw new RuntimeException("Not implemented");
-        }
-        
-        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
-        default Calendar getEndTime() {
-            throw new RuntimeException("Not implemented");
-        }
-        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
-        default void setEndTime(Calendar c) {
-            throw new RuntimeException("Not implemented");
-        }
-        
-        // ----
-        // ZonedDateTime
-        
-        /** This is the replacement of Calendar, if you use ZonedDateTime be aware that the default implementations of the LocalDateTime methods in this interface convert LocalDateTime to ZonedDateTime using a rather crude approach */
-        default ZonedDateTime getStartZonedDateTime() {
-            return DateTimeToCalendarHelper.createZonedDateTimeFromCalendar(getStartTime());
-        }
-        /** This is the replacement of Calendar, if you use ZonedDateTime be aware that the default implementations of the LocalDateTime methods in this interface convert LocalDateTime to ZonedDateTime using a rather crude approach */
-        default void setStartZonedDateTime(ZonedDateTime v) {
-            setStartTime(DateTimeToCalendarHelper.createCalendarFromZonedDateTime(v));
-        }
-        
-        /** This is the replacement of Calendar, if you use ZonedDateTime be aware that the default implementations of the LocalDateTime methods in this interface convert LocalDateTime to ZonedDateTime using a rather crude approach */
-        default ZonedDateTime getEndZonedDateTime() {
-            return DateTimeToCalendarHelper.createZonedDateTimeFromCalendar(getEndTime());
-        }
-        /** End is exclusive */
-        default void setEndZonedDateTime(ZonedDateTime v) {
-            setEndTime(DateTimeToCalendarHelper.createCalendarFromZonedDateTime(v));
-        }
-        
-        // ----
-        // LocalDateTime 
-        
-        /** This is what Agenda uses to render the appointments */
-        default LocalDateTime getStartLocalDateTime() {
-            return getStartZonedDateTime().toLocalDateTime();
-        }
-        /** This is what Agenda uses to render the appointments */
-        default void setStartLocalDateTime(LocalDateTime v) {
-            setStartZonedDateTime(ZonedDateTime.of(v, ZoneId.systemDefault()));
-        }
-        
-        /** This is what Agenda uses to render the appointments */
-        default LocalDateTime getEndLocalDateTime() {
-            return getEndZonedDateTime() == null ? null : getEndZonedDateTime().toLocalDateTime();
-        }
-        /** End is exclusive */
-        default void setEndLocalDateTime(LocalDateTime v) {
-            setEndZonedDateTime(v == null ? null : ZonedDateTime.of(v, ZoneId.systemDefault()));
-        }
-    }
-    
-    static public class RepeatableAppointmentData extends Agenda.AppointmentImplBase<RepeatableAppointmentData> implements AppointmentData
-    {
-        
-        @Override
-        public String getUID() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public void setUID(String uid) {
-            // TODO Auto-generated method stub
-            
-        }
-        
-    }
+//    /** non-data data fields.  The fields that get copied into repeat-made appointments */
+//    static public interface AppointmentData extends Agenda.Appointment
+//    {
+//        // TODO - SHOULD GO TO REGULAR AGENDA
+//        /** Unique identifier as defined by iCalendar RFC 5545, 3.8.4.7 */
+//        String getUID();
+//        void setUID(String uid);
+//        
+//        // THESE SHOULDN'T BE HERE - ERROR IN DEFAULTS
+//        // ----
+//        // Calendar
+//        
+//        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
+//        default Calendar getStartTime() {
+//            throw new RuntimeException("Not implemented");
+//        }
+//        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
+//        default void setStartTime(Calendar c) {
+//            throw new RuntimeException("Not implemented");
+//        }
+//        
+//        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
+//        default Calendar getEndTime() {
+//            throw new RuntimeException("Not implemented");
+//        }
+//        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
+//        default void setEndTime(Calendar c) {
+//            throw new RuntimeException("Not implemented");
+//        }
+//        
+//        // ----
+//        // ZonedDateTime
+//        
+//        /** This is the replacement of Calendar, if you use ZonedDateTime be aware that the default implementations of the LocalDateTime methods in this interface convert LocalDateTime to ZonedDateTime using a rather crude approach */
+//        default ZonedDateTime getStartZonedDateTime() {
+//            return DateTimeToCalendarHelper.createZonedDateTimeFromCalendar(getStartTime());
+//        }
+//        /** This is the replacement of Calendar, if you use ZonedDateTime be aware that the default implementations of the LocalDateTime methods in this interface convert LocalDateTime to ZonedDateTime using a rather crude approach */
+//        default void setStartZonedDateTime(ZonedDateTime v) {
+//            setStartTime(DateTimeToCalendarHelper.createCalendarFromZonedDateTime(v));
+//        }
+//        
+//        /** This is the replacement of Calendar, if you use ZonedDateTime be aware that the default implementations of the LocalDateTime methods in this interface convert LocalDateTime to ZonedDateTime using a rather crude approach */
+//        default ZonedDateTime getEndZonedDateTime() {
+//            return DateTimeToCalendarHelper.createZonedDateTimeFromCalendar(getEndTime());
+//        }
+//        /** End is exclusive */
+//        default void setEndZonedDateTime(ZonedDateTime v) {
+//            setEndTime(DateTimeToCalendarHelper.createCalendarFromZonedDateTime(v));
+//        }
+//        
+//        // ----
+//        // LocalDateTime 
+//        
+//        /** This is what Agenda uses to render the appointments */
+//        default LocalDateTime getStartLocalDateTime() {
+//            return getStartZonedDateTime().toLocalDateTime();
+//        }
+//        /** This is what Agenda uses to render the appointments */
+//        default void setStartLocalDateTime(LocalDateTime v) {
+//            setStartZonedDateTime(ZonedDateTime.of(v, ZoneId.systemDefault()));
+//        }
+//        
+//        /** This is what Agenda uses to render the appointments */
+//        default LocalDateTime getEndLocalDateTime() {
+//            return getEndZonedDateTime() == null ? null : getEndZonedDateTime().toLocalDateTime();
+//        }
+//        /** End is exclusive */
+//        default void setEndLocalDateTime(LocalDateTime v) {
+//            setEndZonedDateTime(v == null ? null : ZonedDateTime.of(v, ZoneId.systemDefault()));
+//        }
+//    }
+//    
+//    static public class RepeatableAppointmentData extends Agenda.AppointmentImplBase<RepeatableAppointmentData> implements AppointmentData
+//    {
+//        
+//        @Override
+//        public String getUID() {
+//            // TODO Auto-generated method stub
+//            return null;
+//        }
+//
+//        @Override
+//        public void setUID(String uid) {
+//            // TODO Auto-generated method stub
+//            
+//        }
+//        
+//    }
     
     /** Contains all the appointment data - no repeatable information
     *   Like Appointment, but contains extra fields - no repeat object */
@@ -378,7 +378,7 @@ public class RepeatableAgenda extends Agenda {
          * @return
          */
         @Deprecated
-        default Appointment copyInto(Appointment appointment, Appointment appointmentFromRepeatRule) {
+        default Appointment copyNonUniqueFieldsTo(Appointment appointment, Appointment appointmentFromRepeatRule) {
             if (appointment.getAppointmentGroup().equals(appointmentFromRepeatRule.getAppointmentGroup())) {
                 appointment.setAppointmentGroup(getAppointmentGroup());
             }
@@ -508,7 +508,7 @@ public class RepeatableAgenda extends Agenda {
         /** Copy fields from this to input parameter appointment */
         @Override
         public Appointment copyFieldsTo(Appointment appointment) {
-            System.out.println("RepeatableAppointmentImplBase copyFieldsTo ");
+            System.out.println("AppointmentImplBase2 copyFieldsTo ");
             if (appointment instanceof AppointmentImplBase2) copy(this, (AppointmentImplBase2<T>) appointment);
             return appointment;
         }
@@ -735,8 +735,9 @@ public class RepeatableAgenda extends Agenda {
         /** Copy fields from this to input parameter appointment */
         @Override
         public Appointment copyFieldsTo(Appointment destination) {
-            System.out.println("RepeatableAppointmentImplBase copyFieldsTo ");
-            if ((destination instanceof RepeatableAppointmentImplBase) && (((RepeatableAppointment) destination).getRepeat() != null))
+            boolean copyRepeat = ! ((((RepeatableAppointment) destination).getRepeat() == null) ||  (getRepeat() == null));
+            System.out.println("RepeatableAppointmentImplBase copyFieldsTo " + copyRepeat + " " + (((RepeatableAppointment) destination).getRepeat() == null) + " " + (getRepeat() == null) + "");
+            if ((destination instanceof RepeatableAppointmentImplBase) && copyRepeat)
             {
                 copy(this, (RepeatableAppointmentImplBase<T>) destination);
             }
@@ -755,6 +756,7 @@ public class RepeatableAgenda extends Agenda {
         }       
         
       // used for unit testing, not needed by implementation
+        // Is this in the right place?
       @Override
       public boolean equals(Object obj) {
           if (obj == this) return true;
@@ -763,6 +765,8 @@ public class RepeatableAgenda extends Agenda {
           }
           RepeatableAppointment testObj = (RepeatableAppointment) obj;
 
+          System.out.println("Descriptions2 " + getDescription() + " " + testObj.getDescription());
+          
           boolean descriptionEquals = (getDescription() == null) ?
                   (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
           boolean locationEquals = (getLocation() == null) ?
@@ -774,7 +778,8 @@ public class RepeatableAgenda extends Agenda {
           System.out.println("repeats " + getRepeat() + " " + testObj.getRepeat());
           boolean repeatEquals = (getRepeat() == null) ?
                   (testObj.getRepeat() == null) : getRepeat().equals(testObj.getRepeat());
-          System.out.println("RepeatableAppointmentImplBase equals1 " + descriptionEquals + " " + locationEquals + " " + summaryEquals + " " +  " " + appointmentGroupEquals + " " + repeatEquals + " " + getRepeat() + " " + testObj.getRepeat());
+          System.out.println("RepeatableAppointmentImplBase equals1 " + descriptionEquals + " " + locationEquals 
+                  + " " + summaryEquals + " " +  " " + appointmentGroupEquals + " " + repeatEquals + " " + getRepeat() + " " + testObj.getRepeat());
           return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals && repeatEquals;
       }
 

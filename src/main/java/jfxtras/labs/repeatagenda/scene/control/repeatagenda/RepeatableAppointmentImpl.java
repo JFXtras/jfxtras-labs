@@ -116,17 +116,15 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
     {
         super(source);
         System.out.println("RepeatableAppointmentImpl constructor");
-        // TODO - MAYBE USE STATIC COPY SOURCE - DESTINATION
-//        a.copyFieldsTo(this);
         boolean dateTimeFlag = true;
         if (source instanceof RepeatableAppointmentImpl) copy((RepeatableAppointmentImpl) source, this, dateTimeFlag);
     }
     
     @Override
     public Appointment copyFieldsTo(Appointment destination) {
-        System.out.println("RepeatableAppointmentImpl copyFieldsTo ");
-        boolean dateTimeFlag = destination.getStartLocalDateTime() != null; // don't copy date/times if they are already null - this indicates the appointment is repeat.appointmentData which only contains non-time data
-        if (destination instanceof RepeatableAppointmentImpl) copy(this, (RepeatableAppointmentImpl) destination, dateTimeFlag);
+        boolean copyDateTime = (destination.getStartLocalDateTime() != null) && (getStartLocalDateTime() != null); // don't copy date/times if they are already null - this indicates the appointment is repeat.appointmentData which only contains non-time data
+        System.out.println("RepeatableAppointmentImpl copyFieldsTo " + copyDateTime + " " + (destination.getStartLocalDateTime() == null) + " " + (getStartLocalDateTime() == null));        
+        if (destination instanceof RepeatableAppointmentImpl) copy(this, (RepeatableAppointmentImpl) destination, copyDateTime);
         return super.copyFieldsTo(destination);
     }
     
