@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -25,6 +24,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
@@ -181,10 +182,10 @@ public class RepeatImpl extends Repeat {
         setDurationInSeconds(Integer.valueOf(IOUtilities.myGet(repeatAttributes, "duration", "")));
 //        setStartLocalTime(myParseLocalDateTime(DataUtilities.myGet(repeatAttributes, "startTime", ""), Settings.TIME_FORMAT_AGENDA));
 //        setEndLocalTime(myParseLocalDateTime(DataUtilities.myGet(repeatAttributes, "endTime", ""), Settings.TIME_FORMAT_AGENDA));
-        Set<LocalDateTime> exceptionDates = Arrays
+        ObservableList<LocalDateTime> exceptionDates = FXCollections.observableArrayList(Arrays
                 .stream(IOUtilities.myGet(repeatAttributes, "deletedDates", "").split(" "))
                 .map(a -> myParseLocalDateTime(a))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList()));
         setExceptions(exceptionDates);
 //        setExceptionDates(DataUtilities.myGetSet(repeatAttributes, "deletedDates", "", Settings.DATE_FORMAT1));
 
@@ -303,7 +304,7 @@ public class RepeatImpl extends Repeat {
         if (getKey() == null) setKey(nextKey++); // if it has no key (meaning its new) give it the next one
         myElement.setAttribute("key", Integer.toString(getKey()));
         myElement.setAttribute("repeatFrequency", Integer.toString(getInterval()));
-        myElement.setAttribute("startDate", getStartLocalDate().format(formatter));
+        myElement.setAttribute("startDate", getStartLocalDateTime().format(formatter));
         myElement.setAttribute("duration", Integer.toString(getDurationInSeconds()));
 
 //        myElement.setAttribute("startTime", DataUtilities.myFormatLocalTime(getStartLocalTime()));

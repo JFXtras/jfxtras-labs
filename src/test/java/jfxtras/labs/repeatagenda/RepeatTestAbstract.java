@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Set;
@@ -11,6 +12,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
@@ -61,13 +63,20 @@ public abstract class RepeatTestAbstract {
         return new RepeatImpl(RepeatableAppointmentImpl.class)
                 .withStartLocalDate(LocalDateTime.of(2015, 10, 7, 8, 45))
                 .withDurationInSeconds(5400)
-//                .withStartLocalTime(LocalTime.of(8, 45))
-//                .withEndLocalTime(LocalTime.of(10, 15))
                 .withFrequency(Frequency.DAILY)
                 .withInterval(3)
                 .withEndCriteria(EndCriteria.AFTER)
                 .withCount(11)
                 .withAppointmentData(a);
+    }
+
+    public Repeat getRepeatDailyWithExceptions()
+    {
+        ObservableList<LocalDateTime> exceptions = FXCollections.observableArrayList(
+                Arrays.asList(LocalDateTime.of(2015, 10, 13, 8, 45)
+                            , LocalDateTime.of(2015, 10, 16, 8, 45)
+                            , LocalDateTime.of(2015, 10, 19, 8, 45)));
+        return getRepeatDaily().withExceptions(exceptions);
     }
     
     public Repeat getRepeatWeekly()

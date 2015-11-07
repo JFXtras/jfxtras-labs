@@ -16,6 +16,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Test;
 
+import javafx.collections.FXCollections;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.EndCriteria;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.Frequency;
@@ -76,7 +77,7 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
                 .withInterval(2)
                 .withEndCriteria(EndCriteria.AFTER)
                 .withCount(50)
-                .withExceptions(new HashSet<LocalDateTime>(Arrays.asList(LocalDateTime.of(2015, 11, 2, 8, 45))))
+                .withExceptions(FXCollections.observableArrayList(Arrays.asList(LocalDateTime.of(2015, 11, 2, 8, 45))))
                 .withAppointmentData(a);
         assertEquals(expectedRepeat, repeat); // check to see if repeat rule changed correctly
         

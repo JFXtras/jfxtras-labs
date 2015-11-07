@@ -89,7 +89,7 @@ final private ChangeListener<? super Integer> frequencyListener = (observable, o
 
 final private ChangeListener<? super LocalDate> startDateListener = ((observable, oldSelection, newSelection) ->
 {
-    LocalTime startTime = repeat.getStartLocalDate().toLocalTime();
+    LocalTime startTime = repeat.getStartLocalDateTime().toLocalTime();
     repeat.setStartLocalDate(newSelection.atTime(startTime));
 });
 
@@ -274,7 +274,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
     
     final ChangeListener<? super LocalDate> endOnDateListener = ((observable, oldSelection, newSelection) ->
     {
-        LocalTime endTime = repeat.getStartLocalDate().plusSeconds(repeat.getDurationInSeconds()).toLocalTime();
+        LocalTime endTime = repeat.getStartLocalDateTime().plusSeconds(repeat.getDurationInSeconds()).toLocalTime();
         repeat.setUntilLocalDateTime(newSelection.atTime(endTime));
     });
     endOnRadioButton.selectedProperty().addListener((observable, oldSelection, newSelection) ->
@@ -306,11 +306,9 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
  */
     public void setupData(
             RepeatableAppointment appointment
-//          , Map<Appointment, Repeat> repeatMap
           , LocalDateTimeRange dateTimeRange
           , Class<? extends RepeatableAppointment> appointmentClass
           , Class<? extends Repeat> repeatClass)
-//          , Callback<LocalDateTimeRange, Appointment> newAppointmentCallback)
     {
 
 //        this.appointment = appointment;
@@ -381,6 +379,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
 
         // Check repeatable box if appointment has a Repeat
         repeatableCheckBox.selectedProperty().set(appointment.getRepeat() != null);        
+        startDatePicker.setValue(repeat.getStartLocalDateTime().toLocalDate());
 //        repeatableCheckBox.selectedProperty().set(repeatMap.containsKey(appointment));
     }
     

@@ -167,7 +167,7 @@ public final class RepeatableUtilities {
             break;
         case WITH_EXISTING_REPEAT:
             // TODO - IF APPOINTMENT SELECTED IS LAST APPOINTMENT IN SERIES ONLY OFFER INDIVIDUAL AND ALL - NO FUTURE
-            if (appointment.getStartLocalDateTime().toLocalDate().equals(repeat.getStartLocalDate()))
+            if (appointment.getStartLocalDateTime().toLocalDate().equals(repeat.getStartLocalDateTime()))
             {
                 choices = new RepeatChange[] {RepeatChange.ONE, RepeatChange.ALL};
             }
@@ -516,8 +516,9 @@ public final class RepeatableUtilities {
 //                System.out.println("size1 " + appointments.size());
 //                appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
 //                System.exit(0);
-                repeat.updateAppointments(appointments, appointment, appointmentOld
-                        , startTemporalAdjuster, endTemporalAdjuster);
+//                repeat.updateAppointments(appointments, appointment, appointmentOld
+//                        , startTemporalAdjuster, endTemporalAdjuster);
+                
                 editedAppointmentsTemp.addAll(repeat
                       .appointments()
                       .stream()
@@ -541,17 +542,30 @@ public final class RepeatableUtilities {
                 }
                 
                 // Split deleted dates between repeat and repeatOld
-                System.out.println("repeatOld.getExceptions() " + repeatOld);
                 repeatOld.getExceptions().clear();
-                final Iterator<LocalDateTime> dateIterator = repeat.getExceptions().iterator();
-                while (dateIterator.hasNext())
+                final Iterator<LocalDateTime> exceptionIterator = repeat.getExceptions().iterator();
+                while (exceptionIterator.hasNext())
                 {
-                    LocalDateTime d = dateIterator.next();
+                    LocalDateTime d = exceptionIterator.next();
                     if (d.isBefore(startDate))
                     {
-                        dateIterator.remove();
+                        exceptionIterator.remove();
                     } else {
                         repeatOld.getExceptions().add(d);
+                    }
+                }
+                
+                // Split recurrences between repeat and repeatOld
+                repeatOld.getRecurrences().clear();
+                final Iterator<LocalDateTime> recurrenceIterator = repeat.getRecurrences().iterator();
+                while (recurrenceIterator.hasNext())
+                {
+                    LocalDateTime d = recurrenceIterator.next();
+                    if (d.isBefore(startDate))
+                    {
+                        recurrenceIterator.remove();
+                    } else {
+                        repeatOld.getRecurrences().add(d);
                     }
                 }
                 
@@ -650,7 +664,7 @@ public final class RepeatableUtilities {
                     }
                     if (dayShift2 > 0)
                     {
-                        LocalTime time = repeat.getStartLocalDate().toLocalTime();
+                        LocalTime time = repeat.getStartLocalDateTime().toLocalTime();
                         LocalDate date = startDateOld.plusDays(dayShift2).toLocalDate();
                         repeat.setStartLocalDate(LocalDateTime.of(date, time));
                     }

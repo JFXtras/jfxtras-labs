@@ -16,6 +16,7 @@ import java.util.TreeSet;
 
 import org.junit.Test;
 
+import javafx.collections.FXCollections;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.EndCriteria;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.Frequency;
@@ -512,7 +513,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withFrequency(Frequency.WEEKLY)
                 .withDayOfWeek(DayOfWeek.WEDNESDAY, true)
                 .withDayOfWeek(DayOfWeek.FRIDAY, true)
-                .withExceptions(new HashSet<LocalDateTime>(Arrays.asList(LocalDateTime.of(2015, 11, 4, 18, 0))))
+                .withExceptions(FXCollections.observableArrayList(Arrays.asList(LocalDateTime.of(2015, 11, 4, 18, 0))))
                 .withAppointmentData(a);
         assertEquals(expectedRepeat, repeat); // check to see if repeat rule changed correctly
         
@@ -922,7 +923,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
 //                .withStartLocalTime(LocalTime.of(9, 45))
 //                .withEndLocalTime(LocalTime.of(11, 0))
                 .withFrequency(Frequency.DAILY)
-                .withExceptions(new HashSet<LocalDateTime>(Arrays.asList(LocalDateTime.of(2015, 10, 28, 8, 45))))
+                .withExceptions(FXCollections.observableArrayList(Arrays.asList(LocalDateTime.of(2015, 10, 28, 8, 45))))
                 .withInterval(3)
                 .withEndCriteria(EndCriteria.AFTER)
                 .withCount(11)
