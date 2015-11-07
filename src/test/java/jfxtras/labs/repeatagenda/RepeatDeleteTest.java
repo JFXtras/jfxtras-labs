@@ -36,7 +36,7 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
     @Test
     public void deleteOneWeeklyTimeAndDate() throws ParserConfigurationException
     {
-        Repeat repeat = getRepeatWeeklyFixed2();
+        Repeat repeat = getRepeatWeekly2();
         Set<Repeat> repeats = new HashSet<Repeat>(Arrays.asList(repeat));
         Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
         LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
@@ -111,7 +111,7 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
     @Test
     public void deleteAllWeeklyTimeAndDate() throws ParserConfigurationException
     {
-        Repeat repeat = getRepeatWeeklyFixed2();
+        Repeat repeat = getRepeatWeekly2();
         Set<Repeat> repeats = new HashSet<Repeat>(Arrays.asList(repeat));
         Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
         LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);

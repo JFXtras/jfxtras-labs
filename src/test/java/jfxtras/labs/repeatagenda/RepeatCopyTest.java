@@ -28,7 +28,7 @@ public class RepeatCopyTest extends RepeatTestAbstract
     @Test
     public void canCopyRepeatableAppointment()
     {
-        Set<Appointment> appointments = getRepeatWeeklyFixedAppointments(
+        Set<Appointment> appointments = getRepeatWeeklyAppointments(
                 LocalDateTime.of(2015, 11, 1, 0, 0)
               , LocalDateTime.of(2015, 11, 8, 0, 0));
         Iterator<Appointment> appointmentIterator = appointments.iterator();
@@ -57,7 +57,7 @@ public class RepeatCopyTest extends RepeatTestAbstract
     @Test
     public void canCopyRepeat()
     {
-        Repeat repeat = getRepeatWeekly();
+        Repeat repeat = getRepeatWeeklyNow();
         Repeat repeatCopy = RepeatFactory.newRepeat(repeat);
         assertEquals(repeat, repeatCopy); // check number of appointments
         assertTrue(repeat != repeatCopy); // insure not same reference
@@ -67,7 +67,7 @@ public class RepeatCopyTest extends RepeatTestAbstract
     @Test
     public void canCopyFieldsWithCancel()
     {
-        Set<Appointment> appointments = getRepeatWeeklyFixedAppointments(
+        Set<Appointment> appointments = getRepeatWeeklyAppointments(
                 LocalDateTime.of(2015, 11, 1, 0, 0)
               , LocalDateTime.of(2015, 11, 8, 0, 0));
         Iterator<Appointment> appointmentIterator = appointments.iterator();
@@ -106,7 +106,7 @@ public class RepeatCopyTest extends RepeatTestAbstract
     @Test
     public void canCopyFieldsWithCancel2()
     {
-        Repeat repeat = getRepeatDailyFixed();
+        Repeat repeat = getRepeatDaily();
         Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
         LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2015, 11, 8, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
@@ -140,7 +140,7 @@ public class RepeatCopyTest extends RepeatTestAbstract
     @Test
     public void canCopyFieldsToRepeat()
     {
-        Repeat repeat = getRepeatDailyFixed();
+        Repeat repeat = getRepeatDaily();
         Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
         LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2015, 11, 8, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)

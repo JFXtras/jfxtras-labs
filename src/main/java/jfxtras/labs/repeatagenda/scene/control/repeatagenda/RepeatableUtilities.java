@@ -185,7 +185,7 @@ public final class RepeatableUtilities {
                 if (confirmDeleteCallback.call("1"))
                 {
                     writeRepeats = removeOne(appointments, appointment);
-                    if (writeRepeats) removeOne(repeat.getAppointments(), appointment);
+                    if (writeRepeats) removeOne(repeat.appointments(), appointment);
                     if (startDate.equals(repeat.getUntilLocalDateTime()))
                     { // deleted appointment is on end date, adjust end date and number of appointments
                         repeat.setUntilLocalDateTime(startDate.minusDays(1));
@@ -407,7 +407,7 @@ public final class RepeatableUtilities {
 //                return WindowCloseType.CLOSE_WITHOUT_CHANGE;
 //            }
 
-            Iterator<RepeatableAppointment> appointmentIterator = repeatOld.getAppointments().iterator();
+            Iterator<RepeatableAppointment> appointmentIterator = repeatOld.appointments().iterator();
             while (appointmentIterator.hasNext())
             {
                 Appointment myAppointment = appointmentIterator.next();
@@ -425,11 +425,11 @@ public final class RepeatableUtilities {
           repeat.unbindAll();
           appointment.setRepeat(repeat);
 //          repeatMap.put(appointment, repeat);
-          repeat.getAppointments().add(appointment);
+          repeat.appointments().add(appointment);
 //          System.out.println(repeat.getStartLocalDate());
 //          System.exit(0);
           Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments();
-          System.out.println("newAppointments " + newAppointments.size() + " " + repeat.getAppointments());
+          System.out.println("newAppointments " + newAppointments.size() + " " + repeat.appointments());
           appointments.addAll(newAppointments);
           appointment.copyFieldsTo(repeat.getAppointmentData()); // copy any appointment changes (i.e. description, group, location, etc)
           repeats.add(repeat);
@@ -519,7 +519,7 @@ public final class RepeatableUtilities {
                 repeat.updateAppointments(appointments, appointment, appointmentOld
                         , startTemporalAdjuster, endTemporalAdjuster);
                 editedAppointmentsTemp.addAll(repeat
-                      .getAppointments()
+                      .appointments()
                       .stream()
                       .filter(a -> ! a.isRepeatMade())
                       .collect(Collectors.toSet()));
@@ -555,21 +555,19 @@ public final class RepeatableUtilities {
                     }
                 }
                 
-                // Split appointments between repeat and repeatOld
-                repeatOld.getAppointments().clear();
-                Iterator<RepeatableAppointment> appointmentIterator = repeat.getAppointments().iterator();
-//                int counter = 0;
-                while (appointmentIterator.hasNext())
-                {
-                    RepeatableAppointment a = appointmentIterator.next();
-                    if (a.getStartLocalDateTime().isBefore(startDate))
-                    {
-                        appointmentIterator.remove();
-                        repeatOld.getAppointments().add(a);
-//                    } else {
-//                        counter++;                                    
-                    }
-                }
+//                // Split appointments between repeat and repeatOld
+//                repeatOld.appointments().clear();
+//                Iterator<RepeatableAppointment> appointmentIterator = repeat.appointments().iterator();
+//                while (appointmentIterator.hasNext())
+//                {
+//                    RepeatableAppointment a = appointmentIterator.next();
+//                    if (a.getStartLocalDateTime().isBefore(startDate))
+//                    {
+//                        appointmentIterator.remove();
+//                        repeatOld.appointments().add(a);
+//                        a.setRepeat(repeatOld);
+//                    }
+//                }
                 
                 // Modify start and end date for repeat and repeatOld.  Adjust IntervalUnit specific data
                 repeatOld.setEndCriteria(EndCriteria.UNTIL);
@@ -584,14 +582,12 @@ public final class RepeatableUtilities {
 //                    adjustStartDate = startDate.equals(repeat.getStartLocalDate());
 //                    System.out.println("repeat.getEndAfterEvents( " + repeat.getEndAfterEvents() + " " + repeat.getEndOnDate() + " " + dayShift);
                     repeat.adjustDateTime(false, startTemporalAdjuster, endTemporalAdjuster);
-
-                    newLastStartDateTime = repeat.getUntilLocalDateTime().with(startTemporalAdjuster);
-                    repeat.setUntilLocalDateTime(newLastStartDateTime);
-//                    if (repeat.getEndCriteria() != EndCriteria.NEVER)
-//                    {
-//                        LocalDateTime newEndOnDate = repeat.getEndOnDate().plusDays(dayShift);
-//                        repeat.setEndOnDate(newEndOnDate);
-//                    }
+//                    System.out.println("future nulls4 " + repeat + repeat.getUntilLocalDateTime());
+                    if (repeat.getEndCriteria() != EndCriteria.NEVER)
+                    {
+                        newLastStartDateTime = repeat.getUntilLocalDateTime().with(startTemporalAdjuster);
+                        repeat.setUntilLocalDateTime(newLastStartDateTime);
+                    }
 //                    if (repeat.getEndCriteria() == EndCriteria.AFTER) repeat.makeEndAfterEventsFromEndOnDate();
 
                     //                    System.out.println("repeat.getEndAfterEvents( " + repeat.getEndAfterEvents() + " " + repeat.getEndOnDate());
@@ -610,7 +606,7 @@ public final class RepeatableUtilities {
 //                    System.out.println("start list");
 //                    appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
 //                    System.out.println("before update " + appointments.size());
-                    repeatOld.updateAppointments(appointments, appointment);
+//                    repeatOld.updateAppointments(appointments, appointment);
 //                    appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
 //                    System.out.println("after update " + appointments.size());
 //                    System.out.println(repeat);
@@ -670,9 +666,9 @@ public final class RepeatableUtilities {
                 }
 //                System.out.println("appointments1 " + repeat.getAppointments().size());
                 if (repeat.getEndCriteria() != EndCriteria.NEVER) repeat.makeCountFromUntil();
-                repeat.updateAppointments(appointments, appointment, appointmentOld
-                        , startTemporalAdjuster, endTemporalAdjuster);
-                System.out.println("appointments2 " + repeat.getAppointments().size());
+//                repeat.updateAppointments(appointments, appointment, appointmentOld
+//                        , startTemporalAdjuster, endTemporalAdjuster);
+                System.out.println("appointments2 " + repeat.appointments().size());
                 repeats.add(repeatOld);
 //                appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
 //                System.out.println("after update2 " + appointments.size());
@@ -680,12 +676,33 @@ public final class RepeatableUtilities {
 //                System.out.println("repeat.getEndOnDate() " + repeat.getEndOnDate() + " " + repeat.getStartLocalDate());
 //              System.exit(0);                
                 editedRepeatsFlag = true;
+                
+                // TODO - IF I'M DELETING ALL APPOINTMENTS THEN WHY EDIT THEM?  I SHOULD EDIT REPEAT AND IGNORE CHANGES TO APPOINTMENTS
+                // Delete appointments
+                repeat.appointments()
+                    .stream()
+                    .filter(a -> a.isRepeatMade())
+                    .forEach(a -> appointments.remove(a));
+                repeat.appointments().clear();
+                
+                repeatOld.appointments()
+                    .stream()
+                    .filter(a -> a.isRepeatMade())
+                    .forEach(a -> appointments.remove(a));
+                repeatOld.appointments().clear();
+                
+                System.out.println("removed apopintments " + appointments.size());
+                // Make new appointments
+                appointments.addAll(repeat.makeAppointments());
+                appointments.addAll(repeatOld.makeAppointments());
+                System.out.println("added apopintments " + appointments.size());
+                
                 if (repeatOld.oneAppointmentToIndividual(repeats, appointments)) editedAppointmentsFlag = true;  // Check if any repeats have only one appointment and should become individual
                 // TODO - CHANGES OF CONVERT TO ONE APPOINTMENT
                 break;
             case CANCEL: // restore old appointment and repeat rule (use copyInto to avoid triggering change listeners)
                 appointmentOld.copyFieldsTo(appointment);
-               repeatOld.copyFieldsTo(repeat); // This one may be unnecessary if copy above is deep             
+                repeatOld.copyFieldsTo(repeat); // This one may be unnecessary if copy above is deep             
             
 //                Iterator<DayOfWeek> dayOfWeekIterator = Arrays 
 //                        .stream(DayOfWeek.values())
@@ -720,6 +737,21 @@ public final class RepeatableUtilities {
             break;
         default:
             throw new InvalidParameterException("Invalid Appointment Type");
+        }
+        
+        if (editedRepeatsFlag && (repeat != null))
+        {
+            // Delete appointments
+//            System.out.println(repeat);
+//            System.out.println(repeat.appointments());
+            repeat.appointments()
+                .stream()
+                .filter(a -> a.isRepeatMade())
+                .forEach(a -> appointments.remove(a));
+            repeat.appointments().clear();
+
+            // Make new appointments
+            appointments.addAll(repeat.makeAppointments());
         }
         
         // Write changes that occurred

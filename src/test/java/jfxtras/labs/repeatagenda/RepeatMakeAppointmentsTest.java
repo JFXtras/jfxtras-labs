@@ -30,7 +30,7 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
     @Test
     public void makeAppointmentsMonthly()
     {
-        Repeat repeat = getRepeatMonthlyFixed();
+        Repeat repeat = getRepeatMonthly();
         List<RepeatableAppointment> appointments = new ArrayList<RepeatableAppointment>();
         LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2015, 11, 8, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
@@ -50,7 +50,7 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
     @Test
     public void makeAppointmentsMonthlyOutsideDateBounds()
     {
-        Repeat repeat = getRepeatMonthlyFixed();
+        Repeat repeat = getRepeatMonthly();
         List<RepeatableAppointment> appointments = new ArrayList<RepeatableAppointment>();
         LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2015, 11, 7, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
@@ -61,7 +61,7 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
     @Test
     public void makeAppointmentsMonthly2()
     {
-        Repeat repeat = getRepeatMonthlyFixed2();
+        Repeat repeat = getRepeatMonthly2();
         List<RepeatableAppointment> appointments = new ArrayList<RepeatableAppointment>();
         LocalDateTime startDate = LocalDateTime.of(2015, 12, 13, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2015, 12, 20, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
@@ -80,7 +80,7 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
     @Test
     public void makeAppointmentsWeekly()
     {
-        Repeat repeat = getRepeatWeeklyFixed();
+        Repeat repeat = getRepeatWeekly();
         Set<RepeatableAppointment> appointments = new TreeSet<RepeatableAppointment>(getAppointmentComparator());
         LocalDateTime startDate = LocalDateTime.of(2015, 12, 13, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2015, 12, 20, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
@@ -116,7 +116,7 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
     @Test
     public void makeAppointmentsMonthly3()
     {
-        Repeat repeat = getRepeatMonthlyFixed2();
+        Repeat repeat = getRepeatMonthly2();
         List<RepeatableAppointment> appointments = new ArrayList<RepeatableAppointment>();
         LocalDateTime startDate = LocalDateTime.of(2015, 12, 13, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2015, 12, 20, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)

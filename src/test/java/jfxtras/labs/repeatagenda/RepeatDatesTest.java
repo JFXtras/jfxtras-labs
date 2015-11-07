@@ -25,21 +25,21 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     @Test
     public void canGetFirstDateDailyM10()
     {
-        Repeat r = getRepeatDaily();
+        Repeat r = getRepeatDailyNow();
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().minusDays(10));
         assertEquals(r.getStartLocalDate(), firstMatchDate);
     }
     @Test
     public void canGetFirstDateWeeklyM10()
     {
-        Repeat r = getRepeatWeekly();
+        Repeat r = getRepeatWeeklyNow();
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().minusDays(10));
         assertEquals(r.getStartLocalDate(), firstMatchDate);
     }
     @Test
     public void canGetFirstDateMonthlyM10()
     {
-        Repeat r = getRepeatMonthly();
+        Repeat r = getRepeatMonthlyNow();
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().minusDays(10));
         assertEquals(r.getStartLocalDate(), firstMatchDate);
     }
@@ -48,28 +48,28 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     @Test
     public void canGetSecondDateWeeklyFixedM0()
     {
-        Repeat r = getRepeatWeeklyFixed();
+        Repeat r = getRepeatWeekly();
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().minusDays(0));
         assertEquals(LocalDateTime.of(2015, 10, 9, 18, 0), firstMatchDate);
     }
     @Test
     public void canGetFirstDateWeeklyFixedM10()
     {
-        Repeat r = getRepeatWeeklyFixed();
+        Repeat r = getRepeatWeekly();
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().minusDays(10));
         assertEquals(LocalDateTime.of(2015, 10, 7, 18, 0), firstMatchDate);
     }
     @Test
     public void canGetSecondDateDailyFixedP0()
     {
-        Repeat r = getRepeatDailyFixed();
+        Repeat r = getRepeatDaily();
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(0));
         assertEquals(LocalDateTime.of(2015, 10, 10, 8, 45), firstMatchDate);
     }
     @Test
     public void canGetFirstDateDailyFixedP0()
     {
-        Repeat r = getRepeatDailyFixed();
+        Repeat r = getRepeatDaily();
         LocalDateTime firstMatchDate = r
                 .streamOfDatesEndless()
                 .findFirst().get();
@@ -78,14 +78,14 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     @Test
     public void canGetFirstDateDailyFixedP1()
     {
-        Repeat r = getRepeatDailyFixed();
+        Repeat r = getRepeatDaily();
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(1));
         assertEquals(LocalDateTime.of(2015, 10, 10, 8, 45), firstMatchDate);
     }
     @Test
     public void canGetFirstDateDailyFixedP10()
     {
-        Repeat r = getRepeatDailyFixed();
+        Repeat r = getRepeatDaily();
 //        System.out.println("r.getStartLocalDate() " + r.getStartLocalDate());
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(10));
         assertEquals(LocalDateTime.of(2015, 10, 19, 8, 45), firstMatchDate);
@@ -93,28 +93,28 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     @Test
     public void canGetFirstDateDailyFixedP100()
     {
-        Repeat r = getRepeatDailyFixed();
+        Repeat r = getRepeatDaily();
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(100));
         assertEquals(LocalDateTime.of(2016, 1, 17, 8, 45), firstMatchDate);
     }
     @Test
     public void canGetFirstDateWeeklyFixedP0()
     {
-        Repeat r = getRepeatWeeklyFixed();
+        Repeat r = getRepeatWeekly();
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(0));
         assertEquals(LocalDateTime.of(2015, 10, 9, 18, 0), firstMatchDate);
     }
     @Test
     public void canGetFirstDateWeeklyFixedP1()
     {
-        Repeat r = getRepeatWeeklyFixed();
+        Repeat r = getRepeatWeekly();
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(1));
         assertEquals(LocalDateTime.of(2015, 10, 9, 18, 0), firstMatchDate);
     }
     @Test
     public void canGetFirstDateWeeklyFixedP10()
     {
-        Repeat r = getRepeatWeeklyFixed();
+        Repeat r = getRepeatWeekly();
 //        System.out.println("r.getStartLocalDate() " + r.getStartLocalDate());
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(10));
         assertEquals(LocalDateTime.of(2015, 10, 21, 18, 0), firstMatchDate);
@@ -122,14 +122,14 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     @Test
     public void canGetFirstDateWeeklyFixedP100()
     {
-        Repeat r = getRepeatWeeklyFixed();
+        Repeat r = getRepeatWeekly();
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(100));
         assertEquals(LocalDateTime.of(2016, 1, 20, 18, 0), firstMatchDate);
     }
     @Test
     public void canGetFirstDateWeeklyFixed2P0()
     {
-        Repeat r = getRepeatWeeklyFixed2();
+        Repeat r = getRepeatWeekly2();
 //        r.dayOfWeekMap.entrySet().stream().forEach(System.out::println);
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(0));
         assertEquals(LocalDateTime.of(2015, 10, 7, 8, 45), firstMatchDate);
@@ -137,14 +137,14 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     @Test
     public void canGetFirstDateWeeklyFixed2P1()
     {
-        Repeat r = getRepeatWeeklyFixed2();
+        Repeat r = getRepeatWeekly2();
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(1));
         assertEquals(LocalDateTime.of(2015, 10, 7, 8, 45), firstMatchDate);
     }
     @Test
     public void canGetFirstDateWeeklyFixed2P10()
     {
-        Repeat r = getRepeatWeeklyFixed2();
+        Repeat r = getRepeatWeekly2();
 //        System.out.println("r.getStartLocalDate() " + r.getStartLocalDate());
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(10));
         assertEquals(LocalDateTime.of(2015, 10, 19, 8, 45), firstMatchDate);
@@ -152,28 +152,28 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     @Test
     public void canGetFirstDateWeeklyFixed2P100()
     {
-        Repeat r = getRepeatWeeklyFixed2();
+        Repeat r = getRepeatWeekly2();
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(100));
         assertEquals(LocalDateTime.of(2016, 1, 15, 8, 45), firstMatchDate);
     }
     @Test
     public void canGetFirstDateMonthlyFixedP0()
     {
-        Repeat r = getRepeatMonthlyFixed();
+        Repeat r = getRepeatMonthly();
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(0));
         assertEquals(LocalDateTime.of(2015, 11, 7, 8, 45), firstMatchDate);
     }
     @Test
     public void canGetFirstDateMonthlyFixedP1()
     {
-        Repeat r = getRepeatMonthlyFixed();
+        Repeat r = getRepeatMonthly();
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(1));
         assertEquals(LocalDateTime.of(2015, 11, 7, 8, 45), firstMatchDate);
     }
     @Test
     public void canGetFirstDateMonthlyFixedP10()
     {
-        Repeat r = getRepeatMonthlyFixed();
+        Repeat r = getRepeatMonthly();
 //        System.out.println("r.getStartLocalDate() " + r.getStartLocalDate());
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(10));
         assertEquals(LocalDateTime.of(2015, 11, 7, 8, 45), firstMatchDate);
@@ -181,28 +181,28 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     @Test
     public void canGetFirstDateMonthlyFixedP100()
     {
-        Repeat r = getRepeatMonthlyFixed();
+        Repeat r = getRepeatMonthly();
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(100));
         assertEquals(LocalDateTime.of(2016, 2, 7, 8, 45), firstMatchDate);
     }
     @Test
     public void canGetFirstDateMonthlyFixed2P0()
     {
-        Repeat r = getRepeatMonthlyFixed2();
+        Repeat r = getRepeatMonthly2();
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(0));
         assertEquals(LocalDateTime.of(2015, 11, 19, 8, 45), firstMatchDate);
     }
     @Test
     public void canGetFirstDateMonthlyFixed2P1()
     {
-        Repeat r = getRepeatMonthlyFixed2();
+        Repeat r = getRepeatMonthly2();
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(1));
         assertEquals(LocalDateTime.of(2015, 11, 19, 8, 45), firstMatchDate);
     }
     @Test
     public void canGetFirstDateMonthlyFixed2P10()
     {
-        Repeat r = getRepeatMonthlyFixed2();
+        Repeat r = getRepeatMonthly2();
 //        System.out.println("r.getStartLocalDate() " + r.getStartLocalDate());
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(10));
         assertEquals(LocalDateTime.of(2015, 11, 19, 8, 45), firstMatchDate);
@@ -210,7 +210,7 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     @Test
     public void canGetFirstDateMonthlyFixed2P100()
     {
-        Repeat r = getRepeatMonthlyFixed2();
+        Repeat r = getRepeatMonthly2();
         LocalDateTime firstMatchDate = r.nextValidDateSlow(r.getStartLocalDate().plusDays(100));
         assertEquals(LocalDateTime.of(2016, 2, 18, 8, 45), firstMatchDate);
     }
@@ -219,7 +219,7 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     @Test
     public void canListDailyFixed()
     {
-        Repeat r = getRepeatDailyFixed();
+        Repeat r = getRepeatDaily();
         List<LocalDateTime> madeDates = r.streamOfDates()
             .collect(Collectors.toList());
         List<LocalDate> expectedDates1 = new ArrayList<LocalDate>(Arrays.asList(
@@ -243,7 +243,7 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     @Test
     public void canListWeeklyFixed()
     {
-        Repeat r = getRepeatWeeklyFixed();
+        Repeat r = getRepeatWeekly();
         List<LocalDateTime> madeDates = r.streamOfDatesEndless()
             .limit(10)
             .collect(Collectors.toList());
@@ -268,7 +268,7 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     @Test
     public void canListWeeklyFixed2()
     {
-        Repeat r = getRepeatWeeklyFixed2();
+        Repeat r = getRepeatWeekly2();
         List<LocalDateTime> madeDates = r.streamOfDatesEndless()
             .limit(r.getCount())
             .collect(Collectors.toList());
@@ -333,7 +333,7 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     @Test
     public void canListMonthlyFixed()
     {
-        Repeat r = getRepeatMonthlyFixed();
+        Repeat r = getRepeatMonthly();
         List<LocalDateTime> madeDates = r.streamOfDates()
             .collect(Collectors.toList());
         List<LocalDate> expectedDates1 = new ArrayList<LocalDate>(Arrays.asList(
@@ -359,7 +359,7 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     @Test
     public void canListMonthlyFixed2()
     {
-        Repeat r = getRepeatMonthlyFixed2();
+        Repeat r = getRepeatMonthly2();
         List<LocalDateTime> madeDates = r.streamOfDates()
             .collect(Collectors.toList());
         List<LocalDate> expectedDates1 = new ArrayList<LocalDate>(Arrays.asList(
@@ -385,7 +385,7 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     @Test
     public void canListYearlyFixed()
     {
-        Repeat r = getRepeatYearlyFixed();
+        Repeat r = getRepeatYearly();
         List<LocalDateTime> madeDates = r.streamOfDatesEndless()
             .limit(10)
             .collect(Collectors.toList());

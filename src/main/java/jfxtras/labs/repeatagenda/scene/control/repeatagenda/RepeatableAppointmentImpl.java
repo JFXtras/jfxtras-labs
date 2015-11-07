@@ -44,7 +44,7 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
  * @author David Bal
  *
  */
-public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<RepeatableAppointmentImpl> {
+public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<RepeatableAppointmentImpl> implements RepeatableAppointment {
     
       /** AppointmentGroupIndex: */
     private int appointmentGroupIndex = 0; // only used privately for I/O - later matched up to an appointmentGroup
