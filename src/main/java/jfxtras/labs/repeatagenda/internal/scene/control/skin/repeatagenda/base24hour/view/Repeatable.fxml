@@ -116,19 +116,19 @@
                            </padding>
                         </VBox>
                         <Label fx:id="monthlyLabel" text="%repeat.by" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-                        <VBox disable="true" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="9" GridPane.rowSpan="4">
+                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="9" GridPane.rowSpan="4">
                            <children>
                               <HBox spacing="5.0">
                                  <children>
-                                    <ComboBox prefWidth="150.0" />
+                                    <ComboBox fx:id="exceptionComboBox" prefWidth="150.0" />
                                     <HBox prefWidth="20.0" />
-                                    <Button mnemonicParsing="false" prefWidth="72.0" text="Add" />
+                                    <Button fx:id="addExceptionButton" disable="true" mnemonicParsing="false" onAction="#handleAddException" prefWidth="72.0" text="%add" />
                                  </children>
                               </HBox>
-                              <HBox spacing="5.0">
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
                                  <children>
-                                    <ListView prefHeight="200.0" prefWidth="175.0" />
-                                    <Button mnemonicParsing="false" text="Remove" />
+                                    <ListView fx:id="exceptionsListView" prefHeight="200.0" prefWidth="175.0" />
+                                    <Button fx:id="removeExceptionButton" disable="true" mnemonicParsing="false" onAction="#handleRemoveException" text="%remove" />
                                  </children>
                               </HBox>
                            </children>
@@ -136,7 +136,7 @@
                               <Insets top="5.0" />
                            </GridPane.margin>
                         </VBox>
-                        <Label disable="true" text="TODO exceptions" GridPane.halignment="RIGHT" GridPane.rowIndex="9">
+                        <Label text="%exceptions" GridPane.halignment="RIGHT" GridPane.rowIndex="9">
                            <GridPane.margin>
                               <Insets top="10.0" />
                            </GridPane.margin>

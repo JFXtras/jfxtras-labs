@@ -36,7 +36,8 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
  *
  */
 public class RepeatImpl extends Repeat {
-    
+
+    // TODO - PUT FORMATER IN RESOURSEBUNDLE
   private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public RepeatImpl() { }
@@ -186,7 +187,8 @@ public class RepeatImpl extends Repeat {
                 .stream(IOUtilities.myGet(repeatAttributes, "deletedDates", "").split(" "))
                 .map(a -> myParseLocalDateTime(a))
                 .collect(Collectors.toList()));
-        setExceptions(exceptionDates);
+        getExceptions().clear();
+        getExceptions().addAll(exceptionDates);
 //        setExceptionDates(DataUtilities.myGetSet(repeatAttributes, "deletedDates", "", Settings.DATE_FORMAT1));
 
         switch (myIntervalUnit) {

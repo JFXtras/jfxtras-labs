@@ -343,6 +343,7 @@ public final class RepeatableUtilities {
         final int dayShift = Period.between(startDateOld.toLocalDate(), startDate.toLocalDate()).getDays();
         final int startMinuteShift = (int) Duration.between(appointmentOld.getStartLocalDateTime()
                                                , appointment.getStartLocalDateTime()).toMinutes();
+        System.out.println("startMinuteShift " + startMinuteShift);
         final int endMinuteShift = (int) Duration.between(appointmentOld.getEndLocalDateTime()
                 , appointment.getEndLocalDateTime()).toMinutes();
         final TemporalAdjuster startTemporalAdjuster = temporal ->

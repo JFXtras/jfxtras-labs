@@ -3,10 +3,14 @@ package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base2
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
@@ -22,6 +26,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -32,6 +37,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.EndCriteria;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatFactory;
@@ -40,6 +46,8 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 public class RepeatableController {
 
+final private static int EXCEPTION_CHOICE_LIMIT = 100;
+    
 //private RepeatableAppointment appointment;
 private Repeat repeat;
 
@@ -73,10 +81,25 @@ private Repeat repeat;
 private ToggleGroup endGroup;
 @FXML private Label repeatSummaryLabel;
 
+@FXML ComboBox<LocalDateTime> exceptionComboBox;
+@FXML Button addExceptionButton;
+@FXML ListView<LocalDateTime> exceptionsListView;
+@FXML Button removeExceptionButton;
+
 @FXML private Button closeButton;
 @FXML private Button cancelButton;
+// TODO - DO I WANT A DELETE BUTTON?
 
 final private InvalidationListener makeEndOnDateListener = (obs) -> repeat.makeUntilFromCount();
+
+// This listener is executed when any repeat changes occur to ensure exception date list in exceptionComboBox is valid
+final private InvalidationListener makeExceptionDatesListener = (obs) -> 
+{
+    List<LocalDateTime> exceptionDates = repeat.streamOfDatesEndless()
+          .limit(EXCEPTION_CHOICE_LIMIT)
+          .collect(Collectors.toList());
+    exceptionComboBox.getItems().addAll(exceptionDates);
+};
 
 final private ChangeListener<? super Integer> frequencyListener = (observable, oldValue, newValue) ->
 {
@@ -311,9 +334,6 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
           , Class<? extends Repeat> repeatClass)
     {
 
-//        this.appointment = appointment;
-//        System.out.println("appointment.getRepeat() " + repeatMap.get(appointment) );
-//        if (repeatMap.get(appointment) != null)
         if (appointment.getRepeat() != null)
         { // get existing repeat
             repeat = appointment.getRepeat();
@@ -340,37 +360,37 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
             repeat.setDayOfWeek(d, true); // set default day of week for default Weekly appointment
         }
         
-        //        setupAppointmentBindings();
-
-//        if (repeat.getEndCriteria() == EndCriteria.AFTER)
-//        {
-//            System.out.println("repeat.getEndAfterEvents() " + repeat.getEndAfterEvents());
-//            if (repeat.getEndAfterEvents() == 1) {
-//                System.out.println("event");
-//                eventLabel.setText(resources.getString("event"));
-//            } else {
-//                System.out.println("events");
-//                eventLabel.setText(resources.getString("events"));
-//            }
-//        }
-
-        // TODO - REMOVE CAST TO MYREPEAT
-//        if (! ((MyRepeat)repeat).hasKey()) startDatePicker.setDisable(true);
+        exceptionComboBox.setConverter(new StringConverter<LocalDateTime>()
+        {
+            final private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.start"));
+            @Override public String toString(LocalDateTime d) {
+                return formatter.format(d);
+            }
+            @Override public LocalDateTime fromString(String string) {
+                throw new RuntimeException("not required for non editable ComboBox");
+            }
+        });
+        
+        exceptionComboBox.valueProperty().addListener((obs) ->
+        {
+           System.out.println("selection exception "); 
+           addExceptionButton.setDisable(false);
+        });
+        
+        // Listeners to update exception dates
+        repeatableCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
         
         // REPEATABLE CHECKBOX
         repeatableCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
         {
             if (newSelection) {
-//                repeatMap.put(appointment, repeat);
                 appointment.setRepeat(repeat);
-//                repeat.getAppointments().add(appointment);
+//                makeExceptionDates();
                 setupBindings();
                 repeatableGridPane.setDisable(false);
                 startDatePicker.setDisable(false);
             } else {
-//                repeatMap.remove(appointment);
                 appointment.setRepeat(null);
-//                repeat.getAppointments().remove(appointment);
                 removeBindings();
                 repeatableGridPane.setDisable(true);
                 startDatePicker.setDisable(true);
@@ -457,6 +477,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
         }
     }
     
+    // Displays an alert notifying user number input is not valid
     private static void notNumberAlert(String validFormat)
     {
         Alert alert = new Alert(AlertType.ERROR);
@@ -467,5 +488,28 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
         alert.getButtonTypes().setAll(buttonTypeOk);
         Optional<ButtonType> result = alert.showAndWait();
     }
+    
+//    private void makeExceptionDates()
+//    {
+//        List<LocalDateTime> exceptionDates = repeat.streamOfDates()
+//                .limit(EXCEPTION_CHOICE_LIMIT)
+//                .collect(Collectors.toList());
+//          exceptionComboBox.getItems().addAll(exceptionDates);
+//    }
+    
+    @FXML private void handleAddException()
+    {
+        System.out.println("Add Exception");
+        LocalDateTime d = exceptionComboBox.getValue();
+        exceptionsListView.getItems().add(d);
+        exceptionComboBox.getItems().remove(d);
+    }
+
+    @FXML private void handleRemoveException()
+    {
+        System.out.println("Remove Exception");
+        
+    }
+
 
 }

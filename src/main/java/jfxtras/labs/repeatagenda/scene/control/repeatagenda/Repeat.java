@@ -290,18 +290,16 @@ public abstract class Repeat {
     
     // deleted appointments - skip these when making appointments from the repeat rule
     // TODO - Should this be an Observable Collection?
-    private ObservableList<LocalDateTime> exceptions = FXCollections.observableArrayList();
+    final private ObservableList<LocalDateTime> exceptions = FXCollections.observableArrayList();
     public ObservableList<LocalDateTime> getExceptions() { return exceptions; }
-    public void setExceptions(ObservableList<LocalDateTime> dates) { exceptions = dates; }
-    public Repeat withExceptions(ObservableList<LocalDateTime> dates) { setExceptions(dates); return this; }
+//    public void setExceptions(ObservableList<LocalDateTime> dates) { exceptions = dates; }
+    public Repeat withExceptions(ObservableList<LocalDateTime> dates) { exceptions.addAll(dates); return this; }
     private boolean exceptionsEquals(Collection<LocalDateTime> exceptionsTest)
-    {
-        exceptionsTest.stream().forEach(a -> System.out.println("test " + a));
+    { // test doesn't require order to be same 
         Iterator<LocalDateTime> dateIterator = getExceptions().iterator();
         while (dateIterator.hasNext())
         {
             LocalDateTime myDate = dateIterator.next();
-            System.out.println(myDate);
             if (! exceptionsTest.contains(myDate)) return false;
         }
         return true;
@@ -452,7 +450,8 @@ public abstract class Repeat {
                              boolean value = a.getValue().get();
                              destination.setDayOfWeek(d, value);   
                          });
-        destination.setExceptions(source.getExceptions());
+        destination.getExceptions().clear();
+        destination.getExceptions().addAll(source.getExceptions());
         destination.setStartLocalDate(source.getStartLocalDateTime());
         destination.setDurationInSeconds(source.getDurationInSeconds());
         destination.setUntilLocalDateTime(source.getUntilLocalDateTime());
@@ -1371,39 +1370,11 @@ public abstract class Repeat {
         final LocalDateTime newStartLocalDateTime = getStartLocalDateTime()
                 .with(startTemporalAdjuster);
 
-        //                .atTime(getStartLocalTime())
-//        final LocalTime newEndLocalTime = getStartLocalDate()
-////                .atTime(getEndLocalTime())
-//                .with(endTemporalAdjuster)
-//                .toLocalTime();
         final LocalDateTime oldEndLocalDateTime = getStartLocalDateTime().plusSeconds(getDurationInSeconds());
         final LocalDateTime newEndLocalDateTime = oldEndLocalDateTime.with(endTemporalAdjuster);
         int newDuration = (int) ChronoUnit.SECONDS.between(newStartLocalDateTime, newEndLocalDateTime);
-//        System.out.println("start " + getStartLocalDate() + " old " + oldEndLocalDateTime + " new " + newEndLocalDateTime);
-//        System.out.println("Duration " + this.getDurationInSeconds() + " " + newDuration);
-//        System.exit(0);
         setDurationInSeconds(newDuration);
-        
-        
-//        final LocalDateTime newEndOnLocalDateTime = this.getEndOnDate().with(startTemporalAdjuster);
-//        System.out.println("adjust endOnDate " + getEndOnDate() + " " + newEndOnLocalDateTime);
-//        this.setEndOnDate(newEndOnLocalDateTime);
 
-        
-//        setStartLocalDate(newStartLocalDateTime);
-
-        //        final LocalDateTime newEndLocalDateTime = getStartLocalDate().plusSeconds(getDuration());
-//        setEndLocalTime(newEndLocalTime);
-
-        // TODO - ALLOW ADJUSTING END DATE COMPLETELY - ADD ADJUSTER
-//        if (getEndCriteria() != EndCriteria.NEVER)
-//        {
-//            LocalTime newStartTime = newStartLocalDateTime.toLocalTime();
-//            LocalDateTime newEndOnDateTime = getLastStartDateTime().toLocalDate().atTime(newStartTime);
-//            System.out.println("adjustment endTime " + newStartTime + " " + newEndOnDateTime);;
-//            setLastStartDateTime(newEndOnDateTime);
-//        }
-        
         if (adjustStartDate)
         {
 //            if (getIntervalUnit() == IntervalUnit.WEEKLY)
@@ -1424,8 +1395,16 @@ public abstract class Repeat {
 //                setStartLocalDate(earliestDate.plusDays(dayShift));
 //            } else { // edit startDate for all other IntervalUnit types
                 setStartLocalDate(newStartLocalDateTime);
-//            }
         }
+
+        // Adjust exceptions
+        Set<LocalDateTime> newExceptions = getExceptions()
+                .stream()
+                .map(a -> a.with(startTemporalAdjuster))
+                .collect(Collectors.toSet());
+        getExceptions().clear();
+        getExceptions().addAll(newExceptions);
+
     }
     
     /**

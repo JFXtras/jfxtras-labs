@@ -8,6 +8,8 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -126,6 +128,7 @@ public class RepeatableAgenda extends Agenda {
           , Collection<Repeat> repeats
           , Class<? extends Repeat> repeatClass)
     {
+        this();
         getAppointmentsIndividual().addAll(individualAppointments);
         setRepeats(repeats);
         this.repeatClass = repeatClass;
@@ -133,6 +136,16 @@ public class RepeatableAgenda extends Agenda {
     
     public RepeatableAgenda()
     {
+        super();
+
+        // setup default ResourceBundle
+        Locale myLocale = Locale.getDefault();
+        // TODO - GET PATH BETTER WAY
+        ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Bundle", myLocale);
+        Settings.setup(resources);
+//        System.out.println(resources);
+//        System.exit(0);
+
         // Listen for changes to appointments (additions and deletions)
         appointments().addListener((ListChangeListener.Change<? extends Appointment> change)
             -> {
@@ -875,6 +888,11 @@ public class RepeatableAgenda extends Agenda {
           return null;
 
         }
+    }
+
+    /** Add ResourceBundle for FXML controllers that contains strings for the appointment popups */
+    public void setResourceBundle(ResourceBundle resources) {
+        Settings.setup(resources);
     }
 
 //    public static RepeatableAppointment AppointmentFactory(RepeatableAppointment source) {
