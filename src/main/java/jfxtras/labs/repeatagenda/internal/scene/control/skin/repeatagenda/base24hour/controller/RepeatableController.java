@@ -371,10 +371,11 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
             DayOfWeek d = appointment.getStartLocalDateTime().getDayOfWeek();
             repeat.setDayOfWeek(d, true); // set default day of week for default Weekly appointment
         }
-        
+
+        // Setup exceptionComboBox string converter - must be done after initialization because resource bundle isn't instantiated before now
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.exception"));
         exceptionComboBox.setConverter(new StringConverter<LocalDateTime>()
         { // setup string converter
-            final private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.exception"));
             @Override public String toString(LocalDateTime d) {
                 return formatter.format(d);
             }
@@ -384,10 +385,9 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
         });
         exceptionComboBox.valueProperty().addListener(obs -> addExceptionButton.setDisable(false)); // turn on add button when exception date is selected in combobox
 
-     // Custom rendering of the table cell.
+     // Custom rendering of the table cell -  must be done after initialization because resource bundle isn't instantiated before now.
         exceptionsListView.setCellFactory(column -> {
             return new ListCell<LocalDateTime>() {
-                final private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.exception"));
                 @Override
                 protected void updateItem(LocalDateTime item, boolean empty) {
                     super.updateItem(item, empty);
@@ -399,7 +399,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
                         // Format date.
                         setText(formatter.format(item));
 
-//                        // TODO - Style invalid dates red
+//                        // TODO - Style invalid dates red (need to test every date to see if valid)
 //                        if (repeat.isValidDateTime(item)) {
 //                            setStyle("-fx-background-color: red");
 //                        }
@@ -407,7 +407,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
                 }
             };
         });
-        
+        exceptionsListView.getSelectionModel().selectedItemProperty().addListener(obs -> removeExceptionButton.setDisable(false)); // turn on add button when exception date is selected in combobox        
         
         // Listeners to update exception dates
         repeatableCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
@@ -452,6 +452,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
         startDatePicker.valueProperty().addListener(startDateListener);
         setEndGroup(repeat.getEndCriteria());
         repeat.countProperty().addListener(makeEndOnDateListener);
+        exceptionsListView.setItems(repeat.getExceptions());
     }
     
     private void setupAppointmentBindings() {
@@ -531,7 +532,6 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
     
     @FXML private void handleAddException()
     {
-        System.out.println("Add Exception");
         LocalDateTime d = exceptionComboBox.getValue();
         exceptionsListView.getItems().add(d);
         exceptionComboBox.getItems().remove(d);
@@ -541,7 +541,10 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
     @FXML private void handleRemoveException()
     {
         System.out.println("Remove Exception");
-        
+        LocalDateTime d = exceptionsListView.getSelectionModel().getSelectedItem();
+        exceptionComboBox.getItems().add(d);
+        exceptionsListView.getItems().remove(d);
+        if (exceptionsListView.getSelectionModel().getSelectedItem() == null) removeExceptionButton.setDisable(true);
     }
 
 
