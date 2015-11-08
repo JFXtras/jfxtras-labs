@@ -26,6 +26,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Spinner;
@@ -89,6 +90,17 @@ private ToggleGroup endGroup;
 @FXML private Button closeButton;
 @FXML private Button cancelButton;
 // TODO - DO I WANT A DELETE BUTTON?
+
+//final private StringConverter<LocalDateTime> exceptionDateConverter = new StringConverter<LocalDateTime>()
+//{
+//    final private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.start"));
+//    @Override public String toString(LocalDateTime d) {
+//        return formatter.format(d);
+//    }
+//    @Override public LocalDateTime fromString(String string) {
+//        throw new RuntimeException("not required for non editable ComboBox");
+//    }
+//};
 
 final private InvalidationListener makeEndOnDateListener = (obs) -> repeat.makeUntilFromCount();
 
@@ -361,8 +373,8 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
         }
         
         exceptionComboBox.setConverter(new StringConverter<LocalDateTime>()
-        {
-            final private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.start"));
+        { // setup string converter
+            final private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.exception"));
             @Override public String toString(LocalDateTime d) {
                 return formatter.format(d);
             }
@@ -370,12 +382,32 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
                 throw new RuntimeException("not required for non editable ComboBox");
             }
         });
-        
-        exceptionComboBox.valueProperty().addListener((obs) ->
-        {
-           System.out.println("selection exception "); 
-           addExceptionButton.setDisable(false);
+        exceptionComboBox.valueProperty().addListener(obs -> addExceptionButton.setDisable(false)); // turn on add button when exception date is selected in combobox
+
+     // Custom rendering of the table cell.
+        exceptionsListView.setCellFactory(column -> {
+            return new ListCell<LocalDateTime>() {
+                final private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.exception"));
+                @Override
+                protected void updateItem(LocalDateTime item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                        setStyle("");
+                    } else {
+                        // Format date.
+                        setText(formatter.format(item));
+
+//                        // TODO - Style invalid dates red
+//                        if (repeat.isValidDateTime(item)) {
+//                            setStyle("-fx-background-color: red");
+//                        }
+                    }
+                }
+            };
         });
+        
         
         // Listeners to update exception dates
         repeatableCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
@@ -503,6 +535,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
         LocalDateTime d = exceptionComboBox.getValue();
         exceptionsListView.getItems().add(d);
         exceptionComboBox.getItems().remove(d);
+        if (exceptionComboBox.getValue() == null) addExceptionButton.setDisable(true);
     }
 
     @FXML private void handleRemoveException()
