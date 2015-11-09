@@ -215,7 +215,7 @@ public class RepeatImpl extends Repeat {
                 setCount(IOUtilities.myParseInt(IOUtilities.myGet(repeatAttributes, "endAfterEvents", "")));
                 // fall through
             case UNTIL:
-                setUntilLocalDateTime(LocalDateTime.parse(IOUtilities.myGet(repeatAttributes, "endOnDate", ""), formatter));
+                setUntil(LocalDateTime.parse(IOUtilities.myGet(repeatAttributes, "endOnDate", ""), formatter));
                 break;
             default:
                 break;

@@ -7,9 +7,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javafx.beans.InvalidationListener;
@@ -47,7 +51,7 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 public class RepeatableController {
 
-final private static int EXCEPTION_CHOICE_LIMIT = 100;
+final private static int EXCEPTION_CHOICE_LIMIT = 50;
     
 //private RepeatableAppointment appointment;
 private Repeat repeat;
@@ -84,11 +88,13 @@ private ToggleGroup endGroup;
 
 @FXML ComboBox<LocalDateTime> exceptionComboBox;
 @FXML Button addExceptionButton;
-@FXML ListView<LocalDateTime> exceptionsListView;
+@FXML ListView<LocalDateTime> exceptionsListView; // list of date/times to be skipped (deleted events)
 @FXML Button removeExceptionButton;
 
 @FXML private Button closeButton;
 @FXML private Button cancelButton;
+
+private Set<LocalDateTime> invalidExceptions = new HashSet<LocalDateTime>();
 // TODO - DO I WANT A DELETE BUTTON?
 
 //final private StringConverter<LocalDateTime> exceptionDateConverter = new StringConverter<LocalDateTime>()
@@ -107,11 +113,15 @@ final private InvalidationListener makeEndOnDateListener = (obs) -> repeat.makeU
 // This listener is executed when any repeat changes occur to ensure exception date list in exceptionComboBox is valid
 final private InvalidationListener makeExceptionDatesListener = (obs) -> 
 {
-    List<LocalDateTime> exceptionDates = repeat.streamOfDatesEndless()
-          .limit(EXCEPTION_CHOICE_LIMIT)
-          .collect(Collectors.toList());
-    exceptionComboBox.getItems().addAll(exceptionDates);
+//    System.out.println("make copy");
+//    Repeat r = RepeatFactory.newRepeat(repeat); // copy repeat to force update of bindings
+    makeExceptionDates();
 };
+
+//final private ChangeListener<? super Number> makeExceptionDatesListener2 = ((observable, oldSelection, newSelection) ->
+//{
+//    makeExceptionDates();
+//});
 
 final private ChangeListener<? super Integer> frequencyListener = (observable, oldValue, newValue) ->
 {
@@ -130,6 +140,14 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
 
 @FXML public void initialize()
 {
+    
+    // Listeners to update exception dates
+    repeat.intervalProperty().addListener(makeExceptionDatesListener);
+    repeat.frequencyProperty().addListener(makeExceptionDatesListener);
+    repeat.endCriteriaProperty().addListener(makeExceptionDatesListener);
+    repeat.countProperty().addListener(makeExceptionDatesListener);
+    repeat.untilProperty().addListener(makeExceptionDatesListener);
+    // TODO - WHEN REPEAT CHANGES TO HAVE COLLECTION OF RULES HOW DO I BIND TO MONTHLY OR WEEKLY OR ANY SPECIAL PROPERTIES?
     
     // *********INTERVAL COMBOBOX**************
     final ObservableList<Repeat.Frequency> intervalList = FXCollections.observableArrayList();
@@ -161,9 +179,9 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
        // change frequencyLabel to be singular or plural
         if (repeat.getEndCriteria() == EndCriteria.AFTER) repeat.makeUntilFromCount();
         if (intervalSpinner.getValue() == 1) {
-            frequencyLabel.setText(repeat.getFrequency().toStringSingular());
+            frequencyLabel.setText(selected.toStringSingular());
         } else {
-            frequencyLabel.setText(repeat.getFrequency().toStringPlural());
+            frequencyLabel.setText(selected.toStringPlural());
         }
     });
     frequencyComboBox.setConverter(Repeat.Frequency.stringConverter);
@@ -188,6 +206,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
         } else {
             frequencyLabel.setText(repeat.getFrequency().toStringPlural());
         }
+//        makeExceptionDates();
     });
     
     // Make frequencySpinner and only accept numbers (needs below two listeners)
@@ -310,7 +329,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
     final ChangeListener<? super LocalDate> endOnDateListener = ((observable, oldSelection, newSelection) ->
     {
         LocalTime endTime = repeat.getStartLocalDateTime().plusSeconds(repeat.getDurationInSeconds()).toLocalTime();
-        repeat.setUntilLocalDateTime(newSelection.atTime(endTime));
+        repeat.setUntil(newSelection.atTime(endTime));
     });
     endOnRadioButton.selectedProperty().addListener((observable, oldSelection, newSelection) ->
     {
@@ -372,6 +391,10 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
             repeat.setDayOfWeek(d, true); // set default day of week for default Weekly appointment
         }
 
+        // Initial values
+        intervalSpinner.getValueFactory().setValue(repeat.getInterval());
+        setEndGroup(repeat.getEndCriteria());
+        
         // Setup exceptionComboBox string converter - must be done after initialization because resource bundle isn't instantiated before now
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.exception"));
         exceptionComboBox.setConverter(new StringConverter<LocalDateTime>()
@@ -385,39 +408,50 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
         });
         exceptionComboBox.valueProperty().addListener(obs -> addExceptionButton.setDisable(false)); // turn on add button when exception date is selected in combobox
 
-     // Custom rendering of the table cell -  must be done after initialization because resource bundle isn't instantiated before now.
-        exceptionsListView.setCellFactory(column -> {
-            return new ListCell<LocalDateTime>() {
+     // Custom rendering of the list cell -  must be done after initialization because resource bundle isn't instantiated before now.
+        exceptionsListView.setCellFactory(value -> 
+        { 
+            return new ListCell<LocalDateTime>()
+            {
                 @Override
-                protected void updateItem(LocalDateTime item, boolean empty) {
-                    super.updateItem(item, empty);
+                protected void updateItem(LocalDateTime exception, boolean empty)
+                {
+                    super.updateItem(exception, empty);
 
-                    if (item == null || empty) {
+                    if (exception == null || empty)
+                    {
                         setText(null);
                         setStyle("");
-                    } else {
-                        // Format date.
-                        setText(formatter.format(item));
-
-//                        // TODO - Style invalid dates red (need to test every date to see if valid)
-//                        if (repeat.isValidDateTime(item)) {
-//                            setStyle("-fx-background-color: red");
-//                        }
+                    } else
+                    {
+                        // Format and style (invalid dates red)
+                        if (invalidExceptions.contains(exception))
+                        {
+                            setStyle("-fx-text-fill: red");
+                            setText(formatter.format(exception) + "-invalid");
+                        } else
+                        {
+                            setStyle("-fx-text-fill: black");                            
+                            setText(formatter.format(exception));
+                        }
+                            
                     }
                 }
             };
         });
-        exceptionsListView.getSelectionModel().selectedItemProperty().addListener(obs -> removeExceptionButton.setDisable(false)); // turn on add button when exception date is selected in combobox        
+
+        exceptionsListView.getSelectionModel().selectedItemProperty().addListener(obs -> {
+//            Collections.sort(exceptionsListView.getItems());
+            removeExceptionButton.setDisable(false); // turn on add button when exception date is selected in combobox
+        });
         
-        // Listeners to update exception dates
-        repeatableCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
         
         // REPEATABLE CHECKBOX
         repeatableCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
         {
             if (newSelection) {
                 appointment.setRepeat(repeat);
-//                makeExceptionDates();
+                makeExceptionDates();
                 setupBindings();
                 repeatableGridPane.setDisable(false);
                 startDatePicker.setDisable(false);
@@ -437,7 +471,6 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
     
     private void setupBindings() {
         frequencyComboBox.valueProperty().bindBidirectional(repeat.frequencyProperty());
-        intervalSpinner.getValueFactory().setValue(repeat.getInterval());
         repeat.intervalProperty().bind(intervalSpinner.valueProperty());
         sundayCheckBox.selectedProperty().bindBidirectional(repeat.getDayOfWeekProperty(DayOfWeek.SUNDAY));
         mondayCheckBox.selectedProperty().bindBidirectional(repeat.getDayOfWeekProperty(DayOfWeek.MONDAY));
@@ -450,7 +483,6 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
         dayOfWeekRadioButton.selectedProperty().bindBidirectional(repeat.repeatDayOfWeekProperty());
 //        startDatePicker.valueProperty().bind(repeat.startLocalDateProperty());
         startDatePicker.valueProperty().addListener(startDateListener);
-        setEndGroup(repeat.getEndCriteria());
         repeat.countProperty().addListener(makeEndOnDateListener);
         exceptionsListView.setItems(repeat.getExceptions());
     }
@@ -522,19 +554,59 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
         Optional<ButtonType> result = alert.showAndWait();
     }
     
-//    private void makeExceptionDates()
-//    {
-//        List<LocalDateTime> exceptionDates = repeat.streamOfDates()
-//                .limit(EXCEPTION_CHOICE_LIMIT)
-//                .collect(Collectors.toList());
-//          exceptionComboBox.getItems().addAll(exceptionDates);
-//    }
+    private void makeExceptionDates()
+    {
+        System.out.println("make exception date list");
+        List<LocalDateTime> exceptionDates = repeat.streamOfDatesEndless()
+              .limit(EXCEPTION_CHOICE_LIMIT)
+              .collect(Collectors.toList());
+        exceptionComboBox.getItems().clear();
+        exceptionComboBox.getItems().addAll(exceptionDates);
+//        exceptionComboBox.getItems().stream().forEach(System.out::println);
+    }
+    
+    private void updateExceptionList()
+    {
+        // Make invalidExceptions set (collection of date/times that are not valid events due to repeat rule changes, will be given special formatting to stand out)
+//      invalidExceptions.clear();
+      System.out.println("valid dates " + repeat.getInterval());
+      repeat.streamOfDatesEndlessWithExceptions().limit(5).forEach(System.out::println);
+      System.out.println("valid dates done");
+      Set<LocalDateTime> invalidExceptionsNew = new HashSet<LocalDateTime>();
+      Iterator<LocalDateTime> validIterator = repeat.streamOfDatesEndlessWithExceptions().iterator();
+      Iterator<LocalDateTime> exceptionIterator = exceptionsListView.getItems().iterator();
+      while (exceptionIterator.hasNext())
+      {
+          LocalDateTime exception = exceptionIterator.next();
+          LocalDateTime valid = validIterator.next();
+          while (valid.isBefore(exception))
+          {
+              valid = validIterator.next();
+          }
+          System.out.println("Date test " + exception + " " + valid + " " + (exception.equals(valid)));
+          if (! exception.equals(valid)) invalidExceptionsNew.add(exception);
+      }
+      System.out.println("invalid dates");
+      invalidExceptionsNew.stream().forEach(System.out::println);
+      if (! invalidExceptionsNew.equals(invalidExceptions))
+      { // invalid exceptions are different, replace collection and replace exceptionsListView items
+          invalidExceptions.clear();
+          invalidExceptions.addAll(invalidExceptionsNew);
+          exceptionsListView.refresh();
+//          Set<LocalDateTime> tempExceptions = exceptionsListView.getItems().stream().collect(Collectors.toSet());
+//          exceptionsListView.setItems(repeat.getExceptions());
+      }
+      // TODO - NEED TO SEE IF ANY CHANGES TO INVALID EXCEPTIONS OCCURS, IF SO REDRAW ENTIRE EXCEPTION LIST
+
+    }
     
     @FXML private void handleAddException()
     {
         LocalDateTime d = exceptionComboBox.getValue();
         exceptionsListView.getItems().add(d);
-        exceptionComboBox.getItems().remove(d);
+        makeExceptionDates();
+//        exceptionComboBox.getItems().remove(d);
+        Collections.sort(exceptionsListView.getItems()); // Maintain sorted list
         if (exceptionComboBox.getValue() == null) addExceptionButton.setDisable(true);
     }
 
@@ -542,7 +614,8 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
     {
         System.out.println("Remove Exception");
         LocalDateTime d = exceptionsListView.getSelectionModel().getSelectedItem();
-        exceptionComboBox.getItems().add(d);
+        makeExceptionDates();
+//        exceptionComboBox.getItems().add(d);
         exceptionsListView.getItems().remove(d);
         if (exceptionsListView.getSelectionModel().getSelectedItem() == null) removeExceptionButton.setDisable(true);
     }

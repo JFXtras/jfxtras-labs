@@ -87,7 +87,7 @@ public class RepeatCopyTest extends RepeatTestAbstract
         repeat.setDayOfWeek(DayOfWeek.FRIDAY, false);
         repeat.setDayOfWeek(DayOfWeek.THURSDAY, true);
         repeat.setEndCriteria(EndCriteria.UNTIL);
-        repeat.setUntilLocalDateTime(LocalDateTime.of(2016, 11, 1, 0, 0));
+        repeat.setUntil(LocalDateTime.of(2016, 11, 1, 0, 0));
         
         
         // Copy original back and check equality

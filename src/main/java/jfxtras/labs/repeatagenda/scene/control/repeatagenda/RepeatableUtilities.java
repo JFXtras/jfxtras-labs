@@ -188,7 +188,7 @@ public final class RepeatableUtilities {
                     if (writeRepeats) removeOne(repeat.appointments(), appointment);
                     if (startDate.equals(repeat.getUntilLocalDateTime()))
                     { // deleted appointment is on end date, adjust end date and number of appointments
-                        repeat.setUntilLocalDateTime(startDate.minusDays(1));
+                        repeat.setUntil(startDate.minusDays(1));
                         if (repeat.getEndCriteria().equals(EndCriteria.AFTER))
                         { // decrement end after events
                             repeat.setCount(repeat.getCount()-1);
@@ -242,14 +242,14 @@ public final class RepeatableUtilities {
                     {
                         case NEVER: // convert to end ON
                             repeat.setEndCriteria(EndCriteria.UNTIL);
-                            repeat.setUntilLocalDateTime(startDate.minusDays(1));
+                            repeat.setUntil(startDate.minusDays(1));
 //                            repeat.makeEndAfterEventsFromEndOnDate();
                             break;
                         case AFTER: // reduce quantity by deleted quantity
                             repeat.setCount(repeat.getCount() - deletedAppointments);
                             // drop through
                         case UNTIL:
-                            repeat.setUntilLocalDateTime(startDate.minusDays(1));
+                            repeat.setUntil(startDate.minusDays(1));
                             break;
                         default:
                             break;
@@ -587,7 +587,7 @@ public final class RepeatableUtilities {
                 // Modify start and end date for repeat and repeatOld.  Adjust IntervalUnit specific data
                 repeatOld.setEndCriteria(EndCriteria.UNTIL);
                 repeatOld.setCount(0); // criteria changed to ON so 0 count events
-                repeatOld.setUntilLocalDateTime(repeatOld.previousValidDate(startDateOld));
+                repeatOld.setUntil(repeatOld.previousValidDate(startDateOld));
 //                boolean adjustStartDate;
                 switch (repeat.getFrequency())
                 {
@@ -601,7 +601,7 @@ public final class RepeatableUtilities {
                     if (repeat.getEndCriteria() != EndCriteria.NEVER)
                     {
                         newLastStartDateTime = repeat.getUntilLocalDateTime().with(startTemporalAdjuster);
-                        repeat.setUntilLocalDateTime(newLastStartDateTime);
+                        repeat.setUntil(newLastStartDateTime);
                     }
 //                    if (repeat.getEndCriteria() == EndCriteria.AFTER) repeat.makeEndAfterEventsFromEndOnDate();
 
@@ -640,11 +640,11 @@ public final class RepeatableUtilities {
                     if (lastDayOfWeek == dayOfWeekNew)
                     { // adjust date and time
                         newLastStartDateTime = repeat.getUntilLocalDateTime().with(startTemporalAdjuster);
-                        repeat.setUntilLocalDateTime(newLastStartDateTime);
+                        repeat.setUntil(newLastStartDateTime);
                     } else
                     { // adjust time only
                         newLastStartDateTime = repeat.getUntilLocalDateTime().toLocalDate().atTime(startDate.toLocalTime());
-                        repeat.setUntilLocalDateTime(newLastStartDateTime);
+                        repeat.setUntil(newLastStartDateTime);
                     }
                     
 //                    final LocalDateTime earliestDate = getStartLocalDate();

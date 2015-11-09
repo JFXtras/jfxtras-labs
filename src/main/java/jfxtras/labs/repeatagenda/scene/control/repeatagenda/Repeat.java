@@ -95,7 +95,7 @@ public abstract class Repeat {
     public Repeat withFrequency(Frequency frequency) { setFrequency(frequency); return this; }
     
     /** number of frequency periods to pass before new appointment */
-    final private IntegerProperty interval = new SimpleIntegerProperty(1);
+    final private IntegerProperty interval = new SimpleIntegerProperty(this, "interval", 1);
     public Integer getInterval() { return interval.getValue(); }
     public IntegerProperty intervalProperty() { return interval; }
     public void setInterval(Integer interval) {
@@ -176,10 +176,10 @@ public abstract class Repeat {
     public Repeat withMonthlyRepeat(MonthlyRepeat monthlyRepeat) { setMonthlyRepeat(monthlyRepeat); return this; }
     
     /** Start date/time of repeat rule */
-    final private ObjectProperty<LocalDateTime> startLocalDate = new SimpleObjectProperty<LocalDateTime>();
-    public ObjectProperty<LocalDateTime> startLocalDateProperty() { return startLocalDate; }
-    public LocalDateTime getStartLocalDateTime() { return startLocalDate.getValue(); }
-    public void setStartLocalDate(LocalDateTime startDate) { this.startLocalDate.set(startDate); }
+    final private ObjectProperty<LocalDateTime> startLocalDateTime = new SimpleObjectProperty<LocalDateTime>();
+    public ObjectProperty<LocalDateTime> startLocalDateTimeProperty() { return startLocalDateTime; }
+    public LocalDateTime getStartLocalDateTime() { return startLocalDateTime.getValue(); }
+    public void setStartLocalDate(LocalDateTime startDate) { this.startLocalDateTime.set(startDate); }
     public Repeat withStartLocalDate(LocalDateTime startDate) { setStartLocalDate(startDate); return this; }
     
     /** Seconds duration of appointments */
@@ -238,7 +238,7 @@ public abstract class Repeat {
         {
             myDate = validDateIterator.next();
         }
-        setUntilLocalDateTime(myDate);
+        setUntil(myDate);
     }
     /**
      * Find number of events from end date.  Value put into endAfterEvents
@@ -257,15 +257,16 @@ public abstract class Repeat {
         }
         count.set(eventCounter);
     }
-    
-    final private ObjectProperty<LocalDateTime> untilLocalDateTime = new SimpleObjectProperty<LocalDateTime>();
-    public ObjectProperty<LocalDateTime> untilLocalDateTimeProperty() { return untilLocalDateTime; }
-    public LocalDateTime getUntilLocalDateTime() { return untilLocalDateTime.getValue(); }
-    public void setUntilLocalDateTime(LocalDateTime dateTime) { this.untilLocalDateTime.set(dateTime); }
-    public Repeat withUntilLocalDateTime(LocalDateTime dateTime)
+
+    /** Date/time repeat rule ends */
+    public ObjectProperty<LocalDateTime> untilProperty() { return until; }
+    final private ObjectProperty<LocalDateTime> until = new SimpleObjectProperty<LocalDateTime>(this, "until");
+    public LocalDateTime getUntilLocalDateTime() { return until.getValue(); }
+    public void setUntil(LocalDateTime dateTime) { this.until.set(dateTime); }
+    public Repeat withUntil(LocalDateTime dateTime)
     {
         if (getEndCriteria() != EndCriteria.UNTIL) throw new InvalidParameterException("EndCriteria must be set to ON before endOnDate is set");
-        setUntilLocalDateTime(dateTime);
+        setUntil(dateTime);
         return this;
     }
 
@@ -454,7 +455,7 @@ public abstract class Repeat {
         destination.getExceptions().addAll(source.getExceptions());
         destination.setStartLocalDate(source.getStartLocalDateTime());
         destination.setDurationInSeconds(source.getDurationInSeconds());
-        destination.setUntilLocalDateTime(source.getUntilLocalDateTime());
+        destination.setUntil(source.getUntilLocalDateTime());
         RepeatableAppointment appt = AppointmentFactory.newAppointment(source.getAppointmentData());
         destination.setAppointmentData(appt);
         source.appointments().stream().forEach(a -> destination.appointments().add(a));
@@ -1088,7 +1089,7 @@ public abstract class Repeat {
     }
 
     /**
-     * Returns a stream of valid start dates.
+     * Returns a stream of valid start dates excluding exceptions.
      * 
      * @return
      */
@@ -1097,6 +1098,22 @@ public abstract class Repeat {
         return Stream
             .iterate(getStartLocalDateTime(), (a) -> { return a.with(new NextAppointment()); }) // infinite stream of valid dates
             .filter(a -> ! getExceptions().contains(a));                             // filter out deleted dates
+    }
+    
+    /**
+     * Returns a stream of valid start dates including exceptions.
+     * 
+     * @return
+     */
+    public Stream<LocalDateTime> streamOfDatesEndlessWithExceptions()
+    {
+        return Stream
+            .iterate(getStartLocalDateTime(), (a) -> { return a.with(new NextAppointment()); }); // infinite stream of valid dates
+    }
+    
+    public boolean isValidEvent(LocalDateTime a) {
+//        streamOfDatesEndless
+        return false;
     }
     
     /**
@@ -1466,7 +1483,7 @@ public abstract class Repeat {
     public void unbindAll() {
         countProperty().unbind();
         endCriteriaProperty().unbind();
-        untilLocalDateTimeProperty().unbind();
+        untilProperty().unbind();
         frequencyProperty().unbind();
         repeatDayOfMonthProperty().unbind();
         repeatDayOfWeekProperty().unbind();
@@ -1474,7 +1491,7 @@ public abstract class Repeat {
         getDayOfWeekMap().entrySet()
                                    .stream()
                                    .forEach(a -> a.getValue().unbind());
-        startLocalDateProperty().unbind();
+        startLocalDateTimeProperty().unbind();
     }
     
     /**
@@ -1487,7 +1504,6 @@ public abstract class Repeat {
         @Override
         public Temporal adjustInto(Temporal temporal)
         {
-            final int maxI = getInterval();
             final TemporalField weekOfYear;
             final int initialWeek;
             int currentWeek = 0;
@@ -1556,7 +1572,7 @@ public abstract class Repeat {
                 { // all other IntervalUnit types (not WEEKLY) increment counter i for every cycle of anonymous inner class TemporalAdjuster
                     i++;
                 }
-            } while (i < maxI); // end of while looping anonymous inner class
+            } while (i < getInterval()); // end of while looping anonymous inner class
         return temporal;
         }
     }

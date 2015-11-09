@@ -606,7 +606,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withFrequency(Frequency.DAILY)
                 .withInterval(3)
                 .withEndCriteria(EndCriteria.UNTIL)
-                .withUntilLocalDateTime(LocalDateTime.of(2015, 10, 25, 10, 15))
+                .withUntil(LocalDateTime.of(2015, 10, 25, 10, 15))
                 .withAppointmentData(a2);
         final Repeat repeat2 = repeats.get(1);
         assertEquals(1, repeat2.appointments().size());
@@ -699,7 +699,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withFrequency(Frequency.YEARLY)
                 .withEndCriteria(EndCriteria.UNTIL)
 //                .withCount(2)
-                .withUntilLocalDateTime(LocalDateTime.of(2016, 10, 7, 10, 15)) // should end after last appointment or before start of next repeat?
+                .withUntil(LocalDateTime.of(2016, 10, 7, 10, 15)) // should end after last appointment or before start of next repeat?
                 .withAppointmentData(a2);
         final Repeat repeat2 = repeats.get(1);
         assertEquals(0, repeat2.appointments().size());
@@ -829,7 +829,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withDayOfWeek(DayOfWeek.FRIDAY, true)
                 .withInterval(2)
                 .withEndCriteria(EndCriteria.UNTIL)
-                .withUntilLocalDateTime(LocalDateTime.of(2015, 12, 2, 10, 15))
+                .withUntil(LocalDateTime.of(2015, 12, 2, 10, 15))
                 .withAppointmentData(a2);
         final Repeat repeat2 = repeats.get(1);
         assertEquals(2, repeat2.appointments().size());

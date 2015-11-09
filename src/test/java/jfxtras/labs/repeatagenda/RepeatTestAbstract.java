@@ -138,7 +138,7 @@ public abstract class RepeatTestAbstract {
 //                .withStartLocalTime(LocalTime.of(8, 45))
 //                .withEndLocalTime(LocalTime.of(10, 15))
                 .withEndCriteria(EndCriteria.UNTIL)
-                .withUntilLocalDateTime(LocalDateTime.of(2016, 10, 7, 10, 15))
+                .withUntil(LocalDateTime.of(2016, 10, 7, 10, 15))
                 .withFrequency(Frequency.MONTHLY)
                 .withMonthlyRepeat(MonthlyRepeat.DAY_OF_MONTH)
                 .withAppointmentData(a2);
@@ -155,7 +155,7 @@ public abstract class RepeatTestAbstract {
 //                .withStartLocalTime(LocalTime.of(8, 45))
 //                .withEndLocalTime(LocalTime.of(10, 15))
                 .withEndCriteria(EndCriteria.UNTIL)
-                .withUntilLocalDateTime(LocalDateTime.of(2016, 10, 20, 10, 15))
+                .withUntil(LocalDateTime.of(2016, 10, 20, 10, 15))
                 .withFrequency(Frequency.MONTHLY)
                 .withMonthlyRepeat(MonthlyRepeat.DAY_OF_WEEK)
                 .withAppointmentData(a2);
@@ -231,7 +231,7 @@ public abstract class RepeatTestAbstract {
 //                .withStartLocalTime(LocalTime.now().minusHours(5))
 //                .withEndLocalTime(LocalTime.now().minusHours(3))
                 .withEndCriteria(EndCriteria.UNTIL)
-                .withUntilLocalDateTime(LocalDateTime.of(LocalDate.now().minusDays(1).plusMonths(3),LocalTime.of(hour, minute).plusSeconds(9000)))
+                .withUntil(LocalDateTime.of(LocalDate.now().minusDays(1).plusMonths(3),LocalTime.of(hour, minute).plusSeconds(9000)))
                 .withFrequency(Frequency.MONTHLY)
                 .withMonthlyRepeat(MonthlyRepeat.DAY_OF_MONTH)
                 .withAppointmentData(a2);
