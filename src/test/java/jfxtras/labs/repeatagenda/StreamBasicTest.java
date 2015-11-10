@@ -17,7 +17,7 @@ public class StreamBasicTest extends StreamTestAbstract {
 //                , new int[]{1, 5} ); // 1st and 5th day of the month
 //        .stream();
         Monthly monthly = new Monthly(LocalDateTime.of(2015, 11, 9, 10, 0));
-        monthly.setInterval(2);
+        monthly.setInterval(1);
         monthly.stream().limit(10).forEach(System.out::println);
     }
 }

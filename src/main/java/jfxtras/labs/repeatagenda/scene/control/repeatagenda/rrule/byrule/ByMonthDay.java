@@ -1,5 +1,6 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byrule;
 
+import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -14,11 +15,14 @@ public class ByMonthDay extends ByRuleAbstract
 {
 
     private int[] daysOfMonth; // sorted array of days of month to apply the rule (i.e. 5, 10 = 5th and 10th days of the month)
-
+    private int[] validDays;
+    
     // Constructor
     public ByMonthDay(Frequency frequency, int... daysOfMonth) {
         super(frequency);
         this.daysOfMonth = daysOfMonth;
+        int daysInMonth = getFrequency().getStartLocalDateTime().toLocalDate().lengthOfMonth();
+        validDays = makeValidDays(daysInMonth, daysOfMonth);
     }
 
 //    // TODO - SHOULD I PASS FREQUENCY IN ITS ENTIRITY?
@@ -36,6 +40,25 @@ public class ByMonthDay extends ByRuleAbstract
 //    public BooleanProperty repeatDayOfMonthProperty() { return repeatDayOfMonth; }
 //    private void setRepeatDayOfMonth(Boolean repeatDayOfMonth) { this.repeatDayOfMonth.set(repeatDayOfMonth); }
 
+    public static int[] makeValidDays(int daysInMonth, int[] daysOfMonth)
+    {
+        int[] validDays = new int[daysOfMonth.length];
+        int i=0;
+        for (int day : daysOfMonth)
+        {
+            if (day == 0 || day < -31 || day > 31) throw new InvalidParameterException("Invalid BYMONTHDAY value (" + day + ").  Must be 1 to 31 or -31 to -1.");
+            if (day > 0)
+            {
+                validDays[i] = day;
+            } else
+            {
+                validDays[i] = (daysInMonth + day + 1); // negative daysOfMonth (-3 = 3rd to last day of month)                
+            }
+            i++;
+        }
+        return validDays;
+    }
+    
     @Override
     public Stream<LocalDateTime> stream()
     { // infinite stream of valid dates filtered by rule
@@ -47,22 +70,23 @@ public class ByMonthDay extends ByRuleAbstract
             int startMonth = getFrequency().getStartLocalDateTime().toLocalDate().getMonthValue();
 //            Stream<LocalDateTime> s1 = 
             // Below stream works, but its not efficient.  Try to find a better approach.
-            return Stream.iterate(getFrequency().getStartLocalDateTime(), (d) -> { return d.plusDays(1); }) // stream of all days starting at startLocalDateTime
-                    .filter(d ->
-                    { // remove all but qualifying days
-                        int myMonth = d.toLocalDate().getMonthValue();
-//                        System.out.println((myMonth - startMonth) + " " + getFrequency().getInterval() + " " + (myMonth - startMonth) % getFrequency().getInterval());
-                        if ((myMonth - startMonth) % getFrequency().getInterval() != 0) return false; // false if wrong month
-                        int myDay = d.toLocalDate().getDayOfMonth();
-                        int daysInMonth = d.toLocalDate().lengthOfMonth();
-                        for (int day : daysOfMonth)
-                        {
-//                            System.out.println("match day " + myDay);
-                            if (myDay == day) return true;
-                            if ((day < 0) && (myDay == daysInMonth - day)) return true; // negative daysOfMonth (-3 = 3rd to last day of month)
-                        }
-                        return false;
-                    });
+//            return Stream.iterate(getFrequency().getStartLocalDateTime(), (d) -> { return d.plusDays(1); }) // stream of all days starting at startLocalDateTime
+//                    .filter(d ->
+//                    { // remove all but qualifying days
+//                        int myMonth = d.toLocalDate().getMonthValue();
+//                        if ((myMonth - startMonth) % getFrequency().getInterval() != 0) return false; // false if wrong month
+//                        int myDay = d.toLocalDate().getDayOfMonth();
+//                        int daysInMonth = d.toLocalDate().lengthOfMonth();
+//                        for (int day : daysOfMonth)
+//                        {
+////                            System.out.println("match day " + myDay);
+//                            if (myDay == day) return true;
+//                            if ((day < 0) && (myDay == daysInMonth - day)) return true; // negative daysOfMonth (-3 = 3rd to last day of month)
+//                        }
+//                        return false;
+//                    });
+            
+            return Stream.iterate(getFrequency().getStartLocalDateTime(), (a) -> { return a.with(new NextAppointment()); });
 
 //            Stream<LocalDateTime> stream = null;
 //            LocalDateTime startDateTime = getFrequency().getStartLocalDateTime();
@@ -113,41 +137,26 @@ public class ByMonthDay extends ByRuleAbstract
         @Override
         public Temporal adjustInto(Temporal temporal)
         {
-//            LocalDate inputDate = LocalDate.from(temporal);
-//            Month m = LocalDate.from(temporal).getMonth();
-            int plusDays;
-            int currentDay = LocalDate.from(temporal).getDayOfMonth();
-            int lastDay = daysOfMonth[daysOfMonth.length-1];
-            if (currentDay == lastDay)
-            { // skip interval-1 months if on last day of months day array
-                int monthsSkipped = getFrequency().getInterval()-1;
-                temporal = temporal.plus(Period.ofMonths(monthsSkipped));
-                plusDays = daysOfMonth[0] - currentDay;
+            int dayShift = 0;
+            int myDay = LocalDate.from(temporal).getDayOfMonth();
+            if (myDay == validDays[validDays.length-1])
+            { // if last day in validDays then skip months and make new array of validDays
+                int interval = getFrequency().getInterval();
+                temporal = temporal.plus(Period.ofMonths(interval)); // adjust month
+                validDays = makeValidDays(LocalDate.from(temporal).lengthOfMonth(), daysOfMonth);
+                dayShift = validDays[0] - myDay;
             } else
-            {
-                for (int day : daysOfMonth)
-                {    
-                    if (day > currentDay) plusDays = day;
+            { // get next day in validDays array
+                for (int day : validDays)
+                {
+                    if (day > myDay)
+                    {
+                        dayShift = day - myDay;
+                        break;
+                    }
                 }
             }
-            
-            
-//            for (int i=0; i<getFrequency().getInterval(); i++)
-//            { // loop that counts number of valid dates for total time interval (repeatFrequency)
-//                temporal = temporal.with(new TemporalAdjuster()
-//                { // anonymous inner class that finds next valid date
-//                    @Override
-//                    public Temporal adjustInto(Temporal temporal)
-//                    {
-//                        for (int days : daysOfMonth)
-//                        {    
-//                            
-//                        }
-//                        return temporal.plus(Period.ofMonths(1));
-//                    }
-//                });
-//            }; // end of looping anonymous inner class
-        return temporal;
+            return temporal.plus(Period.ofDays(dayShift)); // adjust day
         }
     }
 
