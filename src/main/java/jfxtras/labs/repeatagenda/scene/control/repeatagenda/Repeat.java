@@ -67,6 +67,20 @@ public abstract class Repeat {
     public Class<? extends RepeatableAppointment> getAppointmentClass() { return appointmentClass; }
     public Repeat withAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
 
+    /** Start date/time of repeat rule */
+    final private ObjectProperty<LocalDateTime> startLocalDateTime = new SimpleObjectProperty<LocalDateTime>();
+    public ObjectProperty<LocalDateTime> startLocalDateTimeProperty() { return startLocalDateTime; }
+    public LocalDateTime getStartLocalDateTime() { return startLocalDateTime.getValue(); }
+    public void setStartLocalDate(LocalDateTime startDate) { this.startLocalDateTime.set(startDate); }
+    public Repeat withStartLocalDate(LocalDateTime startDate) { setStartLocalDate(startDate); return this; }
+    
+    /** Seconds duration of appointments */
+    final private ObjectProperty<Integer> durationInSeconds = new SimpleObjectProperty<Integer>(this, "durationProperty");
+    public ObjectProperty<Integer> durationInSecondsProperty() { return durationInSeconds; }
+    public Integer getDurationInSeconds() { return durationInSeconds.getValue(); }
+    public void setDurationInSeconds(Integer value) { durationInSeconds.setValue(value); }
+    public Repeat withDurationInSeconds(Integer value) { setDurationInSeconds(value); return this; } 
+    
     // sequential int key part of UID
     private static Integer nextKey = 0;
     private Integer key;
@@ -86,6 +100,10 @@ public abstract class Repeat {
         String domain = "jfxtras-agenda";
         return dateTime + keyString + domain;
     }
+    
+    /** FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.) */
+    public Frequency getFrequencyRule() { return frequencyRule; }
+    private Frequency frequencyRule; // Experimental
     
     /** time period between new appointments (daily, weekly, etc.) */
     final private ObjectProperty<Frequency> frequency = new SimpleObjectProperty<Frequency>();
@@ -174,21 +192,7 @@ public abstract class Repeat {
         }
     }
     public Repeat withMonthlyRepeat(MonthlyRepeat monthlyRepeat) { setMonthlyRepeat(monthlyRepeat); return this; }
-    
-    /** Start date/time of repeat rule */
-    final private ObjectProperty<LocalDateTime> startLocalDateTime = new SimpleObjectProperty<LocalDateTime>();
-    public ObjectProperty<LocalDateTime> startLocalDateTimeProperty() { return startLocalDateTime; }
-    public LocalDateTime getStartLocalDateTime() { return startLocalDateTime.getValue(); }
-    public void setStartLocalDate(LocalDateTime startDate) { this.startLocalDateTime.set(startDate); }
-    public Repeat withStartLocalDate(LocalDateTime startDate) { setStartLocalDate(startDate); return this; }
-    
-    /** Seconds duration of appointments */
-    final private ObjectProperty<Integer> durationInSeconds = new SimpleObjectProperty<Integer>(this, "durationProperty");
-    public ObjectProperty<Integer> durationInSecondsProperty() { return durationInSeconds; }
-    public Integer getDurationInSeconds() { return durationInSeconds.getValue(); }
-    public void setDurationInSeconds(Integer value) { durationInSeconds.setValue(value); }
-    public Repeat withDurationInSeconds(Integer value) { setDurationInSeconds(value); return this; } 
-    
+        
     final private ObjectProperty<EndCriteria> endCriteria = new SimpleObjectProperty<EndCriteria>();
     public ObjectProperty<EndCriteria> endCriteriaProperty() { return endCriteria; }
     public EndCriteria getEndCriteria() { return endCriteria.getValue(); }

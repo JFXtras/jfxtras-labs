@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import com.google.common.collect.Iterators;
 
-public class MergeStreamTest extends StreamTestAbstract {
+public class StreamMergeTest extends StreamTestAbstract {
 
     @Test
     public void mergeStreamTest1()
