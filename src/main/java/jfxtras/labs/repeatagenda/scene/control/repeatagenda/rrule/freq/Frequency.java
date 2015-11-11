@@ -42,18 +42,29 @@ public interface Frequency {
 //    /** Initial stream of dates */
 //    void setInStream(Stream<LocalDateTime> inStream);
     
-    /** Resulting stream of date/times by applying rules */
-    Stream<LocalDateTime> stream();
+    /** Resulting stream of date/times by applying rules 
+     * Starts on startDateTime, which must be a valid event date/time, not necessarily the
+     * first date/time (DTSTART) in the sequence. */
+    Stream<LocalDateTime> stream(LocalDateTime startDateTime);
 
+    /** Resulting stream of date/times by applying rules 
+     * Uses startLocalDateTime - first date/time in sequence (DTSTART) as a default starting point*/
+    default Stream<LocalDateTime> stream()
+    {
+        return stream(getStartLocalDateTime());
+    };
 
-
-    /** Enum of implemented BYxxx rules */
+    /** Enumeration of FREQ rules */
     public static enum FrequencyEnum
     {
-        DAILY
-      , WEEKLY
+        YEARLY
       , MONTHLY
-      , YEARLY
+      , WEEKLY
+      , DAILY
+      , HOURLY // Not implemented
+      , MINUTELY // Not implemented
+      , SECONDLY // Not implemented
+      
     }
     
 }

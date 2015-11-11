@@ -15,7 +15,6 @@ public abstract class ByRuleAbstract implements ByRule {
     ByRuleAbstract(Frequency frequency)
     {
         this.frequency = frequency;
-//        this.inStream = inStream;
     }    
 
 

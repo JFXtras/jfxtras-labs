@@ -2,7 +2,6 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq;
 
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
 import java.util.stream.Stream;
 
@@ -11,6 +10,9 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx.ByRule;
 
 public class Daily extends FrequencyAbstract
 {    
+    // adjusts temporal parameter to become date/time of next event
+    private final TemporalAdjuster dailyAdjuster = (temporal) -> temporal.plus(Period.ofDays(getInterval()));
+
     @Override public FrequencyEnum frequencyEnum() { return FrequencyEnum.DAILY; }
 
     // Constructor
@@ -20,36 +22,22 @@ public class Daily extends FrequencyAbstract
     }
 
     @Override
-    public Stream<LocalDateTime> stream()
+    public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
-        Stream<LocalDateTime> s;
-        if (getByRules().isEmpty())
-        { // if no rules, return stream repeating monthly on day of month matching startLocalDateTime
-            s = Stream.iterate(getStartLocalDateTime(), (a) -> { return a.with(new NextAppointment()); });
-        } else
-        {
+        Stream<LocalDateTime> stream = Stream.iterate(getStartLocalDateTime(), (a) -> { return a.with(dailyAdjuster); });
+//        if (! getByRules().isEmpty())
+//        {
             System.out.println("processing rules");
-            s = Stream.iterate(getStartLocalDateTime(), (a) -> { return a.with(new NextAppointment()); });
-            for (ByRule r : getByRules())
+            for (ByRule rule : getByRules())
             {
-                s = r.stream(s);
+                stream = rule.stream(stream, startDateTime);
             }
-//            return s;
-        }
+//        }
+        // Limit by COUNT
         System.out.println("getCount() " + getCount());
-        Stream<LocalDateTime> s2 = (getCount() == 0) ? s : s.limit(getCount());
-        return s2;
+        Stream<LocalDateTime> streamLimited = (getCount() == 0) ? stream : stream.limit(getCount());
+        return streamLimited;
 //        return Stream.iterate(getStartLocalDateTime(), (a) -> { return a.with(new NextAppointment()); });
     }    
     
-    /** adjusts temporal parameter to become date/time of next event */
-    private class NextAppointment implements TemporalAdjuster
-    {
-        @Override
-        public Temporal adjustInto(Temporal temporal)
-        {
-            return temporal.plus(Period.ofDays(getInterval()));
-        }
-    }
-
 }

@@ -3,12 +3,9 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx.ByMonthDay;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx.ByRule;
-
 public class Yearly extends FrequencyAbstract {
 
-    private ByRule defaultRule = new ByMonthDay(this);
+//    private ByRule defaultRule = new ByMonthDay(this);
     
     @Override public FrequencyEnum frequencyEnum() { return FrequencyEnum.YEARLY; }
     
@@ -18,7 +15,7 @@ public class Yearly extends FrequencyAbstract {
     }
 
     @Override
-    public Stream<LocalDateTime> stream() {
+    public Stream<LocalDateTime> stream(LocalDateTime start) {
         // TODO Auto-generated method stub
         return null;
     }

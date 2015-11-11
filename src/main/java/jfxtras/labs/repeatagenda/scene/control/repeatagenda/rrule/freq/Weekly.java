@@ -16,10 +16,8 @@ public class Weekly extends FrequencyAbstract
     private DayOfWeek weekStart;
 
     @Override
-    public Stream<LocalDateTime> stream() {
+    public Stream<LocalDateTime> stream(LocalDateTime start) {
         // TODO Auto-generated method stub
         return null;
     }
-   
-
 }

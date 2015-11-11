@@ -43,6 +43,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract {
               , LocalDateTime.of(2016, 2, 28, 10, 0)
               , LocalDateTime.of(2016, 3, 30, 10, 0)
                 ));
+        System.exit(0);
         assertEquals(expectedDates, madeDates);
     }
 
