@@ -1,4 +1,4 @@
-package jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byrule;
+package jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -9,7 +9,7 @@ import java.util.stream.StreamSupport;
 
 import com.google.common.collect.Iterators;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.Frequency;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq.Frequency;
 
 /**
  * BYxxx rule that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
@@ -19,14 +19,17 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.Frequency;
  */
 public interface ByRule {
 
-    /** new stream of date/times after applying BYxxx rule */
+    /** new stream of date/times made after applying BYxxx rule */
+    Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream);
+    /** new stream of date/times made after applying BYxxx rule.  Uses no starting input stream.
+     * The ByRule generates the stream.  This option is only appropriate for select Frequency/ByRule
+     * Combinations. (example: MONTHLY & BYMONTHDAY) */
     Stream<LocalDateTime> stream();
     
-    /** parent frequency rule, set in constructor */
+    /** parent FREQuency rule */
     Frequency getFrequency();
-//    void setFrequency(FrequencyEnum f);
-//    FrequencyRuleEnum getFrequency();
     
+    //I may not need this method -use flatmap instead
     public static Stream<LocalDateTime> mergeStream(Stream<LocalDateTime> stream1, Stream<LocalDateTime> stream2)
     {
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(

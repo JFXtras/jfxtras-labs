@@ -81,6 +81,11 @@ public abstract class Repeat {
     public void setDurationInSeconds(Integer value) { durationInSeconds.setValue(value); }
     public Repeat withDurationInSeconds(Integer value) { setDurationInSeconds(value); return this; } 
     
+    // TODO - MAKE A CACHE LIST OF START DATES
+    // try to avoid making new dates by starting from the first startLocalDateTime if possible
+    // having a variety of valid start date/times, spaced by 100 or so could be a good solution.
+    private List<LocalDateTime> startCache = new ArrayList<LocalDateTime>();
+    
     // sequential int key part of UID
     private static Integer nextKey = 0;
     private Integer key;

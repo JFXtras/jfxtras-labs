@@ -1,10 +1,12 @@
-package jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule;
+package jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
-public class Weekly extends FrequencyAbstract {
+public class Weekly extends FrequencyAbstract
+{
+    @Override public FrequencyEnum frequencyEnum() { return FrequencyEnum.WEEKLY; }
 
     Weekly(LocalDateTime startLocalDateTime) {
         super(startLocalDateTime);
@@ -18,12 +20,6 @@ public class Weekly extends FrequencyAbstract {
         // TODO Auto-generated method stub
         return null;
     }
-
-    @Override
-    public FrequencyEnum frequencyEnum() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
+   
 
 }
