@@ -12,19 +12,27 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq.Frequency
 /** BYMONTHDAY from RFC 5545, iCalendar */
 public class ByMonthDay extends ByRuleAbstract
 {
-    private int[] daysOfMonth; // sorted array of days of month to apply the rule (i.e. 5, 10 = 5th and 10th days of the month, -3 = 3rd from last day of month)
+    /** sorted array of days of month
+     * (i.e. 5, 10 = 5th and 10th days of the month, -3 = 3rd from last day of month)
+     * Uses a varargs parameter to allow any number of days
+     */
+    public int[] getDaysOfMonth() { return daysOfMonth; }
+    private int[] daysOfMonth;
+    public void setDaysOfMonth(int... daysOfMonth) { this.daysOfMonth = daysOfMonth; }
+    public ByRule withDaysOfMonth(int... daysOfMonth) { setDaysOfMonth(daysOfMonth); return this; }
+    
     private int[] validDays; // array of valid days of month for current month
     
-    /** Constructor with varargs to specify a group of daysOfMonth */
-    public ByMonthDay(Frequency frequency, int... daysOfMonth) {
-        super(frequency);
-        this.daysOfMonth = daysOfMonth;
-    }
+//    /** Constructor with varargs to specify a group of daysOfMonth */
+//    public ByMonthDay(Frequency frequency, int... daysOfMonth) {
+//        super(frequency);
+//        this.daysOfMonth = daysOfMonth;
+//    }
 
     /** Constructor that defaults to startLocalDateTime for dayOfMonth */
     public ByMonthDay(Frequency frequency) {
         super(frequency);
-        daysOfMonth = new int[] { getFrequency().getStartLocalDateTime().toLocalDate().getDayOfMonth() }; // get day of month for startLocalDateTime
+//        daysOfMonth = new int[] { getFrequency().getStartLocalDateTime().toLocalDate().getDayOfMonth() }; // get day of month for startLocalDateTime
     }
 
     /**
@@ -33,6 +41,10 @@ public class ByMonthDay extends ByRuleAbstract
     @Override
     public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
     {
+        if (daysOfMonth == null)
+        { // if no days specified when constructing, get day of month for startDateTime
+            daysOfMonth = new int[] { startDateTime.toLocalDate().getDayOfMonth() };
+        }
         int startDaysInMonth = startDateTime.toLocalDate().lengthOfMonth();
         validDays = makeValidDays(startDaysInMonth, daysOfMonth);
         switch (getFrequency().frequencyEnum())
@@ -70,14 +82,15 @@ public class ByMonthDay extends ByRuleAbstract
                         dates.add(lastDateOfMonth.plusDays(day+1));                        
                     }
                 }
-                System.out.println("start new");
-                dates.stream().forEach(System.out::println);
-                System.out.println("start end");
                 return dates.stream();
             });       
         }
         case WEEKLY:
             throw new InvalidParameterException("BYMONTHDAY is not available for WEEKLY frequency."); // Not available
+        case HOURLY:
+        case MINUTELY:
+        case SECONDLY:
+            throw new RuntimeException("Not implemented");
         default:
             break;
         }  

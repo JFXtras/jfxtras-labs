@@ -1,8 +1,8 @@
 package jfxtras.labs.repeatagenda;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx.ByMonthDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx.ByRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq.Daily;
@@ -11,49 +11,77 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq.Monthly;
 
 public abstract class ICalendarRepeatTestAbstract
 {
-//    protected static Monthly MONTHLY = new Monthly(LocalDateTime.of(2015, 11, 9, 10, 0));
     
     /** FREQ=MONTHLY, Basic monthly stream, repeats 9th day of every month */
-    protected static Frequency getMonthlyStream()
+    protected static RRule getMonthlyStream()
     {
-        Monthly monthly = new Monthly(LocalDateTime.of(2015, 11, 9, 10, 0));
-        return monthly;
+        RRule rule = new RRule()
+                .withStartLocalDate(LocalDateTime.of(2015, 11, 9, 10, 0));
+        Monthly monthly = new Monthly();
+        rule.setFrequency(monthly);
+        return rule;
     }
 
     /** FREQ=MONTHLY;BYMONTHDAY=-2, Monthly stream, negative day of month */
-    protected static Frequency getMonthlyStream2()
+    protected static RRule getMonthlyStream2()
     {
-        Monthly monthly = new Monthly(LocalDateTime.of(2015, 11, 29, 10, 0));
-        ByRule rule2 = new ByMonthDay(monthly, -2); // repeats 2nd to last day
-        monthly.addByRule(rule2);
-        return monthly;
+        RRule rule = new RRule()
+                .withStartLocalDate(LocalDateTime.of(2015, 11, 29, 10, 0));
+        Frequency monthly = new Monthly();
+        rule.setFrequency(monthly);
+        ByRule by = new ByMonthDay(monthly)
+                .withDaysOfMonth(-2);// repeats 2nd to last day
+        monthly.addByRule(by);
+        return rule;
     }
 
     /** FREQ=DAILY, Basic daily stream */
-    protected static Frequency getDailyStream()
+    protected static RRule getDailyStream()
     {
-        Daily daily = new Daily(LocalDateTime.of(2015, 11, 9, 10, 0));
-        return daily;
+        RRule rule = new RRule()
+                .withStartLocalDate(LocalDateTime.of(2015, 11, 9, 10, 0));
+        Frequency daily = new Daily();
+        rule.setFrequency( daily);
+        return rule;
     }
 
     /** FREQ=DAILY;INVERVAL=3;COUNT=6 */
-    protected static Frequency getDailyStream2()
+    protected static RRule getDailyStream2()
     {
-        Daily daily = new Daily(LocalDateTime.of(2015, 11, 9, 10, 0));
-        daily.setInterval(3);
-        daily.setCount(6);
-        return daily;
+        RRule rule = new RRule()
+                .withStartLocalDate(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withCount(6);
+        Frequency daily = new Daily()
+                .withInterval(3);
+        rule.setFrequency(daily);
+        return rule;
     }
-    
-//    protected static Stream<LocalDateTime> STREAM1 = 
-//            new ByMonthDay(MONTHLY
-//                    , new int[]{9, 15} ) // 9th and 15th day of the month
-//            .stream();
-    
-//    protected static Stream<LocalDateTime> STREAM2 = 
-//            new ByMonthDay(MONTHLY
-//                    , 9 ) // 9nd day of the month
-//            .stream();
-//    protected static Stream<LocalDateTime> STREAM2 = new Monthly(LocalDateTime.of(2015, 11, 9, 10, 0), 1).stream();
-    protected static final Comparator<LocalDateTime> COMPARATOR = (a1, a2) -> a1.compareTo(a2);
+
+    /** FREQ=DAILY;INVERVAL=3;COUNT=10;BYMONTHDAY=9,10,11,12,13,14 */
+    protected static RRule getDailyStream3()
+    {
+        RRule rule = new RRule()
+                .withStartLocalDate(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withCount(10);
+        Frequency daily = new Daily()
+                .withInterval(3);
+        rule.setFrequency(daily);
+        ByRule byRule = new ByMonthDay(daily)
+                .withDaysOfMonth(9,10,11,12,13,14);
+        daily.addByRule(byRule);
+        return rule;
+    }
+
+    /** FREQ=DAILY;INVERVAL=2;BYMONTHDAY=9 */
+    protected static RRule getDailyStream4()
+    {
+        RRule rule = new RRule()
+                .withStartLocalDate(LocalDateTime.of(2015, 11, 9, 10, 0));
+        Frequency daily = new Daily()
+                .withInterval(2);
+        rule.setFrequency(daily);
+        ByRule byRule = new ByMonthDay(daily); // use default repeat date from startLocalDateTime (9th of month)
+        daily.addByRule(byRule);
+        return rule;
+    }
 }

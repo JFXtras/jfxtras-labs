@@ -15,30 +15,28 @@ public class Monthly extends FrequencyAbstract {
 
 //    private ByRule defaultRule = new ByMonthDay(this);
     
-    // Constructor
-    public Monthly(LocalDateTime startLocalDateTime)
-    {
-        super(startLocalDateTime);
-    }
+//    // Constructor
+//    public Monthly(LocalDateTime startLocalDateTime)
+//    {
+//        super(startLocalDateTime);
+//    }
     
     @Override public FrequencyEnum frequencyEnum() { return FrequencyEnum.MONTHLY; }
         
     @Override
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
-        Stream<LocalDateTime> stream = Stream.iterate(getStartLocalDateTime(), (a) -> { return a.with(monthlyAdjuster); });
-//        if (! getByRules().isEmpty())
-//        {
-            System.out.println("processing rules");
-            for (ByRule rule : getByRules())
-            {
-                stream = rule.stream(stream, startDateTime);
-            }
-//        }
+        Stream<LocalDateTime> stream = Stream.iterate(startDateTime, (a) -> { return a.with(monthlyAdjuster); });
+        System.out.println("processing rules");
+        for (ByRule rule : getByRules())
+        {
+            stream = rule.stream(stream, startDateTime);
+        }
+
         // Limit by COUNT
-        System.out.println("getCount() " + getCount());
-        Stream<LocalDateTime> streamLimited = (getCount() == 0) ? stream : stream.limit(getCount());
-        return streamLimited;
+//        Stream<LocalDateTime> streamLimited = (getCount() == 0) ? stream : stream.limit(getCount());
+        // Limit by UNTIL
+        return stream;
     }
     
 }

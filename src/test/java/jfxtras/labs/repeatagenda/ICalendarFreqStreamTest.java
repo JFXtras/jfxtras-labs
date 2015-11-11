@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq.Frequency;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.RRule;
 
 public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract {
 
@@ -18,7 +18,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract {
     @Test
     public void monthlyStreamTest()
     {
-        Frequency f = getMonthlyStream();
+        RRule f = getMonthlyStream();
         List<LocalDateTime> madeDates = f.stream().limit(5).collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0)
@@ -34,7 +34,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract {
     @Test
     public void monthlyStreamTest2()
     {
-        Frequency f = getMonthlyStream2();
+        RRule f = getMonthlyStream2();
         List<LocalDateTime> madeDates = f.stream().limit(5).collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 29, 10, 0)
@@ -43,7 +43,6 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract {
               , LocalDateTime.of(2016, 2, 28, 10, 0)
               , LocalDateTime.of(2016, 3, 30, 10, 0)
                 ));
-        System.exit(0);
         assertEquals(expectedDates, madeDates);
     }
 
@@ -51,7 +50,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract {
     @Test
     public void dailyStreamTest()
     {
-        Frequency f = getDailyStream();
+        RRule f = getDailyStream();
         List<LocalDateTime> madeDates = f.stream().limit(5).collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0)
@@ -67,8 +66,8 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract {
     @Test
     public void dailyStreamTest2()
     {
-        Frequency f = getDailyStream2();
-        List<LocalDateTime> madeDates = f.stream().peek(System.out::println).collect(Collectors.toList());
+        RRule f = getDailyStream2();
+        List<LocalDateTime> madeDates = f.stream().collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0)
               , LocalDateTime.of(2015, 11, 12, 10, 0)
@@ -76,6 +75,44 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract {
               , LocalDateTime.of(2015, 11, 18, 10, 0)
               , LocalDateTime.of(2015, 11, 21, 10, 0)
               , LocalDateTime.of(2015, 11, 24, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
+
+    /** Tests daily stream with FREQ=DAILY;INVERVAL=2;BYMONTHDAY=9,10,11,12,13,14 */
+    @Test
+    public void dailyStreamTest3()
+    {
+        RRule f = getDailyStream3();
+        List<LocalDateTime> madeDates = f.stream().limit(10).collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 11, 12, 10, 0)
+              , LocalDateTime.of(2015, 12, 9, 10, 0)
+              , LocalDateTime.of(2015, 12, 12, 10, 0)
+              , LocalDateTime.of(2016, 1, 11, 10, 0)
+              , LocalDateTime.of(2016, 1, 14, 10, 0)
+              , LocalDateTime.of(2016, 2, 10, 10, 0)
+              , LocalDateTime.of(2016, 2, 13, 10, 0)
+              , LocalDateTime.of(2016, 3, 11, 10, 0)
+              , LocalDateTime.of(2016, 3, 14, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
+    
+    /** Tests daily stream with FREQ=DAILY;INVERVAL=2;BYMONTHDAY=9 */
+    @Test
+    public void dailyStreamTest4()
+    {
+        RRule f = getDailyStream4();
+        List<LocalDateTime> madeDates = f.stream().limit(6).collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 12, 9, 10, 0)
+              , LocalDateTime.of(2016, 2, 9, 10, 0)
+              , LocalDateTime.of(2016, 4, 9, 10, 0)
+              , LocalDateTime.of(2016, 5, 9, 10, 0)
+              , LocalDateTime.of(2016, 8, 9, 10, 0)
                 ));
         assertEquals(expectedDates, madeDates);
     }

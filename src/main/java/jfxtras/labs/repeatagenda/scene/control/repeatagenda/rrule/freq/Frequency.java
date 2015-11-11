@@ -15,13 +15,13 @@ public interface Frequency {
     Integer getInterval();
     void setInterval(Integer interval);
 
-    /** Number of frequency periods elapsed before next occurrence, can't be set if until is used */
-    Integer getCount();
-    void setCount(Integer count);
-    
-    /** End date/time for repeat rule, can't be set if count is used. */
-    LocalDateTime getUntil();
-    void setUntil(LocalDateTime dateTime);
+//    /** Number of frequency periods elapsed before next occurrence, can't be set if until is used */
+//    Integer getCount();
+//    void setCount(Integer count);
+//    
+//    /** End date/time for repeat rule, can't be set if count is used. */
+//    LocalDateTime getUntil();
+//    void setUntil(LocalDateTime dateTime);
     
     /** Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
      * The BYxxx rules must be applied in a specific order and can only be occur once */
@@ -32,7 +32,7 @@ public interface Frequency {
 //    void setByRules(LinkedHashSet<ByRule> c);
     
     /** startLocalDateTime from parent Repeat object */
-    LocalDateTime getStartLocalDateTime();
+//    LocalDateTime getStartLocalDateTime();
 //    void setStartLocalDateTime(LocalDateTime startLocalDateTime);
     
     /** Enum of frequency rule
@@ -47,12 +47,12 @@ public interface Frequency {
      * first date/time (DTSTART) in the sequence. */
     Stream<LocalDateTime> stream(LocalDateTime startDateTime);
 
-    /** Resulting stream of date/times by applying rules 
-     * Uses startLocalDateTime - first date/time in sequence (DTSTART) as a default starting point*/
-    default Stream<LocalDateTime> stream()
-    {
-        return stream(getStartLocalDateTime());
-    };
+//    /** Resulting stream of date/times by applying rules 
+//     * Uses startLocalDateTime - first date/time in sequence (DTSTART) as a default starting point*/
+//    default Stream<LocalDateTime> stream()
+//    {
+//        return stream(getStartLocalDateTime());
+//    };
 
     /** Enumeration of FREQ rules */
     public static enum FrequencyEnum

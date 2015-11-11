@@ -15,28 +15,26 @@ public class Daily extends FrequencyAbstract
 
     @Override public FrequencyEnum frequencyEnum() { return FrequencyEnum.DAILY; }
 
-    // Constructor
-    public Daily(LocalDateTime startLocalDateTime)
-    {
-        super(startLocalDateTime);
-    }
+//    // Constructor
+//    public Daily(LocalDateTime startLocalDateTime)
+//    {
+//        super(startLocalDateTime);
+//    }
 
     @Override
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
-        Stream<LocalDateTime> stream = Stream.iterate(getStartLocalDateTime(), (a) -> { return a.with(dailyAdjuster); });
-//        if (! getByRules().isEmpty())
-//        {
-            System.out.println("processing rules");
-            for (ByRule rule : getByRules())
-            {
-                stream = rule.stream(stream, startDateTime);
-            }
-//        }
+        Stream<LocalDateTime> stream = Stream.iterate(startDateTime, (a) -> { return a.with(dailyAdjuster); });
+
+        for (ByRule rule : getByRules())
+        {
+            stream = rule.stream(stream, startDateTime);
+        }
+
         // Limit by COUNT
-        System.out.println("getCount() " + getCount());
-        Stream<LocalDateTime> streamLimited = (getCount() == 0) ? stream : stream.limit(getCount());
-        return streamLimited;
+//        System.out.println("getCount() " + getCount());
+//        Stream<LocalDateTime> streamLimited = (getCount() == 0) ? stream : stream.limit(getCount());
+        return stream;
 //        return Stream.iterate(getStartLocalDateTime(), (a) -> { return a.with(new NextAppointment()); });
     }    
     
