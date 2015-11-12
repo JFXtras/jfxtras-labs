@@ -1,6 +1,7 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq;
 
 import java.security.InvalidParameterException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,9 +38,12 @@ public abstract class FrequencyAbstract implements Frequency {
         }
     }
     public Frequency withInterval(int interval) { setInterval(interval); return this; }
-        
-    private final List<ByRule> byRules = new ArrayList<ByRule>();
+
+    /** BYxxx Rules 
+     * Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
+     * The BYxxx rules must be applied in a specific order and can only be occur once */
     @Override public List<ByRule> getByRules() { return byRules; }
+    private final List<ByRule> byRules = new ArrayList<ByRule>();
     @Override public void addByRule(ByRule byRule)
     {
         boolean alreadyPresent = getByRules().stream().anyMatch(a -> a.getClass() == byRule.getClass());
@@ -48,6 +52,35 @@ public abstract class FrequencyAbstract implements Frequency {
                     + byRule.getClass().getName() + ") more than once.");
         }
         getByRules().add(byRule);
+    }
+    
+    /** Time unit of last rule applied.  It represents the time span to apply future changes to the output stream of date/times
+     * For example:
+     * following FREQ=WEEKLY it is WEEKS
+     * following FREQ=YEARLY it is YEARS
+     * following FREQ=YEARLY;BYWEEKNO=20 it is WEEKS
+     * following FREQ=YEARLY;BYMONTH=3 it is MONTHS
+     * following FREQ=YEARLY;BYMONTH=3;BYDAY=TH it is DAYS
+     */
+    public ChronoUnit getChronoUnit() { return chronoUnit; };
+    private ChronoUnit chronoUnit;
+    public void setChronoUnit(ChronoUnit chronoUnit)
+    {
+        switch (chronoUnit)
+        {
+        case DAYS:
+        case MONTHS:
+        case WEEKS:
+        case YEARS:
+            this.chronoUnit = chronoUnit;
+            break;
+        case HOURS:
+        case MINUTES:
+        case SECONDS:
+            throw new RuntimeException("ChronoUnit not implemented yet: " + chronoUnit);
+        default:
+            throw new RuntimeException("Invalid ChronoUnit: " + chronoUnit);
+        }
     }
 
 }

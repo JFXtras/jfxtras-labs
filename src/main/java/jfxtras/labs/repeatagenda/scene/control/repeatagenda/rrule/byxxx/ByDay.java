@@ -1,11 +1,19 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx;
 
+import static java.time.temporal.ChronoField.DAY_OF_WEEK;
+import static java.time.temporal.ChronoUnit.DAYS;
+
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Stream;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq.Frequency;
@@ -16,16 +24,26 @@ public class ByDay extends ByRuleAbstract
     /** sorted array of days of month
      * (i.e. 5, 10 = 5th and 10th days of the month, -3 = 3rd from last day of month)
      * Uses a varargs parameter to allow any number of days
+     * The list of days with ordinals must be sorted.  For example 1MO,2TU,4SA not 2TU,1MO,4SA
      */
     public ByDayPair[] getByDayPair() { return byDayPairs; }
     private ByDayPair[] byDayPairs;
     private void setByDayPair(ByDayPair... byDayPairs) { this.byDayPairs = byDayPairs; }
+//    private boolean anyByDayPairWithOrdinal = false;
 //    public ByRule withByDayPair(ByDayPair... byDayPairs) { setByDayPair(byDayPairs); return this; }
     
     public ByDay(Frequency frequency, ByDayPair... byDayPairs)
     {
         super(frequency);
         setByDayPair(byDayPairs);
+//        for (ByDayPair p : byDayPairs)
+//        {
+//            if (p.ordinal > 0 )
+//            {
+//                anyByDayPairWithOrdinal = true;
+//                break;
+//            }
+//        }
     }
 
     /** Constructor that uses DayOfWeek values without a preceding integer.  All days of the 
@@ -44,67 +62,119 @@ public class ByDay extends ByRuleAbstract
     @Override
     public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
     {
-        switch (getFrequency().frequencyEnum())
+//        switch (getFrequency().frequencyEnum())
+        switch (getFrequency().getChronoUnit())
         {
-        case DAILY:
+        case DAYS:
+            getFrequency().setChronoUnit(DAYS);
             return inStream.filter(date ->
             { // filter out all but qualifying days
                 DayOfWeek myDayOfWeek = date.toLocalDate().getDayOfWeek();
                 for (ByDayPair byDayPair : getByDayPair())
                 {
-                    if (byDayPair.day == myDayOfWeek) return true;
+                    if (byDayPair.dayOfWeek == myDayOfWeek) return true;
                 }
                 return false;
             });
-        case WEEKLY:
+        case WEEKS:
+            getFrequency().setChronoUnit(DAYS);
             return inStream.flatMap(date -> 
             { // Expand to be byDayPairs days in current week
                 List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
                 int dayOfWeekValue = date.toLocalDate().getDayOfWeek().getValue();
                 for (ByDayPair byDayPair : getByDayPair())
                 {
-                    int dayShift = byDayPair.day.getValue() - dayOfWeekValue;
+                    int dayShift = byDayPair.dayOfWeek.getValue() - dayOfWeekValue;
                     dates.add(date.plusDays(dayShift));
                 }
                 return dates.stream();
             });
-        case MONTHLY:
+        case MONTHS:
+            getFrequency().setChronoUnit(DAYS);
             return inStream.flatMap(date -> 
-            { // Expand to be byDayPairs days in current week
+            {
                 List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
+                boolean sortNeeded = false;
                 for (ByDayPair byDayPair : getByDayPair())
                 {
                     if (byDayPair.ordinal == 0)
-                        // TODO - CONSIDER ADDING ALL DAYS IN MONTH AND REMOVING THE ONES THAT DON'T MATCH
                     { // add every matching day of week in month
+                        sortNeeded = true;
                         Month myMonth = date.getMonth();
-                        for (int i=1; i<5; i++)
+                        for (int weekNum=1; weekNum<5; weekNum++)
                         {
-                            LocalDateTime newDate = date.with(TemporalAdjusters.dayOfWeekInMonth(i, byDayPair.day));
+                            LocalDateTime newDate = date.with(TemporalAdjusters.dayOfWeekInMonth(weekNum, byDayPair.dayOfWeek));
                             if (newDate.getMonth() == myMonth && ! newDate.isBefore(startDateTime)) dates.add(newDate);
                         }
                     } else
-                    {
+                    { // if never any ordinal numbers then sort is not required
                         Month myMonth = date.getMonth();
-                        LocalDateTime newDate = date.with(TemporalAdjusters.dayOfWeekInMonth(byDayPair.ordinal, byDayPair.day));
+                        LocalDateTime newDate = date.with(TemporalAdjusters.dayOfWeekInMonth(byDayPair.ordinal, byDayPair.dayOfWeek));
                         if (newDate.getMonth() == myMonth) dates.add(newDate);
                     }
                 }
+                if (sortNeeded) Collections.sort(dates);
                 return dates.stream();
-            });          
-        case YEARLY:
-        {
-        }
-        case HOURLY:
-        case MINUTELY:
-        case SECONDLY:
-            throw new RuntimeException("Not implemented"); // probably same as DAILY
+            });
+        case YEARS:
+            System.out.println("start byDay year");
+            getFrequency().setChronoUnit(DAYS);
+            return inStream.flatMap(date -> 
+            {
+                List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
+                boolean sortNeeded = false;
+                for (ByDayPair byDayPair : getByDayPair())
+                {
+                    if (byDayPair.ordinal == 0)
+                    { // add every matching day of week in year
+                        sortNeeded = true;
+                        final int startWeekNumber;
+                        if (date.getYear() == startDateTime.getYear())
+                        {
+                            WeekFields weekFields = WeekFields.of(Locale.getDefault()); 
+                            startWeekNumber = date.get(weekFields.weekOfWeekBasedYear());
+                        } else
+                        {
+                            startWeekNumber = 1;
+                        }
+                        for (int weekNum=startWeekNumber; weekNum<53; weekNum++)
+                        {
+                            LocalDateTime newDate = date.with(dayOfWeekInYear(weekNum, byDayPair.dayOfWeek));
+                            dates.add(newDate);
+                        }
+                    } else
+                    { // if never any ordinal numbers then sort is not required
+                        LocalDateTime newDate = date.with(dayOfWeekInYear(byDayPair.ordinal, byDayPair.dayOfWeek));
+                        if (! newDate.isBefore(startDateTime)) dates.add(newDate);
+                    }
+                }
+                if (sortNeeded) Collections.sort(dates);
+                return dates.stream();
+            }); 
+        case HOURS:
+        case MINUTES:
+        case SECONDS:
+            throw new RuntimeException("Not implemented ChronoUnit: " + getFrequency().getChronoUnit()); // probably same as DAILY
         default:
             break;
         }
         return null;
     }
 
+    /** Finds nth occurrence of a week in a year.  Assumes ordinal is > 0 
+     * Based on TemporalAdjusters.dayOfWeekInMonth */
+    private TemporalAdjuster dayOfWeekInYear(int ordinal, DayOfWeek dayOfWeek)
+    {
+        int dowValue = dayOfWeek.getValue();
+        return (temporal) -> {
+            Temporal temp = temporal.with(TemporalAdjusters.firstDayOfYear());
+            int curDow = temp.get(DAY_OF_WEEK);
+            int dowDiff = (dowValue - curDow + 7) % 7;
+            dowDiff += (ordinal - 1L) * 7L;  // safe from overflow
+            return temp.plus(dowDiff, DAYS);
+        };
+    }
+    
     /**
      * Contains both the day of the week and an optional positive or negative integer (ordinal).
      * If the integer is present it represents the nth occurrence of a specific day within the 
@@ -114,11 +184,11 @@ public class ByDay extends ByRuleAbstract
      */
     public static class ByDayPair
     {
-        DayOfWeek day;
+        DayOfWeek dayOfWeek;
         int ordinal = 0;
         public ByDayPair(DayOfWeek d, int i)
         {
-            day = d;
+            dayOfWeek = d;
             ordinal = i;
         }
     }

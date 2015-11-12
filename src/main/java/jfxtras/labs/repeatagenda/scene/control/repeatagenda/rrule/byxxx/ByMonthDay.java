@@ -41,9 +41,10 @@ public class ByMonthDay extends ByRuleAbstract
         }
         int startDaysInMonth = startDateTime.toLocalDate().lengthOfMonth();
         validDays = makeValidDays(startDaysInMonth, getDaysOfMonth());
-        switch (getFrequency().frequencyEnum())
+//        switch (getFrequency().frequencyEnum())
+        switch (getFrequency().getChronoUnit())
         {
-        case DAILY:
+        case DAYS:
         {
             return inStream.filter(d ->
                     { // filter out all but qualifying days
@@ -57,8 +58,8 @@ public class ByMonthDay extends ByRuleAbstract
                         return false;
                     });
         }
-        case MONTHLY:
-        case YEARLY:
+        case MONTHS:
+        case YEARS:
         {
             return inStream.flatMap(d -> 
             { // Expand to be daysOfMonth days in current month
@@ -78,11 +79,11 @@ public class ByMonthDay extends ByRuleAbstract
                 return dates.stream();
             });       
         }
-        case WEEKLY:
+        case WEEKS:
             throw new InvalidParameterException("BYMONTHDAY is not available for WEEKLY frequency."); // Not available
-        case HOURLY:
-        case MINUTELY:
-        case SECONDLY:
+        case HOURS:
+        case MINUTES:
+        case SECONDS:
             throw new RuntimeException("Not implemented"); // probably same as DAILY
         default:
             break;
