@@ -46,6 +46,44 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract {
         assertEquals(expectedDates, madeDates);
     }
 
+    /** Tests daily stream with FREQ=MONTHLY;BYDAY=TU,WE,FR */
+    @Test
+    public void monthlyStreamTest3()
+    {
+        RRule f = getMonthlyStream3();
+        List<LocalDateTime> madeDates = f.stream().limit(10).peek(System.out::println).collect(Collectors.toList());
+        System.exit(0);
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 10, 10, 0)
+              , LocalDateTime.of(2015, 11, 17, 10, 0)
+              , LocalDateTime.of(2015, 11, 24, 10, 0)
+              , LocalDateTime.of(2015, 11, 17, 10, 0)
+              , LocalDateTime.of(2015, 11, 17, 10, 0)
+              , LocalDateTime.of(2015, 11, 17, 10, 0)
+              , LocalDateTime.of(2015, 11, 17, 10, 0)
+              , LocalDateTime.of(2015, 11, 17, 10, 0)
+              , LocalDateTime.of(2015, 11, 17, 10, 0)
+              , LocalDateTime.of(2015, 11, 17, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
+    
+    /** Tests daily stream with FREQ=MONTHLY;BYDAY=-1SA */
+    @Test
+    public void monthlyStreamTest4()
+    {
+        RRule f = getMonthlyStream4();
+        List<LocalDateTime> madeDates = f.stream().limit(5).collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 28, 10, 0)
+              , LocalDateTime.of(2015, 12, 26, 10, 0)
+              , LocalDateTime.of(2016, 1, 30, 10, 0)
+              , LocalDateTime.of(2016, 2, 27, 10, 0)
+              , LocalDateTime.of(2016, 3, 26, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
+    
     /** Tests daily stream with FREQ=DAILY */
     @Test
     public void dailyStreamTest()
@@ -113,6 +151,23 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract {
               , LocalDateTime.of(2016, 4, 9, 10, 0)
               , LocalDateTime.of(2016, 5, 9, 10, 0)
               , LocalDateTime.of(2016, 8, 9, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
+    
+    /** Tests daily stream with FREQ=DAILY;INVERVAL=2;BYDAY=FR*/
+    @Test
+    public void dailyStreamTest5()
+    {
+        RRule f = getDailyStream5();
+        List<LocalDateTime> madeDates = f.stream().limit(6).collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 13, 10, 0)
+              , LocalDateTime.of(2015, 11, 27, 10, 0)
+              , LocalDateTime.of(2015, 12, 11, 10, 0)
+              , LocalDateTime.of(2015, 12, 25, 10, 0)
+              , LocalDateTime.of(2016, 1, 8, 10, 0)
+              , LocalDateTime.of(2016, 1, 22, 10, 0)
                 ));
         assertEquals(expectedDates, madeDates);
     }

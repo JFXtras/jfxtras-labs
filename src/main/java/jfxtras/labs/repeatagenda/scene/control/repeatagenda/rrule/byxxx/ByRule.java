@@ -25,15 +25,6 @@ public interface ByRule {
      * Starts on startDateTime, which must be a valid event date/time, not necessarily the
      * first date/time (DTSTART) in the sequence. */
     Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime);
-
-//    /** New stream of date/times made after applying BYxxx rule
-//     * Stream is infinite if COUNT or UNTIL not present or ends when COUNT or UNTIL condition
-//     * is met.
-//     * Uses startLocalDateTime - first date/time in sequence (DTSTART) as a default starting point */
-//    default Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream)
-//    {
-//        return stream(inStream, getFrequency().getStartLocalDateTime());
-//    };
     
     /** parent FREQuency rule */
     Frequency getFrequency();

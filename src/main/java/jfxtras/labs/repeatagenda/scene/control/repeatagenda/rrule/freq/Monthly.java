@@ -7,19 +7,11 @@ import java.util.stream.Stream;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx.ByRule;
 
-/** Repeat rule for frequency of Monthly */
+/** MONTHLY frequency rule as defined by RFC 5545 iCalendar 3.3.10 p39 */
 public class Monthly extends FrequencyAbstract {   
         
     // adjusts temporal parameter to become date/time of next event
     private final TemporalAdjuster monthlyAdjuster = (temporal) -> temporal.plus(Period.ofMonths(getInterval()));
-
-//    private ByRule defaultRule = new ByMonthDay(this);
-    
-//    // Constructor
-//    public Monthly(LocalDateTime startLocalDateTime)
-//    {
-//        super(startLocalDateTime);
-//    }
     
     @Override public FrequencyEnum frequencyEnum() { return FrequencyEnum.MONTHLY; }
         
@@ -27,15 +19,10 @@ public class Monthly extends FrequencyAbstract {
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
         Stream<LocalDateTime> stream = Stream.iterate(startDateTime, (a) -> { return a.with(monthlyAdjuster); });
-        System.out.println("processing rules");
         for (ByRule rule : getByRules())
         {
             stream = rule.stream(stream, startDateTime);
         }
-
-        // Limit by COUNT
-//        Stream<LocalDateTime> streamLimited = (getCount() == 0) ? stream : stream.limit(getCount());
-        // Limit by UNTIL
         return stream;
     }
     

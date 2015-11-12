@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx.ByRule;
 
-
+/** DAILY frequency rule as defined by RFC 5545 iCalendar 3.3.10 p39 */
 public class Daily extends FrequencyAbstract
 {    
     // adjusts temporal parameter to become date/time of next event
@@ -15,27 +15,17 @@ public class Daily extends FrequencyAbstract
 
     @Override public FrequencyEnum frequencyEnum() { return FrequencyEnum.DAILY; }
 
-//    // Constructor
-//    public Daily(LocalDateTime startLocalDateTime)
-//    {
-//        super(startLocalDateTime);
-//    }
-
+    // TODO - Maybe I can put this method in the abstract as default and put a getter on the temporal adjuster.  This
+    // depends on if the other Frequency rules use a temporal adjuster.  I don't know about weekly.
     @Override
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
         Stream<LocalDateTime> stream = Stream.iterate(startDateTime, (a) -> { return a.with(dailyAdjuster); });
-
         for (ByRule rule : getByRules())
         {
             stream = rule.stream(stream, startDateTime);
         }
-
-        // Limit by COUNT
-//        System.out.println("getCount() " + getCount());
-//        Stream<LocalDateTime> streamLimited = (getCount() == 0) ? stream : stream.limit(getCount());
         return stream;
-//        return Stream.iterate(getStartLocalDateTime(), (a) -> { return a.with(new NextAppointment()); });
     }    
     
 }

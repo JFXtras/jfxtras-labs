@@ -23,16 +23,10 @@ public class ByMonthDay extends ByRuleAbstract
     
     private int[] validDays; // array of valid days of month for current month
     
-//    /** Constructor with varargs to specify a group of daysOfMonth */
-//    public ByMonthDay(Frequency frequency, int... daysOfMonth) {
-//        super(frequency);
-//        this.daysOfMonth = daysOfMonth;
-//    }
-
-    /** Constructor that defaults to startLocalDateTime for dayOfMonth */
+    /** Constructor 
+     * If not setting daysOfMonth then defaults to startLocalDateTime for dayOfMonth */
     public ByMonthDay(Frequency frequency) {
         super(frequency);
-//        daysOfMonth = new int[] { getFrequency().getStartLocalDateTime().toLocalDate().getDayOfMonth() }; // get day of month for startLocalDateTime
     }
 
     /**
@@ -46,17 +40,16 @@ public class ByMonthDay extends ByRuleAbstract
             daysOfMonth = new int[] { startDateTime.toLocalDate().getDayOfMonth() };
         }
         int startDaysInMonth = startDateTime.toLocalDate().lengthOfMonth();
-        validDays = makeValidDays(startDaysInMonth, daysOfMonth);
+        validDays = makeValidDays(startDaysInMonth, getDaysOfMonth());
         switch (getFrequency().frequencyEnum())
         {
         case DAILY:
         {
-//            int startMonth = getFrequency().getStartLocalDateTime().toLocalDate().getMonthValue();
             return inStream.filter(d ->
                     { // filter out all but qualifying days
                         int myDay = d.toLocalDate().getDayOfMonth();
                         int myDaysInMonth = d.toLocalDate().lengthOfMonth();
-                        for (int day : daysOfMonth)
+                        for (int day : getDaysOfMonth())
                         {
                             if (myDay == day) return true;
                             if ((day < 0) && (myDay == myDaysInMonth + day + 1)) return true; // negative daysOfMonth (-3 = 3rd to last day of month)
@@ -72,7 +65,7 @@ public class ByMonthDay extends ByRuleAbstract
                 List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
                 LocalDateTime firstDateOfMonth = d.with(TemporalAdjusters.firstDayOfMonth());
                 LocalDateTime lastDateOfMonth = d.with(TemporalAdjusters.lastDayOfMonth());
-                for (int day : daysOfMonth)
+                for (int day : getDaysOfMonth())
                 {
                     if (day > 0)
                     {
@@ -90,10 +83,10 @@ public class ByMonthDay extends ByRuleAbstract
         case HOURLY:
         case MINUTELY:
         case SECONDLY:
-            throw new RuntimeException("Not implemented");
+            throw new RuntimeException("Not implemented"); // probably same as DAILY
         default:
             break;
-        }  
+        }
         return null;
     }
 

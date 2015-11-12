@@ -1,8 +1,10 @@
 package jfxtras.labs.repeatagenda;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.RRule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx.ByMonthDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx.ByRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq.Daily;
@@ -35,6 +37,30 @@ public abstract class ICalendarRepeatTestAbstract
         return rule;
     }
 
+    /** FREQ=MONTHLY;BYDAY=TU,WE,FR */
+    protected static RRule getMonthlyStream3()
+    {
+        RRule rule = new RRule()
+                .withStartLocalDate(LocalDateTime.of(2015, 11, 9, 10, 0));
+        Frequency monthly = new Monthly();
+        rule.setFrequency(monthly);
+        ByRule byRule = new ByDay(monthly, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY);
+        monthly.addByRule(byRule);
+        return rule;
+    }
+
+    /** FREQ=MONTHLY;BYDAY=-1SA */
+    protected static RRule getMonthlyStream4()
+    {
+        RRule rule = new RRule()
+                .withStartLocalDate(LocalDateTime.of(2015, 11, 9, 10, 0));
+        Frequency monthly = new Monthly();
+        rule.setFrequency(monthly);
+        ByRule byRule = new ByDay(monthly, new ByDay.ByDayPair(DayOfWeek.SATURDAY, -1));
+        monthly.addByRule(byRule);
+        return rule;
+    }
+    
     /** FREQ=DAILY, Basic daily stream */
     protected static RRule getDailyStream()
     {
@@ -84,4 +110,18 @@ public abstract class ICalendarRepeatTestAbstract
         daily.addByRule(byRule);
         return rule;
     }
+    
+    /** FREQ=DAILY;INVERVAL=2;BYDAY=FR */
+    protected static RRule getDailyStream5()
+    {
+        RRule rule = new RRule()
+                .withStartLocalDate(LocalDateTime.of(2015, 11, 9, 10, 0));
+        Frequency daily = new Daily()
+                .withInterval(2);
+        rule.setFrequency(daily);
+        ByRule byRule = new ByDay(daily, DayOfWeek.FRIDAY);
+        daily.addByRule(byRule);
+        return rule;
+    }
+
 }

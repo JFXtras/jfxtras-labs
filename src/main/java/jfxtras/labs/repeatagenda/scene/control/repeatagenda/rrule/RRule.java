@@ -2,7 +2,12 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -10,7 +15,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq.Frequency;
 
-/** Recurrence Rule, RRULE, as defined in RFC 5545 3.8.5.3, page 122 */
+/** Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122 */
 public class RRule {
 
     /** DTSTART from RFC 5545 iCalendar 3.8.2.4 page 97
@@ -27,7 +32,7 @@ public class RRule {
     public void setFrequency(Frequency frequency) { this.frequency = frequency; }
     
     /** COUNT: (RFC 5545 iCalendar 3.3.10, page 41) number of events to occur before repeat rule ends */
-    // Uses lazy initialization of property because often count stays as the default value of 0
+    // Uses lazy initialization of property because often COUNT stays as the default value of 0
     public IntegerProperty countProperty()
     {
         if (count == null) count = new SimpleIntegerProperty(this, "count", _count);
@@ -38,29 +43,72 @@ public class RRule {
     private int _count = 0;
     public void setCount(Integer i)
     {
-        if (i > 0)
+        if (getUntil() == null)
         {
-            if (count == null)
+            if (i > 0)
             {
-                _count = i;
+                if (count == null)
+                {
+                    _count = i;
+                } else
+                {
+                    count.set(i);
+                }
             } else
             {
-                count.set(i);
+                throw new InvalidParameterException("COUNT can't be less than 1. (" + i + ")");
             }
         } else
         {
-            throw new InvalidParameterException("COUNT can't be less than 1. (" + i + ")");
+            throw new InvalidParameterException("can't set COUNT if UNTIL is already set.");
         }
     }
     public RRule withCount(int count) { setCount(count); return this; }
+
+    /** UNTIL: (RFC 5545 iCalendar 3.3.10, page 41) date/time repeat rule ends */
+    // Uses lazy initialization of property because often UNTIL stays as the default value of 0
+    public SimpleObjectProperty<LocalDateTime> untilProperty()
+    {
+        if (until == null) until = new SimpleObjectProperty<LocalDateTime>(this, "until", _until);
+        return until;
+    }
+    private SimpleObjectProperty<LocalDateTime> until;
+    public LocalDateTime getUntil() { return (until == null) ? _until : until.getValue(); }
+    private LocalDateTime _until;
+    public void setUntil(LocalDateTime t)
+    {
+        if (getCount() > 0)
+        {
+            if (until == null)
+            {
+                _until = t;
+            } else
+            {
+                until.set(t);
+            }
+        } else
+        {
+            throw new InvalidParameterException("can't set UNTIL if COUNT is already set.");
+        }
+    }
+    public RRule withUntil(int until) { setCount(until); return this; }
     
     /** Resulting stream of date/times by applying rules 
      * Starts on startDateTime, which must be a valid event date/time, not necessarily the
      * first date/time (DTSTART) in the sequence. */
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
-        return (getCount() == 0) ? frequency.stream(startDateTime) : frequency.stream(startDateTime).limit(getCount());
-
+        if (getCount() > 0)
+        {
+            return frequency.stream(startDateTime).limit(getCount());
+        } else if (getUntil() != null)
+        {
+//            return frequency
+//                    .stream(startDateTime)
+//                    .takeWhile(a -> a.isBefore(getUntil())); // available in Java 9
+            return takeWhile(frequency.stream(startDateTime), a -> a.isBefore(LocalDateTime.of(2015, 11, 19, 10, 0)));
+        }
+        return frequency.stream(startDateTime);
     };
 
     /** Resulting stream of date/times by applying rules 
@@ -69,6 +117,31 @@ public class RRule {
     {
         return stream(getStartLocalDateTime());
     }
+    
+    // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate
+    static <T> Spliterator<T> takeWhile(
+            Spliterator<T> splitr, Predicate<? super T> predicate) {
+          return new Spliterators.AbstractSpliterator<T>(splitr.estimateSize(), 0) {
+            boolean stillGoing = true;
+            @Override public boolean tryAdvance(Consumer<? super T> consumer) {
+              if (stillGoing) {
+                boolean hadNext = splitr.tryAdvance(elem -> {
+                  if (predicate.test(elem)) {
+                    consumer.accept(elem);
+                  } else {
+                    stillGoing = false;
+                  }
+                });
+                return hadNext && stillGoing;
+              }
+              return false;
+            }
+          };
+        }
 
+        static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
+           return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
+        }
+    
 
 }
