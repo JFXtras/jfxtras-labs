@@ -183,6 +183,20 @@ public abstract class ICalendarRepeatTestAbstract
         return rule;
     }
 
+    /** FREQ=MONTHLY;BYDAY=FR;BYMONTHDAY=13 Every Friday the 13th, forever: */
+    protected static RRule getMonthlyStream5()
+    {
+        RRule rule = new RRule(null)
+                .withStartLocalDate(LocalDateTime.of(1997, 9, 2, 10, 0));
+        Frequency monthly = new Monthly();
+        rule.setFrequency(monthly);
+        ByRule byRule = new ByDay(monthly, DayOfWeek.FRIDAY);
+        monthly.addByRule(byRule);
+        ByRule byRule2 = new ByMonthDay(monthly, 13);
+        monthly.addByRule(byRule2);
+        return rule;
+    }
+    
     /** FREQ=WEEKLY, Basic weekly stream */
     protected static RRule getWeeklyStream1()
     {

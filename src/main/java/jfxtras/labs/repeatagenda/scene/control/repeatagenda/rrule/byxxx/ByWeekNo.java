@@ -59,7 +59,7 @@ public class ByWeekNo extends ByRuleAbstract
             if (firstDayOfWeek != getWeekStart())
             {
                 switch (weekStart)
-                { // Pick a Locale that matches the first day of week specifed.
+                { // Pick a Locale that matches the first day of week specified.
                 case MONDAY:
                     oldLocale = Locale.getDefault();
                     Locale.setDefault(Locale.FRANCE);

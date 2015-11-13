@@ -1,5 +1,7 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
@@ -47,13 +49,13 @@ public class ByMonthDay extends ByRuleAbstract
         { // if no days specified when constructing, get day of month for startDateTime
             daysOfMonth = new int[] { startDateTime.toLocalDate().getDayOfMonth() };
         }
-        int startDaysInMonth = startDateTime.toLocalDate().lengthOfMonth();
+//        int startDaysInMonth = startDateTime.toLocalDate().lengthOfMonth();
 //        validDays = makeValidDays(startDaysInMonth, getDaysOfMonth());
 //        switch (getFrequency().frequencyEnum())
         switch (getFrequency().getChronoUnit())
         {
         case DAYS:
-        {
+            getFrequency().setChronoUnit(DAYS);
             return inStream.filter(d ->
                     { // filter out all but qualifying days
                         int myDay = d.toLocalDate().getDayOfMonth();
@@ -65,10 +67,9 @@ public class ByMonthDay extends ByRuleAbstract
                         }
                         return false;
                     });
-        }
         case MONTHS:
         case YEARS:
-        {
+            getFrequency().setChronoUnit(DAYS);
             return inStream.flatMap(d -> 
             { // Expand to be daysOfMonth days in current month
                 List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
@@ -86,7 +87,6 @@ public class ByMonthDay extends ByRuleAbstract
                 }
                 return dates.stream();
             });       
-        }
         case WEEKS:
             throw new InvalidParameterException("BYMONTHDAY is not available for WEEKLY frequency."); // Not available
         case HOURS:

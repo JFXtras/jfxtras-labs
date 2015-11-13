@@ -107,7 +107,6 @@ public class ByDay extends ByRuleAbstract
                 return dates.stream();
             });
         case YEARS:
-            System.out.println("start byDay year");
             getFrequency().setChronoUnit(DAYS);
             return inStream.flatMap(date -> 
             {
