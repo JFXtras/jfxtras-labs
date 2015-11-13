@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
@@ -147,8 +146,8 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract {
     @Test
     public void yearlyStreamTest8()
     {
-        Locale oldLocale = Locale.getDefault();
-        Locale.setDefault(Locale.FRANCE); // has Monday as first day of week system.  US is Sunday which causes an error.
+//        Locale oldLocale = Locale.getDefault();
+//        Locale.setDefault(Locale.FRANCE); // has Monday as first day of week system.  US is Sunday which causes an error.
         RRule f = getYearlyStream8();
         List<LocalDateTime> madeDates = f.stream().limit(5).collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -159,7 +158,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract {
               , LocalDateTime.of(2001, 5, 14, 10, 0)
                 ));
         assertEquals(expectedDates, madeDates);
-        Locale.setDefault(oldLocale);
+//        Locale.setDefault(oldLocale);
     }
     
     /** Tests daily stream with FREQ=MONTHLY */

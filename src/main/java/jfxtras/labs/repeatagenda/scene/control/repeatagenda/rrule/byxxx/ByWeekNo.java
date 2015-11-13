@@ -31,7 +31,13 @@ public class ByWeekNo extends ByRuleAbstract
         }
         this.weekNumbers = weekNumbers;
     }
-    public ByRule withWeekNumbers(int... weekNumbers) { setWeekNumbers(weekNumbers); return this; }
+    public ByWeekNo withWeekNumbers(int... weekNumbers) { setWeekNumbers(weekNumbers); return this; }
+
+    /** Start of week - default start of week is Monday */
+    public DayOfWeek getWeekStart() { return weekStart; }
+    private DayOfWeek weekStart = DayOfWeek.MONDAY;
+    public void setWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; }
+
     
     /** Constructor requires weeks of the year value(s) */
     public ByWeekNo(Frequency frequency, int...weekNumbers)
@@ -47,20 +53,49 @@ public class ByWeekNo extends ByRuleAbstract
         {
         case YEARS:
             getFrequency().setChronoUnit(WEEKS);
-            return inStream.flatMap(date -> 
+            Locale oldLocale = null;
+            WeekFields weekFields = WeekFields.of(Locale.getDefault());
+            DayOfWeek firstDayOfWeek = weekFields.getFirstDayOfWeek();
+            if (firstDayOfWeek != getWeekStart())
+            {
+                switch (weekStart)
+                { // Pick a Locale that matches the first day of week specifed.
+                case MONDAY:
+                    oldLocale = Locale.getDefault();
+                    Locale.setDefault(Locale.FRANCE);
+                    break;
+                case SUNDAY:
+                    oldLocale = Locale.getDefault();
+                    Locale.setDefault(Locale.US);
+                    break;
+                case FRIDAY:
+                case SATURDAY:
+                case THURSDAY:
+                case TUESDAY:
+                case WEDNESDAY:
+                default:
+                    throw new RuntimeException("Not implemented start of week " + weekStart);
+                }
+            }
+            WeekFields weekFields2 = WeekFields.of(Locale.getDefault());
+            if (weekFields2.getFirstDayOfWeek() != getWeekStart()) throw new RuntimeException("Can't match first day of week " + getWeekStart());
+
+            // Make output stream
+            Stream<LocalDateTime> outStream = inStream.flatMap(date -> 
             { // Expand to include matching days in all months
                 DayOfWeek dayOfWeek = startDateTime.getDayOfWeek();
-                WeekFields weekFields = WeekFields.of(Locale.getDefault());
                 List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
                 for (int myWeekNumber: getWeekNumbers())
                 {
                     LocalDateTime newDate = date.with(TemporalAdjusters.next(dayOfWeek));
-                    int newDateWeekNumber = newDate.get(weekFields.weekOfWeekBasedYear());
+                    int newDateWeekNumber = newDate.get(weekFields2.weekOfWeekBasedYear());
                     int weekShift = myWeekNumber - newDateWeekNumber;
                     dates.add(newDate.plusWeeks(weekShift));
                 }
                 return dates.stream();
             });
+            if (oldLocale != null) Locale.setDefault(oldLocale); // if changed, return Locale to former setting
+            return outStream;
         case DAYS:
         case WEEKS:
         case MONTHS:

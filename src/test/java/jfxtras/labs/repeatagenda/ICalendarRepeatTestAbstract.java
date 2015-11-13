@@ -120,14 +120,15 @@ public abstract class ICalendarRepeatTestAbstract
         return rule;
     }
     
-    /** FREQ=YEARLY;BYWEEKNO=20;BYDAY=MO */
+    /** FREQ=YEARLY;WKST=MO;BYWEEKNO=20;BYDAY=MO */
     protected static RRule getYearlyStream8()
     {
         RRule rule = new RRule(null)
                 .withStartLocalDate(LocalDateTime.of(1997, 5, 12, 10, 0));
         Frequency yearly = new Yearly();
         rule.setFrequency(yearly);
-        ByRule byRule = new ByWeekNo(yearly, 20);
+        ByWeekNo byRule = new ByWeekNo(yearly, 20);
+        byRule.setWeekStart(DayOfWeek.MONDAY); // not needed, is default.
         yearly.addByRule(byRule);
         ByRule byRule2 = new ByDay(yearly, DayOfWeek.MONDAY);
         yearly.addByRule(byRule2);

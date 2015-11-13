@@ -114,7 +114,7 @@ public class RRule {
     
     /** Start of week - default start of week is Monday */
 //    public DayOfWeek getWeekStart() { return weekStart; }
-    public static DayOfWeek WEEK_START = DayOfWeek.MONDAY;
+    public static DayOfWeek WEEK_START = DayOfWeek.MONDAY; // TODO - WHAT AM I GOING TO DO WITH THIS?  IT IS SUPPOSE TO BE IN LOCALE.
 //    public void setWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; }
     
     /** Constructor.  Sets appointmentClass used to make new appointments in the AppointmentFactory */
