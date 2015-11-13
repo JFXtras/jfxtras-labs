@@ -21,7 +21,7 @@ public class ByMonthDay extends ByRuleAbstract
     public void setDaysOfMonth(int... daysOfMonth) { this.daysOfMonth = daysOfMonth; }
     public ByRule withDaysOfMonth(int... daysOfMonth) { setDaysOfMonth(daysOfMonth); return this; }
     
-    private int[] validDays; // array of valid days of month for current month
+//    private int[] validDays; // array of valid days of month for current month
     
     /** Constructor 
      * If not setting daysOfMonth then defaults to startLocalDateTime for dayOfMonth */
@@ -31,7 +31,8 @@ public class ByMonthDay extends ByRuleAbstract
 
     /** Constructor 
      * Contains varargs of daysOfMonth */
-    public ByMonthDay(Frequency frequency, int... daysOfMonth) {
+    public ByMonthDay(Frequency frequency, int... daysOfMonth)
+    {
         super(frequency);
         setDaysOfMonth(daysOfMonth);
     }
@@ -47,7 +48,7 @@ public class ByMonthDay extends ByRuleAbstract
             daysOfMonth = new int[] { startDateTime.toLocalDate().getDayOfMonth() };
         }
         int startDaysInMonth = startDateTime.toLocalDate().lengthOfMonth();
-        validDays = makeValidDays(startDaysInMonth, getDaysOfMonth());
+//        validDays = makeValidDays(startDaysInMonth, getDaysOfMonth());
 //        switch (getFrequency().frequencyEnum())
         switch (getFrequency().getChronoUnit())
         {
@@ -98,23 +99,23 @@ public class ByMonthDay extends ByRuleAbstract
         return null;
     }
 
-    /** for current month, makes an array of valid days, works with both positive and negative daysOfMonth values */
-    private int[] makeValidDays(int daysInMonth, int[] daysOfMonth)
-    {
-        int[] validDays = new int[daysOfMonth.length];
-        int i=0;
-        for (int day : daysOfMonth)
-        {
-            if (day == 0 || day < -31 || day > 31) throw new InvalidParameterException("Invalid BYMONTHDAY value (" + day + ").  Must be 1 to 31 or -31 to -1.");
-            if (day > 0)
-            {
-                validDays[i] = day;
-            } else
-            {
-                validDays[i] = (daysInMonth + day + 1); // negative daysOfMonth (-3 = 3rd to last day of month)                
-            }
-            i++;
-        }
-        return validDays;
-    }
+//    /** for current month, makes an array of valid days, works with both positive and negative daysOfMonth values */
+//    private int[] makeValidDays(int daysInMonth, int[] daysOfMonth)
+//    {
+//        int[] validDays = new int[daysOfMonth.length];
+//        int i=0;
+//        for (int day : daysOfMonth)
+//        {
+//            if (day == 0 || day < -31 || day > 31) throw new InvalidParameterException("Invalid BYMONTHDAY value (" + day + ").  Must be 1 to 31 or -31 to -1.");
+//            if (day > 0)
+//            {
+//                validDays[i] = day;
+//            } else
+//            {
+//                validDays[i] = (daysInMonth + day + 1); // negative daysOfMonth (-3 = 3rd to last day of month)                
+//            }
+//            i++;
+//        }
+//        return validDays;
+//    }
 }

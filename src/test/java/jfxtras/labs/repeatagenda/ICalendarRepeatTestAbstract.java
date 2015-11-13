@@ -6,9 +6,11 @@ import java.time.Month;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx.ByDay;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx.ByMonth;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx.ByMonthDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx.ByRule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx.ByWeekNo;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq.Daily;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq.Frequency;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq.Monthly;
@@ -103,6 +105,33 @@ public abstract class ICalendarRepeatTestAbstract
         yearly.addByRule(byRule2);
         ByRule byRule3 = new ByMonthDay(yearly, 2,3,4,5,6,7,8);
         yearly.addByRule(byRule3);
+        return rule;
+    }
+    
+    /** FREQ=YEARLY;BYDAY=20MO */
+    protected static RRule getYearlyStream7()
+    {
+        RRule rule = new RRule(null)
+                .withStartLocalDate(LocalDateTime.of(1997, 5, 19, 10, 0));
+        Frequency yearly = new Yearly();
+        rule.setFrequency(yearly);
+        ByRule byRule = new ByDay(yearly, new ByDayPair(DayOfWeek.MONDAY, 20));
+        yearly.addByRule(byRule);
+        return rule;
+    }
+    
+    /** FREQ=YEARLY;BYWEEKNO=20;BYDAY=MO */
+    protected static RRule getYearlyStream8()
+    {
+        RRule rule = new RRule(null)
+                .withStartLocalDate(LocalDateTime.of(1997, 5, 12, 10, 0));
+        Frequency yearly = new Yearly();
+        rule.setFrequency(yearly);
+        ByRule byRule = new ByWeekNo(yearly, 20);
+        yearly.addByRule(byRule);
+        ByRule byRule2 = new ByDay(yearly, DayOfWeek.MONDAY);
+        yearly.addByRule(byRule2);
+
         return rule;
     }
     

@@ -1,6 +1,7 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule;
 
 import java.security.InvalidParameterException;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Spliterator;
@@ -110,6 +111,11 @@ public class RRule {
         }
     }
     public RRule withUntil(int until) { setCount(until); return this; }
+    
+    /** Start of week - default start of week is Monday */
+//    public DayOfWeek getWeekStart() { return weekStart; }
+    public static DayOfWeek WEEK_START = DayOfWeek.MONDAY;
+//    public void setWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; }
     
     /** Constructor.  Sets appointmentClass used to make new appointments in the AppointmentFactory */
     public RRule(Class<? extends RepeatableAppointment> appointmentClass)

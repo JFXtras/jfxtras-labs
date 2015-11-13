@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
@@ -99,7 +100,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract {
     public void yearlyStreamTest5()
     {
         RRule f = getYearlyStream5();
-        List<LocalDateTime> madeDates = f.stream().limit(5).peek(System.out::println).collect(Collectors.toList());
+        List<LocalDateTime> madeDates = f.stream().limit(5).collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 10, 0, 0)
               , LocalDateTime.of(2016, 11, 10, 0, 0)
@@ -126,6 +127,39 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract {
               , LocalDateTime.of(2016, 11, 8, 0, 0)
                 ));
         assertEquals(expectedDates, madeDates);
+    }
+    
+    /** FREQ=YEARLY;BYDAY=20MO */
+    @Test
+    public void yearlyStreamTest7()
+    {
+        RRule f = getYearlyStream7();
+        List<LocalDateTime> madeDates = f.stream().limit(3).collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(1997, 5, 19, 0, 0)
+              , LocalDateTime.of(1998, 5, 18, 0, 0)
+              , LocalDateTime.of(1999, 5, 17, 0, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
+    
+    /** FREQ=YEARLY;BYWEEKNO=20;BYDAY=MO */
+    @Test
+    public void yearlyStreamTest8()
+    {
+        Locale oldLocale = Locale.getDefault();
+        Locale.setDefault(Locale.FRANCE); // has Monday as first day of week system.  US is Sunday which causes an error.
+        RRule f = getYearlyStream8();
+        List<LocalDateTime> madeDates = f.stream().limit(5).collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(1997, 5, 12, 10, 0)
+              , LocalDateTime.of(1998, 5, 11, 10, 0)
+              , LocalDateTime.of(1999, 5, 17, 10, 0)
+              , LocalDateTime.of(2000, 5, 15, 10, 0)
+              , LocalDateTime.of(2001, 5, 14, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+        Locale.setDefault(oldLocale);
     }
     
     /** Tests daily stream with FREQ=MONTHLY */
