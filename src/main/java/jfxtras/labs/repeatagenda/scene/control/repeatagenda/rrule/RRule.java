@@ -4,26 +4,29 @@ import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq.Frequency;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
-/** Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122 */
+/**
+ * Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
+ * Used as a part of a VEVENT as defined by 3.6.1, page 52.
+ * 
+ * @author David Bal
+ *
+ */
 public class RRule {
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
@@ -43,77 +46,18 @@ public class RRule {
      */
     public Class<? extends RepeatableAppointment> getAppointmentClass() { return appointmentClass; }
     private Class<? extends RepeatableAppointment> appointmentClass;
-//    private void setAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { this.appointmentClass = appointmentClass; }
-//    public RRule withAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
+    private void setAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { this.appointmentClass = appointmentClass; }
+    public RRule withAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
     
-    /**
-     * DTSTART from RFC 5545 iCalendar 3.8.2.4 page 97
-     * Start date/time of repeat rule
-     */
-    final private ObjectProperty<LocalDateTime> startLocalDateTime = new SimpleObjectProperty<LocalDateTime>();
-    public ObjectProperty<LocalDateTime> startLocalDateTimeProperty() { return startLocalDateTime; }
-    public LocalDateTime getStartLocalDateTime() { return startLocalDateTime.getValue(); }
-    public void setStartLocalDate(LocalDateTime startDate) { this.startLocalDateTime.set(startDate); }
-    public RRule withStartLocalDate(LocalDateTime startDate) { setStartLocalDate(startDate); return this; }
+    /** Parent VEvent 
+     * Contains following data necessary for RRule: DTSTART, DURATION */
+    final private VEvent vevent;
 
-    /** 
-     * DURATION from RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34
-     * Internally stored a seconds.  Can be set an an integer of seconds or a string as defined by iCalendar which is
-     * converted to seconds.  This value is used exclusively internally.  Any specified DTEND is converted to 
-     * durationInSeconds,
-     * */
-    final private ObjectProperty<Integer> durationInSeconds = new SimpleObjectProperty<Integer>(this, "durationProperty");
-    public ObjectProperty<Integer> durationInSecondsProperty() { return durationInSeconds; }
-    public Integer getDurationInSeconds() { return durationInSeconds.getValue(); }
-    public void setDurationInSeconds(Integer value) { durationInSeconds.setValue(value); }
-    public void setDurationInSeconds(String value)
-    { // parse ISO.8601.2004 string into period of seconds (no support for Y (years) or M (months).
-        int seconds = 0;
-        Pattern p = Pattern.compile("([0-9]+)|([A-Z])");
-        Matcher m = p.matcher(value);
-        List<String> tokens = new ArrayList<String>();
-        while (m.find())
-        {
-            String token = m.group(0);
-            tokens.add(token);
-        }
-        Iterator<String> tokenIterator = tokens.iterator();
-        String firstString = tokenIterator.next();
-        if (! tokenIterator.hasNext() || (! firstString.equals("P"))) throw new InvalidParameterException("Invalid DURATION string (" + value + "). Must begin with a P");
-        boolean timeFlag = false;
-        while (tokenIterator.hasNext())
-        {
-            String token = tokenIterator.next();
-            if (token.matches("\\d+"))
-            { // first value is a number means I got a data element
-                int n = Integer.parseInt(token);
-                String time = tokenIterator.next();
-                if (time.equals("W"))
-                {
-                    seconds += n * 7 * 24 * 60 * 60;
-                } else if (time.equals("D"))
-                {
-                    seconds += n * 24 * 60 * 60;
-                } else if (timeFlag && time.equals("H"))
-                {
-                    seconds += n * 60 * 60;                    
-                } else if (timeFlag && time.equals("M"))
-                {
-                    seconds += n * 60;                                        
-                } else if (timeFlag && time.equals("S"))
-                {
-                    seconds += n;                    
-                } else
-                {
-                    throw new InvalidParameterException("Invalid DURATION string time element (" + time + "). Must begin with a P");
-                }
-            } else if (token.equals("T")) timeFlag = true; // proceeding elements will be hour, minute or second
-        }
-        durationInSeconds.setValue(seconds);
-    }
-    public RRule withDurationInSeconds(Integer value) { setDurationInSeconds(value); return this; } 
-    public RRule withDurationInSeconds(String value) { setDurationInSeconds(value); return this; } 
-    
+    // TODO - MAKE A CACHE LIST OF START DATES (from the stream)
+    // try to avoid making new dates by starting from the first startLocalDateTime if possible
+    // having a variety of valid start date/times, spaced by 100 or so could be a good solution.
+    private List<LocalDateTime> startCache = new ArrayList<LocalDateTime>();
+        
     /** 
      * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.) 
      */
@@ -187,15 +131,10 @@ public class RRule {
     }
     public RRule withUntil(int until) { setCount(until); return this; }
     
-//    /**Start of week - default start of week is Monday */
-////    public DayOfWeek getWeekStart() { return weekStart; }
-//    public static DayOfWeek WEEK_START = DayOfWeek.MONDAY; // TODO - WHAT AM I GOING TO DO WITH THIS?  IT IS SUPPOSE TO BE IN LOCALE.
-////    public void setWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; }
-    
-    /** Constructor.  Sets appointmentClass used to make new appointments in the AppointmentFactory */
-    public RRule(Class<? extends RepeatableAppointment> appointmentClass)
+    /** Constructor.  Sets parent VEvent object */
+    public RRule(VEvent vevent)
     {
-        this.appointmentClass = appointmentClass;
+        this.vevent = vevent;
     }
     
     /** Resulting stream of date/times by applying rules 
@@ -220,7 +159,7 @@ public class RRule {
      * Uses startLocalDateTime - first date/time in sequence (DTSTART) as a default starting point */
     public Stream<LocalDateTime> stream()
     {
-        return stream(getStartLocalDateTime());
+        return stream(vevent.getStartLocalDateTime());
     }
     
     // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate
