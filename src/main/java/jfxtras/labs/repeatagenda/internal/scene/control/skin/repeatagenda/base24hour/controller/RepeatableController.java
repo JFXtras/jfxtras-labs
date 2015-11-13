@@ -141,14 +141,6 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
 @FXML public void initialize()
 {
     
-    // Listeners to update exception dates
-    repeat.intervalProperty().addListener(makeExceptionDatesListener);
-    repeat.frequencyProperty().addListener(makeExceptionDatesListener);
-    repeat.endCriteriaProperty().addListener(makeExceptionDatesListener);
-    repeat.countProperty().addListener(makeExceptionDatesListener);
-    repeat.untilProperty().addListener(makeExceptionDatesListener);
-    // TODO - WHEN REPEAT CHANGES TO HAVE COLLECTION OF RULES HOW DO I BIND TO MONTHLY OR WEEKLY OR ANY SPECIAL PROPERTIES?
-    
     // *********INTERVAL COMBOBOX**************
     final ObservableList<Repeat.Frequency> intervalList = FXCollections.observableArrayList();
     intervalList.add(Repeat.Frequency.DAILY);
@@ -364,7 +356,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
           , Class<? extends RepeatableAppointment> appointmentClass
           , Class<? extends Repeat> repeatClass)
     {
-
+        // Instantiate Repeat, if appointment does not have repeat rules assigned previously
         if (appointment.getRepeat() != null)
         { // get existing repeat
             repeat = appointment.getRepeat();
@@ -391,6 +383,13 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
             repeat.setDayOfWeek(d, true); // set default day of week for default Weekly appointment
         }
 
+        // Listeners to update exception dates
+        repeat.intervalProperty().addListener(makeExceptionDatesListener);
+        repeat.frequencyProperty().addListener(makeExceptionDatesListener);
+        repeat.endCriteriaProperty().addListener(makeExceptionDatesListener);
+        repeat.countProperty().addListener(makeExceptionDatesListener);
+        repeat.untilProperty().addListener(makeExceptionDatesListener);
+        
         // Initial values
         intervalSpinner.getValueFactory().setValue(repeat.getInterval());
         setEndGroup(repeat.getEndCriteria());
@@ -409,6 +408,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
         exceptionComboBox.valueProperty().addListener(obs -> addExceptionButton.setDisable(false)); // turn on add button when exception date is selected in combobox
 
      // Custom rendering of the list cell -  must be done after initialization because resource bundle isn't instantiated before now.
+        // TODO - Colors not changing real-time.
         exceptionsListView.setCellFactory(value -> 
         { 
             return new ListCell<LocalDateTime>()
@@ -565,6 +565,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
 //        exceptionComboBox.getItems().stream().forEach(System.out::println);
     }
     
+    // TODO - NOT WORKING CORRECTLY - SUPPOSE TO UPDATE LIST REAL-TIME TO PROVIDE COLOR CHANGES
     private void updateExceptionList()
     {
         // Make invalidExceptions set (collection of date/times that are not valid events due to repeat rule changes, will be given special formatting to stand out)

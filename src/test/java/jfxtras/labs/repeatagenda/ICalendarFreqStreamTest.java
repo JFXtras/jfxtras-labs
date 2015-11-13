@@ -135,9 +135,9 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract {
         RRule f = getYearlyStream7();
         List<LocalDateTime> madeDates = f.stream().limit(3).collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
-                LocalDateTime.of(1997, 5, 19, 0, 0)
-              , LocalDateTime.of(1998, 5, 18, 0, 0)
-              , LocalDateTime.of(1999, 5, 17, 0, 0)
+                LocalDateTime.of(1997, 5, 19, 10, 0)
+              , LocalDateTime.of(1998, 5, 18, 10, 0)
+              , LocalDateTime.of(1999, 5, 17, 10, 0)
                 ));
         assertEquals(expectedDates, madeDates);
     }

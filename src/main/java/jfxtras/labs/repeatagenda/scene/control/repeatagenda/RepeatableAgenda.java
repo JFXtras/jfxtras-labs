@@ -788,7 +788,6 @@ public class RepeatableAgenda extends Agenda {
           return null;
         }
 
-        @Deprecated
         public static Repeat newRepeat(
                 Class<? extends Repeat> repeatClass
               , Class<? extends RepeatableAppointment> appointmentClass)
