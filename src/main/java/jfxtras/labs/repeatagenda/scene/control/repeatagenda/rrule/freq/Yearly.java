@@ -11,8 +11,6 @@ public class Yearly extends FrequencyAbstract {
     private final TemporalAdjuster yearlyAdjuster = (temporal) -> temporal.plus(getInterval(), YEARS);
     @Override public TemporalAdjuster getAdjuster() { return yearlyAdjuster; }
 
-    @Override public FrequencyEnum frequencyEnum() { return FrequencyEnum.YEARLY; }
-
     // Constructor
     public Yearly() { setChronoUnit(YEARS); }
 }

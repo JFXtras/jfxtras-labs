@@ -32,6 +32,8 @@ public class ByMonth extends ByRuleAbstract
         switch (getFrequency().getChronoUnit())
         {
         case DAYS:
+        case WEEKS:
+        case MONTHS:
             getFrequency().setChronoUnit(MONTHS);
             return inStream.filter(date ->
             { // filter out all but qualifying days
@@ -42,8 +44,6 @@ public class ByMonth extends ByRuleAbstract
                 }
                 return false;
             });
-        case WEEKS:
-        case MONTHS:
         case YEARS:
             getFrequency().setChronoUnit(MONTHS);
             return inStream.flatMap(date -> 

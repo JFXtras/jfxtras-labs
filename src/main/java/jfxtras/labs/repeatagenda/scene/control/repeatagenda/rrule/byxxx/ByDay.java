@@ -29,21 +29,11 @@ public class ByDay extends ByRuleAbstract
     public ByDayPair[] getByDayPair() { return byDayPairs; }
     private ByDayPair[] byDayPairs;
     private void setByDayPair(ByDayPair... byDayPairs) { this.byDayPairs = byDayPairs; }
-//    private boolean anyByDayPairWithOrdinal = false;
-//    public ByRule withByDayPair(ByDayPair... byDayPairs) { setByDayPair(byDayPairs); return this; }
     
     public ByDay(Frequency frequency, ByDayPair... byDayPairs)
     {
         super(frequency);
         setByDayPair(byDayPairs);
-//        for (ByDayPair p : byDayPairs)
-//        {
-//            if (p.ordinal > 0 )
-//            {
-//                anyByDayPairWithOrdinal = true;
-//                break;
-//            }
-//        }
     }
 
     /** Constructor that uses DayOfWeek values without a preceding integer.  All days of the 
@@ -62,7 +52,6 @@ public class ByDay extends ByRuleAbstract
     @Override
     public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
     {
-//        switch (getFrequency().frequencyEnum())
         switch (getFrequency().getChronoUnit())
         {
         case DAYS:
@@ -85,7 +74,8 @@ public class ByDay extends ByRuleAbstract
                 for (ByDayPair byDayPair : getByDayPair())
                 {
                     int dayShift = byDayPair.dayOfWeek.getValue() - dayOfWeekValue;
-                    dates.add(date.plusDays(dayShift));
+                    LocalDateTime newDate = date.plusDays(dayShift);
+                    if (! newDate.isBefore(startDateTime)) dates.add(newDate);
                 }
                 return dates.stream();
             });

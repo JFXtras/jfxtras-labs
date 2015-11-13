@@ -2,6 +2,7 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
@@ -13,11 +14,28 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq.Frequency;
+import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 /** Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122 */
 public class RRule {
 
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
+    
+    /** Range for which appointments are to be generated.  Should match the dates displayed on the calendar. */
+    public LocalDateTimeRange getAppointmentDateTimeRange() { return appointmentDateTimeRange; }
+    private LocalDateTimeRange appointmentDateTimeRange;
+    public void setAppointmentDateTimeRange(LocalDateTimeRange appointmentDateTimeRange) { this.appointmentDateTimeRange = appointmentDateTimeRange; }
+    public RRule withAppointmentDateTimeRange(LocalDateTimeRange appointmentDateTimeRange) { setAppointmentDateTimeRange(appointmentDateTimeRange); return this; }
+
+    /** RRule doesn't know how to make an appointment.  An appointment factory makes new appointments.  The Class of the appointment
+     * is an argument for the AppointmentFactory.  The appointmentClass is set in the constructor. */
+    public Class<? extends RepeatableAppointment> getAppointmentClass() { return appointmentClass; }
+    private Class<? extends RepeatableAppointment> appointmentClass;
+//    private void setAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { this.appointmentClass = appointmentClass; }
+//    public RRule withAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
+    
     /** DTSTART from RFC 5545 iCalendar 3.8.2.4 page 97
      * Start date/time of repeat rule */
     final private ObjectProperty<LocalDateTime> startLocalDateTime = new SimpleObjectProperty<LocalDateTime>();
@@ -92,6 +110,12 @@ public class RRule {
         }
     }
     public RRule withUntil(int until) { setCount(until); return this; }
+    
+    /** Constructor.  Sets appointmentClass used to make new appointments in the AppointmentFactory */
+    public RRule(Class<? extends RepeatableAppointment> appointmentClass)
+    {
+        this.appointmentClass = appointmentClass;
+    }
     
     /** Resulting stream of date/times by applying rules 
      * Starts on startDateTime, which must be a valid event date/time, not necessarily the

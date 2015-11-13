@@ -29,6 +29,13 @@ public class ByMonthDay extends ByRuleAbstract
         super(frequency);
     }
 
+    /** Constructor 
+     * Contains varargs of daysOfMonth */
+    public ByMonthDay(Frequency frequency, int... daysOfMonth) {
+        super(frequency);
+        setDaysOfMonth(daysOfMonth);
+    }
+    
     /**
      * Return stream of valid dates made by rule (infinite if COUNT or UNTIL not present)
      */

@@ -11,7 +11,6 @@ public class Daily extends FrequencyAbstract
     private final TemporalAdjuster dailyAdjuster = (temporal) -> temporal.plus(getInterval(), DAYS);
     @Override public TemporalAdjuster getAdjuster() { return dailyAdjuster; }
 
-    @Override public FrequencyEnum frequencyEnum() { return FrequencyEnum.DAILY; }
     // Constructor
     public Daily() { setChronoUnit(DAYS); }  
 }

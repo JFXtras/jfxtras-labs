@@ -11,16 +11,12 @@ public class Weekly extends FrequencyAbstract
     // adjusts temporal parameter to become date/time of next event
     private final TemporalAdjuster weeklyAdjuster = (temporal) -> temporal.plus(getInterval(), WEEKS);
     @Override public TemporalAdjuster getAdjuster() { return weeklyAdjuster; }
-    
-    private DayOfWeek weekStart = DayOfWeek.MONDAY; // default start of week to Monday
+
+    /** Start of week - default start of week is Monday */
     public DayOfWeek getWeekStart() { return weekStart; }
+    private DayOfWeek weekStart = DayOfWeek.MONDAY;
+    public void setWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; }
     
     // Constructor
     public Weekly() { setChronoUnit(WEEKS); }
-
-    @Override
-    public FrequencyEnum frequencyEnum() {
-        // TODO Auto-generated method stub
-        return null;
-    }  
 }

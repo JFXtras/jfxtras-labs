@@ -18,24 +18,29 @@ public interface Frequency {
     void setInterval(Integer interval);
     
     /** Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
-     * The BYxxx rules must be applied in a specific order and can only be occur once */
+     * The BYxxx rules must be applied in a specific order and can only be occur once 
+     * BYxxx rule parts
+      are applied to the current set of evaluated occurrences in the
+      following order: BYMONTH, BYWEEKNO, BYYEARDAY, BYMONTHDAY, BYDAY,
+      BYHOUR, BYMINUTE, BYSECOND and BYSETPOS; then COUNT and UNTIL are
+      evaluated.*/
     List<ByRule> getByRules();
 
     /** Adds new byRule to collection and ensures that type of rule isn't already present */
     void addByRule(ByRule byRule);
 
     
-    /** Enum of frequency rule
-     *  Enables usage of switch in BYxxx rules for each FREQ rule */
-    @Deprecated
-    FrequencyEnum frequencyEnum();
+    /** Chrono unit of last modification to stream
+     *  Enables usage of switch statement in BYxxx rules */
+    ChronoUnit getChronoUnit();
+    void setChronoUnit(ChronoUnit chronoUnit);
 
     
-    /** Resulting stream of date/times by applying rules 
-     * Starts on startDateTime, which must be a valid event date/time, not necessarily the
-     * first date/time (DTSTART) in the sequence. */
-//    Stream<LocalDateTime> stream(LocalDateTime startDateTime);
-
+    /** Resulting stream of start date/times by applying Frequency temporal adjuster and all, if any,
+     * ByRules.
+     * Starts on startDateTime, which must be a valid event date/time, but not necessarily the
+     * first date/time (DTSTART) in the sequence. A later startDateTime can be used to more efficiently
+     * get to later dates in the stream. */
     default Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
         Stream<LocalDateTime> stream = Stream.iterate(startDateTime, (a) -> { return a.with(getAdjuster()); });
@@ -46,14 +51,10 @@ public interface Frequency {
         return stream;
     }
     
+    /** Temporal adjuster every class implementing Frequency must provide that modifies frequency dates 
+     * For example, Weekly class advances the dates by INTERVAL Number of weeks. */
     TemporalAdjuster getAdjuster();
 
-//    /** Resulting stream of date/times by applying rules 
-//     * Uses startLocalDateTime - first date/time in sequence (DTSTART) as a default starting point*/
-//    default Stream<LocalDateTime> stream()
-//    {
-//        return stream(getStartLocalDateTime());
-//    };
 
     /** Enumeration of FREQ rules */
     public static enum FrequencyEnum
@@ -68,8 +69,7 @@ public interface Frequency {
       
     }
 
-    ChronoUnit getChronoUnit();
-    void setChronoUnit(ChronoUnit chronoUnit);
+
     
 }
 
