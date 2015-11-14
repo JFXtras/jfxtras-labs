@@ -159,7 +159,7 @@ public class RRule {
      * Uses startLocalDateTime - first date/time in sequence (DTSTART) as a default starting point */
     public Stream<LocalDateTime> stream()
     {
-        return stream(vevent.getStartLocalDateTime());
+        return stream(vevent.getDateTimeStart());
     }
     
     // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate
