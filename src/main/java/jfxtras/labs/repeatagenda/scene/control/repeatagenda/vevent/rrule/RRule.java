@@ -1,10 +1,14 @@
-package jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule;
+package jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
@@ -15,14 +19,18 @@ import java.util.stream.StreamSupport;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEvent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq.Frequency;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.VEvent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq.Frequency;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 /**
  * Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
  * Used as a part of a VEVENT as defined by 3.6.1, page 52.
+ * 
+ * After applying all Rules
  * 
  * @author David Bal
  *
@@ -131,13 +139,67 @@ public class RRule {
     }
     public RRule withUntil(int until) { setCount(until); return this; }
     
+    // deleted appointments - skip these when making appointments from the repeat rule
+    // TODO - Should this be an Observable Collection?
+    /** EXDATE */
+    final private ObservableList<LocalDateTime> exceptions = FXCollections.observableArrayList();
+    public ObservableList<LocalDateTime> getExceptions() { return exceptions; }
+//    public void setExceptions(ObservableList<LocalDateTime> dates) { exceptions = dates; }
+    public RRule withExceptions(ObservableList<LocalDateTime> dates) { exceptions.addAll(dates); return this; }
+    private boolean exceptionsEquals(Collection<LocalDateTime> exceptionsTest)
+    { // test doesn't require order to be same 
+        Iterator<LocalDateTime> dateIterator = getExceptions().iterator();
+        while (dateIterator.hasNext())
+        {
+            LocalDateTime myDate = dateIterator.next();
+            if (! exceptionsTest.contains(myDate)) return false;
+        }
+        return true;
+    }
+    
+    // TODO - 
+    /** RDATE */
+    final private ObservableList<LocalDateTime> rdate = FXCollections.observableArrayList();
+    
+    
+    // List of RECURRENCE-ID events represented by a individual appointment with some unique data
+    private Set<LocalDateTime> recurrences = new HashSet<LocalDateTime>();
+    public Set<LocalDateTime> getRecurrences() { return recurrences; }
+    public void setRecurrences(Set<LocalDateTime> dates) { recurrences = dates; }
+    public RRule withRecurrences(Set<LocalDateTime> dates) { setRecurrences(dates); return this; }
+    private boolean recurrencesEquals(Collection<LocalDateTime> recurrencesTest)
+    {
+        recurrencesTest.stream().forEach(a -> System.out.println("test " + a));
+        Iterator<LocalDateTime> dateIterator = getExceptions().iterator();
+        while (dateIterator.hasNext())
+        {
+            LocalDateTime myDate = dateIterator.next();
+            System.out.println(myDate);
+            if (! recurrencesTest.contains(myDate)) return false;
+        }
+        return true;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /** Constructor.  Sets parent VEvent object */
     public RRule(VEvent vevent)
     {
         this.vevent = vevent;
     }
     
-    /** Resulting stream of date/times by applying rules 
+
+    /** Stream of date/times made after applying all modification rules.
+     * Stream is infinite if COUNT or UNTIL not present or ends when COUNT or UNTIL condition
+     * is met.
      * Starts on startDateTime, which must be a valid event date/time, not necessarily the
      * first date/time (DTSTART) in the sequence. */
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
@@ -150,7 +212,7 @@ public class RRule {
 //            return frequency
 //                    .stream(startDateTime)
 //                    .takeWhile(a -> a.isBefore(getUntil())); // available in Java 9
-            return takeWhile(frequency.stream(startDateTime), a -> a.isBefore(LocalDateTime.of(2015, 11, 19, 10, 0)));
+            return takeWhile(frequency.stream(startDateTime), a -> a.isBefore(getUntil()));
         }
         return frequency.stream(startDateTime);
     };

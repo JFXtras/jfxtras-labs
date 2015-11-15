@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.RRule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.RRule;
 
 public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract {
 

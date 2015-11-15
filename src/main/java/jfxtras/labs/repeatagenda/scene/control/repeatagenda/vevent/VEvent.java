@@ -1,4 +1,4 @@
-package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
+package jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
@@ -17,7 +17,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.util.Callback;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.RRule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.RRule;
 
 /**
  * Parent calendar component, VEVENT

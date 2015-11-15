@@ -1,4 +1,4 @@
-package jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx;
+package jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.byxxx;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq.Frequency;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.Rule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq.Frequency;
 
 /** BYMONTHDAY from RFC 5545, iCalendar */
 public class ByMonthDay extends ByRuleAbstract
@@ -21,7 +22,7 @@ public class ByMonthDay extends ByRuleAbstract
     public int[] getDaysOfMonth() { return daysOfMonth; }
     private int[] daysOfMonth;
     public void setDaysOfMonth(int... daysOfMonth) { this.daysOfMonth = daysOfMonth; }
-    public ByRule withDaysOfMonth(int... daysOfMonth) { setDaysOfMonth(daysOfMonth); return this; }
+    public Rule withDaysOfMonth(int... daysOfMonth) { setDaysOfMonth(daysOfMonth); return this; }
     
 //    private int[] validDays; // array of valid days of month for current month
     

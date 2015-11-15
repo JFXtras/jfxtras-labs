@@ -1,4 +1,4 @@
-package jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq;
+package jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq;
 
 import static java.time.temporal.ChronoUnit.YEARS;
 

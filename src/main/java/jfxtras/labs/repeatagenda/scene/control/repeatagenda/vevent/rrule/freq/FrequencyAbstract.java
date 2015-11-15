@@ -1,4 +1,4 @@
-package jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq;
+package jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq;
 
 import java.security.InvalidParameterException;
 import java.time.temporal.ChronoUnit;
@@ -7,7 +7,7 @@ import java.util.List;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx.ByRule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.Rule;
 
 public abstract class FrequencyAbstract implements Frequency {
     
@@ -42,9 +42,9 @@ public abstract class FrequencyAbstract implements Frequency {
     /** BYxxx Rules 
      * Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
      * The BYxxx rules must be applied in a specific order and can only be occur once */
-    @Override public List<ByRule> getByRules() { return byRules; }
-    private final List<ByRule> byRules = new ArrayList<ByRule>();
-    @Override public void addByRule(ByRule byRule)
+    @Override public List<Rule> getByRules() { return byRules; }
+    private final List<Rule> byRules = new ArrayList<Rule>();
+    @Override public void addByRule(Rule byRule)
     {
         boolean alreadyPresent = getByRules().stream().anyMatch(a -> a.getClass() == byRule.getClass());
         if (alreadyPresent){

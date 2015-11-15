@@ -1,4 +1,4 @@
-package jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.byxxx;
+package jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.byxxx;
 import static java.time.temporal.ChronoUnit.MONTHS;
 
 import java.time.LocalDateTime;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.rrule.freq.Frequency;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq.Frequency;
 
 /** BYMONTH from RFC 5545, iCalendar 3.3.10, page 42 */
 public class ByMonth extends ByRuleAbstract
