@@ -131,6 +131,8 @@ public abstract class Repeat {
     }
     public Repeat withInterval(Integer count) { setInterval(count); return this; }
 
+    // TODO - DO I ABANDON THESE?  WITH ICALENDAR THE BYDAY RULE SELECTS DAYS.
+    // DO I PUT THE PROPERTIES THERE?  HOW DO I GET TO THEM?
     /** Map of Days of Week properties */
     final private Map<DayOfWeek, BooleanProperty> dayOfWeekMap = Arrays // Initialized map of all days of the week, each BooleanProperty is false
             .stream(DayOfWeek.values())

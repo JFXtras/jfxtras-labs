@@ -9,8 +9,6 @@ import java.util.stream.StreamSupport;
 
 import com.google.common.collect.Iterators;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.Rule;
-
 /**
  * 
  * @author David Bal

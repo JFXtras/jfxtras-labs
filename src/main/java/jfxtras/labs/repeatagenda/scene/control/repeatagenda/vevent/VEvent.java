@@ -7,27 +7,93 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.util.Callback;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.RRule;
 
 /**
  * Parent calendar component, VEVENT
  * Defined in RFC 5545 iCalendar 3.6.1, page 52.
  * 
- * @author David Bal
+ * The status of following component properties from RFC 5545:
+ * 
+       3.8.1.  Descriptive Component Properties  . . . . . . . . . .  81
+         3.8.1.1.  Attachment  . . . . . . . . . . . . . . . . . . .  81 - NO
+         3.8.1.2.  Categories  . . . . . . . . . . . . . . . . . . .  82 - Yes (appointmentGroup)
+         3.8.1.3.  Classification  . . . . . . . . . . . . . . . . .  83 - NO
+         3.8.1.4.  Comment . . . . . . . . . . . . . . . . . . . . .  84 - Yes
+         3.8.1.5.  Description . . . . . . . . . . . . . . . . . . .  85 - Yes
+         3.8.1.6.  Geographic Position . . . . . . . . . . . . . . .  87 - NO
+         3.8.1.7.  Location  . . . . . . . . . . . . . . . . . . . .  88 - Yes
+         3.8.1.8.  Percent Complete  . . . . . . . . . . . . . . . .  89 - NO
+         3.8.1.9.  Priority  . . . . . . . . . . . . . . . . . . . .  90 - NO
+         3.8.1.10. Resources . . . . . . . . . . . . . . . . . . . .  92 - NO
+         3.8.1.11. Status  . . . . . . . . . . . . . . . . . . . . .  93 - NO
+         3.8.1.12. Summary . . . . . . . . . . . . . . . . . . . . .  94 - Yes
+       3.8.2.  Date and Time Component Properties  . . . . . . . . .  95
+         3.8.2.1.  Date-Time Completed . . . . . . . . . . . . . . .  95 - NO
+         3.8.2.2.  Date-Time End . . . . . . . . . . . . . . . . . .  96 - Yes
+         3.8.2.3.  Date-Time Due . . . . . . . . . . . . . . . . . .  97 - NO
+         3.8.2.4.  Date-Time Start . . . . . . . . . . . . . . . . .  99 - Yes
+         3.8.2.5.  Duration  . . . . . . . . . . . . . . . . . . . . 100 - Yes
+         3.8.2.6.  Free/Busy Time  . . . . . . . . . . . . . . . . . 101 - NO
+         3.8.2.7.  Time Transparency . . . . . . . . . . . . . . . . 102 - NO
+       3.8.3.  Time Zone Component Properties  . . . . . . . . . . . 103 - NO
+         3.8.3.1.  Time Zone Identifier  . . . . . . . . . . . . . . 103 - NO
+         3.8.3.2.  Time Zone Name  . . . . . . . . . . . . . . . . . 105 - NO
+         3.8.3.3.  Time Zone Offset From . . . . . . . . . . . . . . 106 - NO
+         3.8.3.4.  Time Zone Offset To . . . . . . . . . . . . . . . 106 - NO
+         3.8.3.5.  Time Zone URL . . . . . . . . . . . . . . . . . . 107 - NO
+       3.8.4.  Relationship Component Properties . . . . . . . . . . 108
+         3.8.4.1.  Attendee  . . . . . . . . . . . . . . . . . . . . 108 - NO
+         3.8.4.2.  Contact . . . . . . . . . . . . . . . . . . . . . 111 - NO
+         3.8.4.3.  Organizer . . . . . . . . . . . . . . . . . . . . 113 - NO
+         3.8.4.4.  Recurrence ID . . . . . . . . . . . . . . . . . . 114 - Yes
+         3.8.4.5.  Related To  . . . . . . . . . . . . . . . . . . . 117 - NO
+         3.8.4.6.  Uniform Resource Locator  . . . . . . . . . . . . 118 - NO
+         3.8.4.7.  Unique Identifier . . . . . . . . . . . . . . . . 119 - Yes
+       3.8.5.  Recurrence Component Properties . . . . . . . . . . . 120
+         3.8.5.1.  Exception Date-Times  . . . . . . . . . . . . . . 120 - Yes, in EXDate
+         3.8.5.2.  Recurrence Date-Times . . . . . . . . . . . . . . 122 - Yes, in RDate
+         3.8.5.3.  Recurrence Rule . . . . . . . . . . . . . . . . . 124 - Yes, in RRule
+       3.8.6.  Alarm Component Properties  . . . . . . . . . . . . . 134
+         3.8.6.1.  Action  . . . . . . . . . . . . . . . . . . . . . 134 - NO
+         3.8.6.2.  Repeat Count  . . . . . . . . . . . . . . . . . . 135 - NO
+         3.8.6.3.  Trigger . . . . . . . . . . . . . . . . . . . . . 135 - NO
+       3.8.7.  Change Management Component Properties  . . . . . . . 138
+         3.8.7.1.  Date-Time Created . . . . . . . . . . . . . . . . 138 - Yes
+         3.8.7.2.  Date-Time Stamp . . . . . . . . . . . . . . . . . 139 - Yes
+         3.8.7.3.  Last Modified . . . . . . . . . . . . . . . . . . 140 - Yes
+         3.8.7.4.  Sequence Number . . . . . . . . . . . . . . . . . 141 - Yes
+       3.8.8.  Miscellaneous Component Properties  . . . . . . . . . 142
+         3.8.8.1.  IANA Properties . . . . . . . . . . . . . . . . . 142 - NO
+         3.8.8.2.  Non-Standard Properties . . . . . . . . . . . . . 142 - NO
+         3.8.8.3.  Request Status  . . . . . . . . . . . . . . . . . 144 - NO
+
+ * 
  *
  */
-public class VEvent {
-   
+public class VEvent
+{
     /**
      * Date-Time Start, DTSTART from RFC 5545 iCalendar 3.8.2.4 page 97
      * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
@@ -191,7 +257,174 @@ public class VEvent {
         setUID(uidGeneratorCallback.call(null));
     }
  
-
+    /**
+     *  COMMENT: RFC 5545 iCalendar 3.8.1.12. page 83
+     * This property specifies non-processing information intended
+      to provide a comment to the calendar user.
+     * Example:
+     * COMMENT:The meeting really needs to include both ourselves
+         and the customer. We can't hold this meeting without them.
+         As a matter of fact\, the venue for the meeting ought to be at
+         their site. - - John
+     * */
+    public SimpleStringProperty commentProperty() { return commentProperty; }
+    final private SimpleStringProperty commentProperty = new SimpleStringProperty(this, "comment");
+    public String getComment() { return commentProperty.getValue(); }
+    public void setComment(String value) { commentProperty.setValue(value); }
+    public VEvent withComment(String value) { setComment(value); return this; } 
     
-    private RRule rrule;
+    
+    /**
+     *  SUMMARY: RFC 5545 iCalendar 3.8.1.12. page 83
+     * This property defines a short summary or subject for the calendar component 
+     * Example:
+     * SUMMARY:Department Party
+     * */
+    public SimpleStringProperty summaryProperty() { return summaryProperty; }
+    final private SimpleStringProperty summaryProperty = new SimpleStringProperty(this, "summary");
+    public String getSummary() { return summaryProperty.getValue(); }
+    public void setSummary(String value) { summaryProperty.setValue(value); }
+    public VEvent withSummary(String value) { setSummary(value); return this; } 
+    
+    /**
+     * DESCRIPTION: RFC 5545 iCalendar 3.8.1.12. page 84
+     * This property provides a more complete description of the
+     * calendar component than that provided by the "SUMMARY" property.
+     * Example:
+     * DESCRIPTION:Meeting to provide technical review for "Phoenix"
+     *  design.\nHappy Face Conference Room. Phoenix design team
+     *  MUST attend this meeting.\nRSVP to team leader.
+     */
+    public StringProperty descriptionProperty() { return descriptionProperty; }
+    final private StringProperty descriptionProperty = new SimpleStringProperty(this, "description");
+    public String getDescription() { return descriptionProperty.getValue(); }
+    public void setDescription(String value) { descriptionProperty.setValue(value); }
+    public VEvent withDescription(String value) { setDescription(value); return this; } 
+    
+    /**
+     * LOCATION: RFC 5545 iCalendar 3.8.1.12. page 87
+     * This property defines the intended venue for the activity
+     * defined by a calendar component.
+     * Example:
+     * LOCATION:Conference Room - F123\, Bldg. 002
+     */
+    public StringProperty locationProperty() { return locationProperty; }
+    final private StringProperty locationProperty = new SimpleStringProperty(this, "location");
+    public String getLocation() { return locationProperty.getValue(); }
+    public void setLocation(String value) { locationProperty.setValue(value); }
+    public VEvent withLocation(String value) { setLocation(value); return this; } 
+    
+    /**
+     * CATEGORIES: RFC 5545 iCalendar 3.8.1.12. page 81
+     * This property defines the categories for a calendar component.
+     * Example:
+     * CATEGORIES:APPOINTMENT,EDUCATION
+     * CATEGORIES:MEETING
+     */
+    public SimpleStringProperty categoriesProperty() { return categoriesProperty; }
+    final private SimpleStringProperty categoriesProperty = new SimpleStringProperty(this, "appointmentGroup");
+    public String getCategories() { return categoriesProperty.getValue(); }
+    public void setCategories(String value) { categoriesProperty.setValue(value); }
+    public VEvent withCategories(String value) { setCategories(value); return this; }
+ 
+    // NO NEED - 
+//    /** Appointment-specific data - only uses data fields. Repeat related and date/time objects are null */
+//    // TODO - HOW TO ENSURE USAGE OF ICALENDAR DATA FIELDS YET PROVIDE AVAILABILITY OF CUSTOM FIELDS AND
+//    // COMPATIBILITY WITH AGENDA?
+////    DESCRIPTION:This is a message for everyone
+////    SUMMARY:The event
+////    LOCATION:here
+////    CATEGORIES:3.8.1.2 page 81 - like appointmentGroup
+//    // COMMENT 3.8.1.4 page 83
+//    private RepeatableAppointment appointmentData = null; //AppointmentFactory.newAppointment();
+//    public RepeatableAppointment getAppointmentData() { return appointmentData; }
+//    public void setAppointmentData(RepeatableAppointment appointment) { appointmentData = appointment; }
+//    public VEvent withAppointmentData(RepeatableAppointment appointment) { setAppointmentData(appointment); return this; }
+    
+    /**
+     * Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
+     * If event is not repeating value is null
+     */
+    public RRule getRRule() { return rRule; }
+    private RRule rRule;
+    public void setRRule(RRule rRule) { this.rRule = rRule; }
+
+    /**
+     * Start of range for which events are generated.  Should match the dates displayed on the calendar.
+     */
+    public LocalDateTime getDateTimeRangeStart() { return dateTimeRangeStart; }
+    private LocalDateTime dateTimeRangeStart;
+    public void setDateTimeRangeStart(LocalDateTime startDateTime) { this.dateTimeRangeStart = startDateTime; }
+
+    /**
+     * End of range for which events are generated.  Should match the dates displayed on the calendar.
+     */
+    public LocalDateTime getDateTimeRangeEnd() { return dateTimeRangeEnd; }
+    private LocalDateTime dateTimeRangeEnd;
+    public void setDateTimeRangeEnd(LocalDateTime endDateTime) { this.dateTimeRangeEnd = endDateTime; }
+    
+    /** Stream of date/times made after applying all modification rules.
+     * Stream is infinite if COUNT or UNTIL not present or ends when COUNT or UNTIL condition
+     * is met.
+     * Starts on startDateTime, which must be a valid event date/time, not necessarily the
+     * first date/time (DTSTART) in the sequence. */
+    public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
+    {
+//        return getRRule().stream(startDateTime);
+        if (getRRule() == null)
+        { // if individual event
+            if (! startDateTime.isBefore(getDateTimeStart()))
+            {
+            return Arrays.asList(getDateTimeStart()).stream();
+            } else
+            { // dateTimeStart is before startDateTime
+                return null;
+            }
+        } else
+        { // if has recurrence rule
+            // filter away too early (with Java 9 takeWhile these statements can be combined into one chained statement for greater elegance)
+            Stream<LocalDateTime> filteredStream = getRRule()
+                    .stream(startDateTime)
+                    .filter(a -> (getDateTimeRangeStart() == null) ? true : ! a.isBefore(getDateTimeRangeStart()));
+            // stop when too late
+            return takeWhile(filteredStream, a -> (getDateTimeRangeEnd() == null) ? true : ! a.isAfter(getDateTimeRangeEnd()));
+        }
+    };
+    
+    // TODO - CAN I MAKE THIS GENERIC AND USE A FACTORY TO MAKE THE EVENTS?
+    /**
+     * The currently generated events of the recurrence set.
+     * 3.8.5.2 defines the recurrence set as the complete set of recurrence instances for a
+     * calendar component.  As many RRule definitions are infinite sets, a complete representation
+     * is not possible.  The set only contains the events inside the bounds of 
+     */
+    public Set<RepeatableAppointment> appointments() { return myAppointments; }
+    final private Set<RepeatableAppointment> myAppointments = new HashSet<RepeatableAppointment>();
+    public VEvent withAppointments(Collection<RepeatableAppointment> s) { appointments().addAll(s); return this; }
+
+    // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate
+    public static <T> Spliterator<T> takeWhile(
+            Spliterator<T> splitr, Predicate<? super T> predicate) {
+          return new Spliterators.AbstractSpliterator<T>(splitr.estimateSize(), 0) {
+            boolean stillGoing = true;
+            @Override public boolean tryAdvance(Consumer<? super T> consumer) {
+              if (stillGoing) {
+                boolean hadNext = splitr.tryAdvance(elem -> {
+                  if (predicate.test(elem)) {
+                    consumer.accept(elem);
+                  } else {
+                    stillGoing = false;
+                  }
+                });
+                return hadNext && stillGoing;
+              }
+              return false;
+            }
+          };
+        }
+
+        static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
+           return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
+        }
+    
 }

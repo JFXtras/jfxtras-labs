@@ -1,4 +1,4 @@
-package jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent;
+package jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule;
 
 import java.time.LocalDateTime;
 import java.util.stream.Stream;

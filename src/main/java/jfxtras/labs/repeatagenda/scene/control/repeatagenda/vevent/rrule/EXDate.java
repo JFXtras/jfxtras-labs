@@ -3,8 +3,6 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.Rule;
-
 /**
  * EXDATE, list of DATE-TIME exceptions for recurring events as defined in 
  * RFC 5545 iCalendar 3.8.5.1, page 117.

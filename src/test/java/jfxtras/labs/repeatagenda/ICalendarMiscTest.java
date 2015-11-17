@@ -7,7 +7,8 @@ import java.time.LocalDateTime;
 
 import org.junit.Test;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEvent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.VEvent;
+
 
 public class ICalendarMiscTest {
 

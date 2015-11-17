@@ -6,7 +6,7 @@ import java.time.temporal.TemporalAdjuster;
 import java.util.List;
 import java.util.stream.Stream;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.Rule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.Rule;
 
 /** Interface for frequency rule that produces a stream of LocalDateTime start times for repeatable events 
  * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.) */
@@ -17,17 +17,18 @@ public interface Frequency {
     Integer getInterval();
     void setInterval(Integer interval);
     
-    /** Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
+    /** Collection of rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
+     * The rules include all BYxxx rules, EXDate and RDate lists.
      * The BYxxx rules must be applied in a specific order and can only be occur once 
      * BYxxx rule parts
       are applied to the current set of evaluated occurrences in the
       following order: BYMONTH, BYWEEKNO, BYYEARDAY, BYMONTHDAY, BYDAY,
       BYHOUR, BYMINUTE, BYSECOND and BYSETPOS; then COUNT and UNTIL are
       evaluated.*/
-    List<Rule> getByRules();
+    List<Rule> getRules();
 
     /** Adds new byRule to collection and ensures that type of rule isn't already present */
-    void addByRule(Rule byRule);
+    void addByRule(Rule rule);
 
     
     /** Chrono unit of last modification to stream
@@ -44,7 +45,7 @@ public interface Frequency {
     default Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
         Stream<LocalDateTime> stream = Stream.iterate(startDateTime, (a) -> { return a.with(getAdjuster()); });
-        for (Rule rule : getByRules())
+        for (Rule rule : getRules())
         {
             stream = rule.stream(stream, startDateTime);
         }

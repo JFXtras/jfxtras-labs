@@ -19,18 +19,14 @@ import java.util.stream.StreamSupport;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq.Frequency;
-import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 /**
  * Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
  * Used as a part of a VEVENT as defined by 3.6.1, page 52.
  * 
- * After applying all Rules
+ * Produces a stream of start date/times after applying all modification rules.
  * 
  * @author David Bal
  *
@@ -39,14 +35,6 @@ public class RRule {
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
     
-    /**
-     * Range for which appointments are to be generated.  Should match the dates displayed on the calendar.
-     */
-    public LocalDateTimeRange getAppointmentDateTimeRange() { return appointmentDateTimeRange; }
-    private LocalDateTimeRange appointmentDateTimeRange;
-    public void setAppointmentDateTimeRange(LocalDateTimeRange appointmentDateTimeRange) { this.appointmentDateTimeRange = appointmentDateTimeRange; }
-    public RRule withAppointmentDateTimeRange(LocalDateTimeRange appointmentDateTimeRange) { setAppointmentDateTimeRange(appointmentDateTimeRange); return this; }
-
     /**
      *  RRule doesn't know how to make an appointment.  An appointment factory makes new appointments.  The Class of the appointment
      * is an argument for the AppointmentFactory.  The appointmentClass is set in the constructor.  A RRule object is not valid without
@@ -57,9 +45,15 @@ public class RRule {
     private void setAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { this.appointmentClass = appointmentClass; }
     public RRule withAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
     
+//    public LocalDateTimeRange getDateTimeRange() { return appointmentDateTimeRange; }
+//    private LocalDateTimeRange appointmentDateTimeRange;
+//    public void setAppointmentDateTimeRange(LocalDateTimeRange appointmentDateTimeRange) { this.appointmentDateTimeRange = appointmentDateTimeRange; }
+//    public VEvent withAppointmentDateTimeRange(LocalDateTimeRange appointmentDateTimeRange) { setAppointmentDateTimeRange(appointmentDateTimeRange); return this; }
+
+    
     /** Parent VEvent 
      * Contains following data necessary for RRule: DTSTART, DURATION */
-    final private VEvent vevent;
+//    final private VEvent vevent;
 
     // TODO - MAKE A CACHE LIST OF START DATES (from the stream)
     // try to avoid making new dates by starting from the first startLocalDateTime if possible
@@ -141,28 +135,30 @@ public class RRule {
     
     // deleted appointments - skip these when making appointments from the repeat rule
     // TODO - Should this be an Observable Collection?
-    /** EXDATE */
-    final private ObservableList<LocalDateTime> exceptions = FXCollections.observableArrayList();
-    public ObservableList<LocalDateTime> getExceptions() { return exceptions; }
-//    public void setExceptions(ObservableList<LocalDateTime> dates) { exceptions = dates; }
-    public RRule withExceptions(ObservableList<LocalDateTime> dates) { exceptions.addAll(dates); return this; }
-    private boolean exceptionsEquals(Collection<LocalDateTime> exceptionsTest)
-    { // test doesn't require order to be same 
-        Iterator<LocalDateTime> dateIterator = getExceptions().iterator();
-        while (dateIterator.hasNext())
-        {
-            LocalDateTime myDate = dateIterator.next();
-            if (! exceptionsTest.contains(myDate)) return false;
-        }
-        return true;
-    }
+//    /** EXDATE */  - in own class
+//    final private ObservableList<LocalDateTime> exceptions = FXCollections.observableArrayList();
+//    public ObservableList<LocalDateTime> getExceptions() { return exceptions; }
+////    public void setExceptions(ObservableList<LocalDateTime> dates) { exceptions = dates; }
+//    public RRule withExceptions(ObservableList<LocalDateTime> dates) { exceptions.addAll(dates); return this; }
+//    private boolean exceptionsEquals(Collection<LocalDateTime> exceptionsTest)
+//    { // test doesn't require order to be same 
+//        Iterator<LocalDateTime> dateIterator = getExceptions().iterator();
+//        while (dateIterator.hasNext())
+//        {
+//            LocalDateTime myDate = dateIterator.next();
+//            if (! exceptionsTest.contains(myDate)) return false;
+//        }
+//        return true;
+//    }
     
     // TODO - 
     /** RDATE */
-    final private ObservableList<LocalDateTime> rdate = FXCollections.observableArrayList();
+//    final private ObservableList<LocalDateTime> rdate = FXCollections.observableArrayList(); - in own class
     
     
     // List of RECURRENCE-ID events represented by a individual appointment with some unique data
+    // SHOULD RECURRENCES BE A SPECIAL CLASS OF APPOINTMENT WITH RECURRENCT-ID?
+    // IF SO THEN I COULD MAKE A COLLECTION OF APPOINTMENTS HERE
     private Set<LocalDateTime> recurrences = new HashSet<LocalDateTime>();
     public Set<LocalDateTime> getRecurrences() { return recurrences; }
     public void setRecurrences(Set<LocalDateTime> dates) { recurrences = dates; }
@@ -170,7 +166,7 @@ public class RRule {
     private boolean recurrencesEquals(Collection<LocalDateTime> recurrencesTest)
     {
         recurrencesTest.stream().forEach(a -> System.out.println("test " + a));
-        Iterator<LocalDateTime> dateIterator = getExceptions().iterator();
+        Iterator<LocalDateTime> dateIterator = getRecurrences().iterator();
         while (dateIterator.hasNext())
         {
             LocalDateTime myDate = dateIterator.next();
@@ -190,11 +186,12 @@ public class RRule {
     
     
     
-    /** Constructor.  Sets parent VEvent object */
-    public RRule(VEvent vevent)
-    {
-        this.vevent = vevent;
-    }
+//    /** Constructor.  Sets parent VEvent object */
+//    // TODO  REMOVE VEVENT AS A PARAMETER
+//    public RRule(VEvent vevent)
+//    {
+//        this.vevent = vevent;
+//    }
     
 
     /** Stream of date/times made after applying all modification rules.
@@ -204,6 +201,14 @@ public class RRule {
      * first date/time (DTSTART) in the sequence. */
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
+//        Stream<LocalDateTime> rangeFileredStream = takeWhile(frequency.stream(startDateTime), a -> 
+//        {
+//            boolean notTooLate = (getStartRangeDateTime() == null) ? true : ! a.isAfter(getEndRangeDateTime());
+//            boolean notTooEarly = (getEndRangeDateTime() == null) ? true : ! a.isBefore(getStartRangeDateTime());
+//            System.out.println("test3 " + a + " " + notTooEarly + " " + notTooLate);
+//            return notTooEarly && notTooLate;
+//        });
+        
         if (getCount() > 0)
         {
             return frequency.stream(startDateTime).limit(getCount());
@@ -216,38 +221,65 @@ public class RRule {
         }
         return frequency.stream(startDateTime);
     };
+    
+//    /** Filtered RRule stream to include only dates within start and end range */
+//    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream)
+//    {
+//        return takeWhile(inStream
+//                , a -> ! a.isBefore(getStartDateTimeRange())
+//                    || ! a.isAfter(getEndDateTimeRange()));               
+//    };
 
-    /** Resulting stream of date/times by applying rules 
-     * Uses startLocalDateTime - first date/time in sequence (DTSTART) as a default starting point */
-    public Stream<LocalDateTime> stream()
-    {
-        return stream(vevent.getDateTimeStart());
-    }
+//    /** Resulting stream of date/times by applying rules 
+//     * Uses startLocalDateTime - first date/time in sequence (DTSTART) as a default starting point */
+//    public Stream<LocalDateTime> stream()
+//    {
+//        return stream(vevent.getDateTimeStart());
+//    }
     
     // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate
-    static <T> Spliterator<T> takeWhile(
-            Spliterator<T> splitr, Predicate<? super T> predicate) {
-          return new Spliterators.AbstractSpliterator<T>(splitr.estimateSize(), 0) {
-            boolean stillGoing = true;
-            @Override public boolean tryAdvance(Consumer<? super T> consumer) {
-              if (stillGoing) {
-                boolean hadNext = splitr.tryAdvance(elem -> {
-                  if (predicate.test(elem)) {
-                    consumer.accept(elem);
-                  } else {
-                    stillGoing = false;
-                  }
-                });
-                return hadNext && stillGoing;
+    static <T> Spliterator<T> takeWhile(Spliterator<T> splitr, Predicate<? super T> predicate)
+    {
+      return new Spliterators.AbstractSpliterator<T>(splitr.estimateSize(), 0) {
+        boolean stillGoing = true;
+        @Override public boolean tryAdvance(Consumer<? super T> consumer) {
+          if (stillGoing) {
+            boolean hadNext = splitr.tryAdvance(elem -> {
+              if (predicate.test(elem)) {
+                consumer.accept(elem);
+              } else {
+                stillGoing = false;
               }
-              return false;
-            }
-          };
+            });
+            return hadNext && stillGoing;
+          }
+          return false;
         }
+      };
+    }
 
-        static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
-           return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
-        }
+    public static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
+       return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
+    }
     
+//        /**
+//         * A Datetime range.  The range of dates within the recurrence set to be included in
+//         * the stream
+//         */
+//        static public class LocalDateTimeRange
+//        {
+//            public LocalDateTimeRange(LocalDateTime start, LocalDateTime end)
+//            {
+//                this.start = start;
+//                this.end = end;
+//            }
+//            
+//            public LocalDateTime getStartLocalDateTime() { return start; }
+//            final LocalDateTime start;
+//            
+//            public LocalDateTime getEndLocalDateTime() { return end; }
+//            final LocalDateTime end; 
+//
+//        }
 
 }

@@ -11,11 +11,17 @@ import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq.Frequency;
 
 /** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */
@@ -29,6 +35,33 @@ public class ByDay extends ByRuleAbstract
     public ByDayPair[] getByDayPair() { return byDayPairs; }
     private ByDayPair[] byDayPairs;
     private void setByDayPair(ByDayPair... byDayPairs) { this.byDayPairs = byDayPairs; }
+    
+    
+    // TODO - IS THIS A GOOD FIT HERE?
+    // SHOULD I HAVE PROPERTIES OR SHOULD I HAVE A LISTENER SET THE VALUES?
+    // I THINK THAT IF THERE ARE NO ORDINAL VALUES I SHOULD USE PROPERTIES
+    final private Map<DayOfWeek, BooleanProperty> dayOfWeekMap = Arrays // Initialized map of all days of the week, each BooleanProperty is false
+            .stream(DayOfWeek.values())
+            .collect(Collectors.toMap(k -> k, v -> new SimpleBooleanProperty(false)));
+    public Map<DayOfWeek, BooleanProperty> getDayOfWeekMap() { return dayOfWeekMap; }
+    public void setDayOfWeek(DayOfWeek d, boolean value) { getDayOfWeekMap().get(d).set(value); }
+    public boolean getDayOfWeek(DayOfWeek d) { return getDayOfWeekMap().get(d).get(); }
+    public BooleanProperty getDayOfWeekProperty(DayOfWeek d) { return getDayOfWeekMap().get(d); }
+//    public Repeat withDayOfWeek(DayOfWeek d, boolean value) { setDayOfWeek(d, value); return this; }
+    private boolean dayOfWeekMapEqual(Map<DayOfWeek, BooleanProperty> dayOfWeekMap2) {
+        Iterator<DayOfWeek> dayOfWeekIterator = Arrays 
+            .stream(DayOfWeek.values())
+            .limit(7)
+            .iterator();
+        while (dayOfWeekIterator.hasNext())
+        {
+            DayOfWeek key = dayOfWeekIterator.next();
+            boolean b1 = getDayOfWeekMap().get(key).get();
+            boolean b2 = dayOfWeekMap2.get(key).get();
+            if (b1 != b2) return false;
+        }
+        return true;
+    }
     
     public ByDay(Frequency frequency, ByDayPair... byDayPairs)
     {

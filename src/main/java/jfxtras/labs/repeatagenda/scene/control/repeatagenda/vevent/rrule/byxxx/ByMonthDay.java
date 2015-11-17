@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.Rule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq.Frequency;
 
 /** BYMONTHDAY from RFC 5545, iCalendar */

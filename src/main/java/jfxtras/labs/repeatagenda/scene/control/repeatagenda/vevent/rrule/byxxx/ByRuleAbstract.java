@@ -1,6 +1,6 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.byxxx;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.Rule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq.Frequency;
 
 /**

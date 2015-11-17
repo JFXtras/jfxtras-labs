@@ -237,7 +237,100 @@ public class RepeatableAgenda extends Agenda {
     {
         return ! appointmentsIndividual.contains(a);
     }
+
+    
+    /** Contains all the appointment data - no repeatable information
+    *   Like Appointment, but contains extra fields - no repeat object */
+    static public interface Appointment3
+    {
+        // TODO - SHOULD GO TO REGULAR AGENDA
+        /** Unique identifier as defined by iCalendar RFC 5545, 3.8.4.7 */
+        String getUID();
+        void setUID(String uid);
+
+        // TODO - SHOULD GO TO REGULAR AGENDA
+        /** Number of times appointment was edited.  Sequence as defined by iCalendar RFC 5545, 3.8.7.4 */
+        int getSequence();
+        void setSequence(int sequence);
+
+        // TODO - SHOULD GO TO REGULAR AGENDA
+        /** Last date/time object was revised.  Date-Time Stamp as defined by iCalendar RFC 5545, 3.8.7.2 */
+        LocalDateTime getDTStamp();
+        void setDTStamp(LocalDateTime dtStamp);
+
+        // TODO - SHOULD GO TO REGULAR AGENDA
+        /** Created date/time as defined by iCalendar RFC 5545, 3.8.7.1 */
+        LocalDateTime getCreated();
+        void setCreated(LocalDateTime created);
+
         
+        // DEFAULTS - SHOULD BE INHERETED, BUT AREN'T - PROBLEM MAY BE RETROLAMBDA
+        // ----
+        // Calendar
+        
+        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
+        default Calendar getStartTime() {
+            throw new RuntimeException("Not implemented");
+        }
+        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
+        default void setStartTime(Calendar c) {
+            throw new RuntimeException("Not implemented");
+        }
+        
+        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
+        default Calendar getEndTime() {
+            throw new RuntimeException("Not implemented");
+        }
+        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
+        default void setEndTime(Calendar c) {
+            throw new RuntimeException("Not implemented");
+        }
+        
+        // ----
+        // ZonedDateTime
+        
+        /** This is the replacement of Calendar, if you use ZonedDateTime be aware that the default implementations of the LocalDateTime methods in this interface convert LocalDateTime to ZonedDateTime using a rather crude approach */
+        default ZonedDateTime getStartZonedDateTime() {
+            return DateTimeToCalendarHelper.createZonedDateTimeFromCalendar(getStartTime());
+        }
+        /** This is the replacement of Calendar, if you use ZonedDateTime be aware that the default implementations of the LocalDateTime methods in this interface convert LocalDateTime to ZonedDateTime using a rather crude approach */
+        default void setStartZonedDateTime(ZonedDateTime v) {
+            setStartTime(DateTimeToCalendarHelper.createCalendarFromZonedDateTime(v));
+        }
+        
+        /** This is the replacement of Calendar, if you use ZonedDateTime be aware that the default implementations of the LocalDateTime methods in this interface convert LocalDateTime to ZonedDateTime using a rather crude approach */
+        default ZonedDateTime getEndZonedDateTime() {
+            return DateTimeToCalendarHelper.createZonedDateTimeFromCalendar(getEndTime());
+        }
+        /** End is exclusive */
+        default void setEndZonedDateTime(ZonedDateTime v) {
+            setEndTime(DateTimeToCalendarHelper.createCalendarFromZonedDateTime(v));
+        }
+        
+        // ----
+        // LocalDateTime 
+        
+        /** This is what Agenda uses to render the appointments */
+        default LocalDateTime getStartLocalDateTime() {
+            return getStartZonedDateTime().toLocalDateTime();
+        }
+        /** This is what Agenda uses to render the appointments */
+        default void setStartLocalDateTime(LocalDateTime v) {
+            setStartZonedDateTime(ZonedDateTime.of(v, ZoneId.systemDefault()));
+        }
+        
+        /** This is what Agenda uses to render the appointments */
+        default LocalDateTime getEndLocalDateTime() {
+            return getEndZonedDateTime() == null ? null : getEndZonedDateTime().toLocalDateTime();
+        }
+        /** End is exclusive */
+        default void setEndLocalDateTime(LocalDateTime v) {
+            setEndZonedDateTime(v == null ? null : ZonedDateTime.of(v, ZoneId.systemDefault()));
+        }
+
+    }
+    
+    
     /** Contains all the appointment data - no repeatable information
     *   Like Appointment, but contains extra fields - no repeat object */
     static public interface Appointment2 extends Agenda.Appointment
@@ -326,51 +419,8 @@ public class RepeatableAgenda extends Agenda {
         default void setEndLocalDateTime(LocalDateTime v) {
             setEndZonedDateTime(v == null ? null : ZonedDateTime.of(v, ZoneId.systemDefault()));
         }
-        
-//        /**
-//         * Copies this Appointment fields into destination parameter
-//         * This method must be overridden by an implementing class
-//         * 
-//         * @param destination
-//         * @return
-//         */
-//        @Deprecated
-//        default Appointment copyFieldsTo(Appointment2 destination) {
-//            destination.setAppointmentGroup(getAppointmentGroup());
-//            destination.setDescription(getDescription());
-//            destination.setSummary(getSummary());
-//            return destination;
-//        }
 
       Appointment copyNonUniqueFieldsTo(Appointment appointment, Appointment appointmentFromRepeatRule);
-
-        
-//        /**
-//         * Copies this Appointment non-time fields into passed appointment
-//         * Used on recurrences when some of fields are unique and should not be copied.
-//         * This method must be overridden by an implementing class
-//         * 
-//         * @param appointment
-//         * @param appointmentFromRepeatRule
-//         * @param repeatMap
-//         * @return
-//         */
-//        @Deprecated
-//        default Appointment copyNonUniqueFieldsTo(Appointment appointment, Appointment appointmentFromRepeatRule) {
-//            if (appointment.getAppointmentGroup().equals(appointmentFromRepeatRule.getAppointmentGroup())) {
-//                appointment.setAppointmentGroup(getAppointmentGroup());
-//            }
-//            if (appointment.getDescription().equals(appointmentFromRepeatRule.getDescription())) {
-//                appointment.setDescription(getDescription());
-//            }
-//            if (appointment.getSummary().equals(appointmentFromRepeatRule.getSummary())) {
-//                appointment.setSummary(getSummary());
-//            }
-////            Repeat repeat = repeatMap.get(appointmentFrom);
-////            repeatMap.put(appointmentTo, repeat);
-////            getRepeat().copyInto(appointment.getRepeat());
-//            return appointment;
-//        }
         
       Appointment copyFieldsTo(Appointment destination);
 
