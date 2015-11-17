@@ -12,14 +12,14 @@ import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.VEvent;
 
-public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
+public class ICalendarDateTest extends ICalendarRepeatTestAbstract
 {
     
     /** Tests daily stream with FREQ=YEARLY */
     @Test
     public void yearlyStreamTest1()
     {
-        VEvent e = getYearlyStream1();
+        VEvent e = getYearly1();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(5)
@@ -38,7 +38,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void yearlyStreamTest2()
     {
-        VEvent e = getYearlyStream2();
+        VEvent e = getYearly2();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(5)
@@ -57,7 +57,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void yearlyStreamTest3()
     {
-        VEvent e = getYearlyStream3();
+        VEvent e = getYearly3();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(20)
@@ -91,7 +91,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void yearlyStreamTest4()
     {
-        VEvent e = getYearlyStream4();
+        VEvent e = getYearly4();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(5)
@@ -110,7 +110,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void yearlyStreamTest5()
     {
-        VEvent e = getYearlyStream5();
+        VEvent e = getYearly5();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(5)
@@ -130,7 +130,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void yearlyStreamTest6()
     {
-        VEvent e = getYearlyStream6();
+        VEvent e = getYearly6();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(6)
@@ -150,7 +150,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void yearlyStreamTest7()
     {
-        VEvent e = getYearlyStream7();
+        VEvent e = getYearly7();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(3)
@@ -169,7 +169,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     {
 //        Locale oldLocale = Locale.getDefault();
 //        Locale.setDefault(Locale.FRANCE); // has Monday as first day of week system.  US is Sunday which causes an error.
-        VEvent e = getYearlyStream8();
+        VEvent e = getYearly8();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(5)
@@ -189,7 +189,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void yearlyStreamTest9()
     {
-        VEvent e = getYearlyStream9();
+        VEvent e = getYearly9();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(5)
@@ -208,7 +208,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void monthlyStreamTest()
     {
-        VEvent e = getMonthlyStream1();
+        VEvent e = getMonthly1();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(5)
@@ -227,7 +227,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void monthlyStreamTest2()
     {
-        VEvent e = getMonthlyStream2();
+        VEvent e = getMonthly2();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(5)
@@ -246,7 +246,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void monthlyStreamTest3()
     {
-        VEvent e = getMonthlyStream3();
+        VEvent e = getMonthly3();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(10)
@@ -270,7 +270,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void monthlyStreamTest4()
     {
-        VEvent e = getMonthlyStream4();
+        VEvent e = getMonthly4();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(5)
@@ -289,7 +289,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void monthlyStreamTest5()
     {
-        VEvent e = getMonthlyStream5();
+        VEvent e = getMonthly5();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(5)
@@ -308,7 +308,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void monthlyStreamTest6()
     {
-        VEvent e = getMonthlyStream6();
+        VEvent e = getMonthly6();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(13)
@@ -335,7 +335,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void weeklyStreamTest1()
     {
-        VEvent e = getWeeklyStream1();
+        VEvent e = getWeekly1();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(5)
@@ -354,7 +354,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void weeklyStreamTest2()
     {
-        VEvent e = getWeeklyStream2();
+        VEvent e = getWeekly2();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(10)
@@ -378,7 +378,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void weeklyStreamTest3()
     {
-        VEvent e = getWeeklyStream3();
+        VEvent e = getWeekly3();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(5)
@@ -397,7 +397,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void dailyStreamTest1()
     {
-        VEvent e = getDailyStream1();
+        VEvent e = getDaily1();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(5)
@@ -416,7 +416,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void dailyStreamTest2()
     {
-        VEvent e = getDailyStream2();
+        VEvent e = getDaily2();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .collect(Collectors.toList());
@@ -435,7 +435,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void dailyStreamTest3()
     {
-        VEvent e = getDailyStream3();
+        VEvent e = getDaily3();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(10)
@@ -459,7 +459,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void dailyStreamTest4()
     {
-        VEvent e = getDailyStream4();
+        VEvent e = getDaily4();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(6)
@@ -479,7 +479,7 @@ public class ICalendarFreqStreamTest extends ICalendarRepeatTestAbstract
     @Test
     public void dailyStreamTest5()
     {
-        VEvent e = getDailyStream5();
+        VEvent e = getDaily5();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(6)

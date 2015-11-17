@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.time.Month;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.byxxx.ByDay;
@@ -23,10 +22,10 @@ public abstract class ICalendarRepeatTestAbstract
 {
 
     /** FREQ=YEARLY; */
-    protected static VEvent getYearlyStream1()
+    protected static VEventImpl getYearly1()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency yearly = new Yearly();
@@ -35,10 +34,10 @@ public abstract class ICalendarRepeatTestAbstract
     }
 
     /** FREQ=YEARLY;BYDAY=SU; */
-    protected static VEvent getYearlyStream2()
+    protected static VEventImpl getYearly2()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 6, 10, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 6, 10, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency yearly = new Yearly();
@@ -52,10 +51,10 @@ public abstract class ICalendarRepeatTestAbstract
      * DTSTART;TZID=America/New_York:19970605T090000
      * RRULE:FREQ=YEARLY;BYDAY=TH;BYMONTH=6,7,8
      * example in RFC 5545 iCalendar, page 129 */
-    protected static VEvent getYearlyStream3()
+    protected static VEventImpl getYearly3()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(1997, 6, 5, 9, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(1997, 6, 5, 9, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency yearly = new Yearly();
@@ -68,10 +67,10 @@ public abstract class ICalendarRepeatTestAbstract
     }
     
     /** FREQ=YEARLY;BYMONTH=1,2 */
-    protected static VEvent getYearlyStream4()
+    protected static VEventImpl getYearly4()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 1, 6, 10, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(2015, 1, 6, 10, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency yearly = new Yearly();
@@ -82,10 +81,10 @@ public abstract class ICalendarRepeatTestAbstract
     }
 
     /** FREQ=YEARLY;BYMONTH=11;BYMONTHDAY=10 */
-    protected static VEvent getYearlyStream5()
+    protected static VEventImpl getYearly5()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 10, 0, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 10, 0, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency yearly = new Yearly();
@@ -104,10 +103,10 @@ public abstract class ICalendarRepeatTestAbstract
        DTSTART;TZID=America/New_York:19961105T090000
        RRULE:FREQ=YEARLY;INTERVAL=4;BYMONTH=11;BYDAY=TU;
         BYMONTHDAY=2,3,4,5,6,7,8 */
-    protected static VEvent getYearlyStream6()
+    protected static VEventImpl getYearly6()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(1996, 11, 5, 0, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(1996, 11, 5, 0, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency yearly = new Yearly()
@@ -123,10 +122,10 @@ public abstract class ICalendarRepeatTestAbstract
     }
     
     /** FREQ=YEARLY;BYDAY=20MO */
-    protected static VEvent getYearlyStream7()
+    protected static VEventImpl getYearly7()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(1997, 5, 19, 10, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(1997, 5, 19, 10, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency yearly = new Yearly();
@@ -137,10 +136,10 @@ public abstract class ICalendarRepeatTestAbstract
     }
     
     /** FREQ=YEARLY;WKST=MO;BYWEEKNO=20;BYDAY=MO */
-    protected static VEvent getYearlyStream8()
+    protected static VEventImpl getYearly8()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(1997, 5, 12, 10, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(1997, 5, 12, 10, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency yearly = new Yearly();
@@ -155,10 +154,10 @@ public abstract class ICalendarRepeatTestAbstract
     }
     
     /** FREQ=YEARLY;BYMONTH=11;BYMONTHDAY=10 - start before first valid date */
-    protected static VEvent getYearlyStream9()
+    protected static VEventImpl getYearly9()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 1, 1, 0, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(2015, 1, 1, 0, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency yearly = new Yearly();
@@ -171,10 +170,10 @@ public abstract class ICalendarRepeatTestAbstract
     }
     
     /** FREQ=MONTHLY, Basic monthly stream, repeats 9th day of every month */
-    protected static VEvent getMonthlyStream1()
+    protected static VEventImpl getMonthly1()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Monthly monthly = new Monthly();
@@ -183,10 +182,10 @@ public abstract class ICalendarRepeatTestAbstract
     }
 
     /** FREQ=MONTHLY;BYMONTHDAY=-2, Monthly stream, negative day of month */
-    protected static VEvent getMonthlyStream2()
+    protected static VEventImpl getMonthly2()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 29, 10, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 29, 10, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency monthly = new Monthly();
@@ -198,10 +197,10 @@ public abstract class ICalendarRepeatTestAbstract
     }
 
     /** FREQ=MONTHLY;BYDAY=TU,WE,FR */
-    protected static VEvent getMonthlyStream3()
+    protected static VEventImpl getMonthly3()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency monthly = new Monthly();
@@ -212,10 +211,10 @@ public abstract class ICalendarRepeatTestAbstract
     }
 
     /** FREQ=MONTHLY;BYDAY=-1SA */
-    protected static VEvent getMonthlyStream4()
+    protected static VEventImpl getMonthly4()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency monthly = new Monthly();
@@ -226,10 +225,10 @@ public abstract class ICalendarRepeatTestAbstract
     }
 
     /** FREQ=MONTHLY;BYDAY=FR;BYMONTHDAY=13 Every Friday the 13th, forever: */
-    protected static VEvent getMonthlyStream5()
+    protected static VEventImpl getMonthly5()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(1997, 9, 2, 10, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(1997, 9, 2, 10, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency monthly = new Monthly();
@@ -242,10 +241,10 @@ public abstract class ICalendarRepeatTestAbstract
     }
 
     /** FREQ=MONTHLY;BYMONTH=11,12;BYDAY=TU,WE,FR - start before first valid date */
-    protected static VEvent getMonthlyStream6()
+    protected static VEventImpl getMonthly6()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 1, 10, 10, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(2015, 1, 10, 10, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency monthly = new Monthly();
@@ -258,10 +257,10 @@ public abstract class ICalendarRepeatTestAbstract
     }
     
     /** FREQ=WEEKLY, Basic weekly stream */
-    protected static VEvent getWeeklyStream1()
+    protected static VEventImpl getWeekly1()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency weekly = new Weekly();
@@ -270,10 +269,10 @@ public abstract class ICalendarRepeatTestAbstract
     }
 
     /** FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE,FR */
-    protected static VEvent getWeeklyStream2()
+    protected static VEventImpl getWeekly2()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency weekly = new Weekly()
@@ -285,10 +284,10 @@ public abstract class ICalendarRepeatTestAbstract
     }
 
     /** FREQ=WEEKLY;BYDAY=MO,WE,FR  - start before first valid date */
-    protected static VEvent getWeeklyStream3()
+    protected static VEventImpl getWeekly3()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency weekly = new Weekly();
@@ -299,10 +298,12 @@ public abstract class ICalendarRepeatTestAbstract
     }
     
     /** FREQ=DAILY, Basic daily stream */
-    protected static VEventImpl getDailyStream1()
+    protected static VEventImpl getDaily1()
     {
-        VEventImpl vevent = new VEventImpl();
-        vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        VEventImpl vevent = new VEventImpl()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withDurationInSeconds(3600)
+                .withDescription("Daily1 Description");
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency daily = new Daily();
@@ -311,10 +312,10 @@ public abstract class ICalendarRepeatTestAbstract
     }
 
     /** FREQ=DAILY;INVERVAL=3;COUNT=6 */
-    protected static VEvent getDailyStream2()
+    protected static VEventImpl getDaily2()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         RRule rule = new RRule()
                 .withCount(6);
         vevent.setRRule(rule);
@@ -325,7 +326,7 @@ public abstract class ICalendarRepeatTestAbstract
     }
 
     /** FREQ=DAILY;INVERVAL=3;COUNT=10;BYMONTHDAY=9,10,11,12,13,14 */
-    protected static VEventImpl getDailyStream3()
+    protected static VEventImpl getDaily3()
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
@@ -342,10 +343,10 @@ public abstract class ICalendarRepeatTestAbstract
     }
 
     /** FREQ=DAILY;INVERVAL=2;BYMONTHDAY=9 */
-    protected static VEvent getDailyStream4()
+    protected static VEventImpl getDaily4()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency daily = new Daily()
@@ -357,10 +358,10 @@ public abstract class ICalendarRepeatTestAbstract
     }
     
     /** FREQ=DAILY;INVERVAL=2;BYDAY=FR */
-    protected static VEvent getDailyStream5()
+    protected static VEventImpl getDaily5()
     {
-        VEvent vevent = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency daily = new Daily()

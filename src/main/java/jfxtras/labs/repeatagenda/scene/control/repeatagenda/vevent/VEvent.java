@@ -8,11 +8,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
@@ -27,7 +24,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.util.Callback;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.RRule;
 
 /**
@@ -38,7 +34,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.RRule;
  * 
        3.8.1.  Descriptive Component Properties  . . . . . . . . . .  81
          3.8.1.1.  Attachment  . . . . . . . . . . . . . . . . . . .  81 - NO
-         3.8.1.2.  Categories  . . . . . . . . . . . . . . . . . . .  82 - Yes (appointmentGroup)
+         3.8.1.2.  Categories  . . . . . . . . . . . . . . . . . . .  82 - Yes
          3.8.1.3.  Classification  . . . . . . . . . . . . . . . . .  83 - NO
          3.8.1.4.  Comment . . . . . . . . . . . . . . . . . . . . .  84 - Yes
          3.8.1.5.  Description . . . . . . . . . . . . . . . . . . .  85 - Yes
@@ -67,32 +63,33 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.RRule;
          3.8.4.1.  Attendee  . . . . . . . . . . . . . . . . . . . . 108 - NO
          3.8.4.2.  Contact . . . . . . . . . . . . . . . . . . . . . 111 - NO
          3.8.4.3.  Organizer . . . . . . . . . . . . . . . . . . . . 113 - NO
-         3.8.4.4.  Recurrence ID . . . . . . . . . . . . . . . . . . 114 - Yes
+         3.8.4.4.  Recurrence ID . . . . . . . . . . . . . . . . . . 114 - TODO
          3.8.4.5.  Related To  . . . . . . . . . . . . . . . . . . . 117 - NO
          3.8.4.6.  Uniform Resource Locator  . . . . . . . . . . . . 118 - NO
          3.8.4.7.  Unique Identifier . . . . . . . . . . . . . . . . 119 - Yes
        3.8.5.  Recurrence Component Properties . . . . . . . . . . . 120
          3.8.5.1.  Exception Date-Times  . . . . . . . . . . . . . . 120 - Yes, in EXDate
-         3.8.5.2.  Recurrence Date-Times . . . . . . . . . . . . . . 122 - Yes, in RDate
-         3.8.5.3.  Recurrence Rule . . . . . . . . . . . . . . . . . 124 - Yes, in RRule
+         3.8.5.2.  Recurrence Date-Times . . . . . . . . . . . . . . 122 - TODO, in RDate
+         3.8.5.3.  Recurrence Rule . . . . . . . . . . . . . . . . . 124 - TODO, in RRule
        3.8.6.  Alarm Component Properties  . . . . . . . . . . . . . 134
          3.8.6.1.  Action  . . . . . . . . . . . . . . . . . . . . . 134 - NO
          3.8.6.2.  Repeat Count  . . . . . . . . . . . . . . . . . . 135 - NO
          3.8.6.3.  Trigger . . . . . . . . . . . . . . . . . . . . . 135 - NO
        3.8.7.  Change Management Component Properties  . . . . . . . 138
-         3.8.7.1.  Date-Time Created . . . . . . . . . . . . . . . . 138 - Yes
-         3.8.7.2.  Date-Time Stamp . . . . . . . . . . . . . . . . . 139 - Yes
-         3.8.7.3.  Last Modified . . . . . . . . . . . . . . . . . . 140 - Yes
-         3.8.7.4.  Sequence Number . . . . . . . . . . . . . . . . . 141 - Yes
+         3.8.7.1.  Date-Time Created . . . . . . . . . . . . . . . . 138 - TODO
+         3.8.7.2.  Date-Time Stamp . . . . . . . . . . . . . . . . . 139 - TODO
+         3.8.7.3.  Last Modified . . . . . . . . . . . . . . . . . . 140 - TODO
+         3.8.7.4.  Sequence Number . . . . . . . . . . . . . . . . . 141 - TODO
        3.8.8.  Miscellaneous Component Properties  . . . . . . . . . 142
          3.8.8.1.  IANA Properties . . . . . . . . . . . . . . . . . 142 - NO
          3.8.8.2.  Non-Standard Properties . . . . . . . . . . . . . 142 - NO
          3.8.8.3.  Request Status  . . . . . . . . . . . . . . . . . 144 - NO
+ * @param <T>
 
  * 
  *
  */
-public class VEvent
+public abstract class VEvent<T extends VEvent>
 {
     /**
      * Date-Time Start, DTSTART from RFC 5545 iCalendar 3.8.2.4 page 97
@@ -104,7 +101,7 @@ public class VEvent
     public LocalDateTime getDateTimeStart() { return dateTimeStart.getValue(); }
     public void setDateTimeStart(LocalDateTime dtStart) { this.dateTimeStart.set(dtStart); }
     // TODO - ADD SET METHOD FOR ICALENDAR COMPLIANT STRINGS
-    public VEvent withDateTimeStart(LocalDateTime startDate) { setDateTimeStart(startDate); return this; }
+    public T withDateTimeStart(LocalDateTime startDate) { setDateTimeStart(startDate); return (T)this; }
 
     /** 
      * DURATION from RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34
@@ -161,8 +158,8 @@ public class VEvent
         }
         durationInSeconds.setValue(seconds);
     }
-    public VEvent withDurationInSeconds(Integer value) { setDurationInSeconds(value); return this; } 
-    public VEvent withDurationInSeconds(String value) { setDurationInSeconds(value); return this; } 
+    public T withDurationInSeconds(Integer value) { setDurationInSeconds(value); return (T)this; } 
+    public T withDurationInSeconds(String value) { setDurationInSeconds(value); return (T)this; } 
     
     /**
      * Date-Time End, DTEND from RFC 5545 iCalendar 3.8.2.2 page 95
@@ -284,7 +281,7 @@ public class VEvent
     final private SimpleStringProperty summaryProperty = new SimpleStringProperty(this, "summary");
     public String getSummary() { return summaryProperty.getValue(); }
     public void setSummary(String value) { summaryProperty.setValue(value); }
-    public VEvent withSummary(String value) { setSummary(value); return this; } 
+    public T withSummary(String value) { setSummary(value); return (T)this; } 
     
     /**
      * DESCRIPTION: RFC 5545 iCalendar 3.8.1.12. page 84
@@ -299,7 +296,7 @@ public class VEvent
     final private StringProperty descriptionProperty = new SimpleStringProperty(this, "description");
     public String getDescription() { return descriptionProperty.getValue(); }
     public void setDescription(String value) { descriptionProperty.setValue(value); }
-    public VEvent withDescription(String value) { setDescription(value); return this; } 
+    public T withDescription(String value) { setDescription(value); return (T)this; } 
     
     /**
      * LOCATION: RFC 5545 iCalendar 3.8.1.12. page 87
@@ -312,7 +309,7 @@ public class VEvent
     final private StringProperty locationProperty = new SimpleStringProperty(this, "location");
     public String getLocation() { return locationProperty.getValue(); }
     public void setLocation(String value) { locationProperty.setValue(value); }
-    public VEvent withLocation(String value) { setLocation(value); return this; } 
+    public T withLocation(String value) { setLocation(value); return (T)this; } 
     
     /**
      * CATEGORIES: RFC 5545 iCalendar 3.8.1.12. page 81
@@ -325,7 +322,7 @@ public class VEvent
     final private SimpleStringProperty categoriesProperty = new SimpleStringProperty(this, "appointmentGroup");
     public String getCategories() { return categoriesProperty.getValue(); }
     public void setCategories(String value) { categoriesProperty.setValue(value); }
-    public VEvent withCategories(String value) { setCategories(value); return this; }
+    public T withCategories(String value) { setCategories(value); return (T)this; }
  
     // NO NEED - 
 //    /** Appointment-specific data - only uses data fields. Repeat related and date/time objects are null */
@@ -355,30 +352,32 @@ public class VEvent
     public LocalDateTime getDateTimeRangeStart() { return dateTimeRangeStart; }
     private LocalDateTime dateTimeRangeStart;
     public void setDateTimeRangeStart(LocalDateTime startDateTime) { this.dateTimeRangeStart = startDateTime; }
-
+    public T withDateTimeRangeStart(LocalDateTime startDateTime) { setDateTimeRangeStart(startDateTime); return (T)this; }
+    
     /**
      * End of range for which events are generated.  Should match the dates displayed on the calendar.
      */
     public LocalDateTime getDateTimeRangeEnd() { return dateTimeRangeEnd; }
     private LocalDateTime dateTimeRangeEnd;
     public void setDateTimeRangeEnd(LocalDateTime endDateTime) { this.dateTimeRangeEnd = endDateTime; }
+    public T withDateTimeRangeEnd(LocalDateTime endDateTime) { setDateTimeRangeEnd(endDateTime); return (T)this; }
     
-    /** Stream of date/times made after applying all modification rules.
-     * Stream is infinite if COUNT or UNTIL not present or ends when COUNT or UNTIL condition
-     * is met.
+    /** Stream of date/times that indicate the start of the event(s).
+     * For a VEvent without RRULE the stream will contain only one date/time element.
+     * A VEvent with a RRULE the stream contains more than one date/time element.  It will be infinite 
+     * if COUNT or UNTIL is not present.  The stream has an end when COUNT or UNTIL condition is met.
      * Starts on startDateTime, which must be a valid event date/time, not necessarily the
      * first date/time (DTSTART) in the sequence. */
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
-//        return getRRule().stream(startDateTime);
         if (getRRule() == null)
         { // if individual event
             if (! startDateTime.isBefore(getDateTimeStart()))
             {
             return Arrays.asList(getDateTimeStart()).stream();
             } else
-            { // dateTimeStart is before startDateTime
-                return null;
+            { // if dateTimeStart is before startDateTime
+                return new ArrayList<LocalDateTime>().stream(); // empty stream
             }
         } else
         { // if has recurrence rule
@@ -391,17 +390,6 @@ public class VEvent
         }
     };
     
-    // TODO - CAN I MAKE THIS GENERIC AND USE A FACTORY TO MAKE THE EVENTS?
-    /**
-     * The currently generated events of the recurrence set.
-     * 3.8.5.2 defines the recurrence set as the complete set of recurrence instances for a
-     * calendar component.  As many RRule definitions are infinite sets, a complete representation
-     * is not possible.  The set only contains the events inside the bounds of 
-     */
-    public Set<RepeatableAppointment> appointments() { return myAppointments; }
-    final private Set<RepeatableAppointment> myAppointments = new HashSet<RepeatableAppointment>();
-    public VEvent withAppointments(Collection<RepeatableAppointment> s) { appointments().addAll(s); return this; }
-
     // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate
     public static <T> Spliterator<T> takeWhile(
             Spliterator<T> splitr, Predicate<? super T> predicate) {

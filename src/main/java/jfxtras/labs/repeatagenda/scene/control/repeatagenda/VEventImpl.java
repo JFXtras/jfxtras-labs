@@ -2,11 +2,12 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
@@ -18,89 +19,82 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.VEvent;
 // Needs to have copy methods to copy from VEvent to appointment and visa-versa
 // Should this implement Appointment?
 
-public class VEventImpl extends VEvent
+/**
+ * Concrete class as an example of VEvent.
+ * This class creates appointments from VEvent objects for display in Agenda.
+ * You can create other classes to make events for other uses.
+ * 
+ * Special use:
+ * 3.8.1.2.  Categories  . . . . . . . . . . . . . . . . . . .  82 - Yes (home for appointmentGroup)
+ * 
+ * @author David Bal
+ *
+ */
+
+public class VEventImpl extends VEvent<VEventImpl>
 {
 
     /**
-     * Make appointments that should exist between startDate and endDate based on Repeat rules.
-     * Adds those appointments to the input parameter appointments Collection.
-     * Doesn't make Appointment for dates that are already represented as individual appointments
-     * as specified in usedDates.
-     * sets startDate and endDate to private fields
+     *  VEventImpl doesn't know how to make an appointment.  An appointment factory makes new appointments.  The Class of the appointment
+     * is an argument for the AppointmentFactory.  The appointmentClass is set in the constructor.  A RRule object is not valid without
+     * the appointmentClass.
+     */
+    public Class<? extends RepeatableAppointment> getAppointmentClass() { return appointmentClass; }
+    private Class<? extends RepeatableAppointment> appointmentClass;
+    public void setAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { this.appointmentClass = appointmentClass; }
+    public VEventImpl withAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
+
+    /**
+     * The currently generated events of the recurrence set.
+     * 3.8.5.2 defines the recurrence set as the complete set of recurrence instances for a
+     * calendar component.  As many RRule definitions are infinite sets, a complete representation
+     * is not possible.  The set only contains the events inside the bounds of 
+     */
+    public Set<RepeatableAppointment> appointments() { return myAppointments; }
+    final private Set<RepeatableAppointment> myAppointments = new HashSet<RepeatableAppointment>();
+//    public VEventImpl withAppointments(Collection<RepeatableAppointment> s) { appointments().addAll(s); return this; }
+    
+    
+    /**
+     * Returns appointments that should exist between dateTimeRangeStart and dateTimeRangeEnd based on VEvent.
+     * For convenience, sets VEvent dateTimeRangeStart and dateTimeRangeEnd prior to making appointments.
      * 
-     * @param appointments
-     * @param startDateTime
-     * @param endDateTime
+     * @param dateTimeRangeStart
+     * @param dateTimeRangeEnd
      * @return
      */
     public Collection<RepeatableAppointment> makeAppointments(
-            LocalDateTime startDateTime
-          , LocalDateTime endDateTime)
+            LocalDateTime dateTimeRangeStart
+          , LocalDateTime dateTimeRangeEnd)
     {
-        Set<RepeatableAppointment> appointments = new HashSet<RepeatableAppointment>();
-//        LocalDateTime endDate = getRRule().getEndRangeDateTime();
-//        LocalDateTime startDate = getRRule().getStartRangeDateTime();
+        setDateTimeRangeStart(dateTimeRangeStart);
+        setDateTimeRangeEnd(dateTimeRangeEnd);
+        return makeAppointments();
+    }
+    /**
+     * Returns appointments that should exist between dateTimeRangeStart and dateTimeRangeEnd based on VEvent.
+     * Uses dateTimeRange previously set in VEvent.
+     * 
+     * @return created appointments
+     */
+    public Collection<RepeatableAppointment> makeAppointments()
+    {
+        List<RepeatableAppointment> appointments = new ArrayList<RepeatableAppointment>();
 
-        final LocalDateTime myEndDate;
-        if (getRRule().getUntil() == null) {
-            myEndDate = endDateTime;
-        } else {
-//            System.out.println(endDate + " " + getEndOnDate());
-//            LocalDateTime endOnDateTime = getEndOnDate().plusDays(1).atStartOfDay().minusNanos(1);
-            myEndDate = (endDateTime.isBefore(getRRule().getUntil())) ? endDateTime : getRRule().getUntil();
-        }
-        // Below may only be needed if startDate is before DTStart
-        LocalDateTime myStartDate = nextValidDateSlow(startDateTime.minusNanos(1));
-        System.out.println("myStartDate " + myStartDate + " " + myEndDate);
-//        System.out.println("StartDate " + startDate + " " + endDate + " " + this.getStartLocalDate() + " " +  getEndOnDate() );
+            stream(getDateTimeStart())
+                .forEach(d -> {
+                    RepeatableAppointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
+                    // TODO - chain "with" methods
+                    appt.setStartLocalDateTime(d);
+                    appt.setEndLocalDateTime(d.plusSeconds(getDurationInSeconds()));
+                    appt.setRepeatMade(true);
+                    appt.setDescription(getDescription());
+                    appt.setSummary(getSummary());
+                    // TODO - appointmentGroup
+                    appointments.add(appt);   // add appointments to main collection
+                    appointments().add(appt); // add appointments to this repeat's collection
+                });
 
-        if (! myStartDate.isAfter(myEndDate))
-        { // create set of appointment dates already used, to be skipped in making more
-//            System.out.println("make appointments");
-            // TODO - going to change from searching appointments to adding exceptions and individual recurrences
-            final Set<LocalDateTime> usedDates = appointments()
-                    .stream()
-                    .map(a -> a.getStartLocalDateTime())
-                    .peek(a -> System.out.println("used " + a))
-                    .collect(Collectors.toSet());
-            
-            final Iterator<RepeatableAppointment> i = stream(getDateTimeStart())                            // appointment iterator
-//                    .iterate(myStartDate, (a) -> a.with(new NextAppointment())) // infinite stream of valid dates
-//                    .filter(a -> ! usedDates.contains(a))                       // filter out dates already used
-//                    .filter(a -> ! getExceptions().contains(a))               // filter out deleted dates
-                    .map(myStartDateTime -> {                                                 // make new appointment
-//                        LocalDateTime myStartDateTime = a;
-                        LocalDateTime myEndDateTime = myStartDateTime.plusSeconds(getDurationInSeconds());
-                        System.out.println("appointmentClass2 " + getRRule().getAppointmentClass());
-                        RepeatableAppointment appt = AppointmentFactory.newAppointment(getRRule().getAppointmentClass());
-//                        RepeatableAppointment appt = (RepeatableAppointment) getNewAppointmentCallback()
-//                            .call(new LocalDateTimeRange(myStartDateTime, myEndDateTime));
-                        appt.setStartLocalDateTime(myStartDateTime);
-                        appt.setEndLocalDateTime(myEndDateTime);
-//                        appt.setRepeat(this);
-                        appt.setRepeatMade(true);
-//                        appt.setAppointmentGroup(getAppointmentData().getAppointmentGroup());
-//                        appt.setDescription(getAppointmentData().getDescription());
-//                        appt.setSummary(getAppointmentData().getSummary());
-                        return appt;
-                    })
-                    .iterator();                                                // make iterator
-            
-            while (i.hasNext())
-            { // Process new appointments
-                final RepeatableAppointment a = i.next();
-//                System.out.println("a --- " + a + " " + a.getStartLocalDateTime());
-//                System.out.println("times " + a.getStartLocalDateTime().toLocalDate() + " " + (myEndDate));
-                if (a.getStartLocalDateTime().isAfter(myEndDate)) break; // exit loop when at end
-//                System.out.println("add " + a.getStartLocalDateTime());
-//                repeatMap.add(a, this);                                                // add appointment and repeat to repeatMap
-                appointments.add(a);                                                   // add appointments to main collection
-                appointments().add(a);                                              // add appointments to this repeat's collection
-//                repeatMap.put(a, this);
-            }
-//            isNew = false; // when makeAppointments is run first time set isNew to false
-        }
-        
         return appointments;
     }
  

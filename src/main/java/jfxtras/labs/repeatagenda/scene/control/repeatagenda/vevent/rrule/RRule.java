@@ -19,7 +19,6 @@ import java.util.stream.StreamSupport;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq.Frequency;
 
 /**
@@ -35,15 +34,6 @@ public class RRule {
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
     
-    /**
-     *  RRule doesn't know how to make an appointment.  An appointment factory makes new appointments.  The Class of the appointment
-     * is an argument for the AppointmentFactory.  The appointmentClass is set in the constructor.  A RRule object is not valid without
-     * the appointmentClass.
-     */
-    public Class<? extends RepeatableAppointment> getAppointmentClass() { return appointmentClass; }
-    private Class<? extends RepeatableAppointment> appointmentClass;
-    private void setAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { this.appointmentClass = appointmentClass; }
-    public RRule withAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
     
 //    public LocalDateTimeRange getDateTimeRange() { return appointmentDateTimeRange; }
 //    private LocalDateTimeRange appointmentDateTimeRange;

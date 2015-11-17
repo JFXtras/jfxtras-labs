@@ -10,8 +10,9 @@ import org.junit.runners.Suite.SuiteClasses;
               , RepeatDeleteTest.class
               , RepeatEditTest.class
               , RepeatMakeAppointmentsTest.class
-              , ICalendarFreqStreamTest.class
+              , ICalendarDateTest.class
               , ICalendarMiscTest.class
+              , ICalendarDateRangeTest.class
               })
 public class AllTests {
 

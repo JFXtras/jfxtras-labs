@@ -911,7 +911,6 @@ public class RepeatableAgenda extends Agenda {
 //            return a;
 //        }
 
-        @Deprecated
         public static <T extends Appointment> T newAppointment(Class<T> appointmentClass)
         {
             try {

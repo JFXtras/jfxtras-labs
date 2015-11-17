@@ -12,13 +12,13 @@ import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 
-public class ICalendarRangeTest extends ICalendarRepeatTestAbstract
+public class ICalendarDateRangeTest extends ICalendarRepeatTestAbstract
 {
     /** Tests daily stream with FREQ=DAILY */
     @Test
     public void dailyStreamTest1()
     {
-        VEventImpl vevent = getDailyStream1();
+        VEventImpl vevent = getDaily1();
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         List<LocalDateTime> madeDates = vevent
@@ -39,7 +39,7 @@ public class ICalendarRangeTest extends ICalendarRepeatTestAbstract
     @Test
     public void dailyStreamTest2()
     {
-        VEventImpl vevent = getDailyStream1();
+        VEventImpl vevent = getDaily1();
         vevent.setDateTimeRangeStart(LocalDateTime.of(2014, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2014, 11, 22, 0, 0));
         List<LocalDateTime> madeDates = vevent
@@ -53,7 +53,7 @@ public class ICalendarRangeTest extends ICalendarRepeatTestAbstract
     @Test
     public void dailyStreamTest3()
     {
-        VEventImpl vevent = getDailyStream3();
+        VEventImpl vevent = getDaily3();
         vevent.setDateTimeRangeStart(LocalDateTime.of(2016, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2016, 11, 22, 0, 0));
         List<LocalDateTime> madeDates = vevent

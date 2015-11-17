@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 import org.junit.Test;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.VEvent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 
 
 public class ICalendarMiscTest {
@@ -16,7 +16,7 @@ public class ICalendarMiscTest {
     @Test
     public void canConvertDurationString()
     {
-        VEvent v = new VEvent();
+        VEventImpl v = new VEventImpl();
         String duration = "P15DT5H0M20S";
         v.setDurationInSeconds(duration);
         assertTrue(v.getDurationInSeconds() == 1314020);
@@ -26,7 +26,7 @@ public class ICalendarMiscTest {
     @Test
     public void canConvertDurationString2()
     {
-        VEvent v = new VEvent();
+        VEventImpl v = new VEventImpl();
         String duration = "PT1H30M";
         v.setDurationInSeconds(duration);
         assertTrue(v.getDurationInSeconds() == 5400);
@@ -36,7 +36,7 @@ public class ICalendarMiscTest {
     @Test
     public void canConvertDateTimeString1()
     {
-        VEvent v = new VEvent();
+        VEventImpl v = new VEventImpl();
         String duration = "TZID=America/New_York:19980119T020000";
         LocalDateTime l = v.iCalendarDateTimeToLocalDateTime(duration);
         System.out.println(l);
@@ -47,7 +47,7 @@ public class ICalendarMiscTest {
     @Test
     public void canConvertDateTimeString2()
     {
-        VEvent v = new VEvent();
+        VEventImpl v = new VEventImpl();
         String duration = "VALUE=DATE:19980704";
         LocalDateTime l = v.iCalendarDateTimeToLocalDateTime(duration);
         System.out.println(l);
