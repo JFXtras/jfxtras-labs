@@ -1,4 +1,4 @@
-package jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq;
+package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -6,7 +6,7 @@ import java.time.temporal.TemporalAdjuster;
 import java.util.List;
 import java.util.stream.Stream;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.Rule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.Rule;
 
 /** Interface for frequency rule that produces a stream of LocalDateTime start times for repeatable events 
  * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.) */
@@ -38,7 +38,7 @@ public interface Frequency {
 
     
     /** Resulting stream of start date/times by applying Frequency temporal adjuster and all, if any,
-     * ByRules.
+     * Rules.
      * Starts on startDateTime, which must be a valid event date/time, but not necessarily the
      * first date/time (DTSTART) in the sequence. A later startDateTime can be used to more efficiently
      * get to later dates in the stream. */

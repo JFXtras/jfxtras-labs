@@ -1,10 +1,7 @@
-package jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent;
+package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
 import java.security.InvalidParameterException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,8 +20,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.util.Callback;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.RRule;
 
 /**
  * Parent calendar component, VEVENT
@@ -89,7 +84,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.RRule;
  * 
  *
  */
-public abstract class VEvent<T extends VEvent>
+public abstract class VEvent extends VComponent
 {
     /**
      * Date-Time Start, DTSTART from RFC 5545 iCalendar 3.8.2.4 page 97
@@ -101,7 +96,7 @@ public abstract class VEvent<T extends VEvent>
     public LocalDateTime getDateTimeStart() { return dateTimeStart.getValue(); }
     public void setDateTimeStart(LocalDateTime dtStart) { this.dateTimeStart.set(dtStart); }
     // TODO - ADD SET METHOD FOR ICALENDAR COMPLIANT STRINGS
-    public T withDateTimeStart(LocalDateTime startDate) { setDateTimeStart(startDate); return (T)this; }
+//    public T withDateTimeStart(LocalDateTime startDate) { setDateTimeStart(startDate); return (T)this; }
 
     /** 
      * DURATION from RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34
@@ -158,8 +153,8 @@ public abstract class VEvent<T extends VEvent>
         }
         durationInSeconds.setValue(seconds);
     }
-    public T withDurationInSeconds(Integer value) { setDurationInSeconds(value); return (T)this; } 
-    public T withDurationInSeconds(String value) { setDurationInSeconds(value); return (T)this; } 
+//    public T withDurationInSeconds(Integer value) { setDurationInSeconds(value); return (T)this; } 
+//    public T withDurationInSeconds(String value) { setDurationInSeconds(value); return (T)this; } 
     
     /**
      * Date-Time End, DTEND from RFC 5545 iCalendar 3.8.2.2 page 95
@@ -179,80 +174,52 @@ public abstract class VEvent<T extends VEvent>
     }
     public LocalDateTime getDateTimeEnd() { return getDateTimeStart().plusSeconds(getDurationInSeconds()); }
 
-    /** Method to convert DTSTART or DTEND to LocalDateTime
-     * Currently ignores time zones */
-    public LocalDateTime iCalendarDateTimeToLocalDateTime(String dt)
-    {
-        Pattern p = Pattern.compile("([0-9]+)");
-        Matcher m = p.matcher(dt);
-        List<String> tokens = new ArrayList<String>();
-        while (m.find())
-        {
-            String token = m.group(0);
-            tokens.add(token);
-        }
-        LocalDate date;
-        if (tokens.size() > 0)
-        {
-            String dateToken = tokens.get(0);
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
-            date = LocalDate.parse(dateToken, dateFormatter);
-        } else throw new InvalidParameterException("Invalid Date-Time string: " + dt);           
-        if (tokens.size() == 2)
-        { // find date if another token is available
-            String timeToken = tokens.get(1);
-            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(timePattern);
-            LocalTime time = LocalTime.parse(timeToken, timeFormatter);
-            return LocalDateTime.of(date, time);
-        }
-        return date.atStartOfDay();
-    }
     
-    /**
-     * Unique identifier, UID as defined by RFC 5545, iCalendar 3.8.4.7 page 117
-     * A globally unique identifier for the calendar component.
-     * Included is an example UID generator.  Other UID generators can be provided by
-     * setting the UID callback.
-     * Uses lazy initialization of property because UID doesn't often require advanced features.
-     */
-    public StringProperty UIDProperty()
-    {
-        if (uid == null) uid = new SimpleStringProperty(this, "UID", _uid);
-        return uid;
-    }
-    private StringProperty uid;
-    public String getUID() { return (uid == null) ? _uid : uid.getValue(); }
-    private String _uid;
-    public void setUID(String s)
-    {
-        if (uid == null)
-        {
-            _uid = s;
-        } else
-        {
-            uid.set(s);
-        }
-    }
-    public VEvent withUID(String uid) { setUID(uid); return this; }
-
-    /** Callback for creating unique uid values */
-    public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
-    private static String datePattern = "yyyyMMdd";
-    private static String timePattern = "HHmmss";
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern + "'T'" + timePattern);
-    private static Integer nextKey = 0;
-    private Callback<Void, String> uidGeneratorCallback = (Void) ->
-    { // default UID generator callback
-        String dateTime = formatter.format(LocalDateTime.now());
-        String domain = "jfxtras-agenda";
-        return dateTime + nextKey++ + domain;
-    };
-    public void setUidGeneratorCallback(Callback<Void, String> uidCallback) { this.uidGeneratorCallback = uidCallback; }
-    /** assign uid by calling the uidGeneratorCallback */
-    public void makeUid()
-    {
-        setUID(uidGeneratorCallback.call(null));
-    }
+//    /**
+//     * Unique identifier, UID as defined by RFC 5545, iCalendar 3.8.4.7 page 117
+//     * A globally unique identifier for the calendar component.
+//     * Included is an example UID generator.  Other UID generators can be provided by
+//     * setting the UID callback.
+//     * Uses lazy initialization of property because UID doesn't often require advanced features.
+//     */
+//    public StringProperty UIDProperty()
+//    {
+//        if (uid == null) uid = new SimpleStringProperty(this, "UID", _uid);
+//        return uid;
+//    }
+//    private StringProperty uid;
+//    public String getUID() { return (uid == null) ? _uid : uid.getValue(); }
+//    private String _uid;
+//    public void setUID(String s)
+//    {
+//        if (uid == null)
+//        {
+//            _uid = s;
+//        } else
+//        {
+//            uid.set(s);
+//        }
+//    }
+//    public VEvent withUID(String uid) { setUID(uid); return this; }
+//
+//    /** Callback for creating unique uid values */
+//    public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
+//    private static String datePattern = "yyyyMMdd";
+//    private static String timePattern = "HHmmss";
+//    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern + "'T'" + timePattern);
+//    private static Integer nextKey = 0;
+//    private Callback<Void, String> uidGeneratorCallback = (Void) ->
+//    { // default UID generator callback
+//        String dateTime = formatter.format(LocalDateTime.now());
+//        String domain = "jfxtras-agenda";
+//        return dateTime + nextKey++ + domain;
+//    };
+//    public void setUidGeneratorCallback(Callback<Void, String> uidCallback) { this.uidGeneratorCallback = uidCallback; }
+//    /** assign uid by calling the uidGeneratorCallback */
+//    public void makeUid()
+//    {
+//        setUID(uidGeneratorCallback.call(null));
+//    }
  
     /**
      *  COMMENT: RFC 5545 iCalendar 3.8.1.12. page 83
@@ -281,7 +248,7 @@ public abstract class VEvent<T extends VEvent>
     final private SimpleStringProperty summaryProperty = new SimpleStringProperty(this, "summary");
     public String getSummary() { return summaryProperty.getValue(); }
     public void setSummary(String value) { summaryProperty.setValue(value); }
-    public T withSummary(String value) { setSummary(value); return (T)this; } 
+//    public T withSummary(String value) { setSummary(value); return (T)this; } 
     
     /**
      * DESCRIPTION: RFC 5545 iCalendar 3.8.1.12. page 84
@@ -296,7 +263,7 @@ public abstract class VEvent<T extends VEvent>
     final private StringProperty descriptionProperty = new SimpleStringProperty(this, "description");
     public String getDescription() { return descriptionProperty.getValue(); }
     public void setDescription(String value) { descriptionProperty.setValue(value); }
-    public T withDescription(String value) { setDescription(value); return (T)this; } 
+//    public T withDescription(String value) { setDescription(value); return (T)this; } 
     
     /**
      * LOCATION: RFC 5545 iCalendar 3.8.1.12. page 87
@@ -309,7 +276,7 @@ public abstract class VEvent<T extends VEvent>
     final private StringProperty locationProperty = new SimpleStringProperty(this, "location");
     public String getLocation() { return locationProperty.getValue(); }
     public void setLocation(String value) { locationProperty.setValue(value); }
-    public T withLocation(String value) { setLocation(value); return (T)this; } 
+//    public T withLocation(String value) { setLocation(value); return (T)this; } 
     
     /**
      * CATEGORIES: RFC 5545 iCalendar 3.8.1.12. page 81
@@ -322,7 +289,7 @@ public abstract class VEvent<T extends VEvent>
     final private SimpleStringProperty categoriesProperty = new SimpleStringProperty(this, "appointmentGroup");
     public String getCategories() { return categoriesProperty.getValue(); }
     public void setCategories(String value) { categoriesProperty.setValue(value); }
-    public T withCategories(String value) { setCategories(value); return (T)this; }
+//    public T withCategories(String value) { setCategories(value); return (T)this; }
  
     // NO NEED - 
 //    /** Appointment-specific data - only uses data fields. Repeat related and date/time objects are null */
@@ -338,13 +305,6 @@ public abstract class VEvent<T extends VEvent>
 //    public void setAppointmentData(RepeatableAppointment appointment) { appointmentData = appointment; }
 //    public VEvent withAppointmentData(RepeatableAppointment appointment) { setAppointmentData(appointment); return this; }
     
-    /**
-     * Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
-     * If event is not repeating value is null
-     */
-    public RRule getRRule() { return rRule; }
-    private RRule rRule;
-    public void setRRule(RRule rRule) { this.rRule = rRule; }
 
     /**
      * Start of range for which events are generated.  Should match the dates displayed on the calendar.
@@ -352,7 +312,7 @@ public abstract class VEvent<T extends VEvent>
     public LocalDateTime getDateTimeRangeStart() { return dateTimeRangeStart; }
     private LocalDateTime dateTimeRangeStart;
     public void setDateTimeRangeStart(LocalDateTime startDateTime) { this.dateTimeRangeStart = startDateTime; }
-    public T withDateTimeRangeStart(LocalDateTime startDateTime) { setDateTimeRangeStart(startDateTime); return (T)this; }
+//    public T withDateTimeRangeStart(LocalDateTime startDateTime) { setDateTimeRangeStart(startDateTime); return (T)this; }
     
     /**
      * End of range for which events are generated.  Should match the dates displayed on the calendar.
@@ -360,7 +320,7 @@ public abstract class VEvent<T extends VEvent>
     public LocalDateTime getDateTimeRangeEnd() { return dateTimeRangeEnd; }
     private LocalDateTime dateTimeRangeEnd;
     public void setDateTimeRangeEnd(LocalDateTime endDateTime) { this.dateTimeRangeEnd = endDateTime; }
-    public T withDateTimeRangeEnd(LocalDateTime endDateTime) { setDateTimeRangeEnd(endDateTime); return (T)this; }
+//    public T withDateTimeRangeEnd(LocalDateTime endDateTime) { setDateTimeRangeEnd(endDateTime); return (T)this; }
     
     /** Stream of date/times that indicate the start of the event(s).
      * For a VEvent without RRULE the stream will contain only one date/time element.

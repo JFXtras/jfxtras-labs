@@ -1,4 +1,4 @@
-package jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.byxxx;
+package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx;
 
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq.Frequency;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 
 /** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */
 public class ByDay extends ByRuleAbstract

@@ -1,4 +1,4 @@
-package jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq;
+package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq;
 
 import java.security.InvalidParameterException;
 import java.time.temporal.ChronoUnit;
@@ -7,7 +7,7 @@ import java.util.List;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.Rule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.Rule;
 
 public abstract class FrequencyAbstract implements Frequency {
     

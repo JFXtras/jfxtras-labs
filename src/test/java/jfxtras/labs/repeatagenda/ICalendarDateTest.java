@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.VEvent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 
 public class ICalendarDateTest extends ICalendarRepeatTestAbstract
 {

@@ -25,6 +25,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.DateTimeToCalendarHelper;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.RepeatMenu;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.scene.control.agenda.Agenda;
 
 public class RepeatableAgenda extends Agenda {
@@ -652,7 +653,10 @@ public class RepeatableAgenda extends Agenda {
         /** Repeat rule attached to appointment, if null appointment is individual */
         Repeat getRepeat();
         void setRepeat(Repeat repeat);
-        
+
+        /** Repeat rule attached to appointment, if null appointment is individual */
+        VEvent getVEvent();
+        void setVEvent(VEvent vevent);
     }
     
     /** Contains appointment data and repeatable information */
@@ -661,10 +665,21 @@ public class RepeatableAgenda extends Agenda {
         protected RepeatableAppointmentImplBase() { }
                
         /** Repeat rules, null if an individual appointment */
+        @Deprecated
         private Repeat repeat;
+        @Deprecated
         public void setRepeat(Repeat repeat) { this.repeat = repeat; }
+        @Deprecated
         public Repeat getRepeat() { return repeat; }
+        @Deprecated
         public T withRepeat(Repeat repeat) { setRepeat(repeat); return (T)this; }
+
+        /** VEvent - defined in RFC 5545 iCalendar 3.6.1, page 52. */
+        // TODO - SOLVE PROBLEM WITH VEVENT GENERIC
+        private VEvent vevent;
+        public void setVEvent(VEvent vevent) { this.vevent = vevent; }
+        public VEvent getVEvent() { return vevent; }
+        public T withVEvent(VEvent vevent) { setVEvent(vevent); return (T)this; }
         
         /**
          * true = a temporary appointment created by a repeat rule
@@ -722,7 +737,7 @@ public class RepeatableAgenda extends Agenda {
           }
           RepeatableAppointment testObj = (RepeatableAppointment) obj;
 
-          System.out.println("Descriptions2 " + getDescription() + " " + testObj.getDescription());
+          System.out.println("getAppointmentGroup()2 " + getAppointmentGroup().getDescription() + " " + testObj.getAppointmentGroup().getDescription());
           
           boolean descriptionEquals = (getDescription() == null) ?
                   (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());

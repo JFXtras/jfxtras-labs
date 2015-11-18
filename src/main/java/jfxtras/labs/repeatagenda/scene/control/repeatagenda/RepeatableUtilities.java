@@ -897,9 +897,9 @@ public final class RepeatableUtilities {
         }
     }
     
-    public enum WindowCloseType {
+    public enum WindowCloseType
+    {
         X, CANCEL, CLOSE_WITH_CHANGE, CLOSE_WITHOUT_CHANGE
-        
     }
     
     /**

@@ -3,24 +3,51 @@ package jfxtras.labs.repeatagenda;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Comparator;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import javafx.collections.ObservableList;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.RRule;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.Rule;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.byxxx.ByDay;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.byxxx.ByDay.ByDayPair;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.byxxx.ByMonth;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.byxxx.ByMonthDay;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.byxxx.ByWeekNo;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq.Daily;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq.Frequency;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq.Monthly;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq.Weekly;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq.Yearly;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.Rule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByMonth;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByMonthDay;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByWeekNo;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay.ByDayPair;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Daily;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Monthly;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Weekly;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Yearly;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
+import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 public abstract class ICalendarRepeatTestAbstract
 {
 
+    public final static ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
+    = javafx.collections.FXCollections.observableArrayList(
+            IntStream
+            .range(0, 23)
+            .mapToObj(i -> new RepeatableAgenda.AppointmentGroupImpl()
+//                   .withStyleClass("group" + i) // skipped due to static variable problem with junit
+                   .withKey(i)
+                   .withDescription("group" + (i < 10 ? "0" : "") + i))
+            .collect(Collectors.toList()));
+    static ObservableList<AppointmentGroup> appointmentGroups = DEFAULT_APPOINTMENT_GROUPS;
+    
+    // Comparator for tree sort
+    private static final Comparator<Appointment> APPOINTMENT_COMPARATOR = (a1, a2)
+            -> a1.getStartLocalDateTime().compareTo(a2.getStartLocalDateTime());
+    public static final Comparator<Appointment> getAppointmentComparator() { return APPOINTMENT_COMPARATOR; }
+    
+    private static final Class<RepeatableAppointmentImpl> clazz = RepeatableAppointmentImpl.class;
+    public Class<RepeatableAppointmentImpl> getClazz() { return clazz; }
+    
     /** FREQ=YEARLY; */
     protected static VEventImpl getYearly1()
     {
@@ -273,6 +300,11 @@ public abstract class ICalendarRepeatTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
+        vevent.setAppointmentGroup(appointmentGroups.get(3));
+        vevent.setDurationInSeconds(2700);
+        vevent.setDescription("Weekly1 Description");
+        vevent.setSummary("Weekly1 Summary");
+        vevent.setAppointmentClass(RepeatableAppointmentImpl.class);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency weekly = new Weekly()
@@ -300,10 +332,12 @@ public abstract class ICalendarRepeatTestAbstract
     /** FREQ=DAILY, Basic daily stream */
     protected static VEventImpl getDaily1()
     {
-        VEventImpl vevent = new VEventImpl()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withDurationInSeconds(3600)
-                .withDescription("Daily1 Description");
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        vevent.setDurationInSeconds(3600);
+        vevent.setDescription("Daily1 Description");
+        vevent.setSummary("Daily1 Summary");
+        vevent.setAppointmentClass(RepeatableAppointmentImpl.class);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency daily = new Daily();

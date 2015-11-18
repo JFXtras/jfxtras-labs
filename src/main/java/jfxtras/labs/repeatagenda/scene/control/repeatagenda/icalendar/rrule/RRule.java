@@ -1,4 +1,4 @@
-package jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule;
+package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
@@ -19,7 +19,7 @@ import java.util.stream.StreamSupport;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq.Frequency;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 
 /**
  * Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122.

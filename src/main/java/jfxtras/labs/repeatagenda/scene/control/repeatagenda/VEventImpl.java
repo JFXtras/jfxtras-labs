@@ -9,9 +9,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.VEvent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
+import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 // TODO - Needs to know how to make Appointments for agenda
 // Will be like Repeat class
@@ -31,9 +34,13 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.VEvent;
  *
  */
 
-public class VEventImpl extends VEvent<VEventImpl>
+public class VEventImpl extends VEvent
 {
 
+    private AppointmentGroup appointmentGroup;
+    public void setAppointmentGroup(AppointmentGroup appointmentGroup) { this.appointmentGroup = appointmentGroup; this.setCategories(appointmentGroup.getStyleClass()); }
+    public AppointmentGroup getAppointmentGroup() { return appointmentGroup; }
+    
     /**
      *  VEventImpl doesn't know how to make an appointment.  An appointment factory makes new appointments.  The Class of the appointment
      * is an argument for the AppointmentFactory.  The appointmentClass is set in the constructor.  A RRule object is not valid without
@@ -84,13 +91,12 @@ public class VEventImpl extends VEvent<VEventImpl>
             stream(getDateTimeStart())
                 .forEach(d -> {
                     RepeatableAppointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
-                    // TODO - chain "with" methods
                     appt.setStartLocalDateTime(d);
                     appt.setEndLocalDateTime(d.plusSeconds(getDurationInSeconds()));
                     appt.setRepeatMade(true);
                     appt.setDescription(getDescription());
                     appt.setSummary(getSummary());
-                    // TODO - appointmentGroup
+                    appt.setAppointmentGroup(getAppointmentGroup());
                     appointments.add(appt);   // add appointments to main collection
                     appointments().add(appt); // add appointments to this repeat's collection
                 });
@@ -118,5 +124,95 @@ public class VEventImpl extends VEvent<VEventImpl>
         }
         throw new InvalidParameterException("Can't find valid date starting at " + inputDate);
     }
+    
+
+    // its already edited by RepeatableController
+    // changes to be made if ONE or FUTURE is selected.
+    // change back if CANCEL
+    public void edit(
+            VEventImpl veventOld // change back if cancel
+            , Collection<Appointment> appointments // remove affected appointments
+            , Collection<VEvent> vevents // add new VEvents if change to one or future
+            , Callback<RepeatChange[], RepeatChange> changeDialogCallback // force change selection for testing
+            , Callback<Collection<VEvent>, Void> writeVEventsCallback) // I/O callback
+    {
+        
+    }
+    
+    /**
+     * Edit appointments with parameters for the callbacks.
+     * To do testing the two write callbacks should be set to stubs that do nothing.  Also, the changeDialogCallback
+     * should be sent to return the RepeatChange option being tested (i.e. ALL).
+     * 
+     * @param appointments
+     * @param appointment
+     * @param appointmentOld
+     * @param repeats
+     * @param changeDialogCallback - code for the choice dialog selecting editing ALL, FUTURE, or ONE.  For testing return the RepeatChange being tested
+     * @param writeAppointmentsCallback - code for writing appointments IO.  For testing do nothing
+     * @param writeRepeatsCallback - code for writing repeats IO.  For testing do nothing
+     * @return
+     */
+    /**
+     * Edit appointments 
+     * 
+     * @param appointmentInput
+     * @param appointmentOldInput
+     * @param appointments
+     * @param repeats
+     * @param changeDialogCallback
+     * @param writeAppointmentsCallback
+     * @param writeRepeatsCallback
+     * @return
+     */
+    // Can I edit only appointment here and use some callback to edit VEvent?
+    // Goal is to make method generic enough that appointment making class can change and it stay the same.
+    //
+    public static WindowCloseType editVEvent(
+              RepeatableAppointment appointmentInput
+            , RepeatableAppointment appointmentOldInput
+            , Collection<Appointment> appointments
+            , Collection<VEvent> vevents
+            , Callback<RepeatChange[], RepeatChange> changeDialogCallback
+            , Callback<Collection<Appointment>, Void> writeAppointmentsCallback
+            , Callback<Collection<Repeat>, Void> writeRepeatsCallback)
+    {
+        return null;
+        
+    }
+
+
+    public static WindowCloseType editVEvent(
+            RepeatableAppointment selectedAppointment,
+            RepeatableAppointment appointmentOld, Set<Appointment> appointments,
+            List<VEvent> vevents,
+            Callback<RepeatChange[], RepeatChange> changeDialogCallback,
+            Object writeAppointmentsCallback, Object writeRepeatsCallback) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    /**
+     * Options available when changing a repeatable appointment
+     * ONE: Change only selected appointment
+     * ALL: Change all appointments with repeat rule
+     * FUTURE: Change future appointments with repeat rule
+     * @author David Bal
+     *
+     */
+    public enum RepeatChange {
+        ONE, ALL, FUTURE, CANCEL;
+
+        @Override
+        public String toString() {
+            return Settings.REPEAT_CHANGE_CHOICES.get(this);
+        }
+    }
+    
+    public enum WindowCloseType
+    {
+        X, CANCEL, CLOSE_WITH_CHANGE, CLOSE_WITHOUT_CHANGE
+    }
+
 
 }

@@ -1,7 +1,7 @@
-package jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.byxxx;
+package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.Rule;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.vevent.rrule.freq.Frequency;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.Rule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 
 /**
  * BYxxx rule that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)

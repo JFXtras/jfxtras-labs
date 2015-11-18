@@ -13,6 +13,7 @@ import org.junit.runners.Suite.SuiteClasses;
               , ICalendarDateTest.class
               , ICalendarMiscTest.class
               , ICalendarDateRangeTest.class
+              , ICalendarMakeAppointmentsTest.class
               })
 public class AllTests {
 
