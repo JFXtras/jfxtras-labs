@@ -28,23 +28,23 @@ import javafx.beans.property.StringProperty;
  * The status of following component properties from RFC 5545:
  * 
        3.8.1.  Descriptive Component Properties  . . . . . . . . . .  81
-         3.8.1.1.  Attachment  . . . . . . . . . . . . . . . . . . .  81 - NO
-         3.8.1.2.  Categories  . . . . . . . . . . . . . . . . . . .  82 - Yes
-         3.8.1.3.  Classification  . . . . . . . . . . . . . . . . .  83 - NO
-         3.8.1.4.  Comment . . . . . . . . . . . . . . . . . . . . .  84 - Yes
+         3.8.1.1.  Attachment  . . . . . . . . . . . . . . . . . . .  81 - NO (from VComponent)
+         3.8.1.2.  Categories  . . . . . . . . . . . . . . . . . . .  82 - Yes (from VComponent)
+         3.8.1.3.  Classification  . . . . . . . . . . . . . . . . .  83 - TODO (from VComponent)
+         3.8.1.4.  Comment . . . . . . . . . . . . . . . . . . . . .  84 - Yes (from VComponent)
          3.8.1.5.  Description . . . . . . . . . . . . . . . . . . .  85 - Yes
          3.8.1.6.  Geographic Position . . . . . . . . . . . . . . .  87 - NO
          3.8.1.7.  Location  . . . . . . . . . . . . . . . . . . . .  88 - Yes
          3.8.1.8.  Percent Complete  . . . . . . . . . . . . . . . .  89 - NO
          3.8.1.9.  Priority  . . . . . . . . . . . . . . . . . . . .  90 - NO
-         3.8.1.10. Resources . . . . . . . . . . . . . . . . . . . .  92 - NO
-         3.8.1.11. Status  . . . . . . . . . . . . . . . . . . . . .  93 - NO
-         3.8.1.12. Summary . . . . . . . . . . . . . . . . . . . . .  94 - Yes
+         3.8.1.10. Resources . . . . . . . . . . . . . . . . . . . .  92 - NO (from VComponent)
+         3.8.1.11. Status  . . . . . . . . . . . . . . . . . . . . .  93 - TODO (from VComponent)
+         3.8.1.12. Summary . . . . . . . . . . . . . . . . . . . . .  94 - Yes (from VComponent)
        3.8.2.  Date and Time Component Properties  . . . . . . . . .  95
          3.8.2.1.  Date-Time Completed . . . . . . . . . . . . . . .  95 - NO
          3.8.2.2.  Date-Time End . . . . . . . . . . . . . . . . . .  96 - Yes
          3.8.2.3.  Date-Time Due . . . . . . . . . . . . . . . . . .  97 - NO
-         3.8.2.4.  Date-Time Start . . . . . . . . . . . . . . . . .  99 - Yes
+         3.8.2.4.  Date-Time Start . . . . . . . . . . . . . . . . .  99 - Yes (from VComponent)
          3.8.2.5.  Duration  . . . . . . . . . . . . . . . . . . . . 100 - Yes
          3.8.2.6.  Free/Busy Time  . . . . . . . . . . . . . . . . . 101 - NO
          3.8.2.7.  Time Transparency . . . . . . . . . . . . . . . . 102 - NO
@@ -55,49 +55,50 @@ import javafx.beans.property.StringProperty;
          3.8.3.4.  Time Zone Offset To . . . . . . . . . . . . . . . 106 - NO
          3.8.3.5.  Time Zone URL . . . . . . . . . . . . . . . . . . 107 - NO
        3.8.4.  Relationship Component Properties . . . . . . . . . . 108
-         3.8.4.1.  Attendee  . . . . . . . . . . . . . . . . . . . . 108 - NO
-         3.8.4.2.  Contact . . . . . . . . . . . . . . . . . . . . . 111 - NO
-         3.8.4.3.  Organizer . . . . . . . . . . . . . . . . . . . . 113 - NO
-         3.8.4.4.  Recurrence ID . . . . . . . . . . . . . . . . . . 114 - TODO
-         3.8.4.5.  Related To  . . . . . . . . . . . . . . . . . . . 117 - NO
-         3.8.4.6.  Uniform Resource Locator  . . . . . . . . . . . . 118 - NO
-         3.8.4.7.  Unique Identifier . . . . . . . . . . . . . . . . 119 - Yes
+         3.8.4.1.  Attendee  . . . . . . . . . . . . . . . . . . . . 108 - NO (from VComponent)
+         3.8.4.2.  Contact . . . . . . . . . . . . . . . . . . . . . 111 - TODO (from VComponent)
+         3.8.4.3.  Organizer . . . . . . . . . . . . . . . . . . . . 113 - TODO (from VComponent)
+         3.8.4.4.  Recurrence ID . . . . . . . . . . . . . . . . . . 114 - TODO (from VComponent)
+         3.8.4.5.  Related To  . . . . . . . . . . . . . . . . . . . 117 - NO (from VComponent)
+         3.8.4.6.  Uniform Resource Locator  . . . . . . . . . . . . 118 - NO (from VComponent)
+         3.8.4.7.  Unique Identifier . . . . . . . . . . . . . . . . 119 - Yes (from VComponent)
        3.8.5.  Recurrence Component Properties . . . . . . . . . . . 120
-         3.8.5.1.  Exception Date-Times  . . . . . . . . . . . . . . 120 - Yes, in EXDate
-         3.8.5.2.  Recurrence Date-Times . . . . . . . . . . . . . . 122 - TODO, in RDate
-         3.8.5.3.  Recurrence Rule . . . . . . . . . . . . . . . . . 124 - TODO, in RRule
+         3.8.5.1.  Exception Date-Times  . . . . . . . . . . . . . . 120 - Yes, in EXDate class
+         3.8.5.2.  Recurrence Date-Times . . . . . . . . . . . . . . 122 - TODO, in RDate class
+         3.8.5.3.  Recurrence Rule . . . . . . . . . . . . . . . . . 124 - TODO, in RRule class
        3.8.6.  Alarm Component Properties  . . . . . . . . . . . . . 134
          3.8.6.1.  Action  . . . . . . . . . . . . . . . . . . . . . 134 - NO
          3.8.6.2.  Repeat Count  . . . . . . . . . . . . . . . . . . 135 - NO
          3.8.6.3.  Trigger . . . . . . . . . . . . . . . . . . . . . 135 - NO
        3.8.7.  Change Management Component Properties  . . . . . . . 138
-         3.8.7.1.  Date-Time Created . . . . . . . . . . . . . . . . 138 - TODO
-         3.8.7.2.  Date-Time Stamp . . . . . . . . . . . . . . . . . 139 - TODO
-         3.8.7.3.  Last Modified . . . . . . . . . . . . . . . . . . 140 - TODO
-         3.8.7.4.  Sequence Number . . . . . . . . . . . . . . . . . 141 - TODO
+         3.8.7.1.  Date-Time Created . . . . . . . . . . . . . . . . 138 - TODO (from VComponent)
+         3.8.7.2.  Date-Time Stamp . . . . . . . . . . . . . . . . . 139 - TODO (from VComponent)
+         3.8.7.3.  Last Modified . . . . . . . . . . . . . . . . . . 140 - TODO (from VComponent)
+         3.8.7.4.  Sequence Number . . . . . . . . . . . . . . . . . 141 - TODO (from VComponent)
        3.8.8.  Miscellaneous Component Properties  . . . . . . . . . 142
-         3.8.8.1.  IANA Properties . . . . . . . . . . . . . . . . . 142 - NO
-         3.8.8.2.  Non-Standard Properties . . . . . . . . . . . . . 142 - NO
-         3.8.8.3.  Request Status  . . . . . . . . . . . . . . . . . 144 - NO
- * @param <T>
-
- * 
+         3.8.8.1.  IANA Properties . . . . . . . . . . . . . . . . . 142 - NO (from VComponent)
+         3.8.8.2.  Non-Standard Properties . . . . . . . . . . . . . 142 - TODO (from VComponent, some X-properties may be defined here too)
+         3.8.8.3.  Request Status  . . . . . . . . . . . . . . . . . 144 - NO (from VComponent)
  *
  */
 public abstract class VEvent extends VComponent
 {
-    /**
-     * Date-Time Start, DTSTART from RFC 5545 iCalendar 3.8.2.4 page 97
-     * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
-     * start date/times of the repeating events.
-     */
-    final private ObjectProperty<LocalDateTime> dateTimeStart = new SimpleObjectProperty<LocalDateTime>();
-    public ObjectProperty<LocalDateTime> dateTimeStartProperty() { return dateTimeStart; }
-    public LocalDateTime getDateTimeStart() { return dateTimeStart.getValue(); }
-    public void setDateTimeStart(LocalDateTime dtStart) { this.dateTimeStart.set(dtStart); }
-    // TODO - ADD SET METHOD FOR ICALENDAR COMPLIANT STRINGS
-//    public T withDateTimeStart(LocalDateTime startDate) { setDateTimeStart(startDate); return (T)this; }
 
+    /**
+     * DESCRIPTION: RFC 5545 iCalendar 3.8.1.12. page 84
+     * This property provides a more complete description of the
+     * calendar component than that provided by the "SUMMARY" property.
+     * Example:
+     * DESCRIPTION:Meeting to provide technical review for "Phoenix"
+     *  design.\nHappy Face Conference Room. Phoenix design team
+     *  MUST attend this meeting.\nRSVP to team leader.
+     */
+    public StringProperty descriptionProperty() { return descriptionProperty; }
+    final private StringProperty descriptionProperty = new SimpleStringProperty(this, "description");
+    public String getDescription() { return descriptionProperty.getValue(); }
+    public void setDescription(String value) { descriptionProperty.setValue(value); }
+//    public T withDescription(String value) { setDescription(value); return (T)this; } 
+    
     /** 
      * DURATION from RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34
      * Internally stored a seconds.  Can be set an an integer of seconds or a string as defined by iCalendar which is
@@ -173,123 +174,6 @@ public abstract class VEvent extends VComponent
         setDateTimeEnd(dt);
     }
     public LocalDateTime getDateTimeEnd() { return getDateTimeStart().plusSeconds(getDurationInSeconds()); }
-
-    
-//    /**
-//     * Unique identifier, UID as defined by RFC 5545, iCalendar 3.8.4.7 page 117
-//     * A globally unique identifier for the calendar component.
-//     * Included is an example UID generator.  Other UID generators can be provided by
-//     * setting the UID callback.
-//     * Uses lazy initialization of property because UID doesn't often require advanced features.
-//     */
-//    public StringProperty UIDProperty()
-//    {
-//        if (uid == null) uid = new SimpleStringProperty(this, "UID", _uid);
-//        return uid;
-//    }
-//    private StringProperty uid;
-//    public String getUID() { return (uid == null) ? _uid : uid.getValue(); }
-//    private String _uid;
-//    public void setUID(String s)
-//    {
-//        if (uid == null)
-//        {
-//            _uid = s;
-//        } else
-//        {
-//            uid.set(s);
-//        }
-//    }
-//    public VEvent withUID(String uid) { setUID(uid); return this; }
-//
-//    /** Callback for creating unique uid values */
-//    public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
-//    private static String datePattern = "yyyyMMdd";
-//    private static String timePattern = "HHmmss";
-//    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern + "'T'" + timePattern);
-//    private static Integer nextKey = 0;
-//    private Callback<Void, String> uidGeneratorCallback = (Void) ->
-//    { // default UID generator callback
-//        String dateTime = formatter.format(LocalDateTime.now());
-//        String domain = "jfxtras-agenda";
-//        return dateTime + nextKey++ + domain;
-//    };
-//    public void setUidGeneratorCallback(Callback<Void, String> uidCallback) { this.uidGeneratorCallback = uidCallback; }
-//    /** assign uid by calling the uidGeneratorCallback */
-//    public void makeUid()
-//    {
-//        setUID(uidGeneratorCallback.call(null));
-//    }
- 
-    /**
-     *  COMMENT: RFC 5545 iCalendar 3.8.1.12. page 83
-     * This property specifies non-processing information intended
-      to provide a comment to the calendar user.
-     * Example:
-     * COMMENT:The meeting really needs to include both ourselves
-         and the customer. We can't hold this meeting without them.
-         As a matter of fact\, the venue for the meeting ought to be at
-         their site. - - John
-     * */
-    public SimpleStringProperty commentProperty() { return commentProperty; }
-    final private SimpleStringProperty commentProperty = new SimpleStringProperty(this, "comment");
-    public String getComment() { return commentProperty.getValue(); }
-    public void setComment(String value) { commentProperty.setValue(value); }
-    public VEvent withComment(String value) { setComment(value); return this; } 
-    
-    
-    /**
-     *  SUMMARY: RFC 5545 iCalendar 3.8.1.12. page 83
-     * This property defines a short summary or subject for the calendar component 
-     * Example:
-     * SUMMARY:Department Party
-     * */
-    public SimpleStringProperty summaryProperty() { return summaryProperty; }
-    final private SimpleStringProperty summaryProperty = new SimpleStringProperty(this, "summary");
-    public String getSummary() { return summaryProperty.getValue(); }
-    public void setSummary(String value) { summaryProperty.setValue(value); }
-//    public T withSummary(String value) { setSummary(value); return (T)this; } 
-    
-    /**
-     * DESCRIPTION: RFC 5545 iCalendar 3.8.1.12. page 84
-     * This property provides a more complete description of the
-     * calendar component than that provided by the "SUMMARY" property.
-     * Example:
-     * DESCRIPTION:Meeting to provide technical review for "Phoenix"
-     *  design.\nHappy Face Conference Room. Phoenix design team
-     *  MUST attend this meeting.\nRSVP to team leader.
-     */
-    public StringProperty descriptionProperty() { return descriptionProperty; }
-    final private StringProperty descriptionProperty = new SimpleStringProperty(this, "description");
-    public String getDescription() { return descriptionProperty.getValue(); }
-    public void setDescription(String value) { descriptionProperty.setValue(value); }
-//    public T withDescription(String value) { setDescription(value); return (T)this; } 
-    
-    /**
-     * LOCATION: RFC 5545 iCalendar 3.8.1.12. page 87
-     * This property defines the intended venue for the activity
-     * defined by a calendar component.
-     * Example:
-     * LOCATION:Conference Room - F123\, Bldg. 002
-     */
-    public StringProperty locationProperty() { return locationProperty; }
-    final private StringProperty locationProperty = new SimpleStringProperty(this, "location");
-    public String getLocation() { return locationProperty.getValue(); }
-    public void setLocation(String value) { locationProperty.setValue(value); }
-//    public T withLocation(String value) { setLocation(value); return (T)this; } 
-    
-    /**
-     * CATEGORIES: RFC 5545 iCalendar 3.8.1.12. page 81
-     * This property defines the categories for a calendar component.
-     * Example:
-     * CATEGORIES:APPOINTMENT,EDUCATION
-     * CATEGORIES:MEETING
-     */
-    public SimpleStringProperty categoriesProperty() { return categoriesProperty; }
-    final private SimpleStringProperty categoriesProperty = new SimpleStringProperty(this, "appointmentGroup");
-    public String getCategories() { return categoriesProperty.getValue(); }
-    public void setCategories(String value) { categoriesProperty.setValue(value); }
-//    public T withCategories(String value) { setCategories(value); return (T)this; }
  
     // NO NEED - 
 //    /** Appointment-specific data - only uses data fields. Repeat related and date/time objects are null */
@@ -321,6 +205,25 @@ public abstract class VEvent extends VComponent
     private LocalDateTime dateTimeRangeEnd;
     public void setDateTimeRangeEnd(LocalDateTime endDateTime) { this.dateTimeRangeEnd = endDateTime; }
 //    public T withDateTimeRangeEnd(LocalDateTime endDateTime) { setDateTimeRangeEnd(endDateTime); return (T)this; }
+    
+    
+    // CONSTRUCTOR
+    public VEvent(VEvent vevent)
+    {
+        super(vevent);
+    }
+    
+    public VEvent() { }
+    
+    /** Deep copy all fields from source to destination */
+    public static void copy(VEvent source, VEvent destination)
+    {
+        destination.setDescription(source.getDescription());
+        destination.setDurationInSeconds(source.getDurationInSeconds());
+        if (source.getDateTimeRangeStart() != null) destination.setDateTimeRangeStart(source.getDateTimeRangeStart());
+        if (source.getDateTimeRangeEnd() != null) destination.setDateTimeRangeEnd(source.getDateTimeRangeEnd());
+    }
+
     
     /** Stream of date/times that indicate the start of the event(s).
      * For a VEvent without RRULE the stream will contain only one date/time element.

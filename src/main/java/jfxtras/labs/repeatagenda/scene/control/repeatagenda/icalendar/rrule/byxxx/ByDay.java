@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 
 /** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */
@@ -35,8 +36,7 @@ public class ByDay extends ByRuleAbstract
     public ByDayPair[] getByDayPair() { return byDayPairs; }
     private ByDayPair[] byDayPairs;
     private void setByDayPair(ByDayPair... byDayPairs) { this.byDayPairs = byDayPairs; }
-    
-    
+
     // TODO - IS THIS A GOOD FIT HERE?
     // SHOULD I HAVE PROPERTIES OR SHOULD I HAVE A LISTENER SET THE VALUES?
     // I THINK THAT IF THERE ARE NO ORDINAL VALUES I SHOULD USE PROPERTIES
@@ -79,6 +79,17 @@ public class ByDay extends ByRuleAbstract
         for (DayOfWeek d : daysOfWeek)
         {
             byDayPairs[i++] = new ByDayPair(d, 0);
+        }
+    }
+    
+    @Override
+    public void copyTo(Rule destination)
+    {
+        ByDay destination2 = (ByDay) destination;
+        destination2.byDayPairs = new ByDayPair[byDayPairs.length];
+        for (int i=0; i<byDayPairs.length; i++)
+        {
+            destination2.byDayPairs[i] = new ByDayPair(byDayPairs[i].dayOfWeek, byDayPairs[i].ordinal);
         }
     }
 

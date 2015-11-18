@@ -18,7 +18,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.Rep
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 
-public class ICalendarMakeAppointmentsTest extends ICalendarRepeatTestAbstract
+public class ICalendarMakeAppointmentsTest extends ICalendarTestAbstract
 {
 
     /** Tests daily stream with FREQ=DAILY */

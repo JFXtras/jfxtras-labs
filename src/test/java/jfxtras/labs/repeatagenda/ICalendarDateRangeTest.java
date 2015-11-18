@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 
-public class ICalendarDateRangeTest extends ICalendarRepeatTestAbstract
+public class ICalendarDateRangeTest extends ICalendarTestAbstract
 {
     /** Tests daily stream with FREQ=DAILY */
     @Test

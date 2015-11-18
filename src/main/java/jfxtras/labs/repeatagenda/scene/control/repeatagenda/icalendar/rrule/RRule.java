@@ -123,28 +123,6 @@ public class RRule {
     }
     public RRule withUntil(int until) { setCount(until); return this; }
     
-    // deleted appointments - skip these when making appointments from the repeat rule
-    // TODO - Should this be an Observable Collection?
-//    /** EXDATE */  - in own class
-//    final private ObservableList<LocalDateTime> exceptions = FXCollections.observableArrayList();
-//    public ObservableList<LocalDateTime> getExceptions() { return exceptions; }
-////    public void setExceptions(ObservableList<LocalDateTime> dates) { exceptions = dates; }
-//    public RRule withExceptions(ObservableList<LocalDateTime> dates) { exceptions.addAll(dates); return this; }
-//    private boolean exceptionsEquals(Collection<LocalDateTime> exceptionsTest)
-//    { // test doesn't require order to be same 
-//        Iterator<LocalDateTime> dateIterator = getExceptions().iterator();
-//        while (dateIterator.hasNext())
-//        {
-//            LocalDateTime myDate = dateIterator.next();
-//            if (! exceptionsTest.contains(myDate)) return false;
-//        }
-//        return true;
-//    }
-    
-    // TODO - 
-    /** RDATE */
-//    final private ObservableList<LocalDateTime> rdate = FXCollections.observableArrayList(); - in own class
-    
     
     // List of RECURRENCE-ID events represented by a individual appointment with some unique data
     // SHOULD RECURRENCES BE A SPECIAL CLASS OF APPOINTMENT WITH RECURRENCT-ID?
@@ -166,23 +144,24 @@ public class RRule {
         return true;
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-//    /** Constructor.  Sets parent VEvent object */
-//    // TODO  REMOVE VEVENT AS A PARAMETER
-//    public RRule(VEvent vevent)
-//    {
-//        this.vevent = vevent;
-//    }
-    
+
+    /** Deep copy all fields from source to destination */
+    public static void copy(RRule source, RRule destination)
+    {
+        if (source.getCount() != null) destination.setCount(source.getCount());
+        if (source.getFrequency() != null)
+        {
+            try {
+                Frequency newFreqency = source.getFrequency().getClass().newInstance();
+                Frequency.copy(source.getFrequency(), newFreqency);
+                destination.setFrequency(newFreqency);
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        source.getRecurrences().stream().forEach(a -> destination.getRecurrences().add(a));
+    }
+
 
     /** Stream of date/times made after applying all modification rules.
      * Stream is infinite if COUNT or UNTIL not present or ends when COUNT or UNTIL condition
@@ -191,14 +170,6 @@ public class RRule {
      * first date/time (DTSTART) in the sequence. */
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
-//        Stream<LocalDateTime> rangeFileredStream = takeWhile(frequency.stream(startDateTime), a -> 
-//        {
-//            boolean notTooLate = (getStartRangeDateTime() == null) ? true : ! a.isAfter(getEndRangeDateTime());
-//            boolean notTooEarly = (getEndRangeDateTime() == null) ? true : ! a.isBefore(getStartRangeDateTime());
-//            System.out.println("test3 " + a + " " + notTooEarly + " " + notTooLate);
-//            return notTooEarly && notTooLate;
-//        });
-        
         if (getCount() > 0)
         {
             return frequency.stream(startDateTime).limit(getCount());
@@ -211,21 +182,6 @@ public class RRule {
         }
         return frequency.stream(startDateTime);
     };
-    
-//    /** Filtered RRule stream to include only dates within start and end range */
-//    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream)
-//    {
-//        return takeWhile(inStream
-//                , a -> ! a.isBefore(getStartDateTimeRange())
-//                    || ! a.isAfter(getEndDateTimeRange()));               
-//    };
-
-//    /** Resulting stream of date/times by applying rules 
-//     * Uses startLocalDateTime - first date/time in sequence (DTSTART) as a default starting point */
-//    public Stream<LocalDateTime> stream()
-//    {
-//        return stream(vevent.getDateTimeStart());
-//    }
     
     // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate
     static <T> Spliterator<T> takeWhile(Spliterator<T> splitr, Predicate<? super T> predicate)
@@ -251,7 +207,7 @@ public class RRule {
     public static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
        return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
     }
-    
+
 //        /**
 //         * A Datetime range.  The range of dates within the recurrence set to be included in
 //         * the stream

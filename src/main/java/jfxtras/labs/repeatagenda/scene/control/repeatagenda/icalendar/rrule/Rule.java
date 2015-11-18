@@ -18,6 +18,14 @@ public interface Rule
      * 
      * */
     Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime);
+
+    /** Deep copy all fields from source to destination */
+    static void copy(Rule source, Rule destination)
+    {
+        source.copyTo(destination);
+    }
+
+    void copyTo(Rule destination);
     
     
 

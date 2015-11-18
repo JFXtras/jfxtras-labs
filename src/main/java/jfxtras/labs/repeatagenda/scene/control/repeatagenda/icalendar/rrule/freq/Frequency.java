@@ -70,6 +70,26 @@ public interface Frequency {
       
     }
 
+    /** Deep copy all fields from source to destination */
+    static void copy(Frequency source, Frequency destination)
+    {
+        destination.setChronoUnit(source.getChronoUnit());
+        if (source.getInterval() != null) destination.setInterval(source.getInterval());
+        if (source.getRules() != null)
+        {
+            source.getRules().stream().forEach(r ->
+            {
+                try {
+                    Rule newRule = r.getClass().newInstance();
+                    Rule.copy(r, newRule);
+                    destination.addByRule(newRule);
+                } catch (InstantiationException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
 
     
 }

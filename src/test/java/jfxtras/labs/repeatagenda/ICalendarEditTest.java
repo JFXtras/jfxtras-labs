@@ -16,7 +16,6 @@ import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableUtilities.RepeatChange;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl.WindowCloseType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
@@ -24,7 +23,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Daily;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
-public class ICalendarEditTest extends ICalendarRepeatTestAbstract
+public class ICalendarEditTest extends ICalendarTestAbstract
 {
 
     /**
@@ -44,6 +43,8 @@ public class ICalendarEditTest extends ICalendarRepeatTestAbstract
 
         assertEquals(3, appointments.size()); // check if there are only two appointments
 
+        VEventImpl veventOld = new VEventImpl(vevent);
+        
         // select appointment and apply changes
         Iterator<Appointment> appointmentIterator = appointments.iterator(); // skip first
         RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next();
@@ -51,14 +52,14 @@ public class ICalendarEditTest extends ICalendarRepeatTestAbstract
         LocalDate date = selectedAppointment.getStartLocalDateTime().toLocalDate();
         selectedAppointment.setStartLocalDateTime(date.atTime(9, 45)); // change start time
         selectedAppointment.setEndLocalDateTime(date.atTime(11, 0)); // change end time
-        WindowCloseType windowCloseType = VEventImpl.editVEvent(
-                selectedAppointment
-              , appointmentOld
-              , appointments
-              , vevents
-              , a -> RepeatChange.ALL
-              , null
-              , null);
+
+        // TODO - MAKE CHANGES TO VEVENT
+        WindowCloseType windowCloseType = vevent.edit(
+                veventOld               // original VEvent
+              , appointments            // collection of all appointments
+              , vevents                 // collection of all VEvents
+              , a -> VEventImpl.ChangeDialogResponse.ALL   // answer to edit dialog
+              , null);                  // VEvents I/O callback
         assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
 
         // Check Repeat

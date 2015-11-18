@@ -26,7 +26,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
-public abstract class ICalendarRepeatTestAbstract
+public abstract class ICalendarTestAbstract
 {
 
     public final static ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
