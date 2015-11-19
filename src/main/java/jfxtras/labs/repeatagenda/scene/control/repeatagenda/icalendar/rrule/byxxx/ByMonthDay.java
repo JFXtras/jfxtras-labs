@@ -52,6 +52,18 @@ public class ByMonthDay extends ByRuleAbstract
         }
     }
     
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        ByMonthDay testObj = (ByMonthDay) obj;
+        boolean daysOfMonthEquals = getDaysOfMonth().equals(testObj.getDaysOfMonth());
+        return daysOfMonthEquals;
+    }
+    
     /**
      * Return stream of valid dates made by rule (infinite if COUNT or UNTIL not present)
      */

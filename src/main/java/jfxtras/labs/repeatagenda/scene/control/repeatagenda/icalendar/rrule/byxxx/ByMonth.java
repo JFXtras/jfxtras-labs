@@ -35,6 +35,18 @@ public class ByMonth extends ByRuleAbstract
     }
     
     @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        ByMonth testObj = (ByMonth) obj;
+        boolean monthEquals = getMonths().equals(testObj.getMonths());
+        return monthEquals;
+    }
+    
+    @Override
     public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
     {
         switch (getFrequency().getChronoUnit())

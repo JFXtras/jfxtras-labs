@@ -59,6 +59,18 @@ public class ByWeekNo extends ByRuleAbstract
     }
     
     @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        ByWeekNo testObj = (ByWeekNo) obj;
+        boolean weekNumbersEquals = getWeekNumbers().equals(testObj.getWeekNumbers());
+        return weekNumbersEquals;
+    }
+    
+    @Override
     public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
     {
         switch (getFrequency().getChronoUnit())
