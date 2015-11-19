@@ -39,6 +39,18 @@ public class ByMonthDay extends ByRuleAbstract
         super(frequency);
         setDaysOfMonth(daysOfMonth);
     }
+    public ByMonthDay() { }
+
+    @Override
+    public void copyTo(Rule destination)
+    {
+        ByMonthDay destination2 = (ByMonthDay) destination;
+        destination2.daysOfMonth = new int[daysOfMonth.length];
+        for (int i=0; i<daysOfMonth.length; i++)
+        {
+            destination2.daysOfMonth[i] = daysOfMonth[i];
+        }
+    }
     
     /**
      * Return stream of valid dates made by rule (infinite if COUNT or UNTIL not present)
@@ -99,6 +111,7 @@ public class ByMonthDay extends ByRuleAbstract
         }
         return null;
     }
+
 
 //    /** for current month, makes an array of valid days, works with both positive and negative daysOfMonth values */
 //    private int[] makeValidDays(int daysInMonth, int[] daysOfMonth)

@@ -148,7 +148,7 @@ public class RRule {
     /** Deep copy all fields from source to destination */
     public static void copy(RRule source, RRule destination)
     {
-        if (source.getCount() != null) destination.setCount(source.getCount());
+        if (source.getCount() > 0) destination.setCount(source.getCount());
         if (source.getFrequency() != null)
         {
             try {
@@ -159,9 +159,33 @@ public class RRule {
                 e.printStackTrace();
             }
         }
-        source.getRecurrences().stream().forEach(a -> destination.getRecurrences().add(a));
+        Iterator<LocalDateTime> i = source.getRecurrences().iterator();
+        while (i.hasNext())
+        {
+            destination.getRecurrences().add(i.next());
+        }
     }
 
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        RRule testObj = (RRule) obj;
+
+        boolean countEquals = (getCount() == null) ?
+                (testObj.getCount() == null) : getCount().equals(testObj.getCount());
+        boolean frequencyEquals = (getFrequency() == null) ?
+                (testObj.getFrequency() == null) : getFrequency().equals(testObj.getFrequency());
+        boolean recurrencesEquals = (getRecurrences() == null) ?
+                (testObj.getRecurrences() == null) : getRecurrences().equals(testObj.getRecurrences());
+
+        System.out.println("RRule " + countEquals + " " + frequencyEquals + " " + recurrencesEquals);
+        return countEquals && frequencyEquals && recurrencesEquals;
+                
+    }
 
     /** Stream of date/times made after applying all modification rules.
      * Stream is infinite if COUNT or UNTIL not present or ends when COUNT or UNTIL condition

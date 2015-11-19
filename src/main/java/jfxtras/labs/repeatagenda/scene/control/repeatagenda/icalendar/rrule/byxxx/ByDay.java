@@ -82,6 +82,8 @@ public class ByDay extends ByRuleAbstract
         }
     }
     
+    public ByDay() { } 
+    
     @Override
     public void copyTo(Rule destination)
     {
@@ -93,6 +95,18 @@ public class ByDay extends ByRuleAbstract
         }
     }
 
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        ByDay testObj = (ByDay) obj;
+        boolean byDayPairsEquals = getByDayPair().equals(testObj.getByDayPair());
+        return byDayPairsEquals;
+    }
+    
     @Override
     public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
     {
@@ -224,5 +238,17 @@ public class ByDay extends ByRuleAbstract
             dayOfWeek = d;
             ordinal = i;
         }
+        
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (obj == this) return true;
+            if((obj == null) || (obj.getClass() != getClass())) {
+                return false;
+            }
+            ByDayPair testObj = (ByDayPair) obj;
+            return dayOfWeek == testObj.dayOfWeek
+                    && ordinal == testObj.ordinal;
+        }        
     }
 }

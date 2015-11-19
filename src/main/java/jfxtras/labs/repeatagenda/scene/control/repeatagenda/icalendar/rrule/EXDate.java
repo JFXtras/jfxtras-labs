@@ -21,4 +21,10 @@ public class EXDate implements Rule
         return null;
     }
 
+    @Override
+    public void copyTo(Rule destination) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

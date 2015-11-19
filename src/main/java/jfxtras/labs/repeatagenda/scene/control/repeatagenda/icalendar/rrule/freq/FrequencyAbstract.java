@@ -3,6 +3,7 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.fre
 import java.security.InvalidParameterException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javafx.beans.property.IntegerProperty;
@@ -43,15 +44,39 @@ public abstract class FrequencyAbstract implements Frequency {
      * Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
      * The BYxxx rules must be applied in a specific order and can only be occur once */
     @Override public List<Rule> getRules() { return byRules; }
-    private final List<Rule> byRules = new ArrayList<Rule>();
+    private List<Rule> byRules;
     @Override public void addByRule(Rule byRule)
     {
+        if (byRules == null) byRules = new ArrayList<Rule>();
         boolean alreadyPresent = getRules().stream().anyMatch(a -> a.getClass() == byRule.getClass());
         if (alreadyPresent){
             throw new InvalidParameterException("Can't add BYxxx rule (" 
                     + byRule.getClass().getName() + ") more than once.");
         }
         getRules().add(byRule);
+    }
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        Frequency testObj = (Frequency) obj;
+        
+        boolean intervalEquals = (getInterval() == null) ?
+                (testObj.getInterval() == null) : getInterval().equals(testObj.getInterval());
+        Iterator<Rule> ruleIterator = getRules().iterator();
+        List<Boolean> rulesEqualsArray = new ArrayList<Boolean>();
+        for (int i=0; i<getRules().size(); i++)
+        {
+            boolean e = getRules().get(i).equals(testObj.getRules().get(i));
+            rulesEqualsArray.add(e);
+        }
+        boolean rulesEquals = rulesEqualsArray.stream().allMatch(a -> true );
+        System.out.println("frequency " + intervalEquals + " " + rulesEquals);
+        return intervalEquals && rulesEquals;
     }
     
     /** Time unit of last rule applied.  It represents the time span to apply future changes to the output stream of date/times

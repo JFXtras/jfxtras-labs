@@ -77,8 +77,10 @@ public interface Frequency {
         if (source.getInterval() != null) destination.setInterval(source.getInterval());
         if (source.getRules() != null)
         {
+//            System.out.println("rules size-" + source.getRules().size());
             source.getRules().stream().forEach(r ->
             {
+//                System.out.println(r.getClass());
                 try {
                     Rule newRule = r.getClass().newInstance();
                     Rule.copy(r, newRule);

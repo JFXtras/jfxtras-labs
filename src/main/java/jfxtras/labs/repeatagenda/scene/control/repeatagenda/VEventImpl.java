@@ -73,8 +73,8 @@ public class VEventImpl extends VEvent
     /** Deep copy all fields from source to destination */
     public static void copy(VEventImpl source, VEventImpl destination)
     {
-        destination.setAppointmentGroup(source.getAppointmentGroup());
-        destination.setAppointmentClass(source.getAppointmentClass());
+        if (source.getAppointmentGroup() != null) destination.setAppointmentGroup(source.getAppointmentGroup());
+        if (source.getAppointmentClass() != null) destination.setAppointmentClass(source.getAppointmentClass());
         source.appointments().stream().forEach(a -> destination.appointments().add(a));
     }
 

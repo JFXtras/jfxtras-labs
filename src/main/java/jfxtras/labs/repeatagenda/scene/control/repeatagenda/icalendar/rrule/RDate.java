@@ -34,4 +34,10 @@ public class RDate implements Rule
             Spliterator.ORDERED),
           false /* not parallel */ );
     }
+
+    @Override
+    public void copyTo(Rule destination) {
+        // TODO Auto-generated method stub
+        
+    }
 }

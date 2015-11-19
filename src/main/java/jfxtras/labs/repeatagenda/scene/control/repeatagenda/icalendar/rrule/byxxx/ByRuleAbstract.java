@@ -22,7 +22,9 @@ public abstract class ByRuleAbstract implements Rule {
     ByRuleAbstract(Frequency frequency)
     {
         this.frequency = frequency;
-    }    
+    }
+    
+    ByRuleAbstract() { }
 
 
 }

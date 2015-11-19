@@ -167,25 +167,25 @@ public class VComponent
      * setting the UID callback.
      * Uses lazy initialization of property because UID doesn't often require advanced features.
      */
-    public StringProperty UIDProperty()
+    public StringProperty uniqueIdentifierProperty()
     {
-        if (uid == null) uid = new SimpleStringProperty(this, "UID", _uid);
-        return uid;
+        if (uniqueIdentifier == null) uniqueIdentifier = new SimpleStringProperty(this, "UID", _uniqueIdentifier);
+        return uniqueIdentifier;
     }
-    private StringProperty uid;
-    public String getUID() { return (uid == null) ? _uid : uid.getValue(); }
-    private String _uid;
-    public void setUID(String s)
+    private StringProperty uniqueIdentifier;
+    public String getUniqueIdentifier() { return (uniqueIdentifier == null) ? _uniqueIdentifier : uniqueIdentifier.getValue(); }
+    private String _uniqueIdentifier;
+    public void setUniqueIdentifier(String s)
     {
-        if (uid == null)
+        if (uniqueIdentifier == null)
         {
-            _uid = s;
+            _uniqueIdentifier = s;
         } else
         {
-            uid.set(s);
+            uniqueIdentifier.set(s);
         }
     }
-    public VComponent withUID(String uid) { setUID(uid); return this; }
+    public VComponent withUniqueIdentifier(String uid) { setUniqueIdentifier(uid); return this; }
 
     /** Callback for creating unique uid values */
     public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
@@ -203,7 +203,7 @@ public class VComponent
     /** assign uid by calling the uidGeneratorCallback */
     public void makeUid()
     {
-        setUID(uidGeneratorCallback.call(null));
+        setUniqueIdentifier(uidGeneratorCallback.call(null));
     }
     
     /** Method to convert DTSTART or DTEND to LocalDateTime
@@ -247,14 +247,56 @@ public class VComponent
     /** Deep copy all fields from source to destination */
     public static void copy(VComponent source, VComponent destination)
     {
-        destination.setCategories(source.getSummary());
+        destination.setCategories(source.getCategories());
         destination.setComment(source.getComment());
         destination.setDateTimeStart(source.getDateTimeStart());
         destination.setLocation(source.getLocation());
         destination.setSummary(source.getSummary());
-        destination.setUID(source.getUID());
-        RRule.copy(source.getRRule(), destination.getRRule());
+        destination.setUniqueIdentifier(source.getUniqueIdentifier());
+        if (source.getRRule() != null)
+        {
+            if (destination.getRRule() == null)
+            { // make new RRule object for destination if necessary
+                try {
+                    RRule newRRule = source.getRRule().getClass().newInstance();
+                    destination.setRRule(newRRule);
+                } catch (InstantiationException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+            RRule.copy(source.getRRule(), destination.getRRule());
+        }
     }
 
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        VComponent testObj = (VComponent) obj;
+
+        boolean categoriesEquals = (getCategories() == null) ?
+                (testObj.getCategories() == null) : getCategories().equals(testObj.getCategories());
+        boolean commentEquals = (getComment() == null) ?
+                (testObj.getComment() == null) : getComment().equals(testObj.getComment());
+        boolean dateTimeStartsEquals = (getDateTimeStart() == null) ?
+                (testObj.getDateTimeStart() == null) : getDateTimeStart().equals(testObj.getDateTimeStart());
+        boolean locationEquals = (getLocation() == null) ?
+                (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
+        boolean summaryEquals = (getSummary() == null) ?
+                (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
+        boolean uniqueIdentifierEquals = (getUniqueIdentifier() == null) ?
+                (testObj.getUniqueIdentifier() == null) : getUniqueIdentifier().equals(testObj.getUniqueIdentifier());
+        boolean rruleEquals = (getRRule() == null) ?
+                (testObj.getRRule() == null) : getRRule().equals(testObj.getRRule());
+                System.out.println(getRRule() + " " + testObj.getRRule());
+        System.out.println(categoriesEquals + " " + commentEquals + " " + dateTimeStartsEquals + " " + locationEquals
+                + " " + summaryEquals + " " + uniqueIdentifierEquals + " " + rruleEquals);
+        return categoriesEquals && commentEquals && dateTimeStartsEquals && locationEquals
+                && summaryEquals && uniqueIdentifierEquals && rruleEquals;
+                
+    }
 
 }

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
 
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 
 /** BYWEEKNO from RFC 5545, iCalendar 3.3.10, page 42 */
@@ -46,6 +47,17 @@ public class ByWeekNo extends ByRuleAbstract
         setWeekNumbers(weekNumbers);
     }
 
+    @Override
+    public void copyTo(Rule destination)
+    {
+        ByWeekNo destination2 = (ByWeekNo) destination;
+        destination2.weekNumbers = new int[weekNumbers.length];
+        for (int i=0; i<weekNumbers.length; i++)
+        {
+            destination2.weekNumbers[i] = weekNumbers[i];
+        }
+    }
+    
     @Override
     public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
     {
