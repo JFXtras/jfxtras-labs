@@ -56,7 +56,6 @@ public interface Frequency {
      * For example, Weekly class advances the dates by INTERVAL Number of weeks. */
     TemporalAdjuster getAdjuster();
 
-
     /** Enumeration of FREQ rules */
     public static enum FrequencyEnum
     {

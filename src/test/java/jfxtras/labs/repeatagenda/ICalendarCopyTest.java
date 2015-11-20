@@ -18,4 +18,13 @@ public class ICalendarCopyTest extends ICalendarTestAbstract
         assertEquals(vevent, veventCopy); // check number of appointments
         assertTrue(vevent != veventCopy); // insure not same reference
     }
+    
+    @Test
+    public void canCopyVEvent2()
+    {
+        VEventImpl vevent = getWeekly3();
+        VEventImpl veventCopy = new VEventImpl(vevent);
+        assertEquals(vevent, veventCopy); // check number of appointments
+        assertTrue(vevent != veventCopy); // insure not same reference
+    }
 }

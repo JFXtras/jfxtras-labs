@@ -737,7 +737,7 @@ public class RepeatableAgenda extends Agenda {
           }
           RepeatableAppointment testObj = (RepeatableAppointment) obj;
 
-          System.out.println("getAppointmentGroup()2 " + getAppointmentGroup().getDescription() + " " + testObj.getAppointmentGroup().getDescription());
+//          System.out.println("getAppointmentGroup()2 " + getAppointmentGroup().getDescription() + " " + testObj.getAppointmentGroup().getDescription());
           
           boolean descriptionEquals = (getDescription() == null) ?
                   (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());

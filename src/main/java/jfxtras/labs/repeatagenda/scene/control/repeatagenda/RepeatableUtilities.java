@@ -442,7 +442,6 @@ public final class RepeatableUtilities {
           break;
         case WITH_EXISTING_REPEAT:
             if (! appointmentChanged) choices = new RepeatChange[] {RepeatChange.ALL, RepeatChange.FUTURE};
-//            changeResponse = repeatChangeDialog(choices);
             changeResponse = changeDialogCallback.call(choices);
             switch (changeResponse)
             {

@@ -14,35 +14,35 @@ import javafx.scene.control.ChoiceDialog;
 public class ICalendarUtilities {
 
     /**
-     * If repeat criteria has changed display this alert to find out how to apply changes (one, all or future)
+     * This alert inquires how to apply changes (one, all or this-and-future)
      * Can provide a custom choiceList, or omit the list and use the default choices.
      * 
      * @param resources
      * @param choiceList
      * @return
      */
-    public static RepeatChange repeatChangeDialog(RepeatChange...choiceList)
+    public static ChangeDialogOptions repeatChangeDialog(ChangeDialogOptions...choiceList)
     {
         ResourceBundle resources = Settings.resources;
-        List<RepeatChange> choices;
+        List<ChangeDialogOptions> choices;
         if (choiceList == null || choiceList.length == 0)
         { // use default choices
-            choices = new ArrayList<RepeatChange>();
-            choices.add(RepeatChange.ONE);
-            choices.add(RepeatChange.ALL);
-            choices.add(RepeatChange.FUTURE);
+            choices = new ArrayList<ChangeDialogOptions>();
+            choices.add(ChangeDialogOptions.ONE);
+            choices.add(ChangeDialogOptions.ALL);
+            choices.add(ChangeDialogOptions.FUTURE);
         } else { // use inputed choices
-            choices = new ArrayList<RepeatChange>(Arrays.asList(choiceList));
+            choices = new ArrayList<ChangeDialogOptions>(Arrays.asList(choiceList));
         }
                
-        ChoiceDialog<RepeatChange> dialog = new ChoiceDialog<>(choices.get(0), choices);
+        ChoiceDialog<ChangeDialogOptions> dialog = new ChoiceDialog<>(choices.get(0), choices);
         dialog.setTitle(resources.getString("dialog.repeat.change.title"));
         dialog.setContentText(resources.getString("dialog.repeat.change.content"));
         dialog.setHeaderText(resources.getString("dialog.repeat.change.header"));
 
-        Optional<RepeatChange> result = dialog.showAndWait();
+        Optional<ChangeDialogOptions> result = dialog.showAndWait();
         
-        return (result.isPresent()) ? result.get() : RepeatChange.CANCEL;
+        return (result.isPresent()) ? result.get() : ChangeDialogOptions.CANCEL;
     }
 
     /**
@@ -67,12 +67,13 @@ public class ICalendarUtilities {
     /**
      * Options available when changing a repeatable appointment
      * ONE: Change only selected appointment
-     * ALL: Change all appointments with repeat rule
-     * FUTURE: Change future appointments with repeat rule
+     * ALL: Change all appointments
+     * FUTURE: Change this and future appointments
      * @author David Bal
      *
      */
-    public enum RepeatChange {
+    public enum ChangeDialogOptions
+    {
         ONE, ALL, FUTURE, CANCEL;
 
         @Override
@@ -86,6 +87,12 @@ public class ICalendarUtilities {
         X, CANCEL, CLOSE_WITH_CHANGE, CLOSE_WITHOUT_CHANGE
     }
 
-
+    public enum RRuleType
+    {
+        INDIVIDUAL
+      , WITH_EXISTING_REPEAT
+      , WITH_NEW_REPEAT
+      , HAD_REPEAT_BECOMING_INDIVIDUAL
+    }
 
 }

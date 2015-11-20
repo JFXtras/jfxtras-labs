@@ -14,10 +14,10 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByMonth;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByMonthDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByWeekNo;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Daily;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Monthly;
@@ -53,6 +53,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency yearly = new Yearly();
@@ -65,6 +66,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 6, 10, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency yearly = new Yearly();
@@ -82,6 +84,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(1997, 6, 5, 9, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency yearly = new Yearly();
@@ -98,6 +101,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(2015, 1, 6, 10, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency yearly = new Yearly();
@@ -112,6 +116,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 10, 0, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency yearly = new Yearly();
@@ -134,6 +139,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(1996, 11, 5, 0, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency yearly = new Yearly()
@@ -153,6 +159,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(1997, 5, 19, 10, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency yearly = new Yearly();
@@ -167,6 +174,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(1997, 5, 12, 10, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency yearly = new Yearly();
@@ -185,6 +193,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(2015, 1, 1, 0, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency yearly = new Yearly();
@@ -201,6 +210,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Monthly monthly = new Monthly();
@@ -213,6 +223,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 29, 10, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency monthly = new Monthly();
@@ -228,6 +239,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency monthly = new Monthly();
@@ -242,6 +254,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency monthly = new Monthly();
@@ -256,6 +269,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(1997, 9, 2, 10, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency monthly = new Monthly();
@@ -272,6 +286,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(2015, 1, 10, 10, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency monthly = new Monthly();
@@ -288,6 +303,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency weekly = new Weekly();
@@ -304,7 +320,7 @@ public abstract class ICalendarTestAbstract
         vevent.setDurationInSeconds(2700);
         vevent.setDescription("Weekly1 Description");
         vevent.setSummary("Weekly1 Summary");
-        vevent.setAppointmentClass(RepeatableAppointmentImpl.class);
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency weekly = new Weekly()
@@ -320,6 +336,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency weekly = new Weekly();
@@ -337,7 +354,7 @@ public abstract class ICalendarTestAbstract
         vevent.setDurationInSeconds(3600);
         vevent.setDescription("Daily1 Description");
         vevent.setSummary("Daily1 Summary");
-        vevent.setAppointmentClass(RepeatableAppointmentImpl.class);
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency daily = new Daily();
@@ -350,6 +367,8 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        vevent.setDurationInSeconds(5400);
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule()
                 .withCount(6);
         vevent.setRRule(rule);
@@ -364,6 +383,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule()
                 .withCount(10);
         vevent.setRRule(rule);
@@ -381,6 +401,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency daily = new Daily()
@@ -396,6 +417,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
         Frequency daily = new Daily()

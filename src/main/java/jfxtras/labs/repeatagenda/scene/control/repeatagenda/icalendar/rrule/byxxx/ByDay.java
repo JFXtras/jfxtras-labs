@@ -103,7 +103,8 @@ public class ByDay extends ByRuleAbstract
             return false;
         }
         ByDay testObj = (ByDay) obj;
-        boolean byDayPairsEquals = getByDayPair().equals(testObj.getByDayPair());
+        boolean byDayPairsEquals = Arrays.equals(getByDayPair(), testObj.getByDayPair());
+        System.out.println("ByDay equals " + byDayPairsEquals);
         return byDayPairsEquals;
     }
     
@@ -247,8 +248,10 @@ public class ByDay extends ByRuleAbstract
                 return false;
             }
             ByDayPair testObj = (ByDayPair) obj;
-            return dayOfWeek == testObj.dayOfWeek
-                    && ordinal == testObj.ordinal;
+            System.out.println("ByDayPairequals " + (dayOfWeek == testObj.dayOfWeek)
+                    + " " + (ordinal == testObj.ordinal));
+            return (dayOfWeek == testObj.dayOfWeek)
+                    && (ordinal == testObj.ordinal);
         }        
     }
 }

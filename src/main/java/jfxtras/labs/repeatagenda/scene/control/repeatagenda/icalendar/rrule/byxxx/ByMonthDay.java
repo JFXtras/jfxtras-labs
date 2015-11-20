@@ -6,6 +6,7 @@ import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -60,7 +61,8 @@ public class ByMonthDay extends ByRuleAbstract
             return false;
         }
         ByMonthDay testObj = (ByMonthDay) obj;
-        boolean daysOfMonthEquals = getDaysOfMonth().equals(testObj.getDaysOfMonth());
+        boolean daysOfMonthEquals = Arrays.equals(getDaysOfMonth(), testObj.getDaysOfMonth());
+//        System.out.println("ByMonthDay equals " + daysOfMonthEquals + " " + daysOfMonth[0] + " " + testObj.getDaysOfMonth()[0]);
         return daysOfMonthEquals;
     }
     

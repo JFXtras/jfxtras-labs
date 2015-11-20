@@ -10,9 +10,13 @@ import java.util.List;
 import java.util.Set;
 
 import javafx.util.Callback;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.RRuleType;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
@@ -24,11 +28,10 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 /**
  * Concrete class as an example of VEvent.
- * This class creates appointments from VEvent objects for display in Agenda.
- * You can create other classes to make events for other uses.
+ * This class creates and edits appointments for display in Agenda.
  * 
  * Special use:
- * 3.8.1.2.  Categories  . . . . . . . . . . . . . . . . . . .  82 - Yes (home for appointmentGroup)
+ * 3.8.1.2.  Categories: contains data for Appointment.appointmentGroup
  * 
  * @author David Bal
  *
@@ -60,6 +63,7 @@ public class VEventImpl extends VEvent
     public Set<RepeatableAppointment> appointments() { return myAppointments; }
     final private Set<RepeatableAppointment> myAppointments = new HashSet<RepeatableAppointment>();
 //    public VEventImpl withAppointments(Collection<RepeatableAppointment> s) { appointments().addAll(s); return this; }
+    public boolean isNewRRule() { return appointments().size() == 0; } // new RRule has no appointments
     
     // CONSTRUCTORS
     /** Copy constructor */
@@ -86,7 +90,7 @@ public class VEventImpl extends VEvent
      * @param dateTimeRangeEnd
      * @return
      */
-    public Collection<RepeatableAppointment> makeAppointments(
+    public Collection<Appointment> makeAppointments(
             LocalDateTime dateTimeRangeStart
           , LocalDateTime dateTimeRangeEnd)
     {
@@ -100,12 +104,12 @@ public class VEventImpl extends VEvent
      * 
      * @return created appointments
      */
-    public Collection<RepeatableAppointment> makeAppointments()
+    public Collection<Appointment> makeAppointments()
     {
-        List<RepeatableAppointment> appointments = new ArrayList<RepeatableAppointment>();
-
-            stream(getDateTimeStart())
+        List<Appointment> madeAppointments = new ArrayList<Appointment>();
+        stream(getDateTimeStart())
                 .forEach(d -> {
+                    System.out.println("getAppointmentClass: " + getAppointmentClass());
                     RepeatableAppointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
                     appt.setStartLocalDateTime(d);
                     appt.setEndLocalDateTime(d.plusSeconds(getDurationInSeconds()));
@@ -113,11 +117,11 @@ public class VEventImpl extends VEvent
                     appt.setDescription(getDescription());
                     appt.setSummary(getSummary());
                     appt.setAppointmentGroup(getAppointmentGroup());
-                    appointments.add(appt);   // add appointments to main collection
+                    madeAppointments.add(appt);   // add appointments to main collection
                     appointments().add(appt); // add appointments to this repeat's collection
                 });
 
-        return appointments;
+        return madeAppointments;
     }
  
     /**
@@ -147,37 +151,88 @@ public class VEventImpl extends VEvent
     // changes to be made if ONE or FUTURE is selected.
     // change back if CANCEL
     public WindowCloseType edit(
-            VEventImpl veventOld // change back if cancel
+              VEventImpl vEventOld // change back if cancel
             , Collection<Appointment> appointments // remove affected appointments
             , Collection<VEvent> vevents // add new VEvents if change to one or future
-            , Callback<ChangeDialogResponse[], ChangeDialogResponse> changeDialogCallback // force change selection for testing
+            , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback // force change selection for testing
             , Callback<Collection<VEvent>, Void> writeVEventsCallback) // I/O callback
     {
-        return null;
-        
-    }
-    
-    /**
-     * Options available when changing a repeatable appointment
-     * ONE: Change only selected appointment
-     * ALL: Change all appointments with repeat rule
-     * FUTURE: Change future appointments with repeat rule
-     * @author David Bal
-     *
-     */
-    public enum ChangeDialogResponse {
-        ONE, ALL, FUTURE, CANCEL;
+        if (this.equals(vEventOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
+        final RRuleType rruleType = getVEventType(vEventOld.getRRule());
+        System.out.println("rruleType " + rruleType);
+        boolean editedFlag = false;
+        switch (rruleType)
+        {
+        case HAD_REPEAT_BECOMING_INDIVIDUAL:
+            this.setRRule(null);
+        case WITH_NEW_REPEAT:
+        case INDIVIDUAL:
+            editedFlag = true;
+            break;
+        case WITH_EXISTING_REPEAT:
+            // Check if changes between vEvent and vEventOld exist apart from RRule
+            VEventImpl tempVEvent = new VEventImpl(vEventOld);
+            tempVEvent.setRRule(getRRule());
+            boolean onlyRRuleChanged = this.equals(tempVEvent);
 
-        @Override
-        public String toString() {
-            return Settings.REPEAT_CHANGE_CHOICES.get(this);
+            ChangeDialogOptions[] choices = null;
+            if (onlyRRuleChanged) choices = new ChangeDialogOptions[] {ChangeDialogOptions.ALL, ChangeDialogOptions.FUTURE};
+            ChangeDialogOptions changeResponse = changeDialogCallback.call(choices);
+            switch (changeResponse)
+            {
+            case ALL:
+                break;
+            case CANCEL:
+                break;
+            case FUTURE:
+                break;
+            case ONE:
+                break;
+            default:
+                break;
+            }
+            break;
+        default:
+            break;
+        }
+        
+        if (editedFlag) // make these changes as long as CANCEL is not selected
+        { // remove appointments from mail collection made by VEvent
+            Iterator<Appointment> i = appointments.iterator();
+            while (i.hasNext())
+            {
+                Appointment a = i.next();
+                if (appointments().contains(a)) i.remove();
+            }
+            appointments().clear(); // clear VEvent's collection of appointments
+            appointments.addAll(makeAppointments()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
+            return WindowCloseType.CLOSE_WITH_CHANGE;
+        } else
+        {
+            return WindowCloseType.CLOSE_WITHOUT_CHANGE;
         }
     }
     
-    public enum WindowCloseType
+    private RRuleType getVEventType(RRule rruleOld)
     {
-        X, CANCEL, CLOSE_WITH_CHANGE, CLOSE_WITHOUT_CHANGE
+
+        if (getRRule() == null)
+        {
+            if (rruleOld == null)
+            { // doesn't have repeat or have old repeat either
+                return RRuleType.INDIVIDUAL;
+            } else {
+                return RRuleType.HAD_REPEAT_BECOMING_INDIVIDUAL;
+            }
+        } else
+        {
+            if (isNewRRule())
+            {
+                return RRuleType.WITH_NEW_REPEAT;                
+            } else {
+                return RRuleType.WITH_EXISTING_REPEAT;
+            }
+        }
     }
-
-
+    
 }

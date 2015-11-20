@@ -44,10 +44,10 @@ public abstract class FrequencyAbstract implements Frequency {
      * Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
      * The BYxxx rules must be applied in a specific order and can only be occur once */
     @Override public List<Rule> getRules() { return byRules; }
-    private List<Rule> byRules;
+    private List<Rule> byRules = new ArrayList<Rule>();
     @Override public void addByRule(Rule byRule)
     {
-        if (byRules == null) byRules = new ArrayList<Rule>();
+//        if (byRules == null) byRules = new ArrayList<Rule>();
         boolean alreadyPresent = getRules().stream().anyMatch(a -> a.getClass() == byRule.getClass());
         if (alreadyPresent){
             throw new InvalidParameterException("Can't add BYxxx rule (" 
