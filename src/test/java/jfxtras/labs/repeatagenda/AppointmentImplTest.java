@@ -4,8 +4,11 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 
+import org.junit.Ignore;
+
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
+@Ignore  // FIXTHIS
 public class AppointmentImplTest implements jfxtras.scene.control.agenda.Agenda.Appointment {
 
     @Override
