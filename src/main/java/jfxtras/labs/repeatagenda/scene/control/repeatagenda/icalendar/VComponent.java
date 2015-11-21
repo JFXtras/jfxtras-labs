@@ -245,7 +245,7 @@ public class VComponent
     public VComponent() { }
 
     /** Deep copy all fields from source to destination */
-    public static void copy(VComponent source, VComponent destination)
+    private static void copy(VComponent source, VComponent destination)
     {
         destination.setCategories(source.getCategories());
         destination.setComment(source.getComment());
@@ -266,6 +266,12 @@ public class VComponent
             }
             RRule.copy(source.getRRule(), destination.getRRule());
         }
+    }
+    
+    /** Deep copy all fields from source to destination */
+    public void copyTo(VComponent destination)
+    {
+        copy(this, destination);
     }
 
     @Override

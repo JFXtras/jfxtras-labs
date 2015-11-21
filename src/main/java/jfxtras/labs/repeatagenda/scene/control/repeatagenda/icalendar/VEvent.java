@@ -166,6 +166,7 @@ public abstract class VEvent extends VComponent
     public void setDateTimeEnd(LocalDateTime dtEnd)
     {
         long seconds = ChronoUnit.SECONDS.between(getDateTimeStart(), dtEnd);
+        System.out.println("seconds: " + seconds);
         setDurationInSeconds((int) seconds);
     }
     public void setDateTimeEnd(String dtEnd)
@@ -211,12 +212,13 @@ public abstract class VEvent extends VComponent
     public VEvent(VEvent vevent)
     {
         super(vevent);
+        copy(vevent, this);
     }
     
     public VEvent() { }
     
     /** Deep copy all fields from source to destination */
-    public static void copy(VEvent source, VEvent destination)
+    private static void copy(VEvent source, VEvent destination)
     {
         destination.setDescription(source.getDescription());
         destination.setDurationInSeconds(source.getDurationInSeconds());
@@ -224,6 +226,12 @@ public abstract class VEvent extends VComponent
         if (source.getDateTimeRangeEnd() != null) destination.setDateTimeRangeEnd(source.getDateTimeRangeEnd());
     }
 
+    /** Deep copy all fields from source to destination */
+    @Override
+    public void copyTo(VComponent destination)
+    {
+        copy(this, (VEvent) destination);
+    }
     
     /** Stream of date/times that indicate the start of the event(s).
      * For a VEvent without RRULE the stream will contain only one date/time element.
@@ -252,6 +260,104 @@ public abstract class VEvent extends VComponent
             return takeWhile(filteredStream, a -> (getDateTimeRangeEnd() == null) ? true : ! a.isAfter(getDateTimeRangeEnd()));
         }
     };
+    
+//    // its already edited by RepeatableController
+//    // changes to be made if ONE or FUTURE is selected.
+//    // change back if CANCEL
+//    public <T> WindowCloseType edit(
+//              LocalDateTime dateTimeStart // start date/time of edited recurrence
+//            , VEvent vEventOld // change back if cancel
+//            , Collection<T> appointments // remove affected appointments
+//            , Collection<VEvent> vevents // add new VEvents if change to one or future
+//            , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback // force change selection for testing
+//            , Callback<Collection<VEvent>, Void> writeVEventsCallback) // I/O callback
+//    {
+//        if (this.equals(vEventOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
+//        final RRuleType rruleType = getVEventType(vEventOld.getRRule());
+//        System.out.println("rruleType " + rruleType);
+//        boolean editedFlag = false;
+//        switch (rruleType)
+//        {
+//        case HAD_REPEAT_BECOMING_INDIVIDUAL:
+//            this.setRRule(null);
+//        case WITH_NEW_REPEAT:
+//        case INDIVIDUAL:
+//            editedFlag = true;
+//            break;
+//        case WITH_EXISTING_REPEAT:
+//            // Check if changes between vEvent and vEventOld exist apart from RRule
+//            VEvent tempVEvent = VEventFactory.newVEvent(vEventOld);
+//            tempVEvent.setRRule(getRRule());
+//            boolean onlyRRuleChanged = this.equals(tempVEvent);
+//
+//            ChangeDialogOptions[] choices = null;
+//            if (onlyRRuleChanged) choices = new ChangeDialogOptions[] {ChangeDialogOptions.ALL, ChangeDialogOptions.FUTURE};
+//            ChangeDialogOptions changeResponse = changeDialogCallback.call(choices);
+//            switch (changeResponse)
+//            {
+//            case ALL:
+//                break;
+//            case CANCEL:
+//                break;
+//            case FUTURE:
+//                break;
+//            case ONE:
+//                // Make new individual VEvent, save settings to it.  Add date to original as recurrence.
+//                VEvent newVEvent = VEventFactory.newVEvent(this);
+//                newVEvent.setRRule(null);
+//                newVEvent.setDateTimeStart(dateTimeStart);
+//                vevents.remove(this);
+//                vevents.add(vEventOld);
+////                veventRefreshAppointments.call()
+////                this = vEventOld;
+//                vEventOld.copyTo(this);
+//                break;
+//            }
+//            break;
+//        default:
+//            break;
+//        }
+//        // TODO - THIS MAY MEAN THIS HAS TO GO BACK TO IMPL - CAN USE CALLBACK
+//        // DOESN'T KNOW ABOUT APPOINTMENTS HERE
+//        
+//        if (editedFlag) // make these changes as long as CANCEL is not selected
+//        { // remove appointments from mail collection made by VEvent
+//            Iterator<T> i = appointments.iterator();
+//            while (i.hasNext())
+//            {
+//                T a = i.next();
+//                if (appointments().contains(a)) i.remove();
+//            }
+//            appointments().clear(); // clear VEvent's collection of appointments
+//            appointments.addAll(makeAppointments()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
+//            return WindowCloseType.CLOSE_WITH_CHANGE;
+//        } else
+//        {
+//            return WindowCloseType.CLOSE_WITHOUT_CHANGE;
+//        }
+//    }
+//    
+//    private RRuleType getVEventType(RRule rruleOld)
+//    {
+//
+//        if (getRRule() == null)
+//        {
+//            if (rruleOld == null)
+//            { // doesn't have repeat or have old repeat either
+//                return RRuleType.INDIVIDUAL;
+//            } else {
+//                return RRuleType.HAD_REPEAT_BECOMING_INDIVIDUAL;
+//            }
+//        } else
+//        { // RRule != null
+//            if (rruleOld == null)
+//            {
+//                return RRuleType.WITH_NEW_REPEAT;                
+//            } else {
+//                return RRuleType.WITH_EXISTING_REPEAT;
+//            }
+//        }
+//    }
     
     // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate
     public static <T> Spliterator<T> takeWhile(

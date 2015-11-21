@@ -869,6 +869,31 @@ public class RepeatableAgenda extends Agenda {
         }
     }
     
+    static public class VEventFactory
+    {
+        public static VEvent newVComponent(Class<? extends VEvent> VEventClass)
+        {
+            try {
+                return VEventClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        public static <T extends VEvent> VEvent newVEvent(T source)
+        {
+            try {
+                return (T) source.getClass()
+                        .getConstructor(VEvent.class)
+                        .newInstance(source);
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+                e.printStackTrace();
+            }
+          return null;
+        }
+    }
+    
     static public class AppointmentFactory {
         
 //        @Deprecated

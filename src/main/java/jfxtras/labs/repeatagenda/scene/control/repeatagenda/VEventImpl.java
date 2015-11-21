@@ -34,6 +34,7 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
  * 3.8.1.2.  Categories: contains data for Appointment.appointmentGroup
  * 
  * @author David Bal
+ * @param <T>
  *
  */
 
@@ -75,11 +76,17 @@ public class VEventImpl extends VEvent
     public VEventImpl() { }
 
     /** Deep copy all fields from source to destination */
-    public static void copy(VEventImpl source, VEventImpl destination)
+    private static void copy(VEventImpl source, VEventImpl destination)
     {
         if (source.getAppointmentGroup() != null) destination.setAppointmentGroup(source.getAppointmentGroup());
         if (source.getAppointmentClass() != null) destination.setAppointmentClass(source.getAppointmentClass());
         source.appointments().stream().forEach(a -> destination.appointments().add(a));
+    }
+    
+    /** Deep copy all fields from source to destination */
+    public void copyTo(VEventImpl destination)
+    {
+        copy(this, destination);
     }
 
     /**
@@ -98,6 +105,7 @@ public class VEventImpl extends VEvent
         setDateTimeRangeEnd(dateTimeRangeEnd);
         return makeAppointments();
     }
+
     /**
      * Returns appointments that should exist between dateTimeRangeStart and dateTimeRangeEnd based on VEvent.
      * Uses dateTimeRange previously set in VEvent.
@@ -109,7 +117,7 @@ public class VEventImpl extends VEvent
         List<Appointment> madeAppointments = new ArrayList<Appointment>();
         stream(getDateTimeStart())
                 .forEach(d -> {
-                    System.out.println("getAppointmentClass: " + getAppointmentClass());
+                    System.out.println("getAppointmentClass: " + getDurationInSeconds());
                     RepeatableAppointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
                     appt.setStartLocalDateTime(d);
                     appt.setEndLocalDateTime(d.plusSeconds(getDurationInSeconds()));
@@ -146,13 +154,23 @@ public class VEventImpl extends VEvent
         throw new InvalidParameterException("Can't find valid date starting at " + inputDate);
     }
     
-
+    public static void refreshVEventAppointments(VEventImpl vevent)
+    {
+        
+    }
+    
+    
     // its already edited by RepeatableController
     // changes to be made if ONE or FUTURE is selected.
     // change back if CANCEL
+    // Needs
+    // makeAppointments - can be done by caller
+    // make new VEvent - for edit ONE, FUTURE
     public WindowCloseType edit(
-              VEventImpl vEventOld // change back if cancel
-            , Collection<Appointment> appointments // remove affected appointments
+              LocalDateTime dateTimeRecurrence // start date/time of edited recurrence
+            , long durationInSeconds
+            , VEvent vEventOld // change back if cancel
+            , List<Appointment> appointments // remove affected appointments
             , Collection<VEvent> vevents // add new VEvents if change to one or future
             , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback // force change selection for testing
             , Callback<Collection<VEvent>, Void> writeVEventsCallback) // I/O callback
@@ -160,18 +178,18 @@ public class VEventImpl extends VEvent
         if (this.equals(vEventOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
         final RRuleType rruleType = getVEventType(vEventOld.getRRule());
         System.out.println("rruleType " + rruleType);
-        boolean editedFlag = false;
+        boolean editedFlag = true;
         switch (rruleType)
         {
         case HAD_REPEAT_BECOMING_INDIVIDUAL:
             this.setRRule(null);
         case WITH_NEW_REPEAT:
-        case INDIVIDUAL:
-            editedFlag = true;
+        case INDIVIDUAL:            
             break;
         case WITH_EXISTING_REPEAT:
             // Check if changes between vEvent and vEventOld exist apart from RRule
-            VEventImpl tempVEvent = new VEventImpl(vEventOld);
+//            VEvent tempVEvent = VEventFactory.newVEvent(vEventOld);
+            VEvent tempVEvent = new VEventImpl((VEventImpl) vEventOld);
             tempVEvent.setRRule(getRRule());
             boolean onlyRRuleChanged = this.equals(tempVEvent);
 
@@ -183,29 +201,65 @@ public class VEventImpl extends VEvent
             case ALL:
                 break;
             case CANCEL:
+                editedFlag = false;
                 break;
             case FUTURE:
                 break;
             case ONE:
-                break;
-            default:
+                // Make new individual VEvent, save settings to it.  Add date to original as recurrence.
+
+                // make new VEvent for individual event
+                VEventImpl newVEvent = new VEventImpl(this);
+                newVEvent.setRRule(null);
+                newVEvent.setDateTimeStart(dateTimeRecurrence);
+                // TODO - add UID for parent
+                vevents.add(newVEvent);
+                appointments.addAll(newVEvent.makeAppointments());
+
+                // modify this VEvent for recurrence
+                vEventOld.copyTo(this);
+                // TODO - ADD individual date to list of recurrence dates
+
+//                System.out.println("ONE: " + this.getDurationInSeconds() + " " + vEventOld.getDurationInSeconds());
+//
+//                appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+//                System.out.println("size0: " + appointments.size() + " " + newVEvent.makeAppointments().size());
+//                newVEvent.makeAppointments().stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+//                Appointment a2 = newVEvent.makeAppointments().iterator().next();
+//                System.out.println("contains " + appointments.contains(a2));
+                
+                System.out.println("size0-: " + appointments.size());
+                appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+//                System.exit(0);
+//                vevents.add(vEventOld);
+//                veventRefreshAppointments.call()
+//                this = vEventOld;
+                
                 break;
             }
             break;
         default:
             break;
         }
+        // TODO - THIS MAY MEAN THIS HAS TO GO BACK TO IMPL - CAN USE CALLBACK
+        // DOESN'T KNOW ABOUT APPOINTMENTS HERE
         
         if (editedFlag) // make these changes as long as CANCEL is not selected
         { // remove appointments from mail collection made by VEvent
-            Iterator<Appointment> i = appointments.iterator();
-            while (i.hasNext())
-            {
-                Appointment a = i.next();
-                if (appointments().contains(a)) i.remove();
-            }
+            System.out.println("Edited flag:");
+            appointments.removeIf(a -> {
+                return appointments().stream().anyMatch(a2 -> a2 == a);
+            });
+//            Iterator<Appointment> i = appointments.iterator();
+//            while (i.hasNext())
+//            {
+//                Appointment a = i.next();
+//                if (appointments().contains(a)) i.remove();
+//            }
             appointments().clear(); // clear VEvent's collection of appointments
+            System.out.println("size1: " + appointments.size());
             appointments.addAll(makeAppointments()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
+            System.out.println("size2: " + appointments.size());
             return WindowCloseType.CLOSE_WITH_CHANGE;
         } else
         {
@@ -225,8 +279,8 @@ public class VEventImpl extends VEvent
                 return RRuleType.HAD_REPEAT_BECOMING_INDIVIDUAL;
             }
         } else
-        {
-            if (isNewRRule())
+        { // RRule != null
+            if (rruleOld == null)
             {
                 return RRuleType.WITH_NEW_REPEAT;                
             } else {

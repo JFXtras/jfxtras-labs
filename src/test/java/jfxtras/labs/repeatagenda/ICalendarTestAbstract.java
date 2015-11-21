@@ -336,6 +336,10 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vevent = new VEventImpl();
         vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0));
+        vevent.setAppointmentGroup(appointmentGroups.get(3));
+        vevent.setDurationInSeconds(2700);
+        vevent.setDescription("Weekly1 Description");
+        vevent.setSummary("Weekly1 Summary");
         vevent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vevent.setRRule(rule);
@@ -425,6 +429,16 @@ public abstract class ICalendarTestAbstract
         rule.setFrequency(daily);
         Rule byRule = new ByDay(daily, DayOfWeek.FRIDAY);
         daily.addByRule(byRule);
+        return vevent;
+    }
+    
+    /** Individual - non repeatable VEvent */
+    protected static VEventImpl getIndividual1()
+    {
+        VEventImpl vevent = new VEventImpl();
+        vevent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        vevent.setDurationInSeconds(3600);
+        vevent.setAppointmentClass(clazz);
         return vevent;
     }
 }

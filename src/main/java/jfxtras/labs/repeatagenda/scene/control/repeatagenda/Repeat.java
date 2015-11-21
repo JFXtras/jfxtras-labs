@@ -44,6 +44,7 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
  *  
  * @author David Bal
  */
+@Deprecated
 public abstract class Repeat {
     
     // TODO - MAKE A WAY TO APPLY MULTIPLE RULES ON TOP OF EACH OTHER - like iCalendar
