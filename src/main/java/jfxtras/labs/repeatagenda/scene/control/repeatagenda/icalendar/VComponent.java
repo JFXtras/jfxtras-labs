@@ -298,7 +298,7 @@ public class VComponent
         boolean rruleEquals = (getRRule() == null) ?
                 (testObj.getRRule() == null) : getRRule().equals(testObj.getRRule());
                 System.out.println(getRRule() + " " + testObj.getRRule());
-        System.out.println(categoriesEquals + " " + commentEquals + " " + dateTimeStartsEquals + " " + locationEquals
+        System.out.println("Vcomponent equals: " + categoriesEquals + " " + commentEquals + " " + dateTimeStartsEquals + " " + locationEquals
                 + " " + summaryEquals + " " + uniqueIdentifierEquals + " " + rruleEquals);
         return categoriesEquals && commentEquals && dateTimeStartsEquals && locationEquals
                 && summaryEquals && uniqueIdentifierEquals && rruleEquals;

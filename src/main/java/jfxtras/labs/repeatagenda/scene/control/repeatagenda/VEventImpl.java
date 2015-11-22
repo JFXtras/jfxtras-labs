@@ -168,14 +168,17 @@ public class VEventImpl extends VEvent
     // make new VEvent - for edit ONE, FUTURE
     public WindowCloseType edit(
               LocalDateTime dateTimeRecurrence // start date/time of edited recurrence
-            , long durationInSeconds
+            , int durationInSeconds
             , VEvent vEventOld // change back if cancel
             , List<Appointment> appointments // remove affected appointments
             , Collection<VEvent> vevents // add new VEvents if change to one or future
             , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback // force change selection for testing
             , Callback<Collection<VEvent>, Void> writeVEventsCallback) // I/O callback
     {
-        if (this.equals(vEventOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
+        // Check if start time and duration has changed because those values are not changed in the edit controller.
+        boolean startTimeEqual = dateTimeRecurrence.toLocalTime().equals(vEventOld.getDateTimeStart().toLocalTime());
+        boolean durationEqual = (durationInSeconds == vEventOld.getDurationInSeconds());
+        if (startTimeEqual && durationEqual && this.equals(vEventOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
         final RRuleType rruleType = getVEventType(vEventOld.getRRule());
         System.out.println("rruleType " + rruleType);
         boolean editedFlag = true;

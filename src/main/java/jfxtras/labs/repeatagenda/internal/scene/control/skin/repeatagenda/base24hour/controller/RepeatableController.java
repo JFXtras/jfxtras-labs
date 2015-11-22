@@ -593,7 +593,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
       { // invalid exceptions are different, replace collection and replace exceptionsListView items
           invalidExceptions.clear();
           invalidExceptions.addAll(invalidExceptionsNew);
-// FIXTHIS: refresh does not exist          exceptionsListView.refresh();
+        //  exceptionsListView.refresh(); - available as of 8u60
 //          Set<LocalDateTime> tempExceptions = exceptionsListView.getItems().stream().collect(Collectors.toSet());
 //          exceptionsListView.setItems(repeat.getExceptions());
       }

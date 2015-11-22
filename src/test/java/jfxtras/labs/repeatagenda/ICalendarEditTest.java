@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
@@ -30,7 +29,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
      * Tests a daily repeat event with start and end time edit ALL events
      */
     @Test
-    @Ignore // FIXTHIS
     public void editAllDailyTime()
     {
         VEventImpl vevent = getDaily2();
@@ -51,11 +49,13 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         LocalDate date = selectedAppointment.getStartLocalDateTime().toLocalDate();
         selectedAppointment.setStartLocalDateTime(date.atTime(9, 45)); // change start time
         selectedAppointment.setEndLocalDateTime(date.atTime(11, 0)); // change end time
+        int durationInSeconds = (int) ChronoUnit.SECONDS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
+        vevent.setDurationInSeconds(durationInSeconds);
 
         // TODO - MAKE CHANGES TO VEVENT
         WindowCloseType windowCloseType = vevent.edit(
                 selectedAppointment.getStartLocalDateTime()
-              , 0
+              , durationInSeconds
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
@@ -173,7 +173,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().plusDays(1); // shift appointment 1 day forward
         selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
         selectedAppointment.setEndLocalDateTime(newDate.atTime(11, 0)); // change end time
-        long durationInSeconds = ChronoUnit.SECONDS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
+        int durationInSeconds = (int) ChronoUnit.SECONDS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
 //        vevent.setDateTimeStart(newDate.atTime(9, 45)); // change start time
 //        vevent.setDateTimeEnd(newDate.atTime(11, 0)); // change end time
         vevent.setSummary("Edited Summary");

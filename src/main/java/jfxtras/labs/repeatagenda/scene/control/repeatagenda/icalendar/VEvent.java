@@ -16,8 +16,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -105,8 +104,8 @@ public abstract class VEvent extends VComponent
      * converted to seconds.  This value is used exclusively internally.  Any specified DTEND is converted to 
      * durationInSeconds,
      * */
-    final private ObjectProperty<Integer> durationInSeconds = new SimpleObjectProperty<Integer>(this, "durationProperty");
-    public ObjectProperty<Integer> durationInSecondsProperty() { return durationInSeconds; }
+    final private SimpleIntegerProperty durationInSeconds = new SimpleIntegerProperty(this, "durationProperty");
+    public SimpleIntegerProperty durationInSecondsProperty() { return durationInSeconds; }
     public Integer getDurationInSeconds() { return durationInSeconds.getValue(); }
     public void setDurationInSeconds(Integer value) { durationInSeconds.setValue(value); }
     public void setDurationInSeconds(String value)
