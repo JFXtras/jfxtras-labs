@@ -167,7 +167,8 @@ public class VEventImpl extends VEvent
     // makeAppointments - can be done by caller
     // make new VEvent - for edit ONE, FUTURE
     public WindowCloseType edit(
-              LocalDateTime dateTimeRecurrence // start date/time of edited recurrence
+              LocalDateTime dateTimeRecurrence // start date/time before edit
+            , LocalDateTime dateTimeNew // start date/time after edit
             , int durationInSeconds
             , VEvent vEventOld // change back if cancel
             , List<Appointment> appointments // remove affected appointments
@@ -214,13 +215,15 @@ public class VEventImpl extends VEvent
                 // make new VEvent for individual event
                 VEventImpl newVEvent = new VEventImpl(this);
                 newVEvent.setRRule(null);
-                newVEvent.setDateTimeStart(dateTimeRecurrence);
+                newVEvent.setDateTimeStart(dateTimeNew);
                 // TODO - add UID for parent
                 vevents.add(newVEvent);
                 appointments.addAll(newVEvent.makeAppointments());
 
                 // modify this VEvent for recurrence
-                vEventOld.copyTo(this);
+                vEventOld.copyTo(this);                
+                System.out.println("recurrence: " + dateTimeRecurrence.minusSeconds(durationInSeconds));
+                getRRule().getRecurrences().add(dateTimeRecurrence);
                 // TODO - ADD individual date to list of recurrence dates
 
 //                System.out.println("ONE: " + this.getDurationInSeconds() + " " + vEventOld.getDurationInSeconds());

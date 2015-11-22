@@ -124,7 +124,7 @@ public class RRule {
     public RRule withUntil(int until) { setCount(until); return this; }
     
     
-    // List of RECURRENCE-ID events represented by a individual appointment with some unique data
+    // Collection of RECURRENCE-ID events represented by a individual appointment with some unique data
     // SHOULD RECURRENCES BE A SPECIAL CLASS OF APPOINTMENT WITH RECURRENCT-ID?
     // IF SO THEN I COULD MAKE A COLLECTION OF APPOINTMENTS HERE
     private Set<LocalDateTime> recurrences = new HashSet<LocalDateTime>();
@@ -194,17 +194,21 @@ public class RRule {
      * first date/time (DTSTART) in the sequence. */
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
+        System.out.println("getRecurrences().size(): " + getRecurrences().size());
+        Stream<LocalDateTime> filteredStream = (getRecurrences().size() > 0) ?
+                frequency.stream(startDateTime).filter(d -> ! getRecurrences().contains(d))
+               : frequency.stream(startDateTime);
         if (getCount() > 0)
         {
-            return frequency.stream(startDateTime).limit(getCount());
+            return filteredStream.limit(getCount());
         } else if (getUntil() != null)
         {
 //            return frequency
 //                    .stream(startDateTime)
 //                    .takeWhile(a -> a.isBefore(getUntil())); // available in Java 9
-            return takeWhile(frequency.stream(startDateTime), a -> a.isBefore(getUntil()));
+            return takeWhile(filteredStream, a -> a.isBefore(getUntil()));
         }
-        return frequency.stream(startDateTime);
+        return filteredStream;
     };
     
     // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate

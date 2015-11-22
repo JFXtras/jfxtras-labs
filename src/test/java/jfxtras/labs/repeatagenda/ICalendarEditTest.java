@@ -55,6 +55,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // TODO - MAKE CHANGES TO VEVENT
         WindowCloseType windowCloseType = vevent.edit(
                 selectedAppointment.getStartLocalDateTime()
+              , null
               , durationInSeconds
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
@@ -128,6 +129,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // Edit
         WindowCloseType windowCloseType = vevent.edit(
                 selectedAppointment.getStartLocalDateTime()
+              , null
               , 0
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
@@ -168,6 +170,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // select appointment (get recurrence date)
         Iterator<Appointment> appointmentIterator = appointments.iterator(); // skip first
         RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next();
+        LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
         
         // apply changes
         LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().plusDays(1); // shift appointment 1 day forward
@@ -179,12 +182,13 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         vevent.setSummary("Edited Summary");
         vevent.setAppointmentGroup(appointmentGroups.get(7));
         
-        System.out.println(vevent.getDateTimeStart());
-        System.exit(0);
+//        System.out.println(vevent.getDateTimeStart());
+//        System.exit(0);
         
         // Edit
         WindowCloseType windowCloseType = vevent.edit(
-                selectedAppointment.getStartLocalDateTime()
+                dateTimeOriginal
+              , selectedAppointment.getStartLocalDateTime()
               , durationInSeconds
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
