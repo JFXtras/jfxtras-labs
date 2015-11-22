@@ -2,6 +2,7 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -160,26 +161,34 @@ public class VEventImpl extends VEvent
     }
     
     
-    // its already edited by RepeatableController
-    // changes to be made if ONE or FUTURE is selected.
-    // change back if CANCEL
-    // Needs
-    // makeAppointments - can be done by caller
-    // make new VEvent - for edit ONE, FUTURE
+    /**
+     * Handles editing VEvent objects.
+     * 
+     * @param dateTimeOld - start date/time before edit
+     * @param dateTimeNew - start date/time after edit
+     * @param durationInSecondsNew - duration after edit
+     * @param vEventOld - copy from vEventOld into this if edit is canceled
+     * @param appointments - list of all appointments in agenda
+     * @param vevents - collection of all VEvents (add new VEvents if change to ONE or FUTURE)
+     * @param changeDialogCallback - called to make dialog to prompt user for scope of edit (usually ONE, ALL, OR THIS_AND_FUTURE).  Parameter can be a simple predicate to force selection for testing (example: a -> ChangeDialogOptions.ONE).
+     * @param writeVEventsCallback - called to do VEvent I/O if necessary.
+     * @return
+     */
     public WindowCloseType edit(
-              LocalDateTime dateTimeRecurrence // start date/time before edit
-            , LocalDateTime dateTimeNew // start date/time after edit
-            , int durationInSeconds
-            , VEvent vEventOld // change back if cancel
-            , List<Appointment> appointments // remove affected appointments
-            , Collection<VEvent> vevents // add new VEvents if change to one or future
-            , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback // force change selection for testing
-            , Callback<Collection<VEvent>, Void> writeVEventsCallback) // I/O callback
+              LocalDateTime dateTimeOld
+            , LocalDateTime dateTimeNew
+            , int durationInSecondsNew
+            , VEventImpl vEventOld
+            , List<Appointment> appointments
+            , Collection<VEvent> vevents
+            , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
+            , Callback<Collection<VEvent>, Void> writeVEventsCallback)
     {
         // Check if start time and duration has changed because those values are not changed in the edit controller.
-        boolean startTimeEqual = dateTimeRecurrence.toLocalTime().equals(vEventOld.getDateTimeStart().toLocalTime());
-        boolean durationEqual = (durationInSeconds == vEventOld.getDurationInSeconds());
-        if (startTimeEqual && durationEqual && this.equals(vEventOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
+        boolean dateTimeNewEqual = dateTimeNew.toLocalTime().equals(vEventOld.getDateTimeStart().toLocalTime());
+        boolean durationEqual = (durationInSecondsNew == vEventOld.getDurationInSeconds());
+        if (dateTimeNewEqual && durationEqual && this.equals(vEventOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
+
         final RRuleType rruleType = getVEventType(vEventOld.getRRule());
         System.out.println("rruleType " + rruleType);
         boolean editedFlag = true;
@@ -203,6 +212,11 @@ public class VEventImpl extends VEvent
             switch (changeResponse)
             {
             case ALL:
+                // Copy date/time data to this VEvent
+                long secondsAdjustment = ChronoUnit.SECONDS.between(dateTimeOld, dateTimeNew);
+                LocalDateTime newDateTimeStart = getDateTimeStart().plusSeconds(secondsAdjustment);
+                setDateTimeStart(newDateTimeStart);
+                setDurationInSeconds(durationInSecondsNew);
                 break;
             case CANCEL:
                 editedFlag = false;
@@ -222,8 +236,8 @@ public class VEventImpl extends VEvent
 
                 // modify this VEvent for recurrence
                 vEventOld.copyTo(this);                
-                System.out.println("recurrence: " + dateTimeRecurrence.minusSeconds(durationInSeconds));
-                getRRule().getRecurrences().add(dateTimeRecurrence);
+                System.out.println("recurrence: " + dateTimeOld.minusSeconds(durationInSecondsNew));
+                getRRule().getRecurrences().add(dateTimeOld);
                 // TODO - ADD individual date to list of recurrence dates
 
 //                System.out.println("ONE: " + this.getDurationInSeconds() + " " + vEventOld.getDurationInSeconds());

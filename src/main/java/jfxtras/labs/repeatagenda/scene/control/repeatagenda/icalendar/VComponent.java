@@ -297,7 +297,7 @@ public class VComponent
                 (testObj.getUniqueIdentifier() == null) : getUniqueIdentifier().equals(testObj.getUniqueIdentifier());
         boolean rruleEquals = (getRRule() == null) ?
                 (testObj.getRRule() == null) : getRRule().equals(testObj.getRRule());
-                System.out.println(getRRule() + " " + testObj.getRRule());
+                System.out.println("dateTimeStartsEquals: " + getDateTimeStart() + " " + testObj.getDateTimeStart());
         System.out.println("Vcomponent equals: " + categoriesEquals + " " + commentEquals + " " + dateTimeStartsEquals + " " + locationEquals
                 + " " + summaryEquals + " " + uniqueIdentifierEquals + " " + rruleEquals);
         return categoriesEquals && commentEquals && dateTimeStartsEquals && locationEquals

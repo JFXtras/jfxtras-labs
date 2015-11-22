@@ -175,6 +175,7 @@ public class RRule {
         }
         RRule testObj = (RRule) obj;
 
+        System.out.println("count: " + getCount() + " " + testObj.getCount());
         boolean countEquals = (getCount() == null) ?
                 (testObj.getCount() == null) : getCount().equals(testObj.getCount());
         boolean frequencyEquals = (getFrequency() == null) ?
