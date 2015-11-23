@@ -36,7 +36,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         List<VEvent> vevents = new ArrayList<VEvent>(Arrays.asList(vevent));
-//      Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
         List<Appointment> appointments = new ArrayList<Appointment>();
         Collection<Appointment> newAppointments = vevent.makeAppointments();
         appointments.addAll(newAppointments);
@@ -46,7 +45,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // select appointment and apply changes
         Iterator<Appointment> appointmentIterator = appointments.iterator(); // skip first
         RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next();
-//        RepeatableAppointment appointmentOld = AppointmentFactory.newAppointment(selectedAppointment);
         LocalDateTime dateTimeOld = selectedAppointment.getStartLocalDateTime();
         LocalDate dateOld = dateTimeOld.toLocalDate();
         selectedAppointment.setStartLocalDateTime(dateOld.atTime(9, 45)); // change start time
@@ -54,10 +52,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         int durationInSeconds = (int) ChronoUnit.SECONDS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
         LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
 
-        System.out.println("start1");
-        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
-
-        // TODO - MAKE CHANGES TO VEVENT
         WindowCloseType windowCloseType = vevent.edit(
                 dateTimeOld
               , dateTimeNew
@@ -68,9 +62,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
               , a -> ChangeDialogOptions.ALL   // answer to edit dialog
               , null);                  // VEvents I/O callback
         assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
-
-        System.out.println("start2");
-        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
 
         // Check edited VEvent
         VEventImpl expectedVEvent = new VEventImpl();
@@ -93,17 +84,123 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     }
     
     /**
-     * Tests changing a daily repeat rule to an individual appointment
+     * Tests ONE event of a daily repeat event changing date and time
      */
     @Test
-    public void editRepeatDailyToIndividual()
+    public void editOneDailyTimeAndDate()
     {
         // Individual Appointment
         VEventImpl vevent = getDaily2();
         List<VEvent> vevents = new ArrayList<VEvent>(Arrays.asList(vevent));
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
-//      Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
+        List<Appointment> appointments = new ArrayList<Appointment>();
+        Collection<Appointment> newAppointments = vevent.makeAppointments();
+        appointments.addAll(newAppointments);
+        assertEquals(3, appointments.size()); // check if there are only 3 appointments
+        VEventImpl veventOld = new VEventImpl(vevent);
+        
+        // select appointment (get recurrence date)
+        Iterator<Appointment> appointmentIterator = appointments.iterator();
+        RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next();
+        LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
+        
+        // apply changes
+        LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().plusDays(1); // shift appointment 1 day forward
+        selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
+        selectedAppointment.setEndLocalDateTime(newDate.atTime(11, 0)); // change end time
+        int durationInSeconds = (int) ChronoUnit.SECONDS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
+        LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
+        vevent.setSummary("Edited Summary");
+        vevent.setAppointmentGroup(appointmentGroups.get(7));
+        
+        // Edit
+        WindowCloseType windowCloseType = vevent.edit(
+                dateTimeOriginal
+              , dateTimeNew
+              , durationInSeconds
+              , veventOld               // original VEvent
+              , appointments            // collection of all appointments
+              , vevents                 // collection of all VEvents
+              , a -> ChangeDialogOptions.ONE                   // answer to edit dialog
+              , null);                  // VEvents I/O callback
+        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+        assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
+
+        List<LocalDateTime> madeDates = appointments.stream().map(a -> a.getStartLocalDateTime()).collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 16, 9, 45)
+              , LocalDateTime.of(2015, 11, 18, 10, 0)
+              , LocalDateTime.of(2015, 11, 21, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
+    
+    /**
+     * Tests ONE event of a daily repeat event changing date and time
+     */
+    @Test
+    public void editFutureTimeAndDateDailyRepeat()
+    {
+        // Individual Appointment
+        VEventImpl vevent = getDaily2();
+        List<VEvent> vevents = new ArrayList<VEvent>(Arrays.asList(vevent));
+        vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
+        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
+        List<Appointment> appointments = new ArrayList<Appointment>();
+        Collection<Appointment> newAppointments = vevent.makeAppointments();
+        appointments.addAll(newAppointments);
+        assertEquals(3, appointments.size()); // check if there are only 3 appointments
+        VEventImpl veventOld = new VEventImpl(vevent);
+        
+        // select appointment (get recurrence date)
+        Iterator<Appointment> appointmentIterator = appointments.iterator();
+        appointmentIterator.next(); // skip first
+        RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next();
+        LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
+        
+        // apply changes
+        LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().minusDays(1); // shift appointment 1 day backward
+        selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
+        selectedAppointment.setEndLocalDateTime(newDate.atTime(11, 0)); // change end time
+        int durationInSeconds = (int) ChronoUnit.SECONDS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
+        LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
+        vevent.setSummary("Edited Summary");
+        vevent.setAppointmentGroup(appointmentGroups.get(7));
+        
+        // Edit
+        WindowCloseType windowCloseType = vevent.edit(
+                dateTimeOriginal
+              , dateTimeNew
+              , durationInSeconds
+              , veventOld               // original VEvent
+              , appointments            // collection of all appointments
+              , vevents                 // collection of all VEvents
+              , a -> ChangeDialogOptions.THIS_AND_FUTURE                   // answer to edit dialog
+              , null);                  // VEvents I/O callback
+        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+        assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
+
+        List<LocalDateTime> madeDates = appointments.stream().map(a -> a.getStartLocalDateTime()).collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 15, 10, 0)
+              , LocalDateTime.of(2015, 11, 17, 9, 45)
+              , LocalDateTime.of(2015, 11, 20, 9, 45)
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
+    
+    /**
+     * Tests changing a daily repeat rule to an individual appointment
+     */
+    @Test
+    public void editToIndividualRepeatDaily()
+    {
+        // Individual Appointment
+        VEventImpl vevent = getDaily2();
+        List<VEvent> vevents = new ArrayList<VEvent>(Arrays.asList(vevent));
+        vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
+        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         List<Appointment> appointments = new ArrayList<Appointment>();
         Collection<Appointment> newAppointments = vevent.makeAppointments();
         appointments.addAll(newAppointments);
@@ -136,65 +233,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         assertEquals(expectedVEvent, vevent); // check to see if repeat rule changed correctly
         
         vevents.stream().forEach(a -> System.out.println(a.getDateTimeStart()));
-    }
-    
-    
-    /**
-     * Tests a daily repeat event with day shift and start and end time edit ONE event
-     */
-    @Test
-    public void editOneDailyTimeAndDate()
-    {
-        // Individual Appointment
-        VEventImpl vevent = getDaily2();
-        List<VEvent> vevents = new ArrayList<VEvent>(Arrays.asList(vevent));
-        vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
-        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
-//        Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
-        List<Appointment> appointments = new ArrayList<Appointment>();
-        Collection<Appointment> newAppointments = vevent.makeAppointments();
-        appointments.addAll(newAppointments);
-        assertEquals(3, appointments.size()); // check if there are only 3 appointments
-        VEventImpl veventOld = new VEventImpl(vevent);
-//        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
-        
-        // select appointment (get recurrence date)
-        Iterator<Appointment> appointmentIterator = appointments.iterator(); // skip first
-        RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next();
-        LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
-        
-        // apply changes
-        LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().plusDays(1); // shift appointment 1 day forward
-        selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
-        selectedAppointment.setEndLocalDateTime(newDate.atTime(11, 0)); // change end time
-        int durationInSeconds = (int) ChronoUnit.SECONDS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
-        vevent.setSummary("Edited Summary");
-        vevent.setAppointmentGroup(appointmentGroups.get(7));
-        
-//        System.out.println(vevent.getDateTimeStart());
-//        System.exit(0);
-        
-        // Edit
-        WindowCloseType windowCloseType = vevent.edit(
-                dateTimeOriginal
-              , selectedAppointment.getStartLocalDateTime()
-              , durationInSeconds
-              , veventOld               // original VEvent
-              , appointments            // collection of all appointments
-              , vevents                 // collection of all VEvents
-              , a -> ChangeDialogOptions.ONE                   // answer to edit dialog
-              , null);                  // VEvents I/O callback
-        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
-        assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
-
-        List<LocalDateTime> madeDates = appointments.stream().map(a -> a.getStartLocalDateTime()).collect(Collectors.toList());
-        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
-                LocalDateTime.of(2015, 11, 16, 9, 45)
-              , LocalDateTime.of(2015, 11, 18, 10, 0)
-              , LocalDateTime.of(2015, 11, 21, 10, 0)
-                ));
-        assertEquals(expectedDates, madeDates);
-        
     }
     
 }

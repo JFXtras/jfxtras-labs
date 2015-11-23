@@ -123,23 +123,24 @@ public class RRule {
     }
     public RRule withUntil(int until) { setCount(until); return this; }
     
-    
-    // Collection of RECURRENCE-ID events represented by a individual appointment with some unique data
-    // SHOULD RECURRENCES BE A SPECIAL CLASS OF APPOINTMENT WITH RECURRENCT-ID?
-    // IF SO THEN I COULD MAKE A COLLECTION OF APPOINTMENTS HERE
-    private Set<LocalDateTime> recurrences = new HashSet<LocalDateTime>();
-    public Set<LocalDateTime> getRecurrences() { return recurrences; }
-    public void setRecurrences(Set<LocalDateTime> dates) { recurrences = dates; }
-    public RRule withRecurrences(Set<LocalDateTime> dates) { setRecurrences(dates); return this; }
-    private boolean recurrencesEquals(Collection<LocalDateTime> recurrencesTest)
+    /**
+     * The set of specific instances of recurring "VEVENT", "VTODO", or "VJOURNAL" calendar components
+     * specified individually in conjunction with "UID" and "SEQUENCE" properties.  Each instance 
+     * has a RECURRENCE ID with a value equal to the original value of the "DTSTART" property of 
+     * the recurrence instance.  The UID matches the UID of the parent calendar component.
+     * See 3.8.4.4 of RFC 5545 iCalendar
+     */
+    public Set<LocalDateTime> getInstances() { return instances; }
+    private Set<LocalDateTime> instances = new HashSet<LocalDateTime>();
+    public void setInstances(Set<LocalDateTime> dateTimes) { instances = dateTimes; }
+    public RRule withInstances(Set<LocalDateTime> dateTimes) { setInstances(dateTimes); return this; }
+    private boolean instancesEquals(Collection<LocalDateTime> instancesTest)
     {
-        recurrencesTest.stream().forEach(a -> System.out.println("test " + a));
-        Iterator<LocalDateTime> dateIterator = getRecurrences().iterator();
+        Iterator<LocalDateTime> dateIterator = getInstances().iterator();
         while (dateIterator.hasNext())
         {
             LocalDateTime myDate = dateIterator.next();
-            System.out.println(myDate);
-            if (! recurrencesTest.contains(myDate)) return false;
+            if (! instancesTest.contains(myDate)) return false;
         }
         return true;
     }
@@ -159,10 +160,10 @@ public class RRule {
                 e.printStackTrace();
             }
         }
-        Iterator<LocalDateTime> i = source.getRecurrences().iterator();
+        Iterator<LocalDateTime> i = source.getInstances().iterator();
         while (i.hasNext())
         {
-            destination.getRecurrences().add(i.next());
+            destination.getInstances().add(i.next());
         }
     }
 
@@ -180,8 +181,8 @@ public class RRule {
                 (testObj.getCount() == null) : getCount().equals(testObj.getCount());
         boolean frequencyEquals = (getFrequency() == null) ?
                 (testObj.getFrequency() == null) : getFrequency().equals(testObj.getFrequency());
-        boolean recurrencesEquals = (getRecurrences() == null) ?
-                (testObj.getRecurrences() == null) : getRecurrences().equals(testObj.getRecurrences());
+        boolean recurrencesEquals = (getInstances() == null) ?
+                (testObj.getInstances() == null) : getInstances().equals(testObj.getInstances());
 
         System.out.println("RRule " + countEquals + " " + frequencyEquals + " " + recurrencesEquals);
         return countEquals && frequencyEquals && recurrencesEquals;
@@ -195,9 +196,9 @@ public class RRule {
      * first date/time (DTSTART) in the sequence. */
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
-        System.out.println("getRecurrences().size(): " + getRecurrences().size());
-        Stream<LocalDateTime> filteredStream = (getRecurrences().size() > 0) ?
-                frequency.stream(startDateTime).filter(d -> ! getRecurrences().contains(d))
+        System.out.println("getRecurrences().size(): " + getInstances().size());
+        Stream<LocalDateTime> filteredStream = (getInstances().size() > 0) ?
+                frequency.stream(startDateTime).filter(d -> ! getInstances().contains(d))
                : frequency.stream(startDateTime);
         if (getCount() > 0)
         {

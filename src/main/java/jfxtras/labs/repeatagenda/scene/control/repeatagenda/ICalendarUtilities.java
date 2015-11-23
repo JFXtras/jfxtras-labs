@@ -30,7 +30,7 @@ public class ICalendarUtilities {
             choices = new ArrayList<ChangeDialogOptions>();
             choices.add(ChangeDialogOptions.ONE);
             choices.add(ChangeDialogOptions.ALL);
-            choices.add(ChangeDialogOptions.FUTURE);
+            choices.add(ChangeDialogOptions.THIS_AND_FUTURE);
         } else { // use inputed choices
             choices = new ArrayList<ChangeDialogOptions>(Arrays.asList(choiceList));
         }
@@ -74,7 +74,7 @@ public class ICalendarUtilities {
      */
     public enum ChangeDialogOptions
     {
-        ONE, ALL, FUTURE, CANCEL;
+        ONE, ALL, THIS_AND_FUTURE, CANCEL;
 
         @Override
         public String toString() {

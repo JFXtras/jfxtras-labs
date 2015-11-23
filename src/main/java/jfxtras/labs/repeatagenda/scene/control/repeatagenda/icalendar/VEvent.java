@@ -7,14 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -174,38 +169,6 @@ public abstract class VEvent extends VComponent
         setDateTimeEnd(dt);
     }
     public LocalDateTime getDateTimeEnd() { return getDateTimeStart().plusSeconds(getDurationInSeconds()); }
- 
-    // NO NEED - 
-//    /** Appointment-specific data - only uses data fields. Repeat related and date/time objects are null */
-//    // TODO - HOW TO ENSURE USAGE OF ICALENDAR DATA FIELDS YET PROVIDE AVAILABILITY OF CUSTOM FIELDS AND
-//    // COMPATIBILITY WITH AGENDA?
-////    DESCRIPTION:This is a message for everyone
-////    SUMMARY:The event
-////    LOCATION:here
-////    CATEGORIES:3.8.1.2 page 81 - like appointmentGroup
-//    // COMMENT 3.8.1.4 page 83
-//    private RepeatableAppointment appointmentData = null; //AppointmentFactory.newAppointment();
-//    public RepeatableAppointment getAppointmentData() { return appointmentData; }
-//    public void setAppointmentData(RepeatableAppointment appointment) { appointmentData = appointment; }
-//    public VEvent withAppointmentData(RepeatableAppointment appointment) { setAppointmentData(appointment); return this; }
-    
-
-    /**
-     * Start of range for which events are generated.  Should match the dates displayed on the calendar.
-     */
-    public LocalDateTime getDateTimeRangeStart() { return dateTimeRangeStart; }
-    private LocalDateTime dateTimeRangeStart;
-    public void setDateTimeRangeStart(LocalDateTime startDateTime) { this.dateTimeRangeStart = startDateTime; }
-//    public T withDateTimeRangeStart(LocalDateTime startDateTime) { setDateTimeRangeStart(startDateTime); return (T)this; }
-    
-    /**
-     * End of range for which events are generated.  Should match the dates displayed on the calendar.
-     */
-    public LocalDateTime getDateTimeRangeEnd() { return dateTimeRangeEnd; }
-    private LocalDateTime dateTimeRangeEnd;
-    public void setDateTimeRangeEnd(LocalDateTime endDateTime) { this.dateTimeRangeEnd = endDateTime; }
-//    public T withDateTimeRangeEnd(LocalDateTime endDateTime) { setDateTimeRangeEnd(endDateTime); return (T)this; }
-    
     
     // CONSTRUCTOR
     public VEvent(VEvent vevent)
@@ -221,8 +184,8 @@ public abstract class VEvent extends VComponent
     {
         destination.setDescription(source.getDescription());
         destination.setDurationInSeconds(source.getDurationInSeconds());
-        if (source.getDateTimeRangeStart() != null) destination.setDateTimeRangeStart(source.getDateTimeRangeStart());
-        if (source.getDateTimeRangeEnd() != null) destination.setDateTimeRangeEnd(source.getDateTimeRangeEnd());
+//        if (source.getDateTimeRangeStart() != null) destination.setDateTimeRangeStart(source.getDateTimeRangeStart());
+//        if (source.getDateTimeRangeEnd() != null) destination.setDateTimeRangeEnd(source.getDateTimeRangeEnd());
     }
 
     /** Deep copy all fields from source to destination */
@@ -230,6 +193,23 @@ public abstract class VEvent extends VComponent
     public void copyTo(VComponent destination)
     {
         copy(this, (VEvent) destination);
+    }
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        VEvent testObj = (VEvent) obj;
+
+        boolean descriptionEquals = (getDescription() == null) ?
+                (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
+        boolean durationEquals = (getDurationInSeconds() == null) ?
+                (testObj.getDurationInSeconds() == null) : getDurationInSeconds().equals(testObj.getDurationInSeconds());
+        // don't need to check getDateTimeEnd because it bound to duration
+        return descriptionEquals && durationEquals;
     }
     
     /** Stream of date/times that indicate the start of the event(s).
@@ -240,6 +220,7 @@ public abstract class VEvent extends VComponent
      * first date/time (DTSTART) in the sequence. */
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
+        Object rStream = (getRDate() == null) ? null : this.getRDate().stream(null, startDateTime);
         if (getRRule() == null)
         { // if individual event
             if (! startDateTime.isBefore(getDateTimeStart()))
@@ -251,136 +232,8 @@ public abstract class VEvent extends VComponent
             }
         } else
         { // if has recurrence rule
-            // filter away too early (with Java 9 takeWhile these statements can be combined into one chained statement for greater elegance)
-            Stream<LocalDateTime> filteredStream = getRRule()
-                    .stream(startDateTime)
-                    .filter(a -> (getDateTimeRangeStart() == null) ? true : ! a.isBefore(getDateTimeRangeStart()));
-            // stop when too late
-            return takeWhile(filteredStream, a -> (getDateTimeRangeEnd() == null) ? true : ! a.isAfter(getDateTimeRangeEnd()));
+            return getRRule().stream(startDateTime);
         }
     };
-    
-//    // its already edited by RepeatableController
-//    // changes to be made if ONE or FUTURE is selected.
-//    // change back if CANCEL
-//    public <T> WindowCloseType edit(
-//              LocalDateTime dateTimeStart // start date/time of edited recurrence
-//            , VEvent vEventOld // change back if cancel
-//            , Collection<T> appointments // remove affected appointments
-//            , Collection<VEvent> vevents // add new VEvents if change to one or future
-//            , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback // force change selection for testing
-//            , Callback<Collection<VEvent>, Void> writeVEventsCallback) // I/O callback
-//    {
-//        if (this.equals(vEventOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
-//        final RRuleType rruleType = getVEventType(vEventOld.getRRule());
-//        System.out.println("rruleType " + rruleType);
-//        boolean editedFlag = false;
-//        switch (rruleType)
-//        {
-//        case HAD_REPEAT_BECOMING_INDIVIDUAL:
-//            this.setRRule(null);
-//        case WITH_NEW_REPEAT:
-//        case INDIVIDUAL:
-//            editedFlag = true;
-//            break;
-//        case WITH_EXISTING_REPEAT:
-//            // Check if changes between vEvent and vEventOld exist apart from RRule
-//            VEvent tempVEvent = VEventFactory.newVEvent(vEventOld);
-//            tempVEvent.setRRule(getRRule());
-//            boolean onlyRRuleChanged = this.equals(tempVEvent);
-//
-//            ChangeDialogOptions[] choices = null;
-//            if (onlyRRuleChanged) choices = new ChangeDialogOptions[] {ChangeDialogOptions.ALL, ChangeDialogOptions.FUTURE};
-//            ChangeDialogOptions changeResponse = changeDialogCallback.call(choices);
-//            switch (changeResponse)
-//            {
-//            case ALL:
-//                break;
-//            case CANCEL:
-//                break;
-//            case FUTURE:
-//                break;
-//            case ONE:
-//                // Make new individual VEvent, save settings to it.  Add date to original as recurrence.
-//                VEvent newVEvent = VEventFactory.newVEvent(this);
-//                newVEvent.setRRule(null);
-//                newVEvent.setDateTimeStart(dateTimeStart);
-//                vevents.remove(this);
-//                vevents.add(vEventOld);
-////                veventRefreshAppointments.call()
-////                this = vEventOld;
-//                vEventOld.copyTo(this);
-//                break;
-//            }
-//            break;
-//        default:
-//            break;
-//        }
-//        // TODO - THIS MAY MEAN THIS HAS TO GO BACK TO IMPL - CAN USE CALLBACK
-//        // DOESN'T KNOW ABOUT APPOINTMENTS HERE
-//        
-//        if (editedFlag) // make these changes as long as CANCEL is not selected
-//        { // remove appointments from mail collection made by VEvent
-//            Iterator<T> i = appointments.iterator();
-//            while (i.hasNext())
-//            {
-//                T a = i.next();
-//                if (appointments().contains(a)) i.remove();
-//            }
-//            appointments().clear(); // clear VEvent's collection of appointments
-//            appointments.addAll(makeAppointments()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
-//            return WindowCloseType.CLOSE_WITH_CHANGE;
-//        } else
-//        {
-//            return WindowCloseType.CLOSE_WITHOUT_CHANGE;
-//        }
-//    }
-//    
-//    private RRuleType getVEventType(RRule rruleOld)
-//    {
-//
-//        if (getRRule() == null)
-//        {
-//            if (rruleOld == null)
-//            { // doesn't have repeat or have old repeat either
-//                return RRuleType.INDIVIDUAL;
-//            } else {
-//                return RRuleType.HAD_REPEAT_BECOMING_INDIVIDUAL;
-//            }
-//        } else
-//        { // RRule != null
-//            if (rruleOld == null)
-//            {
-//                return RRuleType.WITH_NEW_REPEAT;                
-//            } else {
-//                return RRuleType.WITH_EXISTING_REPEAT;
-//            }
-//        }
-//    }
-    
-    // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate
-    public static <T> Spliterator<T> takeWhile(
-            Spliterator<T> splitr, Predicate<? super T> predicate) {
-          return new Spliterators.AbstractSpliterator<T>(splitr.estimateSize(), 0) {
-            boolean stillGoing = true;
-            @Override public boolean tryAdvance(Consumer<? super T> consumer) {
-              if (stillGoing) {
-                boolean hadNext = splitr.tryAdvance(elem -> {
-                  if (predicate.test(elem)) {
-                    consumer.accept(elem);
-                  } else {
-                    stillGoing = false;
-                  }
-                });
-                return hadNext && stillGoing;
-              }
-              return false;
-            }
-          };
-        }
-
-        static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
-           return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
-        }
-    
+        
 }

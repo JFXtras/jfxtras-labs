@@ -9,6 +9,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
@@ -57,6 +63,23 @@ public class VEventImpl extends VEvent
     public VEventImpl withAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
 
     /**
+     * Start of range for which events are generated.  Should match the dates displayed on the calendar.
+     * This is not a part of an iCalendar VEvent
+     */
+    public LocalDateTime getDateTimeRangeStart() { return dateTimeRangeStart; }
+    private LocalDateTime dateTimeRangeStart;
+    public void setDateTimeRangeStart(LocalDateTime startDateTime) { this.dateTimeRangeStart = startDateTime; }
+//    public T withDateTimeRangeStart(LocalDateTime startDateTime) { setDateTimeRangeStart(startDateTime); return (T)this; }
+    
+    /**
+     * End of range for which events are generated.  Should match the dates displayed on the calendar.
+     */
+    public LocalDateTime getDateTimeRangeEnd() { return dateTimeRangeEnd; }
+    private LocalDateTime dateTimeRangeEnd;
+    public void setDateTimeRangeEnd(LocalDateTime endDateTime) { this.dateTimeRangeEnd = endDateTime; }
+//    public T withDateTimeRangeEnd(LocalDateTime endDateTime) { setDateTimeRangeEnd(endDateTime); return (T)this; }
+
+    /**
      * The currently generated events of the recurrence set.
      * 3.8.5.2 defines the recurrence set as the complete set of recurrence instances for a
      * calendar component.  As many RRule definitions are infinite sets, a complete representation
@@ -81,6 +104,8 @@ public class VEventImpl extends VEvent
     {
         if (source.getAppointmentGroup() != null) destination.setAppointmentGroup(source.getAppointmentGroup());
         if (source.getAppointmentClass() != null) destination.setAppointmentClass(source.getAppointmentClass());
+        if (source.getDateTimeRangeStart() != null) destination.setDateTimeRangeStart(source.getDateTimeRangeStart());
+        if (source.getDateTimeRangeEnd() != null) destination.setDateTimeRangeEnd(source.getDateTimeRangeEnd());
         source.appointments().stream().forEach(a -> destination.appointments().add(a));
     }
     
@@ -89,6 +114,17 @@ public class VEventImpl extends VEvent
     {
         copy(this, destination);
     }
+    
+    public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
+    {
+        Stream<LocalDateTime> initialStream = super.stream(startDateTime);
+        // filter away too early (with Java 9 takeWhile these statements can be combined into one chained statement for greater elegance)
+        Stream<LocalDateTime> filteredStream = initialStream
+                .filter(a -> (getDateTimeRangeStart() == null) ? true : ! a.isBefore(getDateTimeRangeStart()));
+        // stop when too late
+        return takeWhile(filteredStream, a -> (getDateTimeRangeEnd() == null) ? true : ! a.isAfter(getDateTimeRangeEnd()));
+    }
+
 
     /**
      * Returns appointments that should exist between dateTimeRangeStart and dateTimeRangeEnd based on VEvent.
@@ -169,7 +205,7 @@ public class VEventImpl extends VEvent
      * @param durationInSecondsNew - duration after edit
      * @param vEventOld - copy from vEventOld into this if edit is canceled
      * @param appointments - list of all appointments in agenda
-     * @param vevents - collection of all VEvents (add new VEvents if change to ONE or FUTURE)
+     * @param vEvents - collection of all VEvents (add new VEvents if change to ONE or FUTURE)
      * @param changeDialogCallback - called to make dialog to prompt user for scope of edit (usually ONE, ALL, OR THIS_AND_FUTURE).  Parameter can be a simple predicate to force selection for testing (example: a -> ChangeDialogOptions.ONE).
      * @param writeVEventsCallback - called to do VEvent I/O if necessary.
      * @return
@@ -180,7 +216,7 @@ public class VEventImpl extends VEvent
             , int durationInSecondsNew
             , VEventImpl vEventOld
             , List<Appointment> appointments
-            , Collection<VEvent> vevents
+            , Collection<VEvent> vEvents
             , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
             , Callback<Collection<VEvent>, Void> writeVEventsCallback)
     {
@@ -207,55 +243,99 @@ public class VEventImpl extends VEvent
             boolean onlyRRuleChanged = this.equals(tempVEvent);
 
             ChangeDialogOptions[] choices = null;
-            if (onlyRRuleChanged) choices = new ChangeDialogOptions[] {ChangeDialogOptions.ALL, ChangeDialogOptions.FUTURE};
+            if (onlyRRuleChanged) choices = new ChangeDialogOptions[] {ChangeDialogOptions.ALL, ChangeDialogOptions.THIS_AND_FUTURE};
             ChangeDialogOptions changeResponse = changeDialogCallback.call(choices);
             switch (changeResponse)
             {
-            case ALL:
-                // Copy date/time data to this VEvent
-                long secondsAdjustment = ChronoUnit.SECONDS.between(dateTimeOld, dateTimeNew);
-                LocalDateTime newDateTimeStart = getDateTimeStart().plusSeconds(secondsAdjustment);
-                setDateTimeStart(newDateTimeStart);
-                setDurationInSeconds(durationInSecondsNew);
-                break;
-            case CANCEL:
-                editedFlag = false;
-                break;
-            case FUTURE:
-                break;
-            case ONE:
-                // Make new individual VEvent, save settings to it.  Add date to original as recurrence.
+                case ALL:
+                    // Copy date/time data to this VEvent
+                    long secondsAdjustment = ChronoUnit.SECONDS.between(dateTimeOld, dateTimeNew);
+                    LocalDateTime newDateTimeStart = getDateTimeStart().plusSeconds(secondsAdjustment);
+                    setDateTimeStart(newDateTimeStart);
+                    setDurationInSeconds(durationInSecondsNew);
+                    break;
+                case CANCEL:
+                    editedFlag = false;
+                    break;
+                case THIS_AND_FUTURE:
+                {
+                    // Make new individual VEvent, save settings to it.  Add date to original as recurrence.
+                    VEventImpl newVEvent = new VEventImpl(this);
+                    vEvents.add(newVEvent);
+                    newVEvent.setDateTimeStart(dateTimeNew);
 
-                // make new VEvent for individual event
-                VEventImpl newVEvent = new VEventImpl(this);
-                newVEvent.setRRule(null);
-                newVEvent.setDateTimeStart(dateTimeNew);
-                // TODO - add UID for parent
-                vevents.add(newVEvent);
-                appointments.addAll(newVEvent.makeAppointments());
+                    // Split EXDates dates between this and newVEvent
+                    getExDate().getDates().clear();
+                    final Iterator<LocalDateTime> exceptionIterator = vEventOld.getExDate().getDates().iterator();
+                    while (exceptionIterator.hasNext())
+                    {
+                        LocalDateTime d = exceptionIterator.next();
+                        if (d.isBefore(dateTimeNew))
+                        {
+                            exceptionIterator.remove();
+                        } else {
+                            vEventOld.getExDate().getDates().add(d);
+                        }
+                    }
 
-                // modify this VEvent for recurrence
-                vEventOld.copyTo(this);                
-                System.out.println("recurrence: " + dateTimeOld.minusSeconds(durationInSecondsNew));
-                getRRule().getRecurrences().add(dateTimeOld);
-                // TODO - ADD individual date to list of recurrence dates
-
-//                System.out.println("ONE: " + this.getDurationInSeconds() + " " + vEventOld.getDurationInSeconds());
-//
-//                appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
-//                System.out.println("size0: " + appointments.size() + " " + newVEvent.makeAppointments().size());
-//                newVEvent.makeAppointments().stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
-//                Appointment a2 = newVEvent.makeAppointments().iterator().next();
-//                System.out.println("contains " + appointments.contains(a2));
-                
-                System.out.println("size0-: " + appointments.size());
-                appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
-//                System.exit(0);
-//                vevents.add(vEventOld);
-//                veventRefreshAppointments.call()
-//                this = vEventOld;
-                
-                break;
+                    // Split instance dates between this and newVEvent
+                    getRRule().getInstances().clear();
+                    final Iterator<LocalDateTime> instanceIterator = vEventOld.getRRule().getInstances().iterator();
+                    while (exceptionIterator.hasNext())
+                    {
+                        LocalDateTime d = instanceIterator.next();
+                        if (d.isBefore(dateTimeNew))
+                        {
+                            instanceIterator.remove();
+                        } else {
+                            vEventOld.getRRule().getInstances().add(d);
+                        }
+                    }
+                    
+                    // Split recurrence date/times between this and newVEvent
+                    getRDate().getDates().clear();
+                    final Iterator<LocalDateTime> recurrenceIterator = vEventOld.getRDate().getDates().iterator();
+                    while (recurrenceIterator.hasNext())
+                    {
+                        LocalDateTime d = recurrenceIterator.next();
+                        if (d.isBefore(dateTimeNew))
+                        {
+                            recurrenceIterator.remove();
+                        } else {
+                            vEventOld.getRDate().getDates().add(d);
+                        }
+                    }
+                    
+                    // Assign UNTIL date/time for old VEvent 
+                    if (vEventOld.getRRule().getCount() != null) vEventOld.getRRule().setCount(null);
+                    vEventOld.getRRule().setUntil(dateTimeNew.minusSeconds(1));
+                    
+                    // Modify start and end date for new VEvent
+                    if (getRRule().getCount() != null)
+                    {
+                        
+                    }
+                    if (getRRule().getUntil() != null)
+                    {
+                        
+                    }
+                    break;
+                }
+                case ONE:
+                {
+                    // Make new individual VEvent, save settings to it.  Add date to original as recurrence.
+                    VEventImpl newVEvent = new VEventImpl(this);
+                    vEvents.add(newVEvent);
+                    newVEvent.setDateTimeStart(dateTimeNew);
+                    // TODO - need new UID for newVEvent.  Do it here or in constructor?
+                    newVEvent.setRRule(null);
+                    appointments.addAll(newVEvent.makeAppointments());
+    
+                    // modify this VEvent for recurrence
+                    vEventOld.copyTo(this);                
+                    getRRule().getInstances().add(dateTimeOld);
+                    break;
+                }
             }
             break;
         default:
@@ -308,5 +388,31 @@ public class VEventImpl extends VEvent
             }
         }
     }
+    
+    // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate
+    // will be obsolete with Java 9
+    public static <T> Spliterator<T> takeWhile(
+            Spliterator<T> splitr, Predicate<? super T> predicate) {
+          return new Spliterators.AbstractSpliterator<T>(splitr.estimateSize(), 0) {
+            boolean stillGoing = true;
+            @Override public boolean tryAdvance(Consumer<? super T> consumer) {
+              if (stillGoing) {
+                boolean hadNext = splitr.tryAdvance(elem -> {
+                  if (predicate.test(elem)) {
+                    consumer.accept(elem);
+                  } else {
+                    stillGoing = false;
+                  }
+                });
+                return hadNext && stillGoing;
+              }
+              return false;
+            }
+          };
+        }
+
+        static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
+           return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
+        }
     
 }

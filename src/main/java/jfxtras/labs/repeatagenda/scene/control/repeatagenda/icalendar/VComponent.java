@@ -66,8 +66,8 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
          3.8.4.6.  Uniform Resource Locator  . . . . . . . . . . . . 118 - NO
          3.8.4.7.  Unique Identifier . . . . . . . . . . . . . . . . 119 - Yes
        3.8.5.  Recurrence Component Properties . . . . . . . . . . . 120
-         3.8.5.1.  Exception Date-Times  . . . . . . . . . . . . . . 120 - Yes, in EXDate class
-         3.8.5.2.  Recurrence Date-Times . . . . . . . . . . . . . . 122 - TODO, in RDate class
+         3.8.5.1.  Exception Date-Times  . . . . . . . . . . . . . . 120 - Yes
+         3.8.5.2.  Recurrence Date-Times . . . . . . . . . . . . . . 122 - Yes
          3.8.5.3.  Recurrence Rule . . . . . . . . . . . . . . . . . 124 - TODO, in RRule class
        3.8.6.  Alarm Component Properties  . . . . . . . . . . . . . 134
          3.8.6.1.  Action  . . . . . . . . . . . . . . . . . . . . . 134 - NO
@@ -82,6 +82,33 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
          3.8.8.1.  IANA Properties . . . . . . . . . . . . . . . . . 142 - NO
          3.8.8.2.  Non-Standard Properties . . . . . . . . . . . . . 142 - NO
          3.8.8.3.  Request Status  . . . . . . . . . . . . . . . . . 144 - NO
+         
+Alphabetical list of elements for VComponent (some not implemented)
+ATTACH
+ATTENDEE
+CATEGORIES
+CLASS
+COMMENT
+CONTACT
+CREATED
+DTSTAMP
+DTSTART
+EXDATE
+IANA-PROP
+LAST-MOD
+ORGANIZER
+RDATE
+RECURID
+RELATED
+RESOURCES
+RRULE
+RSTATUS
+SEQ
+STATUS
+SUMMARY
+UID
+URL
+X-PROP
  * 
  * @author David Bal
  *
@@ -126,6 +153,14 @@ public class VComponent
     public ObjectProperty<LocalDateTime> dateTimeStartProperty() { return dateTimeStart; }
     public LocalDateTime getDateTimeStart() { return dateTimeStart.getValue(); }
     public void setDateTimeStart(LocalDateTime dtStart) { this.dateTimeStart.set(dtStart); }
+
+    /**
+     * EXDATE: Set of date/times exceptions for recurring events, to-dos, journal entries.
+     * 3.8.5.1, RFC 5545 iCalendar
+     */
+    private EXDate exDate;
+    public void setExDate(EXDate exDate) { this.exDate = exDate; }
+    public EXDate getExDate() { return exDate; }
     
     /**
      * LOCATION: RFC 5545 iCalendar 3.8.1.12. page 87
@@ -140,6 +175,14 @@ public class VComponent
     public void setLocation(String value) { locationProperty.setValue(value); }
 //    public T withLocation(String value) { setLocation(value); return (T)this; }
 
+    /**
+     * RDATE: Set of date/times for recurring events, to-dos, journal entries.
+     * 3.8.5.2, RFC 5545 iCalendar
+     */
+    private RDate rDate;
+    public void setRDate(RDate rDate) { this.rDate = rDate; }
+    public RDate getRDate() { return rDate; }
+    
     /**
      * Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
      * If event is not repeating value is null
