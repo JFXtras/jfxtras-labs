@@ -206,8 +206,9 @@ public abstract class VEvent extends VComponent
                 (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
         boolean durationEquals = (getDurationInSeconds() == null) ?
                 (testObj.getDurationInSeconds() == null) : getDurationInSeconds().equals(testObj.getDurationInSeconds());
+        System.out.println("VEvent: " + descriptionEquals + " " + durationEquals);
         // don't need to check getDateTimeEnd because it bound to duration
-        return descriptionEquals && durationEquals;
+        return super.equals(obj) && descriptionEquals && durationEquals;
     }
         
 }

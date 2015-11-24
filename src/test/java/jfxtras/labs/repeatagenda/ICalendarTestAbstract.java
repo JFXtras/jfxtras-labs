@@ -374,6 +374,9 @@ public abstract class ICalendarTestAbstract
         VEventImpl vEvent = new VEventImpl();
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setDurationInSeconds(5400);
+        vEvent.setAppointmentGroup(appointmentGroups.get(3));
+        vEvent.setDescription("Daily2 Description");
+        vEvent.setSummary("Daily2 Summary");
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule()
                 .withCount(6);

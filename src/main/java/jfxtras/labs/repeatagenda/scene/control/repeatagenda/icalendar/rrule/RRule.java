@@ -59,7 +59,8 @@ public class RRule {
     
     /**
      * COUNT: (RFC 5545 iCalendar 3.3.10, page 41) number of events to occur before repeat rule ends
-     * Uses lazy initialization of property because often COUNT stays as the default value of 0
+     * Uses lazy initialization of property because often COUNT stays as the default value of 0.
+     * Value of 0 means COUNT is not used.
      */
     public IntegerProperty countProperty()
     {
@@ -71,9 +72,10 @@ public class RRule {
     private int _count = 0;
     public void setCount(Integer i)
     {
+//        System.out.println("until: " + getUntil());
         if (getUntil() == null)
         {
-            if (i > 0)
+            if (i >= 0)
             {
                 if (count == null)
                 {
@@ -84,7 +86,7 @@ public class RRule {
                 }
             } else
             {
-                throw new InvalidParameterException("COUNT can't be less than 1. (" + i + ")");
+                throw new InvalidParameterException("COUNT can't be less than 0. (" + i + ")");
             }
         } else
         {
@@ -107,7 +109,7 @@ public class RRule {
     private LocalDateTime _until;
     public void setUntil(LocalDateTime t)
     {
-        if (getCount() > 0)
+        if (getCount() == 0)
         {
             if (until == null)
             {

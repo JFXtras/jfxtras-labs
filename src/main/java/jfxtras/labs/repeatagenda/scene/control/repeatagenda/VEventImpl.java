@@ -115,6 +115,32 @@ public class VEventImpl extends VEvent
         copy(this, destination);
     }
     
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        VEventImpl testObj = (VEventImpl) obj;
+
+        boolean appointmentClassEquals = (getAppointmentClass() == null) ?
+                (testObj.getAppointmentClass() == null) : getAppointmentClass().equals(testObj.getAppointmentClass());
+        boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
+                (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
+        boolean dateTimeRangeStartEquals = (getDateTimeRangeStart() == null) ?
+                (testObj.getDateTimeRangeStart() == null) : getDateTimeRangeStart().equals(testObj.getDateTimeRangeStart());
+        boolean dateTimeRangeEndEquals = (getDateTimeRangeEnd() == null) ?
+                (testObj.getDateTimeRangeEnd() == null) : getDateTimeRangeEnd().equals(testObj.getDateTimeRangeEnd());
+//        boolean appointmentsEquals = (appointments() == null) ?
+//                (testObj.appointments() == null) : appointments().equals(testObj.appointments());
+//        System.out.println("VEventImpl: " + " " + getDateTimeRangeStart() + " " +   testObj.getDateTimeRangeStart());
+        System.out.println("VEventImpl: " + appointmentClassEquals + " " + appointmentGroupEquals + " " + dateTimeRangeStartEquals + " " + dateTimeRangeEndEquals
+                + " ");// + appointmentsEquals);
+        return super.equals(obj) && appointmentClassEquals && appointmentGroupEquals && dateTimeRangeStartEquals
+                && dateTimeRangeEndEquals;
+    }
+    
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
         Stream<LocalDateTime> initialStream = super.stream(startDateTime);
@@ -258,63 +284,94 @@ public class VEventImpl extends VEvent
                     editedFlag = false;
                     break;
                 case THIS_AND_FUTURE:
-                {
-                    // Make new individual VEvent, save settings to it.  Add date to original as recurrence.
-                    VEventImpl newVEvent = new VEventImpl(this);
-                    vEvents.add(newVEvent);
-                    newVEvent.setDateTimeStart(dateTimeNew);
+                { // this = edited VEvent, vEventOld = former settings, with UNTIL set at start for this.
 
+                    // Remove appointments
+                    appointments.removeIf(a -> {
+                        return appointments().stream().anyMatch(a2 -> a2 == a);
+                    });
+                    
+                    // modify old VEvent
+                    vEvents.add(vEventOld);
+                    if (vEventOld.getRRule().getCount() != null) vEventOld.getRRule().setCount(0);
+                    vEventOld.getRRule().setUntil(dateTimeNew.minusSeconds(1));
+                    vEventOld.appointments().clear();
+                    appointments.addAll(vEventOld.makeAppointments()); // add vEventOld part of new appointments
+                    
                     // Split EXDates dates between this and newVEvent
-                    getExDate().getDates().clear();
-                    final Iterator<LocalDateTime> exceptionIterator = vEventOld.getExDate().getDates().iterator();
-                    while (exceptionIterator.hasNext())
+                    if (getExDate() != null)
                     {
-                        LocalDateTime d = exceptionIterator.next();
-                        if (d.isBefore(dateTimeNew))
+                        getExDate().getDates().clear();
+                        final Iterator<LocalDateTime> exceptionIterator = vEventOld.getExDate().getDates().iterator();
+                        while (exceptionIterator.hasNext())
                         {
-                            exceptionIterator.remove();
-                        } else {
-                            vEventOld.getExDate().getDates().add(d);
+                            LocalDateTime d = exceptionIterator.next();
+                            if (d.isBefore(dateTimeNew))
+                            {
+                                exceptionIterator.remove();
+                            } else {
+                                vEventOld.getExDate().getDates().add(d);
+                            }
                         }
                     }
 
                     // Split instance dates between this and newVEvent
-                    getRRule().getInstances().clear();
-                    final Iterator<LocalDateTime> instanceIterator = vEventOld.getRRule().getInstances().iterator();
-                    while (exceptionIterator.hasNext())
+                    if (getRRule().getInstances() != null)
                     {
-                        LocalDateTime d = instanceIterator.next();
-                        if (d.isBefore(dateTimeNew))
+                        getRRule().getInstances().clear();
+                        final Iterator<LocalDateTime> instanceIterator = vEventOld.getRRule().getInstances().iterator();
+                        while (instanceIterator.hasNext())
                         {
-                            instanceIterator.remove();
-                        } else {
-                            vEventOld.getRRule().getInstances().add(d);
+                            LocalDateTime d = instanceIterator.next();
+                            if (d.isBefore(dateTimeNew))
+                            {
+                                instanceIterator.remove();
+                            } else {
+                                vEventOld.getRRule().getInstances().add(d);
+                            }
                         }
                     }
                     
                     // Split recurrence date/times between this and newVEvent
-                    getRDate().getDates().clear();
-                    final Iterator<LocalDateTime> recurrenceIterator = vEventOld.getRDate().getDates().iterator();
-                    while (recurrenceIterator.hasNext())
+                    if (getRDate() != null)
                     {
-                        LocalDateTime d = recurrenceIterator.next();
-                        if (d.isBefore(dateTimeNew))
+                        getRDate().getDates().clear();
+                        final Iterator<LocalDateTime> recurrenceIterator = vEventOld.getRDate().getDates().iterator();
+                        while (recurrenceIterator.hasNext())
                         {
-                            recurrenceIterator.remove();
-                        } else {
-                            vEventOld.getRDate().getDates().add(d);
+                            LocalDateTime d = recurrenceIterator.next();
+                            if (d.isBefore(dateTimeNew))
+                            {
+                                recurrenceIterator.remove();
+                            } else {
+                                vEventOld.getRDate().getDates().add(d);
+                            }
+                        }
+                    }
+
+                    // Modify this (edited) VEvent
+                    setDateTimeStart(dateTimeNew);
+                    setDurationInSeconds(durationInSecondsNew);
+                    
+                    // Modify COUNT for this (edited) VEvent
+                    if (getRRule().getCount() != null)
+                    {
+                        final Iterator<LocalDateTime> appointmentIterator = appointments()
+                                .stream()
+                                .map(a -> a.getStartLocalDateTime())
+                                .iterator();
+                        while (appointmentIterator.hasNext())
+                        {
+                            LocalDateTime d = appointmentIterator.next();
+                            if (d.isBefore(dateTimeNew))
+                            {
+                                int newCount = getRRule().getCount()-1;
+                                getRRule().setCount(newCount);
+                            }
                         }
                     }
                     
-                    // Assign UNTIL date/time for old VEvent 
-                    if (vEventOld.getRRule().getCount() != null) vEventOld.getRRule().setCount(null);
-                    vEventOld.getRRule().setUntil(dateTimeNew.minusSeconds(1));
-                    
-                    // Modify start and end date for new VEvent
-                    if (getRRule().getCount() != null)
-                    {
-                        
-                    }
+
                     if (getRRule().getUntil() != null)
                     {
                         

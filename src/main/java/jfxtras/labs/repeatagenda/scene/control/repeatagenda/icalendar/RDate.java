@@ -25,6 +25,7 @@ public class RDate extends RecurrenceComponent<RDate>
     @Override
     public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
     {
+        if (inStream == null) return getDates().stream().filter(d -> ! d.isBefore(startDateTime));
         return merge(inStream
                 , getDates().stream().filter(d -> ! d.isBefore(startDateTime))
                 , (a1, a2) -> a1.compareTo(a2));
