@@ -495,6 +495,30 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         assertEquals(expectedDates, madeDates);
     }
     
+    /** Tests daily stream with FREQ=DAILY;INVERVAL=2;UNTIL=20151201T000000 */
+    @Test
+    public void dailyStreamTest6()
+    {
+        VEvent e = getDaily6();
+        List<LocalDateTime> madeDates = e
+                .stream(e.getDateTimeStart())
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 11, 11, 10, 0)
+              , LocalDateTime.of(2015, 11, 13, 10, 0)
+              , LocalDateTime.of(2015, 11, 15, 10, 0)
+              , LocalDateTime.of(2015, 11, 17, 10, 0)
+              , LocalDateTime.of(2015, 11, 19, 10, 0)
+              , LocalDateTime.of(2015, 11, 21, 10, 0)
+              , LocalDateTime.of(2015, 11, 23, 10, 0)
+              , LocalDateTime.of(2015, 11, 25, 10, 0)
+              , LocalDateTime.of(2015, 11, 27, 10, 0)
+              , LocalDateTime.of(2015, 11, 29, 10, 0)
+              ));
+        assertEquals(expectedDates, madeDates);
+    }
+    
     /** Tests individual VEvent */
     @Test
     public void individualTest1()

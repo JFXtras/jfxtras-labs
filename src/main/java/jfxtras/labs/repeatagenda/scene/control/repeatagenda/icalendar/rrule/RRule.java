@@ -123,7 +123,7 @@ public class RRule {
             throw new InvalidParameterException("can't set UNTIL if COUNT is already set.");
         }
     }
-    public RRule withUntil(int until) { setCount(until); return this; }
+    public RRule withUntil(LocalDateTime until) { setUntil(until); return this; }
     
     /**
      * The set of specific instances of recurring "VEVENT", "VTODO", or "VJOURNAL" calendar components

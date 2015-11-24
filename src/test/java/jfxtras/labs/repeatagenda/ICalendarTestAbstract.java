@@ -436,6 +436,25 @@ public abstract class ICalendarTestAbstract
         daily.addByRule(byRule);
         return vEvent;
     }
+
+    /** FREQ=DAILY;INVERVAL=2;UNTIL=20151201T000000 */
+    protected static VEventImpl getDaily6()
+    {
+        VEventImpl vEvent = new VEventImpl();
+        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        vEvent.setDurationInSeconds(5400);
+        vEvent.setAppointmentGroup(appointmentGroups.get(3));
+        vEvent.setDescription("Daily6 Description");
+        vEvent.setSummary("Daily6 Summary");
+        vEvent.setAppointmentClass(clazz);
+        RRule rule = new RRule()
+                .withUntil(LocalDateTime.of(2015, 12, 1, 0, 0));
+        vEvent.setRRule(rule);
+        Frequency daily = new Daily()
+                .withInterval(2);
+        rule.setFrequency(daily);
+        return vEvent;
+    }
     
     /** Individual - non repeatable VEvent */
     protected static VEventImpl getIndividual1()

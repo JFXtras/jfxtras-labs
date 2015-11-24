@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
@@ -31,7 +33,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
      * Tests editing start and end time of ALL events
      */
     @Test
-    public void editAllDailyTime()
+    public void editAllDateTimeDaily2()
     {
         VEventImpl vevent = getDaily2();
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
@@ -93,7 +95,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
      * Tests ONE event of a daily repeat event changing date and time
      */
     @Test
-    public void editOneDailyTimeAndDate()
+    public void editOneTimeAndDateDaily2()
     {
         // Individual Appointment
         VEventImpl vevent = getDaily2();
@@ -143,11 +145,11 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     }
     
     /**
-     * Tests ONE event of a daily repeat event changing date and time
+     * Tests editing THIS_AND_FUTURE events of a daily repeat event changing date and time
      * FREQ=DAILY;INVERVAL=3;COUNT=6
      */
     @Test
-    public void editFutureTimeAndDateDailyRepeat()
+    public void editFutureTimeAndDateDaily2()
     {
         // Individual Appointment
         VEventImpl vevent = getDaily2();
@@ -226,6 +228,131 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 .withDescription("Edited Description")
                 .withSummary("Edited Summary");
         assertEquals(expectedAppointment3, editedAppointment3); // Check to see if repeat-generated appointment changed correctly
+    }
+
+    
+    /**
+     * Tests editing THIS_AND_FUTURE events of a daily repeat event changing date and time
+     * FREQ=DAILY;INVERVAL=2;UNTIL=20151201T000000
+     */
+    @Test
+    public void editFutureTimeAndDateDaily6()
+    {
+        // Individual Appointment
+        VEventImpl vevent = getDaily6();
+        List<VEvent> vevents = new ArrayList<VEvent>(Arrays.asList(vevent));
+        vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
+        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
+        Set<Appointment> appointments = new TreeSet<Appointment>((a,b) -> a.getStartLocalDateTime().compareTo(b.getStartLocalDateTime()));
+        Collection<Appointment> newAppointments = vevent.makeAppointments();
+        appointments.addAll(newAppointments);
+        assertEquals(4, appointments.size()); // check if there are only 3 appointments
+        VEventImpl veventOld = new VEventImpl(vevent);
+        
+        // select appointment (get recurrence date)
+        Iterator<Appointment> appointmentIterator = appointments.iterator();
+        appointmentIterator.next(); // skip first
+        appointmentIterator.next(); // skip second
+        RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next();
+        LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
+        
+        // apply changes
+        LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().minusDays(2); // shift appointment 2 day backward
+        selectedAppointment.setStartLocalDateTime(newDate.atTime(6, 0)); // change start time
+        selectedAppointment.setEndLocalDateTime(newDate.atTime(7, 0)); // change end time
+        int durationInSeconds = (int) ChronoUnit.SECONDS.between(
+                selectedAppointment.getStartLocalDateTime()
+              , selectedAppointment.getEndLocalDateTime());
+        LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
+        vevent.setSummary("Edited Summary");
+        vevent.setDescription("Edited Description");
+        vevent.setAppointmentGroup(appointmentGroups.get(7));
+        
+        // Edit
+        WindowCloseType windowCloseType = vevent.edit(
+                dateTimeOriginal
+              , dateTimeNew
+              , durationInSeconds
+              , veventOld               // original VEvent
+              , appointments            // collection of all appointments
+              , vevents                 // collection of all VEvents
+              , a -> ChangeDialogOptions.THIS_AND_FUTURE                   // answer to edit dialog
+              , null);                  // VEvents I/O callback
+        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime() + " " + a.getEndLocalDateTime()));
+        assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
+
+        List<LocalDateTime> madeDates = appointments
+                .stream()
+                .map(a -> a.getStartLocalDateTime())
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 15, 10, 0)
+              , LocalDateTime.of(2015, 11, 17, 6, 0)
+              , LocalDateTime.of(2015, 11, 17, 10, 0)
+              , LocalDateTime.of(2015, 11, 19, 6, 0)
+              , LocalDateTime.of(2015, 11, 21, 6, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+
+        // Check Appointments
+        Iterator<Appointment> appointmentIteratorNew = appointments.iterator();
+        RepeatableAppointment editedAppointment1 = (RepeatableAppointment) appointmentIteratorNew.next();
+
+        RepeatableAppointment expectedAppointment1 = new RepeatableAppointmentImpl()
+            .withStartLocalDateTime(LocalDateTime.of(2015, 11, 15, 10, 0))
+            .withEndLocalDateTime(LocalDateTime.of(2015, 11, 15, 11, 30))
+            .withAppointmentGroup(appointmentGroups.get(3))
+            .withDescription("Daily6 Description")
+            .withSummary("Daily6 Summary");
+        assertEquals(expectedAppointment1, editedAppointment1); // Check to see if repeat-generated appointment changed correctly
+
+        RepeatableAppointment editedAppointment2 = (RepeatableAppointment) appointmentIteratorNew.next();
+        RepeatableAppointment expectedAppointment2 = new RepeatableAppointmentImpl()
+                .withStartLocalDateTime(LocalDateTime.of(2015, 11, 17, 6, 0))
+                .withEndLocalDateTime(LocalDateTime.of(2015, 11, 17, 7, 0))
+                .withAppointmentGroup(appointmentGroups.get(7))
+                .withDescription("Edited Description")
+                .withSummary("Edited Summary");
+        assertEquals(expectedAppointment2, editedAppointment2); // Check to see if repeat-generated appointment changed correctly
+
+        RepeatableAppointment editedAppointment3 = (RepeatableAppointment) appointmentIteratorNew.next();
+        RepeatableAppointment expectedAppointment3 = new RepeatableAppointmentImpl()
+                .withStartLocalDateTime(LocalDateTime.of(2015, 11, 17, 10, 0))
+                .withEndLocalDateTime(LocalDateTime.of(2015, 11, 17, 11, 30))
+                .withAppointmentGroup(appointmentGroups.get(3))
+                .withDescription("Daily6 Description")
+                .withSummary("Daily6 Summary");
+            assertEquals(expectedAppointment3, editedAppointment3); // Check to see if repeat-generated appointment changed correctly
+
+        RepeatableAppointment editedAppointment4 = (RepeatableAppointment) appointmentIteratorNew.next();
+        RepeatableAppointment expectedAppointment4 = new RepeatableAppointmentImpl()
+                .withStartLocalDateTime(LocalDateTime.of(2015, 11, 19, 6, 0))
+                .withEndLocalDateTime(LocalDateTime.of(2015, 11, 19, 7, 0))
+                .withAppointmentGroup(appointmentGroups.get(7))
+                .withDescription("Edited Description")
+                .withSummary("Edited Summary");
+        assertEquals(expectedAppointment4, editedAppointment4); // Check to see if repeat-generated appointment changed correctly
+
+        RepeatableAppointment editedAppointment5 = (RepeatableAppointment) appointmentIteratorNew.next();
+        RepeatableAppointment expectedAppointment5 = new RepeatableAppointmentImpl()
+                .withStartLocalDateTime(LocalDateTime.of(2015, 11, 21, 6, 0))
+                .withEndLocalDateTime(LocalDateTime.of(2015, 11, 21, 7, 0))
+                .withAppointmentGroup(appointmentGroups.get(7))
+                .withDescription("Edited Description")
+                .withSummary("Edited Summary");
+        assertEquals(expectedAppointment5, editedAppointment5); // Check to see if repeat-generated appointment changed correctly
+
+        vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 1, 0, 0));
+        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 12, 31, 0, 0));
+        appointments.clear();
+        appointments.addAll(vevent.makeAppointments());
+        
+        VEventImpl veventNew = (VEventImpl) vevents.get(1);
+        veventNew.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 1, 0, 0));
+        veventNew.setDateTimeRangeEnd(LocalDateTime.of(2015, 12, 31, 0, 0));
+        appointments.addAll(veventNew.makeAppointments());
+        
+        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
 
     }
     
@@ -233,7 +360,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
      * Tests changing a daily repeat rule to an individual appointment
      */
     @Test
-    public void editToIndividualRepeatDaily()
+    public void editToIndividualDaily2()
     {
         // Individual Appointment
         VEventImpl vevent = getDaily2();

@@ -80,15 +80,15 @@ public class VEventImpl extends VEvent
 //    public T withDateTimeRangeEnd(LocalDateTime endDateTime) { setDateTimeRangeEnd(endDateTime); return (T)this; }
 
     /**
-     * The currently generated events of the recurrence set.
+     * The currently generated instances of the recurrence set.
      * 3.8.5.2 defines the recurrence set as the complete set of recurrence instances for a
      * calendar component.  As many RRule definitions are infinite sets, a complete representation
      * is not possible.  The set only contains the events inside the bounds of 
      */
-    public Set<RepeatableAppointment> appointments() { return myAppointments; }
-    final private Set<RepeatableAppointment> myAppointments = new HashSet<RepeatableAppointment>();
+    public Set<RepeatableAppointment> appointmentInstances() { return appointmentInstances; }
+    final private Set<RepeatableAppointment> appointmentInstances = new HashSet<RepeatableAppointment>();
 //    public VEventImpl withAppointments(Collection<RepeatableAppointment> s) { appointments().addAll(s); return this; }
-    public boolean isNewRRule() { return appointments().size() == 0; } // new RRule has no appointments
+    public boolean isNewRRule() { return appointmentInstances().size() == 0; } // new RRule has no appointments
     
     // CONSTRUCTORS
     /** Copy constructor */
@@ -106,7 +106,7 @@ public class VEventImpl extends VEvent
         if (source.getAppointmentClass() != null) destination.setAppointmentClass(source.getAppointmentClass());
         if (source.getDateTimeRangeStart() != null) destination.setDateTimeRangeStart(source.getDateTimeRangeStart());
         if (source.getDateTimeRangeEnd() != null) destination.setDateTimeRangeEnd(source.getDateTimeRangeEnd());
-        source.appointments().stream().forEach(a -> destination.appointments().add(a));
+        source.appointmentInstances().stream().forEach(a -> destination.appointmentInstances().add(a));
     }
     
     /** Deep copy all fields from source to destination */
@@ -134,7 +134,6 @@ public class VEventImpl extends VEvent
                 (testObj.getDateTimeRangeEnd() == null) : getDateTimeRangeEnd().equals(testObj.getDateTimeRangeEnd());
 //        boolean appointmentsEquals = (appointments() == null) ?
 //                (testObj.appointments() == null) : appointments().equals(testObj.appointments());
-//        System.out.println("VEventImpl: " + " " + getDateTimeRangeStart() + " " +   testObj.getDateTimeRangeStart());
         System.out.println("VEventImpl: " + appointmentClassEquals + " " + appointmentGroupEquals + " " + dateTimeRangeStartEquals + " " + dateTimeRangeEndEquals
                 + " ");// + appointmentsEquals);
         return super.equals(obj) && appointmentClassEquals && appointmentGroupEquals && dateTimeRangeStartEquals
@@ -189,7 +188,7 @@ public class VEventImpl extends VEvent
                     appt.setSummary(getSummary());
                     appt.setAppointmentGroup(getAppointmentGroup());
                     madeAppointments.add(appt);   // add appointments to main collection
-                    appointments().add(appt); // add appointments to this repeat's collection
+                    appointmentInstances().add(appt); // add appointments to this repeat's collection
                 });
 
         return madeAppointments;
@@ -230,7 +229,7 @@ public class VEventImpl extends VEvent
      * @param dateTimeNew - start date/time after edit
      * @param durationInSecondsNew - duration after edit
      * @param vEventOld - copy from vEventOld into this if edit is canceled
-     * @param appointments - list of all appointments in agenda
+     * @param appointments - list of all appointments in agenda (sorted by start date/time)
      * @param vEvents - collection of all VEvents (add new VEvents if change to ONE or FUTURE)
      * @param changeDialogCallback - called to make dialog to prompt user for scope of edit (usually ONE, ALL, OR THIS_AND_FUTURE).  Parameter can be a simple predicate to force selection for testing (example: a -> ChangeDialogOptions.ONE).
      * @param writeVEventsCallback - called to do VEvent I/O if necessary.
@@ -286,16 +285,15 @@ public class VEventImpl extends VEvent
                 case THIS_AND_FUTURE:
                 { // this = edited VEvent, vEventOld = former settings, with UNTIL set at start for this.
 
+                    
                     // Remove appointments
-                    appointments.removeIf(a -> {
-                        return appointments().stream().anyMatch(a2 -> a2 == a);
-                    });
+                    appointments.removeIf(a -> appointmentInstances().stream().anyMatch(a2 -> a2 == a));
                     
                     // modify old VEvent
                     vEvents.add(vEventOld);
                     if (vEventOld.getRRule().getCount() != null) vEventOld.getRRule().setCount(0);
-                    vEventOld.getRRule().setUntil(dateTimeNew.minusSeconds(1));
-                    vEventOld.appointments().clear();
+                    vEventOld.getRRule().setUntil(dateTimeOld.minusSeconds(1));
+                    vEventOld.appointmentInstances().clear();
                     appointments.addAll(vEventOld.makeAppointments()); // add vEventOld part of new appointments
                     
                     // Split EXDates dates between this and newVEvent
@@ -354,9 +352,9 @@ public class VEventImpl extends VEvent
                     setDurationInSeconds(durationInSecondsNew);
                     
                     // Modify COUNT for this (edited) VEvent
-                    if (getRRule().getCount() != null)
+                    if (getRRule().getCount() > 0)
                     {
-                        final Iterator<LocalDateTime> appointmentIterator = appointments()
+                        final Iterator<LocalDateTime> appointmentIterator = appointmentInstances()
                                 .stream()
                                 .map(a -> a.getStartLocalDateTime())
                                 .iterator();
@@ -371,7 +369,6 @@ public class VEventImpl extends VEvent
                         }
                     }
                     
-
                     if (getRRule().getUntil() != null)
                     {
                         
@@ -405,7 +402,7 @@ public class VEventImpl extends VEvent
         { // remove appointments from mail collection made by VEvent
             System.out.println("Edited flag:");
             appointments.removeIf(a -> {
-                return appointments().stream().anyMatch(a2 -> a2 == a);
+                return appointmentInstances().stream().anyMatch(a2 -> a2 == a);
             });
 //            Iterator<Appointment> i = appointments.iterator();
 //            while (i.hasNext())
@@ -413,7 +410,7 @@ public class VEventImpl extends VEvent
 //                Appointment a = i.next();
 //                if (appointments().contains(a)) i.remove();
 //            }
-            appointments().clear(); // clear VEvent's collection of appointments
+            appointmentInstances().clear(); // clear VEvent's collection of appointments
             System.out.println("size1: " + appointments.size());
             appointments.addAll(makeAppointments()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
             System.out.println("size2: " + appointments.size());
