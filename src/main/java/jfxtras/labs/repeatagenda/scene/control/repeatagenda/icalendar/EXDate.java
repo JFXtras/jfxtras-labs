@@ -11,12 +11,13 @@ import java.util.stream.Stream;
  * @author David Bal
  *
  */
-public class EXDate extends RecurrenceComponent
+public class EXDate extends RecurrenceComponent<EXDate>
 {    
     /** Remove date/times in exDates set */
     @Override
     public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
     {
+        System.out.println("EXDate:");
         return inStream.filter(d -> ! getDates().contains(d));
     }
     

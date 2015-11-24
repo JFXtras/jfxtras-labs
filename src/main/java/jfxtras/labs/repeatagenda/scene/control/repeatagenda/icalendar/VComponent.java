@@ -6,9 +6,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -80,7 +82,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
          3.8.7.4.  Sequence Number . . . . . . . . . . . . . . . . . 141 - TODO
        3.8.8.  Miscellaneous Component Properties  . . . . . . . . . 142
          3.8.8.1.  IANA Properties . . . . . . . . . . . . . . . . . 142 - NO
-         3.8.8.2.  Non-Standard Properties . . . . . . . . . . . . . 142 - NO
+         3.8.8.2.  Non-Standard Properties . . . . . . . . . . . . . 142 - TODO
          3.8.8.3.  Request Status  . . . . . . . . . . . . . . . . . 144 - NO
          
 Alphabetical list of elements for VComponent (some not implemented)
@@ -109,6 +111,12 @@ SUMMARY
 UID
 URL
 X-PROP
+
+Limitations: COMMENT, EXDATE, RDATE can only exist once per calendar component.  According
+to iCalendar a number of properties, including those three, can exist more than once.  Fixing
+this limitation is a future goal. - I plan on fixing this problem by combining multiple
+instances into one property internally.
+
  * 
  * @author David Bal
  *
@@ -158,6 +166,7 @@ public class VComponent
      * EXDATE: Set of date/times exceptions for recurring events, to-dos, journal entries.
      * 3.8.5.1, RFC 5545 iCalendar
      */
+    // TODO - REPLACE WITH COLLECTION TO ALLOW MULTIPLE OCCURRENCES
     private EXDate exDate;
     public void setExDate(EXDate exDate) { this.exDate = exDate; }
     public EXDate getExDate() { return exDate; }
@@ -179,6 +188,7 @@ public class VComponent
      * RDATE: Set of date/times for recurring events, to-dos, journal entries.
      * 3.8.5.2, RFC 5545 iCalendar
      */
+//    private ObservableList<RDate> rDates;
     private RDate rDate;
     public void setRDate(RDate rDate) { this.rDate = rDate; }
     public RDate getRDate() { return rDate; }
@@ -346,6 +356,35 @@ public class VComponent
         return categoriesEquals && commentEquals && dateTimeStartsEquals && locationEquals
                 && summaryEquals && uniqueIdentifierEquals && rruleEquals;
                 
+    }
+    
+    
+    /** Stream of date/times that indicate the start of the event(s).
+     * For a VEvent without RRULE the stream will contain only one date/time element.
+     * A VEvent with a RRULE the stream contains more than one date/time element.  It will be infinite 
+     * if COUNT or UNTIL is not present.  The stream has an end when COUNT or UNTIL condition is met.
+     * Starts on startDateTime, which must be a valid event date/time, not necessarily the
+     * first date/time (DTSTART) in the sequence. */
+    public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
+    {
+        Stream<LocalDateTime> stream1;
+        if (getRRule() == null)
+        { // if individual event
+            if (! startDateTime.isBefore(getDateTimeStart()))
+            {
+                stream1 = Arrays.asList(getDateTimeStart()).stream();
+            } else
+            { // if dateTimeStart is before startDateTime
+//                System.out.println("empty stream");
+                stream1 = new ArrayList<LocalDateTime>().stream(); // empty stream
+            }
+        } else
+        { // if has recurrence rule
+            stream1 = getRRule().stream(startDateTime);
+        }
+        Stream<LocalDateTime> stream2 = (getRDate() == null) ? stream1 : getRDate().stream(stream1, startDateTime); // add recurrence list
+        Stream<LocalDateTime> stream3 = (getExDate() == null) ? stream2 : getExDate().stream(stream2, startDateTime); // remove exceptions
+        return stream3;
     }
 
 }

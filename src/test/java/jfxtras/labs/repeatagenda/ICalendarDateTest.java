@@ -480,7 +480,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void dailyStreamTest5()
     {
         VEvent e = getDaily5();
-        List<LocalDateTime> madeDates = e.getRRule()
+        List<LocalDateTime> madeDates = e
                 .stream(e.getDateTimeStart())
                 .limit(6)
                 .collect(Collectors.toList());
@@ -508,5 +508,38 @@ public class ICalendarDateTest extends ICalendarTestAbstract
                 ));
         assertEquals(expectedDates, madeDates);
     }
-    
+
+    /** Tests VEvent with RRule and exception VEvent */
+    @Test
+    public void exceptionTest1()
+    {
+        VEvent e = getDailyWithException1();
+        List<LocalDateTime> madeDates = e
+                .stream(e.getDateTimeStart())
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 11, 15, 10, 0)
+              , LocalDateTime.of(2015, 11, 18, 10, 0)
+              , LocalDateTime.of(2015, 11, 21, 10, 0)
+              , LocalDateTime.of(2015, 11, 24, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
+
+    /** Tests VEvent with RRule and exception VEvent */
+    @Test
+    public void recurrenceTest1()
+    {
+        VEvent e = getRecurrence1();
+        List<LocalDateTime> madeDates = e
+                .stream(e.getDateTimeStart())
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 11, 12, 10, 0)
+              , LocalDateTime.of(2015, 11, 14, 12, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
 }

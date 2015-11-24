@@ -4,12 +4,10 @@ import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -211,29 +209,5 @@ public abstract class VEvent extends VComponent
         // don't need to check getDateTimeEnd because it bound to duration
         return descriptionEquals && durationEquals;
     }
-    
-    /** Stream of date/times that indicate the start of the event(s).
-     * For a VEvent without RRULE the stream will contain only one date/time element.
-     * A VEvent with a RRULE the stream contains more than one date/time element.  It will be infinite 
-     * if COUNT or UNTIL is not present.  The stream has an end when COUNT or UNTIL condition is met.
-     * Starts on startDateTime, which must be a valid event date/time, not necessarily the
-     * first date/time (DTSTART) in the sequence. */
-    public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
-    {
-        Object rStream = (getRDate() == null) ? null : this.getRDate().stream(null, startDateTime);
-        if (getRRule() == null)
-        { // if individual event
-            if (! startDateTime.isBefore(getDateTimeStart()))
-            {
-            return Arrays.asList(getDateTimeStart()).stream();
-            } else
-            { // if dateTimeStart is before startDateTime
-                return new ArrayList<LocalDateTime>().stream(); // empty stream
-            }
-        } else
-        { // if has recurrence rule
-            return getRRule().stream(startDateTime);
-        }
-    };
         
 }

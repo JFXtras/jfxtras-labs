@@ -2,6 +2,7 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -11,8 +12,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.Rule;
 
-/** For EXDate and RDate */
-public abstract class RecurrenceComponent implements Rule
+/** For EXDate and RDate
+ * Limitation: only DATE-TIME supported.  DATE is not supported.
+ * @param <T>*/
+public abstract class RecurrenceComponent<T> implements Rule
 {
     /**
      * EXDATE or RDATE: Set of date/times included or excepted for recurring events, to-dos, journal entries.
@@ -28,6 +31,19 @@ public abstract class RecurrenceComponent implements Rule
     {
         if (dates == null) this.dates = FXCollections.observableSet(new HashSet<LocalDateTime>());
         this.dates.addAll(dates);
+    }
+    public T withDates(LocalDateTime...dates)
+    {
+        for (int i=0; i<dates.length; i++)
+        {
+            getDates().add(dates[i]);
+        }
+        return (T) this;
+    }
+    public T withDates(Collection<LocalDateTime> dates)
+    {
+        getDates().addAll(dates);
+        return (T) this;
     }
     
 

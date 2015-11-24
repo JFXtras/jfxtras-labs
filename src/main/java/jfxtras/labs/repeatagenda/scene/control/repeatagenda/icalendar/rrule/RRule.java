@@ -131,7 +131,7 @@ public class RRule {
      * See 3.8.4.4 of RFC 5545 iCalendar
      */
     public Set<LocalDateTime> getInstances() { return instances; }
-    private Set<LocalDateTime> instances = new HashSet<LocalDateTime>();
+    private Set<LocalDateTime> instances = new HashSet<>();
     public void setInstances(Set<LocalDateTime> dateTimes) { instances = dateTimes; }
     public RRule withInstances(Set<LocalDateTime> dateTimes) { setInstances(dateTimes); return this; }
     private boolean instancesEquals(Collection<LocalDateTime> instancesTest)
@@ -196,7 +196,7 @@ public class RRule {
      * first date/time (DTSTART) in the sequence. */
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
-        System.out.println("getRecurrences().size(): " + getInstances().size());
+//        System.out.println("getRecurrences().size(): " + getInstances().size());
         Stream<LocalDateTime> filteredStream = (getInstances().size() > 0) ?
                 frequency.stream(startDateTime).filter(d -> ! getInstances().contains(d))
                : frequency.stream(startDateTime);
