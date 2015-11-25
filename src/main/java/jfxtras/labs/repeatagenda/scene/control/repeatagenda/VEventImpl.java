@@ -250,7 +250,7 @@ public class VEventImpl extends VEvent
     public WindowCloseType edit(
               LocalDateTime dateTimeOld
             , LocalDateTime dateTimeNew
-            , int durationInSecondsNew
+            , long durationInSecondsNew
             , VEventImpl vEventOld
             , Collection<Appointment> appointments
             , Collection<VEvent> vEvents

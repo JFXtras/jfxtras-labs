@@ -7,7 +7,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -133,7 +135,7 @@ public abstract class VComponent
      * CATEGORIES:MEETING
      */
     public SimpleStringProperty categoriesProperty() { return categoriesProperty; }
-    final private SimpleStringProperty categoriesProperty = new SimpleStringProperty(this, "appointmentGroup");
+    final private SimpleStringProperty categoriesProperty = new SimpleStringProperty(this, "CATEGORIES");
     public String getCategories() { return categoriesProperty.getValue(); }
     public void setCategories(String value) { categoriesProperty.setValue(value); }
 //    public T withCategories(String value) { setCategories(value); return (T)this; }
@@ -149,7 +151,7 @@ public abstract class VComponent
          their site. - - John
      * */
     public SimpleStringProperty commentProperty() { return commentProperty; }
-    final private SimpleStringProperty commentProperty = new SimpleStringProperty(this, "comment");
+    final private SimpleStringProperty commentProperty = new SimpleStringProperty(this, "COMMENT");
     public String getComment() { return commentProperty.getValue(); }
     public void setComment(String value) { commentProperty.setValue(value); }
 //    public VEvent withComment(String value) { setComment(value); return this; }
@@ -159,7 +161,7 @@ public abstract class VComponent
      * This property specifies the date and time that the calendar information was created.
      * This is analogous to the creation date and time for a file in the file system.
      */
-    final private ObjectProperty<LocalDateTime> dateTimeCreated = new SimpleObjectProperty<LocalDateTime>();
+    final private ObjectProperty<LocalDateTime> dateTimeCreated = new SimpleObjectProperty<LocalDateTime>(this, "CREATED");
     public ObjectProperty<LocalDateTime> dateTimeCreatedProperty() { return dateTimeCreated; }
     public LocalDateTime getDateTimeCreated() { return dateTimeCreated.getValue(); }
     public void setDateTimeCreated(LocalDateTime dtCreated) { this.dateTimeCreated.set(dtCreated); }
@@ -169,7 +171,7 @@ public abstract class VComponent
      * This property specifies the date and time that the instance of the
      * iCalendar object was created
      */
-    final private ObjectProperty<LocalDateTime> dateTimeStamp = new SimpleObjectProperty<LocalDateTime>();
+    final private ObjectProperty<LocalDateTime> dateTimeStamp = new SimpleObjectProperty<LocalDateTime>(this, "DTSTAMP");
     public ObjectProperty<LocalDateTime> dateTimeStampProperty() { return dateTimeStamp; }
     public LocalDateTime getDateTimeStamp() { return dateTimeStamp.getValue(); }
     public void setDateTimeStamp(LocalDateTime dtStamp) { this.dateTimeStamp.set(dtStamp); }
@@ -179,7 +181,7 @@ public abstract class VComponent
      * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
      * start date/times of the repeating events.
      */
-    final private ObjectProperty<LocalDateTime> dateTimeStart = new SimpleObjectProperty<LocalDateTime>();
+    final private ObjectProperty<LocalDateTime> dateTimeStart = new SimpleObjectProperty<LocalDateTime>(this, "DTSTART");
     public ObjectProperty<LocalDateTime> dateTimeStartProperty() { return dateTimeStart; }
     public LocalDateTime getDateTimeStart() { return dateTimeStart.getValue(); }
     public void setDateTimeStart(LocalDateTime dtStart) { this.dateTimeStart.set(dtStart); }
@@ -187,17 +189,36 @@ public abstract class VComponent
     /**
      * EXDATE: Set of date/times exceptions for recurring events, to-dos, journal entries.
      * 3.8.5.1, RFC 5545 iCalendar
+     * Is rarely used, so employs lazy initialization.
      */
-    private EXDate exDate;
-    public void setExDate(EXDate exDate) { this.exDate = exDate; }
-    public EXDate getExDate() { return exDate; }
+    public ObjectProperty<EXDate> exDateProperty()
+    {
+        if (exDate == null) exDate = new SimpleObjectProperty<EXDate>(this, "EXDATE", _exDate);
+        return exDate;
+    }
+    private ObjectProperty<EXDate> exDate;
+    private EXDate _exDate;
+    public EXDate getExDate()
+    {
+        return (exDate == null) ? _exDate : exDate.getValue();
+    }
+    public void setExDate(EXDate exDate)
+    {
+        if (exDate == null)
+        {
+            _exDate = exDate;
+        } else
+        {
+            this.exDate.set(exDate);
+        }
+    }
 
     /**
      * LAST-MODIFIED: Date-Time Last Modified, from RFC 5545 iCalendar 3.8.7.3 page 138
      * This property specifies the date and time that the information associated with
      * the calendar component was last revised.
      */
-    final private ObjectProperty<LocalDateTime> dateTimeLastModified = new SimpleObjectProperty<LocalDateTime>();
+    final private ObjectProperty<LocalDateTime> dateTimeLastModified = new SimpleObjectProperty<LocalDateTime>(this, "LAST-MODIFIED");
     public ObjectProperty<LocalDateTime> dateTimeLastModifiedProperty() { return dateTimeLastModified; }
     public LocalDateTime getDateTimeLastModified() { return dateTimeLastModified.getValue(); }
     public void setDateTimeLastModified(LocalDateTime dtLastModified) { this.dateTimeLastModified.set(dtLastModified); }
@@ -210,7 +231,7 @@ public abstract class VComponent
      * LOCATION:Conference Room - F123\, Bldg. 002
      */
     public StringProperty locationProperty() { return locationProperty; }
-    final private StringProperty locationProperty = new SimpleStringProperty(this, "location");
+    final private StringProperty locationProperty = new SimpleStringProperty(this, "LOCATION");
     public String getLocation() { return locationProperty.getValue(); }
     public void setLocation(String value) { locationProperty.setValue(value); }
 //    public T withLocation(String value) { setLocation(value); return (T)this; }
@@ -223,6 +244,35 @@ public abstract class VComponent
     private RDate rDate;
     public void setRDate(RDate rDate) { this.rDate = rDate; }
     public RDate getRDate() { return rDate; }
+
+
+    /**
+     * RECURRENCE-ID: Date-Time recurrence, from RFC 5545 iCalendar 3.8.4.4 page 112
+     * The property value is the original value of the "DTSTART" property of the 
+     * recurrence instance.
+     * It rarely used, so lazy initialization is used.
+     */
+    public ObjectProperty<LocalDateTime> dateTimeRecurrenceProperty()
+    {
+        if (dateTimeRecurrence == null) dateTimeRecurrence = new SimpleObjectProperty<LocalDateTime>(this, "RECURRENCE-ID", _dateTimeRecurrence);
+        return dateTimeRecurrence;
+    }
+    private ObjectProperty<LocalDateTime> dateTimeRecurrence;
+    private LocalDateTime _dateTimeRecurrence;
+    public LocalDateTime getDateTimeRecurrence()
+    {
+        return (dateTimeRecurrence == null) ? _dateTimeRecurrence : dateTimeRecurrence.getValue();
+    }
+    public void setDateTimeRecurrence(LocalDateTime dtRecurrence)
+    {
+        if (dateTimeRecurrence == null)
+        {
+            _dateTimeRecurrence = dtRecurrence;
+        } else
+        {
+            dateTimeRecurrence.set(dtRecurrence);
+        }
+    }
     
     /**
      * Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
@@ -273,13 +323,13 @@ public abstract class VComponent
 
     /** Callback for creating unique uid values */
     public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
-    private static String datePattern = "yyyyMMdd";
-    private static String timePattern = "HHmmss";
-    protected static DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern + "'T'" + timePattern);
+    private final static String datePattern = "yyyyMMdd";
+    private final static String timePattern = "HHmmss";
+    public final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(datePattern + "'T'" + timePattern);
     private static Integer nextKey = 0;
     private Callback<Void, String> uidGeneratorCallback = (Void) ->
     { // default UID generator callback
-        String dateTime = formatter.format(LocalDateTime.now());
+        String dateTime = FORMATTER.format(LocalDateTime.now());
         String domain = "jfxtras.org";
         return dateTime + "-" + nextKey++ + domain;
     };
@@ -387,66 +437,24 @@ public abstract class VComponent
                 && summaryEquals && uniqueIdentifierEquals && rruleEquals;
     }
 
-//    @Override
-//    public String toString()
-//    {
-//        List<String> properties2 = new ArrayList<String>();
-////        List<Pair> properties = new ArrayList<Pair>();
-//        StringBuilder builder = new StringBuilder();
-//
-//        properties2.add(0, "BEGIN:" + name());
-//        properties2.add(100, "DTSTAMP:" + formatter.format(getDateTimeStamp()));
-//        if (getDateTimeCreated() != null) properties2.add(200, "CREATED:" + formatter.format(getDateTimeCreated()));
-//        properties2.add(300, "UID:" + getUniqueIdentifier()));
-//        if (getDateTimeLastModified() != null) properties2.add(400, "LAST-MODIFIED:" + formatter.format(getDateTimeLastModified()));
-//        // 500 DESCRIPTION - VEVENT
-//        // Different toString? - add to properties2 list?
-//        properties2.add(600, "SUMMARY:" + getSummary());
-//        if (getDateTimeLastModified() != null) properties2.add(700, "DTSTART:" + formatter.format(getDateTimeStart()));
-//        properties2.add(100000, "END:" + name());
-//
-//        properties.add(new Pair(0, "BEGIN:" + name()));
-//        properties.add(new Pair(100, "DTSTAMP:" + formatter.format(getDateTimeStamp())));
-//        if (getDateTimeCreated() != null) properties.add(new Pair(200, "CREATED:" + formatter.format(getDateTimeCreated())));
-//        properties.add(new Pair(300, "UID:" + getUniqueIdentifier()));
-//        if (getDateTimeLastModified() != null) properties.add(new Pair(400, "LAST-MODIFIED:" + formatter.format(getDateTimeLastModified())));
-//        // 500 DESCRIPTION - VEVENT
-//        // Different toString? - add to properties list?
-//        properties.add(new Pair(600, "SUMMARY:" + getSummary()));
-//        if (getDateTimeLastModified() != null) properties.add(new Pair(700, "DTSTART:" + formatter.format(getDateTimeStart())));
-//        properties.add(new Pair(100000, "END:" + name()));
-//
-//        builder.append("BEGIN:" + name() + System.lineSeparator());
-//        builder.append("DTSTAMP:" + formatter.format(getDateTimeStamp()) + System.lineSeparator());
-//        if (getDateTimeCreated() != null) builder.append("CREATED:" + formatter.format(getDateTimeCreated()) + System.lineSeparator()); // optional
-//        builder.append("UID:" + getUniqueIdentifier() + System.lineSeparator());
-//        if (getDateTimeLastModified() != null) builder.append("LAST-MODIFIED:" + formatter.format(getDateTimeLastModified()) + System.lineSeparator()); // optional
-//        if (getSummary() != null) builder.append("SUMMARY:" + getSummary() + System.lineSeparator());
-//        builder.append("DTSTART:" + formatter.format(getDateTimeStart()) + System.lineSeparator());
-//        
-//        builder.append("END:" + name());
-//        
-//        return properties
-//                .stream()
-//                .sorted()
-//                .map(p -> p.getValue() + System.lineSeparator())
-//                .collect(Collectors.joining());
-////        return builder.toString();
-//    }
-    protected List<Pair> addPropertyStrings(List<Pair> properties)
+    Map<String, String> addProperties()
     {
-        if (getDateTimeStart() != null) properties.add(new Pair(100, "DTSTART:" + formatter.format(getDateTimeStart())));
-        if (getRRule() != null) properties.add(new Pair(300, "RRULE:" + getRRule().toString()));
-        if (getRDate() != null) properties.add(new Pair(310, "RDATE:" + getRDate().toString()));
-        if (getExDate() != null) properties.add(new Pair(320, "EXDATE:" + getExDate().toString()));
-        properties.add(new Pair(400, "DTSTAMP:" + formatter.format(getDateTimeStamp())));
-        properties.add(new Pair(500, "UID:" + getUniqueIdentifier()));
-        if (getDateTimeCreated() != null) properties.add(new Pair(600, "CREATED:" + formatter.format(getDateTimeCreated())));
-        if (getDateTimeLastModified() != null) properties.add(new Pair(800, "LAST-MODIFIED:" + formatter.format(getDateTimeLastModified())));
-        if (getLocation() != null) properties.add(new Pair(900, "LOCATION:" + getLocation()));
-        if (getSummary() != null) properties.add(new Pair(1000, "SUMMARY:" + getSummary()));
-        if (getComment() != null) properties.add(new Pair(1300, "COMMENT:" + getComment()));
-        if (getCategories() != null) properties.add(new Pair(1400, "CATEGORIES:" + getCategories()));
+        Map<String, String> properties = new HashMap<String, String>();
+        if (getDateTimeStart() != null) properties.put(dateTimeStartProperty().getName(), FORMATTER.format(getDateTimeStart()));
+
+//        if (getDateTimeStart() != null) properties.add(new Pair(100, "DTSTART:" + FORMATTER.format(getDateTimeStart())));
+//        if (getRRule() != null) properties.add(new Pair(600, "RRULE:" + getRRule().toString()));
+//        if (getRDate() != null) properties.add(new Pair(700, "RDATE:" + getRDate().toString()));
+//        if (getExDate() != null) properties.add(new Pair(800, "EXDATE:" + getExDate().toString()));
+//        properties.add(new Pair(300, "DTSTAMP:" + FORMATTER.format(getDateTimeStamp())));
+//        properties.add(new Pair(700, "UID:" + getUniqueIdentifier()));
+//        if (getDateTimeCreated() != null) properties.add(new Pair(400, "CREATED:" + FORMATTER.format(getDateTimeCreated())));
+//        if (getDateTimeLastModified() != null) properties.add(new Pair(500, "LAST-MODIFIED:" + FORMATTER.format(getDateTimeLastModified())));
+//        if (getDateTimeRecurrence() != null) properties.add(new Pair(600, "RECURRENCE-ID:" + FORMATTER.format(getDateTimeRecurrence())));
+//        if (getLocation() != null) properties.add(new Pair(900, "LOCATION:" + getLocation()));
+//        if (getSummary() != null) properties.add(new Pair(1000, "SUMMARY:" + getSummary()));
+//        if (getComment() != null) properties.add(new Pair(1300, "COMMENT:" + getComment()));
+//        if (getCategories() != null) properties.add(new Pair(1400, "CATEGORIES:" + getCategories()));
         // 500 DESCRIPTION - VEVENT
         // Different toString? - add to properties list?
         return properties;

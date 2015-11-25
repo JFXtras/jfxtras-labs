@@ -2,7 +2,6 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -13,12 +12,14 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 
 /**
@@ -31,9 +32,6 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
  *
  */
 public class RRule {
-
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
-    
     
 //    public LocalDateTimeRange getDateTimeRange() { return appointmentDateTimeRange; }
 //    private LocalDateTimeRange appointmentDateTimeRange;
@@ -195,6 +193,14 @@ public class RRule {
     {
         StringBuilder builder = new StringBuilder();
         builder.append(getFrequency().toString());
+        if (getCount() > 0) builder.append(";COUNT=" + getCount());
+        if (getUntil() != null) builder.append(";UNTIL=" + VComponent.FORMATTER.format(getUntil()));
+        String rules = getFrequency()
+                .getRules()
+                .stream()
+                .map(r -> ":" + r.toString())
+                .collect(Collectors.joining());
+        builder.append(rules);
         return builder.toString();
     }
 
@@ -205,7 +211,6 @@ public class RRule {
      * first date/time (DTSTART) in the sequence. */
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
-//        System.out.println("getRecurrences().size(): " + getInstances().size());
         Stream<LocalDateTime> filteredStream = (getInstances().size() > 0) ?
                 frequency.stream(startDateTime).filter(d -> ! getInstances().contains(d))
                : frequency.stream(startDateTime);
@@ -246,25 +251,4 @@ public class RRule {
     public static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
        return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
     }
-
-//        /**
-//         * A Datetime range.  The range of dates within the recurrence set to be included in
-//         * the stream
-//         */
-//        static public class LocalDateTimeRange
-//        {
-//            public LocalDateTimeRange(LocalDateTime start, LocalDateTime end)
-//            {
-//                this.start = start;
-//                this.end = end;
-//            }
-//            
-//            public LocalDateTime getStartLocalDateTime() { return start; }
-//            final LocalDateTime start;
-//            
-//            public LocalDateTime getEndLocalDateTime() { return end; }
-//            final LocalDateTime end; 
-//
-//        }
-
 }

@@ -4,15 +4,20 @@ import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 
 /**
  * Parent calendar component, VEVENT
@@ -86,7 +91,7 @@ public abstract class VEvent extends VComponent
      *  MUST attend this meeting.\nRSVP to team leader.
      */
     public StringProperty descriptionProperty() { return descriptionProperty; }
-    final private StringProperty descriptionProperty = new SimpleStringProperty(this, "description");
+    final private StringProperty descriptionProperty = new SimpleStringProperty(this, "DESCRIPTION");
     public String getDescription() { return descriptionProperty.getValue(); }
     public void setDescription(String value) { descriptionProperty.setValue(value); }
 //    public T withDescription(String value) { setDescription(value); return (T)this; } 
@@ -97,13 +102,18 @@ public abstract class VEvent extends VComponent
      * converted to seconds.  This value is used exclusively internally.  Any specified DTEND is converted to 
      * durationInSeconds,
      * */
-    final private SimpleIntegerProperty durationInSeconds = new SimpleIntegerProperty(this, "durationProperty");
-    public SimpleIntegerProperty durationInSecondsProperty() { return durationInSeconds; }
-    public Integer getDurationInSeconds() { return durationInSeconds.getValue(); }
-    public void setDurationInSeconds(Integer value) { durationInSeconds.setValue(value); }
+    final private SimpleLongProperty durationInSeconds = new SimpleLongProperty(this, "DURATION");
+    public SimpleLongProperty durationInSecondsProperty() { return durationInSeconds; }
+    public Long getDurationInSeconds() { return durationInSeconds.getValue(); }
+    public void setDurationInSeconds(Long value)
+    {
+        durationInSeconds.setValue(value);
+        LocalDateTime newDateTimeEnd = getDateTimeStart().plusSeconds(getDurationInSeconds());
+        setDateTimeEnd(newDateTimeEnd);
+    }
     public void setDurationInSeconds(String value)
     { // parse ISO.8601.2004 period string into period of seconds (no support for Y (years) or M (months).
-        int seconds = 0;
+        long seconds = 0;
         Pattern p = Pattern.compile("([0-9]+)|([A-Z])");
         Matcher m = p.matcher(value);
         List<String> tokens = new ArrayList<String>();
@@ -150,32 +160,38 @@ public abstract class VEvent extends VComponent
 //    public T withDurationInSeconds(String value) { setDurationInSeconds(value); return (T)this; } 
     
     /**
-     * Date-Time End, DTEND from RFC 5545 iCalendar 3.8.2.2 page 95
+     * DTEND, Date-Time End. from RFC 5545 iCalendar 3.8.2.2 page 95
      * Specifies the date and time that a calendar component ends.
      * If entered this value is used to calculate the durationInSeconds, which is used
      * internally.
      */
-    public void setDateTimeEnd(LocalDateTime dtEnd)
-    {
-        long seconds = ChronoUnit.SECONDS.between(getDateTimeStart(), dtEnd);
-        System.out.println("seconds: " + seconds);
-        setDurationInSeconds((int) seconds);
-    }
+    final private ObjectProperty<LocalDateTime> dateTimeEnd = new SimpleObjectProperty<LocalDateTime>(this, "DTEND");
+    public ObjectProperty<LocalDateTime> dateTimeEndProperty() { return dateTimeEnd; }
+    public void setDateTimeEnd(LocalDateTime dtEnd) { dateTimeEnd.set(dtEnd); }
     public void setDateTimeEnd(String dtEnd)
     {
         LocalDateTime dt = iCalendarDateTimeToLocalDateTime(dtEnd);
         setDateTimeEnd(dt);
     }
-    public LocalDateTime getDateTimeEnd() { return getDateTimeStart().plusSeconds(getDurationInSeconds()); }
-    
-    // CONSTRUCTOR
+    public LocalDateTime getDateTimeEnd() { return dateTimeEnd.get(); }
+    private final ChangeListener<? super LocalDateTime> dateTimeEndlistener = (obs, oldSel, newSel) ->
+    { // listener to synch dateTimeEnd and durationInSeconds
+        long seconds = ChronoUnit.SECONDS.between(getDateTimeStart(), newSel);
+        setDurationInSeconds(seconds);
+    };
+
+    // CONSTRUCTORS
     public VEvent(VEvent vevent)
     {
         super(vevent);
         copy(vevent, this);
+        dateTimeEndProperty().addListener(dateTimeEndlistener);
     }
     
-    public VEvent() { }
+    public VEvent()
+    {
+        dateTimeEndProperty().addListener(dateTimeEndlistener);
+    }
     
     /** Deep copy all fields from source to destination */
     private static void copy(VEvent source, VEvent destination)
@@ -214,29 +230,23 @@ public abstract class VEvent extends VComponent
     @Override
     public String toString()
     {
-        List<Pair> properties = new ArrayList<Pair>();
-        addPropertyStrings(properties);
-        return properties
-                .stream()
+        Map<String, String> properties = addProperties();
+
+        // Make properties string
+        String propertiesString = properties.entrySet()
+                .stream() 
+                .map(p -> p.getKey() + ":" + p.getValue() + System.lineSeparator())
                 .sorted()
-                .map(p -> p.getValue() + System.lineSeparator())
                 .collect(Collectors.joining());
-//        StringBuilder builder = new StringBuilder();
-//        builder.append("BEGIN:VEVENT" + System.lineSeparator());
-//        builder.append(super.toString());
-//        builder.append("DESCRIPTION:" + getDescription() + System.lineSeparator());
-//        builder.append("DTEND:" + VComponent.formatter.format(getDateTimeEnd()) + System.lineSeparator());
-//        builder.append("END:VEVENT");
-//        return builder.toString();
+        return "VEVENT:BEGIN" + System.lineSeparator() + propertiesString + "VEVENT:END";
     }
     @Override
-    protected List<Pair> addPropertyStrings(List<Pair> properties)
+    protected Map<String, String> addProperties()
     {
-        super.addPropertyStrings(properties);
-        properties.add(new Pair(0, "BEGIN:VEVENT"));
-        if (getDateTimeEnd() != null) properties.add(new Pair(200, "DTEND:" + formatter.format(getDateTimeEnd())));
-        properties.add(new Pair(700, "DESCRIPTION:" + getDescription()));
-        properties.add(new Pair(100000, "END:VEVENT"));
+        Map<String, String> properties = new HashMap<String, String>();
+        properties.putAll(super.addProperties());
+        if (getDescription() != null) properties.put(descriptionProperty().getName(), getDescription());
+        properties.put(dateTimeEndProperty().getName(), FORMATTER.format(getDateTimeEnd()));
         return properties;
     }
     

@@ -60,7 +60,7 @@ public abstract class ICalendarTestAbstract
         vEvent.setDateTimeLastModified(LocalDateTime.of(2015, 11, 10, 18, 30));
         vEvent.setUniqueIdentifier("20151109T082900-0@jfxtras.org");
         vEvent.setAppointmentGroup(appointmentGroups.get(13));
-        vEvent.setDurationInSeconds(3600);
+        vEvent.setDurationInSeconds(3600L);
         vEvent.setDescription("Yearly1 Description");
         vEvent.setSummary("Yearly1 Summary");
         vEvent.setAppointmentClass(clazz);
@@ -327,7 +327,7 @@ public abstract class ICalendarTestAbstract
         VEventImpl vEvent = new VEventImpl();
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
         vEvent.setAppointmentGroup(appointmentGroups.get(3));
-        vEvent.setDurationInSeconds(2700);
+        vEvent.setDurationInSeconds(2700L);
         vEvent.setDescription("Weekly1 Description");
         vEvent.setSummary("Weekly1 Summary");
         vEvent.setAppointmentClass(clazz);
@@ -347,7 +347,7 @@ public abstract class ICalendarTestAbstract
         VEventImpl vEvent = new VEventImpl();
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0));
         vEvent.setAppointmentGroup(appointmentGroups.get(3));
-        vEvent.setDurationInSeconds(2700);
+        vEvent.setDurationInSeconds(2700L);
         vEvent.setDescription("Weekly1 Description");
         vEvent.setSummary("Weekly1 Summary");
         vEvent.setAppointmentClass(clazz);
@@ -365,7 +365,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl();
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDurationInSeconds(3600);
+        vEvent.setDurationInSeconds(3600L);
         vEvent.setDescription("Daily1 Description");
         vEvent.setSummary("Daily1 Summary");
         vEvent.setAppointmentClass(clazz);
@@ -381,7 +381,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl();
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDurationInSeconds(5400);
+        vEvent.setDurationInSeconds(5400L);
         vEvent.setAppointmentGroup(appointmentGroups.get(3));
         vEvent.setDescription("Daily2 Description");
         vEvent.setSummary("Daily2 Summary");
@@ -450,7 +450,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl();
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDurationInSeconds(5400);
+        vEvent.setDurationInSeconds(5400L);
         vEvent.setAppointmentGroup(appointmentGroups.get(3));
         vEvent.setDescription("Daily6 Description");
         vEvent.setSummary("Daily6 Summary");
@@ -469,7 +469,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl();
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDurationInSeconds(3600);
+        vEvent.setDurationInSeconds(3600L);
         vEvent.setAppointmentClass(clazz);
         return vEvent;
     }
@@ -486,7 +486,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl();
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDurationInSeconds(3600);
+        vEvent.setDurationInSeconds(3600L);
         RDate rDate = new RDate().withDates(LocalDateTime.of(2015, 11, 12, 10, 0), LocalDateTime.of(2015, 11, 14, 12, 0));
         vEvent.setRDate(rDate);
         return vEvent;
