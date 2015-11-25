@@ -1,6 +1,5 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 
 /**
@@ -9,12 +8,14 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
  * @author David Bal
  *
  */
-public abstract class ByRuleAbstract implements Rule {
-
-    /** Original stream of date/times before modification */
-//    Stream<LocalDateTime> getInStream() { return inStream; }
-//    private Stream<LocalDateTime> inStream;
-
+public abstract class ByRuleAbstract implements Rule
+{
+    /** Order in which ByRules should be processed */
+    public Integer getSortOrder() { return sortOrder; }
+    private Integer sortOrder;
+    protected void setSortOrder(Integer sortOrder) { this.sortOrder = sortOrder; }
+    
+    /** Parent Frequency */
     public Frequency getFrequency() { return frequency; }
     private Frequency frequency;
         
@@ -26,5 +27,10 @@ public abstract class ByRuleAbstract implements Rule {
     
     ByRuleAbstract() { }
 
+    @Override
+    public int compareTo(Rule byRule)
+    {
+        return getSortOrder().compareTo(byRule.getSortOrder());
+    }
 
 }

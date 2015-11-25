@@ -13,4 +13,7 @@ public class Weekly extends FrequencyAbstract
     
     // Constructor
     public Weekly() { setChronoUnit(WEEKS); }
+
+    @Override
+    public String toString() { return "FREQ=WEEKLY"; }
 }

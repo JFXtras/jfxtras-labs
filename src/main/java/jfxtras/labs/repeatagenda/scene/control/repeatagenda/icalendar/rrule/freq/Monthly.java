@@ -12,5 +12,8 @@ public class Monthly extends FrequencyAbstract
     @Override public TemporalAdjuster getAdjuster() { return monthlyAdjuster; }
         
     // Constructor
-    public Monthly() { setChronoUnit(MONTHS); }    
+    public Monthly() { setChronoUnit(MONTHS); }
+    
+    @Override
+    public String toString() { return "FREQ=MONTHLY"; }
 }

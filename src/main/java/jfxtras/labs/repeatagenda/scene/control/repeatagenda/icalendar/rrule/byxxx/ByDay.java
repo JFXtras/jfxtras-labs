@@ -22,7 +22,6 @@ import java.util.stream.Stream;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 
 /** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */
@@ -67,6 +66,7 @@ public class ByDay extends ByRuleAbstract
     {
         super(frequency);
         setByDayPair(byDayPairs);
+        setSortOrder(40);
     }
 
     /** Constructor that uses DayOfWeek values without a preceding integer.  All days of the 
@@ -74,6 +74,7 @@ public class ByDay extends ByRuleAbstract
     public ByDay(Frequency frequency, DayOfWeek... daysOfWeek)
     {
         super(frequency);
+        setSortOrder(40);
         byDayPairs = new ByDayPair[daysOfWeek.length];
         int i=0;
         for (DayOfWeek d : daysOfWeek)
@@ -150,7 +151,7 @@ public class ByDay extends ByRuleAbstract
                     { // add every matching day of week in month
                         sortNeeded = true;
                         Month myMonth = date.getMonth();
-                        for (int weekNum=1; weekNum<5; weekNum++)
+                        for (int weekNum=1; weekNum<=5; weekNum++)
                         {
                             LocalDateTime newDate = date.with(TemporalAdjusters.dayOfWeekInMonth(weekNum, byDayPair.dayOfWeek));
                             if (newDate.getMonth() == myMonth && ! newDate.isBefore(startDateTime)) dates.add(newDate);

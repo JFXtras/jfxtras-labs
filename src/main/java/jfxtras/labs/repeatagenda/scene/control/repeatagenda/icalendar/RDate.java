@@ -22,7 +22,6 @@ public class RDate extends RecurrenceComponent<RDate>
 {
             
     /** Remove date/times in exDates set */
-    @Override
     public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
     {
         if (inStream == null) return getDates().stream().filter(d -> ! d.isBefore(startDateTime));

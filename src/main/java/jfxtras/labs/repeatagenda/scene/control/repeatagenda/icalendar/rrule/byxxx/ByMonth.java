@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 
 /** BYMONTH from RFC 5545, iCalendar 3.3.10, page 42 */
@@ -25,6 +24,7 @@ public class ByMonth extends ByRuleAbstract
     {
         super(frequency);
         setMonths(months);
+        setSortOrder(0);
     }
 
     @Override

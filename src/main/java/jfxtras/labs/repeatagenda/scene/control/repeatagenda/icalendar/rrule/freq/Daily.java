@@ -12,5 +12,8 @@ public class Daily extends FrequencyAbstract
     @Override public TemporalAdjuster getAdjuster() { return dailyAdjuster; }
 
     // Constructor
-    public Daily() { setChronoUnit(DAYS); }  
+    public Daily() { setChronoUnit(DAYS); }
+    
+    @Override
+    public String toString() { return "FREQ=DAILY"; }
 }

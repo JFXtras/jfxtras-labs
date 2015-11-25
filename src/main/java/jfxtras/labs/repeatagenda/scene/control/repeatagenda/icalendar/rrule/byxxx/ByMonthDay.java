@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 
 /** BYMONTHDAY from RFC 5545, iCalendar */
@@ -31,6 +30,7 @@ public class ByMonthDay extends ByRuleAbstract
      * If not setting daysOfMonth then defaults to startLocalDateTime for dayOfMonth */
     public ByMonthDay(Frequency frequency) {
         super(frequency);
+        setSortOrder(30);
     }
 
     /** Constructor 
@@ -39,6 +39,7 @@ public class ByMonthDay extends ByRuleAbstract
     {
         super(frequency);
         setDaysOfMonth(daysOfMonth);
+        setSortOrder(30);
     }
     public ByMonthDay() { }
 

@@ -188,7 +188,14 @@ public class RRule {
 
         System.out.println("RRule " + countEquals + " " + frequencyEquals + " " + recurrencesEquals);
         return countEquals && frequencyEquals && recurrencesEquals;
-                
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.append(getFrequency().toString());
+        return builder.toString();
     }
 
     /** Stream of date/times made after applying all modification rules.

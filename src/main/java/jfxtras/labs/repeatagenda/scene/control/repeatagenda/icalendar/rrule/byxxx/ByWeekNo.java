@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 
 /** BYWEEKNO from RFC 5545, iCalendar 3.3.10, page 42 */
@@ -45,6 +44,7 @@ public class ByWeekNo extends ByRuleAbstract
     {
         super(frequency);
         setWeekNumbers(weekNumbers);
+        setSortOrder(10);
     }
 
     @Override

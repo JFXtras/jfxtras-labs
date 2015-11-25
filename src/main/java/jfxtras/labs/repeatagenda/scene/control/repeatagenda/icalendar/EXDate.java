@@ -14,7 +14,6 @@ import java.util.stream.Stream;
 public class EXDate extends RecurrenceComponent<EXDate>
 {    
     /** Remove date/times in exDates set */
-    @Override
     public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
     {
         System.out.println("EXDate:");

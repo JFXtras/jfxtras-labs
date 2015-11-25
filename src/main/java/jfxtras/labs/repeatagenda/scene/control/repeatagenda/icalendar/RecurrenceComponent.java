@@ -10,12 +10,12 @@ import java.util.Set;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.Rule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
 
 /** For EXDate and RDate
  * Limitation: only DATE-TIME supported.  DATE is not supported.
  * @param <T>*/
-public abstract class RecurrenceComponent<T> implements Rule
+public abstract class RecurrenceComponent<T>
 {
     /**
      * EXDATE or RDATE: Set of date/times included or excepted for recurring events, to-dos, journal entries.
@@ -46,8 +46,6 @@ public abstract class RecurrenceComponent<T> implements Rule
         return (T) this;
     }
     
-
-    @Override
     public void copyTo(Rule destination) {
         // TODO Auto-generated method stub
         

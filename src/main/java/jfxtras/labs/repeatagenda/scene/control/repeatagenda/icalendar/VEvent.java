@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -74,10 +75,7 @@ import javafx.beans.property.StringProperty;
  *
  */
 public abstract class VEvent extends VComponent
-{
-    @Override
-    public String name() { return "VEVENT"; }
-    
+{   
     /**
      * DESCRIPTION: RFC 5545 iCalendar 3.8.1.12. page 84
      * This property provides a more complete description of the
@@ -216,7 +214,30 @@ public abstract class VEvent extends VComponent
     @Override
     public String toString()
     {
-        return super.toString();
+        List<Pair> properties = new ArrayList<Pair>();
+        addPropertyStrings(properties);
+        return properties
+                .stream()
+                .sorted()
+                .map(p -> p.getValue() + System.lineSeparator())
+                .collect(Collectors.joining());
+//        StringBuilder builder = new StringBuilder();
+//        builder.append("BEGIN:VEVENT" + System.lineSeparator());
+//        builder.append(super.toString());
+//        builder.append("DESCRIPTION:" + getDescription() + System.lineSeparator());
+//        builder.append("DTEND:" + VComponent.formatter.format(getDateTimeEnd()) + System.lineSeparator());
+//        builder.append("END:VEVENT");
+//        return builder.toString();
+    }
+    @Override
+    protected List<Pair> addPropertyStrings(List<Pair> properties)
+    {
+        super.addPropertyStrings(properties);
+        properties.add(new Pair(0, "BEGIN:VEVENT"));
+        if (getDateTimeEnd() != null) properties.add(new Pair(200, "DTEND:" + formatter.format(getDateTimeEnd())));
+        properties.add(new Pair(700, "DESCRIPTION:" + getDescription()));
+        properties.add(new Pair(100000, "END:VEVENT"));
+        return properties;
     }
     
     @Override

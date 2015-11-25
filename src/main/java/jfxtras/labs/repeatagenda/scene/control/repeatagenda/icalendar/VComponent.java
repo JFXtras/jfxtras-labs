@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
@@ -276,7 +275,7 @@ public abstract class VComponent
     public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
     private static String datePattern = "yyyyMMdd";
     private static String timePattern = "HHmmss";
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern + "'T'" + timePattern);
+    protected static DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern + "'T'" + timePattern);
     private static Integer nextKey = 0;
     private Callback<Void, String> uidGeneratorCallback = (Void) ->
     { // default UID generator callback
@@ -388,45 +387,76 @@ public abstract class VComponent
                 && summaryEquals && uniqueIdentifierEquals && rruleEquals;
     }
 
-    @Override
-    public String toString()
+//    @Override
+//    public String toString()
+//    {
+//        List<String> properties2 = new ArrayList<String>();
+////        List<Pair> properties = new ArrayList<Pair>();
+//        StringBuilder builder = new StringBuilder();
+//
+//        properties2.add(0, "BEGIN:" + name());
+//        properties2.add(100, "DTSTAMP:" + formatter.format(getDateTimeStamp()));
+//        if (getDateTimeCreated() != null) properties2.add(200, "CREATED:" + formatter.format(getDateTimeCreated()));
+//        properties2.add(300, "UID:" + getUniqueIdentifier()));
+//        if (getDateTimeLastModified() != null) properties2.add(400, "LAST-MODIFIED:" + formatter.format(getDateTimeLastModified()));
+//        // 500 DESCRIPTION - VEVENT
+//        // Different toString? - add to properties2 list?
+//        properties2.add(600, "SUMMARY:" + getSummary());
+//        if (getDateTimeLastModified() != null) properties2.add(700, "DTSTART:" + formatter.format(getDateTimeStart()));
+//        properties2.add(100000, "END:" + name());
+//
+//        properties.add(new Pair(0, "BEGIN:" + name()));
+//        properties.add(new Pair(100, "DTSTAMP:" + formatter.format(getDateTimeStamp())));
+//        if (getDateTimeCreated() != null) properties.add(new Pair(200, "CREATED:" + formatter.format(getDateTimeCreated())));
+//        properties.add(new Pair(300, "UID:" + getUniqueIdentifier()));
+//        if (getDateTimeLastModified() != null) properties.add(new Pair(400, "LAST-MODIFIED:" + formatter.format(getDateTimeLastModified())));
+//        // 500 DESCRIPTION - VEVENT
+//        // Different toString? - add to properties list?
+//        properties.add(new Pair(600, "SUMMARY:" + getSummary()));
+//        if (getDateTimeLastModified() != null) properties.add(new Pair(700, "DTSTART:" + formatter.format(getDateTimeStart())));
+//        properties.add(new Pair(100000, "END:" + name()));
+//
+//        builder.append("BEGIN:" + name() + System.lineSeparator());
+//        builder.append("DTSTAMP:" + formatter.format(getDateTimeStamp()) + System.lineSeparator());
+//        if (getDateTimeCreated() != null) builder.append("CREATED:" + formatter.format(getDateTimeCreated()) + System.lineSeparator()); // optional
+//        builder.append("UID:" + getUniqueIdentifier() + System.lineSeparator());
+//        if (getDateTimeLastModified() != null) builder.append("LAST-MODIFIED:" + formatter.format(getDateTimeLastModified()) + System.lineSeparator()); // optional
+//        if (getSummary() != null) builder.append("SUMMARY:" + getSummary() + System.lineSeparator());
+//        builder.append("DTSTART:" + formatter.format(getDateTimeStart()) + System.lineSeparator());
+//        
+//        builder.append("END:" + name());
+//        
+//        return properties
+//                .stream()
+//                .sorted()
+//                .map(p -> p.getValue() + System.lineSeparator())
+//                .collect(Collectors.joining());
+////        return builder.toString();
+//    }
+    protected List<Pair> addPropertyStrings(List<Pair> properties)
     {
-        List<Pair> properties = new ArrayList<Pair>();
-        StringBuilder builder = new StringBuilder();
-
-        properties.add(new Pair(0, "BEGIN:" + name()));
-        properties.add(new Pair(100, "DTSTAMP:" + formatter.format(getDateTimeStamp())));
-        if (getDateTimeCreated() != null) properties.add(new Pair(200, "CREATED:" + formatter.format(getDateTimeCreated())));
-        properties.add(new Pair(300, "UID:" + getUniqueIdentifier()));
-        if (getDateTimeLastModified() != null) properties.add(new Pair(400, "LAST-MODIFIED:" + formatter.format(getDateTimeLastModified())));
+        if (getDateTimeStart() != null) properties.add(new Pair(100, "DTSTART:" + formatter.format(getDateTimeStart())));
+        if (getRRule() != null) properties.add(new Pair(300, "RRULE:" + getRRule().toString()));
+        if (getRDate() != null) properties.add(new Pair(310, "RDATE:" + getRDate().toString()));
+        if (getExDate() != null) properties.add(new Pair(320, "EXDATE:" + getExDate().toString()));
+        properties.add(new Pair(400, "DTSTAMP:" + formatter.format(getDateTimeStamp())));
+        properties.add(new Pair(500, "UID:" + getUniqueIdentifier()));
+        if (getDateTimeCreated() != null) properties.add(new Pair(600, "CREATED:" + formatter.format(getDateTimeCreated())));
+        if (getDateTimeLastModified() != null) properties.add(new Pair(800, "LAST-MODIFIED:" + formatter.format(getDateTimeLastModified())));
+        if (getLocation() != null) properties.add(new Pair(900, "LOCATION:" + getLocation()));
+        if (getSummary() != null) properties.add(new Pair(1000, "SUMMARY:" + getSummary()));
+        if (getComment() != null) properties.add(new Pair(1300, "COMMENT:" + getComment()));
+        if (getCategories() != null) properties.add(new Pair(1400, "CATEGORIES:" + getCategories()));
         // 500 DESCRIPTION - VEVENT
         // Different toString? - add to properties list?
-        properties.add(new Pair(600, "SUMMARY:" + getSummary()));
-        if (getDateTimeLastModified() != null) properties.add(new Pair(700, "DTSTART:" + formatter.format(getDateTimeStart())));
-        properties.add(new Pair(100000, "END:" + name()));
-
-        builder.append("BEGIN:" + name() + System.lineSeparator());
-        builder.append("DTSTAMP:" + formatter.format(getDateTimeStamp()) + System.lineSeparator());
-        if (getDateTimeCreated() != null) builder.append("CREATED:" + formatter.format(getDateTimeCreated()) + System.lineSeparator()); // optional
-        builder.append("UID:" + getUniqueIdentifier() + System.lineSeparator());
-        if (getDateTimeLastModified() != null) builder.append("LAST-MODIFIED:" + formatter.format(getDateTimeLastModified()) + System.lineSeparator()); // optional
-        if (getSummary() != null) builder.append("SUMMARY:" + getSummary() + System.lineSeparator());
-        builder.append("DTSTART:" + formatter.format(getDateTimeStart()) + System.lineSeparator());
-        
-        builder.append("END:" + name());
-        
-        return properties
-                .stream()
-                .sorted()
-                .map(p -> p.getValue() + System.lineSeparator())
-                .collect(Collectors.joining());
-//        return builder.toString();
+        return properties;
     }
+
     protected class Pair implements Comparable<Pair>
     {
-        public Pair(int i, String string) {
-            setValue(string);
-            setSort(i);
+        public Pair(int sort, String value) {
+            setValue(value);
+            setSort(sort);
         }
 
         public String getValue() { return value; }
@@ -443,8 +473,7 @@ public abstract class VComponent
             int sortTest = pair.getSort();
             return (getSort() > sortTest) ? 1 :
                 (getSort() < sortTest) ? -1 : 0;
-        }
-        
+        }   
     }
     
     public void parse(String s)
