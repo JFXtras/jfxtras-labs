@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
@@ -155,7 +156,7 @@ public abstract class VComponent
 //    public VEvent withComment(String value) { setComment(value); return this; }
 
     /**
-     * Date-Time Created, CREATED from RFC 5545 iCalendar 3.8.7.1 page 136
+     * CREATED: Date-Time Created, from RFC 5545 iCalendar 3.8.7.1 page 136
      * This property specifies the date and time that the calendar information was created.
      * This is analogous to the creation date and time for a file in the file system.
      */
@@ -165,7 +166,7 @@ public abstract class VComponent
     public void setDateTimeCreated(LocalDateTime dtCreated) { this.dateTimeCreated.set(dtCreated); }
     
     /**
-     * Date-Time Stamp, DTSTAMP from RFC 5545 iCalendar 3.8.7.2 page 137
+     * DTSTAMP: Date-Time Stamp, from RFC 5545 iCalendar 3.8.7.2 page 137
      * This property specifies the date and time that the instance of the
      * iCalendar object was created
      */
@@ -175,7 +176,7 @@ public abstract class VComponent
     public void setDateTimeStamp(LocalDateTime dtStamp) { this.dateTimeStamp.set(dtStamp); }
     
     /**
-     * Date-Time Start, DTSTART from RFC 5545 iCalendar 3.8.2.4 page 97
+     * DTSTART: Date-Time Start, from RFC 5545 iCalendar 3.8.2.4 page 97
      * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
      * start date/times of the repeating events.
      */
@@ -191,6 +192,16 @@ public abstract class VComponent
     private EXDate exDate;
     public void setExDate(EXDate exDate) { this.exDate = exDate; }
     public EXDate getExDate() { return exDate; }
+
+    /**
+     * LAST-MODIFIED: Date-Time Last Modified, from RFC 5545 iCalendar 3.8.7.3 page 138
+     * This property specifies the date and time that the information associated with
+     * the calendar component was last revised.
+     */
+    final private ObjectProperty<LocalDateTime> dateTimeLastModified = new SimpleObjectProperty<LocalDateTime>();
+    public ObjectProperty<LocalDateTime> dateTimeLastModifiedProperty() { return dateTimeLastModified; }
+    public LocalDateTime getDateTimeLastModified() { return dateTimeLastModified.getValue(); }
+    public void setDateTimeLastModified(LocalDateTime dtLastModified) { this.dateTimeLastModified.set(dtLastModified); }
     
     /**
      * LOCATION: RFC 5545 iCalendar 3.8.1.12. page 87
@@ -270,8 +281,8 @@ public abstract class VComponent
     private Callback<Void, String> uidGeneratorCallback = (Void) ->
     { // default UID generator callback
         String dateTime = formatter.format(LocalDateTime.now());
-        String domain = "jfxtras-agenda";
-        return dateTime + nextKey++ + domain;
+        String domain = "jfxtras.org";
+        return dateTime + "-" + nextKey++ + domain;
     };
     public void setUidGeneratorCallback(Callback<Void, String> uidCallback) { this.uidGeneratorCallback = uidCallback; }
     /** assign uid by calling the uidGeneratorCallback */
@@ -380,12 +391,60 @@ public abstract class VComponent
     @Override
     public String toString()
     {
+        List<Pair> properties = new ArrayList<Pair>();
         StringBuilder builder = new StringBuilder();
+
+        properties.add(new Pair(0, "BEGIN:" + name()));
+        properties.add(new Pair(100, "DTSTAMP:" + formatter.format(getDateTimeStamp())));
+        if (getDateTimeCreated() != null) properties.add(new Pair(200, "CREATED:" + formatter.format(getDateTimeCreated())));
+        properties.add(new Pair(300, "UID:" + getUniqueIdentifier()));
+        if (getDateTimeLastModified() != null) properties.add(new Pair(400, "LAST-MODIFIED:" + formatter.format(getDateTimeLastModified())));
+        // 500 DESCRIPTION - VEVENT
+        // Different toString? - add to properties list?
+        properties.add(new Pair(600, "SUMMARY:" + getSummary()));
+        if (getDateTimeLastModified() != null) properties.add(new Pair(700, "DTSTART:" + formatter.format(getDateTimeStart())));
+        properties.add(new Pair(100000, "END:" + name()));
+
         builder.append("BEGIN:" + name() + System.lineSeparator());
         builder.append("DTSTAMP:" + formatter.format(getDateTimeStamp()) + System.lineSeparator());
-        builder.append("CREATED:" + formatter.format(getDateTimeCreated()) + System.lineSeparator());
+        if (getDateTimeCreated() != null) builder.append("CREATED:" + formatter.format(getDateTimeCreated()) + System.lineSeparator()); // optional
+        builder.append("UID:" + getUniqueIdentifier() + System.lineSeparator());
+        if (getDateTimeLastModified() != null) builder.append("LAST-MODIFIED:" + formatter.format(getDateTimeLastModified()) + System.lineSeparator()); // optional
+        if (getSummary() != null) builder.append("SUMMARY:" + getSummary() + System.lineSeparator());
+        builder.append("DTSTART:" + formatter.format(getDateTimeStart()) + System.lineSeparator());
+        
         builder.append("END:" + name());
-        return builder.toString();
+        
+        return properties
+                .stream()
+                .sorted()
+                .map(p -> p.getValue() + System.lineSeparator())
+                .collect(Collectors.joining());
+//        return builder.toString();
+    }
+    protected class Pair implements Comparable<Pair>
+    {
+        public Pair(int i, String string) {
+            setValue(string);
+            setSort(i);
+        }
+
+        public String getValue() { return value; }
+        private String value;
+        public void setValue(String s) { value = s; }
+        
+        public int getSort() { return sort; }
+        private int sort;
+        public void setSort(int i) { sort = i; }
+
+        @Override
+        public int compareTo(Pair pair)
+        {
+            int sortTest = pair.getSort();
+            return (getSort() > sortTest) ? 1 :
+                (getSort() < sortTest) ? -1 : 0;
+        }
+        
     }
     
     public void parse(String s)

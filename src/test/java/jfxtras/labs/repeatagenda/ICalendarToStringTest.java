@@ -18,7 +18,12 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                               + "DTSTAMP:20151109T083000" + System.lineSeparator()
                               + "CREATED:20151109T082900" + System.lineSeparator()
-                              + "END:VEVENT";
+                              + "UID:20151109T082900-0@jfxtras.org" + System.lineSeparator()
+                              + "LAST-MODIFIED:20151110T183000" + System.lineSeparator()
+//                              + "DESCRIPTION:Yearly1 Description" + System.lineSeparator()
+                              + "SUMMARY:Yearly1 Summary" + System.lineSeparator()
+                              + "DTSTART:20151109T100000" + System.lineSeparator()
+                              + "END:VEVENT" + System.lineSeparator();
         assertEquals(expectedString, madeString);
     }
 }

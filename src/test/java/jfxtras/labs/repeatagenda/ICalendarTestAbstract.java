@@ -57,6 +57,12 @@ public abstract class ICalendarTestAbstract
         vEvent.setDateTimeCreated(LocalDateTime.of(2015, 11, 9, 8, 29));
         vEvent.setDateTimeStamp(LocalDateTime.of(2015, 11, 9, 8, 30));
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        vEvent.setDateTimeLastModified(LocalDateTime.of(2015, 11, 10, 18, 30));
+        vEvent.setUniqueIdentifier("20151109T082900-0@jfxtras.org");
+        vEvent.setAppointmentGroup(appointmentGroups.get(13));
+        vEvent.setDurationInSeconds(3600);
+        vEvent.setDescription("Yearly1 Description");
+        vEvent.setSummary("Yearly1 Summary");
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vEvent.setRRule(rule);
