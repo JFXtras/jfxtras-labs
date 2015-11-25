@@ -9,12 +9,11 @@ import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 
-
-public class ICalendarMiscTest {
-
+public class ICalendarParseStringTest
+{
     /** tests converting ISO.8601.2004 duration string to duration in seconds */
     @Test
-    public void canConvertDurationString()
+    public void canParseDurationString()
     {
         VEventImpl v = new VEventImpl();
         String duration = "P15DT5H0M20S";
@@ -24,7 +23,7 @@ public class ICalendarMiscTest {
     
     /** tests converting ISO.8601.2004 duration string to duration in seconds */
     @Test
-    public void canConvertDurationString2()
+    public void canParseDurationString2()
     {
         VEventImpl v = new VEventImpl();
         String duration = "PT1H30M";
@@ -34,7 +33,7 @@ public class ICalendarMiscTest {
 
     /** tests converting ISO.8601.2004 date time string to LocalDateTime */
     @Test
-    public void canConvertDateTimeString1()
+    public void canParseDateTimeString1()
     {
         VEventImpl v = new VEventImpl();
         String duration = "TZID=America/New_York:19980119T020000";
@@ -45,7 +44,7 @@ public class ICalendarMiscTest {
 
     /** tests converting ISO.8601.2004 date string to LocalDateTime */
     @Test
-    public void canConvertDateTimeString2()
+    public void canParseDateTimeString2()
     {
         VEventImpl v = new VEventImpl();
         String duration = "VALUE=DATE:19980704";
@@ -53,5 +52,4 @@ public class ICalendarMiscTest {
         System.out.println(l);
         assertEquals(l, LocalDateTime.of(1998, 7, 4, 0, 0));
     }
-
 }

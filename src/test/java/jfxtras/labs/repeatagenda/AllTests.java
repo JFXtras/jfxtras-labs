@@ -11,7 +11,7 @@ import org.junit.runners.Suite.SuiteClasses;
               , RepeatEditTest.class
               , RepeatMakeAppointmentsTest.class
               , ICalendarDateTest.class
-              , ICalendarMiscTest.class
+              , ICalendarParseStringTest.class
               , ICalendarDateRangeTest.class
               , ICalendarMakeAppointmentsTest.class
               , ICalendarEditTest.class

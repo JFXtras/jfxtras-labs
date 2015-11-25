@@ -149,6 +149,19 @@ public class VEventImpl extends VEvent
         // stop when too late
         return takeWhile(filteredStream, a -> (getDateTimeRangeEnd() == null) ? true : ! a.isAfter(getDateTimeRangeEnd()));
     }
+    
+    @Override
+    public String toString()
+    {
+        return super.toString();
+    }
+    
+    @Override
+    public void parse(String s)
+    {
+        
+    }
+    
 
 
     /**
@@ -179,7 +192,6 @@ public class VEventImpl extends VEvent
         List<Appointment> madeAppointments = new ArrayList<Appointment>();
         stream(getDateTimeStart())
                 .forEach(d -> {
-                    System.out.println("getAppointmentClass: " + getDurationInSeconds());
                     RepeatableAppointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
                     appt.setStartLocalDateTime(d);
                     appt.setEndLocalDateTime(d.plusSeconds(getDurationInSeconds()));
@@ -240,7 +252,7 @@ public class VEventImpl extends VEvent
             , LocalDateTime dateTimeNew
             , int durationInSecondsNew
             , VEventImpl vEventOld
-            , List<Appointment> appointments
+            , Collection<Appointment> appointments
             , Collection<VEvent> vEvents
             , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
             , Callback<Collection<VEvent>, Void> writeVEventsCallback)
@@ -256,7 +268,9 @@ public class VEventImpl extends VEvent
         switch (rruleType)
         {
         case HAD_REPEAT_BECOMING_INDIVIDUAL:
-            this.setRRule(null);
+            setRRule(null);
+            setRDate(null);
+            setExDate(null);
         case WITH_NEW_REPEAT:
         case INDIVIDUAL:            
             break;
@@ -283,11 +297,10 @@ public class VEventImpl extends VEvent
                     editedFlag = false;
                     break;
                 case THIS_AND_FUTURE:
-                { // this = edited VEvent, vEventOld = former settings, with UNTIL set at start for this.
-
+                { // this is edited VEvent, vEventOld is former settings, with UNTIL set at start for this.
                     
                     // Remove appointments
-                    appointments.removeIf(a -> appointmentInstances().stream().anyMatch(a2 -> a2 == a));
+                    appointments.removeIf(a -> vEventOld.appointmentInstances().stream().anyMatch(a2 -> a2 == a));
                     
                     // modify old VEvent
                     vEvents.add(vEventOld);
@@ -351,33 +364,21 @@ public class VEventImpl extends VEvent
                     setDateTimeStart(dateTimeNew);
                     setDurationInSeconds(durationInSecondsNew);
                     
-                    // Modify COUNT for this (edited) VEvent
+                    // Modify COUNT for this (the edited) VEvent
                     if (getRRule().getCount() > 0)
                     {
-                        final Iterator<LocalDateTime> appointmentIterator = appointmentInstances()
+                        final int newCount = (int) appointmentInstances()
                                 .stream()
                                 .map(a -> a.getStartLocalDateTime())
-                                .iterator();
-                        while (appointmentIterator.hasNext())
-                        {
-                            LocalDateTime d = appointmentIterator.next();
-                            if (d.isBefore(dateTimeNew))
-                            {
-                                int newCount = getRRule().getCount()-1;
-                                getRRule().setCount(newCount);
-                            }
-                        }
+                                .filter(d -> ! d.isBefore(dateTimeNew))
+                                .count();
+                        getRRule().setCount(newCount);
                     }
-                    
-                    if (getRRule().getUntil() != null)
-                    {
-                        
-                    }
+
                     break;
                 }
                 case ONE:
-                {
-                    // Make new individual VEvent, save settings to it.  Add date to original as recurrence.
+                { // Make new individual VEvent, save settings to it.  Add date to original as recurrence.
                     VEventImpl newVEvent = new VEventImpl(this);
                     vEvents.add(newVEvent);
                     newVEvent.setDateTimeStart(dateTimeNew);
@@ -393,7 +394,7 @@ public class VEventImpl extends VEvent
             }
             break;
         default:
-            break;
+            throw new RuntimeException("Unsupported RRuleType: " + rruleType);
         }
         // TODO - THIS MAY MEAN THIS HAS TO GO BACK TO IMPL - CAN USE CALLBACK
         // DOESN'T KNOW ABOUT APPOINTMENTS HERE
@@ -401,10 +402,9 @@ public class VEventImpl extends VEvent
         if (editedFlag) // make these changes as long as CANCEL is not selected
         { // remove appointments from mail collection made by VEvent
             System.out.println("Edited flag:");
-            appointments.removeIf(a -> {
-                return appointmentInstances().stream().anyMatch(a2 -> a2 == a);
-            });
-//            Iterator<Appointment> i = appointments.iterator();
+            appointments.removeIf(a -> appointmentInstances().stream().anyMatch(a2 -> a2 == a));
+
+            //            Iterator<Appointment> i = appointments.iterator();
 //            while (i.hasNext())
 //            {
 //                Appointment a = i.next();

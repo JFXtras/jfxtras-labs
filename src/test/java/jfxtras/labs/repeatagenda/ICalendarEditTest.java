@@ -342,6 +342,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 .withSummary("Edited Summary");
         assertEquals(expectedAppointment5, editedAppointment5); // Check to see if repeat-generated appointment changed correctly
 
+        // All dates check
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 1, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 12, 31, 0, 0));
         appointments.clear();
@@ -351,8 +352,23 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         veventNew.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 1, 0, 0));
         veventNew.setDateTimeRangeEnd(LocalDateTime.of(2015, 12, 31, 0, 0));
         appointments.addAll(veventNew.makeAppointments());
+        List<LocalDateTime> madeDates2 = appointments.stream().map(a -> a.getStartLocalDateTime()).collect(Collectors.toList());
         
-        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+        List<LocalDateTime> expectedDates2 = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 11, 11, 10, 0)
+              , LocalDateTime.of(2015, 11, 13, 10, 0)
+              , LocalDateTime.of(2015, 11, 15, 10, 0)
+              , LocalDateTime.of(2015, 11, 17, 6, 0)
+              , LocalDateTime.of(2015, 11, 17, 10, 0)
+              , LocalDateTime.of(2015, 11, 19, 6, 0)
+              , LocalDateTime.of(2015, 11, 21, 6, 0)
+              , LocalDateTime.of(2015, 11, 23, 6, 0)
+              , LocalDateTime.of(2015, 11, 25, 6, 0)
+              , LocalDateTime.of(2015, 11, 27, 6, 0)
+              , LocalDateTime.of(2015, 11, 29, 6, 0)
+              ));
+        assertEquals(expectedDates2, madeDates2);
 
     }
     
@@ -407,4 +423,44 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         vevents.stream().forEach(a -> System.out.println(a.getDateTimeStart()));
     }
     
+    /**
+     * Tests editing start and end time of ALL events
+     */
+    @Test
+    public void editCancelDaily2()
+    {
+        VEventImpl vevent = getDaily2();
+        vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
+        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
+        List<VEvent> vevents = new ArrayList<VEvent>(Arrays.asList(vevent));
+        List<Appointment> appointments = new ArrayList<Appointment>();
+        Collection<Appointment> newAppointments = vevent.makeAppointments();
+        appointments.addAll(newAppointments);
+        VEventImpl veventOld = new VEventImpl(vevent);
+        
+        // select appointment and apply changes
+        Iterator<Appointment> appointmentIterator = appointments.iterator(); // skip first
+        RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next();
+        LocalDateTime dateTimeOld = selectedAppointment.getStartLocalDateTime();
+        LocalDate dateOld = dateTimeOld.toLocalDate();
+        selectedAppointment.setStartLocalDateTime(dateOld.atTime(9, 45)); // change start time
+        selectedAppointment.setEndLocalDateTime(dateOld.atTime(11, 0)); // change end time
+        int durationInSeconds = (int) ChronoUnit.SECONDS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
+        LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
+
+        WindowCloseType windowCloseType = vevent.edit(
+                dateTimeOld
+              , dateTimeNew
+              , durationInSeconds
+              , veventOld               // original VEvent
+              , appointments            // collection of all appointments
+              , vevents                 // collection of all VEvents
+              , a -> ChangeDialogOptions.CANCEL   // answer to edit dialog
+              , null);                  // VEvents I/O callback
+        assertEquals(WindowCloseType.CLOSE_WITHOUT_CHANGE, windowCloseType); // check to see if close type is correct
+
+        // Check edited VEvent
+        VEventImpl expectedVEvent = veventOld;
+        assertEquals(expectedVEvent, vevent); // check to see if repeat rule changed correctly
+    }
 }

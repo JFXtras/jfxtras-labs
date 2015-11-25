@@ -121,8 +121,10 @@ instances into one property internally.
  * @author David Bal
  *
  */
-public class VComponent
+public abstract class VComponent
 {
+    public String name() { return null; } // not called for abstract class
+
     /**
      * CATEGORIES: RFC 5545 iCalendar 3.8.1.12. page 81
      * This property defines the categories for a calendar component.
@@ -153,6 +155,26 @@ public class VComponent
 //    public VEvent withComment(String value) { setComment(value); return this; }
 
     /**
+     * Date-Time Created, CREATED from RFC 5545 iCalendar 3.8.7.1 page 136
+     * This property specifies the date and time that the calendar information was created.
+     * This is analogous to the creation date and time for a file in the file system.
+     */
+    final private ObjectProperty<LocalDateTime> dateTimeCreated = new SimpleObjectProperty<LocalDateTime>();
+    public ObjectProperty<LocalDateTime> dateTimeCreatedProperty() { return dateTimeCreated; }
+    public LocalDateTime getDateTimeCreated() { return dateTimeCreated.getValue(); }
+    public void setDateTimeCreated(LocalDateTime dtCreated) { this.dateTimeCreated.set(dtCreated); }
+    
+    /**
+     * Date-Time Stamp, DTSTAMP from RFC 5545 iCalendar 3.8.7.2 page 137
+     * This property specifies the date and time that the instance of the
+     * iCalendar object was created
+     */
+    final private ObjectProperty<LocalDateTime> dateTimeStamp = new SimpleObjectProperty<LocalDateTime>();
+    public ObjectProperty<LocalDateTime> dateTimeStampProperty() { return dateTimeStamp; }
+    public LocalDateTime getDateTimeStamp() { return dateTimeStamp.getValue(); }
+    public void setDateTimeStamp(LocalDateTime dtStamp) { this.dateTimeStamp.set(dtStamp); }
+    
+    /**
      * Date-Time Start, DTSTART from RFC 5545 iCalendar 3.8.2.4 page 97
      * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
      * start date/times of the repeating events.
@@ -166,7 +188,6 @@ public class VComponent
      * EXDATE: Set of date/times exceptions for recurring events, to-dos, journal entries.
      * 3.8.5.1, RFC 5545 iCalendar
      */
-    // TODO - REPLACE WITH COLLECTION TO ALLOW MULTIPLE OCCURRENCES
     private EXDate exDate;
     public void setExDate(EXDate exDate) { this.exDate = exDate; }
     public EXDate getExDate() { return exDate; }
@@ -354,8 +375,24 @@ public class VComponent
                 + " " + summaryEquals + " " + uniqueIdentifierEquals + " " + rruleEquals);
         return categoriesEquals && commentEquals && dateTimeStartsEquals && locationEquals
                 && summaryEquals && uniqueIdentifierEquals && rruleEquals;
-                
     }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.append("BEGIN:" + name() + System.lineSeparator());
+        builder.append("DTSTAMP:" + formatter.format(getDateTimeStamp()) + System.lineSeparator());
+        builder.append("CREATED:" + formatter.format(getDateTimeCreated()) + System.lineSeparator());
+        builder.append("END:" + name());
+        return builder.toString();
+    }
+    
+    public void parse(String s)
+    {
+        
+    }
+        
     
     
     /** Stream of date/times that indicate the start of the event(s).

@@ -54,6 +54,8 @@ public abstract class ICalendarTestAbstract
     protected static VEventImpl getYearly1()
     {
         VEventImpl vEvent = new VEventImpl();
+        vEvent.setDateTimeCreated(LocalDateTime.of(2015, 11, 9, 8, 29));
+        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 11, 9, 8, 30));
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();

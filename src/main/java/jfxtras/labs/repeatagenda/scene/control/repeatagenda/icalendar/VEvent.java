@@ -75,7 +75,9 @@ import javafx.beans.property.StringProperty;
  */
 public abstract class VEvent extends VComponent
 {
-
+    @Override
+    public String name() { return "VEVENT"; }
+    
     /**
      * DESCRIPTION: RFC 5545 iCalendar 3.8.1.12. page 84
      * This property provides a more complete description of the
@@ -209,6 +211,18 @@ public abstract class VEvent extends VComponent
         System.out.println("VEvent: " + descriptionEquals + " " + durationEquals);
         // don't need to check getDateTimeEnd because it bound to duration
         return super.equals(obj) && descriptionEquals && durationEquals;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return super.toString();
+    }
+    
+    @Override
+    public void parse(String s)
+    {
+        
     }
         
 }
