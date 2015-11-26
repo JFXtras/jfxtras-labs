@@ -8,6 +8,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
@@ -65,6 +66,15 @@ public class ByMonthDay extends ByRuleAbstract
         boolean daysOfMonthEquals = Arrays.equals(getDaysOfMonth(), testObj.getDaysOfMonth());
 //        System.out.println("ByMonthDay equals " + daysOfMonthEquals + " " + daysOfMonth[0] + " " + testObj.getDaysOfMonth()[0]);
         return daysOfMonthEquals;
+    }
+    
+    @Override
+    public String toString()
+    {
+        String days = Arrays.stream(getDaysOfMonth())
+                .mapToObj(d -> d + ",")
+                .collect(Collectors.joining());
+        return "BYMONTHDAY=" + days.substring(0, days.length()-1); // remove last comma
     }
     
     /**
@@ -126,25 +136,4 @@ public class ByMonthDay extends ByRuleAbstract
         }
         return null;
     }
-
-
-//    /** for current month, makes an array of valid days, works with both positive and negative daysOfMonth values */
-//    private int[] makeValidDays(int daysInMonth, int[] daysOfMonth)
-//    {
-//        int[] validDays = new int[daysOfMonth.length];
-//        int i=0;
-//        for (int day : daysOfMonth)
-//        {
-//            if (day == 0 || day < -31 || day > 31) throw new InvalidParameterException("Invalid BYMONTHDAY value (" + day + ").  Must be 1 to 31 or -31 to -1.");
-//            if (day > 0)
-//            {
-//                validDays[i] = day;
-//            } else
-//            {
-//                validDays[i] = (daysInMonth + day + 1); // negative daysOfMonth (-3 = 3rd to last day of month)                
-//            }
-//            i++;
-//        }
-//        return validDays;
-//    }
 }

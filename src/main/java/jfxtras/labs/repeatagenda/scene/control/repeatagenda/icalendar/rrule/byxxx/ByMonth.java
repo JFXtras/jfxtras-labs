@@ -4,7 +4,9 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
@@ -45,7 +47,17 @@ public class ByMonth extends ByRuleAbstract
         boolean monthEquals = getMonths().equals(testObj.getMonths());
         return monthEquals;
     }
+
     
+    @Override
+    public String toString()
+    {
+        String days = Arrays.stream(getMonths())
+                .map(d -> d.getValue() + ",")
+                .collect(Collectors.joining());
+        return "BYMONTH=" + days.substring(0, days.length()-1); // remove last comma
+    }
+
     @Override
     public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
     {

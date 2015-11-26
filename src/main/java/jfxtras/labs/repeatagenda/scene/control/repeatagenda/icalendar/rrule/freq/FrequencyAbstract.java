@@ -102,7 +102,7 @@ public abstract class FrequencyAbstract implements Frequency {
         case HOURS:
         case MINUTES:
         case SECONDS:
-            throw new RuntimeException("ChronoUnit not implemented yet: " + chronoUnit);
+            throw new RuntimeException("ChronoUnit not implemented: " + chronoUnit);
         default:
             throw new RuntimeException("Invalid ChronoUnit: " + chronoUnit);
         }

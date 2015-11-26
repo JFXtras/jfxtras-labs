@@ -110,6 +110,19 @@ public class ByDay extends ByRuleAbstract
     }
     
     @Override
+    public String toString()
+    {
+        String days = Arrays.stream(getByDayPair())
+                .map(d ->
+                {
+                    String day = d.dayOfWeek.toString().substring(0, 2) + ",";
+                    return (d.ordinal == 0) ? day : d.ordinal + day;
+                })
+                .collect(Collectors.joining());
+        return "BYDAY=" + days.substring(0, days.length()-1); // remove last comma
+    }
+    
+    @Override
     public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
     {
         switch (getFrequency().getChronoUnit())

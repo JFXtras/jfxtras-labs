@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -232,7 +233,7 @@ public abstract class VEvent extends VComponent
     {
 //        List<Property> properties2 = new ArrayList<Property>();
 //        properties2.addAll(descriptionProperty(), dateTimeEndProperty())
-        Map<String, String> properties = addProperties();
+        Map<Property, String> properties = addProperties();
 
 //        String propertiesString2 = properties2.stream()
 //                .map(p -> p.getName() + ":" + p.getValue().toString())
@@ -243,18 +244,18 @@ public abstract class VEvent extends VComponent
         // Make properties string
         String propertiesString = properties.entrySet()
                 .stream() 
-                .map(p -> p.getKey() + ":" + p.getValue() + System.lineSeparator())
+                .map(p -> p.getKey().getName() + ":" + p.getValue() + System.lineSeparator())
                 .sorted()
                 .collect(Collectors.joining());
         return "BEGIN:VEVENT" + System.lineSeparator() + propertiesString + "END:VEVENT";
     }
     @Override
-    protected Map<String, String> addProperties()
+    protected Map<Property, String> addProperties()
     {
-        Map<String, String> properties = new HashMap<String, String>();
+        Map<Property, String> properties = new HashMap<Property, String>();
         properties.putAll(super.addProperties());
-        if (getDescription() != null) properties.put(descriptionProperty().getName(), getDescription());
-        properties.put(dateTimeEndProperty().getName(), FORMATTER.format(getDateTimeEnd()));
+        if (getDescription() != null) properties.put(descriptionProperty(), getDescription());
+        properties.put(dateTimeEndProperty(), FORMATTER.format(getDateTimeEnd()));
         return properties;
     }
     

@@ -8,8 +8,10 @@ import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
@@ -68,6 +70,16 @@ public class ByWeekNo extends ByRuleAbstract
         ByWeekNo testObj = (ByWeekNo) obj;
         boolean weekNumbersEquals = getWeekNumbers().equals(testObj.getWeekNumbers());
         return weekNumbersEquals;
+    }
+    
+    
+    @Override
+    public String toString()
+    {
+        String days = Arrays.stream(getWeekNumbers())
+                .mapToObj(d -> d + ",")
+                .collect(Collectors.joining());
+        return "BYWEEKNO=" + days.substring(0, days.length()-1); // remove last comma
     }
     
     @Override

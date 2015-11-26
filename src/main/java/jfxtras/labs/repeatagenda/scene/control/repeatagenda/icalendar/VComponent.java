@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -449,40 +450,23 @@ public abstract class VComponent
                 && summaryEquals && uniqueIdentifierEquals && rruleEquals;
     }
 
-    Map<String, String> addProperties()
+    Map<Property, String> addProperties()
     {
-        Map<String, String> properties = new HashMap<String, String>();
+        Map<Property, String> properties = new HashMap<Property, String>();
 
-        if (getCategories() != null) properties.put(categoriesProperty().getName(), getCategories().toString());
-        if (getComment() != null) properties.put(commentProperty().getName(), getComment().toString());
-        if (getDateTimeCreated() != null) properties.put(dateTimeCreatedProperty().getName(), FORMATTER.format(getDateTimeCreated()));
-        properties.put(dateTimeStampProperty().getName(), FORMATTER.format(getDateTimeStamp()));
-        if (getDateTimeRecurrence() != null) properties.put(dateTimeRecurrenceProperty().getName(), FORMATTER.format(getDateTimeRecurrence()));
-        if (getDateTimeStart() != null) properties.put(dateTimeStartProperty().getName(), FORMATTER.format(getDateTimeStart()));
-        if (getDateTimeLastModified() != null) properties.put(dateTimeLastModifiedProperty().getName(), FORMATTER.format(getDateTimeLastModified()));
-        if (getExDate() != null) properties.put(exDateProperty().getName(), getExDate().toString());
-        if (getLocation() != null) properties.put(locationProperty().getName(), getLocation().toString());
-        if (getRDate() != null) properties.put(rDateProperty().getName(), getRDate().toString());
-        if (getRRule() != null) properties.put(rRuleProperty().getName(), getRRule().toString());
-        if (getSummary() != null) properties.put(summaryProperty().getName(), getSummary().toString());
-        properties.put(uniqueIdentifierProperty().getName(), getUniqueIdentifier());
-
-
-//        if (getDateTimeStart() != null) properties.add(new Pair(100, "DTSTART:" + FORMATTER.format(getDateTimeStart())));
-//        if (getRRule() != null) properties.add(new Pair(600, "RRULE:" + getRRule().toString()));
-//        if (getRDate() != null) properties.add(new Pair(700, "RDATE:" + getRDate().toString()));
-//        if (getExDate() != null) properties.add(new Pair(800, "EXDATE:" + getExDate().toString()));
-//        properties.add(new Pair(300, "DTSTAMP:" + FORMATTER.format(getDateTimeStamp())));
-//        properties.add(new Pair(700, "UID:" + getUniqueIdentifier()));
-//        if (getDateTimeCreated() != null) properties.add(new Pair(400, "CREATED:" + FORMATTER.format(getDateTimeCreated())));
-//        if (getDateTimeLastModified() != null) properties.add(new Pair(500, "LAST-MODIFIED:" + FORMATTER.format(getDateTimeLastModified())));
-//        if (getDateTimeRecurrence() != null) properties.add(new Pair(600, "RECURRENCE-ID:" + FORMATTER.format(getDateTimeRecurrence())));
-//        if (getLocation() != null) properties.add(new Pair(900, "LOCATION:" + getLocation()));
-//        if (getSummary() != null) properties.add(new Pair(1000, "SUMMARY:" + getSummary()));
-//        if (getComment() != null) properties.add(new Pair(1300, "COMMENT:" + getComment()));
-//        if (getCategories() != null) properties.add(new Pair(1400, "CATEGORIES:" + getCategories()));
-        // 500 DESCRIPTION - VEVENT
-        // Different toString? - add to properties list?
+        if (getCategories() != null) properties.put(categoriesProperty(), getCategories().toString());
+        if (getComment() != null) properties.put(commentProperty(), getComment().toString());
+        if (getDateTimeCreated() != null) properties.put(dateTimeCreatedProperty(), FORMATTER.format(getDateTimeCreated()));
+        properties.put(dateTimeStampProperty(), FORMATTER.format(getDateTimeStamp()));
+        if (getDateTimeRecurrence() != null) properties.put(dateTimeRecurrenceProperty(), FORMATTER.format(getDateTimeRecurrence()));
+        if (getDateTimeStart() != null) properties.put(dateTimeStartProperty(), FORMATTER.format(getDateTimeStart()));
+        if (getDateTimeLastModified() != null) properties.put(dateTimeLastModifiedProperty(), FORMATTER.format(getDateTimeLastModified()));
+        if (getExDate() != null) properties.put(exDateProperty(), getExDate().toString());
+        if (getLocation() != null) properties.put(locationProperty(), getLocation().toString());
+        if (getRDate() != null) properties.put(rDateProperty(), getRDate().toString());
+        if (getRRule() != null) properties.put(rRuleProperty(), getRRule().toString());
+        if (getSummary() != null) properties.put(summaryProperty(), getSummary().toString());
+        properties.put(uniqueIdentifierProperty(), getUniqueIdentifier());
         return properties;
     }
 

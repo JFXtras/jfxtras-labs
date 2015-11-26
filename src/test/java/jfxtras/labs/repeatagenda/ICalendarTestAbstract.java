@@ -279,6 +279,9 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl();
         vEvent.setDateTimeStart(LocalDateTime.of(1997, 9, 2, 10, 0));
+        vEvent.setDateTimeStamp(LocalDateTime.of(1997, 9, 1, 8, 30));
+        vEvent.setDurationInSeconds(3600L);
+        vEvent.setUniqueIdentifier("19970901T083000-0@jfxtras.org");
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vEvent.setRRule(rule);
@@ -296,6 +299,9 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl();
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 1, 10, 10, 0));
+        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setDurationInSeconds(5400L);
+        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vEvent.setRRule(rule);

@@ -198,7 +198,7 @@ public class RRule {
         String rules = getFrequency()
                 .getRules()
                 .stream()
-                .map(r -> ":" + r.toString())
+                .map(r -> ";" + r.toString())
                 .collect(Collectors.joining());
         builder.append(rules);
         return builder.toString();
