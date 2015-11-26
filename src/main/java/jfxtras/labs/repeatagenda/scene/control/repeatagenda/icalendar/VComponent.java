@@ -198,10 +198,7 @@ public abstract class VComponent
     }
     private ObjectProperty<EXDate> exDate;
     private EXDate _exDate;
-    public EXDate getExDate()
-    {
-        return (exDate == null) ? _exDate : exDate.getValue();
-    }
+    public EXDate getExDate() { return (exDate == null) ? _exDate : exDate.getValue(); }
     public void setExDate(EXDate exDate)
     {
         if (exDate == null)
@@ -239,12 +236,26 @@ public abstract class VComponent
     /**
      * RDATE: Set of date/times for recurring events, to-dos, journal entries.
      * 3.8.5.2, RFC 5545 iCalendar
+     * Is rarely used, so employs lazy initialization.
      */
-//    private ObservableList<RDate> rDates;
-    private RDate rDate;
-    public void setRDate(RDate rDate) { this.rDate = rDate; }
-    public RDate getRDate() { return rDate; }
-
+    public ObjectProperty<RDate> rDateProperty()
+    {
+        if (rDate == null) rDate = new SimpleObjectProperty<RDate>(this, "RDATE", _rDate);
+        return rDate;
+    }
+    private ObjectProperty<RDate> rDate;
+    private RDate _rDate;
+    public RDate getRDate() { return (rDate == null) ? _rDate : rDate.getValue(); }
+    public void setRDate(RDate rDate)
+    {
+        if (rDate == null)
+        {
+            _rDate = rDate;
+        } else
+        {
+            this.rDate.set(rDate);
+        }
+    }
 
     /**
      * RECURRENCE-ID: Date-Time recurrence, from RFC 5545 iCalendar 3.8.4.4 page 112
@@ -278,9 +289,10 @@ public abstract class VComponent
      * Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
      * If event is not repeating value is null
      */
-    public RRule getRRule() { return rRule; }
-    private RRule rRule;
-    public void setRRule(RRule rRule) { this.rRule = rRule; }
+    public ObjectProperty<RRule> rRuleProperty() { return rRule; }
+    final private ObjectProperty<RRule> rRule = new SimpleObjectProperty<RRule>(this, "RRULE");
+    public RRule getRRule() { return rRule.get(); }
+    public void setRRule(RRule rRule) { this.rRule.set(rRule); }
     
     /**
      *  SUMMARY: RFC 5545 iCalendar 3.8.1.12. page 83
@@ -289,7 +301,7 @@ public abstract class VComponent
      * SUMMARY:Department Party
      * */
     public SimpleStringProperty summaryProperty() { return summaryProperty; }
-    final private SimpleStringProperty summaryProperty = new SimpleStringProperty(this, "summary");
+    final private SimpleStringProperty summaryProperty = new SimpleStringProperty(this, "SUMMARY");
     public String getSummary() { return summaryProperty.getValue(); }
     public void setSummary(String value) { summaryProperty.setValue(value); }
 //    public T withSummary(String value) { setSummary(value); return (T)this; } 
@@ -440,7 +452,21 @@ public abstract class VComponent
     Map<String, String> addProperties()
     {
         Map<String, String> properties = new HashMap<String, String>();
+
+        if (getCategories() != null) properties.put(categoriesProperty().getName(), getCategories().toString());
+        if (getComment() != null) properties.put(commentProperty().getName(), getComment().toString());
+        if (getDateTimeCreated() != null) properties.put(dateTimeCreatedProperty().getName(), FORMATTER.format(getDateTimeCreated()));
+        properties.put(dateTimeStampProperty().getName(), FORMATTER.format(getDateTimeStamp()));
+        if (getDateTimeRecurrence() != null) properties.put(dateTimeRecurrenceProperty().getName(), FORMATTER.format(getDateTimeRecurrence()));
         if (getDateTimeStart() != null) properties.put(dateTimeStartProperty().getName(), FORMATTER.format(getDateTimeStart()));
+        if (getDateTimeLastModified() != null) properties.put(dateTimeLastModifiedProperty().getName(), FORMATTER.format(getDateTimeLastModified()));
+        if (getExDate() != null) properties.put(exDateProperty().getName(), getExDate().toString());
+        if (getLocation() != null) properties.put(locationProperty().getName(), getLocation().toString());
+        if (getRDate() != null) properties.put(rDateProperty().getName(), getRDate().toString());
+        if (getRRule() != null) properties.put(rRuleProperty().getName(), getRRule().toString());
+        if (getSummary() != null) properties.put(summaryProperty().getName(), getSummary().toString());
+        properties.put(uniqueIdentifierProperty().getName(), getUniqueIdentifier());
+
 
 //        if (getDateTimeStart() != null) properties.add(new Pair(100, "DTSTART:" + FORMATTER.format(getDateTimeStart())));
 //        if (getRRule() != null) properties.add(new Pair(600, "RRULE:" + getRRule().toString()));

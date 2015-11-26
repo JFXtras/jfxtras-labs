@@ -230,15 +230,23 @@ public abstract class VEvent extends VComponent
     @Override
     public String toString()
     {
+//        List<Property> properties2 = new ArrayList<Property>();
+//        properties2.addAll(descriptionProperty(), dateTimeEndProperty())
         Map<String, String> properties = addProperties();
 
+//        String propertiesString2 = properties2.stream()
+//                .map(p -> p.getName() + ":" + p.getValue().toString())
+//                .sorted()
+//                .peek(System.out::println)
+//                .collect(Collectors.joining());
+//System.exit(0);        
         // Make properties string
         String propertiesString = properties.entrySet()
                 .stream() 
                 .map(p -> p.getKey() + ":" + p.getValue() + System.lineSeparator())
                 .sorted()
                 .collect(Collectors.joining());
-        return "VEVENT:BEGIN" + System.lineSeparator() + propertiesString + "VEVENT:END";
+        return "BEGIN:VEVENT" + System.lineSeparator() + propertiesString + "END:VEVENT";
     }
     @Override
     protected Map<String, String> addProperties()
