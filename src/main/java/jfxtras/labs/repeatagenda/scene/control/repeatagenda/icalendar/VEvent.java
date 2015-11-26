@@ -78,6 +78,7 @@ import javafx.beans.value.ChangeListener;
          3.8.8.1.  IANA Properties . . . . . . . . . . . . . . . . . 142 - NO (from VComponent)
          3.8.8.2.  Non-Standard Properties . . . . . . . . . . . . . 142 - TODO (from VComponent, some X-properties may be defined here too)
          3.8.8.3.  Request Status  . . . . . . . . . . . . . . . . . 144 - NO (from VComponent)
+ * @param <T>
  *
  */
 public abstract class VEvent extends VComponent
@@ -177,8 +178,19 @@ public abstract class VEvent extends VComponent
     public LocalDateTime getDateTimeEnd() { return dateTimeEnd.get(); }
     private final ChangeListener<? super LocalDateTime> dateTimeEndlistener = (obs, oldSel, newSel) ->
     { // listener to synch dateTimeEnd and durationInSeconds
-        long seconds = ChronoUnit.SECONDS.between(getDateTimeStart(), newSel);
-        setDurationInSeconds(seconds);
+        if (getDateTimeStart() != null)
+        {
+            long seconds = ChronoUnit.SECONDS.between(getDateTimeStart(), newSel);
+            setDurationInSeconds(seconds);            
+        }
+    };
+    private final ChangeListener<? super LocalDateTime> dateTimeStartlistener = (obs, oldSel, newSel) ->
+    { // listener to synch dateTimeStart and durationInSeconds
+        if (getDateTimeEnd() != null)
+        {
+            long seconds = ChronoUnit.SECONDS.between(newSel, getDateTimeEnd());
+            setDurationInSeconds(seconds);
+        }
     };
 
     // CONSTRUCTORS
@@ -187,11 +199,13 @@ public abstract class VEvent extends VComponent
         super(vevent);
         copy(vevent, this);
         dateTimeEndProperty().addListener(dateTimeEndlistener);
+        dateTimeStartProperty().addListener(dateTimeStartlistener);
     }
     
     public VEvent()
     {
         dateTimeEndProperty().addListener(dateTimeEndlistener);
+        dateTimeStartProperty().addListener(dateTimeStartlistener);
     }
     
     /** Deep copy all fields from source to destination */
@@ -261,7 +275,7 @@ public abstract class VEvent extends VComponent
         return properties;
     }
     
-    public static VEvent parse(VEvent vEvent, List<String> strings)
+    protected static VEvent parseVEvent(VEvent vEvent, List<String> strings)
     {
         if (! strings.get(0).equals("BEGIN:VEVENT"))
         {
@@ -274,7 +288,6 @@ public abstract class VEvent extends VComponent
         while (stringsIterator.hasNext())
         {
             String[] property = stringsIterator.next().split(":");
-            System.out.println(property[0] + " " + property[1]);
             if (property[0].equals(vEvent.descriptionProperty().getName()))
             { // DESCRIPTION
                 vEvent.setDescription(property[1]);
@@ -290,7 +303,7 @@ public abstract class VEvent extends VComponent
                 stringsIterator.remove();
             }           
         }
-        return (VEvent) VComponent.parse(vEvent, strings);
+        return (VEvent) VComponent.parseVComponent(vEvent, strings);
     }
        
 }

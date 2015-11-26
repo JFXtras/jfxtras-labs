@@ -4,6 +4,7 @@ import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,6 +14,7 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -157,14 +159,22 @@ public class VEventImpl extends VEvent
         return super.toString();
     }
     
-    /** Make new object and populate properties from list of strings */
-    public static VEventImpl parse(List<String> strings)
+    /** Make new VEventImpl and populate properties from list of strings */
+    public static VEventImpl parseVEvent(List<String> strings)
     {
         VEventImpl vEvent = new VEventImpl();
-        return (VEventImpl) VEvent.parse(vEvent, strings);
+        return (VEventImpl) VEvent.parseVEvent(vEvent, strings);
     }
     
-
+    /** Make new VEventImpl and populate properties from a string with properties separated
+     * a by lineSeparator */
+    public static VEventImpl parseVEvent(String strings)
+    {
+        List<String> stringsList = Arrays
+                .stream(strings.split(System.lineSeparator()))
+                .collect(Collectors.toList());
+        return parseVEvent(stringsList);
+    }
 
     /**
      * Returns appointments that should exist between dateTimeRangeStart and dateTimeRangeEnd based on VEvent.

@@ -3,6 +3,7 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule;
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,6 +18,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -46,14 +48,15 @@ public class RRule {
     // TODO - MAKE A CACHE LIST OF START DATES (from the stream)
     // try to avoid making new dates by starting from the first startLocalDateTime if possible
     // having a variety of valid start date/times, spaced by 100 or so could be a good solution.
-    private List<LocalDateTime> startCache = new ArrayList<LocalDateTime>();
+    private List<LocalDateTime> startCache = new ArrayList<>();
         
     /** 
      * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.) 
      */
-    public Frequency getFrequency() { return frequency; }
-    private Frequency frequency;
-    public void setFrequency(Frequency frequency) { this.frequency = frequency; }
+    public ObjectProperty<Frequency> frequencyProperty() { return frequency; }
+    private ObjectProperty<Frequency> frequency = new SimpleObjectProperty<>(this, "FREQ");
+    public Frequency getFrequency() { return frequency.get(); }
+    public void setFrequency(Frequency frequency) { this.frequency.set(frequency); }
     
     /**
      * COUNT: (RFC 5545 iCalendar 3.3.10, page 41) number of events to occur before repeat rule ends
@@ -203,6 +206,24 @@ public class RRule {
         builder.append(rules);
         return builder.toString();
     }
+    
+    /** Return new RRule with its properties set by parsing iCalendar compliant RRULE string */
+    public static RRule parseRRule(String rRuleString)
+    {
+        RRule rrule = new RRule();
+        
+        // Parse string
+        Arrays.stream(rRuleString.split(";"))
+                .forEach(r ->
+                {
+                    String[] ruleAndValue = r.split("=");
+                    if (ruleAndValue[0].equals(rrule.frequencyProperty().getName()))
+                    { // FREQ
+                        
+                    }
+                });
+        return rrule;
+    }
 
     /** Stream of date/times made after applying all modification rules.
      * Stream is infinite if COUNT or UNTIL not present or ends when COUNT or UNTIL condition
@@ -212,8 +233,8 @@ public class RRule {
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
         Stream<LocalDateTime> filteredStream = (getInstances().size() > 0) ?
-                frequency.stream(startDateTime).filter(d -> ! getInstances().contains(d))
-               : frequency.stream(startDateTime);
+                getFrequency().stream(startDateTime).filter(d -> ! getInstances().contains(d))
+               : getFrequency().stream(startDateTime);
         if (getCount() > 0)
         {
             return filteredStream.limit(getCount());
@@ -251,4 +272,5 @@ public class RRule {
     public static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
        return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
     }
+
 }

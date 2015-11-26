@@ -123,6 +123,7 @@ instances into one property internally.
 
  * 
  * @author David Bal
+ * @param <T>
  *
  */
 public abstract class VComponent
@@ -295,6 +296,7 @@ public abstract class VComponent
     final private ObjectProperty<RRule> rRule = new SimpleObjectProperty<RRule>(this, "RRULE");
     public RRule getRRule() { return rRule.get(); }
     public void setRRule(RRule rRule) { this.rRule.set(rRule); }
+//    public void setRRule(String rRuleString) { setRRule(RRule.parseRRule(rRuleString)); }
     
     /**
      *  SUMMARY: RFC 5545 iCalendar 3.8.1.12. page 83
@@ -313,27 +315,12 @@ public abstract class VComponent
      * A globally unique identifier for the calendar component.
      * Included is an example UID generator.  Other UID generators can be provided by
      * setting the UID callback.
-     * Uses lazy initialization of property because UID doesn't often require advanced features.
      */
-    public StringProperty uniqueIdentifierProperty()
-    {
-        if (uniqueIdentifier == null) uniqueIdentifier = new SimpleStringProperty(this, "UID", _uniqueIdentifier);
-        return uniqueIdentifier;
-    }
-    private StringProperty uniqueIdentifier;
-    public String getUniqueIdentifier() { return (uniqueIdentifier == null) ? _uniqueIdentifier : uniqueIdentifier.getValue(); }
-    private String _uniqueIdentifier;
-    public void setUniqueIdentifier(String s)
-    {
-        if (uniqueIdentifier == null)
-        {
-            _uniqueIdentifier = s;
-        } else
-        {
-            uniqueIdentifier.set(s);
-        }
-    }
-    public VComponent withUniqueIdentifier(String uid) { setUniqueIdentifier(uid); return this; }
+    public StringProperty uniqueIdentifierProperty() { return uniqueIdentifier; }
+    final private StringProperty uniqueIdentifier = new SimpleStringProperty(this, "UID");
+    public String getUniqueIdentifier() { return uniqueIdentifier.getValue(); }
+    public void setUniqueIdentifier(String s) { uniqueIdentifier.set(s); }
+//    public T withUniqueIdentifier(String uid) { setUniqueIdentifier(uid); return (T)this; }
 
     /** Callback for creating unique uid values */
     public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
@@ -451,7 +438,7 @@ public abstract class VComponent
                 && summaryEquals && uniqueIdentifierEquals && rruleEquals;
     }
 
-    /** Make map of properties, string values for toString method in subclasses */
+    /** Make map of properties & string values for toString method in subclasses (like VEvent) */
     Map<Property, String> makePropertiesMap()
     {
         Map<Property, String> properties = new HashMap<Property, String>();
@@ -471,36 +458,12 @@ public abstract class VComponent
         properties.put(uniqueIdentifierProperty(), getUniqueIdentifier());
         return properties;
     }
-
-    protected class Pair implements Comparable<Pair>
-    {
-        public Pair(int sort, String value) {
-            setValue(value);
-            setSort(sort);
-        }
-
-        public String getValue() { return value; }
-        private String value;
-        public void setValue(String s) { value = s; }
-        
-        public int getSort() { return sort; }
-        private int sort;
-        public void setSort(int i) { sort = i; }
-
-        @Override
-        public int compareTo(Pair pair)
-        {
-            int sortTest = pair.getSort();
-            return (getSort() > sortTest) ? 1 :
-                (getSort() < sortTest) ? -1 : 0;
-        }   
-    }
     
     /** Convert a list of strings containing properties of a iCalendar component and
      * populate its properties
      * @param s
      */
-    public static VComponent parse(VComponent vComponent, List<String> strings)
+    protected static VComponent parseVComponent(VComponent vComponent, List<String> strings)
     {
         Iterator<String> stringsIterator = strings.iterator();
         stringsIterator.next(); // skip BEGIN:VEVENT
@@ -512,6 +475,24 @@ public abstract class VComponent
             { // DTSTAMP
                 LocalDateTime dateTime = LocalDateTime.parse(property[1],FORMATTER);
                 vComponent.setDateTimeStamp(dateTime);
+                stringsIterator.remove();
+            } else if (property[0].equals(vComponent.dateTimeStartProperty().getName()))
+            { // DTSTART
+                LocalDateTime dateTime = LocalDateTime.parse(property[1],FORMATTER);
+                vComponent.setDateTimeStart(dateTime);
+                stringsIterator.remove();
+            } else if (property[0].equals(vComponent.dateTimeLastModifiedProperty().getName()))
+            { // LAST-MODIFIED
+                LocalDateTime dateTime = LocalDateTime.parse(property[1],FORMATTER);
+                vComponent.setDateTimeLastModified(dateTime);
+                stringsIterator.remove();
+            } else if (property[0].equals(vComponent.rRuleProperty().getName()))
+            { // RRULE
+                vComponent.setRRule(RRule.parseRRule(property[1]));
+                stringsIterator.remove();
+            } else if (property[0].equals(vComponent.summaryProperty().getName()))
+            { // SUMMARY
+                vComponent.setSummary(property[1]);
                 stringsIterator.remove();
             } else if (property[0].equals(vComponent.uniqueIdentifierProperty().getName()))
             { // UID

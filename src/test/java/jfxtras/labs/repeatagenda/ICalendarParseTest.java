@@ -2,10 +2,6 @@ package jfxtras.labs.repeatagenda;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
@@ -28,10 +24,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                               + "SUMMARY:Yearly1 Summary" + System.lineSeparator()
                               + "UID:20151109T082900-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
-        List<String> strings = Arrays
-                .stream(expectedString.split(System.lineSeparator()))
-                .collect(Collectors.toList());
-        VEventImpl vEvent = VEventImpl.parse(strings);
+        VEventImpl vEvent = VEventImpl.parseVEvent(expectedString);
         System.out.println(vEvent.toString());
         VEvent expectedVEvent = getYearly1();
         assertEquals(expectedVEvent, vEvent);
