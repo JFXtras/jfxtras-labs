@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -450,7 +451,8 @@ public abstract class VComponent
                 && summaryEquals && uniqueIdentifierEquals && rruleEquals;
     }
 
-    Map<Property, String> addProperties()
+    /** Make map of properties, string values for toString method in subclasses */
+    Map<Property, String> makePropertiesMap()
     {
         Map<Property, String> properties = new HashMap<Property, String>();
 
@@ -494,9 +496,30 @@ public abstract class VComponent
         }   
     }
     
-    public void parse(String s)
+    /** Convert a list of strings containing properties of a iCalendar component and
+     * populate its properties
+     * @param s
+     */
+    public static VComponent parse(VComponent vComponent, List<String> strings)
     {
-        
+        Iterator<String> stringsIterator = strings.iterator();
+        stringsIterator.next(); // skip BEGIN:VEVENT
+        stringsIterator.remove();
+        while (stringsIterator.hasNext())
+        {
+            String[] property = stringsIterator.next().split(":");
+            if (property[0].equals(vComponent.dateTimeStampProperty().getName()))
+            { // DTSTAMP
+                LocalDateTime dateTime = LocalDateTime.parse(property[1],FORMATTER);
+                vComponent.setDateTimeStamp(dateTime);
+                stringsIterator.remove();
+            } else if (property[0].equals(vComponent.uniqueIdentifierProperty().getName()))
+            { // UID
+                vComponent.setUniqueIdentifier(property[1]);
+                stringsIterator.remove();
+            }
+        }
+        return vComponent;
     }
         
     

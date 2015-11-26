@@ -91,10 +91,10 @@ public abstract class VEvent extends VComponent
      *  design.\nHappy Face Conference Room. Phoenix design team
      *  MUST attend this meeting.\nRSVP to team leader.
      */
-    public StringProperty descriptionProperty() { return descriptionProperty; }
-    final private StringProperty descriptionProperty = new SimpleStringProperty(this, "DESCRIPTION");
-    public String getDescription() { return descriptionProperty.getValue(); }
-    public void setDescription(String value) { descriptionProperty.setValue(value); }
+    public StringProperty descriptionProperty() { return description; }
+    final private StringProperty description = new SimpleStringProperty(this, "DESCRIPTION");
+    public String getDescription() { return description.getValue(); }
+    public void setDescription(String value) { description.setValue(value); }
 //    public T withDescription(String value) { setDescription(value); return (T)this; } 
     
     /** 
@@ -228,12 +228,13 @@ public abstract class VEvent extends VComponent
         return super.equals(obj) && descriptionEquals && durationEquals;
     }
     
+    /** Make iCalendar compliant string of VEvent calendar component */
     @Override
     public String toString()
     {
 //        List<Property> properties2 = new ArrayList<Property>();
 //        properties2.addAll(descriptionProperty(), dateTimeEndProperty())
-        Map<Property, String> properties = addProperties();
+        Map<Property, String> properties = makePropertiesMap();
 
 //        String propertiesString2 = properties2.stream()
 //                .map(p -> p.getName() + ":" + p.getValue().toString())
@@ -249,20 +250,47 @@ public abstract class VEvent extends VComponent
                 .collect(Collectors.joining());
         return "BEGIN:VEVENT" + System.lineSeparator() + propertiesString + "END:VEVENT";
     }
+
     @Override
-    protected Map<Property, String> addProperties()
+    Map<Property, String> makePropertiesMap()
     {
         Map<Property, String> properties = new HashMap<Property, String>();
-        properties.putAll(super.addProperties());
+        properties.putAll(super.makePropertiesMap());
         if (getDescription() != null) properties.put(descriptionProperty(), getDescription());
         properties.put(dateTimeEndProperty(), FORMATTER.format(getDateTimeEnd()));
         return properties;
     }
     
-    @Override
-    public void parse(String s)
+    public static VEvent parse(VEvent vEvent, List<String> strings)
     {
+        if (! strings.get(0).equals("BEGIN:VEVENT"))
+        {
+            throw new InvalidParameterException("Invalid calendar component. First element must be BEGIN:VEVENT");
+        }
         
+        Iterator<String> stringsIterator = strings.iterator();
+        stringsIterator.next(); // skip BEGIN:VEVENT
+        stringsIterator.remove();
+        while (stringsIterator.hasNext())
+        {
+            String[] property = stringsIterator.next().split(":");
+            System.out.println(property[0] + " " + property[1]);
+            if (property[0].equals(vEvent.descriptionProperty().getName()))
+            { // DESCRIPTION
+                vEvent.setDescription(property[1]);
+                stringsIterator.remove();
+            } else if (property[0].equals(vEvent.durationInSecondsProperty().getName()))
+            { // DURATION
+                vEvent.setDurationInSeconds(property[1]);
+                stringsIterator.remove();
+            } else if (property[0].equals(vEvent.dateTimeEndProperty().getName()))
+            { // DTEND
+                LocalDateTime dateTime = LocalDateTime.parse(property[1],FORMATTER);
+                vEvent.setDateTimeEnd(dateTime);
+                stringsIterator.remove();
+            }           
+        }
+        return (VEvent) VComponent.parse(vEvent, strings);
     }
-        
+       
 }

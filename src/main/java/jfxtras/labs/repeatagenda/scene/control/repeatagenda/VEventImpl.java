@@ -153,13 +153,15 @@ public class VEventImpl extends VEvent
     @Override
     public String toString()
     {
+        // TODO - ADD CUSTOM PROPERTIES AS X-PROPERTIES
         return super.toString();
     }
     
-    @Override
-    public void parse(String s)
+    /** Make new object and populate properties from list of strings */
+    public static VEventImpl parse(List<String> strings)
     {
-        
+        VEventImpl vEvent = new VEventImpl();
+        return (VEventImpl) VEvent.parse(vEvent, strings);
     }
     
 
