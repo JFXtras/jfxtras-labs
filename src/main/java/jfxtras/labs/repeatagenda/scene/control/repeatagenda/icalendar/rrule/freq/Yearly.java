@@ -15,5 +15,8 @@ public class Yearly extends FrequencyAbstract
     public Yearly() { setChronoUnit(YEARS); }
 
     @Override
-    public String toString() { return "FREQ=YEARLY"; }
+    public String toString()
+    {
+        return super.toString() + Frequencies.YEARLY;
+    }
 }

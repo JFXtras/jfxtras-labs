@@ -6,9 +6,11 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -18,6 +20,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.RRuleType;
@@ -50,9 +55,17 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 public class VEventImpl extends VEvent
 {
 
-    private AppointmentGroup appointmentGroup;
-    public void setAppointmentGroup(AppointmentGroup appointmentGroup) { this.appointmentGroup = appointmentGroup; this.setCategories(appointmentGroup.getStyleClass()); }
-    public AppointmentGroup getAppointmentGroup() { return appointmentGroup; }
+    /**
+     * X-APPOINTMENT-GROUP
+     * Contains the AppointmentGroup from Agenda.
+     * Non-Standard iCalendar Property (3.8.8.2 in RFC 5545 iCalendar)
+     * The css StyleClass is the value portion of this property outputed by toString.
+     * StyleClass must be unique for each AppointmentGroup.
+     */
+    public ObjectProperty<AppointmentGroup> appointmentGroupProperty() { return appointmentGroup; }
+    private ObjectProperty<AppointmentGroup> appointmentGroup = new SimpleObjectProperty<>(this, "X-APPOINTMENT-GROUP");
+    public void setAppointmentGroup(AppointmentGroup appointmentGroup) { this.appointmentGroup.set(appointmentGroup); }
+    public AppointmentGroup getAppointmentGroup() { return appointmentGroup.get(); }
     
     /**
      *  VEventImpl doesn't know how to make an appointment.  An appointment factory makes new appointments.  The Class of the appointment
@@ -60,9 +73,9 @@ public class VEventImpl extends VEvent
      * the appointmentClass.
      */
     public Class<? extends RepeatableAppointment> getAppointmentClass() { return appointmentClass; }
-    private Class<? extends RepeatableAppointment> appointmentClass;
+    private Class<? extends RepeatableAppointment> appointmentClass = RepeatableAppointmentImpl.class;
     public void setAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { this.appointmentClass = appointmentClass; }
-    public VEventImpl withAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
+//    public VEventImpl withAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
 
     /**
      * Start of range for which events are generated.  Should match the dates displayed on the calendar.
@@ -155,18 +168,33 @@ public class VEventImpl extends VEvent
     @Override
     public String toString()
     {
-        // TODO - ADD CUSTOM PROPERTIES AS X-PROPERTIES
-        return super.toString();
+        Map<Property, String> properties = makePropertiesMap();
+        String propertiesString = properties.entrySet()
+                .stream() 
+                .map(p -> p.getKey().getName() + ":" + p.getValue() + System.lineSeparator())
+                .sorted()
+                .collect(Collectors.joining());
+        return "BEGIN:VEVENT" + System.lineSeparator() + propertiesString + "END:VEVENT";
     }
     
-    /** Make new VEventImpl and populate properties from list of strings */
+    @Override
+    protected Map<Property, String> makePropertiesMap()
+    {
+        Map<Property, String> properties = new HashMap<Property, String>();
+        properties.putAll(super.makePropertiesMap());
+        if (getAppointmentGroup() != null) properties.put(appointmentGroupProperty(), getAppointmentGroup().getStyleClass());
+        properties.put(dateTimeEndProperty(), FORMATTER.format(getDateTimeEnd()));
+        return properties;
+    }
+    
+    /** Make new VEventImpl and populate properties by parsing list of strings */
     public static VEventImpl parseVEvent(List<String> strings)
     {
         VEventImpl vEvent = new VEventImpl();
         return (VEventImpl) VEvent.parseVEvent(vEvent, strings);
     }
     
-    /** Make new VEventImpl and populate properties from a string with properties separated
+    /** Make new VEventImpl and populate properties by parsing a string with properties separated
      * a by lineSeparator */
     public static VEventImpl parseVEvent(String strings)
     {

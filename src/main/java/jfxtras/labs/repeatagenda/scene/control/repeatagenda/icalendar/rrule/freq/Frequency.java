@@ -59,17 +59,35 @@ public interface Frequency {
      * For example, Weekly class advances the dates by INTERVAL Number of weeks. */
     TemporalAdjuster getAdjuster();
 
-    /** Enumeration of FREQ rules */
-    public static enum FrequencyEnum
+    /** Enumeration of FREQ rules 
+     * Is used to make new instances of the different Frequencies by matching FREQ property
+     * to its matching class */
+    public static enum Frequencies
     {
-        YEARLY
-      , MONTHLY
-      , WEEKLY
-      , DAILY
-      , HOURLY // Not implemented
-      , MINUTELY // Not implemented
-      , SECONDLY // Not implemented
+        YEARLY (Yearly.class)
+      , MONTHLY (Monthly.class)
+      , WEEKLY (Weekly.class)
+      , DAILY (Daily.class)
+      , HOURLY (Hourly.class) // Not implemented
+      , MINUTELY (Minutely.class) // Not implemented
+      , SECONDLY (Secondly.class);// Not implemented
       
+        private Class<? extends Frequency> clazz;
+          
+        Frequencies(Class<? extends Frequency> clazz)
+        {
+            this.clazz = clazz;
+        }
+          
+        public Frequency newInstance()
+        {
+            try {
+                return clazz.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
     /** Deep copy all fields from source to destination */

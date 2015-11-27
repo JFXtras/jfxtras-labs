@@ -15,5 +15,8 @@ public class Daily extends FrequencyAbstract
     public Daily() { setChronoUnit(DAYS); }
     
     @Override
-    public String toString() { return "FREQ=DAILY"; }
+    public String toString()
+    {
+        return super.toString() + Frequencies.DAILY;
+    }
 }

@@ -15,5 +15,8 @@ public class Monthly extends FrequencyAbstract
     public Monthly() { setChronoUnit(MONTHS); }
     
     @Override
-    public String toString() { return "FREQ=MONTHLY"; }
+    public String toString()
+    {
+        return super.toString() + Frequencies.MONTHLY;
+    }
 }

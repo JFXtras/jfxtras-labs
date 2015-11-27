@@ -15,5 +15,8 @@ public class Weekly extends FrequencyAbstract
     public Weekly() { setChronoUnit(WEEKS); }
 
     @Override
-    public String toString() { return "FREQ=WEEKLY"; }
+    public String toString()
+    {
+        return super.toString() + Frequencies.WEEKLY;
+    }
 }

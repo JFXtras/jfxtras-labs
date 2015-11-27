@@ -219,7 +219,10 @@ public class RRule {
                     String[] ruleAndValue = r.split("=");
                     if (ruleAndValue[0].equals(rrule.frequencyProperty().getName()))
                     { // FREQ
-                        
+                        Frequency freq = Frequency.Frequencies
+                                .valueOf(ruleAndValue[1])
+                                .newInstance();
+                        rrule.setFrequency(freq);
                     }
                 });
         return rrule;

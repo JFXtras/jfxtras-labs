@@ -35,10 +35,14 @@ public abstract class ICalendarTestAbstract
     = javafx.collections.FXCollections.observableArrayList(
             IntStream
             .range(0, 23)
-            .mapToObj(i -> new RepeatableAgenda.AppointmentGroupImpl()
-//                   .withStyleClass("group" + i) // skipped due to static variable problem with junit
-                   .withKey(i)
-                   .withDescription("group" + (i < 10 ? "0" : "") + i))
+            .mapToObj(i -> 
+            {
+                RepeatableAgenda.AppointmentGroupImpl a = new RepeatableAgenda.AppointmentGroupImpl()
+                    .withKey(i)
+                    .withDescription("group" + (i < 10 ? "0" : "") + i);
+                a.setStyleClass("group" + i); // skipped due to static variable problem with junit
+                return a;
+            })
             .collect(Collectors.toList()));
     static ObservableList<AppointmentGroup> appointmentGroups = DEFAULT_APPOINTMENT_GROUPS;
     

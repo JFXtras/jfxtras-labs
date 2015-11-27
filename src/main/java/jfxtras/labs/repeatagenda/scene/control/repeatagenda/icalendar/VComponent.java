@@ -466,12 +466,15 @@ public abstract class VComponent
     protected static VComponent parseVComponent(VComponent vComponent, List<String> strings)
     {
         Iterator<String> stringsIterator = strings.iterator();
-        stringsIterator.next(); // skip BEGIN:VEVENT
-        stringsIterator.remove();
         while (stringsIterator.hasNext())
         {
             String[] property = stringsIterator.next().split(":");
-            if (property[0].equals(vComponent.dateTimeStampProperty().getName()))
+            if (property[0].equals(vComponent.dateTimeCreatedProperty().getName()))
+            { // CREATED
+                LocalDateTime dateTime = LocalDateTime.parse(property[1],FORMATTER);
+                vComponent.setDateTimeCreated(dateTime);
+                stringsIterator.remove();
+            } else if (property[0].equals(vComponent.dateTimeStampProperty().getName()))
             { // DTSTAMP
                 LocalDateTime dateTime = LocalDateTime.parse(property[1],FORMATTER);
                 vComponent.setDateTimeStamp(dateTime);

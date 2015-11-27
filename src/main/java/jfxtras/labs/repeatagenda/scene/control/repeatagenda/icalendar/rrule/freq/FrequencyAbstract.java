@@ -79,6 +79,12 @@ public abstract class FrequencyAbstract implements Frequency {
         return intervalEquals && rulesEquals;
     }
     
+    @Override
+    public String toString()
+    {
+        return "FREQ=";
+    }
+
     /** Time unit of last rule applied.  It represents the time span to apply future changes to the output stream of date/times
      * For example:
      * following FREQ=WEEKLY it is WEEKS
