@@ -265,6 +265,23 @@ public abstract class VEvent extends VComponent
         return properties;
     }
     
+    @Override
+    public String validityCheck()
+    {
+        String errors = super.validityCheck();
+        boolean durationNull = getDurationInSeconds() == null;
+        boolean endDateTimeNull = this.getDateTimeEnd() == null;
+        if (durationNull && endDateTimeNull) errors += System.lineSeparator() + "Invalid VEvent.  Both DURATION and DTEND can not be null.";
+        if (! durationNull && ! endDateTimeNull) errors += System.lineSeparator() + "Invalid VEvent.  Both DURATION and DTEND can not be set.  One must be null.";
+        return errors;
+    }
+    
+    /** This method should be called by a method in the implementing class the
+     * makes a new object and passes it here as vEvent  
+     * @param vEvent
+     * @param strings
+     * @return
+     */
     protected static VEvent parseVEvent(VEvent vEvent, List<String> strings)
     {
         // Test for correct beginning and end, then remove

@@ -196,6 +196,8 @@ public class VEventImpl extends VEvent
     @Override
     public String toString()
     {
+        String errors = validityCheck();
+        if (errors != "") throw new InvalidParameterException(errors);
         Map<Property, String> properties = makePropertiesMap();
         String propertiesString = properties.entrySet()
                 .stream() 
@@ -215,7 +217,15 @@ public class VEventImpl extends VEvent
         return properties;
     }
     
-    /** Make new VEventImpl and populate properties by parsing list of strings */
+    @Override
+    public String validityCheck()
+    {
+        String errors = super.validityCheck();
+        if (getAppointmentClass() == null) errors += System.lineSeparator() + "Invalid VEventImpl.  appointmentClass must not be null.";
+        return errors;
+    }
+    
+    /** Make new VEventImpl and populate properties by parsing a list of strings */
     public static VEventImpl parseVEvent(List<String> strings)
     {
         VEventImpl vEvent = new VEventImpl();
@@ -233,7 +243,7 @@ public class VEventImpl extends VEvent
     }
     
     /** Make new VEventImpl and populate properties by parsing a string with properties separated
-     * a by lineSeparator */
+     * a by lineSeparator (new line) */
     public static VEventImpl parseVEvent(String strings)
     {
         List<String> stringsList = Arrays

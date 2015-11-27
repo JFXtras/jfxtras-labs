@@ -446,7 +446,7 @@ public abstract class VComponent
         if (getCategories() != null) properties.put(categoriesProperty(), getCategories().toString());
         if (getComment() != null) properties.put(commentProperty(), getComment().toString());
         if (getDateTimeCreated() != null) properties.put(dateTimeCreatedProperty(), FORMATTER.format(getDateTimeCreated()));
-        properties.put(dateTimeStampProperty(), FORMATTER.format(getDateTimeStamp()));
+        properties.put(dateTimeStampProperty(), FORMATTER.format(getDateTimeStamp())); // required property
         if (getDateTimeRecurrence() != null) properties.put(dateTimeRecurrenceProperty(), FORMATTER.format(getDateTimeRecurrence()));
         if (getDateTimeStart() != null) properties.put(dateTimeStartProperty(), FORMATTER.format(getDateTimeStart()));
         if (getDateTimeLastModified() != null) properties.put(dateTimeLastModifiedProperty(), FORMATTER.format(getDateTimeLastModified()));
@@ -455,8 +455,20 @@ public abstract class VComponent
         if (getRDate() != null) properties.put(rDateProperty(), getRDate().toString());
         if (getRRule() != null) properties.put(rRuleProperty(), getRRule().toString());
         if (getSummary() != null) properties.put(summaryProperty(), getSummary().toString());
-        properties.put(uniqueIdentifierProperty(), getUniqueIdentifier());
+        properties.put(uniqueIdentifierProperty(), getUniqueIdentifier()); // required property
         return properties;
+    }
+    
+    /**
+     * Checks to see if object contains required properties.  Returns empty string if it is
+     * valid.  Returns string of errors if not valid..
+     */
+    public String validityCheck()
+    {
+        String errors = "";
+        if (getDateTimeLastModified() == null) errors += System.lineSeparator() + "Invalid VComponent.  DTSTAMP must not be null.";
+        if (getUniqueIdentifier() == null) errors += System.lineSeparator() + "Invalid VComponent.  UID must not be null.";
+        return errors;
     }
     
     /** Convert a list of strings containing properties of a iCalendar component and
