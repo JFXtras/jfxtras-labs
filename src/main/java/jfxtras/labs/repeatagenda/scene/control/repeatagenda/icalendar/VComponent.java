@@ -137,8 +137,8 @@ public abstract class VComponent
      * CATEGORIES:APPOINTMENT,EDUCATION
      * CATEGORIES:MEETING
      */
-    public SimpleStringProperty categoriesProperty() { return categoriesProperty; }
-    final private SimpleStringProperty categoriesProperty = new SimpleStringProperty(this, "CATEGORIES");
+    public StringProperty categoriesProperty() { return categoriesProperty; }
+    final private StringProperty categoriesProperty = new SimpleStringProperty(this, "CATEGORIES");
     public String getCategories() { return categoriesProperty.getValue(); }
     public void setCategories(String value) { categoriesProperty.setValue(value); }
 //    public T withCategories(String value) { setCategories(value); return (T)this; }
@@ -153,8 +153,8 @@ public abstract class VComponent
          As a matter of fact\, the venue for the meeting ought to be at
          their site. - - John
      * */
-    public SimpleStringProperty commentProperty() { return commentProperty; }
-    final private SimpleStringProperty commentProperty = new SimpleStringProperty(this, "COMMENT");
+    public StringProperty commentProperty() { return commentProperty; }
+    final private StringProperty commentProperty = new SimpleStringProperty(this, "COMMENT");
     public String getComment() { return commentProperty.getValue(); }
     public void setComment(String value) { commentProperty.setValue(value); }
 //    public VEvent withComment(String value) { setComment(value); return this; }
@@ -304,8 +304,8 @@ public abstract class VComponent
      * Example:
      * SUMMARY:Department Party
      * */
-    public SimpleStringProperty summaryProperty() { return summaryProperty; }
-    final private SimpleStringProperty summaryProperty = new SimpleStringProperty(this, "SUMMARY");
+    public StringProperty summaryProperty() { return summaryProperty; }
+    final private StringProperty summaryProperty = new SimpleStringProperty(this, "SUMMARY");
     public String getSummary() { return summaryProperty.getValue(); }
     public void setSummary(String value) { summaryProperty.setValue(value); }
 //    public T withSummary(String value) { setSummary(value); return (T)this; } 

@@ -23,8 +23,10 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                               + "RRULE:FREQ=YEARLY" + System.lineSeparator()
                               + "SUMMARY:Yearly1 Summary" + System.lineSeparator()
                               + "UID:20151109T082900-0@jfxtras.org" + System.lineSeparator()
+                              + "X-APPOINTMENT-GROUP:group13" + System.lineSeparator()
                               + "END:VEVENT";
         VEventImpl vEvent = VEventImpl.parseVEvent(expectedString);
+        vEvent.getAppointmentGroups().addAll(DEFAULT_APPOINTMENT_GROUPS);
         System.out.println(vEvent.toString());
         VEvent expectedVEvent = getYearly1();
         assertEquals(expectedVEvent, vEvent);

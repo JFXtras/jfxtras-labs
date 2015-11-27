@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
@@ -241,18 +242,18 @@ public abstract class VEvent extends VComponent
         return super.equals(obj) && descriptionEquals && durationEquals;
     }
     
-//    /** Make iCalendar compliant string of VEvent calendar component */
-//    @Override
-//    public String toString()
-//    {
-//        Map<Property, String> properties = makePropertiesMap();
-//        String propertiesString = properties.entrySet()
-//                .stream() 
-//                .map(p -> p.getKey().getName() + ":" + p.getValue() + System.lineSeparator())
-//                .sorted()
-//                .collect(Collectors.joining());
-//        return "BEGIN:VEVENT" + System.lineSeparator() + propertiesString + "END:VEVENT";
-//    }
+    /** Make iCalendar compliant string of VEvent calendar component */
+    @Override
+    public String toString()
+    {
+        Map<Property, String> properties = makePropertiesMap();
+        String propertiesString = properties.entrySet()
+                .stream() 
+                .map(p -> p.getKey().getName() + ":" + p.getValue() + System.lineSeparator())
+                .sorted()
+                .collect(Collectors.joining());
+        return "BEGIN:VEVENT" + System.lineSeparator() + propertiesString + "END:VEVENT";
+    }
 
     @Override
     protected Map<Property, String> makePropertiesMap()
@@ -276,7 +277,7 @@ public abstract class VEvent extends VComponent
         }
         if (! strings.get(strings.size()-1).equals("END:VEVENT"))
         {
-            throw new InvalidParameterException("Invalid calendar component. First element must be BEGIN:VEVENT");
+            throw new InvalidParameterException("Invalid calendar component. Last element must be END:VEVENT");
         } else
         {
             strings.remove(strings.size()-1);
@@ -284,14 +285,9 @@ public abstract class VEvent extends VComponent
 
         
         Iterator<String> stringsIterator = strings.iterator();
-//        System.out.println("remove " + stringsIterator.next()); // skip BEGIN:VEVENT
-//        stringsIterator.remove();
-//        System.out.println("remove " + stringsIterator.next()); // skip BEGIN:VEVENT
-//System.exit(0);
         while (stringsIterator.hasNext())
         {
             String[] property = stringsIterator.next().split(":");
-//            System.out.println(property[0]);
             if (property[0].equals(vEvent.descriptionProperty().getName()))
             { // DESCRIPTION
                 vEvent.setDescription(property[1]);
@@ -307,8 +303,6 @@ public abstract class VEvent extends VComponent
                 stringsIterator.remove();
             }           
         }
-//        strings.stream().forEach(System.out::println);
-//        System.exit(0);
         return (VEvent) VComponent.parseVComponent(vEvent, strings);
     }
        

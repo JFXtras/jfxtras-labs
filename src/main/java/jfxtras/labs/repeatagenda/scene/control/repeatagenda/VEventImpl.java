@@ -20,9 +20,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import javafx.beans.property.ObjectProperty;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.Property;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.RRuleType;
@@ -62,10 +64,29 @@ public class VEventImpl extends VEvent
      * The css StyleClass is the value portion of this property outputed by toString.
      * StyleClass must be unique for each AppointmentGroup.
      */
-    public ObjectProperty<AppointmentGroup> appointmentGroupProperty() { return appointmentGroup; }
-    private ObjectProperty<AppointmentGroup> appointmentGroup = new SimpleObjectProperty<>(this, "X-APPOINTMENT-GROUP");
-    public void setAppointmentGroup(AppointmentGroup appointmentGroup) { this.appointmentGroup.set(appointmentGroup); }
-    public AppointmentGroup getAppointmentGroup() { return appointmentGroup.get(); }
+    public StringProperty appointmentGroupStyleClassProperty() { return appointmentGroupStyleClass; }
+    private StringProperty appointmentGroupStyleClass = new SimpleStringProperty(this, "X-APPOINTMENT-GROUP");
+    public void setAppointmentGroupStyleClass(String appointmentGroupStyleClass) { this.appointmentGroupStyleClass.set(appointmentGroupStyleClass); }
+    public String getAppointmentGroupStyleClass() { return appointmentGroupStyleClass.get(); }
+
+    private AppointmentGroup appointmentGroup;
+    public void setAppointmentGroup(AppointmentGroup appointmentGroup) { this.appointmentGroup = appointmentGroup; }
+    public AppointmentGroup getAppointmentGroup() { return appointmentGroup; }
+    
+    private final ObservableList<AppointmentGroup> appointmentGroups = javafx.collections.FXCollections.observableArrayList();
+    public ObservableList<AppointmentGroup> getAppointmentGroups() { return appointmentGroups; }
+    private void synchAppointmentGroup()
+    { // ensures appointmentGroup and appointmentGroupStyleClass match
+        if (! getAppointmentGroups().isEmpty())
+        {
+            AppointmentGroup aGroup = getAppointmentGroups()
+                    .stream()
+                    .filter(g -> g.getStyleClass().equals(getAppointmentGroupStyleClass()))
+                    .findFirst()
+                    .get();
+            setAppointmentGroup(aGroup);
+        }
+    }
     
     /**
      *  VEventImpl doesn't know how to make an appointment.  An appointment factory makes new appointments.  The Class of the appointment
@@ -109,10 +130,16 @@ public class VEventImpl extends VEvent
     /** Copy constructor */
     public VEventImpl(VEventImpl vevent) {
         super(vevent);
+        appointmentGroupStyleClassProperty().addListener(obs -> synchAppointmentGroup());
+        getAppointmentGroups().addListener((InvalidationListener) obs -> synchAppointmentGroup());
         copy(vevent, this);
     }
     
-    public VEventImpl() { }
+    public VEventImpl()
+    {
+        appointmentGroupStyleClassProperty().addListener(obs -> synchAppointmentGroup());        
+        getAppointmentGroups().addListener((InvalidationListener) obs -> synchAppointmentGroup());
+    }
 
     /** Deep copy all fields from source to destination */
     private static void copy(VEventImpl source, VEventImpl destination)
@@ -165,6 +192,7 @@ public class VEventImpl extends VEvent
         return takeWhile(filteredStream, a -> (getDateTimeRangeEnd() == null) ? true : ! a.isAfter(getDateTimeRangeEnd()));
     }
     
+    /** Make iCalendar compliant string of VEvent calendar component */
     @Override
     public String toString()
     {
@@ -182,7 +210,7 @@ public class VEventImpl extends VEvent
     {
         Map<Property, String> properties = new HashMap<Property, String>();
         properties.putAll(super.makePropertiesMap());
-        if (getAppointmentGroup() != null) properties.put(appointmentGroupProperty(), getAppointmentGroup().getStyleClass());
+        if (getAppointmentGroup() != null) properties.put(appointmentGroupStyleClassProperty(), getAppointmentGroupStyleClass());
         properties.put(dateTimeEndProperty(), FORMATTER.format(getDateTimeEnd()));
         return properties;
     }
@@ -191,6 +219,16 @@ public class VEventImpl extends VEvent
     public static VEventImpl parseVEvent(List<String> strings)
     {
         VEventImpl vEvent = new VEventImpl();
+        Iterator<String> stringsIterator = strings.iterator();
+        while (stringsIterator.hasNext())
+        {
+            String[] property = stringsIterator.next().split(":");
+            if (property[0].equals(vEvent.appointmentGroupStyleClassProperty().getName()))
+            { // X-APPOINTMENT-GROUP
+                vEvent.setAppointmentGroupStyleClass(property[1]);
+                stringsIterator.remove();
+            }
+        }
         return (VEventImpl) VEvent.parseVEvent(vEvent, strings);
     }
     
