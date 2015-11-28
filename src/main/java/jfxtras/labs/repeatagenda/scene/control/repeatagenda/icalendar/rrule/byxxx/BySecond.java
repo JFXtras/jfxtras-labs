@@ -7,10 +7,11 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
 
 public class BySecond extends ByRuleAbstract
 {
+    private final static int SORT_ORDER = 40; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
+
     public BySecond(Frequency frequency)
     {
-        super(frequency);
-        setSortOrder(70);
+        super(frequency, SORT_ORDER);
         throw new RuntimeException("not implemented");
     }
     

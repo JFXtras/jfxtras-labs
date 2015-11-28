@@ -12,20 +12,19 @@ public abstract class ByRuleAbstract implements Rule
 {
     /** Order in which ByRules should be processed */
     public Integer getSortOrder() { return sortOrder; }
-    private Integer sortOrder;
-    protected void setSortOrder(Integer sortOrder) { this.sortOrder = sortOrder; }
+    final private Integer sortOrder;
     
     /** Parent Frequency */
-    public Frequency getFrequency() { return frequency; }
-    private Frequency frequency;
+    Frequency getFrequency() { return frequency; }
+    final private Frequency frequency;
         
-    // Constructor
-    ByRuleAbstract(Frequency frequency)
+    /** Constructor that takes parent Frequency and processing order 
+     * as defined in RFC 5545 iCalendar page 44 as parameters */
+    ByRuleAbstract(Frequency frequency, Integer sortOrder)
     {
         this.frequency = frequency;
+        this.sortOrder = sortOrder;
     }
-    
-    ByRuleAbstract() { }
 
     @Override
     public int compareTo(Rule byRule)

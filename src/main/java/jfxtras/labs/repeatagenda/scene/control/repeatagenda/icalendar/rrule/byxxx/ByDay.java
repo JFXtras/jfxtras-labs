@@ -13,20 +13,18 @@ import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 
 /** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */
 public class ByDay extends ByRuleAbstract
 {
+    private final static int SORT_ORDER = 40; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
+
     /** sorted array of days of month
      * (i.e. 5, 10 = 5th and 10th days of the month, -3 = 3rd from last day of month)
      * Uses a varargs parameter to allow any number of days
@@ -35,46 +33,19 @@ public class ByDay extends ByRuleAbstract
     public ByDayPair[] getByDayPair() { return byDayPairs; }
     private ByDayPair[] byDayPairs;
     private void setByDayPair(ByDayPair... byDayPairs) { this.byDayPairs = byDayPairs; }
-
-    // TODO - IS THIS A GOOD FIT HERE?
-    // SHOULD I HAVE PROPERTIES OR SHOULD I HAVE A LISTENER SET THE VALUES?
-    // I THINK THAT IF THERE ARE NO ORDINAL VALUES I SHOULD USE PROPERTIES
-    final private Map<DayOfWeek, BooleanProperty> dayOfWeekMap = Arrays // Initialized map of all days of the week, each BooleanProperty is false
-            .stream(DayOfWeek.values())
-            .collect(Collectors.toMap(k -> k, v -> new SimpleBooleanProperty(false)));
-    public Map<DayOfWeek, BooleanProperty> getDayOfWeekMap() { return dayOfWeekMap; }
-    public void setDayOfWeek(DayOfWeek d, boolean value) { getDayOfWeekMap().get(d).set(value); }
-    public boolean getDayOfWeek(DayOfWeek d) { return getDayOfWeekMap().get(d).get(); }
-    public BooleanProperty getDayOfWeekProperty(DayOfWeek d) { return getDayOfWeekMap().get(d); }
-//    public Repeat withDayOfWeek(DayOfWeek d, boolean value) { setDayOfWeek(d, value); return this; }
-    private boolean dayOfWeekMapEqual(Map<DayOfWeek, BooleanProperty> dayOfWeekMap2) {
-        Iterator<DayOfWeek> dayOfWeekIterator = Arrays 
-            .stream(DayOfWeek.values())
-            .limit(7)
-            .iterator();
-        while (dayOfWeekIterator.hasNext())
-        {
-            DayOfWeek key = dayOfWeekIterator.next();
-            boolean b1 = getDayOfWeekMap().get(key).get();
-            boolean b2 = dayOfWeekMap2.get(key).get();
-            if (b1 != b2) return false;
-        }
-        return true;
-    }
     
+    /** Constructor with varargs ByDayPair */
     public ByDay(Frequency frequency, ByDayPair... byDayPairs)
     {
-        super(frequency);
+        super(frequency, SORT_ORDER);
         setByDayPair(byDayPairs);
-        setSortOrder(40);
     }
 
     /** Constructor that uses DayOfWeek values without a preceding integer.  All days of the 
      * provided types are included within the specified frequency */
     public ByDay(Frequency frequency, DayOfWeek... daysOfWeek)
     {
-        super(frequency);
-        setSortOrder(40);
+        super(frequency, SORT_ORDER);
         byDayPairs = new ByDayPair[daysOfWeek.length];
         int i=0;
         for (DayOfWeek d : daysOfWeek)
@@ -82,8 +53,6 @@ public class ByDay extends ByRuleAbstract
             byDayPairs[i++] = new ByDayPair(d, 0);
         }
     }
-    
-    public ByDay() { } 
     
     @Override
     public void copyTo(Rule destination)

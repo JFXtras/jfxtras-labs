@@ -14,6 +14,8 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
 /** BYMONTH from RFC 5545, iCalendar 3.3.10, page 42 */
 public class ByMonth extends ByRuleAbstract
 {
+    private final static int SORT_ORDER = 0; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
+
     /** sorted array of months to be included
      * January = 1 - December = 12
      * Uses a varargs parameter to allow any number of months
@@ -24,9 +26,8 @@ public class ByMonth extends ByRuleAbstract
 
     public ByMonth(Frequency frequency, Month... months)
     {
-        super(frequency);
+        super(frequency, SORT_ORDER);
         setMonths(months);
-        setSortOrder(0);
     }
 
     @Override

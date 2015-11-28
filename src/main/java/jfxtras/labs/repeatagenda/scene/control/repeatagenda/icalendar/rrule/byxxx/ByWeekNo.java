@@ -19,6 +19,8 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
 /** BYWEEKNO from RFC 5545, iCalendar 3.3.10, page 42 */
 public class ByWeekNo extends ByRuleAbstract
 {
+    private final static int SORT_ORDER = 10; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
+
     /** sorted array of weeks of the year
      * (i.e. 5, 10 = 5th and 10th weeks of the year, -3 = 3rd from last week of the year)
      * Uses a varargs parameter to allow any number of value.
@@ -44,9 +46,8 @@ public class ByWeekNo extends ByRuleAbstract
     /** Constructor requires weeks of the year value(s) */
     public ByWeekNo(Frequency frequency, int...weekNumbers)
     {
-        super(frequency);
+        super(frequency, SORT_ORDER);
         setWeekNumbers(weekNumbers);
-        setSortOrder(10);
     }
 
     @Override

@@ -16,6 +16,8 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
 /** BYMONTHDAY from RFC 5545, iCalendar */
 public class ByMonthDay extends ByRuleAbstract
 {
+    private final static int SORT_ORDER = 30; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
+
     /** sorted array of days of month
      * (i.e. 5, 10 = 5th and 10th days of the month, -3 = 3rd from last day of month)
      * Uses a varargs parameter to allow any number of days
@@ -30,19 +32,16 @@ public class ByMonthDay extends ByRuleAbstract
     /** Constructor 
      * If not setting daysOfMonth then defaults to startLocalDateTime for dayOfMonth */
     public ByMonthDay(Frequency frequency) {
-        super(frequency);
-        setSortOrder(30);
+        super(frequency, SORT_ORDER);
     }
 
     /** Constructor 
      * Contains varargs of daysOfMonth */
     public ByMonthDay(Frequency frequency, int... daysOfMonth)
     {
-        super(frequency);
+        super(frequency, SORT_ORDER);
         setDaysOfMonth(daysOfMonth);
-        setSortOrder(30);
     }
-    public ByMonthDay() { }
 
     @Override
     public void copyTo(Rule destination)
