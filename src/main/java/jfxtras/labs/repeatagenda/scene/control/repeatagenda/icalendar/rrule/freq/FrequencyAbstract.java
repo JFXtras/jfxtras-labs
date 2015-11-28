@@ -55,35 +55,6 @@ public abstract class FrequencyAbstract implements Frequency {
         }
         getRules().add(byRule);
     }
-    
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (obj == this) return true;
-        if((obj == null) || (obj.getClass() != getClass())) {
-            return false;
-        }
-        Frequency testObj = (Frequency) obj;
-        
-        boolean intervalEquals = (getInterval() == null) ?
-                (testObj.getInterval() == null) : getInterval().equals(testObj.getInterval());
-        Iterator<Rule> ruleIterator = getRules().iterator();
-        List<Boolean> rulesEqualsArray = new ArrayList<Boolean>();
-        for (int i=0; i<getRules().size(); i++)
-        {
-            boolean e = getRules().get(i).equals(testObj.getRules().get(i));
-            rulesEqualsArray.add(e);
-        }
-        boolean rulesEquals = rulesEqualsArray.stream().allMatch(a -> true );
-        System.out.println("frequency " + intervalEquals + " " + rulesEquals);
-        return intervalEquals && rulesEquals;
-    }
-    
-    @Override
-    public String toString()
-    {
-        return "FREQ=";
-    }
 
     /** Time unit of last rule applied.  It represents the time span to apply future changes to the output stream of date/times
      * For example:
@@ -113,5 +84,46 @@ public abstract class FrequencyAbstract implements Frequency {
             throw new RuntimeException("Invalid ChronoUnit: " + chronoUnit);
         }
     }
+    
+    public FrequencyType getFrequencyType() { return frequencyType; }
+    final private FrequencyType frequencyType;
 
+    // CONSTRUCTOR
+    public FrequencyAbstract(FrequencyType frequencyType, ChronoUnit chronoUnit)
+    {
+        this.frequencyType = frequencyType;
+        setChronoUnit(chronoUnit);
+    }
+
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        Frequency testObj = (Frequency) obj;
+        
+        boolean intervalEquals = (getInterval() == null) ?
+                (testObj.getInterval() == null) : getInterval().equals(testObj.getInterval());
+        Iterator<Rule> ruleIterator = getRules().iterator();
+        List<Boolean> rulesEqualsArray = new ArrayList<Boolean>();
+        for (int i=0; i<getRules().size(); i++)
+        {
+            boolean e = getRules().get(i).equals(testObj.getRules().get(i));
+            rulesEqualsArray.add(e);
+        }
+        boolean rulesEquals = rulesEqualsArray.stream().allMatch(a -> true );
+        System.out.println("frequency " + intervalEquals + " " + rulesEquals);
+        return intervalEquals && rulesEquals;
+    }
+    
+    @Override
+    public String toString()
+    {
+        StringBuilder builder = new StringBuilder("FREQ=" + getFrequencyType().toString());
+        if (getInterval() > 1) builder.append(";INTERVAL=" + getInterval());
+        return builder.toString();
+    }
 }

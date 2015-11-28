@@ -154,7 +154,7 @@ public abstract class VEvent extends VComponent
 
         return duration.toString();
     }
-    public void setDurationInSeconds(Long value) { durationInSeconds.setValue(value); }
+    public void setDurationInSeconds(Long value) { durationInSeconds.setValue(value); useDuration=true; useDateTimeEnd=false; }
     public void setDurationInSeconds(String value)
     { // parse ISO.8601.2004 period string into period of seconds (no support for Y (years) or M (months).
         long seconds = 0;
@@ -236,7 +236,7 @@ public abstract class VEvent extends VComponent
      */
     final private ObjectProperty<LocalDateTime> dateTimeEnd = new SimpleObjectProperty<LocalDateTime>(this, "DTEND");
     public ObjectProperty<LocalDateTime> dateTimeEndProperty() { return dateTimeEnd; }
-    public void setDateTimeEnd(LocalDateTime dtEnd) { dateTimeEnd.set(dtEnd); }
+    public void setDateTimeEnd(LocalDateTime dtEnd) { dateTimeEnd.set(dtEnd); useDuration=false; useDateTimeEnd=true; }
     public void setDateTimeEnd(String dtEnd)
     {
         LocalDateTime dt = iCalendarDateTimeToLocalDateTime(dtEnd);

@@ -70,7 +70,7 @@ public class VEventImpl extends VEvent
     public String getAppointmentGroupStyleClass() { return appointmentGroupStyleClass.get(); }
 
     private AppointmentGroup appointmentGroup;
-    public void setAppointmentGroup(AppointmentGroup appointmentGroup) { this.appointmentGroup = appointmentGroup; }
+    public void setAppointmentGroup(AppointmentGroup appointmentGroup) { this.appointmentGroup = appointmentGroup; setAppointmentGroupStyleClass(appointmentGroup.getStyleClass()); }
     public AppointmentGroup getAppointmentGroup() { return appointmentGroup; }
     
     private final ObservableList<AppointmentGroup> appointmentGroups = javafx.collections.FXCollections.observableArrayList();

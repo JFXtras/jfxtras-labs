@@ -2,6 +2,7 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.fre
 
 import static java.time.temporal.ChronoUnit.WEEKS;
 
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjuster;
 
 /** WEEKLY frequency rule as defined by RFC 5545 iCalendar 3.3.10 p39 */
@@ -12,11 +13,5 @@ public class Weekly extends FrequencyAbstract
     @Override public TemporalAdjuster getAdjuster() { return weeklyAdjuster; }
     
     // Constructor
-    public Weekly() { setChronoUnit(WEEKS); }
-
-    @Override
-    public String toString()
-    {
-        return super.toString() + Frequencies.WEEKLY;
-    }
+    public Weekly() { super(FrequencyType.WEEKLY, ChronoUnit.WEEKS); }
 }

@@ -32,11 +32,13 @@ public interface Frequency {
     void addByRule(Rule rule);
 
     
-    /** Chrono unit of last modification to stream
+    /** ChronoUnit of last modification to stream
      *  Enables usage of switch statement in BYxxx rules */
     ChronoUnit getChronoUnit();
     void setChronoUnit(ChronoUnit chronoUnit);
 
+    /** Which of the enum type FrenquencyType the implementing class represents */
+    FrequencyType getFrequencyType();
     
     /** Resulting stream of start date/times by applying Frequency temporal adjuster and all, if any,
      * Rules.
@@ -62,7 +64,7 @@ public interface Frequency {
     /** Enumeration of FREQ rules 
      * Is used to make new instances of the different Frequencies by matching FREQ property
      * to its matching class */
-    public static enum Frequencies
+    public static enum FrequencyType
     {
         YEARLY (Yearly.class)
       , MONTHLY (Monthly.class)
@@ -74,7 +76,7 @@ public interface Frequency {
       
         private Class<? extends Frequency> clazz;
           
-        Frequencies(Class<? extends Frequency> clazz)
+        FrequencyType(Class<? extends Frequency> clazz)
         {
             this.clazz = clazz;
         }

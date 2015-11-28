@@ -410,11 +410,10 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl();
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        vEvent.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0));
         vEvent.setAppointmentClass(clazz);
         vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
-        vEvent.setDateTimeEnd(LocalDateTime.of(2015, 1, 10, 8, 0));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
-        vEvent.setDurationInSeconds(3600L);
         RRule rule = new RRule()
                 .withCount(10);
         vEvent.setRRule(rule);

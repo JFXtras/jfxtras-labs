@@ -2,6 +2,7 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.fre
 
 import static java.time.temporal.ChronoUnit.MONTHS;
 
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjuster;
 
 /** MONTHLY frequency rule as defined by RFC 5545 iCalendar 3.3.10 p39 */
@@ -12,11 +13,5 @@ public class Monthly extends FrequencyAbstract
     @Override public TemporalAdjuster getAdjuster() { return monthlyAdjuster; }
         
     // Constructor
-    public Monthly() { setChronoUnit(MONTHS); }
-    
-    @Override
-    public String toString()
-    {
-        return super.toString() + Frequencies.MONTHLY;
-    }
+    public Monthly() { super(FrequencyType.MONTHLY, ChronoUnit.MONTHS); }
 }
