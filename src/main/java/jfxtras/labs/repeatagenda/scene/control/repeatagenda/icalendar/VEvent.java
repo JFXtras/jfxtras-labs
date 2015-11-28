@@ -1,6 +1,7 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
 import java.security.InvalidParameterException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -83,6 +84,11 @@ import javafx.beans.value.ChangeListener;
  */
 public abstract class VEvent extends VComponent
 {   
+    private static final long SECONDS_IN_WEEK = Duration.ofDays(7).getSeconds();
+    private static final long SECONDS_IN_DAY = Duration.ofDays(1).getSeconds();
+    private static final long SECONDS_IN_HOUR = Duration.ofHours(1).getSeconds();
+    private static final long SECONDS_IN_MINUTE = Duration.ofMinutes(1).getSeconds();
+    
     /**
      * DESCRIPTION: RFC 5545 iCalendar 3.8.1.12. page 84
      * This property provides a more complete description of the
@@ -107,7 +113,47 @@ public abstract class VEvent extends VComponent
     final private SimpleLongProperty durationInSeconds = new SimpleLongProperty(this, "DURATION");
     public SimpleLongProperty durationInSecondsProperty() { return durationInSeconds; }
     public Long getDurationInSeconds() { return durationInSeconds.getValue(); }
-    public String getDurationAsString() { return null; } // TODO 
+    public String getDurationAsString()
+    {
+        StringBuilder duration = new StringBuilder("P");
+        Long seconds = getDurationInSeconds();
+
+        Long weeks = seconds / SECONDS_IN_WEEK;
+        if (weeks > 0) duration.append(weeks + "W");
+        seconds -= SECONDS_IN_WEEK * weeks;
+
+        Long days = seconds / SECONDS_IN_DAY;
+        if (days > 0) duration.append(days + "D");
+        seconds -= SECONDS_IN_DAY * days;
+
+        Long hours = seconds / SECONDS_IN_HOUR;
+        boolean addedT = false;
+        if (hours > 0)
+        {
+            addedT = true;
+            duration.append("T");
+            duration.append(hours + "H");
+        }
+        seconds -= SECONDS_IN_HOUR * hours;
+
+        Long minutes = seconds / SECONDS_IN_MINUTE;
+        if (minutes > 0)
+        {
+            if (! addedT) duration.append("T");
+            addedT = true;
+            duration.append(minutes + "M");
+        }
+        seconds -= SECONDS_IN_MINUTE * minutes;
+
+        if (seconds > 0)
+        {
+            if (! addedT) duration.append("T");
+            addedT = true;
+            duration.append(seconds + "S");
+        }
+
+        return duration.toString();
+    }
     public void setDurationInSeconds(Long value) { durationInSeconds.setValue(value); }
     public void setDurationInSeconds(String value)
     { // parse ISO.8601.2004 period string into period of seconds (no support for Y (years) or M (months).
@@ -119,6 +165,8 @@ public abstract class VEvent extends VComponent
         {
             String token = m.group(0);
             tokens.add(token);
+            
+            Long s = Duration.ofDays(7).getSeconds();
         }
         Iterator<String> tokenIterator = tokens.iterator();
         String firstString = tokenIterator.next();
@@ -133,16 +181,16 @@ public abstract class VEvent extends VComponent
                 String time = tokenIterator.next();
                 if (time.equals("W"))
                 { // weeks
-                    seconds += n * 7 * 24 * 60 * 60;
+                    seconds += n * SECONDS_IN_WEEK;
                 } else if (time.equals("D"))
                 { // days
-                    seconds += n * 24 * 60 * 60;
+                    seconds += n * SECONDS_IN_DAY;
                 } else if (timeFlag && time.equals("H"))
                 { // hours
-                    seconds += n * 60 * 60;                    
+                    seconds += n * SECONDS_IN_HOUR;                   
                 } else if (timeFlag && time.equals("M"))
                 { // minutes
-                    seconds += n * 60;                                        
+                    seconds += n * SECONDS_IN_MINUTE;                                        
                 } else if (timeFlag && time.equals("S"))
                 { // seconds
                     seconds += n;                    
@@ -269,7 +317,7 @@ public abstract class VEvent extends VComponent
         if (getDescription() != null) properties.put(descriptionProperty(), getDescription());
         System.out.println("use: " + useDateTimeEnd + " " + useDuration);
         if (useDateTimeEnd) properties.put(dateTimeEndProperty(), FORMATTER.format(getDateTimeEnd()));
-        if (useDuration) properties.put(durationInSecondsProperty(), "PT" + getDurationInSeconds() + "S");
+        if (useDuration) properties.put(durationInSecondsProperty(), getDurationAsString());
         return properties;
     }
     
@@ -348,6 +396,8 @@ public abstract class VEvent extends VComponent
                 }            
             }           
         }
+        vEvent.useDuration = true;
+        vEvent.useDateTimeEnd = false;
         return (VEvent) VComponent.parseVComponent(vEvent, strings);
     }
        
