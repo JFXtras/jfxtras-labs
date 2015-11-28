@@ -466,7 +466,7 @@ public abstract class VComponent
     public String validityCheck()
     {
         String errors = "";
-        if (getDateTimeLastModified() == null) errors += System.lineSeparator() + "Invalid VComponent.  DTSTAMP must not be null.";
+        if (getDateTimeStamp() == null) errors += System.lineSeparator() + "Invalid VComponent.  DTSTAMP must not be null.";
         if (getUniqueIdentifier() == null) errors += System.lineSeparator() + "Invalid VComponent.  UID must not be null.";
         return errors;
     }

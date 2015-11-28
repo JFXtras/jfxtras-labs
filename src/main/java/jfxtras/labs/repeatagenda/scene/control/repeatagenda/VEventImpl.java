@@ -76,8 +76,8 @@ public class VEventImpl extends VEvent
     private final ObservableList<AppointmentGroup> appointmentGroups = javafx.collections.FXCollections.observableArrayList();
     public ObservableList<AppointmentGroup> getAppointmentGroups() { return appointmentGroups; }
     private void synchAppointmentGroup()
-    { // ensures appointmentGroup and appointmentGroupStyleClass match
-        if (! getAppointmentGroups().isEmpty())
+    { // ensures appointmentGroup and appointmentGroupStyleClass match.  This method is run by two listeners added to appointmentGroupStyleClassProperty and appointmentGroups by the constructor.
+        if (! getAppointmentGroups().isEmpty() && getAppointmentGroupStyleClass() != null)
         {
             AppointmentGroup aGroup = getAppointmentGroups()
                     .stream()
@@ -213,7 +213,6 @@ public class VEventImpl extends VEvent
         Map<Property, String> properties = new HashMap<Property, String>();
         properties.putAll(super.makePropertiesMap());
         if (getAppointmentGroup() != null) properties.put(appointmentGroupStyleClassProperty(), getAppointmentGroupStyleClass());
-        properties.put(dateTimeEndProperty(), FORMATTER.format(getDateTimeEnd()));
         return properties;
     }
     
