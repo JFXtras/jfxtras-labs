@@ -22,6 +22,9 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByMonthDay;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule.ByRules;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 
 /**
@@ -211,6 +214,23 @@ public class RRule {
     public static RRule parseRRule(String rRuleString)
     {
         RRule rrule = new RRule();
+//        // RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6
+//        List<String> stringList = Arrays.asList(rRuleString.split(";"));
+//        
+//        Iterator<String> iterator = stringList.iterator();
+//        
+//        while (iterator.hasNext())
+//        {
+//            String[] ruleAndValue = iterator.next().split("=");
+//            if (ruleAndValue[0].equals(rrule.frequencyProperty().getName()))
+//            { // FREQ
+//                Frequency freq = Frequency.FrequencyType
+//                        .valueOf(ruleAndValue[1])
+//                        .newInstance();
+//                rrule.setFrequency(freq);
+//                iterator.remove();
+//            }
+//        }
         
         // Parse string
         Arrays.stream(rRuleString.split(";"))
@@ -223,6 +243,28 @@ public class RRule {
                                 .valueOf(ruleAndValue[1])
                                 .newInstance();
                         rrule.setFrequency(freq);
+                    } else if (ruleAndValue[0].equals(rrule.frequencyProperty().getName()))
+                    {
+                        
+                    } else
+                    {
+                        for (ByRules b : ByRules.values())
+                        {
+                            System.out.println("Testing: " + ruleAndValue[0] + " " + b + (ruleAndValue[0].equals(b.toString())));
+                            if (ruleAndValue[0].equals(b.toString()))
+                            {
+                                try {
+                                    Rule rule = b.newInstance(rrule.getFrequency(), ruleAndValue[1]);
+                                    rrule.getFrequency().addByRule(rule);
+                                    ByMonthDay b2 = (ByMonthDay) rule;
+                                    System.out.println("days: ");
+                                    Arrays.stream(b2.getDaysOfMonth()).forEach(System.out::println);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                System.out.println("got: " + b);
+                            }
+                        }
                     }
                 });
         return rrule;
@@ -276,4 +318,41 @@ public class RRule {
        return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
     }
 
+//    /** Enumeration of RRule parts
+//     * Is used to make new instances of the different Frequencies by matching RRULE property
+//     * to its matching class */
+//    public static enum FrequencyParts
+//    {
+//        FREQ (Yearly.class)
+//      , UNTIL (Monthly.class)
+//      , COUNT (Weekly.class)
+//      , INTERVAL (Daily.class)
+//      , BYSECOND (Hourly.class) // Not implemented
+//      , BYMINUTE (Minutely.class) // Not implemented
+//      , BYHOUR (Secondly.class)
+//      , BYDAY
+//      , BYMONTHDAY
+//      , BYYEARDAY
+//      , BYWEEKNO
+//      , BYMONTH
+//      , BYSETPOS
+//      , WKST);
+//      
+//        private Class<? extends Frequency> clazz;
+//          
+//        FrequencyParts(Class<? extends Rule> clazz)
+//        {
+//            this.clazz = clazz;
+//        }
+//          
+//        public Frequency newInstance()
+//        {
+//            try {
+//                return clazz.newInstance();
+//            } catch (InstantiationException | IllegalAccessException e) {
+//                e.printStackTrace();
+//            }
+//            return null;
+//        }
+//    }
 }

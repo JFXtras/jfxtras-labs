@@ -544,7 +544,6 @@ public class ICalendarDateTest extends ICalendarTestAbstract
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0)
-              , LocalDateTime.of(2015, 11, 15, 10, 0)
               , LocalDateTime.of(2015, 11, 18, 10, 0)
               , LocalDateTime.of(2015, 11, 21, 10, 0)
               , LocalDateTime.of(2015, 11, 24, 10, 0)

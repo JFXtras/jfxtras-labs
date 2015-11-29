@@ -2,11 +2,13 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
@@ -47,8 +49,7 @@ public abstract class RecurrenceComponent<T>
     }
     
     public void copyTo(Rule destination) {
-        // TODO Auto-generated method stub
-        
+        // TODO Auto-generated method stub       
     }
     
     @Override
@@ -75,4 +76,25 @@ public abstract class RecurrenceComponent<T>
         }
         return true;
     }
+
+    @Override
+    public String toString()
+    {
+        String datesString = getDates()
+                .stream()
+                .sorted()
+                .map(d -> VComponent.FORMATTER.format(d) + ",")
+                .collect(Collectors.joining());
+        return datesString.substring(0, datesString.length()-1); // remove last comma
+    }
+    
+    /** convert a comma delimeted string of VComponent.FORMATTER dates to a List<LocalDateTime> */
+    public static Collection<LocalDateTime> parseDates(String string)
+    {
+        return Arrays.asList(string.split(","))
+                     .stream()
+                     .map(s -> LocalDateTime.parse(s,VComponent.FORMATTER))
+                     .collect(Collectors.toList());
+    }
+
 }

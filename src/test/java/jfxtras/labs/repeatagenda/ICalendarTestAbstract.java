@@ -396,6 +396,8 @@ public abstract class ICalendarTestAbstract
         vEvent.setDescription("Daily2 Description");
         vEvent.setSummary("Daily2 Summary");
         vEvent.setAppointmentClass(clazz);
+        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         RRule rule = new RRule()
                 .withCount(6);
         vEvent.setRRule(rule);
@@ -487,10 +489,12 @@ public abstract class ICalendarTestAbstract
         return vEvent;
     }
     
+    /** FREQ=DAILY;INVERVAL=3;COUNT=6
+     *  EXDATE=20151112T100000,20151115T100000 */
     protected static VEventImpl getDailyWithException1()
     {
         VEventImpl vEvent = getDaily2();
-        EXDate exDate = new EXDate().withDates(LocalDateTime.of(2015, 11, 12, 10, 0));
+        EXDate exDate = new EXDate().withDates(LocalDateTime.of(2015, 11, 12, 10, 0), LocalDateTime.of(2015, 11, 15, 10, 0));
         vEvent.setExDate(exDate);
         return vEvent;
     }

@@ -31,5 +31,4 @@ public abstract class ByRuleAbstract implements Rule
     {
         return getSortOrder().compareTo(byRule.getSortOrder());
     }
-
 }

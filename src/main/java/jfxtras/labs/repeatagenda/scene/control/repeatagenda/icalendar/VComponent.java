@@ -123,7 +123,7 @@ instances into one property internally.
 
  * 
  * @author David Bal
- * @param <T>
+ * @see VEvent
  *
  */
 public abstract class VComponent
@@ -472,7 +472,7 @@ public abstract class VComponent
     }
     
     /** Convert a list of strings containing properties of a iCalendar component and
-     * populate its properties
+     * populate its properties.  Used to make a new object from a List<String>.
      * @param s
      */
     protected static VComponent parseVComponent(VComponent vComponent, List<String> strings)

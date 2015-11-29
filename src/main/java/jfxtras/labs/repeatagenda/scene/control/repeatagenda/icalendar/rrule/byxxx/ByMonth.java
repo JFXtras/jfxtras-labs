@@ -24,10 +24,17 @@ public class ByMonth extends ByRuleAbstract
     private Month[] months;
     private void setMonths(Month... months) { this.months = months; }
 
+    // CONSTRUCTORS
     public ByMonth(Frequency frequency, Month... months)
     {
         super(frequency, SORT_ORDER);
         setMonths(months);
+    }
+
+    public ByMonth(Frequency frequency, String months)
+    {
+        super(frequency, SORT_ORDER);
+//        setMonths(months);
     }
 
     @Override
@@ -49,7 +56,6 @@ public class ByMonth extends ByRuleAbstract
         return monthEquals;
     }
 
-    
     @Override
     public String toString()
     {

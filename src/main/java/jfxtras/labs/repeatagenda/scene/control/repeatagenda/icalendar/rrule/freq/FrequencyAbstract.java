@@ -3,7 +3,6 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.fre
 import java.security.InvalidParameterException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javafx.beans.property.IntegerProperty;
@@ -107,7 +106,7 @@ public abstract class FrequencyAbstract implements Frequency {
         
         boolean intervalEquals = (getInterval() == null) ?
                 (testObj.getInterval() == null) : getInterval().equals(testObj.getInterval());
-        Iterator<Rule> ruleIterator = getRules().iterator();
+//        Iterator<Rule> ruleIterator = getRules().iterator();
         List<Boolean> rulesEqualsArray = new ArrayList<Boolean>();
         for (int i=0; i<getRules().size(); i++)
         {

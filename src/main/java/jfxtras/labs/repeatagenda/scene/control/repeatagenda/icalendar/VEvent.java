@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -334,7 +335,7 @@ public abstract class VEvent extends VComponent
     }
     
     /** This method should be called by a method in the implementing class the
-     * makes a new object and passes it here as vEvent  
+     * makes a new object and passes it here as vEvent.
      * @param vEvent
      * @param strings
      * @return
@@ -393,8 +394,17 @@ public abstract class VEvent extends VComponent
                 } else
                 {
                     throw new InvalidParameterException("Invalid VEvent: Can't contain both DTEND and DURATION.");
-                }            
-            }           
+                }
+            } else if (property[0].equals(vEvent.exDateProperty().getName()))
+            {
+                Collection<LocalDateTime> dateTimeCollection= RecurrenceComponent.parseDates(property[1]);
+                EXDate exDate = new EXDate().withDates(dateTimeCollection);
+                vEvent.setExDate(exDate);
+                stringsIterator.remove();
+            } else if (property[0].equals(vEvent.rDateProperty().getName()))
+            {
+                
+            }
         }
         vEvent.useDuration = true;
         vEvent.useDateTimeEnd = false;
