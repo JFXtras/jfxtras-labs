@@ -204,7 +204,7 @@ public abstract class VComponent
     public EXDate getExDate() { return (exDate == null) ? _exDate : exDate.getValue(); }
     public void setExDate(EXDate exDate)
     {
-        if (exDate == null)
+        if (this.exDate == null)
         {
             _exDate = exDate;
         } else
@@ -251,7 +251,7 @@ public abstract class VComponent
     public RDate getRDate() { return (rDate == null) ? _rDate : rDate.getValue(); }
     public void setRDate(RDate rDate)
     {
-        if (rDate == null)
+        if (this.rDate == null)
         {
             _rDate = rDate;
         } else

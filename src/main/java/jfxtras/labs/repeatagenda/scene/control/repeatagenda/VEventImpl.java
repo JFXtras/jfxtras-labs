@@ -36,18 +36,10 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
-// TODO - Needs to know how to make Appointments for agenda
-// Will be like Repeat class
-// Needs a makeAppointments method
-// Needs to have copy methods to copy from VEvent to appointment and visa-versa
-// Should this implement Appointment?
-
 /**
- * Concrete class as an example of VEvent.
+ * Concrete class as an example of a VEvent.
  * This class creates and edits appointments for display in Agenda.
  * 
- * Special use:
- * 3.8.1.2.  Categories: contains data for Appointment.appointmentGroup
  * 
  * @author David Bal
  * @param <T>
@@ -182,6 +174,7 @@ public class VEventImpl extends VEvent
                 && dateTimeRangeEndEquals;
     }
     
+    @Override
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
         Stream<LocalDateTime> initialStream = super.stream(startDateTime);
@@ -252,8 +245,9 @@ public class VEventImpl extends VEvent
     }
 
     /**
-     * Returns appointments that should exist between dateTimeRangeStart and dateTimeRangeEnd based on VEvent.
-     * For convenience, sets VEvent dateTimeRangeStart and dateTimeRangeEnd prior to making appointments.
+     * Returns appointments for Agenda that should exist between dateTimeRangeStart and dateTimeRangeEnd
+     * based on VEvent.  For convenience, sets VEvent dateTimeRangeStart and dateTimeRangeEnd prior to 
+     * making appointments.
      * 
      * @param dateTimeRangeStart
      * @param dateTimeRangeEnd
@@ -269,8 +263,8 @@ public class VEventImpl extends VEvent
     }
 
     /**
-     * Returns appointments that should exist between dateTimeRangeStart and dateTimeRangeEnd based on VEvent.
-     * Uses dateTimeRange previously set in VEvent.
+     * Returns appointments for Agenda that should exist between dateTimeRangeStart and dateTimeRangeEnd
+     * based on VEvent properties.  Uses dateTimeRange previously set in VEvent.
      * 
      * @return created appointments
      */
@@ -303,6 +297,7 @@ public class VEventImpl extends VEvent
      */
     // TODO - If this method is necessary consider using cache of dates for faster retrieval
     // TODO - it may not be necessary, remove if possible for improved efficiency
+    @Deprecated
     public LocalDateTime nextValidDateSlow(LocalDateTime inputDate)
     {
         if (inputDate.isBefore(getDateTimeStart())) return getDateTimeStart();
