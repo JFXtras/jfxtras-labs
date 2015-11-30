@@ -75,47 +75,47 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
        3.8.5.  Recurrence Component Properties . . . . . . . . . . . 120
          3.8.5.1.  Exception Date-Times  . . . . . . . . . . . . . . 120 - Yes
          3.8.5.2.  Recurrence Date-Times . . . . . . . . . . . . . . 122 - Yes
-         3.8.5.3.  Recurrence Rule . . . . . . . . . . . . . . . . . 124 - TODO, in RRule class
+         3.8.5.3.  Recurrence Rule . . . . . . . . . . . . . . . . . 124 - Yes, in RRule class
        3.8.6.  Alarm Component Properties  . . . . . . . . . . . . . 134
          3.8.6.1.  Action  . . . . . . . . . . . . . . . . . . . . . 134 - NO
          3.8.6.2.  Repeat Count  . . . . . . . . . . . . . . . . . . 135 - NO
          3.8.6.3.  Trigger . . . . . . . . . . . . . . . . . . . . . 135 - NO
        3.8.7.  Change Management Component Properties  . . . . . . . 138
-         3.8.7.1.  Date-Time Created . . . . . . . . . . . . . . . . 138 - TODO
-         3.8.7.2.  Date-Time Stamp . . . . . . . . . . . . . . . . . 139 - TODO
-         3.8.7.3.  Last Modified . . . . . . . . . . . . . . . . . . 140 - TODO
+         3.8.7.1.  Date-Time Created . . . . . . . . . . . . . . . . 138 - Yes
+         3.8.7.2.  Date-Time Stamp . . . . . . . . . . . . . . . . . 139 - Yes
+         3.8.7.3.  Last Modified . . . . . . . . . . . . . . . . . . 140 - Yes
          3.8.7.4.  Sequence Number . . . . . . . . . . . . . . . . . 141 - TODO
        3.8.8.  Miscellaneous Component Properties  . . . . . . . . . 142
          3.8.8.1.  IANA Properties . . . . . . . . . . . . . . . . . 142 - NO
-         3.8.8.2.  Non-Standard Properties . . . . . . . . . . . . . 142 - TODO
+         3.8.8.2.  Non-Standard Properties . . . . . . . . . . . . . 142 - can't be implemented here.  must be in implementing class
          3.8.8.3.  Request Status  . . . . . . . . . . . . . . . . . 144 - NO
          
 Alphabetical list of elements for VComponent (some not implemented)
-ATTACH
-ATTENDEE
-CATEGORIES
-CLASS
-COMMENT
-CONTACT
-CREATED
-DTSTAMP
-DTSTART
-EXDATE
-IANA-PROP
-LAST-MOD
-ORGANIZER
-RDATE
-RECURID
-RELATED
-RESOURCES
-RRULE
-RSTATUS
-SEQ
-STATUS
-SUMMARY
-UID
-URL
-X-PROP
+ATTACH - not implemented
+ATTENDEE - not implemented
+CATEGORIES - yes
+CLASS - not implemented
+COMMENT - yes
+CONTACT - not implemented
+CREATED - yes
+DTSTAMP - yes
+DTSTART - yes
+EXDATE - yes
+IANA-PROP - not implemented
+LAST-MOD - yes
+ORGANIZER - not implemented
+RDATE - yes
+RECURID - TODO
+RELATED - not implemented
+RESOURCES - not implemented
+RRULE - yes
+RSTATUS - not implemented
+SEQ - TODO
+STATUS - not implemented
+SUMMARY - yes
+UID - yes
+URL - not implemented
+X-PROP - can't be implemented here.  must be in implementing class
 
 Limitations: COMMENT, EXDATE, RDATE can only exist once per calendar component.  According
 to iCalendar a number of properties, including those three, can exist more than once.  Fixing

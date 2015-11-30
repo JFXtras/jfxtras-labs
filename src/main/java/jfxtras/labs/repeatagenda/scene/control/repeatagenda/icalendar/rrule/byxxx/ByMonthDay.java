@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 
 /** BYMONTHDAY from RFC 5545, iCalendar */
 public class ByMonthDay extends ByRuleAbstract
@@ -34,7 +33,7 @@ public class ByMonthDay extends ByRuleAbstract
     /** Constructor 
      * takes String of comma-delimited integers, parses it to array of ints
      * This constructor is REQUIRED by the Rule.ByRules newInstance method. */
-    public ByMonthDay(Frequency frequency, String daysOfMonthString)
+    public ByMonthDay(String daysOfMonthString)
     {
         super(PROCESS_ORDER);
         int[] days = Arrays
@@ -43,16 +42,10 @@ public class ByMonthDay extends ByRuleAbstract
                 .toArray();
         setDaysOfMonth(days);
     }
-    
-    /** Constructor 
-     * If not setting daysOfMonth then defaults to startLocalDateTime for dayOfMonth */
-    public ByMonthDay(Frequency frequency) {
-        super(PROCESS_ORDER);
-    }
 
     /** Constructor 
      * Contains varargs of daysOfMonth */
-    public ByMonthDay(Frequency frequency, int... daysOfMonth)
+    public ByMonthDay(int... daysOfMonth)
     {
         super(PROCESS_ORDER);
         setDaysOfMonth(daysOfMonth);

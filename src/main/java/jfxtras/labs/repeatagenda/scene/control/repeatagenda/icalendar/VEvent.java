@@ -20,6 +20,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 
 /**
  * Parent calendar component, VEVENT
@@ -79,8 +80,9 @@ import javafx.beans.value.ChangeListener;
          3.8.8.1.  IANA Properties . . . . . . . . . . . . . . . . . 142 - NO (from VComponent)
          3.8.8.2.  Non-Standard Properties . . . . . . . . . . . . . 142 - TODO (from VComponent, some X-properties may be defined here too)
          3.8.8.3.  Request Status  . . . . . . . . . . . . . . . . . 144 - NO (from VComponent)
- * @param <T>
  *
+ * @author David Bal
+ * @see VEventImpl
  */
 public abstract class VEvent extends VComponent
 {   

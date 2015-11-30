@@ -117,6 +117,5 @@ public class RDate extends RecurrenceComponent<RDate>
             return theNext;
         }
     }
-
 }
 

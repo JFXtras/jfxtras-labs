@@ -16,7 +16,10 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxx
 
 /** For EXDate and RDate
  * Limitation: only DATE-TIME supported.  DATE is not supported.
- * @param <T>*/
+ * @param <T>
+ * @see EXDate
+ * @see RDate
+ * */
 public abstract class RecurrenceComponent<T>
 {
     /**

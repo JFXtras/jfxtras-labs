@@ -13,8 +13,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByMonth;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByMonthDay;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByWeekNo;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Monthly;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Yearly;
 
 public class ICalendarParseTest extends ICalendarTestAbstract
@@ -65,14 +69,39 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     {
         String s = "FREQ=YEARLY;INTERVAL=2;BYMONTH=1;BYDAY=SU";
         RRule rRule = RRule.parseRRule(s);
-        System.out.println("rRule:"+rRule.toString());
         RRule expectedRRule = new RRule();
         Frequency frequency = new Yearly()
                 .withInterval(2);
         frequency.addByRule(new ByMonth(Month.JANUARY));
         frequency.addByRule(new ByDay(DayOfWeek.SUNDAY));
         expectedRRule.setFrequency(frequency);
-        System.out.println("rules: " +expectedRRule.getFrequency().getRules().size());
+        assertEquals(expectedRRule, rRule);
+    }
+    
+    @Test
+    public void canParseRRule2()
+    {
+        String s = "FREQ=MONTHLY;BYDAY=SA;BYMONTHDAY=7,8,9,10,11,12,13";
+        RRule rRule = RRule.parseRRule(s);
+        RRule expectedRRule = new RRule();
+        Frequency frequency = new Monthly();
+        frequency.addByRule(new ByDay(DayOfWeek.SATURDAY));
+        frequency.addByRule(new ByMonthDay(7,8,9,10,11,12,13));
+        expectedRRule.setFrequency(frequency);
+        assertEquals(expectedRRule, rRule);
+    }
+    
+    @Test
+    public void canParseRRule3()
+    {
+        String s = "FREQ=YEARLY;BYWEEKNO=20;BYDAY=2MO,3MO";
+        RRule rRule = RRule.parseRRule(s);
+        System.out.println("rRule:"+rRule.toString());
+        RRule expectedRRule = new RRule();
+        Frequency frequency = new Yearly();
+        frequency.addByRule(new ByDay(new ByDayPair(DayOfWeek.MONDAY, 2), new ByDayPair(DayOfWeek.MONDAY, 3)));
+        frequency.addByRule(new ByWeekNo(20));
+        expectedRRule.setFrequency(frequency);
         assertEquals(expectedRRule, rRule);
     }
     
