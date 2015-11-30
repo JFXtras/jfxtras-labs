@@ -135,6 +135,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
                 .limit(6)
+                .peek(System.out::println)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(1996, 11, 5, 0, 0)

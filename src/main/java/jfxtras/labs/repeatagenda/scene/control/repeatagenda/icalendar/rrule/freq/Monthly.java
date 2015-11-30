@@ -5,6 +5,8 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjuster;
 
+import javafx.beans.property.SimpleObjectProperty;
+
 /** MONTHLY frequency rule as defined by RFC 5545 iCalendar 3.3.10 p39 */
 public class Monthly extends FrequencyAbstract
 {  
@@ -13,5 +15,5 @@ public class Monthly extends FrequencyAbstract
     @Override public TemporalAdjuster getAdjuster() { return monthlyAdjuster; }
         
     // Constructor
-    public Monthly() { super(FrequencyType.MONTHLY, ChronoUnit.MONTHS); }
+    public Monthly() { super(FrequencyType.MONTHLY, new SimpleObjectProperty<ChronoUnit>(ChronoUnit.MONTHS)); }
 }

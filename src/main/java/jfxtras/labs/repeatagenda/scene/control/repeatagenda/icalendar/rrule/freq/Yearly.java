@@ -5,6 +5,8 @@ import static java.time.temporal.ChronoUnit.YEARS;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjuster;
 
+import javafx.beans.property.SimpleObjectProperty;
+
 /** YEARLY frequency rule as defined by RFC 5545 iCalendar 3.3.10 p39 */
 public class Yearly extends FrequencyAbstract
 {
@@ -13,5 +15,5 @@ public class Yearly extends FrequencyAbstract
     @Override public TemporalAdjuster getAdjuster() { return yearlyAdjuster; }
 
     // Constructor
-    public Yearly() { super(FrequencyType.YEARLY, ChronoUnit.YEARS); }
+    public Yearly() { super(FrequencyType.YEARLY, new SimpleObjectProperty<ChronoUnit>(ChronoUnit.YEARS)); }
 }

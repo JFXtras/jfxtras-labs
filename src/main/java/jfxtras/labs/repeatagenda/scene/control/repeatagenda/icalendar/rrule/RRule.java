@@ -198,8 +198,14 @@ public class RRule {
     {
         StringBuilder builder = new StringBuilder();
         builder.append(getFrequency().toString());
-        if (getCount() > 0) builder.append(";COUNT=" + getCount());
-        if (getUntil() != null) builder.append(";UNTIL=" + VComponent.FORMATTER.format(getUntil()));
+        if (getCount() > 0) builder.append(";" + countProperty().getName() + "=" + getCount());
+        if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + VComponent.FORMATTER.format(getUntil()));
+        System.out.println(getFrequency()
+        .getRules());
+        getFrequency()
+        .getRules()
+        .stream()
+        .forEach(r -> System.out.println("rules:" + r.getClass()));
         String rules = getFrequency()
                 .getRules()
                 .stream()
@@ -239,17 +245,14 @@ public class RRule {
 //                            System.out.println("Testing: " + ruleAndValue[0] + " " + b + (ruleAndValue[0].equals(b.toString())));
                             if (ruleAndValue[0].equals(b.toString()))
                             {
-                                try { // Make new instance of Byxx Rule with value by parsing ruleAndValue[1]
-                                    Rule rule = b.newInstance(rrule.getFrequency(), ruleAndValue[1]);
-                                    System.out.println("rule: " + rule + " " + rrule);
-                                    rrule.getFrequency().addByRule(rule);
-//                                    ByMonthDay b2 = (ByMonthDay) rule;
-//                                    System.out.println("days: ");
-//                                    Arrays.stream(b2.getDaysOfMonth()).forEach(System.out::println);
-                                } catch (NoSuchMethodException e)
-                                {
+                                Rule rule = null;
+                                try {
+                                    rule = b.newInstance(ruleAndValue[1]);
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
+                                System.out.println("rule: " + rule + " " + rrule);
+                                rrule.getFrequency().addByRule(rule);
                             }
                         }
                     }

@@ -5,6 +5,7 @@ import static java.time.temporal.ChronoUnit.WEEKS;
 import java.security.InvalidParameterException;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
+import javafx.beans.property.ObjectProperty;
 
 /** BYWEEKNO from RFC 5545, iCalendar 3.3.10, page 42 */
 public class ByWeekNo extends ByRuleAbstract
@@ -44,9 +45,9 @@ public class ByWeekNo extends ByRuleAbstract
 
     
     /** Constructor requires weeks of the year value(s) */
-    public ByWeekNo(Frequency frequency, int...weekNumbers)
+    public ByWeekNo(int...weekNumbers)
     {
-        super(frequency, SORT_ORDER);
+        super(SORT_ORDER);
         setWeekNumbers(weekNumbers);
     }
 
@@ -84,12 +85,13 @@ public class ByWeekNo extends ByRuleAbstract
     }
     
     @Override
-    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
+    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, ObjectProperty<ChronoUnit> chronoUnit, LocalDateTime startDateTime)
     {
-        switch (getFrequency().getChronoUnit())
+        ChronoUnit originalChronoUnit = chronoUnit.get();
+        chronoUnit.set(WEEKS);
+        switch (originalChronoUnit)
         {
         case YEARS:
-            getFrequency().setChronoUnit(WEEKS);
             Locale oldLocale = null;
             WeekFields weekFields = WeekFields.of(Locale.getDefault());
             DayOfWeek firstDayOfWeek = weekFields.getFirstDayOfWeek();
@@ -139,7 +141,7 @@ public class ByWeekNo extends ByRuleAbstract
         case HOURS:
         case MINUTES:
         case SECONDS:
-            throw new InvalidParameterException("BYWEEKNO is not available for " + getFrequency().getChronoUnit() + " frequency."); // Not available
+            throw new InvalidParameterException("BYWEEKNO is not available for " + chronoUnit + " frequency."); // Not available
         default:
             break;
         }

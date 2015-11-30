@@ -6,6 +6,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
@@ -20,7 +21,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
+import javafx.beans.property.ObjectProperty;
 
 /** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */
 public class ByDay extends ByRuleAbstract
@@ -39,9 +40,9 @@ public class ByDay extends ByRuleAbstract
     //CONSTRUCTORS
     /** Parse iCalendar compliant list of days of the week.  For example 1MO,2TU,4SA
      * This constructor is REQUIRED by the Rule.ByRules newInstance method. */
-    public ByDay(Frequency frequency, String dayPairs)
+    public ByDay(String dayPairs)
     {
-        super(frequency, SORT_ORDER);
+        super(SORT_ORDER);
         List<ByDayPair> dayPairsList = new ArrayList<ByDayPair>();
         Pattern p = Pattern.compile("([0-9]+)?([A-Z]{2})");
         Matcher m = p.matcher(dayPairs);
@@ -68,17 +69,17 @@ public class ByDay extends ByRuleAbstract
     }
     
     /** Constructor with varargs ByDayPair */
-    public ByDay(Frequency frequency, ByDayPair... byDayPairs)
+    public ByDay(ByDayPair... byDayPairs)
     {
-        super(frequency, SORT_ORDER);
+        super(SORT_ORDER);
         setByDayPair(byDayPairs);
     }
 
     /** Constructor that uses DayOfWeek values without a preceding integer.  All days of the 
      * provided types are included within the specified frequency */
-    public ByDay(Frequency frequency, DayOfWeek... daysOfWeek)
+    public ByDay(DayOfWeek... daysOfWeek)
     {
-        super(frequency, SORT_ORDER);
+        super(SORT_ORDER);
         byDayPairs = new ByDayPair[daysOfWeek.length];
         int i=0;
         for (DayOfWeek d : daysOfWeek)
@@ -125,12 +126,13 @@ public class ByDay extends ByRuleAbstract
     }
     
     @Override
-    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
+    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, ObjectProperty<ChronoUnit> chronoUnit, LocalDateTime startDateTime)
     {
-        switch (getFrequency().getChronoUnit())
+        ChronoUnit originalChronoUnit = chronoUnit.get();
+        chronoUnit.set(DAYS);
+        switch (originalChronoUnit)
         {
         case DAYS:
-            getFrequency().setChronoUnit(DAYS);
             return inStream.filter(date ->
             { // filter out all but qualifying days
                 DayOfWeek myDayOfWeek = date.toLocalDate().getDayOfWeek();
@@ -141,7 +143,6 @@ public class ByDay extends ByRuleAbstract
                 return false;
             });
         case WEEKS:
-            getFrequency().setChronoUnit(DAYS);
             return inStream.flatMap(date -> 
             { // Expand to be byDayPairs days in current week
                 List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
@@ -155,7 +156,6 @@ public class ByDay extends ByRuleAbstract
                 return dates.stream();
             });
         case MONTHS:
-            getFrequency().setChronoUnit(DAYS);
             return inStream.flatMap(date -> 
             {
                 List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
@@ -182,7 +182,6 @@ public class ByDay extends ByRuleAbstract
                 return dates.stream();
             });
         case YEARS:
-            getFrequency().setChronoUnit(DAYS);
             return inStream.flatMap(date -> 
             {
                 List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
@@ -218,7 +217,7 @@ public class ByDay extends ByRuleAbstract
         case HOURS:
         case MINUTES:
         case SECONDS:
-            throw new RuntimeException("Not implemented ChronoUnit: " + getFrequency().getChronoUnit()); // probably same as DAILY
+            throw new RuntimeException("Not implemented ChronoUnit: " + chronoUnit); // probably same as DAILY
         default:
             break;
         }

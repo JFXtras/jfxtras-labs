@@ -85,7 +85,7 @@ public abstract class ICalendarTestAbstract
         vEvent.setRRule(rule);
         Frequency yearly = new Yearly();
         rule.setFrequency(yearly);
-        Rule byRule = new ByDay(yearly, DayOfWeek.FRIDAY);
+        Rule byRule = new ByDay(DayOfWeek.FRIDAY);
         yearly.addByRule(byRule);
         return vEvent;
     }
@@ -103,9 +103,9 @@ public abstract class ICalendarTestAbstract
         vEvent.setRRule(rule);
         Frequency yearly = new Yearly();
         rule.setFrequency(yearly);
-        Rule byRule = new ByDay(yearly, DayOfWeek.THURSDAY);
+        Rule byRule = new ByDay(DayOfWeek.THURSDAY);
         yearly.addByRule(byRule);
-        Rule byRule2 = new ByMonth(yearly, Month.JUNE, Month.JULY, Month.AUGUST);
+        Rule byRule2 = new ByMonth(Month.JUNE, Month.JULY, Month.AUGUST);
         yearly.addByRule(byRule2);
         return vEvent;
     }
@@ -120,7 +120,7 @@ public abstract class ICalendarTestAbstract
         vEvent.setRRule(rule);
         Frequency yearly = new Yearly();
         rule.setFrequency(yearly);
-        Rule byRule = new ByMonth(yearly, Month.JANUARY, Month.FEBRUARY);
+        Rule byRule = new ByMonth(Month.JANUARY, Month.FEBRUARY);
         yearly.addByRule(byRule);
         return vEvent;
     }
@@ -135,7 +135,7 @@ public abstract class ICalendarTestAbstract
         vEvent.setRRule(rule);
         Frequency yearly = new Yearly();
         rule.setFrequency(yearly);
-        Rule byRule = new ByMonth(yearly, Month.NOVEMBER);
+        Rule byRule = new ByMonth(Month.NOVEMBER);
         yearly.addByRule(byRule);
         Rule byRule2 = new ByMonthDay(yearly); // use default repeat date from startLocalDateTime (10th of month)
         yearly.addByRule(byRule2);
@@ -159,9 +159,9 @@ public abstract class ICalendarTestAbstract
         Frequency yearly = new Yearly()
                 .withInterval(4);
         rule.setFrequency(yearly);
-        Rule byRule = new ByMonth(yearly, Month.NOVEMBER);
+        Rule byRule = new ByMonth(Month.NOVEMBER);
         yearly.addByRule(byRule);
-        Rule byRule2 = new ByDay(yearly, DayOfWeek.TUESDAY);
+        Rule byRule2 = new ByDay(DayOfWeek.TUESDAY);
         yearly.addByRule(byRule2);
         Rule byRule3 = new ByMonthDay(yearly, 2,3,4,5,6,7,8);
         yearly.addByRule(byRule3);
@@ -178,7 +178,7 @@ public abstract class ICalendarTestAbstract
         vEvent.setRRule(rule);
         Frequency yearly = new Yearly();
         rule.setFrequency(yearly);
-        Rule byRule = new ByDay(yearly, new ByDayPair(DayOfWeek.MONDAY, 20));
+        Rule byRule = new ByDay(new ByDayPair(DayOfWeek.MONDAY, 20));
         yearly.addByRule(byRule);
         return vEvent;
     }
@@ -193,10 +193,10 @@ public abstract class ICalendarTestAbstract
         vEvent.setRRule(rule);
         Frequency yearly = new Yearly();
         rule.setFrequency(yearly);
-        ByWeekNo byRule = new ByWeekNo(yearly, 20);
+        ByWeekNo byRule = new ByWeekNo(20);
         byRule.setWeekStart(DayOfWeek.MONDAY); // not needed, is default.
         yearly.addByRule(byRule);
-        Rule byRule2 = new ByDay(yearly, DayOfWeek.MONDAY);
+        Rule byRule2 = new ByDay(DayOfWeek.MONDAY);
         yearly.addByRule(byRule2);
 
         return vEvent;
@@ -212,7 +212,7 @@ public abstract class ICalendarTestAbstract
         vEvent.setRRule(rule);
         Frequency yearly = new Yearly();
         rule.setFrequency(yearly);
-        Rule byRule = new ByMonth(yearly, Month.NOVEMBER);
+        Rule byRule = new ByMonth(Month.NOVEMBER);
         yearly.addByRule(byRule);
         Rule byRule2 = new ByMonthDay(yearly, 10); // use default repeat date from startLocalDateTime (10th of month)
         yearly.addByRule(byRule2);
@@ -258,7 +258,7 @@ public abstract class ICalendarTestAbstract
         vEvent.setRRule(rule);
         Frequency monthly = new Monthly();
         rule.setFrequency(monthly);
-        Rule byRule = new ByDay(monthly, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY);
+        Rule byRule = new ByDay(DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY);
         monthly.addByRule(byRule);
         return vEvent;
     }
@@ -273,7 +273,7 @@ public abstract class ICalendarTestAbstract
         vEvent.setRRule(rule);
         Frequency monthly = new Monthly();
         rule.setFrequency(monthly);
-        Rule byRule = new ByDay(monthly, new ByDay.ByDayPair(DayOfWeek.SATURDAY, -1));
+        Rule byRule = new ByDay(new ByDay.ByDayPair(DayOfWeek.SATURDAY, -1));
         monthly.addByRule(byRule);
         return vEvent;
     }
@@ -291,7 +291,7 @@ public abstract class ICalendarTestAbstract
         vEvent.setRRule(rule);
         Frequency monthly = new Monthly();
         rule.setFrequency(monthly);
-        Rule byRule = new ByDay(monthly, DayOfWeek.FRIDAY);
+        Rule byRule = new ByDay(DayOfWeek.FRIDAY);
         monthly.addByRule(byRule);
         Rule byRule2 = new ByMonthDay(monthly, 13);
         monthly.addByRule(byRule2);
@@ -311,9 +311,9 @@ public abstract class ICalendarTestAbstract
         vEvent.setRRule(rule);
         Frequency monthly = new Monthly();
         rule.setFrequency(monthly);
-        Rule byRule1 = new ByMonth(monthly, Month.NOVEMBER, Month.DECEMBER);
+        Rule byRule1 = new ByMonth(Month.NOVEMBER, Month.DECEMBER);
         monthly.addByRule(byRule1);
-        Rule byRule2 = new ByDay(monthly, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY);
+        Rule byRule2 = new ByDay(DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY);
         monthly.addByRule(byRule2);
         return vEvent;
     }
@@ -346,7 +346,7 @@ public abstract class ICalendarTestAbstract
         Frequency weekly = new Weekly()
                 .withInterval(2);
         rule.setFrequency(weekly);
-        Rule byRule = new ByDay(weekly, DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY);
+        Rule byRule = new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY);
         weekly.addByRule(byRule);
         return vEvent;
     }
@@ -365,7 +365,7 @@ public abstract class ICalendarTestAbstract
         vEvent.setRRule(rule);
         Frequency weekly = new Weekly();
         rule.setFrequency(weekly);
-        Rule byRule = new ByDay(weekly, DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY);
+        Rule byRule = new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY);
         weekly.addByRule(byRule);
         return vEvent;
     }
@@ -455,7 +455,7 @@ public abstract class ICalendarTestAbstract
         Frequency daily = new Daily()
                 .withInterval(2);
         rule.setFrequency(daily);
-        Rule byRule = new ByDay(daily, DayOfWeek.FRIDAY);
+        Rule byRule = new ByDay(DayOfWeek.FRIDAY);
         daily.addByRule(byRule);
         return vEvent;
     }

@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
 
@@ -89,11 +90,11 @@ public abstract class FrequencyAbstract implements Frequency {
      * following FREQ=YEARLY;BYMONTH=3 it is MONTHS
      * following FREQ=YEARLY;BYMONTH=3;BYDAY=TH it is DAYS
      */
-    public ChronoUnit getChronoUnit() { return chronoUnit; };
-    private ChronoUnit chronoUnit;
-    public void setChronoUnit(ChronoUnit chronoUnit)
+    public ObjectProperty<ChronoUnit> getChronoUnit() { return chronoUnit; };
+    private ObjectProperty<ChronoUnit> chronoUnit;
+    public void setChronoUnit(ObjectProperty<ChronoUnit> chronoUnit)
     {
-        switch (chronoUnit)
+        switch (chronoUnit.get())
         {
         case DAYS:
         case MONTHS:
@@ -114,7 +115,7 @@ public abstract class FrequencyAbstract implements Frequency {
     final private FrequencyType frequencyType;
 
     // CONSTRUCTOR
-    public FrequencyAbstract(FrequencyType frequencyType, ChronoUnit chronoUnit)
+    public FrequencyAbstract(FrequencyType frequencyType, ObjectProperty<ChronoUnit> chronoUnit)
     {
         this.frequencyType = frequencyType;
         setChronoUnit(chronoUnit);

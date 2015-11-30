@@ -4,6 +4,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 
 /** BYMONTHDAY from RFC 5545, iCalendar */
@@ -34,7 +36,7 @@ public class ByMonthDay extends ByRuleAbstract
      * This constructor is REQUIRED by the Rule.ByRules newInstance method. */
     public ByMonthDay(Frequency frequency, String daysOfMonthString)
     {
-        super(frequency, SORT_ORDER);
+        super(SORT_ORDER);
         int[] days = Arrays
                 .stream(daysOfMonthString.split(","))
                 .mapToInt(s -> Integer.parseInt(s))
@@ -45,14 +47,14 @@ public class ByMonthDay extends ByRuleAbstract
     /** Constructor 
      * If not setting daysOfMonth then defaults to startLocalDateTime for dayOfMonth */
     public ByMonthDay(Frequency frequency) {
-        super(frequency, SORT_ORDER);
+        super(SORT_ORDER);
     }
 
     /** Constructor 
      * Contains varargs of daysOfMonth */
     public ByMonthDay(Frequency frequency, int... daysOfMonth)
     {
-        super(frequency, SORT_ORDER);
+        super(SORT_ORDER);
         setDaysOfMonth(daysOfMonth);
     }
 
@@ -93,19 +95,17 @@ public class ByMonthDay extends ByRuleAbstract
      * Return stream of valid dates made by rule (infinite if COUNT or UNTIL not present)
      */
     @Override
-    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
+    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, ObjectProperty<ChronoUnit> chronoUnit, LocalDateTime startDateTime)
     {
         if (daysOfMonth == null)
         { // if no days specified when constructing, get day of month for startDateTime
             daysOfMonth = new int[] { startDateTime.toLocalDate().getDayOfMonth() };
         }
-//        int startDaysInMonth = startDateTime.toLocalDate().lengthOfMonth();
-//        validDays = makeValidDays(startDaysInMonth, getDaysOfMonth());
-//        switch (getFrequency().frequencyEnum())
-        switch (getFrequency().getChronoUnit())
+        ChronoUnit originalChronoUnit = chronoUnit.get();
+        chronoUnit.set(DAYS);
+        switch (originalChronoUnit)
         {
         case DAYS:
-            getFrequency().setChronoUnit(DAYS);
             return inStream.filter(d ->
                     { // filter out all but qualifying days
                         int myDay = d.toLocalDate().getDayOfMonth();
@@ -119,7 +119,6 @@ public class ByMonthDay extends ByRuleAbstract
                     });
         case MONTHS:
         case YEARS:
-            getFrequency().setChronoUnit(DAYS);
             return inStream.flatMap(d -> 
             { // Expand to be daysOfMonth days in current month
                 List<LocalDateTime> dates = new ArrayList<LocalDateTime>();

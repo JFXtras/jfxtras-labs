@@ -5,6 +5,8 @@ import static java.time.temporal.ChronoUnit.WEEKS;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjuster;
 
+import javafx.beans.property.SimpleObjectProperty;
+
 /** WEEKLY frequency rule as defined by RFC 5545 iCalendar 3.3.10 p39 */
 public class Weekly extends FrequencyAbstract
 {
@@ -13,5 +15,5 @@ public class Weekly extends FrequencyAbstract
     @Override public TemporalAdjuster getAdjuster() { return weeklyAdjuster; }
     
     // Constructor
-    public Weekly() { super(FrequencyType.WEEKLY, ChronoUnit.WEEKS); }
+    public Weekly() { super(FrequencyType.WEEKLY, new SimpleObjectProperty<ChronoUnit>(ChronoUnit.WEEKS)); }
 }

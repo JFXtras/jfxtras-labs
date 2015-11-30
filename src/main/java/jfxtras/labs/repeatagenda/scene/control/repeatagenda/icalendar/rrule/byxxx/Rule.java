@@ -2,9 +2,10 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byx
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.stream.Stream;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
+import javafx.beans.property.ObjectProperty;
 
 /**
  * Interface for a rule that applies a modification to a Stream of start date/times, such
@@ -29,7 +30,7 @@ public interface Rule extends Comparable<Rule>
      * or adds additional date/times.
      * 
      * */
-    Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime);
+    Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, ObjectProperty<ChronoUnit> chronoUnit, LocalDateTime startDateTime);
 
     /** order to process rules */
     Integer getSortOrder();
@@ -74,15 +75,9 @@ public interface Rule extends Comparable<Rule>
 //            return null;
 //        }
 
-        public Rule newInstance(Frequency frequency, String string) throws NoSuchMethodException
+        public Rule newInstance(String string) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
         {
-            try {
-                return clazz.getConstructor(Frequency.class, String.class).newInstance(frequency, string);
-            } catch (InstantiationException | IllegalAccessException
-                    | IllegalArgumentException | InvocationTargetException
-                    | SecurityException e) {
-            }
-            return null;
+            return clazz.getConstructor(String.class).newInstance(string);
         }
     }
 }

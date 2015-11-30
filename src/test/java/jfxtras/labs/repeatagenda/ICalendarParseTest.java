@@ -65,12 +65,12 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     {
         String s = "FREQ=YEARLY;INTERVAL=2;BYMONTH=1;BYDAY=SU";
         RRule rRule = RRule.parseRRule(s);
-        System.out.println(rRule.toString());
+        System.out.println("rRule:"+rRule.toString());
         RRule expectedRRule = new RRule();
         Frequency frequency = new Yearly()
                 .withInterval(2);
-        frequency.addByRule(new ByMonth(frequency, Month.JANUARY));
-        frequency.addByRule(new ByDay(frequency, DayOfWeek.SUNDAY));
+        frequency.addByRule(new ByMonth(Month.JANUARY));
+        frequency.addByRule(new ByDay(DayOfWeek.SUNDAY));
         expectedRRule.setFrequency(frequency);
         System.out.println("rules: " +expectedRRule.getFrequency().getRules().size());
         assertEquals(expectedRRule, rRule);

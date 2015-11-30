@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
+import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
 
 /** Interface for frequency rule that produces a stream of LocalDateTime start times for repeatable events 
@@ -44,8 +45,8 @@ public interface Frequency {
     
     /** ChronoUnit of last modification to stream
      *  Enables usage of switch statement in BYxxx rules */
-    ChronoUnit getChronoUnit();
-    void setChronoUnit(ChronoUnit chronoUnit);
+    ObjectProperty<ChronoUnit> getChronoUnit();
+    void setChronoUnit(ObjectProperty<ChronoUnit> chronoUnit);
 
     /** Which of the enum type FrenquencyType the implementing class represents */
     FrequencyType getFrequencyType();
@@ -62,7 +63,8 @@ public interface Frequency {
         while (rulesIterator.hasNext())
         {
             Rule rule = rulesIterator.next();
-            stream = rule.stream(stream, startDateTime);            
+            stream = rule.stream(stream, getChronoUnit(), startDateTime);
+            System.out.println("chronounit:"  + getChronoUnit());
         }
         return stream;
     }
