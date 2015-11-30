@@ -25,16 +25,21 @@ public class ByMonth extends ByRuleAbstract
     private void setMonths(Month... months) { this.months = months; }
 
     // CONSTRUCTORS
+    /** This constructor is REQUIRED by the Rule.ByRules newInstance method. */
+    public ByMonth(Frequency frequency, String months)
+    {
+        super(frequency, SORT_ORDER);
+        setMonths(
+          Arrays.asList(months.split(","))
+                .stream()
+                .map(s -> Month.of(Integer.parseInt(s)))
+                .toArray(size -> new Month[size]));
+    }
+
     public ByMonth(Frequency frequency, Month... months)
     {
         super(frequency, SORT_ORDER);
         setMonths(months);
-    }
-
-    public ByMonth(Frequency frequency, String months)
-    {
-        super(frequency, SORT_ORDER);
-//        setMonths(months);
     }
 
     @Override
@@ -62,7 +67,7 @@ public class ByMonth extends ByRuleAbstract
         String days = Arrays.stream(getMonths())
                 .map(d -> d.getValue() + ",")
                 .collect(Collectors.joining());
-        return "BYMONTH=" + days.substring(0, days.length()-1); // remove last comma
+        return ByRules.BYMONTH + "=" + days.substring(0, days.length()-1); // remove last comma
     }
 
     @Override

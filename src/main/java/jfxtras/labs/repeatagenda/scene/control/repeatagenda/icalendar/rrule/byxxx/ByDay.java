@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,6 +35,37 @@ public class ByDay extends ByRuleAbstract
     public ByDayPair[] getByDayPair() { return byDayPairs; }
     private ByDayPair[] byDayPairs;
     private void setByDayPair(ByDayPair... byDayPairs) { this.byDayPairs = byDayPairs; }
+    
+    //CONSTRUCTORS
+    /** Parse iCalendar compliant list of days of the week.  For example 1MO,2TU,4SA
+     * This constructor is REQUIRED by the Rule.ByRules newInstance method. */
+    public ByDay(Frequency frequency, String dayPairs)
+    {
+        super(frequency, SORT_ORDER);
+        List<ByDayPair> dayPairsList = new ArrayList<ByDayPair>();
+        Pattern p = Pattern.compile("([0-9]+)?([A-Z]{2})");
+        Matcher m = p.matcher(dayPairs);
+        while (m.find())
+        {
+            String token = m.group();
+            if (token.matches("^([0-9]+.*)")) // start with ordinal number
+            {
+                Matcher m2 = p.matcher(token);
+                if (m2.find())
+                {
+                    DayOfWeek dayOfWeek = ICalendarDayOfWeek.valueOf(m2.group(2)).getDayOfWeek();
+                    int ordinal = Integer.parseInt(m2.group(1));
+                    dayPairsList.add(new ByDayPair(dayOfWeek, ordinal));
+                }
+            } else
+            { // has no ordinal number
+                DayOfWeek dayOfWeek = ICalendarDayOfWeek.valueOf(token).getDayOfWeek();
+                dayPairsList.add(new ByDayPair(dayOfWeek, 0));
+            }
+        }
+        byDayPairs = new ByDayPair[dayPairsList.size()];
+        byDayPairs = dayPairsList.toArray(byDayPairs);
+    }
     
     /** Constructor with varargs ByDayPair */
     public ByDay(Frequency frequency, ByDayPair... byDayPairs)
@@ -88,7 +121,7 @@ public class ByDay extends ByRuleAbstract
                     return (d.ordinal == 0) ? day : d.ordinal + day;
                 })
                 .collect(Collectors.joining());
-        return "BYDAY=" + days.substring(0, days.length()-1); // remove last comma
+        return ByRules.BYDAY + "=" + days.substring(0, days.length()-1); // remove last comma
     }
     
     @Override
@@ -217,10 +250,10 @@ public class ByDay extends ByRuleAbstract
     {
         DayOfWeek dayOfWeek;
         int ordinal = 0;
-        public ByDayPair(DayOfWeek d, int i)
+        public ByDayPair(DayOfWeek dayOfWeek, int ordinal)
         {
-            dayOfWeek = d;
-            ordinal = i;
+            this.dayOfWeek = dayOfWeek;
+            this.ordinal = ordinal;
         }
         
         @Override
@@ -236,5 +269,26 @@ public class ByDay extends ByRuleAbstract
             return (dayOfWeek == testObj.dayOfWeek)
                     && (ordinal == testObj.ordinal);
         }        
+    }
+    
+    /** Match up iCalendar 2-character day of week to Java Time DayOfWeek */
+    private enum ICalendarDayOfWeek
+    {
+        MO (DayOfWeek.MONDAY)
+      , TU (DayOfWeek.TUESDAY)
+      , WE (DayOfWeek.WEDNESDAY)
+      , TH (DayOfWeek.THURSDAY)
+      , FR (DayOfWeek.FRIDAY)
+      , SA (DayOfWeek.SATURDAY)
+      , SU (DayOfWeek.SUNDAY);
+      
+        private DayOfWeek dow;
+      
+        ICalendarDayOfWeek(DayOfWeek dow)
+        {
+          this.dow = dow;
+        }
+      
+        public DayOfWeek getDayOfWeek() { return dow; }
     }
 }

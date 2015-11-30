@@ -86,7 +86,7 @@ public class ByMonthDay extends ByRuleAbstract
         String days = Arrays.stream(getDaysOfMonth())
                 .mapToObj(d -> d + ",")
                 .collect(Collectors.joining());
-        return "BYMONTHDAY=" + days.substring(0, days.length()-1); // remove last comma
+        return ByRules.BYMONTHDAY + "=" + days.substring(0, days.length()-1); // remove last comma
     }
     
     /**

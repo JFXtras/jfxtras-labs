@@ -50,12 +50,18 @@ public abstract class FrequencyAbstract implements Frequency {
             if (i==0)
             {
                 i = Integer.parseInt(token);
+                if (i > 0)
+                {
+                    setInterval(i);
+                } else
+                {
+                    throw new InvalidParameterException("INTERVAL must be greater than or equal to one");                    
+                }
             } else
             {
                 throw new InvalidParameterException("INTERVAL can only be specified once");
             }
         }
-        setInterval(i);
     }
     public Frequency withInterval(int interval) { setInterval(interval); return this; }
 
@@ -127,13 +133,20 @@ public abstract class FrequencyAbstract implements Frequency {
         boolean intervalEquals = (getInterval() == null) ?
                 (testObj.getInterval() == null) : getInterval().equals(testObj.getInterval());
 //        Iterator<Rule> ruleIterator = getRules().iterator();
-        List<Boolean> rulesEqualsArray = new ArrayList<Boolean>();
-        for (int i=0; i<getRules().size(); i++)
+        boolean rulesEquals;
+        if (getRules().size() == testObj.getRules().size())
         {
-            boolean e = getRules().get(i).equals(testObj.getRules().get(i));
-            rulesEqualsArray.add(e);
+            List<Boolean> rulesEqualsArray = new ArrayList<Boolean>();
+            for (int i=0; i<getRules().size(); i++)
+            {
+                boolean e = getRules().get(i).equals(testObj.getRules().get(i));
+                rulesEqualsArray.add(e);
+            }
+            rulesEquals = rulesEqualsArray.stream().allMatch(a -> true );
+        } else
+        {
+            rulesEquals = false;
         }
-        boolean rulesEquals = rulesEqualsArray.stream().allMatch(a -> true );
         System.out.println("frequency " + intervalEquals + " " + rulesEquals);
         return intervalEquals && rulesEquals;
     }

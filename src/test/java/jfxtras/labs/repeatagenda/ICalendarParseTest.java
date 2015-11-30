@@ -1,14 +1,81 @@
 package jfxtras.labs.repeatagenda;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.Month;
 
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByMonth;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Yearly;
 
 public class ICalendarParseTest extends ICalendarTestAbstract
 {
+    /** tests converting ISO.8601.2004 duration string to duration in seconds */
+    @Test
+    public void canParseDurationString()
+    {
+        VEventImpl v = new VEventImpl();
+        String duration = "P15DT5H0M20S";
+        v.setDurationInSeconds(duration);
+        assertTrue(v.getDurationInSeconds() == 1314020);
+    }
+    
+    /** tests converting ISO.8601.2004 duration string to duration in seconds */
+    @Test
+    public void canParseDurationString2()
+    {
+        VEventImpl v = new VEventImpl();
+        String duration = "PT1H30M";
+        v.setDurationInSeconds(duration);
+        assertTrue(v.getDurationInSeconds() == 5400);
+    }
+
+    /** tests converting ISO.8601.2004 date time string to LocalDateTime */
+    @Test
+    public void canParseDateTimeString1()
+    {
+        VEventImpl v = new VEventImpl();
+        String duration = "TZID=America/New_York:19980119T020000";
+        LocalDateTime l = v.iCalendarDateTimeToLocalDateTime(duration);
+        assertEquals(l, LocalDateTime.of(1998, 1, 19, 2, 0));
+    }
+
+    /** tests converting ISO.8601.2004 date string to LocalDateTime */
+    @Test
+    public void canParseDateTimeString2()
+    {
+        VEventImpl v = new VEventImpl();
+        String duration = "VALUE=DATE:19980704";
+        LocalDateTime l = v.iCalendarDateTimeToLocalDateTime(duration);
+        assertEquals(l, LocalDateTime.of(1998, 7, 4, 0, 0));
+    }
+    
+    /** tests parsing RRULE:FREQ=YEARLY;INTERVAL=2;BYMONTH=1;BYDAY=SU */
+    @Test
+    public void canParseRRule1()
+    {
+        String s = "FREQ=YEARLY;INTERVAL=2;BYMONTH=1;BYDAY=SU";
+        RRule rRule = RRule.parseRRule(s);
+        System.out.println(rRule.toString());
+        RRule expectedRRule = new RRule();
+        Frequency frequency = new Yearly()
+                .withInterval(2);
+        frequency.addByRule(new ByMonth(frequency, Month.JANUARY));
+        frequency.addByRule(new ByDay(frequency, DayOfWeek.SUNDAY));
+        expectedRRule.setFrequency(frequency);
+        System.out.println("rules: " +expectedRRule.getFrequency().getRules().size());
+        assertEquals(expectedRRule, rRule);
+    }
+    
     /** Tests FREQ=YEARLY */
     @Test
     public void yearly1ToString()

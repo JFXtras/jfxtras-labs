@@ -212,31 +212,15 @@ public class RRule {
     /** Return new RRule with its properties set by parsing iCalendar compliant RRULE string */
     public static RRule parseRRule(String rRuleString)
     {
+        System.out.println("rRuleString: " + rRuleString);
         RRule rrule = new RRule();
-
-        //        // RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6
-//        List<String> stringList = Arrays.asList(rRuleString.split(";"));
-//        
-//        Iterator<String> iterator = stringList.iterator();
-//        
-//        while (iterator.hasNext())
-//        {
-//            String[] ruleAndValue = iterator.next().split("=");
-//            if (ruleAndValue[0].equals(rrule.frequencyProperty().getName()))
-//            { // FREQ
-//                Frequency freq = Frequency.FrequencyType
-//                        .valueOf(ruleAndValue[1])
-//                        .newInstance();
-//                rrule.setFrequency(freq);
-//                iterator.remove();
-//            }
-//        }
         
         // Parse string
         Arrays.stream(rRuleString.split(";"))
                 .forEach(r ->
                 {
                     String[] ruleAndValue = r.split("=");
+                    System.out.println("test: " + ruleAndValue[0]);
                     if (ruleAndValue[0].equals(rrule.frequencyProperty().getName()))
                     { // FREQ
                         Frequency freq = Frequency.FrequencyType
@@ -257,13 +241,13 @@ public class RRule {
                             {
                                 try { // Make new instance of Byxx Rule with value by parsing ruleAndValue[1]
                                     Rule rule = b.newInstance(rrule.getFrequency(), ruleAndValue[1]);
+                                    System.out.println("rule: " + rule + " " + rrule);
                                     rrule.getFrequency().addByRule(rule);
 //                                    ByMonthDay b2 = (ByMonthDay) rule;
 //                                    System.out.println("days: ");
 //                                    Arrays.stream(b2.getDaysOfMonth()).forEach(System.out::println);
                                 } catch (NoSuchMethodException e)
                                 {
-//                                    System.out.println("Error: " + ruleAndValue[0] + "(Frequency.class, String.class) constructor does not exist.");
                                     e.printStackTrace();
                                 }
                             }
