@@ -20,7 +20,7 @@ import javafx.beans.property.ObjectProperty;
 /** BYWEEKNO from RFC 5545, iCalendar 3.3.10, page 42 */
 public class ByWeekNo extends ByRuleAbstract
 {
-    private final static int SORT_ORDER = 10; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
+    private final static int PROCESS_ORDER = 10; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
 
     /** sorted array of weeks of the year
      * (i.e. 5, 10 = 5th and 10th weeks of the year, -3 = 3rd from last week of the year)
@@ -43,11 +43,23 @@ public class ByWeekNo extends ByRuleAbstract
     private DayOfWeek weekStart = DayOfWeek.MONDAY;
     public void setWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; }
 
-    
-    /** Constructor requires weeks of the year value(s) */
+    // CONSTRUCTORS
+    /** takes String of comma-delimited integers, parses it to array of ints 
+     * This constructor is REQUIRED by the Rule.ByRules newInstance method. */
+    public ByWeekNo(String weekNumbersString)
+    {
+        super(PROCESS_ORDER);
+        int[] days = Arrays
+                .stream(weekNumbersString.split(","))
+                .mapToInt(s -> Integer.parseInt(s))
+                .toArray();
+        setWeekNumbers(days);
+    }
+
+    /** Constructor requires weeks of the year int value(s) */
     public ByWeekNo(int...weekNumbers)
     {
-        super(SORT_ORDER);
+        super(PROCESS_ORDER);
         setWeekNumbers(weekNumbers);
     }
 

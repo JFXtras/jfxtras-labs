@@ -18,7 +18,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
 /** BYMONTHDAY from RFC 5545, iCalendar */
 public class ByMonthDay extends ByRuleAbstract
 {
-    private final static int SORT_ORDER = 30; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
+    private final static int PROCESS_ORDER = 30; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
 
     /** sorted array of days of month
      * (i.e. 5, 10 = 5th and 10th days of the month, -3 = 3rd from last day of month)
@@ -32,11 +32,11 @@ public class ByMonthDay extends ByRuleAbstract
 //    private int[] validDays; // array of valid days of month for current month
 
     /** Constructor 
-     * takes String of daysOfMonth, parses it to array of ints
+     * takes String of comma-delimited integers, parses it to array of ints
      * This constructor is REQUIRED by the Rule.ByRules newInstance method. */
     public ByMonthDay(Frequency frequency, String daysOfMonthString)
     {
-        super(SORT_ORDER);
+        super(PROCESS_ORDER);
         int[] days = Arrays
                 .stream(daysOfMonthString.split(","))
                 .mapToInt(s -> Integer.parseInt(s))
@@ -47,14 +47,14 @@ public class ByMonthDay extends ByRuleAbstract
     /** Constructor 
      * If not setting daysOfMonth then defaults to startLocalDateTime for dayOfMonth */
     public ByMonthDay(Frequency frequency) {
-        super(SORT_ORDER);
+        super(PROCESS_ORDER);
     }
 
     /** Constructor 
      * Contains varargs of daysOfMonth */
     public ByMonthDay(Frequency frequency, int... daysOfMonth)
     {
-        super(SORT_ORDER);
+        super(PROCESS_ORDER);
         setDaysOfMonth(daysOfMonth);
     }
 

@@ -26,7 +26,7 @@ import javafx.beans.property.ObjectProperty;
 /** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */
 public class ByDay extends ByRuleAbstract
 {
-    private final static int SORT_ORDER = 40; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
+    private final static int PROCESS_ORDER = 40; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
 
     /** sorted array of days of month
      * (i.e. 5, 10 = 5th and 10th days of the month, -3 = 3rd from last day of month)
@@ -42,7 +42,7 @@ public class ByDay extends ByRuleAbstract
      * This constructor is REQUIRED by the Rule.ByRules newInstance method. */
     public ByDay(String dayPairs)
     {
-        super(SORT_ORDER);
+        super(PROCESS_ORDER);
         List<ByDayPair> dayPairsList = new ArrayList<ByDayPair>();
         Pattern p = Pattern.compile("([0-9]+)?([A-Z]{2})");
         Matcher m = p.matcher(dayPairs);
@@ -71,7 +71,7 @@ public class ByDay extends ByRuleAbstract
     /** Constructor with varargs ByDayPair */
     public ByDay(ByDayPair... byDayPairs)
     {
-        super(SORT_ORDER);
+        super(PROCESS_ORDER);
         setByDayPair(byDayPairs);
     }
 
@@ -79,7 +79,7 @@ public class ByDay extends ByRuleAbstract
      * provided types are included within the specified frequency */
     public ByDay(DayOfWeek... daysOfWeek)
     {
-        super(SORT_ORDER);
+        super(PROCESS_ORDER);
         byDayPairs = new ByDayPair[daysOfWeek.length];
         int i=0;
         for (DayOfWeek d : daysOfWeek)

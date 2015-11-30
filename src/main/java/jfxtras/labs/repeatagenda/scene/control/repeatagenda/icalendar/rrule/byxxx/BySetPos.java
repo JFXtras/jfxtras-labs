@@ -8,11 +8,11 @@ import javafx.beans.property.ObjectProperty;
 
 public class BySetPos extends ByRuleAbstract
 {
-    private final static int SORT_ORDER = 80; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
+    private final static int PROCESS_ORDER = 80; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
 
     public BySetPos()
     {
-        super(SORT_ORDER);
+        super(PROCESS_ORDER);
         throw new RuntimeException("not implemented");
     }
     

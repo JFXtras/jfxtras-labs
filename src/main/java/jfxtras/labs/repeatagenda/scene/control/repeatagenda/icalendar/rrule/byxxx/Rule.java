@@ -28,12 +28,16 @@ public interface Rule extends Comparable<Rule>
     /** 
      * New stream of date/times made after applying rule that either filters out some date/times
      * or adds additional date/times.
-     * 
-     * */
+     *  
+     * @param inStream - Current stream to be added to or subtracted from
+     * @param chronoUnit - ChronoUnit of last modification to inStream
+     * @param startDateTime - start date/time
+     * @return
+     */
     Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, ObjectProperty<ChronoUnit> chronoUnit, LocalDateTime startDateTime);
 
     /** order to process rules */
-    Integer getSortOrder();
+    Integer getProcessOrder();
 
     void copyTo(Rule destination);
 
