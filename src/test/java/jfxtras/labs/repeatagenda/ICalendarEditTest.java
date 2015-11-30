@@ -78,6 +78,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         expectedVEvent.setRRule(new RRule().withCount(6));
         expectedVEvent.getRRule().setFrequency(new Daily().withInterval(3));
         expectedVEvent.setSummary("Daily2 Summary");
+        expectedVEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        expectedVEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         assertEquals(expectedVEvent, vevent); // check to see if repeat rule changed correctly
         assertEquals(3, appointments.size()); // check if there are only two appointments
         
@@ -418,6 +420,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         expectedVEvent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         expectedVEvent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         expectedVEvent.setSummary("Daily2 Summary");
+        expectedVEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        expectedVEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         assertEquals(expectedVEvent, vevent); // check to see if repeat rule changed correctly
         
         vevents.stream().forEach(a -> System.out.println(a.getDateTimeStart()));

@@ -5,7 +5,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -166,8 +165,6 @@ public abstract class VEvent extends VComponent
         {
             String token = m.group(0);
             tokens.add(token);
-            
-            Long s = Duration.ofDays(7).getSeconds();
         }
         Iterator<String> tokenIterator = tokens.iterator();
         String firstString = tokenIterator.next();
@@ -366,44 +363,53 @@ public abstract class VEvent extends VComponent
             final String[] property = stringsIterator.next().split(":");
             if (property[0].equals(vEvent.descriptionProperty().getName()))
             { // DESCRIPTION
-                    vEvent.setDescription(property[1]);
-                    stringsIterator.remove();
+                    if (vEvent.getDescription() == null)
+                    {
+                        vEvent.setDescription(property[1]);
+                        stringsIterator.remove();
+                    } else
+                    {
+                        throw new InvalidParameterException("Invalid VEvent: DESCRIPTION can only be specified once");
+                    }
             } else if (property[0].equals(vEvent.durationInSecondsProperty().getName()))
             { // DURATION
-                if (dTEndFound == false)
+                if (vEvent.getDurationInSeconds() == 0)
                 {
-                    durationFound = true;
-                    vEvent.useDuration = true;
-                    vEvent.useDateTimeEnd = false;
-                    vEvent.setDurationInSeconds(property[1]);
-                    stringsIterator.remove();
+                    if (dTEndFound == false)
+                    {
+                        durationFound = true;
+                        vEvent.useDuration = true;
+                        vEvent.useDateTimeEnd = false;
+                        vEvent.setDurationInSeconds(property[1]);
+                        stringsIterator.remove();
+                    } else
+                    {
+                        throw new InvalidParameterException("Invalid VEvent: Can't contain both DTEND and DURATION.");
+                    }
                 } else
                 {
-                    throw new InvalidParameterException("Invalid VEvent: Can't contain both DTEND and DURATION.");
-                }    
+                    throw new InvalidParameterException("Invalid VEvent: DURATION can only be specified once.");                    
+                }
             } else if (property[0].equals(vEvent.dateTimeEndProperty().getName()))
             { // DTEND
-                if (durationFound == false)
+                if (vEvent.getDateTimeEnd() == null)
                 {
-                    dTEndFound = true;
-                    vEvent.useDuration = false;
-                    vEvent.useDateTimeEnd = true;
-                    LocalDateTime dateTime = LocalDateTime.parse(property[1],FORMATTER);
-                    vEvent.setDateTimeEnd(dateTime);
-                    stringsIterator.remove();
+                    if (durationFound == false)
+                    {
+                        dTEndFound = true;
+                        vEvent.useDuration = false;
+                        vEvent.useDateTimeEnd = true;
+                        LocalDateTime dateTime = LocalDateTime.parse(property[1],FORMATTER);
+                        vEvent.setDateTimeEnd(dateTime);
+                        stringsIterator.remove();
+                    } else
+                    {
+                        throw new InvalidParameterException("Invalid VEvent: Can't contain both DTEND and DURATION.");
+                    }
                 } else
                 {
-                    throw new InvalidParameterException("Invalid VEvent: Can't contain both DTEND and DURATION.");
+                    throw new InvalidParameterException("Invalid VEvent: DTEND can only be specified once.");                                        
                 }
-            } else if (property[0].equals(vEvent.exDateProperty().getName()))
-            {
-                Collection<LocalDateTime> dateTimeCollection= RecurrenceComponent.parseDates(property[1]);
-                EXDate exDate = new EXDate().withDates(dateTimeCollection);
-                vEvent.setExDate(exDate);
-                stringsIterator.remove();
-            } else if (property[0].equals(vEvent.rDateProperty().getName()))
-            {
-                
             }
         }
         vEvent.useDuration = true;

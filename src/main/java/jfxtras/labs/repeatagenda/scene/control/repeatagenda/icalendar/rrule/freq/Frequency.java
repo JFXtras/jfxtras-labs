@@ -10,13 +10,23 @@ import java.util.stream.Stream;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
 
 /** Interface for frequency rule that produces a stream of LocalDateTime start times for repeatable events 
- * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.) */
-// Experimental
+ * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.)
+ * @author David Bal
+ * @see FrequencyAbstract
+ * @see Yearly
+ * @see Monthly
+ * @see Weekly
+ * @see Daily
+ * @see Hourly
+ * @see Minutely
+ * @see Secondly */
 public interface Frequency {
 
     /** Number of frequency periods elapsed before next occurrence. Defaults to 1*/
     Integer getInterval();
     void setInterval(Integer interval);
+    /** Set interval from strong containing INTERVAL=n where n is a number */
+    void setInterval(String s);
     
     /** Collection of rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
      * The rules include all BYxxx rules, EXDate and RDate lists.

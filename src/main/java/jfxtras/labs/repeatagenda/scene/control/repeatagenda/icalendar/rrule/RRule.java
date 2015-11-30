@@ -22,7 +22,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByMonthDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule.ByRules;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
@@ -68,7 +67,7 @@ public class RRule {
      */
     public IntegerProperty countProperty()
     {
-        if (count == null) count = new SimpleIntegerProperty(this, "count", _count);
+        if (count == null) count = new SimpleIntegerProperty(this, "COUNT", _count);
         return count;
     }
     private IntegerProperty count;
@@ -214,7 +213,8 @@ public class RRule {
     public static RRule parseRRule(String rRuleString)
     {
         RRule rrule = new RRule();
-//        // RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6
+
+        //        // RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6
 //        List<String> stringList = Arrays.asList(rRuleString.split(";"));
 //        
 //        Iterator<String> iterator = stringList.iterator();
@@ -242,27 +242,30 @@ public class RRule {
                         Frequency freq = Frequency.FrequencyType
                                 .valueOf(ruleAndValue[1])
                                 .newInstance();
+                        freq.setInterval(rRuleString);
                         rrule.setFrequency(freq);
-                    } else if (ruleAndValue[0].equals(rrule.frequencyProperty().getName()))
+                    } else if (ruleAndValue[0].equals(rrule.countProperty().getName()))
                     {
-                        
+                        System.out.println("foudn COUNT: ");
+                        rrule.setCount(Integer.parseInt(ruleAndValue[1]));
                     } else
                     {
                         for (ByRules b : ByRules.values())
                         {
-                            System.out.println("Testing: " + ruleAndValue[0] + " " + b + (ruleAndValue[0].equals(b.toString())));
+//                            System.out.println("Testing: " + ruleAndValue[0] + " " + b + (ruleAndValue[0].equals(b.toString())));
                             if (ruleAndValue[0].equals(b.toString()))
                             {
-                                try {
+                                try { // Make new instance of Byxx Rule with value by parsing ruleAndValue[1]
                                     Rule rule = b.newInstance(rrule.getFrequency(), ruleAndValue[1]);
                                     rrule.getFrequency().addByRule(rule);
-                                    ByMonthDay b2 = (ByMonthDay) rule;
-                                    System.out.println("days: ");
-                                    Arrays.stream(b2.getDaysOfMonth()).forEach(System.out::println);
-                                } catch (Exception e) {
+//                                    ByMonthDay b2 = (ByMonthDay) rule;
+//                                    System.out.println("days: ");
+//                                    Arrays.stream(b2.getDaysOfMonth()).forEach(System.out::println);
+                                } catch (NoSuchMethodException e)
+                                {
+//                                    System.out.println("Error: " + ruleAndValue[0] + "(Frequency.class, String.class) constructor does not exist.");
                                     e.printStackTrace();
                                 }
-                                System.out.println("got: " + b);
                             }
                         }
                     }

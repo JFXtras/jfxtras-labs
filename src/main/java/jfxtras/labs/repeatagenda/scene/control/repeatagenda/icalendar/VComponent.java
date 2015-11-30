@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -495,6 +496,15 @@ public abstract class VComponent
             { // DTSTART
                 LocalDateTime dateTime = LocalDateTime.parse(property[1],FORMATTER);
                 vComponent.setDateTimeStart(dateTime);
+                stringsIterator.remove();
+            } else if (property[0].equals(vComponent.exDateProperty().getName()))
+            {
+                Collection<LocalDateTime> dateTimeCollection= RecurrenceComponent.parseDates(property[1]);
+                if (vComponent.getExDate() == null)
+                {
+                    vComponent.setExDate(new EXDate());
+                }                  
+                vComponent.getExDate().getDates().addAll(dateTimeCollection);
                 stringsIterator.remove();
             } else if (property[0].equals(vComponent.dateTimeLastModifiedProperty().getName()))
             { // LAST-MODIFIED

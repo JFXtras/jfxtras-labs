@@ -407,7 +407,7 @@ public abstract class ICalendarTestAbstract
         return vEvent;
     }
 
-    /** FREQ=DAILY;INVERVAL=3;COUNT=10;BYMONTHDAY=9,10,11,12,13,14 */
+    /** FREQ=DAILY;INTERVAL=3;COUNT=10;BYMONTHDAY=9,10,11,12,13,14 */
     protected static VEventImpl getDaily3()
     {
         VEventImpl vEvent = new VEventImpl();

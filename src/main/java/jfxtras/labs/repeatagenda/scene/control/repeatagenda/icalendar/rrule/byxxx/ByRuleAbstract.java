@@ -25,7 +25,7 @@ public abstract class ByRuleAbstract implements Rule
         this.frequency = frequency;
         this.sortOrder = sortOrder;
     }
-
+    
     @Override
     public int compareTo(Rule byRule)
     {

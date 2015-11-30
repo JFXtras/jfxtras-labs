@@ -11,7 +11,16 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
  * as BYxxx rules, in a recurring event (RRULE).
  * 
  * @author David Bal
- *
+ * @see ByRuleAbstract
+ * @see ByMonth
+ * @see ByWeekNo
+ * @see ByYearDay
+ * @see ByMonthDay
+ * @see ByDay
+ * @see ByHour
+ * @see ByMinute
+ * @see BySecond
+ * @see BySetPos
  */
 public interface Rule extends Comparable<Rule>
 {
@@ -55,19 +64,25 @@ public interface Rule extends Comparable<Rule>
             this.clazz = clazz;
         }
           
-        public Rule newInstance()
+//        public Rule newInstance()
+//        {
+//            try {
+//                return clazz.newInstance();
+//            } catch (InstantiationException | IllegalAccessException e) {
+//                e.printStackTrace();
+//            }
+//            return null;
+//        }
+
+        public Rule newInstance(Frequency frequency, String string) throws NoSuchMethodException
         {
             try {
-                return clazz.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
+                return clazz.getConstructor(Frequency.class, String.class).newInstance(frequency, string);
+            } catch (InstantiationException | IllegalAccessException
+                    | IllegalArgumentException | InvocationTargetException
+                    | SecurityException e) {
             }
             return null;
-        }
-
-        public Rule newInstance(Frequency frequency, String string) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
-        {
-            return clazz.getConstructor(Frequency.class, String.class).newInstance(frequency, string);
         }
     }
 }

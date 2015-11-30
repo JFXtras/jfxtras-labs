@@ -28,6 +28,19 @@ public class ByMonthDay extends ByRuleAbstract
     public Rule withDaysOfMonth(int... daysOfMonth) { setDaysOfMonth(daysOfMonth); return this; }
     
 //    private int[] validDays; // array of valid days of month for current month
+
+    /** Constructor 
+     * takes String of daysOfMonth, parses it to array of ints
+     * This constructor is REQUIRED by the Rule.ByRules newInstance method. */
+    public ByMonthDay(Frequency frequency, String daysOfMonthString)
+    {
+        super(frequency, SORT_ORDER);
+        int[] days = Arrays
+                .stream(daysOfMonthString.split(","))
+                .mapToInt(s -> Integer.parseInt(s))
+                .toArray();
+        setDaysOfMonth(days);
+    }
     
     /** Constructor 
      * If not setting daysOfMonth then defaults to startLocalDateTime for dayOfMonth */
@@ -41,17 +54,6 @@ public class ByMonthDay extends ByRuleAbstract
     {
         super(frequency, SORT_ORDER);
         setDaysOfMonth(daysOfMonth);
-    }
-    /** Constructor 
-     * takes String of daysOfMonth */
-    public ByMonthDay(Frequency frequency, String daysOfMonthString)
-    {
-        super(frequency, SORT_ORDER);
-        int[] days = Arrays
-                .stream(daysOfMonthString.split(","))
-                .mapToInt(s -> Integer.parseInt(s))
-                .toArray();
-        setDaysOfMonth(days);
     }
 
     @Override

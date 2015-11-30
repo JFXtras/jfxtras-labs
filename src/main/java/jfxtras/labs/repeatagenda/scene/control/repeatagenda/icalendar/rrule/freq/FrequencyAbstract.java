@@ -4,6 +4,8 @@ import java.security.InvalidParameterException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -36,6 +38,24 @@ public abstract class FrequencyAbstract implements Frequency {
         {
             throw new InvalidParameterException("INTERVAL can't be less than 1. (" + i + ")");
         }
+    }
+    @Override public void setInterval(String s)
+    {
+        Pattern p = Pattern.compile("(?<=INTERVAL=)[0-9]+");
+        Matcher m = p.matcher(s);
+        int i=0;
+        while (m.find())
+        {
+            String token = m.group();
+            if (i==0)
+            {
+                i = Integer.parseInt(token);
+            } else
+            {
+                throw new InvalidParameterException("INTERVAL can only be specified once");
+            }
+        }
+        setInterval(i);
     }
     public Frequency withInterval(int interval) { setInterval(interval); return this; }
 
