@@ -86,7 +86,7 @@ public abstract class RecurrenceComponent<T>
         String datesString = getDates()
                 .stream()
                 .sorted()
-                .map(d -> VComponent.FORMATTER.format(d) + ",")
+                .map(d -> VComponentAbstract.FORMATTER.format(d) + ",")
                 .collect(Collectors.joining());
         return datesString.substring(0, datesString.length()-1); // remove last comma
     }
@@ -96,7 +96,7 @@ public abstract class RecurrenceComponent<T>
     {
         return Arrays.asList(string.split(","))
                      .stream()
-                     .map(s -> LocalDateTime.parse(s,VComponent.FORMATTER))
+                     .map(s -> LocalDateTime.parse(s,VComponentAbstract.FORMATTER))
                      .collect(Collectors.toList());
     }
 

@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.util.StringConverter;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
 
 /** Interface for frequency rule that produces a stream of LocalDateTime start times for repeatable events 
@@ -102,6 +104,57 @@ public interface Frequency {
             }
             return null;
         }
+        
+        public String toStringSingular() {
+            switch (this) {
+            case DAILY:
+                return Settings.REPEAT_FREQUENCIES_SINGULAR.get(DAILY);
+            case WEEKLY:
+                return Settings.REPEAT_FREQUENCIES_SINGULAR.get(WEEKLY);
+            case MONTHLY:
+                return Settings.REPEAT_FREQUENCIES_SINGULAR.get(MONTHLY);
+            case YEARLY:
+                return Settings.REPEAT_FREQUENCIES_SINGULAR.get(YEARLY);
+            default:
+                return null;                
+            }
+        }
+        
+        public String toStringPlural() {
+            switch (this) {
+            case DAILY:
+                return Settings.REPEAT_FREQUENCIES_PLURAL.get(DAILY);
+            case WEEKLY:
+                return Settings.REPEAT_FREQUENCIES_PLURAL.get(WEEKLY);
+            case MONTHLY:
+                return Settings.REPEAT_FREQUENCIES_PLURAL.get(MONTHLY);
+            case YEARLY:
+                return Settings.REPEAT_FREQUENCIES_PLURAL.get(YEARLY);
+            default:
+                return null;                
+            }
+        }
+        
+        public static StringConverter<FrequencyType> stringConverter
+            = new StringConverter<FrequencyType>() {
+            @Override public String toString(FrequencyType object) {
+                switch (object) {
+                case DAILY:
+                    return Settings.REPEAT_FREQUENCIES.get(FrequencyType.DAILY);
+                case WEEKLY:
+                    return Settings.REPEAT_FREQUENCIES.get(FrequencyType.WEEKLY);
+                case MONTHLY:
+                    return Settings.REPEAT_FREQUENCIES.get(FrequencyType.MONTHLY);
+                case YEARLY:
+                    return Settings.REPEAT_FREQUENCIES.get(FrequencyType.YEARLY);
+                default:
+                    return null;                
+                }
+            }
+            @Override public FrequencyType fromString(String string) {
+                throw new RuntimeException("not required for non editable ComboBox");
+            }
+        };
     }
 
     /** Deep copy all fields from source to destination */

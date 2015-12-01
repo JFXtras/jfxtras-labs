@@ -21,7 +21,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponentAbstract;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule.ByRules;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
@@ -199,7 +199,7 @@ public class RRule {
         StringBuilder builder = new StringBuilder();
         builder.append(getFrequency().toString());
         if (getCount() > 0) builder.append(";" + countProperty().getName() + "=" + getCount());
-        if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + VComponent.FORMATTER.format(getUntil()));
+        if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + VComponentAbstract.FORMATTER.format(getUntil()));
         System.out.println(getFrequency()
         .getRules());
         getFrequency()
@@ -304,7 +304,7 @@ public class RRule {
       };
     }
 
-    public static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
+    static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
        return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
     }
 

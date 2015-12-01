@@ -84,7 +84,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
  * @author David Bal
  * @see VEventImpl
  */
-public abstract class VEvent extends VComponent
+public abstract class VEvent extends VComponentAbstract
 {   
     private static final long SECONDS_IN_WEEK = Duration.ofDays(7).getSeconds();
     private static final long SECONDS_IN_DAY = Duration.ofDays(1).getSeconds();
@@ -271,7 +271,7 @@ public abstract class VEvent extends VComponent
 
     /** Deep copy all fields from source to destination */
     @Override
-    public void copyTo(VComponent destination)
+    public void copyTo(VComponentAbstract destination)
     {
         copy(this, (VEvent) destination);
     }
@@ -416,7 +416,7 @@ public abstract class VEvent extends VComponent
         }
         vEvent.useDuration = true;
         vEvent.useDateTimeEnd = false;
-        return (VEvent) VComponent.parseVComponent(vEvent, strings);
+        return (VEvent) VComponentAbstract.parseVComponent(vEvent, strings);
     }
        
 }
