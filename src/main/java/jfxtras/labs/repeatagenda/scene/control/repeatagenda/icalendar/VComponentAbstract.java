@@ -385,6 +385,7 @@ public abstract class VComponentAbstract implements VComponent
     {
         destination.setCategories(source.getCategories());
         destination.setComment(source.getComment());
+        destination.setDateTimeStamp(source.getDateTimeStamp());
         destination.setDateTimeStart(source.getDateTimeStart());
         destination.setLocation(source.getLocation());
         destination.setSummary(source.getSummary());
@@ -423,6 +424,8 @@ public abstract class VComponentAbstract implements VComponent
                 (testObj.getCategories() == null) : getCategories().equals(testObj.getCategories());
         boolean commentEquals = (getComment() == null) ?
                 (testObj.getComment() == null) : getComment().equals(testObj.getComment());
+        boolean dateTimeStampEquals = (getDateTimeStamp() == null) ?
+                (testObj.getDateTimeStamp() == null) : getDateTimeStamp().equals(testObj.getDateTimeStamp());
         boolean dateTimeStartsEquals = (getDateTimeStart() == null) ?
                 (testObj.getDateTimeStart() == null) : getDateTimeStart().equals(testObj.getDateTimeStart());
         boolean locationEquals = (getLocation() == null) ?
@@ -433,13 +436,13 @@ public abstract class VComponentAbstract implements VComponent
                 (testObj.getUniqueIdentifier() == null) : getUniqueIdentifier().equals(testObj.getUniqueIdentifier());
         boolean rruleEquals = (getRRule() == null) ?
                 (testObj.getRRule() == null) : getRRule().equals(testObj.getRRule());
-        System.out.println("Vcomponent equals: " + categoriesEquals + " " + commentEquals + " " + dateTimeStartsEquals + " " + locationEquals
-                + " " + summaryEquals + " " + uniqueIdentifierEquals + " " + rruleEquals);
-        return categoriesEquals && commentEquals && dateTimeStartsEquals && locationEquals
+        System.out.println("Vcomponent equals: " + categoriesEquals + " " + commentEquals + " " + dateTimeStampEquals + " " + dateTimeStartsEquals + " " 
+                + locationEquals + " " + summaryEquals + " " + uniqueIdentifierEquals + " " + rruleEquals);
+        return categoriesEquals && commentEquals && dateTimeStampEquals && dateTimeStartsEquals && locationEquals
                 && summaryEquals && uniqueIdentifierEquals && rruleEquals;
     }
 
-    /** Make map of properties & string values for toString method in subclasses (like VEvent) */
+    /** Make map of properties and string values for toString method in subclasses (like VEvent) */
     Map<Property, String> makePropertiesMap()
     {
         Map<Property, String> properties = new HashMap<Property, String>();

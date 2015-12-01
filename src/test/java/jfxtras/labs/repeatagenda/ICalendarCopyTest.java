@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
@@ -13,6 +14,7 @@ public class ICalendarCopyTest extends ICalendarTestAbstract
 {
 
     @Test
+    @Ignore
     public void canCopyVEvent1()
     {
         VEventImpl vevent = getMonthly5();
@@ -24,6 +26,7 @@ public class ICalendarCopyTest extends ICalendarTestAbstract
     }
     
     @Test
+    @Ignore
     public void canCopyVEvent2()
     {
         VEventImpl vevent = getWeekly3();

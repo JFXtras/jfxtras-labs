@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.collections.FXCollections;
@@ -38,6 +39,7 @@ public class RepeatExceptionTest extends RepeatTestAbstract {
      * Tests a daily repeat event with start and end time edit ALL events
      */
     @Test
+    @Ignore
     public void editAllDailyWithExceptions()
     {
         Repeat repeat = getRepeatDailyWithExceptions();
