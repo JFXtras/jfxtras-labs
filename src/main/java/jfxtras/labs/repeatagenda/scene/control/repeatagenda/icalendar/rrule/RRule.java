@@ -2,8 +2,8 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,12 +13,17 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponentAbstract;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule.ByRules;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 
 /**
@@ -31,9 +36,6 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
  *
  */
 public class RRule {
-
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
-    
     
 //    public LocalDateTimeRange getDateTimeRange() { return appointmentDateTimeRange; }
 //    private LocalDateTimeRange appointmentDateTimeRange;
@@ -48,22 +50,24 @@ public class RRule {
     // TODO - MAKE A CACHE LIST OF START DATES (from the stream)
     // try to avoid making new dates by starting from the first startLocalDateTime if possible
     // having a variety of valid start date/times, spaced by 100 or so could be a good solution.
-    private List<LocalDateTime> startCache = new ArrayList<LocalDateTime>();
+    private List<LocalDateTime> startCache = new ArrayList<>();
         
     /** 
      * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.) 
      */
-    public Frequency getFrequency() { return frequency; }
-    private Frequency frequency;
-    public void setFrequency(Frequency frequency) { this.frequency = frequency; }
+    public ObjectProperty<Frequency> frequencyProperty() { return frequency; }
+    private ObjectProperty<Frequency> frequency = new SimpleObjectProperty<>(this, "FREQ");
+    public Frequency getFrequency() { return frequency.get(); }
+    public void setFrequency(Frequency frequency) { this.frequency.set(frequency); }
     
     /**
      * COUNT: (RFC 5545 iCalendar 3.3.10, page 41) number of events to occur before repeat rule ends
-     * Uses lazy initialization of property because often COUNT stays as the default value of 0
+     * Uses lazy initialization of property because often COUNT stays as the default value of 0.
+     * Value of 0 means COUNT is not used.
      */
     public IntegerProperty countProperty()
     {
-        if (count == null) count = new SimpleIntegerProperty(this, "count", _count);
+        if (count == null) count = new SimpleIntegerProperty(this, "COUNT", _count);
         return count;
     }
     private IntegerProperty count;
@@ -71,9 +75,10 @@ public class RRule {
     private int _count = 0;
     public void setCount(Integer i)
     {
+//        System.out.println("until: " + getUntil());
         if (getUntil() == null)
         {
-            if (i > 0)
+            if (i >= 0)
             {
                 if (count == null)
                 {
@@ -84,7 +89,7 @@ public class RRule {
                 }
             } else
             {
-                throw new InvalidParameterException("COUNT can't be less than 1. (" + i + ")");
+                throw new InvalidParameterException("COUNT can't be less than 0. (" + i + ")");
             }
         } else
         {
@@ -107,7 +112,7 @@ public class RRule {
     private LocalDateTime _until;
     public void setUntil(LocalDateTime t)
     {
-        if (getCount() > 0)
+        if (getCount() == 0)
         {
             if (until == null)
             {
@@ -121,25 +126,26 @@ public class RRule {
             throw new InvalidParameterException("can't set UNTIL if COUNT is already set.");
         }
     }
-    public RRule withUntil(int until) { setCount(until); return this; }
+    public RRule withUntil(LocalDateTime until) { setUntil(until); return this; }
     
-    
-    // List of RECURRENCE-ID events represented by a individual appointment with some unique data
-    // SHOULD RECURRENCES BE A SPECIAL CLASS OF APPOINTMENT WITH RECURRENCT-ID?
-    // IF SO THEN I COULD MAKE A COLLECTION OF APPOINTMENTS HERE
-    private Set<LocalDateTime> recurrences = new HashSet<LocalDateTime>();
-    public Set<LocalDateTime> getRecurrences() { return recurrences; }
-    public void setRecurrences(Set<LocalDateTime> dates) { recurrences = dates; }
-    public RRule withRecurrences(Set<LocalDateTime> dates) { setRecurrences(dates); return this; }
-    private boolean recurrencesEquals(Collection<LocalDateTime> recurrencesTest)
+    /**
+     * The set of specific instances of recurring "VEVENT", "VTODO", or "VJOURNAL" calendar components
+     * specified individually in conjunction with "UID" and "SEQUENCE" properties.  Each instance 
+     * has a RECURRENCE ID with a value equal to the original value of the "DTSTART" property of 
+     * the recurrence instance.  The UID matches the UID of the parent calendar component.
+     * See 3.8.4.4 of RFC 5545 iCalendar
+     */
+    public Set<LocalDateTime> getInstances() { return instances; }
+    private Set<LocalDateTime> instances = new HashSet<>();
+    public void setInstances(Set<LocalDateTime> dateTimes) { instances = dateTimes; }
+    public RRule withInstances(Set<LocalDateTime> dateTimes) { setInstances(dateTimes); return this; }
+    private boolean instancesEquals(Collection<LocalDateTime> instancesTest)
     {
-        recurrencesTest.stream().forEach(a -> System.out.println("test " + a));
-        Iterator<LocalDateTime> dateIterator = getRecurrences().iterator();
+        Iterator<LocalDateTime> dateIterator = getInstances().iterator();
         while (dateIterator.hasNext())
         {
             LocalDateTime myDate = dateIterator.next();
-            System.out.println(myDate);
-            if (! recurrencesTest.contains(myDate)) return false;
+            if (! instancesTest.contains(myDate)) return false;
         }
         return true;
     }
@@ -159,10 +165,10 @@ public class RRule {
                 e.printStackTrace();
             }
         }
-        Iterator<LocalDateTime> i = source.getRecurrences().iterator();
+        Iterator<LocalDateTime> i = source.getInstances().iterator();
         while (i.hasNext())
         {
-            destination.getRecurrences().add(i.next());
+            destination.getInstances().add(i.next());
         }
     }
 
@@ -175,16 +181,83 @@ public class RRule {
         }
         RRule testObj = (RRule) obj;
 
+        System.out.println("count: " + getCount() + " " + testObj.getCount());
         boolean countEquals = (getCount() == null) ?
                 (testObj.getCount() == null) : getCount().equals(testObj.getCount());
         boolean frequencyEquals = (getFrequency() == null) ?
                 (testObj.getFrequency() == null) : getFrequency().equals(testObj.getFrequency());
-        boolean recurrencesEquals = (getRecurrences() == null) ?
-                (testObj.getRecurrences() == null) : getRecurrences().equals(testObj.getRecurrences());
+        boolean recurrencesEquals = (getInstances() == null) ?
+                (testObj.getInstances() == null) : getInstances().equals(testObj.getInstances());
 
         System.out.println("RRule " + countEquals + " " + frequencyEquals + " " + recurrencesEquals);
         return countEquals && frequencyEquals && recurrencesEquals;
-                
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.append(getFrequency().toString());
+        if (getCount() > 0) builder.append(";" + countProperty().getName() + "=" + getCount());
+        if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + VComponentAbstract.FORMATTER.format(getUntil()));
+        System.out.println(getFrequency()
+        .getRules());
+        getFrequency()
+        .getRules()
+        .stream()
+        .forEach(r -> System.out.println("rules:" + r.getClass()));
+        String rules = getFrequency()
+                .getRules()
+                .stream()
+                .map(r -> ";" + r.toString())
+                .collect(Collectors.joining());
+        builder.append(rules);
+        return builder.toString();
+    }
+    
+    /** Return new RRule with its properties set by parsing iCalendar compliant RRULE string */
+    public static RRule parseRRule(String rRuleString)
+    {
+        System.out.println("rRuleString: " + rRuleString);
+        RRule rrule = new RRule();
+        
+        // Parse string
+        Arrays.stream(rRuleString.split(";"))
+                .forEach(r ->
+                {
+                    String[] ruleAndValue = r.split("=");
+                    System.out.println("test: " + ruleAndValue[0]);
+                    if (ruleAndValue[0].equals(rrule.frequencyProperty().getName()))
+                    { // FREQ
+                        Frequency freq = Frequency.FrequencyType
+                                .valueOf(ruleAndValue[1])
+                                .newInstance();
+                        freq.setInterval(rRuleString);
+                        rrule.setFrequency(freq);
+                    } else if (ruleAndValue[0].equals(rrule.countProperty().getName()))
+                    {
+                        System.out.println("foudn COUNT: ");
+                        rrule.setCount(Integer.parseInt(ruleAndValue[1]));
+                    } else
+                    {
+                        for (ByRules b : ByRules.values())
+                        {
+//                            System.out.println("Testing: " + ruleAndValue[0] + " " + b + (ruleAndValue[0].equals(b.toString())));
+                            if (ruleAndValue[0].equals(b.toString()))
+                            {
+                                Rule rule = null;
+                                try {
+                                    rule = b.newInstance(ruleAndValue[1]);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                System.out.println("rule: " + rule + " " + rrule);
+                                rrule.getFrequency().addByRule(rule);
+                            }
+                        }
+                    }
+                });
+        return rrule;
     }
 
     /** Stream of date/times made after applying all modification rules.
@@ -194,17 +267,20 @@ public class RRule {
      * first date/time (DTSTART) in the sequence. */
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
+        Stream<LocalDateTime> filteredStream = (getInstances().size() > 0) ?
+                getFrequency().stream(startDateTime).filter(d -> ! getInstances().contains(d))
+               : getFrequency().stream(startDateTime);
         if (getCount() > 0)
         {
-            return frequency.stream(startDateTime).limit(getCount());
+            return filteredStream.limit(getCount());
         } else if (getUntil() != null)
         {
 //            return frequency
 //                    .stream(startDateTime)
 //                    .takeWhile(a -> a.isBefore(getUntil())); // available in Java 9
-            return takeWhile(frequency.stream(startDateTime), a -> a.isBefore(getUntil()));
+            return takeWhile(filteredStream, a -> a.isBefore(getUntil()));
         }
-        return frequency.stream(startDateTime);
+        return filteredStream;
     };
     
     // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate
@@ -228,28 +304,45 @@ public class RRule {
       };
     }
 
-    public static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
+    static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
        return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
     }
 
-//        /**
-//         * A Datetime range.  The range of dates within the recurrence set to be included in
-//         * the stream
-//         */
-//        static public class LocalDateTimeRange
+//    /** Enumeration of RRule parts
+//     * Is used to make new instances of the different Frequencies by matching RRULE property
+//     * to its matching class */
+//    public static enum FrequencyParts
+//    {
+//        FREQ (Yearly.class)
+//      , UNTIL (Monthly.class)
+//      , COUNT (Weekly.class)
+//      , INTERVAL (Daily.class)
+//      , BYSECOND (Hourly.class) // Not implemented
+//      , BYMINUTE (Minutely.class) // Not implemented
+//      , BYHOUR (Secondly.class)
+//      , BYDAY
+//      , BYMONTHDAY
+//      , BYYEARDAY
+//      , BYWEEKNO
+//      , BYMONTH
+//      , BYSETPOS
+//      , WKST);
+//      
+//        private Class<? extends Frequency> clazz;
+//          
+//        FrequencyParts(Class<? extends Rule> clazz)
 //        {
-//            public LocalDateTimeRange(LocalDateTime start, LocalDateTime end)
-//            {
-//                this.start = start;
-//                this.end = end;
-//            }
-//            
-//            public LocalDateTime getStartLocalDateTime() { return start; }
-//            final LocalDateTime start;
-//            
-//            public LocalDateTime getEndLocalDateTime() { return end; }
-//            final LocalDateTime end; 
-//
+//            this.clazz = clazz;
 //        }
-
+//          
+//        public Frequency newInstance()
+//        {
+//            try {
+//                return clazz.newInstance();
+//            } catch (InstantiationException | IllegalAccessException e) {
+//                e.printStackTrace();
+//            }
+//            return null;
+//        }
+//    }
 }

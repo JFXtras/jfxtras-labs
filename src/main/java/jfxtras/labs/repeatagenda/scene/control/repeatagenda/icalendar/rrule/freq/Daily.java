@@ -2,7 +2,10 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.fre
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjuster;
+
+import javafx.beans.property.SimpleObjectProperty;
 
 /** DAILY frequency rule as defined by RFC 5545 iCalendar 3.3.10 p39 */
 public class Daily extends FrequencyAbstract
@@ -12,5 +15,5 @@ public class Daily extends FrequencyAbstract
     @Override public TemporalAdjuster getAdjuster() { return dailyAdjuster; }
 
     // Constructor
-    public Daily() { setChronoUnit(DAYS); }  
+    public Daily() { super(FrequencyType.DAILY, new SimpleObjectProperty<ChronoUnit>(ChronoUnit.DAYS)); }
 }

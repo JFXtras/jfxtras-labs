@@ -5,19 +5,23 @@ import static java.time.temporal.ChronoUnit.WEEKS;
 import java.security.InvalidParameterException;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.Rule;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
+import javafx.beans.property.ObjectProperty;
 
 /** BYWEEKNO from RFC 5545, iCalendar 3.3.10, page 42 */
 public class ByWeekNo extends ByRuleAbstract
 {
+    private final static int PROCESS_ORDER = 10; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
+
     /** sorted array of weeks of the year
      * (i.e. 5, 10 = 5th and 10th weeks of the year, -3 = 3rd from last week of the year)
      * Uses a varargs parameter to allow any number of value.
@@ -39,11 +43,23 @@ public class ByWeekNo extends ByRuleAbstract
     private DayOfWeek weekStart = DayOfWeek.MONDAY;
     public void setWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; }
 
-    
-    /** Constructor requires weeks of the year value(s) */
-    public ByWeekNo(Frequency frequency, int...weekNumbers)
+    // CONSTRUCTORS
+    /** takes String of comma-delimited integers, parses it to array of ints 
+     * This constructor is REQUIRED by the Rule.ByRules newInstance method. */
+    public ByWeekNo(String weekNumbersString)
     {
-        super(frequency);
+        super(PROCESS_ORDER);
+        int[] days = Arrays
+                .stream(weekNumbersString.split(","))
+                .mapToInt(s -> Integer.parseInt(s))
+                .toArray();
+        setWeekNumbers(days);
+    }
+
+    /** Constructor requires weeks of the year int value(s) */
+    public ByWeekNo(int...weekNumbers)
+    {
+        super(PROCESS_ORDER);
         setWeekNumbers(weekNumbers);
     }
 
@@ -70,13 +86,24 @@ public class ByWeekNo extends ByRuleAbstract
         return weekNumbersEquals;
     }
     
+    
     @Override
-    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
+    public String toString()
     {
-        switch (getFrequency().getChronoUnit())
+        String days = Arrays.stream(getWeekNumbers())
+                .mapToObj(d -> d + ",")
+                .collect(Collectors.joining());
+        return ByRules.BYWEEKNO + "=" + days.substring(0, days.length()-1); // remove last comma
+    }
+    
+    @Override
+    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, ObjectProperty<ChronoUnit> chronoUnit, LocalDateTime startDateTime)
+    {
+        ChronoUnit originalChronoUnit = chronoUnit.get();
+        chronoUnit.set(WEEKS);
+        switch (originalChronoUnit)
         {
         case YEARS:
-            getFrequency().setChronoUnit(WEEKS);
             Locale oldLocale = null;
             WeekFields weekFields = WeekFields.of(Locale.getDefault());
             DayOfWeek firstDayOfWeek = weekFields.getFirstDayOfWeek();
@@ -126,7 +153,7 @@ public class ByWeekNo extends ByRuleAbstract
         case HOURS:
         case MINUTES:
         case SECONDS:
-            throw new InvalidParameterException("BYWEEKNO is not available for " + getFrequency().getChronoUnit() + " frequency."); // Not available
+            throw new InvalidParameterException("BYWEEKNO is not available for " + chronoUnit + " frequency."); // Not available
         default:
             break;
         }

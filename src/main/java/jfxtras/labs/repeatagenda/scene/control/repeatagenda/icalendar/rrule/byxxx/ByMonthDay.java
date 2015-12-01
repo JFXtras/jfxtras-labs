@@ -4,18 +4,21 @@ import static java.time.temporal.ChronoUnit.DAYS;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.Rule;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
+import javafx.beans.property.ObjectProperty;
 
 /** BYMONTHDAY from RFC 5545, iCalendar */
 public class ByMonthDay extends ByRuleAbstract
 {
+    private final static int PROCESS_ORDER = 30; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
+
     /** sorted array of days of month
      * (i.e. 5, 10 = 5th and 10th days of the month, -3 = 3rd from last day of month)
      * Uses a varargs parameter to allow any number of days
@@ -26,21 +29,27 @@ public class ByMonthDay extends ByRuleAbstract
     public Rule withDaysOfMonth(int... daysOfMonth) { setDaysOfMonth(daysOfMonth); return this; }
     
 //    private int[] validDays; // array of valid days of month for current month
-    
+
     /** Constructor 
-     * If not setting daysOfMonth then defaults to startLocalDateTime for dayOfMonth */
-    public ByMonthDay(Frequency frequency) {
-        super(frequency);
+     * takes String of comma-delimited integers, parses it to array of ints
+     * This constructor is REQUIRED by the Rule.ByRules newInstance method. */
+    public ByMonthDay(String daysOfMonthString)
+    {
+        super(PROCESS_ORDER);
+        int[] days = Arrays
+                .stream(daysOfMonthString.split(","))
+                .mapToInt(s -> Integer.parseInt(s))
+                .toArray();
+        setDaysOfMonth(days);
     }
 
     /** Constructor 
      * Contains varargs of daysOfMonth */
-    public ByMonthDay(Frequency frequency, int... daysOfMonth)
+    public ByMonthDay(int... daysOfMonth)
     {
-        super(frequency);
+        super(PROCESS_ORDER);
         setDaysOfMonth(daysOfMonth);
     }
-    public ByMonthDay() { }
 
     @Override
     public void copyTo(Rule destination)
@@ -66,23 +75,30 @@ public class ByMonthDay extends ByRuleAbstract
         return daysOfMonthEquals;
     }
     
+    @Override
+    public String toString()
+    {
+        String days = Arrays.stream(getDaysOfMonth())
+                .mapToObj(d -> d + ",")
+                .collect(Collectors.joining());
+        return ByRules.BYMONTHDAY + "=" + days.substring(0, days.length()-1); // remove last comma
+    }
+    
     /**
      * Return stream of valid dates made by rule (infinite if COUNT or UNTIL not present)
      */
     @Override
-    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
+    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, ObjectProperty<ChronoUnit> chronoUnit, LocalDateTime startDateTime)
     {
         if (daysOfMonth == null)
         { // if no days specified when constructing, get day of month for startDateTime
             daysOfMonth = new int[] { startDateTime.toLocalDate().getDayOfMonth() };
         }
-//        int startDaysInMonth = startDateTime.toLocalDate().lengthOfMonth();
-//        validDays = makeValidDays(startDaysInMonth, getDaysOfMonth());
-//        switch (getFrequency().frequencyEnum())
-        switch (getFrequency().getChronoUnit())
+        ChronoUnit originalChronoUnit = chronoUnit.get();
+        chronoUnit.set(DAYS);
+        switch (originalChronoUnit)
         {
         case DAYS:
-            getFrequency().setChronoUnit(DAYS);
             return inStream.filter(d ->
                     { // filter out all but qualifying days
                         int myDay = d.toLocalDate().getDayOfMonth();
@@ -96,7 +112,6 @@ public class ByMonthDay extends ByRuleAbstract
                     });
         case MONTHS:
         case YEARS:
-            getFrequency().setChronoUnit(DAYS);
             return inStream.flatMap(d -> 
             { // Expand to be daysOfMonth days in current month
                 List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
@@ -125,25 +140,4 @@ public class ByMonthDay extends ByRuleAbstract
         }
         return null;
     }
-
-
-//    /** for current month, makes an array of valid days, works with both positive and negative daysOfMonth values */
-//    private int[] makeValidDays(int daysInMonth, int[] daysOfMonth)
-//    {
-//        int[] validDays = new int[daysOfMonth.length];
-//        int i=0;
-//        for (int day : daysOfMonth)
-//        {
-//            if (day == 0 || day < -31 || day > 31) throw new InvalidParameterException("Invalid BYMONTHDAY value (" + day + ").  Must be 1 to 31 or -31 to -1.");
-//            if (day > 0)
-//            {
-//                validDays[i] = day;
-//            } else
-//            {
-//                validDays[i] = (daysInMonth + day + 1); // negative daysOfMonth (-3 = 3rd to last day of month)                
-//            }
-//            i++;
-//        }
-//        return validDays;
-//    }
 }

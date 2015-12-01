@@ -1,24 +1,26 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
 import java.security.InvalidParameterException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.stream.Collectors;
 
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 
 /**
  * Parent calendar component, VEVENT
@@ -79,10 +81,16 @@ import javafx.beans.property.StringProperty;
          3.8.8.2.  Non-Standard Properties . . . . . . . . . . . . . 142 - TODO (from VComponent, some X-properties may be defined here too)
          3.8.8.3.  Request Status  . . . . . . . . . . . . . . . . . 144 - NO (from VComponent)
  *
+ * @author David Bal
+ * @see VEventImpl
  */
-public abstract class VEvent extends VComponent
-{
-
+public abstract class VEvent extends VComponentAbstract
+{   
+    private static final long SECONDS_IN_WEEK = Duration.ofDays(7).getSeconds();
+    private static final long SECONDS_IN_DAY = Duration.ofDays(1).getSeconds();
+    private static final long SECONDS_IN_HOUR = Duration.ofHours(1).getSeconds();
+    private static final long SECONDS_IN_MINUTE = Duration.ofMinutes(1).getSeconds();
+    
     /**
      * DESCRIPTION: RFC 5545 iCalendar 3.8.1.12. page 84
      * This property provides a more complete description of the
@@ -92,10 +100,10 @@ public abstract class VEvent extends VComponent
      *  design.\nHappy Face Conference Room. Phoenix design team
      *  MUST attend this meeting.\nRSVP to team leader.
      */
-    public StringProperty descriptionProperty() { return descriptionProperty; }
-    final private StringProperty descriptionProperty = new SimpleStringProperty(this, "description");
-    public String getDescription() { return descriptionProperty.getValue(); }
-    public void setDescription(String value) { descriptionProperty.setValue(value); }
+    public StringProperty descriptionProperty() { return description; }
+    final private StringProperty description = new SimpleStringProperty(this, "DESCRIPTION");
+    public String getDescription() { return description.getValue(); }
+    public void setDescription(String value) { description.setValue(value); }
 //    public T withDescription(String value) { setDescription(value); return (T)this; } 
     
     /** 
@@ -104,13 +112,54 @@ public abstract class VEvent extends VComponent
      * converted to seconds.  This value is used exclusively internally.  Any specified DTEND is converted to 
      * durationInSeconds,
      * */
-    final private SimpleIntegerProperty durationInSeconds = new SimpleIntegerProperty(this, "durationProperty");
-    public SimpleIntegerProperty durationInSecondsProperty() { return durationInSeconds; }
-    public Integer getDurationInSeconds() { return durationInSeconds.getValue(); }
-    public void setDurationInSeconds(Integer value) { durationInSeconds.setValue(value); }
+    final private SimpleLongProperty durationInSeconds = new SimpleLongProperty(this, "DURATION");
+    public SimpleLongProperty durationInSecondsProperty() { return durationInSeconds; }
+    public Long getDurationInSeconds() { return durationInSeconds.getValue(); }
+    public String getDurationAsString()
+    {
+        StringBuilder duration = new StringBuilder("P");
+        Long seconds = getDurationInSeconds();
+
+        Long weeks = seconds / SECONDS_IN_WEEK;
+        if (weeks > 0) duration.append(weeks + "W");
+        seconds -= SECONDS_IN_WEEK * weeks;
+
+        Long days = seconds / SECONDS_IN_DAY;
+        if (days > 0) duration.append(days + "D");
+        seconds -= SECONDS_IN_DAY * days;
+
+        Long hours = seconds / SECONDS_IN_HOUR;
+        boolean addedT = false;
+        if (hours > 0)
+        {
+            addedT = true;
+            duration.append("T");
+            duration.append(hours + "H");
+        }
+        seconds -= SECONDS_IN_HOUR * hours;
+
+        Long minutes = seconds / SECONDS_IN_MINUTE;
+        if (minutes > 0)
+        {
+            if (! addedT) duration.append("T");
+            addedT = true;
+            duration.append(minutes + "M");
+        }
+        seconds -= SECONDS_IN_MINUTE * minutes;
+
+        if (seconds > 0)
+        {
+            if (! addedT) duration.append("T");
+            addedT = true;
+            duration.append(seconds + "S");
+        }
+
+        return duration.toString();
+    }
+    public void setDurationInSeconds(Long value) { durationInSeconds.setValue(value); useDuration=true; useDateTimeEnd=false; }
     public void setDurationInSeconds(String value)
     { // parse ISO.8601.2004 period string into period of seconds (no support for Y (years) or M (months).
-        int seconds = 0;
+        long seconds = 0;
         Pattern p = Pattern.compile("([0-9]+)|([A-Z])");
         Matcher m = p.matcher(value);
         List<String> tokens = new ArrayList<String>();
@@ -132,255 +181,242 @@ public abstract class VEvent extends VComponent
                 String time = tokenIterator.next();
                 if (time.equals("W"))
                 { // weeks
-                    seconds += n * 7 * 24 * 60 * 60;
+                    seconds += n * SECONDS_IN_WEEK;
                 } else if (time.equals("D"))
                 { // days
-                    seconds += n * 24 * 60 * 60;
+                    seconds += n * SECONDS_IN_DAY;
                 } else if (timeFlag && time.equals("H"))
                 { // hours
-                    seconds += n * 60 * 60;                    
+                    seconds += n * SECONDS_IN_HOUR;                   
                 } else if (timeFlag && time.equals("M"))
                 { // minutes
-                    seconds += n * 60;                                        
+                    seconds += n * SECONDS_IN_MINUTE;                                        
                 } else if (timeFlag && time.equals("S"))
                 { // seconds
                     seconds += n;                    
                 } else
                 {
-                    throw new InvalidParameterException("Invalid DURATION string time element (" + time + "). Must begin with a P");
+                    throw new InvalidParameterException("Invalid DURATION string time element (" + time + "). Must begin with a P, or Time character T not found");
                 }
             } else if (token.equals("T")) timeFlag = true; // proceeding elements will be hour, minute or second
         }
         durationInSeconds.setValue(seconds);
     }
-//    public T withDurationInSeconds(Integer value) { setDurationInSeconds(value); return (T)this; } 
-//    public T withDurationInSeconds(String value) { setDurationInSeconds(value); return (T)this; } 
+    private final ChangeListener<? super LocalDateTime> dateTimeEndlistener = (obs, oldSel, newSel) ->
+    { // listener to synch dateTimeEnd and durationInSeconds
+        if (getDateTimeStart() != null)
+        {
+            long seconds = ChronoUnit.SECONDS.between(getDateTimeStart(), newSel);
+            setDurationInSeconds(seconds);            
+        }
+    };
+    private final ChangeListener<? super LocalDateTime> dateTimeStartlistener = (obs, oldSel, newSel) ->
+    { // listener to synch dateTimeStart and durationInSeconds
+        if (getDateTimeEnd() != null)
+        {
+            long seconds = ChronoUnit.SECONDS.between(newSel, getDateTimeEnd());
+            setDurationInSeconds(seconds);
+        }
+    };
+    private final ChangeListener<? super Number> durationlistener = (obs, oldSel, newSel) ->
+    { // listener to synch dateTimeEnd and durationInSeconds.  dateTimeStart is left in place.
+        if (getDateTimeStart() != null)
+        {
+            LocalDateTime dtEnd = getDateTimeStart().plusSeconds((long) newSel);
+            setDateTimeEnd(dtEnd);
+        }
+    };
+    private boolean useDuration = false; // when true toString will output DURATION
     
     /**
-     * Date-Time End, DTEND from RFC 5545 iCalendar 3.8.2.2 page 95
+     * DTEND, Date-Time End. from RFC 5545 iCalendar 3.8.2.2 page 95
      * Specifies the date and time that a calendar component ends.
      * If entered this value is used to calculate the durationInSeconds, which is used
      * internally.
      */
-    public void setDateTimeEnd(LocalDateTime dtEnd)
-    {
-        long seconds = ChronoUnit.SECONDS.between(getDateTimeStart(), dtEnd);
-        System.out.println("seconds: " + seconds);
-        setDurationInSeconds((int) seconds);
-    }
+    final private ObjectProperty<LocalDateTime> dateTimeEnd = new SimpleObjectProperty<LocalDateTime>(this, "DTEND");
+    public ObjectProperty<LocalDateTime> dateTimeEndProperty() { return dateTimeEnd; }
+    public void setDateTimeEnd(LocalDateTime dtEnd) { dateTimeEnd.set(dtEnd); useDuration=false; useDateTimeEnd=true; }
     public void setDateTimeEnd(String dtEnd)
     {
         LocalDateTime dt = iCalendarDateTimeToLocalDateTime(dtEnd);
         setDateTimeEnd(dt);
     }
-    public LocalDateTime getDateTimeEnd() { return getDateTimeStart().plusSeconds(getDurationInSeconds()); }
- 
-    // NO NEED - 
-//    /** Appointment-specific data - only uses data fields. Repeat related and date/time objects are null */
-//    // TODO - HOW TO ENSURE USAGE OF ICALENDAR DATA FIELDS YET PROVIDE AVAILABILITY OF CUSTOM FIELDS AND
-//    // COMPATIBILITY WITH AGENDA?
-////    DESCRIPTION:This is a message for everyone
-////    SUMMARY:The event
-////    LOCATION:here
-////    CATEGORIES:3.8.1.2 page 81 - like appointmentGroup
-//    // COMMENT 3.8.1.4 page 83
-//    private RepeatableAppointment appointmentData = null; //AppointmentFactory.newAppointment();
-//    public RepeatableAppointment getAppointmentData() { return appointmentData; }
-//    public void setAppointmentData(RepeatableAppointment appointment) { appointmentData = appointment; }
-//    public VEvent withAppointmentData(RepeatableAppointment appointment) { setAppointmentData(appointment); return this; }
-    
+    public LocalDateTime getDateTimeEnd() { return dateTimeEnd.get(); }
+    private boolean useDateTimeEnd = true; // when true toString will output DTEND, default to true
 
-    /**
-     * Start of range for which events are generated.  Should match the dates displayed on the calendar.
-     */
-    public LocalDateTime getDateTimeRangeStart() { return dateTimeRangeStart; }
-    private LocalDateTime dateTimeRangeStart;
-    public void setDateTimeRangeStart(LocalDateTime startDateTime) { this.dateTimeRangeStart = startDateTime; }
-//    public T withDateTimeRangeStart(LocalDateTime startDateTime) { setDateTimeRangeStart(startDateTime); return (T)this; }
-    
-    /**
-     * End of range for which events are generated.  Should match the dates displayed on the calendar.
-     */
-    public LocalDateTime getDateTimeRangeEnd() { return dateTimeRangeEnd; }
-    private LocalDateTime dateTimeRangeEnd;
-    public void setDateTimeRangeEnd(LocalDateTime endDateTime) { this.dateTimeRangeEnd = endDateTime; }
-//    public T withDateTimeRangeEnd(LocalDateTime endDateTime) { setDateTimeRangeEnd(endDateTime); return (T)this; }
-    
-    
-    // CONSTRUCTOR
+    // CONSTRUCTORS
     public VEvent(VEvent vevent)
     {
         super(vevent);
         copy(vevent, this);
+        dateTimeEndProperty().addListener(dateTimeEndlistener); // synch duration with dateTimeEnd
+        dateTimeStartProperty().addListener(dateTimeStartlistener); // synch duration with dateTimeStart
+        durationInSecondsProperty().addListener(durationlistener); // synch duration with dateTimeEnd
     }
     
-    public VEvent() { }
+    public VEvent()
+    {
+        dateTimeEndProperty().addListener(dateTimeEndlistener); // synch duration with dateTimeEnd
+        dateTimeStartProperty().addListener(dateTimeStartlistener); // synch duration with dateTimeStart
+        durationInSecondsProperty().addListener(durationlistener); // synch duration with dateTimeEnd
+    }
     
     /** Deep copy all fields from source to destination */
     private static void copy(VEvent source, VEvent destination)
     {
         destination.setDescription(source.getDescription());
         destination.setDurationInSeconds(source.getDurationInSeconds());
-        if (source.getDateTimeRangeStart() != null) destination.setDateTimeRangeStart(source.getDateTimeRangeStart());
-        if (source.getDateTimeRangeEnd() != null) destination.setDateTimeRangeEnd(source.getDateTimeRangeEnd());
     }
 
     /** Deep copy all fields from source to destination */
     @Override
-    public void copyTo(VComponent destination)
+    public void copyTo(VComponentAbstract destination)
     {
         copy(this, (VEvent) destination);
     }
     
-    /** Stream of date/times that indicate the start of the event(s).
-     * For a VEvent without RRULE the stream will contain only one date/time element.
-     * A VEvent with a RRULE the stream contains more than one date/time element.  It will be infinite 
-     * if COUNT or UNTIL is not present.  The stream has an end when COUNT or UNTIL condition is met.
-     * Starts on startDateTime, which must be a valid event date/time, not necessarily the
-     * first date/time (DTSTART) in the sequence. */
-    public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
+    @Override
+    public boolean equals(Object obj)
     {
-        if (getRRule() == null)
-        { // if individual event
-            if (! startDateTime.isBefore(getDateTimeStart()))
-            {
-            return Arrays.asList(getDateTimeStart()).stream();
-            } else
-            { // if dateTimeStart is before startDateTime
-                return new ArrayList<LocalDateTime>().stream(); // empty stream
-            }
-        } else
-        { // if has recurrence rule
-            // filter away too early (with Java 9 takeWhile these statements can be combined into one chained statement for greater elegance)
-            Stream<LocalDateTime> filteredStream = getRRule()
-                    .stream(startDateTime)
-                    .filter(a -> (getDateTimeRangeStart() == null) ? true : ! a.isBefore(getDateTimeRangeStart()));
-            // stop when too late
-            return takeWhile(filteredStream, a -> (getDateTimeRangeEnd() == null) ? true : ! a.isAfter(getDateTimeRangeEnd()));
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
         }
-    };
-    
-//    // its already edited by RepeatableController
-//    // changes to be made if ONE or FUTURE is selected.
-//    // change back if CANCEL
-//    public <T> WindowCloseType edit(
-//              LocalDateTime dateTimeStart // start date/time of edited recurrence
-//            , VEvent vEventOld // change back if cancel
-//            , Collection<T> appointments // remove affected appointments
-//            , Collection<VEvent> vevents // add new VEvents if change to one or future
-//            , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback // force change selection for testing
-//            , Callback<Collection<VEvent>, Void> writeVEventsCallback) // I/O callback
-//    {
-//        if (this.equals(vEventOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
-//        final RRuleType rruleType = getVEventType(vEventOld.getRRule());
-//        System.out.println("rruleType " + rruleType);
-//        boolean editedFlag = false;
-//        switch (rruleType)
-//        {
-//        case HAD_REPEAT_BECOMING_INDIVIDUAL:
-//            this.setRRule(null);
-//        case WITH_NEW_REPEAT:
-//        case INDIVIDUAL:
-//            editedFlag = true;
-//            break;
-//        case WITH_EXISTING_REPEAT:
-//            // Check if changes between vEvent and vEventOld exist apart from RRule
-//            VEvent tempVEvent = VEventFactory.newVEvent(vEventOld);
-//            tempVEvent.setRRule(getRRule());
-//            boolean onlyRRuleChanged = this.equals(tempVEvent);
-//
-//            ChangeDialogOptions[] choices = null;
-//            if (onlyRRuleChanged) choices = new ChangeDialogOptions[] {ChangeDialogOptions.ALL, ChangeDialogOptions.FUTURE};
-//            ChangeDialogOptions changeResponse = changeDialogCallback.call(choices);
-//            switch (changeResponse)
-//            {
-//            case ALL:
-//                break;
-//            case CANCEL:
-//                break;
-//            case FUTURE:
-//                break;
-//            case ONE:
-//                // Make new individual VEvent, save settings to it.  Add date to original as recurrence.
-//                VEvent newVEvent = VEventFactory.newVEvent(this);
-//                newVEvent.setRRule(null);
-//                newVEvent.setDateTimeStart(dateTimeStart);
-//                vevents.remove(this);
-//                vevents.add(vEventOld);
-////                veventRefreshAppointments.call()
-////                this = vEventOld;
-//                vEventOld.copyTo(this);
-//                break;
-//            }
-//            break;
-//        default:
-//            break;
-//        }
-//        // TODO - THIS MAY MEAN THIS HAS TO GO BACK TO IMPL - CAN USE CALLBACK
-//        // DOESN'T KNOW ABOUT APPOINTMENTS HERE
-//        
-//        if (editedFlag) // make these changes as long as CANCEL is not selected
-//        { // remove appointments from mail collection made by VEvent
-//            Iterator<T> i = appointments.iterator();
-//            while (i.hasNext())
-//            {
-//                T a = i.next();
-//                if (appointments().contains(a)) i.remove();
-//            }
-//            appointments().clear(); // clear VEvent's collection of appointments
-//            appointments.addAll(makeAppointments()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
-//            return WindowCloseType.CLOSE_WITH_CHANGE;
-//        } else
-//        {
-//            return WindowCloseType.CLOSE_WITHOUT_CHANGE;
-//        }
-//    }
-//    
-//    private RRuleType getVEventType(RRule rruleOld)
-//    {
-//
-//        if (getRRule() == null)
-//        {
-//            if (rruleOld == null)
-//            { // doesn't have repeat or have old repeat either
-//                return RRuleType.INDIVIDUAL;
-//            } else {
-//                return RRuleType.HAD_REPEAT_BECOMING_INDIVIDUAL;
-//            }
-//        } else
-//        { // RRule != null
-//            if (rruleOld == null)
-//            {
-//                return RRuleType.WITH_NEW_REPEAT;                
-//            } else {
-//                return RRuleType.WITH_EXISTING_REPEAT;
-//            }
-//        }
-//    }
-    
-    // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate
-    public static <T> Spliterator<T> takeWhile(
-            Spliterator<T> splitr, Predicate<? super T> predicate) {
-          return new Spliterators.AbstractSpliterator<T>(splitr.estimateSize(), 0) {
-            boolean stillGoing = true;
-            @Override public boolean tryAdvance(Consumer<? super T> consumer) {
-              if (stillGoing) {
-                boolean hadNext = splitr.tryAdvance(elem -> {
-                  if (predicate.test(elem)) {
-                    consumer.accept(elem);
-                  } else {
-                    stillGoing = false;
-                  }
-                });
-                return hadNext && stillGoing;
-              }
-              return false;
-            }
-          };
-        }
+        VEvent testObj = (VEvent) obj;
 
-        static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
-           return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
-        }
+        boolean descriptionEquals = (getDescription() == null) ?
+                (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
+        boolean durationEquals = (getDurationInSeconds() == null) ?
+                (testObj.getDurationInSeconds() == null) : getDurationInSeconds().equals(testObj.getDurationInSeconds());
+        System.out.println("VEvent: " + descriptionEquals + " " + durationEquals);
+        // don't need to check getDateTimeEnd because it is bound to duration
+        return super.equals(obj) && descriptionEquals && durationEquals;
+    }
     
+    /** Make iCalendar compliant string of VEvent calendar component.
+     * This method should be overridden by an implementing class if that
+     * class contains any extra properties. */
+    @Override
+    public String toString()
+    {
+        Map<Property, String> properties = makePropertiesMap();
+        String propertiesString = properties.entrySet()
+                .stream() 
+                .map(p -> p.getKey().getName() + ":" + p.getValue() + System.lineSeparator())
+                .sorted()
+                .collect(Collectors.joining());
+        return "BEGIN:VEVENT" + System.lineSeparator() + propertiesString + "END:VEVENT";
+    }
+
+    @Override
+    protected Map<Property, String> makePropertiesMap()
+    {
+        Map<Property, String> properties = new HashMap<Property, String>();
+        properties.putAll(super.makePropertiesMap());
+        if (getDescription() != null) properties.put(descriptionProperty(), getDescription());
+        System.out.println("use: " + useDateTimeEnd + " " + useDuration);
+        if (useDateTimeEnd) properties.put(dateTimeEndProperty(), FORMATTER.format(getDateTimeEnd()));
+        if (useDuration) properties.put(durationInSecondsProperty(), getDurationAsString());
+        return properties;
+    }
+    
+    @Override
+    public String validityCheck()
+    {
+        String errors = super.validityCheck();
+        boolean durationNull = getDurationInSeconds() == 0;
+        boolean endDateTimeNull = this.getDateTimeEnd() == null;
+        SimpleLongProperty d = new SimpleLongProperty(this, "DURATION");
+        if (durationNull && endDateTimeNull) errors += System.lineSeparator() + "Invalid VEvent.  Both DURATION and DTEND can not be null.";
+        // Check for invalid condition where both DURATION and DTEND not being null is done in parseVEvent.  Not done here due to bindings between both DURATION and DTEND.
+        return errors;
+    }
+    
+    /** This method should be called by a method in the implementing class the
+     * makes a new object and passes it here as vEvent.
+     * @param vEvent
+     * @param strings
+     * @return
+     */
+    protected static VEvent parseVEvent(VEvent vEvent, List<String> strings)
+    {
+        // Test for correct beginning and end, then remove
+        if (! strings.get(0).equals("BEGIN:VEVENT"))
+        {
+            throw new InvalidParameterException("Invalid calendar component. First element must be BEGIN:VEVENT");
+        } else
+        {
+            strings.remove(0);
+        }
+        if (! strings.get(strings.size()-1).equals("END:VEVENT"))
+        {
+            throw new InvalidParameterException("Invalid calendar component. Last element must be END:VEVENT");
+        } else
+        {
+            strings.remove(strings.size()-1);
+        }
+        
+        Iterator<String> stringsIterator = strings.iterator();
+        boolean dTEndFound = false;
+        boolean durationFound = false;
+        while (stringsIterator.hasNext())
+        {
+            final String[] property = stringsIterator.next().split(":");
+            if (property[0].equals(vEvent.descriptionProperty().getName()))
+            { // DESCRIPTION
+                    if (vEvent.getDescription() == null)
+                    {
+                        vEvent.setDescription(property[1]);
+                        stringsIterator.remove();
+                    } else
+                    {
+                        throw new InvalidParameterException("Invalid VEvent: DESCRIPTION can only be specified once");
+                    }
+            } else if (property[0].equals(vEvent.durationInSecondsProperty().getName()))
+            { // DURATION
+                if (vEvent.getDurationInSeconds() == 0)
+                {
+                    if (dTEndFound == false)
+                    {
+                        durationFound = true;
+                        vEvent.useDuration = true;
+                        vEvent.useDateTimeEnd = false;
+                        vEvent.setDurationInSeconds(property[1]);
+                        stringsIterator.remove();
+                    } else
+                    {
+                        throw new InvalidParameterException("Invalid VEvent: Can't contain both DTEND and DURATION.");
+                    }
+                } else
+                {
+                    throw new InvalidParameterException("Invalid VEvent: DURATION can only be specified once.");                    
+                }
+            } else if (property[0].equals(vEvent.dateTimeEndProperty().getName()))
+            { // DTEND
+                if (vEvent.getDateTimeEnd() == null)
+                {
+                    if (durationFound == false)
+                    {
+                        dTEndFound = true;
+                        vEvent.useDuration = false;
+                        vEvent.useDateTimeEnd = true;
+                        LocalDateTime dateTime = LocalDateTime.parse(property[1],FORMATTER);
+                        vEvent.setDateTimeEnd(dateTime);
+                        stringsIterator.remove();
+                    } else
+                    {
+                        throw new InvalidParameterException("Invalid VEvent: Can't contain both DTEND and DURATION.");
+                    }
+                } else
+                {
+                    throw new InvalidParameterException("Invalid VEvent: DTEND can only be specified once.");                                        
+                }
+            }
+        }
+        vEvent.useDuration = true;
+        vEvent.useDateTimeEnd = false;
+        return (VEvent) VComponentAbstract.parseVComponent(vEvent, strings);
+    }
+       
 }

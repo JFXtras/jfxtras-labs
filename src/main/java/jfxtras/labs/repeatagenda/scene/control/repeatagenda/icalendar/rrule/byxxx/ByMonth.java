@@ -3,16 +3,20 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.Rule;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
+import javafx.beans.property.ObjectProperty;
 
 /** BYMONTH from RFC 5545, iCalendar 3.3.10, page 42 */
 public class ByMonth extends ByRuleAbstract
 {
+    private final static int PROCESS_ORDER = 0; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
+
     /** sorted array of months to be included
      * January = 1 - December = 12
      * Uses a varargs parameter to allow any number of months
@@ -21,9 +25,21 @@ public class ByMonth extends ByRuleAbstract
     private Month[] months;
     private void setMonths(Month... months) { this.months = months; }
 
-    public ByMonth(Frequency frequency, Month... months)
+    // CONSTRUCTORS
+    /** This constructor is REQUIRED by the Rule.ByRules newInstance method. */
+    public ByMonth(String months)
     {
-        super(frequency);
+        super(PROCESS_ORDER);
+        setMonths(
+          Arrays.asList(months.split(","))
+                .stream()
+                .map(s -> Month.of(Integer.parseInt(s)))
+                .toArray(size -> new Month[size]));
+    }
+
+    public ByMonth(Month... months)
+    {
+        super(PROCESS_ORDER);
         setMonths(months);
     }
 
@@ -45,16 +61,26 @@ public class ByMonth extends ByRuleAbstract
         boolean monthEquals = getMonths().equals(testObj.getMonths());
         return monthEquals;
     }
-    
+
     @Override
-    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
+    public String toString()
     {
-        switch (getFrequency().getChronoUnit())
+        String days = Arrays.stream(getMonths())
+                .map(d -> d.getValue() + ",")
+                .collect(Collectors.joining());
+        return ByRules.BYMONTH + "=" + days.substring(0, days.length()-1); // remove last comma
+    }
+
+    @Override
+    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, ObjectProperty<ChronoUnit> chronoUnit, LocalDateTime startDateTime)
+    {
+        ChronoUnit originalChronoUnit = chronoUnit.get();
+        chronoUnit.set(MONTHS);
+        switch (originalChronoUnit)
         {
         case DAYS:
         case WEEKS:
         case MONTHS:
-            getFrequency().setChronoUnit(MONTHS);
             return inStream.filter(date ->
             { // filter out all but qualifying days
                 Month myMonth = date.toLocalDate().getMonth();
@@ -65,7 +91,6 @@ public class ByMonth extends ByRuleAbstract
                 return false;
             });
         case YEARS:
-            getFrequency().setChronoUnit(MONTHS);
             return inStream.flatMap(date -> 
             { // Expand to include matching days in all months
                 List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
@@ -81,7 +106,7 @@ public class ByMonth extends ByRuleAbstract
         case HOURS:
         case MINUTES:
         case SECONDS:
-            throw new RuntimeException("Not implemented ChronoUnit: " + getFrequency().getChronoUnit()); // probably same as DAILY
+            throw new RuntimeException("Not implemented ChronoUnit: " + chronoUnit); // probably same as DAILY
         default:
             break;
         }

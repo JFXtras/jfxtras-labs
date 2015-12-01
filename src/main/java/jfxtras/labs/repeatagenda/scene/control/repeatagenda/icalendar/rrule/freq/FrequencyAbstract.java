@@ -1,14 +1,19 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq;
 
 import java.security.InvalidParameterException;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.Rule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
 
 public abstract class FrequencyAbstract implements Frequency {
     
@@ -38,6 +43,30 @@ public abstract class FrequencyAbstract implements Frequency {
             throw new InvalidParameterException("INTERVAL can't be less than 1. (" + i + ")");
         }
     }
+    @Override public void setInterval(String s)
+    {
+        Pattern p = Pattern.compile("(?<=INTERVAL=)[0-9]+");
+        Matcher m = p.matcher(s);
+        int i=0;
+        while (m.find())
+        {
+            String token = m.group();
+            if (i==0)
+            {
+                i = Integer.parseInt(token);
+                if (i > 0)
+                {
+                    setInterval(i);
+                } else
+                {
+                    throw new InvalidParameterException("INTERVAL must be greater than or equal to one");                    
+                }
+            } else
+            {
+                throw new InvalidParameterException("INTERVAL can only be specified once");
+            }
+        }
+    }
     public Frequency withInterval(int interval) { setInterval(interval); return this; }
 
     /** BYxxx Rules 
@@ -55,6 +84,69 @@ public abstract class FrequencyAbstract implements Frequency {
         }
         getRules().add(byRule);
     }
+
+    /** Time unit of last rule applied.  It represents the time span to apply future changes to the output stream of date/times
+     * For example:
+     * following FREQ=WEEKLY it is WEEKS
+     * following FREQ=YEARLY it is YEARS
+     * following FREQ=YEARLY;BYWEEKNO=20 it is WEEKS
+     * following FREQ=YEARLY;BYMONTH=3 it is MONTHS
+     * following FREQ=YEARLY;BYMONTH=3;BYDAY=TH it is DAYS
+     */
+    public ObjectProperty<ChronoUnit> getChronoUnit() { return chronoUnit; };
+    private ObjectProperty<ChronoUnit> chronoUnit;
+    private final ChronoUnit initialChronoUnit;
+    public void setChronoUnit(ObjectProperty<ChronoUnit> chronoUnit)
+    {
+        switch (chronoUnit.get())
+        {
+        case DAYS:
+        case MONTHS:
+        case WEEKS:
+        case YEARS:
+            this.chronoUnit = chronoUnit;
+            break;
+        case HOURS:
+        case MINUTES:
+        case SECONDS:
+            throw new RuntimeException("ChronoUnit not implemented: " + chronoUnit);
+        default:
+            throw new RuntimeException("Invalid ChronoUnit: " + chronoUnit);
+        }
+    }
+    
+    
+    public FrequencyType getFrequencyType() { return frequencyType; }
+    final private FrequencyType frequencyType;
+
+    // CONSTRUCTOR
+    public FrequencyAbstract(FrequencyType frequencyType, ObjectProperty<ChronoUnit> chronoUnit)
+    {
+        this.frequencyType = frequencyType;
+        this.initialChronoUnit = chronoUnit.get();
+        setChronoUnit(chronoUnit);
+    }
+
+    
+    /** Resulting stream of start date/times by applying Frequency temporal adjuster and all, if any,
+     * Rules.
+     * Starts on startDateTime, which must be a valid event date/time, but not necessarily the
+     * first date/time (DTSTART) in the sequence. A later startDateTime can be used to more efficiently
+     * get to later dates in the stream. */
+    public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
+    {
+        getChronoUnit().set(initialChronoUnit); // start with Frequency ChronoUnit when making a stream
+        Stream<LocalDateTime> stream = Stream.iterate(startDateTime, (a) -> { return a.with(getAdjuster()); });
+        Iterator<Rule> rulesIterator = getRules().stream().sorted().iterator();
+        while (rulesIterator.hasNext())
+        {
+            System.out.println("chronounit start:"  + getChronoUnit());
+            Rule rule = rulesIterator.next();
+            stream = rule.stream(stream, getChronoUnit(), startDateTime);
+            System.out.println("chronounit end:"  + getChronoUnit());
+        }
+        return stream;
+    }
     
     @Override
     public boolean equals(Object obj)
@@ -67,45 +159,30 @@ public abstract class FrequencyAbstract implements Frequency {
         
         boolean intervalEquals = (getInterval() == null) ?
                 (testObj.getInterval() == null) : getInterval().equals(testObj.getInterval());
-        Iterator<Rule> ruleIterator = getRules().iterator();
-        List<Boolean> rulesEqualsArray = new ArrayList<Boolean>();
-        for (int i=0; i<getRules().size(); i++)
+//        Iterator<Rule> ruleIterator = getRules().iterator();
+        boolean rulesEquals;
+        if (getRules().size() == testObj.getRules().size())
         {
-            boolean e = getRules().get(i).equals(testObj.getRules().get(i));
-            rulesEqualsArray.add(e);
+            List<Boolean> rulesEqualsArray = new ArrayList<Boolean>();
+            for (int i=0; i<getRules().size(); i++)
+            {
+                boolean e = getRules().get(i).equals(testObj.getRules().get(i));
+                rulesEqualsArray.add(e);
+            }
+            rulesEquals = rulesEqualsArray.stream().allMatch(a -> true );
+        } else
+        {
+            rulesEquals = false;
         }
-        boolean rulesEquals = rulesEqualsArray.stream().allMatch(a -> true );
         System.out.println("frequency " + intervalEquals + " " + rulesEquals);
         return intervalEquals && rulesEquals;
     }
     
-    /** Time unit of last rule applied.  It represents the time span to apply future changes to the output stream of date/times
-     * For example:
-     * following FREQ=WEEKLY it is WEEKS
-     * following FREQ=YEARLY it is YEARS
-     * following FREQ=YEARLY;BYWEEKNO=20 it is WEEKS
-     * following FREQ=YEARLY;BYMONTH=3 it is MONTHS
-     * following FREQ=YEARLY;BYMONTH=3;BYDAY=TH it is DAYS
-     */
-    public ChronoUnit getChronoUnit() { return chronoUnit; };
-    private ChronoUnit chronoUnit;
-    public void setChronoUnit(ChronoUnit chronoUnit)
+    @Override
+    public String toString()
     {
-        switch (chronoUnit)
-        {
-        case DAYS:
-        case MONTHS:
-        case WEEKS:
-        case YEARS:
-            this.chronoUnit = chronoUnit;
-            break;
-        case HOURS:
-        case MINUTES:
-        case SECONDS:
-            throw new RuntimeException("ChronoUnit not implemented yet: " + chronoUnit);
-        default:
-            throw new RuntimeException("Invalid ChronoUnit: " + chronoUnit);
-        }
+        StringBuilder builder = new StringBuilder("FREQ=" + getFrequencyType().toString());
+        if (getInterval() > 1) builder.append(";INTERVAL=" + getInterval());
+        return builder.toString();
     }
-
 }

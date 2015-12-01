@@ -1,30 +1,36 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.Rule;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
-
 /**
  * BYxxx rule that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
  * The BYxxx rules must be applied in a specific order
+ * 
  * @author David Bal
- *
+ * @see ByMonth
+ * @see ByWeekNo
+ * @see ByYearDay
+ * @see ByMonthDay
+ * @see ByDay
+ * @see ByHour
+ * @see ByMinute
+ * @see BySecond
+ * @see BySetPos
  */
-public abstract class ByRuleAbstract implements Rule {
-
-    /** Original stream of date/times before modification */
-//    Stream<LocalDateTime> getInStream() { return inStream; }
-//    private Stream<LocalDateTime> inStream;
-
-    public Frequency getFrequency() { return frequency; }
-    private Frequency frequency;
+public abstract class ByRuleAbstract implements Rule
+{
+    /** Order in which ByRules are processed */
+    public Integer getProcessOrder() { return processOrder; }
+    final private Integer processOrder;
         
-    // Constructor
-    ByRuleAbstract(Frequency frequency)
+    /** Constructor that takes processing order 
+     * as defined in RFC 5545 iCalendar page 44 as parameters */
+    ByRuleAbstract(Integer processOrder)
     {
-        this.frequency = frequency;
+        this.processOrder = processOrder;
     }
     
-    ByRuleAbstract() { }
-
-
+    @Override
+    public int compareTo(Rule byRule)
+    {
+        return getProcessOrder().compareTo(byRule.getProcessOrder());
+    }
 }
