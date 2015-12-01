@@ -45,7 +45,9 @@ public class ByWeekNo extends ByRuleAbstract
 
     // CONSTRUCTORS
     /** takes String of comma-delimited integers, parses it to array of ints 
-     * This constructor is REQUIRED by the Rule.ByRules newInstance method. */
+     * This constructor is REQUIRED by 
+     * {@link jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule.ByRules#newInstance(String)}
+     */
     public ByWeekNo(String weekNumbersString)
     {
         super(PROCESS_ORDER);
@@ -56,6 +58,14 @@ public class ByWeekNo extends ByRuleAbstract
         setWeekNumbers(days);
     }
 
+    /**
+     * This constructor is required by {@link jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency#copy}
+     */
+    public ByWeekNo()
+    {
+        super(PROCESS_ORDER);
+    }
+    
     /** Constructor requires weeks of the year int value(s) */
     public ByWeekNo(int...weekNumbers)
     {

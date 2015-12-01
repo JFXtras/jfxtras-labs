@@ -26,7 +26,9 @@ public class ByMonth extends ByRuleAbstract
     private void setMonths(Month... months) { this.months = months; }
 
     // CONSTRUCTORS
-    /** This constructor is REQUIRED by the Rule.ByRules newInstance method. */
+    /** This constructor is REQUIRED by 
+     * {@link jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule.ByRules#newInstance(String)}
+     */
     public ByMonth(String months)
     {
         super(PROCESS_ORDER);
@@ -37,6 +39,14 @@ public class ByMonth extends ByRuleAbstract
                 .toArray(size -> new Month[size]));
     }
 
+    /**
+     * This constructor is required by {@link jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency#copy}
+     */
+    public ByMonth()
+    {
+        super(PROCESS_ORDER);
+    }
+    
     public ByMonth(Month... months)
     {
         super(PROCESS_ORDER);

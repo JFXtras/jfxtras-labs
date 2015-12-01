@@ -154,7 +154,7 @@ public interface Frequency {
 //            System.out.println("rules size-" + source.getRules().size());
             source.getRules().stream().forEach(r ->
             {
-//                System.out.println(r.getClass());
+                System.out.println("rule: " + r.getClass());
                 try {
                     Rule newRule = r.getClass().newInstance();
                     Rule.copy(r, newRule);

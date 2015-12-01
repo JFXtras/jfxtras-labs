@@ -79,6 +79,7 @@ public interface Rule extends Comparable<Rule>
 //            return null;
 //        }
 
+        /** Returns new instance of the ByRule specified by the enum */
         public Rule newInstance(String string) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
         {
             return clazz.getConstructor(String.class).newInstance(string);

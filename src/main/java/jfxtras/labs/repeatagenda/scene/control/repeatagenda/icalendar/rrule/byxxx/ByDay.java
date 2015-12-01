@@ -39,7 +39,9 @@ public class ByDay extends ByRuleAbstract
     
     //CONSTRUCTORS
     /** Parse iCalendar compliant list of days of the week.  For example 1MO,2TU,4SA
-     * This constructor is REQUIRED by the Rule.ByRules newInstance method. */
+     * This constructor is REQUIRED by 
+     * {@link jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule.ByRules#newInstance(String)}
+     */
     public ByDay(String dayPairs)
     {
         super(PROCESS_ORDER);
@@ -67,6 +69,15 @@ public class ByDay extends ByRuleAbstract
         byDayPairs = new ByDayPair[dayPairsList.size()];
         byDayPairs = dayPairsList.toArray(byDayPairs);
     }
+    
+    /**
+     * This constructor is required by {@link jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency#copy}
+     */
+    public ByDay()
+    {
+        super(PROCESS_ORDER);
+    }
+
     
     /** Constructor with varargs ByDayPair */
     public ByDay(ByDayPair... byDayPairs)
