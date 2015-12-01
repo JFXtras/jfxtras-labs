@@ -192,28 +192,21 @@ public class RepeatableAgenda extends Agenda {
         
         // manage repeat-made appointments when the range changes
         setLocalDateTimeRangeCallback(dateTimeRange -> {
+            System.out.println("range callback1:");
             this.dateTimeRange = dateTimeRange;
             LocalDateTime startDate = dateTimeRange.getStartLocalDateTime();
             LocalDateTime endDate = dateTimeRange.getEndLocalDateTime();
-            appointments().removeIf(a -> ((RepeatableAppointment) a).isRepeatMade());
 
-//            repeats().stream().forEach(r ->
-//            { // remove repeat-made appointments, leave individual appointment recurrences
-//                Set<RepeatableAppointment> s = r.appointments()
-//                        .stream()
-//                        .filter(a -> a.getRepeat() == r)
-////                        .filter(a -> ! repeatMap.containsKey(a))
-//                        .collect(Collectors.toSet());
-//                r.appointments().removeAll(s);
-//            });
-            
+            // Remove instances and appointments
             vComponents().stream().forEach(v -> v.instances().clear());   
             appointments().clear();
+            System.out.println("range callback2:");
 
             //            repeatMap.clear();
             vComponents().stream().forEach(r ->
             { // Make new repeat-made appointments inside range
                 Collection<Appointment> newAppointments = r.makeInstances(startDate, endDate);
+                System.out.println("range callback3:");
                 appointments().addAll(newAppointments);
             });
             return null; // return argument for the Callback

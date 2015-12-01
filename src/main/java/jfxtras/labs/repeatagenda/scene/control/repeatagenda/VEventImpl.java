@@ -31,6 +31,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.R
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -177,6 +178,7 @@ public class VEventImpl extends VEvent
     @Override
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
+        System.out.println("range: " + getDateTimeRangeStart() + " " + this.getDateTimeRangeEnd());
         Stream<LocalDateTime> initialStream = super.stream(startDateTime);
         // filter away too early (with Java 9 takeWhile these statements can be combined into one chained statement for greater elegance)
         Stream<LocalDateTime> filteredStream = initialStream
@@ -272,6 +274,7 @@ public class VEventImpl extends VEvent
     public Collection<Appointment> makeInstances()
     {
         List<Appointment> madeAppointments = new ArrayList<Appointment>();
+        System.out.println("here:" + getDateTimeStart());
         stream(getDateTimeStart())
                 .forEach(d -> {
                     RepeatableAppointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
@@ -281,6 +284,7 @@ public class VEventImpl extends VEvent
                     appt.setDescription(getDescription());
                     appt.setSummary(getSummary());
                     appt.setAppointmentGroup(getAppointmentGroup());
+                    System.out.println("here:" + d);
                     madeAppointments.add(appt);   // add appointments to main collection
                     instances().add(appt); // add appointments to this repeat's collection
                 });
@@ -551,5 +555,16 @@ public class VEventImpl extends VEvent
         static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
            return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
         }
-    
+        
+        @Override
+        public <T> WindowCloseType edit(LocalDateTime dateTimeOld,
+                LocalDateTime dateTimeNew, long durationInSecondsNew,
+                VComponent vComponentOld, Collection<T> instances,
+                Collection<VComponent> vEvents,
+                Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback,
+                Callback<Collection<VComponent>, Void> writeVEventsCallback) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+        
 }

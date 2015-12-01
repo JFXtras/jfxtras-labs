@@ -3,10 +3,12 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
+import javafx.util.Callback;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
-import jfxtras.scene.control.agenda.Agenda.Appointment;
 
-/** Interface for VEVENT, VTODO, VJOURNA calendar components. 
+/** Interface for VEVENT, VTODO, VJOURNAL calendar components. 
  * @param <T>*/
 public interface VComponent
 {
@@ -26,6 +28,7 @@ public interface VComponent
      * @return - collection of Appointments of type T
      * 
      * @author David Bal
+     * @param <T>
      * @see VEventImpl
      */
     <T> Collection<T> makeInstances(
@@ -35,9 +38,22 @@ public interface VComponent
     /**
      * Returns existing instances in the Recurrence Set (defined in RFC 5545 iCalendar page 121)
      * made by the last call of makeRecurrenceSet
+     * @param <T>
      * 
      * @return - current instances of the Recurrence Set
      * @see makeRecurrenceSet
      */
-    Collection<Appointment> instances();
+    <T> Collection<T> instances();
+
+    
+    <T> WindowCloseType edit(
+            LocalDateTime dateTimeOld
+          , LocalDateTime dateTimeNew
+          , long durationInSecondsNew
+          , VComponent vComponentOld
+          , Collection<T> instances
+          , Collection<VComponent> vEvents
+          , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
+          , Callback<Collection<VComponent>, Void> writeVEventsCallback);
+    
 }

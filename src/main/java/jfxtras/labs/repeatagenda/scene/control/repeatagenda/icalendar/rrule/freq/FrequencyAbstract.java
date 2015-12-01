@@ -1,11 +1,14 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq;
 
 import java.security.InvalidParameterException;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -92,6 +95,7 @@ public abstract class FrequencyAbstract implements Frequency {
      */
     public ObjectProperty<ChronoUnit> getChronoUnit() { return chronoUnit; };
     private ObjectProperty<ChronoUnit> chronoUnit;
+    private final ChronoUnit initialChronoUnit;
     public void setChronoUnit(ObjectProperty<ChronoUnit> chronoUnit)
     {
         switch (chronoUnit.get())
@@ -111,6 +115,7 @@ public abstract class FrequencyAbstract implements Frequency {
         }
     }
     
+    
     public FrequencyType getFrequencyType() { return frequencyType; }
     final private FrequencyType frequencyType;
 
@@ -118,9 +123,30 @@ public abstract class FrequencyAbstract implements Frequency {
     public FrequencyAbstract(FrequencyType frequencyType, ObjectProperty<ChronoUnit> chronoUnit)
     {
         this.frequencyType = frequencyType;
+        this.initialChronoUnit = chronoUnit.get();
         setChronoUnit(chronoUnit);
     }
 
+    
+    /** Resulting stream of start date/times by applying Frequency temporal adjuster and all, if any,
+     * Rules.
+     * Starts on startDateTime, which must be a valid event date/time, but not necessarily the
+     * first date/time (DTSTART) in the sequence. A later startDateTime can be used to more efficiently
+     * get to later dates in the stream. */
+    public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
+    {
+        getChronoUnit().set(initialChronoUnit); // start with Frequency ChronoUnit when making a stream
+        Stream<LocalDateTime> stream = Stream.iterate(startDateTime, (a) -> { return a.with(getAdjuster()); });
+        Iterator<Rule> rulesIterator = getRules().stream().sorted().iterator();
+        while (rulesIterator.hasNext())
+        {
+            System.out.println("chronounit start:"  + getChronoUnit());
+            Rule rule = rulesIterator.next();
+            stream = rule.stream(stream, getChronoUnit(), startDateTime);
+            System.out.println("chronounit end:"  + getChronoUnit());
+        }
+        return stream;
+    }
     
     @Override
     public boolean equals(Object obj)

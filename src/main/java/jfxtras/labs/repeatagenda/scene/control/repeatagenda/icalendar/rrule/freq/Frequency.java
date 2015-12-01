@@ -3,7 +3,6 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.fre
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjuster;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -49,28 +48,16 @@ public interface Frequency {
      *  Enables usage of switch statement in BYxxx rules */
     ObjectProperty<ChronoUnit> getChronoUnit();
     void setChronoUnit(ObjectProperty<ChronoUnit> chronoUnit);
+    
+    Stream<LocalDateTime> stream(LocalDateTime startDateTime);
+//    /**
+//     * Return inital ChronoUnit for Frequency.  This value must be 
+//     */
+//    ChronoUnit getInitialChronoUnit();
 
     /** Which of the enum type FrenquencyType the implementing class represents */
     FrequencyType getFrequencyType();
-    
-    /** Resulting stream of start date/times by applying Frequency temporal adjuster and all, if any,
-     * Rules.
-     * Starts on startDateTime, which must be a valid event date/time, but not necessarily the
-     * first date/time (DTSTART) in the sequence. A later startDateTime can be used to more efficiently
-     * get to later dates in the stream. */
-    default Stream<LocalDateTime> stream(LocalDateTime startDateTime)
-    {
-        Stream<LocalDateTime> stream = Stream.iterate(startDateTime, (a) -> { return a.with(getAdjuster()); });
-        Iterator<Rule> rulesIterator = getRules().stream().sorted().iterator();
-        while (rulesIterator.hasNext())
-        {
-            Rule rule = rulesIterator.next();
-            stream = rule.stream(stream, getChronoUnit(), startDateTime);
-            System.out.println("chronounit:"  + getChronoUnit());
-        }
-        return stream;
-    }
-    
+        
     /** Temporal adjuster every class implementing Frequency must provide that modifies frequency dates 
      * For example, Weekly class advances the dates by INTERVAL Number of weeks. */
     TemporalAdjuster getAdjuster();
