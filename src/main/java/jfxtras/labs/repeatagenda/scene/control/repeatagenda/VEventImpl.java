@@ -42,7 +42,6 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
  * 
  * 
  * @author David Bal
- * @param <T>
  *
  */
 
@@ -113,10 +112,11 @@ public class VEventImpl extends VEvent
      * calendar component.  As many RRule definitions are infinite sets, a complete representation
      * is not possible.  The set only contains the events inside the bounds of 
      */
-    public Set<RepeatableAppointment> appointmentInstances() { return appointmentInstances; }
-    final private Set<RepeatableAppointment> appointmentInstances = new HashSet<RepeatableAppointment>();
+    @Override
+    public Set<Appointment> instances() { return instances; }
+    final private Set<Appointment> instances = new HashSet<Appointment>();
 //    public VEventImpl withAppointments(Collection<RepeatableAppointment> s) { appointments().addAll(s); return this; }
-    public boolean isNewRRule() { return appointmentInstances().size() == 0; } // new RRule has no appointments
+    public boolean isNewRRule() { return instances().size() == 0; } // new RRule has no appointments
     
     // CONSTRUCTORS
     /** Copy constructor */
@@ -140,7 +140,7 @@ public class VEventImpl extends VEvent
         if (source.getAppointmentClass() != null) destination.setAppointmentClass(source.getAppointmentClass());
         if (source.getDateTimeRangeStart() != null) destination.setDateTimeRangeStart(source.getDateTimeRangeStart());
         if (source.getDateTimeRangeEnd() != null) destination.setDateTimeRangeEnd(source.getDateTimeRangeEnd());
-        source.appointmentInstances().stream().forEach(a -> destination.appointmentInstances().add(a));
+        source.instances().stream().forEach(a -> destination.instances().add(a));
     }
     
     /** Deep copy all fields from source to destination */
@@ -253,13 +253,14 @@ public class VEventImpl extends VEvent
      * @param dateTimeRangeEnd
      * @return
      */
-    public Collection<Appointment> makeAppointments(
+    @Override
+    public Collection<Appointment> makeInstances(
             LocalDateTime dateTimeRangeStart
           , LocalDateTime dateTimeRangeEnd)
     {
         setDateTimeRangeStart(dateTimeRangeStart);
         setDateTimeRangeEnd(dateTimeRangeEnd);
-        return makeAppointments();
+        return makeInstances();
     }
 
     /**
@@ -268,7 +269,7 @@ public class VEventImpl extends VEvent
      * 
      * @return created appointments
      */
-    public Collection<Appointment> makeAppointments()
+    public Collection<Appointment> makeInstances()
     {
         List<Appointment> madeAppointments = new ArrayList<Appointment>();
         stream(getDateTimeStart())
@@ -281,7 +282,7 @@ public class VEventImpl extends VEvent
                     appt.setSummary(getSummary());
                     appt.setAppointmentGroup(getAppointmentGroup());
                     madeAppointments.add(appt);   // add appointments to main collection
-                    appointmentInstances().add(appt); // add appointments to this repeat's collection
+                    instances().add(appt); // add appointments to this repeat's collection
                 });
 
         return madeAppointments;
@@ -382,14 +383,14 @@ public class VEventImpl extends VEvent
                 { // this is edited VEvent, vEventOld is former settings, with UNTIL set at start for this.
                     
                     // Remove appointments
-                    appointments.removeIf(a -> vEventOld.appointmentInstances().stream().anyMatch(a2 -> a2 == a));
+                    appointments.removeIf(a -> vEventOld.instances().stream().anyMatch(a2 -> a2 == a));
                     
                     // modify old VEvent
                     vEvents.add(vEventOld);
                     if (vEventOld.getRRule().getCount() != null) vEventOld.getRRule().setCount(0);
                     vEventOld.getRRule().setUntil(dateTimeOld.minusSeconds(1));
-                    vEventOld.appointmentInstances().clear();
-                    appointments.addAll(vEventOld.makeAppointments()); // add vEventOld part of new appointments
+                    vEventOld.instances().clear();
+                    appointments.addAll(vEventOld.makeInstances()); // add vEventOld part of new appointments
                     
                     // Split EXDates dates between this and newVEvent
                     if (getExDate() != null)
@@ -449,7 +450,7 @@ public class VEventImpl extends VEvent
                     // Modify COUNT for this (the edited) VEvent
                     if (getRRule().getCount() > 0)
                     {
-                        final int newCount = (int) appointmentInstances()
+                        final int newCount = (int) instances()
                                 .stream()
                                 .map(a -> a.getStartLocalDateTime())
                                 .filter(d -> ! d.isBefore(dateTimeNew))
@@ -466,7 +467,7 @@ public class VEventImpl extends VEvent
                     newVEvent.setDateTimeStart(dateTimeNew);
                     // TODO - need new UID for newVEvent.  Do it here or in constructor?
                     newVEvent.setRRule(null);
-                    appointments.addAll(newVEvent.makeAppointments());
+                    appointments.addAll(newVEvent.makeInstances());
     
                     // modify this VEvent for recurrence
                     vEventOld.copyTo(this);                
@@ -484,7 +485,7 @@ public class VEventImpl extends VEvent
         if (editedFlag) // make these changes as long as CANCEL is not selected
         { // remove appointments from mail collection made by VEvent
             System.out.println("Edited flag:");
-            appointments.removeIf(a -> appointmentInstances().stream().anyMatch(a2 -> a2 == a));
+            appointments.removeIf(a -> instances().stream().anyMatch(a2 -> a2 == a));
 
             //            Iterator<Appointment> i = appointments.iterator();
 //            while (i.hasNext())
@@ -492,9 +493,9 @@ public class VEventImpl extends VEvent
 //                Appointment a = i.next();
 //                if (appointments().contains(a)) i.remove();
 //            }
-            appointmentInstances().clear(); // clear VEvent's collection of appointments
+            instances().clear(); // clear VEvent's collection of appointments
             System.out.println("size1: " + appointments.size());
-            appointments.addAll(makeAppointments()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
+            appointments.addAll(makeInstances()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
             System.out.println("size2: " + appointments.size());
             return WindowCloseType.CLOSE_WITH_CHANGE;
         } else

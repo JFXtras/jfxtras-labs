@@ -30,7 +30,7 @@ public class ICalendarMakeAppointmentsTest extends ICalendarTestAbstract
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         List<Appointment> appointments = new ArrayList<Appointment>();
-        Collection<Appointment> newAppointments = vevent.makeAppointments();
+        Collection<Appointment> newAppointments = vevent.makeInstances();
         appointments.addAll(newAppointments);       
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 15, 10, 0)
@@ -64,7 +64,7 @@ public class ICalendarMakeAppointmentsTest extends ICalendarTestAbstract
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 12, 20, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 12, 27, 0, 0));
         List<Appointment> appointments = new ArrayList<Appointment>();
-        Collection<Appointment> newAppointments = vevent.makeAppointments();
+        Collection<Appointment> newAppointments = vevent.makeInstances();
         appointments.addAll(newAppointments);
 
         Iterator<Appointment> appointmentIterator = appointments.iterator();

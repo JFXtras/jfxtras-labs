@@ -46,7 +46,7 @@ public class RepeatableAgenda extends Agenda {
     
     /** VComponents */
     private Collection<VComponent> repeats;
-    public Collection<VComponent> repeats() { return repeats; }
+    public Collection<VComponent> vComponents() { return repeats; }
     public void setVComponents(Collection<VComponent> repeatRules)
     {
         this.repeats = repeatRules;
@@ -170,7 +170,7 @@ public class RepeatableAgenda extends Agenda {
                     , vevent
                     , dateTimeRange
                     , appointments()
-                    , repeats()
+                    , vComponents()
                     , appointmentGroups()
                     , appointmentGroupWriteCallback
                     , repeatWriteCallback // write repeat callback initialized to null
@@ -207,13 +207,13 @@ public class RepeatableAgenda extends Agenda {
 //                r.appointments().removeAll(s);
 //            });
             
-//            repeats().stream().forEach(r -> {
-//                r.getAppointments().clear());   
-//            }
-//            repeatMap.clear();
-            repeats().stream().forEach(r ->
+            vComponents().stream().forEach(v -> v.instances().clear());   
+            appointments().clear();
+
+            //            repeatMap.clear();
+            vComponents().stream().forEach(r ->
             { // Make new repeat-made appointments inside range
-                Collection<RepeatableAppointment> newAppointments = r.makeAppointments(startDate, endDate);
+                Collection<Appointment> newAppointments = r.makeInstances(startDate, endDate);
                 appointments().addAll(newAppointments);
             });
             return null; // return argument for the Callback

@@ -40,7 +40,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         List<VEvent> vevents = new ArrayList<VEvent>(Arrays.asList(vevent));
         List<Appointment> appointments = new ArrayList<Appointment>();
-        Collection<Appointment> newAppointments = vevent.makeAppointments();
+        Collection<Appointment> newAppointments = vevent.makeInstances();
         appointments.addAll(newAppointments);
         assertEquals(3, appointments.size()); // check if there are only 3 appointments
         VEventImpl veventOld = new VEventImpl(vevent);
@@ -105,7 +105,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         List<Appointment> appointments = new ArrayList<Appointment>();
-        Collection<Appointment> newAppointments = vevent.makeAppointments();
+        Collection<Appointment> newAppointments = vevent.makeInstances();
         appointments.addAll(newAppointments);
         assertEquals(3, appointments.size()); // check if there are only 3 appointments
         VEventImpl veventOld = new VEventImpl(vevent);
@@ -159,7 +159,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         List<Appointment> appointments = new ArrayList<Appointment>();
-        Collection<Appointment> newAppointments = vevent.makeAppointments();
+        Collection<Appointment> newAppointments = vevent.makeInstances();
         appointments.addAll(newAppointments);
         assertEquals(3, appointments.size()); // check if there are only 3 appointments
         VEventImpl veventOld = new VEventImpl(vevent);
@@ -246,7 +246,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         Set<Appointment> appointments = new TreeSet<Appointment>((a,b) -> a.getStartLocalDateTime().compareTo(b.getStartLocalDateTime()));
-        Collection<Appointment> newAppointments = vevent.makeAppointments();
+        Collection<Appointment> newAppointments = vevent.makeInstances();
         appointments.addAll(newAppointments);
         assertEquals(4, appointments.size()); // check if there are only 3 appointments
         VEventImpl veventOld = new VEventImpl(vevent);
@@ -348,12 +348,12 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 1, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 12, 31, 0, 0));
         appointments.clear();
-        appointments.addAll(vevent.makeAppointments());
+        appointments.addAll(vevent.makeInstances());
         
         VEventImpl veventNew = (VEventImpl) vevents.get(1);
         veventNew.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 1, 0, 0));
         veventNew.setDateTimeRangeEnd(LocalDateTime.of(2015, 12, 31, 0, 0));
-        appointments.addAll(veventNew.makeAppointments());
+        appointments.addAll(veventNew.makeInstances());
         List<LocalDateTime> madeDates2 = appointments.stream().map(a -> a.getStartLocalDateTime()).collect(Collectors.toList());
         
         List<LocalDateTime> expectedDates2 = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -386,7 +386,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         List<Appointment> appointments = new ArrayList<Appointment>();
-        Collection<Appointment> newAppointments = vevent.makeAppointments();
+        Collection<Appointment> newAppointments = vevent.makeInstances();
         appointments.addAll(newAppointments);
         assertEquals(3, appointments.size()); // check if there are only 3 appointments
         VEventImpl veventOld = new VEventImpl(vevent);
@@ -438,7 +438,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         List<VEvent> vevents = new ArrayList<VEvent>(Arrays.asList(vevent));
         List<Appointment> appointments = new ArrayList<Appointment>();
-        Collection<Appointment> newAppointments = vevent.makeAppointments();
+        Collection<Appointment> newAppointments = vevent.makeInstances();
         appointments.addAll(newAppointments);
         VEventImpl veventOld = new VEventImpl(vevent);
         
