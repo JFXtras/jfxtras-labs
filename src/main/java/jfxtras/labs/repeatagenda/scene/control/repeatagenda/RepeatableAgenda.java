@@ -164,7 +164,14 @@ public class RepeatableAgenda extends Agenda {
         // Change edit popup to provide one with repeat options
         setEditAppointmentCallback((Appointment appointment) ->
         {
-            VComponent vevent = null;
+            // Match appointment to VComponent
+            // TODO - replace with map?
+            VComponent vevent = vComponents()
+                    .stream()
+                    .filter(v -> v.instances().contains(appointment))
+                    .findFirst()
+                    .get();
+            System.out.println("vevent:" + (vevent==null));
             Stage repeatMenu = new RepeatMenu2(
                     (RepeatableAppointment) appointment
                     , vevent
@@ -192,7 +199,6 @@ public class RepeatableAgenda extends Agenda {
         
         // manage repeat-made appointments when the range changes
         setLocalDateTimeRangeCallback(dateTimeRange -> {
-            System.out.println("range callback1:");
             this.dateTimeRange = dateTimeRange;
             LocalDateTime startDate = dateTimeRange.getStartLocalDateTime();
             LocalDateTime endDate = dateTimeRange.getEndLocalDateTime();
@@ -200,13 +206,11 @@ public class RepeatableAgenda extends Agenda {
             // Remove instances and appointments
             vComponents().stream().forEach(v -> v.instances().clear());   
             appointments().clear();
-            System.out.println("range callback2:");
 
             //            repeatMap.clear();
             vComponents().stream().forEach(r ->
             { // Make new repeat-made appointments inside range
                 Collection<Appointment> newAppointments = r.makeInstances(startDate, endDate);
-                System.out.println("range callback3:");
                 appointments().addAll(newAppointments);
             });
             return null; // return argument for the Callback

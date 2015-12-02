@@ -9,7 +9,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.W
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 
 /** Interface for VEVENT, VTODO, VJOURNAL calendar components. 
- * @param <T>*/
+ * */
 public interface VComponent
 {
     /**
@@ -25,7 +25,7 @@ public interface VComponent
      * 
      * @param dateTimeRangeStart - Start date/time when appointments will be made
      * @param dateTimeRangeEnd - End date/time when appointments will be made
-     * @return - collection of Appointments of type T
+     * @return - collection of instances of type T
      * 
      * @author David Bal
      * @param <T>

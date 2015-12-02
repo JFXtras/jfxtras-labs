@@ -12,7 +12,7 @@ import javafx.scene.control.Control;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.AppointmentEditController;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.AppointmentEditControllerOld;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
@@ -59,7 +59,7 @@ public class RepeatMenu extends Stage {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        AppointmentEditController appointmentEditController = appointmentMenuLoader.getController();
+        AppointmentEditControllerOld appointmentEditController = appointmentMenuLoader.getController();
         appointmentEditController.setupData(
                 appointment
               , dateTimeRange

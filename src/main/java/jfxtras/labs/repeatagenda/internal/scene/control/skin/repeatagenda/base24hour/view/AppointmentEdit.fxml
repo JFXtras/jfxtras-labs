@@ -74,7 +74,7 @@
                                  <children>
                                     <Label text="%name" GridPane.halignment="RIGHT" />
                                     <Label text="%description" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-                                    <TextField fx:id="nameTextField" GridPane.columnIndex="1" />
+                                    <TextField fx:id="summaryTextField" GridPane.columnIndex="1" />
                                     <TextArea fx:id="descriptionTextArea" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="2" />
                                     <Label text="%location" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
                                     <TextField fx:id="locationTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />

@@ -12,7 +12,7 @@ import javafx.scene.control.Control;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.AppointmentEditController3;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.AppointmentEditController;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
@@ -23,7 +23,7 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 /** Makes new stage for popup window to edit VEvent and Agenda.Appointment
  * 
  * @author David Bal
- * @see AppointmentEditController3
+ * @see AppointmentEditController
  */
 public class RepeatMenu2 extends Stage {
 
@@ -57,9 +57,9 @@ public class RepeatMenu2 extends Stage {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        AppointmentEditController3 appointmentEditController = appointmentMenuLoader.getController();
+        AppointmentEditController appointmentEditController = appointmentMenuLoader.getController();
         appointmentEditController.setupData(
-                (VEvent) vevent
+                (VEvent) vevent // TODO - can I find a way to remove this cast?  Can I put a method in VComponent?
               , dateTimeRange
               , appointments
               , repeats

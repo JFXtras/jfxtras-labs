@@ -1,15 +1,15 @@
 package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour;
 
 import javafx.fxml.FXMLLoader;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.RepeatableController;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.RepeatableControllerOld;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 
 public class RepeatPaneLoader {
 
     private RepeatPaneLoader() { }
     
-    private RepeatableController repeatPaneController;
-    public RepeatableController getController() { return repeatPaneController; }
+    private RepeatableControllerOld repeatPaneController;
+    public RepeatableControllerOld getController() { return repeatPaneController; }
     
     public static FXMLLoader newInstance()
     {
