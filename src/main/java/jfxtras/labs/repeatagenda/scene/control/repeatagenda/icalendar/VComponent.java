@@ -13,6 +13,16 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 public interface VComponent
 {
     /**
+     * CATEGORIES: RFC 5545 iCalendar 3.8.1.12. page 81
+     * This property defines the categories for a calendar component.
+     * Example:
+     * CATEGORIES:APPOINTMENT,EDUCATION
+     * CATEGORIES:MEETING
+     */
+    String getCategories();
+    void setCategories(String value);
+    
+    /**
      * Returns the collection of recurrence instances of calendar component of type T that exists
      * between dateTimeRangeStart and dateTimeRangeEnd based on VComponent.
      * Recurrence set is defined in RFC 5545 iCalendar page 121 as follows 

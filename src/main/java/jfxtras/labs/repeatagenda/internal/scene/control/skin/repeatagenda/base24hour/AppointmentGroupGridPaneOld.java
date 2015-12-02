@@ -10,28 +10,23 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 /** makes a group of colored squares used to select appointment group */
-public class AppointmentGroupGridPane extends GridPane
-{
-private Pane[] lPane;
+public class AppointmentGroupGridPaneOld extends GridPane {
 
-/** Index of selected AppointmentGroup */
-public IntegerProperty appointmentGroupSelectedProperty() { return appointmentGroupSelected; }
-private IntegerProperty appointmentGroupSelected = new SimpleIntegerProperty(-1);
-private void setAppointmentGroupSelected(Integer i) { appointmentGroupSelected.set(i); }
-public Integer getAppointmentGroupSelected() { return appointmentGroupSelected.getValue(); }   
+ private Pane[] lPane;
+ private IntegerProperty appointmentGroupSelected = new SimpleIntegerProperty(-1);
  
- public AppointmentGroupGridPane() {
+ public AppointmentGroupGridPaneOld() {
  }
 
- public AppointmentGroupGridPane(VComponent vComponent, List<AppointmentGroup> appointmentGroups) {
-     setupData(vComponent, appointmentGroups);
+ public AppointmentGroupGridPaneOld(Appointment appointment, List<AppointmentGroup> appointmentGroups) {
+     setupData(appointment, appointmentGroups);
  }
  
- public void setupData(VComponent vComponent, List<AppointmentGroup> appointmentGroups)
+ public void setupData(Appointment appointment, List<AppointmentGroup> appointmentGroups)
  {
      this.getStyleClass().add("AppointmentGroups");
      this.setHgap(2);
@@ -56,23 +51,18 @@ public Integer getAppointmentGroupSelected() { return appointmentGroupSelected.g
 
              // assign appointment group
              AppointmentGroup g = appointmentGroups.get(appointmentGroupSelected.getValue());
-             vComponent.setCategories(g.getStyleClass());
+             appointment.setAppointmentGroup(g);
          });
          lCnt++;
      }
 
-     // Select current group
-     AppointmentGroup myAppointmentGroup = appointmentGroups
-             .stream()
-             .filter(a -> a.getStyleClass().equals(vComponent.getCategories()))
-             .findFirst()
-             .orElse(appointmentGroups.get(0));
-     int index = appointmentGroups.indexOf(myAppointmentGroup);
+     // TODO - REMOVE CAST
+     int index = ((RepeatableAgenda.AppointmentGroupImpl) appointment.getAppointmentGroup()).getKey();
      setAppointmentGroupSelected(index);
      setLPane(index);
      
-     // change listener - fires when new icon is selected
-     appointmentGroupSelectedProperty().addListener((observable, oldSelection, newSelection) ->  {
+     // change listener - runs when new color is selected
+     appointmentGroupSelected.addListener((observable, oldSelection, newSelection) ->  {
        int oldS = (int) oldSelection;
        int newS = (int) newSelection;
        setLPane(newS);
@@ -97,6 +87,18 @@ public Integer getAppointmentGroupSelected() { return appointmentGroupSelected.g
          Tooltip.install(lPane[i], new Tooltip(a.getDescription()));
      } 
  }
+
+ public IntegerProperty appointmentGroupSelectedProperty() {
+     return appointmentGroupSelected;
+ }
+
+ public void setAppointmentGroupSelected(Integer i) {
+     appointmentGroupSelected.set(i);
+ }
+ 
+ public Integer getAppointmentGroupSelected() {
+     return appointmentGroupSelected.getValue();
+ }   
 
  void setupMouseOverAsBusy(final Node node)
  {

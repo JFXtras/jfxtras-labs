@@ -7,6 +7,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
@@ -46,10 +48,18 @@ public class AppointmentEditController
     @FXML private Button cancelAppointmentButton;
     @FXML private Button closeRepeatButton;
     @FXML private Button cancelRepeatButton;
-
     @FXML private Button saveAdvancedButton;
     
     @FXML private RepeatableController repeatableController;
+
+    Callback<Throwable, Void> errorCallback = (throwable) ->
+    {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Invalid Date or Time");
+        alert.setContentText("Please enter valid date and time");
+        alert.showAndWait();
+        return null;
+    };
     
     @FXML public void initialize()
     {
@@ -67,8 +77,39 @@ public class AppointmentEditController
             , Callback<Collection<VComponent>, Void> vEventWriteCallback
             , Callback<Void, Void> refreshCallback)
     {
-        Locale locale = Locale.getDefault();
         summaryTextField.textProperty().bindBidirectional(vEvent.summaryProperty());
+        descriptionTextArea.textProperty().bindBidirectional(vEvent.descriptionProperty());
+        locationTextField.textProperty().bindBidirectional(vEvent.locationProperty());
+        
+        // START DATE/TIME
+        Locale locale = Locale.getDefault();
+        startTextField.setLocale(locale);
+        startTextField.localDateTimeProperty().bindBidirectional(vEvent.dateTimeStartProperty());
+        startTextField.setParseErrorCallback(errorCallback);
+
+        // END DATE/TIME
+        endTextField.setLocale(locale);
+        endTextField.localDateTimeProperty().bindBidirectional(vEvent.dateTimeEndProperty());
+        endTextField.setParseErrorCallback(errorCallback);
+        
+        // APPOINTMENT GROUP
+        appointmentGroupGridPane.setupData(vEvent, appointmentGroups);
+        
+        // store group name changes by each character typed
+        appointmentGroupGridPane.appointmentGroupSelectedProperty().addListener(
+            (observable, oldSelection, newSelection) ->  {
+                Integer i = appointmentGroupGridPane.getAppointmentGroupSelected();
+                String newText = appointmentGroups.get(i).getDescription();
+                groupTextField.setText(newText);
+//                groupNameEdited.set(true);
+            });
+
+        groupTextField.textProperty().addListener((observable, oldSelection, newSelection) ->  {
+            int i = appointmentGroupGridPane.getAppointmentGroupSelected();
+            appointmentGroups.get(i).setDescription(newSelection);
+            appointmentGroupGridPane.updateToolTip(i, appointmentGroups);
+//            groupNameEdited.set(true);
+        });
     }
 
     // AFTER CLICK SAVE VERIFY REPEAT IS VALID, IF NOT PROMPT.

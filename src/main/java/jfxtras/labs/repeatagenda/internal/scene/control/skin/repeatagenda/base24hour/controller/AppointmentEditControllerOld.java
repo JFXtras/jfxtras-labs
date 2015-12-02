@@ -19,7 +19,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPaneOld;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
@@ -63,7 +63,7 @@ public class AppointmentEditControllerOld {
 //    @FXML private LocalDateTimeTextField endTextField;
     @FXML private LocalDateTimeTextField startTextField;
     @FXML private LocalDateTimeTextField endTextField;
-    @FXML private AppointmentGroupGridPane appointmentGroupGridPane;
+    @FXML private AppointmentGroupGridPaneOld appointmentGroupGridPane;
     
 //    @FXML private TextField customTextField;
     @FXML private TextField locationTextField;
@@ -154,9 +154,8 @@ public class AppointmentEditControllerOld {
             return null;
         });
         
-//        startTextField.localDateTimeProperty().bindBidirectional(appointment.startLocalDateTimeProperty());
-//        startTextField.localDateTimeProperty().addListener(startDateListener);
-        startTextField.localDateTimeProperty().addListener((obs, oldValue, newValue) -> appointment.setStartLocalDateTime(newValue));
+        startTextField.localDateTimeProperty().addListener((obs, oldValue, newValue)
+                -> appointment.setStartLocalDateTime(newValue));
 
         // END DATE TIME TEXT FIELD
         endTextField.setLocale(locale);
@@ -170,9 +169,8 @@ public class AppointmentEditControllerOld {
         });
         endTextField.setVisible(appointment.getEndLocalDateTime() != null);
 
-        endTextField.localDateTimeProperty().addListener((obs, oldValue, newValue) ->  {
-            appointment.setEndLocalDateTime(newValue);
-        });
+        endTextField.localDateTimeProperty().addListener((obs, oldValue, newValue)
+                -> appointment.setEndLocalDateTime(newValue));
         
         // Whole day
         wholeDayCheckBox.selectedProperty().set(appointment.isWholeDay());
@@ -235,7 +233,7 @@ public class AppointmentEditControllerOld {
         setCloseType(WindowCloseType.CANCEL);
     }
     
-    public AppointmentGroupGridPane getAppointmentGroupGridPane() {
+    public AppointmentGroupGridPaneOld getAppointmentGroupGridPane() {
         return appointmentGroupGridPane;
     }
 
