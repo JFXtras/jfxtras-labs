@@ -54,17 +54,18 @@ public Integer getAppointmentGroupSelected() { return appointmentGroupSelected.g
              mouseEvent.consume(); // consume before anything else, in case there is a problem in the handling
              appointmentGroupSelected.set(appointmentGroups.indexOf(lAppointmentGroup));
 
-             // assign appointment group
+             // assign appointment group, store description in CATEGORIES field
              AppointmentGroup g = appointmentGroups.get(appointmentGroupSelected.getValue());
-             vComponent.setCategories(g.getStyleClass());
+             vComponent.setCategories(g.getDescription());
          });
          lCnt++;
      }
 
      // Select current group
+     System.out.println("initial agoup: " + vComponent.getCategories());
      AppointmentGroup myAppointmentGroup = appointmentGroups
              .stream()
-             .filter(a -> a.getStyleClass().equals(vComponent.getCategories()))
+             .filter(a -> a.getDescription().equals(vComponent.getCategories()))
              .findFirst()
              .orElse(appointmentGroups.get(0));
      int index = appointmentGroups.indexOf(myAppointmentGroup);

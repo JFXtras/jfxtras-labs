@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -26,9 +27,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.EndCriteria;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponentAbstract;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
-import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency.FrequencyType;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Weekly;
 
 public class RepeatableController {
 
@@ -80,7 +85,9 @@ private Set<LocalDateTime> invalidExceptions = new HashSet<LocalDateTime>();
 
 @FXML public void initialize()
 {
-    
+ // Setup frequencyComboBox items
+    frequencyComboBox.setItems(FXCollections.observableArrayList(FrequencyType.intervalValues()));
+    frequencyComboBox.setConverter(Frequency.FrequencyType.stringConverter);
     
 }
 
@@ -91,10 +98,38 @@ private Set<LocalDateTime> invalidExceptions = new HashSet<LocalDateTime>();
  * @param dateTimeRange : date range for current agenda skin
  */
     public void setupData(
-            VComponentAbstract vcomponent
-          , LocalDateTimeRange dateTimeRange)
+            VComponent vComponent)
     {
-
+        // MAKE NEW RRULE IF NECESSARY
+        RRule rRule;
+        if (vComponent.getRRule() == null)
+        {
+            rRule = setDefaults(new RRule(), vComponent.getDateTimeStart());
+            vComponent.setRRule(rRule);
+        } else
+        {
+            rRule = vComponent.getRRule();
+        }
+        
+        // REPEATABLE CHECKBOX
+        repeatableCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
+        {
+            if (newSelection)
+            {
+                if (vComponent.getRRule() == null) vComponent.setRRule(rRule);
+//                makeExceptionDates();
+//                setupBindings();
+                repeatableGridPane.setDisable(false);
+                startDatePicker.setDisable(false);
+            } else
+            {
+                vComponent.setRRule(null);
+//                appointment.setRepeat(null);
+//                removeBindings();
+                repeatableGridPane.setDisable(true);
+                startDatePicker.setDisable(true);
+            }
+        });
     }
     
         
@@ -112,6 +147,35 @@ private Set<LocalDateTime> invalidExceptions = new HashSet<LocalDateTime>();
         default:
             break;
         }
+    }
+
+    /** bind properties from vComponent and FXML properties */
+    private void setupBindings() {
+//        frequencyComboBox.valueProperty().bindBidirectional(repeat.frequencyProperty());
+//        repeat.intervalProperty().bind(intervalSpinner.valueProperty());
+//        sundayCheckBox.selectedProperty().bindBidirectional(repeat.getDayOfWeekProperty(DayOfWeek.SUNDAY));
+//        mondayCheckBox.selectedProperty().bindBidirectional(repeat.getDayOfWeekProperty(DayOfWeek.MONDAY));
+//        tuesdayCheckBox.selectedProperty().bindBidirectional(repeat.getDayOfWeekProperty(DayOfWeek.TUESDAY));
+//        wednesdayCheckBox.selectedProperty().bindBidirectional(repeat.getDayOfWeekProperty(DayOfWeek.WEDNESDAY));
+//        thursdayCheckBox.selectedProperty().bindBidirectional(repeat.getDayOfWeekProperty(DayOfWeek.THURSDAY));
+//        fridayCheckBox.selectedProperty().bindBidirectional(repeat.getDayOfWeekProperty(DayOfWeek.FRIDAY));
+//        saturdayCheckBox.selectedProperty().bindBidirectional(repeat.getDayOfWeekProperty(DayOfWeek.SATURDAY));
+//        dayOfMonthRadioButton.selectedProperty().bindBidirectional(repeat.repeatDayOfMonthProperty());
+//        dayOfWeekRadioButton.selectedProperty().bindBidirectional(repeat.repeatDayOfWeekProperty());
+////        startDatePicker.valueProperty().bind(repeat.startLocalDateProperty());
+//        startDatePicker.valueProperty().addListener(startDateListener);
+//        repeat.countProperty().addListener(makeEndOnDateListener);
+//        exceptionsListView.setItems(repeat.getExceptions());
+    }
+    
+    /**
+     * Default settings for a new RRule - weekly, repeats on day of week in dateTime
+     */
+    private static RRule setDefaults(RRule rRule, LocalDateTime dateTime)
+    {
+        rRule.setFrequency(new Weekly());
+        rRule.getFrequency().addByRule(new ByDay(dateTime.getDayOfWeek()));
+        return rRule;
     }
     
     // Displays an alert notifying user number input is not valid

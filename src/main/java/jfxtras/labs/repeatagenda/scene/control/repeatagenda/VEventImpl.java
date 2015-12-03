@@ -51,6 +51,7 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 public class VEventImpl extends VEvent<Appointment>
 {
 
+    // TODO - I THINK I'M GOING TO USE CATEGORIES INSTEAD OF BELOW X CUSTOM ELEMENT
     /**
      * X-APPOINTMENT-GROUP
      * Contains the AppointmentGroup from Agenda.

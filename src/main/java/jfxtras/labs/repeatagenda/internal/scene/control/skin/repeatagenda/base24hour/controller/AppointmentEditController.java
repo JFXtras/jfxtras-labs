@@ -133,23 +133,28 @@ public class AppointmentEditController
         endTextField.setParseErrorCallback(errorCallback);
         
         // APPOINTMENT GROUP
-        appointmentGroupGridPane.setupData(vComponent, appointmentGroups);
-        
         // store group name changes by each character typed
         appointmentGroupGridPane.appointmentGroupSelectedProperty().addListener(
-            (observable, oldSelection, newSelection) ->  {
+            (observable, oldSelection, newSelection) ->
+            {
                 Integer i = appointmentGroupGridPane.getAppointmentGroupSelected();
                 String newText = appointmentGroups.get(i).getDescription();
                 groupTextField.setText(newText);
-//                groupNameEdited.set(true);
+//                groupNameEdited.set(true); // TODO - HANDLE APPOINTMENT GROUP I/O
             });
 
-        groupTextField.textProperty().addListener((observable, oldSelection, newSelection) ->  {
+        groupTextField.textProperty().addListener((observable, oldSelection, newSelection) ->
+        {
             int i = appointmentGroupGridPane.getAppointmentGroupSelected();
             appointmentGroups.get(i).setDescription(newSelection);
             appointmentGroupGridPane.updateToolTip(i, appointmentGroups);
+            vEvent.setCategories(newSelection);
 //            groupNameEdited.set(true);
         });
+        appointmentGroupGridPane.setupData(vComponent, appointmentGroups);
+
+        // SETUP REPEATABLE CONTROLLER
+        repeatableController.setupData(vComponent);
     }
 
     // AFTER CLICK SAVE VERIFY REPEAT IS VALID, IF NOT PROMPT.
