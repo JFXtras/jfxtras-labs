@@ -37,7 +37,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         VEventImpl vevent = getDaily2();
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
-        List<VComponent> vevents = new ArrayList<VComponent>(Arrays.asList(vevent));
+        List<VComponent<Appointment>> vevents = new ArrayList<>(Arrays.asList(vevent));
         List<Appointment> appointments = new ArrayList<Appointment>();
         Collection<Appointment> newAppointments = vevent.makeInstances();
         appointments.addAll(newAppointments);
@@ -99,7 +99,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     {
         // Individual Appointment
         VEventImpl vevent = getDaily2();
-        List<VComponent> vevents = new ArrayList<VComponent>(Arrays.asList(vevent));
+        List<VComponent<Appointment>> vevents = new ArrayList<>(Arrays.asList(vevent));
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         List<Appointment> appointments = new ArrayList<Appointment>();
@@ -152,7 +152,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     {
         // Individual Appointment
         VEventImpl vevent = getDaily2();
-        List<VComponent> vevents = new ArrayList<VComponent>(Arrays.asList(vevent));
+        List<VComponent<Appointment>> vevents = new ArrayList<>(Arrays.asList(vevent));
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         List<Appointment> appointments = new ArrayList<Appointment>();
@@ -238,7 +238,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     {
         // Individual Appointment
         VEventImpl vevent = getDaily6();
-        List<VComponent> vevents = new ArrayList<VComponent>(Arrays.asList(vevent));
+        List<VComponent<Appointment>> vevents = new ArrayList<>(Arrays.asList(vevent));
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         Set<Appointment> appointments = new TreeSet<Appointment>((a,b) -> a.getStartLocalDateTime().compareTo(b.getStartLocalDateTime()));
@@ -375,7 +375,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     {
         // Individual Appointment
         VEventImpl vevent = getDaily2();
-        List<VComponent> vevents = new ArrayList<VComponent>(Arrays.asList(vevent));
+        List<VComponent<Appointment>> vevents = new ArrayList<>(Arrays.asList(vevent));
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         List<Appointment> appointments = new ArrayList<Appointment>();
@@ -428,7 +428,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         VEventImpl vevent = getDaily2();
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
-        List<VComponent> vevents = new ArrayList<VComponent>(Arrays.asList(vevent));
+        List<VComponent<Appointment>> vevents = new ArrayList<>(Arrays.asList(vevent));
         List<Appointment> appointments = new ArrayList<Appointment>();
         Collection<Appointment> newAppointments = vevent.makeInstances();
         appointments.addAll(newAppointments);

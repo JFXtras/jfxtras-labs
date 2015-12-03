@@ -87,6 +87,9 @@ public class EditPopupLoader extends Stage {
             switch (popupCloseType.get())
             {
             case CLOSE_WITH_CHANGE:
+                System.out.println("close popup");
+                System.out.println(vComponent.toString());
+                System.out.println("close popup");
                 if (groupNameEdited.getValue()) {    // write group name changes
                     System.out.println("group change write needed");
                     appointmentGroupWriteCallback.call(appointmentGroups);

@@ -200,12 +200,6 @@ public class RRule {
         builder.append(getFrequency().toString());
         if (getCount() > 0) builder.append(";" + countProperty().getName() + "=" + getCount());
         if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + VComponentAbstract.FORMATTER.format(getUntil()));
-        System.out.println(getFrequency()
-        .getRules());
-        getFrequency()
-        .getRules()
-        .stream()
-        .forEach(r -> System.out.println("rules:" + r.getClass()));
         String rules = getFrequency()
                 .getRules()
                 .stream()

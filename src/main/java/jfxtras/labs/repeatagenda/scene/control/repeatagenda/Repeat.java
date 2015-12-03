@@ -581,6 +581,7 @@ public abstract class Repeat {
      * @author David Bal
      *
      */
+    @Deprecated
     public enum Frequency
     {
         DAILY(Period.ofDays(1)) // value is adjustment subtracted from start date to allow NextAppointment to find start date

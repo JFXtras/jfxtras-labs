@@ -27,7 +27,7 @@ public class ICalendarUtilities {
         List<ChangeDialogOptions> choices;
         if (choiceList == null || choiceList.length == 0)
         { // use default choices
-            choices = new ArrayList<ChangeDialogOptions>();
+            choices = new ArrayList<>();
             choices.add(ChangeDialogOptions.ONE);
             choices.add(ChangeDialogOptions.ALL);
             choices.add(ChangeDialogOptions.THIS_AND_FUTURE);

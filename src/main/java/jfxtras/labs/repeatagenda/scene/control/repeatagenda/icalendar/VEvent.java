@@ -273,6 +273,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     @Override
     public void copyTo(VComponent destination)
     {
+        super.copyTo(destination);
         copy(this, (VEvent) destination);
     }
     
@@ -315,7 +316,6 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         Map<Property, String> properties = new HashMap<Property, String>();
         properties.putAll(super.makePropertiesMap());
         if (getDescription() != null) properties.put(descriptionProperty(), getDescription());
-        System.out.println("use: " + useDateTimeEnd + " " + useDuration);
         if (useDateTimeEnd) properties.put(dateTimeEndProperty(), FORMATTER.format(getDateTimeEnd()));
         if (useDuration) properties.put(durationInSecondsProperty(), getDurationAsString());
         return properties;

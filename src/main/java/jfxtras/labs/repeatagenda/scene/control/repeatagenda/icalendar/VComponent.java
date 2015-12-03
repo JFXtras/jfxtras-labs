@@ -60,13 +60,13 @@ public interface VComponent<T>
      * @see makeRecurrenceSet
      */
     Collection<T> instances();
-
+    
     /**
      * Copies this object into destination object
      * 
      * @param destination
      */
-    void copyTo(VComponent destination);
+    void copyTo(VComponent<T> destination);
     
     WindowCloseType edit(
             LocalDateTime dateTimeStartInstanceOld

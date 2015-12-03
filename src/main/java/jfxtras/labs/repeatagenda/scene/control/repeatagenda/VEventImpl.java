@@ -150,6 +150,7 @@ public class VEventImpl extends VEvent<Appointment>
     @Override
     public void copyTo(VComponent destination)
     {
+        super.copyTo(destination);
         copy(this, (VEventImpl) destination);
     }
     
@@ -355,9 +356,10 @@ public class VEventImpl extends VEvent<Appointment>
         // Check if start time and duration has changed because those values are not changed in the edit controller.
         final long durationInSeconds = ChronoUnit.SECONDS.between(dateTimeStartInstanceNew, dateTimeEndInstanceNew);
         final VEventImpl vEventOld2 = (VEventImpl) vEventOld;
-        boolean dateTimeNewEqual = dateTimeStartInstanceNew.toLocalTime().equals(vEventOld2.getDateTimeStart().toLocalTime());
-        boolean durationEqual = (durationInSeconds == vEventOld2.getDurationInSeconds());
-        if (dateTimeNewEqual && durationEqual && this.equals(vEventOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
+        System.out.println(dateTimeStartInstanceNew + " " + vEventOld2.getDateTimeStart());
+        boolean dateTimeNewSame = dateTimeStartInstanceNew.toLocalTime().equals(vEventOld2.getDateTimeStart().toLocalTime());
+        boolean durationSame = (durationInSeconds == vEventOld2.getDurationInSeconds());
+        if (dateTimeNewSame && durationSame && this.equals(vEventOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
 
         final RRuleType rruleType = getVEventType(getRRule());
         System.out.println("rruleType " + rruleType);

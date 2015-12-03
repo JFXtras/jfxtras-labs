@@ -8,8 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.Frequency;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableUtilities.RepeatChange;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency.FrequencyType;
 
 
 public final class Settings {
@@ -28,10 +28,10 @@ public final class Settings {
     public static DateTimeFormatter TIME_FORMAT_AGENDA;
     public static final boolean PRETTY_XML = true;  // true for readable indented XML output, false for small files
 
-    public static final Map<Frequency, String> REPEAT_FREQUENCIES = new HashMap<Frequency, String>();
-    public static final Map<Frequency, String> REPEAT_FREQUENCIES_PLURAL = new HashMap<Frequency, String>();
-    public static final Map<Frequency, String> REPEAT_FREQUENCIES_SINGULAR = new HashMap<Frequency, String>();
-    public static final Map<RepeatChange, String> REPEAT_CHANGE_CHOICES = new LinkedHashMap<RepeatChange, String>();
+    public static final Map<FrequencyType, String> REPEAT_FREQUENCIES = new HashMap<>();
+    public static final Map<FrequencyType, String> REPEAT_FREQUENCIES_PLURAL = new HashMap<>();
+    public static final Map<FrequencyType, String> REPEAT_FREQUENCIES_SINGULAR = new HashMap<>();
+    public static final Map<ChangeDialogOptions, String> REPEAT_CHANGE_CHOICES = new LinkedHashMap<>();
 
     public static ResourceBundle resources;
    
@@ -46,24 +46,24 @@ public final class Settings {
         DATE_FORMAT_AGENDA_END = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format.agenda.end"));
         TIME_FORMAT_AGENDA = DateTimeFormatter.ofPattern(resourcesIn.getString("time.format.agenda"));
         
-        REPEAT_FREQUENCIES.put(Frequency.DAILY, resourcesIn.getString("daily"));
-        REPEAT_FREQUENCIES.put(Frequency.WEEKLY, resourcesIn.getString("weekly"));
-        REPEAT_FREQUENCIES.put(Frequency.MONTHLY, resourcesIn.getString("monthly"));
-        REPEAT_FREQUENCIES.put(Frequency.YEARLY, resourcesIn.getString("yearly"));
+        REPEAT_FREQUENCIES.put(FrequencyType.DAILY, resourcesIn.getString("daily"));
+        REPEAT_FREQUENCIES.put(FrequencyType.WEEKLY, resourcesIn.getString("weekly"));
+        REPEAT_FREQUENCIES.put(FrequencyType.MONTHLY, resourcesIn.getString("monthly"));
+        REPEAT_FREQUENCIES.put(FrequencyType.YEARLY, resourcesIn.getString("yearly"));
         
-        REPEAT_FREQUENCIES_PLURAL.put(Frequency.DAILY, resourcesIn.getString("days"));
-        REPEAT_FREQUENCIES_PLURAL.put(Frequency.WEEKLY, resourcesIn.getString("weeks"));
-        REPEAT_FREQUENCIES_PLURAL.put(Frequency.MONTHLY, resourcesIn.getString("months"));
-        REPEAT_FREQUENCIES_PLURAL.put(Frequency.YEARLY, resourcesIn.getString("years"));
+        REPEAT_FREQUENCIES_PLURAL.put(FrequencyType.DAILY, resourcesIn.getString("days"));
+        REPEAT_FREQUENCIES_PLURAL.put(FrequencyType.WEEKLY, resourcesIn.getString("weeks"));
+        REPEAT_FREQUENCIES_PLURAL.put(FrequencyType.MONTHLY, resourcesIn.getString("months"));
+        REPEAT_FREQUENCIES_PLURAL.put(FrequencyType.YEARLY, resourcesIn.getString("years"));
         
-        REPEAT_FREQUENCIES_SINGULAR.put(Frequency.DAILY, resourcesIn.getString("day"));
-        REPEAT_FREQUENCIES_SINGULAR.put(Frequency.WEEKLY, resourcesIn.getString("week"));
-        REPEAT_FREQUENCIES_SINGULAR.put(Frequency.MONTHLY, resourcesIn.getString("month"));
-        REPEAT_FREQUENCIES_SINGULAR.put(Frequency.YEARLY, resourcesIn.getString("year"));
+        REPEAT_FREQUENCIES_SINGULAR.put(FrequencyType.DAILY, resourcesIn.getString("day"));
+        REPEAT_FREQUENCIES_SINGULAR.put(FrequencyType.WEEKLY, resourcesIn.getString("week"));
+        REPEAT_FREQUENCIES_SINGULAR.put(FrequencyType.MONTHLY, resourcesIn.getString("month"));
+        REPEAT_FREQUENCIES_SINGULAR.put(FrequencyType.YEARLY, resourcesIn.getString("year"));
 
-        REPEAT_CHANGE_CHOICES.put(RepeatableUtilities.RepeatChange.ONE, resources.getString("dialog.repeat.change.one"));
-        REPEAT_CHANGE_CHOICES.put(RepeatableUtilities.RepeatChange.ALL, resources.getString("dialog.repeat.change.all"));
-        REPEAT_CHANGE_CHOICES.put(RepeatableUtilities.RepeatChange.FUTURE, resources.getString("dialog.repeat.change.future"));
+        REPEAT_CHANGE_CHOICES.put(ChangeDialogOptions.ONE, resources.getString("dialog.repeat.change.one"));
+        REPEAT_CHANGE_CHOICES.put(ChangeDialogOptions.ALL, resources.getString("dialog.repeat.change.all"));
+        REPEAT_CHANGE_CHOICES.put(ChangeDialogOptions.THIS_AND_FUTURE, resources.getString("dialog.repeat.change.future"));
         
     }
 
