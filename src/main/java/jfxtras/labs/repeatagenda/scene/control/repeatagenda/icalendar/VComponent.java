@@ -72,10 +72,10 @@ public interface VComponent<T>
             LocalDateTime dateTimeStartInstanceOld
           , LocalDateTime dateTimeStartInstanceNew
           , LocalDateTime dateTimeEndInstanceNew
-          , VComponent vComponentOld
+          , VComponent<T> vComponentOld
           , Collection<T> instances
-          , Collection<VComponent> vEvents
+          , Collection<VComponent<T>> vEvents
           , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
-          , Callback<Collection<VComponent>, Void> vEventWriteCallback);
+          , Callback<Collection<VComponent<T>>, Void> vEventWriteCallback);
     
 }

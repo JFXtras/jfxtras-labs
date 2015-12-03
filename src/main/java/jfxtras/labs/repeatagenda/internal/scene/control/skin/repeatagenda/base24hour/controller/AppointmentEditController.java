@@ -39,8 +39,8 @@ public class AppointmentEditController
     private VEvent<Appointment> vEvent;
     private VEvent<Appointment> vEventOld;
     private Collection<Appointment> appointments;
-    private Collection<VComponent> vComponents;
-    private Callback<Collection<VComponent>, Void> vEventWriteCallback;
+    private Collection<VComponent<Appointment>> vComponents;
+    private Callback<Collection<VComponent<Appointment>>, Void> vEventWriteCallback;
 
     /** Indicates how the popup window closed */
 //    public ObjectProperty<WindowCloseType> windowCloseTypeProperty() { return windowCloseType; }
@@ -97,9 +97,9 @@ public class AppointmentEditController
             , VComponent<Appointment> vComponent
             , LocalDateTimeRange dateTimeRange
             , Collection<Appointment> appointments
-            , Collection<VComponent> vComponents
+            , Collection<VComponent<Appointment>> vComponents
             , List<AppointmentGroup> appointmentGroups
-            , Callback<Collection<VComponent>, Void> vEventWriteCallback
+            , Callback<Collection<VComponent<Appointment>>, Void> vEventWriteCallback
             , ObjectProperty<WindowCloseType> popupCloseType)
     {
         dateTimeStartInstanceOld = appointment.getStartLocalDateTime();

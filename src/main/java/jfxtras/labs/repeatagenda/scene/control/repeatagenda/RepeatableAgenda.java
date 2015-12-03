@@ -45,9 +45,9 @@ public class RepeatableAgenda extends Agenda {
     public LocalDateTimeRange getDateTimeRange() { return dateTimeRange; }
     
     /** VComponents */
-    private Collection<VComponent> repeats;
-    public Collection<VComponent> vComponents() { return repeats; }
-    public void setVComponents(Collection<VComponent> repeatRules)
+    private Collection<VComponent<Appointment>> repeats;
+    public Collection<VComponent<Appointment>> vComponents() { return repeats; }
+    public void setVComponents(Collection<VComponent<Appointment>> repeatRules)
     {
         this.repeats = repeatRules;
 //        if (getAppointmentsIndividual() != null)
@@ -80,8 +80,8 @@ public class RepeatableAgenda extends Agenda {
     public void setAppointmentClass(Class<? extends RepeatableAppointment> clazz) { appointmentClass = clazz; }
 
     // I/O callbacks, must be set to provide I/O functionality, null by default
-    private Callback<Collection<VComponent>, Void> repeatWriteCallback = null;
-    public void setRepeatWriteCallback(Callback<Collection<VComponent>, Void> repeatWriteCallback) { this.repeatWriteCallback = repeatWriteCallback; }
+    private Callback<Collection<VComponent<Appointment>>, Void> repeatWriteCallback = null;
+    public void setRepeatWriteCallback(Callback<Collection<VComponent<Appointment>>, Void> repeatWriteCallback) { this.repeatWriteCallback = repeatWriteCallback; }
     private Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback = null;
     public void setAppointmentGroupWriteCallback(Callback<Collection<AppointmentGroup>, Void> appointmentWriteCallback) { this.appointmentGroupWriteCallback = appointmentGroupWriteCallback; }
 
@@ -117,7 +117,7 @@ public class RepeatableAgenda extends Agenda {
      */
     public RepeatableAgenda(
             Collection<Appointment> individualAppointments
-          , Collection<VComponent> vComponents)
+          , Collection<VComponent<Appointment>> vComponents)
     {
         this();
         setVComponents(vComponents);

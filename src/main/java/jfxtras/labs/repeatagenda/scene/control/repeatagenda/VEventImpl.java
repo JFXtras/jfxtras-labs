@@ -346,11 +346,11 @@ public class VEventImpl extends VEvent<Appointment>
               LocalDateTime dateTimeStartInstanceOld
             , LocalDateTime dateTimeStartInstanceNew
             , LocalDateTime dateTimeEndInstanceNew
-            , VComponent vEventOld
+            , VComponent<Appointment> vEventOld
             , Collection<Appointment> appointments
-            , Collection<VComponent> vEvents
+            , Collection<VComponent<Appointment>> vEvents
             , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
-            , Callback<Collection<VComponent>, Void> writeVEventsCallback)
+            , Callback<Collection<VComponent<Appointment>>, Void> writeVEventsCallback)
     {
         // Check if start time and duration has changed because those values are not changed in the edit controller.
         final long durationInSeconds = ChronoUnit.SECONDS.between(dateTimeStartInstanceNew, dateTimeEndInstanceNew);
@@ -374,7 +374,7 @@ public class VEventImpl extends VEvent<Appointment>
         case WITH_EXISTING_REPEAT:
             // Check if changes between vEvent and vEventOld exist apart from RRule
 //            VEvent tempVEvent = VEventFactory.newVEvent(vEventOld);
-            VEvent tempVEvent = new VEventImpl((VEventImpl) vEventOld);
+            VEvent<Appointment> tempVEvent = new VEventImpl((VEventImpl) vEventOld);
             tempVEvent.setRRule(getRRule());
             boolean onlyRRuleChanged = this.equals(tempVEvent);
 

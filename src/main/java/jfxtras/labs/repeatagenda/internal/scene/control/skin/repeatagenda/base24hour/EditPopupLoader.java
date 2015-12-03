@@ -17,13 +17,13 @@ import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.AppointmentEditController;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
-/** Makes new stage for popup window to edit VEvent and Agenda.Appointment
+/** Makes new stage for popup window to edit VEvent with Agenda.Appointment instances
  * 
  * @author David Bal
  * @see AppointmentEditController
@@ -36,22 +36,23 @@ public class EditPopupLoader extends Stage {
     // CONSTRUCTOR
     public EditPopupLoader(
               Appointment appointment // selected instance
-            , VComponent vevent
+            , VComponent<Appointment> vComponent
             , LocalDateTimeRange dateTimeRange
             , Collection<Appointment> appointments
-            , Collection<VComponent> repeats
+            , Collection<VComponent<Appointment>> repeats
             , List<AppointmentGroup> appointmentGroups
             , Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback
-            , Callback<Collection<VComponent>, Void> veventWriteCallback
+            , Callback<Collection<VComponent<Appointment>>, Void> veventWriteCallback
             , Callback<Void, Void> refreshCallback)
     {
         String start = Settings.DATE_FORMAT_AGENDA_START.format(appointment.getStartLocalDateTime());
         String end = Settings.DATE_FORMAT_AGENDA_END.format(appointment.getEndLocalDateTime());
         String appointmentTime = start + end + " ";
-//        setTitle(vevent.getSummary() + ": " + appointmentTime);
+        VEvent<Appointment> vEvent = (VEvent<Appointment>) vComponent;
+        setTitle(vEvent.getSummary() + ": " + appointmentTime);
         initModality(Modality.APPLICATION_MODAL);
         
-//        // LOAD FXML
+        // LOAD FXML
         FXMLLoader appointmentMenuLoader = new FXMLLoader();
         appointmentMenuLoader.setLocation(RepeatMenuOld.class.getResource("view/AppointmentEdit.fxml"));
         appointmentMenuLoader.setResources(Settings.resources);
@@ -62,9 +63,10 @@ public class EditPopupLoader extends Stage {
             e.printStackTrace();
         }
         AppointmentEditController appointmentEditController = appointmentMenuLoader.getController();
+
         appointmentEditController.setupData(
                 appointment
-              , (VEventImpl) vevent // TODO - can I find a way to remove this cast?  Can I put a method in VComponent?
+              , vComponent
               , dateTimeRange
               , appointments
               , repeats
