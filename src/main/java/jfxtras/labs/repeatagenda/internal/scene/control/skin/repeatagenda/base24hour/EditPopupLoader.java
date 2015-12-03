@@ -5,7 +5,9 @@ import java.util.Collection;
 import java.util.List;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Control;
@@ -13,9 +15,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.AppointmentEditController;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
@@ -25,13 +28,14 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
  * @author David Bal
  * @see AppointmentEditController
  */
-public class RepeatMenu2 extends Stage {
+public class EditPopupLoader extends Stage {
 
     private BooleanProperty groupNameEdited = new SimpleBooleanProperty(false);
+    private ObjectProperty<WindowCloseType> popupCloseType = new SimpleObjectProperty<WindowCloseType>(WindowCloseType.X); // default to X, meaning click on X to close window)
 
     // CONSTRUCTOR
-    public RepeatMenu2(
-              Appointment appointment
+    public EditPopupLoader(
+              Appointment appointment // selected instance
             , VComponent vevent
             , LocalDateTimeRange dateTimeRange
             , Collection<Appointment> appointments
@@ -49,7 +53,7 @@ public class RepeatMenu2 extends Stage {
         
 //        // LOAD FXML
         FXMLLoader appointmentMenuLoader = new FXMLLoader();
-        appointmentMenuLoader.setLocation(RepeatMenu.class.getResource("view/AppointmentEdit.fxml"));
+        appointmentMenuLoader.setLocation(RepeatMenuOld.class.getResource("view/AppointmentEdit.fxml"));
         appointmentMenuLoader.setResources(Settings.resources);
         Control appointmentMenu = null;
         try {
@@ -59,33 +63,37 @@ public class RepeatMenu2 extends Stage {
         }
         AppointmentEditController appointmentEditController = appointmentMenuLoader.getController();
         appointmentEditController.setupData(
-                (VEvent) vevent // TODO - can I find a way to remove this cast?  Can I put a method in VComponent?
+                appointment
+              , (VEventImpl) vevent // TODO - can I find a way to remove this cast?  Can I put a method in VComponent?
               , dateTimeRange
               , appointments
               , repeats
               , appointmentGroups
               , veventWriteCallback
-              , refreshCallback);
+              , popupCloseType);
         Scene scene = new Scene(appointmentMenu);
 
 //        groupNameEdited.bindBidirectional(appointmentEditController.groupNameEditedProperty());
 
+        // listen for close event
+        popupCloseType.addListener((observable, oldSelection, newSelection) -> close());
+        
         // when popup closes write changes if occurred
         setOnHidden((windowEvent) -> 
         {
 //            appointmentEditController.getRepeatableController().removeRepeatBindings();
-//            switch (appointmentEditController.getCloseType())
-//            {
-//            case CLOSE_WITH_CHANGE:
-//                if (groupNameEdited.getValue()) {    // write group name changes
-//                    System.out.println("group change write needed");
-//                    appointmentGroupWriteCallback.call(appointmentGroups);
-////                    AppointmentIO.writeAppointmentGroups(appointmentGroups, Settings.APPOINTMENT_GROUPS_FILE);
-//                }
-//                break;
-//            default:
-//                break;
-//            }
+            switch (popupCloseType.get())
+            {
+            case CLOSE_WITH_CHANGE:
+                if (groupNameEdited.getValue()) {    // write group name changes
+                    System.out.println("group change write needed");
+                    appointmentGroupWriteCallback.call(appointmentGroups);
+//                    AppointmentIO.writeAppointmentGroups(appointmentGroups, Settings.APPOINTMENT_GROUPS_FILE);
+                }
+                break;
+            default:
+                break;
+            }
         });
         
         setScene(scene);

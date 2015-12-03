@@ -127,7 +127,7 @@ instances into one property internally.
  * @see VEvent
  *
  */
-public abstract class VComponentAbstract implements VComponent
+public abstract class VComponentAbstract<T> implements VComponent<T>
 {
     public String name() { return null; } // not called for abstract class
 
@@ -406,9 +406,10 @@ public abstract class VComponentAbstract implements VComponent
     }
     
     /** Deep copy all fields from source to destination */
-    public void copyTo(VComponentAbstract destination)
+    @Override
+    public void copyTo(VComponent destination)
     {
-        copy(this, destination);
+        copy(this, (VComponentAbstract) destination);
     }
 
     @Override

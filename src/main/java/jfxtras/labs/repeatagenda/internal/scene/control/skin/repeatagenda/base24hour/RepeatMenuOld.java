@@ -21,7 +21,7 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 /** New stage for popup window */
-public class RepeatMenu extends Stage {
+public class RepeatMenuOld extends Stage {
 
     private BooleanProperty groupNameEdited = new SimpleBooleanProperty(false);
 //    private BooleanProperty appointmentEdited = new SimpleBooleanProperty(false);
@@ -30,7 +30,7 @@ public class RepeatMenu extends Stage {
 //    private BooleanProperty repeatEdited = new SimpleBooleanProperty(false);
 //    public BooleanProperty repeatEditedProperty() { return repeatEdited; }
 
-    public RepeatMenu(Appointment appointment
+    public RepeatMenuOld(Appointment appointment
             , LocalDateTimeRange dateTimeRange
             , Collection<Appointment> appointments
             , Collection<Repeat> repeats
@@ -51,7 +51,7 @@ public class RepeatMenu extends Stage {
         
 //        // LOAD FXML
         FXMLLoader appointmentMenuLoader = new FXMLLoader();
-        appointmentMenuLoader.setLocation(RepeatMenu.class.getResource("view/AppointmentEdit.fxml"));
+        appointmentMenuLoader.setLocation(RepeatMenuOld.class.getResource("view/AppointmentEdit.fxml"));
         appointmentMenuLoader.setResources(Settings.resources);
         Control appointmentMenu = null;
         try {
@@ -81,7 +81,8 @@ public class RepeatMenu extends Stage {
 //        repeatEdited.bindBidirectional(appointmentEditController.repeatEditedProperty());
 
         // listen for close event
-        appointmentEditController.closeTypeProperty().addListener((observable, oldSelection, newSelection) -> close());
+        appointmentEditController.closeTypeProperty()
+                .addListener((observable, oldSelection, newSelection) -> close());
 
         // when popup closes write changes if occurred
         setOnHidden((windowEvent) -> 

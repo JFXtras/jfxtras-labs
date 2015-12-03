@@ -9,8 +9,10 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.W
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 
 /** Interface for VEVENT, VTODO, VJOURNAL calendar components. 
+ * @param <T> - type of recurrence instances
+ * @see VComponentAbstract
  * */
-public interface VComponent
+public interface VComponent<T>
 {
     /**
      * CATEGORIES: RFC 5545 iCalendar 3.8.1.12. page 81
@@ -41,10 +43,14 @@ public interface VComponent
      * @param <T>
      * @see VEventImpl
      */
-    <T> Collection<T> makeInstances(
+    Collection<T> makeInstances(
             LocalDateTime dateTimeRangeStart
           , LocalDateTime dateTimeRangeEnd);
-    
+
+    /** makeInstance that uses previously assigned dateTimeRangeStart and dateTimeRangeEnd 
+     * @param <T>*/
+    Collection<T> makeInstances();
+
     /**
      * Returns existing instances in the Recurrence Set (defined in RFC 5545 iCalendar page 121)
      * made by the last call of makeRecurrenceSet
@@ -53,17 +59,23 @@ public interface VComponent
      * @return - current instances of the Recurrence Set
      * @see makeRecurrenceSet
      */
-    <T> Collection<T> instances();
+    Collection<T> instances();
 
+    /**
+     * Copies this object into destination object
+     * 
+     * @param destination
+     */
+    void copyTo(VComponent destination);
     
-    <T> WindowCloseType edit(
-            LocalDateTime dateTimeOld
-          , LocalDateTime dateTimeNew
-          , long durationInSecondsNew
+    WindowCloseType edit(
+            LocalDateTime dateTimeStartInstanceOld
+          , LocalDateTime dateTimeStartInstanceNew
+          , LocalDateTime dateTimeEndInstanceNew
           , VComponent vComponentOld
           , Collection<T> instances
           , Collection<VComponent> vEvents
           , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
-          , Callback<Collection<VComponent>, Void> writeVEventsCallback);
+          , Callback<Collection<VComponent>, Void> vEventWriteCallback);
     
 }

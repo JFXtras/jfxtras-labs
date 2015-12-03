@@ -15,7 +15,7 @@ public class RepeatPaneLoader {
     {
 //      // LOAD FXML
       FXMLLoader repeatPaneLoader = new FXMLLoader();
-      repeatPaneLoader.setLocation(RepeatMenu.class.getResource("view/Repeatable.fxml"));
+      repeatPaneLoader.setLocation(RepeatMenuOld.class.getResource("view/Repeatable.fxml"));
       repeatPaneLoader.setResources(Settings.resources);
 //      try {
 //          repeatPane = repeatPaneLoader.load();

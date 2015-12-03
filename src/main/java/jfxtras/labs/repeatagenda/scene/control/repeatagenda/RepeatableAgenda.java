@@ -23,7 +23,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.DateTimeToCalendarHelper;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.RepeatMenu2;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.EditPopupLoader;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.scene.control.agenda.Agenda;
@@ -172,7 +172,7 @@ public class RepeatableAgenda extends Agenda {
                     .findFirst()
                     .get();
             System.out.println("vevent:" + (vevent==null));
-            Stage repeatMenu = new RepeatMenu2(
+            Stage repeatMenu = new EditPopupLoader(
                     (RepeatableAppointment) appointment
                     , vevent
                     , dateTimeRange

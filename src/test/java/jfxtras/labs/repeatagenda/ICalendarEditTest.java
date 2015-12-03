@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,7 +20,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.W
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Daily;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -38,7 +37,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         VEventImpl vevent = getDaily2();
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
-        List<VEvent> vevents = new ArrayList<VEvent>(Arrays.asList(vevent));
+        List<VComponent> vevents = new ArrayList<VComponent>(Arrays.asList(vevent));
         List<Appointment> appointments = new ArrayList<Appointment>();
         Collection<Appointment> newAppointments = vevent.makeInstances();
         appointments.addAll(newAppointments);
@@ -52,13 +51,12 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         LocalDate dateOld = dateTimeOld.toLocalDate();
         selectedAppointment.setStartLocalDateTime(dateOld.atTime(9, 45)); // change start time
         selectedAppointment.setEndLocalDateTime(dateOld.atTime(11, 0)); // change end time
-        int durationInSeconds = (int) ChronoUnit.SECONDS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
         LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
 
         WindowCloseType windowCloseType = vevent.edit(
                 dateTimeOld
               , dateTimeNew
-              , durationInSeconds
+              , selectedAppointment.getEndLocalDateTime()
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
@@ -101,7 +99,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     {
         // Individual Appointment
         VEventImpl vevent = getDaily2();
-        List<VEvent> vevents = new ArrayList<VEvent>(Arrays.asList(vevent));
+        List<VComponent> vevents = new ArrayList<VComponent>(Arrays.asList(vevent));
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         List<Appointment> appointments = new ArrayList<Appointment>();
@@ -119,7 +117,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().plusDays(1); // shift appointment 1 day forward
         selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
         selectedAppointment.setEndLocalDateTime(newDate.atTime(11, 0)); // change end time
-        int durationInSeconds = (int) ChronoUnit.SECONDS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
         LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
         vevent.setSummary("Edited Summary");
         vevent.setAppointmentGroup(appointmentGroups.get(7));
@@ -128,7 +125,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         WindowCloseType windowCloseType = vevent.edit(
                 dateTimeOriginal
               , dateTimeNew
-              , durationInSeconds
+              , selectedAppointment.getEndLocalDateTime()
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
@@ -155,7 +152,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     {
         // Individual Appointment
         VEventImpl vevent = getDaily2();
-        List<VEvent> vevents = new ArrayList<VEvent>(Arrays.asList(vevent));
+        List<VComponent> vevents = new ArrayList<VComponent>(Arrays.asList(vevent));
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         List<Appointment> appointments = new ArrayList<Appointment>();
@@ -174,7 +171,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().minusDays(1); // shift appointment 1 day backward
         selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
         selectedAppointment.setEndLocalDateTime(newDate.atTime(11, 0)); // change end time
-        int durationInSeconds = (int) ChronoUnit.SECONDS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
         LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
         vevent.setSummary("Edited Summary");
         vevent.setDescription("Edited Description");
@@ -184,7 +180,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         WindowCloseType windowCloseType = vevent.edit(
                 dateTimeOriginal
               , dateTimeNew
-              , durationInSeconds
+              , selectedAppointment.getEndLocalDateTime()
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
@@ -242,7 +238,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     {
         // Individual Appointment
         VEventImpl vevent = getDaily6();
-        List<VEvent> vevents = new ArrayList<VEvent>(Arrays.asList(vevent));
+        List<VComponent> vevents = new ArrayList<VComponent>(Arrays.asList(vevent));
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         Set<Appointment> appointments = new TreeSet<Appointment>((a,b) -> a.getStartLocalDateTime().compareTo(b.getStartLocalDateTime()));
@@ -262,9 +258,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().minusDays(2); // shift appointment 2 day backward
         selectedAppointment.setStartLocalDateTime(newDate.atTime(6, 0)); // change start time
         selectedAppointment.setEndLocalDateTime(newDate.atTime(7, 0)); // change end time
-        int durationInSeconds = (int) ChronoUnit.SECONDS.between(
-                selectedAppointment.getStartLocalDateTime()
-              , selectedAppointment.getEndLocalDateTime());
         LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
         vevent.setSummary("Edited Summary");
         vevent.setDescription("Edited Description");
@@ -274,7 +267,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         WindowCloseType windowCloseType = vevent.edit(
                 dateTimeOriginal
               , dateTimeNew
-              , durationInSeconds
+              , selectedAppointment.getEndLocalDateTime()
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
@@ -382,7 +375,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     {
         // Individual Appointment
         VEventImpl vevent = getDaily2();
-        List<VEvent> vevents = new ArrayList<VEvent>(Arrays.asList(vevent));
+        List<VComponent> vevents = new ArrayList<VComponent>(Arrays.asList(vevent));
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         List<Appointment> appointments = new ArrayList<Appointment>();
@@ -403,7 +396,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         WindowCloseType windowCloseType = vevent.edit(
                 selectedAppointment.getStartLocalDateTime()
               , selectedAppointment.getStartLocalDateTime()
-              , 0
+              , selectedAppointment.getEndLocalDateTime()
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
@@ -424,7 +417,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         expectedVEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         assertEquals(expectedVEvent, vevent); // check to see if repeat rule changed correctly
         
-        vevents.stream().forEach(a -> System.out.println(a.getDateTimeStart()));
     }
     
     /**
@@ -436,7 +428,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         VEventImpl vevent = getDaily2();
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
-        List<VEvent> vevents = new ArrayList<VEvent>(Arrays.asList(vevent));
+        List<VComponent> vevents = new ArrayList<VComponent>(Arrays.asList(vevent));
         List<Appointment> appointments = new ArrayList<Appointment>();
         Collection<Appointment> newAppointments = vevent.makeInstances();
         appointments.addAll(newAppointments);
@@ -449,13 +441,12 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         LocalDate dateOld = dateTimeOld.toLocalDate();
         selectedAppointment.setStartLocalDateTime(dateOld.atTime(9, 45)); // change start time
         selectedAppointment.setEndLocalDateTime(dateOld.atTime(11, 0)); // change end time
-        int durationInSeconds = (int) ChronoUnit.SECONDS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
         LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
 
         WindowCloseType windowCloseType = vevent.edit(
                 dateTimeOld
               , dateTimeNew
-              , durationInSeconds
+              , selectedAppointment.getEndLocalDateTime()
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
