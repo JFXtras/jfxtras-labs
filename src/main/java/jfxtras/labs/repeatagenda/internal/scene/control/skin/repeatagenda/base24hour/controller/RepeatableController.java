@@ -4,7 +4,9 @@ package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base2
 import java.security.InvalidParameterException;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.temporal.WeekFields;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -35,6 +37,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.EndCriteria;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency.FrequencyType;
@@ -46,6 +49,7 @@ final private static int EXCEPTION_CHOICE_LIMIT = 50;
     
 //private RepeatableAppointment appointment;
 private VComponent<T> vComponent;
+private Rule byRule;
 private ByDay byDayRule; // is null if no ByDay rule is present
 private LocalDateTime dateTimeStartInstanceNew;
 
@@ -159,6 +163,24 @@ private final ChangeListener<? super Boolean> saturdayListener = (obs2, oldSel2,
     }
 };
 
+// Listener for dayOfWeekRadioButton when frequency if monthly
+private ChangeListener<? super Boolean> dayOfWeekListener = (obs2, oldSel2, newSel2) -> 
+{
+    if (newSel2)
+    {
+        System.out.println("add byDay:");
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+        int ordinalWeekNumber = dateTimeStartInstanceNew.get(weekFields.weekOfMonth());
+        DayOfWeek dayOfWeek = dateTimeStartInstanceNew.getDayOfWeek();
+        byDayRule = new ByDay(new ByDayPair(dayOfWeek, ordinalWeekNumber));
+        vComponent.getRRule().getFrequency().addByRule(byDayRule);
+    } else
+    { // remove rule to reset to default behavior of repeat by day of month
+        System.out.println("remove byDay:");
+        vComponent.getRRule().getFrequency().getByRules().clear();
+    }
+};
+
 // FREQUENCY CHANGE LISTENER
 private final ChangeListener<? super FrequencyType> frequencyListener = (obs, oldSel, newSel) -> 
 {
@@ -192,15 +214,19 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
         monthlyLabel.setVisible(true);
         weeklyHBox.setVisible(false);
         weeklyLabel.setVisible(false);
+        boolean hasByDayRule = vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRules.BYDAY) != null;
+        dayOfMonthRadioButton.selectedProperty().set(! hasByDayRule);
+        dayOfWeekRadioButton.selectedProperty().set(hasByDayRule);
+        dayOfWeekRadioButton.selectedProperty().addListener(dayOfWeekListener);
+        // TODO - IF DAY OF THE MONTH - USE BYMONTHDAY - NOT NEEDED - JUST MONTHLY REQUIRED
+        // IF DAY OF THE WEEK - USE BYDAY WITH ORDINAL
         break;
     case WEEKLY:
         monthlyVBox.setVisible(false);
         monthlyLabel.setVisible(false);
         weeklyHBox.setVisible(true);
         weeklyLabel.setVisible(true);
-        // TODO - make bindings for day of week check boxes
         byDayRule = (ByDay) vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRules.BYDAY);
-        System.out.println("add listeners:");
         sundayCheckBox.selectedProperty().addListener(sundayListener);
         mondayCheckBox.selectedProperty().addListener(mondayListener);
         tuesdayCheckBox.selectedProperty().addListener(tuesdayListener);
@@ -212,7 +238,7 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
     case SECONDLY:
     case MINUTELY:
     case HOURLY:
-        throw new InvalidParameterException("Frequency not implemented");
+        throw new InvalidParameterException("Frequency " + newSel + " not implemented");
     default:
         break;
     }
@@ -225,7 +251,7 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
 
 };
 
-
+// INITIALIZATION - runs when FXML is initialized
 @FXML public void initialize()
 {
     // Setup frequencyComboBox items
@@ -285,10 +311,14 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
     fridayCheckBox.setTooltip(new Tooltip(resources.getString("friday")));
     saturdayCheckBox.setTooltip(new Tooltip(resources.getString("saturday")));
 
+    final ToggleGroup monthlyGroup = new ToggleGroup();
+    dayOfMonthRadioButton.setToggleGroup(monthlyGroup);
+    dayOfWeekRadioButton.setToggleGroup(monthlyGroup);
 }
 
 
 /**
+ * Add data that was unavailable at initialization time
  * 
  * @param rrule
  * @param dateTimeRange : date range for current agenda skin
@@ -392,7 +422,7 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
         {
             Optional<Rule> rule = vComponent.getRRule()
                     .getFrequency()
-                    .getRules()
+                    .getByRules()
                     .stream()
                     .filter(r -> r.getByRule() == Rule.ByRules.BYDAY)
                     .findFirst();

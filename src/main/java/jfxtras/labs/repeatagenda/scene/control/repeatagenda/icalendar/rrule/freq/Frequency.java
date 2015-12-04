@@ -38,8 +38,7 @@ public interface Frequency {
       following order: BYMONTH, BYWEEKNO, BYYEARDAY, BYMONTHDAY, BYDAY,
       BYHOUR, BYMINUTE, BYSECOND and BYSETPOS; then COUNT and UNTIL are
       evaluated.*/
-    List<Rule> getRules();
-
+    List<Rule> getByRules();
     /** Adds new byRule to collection and ensures that type of rule isn't already present */
     void addByRule(Rule rule);
     /** return ByRule object from byRules list by type.  Returns null if not present */
@@ -161,10 +160,10 @@ public interface Frequency {
     {
         destination.setChronoUnit(source.getChronoUnit());
         if (source.getInterval() != null) destination.setInterval(source.getInterval());
-        if (source.getRules() != null)
+        if (source.getByRules() != null)
         {
 //            System.out.println("rules size-" + source.getRules().size());
-            source.getRules().stream().forEach(r ->
+            source.getByRules().stream().forEach(r ->
             {
 //                System.out.println("rule: " + r.getClass());
                 try {

@@ -200,7 +200,7 @@ public class RRule {
         if (getCount() > 0) builder.append(";" + countProperty().getName() + "=" + getCount());
         if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + VComponentAbstract.FORMATTER.format(getUntil()));
         String rules = getFrequency()
-                .getRules()
+                .getByRules()
                 .stream()
                 .map(r -> ";" + r.toString())
                 .collect(Collectors.joining());

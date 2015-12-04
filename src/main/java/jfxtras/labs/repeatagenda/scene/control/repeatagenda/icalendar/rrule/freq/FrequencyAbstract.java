@@ -73,21 +73,21 @@ public abstract class FrequencyAbstract implements Frequency {
     /** BYxxx Rules 
      * Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
      * The BYxxx rules must be applied in a specific order and can only be occur once */
-    @Override public List<Rule> getRules() { return byRules; }
+    @Override public List<Rule> getByRules() { return byRules; }
     private List<Rule> byRules = new ArrayList<Rule>();
     @Override public void addByRule(Rule byRule)
     {
 //        if (byRules == null) byRules = new ArrayList<Rule>();
-        boolean alreadyPresent = getRules().stream().anyMatch(a -> a.getClass() == byRule.getClass());
+        boolean alreadyPresent = getByRules().stream().anyMatch(a -> a.getClass() == byRule.getClass());
         if (alreadyPresent){
             throw new InvalidParameterException("Can't add BYxxx rule (" 
                     + byRule.getClass().getName() + ") more than once.");
         }
-        getRules().add(byRule);
+        getByRules().add(byRule);
     }
     @Override public Rule getByRuleByType(Rule.ByRules byRule)
     {
-        Optional<Rule> rule = getRules().stream().filter(a -> a.getByRule() == byRule).findFirst();
+        Optional<Rule> rule = getByRules().stream().filter(a -> a.getByRule() == byRule).findFirst();
         return (rule.isPresent()) ? rule.get() : null;
     }
 
@@ -138,7 +138,7 @@ public abstract class FrequencyAbstract implements Frequency {
     {
         getChronoUnit().set(initialChronoUnit); // start with Frequency ChronoUnit when making a stream
         Stream<LocalDateTime> stream = Stream.iterate(startDateTime, (a) -> { return a.with(getAdjuster()); });
-        Iterator<Rule> rulesIterator = getRules().stream().sorted().iterator();
+        Iterator<Rule> rulesIterator = getByRules().stream().sorted().iterator();
         while (rulesIterator.hasNext())
         {
             System.out.println("chronounit start:"  + getChronoUnit());
@@ -162,12 +162,12 @@ public abstract class FrequencyAbstract implements Frequency {
                 (testObj.getInterval() == null) : getInterval().equals(testObj.getInterval());
 //        Iterator<Rule> ruleIterator = getRules().iterator();
         boolean rulesEquals;
-        if (getRules().size() == testObj.getRules().size())
+        if (getByRules().size() == testObj.getByRules().size())
         {
             List<Boolean> rulesEqualsArray = new ArrayList<Boolean>();
-            for (int i=0; i<getRules().size(); i++)
+            for (int i=0; i<getByRules().size(); i++)
             {
-                boolean e = getRules().get(i).equals(testObj.getRules().get(i));
+                boolean e = getByRules().get(i).equals(testObj.getByRules().get(i));
                 rulesEqualsArray.add(e);
             }
             rulesEquals = rulesEqualsArray.stream().allMatch(a -> a == true );
