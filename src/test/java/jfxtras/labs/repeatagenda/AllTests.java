@@ -17,6 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
               , ICalendarEditTest.class
               , ICalendarToStringTest.class
               , ICalendarCopyTest.class
+              , ICalendarEqualsTest.class
               })
 public class AllTests {
 

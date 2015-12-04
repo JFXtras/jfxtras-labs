@@ -170,7 +170,7 @@ public abstract class FrequencyAbstract implements Frequency {
                 boolean e = getRules().get(i).equals(testObj.getRules().get(i));
                 rulesEqualsArray.add(e);
             }
-            rulesEquals = rulesEqualsArray.stream().allMatch(a -> true );
+            rulesEquals = rulesEqualsArray.stream().allMatch(a -> a == true );
         } else
         {
             rulesEquals = false;

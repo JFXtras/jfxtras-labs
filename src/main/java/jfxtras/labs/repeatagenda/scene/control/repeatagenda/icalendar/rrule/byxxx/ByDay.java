@@ -49,7 +49,7 @@ public class ByDay extends ByRuleAbstract
             .isPresent();
         if (! isPresent)
         {
-            List<ByDayPair> list = Arrays.asList(getByDayPair());
+            List<ByDayPair> list = new ArrayList<>(Arrays.asList(getByDayPair()));
             list.add(new ByDayPair(dayOfWeek, 0));
             byDayPairs = list.toArray(byDayPairs);
         }
