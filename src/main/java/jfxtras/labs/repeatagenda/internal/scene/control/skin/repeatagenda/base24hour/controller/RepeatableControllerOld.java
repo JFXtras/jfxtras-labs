@@ -190,7 +190,6 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
 //    });
     
     intervalSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1));
-
     intervalSpinner.valueProperty().addListener((observable, oldValue, newValue) ->
     {
         if (newValue == 1) {

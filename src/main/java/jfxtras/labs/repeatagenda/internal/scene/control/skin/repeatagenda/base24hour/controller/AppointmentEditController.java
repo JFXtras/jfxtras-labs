@@ -60,7 +60,7 @@ public class AppointmentEditController
     @FXML private Button closeRepeatButton;
     @FXML private Button cancelRepeatButton;
     @FXML private Button saveAdvancedButton;
-    @FXML private RepeatableController repeatableController;
+    @FXML private RepeatableController<Appointment> repeatableController;
 
     // Callback for LocalDateTimeTextField that is called when invalid date/time is entered
     Callback<Throwable, Void> errorCallback = (throwable) ->
@@ -154,7 +154,7 @@ public class AppointmentEditController
         appointmentGroupGridPane.setupData(vComponent, appointmentGroups);
 
         // SETUP REPEATABLE CONTROLLER
-        repeatableController.setupData(vComponent);
+        repeatableController.setupData(vComponent, startTextField.getLocalDateTime());
     }
 
     // AFTER CLICK SAVE VERIFY REPEAT IS VALID, IF NOT PROMPT.
@@ -175,7 +175,6 @@ public class AppointmentEditController
         if (windowCloseType.get() == WindowCloseType.CLOSE_WITH_CHANGE)
         {
 //          refreshCallback.call(null);
-//          System.out.println("repeat details " + appointment.getRepeat().getFrequency());
         
         }
 

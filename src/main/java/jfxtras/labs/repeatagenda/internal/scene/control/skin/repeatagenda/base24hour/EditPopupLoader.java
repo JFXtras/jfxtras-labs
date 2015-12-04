@@ -83,6 +83,7 @@ public class EditPopupLoader extends Stage {
         // when popup closes write changes if occurred
         setOnHidden((windowEvent) -> 
         {
+            System.out.println("close type:" + popupCloseType.get());
 //            appointmentEditController.getRepeatableController().removeRepeatBindings();
             switch (popupCloseType.get())
             {

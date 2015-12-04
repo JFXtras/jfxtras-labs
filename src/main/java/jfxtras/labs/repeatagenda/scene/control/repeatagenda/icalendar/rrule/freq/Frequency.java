@@ -92,32 +92,12 @@ public interface Frequency {
             return null;
         }
 
-        /** return implemented FrequencyTypes */
-        public static FrequencyType[] intervalValues()
+        /** return array of implemented FrequencyTypes */
+        public static FrequencyType[] implementedValues()
         {
             return new FrequencyType[] { DAILY, WEEKLY, MONTHLY, YEARLY };
         }
-        
-        public String toString()
-        {
-            switch (this)
-            {
-            case DAILY:
-                return Settings.REPEAT_FREQUENCIES.get(FrequencyType.DAILY);
-            case WEEKLY:
-                return Settings.REPEAT_FREQUENCIES.get(FrequencyType.WEEKLY);
-            case MONTHLY:
-                return Settings.REPEAT_FREQUENCIES.get(FrequencyType.MONTHLY);
-            case YEARLY:
-                return Settings.REPEAT_FREQUENCIES.get(FrequencyType.YEARLY);
-            case HOURLY: // Not implemented
-            case MINUTELY: // Not implemented
-            case SECONDLY: // Not implemented
-            default:
-                return null;                
-            }
-        }
-        
+                
         public String toStringSingular()
         {
             switch (this)

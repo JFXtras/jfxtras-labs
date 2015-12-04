@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -22,25 +23,28 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.EndCriteria;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponentAbstract;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency.FrequencyType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Weekly;
 
-public class RepeatableController {
+public class RepeatableController<T> {
 
 final private static int EXCEPTION_CHOICE_LIMIT = 50;
     
 //private RepeatableAppointment appointment;
-private VComponentAbstract vcomponent;
+private VComponent<T> vComponent;
+private LocalDateTime dateTimeStartInstanceNew;
 
 @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
 
@@ -82,13 +86,64 @@ private ToggleGroup endGroup;
 
 private Set<LocalDateTime> invalidExceptions = new HashSet<LocalDateTime>();
 
+ChangeListener<? super FrequencyType> frequencyListener = (obs, oldSel, newSel) -> 
+{
+    vComponent.getRRule().setFrequency(newSel.newInstance());
+    intervalSpinner.getEditor().textProperty().set("1");
+};
+
 
 @FXML public void initialize()
 {
- // Setup frequencyComboBox items
-    frequencyComboBox.setItems(FXCollections.observableArrayList(FrequencyType.intervalValues()));
+    // Setup frequencyComboBox items
+    frequencyComboBox.setItems(FXCollections.observableArrayList(FrequencyType.implementedValues()));
     frequencyComboBox.setConverter(Frequency.FrequencyType.stringConverter);
+
+    // INTERVAL SPINNER
+    intervalSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1));
+    intervalSpinner.valueProperty().addListener((observable, oldValue, newValue) ->
+    {
+        if (newValue == 1) {
+            frequencyLabel.setText(frequencyComboBox.valueProperty().get().toStringSingular());
+        } else {
+            frequencyLabel.setText(frequencyComboBox.valueProperty().get().toStringPlural());
+        }
+//        makeExceptionDates();
+    });
     
+    // Make frequencySpinner and only accept numbers (needs below two listeners)
+    intervalSpinner.setEditable(true);
+    intervalSpinner.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, (event)  ->
+    {
+        if (event.getCode() == KeyCode.ENTER) {
+            String s = intervalSpinner.getEditor().textProperty().get();
+            boolean isNumber = s.matches("[0-9]+");
+            if (! isNumber) {
+                String lastValue = intervalSpinner.getValue().toString();
+                intervalSpinner.getEditor().textProperty().set(lastValue);
+                notNumberAlert("123");
+            }
+        }
+    });
+    intervalSpinner.focusedProperty().addListener((obs, wasFocused, isNowFocused) ->
+    {
+        if (! isNowFocused) {
+            int value;
+            String s = intervalSpinner.getEditor().textProperty().get();
+            boolean isNumber = s.matches("[0-9]+");
+            if (isNumber)
+            {
+                value = Integer.parseInt(s);
+//                vComponent.getRRule().getFrequency().intervalProperty().unbind();
+                vComponent.getRRule().getFrequency().setInterval(value);
+            } else {
+                String lastValue = intervalSpinner.getValue().toString();
+                intervalSpinner.getEditor().textProperty().set(lastValue);
+                notNumberAlert("123");
+            }
+        }
+    });
+
 }
 
 
@@ -98,8 +153,12 @@ private Set<LocalDateTime> invalidExceptions = new HashSet<LocalDateTime>();
  * @param dateTimeRange : date range for current agenda skin
  */
     public void setupData(
-            VComponent vComponent)
+            VComponent<T> vComponent
+          , LocalDateTime dateTimeStartInstanceNew)
     {
+        this.vComponent = vComponent;
+        this.dateTimeStartInstanceNew = dateTimeStartInstanceNew;
+        
         // MAKE NEW RRULE IF NECESSARY
         RRule rRule;
         if (vComponent.getRRule() == null)
@@ -111,6 +170,8 @@ private Set<LocalDateTime> invalidExceptions = new HashSet<LocalDateTime>();
             rRule = vComponent.getRRule();
         }
         
+        frequencyComboBox.setValue(rRule.getFrequency().getFrequencyType());
+        
         // REPEATABLE CHECKBOX
         repeatableCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
         {
@@ -118,18 +179,19 @@ private Set<LocalDateTime> invalidExceptions = new HashSet<LocalDateTime>();
             {
                 if (vComponent.getRRule() == null) vComponent.setRRule(rRule);
 //                makeExceptionDates();
-//                setupBindings();
+                setupBindings();
                 repeatableGridPane.setDisable(false);
                 startDatePicker.setDisable(false);
             } else
             {
                 vComponent.setRRule(null);
 //                appointment.setRepeat(null);
-//                removeBindings();
+                removeBindings();
                 repeatableGridPane.setDisable(true);
                 startDatePicker.setDisable(true);
             }
         });
+        
     }
     
         
@@ -150,8 +212,9 @@ private Set<LocalDateTime> invalidExceptions = new HashSet<LocalDateTime>();
     }
 
     /** bind properties from vComponent and FXML properties */
-    private void setupBindings() {
-//        frequencyComboBox.valueProperty().bindBidirectional(repeat.frequencyProperty());
+    private void setupBindings()
+    {
+        frequencyComboBox.valueProperty().addListener(frequencyListener);
 //        repeat.intervalProperty().bind(intervalSpinner.valueProperty());
 //        sundayCheckBox.selectedProperty().bindBidirectional(repeat.getDayOfWeekProperty(DayOfWeek.SUNDAY));
 //        mondayCheckBox.selectedProperty().bindBidirectional(repeat.getDayOfWeekProperty(DayOfWeek.MONDAY));
@@ -167,6 +230,13 @@ private Set<LocalDateTime> invalidExceptions = new HashSet<LocalDateTime>();
 //        repeat.countProperty().addListener(makeEndOnDateListener);
 //        exceptionsListView.setItems(repeat.getExceptions());
     }
+
+    /** unbind properties from vComponent and FXML properties */
+    private void removeBindings()
+    {
+        frequencyComboBox.valueProperty().removeListener(frequencyListener);
+    }
+
     
     /**
      * Default settings for a new RRule - weekly, repeats on day of week in dateTime

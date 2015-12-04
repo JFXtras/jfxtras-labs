@@ -69,15 +69,15 @@ public interface Rule extends Comparable<Rule>
             this.clazz = clazz;
         }
           
-//        public Rule newInstance()
-//        {
-//            try {
-//                return clazz.newInstance();
-//            } catch (InstantiationException | IllegalAccessException e) {
-//                e.printStackTrace();
-//            }
-//            return null;
-//        }
+        public Rule newInstance()
+        {
+            try {
+                return clazz.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
 
         /** Returns new instance of the ByRule specified by the enum */
         public Rule newInstance(String string) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
