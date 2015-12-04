@@ -17,20 +17,23 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byx
  */
 public abstract class ByRuleAbstract implements Rule
 {
-    /** Order in which ByRules are processed */
-    public Integer getProcessOrder() { return processOrder; }
-    final private Integer processOrder;
-        
-    /** Constructor that takes processing order 
-     * as defined in RFC 5545 iCalendar page 44 as parameters */
-    ByRuleAbstract(Integer processOrder)
+    /** ByRule enum containing order in which ByRules are processed */
+    final private ByRules byRule;
+    @Override public ByRules getByRule() { return byRule; }
+
+    /** Constructor that takes ByRule type as parameter 
+     * The type contains the processing order as defined in RFC 5545 iCalendar page 44 */
+    ByRuleAbstract(ByRules byRule)
     {
-        this.processOrder = processOrder;
+        this.byRule = byRule;
     }
-    
+
     @Override
     public int compareTo(Rule byRule)
     {
-        return getProcessOrder().compareTo(byRule.getProcessOrder());
+        int p1 = this.getByRule().getProcessOrder();
+        int p2 = byRule.getByRule().getProcessOrder();
+        return (p2 > p1) ? 1 :
+               (p2 < p1) ? -1 : 0;
     }
 }

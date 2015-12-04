@@ -42,18 +42,21 @@ public interface Frequency {
 
     /** Adds new byRule to collection and ensures that type of rule isn't already present */
     void addByRule(Rule rule);
-
+    /** return ByRule object from byRules list by type.  Returns null if not present */
+    Rule getByRuleByType(Rule.ByRules byRule);
     
     /** ChronoUnit of last modification to stream
      *  Enables usage of switch statement in BYxxx rules */
     ObjectProperty<ChronoUnit> getChronoUnit();
     void setChronoUnit(ObjectProperty<ChronoUnit> chronoUnit);
-    
+
+    /** Resulting stream of start date/times by applying Frequency temporal adjuster and all, if any,
+     * Rules.
+     * Starts on startDateTime, which must be a valid event date/time, but not necessarily the
+     * first date/time (DTSTART) in the sequence. A later startDateTime can be used to more efficiently
+     * get to later dates in the stream. */
     Stream<LocalDateTime> stream(LocalDateTime startDateTime);
-//    /**
-//     * Return inital ChronoUnit for Frequency.  This value must be 
-//     */
-//    ChronoUnit getInitialChronoUnit();
+
 
     /** Which of the enum type FrenquencyType the implementing class represents */
     FrequencyType getFrequencyType();
@@ -163,7 +166,7 @@ public interface Frequency {
 //            System.out.println("rules size-" + source.getRules().size());
             source.getRules().stream().forEach(r ->
             {
-                System.out.println("rule: " + r.getClass());
+//                System.out.println("rule: " + r.getClass());
                 try {
                     Rule newRule = r.getClass().newInstance();
                     Rule.copy(r, newRule);

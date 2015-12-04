@@ -26,16 +26,51 @@ import javafx.beans.property.ObjectProperty;
 /** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */
 public class ByDay extends ByRuleAbstract
 {
-    private final static int PROCESS_ORDER = 40; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
-
-    /** sorted array of days of month
-     * (i.e. 5, 10 = 5th and 10th days of the month, -3 = 3rd from last day of month)
+    private final static ByRules MY_RULE = ByRules.BYDAY;
+    
+    /** Array of days of the week.  Ordinal number is optional.  Without will include all
+     * days matching that day of the week, with the ordinal will be only include the
+     * nth day of the week in the month, when n is the ordinal number.
+     * 
      * Uses a varargs parameter to allow any number of days
      * The list of days with ordinals must be sorted.  For example 1MO,2TU,4SA not 2TU,1MO,4SA
      */
     public ByDayPair[] getByDayPair() { return byDayPairs; }
     private ByDayPair[] byDayPairs;
     private void setByDayPair(ByDayPair... byDayPairs) { this.byDayPairs = byDayPairs; }
+    
+    /** add individual DayofWeek, without ordinal value, to BYDAY rule */
+    public void addDayOfWeek(DayOfWeek dayOfWeek)
+    {
+        boolean isPresent = Arrays.stream(getByDayPair())
+            .map(a -> a.dayOfWeek)
+            .filter(d -> d == dayOfWeek)
+            .findAny()
+            .isPresent();
+        if (! isPresent)
+        {
+            List<ByDayPair> list = Arrays.asList(getByDayPair());
+            list.add(new ByDayPair(dayOfWeek, 0));
+            byDayPairs = list.toArray(byDayPairs);
+        }
+    }
+
+    /** remove individual DayofWeek from BYDAY rule */
+    public void removeDayOfWeek(DayOfWeek dayOfWeek)
+    {
+        byDayPairs = Arrays.stream(getByDayPair())
+                .filter(d -> d.dayOfWeek == dayOfWeek)
+                .toArray(size -> new ByDayPair[size]);
+    }
+    
+    /** Return a list of days of the week that don't have an ordinal (as every FRIDAY) */
+    public List<DayOfWeek> getDayofWeekWithoutOrdinalList()
+    {
+        return Arrays.stream(getByDayPair())
+                     .filter(d -> d.ordinal == 0)
+                     .map(d -> d.dayOfWeek)
+                     .collect(Collectors.toList());
+    }
     
     //CONSTRUCTORS
     /** Parse iCalendar compliant list of days of the week.  For example 1MO,2TU,4SA
@@ -44,7 +79,7 @@ public class ByDay extends ByRuleAbstract
      */
     public ByDay(String dayPairs)
     {
-        super(PROCESS_ORDER);
+        this();
         List<ByDayPair> dayPairsList = new ArrayList<ByDayPair>();
         Pattern p = Pattern.compile("([0-9]+)?([A-Z]{2})");
         Matcher m = p.matcher(dayPairs);
@@ -75,14 +110,14 @@ public class ByDay extends ByRuleAbstract
      */
     public ByDay()
     {
-        super(PROCESS_ORDER);
+        super(MY_RULE);
     }
 
     
     /** Constructor with varargs ByDayPair */
     public ByDay(ByDayPair... byDayPairs)
     {
-        super(PROCESS_ORDER);
+        this();
         setByDayPair(byDayPairs);
     }
 
@@ -90,7 +125,7 @@ public class ByDay extends ByRuleAbstract
      * provided types are included within the specified frequency */
     public ByDay(DayOfWeek... daysOfWeek)
     {
-        super(PROCESS_ORDER);
+        this();
         byDayPairs = new ByDayPair[daysOfWeek.length];
         int i=0;
         for (DayOfWeek d : daysOfWeek)
@@ -258,8 +293,9 @@ public class ByDay extends ByRuleAbstract
      */
     public static class ByDayPair
     {
-        DayOfWeek dayOfWeek;
-        int ordinal = 0;
+        private DayOfWeek dayOfWeek;
+        private int ordinal = 0;
+
         public ByDayPair(DayOfWeek dayOfWeek, int ordinal)
         {
             this.dayOfWeek = dayOfWeek;

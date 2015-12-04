@@ -15,7 +15,7 @@ import javafx.beans.property.ObjectProperty;
 /** BYMONTH from RFC 5545, iCalendar 3.3.10, page 42 */
 public class ByMonth extends ByRuleAbstract
 {
-    private final static int PROCESS_ORDER = 0; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
+    private final static ByRules MY_RULE = ByRules.BYMONTH;
 
     /** sorted array of months to be included
      * January = 1 - December = 12
@@ -31,7 +31,7 @@ public class ByMonth extends ByRuleAbstract
      */
     public ByMonth(String months)
     {
-        super(PROCESS_ORDER);
+        this();
         setMonths(
           Arrays.asList(months.split(","))
                 .stream()
@@ -44,12 +44,12 @@ public class ByMonth extends ByRuleAbstract
      */
     public ByMonth()
     {
-        super(PROCESS_ORDER);
+        super(MY_RULE);
     }
     
     public ByMonth(Month... months)
     {
-        super(PROCESS_ORDER);
+        this();
         setMonths(months);
     }
 

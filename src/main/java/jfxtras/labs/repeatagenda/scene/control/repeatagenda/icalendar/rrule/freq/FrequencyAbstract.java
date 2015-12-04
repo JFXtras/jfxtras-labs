@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -84,6 +85,11 @@ public abstract class FrequencyAbstract implements Frequency {
         }
         getRules().add(byRule);
     }
+    @Override public Rule getByRuleByType(Rule.ByRules byRule)
+    {
+        Optional<Rule> rule = getRules().stream().filter(a -> a.getByRule() == byRule).findFirst();
+        return (rule.isPresent()) ? rule.get() : null;
+    }
 
     /** Time unit of last rule applied.  It represents the time span to apply future changes to the output stream of date/times
      * For example:
@@ -127,12 +133,7 @@ public abstract class FrequencyAbstract implements Frequency {
         setChronoUnit(chronoUnit);
     }
 
-    
-    /** Resulting stream of start date/times by applying Frequency temporal adjuster and all, if any,
-     * Rules.
-     * Starts on startDateTime, which must be a valid event date/time, but not necessarily the
-     * first date/time (DTSTART) in the sequence. A later startDateTime can be used to more efficiently
-     * get to later dates in the stream. */
+    @Override
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
         getChronoUnit().set(initialChronoUnit); // start with Frequency ChronoUnit when making a stream

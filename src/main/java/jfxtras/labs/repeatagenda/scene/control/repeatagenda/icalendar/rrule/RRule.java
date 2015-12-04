@@ -212,7 +212,6 @@ public class RRule {
     /** Return new RRule with its properties set by parsing iCalendar compliant RRULE string */
     public static RRule parseRRule(String rRuleString)
     {
-        System.out.println("rRuleString: " + rRuleString);
         RRule rrule = new RRule();
         
         // Parse string
@@ -220,7 +219,6 @@ public class RRule {
                 .forEach(r ->
                 {
                     String[] ruleAndValue = r.split("=");
-                    System.out.println("test: " + ruleAndValue[0]);
                     if (ruleAndValue[0].equals(rrule.frequencyProperty().getName()))
                     { // FREQ
                         Frequency freq = Frequency.FrequencyType
@@ -245,7 +243,7 @@ public class RRule {
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                                System.out.println("rule: " + rule + " " + rrule);
+//                                System.out.println("rule: " + rule + " " + rrule);
                                 rrule.getFrequency().addByRule(rule);
                             }
                         }
@@ -301,42 +299,4 @@ public class RRule {
     static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
        return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
     }
-
-//    /** Enumeration of RRule parts
-//     * Is used to make new instances of the different Frequencies by matching RRULE property
-//     * to its matching class */
-//    public static enum FrequencyParts
-//    {
-//        FREQ (Yearly.class)
-//      , UNTIL (Monthly.class)
-//      , COUNT (Weekly.class)
-//      , INTERVAL (Daily.class)
-//      , BYSECOND (Hourly.class) // Not implemented
-//      , BYMINUTE (Minutely.class) // Not implemented
-//      , BYHOUR (Secondly.class)
-//      , BYDAY
-//      , BYMONTHDAY
-//      , BYYEARDAY
-//      , BYWEEKNO
-//      , BYMONTH
-//      , BYSETPOS
-//      , WKST);
-//      
-//        private Class<? extends Frequency> clazz;
-//          
-//        FrequencyParts(Class<? extends Rule> clazz)
-//        {
-//            this.clazz = clazz;
-//        }
-//          
-//        public Frequency newInstance()
-//        {
-//            try {
-//                return clazz.newInstance();
-//            } catch (InstantiationException | IllegalAccessException e) {
-//                e.printStackTrace();
-//            }
-//            return null;
-//        }
-//    }
 }

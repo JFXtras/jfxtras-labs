@@ -1,12 +1,12 @@
 package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller;
 
 
+import java.security.InvalidParameterException;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -25,6 +25,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
@@ -34,6 +35,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.EndCriteria;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency.FrequencyType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Weekly;
@@ -84,12 +86,68 @@ private ToggleGroup endGroup;
 @FXML private Button closeButton;
 @FXML private Button cancelButton;
 
-private Set<LocalDateTime> invalidExceptions = new HashSet<LocalDateTime>();
+//private ChangeListener<? super Boolean> dayOfWeekListener = (obs, oldSel, newSel) -> 
+
+//private Set<LocalDateTime> invalidExceptions = new HashSet<LocalDateTime>();
 
 ChangeListener<? super FrequencyType> frequencyListener = (obs, oldSel, newSel) -> 
 {
-    vComponent.getRRule().setFrequency(newSel.newInstance());
-    intervalSpinner.getEditor().textProperty().set("1");
+    // Change Frequency if different, reset Interval to 1
+    if (vComponent.getRRule().getFrequency().getFrequencyType() != newSel)
+    {
+        vComponent.getRRule().setFrequency(newSel.newInstance());
+        intervalSpinner.getEditor().textProperty().set("1");
+    
+        // Setup monthlyVBox and weeklyHBox setting visibility
+        switch (newSel)
+        {
+        case DAILY:
+        case YEARLY:
+            monthlyVBox.setVisible(false);
+            monthlyLabel.setVisible(false);
+            weeklyHBox.setVisible(false);
+            weeklyLabel.setVisible(false);
+            break;
+        case MONTHLY:
+            monthlyVBox.setVisible(true);
+            monthlyLabel.setVisible(true);
+            weeklyHBox.setVisible(false);
+            weeklyLabel.setVisible(false);
+            break;
+        case WEEKLY:
+            monthlyVBox.setVisible(false);
+            monthlyLabel.setVisible(false);
+            weeklyHBox.setVisible(true);
+            weeklyLabel.setVisible(true);
+            // TODO - make bindings for day of week check boxes
+            ByDay byDayRule = (ByDay) vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRules.BYDAY);
+            sundayCheckBox.selectedProperty().addListener((obs2, oldSel2, newSel2) -> 
+            {
+                if (newSel2)
+                {
+                    System.out.println("mark sunday");
+                    byDayRule.addDayOfWeek(DayOfWeek.SUNDAY);
+                } else
+                {
+                    byDayRule.removeDayOfWeek(DayOfWeek.SUNDAY);
+                }
+            });
+            break;
+        case SECONDLY:
+        case MINUTELY:
+        case HOURLY:
+            throw new InvalidParameterException("Frequency not implemented");
+        default:
+            break;
+        }
+    }
+    
+    if (intervalSpinner.getValue() == 1) {
+        frequencyLabel.setText(frequencyComboBox.valueProperty().get().toStringSingular());
+    } else {
+        frequencyLabel.setText(frequencyComboBox.valueProperty().get().toStringPlural());
+    }
+
 };
 
 
@@ -134,7 +192,6 @@ ChangeListener<? super FrequencyType> frequencyListener = (obs, oldSel, newSel) 
             if (isNumber)
             {
                 value = Integer.parseInt(s);
-//                vComponent.getRRule().getFrequency().intervalProperty().unbind();
                 vComponent.getRRule().getFrequency().setInterval(value);
             } else {
                 String lastValue = intervalSpinner.getValue().toString();
@@ -143,6 +200,15 @@ ChangeListener<? super FrequencyType> frequencyListener = (obs, oldSel, newSel) 
             }
         }
     });
+    
+    // Day of week tooltips
+    sundayCheckBox.setTooltip(new Tooltip(resources.getString("sunday")));
+    mondayCheckBox.setTooltip(new Tooltip(resources.getString("monday")));
+    tuesdayCheckBox.setTooltip(new Tooltip(resources.getString("tuesday")));
+    wednesdayCheckBox.setTooltip(new Tooltip(resources.getString("wednesday")));
+    thursdayCheckBox.setTooltip(new Tooltip(resources.getString("thursday")));
+    fridayCheckBox.setTooltip(new Tooltip(resources.getString("friday")));
+    saturdayCheckBox.setTooltip(new Tooltip(resources.getString("saturday")));
 
 }
 
@@ -161,16 +227,16 @@ ChangeListener<? super FrequencyType> frequencyListener = (obs, oldSel, newSel) 
         
         // MAKE NEW RRULE IF NECESSARY
         RRule rRule;
+        boolean checkBox = false;
         if (vComponent.getRRule() == null)
         {
             rRule = setDefaults(new RRule(), vComponent.getDateTimeStart());
             vComponent.setRRule(rRule);
         } else
         {
+            checkBox = true;
             rRule = vComponent.getRRule();
         }
-        
-        frequencyComboBox.setValue(rRule.getFrequency().getFrequencyType());
         
         // REPEATABLE CHECKBOX
         repeatableCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
@@ -191,7 +257,12 @@ ChangeListener<? super FrequencyType> frequencyListener = (obs, oldSel, newSel) 
                 startDatePicker.setDisable(true);
             }
         });
-        
+
+        // Initial settings
+        repeatableCheckBox.selectedProperty().set(checkBox);
+        frequencyComboBox.setValue(rRule.getFrequency().getFrequencyType());
+        setDayOfWeek(vComponent);
+
     }
     
         
@@ -237,6 +308,58 @@ ChangeListener<? super FrequencyType> frequencyListener = (obs, oldSel, newSel) 
         frequencyComboBox.valueProperty().removeListener(frequencyListener);
     }
 
+    /** Set day of week properties if FREQ=WEEKLY and has BYDAY byxxx rule 
+     * This method is called only during setup */
+    private void setDayOfWeek(VComponent<T> vComponent)
+    {
+        // Set day of week properties
+        if (vComponent.getRRule().getFrequency().getFrequencyType() == FrequencyType.WEEKLY)
+        {
+            Optional<Rule> rule = vComponent.getRRule()
+                    .getFrequency()
+                    .getRules()
+                    .stream()
+                    .filter(r -> r.getByRule() == Rule.ByRules.BYDAY)
+                    .findFirst();
+            if (rule.isPresent())
+            {
+                ByDay r = ((ByDay) rule.get());
+                ((ByDay) rule.get()).getDayofWeekWithoutOrdinalList()
+                        .stream()
+                        .forEach(d -> 
+                        {
+                            switch(d)
+                            {
+                            case FRIDAY:
+                                fridayCheckBox.selectedProperty().set(true);
+                                break;
+                            case MONDAY:
+                                mondayCheckBox.selectedProperty().set(true);
+                                break;
+                            case SATURDAY:
+                                saturdayCheckBox.selectedProperty().set(true);
+                                break;
+                            case SUNDAY:
+                                sundayCheckBox.selectedProperty().set(true);
+                                break;
+                            case THURSDAY:
+                                thursdayCheckBox.selectedProperty().set(true);
+                                break;
+                            case TUESDAY:
+                                tuesdayCheckBox.selectedProperty().set(true);
+                                break;
+                            case WEDNESDAY:
+                                wednesdayCheckBox.selectedProperty().set(true);
+                                break;
+                            default:
+                                break;
+                            }
+                        });
+    
+            }
+        }
+    }
+    
     
     /**
      * Default settings for a new RRule - weekly, repeats on day of week in dateTime

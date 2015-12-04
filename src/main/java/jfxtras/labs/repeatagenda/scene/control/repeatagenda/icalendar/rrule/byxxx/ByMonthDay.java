@@ -17,7 +17,7 @@ import javafx.beans.property.ObjectProperty;
 /** BYMONTHDAY from RFC 5545, iCalendar */
 public class ByMonthDay extends ByRuleAbstract
 {
-    private final static int PROCESS_ORDER = 30; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
+    private final static ByRules MY_RULE = ByRules.BYMONTHDAY;
 
     /** sorted array of days of month
      * (i.e. 5, 10 = 5th and 10th days of the month, -3 = 3rd from last day of month)
@@ -37,7 +37,7 @@ public class ByMonthDay extends ByRuleAbstract
      */
     public ByMonthDay(String daysOfMonthString)
     {
-        super(PROCESS_ORDER);
+        this();
         int[] days = Arrays
                 .stream(daysOfMonthString.split(","))
                 .mapToInt(s -> Integer.parseInt(s))
@@ -50,14 +50,14 @@ public class ByMonthDay extends ByRuleAbstract
      */
     public ByMonthDay()
     {
-        super(PROCESS_ORDER);
+        super(MY_RULE);
     }
 
     /** Constructor 
      * Contains varargs of daysOfMonth */
     public ByMonthDay(int... daysOfMonth)
     {
-        super(PROCESS_ORDER);
+        this();
         setDaysOfMonth(daysOfMonth);
     }
 

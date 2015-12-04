@@ -8,11 +8,11 @@ import javafx.beans.property.ObjectProperty;
 
 public class ByYearDay extends ByRuleAbstract
 {
-    private final static int PROCESS_ORDER = 20; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
+    private final static ByRules MY_RULE = ByRules.BYYEARDAY;
 
     public ByYearDay()
     {
-        super(PROCESS_ORDER);
+        super(MY_RULE);
         throw new RuntimeException("not implemented");
     }
 

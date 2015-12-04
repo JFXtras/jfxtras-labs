@@ -37,7 +37,8 @@ public interface Rule extends Comparable<Rule>
     Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, ObjectProperty<ChronoUnit> chronoUnit, LocalDateTime startDateTime);
 
     /** order to process rules */
-    Integer getProcessOrder();
+    ByRules getByRule();
+//    Integer getProcessOrder();
 
     void copyTo(Rule destination);
 
@@ -48,27 +49,35 @@ public interface Rule extends Comparable<Rule>
     }
     
     /** Enumeration of Byxxx rules parts
-     * Is used to make new instances of the different Rules by matching RRULE property
-     * to its matching class */
+     * Contains values including the object's class and the order for processing Byxxx Rules
+     * from RFC 5545 iCalendar page 44
+     * The class is used to make new instances of the different Rules by matching RRULE property
+     * to its matching class
+     * */
     static enum ByRules
     {
-        BYSECOND (BySecond.class) // Not implemented
-      , BYMINUTE (ByMinute.class) // Not implemented
-      , BYHOUR (ByHour.class) // Not implemented
-      , BYDAY (ByDay.class)
-      , BYMONTHDAY (ByMonthDay.class)
-      , BYYEARDAY (ByYearDay.class) // Not implemented
-      , BYWEEKNO (ByWeekNo.class)
-      , BYMONTH (ByMonth.class)
-      , BYSETPOS (BySetPos.class); // Not implemented
+        BYSECOND (BySecond.class, 70) // Not implemented
+      , BYMINUTE (ByMinute.class, 60) // Not implemented
+      , BYHOUR (ByHour.class, 50) // Not implemented
+      , BYDAY (ByDay.class, 40)
+      , BYMONTHDAY (ByMonthDay.class, 30)
+      , BYYEARDAY (ByYearDay.class, 20) // Not implemented
+      , BYWEEKNO (ByWeekNo.class, 10)
+      , BYMONTH (ByMonth.class, 0)
+      , BYSETPOS (BySetPos.class, 80); // Not implemented
       
         private Class<? extends Rule> clazz;
-          
-        ByRules(Class<? extends Rule> clazz)
+
+        private int processOrder;
+        public int getProcessOrder() { return processOrder; }
+
+        ByRules(Class<? extends Rule> clazz, int processOrder)
         {
             this.clazz = clazz;
+            this.processOrder = processOrder;
         }
-          
+
+        /** return new instance of the matching ByRule object */
         public Rule newInstance()
         {
             try {
@@ -79,7 +88,8 @@ public interface Rule extends Comparable<Rule>
             return null;
         }
 
-        /** Returns new instance of the ByRule specified by the enum */
+        /** Returns new instance of the matching ByRule and populates its value
+         * by parsing the String parameter */
         public Rule newInstance(String string) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
         {
             return clazz.getConstructor(String.class).newInstance(string);

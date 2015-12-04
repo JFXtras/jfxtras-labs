@@ -5,15 +5,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 
 public class ByMinute extends ByRuleAbstract
 {
-    private final static int PROCESS_ORDER = 60; // order for processing Byxxx Rules from RFC 5545 iCalendar page 44
+    private final static ByRules MY_RULE = ByRules.BYMINUTE;
 
-    public ByMinute(Frequency frequency)
+    public ByMinute()
     {
-        super(PROCESS_ORDER);
+        super(MY_RULE);
         throw new RuntimeException("not implemented");
     }
     
