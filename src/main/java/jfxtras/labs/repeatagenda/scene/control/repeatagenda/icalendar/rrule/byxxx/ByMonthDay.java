@@ -81,7 +81,6 @@ public class ByMonthDay extends ByRuleAbstract
         }
         ByMonthDay testObj = (ByMonthDay) obj;
         boolean daysOfMonthEquals = Arrays.equals(getDaysOfMonth(), testObj.getDaysOfMonth());
-//        System.out.println("ByMonthDay equals " + daysOfMonthEquals + " " + daysOfMonth[0] + " " + testObj.getDaysOfMonth()[0]);
         return daysOfMonthEquals;
     }
     

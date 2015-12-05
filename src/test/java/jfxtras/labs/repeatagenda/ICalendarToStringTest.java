@@ -41,7 +41,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
                           + "DTSTAMP:19970901T083000" + System.lineSeparator()
                           + "DTSTART:19970902T100000" + System.lineSeparator()
                           + "DURATION:PT1H" + System.lineSeparator()
-                          + "RRULE:FREQ=MONTHLY;BYDAY=FR;BYMONTHDAY=13" + System.lineSeparator()
+                          + "RRULE:FREQ=MONTHLY;BYMONTHDAY=13;BYDAY=FR" + System.lineSeparator()
                           + "UID:19970901T083000-0@jfxtras.org" + System.lineSeparator()
                           + "END:VEVENT";
     assertEquals(expectedString, madeString);

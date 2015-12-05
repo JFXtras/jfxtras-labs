@@ -21,7 +21,7 @@ import java.util.stream.StreamSupport;
 public class RDate extends RecurrenceComponent<RDate>
 {
             
-    /** Remove date/times in exDates set */
+    /** Add date/times in RDates set */
     public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
     {
         if (inStream == null) return getDates().stream().filter(d -> ! d.isBefore(startDateTime));
@@ -99,7 +99,6 @@ public class RDate extends RecurrenceComponent<RDate>
             int result = (next1 == null) ? 1 :
                          (next2 == null) ? -1 :
                          comparator.compare(next1, next2);
-//            System.out.println("result: " + result);
             if (result > 0)
             {
                 theNext = next2;

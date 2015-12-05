@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
 
 /** For EXDate and RDate
  * Limitation: only DATE-TIME supported.  DATE is not supported.
@@ -51,8 +50,20 @@ public abstract class RecurrenceComponent<T>
         return (T) this;
     }
     
-    public void copyTo(Rule destination) {
-        // TODO Auto-generated method stub       
+    /** Deep copy all fields from source to destination 
+     * @param <U>*/
+    private static <U> void copy(RecurrenceComponent<U> source, RecurrenceComponent<U> destination)
+    {
+        if (source.getDates() != null)
+        {
+            source.getDates().stream().forEach(r -> destination.getDates().add(r));
+        }
+    }
+    
+    /** Deep copy all fields from this to destination */
+    public void copyTo(RecurrenceComponent<T> destination)
+    {
+        copy(this, destination);
     }
     
     @Override

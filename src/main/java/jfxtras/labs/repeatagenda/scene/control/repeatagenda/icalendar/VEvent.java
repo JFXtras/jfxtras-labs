@@ -269,7 +269,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         destination.setDurationInSeconds(source.getDurationInSeconds());
     }
 
-    /** Deep copy all fields from source to destination */
+    /** Deep copy all fields from this to destination */
     @Override
     public void copyTo(VComponent destination)
     {

@@ -4,6 +4,7 @@ import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -84,10 +85,14 @@ public abstract class FrequencyAbstract implements Frequency {
                     + byRule.getClass().getName() + ") more than once.");
         }
         getByRules().add(byRule);
+        Collections.sort(getByRules());
     }
     @Override public Rule getByRuleByType(Rule.ByRules byRule)
     {
-        Optional<Rule> rule = getByRules().stream().filter(a -> a.getByRule() == byRule).findFirst();
+        Optional<Rule> rule = getByRules()
+                .stream()
+                .filter(a -> a.getByRule() == byRule)
+                .findFirst();
         return (rule.isPresent()) ? rule.get() : null;
     }
 
@@ -141,10 +146,9 @@ public abstract class FrequencyAbstract implements Frequency {
         Iterator<Rule> rulesIterator = getByRules().stream().sorted().iterator();
         while (rulesIterator.hasNext())
         {
-            System.out.println("chronounit start:"  + getChronoUnit());
             Rule rule = rulesIterator.next();
+            System.out.println("chronoUnit: " + getChronoUnit() + rule.getByRule());
             stream = rule.stream(stream, getChronoUnit(), startDateTime);
-            System.out.println("chronounit end:"  + getChronoUnit());
         }
         return stream;
     }
@@ -162,12 +166,14 @@ public abstract class FrequencyAbstract implements Frequency {
                 (testObj.getInterval() == null) : getInterval().equals(testObj.getInterval());
 //        Iterator<Rule> ruleIterator = getRules().iterator();
         boolean rulesEquals;
+        System.out.println(getByRules().size() + " -size- "+  testObj.getByRules().size());
         if (getByRules().size() == testObj.getByRules().size())
         {
             List<Boolean> rulesEqualsArray = new ArrayList<Boolean>();
             for (int i=0; i<getByRules().size(); i++)
             {
                 boolean e = getByRules().get(i).equals(testObj.getByRules().get(i));
+                System.out.println("rules: " + getByRules().get(i) + " " + testObj.getByRules().get(i) + " " + e);
                 rulesEqualsArray.add(e);
             }
             rulesEquals = rulesEqualsArray.stream().allMatch(a -> a == true );

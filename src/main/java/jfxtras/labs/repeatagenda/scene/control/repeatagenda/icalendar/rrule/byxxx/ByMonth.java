@@ -68,7 +68,7 @@ public class ByMonth extends ByRuleAbstract
             return false;
         }
         ByMonth testObj = (ByMonth) obj;
-        boolean monthEquals = getMonths().equals(testObj.getMonths());
+        boolean monthEquals = Arrays.equals(getMonths(), testObj.getMonths());
         return monthEquals;
     }
 

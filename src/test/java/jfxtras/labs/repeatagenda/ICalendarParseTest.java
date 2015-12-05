@@ -102,6 +102,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
         frequency.addByRule(new ByDay(new ByDayPair(DayOfWeek.MONDAY, 2), new ByDayPair(DayOfWeek.MONDAY, 3)));
         frequency.addByRule(new ByWeekNo(20));
         expectedRRule.setFrequency(frequency);
+        System.out.println("expectedRRule:"+expectedRRule.toString());
         assertEquals(expectedRRule, rRule);
     }
     

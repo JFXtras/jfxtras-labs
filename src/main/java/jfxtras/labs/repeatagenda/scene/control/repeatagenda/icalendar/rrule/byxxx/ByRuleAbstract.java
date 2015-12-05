@@ -15,7 +15,7 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byx
  * @see BySecond
  * @see BySetPos
  */
-public abstract class ByRuleAbstract implements Rule
+public abstract class ByRuleAbstract implements Rule, Comparable<Rule>
 {
     /** ByRule enum containing order in which ByRules are processed */
     final private ByRules byRule;
@@ -33,7 +33,7 @@ public abstract class ByRuleAbstract implements Rule
     {
         int p1 = this.getByRule().getProcessOrder();
         int p2 = byRule.getByRule().getProcessOrder();
-        return (p2 > p1) ? 1 :
-               (p2 < p1) ? -1 : 0;
+        return (p2 > p1) ? -1 :
+               (p2 < p1) ? 1 : 0;
     }
 }

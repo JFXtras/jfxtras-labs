@@ -149,10 +149,9 @@ public class RRule {
         }
         return true;
     }
-    
 
     /** Deep copy all fields from source to destination */
-    public static void copy(RRule source, RRule destination)
+    private static void copy(RRule source, RRule destination)
     {
         if (source.getCount() > 0) destination.setCount(source.getCount());
         if (source.getFrequency() != null)
@@ -170,6 +169,12 @@ public class RRule {
         {
             destination.getInstances().add(i.next());
         }
+    }
+    
+    /** Deep copy all fields from this to destination */
+    public void copyTo(RRule destination)
+    {
+        copy(this, (RRule) destination);
     }
 
     @Override

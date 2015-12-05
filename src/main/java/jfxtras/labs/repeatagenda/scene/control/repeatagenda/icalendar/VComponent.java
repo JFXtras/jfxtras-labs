@@ -2,6 +2,7 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
@@ -104,8 +105,10 @@ public interface VComponent<T>
     public void setDateTimeRecurrence(LocalDateTime dtRecurrence);
     
     /**
-     * Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
-     * If event is not repeating value is null
+     * RRULE, Recurrence Rule as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
+     * This property defines a rule or repeating pattern for recurring events, 
+     * to-dos, journal entries, or time zone definitions
+     * If component is not repeating the value is null.
      */
     RRule getRRule();
     void setRRule(RRule rRule);
@@ -128,6 +131,18 @@ public interface VComponent<T>
     String getUniqueIdentifier();
     void setUniqueIdentifier(String s);
     
+    /** Stream of date/times that indicate the start of the event(s).
+     * For a VEvent without RRULE the stream will contain only one date/time element.
+     * A VEvent with a RRULE the stream contains more than one date/time element.  It will be infinite 
+     * if COUNT or UNTIL is not present.  The stream has an end when COUNT or UNTIL condition is met.
+     * Starts on startDateTime, which must be a valid event date/time, not necessarily the
+     * first date/time (DTSTART) in the sequence.
+     * 
+     * @param startDateTime - start date/times are produced after this date
+     * @return - stream of start date/times for the recurrence set
+     */
+    Stream<LocalDateTime> stream(LocalDateTime startDateTime);
+
     /**
      * Returns the collection of recurrence instances of calendar component of type T that exists
      * between dateTimeRangeStart and dateTimeRangeEnd based on VComponent.

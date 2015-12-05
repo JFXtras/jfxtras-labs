@@ -92,7 +92,8 @@ public class ByWeekNo extends ByRuleAbstract
             return false;
         }
         ByWeekNo testObj = (ByWeekNo) obj;
-        boolean weekNumbersEquals = getWeekNumbers().equals(testObj.getWeekNumbers());
+        
+        boolean weekNumbersEquals = Arrays.equals(getWeekNumbers(), testObj.getWeekNumbers());
         return weekNumbersEquals;
     }
     
@@ -163,7 +164,7 @@ public class ByWeekNo extends ByRuleAbstract
         case HOURS:
         case MINUTES:
         case SECONDS:
-            throw new InvalidParameterException("BYWEEKNO is not available for " + chronoUnit + " frequency."); // Not available
+            throw new InvalidParameterException("BYWEEKNO is not available for " + chronoUnit.get() + " frequency."); // Not available
         default:
             break;
         }

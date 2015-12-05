@@ -401,7 +401,33 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                     e.printStackTrace();
                 }
             }
-            RRule.copy(source.getRRule(), destination.getRRule());
+            source.getRRule().copyTo(destination.getRRule());
+        }
+        if (source.getExDate() != null)
+        {
+            if (destination.getExDate() == null)
+            { // make new EXDate object for destination if necessary
+                try {
+                    EXDate newEXDate = source.getExDate().getClass().newInstance();
+                    destination.setExDate(newEXDate);
+                } catch (InstantiationException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+            source.getExDate().copyTo(destination.getExDate());
+        }
+        if (source.getRDate() != null)
+        {
+            if (destination.getRDate() == null)
+            { // make new RDate object for destination if necessary
+                try {
+                    RDate newRDate = source.getRDate().getClass().newInstance();
+                    destination.setRDate(newRDate);
+                } catch (InstantiationException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+            source.getRDate().copyTo(destination.getRDate());
         }
     }
     
@@ -437,10 +463,14 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 (testObj.getUniqueIdentifier() == null) : getUniqueIdentifier().equals(testObj.getUniqueIdentifier());
         boolean rruleEquals = (getRRule() == null) ?
                 (testObj.getRRule() == null) : getRRule().equals(testObj.getRRule());
+        boolean eXDatesEquals = (getExDate() == null) ?
+                (testObj.getExDate() == null) : getExDate().equals(testObj.getExDate());
+        boolean rDatesEquals = (getRDate() == null) ?
+                (testObj.getRDate() == null) : getRDate().equals(testObj.getRDate());
         System.out.println("Vcomponent equals: " + categoriesEquals + " " + commentEquals + " " + dateTimeStampEquals + " " + dateTimeStartsEquals + " " 
-                + locationEquals + " " + summaryEquals + " " + uniqueIdentifierEquals + " " + rruleEquals);
+                + locationEquals + " " + summaryEquals + " " + uniqueIdentifierEquals + " " + rruleEquals + " " + eXDatesEquals + " " + rDatesEquals);
         return categoriesEquals && commentEquals && dateTimeStampEquals && dateTimeStartsEquals && locationEquals
-                && summaryEquals && uniqueIdentifierEquals && rruleEquals;
+                && summaryEquals && uniqueIdentifierEquals && rruleEquals && eXDatesEquals && rDatesEquals;
     }
 
     /** Make map of properties and string values for toString method in subclasses (like VEvent) */
@@ -533,13 +563,13 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     }
         
     
-    
     /** Stream of date/times that indicate the start of the event(s).
      * For a VEvent without RRULE the stream will contain only one date/time element.
      * A VEvent with a RRULE the stream contains more than one date/time element.  It will be infinite 
      * if COUNT or UNTIL is not present.  The stream has an end when COUNT or UNTIL condition is met.
      * Starts on startDateTime, which must be a valid event date/time, not necessarily the
      * first date/time (DTSTART) in the sequence. */
+    @Override
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
         Stream<LocalDateTime> stream1;
