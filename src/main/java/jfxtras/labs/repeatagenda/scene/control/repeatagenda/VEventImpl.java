@@ -300,28 +300,28 @@ public class VEventImpl extends VEvent<Appointment>
         return madeAppointments;
     }
  
-    /**
-     * Returns next valid date time starting with inputed date.  If inputed date is valid it is returned.
-     * Iterates from first date until it passes the inputDate.  This make take a long time if the date
-     * is far in the future.
-     * 
-     * @param inputDate
-     * @return
-     */
-    // TODO - If this method is necessary consider using cache of dates for faster retrieval
-    // TODO - it may not be necessary, remove if possible for improved efficiency
-    @Deprecated
-    public LocalDateTime nextValidDateSlow(LocalDateTime inputDate)
-    {
-        if (inputDate.isBefore(getDateTimeStart())) return getDateTimeStart();
-        final Iterator<LocalDateTime> i = getRRule().stream(inputDate).iterator();                                                            // make iterator
-        while (i.hasNext())
-        { // find date
-            LocalDateTime s = i.next();
-            if (s.isAfter(inputDate)) return s; // exit loop when beyond date without match
-        }
-        throw new InvalidParameterException("Can't find valid date starting at " + inputDate);
-    }
+//    /**
+//     * Returns next valid date time starting with inputed date.  If inputed date is valid it is returned.
+//     * Iterates from first date until it passes the inputDate.  This make take a long time if the date
+//     * is far in the future.
+//     * 
+//     * @param inputDate
+//     * @return
+//     */
+//    // TODO - If this method is necessary consider using cache of dates for faster retrieval
+//    // TODO - it may not be necessary, remove if possible for improved efficiency
+//    @Deprecated
+//    public LocalDateTime nextValidDateSlow(LocalDateTime inputDate)
+//    {
+//        if (inputDate.isBefore(getDateTimeStart())) return getDateTimeStart();
+//        final Iterator<LocalDateTime> i = getRRule().stream(inputDate).iterator();                                                            // make iterator
+//        while (i.hasNext())
+//        { // find date
+//            LocalDateTime s = i.next();
+//            if (s.isAfter(inputDate)) return s; // exit loop when beyond date without match
+//        }
+//        throw new InvalidParameterException("Can't find valid date starting at " + inputDate);
+//    }
     
     public static void refreshVEventAppointments(VEventImpl vevent)
     {

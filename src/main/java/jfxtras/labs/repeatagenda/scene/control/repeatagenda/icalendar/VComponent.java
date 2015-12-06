@@ -52,17 +52,17 @@ public interface VComponent<T>
      * This property specifies the date and time that the instance of the
      * iCalendar object was created
      */
-    public LocalDateTime getDateTimeStamp();
-    public void setDateTimeStamp(LocalDateTime dtStamp);
+    LocalDateTime getDateTimeStamp();
+    void setDateTimeStamp(LocalDateTime dtStamp);
     
     /**
      * DTSTART: Date-Time Start, from RFC 5545 iCalendar 3.8.2.4 page 97
      * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
      * start date/times of the repeating events.
      */
-    LocalDateTime getDateTimeStart();
-    void setDateTimeStart(LocalDateTime dtStart);
-    
+    VDateTime getDateTimeStart();
+    void setDateTimeStart(VDateTime dtStart);
+        
     /**
      * EXDATE: Set of date/times exceptions for recurring events, to-dos, journal entries.
      * 3.8.5.1, RFC 5545 iCalendar
@@ -130,6 +130,15 @@ public interface VComponent<T>
      */
     String getUniqueIdentifier();
     void setUniqueIdentifier(String s);
+    
+    /** This property is true when the DTSTART property contains only a date (no time)
+     * example: DTSTART;VALUE=DATE:19971102
+     * If this property is true the component can't have DURATION or DTEND
+     * If this property is true the time portion of dateTimeStart is set to the start of the day and
+     * the time is ignored.
+     */
+    boolean isWholeDay();
+    void setWholeDay(boolean wholeDay);
     
     /** Stream of date/times that indicate the start of the event(s).
      * For a VEvent without RRULE the stream will contain only one date/time element.

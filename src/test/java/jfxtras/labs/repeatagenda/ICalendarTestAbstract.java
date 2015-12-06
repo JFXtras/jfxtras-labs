@@ -508,4 +508,16 @@ public abstract class ICalendarTestAbstract
         vEvent.setRDate(rDate);
         return vEvent;
     }
+    
+    /** all-day appointments */
+    protected static VEventImpl getAllDayDaily1()
+    {
+        VEventImpl vEvent = new VEventImpl();
+        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        vEvent.setDurationInSeconds(3600L);
+        vEvent.setAppointmentClass(clazz);
+        vEvent.setWholeDay(true);
+        return vEvent;
+    }
+
 }

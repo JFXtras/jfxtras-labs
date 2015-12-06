@@ -16,8 +16,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -165,7 +167,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * This property specifies the date and time that the calendar information was created.
      * This is analogous to the creation date and time for a file in the file system.
      */
-    final private ObjectProperty<LocalDateTime> dateTimeCreated = new SimpleObjectProperty<LocalDateTime>(this, "CREATED");
+    final private ObjectProperty<LocalDateTime> dateTimeCreated = new SimpleObjectProperty<>(this, "CREATED");
     public ObjectProperty<LocalDateTime> dateTimeCreatedProperty() { return dateTimeCreated; }
     public LocalDateTime getDateTimeCreated() { return dateTimeCreated.getValue(); }
     public void setDateTimeCreated(LocalDateTime dtCreated) { this.dateTimeCreated.set(dtCreated); }
@@ -175,7 +177,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * This property specifies the date and time that the instance of the
      * iCalendar object was created
      */
-    final private ObjectProperty<LocalDateTime> dateTimeStamp = new SimpleObjectProperty<LocalDateTime>(this, "DTSTAMP");
+    final private ObjectProperty<LocalDateTime> dateTimeStamp = new SimpleObjectProperty<>(this, "DTSTAMP");
     public ObjectProperty<LocalDateTime> dateTimeStampProperty() { return dateTimeStamp; }
     public LocalDateTime getDateTimeStamp() { return dateTimeStamp.getValue(); }
     public void setDateTimeStamp(LocalDateTime dtStamp) { this.dateTimeStamp.set(dtStamp); }
@@ -185,10 +187,10 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
      * start date/times of the repeating events.
      */
-    final private ObjectProperty<LocalDateTime> dateTimeStart = new SimpleObjectProperty<LocalDateTime>(this, "DTSTART");
-    public ObjectProperty<LocalDateTime> dateTimeStartProperty() { return dateTimeStart; }
-    public LocalDateTime getDateTimeStart() { return dateTimeStart.getValue(); }
-    public void setDateTimeStart(LocalDateTime dtStart) { this.dateTimeStart.set(dtStart); }
+    final private ObjectProperty<VDateTime> dateTimeStart = new SimpleObjectProperty<>(this, "DTSTART");
+    public ObjectProperty<VDateTime> dateTimeStartProperty() { return dateTimeStart; }
+    @Override public VDateTime getDateTimeStart() { return dateTimeStart.getValue(); }
+    @Override public void setDateTimeStart(VDateTime dtStart) { this.dateTimeStart.set(dtStart); }
 
     /**
      * EXDATE: Set of date/times exceptions for recurring events, to-dos, journal entries.
@@ -197,7 +199,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      */
     public ObjectProperty<EXDate> exDateProperty()
     {
-        if (exDate == null) exDate = new SimpleObjectProperty<EXDate>(this, "EXDATE", _exDate);
+        if (exDate == null) exDate = new SimpleObjectProperty<>(this, "EXDATE", _exDate);
         return exDate;
     }
     private ObjectProperty<EXDate> exDate;
@@ -240,8 +242,8 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     /**
      * RDATE: Set of date/times for recurring events, to-dos, journal entries.
      * 3.8.5.2, RFC 5545 iCalendar
-     * Is rarely used, so employs lazy initialization.
-     */
+    */
+    // Is rarely used, so employs lazy initialization.
     public ObjectProperty<RDate> rDateProperty()
     {
         if (rDate == null) rDate = new SimpleObjectProperty<RDate>(this, "RDATE", _rDate);
@@ -265,8 +267,8 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * RECURRENCE-ID: Date-Time recurrence, from RFC 5545 iCalendar 3.8.4.4 page 112
      * The property value is the original value of the "DTSTART" property of the 
      * recurrence instance.
-     * It rarely used, so lazy initialization is used.
      */
+    // Is rarely used, so lazy initialization is used.
     public ObjectProperty<LocalDateTime> dateTimeRecurrenceProperty()
     {
         if (dateTimeRecurrence == null) dateTimeRecurrence = new SimpleObjectProperty<LocalDateTime>(this, "RECURRENCE-ID", _dateTimeRecurrence);
@@ -323,7 +325,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     public void setUniqueIdentifier(String s) { uniqueIdentifier.set(s); }
 //    public T withUniqueIdentifier(String uid) { setUniqueIdentifier(uid); return (T)this; }
 
-    /** Callback for creating unique uid values */
+    /** Callback for creating unique uid values - not implemented - TODO */
     public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
     private final static String datePattern = "yyyyMMdd";
     private final static String timePattern = "HHmmss";
@@ -341,6 +343,15 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     {
         setUniqueIdentifier(uidGeneratorCallback.call(null));
     }
+    
+    /**
+     * WholeDay property - used only internally, not a part of the iCalendar specification
+     * Indicates a component's duration is one day.
+     */
+    public BooleanProperty wholeDayProperty() { return wholeDay; }
+    private BooleanProperty wholeDay = new SimpleBooleanProperty(this, "wholeDay", false);
+    public boolean isWholeDay() { return wholeDay.get(); }
+    public void setWholeDay(boolean b) { wholeDay.set(b); }
     
     /** Method to convert DTSTART or DTEND to LocalDateTime
      * Currently ignores time zones */
@@ -528,12 +539,17 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 stringsIterator.remove();
             } else if (property[0].equals(vComponent.dateTimeStartProperty().getName()))
             { // DTSTART
+                if (property[1].matches("VALUE=DATE"))
+                {
+                    
+                }
                 LocalDateTime dateTime = LocalDateTime.parse(property[1],FORMATTER);
-                vComponent.setDateTimeStart(dateTime);
+//                vComponent.setDateTimeStart(dateTime);
+                vComponent.getDateTimeStart().setLocalDateTime(dateTime);
                 stringsIterator.remove();
             } else if (property[0].equals(vComponent.exDateProperty().getName()))
-            {
-                Collection<LocalDateTime> dateTimeCollection= RecurrenceComponent.parseDates(property[1]);
+            { // EXDATE
+                Collection<LocalDateTime> dateTimeCollection = RecurrenceComponent.parseDates(property[1]);
                 if (vComponent.getExDate() == null)
                 {
                     vComponent.setExDate(new EXDate());
@@ -545,6 +561,16 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 LocalDateTime dateTime = LocalDateTime.parse(property[1],FORMATTER);
                 vComponent.setDateTimeLastModified(dateTime);
                 stringsIterator.remove();
+            } else if (property[0].equals(vComponent.rDateProperty().getName()))
+            { // RDATE
+                Collection<LocalDateTime> dateTimeCollection = RecurrenceComponent.parseDates(property[1]);
+                if (vComponent.getRDate() == null)
+                {
+                    vComponent.setRDate(new RDate());
+                }                  
+                vComponent.getRDate().getDates().addAll(dateTimeCollection);
+                stringsIterator.remove();
+
             } else if (property[0].equals(vComponent.rRuleProperty().getName()))
             { // RRULE
                 vComponent.setRRule(RRule.parseRRule(property[1]));
@@ -575,9 +601,11 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         Stream<LocalDateTime> stream1;
         if (getRRule() == null)
         { // if individual event
-            if (! startDateTime.isBefore(getDateTimeStart()))
+//            if (! startDateTime.isBefore(getDateTimeStart()))
+            if (! startDateTime.isBefore(LocalDateTime.from(getDateTimeStart())))
             {
-                stream1 = Arrays.asList(getDateTimeStart()).stream();
+//                stream1 = Arrays.asList(getDateTimeStart()).stream();
+                stream1 = Arrays.asList(LocalDateTime.from(getDateTimeStart())).stream();
             } else
             { // if dateTimeStart is before startDateTime
 //                System.out.println("empty stream");
