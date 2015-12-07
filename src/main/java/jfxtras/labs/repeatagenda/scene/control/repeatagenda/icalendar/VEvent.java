@@ -4,7 +4,6 @@ import java.security.InvalidParameterException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -159,7 +158,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     }
     public void setDurationInSeconds(Long value)
     {
-        if (isWholeDay()) throw new InvalidParameterException("Can't send Duration when wholeDay is true.");
+        if (getDateTimeStart().isWholeDay()) throw new InvalidParameterException("Can't send Duration when wholeDay is true.");
         durationInSeconds.setValue(value);
         useDuration=true;
         useDateTimeEnd=false;
@@ -213,24 +212,32 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     { // listener to synch dateTimeEnd and durationInSeconds
         if (getDateTimeStart() != null)
         {
-            long seconds = ChronoUnit.SECONDS.between(getDateTimeStart(), newSel);
+            long seconds = ChronoUnit.SECONDS.between(getDateTimeStart().getLocalDateTime(), newSel);
             setDurationInSeconds(seconds);            
         }
     };
-    private final ChangeListener<? super Temporal> dateTimeStartlistener = (obs, oldSel, newSel) ->
+    private final ChangeListener<? super VDateTime> dateTimeStartlistener = (obs, oldSel, newSel) ->
     { // listener to synch dateTimeStart and durationInSeconds
         if (getDateTimeEnd() != null)
         {
-            long seconds = ChronoUnit.SECONDS.between(newSel, getDateTimeEnd());
+            long seconds = ChronoUnit.SECONDS.between(newSel.getLocalDateTime(), getDateTimeEnd());
             setDurationInSeconds(seconds);
         }
     };
+//    private final ChangeListener<? super Temporal> dateTimeStartlistener = (obs, oldSel, newSel) ->
+//    { // listener to synch dateTimeStart and durationInSeconds
+//        if (getDateTimeEnd() != null)
+//        {
+//            long seconds = ChronoUnit.SECONDS.between(newSel, getDateTimeEnd());
+//            setDurationInSeconds(seconds);
+//        }
+//    };
     private final ChangeListener<? super Number> durationlistener = (obs, oldSel, newSel) ->
     { // listener to synch dateTimeEnd and durationInSeconds.  dateTimeStart is left in place.
         if (getDateTimeStart() != null)
         {
-//            LocalDateTime dtEnd = getDateTimeStart().plusSeconds((long) newSel);
-            LocalDateTime dtEnd = LocalDateTime.from(getDateTimeStart()).plusSeconds((long) newSel);
+            LocalDateTime dtEnd = getDateTimeStart().getLocalDateTime().plusSeconds((long) newSel);
+//            LocalDateTime dtEnd = LocalDateTime.from(getDateTimeStart()).plusSeconds((long) newSel);
             setDateTimeEnd(dtEnd);
         }
     };
@@ -246,7 +253,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     public ObjectProperty<LocalDateTime> dateTimeEndProperty() { return dateTimeEnd; }
     public void setDateTimeEnd(LocalDateTime dtEnd)
     {
-        if (isWholeDay()) throw new InvalidParameterException("Can't send dateTimeEnd when wholeDay is true.");
+        if ((getDateTimeStart() != null) && getDateTimeStart().isWholeDay()) throw new InvalidParameterException("Can't send dateTimeEnd when wholeDay is true.");
         dateTimeEnd.set(dtEnd);
         useDuration=false;
         useDateTimeEnd=true;
@@ -265,6 +272,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         super(vevent);
         copy(vevent, this);
         dateTimeEndProperty().addListener(dateTimeEndlistener); // synch duration with dateTimeEnd
+//        dateTimeStartProperty().addListener(dateTimeStartlistener); // synch duration with dateTimeStart
         dateTimeStartProperty().addListener(dateTimeStartlistener); // synch duration with dateTimeStart
         durationInSecondsProperty().addListener(durationlistener); // synch duration with dateTimeEnd
     }
@@ -272,6 +280,8 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     public VEvent()
     {
         dateTimeEndProperty().addListener(dateTimeEndlistener); // synch duration with dateTimeEnd
+//        System.out.println(getDateTimeStart());
+//        System.out.println(getDateTimeStart().dateTimeProperty());
         dateTimeStartProperty().addListener(dateTimeStartlistener); // synch duration with dateTimeStart
         durationInSecondsProperty().addListener(durationlistener); // synch duration with dateTimeEnd
     }
@@ -344,10 +354,11 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         // Note: Check for invalid condition where both DURATION and DTEND not being null is done in parseVEvent.
         // It is not checked here due to bindings between both DURATION and DTEND.
         if (durationNull && endDateTimeNull) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DURATION and DTEND can not be null.");
-        boolean wholeDayAndDTEndOK = isWholeDay() && durationNull;
-        if (! wholeDayAndDTEndOK) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  WholeDay can't be true and have an end date/time (DTEND).");
-        boolean wholeDayAndDurationOK = isWholeDay() && endDateTimeNull;
-        if (! wholeDayAndDurationOK) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  WholeDay can't be true and have a duration (DURATION).");
+        boolean wholeDayAndDTEndProblem = getDateTimeStart().isWholeDay() && ! durationNull;
+//        System.out.println("here: " + getDateTimeStart().isWholeDay() + " - " + durationNull + " " + (getDateTimeStart().isWholeDay() && durationNull));
+        if (wholeDayAndDTEndProblem) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  WholeDay can't be true and have an end date/time (DTEND).");
+        boolean wholeDayAndDurationProblem = getDateTimeStart().isWholeDay() && ! endDateTimeNull;
+        if (wholeDayAndDurationProblem) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  WholeDay can't be true and have a duration (DURATION).");
         return errorsBuilder.toString();
     }
     

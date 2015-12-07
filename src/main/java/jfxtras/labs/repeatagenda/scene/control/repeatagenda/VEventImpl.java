@@ -197,7 +197,7 @@ public class VEventImpl extends VEvent<Appointment>
     public String toString()
     {
         String errors = validityCheck();
-        if (errors != "") throw new InvalidParameterException(errors);
+        if (! errors.equals("")) throw new InvalidParameterException(errors);
         Map<Property, String> properties = makePropertiesMap();
         String propertiesString = properties.entrySet()
                 .stream() 
@@ -283,7 +283,7 @@ public class VEventImpl extends VEvent<Appointment>
     {
         List<Appointment> madeAppointments = new ArrayList<Appointment>();
         System.out.println("here:" + getDateTimeStart());
-        stream(getDateTimeStart())
+        stream(getDateTimeStart().getLocalDateTime())
                 .forEach(d -> {
                     RepeatableAppointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
                     appt.setStartLocalDateTime(d);
@@ -358,7 +358,7 @@ public class VEventImpl extends VEvent<Appointment>
         final long durationInSeconds = ChronoUnit.SECONDS.between(dateTimeStartInstanceNew, dateTimeEndInstanceNew);
         final VEventImpl vEventOld2 = (VEventImpl) vEventOld;
         System.out.println(dateTimeStartInstanceNew + " " + vEventOld2.getDateTimeStart());
-        boolean dateTimeNewSame = dateTimeStartInstanceNew.toLocalTime().equals(vEventOld2.getDateTimeStart().toLocalTime());
+        boolean dateTimeNewSame = dateTimeStartInstanceNew.toLocalTime().equals(vEventOld2.getDateTimeStart().getLocalDateTime().toLocalTime());
         boolean durationSame = (durationInSeconds == vEventOld2.getDurationInSeconds());
         if (dateTimeNewSame && durationSame && this.equals(vEventOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
 
@@ -389,8 +389,8 @@ public class VEventImpl extends VEvent<Appointment>
                 case ALL:
                     // Copy date/time data to this VEvent
                     long secondsAdjustment = ChronoUnit.SECONDS.between(dateTimeStartInstanceOld, dateTimeStartInstanceNew);
-                    LocalDateTime newDateTimeStart = getDateTimeStart().plusSeconds(secondsAdjustment);
-                    setDateTimeStart(newDateTimeStart);
+                    LocalDateTime newDateTimeStart = getDateTimeStart().getLocalDateTime().plusSeconds(secondsAdjustment);
+                    getDateTimeStart().setLocalDateTime(newDateTimeStart);
                     setDurationInSeconds(durationInSeconds);
                     break;
                 case CANCEL:
@@ -461,7 +461,7 @@ public class VEventImpl extends VEvent<Appointment>
                     }
 
                     // Modify this (edited) VEvent
-                    setDateTimeStart(dateTimeStartInstanceNew);
+                    getDateTimeStart().setLocalDateTime(dateTimeStartInstanceNew);
                     setDurationInSeconds(durationInSeconds);
                     
                     // Modify COUNT for this (the edited) VEvent
@@ -481,7 +481,7 @@ public class VEventImpl extends VEvent<Appointment>
                 { // Make new individual VEvent, save settings to it.  Add date to original as recurrence.
                     VEventImpl newVEvent = new VEventImpl(this);
                     vEvents.add(newVEvent);
-                    newVEvent.setDateTimeStart(dateTimeStartInstanceNew);
+                    newVEvent.getDateTimeStart().setLocalDateTime(dateTimeStartInstanceNew);
                     // TODO - need new UID for newVEvent.  Do it here or in constructor?
                     newVEvent.setRRule(null);
                     appointments.addAll(newVEvent.makeInstances());

@@ -1,36 +1,35 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
+import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalField;
-import java.time.temporal.TemporalUnit;
+import java.time.format.DateTimeFormatter;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 
 /**
  * Class that represents both DATE (3.3.4) and DATE-TIME (3.3.5)
+ * if wholeDay is true dateTime is atStartOfDay and time can't be set.
  * from RFC 5545 iCalendar
  * 
  * @author David Bal
  *
  */
-public class VDateTime implements Temporal
+public class VDateTime
 {
-//    public ObjectProperty<LocalDateTime> dateTimeProperty = new SimpleObjectProperty<>();
-    public LocalDateTime getLocalDateTime()
-    {
-        return (getLocalDate() == null) ? null
-               : (getLocalTime() == null) ? getLocalDate().atStartOfDay()
-               : LocalDateTime.of(getLocalDate(), getLocalTime());
-    }
-    public void setLocalDateTime(LocalDateTime dateTime)
-    {
-        setLocalDate(dateTime.toLocalDate());
-        setLocalDate(dateTime.toLocalTime());
-    }
+    
+    private final static String datePattern = "yyyyMMdd";
+    private final static String timePattern = "HHmmss";
+    public final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(datePattern + "'T'" + timePattern);
+    public final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(datePattern);
+    
+    public ObjectProperty<LocalDateTime> dateTimeProperty() { return dateTime; }
+    private ObjectProperty<LocalDateTime> dateTime = new SimpleObjectProperty<>();
+    public void setLocalDateTime(LocalDateTime dateTime) { this.dateTime.set(dateTime); }
+    public LocalDateTime getLocalDateTime() { return dateTime.get(); }
 
     /** DATE part of DATE-TIME property */
     public ObjectProperty<LocalDate> dateProperty() { return date; }
@@ -41,56 +40,165 @@ public class VDateTime implements Temporal
     /** TIME part of DATE-TIME property */
     public ObjectProperty<LocalTime> timeProperty()
     {
-        if (time == null) time = new SimpleObjectProperty<LocalTime>(_time);
-        return time;
+        return (wholeDay) ? null : time;
     }
-    private ObjectProperty<LocalTime> time;
-    private LocalTime _time;
-    public LocalTime getLocalTime()
+    public LocalTime getLocalTime() { return time.get(); }
+    private ObjectProperty<LocalTime> time = new SimpleObjectProperty<LocalTime>();
+    public void setLocalTime(LocalTime time)
     {
-        return (time == null) ? _time : time.getValue();
-    }
-    public void setLocalDate(LocalTime time)
-    {
-        if (time == null)
-        {
-            _time = time;
-        } else
+        if (! isWholeDay())
         {
             this.time.set(time);
+        } else throw new InvalidParameterException("Can't set time when wholeDay is true.");
+    }
+    
+    /** This property is true when the this contains a date (no time)
+     * example: DTSTART;VALUE=DATE:19971102
+     * If this property is true the component can't have DURATION or DTEND
+     * If this property is true the time portion of dateTimeStart is set to the start of the day and
+     * the time is ignored.
+     */
+    final private boolean wholeDay;
+    public boolean isWholeDay() { return wholeDay; }
+
+    // Listeners
+    private final ChangeListener<? super LocalDateTime> dateTimeListener;
+    private ChangeListener<? super LocalDate> dateListener;
+    private ChangeListener<? super LocalTime> timeListener;
+    
+    // CONSTRUCTORS
+    private VDateTime(boolean wholeDay)
+    {
+        this.wholeDay = wholeDay;
+
+        // assign listeners
+        dateTimeListener = (obs, oldValue, newValue) ->
+        {
+            dateProperty().removeListener(dateListener);
+            setLocalDate(newValue.toLocalDate());
+            if (! isWholeDay())
+            {
+                timeProperty().removeListener(timeListener);
+                setLocalTime(newValue.toLocalTime());
+                timeProperty().addListener(timeListener);
+            }
+            dateProperty().addListener(dateListener);
+        };
+        dateListener = (obs, oldValue, newValue) ->
+        {
+            dateTimeProperty().removeListener(dateTimeListener);
+            if (isWholeDay())
+            {
+                setLocalDateTime(getLocalDate().atStartOfDay());
+            } else
+            {
+                setLocalDateTime(LocalDateTime.of(getLocalDate(), getLocalTime()));
+            }
+            dateTimeProperty().addListener(dateTimeListener);
+        };
+        timeListener = (obs, oldValue, newValue) ->
+        {
+            dateTimeProperty().removeListener(dateTimeListener);
+            setLocalDateTime(LocalDateTime.of(getLocalDate(), getLocalTime()));
+            dateTimeProperty().addListener(dateTimeListener);
+        };
+        dateTimeProperty().addListener(dateTimeListener);
+        dateProperty().addListener(dateListener);
+        if (! wholeDay) timeProperty().addListener(timeListener);
+    }
+    
+    /**
+     * A representation of DATE-TIME (RFC 5545 iCalendar 3.3.5) initialized with
+     * a LocalDateTime.
+     */
+    public VDateTime(LocalDateTime dateTime)
+    {
+        this(false);
+        setLocalDateTime(dateTime);
+    }
+
+    /**
+     * A representation of DATE (RFC 5545 iCalendar 3.3.4) initialized with
+     * a LocalDate.  This is used for components that use whole days only without a time field.
+     * An object instantiated with this constructor can not have the time field set.  Trying to do
+     * so will result in an exception being thrown.
+     * For convenience, a dateTimeProperty is provided with the time set to the start of the day.
+     */
+    public VDateTime(LocalDate date)
+    {
+        this(true);
+        setLocalDate(date);
+    }
+    
+    /**
+     * Returns a DATE (3.3.4) and DATE-TIME (3.3.5) string as defined from RFC 5545 iCalendar
+     */
+    @Override
+    public String toString()
+    {
+        return (wholeDay) ? DATE_FORMATTER.format(getLocalDate()) : DATE_TIME_FORMATTER.format(getLocalDateTime());
+    }
+    
+    /**
+     * @param dateTimeString - string with either DATE (3.3.4) and DATE-TIME (3.3.5)
+     *  defined from RFC 5545 iCalendar
+     * @return - new VDateTime object initialized with parsed dateTimeString
+     */
+    public static VDateTime parseDateTime(String dateTimeString)
+    {
+        if (dateTimeString.matches(".+T.+"))
+        {
+            LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, DATE_TIME_FORMATTER);
+            return new VDateTime(dateTime);
+        } else
+        {
+            LocalDate date = LocalDate.parse(dateTimeString, DATE_FORMATTER);
+            return new VDateTime(date);            
         }
     }
 
-    public boolean isWholeDay() { return time == null; }
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (super.equals(obj)) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        VDateTime testObj = (VDateTime) obj;
+        boolean dateEquals = getLocalDate().equals(testObj.getLocalDate());
+        boolean timeEquals = (getLocalTime() == null) ?
+                (testObj.getLocalTime() == null) : getLocalTime().equals(testObj.getLocalTime());
+        return dateEquals && timeEquals;
+    }
     
-    @Override
-    public boolean isSupported(TemporalField field) {
-        return getLocalDateTime().isSupported(field);
-    }
-
-    @Override
-    public long getLong(TemporalField field) {
-        return getLocalDateTime().getLong(field);
-    }
-
-    @Override
-    public boolean isSupported(TemporalUnit unit) {
-        return getLocalDateTime().isSupported(unit);
-    }
-
-    @Override
-    public Temporal with(TemporalField field, long newValue) {
-        return getLocalDateTime().with(field, newValue);
-    }
-
-    @Override
-    public Temporal plus(long amountToAdd, TemporalUnit unit) {
-        return getLocalDateTime().plus(amountToAdd, unit);
-    }
-
-    @Override
-    public long until(Temporal endExclusive, TemporalUnit unit) {
-        return getLocalDateTime().until(endExclusive, unit);
-    }
+//    @Override
+//    public boolean isSupported(TemporalField field) {
+//        return getLocalDateTime().isSupported(field);
+//    }
+//
+//    @Override
+//    public long getLong(TemporalField field) {
+//        return getLocalDateTime().getLong(field);
+//    }
+//
+//    @Override
+//    public boolean isSupported(TemporalUnit unit) {
+//        return getLocalDateTime().isSupported(unit);
+//    }
+//
+//    @Override
+//    public Temporal with(TemporalField field, long newValue) {
+//        return getLocalDateTime().with(field, newValue);
+//    }
+//
+//    @Override
+//    public Temporal plus(long amountToAdd, TemporalUnit unit) {
+//        return getLocalDateTime().plus(amountToAdd, unit);
+//    }
+//
+//    @Override
+//    public long until(Temporal endExclusive, TemporalUnit unit) {
+//        return getLocalDateTime().until(endExclusive, unit);
+//    }
 
 }

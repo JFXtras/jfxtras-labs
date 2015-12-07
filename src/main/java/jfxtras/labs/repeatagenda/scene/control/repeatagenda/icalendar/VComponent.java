@@ -131,14 +131,14 @@ public interface VComponent<T>
     String getUniqueIdentifier();
     void setUniqueIdentifier(String s);
     
-    /** This property is true when the DTSTART property contains only a date (no time)
-     * example: DTSTART;VALUE=DATE:19971102
-     * If this property is true the component can't have DURATION or DTEND
-     * If this property is true the time portion of dateTimeStart is set to the start of the day and
-     * the time is ignored.
-     */
-    boolean isWholeDay();
-    void setWholeDay(boolean wholeDay);
+//    /** This property is true when the DTSTART property contains only a date (no time)
+//     * example: DTSTART;VALUE=DATE:19971102
+//     * If this property is true the component can't have DURATION or DTEND
+//     * If this property is true the time portion of dateTimeStart is set to the start of the day and
+//     * the time is ignored.
+//     */
+//    boolean isWholeDay();
+//    void setWholeDay(boolean wholeDay);
     
     /** Stream of date/times that indicate the start of the event(s).
      * For a VEvent without RRULE the stream will contain only one date/time element.

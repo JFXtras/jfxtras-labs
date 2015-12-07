@@ -10,6 +10,7 @@ import java.time.Month;
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
@@ -96,13 +97,13 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     {
         String s = "FREQ=YEARLY;BYWEEKNO=20;BYDAY=2MO,3MO";
         RRule rRule = RRule.parseRRule(s);
-        System.out.println("rRule:"+rRule.toString());
+//        System.out.println("rRule:"+rRule.toString());
         RRule expectedRRule = new RRule();
         Frequency frequency = new Yearly();
         frequency.addByRule(new ByDay(new ByDayPair(DayOfWeek.MONDAY, 2), new ByDayPair(DayOfWeek.MONDAY, 3)));
         frequency.addByRule(new ByWeekNo(20));
         expectedRRule.setFrequency(frequency);
-        System.out.println("expectedRRule:"+expectedRRule.toString());
+//        System.out.println("expectedRRule:"+expectedRRule.toString());
         assertEquals(expectedRRule, rRule);
     }
     
@@ -162,5 +163,14 @@ public class ICalendarParseTest extends ICalendarTestAbstract
         vEvent.getAppointmentGroups().addAll(DEFAULT_APPOINTMENT_GROUPS);
         VEvent expectedVEvent = getDailyWithException1();
         assertEquals(expectedVEvent, vEvent);
+    }
+    
+    @Test
+    public void canParseVDateTime()
+    {
+        VDateTime expectedDateTime = new VDateTime(LocalDateTime.of(2015, 11, 15, 10, 0));
+        VDateTime dateTime = VDateTime.parseDateTime("20151115T100000");
+//        System.out.println(expectedDateTime.getLocalDateTime() + " "+ dateTime.getLocalDateTime());
+        assertEquals(expectedDateTime, dateTime);
     }
 }

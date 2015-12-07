@@ -1,6 +1,7 @@
 package jfxtras.labs.repeatagenda;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Comparator;
@@ -513,10 +514,9 @@ public abstract class ICalendarTestAbstract
     protected static VEventImpl getAllDayDaily1()
     {
         VEventImpl vEvent = new VEventImpl();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        vEvent.setDateTimeStart(LocalDate.of(2015, 11, 9));
         vEvent.setDurationInSeconds(3600L);
         vEvent.setAppointmentClass(clazz);
-        vEvent.setWholeDay(true);
         return vEvent;
     }
 
