@@ -133,6 +133,7 @@ public class VEventImpl extends VEvent<Appointment>
     
     public VEventImpl()
     {
+        super();
         appointmentGroupStyleClassProperty().addListener(obs -> synchAppointmentGroup());        
         getAppointmentGroups().addListener((InvalidationListener) obs -> synchAppointmentGroup());
     }
@@ -617,6 +618,7 @@ public class VEventImpl extends VEvent<Appointment>
         static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
            return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
         }
+
 
        
         

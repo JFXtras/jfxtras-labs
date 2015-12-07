@@ -124,6 +124,7 @@ instances into one property internally.
 
  * 
  * @author David Bal
+ * @param <U>
  * @see VEvent
  *
  */
@@ -140,8 +141,8 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      */
     public StringProperty categoriesProperty() { return categoriesProperty; }
     final private StringProperty categoriesProperty = new SimpleStringProperty(this, "CATEGORIES");
-    public String getCategories() { return categoriesProperty.getValue(); }
-    public void setCategories(String value) { categoriesProperty.setValue(value); }
+    public String getCategories() { return categoriesProperty.get(); }
+    public void setCategories(String value) { categoriesProperty.set(value); }
 //    public T withCategories(String value) { setCategories(value); return (T)this; }
     
     /**
@@ -156,8 +157,8 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * */
     public StringProperty commentProperty() { return commentProperty; }
     final private StringProperty commentProperty = new SimpleStringProperty(this, "COMMENT");
-    public String getComment() { return commentProperty.getValue(); }
-    public void setComment(String value) { commentProperty.setValue(value); }
+    public String getComment() { return commentProperty.get(); }
+    public void setComment(String value) { commentProperty.set(value); }
 //    public VEvent withComment(String value) { setComment(value); return this; }
 
     /**
@@ -167,7 +168,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      */
     final private ObjectProperty<LocalDateTime> dateTimeCreated = new SimpleObjectProperty<>(this, "CREATED");
     public ObjectProperty<LocalDateTime> dateTimeCreatedProperty() { return dateTimeCreated; }
-    public LocalDateTime getDateTimeCreated() { return dateTimeCreated.getValue(); }
+    public LocalDateTime getDateTimeCreated() { return dateTimeCreated.get(); }
     public void setDateTimeCreated(LocalDateTime dtCreated) { this.dateTimeCreated.set(dtCreated); }
     
     /**
@@ -177,7 +178,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      */
     final private ObjectProperty<LocalDateTime> dateTimeStamp = new SimpleObjectProperty<>(this, "DTSTAMP");
     public ObjectProperty<LocalDateTime> dateTimeStampProperty() { return dateTimeStamp; }
-    public LocalDateTime getDateTimeStamp() { return dateTimeStamp.getValue(); }
+    public LocalDateTime getDateTimeStamp() { return dateTimeStamp.get(); }
     public void setDateTimeStamp(LocalDateTime dtStamp) { this.dateTimeStamp.set(dtStamp); }
     
     /**
@@ -191,38 +192,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     final private ObjectProperty<VDateTime> dateTimeStart = new SimpleObjectProperty<>(this, "DTSTART");
     @Override public VDateTime getDateTimeStart() { return dateTimeStart.get(); }
     @Override public void setDateTimeStart(VDateTime dtStart) { dateTimeStart.set(dtStart); }
-    public void setDateTimeStart(LocalDateTime dateTime)
-    {
-        if (getDateTimeStart() == null)
-        {
-            setDateTimeStart(new VDateTime(dateTime));
-        } else
-        {
-            getDateTimeStart().setLocalDateTime(dateTime);
-        }
-    }
-    public void setDateTimeStart(LocalDate date)
-    {
-        if (getDateTimeStart() == null)
-        {
-            setDateTimeStart(new VDateTime(date));
-        } else
-        {
-            getDateTimeStart().setLocalDate(date);
-        }
-    }
-    
-    //    public void setDateTimeStart(Temporal dtStart)
-//    {
-//        if (dtStart instanceof LocalDateTime)
-//        {
-//            this.dateTimeStart.get().setLocalDateTime((LocalDateTime) dtStart);
-//        } else if (dtStart instanceof LocalDate)
-//        {
-//            this.dateTimeStart.get().setLocalDate((LocalDate) dtStart);            
-//        }
-//
-//    }
     
     /**
      * EXDATE: Set of date/times exceptions for recurring events, to-dos, journal entries.
@@ -421,7 +390,10 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         copy(vcomponent, this);
     }
     
-    public VComponentAbstract() { }
+    public VComponentAbstract()
+    {
+        setDateTimeStart(new VDateTime());
+    }
 
     /** Deep copy all fields from source to destination */
     private static void copy(VComponentAbstract source, VComponentAbstract destination)

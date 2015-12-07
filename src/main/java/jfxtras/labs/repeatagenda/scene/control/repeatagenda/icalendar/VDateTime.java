@@ -3,12 +3,8 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
+import java.time.temporal.Temporal;
 
 /**
  * Class that represents both DATE (3.3.4) and DATE-TIME (3.3.5)
@@ -20,115 +16,71 @@ import javafx.beans.value.ChangeListener;
  */
 public class VDateTime
 {
-    
     private final static String datePattern = "yyyyMMdd";
     private final static String timePattern = "HHmmss";
     public final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(datePattern + "'T'" + timePattern);
     public final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(datePattern);
     
-    public ObjectProperty<LocalDateTime> dateTimeProperty() { return dateTime; }
-    private ObjectProperty<LocalDateTime> dateTime = new SimpleObjectProperty<>();
-    public void setLocalDateTime(LocalDateTime dateTime) { this.dateTime.set(dateTime); }
-    public LocalDateTime getLocalDateTime() { return dateTime.get(); }
-
-    /** DATE part of DATE-TIME property */
-    public ObjectProperty<LocalDate> dateProperty() { return date; }
-    public LocalDate getLocalDate() { return date.get(); }
-    private ObjectProperty<LocalDate> date = new SimpleObjectProperty<>();
-    public void setLocalDate(LocalDate date) { this.date.set(date); }
+    private Temporal dateOrDateTime;
+    private Temporal getDateOrDateTime() { return dateOrDateTime; }
+    private void setDateOrDateTime(Temporal dateOrDateTime) { this.dateOrDateTime = dateOrDateTime; }
     
-    /** TIME part of DATE-TIME property */
-    public ObjectProperty<LocalTime> timeProperty()
+    public LocalDate getLocalDate()
     {
-        return (wholeDay) ? null : time;
-    }
-    public LocalTime getLocalTime() { return time.get(); }
-    private ObjectProperty<LocalTime> time = new SimpleObjectProperty<LocalTime>();
-    public void setLocalTime(LocalTime time)
-    {
-        if (! isWholeDay())
+        if (dateOrDateTime == null) return null;
+        if (dateOrDateTime instanceof LocalDate)
         {
-            this.time.set(time);
-        } else throw new InvalidParameterException("Can't set time when wholeDay is true.");
+            return (LocalDate) dateOrDateTime;
+        } else throw new InvalidParameterException("Type of temporal is not LocalDate.");
     }
-    
-    /** This property is true when the this contains a date (no time)
+    public void setLocalDate(LocalDate date)
+    {
+        if ((dateOrDateTime instanceof LocalDate) || (dateOrDateTime == null))
+        {
+            dateOrDateTime = date;
+        }
+    }  
+    public LocalDateTime getLocalDateTime()
+    {
+        if (dateOrDateTime == null) return null;
+        if (dateOrDateTime instanceof LocalDateTime)
+        {
+            return (LocalDateTime) dateOrDateTime;
+        } else if (dateOrDateTime instanceof LocalDate)
+        {
+            return (LocalDateTime) ((LocalDate) dateOrDateTime).atStartOfDay();
+        } else
+        {
+            throw new InvalidParameterException("Type of temporal is not LocalDate: " + dateOrDateTime);            
+        }
+    }
+    public void setLocalDateTime(LocalDateTime dateTime)
+    {
+        if ((dateOrDateTime instanceof LocalDateTime) || (dateOrDateTime == null))
+        {
+            dateOrDateTime = dateTime;
+        }
+    }
+  
+    /** This property is true when this only contains a date, not a time.
      * example: DTSTART;VALUE=DATE:19971102
      * If this property is true the component can't have DURATION or DTEND
      * If this property is true the time portion of dateTimeStart is set to the start of the day and
      * the time is ignored.
      */
-    final private boolean wholeDay;
-    public boolean isWholeDay() { return wholeDay; }
-
-    // Listeners
-    private final ChangeListener<? super LocalDateTime> dateTimeListener;
-    private ChangeListener<? super LocalDate> dateListener;
-    private ChangeListener<? super LocalTime> timeListener;
-    
-    // CONSTRUCTORS
-    private VDateTime(boolean wholeDay)
-    {
-        this.wholeDay = wholeDay;
-
-        // assign listeners
-        dateTimeListener = (obs, oldValue, newValue) ->
-        {
-            dateProperty().removeListener(dateListener);
-            setLocalDate(newValue.toLocalDate());
-            if (! isWholeDay())
-            {
-                timeProperty().removeListener(timeListener);
-                setLocalTime(newValue.toLocalTime());
-                timeProperty().addListener(timeListener);
-            }
-            dateProperty().addListener(dateListener);
-        };
-        dateListener = (obs, oldValue, newValue) ->
-        {
-            dateTimeProperty().removeListener(dateTimeListener);
-            if (isWholeDay())
-            {
-                setLocalDateTime(getLocalDate().atStartOfDay());
-            } else
-            {
-                setLocalDateTime(LocalDateTime.of(getLocalDate(), getLocalTime()));
-            }
-            dateTimeProperty().addListener(dateTimeListener);
-        };
-        timeListener = (obs, oldValue, newValue) ->
-        {
-            dateTimeProperty().removeListener(dateTimeListener);
-            setLocalDateTime(LocalDateTime.of(getLocalDate(), getLocalTime()));
-            dateTimeProperty().addListener(dateTimeListener);
-        };
-        dateTimeProperty().addListener(dateTimeListener);
-        dateProperty().addListener(dateListener);
-        if (! wholeDay) timeProperty().addListener(timeListener);
-    }
+    public boolean isWholeDay() { return dateOrDateTime instanceof LocalDate; }
     
     // CONSTRUCTORS
     /**
-     * A representation of DATE-TIME (RFC 5545 iCalendar 3.3.5) initialized with
-     * a LocalDateTime.
+     * A representation of DATE (3.3.4) or DATE-TIME (3.3.5) defined in RFC 5545 iCalendar 3.3.5.
+     * Type of dateOrDateTime must be either either LocalDate or LocalDateTime.
      */
-    public VDateTime(LocalDateTime dateTime)
+    public VDateTime(Temporal dateOrDateTime)
     {
-        this(false);
-        setLocalDateTime(dateTime);
-    }
-
-    /**
-     * A representation of DATE (RFC 5545 iCalendar 3.3.4) initialized with
-     * a LocalDate.  This is used for components that use whole days only without a time field.
-     * An object instantiated with this constructor can not have the time field set.  Trying to do
-     * so will result in an exception being thrown.
-     * For convenience, a dateTimeProperty is provided with the time set to the start of the day.
-     */
-    public VDateTime(LocalDate date)
-    {
-        this(true);
-        setLocalDate(date);
+        if (dateOrDateTime instanceof LocalDate || dateOrDateTime instanceof LocalDateTime)
+        {
+            this.dateOrDateTime = dateOrDateTime;            
+        } else throw new InvalidParameterException("Type of dateOrDateTime must be LocalDate or LocalDateTime.");
     }
     
     /**
@@ -137,10 +89,10 @@ public class VDateTime
      */
     public VDateTime(VDateTime vDateTime)
     {
-        this(vDateTime.isWholeDay());
         copy(vDateTime, this);
     }
 
+    public VDateTime() { }
 
     /** Deep copy all fields from source to destination */
     public void copyTo(VDateTime destination)
@@ -151,7 +103,7 @@ public class VDateTime
     /** Deep copy all fields from source to destination */
     private static void copy(VDateTime source, VDateTime destination)
     {
-        destination.setLocalDateTime(source.getLocalDateTime()); // date and time are set by listeners
+        destination.setDateOrDateTime(source.getDateOrDateTime());
     }
 
     @Override
@@ -162,10 +114,7 @@ public class VDateTime
             return false;
         }
         VDateTime testObj = (VDateTime) obj;
-        boolean dateEquals = getLocalDate().equals(testObj.getLocalDate());
-        boolean timeEquals = (getLocalTime() == null) ?
-                (testObj.getLocalTime() == null) : getLocalTime().equals(testObj.getLocalTime());
-        return dateEquals && timeEquals;
+        return getDateOrDateTime().equals(testObj.getDateOrDateTime());
     }
     
     /**
@@ -174,24 +123,36 @@ public class VDateTime
     @Override
     public String toString()
     {
-        return (wholeDay) ? DATE_FORMATTER.format(getLocalDate()) : DATE_TIME_FORMATTER.format(getLocalDateTime());
+        return (isWholeDay()) ? DATE_FORMATTER.format(getLocalDate())
+                              : DATE_TIME_FORMATTER.format(getLocalDateTime());
     }
         
     /**
      * @param dateTimeString - string with either DATE (3.3.4) and DATE-TIME (3.3.5)
-     *  defined from RFC 5545 iCalendar
+     * defined from RFC 5545 iCalendar.
+     * Examples:
+     * VALUE=DATE-TIME:20151115T100000
+     * VALUE=DATE-TIME:20151115T100000Z (UTC time ignored currently)
+     * 20151115T100000
+     * VALUE=DATE:20151115
+     *  Currently only handles local time, UTC time and time zone reference is TODO
      * @return - new VDateTime object initialized with parsed dateTimeString
      */
     public static VDateTime parseDateTime(String dateTimeString)
     {
-        if (dateTimeString.matches(".+T.+"))
+        if (dateTimeString.matches("^(VALUE=DATE-TIME:)?[0-9]{8}T?([0-9]{6})?Z?"))
         {
-            LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, DATE_TIME_FORMATTER);
+            String extractedDateTimeString = dateTimeString.substring(dateTimeString.lastIndexOf(":") + 1).trim();
+            LocalDateTime dateTime = LocalDateTime.parse(extractedDateTimeString, DATE_TIME_FORMATTER);
             return new VDateTime(dateTime);
+        } else if (dateTimeString.matches("^VALUE=DATE:[0-9]{8}"))
+        {
+            String extractedDateString = dateTimeString.substring(dateTimeString.lastIndexOf(":") + 1).trim();
+            LocalDate date = LocalDate.parse(extractedDateString, DATE_FORMATTER);
+            return new VDateTime(date);            
         } else
         {
-            LocalDate date = LocalDate.parse(dateTimeString, DATE_FORMATTER);
-            return new VDateTime(date);            
+            throw new InvalidParameterException("String does not match DATE or DATE-TIME pattern: " + dateTimeString);
         }
     }
 

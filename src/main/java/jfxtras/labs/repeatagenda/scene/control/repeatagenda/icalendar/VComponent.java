@@ -11,6 +11,8 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
 
 /** Interface for VEVENT, VTODO, VJOURNAL calendar components. 
  * @param <T> - type of recurrence instance, such as an appointment implementation
+ * @param <U> - either LocalDate or LocalDateTime, representing if the component is whole day,
+ *  or has time fields, respectively
  * @see VComponentAbstract
  * @see VEvent
  * */
@@ -59,6 +61,7 @@ public interface VComponent<T>
      * DTSTART: Date-Time Start, from RFC 5545 iCalendar 3.8.2.4 page 97
      * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
      * start date/times of the repeating events.
+     * @param <U>
      */
     VDateTime getDateTimeStart();
     void setDateTimeStart(VDateTime dtStart);
