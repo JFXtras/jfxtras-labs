@@ -480,6 +480,8 @@ public class VEventImpl extends VEvent<Appointment>
                 case ONE:
                 { // Make new individual VEvent, save settings to it.  Add date to original as recurrence.
                     VEventImpl newVEvent = new VEventImpl(this);
+//                    System.out.println("change one: " + newVEvent.getDateTimeStart().hashCode() + " " + this.getDateTimeStart().hashCode());
+//                    System.exit(0);
                     vEvents.add(newVEvent);
                     newVEvent.getDateTimeStart().setLocalDateTime(dateTimeStartInstanceNew);
                     // TODO - need new UID for newVEvent.  Do it here or in constructor?

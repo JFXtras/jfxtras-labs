@@ -107,6 +107,7 @@ public class VDateTime
         if (! wholeDay) timeProperty().addListener(timeListener);
     }
     
+    // CONSTRUCTORS
     /**
      * A representation of DATE-TIME (RFC 5545 iCalendar 3.3.5) initialized with
      * a LocalDateTime.
@@ -131,6 +132,43 @@ public class VDateTime
     }
     
     /**
+     * Copy constructor for a representation of DATE-TIME (RFC 5545 iCalendar 3.3.5) initialized with
+     * a LocalDateTime.
+     */
+    public VDateTime(VDateTime vDateTime)
+    {
+        this(vDateTime.isWholeDay());
+        copy(vDateTime, this);
+    }
+
+
+    /** Deep copy all fields from source to destination */
+    public void copyTo(VDateTime destination)
+    {
+        copy(this, destination);
+    }
+    
+    /** Deep copy all fields from source to destination */
+    private static void copy(VDateTime source, VDateTime destination)
+    {
+        destination.setLocalDateTime(source.getLocalDateTime()); // date and time are set by listeners
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (super.equals(obj)) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        VDateTime testObj = (VDateTime) obj;
+        boolean dateEquals = getLocalDate().equals(testObj.getLocalDate());
+        boolean timeEquals = (getLocalTime() == null) ?
+                (testObj.getLocalTime() == null) : getLocalTime().equals(testObj.getLocalTime());
+        return dateEquals && timeEquals;
+    }
+    
+    /**
      * Returns a DATE (3.3.4) and DATE-TIME (3.3.5) string as defined from RFC 5545 iCalendar
      */
     @Override
@@ -138,7 +176,7 @@ public class VDateTime
     {
         return (wholeDay) ? DATE_FORMATTER.format(getLocalDate()) : DATE_TIME_FORMATTER.format(getLocalDateTime());
     }
-    
+        
     /**
      * @param dateTimeString - string with either DATE (3.3.4) and DATE-TIME (3.3.5)
      *  defined from RFC 5545 iCalendar
@@ -156,49 +194,5 @@ public class VDateTime
             return new VDateTime(date);            
         }
     }
-
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (super.equals(obj)) return true;
-        if((obj == null) || (obj.getClass() != getClass())) {
-            return false;
-        }
-        VDateTime testObj = (VDateTime) obj;
-        boolean dateEquals = getLocalDate().equals(testObj.getLocalDate());
-        boolean timeEquals = (getLocalTime() == null) ?
-                (testObj.getLocalTime() == null) : getLocalTime().equals(testObj.getLocalTime());
-        return dateEquals && timeEquals;
-    }
-    
-//    @Override
-//    public boolean isSupported(TemporalField field) {
-//        return getLocalDateTime().isSupported(field);
-//    }
-//
-//    @Override
-//    public long getLong(TemporalField field) {
-//        return getLocalDateTime().getLong(field);
-//    }
-//
-//    @Override
-//    public boolean isSupported(TemporalUnit unit) {
-//        return getLocalDateTime().isSupported(unit);
-//    }
-//
-//    @Override
-//    public Temporal with(TemporalField field, long newValue) {
-//        return getLocalDateTime().with(field, newValue);
-//    }
-//
-//    @Override
-//    public Temporal plus(long amountToAdd, TemporalUnit unit) {
-//        return getLocalDateTime().plus(amountToAdd, unit);
-//    }
-//
-//    @Override
-//    public long until(Temporal endExclusive, TemporalUnit unit) {
-//        return getLocalDateTime().until(endExclusive, unit);
-//    }
 
 }

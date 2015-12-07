@@ -286,11 +286,12 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         durationInSecondsProperty().addListener(durationlistener); // synch duration with dateTimeEnd
     }
     
-    /** Deep copy all fields from source to destination */
+    /** Deep copy all fields from source to destination.  Used both by copyTo method and copy constructor. */
     private static void copy(VEvent source, VEvent destination)
     {
         destination.setDescription(source.getDescription());
         destination.setDurationInSeconds(source.getDurationInSeconds());
+        destination.setDateTimeStart(new VDateTime(source.getDateTimeStart()));
     }
 
     /** Deep copy all fields from this to destination */
