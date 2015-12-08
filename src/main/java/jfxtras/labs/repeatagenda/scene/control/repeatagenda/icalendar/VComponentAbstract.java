@@ -392,7 +392,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     
     public VComponentAbstract()
     {
-        setDateTimeStart(new VDateTime());
     }
 
     /** Deep copy all fields from source to destination */
@@ -530,39 +529,41 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         Iterator<String> stringsIterator = strings.iterator();
         while (stringsIterator.hasNext())
         {
-            String[] property = stringsIterator.next().split(":");
-            if (property[0].equals(vComponent.dateTimeCreatedProperty().getName()))
+            String line = stringsIterator.next();
+            String property = line.substring(0, line.indexOf(":"));
+            String value = line.substring(line.indexOf(":") + 1).trim();
+            if (property.equals(vComponent.dateTimeCreatedProperty().getName()))
             { // CREATED
-                LocalDateTime dateTime = LocalDateTime.parse(property[1],FORMATTER);
+                LocalDateTime dateTime = LocalDateTime.parse(value,FORMATTER);
                 vComponent.setDateTimeCreated(dateTime);
                 stringsIterator.remove();
-            } else if (property[0].equals(vComponent.dateTimeStampProperty().getName()))
+            } else if (property.equals(vComponent.dateTimeStampProperty().getName()))
             { // DTSTAMP
-                LocalDateTime dateTime = LocalDateTime.parse(property[1],FORMATTER);
+                LocalDateTime dateTime = LocalDateTime.parse(value,FORMATTER);
                 vComponent.setDateTimeStamp(dateTime);
                 stringsIterator.remove();
-            } else if (property[0].equals(vComponent.dateTimeStartProperty().getName()))
+            } else if (property.equals(vComponent.dateTimeStartProperty().getName()))
             { // DTSTART
-                VDateTime dateTime = VDateTime.parseDateTime(property[1]);
+                VDateTime dateTime = VDateTime.parseDateTime(value);
                 vComponent.setDateTimeStart(dateTime);
                 stringsIterator.remove();
-            } else if (property[0].equals(vComponent.exDateProperty().getName()))
+            } else if (property.equals(vComponent.exDateProperty().getName()))
             { // EXDATE
-                Collection<LocalDateTime> dateTimeCollection = RecurrenceComponent.parseDates(property[1]);
+                Collection<LocalDateTime> dateTimeCollection = RecurrenceComponent.parseDates(value);
                 if (vComponent.getExDate() == null)
                 {
                     vComponent.setExDate(new EXDate());
                 }                  
                 vComponent.getExDate().getDates().addAll(dateTimeCollection);
                 stringsIterator.remove();
-            } else if (property[0].equals(vComponent.dateTimeLastModifiedProperty().getName()))
+            } else if (property.equals(vComponent.dateTimeLastModifiedProperty().getName()))
             { // LAST-MODIFIED
-                LocalDateTime dateTime = LocalDateTime.parse(property[1],FORMATTER);
+                LocalDateTime dateTime = LocalDateTime.parse(value,FORMATTER);
                 vComponent.setDateTimeLastModified(dateTime);
                 stringsIterator.remove();
-            } else if (property[0].equals(vComponent.rDateProperty().getName()))
+            } else if (property.equals(vComponent.rDateProperty().getName()))
             { // RDATE
-                Collection<LocalDateTime> dateTimeCollection = RecurrenceComponent.parseDates(property[1]);
+                Collection<LocalDateTime> dateTimeCollection = RecurrenceComponent.parseDates(value);
                 if (vComponent.getRDate() == null)
                 {
                     vComponent.setRDate(new RDate());
@@ -570,17 +571,17 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 vComponent.getRDate().getDates().addAll(dateTimeCollection);
                 stringsIterator.remove();
 
-            } else if (property[0].equals(vComponent.rRuleProperty().getName()))
+            } else if (property.equals(vComponent.rRuleProperty().getName()))
             { // RRULE
-                vComponent.setRRule(RRule.parseRRule(property[1]));
+                vComponent.setRRule(RRule.parseRRule(value));
                 stringsIterator.remove();
-            } else if (property[0].equals(vComponent.summaryProperty().getName()))
+            } else if (property.equals(vComponent.summaryProperty().getName()))
             { // SUMMARY
-                vComponent.setSummary(property[1]);
+                vComponent.setSummary(value);
                 stringsIterator.remove();
-            } else if (property[0].equals(vComponent.uniqueIdentifierProperty().getName()))
+            } else if (property.equals(vComponent.uniqueIdentifierProperty().getName()))
             { // UID
-                vComponent.setUniqueIdentifier(property[1]);
+                vComponent.setUniqueIdentifier(value);
                 stringsIterator.remove();
             }
         }

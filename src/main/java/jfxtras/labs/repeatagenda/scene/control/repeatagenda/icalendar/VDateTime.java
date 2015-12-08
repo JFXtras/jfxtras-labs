@@ -123,17 +123,21 @@ public class VDateTime
     @Override
     public String toString()
     {
-        return (isWholeDay()) ? DATE_FORMATTER.format(getLocalDate())
+        return (isWholeDay()) ? "VALUE=DATE:" + DATE_FORMATTER.format(getLocalDate())
                               : DATE_TIME_FORMATTER.format(getLocalDateTime());
     }
         
     /**
+     * parses string into LocalDate or LocalDateTime in a new VDateTime object
      * @param dateTimeString - string with either DATE (3.3.4) and DATE-TIME (3.3.5)
      * defined from RFC 5545 iCalendar.
-     * Examples:
+     * 
+     * Date-time Examples:
      * VALUE=DATE-TIME:20151115T100000
      * VALUE=DATE-TIME:20151115T100000Z (UTC time ignored currently)
      * 20151115T100000
+     * 
+     * Date Example:
      * VALUE=DATE:20151115
      *  Currently only handles local time, UTC time and time zone reference is TODO
      * @return - new VDateTime object initialized with parsed dateTimeString

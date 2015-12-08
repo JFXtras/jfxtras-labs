@@ -208,11 +208,11 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         }
         durationInSeconds.setValue(seconds);
     }
-    private final ChangeListener<? super LocalDateTime> dateTimeEndlistener = (obs, oldSel, newSel) ->
+    private final ChangeListener<? super VDateTime> dateTimeEndlistener = (obs, oldSel, newSel) ->
     { // listener to synch dateTimeEnd and durationInSeconds
         if (getDateTimeStart() != null)
         {
-            long seconds = ChronoUnit.SECONDS.between(getDateTimeStart().getLocalDateTime(), newSel);
+            long seconds = ChronoUnit.SECONDS.between(getDateTimeStart().getLocalDateTime(), newSel.getLocalDateTime());
             setDurationInSeconds(seconds);            
         }
     };
@@ -220,25 +220,16 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     { // listener to synch dateTimeStart and durationInSeconds
         if (getDateTimeEnd() != null)
         {
-            long seconds = ChronoUnit.SECONDS.between(newSel.getLocalDateTime(), getDateTimeEnd());
+            long seconds = ChronoUnit.SECONDS.between(newSel.getLocalDateTime(), getDateTimeEnd().getLocalDateTime());
             setDurationInSeconds(seconds);
         }
     };
-//    private final ChangeListener<? super Temporal> dateTimeStartlistener = (obs, oldSel, newSel) ->
-//    { // listener to synch dateTimeStart and durationInSeconds
-//        if (getDateTimeEnd() != null)
-//        {
-//            long seconds = ChronoUnit.SECONDS.between(newSel, getDateTimeEnd());
-//            setDurationInSeconds(seconds);
-//        }
-//    };
     private final ChangeListener<? super Number> durationlistener = (obs, oldSel, newSel) ->
     { // listener to synch dateTimeEnd and durationInSeconds.  dateTimeStart is left in place.
-        if (getDateTimeStart().getLocalDateTime() != null)
+        if ((getDateTimeStart() != null) && (getDateTimeEnd() != null))
         {
             LocalDateTime dtEnd = getDateTimeStart().getLocalDateTime().plusSeconds((long) newSel);
-//            LocalDateTime dtEnd = LocalDateTime.from(getDateTimeStart()).plusSeconds((long) newSel);
-            setDateTimeEnd(dtEnd);
+            getDateTimeEnd().setLocalDateTime(dtEnd);
         }
     };
     private boolean useDuration = false; // when true toString will output DURATION
@@ -249,21 +240,21 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
      * If entered this value is used to calculate the durationInSeconds, which is used
      * internally.
      */
-    final private ObjectProperty<LocalDateTime> dateTimeEnd = new SimpleObjectProperty<LocalDateTime>(this, "DTEND");
-    public ObjectProperty<LocalDateTime> dateTimeEndProperty() { return dateTimeEnd; }
-    public void setDateTimeEnd(LocalDateTime dtEnd)
+    final private ObjectProperty<VDateTime> dateTimeEnd = new SimpleObjectProperty<>(this, "DTEND");
+    public ObjectProperty<VDateTime> dateTimeEndProperty() { return dateTimeEnd; }
+    public void setDateTimeEnd(VDateTime dtEnd)
     {
         if ((getDateTimeStart() != null) && getDateTimeStart().isWholeDay()) throw new InvalidParameterException("Can't send dateTimeEnd when wholeDay is true.");
         dateTimeEnd.set(dtEnd);
         useDuration=false;
         useDateTimeEnd=true;
     }
-    public void setDateTimeEnd(String dtEnd)
-    {
-        LocalDateTime dt = iCalendarDateTimeToLocalDateTime(dtEnd);
-        setDateTimeEnd(dt);
-    }
-    public LocalDateTime getDateTimeEnd() { return dateTimeEnd.get(); }
+//    public void setDateTimeEnd(String dtEnd)
+//    {
+//        LocalDateTime dt = iCalendarDateTimeToLocalDateTime(dtEnd);
+//        setDateTimeEnd(dt);
+//    }
+    public VDateTime getDateTimeEnd() { return dateTimeEnd.get(); }
     private boolean useDateTimeEnd = true; // when true toString will output DTEND, default to true
 
     // CONSTRUCTORS
@@ -342,8 +333,11 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         Map<Property, String> properties = new HashMap<Property, String>();
         properties.putAll(super.makePropertiesMap());
         if (getDescription() != null) properties.put(descriptionProperty(), getDescription());
-        if (useDateTimeEnd) properties.put(dateTimeEndProperty(), FORMATTER.format(getDateTimeEnd()));
-        if (useDuration) properties.put(durationInSecondsProperty(), getDurationAsString());
+        if (! getDateTimeStart().isWholeDay())
+        {
+            if (useDateTimeEnd) properties.put(dateTimeEndProperty(), FORMATTER.format(getDateTimeEnd().getLocalDateTime()));
+            if (useDuration) properties.put(durationInSecondsProperty(), getDurationAsString());
+        }
         return properties;
     }
     
@@ -355,7 +349,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         boolean endDateTimeNull = getDateTimeEnd() == null;
         // Note: Check for invalid condition where both DURATION and DTEND not being null is done in parseVEvent.
         // It is not checked here due to bindings between both DURATION and DTEND.
-        if (durationNull && endDateTimeNull) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DURATION and DTEND can not be null.");
+        if (durationNull && endDateTimeNull & ! getDateTimeStart().isWholeDay()) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DURATION and DTEND can not be null.");
         boolean wholeDayAndDTEndProblem = getDateTimeStart().isWholeDay() && ! durationNull;
 //        System.out.println("here: " + getDateTimeStart().isWholeDay() + " - " + durationNull + " " + (getDateTimeStart().isWholeDay() && durationNull));
         if (wholeDayAndDTEndProblem) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  WholeDay can't be true and have an end date/time (DTEND).");
@@ -393,18 +387,21 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         boolean durationFound = false;
         while (stringsIterator.hasNext())
         {
-            final String[] property = stringsIterator.next().split(":");
-            if (property[0].equals(vEvent.descriptionProperty().getName()))
+            String line = stringsIterator.next();
+            String property = line.substring(0, line.indexOf(":"));
+            String value = line.substring(line.indexOf(":") + 1).trim();
+//            final String[] property = stringsIterator.next().split(":");
+            if (property.equals(vEvent.descriptionProperty().getName()))
             { // DESCRIPTION
                     if (vEvent.getDescription() == null)
                     {
-                        vEvent.setDescription(property[1]);
+                        vEvent.setDescription(value);
                         stringsIterator.remove();
                     } else
                     {
                         throw new InvalidParameterException("Invalid VEvent: DESCRIPTION can only be specified once");
                     }
-            } else if (property[0].equals(vEvent.durationInSecondsProperty().getName()))
+            } else if (property.equals(vEvent.durationInSecondsProperty().getName()))
             { // DURATION
                 if (vEvent.getDurationInSeconds() == 0)
                 {
@@ -413,7 +410,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                         durationFound = true;
                         vEvent.useDuration = true;
                         vEvent.useDateTimeEnd = false;
-                        vEvent.setDurationInSeconds(property[1]);
+                        vEvent.setDurationInSeconds(value);
                         stringsIterator.remove();
                     } else
                     {
@@ -423,7 +420,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                 {
                     throw new InvalidParameterException("Invalid VEvent: DURATION can only be specified once.");                    
                 }
-            } else if (property[0].equals(vEvent.dateTimeEndProperty().getName()))
+            } else if (property.equals(vEvent.dateTimeEndProperty().getName()))
             { // DTEND
                 if (vEvent.getDateTimeEnd() == null)
                 {
@@ -432,7 +429,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                         dTEndFound = true;
                         vEvent.useDuration = false;
                         vEvent.useDateTimeEnd = true;
-                        LocalDateTime dateTime = LocalDateTime.parse(property[1],FORMATTER);
+                        VDateTime dateTime = VDateTime.parseDateTime(value);
                         vEvent.setDateTimeEnd(dateTime);
                         stringsIterator.remove();
                     } else

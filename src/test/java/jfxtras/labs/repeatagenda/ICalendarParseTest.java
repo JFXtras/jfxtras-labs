@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 
@@ -97,13 +98,11 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     {
         String s = "FREQ=YEARLY;BYWEEKNO=20;BYDAY=2MO,3MO";
         RRule rRule = RRule.parseRRule(s);
-//        System.out.println("rRule:"+rRule.toString());
         RRule expectedRRule = new RRule();
         Frequency frequency = new Yearly();
         frequency.addByRule(new ByDay(new ByDayPair(DayOfWeek.MONDAY, 2), new ByDayPair(DayOfWeek.MONDAY, 3)));
         frequency.addByRule(new ByWeekNo(20));
         expectedRRule.setFrequency(frequency);
-//        System.out.println("expectedRRule:"+expectedRRule.toString());
         assertEquals(expectedRRule, rRule);
     }
     
@@ -111,7 +110,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     @Test
     public void yearly1ToString()
     {
-        String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
+        String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
                               + "CREATED:20151109T082900" + System.lineSeparator()
                               + "DESCRIPTION:Yearly1 Description" + System.lineSeparator()
                               + "DTSTAMP:20151109T083000" + System.lineSeparator()
@@ -123,7 +122,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                               + "UID:20151109T082900-0@jfxtras.org" + System.lineSeparator()
                               + "X-APPOINTMENT-GROUP:group13" + System.lineSeparator()
                               + "END:VEVENT";
-        VEventImpl vEvent = VEventImpl.parseVEvent(expectedString);        
+        VEventImpl vEvent = VEventImpl.parseVEvent(vEventString);        
         vEvent.getAppointmentGroups().addAll(DEFAULT_APPOINTMENT_GROUPS);
         VEvent expectedVEvent = getYearly1();
         assertEquals(expectedVEvent, vEvent);
@@ -132,14 +131,14 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     @Test
     public void daily3ToString()
     {
-        String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
+        String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
                               + "DTEND:20151109T110000" + System.lineSeparator()
                               + "DTSTAMP:20150110T080000" + System.lineSeparator()
                               + "DTSTART:20151109T100000" + System.lineSeparator()
                               + "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=10;BYMONTHDAY=9,10,11,12,13,14" + System.lineSeparator()
                               + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
-        VEventImpl vEvent = VEventImpl.parseVEvent(expectedString);
+        VEventImpl vEvent = VEventImpl.parseVEvent(vEventString);
         vEvent.getAppointmentGroups().addAll(DEFAULT_APPOINTMENT_GROUPS);
         VEvent expectedVEvent = getDaily3();
         assertEquals(expectedVEvent, vEvent);
@@ -148,7 +147,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     @Test
     public void dailyWithException1ToString()
     {
-        String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
+        String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
                 + "DESCRIPTION:Daily2 Description" + System.lineSeparator()
                 + "DTSTAMP:20150110T080000" + System.lineSeparator()
                 + "DTSTART:20151109T100000" + System.lineSeparator()
@@ -159,7 +158,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                 + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                 + "X-APPOINTMENT-GROUP:group3" + System.lineSeparator()
                 + "END:VEVENT";
-        VEventImpl vEvent = VEventImpl.parseVEvent(expectedString);
+        VEventImpl vEvent = VEventImpl.parseVEvent(vEventString);
         vEvent.getAppointmentGroups().addAll(DEFAULT_APPOINTMENT_GROUPS);
         VEvent expectedVEvent = getDailyWithException1();
         assertEquals(expectedVEvent, vEvent);
@@ -170,7 +169,6 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     {
         VDateTime expectedDateTime = new VDateTime(LocalDateTime.of(2015, 11, 15, 10, 0));
         VDateTime dateTime = VDateTime.parseDateTime("20151115T100000");
-//        System.out.println(expectedDateTime.getLocalDateTime() + " "+ dateTime.getLocalDateTime());
         assertEquals(expectedDateTime, dateTime);
     }
     
@@ -179,7 +177,27 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     {
         VDateTime expectedDateTime = new VDateTime(LocalDateTime.of(2015, 11, 15, 10, 0));
         VDateTime dateTime = VDateTime.parseDateTime("VALUE=DATE-TIME:20151115T100000");
-//        System.out.println(expectedDateTime.getLocalDateTime() + " "+ dateTime.getLocalDateTime());
         assertEquals(expectedDateTime, dateTime);
+    }
+
+    @Test
+    public void canParseVDate1()
+    {
+        VDateTime expectedDateTime = new VDateTime(LocalDate.of(2015, 11, 15));
+        VDateTime dateTime = VDateTime.parseDateTime("VALUE=DATE:20151115");
+        assertEquals(expectedDateTime, dateTime);
+    }
+    
+    @Test
+    public void canParseWholeDay1()
+    {
+    String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
+                          + "DTSTAMP:20150110T080000" + System.lineSeparator()
+                          + "DTSTART:VALUE=DATE:20151109" + System.lineSeparator()
+                          + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
+                          + "END:VEVENT";
+    VEventImpl vEvent = VEventImpl.parseVEvent(vEventString);
+    VEventImpl expectedVEvent = getWholeDayDaily1();
+    assertEquals(expectedVEvent, vEvent);
     }
 }
