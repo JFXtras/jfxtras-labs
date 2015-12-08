@@ -185,7 +185,7 @@ public class VEventImpl extends VEvent<Appointment>
     @Override
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
-        System.out.println("range: " + getDateTimeRangeStart() + " " + this.getDateTimeRangeEnd());
+//        System.out.println("range: " + getDateTimeRangeStart() + " " + this.getDateTimeRangeEnd());
         Stream<LocalDateTime> initialStream = super.stream(startDateTime);
         // filter away too early (with Java 9 takeWhile these statements can be combined into one chained statement for greater elegance)
         Stream<LocalDateTime> filteredStream = initialStream

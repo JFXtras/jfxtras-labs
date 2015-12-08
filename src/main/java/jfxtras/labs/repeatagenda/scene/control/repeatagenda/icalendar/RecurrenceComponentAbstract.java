@@ -14,11 +14,11 @@ import javafx.collections.ObservableSet;
 
 /** For EXDate and RDate
  * Limitation: only DATE-TIME supported.  DATE is not supported.
- * @param <T>
+ * @param <T> either EXDate or RDate
  * @see EXDate
  * @see RDate
  * */
-public abstract class RecurrenceComponent<T>
+public abstract class RecurrenceComponentAbstract<T> implements RecurrenceComponent
 {
     /**
      * EXDATE or RDATE: Set of date/times included or excepted for recurring events, to-dos, journal entries.
@@ -51,7 +51,7 @@ public abstract class RecurrenceComponent<T>
     
     /** Deep copy all fields from source to destination 
      * @param <U>*/
-    private static <U> void copy(RecurrenceComponent<U> source, RecurrenceComponent<U> destination)
+    private static <U> void copy(RecurrenceComponentAbstract<U> source, RecurrenceComponentAbstract<U> destination)
     {
         if (source.getDates() != null)
         {
@@ -60,7 +60,7 @@ public abstract class RecurrenceComponent<T>
     }
     
     /** Deep copy all fields from this to destination */
-    public void copyTo(RecurrenceComponent<T> destination)
+    public void copyTo(RecurrenceComponentAbstract<T> destination)
     {
         copy(this, destination);
     }
@@ -72,7 +72,7 @@ public abstract class RecurrenceComponent<T>
         if((obj == null) || (obj.getClass() != getClass())) {
             return false;
         }
-        EXDate testObj = (EXDate) obj;
+        RecurrenceComponentAbstract testObj = (RecurrenceComponentAbstract) obj;
 
         if (getDates() == null) return testObj.getDates() == null;
         if (getDates().size() != testObj.getDates().size()) return false;

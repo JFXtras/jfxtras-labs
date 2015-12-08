@@ -18,7 +18,7 @@ import java.util.stream.StreamSupport;
  *
  */
 // Merge stream is untested
-public class RDate extends RecurrenceComponent<RDate>
+public class RDate extends RecurrenceComponentAbstract<RDate>
 {
             
     /** Add date/times in RDates set */

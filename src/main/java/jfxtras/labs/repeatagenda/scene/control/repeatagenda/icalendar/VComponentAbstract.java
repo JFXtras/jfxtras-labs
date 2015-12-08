@@ -549,7 +549,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 stringsIterator.remove();
             } else if (property.equals(vComponent.exDateProperty().getName()))
             { // EXDATE
-                Collection<VDateTime> dateTimeCollection = RecurrenceComponent.parseDates(value);
+                Collection<VDateTime> dateTimeCollection = RecurrenceComponentAbstract.parseDates(value);
                 if (vComponent.getExDate() == null)
                 {
                     vComponent.setExDate(new EXDate());
@@ -563,7 +563,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 stringsIterator.remove();
             } else if (property.equals(vComponent.rDateProperty().getName()))
             { // RDATE
-                Collection<VDateTime> dateTimeCollection = RecurrenceComponent.parseDates(value);
+                Collection<VDateTime> dateTimeCollection = RecurrenceComponentAbstract.parseDates(value);
                 if (vComponent.getRDate() == null)
                 {
                     vComponent.setRDate(new RDate());

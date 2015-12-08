@@ -13,7 +13,7 @@ import java.util.stream.Stream;
  * @author David Bal
  *
  */
-public class EXDate extends RecurrenceComponent<EXDate>
+public class EXDate extends RecurrenceComponentAbstract<EXDate>
 {    
     /** Remove date/times in exDates set */
     public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
