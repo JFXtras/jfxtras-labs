@@ -43,6 +43,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay.ByDayPair;
@@ -476,7 +477,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         exceptionComboBox.setConverter(new StringConverter<LocalDateTime>()
         { // setup string converter
             @Override public String toString(LocalDateTime d) {
-                return formatter.format(d);
+                return d.toString();
             }
             @Override public LocalDateTime fromString(String string) {
                 throw new RuntimeException("not required for non editable ComboBox");
@@ -518,7 +519,15 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         frequencyComboBox.setValue(rRule.getFrequency().getFrequencyType());
         setDayOfWeek(vComponent);
         startDatePicker.setValue(vComponent.getDateTimeStart().getLocalDate());
-        if (vComponent.getExDate() != null) exceptionsListView.getItems().addAll(vComponent.getExDate().getDates());
+        if (vComponent.getExDate() != null) {
+            List<LocalDateTime> collect = vComponent
+                    .getExDate()
+                    .getDates()
+                    .stream()
+                    .map(d -> d.getLocalDateTime())
+                    .collect(Collectors.toList());
+            exceptionsListView.getItems().addAll(collect);
+        }
         if (vComponent.getRRule().getCount() > 0)
         {
             endAfterRadioButton.selectedProperty().set(true);
@@ -629,7 +638,10 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
     {
         System.out.println("make exception date list");
         
-        Stream<LocalDateTime> stream1 = vComponent.getRRule().stream(vComponent.getDateTimeStart().getLocalDateTime());
+        Stream<LocalDateTime> stream1 = vComponent
+                .getRRule()
+                .stream(vComponent.getDateTimeStart().getLocalDateTime());
+//                .map(d -> new VDateTime(d));
         Stream<LocalDateTime> stream2 = (vComponent.getExDate() == null) ? stream1
                 : vComponent.getExDate().stream(stream1, vComponent.getDateTimeStart().getLocalDateTime()); // remove exceptions
         List<LocalDateTime> exceptionDates = stream2.limit(EXCEPTION_CHOICE_LIMIT).collect(Collectors.toList());
@@ -642,7 +654,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         LocalDateTime d = exceptionComboBox.getValue();
         exceptionsListView.getItems().add(d);
         if (vComponent.getExDate() == null) vComponent.setExDate(new EXDate());
-        vComponent.getExDate().getDates().add(d);
+        vComponent.getExDate().getDates().add(new VDateTime(d));
         makeExceptionDates();
 //        exceptionComboBox.getItems().remove(d);
         Collections.sort(exceptionsListView.getItems()); // Maintain sorted list

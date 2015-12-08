@@ -14,7 +14,7 @@ import java.time.temporal.Temporal;
  * @author David Bal
  *
  */
-public class VDateTime
+public class VDateTime implements Comparable<VDateTime>
 {
     private final static String datePattern = "yyyyMMdd";
     private final static String timePattern = "HHmmss";
@@ -117,6 +117,12 @@ public class VDateTime
         return getDateOrDateTime().equals(testObj.getDateOrDateTime());
     }
     
+    @Override
+    public int compareTo(VDateTime obj)
+    {
+        return getLocalDateTime().compareTo(obj.getLocalDateTime());
+    }
+    
     /**
      * Returns a DATE (3.3.4) and DATE-TIME (3.3.5) string as defined from RFC 5545 iCalendar
      */
@@ -142,7 +148,7 @@ public class VDateTime
      *  Currently only handles local time, UTC time and time zone reference is TODO
      * @return - new VDateTime object initialized with parsed dateTimeString
      */
-    public static VDateTime parseDateTime(String dateTimeString)
+    public static VDateTime parseString(String dateTimeString)
     {
         if (dateTimeString.matches("^(VALUE=DATE-TIME:)?[0-9]{8}T?([0-9]{6})?Z?"))
         {

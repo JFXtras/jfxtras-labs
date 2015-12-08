@@ -544,12 +544,12 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 stringsIterator.remove();
             } else if (property.equals(vComponent.dateTimeStartProperty().getName()))
             { // DTSTART
-                VDateTime dateTime = VDateTime.parseDateTime(value);
+                VDateTime dateTime = VDateTime.parseString(value);
                 vComponent.setDateTimeStart(dateTime);
                 stringsIterator.remove();
             } else if (property.equals(vComponent.exDateProperty().getName()))
             { // EXDATE
-                Collection<LocalDateTime> dateTimeCollection = RecurrenceComponent.parseDates(value);
+                Collection<VDateTime> dateTimeCollection = RecurrenceComponent.parseDates(value);
                 if (vComponent.getExDate() == null)
                 {
                     vComponent.setExDate(new EXDate());
@@ -563,7 +563,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 stringsIterator.remove();
             } else if (property.equals(vComponent.rDateProperty().getName()))
             { // RDATE
-                Collection<LocalDateTime> dateTimeCollection = RecurrenceComponent.parseDates(value);
+                Collection<VDateTime> dateTimeCollection = RecurrenceComponent.parseDates(value);
                 if (vComponent.getRDate() == null)
                 {
                     vComponent.setRDate(new RDate());

@@ -496,7 +496,7 @@ public abstract class ICalendarTestAbstract
     protected static VEventImpl getDailyWithException1()
     {
         VEventImpl vEvent = getDaily2();
-        EXDate exDate = new EXDate().withDates(LocalDateTime.of(2015, 11, 12, 10, 0), LocalDateTime.of(2015, 11, 15, 10, 0));
+        EXDate exDate = new EXDate().withDates(new VDateTime(LocalDateTime.of(2015, 11, 12, 10, 0)), new VDateTime(LocalDateTime.of(2015, 11, 15, 10, 0)));
         vEvent.setExDate(exDate);
         return vEvent;
     }
@@ -506,7 +506,7 @@ public abstract class ICalendarTestAbstract
         VEventImpl vEvent = new VEventImpl();
         vEvent.setDateTimeStart(new VDateTime(LocalDateTime.of(2015, 11, 9, 10, 0)));
         vEvent.setDurationInSeconds(3600L);
-        RDate rDate = new RDate().withDates(LocalDateTime.of(2015, 11, 12, 10, 0), LocalDateTime.of(2015, 11, 14, 12, 0));
+        RDate rDate = new RDate().withDates(new VDateTime(LocalDateTime.of(2015, 11, 12, 10, 0)), new VDateTime(LocalDateTime.of(2015, 11, 14, 12, 0)));
         vEvent.setRDate(rDate);
         return vEvent;
     }

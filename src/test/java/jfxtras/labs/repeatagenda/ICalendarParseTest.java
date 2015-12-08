@@ -168,7 +168,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     public void canParseVDateTime1()
     {
         VDateTime expectedDateTime = new VDateTime(LocalDateTime.of(2015, 11, 15, 10, 0));
-        VDateTime dateTime = VDateTime.parseDateTime("20151115T100000");
+        VDateTime dateTime = VDateTime.parseString("20151115T100000");
         assertEquals(expectedDateTime, dateTime);
     }
     
@@ -176,7 +176,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     public void canParseVDateTime2()
     {
         VDateTime expectedDateTime = new VDateTime(LocalDateTime.of(2015, 11, 15, 10, 0));
-        VDateTime dateTime = VDateTime.parseDateTime("VALUE=DATE-TIME:20151115T100000");
+        VDateTime dateTime = VDateTime.parseString("VALUE=DATE-TIME:20151115T100000");
         assertEquals(expectedDateTime, dateTime);
     }
 
@@ -184,7 +184,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     public void canParseVDate1()
     {
         VDateTime expectedDateTime = new VDateTime(LocalDate.of(2015, 11, 15));
-        VDateTime dateTime = VDateTime.parseDateTime("VALUE=DATE:20151115");
+        VDateTime dateTime = VDateTime.parseString("VALUE=DATE:20151115");
         assertEquals(expectedDateTime, dateTime);
     }
     

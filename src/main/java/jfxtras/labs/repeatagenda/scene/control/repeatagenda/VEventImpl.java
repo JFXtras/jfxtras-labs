@@ -35,6 +35,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.W
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -414,11 +415,11 @@ public class VEventImpl extends VEvent<Appointment>
                     if (getExDate() != null)
                     {
                         getExDate().getDates().clear();
-                        final Iterator<LocalDateTime> exceptionIterator = vEventOld2.getExDate().getDates().iterator();
+                        final Iterator<VDateTime> exceptionIterator = vEventOld2.getExDate().getDates().iterator();
                         while (exceptionIterator.hasNext())
                         {
-                            LocalDateTime d = exceptionIterator.next();
-                            if (d.isBefore(dateTimeStartInstanceNew))
+                            VDateTime d = exceptionIterator.next();
+                            if (d.getLocalDateTime().isBefore(dateTimeStartInstanceNew))
                             {
                                 exceptionIterator.remove();
                             } else {
@@ -448,11 +449,11 @@ public class VEventImpl extends VEvent<Appointment>
                     if (getRDate() != null)
                     {
                         getRDate().getDates().clear();
-                        final Iterator<LocalDateTime> recurrenceIterator = vEventOld2.getRDate().getDates().iterator();
+                        final Iterator<VDateTime> recurrenceIterator = vEventOld2.getRDate().getDates().iterator();
                         while (recurrenceIterator.hasNext())
                         {
-                            LocalDateTime d = recurrenceIterator.next();
-                            if (d.isBefore(dateTimeStartInstanceNew))
+                            VDateTime d = recurrenceIterator.next();
+                            if (d.getLocalDateTime().isBefore(dateTimeStartInstanceNew))
                             {
                                 recurrenceIterator.remove();
                             } else {

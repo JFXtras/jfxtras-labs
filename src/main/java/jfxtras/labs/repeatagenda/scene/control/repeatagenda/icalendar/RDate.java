@@ -24,15 +24,28 @@ public class RDate extends RecurrenceComponent<RDate>
     /** Add date/times in RDates set */
     public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
     {
-        if (inStream == null) return getDates().stream().filter(d -> ! d.isBefore(startDateTime));
+        if (inStream == null)
+        {
+            return getDates()
+                    .stream()
+                    .map(d -> d.getLocalDateTime())
+                    .filter(d -> ! d.isBefore(startDateTime));
+        }
+        Stream<LocalDateTime> stream2 = getDates()
+                .stream()
+                .map(d -> d.getLocalDateTime())
+                .filter(d -> ! d.isBefore(startDateTime));
         return merge(inStream
-                , getDates().stream().filter(d -> ! d.isBefore(startDateTime))
-                , (a1, a2) -> a1.compareTo(a2));
+                   , stream2
+                   , (a1, a2) -> a1.compareTo(a2));
     }
 
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
-        return getDates().stream().filter(d -> ! d.isBefore(startDateTime));
+        return getDates()
+                .stream()
+                .map(d -> d.getLocalDateTime())
+                .filter(d -> ! d.isBefore(startDateTime));
     }
 
     

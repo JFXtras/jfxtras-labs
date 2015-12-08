@@ -426,7 +426,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                         dTEndFound = true;
                         vEvent.useDuration = false;
                         vEvent.useDateTimeEnd = true;
-                        VDateTime dateTime = VDateTime.parseDateTime(value);
+                        VDateTime dateTime = VDateTime.parseString(value);
                         vEvent.setDateTimeEnd(dateTime);
                         stringsIterator.remove();
                     } else

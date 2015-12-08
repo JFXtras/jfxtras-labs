@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule.ByRules;
 
@@ -29,7 +30,7 @@ public class ICalendarEqualsTest extends ICalendarTestAbstract
     {
         VEventImpl vevent = getMonthly5();
         VEventImpl vevent2 = getMonthly5();
-        EXDate exDate = new EXDate().withDates(LocalDateTime.of(2015, 11, 12, 10, 0), LocalDateTime.of(2015, 11, 15, 10, 0));
+        EXDate exDate = new EXDate().withDates(new VDateTime(LocalDateTime.of(2015, 11, 12, 10, 0)), new VDateTime(LocalDateTime.of(2015, 11, 15, 10, 0)));
         vevent2.setExDate(exDate);
         assertFalse(vevent.equals(vevent2)); // check number of appointments
     }

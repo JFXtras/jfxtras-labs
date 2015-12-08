@@ -1,10 +1,9 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,18 +24,18 @@ public abstract class RecurrenceComponent<T>
      * EXDATE or RDATE: Set of date/times included or excepted for recurring events, to-dos, journal entries.
      * 3.8.5.1, RFC 5545 iCalendar
      */
-    public Set<LocalDateTime> getDates()
+    public Set<VDateTime> getDates()
     {
-        if (dates == null) this.dates = FXCollections.observableSet(new HashSet<LocalDateTime>());
+        if (dates == null) this.dates = FXCollections.observableSet(new HashSet<VDateTime>());
         return dates;
     }
-    private ObservableSet<LocalDateTime> dates;
-    public void setDates(Set<LocalDateTime> dates)
+    private ObservableSet<VDateTime> dates;
+    public void setDates(Set<VDateTime> dates)
     {
-        if (dates == null) this.dates = FXCollections.observableSet(new HashSet<LocalDateTime>());
+        if (dates == null) this.dates = FXCollections.observableSet(new HashSet<VDateTime>());
         this.dates.addAll(dates);
     }
-    public T withDates(LocalDateTime...dates)
+    public T withDates(VDateTime...dates)
     {
         for (int i=0; i<dates.length; i++)
         {
@@ -44,7 +43,7 @@ public abstract class RecurrenceComponent<T>
         }
         return (T) this;
     }
-    public T withDates(Collection<LocalDateTime> dates)
+    public T withDates(Collection<VDateTime> dates)
     {
         getDates().addAll(dates);
         return (T) this;
@@ -74,16 +73,18 @@ public abstract class RecurrenceComponent<T>
             return false;
         }
         EXDate testObj = (EXDate) obj;
-        boolean datesEquals;
+
         if (getDates() == null) return testObj.getDates() == null;
         if (getDates().size() != testObj.getDates().size()) return false;
         
         // Sort both sets as lists and compare each element
-        final Comparator<LocalDateTime> c = (d1, d2) -> d1.compareTo(d2);
-        List<LocalDateTime> l1 = new ArrayList<LocalDateTime>(getDates());
-        l1.sort(c);
-        List<LocalDateTime> l2 = new ArrayList<LocalDateTime>(testObj.getDates());
-        l2.sort(c);
+//        final Comparator<VDateTime> c = (d1, d2) -> d1.getLocalDateTime().compareTo(d2.getLocalDateTime());
+        List<VDateTime> l1 = new ArrayList<VDateTime>(getDates());
+        Collections.sort(l1);
+//        l1.sort(c);
+        List<VDateTime> l2 = new ArrayList<VDateTime>(testObj.getDates());
+        Collections.sort(l2);
+//        l2.sort(c);
         for (int i=0; i<l1.size(); i++)
         {
             if(! l1.get(i).equals(l2.get(i))) return false;
@@ -97,17 +98,17 @@ public abstract class RecurrenceComponent<T>
         String datesString = getDates()
                 .stream()
                 .sorted()
-                .map(d -> VComponentAbstract.FORMATTER.format(d) + ",")
+                .map(d -> d.toString() + ",")
                 .collect(Collectors.joining());
         return datesString.substring(0, datesString.length()-1); // remove last comma
     }
     
-    /** convert a comma delimeted string of VComponent.FORMATTER dates to a List<LocalDateTime> */
-    public static Collection<LocalDateTime> parseDates(String string)
+    /** convert a comma delimited string of VComponent.FORMATTER dates to a List<LocalDateTime> */
+    public static Collection<VDateTime> parseDates(String string)
     {
         return Arrays.asList(string.split(","))
                      .stream()
-                     .map(s -> LocalDateTime.parse(s,VComponentAbstract.FORMATTER))
+                     .map(s -> VDateTime.parseString(s))
                      .collect(Collectors.toList());
     }
 
