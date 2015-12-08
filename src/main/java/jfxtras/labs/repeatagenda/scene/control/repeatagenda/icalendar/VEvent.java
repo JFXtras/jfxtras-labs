@@ -158,7 +158,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     }
     public void setDurationInSeconds(Long value)
     {
-        if (getDateTimeStart().isWholeDay()) throw new InvalidParameterException("Can't send Duration when wholeDay is true.");
+//        if (getDateTimeStart().isWholeDay()) throw new InvalidParameterException("Can't send Duration when wholeDay is true.");
         durationInSeconds.setValue(value);
         useDuration=true;
         useDateTimeEnd=false;
@@ -244,7 +244,9 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     public ObjectProperty<VDateTime> dateTimeEndProperty() { return dateTimeEnd; }
     public void setDateTimeEnd(VDateTime dtEnd)
     {
-        if ((getDateTimeStart() != null) && getDateTimeStart().isWholeDay()) throw new InvalidParameterException("Can't send dateTimeEnd when wholeDay is true.");
+        if ((getDateTimeStart() != null) 
+          && getDateTimeStart().isWholeDay()
+          && ! dtEnd.isWholeDay()) throw new InvalidParameterException("Can't set LocalDateTime to dateTimeEnd when wholeDay is true.");
         dateTimeEnd.set(dtEnd);
         useDuration=false;
         useDateTimeEnd=true;
@@ -333,11 +335,8 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         Map<Property, String> properties = new HashMap<Property, String>();
         properties.putAll(super.makePropertiesMap());
         if (getDescription() != null) properties.put(descriptionProperty(), getDescription());
-        if (! getDateTimeStart().isWholeDay())
-        {
-            if (useDateTimeEnd) properties.put(dateTimeEndProperty(), FORMATTER.format(getDateTimeEnd().getLocalDateTime()));
-            if (useDuration) properties.put(durationInSecondsProperty(), getDurationAsString());
-        }
+        if (useDateTimeEnd) properties.put(dateTimeEndProperty(), getDateTimeEnd().toString());
+        if (useDuration) properties.put(durationInSecondsProperty(), getDurationAsString());
         return properties;
     }
     
@@ -350,11 +349,9 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         // Note: Check for invalid condition where both DURATION and DTEND not being null is done in parseVEvent.
         // It is not checked here due to bindings between both DURATION and DTEND.
         if (durationNull && endDateTimeNull & ! getDateTimeStart().isWholeDay()) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DURATION and DTEND can not be null.");
-        boolean wholeDayAndDTEndProblem = getDateTimeStart().isWholeDay() && ! durationNull;
-//        System.out.println("here: " + getDateTimeStart().isWholeDay() + " - " + durationNull + " " + (getDateTimeStart().isWholeDay() && durationNull));
-        if (wholeDayAndDTEndProblem) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  WholeDay can't be true and have an end date/time (DTEND).");
-        boolean wholeDayAndDurationProblem = getDateTimeStart().isWholeDay() && ! endDateTimeNull;
-        if (wholeDayAndDurationProblem) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  WholeDay can't be true and have a duration (DURATION).");
+        Boolean s = (getDateTimeStart() == null) ? null: getDateTimeStart().isWholeDay();
+        Boolean e = (getDateTimeEnd() == null) ? null: getDateTimeEnd().isWholeDay();
+        if ((s != null) && (e != null) && ((s && !e) || (!s && e))) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DTSTART and DTEND must be both whole day or neither can be");
         return errorsBuilder.toString();
     }
     

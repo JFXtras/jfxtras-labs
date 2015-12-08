@@ -93,11 +93,11 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     VEventImpl vEvent = getWholeDayDaily1();
     String madeString = vEvent.toString();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
+                          + "DTEND:VALUE=DATE:20151112" + System.lineSeparator()
                           + "DTSTAMP:20150110T080000" + System.lineSeparator()
                           + "DTSTART:VALUE=DATE:20151109" + System.lineSeparator()
                           + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                           + "END:VEVENT";
     assertEquals(expectedString, madeString);
     }
-    
 }

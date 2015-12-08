@@ -516,6 +516,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl();
         vEvent.setDateTimeStart(new VDateTime(LocalDate.of(2015, 11, 9)));
+        vEvent.setDateTimeEnd(new VDateTime(LocalDate.of(2015, 11, 12)));
         vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         vEvent.setAppointmentClass(clazz);
