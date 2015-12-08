@@ -34,6 +34,7 @@ public class RDate extends RecurrenceComponentAbstract<RDate>
         Stream<LocalDateTime> stream2 = getDates()
                 .stream()
                 .map(d -> d.getLocalDateTime())
+                .sorted()
                 .filter(d -> ! d.isBefore(startDateTime));
         return merge(inStream
                    , stream2

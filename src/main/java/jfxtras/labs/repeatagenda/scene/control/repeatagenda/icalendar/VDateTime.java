@@ -7,7 +7,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 
 /**
- * Class that represents both DATE (3.3.4) and DATE-TIME (3.3.5)
+ * Class that encapsulates a Temporal object to represent either DATE (3.3.4)
+ * or DATE-TIME (3.3.5).  It represents DATE (as LocalDate) if the component is
+ * for a whole day and DATE-TIME (as LocalDateTime) for a component that has a 
+ * time part.
  * if wholeDay is true dateTime is atStartOfDay and time can't be set.
  * from RFC 5545 iCalendar
  * 
@@ -123,6 +126,12 @@ public class VDateTime implements Comparable<VDateTime>
         return getLocalDateTime().compareTo(obj.getLocalDateTime());
     }
     
+    // overriding hashCode is required to ensure Set properly avoids duplicates. 
+    @Override
+    public int hashCode() {
+        return dateOrDateTime.hashCode();
+    }
+    
     /**
      * Returns a DATE (3.3.4) and DATE-TIME (3.3.5) string as defined from RFC 5545 iCalendar
      */
@@ -165,5 +174,4 @@ public class VDateTime implements Comparable<VDateTime>
             throw new InvalidParameterException("String does not match DATE or DATE-TIME pattern: " + dateTimeString);
         }
     }
-
 }

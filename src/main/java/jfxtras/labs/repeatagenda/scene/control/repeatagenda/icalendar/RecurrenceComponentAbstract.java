@@ -72,7 +72,7 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
         if((obj == null) || (obj.getClass() != getClass())) {
             return false;
         }
-        RecurrenceComponentAbstract testObj = (RecurrenceComponentAbstract) obj;
+        RecurrenceComponentAbstract<T> testObj = (RecurrenceComponentAbstract<T>) obj;
 
         if (getDates() == null) return testObj.getDates() == null;
         if (getDates().size() != testObj.getDates().size()) return false;
