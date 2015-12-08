@@ -92,9 +92,9 @@ private LocalDateTime dateTimeStartInstanceNew;
 private ToggleGroup endGroup;
 @FXML private Label repeatSummaryLabel;
 
-@FXML ComboBox<LocalDateTime> exceptionComboBox;
+@FXML ComboBox<VDateTime> exceptionComboBox;
 @FXML Button addExceptionButton;
-@FXML ListView<LocalDateTime> exceptionsListView; // EXDATE date/times to be skipped (deleted events)
+@FXML ListView<VDateTime> exceptionsListView; // EXDATE date/times to be skipped (deleted events)
 @FXML Button removeExceptionButton;
 
 @FXML private Button closeButton;
@@ -473,15 +473,16 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         // EXCEPTIONS
         // Note: exceptionComboBox string converter must be setup done after the controller's initialization 
         // because the resource bundle isn't instantiated earlier.
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.exception"));
-        exceptionComboBox.setConverter(new StringConverter<LocalDateTime>()
+        final DateTimeFormatter formatterDateTime = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.exception"));
+        final DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.exception"));
+        exceptionComboBox.setConverter(new StringConverter<VDateTime>()
         { // setup string converter
-            @Override public String toString(LocalDateTime d) {
-                return d.toString();
+            @Override public String toString(VDateTime d)
+            {
+                DateTimeFormatter myFormatter = (d.isWholeDay()) ? formatterDate : formatterDateTime;
+                return myFormatter.format(d.getLocalDateTime());
             }
-            @Override public LocalDateTime fromString(String string) {
-                throw new RuntimeException("not required for non editable ComboBox");
-            }
+            @Override public VDateTime fromString(String string) { throw new RuntimeException("not required for non editable ComboBox"); }
         });
         exceptionComboBox.valueProperty().addListener(obs -> addExceptionButton.setDisable(false)); // turn on add button when exception date is selected in combobox
         
@@ -520,11 +521,11 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         setDayOfWeek(vComponent);
         startDatePicker.setValue(vComponent.getDateTimeStart().getLocalDate());
         if (vComponent.getExDate() != null) {
-            List<LocalDateTime> collect = vComponent
+            List<VDateTime> collect = vComponent
                     .getExDate()
                     .getDates()
                     .stream()
-                    .map(d -> d.getLocalDateTime())
+//                    .map(d -> d.getLocalDateTime())
                     .collect(Collectors.toList());
             exceptionsListView.getItems().addAll(collect);
         }
@@ -641,17 +642,19 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         Stream<LocalDateTime> stream1 = vComponent
                 .getRRule()
                 .stream(vComponent.getDateTimeStart().getLocalDateTime());
-//                .map(d -> new VDateTime(d));
         Stream<LocalDateTime> stream2 = (vComponent.getExDate() == null) ? stream1
                 : vComponent.getExDate().stream(stream1, vComponent.getDateTimeStart().getLocalDateTime()); // remove exceptions
-        List<LocalDateTime> exceptionDates = stream2.limit(EXCEPTION_CHOICE_LIMIT).collect(Collectors.toList());
+        List<VDateTime> exceptionDates = stream2
+                .limit(EXCEPTION_CHOICE_LIMIT)
+                .map(d -> new VDateTime(d))
+                .collect(Collectors.toList());
         exceptionComboBox.getItems().clear();
         exceptionComboBox.getItems().addAll(exceptionDates);
     }
     
     @FXML private void handleAddException()
     {
-        LocalDateTime d = exceptionComboBox.getValue();
+        VDateTime d = exceptionComboBox.getValue();
         exceptionsListView.getItems().add(d);
         if (vComponent.getExDate() == null) vComponent.setExDate(new EXDate());
         vComponent.getExDate().getDates().add(new VDateTime(d));
@@ -664,7 +667,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
     @FXML private void handleRemoveException()
     {
         System.out.println("Remove Exception");
-        LocalDateTime d = exceptionsListView.getSelectionModel().getSelectedItem();
+        VDateTime d = exceptionsListView.getSelectionModel().getSelectedItem();
         vComponent.getExDate().getDates().remove(d);
         makeExceptionDates();
 //        exceptionComboBox.getItems().add(d);
