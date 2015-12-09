@@ -16,6 +16,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
         VEventImpl e = getYearly1();
         String madeString = e.toString();
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
+                              + "CATEGORIES:group13" + System.lineSeparator()
                               + "CREATED:20151109T082900" + System.lineSeparator()
                               + "DESCRIPTION:Yearly1 Description" + System.lineSeparator()
                               + "DTSTAMP:20151109T083000" + System.lineSeparator()
@@ -25,7 +26,6 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
                               + "RRULE:FREQ=YEARLY" + System.lineSeparator()
                               + "SUMMARY:Yearly1 Summary" + System.lineSeparator()
                               + "UID:20151109T082900-0@jfxtras.org" + System.lineSeparator()
-                              + "X-APPOINTMENT-GROUP:group13" + System.lineSeparator()
                               + "END:VEVENT";
         assertEquals(expectedString, madeString);
     }
@@ -73,6 +73,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     VEvent e = getDailyWithException1();
     String madeString = e.toString();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
+                          + "CATEGORIES:group03" + System.lineSeparator()
                           + "DESCRIPTION:Daily2 Description" + System.lineSeparator()
                           + "DTSTAMP:20150110T080000" + System.lineSeparator()
                           + "DTSTART:20151109T100000" + System.lineSeparator()
@@ -81,7 +82,6 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
                           + "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6" + System.lineSeparator()
                           + "SUMMARY:Daily2 Summary" + System.lineSeparator()
                           + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
-                          + "X-APPOINTMENT-GROUP:group3" + System.lineSeparator()
                           + "END:VEVENT";
     assertEquals(expectedString, madeString);
     }

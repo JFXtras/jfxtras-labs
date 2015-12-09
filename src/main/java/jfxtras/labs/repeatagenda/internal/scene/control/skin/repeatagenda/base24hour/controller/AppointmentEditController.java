@@ -54,7 +54,7 @@ public class AppointmentEditController
     @FXML private TextField summaryTextField; // SUMMARY
     @FXML private TextArea descriptionTextArea; // DESCRIPTION
     @FXML private CheckBox wholeDayCheckBox;
-    @FXML private TextField groupTextField;
+    @FXML private TextField groupTextField; // CATEGORIES
     @FXML private Button closeAppointmentButton;
     @FXML private Button cancelAppointmentButton;
     @FXML private Button closeRepeatButton;
@@ -133,7 +133,6 @@ public class AppointmentEditController
         endTextField.setParseErrorCallback(errorCallback);
         
         // APPOINTMENT GROUP
-        // store group name changes by each character typed
         appointmentGroupGridPane.appointmentGroupSelectedProperty().addListener(
             (observable, oldSelection, newSelection) ->
             {
@@ -142,13 +141,14 @@ public class AppointmentEditController
                 groupTextField.setText(newText);
 //                groupNameEdited.set(true); // TODO - HANDLE APPOINTMENT GROUP I/O
             });
-
+        // store group name changes by each character typed
         groupTextField.textProperty().addListener((observable, oldSelection, newSelection) ->
         {
             int i = appointmentGroupGridPane.getAppointmentGroupSelected();
             appointmentGroups.get(i).setDescription(newSelection);
             appointmentGroupGridPane.updateToolTip(i, appointmentGroups);
             vEvent.setCategories(newSelection);
+            // TODO - ensure groupTextField is unique description text
 //            groupNameEdited.set(true);
         });
         appointmentGroupGridPane.setupData(vComponent, appointmentGroups);

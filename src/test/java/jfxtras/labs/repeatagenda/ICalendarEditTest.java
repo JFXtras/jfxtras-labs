@@ -66,7 +66,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
 
         // Check edited VEvent
-        VEventImpl expectedVEvent = new VEventImpl();
+        VEventImpl expectedVEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         expectedVEvent.setAppointmentClass(getClazz());
         expectedVEvent.setAppointmentGroup(appointmentGroups.get(3));
         expectedVEvent.setDateTimeStart(new VDateTime(LocalDateTime.of(2015, 11, 9, 9, 45)));
@@ -208,6 +208,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
             .withAppointmentGroup(appointmentGroups.get(3))
             .withDescription("Daily2 Description")
             .withSummary("Daily2 Summary");
+        System.out.println("appt group desc: " + editedAppointment1.getAppointmentGroup().getDescription());
         assertEquals(expectedAppointment1, editedAppointment1); // Check to see if repeat-generated appointment changed correctly
 
         RepeatableAppointment editedAppointment2 = (RepeatableAppointment) appointmentIteratorNew.next();
@@ -405,7 +406,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
               , null);                  // VEvents I/O callback
         assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
 
-        VEventImpl expectedVEvent = new VEventImpl();
+        VEventImpl expectedVEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         expectedVEvent.setAppointmentClass(getClazz());
         expectedVEvent.setAppointmentGroup(appointmentGroups.get(3));
         expectedVEvent.setDateTimeStart(new VDateTime(LocalDateTime.of(2015, 11, 9, 10, 0)));

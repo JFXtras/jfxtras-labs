@@ -348,7 +348,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         boolean endDateTimeNull = getDateTimeEnd() == null;
         // Note: Check for invalid condition where both DURATION and DTEND not being null is done in parseVEvent.
         // It is not checked here due to bindings between both DURATION and DTEND.
-        if (durationNull && endDateTimeNull & ! getDateTimeStart().isWholeDay()) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DURATION and DTEND can not be null.");
+        if (durationNull && endDateTimeNull && getDateTimeStart() != null && ! getDateTimeStart().isWholeDay()) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DURATION and DTEND can not be null.");
         Boolean s = (getDateTimeStart() == null) ? null: getDateTimeStart().isWholeDay();
         Boolean e = (getDateTimeEnd() == null) ? null: getDateTimeEnd().isWholeDay();
         if ((s != null) && (e != null) && ((s && !e) || (!s && e))) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DTSTART and DTEND must be both whole day or neither can be");
@@ -387,7 +387,6 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
             String line = stringsIterator.next();
             String property = line.substring(0, line.indexOf(":"));
             String value = line.substring(line.indexOf(":") + 1).trim();
-//            final String[] property = stringsIterator.next().split(":");
             if (property.equals(vEvent.descriptionProperty().getName()))
             { // DESCRIPTION
                     if (vEvent.getDescription() == null)

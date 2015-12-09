@@ -514,10 +514,11 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      */
     public String validityCheck()
     {
-        String errors = "";
-        if (getDateTimeStamp() == null) errors += System.lineSeparator() + "Invalid VComponent.  DTSTAMP must not be null.";
-        if (getUniqueIdentifier() == null) errors += System.lineSeparator() + "Invalid VComponent.  UID must not be null.";
-        return errors;
+        StringBuilder errorsBuilder = new StringBuilder();
+        if (getDateTimeStart() == null) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DTSTART must not be null.");
+        if (getDateTimeStamp() == null) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DTSTAMP must not be null.");
+        if (getUniqueIdentifier() == null) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  UID must not be null.");
+        return errorsBuilder.toString();
     }
     
     /** Convert a list of strings containing properties of a iCalendar component and
@@ -532,7 +533,12 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
             String line = stringsIterator.next();
             String property = line.substring(0, line.indexOf(":"));
             String value = line.substring(line.indexOf(":") + 1).trim();
-            if (property.equals(vComponent.dateTimeCreatedProperty().getName()))
+            if (property.equals(vComponent.categoriesProperty().getName()))
+            { // CATEGORIES
+                System.out.println("found categories:" + value);
+                vComponent.setCategories(value);
+                stringsIterator.remove();
+            } else if (property.equals(vComponent.dateTimeCreatedProperty().getName()))
             { // CREATED
                 LocalDateTime dateTime = LocalDateTime.parse(value,FORMATTER);
                 vComponent.setDateTimeCreated(dateTime);

@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
@@ -45,11 +46,11 @@ public class RepeatableAgenda extends Agenda {
     public LocalDateTimeRange getDateTimeRange() { return dateTimeRange; }
     
     /** VComponents */
-    private Collection<VComponent<Appointment>> repeats;
-    public Collection<VComponent<Appointment>> vComponents() { return repeats; }
+    private Collection<VComponent<Appointment>> vComponents;
+    public Collection<VComponent<Appointment>> vComponents() { return vComponents; }
     public void setVComponents(Collection<VComponent<Appointment>> repeatRules)
     {
-        this.repeats = repeatRules;
+        this.vComponents = repeatRules;
 //        if (getAppointmentsIndividual() != null)
 //        { // In cast individual appointments are set first collect individual appointments that are recurrences and add to repeat appointment list
 //            repeats().stream().forEach(r ->
@@ -69,22 +70,58 @@ public class RepeatableAgenda extends Agenda {
 
     }
     
-//    // Extended repeat class used by the implementor - used to instantiate new repeat objects
-//    private Class<? extends Repeat> repeatClass = RepeatImpl.class; // default class, change if other implementation is used
-//    Class<? extends Repeat> getRepeatClass() { return repeatClass; }
-//    public void setRepeatClass(Class<? extends Repeat> clazz) { repeatClass = clazz; }
+    // VEvent class - used in factory to instantiate new VEvent objects
+    private Class<? extends VComponent<Appointment>> vEventClass = VEventImpl.class; // default class, change if other implementation is used
+    Class<? extends VComponent<Appointment>> getVEventClass() { return vEventClass; }
+    public void setVEventClass(Class<? extends VComponent<Appointment>> clazz) { vEventClass = clazz; }
 
     // Extended appointment class used by the implementor - used to instantiate new appointment objects
-    private Class<? extends RepeatableAppointment> appointmentClass = RepeatableAppointmentImpl.class; // set to default class, change if using own implementation
-    Class<? extends RepeatableAppointment> getAppointmentClass() { return appointmentClass; }
-    public void setAppointmentClass(Class<? extends RepeatableAppointment> clazz) { appointmentClass = clazz; }
+    private Class<? extends Appointment> appointmentClass = RepeatableAppointmentImpl.class; // set to default class, change if using own implementation
+    Class<? extends Appointment> getAppointmentClass() { return appointmentClass; }
+    public void setAppointmentClass(Class<? extends Appointment> clazz) { appointmentClass = clazz; }
 
     // I/O callbacks, must be set to provide I/O functionality, null by default
-    private Callback<Collection<VComponent<Appointment>>, Void> repeatWriteCallback = null;
+    private Callback<Collection<VComponent< Appointment>>, Void> repeatWriteCallback = null;
     public void setRepeatWriteCallback(Callback<Collection<VComponent<Appointment>>, Void> repeatWriteCallback) { this.repeatWriteCallback = repeatWriteCallback; }
+
     private Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback = null;
     public void setAppointmentGroupWriteCallback(Callback<Collection<AppointmentGroup>, Void> appointmentWriteCallback) { this.appointmentGroupWriteCallback = appointmentGroupWriteCallback; }
 
+    // listen to changes in appointments from agenda. This listener must be removed and added back when a change
+    // in the time range occurs.
+    private final ListChangeListener<Appointment> appointmentListener = (ListChangeListener.Change<? extends Appointment> change)
+            -> {
+                System.out.println("appointment change listener:");
+                while (change.next())
+                {
+                    if (change.wasReplaced())
+                    {
+                        List<? extends Appointment> removedAppointments = change.getRemoved();
+                        Set<Appointment> removedIndividualAppointments = removedAppointments.stream()
+                                .map(a -> ((RepeatableAppointment) a))
+                                .filter(a -> ! a.isRepeatMade())
+                                .peek(a -> System.out.println("removed individual " + a.getStartLocalDateTime()))
+                                .collect(Collectors.toSet());
+                    }
+                    if (change.wasAdded())
+                    {
+//                        change.getAddedSubList()
+                        List<? extends Appointment> addedAppointments = change.getAddedSubList();
+                        Set<Appointment> newIndividualAppointments = addedAppointments.stream()
+//                            .map(a -> ((Appointment) a))
+//                            .filter(a -> ! a.isRepeatMade())
+                            .peek(a -> 
+                            {
+                                // only do this if not from a vevent
+                                VComponent<Appointment> newVEvent = VEventFactory.newVComponent(getVEventClass(), a);
+                                vComponents.add(newVEvent);
+                                System.out.println("added individual " + a.getStartLocalDateTime());   
+                            })
+                            .collect(Collectors.toSet());
+                        // add vevent - make method to create VEvent from appointment in VEventImpl
+                    }
+                }
+            };
     
 //    /** Individual appointments - kept updated with appointments */
 //    private Collection<Appointment> appointmentsIndividual = new HashSet<Appointment>(); //FXCollections.observableArrayList();
@@ -132,34 +169,9 @@ public class RepeatableAgenda extends Agenda {
         // TODO - GET PATH BETTER WAY
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Bundle", myLocale);
         Settings.setup(resources);
-//        System.out.println(resources);
-//        System.exit(0);
 
         // Listen for changes to appointments (additions and deletions)
-        appointments().addListener((ListChangeListener.Change<? extends Appointment> change)
-            -> {
-                while (change.next())
-                {
-                    if (change.wasReplaced())
-                    {
-                        List<? extends Appointment> removedAppointments = change.getRemoved();
-                        Set<Appointment> removedIndividualAppointments = removedAppointments.stream()
-                                .map(a -> ((RepeatableAppointment) a))
-                                .filter(a -> ! a.isRepeatMade())
-                                .peek(a -> System.out.println("removed individual " + a.getStartLocalDateTime()))
-                                .collect(Collectors.toSet());
-                    }
-                    if (change.wasAdded())
-                    {
-                        List<? extends Appointment> addedAppointments = change.getAddedSubList();
-                        Set<Appointment> newIndividualAppointments = addedAppointments.stream()
-                            .map(a -> ((RepeatableAppointment) a))
-                            .filter(a -> ! a.isRepeatMade())
-                            .peek(a -> System.out.println("added individual " + a.getStartLocalDateTime()))
-                            .collect(Collectors.toSet());
-                    }
-                }
-            });
+        appointments().addListener(appointmentListener);
         
         // Change edit popup to provide one with repeat options
         setEditAppointmentCallback((Appointment appointment) ->
@@ -171,9 +183,9 @@ public class RepeatableAgenda extends Agenda {
                     .filter(v -> v.instances().contains(appointment))
                     .findFirst()
                     .get();
-            System.out.println("vevent:" + (vevent==null));
+//            System.out.println("vevent:" + (vevent==null));
             Stage repeatMenu = new EditPopupLoader(
-                    (RepeatableAppointment) appointment
+                    (Appointment) appointment
                     , vevent
                     , dateTimeRange
                     , appointments()
@@ -182,16 +194,6 @@ public class RepeatableAgenda extends Agenda {
                     , appointmentGroupWriteCallback
                     , repeatWriteCallback // write repeat callback initialized to null
                     , a -> { this.refresh(); return null; }); // refresh agenda
-
-//            Appointment appointment
-//          , VEvent vevent
-//          , LocalDateTimeRange dateTimeRange
-//          , Collection<Appointment> appointments
-//          , Collection<VEvent> repeats
-//          , List<AppointmentGroup> appointmentGroups
-//          , Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback
-//          , Callback<Collection<VEvent>, Void> veventWriteCallback
-//          , Callback<Void, Void> refreshCallback)
             
             repeatMenu.show();
             return null;
@@ -206,13 +208,13 @@ public class RepeatableAgenda extends Agenda {
             // Remove instances and appointments
             vComponents().stream().forEach(v -> v.instances().clear());   
             appointments().clear();
-
-            //            repeatMap.clear();
+            appointments().removeListener(appointmentListener);
             vComponents().stream().forEach(r ->
             { // Make new repeat-made appointments inside range
                 Collection<Appointment> newAppointments = r.makeInstances(startDate, endDate);
                 appointments().addAll(newAppointments);
             });
+            appointments().addListener(appointmentListener);
             return null; // return argument for the Callback
         });
     }
@@ -236,6 +238,7 @@ public class RepeatableAgenda extends Agenda {
     *   Like Appointment, but contains extra fields - no repeat object */
     static public interface Appointment2 extends Agenda.Appointment
     {
+        // TODO - add all iCalendar properties for VEvent
         // TODO - SHOULD GO TO REGULAR AGENDA
         /** Unique identifier as defined by iCalendar RFC 5545, 3.8.4.7 */
         String getUID();
@@ -710,24 +713,8 @@ public class RepeatableAgenda extends Agenda {
         
         }
     
+    @Deprecated
     static public class RepeatFactory {
-                
-//        public static Repeat newRepeat(
-//                Class<? extends Repeat> repeatClass
-//              , LocalDateTimeRange dateTimeRange
-//              , Class<? extends RepeatableAppointment> appointmentClass)
-//        {
-//                try {
-//                    return repeatClass
-//                            .getConstructor(Class.class)
-//                            .newInstance(appointmentClass)
-//                            .withAppointmentClass(appointmentClass)
-//                            .withLocalDateTimeDisplayRange(dateTimeRange);
-//                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-//                    e.printStackTrace();
-//                }
-//            return null;
-//        }
         @Deprecated
         public static Repeat newRepeat(Class<? extends Repeat> repeatClass)
         {
@@ -769,13 +756,67 @@ public class RepeatableAgenda extends Agenda {
         }
     }
     
+    /**
+     * Make new VEvent objects of the implemented class
+     * 
+     * @author David Bal
+     *
+     */
     static public class VEventFactory
     {
-        public static VEvent newVComponent(Class<? extends VEvent> VEventClass)
+        /** Return new VEvent
+         * 
+         * @param VEventClass - class of new VEvent
+         * @return - the new vEvent
+         */
+        public static <U extends Appointment> VComponent<U> newVComponent(Class<? extends VComponent<U>> VEventClass)
         {
             try {
                 return VEventClass.newInstance();
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        
+//        /** Return new VEvent
+//         * @param <U>
+//         * 
+//         * @param vEventClass - class of new VEvent
+//         * @return - the new vEvent
+//         */
+//        public static  <U extends Appointment> VComponent<U> newVComponent(
+//                Class<? extends VComponent<U>> vEventClass
+//              , Class<? extends Appointment> appointmentClass
+//              , U appointment)
+//        {
+//            Arrays.stream(vEventClass.getConstructors()).forEach(System.out::println);
+//            try {
+//                return vEventClass
+//                        .getConstructor(appointmentClass)
+//                        .newInstance(appointment);
+//            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException | NoSuchMethodException e) {
+//                e.printStackTrace();
+//            }
+//            return null;
+//        }
+        
+        /** Return new VEvent
+         * @param <U>
+         * 
+         * @param vEventClass - class of new VEvent
+         * @return - the new vEvent
+         */
+        public static  <U extends Appointment> VComponent<U> newVComponent(
+                Class<? extends VComponent<U>> vEventClass
+              , U appointment)
+        {
+            Arrays.stream(vEventClass.getConstructors()).forEach(System.out::println);
+            try {
+                return vEventClass
+                        .getConstructor(Appointment.class)
+                        .newInstance(appointment);
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
             }
             return null;
@@ -795,61 +836,6 @@ public class RepeatableAgenda extends Agenda {
     }
     
     static public class AppointmentFactory {
-        
-//        @Deprecated
-//        public static RepeatableAppointment newRepeatableAppointment(
-//                Class<? extends RepeatableAppointment> appointmentClass
-//              , Class<? extends Repeat> repeatClass)
-//        {
-//            try {
-//                RepeatableAppointment a = appointmentClass.newInstance();
-//                Repeat r = RepeatFactory.newRepeat(repeatClass);
-//                a.setRepeat(r);
-//                return a;
-//            } catch (InstantiationException | IllegalAccessException e) {
-//                e.printStackTrace();
-//            }
-//            return null;
-//        }
-//
-//        /** Builds an incomplete Appointment object with the Repeat field null - used as data for a repeat object */
-//        // TODO - SHOULD I MAKE A NEW CLASS WITHOUT REPEATS IN IT (APPT DATA)?
-//        @Deprecated
-//        public static RepeatableAppointment newRepeatableAppointment(Class<? extends RepeatableAppointment> appointmentClass)
-//        {
-//            try {
-//                return appointmentClass.newInstance();
-//            } catch (InstantiationException | IllegalAccessException e) {
-//                e.printStackTrace();
-//            }
-//            return null;
-//        }
-
-//        // Returns deep copy of RepeatableAppointment
-//        public static RepeatableAppointment newRepeatableAppointment(RepeatableAppointment appointment)
-//        {
-//            Class<? extends RepeatableAppointment> appointmentClass = appointment.getClass();
-//            RepeatableAppointment a = null;
-//            try {
-//                a = appointmentClass.getConstructor(RepeatableAppointment.class).newInstance(appointment);
-//            } catch (InstantiationException | IllegalAccessException
-//                    | IllegalArgumentException | InvocationTargetException
-//                    | NoSuchMethodException | SecurityException e) {
-//                e.printStackTrace();
-//            }
-//
-////          RepeatableAppointment a = newRepeatableAppointment(appointment.getClass());            
-////            appointment.copyInto(a);
-//            if (appointment.getRepeat() != null)
-//            {
-//                Repeat r = RepeatFactory.newRepeat(appointment.getRepeat().getClass());
-//                appointment.getRepeat().copyInto(r);
-//                Appointment2 a2 = newAppointment(appointment.getRepeat().getAppointmentData());
-//                r.setAppointmentData(a2);
-//                a.setRepeat(r);
-//            }
-//            return a;
-//        }
 
         public static <T extends Appointment> T newAppointment(Class<T> appointmentClass)
         {

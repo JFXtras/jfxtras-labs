@@ -23,9 +23,10 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javafx.beans.InvalidationListener;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ChoiceDialog;
 import javafx.util.Callback;
@@ -33,7 +34,6 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.C
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.RRuleType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentFactory;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
@@ -52,46 +52,58 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 public class VEventImpl extends VEvent<Appointment>
 {
 
-    // TODO - I THINK I'M GOING TO USE CATEGORIES INSTEAD OF BELOW X CUSTOM ELEMENT
-    /**
-     * X-APPOINTMENT-GROUP
-     * Contains the AppointmentGroup from Agenda.
-     * Non-Standard iCalendar Property (3.8.8.2 in RFC 5545 iCalendar)
-     * The css StyleClass is the value portion of this property outputed by toString.
-     * StyleClass must be unique for each AppointmentGroup.
-     */
-    public StringProperty appointmentGroupStyleClassProperty() { return appointmentGroupStyleClass; }
-    private StringProperty appointmentGroupStyleClass = new SimpleStringProperty(this, "X-APPOINTMENT-GROUP");
-    public void setAppointmentGroupStyleClass(String appointmentGroupStyleClass) { this.appointmentGroupStyleClass.set(appointmentGroupStyleClass); }
-    public String getAppointmentGroupStyleClass() { return appointmentGroupStyleClass.get(); }
+//    // TODO - I THINK I'M GOING TO USE CATEGORIES INSTEAD OF BELOW X CUSTOM ELEMENT
+//    /**
+//     * X-APPOINTMENT-GROUP
+//     * Contains the AppointmentGroup from Agenda.
+//     * Non-Standard iCalendar Property (3.8.8.2 in RFC 5545 iCalendar)
+//     * The css StyleClass is the value portion of this property outputed by toString.
+//     * StyleClass must be unique for each AppointmentGroup.
+//     */
+//    public StringProperty appointmentGroupStyleClassProperty() { return appointmentGroupStyleClass; }
+//    private StringProperty appointmentGroupStyleClass = new SimpleStringProperty(this, "X-APPOINTMENT-GROUP");
+//    public void setAppointmentGroupStyleClass(String appointmentGroupStyleClass) { this.appointmentGroupStyleClass.set(appointmentGroupStyleClass); }
+//    public String getAppointmentGroupStyleClass() { return appointmentGroupStyleClass.get(); }
+//
+    public ObjectProperty<AppointmentGroup> appointmentGroupProperty() { return appointmentGroup; }
+    private ObjectProperty<AppointmentGroup> appointmentGroup = new SimpleObjectProperty<AppointmentGroup>(this, "CATEGORIES");
+    public void setAppointmentGroup(AppointmentGroup appointmentGroup) { this.appointmentGroup.set(appointmentGroup); }
+    public AppointmentGroup getAppointmentGroup() { return appointmentGroup.get(); }
 
-    private AppointmentGroup appointmentGroup;
-    public void setAppointmentGroup(AppointmentGroup appointmentGroup) { this.appointmentGroup = appointmentGroup; setAppointmentGroupStyleClass(appointmentGroup.getStyleClass()); }
-    public AppointmentGroup getAppointmentGroup() { return appointmentGroup; }
-    
-    private final ObservableList<AppointmentGroup> appointmentGroups = javafx.collections.FXCollections.observableArrayList();
+    /** appointmentGroups from Agenda.  It is used to synch categories to appointmentGroup, 
+     * which is needed by the makeAppointment method 
+     * @see #makeInstances() */
     public ObservableList<AppointmentGroup> getAppointmentGroups() { return appointmentGroups; }
-    private void synchAppointmentGroup()
-    { // ensures appointmentGroup and appointmentGroupStyleClass match.  This method is run by two listeners added to appointmentGroupStyleClassProperty and appointmentGroups by the constructor.
-        if (! getAppointmentGroups().isEmpty() && getAppointmentGroupStyleClass() != null)
+    final private ObservableList<AppointmentGroup> appointmentGroups;
+
+    /* below listeners ensures appointmentGroup description and categories match.  
+     * added to categoriesProperty and appointmentGroups by the constructor.
+     * appointmentGroups must be set
+     */
+    private final InvalidationListener categoriesListener = obs ->
+    {
+        System.out.println("finding appointment group:" + getAppointmentGroups().isEmpty() + " " + getCategories());
+        if (! getAppointmentGroups().isEmpty() && getCategories() != null)
         {
-            AppointmentGroup aGroup = getAppointmentGroups()
+            Optional<AppointmentGroup> myGroup = getAppointmentGroups()
                     .stream()
-                    .filter(g -> g.getStyleClass().equals(getAppointmentGroupStyleClass()))
-                    .findFirst()
-                    .get();
-            setAppointmentGroup(aGroup);
+                    .filter(g -> g.getDescription().equals(getCategories()))
+                    .findFirst();
+            if (! myGroup.isPresent()) System.out.println("no matched group:");
+            if (myGroup.isPresent()) setAppointmentGroup(myGroup.get());                
         }
-    }
+    };
+    private final ChangeListener<? super AppointmentGroup> appointmentGroupListener = 
+            (obs, oldValue, newValue) -> setCategories(newValue.getDescription());
     
     /**
      *  VEventImpl doesn't know how to make an appointment.  An appointment factory makes new appointments.  The Class of the appointment
      * is an argument for the AppointmentFactory.  The appointmentClass is set in the constructor.  A RRule object is not valid without
      * the appointmentClass.
      */
-    public Class<? extends RepeatableAppointment> getAppointmentClass() { return appointmentClass; }
-    private Class<? extends RepeatableAppointment> appointmentClass = RepeatableAppointmentImpl.class;
-    public void setAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { this.appointmentClass = appointmentClass; }
+    public Class<? extends Appointment> getAppointmentClass() { return appointmentClass; }
+    private Class<? extends Appointment> appointmentClass = RepeatableAppointmentImpl.class;
+    public void setAppointmentClass(Class<? extends Appointment> appointmentClass) { this.appointmentClass = appointmentClass; }
 //    public VEventImpl withAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
 
     /**
@@ -119,27 +131,50 @@ public class VEventImpl extends VEvent<Appointment>
      */
     @Override
     public Set<Appointment> instances() { return instances; }
-    final private Set<Appointment> instances = new HashSet<Appointment>();
+    final private Set<Appointment> instances = new HashSet<>();
 //    public VEventImpl withAppointments(Collection<RepeatableAppointment> s) { appointments().addAll(s); return this; }
     public boolean isNewRRule() { return instances().size() == 0; } // new RRule has no appointments
     
-    // CONSTRUCTORS
+    /*
+     * CONSTRUCTORS
+     */
     /** Copy constructor */
     public VEventImpl(VEventImpl vevent) {
         super(vevent);
-        appointmentGroupStyleClassProperty().addListener(obs -> synchAppointmentGroup());
-        getAppointmentGroups().addListener((InvalidationListener) obs -> synchAppointmentGroup());
+        this.appointmentGroups = vevent.getAppointmentGroups();
+        categoriesProperty().addListener(categoriesListener);
+        appointmentGroup.addListener(appointmentGroupListener);
         copy(vevent, this);
     }
     
-    public VEventImpl()
+    public VEventImpl(ObservableList<AppointmentGroup> appointmentGroups)
     {
         super();
-        appointmentGroupStyleClassProperty().addListener(obs -> synchAppointmentGroup());        
-        getAppointmentGroups().addListener((InvalidationListener) obs -> synchAppointmentGroup());
+        this.appointmentGroups = appointmentGroups;
+        categoriesProperty().addListener(categoriesListener);
+        appointmentGroup.addListener(appointmentGroupListener);
+    }
+    
+    /**
+     * makes new VEventImpl by copying properties from appointment
+     * 
+     * @param appointment - from Agenda
+     */
+    public VEventImpl(Appointment appointment, ObservableList<AppointmentGroup> appointmentGroups)
+    {
+        this(appointmentGroups);
+        System.out.println("make VEvent");
+        setDescription(appointment.getDescription());
+        setLocation(appointment.getLocation());
+        setCategories(appointment.getAppointmentGroup().getStyleClass());
+        // add fields, make UID, date stamp
+        // verify
+        if (! validityCheck().equals("")) throw new InvalidParameterException(validityCheck());
+        // TODO - extract from Appointment fields for VEvent
     }
 
-    /** Deep copy all fields from source to destination */
+    /** Deep copy all fields from source to destination 
+     * @param <E>*/
     private static void copy(VEventImpl source, VEventImpl destination)
     {
         if (source.getAppointmentGroup() != null) destination.setAppointmentGroup(source.getAppointmentGroup());
@@ -168,17 +203,17 @@ public class VEventImpl extends VEvent<Appointment>
 
         boolean appointmentClassEquals = (getAppointmentClass() == null) ?
                 (testObj.getAppointmentClass() == null) : getAppointmentClass().equals(testObj.getAppointmentClass());
-        boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
-                (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
+//        boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
+//                (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
         boolean dateTimeRangeStartEquals = (getDateTimeRangeStart() == null) ?
                 (testObj.getDateTimeRangeStart() == null) : getDateTimeRangeStart().equals(testObj.getDateTimeRangeStart());
         boolean dateTimeRangeEndEquals = (getDateTimeRangeEnd() == null) ?
                 (testObj.getDateTimeRangeEnd() == null) : getDateTimeRangeEnd().equals(testObj.getDateTimeRangeEnd());
 //        boolean appointmentsEquals = (appointments() == null) ?
 //                (testObj.appointments() == null) : appointments().equals(testObj.appointments());
-        System.out.println("VEventImpl: " + appointmentClassEquals + " " + appointmentGroupEquals + " " + dateTimeRangeStartEquals + " " + dateTimeRangeEndEquals
+        System.out.println("VEventImpl: " + appointmentClassEquals + " " + dateTimeRangeStartEquals + " " + dateTimeRangeEndEquals
                 + " ");// + appointmentsEquals);
-        return super.equals(obj) && appointmentClassEquals && appointmentGroupEquals && dateTimeRangeStartEquals
+        return super.equals(obj) && appointmentClassEquals && dateTimeRangeStartEquals
                 && dateTimeRangeEndEquals;
     }
     
@@ -214,7 +249,7 @@ public class VEventImpl extends VEvent<Appointment>
     {
         Map<Property, String> properties = new HashMap<Property, String>();
         properties.putAll(super.makePropertiesMap());
-        if (getAppointmentGroup() != null) properties.put(appointmentGroupStyleClassProperty(), getAppointmentGroupStyleClass());
+//        if (getAppointmentGroup() != null) properties.put(appointmentGroupStyleClassProperty(), getAppointmentGroupStyleClass());
         return properties;
     }
     
@@ -222,42 +257,47 @@ public class VEventImpl extends VEvent<Appointment>
     public String validityCheck()
     {
         String errors = super.validityCheck();
-        if (getAppointmentClass() == null) errors += System.lineSeparator() + "Invalid VEventImpl.  appointmentClass must not be null.";
+//        if (getAppointmentClass() == null) errors += System.lineSeparator() + "Invalid VEventImpl.  appointmentClass must not be null.";
         return errors;
     }
     
-    /** Make new VEventImpl and populate properties by parsing a list of strings */
-    public static VEventImpl parseVEvent(List<String> strings)
+    /** Make new VEventImpl and populate properties by parsing a list of strings 
+     * @param <E>*/
+    public static VEventImpl parseVEvent(List<String> strings, ObservableList<AppointmentGroup> appointmentGroups)
     {
-        VEventImpl vEvent = new VEventImpl();
-        Iterator<String> stringsIterator = strings.iterator();
-        while (stringsIterator.hasNext())
-        {
-            String[] property = stringsIterator.next().split(":");
-            if (property[0].equals(vEvent.appointmentGroupStyleClassProperty().getName()))
-            { // X-APPOINTMENT-GROUP
-                vEvent.setAppointmentGroupStyleClass(property[1]);
-                stringsIterator.remove();
-            }
-        }
-        return (VEventImpl) VEvent.parseVEvent(vEvent, strings);
+        VEventImpl vEvent = new VEventImpl(appointmentGroups);
+        VEvent.parseVEvent(vEvent, strings); // parse VEvent properties into vEvent
+        System.out.println("categories:" + vEvent.getCategories());
+//        Iterator<String> stringsIterator = strings.iterator();
+//        while (stringsIterator.hasNext())
+//        {
+//            String line = stringsIterator.next();
+//            String property = line.substring(0, line.indexOf(":"));
+//            String value = line.substring(line.indexOf(":") + 1).trim();
+//            if (property.equals(vEvent.appointmentGroupProperty().getName()))
+//            { // X-APPOINTMENT-GROUP
+//                vEvent.setAppointmentGroupStyleClass(property[1]);
+//                stringsIterator.remove();
+//            }
+//        }
+        return vEvent;
     }
     
     /** Make new VEventImpl and populate properties by parsing a string with properties separated
      * a by lineSeparator (new line) */
-    public static VEventImpl parseVEvent(String strings)
+    public static VEventImpl parseVEvent(String strings, ObservableList<AppointmentGroup> appointmentGroups)
     {
         List<String> stringsList = Arrays
                 .stream(strings.split(System.lineSeparator()))
                 .collect(Collectors.toList());
-        return parseVEvent(stringsList);
+        return parseVEvent(stringsList, appointmentGroups);
     }
 
     /**
      * Returns appointments for Agenda that should exist between dateTimeRangeStart and dateTimeRangeEnd
      * based on VEvent.  For convenience, sets VEvent dateTimeRangeStart and dateTimeRangeEnd prior to 
      * making appointments.
-     * @param <T>
+     * @param <Appointment>
      * 
      * @param dateTimeRangeStart
      * @param dateTimeRangeEnd
@@ -276,25 +316,23 @@ public class VEventImpl extends VEvent<Appointment>
     /**
      * Returns appointments for Agenda that should exist between dateTimeRangeStart and dateTimeRangeEnd
      * based on VEvent properties.  Uses dateTimeRange previously set in VEvent.
-     * @param <T>
+     * @param <Appointment>
      * 
      * @return created appointments
      */
     @Override
     public Collection<Appointment> makeInstances()
     {
-        List<Appointment> madeAppointments = new ArrayList<Appointment>();
-        System.out.println("here:" + getDateTimeStart());
+        List<Appointment> madeAppointments = new ArrayList<>();
         stream(getDateTimeStart().getLocalDateTime())
                 .forEach(d -> {
-                    RepeatableAppointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
+                    Appointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
                     appt.setStartLocalDateTime(d);
                     appt.setEndLocalDateTime(d.plusSeconds(getDurationInSeconds()));
-                    appt.setRepeatMade(true);
+//                    appt.setRepeatMade(true);
                     appt.setDescription(getDescription());
                     appt.setSummary(getSummary());
                     appt.setAppointmentGroup(getAppointmentGroup());
-                    System.out.println("here:" + d);
                     madeAppointments.add(appt);   // add appointments to main collection
                     instances().add(appt); // add appointments to this repeat's collection
                 });
@@ -302,38 +340,10 @@ public class VEventImpl extends VEvent<Appointment>
         return madeAppointments;
     }
  
-//    /**
-//     * Returns next valid date time starting with inputed date.  If inputed date is valid it is returned.
-//     * Iterates from first date until it passes the inputDate.  This make take a long time if the date
-//     * is far in the future.
-//     * 
-//     * @param inputDate
-//     * @return
-//     */
-//    // TODO - If this method is necessary consider using cache of dates for faster retrieval
-//    // TODO - it may not be necessary, remove if possible for improved efficiency
-//    @Deprecated
-//    public LocalDateTime nextValidDateSlow(LocalDateTime inputDate)
-//    {
-//        if (inputDate.isBefore(getDateTimeStart())) return getDateTimeStart();
-//        final Iterator<LocalDateTime> i = getRRule().stream(inputDate).iterator();                                                            // make iterator
-//        while (i.hasNext())
-//        { // find date
-//            LocalDateTime s = i.next();
-//            if (s.isAfter(inputDate)) return s; // exit loop when beyond date without match
-//        }
-//        throw new InvalidParameterException("Can't find valid date starting at " + inputDate);
-//    }
-    
-    public static void refreshVEventAppointments(VEventImpl vevent)
-    {
-        
-    }
     
     
     /**
      * Handles editing VEvent objects.
-     * @param <T>
      * 
      * @param dateTimeStartInstanceOld - start date/time of selected instance before edit
      * @param dateTimeStartInstanceNew - start date/time of selected instance after edit
@@ -351,7 +361,7 @@ public class VEventImpl extends VEvent<Appointment>
             , LocalDateTime dateTimeStartInstanceNew
             , LocalDateTime dateTimeEndInstanceNew
             , VComponent<Appointment> vEventOld
-            , Collection<Appointment> appointments
+            , Collection< Appointment> appointments
             , Collection<VComponent<Appointment>> vEvents
             , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
             , Callback<Collection<VComponent<Appointment>>, Void> writeVEventsCallback)
@@ -379,7 +389,7 @@ public class VEventImpl extends VEvent<Appointment>
         case WITH_EXISTING_REPEAT:
             // Check if changes between vEvent and vEventOld exist apart from RRule
 //            VEvent tempVEvent = VEventFactory.newVEvent(vEventOld);
-            VEvent<Appointment> tempVEvent = new VEventImpl((VEventImpl) vEventOld);
+            VEvent tempVEvent = new VEventImpl((VEventImpl) vEventOld);
             tempVEvent.setRRule(getRRule());
             boolean onlyRRuleChanged = this.equals(tempVEvent);
 

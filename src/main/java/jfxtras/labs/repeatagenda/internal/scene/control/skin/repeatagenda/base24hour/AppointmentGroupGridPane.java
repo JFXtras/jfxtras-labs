@@ -62,7 +62,6 @@ public Integer getAppointmentGroupSelected() { return appointmentGroupSelected.g
      }
 
      // Select current group
-     System.out.println("initial agoup: " + vComponent.getCategories());
      AppointmentGroup myAppointmentGroup = appointmentGroups
              .stream()
              .filter(a -> a.getDescription().equals(vComponent.getCategories()))

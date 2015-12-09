@@ -519,7 +519,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         repeatableCheckBox.selectedProperty().set(checkBox);
         frequencyComboBox.setValue(rRule.getFrequency().getFrequencyType());
         setDayOfWeek(vComponent);
-        startDatePicker.setValue(vComponent.getDateTimeStart().getLocalDate());
+        startDatePicker.setValue(vComponent.getDateTimeStart().getLocalDateTime().toLocalDate());
         if (vComponent.getExDate() != null) {
             List<VDateTime> collect = vComponent
                     .getExDate()
