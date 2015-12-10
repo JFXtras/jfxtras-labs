@@ -80,6 +80,7 @@ private LocalDateTime dateTimeStartInstanceNew;
 @FXML private CheckBox saturdayCheckBox;
 @FXML private VBox monthlyVBox;
 @FXML private Label monthlyLabel;
+private ToggleGroup monthlyGroup;
 @FXML private RadioButton dayOfMonthRadioButton;
 @FXML private RadioButton dayOfWeekRadioButton;
 @FXML private DatePicker startDatePicker;
@@ -229,6 +230,7 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
         dayOfWeekRadioButton.selectedProperty().addListener(dayOfWeekListener);
         break;
     case WEEKLY:
+        System.out.println("triggered weekly:");
         monthlyVBox.setVisible(false);
         monthlyLabel.setVisible(false);
         weeklyHBox.setVisible(true);
@@ -255,7 +257,6 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
     } else {
         frequencyLabel.setText(frequencyComboBox.valueProperty().get().toStringPlural());
     }
-
 };
 
 // MAKE EXCEPTION DATES LISTENER
@@ -410,7 +411,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
     saturdayCheckBox.setTooltip(new Tooltip(resources.getString("saturday")));
 
     // Monthly ToggleGroup
-    final ToggleGroup monthlyGroup = new ToggleGroup();
+    monthlyGroup = new ToggleGroup();
     dayOfMonthRadioButton.setToggleGroup(monthlyGroup);
     dayOfWeekRadioButton.setToggleGroup(monthlyGroup);
     
@@ -419,7 +420,6 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
     endNeverRadioButton.setToggleGroup(endGroup);
     endAfterRadioButton.setToggleGroup(endGroup);
     endOnRadioButton.setToggleGroup(endGroup);
-    
 }
 
 
@@ -456,14 +456,14 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
             {
                 if (vComponent.getRRule() == null) vComponent.setRRule(rRule);
 //                makeExceptionDates();
-                setupBindings();
+                frequencyComboBox.valueProperty().addListener(frequencyListener);
                 repeatableGridPane.setDisable(false);
                 startDatePicker.setDisable(false);
             } else
             {
                 vComponent.setRRule(null);
 //                appointment.setRepeat(null);
-                removeBindings();
+                frequencyComboBox.valueProperty().removeListener(frequencyListener);
                 repeatableGridPane.setDisable(true);
                 startDatePicker.setDisable(true);
             }
@@ -484,31 +484,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
             @Override public VDateTime fromString(String string) { throw new RuntimeException("not required for non editable ComboBox"); }
         });
         exceptionComboBox.valueProperty().addListener(obs -> addExceptionButton.setDisable(false)); // turn on add button when exception date is selected in combobox
-        
-        // Listeners to update exception dates
-        vComponent.getRRule().countProperty().addListener(makeExceptionDatesListener);
-        vComponent.getRRule().frequencyProperty().addListener(makeExceptionDatesListener);
-        intervalSpinner.valueProperty().addListener(makeExceptionDatesListener);
-        vComponent.getRRule().untilProperty().addListener(makeExceptionDatesListener);
-        
-        // Listeners to update exception dates
-        frequencyComboBox.valueProperty().addListener(makeExceptionDatesListener);
-        intervalSpinner.valueProperty().addListener(makeExceptionDatesListener);
-        sundayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-        mondayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-        tuesdayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-        wednesdayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-        thursdayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-        fridayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-        saturdayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-        dayOfMonthRadioButton.selectedProperty().addListener(makeExceptionDatesListener);
-        dayOfWeekRadioButton.selectedProperty().addListener(makeExceptionDatesListener);
-        endNeverRadioButton.selectedProperty().addListener(makeExceptionDatesListener);
-        endAfterRadioButton.selectedProperty().addListener(makeExceptionDatesListener);
-        endOnRadioButton.selectedProperty().addListener(makeExceptionDatesListener);
-        endAfterEventsSpinner.valueProperty().addListener(makeExceptionDatesListener);
-        endOnDatePicker.valueProperty().addListener(makeExceptionDatesListener);
-        
+                
         exceptionsListView.getSelectionModel().selectedItemProperty().addListener(obs ->
         {
           removeExceptionButton.setDisable(false); // turn on add button when exception date is selected in combobox
@@ -539,6 +515,29 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
             endNeverRadioButton.selectedProperty().set(true);
         }
 
+        // Listeners to update exception dates
+//        vComponent.getRRule().countProperty().addListener(makeExceptionDatesListener);
+//        vComponent.getRRule().frequencyProperty().addListener(makeExceptionDatesListener);
+//        vComponent.getRRule().untilProperty().addListener(makeExceptionDatesListener);
+        frequencyComboBox.valueProperty().addListener(makeExceptionDatesListener);
+        intervalSpinner.valueProperty().addListener(makeExceptionDatesListener);
+        sundayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
+        mondayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
+        tuesdayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
+        wednesdayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
+        thursdayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
+        fridayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
+        saturdayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
+        monthlyGroup.selectedToggleProperty().addListener(makeExceptionDatesListener);
+//        dayOfMonthRadioButton.selectedProperty().addListener(makeExceptionDatesListener);
+//        dayOfWeekRadioButton.selectedProperty().addListener(makeExceptionDatesListener);
+        endGroup.selectedToggleProperty().addListener(makeExceptionDatesListener);
+//        endNeverRadioButton.selectedProperty().addListener(makeExceptionDatesListener);
+//        endAfterRadioButton.selectedProperty().addListener(makeExceptionDatesListener);
+//        endOnRadioButton.selectedProperty().addListener(makeExceptionDatesListener);
+        endAfterEventsSpinner.valueProperty().addListener(makeExceptionDatesListener);
+        endOnDatePicker.valueProperty().addListener(makeExceptionDatesListener);
+        
     }
     
         
@@ -558,17 +557,17 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         }
     }
 
-    /** bind properties from vComponent and FXML properties */
-    private void setupBindings()
-    {
-        frequencyComboBox.valueProperty().addListener(frequencyListener);
-    }
-
-    /** unbind properties from vComponent and FXML properties */
-    private void removeBindings()
-    {
-        frequencyComboBox.valueProperty().removeListener(frequencyListener);
-    }
+//    /** bind properties from vComponent and FXML properties */
+//    private void setupBindings()
+//    {
+//        frequencyComboBox.valueProperty().addListener(frequencyListener);
+//    }
+//
+//    /** unbind properties from vComponent and FXML properties */
+//    private void removeBindings()
+//    {
+//        frequencyComboBox.valueProperty().removeListener(frequencyListener);
+//    }
 
     /** Set day of week properties if FREQ=WEEKLY and has BYDAY rule 
      * This method is called only during setup */
@@ -626,10 +625,12 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
     /**
      * Default settings for a new RRule - weekly, repeats on day of week in dateTime
      */
-    private static RRule setDefaults(RRule rRule, LocalDateTime dateTime)
+    private RRule setDefaults(RRule rRule, LocalDateTime dateTime)
     {
         rRule.setFrequency(new Weekly());
         rRule.getFrequency().addByRule(new ByDay(dateTime.getDayOfWeek()));
+        monthlyVBox.setVisible(false);
+        monthlyLabel.setVisible(false);
         return rRule;
     }
     

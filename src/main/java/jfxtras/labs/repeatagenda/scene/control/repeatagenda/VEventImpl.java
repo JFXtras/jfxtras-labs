@@ -307,7 +307,7 @@ public class VEventImpl extends VEvent<Appointment>
     @Override
     public Collection<Appointment> makeInstances()
     {
-        System.out.println(getDateTimeRangeStart() + " " + getDateTimeRangeStart());
+        System.out.println("range: " + getDateTimeRangeStart() + " " + getDateTimeRangeEnd());
         if ((getDateTimeRangeStart() == null) || (getDateTimeRangeStart() == null)) throw new IllegalArgumentException("can't make instances without setting date/time range first");
         List<Appointment> madeAppointments = new ArrayList<>();
         stream(getDateTimeStart().getLocalDateTime())
@@ -511,9 +511,9 @@ public class VEventImpl extends VEvent<Appointment>
 //                if (appointments().contains(a)) i.remove();
 //            }
             instances().clear(); // clear VEvent's collection of appointments
-            System.out.println("size1: " + appointments.size());
+//            System.out.println("size1: " + appointments.size());
             appointments.addAll(makeInstances()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
-            System.out.println("size2: " + appointments.size());
+//            System.out.println("size2: " + appointments.size());
             return WindowCloseType.CLOSE_WITH_CHANGE;
         } else
         {

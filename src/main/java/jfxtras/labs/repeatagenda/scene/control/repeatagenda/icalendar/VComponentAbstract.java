@@ -335,28 +335,20 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     };
     public void setUidGeneratorCallback(Callback<Void, String> uidCallback) { this.uidGeneratorCallback = uidCallback; }
     
-    // TODO - MAYBE REPLACE SOME OF THESE RANGE METHODS
     /**
      * Start of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
      * This is not a part of an iCalendar VEvent
      */
     public LocalDateTime getDateTimeRangeStart() { return dateTimeRangeStart; }
     private LocalDateTime dateTimeRangeStart;
-    public void setDateTimeRangeStart(LocalDateTime startDateTime) { this.dateTimeRangeStart = startDateTime; }
+    public void setDateTimeRangeStart(LocalDateTime dateTimeRangeStart) { this.dateTimeRangeStart = dateTimeRangeStart; }
     
     /**
      * End of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
      */
     public LocalDateTime getDateTimeRangeEnd() { return dateTimeRangeEnd; }
     private LocalDateTime dateTimeRangeEnd;
-    public void setDateTimeRangeEnd(LocalDateTime endDateTime) { this.dateTimeRangeEnd = endDateTime; }
-    
-    @Override
-    public void setDateTimeRange(LocalDateTime dateTimeRangeStart, LocalDateTime dateTimeRangeEnd)
-    {
-        setDateTimeRangeStart(dateTimeRangeStart);
-        setDateTimeRangeEnd(dateTimeRangeEnd);
-    }
+    public void setDateTimeRangeEnd(LocalDateTime dateTimeRangeEnd) { this.dateTimeRangeEnd = dateTimeRangeEnd; }
     
     /** Method to convert DTSTART or DTEND to LocalDateTime
      * Currently ignores time zones */

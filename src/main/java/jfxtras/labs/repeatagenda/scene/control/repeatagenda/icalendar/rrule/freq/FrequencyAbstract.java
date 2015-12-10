@@ -146,7 +146,7 @@ public abstract class FrequencyAbstract implements Frequency {
         while (rulesIterator.hasNext())
         {
             Rule rule = rulesIterator.next();
-            System.out.println("chronoUnit: " + getChronoUnit() + rule.getByRule());
+//            System.out.println("chronoUnit: " + getChronoUnit() + rule.getByRule());
             stream = rule.stream(stream, getChronoUnit(), startDateTime);
         }
         return stream;

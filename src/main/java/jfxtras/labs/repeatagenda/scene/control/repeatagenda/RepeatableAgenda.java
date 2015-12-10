@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
@@ -42,15 +41,14 @@ public class RepeatableAgenda extends Agenda {
                        .withDescription("group" + (i < 10 ? "0" : "") + i))
                 .collect(Collectors.toList()));
 
-    private LocalDateTimeRange dateTimeRange; // date range of current skin
-    public LocalDateTimeRange getDateTimeRange() { return dateTimeRange; }
+    private LocalDateTimeRange dateTimeRange; // date range of current skin, set when localDateTimeRangeCallback fires
     
     /** VComponents */
     private Collection<VComponent<Appointment>> vComponents;
     public Collection<VComponent<Appointment>> vComponents() { return vComponents; }
-    public void setVComponents(Collection<VComponent<Appointment>> repeatRules)
+    public void setVComponents(Collection<VComponent<Appointment>> vComponents)
     {
-        this.vComponents = repeatRules;
+        this.vComponents = vComponents;
 //        if (getAppointmentsIndividual() != null)
 //        { // In cast individual appointments are set first collect individual appointments that are recurrences and add to repeat appointment list
 //            repeats().stream().forEach(r ->
@@ -91,7 +89,7 @@ public class RepeatableAgenda extends Agenda {
     // in the time range occurs.
     private final ListChangeListener<Appointment> appointmentListener = (ListChangeListener.Change<? extends Appointment> change)
             -> {
-                System.out.println("appointment change listener:");
+//                System.out.println("appointment change listener:");
                 while (change.next())
                 {
                     if (change.wasReplaced())
@@ -117,9 +115,10 @@ public class RepeatableAgenda extends Agenda {
                                         .newVComponent(getVEventClass(), a, appointmentGroups());
                                 LocalDateTime dateTimeRangeStart = dateTimeRange.getStartLocalDateTime();
                                 LocalDateTime dateTimeRangeEnd = dateTimeRange.getEndLocalDateTime();
-                                newVEvent.setDateTimeRange(dateTimeRangeStart, dateTimeRangeEnd);
+                                newVEvent.setDateTimeRangeStart(dateTimeRangeStart);
+                                newVEvent.setDateTimeRangeEnd(dateTimeRangeEnd);
                                 vComponents.add(newVEvent);
-                                System.out.println("added individual " + a.getStartLocalDateTime());   
+                                System.out.println("added vEvemt " + a.getStartLocalDateTime());   
                             })
                             .collect(Collectors.toSet());
                         // add vevent - make method to create VEvent from appointment in VEventImpl
@@ -187,7 +186,8 @@ public class RepeatableAgenda extends Agenda {
                     .filter(v -> v.instances().contains(appointment))
                     .findFirst()
                     .get();
-//            System.out.println("vevent:" + (vevent==null));
+
+            appointments().removeListener(appointmentListener); // remove listener to prevent making extra vEvents during edit
             Stage repeatMenu = new EditPopupLoader(
                     (Appointment) appointment
                     , vevent
@@ -198,25 +198,28 @@ public class RepeatableAgenda extends Agenda {
                     , appointmentGroupWriteCallback
                     , repeatWriteCallback // write repeat callback initialized to null
                     , a -> { this.refresh(); return null; }); // refresh agenda
-            
             repeatMenu.show();
+            repeatMenu.setOnHidden((windowEvent) -> appointments().addListener(appointmentListener)); // return listener when repeatMenu closes
             return null;
         });
         
         // manage repeat-made appointments when the range changes
-        setLocalDateTimeRangeCallback(dateTimeRange -> {
+        setLocalDateTimeRangeCallback(dateTimeRange ->
+        {
             this.dateTimeRange = dateTimeRange;
+//            System.out.println("new range:" + dateTimeRange);
             LocalDateTime dateTimeRangeStart = dateTimeRange.getStartLocalDateTime();
             LocalDateTime dateTimeRangeEnd = dateTimeRange.getEndLocalDateTime();
 
+            System.out.println("vComponents sizs: " + vComponents().size());
             // Remove instances and appointments
             vComponents().stream().forEach(v -> v.instances().clear());   
             appointments().clear();
-            appointments().removeListener(appointmentListener);
+            appointments().removeListener(appointmentListener); // remove listener to prevent making extra vEvents during refresh
             vComponents().stream().forEach(r ->
             { // Make new repeat-made appointments inside range
-                r.setDateTimeRange(dateTimeRangeStart, dateTimeRangeEnd);
-//                System.out.println(dateTimeRangeStart + " " + dateTimeRangeEnd);
+                r.setDateTimeRangeStart(dateTimeRangeStart);
+                r.setDateTimeRangeEnd(dateTimeRangeEnd);
                 Collection<Appointment> newAppointments = r.makeInstances();
                 appointments().addAll(newAppointments);
             });
@@ -796,7 +799,7 @@ public class RepeatableAgenda extends Agenda {
               , U appointment
               , ObservableList<AppointmentGroup> appointmentGroups)
         {
-            Arrays.stream(vEventClass.getConstructors()).forEach(System.out::println);
+//            Arrays.stream(vEventClass.getConstructors()).forEach(System.out::println);
             try {
                 return vEventClass
                         .getConstructor(Appointment.class, ObservableList.class)
