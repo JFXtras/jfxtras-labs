@@ -115,6 +115,9 @@ public class RepeatableAgenda extends Agenda {
                                 // only do this if not from a vevent
                                 VComponent<Appointment> newVEvent = VEventFactory
                                         .newVComponent(getVEventClass(), a, appointmentGroups());
+                                LocalDateTime dateTimeRangeStart = dateTimeRange.getStartLocalDateTime();
+                                LocalDateTime dateTimeRangeEnd = dateTimeRange.getEndLocalDateTime();
+                                newVEvent.setDateTimeRange(dateTimeRangeStart, dateTimeRangeEnd);
                                 vComponents.add(newVEvent);
                                 System.out.println("added individual " + a.getStartLocalDateTime());   
                             })
@@ -203,8 +206,8 @@ public class RepeatableAgenda extends Agenda {
         // manage repeat-made appointments when the range changes
         setLocalDateTimeRangeCallback(dateTimeRange -> {
             this.dateTimeRange = dateTimeRange;
-            LocalDateTime startDate = dateTimeRange.getStartLocalDateTime();
-            LocalDateTime endDate = dateTimeRange.getEndLocalDateTime();
+            LocalDateTime dateTimeRangeStart = dateTimeRange.getStartLocalDateTime();
+            LocalDateTime dateTimeRangeEnd = dateTimeRange.getEndLocalDateTime();
 
             // Remove instances and appointments
             vComponents().stream().forEach(v -> v.instances().clear());   
@@ -212,7 +215,9 @@ public class RepeatableAgenda extends Agenda {
             appointments().removeListener(appointmentListener);
             vComponents().stream().forEach(r ->
             { // Make new repeat-made appointments inside range
-                Collection<Appointment> newAppointments = r.makeInstances(startDate, endDate);
+                r.setDateTimeRange(dateTimeRangeStart, dateTimeRangeEnd);
+//                System.out.println(dateTimeRangeStart + " " + dateTimeRangeEnd);
+                Collection<Appointment> newAppointments = r.makeInstances();
                 appointments().addAll(newAppointments);
             });
             appointments().addListener(appointmentListener);
@@ -786,7 +791,6 @@ public class RepeatableAgenda extends Agenda {
          * @param vEventClass - class of new VEvent
          * @return - the new vEvent
          */
-
         public static  <U extends Appointment> VComponent<U> newVComponent(
                 Class<? extends VComponent<U>> vEventClass
               , U appointment
@@ -803,18 +807,23 @@ public class RepeatableAgenda extends Agenda {
             return null;
         }
 
-        @Deprecated
-        public static <T extends VEvent> VEvent newVEvent(T source)
-        {
-            try {
-                return (T) source.getClass()
-                        .getConstructor(VEvent.class)
-                        .newInstance(source);
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-                e.printStackTrace();
-            }
-          return null;
-        }
+//        /**
+//         * Copy VComponent object
+//         * 
+//         * @param source VComponent object to copy 
+//         * @return new copy
+//         */
+//         public static <T extends VComponent<U>, U extends Appointment> VComponent<U> newVComponent(T source)
+//        {
+//            try {
+//                return (T) source.getClass()
+//                        .getConstructor(source.getClass())
+//                        .newInstance(source);
+//            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+//                e.printStackTrace();
+//            }
+//          return null;
+//        }
     }
     
     static public class AppointmentFactory {

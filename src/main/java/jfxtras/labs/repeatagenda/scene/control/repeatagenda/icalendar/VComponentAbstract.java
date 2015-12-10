@@ -326,9 +326,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
 
     /** Callback for creating unique uid values - not implemented - TODO */
     public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
-//    private final static String datePattern = "yyyyMMdd";
-//    private final static String timePattern = "HHmmss";
-//    public final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(datePattern + "'T'" + timePattern);
     private static Integer nextKey = 0;
     private Callback<Void, String> uidGeneratorCallback = (Void) ->
     { // default UID generator callback
@@ -337,20 +334,29 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         return dateTime + "-" + nextKey++ + domain;
     };
     public void setUidGeneratorCallback(Callback<Void, String> uidCallback) { this.uidGeneratorCallback = uidCallback; }
-    /** assign uid by calling the uidGeneratorCallback */
-    public void makeUid()
-    {
-        setUniqueIdentifier(uidGeneratorCallback.call(null));
-    }
     
-//    /**
-//     * WholeDay property - used only internally, not a part of the iCalendar specification
-//     * Indicates a component's duration is one day.
-//     */
-//    public BooleanProperty wholeDayProperty() { return wholeDay; }
-//    private BooleanProperty wholeDay = new SimpleBooleanProperty(this, "wholeDay", false);
-//    public boolean isWholeDay() { return wholeDay.get(); }
-//    public void setWholeDay(boolean b) { wholeDay.set(b); }
+    // TODO - MAYBE REPLACE SOME OF THESE RANGE METHODS
+    /**
+     * Start of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
+     * This is not a part of an iCalendar VEvent
+     */
+    public LocalDateTime getDateTimeRangeStart() { return dateTimeRangeStart; }
+    private LocalDateTime dateTimeRangeStart;
+    public void setDateTimeRangeStart(LocalDateTime startDateTime) { this.dateTimeRangeStart = startDateTime; }
+    
+    /**
+     * End of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
+     */
+    public LocalDateTime getDateTimeRangeEnd() { return dateTimeRangeEnd; }
+    private LocalDateTime dateTimeRangeEnd;
+    public void setDateTimeRangeEnd(LocalDateTime endDateTime) { this.dateTimeRangeEnd = endDateTime; }
+    
+    @Override
+    public void setDateTimeRange(LocalDateTime dateTimeRangeStart, LocalDateTime dateTimeRangeEnd)
+    {
+        setDateTimeRangeStart(dateTimeRangeStart);
+        setDateTimeRangeEnd(dateTimeRangeEnd);
+    }
     
     /** Method to convert DTSTART or DTEND to LocalDateTime
      * Currently ignores time zones */
@@ -383,7 +389,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
 
     // CONSTRUCTORS
     /** Copy constructor */
-    public VComponentAbstract(VComponentAbstract vcomponent)
+    public VComponentAbstract(VComponentAbstract<T> vcomponent)
     {
         copy(vcomponent, this);
     }
@@ -393,7 +399,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     }
 
     /** Deep copy all fields from source to destination */
-    private static void copy(VComponentAbstract source, VComponentAbstract destination)
+    private static void copy(VComponentAbstract<?> source, VComponentAbstract<?> destination)
     {
         destination.setCategories(source.getCategories());
         destination.setComment(source.getComment());
@@ -445,9 +451,9 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     
     /** Deep copy all fields from source to destination */
     @Override
-    public void copyTo(VComponent destination)
+    public void copyTo(VComponent<T> destination)
     {
-        copy(this, (VComponentAbstract) destination);
+        copy(this, (VComponentAbstract<T>) destination);
     }
 
     @Override
@@ -457,7 +463,8 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         if((obj == null) || (obj.getClass() != getClass())) {
             return false;
         }
-        VComponentAbstract testObj = (VComponentAbstract) obj;
+        @SuppressWarnings("unchecked")
+        VComponentAbstract<T> testObj = (VComponentAbstract<T>) obj;
 
         boolean categoriesEquals = (getCategories() == null) ?
                 (testObj.getCategories() == null) : getCategories().equals(testObj.getCategories());
@@ -486,6 +493,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     }
 
     /** Make map of properties and string values for toString method in subclasses (like VEvent) */
+    @SuppressWarnings("rawtypes")
     Map<Property, String> makePropertiesMap()
     {
         Map<Property, String> properties = new HashMap<Property, String>();
@@ -521,9 +529,10 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     
     /** Convert a list of strings containing properties of a iCalendar component and
      * populate its properties.  Used to make a new object from a List<String>.
+     * @param <U>
      * @param s
      */
-    protected static VComponentAbstract parseVComponent(VComponentAbstract vComponent, List<String> strings)
+    protected static <U> VComponentAbstract<U> parseVComponent(VComponentAbstract<U> vComponent, List<String> strings)
     {
         Iterator<String> stringsIterator = strings.iterator();
         while (stringsIterator.hasNext())
@@ -592,7 +601,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         return vComponent;
     }
         
-    
     /** Stream of date/times that indicate the start of the event(s).
      * For a VEvent without RRULE the stream will contain only one date/time element.
      * A VEvent with a RRULE the stream contains more than one date/time element.  It will be infinite 

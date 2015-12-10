@@ -1,6 +1,7 @@
 package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller;
 
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -92,6 +93,7 @@ public class AppointmentEditController
      * @param vEventWriteCallback
      * @param refreshCallback
      */
+    @SuppressWarnings("unchecked")
     public void setupData(
               Appointment appointment
             , VComponent<Appointment> vComponent
@@ -111,9 +113,13 @@ public class AppointmentEditController
 
         // Copy original VEvent
         try {
-            vEventOld = vEvent.getClass().newInstance();
-            vEvent.copyTo(vEventOld);
-        } catch (InstantiationException | IllegalAccessException e) {
+            vEventOld = vEvent
+                    .getClass()
+                    .getConstructor(vEvent.getClass())
+                    .newInstance(vEvent);
+//            vEventOld = vEvent.getClass().newInstance();
+//            vEvent.copyTo(vEventOld);
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             e.printStackTrace();
         }
         

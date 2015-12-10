@@ -107,23 +107,6 @@ public class VEventImpl extends VEvent<Appointment>
 //    public VEventImpl withAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
 
     /**
-     * Start of range for which events are generated.  Should match the dates displayed on the calendar.
-     * This is not a part of an iCalendar VEvent
-     */
-    public LocalDateTime getDateTimeRangeStart() { return dateTimeRangeStart; }
-    private LocalDateTime dateTimeRangeStart;
-    public void setDateTimeRangeStart(LocalDateTime startDateTime) { this.dateTimeRangeStart = startDateTime; }
-//    public T withDateTimeRangeStart(LocalDateTime startDateTime) { setDateTimeRangeStart(startDateTime); return (T)this; }
-    
-    /**
-     * End of range for which events are generated.  Should match the dates displayed on the calendar.
-     */
-    public LocalDateTime getDateTimeRangeEnd() { return dateTimeRangeEnd; }
-    private LocalDateTime dateTimeRangeEnd;
-    public void setDateTimeRangeEnd(LocalDateTime endDateTime) { this.dateTimeRangeEnd = endDateTime; }
-//    public T withDateTimeRangeEnd(LocalDateTime endDateTime) { setDateTimeRangeEnd(endDateTime); return (T)this; }
-
-    /**
      * The currently generated instances of the recurrence set.
      * 3.8.5.2 defines the recurrence set as the complete set of recurrence instances for a
      * calendar component.  As many RRule definitions are infinite sets, a complete representation
@@ -163,7 +146,6 @@ public class VEventImpl extends VEvent<Appointment>
     public VEventImpl(Appointment appointment, ObservableList<AppointmentGroup> appointmentGroups)
     {
         this(appointmentGroups);
-        System.out.println("make VEvent");
         setDescription(appointment.getDescription());
         setLocation(appointment.getLocation());
         setCategories(appointment.getAppointmentGroup().getDescription());
@@ -172,10 +154,8 @@ public class VEventImpl extends VEvent<Appointment>
         setDateTimeEnd(new VDateTime(appointment.getEndLocalDateTime()));
         String uid = getUidGeneratorCallback().call(null);
         setUniqueIdentifier(uid);
-        // add fields, make UID, date stamp
-        // verify
+        instances().add(appointment);
         if (! validityCheck().equals("")) throw new IllegalArgumentException(validityCheck());
-        // TODO - extract from Appointment fields for VEvent
     }
 
     /** Deep copy all fields from source to destination 
@@ -225,7 +205,6 @@ public class VEventImpl extends VEvent<Appointment>
     @Override
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
-//        System.out.println("range: " + getDateTimeRangeStart() + " " + this.getDateTimeRangeEnd());
         Stream<LocalDateTime> initialStream = super.stream(startDateTime);
         // filter away too early (with Java 9 takeWhile these statements can be combined into one chained statement for greater elegance)
         Stream<LocalDateTime> filteredStream = initialStream
@@ -298,25 +277,25 @@ public class VEventImpl extends VEvent<Appointment>
         return parseVEvent(stringsList, appointmentGroups);
     }
 
-    /**
-     * Returns appointments for Agenda that should exist between dateTimeRangeStart and dateTimeRangeEnd
-     * based on VEvent.  For convenience, sets VEvent dateTimeRangeStart and dateTimeRangeEnd prior to 
-     * making appointments.
-     * @param <Appointment>
-     * 
-     * @param dateTimeRangeStart
-     * @param dateTimeRangeEnd
-     * @return
-     */
-    @Override
-    public Collection<Appointment> makeInstances(
-            LocalDateTime dateTimeRangeStart
-          , LocalDateTime dateTimeRangeEnd)
-    {
-        setDateTimeRangeStart(dateTimeRangeStart);
-        setDateTimeRangeEnd(dateTimeRangeEnd);
-        return makeInstances();
-    }
+//    /**
+//     * Returns appointments for Agenda that should exist between dateTimeRangeStart and dateTimeRangeEnd
+//     * based on VEvent.  For convenience, sets VEvent dateTimeRangeStart and dateTimeRangeEnd prior to 
+//     * making appointments.
+//     * @param <Appointment>
+//     * 
+//     * @param dateTimeRangeStart
+//     * @param dateTimeRangeEnd
+//     * @return
+//     */
+//    @Override
+//    public Collection<Appointment> makeInstances(
+//            LocalDateTime dateTimeRangeStart
+//          , LocalDateTime dateTimeRangeEnd)
+//    {
+//        setDateTimeRangeStart(dateTimeRangeStart);
+//        setDateTimeRangeEnd(dateTimeRangeEnd);
+//        return makeInstances();
+//    }
 
     /**
      * Returns appointments for Agenda that should exist between dateTimeRangeStart and dateTimeRangeEnd
@@ -328,6 +307,8 @@ public class VEventImpl extends VEvent<Appointment>
     @Override
     public Collection<Appointment> makeInstances()
     {
+        System.out.println(getDateTimeRangeStart() + " " + getDateTimeRangeStart());
+        if ((getDateTimeRangeStart() == null) || (getDateTimeRangeStart() == null)) throw new IllegalArgumentException("can't make instances without setting date/time range first");
         List<Appointment> madeAppointments = new ArrayList<>();
         stream(getDateTimeStart().getLocalDateTime())
                 .forEach(d -> {
@@ -394,7 +375,7 @@ public class VEventImpl extends VEvent<Appointment>
         case WITH_EXISTING_REPEAT:
             // Check if changes between vEvent and vEventOld exist apart from RRule
 //            VEvent tempVEvent = VEventFactory.newVEvent(vEventOld);
-            VEvent tempVEvent = new VEventImpl((VEventImpl) vEventOld);
+            VEvent<Appointment> tempVEvent = new VEventImpl((VEventImpl) vEventOld);
             tempVEvent.setRRule(getRRule());
             boolean onlyRRuleChanged = this.equals(tempVEvent);
 
@@ -634,8 +615,4 @@ public class VEventImpl extends VEvent<Appointment>
         static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
            return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
         }
-
-
-       
-        
 }
