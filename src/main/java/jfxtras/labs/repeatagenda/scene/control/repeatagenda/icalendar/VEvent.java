@@ -1,6 +1,5 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
-import java.security.InvalidParameterException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -158,7 +157,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     }
     public void setDurationInSeconds(Long value)
     {
-//        if (getDateTimeStart().isWholeDay()) throw new InvalidParameterException("Can't send Duration when wholeDay is true.");
+//        if (getDateTimeStart().isWholeDay()) throw new IllegalArgumentException("Can't send Duration when wholeDay is true.");
         durationInSeconds.setValue(value);
         useDuration=true;
         useDateTimeEnd=false;
@@ -176,7 +175,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         }
         Iterator<String> tokenIterator = tokens.iterator();
         String firstString = tokenIterator.next();
-        if (! tokenIterator.hasNext() || (! firstString.equals("P"))) throw new InvalidParameterException("Invalid DURATION string (" + value + "). Must begin with a P");
+        if (! tokenIterator.hasNext() || (! firstString.equals("P"))) throw new IllegalArgumentException("Invalid DURATION string (" + value + "). Must begin with a P");
         boolean timeFlag = false;
         while (tokenIterator.hasNext())
         {
@@ -202,7 +201,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                     seconds += n;                    
                 } else
                 {
-                    throw new InvalidParameterException("Invalid DURATION string time element (" + time + "). Must begin with a P, or Time character T not found");
+                    throw new IllegalArgumentException("Invalid DURATION string time element (" + time + "). Must begin with a P, or Time character T not found");
                 }
             } else if (token.equals("T")) timeFlag = true; // proceeding elements will be hour, minute or second
         }
@@ -246,7 +245,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     {
         if ((getDateTimeStart() != null) 
           && getDateTimeStart().isWholeDay()
-          && ! dtEnd.isWholeDay()) throw new InvalidParameterException("Can't set LocalDateTime to dateTimeEnd when wholeDay is true.");
+          && ! dtEnd.isWholeDay()) throw new IllegalArgumentException("Can't set LocalDateTime to dateTimeEnd when wholeDay is true.");
         dateTimeEnd.set(dtEnd);
         useDuration=false;
         useDateTimeEnd=true;
@@ -366,14 +365,14 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         // Test for correct beginning and end, then remove
         if (! strings.get(0).equals("BEGIN:VEVENT"))
         {
-            throw new InvalidParameterException("Invalid calendar component. First element must be BEGIN:VEVENT");
+            throw new IllegalArgumentException("Invalid calendar component. First element must be BEGIN:VEVENT");
         } else
         {
             strings.remove(0);
         }
         if (! strings.get(strings.size()-1).equals("END:VEVENT"))
         {
-            throw new InvalidParameterException("Invalid calendar component. Last element must be END:VEVENT");
+            throw new IllegalArgumentException("Invalid calendar component. Last element must be END:VEVENT");
         } else
         {
             strings.remove(strings.size()-1);
@@ -395,7 +394,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                         stringsIterator.remove();
                     } else
                     {
-                        throw new InvalidParameterException("Invalid VEvent: DESCRIPTION can only be specified once");
+                        throw new IllegalArgumentException("Invalid VEvent: DESCRIPTION can only be specified once");
                     }
             } else if (property.equals(vEvent.durationInSecondsProperty().getName()))
             { // DURATION
@@ -410,11 +409,11 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                         stringsIterator.remove();
                     } else
                     {
-                        throw new InvalidParameterException("Invalid VEvent: Can't contain both DTEND and DURATION.");
+                        throw new IllegalArgumentException("Invalid VEvent: Can't contain both DTEND and DURATION.");
                     }
                 } else
                 {
-                    throw new InvalidParameterException("Invalid VEvent: DURATION can only be specified once.");                    
+                    throw new IllegalArgumentException("Invalid VEvent: DURATION can only be specified once.");                    
                 }
             } else if (property.equals(vEvent.dateTimeEndProperty().getName()))
             { // DTEND
@@ -430,11 +429,11 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                         stringsIterator.remove();
                     } else
                     {
-                        throw new InvalidParameterException("Invalid VEvent: Can't contain both DTEND and DURATION.");
+                        throw new IllegalArgumentException("Invalid VEvent: Can't contain both DTEND and DURATION.");
                     }
                 } else
                 {
-                    throw new InvalidParameterException("Invalid VEvent: DTEND can only be specified once.");                                        
+                    throw new IllegalArgumentException("Invalid VEvent: DTEND can only be specified once.");                                        
                 }
             }
         }

@@ -113,7 +113,8 @@ public class RepeatableAgenda extends Agenda {
                             .peek(a -> 
                             {
                                 // only do this if not from a vevent
-                                VComponent<Appointment> newVEvent = VEventFactory.newVComponent(getVEventClass(), a);
+                                VComponent<Appointment> newVEvent = VEventFactory
+                                        .newVComponent(getVEventClass(), a, appointmentGroups());
                                 vComponents.add(newVEvent);
                                 System.out.println("added individual " + a.getStartLocalDateTime());   
                             })
@@ -778,50 +779,31 @@ public class RepeatableAgenda extends Agenda {
             }
             return null;
         }
-        
-//        /** Return new VEvent
-//         * @param <U>
-//         * 
-//         * @param vEventClass - class of new VEvent
-//         * @return - the new vEvent
-//         */
-//        public static  <U extends Appointment> VComponent<U> newVComponent(
-//                Class<? extends VComponent<U>> vEventClass
-//              , Class<? extends Appointment> appointmentClass
-//              , U appointment)
-//        {
-//            Arrays.stream(vEventClass.getConstructors()).forEach(System.out::println);
-//            try {
-//                return vEventClass
-//                        .getConstructor(appointmentClass)
-//                        .newInstance(appointment);
-//            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException | NoSuchMethodException e) {
-//                e.printStackTrace();
-//            }
-//            return null;
-//        }
-        
+                
         /** Return new VEvent
          * @param <U>
          * 
          * @param vEventClass - class of new VEvent
          * @return - the new vEvent
          */
+
         public static  <U extends Appointment> VComponent<U> newVComponent(
                 Class<? extends VComponent<U>> vEventClass
-              , U appointment)
+              , U appointment
+              , ObservableList<AppointmentGroup> appointmentGroups)
         {
             Arrays.stream(vEventClass.getConstructors()).forEach(System.out::println);
             try {
                 return vEventClass
-                        .getConstructor(Appointment.class)
-                        .newInstance(appointment);
+                        .getConstructor(Appointment.class, ObservableList.class)
+                        .newInstance(appointment, appointmentGroups);
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
             }
             return null;
         }
 
+        @Deprecated
         public static <T extends VEvent> VEvent newVEvent(T source)
         {
             try {

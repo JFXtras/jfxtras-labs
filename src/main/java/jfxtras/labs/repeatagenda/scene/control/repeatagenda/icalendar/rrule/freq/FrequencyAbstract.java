@@ -1,6 +1,5 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq;
 
-import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ public abstract class FrequencyAbstract implements Frequency {
             }
         } else
         {
-            throw new InvalidParameterException("INTERVAL can't be less than 1. (" + i + ")");
+            throw new IllegalArgumentException("INTERVAL can't be less than 1. (" + i + ")");
         }
     }
     @Override public void setInterval(String s)
@@ -61,11 +60,11 @@ public abstract class FrequencyAbstract implements Frequency {
                     setInterval(i);
                 } else
                 {
-                    throw new InvalidParameterException("INTERVAL must be greater than or equal to one");                    
+                    throw new IllegalArgumentException("INTERVAL must be greater than or equal to one");                    
                 }
             } else
             {
-                throw new InvalidParameterException("INTERVAL can only be specified once");
+                throw new IllegalArgumentException("INTERVAL can only be specified once");
             }
         }
     }
@@ -81,7 +80,7 @@ public abstract class FrequencyAbstract implements Frequency {
 //        if (byRules == null) byRules = new ArrayList<Rule>();
         boolean alreadyPresent = getByRules().stream().anyMatch(a -> a.getClass() == byRule.getClass());
         if (alreadyPresent){
-            throw new InvalidParameterException("Can't add BYxxx rule (" 
+            throw new IllegalArgumentException("Can't add BYxxx rule (" 
                     + byRule.getClass().getName() + ") more than once.");
         }
         getByRules().add(byRule);

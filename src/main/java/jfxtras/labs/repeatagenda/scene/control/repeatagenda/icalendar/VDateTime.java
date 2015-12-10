@@ -1,6 +1,5 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
-import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,6 +22,7 @@ public class VDateTime implements Comparable<VDateTime>
     private final static String timePattern = "HHmmss";
     public final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(datePattern + "'T'" + timePattern);
     public final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(datePattern);
+    public final static DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(timePattern);
     
     private Temporal dateOrDateTime;
     private Temporal getDateOrDateTime() { return dateOrDateTime; }
@@ -34,7 +34,7 @@ public class VDateTime implements Comparable<VDateTime>
         if (dateOrDateTime instanceof LocalDate)
         {
             return (LocalDate) dateOrDateTime;
-        } else throw new InvalidParameterException("Type of temporal is not LocalDate.");
+        } else throw new IllegalArgumentException("Type of temporal is not LocalDate.");
     }
     public void setLocalDate(LocalDate date)
     {
@@ -54,7 +54,7 @@ public class VDateTime implements Comparable<VDateTime>
             return (LocalDateTime) ((LocalDate) dateOrDateTime).atStartOfDay();
         } else
         {
-            throw new InvalidParameterException("Type of temporal is not LocalDate: " + dateOrDateTime);            
+            throw new IllegalArgumentException("Type of temporal is not LocalDate: " + dateOrDateTime);            
         }
     }
     public void setLocalDateTime(LocalDateTime dateTime)
@@ -83,7 +83,7 @@ public class VDateTime implements Comparable<VDateTime>
         if (dateOrDateTime instanceof LocalDate || dateOrDateTime instanceof LocalDateTime)
         {
             this.dateOrDateTime = dateOrDateTime;            
-        } else throw new InvalidParameterException("Type of dateOrDateTime must be LocalDate or LocalDateTime.");
+        } else throw new IllegalArgumentException("Type of dateOrDateTime must be LocalDate or LocalDateTime.");
     }
     
     /**
@@ -171,7 +171,7 @@ public class VDateTime implements Comparable<VDateTime>
             return new VDateTime(date);            
         } else
         {
-            throw new InvalidParameterException("String does not match DATE or DATE-TIME pattern: " + dateTimeString);
+            throw new IllegalArgumentException("String does not match DATE or DATE-TIME pattern: " + dateTimeString);
         }
     }
 }

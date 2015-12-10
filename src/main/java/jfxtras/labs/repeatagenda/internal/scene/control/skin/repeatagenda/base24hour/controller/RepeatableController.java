@@ -1,7 +1,6 @@
 package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller;
 
 
-import java.security.InvalidParameterException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -246,7 +245,7 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
     case SECONDLY:
     case MINUTELY:
     case HOURLY:
-        throw new InvalidParameterException("Frequency " + newSel + " not implemented");
+        throw new IllegalArgumentException("Frequency " + newSel + " not implemented");
     default:
         break;
     }

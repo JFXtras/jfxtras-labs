@@ -2,7 +2,6 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byx
 
 import static java.time.temporal.ChronoUnit.WEEKS;
 
-import java.security.InvalidParameterException;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -32,7 +31,7 @@ public class ByWeekNo extends ByRuleAbstract
     {
         for (int w : weekNumbers)
         {
-            if (w < -53 || w > 53 || w == 0) throw new InvalidParameterException("Invalid BYWEEKNO value (" + w + "). Valid values are 1 to 53 or -53 to -1.");
+            if (w < -53 || w > 53 || w == 0) throw new IllegalArgumentException("Invalid BYWEEKNO value (" + w + "). Valid values are 1 to 53 or -53 to -1.");
         }
         this.weekNumbers = weekNumbers;
     }
@@ -164,7 +163,7 @@ public class ByWeekNo extends ByRuleAbstract
         case HOURS:
         case MINUTES:
         case SECONDS:
-            throw new InvalidParameterException("BYWEEKNO is not available for " + chronoUnit.get() + " frequency."); // Not available
+            throw new IllegalArgumentException("BYWEEKNO is not available for " + chronoUnit.get() + " frequency."); // Not available
         default:
             break;
         }

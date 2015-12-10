@@ -1,6 +1,5 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 
-import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -87,9 +86,10 @@ public class VEventImpl extends VEvent<Appointment>
         {
             Optional<AppointmentGroup> myGroup = getAppointmentGroups()
                     .stream()
+//                    .peek(a -> System.out.println(a.getDescription()))
                     .filter(g -> g.getDescription().equals(getCategories()))
                     .findFirst();
-            if (! myGroup.isPresent()) System.out.println("no matched group:");
+//            if (! myGroup.isPresent()) System.out.println("no matched group:");
             if (myGroup.isPresent()) setAppointmentGroup(myGroup.get());                
         }
     };
@@ -166,10 +166,15 @@ public class VEventImpl extends VEvent<Appointment>
         System.out.println("make VEvent");
         setDescription(appointment.getDescription());
         setLocation(appointment.getLocation());
-        setCategories(appointment.getAppointmentGroup().getStyleClass());
+        setCategories(appointment.getAppointmentGroup().getDescription());
+        setDateTimeStamp(LocalDateTime.now());
+        setDateTimeStart(new VDateTime(appointment.getStartLocalDateTime()));
+        setDateTimeEnd(new VDateTime(appointment.getEndLocalDateTime()));
+        String uid = getUidGeneratorCallback().call(null);
+        setUniqueIdentifier(uid);
         // add fields, make UID, date stamp
         // verify
-        if (! validityCheck().equals("")) throw new InvalidParameterException(validityCheck());
+        if (! validityCheck().equals("")) throw new IllegalArgumentException(validityCheck());
         // TODO - extract from Appointment fields for VEvent
     }
 
@@ -234,7 +239,7 @@ public class VEventImpl extends VEvent<Appointment>
     public String toString()
     {
         String errors = validityCheck();
-        if (! errors.equals("")) throw new InvalidParameterException(errors);
+        if (! errors.equals("")) throw new IllegalArgumentException(errors);
         Map<Property, String> properties = makePropertiesMap();
         String propertiesString = properties.entrySet()
                 .stream() 

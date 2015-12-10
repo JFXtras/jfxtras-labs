@@ -1,10 +1,8 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
-import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -328,13 +326,13 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
 
     /** Callback for creating unique uid values - not implemented - TODO */
     public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
-    private final static String datePattern = "yyyyMMdd";
-    private final static String timePattern = "HHmmss";
-    public final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(datePattern + "'T'" + timePattern);
+//    private final static String datePattern = "yyyyMMdd";
+//    private final static String timePattern = "HHmmss";
+//    public final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(datePattern + "'T'" + timePattern);
     private static Integer nextKey = 0;
     private Callback<Void, String> uidGeneratorCallback = (Void) ->
     { // default UID generator callback
-        String dateTime = FORMATTER.format(LocalDateTime.now());
+        String dateTime = VDateTime.DATE_TIME_FORMATTER.format(LocalDateTime.now());
         String domain = "jfxtras.org";
         return dateTime + "-" + nextKey++ + domain;
     };
@@ -370,14 +368,14 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         if (tokens.size() > 0)
         {
             String dateToken = tokens.get(0);
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
-            date = LocalDate.parse(dateToken, dateFormatter);
-        } else throw new InvalidParameterException("Invalid Date-Time string: " + dt);           
+//            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(VDateTime.datePattern);
+            date = LocalDate.parse(dateToken, VDateTime.DATE_FORMATTER);
+        } else throw new IllegalArgumentException("Invalid Date-Time string: " + dt);           
         if (tokens.size() == 2)
         { // find date if another token is available
             String timeToken = tokens.get(1);
-            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(timePattern);
-            LocalTime time = LocalTime.parse(timeToken, timeFormatter);
+//            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(timePattern);
+            LocalTime time = LocalTime.parse(timeToken, VDateTime.TIME_FORMATTER);
             return LocalDateTime.of(date, time);
         }
         return date.atStartOfDay();
@@ -494,11 +492,11 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
 
         if (getCategories() != null) properties.put(categoriesProperty(), getCategories().toString());
         if (getComment() != null) properties.put(commentProperty(), getComment().toString());
-        if (getDateTimeCreated() != null) properties.put(dateTimeCreatedProperty(), FORMATTER.format(getDateTimeCreated()));
-        properties.put(dateTimeStampProperty(), FORMATTER.format(getDateTimeStamp())); // required property
-        if (getDateTimeRecurrence() != null) properties.put(dateTimeRecurrenceProperty(), FORMATTER.format(getDateTimeRecurrence()));
+        if (getDateTimeCreated() != null) properties.put(dateTimeCreatedProperty(), VDateTime.DATE_TIME_FORMATTER.format(getDateTimeCreated()));
+        properties.put(dateTimeStampProperty(), VDateTime.DATE_TIME_FORMATTER.format(getDateTimeStamp())); // required property
+        if (getDateTimeRecurrence() != null) properties.put(dateTimeRecurrenceProperty(), VDateTime.DATE_TIME_FORMATTER.format(getDateTimeRecurrence()));
         if (getDateTimeStart() != null) properties.put(dateTimeStartProperty(), getDateTimeStart().toString());
-        if (getDateTimeLastModified() != null) properties.put(dateTimeLastModifiedProperty(), FORMATTER.format(getDateTimeLastModified()));
+        if (getDateTimeLastModified() != null) properties.put(dateTimeLastModifiedProperty(), VDateTime.DATE_TIME_FORMATTER.format(getDateTimeLastModified()));
         if (getExDate() != null) properties.put(exDateProperty(), getExDate().toString());
         if (getLocation() != null) properties.put(locationProperty(), getLocation().toString());
         if (getRDate() != null) properties.put(rDateProperty(), getRDate().toString());
@@ -540,12 +538,12 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 stringsIterator.remove();
             } else if (property.equals(vComponent.dateTimeCreatedProperty().getName()))
             { // CREATED
-                LocalDateTime dateTime = LocalDateTime.parse(value,FORMATTER);
+                LocalDateTime dateTime = LocalDateTime.parse(value,VDateTime.DATE_TIME_FORMATTER);
                 vComponent.setDateTimeCreated(dateTime);
                 stringsIterator.remove();
             } else if (property.equals(vComponent.dateTimeStampProperty().getName()))
             { // DTSTAMP
-                LocalDateTime dateTime = LocalDateTime.parse(value,FORMATTER);
+                LocalDateTime dateTime = LocalDateTime.parse(value,VDateTime.DATE_TIME_FORMATTER);
                 vComponent.setDateTimeStamp(dateTime);
                 stringsIterator.remove();
             } else if (property.equals(vComponent.dateTimeStartProperty().getName()))
@@ -564,7 +562,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 stringsIterator.remove();
             } else if (property.equals(vComponent.dateTimeLastModifiedProperty().getName()))
             { // LAST-MODIFIED
-                LocalDateTime dateTime = LocalDateTime.parse(value,FORMATTER);
+                LocalDateTime dateTime = LocalDateTime.parse(value,VDateTime.DATE_TIME_FORMATTER);
                 vComponent.setDateTimeLastModified(dateTime);
                 stringsIterator.remove();
             } else if (property.equals(vComponent.rDateProperty().getName()))

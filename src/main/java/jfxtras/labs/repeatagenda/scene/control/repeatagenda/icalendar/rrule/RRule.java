@@ -1,6 +1,5 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule;
 
-import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +20,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponentAbstract;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule.ByRules;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
@@ -89,11 +88,11 @@ public class RRule {
                 }
             } else
             {
-                throw new InvalidParameterException("COUNT can't be less than 0. (" + i + ")");
+                throw new IllegalArgumentException("COUNT can't be less than 0. (" + i + ")");
             }
         } else
         {
-            throw new InvalidParameterException("can't set COUNT if UNTIL is already set.");
+            throw new IllegalArgumentException("can't set COUNT if UNTIL is already set.");
         }
     }
     public RRule withCount(int count) { setCount(count); return this; }
@@ -123,7 +122,7 @@ public class RRule {
             }
         } else
         {
-            throw new InvalidParameterException("can't set UNTIL if COUNT is already set.");
+            throw new IllegalArgumentException("can't set UNTIL if COUNT is already set.");
         }
     }
     public RRule withUntil(LocalDateTime until) { setUntil(until); return this; }
@@ -203,7 +202,7 @@ public class RRule {
         StringBuilder builder = new StringBuilder();
         builder.append(getFrequency().toString());
         if (getCount() > 0) builder.append(";" + countProperty().getName() + "=" + getCount());
-        if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + VComponentAbstract.FORMATTER.format(getUntil()));
+        if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + VDateTime.DATE_TIME_FORMATTER.format(getUntil()));
         String rules = getFrequency()
                 .getByRules()
                 .stream()

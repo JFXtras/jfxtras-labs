@@ -167,7 +167,7 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
                 (testObj.getCustom() == null) : getCustom().equals(testObj.getCustom());
                 
         System.out.println( "RepeatableAppointmentImpl equals " + startEquals + " " + endEquals + " " + customEquals);
-//        if (getStartLocalDateTime() == null) throw new InvalidParameterException();
+//        if (getStartLocalDateTime() == null) throw new IllegalArgumentException();
         return super.equals(obj) && startEquals && endEquals && customEquals;
     }
     
