@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javafx.collections.ObservableList;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentImplLocal2;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentImplLocal2;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.RDate;
@@ -39,7 +39,7 @@ public abstract class ICalendarTestAbstract
             .range(0, 23)
             .mapToObj(i -> 
             {
-                RepeatableAgenda.AppointmentGroupImpl a = new RepeatableAgenda.AppointmentGroupImpl()
+                ICalendarAgenda.AppointmentGroupImpl a = new ICalendarAgenda.AppointmentGroupImpl()
 //                    .withKey(i)
                     .withDescription("group" + (i < 10 ? "0" : "") + i);
                 a.setStyleClass("group" + i); // skipped due to static variable problem with junit

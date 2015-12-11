@@ -37,14 +37,14 @@ import jfxtras.scene.control.agenda.Agenda;
  * @author David Bal
  *
  */
-public class RepeatableAgenda extends Agenda {
+public class ICalendarAgenda extends Agenda {
     
     private static String AGENDA_STYLE_CLASS = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
     final public static ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
         = javafx.collections.FXCollections.observableArrayList(
                 IntStream
                 .range(0, 24)
-                .mapToObj(i -> new RepeatableAgenda.AppointmentGroupImpl()
+                .mapToObj(i -> new ICalendarAgenda.AppointmentGroupImpl()
                        .withStyleClass("group" + i)
 //                       .withKey(i)
                        .withDescription("group" + (i < 10 ? "0" : "") + i))
@@ -115,7 +115,7 @@ public class RepeatableAgenda extends Agenda {
                 }
             };
     
-    public RepeatableAgenda()
+    public ICalendarAgenda()
     {
         super();
 

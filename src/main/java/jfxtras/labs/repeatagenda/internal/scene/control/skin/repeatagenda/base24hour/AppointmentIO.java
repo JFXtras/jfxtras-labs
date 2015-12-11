@@ -21,7 +21,7 @@ import org.xml.sax.SAXException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.IOUtilities;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentGroupImpl;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentGroupImpl;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 

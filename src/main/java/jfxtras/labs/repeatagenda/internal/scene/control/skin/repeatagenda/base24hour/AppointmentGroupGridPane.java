@@ -9,7 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
@@ -41,7 +41,7 @@ public Integer getAppointmentGroupSelected() { return appointmentGroupSelected.g
      int lCnt = 0;
      for (AppointmentGroup lAppointmentGroup : appointmentGroups)
      {
-         lPane[lCnt] = ((RepeatableAgenda.AppointmentGroupImpl) lAppointmentGroup).getIcon();
+         lPane[lCnt] = ((ICalendarAgenda.AppointmentGroupImpl) lAppointmentGroup).getIcon();
          this.add(lPane[lCnt], lCnt % 12, lCnt / 12 );
 
          // tooltip

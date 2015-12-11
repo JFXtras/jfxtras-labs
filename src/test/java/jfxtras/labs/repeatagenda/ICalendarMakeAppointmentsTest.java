@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentFactory;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 

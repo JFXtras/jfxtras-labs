@@ -51,7 +51,14 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency.FrequencyType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Weekly;
 
-public class RepeatableController<T> {
+/**
+ * Makes pane for selection some repeatable rules
+ * @author David Bal
+ *
+ * @param <T> type of recurrence instance (such as Agenda.Appointment)
+ */
+public class RepeatableController<T>
+{
 
 final private static int EXCEPTION_CHOICE_LIMIT = 50;
     
@@ -376,8 +383,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
     // END ON LISTENERS
     final ChangeListener<? super LocalDate> endOnDateListener = ((observable, oldSelection, newSelection) ->
     {
-        LocalTime endTime = dateTimeStartInstanceNew.toLocalTime();
-        vComponent.getRRule().setUntil(newSelection.atTime(endTime));
+        vComponent.getRRule().setUntil(newSelection.atTime(LocalTime.of(23, 59, 59))); // end at end of day
     });
     endOnRadioButton.selectedProperty().addListener((observable, oldSelection, newSelection) ->
     {

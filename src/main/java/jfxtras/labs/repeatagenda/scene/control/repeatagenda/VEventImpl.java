@@ -32,7 +32,7 @@ import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.RRuleType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentFactory;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
@@ -102,7 +102,7 @@ public class VEventImpl extends VEvent<Appointment>
      * the appointmentClass.
      */
     public Class<? extends Appointment> getAppointmentClass() { return appointmentClass; }
-    private Class<? extends Appointment> appointmentClass = RepeatableAgenda.AppointmentImplLocal2.class; // default
+    private Class<? extends Appointment> appointmentClass = ICalendarAgenda.AppointmentImplLocal2.class; // default
     public void setAppointmentClass(Class<? extends Appointment> appointmentClass) { this.appointmentClass = appointmentClass; }
 //    public VEventImpl withAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
 
@@ -356,12 +356,12 @@ public class VEventImpl extends VEvent<Appointment>
         // Check if start time and duration has changed because those values are not changed in the edit controller.
         final long durationInSeconds = ChronoUnit.SECONDS.between(dateTimeStartInstanceNew, dateTimeEndInstanceNew);
         final VEventImpl vEventOld2 = (VEventImpl) vEventOld;
-        System.out.println(dateTimeStartInstanceNew + " " + vEventOld2.getDateTimeStart());
+//        System.out.println(dateTimeStartInstanceNew + " " + vEventOld2.getDateTimeStart());
         boolean dateTimeNewSame = dateTimeStartInstanceNew.toLocalTime().equals(vEventOld2.getDateTimeStart().getLocalDateTime().toLocalTime());
         boolean durationSame = (durationInSeconds == vEventOld2.getDurationInSeconds());
         if (dateTimeNewSame && durationSame && this.equals(vEventOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
 
-        final RRuleType rruleType = getVEventType(getRRule());
+        final RRuleType rruleType = getRRuleType(getRRule());
         System.out.println("rruleType " + rruleType);
         boolean editedFlag = true;
         switch (rruleType)
@@ -569,7 +569,7 @@ public class VEventImpl extends VEvent<Appointment>
         }
     }
     
-    private RRuleType getVEventType(RRule rruleOld)
+    private RRuleType getRRuleType(RRule rruleOld)
     {
 
         if (getRRule() == null)
