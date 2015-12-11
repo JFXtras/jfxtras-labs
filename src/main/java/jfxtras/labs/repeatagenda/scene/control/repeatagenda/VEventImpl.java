@@ -37,7 +37,6 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
-import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
@@ -103,7 +102,7 @@ public class VEventImpl extends VEvent<Appointment>
      * the appointmentClass.
      */
     public Class<? extends Appointment> getAppointmentClass() { return appointmentClass; }
-    private Class<? extends Appointment> appointmentClass = Agenda.AppointmentImplLocal.class;
+    private Class<? extends Appointment> appointmentClass = RepeatableAgenda.AppointmentImplLocal2.class; // default
     public void setAppointmentClass(Class<? extends Appointment> appointmentClass) { this.appointmentClass = appointmentClass; }
 //    public VEventImpl withAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
 
@@ -181,25 +180,26 @@ public class VEventImpl extends VEvent<Appointment>
     @Override
     public boolean equals(Object obj)
     {
-        if (obj == this) return true;
-        if((obj == null) || (obj.getClass() != getClass())) {
-            return false;
-        }
+//        super.equals(obj);
+//        if (obj == this) return true;
+//        if((obj == null) || (obj.getClass() != getClass())) {
+//            return false;
+//        }
         VEventImpl testObj = (VEventImpl) obj;
-
+        System.out.println("getAppointmentClass:" + getAppointmentClass() + " " + testObj.getAppointmentClass());
         boolean appointmentClassEquals = (getAppointmentClass() == null) ?
                 (testObj.getAppointmentClass() == null) : getAppointmentClass().equals(testObj.getAppointmentClass());
-//        boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
-//                (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
+        boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
+                (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
         boolean dateTimeRangeStartEquals = (getDateTimeRangeStart() == null) ?
                 (testObj.getDateTimeRangeStart() == null) : getDateTimeRangeStart().equals(testObj.getDateTimeRangeStart());
         boolean dateTimeRangeEndEquals = (getDateTimeRangeEnd() == null) ?
                 (testObj.getDateTimeRangeEnd() == null) : getDateTimeRangeEnd().equals(testObj.getDateTimeRangeEnd());
 //        boolean appointmentsEquals = (appointments() == null) ?
 //                (testObj.appointments() == null) : appointments().equals(testObj.appointments());
-        System.out.println("VEventImpl: " + appointmentClassEquals + " " + dateTimeRangeStartEquals + " " + dateTimeRangeEndEquals
+        System.out.println("VEventImpl: " + appointmentClassEquals + " " + dateTimeRangeStartEquals + " " + appointmentGroupEquals + " " + dateTimeRangeEndEquals
                 + " ");// + appointmentsEquals);
-        return super.equals(obj) && appointmentClassEquals && dateTimeRangeStartEquals
+        return super.equals(obj) && appointmentClassEquals && dateTimeRangeStartEquals && appointmentGroupEquals
                 && dateTimeRangeEndEquals;
     }
     

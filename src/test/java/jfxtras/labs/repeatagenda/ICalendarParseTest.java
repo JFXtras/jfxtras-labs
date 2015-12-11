@@ -122,7 +122,8 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                               + "SUMMARY:Yearly1 Summary" + System.lineSeparator()
                               + "UID:20151109T082900-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
-        VEventImpl vEvent = VEventImpl.parseVEvent(vEventString, DEFAULT_APPOINTMENT_GROUPS);        
+        VEventImpl vEvent = VEventImpl.parseVEvent(vEventString, DEFAULT_APPOINTMENT_GROUPS);
+        vEvent.setAppointmentClass(getClazz());
         VEvent expectedVEvent = getYearly1();
         assertEquals(expectedVEvent, vEvent);
     }

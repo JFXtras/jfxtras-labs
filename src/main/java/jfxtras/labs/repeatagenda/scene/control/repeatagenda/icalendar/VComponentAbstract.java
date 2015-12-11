@@ -451,7 +451,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     @Override
     public boolean equals(Object obj)
     {
-        if (obj == this) return true;
+        if (super.equals(obj)) return true;
         if((obj == null) || (obj.getClass() != getClass())) {
             return false;
         }
