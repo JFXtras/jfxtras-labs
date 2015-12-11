@@ -17,8 +17,7 @@ import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
@@ -47,7 +46,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         
         // select appointment and apply changes
         Iterator<Appointment> appointmentIterator = appointments.iterator(); // skip first
-        RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next();
+        Appointment selectedAppointment = (Appointment) appointmentIterator.next();
         LocalDateTime dateTimeOld = selectedAppointment.getStartLocalDateTime();
         LocalDate dateOld = dateTimeOld.toLocalDate();
         selectedAppointment.setStartLocalDateTime(dateOld.atTime(9, 45)); // change start time
@@ -111,7 +110,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         
         // select appointment (get recurrence date)
         Iterator<Appointment> appointmentIterator = appointments.iterator();
-        RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next();
+        Appointment selectedAppointment = (Appointment) appointmentIterator.next();
         LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
         
         // apply changes
@@ -165,7 +164,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // select appointment (get recurrence date)
         Iterator<Appointment> appointmentIterator = appointments.iterator();
         appointmentIterator.next(); // skip first
-        RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next();
+        Appointment selectedAppointment = (Appointment) appointmentIterator.next();
         LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
         
         // apply changes
@@ -200,9 +199,9 @@ public class ICalendarEditTest extends ICalendarTestAbstract
 
         // Check Appointments
         Iterator<Appointment> appointmentIteratorNew = appointments.iterator();
-        RepeatableAppointment editedAppointment1 = (RepeatableAppointment) appointmentIteratorNew.next();
+        Appointment editedAppointment1 = (Appointment) appointmentIteratorNew.next();
 
-        RepeatableAppointment expectedAppointment1 = new RepeatableAppointmentImpl()
+        Appointment expectedAppointment1 = AppointmentFactory.newAppointment(getClazz())
             .withStartLocalDateTime(LocalDateTime.of(2015, 11, 15, 10, 0))
             .withEndLocalDateTime(LocalDateTime.of(2015, 11, 15, 11, 30))
             .withAppointmentGroup(appointmentGroups.get(3))
@@ -211,8 +210,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         System.out.println("appt group desc: " + editedAppointment1.getAppointmentGroup().getDescription());
         assertEquals(expectedAppointment1, editedAppointment1); // Check to see if repeat-generated appointment changed correctly
 
-        RepeatableAppointment editedAppointment2 = (RepeatableAppointment) appointmentIteratorNew.next();
-        RepeatableAppointment expectedAppointment2 = new RepeatableAppointmentImpl()
+        Appointment editedAppointment2 = (Appointment) appointmentIteratorNew.next();
+        Appointment expectedAppointment2 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDateTime.of(2015, 11, 17, 9, 45))
                 .withEndLocalDateTime(LocalDateTime.of(2015, 11, 17, 11, 0))
                 .withAppointmentGroup(appointmentGroups.get(7))
@@ -220,8 +219,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 .withSummary("Edited Summary");
         assertEquals(expectedAppointment2, editedAppointment2); // Check to see if repeat-generated appointment changed correctly
 
-        RepeatableAppointment editedAppointment3 = (RepeatableAppointment) appointmentIteratorNew.next();
-        RepeatableAppointment expectedAppointment3 = new RepeatableAppointmentImpl()
+        Appointment editedAppointment3 = (Appointment) appointmentIteratorNew.next();
+        Appointment expectedAppointment3 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDateTime.of(2015, 11, 20, 9, 45))
                 .withEndLocalDateTime(LocalDateTime.of(2015, 11, 20, 11, 0))
                 .withAppointmentGroup(appointmentGroups.get(7))
@@ -253,7 +252,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         Iterator<Appointment> appointmentIterator = appointments.iterator();
         appointmentIterator.next(); // skip first
         appointmentIterator.next(); // skip second
-        RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next();
+        Appointment selectedAppointment = (Appointment) appointmentIterator.next();
         LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
         
         // apply changes
@@ -293,9 +292,9 @@ public class ICalendarEditTest extends ICalendarTestAbstract
 
         // Check Appointments
         Iterator<Appointment> appointmentIteratorNew = appointments.iterator();
-        RepeatableAppointment editedAppointment1 = (RepeatableAppointment) appointmentIteratorNew.next();
+        Appointment editedAppointment1 = (Appointment) appointmentIteratorNew.next();
 
-        RepeatableAppointment expectedAppointment1 = new RepeatableAppointmentImpl()
+        Appointment expectedAppointment1 = AppointmentFactory.newAppointment(getClazz())
             .withStartLocalDateTime(LocalDateTime.of(2015, 11, 15, 10, 0))
             .withEndLocalDateTime(LocalDateTime.of(2015, 11, 15, 11, 30))
             .withAppointmentGroup(appointmentGroups.get(3))
@@ -303,8 +302,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
             .withSummary("Daily6 Summary");
         assertEquals(expectedAppointment1, editedAppointment1); // Check to see if repeat-generated appointment changed correctly
 
-        RepeatableAppointment editedAppointment2 = (RepeatableAppointment) appointmentIteratorNew.next();
-        RepeatableAppointment expectedAppointment2 = new RepeatableAppointmentImpl()
+        Appointment editedAppointment2 = (Appointment) appointmentIteratorNew.next();
+        Appointment expectedAppointment2 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDateTime.of(2015, 11, 17, 6, 0))
                 .withEndLocalDateTime(LocalDateTime.of(2015, 11, 17, 7, 0))
                 .withAppointmentGroup(appointmentGroups.get(7))
@@ -312,8 +311,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 .withSummary("Edited Summary");
         assertEquals(expectedAppointment2, editedAppointment2); // Check to see if repeat-generated appointment changed correctly
 
-        RepeatableAppointment editedAppointment3 = (RepeatableAppointment) appointmentIteratorNew.next();
-        RepeatableAppointment expectedAppointment3 = new RepeatableAppointmentImpl()
+        Appointment editedAppointment3 = (Appointment) appointmentIteratorNew.next();
+        Appointment expectedAppointment3 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDateTime.of(2015, 11, 17, 10, 0))
                 .withEndLocalDateTime(LocalDateTime.of(2015, 11, 17, 11, 30))
                 .withAppointmentGroup(appointmentGroups.get(3))
@@ -321,8 +320,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 .withSummary("Daily6 Summary");
             assertEquals(expectedAppointment3, editedAppointment3); // Check to see if repeat-generated appointment changed correctly
 
-        RepeatableAppointment editedAppointment4 = (RepeatableAppointment) appointmentIteratorNew.next();
-        RepeatableAppointment expectedAppointment4 = new RepeatableAppointmentImpl()
+        Appointment editedAppointment4 = (Appointment) appointmentIteratorNew.next();
+        Appointment expectedAppointment4 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDateTime.of(2015, 11, 19, 6, 0))
                 .withEndLocalDateTime(LocalDateTime.of(2015, 11, 19, 7, 0))
                 .withAppointmentGroup(appointmentGroups.get(7))
@@ -330,8 +329,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 .withSummary("Edited Summary");
         assertEquals(expectedAppointment4, editedAppointment4); // Check to see if repeat-generated appointment changed correctly
 
-        RepeatableAppointment editedAppointment5 = (RepeatableAppointment) appointmentIteratorNew.next();
-        RepeatableAppointment expectedAppointment5 = new RepeatableAppointmentImpl()
+        Appointment editedAppointment5 = (Appointment) appointmentIteratorNew.next();
+        Appointment expectedAppointment5 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDateTime.of(2015, 11, 21, 6, 0))
                 .withEndLocalDateTime(LocalDateTime.of(2015, 11, 21, 7, 0))
                 .withAppointmentGroup(appointmentGroups.get(7))
@@ -389,7 +388,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
 
         // select appointment (get recurrence date)
         Iterator<Appointment> appointmentIterator = appointments.iterator(); // skip first
-        RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next();
+        Appointment selectedAppointment = (Appointment) appointmentIterator.next();
         
         // apply changes
         vevent.setRRule(null);
@@ -438,7 +437,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         
         // select appointment and apply changes
         Iterator<Appointment> appointmentIterator = appointments.iterator(); // skip first
-        RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next();
+        Appointment selectedAppointment = (Appointment) appointmentIterator.next();
         LocalDateTime dateTimeOld = selectedAppointment.getStartLocalDateTime();
         LocalDate dateOld = dateTimeOld.toLocalDate();
         selectedAppointment.setStartLocalDateTime(dateOld.atTime(9, 45)); // change start time

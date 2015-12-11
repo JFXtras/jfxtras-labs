@@ -54,7 +54,7 @@ public class EditPopupLoader extends Stage {
         
         // LOAD FXML
         FXMLLoader appointmentMenuLoader = new FXMLLoader();
-        appointmentMenuLoader.setLocation(RepeatMenuOld.class.getResource("view/AppointmentEdit.fxml"));
+        appointmentMenuLoader.setLocation(EditPopupLoader.class.getResource("view/AppointmentEdit.fxml"));
         appointmentMenuLoader.setResources(Settings.resources);
         Control appointmentMenu = null;
         try {

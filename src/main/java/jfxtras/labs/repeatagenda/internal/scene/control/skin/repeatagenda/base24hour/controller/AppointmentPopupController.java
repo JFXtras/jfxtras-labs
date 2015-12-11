@@ -12,10 +12,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Popup;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 /**
@@ -26,7 +25,7 @@ public class AppointmentPopupController {
     
     private Pane pane;
     private Collection<Appointment> appointments;
-    private Collection<Repeat> repeats;
+    private Collection<VComponent<Appointment>> repeats;
 //    private Map<Appointment, Repeat> repeatMap;
     private RepeatableAppointment appointment;
     private Popup popup;
@@ -45,7 +44,7 @@ public class AppointmentPopupController {
     public void setupData(
               Collection<Appointment> appointments
             , RepeatableAppointment appointment
-            , Collection<Repeat> repeats
+            , Collection<VComponent<Appointment>> repeats
 //            , Map<Appointment, Repeat> repeatMap
             , Pane pane
 
@@ -78,7 +77,7 @@ public class AppointmentPopupController {
     @FXML private void handleDeleteAppointment() throws ParserConfigurationException {
         popup.hide();
 //        RepeatableUtilities.deleteAppointments(layoutHelp.skinnable.appointments()
-        RepeatableUtilities.deleteAppointments(appointment, appointments, repeats);
+//        RepeatableUtilities.deleteAppointments(appointment, appointments, repeats);
 
 //        layoutHelp.skin.setupAppointments();    // refresh appointment graphics
     }

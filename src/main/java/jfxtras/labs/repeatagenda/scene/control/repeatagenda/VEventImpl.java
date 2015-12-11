@@ -37,6 +37,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
+import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
@@ -102,7 +103,7 @@ public class VEventImpl extends VEvent<Appointment>
      * the appointmentClass.
      */
     public Class<? extends Appointment> getAppointmentClass() { return appointmentClass; }
-    private Class<? extends Appointment> appointmentClass = RepeatableAppointmentImpl.class;
+    private Class<? extends Appointment> appointmentClass = Agenda.AppointmentImplLocal.class;
     public void setAppointmentClass(Class<? extends Appointment> appointmentClass) { this.appointmentClass = appointmentClass; }
 //    public VEventImpl withAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
 
@@ -307,7 +308,7 @@ public class VEventImpl extends VEvent<Appointment>
     @Override
     public Collection<Appointment> makeInstances()
     {
-        System.out.println("range: " + getDateTimeRangeStart() + " " + getDateTimeRangeEnd());
+//        System.out.println("range: " + getDateTimeRangeStart() + " " + getDateTimeRangeEnd());
         if ((getDateTimeRangeStart() == null) || (getDateTimeRangeStart() == null)) throw new IllegalArgumentException("can't make instances without setting date/time range first");
         List<Appointment> madeAppointments = new ArrayList<>();
         stream(getDateTimeStart().getLocalDateTime())

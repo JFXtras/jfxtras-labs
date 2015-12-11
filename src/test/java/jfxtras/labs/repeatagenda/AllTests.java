@@ -5,12 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ RepeatCopyTest.class
-              , RepeatDatesTest.class
-              , RepeatDeleteTest.class
-              , RepeatEditTest.class
-              , RepeatMakeAppointmentsTest.class
-              , ICalendarDateTest.class
+@SuiteClasses({ ICalendarDateTest.class
               , ICalendarParseTest.class
               , ICalendarDateRangeTest.class
               , ICalendarMakeAppointmentsTest.class

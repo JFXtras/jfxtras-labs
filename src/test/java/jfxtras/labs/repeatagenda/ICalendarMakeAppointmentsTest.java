@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentFactory;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
@@ -41,15 +39,15 @@ public class ICalendarMakeAppointmentsTest extends ICalendarTestAbstract
               , LocalDateTime.of(2015, 11, 20, 10, 0)
               , LocalDateTime.of(2015, 11, 21, 10, 0)
                 ));
-        List<RepeatableAppointment> expectedAppointments = expectedDates
+        List<Appointment> expectedAppointments = expectedDates
                 .stream()
                 .map(d -> {
                     return AppointmentFactory.newAppointment(getClazz())
                             .withStartLocalDateTime(d)
                             .withEndLocalDateTime(d.plusSeconds(3600))
                             .withDescription("Daily1 Description")
-                            .withSummary("Daily1 Summary")
-                            .withRepeatMade(true);
+                            .withSummary("Daily1 Summary");
+//                            .withRepeatMade(true);
                 })
                 .collect(Collectors.toList());
         assertEquals(expectedAppointments, appointments);
@@ -60,7 +58,7 @@ public class ICalendarMakeAppointmentsTest extends ICalendarTestAbstract
     public void makeAppointmentsWeeklyTest1()
     {
         VEventImpl vevent = getWeekly2();
-        vevent.setAppointmentClass(RepeatableAppointmentImpl.class);
+        vevent.setAppointmentClass(getClazz());
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 12, 20, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 12, 27, 0, 0));
         List<Appointment> appointments = new ArrayList<Appointment>();
@@ -69,37 +67,37 @@ public class ICalendarMakeAppointmentsTest extends ICalendarTestAbstract
 
         Iterator<Appointment> appointmentIterator = appointments.iterator();
 
-        RepeatableAppointment madeAppointment1 = (RepeatableAppointment) appointmentIterator.next();
-        RepeatableAppointment expectedAppointment1 = AppointmentFactory.newAppointment(getClazz())
+        Appointment madeAppointment1 = (Appointment) appointmentIterator.next();
+        Appointment expectedAppointment1 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDate.of(2015, 12, 21).atTime(10, 0))
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 21).atTime(10, 45))
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly1 Summary")
-                .withDescription("Weekly1 Description")
-                .withRepeatMade(true)
-                .withVEvent(vevent);
+                .withDescription("Weekly1 Description");
+//                .withRepeatMade(true)
+//                .withVEvent(vevent);
         assertEquals(expectedAppointment1, madeAppointment1); 
         
-        RepeatableAppointment madeAppointment2 = (RepeatableAppointment) appointmentIterator.next();
-        RepeatableAppointment expectedAppointment2 = AppointmentFactory.newAppointment(getClazz())
+        Appointment madeAppointment2 = (Appointment) appointmentIterator.next();
+        Appointment expectedAppointment2 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDate.of(2015, 12, 23).atTime(10, 0))
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 23).atTime(10, 45))
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly1 Summary")
-                .withDescription("Weekly1 Description")
-                .withRepeatMade(true)
-                .withVEvent(vevent);
+                .withDescription("Weekly1 Description");
+//                .withRepeatMade(true)
+//                .withVEvent(vevent);
         assertEquals(expectedAppointment2, madeAppointment2);
 
-        RepeatableAppointment madeAppointment3 = (RepeatableAppointment) appointmentIterator.next();
-        RepeatableAppointment expectedAppointment3 = AppointmentFactory.newAppointment(getClazz())
+        Appointment madeAppointment3 = (Appointment) appointmentIterator.next();
+        Appointment expectedAppointment3 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDate.of(2015, 12, 25).atTime(10, 0))
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 25).atTime(10, 45))
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly1 Summary")
-                .withDescription("Weekly1 Description")
-                .withRepeatMade(true)
-                .withVEvent(vevent);
+                .withDescription("Weekly1 Description");
+//                .withRepeatMade(true)
+//                .withVEvent(vevent);
         assertEquals(expectedAppointment3, madeAppointment3);     
     }
     

@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
 
 import javafx.collections.ObservableList;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentImplLocal2;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.RDate;
@@ -40,7 +40,7 @@ public abstract class ICalendarTestAbstract
             .mapToObj(i -> 
             {
                 RepeatableAgenda.AppointmentGroupImpl a = new RepeatableAgenda.AppointmentGroupImpl()
-                    .withKey(i)
+//                    .withKey(i)
                     .withDescription("group" + (i < 10 ? "0" : "") + i);
                 a.setStyleClass("group" + i); // skipped due to static variable problem with junit
                 return a;
@@ -53,8 +53,8 @@ public abstract class ICalendarTestAbstract
             -> a1.getStartLocalDateTime().compareTo(a2.getStartLocalDateTime());
     public static final Comparator<Appointment> getAppointmentComparator() { return APPOINTMENT_COMPARATOR; }
     
-    private static final Class<RepeatableAppointmentImpl> clazz = RepeatableAppointmentImpl.class;
-    public Class<RepeatableAppointmentImpl> getClazz() { return clazz; }
+    private static final Class<AppointmentImplLocal2> clazz = AppointmentImplLocal2.class;
+    public Class<AppointmentImplLocal2> getClazz() { return clazz; }
     
     /** FREQ=YEARLY; */
     protected static VEventImpl getYearly1()
