@@ -40,6 +40,9 @@ import jfxtras.scene.control.agenda.Agenda;
 public class ICalendarAgenda extends Agenda {
     
     private static String AGENDA_STYLE_CLASS = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
+
+    // default appointment group list
+    // if any element has been edited the edit list must be added to appointmentGroups
     final public static ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
         = javafx.collections.FXCollections.observableArrayList(
                 IntStream
@@ -78,60 +81,53 @@ public class ICalendarAgenda extends Agenda {
     // in the time range, and editing a VComponent occurs.
     private final ListChangeListener<Appointment> appointmentListener = (ListChangeListener.Change<? extends Appointment> change)
             -> {
-//                System.out.println("appointment change listener:");
                 while (change.next())
                 {
                     if (change.wasReplaced())
                     {
+                        // TODO - FIXTHIS - DOESN'T REMOVE VEVENTS
                         List<? extends Appointment> removedAppointments = change.getRemoved();
                         Set<Appointment> removedIndividualAppointments = removedAppointments.stream()
                                 .map(a -> ((RepeatableAppointment) a))
-//                                .filter(a -> ! a.isRepeatMade())
                                 .peek(a -> System.out.println("removed individual " + a.getStartLocalDateTime()))
                                 .collect(Collectors.toSet());
                     }
                     if (change.wasAdded())
                     {
-//                        change.getAddedSubList()
-//                        List<? extends Appointment> addedAppointments = change.getAddedSubList();
-//                        Set<Appointment> newIndividualAppointments = addedAppointments.stream()
-////                            .map(a -> ((Appointment) a))
-////                            .filter(a -> ! a.isRepeatMade())
                         change.getAddedSubList()
                                 .stream()
-                                .peek(a -> 
+                                .forEach(a -> 
                                 { // make new VComponent
-                                    VComponent<Appointment> newVComponent = VEventFactory
+                                    VComponent<Appointment> newVComponent = VComponentFactory
                                             .newVComponent(getVEventClass(), a, appointmentGroups());
                                     LocalDateTime dateTimeRangeStart = dateTimeRange.getStartLocalDateTime();
                                     LocalDateTime dateTimeRangeEnd = dateTimeRange.getEndLocalDateTime();
                                     newVComponent.setDateTimeRangeStart(dateTimeRangeStart);
                                     newVComponent.setDateTimeRangeEnd(dateTimeRangeEnd);
                                     vComponents.add(newVComponent);
-                                    System.out.println("added vEvemt " + a.getStartLocalDateTime());   
-                                })
-                                .collect(Collectors.toSet());
+//                                    System.out.println("added vEvemt " + a.getStartLocalDateTime());   
+                                });
                     }
                 }
             };
     
+    // CONSTRUCTOR
     public ICalendarAgenda()
     {
         super();
-
-        // setup default ResourceBundle
         Locale myLocale = Locale.getDefault();
-        // TODO - GET PATH BETTER WAY
+
+        // setup default ResourceBundle // TODO - GET PATH BETTER WAY
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Bundle", myLocale);
         Settings.setup(resources);
 
         // Listen for changes to appointments (additions and deletions)
         appointments().addListener(appointmentListener);
         
-        // Change edit popup to provide one with repeat options
+        // CHANGE DEFAULT EDIT POPUP
+        // new popup has repeat options
         setEditAppointmentCallback((Appointment appointment) ->
         {
-            // TODO - replace with map?
             // Match appointment to VComponent
             VComponent vevent = vComponents()
                     .stream()
@@ -141,7 +137,7 @@ public class ICalendarAgenda extends Agenda {
 
             appointments().removeListener(appointmentListener); // remove listener to prevent making extra vEvents during edit
             Stage repeatMenu = new EditPopupLoader(
-                    (Appointment) appointment
+                      appointment
                     , vevent
                     , dateTimeRange
                     , appointments()
@@ -155,7 +151,8 @@ public class ICalendarAgenda extends Agenda {
             return null;
         });
         
-        // manage repeat-made appointments when the range changes
+        // LISTEN FOR AGENDA RANGE CHANGES
+        // refresh Appointments made from VComponents
         setLocalDateTimeRangeCallback(dateTimeRange ->
         {
             this.dateTimeRange = dateTimeRange;
@@ -180,6 +177,7 @@ public class ICalendarAgenda extends Agenda {
         });
     }
     
+    /** Example Appointment class with overridden equals method used by unit testing */
     static public class AppointmentImplLocal2 extends AppointmentImplLocal
     {
         @Override
@@ -199,16 +197,98 @@ public class ICalendarAgenda extends Agenda {
                     (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
             boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
                     (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
-//            System.out.println("repeats " + getRepeat() + " " + testObj.getRepeat());
-//            boolean repeatEquals = (getRepeat() == null) ?
-//                    (testObj.getRepeat() == null) : getRepeat().equals(testObj.getRepeat());
-//            System.out.println("RepeatableAppointmentImplBase equals1 " + descriptionEquals + " " + locationEquals 
-//                    + " " + summaryEquals + " " +  " " + appointmentGroupEquals + " " + repeatEquals + " " + getRepeat() + " " + testObj.getRepeat());
+            System.out.println("AppointmentImplLocal2 equals: " + descriptionEquals + " " + locationEquals 
+                    + " " + summaryEquals + " " +  " " + appointmentGroupEquals);
             return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals ;
         }
     }
     
+    /**
+     * VComponent factory methods
+     * 
+     * @author David Bal
+     *
+     */
+    static public class VComponentFactory
+    {
+                
+        /** Return new VComponent made from an Appointment
+         * Used when graphically adding an appointment to Agenda.
+         * @param <U>
+         * 
+         * @param vComponentClass - class of new VEvent
+         * @param appointment - an Agenda Appointment
+         * @param appointmentGroups - list of AppointmentGroups
+         * @return
+         */
+        public static <U extends Appointment> VComponent<U> newVComponent(
+                Class<? extends VComponent<U>> vComponentClass
+              , U appointment
+              , ObservableList<AppointmentGroup> appointmentGroups)
+        {
+            try {
+                return vComponentClass
+                        .getConstructor(Appointment.class, ObservableList.class)
+                        .newInstance(appointment, appointmentGroups);
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        
+        @SuppressWarnings("unchecked")
+        public static <U extends Appointment> VComponent<U> newVComponent(VComponent<U> vComponent)
+        {
+            try {
+                return vComponent.getClass()
+                        .getConstructor(vComponent.getClass())
+                        .newInstance(vComponent);
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+    
+    /**
+     * Appointment factory methods
+     * 
+     * @author David Bal
+     *
+     */
+    static public class AppointmentFactory {
+
+        /** returns new Appointment */
+        public static <T extends Appointment> T newAppointment(Class<T> appointmentClass)
+        {
+            try {
+                return appointmentClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    
+        /** Returns deep copy of source appointment */
+        @SuppressWarnings("unchecked")
+        public static <T extends Appointment> T newAppointment(T source)
+        {
+            try {
+                return (T) source.getClass()
+                        .getConstructor(Appointment.class) // gets copy constructor
+                        .newInstance(source);               // calls copy constructor
+            } catch (InstantiationException | IllegalAccessException
+                    | IllegalArgumentException | InvocationTargetException
+                    | NoSuchMethodException | SecurityException e) {
+                e.printStackTrace();
+            }
+          return null;
+
+        }
+    }
+    
     // TODO - revise Appointment interface changes
+    // I MAY JUST REMOVE ALL CODE BELOW HERE
     /** Contains all the appointment data - no repeatable information
     *   Like Appointment, but contains extra fields - no repeat object */
     static public interface Appointment2 extends Agenda.Appointment
@@ -546,80 +626,7 @@ public class ICalendarAgenda extends Agenda {
         }
     
     
-    /**
-     * Make new VEvent objects of an implemented class
-     * 
-     * @author David Bal
-     *
-     */
-    static public class VEventFactory
-    {
-//        /** Return new VEvent
-//         * 
-//         * @param VEventClass - class of new VEvent
-//         * @return - the new vEvent
-//         */
-//        public static <U extends Appointment> VComponent<U> newVComponent(Class<? extends VComponent<U>> VEventClass)
-//        {
-//            try {
-//                return VEventClass.newInstance();
-//            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException e) {
-//                e.printStackTrace();
-//            }
-//            return null;
-//        }
-                
-        /** Return new VEvent made from an Appointment
-         * @param <U>
-         * 
-         * @param vEventClass - class of new VEvent
-         * @return - the new vEvent
-         */
-        public static  <U extends Appointment> VComponent<U> newVComponent(
-                Class<? extends VComponent<U>> vEventClass
-              , U appointment
-              , ObservableList<AppointmentGroup> appointmentGroups)
-        {
-//            Arrays.stream(vEventClass.getConstructors()).forEach(System.out::println);
-            try {
-                return vEventClass
-                        .getConstructor(Appointment.class, ObservableList.class)
-                        .newInstance(appointment, appointmentGroups);
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-    
-    static public class AppointmentFactory {
 
-        public static <T extends Appointment> T newAppointment(Class<T> appointmentClass)
-        {
-            try {
-                return appointmentClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    
-        // Returns deep copy of source
-        public static <T extends Appointment> T newAppointment(T source)
-        {
-            try {
-                return (T) source.getClass()
-                        .getConstructor(Appointment.class) // gets copy constructor
-                        .newInstance(source);               // calls copy constructor
-            } catch (InstantiationException | IllegalAccessException
-                    | IllegalArgumentException | InvocationTargetException
-                    | NoSuchMethodException | SecurityException e) {
-                e.printStackTrace();
-            }
-          return null;
-
-        }
-    }
 
     /** Add ResourceBundle for FXML controllers that contains strings for the appointment popups */
     public void setResourceBundle(ResourceBundle resources) {

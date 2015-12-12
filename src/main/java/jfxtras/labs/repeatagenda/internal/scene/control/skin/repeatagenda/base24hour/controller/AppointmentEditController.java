@@ -1,7 +1,6 @@
 package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller;
 
 
-import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -18,6 +17,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.VComponentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -112,16 +112,7 @@ public class AppointmentEditController
         this.windowCloseType = popupCloseType;
 
         // Copy original VEvent
-        try {
-            vEventOld = vEvent
-                    .getClass()
-                    .getConstructor(vEvent.getClass())
-                    .newInstance(vEvent);
-//            vEventOld = vEvent.getClass().newInstance();
-//            vEvent.copyTo(vEventOld);
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            e.printStackTrace();
-        }
+        vEventOld = (VEvent<Appointment>) VComponentFactory.newVComponent(vEvent);
         
         summaryTextField.textProperty().bindBidirectional(vEvent.summaryProperty());
         descriptionTextArea.textProperty().bindBidirectional(vEvent.descriptionProperty());
@@ -178,10 +169,8 @@ public class AppointmentEditController
               , a -> ICalendarUtilities.repeatChangeDialog()
               , vEventWriteCallback);
         windowCloseType.set(result);
-        if (windowCloseType.get() == WindowCloseType.CLOSE_WITH_CHANGE)
+        if (windowCloseType.get() == WindowCloseType.CLOSE_WITHOUT_CHANGE)
         {
-//          refreshCallback.call(null);
-        
         }
 
     }
@@ -190,6 +179,7 @@ public class AppointmentEditController
     @FXML private void handleCancelButton()
     {
         windowCloseType.set(WindowCloseType.CANCEL);
+        vEventOld.copyTo(vEvent);
     }
 
     

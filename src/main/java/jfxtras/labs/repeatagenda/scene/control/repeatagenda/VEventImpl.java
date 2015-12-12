@@ -29,10 +29,10 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ChoiceDialog;
 import javafx.util.Callback;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.RRuleType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
@@ -146,14 +146,14 @@ public class VEventImpl extends VEvent<Appointment>
     public VEventImpl(Appointment appointment, ObservableList<AppointmentGroup> appointmentGroups)
     {
         this(appointmentGroups);
-        setDescription(appointment.getDescription());
-        setLocation(appointment.getLocation());
         setCategories(appointment.getAppointmentGroup().getDescription());
+        setDateTimeEnd(new VDateTime(appointment.getEndLocalDateTime()));
         setDateTimeStamp(LocalDateTime.now());
         setDateTimeStart(new VDateTime(appointment.getStartLocalDateTime()));
-        setDateTimeEnd(new VDateTime(appointment.getEndLocalDateTime()));
-        String uid = getUidGeneratorCallback().call(null);
-        setUniqueIdentifier(uid);
+        setDescription(appointment.getDescription());
+        setLocation(appointment.getLocation());
+        setSummary(appointment.getSummary());
+        setUniqueIdentifier(getUidGeneratorCallback().call(null));
         instances().add(appointment);
         if (! validityCheck().equals("")) throw new IllegalArgumentException(validityCheck());
     }
@@ -180,11 +180,10 @@ public class VEventImpl extends VEvent<Appointment>
     @Override
     public boolean equals(Object obj)
     {
-//        super.equals(obj);
-//        if (obj == this) return true;
-//        if((obj == null) || (obj.getClass() != getClass())) {
-//            return false;
-//        }
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
         VEventImpl testObj = (VEventImpl) obj;
         System.out.println("getAppointmentClass:" + getAppointmentClass() + " " + testObj.getAppointmentClass());
         boolean appointmentClassEquals = (getAppointmentClass() == null) ?
@@ -278,26 +277,6 @@ public class VEventImpl extends VEvent<Appointment>
         return parseVEvent(stringsList, appointmentGroups);
     }
 
-//    /**
-//     * Returns appointments for Agenda that should exist between dateTimeRangeStart and dateTimeRangeEnd
-//     * based on VEvent.  For convenience, sets VEvent dateTimeRangeStart and dateTimeRangeEnd prior to 
-//     * making appointments.
-//     * @param <Appointment>
-//     * 
-//     * @param dateTimeRangeStart
-//     * @param dateTimeRangeEnd
-//     * @return
-//     */
-//    @Override
-//    public Collection<Appointment> makeInstances(
-//            LocalDateTime dateTimeRangeStart
-//          , LocalDateTime dateTimeRangeEnd)
-//    {
-//        setDateTimeRangeStart(dateTimeRangeStart);
-//        setDateTimeRangeEnd(dateTimeRangeEnd);
-//        return makeInstances();
-//    }
-
     /**
      * Returns appointments for Agenda that should exist between dateTimeRangeStart and dateTimeRangeEnd
      * based on VEvent properties.  Uses dateTimeRange previously set in VEvent.
@@ -361,7 +340,7 @@ public class VEventImpl extends VEvent<Appointment>
         boolean durationSame = (durationInSeconds == vEventOld2.getDurationInSeconds());
         if (dateTimeNewSame && durationSame && this.equals(vEventOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
 
-        final RRuleType rruleType = getRRuleType(getRRule());
+        final RRuleType rruleType = getRRuleType(vEventOld.getRRule());
         System.out.println("rruleType " + rruleType);
         boolean editedFlag = true;
         switch (rruleType)
@@ -393,7 +372,9 @@ public class VEventImpl extends VEvent<Appointment>
                     setDurationInSeconds(durationInSeconds);
                     break;
                 case CANCEL:
+//                    System.out.println("cancel:");
                     editedFlag = false;
+//                    vEventOld.copyTo(this);
                     break;
                 case THIS_AND_FUTURE:
                 { // this is edited VEvent, vEventOld is former settings, with UNTIL set at start for this.
@@ -571,7 +552,7 @@ public class VEventImpl extends VEvent<Appointment>
     
     private RRuleType getRRuleType(RRule rruleOld)
     {
-
+System.out.println("rules:" + getRRule() + " " + rruleOld);
         if (getRRule() == null)
         {
             if (rruleOld == null)
