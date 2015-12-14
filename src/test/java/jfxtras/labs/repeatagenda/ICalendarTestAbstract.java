@@ -1,6 +1,7 @@
 package jfxtras.labs.repeatagenda;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -31,6 +32,7 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 public abstract class ICalendarTestAbstract
 {
+    public static final long NANOS_IN_SECOND = Duration.ofSeconds(1).toNanos();
 
     public final static ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
     = javafx.collections.FXCollections.observableArrayList(
@@ -65,7 +67,7 @@ public abstract class ICalendarTestAbstract
         vEvent.setDateTimeLastModified(LocalDateTime.of(2015, 11, 10, 18, 30));
         vEvent.setUniqueIdentifier("20151109T082900-0@jfxtras.org");
         vEvent.setAppointmentGroup(appointmentGroups.get(13));
-        vEvent.setDurationInSeconds(3600L);
+        vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
         vEvent.setDescription("Yearly1 Description");
         vEvent.setSummary("Yearly1 Summary");
         vEvent.setAppointmentClass(clazz);
@@ -285,7 +287,7 @@ public abstract class ICalendarTestAbstract
         VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(1997, 9, 2, 10, 0));
         vEvent.setDateTimeStamp(LocalDateTime.of(1997, 9, 1, 8, 30));
-        vEvent.setDurationInSeconds(3600L);
+        vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
         vEvent.setUniqueIdentifier("19970901T083000-0@jfxtras.org");
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -305,7 +307,7 @@ public abstract class ICalendarTestAbstract
         VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 1, 10, 10, 0));
         vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
-        vEvent.setDurationInSeconds(5400L);
+        vEvent.setDurationInNanos(5400L * NANOS_IN_SECOND);
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -338,7 +340,7 @@ public abstract class ICalendarTestAbstract
         VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
         vEvent.setAppointmentGroup(appointmentGroups.get(3));
-        vEvent.setDurationInSeconds(2700L);
+        vEvent.setDurationInNanos(2700L * NANOS_IN_SECOND);
         vEvent.setDescription("Weekly1 Description");
         vEvent.setSummary("Weekly1 Summary");
         vEvent.setAppointmentClass(clazz);
@@ -358,7 +360,7 @@ public abstract class ICalendarTestAbstract
         VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0));
         vEvent.setAppointmentGroup(appointmentGroups.get(3));
-        vEvent.setDurationInSeconds(2700L);
+        vEvent.setDurationInNanos(2700L * NANOS_IN_SECOND);
         vEvent.setDescription("Weekly1 Description");
         vEvent.setSummary("Weekly1 Summary");
         vEvent.setAppointmentClass(clazz);
@@ -376,7 +378,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDurationInSeconds(3600L);
+        vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
         vEvent.setDescription("Daily1 Description");
         vEvent.setSummary("Daily1 Summary");
         vEvent.setAppointmentClass(clazz);
@@ -392,7 +394,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDurationInSeconds(5400L);
+        vEvent.setDurationInNanos(5400L * NANOS_IN_SECOND);
         vEvent.setAppointmentGroup(appointmentGroups.get(3));
         vEvent.setDescription("Daily2 Description");
         vEvent.setSummary("Daily2 Summary");
@@ -466,7 +468,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDurationInSeconds(5400L);
+        vEvent.setDurationInNanos(5400L * NANOS_IN_SECOND);
         vEvent.setAppointmentGroup(appointmentGroups.get(3));
         vEvent.setDescription("Daily6 Description");
         vEvent.setSummary("Daily6 Summary");
@@ -485,7 +487,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDurationInSeconds(3600L);
+        vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
         vEvent.setAppointmentClass(clazz);
         return vEvent;
     }
@@ -505,7 +507,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDurationInSeconds(3600L);
+        vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
         RDate rDate = new RDate().withTemporals(LocalDateTime.of(2015, 11, 12, 10, 0), LocalDateTime.of(2015, 11, 14, 12, 0));
         vEvent.setRDate(rDate);
         return vEvent;

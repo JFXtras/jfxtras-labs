@@ -2,9 +2,13 @@ package jfxtras.labs.repeatagenda;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.LocalDate;
+import java.time.temporal.Temporal;
+
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 
 public class ICalendarToStringTest extends ICalendarTestAbstract
@@ -85,11 +89,19 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
                           + "END:VEVENT";
     assertEquals(expectedString, madeString);
     }
-    
-    @Test
-    public void canConvertToStringWholeDay1()
-    {
 
+    @Test
+    public void canConvertWholeDay1()
+    {
+        Temporal date = LocalDate.of(2015, 11, 12);
+        String expectedString = "VALUE=DATE:20151112";
+        String madeString = VComponent.temporalToString(date);
+        assertEquals(expectedString, madeString);
+    }
+
+    @Test
+    public void canConvertWholeDay2()
+    {
     VEventImpl vEvent = getWholeDayDaily1();
     String madeString = vEvent.toString();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
@@ -100,4 +112,5 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
                           + "END:VEVENT";
     assertEquals(expectedString, madeString);
     }
+
 }

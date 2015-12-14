@@ -394,7 +394,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
             { // new selection - use date/time one month in the future as default
 //                LocalTime time = vComponent.getDateTimeStart().getLocalDateTime().toLocalTime();
                 LocalDateTime defaultEndOnDateTime = (dateTimeStartInstanceNew.equals(vComponent.getDateTimeStart())) ?
-                        vComponent.getDateTimeStart().plus(1, ChronoUnit.MONTHS)
+                        VComponent.makeLocalDateTimeFromTemporal(vComponent.getDateTimeStart()).plus(1, ChronoUnit.MONTHS)
                       : dateTimeStartInstanceNew;
                 vComponent.getRRule().setUntil(defaultEndOnDateTime);
             }
@@ -448,7 +448,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         boolean checkBox = false;
         if (vComponent.getRRule() == null)
         {
-            rRule = setDefaults(new RRule(), vComponent.getDateTimeStart());
+            rRule = setDefaults(new RRule(), VComponent.makeLocalDateTimeFromTemporal(vComponent.getDateTimeStart()));
             vComponent.setRRule(rRule);
         } else
         {
@@ -646,7 +646,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
     {
         System.out.println("make exception date list");
         
-        final LocalDateTime dateTimeStart = vComponent.getDateTimeStart();
+        final LocalDateTime dateTimeStart = VComponent.makeLocalDateTimeFromTemporal(vComponent.getDateTimeStart());
         Stream<LocalDateTime> stream1 = vComponent
                 .getRRule()
                 .stream(dateTimeStart);

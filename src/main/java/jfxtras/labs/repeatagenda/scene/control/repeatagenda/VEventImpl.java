@@ -186,7 +186,7 @@ public class VEventImpl extends VEvent<Appointment>
             return false;
         }
         VEventImpl testObj = (VEventImpl) obj;
-        System.out.println("getAppointmentClass:" + getAppointmentClass() + " " + testObj.getAppointmentClass());
+        System.out.println("getAppointmentClass:" + getAppointmentClass().getSimpleName() + " " + testObj.getAppointmentClass().getSimpleName());
         boolean appointmentClassEquals = (getAppointmentClass() == null) ?
                 (testObj.getAppointmentClass() == null) : getAppointmentClass().equals(testObj.getAppointmentClass());
         boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
@@ -291,11 +291,11 @@ public class VEventImpl extends VEvent<Appointment>
 //        System.out.println("range: " + getDateTimeRangeStart() + " " + getDateTimeRangeEnd());
         if ((getDateTimeRangeStart() == null) || (getDateTimeRangeStart() == null)) throw new IllegalArgumentException("can't make instances without setting date/time range first");
         List<Appointment> madeAppointments = new ArrayList<>();
-        stream(getDateTimeStart())
+        stream(VComponent.makeLocalDateTimeFromTemporal(getDateTimeStart()))
                 .forEach(d -> {
                     Appointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
                     appt.setStartLocalDateTime(d);
-                    appt.setEndLocalDateTime(d.plusSeconds(getDurationInSeconds()));
+                    appt.setEndLocalDateTime(d.plusSeconds(getDurationInNanos()));
 //                    appt.setRepeatMade(true);
                     appt.setDescription(getDescription());
                     appt.setSummary(getSummary());
@@ -338,7 +338,7 @@ public class VEventImpl extends VEvent<Appointment>
         final VEventImpl vEventOld2 = (VEventImpl) vEventOld;
 //        System.out.println(dateTimeStartInstanceNew + " " + vEventOld2.getDateTimeStart());
         boolean dateTimeNewSame = dateTimeStartInstanceNew.toLocalTime().equals(LocalTime.from(vEventOld2.getDateTimeStart()));
-        boolean durationSame = (durationInSeconds == vEventOld2.getDurationInSeconds());
+        boolean durationSame = (durationInSeconds == vEventOld2.getDurationInNanos());
         if (dateTimeNewSame && durationSame && this.equals(vEventOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
 
         final RRuleType rruleType = getRRuleType(vEventOld.getRRule());
@@ -370,7 +370,7 @@ public class VEventImpl extends VEvent<Appointment>
                     long secondsAdjustment = ChronoUnit.SECONDS.between(dateTimeStartInstanceOld, dateTimeStartInstanceNew);
                     Temporal newDateTimeStart = getDateTimeStart().plus(secondsAdjustment, ChronoUnit.SECONDS);
                     setDateTimeStart(newDateTimeStart);
-                    setDurationInSeconds(durationInSeconds);
+                    setDurationInNanos(durationInSeconds);
                     break;
                 case CANCEL:
 //                    System.out.println("cancel:");
@@ -443,7 +443,7 @@ public class VEventImpl extends VEvent<Appointment>
 
                     // Modify this (edited) VEvent
                     setDateTimeStart(dateTimeStartInstanceNew);
-                    setDurationInSeconds(durationInSeconds);
+                    setDurationInNanos(durationInSeconds);
                     
                     // Modify COUNT for this (the edited) VEvent
                     if (getRRule().getCount() > 0)

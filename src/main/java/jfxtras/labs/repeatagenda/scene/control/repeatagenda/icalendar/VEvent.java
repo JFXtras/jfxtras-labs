@@ -1,8 +1,10 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
+import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
@@ -87,10 +89,11 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
  */
 public abstract class VEvent<T> extends VComponentAbstract<T>
 {   
-    private static final long SECONDS_IN_WEEK = Duration.ofDays(7).getSeconds();
-    private static final long SECONDS_IN_DAY = Duration.ofDays(1).getSeconds();
-    private static final long SECONDS_IN_HOUR = Duration.ofHours(1).getSeconds();
-    private static final long SECONDS_IN_MINUTE = Duration.ofMinutes(1).getSeconds();
+    private static final long NANOS_IN_WEEK = Duration.ofDays(7).toNanos();
+    private static final long NANOS_IN_DAY = Duration.ofDays(1).toNanos();
+    private static final long NANOS_IN_HOUR = Duration.ofHours(1).toNanos();
+    private static final long NANOS_IN_MINUTE = Duration.ofMinutes(1).toNanos();
+    private static final long NANOS_IN_SECOND = Duration.ofSeconds(1).toNanos();
     
     /**
      * DESCRIPTION: RFC 5545 iCalendar 3.8.1.12. page 84
@@ -113,23 +116,23 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
      * converted to seconds.  This value is used exclusively internally.  Any specified DTEND is converted to 
      * durationInSeconds,
      * */
-    final private SimpleLongProperty durationInSeconds = new SimpleLongProperty(this, "DURATION");
-    public SimpleLongProperty durationInSecondsProperty() { return durationInSeconds; }
-    public Long getDurationInSeconds() { return durationInSeconds.getValue(); }
+    final private SimpleLongProperty durationInNanos = new SimpleLongProperty(this, "DURATION");
+    public SimpleLongProperty durationInNanosProperty() { return durationInNanos; }
+    public Long getDurationInNanos() { return durationInNanos.getValue(); }
     public String getDurationAsString()
     {
         StringBuilder duration = new StringBuilder("P");
-        Long seconds = getDurationInSeconds();
+        Long nanos = getDurationInNanos();
 
-        Long weeks = seconds / SECONDS_IN_WEEK;
+        Long weeks = nanos / NANOS_IN_WEEK;
         if (weeks > 0) duration.append(weeks + "W");
-        seconds -= SECONDS_IN_WEEK * weeks;
+        nanos -= NANOS_IN_WEEK * weeks;
 
-        Long days = seconds / SECONDS_IN_DAY;
+        Long days = nanos / NANOS_IN_DAY;
         if (days > 0) duration.append(days + "D");
-        seconds -= SECONDS_IN_DAY * days;
+        nanos -= NANOS_IN_DAY * days;
 
-        Long hours = seconds / SECONDS_IN_HOUR;
+        Long hours = nanos / NANOS_IN_HOUR;
         boolean addedT = false;
         if (hours > 0)
         {
@@ -137,36 +140,40 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
             duration.append("T");
             duration.append(hours + "H");
         }
-        seconds -= SECONDS_IN_HOUR * hours;
+        nanos -= NANOS_IN_HOUR * hours;
 
-        Long minutes = seconds / SECONDS_IN_MINUTE;
+        Long minutes = nanos / NANOS_IN_MINUTE;
         if (minutes > 0)
         {
             if (! addedT) duration.append("T");
             addedT = true;
             duration.append(minutes + "M");
         }
-        seconds -= SECONDS_IN_MINUTE * minutes;
+        nanos -= NANOS_IN_MINUTE * minutes;
 
-        if (seconds > 0)
+        if (nanos > 0)
         {
             if (! addedT) duration.append("T");
             addedT = true;
+            Long seconds = nanos / NANOS_IN_SECOND;
             duration.append(seconds + "S");
         }
 
         return duration.toString();
     }
-    public void setDurationInSeconds(Long value)
+    public void setDurationInNanos(Long value)
     {
 //        if (getDateTimeStart().isWholeDay()) throw new IllegalArgumentException("Can't send Duration when wholeDay is true.");
-        durationInSeconds.setValue(value);
-        useDuration=true;
-        useDateTimeEnd=false;
+        if (getDateTimeEnd() == null)
+        { // this happens when duration of dateTimeEnd is set for the first time
+            useDuration=true;
+            useDateTimeEnd=false;            
+        }
+        durationInNanos.setValue(value);
     }
-    public void setDurationInSeconds(String value)
+    public void setDurationInNanos(String value)
     { // parse ISO.8601.2004 period string into period of seconds (no support for Y (years) or M (months).
-        long seconds = 0;
+        long nanos = 0;
         Pattern p = Pattern.compile("([0-9]+)|([A-Z])");
         Matcher m = p.matcher(value);
         List<String> tokens = new ArrayList<String>();
@@ -188,55 +195,30 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                 String time = tokenIterator.next();
                 if (time.equals("W"))
                 { // weeks
-                    seconds += n * SECONDS_IN_WEEK;
+                    nanos += n * NANOS_IN_WEEK;
                 } else if (time.equals("D"))
                 { // days
-                    seconds += n * SECONDS_IN_DAY;
+                    nanos += n * NANOS_IN_DAY;
                 } else if (timeFlag && time.equals("H"))
                 { // hours
-                    seconds += n * SECONDS_IN_HOUR;                   
+                    nanos += n * NANOS_IN_HOUR;                   
                 } else if (timeFlag && time.equals("M"))
                 { // minutes
-                    seconds += n * SECONDS_IN_MINUTE;                                        
+                    nanos += n * NANOS_IN_MINUTE;                                        
                 } else if (timeFlag && time.equals("S"))
                 { // seconds
-                    seconds += n;                    
+                    nanos += n * NANOS_IN_SECOND;                    
                 } else
                 {
                     throw new IllegalArgumentException("Invalid DURATION string time element (" + time + "). Must begin with a P, or Time character T not found");
                 }
             } else if (token.equals("T")) timeFlag = true; // proceeding elements will be hour, minute or second
         }
-        durationInSeconds.setValue(seconds);
+        durationInNanos.setValue(nanos);
     }
-    private final ChangeListener<? super Temporal> dateTimeEndlistener = (obs, oldSel, newSel) ->
-    { // listener to synch dateTimeEnd and durationInSeconds
-        if (getDateTimeStart() != null)
-        {
-            LocalDateTime localDateTime = (newSel instanceof LocalDateTime) ? (LocalDateTime) newSel
-                    : ((LocalDate) newSel).atStartOfDay();
-            long seconds = ChronoUnit.SECONDS.between(getDateTimeStart(), localDateTime);
-            setDurationInSeconds(seconds);            
-        }
-    };
-    private final ChangeListener<? super Temporal> dateTimeStartlistener = (obs, oldSel, newSel) ->
-    { // listener to synch dateTimeStart and durationInSeconds
-        if (getDateTimeEnd() != null)
-        {
-            LocalDateTime localDateTime = (getDateTimeEnd() instanceof LocalDateTime) ? (LocalDateTime) getDateTimeEnd()
-                    : ((LocalDate) getDateTimeEnd()).atStartOfDay();
-            long seconds = ChronoUnit.SECONDS.between(newSel, localDateTime);
-            setDurationInSeconds(seconds);
-        }
-    };
-    private final ChangeListener<? super Number> durationlistener = (obs, oldSel, newSel) ->
-    { // listener to synch dateTimeEnd and durationInSeconds.  dateTimeStart is left in place.
-        if ((getDateTimeStart() != null) && (getDateTimeEnd() != null))
-        {
-            Temporal dtEnd = getDateTimeStart().plus((long) newSel, ChronoUnit.SECONDS);
-            setDateTimeEnd(dtEnd);
-        }
-    };
+    private ChangeListener<? super Temporal> dateTimeEndlistener;
+    private ChangeListener<? super Temporal> dateTimeStartlistener;
+    private ChangeListener<? super Number> durationlistener;
     private boolean useDuration = false; // when true toString will output DURATION
     
     /**
@@ -249,10 +231,14 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     public ObjectProperty<Temporal> dateTimeEndProperty() { return dateTimeEnd; }
     public void setDateTimeEnd(Temporal dtEnd)
     {
-        if ((getDateTimeStart() != null) && ! isDateTimeStartWholeDay() && ! isDateTimeEndWholeDay()) throw new IllegalArgumentException("Can't set LocalDateTime to dateTimeEnd when wholeDay is true.");
+        if ((dtEnd instanceof LocalDateTime) && isDateTimeStartWholeDay()) throw new DateTimeException("Can't set LocalDateTime to dateTimeEnd when wholeDay is true.");
+        if (getDurationInNanos() == null)
+        { // this happens when duration of dateTimeEnd is set for the first time
+            useDuration=false;
+            useDateTimeEnd=true;
+        }
         dateTimeEnd.set(dtEnd);
-        useDuration=false;
-        useDateTimeEnd=true;
+;
     }
     public Temporal getDateTimeEnd() { return dateTimeEnd.get(); }
     private boolean isDateTimeEndWholeDay() { return getDateTimeEnd() instanceof LocalDate; }
@@ -263,27 +249,90 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     {
         super(vevent);
         copy(vevent, this);
-        dateTimeEndProperty().addListener(dateTimeEndlistener); // synch duration with dateTimeEnd
-//        dateTimeStartProperty().addListener(dateTimeStartlistener); // synch duration with dateTimeStart
-        dateTimeStartProperty().addListener(dateTimeStartlistener); // synch duration with dateTimeStart
-        durationInSecondsProperty().addListener(durationlistener); // synch duration with dateTimeEnd
+        setupListeners();
     }
     
     public VEvent()
     {
         super();
+        setupListeners();
+    }
+    
+    /* add listeners for dateTimeStart, dateTimeEnd and duration */
+    private void setupListeners()
+    {
+        dateTimeEndlistener = (obs, oldSel, newSel) ->
+        { // listener to synch dateTimeEnd and durationInSeconds
+            if (getDateTimeStart() != null)
+            {
+                long nanos = 0;
+                if ((getDateTimeEnd() instanceof LocalDateTime) && (getDateTimeStart() instanceof LocalDateTime))
+                {
+                    nanos = ChronoUnit.NANOS.between(getDateTimeStart(), newSel);
+                } else if ((getDateTimeEnd() instanceof LocalDate) && (getDateTimeStart() instanceof LocalDate))
+                {
+                    int days = Period.between((LocalDate) getDateTimeStart(), (LocalDate) newSel).getDays();
+                    nanos = (long) days * NANOS_IN_DAY;
+                } else throw new DateTimeException("DTSTART and DTEND must have same Temporal type("
+                        + getDateTimeStart().getClass().getSimpleName() + ", " + getDateTimeEnd().getClass().getSimpleName());
+                
+                durationInNanosProperty().removeListener(durationlistener);
+                setDurationInNanos(nanos);
+                durationInNanosProperty().addListener(durationlistener);
+            }
+        };
+        
+        dateTimeStartlistener = (obs, oldSel, newSel) ->
+        { // listener to synch dateTimeStart and durationInSeconds
+            if (getDateTimeEnd() != null)
+            {
+                long nanos = 0;
+                if ((getDateTimeEnd() instanceof LocalDateTime) && (getDateTimeStart() instanceof LocalDateTime))
+                {
+                    nanos = ChronoUnit.NANOS.between(newSel, getDateTimeEnd());
+                } else if ((getDateTimeEnd() instanceof LocalDate) && (getDateTimeStart() instanceof LocalDate))
+                {
+                    int days = Period.between((LocalDate) newSel, (LocalDate) getDateTimeEnd()).getDays();
+                    nanos = (long) days * NANOS_IN_DAY;
+                } else throw new DateTimeException("DTSTART and DTEND must have same Temporal type("
+                        + getDateTimeStart().getClass().getSimpleName() + ", " + getDateTimeEnd().getClass().getSimpleName());
+
+                durationInNanosProperty().removeListener(durationlistener);
+                setDurationInNanos(nanos);
+                durationInNanosProperty().addListener(durationlistener);
+            }
+        };
+        
+        durationlistener = (obs, oldSel, newSel) ->
+        { // listener to synch dateTimeEnd and durationInSeconds.  dateTimeStart is left in place.
+            if ((getDateTimeStart() != null) && (getDateTimeEnd() != null))
+            {
+                Temporal dtEnd;
+                if ((getDateTimeEnd() instanceof LocalDateTime) && (getDateTimeStart() instanceof LocalDateTime))
+                {
+                    dtEnd = getDateTimeEnd().plus((long) newSel, ChronoUnit.NANOS);
+                } else if ((getDateTimeEnd() instanceof LocalDate) && (getDateTimeStart() instanceof LocalDate))
+                {
+                    dtEnd = getDateTimeEnd().plus(((long) newSel)/NANOS_IN_DAY, ChronoUnit.DAYS);
+                } else throw new DateTimeException("DTSTART and DTEND must have same Temporal type("
+                        + getDateTimeStart().getClass().getSimpleName() + ", " + getDateTimeEnd().getClass().getSimpleName());
+
+                dateTimeEndProperty().removeListener(dateTimeEndlistener);
+                setDateTimeEnd(dtEnd);
+                dateTimeEndProperty().addListener(dateTimeEndlistener);
+            }
+        };
+        
         dateTimeEndProperty().addListener(dateTimeEndlistener); // synch duration with dateTimeEnd
-//        System.out.println(getDateTimeStart());
-//        System.out.println(getDateTimeStart().dateTimeProperty());
         dateTimeStartProperty().addListener(dateTimeStartlistener); // synch duration with dateTimeStart
-        durationInSecondsProperty().addListener(durationlistener); // synch duration with dateTimeEnd
+        durationInNanosProperty().addListener(durationlistener); // synch duration with dateTimeEnd
     }
     
     /** Deep copy all fields from source to destination.  Used both by copyTo method and copy constructor. */
     private static void copy(VEvent source, VEvent destination)
     {
         destination.setDescription(source.getDescription());
-        destination.setDurationInSeconds(source.getDurationInSeconds());
+        destination.setDurationInNanos(source.getDurationInNanos());
         destination.setDateTimeStart(source.getDateTimeStart());
     }
 
@@ -302,8 +351,8 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
 
         boolean descriptionEquals = (getDescription() == null) ?
                 (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
-        boolean durationEquals = (getDurationInSeconds() == null) ?
-                (testObj.getDurationInSeconds() == null) : getDurationInSeconds().equals(testObj.getDurationInSeconds());
+        boolean durationEquals = (getDurationInNanos() == null) ?
+                (testObj.getDurationInNanos() == null) : getDurationInNanos().equals(testObj.getDurationInNanos());
         System.out.println("VEvent: " + descriptionEquals + " " + durationEquals);
         // don't need to check getDateTimeEnd because it is bound to duration
         return super.equals(obj) && descriptionEquals && durationEquals;
@@ -330,8 +379,8 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         Map<Property, String> properties = new HashMap<Property, String>();
         properties.putAll(super.makePropertiesMap());
         if (getDescription() != null) properties.put(descriptionProperty(), getDescription());
-        if (useDateTimeEnd) properties.put(dateTimeEndProperty(), getDateTimeEnd().toString());
-        if (useDuration) properties.put(durationInSecondsProperty(), getDurationAsString());
+        if (useDateTimeEnd) properties.put(dateTimeEndProperty(), VComponent.temporalToString(getDateTimeEnd()));
+        if (useDuration) properties.put(durationInNanosProperty(), getDurationAsString());
         return properties;
     }
     
@@ -339,7 +388,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     public String validityCheck()
     {
         StringBuilder errorsBuilder = new StringBuilder(super.validityCheck());
-        boolean durationNull = getDurationInSeconds() == 0;
+        boolean durationNull = getDurationInNanos() == 0;
         boolean endDateTimeNull = getDateTimeEnd() == null;
         // Note: Check for invalid condition where both DURATION and DTEND not being null is done in parseVEvent.
         // It is not checked here due to bindings between both DURATION and DTEND.
@@ -352,11 +401,12 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     
     /** This method should be called by a method in the implementing class the
      * makes a new object and passes it here as vEvent.
+     * @param <U>
      * @param vEvent
      * @param strings
      * @return
      */
-    protected static VEvent parseVEvent(VEvent vEvent, List<String> strings)
+    protected static <U> VEvent<U> parseVEvent(VEvent<U> vEvent, List<String> strings)
     {
         // Test for correct beginning and end, then remove
         if (! strings.get(0).equals("BEGIN:VEVENT"))
@@ -392,16 +442,16 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                     {
                         throw new IllegalArgumentException("Invalid VEvent: DESCRIPTION can only be specified once");
                     }
-            } else if (property.equals(vEvent.durationInSecondsProperty().getName()))
+            } else if (property.equals(vEvent.durationInNanosProperty().getName()))
             { // DURATION
-                if (vEvent.getDurationInSeconds() == 0)
+                if (vEvent.getDurationInNanos() == 0)
                 {
                     if (dTEndFound == false)
                     {
                         durationFound = true;
                         vEvent.useDuration = true;
                         vEvent.useDateTimeEnd = false;
-                        vEvent.setDurationInSeconds(value);
+                        vEvent.setDurationInNanos(value);
                         stringsIterator.remove();
                     } else
                     {
@@ -421,7 +471,8 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                         vEvent.useDuration = false;
                         vEvent.useDateTimeEnd = true;
 //                        VDateTime dateTime = VDateTime.parseString(value);
-                        Temporal dateTime = VComponent.parseDateAndDateTimeString(value);
+                        Temporal dateTime = VComponent.parseTemporal(value);
+                        System.out.println("dateTime:" + dateTime);
                         vEvent.setDateTimeEnd(dateTime);
                         stringsIterator.remove();
                     } else
@@ -436,7 +487,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         }
         vEvent.useDuration = true;
         vEvent.useDateTimeEnd = false;
-        return (VEvent) VComponentAbstract.parseVComponent(vEvent, strings);
+        return (VEvent<U>) VComponentAbstract.parseVComponent(vEvent, strings);
     }
        
 }

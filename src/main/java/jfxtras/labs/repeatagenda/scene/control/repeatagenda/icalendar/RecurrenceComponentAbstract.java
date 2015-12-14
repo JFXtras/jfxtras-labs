@@ -60,7 +60,7 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
      */
     public Collection<LocalDateTime> getLocalDateTimes()
     {
-        checkTemporalTypes(LocalDateTime.class);
+//        checkTemporalTypes(LocalDateTime.class);
         return getTemporalStream()
                 .filter(d -> (d instanceof LocalDateTime))
                 .map(d -> (LocalDateTime) d)
@@ -75,7 +75,7 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
      */
     public Collection<LocalDate> getLocalDates()
     {
-        checkTemporalTypes(LocalDate.class);
+//        checkTemporalTypes(LocalDate.class);
         return getTemporalStream()
                 .filter(d -> (d instanceof LocalDate))
                 .map(d -> (LocalDate) d)
@@ -106,7 +106,8 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
     {
         boolean same =  getVDateTimes()
                 .stream()
-                .allMatch(v -> v.getClass().equals(clazz));
+                .peek(v -> System.out.println(v.getTemporal().getClass().getName()))
+                .allMatch(v -> v.getTemporal().getClass().equals(clazz));
         if (! same) throw new IllegalArgumentException("Not all Temporal objects in VDateTime class of type:" + clazz.getSimpleName());
     }
     

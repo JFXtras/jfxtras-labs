@@ -189,10 +189,8 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      */
     public ObjectProperty<Temporal> dateTimeStartProperty() { return dateTimeStart; }
     final private ObjectProperty<Temporal> dateTimeStart = new SimpleObjectProperty<>(this, "DTSTART");
-    @Override public LocalDateTime getDateTimeStart()
-    {
-        return VComponent.makeLocalDateTimeFromTemporal(dateTimeStart.get());
-    }
+    public LocalDateTime dateTimeStartToLocalDateTime() { return VComponent.makeLocalDateTimeFromTemporal(dateTimeStart.get()); }
+    @Override public Temporal getDateTimeStart() { return dateTimeStart.get(); }
     @Override public void setDateTimeStart(Temporal dtStart) { VComponent.super.setDateTimeStart(dtStart); dateTimeStart.set(dtStart); }
     boolean isDateTimeStartWholeDay() { return dateTimeStart.get() instanceof LocalDate; }
     
@@ -496,7 +494,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         if (getDateTimeCreated() != null) properties.put(dateTimeCreatedProperty(), VDateTime.DATE_TIME_FORMATTER.format(getDateTimeCreated()));
         properties.put(dateTimeStampProperty(), VDateTime.DATE_TIME_FORMATTER.format(getDateTimeStamp())); // required property
         if (getDateTimeRecurrence() != null) properties.put(dateTimeRecurrenceProperty(), VDateTime.DATE_TIME_FORMATTER.format(getDateTimeRecurrence()));
-        if (getDateTimeStart() != null) properties.put(dateTimeStartProperty(), getDateTimeStart().toString());
+        if (getDateTimeStart() != null) properties.put(dateTimeStartProperty(), VComponent.temporalToString(getDateTimeStart()));
         if (getDateTimeLastModified() != null) properties.put(dateTimeLastModifiedProperty(), VDateTime.DATE_TIME_FORMATTER.format(getDateTimeLastModified()));
         if (getExDate() != null) properties.put(exDateProperty(), getExDate().toString());
         if (getLocation() != null) properties.put(locationProperty(), getLocation().toString());
@@ -535,7 +533,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
             String value = line.substring(line.indexOf(":") + 1).trim();
             if (property.equals(vComponent.categoriesProperty().getName()))
             { // CATEGORIES
-                System.out.println("found categories:" + value);
+//                System.out.println("found categories:" + value);
                 vComponent.setCategories(value);
                 stringsIterator.remove();
             } else if (property.equals(vComponent.dateTimeCreatedProperty().getName()))
@@ -551,7 +549,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
             } else if (property.equals(vComponent.dateTimeStartProperty().getName()))
             { // DTSTART
 //                VDateTime dateTime = VDateTime.parseString(value);
-                Temporal dateTime = VComponent.parseDateAndDateTimeString(value);
+                Temporal dateTime = VComponent.parseTemporal(value);
                 vComponent.setDateTimeStart(dateTime);
                 stringsIterator.remove();
             } else if (property.equals(vComponent.exDateProperty().getName()))
@@ -607,7 +605,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         Stream<LocalDateTime> stream1;
         if (getRRule() == null)
         { // if individual event
-            stream1 = Arrays.asList(getDateTimeStart())
+            stream1 = Arrays.asList(dateTimeStartToLocalDateTime())
                     .stream()
                     .filter(d -> ! d.isBefore(startDateTime));
 ////            if (! startDateTime.isBefore(getDateTimeStart()))

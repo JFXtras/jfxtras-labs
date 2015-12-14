@@ -7,10 +7,12 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.temporal.Temporal;
 
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
@@ -31,8 +33,9 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     {
         VEventImpl v = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         String duration = "P15DT5H0M20S";
-        v.setDurationInSeconds(duration);
-        assertTrue(v.getDurationInSeconds() == 1314020);
+        v.setDurationInNanos(duration);
+        System.out.println(v.getDurationInNanos() + " " + (1314020l * NANOS_IN_SECOND));
+        assertTrue(v.getDurationInNanos() == (1314020l * NANOS_IN_SECOND));
     }
     
     /** tests converting ISO.8601.2004 duration string to duration in seconds */
@@ -41,8 +44,8 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     {
         VEventImpl v = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         String duration = "PT1H30M";
-        v.setDurationInSeconds(duration);
-        assertTrue(v.getDurationInSeconds() == 5400);
+        v.setDurationInNanos(duration);
+        assertTrue(v.getDurationInNanos() == (5400l * NANOS_IN_SECOND));
     }
 
     /** tests converting ISO.8601.2004 date time string to LocalDateTime */
@@ -179,11 +182,13 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     }
 
     @Test
-    public void canParseVDate1()
+    public void canParseDate1()
     {
-        VDateTime expectedDateTime = new VDateTime(LocalDate.of(2015, 11, 15));
-        VDateTime dateTime = VDateTime.parseString("VALUE=DATE:20151115");
-        assertEquals(expectedDateTime, dateTime);
+//        VDateTime expectedDateTime = new VDateTime(LocalDate.of(2015, 11, 15));
+//        VDateTime dateTime = VDateTime.parseString("VALUE=DATE:20151115");
+        Temporal date = LocalDate.of(2015, 11, 15);
+        Temporal dateString = VComponent.parseTemporal("VALUE=DATE:20151115");
+        assertEquals(dateString, date);
     }
     
     @Test
@@ -196,6 +201,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                           + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                           + "END:VEVENT";
     VEventImpl vEvent = VEventImpl.parseVEvent(vEventString, DEFAULT_APPOINTMENT_GROUPS);
+    System.out.println("duration:"+vEvent.getDurationInNanos());
     VEventImpl expectedVEvent = getWholeDayDaily1();
     assertEquals(expectedVEvent, vEvent);
     }

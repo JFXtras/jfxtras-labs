@@ -69,7 +69,7 @@ public interface VComponent<T>
      * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
      * start date/times of the repeating events.  Can be either type LocalDate or LocalDateTime
      */
-    LocalDateTime getDateTimeStart();
+    Temporal getDateTimeStart();
     default void setDateTimeStart(Temporal dtStart)
     {
         boolean correctType = (dtStart instanceof LocalDate) || (dtStart instanceof LocalDateTime);
@@ -254,7 +254,7 @@ public interface VComponent<T>
           , Callback<Collection<VComponent<T>>, Void> vEventWriteCallback);
 
     /** Parse iCalendar date or date/time string into LocalDate or LocalDateTime Temporal object */
-    static Temporal parseDateAndDateTimeString(String dateTimeString)
+    static Temporal parseTemporal(String dateTimeString)
     {
         if (dateTimeString.matches("^(VALUE=DATE-TIME:)?[0-9]{8}T?([0-9]{6})?Z?"))
         {
@@ -271,6 +271,25 @@ public interface VComponent<T>
             throw new IllegalArgumentException("String does not match DATE or DATE-TIME pattern: " + dateTimeString);
         }
     }
+    
+    /**
+     * Convert temporal, either LocalDate or LocalDateTime to appropriate iCalendar string
+     * 
+     * @param temporal LocalDate or LocalDateTime
+     * @return iCalendar date or date/time string
+     */
+    static String temporalToString(Temporal temporal)
+    {
+        if (temporal == null) return null;
+        if (temporal instanceof LocalDate)
+        {
+            return "VALUE=DATE:" + DATE_FORMATTER.format(temporal);
+        } else if (temporal instanceof LocalDateTime)
+        {
+            return DATE_TIME_FORMATTER.format(temporal);
+        } else throw new DateTimeException("Unable to obtain LocalDateTime from TemporalAccessor: " +
+                temporal + " of type " + temporal.getClass().getName());
+    }
 
     /**
      * Returns LocalDateTime from TemperalAccessor that is an instance of either LocalDate or LocalDateTime
@@ -281,6 +300,7 @@ public interface VComponent<T>
      */
     static LocalDateTime makeLocalDateTimeFromTemporal(TemporalAccessor temporal)
     {
+        if (temporal == null) return null;
         if (temporal instanceof LocalDate)
         {
             return ((LocalDate) temporal).atStartOfDay();

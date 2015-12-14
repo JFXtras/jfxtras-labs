@@ -22,7 +22,7 @@ public class ICalendarDateRangeTest extends ICalendarTestAbstract
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         List<LocalDateTime> madeDates = vevent
-                .stream(vevent.getDateTimeStart())
+                .stream(vevent.dateTimeStartToLocalDateTime())
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -43,7 +43,7 @@ public class ICalendarDateRangeTest extends ICalendarTestAbstract
         vevent.setDateTimeRangeStart(LocalDateTime.of(2014, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2014, 11, 22, 0, 0));
         List<LocalDateTime> madeDates = vevent
-                .stream(vevent.getDateTimeStart())
+                .stream(vevent.dateTimeStartToLocalDateTime())
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>();
         assertEquals(expectedDates, madeDates);
@@ -57,7 +57,7 @@ public class ICalendarDateRangeTest extends ICalendarTestAbstract
         vevent.setDateTimeRangeStart(LocalDateTime.of(2016, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2016, 11, 22, 0, 0));
         List<LocalDateTime> madeDates = vevent
-                .stream(vevent.getDateTimeStart())
+                .stream(vevent.dateTimeStartToLocalDateTime())
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>();
         assertEquals(expectedDates, madeDates);
