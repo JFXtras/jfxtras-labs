@@ -52,7 +52,7 @@ public class ICalendarUtilities {
      * @param appointmentQuantity
      * @return
      */
-    private static Boolean confirmDelete(String appointmentQuantity)
+    public static Boolean confirmDelete(String appointmentQuantity)
     {
         ResourceBundle resources = Settings.resources;
         Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -63,6 +63,26 @@ public class ICalendarUtilities {
         Optional<ButtonType> result = alert.showAndWait();
         return result.get() == ButtonType.OK;
     }
+    
+//    /**
+//     * Removes an element from a collection.
+//     * Similar to removeIf, but quits when one remove occurs
+//     * 
+//     * @param collection
+//     * @param element
+//     * @return
+//     */
+//    public static <T> boolean removeFirst(Collection<T> collection, T element) {
+//        Iterator<T> i = collection.iterator();
+//        while (i.hasNext()) {
+//            T a = i.next();
+//            if (a == element) {
+//                i.remove();
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
     
     /**
      * Options available when changing a repeatable appointment

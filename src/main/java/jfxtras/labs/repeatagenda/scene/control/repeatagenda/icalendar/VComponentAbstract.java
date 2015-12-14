@@ -3,6 +3,7 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -186,10 +187,14 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * Can contain either a LocalDate (DATE) or LocalDateTime (DATE-TIME)
      * @SEE VDateTime
      */
-    public ObjectProperty<VDateTime> dateTimeStartProperty() { return dateTimeStart; }
-    final private ObjectProperty<VDateTime> dateTimeStart = new SimpleObjectProperty<>(this, "DTSTART");
-    @Override public VDateTime getDateTimeStart() { return dateTimeStart.get(); }
-    @Override public void setDateTimeStart(VDateTime dtStart) { dateTimeStart.set(dtStart); }
+    public ObjectProperty<Temporal> dateTimeStartProperty() { return dateTimeStart; }
+    final private ObjectProperty<Temporal> dateTimeStart = new SimpleObjectProperty<>(this, "DTSTART");
+    @Override public LocalDateTime getDateTimeStart()
+    {
+        return VComponent.makeLocalDateTimeFromTemporal(dateTimeStart.get());
+    }
+    @Override public void setDateTimeStart(Temporal dtStart) { VComponent.super.setDateTimeStart(dtStart); dateTimeStart.set(dtStart); }
+    boolean isDateTimeStartWholeDay() { return dateTimeStart.get() instanceof LocalDate; }
     
     /**
      * EXDATE: Set of date/times exceptions for recurring events, to-dos, journal entries.
@@ -545,7 +550,8 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 stringsIterator.remove();
             } else if (property.equals(vComponent.dateTimeStartProperty().getName()))
             { // DTSTART
-                VDateTime dateTime = VDateTime.parseString(value);
+//                VDateTime dateTime = VDateTime.parseString(value);
+                Temporal dateTime = VComponent.parseDateAndDateTimeString(value);
                 vComponent.setDateTimeStart(dateTime);
                 stringsIterator.remove();
             } else if (property.equals(vComponent.exDateProperty().getName()))
@@ -555,7 +561,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 {
                     vComponent.setExDate(new EXDate());
                 }                  
-                vComponent.getExDate().getDates().addAll(dateTimeCollection);
+                vComponent.getExDate().getVDateTimes().addAll(dateTimeCollection);
                 stringsIterator.remove();
             } else if (property.equals(vComponent.dateTimeLastModifiedProperty().getName()))
             { // LAST-MODIFIED
@@ -569,7 +575,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 {
                     vComponent.setRDate(new RDate());
                 }                  
-                vComponent.getRDate().getDates().addAll(dateTimeCollection);
+                vComponent.getRDate().getVDateTimes().addAll(dateTimeCollection);
                 stringsIterator.remove();
 
             } else if (property.equals(vComponent.rRuleProperty().getName()))
@@ -601,16 +607,19 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         Stream<LocalDateTime> stream1;
         if (getRRule() == null)
         { // if individual event
-//            if (! startDateTime.isBefore(getDateTimeStart()))
-            if (! startDateTime.isBefore(getDateTimeStart().getLocalDateTime()))
-            {
-//                stream1 = Arrays.asList(getDateTimeStart()).stream();
-                stream1 = Arrays.asList(getDateTimeStart().getLocalDateTime()).stream();
-            } else
-            { // if dateTimeStart is before startDateTime
-//                System.out.println("empty stream");
-                stream1 = new ArrayList<LocalDateTime>().stream(); // empty stream
-            }
+            stream1 = Arrays.asList(getDateTimeStart())
+                    .stream()
+                    .filter(d -> ! d.isBefore(startDateTime));
+////            if (! startDateTime.isBefore(getDateTimeStart()))
+//            if (! startDateTime.isBefore(getDateTimeStart().getLocalDateTime()))
+//            {
+////                stream1 = Arrays.asList(getDateTimeStart()).stream();
+//                stream1 = Arrays.asList(getDateTimeStart().getLocalDateTime()).stream();
+//            } else
+//            { // if dateTimeStart is before startDateTime
+////                System.out.println("empty stream");
+//                stream1 = new ArrayList<LocalDateTime>().stream(); // empty stream
+//            }
         } else
         { // if has recurrence rule
             stream1 = getRRule().stream(startDateTime);

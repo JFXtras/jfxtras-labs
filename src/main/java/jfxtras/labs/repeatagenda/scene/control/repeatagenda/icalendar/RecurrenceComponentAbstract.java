@@ -1,5 +1,8 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -8,12 +11,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 
 /** For EXDate and RDate
- * Limitation: only DATE-TIME supported.  DATE is not supported.
+ * Stores either date or date-time values
  * @param <T> either EXDate or RDate
  * @see EXDate
  * @see RDate
@@ -24,38 +28,119 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
      * EXDATE or RDATE: Set of date/times included or excepted for recurring events, to-dos, journal entries.
      * 3.8.5.1, RFC 5545 iCalendar
      */
-    public Set<VDateTime> getDates()
+    public Set<VDateTime> getVDateTimes() { return vDateTimes; }
+    private ObservableSet<VDateTime> vDateTimes = FXCollections.observableSet(new HashSet<VDateTime>());
+    public void setVDateTimes(Temporal...dateOrDateTime)
     {
-        if (dates == null) this.dates = FXCollections.observableSet(new HashSet<VDateTime>());
-        return dates;
-    }
-    private ObservableSet<VDateTime> dates;
-    public void setDates(Set<VDateTime> dates)
-    {
-        if (dates == null) this.dates = FXCollections.observableSet(new HashSet<VDateTime>());
-        this.dates.addAll(dates);
-    }
-    public T withDates(VDateTime...dates)
-    {
-        for (int i=0; i<dates.length; i++)
+        for (Temporal d : dateOrDateTime)
         {
-            getDates().add(dates[i]);
+            this.getVDateTimes().add(new VDateTime(d));
         }
-        return (T) this;
+        if (dateOrDateTime.length > 0) getTemporalClass(); // test class sameness
+        Class<? extends Temporal> firstClass = dateOrDateTime[0].getClass();
+        checkTemporalTypes(firstClass);
     }
-    public T withDates(Collection<VDateTime> dates)
+
+    /** Class of encapsulated Temporal objects */
+    protected Class<? extends Temporal> getTemporalClass()
     {
-        getDates().addAll(dates);
+        if (getVDateTimes().size() > 0)
+        {
+            Class<? extends Temporal> clazz = getVDateTimes().iterator().next().getTemporal().getClass();
+            checkTemporalTypes(clazz);
+            return clazz;                
+        } else return null;
+    }
+    
+    /**
+     *  If vDateTimes set wraps a set of LocalDateTime Temporal objects then returns a collection 
+     *  of LocalDateTime objects, otherwise throws an exception.
+     * 
+     * @return collection of LocalDateTime
+     */
+    public Collection<LocalDateTime> getLocalDateTimes()
+    {
+        checkTemporalTypes(LocalDateTime.class);
+        return getTemporalStream()
+                .filter(d -> (d instanceof LocalDateTime))
+                .map(d -> (LocalDateTime) d)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     *  If vDateTimes set wraps a set of LocalDate Temporal objects then returns a collection 
+     *  of LocalDate objects, otherwise throws an exception.
+     * 
+     * @return collection of LocalDate
+     */
+    public Collection<LocalDate> getLocalDates()
+    {
+        checkTemporalTypes(LocalDate.class);
+        return getTemporalStream()
+                .filter(d -> (d instanceof LocalDate))
+                .map(d -> (LocalDate) d)
+                .collect(Collectors.toList());
+    }
+    protected Stream<Temporal> getTemporalStream()
+    {
+        return getVDateTimes()
+                .stream()
+                .map(d -> d.getDateOrDateTime());
+    }
+
+    /**
+     * Allows initialization of LocalDate or LocalDate Temporal objects.
+     * 
+     * @param dateOrDateTime
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public T withTemporals(Temporal... dateOrDateTime)
+    {
+        setVDateTimes(dateOrDateTime);
         return (T) this;
     }
     
+    /* checks if all Temporal objects in vDateTimes are the same */
+    private void checkTemporalTypes(Class<? extends Temporal> clazz)
+    {
+        boolean same =  getVDateTimes()
+                .stream()
+                .allMatch(v -> v.getClass().equals(clazz));
+        if (! same) throw new IllegalArgumentException("Not all Temporal objects in VDateTime class of type:" + clazz.getSimpleName());
+    }
+    
+//    @SuppressWarnings("unchecked")
+//    public T withDateTimes(LocalDateTime... dateTime)
+//    {
+//        for (LocalDateTime d : dateTime)
+//        {
+//            this.getVDateTimes().add(new VDateTime(d));
+//        }
+//        return (T) this;
+//    }
+//    @SuppressWarnings("unchecked")
+//    public T withDates(LocalDate... date)
+//    {
+//        for (LocalDate d : date)
+//        {
+//            this.getVDateTimes().add(new VDateTime(d));
+//        }
+//        return (T) this;
+//    }
+    
+    // CONSTRUCTORS
+    public RecurrenceComponentAbstract() { }
+    public RecurrenceComponentAbstract(Temporal... dateOrDateTime) { withTemporals(dateOrDateTime); }
+//    public RecurrenceComponentAbstract(LocalDate... date) { withDates(date); }
+
     /** Deep copy all fields from source to destination 
      * @param <U>*/
-    private static <U> void copy(RecurrenceComponentAbstract<U> source, RecurrenceComponentAbstract<U> destination)
+    private static <T> void copy(RecurrenceComponentAbstract<T> source, RecurrenceComponentAbstract<T> destination)
     {
-        if (source.getDates() != null)
+        if (source.getVDateTimes() != null)
         {
-            source.getDates().stream().forEach(r -> destination.getDates().add(r));
+            source.getVDateTimes().stream().forEach(r -> destination.getVDateTimes().add(r));
         }
     }
     
@@ -72,17 +157,18 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
         if((obj == null) || (obj.getClass() != getClass())) {
             return false;
         }
+        @SuppressWarnings("unchecked")
         RecurrenceComponentAbstract<T> testObj = (RecurrenceComponentAbstract<T>) obj;
 
-        if (getDates() == null) return testObj.getDates() == null;
-        if (getDates().size() != testObj.getDates().size()) return false;
+        if (getVDateTimes() == null) return testObj.getVDateTimes() == null;
+        if (getVDateTimes().size() != testObj.getVDateTimes().size()) return false;
         
         // Sort both sets as lists and compare each element
 //        final Comparator<VDateTime> c = (d1, d2) -> d1.getLocalDateTime().compareTo(d2.getLocalDateTime());
-        List<VDateTime> l1 = new ArrayList<VDateTime>(getDates());
+        List<VDateTime> l1 = new ArrayList<VDateTime>(getVDateTimes());
         Collections.sort(l1);
 //        l1.sort(c);
-        List<VDateTime> l2 = new ArrayList<VDateTime>(testObj.getDates());
+        List<VDateTime> l2 = new ArrayList<VDateTime>(testObj.getVDateTimes());
         Collections.sort(l2);
 //        l2.sort(c);
         for (int i=0; i<l1.size(); i++)
@@ -95,7 +181,7 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
     @Override
     public String toString()
     {
-        String datesString = getDates()
+        String datesString = getVDateTimes()
                 .stream()
                 .sorted()
                 .map(d -> d.toString() + ",")

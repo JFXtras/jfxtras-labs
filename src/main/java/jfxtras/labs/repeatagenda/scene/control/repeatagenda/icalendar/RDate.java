@@ -1,5 +1,6 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -15,37 +16,95 @@ import java.util.stream.StreamSupport;
  * Limitation: only DATE-TIME supported.  DATE and PERIOD are not supported.
  * 
  * @author David Bal
+ * @param <U>
  *
  */
 // Merge stream is untested
 public class RDate extends RecurrenceComponentAbstract<RDate>
 {
-            
+
+//    /** Add date/times in RDates set */
+//    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream)
+//    {
+//        if (inStream == null)
+//        {
+//            return myStream();
+//        }
+//        return merge(inStream
+//                , getLocalDateTimes().stream()
+//                , (a1,a2) -> a1.compareTo(a2));        
+//    }
+
     /** Add date/times in RDates set */
     public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
     {
         if (inStream == null)
         {
-            return getDates()
-                    .stream()
-                    .map(d -> d.getLocalDateTime())
-                    .filter(d -> ! d.isBefore(startDateTime));
+            return myStream(startDateTime);
         }
-        Stream<LocalDateTime> stream2 = getDates()
-                .stream()
-                .map(d -> d.getLocalDateTime())
-                .sorted()
-                .filter(d -> ! d.isBefore(startDateTime));
+//        final Comparator<Temporal> comparator = (a1, a2) ->
+//        {
+//            if (startTemporal instanceof LocalDate)
+//            {
+//                return ((LocalDate) a1).compareTo((LocalDate) a2);
+//            } else if (startTemporal instanceof LocalDateTime)
+//            {
+//                return ((LocalDateTime) a1).compareTo((LocalDateTime) a2);
+//            } else throw new IllegalArgumentException("Unsupported Temporal class:" + startTemporal.getClass().getSimpleName());
+//        };
         return merge(inStream
-                   , stream2
-                   , (a1, a2) -> a1.compareTo(a2));
+                   , getLocalDateTimes().stream()
+                   , (a1,a2) -> a1.compareTo(a2));
+    }
+    
+//    // stream of RDate start dates or date/times
+//    private Stream<LocalDateTime> myStream()
+//    {
+//        return getTemporalStream()
+//                .map(t ->
+//                {
+//                    if (getTemporalClass().equals(LocalDate.class))
+//                    {
+//                        return ((LocalDate) t).atStartOfDay();
+//                    } else if (getTemporalClass().equals(LocalDateTime.class))
+//                    {
+//                        return (LocalDateTime) t;                            
+//                    } else throw new IllegalArgumentException("Unsupported Temporal class:" + getTemporalClass().getSimpleName());
+//                });
+//    }
+    
+    // stream of RDate start dates or date/times
+    private Stream<LocalDateTime> myStream(LocalDateTime startDateTime)
+    {
+        return getTemporalStream()
+                .filter(t -> 
+                {
+                    if (getTemporalClass().equals(LocalDate.class))
+                    {
+                        LocalDate start = startDateTime.toLocalDate();
+                        return ! ((LocalDate) t).isBefore(start);
+                    } else if (getTemporalClass().equals(LocalDateTime.class))
+                    {
+                        LocalDateTime start = (LocalDateTime) startDateTime;
+                        return ! ((LocalDateTime) t).isBefore(start);
+                    } else throw new IllegalArgumentException("Unsupported Temporal class:" + getTemporalClass().getSimpleName());
+                })
+                .map(t ->
+                {
+                    if (getTemporalClass().equals(LocalDate.class))
+                    {
+                        return ((LocalDate) t).atStartOfDay();
+                    } else if (getTemporalClass().equals(LocalDateTime.class))
+                    {
+                        return (LocalDateTime) t;                            
+                    } else throw new IllegalArgumentException("Unsupported Temporal class:" + getTemporalClass().getSimpleName());
+                });
     }
 
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
-        return getDates()
+        return getLocalDateTimes()
                 .stream()
-                .map(d -> d.getLocalDateTime())
                 .filter(d -> ! d.isBefore(startDateTime));
     }
 
@@ -130,5 +189,6 @@ public class RDate extends RecurrenceComponentAbstract<RDate>
             return theNext;
         }
     }
+
 }
 

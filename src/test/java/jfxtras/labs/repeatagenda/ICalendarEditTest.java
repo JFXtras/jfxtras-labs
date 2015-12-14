@@ -15,12 +15,11 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Daily;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -68,7 +67,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         VEventImpl expectedVEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         expectedVEvent.setAppointmentClass(getClazz());
         expectedVEvent.setAppointmentGroup(appointmentGroups.get(3));
-        expectedVEvent.setDateTimeStart(new VDateTime(LocalDateTime.of(2015, 11, 9, 9, 45)));
+        expectedVEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 9, 45));
         expectedVEvent.setDescription("Daily2 Description");
         expectedVEvent.setDurationInSeconds(4500L);
         expectedVEvent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
@@ -408,7 +407,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         VEventImpl expectedVEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         expectedVEvent.setAppointmentClass(getClazz());
         expectedVEvent.setAppointmentGroup(appointmentGroups.get(3));
-        expectedVEvent.setDateTimeStart(new VDateTime(LocalDateTime.of(2015, 11, 9, 10, 0)));
+        expectedVEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         expectedVEvent.setDescription("Daily2 Description");
         expectedVEvent.setDurationInSeconds(5400L);
         expectedVEvent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));

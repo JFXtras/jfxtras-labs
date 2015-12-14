@@ -1,6 +1,11 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
 import java.util.Collection;
 import java.util.stream.Stream;
 
@@ -16,6 +21,10 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
  * */
 public interface VComponent<T>
 {
+    final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd" + "'T'" + "HHmmss");
+    final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
+    final static DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HHmmss");
+    
     /**
      * CATEGORIES: RFC 5545 iCalendar 3.8.1.12. page 81
      * This property defines the categories for a calendar component.
@@ -58,11 +67,14 @@ public interface VComponent<T>
     /**
      * DTSTART: Date-Time Start, from RFC 5545 iCalendar 3.8.2.4 page 97
      * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
-     * start date/times of the repeating events.
-     * @param <U>
+     * start date/times of the repeating events.  Can be either type LocalDate or LocalDateTime
      */
-    VDateTime getDateTimeStart();
-    void setDateTimeStart(VDateTime dtStart);
+    LocalDateTime getDateTimeStart();
+    default void setDateTimeStart(Temporal dtStart)
+    {
+        boolean correctType = (dtStart instanceof LocalDate) || (dtStart instanceof LocalDateTime);
+        if (! correctType) throw new IllegalArgumentException("DTStart type must be LocalDate or LocalDateTime, not: " + dtStart.getClass().getSimpleName());
+    };
         
     /**
      * EXDATE: Set of date/times exceptions for recurring events, to-dos, journal entries.
@@ -198,7 +210,7 @@ public interface VComponent<T>
     void copyTo(VComponent<T> destination);
     
     /**
-     * Method to edit a VComponent.
+     * Handle editing a VComponent.
      * 
      * @param dateTimeStartInstanceOld
      * @param dateTimeStartInstanceNew
@@ -219,5 +231,64 @@ public interface VComponent<T>
           , Collection<VComponent<T>> vEvents
           , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
           , Callback<Collection<VComponent<T>>, Void> vEventWriteCallback);
+    
+    /**
+     * Handle deleting a VComponent from vComponents collection and its accompanying
+     * recurrence instances 
+     * 
+     * @param dateTimeStartInstance
+     * @param vComponentOld
+     * @param appointments collection of recurrence instances
+     * @param vComponents
+     * @param changeDialogCallback
+     * @param vEventWriteCallback
+     * @return
+     */
+    WindowCloseType delete(
+            LocalDateTime dateTimeStartInstance
+          , VComponent<T> vComponentOld
+          , Collection<T> appointments
+          , Collection<VComponent<T>> vComponents
+          , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
+          , Callback<String, Boolean> confirmDeleteCallback
+          , Callback<Collection<VComponent<T>>, Void> vEventWriteCallback);
+
+    /** Parse iCalendar date or date/time string into LocalDate or LocalDateTime Temporal object */
+    static Temporal parseDateAndDateTimeString(String dateTimeString)
+    {
+        if (dateTimeString.matches("^(VALUE=DATE-TIME:)?[0-9]{8}T?([0-9]{6})?Z?"))
+        {
+            String extractedDateTimeString = dateTimeString.substring(dateTimeString.lastIndexOf(":") + 1).trim();
+            LocalDateTime dateTime = LocalDateTime.parse(extractedDateTimeString, DATE_TIME_FORMATTER);
+            return dateTime;
+        } else if (dateTimeString.matches("^VALUE=DATE:[0-9]{8}"))
+        {
+            String extractedDateString = dateTimeString.substring(dateTimeString.lastIndexOf(":") + 1).trim();
+            LocalDate date = LocalDate.parse(extractedDateString, DATE_FORMATTER);
+            return date;            
+        } else
+        {
+            throw new IllegalArgumentException("String does not match DATE or DATE-TIME pattern: " + dateTimeString);
+        }
+    }
+
+    /**
+     * Returns LocalDateTime from TemperalAccessor that is an instance of either LocalDate or LocalDateTime
+     * If the parameter is type LocalDate the returned LocalDateTime is atStartofDay.
+     * 
+     * @param temporal - either LocalDate or LocalDateTime type
+     * @return LocalDateTime
+     */
+    static LocalDateTime makeLocalDateTimeFromTemporal(TemporalAccessor temporal)
+    {
+        if (temporal instanceof LocalDate)
+        {
+            return ((LocalDate) temporal).atStartOfDay();
+        } else if (temporal instanceof LocalDateTime)
+        {
+            return (LocalDateTime) temporal;
+        } else throw new DateTimeException("Unable to obtain LocalDateTime from TemporalAccessor: " +
+                temporal + " of type " + temporal.getClass().getName());
+    }
     
 }

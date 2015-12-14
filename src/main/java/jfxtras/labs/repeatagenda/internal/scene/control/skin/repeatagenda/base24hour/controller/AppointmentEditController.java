@@ -182,5 +182,19 @@ public class AppointmentEditController
         vEventOld.copyTo(vEvent);
     }
 
+    @FXML private void handleDeleteButton()
+    {
+//        windowCloseType.set(WindowCloseType.X);
+        LocalDateTime dateTimeStartInstanceNew = startTextField.getLocalDateTime();
+        final ICalendarUtilities.WindowCloseType result = vEvent.delete(
+                dateTimeStartInstanceOld
+              , vEventOld
+              , appointments
+              , vComponents
+              , a -> ICalendarUtilities.repeatChangeDialog()
+              , a -> ICalendarUtilities.confirmDelete(a)
+              , vEventWriteCallback);
+
+    }
     
 }

@@ -6,10 +6,10 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -79,37 +79,43 @@ public class ICalendarAgenda extends Agenda {
 
     // listen to changes in appointments from agenda. This listener must be removed and added back when a change
     // in the time range, and editing a VComponent occurs.
-    private final ListChangeListener<Appointment> appointmentListener = (ListChangeListener.Change<? extends Appointment> change)
-            -> {
-                while (change.next())
+    private final ListChangeListener<Appointment> appointmentListener = (ListChangeListener.Change<? extends Appointment> change) ->
+    {
+        while (change.next())
+        {
+            if (change.wasReplaced())
+            {
+                // TODO - skip this? handle deletes of Vevents?
+                List<? extends Appointment> removedAppointments = change.getRemoved();
+                Iterator<VComponent<Appointment>> vIterator = vComponents().iterator();
+                while (vIterator.hasNext())
                 {
-                    if (change.wasReplaced())
-                    {
-                        // TODO - FIXTHIS - DOESN'T REMOVE VEVENTS
-                        List<? extends Appointment> removedAppointments = change.getRemoved();
-                        Set<Appointment> removedIndividualAppointments = removedAppointments.stream()
-                                .map(a -> ((RepeatableAppointment) a))
-                                .peek(a -> System.out.println("removed individual " + a.getStartLocalDateTime()))
-                                .collect(Collectors.toSet());
-                    }
-                    if (change.wasAdded())
-                    {
-                        change.getAddedSubList()
-                                .stream()
-                                .forEach(a -> 
-                                { // make new VComponent
-                                    VComponent<Appointment> newVComponent = VComponentFactory
-                                            .newVComponent(getVEventClass(), a, appointmentGroups());
-                                    LocalDateTime dateTimeRangeStart = dateTimeRange.getStartLocalDateTime();
-                                    LocalDateTime dateTimeRangeEnd = dateTimeRange.getEndLocalDateTime();
-                                    newVComponent.setDateTimeRangeStart(dateTimeRangeStart);
-                                    newVComponent.setDateTimeRangeEnd(dateTimeRangeEnd);
-                                    vComponents.add(newVComponent);
-//                                    System.out.println("added vEvemt " + a.getStartLocalDateTime());   
-                                });
-                    }
+                    VComponent<Appointment> vComponent = vIterator.next();
+                    boolean removed = vComponent
+                            .instances()
+                            .stream()
+                            .allMatch(i -> removedAppointments.contains(i));
+                    if (removed) vIterator.remove();
                 }
-            };
+            }
+            if (change.wasAdded())
+            {
+                change.getAddedSubList()
+                        .stream()
+                        .forEach(a -> 
+                        { // make new VComponent
+                            VComponent<Appointment> newVComponent = VComponentFactory
+                                    .newVComponent(getVEventClass(), a, appointmentGroups());
+                            LocalDateTime dateTimeRangeStart = dateTimeRange.getStartLocalDateTime();
+                            LocalDateTime dateTimeRangeEnd = dateTimeRange.getEndLocalDateTime();
+                            newVComponent.setDateTimeRangeStart(dateTimeRangeStart);
+                            newVComponent.setDateTimeRangeEnd(dateTimeRangeEnd);
+                            vComponents.add(newVComponent);
+//                                    System.out.println("added vEvemt " + a.getStartLocalDateTime());   
+                        });
+                }
+            }
+        };
     
     // CONSTRUCTOR
     public ICalendarAgenda()

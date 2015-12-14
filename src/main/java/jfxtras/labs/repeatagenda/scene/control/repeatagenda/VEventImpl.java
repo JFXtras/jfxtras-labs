@@ -1,7 +1,9 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,7 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -27,12 +28,12 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ChoiceDialog;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.RRuleType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
@@ -147,9 +148,9 @@ public class VEventImpl extends VEvent<Appointment>
     {
         this(appointmentGroups);
         setCategories(appointment.getAppointmentGroup().getDescription());
-        setDateTimeEnd(new VDateTime(appointment.getEndLocalDateTime()));
+        setDateTimeEnd(appointment.getEndLocalDateTime());
         setDateTimeStamp(LocalDateTime.now());
-        setDateTimeStart(new VDateTime(appointment.getStartLocalDateTime()));
+        setDateTimeStart(appointment.getStartLocalDateTime());
         setDescription(appointment.getDescription());
         setLocation(appointment.getLocation());
         setSummary(appointment.getSummary());
@@ -290,7 +291,7 @@ public class VEventImpl extends VEvent<Appointment>
 //        System.out.println("range: " + getDateTimeRangeStart() + " " + getDateTimeRangeEnd());
         if ((getDateTimeRangeStart() == null) || (getDateTimeRangeStart() == null)) throw new IllegalArgumentException("can't make instances without setting date/time range first");
         List<Appointment> madeAppointments = new ArrayList<>();
-        stream(getDateTimeStart().getLocalDateTime())
+        stream(getDateTimeStart())
                 .forEach(d -> {
                     Appointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
                     appt.setStartLocalDateTime(d);
@@ -336,7 +337,7 @@ public class VEventImpl extends VEvent<Appointment>
         final long durationInSeconds = ChronoUnit.SECONDS.between(dateTimeStartInstanceNew, dateTimeEndInstanceNew);
         final VEventImpl vEventOld2 = (VEventImpl) vEventOld;
 //        System.out.println(dateTimeStartInstanceNew + " " + vEventOld2.getDateTimeStart());
-        boolean dateTimeNewSame = dateTimeStartInstanceNew.toLocalTime().equals(vEventOld2.getDateTimeStart().getLocalDateTime().toLocalTime());
+        boolean dateTimeNewSame = dateTimeStartInstanceNew.toLocalTime().equals(LocalTime.from(vEventOld2.getDateTimeStart()));
         boolean durationSame = (durationInSeconds == vEventOld2.getDurationInSeconds());
         if (dateTimeNewSame && durationSame && this.equals(vEventOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
 
@@ -367,8 +368,8 @@ public class VEventImpl extends VEvent<Appointment>
                 case ALL:
                     // Copy date/time data to this VEvent
                     long secondsAdjustment = ChronoUnit.SECONDS.between(dateTimeStartInstanceOld, dateTimeStartInstanceNew);
-                    LocalDateTime newDateTimeStart = getDateTimeStart().getLocalDateTime().plusSeconds(secondsAdjustment);
-                    getDateTimeStart().setLocalDateTime(newDateTimeStart);
+                    Temporal newDateTimeStart = getDateTimeStart().plus(secondsAdjustment, ChronoUnit.SECONDS);
+                    setDateTimeStart(newDateTimeStart);
                     setDurationInSeconds(durationInSeconds);
                     break;
                 case CANCEL:
@@ -392,8 +393,8 @@ public class VEventImpl extends VEvent<Appointment>
                     // Split EXDates dates between this and newVEvent
                     if (getExDate() != null)
                     {
-                        getExDate().getDates().clear();
-                        final Iterator<VDateTime> exceptionIterator = vEventOld2.getExDate().getDates().iterator();
+                        getExDate().getVDateTimes().clear();
+                        final Iterator<VDateTime> exceptionIterator = vEventOld2.getExDate().getVDateTimes().iterator();
                         while (exceptionIterator.hasNext())
                         {
                             VDateTime d = exceptionIterator.next();
@@ -401,7 +402,7 @@ public class VEventImpl extends VEvent<Appointment>
                             {
                                 exceptionIterator.remove();
                             } else {
-                                vEventOld2.getExDate().getDates().add(d);
+                                vEventOld2.getExDate().getVDateTimes().add(d);
                             }
                         }
                     }
@@ -426,8 +427,8 @@ public class VEventImpl extends VEvent<Appointment>
                     // Split recurrence date/times between this and newVEvent
                     if (getRDate() != null)
                     {
-                        getRDate().getDates().clear();
-                        final Iterator<VDateTime> recurrenceIterator = vEventOld2.getRDate().getDates().iterator();
+                        getRDate().getVDateTimes().clear();
+                        final Iterator<VDateTime> recurrenceIterator = vEventOld2.getRDate().getVDateTimes().iterator();
                         while (recurrenceIterator.hasNext())
                         {
                             VDateTime d = recurrenceIterator.next();
@@ -435,13 +436,13 @@ public class VEventImpl extends VEvent<Appointment>
                             {
                                 recurrenceIterator.remove();
                             } else {
-                                vEventOld2.getRDate().getDates().add(d);
+                                vEventOld2.getRDate().getVDateTimes().add(d);
                             }
                         }
                     }
 
                     // Modify this (edited) VEvent
-                    getDateTimeStart().setLocalDateTime(dateTimeStartInstanceNew);
+                    setDateTimeStart(dateTimeStartInstanceNew);
                     setDurationInSeconds(durationInSeconds);
                     
                     // Modify COUNT for this (the edited) VEvent
@@ -463,7 +464,7 @@ public class VEventImpl extends VEvent<Appointment>
 //                    System.out.println("change one: " + newVEvent.getDateTimeStart().hashCode() + " " + this.getDateTimeStart().hashCode());
 //                    System.exit(0);
                     vEvents.add(newVEvent);
-                    newVEvent.getDateTimeStart().setLocalDateTime(dateTimeStartInstanceNew);
+                    newVEvent.setDateTimeStart(dateTimeStartInstanceNew);
                     // TODO - need new UID for newVEvent.  Do it here or in constructor?
                     newVEvent.setRRule(null);
                     appointments.addAll(newVEvent.makeInstances());
@@ -504,55 +505,113 @@ public class VEventImpl extends VEvent<Appointment>
     }
     
     /**
-     * If repeat criteria has changed display this alert to find out how to apply changes (one, all or future)
-     * Can provide a custom choiceList, or omit the list and use the default choices.
+     * Handles deleting VComponents and its accompanying appointment recurrence instances 
      * 
-     * @param resources
-     * @param choiceList
+     * @param dateTimeStartInstance
+     * @param vEventOld
+     * @param appointments
+     * @param vEvents
+     * @param changeDialogCallback
+     * @param writeVEventsCallback
      * @return
      */
-    public static RepeatChange repeatChangeDialog(RepeatChange...choiceList)
+    @Override
+    public WindowCloseType delete(
+            LocalDateTime dateTimeStartInstance
+          , VComponent<Appointment> vEventOld
+          , Collection< Appointment> appointments
+          , Collection<VComponent<Appointment>> vEvents
+          , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
+          , Callback<String, Boolean> confirmDeleteCallback
+          , Callback<Collection<VComponent<Appointment>>, Void> writeVEventsCallback)
     {
-        ResourceBundle resources = Settings.resources;
-        List<RepeatChange> choices;
-        if (choiceList == null || choiceList.length == 0)
-        { // use default choices
-            choices = new ArrayList<RepeatChange>();
-            choices.add(RepeatChange.ONE);
-            choices.add(RepeatChange.ALL);
-            choices.add(RepeatChange.FUTURE);
-        } else { // use inputed choices
-            choices = new ArrayList<RepeatChange>(Arrays.asList(choiceList));
+        final RRuleType rruleType = getRRuleType(vEventOld.getRRule());
+        switch (rruleType)
+        {
+        case INDIVIDUAL: // remove individual appointment that has no repeat rule
+            if (confirmDeleteCallback.call("1"))
+            {
+                Iterator<Appointment> appointmentIterator = appointments.iterator();
+                Appointment appointment = null;
+                boolean found = false;
+                while (appointmentIterator.hasNext())
+                {
+                    appointment = appointmentIterator.next();
+                    if (appointment.getStartLocalDateTime().equals(dateTimeStartInstance))
+                    {
+                        appointmentIterator.remove();
+                        found = true;
+                        break;
+                    }
+                }
+                if (found)
+                {
+                    instances().remove(appointment);
+                    if (getExDate() == null) setExDate(new EXDate(dateTimeStartInstance));
+                } else
+                {
+                    throw new IllegalArgumentException("Instance can't be deleted - not found (" + dateTimeStartInstance + ")");
+                }
+            }
+            break;
+        case WITH_EXISTING_REPEAT:
+            break;
+        default:
+            break;
         }
-               
-        ChoiceDialog<RepeatChange> dialog = new ChoiceDialog<>(choices.get(0), choices);
-        dialog.setTitle(resources.getString("dialog.repeat.change.title"));
-        dialog.setContentText(resources.getString("dialog.repeat.change.content"));
-        dialog.setHeaderText(resources.getString("dialog.repeat.change.header"));
-
-        Optional<RepeatChange> result = dialog.showAndWait();
-        
-        return (result.isPresent()) ? result.get() : RepeatChange.CANCEL;
+        return null;
     }
     
-    /**
-     * Options available when changing a repeatable appointment
-     * ONE: Change only selected appointment
-     * ALL: Change all appointments with repeat rule
-     * FUTURE: Change future appointments with repeat rule
-     */
-    public enum RepeatChange {
-        ONE, ALL, FUTURE, CANCEL;
-
-        @Override
-        public String toString() {
-            return Settings.REPEAT_CHANGE_CHOICES.get(this);
-        }
-    }
+    
+//    /**
+//     * If repeat criteria has changed display this alert to find out how to apply changes (one, all or future)
+//     * Can provide a custom choiceList, or omit the list and use the default choices.
+//     * 
+//     * @param resources
+//     * @param choiceList
+//     * @return
+//     */
+//    public static RepeatChange repeatChangeDialog(RepeatChange...choiceList)
+//    {
+//        ResourceBundle resources = Settings.resources;
+//        List<RepeatChange> choices;
+//        if (choiceList == null || choiceList.length == 0)
+//        { // use default choices
+//            choices = new ArrayList<RepeatChange>();
+//            choices.add(RepeatChange.ONE);
+//            choices.add(RepeatChange.ALL);
+//            choices.add(RepeatChange.FUTURE);
+//        } else { // use inputed choices
+//            choices = new ArrayList<RepeatChange>(Arrays.asList(choiceList));
+//        }
+//               
+//        ChoiceDialog<RepeatChange> dialog = new ChoiceDialog<>(choices.get(0), choices);
+//        dialog.setTitle(resources.getString("dialog.repeat.change.title"));
+//        dialog.setContentText(resources.getString("dialog.repeat.change.content"));
+//        dialog.setHeaderText(resources.getString("dialog.repeat.change.header"));
+//
+//        Optional<RepeatChange> result = dialog.showAndWait();
+//        
+//        return (result.isPresent()) ? result.get() : RepeatChange.CANCEL;
+//    }
+//    
+//    /**
+//     * Options available when changing a repeatable appointment
+//     * ONE: Change only selected appointment
+//     * ALL: Change all appointments with repeat rule
+//     * FUTURE: Change future appointments with repeat rule
+//     */
+//    public enum RepeatChange {
+//        ONE, ALL, FUTURE, CANCEL;
+//
+//        @Override
+//        public String toString() {
+//            return Settings.REPEAT_CHANGE_CHOICES.get(this);
+//        }
+//    }
     
     private RRuleType getRRuleType(RRule rruleOld)
     {
-System.out.println("rules:" + getRRule() + " " + rruleOld);
         if (getRRule() == null)
         {
             if (rruleOld == null)

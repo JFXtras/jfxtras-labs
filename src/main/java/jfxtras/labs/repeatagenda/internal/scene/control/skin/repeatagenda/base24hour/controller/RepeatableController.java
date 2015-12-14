@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.WeekFields;
 import java.util.Collections;
 import java.util.List;
@@ -391,9 +392,9 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         {
             if (vComponent.getRRule().getUntil() == null)
             { // new selection - use date/time one month in the future as default
-                LocalTime time = vComponent.getDateTimeStart().getLocalDateTime().toLocalTime();
+//                LocalTime time = vComponent.getDateTimeStart().getLocalDateTime().toLocalTime();
                 LocalDateTime defaultEndOnDateTime = (dateTimeStartInstanceNew.equals(vComponent.getDateTimeStart())) ?
-                        vComponent.getDateTimeStart().getLocalDate().plusMonths(1).atTime(time)
+                        vComponent.getDateTimeStart().plus(1, ChronoUnit.MONTHS)
                       : dateTimeStartInstanceNew;
                 vComponent.getRRule().setUntil(defaultEndOnDateTime);
             }
@@ -447,7 +448,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         boolean checkBox = false;
         if (vComponent.getRRule() == null)
         {
-            rRule = setDefaults(new RRule(), vComponent.getDateTimeStart().getLocalDateTime());
+            rRule = setDefaults(new RRule(), vComponent.getDateTimeStart());
             vComponent.setRRule(rRule);
         } else
         {
@@ -500,11 +501,11 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         repeatableCheckBox.selectedProperty().set(checkBox);
         frequencyComboBox.setValue(rRule.getFrequency().getFrequencyType());
         setDayOfWeek(vComponent);
-        startDatePicker.setValue(vComponent.getDateTimeStart().getLocalDateTime().toLocalDate());
+        startDatePicker.setValue(LocalDate.from(vComponent.getDateTimeStart()));
         if (vComponent.getExDate() != null) {
             List<VDateTime> collect = vComponent
                     .getExDate()
-                    .getDates()
+                    .getVDateTimes()
                     .stream()
 //                    .map(d -> d.getLocalDateTime())
                     .collect(Collectors.toList());
@@ -645,11 +646,12 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
     {
         System.out.println("make exception date list");
         
+        final LocalDateTime dateTimeStart = vComponent.getDateTimeStart();
         Stream<LocalDateTime> stream1 = vComponent
                 .getRRule()
-                .stream(vComponent.getDateTimeStart().getLocalDateTime());
+                .stream(dateTimeStart);
         Stream<LocalDateTime> stream2 = (vComponent.getExDate() == null) ? stream1
-                : vComponent.getExDate().stream(stream1, vComponent.getDateTimeStart().getLocalDateTime()); // remove exceptions
+                : vComponent.getExDate().stream(stream1, dateTimeStart); // remove exceptions
         List<VDateTime> exceptionDates = stream2
                 .limit(EXCEPTION_CHOICE_LIMIT)
                 .map(d -> new VDateTime(d))
@@ -663,7 +665,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         VDateTime d = exceptionComboBox.getValue();
         exceptionsListView.getItems().add(d);
         if (vComponent.getExDate() == null) vComponent.setExDate(new EXDate());
-        vComponent.getExDate().getDates().add(new VDateTime(d));
+        vComponent.getExDate().getVDateTimes().add(new VDateTime(d));
         makeExceptionDates();
 //        exceptionComboBox.getItems().remove(d);
         Collections.sort(exceptionsListView.getItems()); // Maintain sorted list
@@ -674,7 +676,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
     {
         System.out.println("Remove Exception");
         VDateTime d = exceptionsListView.getSelectionModel().getSelectedItem();
-        vComponent.getExDate().getDates().remove(d);
+        vComponent.getExDate().getVDateTimes().remove(d);
         makeExceptionDates();
 //        exceptionComboBox.getItems().add(d);
         exceptionsListView.getItems().remove(d);

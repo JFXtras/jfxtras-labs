@@ -25,7 +25,7 @@ public class VDateTime implements Comparable<VDateTime>
     public final static DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(timePattern);
     
     private Temporal dateOrDateTime;
-    private Temporal getDateOrDateTime() { return dateOrDateTime; }
+    protected Temporal getDateOrDateTime() { return dateOrDateTime; }
     private void setDateOrDateTime(Temporal dateOrDateTime) { this.dateOrDateTime = dateOrDateTime; }
     
     public LocalDate getLocalDate()
@@ -36,7 +36,23 @@ public class VDateTime implements Comparable<VDateTime>
             return (LocalDate) dateOrDateTime;
         } else throw new IllegalArgumentException("Type of temporal is not LocalDate.");
     }
-    public void setLocalDate(LocalDate date)
+    public Temporal getTemporal()
+    {
+        if (dateOrDateTime == null) return null;
+        if ((dateOrDateTime instanceof LocalDate) || (dateOrDateTime instanceof LocalDateTime))
+        {
+            return dateOrDateTime;
+        } else throw new IllegalArgumentException("Type of temporal is not LocalDate or LocalDateTime.");
+    }
+    public void setTemporal(Temporal temporal)
+    {
+        if ((dateOrDateTime instanceof LocalDate) || (dateOrDateTime instanceof LocalDateTime))
+        {
+            dateOrDateTime = temporal;
+        }
+    } 
+    
+    public void setLocalDate(Temporal date)
     {
         if ((dateOrDateTime instanceof LocalDate) || (dateOrDateTime == null))
         {
@@ -57,13 +73,13 @@ public class VDateTime implements Comparable<VDateTime>
             throw new IllegalArgumentException("Type of temporal is not LocalDate: " + dateOrDateTime);            
         }
     }
-    public void setLocalDateTime(LocalDateTime dateTime)
-    {
-        if ((dateOrDateTime instanceof LocalDateTime) || (dateOrDateTime == null))
-        {
-            dateOrDateTime = dateTime;
-        }
-    }
+//    public void setLocalDateTime(LocalDateTime dateTime)
+//    {
+//        if ((dateOrDateTime instanceof LocalDateTime) || (dateOrDateTime == null))
+//        {
+//            dateOrDateTime = dateTime;
+//        }
+//    }
   
     /** This property is true when this only contains a date, not a time.
      * example: DTSTART;VALUE=DATE:19971102
@@ -123,7 +139,13 @@ public class VDateTime implements Comparable<VDateTime>
     @Override
     public int compareTo(VDateTime obj)
     {
-        return getLocalDateTime().compareTo(obj.getLocalDateTime());
+        if (getDateOrDateTime() instanceof LocalDate)
+        {
+            return getLocalDate().compareTo(obj.getLocalDate());            
+        } else if (getDateOrDateTime() instanceof LocalDateTime)
+        {
+            return getLocalDateTime().compareTo(obj.getLocalDateTime());            
+        } else throw new IllegalArgumentException("Type of temporal must be LocalDate or LocalDateTime.");
     }
     
     // overriding hashCode is required to ensure Set properly avoids duplicates. 
