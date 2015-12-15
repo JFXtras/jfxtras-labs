@@ -1,12 +1,14 @@
 package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller;
 
 
+import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.time.temporal.WeekFields;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +45,6 @@ import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay.ByDayPair;
@@ -100,9 +101,9 @@ private ToggleGroup monthlyGroup;
 private ToggleGroup endGroup;
 @FXML private Label repeatSummaryLabel;
 
-@FXML ComboBox<VDateTime> exceptionComboBox;
+@FXML ComboBox<Temporal> exceptionComboBox;
 @FXML Button addExceptionButton;
-@FXML ListView<VDateTime> exceptionsListView; // EXDATE date/times to be skipped (deleted events)
+@FXML ListView<Temporal> exceptionsListView; // EXDATE date/times to be skipped (deleted events)
 @FXML Button removeExceptionButton;
 
 @FXML private Button closeButton;
@@ -481,14 +482,23 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         // because the resource bundle isn't instantiated earlier.
         final DateTimeFormatter formatterDateTime = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.exception"));
         final DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.exception"));
-        exceptionComboBox.setConverter(new StringConverter<VDateTime>()
+        exceptionComboBox.setConverter(new StringConverter<Temporal>()
         { // setup string converter
-            @Override public String toString(VDateTime d)
+            @Override public String toString(Temporal d)
             {
-                DateTimeFormatter myFormatter = (d.isWholeDay()) ? formatterDate : formatterDateTime;
-                return myFormatter.format(d.getLocalDateTime());
+                DateTimeFormatter myFormatter;
+                if ((d instanceof LocalDateTime))
+                {
+                    myFormatter = formatterDate;
+                } else if ((d instanceof LocalDate))
+                {
+                    myFormatter = formatterDateTime;
+                } else throw new DateTimeException("DTSTART and DTEND must have same Temporal type("
+                        + d.getClass().getSimpleName() + ", " + d.getClass().getSimpleName() +")");
+//                DateTimeFormatter myFormatter = (d.isWholeDay()) ? formatterDate : formatterDateTime;
+                return myFormatter.format(d);
             }
-            @Override public VDateTime fromString(String string) { throw new RuntimeException("not required for non editable ComboBox"); }
+            @Override public Temporal fromString(String string) { throw new RuntimeException("not required for non editable ComboBox"); }
         });
         exceptionComboBox.valueProperty().addListener(obs -> addExceptionButton.setDisable(false)); // turn on add button when exception date is selected in combobox
                 
@@ -503,7 +513,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         setDayOfWeek(vComponent);
         startDatePicker.setValue(LocalDate.from(vComponent.getDateTimeStart()));
         if (vComponent.getExDate() != null) {
-            List<VDateTime> collect = vComponent
+            List<Temporal> collect = vComponent
                     .getExDate()
                     .getVDateTimes()
                     .stream()
@@ -652,9 +662,9 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
                 .stream(dateTimeStart);
         Stream<LocalDateTime> stream2 = (vComponent.getExDate() == null) ? stream1
                 : vComponent.getExDate().stream(stream1, dateTimeStart); // remove exceptions
-        List<VDateTime> exceptionDates = stream2
+        List<Temporal> exceptionDates = stream2
                 .limit(EXCEPTION_CHOICE_LIMIT)
-                .map(d -> new VDateTime(d))
+//                .map(d -> new VDateTime(d))
                 .collect(Collectors.toList());
         exceptionComboBox.getItems().clear();
         exceptionComboBox.getItems().addAll(exceptionDates);
@@ -662,20 +672,20 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
     
     @FXML private void handleAddException()
     {
-        VDateTime d = exceptionComboBox.getValue();
+        Temporal d = exceptionComboBox.getValue();
         exceptionsListView.getItems().add(d);
         if (vComponent.getExDate() == null) vComponent.setExDate(new EXDate());
-        vComponent.getExDate().getVDateTimes().add(new VDateTime(d));
+        vComponent.getExDate().getVDateTimes().add(d);
         makeExceptionDates();
 //        exceptionComboBox.getItems().remove(d);
-        Collections.sort(exceptionsListView.getItems()); // Maintain sorted list
+        Collections.sort(exceptionsListView.getItems(),VComponent.DATE_OR_DATETIME_TEMPORAL_COMPARATOR); // Maintain sorted list
         if (exceptionComboBox.getValue() == null) addExceptionButton.setDisable(true);
     }
 
     @FXML private void handleRemoveException()
     {
         System.out.println("Remove Exception");
-        VDateTime d = exceptionsListView.getSelectionModel().getSelectedItem();
+        Temporal d = exceptionsListView.getSelectionModel().getSelectedItem();
         vComponent.getExDate().getVDateTimes().remove(d);
         makeExceptionDates();
 //        exceptionComboBox.getItems().add(d);

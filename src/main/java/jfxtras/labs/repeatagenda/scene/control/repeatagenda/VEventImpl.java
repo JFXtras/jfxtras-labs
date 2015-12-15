@@ -35,7 +35,6 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.R
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -394,15 +393,36 @@ public class VEventImpl extends VEvent<Appointment>
                     if (getExDate() != null)
                     {
                         getExDate().getVDateTimes().clear();
-                        final Iterator<VDateTime> exceptionIterator = vEventOld2.getExDate().getVDateTimes().iterator();
+                        final Iterator<Temporal> exceptionIterator = vEventOld2.getExDate().getVDateTimes().iterator();
                         while (exceptionIterator.hasNext())
                         {
-                            VDateTime d = exceptionIterator.next();
-                            if (d.getLocalDateTime().isBefore(dateTimeStartInstanceNew))
+                            Temporal d = exceptionIterator.next();
+                            int result = VComponent.DATE_OR_DATETIME_TEMPORAL_COMPARATOR.compare(d, dateTimeStartInstanceNew);
+//                            if (d.getLocalDateTime().isBefore(dateTimeStartInstanceNew))
+                            if (result < 0)
                             {
                                 exceptionIterator.remove();
                             } else {
                                 vEventOld2.getExDate().getVDateTimes().add(d);
+                            }
+                        }
+                    }
+
+                    // Split recurrence date/times between this and newVEvent
+                    if (getRDate() != null)
+                    {
+                        getRDate().getVDateTimes().clear();
+                        final Iterator<Temporal> recurrenceIterator = vEventOld2.getRDate().getVDateTimes().iterator();
+                        while (recurrenceIterator.hasNext())
+                        {
+                            Temporal d = recurrenceIterator.next();
+                            int result = VComponent.DATE_OR_DATETIME_TEMPORAL_COMPARATOR.compare(d, dateTimeStartInstanceNew);
+//                            if (d.getLocalDateTime().isBefore(dateTimeStartInstanceNew))
+                            if (result < 0)
+                            {
+                                recurrenceIterator.remove();
+                            } else {
+                                vEventOld2.getRDate().getVDateTimes().add(d);
                             }
                         }
                     }
@@ -424,23 +444,6 @@ public class VEventImpl extends VEvent<Appointment>
                         }
                     }
                     
-                    // Split recurrence date/times between this and newVEvent
-                    if (getRDate() != null)
-                    {
-                        getRDate().getVDateTimes().clear();
-                        final Iterator<VDateTime> recurrenceIterator = vEventOld2.getRDate().getVDateTimes().iterator();
-                        while (recurrenceIterator.hasNext())
-                        {
-                            VDateTime d = recurrenceIterator.next();
-                            if (d.getLocalDateTime().isBefore(dateTimeStartInstanceNew))
-                            {
-                                recurrenceIterator.remove();
-                            } else {
-                                vEventOld2.getRDate().getVDateTimes().add(d);
-                            }
-                        }
-                    }
-
                     // Modify this (edited) VEvent
                     setDateTimeStart(dateTimeStartInstanceNew);
                     setDurationInNanos(durationInSeconds);

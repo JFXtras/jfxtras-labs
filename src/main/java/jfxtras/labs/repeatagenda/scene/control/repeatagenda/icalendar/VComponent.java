@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.stream.Stream;
 
 import javafx.util.Callback;
@@ -253,6 +254,23 @@ public interface VComponent<T>
           , Callback<String, Boolean> confirmDeleteCallback
           , Callback<Collection<VComponent<T>>, Void> vEventWriteCallback);
 
+    /*
+     * Below methods are used to handle dateTimeEnd and dateTimeStart as Temporal objects.  The allowed
+     * types are either LocalDate or LocalDateTime.  Using LocalDate indicates a whole day component.
+     */
+    
+    final static Comparator<Temporal> DATE_OR_DATETIME_TEMPORAL_COMPARATOR = (t1, t2) -> 
+    {
+        if ((t1 instanceof LocalDateTime) && (t2 instanceof LocalDateTime))
+        {
+            return ((LocalDateTime) t1).compareTo((LocalDateTime) t2);
+        } else if ((t1 instanceof LocalDate) && (t2 instanceof LocalDate))
+        {
+            return ((LocalDate) t1).compareTo((LocalDate) t2);
+        } else throw new DateTimeException("DTSTART and DTEND must have same Temporal type("
+                + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() +")");
+    };
+    
     /** Parse iCalendar date or date/time string into LocalDate or LocalDateTime Temporal object */
     static Temporal parseTemporal(String dateTimeString)
     {

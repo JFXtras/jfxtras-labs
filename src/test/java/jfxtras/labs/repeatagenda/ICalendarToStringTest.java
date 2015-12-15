@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 
 public class ICalendarToStringTest extends ICalendarTestAbstract
 {
@@ -39,7 +38,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     public void monthly5ToString()
     {
 
-    VEvent e = getMonthly5();
+    VEventImpl e = getMonthly5();
     String madeString = e.toString();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                           + "DTSTAMP:19970901T083000" + System.lineSeparator()
@@ -56,7 +55,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     public void monthly6ToString()
     {
 
-    VEvent e = getMonthly6();
+    VEventImpl e = getMonthly6();
     String madeString = e.toString();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                           + "DTSTAMP:20150110T080000" + System.lineSeparator()
@@ -74,7 +73,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     public void dailyWithException1ToString()
     {
 
-    VEvent e = getDailyWithException1();
+    VEventImpl e = getDailyWithException1();
     String madeString = e.toString();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                           + "CATEGORIES:group03" + System.lineSeparator()

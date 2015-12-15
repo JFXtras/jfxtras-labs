@@ -25,16 +25,16 @@ import javafx.collections.ObservableSet;
 public abstract class RecurrenceComponentAbstract<T> implements RecurrenceComponent
 {
     /**
-     * EXDATE or RDATE: Set of date/times included or excepted for recurring events, to-dos, journal entries.
+     * EXDATE or RDATE: Set of dates pr date/times included or excepted for recurring events, to-dos, journal entries.
      * 3.8.5.1, RFC 5545 iCalendar
      */
-    public Set<VDateTime> getVDateTimes() { return vDateTimes; }
-    private ObservableSet<VDateTime> vDateTimes = FXCollections.observableSet(new HashSet<VDateTime>());
-    public void setVDateTimes(Temporal...dateOrDateTime)
+    public Set<Temporal> getVDateTimes() { return vDateTimes; }
+    private ObservableSet<Temporal> vDateTimes = FXCollections.observableSet(new HashSet<Temporal>());
+    void setVDateTimes(Temporal...dateOrDateTime)
     {
         for (Temporal d : dateOrDateTime)
         {
-            this.getVDateTimes().add(new VDateTime(d));
+            this.getVDateTimes().add(d);
         }
         if (dateOrDateTime.length > 0) getTemporalClass(); // test class sameness
         Class<? extends Temporal> firstClass = dateOrDateTime[0].getClass();
@@ -46,7 +46,7 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
     {
         if (getVDateTimes().size() > 0)
         {
-            Class<? extends Temporal> clazz = getVDateTimes().iterator().next().getTemporal().getClass();
+            Class<? extends Temporal> clazz = getVDateTimes().iterator().next().getClass();
             checkTemporalTypes(clazz);
             return clazz;                
         } else return null;
@@ -84,8 +84,7 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
     protected Stream<Temporal> getTemporalStream()
     {
         return getVDateTimes()
-                .stream()
-                .map(d -> d.getDateOrDateTime());
+                .stream();
     }
 
     /**
@@ -106,8 +105,8 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
     {
         boolean same =  getVDateTimes()
                 .stream()
-                .peek(v -> System.out.println(v.getTemporal().getClass().getName()))
-                .allMatch(v -> v.getTemporal().getClass().equals(clazz));
+                .peek(v -> System.out.println(v.getClass().getName()))
+                .allMatch(v -> v.getClass().equals(clazz));
         if (! same) throw new IllegalArgumentException("Not all Temporal objects in VDateTime class of type:" + clazz.getSimpleName());
     }
     
@@ -165,13 +164,10 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
         if (getVDateTimes().size() != testObj.getVDateTimes().size()) return false;
         
         // Sort both sets as lists and compare each element
-//        final Comparator<VDateTime> c = (d1, d2) -> d1.getLocalDateTime().compareTo(d2.getLocalDateTime());
-        List<VDateTime> l1 = new ArrayList<VDateTime>(getVDateTimes());
-        Collections.sort(l1);
-//        l1.sort(c);
-        List<VDateTime> l2 = new ArrayList<VDateTime>(testObj.getVDateTimes());
-        Collections.sort(l2);
-//        l2.sort(c);
+        List<Temporal> l1 = new ArrayList<Temporal>(getVDateTimes());
+        Collections.sort(l1, VComponent.DATE_OR_DATETIME_TEMPORAL_COMPARATOR);
+        List<Temporal> l2 = new ArrayList<Temporal>(testObj.getVDateTimes());
+        Collections.sort(l2, VComponent.DATE_OR_DATETIME_TEMPORAL_COMPARATOR);
         for (int i=0; i<l1.size(); i++)
         {
             if(! l1.get(i).equals(l2.get(i))) return false;
@@ -185,17 +181,17 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
         String datesString = getVDateTimes()
                 .stream()
                 .sorted()
-                .map(d -> d.toString() + ",")
+                .map(d -> VComponent.temporalToString(d) + ",")
                 .collect(Collectors.joining());
         return datesString.substring(0, datesString.length()-1); // remove last comma
     }
     
     /** convert a comma delimited string of VComponent.FORMATTER dates to a List<LocalDateTime> */
-    public static Collection<VDateTime> parseDates(String string)
+    public static Collection<Temporal> parseDates(String string)
     {
         return Arrays.asList(string.split(","))
                      .stream()
-                     .map(s -> VDateTime.parseString(s))
+                     .map(s -> VComponent.parseTemporal(s))
                      .collect(Collectors.toList());
     }
 

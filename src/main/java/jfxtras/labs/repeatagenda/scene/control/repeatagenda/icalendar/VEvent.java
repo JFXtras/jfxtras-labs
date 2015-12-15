@@ -274,7 +274,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                     int days = Period.between((LocalDate) getDateTimeStart(), (LocalDate) newSel).getDays();
                     nanos = (long) days * NANOS_IN_DAY;
                 } else throw new DateTimeException("DTSTART and DTEND must have same Temporal type("
-                        + getDateTimeStart().getClass().getSimpleName() + ", " + getDateTimeEnd().getClass().getSimpleName());
+                        + getDateTimeStart().getClass().getSimpleName() + ", " + getDateTimeEnd().getClass().getSimpleName() +")");
                 
                 durationInNanosProperty().removeListener(durationlistener);
                 setDurationInNanos(nanos);
@@ -295,7 +295,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                     int days = Period.between((LocalDate) newSel, (LocalDate) getDateTimeEnd()).getDays();
                     nanos = (long) days * NANOS_IN_DAY;
                 } else throw new DateTimeException("DTSTART and DTEND must have same Temporal type("
-                        + getDateTimeStart().getClass().getSimpleName() + ", " + getDateTimeEnd().getClass().getSimpleName());
+                        + getDateTimeStart().getClass().getSimpleName() + ", " + getDateTimeEnd().getClass().getSimpleName() +")");
 
                 durationInNanosProperty().removeListener(durationlistener);
                 setDurationInNanos(nanos);
@@ -315,7 +315,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                 {
                     dtEnd = getDateTimeEnd().plus(((long) newSel)/NANOS_IN_DAY, ChronoUnit.DAYS);
                 } else throw new DateTimeException("DTSTART and DTEND must have same Temporal type("
-                        + getDateTimeStart().getClass().getSimpleName() + ", " + getDateTimeEnd().getClass().getSimpleName());
+                        + getDateTimeStart().getClass().getSimpleName() + ", " + getDateTimeEnd().getClass().getSimpleName() +")");
 
                 dateTimeEndProperty().removeListener(dateTimeEndlistener);
                 setDateTimeEnd(dtEnd);
