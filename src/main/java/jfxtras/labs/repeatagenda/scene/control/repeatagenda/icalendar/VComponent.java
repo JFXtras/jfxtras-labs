@@ -247,7 +247,6 @@ public interface VComponent<T>
      */
     WindowCloseType delete(
             LocalDateTime dateTimeStartInstance
-          , VComponent<T> vComponentOld
           , Collection<T> appointments
           , Collection<VComponent<T>> vComponents
           , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback

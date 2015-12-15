@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.VComponentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -29,12 +28,10 @@ public class ICalendarDeleteTest extends ICalendarTestAbstract
         Collection<Appointment> newAppointments = vEvent.makeInstances();
         appointments.addAll(newAppointments);
         assertEquals(1, appointments.size());
-        VEventImpl vEventOld = (VEventImpl) VComponentFactory.newVComponent(vEvent);
         LocalDateTime dateTimeStartInstanceOld = appointments.get(0).getStartLocalDateTime();
 
         final ICalendarUtilities.WindowCloseType result = vEvent.delete(
                 dateTimeStartInstanceOld
-              , vEventOld
               , appointments
               , vComponents
               , null
@@ -57,7 +54,6 @@ public class ICalendarDeleteTest extends ICalendarTestAbstract
         Collection<Appointment> newAppointments = vEvent.makeInstances();
         appointments.addAll(newAppointments);
         assertEquals(1, appointments.size());
-        VEventImpl vEventOld = (VEventImpl) VComponentFactory.newVComponent(vEvent);
         vEvent2.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 8, 0, 0));
         vEvent2.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 15, 0, 0));
         LocalDateTime dateTimeStartInstanceOld = appointments.get(0).getStartLocalDateTime();
@@ -66,7 +62,6 @@ public class ICalendarDeleteTest extends ICalendarTestAbstract
 
         final ICalendarUtilities.WindowCloseType result = vEvent.delete(
                 dateTimeStartInstanceOld
-              , vEventOld // may be unnecessary
               , appointments
               , vComponents
               , null

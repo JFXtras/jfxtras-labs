@@ -191,7 +191,6 @@ public class AppointmentEditController
 //        LocalDateTime dateTimeStartInstanceNew = startTextField.getLocalDateTime();
         final ICalendarUtilities.WindowCloseType result = vEvent.delete(
                 dateTimeStartInstanceOld
-              , vEventOld
               , appointments
               , vComponents
               , a -> ICalendarUtilities.repeatChangeDialog()
