@@ -118,7 +118,7 @@
                            <children>
                               <Button fx:id="cancelAppointmentButton" mnemonicParsing="false" onAction="#handleCancelButton" text="%cancel" />
                               <Button fx:id="closeAppointmentButton" layoutX="170.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleCloseButton" text="%close" />
-                              <Button fx:id="deleteAppointmentButton1" mnemonicParsing="false" onAction="#handleDeleteButton" text="%delete" />
+                              <Button fx:id="deleteAppointmentButton" mnemonicParsing="false" onAction="#handleDeleteButton" text="%delete" />
                            </children>
                         </HBox>
                      </children>

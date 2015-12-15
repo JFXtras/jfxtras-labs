@@ -316,7 +316,7 @@ public interface VComponent<T>
      * @param temporal - either LocalDate or LocalDateTime type
      * @return LocalDateTime
      */
-    static LocalDateTime makeLocalDateTimeFromTemporal(TemporalAccessor temporal)
+    static LocalDateTime localDateTimeFromTemporal(TemporalAccessor temporal)
     {
         if (temporal == null) return null;
         if (temporal instanceof LocalDate)

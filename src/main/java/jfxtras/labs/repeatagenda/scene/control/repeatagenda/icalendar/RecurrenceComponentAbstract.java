@@ -28,13 +28,13 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
      * EXDATE or RDATE: Set of dates pr date/times included or excepted for recurring events, to-dos, journal entries.
      * 3.8.5.1, RFC 5545 iCalendar
      */
-    public Set<Temporal> getVDateTimes() { return vDateTimes; }
+    public Set<Temporal> getTemporals() { return vDateTimes; }
     private ObservableSet<Temporal> vDateTimes = FXCollections.observableSet(new HashSet<Temporal>());
     void setVDateTimes(Temporal...dateOrDateTime)
     {
         for (Temporal d : dateOrDateTime)
         {
-            this.getVDateTimes().add(d);
+            this.getTemporals().add(d);
         }
         if (dateOrDateTime.length > 0) getTemporalClass(); // test class sameness
         Class<? extends Temporal> firstClass = dateOrDateTime[0].getClass();
@@ -44,9 +44,9 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
     /** Class of encapsulated Temporal objects */
     protected Class<? extends Temporal> getTemporalClass()
     {
-        if (getVDateTimes().size() > 0)
+        if (getTemporals().size() > 0)
         {
-            Class<? extends Temporal> clazz = getVDateTimes().iterator().next().getClass();
+            Class<? extends Temporal> clazz = getTemporals().iterator().next().getClass();
             checkTemporalTypes(clazz);
             return clazz;                
         } else return null;
@@ -83,7 +83,7 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
     }
     protected Stream<Temporal> getTemporalStream()
     {
-        return getVDateTimes()
+        return getTemporals()
                 .stream();
     }
 
@@ -103,7 +103,7 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
     /* checks if all Temporal objects in vDateTimes are the same */
     private void checkTemporalTypes(Class<? extends Temporal> clazz)
     {
-        boolean same =  getVDateTimes()
+        boolean same =  getTemporals()
                 .stream()
                 .peek(v -> System.out.println(v.getClass().getName()))
                 .allMatch(v -> v.getClass().equals(clazz));
@@ -138,9 +138,9 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
      * @param <U>*/
     private static <T> void copy(RecurrenceComponentAbstract<T> source, RecurrenceComponentAbstract<T> destination)
     {
-        if (source.getVDateTimes() != null)
+        if (source.getTemporals() != null)
         {
-            source.getVDateTimes().stream().forEach(r -> destination.getVDateTimes().add(r));
+            source.getTemporals().stream().forEach(r -> destination.getTemporals().add(r));
         }
     }
     
@@ -160,13 +160,13 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
         @SuppressWarnings("unchecked")
         RecurrenceComponentAbstract<T> testObj = (RecurrenceComponentAbstract<T>) obj;
 
-        if (getVDateTimes() == null) return testObj.getVDateTimes() == null;
-        if (getVDateTimes().size() != testObj.getVDateTimes().size()) return false;
+        if (getTemporals() == null) return testObj.getTemporals() == null;
+        if (getTemporals().size() != testObj.getTemporals().size()) return false;
         
         // Sort both sets as lists and compare each element
-        List<Temporal> l1 = new ArrayList<Temporal>(getVDateTimes());
+        List<Temporal> l1 = new ArrayList<Temporal>(getTemporals());
         Collections.sort(l1, VComponent.DATE_OR_DATETIME_TEMPORAL_COMPARATOR);
-        List<Temporal> l2 = new ArrayList<Temporal>(testObj.getVDateTimes());
+        List<Temporal> l2 = new ArrayList<Temporal>(testObj.getTemporals());
         Collections.sort(l2, VComponent.DATE_OR_DATETIME_TEMPORAL_COMPARATOR);
         for (int i=0; i<l1.size(); i++)
         {
@@ -178,7 +178,7 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
     @Override
     public String toString()
     {
-        String datesString = getVDateTimes()
+        String datesString = getTemporals()
                 .stream()
                 .sorted()
                 .map(d -> VComponent.temporalToString(d) + ",")

@@ -290,11 +290,11 @@ public class VEventImpl extends VEvent<Appointment>
 //        System.out.println("range: " + getDateTimeRangeStart() + " " + getDateTimeRangeEnd());
         if ((getDateTimeRangeStart() == null) || (getDateTimeRangeStart() == null)) throw new IllegalArgumentException("can't make instances without setting date/time range first");
         List<Appointment> madeAppointments = new ArrayList<>();
-        stream(VComponent.makeLocalDateTimeFromTemporal(getDateTimeStart()))
+        stream(VComponent.localDateTimeFromTemporal(getDateTimeStart()))
                 .forEach(d -> {
                     Appointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
                     appt.setStartLocalDateTime(d);
-                    appt.setEndLocalDateTime(d.plusSeconds(getDurationInNanos()));
+                    appt.setEndLocalDateTime(d.plusNanos(getDurationInNanos()));
 //                    appt.setRepeatMade(true);
                     appt.setDescription(getDescription());
                     appt.setSummary(getSummary());
@@ -333,11 +333,12 @@ public class VEventImpl extends VEvent<Appointment>
             , Callback<Collection<VComponent<Appointment>>, Void> writeVEventsCallback)
     {
         // Check if start time and duration has changed because those values are not changed in the edit controller.
-        final long durationInSeconds = ChronoUnit.SECONDS.between(dateTimeStartInstanceNew, dateTimeEndInstanceNew);
+        final long durationInNanos = ChronoUnit.NANOS.between(dateTimeStartInstanceNew, dateTimeEndInstanceNew);
         final VEventImpl vEventOld2 = (VEventImpl) vEventOld;
 //        System.out.println(dateTimeStartInstanceNew + " " + vEventOld2.getDateTimeStart());
         boolean dateTimeNewSame = dateTimeStartInstanceNew.toLocalTime().equals(LocalTime.from(vEventOld2.getDateTimeStart()));
-        boolean durationSame = (durationInSeconds == vEventOld2.getDurationInNanos());
+        boolean durationSame = (durationInNanos == vEventOld2.getDurationInNanos());
+        System.out.println("same:" + dateTimeNewSame + " " + durationSame + " " + this.equals(vEventOld) + " " + this.getDurationInNanos() + " " + this.getDateTimeEnd());
         if (dateTimeNewSame && durationSame && this.equals(vEventOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
 
         final RRuleType rruleType = getRRuleType(vEventOld.getRRule());
@@ -350,7 +351,7 @@ public class VEventImpl extends VEvent<Appointment>
             setRDate(null);
             setExDate(null);
         case WITH_NEW_REPEAT:
-        case INDIVIDUAL:            
+        case INDIVIDUAL:
             break;
         case WITH_EXISTING_REPEAT:
             // Check if changes between vEvent and vEventOld exist apart from RRule
@@ -366,10 +367,10 @@ public class VEventImpl extends VEvent<Appointment>
             {
                 case ALL:
                     // Copy date/time data to this VEvent
-                    long secondsAdjustment = ChronoUnit.SECONDS.between(dateTimeStartInstanceOld, dateTimeStartInstanceNew);
-                    Temporal newDateTimeStart = getDateTimeStart().plus(secondsAdjustment, ChronoUnit.SECONDS);
+                    long nanosAdjustment = ChronoUnit.NANOS.between(dateTimeStartInstanceOld, dateTimeStartInstanceNew);
+                    Temporal newDateTimeStart = getDateTimeStart().plus(nanosAdjustment, ChronoUnit.NANOS);
                     setDateTimeStart(newDateTimeStart);
-                    setDurationInNanos(durationInSeconds);
+                    setDurationInNanos(durationInNanos);
                     break;
                 case CANCEL:
 //                    System.out.println("cancel:");
@@ -392,8 +393,8 @@ public class VEventImpl extends VEvent<Appointment>
                     // Split EXDates dates between this and newVEvent
                     if (getExDate() != null)
                     {
-                        getExDate().getVDateTimes().clear();
-                        final Iterator<Temporal> exceptionIterator = vEventOld2.getExDate().getVDateTimes().iterator();
+                        getExDate().getTemporals().clear();
+                        final Iterator<Temporal> exceptionIterator = vEventOld2.getExDate().getTemporals().iterator();
                         while (exceptionIterator.hasNext())
                         {
                             Temporal d = exceptionIterator.next();
@@ -403,7 +404,7 @@ public class VEventImpl extends VEvent<Appointment>
                             {
                                 exceptionIterator.remove();
                             } else {
-                                vEventOld2.getExDate().getVDateTimes().add(d);
+                                vEventOld2.getExDate().getTemporals().add(d);
                             }
                         }
                     }
@@ -411,8 +412,8 @@ public class VEventImpl extends VEvent<Appointment>
                     // Split recurrence date/times between this and newVEvent
                     if (getRDate() != null)
                     {
-                        getRDate().getVDateTimes().clear();
-                        final Iterator<Temporal> recurrenceIterator = vEventOld2.getRDate().getVDateTimes().iterator();
+                        getRDate().getTemporals().clear();
+                        final Iterator<Temporal> recurrenceIterator = vEventOld2.getRDate().getTemporals().iterator();
                         while (recurrenceIterator.hasNext())
                         {
                             Temporal d = recurrenceIterator.next();
@@ -422,7 +423,7 @@ public class VEventImpl extends VEvent<Appointment>
                             {
                                 recurrenceIterator.remove();
                             } else {
-                                vEventOld2.getRDate().getVDateTimes().add(d);
+                                vEventOld2.getRDate().getTemporals().add(d);
                             }
                         }
                     }
@@ -446,7 +447,7 @@ public class VEventImpl extends VEvent<Appointment>
                     
                     // Modify this (edited) VEvent
                     setDateTimeStart(dateTimeStartInstanceNew);
-                    setDurationInNanos(durationInSeconds);
+                    setDurationInNanos(durationInNanos);
                     
                     // Modify COUNT for this (the edited) VEvent
                     if (getRRule().getCount() > 0)
@@ -529,11 +530,13 @@ public class VEventImpl extends VEvent<Appointment>
           , Callback<Collection<VComponent<Appointment>>, Void> writeVEventsCallback)
     {
         final RRuleType rruleType = getRRuleType(vEventOld.getRRule());
+        System.out.println("rrule:" + rruleType);
         switch (rruleType)
         {
         case INDIVIDUAL: // remove individual appointment that has no repeat rule
             if (confirmDeleteCallback.call("1"))
             {
+                System.out.println("remove individual:");
                 Iterator<Appointment> appointmentIterator = appointments.iterator();
                 Appointment appointment = null;
                 boolean found = false;
@@ -549,8 +552,8 @@ public class VEventImpl extends VEvent<Appointment>
                 }
                 if (found)
                 {
-                    instances().remove(appointment);
-                    if (getExDate() == null) setExDate(new EXDate(dateTimeStartInstance));
+                    vEvents.remove(this);
+                    return WindowCloseType.CLOSE_WITH_CHANGE;
                 } else
                 {
                     throw new IllegalArgumentException("Instance can't be deleted - not found (" + dateTimeStartInstance + ")");
@@ -558,6 +561,16 @@ public class VEventImpl extends VEvent<Appointment>
             }
             break;
         case WITH_EXISTING_REPEAT:
+            
+            if (getExDate() == null)
+            {
+                setExDate(new EXDate(dateTimeStartInstance));
+            } else
+            {
+                getExDate().getTemporals().add(dateTimeStartInstance);
+            }
+
+            
             break;
         default:
             break;

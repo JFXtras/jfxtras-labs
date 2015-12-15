@@ -189,7 +189,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      */
     public ObjectProperty<Temporal> dateTimeStartProperty() { return dateTimeStart; }
     final private ObjectProperty<Temporal> dateTimeStart = new SimpleObjectProperty<>(this, "DTSTART");
-    public LocalDateTime dateTimeStartToLocalDateTime() { return VComponent.makeLocalDateTimeFromTemporal(dateTimeStart.get()); }
+    public LocalDateTime dateTimeStartToLocalDateTime() { return VComponent.localDateTimeFromTemporal(dateTimeStart.get()); }
     @Override public Temporal getDateTimeStart() { return dateTimeStart.get(); }
     @Override public void setDateTimeStart(Temporal dtStart) { VComponent.super.setDateTimeStart(dtStart); dateTimeStart.set(dtStart); }
     boolean isDateTimeStartWholeDay() { return dateTimeStart.get() instanceof LocalDate; }
@@ -559,7 +559,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 {
                     vComponent.setExDate(new EXDate());
                 }                  
-                vComponent.getExDate().getVDateTimes().addAll(dateTimeCollection);
+                vComponent.getExDate().getTemporals().addAll(dateTimeCollection);
                 stringsIterator.remove();
             } else if (property.equals(vComponent.dateTimeLastModifiedProperty().getName()))
             { // LAST-MODIFIED
@@ -573,7 +573,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 {
                     vComponent.setRDate(new RDate());
                 }                  
-                vComponent.getRDate().getVDateTimes().addAll(dateTimeCollection);
+                vComponent.getRDate().getTemporals().addAll(dateTimeCollection);
                 stringsIterator.remove();
 
             } else if (property.equals(vComponent.rRuleProperty().getName()))

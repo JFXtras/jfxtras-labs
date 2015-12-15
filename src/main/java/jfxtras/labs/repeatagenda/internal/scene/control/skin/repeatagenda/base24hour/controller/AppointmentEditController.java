@@ -61,6 +61,7 @@ public class AppointmentEditController
     @FXML private Button closeRepeatButton;
     @FXML private Button cancelRepeatButton;
     @FXML private Button saveAdvancedButton;
+    @FXML private Button deleteAppointmentButton;
     @FXML private RepeatableController<Appointment> repeatableController;
 
     // Callback for LocalDateTimeTextField that is called when invalid date/time is entered
@@ -169,6 +170,7 @@ public class AppointmentEditController
               , a -> ICalendarUtilities.repeatChangeDialog()
               , vEventWriteCallback);
         windowCloseType.set(result);
+        System.out.println("vEvent:" + vEvent.getDateTimeStart()+ " " + vEvent.getDateTimeEnd());
         if (windowCloseType.get() == WindowCloseType.CLOSE_WITHOUT_CHANGE)
         {
         }
@@ -185,7 +187,8 @@ public class AppointmentEditController
     @FXML private void handleDeleteButton()
     {
 //        windowCloseType.set(WindowCloseType.X);
-        LocalDateTime dateTimeStartInstanceNew = startTextField.getLocalDateTime();
+        System.out.println("delete:" + vEvent.getRRule());
+//        LocalDateTime dateTimeStartInstanceNew = startTextField.getLocalDateTime();
         final ICalendarUtilities.WindowCloseType result = vEvent.delete(
                 dateTimeStartInstanceOld
               , vEventOld
@@ -194,7 +197,8 @@ public class AppointmentEditController
               , a -> ICalendarUtilities.repeatChangeDialog()
               , a -> ICalendarUtilities.confirmDelete(a)
               , vEventWriteCallback);
-
+        System.out.println("delete:" + vComponents.size() + " " + appointments.size());
+        windowCloseType.set(result);
     }
     
 }
