@@ -54,8 +54,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
 
         WindowCloseType windowCloseType = vevent.edit(
                 dateTimeOld
-              , dateTimeNew
-              , selectedAppointment.getEndLocalDateTime()
+              , selectedAppointment
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
@@ -123,8 +122,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // Edit
         WindowCloseType windowCloseType = vevent.edit(
                 dateTimeOriginal
-              , dateTimeNew
-              , selectedAppointment.getEndLocalDateTime()
+              , selectedAppointment
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
@@ -178,8 +176,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // Edit
         WindowCloseType windowCloseType = vevent.edit(
                 dateTimeOriginal
-              , dateTimeNew
-              , selectedAppointment.getEndLocalDateTime()
+              , selectedAppointment
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
@@ -266,8 +263,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // Edit
         WindowCloseType windowCloseType = vevent.edit(
                 dateTimeOriginal
-              , dateTimeNew
-              , selectedAppointment.getEndLocalDateTime()
+              , selectedAppointment
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
@@ -395,8 +391,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // Edit
         WindowCloseType windowCloseType = vevent.edit(
                 selectedAppointment.getStartLocalDateTime()
-              , selectedAppointment.getStartLocalDateTime()
-              , selectedAppointment.getEndLocalDateTime()
+              , selectedAppointment
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
@@ -441,12 +436,10 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         LocalDate dateOld = dateTimeOld.toLocalDate();
         selectedAppointment.setStartLocalDateTime(dateOld.atTime(9, 45)); // change start time
         selectedAppointment.setEndLocalDateTime(dateOld.atTime(11, 0)); // change end time
-        LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
 
         WindowCloseType windowCloseType = vevent.edit(
                 dateTimeOld
-              , dateTimeNew
-              , selectedAppointment.getEndLocalDateTime()
+              , selectedAppointment
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents

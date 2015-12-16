@@ -2,6 +2,7 @@ package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base2
 
 
 import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -45,7 +46,7 @@ public class AppointmentEditController
 
     /** Indicates how the popup window closed */
 //    public ObjectProperty<WindowCloseType> windowCloseTypeProperty() { return windowCloseType; }
-    private ObjectProperty<WindowCloseType> windowCloseType; // default to X, meaning click on X to close window
+    private ObjectProperty<WindowCloseType> popupCloseType; // default to X, meaning click on X to close window
     
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     @FXML private LocalDateTimeTextField startTextField; // DTSTART
@@ -111,7 +112,7 @@ public class AppointmentEditController
         this.vComponents = vComponents;
         this.vEventWriteCallback = vEventWriteCallback;
         vEvent = (VEvent<Appointment>) vComponent;
-        this.windowCloseType = popupCloseType;
+        this.popupCloseType = popupCloseType;
 
         // Copy original VEvent
         vEventOld = (VEvent<Appointment>) VComponentFactory.newVComponent(vEvent);
@@ -163,16 +164,15 @@ public class AppointmentEditController
         LocalDateTime dateTimeEndInstanceNew = endTextField.getLocalDateTime();
         final ICalendarUtilities.WindowCloseType result = vEvent.edit(
                 dateTimeStartInstanceOld
-              , dateTimeStartInstanceNew
-              , dateTimeEndInstanceNew
+              , appointment
               , vEventOld
               , appointments
               , vComponents
               , a -> ICalendarUtilities.repeatChangeDialog()
               , vEventWriteCallback);
-        windowCloseType.set(result);
+        popupCloseType.set(result);
         System.out.println("vEvent:" + vEvent.getDateTimeStart()+ " " + vEvent.getDateTimeEnd());
-        if (windowCloseType.get() == WindowCloseType.CLOSE_WITHOUT_CHANGE)
+        if (popupCloseType.get() == WindowCloseType.CLOSE_WITHOUT_CHANGE)
         {
         }
 
@@ -181,7 +181,7 @@ public class AppointmentEditController
     
     @FXML private void handleCancelButton()
     {
-        windowCloseType.set(WindowCloseType.CANCEL);
+        popupCloseType.set(WindowCloseType.CANCEL);
         vEventOld.copyTo(vEvent);
     }
 
@@ -190,15 +190,18 @@ public class AppointmentEditController
 //        windowCloseType.set(WindowCloseType.X);
         System.out.println("delete:" + vEvent.getRRule());
 //        LocalDateTime dateTimeStartInstanceNew = startTextField.getLocalDateTime();
+        Temporal dateOrDateTime = (appointment.isWholeDay()) ? 
+                appointment.getStartLocalDateTime().toLocalDate()
+              : appointment.getStartLocalDateTime();
         final ICalendarUtilities.WindowCloseType result = vEvent.delete(
-                appointment
-              , appointments
+                dateOrDateTime
+//              , appointments
               , vComponents
               , a -> ICalendarUtilities.repeatChangeDialog()
               , a -> ICalendarUtilities.confirmDelete(a)
               , vEventWriteCallback);
         System.out.println("delete:" + vComponents.size() + " " + appointments.size());
-        windowCloseType.set(result);
+        popupCloseType.set(result);
     }
     
 }

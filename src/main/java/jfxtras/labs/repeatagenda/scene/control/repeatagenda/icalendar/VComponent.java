@@ -214,8 +214,7 @@ public interface VComponent<T>
      * Handle editing a VComponent.
      * 
      * @param dateTimeStartInstanceOld
-     * @param dateTimeStartInstanceNew
-     * @param dateTimeEndInstanceNew
+     * @param instance
      * @param vComponentOld
      * @param instances
      * @param vEvents
@@ -225,8 +224,7 @@ public interface VComponent<T>
      */
     WindowCloseType edit(
             LocalDateTime dateTimeStartInstanceOld
-          , LocalDateTime dateTimeStartInstanceNew
-          , LocalDateTime dateTimeEndInstanceNew
+          , T instance
           , VComponent<T> vComponentOld
           , Collection<T> instances
           , Collection<VComponent<T>> vEvents
@@ -237,17 +235,17 @@ public interface VComponent<T>
      * Handle deleting a VComponent from vComponents collection and its accompanying
      * recurrence instances 
      * 
-     * @param dateTimeStartInstance
-     * @param vComponentOld
-     * @param appointments collection of recurrence instances
+     * @param instance
+     * @param instances
      * @param vComponents
      * @param changeDialogCallback
+     * @param confirmDeleteCallback
      * @param vEventWriteCallback
      * @return
      */
     WindowCloseType delete(
-            T appointment
-          , Collection<T> appointments
+            Temporal dateOrDateTime
+//          , Collection<T> instances
           , Collection<VComponent<T>> vComponents
           , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
           , Callback<String, Boolean> confirmDeleteCallback

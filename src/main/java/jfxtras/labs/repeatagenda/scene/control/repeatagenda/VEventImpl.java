@@ -323,14 +323,15 @@ public class VEventImpl extends VEvent<Appointment>
     @Override
     public WindowCloseType edit(
               LocalDateTime dateTimeStartInstanceOld // TODO - NEED TO PASS APPOINTMENT TO ACCOUNT FOR APPOINTMENTS WITH MATCHING DATE/TIMES
-            , LocalDateTime dateTimeStartInstanceNew
-            , LocalDateTime dateTimeEndInstanceNew
+            , Appointment appointment
             , VComponent<Appointment> vEventOld
             , Collection< Appointment> appointments
             , Collection<VComponent<Appointment>> vEvents
             , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
             , Callback<Collection<VComponent<Appointment>>, Void> writeVEventsCallback)
     {
+        LocalDateTime dateTimeStartInstanceNew = appointment.getStartLocalDateTime();
+        LocalDateTime dateTimeEndInstanceNew = appointment.getEndLocalDateTime();
         // Check if start time and duration has changed because those values are not changed in the edit controller.
         final long durationInNanos = ChronoUnit.NANOS.between(dateTimeStartInstanceNew, dateTimeEndInstanceNew);
         final VEventImpl vEventOld2 = (VEventImpl) vEventOld;
@@ -520,8 +521,8 @@ public class VEventImpl extends VEvent<Appointment>
      */
     @Override
     public WindowCloseType delete(
-            Appointment appointment
-          , Collection<Appointment> appointments
+            Temporal dateOrDateTime
+//          , Collection<Appointment> appointments
           , Collection<VComponent<Appointment>> vEvents
           , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
           , Callback<String, Boolean> confirmDeleteCallback
@@ -546,13 +547,13 @@ public class VEventImpl extends VEvent<Appointment>
         if (count == 1) // DELETE NON-REPEATING INSTANCE
         {
 //            appointments.removeIf(a -> a.equals(appointment));
-            appointments.remove(appointment);
+//            appointments.remove(appointment);
             vEvents.remove(this);
             return WindowCloseType.CLOSE_WITH_CHANGE;
         } else if (count > 1 || count == 0) // more than one instance
         {
-            final Temporal dateOrDateTime = (appointment.isWholeDay()) ? appointment.getStartLocalDateTime().toLocalDate()
-                    : appointment.getStartLocalDateTime();
+//            final Temporal dateOrDateTime = (appointment.isWholeDay()) ? appointment.getStartLocalDateTime().toLocalDate()
+//                    : appointment.getStartLocalDateTime();
             ChangeDialogOptions changeResponse = changeDialogCallback.call(null);
             switch (changeResponse)
             {
