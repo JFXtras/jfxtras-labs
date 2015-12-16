@@ -69,7 +69,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         expectedVEvent.setAppointmentGroup(appointmentGroups.get(3));
         expectedVEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 9, 45));
         expectedVEvent.setDescription("Daily2 Description");
-        expectedVEvent.setDurationInNanos(4500L);
+        expectedVEvent.setDurationInNanos(4500L * NANOS_IN_SECOND);
         expectedVEvent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         expectedVEvent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         expectedVEvent.setRRule(new RRule().withCount(6));

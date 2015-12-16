@@ -399,7 +399,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
                       : dateTimeStartInstanceNew;
                 vComponent.getRRule().setUntil(defaultEndOnDateTime);
             }
-            endOnDatePicker.setValue(vComponent.getRRule().getUntil().toLocalDate());
+            endOnDatePicker.setValue(LocalDate.from(vComponent.getRRule().getUntil()));
             endOnDatePicker.setDisable(false);
             endOnDatePicker.valueProperty().addListener(endOnDateListener);
             endOnDatePicker.show();

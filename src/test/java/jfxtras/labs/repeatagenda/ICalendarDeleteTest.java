@@ -28,16 +28,16 @@ public class ICalendarDeleteTest extends ICalendarTestAbstract
         Collection<Appointment> newAppointments = vEvent.makeInstances();
         appointments.addAll(newAppointments);
         assertEquals(1, appointments.size());
-        LocalDateTime dateTimeStartInstanceOld = appointments.get(0).getStartLocalDateTime();
+        Appointment appointment = appointments.get(0);
 
         final ICalendarUtilities.WindowCloseType result = vEvent.delete(
-                dateTimeStartInstanceOld
+                appointment
               , appointments
               , vComponents
               , null
               , a -> true
               , null);
-
+        
         assertEquals(0, vComponents.size());
         assertEquals(0, appointments.size());
     }
@@ -56,12 +56,12 @@ public class ICalendarDeleteTest extends ICalendarTestAbstract
         assertEquals(1, appointments.size());
         vEvent2.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 8, 0, 0));
         vEvent2.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 15, 0, 0));
-        LocalDateTime dateTimeStartInstanceOld = appointments.get(0).getStartLocalDateTime();
+        Appointment appointment = appointments.get(0);
         Collection<Appointment> newAppointments2 = vEvent2.makeInstances();
         appointments.addAll(newAppointments2);
 
         final ICalendarUtilities.WindowCloseType result = vEvent.delete(
-                dateTimeStartInstanceOld
+                appointment
               , appointments
               , vComponents
               , null

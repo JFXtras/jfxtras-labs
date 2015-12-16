@@ -295,11 +295,10 @@ public class VEventImpl extends VEvent<Appointment>
                     Appointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
                     appt.setStartLocalDateTime(d);
                     appt.setEndLocalDateTime(d.plusNanos(getDurationInNanos()));
-//                    appt.setRepeatMade(true);
                     appt.setDescription(getDescription());
                     appt.setSummary(getSummary());
                     appt.setAppointmentGroup(getAppointmentGroup());
-                    madeAppointments.add(appt);   // add appointments to main collection
+                    madeAppointments.add(appt);   // add appointments to return argument
                     instances().add(appt); // add appointments to this repeat's collection
                 });
 
@@ -323,7 +322,7 @@ public class VEventImpl extends VEvent<Appointment>
      */
     @Override
     public WindowCloseType edit(
-              LocalDateTime dateTimeStartInstanceOld
+              LocalDateTime dateTimeStartInstanceOld // TODO - NEED TO PASS APPOINTMENT TO ACCOUNT FOR APPOINTMENTS WITH MATCHING DATE/TIMES
             , LocalDateTime dateTimeStartInstanceNew
             , LocalDateTime dateTimeEndInstanceNew
             , VComponent<Appointment> vEventOld
@@ -488,7 +487,7 @@ public class VEventImpl extends VEvent<Appointment>
         // DOESN'T KNOW ABOUT APPOINTMENTS HERE
         
         if (editedFlag) // make these changes as long as CANCEL is not selected
-        { // remove appointments from mail collection made by VEvent
+        { // remove appointments from main collection
             System.out.println("Edited flag:");
             appointments.removeIf(a -> instances().stream().anyMatch(a2 -> a2 == a));
 
@@ -521,7 +520,7 @@ public class VEventImpl extends VEvent<Appointment>
      */
     @Override
     public WindowCloseType delete(
-            LocalDateTime dateTimeStartInstance
+            Appointment appointment
           , Collection<Appointment> appointments
           , Collection<VComponent<Appointment>> vEvents
           , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
@@ -529,9 +528,11 @@ public class VEventImpl extends VEvent<Appointment>
           , Callback<Collection<VComponent<Appointment>>, Void> writeVEventsCallback)
     {
         // determine number of instances
-        boolean infinite = (getRRule().getUntil() == null) && (getRRule().getCount() == null);
         final long count;
-        if (infinite)
+        if (getRRule() == null)
+        {
+            count = 1;
+        } else if ((getRRule().getUntil() == null) && (getRRule().getCount() == null)) // infinite
         {
             count = 0;
         } else
@@ -540,13 +541,18 @@ public class VEventImpl extends VEvent<Appointment>
             count = stream(startDateTime).count();
         }
 
+        System.out.println("count:" + count);
         // delete depending on number of instances
-        if (count == 1) // one instance
+        if (count == 1) // DELETE NON-REPEATING INSTANCE
         {
+//            appointments.removeIf(a -> a.equals(appointment));
+            appointments.remove(appointment);
             vEvents.remove(this);
             return WindowCloseType.CLOSE_WITH_CHANGE;
         } else if (count > 1 || count == 0) // more than one instance
         {
+            final Temporal dateOrDateTime = (appointment.isWholeDay()) ? appointment.getStartLocalDateTime().toLocalDate()
+                    : appointment.getStartLocalDateTime();
             ChangeDialogOptions changeResponse = changeDialogCallback.call(null);
             switch (changeResponse)
             {
@@ -563,14 +569,14 @@ public class VEventImpl extends VEvent<Appointment>
             case ONE:
                 if (getExDate() == null)
                 {
-                    setExDate(new EXDate(dateTimeStartInstance));
+                    setExDate(new EXDate(dateOrDateTime));
                 } else
                 {
-                    getExDate().getTemporals().add(dateTimeStartInstance);
+                    getExDate().getTemporals().add(dateOrDateTime);
                 }
                 break;
             case THIS_AND_FUTURE:
-                getRRule().setUntil(dateTimeStartInstance);
+                getRRule().setUntil(dateOrDateTime);
                 return WindowCloseType.CLOSE_WITH_CHANGE;
             default:
                 break;

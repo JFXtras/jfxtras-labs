@@ -1,6 +1,7 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule;
 
 import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,6 +21,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule.ByRules;
@@ -101,15 +103,15 @@ public class RRule {
      * UNTIL: (RFC 5545 iCalendar 3.3.10, page 41) date/time repeat rule ends
      * Uses lazy initialization of property because often UNTIL stays as the default value of 0
      */
-    public SimpleObjectProperty<LocalDateTime> untilProperty()
+    public SimpleObjectProperty<Temporal> untilProperty()
     {
-        if (until == null) until = new SimpleObjectProperty<LocalDateTime>(this, "until", _until);
+        if (until == null) until = new SimpleObjectProperty<Temporal>(this, "until", _until);
         return until;
     }
-    private SimpleObjectProperty<LocalDateTime> until;
-    public LocalDateTime getUntil() { return (until == null) ? _until : until.getValue(); }
-    private LocalDateTime _until;
-    public void setUntil(LocalDateTime t)
+    private SimpleObjectProperty<Temporal> until;
+    public Temporal getUntil() { return (until == null) ? _until : until.getValue(); }
+    private Temporal _until;
+    public void setUntil(Temporal t)
     {
         if (getCount() == 0)
         {
@@ -125,7 +127,7 @@ public class RRule {
             throw new IllegalArgumentException("can't set UNTIL if COUNT is already set.");
         }
     }
-    public RRule withUntil(LocalDateTime until) { setUntil(until); return this; }
+    public RRule withUntil(Temporal until) { setUntil(until); return this; }
     
     /**
      * The set of specific instances of recurring "VEVENT", "VTODO", or "VJOURNAL" calendar components
@@ -273,7 +275,7 @@ public class RRule {
 //            return frequency
 //                    .stream(startDateTime)
 //                    .takeWhile(a -> a.isBefore(getUntil())); // available in Java 9
-            return takeWhile(filteredStream, a -> a.isBefore(getUntil()));
+            return takeWhile(filteredStream, a -> a.isBefore(VComponent.localDateTimeFromTemporal(getUntil())));
         }
         return filteredStream;
     };

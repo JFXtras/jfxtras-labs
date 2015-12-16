@@ -35,7 +35,7 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
  */
 public class AppointmentEditController
 {
-//    private Appointment appointment;
+    private Appointment appointment;
     private LocalDateTime dateTimeStartInstanceOld;
     private VEvent<Appointment> vEvent;
     private VEvent<Appointment> vEventOld;
@@ -107,6 +107,7 @@ public class AppointmentEditController
     {
         dateTimeStartInstanceOld = appointment.getStartLocalDateTime();
         this.appointments = appointments;
+        this.appointment = appointment;
         this.vComponents = vComponents;
         this.vEventWriteCallback = vEventWriteCallback;
         vEvent = (VEvent<Appointment>) vComponent;
@@ -190,7 +191,7 @@ public class AppointmentEditController
         System.out.println("delete:" + vEvent.getRRule());
 //        LocalDateTime dateTimeStartInstanceNew = startTextField.getLocalDateTime();
         final ICalendarUtilities.WindowCloseType result = vEvent.delete(
-                dateTimeStartInstanceOld
+                appointment
               , appointments
               , vComponents
               , a -> ICalendarUtilities.repeatChangeDialog()
