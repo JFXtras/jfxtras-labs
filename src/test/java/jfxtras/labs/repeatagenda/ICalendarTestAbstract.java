@@ -5,7 +5,9 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -15,6 +17,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.Appo
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.RDate;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay.ByDayPair;
@@ -56,6 +59,17 @@ public abstract class ICalendarTestAbstract
     
     private static final Class<AppointmentImplLocal2> clazz = AppointmentImplLocal2.class;
     public Class<AppointmentImplLocal2> getClazz() { return clazz; }
+    
+    public static void refresh(List<VComponent<Appointment>> vComponents, List<Appointment> appointments)
+    {
+        vComponents.stream().forEach(v -> v.instances().clear());   
+        appointments.clear();
+        vComponents.stream().forEach(r ->
+        {
+            Collection<Appointment> newAppointments = r.makeInstances();
+            appointments.addAll(newAppointments);
+        });
+    }
     
     /** FREQ=YEARLY; */
     protected static VEventImpl getYearly1()
@@ -370,6 +384,14 @@ public abstract class ICalendarTestAbstract
         rule.setFrequency(weekly);
         Rule byRule = new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY);
         weekly.addByRule(byRule);
+        return vEvent;
+    }
+    
+    /** FREQ=WEEKLY;INTERVAL=2;COUNT=11;BYDAY=MO,WE,FR */
+    protected static VEventImpl getWeekly4()
+    {
+        VEventImpl vEvent = getWeekly2();
+        vEvent.getRRule().setCount(11);
         return vEvent;
     }
     

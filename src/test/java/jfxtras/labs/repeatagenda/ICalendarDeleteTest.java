@@ -10,42 +10,48 @@ import java.util.List;
 
 import org.junit.Test;
 
-import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
+/**
+ * Tests VEventImpl delete method
+ * @author david
+ *
+ */
 public class ICalendarDeleteTest extends ICalendarTestAbstract
 {
     @Test
     public void deleteVComponent1()
     {
-        ICalendarAgenda agenda = new ICalendarAgenda();
-        agenda.setSkin(new AgendaWeekSkin(agenda));
+//        ICalendarAgenda agenda = new ICalendarAgenda();
+//        agenda.setSkin(new AgendaWeekSkin(agenda));
+        // TODO - FIND WAY TO RUN LISTENER WITHOUT ALL OVERHEAD ABOVE? 
         VEventImpl vEvent = getIndividual1();
-        agenda.displayedLocalDateTime().set(LocalDateTime.of(2015, 11, 8, 0, 0));
-//        vEvent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 8, 0, 0));
-//        vEvent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 15, 0, 0));
-        agenda.vComponents().add(vEvent);
-//        List<VComponent<Appointment>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
-//        List<Appointment> appointments = new ArrayList<Appointment>();
-//        Collection<Appointment> newAppointments = vEvent.makeInstances();
-//        appointments.addAll(newAppointments);
-        assertEquals(1, agenda.appointments().size());
-        Appointment appointment = agenda.appointments().get(0);
+//        agenda.displayedLocalDateTime().set(LocalDateTime.of(2015, 11, 8, 0, 0));
+        vEvent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 8, 0, 0));
+        vEvent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 15, 0, 0));
+//        agenda.vComponents().add(vEvent);
+        List<VComponent<Appointment>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        List<Appointment> appointments = new ArrayList<Appointment>();
+        Collection<Appointment> newAppointments = vEvent.makeInstances();
+        appointments.addAll(newAppointments);
+        assertEquals(1, appointments.size());
+        Appointment appointment = appointments.get(0);
 
         final ICalendarUtilities.WindowCloseType result = vEvent.delete(
                 appointment.getStartLocalDateTime()
 //              , appointments
-              , agenda.vComponents()
+              , vComponents
               , null
               , a -> true
               , null);
-        
-        assertEquals(0, agenda.vComponents().size());
-        assertEquals(0, agenda.appointments().size());
+
+        refresh(vComponents, appointments); // normally, this is done by listener in ICalendarAgenda 
+
+        assertEquals(0, vComponents.size());
+        assertEquals(0, appointments.size());
     }
 
     @Test
@@ -73,6 +79,8 @@ public class ICalendarDeleteTest extends ICalendarTestAbstract
               , null
               , a -> true
               , null);
+        
+        refresh(vComponents, appointments); // normally, this is done by listener in ICalendarAgenda 
 
         assertEquals(1, vComponents.size());
         assertEquals(2, appointments.size());

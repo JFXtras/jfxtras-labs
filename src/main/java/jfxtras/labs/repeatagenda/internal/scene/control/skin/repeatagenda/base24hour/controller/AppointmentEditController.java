@@ -188,7 +188,7 @@ public class AppointmentEditController
     @FXML private void handleDeleteButton()
     {
 //        windowCloseType.set(WindowCloseType.X);
-        System.out.println("delete:" + vEvent.getRRule());
+//        System.out.println("delete:" + vEvent.getRRule());
 //        LocalDateTime dateTimeStartInstanceNew = startTextField.getLocalDateTime();
         Temporal dateOrDateTime = (appointment.isWholeDay()) ? 
                 appointment.getStartLocalDateTime().toLocalDate()
@@ -200,7 +200,8 @@ public class AppointmentEditController
               , a -> ICalendarUtilities.repeatChangeDialog()
               , a -> ICalendarUtilities.confirmDelete(a)
               , vEventWriteCallback);
-        System.out.println("delete:" + vComponents.size() + " " + appointments.size());
+        System.out.println("result: " + result);
+//        System.out.println("delete:" + vComponents.size() + " " + appointments.size());
         popupCloseType.set(result);
     }
     

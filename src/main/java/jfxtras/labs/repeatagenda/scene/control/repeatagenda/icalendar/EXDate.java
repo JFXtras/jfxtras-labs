@@ -21,7 +21,11 @@ public class EXDate extends RecurrenceComponentAbstract<EXDate>
     /** Remove date/times in exDates set */
     public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
     {
-        return inStream.filter(d -> ! getLocalDateTimes().contains(d));
+        return inStream.filter(d ->
+        {
+//            System.out.println("EXDate:" + d);
+            return ! getLocalDateTimes().contains(d);
+        });
     }
     
 }

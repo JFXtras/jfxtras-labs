@@ -393,6 +393,30 @@ public class ICalendarDateTest extends ICalendarTestAbstract
                 ));
         assertEquals(expectedDates, madeDates);
     }
+    
+    /** FREQ=WEEKLY;INTERVAL=2;COUNT=11;BYDAY=MO,WE,FR */
+    @Test
+    public void weeklyStreamTest4()
+    {
+        VEventImpl e = getWeekly4();
+        List<LocalDateTime> madeDates = e.getRRule()
+                .stream(e.dateTimeStartToLocalDateTime())
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 11, 10, 0)
+              , LocalDateTime.of(2015, 11, 13, 10, 0)
+              , LocalDateTime.of(2015, 11, 23, 10, 0)
+              , LocalDateTime.of(2015, 11, 25, 10, 0)
+              , LocalDateTime.of(2015, 11, 27, 10, 0)
+              , LocalDateTime.of(2015, 12, 7, 10, 0)
+              , LocalDateTime.of(2015, 12, 9, 10, 0)
+              , LocalDateTime.of(2015, 12, 11, 10, 0)
+              , LocalDateTime.of(2015, 12, 21, 10, 0)
+              , LocalDateTime.of(2015, 12, 23, 10, 0)
+              , LocalDateTime.of(2015, 12, 25, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
    
     /** Tests daily stream with FREQ=DAILY */
     @Test

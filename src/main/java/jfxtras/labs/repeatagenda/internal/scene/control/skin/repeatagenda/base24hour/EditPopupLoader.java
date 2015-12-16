@@ -2,7 +2,6 @@ package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base2
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -15,13 +14,13 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.AppointmentEditController;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
-import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 /** Makes new stage for popup window to edit VEvent with Agenda.Appointment instances
  * 
@@ -37,10 +36,7 @@ public class EditPopupLoader extends Stage {
     public EditPopupLoader(
               Appointment appointment // selected instance
             , VComponent<Appointment> vComponent
-            , LocalDateTimeRange dateTimeRange
-            , Collection<Appointment> appointments
-            , Collection<VComponent<Appointment>> repeats
-            , List<AppointmentGroup> appointmentGroups
+            , ICalendarAgenda agenda
             , Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback
             , Callback<Collection<VComponent<Appointment>>, Void> veventWriteCallback
             , Callback<Void, Void> refreshCallback)
@@ -67,17 +63,17 @@ public class EditPopupLoader extends Stage {
         appointmentEditController.setupData(
                 appointment
               , vComponent
-              , dateTimeRange
-              , appointments
-              , repeats
-              , appointmentGroups
+              , agenda.getDateTimeRange()
+              , agenda.appointments()
+              , agenda.vComponents()
+              , agenda.appointmentGroups()
               , veventWriteCallback
               , popupCloseType);
         Scene scene = new Scene(appointmentMenu);
 
 //        groupNameEdited.bindBidirectional(appointmentEditController.groupNameEditedProperty());
 
-        // listen for close event
+        // listen for close trigger
         popupCloseType.addListener((observable, oldSelection, newSelection) -> close());
         
         // when popup closes write changes if occurred
@@ -88,13 +84,13 @@ public class EditPopupLoader extends Stage {
             switch (popupCloseType.get())
             {
             case CLOSE_WITH_CHANGE:
-                
-//                System.out.println("close popup");
+                agenda.refresh();
+                System.out.println("close popup vevent /n " + vComponent);
 //                System.out.println(vComponent.toString());
 //                System.out.println("close popup");
                 if (groupNameEdited.getValue()) {    // TODO write group name changes
 //                    System.out.println("group change write needed");
-                    appointmentGroupWriteCallback.call(appointmentGroups);
+                    appointmentGroupWriteCallback.call(agenda.appointmentGroups());
 //                    AppointmentIO.writeAppointmentGroups(appointmentGroups, Settings.APPOINTMENT_GROUPS_FILE);
                 }
                 

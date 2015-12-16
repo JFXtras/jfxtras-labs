@@ -290,7 +290,7 @@ public class VEventImpl extends VEvent<Appointment>
 //        System.out.println("range: " + getDateTimeRangeStart() + " " + getDateTimeRangeEnd());
         if ((getDateTimeRangeStart() == null) || (getDateTimeRangeStart() == null)) throw new IllegalArgumentException("can't make instances without setting date/time range first");
         List<Appointment> madeAppointments = new ArrayList<>();
-        stream(VComponent.localDateTimeFromTemporal(getDateTimeStart()))
+        stream(VComponent.localDateTimeFromTemporal(getDateTimeStart())) // TODO - TRY STARTING AT getDateTimeRangeStart() FOR IMPROVED EFFICIENCY
                 .forEach(d -> {
                     Appointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
                     appt.setStartLocalDateTime(d);
@@ -533,13 +533,13 @@ public class VEventImpl extends VEvent<Appointment>
         if (getRRule() == null)
         {
             count = 1;
-        } else if ((getRRule().getUntil() == null) && (getRRule().getCount() == null)) // infinite
+        } else if ((getRRule().getUntil() == null) && (getRRule().getCount() == 0)) // infinite
         {
             count = 0;
         } else
         {
             LocalDateTime startDateTime = VComponent.localDateTimeFromTemporal(getDateTimeStart());
-            count = stream(startDateTime).count();
+            count = getRRule().stream(startDateTime).count();
         }
 
         System.out.println("count:" + count);
@@ -575,9 +575,11 @@ public class VEventImpl extends VEvent<Appointment>
                 {
                     getExDate().getTemporals().add(dateOrDateTime);
                 }
-                break;
+                return WindowCloseType.CLOSE_WITH_CHANGE;
             case THIS_AND_FUTURE:
+                if (getRRule().getCount() == 0) getRRule().setCount(0);
                 getRRule().setUntil(dateOrDateTime);
+                System.out.println("until:" + dateOrDateTime);
                 return WindowCloseType.CLOSE_WITH_CHANGE;
             default:
                 break;
