@@ -1,6 +1,7 @@
 package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
 import java.util.Collection;
@@ -77,10 +78,7 @@ public class AppointmentEditController
     
     @FXML public void initialize()
     {
-        wholeDayCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->  {
-            endTextField.setDisable(newSelection);
-            endTextField.setLocalDateTime(startTextField.getLocalDateTime());
-        });
+
     }
     
     /**
@@ -117,20 +115,72 @@ public class AppointmentEditController
         // Copy original VEvent
         vEventOld = (VEvent<Appointment>) VComponentFactory.newVComponent(vEvent);
         
+        // String bindings
         summaryTextField.textProperty().bindBidirectional(vEvent.summaryProperty());
         descriptionTextArea.textProperty().bindBidirectional(vEvent.descriptionProperty());
         locationTextField.textProperty().bindBidirectional(vEvent.locationProperty());
         
+        // WHOLE DAY
+        boolean wholeDay = vEvent.getDateTimeStart() instanceof LocalDate;
+        wholeDayCheckBox.setSelected(wholeDay);
+        
+        wholeDayCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
+        {
+            // TODO - TRY STACK PANE TO REPLACE LocalDateTimeTextField WITH LocalDateTextField WHEN WHOLE DAY
+            if (newSelection)
+            {
+                vEvent.dateTimeEndProperty().set(null);
+                vEvent.dateTimeStartProperty().set(null);
+
+                LocalDateTime startDate = startTextField.getLocalDateTime().toLocalDate().atStartOfDay();
+                startTextField.setLocalDateTime(startDate);
+                vEvent.setDateTimeStart(startDate.toLocalDate());
+                
+                LocalDateTime endDate = endTextField.getLocalDateTime().toLocalDate().atStartOfDay();
+                if (startDate.equals(endDate)) endDate = endDate.plusDays(1);
+                endTextField.setLocalDateTime(endDate.minusNanos(1));
+                vEvent.setDateTimeEnd(endDate.toLocalDate());
+            } else
+            {
+                vEvent.setDateTimeStart(startTextField.getLocalDateTime());
+                vEvent.setDateTimeEnd(endTextField.getLocalDateTime());
+            }
+        });
+        
         // START DATE/TIME
         Locale locale = Locale.getDefault();
         startTextField.setLocale(locale);
-        startTextField.setLocalDateTime(appointment.getStartLocalDateTime());
+        startTextField.setLocalDateTime(VComponent.localDateTimeFromTemporal(vEvent.getDateTimeStart()));
         startTextField.setParseErrorCallback(errorCallback);
+        startTextField.localDateTimeProperty().addListener((observable, oldSelection, newSelection) ->
+        {
+            if (wholeDayCheckBox.isSelected())
+            {
+                LocalDateTime date = newSelection.toLocalDate().atStartOfDay();
+                startTextField.setLocalDateTime(date);
+                vEvent.setDateTimeStart(newSelection.toLocalDate());
+            } else
+            {
+                vEvent.setDateTimeStart(newSelection);
+            }
+        });
 
         // END DATE/TIME
         endTextField.setLocale(locale);
-        endTextField.setLocalDateTime(appointment.getEndLocalDateTime());
+        endTextField.setLocalDateTime(VComponent.localDateTimeFromTemporal(vEvent.getDateTimeEnd()));
         endTextField.setParseErrorCallback(errorCallback);
+        endTextField.localDateTimeProperty().addListener((observable, oldSelection, newSelection) ->
+        {
+            if (wholeDayCheckBox.isSelected())
+            {
+                LocalDateTime date = newSelection.toLocalDate().atStartOfDay().plusDays(1);
+                endTextField.setLocalDateTime(date.minusNanos(1));
+                vEvent.setDateTimeEnd(newSelection.toLocalDate());
+            } else
+            {
+                vEvent.setDateTimeEnd(newSelection);
+            }            
+        });
         
         // APPOINTMENT GROUP
         appointmentGroupGridPane.appointmentGroupSelectedProperty().addListener(

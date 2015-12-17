@@ -327,7 +327,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     public void setUniqueIdentifier(String s) { uniqueIdentifier.set(s); }
 //    public T withUniqueIdentifier(String uid) { setUniqueIdentifier(uid); return (T)this; }
 
-    /** Callback for creating unique uid values - not implemented - TODO */
+    /** Callback for creating unique uid values  */
     public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
     private static Integer nextKey = 0;
     private Callback<Void, String> uidGeneratorCallback = (Void) ->
@@ -463,7 +463,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 (testObj.getComment() == null) : getComment().equals(testObj.getComment());
         boolean dateTimeStampEquals = (getDateTimeStamp() == null) ?
                 (testObj.getDateTimeStamp() == null) : getDateTimeStamp().equals(testObj.getDateTimeStamp());
-        boolean dateTimeStartsEquals = (getDateTimeStart() == null) ?
+        boolean dateTimeStartEquals = (getDateTimeStart() == null) ?
                 (testObj.getDateTimeStart() == null) : getDateTimeStart().equals(testObj.getDateTimeStart());
         boolean locationEquals = (getLocation() == null) ?
                 (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
@@ -477,9 +477,9 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 (testObj.getExDate() == null) : getExDate().equals(testObj.getExDate());
         boolean rDatesEquals = (getRDate() == null) ?
                 (testObj.getRDate() == null) : getRDate().equals(testObj.getRDate());
-        System.out.println("Vcomponent equals: " + categoriesEquals + " " + commentEquals + " " + dateTimeStampEquals + " " + dateTimeStartsEquals + " " 
+        System.out.println("Vcomponent equals: " + categoriesEquals + " " + commentEquals + " " + dateTimeStampEquals + " " + dateTimeStartEquals + " " 
                 + locationEquals + " " + summaryEquals + " " + uniqueIdentifierEquals + " " + rruleEquals + " " + eXDatesEquals + " " + rDatesEquals);
-        return categoriesEquals && commentEquals && dateTimeStampEquals && dateTimeStartsEquals && locationEquals
+        return categoriesEquals && commentEquals && dateTimeStampEquals && dateTimeStartEquals && locationEquals
                 && summaryEquals && uniqueIdentifierEquals && rruleEquals && eXDatesEquals && rDatesEquals;
     }
 

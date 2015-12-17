@@ -6,7 +6,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -102,6 +101,7 @@ public class ICalendarAgenda extends Agenda {
                             LocalDateTime dateTimeRangeEnd = dateTimeRange.getEndLocalDateTime();
                             newVComponent.setDateTimeRangeStart(dateTimeRangeStart);
                             newVComponent.setDateTimeRangeEnd(dateTimeRangeEnd);
+                            newVComponent.setUniqueIdentifier(newVComponent.getUidGeneratorCallback().call(null));
                             System.out.println("add vEvemt " + a.getStartLocalDateTime());
 //                            vComponents().removeListener(vComponentListener);
                             vComponents.add(newVComponent);
@@ -122,14 +122,12 @@ public class ICalendarAgenda extends Agenda {
         Settings.setup(resources);
 
         // Listen for changes to appointments (additions and deletions)
-        System.out.println("add listener1");
         appointments().addListener(appointmentListener);
 
 //        // Listen for changes to vComponents (additions and deletions)
 //        vComponents().addListener(vComponentListener);
         
-        // CHANGE DEFAULT EDIT POPUP
-        // new popup has repeat options
+        // CHANGE DEFAULT EDIT POPUP - new popup has repeat options
         setEditAppointmentCallback((Appointment appointment) ->
         {
             // Match appointment to VComponent
@@ -139,29 +137,19 @@ public class ICalendarAgenda extends Agenda {
                     .findFirst()
                     .get();
 
-//            appointments().removeListener(appointmentListener); // remove listener to prevent making extra vEvents during edit
-            Stage repeatMenu = new EditPopupLoader(
+            appointments().removeListener(appointmentListener); // remove listener to prevent making extra vEvents during edit
+            Stage editPopup = new EditPopupLoader(
                       appointment
                     , vevent
                     , this
-//                    , dateTimeRange
-//                    , appointments()
-//                    , vComponents()
-//                    , appointmentGroups()
                     , appointmentGroupWriteCallback
                     , repeatWriteCallback // write repeat callback initialized to null
                     , a -> { this.refresh(); return null; }); // refresh agenda
-            repeatMenu.setOnShowing((windowEvent) -> 
-            {
-                System.out.println("remove listener2");
-                appointments().removeListener(appointmentListener);
-            }); // return listener when repeatMenu closes
-            repeatMenu.show();
-            repeatMenu.setOnHiding((windowEvent) -> 
-            {
-                System.out.println("add listener2");
-                appointments().addListener(appointmentListener);
-            }); // return listener when repeatMenu closes
+            
+            // remove listener to prevent making extra vEvents during edit
+            editPopup.setOnShowing((windowEvent) -> appointments().removeListener(appointmentListener));
+            editPopup.show();
+            editPopup.setOnHiding((windowEvent) -> appointments().addListener(appointmentListener)); // return listener
             return null;
         });
         
@@ -185,36 +173,18 @@ public class ICalendarAgenda extends Agenda {
         if (dateTimeRange != null)
         {
             // Remove instances and appointments
-            System.out.println("start refresh: " + vComponents().size() + " " + appointments().size());
-            vComponents().stream().forEach(v -> v.instances().clear());   
+            vComponents().stream().forEach(v -> v.instances().clear());
     
-            // Make new repeat-made appointments inside range
-//            appointments().removeListener(appointmentListener); // remove appointmentListener to prevent making extra vEvents during refresh
-
-            System.out.println("remove listener3");
             appointments().removeListener(appointmentListener); // remove appointmentListener to prevent making extra vEvents during refresh
             appointments().clear();
-            Iterator<VComponent<Appointment>> i = vComponents().iterator();
-//            for (VComponent<Appointment> r : vComponents())
-            while (i.hasNext())
+            vComponents().stream().forEach(r ->
             {
-                VComponent<Appointment> r = i.next();
-                System.out.println("r:" + r.getDateTimeStart());
                 r.setDateTimeRangeStart(dateTimeRange.getStartLocalDateTime());
                 r.setDateTimeRangeEnd(dateTimeRange.getEndLocalDateTime());
                 Collection<Appointment> newAppointments = r.makeInstances();
                 appointments().addAll(newAppointments);
-            }
-//            vComponents().stream().forEach(r ->
-//            {
-//                r.setDateTimeRangeStart(dateTimeRange.getStartLocalDateTime());
-//                r.setDateTimeRangeEnd(dateTimeRange.getEndLocalDateTime());
-//                Collection<Appointment> newAppointments = r.makeInstances();
-//                appointments().addAll(newAppointments);
-//            });
-            System.out.println("add listener3");
+            });
             appointments().addListener(appointmentListener); // add back appointmentListener
-            System.out.println("end refresh: " + vComponents().size() + " " + appointments().size());
         }
     }
     

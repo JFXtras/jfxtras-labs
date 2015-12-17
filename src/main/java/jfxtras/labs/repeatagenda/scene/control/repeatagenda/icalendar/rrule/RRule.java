@@ -103,9 +103,10 @@ public class RRule {
      * UNTIL: (RFC 5545 iCalendar 3.3.10, page 41) date/time repeat rule ends
      * Uses lazy initialization of property because often UNTIL stays as the default value of 0
      */
+    // TODO - REMOVE LAZY INITIALIZATION?  I USE NAME ALL THE TIME
     public SimpleObjectProperty<Temporal> untilProperty()
     {
-        if (until == null) until = new SimpleObjectProperty<Temporal>(this, "until", _until);
+        if (until == null) until = new SimpleObjectProperty<Temporal>(this, "UNTIL", _until);
         return until;
     }
     private SimpleObjectProperty<Temporal> until;

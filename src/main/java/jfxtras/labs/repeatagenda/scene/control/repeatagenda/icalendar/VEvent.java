@@ -263,7 +263,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     {
         dateTimeEndlistener = (obs, oldSel, newSel) ->
         { // listener to synch dateTimeEnd and durationInSeconds
-            if (getDateTimeStart() != null)
+            if ((getDateTimeStart() != null) && (getDateTimeEnd() != null))
             {
                 long nanos = 0;
                 if ((getDateTimeEnd() instanceof LocalDateTime) && (getDateTimeStart() instanceof LocalDateTime))
@@ -284,7 +284,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         
         dateTimeStartlistener = (obs, oldSel, newSel) ->
         { // listener to synch dateTimeStart and durationInSeconds
-            if (getDateTimeEnd() != null)
+            if ((getDateTimeStart() != null) && (getDateTimeEnd() != null))
             {
                 long nanos = 0;
                 if ((getDateTimeEnd() instanceof LocalDateTime) && (getDateTimeStart() instanceof LocalDateTime))
