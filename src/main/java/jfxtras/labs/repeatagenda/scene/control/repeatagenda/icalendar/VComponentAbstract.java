@@ -509,7 +509,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * Checks to see if object contains required properties.  Returns empty string if it is
      * valid.  Returns string of errors if not valid..
      */
-    public String validityCheck()
+    public String makeErrorString()
     {
         StringBuilder errorsBuilder = new StringBuilder();
         if (getDateTimeStart() == null) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DTSTART must not be null.");
@@ -607,6 +607,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         { // if individual event
             stream1 = Arrays.asList(dateTimeStartToLocalDateTime())
                     .stream()
+                    .peek(d -> System.out.println("stream: " + d + " " + startDateTime))
                     .filter(d -> ! d.isBefore(startDateTime));
 ////            if (! startDateTime.isBefore(getDateTimeStart()))
 //            if (! startDateTime.isBefore(getDateTimeStart().getLocalDateTime()))

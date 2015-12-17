@@ -1,7 +1,6 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
@@ -155,7 +154,7 @@ public class VEventImpl extends VEvent<Appointment>
         setSummary(appointment.getSummary());
         setUniqueIdentifier(getUidGeneratorCallback().call(null));
         instances().add(appointment);
-        if (! validityCheck().equals("")) throw new IllegalArgumentException(validityCheck());
+        if (! makeErrorString().equals("")) throw new IllegalArgumentException(makeErrorString());
     }
 
     /** Deep copy all fields from source to destination 
@@ -217,7 +216,7 @@ public class VEventImpl extends VEvent<Appointment>
     @Override
     public String toString()
     {
-        String errors = validityCheck();
+        String errors = makeErrorString();
         if (! errors.equals("")) throw new IllegalArgumentException(errors);
         Map<Property, String> properties = makePropertiesMap();
         String propertiesString = properties.entrySet()
@@ -238,11 +237,17 @@ public class VEventImpl extends VEvent<Appointment>
     }
     
     @Override
-    public String validityCheck()
+    public String makeErrorString()
     {
-        String errors = super.validityCheck();
+        String errors = super.makeErrorString();
 //        if (getAppointmentClass() == null) errors += System.lineSeparator() + "Invalid VEventImpl.  appointmentClass must not be null.";
         return errors;
+    }
+    
+    @Override
+    public boolean isValid()
+    {
+        return super.makeErrorString().equals("");
     }
     
     /** Make new VEventImpl and populate properties by parsing a list of strings 
@@ -336,7 +341,7 @@ public class VEventImpl extends VEvent<Appointment>
         final long durationInNanos = ChronoUnit.NANOS.between(dateTimeStartInstanceNew, dateTimeEndInstanceNew);
         final VEventImpl vEventOld = (VEventImpl) VComponentOld;
 //        System.out.println(dateTimeStartInstanceNew + " " + vEventOld2.getDateTimeStart());
-        boolean dateTimeNewSame = dateTimeStartInstanceNew.toLocalTime().equals(LocalTime.from(vEventOld.getDateTimeStart()));
+        boolean dateTimeNewSame = dateTimeStartInstanceNew.toLocalTime().equals(VComponent.localDateTimeFromTemporal(vEventOld.getDateTimeStart()));
         boolean durationSame = (durationInNanos == vEventOld.getDurationInNanos());
         System.out.println("same:" + dateTimeNewSame + " " + durationSame + " " + this.equals(VComponentOld) + " " + this.getDurationInNanos() + " " + this.getDateTimeEnd());
         if (dateTimeNewSame && durationSame && this.equals(VComponentOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
@@ -491,7 +496,8 @@ public class VEventImpl extends VEvent<Appointment>
         
         if (editedFlag) // make these changes as long as CANCEL is not selected
         { // remove appointments from main collection
-            System.out.println("Edited flag:");
+            if (! isValid()) throw new IllegalArgumentException(makeErrorString());
+            
             appointments.removeIf(a -> instances().stream().anyMatch(a2 -> a2 == a));
 
             //            Iterator<Appointment> i = appointments.iterator();

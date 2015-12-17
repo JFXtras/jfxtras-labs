@@ -385,9 +385,9 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     }
     
     @Override
-    public String validityCheck()
+    public String makeErrorString()
     {
-        StringBuilder errorsBuilder = new StringBuilder(super.validityCheck());
+        StringBuilder errorsBuilder = new StringBuilder(super.makeErrorString());
         boolean durationNull = getDurationInNanos() == 0;
         boolean endDateTimeNull = getDateTimeEnd() == null;
         // Note: Check for invalid condition where both DURATION and DTEND not being null is done in parseVEvent.

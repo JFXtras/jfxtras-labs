@@ -73,7 +73,7 @@ public interface VComponent<T>
     Temporal getDateTimeStart();
     default void setDateTimeStart(Temporal dtStart)
     {
-        boolean correctType = (dtStart instanceof LocalDate) || (dtStart instanceof LocalDateTime);
+        boolean correctType = (dtStart instanceof LocalDate) || (dtStart instanceof LocalDateTime) || (dtStart == null);
         if (! correctType) throw new IllegalArgumentException("DTStart type must be LocalDate or LocalDateTime, not: " + dtStart.getClass().getSimpleName());
     };
         
@@ -148,6 +148,14 @@ public interface VComponent<T>
     /** Callback for creating unique uid values  */
     Callback<Void, String> getUidGeneratorCallback();
     void setUidGeneratorCallback(Callback<Void, String> uidCallback);
+    
+    /**
+     * Checks to see if VComponent is has all required properties filled.  Also checks
+     * to ensure all properties contain valid values.
+     * 
+     * @return true for valid VComponent, false for invalid one
+     */
+    boolean isValid();
     
     /** Stream of date/times that indicate the start of the event(s).
      * For a VEvent without RRULE the stream will contain only one date/time element.

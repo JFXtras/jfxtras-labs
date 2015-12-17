@@ -65,6 +65,9 @@ public class AppointmentEditController
     @FXML private Button saveAdvancedButton;
     @FXML private Button deleteAppointmentButton;
     @FXML private RepeatableController<Appointment> repeatableController;
+    
+    private Temporal lastDateTimeStart = null;
+    private Temporal lastDateTimeEnd = null;
 
     // Callback for LocalDateTimeTextField that is called when invalid date/time is entered
     Callback<Throwable, Void> errorCallback = (throwable) ->
@@ -129,25 +132,48 @@ public class AppointmentEditController
             // TODO - TRY STACK PANE TO REPLACE LocalDateTimeTextField WITH LocalDateTextField WHEN WHOLE DAY
             if (newSelection)
             {
-                vEvent.dateTimeEndProperty().set(null);
-                vEvent.dateTimeStartProperty().set(null);
+                lastDateTimeStart = vEvent.getDateTimeStart();
+                lastDateTimeEnd = vEvent.getDateTimeEnd();
+                vEvent.setDateTimeStart(null);
+                vEvent.setDateTimeEnd(null);
 
                 LocalDateTime startDate = startTextField.getLocalDateTime().toLocalDate().atStartOfDay();
-                startTextField.setLocalDateTime(startDate);
-                vEvent.setDateTimeStart(startDate.toLocalDate());
+                if (startDate.equals(startTextField.getLocalDateTime()))
+                { // no change - listener will not fire
+                    vEvent.setDateTimeStart(startTextField.getLocalDateTime().toLocalDate());
+                } else
+                {
+                    startTextField.setLocalDateTime(startDate);                    
+                }
                 
-                LocalDateTime endDate = endTextField.getLocalDateTime().toLocalDate().atStartOfDay();
-                if (startDate.equals(endDate)) endDate = endDate.plusDays(1);
-                endTextField.setLocalDateTime(endDate.minusNanos(1));
-                vEvent.setDateTimeEnd(endDate.toLocalDate());
+                LocalDateTime endDate = endTextField.getLocalDateTime().toLocalDate().plusDays(1).atStartOfDay();
+                if (endDate.equals(endTextField.getLocalDateTime()))
+                { // no change - listener will not fire
+                    vEvent.setDateTimeStart(endTextField.getLocalDateTime().toLocalDate());
+                } else
+                {
+                    endTextField.setLocalDateTime(endDate);                    
+                }
             } else
             {
-                vEvent.setDateTimeStart(startTextField.getLocalDateTime());
-                vEvent.setDateTimeEnd(endTextField.getLocalDateTime());
+                if ((lastDateTimeStart != null) & (lastDateTimeEnd != null))
+                {
+                    vEvent.setDateTimeStart(null);
+                    vEvent.setDateTimeEnd(null);
+                    startTextField.setLocalDateTime(VComponent.localDateTimeFromTemporal(lastDateTimeStart));
+                    endTextField.setLocalDateTime(VComponent.localDateTimeFromTemporal(lastDateTimeEnd));  
+                } else
+                {
+                    vEvent.setDateTimeStart(null);
+                    vEvent.setDateTimeEnd(null);
+                    vEvent.setDateTimeStart(startTextField.getLocalDateTime());
+                    vEvent.setDateTimeEnd(endTextField.getLocalDateTime());
+                }
             }
         });
         
         // START DATE/TIME
+        // TODO - ICALENDAR REQUIRES DTEND TO BE EXCLUSIVE OF DATE - EVEN WHOLE DAY
         Locale locale = Locale.getDefault();
         startTextField.setLocale(locale);
         startTextField.setLocalDateTime(VComponent.localDateTimeFromTemporal(vEvent.getDateTimeStart()));
@@ -173,13 +199,13 @@ public class AppointmentEditController
         {
             if (wholeDayCheckBox.isSelected())
             {
-                LocalDateTime date = newSelection.toLocalDate().atStartOfDay().plusDays(1);
-                endTextField.setLocalDateTime(date.minusNanos(1));
+                LocalDateTime date = newSelection.toLocalDate().atStartOfDay();
+                endTextField.setLocalDateTime(date);
                 vEvent.setDateTimeEnd(newSelection.toLocalDate());
             } else
             {
                 vEvent.setDateTimeEnd(newSelection);
-            }            
+            }
         });
         
         // APPOINTMENT GROUP
@@ -210,8 +236,7 @@ public class AppointmentEditController
     // AFTER CLICK SAVE VERIFY REPEAT IS VALID, IF NOT PROMPT.
     @FXML private void handleCloseButton()
     {
-        LocalDateTime dateTimeStartInstanceNew = startTextField.getLocalDateTime();
-        LocalDateTime dateTimeEndInstanceNew = endTextField.getLocalDateTime();
+        if (! vEvent.isValid()) throw new IllegalArgumentException(vEvent.makeErrorString());
         final ICalendarUtilities.WindowCloseType result = vEvent.edit(
                 dateTimeStartInstanceOld
               , appointment
@@ -221,7 +246,6 @@ public class AppointmentEditController
               , a -> ICalendarUtilities.repeatChangeDialog()
               , vEventWriteCallback);
         popupCloseType.set(result);
-        System.out.println("vEvent:" + vEvent.getDateTimeStart()+ " " + vEvent.getDateTimeEnd());
         if (popupCloseType.get() == WindowCloseType.CLOSE_WITHOUT_CHANGE)
         {
         }
