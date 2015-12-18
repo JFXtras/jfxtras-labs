@@ -21,6 +21,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxx
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByMonth;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByMonthDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByWeekNo;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Daily;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Monthly;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Yearly;
@@ -108,6 +109,19 @@ public class ICalendarParseTest extends ICalendarTestAbstract
         expectedRRule.setFrequency(frequency);
         assertEquals(expectedRRule, rRule);
     }
+
+    @Test
+    public void canParseRRule4()
+    {
+        String s = "FREQ=DAILY;INTERVAL=2;UNTIL=20151201T100000";
+        RRule rRule = RRule.parseRRule(s);
+        RRule expectedRRule = new RRule();
+        expectedRRule.setUntil(LocalDateTime.of(2015, 12, 1, 10, 0));
+        Frequency frequency = new Daily();
+        frequency.setInterval(2);
+        expectedRRule.setFrequency(frequency);
+        assertEquals(expectedRRule, rRule);
+    }
     
     /** Tests FREQ=YEARLY */
     @Test
@@ -145,6 +159,26 @@ public class ICalendarParseTest extends ICalendarTestAbstract
         VEvent expectedVEvent = getDaily3();
         assertEquals(expectedVEvent, vEvent);
     }
+    
+    /** FREQ=DAILY;INVERVAL=2;UNTIL=20151201T000000 */
+    @Test
+    public void canParseDaily6()
+    {
+        String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
+                              + "CATEGORIES:group03" + System.lineSeparator()
+                              + "DESCRIPTION:Daily6 Description" + System.lineSeparator()
+                              + "DTEND:20151109T110000" + System.lineSeparator()
+                              + "DTSTAMP:20150110T080000" + System.lineSeparator()
+                              + "DTSTART:20151109T100000" + System.lineSeparator()
+                              + "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=20151201T000000" + System.lineSeparator()
+                              + "SUMMARY:Daily6 Summary" + System.lineSeparator()
+                              + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
+                              + "END:VEVENT";
+        VEventImpl vEvent = VEventImpl.parseVEvent(vEventString, DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl expectedVEvent = getDaily6();
+        assertEquals(expectedVEvent, vEvent);
+    }
+    
     /** Tests FREQ=YEARLY */
     @Test
     public void canParseDailyWithException1()
@@ -184,8 +218,6 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     @Test
     public void canParseDate1()
     {
-//        VDateTime expectedDateTime = new VDateTime(LocalDate.of(2015, 11, 15));
-//        VDateTime dateTime = VDateTime.parseString("VALUE=DATE:20151115");
         Temporal date = LocalDate.of(2015, 11, 15);
         Temporal dateString = VComponent.parseTemporal("VALUE=DATE:20151115");
         assertEquals(dateString, date);

@@ -26,9 +26,8 @@ public interface Frequency {
 
     /** Number of frequency periods elapsed before next occurrence. Defaults to 1*/
     Integer getInterval();
+    /** Number of frequency periods elapsed before next occurrence. Defaults to 1*/
     void setInterval(Integer interval);
-    /** Set interval from strong containing INTERVAL=n where n is a number */
-    void setInterval(String s);
     
     /** Collection of rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
      * The rules include all BYxxx rules, EXDate and RDate lists.

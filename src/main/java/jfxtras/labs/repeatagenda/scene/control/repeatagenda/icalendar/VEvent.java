@@ -485,8 +485,6 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                 }
             }
         }
-        vEvent.useDuration = true;
-        vEvent.useDateTimeEnd = false;
         return (VEvent<U>) VComponentAbstract.parseVComponent(vEvent, strings);
     }
        

@@ -67,6 +67,26 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     assertEquals(expectedString, madeString);
     }
     
+    /** Tests FREQ=MONTHLY;BYDAY=FR;BYMONTHDAY=13 */
+    @Test
+    public void daily6ToString()
+    {
+
+    VEventImpl e = getDaily6();
+    String madeString = e.toString();
+    String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
+                        + "CATEGORIES:group03" + System.lineSeparator()
+                        + "DESCRIPTION:Daily6 Description" + System.lineSeparator()
+                        + "DTEND:20151109T110000" + System.lineSeparator()
+                        + "DTSTAMP:20150110T080000" + System.lineSeparator()
+                        + "DTSTART:20151109T100000" + System.lineSeparator()
+                        + "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=20151201T000000" + System.lineSeparator()
+                        + "SUMMARY:Daily6 Summary" + System.lineSeparator()
+                        + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
+                        + "END:VEVENT";
+    assertEquals(expectedString, madeString);
+    }
+    
     /** FREQ=DAILY;INVERVAL=3;COUNT=6
      *  EXDATE=20151112T100000,20151115T100000 */
     @Test

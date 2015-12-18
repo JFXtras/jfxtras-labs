@@ -490,11 +490,14 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDurationInNanos(5400L * NANOS_IN_SECOND);
+        vEvent.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0));
+//        vEvent.setDurationInNanos(5400L * NANOS_IN_SECOND);
         vEvent.setAppointmentGroup(appointmentGroups.get(3));
         vEvent.setDescription("Daily6 Description");
         vEvent.setSummary("Daily6 Summary");
         vEvent.setAppointmentClass(clazz);
+        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         RRule rule = new RRule()
                 .withUntil(LocalDateTime.of(2015, 12, 1, 0, 0));
         vEvent.setRRule(rule);

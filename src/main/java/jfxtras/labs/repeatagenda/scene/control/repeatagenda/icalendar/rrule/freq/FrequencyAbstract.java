@@ -7,8 +7,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
@@ -42,30 +40,6 @@ public abstract class FrequencyAbstract implements Frequency {
         } else
         {
             throw new IllegalArgumentException("INTERVAL can't be less than 1. (" + i + ")");
-        }
-    }
-    @Override public void setInterval(String s)
-    {
-        Pattern p = Pattern.compile("(?<=INTERVAL=)[0-9]+");
-        Matcher m = p.matcher(s);
-        int i=0;
-        while (m.find())
-        {
-            String token = m.group();
-            if (i==0)
-            {
-                i = Integer.parseInt(token);
-                if (i > 0)
-                {
-                    setInterval(i);
-                } else
-                {
-                    throw new IllegalArgumentException("INTERVAL must be greater than or equal to one");                    
-                }
-            } else
-            {
-                throw new IllegalArgumentException("INTERVAL can only be specified once");
-            }
         }
     }
     public Frequency withInterval(int interval) { setInterval(interval); return this; }

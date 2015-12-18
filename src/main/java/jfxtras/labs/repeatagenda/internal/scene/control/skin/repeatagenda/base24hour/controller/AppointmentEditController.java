@@ -3,6 +3,7 @@ package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base2
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.List;
@@ -139,16 +140,19 @@ public class AppointmentEditController
 
                 LocalDateTime startDate = startTextField.getLocalDateTime().toLocalDate().atStartOfDay();
                 if (startDate.equals(startTextField.getLocalDateTime()))
-                { // no change - listener will not fire
+                { // no change - listener will not fire, value must be set here
                     vEvent.setDateTimeStart(startTextField.getLocalDateTime().toLocalDate());
                 } else
                 {
                     startTextField.setLocalDateTime(startDate);                    
                 }
                 
-                LocalDateTime endDate = endTextField.getLocalDateTime().toLocalDate().plusDays(1).atStartOfDay();
+                LocalTime localTime = endTextField.getLocalDateTime().toLocalTime();
+                LocalDateTime endDate = (localTime.equals(LocalTime.of(0, 0))) ? // use start of next day, if not already on start of day
+                        endTextField.getLocalDateTime()
+                      : endTextField.getLocalDateTime().toLocalDate().plusDays(1).atStartOfDay();
                 if (endDate.equals(endTextField.getLocalDateTime()))
-                { // no change - listener will not fire
+                { // no change - listener will not fire, value must be set here
                     vEvent.setDateTimeStart(endTextField.getLocalDateTime().toLocalDate());
                 } else
                 {

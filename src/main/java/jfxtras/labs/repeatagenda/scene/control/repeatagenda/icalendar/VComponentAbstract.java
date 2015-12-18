@@ -607,7 +607,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         { // if individual event
             stream1 = Arrays.asList(dateTimeStartToLocalDateTime())
                     .stream()
-                    .peek(d -> System.out.println("stream: " + d + " " + startDateTime))
                     .filter(d -> ! d.isBefore(startDateTime));
 ////            if (! startDateTime.isBefore(getDateTimeStart()))
 //            if (! startDateTime.isBefore(getDateTimeStart().getLocalDateTime()))

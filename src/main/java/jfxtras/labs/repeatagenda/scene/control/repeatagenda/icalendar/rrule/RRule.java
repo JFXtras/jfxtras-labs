@@ -3,7 +3,6 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule;
 import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,13 +35,11 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
  * @author David Bal
  *
  */
-public class RRule {
-    
-//    public LocalDateTimeRange getDateTimeRange() { return appointmentDateTimeRange; }
-//    private LocalDateTimeRange appointmentDateTimeRange;
-//    public void setAppointmentDateTimeRange(LocalDateTimeRange appointmentDateTimeRange) { this.appointmentDateTimeRange = appointmentDateTimeRange; }
-//    public VEvent withAppointmentDateTimeRange(LocalDateTimeRange appointmentDateTimeRange) { setAppointmentDateTimeRange(appointmentDateTimeRange); return this; }
-
+public class RRule
+{
+    private final static String COUNT_NAME = "COUNT";
+    private final static String UNTIL_NAME = "UNTIL";
+    private final static String INTERVAL_NAME = "INTERVAL";
     
     /** Parent VEvent 
      * Contains following data necessary for RRule: DTSTART, DURATION */
@@ -68,7 +65,7 @@ public class RRule {
      */
     public IntegerProperty countProperty()
     {
-        if (count == null) count = new SimpleIntegerProperty(this, "COUNT", _count);
+        if (count == null) count = new SimpleIntegerProperty(this, COUNT_NAME, _count);
         return count;
     }
     private IntegerProperty count;
@@ -106,7 +103,7 @@ public class RRule {
     // TODO - REMOVE LAZY INITIALIZATION?  I USE NAME ALL THE TIME
     public SimpleObjectProperty<Temporal> untilProperty()
     {
-        if (until == null) until = new SimpleObjectProperty<Temporal>(this, "UNTIL", _until);
+        if (until == null) until = new SimpleObjectProperty<Temporal>(this, UNTIL_NAME, _until);
         return until;
     }
     private SimpleObjectProperty<Temporal> until;
@@ -219,42 +216,102 @@ public class RRule {
     public static RRule parseRRule(String rRuleString)
     {
         RRule rrule = new RRule();
+        Integer interval = null;
         
         // Parse string
-        Arrays.stream(rRuleString.split(";"))
-                .forEach(r ->
+        for (String element : rRuleString.split(";"))
+        {
+            String property = element.substring(0, element.indexOf("="));
+            String value = element.substring(element.indexOf("=") + 1).trim();
+            if (property.equals(rrule.frequencyProperty().getName()))
+            { // FREQ
+                Frequency freq = Frequency.FrequencyType
+                        .valueOf(value)
+                        .newInstance();
+                rrule.setFrequency(freq);
+                if (interval != null) rrule.getFrequency().setInterval(interval);
+            } else if (property.equals(COUNT_NAME))
+            { // COUNT
+                rrule.setCount(Integer.parseInt(value));
+            } else if (property.equals(UNTIL_NAME))
+            { // UNTIL
+                Temporal dateTime = VComponent.parseTemporal(value);
+                rrule.setUntil(dateTime);
+            } else if (property.equals(INTERVAL_NAME))
+            { // INTERVAL
+                if (rrule.getFrequency() != null)
                 {
-                    String[] ruleAndValue = r.split("=");
-                    if (ruleAndValue[0].equals(rrule.frequencyProperty().getName()))
-                    { // FREQ
-                        Frequency freq = Frequency.FrequencyType
-                                .valueOf(ruleAndValue[1])
-                                .newInstance();
-                        freq.setInterval(rRuleString);
-                        rrule.setFrequency(freq);
-                    } else if (ruleAndValue[0].equals(rrule.countProperty().getName()))
+                    rrule.getFrequency().setInterval(Integer.parseInt(value));
+                } else
+                {
+                    interval = Integer.parseInt(value);
+                }
+            } else
+            {
+                for (ByRules b : ByRules.values())
+                {
+//                    System.out.println("Testing: " + property + " " + b + (property.equals(b.toString())));
+                    if (property.equals(b.toString()))
                     {
-                        System.out.println("foudn COUNT: ");
-                        rrule.setCount(Integer.parseInt(ruleAndValue[1]));
-                    } else
-                    {
-                        for (ByRules b : ByRules.values())
-                        {
-//                            System.out.println("Testing: " + ruleAndValue[0] + " " + b + (ruleAndValue[0].equals(b.toString())));
-                            if (ruleAndValue[0].equals(b.toString()))
-                            {
-                                Rule rule = null;
-                                try {
-                                    rule = b.newInstance(ruleAndValue[1]);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-//                                System.out.println("rule: " + rule + " " + rrule);
-                                rrule.getFrequency().addByRule(rule);
-                            }
+                        Rule rule = null;
+                        try {
+                            rule = b.newInstance(value);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
+//                        System.out.println("rule: " + rule + " " + rrule);
+                        rrule.getFrequency().addByRule(rule);
                     }
-                });
+                }
+            }            
+        }
+//        Arrays.stream(rRuleString.split(";"))
+//                .forEach(r ->
+//                {
+//                    String property = r.substring(0, r.indexOf("="));
+//                    String value = r.substring(r.indexOf("=") + 1).trim();
+//                    if (property.equals(rrule.frequencyProperty().getName()))
+//                    { // FREQ
+//                        Frequency freq = Frequency.FrequencyType
+//                                .valueOf(value)
+//                                .newInstance();
+//                        rrule.setFrequency(freq);
+//                        if (interval != null) rrule.getFrequency().setInterval(interval);
+//                    } else if (property.equals(COUNT_NAME))
+//                    { // COUNT
+//                        rrule.setCount(Integer.parseInt(value));
+//                    } else if (property.equals(UNTIL_NAME))
+//                    { // UNTIL
+//                        Temporal dateTime = VComponent.parseTemporal(value);
+//                        rrule.setUntil(dateTime);
+//                    } else if (property.equals(INTERVAL_NAME))
+//                    { // INTERVAL
+//                        if (rrule.getFrequency() != null)
+//                        {
+//                            rrule.getFrequency().setInterval(Integer.parseInt(value));
+//                        } else
+//                        {
+//                            interval = Integer.parseInt(value);
+//                        }
+//                    } else
+//                    {
+//                        for (ByRules b : ByRules.values())
+//                        {
+//                            System.out.println("Testing: " + property + " " + b + (property.equals(b.toString())));
+//                            if (property.equals(b.toString()))
+//                            {
+//                                Rule rule = null;
+//                                try {
+//                                    rule = b.newInstance(value);
+//                                } catch (Exception e) {
+//                                    e.printStackTrace();
+//                                }
+////                                System.out.println("rule: " + rule + " " + rrule);
+//                                rrule.getFrequency().addByRule(rule);
+//                            }
+//                        }
+//                    }
+//                });
         return rrule;
     }
 
