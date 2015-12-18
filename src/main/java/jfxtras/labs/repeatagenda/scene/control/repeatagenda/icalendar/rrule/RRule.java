@@ -250,7 +250,6 @@ public class RRule
             {
                 for (ByRules b : ByRules.values())
                 {
-//                    System.out.println("Testing: " + property + " " + b + (property.equals(b.toString())));
                     if (property.equals(b.toString()))
                     {
                         Rule rule = null;
@@ -259,59 +258,11 @@ public class RRule
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-//                        System.out.println("rule: " + rule + " " + rrule);
                         rrule.getFrequency().addByRule(rule);
                     }
                 }
             }            
         }
-//        Arrays.stream(rRuleString.split(";"))
-//                .forEach(r ->
-//                {
-//                    String property = r.substring(0, r.indexOf("="));
-//                    String value = r.substring(r.indexOf("=") + 1).trim();
-//                    if (property.equals(rrule.frequencyProperty().getName()))
-//                    { // FREQ
-//                        Frequency freq = Frequency.FrequencyType
-//                                .valueOf(value)
-//                                .newInstance();
-//                        rrule.setFrequency(freq);
-//                        if (interval != null) rrule.getFrequency().setInterval(interval);
-//                    } else if (property.equals(COUNT_NAME))
-//                    { // COUNT
-//                        rrule.setCount(Integer.parseInt(value));
-//                    } else if (property.equals(UNTIL_NAME))
-//                    { // UNTIL
-//                        Temporal dateTime = VComponent.parseTemporal(value);
-//                        rrule.setUntil(dateTime);
-//                    } else if (property.equals(INTERVAL_NAME))
-//                    { // INTERVAL
-//                        if (rrule.getFrequency() != null)
-//                        {
-//                            rrule.getFrequency().setInterval(Integer.parseInt(value));
-//                        } else
-//                        {
-//                            interval = Integer.parseInt(value);
-//                        }
-//                    } else
-//                    {
-//                        for (ByRules b : ByRules.values())
-//                        {
-//                            System.out.println("Testing: " + property + " " + b + (property.equals(b.toString())));
-//                            if (property.equals(b.toString()))
-//                            {
-//                                Rule rule = null;
-//                                try {
-//                                    rule = b.newInstance(value);
-//                                } catch (Exception e) {
-//                                    e.printStackTrace();
-//                                }
-////                                System.out.println("rule: " + rule + " " + rrule);
-//                                rrule.getFrequency().addByRule(rule);
-//                            }
-//                        }
-//                    }
-//                });
         return rrule;
     }
 

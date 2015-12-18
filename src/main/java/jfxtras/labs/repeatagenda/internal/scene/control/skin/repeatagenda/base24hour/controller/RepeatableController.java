@@ -346,6 +346,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
             vComponent.getRRule().countProperty().bind(endAfterEventsSpinner.valueProperty());
         } else
         {
+            vComponent.getRRule().countProperty().unbind();
             vComponent.getRRule().setCount(0);
             endAfterEventsSpinner.setValueFactory(null);
             endAfterEventsSpinner.setDisable(true);
