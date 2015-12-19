@@ -33,7 +33,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
-public abstract class ICalendarTestAbstract
+public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
 {
     public static final long NANOS_IN_SECOND = Duration.ofSeconds(1).toNanos();
 
@@ -46,7 +46,7 @@ public abstract class ICalendarTestAbstract
                 ICalendarAgenda.AppointmentGroupImpl a = new ICalendarAgenda.AppointmentGroupImpl()
 //                    .withKey(i)
                     .withDescription("group" + (i < 10 ? "0" : "") + i);
-                a.setStyleClass("group" + i); // skipped due to static variable problem with junit
+                a.setStyleClass("group" + i);
                 return a;
             })
             .collect(Collectors.toList()));

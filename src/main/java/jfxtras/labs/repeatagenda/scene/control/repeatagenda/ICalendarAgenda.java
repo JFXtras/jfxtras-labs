@@ -117,6 +117,20 @@ public class ICalendarAgenda extends Agenda {
         super();
         Locale myLocale = Locale.getDefault();
 
+        DEFAULT_APPOINTMENT_GROUPS.stream().forEach(g -> ((ICalendarAgenda.AppointmentGroupImpl) g).makeIcon());
+//        DEFAULT_APPOINTMENT_GROUPS = javafx.collections.FXCollections.observableArrayList( // TODO - I WOULD LIKE TO MAKE THIS STATIC, BUT I GET AN ERROR - ICONS ARE NULL, MAYBE RESOURSE CAN'T BE RESOLVED YET?
+//                IntStream
+//                .range(0, 24)
+//                .mapToObj(i -> new ICalendarAgenda.AppointmentGroupImpl()
+//                       .withStyleClass("group" + i)
+////                       .withKey(i)
+//                       .withDescription("group" + (i < 10 ? "0" : "") + i))
+//                .collect(Collectors.toList()));
+
+//        System.out.println(DEFAULT_APPOINTMENT_GROUPS.size());
+//        DEFAULT_APPOINTMENT_GROUPS.stream().forEach(a -> System.out.println(((ICalendarAgenda.AppointmentGroupImpl) a).getIcon()));
+//        System.exit(0);
+        
         // setup default ResourceBundle // TODO - GET PATH BETTER WAY
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Bundle", myLocale);
         Settings.setup(resources);
@@ -616,18 +630,23 @@ public class ICalendarAgenda extends Agenda {
         final private ObjectProperty<String> styleClassObjectProperty = new SimpleObjectProperty<String>(this, "styleClass");
         public String getStyleClass() { return styleClassObjectProperty.getValue(); }
         public void setStyleClass(String value) { styleClassObjectProperty.setValue(value); }
-        public AppointmentGroupImpl withStyleClass(String value) {
+        public AppointmentGroupImpl withStyleClass(String value)
+        {
             setStyleClass(value);
-            icon = new Pane();
-            icon.setPrefSize(20, 20);
-//            icon.getStyleClass().add(Agenda.class.getSimpleName());
-            icon.getStylesheets().add(AGENDA_STYLE_CLASS);
-            icon.getStyleClass().addAll("AppointmentGroup", getStyleClass());
+            makeIcon();
             return this; 
         }
         
         private Pane icon;
         public Pane getIcon() { return icon; }
+        void makeIcon()
+        {
+            icon = new Pane();
+            icon.setPrefSize(20, 20);
+//            icon.getStyleClass().add(Agenda.class.getSimpleName());
+            icon.getStylesheets().add(AGENDA_STYLE_CLASS);
+            icon.getStyleClass().addAll("AppointmentGroup", getStyleClass());
+        }
 
 //        private int key = 0;
 //        public int getKey() { return key; }

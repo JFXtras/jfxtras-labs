@@ -359,6 +359,7 @@ public class VEventImpl extends VEvent<Appointment>
         case INDIVIDUAL:
             break;
         case WITH_EXISTING_REPEAT:
+            // TODO - GET LIST OF PROPERTIES THAT HAVE CHANGED - FOR EXAMPLE, IF ONLY EXDATE HAS CHANGED DON'T ASK ALL-CANCEL-FUTURE, JUST DO IT.
             // Check if changes between vEvent and vEventOld exist apart from RRule
 //            VEvent tempVEvent = VEventFactory.newVEvent(vEventOld);
             VEvent<Appointment> tempVEvent = new VEventImpl((VEventImpl) VComponentOld);
@@ -742,7 +743,8 @@ public class VEventImpl extends VEvent<Appointment>
             if (rruleOld == null)
             {
                 return RRuleType.WITH_NEW_REPEAT;                
-            } else {
+            } else
+            {
                 return RRuleType.WITH_EXISTING_REPEAT;
             }
         }
