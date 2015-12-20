@@ -509,7 +509,9 @@ public class VEventImpl extends VEvent<Appointment>
 //            }
             instances().clear(); // clear VEvent's collection of appointments
 //            System.out.println("size1: " + appointments.size());
+            System.out.println("makeInstances:");
             appointments.addAll(makeInstances()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
+            
 //            System.out.println("size2: " + appointments.size());
             return WindowCloseType.CLOSE_WITH_CHANGE;
         } else

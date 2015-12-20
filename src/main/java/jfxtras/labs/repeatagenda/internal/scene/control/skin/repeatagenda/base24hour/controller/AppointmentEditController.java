@@ -63,7 +63,7 @@ public class AppointmentEditController
     @FXML private Button cancelAppointmentButton;
     @FXML private Button closeRepeatButton;
     @FXML private Button cancelRepeatButton;
-    @FXML private Button saveAdvancedButton;
+//    @FXML private Button saveAdvancedButton;
     @FXML private Button deleteAppointmentButton;
     @FXML private RepeatableController<Appointment> repeatableController;
     
@@ -80,24 +80,8 @@ public class AppointmentEditController
         return null;
     };
     
-    @FXML public void initialize()
-    {
-
-    }
+    @FXML public void initialize() { }
     
-    /**
-     * Set all data this object needs. 
-     * 
-     * @param appointment - selected instance
-     * @param vComponent
-     * @param dateTimeRange
-     * @param appointments
-     * @param vComponents
-     * @param appointmentGroups
-     * @param vEventWriteCallback
-     * @param refreshCallback
-     */
-    @SuppressWarnings("unchecked")
     public void setupData(
               Appointment appointment
             , VComponent<Appointment> vComponent
@@ -109,8 +93,8 @@ public class AppointmentEditController
             , ObjectProperty<WindowCloseType> popupCloseType)
     {
         dateTimeStartInstanceOld = appointment.getStartLocalDateTime();
+        this.appointment = appointment;        
         this.appointments = appointments;
-        this.appointment = appointment;
         this.vComponents = vComponents;
         this.vEventWriteCallback = vEventWriteCallback;
         vEvent = (VEvent<Appointment>) vComponent;

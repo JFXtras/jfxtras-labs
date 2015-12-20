@@ -42,7 +42,6 @@ public Integer getAppointmentGroupSelected() { return appointmentGroupSelected.g
      for (AppointmentGroup lAppointmentGroup : appointmentGroups)
      {
          lPane[lCnt] = ((ICalendarAgenda.AppointmentGroupImpl) lAppointmentGroup).getIcon();
-         System.out.println("pane:" + lPane[lCnt]);
          this.add(lPane[lCnt], lCnt % 12, lCnt / 12 );
 
          // tooltip

@@ -117,7 +117,7 @@ public class ICalendarAgenda extends Agenda {
         super();
         Locale myLocale = Locale.getDefault();
 
-        DEFAULT_APPOINTMENT_GROUPS.stream().forEach(g -> ((ICalendarAgenda.AppointmentGroupImpl) g).makeIcon());
+//        DEFAULT_APPOINTMENT_GROUPS.stream().forEach(g -> ((ICalendarAgenda.AppointmentGroupImpl) g).makeIcon());
 //        DEFAULT_APPOINTMENT_GROUPS = javafx.collections.FXCollections.observableArrayList( // TODO - I WOULD LIKE TO MAKE THIS STATIC, BUT I GET AN ERROR - ICONS ARE NULL, MAYBE RESOURSE CAN'T BE RESOLVED YET?
 //                IntStream
 //                .range(0, 24)

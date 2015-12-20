@@ -33,7 +33,7 @@ public class ICalendarAgendaTestAbstract extends JFXtrasGuiTest
 //            appointmentGroupMap.put(lAppointmentGroup.getDescription(), lAppointmentGroup);
 //        }
 
-        ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
+        final ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
         = javafx.collections.FXCollections.observableArrayList(
                 IntStream
                 .range(0, 24)

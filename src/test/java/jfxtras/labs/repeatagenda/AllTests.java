@@ -5,7 +5,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ ICalendarDeleteTest.class
+@SuiteClasses({ ICalendarAgendaEditTest.class
+              , ICalendarDeleteTest.class
               , ICalendarDateTest.class
               , ICalendarParseTest.class
               , ICalendarDateRangeTest.class
