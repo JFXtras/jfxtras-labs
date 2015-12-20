@@ -6,15 +6,16 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ ICalendarAgendaEditTest.class
-              , ICalendarDeleteTest.class
-              , ICalendarDateTest.class
-              , ICalendarParseTest.class
-              , ICalendarDateRangeTest.class
-              , ICalendarMakeAppointmentsTest.class
-              , ICalendarEditTest.class
-              , ICalendarToStringTest.class
+              , ICalendarAgendaRenderTest.class
               , ICalendarCopyTest.class
+              , ICalendarDateRangeTest.class
+              , ICalendarDateTest.class
+              , ICalendarDeleteTest.class
+              , ICalendarEditTest.class
               , ICalendarEqualsTest.class
+              , ICalendarMakeAppointmentsTest.class
+              , ICalendarParseTest.class
+              , ICalendarToStringTest.class
               })
 public class AllTests {
 
