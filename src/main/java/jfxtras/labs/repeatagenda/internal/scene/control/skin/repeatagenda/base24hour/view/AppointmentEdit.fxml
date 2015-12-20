@@ -127,7 +127,7 @@
             </AnchorPane>
       </content>
     </Tab>
-    <Tab closable="false" text="%repeatable">
+    <Tab fx:id="repeatableTab" closable="false" text="%repeatable">
          <content>
             <AnchorPane>
                <children>

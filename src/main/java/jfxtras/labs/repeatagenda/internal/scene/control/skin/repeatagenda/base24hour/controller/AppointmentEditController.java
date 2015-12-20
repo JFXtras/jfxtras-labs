@@ -16,6 +16,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
@@ -63,9 +64,9 @@ public class AppointmentEditController
     @FXML private Button cancelAppointmentButton;
     @FXML private Button closeRepeatButton;
     @FXML private Button cancelRepeatButton;
-//    @FXML private Button saveAdvancedButton;
     @FXML private Button deleteAppointmentButton;
     @FXML private RepeatableController<Appointment> repeatableController;
+    @FXML private Tab repeatableTab;
     
     private Temporal lastDateTimeStart = null;
     private Temporal lastDateTimeEnd = null;

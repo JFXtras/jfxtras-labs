@@ -55,7 +55,7 @@ public abstract class FrequencyAbstract implements Frequency {
         boolean alreadyPresent = getByRules().stream().anyMatch(a -> a.getClass() == byRule.getClass());
         if (alreadyPresent){
             throw new IllegalArgumentException("Can't add BYxxx rule (" 
-                    + byRule.getClass().getName() + ") more than once.");
+                    + byRule.getClass().getSimpleName() + ") more than once.");
         }
         getByRules().add(byRule);
         Collections.sort(getByRules());

@@ -66,8 +66,7 @@ final private static int EXCEPTION_CHOICE_LIMIT = 50;
     
 //private RepeatableAppointment appointment;
 private VComponent<T> vComponent;
-private Rule byRule;
-private ByDay byDayRule; // is null if no ByDay rule is present
+private ByDay byDayRuleWeekly; // is null if no ByDay rule is present - only for Weekly rule
 private LocalDateTime dateTimeStartInstanceNew;
 
 @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
@@ -106,78 +105,76 @@ private ToggleGroup endGroup;
 @FXML ListView<Temporal> exceptionsListView; // EXDATE date/times to be skipped (deleted events)
 @FXML Button removeExceptionButton;
 
-@FXML private Button closeButton;
-@FXML private Button cancelButton;
 
 // DAY OF WEEK LISTENERS
 private final ChangeListener<? super Boolean> sundayListener = (obs2, oldSel2, newSel2) -> 
 {
     if (newSel2)
     {
-        byDayRule.addDayOfWeek(DayOfWeek.SUNDAY);
+        byDayRuleWeekly.addDayOfWeek(DayOfWeek.SUNDAY);
     } else
     {
-        byDayRule.removeDayOfWeek(DayOfWeek.SUNDAY);
+        byDayRuleWeekly.removeDayOfWeek(DayOfWeek.SUNDAY);
     }
 };
 private final ChangeListener<? super Boolean> mondayListener = (obs2, oldSel2, newSel2) -> 
 {
     if (newSel2)
     {
-        byDayRule.addDayOfWeek(DayOfWeek.MONDAY);
+        byDayRuleWeekly.addDayOfWeek(DayOfWeek.MONDAY);
     } else
     {
-        byDayRule.removeDayOfWeek(DayOfWeek.MONDAY);
+        byDayRuleWeekly.removeDayOfWeek(DayOfWeek.MONDAY);
     }
 };
 private final ChangeListener<? super Boolean> tuesdayListener = (obs2, oldSel2, newSel2) -> 
 {
     if (newSel2)
     {
-        byDayRule.addDayOfWeek(DayOfWeek.TUESDAY);
+        byDayRuleWeekly.addDayOfWeek(DayOfWeek.TUESDAY);
     } else
     {
-        byDayRule.removeDayOfWeek(DayOfWeek.TUESDAY);
+        byDayRuleWeekly.removeDayOfWeek(DayOfWeek.TUESDAY);
     }
 };
 private final ChangeListener<? super Boolean> wednesdayListener = (obs2, oldSel2, newSel2) -> 
 {
     if (newSel2)
     {
-        byDayRule.addDayOfWeek(DayOfWeek.WEDNESDAY);
+        byDayRuleWeekly.addDayOfWeek(DayOfWeek.WEDNESDAY);
     } else
     {
-        byDayRule.removeDayOfWeek(DayOfWeek.WEDNESDAY);
+        byDayRuleWeekly.removeDayOfWeek(DayOfWeek.WEDNESDAY);
     }
 };
 private final ChangeListener<? super Boolean> thursdayListener = (obs2, oldSel2, newSel2) -> 
 {
     if (newSel2)
     {
-        byDayRule.addDayOfWeek(DayOfWeek.THURSDAY);
+        byDayRuleWeekly.addDayOfWeek(DayOfWeek.THURSDAY);
     } else
     {
-        byDayRule.removeDayOfWeek(DayOfWeek.THURSDAY);
+        byDayRuleWeekly.removeDayOfWeek(DayOfWeek.THURSDAY);
     }
 };
 private final ChangeListener<? super Boolean> fridayListener = (obs2, oldSel2, newSel2) -> 
 {
     if (newSel2)
     {
-        byDayRule.addDayOfWeek(DayOfWeek.FRIDAY);
+        byDayRuleWeekly.addDayOfWeek(DayOfWeek.FRIDAY);
     } else
     {
-        byDayRule.removeDayOfWeek(DayOfWeek.FRIDAY);
+        byDayRuleWeekly.removeDayOfWeek(DayOfWeek.FRIDAY);
     }
 };
 private final ChangeListener<? super Boolean> saturdayListener = (obs2, oldSel2, newSel2) -> 
 {
     if (newSel2)
     {
-        byDayRule.addDayOfWeek(DayOfWeek.SATURDAY);
+        byDayRuleWeekly.addDayOfWeek(DayOfWeek.SATURDAY);
     } else
     {
-        byDayRule.removeDayOfWeek(DayOfWeek.SATURDAY);
+        byDayRuleWeekly.removeDayOfWeek(DayOfWeek.SATURDAY);
     }
 };
 
@@ -186,28 +183,29 @@ private ChangeListener<? super Boolean> dayOfWeekListener = (obs2, oldSel2, newS
 {
     if (newSel2)
     {
-        System.out.println("add byDay:");
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
         int ordinalWeekNumber = dateTimeStartInstanceNew.get(weekFields.weekOfMonth());
         DayOfWeek dayOfWeek = dateTimeStartInstanceNew.getDayOfWeek();
-        byDayRule = new ByDay(new ByDayPair(dayOfWeek, ordinalWeekNumber));
-        vComponent.getRRule().getFrequency().addByRule(byDayRule);
+        Rule byDayRuleMonthly = new ByDay(new ByDayPair(dayOfWeek, ordinalWeekNumber));
+        vComponent.getRRule().getFrequency().addByRule(byDayRuleMonthly);
     } else
     { // remove rule to reset to default behavior of repeat by day of month
-        System.out.println("remove byDay:");
-        vComponent.getRRule().getFrequency().getByRules().clear();
+        Rule r = vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRules.BYDAY);
+        vComponent.getRRule().getFrequency().getByRules().remove(r);
     }
 };
 
 // FREQUENCY CHANGE LISTENER
 private final ChangeListener<? super FrequencyType> frequencyListener = (obs, oldSel, newSel) -> 
 {
+    System.out.println("FREQUENCY CHANGE LISTENER");
     // Change Frequency if different, reset Interval to 1
     if (vComponent.getRRule().getFrequency().getFrequencyType() != newSel)
     {
+        dayOfWeekRadioButton.selectedProperty().removeListener(dayOfWeekListener);
         vComponent.getRRule().setFrequency(newSel.newInstance());
         intervalSpinner.getEditor().textProperty().set("1");
-        byDayRule = null;
+//        byDayRule = null;
         sundayCheckBox.selectedProperty().removeListener(sundayListener);
         mondayCheckBox.selectedProperty().removeListener(mondayListener);
         tuesdayCheckBox.selectedProperty().removeListener(tuesdayListener);
@@ -223,28 +221,35 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
     {
     case DAILY:
     case YEARLY:
+    {
         monthlyVBox.setVisible(false);
         monthlyLabel.setVisible(false);
         weeklyHBox.setVisible(false);
         weeklyLabel.setVisible(false);
+        byDayRuleWeekly = null;
         break;
+    }
     case MONTHLY:
         monthlyVBox.setVisible(true);
         monthlyLabel.setVisible(true);
         weeklyHBox.setVisible(false);
         weeklyLabel.setVisible(false);
-        boolean hasByDayRule = vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRules.BYDAY) != null;
-        dayOfMonthRadioButton.selectedProperty().set(! hasByDayRule);
-        dayOfWeekRadioButton.selectedProperty().set(hasByDayRule);
+        Rule r = vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRules.BYDAY);
+        vComponent.getRRule().getFrequency().getByRules().remove(r);
+        byDayRuleWeekly = null;
+        dayOfMonthRadioButton.selectedProperty().set(true);
+        dayOfWeekRadioButton.selectedProperty().set(false);
         dayOfWeekRadioButton.selectedProperty().addListener(dayOfWeekListener);
         break;
     case WEEKLY:
-        System.out.println("triggered weekly:");
+    {
         monthlyVBox.setVisible(false);
         monthlyLabel.setVisible(false);
         weeklyHBox.setVisible(true);
         weeklyLabel.setVisible(true);
-        byDayRule = (ByDay) vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRules.BYDAY);
+        DayOfWeek dayOfWeek = VComponent.localDateTimeFromTemporal(vComponent.getDateTimeStart()).getDayOfWeek();
+        byDayRuleWeekly = new ByDay(dayOfWeek);
+        vComponent.getRRule().getFrequency().addByRule(byDayRuleWeekly);
         sundayCheckBox.selectedProperty().addListener(sundayListener);
         mondayCheckBox.selectedProperty().addListener(mondayListener);
         tuesdayCheckBox.selectedProperty().addListener(tuesdayListener);
@@ -253,6 +258,7 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
         fridayCheckBox.selectedProperty().addListener(fridayListener);
         saturdayCheckBox.selectedProperty().addListener(saturdayListener);
         break;
+    }
     case SECONDLY:
     case MINUTELY:
     case HOURLY:
@@ -266,6 +272,7 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
     } else {
         frequencyLabel.setText(frequencyComboBox.valueProperty().get().toStringPlural());
     }
+    System.out.println("byDayRule1:" + byDayRuleWeekly);
 };
 
 // MAKE EXCEPTION DATES LISTENER
@@ -274,6 +281,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
 // INITIALIZATION - runs when FXML is initialized
 @FXML public void initialize()
 {
+    repeatableCheckBox.setId("repeatableCheckBox");
     // Setup frequencyComboBox items
     frequencyComboBox.setItems(FXCollections.observableArrayList(FrequencyType.implementedValues()));
     frequencyComboBox.setConverter(Frequency.FrequencyType.stringConverter);
@@ -448,6 +456,9 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         this.vComponent = vComponent;
         this.dateTimeStartInstanceNew = dateTimeStartInstanceNew;
         
+
+        frequencyComboBox.valueProperty().addListener(frequencyListener);
+
         // REPEATABLE CHECKBOX
         repeatableCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
         {
@@ -460,7 +471,6 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
                     vComponent.setRRule(rRule);
                     setInitialValues(vComponent);
                 }
-                frequencyComboBox.valueProperty().addListener(frequencyListener);
                 repeatableGridPane.setDisable(false);
                 startDatePicker.setDisable(false);
                 makeExceptionDates();
@@ -469,7 +479,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
             {
                 vComponent.setRRule(null);
 //                appointment.setRepeat(null);
-                frequencyComboBox.valueProperty().removeListener(frequencyListener);
+//                frequencyComboBox.valueProperty().removeListener(frequencyListener);
                 repeatableGridPane.setDisable(true);
                 startDatePicker.setDisable(true);
             }
@@ -529,7 +539,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
     
     private void addExceptionListeners()
     {
-        frequencyComboBox.valueProperty().addListener(makeExceptionDatesListener);
+//        frequencyComboBox.valueProperty().addListener(makeExceptionDatesListener);
         intervalSpinner.valueProperty().addListener(makeExceptionDatesListener);
         sundayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
         mondayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
@@ -546,7 +556,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
     
     private void removeExceptionListeners()
     {
-        frequencyComboBox.valueProperty().removeListener(makeExceptionDatesListener);
+//        frequencyComboBox.valueProperty().removeListener(makeExceptionDatesListener);
         intervalSpinner.valueProperty().removeListener(makeExceptionDatesListener);
         sundayCheckBox.selectedProperty().removeListener(makeExceptionDatesListener);
         mondayCheckBox.selectedProperty().removeListener(makeExceptionDatesListener);
@@ -646,7 +656,9 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
     private RRule setDefaults(RRule rRule, LocalDateTime dateTime)
     {
         rRule.setFrequency(new Weekly());
-        rRule.getFrequency().addByRule(new ByDay(dateTime.getDayOfWeek()));
+//        byDayRule = new ByDay(dateTime.getDayOfWeek());
+//        rRule.getFrequency().addByRule(byDayRule);
+//        rRule.getFrequency().addByRule(new ByDay(dateTime.getDayOfWeek()));
         monthlyVBox.setVisible(false);
         monthlyLabel.setVisible(false);
         return rRule;
