@@ -278,14 +278,38 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
     System.out.println("byDayRule1:" + byDayRuleWeekly);
 };
 
+// listen for changes to start date/time (type may change requiring new exception date choices)
+private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeListener = (observable2, oldValue, newValue) ->
+{
+    makeExceptionDates();
+    // update existing exceptions
+    if (! exceptionsListView.getItems().isEmpty())
+    {
+        List<Temporal> newItems = null;
+        if (newValue.getClass().equals(LocalDate.class))
+        {
+            newItems = exceptionsListView.getItems()
+                    .stream()
+                    .map(d -> LocalDate.from(d))
+                    .collect(Collectors.toList());
+        } else if (newValue.getClass().equals(LocalDateTime.class))
+        {
+            LocalTime time = LocalDateTime.from(newValue).toLocalTime();
+            newItems = exceptionsListView.getItems()
+                    .stream()
+                    .map(d -> LocalDate.from(d).atTime(time))
+                    .collect(Collectors.toList());            
+        }
+        exceptionsListView.setItems(FXCollections.observableArrayList(newItems));
+    }
+};
+
 // MAKE EXCEPTION DATES LISTENER
 final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExceptionDates();
 
 // INITIALIZATION - runs when FXML is initialized
 @FXML public void initialize()
 {
-//    repeatableCheckBox.setId("repeatableCheckBox");
-
     // Setup frequencyComboBox items
     frequencyComboBox.setItems(FXCollections.observableArrayList(FrequencyType.implementedValues()));
     frequencyComboBox.setConverter(Frequency.FrequencyType.stringConverter);
@@ -463,12 +487,6 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         // REPEATABLE CHECKBOX
         repeatableCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
         {
-            // listen for changes to start date/time (type may change requiring new exception date choices)
-            final ChangeListener<? super Temporal> dateTimeStartListener = (observable2, oldValue, newValue) ->
-            {
-                System.out.println("start:" + newValue);
-                makeExceptionDates();
-            };
             if (newSelection)
             {
                 removeExceptionListeners();
@@ -479,7 +497,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
                     vComponent.setRRule(rRule);
                     setInitialValues(vComponent);
                 }
-                ((VComponentAbstract<T>) vComponent).dateTimeStartProperty().addListener(dateTimeStartListener);
+                ((VComponentAbstract<T>) vComponent).dateTimeStartProperty().addListener(dateTimeStartToExceptionChangeListener);
 
                 repeatableGridPane.setDisable(false);
                 startDatePicker.setDisable(false);
@@ -487,7 +505,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
                 addExceptionListeners();
             } else
             {
-                ((VComponentAbstract<T>) vComponent).dateTimeStartProperty().removeListener(dateTimeStartListener);
+                ((VComponentAbstract<T>) vComponent).dateTimeStartProperty().removeListener(dateTimeStartToExceptionChangeListener);
                 vComponent.setRRule(null);
                 repeatableGridPane.setDisable(true);
                 startDatePicker.setDisable(true);
@@ -563,10 +581,8 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         repeatableCheckBox.selectedProperty().set(checkBox);
         if (checkBox) setInitialValues(vComponent);
 
-        // Listeners to update exception dates
-        addExceptionListeners();
-        
-        // Listeners to be added after initial settings
+        // LISTENERS TO BE ADDED AFTER INITIALIZATION
+        addExceptionListeners(); // Listeners to update exception dates
         frequencyComboBox.valueProperty().addListener(frequencyListener);
     }
     
@@ -686,9 +702,6 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
     private RRule setDefaults(RRule rRule, LocalDateTime dateTime)
     {
         rRule.setFrequency(new Weekly());
-//        byDayRule = new ByDay(dateTime.getDayOfWeek());
-//        rRule.getFrequency().addByRule(byDayRule);
-//        rRule.getFrequency().addByRule(new ByDay(dateTime.getDayOfWeek()));
         monthlyVBox.setVisible(false);
         monthlyLabel.setVisible(false);
         return rRule;
@@ -705,7 +718,6 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
                 .stream(dateTimeStart);
         Stream<LocalDateTime> stream2 = (vComponent.getExDate() == null) ? stream1
                 : vComponent.getExDate().stream(stream1, dateTimeStart); // remove exceptions
-//        Class<? extends Temporal> clazz = vComponent.getExDate().temporalClass();
         Class<? extends Temporal> clazz = vComponent.getDateTimeStart().getClass();
         List<Temporal> exceptionDates = null;
         if (clazz.equals(LocalDate.class))
@@ -733,7 +745,6 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         if (vComponent.getExDate() == null) vComponent.setExDate(new EXDate());
         vComponent.getExDate().getTemporals().add(d);
         makeExceptionDates();
-//        exceptionComboBox.getItems().remove(d);
         Collections.sort(exceptionsListView.getItems(),VComponent.DATE_OR_DATETIME_TEMPORAL_COMPARATOR); // Maintain sorted list
         if (exceptionComboBox.getValue() == null) addExceptionButton.setDisable(true);
     }
@@ -744,7 +755,6 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         Temporal d = exceptionsListView.getSelectionModel().getSelectedItem();
         vComponent.getExDate().getTemporals().remove(d);
         makeExceptionDates();
-//        exceptionComboBox.getItems().add(d);
         exceptionsListView.getItems().remove(d);
         if (exceptionsListView.getSelectionModel().getSelectedItem() == null) removeExceptionButton.setDisable(true);
     }
