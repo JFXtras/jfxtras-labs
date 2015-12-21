@@ -21,7 +21,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule.ByRules;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
@@ -202,7 +201,7 @@ public class RRule
         StringBuilder builder = new StringBuilder();
         builder.append(getFrequency().toString());
         if (getCount() > 0) builder.append(";" + countProperty().getName() + "=" + getCount());
-        if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + VDateTime.DATE_TIME_FORMATTER.format(getUntil()));
+        if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + VComponent.DATE_TIME_FORMATTER.format(getUntil()));
         String rules = getFrequency()
                 .getByRules()
                 .stream()

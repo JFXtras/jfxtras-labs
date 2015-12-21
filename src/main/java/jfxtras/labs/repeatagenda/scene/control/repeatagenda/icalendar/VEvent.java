@@ -95,6 +95,9 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     private static final long NANOS_IN_MINUTE = Duration.ofMinutes(1).toNanos();
     private static final long NANOS_IN_SECOND = Duration.ofSeconds(1).toNanos();
     
+    private static final String DESCRIPTION_NAME = "DESCRIPTION";
+    private static final String DURATION_NAME = "DURATION";
+    private static final String DATE_TIME_END_NAME = "DTEND";
     /**
      * DESCRIPTION: RFC 5545 iCalendar 3.8.1.12. page 84
      * This property provides a more complete description of the
@@ -105,7 +108,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
      *  MUST attend this meeting.\nRSVP to team leader.
      */
     public StringProperty descriptionProperty() { return description; }
-    final private StringProperty description = new SimpleStringProperty(this, "DESCRIPTION");
+    final private StringProperty description = new SimpleStringProperty(this, DESCRIPTION_NAME);
     public String getDescription() { return description.getValue(); }
     public void setDescription(String value) { description.setValue(value); }
 //    public T withDescription(String value) { setDescription(value); return (T)this; } 
@@ -116,7 +119,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
      * converted to seconds.  This value is used exclusively internally.  Any specified DTEND is converted to 
      * durationInSeconds,
      * */
-    final private SimpleLongProperty durationInNanos = new SimpleLongProperty(this, "DURATION");
+    final private SimpleLongProperty durationInNanos = new SimpleLongProperty(this, DURATION_NAME);
     public SimpleLongProperty durationInNanosProperty() { return durationInNanos; }
     public Long getDurationInNanos() { return durationInNanos.getValue(); }
     public String getDurationAsString()
@@ -227,7 +230,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
      * If entered this value is used to calculate the durationInSeconds, which is used
      * internally.
      */
-    final private ObjectProperty<Temporal> dateTimeEnd = new SimpleObjectProperty<>(this, "DTEND");
+    final private ObjectProperty<Temporal> dateTimeEnd = new SimpleObjectProperty<>(this, DATE_TIME_END_NAME);
     public ObjectProperty<Temporal> dateTimeEndProperty() { return dateTimeEnd; }
     public void setDateTimeEnd(Temporal dtEnd)
     {
@@ -378,7 +381,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     {
         Map<Property, String> properties = new HashMap<Property, String>();
         properties.putAll(super.makePropertiesMap());
-        if (getDescription() != null) properties.put(descriptionProperty(), getDescription());
+        if ((getDescription() != null) && (! getDescription().equals(""))) properties.put(descriptionProperty(), getDescription());
         if (useDateTimeEnd) properties.put(dateTimeEndProperty(), VComponent.temporalToString(getDateTimeEnd()));
         if (useDuration) properties.put(durationInNanosProperty(), getDurationAsString());
         return properties;
@@ -432,7 +435,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
             String line = stringsIterator.next();
             String property = line.substring(0, line.indexOf(":"));
             String value = line.substring(line.indexOf(":") + 1).trim();
-            if (property.equals(vEvent.descriptionProperty().getName()))
+            if (property.equals(DESCRIPTION_NAME))
             { // DESCRIPTION
                     if (vEvent.getDescription() == null)
                     {
@@ -442,7 +445,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                     {
                         throw new IllegalArgumentException("Invalid VEvent: DESCRIPTION can only be specified once");
                     }
-            } else if (property.equals(vEvent.durationInNanosProperty().getName()))
+            } else if (property.equals(DURATION_NAME))
             { // DURATION
                 if (vEvent.getDurationInNanos() == 0)
                 {
@@ -461,7 +464,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                 {
                     throw new IllegalArgumentException("Invalid VEvent: DURATION can only be specified once.");                    
                 }
-            } else if (property.equals(vEvent.dateTimeEndProperty().getName()))
+            } else if (property.equals(DATE_TIME_END_NAME))
             { // DTEND
                 if (vEvent.getDateTimeEnd() == null)
                 {

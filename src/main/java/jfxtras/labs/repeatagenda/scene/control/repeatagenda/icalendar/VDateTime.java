@@ -2,7 +2,6 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 
 /**
@@ -18,11 +17,11 @@ import java.time.temporal.Temporal;
  */
 public class VDateTime implements Comparable<VDateTime>
 {
-    private final static String datePattern = "yyyyMMdd";
-    private final static String timePattern = "HHmmss";
-    public final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(datePattern + "'T'" + timePattern);
-    public final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(datePattern);
-    public final static DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(timePattern);
+//    private final static String datePattern = "yyyyMMdd";
+//    private final static String timePattern = "HHmmss";
+//    public final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(datePattern + "'T'" + timePattern);
+//    public final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(datePattern);
+//    public final static DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(timePattern);
     
     private Temporal dateOrDateTime;
     protected Temporal getDateOrDateTime() { return dateOrDateTime; }
@@ -160,8 +159,8 @@ public class VDateTime implements Comparable<VDateTime>
     @Override
     public String toString()
     {
-        return (isWholeDay()) ? "VALUE=DATE:" + DATE_FORMATTER.format(getLocalDate())
-                              : DATE_TIME_FORMATTER.format(getLocalDateTime());
+        return (isWholeDay()) ? "VALUE=DATE:" + VComponent.DATE_FORMATTER.format(getLocalDate())
+                              : VComponent.DATE_TIME_FORMATTER.format(getLocalDateTime());
     }
         
     /**
@@ -184,12 +183,12 @@ public class VDateTime implements Comparable<VDateTime>
         if (dateTimeString.matches("^(VALUE=DATE-TIME:)?[0-9]{8}T?([0-9]{6})?Z?"))
         {
             String extractedDateTimeString = dateTimeString.substring(dateTimeString.lastIndexOf(":") + 1).trim();
-            LocalDateTime dateTime = LocalDateTime.parse(extractedDateTimeString, DATE_TIME_FORMATTER);
+            LocalDateTime dateTime = LocalDateTime.parse(extractedDateTimeString, VComponent.DATE_TIME_FORMATTER);
             return new VDateTime(dateTime);
         } else if (dateTimeString.matches("^VALUE=DATE:[0-9]{8}"))
         {
             String extractedDateString = dateTimeString.substring(dateTimeString.lastIndexOf(":") + 1).trim();
-            LocalDate date = LocalDate.parse(extractedDateString, DATE_FORMATTER);
+            LocalDate date = LocalDate.parse(extractedDateString, VComponent.DATE_FORMATTER);
             return new VDateTime(date);            
         } else
         {

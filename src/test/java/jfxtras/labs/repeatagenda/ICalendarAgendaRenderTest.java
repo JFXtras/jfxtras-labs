@@ -1,8 +1,10 @@
 package jfxtras.labs.repeatagenda;
 
-import static org.junit.Assert.assertEquals;
-
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,6 +13,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseButton;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.test.AssertNode;
 import jfxtras.test.TestUtil;
@@ -54,18 +57,12 @@ public class ICalendarAgendaRenderTest extends ICalendarTestAbstract
         press(MouseButton.PRIMARY);
         move("#hourLine12");
         release(MouseButton.PRIMARY);
-        
+        String dateTimeStamp = VComponent.DATE_TIME_FORMATTER.format(LocalDateTime.now());
         Assert.assertEquals(1, agenda.vComponents().size());
 
         move("#hourLine11");
         press(MouseButton.SECONDARY);
         release(MouseButton.SECONDARY);
-
-//        Stage stage2 = GuiTest.findStageByTitle("editPopup");
-//        Node popup = find(".editPopup");
-//        ArrayList<Node> n = getAllNodes(getRootNode());
-//        System.out.println(n.size() + " " + n);
-//        System.exit(0);
 
         Assert.assertEquals("2014-01-01T10:00", agenda.appointments().get(0).getStartLocalDateTime().toString() );
         Assert.assertEquals("2014-01-01T12:00", agenda.appointments().get(0).getEndLocalDateTime().toString() );
@@ -74,31 +71,36 @@ public class ICalendarAgendaRenderTest extends ICalendarTestAbstract
         
         // type value
         click("#repeatableTab");
-//        CheckBox box = (CheckBox) find(".CalendarTextField .text-field");
         click("#repeatableCheckBox");
-        click("#mondayCheckBox");
         click("#fridayCheckBox");
+        click("#mondayCheckBox");
+        click("#closeRepeatButton");
         
-        click("#closeRepeatButton"); // change focus
+        Assert.assertEquals(2, agenda.appointments().size());
+        VComponent<Appointment> v = agenda.vComponents().get(0);
         
-        Assert.assertEquals(1, agenda.appointments().size());
-        Appointment a = agenda.appointments().get(0);
-        assertEquals ("edited summary", a.getSummary());
-        TestUtil.sleep(3000);
+        String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
+                + "CATEGORIES:group00" + System.lineSeparator()
+                + "DTEND:20140101T120000" + System.lineSeparator()
+                + "DTSTAMP:" + dateTimeStamp + System.lineSeparator()
+                + "DTSTART:20140101T100000" + System.lineSeparator()
+                + "RRULE:FREQ=WEEKLY;BYDAY=WE,FR,MO" + System.lineSeparator()
+                + "SUMMARY:New" + System.lineSeparator()
+                + "UID:20140101T000000-0jfxtras.org" + System.lineSeparator()
+                + "END:VEVENT";
+        Assert.assertEquals(expectedString, v.toString());
+        
+        List<LocalDateTime> dates = agenda.appointments()
+                .stream()
+                .map(a -> a.getStartLocalDateTime())
+                .collect(Collectors.toList());
+        
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2014, 1, 1, 10, 0)
+              , LocalDateTime.of(2014, 1, 3, 10, 0)
+                ));
+        Assert.assertEquals(expectedDates, dates);
     }
     
-    public static ArrayList<Node> getAllNodes(Parent root) {
-        ArrayList<Node> nodes = new ArrayList<Node>();
-        addAllDescendents(root, nodes);
-        return nodes;
-    }
-
-    private static void addAllDescendents(Parent parent, ArrayList<Node> nodes) {
-        for (Node node : parent.getChildrenUnmodifiable()) {
-            nodes.add(node);
-            if (node instanceof Parent)
-                addAllDescendents((Parent)node, nodes);
-        }
-    }
 
 }

@@ -1,6 +1,7 @@
 package jfxtras.labs.repeatagenda;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -10,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
@@ -28,11 +30,6 @@ public class ICalendarAgendaTestAbstract extends JFXtrasGuiTest
         agenda.setDisplayedLocalDateTime(LocalDate.of(2014, 1, 1).atStartOfDay());
         agenda.setPrefSize(1000, 800);
         
-        // setup appointment groups
-//        for (Agenda.AppointmentGroup lAppointmentGroup : agenda.appointmentGroups()) {
-//            appointmentGroupMap.put(lAppointmentGroup.getDescription(), lAppointmentGroup);
-//        }
-
         final ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
         = javafx.collections.FXCollections.observableArrayList(
                 IntStream
@@ -45,8 +42,6 @@ public class ICalendarAgendaTestAbstract extends JFXtrasGuiTest
         
         agenda.appointmentGroups().clear();
         agenda.appointmentGroups().addAll(DEFAULT_APPOINTMENT_GROUPS);
-//        DEFAULT_APPOINTMENT_GROUPS.stream().forEach(a -> System.out.println(((ICalendarAgenda.AppointmentGroupImpl) a).getIcon()));
-//        System.exit(0);
         
         // accept new appointments
         agenda.newAppointmentCallbackProperty().set(new Callback<Agenda.LocalDateTimeRange, Agenda.Appointment>()
@@ -54,22 +49,22 @@ public class ICalendarAgendaTestAbstract extends JFXtrasGuiTest
             @Override
             public Agenda.Appointment call(ICalendarAgenda.LocalDateTimeRange dateTimeRange)
             {
-//                return new ICalendarAgenda.AppointmentImplLocal()
-//                        .withStartLocalDateTime(calendarRange.getStartLocalDateTime())
-//                        .withEndLocalDateTime(calendarRange.getEndLocalDateTime())
-//                        .withSummary("new")
-//                        .withDescription("new")
-//                        .withAppointmentGroup(ICalendarTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(0));
                 Appointment appointment = new Agenda.AppointmentImplLocal()
                         .withStartLocalDateTime( dateTimeRange.getStartLocalDateTime())
                         .withEndLocalDateTime( dateTimeRange.getEndLocalDateTime())
                         .withSummary("New")
                         .withDescription("")
                         .withAppointmentGroup(agenda.appointmentGroups().get(0));
-//                System.out.println(agenda.appointmentGroups().get(0).getClass().getName());
-//                System.exit(0);
                 return appointment;
             }
+        });
+        
+        // override default UID generator callback 
+        agenda.setUidGeneratorCallback((Void) ->
+        {
+            String dateTime = VComponent.DATE_TIME_FORMATTER.format(LocalDateTime.of(2014, 1, 1, 0, 0));
+            String domain = "jfxtras.org";
+            return dateTime + "-" + "0" + domain;
         });
         
         vbox.getChildren().add(agenda);

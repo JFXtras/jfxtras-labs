@@ -281,7 +281,8 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
 // INITIALIZATION - runs when FXML is initialized
 @FXML public void initialize()
 {
-    repeatableCheckBox.setId("repeatableCheckBox");
+//    repeatableCheckBox.setId("repeatableCheckBox");
+
     // Setup frequencyComboBox items
     frequencyComboBox.setItems(FXCollections.observableArrayList(FrequencyType.implementedValues()));
     frequencyComboBox.setConverter(Frequency.FrequencyType.stringConverter);

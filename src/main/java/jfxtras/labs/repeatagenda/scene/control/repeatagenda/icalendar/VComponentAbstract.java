@@ -129,7 +129,21 @@ instances into one property internally.
  */
 public abstract class VComponentAbstract<T> implements VComponent<T>
 {
-    public String name() { return null; } // not called for abstract class
+    private static final String CATEGORIES_NAME = "CATEGORIES";
+    private static final String COMMENT_NAME = "COMMENT";
+    private static final String CREATED_NAME = "CREATED";
+    private static final String DATE_TIME_STAMP_NAME = "DTSTAMP";
+    private static final String DATE_TIME_START_NAME = "DTSTART";
+    private static final String EXCEPTION_DATE_TIMES_NAME = "EXDATE";
+    private static final String LAST_MODIFIED_NAME = "LAST-MODIFIED";
+    private static final String LOCATION_NAME = "LOCATION";
+    private static final String RECURRENCE_DATE_TIMES_NAME = "RDATE";
+    private static final String RECURRENCE_ID_NAME = "RECURRENCE-ID";
+    private static final String RECURRENCE_RULE_NAME = "RRULE";
+    private static final String SUMMARY_NAME = "SUMMARY";
+    private static final String UNIQUE_IDENTIFIER_NAME = "UID";
+    
+//    public String name() { return null; } // not called for abstract class
 
     /**
      * CATEGORIES: RFC 5545 iCalendar 3.8.1.12. page 81
@@ -139,7 +153,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * CATEGORIES:MEETING
      */
     public StringProperty categoriesProperty() { return categoriesProperty; }
-    final private StringProperty categoriesProperty = new SimpleStringProperty(this, "CATEGORIES");
+    final private StringProperty categoriesProperty = new SimpleStringProperty(this, CATEGORIES_NAME);
     public String getCategories() { return categoriesProperty.get(); }
     public void setCategories(String value) { categoriesProperty.set(value); }
 //    public T withCategories(String value) { setCategories(value); return (T)this; }
@@ -155,7 +169,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
          their site. - - John
      * */
     public StringProperty commentProperty() { return commentProperty; }
-    final private StringProperty commentProperty = new SimpleStringProperty(this, "COMMENT");
+    final private StringProperty commentProperty = new SimpleStringProperty(this, COMMENT_NAME);
     public String getComment() { return commentProperty.get(); }
     public void setComment(String value) { commentProperty.set(value); }
 //    public VEvent withComment(String value) { setComment(value); return this; }
@@ -165,7 +179,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * This property specifies the date and time that the calendar information was created.
      * This is analogous to the creation date and time for a file in the file system.
      */
-    final private ObjectProperty<LocalDateTime> dateTimeCreated = new SimpleObjectProperty<>(this, "CREATED");
+    final private ObjectProperty<LocalDateTime> dateTimeCreated = new SimpleObjectProperty<>(this, CREATED_NAME);
     public ObjectProperty<LocalDateTime> dateTimeCreatedProperty() { return dateTimeCreated; }
     public LocalDateTime getDateTimeCreated() { return dateTimeCreated.get(); }
     public void setDateTimeCreated(LocalDateTime dtCreated) { this.dateTimeCreated.set(dtCreated); }
@@ -175,7 +189,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * This property specifies the date and time that the instance of the
      * iCalendar object was created
      */
-    final private ObjectProperty<LocalDateTime> dateTimeStamp = new SimpleObjectProperty<>(this, "DTSTAMP");
+    final private ObjectProperty<LocalDateTime> dateTimeStamp = new SimpleObjectProperty<>(this, DATE_TIME_STAMP_NAME);
     public ObjectProperty<LocalDateTime> dateTimeStampProperty() { return dateTimeStamp; }
     public LocalDateTime getDateTimeStamp() { return dateTimeStamp.get(); }
     public void setDateTimeStamp(LocalDateTime dtStamp) { this.dateTimeStamp.set(dtStamp); }
@@ -188,7 +202,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * @SEE VDateTime
      */
     public ObjectProperty<Temporal> dateTimeStartProperty() { return dateTimeStart; }
-    final private ObjectProperty<Temporal> dateTimeStart = new SimpleObjectProperty<>(this, "DTSTART");
+    final private ObjectProperty<Temporal> dateTimeStart = new SimpleObjectProperty<>(this, DATE_TIME_START_NAME);
     public LocalDateTime dateTimeStartToLocalDateTime() { return VComponent.localDateTimeFromTemporal(dateTimeStart.get()); }
     @Override public Temporal getDateTimeStart() { return dateTimeStart.get(); }
     @Override public void setDateTimeStart(Temporal dtStart) { VComponent.super.setDateTimeStart(dtStart); dateTimeStart.set(dtStart); }
@@ -201,7 +215,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      */
     public ObjectProperty<EXDate> exDateProperty()
     {
-        if (exDate == null) exDate = new SimpleObjectProperty<>(this, "EXDATE", _exDate);
+        if (exDate == null) exDate = new SimpleObjectProperty<>(this, EXCEPTION_DATE_TIMES_NAME, _exDate);
         return exDate;
     }
     private ObjectProperty<EXDate> exDate;
@@ -223,7 +237,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * This property specifies the date and time that the information associated with
      * the calendar component was last revised.
      */
-    final private ObjectProperty<LocalDateTime> dateTimeLastModified = new SimpleObjectProperty<LocalDateTime>(this, "LAST-MODIFIED");
+    final private ObjectProperty<LocalDateTime> dateTimeLastModified = new SimpleObjectProperty<LocalDateTime>(this, LAST_MODIFIED_NAME);
     public ObjectProperty<LocalDateTime> dateTimeLastModifiedProperty() { return dateTimeLastModified; }
     public LocalDateTime getDateTimeLastModified() { return dateTimeLastModified.getValue(); }
     public void setDateTimeLastModified(LocalDateTime dtLastModified) { this.dateTimeLastModified.set(dtLastModified); }
@@ -236,7 +250,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * LOCATION:Conference Room - F123\, Bldg. 002
      */
     public StringProperty locationProperty() { return locationProperty; }
-    final private StringProperty locationProperty = new SimpleStringProperty(this, "LOCATION");
+    final private StringProperty locationProperty = new SimpleStringProperty(this, LOCATION_NAME);
     public String getLocation() { return locationProperty.getValue(); }
     public void setLocation(String value) { locationProperty.setValue(value); }
 //    public T withLocation(String value) { setLocation(value); return (T)this; }
@@ -248,7 +262,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     // Is rarely used, so employs lazy initialization.
     public ObjectProperty<RDate> rDateProperty()
     {
-        if (rDate == null) rDate = new SimpleObjectProperty<RDate>(this, "RDATE", _rDate);
+        if (rDate == null) rDate = new SimpleObjectProperty<RDate>(this, RECURRENCE_DATE_TIMES_NAME, _rDate);
         return rDate;
     }
     private ObjectProperty<RDate> rDate;
@@ -270,10 +284,9 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * The property value is the original value of the "DTSTART" property of the 
      * recurrence instance.
      */
-    // Is rarely used, so lazy initialization is used.
     public ObjectProperty<LocalDateTime> dateTimeRecurrenceProperty()
     {
-        if (dateTimeRecurrence == null) dateTimeRecurrence = new SimpleObjectProperty<LocalDateTime>(this, "RECURRENCE-ID", _dateTimeRecurrence);
+        if (dateTimeRecurrence == null) dateTimeRecurrence = new SimpleObjectProperty<LocalDateTime>(this, RECURRENCE_ID_NAME, _dateTimeRecurrence);
         return dateTimeRecurrence;
     }
     private ObjectProperty<LocalDateTime> dateTimeRecurrence;
@@ -298,7 +311,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * If event is not repeating value is null
      */
     public ObjectProperty<RRule> rRuleProperty() { return rRule; }
-    final private ObjectProperty<RRule> rRule = new SimpleObjectProperty<RRule>(this, "RRULE");
+    final private ObjectProperty<RRule> rRule = new SimpleObjectProperty<RRule>(this, RECURRENCE_RULE_NAME);
     public RRule getRRule() { return rRule.get(); }
     public void setRRule(RRule rRule) { this.rRule.set(rRule); }
 //    public void setRRule(String rRuleString) { setRRule(RRule.parseRRule(rRuleString)); }
@@ -310,7 +323,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * SUMMARY:Department Party
      * */
     public StringProperty summaryProperty() { return summaryProperty; }
-    final private StringProperty summaryProperty = new SimpleStringProperty(this, "SUMMARY");
+    final private StringProperty summaryProperty = new SimpleStringProperty(this, SUMMARY_NAME);
     public String getSummary() { return summaryProperty.getValue(); }
     public void setSummary(String value) { summaryProperty.setValue(value); }
 //    public T withSummary(String value) { setSummary(value); return (T)this; } 
@@ -322,17 +335,17 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * setting the UID callback.
      */
     public StringProperty uniqueIdentifierProperty() { return uniqueIdentifier; }
-    final private StringProperty uniqueIdentifier = new SimpleStringProperty(this, "UID");
+    final private StringProperty uniqueIdentifier = new SimpleStringProperty(this, UNIQUE_IDENTIFIER_NAME);
     public String getUniqueIdentifier() { return uniqueIdentifier.getValue(); }
     public void setUniqueIdentifier(String s) { uniqueIdentifier.set(s); }
 //    public T withUniqueIdentifier(String uid) { setUniqueIdentifier(uid); return (T)this; }
-
+    
     /** Callback for creating unique uid values  */
     public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
     private static Integer nextKey = 0;
     private Callback<Void, String> uidGeneratorCallback = (Void) ->
     { // default UID generator callback
-        String dateTime = VDateTime.DATE_TIME_FORMATTER.format(LocalDateTime.now());
+        String dateTime = VComponent.DATE_TIME_FORMATTER.format(LocalDateTime.now());
         String domain = "jfxtras.org";
         return dateTime + "-" + nextKey++ + domain;
     };
@@ -370,13 +383,13 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         {
             String dateToken = tokens.get(0);
 //            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(VDateTime.datePattern);
-            date = LocalDate.parse(dateToken, VDateTime.DATE_FORMATTER);
+            date = LocalDate.parse(dateToken, VComponent.DATE_FORMATTER);
         } else throw new IllegalArgumentException("Invalid Date-Time string: " + dt);           
         if (tokens.size() == 2)
         { // find date if another token is available
             String timeToken = tokens.get(1);
 //            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(timePattern);
-            LocalTime time = LocalTime.parse(timeToken, VDateTime.TIME_FORMATTER);
+            LocalTime time = LocalTime.parse(timeToken, VComponent.TIME_FORMATTER);
             return LocalDateTime.of(date, time);
         }
         return date.atStartOfDay();
@@ -483,7 +496,8 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 && summaryEquals && uniqueIdentifierEquals && rruleEquals && eXDatesEquals && rDatesEquals;
     }
 
-    /** Make map of properties and string values for toString method in subclasses (like VEvent) */
+    /** Make map of properties and string values for toString method in subclasses (like VEvent)
+     * Used by toString method in subclasses */
     @SuppressWarnings("rawtypes")
     Map<Property, String> makePropertiesMap()
     {
@@ -491,11 +505,11 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
 
         if (getCategories() != null) properties.put(categoriesProperty(), getCategories().toString());
         if (getComment() != null) properties.put(commentProperty(), getComment().toString());
-        if (getDateTimeCreated() != null) properties.put(dateTimeCreatedProperty(), VDateTime.DATE_TIME_FORMATTER.format(getDateTimeCreated()));
-        properties.put(dateTimeStampProperty(), VDateTime.DATE_TIME_FORMATTER.format(getDateTimeStamp())); // required property
-        if (getDateTimeRecurrence() != null) properties.put(dateTimeRecurrenceProperty(), VDateTime.DATE_TIME_FORMATTER.format(getDateTimeRecurrence()));
+        if (getDateTimeCreated() != null) properties.put(dateTimeCreatedProperty(), VComponent.DATE_TIME_FORMATTER.format(getDateTimeCreated()));
+        properties.put(dateTimeStampProperty(), VComponent.DATE_TIME_FORMATTER.format(getDateTimeStamp())); // required property
+        if (getDateTimeRecurrence() != null) properties.put(dateTimeRecurrenceProperty(), VComponent.DATE_TIME_FORMATTER.format(getDateTimeRecurrence()));
         if (getDateTimeStart() != null) properties.put(dateTimeStartProperty(), VComponent.temporalToString(getDateTimeStart()));
-        if (getDateTimeLastModified() != null) properties.put(dateTimeLastModifiedProperty(), VDateTime.DATE_TIME_FORMATTER.format(getDateTimeLastModified()));
+        if (getDateTimeLastModified() != null) properties.put(dateTimeLastModifiedProperty(), VComponent.DATE_TIME_FORMATTER.format(getDateTimeLastModified()));
         if (getExDate() != null) properties.put(exDateProperty(), getExDate().toString());
         if (getLocation() != null) properties.put(locationProperty(), getLocation().toString());
         if (getRDate() != null) properties.put(rDateProperty(), getRDate().toString());
@@ -531,28 +545,30 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
             String line = stringsIterator.next();
             String property = line.substring(0, line.indexOf(":"));
             String value = line.substring(line.indexOf(":") + 1).trim();
-            if (property.equals(vComponent.categoriesProperty().getName()))
+            if (property.equals(CATEGORIES_NAME))
             { // CATEGORIES
-//                System.out.println("found categories:" + value);
                 vComponent.setCategories(value);
                 stringsIterator.remove();
-            } else if (property.equals(vComponent.dateTimeCreatedProperty().getName()))
+            } else if (property.equals(COMMENT_NAME))
+            { // COMMENT
+                vComponent.setComment(value);
+                stringsIterator.remove();
+            } else if (property.equals(CREATED_NAME))
             { // CREATED
-                LocalDateTime dateTime = LocalDateTime.parse(value,VDateTime.DATE_TIME_FORMATTER);
+                LocalDateTime dateTime = LocalDateTime.parse(value,VComponent.DATE_TIME_FORMATTER);
                 vComponent.setDateTimeCreated(dateTime);
                 stringsIterator.remove();
-            } else if (property.equals(vComponent.dateTimeStampProperty().getName()))
+            } else if (property.equals(DATE_TIME_STAMP_NAME))
             { // DTSTAMP
-                LocalDateTime dateTime = LocalDateTime.parse(value,VDateTime.DATE_TIME_FORMATTER);
+                LocalDateTime dateTime = LocalDateTime.parse(value,VComponent.DATE_TIME_FORMATTER);
                 vComponent.setDateTimeStamp(dateTime);
                 stringsIterator.remove();
-            } else if (property.equals(vComponent.dateTimeStartProperty().getName()))
+            } else if (property.equals(DATE_TIME_START_NAME))
             { // DTSTART
-//                VDateTime dateTime = VDateTime.parseString(value);
                 Temporal dateTime = VComponent.parseTemporal(value);
                 vComponent.setDateTimeStart(dateTime);
                 stringsIterator.remove();
-            } else if (property.equals(vComponent.exDateProperty().getName()))
+            } else if (property.equals(EXCEPTION_DATE_TIMES_NAME))
             { // EXDATE
                 Collection<Temporal> dateTimeCollection = RecurrenceComponentAbstract.parseDates(value);
                 if (vComponent.getExDate() == null)
@@ -561,12 +577,12 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 }                  
                 vComponent.getExDate().getTemporals().addAll(dateTimeCollection);
                 stringsIterator.remove();
-            } else if (property.equals(vComponent.dateTimeLastModifiedProperty().getName()))
+            } else if (property.equals(LAST_MODIFIED_NAME))
             { // LAST-MODIFIED
-                LocalDateTime dateTime = LocalDateTime.parse(value,VDateTime.DATE_TIME_FORMATTER);
+                LocalDateTime dateTime = LocalDateTime.parse(value,VComponent.DATE_TIME_FORMATTER);
                 vComponent.setDateTimeLastModified(dateTime);
                 stringsIterator.remove();
-            } else if (property.equals(vComponent.rDateProperty().getName()))
+            } else if (property.equals(RECURRENCE_DATE_TIMES_NAME))
             { // RDATE
                 Collection<Temporal> dateTimeCollection = RecurrenceComponentAbstract.parseDates(value);
                 if (vComponent.getRDate() == null)
@@ -575,16 +591,20 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 }                  
                 vComponent.getRDate().getTemporals().addAll(dateTimeCollection);
                 stringsIterator.remove();
-
-            } else if (property.equals(vComponent.rRuleProperty().getName()))
+            } else if (property.equals(RECURRENCE_ID_NAME))
+            { // RECURRENCE-ID
+                LocalDateTime dateTime = LocalDateTime.parse(value,VComponent.DATE_TIME_FORMATTER);
+                vComponent.setDateTimeRecurrence(dateTime);
+                stringsIterator.remove();
+            } else if (property.equals(RECURRENCE_RULE_NAME))
             { // RRULE
                 vComponent.setRRule(RRule.parseRRule(value));
                 stringsIterator.remove();
-            } else if (property.equals(vComponent.summaryProperty().getName()))
+            } else if (property.equals(SUMMARY_NAME))
             { // SUMMARY
                 vComponent.setSummary(value);
                 stringsIterator.remove();
-            } else if (property.equals(vComponent.uniqueIdentifierProperty().getName()))
+            } else if (property.equals(UNIQUE_IDENTIFIER_NAME))
             { // UID
                 vComponent.setUniqueIdentifier(value);
                 stringsIterator.remove();
@@ -608,16 +628,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
             stream1 = Arrays.asList(dateTimeStartToLocalDateTime())
                     .stream()
                     .filter(d -> ! d.isBefore(startDateTime));
-////            if (! startDateTime.isBefore(getDateTimeStart()))
-//            if (! startDateTime.isBefore(getDateTimeStart().getLocalDateTime()))
-//            {
-////                stream1 = Arrays.asList(getDateTimeStart()).stream();
-//                stream1 = Arrays.asList(getDateTimeStart().getLocalDateTime()).stream();
-//            } else
-//            { // if dateTimeStart is before startDateTime
-////                System.out.println("empty stream");
-//                stream1 = new ArrayList<LocalDateTime>().stream(); // empty stream
-//            }
         } else
         { // if has recurrence rule
             stream1 = getRRule().stream(startDateTime);

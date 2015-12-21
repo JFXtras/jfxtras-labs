@@ -80,7 +80,6 @@ public class EditPopupLoader extends Stage {
         setOnHidden((windowEvent) -> 
         {
 //            System.out.println("close type:" + popupCloseType.get() + " " +  agenda.vComponents().size());
-            agenda.vComponents().stream().forEach(System.out::println);
 //            appointmentEditController.getRepeatableController().removeRepeatBindings();
             switch (popupCloseType.get())
             {

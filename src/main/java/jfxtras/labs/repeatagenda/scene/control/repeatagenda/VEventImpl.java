@@ -165,6 +165,7 @@ public class VEventImpl extends VEvent<Appointment>
         if (source.getAppointmentClass() != null) destination.setAppointmentClass(source.getAppointmentClass());
         if (source.getDateTimeRangeStart() != null) destination.setDateTimeRangeStart(source.getDateTimeRangeStart());
         if (source.getDateTimeRangeEnd() != null) destination.setDateTimeRangeEnd(source.getDateTimeRangeEnd());
+        if (source.getUidGeneratorCallback() != null) destination.setUidGeneratorCallback(source.getUidGeneratorCallback());
         source.instances().stream().forEach(a -> destination.instances().add(a));
     }
     
@@ -509,7 +510,6 @@ public class VEventImpl extends VEvent<Appointment>
 //            }
             instances().clear(); // clear VEvent's collection of appointments
 //            System.out.println("size1: " + appointments.size());
-            System.out.println("makeInstances:");
             appointments.addAll(makeInstances()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
             
 //            System.out.println("size2: " + appointments.size());

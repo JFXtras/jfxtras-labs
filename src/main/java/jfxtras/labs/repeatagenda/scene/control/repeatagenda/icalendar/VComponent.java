@@ -137,7 +137,7 @@ public interface VComponent<T>
     void setSummary(String value);
     
     /**
-     * Unique identifier, UID as defined by RFC 5545, iCalendar 3.8.4.7 page 117
+     * UID, Unique identifier, as defined by RFC 5545, iCalendar 3.8.4.7 page 117
      * A globally unique identifier for the calendar component.
      * Included is an example UID generator.  Other UID generators can be provided by
      * setting the UID callback.
@@ -146,6 +146,7 @@ public interface VComponent<T>
     void setUniqueIdentifier(String s);
     
     /** Callback for creating unique uid values  */
+    // TODO - USE STATIC?
     Callback<Void, String> getUidGeneratorCallback();
     void setUidGeneratorCallback(Callback<Void, String> uidCallback);
     

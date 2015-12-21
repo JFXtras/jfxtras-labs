@@ -69,7 +69,18 @@ public class ICalendarAgenda extends Agenda {
     Class<? extends Appointment> getAppointmentClass() { return appointmentClass; }
     public void setAppointmentClass(Class<? extends Appointment> clazz) { appointmentClass = clazz; }
 
-    // I/O callbacks, must be set to provide I/O functionality, null by default
+    /** Callback for creating unique uid values  */
+    public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
+    private static Integer nextKey = 0;
+    private Callback<Void, String> uidGeneratorCallback = (Void) ->
+    { // default UID generator callback
+        String dateTime = VComponent.DATE_TIME_FORMATTER.format(LocalDateTime.now());
+        String domain = "jfxtras.org";
+        return dateTime + "-" + nextKey++ + domain;
+    };
+    public void setUidGeneratorCallback(Callback<Void, String> uidCallback) { this.uidGeneratorCallback = uidCallback; }
+    
+    // I/O callbacks, must be set to provide I/O functionality, null by default - TODO - NOT IMPLEMENTED YET
     private Callback<Collection<VComponent< Appointment>>, Void> repeatWriteCallback = null;
     public void setRepeatWriteCallback(Callback<Collection<VComponent<Appointment>>, Void> repeatWriteCallback) { this.repeatWriteCallback = repeatWriteCallback; }
 
@@ -101,8 +112,9 @@ public class ICalendarAgenda extends Agenda {
                             LocalDateTime dateTimeRangeEnd = dateTimeRange.getEndLocalDateTime();
                             newVComponent.setDateTimeRangeStart(dateTimeRangeStart);
                             newVComponent.setDateTimeRangeEnd(dateTimeRangeEnd);
-                            newVComponent.setUniqueIdentifier(newVComponent.getUidGeneratorCallback().call(null));
-                            System.out.println("add vEvemt " + a.getStartLocalDateTime());
+                            newVComponent.setUidGeneratorCallback(getUidGeneratorCallback());
+                            newVComponent.setUniqueIdentifier(getUidGeneratorCallback().call(null));
+//                            System.out.println("add vEvemt " + a.getStartLocalDateTime());
 //                            vComponents().removeListener(vComponentListener);
                             vComponents.add(newVComponent);
 //                            vComponents().addListener(vComponentListener);
