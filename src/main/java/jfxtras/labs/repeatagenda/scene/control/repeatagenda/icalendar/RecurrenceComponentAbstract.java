@@ -36,13 +36,13 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
         {
             this.getTemporals().add(d);
         }
-        if (dateOrDateTime.length > 0) getTemporalClass(); // test class sameness
+        if (dateOrDateTime.length > 0) temporalClass(); // test class sameness
         Class<? extends Temporal> firstClass = dateOrDateTime[0].getClass();
         checkTemporalTypes(firstClass);
     }
 
-    /** Class of encapsulated Temporal objects */
-    protected Class<? extends Temporal> getTemporalClass()
+    /** Class of encapsulated Temporal objects - LocalDate or LocalDateTime */
+    protected Class<? extends Temporal> temporalClass()
     {
         if (getTemporals().size() > 0)
         {

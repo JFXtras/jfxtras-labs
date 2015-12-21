@@ -79,13 +79,11 @@ public class EditPopupLoader extends Stage {
         // when popup closes write changes if occurred
         setOnHidden((windowEvent) -> 
         {
-//            System.out.println("close type:" + popupCloseType.get() + " " +  agenda.vComponents().size());
-//            appointmentEditController.getRepeatableController().removeRepeatBindings();
+            System.out.println("VComponent:" + vComponent.toString());
             switch (popupCloseType.get())
             {
             case CLOSE_WITH_CHANGE:
                 agenda.refresh();
-//                System.out.println(vComponent.toString());
 //                System.out.println("close popup");
                 if (groupNameEdited.getValue()) {    // TODO write group name changes
 //                    System.out.println("group change write needed");

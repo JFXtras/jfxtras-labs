@@ -1,5 +1,6 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -168,10 +169,24 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
          As a matter of fact\, the venue for the meeting ought to be at
          their site. - - John
      * */
-    public StringProperty commentProperty() { return commentProperty; }
-    final private StringProperty commentProperty = new SimpleStringProperty(this, COMMENT_NAME);
-    public String getComment() { return commentProperty.get(); }
-    public void setComment(String value) { commentProperty.set(value); }
+    public StringProperty commentProperty()
+    {
+        if (comment == null) comment = new SimpleStringProperty(this, COMMENT_NAME, _comment);
+        return comment;
+    }
+    private StringProperty comment;
+    private String _comment;
+    public String getComment() { return (comment == null) ? _comment : comment.get(); }
+    public void setComment(String comment)
+    {
+        if (this.comment == null)
+        {
+            _comment = comment;
+        } else
+        {
+            this.comment.set(comment);            
+        }
+    }
 //    public VEvent withComment(String value) { setComment(value); return this; }
 
     /**
@@ -179,8 +194,8 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * This property specifies the date and time that the calendar information was created.
      * This is analogous to the creation date and time for a file in the file system.
      */
-    final private ObjectProperty<LocalDateTime> dateTimeCreated = new SimpleObjectProperty<>(this, CREATED_NAME);
     public ObjectProperty<LocalDateTime> dateTimeCreatedProperty() { return dateTimeCreated; }
+    final private ObjectProperty<LocalDateTime> dateTimeCreated = new SimpleObjectProperty<>(this, CREATED_NAME);
     public LocalDateTime getDateTimeCreated() { return dateTimeCreated.get(); }
     public void setDateTimeCreated(LocalDateTime dtCreated) { this.dateTimeCreated.set(dtCreated); }
     
@@ -189,8 +204,8 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * This property specifies the date and time that the instance of the
      * iCalendar object was created
      */
-    final private ObjectProperty<LocalDateTime> dateTimeStamp = new SimpleObjectProperty<>(this, DATE_TIME_STAMP_NAME);
     public ObjectProperty<LocalDateTime> dateTimeStampProperty() { return dateTimeStamp; }
+    final private ObjectProperty<LocalDateTime> dateTimeStamp = new SimpleObjectProperty<>(this, DATE_TIME_STAMP_NAME);
     public LocalDateTime getDateTimeStamp() { return dateTimeStamp.get(); }
     public void setDateTimeStamp(LocalDateTime dtStamp) { this.dateTimeStamp.set(dtStamp); }
     
@@ -249,7 +264,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * Example:
      * LOCATION:Conference Room - F123\, Bldg. 002
      */
-    public StringProperty locationProperty() { return locationProperty; }
+    public StringProperty locationProperty(){ return locationProperty; }
     final private StringProperty locationProperty = new SimpleStringProperty(this, LOCATION_NAME);
     public String getLocation() { return locationProperty.getValue(); }
     public void setLocation(String value) { locationProperty.setValue(value); }
@@ -293,7 +308,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     private LocalDateTime _dateTimeRecurrence;
     public LocalDateTime getDateTimeRecurrence()
     {
-        return (dateTimeRecurrence == null) ? _dateTimeRecurrence : dateTimeRecurrence.getValue();
+        return (dateTimeRecurrence == null) ? _dateTimeRecurrence : dateTimeRecurrence.get();
     }
     public void setDateTimeRecurrence(LocalDateTime dtRecurrence)
     {
@@ -310,11 +325,24 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
      * If event is not repeating value is null
      */
-    public ObjectProperty<RRule> rRuleProperty() { return rRule; }
-    final private ObjectProperty<RRule> rRule = new SimpleObjectProperty<RRule>(this, RECURRENCE_RULE_NAME);
-    public RRule getRRule() { return rRule.get(); }
-    public void setRRule(RRule rRule) { this.rRule.set(rRule); }
-//    public void setRRule(String rRuleString) { setRRule(RRule.parseRRule(rRuleString)); }
+    public ObjectProperty<RRule> rRuleProperty()
+    {
+        if (rRule == null) rRule = new SimpleObjectProperty<RRule>(this, RECURRENCE_RULE_NAME, _rRule);
+        return rRule;
+    }
+    private ObjectProperty<RRule> rRule;
+    private RRule _rRule;
+    public RRule getRRule() { return (rRule == null) ? _rRule : rRule.get(); }
+    public void setRRule(RRule rRule)
+    {
+        if (this.rRule == null)
+        {
+            _rRule = rRule;
+        } else
+        {
+            this.rRule.set(rRule);
+        }
+    }
     
     /**
      *  SUMMARY: RFC 5545 iCalendar 3.8.1.12. page 83
@@ -384,7 +412,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
             String dateToken = tokens.get(0);
 //            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(VDateTime.datePattern);
             date = LocalDate.parse(dateToken, VComponent.DATE_FORMATTER);
-        } else throw new IllegalArgumentException("Invalid Date-Time string: " + dt);           
+        } else throw new DateTimeException("Invalid Date-Time string: " + dt);           
         if (tokens.size() == 2)
         { // find date if another token is available
             String timeToken = tokens.get(1);

@@ -307,7 +307,7 @@ public interface VComponent<T>
         {
             return DATE_TIME_FORMATTER.format(temporal);
         } else throw new DateTimeException("Unable to obtain LocalDateTime from TemporalAccessor: " +
-                temporal + " of type " + temporal.getClass().getName());
+                temporal + " of type " + temporal.getClass().getSimpleName());
     }
 
     /**
@@ -327,7 +327,7 @@ public interface VComponent<T>
         {
             return (LocalDateTime) temporal;
         } else throw new DateTimeException("Unable to obtain LocalDateTime from TemporalAccessor: " +
-                temporal + " of type " + temporal.getClass().getName());
+                temporal + " of type " + temporal.getClass().getSimpleName());
     }
     
 }

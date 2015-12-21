@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 
 public class ICalendarDateTest extends ICalendarTestAbstract
 {
@@ -20,7 +19,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     @Test
     public void yearlyStreamTest1()
     {
-        VEvent e = getYearly1();
+        VEventImpl e = getYearly1();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.dateTimeStartToLocalDateTime())
                 .limit(5)
@@ -39,7 +38,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     @Test
     public void yearlyStreamTest2()
     {
-        VEvent e = getYearly2();
+        VEventImpl e = getYearly2();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.dateTimeStartToLocalDateTime())
                 .limit(5)
@@ -58,7 +57,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     @Test
     public void yearlyStreamTest3()
     {
-        VEvent e = getYearly3();
+        VEventImpl e = getYearly3();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.dateTimeStartToLocalDateTime())
                 .limit(20)
@@ -92,7 +91,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     @Test
     public void yearlyStreamTest4()
     {
-        VEvent e = getYearly4();
+        VEventImpl e = getYearly4();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.dateTimeStartToLocalDateTime())
                 .limit(5)
@@ -111,7 +110,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     @Test
     public void yearlyStreamTest5()
     {
-        VEvent e = getYearly5();
+        VEventImpl e = getYearly5();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.dateTimeStartToLocalDateTime())
                 .limit(5)
@@ -131,7 +130,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     @Test
     public void yearlyStreamTest6()
     {
-        VEvent e = getYearly6();
+        VEventImpl e = getYearly6();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.dateTimeStartToLocalDateTime())
                 .limit(6)
@@ -151,7 +150,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     @Test
     public void yearlyStreamTest7()
     {
-        VEvent e = getYearly7();
+        VEventImpl e = getYearly7();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.dateTimeStartToLocalDateTime())
                 .limit(3)
@@ -170,7 +169,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     {
 //        Locale oldLocale = Locale.getDefault();
 //        Locale.setDefault(Locale.FRANCE); // has Monday as first day of week system.  US is Sunday which causes an error.
-        VEvent e = getYearly8();
+        VEventImpl e = getYearly8();
         List<LocalDateTime> madeDates = e.getRRule()
                 .stream(e.dateTimeStartToLocalDateTime())
                 .limit(5)

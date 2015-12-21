@@ -31,6 +31,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Spinner;
@@ -42,6 +43,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -456,9 +458,6 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
     {
         this.vComponent = vComponent;
         this.dateTimeStartInstanceNew = dateTimeStartInstanceNew;
-        
-
-        frequencyComboBox.valueProperty().addListener(frequencyListener);
 
         // REPEATABLE CHECKBOX
         repeatableCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
@@ -479,8 +478,6 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
             } else
             {
                 vComponent.setRRule(null);
-//                appointment.setRepeat(null);
-//                frequencyComboBox.valueProperty().removeListener(frequencyListener);
                 repeatableGridPane.setDisable(true);
                 startDatePicker.setDisable(true);
             }
@@ -490,7 +487,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         // Note: exceptionComboBox string converter must be setup done after the controller's initialization 
         // because the resource bundle isn't instantiated earlier.
         final DateTimeFormatter formatterDateTime = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.exception"));
-        final DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.exception"));
+        final DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.exception.dateonly"));
         exceptionComboBox.setConverter(new StringConverter<Temporal>()
         { // setup string converter
             @Override public String toString(Temporal d)
@@ -498,13 +495,12 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
                 DateTimeFormatter myFormatter;
                 if ((d instanceof LocalDateTime))
                 {
-                    myFormatter = formatterDate;
+                    myFormatter = formatterDateTime;
                 } else if ((d instanceof LocalDate))
                 {
-                    myFormatter = formatterDateTime;
+                    myFormatter = formatterDate;
                 } else throw new DateTimeException("DTSTART and DTEND must have same Temporal type("
                         + d.getClass().getSimpleName() + ", " + d.getClass().getSimpleName() +")");
-//                DateTimeFormatter myFormatter = (d.isWholeDay()) ? formatterDate : formatterDateTime;
                 return myFormatter.format(d);
             }
             @Override public Temporal fromString(String string) { throw new RuntimeException("not required for non editable ComboBox"); }
@@ -516,6 +512,41 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
           removeExceptionButton.setDisable(false); // turn on add button when exception date is selected in combobox
         });
         
+        // Format Temporal in exceptionsListView to LocalDate or LocalDateTime
+        final Callback<ListView<Temporal>, ListCell<Temporal>> temporalCellFactory = new Callback<ListView<Temporal>,  ListCell<Temporal>>()
+        {
+            @Override 
+            public ListCell<Temporal> call(ListView<Temporal> list)
+            {
+                return new ListCell<Temporal>()
+                {
+                    @Override public void updateItem(Temporal temporal, boolean empty)
+                    {
+                        super.updateItem(temporal, empty);
+                        if (temporal == null || empty)
+                        {
+                            setText(null);
+                            setStyle("");
+                        } else
+                        {
+                            // Format date.
+                            DateTimeFormatter myFormatter;
+                            if ((temporal instanceof LocalDateTime))
+                            {
+                                myFormatter = formatterDateTime;
+                            } else if ((temporal instanceof LocalDate))
+                            {
+                                myFormatter = formatterDate;
+                            } else throw new DateTimeException("Invalid Temporal type("
+                                    + temporal.getClass().getSimpleName() + ", " + temporal.getClass().getSimpleName() +")");
+                            setText(myFormatter.format(temporal));
+                        }
+                    }
+                };
+            }
+        };
+        exceptionsListView.setCellFactory(temporalCellFactory);
+        
         // SETUP CONTROLLER'S INITIAL DATA FROM RRULE
         boolean checkBox = (vComponent.getRRule() != null);
         repeatableCheckBox.selectedProperty().set(checkBox);
@@ -523,24 +554,11 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
 
         // Listeners to update exception dates
         addExceptionListeners();
-//        frequencyComboBox.valueProperty().addListener(makeExceptionDatesListener);
-//        intervalSpinner.valueProperty().addListener(makeExceptionDatesListener);
-//        sundayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-//        mondayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-//        tuesdayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-//        wednesdayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-//        thursdayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-//        fridayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-//        saturdayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-//        monthlyGroup.selectedToggleProperty().addListener(makeExceptionDatesListener);
-//        endGroup.selectedToggleProperty().addListener(makeExceptionDatesListener);
-//        endAfterEventsSpinner.valueProperty().addListener(makeExceptionDatesListener);
-//        endOnDatePicker.valueProperty().addListener(makeExceptionDatesListener);
+        frequencyComboBox.valueProperty().addListener(frequencyListener);
     }
     
     private void addExceptionListeners()
     {
-//        frequencyComboBox.valueProperty().addListener(makeExceptionDatesListener);
         intervalSpinner.valueProperty().addListener(makeExceptionDatesListener);
         sundayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
         mondayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
@@ -557,7 +575,6 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
     
     private void removeExceptionListeners()
     {
-//        frequencyComboBox.valueProperty().removeListener(makeExceptionDatesListener);
         intervalSpinner.valueProperty().removeListener(makeExceptionDatesListener);
         sundayCheckBox.selectedProperty().removeListener(makeExceptionDatesListener);
         mondayCheckBox.selectedProperty().removeListener(makeExceptionDatesListener);
@@ -582,7 +599,6 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
                     .getExDate()
                     .getTemporals()
                     .stream()
-//                    .map(d -> d.getLocalDateTime())
                     .collect(Collectors.toList());
             exceptionsListView.getItems().addAll(collect);
         }
@@ -676,9 +692,23 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
                 .stream(dateTimeStart);
         Stream<LocalDateTime> stream2 = (vComponent.getExDate() == null) ? stream1
                 : vComponent.getExDate().stream(stream1, dateTimeStart); // remove exceptions
-        List<Temporal> exceptionDates = stream2
-                .limit(EXCEPTION_CHOICE_LIMIT)
-                .collect(Collectors.toList());
+//        Class<? extends Temporal> clazz = vComponent.getExDate().temporalClass();
+        Class<? extends Temporal> clazz = vComponent.getDateTimeStart().getClass();
+        List<Temporal> exceptionDates = null;
+        if (clazz.equals(LocalDate.class))
+        {
+            exceptionDates = stream2
+                    .limit(EXCEPTION_CHOICE_LIMIT)
+                    .map(d -> d.toLocalDate())
+                    .collect(Collectors.toList());
+        } else if (clazz.equals(LocalDateTime.class))
+        {
+            exceptionDates = stream2
+                    .limit(EXCEPTION_CHOICE_LIMIT)
+                    .collect(Collectors.toList());
+        } else throw new DateTimeException("Invalid Temporal class: " +
+                clazz.getSimpleName() + " Only LocalDate and LocalDateTime accepted.");
+
         exceptionComboBox.getItems().clear();
         exceptionComboBox.getItems().addAll(exceptionDates);
     }

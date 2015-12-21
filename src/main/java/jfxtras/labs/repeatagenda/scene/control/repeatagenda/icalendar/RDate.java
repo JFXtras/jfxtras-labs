@@ -79,25 +79,25 @@ public class RDate extends RecurrenceComponentAbstract<RDate>
         return getTemporalStream()
                 .filter(t -> 
                 {
-                    if (getTemporalClass().equals(LocalDate.class))
+                    if (temporalClass().equals(LocalDate.class))
                     {
                         LocalDate start = startDateTime.toLocalDate();
                         return ! ((LocalDate) t).isBefore(start);
-                    } else if (getTemporalClass().equals(LocalDateTime.class))
+                    } else if (temporalClass().equals(LocalDateTime.class))
                     {
                         LocalDateTime start = (LocalDateTime) startDateTime;
                         return ! ((LocalDateTime) t).isBefore(start);
-                    } else throw new IllegalArgumentException("Unsupported Temporal class:" + getTemporalClass().getSimpleName());
+                    } else throw new IllegalArgumentException("Unsupported Temporal class:" + temporalClass().getSimpleName());
                 })
                 .map(t ->
                 {
-                    if (getTemporalClass().equals(LocalDate.class))
+                    if (temporalClass().equals(LocalDate.class))
                     {
                         return ((LocalDate) t).atStartOfDay();
-                    } else if (getTemporalClass().equals(LocalDateTime.class))
+                    } else if (temporalClass().equals(LocalDateTime.class))
                     {
                         return (LocalDateTime) t;                            
-                    } else throw new IllegalArgumentException("Unsupported Temporal class:" + getTemporalClass().getSimpleName());
+                    } else throw new IllegalArgumentException("Unsupported Temporal class:" + temporalClass().getSimpleName());
                 });
     }
 
