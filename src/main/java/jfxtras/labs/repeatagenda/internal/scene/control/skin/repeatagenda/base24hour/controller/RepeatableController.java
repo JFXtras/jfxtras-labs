@@ -47,6 +47,7 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponentAbstract;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay.ByDayPair;
@@ -462,21 +463,31 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         // REPEATABLE CHECKBOX
         repeatableCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
         {
+            // listen for changes to start date/time (type may change requiring new exception date choices)
+            final ChangeListener<? super Temporal> dateTimeStartListener = (observable2, oldValue, newValue) ->
+            {
+                System.out.println("start:" + newValue);
+                makeExceptionDates();
+            };
             if (newSelection)
             {
                 removeExceptionListeners();
+                // setup new RRule
                 if (vComponent.getRRule() == null)
                 {
                     RRule rRule = setDefaults(new RRule(), VComponent.localDateTimeFromTemporal(vComponent.getDateTimeStart()));
                     vComponent.setRRule(rRule);
                     setInitialValues(vComponent);
                 }
+                ((VComponentAbstract<T>) vComponent).dateTimeStartProperty().addListener(dateTimeStartListener);
+
                 repeatableGridPane.setDisable(false);
                 startDatePicker.setDisable(false);
                 makeExceptionDates();
                 addExceptionListeners();
             } else
             {
+                ((VComponentAbstract<T>) vComponent).dateTimeStartProperty().removeListener(dateTimeStartListener);
                 vComponent.setRRule(null);
                 repeatableGridPane.setDisable(true);
                 startDatePicker.setDisable(true);
@@ -554,6 +565,8 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
 
         // Listeners to update exception dates
         addExceptionListeners();
+        
+        // Listeners to be added after initial settings
         frequencyComboBox.valueProperty().addListener(frequencyListener);
     }
     

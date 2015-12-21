@@ -276,12 +276,13 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                 {
                     int days = Period.between((LocalDate) getDateTimeStart(), (LocalDate) newSel).getDays();
                     nanos = (long) days * NANOS_IN_DAY;
-                } else throw new DateTimeException("DTSTART and DTEND must have same Temporal type("
-                        + getDateTimeStart().getClass().getSimpleName() + ", " + getDateTimeEnd().getClass().getSimpleName() +")");
-                
-                durationInNanosProperty().removeListener(durationlistener);
-                setDurationInNanos(nanos);
-                durationInNanosProperty().addListener(durationlistener);
+                }
+                if (nanos > 0)
+                {
+                    durationInNanosProperty().removeListener(durationlistener);
+                    setDurationInNanos(nanos);
+                    durationInNanosProperty().addListener(durationlistener);
+                }
             }
         };
         
@@ -297,12 +298,13 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                 {
                     int days = Period.between((LocalDate) newSel, (LocalDate) getDateTimeEnd()).getDays();
                     nanos = (long) days * NANOS_IN_DAY;
-                } else throw new DateTimeException("DTSTART and DTEND must have same Temporal type("
-                        + getDateTimeStart().getClass().getSimpleName() + ", " + getDateTimeEnd().getClass().getSimpleName() +")");
-
-                durationInNanosProperty().removeListener(durationlistener);
-                setDurationInNanos(nanos);
-                durationInNanosProperty().addListener(durationlistener);
+                }
+                if (nanos > 0)
+                {
+                    durationInNanosProperty().removeListener(durationlistener);
+                    setDurationInNanos(nanos);
+                    durationInNanosProperty().addListener(durationlistener);
+                }
             }
         };
         
@@ -310,19 +312,20 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         { // listener to synch dateTimeEnd and durationInSeconds.  dateTimeStart is left in place.
             if ((getDateTimeStart() != null) && (getDateTimeEnd() != null))
             {
-                Temporal dtEnd;
+                Temporal dtEnd = null;
                 if ((getDateTimeEnd() instanceof LocalDateTime) && (getDateTimeStart() instanceof LocalDateTime))
                 {
                     dtEnd = getDateTimeEnd().plus((long) newSel, ChronoUnit.NANOS);
                 } else if ((getDateTimeEnd() instanceof LocalDate) && (getDateTimeStart() instanceof LocalDate))
                 {
                     dtEnd = getDateTimeEnd().plus(((long) newSel)/NANOS_IN_DAY, ChronoUnit.DAYS);
-                } else throw new DateTimeException("DTSTART and DTEND must have same Temporal type("
-                        + getDateTimeStart().getClass().getSimpleName() + ", " + getDateTimeEnd().getClass().getSimpleName() +")");
-
-                dateTimeEndProperty().removeListener(dateTimeEndlistener);
-                setDateTimeEnd(dtEnd);
-                dateTimeEndProperty().addListener(dateTimeEndlistener);
+                }
+                if (dtEnd != null)
+                {
+                    dateTimeEndProperty().removeListener(dateTimeEndlistener);
+                    setDateTimeEnd(dtEnd);
+                    dateTimeEndProperty().addListener(dateTimeEndlistener);
+                }
             }
         };
         
@@ -393,12 +396,20 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         StringBuilder errorsBuilder = new StringBuilder(super.makeErrorString());
         boolean durationNull = getDurationInNanos() == 0;
         boolean endDateTimeNull = getDateTimeEnd() == null;
+        
         // Note: Check for invalid condition where both DURATION and DTEND not being null is done in parseVEvent.
         // It is not checked here due to bindings between both DURATION and DTEND.
         if (durationNull && endDateTimeNull && getDateTimeStart() != null && ! isDateTimeStartWholeDay()) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DURATION and DTEND can not be null.");
+
         Boolean s = (getDateTimeStart() == null) ? null: isDateTimeStartWholeDay();
         Boolean e = (getDateTimeEnd() == null) ? null: isDateTimeEndWholeDay();
         if ((s != null) && (e != null) && ((s && !e) || (!s && e))) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DTSTART and DTEND must be both whole day or neither can be");
+
+        Class<? extends Temporal> startClass = getDateTimeStart().getClass();
+        Class<? extends Temporal> endClass = getDateTimeEnd().getClass();
+        
+        if (! startClass.equals(endClass)) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DTSTART and DTEND must have the same Temporal type (" + startClass + "," + endClass + ")");
+        
         return errorsBuilder.toString();
     }
     

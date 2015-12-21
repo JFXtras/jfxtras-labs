@@ -138,6 +138,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
               , LocalDateTime.of(2015, 11, 21, 10, 0)
                 ));
         assertEquals(expectedDates, madeDates);
+        
+        // TODO - CHECK RECURRENCE ID
     }
     
     /**

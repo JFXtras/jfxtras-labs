@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -72,13 +73,27 @@ public class AppointmentEditController
     private Temporal lastDateTimeEnd = null;
 
     // Callback for LocalDateTimeTextField that is called when invalid date/time is entered
-    Callback<Throwable, Void> errorCallback = (throwable) ->
+    private final Callback<Throwable, Void> errorCallback = (throwable) ->
     {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Invalid Date or Time");
         alert.setContentText("Please enter valid date and time");
         alert.showAndWait();
         return null;
+    };
+    
+    private final ChangeListener<? super LocalDateTime> startTextListener = (observable, oldSelection, newSelection) ->
+    {
+        System.out.println("new start:" + newSelection);
+        if (wholeDayCheckBox.isSelected())
+        {
+            LocalDateTime date = newSelection.toLocalDate().atStartOfDay();
+            startTextField.setLocalDateTime(date);
+            vEvent.setDateTimeStart(newSelection.toLocalDate());
+        } else
+        {
+            vEvent.setDateTimeStart(newSelection);
+        }
     };
     
     @FXML public void initialize() { }
@@ -120,12 +135,10 @@ public class AppointmentEditController
             {
                 lastDateTimeStart = vEvent.getDateTimeStart();
                 lastDateTimeEnd = vEvent.getDateTimeEnd();
-                vEvent.setDateTimeStart(null);
-                vEvent.setDateTimeEnd(null);
-
                 LocalDateTime startDate = startTextField.getLocalDateTime().toLocalDate().atStartOfDay();
                 if (startDate.equals(startTextField.getLocalDateTime()))
-                { // no change - listener will not fire, value must be set here
+                { // no change in textField value - listener will not fire, value must be set here (change from LocalDateTime to LocalDate)
+                    System.out.println("new start2:" + startTextField.getLocalDateTime().toLocalDate());
                     vEvent.setDateTimeStart(startTextField.getLocalDateTime().toLocalDate());
                 } else
                 {
@@ -137,24 +150,20 @@ public class AppointmentEditController
                         endTextField.getLocalDateTime()
                       : endTextField.getLocalDateTime().toLocalDate().plusDays(1).atStartOfDay();
                 if (endDate.equals(endTextField.getLocalDateTime()))
-                { // no change - listener will not fire, value must be set here
-                    vEvent.setDateTimeStart(endTextField.getLocalDateTime().toLocalDate());
+                { // no change in textField value - listener will not fire, value must be set here (change from LocalDateTime to LocalDate)
+                    vEvent.setDateTimeEnd(endTextField.getLocalDateTime().toLocalDate());
                 } else
                 {
                     endTextField.setLocalDateTime(endDate);                    
                 }
             } else
             {
-                if ((lastDateTimeStart != null) & (lastDateTimeEnd != null))
+                if ((lastDateTimeStart != null) && (lastDateTimeEnd != null))
                 {
-                    vEvent.setDateTimeStart(null);
-                    vEvent.setDateTimeEnd(null);
                     startTextField.setLocalDateTime(VComponent.localDateTimeFromTemporal(lastDateTimeStart));
                     endTextField.setLocalDateTime(VComponent.localDateTimeFromTemporal(lastDateTimeEnd));  
                 } else
                 {
-                    vEvent.setDateTimeStart(null);
-                    vEvent.setDateTimeEnd(null);
                     vEvent.setDateTimeStart(startTextField.getLocalDateTime());
                     vEvent.setDateTimeEnd(endTextField.getLocalDateTime());
                 }
@@ -167,18 +176,7 @@ public class AppointmentEditController
         startTextField.setLocale(locale);
         startTextField.setLocalDateTime(VComponent.localDateTimeFromTemporal(vEvent.getDateTimeStart()));
         startTextField.setParseErrorCallback(errorCallback);
-        startTextField.localDateTimeProperty().addListener((observable, oldSelection, newSelection) ->
-        {
-            if (wholeDayCheckBox.isSelected())
-            {
-                LocalDateTime date = newSelection.toLocalDate().atStartOfDay();
-                startTextField.setLocalDateTime(date);
-                vEvent.setDateTimeStart(newSelection.toLocalDate());
-            } else
-            {
-                vEvent.setDateTimeStart(newSelection);
-            }
-        });
+        startTextField.localDateTimeProperty().addListener(startTextListener);
 
         // END DATE/TIME
         endTextField.setLocale(locale);
