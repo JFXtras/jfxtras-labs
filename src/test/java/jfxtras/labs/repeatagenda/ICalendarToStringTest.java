@@ -133,11 +133,38 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     }
     
     @Test
-    public void canMakeSummaryString1()
+    public void canMakeRRuleSummaryString1()
     {
         VEventImpl e = getDaily6();
-        String summaryString = e.getRRule().summaryString();
-        System.out.println("summarySTring:" + summaryString);
+        String summaryString = e.getRRule().summary(e.getDateTimeStart());
+        String expectedString = "Every 2 days, until Dec 1, 2015";
+        assertEquals(expectedString, summaryString);
+    }
+    
+    @Test
+    public void canMakeRRuleSummaryString2()
+    {
+        VEventImpl e = getYearly1();
+        String summaryString = e.getRRule().summary(e.getDateTimeStart());
+        String expectedString = "Yearly on November 9";
+        assertEquals(expectedString, summaryString);
+    }
+    
+    @Test
+    public void canMakeRRuleSummaryString3()
+    {
+        VEventImpl e = getMonthly1();
+        String summaryString = e.getRRule().summary(e.getDateTimeStart());
+        String expectedString = "Monthly on day 9";
+        assertEquals(expectedString, summaryString);
     }
 
+    @Test
+    public void canMakeRRuleSummaryString4()
+    {
+        VEventImpl e = getMonthly7();
+        String summaryString = e.getRRule().summary(e.getDateTimeStart());
+        String expectedString = "Monthly on the third Monday";
+        assertEquals(expectedString, summaryString);
+    }
 }

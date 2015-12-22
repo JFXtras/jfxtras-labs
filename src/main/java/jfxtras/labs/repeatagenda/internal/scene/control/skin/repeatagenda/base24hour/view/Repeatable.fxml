@@ -77,7 +77,7 @@
                         <Label text="%ends" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
                         <Label text="%summary" GridPane.halignment="RIGHT" GridPane.rowIndex="14" GridPane.rowSpan="2" />
                         <DatePicker fx:id="startDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                        <Label fx:id="repeatSummaryLabel" text="TODO - This is a really long summary of a complex appointment" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="14" GridPane.rowSpan="2" />
+                        <Label fx:id="repeatSummaryLabel" style="-fx-font-weight: bold;" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="14" GridPane.rowSpan="2" />
                         <HBox fx:id="weeklyHBox" alignment="CENTER" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                            <children>
                               <CheckBox fx:id="sundayCheckBox" mnemonicParsing="false" text="%sunday.letter" />

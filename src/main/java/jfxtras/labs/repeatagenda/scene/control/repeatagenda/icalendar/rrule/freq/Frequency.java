@@ -40,7 +40,7 @@ public interface Frequency {
     List<Rule> getByRules();
     /** Adds new byRule to collection and ensures that type of rule isn't already present */
     void addByRule(Rule rule);
-    /** return ByRule object from byRules list by type.  Returns null if not present */
+    /** return ByRule object from byRules list by enum type.  Returns null if not present */
     Rule getByRuleByType(Rule.ByRules byRule);
     
     /** ChronoUnit of last modification to stream
@@ -104,13 +104,13 @@ public interface Frequency {
             switch (this)
             {
             case DAILY:
-                return Settings.REPEAT_FREQUENCIES_SINGULAR.get(DAILY);
+                return Settings.REPEAT_FREQUENCIES_SINGULAR.get(DAILY); // day
             case WEEKLY:
-                return Settings.REPEAT_FREQUENCIES_SINGULAR.get(WEEKLY);
+                return Settings.REPEAT_FREQUENCIES_SINGULAR.get(WEEKLY); // week
             case MONTHLY:
-                return Settings.REPEAT_FREQUENCIES_SINGULAR.get(MONTHLY);
+                return Settings.REPEAT_FREQUENCIES_SINGULAR.get(MONTHLY); // month
             case YEARLY:
-                return Settings.REPEAT_FREQUENCIES_SINGULAR.get(YEARLY);
+                return Settings.REPEAT_FREQUENCIES_SINGULAR.get(YEARLY); // year
             default:
                 return null;                
             }
@@ -120,30 +120,30 @@ public interface Frequency {
         {
             switch (this) {
             case DAILY:
-                return Settings.REPEAT_FREQUENCIES_PLURAL.get(DAILY);
+                return Settings.REPEAT_FREQUENCIES_PLURAL.get(DAILY); // days
             case WEEKLY:
-                return Settings.REPEAT_FREQUENCIES_PLURAL.get(WEEKLY);
+                return Settings.REPEAT_FREQUENCIES_PLURAL.get(WEEKLY); // weeks
             case MONTHLY:
-                return Settings.REPEAT_FREQUENCIES_PLURAL.get(MONTHLY);
+                return Settings.REPEAT_FREQUENCIES_PLURAL.get(MONTHLY); // months
             case YEARLY:
-                return Settings.REPEAT_FREQUENCIES_PLURAL.get(YEARLY);
+                return Settings.REPEAT_FREQUENCIES_PLURAL.get(YEARLY); // years
             default:
                 return null;                
             }
         }
         
-        public static StringConverter<FrequencyType> stringConverter
-            = new StringConverter<FrequencyType>() {
+        public static StringConverter<FrequencyType> stringConverter = new StringConverter<FrequencyType>()
+        {
             @Override public String toString(FrequencyType object) {
                 switch (object) {
                 case DAILY:
-                    return Settings.REPEAT_FREQUENCIES.get(FrequencyType.DAILY);
+                    return Settings.REPEAT_FREQUENCIES.get(FrequencyType.DAILY); // Daily
                 case WEEKLY:
-                    return Settings.REPEAT_FREQUENCIES.get(FrequencyType.WEEKLY);
+                    return Settings.REPEAT_FREQUENCIES.get(FrequencyType.WEEKLY); // Weekly
                 case MONTHLY:
-                    return Settings.REPEAT_FREQUENCIES.get(FrequencyType.MONTHLY);
+                    return Settings.REPEAT_FREQUENCIES.get(FrequencyType.MONTHLY); // Monthly
                 case YEARLY:
-                    return Settings.REPEAT_FREQUENCIES.get(FrequencyType.YEARLY);
+                    return Settings.REPEAT_FREQUENCIES.get(FrequencyType.YEARLY); // Yearly
                 default:
                     return null;                
                 }

@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 
 /** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */
 public class ByDay extends ByRuleAbstract
@@ -169,6 +170,26 @@ public class ByDay extends ByRuleAbstract
                 })
                 .collect(Collectors.joining());
         return ByRules.BYDAY + "=" + days.substring(0, days.length()-1); // remove last comma
+    }
+    
+    /**
+     * Produces an easy to ready summary for ByDay rule with only one ByDayPair.
+     * Returns null for more than one ByDayPair.
+     * Example: third Monday
+     * 
+     * @return easy to read summary of rule
+     */
+    public String summary()
+    {
+        if (getByDayPair().length == 1)
+        {
+            int ordinal = getByDayPair()[0].ordinal;
+            DayOfWeek dayOfWeek = getByDayPair()[0].dayOfWeek;
+            final String ordinalString = Settings.ORDINALS.get(ordinal);
+            final String dayOfWeekString = Settings.DAYS_OF_WEEK.get(dayOfWeek);
+            return ordinalString + " " + dayOfWeekString;
+        }
+        return null;
     }
     
     @Override

@@ -335,6 +335,22 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
         return vEvent;
     }
     
+    /** FREQ=MONTHLY;BYDAY=3MO */
+    protected static VEventImpl getMonthly7()
+    {
+        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        vEvent.setAppointmentClass(clazz);
+        RRule rule = new RRule();
+        vEvent.setRRule(rule);
+        Frequency monthly = new Monthly();
+        rule.setFrequency(monthly);
+        Rule byRule = new ByDay(new ByDay.ByDayPair(DayOfWeek.MONDAY, 3));
+        monthly.addByRule(byRule);
+        return vEvent;
+    }
+    
+    
     /** FREQ=WEEKLY, Basic weekly stream */
     protected static VEventImpl getWeekly1()
     {

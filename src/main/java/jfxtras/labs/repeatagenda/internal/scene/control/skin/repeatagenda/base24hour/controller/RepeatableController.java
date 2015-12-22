@@ -201,14 +201,14 @@ private ChangeListener<? super Boolean> dayOfWeekListener = (obs2, oldSel2, newS
 // FREQUENCY CHANGE LISTENER
 private final ChangeListener<? super FrequencyType> frequencyListener = (obs, oldSel, newSel) -> 
 {
-    System.out.println("FREQUENCY CHANGE LISTENER");
+//    System.out.println("FREQUENCY CHANGE LISTENER");
+   
     // Change Frequency if different, reset Interval to 1
     if (vComponent.getRRule().getFrequency().frequencyType() != newSel)
     {
         dayOfWeekRadioButton.selectedProperty().removeListener(dayOfWeekListener);
         vComponent.getRRule().setFrequency(newSel.newInstance());
         intervalSpinner.getEditor().textProperty().set("1");
-//        byDayRule = null;
         sundayCheckBox.selectedProperty().removeListener(sundayListener);
         mondayCheckBox.selectedProperty().removeListener(mondayListener);
         tuesdayCheckBox.selectedProperty().removeListener(tuesdayListener);
@@ -275,6 +275,12 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
     } else {
         frequencyLabel.setText(frequencyComboBox.valueProperty().get().toStringPlural());
     }
+    
+    // Make summary
+    String summaryString = vComponent.getRRule().summary(vComponent.getDateTimeStart());
+    System.out.println("frequency: " + newSel + " " + summaryString);
+    repeatSummaryLabel.setText(summaryString);
+    
     System.out.println("byDayRule1:" + byDayRuleWeekly);
 };
 
@@ -305,10 +311,9 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
 };
 
 // MAKE EXCEPTION DATES LISTENER
-final private InvalidationListener makeExceptionDatesListener = (obs) -> 
+final private InvalidationListener makeExceptionDatesAndSummaryListener = (obs) -> 
 {
-    String summaryString = vComponent.getRRule().summaryString();
-//    System.out.println("summaryString:" + summaryString);
+    String summaryString = vComponent.getRRule().summary(vComponent.getDateTimeStart());
     repeatSummaryLabel.setText(summaryString);
     makeExceptionDates();
 };
@@ -594,34 +599,34 @@ final private InvalidationListener makeExceptionDatesListener = (obs) ->
     
     private void addExceptionListeners()
     {
-        intervalSpinner.valueProperty().addListener(makeExceptionDatesListener);
-        sundayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-        mondayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-        tuesdayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-        wednesdayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-        thursdayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-        fridayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-        saturdayCheckBox.selectedProperty().addListener(makeExceptionDatesListener);
-        monthlyGroup.selectedToggleProperty().addListener(makeExceptionDatesListener);
-        endGroup.selectedToggleProperty().addListener(makeExceptionDatesListener);
-        endAfterEventsSpinner.valueProperty().addListener(makeExceptionDatesListener);
-        endOnDatePicker.valueProperty().addListener(makeExceptionDatesListener);
+        intervalSpinner.valueProperty().addListener(makeExceptionDatesAndSummaryListener);
+        sundayCheckBox.selectedProperty().addListener(makeExceptionDatesAndSummaryListener);
+        mondayCheckBox.selectedProperty().addListener(makeExceptionDatesAndSummaryListener);
+        tuesdayCheckBox.selectedProperty().addListener(makeExceptionDatesAndSummaryListener);
+        wednesdayCheckBox.selectedProperty().addListener(makeExceptionDatesAndSummaryListener);
+        thursdayCheckBox.selectedProperty().addListener(makeExceptionDatesAndSummaryListener);
+        fridayCheckBox.selectedProperty().addListener(makeExceptionDatesAndSummaryListener);
+        saturdayCheckBox.selectedProperty().addListener(makeExceptionDatesAndSummaryListener);
+        monthlyGroup.selectedToggleProperty().addListener(makeExceptionDatesAndSummaryListener);
+        endGroup.selectedToggleProperty().addListener(makeExceptionDatesAndSummaryListener);
+        endAfterEventsSpinner.valueProperty().addListener(makeExceptionDatesAndSummaryListener);
+        endOnDatePicker.valueProperty().addListener(makeExceptionDatesAndSummaryListener);
     }
     
     private void removeExceptionListeners()
     {
-        intervalSpinner.valueProperty().removeListener(makeExceptionDatesListener);
-        sundayCheckBox.selectedProperty().removeListener(makeExceptionDatesListener);
-        mondayCheckBox.selectedProperty().removeListener(makeExceptionDatesListener);
-        tuesdayCheckBox.selectedProperty().removeListener(makeExceptionDatesListener);
-        wednesdayCheckBox.selectedProperty().removeListener(makeExceptionDatesListener);
-        thursdayCheckBox.selectedProperty().removeListener(makeExceptionDatesListener);
-        fridayCheckBox.selectedProperty().removeListener(makeExceptionDatesListener);
-        saturdayCheckBox.selectedProperty().removeListener(makeExceptionDatesListener);
-        monthlyGroup.selectedToggleProperty().removeListener(makeExceptionDatesListener);
-        endGroup.selectedToggleProperty().removeListener(makeExceptionDatesListener);
-        endAfterEventsSpinner.valueProperty().removeListener(makeExceptionDatesListener);
-        endOnDatePicker.valueProperty().removeListener(makeExceptionDatesListener);
+        intervalSpinner.valueProperty().removeListener(makeExceptionDatesAndSummaryListener);
+        sundayCheckBox.selectedProperty().removeListener(makeExceptionDatesAndSummaryListener);
+        mondayCheckBox.selectedProperty().removeListener(makeExceptionDatesAndSummaryListener);
+        tuesdayCheckBox.selectedProperty().removeListener(makeExceptionDatesAndSummaryListener);
+        wednesdayCheckBox.selectedProperty().removeListener(makeExceptionDatesAndSummaryListener);
+        thursdayCheckBox.selectedProperty().removeListener(makeExceptionDatesAndSummaryListener);
+        fridayCheckBox.selectedProperty().removeListener(makeExceptionDatesAndSummaryListener);
+        saturdayCheckBox.selectedProperty().removeListener(makeExceptionDatesAndSummaryListener);
+        monthlyGroup.selectedToggleProperty().removeListener(makeExceptionDatesAndSummaryListener);
+        endGroup.selectedToggleProperty().removeListener(makeExceptionDatesAndSummaryListener);
+        endAfterEventsSpinner.valueProperty().removeListener(makeExceptionDatesAndSummaryListener);
+        endOnDatePicker.valueProperty().removeListener(makeExceptionDatesAndSummaryListener);
     }
     
     private void setInitialValues(VComponent<T> vComponent)

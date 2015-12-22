@@ -1,5 +1,6 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
@@ -22,9 +23,11 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule.ByRules;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency.FrequencyType;
 
 /**
  * Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
@@ -213,25 +216,55 @@ public class RRule
     }
     
     /**
+     * Produce easy to read summary of repeat rule
      * 
+     * @param startTemporal LocalDate or LocalDateTime of start date/time (DTSTART)
      * @return Easy to read summary of repeat rule
      */
-  //TODO - use resource instead of strings
-    public String summaryString()
+  //TODO - use resource bundle instead of literal strings
+    public String summary(Temporal startTemporal)
     {
         StringBuilder builder = new StringBuilder();
         if (getCount() == 1) return "Once";
+        
         if (getFrequency().getInterval() > 1)
         {
             builder.append("Every ");
             builder.append(getFrequency().getInterval() + " ");
             builder.append(getFrequency().frequencyType().toStringPlural());
-        } else
+        } else if (getFrequency().getInterval().equals(1))
         {
-            String stringSingular = getFrequency().frequencyType().toStringSingular();
-            String stringSingularCaps = stringSingular.substring(0, 1).toUpperCase() + stringSingular.substring(1);
-            builder.append(stringSingularCaps);
+            String frequency = FrequencyType.stringConverter.toString(getFrequency().frequencyType());
+            builder.append(frequency);
         }
+        
+        ByDay byDay = (ByDay) getFrequency().getByRuleByType(ByRules.BYDAY);
+        switch (getFrequency().frequencyType())
+        {
+        case DAILY: // add nothing else
+            break;
+        case MONTHLY:
+            if (byDay == null)
+            {
+                builder.append(" on day " + LocalDate.from(startTemporal).getDayOfMonth());
+            } else
+            {
+                builder.append(" on the " + byDay.summary());
+            }
+            break;
+        case WEEKLY:
+            break;
+        case YEARLY:
+            builder.append(" on " + Settings.DATE_FORMAT_AGENDA_MONTHDAY.format(startTemporal));
+            break;
+        case HOURLY:
+        case MINUTELY:
+        case SECONDLY:
+            throw new IllegalArgumentException("Not supported:" + getFrequency().frequencyType());
+        default:
+            break;
+        }
+        
         if (getCount() > 0)
         {
             builder.append(", " + getCount() + " times");
