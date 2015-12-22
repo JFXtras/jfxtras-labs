@@ -146,7 +146,6 @@ public interface VComponent<T>
     void setUniqueIdentifier(String s);
     
     /** Callback for creating unique uid values  */
-    // TODO - USE STATIC?
     Callback<Void, String> getUidGeneratorCallback();
     void setUidGeneratorCallback(Callback<Void, String> uidCallback);
     

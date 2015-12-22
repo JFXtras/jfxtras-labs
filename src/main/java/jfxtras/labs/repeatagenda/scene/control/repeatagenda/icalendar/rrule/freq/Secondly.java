@@ -12,7 +12,7 @@ public class Secondly extends FrequencyAbstract
     public Secondly() { super(FrequencyType.SECONDLY, new SimpleObjectProperty<ChronoUnit>(ChronoUnit.SECONDS)); }
 
     @Override
-    public TemporalAdjuster getAdjuster() {
+    public TemporalAdjuster adjuster() {
         // TODO Auto-generated method stub
         return null;
     }

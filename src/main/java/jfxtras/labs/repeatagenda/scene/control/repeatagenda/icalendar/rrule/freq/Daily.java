@@ -12,7 +12,7 @@ public class Daily extends FrequencyAbstract
 {    
     // adjusts temporal parameter to become date/time of next event
     private final TemporalAdjuster dailyAdjuster = (temporal) -> temporal.plus(getInterval(), DAYS);
-    @Override public TemporalAdjuster getAdjuster() { return dailyAdjuster; }
+    @Override public TemporalAdjuster adjuster() { return dailyAdjuster; }
 
     // Constructor
     public Daily() { super(FrequencyType.DAILY, new SimpleObjectProperty<ChronoUnit>(ChronoUnit.DAYS)); }

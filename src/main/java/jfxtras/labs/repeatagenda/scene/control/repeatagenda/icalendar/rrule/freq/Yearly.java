@@ -12,7 +12,7 @@ public class Yearly extends FrequencyAbstract
 {
     // adjusts temporal parameter to become date/time of next event
     private final TemporalAdjuster yearlyAdjuster = (temporal) -> temporal.plus(getInterval(), YEARS);
-    @Override public TemporalAdjuster getAdjuster() { return yearlyAdjuster; }
+    @Override public TemporalAdjuster adjuster() { return yearlyAdjuster; }
 
     // Constructor
     public Yearly() { super(FrequencyType.YEARLY, new SimpleObjectProperty<ChronoUnit>(ChronoUnit.YEARS)); }

@@ -59,11 +59,11 @@
                      <children>
                         <Label text="%repeats" GridPane.halignment="RIGHT">
                            <GridPane.margin>
-                              <Insets bottom="5.0" />
+                              <Insets bottom="8.0" />
                            </GridPane.margin></Label>
                         <ComboBox fx:id="frequencyComboBox" prefWidth="150.0" GridPane.columnIndex="1">
                            <GridPane.margin>
-                              <Insets bottom="5.0" />
+                              <Insets bottom="8.0" />
                            </GridPane.margin></ComboBox>
                         <Label text="%repeat.every" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                         <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">

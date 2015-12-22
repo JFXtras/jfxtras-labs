@@ -57,11 +57,11 @@ public interface Frequency {
 
 
     /** Which of the enum type FrenquencyType the implementing class represents */
-    FrequencyType getFrequencyType();
+    FrequencyType frequencyType();
         
     /** Temporal adjuster every class implementing Frequency must provide that modifies frequency dates 
      * For example, Weekly class advances the dates by INTERVAL Number of weeks. */
-    TemporalAdjuster getAdjuster();
+    TemporalAdjuster adjuster();
 
     /** Enumeration of FREQ rules 
      * Is used to make new instances of the different Frequencies by matching FREQ property

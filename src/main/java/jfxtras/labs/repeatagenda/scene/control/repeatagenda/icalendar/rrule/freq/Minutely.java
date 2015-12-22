@@ -12,7 +12,7 @@ public class Minutely extends FrequencyAbstract
     public Minutely() { super(FrequencyType.MINUTELY, new SimpleObjectProperty<ChronoUnit>(ChronoUnit.MINUTES)); }
 
     @Override
-    public TemporalAdjuster getAdjuster() {
+    public TemporalAdjuster adjuster() {
         // TODO Auto-generated method stub
         return null;
     }

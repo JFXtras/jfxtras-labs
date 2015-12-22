@@ -12,7 +12,7 @@ public class Hourly extends FrequencyAbstract
     public Hourly() { super(FrequencyType.HOURLY, new SimpleObjectProperty<ChronoUnit>(ChronoUnit.HOURS)); }
 
     @Override
-    public TemporalAdjuster getAdjuster() {
+    public TemporalAdjuster adjuster() {
         // TODO Auto-generated method stub
         return null;
     }

@@ -131,5 +131,13 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
                           + "END:VEVENT";
     assertEquals(expectedString, madeString);
     }
+    
+    @Test
+    public void canMakeSummaryString1()
+    {
+        VEventImpl e = getDaily6();
+        String summaryString = e.getRRule().summaryString();
+        System.out.println("summarySTring:" + summaryString);
+    }
 
 }

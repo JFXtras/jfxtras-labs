@@ -12,7 +12,7 @@ public class Weekly extends FrequencyAbstract
 {
     // adjusts temporal parameter to become date/time of next event
     private final TemporalAdjuster weeklyAdjuster = (temporal) -> temporal.plus(getInterval(), WEEKS);
-    @Override public TemporalAdjuster getAdjuster() { return weeklyAdjuster; }
+    @Override public TemporalAdjuster adjuster() { return weeklyAdjuster; }
     
     // Constructor
     public Weekly() { super(FrequencyType.WEEKLY, new SimpleObjectProperty<ChronoUnit>(ChronoUnit.WEEKS)); }

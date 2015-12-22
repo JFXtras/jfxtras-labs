@@ -203,7 +203,7 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
 {
     System.out.println("FREQUENCY CHANGE LISTENER");
     // Change Frequency if different, reset Interval to 1
-    if (vComponent.getRRule().getFrequency().getFrequencyType() != newSel)
+    if (vComponent.getRRule().getFrequency().frequencyType() != newSel)
     {
         dayOfWeekRadioButton.selectedProperty().removeListener(dayOfWeekListener);
         vComponent.getRRule().setFrequency(newSel.newInstance());
@@ -305,7 +305,13 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
 };
 
 // MAKE EXCEPTION DATES LISTENER
-final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExceptionDates();
+final private InvalidationListener makeExceptionDatesListener = (obs) -> 
+{
+    String summaryString = vComponent.getRRule().summaryString();
+//    System.out.println("summaryString:" + summaryString);
+    repeatSummaryLabel.setText(summaryString);
+    makeExceptionDates();
+};
 
 // INITIALIZATION - runs when FXML is initialized
 @FXML public void initialize()
@@ -620,7 +626,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
     
     private void setInitialValues(VComponent<T> vComponent)
     {
-        frequencyComboBox.setValue(vComponent.getRRule().getFrequency().getFrequencyType());
+        frequencyComboBox.setValue(vComponent.getRRule().getFrequency().frequencyType());
         setDayOfWeek(vComponent.getRRule());
         startDatePicker.setValue(LocalDate.from(vComponent.getDateTimeStart()));
         if (vComponent.getExDate() != null) {
@@ -648,7 +654,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
     private void setDayOfWeek(RRule rRule)
     {
         // Set day of week properties
-        if (rRule.getFrequency().getFrequencyType() == FrequencyType.WEEKLY)
+        if (rRule.getFrequency().frequencyType() == FrequencyType.WEEKLY)
         {
             Optional<Rule> rule = rRule
                     .getFrequency()

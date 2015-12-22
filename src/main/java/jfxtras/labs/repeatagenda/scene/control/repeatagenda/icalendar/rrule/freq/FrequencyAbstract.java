@@ -100,7 +100,7 @@ public abstract class FrequencyAbstract implements Frequency {
     }
     
     
-    public FrequencyType getFrequencyType() { return frequencyType; }
+    public FrequencyType frequencyType() { return frequencyType; }
     final private FrequencyType frequencyType;
 
     // CONSTRUCTOR
@@ -115,7 +115,7 @@ public abstract class FrequencyAbstract implements Frequency {
     public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
     {
         getChronoUnit().set(initialChronoUnit); // start with Frequency ChronoUnit when making a stream
-        Stream<LocalDateTime> stream = Stream.iterate(startDateTime, (a) -> { return a.with(getAdjuster()); });
+        Stream<LocalDateTime> stream = Stream.iterate(startDateTime, (a) -> { return a.with(adjuster()); });
         Iterator<Rule> rulesIterator = getByRules().stream().sorted().iterator();
         while (rulesIterator.hasNext())
         {
@@ -161,7 +161,7 @@ public abstract class FrequencyAbstract implements Frequency {
     @Override
     public String toString()
     {
-        StringBuilder builder = new StringBuilder("FREQ=" + getFrequencyType().toString());
+        StringBuilder builder = new StringBuilder("FREQ=" + frequencyType().toString());
         if (getInterval() > 1) builder.append(";INTERVAL=" + getInterval());
         return builder.toString();
     }

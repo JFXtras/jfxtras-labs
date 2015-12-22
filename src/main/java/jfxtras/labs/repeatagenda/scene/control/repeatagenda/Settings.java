@@ -23,6 +23,7 @@ public final class Settings {
     public static DateTimeFormatter DATE_FORMAT1; // format for output files
     public static DateTimeFormatter DATE_FORMAT2; // fancy format for displaying
     public static DateTimeFormatter DATE_FORMAT_AGENDA;
+    public static DateTimeFormatter DATE_FORMAT_AGENDA_DATEONLY;
     public static DateTimeFormatter DATE_FORMAT_AGENDA_START;
     public static DateTimeFormatter DATE_FORMAT_AGENDA_END;
     public static DateTimeFormatter TIME_FORMAT_AGENDA;
@@ -42,6 +43,7 @@ public final class Settings {
         DATE_FORMAT1 = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format1"));
         DATE_FORMAT2 = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format2"));
         DATE_FORMAT_AGENDA = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format.agenda"));
+        DATE_FORMAT_AGENDA_DATEONLY = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format.agenda.dateonly"));
         DATE_FORMAT_AGENDA_START = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format.agenda.start"));
         DATE_FORMAT_AGENDA_END = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format.agenda.end"));
         TIME_FORMAT_AGENDA = DateTimeFormatter.ofPattern(resourcesIn.getString("time.format.agenda"));

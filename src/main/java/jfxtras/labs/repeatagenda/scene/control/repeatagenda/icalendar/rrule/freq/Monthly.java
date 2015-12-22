@@ -12,7 +12,7 @@ public class Monthly extends FrequencyAbstract
 {  
     // adjusts temporal parameter to become date/time of next event
     private final TemporalAdjuster monthlyAdjuster = (temporal) -> temporal.plus(getInterval(), MONTHS);
-    @Override public TemporalAdjuster getAdjuster() { return monthlyAdjuster; }
+    @Override public TemporalAdjuster adjuster() { return monthlyAdjuster; }
         
     // Constructor
     public Monthly() { super(FrequencyType.MONTHLY, new SimpleObjectProperty<ChronoUnit>(ChronoUnit.MONTHS)); }

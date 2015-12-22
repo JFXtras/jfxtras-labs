@@ -20,6 +20,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule.ByRules;
@@ -211,6 +212,36 @@ public class RRule
         return builder.toString();
     }
     
+    /**
+     * 
+     * @return Easy to read summary of repeat rule
+     */
+  //TODO - use resource instead of strings
+    public String summaryString()
+    {
+        StringBuilder builder = new StringBuilder();
+        if (getCount() == 1) return "Once";
+        if (getFrequency().getInterval() > 1)
+        {
+            builder.append("Every ");
+            builder.append(getFrequency().getInterval() + " ");
+            builder.append(getFrequency().frequencyType().toStringPlural());
+        } else
+        {
+            String stringSingular = getFrequency().frequencyType().toStringSingular();
+            String stringSingularCaps = stringSingular.substring(0, 1).toUpperCase() + stringSingular.substring(1);
+            builder.append(stringSingularCaps);
+        }
+        if (getCount() > 0)
+        {
+            builder.append(", " + getCount() + " times");
+        } else if (getUntil() != null)
+        {
+            builder.append(", until " + Settings.DATE_FORMAT_AGENDA_DATEONLY.format(getUntil()));
+        }
+        return builder.toString();
+    }
+
     /** Return new RRule with its properties set by parsing iCalendar compliant RRULE string */
     public static RRule parseRRule(String rRuleString)
     {
