@@ -66,9 +66,16 @@ public class ICalendarAgendaTestAbstract extends JFXtrasGuiTest
             String domain = "jfxtras.org";
             return dateTime + "-" + "0" + domain;
         });
-        
+                
         vbox.getChildren().add(agenda);
         return vbox;
+    }
+    
+    // Causes Not on FX application thread; currentThread = main exception - how to fix?
+    public void shiftOneWeek()
+    {
+        LocalDateTime date = agenda.getDisplayedLocalDateTime();
+        agenda.setDisplayedLocalDateTime(date.plusWeeks(1));
     }
     protected VBox vbox = null; // cannot make this final and assign upon construction
 //    final protected Map<String, Agenda.AppointmentGroup> appointmentGroupMap = new TreeMap<String, Agenda.AppointmentGroup>();
