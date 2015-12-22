@@ -769,14 +769,7 @@ final private InvalidationListener makeExceptionDatesListener = (obs) -> makeExc
         alert.setContentText("Accepted format: " + validFormat);
         ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(buttonTypeOk);
-        Optional<ButtonType> result = alert.showAndWait();
+        alert.showAndWait();
     }
     
-    // Designates how a repeat rule can end.  
-    private enum EndCriteria
-    {
-        NEVER
-      , COUNT
-      , UNTIL;
-    }
 }

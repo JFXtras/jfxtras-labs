@@ -46,14 +46,14 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // select appointment and apply changes
         Iterator<Appointment> appointmentIterator = appointments.iterator(); // skip first
         Appointment selectedAppointment = (Appointment) appointmentIterator.next();
-        LocalDateTime dateTimeOld = selectedAppointment.getStartLocalDateTime();
-        LocalDate dateOld = dateTimeOld.toLocalDate();
-        selectedAppointment.setStartLocalDateTime(dateOld.atTime(9, 45)); // change start time
-        selectedAppointment.setEndLocalDateTime(dateOld.atTime(11, 0)); // change end time
+        LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
+        LocalDate date = LocalDate.from(vevent.getDateTimeStart());
+        vevent.setDateTimeStart(date.atTime(9, 45)); // change start time
+        vevent.setDateTimeEnd(date.atTime(11, 00)); // change start time
         LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
-
+// TODO - PROBLEM - DATE/TIME CHANGE HANDLED BY CONTROLLER, NOT EDIT METHOD
         WindowCloseType windowCloseType = vevent.edit(
-                dateTimeOld
+                dateTimeOriginal
               , selectedAppointment
               , veventOld               // original VEvent
               , appointments            // collection of all appointments

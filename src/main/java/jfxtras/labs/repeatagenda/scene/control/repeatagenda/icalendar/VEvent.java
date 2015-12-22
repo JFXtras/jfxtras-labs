@@ -310,22 +310,43 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         
         durationlistener = (obs, oldSel, newSel) ->
         { // listener to synch dateTimeEnd and durationInSeconds.  dateTimeStart is left in place.
-            if ((getDateTimeStart() != null) && (getDateTimeEnd() != null))
+            System.out.println("duration:" + getDateTimeStart()+ " " +  getDateTimeEnd());
+            System.out.println((getDateTimeStart() == null) + " " + (getDateTimeEnd() == null));
+            System.out.println(!((getDateTimeStart() == null) && (getDateTimeEnd() == null)));
+            if (!((getDateTimeStart() == null) && (getDateTimeEnd() == null)))
             {
+                System.out.println("duration:");
                 Temporal dtEnd = null;
+                // test LocalDateTime
                 if ((getDateTimeEnd() instanceof LocalDateTime) && (getDateTimeStart() instanceof LocalDateTime))
                 {
                     dtEnd = getDateTimeEnd().plus((long) newSel, ChronoUnit.NANOS);
+                } else if (getDateTimeStart() instanceof LocalDateTime)
+                {
+                    if (getDateTimeEnd() == null)
+                    {
+                        dtEnd = getDateTimeStart().minus((long) newSel, ChronoUnit.NANOS);
+                    } else throw new DateTimeException("dateTimeStart and dateTimeEnd must have same Temporal type ("
+                            + getDateTimeStart().getClass().getSimpleName() + ","
+                            + getDateTimeEnd().getClass().getSimpleName() + ")");
+                // test LocalDate
                 } else if ((getDateTimeEnd() instanceof LocalDate) && (getDateTimeStart() instanceof LocalDate))
                 {
                     dtEnd = getDateTimeEnd().plus(((long) newSel)/NANOS_IN_DAY, ChronoUnit.DAYS);
-                }
+                } else if (getDateTimeStart() == null)
+                {
+                    dtEnd = getDateTimeStart().minus(((long) newSel)/NANOS_IN_DAY, ChronoUnit.DAYS);
+                } else throw new DateTimeException("dateTimeStart and dateTimeEnd must have same Temporal type ("
+                        + getDateTimeStart().getClass().getSimpleName() + ","
+                        + getDateTimeEnd().getClass().getSimpleName() + ")");
+                
                 if (dtEnd != null)
                 {
                     dateTimeEndProperty().removeListener(dateTimeEndlistener);
                     setDateTimeEnd(dtEnd);
                     dateTimeEndProperty().addListener(dateTimeEndlistener);
                 }
+                System.out.println("duration:" + dtEnd);
             }
         };
         

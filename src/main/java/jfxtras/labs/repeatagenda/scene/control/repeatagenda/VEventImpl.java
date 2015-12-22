@@ -374,11 +374,11 @@ public class VEventImpl extends VEvent<Appointment>
             switch (changeResponse)
             {
                 case ALL:
-                    // Copy date/time data to this VEvent
-                    long nanosAdjustment = ChronoUnit.NANOS.between(dateTimeStartInstanceOld, dateTimeStartInstanceNew);
-                    Temporal newDateTimeStart = getDateTimeStart().plus(nanosAdjustment, ChronoUnit.NANOS);
-                    setDateTimeStart(newDateTimeStart);
-                    setDurationInNanos(durationInNanos);
+                    // Copy date/time data to this VEvent -- WHY? DID/T BINDINGS WORK
+//                    long nanosAdjustment = ChronoUnit.NANOS.between(dateTimeStartInstanceOld, dateTimeStartInstanceNew);
+//                    Temporal newDateTimeStart = getDateTimeStart().plus(nanosAdjustment, ChronoUnit.NANOS);
+//                    setDateTimeStart(newDateTimeStart);
+//                    setDurationInNanos(durationInNanos);
                     break;
                 case CANCEL:
 //                    System.out.println("cancel:");
