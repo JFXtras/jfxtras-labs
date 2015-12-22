@@ -218,7 +218,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      */
     public ObjectProperty<Temporal> dateTimeStartProperty() { return dateTimeStart; }
     final private ObjectProperty<Temporal> dateTimeStart = new SimpleObjectProperty<>(this, DATE_TIME_START_NAME);
-    public LocalDateTime dateTimeStartToLocalDateTime() { return VComponent.localDateTimeFromTemporal(dateTimeStart.get()); }
+//    public LocalDateTime dateTimeStartToLocalDateTime() { return VComponent.localDateTimeFromTemporal(getDateTimeStart()); }
     @Override public Temporal getDateTimeStart() { return dateTimeStart.get(); }
     @Override public void setDateTimeStart(Temporal dtStart) { VComponent.super.setDateTimeStart(dtStart); dateTimeStart.set(dtStart); }
     boolean isDateTimeStartWholeDay() { return dateTimeStart.get() instanceof LocalDate; }
@@ -653,7 +653,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         Stream<LocalDateTime> stream1;
         if (getRRule() == null)
         { // if individual event
-            stream1 = Arrays.asList(dateTimeStartToLocalDateTime())
+            stream1 = Arrays.asList(VComponent.localDateTimeFromTemporal(getDateTimeStart()))
                     .stream()
                     .filter(d -> ! d.isBefore(startDateTime));
         } else

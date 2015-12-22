@@ -310,9 +310,9 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         
         durationlistener = (obs, oldSel, newSel) ->
         { // listener to synch dateTimeEnd and durationInSeconds.  dateTimeStart is left in place.
-            System.out.println("duration:" + getDateTimeStart()+ " " +  getDateTimeEnd());
-            System.out.println((getDateTimeStart() == null) + " " + (getDateTimeEnd() == null));
-            System.out.println(!((getDateTimeStart() == null) && (getDateTimeEnd() == null)));
+//            System.out.println("duration:" + getDateTimeStart()+ " " +  getDateTimeEnd());
+//            System.out.println((getDateTimeStart() == null) + " " + (getDateTimeEnd() == null));
+//            System.out.println(!((getDateTimeStart() == null) && (getDateTimeEnd() == null)));
             if (!((getDateTimeStart() == null) && (getDateTimeEnd() == null)))
             {
                 System.out.println("duration:");
@@ -346,7 +346,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                     setDateTimeEnd(dtEnd);
                     dateTimeEndProperty().addListener(dateTimeEndlistener);
                 }
-                System.out.println("duration:" + dtEnd);
+//                System.out.println("duration:" + dtEnd);
             }
         };
         

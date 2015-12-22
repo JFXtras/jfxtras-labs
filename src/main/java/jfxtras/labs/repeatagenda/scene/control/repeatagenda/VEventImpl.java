@@ -1,5 +1,6 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
@@ -295,6 +296,7 @@ public class VEventImpl extends VEvent<Appointment>
     {
 //        System.out.println("range: " + getDateTimeRangeStart() + " " + getDateTimeRangeEnd());
         if ((getDateTimeRangeStart() == null) || (getDateTimeRangeStart() == null)) throw new IllegalArgumentException("can't make instances without setting date/time range first");
+        boolean wholeDay = this.getDateTimeStart() instanceof LocalDate;
         List<Appointment> madeAppointments = new ArrayList<>();
         stream(VComponent.localDateTimeFromTemporal(getDateTimeStart())) // TODO - TRY STARTING AT getDateTimeRangeStart() FOR IMPROVED EFFICIENCY
                 .forEach(d -> {
@@ -304,6 +306,7 @@ public class VEventImpl extends VEvent<Appointment>
                     appt.setDescription(getDescription());
                     appt.setSummary(getSummary());
                     appt.setAppointmentGroup(getAppointmentGroup());
+                    appt.setWholeDay(wholeDay);
                     madeAppointments.add(appt);   // add appointments to return argument
                     instances().add(appt); // add appointments to this repeat's collection
                 });

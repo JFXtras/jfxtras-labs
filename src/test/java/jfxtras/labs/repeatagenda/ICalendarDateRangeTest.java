@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 
 public class ICalendarDateRangeTest extends ICalendarTestAbstract
 {
@@ -22,7 +23,7 @@ public class ICalendarDateRangeTest extends ICalendarTestAbstract
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         List<LocalDateTime> madeDates = vevent
-                .stream(vevent.dateTimeStartToLocalDateTime())
+                .stream(VComponent.localDateTimeFromTemporal(vevent.getDateTimeStart()))
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -43,7 +44,7 @@ public class ICalendarDateRangeTest extends ICalendarTestAbstract
         vevent.setDateTimeRangeStart(LocalDateTime.of(2014, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2014, 11, 22, 0, 0));
         List<LocalDateTime> madeDates = vevent
-                .stream(vevent.dateTimeStartToLocalDateTime())
+                .stream(VComponent.localDateTimeFromTemporal(vevent.getDateTimeStart()))
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>();
         assertEquals(expectedDates, madeDates);
@@ -57,7 +58,7 @@ public class ICalendarDateRangeTest extends ICalendarTestAbstract
         vevent.setDateTimeRangeStart(LocalDateTime.of(2016, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2016, 11, 22, 0, 0));
         List<LocalDateTime> madeDates = vevent
-                .stream(vevent.dateTimeStartToLocalDateTime())
+                .stream(VComponent.localDateTimeFromTemporal(vevent.getDateTimeStart()))
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>();
         assertEquals(expectedDates, madeDates);

@@ -549,5 +549,22 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
         vEvent.setAppointmentClass(clazz);
         return vEvent;
     }
+    
+    protected static VEventImpl getWholeDayDaily2()
+    {
+        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        vEvent.setDateTimeStart(LocalDate.of(2015, 11, 9));
+        vEvent.setDateTimeEnd(LocalDate.of(2015, 11, 12));
+        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
+        vEvent.setAppointmentClass(clazz);
+        RRule rule = new RRule()
+                .withCount(6);
+        vEvent.setRRule(rule);
+        Frequency daily = new Daily()
+                .withInterval(3);
+        rule.setFrequency(daily);
+        return vEvent;
+    }
 
 }
