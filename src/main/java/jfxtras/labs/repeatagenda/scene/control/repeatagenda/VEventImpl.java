@@ -147,9 +147,16 @@ public class VEventImpl extends VEvent<Appointment>
     {
         this(appointmentGroups);
         setCategories(appointment.getAppointmentGroup().getDescription());
-        setDateTimeEnd(appointment.getEndLocalDateTime());
+        if (appointment.isWholeDay())
+        {
+            setDateTimeEnd(appointment.getEndLocalDateTime().toLocalDate());
+            setDateTimeStart(appointment.getStartLocalDateTime().toLocalDate());
+        } else
+        {
+            setDateTimeEnd(appointment.getEndLocalDateTime());
+            setDateTimeStart(appointment.getStartLocalDateTime());
+        }
         setDateTimeStamp(LocalDateTime.now());
-        setDateTimeStart(appointment.getStartLocalDateTime());
         setDescription(appointment.getDescription());
         setLocation(appointment.getLocation());
         setSummary(appointment.getSummary());

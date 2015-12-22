@@ -114,7 +114,8 @@ public class ICalendarAgenda extends Agenda {
                             newVComponent.setDateTimeRangeEnd(dateTimeRangeEnd);
                             newVComponent.setUidGeneratorCallback(getUidGeneratorCallback());
                             newVComponent.setUniqueIdentifier(getUidGeneratorCallback().call(null));
-//                            System.out.println("add vEvemt " + a.getStartLocalDateTime());
+                            System.out.println("add vEvemt " + a.getStartLocalDateTime());
+                            System.out.println(newVComponent);
 //                            vComponents().removeListener(vComponentListener);
                             vComponents.add(newVComponent);
 //                            vComponents().addListener(vComponentListener);

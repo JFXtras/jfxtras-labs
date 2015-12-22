@@ -623,19 +623,21 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     
     // Whole day tests
     
-//    @Test
-//    public void makeDatesWholeDayDaily()
-//    {
-//        VEventImpl e = getWholeDayDaily1();
-//        List<LocalDate> madeDates = e
-//                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
-//                .collect(Collectors.toList());
-//        List<LocalDate> expectedDates = new ArrayList<LocalDate>(Arrays.asList(
-//                LocalDate.of(2015, 11, 9)
-//              , LocalDateTime.of(2015, 11, 18, 10, 0)
-//              , LocalDateTime.of(2015, 11, 21, 10, 0)
-//              , LocalDateTime.of(2015, 11, 24, 10, 0)
-//                ));
-//        assertEquals(expectedDates, madeDates);
-//    }
+    @Test
+    public void makeDatesWholeDayDaily()
+    {
+        VEventImpl e = getWholeDayDaily2();
+        List<LocalDateTime> madeDates = e
+                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 0, 0)
+              , LocalDateTime.of(2015, 11, 12, 0, 0)
+              , LocalDateTime.of(2015, 11, 15, 0, 0)
+              , LocalDateTime.of(2015, 11, 18, 0, 0)
+              , LocalDateTime.of(2015, 11, 21, 0, 0)
+              , LocalDateTime.of(2015, 11, 24, 0, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
 }
