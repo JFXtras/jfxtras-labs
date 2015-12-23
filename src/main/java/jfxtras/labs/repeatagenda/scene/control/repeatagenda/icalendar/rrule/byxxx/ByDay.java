@@ -36,6 +36,8 @@ public class ByDay extends ByRuleAbstract
      * Uses a varargs parameter to allow any number of days
      * The list of days with ordinals must be sorted.  For example 1MO,2TU,4SA not 2TU,1MO,4SA
      */
+//    public ObservableList<ByDayPair> byDayPair() { return byDayPairs; }
+//    ObservableList<ByDayPair> byDayPairs = FXCollections.observableArrayList();
     public ByDayPair[] getByDayPair() { return byDayPairs; }
     private ByDayPair[] byDayPairs;
     private void setByDayPair(ByDayPair... byDayPairs) { this.byDayPairs = byDayPairs; }
@@ -60,8 +62,9 @@ public class ByDay extends ByRuleAbstract
     public void removeDayOfWeek(DayOfWeek dayOfWeek)
     {
         byDayPairs = Arrays.stream(getByDayPair())
-                .filter(d -> d.dayOfWeek == dayOfWeek)
+                .filter(d -> d.dayOfWeek != dayOfWeek)
                 .toArray(size -> new ByDayPair[size]);
+        
     }
     
     /** Return a list of days of the week that don't have an ordinal (as every FRIDAY) */
@@ -181,15 +184,17 @@ public class ByDay extends ByRuleAbstract
      */
     public String summary()
     {
-        if (getByDayPair().length == 1)
+        StringBuilder builder = new StringBuilder();
+        for (ByDayPair b : getByDayPair())
         {
-            int ordinal = getByDayPair()[0].ordinal;
-            DayOfWeek dayOfWeek = getByDayPair()[0].dayOfWeek;
-            final String ordinalString = Settings.ORDINALS.get(ordinal);
-            final String dayOfWeekString = Settings.DAYS_OF_WEEK.get(dayOfWeek);
-            return ordinalString + " " + dayOfWeekString;
+            int ordinal = b.ordinal;
+            DayOfWeek dayOfWeek = b.dayOfWeek;
+            String ordinalString = (ordinal > 0) ? Settings.ORDINALS.get(ordinal) + " " : "";
+            String dayOfWeekString = Settings.DAYS_OF_WEEK.get(dayOfWeek);
+            if (builder.length() > 0) builder.append(", ");
+            builder.append(ordinalString + dayOfWeekString);            
         }
-        return null;
+        return builder.toString();
     }
     
     @Override

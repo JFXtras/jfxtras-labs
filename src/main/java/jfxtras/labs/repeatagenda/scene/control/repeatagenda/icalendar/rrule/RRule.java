@@ -1,5 +1,6 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
@@ -76,7 +77,6 @@ public class RRule
     private int _count = 0;
     public void setCount(Integer i)
     {
-//        System.out.println("until: " + getUntil());
         if (getUntil() == null)
         {
             if (i >= 0)
@@ -88,14 +88,8 @@ public class RRule
                 {
                     count.set(i);
                 }
-            } else
-            {
-                throw new IllegalArgumentException("COUNT can't be less than 0. (" + i + ")");
-            }
-        } else
-        {
-            throw new IllegalArgumentException("can't set COUNT if UNTIL is already set.");
-        }
+            } else throw new IllegalArgumentException("COUNT can't be less than 0. (" + i + ")");
+        } else throw new IllegalArgumentException("can't set COUNT if UNTIL is already set.");
     }
     public RRule withCount(int count) { setCount(count); return this; }
 
@@ -103,7 +97,6 @@ public class RRule
      * UNTIL: (RFC 5545 iCalendar 3.3.10, page 41) date/time repeat rule ends
      * Uses lazy initialization of property because often UNTIL stays as the default value of 0
      */
-    // TODO - REMOVE LAZY INITIALIZATION?  I USE NAME ALL THE TIME
     public SimpleObjectProperty<Temporal> untilProperty()
     {
         if (until == null) until = new SimpleObjectProperty<Temporal>(this, UNTIL_NAME, _until);
@@ -123,10 +116,7 @@ public class RRule
             {
                 until.set(t);
             }
-        } else
-        {
-            throw new IllegalArgumentException("can't set UNTIL if COUNT is already set.");
-        }
+        } else throw new IllegalArgumentException("can't set UNTIL if COUNT is already set.");
     }
     public RRule withUntil(Temporal until) { setUntil(until); return this; }
     
@@ -217,6 +207,10 @@ public class RRule
     
     /**
      * Produce easy to read summary of repeat rule
+     * Is limited to producing strings for following repeat rules:
+     * Any individual Frequency (FREQ)
+     * COUNT and UNTIL properties
+     * MONTHLY and WEEKLY with ByDay Byxxx rule
      * 
      * @param startTemporal LocalDate or LocalDateTime of start date/time (DTSTART)
      * @return Easy to read summary of repeat rule
@@ -253,6 +247,15 @@ public class RRule
             }
             break;
         case WEEKLY:
+            if (byDay == null)
+            {
+                DayOfWeek dayOfWeek = LocalDate.from(startTemporal).getDayOfWeek();
+                String dayOfWeekString = Settings.DAYS_OF_WEEK.get(dayOfWeek);
+                builder.append(" on " + dayOfWeekString);
+            } else
+            {
+                builder.append(" on " + byDay.summary());
+            }
             break;
         case YEARLY:
             builder.append(" on " + Settings.DATE_FORMAT_AGENDA_MONTHDAY.format(startTemporal));

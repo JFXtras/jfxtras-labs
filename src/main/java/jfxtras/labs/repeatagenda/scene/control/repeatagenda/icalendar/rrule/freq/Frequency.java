@@ -6,6 +6,7 @@ import java.time.temporal.TemporalAdjuster;
 import java.util.List;
 import java.util.stream.Stream;
 
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.util.StringConverter;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
@@ -28,6 +29,8 @@ public interface Frequency {
     Integer getInterval();
     /** Number of frequency periods elapsed before next occurrence. Defaults to 1*/
     void setInterval(Integer interval);
+    /** Number of frequency periods elapsed before next occurrence. Defaults to 1*/
+    IntegerProperty intervalProperty();
     
     /** Collection of rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
      * The rules include all BYxxx rules, EXDate and RDate lists.

@@ -167,4 +167,31 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
         String expectedString = "Monthly on the third Monday";
         assertEquals(expectedString, summaryString);
     }
+    
+    @Test
+    public void canMakeRRuleSummaryString5()
+    {
+        VEventImpl e = getWeekly1();
+        String summaryString = e.getRRule().summary(e.getDateTimeStart());
+        String expectedString = "Weekly on Monday";
+        assertEquals(expectedString, summaryString);
+    }
+    
+    @Test
+    public void canMakeRRuleSummaryString6()
+    {
+        VEventImpl e = getWeekly2();
+        String summaryString = e.getRRule().summary(e.getDateTimeStart());
+        String expectedString = "Every 2 weeks on Monday, Wednesday, Friday";
+        assertEquals(expectedString, summaryString);
+    }
+    
+    @Test
+    public void canMakeRRuleSummaryString7()
+    {
+        VEventImpl e = getWeekly4();
+        String summaryString = e.getRRule().summary(e.getDateTimeStart());
+        String expectedString = "Every 2 weeks on Monday, Wednesday, Friday, 11 times";
+        assertEquals(expectedString, summaryString);
+    }
 }

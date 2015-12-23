@@ -78,7 +78,7 @@
                         <Label text="%summary" GridPane.halignment="RIGHT" GridPane.rowIndex="14" GridPane.rowSpan="2" />
                         <DatePicker fx:id="startDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                         <Label fx:id="repeatSummaryLabel" style="-fx-font-weight: bold;" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="14" GridPane.rowSpan="2" />
-                        <HBox fx:id="weeklyHBox" alignment="CENTER" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <HBox fx:id="weeklyHBox" alignment="CENTER" spacing="5.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2">
                            <children>
                               <CheckBox fx:id="sundayCheckBox" mnemonicParsing="false" text="%sunday.letter" />
                               <CheckBox fx:id="mondayCheckBox" mnemonicParsing="false" text="%monday.letter" />
@@ -110,7 +110,7 @@
                               <Insets top="5.0" />
                            </GridPane.margin>
                         </VBox>
-                        <VBox fx:id="monthlyVBox" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.rowSpan="2">
+                        <VBox fx:id="monthlyVBox" spacing="5.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.rowSpan="2">
                            <children>
                               <RadioButton fx:id="dayOfMonthRadioButton" mnemonicParsing="false" text="%day.of.month" />
                               <RadioButton fx:id="dayOfWeekRadioButton" mnemonicParsing="false" text="%day.of.week" />

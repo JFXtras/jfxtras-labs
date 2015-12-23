@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
@@ -71,6 +72,12 @@ public interface VComponent<T>
      * start date/times of the repeating events.  Can be either type LocalDate or LocalDateTime
      */
     Temporal getDateTimeStart();
+    /**
+     * DTSTART: Date-Time Start, from RFC 5545 iCalendar 3.8.2.4 page 97
+     * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
+     * start date/times of the repeating events.  Can be either type LocalDate or LocalDateTime
+     */
+    ObjectProperty<Temporal> dateTimeStartProperty(); // TODO - SHOULD I HAVE PROPERTIES HERE OR JUST IN ABSTRACT?
     default void setDateTimeStart(Temporal dtStart)
     {
         boolean correctType = (dtStart instanceof LocalDate) || (dtStart instanceof LocalDateTime) || (dtStart == null);
