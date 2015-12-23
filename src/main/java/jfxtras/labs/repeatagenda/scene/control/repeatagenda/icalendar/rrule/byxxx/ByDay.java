@@ -10,12 +10,10 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
-import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -263,21 +261,12 @@ public class ByDay extends ByRuleAbstract
                     if (byDayPair.ordinal == 0)
                     { // add every matching day of week in year
                         sortNeeded = true;
-                        final int startWeekNumber;
-                        if (date.getYear() == startDateTime.getYear())
+                        LocalDateTime newDate = (startDateTime.getDayOfWeek().equals(byDayPair.dayOfWeek)) ? startDateTime
+                                : startDateTime.with(TemporalAdjusters.next(byDayPair.dayOfWeek));
+                        while (newDate.getYear() == startDateTime.getYear())
                         {
-                            WeekFields weekFields = WeekFields.of(Locale.getDefault()); // TODO - WON'T WORK - NEED nTH OCCURRENCE, NOT WEEK NUMBER
-                            // TODO - NEED TO MAKE DAY OF WEEK IN YEAR
-                            startWeekNumber = date.get(weekFields.weekOfWeekBasedYear());
-                            // maybe go back one week and test to see if past date???
-                        } else
-                        {
-                            startWeekNumber = 1;
-                        }
-                        for (int weekNum=startWeekNumber; weekNum<53; weekNum++)
-                        {
-                            LocalDateTime newDate = date.with(dayOfWeekInYear(weekNum, byDayPair.dayOfWeek));
                             dates.add(newDate);
+                            newDate = newDate.plus(1, ChronoUnit.WEEKS);
                         }
                     } else
                     { // if never any ordinal numbers then sort is not required

@@ -35,7 +35,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         assertEquals(expectedDates, madeDates);
     }
     
-    /** Tests daily stream with FREQ=YEARLY */
+    /** Tests daily stream with FREQ=YEARLY;BYDAY=SU */
     @Test
     public void yearlyStreamTest2()
     {
