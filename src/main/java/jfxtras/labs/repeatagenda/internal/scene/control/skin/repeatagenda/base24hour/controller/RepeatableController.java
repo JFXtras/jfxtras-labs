@@ -66,6 +66,7 @@ public class RepeatableController<T>
 {
 
 final private static int EXCEPTION_CHOICE_LIMIT = 50;
+final private static int INITIAL_COUNT = 10;
     
 private VComponent<T> vComponent;
 private LocalDateTime dateTimeStartInstanceNew;
@@ -195,9 +196,9 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
         frequencyLabel.setText(frequencyComboBox.valueProperty().get().toStringPlural());
     }
     
-    // Make summary
-    String summaryString = vComponent.getRRule().summary(vComponent.getDateTimeStart());
-    repeatSummaryLabel.setText(summaryString);
+    // Make summary and exceptions
+    refreshSummary();
+    makeExceptionDates();
 };
 
 private void setFrequencyVisibility(FrequencyType f)
@@ -319,6 +320,10 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
         } else {
             frequencyLabel.setText(frequencyComboBox.valueProperty().get().toStringPlural());
         }
+        vComponent.getRRule().getFrequency().setInterval(newValue);
+        System.out.println("interval:" + newValue);
+        refreshSummary();
+        makeExceptionDates();
     });
     
     // Make frequencySpinner and only accept numbers (needs below two listeners)
@@ -345,6 +350,8 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
             {
                 value = Integer.parseInt(s);
                 vComponent.getRRule().getFrequency().setInterval(value);
+                refreshSummary();
+                makeExceptionDates();
             } else {
                 String lastValue = intervalSpinner.getValue().toString();
                 intervalSpinner.getEditor().textProperty().set(lastValue);
@@ -354,13 +361,11 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
     });
     
     // END AFTER LISTENERS
-    endAfterEventsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, 10));
     endAfterEventsSpinner.valueProperty().addListener((observable, oldSelection, newSelection) ->
     {
-        if (! vComponent.getRRule().countProperty().isBound()) {
-            endAfterEventsSpinner.getValueFactory().setValue(vComponent.getRRule().getCount());
-            vComponent.getRRule().setCount(newSelection);
-        }
+          vComponent.getRRule().setCount(newSelection);
+          refreshSummary();
+          makeExceptionDates();
         if (newSelection == 1) {
             eventLabel.setText(resources.getString("event"));
         } else {
@@ -408,7 +413,6 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
             boolean isNumber = s.matches("[0-9]+");
             if (isNumber) {
                 value = Integer.parseInt(s);
-                vComponent.getRRule().countProperty().unbind();
                 vComponent.getRRule().setCount(value);
             } else {
                 String lastValue = endAfterEventsSpinner.getValue().toString();
@@ -485,7 +489,7 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
         {
             if (newSelection)
             {
-                removeExceptionListeners();
+//                removeExceptionListeners();
                 // setup new RRule
                 if (vComponent.getRRule() == null)
                 {
@@ -498,7 +502,7 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
                 repeatableGridPane.setDisable(false);
                 startDatePicker.setDisable(false);
                 makeExceptionDates();
-                addExceptionListeners();
+//                addExceptionListeners();
             } else
             {
                 vComponent.dateTimeStartProperty().removeListener(dateTimeStartToExceptionChangeListener);
@@ -578,26 +582,26 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
         if (checkBox) setInitialValues(vComponent);
 
         // LISTENERS TO BE ADDED AFTER INITIALIZATION
-        addExceptionListeners(); // Listeners to update exception dates
+//        addExceptionListeners(); // Listeners to update exception dates
         frequencyComboBox.valueProperty().addListener(frequencyListener);
 
     }
     
-    private void addExceptionListeners()
-    {
-        intervalSpinner.valueProperty().addListener(makeExceptionDatesAndSummaryListener);
-        endNeverRadioButton.selectedProperty().addListener(neverListener);
-        endAfterEventsSpinner.valueProperty().addListener(makeExceptionDatesAndSummaryListener);
-        endOnDatePicker.valueProperty().addListener(makeExceptionDatesAndSummaryListener);
-    }
-    
-    private void removeExceptionListeners()
-    {
-        intervalSpinner.valueProperty().removeListener(makeExceptionDatesAndSummaryListener);
-        endNeverRadioButton.selectedProperty().removeListener(neverListener);
-        endAfterEventsSpinner.valueProperty().removeListener(makeExceptionDatesAndSummaryListener);
-        endOnDatePicker.valueProperty().removeListener(makeExceptionDatesAndSummaryListener);
-    }
+//    private void addExceptionListeners()
+//    {
+//        intervalSpinner.valueProperty().addListener(makeExceptionDatesAndSummaryListener);
+//        endNeverRadioButton.selectedProperty().addListener(neverListener);
+//        endAfterEventsSpinner.valueProperty().addListener(makeExceptionDatesAndSummaryListener);
+//        endOnDatePicker.valueProperty().addListener(makeExceptionDatesAndSummaryListener);
+//    }
+//    
+//    private void removeExceptionListeners()
+//    {
+//        intervalSpinner.valueProperty().removeListener(makeExceptionDatesAndSummaryListener);
+//        endNeverRadioButton.selectedProperty().removeListener(neverListener);
+//        endAfterEventsSpinner.valueProperty().removeListener(makeExceptionDatesAndSummaryListener);
+//        endOnDatePicker.valueProperty().removeListener(makeExceptionDatesAndSummaryListener);
+//    }
     
     private void setInitialValues(VComponent<T> vComponent)
     {
@@ -612,6 +616,8 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
                     .collect(Collectors.toList());
             exceptionsListView.getItems().addAll(collect);
         }
+        int initialCount = (vComponent.getRRule().getCount() > 0) ? vComponent.getRRule().getCount() : INITIAL_COUNT;
+        endAfterEventsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, initialCount));
         if (vComponent.getRRule().getCount() > 0)
         {
             endAfterRadioButton.selectedProperty().set(true);
@@ -622,6 +628,7 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
         {
             endNeverRadioButton.selectedProperty().set(true);
         }
+        
         switch(frequencyType)
         {
         case MONTHLY:
