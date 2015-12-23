@@ -176,6 +176,7 @@ public interface VComponent<T>
      * @param startDateTime - start date/times are produced after this date
      * @return - stream of start date/times for the recurrence set
      */
+    // TODO - CHANGE TO STREAM<TEMPORAL> SO BOTH LOCALDATE AND LOCALDATETIME WORK AUTOMATICALLY?
     Stream<LocalDateTime> stream(LocalDateTime startDateTime);
 
     /**

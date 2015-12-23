@@ -352,10 +352,11 @@ public class VEventImpl extends VEvent<Appointment>
         final long durationInNanos = ChronoUnit.NANOS.between(dateTimeStartInstanceNew, dateTimeEndInstanceNew);
         final VEventImpl vEventOld = (VEventImpl) VComponentOld;
 //        System.out.println(dateTimeStartInstanceNew + " " + vEventOld2.getDateTimeStart());
-        boolean dateTimeNewSame = dateTimeStartInstanceNew.toLocalTime().equals(VComponent.localDateTimeFromTemporal(vEventOld.getDateTimeStart()));
-        boolean durationSame = (durationInNanos == vEventOld.getDurationInNanos());
-        System.out.println("same:" + dateTimeNewSame + " " + durationSame + " " + this.equals(VComponentOld) + " " + this.getDurationInNanos() + " " + this.getDateTimeEnd());
-        if (dateTimeNewSame && durationSame && this.equals(VComponentOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
+//        boolean dateTimeNewSame = dateTimeStartInstanceNew.toLocalTime().equals(VComponent.localDateTimeFromTemporal(vEventOld.getDateTimeStart()));
+//        boolean durationSame = (durationInNanos == vEventOld.getDurationInNanos());
+//        System.out.println("same:" + dateTimeNewSame + " " + durationSame + " " + this.equals(VComponentOld) + " " + this.getDurationInNanos() + " " + this.getDateTimeEnd());
+//        if (dateTimeNewSame && durationSame && this.equals(VComponentOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
+        if (this.equals(VComponentOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
 
         final RRuleType rruleType = getRRuleType(VComponentOld.getRRule());
         System.out.println("rruleType " + rruleType);

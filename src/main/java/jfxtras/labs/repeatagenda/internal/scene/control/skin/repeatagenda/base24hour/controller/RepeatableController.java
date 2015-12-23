@@ -658,6 +658,7 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
             {
                 dayOfWeekRadioButton.selectedProperty().set(true);
             }
+            dayOfWeekRadioButton.selectedProperty().addListener(dayOfWeekButtonListener);
             break;
         case WEEKLY:
             setDayOfWeek(vComponent.getRRule());
