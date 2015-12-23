@@ -266,8 +266,10 @@ public class ByDay extends ByRuleAbstract
                         final int startWeekNumber;
                         if (date.getYear() == startDateTime.getYear())
                         {
-                            WeekFields weekFields = WeekFields.of(Locale.getDefault()); 
+                            WeekFields weekFields = WeekFields.of(Locale.getDefault()); // TODO - WON'T WORK - NEED nTH OCCURRENCE, NOT WEEK NUMBER
+                            // TODO - NEED TO MAKE DAY OF WEEK IN YEAR
                             startWeekNumber = date.get(weekFields.weekOfWeekBasedYear());
+                            // maybe go back one week and test to see if past date???
                         } else
                         {
                             startWeekNumber = 1;

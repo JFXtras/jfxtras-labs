@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -131,16 +130,16 @@ public class RRule
     private Set<LocalDateTime> instances = new HashSet<>();
     public void setInstances(Set<LocalDateTime> dateTimes) { instances = dateTimes; }
     public RRule withInstances(Set<LocalDateTime> dateTimes) { setInstances(dateTimes); return this; }
-    private boolean instancesEquals(Collection<LocalDateTime> instancesTest)
-    {
-        Iterator<LocalDateTime> dateIterator = getInstances().iterator();
-        while (dateIterator.hasNext())
-        {
-            LocalDateTime myDate = dateIterator.next();
-            if (! instancesTest.contains(myDate)) return false;
-        }
-        return true;
-    }
+//    private boolean instancesEquals(Collection<LocalDateTime> instancesTest)
+//    {
+//        Iterator<LocalDateTime> dateIterator = getInstances().iterator();
+//        while (dateIterator.hasNext())
+//        {
+//            LocalDateTime myDate = dateIterator.next();
+//            if (! instancesTest.contains(myDate)) return false;
+//        }
+//        return true;
+//    }
 
     /** Deep copy all fields from source to destination */
     private static void copy(RRule source, RRule destination)
@@ -195,7 +194,7 @@ public class RRule
         StringBuilder builder = new StringBuilder();
         builder.append(getFrequency().toString());
         if (getCount() > 0) builder.append(";" + countProperty().getName() + "=" + getCount());
-        if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + VComponent.DATE_TIME_FORMATTER.format(getUntil()));
+        if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + VComponent.temporalToString(getUntil()));
         String rules = getFrequency()
                 .getByRules()
                 .stream()

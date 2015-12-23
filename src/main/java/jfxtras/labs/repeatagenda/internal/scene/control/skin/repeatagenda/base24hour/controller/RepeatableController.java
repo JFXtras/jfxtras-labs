@@ -9,11 +9,10 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
-import java.time.temporal.WeekFields;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -135,8 +134,13 @@ private ChangeListener<? super Boolean> dayOfWeekButtonListener = (obs2, oldSel2
 {
     if (newSel2)
     {
-        WeekFields weekFields = WeekFields.of(Locale.getDefault());
-        int ordinalWeekNumber = dateTimeStartInstanceNew.get(weekFields.weekOfMonth());
+        LocalDateTime start = dateTimeStartInstanceNew.with(TemporalAdjusters.firstDayOfMonth());
+        int ordinalWeekNumber = 0;
+        while (! dateTimeStartInstanceNew.isBefore(start))
+        {
+            ordinalWeekNumber++;
+            start = start.plusWeeks(1);
+        }
         DayOfWeek dayOfWeek = dateTimeStartInstanceNew.getDayOfWeek();
         Rule byDayRuleMonthly = new ByDay(new ByDayPair(dayOfWeek, ordinalWeekNumber));
         vComponent.getRRule().getFrequency().addByRule(byDayRuleMonthly);
@@ -145,6 +149,8 @@ private ChangeListener<? super Boolean> dayOfWeekButtonListener = (obs2, oldSel2
         Rule r = vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRules.BYDAY);
         vComponent.getRRule().getFrequency().getByRules().remove(r);
     }
+    refreshSummary();
+    makeExceptionDates();
 };
 
 // FREQUENCY CHANGE LISTENER
@@ -600,16 +606,8 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
     
     private void addExceptionListeners()
     {
-//        vComponent.getRRule().getFrequency().intervalProperty().addListener(makeExceptionDatesAndSummaryListener);
         intervalSpinner.valueProperty().addListener(makeExceptionDatesAndSummaryListener);
-//        sundayCheckBox.selectedProperty().addListener(makeExceptionDatesAndSummaryListener);
-//        mondayCheckBox.selectedProperty().addListener(makeExceptionDatesAndSummaryListener);
-//        tuesdayCheckBox.selectedProperty().addListener(makeExceptionDatesAndSummaryListener);
-//        wednesdayCheckBox.selectedProperty().addListener(makeExceptionDatesAndSummaryListener);
-//        thursdayCheckBox.selectedProperty().addListener(makeExceptionDatesAndSummaryListener);
-//        fridayCheckBox.selectedProperty().addListener(makeExceptionDatesAndSummaryListener);
-//        saturdayCheckBox.selectedProperty().addListener(makeExceptionDatesAndSummaryListener);
-        monthlyGroup.selectedToggleProperty().addListener(makeExceptionDatesAndSummaryListener);
+//        monthlyGroup.selectedToggleProperty().addListener(makeExceptionDatesAndSummaryListener);
         endNeverRadioButton.selectedProperty().addListener(neverListener);
 //        endGroup.selectedToggleProperty().addListener(makeExceptionDatesAndSummaryListener);
         endAfterEventsSpinner.valueProperty().addListener(makeExceptionDatesAndSummaryListener);
@@ -618,16 +616,8 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
     
     private void removeExceptionListeners()
     {
-//        vComponent.getRRule().getFrequency().intervalProperty().removeListener(makeExceptionDatesAndSummaryListener);
         intervalSpinner.valueProperty().removeListener(makeExceptionDatesAndSummaryListener);
-//        sundayCheckBox.selectedProperty().removeListener(makeExceptionDatesAndSummaryListener);
-//        mondayCheckBox.selectedProperty().removeListener(makeExceptionDatesAndSummaryListener);
-//        tuesdayCheckBox.selectedProperty().removeListener(makeExceptionDatesAndSummaryListener);
-//        wednesdayCheckBox.selectedProperty().removeListener(makeExceptionDatesAndSummaryListener);
-//        thursdayCheckBox.selectedProperty().removeListener(makeExceptionDatesAndSummaryListener);
-//        fridayCheckBox.selectedProperty().removeListener(makeExceptionDatesAndSummaryListener);
-//        saturdayCheckBox.selectedProperty().removeListener(makeExceptionDatesAndSummaryListener);
-        monthlyGroup.selectedToggleProperty().removeListener(makeExceptionDatesAndSummaryListener);
+//        monthlyGroup.selectedToggleProperty().removeListener(makeExceptionDatesAndSummaryListener);
 //        endGroup.selectedToggleProperty().removeListener(makeExceptionDatesAndSummaryListener);
         endNeverRadioButton.selectedProperty().removeListener(neverListener);
         endAfterEventsSpinner.valueProperty().removeListener(makeExceptionDatesAndSummaryListener);
@@ -636,8 +626,8 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
     
     private void setInitialValues(VComponent<T> vComponent)
     {
-        frequencyComboBox.setValue(vComponent.getRRule().getFrequency().frequencyType());
-        setDayOfWeek(vComponent.getRRule());
+        FrequencyType frequencyType = vComponent.getRRule().getFrequency().frequencyType();
+        frequencyComboBox.setValue(frequencyType);
         startDatePicker.setValue(LocalDate.from(vComponent.getDateTimeStart()));
         if (vComponent.getExDate() != null) {
             List<Temporal> collect = vComponent
@@ -657,7 +647,26 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
         {
             endNeverRadioButton.selectedProperty().set(true);
         }
-        setFrequencyVisibility(vComponent.getRRule().getFrequency().frequencyType());
+        switch(frequencyType)
+        {
+        case MONTHLY:
+            Rule rule = vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRules.BYDAY);
+            if (rule == null)
+            {
+                dayOfMonthRadioButton.selectedProperty().set(true);
+            } else if (rule instanceof ByDay)
+            {
+                dayOfWeekRadioButton.selectedProperty().set(true);
+            }
+            break;
+        case WEEKLY:
+            setDayOfWeek(vComponent.getRRule());
+            break;
+        default:
+            break;
+        
+        }
+        setFrequencyVisibility(frequencyType);
 
     }
 
