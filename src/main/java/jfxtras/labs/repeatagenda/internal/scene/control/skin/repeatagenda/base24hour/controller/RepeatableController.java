@@ -19,9 +19,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -67,6 +68,7 @@ public class RepeatableController<T>
 
 final private static int EXCEPTION_CHOICE_LIMIT = 50;
 final private static int INITIAL_COUNT = 10;
+final private static int INITIAL_INTERVAL = 1;
     
 private VComponent<T> vComponent;
 private LocalDateTime dateTimeStartInstanceNew;
@@ -88,7 +90,9 @@ private LocalDateTime dateTimeStartInstanceNew;
 @FXML private CheckBox thursdayCheckBox;
 @FXML private CheckBox fridayCheckBox;
 @FXML private CheckBox saturdayCheckBox;
-private final Map<Observable, DayOfWeek> checkBoxDayOfWeekMap = new HashMap<Observable, DayOfWeek>();
+private final ObservableList<DayOfWeek> dayOfWeekList = FXCollections.observableArrayList();
+private final Map<BooleanProperty, DayOfWeek> checkBoxDayOfWeekMap = new HashMap<>();
+private Map<DayOfWeek, BooleanProperty> checkBoxDayOfWeekMap2;
 @FXML private VBox monthlyVBox;
 @FXML private Label monthlyLabel;
 private ToggleGroup monthlyGroup;
@@ -112,6 +116,7 @@ private ToggleGroup endGroup;
 // DAY OF WEEK CHECKBOX LISTENER
 private final ChangeListener<? super Boolean> dayOfWeekCheckBoxListener = (obs, oldSel, newSel) -> 
 {
+    System.out.println("trigger day of week:");
     DayOfWeek dayOfWeek = checkBoxDayOfWeekMap.get(obs);
     ByDay rule = (ByDay) vComponent
             .getRRule()
@@ -120,12 +125,15 @@ private final ChangeListener<? super Boolean> dayOfWeekCheckBoxListener = (obs, 
     if (newSel)
     {
         rule.addDayOfWeek(dayOfWeek);
+        dayOfWeekList.add(dayOfWeek);
     } else
     {
         rule.removeDayOfWeek(dayOfWeek);
+        dayOfWeekList.remove(dayOfWeek);
     }
-    refreshSummary();
-    makeExceptionDates();
+//    refreshSummary();
+//    System.out.println("make exception " + obs);
+//    makeExceptionDates();
 };
 
 // Listener for dayOfWeekRadioButton when frequency if monthly
@@ -149,18 +157,44 @@ private ChangeListener<? super Boolean> dayOfWeekButtonListener = (obs2, oldSel2
         vComponent.getRRule().getFrequency().getByRules().remove(r);
     }
     refreshSummary();
-    makeExceptionDates();
+    // makeExceptionDates();
+};
+
+
+//MAKE EXCEPTION DATES LISTENER
+final private InvalidationListener makeExceptionDatesAndSummaryListener = (obs) -> 
+{
+   System.out.println("exceptions6:" + obs);
+   refreshSummary();
+   makeExceptionDates();
+};
+private void refreshSummary()
+{
+// System.out.println("refresh summary:");
+ String summaryString = vComponent.getRRule().summary(vComponent.getDateTimeStart());
+ repeatSummaryLabel.setText(summaryString);
+}
+private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, newValue) ->
+{
+    if (newValue)
+    {
+        refreshSummary();
+        System.out.println("make exception1 " + obs);
+        makeExceptionDates();
+    }
 };
 
 // FREQUENCY CHANGE LISTENER
 private final ChangeListener<? super FrequencyType> frequencyListener = (obs, oldSel, newSel) -> 
 {
-    // Change Frequency if different, reset Interval to 1
+    // Change Frequency if different.  Copy Interval, null ExDate
     if (vComponent.getRRule().getFrequency().frequencyType() != newSel)
     {
-        vComponent.getRRule().setFrequency(newSel.newInstance());
-        intervalSpinner.getEditor().textProperty().set("1");
-        endNeverRadioButton.selectedProperty().set(true);
+        Frequency newFrequency = newSel.newInstance();
+        Integer interval = vComponent.getRRule().getFrequency().getInterval();
+        if (interval > 1) newFrequency.setInterval(interval);
+        vComponent.getRRule().setFrequency(newFrequency);
+        vComponent.setExDate(null);
     }
 
     // Setup monthlyVBox and weeklyHBox setting visibility
@@ -176,8 +210,25 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
         dayOfWeekRadioButton.selectedProperty().set(false);
         break;
     case WEEKLY:
-        DayOfWeek dayOfWeek = VComponent.localDateTimeFromTemporal(vComponent.getDateTimeStart()).getDayOfWeek();
-        vComponent.getRRule().getFrequency().addByRule(new ByDay(dayOfWeek));
+        System.out.println("dayOfWeekList0a " + dayOfWeekList);
+        Rule r2 = vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRules.BYDAY);
+        vComponent.getRRule().getFrequency().getByRules().remove(r2);
+        if (dayOfWeekList.isEmpty())
+        {
+            DayOfWeek dayOfWeek = LocalDate.from(vComponent.getDateTimeStart()).getDayOfWeek();
+            vComponent.getRRule().getFrequency().addByRule(new ByDay(dayOfWeek)); // add days already clicked
+            checkBoxDayOfWeekMap2.get(dayOfWeek).set(true);
+//            checkBoxDayOfWeekMap.entrySet().stream()
+//                    .filter(c -> c.getValue().equals(dayOfWeek))
+//                    .findFirst()
+//                    .get()
+//                    .getKey()
+//                    .set(true);
+        } else
+        {
+            vComponent.getRRule().getFrequency().addByRule(new ByDay(dayOfWeekList)); // add days already clicked            
+        }
+        System.out.println("dayOfWeekList0b " + dayOfWeekList);
         break;
     case SECONDLY:
     case MINUTELY:
@@ -198,6 +249,7 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
     
     // Make summary and exceptions
     refreshSummary();
+    System.out.println("make exception2" + obs + " " + oldSel);
     makeExceptionDates();
 };
 
@@ -239,8 +291,10 @@ private void setFrequencyVisibility(FrequencyType f)
 }
 
 // listen for changes to start date/time (type may change requiring new exception date choices)
-private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeListener = (observable2, oldValue, newValue) ->
+private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeListener = (obs, oldValue, newValue) ->
 {
+    System.out.println("make exception3 " + obs);
+
     makeExceptionDates();
     // update existing exceptions
     if (! exceptionsListView.getItems().isEmpty())
@@ -264,30 +318,40 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     }
 };
 
-// MAKE EXCEPTION DATES LISTENER
-final private InvalidationListener makeExceptionDatesAndSummaryListener = (obs) -> 
-{
-    refreshSummary();
-    makeExceptionDates();
-};
-private void refreshSummary()
-{
-    String summaryString = vComponent.getRRule().summary(vComponent.getDateTimeStart());
-    repeatSummaryLabel.setText(summaryString);
-}
-
-private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, newValue) ->
-{
-    if (newValue)
-    {
-        refreshSummary();
-        makeExceptionDates();
-    }
-};
-
 // INITIALIZATION - runs when FXML is initialized
 @FXML public void initialize()
 {
+    // REPEATABLE CHECKBOX
+    repeatableCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
+    {
+        if (newSelection)
+        {
+            removeExceptionListeners();
+            if (vComponent.getRRule() == null)
+            {
+                // setup new default RRule
+                RRule rRule = new RRule()
+                        .withFrequency(new Weekly()
+                        .withByRules(new ByDay(dateTimeStartInstanceNew.getDayOfWeek()))); // default RRule
+                vComponent.setRRule(rRule);
+                setInitialValues(vComponent);
+                System.out.println("dayOfWeekList1" + dayOfWeekList);
+            }
+            System.out.println("dayOfWeekList2" + dayOfWeekList);
+            vComponent.dateTimeStartProperty().addListener(dateTimeStartToExceptionChangeListener);
+            repeatableGridPane.setDisable(false);
+            startDatePicker.setDisable(false);
+            addExceptionListeners();
+            System.out.println("dayOfWeekList3" + dayOfWeekList);
+        } else
+        {
+            vComponent.dateTimeStartProperty().removeListener(dateTimeStartToExceptionChangeListener);
+            vComponent.setRRule(null);
+            repeatableGridPane.setDisable(true);
+            startDatePicker.setDisable(true);
+        }
+    });
+    
     // DAY OF WEEK CHECK BOX LISTENERS (FOR WEEKLY)
     checkBoxDayOfWeekMap.put(sundayCheckBox.selectedProperty(), DayOfWeek.SUNDAY);
     checkBoxDayOfWeekMap.put(mondayCheckBox.selectedProperty(), DayOfWeek.MONDAY);
@@ -296,23 +360,19 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
     checkBoxDayOfWeekMap.put(thursdayCheckBox.selectedProperty(), DayOfWeek.THURSDAY);
     checkBoxDayOfWeekMap.put(fridayCheckBox.selectedProperty(), DayOfWeek.FRIDAY);
     checkBoxDayOfWeekMap.put(saturdayCheckBox.selectedProperty(), DayOfWeek.SATURDAY);
-    sundayCheckBox.selectedProperty().addListener(dayOfWeekCheckBoxListener);
-    mondayCheckBox.selectedProperty().addListener(dayOfWeekCheckBoxListener);
-    tuesdayCheckBox.selectedProperty().addListener(dayOfWeekCheckBoxListener);
-    wednesdayCheckBox.selectedProperty().addListener(dayOfWeekCheckBoxListener);
-    thursdayCheckBox.selectedProperty().addListener(dayOfWeekCheckBoxListener);
-    fridayCheckBox.selectedProperty().addListener(dayOfWeekCheckBoxListener);
-    saturdayCheckBox.selectedProperty().addListener(dayOfWeekCheckBoxListener);
+    checkBoxDayOfWeekMap2 = checkBoxDayOfWeekMap.entrySet().stream().collect(Collectors.toMap(e -> e.getValue(), e -> e.getKey()));
+    checkBoxDayOfWeekMap.entrySet().stream().forEach(entry -> entry.getKey().addListener(dayOfWeekCheckBoxListener));
 
     // DAY OF WEEK RAIO BUTTON LISTENER (FOR MONTHLY)
     dayOfWeekRadioButton.selectedProperty().addListener(dayOfWeekButtonListener);
 
     // Setup frequencyComboBox items
     frequencyComboBox.setItems(FXCollections.observableArrayList(FrequencyType.implementedValues()));
+//    frequencyComboBox.getSelectionModel().select(FrequencyType.WEEKLY); // default selection
     frequencyComboBox.setConverter(Frequency.FrequencyType.stringConverter);
 
     // INTERVAL SPINNER
-    intervalSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1));
+    intervalSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, INITIAL_INTERVAL));
     intervalSpinner.valueProperty().addListener((observable, oldValue, newValue) ->
     {
         if (newValue == 1) {
@@ -323,7 +383,7 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
         vComponent.getRRule().getFrequency().setInterval(newValue);
         System.out.println("interval:" + newValue);
         refreshSummary();
-        makeExceptionDates();
+         makeExceptionDates();
     });
     
     // Make frequencySpinner and only accept numbers (needs below two listeners)
@@ -363,9 +423,12 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
     // END AFTER LISTENERS
     endAfterEventsSpinner.valueProperty().addListener((observable, oldSelection, newSelection) ->
     {
-          vComponent.getRRule().setCount(newSelection);
-          refreshSummary();
-          makeExceptionDates();
+        if (endAfterRadioButton.isSelected())
+        {
+              vComponent.getRRule().setCount(newSelection);
+              refreshSummary();
+               makeExceptionDates();
+        }
         if (newSelection == 1) {
             eventLabel.setText(resources.getString("event"));
         } else {
@@ -381,6 +444,7 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
             eventLabel.setDisable(false);
             vComponent.getRRule().setCount(endAfterEventsSpinner.getValue());
             refreshSummary();
+            System.out.println("make exception4 " + observable);
             makeExceptionDates();
         } else
         {
@@ -423,9 +487,12 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
     });
     
     // END ON LISTENERS
-    final ChangeListener<? super LocalDate> endOnDateListener = ((observable, oldSelection, newSelection) ->
+    endOnDatePicker.valueProperty().addListener((observable, oldSelection, newSelection) ->
     {
         vComponent.getRRule().setUntil(newSelection.atTime(LocalTime.of(23, 59, 59))); // end at end of day
+        refreshSummary();
+        System.out.println("make exception5 " + observable);
+        makeExceptionDates();
     });
     endOnRadioButton.selectedProperty().addListener((observable, oldSelection, newSelection) ->
     {
@@ -440,12 +507,10 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
             }
             endOnDatePicker.setValue(LocalDate.from(vComponent.getRRule().getUntil()));
             endOnDatePicker.setDisable(false);
-            endOnDatePicker.valueProperty().addListener(endOnDateListener);
             endOnDatePicker.show();
         } else {
             vComponent.getRRule().setUntil(null);
             endOnDatePicker.setDisable(true);
-            endOnDatePicker.valueProperty().removeListener(endOnDateListener);
         }
     });
     
@@ -470,7 +535,6 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
     endOnRadioButton.setToggleGroup(endGroup);
 }
 
-
 /**
  * Add data that was unavailable at initialization time
  * 
@@ -481,36 +545,9 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
             VComponent<T> vComponent
           , LocalDateTime dateTimeStartInstanceNew)
     {
+        System.out.println("setup previous rrule" + vComponent);
         this.vComponent = vComponent;
         this.dateTimeStartInstanceNew = dateTimeStartInstanceNew;
-
-        // REPEATABLE CHECKBOX
-        repeatableCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
-        {
-            if (newSelection)
-            {
-//                removeExceptionListeners();
-                // setup new RRule
-                if (vComponent.getRRule() == null)
-                {
-                    RRule rRule = setDefaults(new RRule(), VComponent.localDateTimeFromTemporal(vComponent.getDateTimeStart()));
-                    vComponent.setRRule(rRule);
-                    setInitialValues(vComponent);
-                }
-                vComponent.dateTimeStartProperty().addListener(dateTimeStartToExceptionChangeListener);
-
-                repeatableGridPane.setDisable(false);
-                startDatePicker.setDisable(false);
-                makeExceptionDates();
-//                addExceptionListeners();
-            } else
-            {
-                vComponent.dateTimeStartProperty().removeListener(dateTimeStartToExceptionChangeListener);
-                vComponent.setRRule(null);
-                repeatableGridPane.setDisable(true);
-                startDatePicker.setDisable(true);
-            }
-        });
 
         // EXCEPTIONS
         // Note: exceptionComboBox string converter must be setup done after the controller's initialization 
@@ -577,38 +614,81 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
         exceptionsListView.setCellFactory(temporalCellFactory);
                 
         // SETUP CONTROLLER'S INITIAL DATA FROM RRULE
-        boolean checkBox = (vComponent.getRRule() != null);
-        repeatableCheckBox.selectedProperty().set(checkBox);
-        if (checkBox) setInitialValues(vComponent);
+        boolean isRepeatable = (vComponent.getRRule() != null);
+        repeatableCheckBox.selectedProperty().set(isRepeatable);
+        if (isRepeatable) 
+        {
+            System.out.println("setup previous rrule" + vComponent);
+            setInitialValues(vComponent);
+            if (vComponent.getExDate() != null)
+            {
+                List<Temporal> collect = vComponent
+                        .getExDate()
+                        .getTemporals()
+                        .stream()
+                        .collect(Collectors.toList());
+                exceptionsListView.getItems().addAll(collect);
+          }
+        }
 
         // LISTENERS TO BE ADDED AFTER INITIALIZATION
-//        addExceptionListeners(); // Listeners to update exception dates
+        addExceptionListeners(); // Listeners to update exception dates
         frequencyComboBox.valueProperty().addListener(frequencyListener);
+//        dayOfWeekList.addListener(makeExceptionDatesAndSummaryListener);
 
     }
     
-//    private void addExceptionListeners()
-//    {
+    private void addExceptionListeners()
+    {
 //        intervalSpinner.valueProperty().addListener(makeExceptionDatesAndSummaryListener);
-//        endNeverRadioButton.selectedProperty().addListener(neverListener);
+        endNeverRadioButton.selectedProperty().addListener(neverListener);
+//        endGroup.selectedToggleProperty().addListener(makeExceptionDatesAndSummaryListener);
 //        endAfterEventsSpinner.valueProperty().addListener(makeExceptionDatesAndSummaryListener);
 //        endOnDatePicker.valueProperty().addListener(makeExceptionDatesAndSummaryListener);
-//    }
-//    
-//    private void removeExceptionListeners()
-//    {
+        dayOfWeekList.addListener(makeExceptionDatesAndSummaryListener);
+    }
+    
+    private void removeExceptionListeners()
+    {
 //        intervalSpinner.valueProperty().removeListener(makeExceptionDatesAndSummaryListener);
-//        endNeverRadioButton.selectedProperty().removeListener(neverListener);
+        endNeverRadioButton.selectedProperty().removeListener(neverListener);
+//        endGroup.selectedToggleProperty().removeListener(makeExceptionDatesAndSummaryListener);
 //        endAfterEventsSpinner.valueProperty().removeListener(makeExceptionDatesAndSummaryListener);
 //        endOnDatePicker.valueProperty().removeListener(makeExceptionDatesAndSummaryListener);
-//    }
+        dayOfWeekList.removeListener(makeExceptionDatesAndSummaryListener);
+    }
     
+    /* Set controls to values in rRule */
     private void setInitialValues(VComponent<T> vComponent)
     {
+        int initialInterval = (vComponent.getRRule().getFrequency().getInterval() > 0) ?
+                vComponent.getRRule().getFrequency().getInterval() : INITIAL_INTERVAL;
+        intervalSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, initialInterval));
         FrequencyType frequencyType = vComponent.getRRule().getFrequency().frequencyType();
-        frequencyComboBox.setValue(frequencyType);
-        startDatePicker.setValue(LocalDate.from(vComponent.getDateTimeStart()));
-        if (vComponent.getExDate() != null) {
+        frequencyComboBox.setValue(frequencyType); // will trigger frequencyListener
+        switch(frequencyType)
+        {
+        case MONTHLY:
+            ByDay rule = (ByDay) vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRules.BYDAY);
+            if (rule == null)
+            {
+                dayOfMonthRadioButton.selectedProperty().set(true);
+            } else
+            {
+                dayOfWeekRadioButton.selectedProperty().set(true);
+            }
+            break;
+        case WEEKLY:
+            setDayOfWeek(vComponent.getRRule());
+            break;
+        default:
+            break;
+        }
+        setFrequencyVisibility(frequencyType);
+        
+        // ExDates
+        if (vComponent.getExDate() != null)
+        {
             List<Temporal> collect = vComponent
                     .getExDate()
                     .getTemporals()
@@ -616,6 +696,7 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
                     .collect(Collectors.toList());
             exceptionsListView.getItems().addAll(collect);
         }
+        
         int initialCount = (vComponent.getRRule().getCount() > 0) ? vComponent.getRRule().getCount() : INITIAL_COUNT;
         endAfterEventsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, initialCount));
         if (vComponent.getRRule().getCount() > 0)
@@ -629,27 +710,7 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
             endNeverRadioButton.selectedProperty().set(true);
         }
         
-        switch(frequencyType)
-        {
-        case MONTHLY:
-            Rule rule = vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRules.BYDAY);
-            if (rule == null)
-            {
-                dayOfMonthRadioButton.selectedProperty().set(true);
-            } else if (rule instanceof ByDay)
-            {
-                dayOfWeekRadioButton.selectedProperty().set(true);
-            }
-            break;
-        case WEEKLY:
-            setDayOfWeek(vComponent.getRRule());
-            break;
-        default:
-            break;
-        
-        }
-        setFrequencyVisibility(frequencyType);
-
+        startDatePicker.setValue(LocalDate.from(vComponent.getDateTimeStart()));
     }
 
     /** Set day of week properties if FREQ=WEEKLY and has BYDAY rule 
@@ -695,16 +756,16 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
     }
     
     
-    /**
-     * Default settings for a new RRule - weekly, repeats on day of week in dateTime
-     */
-    private RRule setDefaults(RRule rRule, LocalDateTime dateTime)
-    {
-        rRule.setFrequency(new Weekly());
-        monthlyVBox.setVisible(false);
-        monthlyLabel.setVisible(false);
-        return rRule;
-    }
+//    /**
+//     * Default settings for a new RRule - weekly, repeats on day of week in dateTime
+//     */
+//    private RRule setDefaults(RRule rRule, LocalDateTime dateTime)
+//    {
+//        rRule.setFrequency(new Weekly());
+//        monthlyVBox.setVisible(false);
+//        monthlyLabel.setVisible(false);
+//        return rRule;
+//    }
     
     /** Make list of start date/times for exceptionComboBox */
     private void makeExceptionDates()
@@ -750,7 +811,6 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
 
     @FXML private void handleRemoveException()
     {
-        System.out.println("Remove Exception");
         Temporal d = exceptionsListView.getSelectionModel().getSelectedItem();
         vComponent.getExDate().getTemporals().remove(d);
         makeExceptionDates();

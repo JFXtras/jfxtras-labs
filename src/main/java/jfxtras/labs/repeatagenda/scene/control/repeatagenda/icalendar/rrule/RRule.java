@@ -60,6 +60,7 @@ public class RRule
     private ObjectProperty<Frequency> frequency = new SimpleObjectProperty<>(this, "FREQ");
     public Frequency getFrequency() { return frequency.get(); }
     public void setFrequency(Frequency frequency) { this.frequency.set(frequency); }
+    public RRule withFrequency(Frequency frequency) { setFrequency(frequency); return this; }
     
     /**
      * COUNT: (RFC 5545 iCalendar 3.3.10, page 41) number of events to occur before repeat rule ends

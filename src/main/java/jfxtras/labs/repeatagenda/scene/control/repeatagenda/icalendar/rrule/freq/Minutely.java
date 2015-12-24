@@ -6,7 +6,7 @@ import java.time.temporal.TemporalAdjuster;
 import javafx.beans.property.SimpleObjectProperty;
 
 /** MINUTELY frequency rule as defined by RFC 5545 iCalendar 3.3.10 p39 */
-public class Minutely extends FrequencyAbstract
+public class Minutely extends FrequencyAbstract<Minutely>
 {
     // Constructor
     public Minutely() { super(FrequencyType.MINUTELY, new SimpleObjectProperty<ChronoUnit>(ChronoUnit.MINUTES)); }

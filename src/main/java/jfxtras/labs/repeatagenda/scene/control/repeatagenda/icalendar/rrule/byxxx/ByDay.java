@@ -12,6 +12,7 @@ import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -128,13 +129,20 @@ public class ByDay extends ByRuleAbstract
     public ByDay(DayOfWeek... daysOfWeek)
     {
         this();
-        byDayPairs = new ByDayPair[daysOfWeek.length];
-        int i=0;
-        for (DayOfWeek d : daysOfWeek)
-        {
-            byDayPairs[i++] = new ByDayPair(d, 0);
-        }
+        if (daysOfWeek.length > 0) byDayPairs = Arrays.stream(daysOfWeek)
+                .map(d -> new ByDayPair(d,0))
+                .toArray(size -> new ByDayPair[size]);
     }
+
+    /** Constructor that uses DayOfWeek Collection.  No ordinals are allowed. */
+    public ByDay(Collection<DayOfWeek> daysOfWeeks)
+    {
+        this();
+        if (daysOfWeeks.size() > 0) byDayPairs = daysOfWeeks.stream()
+                .map(d -> new ByDayPair(d,0))
+                .toArray(size -> new ByDayPair[size]);
+    }
+
     
     @Override
     public void copyTo(Rule destination)

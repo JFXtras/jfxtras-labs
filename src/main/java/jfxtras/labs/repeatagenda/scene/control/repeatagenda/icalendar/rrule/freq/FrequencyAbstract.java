@@ -14,7 +14,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
 
-public abstract class FrequencyAbstract implements Frequency {
+public abstract class FrequencyAbstract<T> implements Frequency {
     
     /** INTERVAL: (RFC 5545 iCalendar 3.3.10, page 40) number of frequency periods to pass before new appointment */
     // Uses lazy initialization of property because often interval stays as the default value of 1
@@ -46,7 +46,7 @@ public abstract class FrequencyAbstract implements Frequency {
 
     /** BYxxx Rules 
      * Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
-     * The BYxxx rules must be applied in a specific order and can only be occur once */
+     * Each BYxxx rule can only occur once */
     @Override public List<Rule> getByRules() { return byRules; }
     private List<Rule> byRules = new ArrayList<Rule>();
     @Override public void addByRule(Rule byRule)
@@ -67,6 +67,17 @@ public abstract class FrequencyAbstract implements Frequency {
                 .filter(a -> a.getByRule() == byRule)
                 .findFirst();
         return (rule.isPresent()) ? rule.get() : null;
+    }
+    /** Add varargs of ByRules to Frequency 
+     * Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
+     * Each BYxxx rule can only occur once */
+    public T withByRules(Rule...byRules)
+    {
+        for (Rule r : byRules)
+        {
+            addByRule(r);
+        }
+        return (T) this;
     }
 
     /** Time unit of last rule applied.  It represents the time span to apply future changes to the output stream of date/times

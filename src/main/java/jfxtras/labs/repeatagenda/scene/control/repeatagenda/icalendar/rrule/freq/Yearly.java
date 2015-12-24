@@ -8,7 +8,7 @@ import java.time.temporal.TemporalAdjuster;
 import javafx.beans.property.SimpleObjectProperty;
 
 /** YEARLY frequency rule as defined by RFC 5545 iCalendar 3.3.10 p39 */
-public class Yearly extends FrequencyAbstract
+public class Yearly extends FrequencyAbstract<Yearly>
 {
     // adjusts temporal parameter to become date/time of next event
     private final TemporalAdjuster yearlyAdjuster = (temporal) -> temporal.plus(getInterval(), YEARS);
