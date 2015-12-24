@@ -299,18 +299,18 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * The property value is the original value of the "DTSTART" property of the 
      * recurrence instance.
      */
-    public ObjectProperty<LocalDateTime> dateTimeRecurrenceProperty()
+    public ObjectProperty<Temporal> dateTimeRecurrenceProperty()
     {
-        if (dateTimeRecurrence == null) dateTimeRecurrence = new SimpleObjectProperty<LocalDateTime>(this, RECURRENCE_ID_NAME, _dateTimeRecurrence);
+        if (dateTimeRecurrence == null) dateTimeRecurrence = new SimpleObjectProperty<>(this, RECURRENCE_ID_NAME, _dateTimeRecurrence);
         return dateTimeRecurrence;
     }
-    private ObjectProperty<LocalDateTime> dateTimeRecurrence;
-    private LocalDateTime _dateTimeRecurrence;
-    public LocalDateTime getDateTimeRecurrence()
+    private ObjectProperty<Temporal> dateTimeRecurrence;
+    private Temporal _dateTimeRecurrence;
+    @Override public Temporal getDateTimeRecurrence()
     {
         return (dateTimeRecurrence == null) ? _dateTimeRecurrence : dateTimeRecurrence.get();
     }
-    public void setDateTimeRecurrence(LocalDateTime dtRecurrence)
+    @Override public void setDateTimeRecurrence(Temporal dtRecurrence)
     {
         if (dateTimeRecurrence == null)
         {
@@ -549,7 +549,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     
     /**
      * Checks to see if object contains required properties.  Returns empty string if it is
-     * valid.  Returns string of errors if not valid..
+     * valid.  Returns string of errors if not valid.
      */
     public String makeErrorString()
     {
@@ -557,6 +557,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         if (getDateTimeStart() == null) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DTSTART must not be null.");
         if (getDateTimeStamp() == null) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DTSTAMP must not be null.");
         if (getUniqueIdentifier() == null) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  UID must not be null.");
+        if (getRRule() != null) errorsBuilder.append(getRRule().makeErrorString(this));
         return errorsBuilder.toString();
     }
     

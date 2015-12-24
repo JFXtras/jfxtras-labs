@@ -176,4 +176,5 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         if (getInterval() > 1) builder.append(";INTERVAL=" + getInterval());
         return builder.toString();
     }
+
 }

@@ -25,7 +25,7 @@ import javafx.collections.ObservableSet;
 public abstract class RecurrenceComponentAbstract<T> implements RecurrenceComponent
 {
     /**
-     * EXDATE or RDATE: Set of dates pr date/times included or excepted for recurring events, to-dos, journal entries.
+     * EXDATE or RDATE: Set of dates or date/times included or excepted for recurring events, to-dos, journal entries.
      * 3.8.5.1, RFC 5545 iCalendar
      */
     public Set<Temporal> getTemporals() { return vDateTimes; }

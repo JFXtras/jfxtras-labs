@@ -37,21 +37,29 @@ public class ByDay extends ByRuleAbstract
      */
 //    public ObservableList<ByDayPair> byDayPair() { return byDayPairs; }
 //    ObservableList<ByDayPair> byDayPairs = FXCollections.observableArrayList();
-    public ByDayPair[] getByDayPair() { return byDayPairs; }
+    public ByDayPair[] getByDayPairs() { return byDayPairs; }
     private ByDayPair[] byDayPairs;
     private void setByDayPair(ByDayPair... byDayPairs) { this.byDayPairs = byDayPairs; }
+    /** Checks if byDayPairs has ordinal values.  If so returns true, otherwise false */
+    public boolean hasOrdinals()
+    {
+        return Arrays.stream(getByDayPairs())
+                .filter(p -> (p.ordinal != 0))
+                .findAny()
+                .isPresent();
+    }
     
     /** add individual DayofWeek, without ordinal value, to BYDAY rule */
     public void addDayOfWeek(DayOfWeek dayOfWeek)
     {
-        boolean isPresent = Arrays.stream(getByDayPair())
+        boolean isPresent = Arrays.stream(getByDayPairs())
             .map(a -> a.dayOfWeek)
             .filter(d -> d == dayOfWeek)
             .findAny()
             .isPresent();
         if (! isPresent)
         {
-            List<ByDayPair> list = new ArrayList<>(Arrays.asList(getByDayPair()));
+            List<ByDayPair> list = new ArrayList<>(Arrays.asList(getByDayPairs()));
             list.add(new ByDayPair(dayOfWeek, 0));
             byDayPairs = list.toArray(byDayPairs);
         }
@@ -60,7 +68,7 @@ public class ByDay extends ByRuleAbstract
     /** remove individual DayofWeek from BYDAY rule */
     public void removeDayOfWeek(DayOfWeek dayOfWeek)
     {
-        byDayPairs = Arrays.stream(getByDayPair())
+        byDayPairs = Arrays.stream(getByDayPairs())
                 .filter(d -> d.dayOfWeek != dayOfWeek)
                 .toArray(size -> new ByDayPair[size]);
         
@@ -69,7 +77,7 @@ public class ByDay extends ByRuleAbstract
     /** Return a list of days of the week that don't have an ordinal (as every FRIDAY) */
     public List<DayOfWeek> getDayofWeekWithoutOrdinalList()
     {
-        return Arrays.stream(getByDayPair())
+        return Arrays.stream(getByDayPairs())
                      .filter(d -> d.ordinal == 0)
                      .map(d -> d.dayOfWeek)
                      .collect(Collectors.toList());
@@ -163,7 +171,7 @@ public class ByDay extends ByRuleAbstract
             return false;
         }
         ByDay testObj = (ByDay) obj;
-        boolean byDayPairsEquals = Arrays.equals(getByDayPair(), testObj.getByDayPair());
+        boolean byDayPairsEquals = Arrays.equals(getByDayPairs(), testObj.getByDayPairs());
         System.out.println("ByDay equals " + byDayPairsEquals);
         return byDayPairsEquals;
     }
@@ -171,7 +179,7 @@ public class ByDay extends ByRuleAbstract
     @Override
     public String toString()
     {
-        String days = Arrays.stream(getByDayPair())
+        String days = Arrays.stream(getByDayPairs())
                 .map(d ->
                 {
                     String day = d.dayOfWeek.toString().substring(0, 2) + ",";
@@ -191,7 +199,7 @@ public class ByDay extends ByRuleAbstract
     public String summary()
     {
         StringBuilder builder = new StringBuilder();
-        for (ByDayPair b : getByDayPair())
+        for (ByDayPair b : getByDayPairs())
         {
             int ordinal = b.ordinal;
             DayOfWeek dayOfWeek = b.dayOfWeek;
@@ -214,7 +222,7 @@ public class ByDay extends ByRuleAbstract
             return inStream.filter(date ->
             { // filter out all but qualifying days
                 DayOfWeek myDayOfWeek = date.toLocalDate().getDayOfWeek();
-                for (ByDayPair byDayPair : getByDayPair())
+                for (ByDayPair byDayPair : getByDayPairs())
                 {
                     if (byDayPair.dayOfWeek == myDayOfWeek) return true;
                 }
@@ -225,7 +233,7 @@ public class ByDay extends ByRuleAbstract
             { // Expand to be byDayPairs days in current week
                 List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
                 int dayOfWeekValue = date.toLocalDate().getDayOfWeek().getValue();
-                for (ByDayPair byDayPair : getByDayPair())
+                for (ByDayPair byDayPair : getByDayPairs())
                 {
                     int dayShift = byDayPair.dayOfWeek.getValue() - dayOfWeekValue;
                     LocalDateTime newDate = date.plusDays(dayShift);
@@ -238,7 +246,7 @@ public class ByDay extends ByRuleAbstract
             {
                 List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
                 boolean sortNeeded = false;
-                for (ByDayPair byDayPair : getByDayPair())
+                for (ByDayPair byDayPair : getByDayPairs())
                 {
                     if (byDayPair.ordinal == 0)
                     { // add every matching day of week in month
@@ -264,7 +272,7 @@ public class ByDay extends ByRuleAbstract
             {
                 List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
                 boolean sortNeeded = false;
-                for (ByDayPair byDayPair : getByDayPair())
+                for (ByDayPair byDayPair : getByDayPairs())
                 {
                     if (byDayPair.ordinal == 0)
                     { // add every matching day of week in year

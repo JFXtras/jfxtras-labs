@@ -193,7 +193,7 @@ public class VEventImpl extends VEvent<Appointment>
             return false;
         }
         VEventImpl testObj = (VEventImpl) obj;
-        System.out.println("getAppointmentClass:" + getAppointmentClass().getSimpleName() + " " + testObj.getAppointmentClass().getSimpleName());
+//        System.out.println("getAppointmentClass:" + getAppointmentClass().getSimpleName() + " " + testObj.getAppointmentClass().getSimpleName());
         boolean appointmentClassEquals = (getAppointmentClass() == null) ?
                 (testObj.getAppointmentClass() == null) : getAppointmentClass().equals(testObj.getAppointmentClass());
         boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?

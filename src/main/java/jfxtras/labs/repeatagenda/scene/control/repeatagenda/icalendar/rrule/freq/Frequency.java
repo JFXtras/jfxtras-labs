@@ -10,7 +10,9 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.util.StringConverter;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule.ByRules;
 
 /** Interface for frequency rule that produces a stream of LocalDateTime start times for repeatable events 
  * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.)
@@ -66,6 +68,50 @@ public interface Frequency {
      * For example, Weekly class advances the dates by INTERVAL Number of weeks. */
     TemporalAdjuster adjuster();
 
+    /**
+     * Checks to see if object contains required properties.  Returns empty string if it is
+     * valid.  Returns string of errors if not valid.
+     */
+    default String makeErrorString()
+    {
+        StringBuilder builder = new StringBuilder();
+        if (getInterval() < 1) builder.append(System.lineSeparator() + "Invalid RRule.  INTERVAL must be greater than or equal to 1.");
+        switch (frequencyType())
+        {
+        case DAILY:
+            if (getByRuleByType(ByRules.BYWEEKNO) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYWEEKNO not available when FREQ is " + frequencyType());
+            if (getByRuleByType(ByRules.BYYEARDAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYYEARDAY not available when FREQ is " + frequencyType());
+            break;
+        case MONTHLY:
+            if (getByRuleByType(ByRules.BYWEEKNO) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYWEEKNO not available when FREQ is " + frequencyType());
+            if (getByRuleByType(ByRules.BYYEARDAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYYEARDAY not available when FREQ is " + frequencyType());
+            break;
+        case WEEKLY:
+            if (getByRuleByType(ByRules.BYWEEKNO) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYWEEKNO not available when FREQ is " + frequencyType());
+            if (getByRuleByType(ByRules.BYYEARDAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYYEARDAY not available when FREQ is " + frequencyType());
+            if (getByRuleByType(ByRules.BYMONTHDAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYMONTHDAY not available when FREQ is " + frequencyType());
+            break;
+        case YEARLY:
+            if ((getByRuleByType(ByRules.BYWEEKNO) != null) && (getByRuleByType(ByRules.BYDAY) != null))
+            {
+                ByDay byDay = (ByDay) getByRuleByType(ByRules.BYDAY);
+                if (byDay.hasOrdinals()) builder.append(System.lineSeparator()
+                        + "Invalid RRule. The BYDAY rule part MUST NOT be specified with a numeric value with the FREQ rule part set to YEARLY when the BYWEEKNO rule part is specified");
+            }
+            break;
+        case HOURLY:
+        case MINUTELY:
+        case SECONDLY:
+            builder.append(System.lineSeparator() + "Invalid RRule. " + frequencyType() + " not implemented.");
+            break;
+        default:
+            builder.append(System.lineSeparator() + "Invalid RRule. " + frequencyType() + " unknown.");
+            break;
+        
+        }
+        return builder.toString();
+    }
+    
     /** Enumeration of FREQ rules 
      * Is used to make new instances of the different Frequencies by matching FREQ property
      * to its matching class */
@@ -176,8 +222,6 @@ public interface Frequency {
             });
         }
     }
-
-
     
 }
 

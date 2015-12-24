@@ -415,11 +415,15 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     public String makeErrorString()
     {
         StringBuilder errorsBuilder = new StringBuilder(super.makeErrorString());
-        boolean durationNull = getDurationInNanos() == 0;
-        boolean endDateTimeNull = getDateTimeEnd() == null;
+
+        LocalDateTime end = VComponent.localDateTimeFromTemporal(getDateTimeEnd());
+        LocalDateTime start = VComponent.localDateTimeFromTemporal(getDateTimeStart());
+        if ((getDateTimeEnd() == null) && (! end.isAfter(start))) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  DTEND must be after DTSTART");
         
         // Note: Check for invalid condition where both DURATION and DTEND not being null is done in parseVEvent.
         // It is not checked here due to bindings between both DURATION and DTEND.
+        boolean durationNull = getDurationInNanos() == 0;
+        boolean endDateTimeNull = getDateTimeEnd() == null;
         if (durationNull && endDateTimeNull && getDateTimeStart() != null && ! isDateTimeStartWholeDay()) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DURATION and DTEND can not be null.");
 
         Boolean s = (getDateTimeStart() == null) ? null: isDateTimeStartWholeDay();
@@ -428,7 +432,6 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
 
         Class<? extends Temporal> startClass = getDateTimeStart().getClass();
         Class<? extends Temporal> endClass = getDateTimeEnd().getClass();
-        
         if (! startClass.equals(endClass)) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DTSTART and DTEND must have the same Temporal type (" + startClass + "," + endClass + ")");
         
         return errorsBuilder.toString();

@@ -118,12 +118,13 @@ public interface VComponent<T>
     public void setRDate(RDate rDate);
 
     /**
-     * RECURRENCE-ID: Date-Time recurrence, from RFC 5545 iCalendar 3.8.4.4 page 112
+     * RECURRENCE-ID: date or date-time recurrence, from RFC 5545 iCalendar 3.8.4.4 page 112
      * The property value is the original value of the "DTSTART" property of the 
      * recurrence instance.
      */
-    LocalDateTime getDateTimeRecurrence();
-    public void setDateTimeRecurrence(LocalDateTime dtRecurrence);
+    // TODO - VERIFY THIS WORKS - I DON'T THINK IT DOES
+    Temporal getDateTimeRecurrence();
+    public void setDateTimeRecurrence(Temporal dtRecurrence);
     
     /**
      * RRULE, Recurrence Rule as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
@@ -263,6 +264,8 @@ public interface VComponent<T>
           , Callback<Collection<VComponent<T>>, Void> vEventWriteCallback);
 
     /*
+     * UTILITY METHODS
+     * 
      * Below methods are used to handle dateTimeEnd and dateTimeStart as Temporal objects.  The allowed
      * types are either LocalDate or LocalDateTime.  Using LocalDate indicates a whole day component.
      */
@@ -337,4 +340,38 @@ public interface VComponent<T>
                 temporal + " of type " + temporal.getClass().getSimpleName());
     }
     
+    /** Determines if Temporal is before t2
+     * Works for LocalDate or LocalDateTime
+     * 
+     * @param t1 first Temporal
+     * @param t2 second Temporal (to compare with t1)
+     * @return true if t1 is before t2, false otherwise
+     */
+    static boolean isBefore(Temporal t1, Temporal t2)
+    {
+        if (t1.getClass().equals(t2.getClass()))
+        {
+            LocalDateTime d1 = localDateTimeFromTemporal(t1);
+            LocalDateTime d2 = localDateTimeFromTemporal(t2);
+            return d1.isBefore(d2);
+        } throw new DateTimeException("Temporal classes must be equal(" + t1.getClass().getSimpleName() + "," + t2.getClass().getSimpleName());
+    }
+
+    /** Determines if Temporal is after t2
+     * Works for LocalDate or LocalDateTime
+     * 
+     * @param t1 first Temporal
+     * @param t2 second Temporal (to compare with t1)
+     * @return true if t1 is after t2, false otherwise
+     */
+    static boolean isAfter(Temporal t1, Temporal t2)
+    {
+        if (t1.getClass().equals(t2.getClass()))
+        {
+            LocalDateTime d1 = localDateTimeFromTemporal(t1);
+            LocalDateTime d2 = localDateTimeFromTemporal(t2);
+            return d1.isAfter(d2);
+        } throw new DateTimeException("Temporal classes must be equal(" + t1.getClass().getSimpleName() + "," + t2.getClass().getSimpleName());
+    }
+
 }

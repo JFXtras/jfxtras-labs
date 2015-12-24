@@ -206,6 +206,27 @@ public class RRule
     }
     
     /**
+     * Checks to see if object contains required properties.  Returns empty string if it is
+     * valid.  Returns string of errors if not valid.
+     */
+    public String makeErrorString(VComponent<?> parent)
+    {
+        StringBuilder builder = new StringBuilder();
+        if (getUntil() != null)
+        {
+            LocalDateTime u = VComponent.localDateTimeFromTemporal(getUntil());
+            LocalDateTime s = VComponent.localDateTimeFromTemporal(parent.getDateTimeStart());
+            if (u.isBefore(s)) builder.append(System.lineSeparator() + "Invalid RRule.  UNTIL can not come before DTSTART");
+        }
+        if ((getCount() == null) || (getCount() < 0)) builder.append(System.lineSeparator() + "Invalid RRule.  COUNT must not be less than 0");
+        if (getFrequency() == null)
+        {
+            builder.append(System.lineSeparator() + "Invalid RRule.  FREQ must not be null");
+        } else builder.append(getFrequency().makeErrorString());
+        return builder.toString();
+    }
+    
+    /**
      * Produce easy to read summary of repeat rule
      * Is limited to producing strings for following repeat rules:
      * Any individual Frequency (FREQ)
@@ -379,4 +400,5 @@ public class RRule
     static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
        return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
     }
+
 }
