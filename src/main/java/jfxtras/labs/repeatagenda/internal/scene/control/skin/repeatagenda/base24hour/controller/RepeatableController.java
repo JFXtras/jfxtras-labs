@@ -95,7 +95,7 @@ private LocalDateTime dateTimeStartInstanceNew;
 @FXML private CheckBox saturdayCheckBox;
 private final ObservableList<DayOfWeek> dayOfWeekList = FXCollections.observableArrayList();
 private final Map<BooleanProperty, DayOfWeek> checkBoxDayOfWeekMap = new HashMap<>();
-private Map<DayOfWeek, BooleanProperty> checkBoxDayOfWeekMap2;
+private Map<DayOfWeek, BooleanProperty> dayOfWeekCheckBoxMap;
 @FXML private VBox monthlyVBox;
 @FXML private Label monthlyLabel;
 private ToggleGroup monthlyGroup;
@@ -220,13 +220,7 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
         {
             DayOfWeek dayOfWeek = LocalDate.from(vComponent.getDateTimeStart()).getDayOfWeek();
             vComponent.getRRule().getFrequency().addByRule(new ByDay(dayOfWeek)); // add days already clicked
-            checkBoxDayOfWeekMap2.get(dayOfWeek).set(true);
-//            checkBoxDayOfWeekMap.entrySet().stream()
-//                    .filter(c -> c.getValue().equals(dayOfWeek))
-//                    .findFirst()
-//                    .get()
-//                    .getKey()
-//                    .set(true);
+            dayOfWeekCheckBoxMap.get(dayOfWeek).set(true);
         } else
         {
             vComponent.getRRule().getFrequency().addByRule(new ByDay(dayOfWeekList)); // add days already clicked            
@@ -251,7 +245,7 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
     
     // Make summary and exceptions
     refreshSummary();
-    System.out.println("make exception2" + obs + " " + oldSel);
+//    System.out.println("make exception2" + obs + " " + oldSel);
     makeExceptionDates();
 };
 
@@ -372,7 +366,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     checkBoxDayOfWeekMap.put(thursdayCheckBox.selectedProperty(), DayOfWeek.THURSDAY);
     checkBoxDayOfWeekMap.put(fridayCheckBox.selectedProperty(), DayOfWeek.FRIDAY);
     checkBoxDayOfWeekMap.put(saturdayCheckBox.selectedProperty(), DayOfWeek.SATURDAY);
-    checkBoxDayOfWeekMap2 = checkBoxDayOfWeekMap.entrySet().stream().collect(Collectors.toMap(e -> e.getValue(), e -> e.getKey()));
+    dayOfWeekCheckBoxMap = checkBoxDayOfWeekMap.entrySet().stream().collect(Collectors.toMap(e -> e.getValue(), e -> e.getKey()));
     checkBoxDayOfWeekMap.entrySet().stream().forEach(entry -> entry.getKey().addListener(dayOfWeekCheckBoxListener));
 
     // DAY OF WEEK RAIO BUTTON LISTENER (FOR MONTHLY)
@@ -489,47 +483,57 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     // END ON LISTENERS
     endOnDatePicker.valueProperty().addListener((observable, oldSelection, newSelection) ->
     {
+        System.out.println("endOnPicker:");
         if (newSelection.isBefore(LocalDate.from(vComponent.getDateTimeStart())))
         {
             tooEarlyDateAlert();
             endOnDatePicker.setValue(oldSelection);
         } else
-        { // ensure selected date is an occurrence date
-            final Temporal adjustedSelection;
+        {
+            // make correct Temporal type
+            final Temporal timeAdjustedSelection;
             if (vComponent.getDateTimeStart() instanceof LocalDateTime)
             {
                 LocalTime time = LocalTime.from(vComponent.getDateTimeStart());
-                adjustedSelection = newSelection.atTime(time);
+                timeAdjustedSelection = newSelection.atTime(time);
             } else
             {
-                adjustedSelection = newSelection;
+                timeAdjustedSelection = newSelection;
             }
-            
-            Iterator<LocalDateTime> dateTimeStartIterator = vComponent.stream(dateTimeStartInstanceNew).iterator();
-            Temporal lastTemporal = null;
+//            vComponent.getRRule().setUntil(timeAdjustedSelection);
+
+            // ensure selected date is an occurrence date
+//            System.out.println("dateTimeStartInstanceNew:" + dateTimeStartInstanceNew);
+            System.out.println(vComponent.getRRule().stream(dateTimeStartInstanceNew).count());
+            Iterator<LocalDateTime> dateTimeStartIterator = vComponent.getRRule().stream(dateTimeStartInstanceNew).iterator();
+            Temporal closestNotAfterTemporal = null;
             while (dateTimeStartIterator.hasNext())
             {
                 Temporal myTemporal = dateTimeStartIterator.next();
-                if (myTemporal.equals(adjustedSelection))
+                System.out.println("date:" + myTemporal + " " + dateTimeStartIterator.hasNext());
+                if (myTemporal.equals(timeAdjustedSelection))
                 {
-                    lastTemporal = adjustedSelection;
+                    System.out.println("equals:" + myTemporal);
+                    closestNotAfterTemporal = timeAdjustedSelection;
                     break;
                 }
-                if (VComponent.isAfter(myTemporal, adjustedSelection))
+                if (VComponent.isAfter(myTemporal, timeAdjustedSelection))
                 {
-                    System.out.println("selected date not on occurrence - adjusted " + newSelection + " " + adjustedSelection);
+                    System.out.println("selected date not on occurrence - adjusted " + newSelection + " " + timeAdjustedSelection);
                     break;
                 }
-                lastTemporal = myTemporal;
+                closestNotAfterTemporal = myTemporal;
             }
-            System.out.println("end on date: " + lastTemporal + " " + newSelection);
-            vComponent.getRRule().setUntil(lastTemporal);
+            System.out.println("end on date: " + closestNotAfterTemporal + " " + newSelection);
+            endOnDatePicker.setValue(LocalDate.from(closestNotAfterTemporal));
+            endOnDatePicker.valueProperty().set(LocalDate.from(closestNotAfterTemporal));
+            vComponent.getRRule().setUntil(closestNotAfterTemporal);
             
 //            .filter(d -> VComponent.isBefore(d, newSelection));
-            vComponent.getRRule().setUntil(newSelection.atTime(LocalTime.of(23, 59, 59))); // end at end of day
+//            vComponent.getRRule().setUntil(newSelection.atTime(LocalTime.of(23, 59, 59))); // end at end of day
             // TODO - MAKE INCLUSIVE - SYNCHRINIZED WITH START OF LAST EVENT
             refreshSummary();
-            System.out.println("make exception5 " + observable);
+//            System.out.println("make exception5 " + observable);
             makeExceptionDates();
         }
     });
@@ -795,22 +799,47 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         }
     }
     
-    
-//    /**
-//     * Default settings for a new RRule - weekly, repeats on day of week in dateTime
-//     */
-//    private RRule setDefaults(RRule rRule, LocalDateTime dateTime)
+//    // Find closest occurrence date not after start.  Used for UNTIL - the 
+//    private LocalDate makeClosestNotAfterEndOnLocalDate(Temporal start)
 //    {
-//        rRule.setFrequency(new Weekly());
-//        monthlyVBox.setVisible(false);
-//        monthlyLabel.setVisible(false);
-//        return rRule;
+//        // make correct Temporal type
+//        final Temporal timeAdjustedSelection;
+//        if (vComponent.getDateTimeStart() instanceof LocalDateTime)
+//        {
+//            LocalTime time = LocalTime.from(vComponent.getDateTimeStart());
+//            timeAdjustedSelection = start.atTime(time);
+//        } else
+//        {
+//            timeAdjustedSelection = start;
+//        }
+//        
+//        Iterator<LocalDateTime> dateTimeStartIterator = vComponent.getRRule().stream(dateTimeStartInstanceNew).iterator();
+//        Temporal closestNotAfterTemporal = null;
+//        while (dateTimeStartIterator.hasNext())
+//        {
+//            Temporal myTemporal = dateTimeStartIterator.next();
+//            System.out.println("date:" + myTemporal + " " + dateTimeStartIterator.hasNext());
+//            if (myTemporal.equals(timeAdjustedSelection))
+//            {
+//                System.out.println("equals:" + myTemporal);
+//                closestNotAfterTemporal = timeAdjustedSelection;
+//                break;
+//            }
+//            if (VComponent.isAfter(myTemporal, timeAdjustedSelection))
+//            {
+//                System.out.println("selected date not on occurrence - adjusted " + newSelection + " " + timeAdjustedSelection);
+//                break;
+//            }
+//            closestNotAfterTemporal = myTemporal;
+//        }
+//        System.out.println("end on date: " + closestNotAfterTemporal + " " + newSelection);
+//
 //    }
     
     /** Make list of start date/times for exceptionComboBox */
     private void makeExceptionDates()
     {
-        System.out.println("make exception date list");
+//        System.out.println("make exception date list");
         
         final LocalDateTime dateTimeStart = VComponent.localDateTimeFromTemporal(vComponent.getDateTimeStart());
         Stream<LocalDateTime> stream1 = vComponent

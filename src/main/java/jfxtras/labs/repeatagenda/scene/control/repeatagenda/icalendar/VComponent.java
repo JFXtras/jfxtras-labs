@@ -371,7 +371,7 @@ public interface VComponent<T>
             LocalDateTime d1 = localDateTimeFromTemporal(t1);
             LocalDateTime d2 = localDateTimeFromTemporal(t2);
             return d1.isAfter(d2);
-        } throw new DateTimeException("Temporal classes must be equal(" + t1.getClass().getSimpleName() + "," + t2.getClass().getSimpleName());
+        } throw new DateTimeException("Temporal classes must be equal (" + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() + ")");
     }
 
 }
