@@ -1,7 +1,5 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,39 +50,38 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
         } else return null;
     }
     
-    /**
-     *  If vDateTimes set wraps a set of LocalDateTime Temporal objects then returns a collection 
-     *  of LocalDateTime objects, otherwise throws an exception.
-     * 
-     * @return collection of LocalDateTime
-     */
-    public Collection<LocalDateTime> getLocalDateTimes()
-    {
-//        checkTemporalTypes(LocalDateTime.class);
-        return getTemporalStream()
-                .filter(d -> (d instanceof LocalDateTime))
-                .map(d -> (LocalDateTime) d)
-                .collect(Collectors.toList());
-    }
+//    /**
+//     *  If vDateTimes set wraps a set of LocalDateTime Temporal objects then returns a collection 
+//     *  of LocalDateTime objects, otherwise throws an exception.
+//     * 
+//     * @return collection of LocalDateTime
+//     */
+//    public Collection<Temporal> getLocalDateTimes()
+//    {
+////        checkTemporalTypes(LocalDateTime.class);
+//        return getTemporalStream()
+//                .filter(d -> (d instanceof LocalDateTime))
+//                .map(d -> (LocalDateTime) d)
+//                .collect(Collectors.toList());
+//    }
 
-    /**
-     *  If vDateTimes set wraps a set of LocalDate Temporal objects then returns a collection 
-     *  of LocalDate objects, otherwise throws an exception.
-     * 
-     * @return collection of LocalDate
-     */
-    public Collection<LocalDate> getLocalDates()
-    {
-//        checkTemporalTypes(LocalDate.class);
-        return getTemporalStream()
-                .filter(d -> (d instanceof LocalDate))
-                .map(d -> (LocalDate) d)
-                .collect(Collectors.toList());
-    }
+//    /**
+//     *  If vDateTimes set wraps a set of LocalDate Temporal objects then returns a collection 
+//     *  of LocalDate objects, otherwise throws an exception.
+//     * 
+//     * @return collection of LocalDate
+//     */
+//    public Collection<LocalDate> getLocalDates()
+//    {
+////        checkTemporalTypes(LocalDate.class);
+//        return getTemporalStream()
+//                .filter(d -> (d instanceof LocalDate))
+//                .map(d -> (LocalDate) d)
+//                .collect(Collectors.toList());
+//    }
     protected Stream<Temporal> getTemporalStream()
     {
-        return getTemporals()
-                .stream();
+        return getTemporals().stream();
     }
 
     /**

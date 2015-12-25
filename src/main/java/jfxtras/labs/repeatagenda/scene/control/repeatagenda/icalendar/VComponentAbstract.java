@@ -218,7 +218,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      */
     public ObjectProperty<Temporal> dateTimeStartProperty() { return dateTimeStart; }
     final private ObjectProperty<Temporal> dateTimeStart = new SimpleObjectProperty<>(this, DATE_TIME_START_NAME);
-//    public LocalDateTime dateTimeStartToLocalDateTime() { return VComponent.localDateTimeFromTemporal(getDateTimeStart()); }
     @Override public Temporal getDateTimeStart() { return dateTimeStart.get(); }
     @Override public void setDateTimeStart(Temporal dtStart) { VComponent.super.setDateTimeStart(dtStart); dateTimeStart.set(dtStart); }
     boolean isDateTimeStartWholeDay() { return dateTimeStart.get() instanceof LocalDate; }
@@ -649,20 +648,21 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * Starts on startDateTime, which must be a valid event date/time, not necessarily the
      * first date/time (DTSTART) in the sequence. */
     @Override
-    public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
+    public Stream<Temporal> stream(Temporal startDateTime)
     {
-        Stream<LocalDateTime> stream1;
+        Stream<Temporal> stream1;
         if (getRRule() == null)
         { // if individual event
-            stream1 = Arrays.asList(VComponent.localDateTimeFromTemporal(getDateTimeStart()))
+            stream1 = Arrays.asList(getDateTimeStart())
                     .stream()
-                    .filter(d -> ! d.isBefore(startDateTime));
+                    .filter(d -> ! VComponent.isBefore(d, startDateTime));
+//                    .filter(d -> ! d.isBefore(startDateTime));
         } else
         { // if has recurrence rule
             stream1 = getRRule().stream(startDateTime);
         }
-        Stream<LocalDateTime> stream2 = (getRDate() == null) ? stream1 : getRDate().stream(stream1, startDateTime); // add recurrence list
-        Stream<LocalDateTime> stream3 = (getExDate() == null) ? stream2 : getExDate().stream(stream2, startDateTime); // remove exceptions
+        Stream<Temporal> stream2 = (getRDate() == null) ? stream1 : getRDate().stream(stream1, startDateTime); // add recurrence list
+        Stream<Temporal> stream3 = (getExDate() == null) ? stream2 : getExDate().stream(stream2, startDateTime); // remove exceptions
         return stream3;
     }
 

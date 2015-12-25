@@ -1,8 +1,8 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx;
 
 import java.lang.reflect.InvocationTargetException;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
@@ -31,10 +31,10 @@ public interface Rule extends Comparable<Rule>
      *  
      * @param inStream - Current stream to be added to or subtracted from
      * @param chronoUnit - ChronoUnit of last modification to inStream
-     * @param startDateTime - start date/time
+     * @param startTemporal - start Temporal (date or date/time)
      * @return
      */
-    Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, ObjectProperty<ChronoUnit> chronoUnit, LocalDateTime startDateTime);
+    Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal);
 
     /** order to process rules */
     ByRules getByRule();

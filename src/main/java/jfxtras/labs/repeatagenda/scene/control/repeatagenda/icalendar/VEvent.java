@@ -416,9 +416,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     {
         StringBuilder errorsBuilder = new StringBuilder(super.makeErrorString());
 
-        LocalDateTime end = VComponent.localDateTimeFromTemporal(getDateTimeEnd());
-        LocalDateTime start = VComponent.localDateTimeFromTemporal(getDateTimeStart());
-        if ((getDateTimeEnd() == null) && (! end.isAfter(start))) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  DTEND must be after DTSTART");
+        if ((getDateTimeEnd() == null) && (! VComponent.isAfter(getDateTimeEnd(), getDateTimeStart()))) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  DTEND must be after DTSTART");
         
         // Note: Check for invalid condition where both DURATION and DTEND not being null is done in parseVEvent.
         // It is not checked here due to bindings between both DURATION and DTEND.

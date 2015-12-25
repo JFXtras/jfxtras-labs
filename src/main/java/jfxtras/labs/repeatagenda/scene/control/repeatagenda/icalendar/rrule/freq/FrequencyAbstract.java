@@ -1,7 +1,7 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq;
 
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -123,10 +123,10 @@ public abstract class FrequencyAbstract<T> implements Frequency {
     }
 
     @Override
-    public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
+    public Stream<Temporal> stream(Temporal startDateTime)
     {
         getChronoUnit().set(initialChronoUnit); // start with Frequency ChronoUnit when making a stream
-        Stream<LocalDateTime> stream = Stream.iterate(startDateTime, (a) -> { return a.with(adjuster()); });
+        Stream<Temporal> stream = Stream.iterate(startDateTime, (a) -> { return a.with(adjuster()); });
         Iterator<Rule> rulesIterator = getByRules().stream().sorted().iterator();
         while (rulesIterator.hasNext())
         {

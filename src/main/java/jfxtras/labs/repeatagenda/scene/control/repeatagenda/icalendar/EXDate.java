@@ -1,6 +1,5 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
-import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
 import java.util.stream.Stream;
 
@@ -19,12 +18,13 @@ public class EXDate extends RecurrenceComponentAbstract<EXDate>
     public EXDate(Temporal... dateOrDateTime) { super(dateOrDateTime); }
     
     /** Remove date/times in exDates set */
-    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, LocalDateTime startDateTime)
+    public Stream<Temporal> stream(Stream<Temporal> inStream, Temporal startTemporal)
     {
         return inStream.filter(d ->
         {
 //            System.out.println("EXDate:" + d);
-            return ! getLocalDateTimes().contains(d);
+//            return ! getLocalDateTimes().contains(d);
+            return ! getTemporals().contains(d);
         });
     }
     

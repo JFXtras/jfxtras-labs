@@ -3,8 +3,8 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byx
 import static java.time.temporal.ChronoUnit.WEEKS;
 
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -107,7 +107,7 @@ public class ByWeekNo extends ByRuleAbstract
     }
     
     @Override
-    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, ObjectProperty<ChronoUnit> chronoUnit, LocalDateTime startDateTime)
+    public Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal)
     {
         ChronoUnit originalChronoUnit = chronoUnit.get();
         chronoUnit.set(WEEKS);
@@ -142,16 +142,16 @@ public class ByWeekNo extends ByRuleAbstract
             if (weekFields2.getFirstDayOfWeek() != getWeekStart()) throw new RuntimeException("Can't match first day of week " + getWeekStart());
 
             // Make output stream
-            Stream<LocalDateTime> outStream = inStream.flatMap(date -> 
+            Stream<Temporal> outStream = inStream.flatMap(date -> 
             { // Expand to include matching days in all months
-                DayOfWeek dayOfWeek = startDateTime.getDayOfWeek();
-                List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
+                DayOfWeek dayOfWeek = DayOfWeek.from(startTemporal);
+                List<Temporal> dates = new ArrayList<>();
                 for (int myWeekNumber: getWeekNumbers())
                 {
-                    LocalDateTime newDate = date.with(TemporalAdjusters.next(dayOfWeek));
-                    int newDateWeekNumber = newDate.get(weekFields2.weekOfWeekBasedYear());
+                    Temporal newTemporal = date.with(TemporalAdjusters.next(dayOfWeek));
+                    int newDateWeekNumber = newTemporal.get(weekFields2.weekOfWeekBasedYear());
                     int weekShift = myWeekNumber - newDateWeekNumber;
-                    dates.add(newDate.plusWeeks(weekShift));
+                    dates.add(newTemporal.plus(weekShift, ChronoUnit.WEEKS));
                 }
                 return dates.stream();
             });

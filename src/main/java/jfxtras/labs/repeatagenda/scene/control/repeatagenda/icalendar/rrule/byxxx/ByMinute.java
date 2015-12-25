@@ -1,7 +1,7 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx;
 
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
@@ -17,8 +17,8 @@ public class ByMinute extends ByRuleAbstract
     }
     
     @Override
-    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, ObjectProperty<ChronoUnit> chronoUnit,
-            LocalDateTime startDateTime) {
+    public Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit,
+            Temporal startDateTime) {
         // TODO Auto-generated method stub
         return null;
     }

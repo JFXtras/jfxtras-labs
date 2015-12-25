@@ -74,7 +74,7 @@ final private static int INITIAL_COUNT = 10;
 final private static int INITIAL_INTERVAL = 1;
     
 private VComponent<T> vComponent;
-private LocalDateTime dateTimeStartInstanceNew;
+private Temporal dateTimeStartInstanceNew;
 
 @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
 
@@ -144,14 +144,14 @@ private ChangeListener<? super Boolean> dayOfWeekButtonListener = (obs2, oldSel2
 {
     if (newSel2)
     {
-        LocalDateTime start = dateTimeStartInstanceNew.with(TemporalAdjusters.firstDayOfMonth());
+        Temporal start = dateTimeStartInstanceNew.with(TemporalAdjusters.firstDayOfMonth());
         int ordinalWeekNumber = 0;
-        while (! dateTimeStartInstanceNew.isBefore(start))
+        while (! VComponent.isBefore(dateTimeStartInstanceNew, start))
         {
             ordinalWeekNumber++;
-            start = start.plusWeeks(1);
+            start = start.plus(1, ChronoUnit.WEEKS);
         }
-        DayOfWeek dayOfWeek = dateTimeStartInstanceNew.getDayOfWeek();
+        DayOfWeek dayOfWeek = DayOfWeek.from(dateTimeStartInstanceNew);
         Rule byDayRuleMonthly = new ByDay(new ByDayPair(dayOfWeek, ordinalWeekNumber));
         vComponent.getRRule().getFrequency().addByRule(byDayRuleMonthly);
     } else
@@ -341,7 +341,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
                 // setup new default RRule
                 RRule rRule = new RRule()
                         .withFrequency(new Weekly()
-                        .withByRules(new ByDay(dateTimeStartInstanceNew.getDayOfWeek()))); // default RRule
+                        .withByRules(new ByDay(DayOfWeek.from(dateTimeStartInstanceNew)))); // default RRule
                 vComponent.setRRule(rRule);
                 setInitialValues(vComponent);
             }
@@ -505,7 +505,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             // ensure selected date is an occurrence date
 //            System.out.println("dateTimeStartInstanceNew:" + dateTimeStartInstanceNew);
             System.out.println(vComponent.getRRule().stream(dateTimeStartInstanceNew).count());
-            Iterator<LocalDateTime> dateTimeStartIterator = vComponent.getRRule().stream(dateTimeStartInstanceNew).iterator();
+            Iterator<Temporal> dateTimeStartIterator = vComponent.getRRule().stream(dateTimeStartInstanceNew).iterator();
             Temporal closestNotAfterTemporal = null;
             while (dateTimeStartIterator.hasNext())
             {
@@ -543,8 +543,8 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         {
             if (vComponent.getRRule().getUntil() == null)
             { // new selection - use date/time one month in the future as default
-                LocalDateTime defaultEndOnDateTime = (dateTimeStartInstanceNew.equals(vComponent.getDateTimeStart())) ?
-                        VComponent.localDateTimeFromTemporal(vComponent.getDateTimeStart()).plus(1, ChronoUnit.MONTHS)
+                Temporal defaultEndOnDateTime = (dateTimeStartInstanceNew.equals(vComponent.getDateTimeStart())) ?
+                        dateTimeStartInstanceNew.plus(1, ChronoUnit.MONTHS)
                       : dateTimeStartInstanceNew;
                 vComponent.getRRule().setUntil(defaultEndOnDateTime);
             }
@@ -586,7 +586,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
  */
     public void setupData(
             VComponent<T> vComponent
-          , LocalDateTime dateTimeStartInstanceNew)
+          , Temporal dateTimeStartInstanceNew)
     {
         this.vComponent = vComponent;
         this.dateTimeStartInstanceNew = dateTimeStartInstanceNew;
@@ -841,11 +841,11 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     {
 //        System.out.println("make exception date list");
         
-        final LocalDateTime dateTimeStart = VComponent.localDateTimeFromTemporal(vComponent.getDateTimeStart());
-        Stream<LocalDateTime> stream1 = vComponent
+        final Temporal dateTimeStart = vComponent.getDateTimeStart();
+        Stream<Temporal> stream1 = vComponent
                 .getRRule()
                 .stream(dateTimeStart);
-        Stream<LocalDateTime> stream2 = (vComponent.getExDate() == null) ? stream1
+        Stream<Temporal> stream2 = (vComponent.getExDate() == null) ? stream1
                 : vComponent.getExDate().stream(stream1, dateTimeStart); // remove exceptions
         Class<? extends Temporal> clazz = vComponent.getDateTimeStart().getClass();
         List<Temporal> exceptionDates = null;
@@ -853,7 +853,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         {
             exceptionDates = stream2
                     .limit(EXCEPTION_CHOICE_LIMIT)
-                    .map(d -> d.toLocalDate())
+//                    .map(d -> d.toLocalDate())
                     .collect(Collectors.toList());
         } else if (clazz.equals(LocalDateTime.class))
         {

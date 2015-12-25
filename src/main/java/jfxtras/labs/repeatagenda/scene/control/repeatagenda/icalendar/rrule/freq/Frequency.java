@@ -1,7 +1,7 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq;
 
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
 import java.util.List;
 import java.util.stream.Stream;
@@ -58,7 +58,7 @@ public interface Frequency {
      * Starts on startDateTime, which must be a valid event date/time, but not necessarily the
      * first date/time (DTSTART) in the sequence. A later startDateTime can be used to more efficiently
      * get to later dates in the stream. */
-    Stream<LocalDateTime> stream(LocalDateTime startDateTime);
+    Stream<Temporal> stream(Temporal startDateTime);
 
 
     /** Which of the enum type FrenquencyType the implementing class represents */

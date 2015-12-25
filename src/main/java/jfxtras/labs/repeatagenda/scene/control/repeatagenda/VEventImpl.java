@@ -211,14 +211,14 @@ public class VEventImpl extends VEvent<Appointment>
     }
     
     @Override
-    public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
+    public Stream<Temporal> stream(Temporal startTemporal)
     {
-        Stream<LocalDateTime> initialStream = super.stream(startDateTime);
+        Stream<Temporal> initialStream = super.stream(startTemporal);
         // filter away too early (with Java 9 takeWhile these statements can be combined into one chained statement for greater elegance)
-        Stream<LocalDateTime> filteredStream = initialStream
-                .filter(a -> (getDateTimeRangeStart() == null) ? true : ! a.isBefore(getDateTimeRangeStart()));
+        Stream<Temporal> filteredStream = initialStream
+                .filter(a -> (getDateTimeRangeStart() == null) ? true : ! VComponent.isBefore(a, getDateTimeRangeStart()));
         // stop when too late
-        return takeWhile(filteredStream, a -> (getDateTimeRangeEnd() == null) ? true : ! a.isAfter(getDateTimeRangeEnd()));
+        return takeWhile(filteredStream, a -> (getDateTimeRangeEnd() == null) ? true : ! VComponent.isAfter(a, getDateTimeRangeEnd()));
     }
     
     /** Make iCalendar compliant string of VEvent calendar component */
@@ -305,11 +305,12 @@ public class VEventImpl extends VEvent<Appointment>
         if ((getDateTimeRangeStart() == null) || (getDateTimeRangeStart() == null)) throw new IllegalArgumentException("can't make instances without setting date/time range first");
         boolean wholeDay = this.getDateTimeStart() instanceof LocalDate;
         List<Appointment> madeAppointments = new ArrayList<>();
-        stream(VComponent.localDateTimeFromTemporal(getDateTimeStart())) // TODO - TRY STARTING AT getDateTimeRangeStart() FOR IMPROVED EFFICIENCY
+        stream(getDateTimeStart()) // TODO - TRY STARTING AT getDateTimeRangeStart() FOR IMPROVED EFFICIENCY
                 .forEach(d -> {
+                    LocalDateTime startLocalDateTime = VComponent.localDateTimeFromTemporal(d);
                     Appointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
-                    appt.setStartLocalDateTime(d);
-                    appt.setEndLocalDateTime(d.plusNanos(getDurationInNanos()));
+                    appt.setStartLocalDateTime(startLocalDateTime);
+                    appt.setEndLocalDateTime(startLocalDateTime.plusNanos(getDurationInNanos()));
                     appt.setDescription(getDescription());
                     appt.setSummary(getSummary());
                     appt.setAppointmentGroup(getAppointmentGroup());
@@ -351,11 +352,6 @@ public class VEventImpl extends VEvent<Appointment>
         // Check if start time and duration has changed because those values are not changed in the edit controller.
         final long durationInNanos = ChronoUnit.NANOS.between(dateTimeStartInstanceNew, dateTimeEndInstanceNew);
         final VEventImpl vEventOld = (VEventImpl) VComponentOld;
-//        System.out.println(dateTimeStartInstanceNew + " " + vEventOld2.getDateTimeStart());
-//        boolean dateTimeNewSame = dateTimeStartInstanceNew.toLocalTime().equals(VComponent.localDateTimeFromTemporal(vEventOld.getDateTimeStart()));
-//        boolean durationSame = (durationInNanos == vEventOld.getDurationInNanos());
-//        System.out.println("same:" + dateTimeNewSame + " " + durationSame + " " + this.equals(VComponentOld) + " " + this.getDurationInNanos() + " " + this.getDateTimeEnd());
-//        if (dateTimeNewSame && durationSame && this.equals(VComponentOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
         if (this.equals(VComponentOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
 
         final RRuleType rruleType = getRRuleType(VComponentOld.getRRule());
@@ -560,8 +556,7 @@ public class VEventImpl extends VEvent<Appointment>
             count = 0;
         } else
         {
-            LocalDateTime startDateTime = VComponent.localDateTimeFromTemporal(getDateTimeStart());
-            count = getRRule().stream(startDateTime).count();
+            count = getRRule().stream(getDateTimeStart()).count();
         }
 
         System.out.println("count:" + count);

@@ -214,9 +214,7 @@ public class RRule
         StringBuilder builder = new StringBuilder();
         if (getUntil() != null)
         {
-            LocalDateTime u = VComponent.localDateTimeFromTemporal(getUntil());
-            LocalDateTime s = VComponent.localDateTimeFromTemporal(parent.getDateTimeStart());
-            if (u.isBefore(s)) builder.append(System.lineSeparator() + "Invalid RRule.  UNTIL can not come before DTSTART");
+            if (VComponent.isBefore(getUntil(), parent.getDateTimeStart())) builder.append(System.lineSeparator() + "Invalid RRule.  UNTIL can not come before DTSTART");
         }
         if ((getCount() == null) || (getCount() < 0)) builder.append(System.lineSeparator() + "Invalid RRule.  COUNT must not be less than 0");
         if (getFrequency() == null)
@@ -358,9 +356,9 @@ public class RRule
      * is met.
      * Starts on startDateTime, which must be a valid event date/time, not necessarily the
      * first date/time (DTSTART) in the sequence. */
-    public Stream<LocalDateTime> stream(LocalDateTime startDateTime)
+    public Stream<Temporal> stream(Temporal startDateTime)
     {
-        Stream<LocalDateTime> filteredStream = (getInstances().size() > 0) ?
+        Stream<Temporal> filteredStream = (getInstances().size() > 0) ?
                 getFrequency().stream(startDateTime).filter(d -> ! getInstances().contains(d))
                : getFrequency().stream(startDateTime);
         if (getCount() > 0)
@@ -371,7 +369,8 @@ public class RRule
 //            return frequency
 //                    .stream(startDateTime)
 //                    .takeWhile(a -> a.isBefore(getUntil())); // available in Java 9
-            return takeWhile(filteredStream, a -> a.isBefore(VComponent.localDateTimeFromTemporal(getUntil())));
+//            return takeWhile(filteredStream, a -> VComponent.isBefore(a, getUntil())));
+            return takeWhile(filteredStream, a -> VComponent.isBefore(a, getUntil()));
         }
         return filteredStream;
     };

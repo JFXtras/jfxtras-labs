@@ -4,8 +4,8 @@ import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.Year;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 
 /** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */
 public class ByDay extends ByRuleAbstract
@@ -212,16 +213,16 @@ public class ByDay extends ByRuleAbstract
     }
     
     @Override
-    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, ObjectProperty<ChronoUnit> chronoUnit, LocalDateTime startDateTime)
+    public Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal)
     {
         ChronoUnit originalChronoUnit = chronoUnit.get();
         chronoUnit.set(DAYS);
         switch (originalChronoUnit)
         {
         case DAYS:
-            return inStream.filter(date ->
+            return inStream.filter(t ->
             { // filter out all but qualifying days
-                DayOfWeek myDayOfWeek = date.toLocalDate().getDayOfWeek();
+                DayOfWeek myDayOfWeek = DayOfWeek.from(t);
                 for (ByDayPair byDayPair : getByDayPairs())
                 {
                     if (byDayPair.dayOfWeek == myDayOfWeek) return true;
@@ -229,68 +230,68 @@ public class ByDay extends ByRuleAbstract
                 return false;
             });
         case WEEKS:
-            return inStream.flatMap(date -> 
+            return inStream.flatMap(t -> 
             { // Expand to be byDayPairs days in current week
-                List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
-                int dayOfWeekValue = date.toLocalDate().getDayOfWeek().getValue();
+                List<Temporal> dates = new ArrayList<>();
+                int dayOfWeekValue = DayOfWeek.from(t).getValue();
                 for (ByDayPair byDayPair : getByDayPairs())
                 {
                     int dayShift = byDayPair.dayOfWeek.getValue() - dayOfWeekValue;
-                    LocalDateTime newDate = date.plusDays(dayShift);
-                    if (! newDate.isBefore(startDateTime)) dates.add(newDate);
+                    Temporal newTemporal = t.plus(dayShift, ChronoUnit.DAYS);
+                    if (! VComponent.isBefore(newTemporal, startTemporal)) dates.add(newTemporal);
                 }
                 return dates.stream();
             });
         case MONTHS:
-            return inStream.flatMap(date -> 
+            return inStream.flatMap(t -> 
             {
-                List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
+                List<Temporal> dates = new ArrayList<>();
                 boolean sortNeeded = false;
                 for (ByDayPair byDayPair : getByDayPairs())
                 {
                     if (byDayPair.ordinal == 0)
                     { // add every matching day of week in month
                         sortNeeded = true;
-                        Month myMonth = date.getMonth();
+                        Month myMonth = Month.from(t);
                         for (int weekNum=1; weekNum<=5; weekNum++)
                         {
-                            LocalDateTime newDate = date.with(TemporalAdjusters.dayOfWeekInMonth(weekNum, byDayPair.dayOfWeek));
-                            if (newDate.getMonth() == myMonth && ! newDate.isBefore(startDateTime)) dates.add(newDate);
+                            Temporal newTemporal = t.with(TemporalAdjusters.dayOfWeekInMonth(weekNum, byDayPair.dayOfWeek));
+                            if (Month.from(newTemporal) == myMonth && ! VComponent.isBefore(newTemporal, startTemporal)) dates.add(newTemporal);
                         }
                     } else
                     { // if never any ordinal numbers then sort is not required
-                        Month myMonth = date.getMonth();
-                        LocalDateTime newDate = date.with(TemporalAdjusters.dayOfWeekInMonth(byDayPair.ordinal, byDayPair.dayOfWeek));
-                        if (newDate.getMonth() == myMonth) dates.add(newDate);
+                        Month myMonth = Month.from(t);
+                        Temporal newTemporal = t.with(TemporalAdjusters.dayOfWeekInMonth(byDayPair.ordinal, byDayPair.dayOfWeek));
+                        if (Month.from(newTemporal) == myMonth) dates.add(newTemporal);
                     }
                 }
-                if (sortNeeded) Collections.sort(dates);
+                if (sortNeeded) Collections.sort(dates, VComponent.DATE_OR_DATETIME_TEMPORAL_COMPARATOR);
                 return dates.stream();
             });
         case YEARS:
             return inStream.flatMap(date -> 
             {
-                List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
+                List<Temporal> dates = new ArrayList<>();
                 boolean sortNeeded = false;
                 for (ByDayPair byDayPair : getByDayPairs())
                 {
                     if (byDayPair.ordinal == 0)
                     { // add every matching day of week in year
                         sortNeeded = true;
-                        LocalDateTime newDate = (startDateTime.getDayOfWeek().equals(byDayPair.dayOfWeek)) ? startDateTime
-                                : startDateTime.with(TemporalAdjusters.next(byDayPair.dayOfWeek));
-                        while (newDate.getYear() == startDateTime.getYear())
+                        Temporal newDate = (DayOfWeek.from(startTemporal).equals(byDayPair.dayOfWeek)) ? startTemporal
+                                : startTemporal.with(TemporalAdjusters.next(byDayPair.dayOfWeek));
+                        while (Year.from(newDate).equals(Year.from(startTemporal)))
                         {
                             dates.add(newDate);
                             newDate = newDate.plus(1, ChronoUnit.WEEKS);
                         }
                     } else
                     { // if never any ordinal numbers then sort is not required
-                        LocalDateTime newDate = date.with(dayOfWeekInYear(byDayPair.ordinal, byDayPair.dayOfWeek));
-                        if (! newDate.isBefore(startDateTime)) dates.add(newDate);
+                        Temporal newDate = date.with(dayOfWeekInYear(byDayPair.ordinal, byDayPair.dayOfWeek));
+                        if (! VComponent.isBefore(newDate, startTemporal)) dates.add(newDate);
                     }
                 }
-                if (sortNeeded) Collections.sort(dates);
+                if (sortNeeded) Collections.sort(dates, VComponent.DATE_OR_DATETIME_TEMPORAL_COMPARATOR);
                 return dates.stream();
             }); 
         case HOURS:

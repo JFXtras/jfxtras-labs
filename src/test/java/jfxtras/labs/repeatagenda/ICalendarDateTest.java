@@ -2,7 +2,9 @@ package jfxtras.labs.repeatagenda;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +13,6 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 
 public class ICalendarDateTest extends ICalendarTestAbstract
 {
@@ -21,8 +22,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void yearlyStreamTest1()
     {
         VEventImpl e = getYearly1();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -40,8 +41,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void yearlyStreamTest2()
     {
         VEventImpl e = getYearly2();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -59,8 +60,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void yearlyStreamTest3()
     {
         VEventImpl e = getYearly3();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(20)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -93,8 +94,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void yearlyStreamTest4()
     {
         VEventImpl e = getYearly4();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -112,8 +113,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void yearlyStreamTest5()
     {
         VEventImpl e = getYearly5();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -132,8 +133,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void yearlyStreamTest6()
     {
         VEventImpl e = getYearly6();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(6)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -152,8 +153,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void yearlyStreamTest7()
     {
         VEventImpl e = getYearly7();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(3)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -171,8 +172,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
 //        Locale oldLocale = Locale.getDefault();
 //        Locale.setDefault(Locale.FRANCE); // has Monday as first day of week system.  US is Sunday which causes an error.
         VEventImpl e = getYearly8();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -191,8 +192,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void yearlyStreamTest9()
     {
         VEventImpl e = getYearly9();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -210,8 +211,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void monthlyStreamTest()
     {
         VEventImpl e = getMonthly1();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -229,8 +230,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void monthlyStreamTest2()
     {
         VEventImpl e = getMonthly2();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -248,8 +249,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void monthlyStreamTest3()
     {
         VEventImpl e = getMonthly3();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(10)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -272,8 +273,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void monthlyStreamTest4()
     {
         VEventImpl e = getMonthly4();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -291,8 +292,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void monthlyStreamTest5()
     {
         VEventImpl e = getMonthly5();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -310,8 +311,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void monthlyStreamTest6()
     {
         VEventImpl e = getMonthly6();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(13)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -337,8 +338,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void weeklyStreamTest1()
     {
         VEventImpl e = getWeekly1();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -356,8 +357,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void weeklyStreamTest2()
     {
         VEventImpl e = getWeekly2();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(10)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -380,8 +381,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void weeklyStreamTest3()
     {
         VEventImpl e = getWeekly3();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -399,8 +400,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void weeklyStreamTest4()
     {
         VEventImpl e = getWeekly4();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 11, 10, 0)
@@ -423,8 +424,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void dailyStreamTest1()
     {
         VEventImpl e = getDaily1();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -442,8 +443,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void dailyStreamTest2()
     {
         VEventImpl e = getDaily2();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0)
@@ -461,8 +462,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void dailyStreamTest3()
     {
         VEventImpl e = getDaily3();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(10)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -485,8 +486,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void dailyStreamTest4()
     {
         VEventImpl e = getDaily4();
-        List<LocalDateTime> madeDates = e.getRRule()
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e.getRRule()
+                .stream(e.getDateTimeStart())
                 .limit(6)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -505,8 +506,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void dailyStreamTest5()
     {
         VEventImpl e = getDaily5();
-        List<LocalDateTime> madeDates = e
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e
+                .stream(e.getDateTimeStart())
                 .limit(6)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -525,8 +526,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void dailyStreamTest6()
     {
         VEventImpl e = getDaily6();
-        List<LocalDateTime> madeDates = e
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e
+                .stream(e.getDateTimeStart())
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0)
@@ -549,8 +550,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void individualTest1()
     {
         VEventImpl e = getIndividual1();
-        List<LocalDateTime> madeDates = e
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e
+                .stream(e.getDateTimeStart())
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0)
@@ -563,8 +564,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void exceptionTest1()
     {
         VEventImpl e = getDailyWithException1();
-        List<LocalDateTime> madeDates = e
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e
+                .stream(e.getDateTimeStart())
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0)
@@ -580,8 +581,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void recurrenceTest1()
     {
         VEventImpl e = getRecurrence1();
-        List<LocalDateTime> madeDates = e
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e
+                .stream(e.getDateTimeStart())
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0)
@@ -598,8 +599,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         VEventImpl vevent = getWeekly2();
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 8, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 15, 0, 0));
-        List<LocalDateTime> madeDates = vevent
-                .stream(VComponent.localDateTimeFromTemporal(vevent.getDateTimeStart()))
+        List<Temporal> madeDates = vevent
+                .stream(vevent.getDateTimeStart())
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 11, 10, 0)
@@ -609,8 +610,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
 
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 12, 6, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 12, 13, 0, 0));
-        List<LocalDateTime> madeDates2 = vevent
-                .stream(VComponent.localDateTimeFromTemporal(vevent.getDateTimeStart()))
+        List<Temporal> madeDates2 = vevent
+                .stream(vevent.getDateTimeStart())
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates2 = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 12, 7, 10, 0)
@@ -627,16 +628,17 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void makeDatesWholeDayDaily()
     {
         VEventImpl e = getWholeDayDaily2();
-        List<LocalDateTime> madeDates = e
-                .stream(VComponent.localDateTimeFromTemporal(e.getDateTimeStart()))
+        List<Temporal> madeDates = e
+                
+                .stream(e.getDateTimeStart())
                 .collect(Collectors.toList());
-        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
-                LocalDateTime.of(2015, 11, 9, 0, 0)
-              , LocalDateTime.of(2015, 11, 12, 0, 0)
-              , LocalDateTime.of(2015, 11, 15, 0, 0)
-              , LocalDateTime.of(2015, 11, 18, 0, 0)
-              , LocalDateTime.of(2015, 11, 21, 0, 0)
-              , LocalDateTime.of(2015, 11, 24, 0, 0)
+        List<LocalDate> expectedDates = new ArrayList<>(Arrays.asList(
+                LocalDate.of(2015, 11, 9)
+              , LocalDate.of(2015, 11, 12)
+              , LocalDate.of(2015, 11, 15)
+              , LocalDate.of(2015, 11, 18)
+              , LocalDate.of(2015, 11, 21)
+              , LocalDate.of(2015, 11, 24)
                 ));
         assertEquals(expectedDates, madeDates);
     }

@@ -178,7 +178,7 @@ public interface VComponent<T>
      * @return - stream of start date/times for the recurrence set
      */
     // TODO - CHANGE TO STREAM<TEMPORAL> SO BOTH LOCALDATE AND LOCALDATETIME WORK AUTOMATICALLY?
-    Stream<LocalDateTime> stream(LocalDateTime startDateTime);
+    Stream<Temporal> stream(Temporal startDateTime);
 
     /**
      * Recurrence instances are made at and after the this date/time

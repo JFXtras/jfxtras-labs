@@ -1,9 +1,9 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx;
 import static java.time.temporal.ChronoUnit.MONTHS;
 
-import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -82,7 +82,7 @@ public class ByMonth extends ByRuleAbstract
     }
 
     @Override
-    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, ObjectProperty<ChronoUnit> chronoUnit, LocalDateTime startDateTime)
+    public Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startDateTime)
     {
         ChronoUnit originalChronoUnit = chronoUnit.get();
         chronoUnit.set(MONTHS);
@@ -91,9 +91,9 @@ public class ByMonth extends ByRuleAbstract
         case DAYS:
         case WEEKS:
         case MONTHS:
-            return inStream.filter(date ->
+            return inStream.filter(t ->
             { // filter out all but qualifying days
-                Month myMonth = date.toLocalDate().getMonth();
+                Month myMonth = Month.from(t);
                 for (Month month : getMonths())
                 {
                     if (month == myMonth) return true;
@@ -101,15 +101,15 @@ public class ByMonth extends ByRuleAbstract
                 return false;
             });
         case YEARS:
-            return inStream.flatMap(date -> 
+            return inStream.flatMap(t -> 
             { // Expand to include matching days in all months
-                List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
-                int monthNum = date.toLocalDate().getMonth().getValue();
+                List<Temporal> dates = new ArrayList<>();
+                int monthNum = Month.from(t).getValue();
                 for (Month month : getMonths())
                 {
                     int myMonthNum = month.getValue();
                     int monthShift = myMonthNum - monthNum;
-                    dates.add(date.plus(monthShift, MONTHS));
+                    dates.add(t.plus(monthShift, MONTHS));
                 }
                 return dates.stream();
             });

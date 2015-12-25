@@ -3,8 +3,11 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byx
 import static java.time.temporal.ChronoUnit.DAYS;
 
 import java.security.InvalidParameterException;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.MonthDay;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -97,11 +100,11 @@ public class ByMonthDay extends ByRuleAbstract
      * Return stream of valid dates made by rule (infinite if COUNT or UNTIL not present)
      */
     @Override
-    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream, ObjectProperty<ChronoUnit> chronoUnit, LocalDateTime startDateTime)
+    public Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal)
     {
         if (daysOfMonth == null)
         { // if no days specified when constructing, get day of month for startDateTime
-            daysOfMonth = new int[] { startDateTime.toLocalDate().getDayOfMonth() };
+            daysOfMonth = new int[] { Month.from(startTemporal).getValue() };
         }
         ChronoUnit originalChronoUnit = chronoUnit.get();
         chronoUnit.set(DAYS);
@@ -110,8 +113,8 @@ public class ByMonthDay extends ByRuleAbstract
         case DAYS:
             return inStream.filter(d ->
                     { // filter out all but qualifying days
-                        int myDay = d.toLocalDate().getDayOfMonth();
-                        int myDaysInMonth = d.toLocalDate().lengthOfMonth();
+                        int myDay = MonthDay.from(d).getDayOfMonth();
+                        int myDaysInMonth = LocalDate.from(d).lengthOfMonth();
                         for (int day : getDaysOfMonth())
                         {
                             if (myDay == day) return true;
@@ -123,17 +126,17 @@ public class ByMonthDay extends ByRuleAbstract
         case YEARS:
             return inStream.flatMap(d -> 
             { // Expand to be daysOfMonth days in current month
-                List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
-                LocalDateTime firstDateOfMonth = d.with(TemporalAdjusters.firstDayOfMonth());
-                LocalDateTime lastDateOfMonth = d.with(TemporalAdjusters.lastDayOfMonth());
+                List<Temporal> dates = new ArrayList<>();
+                Temporal firstDateOfMonth = d.with(TemporalAdjusters.firstDayOfMonth());
+                Temporal lastDateOfMonth = d.with(TemporalAdjusters.lastDayOfMonth());
                 for (int day : getDaysOfMonth())
                 {
                     if (day > 0)
                     {
-                        dates.add(firstDateOfMonth.plusDays(day-1));
+                        dates.add(firstDateOfMonth.plus(day-1, ChronoUnit.DAYS));
                     } else
                     { // negative daysOfMonth (-3 = 3rd to last day of month)
-                        dates.add(lastDateOfMonth.plusDays(day+1));                        
+                        dates.add(lastDateOfMonth.plus(day+1, ChronoUnit.DAYS));                        
                     }
                 }
                 return dates.stream();
