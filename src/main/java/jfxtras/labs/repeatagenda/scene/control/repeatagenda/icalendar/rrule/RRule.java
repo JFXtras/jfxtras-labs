@@ -356,11 +356,11 @@ public class RRule
      * is met.
      * Starts on startDateTime, which must be a valid event date/time, not necessarily the
      * first date/time (DTSTART) in the sequence. */
-    public Stream<Temporal> stream(Temporal startDateTime)
+    public Stream<Temporal> stream(Temporal startTemporal)
     {
         Stream<Temporal> filteredStream = (getInstances().size() > 0) ?
-                getFrequency().stream(startDateTime).filter(d -> ! getInstances().contains(d))
-               : getFrequency().stream(startDateTime);
+                getFrequency().stream(startTemporal).filter(d -> ! getInstances().contains(d))
+               : getFrequency().stream(startTemporal);
         if (getCount() > 0)
         {
             return filteredStream.limit(getCount());
@@ -370,7 +370,7 @@ public class RRule
 //                    .stream(startDateTime)
 //                    .takeWhile(a -> a.isBefore(getUntil())); // available in Java 9
 //            return takeWhile(filteredStream, a -> VComponent.isBefore(a, getUntil())));
-            return takeWhile(filteredStream, a -> VComponent.isBefore(a, getUntil()));
+            return takeWhile(filteredStream, a -> ! VComponent.isAfter(a, getUntil()));
         }
         return filteredStream;
     };

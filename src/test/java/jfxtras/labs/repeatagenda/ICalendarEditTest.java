@@ -453,4 +453,10 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         VEventImpl expectedVEvent = veventOld;
         assertEquals(expectedVEvent, vevent); // check to see if repeat rule changed correctly
     }
+    
+    @Test
+    public void editWholeDay1()
+    {
+        // TODO
+    }
 }

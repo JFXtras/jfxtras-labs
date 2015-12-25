@@ -104,9 +104,9 @@ private ToggleGroup monthlyGroup;
 @FXML private DatePicker startDatePicker;
 @FXML private RadioButton endNeverRadioButton;
 @FXML private RadioButton endAfterRadioButton;
-@FXML private RadioButton endOnRadioButton;
+@FXML private RadioButton untilRadioButton;
 @FXML private Spinner<Integer> endAfterEventsSpinner;
-@FXML private DatePicker endOnDatePicker;
+@FXML private DatePicker untilDatePicker;
 private ToggleGroup endGroup;
 @FXML private Label repeatSummaryLabel;
 
@@ -299,6 +299,83 @@ private final ChangeListener<? super Integer> intervalSpinnerListener = (observa
     makeExceptionDates();
 };
 
+//// END ON LISTENERS
+//ChangeListener<? super LocalDate> listener = (observable, oldSelection, newSelection) ->
+//{
+//    System.out.println("endOnPicker:");
+//    if (newSelection.isBefore(LocalDate.from(vComponent.getDateTimeStart())))
+//    {
+//        tooEarlyDateAlert();
+//        endOnDatePicker.setValue(oldSelection);
+//    } else
+//    {
+//        // make correct Temporal type
+//        final Temporal timeAdjustedSelection;
+//        if (vComponent.getDateTimeStart() instanceof LocalDateTime)
+//        {
+//            LocalTime time = LocalTime.from(vComponent.getDateTimeStart());
+//            timeAdjustedSelection = newSelection.atTime(time);
+//        } else
+//        {
+//            timeAdjustedSelection = newSelection;
+//        }
+//        vComponent.getRRule().setUntil(timeAdjustedSelection);
+//        Iterator<Temporal> iterator = vComponent.getRRule().stream(dateTimeStartInstanceNew).iterator();
+//        Temporal lastTemporal = null;
+//        while (iterator.hasNext()) { lastTemporal = iterator.next(); }
+//        System.out.println("end on date: " + lastTemporal + " " + newSelection);
+//        endOnDatePicker.setValue(LocalDate.from(lastTemporal));
+////        endOnDatePicker.valueProperty().set(LocalDate.from(closestNotAfterTemporal));
+//        vComponent.getRRule().setUntil(lastTemporal);
+//        
+////        .filter(d -> VComponent.isBefore(d, newSelection));
+////        vComponent.getRRule().setUntil(newSelection.atTime(LocalTime.of(23, 59, 59))); // end at end of day
+//        // TODO - MAKE INCLUSIVE - SYNCHRINIZED WITH START OF LAST EVENT
+//        refreshSummary();
+////        System.out.println("make exception5 " + observable);
+//        makeExceptionDates();
+//    }
+//};
+
+//END ON LISTENERS
+private final ChangeListener<? super LocalDate> untilListener = (observable, oldSelection, newSelection) ->
+{
+    if (newSelection.isBefore(LocalDate.from(vComponent.getDateTimeStart())))
+    {
+        tooEarlyDateAlert();
+        untilDatePicker.setValue(oldSelection);
+    } else
+    {
+        Temporal lastTemporal = findUntil(newSelection);
+        if (! LocalDate.from(lastTemporal).equals(newSelection)) notOccurrenceDateAlert(lastTemporal);
+        vComponent.getRRule().setUntil(lastTemporal);
+        refreshSummary();
+//     System.out.println("make exception5 " + observable);
+        makeExceptionDates();
+    }
+};
+
+private Temporal findUntil(Temporal d)
+{
+    final Temporal timeAdjustedSelection;
+    if (vComponent.getDateTimeStart() instanceof LocalDateTime)
+    {
+        LocalTime time = LocalTime.from(vComponent.getDateTimeStart());
+        timeAdjustedSelection = LocalDate.from(d).atTime(time);
+    } else
+    {
+        timeAdjustedSelection = d;
+    }
+    vComponent.getRRule().setUntil(timeAdjustedSelection);
+    Iterator<Temporal> iterator = vComponent.getRRule().stream(dateTimeStartInstanceNew).iterator();
+    Temporal lastTemporal = null;
+    while (iterator.hasNext()) { lastTemporal = iterator.next(); }
+    untilDatePicker.valueProperty().removeListener(untilListener);
+    untilDatePicker.setValue(LocalDate.from(lastTemporal));
+    untilDatePicker.valueProperty().addListener(untilListener);
+    return lastTemporal;
+}
+
 // listen for changes to start date/time (type may change requiring new exception date choices)
 private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeListener = (obs, oldValue, newValue) ->
 {
@@ -480,64 +557,8 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         }
     });
     
-    // END ON LISTENERS
-    endOnDatePicker.valueProperty().addListener((observable, oldSelection, newSelection) ->
-    {
-        System.out.println("endOnPicker:");
-        if (newSelection.isBefore(LocalDate.from(vComponent.getDateTimeStart())))
-        {
-            tooEarlyDateAlert();
-            endOnDatePicker.setValue(oldSelection);
-        } else
-        {
-            // make correct Temporal type
-            final Temporal timeAdjustedSelection;
-            if (vComponent.getDateTimeStart() instanceof LocalDateTime)
-            {
-                LocalTime time = LocalTime.from(vComponent.getDateTimeStart());
-                timeAdjustedSelection = newSelection.atTime(time);
-            } else
-            {
-                timeAdjustedSelection = newSelection;
-            }
-//            vComponent.getRRule().setUntil(timeAdjustedSelection);
-
-            // ensure selected date is an occurrence date
-//            System.out.println("dateTimeStartInstanceNew:" + dateTimeStartInstanceNew);
-            System.out.println(vComponent.getRRule().stream(dateTimeStartInstanceNew).count());
-            Iterator<Temporal> dateTimeStartIterator = vComponent.getRRule().stream(dateTimeStartInstanceNew).iterator();
-            Temporal closestNotAfterTemporal = null;
-            while (dateTimeStartIterator.hasNext())
-            {
-                Temporal myTemporal = dateTimeStartIterator.next();
-                System.out.println("date:" + myTemporal + " " + dateTimeStartIterator.hasNext());
-                if (myTemporal.equals(timeAdjustedSelection))
-                {
-                    System.out.println("equals:" + myTemporal);
-                    closestNotAfterTemporal = timeAdjustedSelection;
-                    break;
-                }
-                if (VComponent.isAfter(myTemporal, timeAdjustedSelection))
-                {
-                    System.out.println("selected date not on occurrence - adjusted " + newSelection + " " + timeAdjustedSelection);
-                    break;
-                }
-                closestNotAfterTemporal = myTemporal;
-            }
-            System.out.println("end on date: " + closestNotAfterTemporal + " " + newSelection);
-            endOnDatePicker.setValue(LocalDate.from(closestNotAfterTemporal));
-            endOnDatePicker.valueProperty().set(LocalDate.from(closestNotAfterTemporal));
-            vComponent.getRRule().setUntil(closestNotAfterTemporal);
-            
-//            .filter(d -> VComponent.isBefore(d, newSelection));
-//            vComponent.getRRule().setUntil(newSelection.atTime(LocalTime.of(23, 59, 59))); // end at end of day
-            // TODO - MAKE INCLUSIVE - SYNCHRINIZED WITH START OF LAST EVENT
-            refreshSummary();
-//            System.out.println("make exception5 " + observable);
-            makeExceptionDates();
-        }
-    });
-    endOnRadioButton.selectedProperty().addListener((observable, oldSelection, newSelection) ->
+    untilDatePicker.valueProperty().addListener(untilListener);
+    untilRadioButton.selectedProperty().addListener((observable, oldSelection, newSelection) ->
     {
         if (newSelection)
         {
@@ -546,14 +567,15 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
                 Temporal defaultEndOnDateTime = (dateTimeStartInstanceNew.equals(vComponent.getDateTimeStart())) ?
                         dateTimeStartInstanceNew.plus(1, ChronoUnit.MONTHS)
                       : dateTimeStartInstanceNew;
-                vComponent.getRRule().setUntil(defaultEndOnDateTime);
+                Temporal lastTemporal = findUntil(defaultEndOnDateTime); // adjust to actual occurrence
+                vComponent.getRRule().setUntil(lastTemporal);
             }
-            endOnDatePicker.setValue(LocalDate.from(vComponent.getRRule().getUntil()));
-            endOnDatePicker.setDisable(false);
-            endOnDatePicker.show();
+            untilDatePicker.setValue(LocalDate.from(vComponent.getRRule().getUntil()));
+            untilDatePicker.setDisable(false);
+            untilDatePicker.show();
         } else {
             vComponent.getRRule().setUntil(null);
-            endOnDatePicker.setDisable(true);
+            untilDatePicker.setDisable(true);
         }
     });
     
@@ -575,7 +597,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     endGroup = new ToggleGroup();
     endNeverRadioButton.setToggleGroup(endGroup);
     endAfterRadioButton.setToggleGroup(endGroup);
-    endOnRadioButton.setToggleGroup(endGroup);
+    untilRadioButton.setToggleGroup(endGroup);
 }
 
 /**
@@ -748,7 +770,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             endAfterRadioButton.selectedProperty().set(true);
         } else if (vComponent.getRRule().getUntil() != null)
         {
-            endOnRadioButton.selectedProperty().set(true);
+            untilRadioButton.selectedProperty().set(true);
         } else
         {
             endNeverRadioButton.selectedProperty().set(true);
@@ -908,6 +930,18 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         alert.setHeaderText("Event can't end before it begins.");
         TemporalAccessor d = vComponent.getDateTimeStart();
         alert.setContentText("Must be after " + Settings.DATE_FORMAT_AGENDA_DATEONLY.format(d));
+        ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonTypeOk);
+        alert.showAndWait();
+    }
+    
+    // Displays an alert notifying UNTIL date is not an occurrence and changed to 
+    private void notOccurrenceDateAlert(Temporal temporal)
+    {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Invalid Date Selection");
+        alert.setHeaderText("Not an occurrence date");
+        alert.setContentText("Date has been changed to  " + Settings.DATE_FORMAT_AGENDA_DATEONLY.format(temporal));
         ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(buttonTypeOk);
         alert.showAndWait();

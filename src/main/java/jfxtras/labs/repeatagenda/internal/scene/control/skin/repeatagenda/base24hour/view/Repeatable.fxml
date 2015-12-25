@@ -101,8 +101,8 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT" spacing="5.0">
                                  <children>
-                                    <RadioButton fx:id="endOnRadioButton" mnemonicParsing="false" text="%on" />
-                                    <DatePicker fx:id="endOnDatePicker" disable="true" />
+                                    <RadioButton fx:id="untilRadioButton" mnemonicParsing="false" text="%on" />
+                                    <DatePicker fx:id="untilDatePicker" disable="true" />
                                  </children>
                               </HBox>
                            </children>

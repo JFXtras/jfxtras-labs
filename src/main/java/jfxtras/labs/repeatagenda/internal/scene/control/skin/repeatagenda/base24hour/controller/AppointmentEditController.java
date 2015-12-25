@@ -237,7 +237,6 @@ public class AppointmentEditController
         if (popupCloseType.get() == WindowCloseType.CLOSE_WITHOUT_CHANGE)
         {
         }
-
     }
     
     

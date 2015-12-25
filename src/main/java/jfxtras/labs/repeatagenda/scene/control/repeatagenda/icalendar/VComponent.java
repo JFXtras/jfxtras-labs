@@ -165,7 +165,7 @@ public interface VComponent<T>
      */
     boolean isValid();
     
-    /** Stream of date/times that indicate the start of the event(s).
+    /** Stream of dates or date/times that indicate the start of the event(s).
      * For a VEvent without RRULE the stream will contain only one date/time element.
      * A VEvent with a RRULE the stream contains more than one date/time element.  It will be infinite 
      * if COUNT or UNTIL is not present.  The stream has an end when COUNT or UNTIL condition is met.
@@ -174,11 +174,10 @@ public interface VComponent<T>
      * 
      * Start date/times are only produced between the ranges set by setDateTimeRanges
      * 
-     * @param startDateTime - start date/times are produced after this date
-     * @return - stream of start date/times for the recurrence set
+     * @param startTemporal - start dates or date/times produced after this date
+     * @return - stream of start dates or date/times for the recurrence set
      */
-    // TODO - CHANGE TO STREAM<TEMPORAL> SO BOTH LOCALDATE AND LOCALDATETIME WORK AUTOMATICALLY?
-    Stream<Temporal> stream(Temporal startDateTime);
+    Stream<Temporal> stream(Temporal startTemporal);
 
     /**
      * Recurrence instances are made at and after the this date/time
