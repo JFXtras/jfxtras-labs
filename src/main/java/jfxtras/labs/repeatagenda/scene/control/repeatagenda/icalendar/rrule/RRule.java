@@ -95,8 +95,9 @@ public class RRule
 
     /**
      * UNTIL: (RFC 5545 iCalendar 3.3.10, page 41) date/time repeat rule ends
-     * Uses lazy initialization of property because often UNTIL stays as the default value of 0
+     * Must be same Temporal type as dateTimeStart (DTSTART)
      */
+    // Uses lazy initialization of property because often UNTIL stays as the default value of null
     public SimpleObjectProperty<Temporal> untilProperty()
     {
         if (until == null) until = new SimpleObjectProperty<Temporal>(this, UNTIL_NAME, _until);

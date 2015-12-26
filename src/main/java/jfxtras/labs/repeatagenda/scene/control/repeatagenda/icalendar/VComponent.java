@@ -1,9 +1,11 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
 import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.util.Collection;
@@ -23,6 +25,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
  * */
 public interface VComponent<T>
 {
+    static final long NANOS_IN_DAY = Duration.ofDays(1).toNanos();
     final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd" + "'T'" + "HHmmss");
     final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
     final static DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HHmmss");
@@ -181,16 +184,18 @@ public interface VComponent<T>
 
     /**
      * Recurrence instances are made at and after the this date/time
+     * Must be same Temporal type as dateTimeStart (DTSTART)
      * 
      * @param dateTimeRangeStart - Start date/time when appointments will be made
      */
-    void setDateTimeRangeStart(LocalDateTime dateTimeRangeStart);
+    void setDateTimeRangeStart(Temporal dateTimeRangeStart);
     /**
      * Recurrence instances are only made before this date/time
+     * Must be same Temporal type as dateTimeStart (DTSTART)
      * 
      * @param dateTimeRangeEnd - End date/time when appointments will be made
      */
-    void setDateTimeRangeEnd(LocalDateTime dateTimeRangeEnd);
+    void setDateTimeRangeEnd(Temporal dateTimeRangeEnd);
 
     /**
      * Returns the collection of recurrence instances of calendar component of type T that exists
@@ -311,12 +316,12 @@ public interface VComponent<T>
         if (temporal == null) return null;
         if (temporal instanceof LocalDate)
         {
-            return "VALUE=DATE:" + DATE_FORMATTER.format(temporal);
+            return DATE_FORMATTER.format(temporal);
         } else if (temporal instanceof LocalDateTime)
         {
             return DATE_TIME_FORMATTER.format(temporal);
-        } else throw new DateTimeException("Unable to obtain LocalDateTime from TemporalAccessor: " +
-                temporal + " of type " + temporal.getClass().getSimpleName());
+        } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported (" +
+                temporal + " of type " + temporal.getClass().getSimpleName() + ")");
     }
 
     /**
@@ -353,7 +358,7 @@ public interface VComponent<T>
             LocalDateTime d1 = localDateTimeFromTemporal(t1);
             LocalDateTime d2 = localDateTimeFromTemporal(t2);
             return d1.isBefore(d2);
-        } throw new DateTimeException("Temporal classes must be equal(" + t1.getClass().getSimpleName() + "," + t2.getClass().getSimpleName());
+        } throw new DateTimeException("For comparision, Temporal classes must be equal (" + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() + ")");
     }
 
     /** Determines if Temporal is after t2
@@ -370,7 +375,28 @@ public interface VComponent<T>
             LocalDateTime d1 = localDateTimeFromTemporal(t1);
             LocalDateTime d2 = localDateTimeFromTemporal(t2);
             return d1.isAfter(d2);
-        } throw new DateTimeException("Temporal classes must be equal (" + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() + ")");
+        } throw new DateTimeException("For comparision, Temporal classes must be equal (" + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() + ")");
+    }
+    
+    /**
+     * Add value in chronoUnit to temporal
+     * Automatically converts nanos to days if temporal is LocalDate.
+     * 
+     * @param dateTimeStart
+     * @param startShiftInNanos
+     * @param days
+     */
+    static Temporal plusNanos(Temporal temporal, long nanos)
+    {
+        if (temporal instanceof LocalDate)
+        {
+            return temporal.plus(nanos/NANOS_IN_DAY, ChronoUnit.DAYS);
+//            return temporal.plus(nanos/NANOS_IN_DAY, ChronoUnit.DAYS);
+        } else if (temporal instanceof LocalDateTime)
+        {
+            return temporal.plus(nanos, ChronoUnit.NANOS);
+        } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported (" +
+                temporal + " of type " + temporal.getClass().getSimpleName() + ")");        
     }
 
 }

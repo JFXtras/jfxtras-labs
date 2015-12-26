@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,6 +23,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Daily;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 public class ICalendarEditTest extends ICalendarTestAbstract
@@ -412,8 +414,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         expectedVEvent.setSummary("Daily2 Summary");
         expectedVEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
         expectedVEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
-        assertEquals(expectedVEvent, vevent); // check to see if repeat rule changed correctly
-        
+        assertEquals(expectedVEvent, vevent); // check to see if repeat rule changed correctly       
     }
     
     /**
@@ -426,7 +427,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
         vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         List<VComponent<Appointment>> vevents = new ArrayList<>(Arrays.asList(vevent));
-        List<Appointment> appointments = new ArrayList<Appointment>();
+        List<Appointment> appointments = new ArrayList<>();
         Collection<Appointment> newAppointments = vevent.makeInstances();
         appointments.addAll(newAppointments);
         VEventImpl veventOld = new VEventImpl(vevent);
@@ -457,6 +458,60 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     @Test
     public void editWholeDay1()
     {
-        // TODO
+        VEventImpl vevent = getWholeDayDaily3();
+        vevent.setDateTimeRangeStart(LocalDate.of(2015, 11, 15));
+        vevent.setDateTimeRangeEnd(LocalDate.of(2015, 11, 22));
+        List<VComponent<Appointment>> vevents = new ArrayList<>(Arrays.asList(vevent));
+        List<Appointment> appointments = new ArrayList<>();
+        Collection<Appointment> newAppointments = vevent.makeInstances();
+        appointments.addAll(newAppointments);
+        assertEquals(3, appointments.size()); // check if there are 3 appointments
+        VEventImpl veventOld = new VEventImpl(vevent);
+
+        // select appointment (get recurrence date)
+        Iterator<Appointment> appointmentIterator = appointments.iterator();
+        appointmentIterator.next(); // skip first
+        appointmentIterator.next(); // skip second
+        Appointment selectedAppointment = (Appointment) appointmentIterator.next();
+        LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
+        
+        // apply changes
+        LocalDate newDate = dateTimeOriginal.toLocalDate().plus(1, ChronoUnit.DAYS); // shift appointment 1 day backward
+//        vevent.
+        LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
+        vevent.setSummary("Edited Summary");
+        vevent.setDescription("Edited Description");
+        vevent.setAppointmentGroup(appointmentGroups.get(7));
+        
+        // Edit
+        WindowCloseType windowCloseType = vevent.edit(
+                selectedAppointment.getStartLocalDateTime()
+              , selectedAppointment
+              , veventOld               // original VEvent
+              , appointments            // collection of all appointments
+              , vevents                 // collection of all VEvents
+              , a -> ChangeDialogOptions.ALL   // answer to edit dialog
+              , null);                  // VEvents I/O callback
+        assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
+        
+        // Check edited VEvent
+        VEventImpl expectedVEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        expectedVEvent.setAppointmentGroup(appointmentGroups.get(7));
+        expectedVEvent.setDateTimeStart(LocalDate.of(2015, 11, 10));
+        expectedVEvent.setDateTimeEnd(LocalDate.of(2015, 11, 12));
+        expectedVEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        expectedVEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
+        expectedVEvent.setDescription("Edited Description");
+        expectedVEvent.setSummary("Edited Summary");
+        expectedVEvent.setAppointmentClass(getClazz());
+        RRule rule = new RRule()
+                .withUntil(LocalDate.of(2015, 11, 25));
+        expectedVEvent.setRRule(rule);
+        Frequency daily = new Daily()
+                .withInterval(3);
+        rule.setFrequency(daily);
+
+        assertEquals(expectedVEvent, vevent); // check to see if repeat rule changed correctly
+        assertEquals(3, appointments.size()); // check if there are only two appointments
     }
 }

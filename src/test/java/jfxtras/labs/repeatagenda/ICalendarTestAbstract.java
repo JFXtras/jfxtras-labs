@@ -501,7 +501,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
         return vEvent;
     }
 
-    /** FREQ=DAILY;INVERVAL=2;UNTIL=20151201T000000 */
+    /* FREQ=DAILY;INVERVAL=2;UNTIL=20151201T000000 */
     protected static VEventImpl getDaily6()
     {
         VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
@@ -566,6 +566,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
         return vEvent;
     }
     
+    /* FREQ=DAILY;INVERVAL=3;COUNT=6 */
     protected static VEventImpl getWholeDayDaily2()
     {
         VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
@@ -583,4 +584,22 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
         return vEvent;
     }
 
+    /* FREQ=DAILY;INVERVAL=3;UNTIL=20151124 */
+    protected static VEventImpl getWholeDayDaily3()
+    {
+        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        vEvent.setDateTimeStart(LocalDate.of(2015, 11, 9));
+        vEvent.setDateTimeEnd(LocalDate.of(2015, 11, 11));
+        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setAppointmentGroup(appointmentGroups.get(3));
+        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
+        vEvent.setAppointmentClass(clazz);
+        RRule rule = new RRule()
+                .withUntil(LocalDate.of(2015, 11, 24));
+        vEvent.setRRule(rule);
+        Frequency daily = new Daily()
+                .withInterval(3);
+        rule.setFrequency(daily);
+        return vEvent;
+    }
 }

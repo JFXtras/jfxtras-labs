@@ -303,8 +303,10 @@ public class VEventImpl extends VEvent<Appointment>
     {
 //        System.out.println("range: " + getDateTimeRangeStart() + " " + getDateTimeRangeEnd());
         if ((getDateTimeRangeStart() == null) || (getDateTimeRangeStart() == null)) throw new IllegalArgumentException("can't make instances without setting date/time range first");
-        boolean wholeDay = this.getDateTimeStart() instanceof LocalDate;
+        boolean wholeDay = getDateTimeStart() instanceof LocalDate;
         List<Appointment> madeAppointments = new ArrayList<>();
+//        stream(getDateTimeStart()).forEach(System.out::println);
+//        System.exit(0);
         stream(getDateTimeStart()) // TODO - TRY STARTING AT getDateTimeRangeStart() FOR IMPROVED EFFICIENCY
                 .forEach(d -> {
                     LocalDateTime startLocalDateTime = VComponent.localDateTimeFromTemporal(d);

@@ -90,7 +90,6 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 public abstract class VEvent<T> extends VComponentAbstract<T>
 {   
     private static final long NANOS_IN_WEEK = Duration.ofDays(7).toNanos();
-    private static final long NANOS_IN_DAY = Duration.ofDays(1).toNanos();
     private static final long NANOS_IN_HOUR = Duration.ofHours(1).toNanos();
     private static final long NANOS_IN_MINUTE = Duration.ofMinutes(1).toNanos();
     private static final long NANOS_IN_SECOND = Duration.ofSeconds(1).toNanos();
@@ -229,6 +228,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
      * Specifies the date and time that a calendar component ends.
      * If entered this value is used to calculate the durationInSeconds, which is used
      * internally.
+     * Must be same Temporal type as dateTimeStart (DTSTART)
      */
     final private ObjectProperty<Temporal> dateTimeEnd = new SimpleObjectProperty<>(this, DATE_TIME_END_NAME);
     public ObjectProperty<Temporal> dateTimeEndProperty() { return dateTimeEnd; }
@@ -406,7 +406,8 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         Map<Property, String> properties = new HashMap<Property, String>();
         properties.putAll(super.makePropertiesMap());
         if ((getDescription() != null) && (! getDescription().equals(""))) properties.put(descriptionProperty(), getDescription());
-        if (useDateTimeEnd) properties.put(dateTimeEndProperty(), VComponent.temporalToString(getDateTimeEnd()));
+        String endPrefix = (getDateTimeEnd() instanceof LocalDate) ? "VALUE=DATE:" : "";
+        if (useDateTimeEnd) properties.put(dateTimeEndProperty(), endPrefix + VComponent.temporalToString(getDateTimeEnd()));
         if (useDuration) properties.put(durationInNanosProperty(), getDurationAsString());
         return properties;
     }

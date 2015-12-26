@@ -382,16 +382,16 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * Start of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
      * This is not a part of an iCalendar VEvent
      */
-    public LocalDateTime getDateTimeRangeStart() { return dateTimeRangeStart; }
-    private LocalDateTime dateTimeRangeStart;
-    public void setDateTimeRangeStart(LocalDateTime dateTimeRangeStart) { this.dateTimeRangeStart = dateTimeRangeStart; }
+    public Temporal getDateTimeRangeStart() { return dateTimeRangeStart; }
+    private Temporal dateTimeRangeStart;
+    public void setDateTimeRangeStart(Temporal dateTimeRangeStart) { this.dateTimeRangeStart = dateTimeRangeStart; }
     
     /**
      * End of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
      */
-    public LocalDateTime getDateTimeRangeEnd() { return dateTimeRangeEnd; }
-    private LocalDateTime dateTimeRangeEnd;
-    public void setDateTimeRangeEnd(LocalDateTime dateTimeRangeEnd) { this.dateTimeRangeEnd = dateTimeRangeEnd; }
+    public Temporal getDateTimeRangeEnd() { return dateTimeRangeEnd; }
+    private Temporal dateTimeRangeEnd;
+    public void setDateTimeRangeEnd(Temporal dateTimeRangeEnd) { this.dateTimeRangeEnd = dateTimeRangeEnd; }
     
     /** Method to convert DTSTART or DTEND to LocalDateTime
      * Currently ignores time zones */
@@ -535,7 +535,8 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         if (getDateTimeCreated() != null) properties.put(dateTimeCreatedProperty(), VComponent.DATE_TIME_FORMATTER.format(getDateTimeCreated()));
         properties.put(dateTimeStampProperty(), VComponent.DATE_TIME_FORMATTER.format(getDateTimeStamp())); // required property
         if (getDateTimeRecurrence() != null) properties.put(dateTimeRecurrenceProperty(), VComponent.DATE_TIME_FORMATTER.format(getDateTimeRecurrence()));
-        if (getDateTimeStart() != null) properties.put(dateTimeStartProperty(), VComponent.temporalToString(getDateTimeStart()));
+        String startPrefix = (getDateTimeStart() instanceof LocalDate) ? "VALUE=DATE:" : "";
+        if (getDateTimeStart() != null) properties.put(dateTimeStartProperty(), startPrefix + VComponent.temporalToString(getDateTimeStart()));
         if (getDateTimeLastModified() != null) properties.put(dateTimeLastModifiedProperty(), VComponent.DATE_TIME_FORMATTER.format(getDateTimeLastModified()));
         if (getExDate() != null) properties.put(exDateProperty(), getExDate().toString());
         if (getLocation() != null) properties.put(locationProperty(), getLocation().toString());

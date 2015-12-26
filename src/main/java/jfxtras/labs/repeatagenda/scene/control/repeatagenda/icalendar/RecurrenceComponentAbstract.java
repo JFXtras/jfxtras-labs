@@ -25,6 +25,7 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
     /**
      * EXDATE or RDATE: Set of dates or date/times included or excepted for recurring events, to-dos, journal entries.
      * 3.8.5.1, RFC 5545 iCalendar
+     * Must be same Temporal type as dateTimeStart (DTSTART)
      */
     public Set<Temporal> getTemporals() { return vDateTimes; }
     private ObservableSet<Temporal> vDateTimes = FXCollections.observableSet(new HashSet<Temporal>());
@@ -50,35 +51,6 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
         } else return null;
     }
     
-//    /**
-//     *  If vDateTimes set wraps a set of LocalDateTime Temporal objects then returns a collection 
-//     *  of LocalDateTime objects, otherwise throws an exception.
-//     * 
-//     * @return collection of LocalDateTime
-//     */
-//    public Collection<Temporal> getLocalDateTimes()
-//    {
-////        checkTemporalTypes(LocalDateTime.class);
-//        return getTemporalStream()
-//                .filter(d -> (d instanceof LocalDateTime))
-//                .map(d -> (LocalDateTime) d)
-//                .collect(Collectors.toList());
-//    }
-
-//    /**
-//     *  If vDateTimes set wraps a set of LocalDate Temporal objects then returns a collection 
-//     *  of LocalDate objects, otherwise throws an exception.
-//     * 
-//     * @return collection of LocalDate
-//     */
-//    public Collection<LocalDate> getLocalDates()
-//    {
-////        checkTemporalTypes(LocalDate.class);
-//        return getTemporalStream()
-//                .filter(d -> (d instanceof LocalDate))
-//                .map(d -> (LocalDate) d)
-//                .collect(Collectors.toList());
-//    }
     protected Stream<Temporal> getTemporalStream()
     {
         return getTemporals().stream();

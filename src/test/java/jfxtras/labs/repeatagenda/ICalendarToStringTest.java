@@ -113,7 +113,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     public void canConvertWholeDay1()
     {
         Temporal date = LocalDate.of(2015, 11, 12);
-        String expectedString = "VALUE=DATE:20151112";
+        String expectedString = "20151112";
         String madeString = VComponent.temporalToString(date);
         assertEquals(expectedString, madeString);
     }
@@ -127,6 +127,22 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
                           + "DTEND:VALUE=DATE:20151112" + System.lineSeparator()
                           + "DTSTAMP:20150110T080000" + System.lineSeparator()
                           + "DTSTART:VALUE=DATE:20151109" + System.lineSeparator()
+                          + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
+                          + "END:VEVENT";
+    assertEquals(expectedString, madeString);
+    }
+    
+    @Test
+    public void canConvertWholeDay3()
+    {
+    VEventImpl vEvent = getWholeDayDaily3();
+    String madeString = vEvent.toString();
+    String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
+                          + "CATEGORIES:group03" + System.lineSeparator()
+                          + "DTEND:VALUE=DATE:20151111" + System.lineSeparator()
+                          + "DTSTAMP:20150110T080000" + System.lineSeparator()
+                          + "DTSTART:VALUE=DATE:20151109" + System.lineSeparator()
+                          + "RRULE:FREQ=DAILY;INTERVAL=3;UNTIL=20151124" + System.lineSeparator()
                           + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                           + "END:VEVENT";
     assertEquals(expectedString, madeString);

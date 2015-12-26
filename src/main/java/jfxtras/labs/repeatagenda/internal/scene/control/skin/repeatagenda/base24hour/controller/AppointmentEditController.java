@@ -4,6 +4,7 @@ package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base2
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.List;
@@ -16,6 +17,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
@@ -25,6 +28,7 @@ import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.VComponentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.scene.control.LocalDateTimeTextField;
@@ -41,7 +45,12 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 public class AppointmentEditController
 {
     private Appointment appointment;
-    private LocalDateTime dateTimeStartInstanceOld;
+//    private LocalDateTime dateTimeInstanceStart;
+//    private LocalDateTime dateTimeInstanceEnd;
+    private LocalDateTime dateTimeInstanceStartOriginal;
+    private LocalDateTime dateTimeInstanceEndOriginal;
+//    private VComponent<Appointment> vComponent;
+    
     private VEvent<Appointment> vEvent;
     private VEvent<Appointment> vEventOld;
     private Collection<Appointment> appointments;
@@ -84,15 +93,28 @@ public class AppointmentEditController
     
     private final ChangeListener<? super LocalDateTime> startTextListener = (observable, oldSelection, newSelection) ->
     {
-        System.out.println("new start:" + newSelection);
-        if (wholeDayCheckBox.isSelected())
+        if (newSelection.isAfter(endTextField.getLocalDateTime()))
         {
-            LocalDateTime date = newSelection.toLocalDate().atStartOfDay();
-            startTextField.setLocalDateTime(date);
-            vEvent.setDateTimeStart(newSelection.toLocalDate());
+            tooLateDateAlert(newSelection, endTextField.getLocalDateTime());
+            startTextField.setLocalDateTime(oldSelection);
         } else
         {
-            vEvent.setDateTimeStart(newSelection);
+            long shiftInNanos = ChronoUnit.NANOS.between(dateTimeInstanceStartOriginal, newSelection);
+            Temporal newDateTimeStart = VComponent.plusNanos(vEvent.getDateTimeStart(), shiftInNanos);
+            vEvent.setDateTimeStart(newDateTimeStart);
+        }
+    };
+    private final ChangeListener<? super LocalDateTime> endTextlistener = (observable, oldSelection, newSelection) ->
+    {
+        if (newSelection.isBefore(startTextField.getLocalDateTime()))
+        {
+            tooEarlyDateAlert(newSelection, startTextField.getLocalDateTime());
+            endTextField.setLocalDateTime(oldSelection);            
+        } else
+        {
+            long shiftInNanos = ChronoUnit.NANOS.between(dateTimeInstanceEndOriginal, newSelection);
+            Temporal newDateTimeEnd = VComponent.plusNanos(vEvent.getDateTimeEnd(), shiftInNanos);
+            vEvent.setDateTimeEnd(newDateTimeEnd);
         }
     };
     
@@ -108,10 +130,14 @@ public class AppointmentEditController
             , Callback<Collection<VComponent<Appointment>>, Void> vEventWriteCallback
             , ObjectProperty<WindowCloseType> popupCloseType)
     {
-        dateTimeStartInstanceOld = appointment.getStartLocalDateTime();
+        dateTimeInstanceStartOriginal = appointment.getStartLocalDateTime();
+        dateTimeInstanceEndOriginal = appointment.getEndLocalDateTime();
+//        dateTimeInstanceStart = appointment.getStartLocalDateTime();
+//        dateTimeInstanceEnd = appointment.getEndLocalDateTime();
         this.appointment = appointment;        
         this.appointments = appointments;
         this.vComponents = vComponents;
+//        this.vComponent = vComponent;
         this.vEventWriteCallback = vEventWriteCallback;
         vEvent = (VEvent<Appointment>) vComponent;
         this.popupCloseType = popupCloseType;
@@ -126,8 +152,7 @@ public class AppointmentEditController
         
         // WHOLE DAY
         boolean wholeDay = vEvent.getDateTimeStart() instanceof LocalDate;
-        wholeDayCheckBox.setSelected(wholeDay);
-        
+        wholeDayCheckBox.setSelected(wholeDay);       
         wholeDayCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
         {
             // TODO - TRY STACK PANE TO REPLACE LocalDateTimeTextField WITH LocalDateTextField WHEN WHOLE DAY
@@ -174,26 +199,15 @@ public class AppointmentEditController
         // TODO - ICALENDAR REQUIRES DTEND TO BE EXCLUSIVE OF DATE - EVEN WHOLE DAY
         Locale locale = Locale.getDefault();
         startTextField.setLocale(locale);
-        startTextField.setLocalDateTime(VComponent.localDateTimeFromTemporal(vEvent.getDateTimeStart()));
+        startTextField.setLocalDateTime(dateTimeInstanceStartOriginal);
         startTextField.setParseErrorCallback(errorCallback);
         startTextField.localDateTimeProperty().addListener(startTextListener);
 
         // END DATE/TIME
         endTextField.setLocale(locale);
-        endTextField.setLocalDateTime(VComponent.localDateTimeFromTemporal(vEvent.getDateTimeEnd()));
+        endTextField.setLocalDateTime(dateTimeInstanceEndOriginal);
         endTextField.setParseErrorCallback(errorCallback);
-        endTextField.localDateTimeProperty().addListener((observable, oldSelection, newSelection) ->
-        {
-            if (wholeDayCheckBox.isSelected())
-            {
-                LocalDateTime date = newSelection.toLocalDate().atStartOfDay();
-                endTextField.setLocalDateTime(date);
-                vEvent.setDateTimeEnd(newSelection.toLocalDate());
-            } else
-            {
-                vEvent.setDateTimeEnd(newSelection);
-            }
-        });
+        endTextField.localDateTimeProperty().addListener(endTextlistener);
         
         // APPOINTMENT GROUP
         appointmentGroupGridPane.appointmentGroupSelectedProperty().addListener(
@@ -226,7 +240,7 @@ public class AppointmentEditController
         System.out.println("valid:" + vEvent.isValid());
         if (! vEvent.isValid()) throw new IllegalArgumentException(vEvent.makeErrorString());
         final ICalendarUtilities.WindowCloseType result = vEvent.edit(
-                dateTimeStartInstanceOld
+                dateTimeInstanceStartOriginal
               , appointment
               , vEventOld
               , appointments
@@ -266,4 +280,29 @@ public class AppointmentEditController
         popupCloseType.set(result);
     }
     
+    // Displays an alert notifying UNTIL date is not an occurrence and changed to 
+    private void tooEarlyDateAlert(Temporal t1, Temporal t2)
+    {
+        System.out.println("tooearly:");
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Invalid Date Selection");
+        alert.setHeaderText("End must be after start");
+        alert.setContentText(Settings.DATE_FORMAT_AGENDA_EXCEPTION.format(t1) + " is not after" + System.lineSeparator() + Settings.DATE_FORMAT_AGENDA_EXCEPTION.format(t2));
+        ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonTypeOk);
+        alert.showAndWait();
+    }
+
+    // Displays an alert notifying UNTIL date is not an occurrence and changed to 
+    private void tooLateDateAlert(Temporal t1, Temporal t2)
+    {
+        System.out.println("toolate:");
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Invalid Date Selection");
+        alert.setHeaderText("Start must be before end");
+        alert.setContentText(Settings.DATE_FORMAT_AGENDA_EXCEPTION.format(t1) + " is not before" + System.lineSeparator() + Settings.DATE_FORMAT_AGENDA_EXCEPTION.format(t2));
+        ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonTypeOk);
+        alert.showAndWait();
+    }
 }
