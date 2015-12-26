@@ -234,7 +234,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     public ObjectProperty<Temporal> dateTimeEndProperty() { return dateTimeEnd; }
     public void setDateTimeEnd(Temporal dtEnd)
     {
-        if ((dtEnd instanceof LocalDateTime) && isDateTimeStartWholeDay()) throw new DateTimeException("Can't set LocalDateTime to dateTimeEnd when wholeDay is true.");
+//        if ((dtEnd instanceof LocalDateTime) && isDateTimeStartWholeDay()) throw new DateTimeException("Can't set LocalDateTime to dateTimeEnd when wholeDay is true.");
         if (getDurationInNanos() == null)
         { // this happens when duration of dateTimeEnd is set for the first time
             useDuration=false;
@@ -310,12 +310,8 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         
         durationlistener = (obs, oldSel, newSel) ->
         { // listener to synch dateTimeEnd and durationInSeconds.  dateTimeStart is left in place.
-//            System.out.println("duration:" + getDateTimeStart()+ " " +  getDateTimeEnd());
-//            System.out.println((getDateTimeStart() == null) + " " + (getDateTimeEnd() == null));
-//            System.out.println(!((getDateTimeStart() == null) && (getDateTimeEnd() == null)));
             if (!((getDateTimeStart() == null) && (getDateTimeEnd() == null)))
             {
-                System.out.println("duration:");
                 Temporal dtEnd = null;
                 // test LocalDateTime
                 if ((getDateTimeEnd() instanceof LocalDateTime) && (getDateTimeStart() instanceof LocalDateTime))
@@ -346,7 +342,6 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                     setDateTimeEnd(dtEnd);
                     dateTimeEndProperty().addListener(dateTimeEndlistener);
                 }
-//                System.out.println("duration:" + dtEnd);
             }
         };
         
@@ -431,7 +426,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
 
         Class<? extends Temporal> startClass = getDateTimeStart().getClass();
         Class<? extends Temporal> endClass = getDateTimeEnd().getClass();
-        if (! startClass.equals(endClass)) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DTSTART and DTEND must have the same Temporal type (" + startClass + "," + endClass + ")");
+        if (! startClass.equals(endClass)) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DTSTART and DTEND must have the same Temporal type (" + startClass.getSimpleName() + "," + endClass.getSimpleName() + ")");
         
         return errorsBuilder.toString();
     }

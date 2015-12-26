@@ -115,6 +115,16 @@ private ToggleGroup endGroup;
 @FXML ListView<Temporal> exceptionsListView; // EXDATE date/times to be skipped (deleted events)
 @FXML Button removeExceptionButton;
 
+private DateTimeFormatter getFormatter(Temporal t)
+{
+    if (t instanceof LocalDateTime)
+    {
+        return Settings.DATE_FORMAT_AGENDA_EXCEPTION;
+    } else if (t instanceof LocalDate)
+    {
+        return Settings.DATE_FORMAT_AGENDA_EXCEPTION_DATEONLY;
+    } else throw new DateTimeException("Invalid Temporal type.  Must be LocalDate or LocalDateTime");
+}
 
 // DAY OF WEEK CHECKBOX LISTENER
 private final ChangeListener<? super Boolean> dayOfWeekCheckBoxListener = (obs, oldSel, newSel) -> 
@@ -299,44 +309,6 @@ private final ChangeListener<? super Integer> intervalSpinnerListener = (observa
     makeExceptionDates();
 };
 
-//// END ON LISTENERS
-//ChangeListener<? super LocalDate> listener = (observable, oldSelection, newSelection) ->
-//{
-//    System.out.println("endOnPicker:");
-//    if (newSelection.isBefore(LocalDate.from(vComponent.getDateTimeStart())))
-//    {
-//        tooEarlyDateAlert();
-//        endOnDatePicker.setValue(oldSelection);
-//    } else
-//    {
-//        // make correct Temporal type
-//        final Temporal timeAdjustedSelection;
-//        if (vComponent.getDateTimeStart() instanceof LocalDateTime)
-//        {
-//            LocalTime time = LocalTime.from(vComponent.getDateTimeStart());
-//            timeAdjustedSelection = newSelection.atTime(time);
-//        } else
-//        {
-//            timeAdjustedSelection = newSelection;
-//        }
-//        vComponent.getRRule().setUntil(timeAdjustedSelection);
-//        Iterator<Temporal> iterator = vComponent.getRRule().stream(dateTimeStartInstanceNew).iterator();
-//        Temporal lastTemporal = null;
-//        while (iterator.hasNext()) { lastTemporal = iterator.next(); }
-//        System.out.println("end on date: " + lastTemporal + " " + newSelection);
-//        endOnDatePicker.setValue(LocalDate.from(lastTemporal));
-////        endOnDatePicker.valueProperty().set(LocalDate.from(closestNotAfterTemporal));
-//        vComponent.getRRule().setUntil(lastTemporal);
-//        
-////        .filter(d -> VComponent.isBefore(d, newSelection));
-////        vComponent.getRRule().setUntil(newSelection.atTime(LocalTime.of(23, 59, 59))); // end at end of day
-//        // TODO - MAKE INCLUSIVE - SYNCHRINIZED WITH START OF LAST EVENT
-//        refreshSummary();
-////        System.out.println("make exception5 " + observable);
-//        makeExceptionDates();
-//    }
-//};
-
 //END ON LISTENERS
 private final ChangeListener<? super LocalDate> untilListener = (observable, oldSelection, newSelection) ->
 {
@@ -379,7 +351,7 @@ private Temporal findUntil(Temporal d)
 // listen for changes to start date/time (type may change requiring new exception date choices)
 private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeListener = (obs, oldValue, newValue) ->
 {
-    System.out.println("make exception3 " + obs);
+//    System.out.println("make exception3 " + obs);
 
     makeExceptionDates();
     // update existing exceptions
@@ -616,22 +588,20 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         // EXCEPTIONS
         // Note: exceptionComboBox string converter must be setup done after the controller's initialization 
         // because the resource bundle isn't instantiated earlier.
-        final DateTimeFormatter formatterDateTime = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.exception"));
-        final DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.exception.dateonly"));
         exceptionComboBox.setConverter(new StringConverter<Temporal>()
         { // setup string converter
-            @Override public String toString(Temporal d)
+            @Override public String toString(Temporal t)
             {
-                DateTimeFormatter myFormatter;
-                if ((d instanceof LocalDateTime))
-                {
-                    myFormatter = formatterDateTime;
-                } else if ((d instanceof LocalDate))
-                {
-                    myFormatter = formatterDate;
-                } else throw new DateTimeException("DTSTART and DTEND must have same Temporal type("
-                        + d.getClass().getSimpleName() + ", " + d.getClass().getSimpleName() +")");
-                return myFormatter.format(d);
+                DateTimeFormatter myFormatter = getFormatter(t);
+//                if ((d instanceof LocalDateTime))
+//                {
+//                    myFormatter = formatterDateTime;
+//                } else if ((d instanceof LocalDate))
+//                {
+//                    myFormatter = formatterDate;
+//                } else throw new DateTimeException("DTSTART and DTEND must have same Temporal type("
+//                        + d.getClass().getSimpleName() + ", " + d.getClass().getSimpleName() +")");
+                return myFormatter.format(t);
             }
             @Override public Temporal fromString(String string) { throw new RuntimeException("not required for non editable ComboBox"); }
         });
@@ -660,15 +630,16 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
                         } else
                         {
                             // Format date.
-                            DateTimeFormatter myFormatter;
-                            if ((temporal instanceof LocalDateTime))
-                            {
-                                myFormatter = formatterDateTime;
-                            } else if ((temporal instanceof LocalDate))
-                            {
-                                myFormatter = formatterDate;
-                            } else throw new DateTimeException("Invalid Temporal type("
-                                    + temporal.getClass().getSimpleName() + ", " + temporal.getClass().getSimpleName() +")");
+                            DateTimeFormatter myFormatter = getFormatter(temporal);
+                            System.out.println("temporal:" + temporal.getClass().getSimpleName());
+//                            if ((temporal instanceof LocalDateTime))
+//                            {
+//                                myFormatter = formatterDateTime;
+//                            } else if ((temporal instanceof LocalDate))
+//                            {
+//                                myFormatter = formatterDate;
+//                            } else throw new DateTimeException("Invalid Temporal type("
+//                                    + temporal.getClass().getSimpleName() + ", " + temporal.getClass().getSimpleName() +")");
                             setText(myFormatter.format(temporal));
                         }
                     }
@@ -861,7 +832,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     /** Make list of start date/times for exceptionComboBox */
     private void makeExceptionDates()
     {
-//        System.out.println("make exception date list");
+        System.out.println("make exception date list" + vComponent.getDateTimeStart().getClass().getSimpleName());
         
         final Temporal dateTimeStart = vComponent.getDateTimeStart();
         Stream<Temporal> stream1 = vComponent

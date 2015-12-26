@@ -13,7 +13,6 @@ import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
@@ -197,22 +196,6 @@ public class ICalendarParseTest extends ICalendarTestAbstract
         VEventImpl vEvent = VEventImpl.parseVEvent(vEventString, DEFAULT_APPOINTMENT_GROUPS);
         VEvent expectedVEvent = getDailyWithException1();
         assertEquals(expectedVEvent, vEvent);
-    }
-    
-    @Test
-    public void canParseVDateTime1()
-    {
-        VDateTime expectedDateTime = new VDateTime(LocalDateTime.of(2015, 11, 15, 10, 0));
-        VDateTime dateTime = VDateTime.parseString("20151115T100000");
-        assertEquals(expectedDateTime, dateTime);
-    }
-    
-    @Test
-    public void canParseVDateTime2()
-    {
-        VDateTime expectedDateTime = new VDateTime(LocalDateTime.of(2015, 11, 15, 10, 0));
-        VDateTime dateTime = VDateTime.parseString("VALUE=DATE-TIME:20151115T100000");
-        assertEquals(expectedDateTime, dateTime);
     }
 
     @Test

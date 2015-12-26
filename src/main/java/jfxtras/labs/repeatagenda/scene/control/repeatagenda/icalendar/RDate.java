@@ -18,21 +18,8 @@ import java.util.stream.StreamSupport;
  * @param <U>
  *
  */
-// Merge stream is untested
 public class RDate extends RecurrenceComponentAbstract<RDate>
 {
-
-//    /** Add date/times in RDates set */
-//    public Stream<LocalDateTime> stream(Stream<LocalDateTime> inStream)
-//    {
-//        if (inStream == null)
-//        {
-//            return myStream();
-//        }
-//        return merge(inStream
-//                , getLocalDateTimes().stream()
-//                , (a1,a2) -> a1.compareTo(a2));        
-//    }
 
     /** Add date/times in RDates set */
     public Stream<Temporal> stream(Stream<Temporal> inStream, Temporal startTemporal)
@@ -41,71 +28,13 @@ public class RDate extends RecurrenceComponentAbstract<RDate>
         {
             getTemporalStream().filter(d -> ! VComponent.isBefore(d, startTemporal));
         }
-//        final Comparator<Temporal> comparator = (a1, a2) ->
-//        {
-//            if (startTemporal instanceof LocalDate)
-//            {
-//                return ((LocalDate) a1).compareTo((LocalDate) a2);
-//            } else if (startTemporal instanceof LocalDateTime)
-//            {
-//                return ((LocalDateTime) a1).compareTo((LocalDateTime) a2);
-//            } else throw new IllegalArgumentException("Unsupported Temporal class:" + startTemporal.getClass().getSimpleName());
-//        };
         return merge(inStream
                    , getTemporalStream()
                    , VComponent.DATE_OR_DATETIME_TEMPORAL_COMPARATOR);
-//                   , (a1,a2) -> a1.compareTo(a2));
     }
-    
-//    // stream of RDate start dates or date/times
-//    private Stream<LocalDateTime> myStream()
-//    {
-//        return getTemporalStream()
-//                .map(t ->
-//                {
-//                    if (getTemporalClass().equals(LocalDate.class))
-//                    {
-//                        return ((LocalDate) t).atStartOfDay();
-//                    } else if (getTemporalClass().equals(LocalDateTime.class))
-//                    {
-//                        return (LocalDateTime) t;                            
-//                    } else throw new IllegalArgumentException("Unsupported Temporal class:" + getTemporalClass().getSimpleName());
-//                });
-//    }
-    
-//    // stream of RDate start dates or date/times
-//    private Stream<Temporal> myStream(Temporal startDateTime)
-//    {
-//        return getTemporalStream()
-//                .filter(t -> 
-//                {
-//                    if (temporalClass().equals(LocalDate.class))
-//                    {
-//                        LocalDate start = startDateTime.toLocalDate();
-//                        return ! ((LocalDate) t).isBefore(start);
-//                    } else if (temporalClass().equals(LocalDateTime.class))
-//                    {
-//                        LocalDateTime start = (LocalDateTime) startDateTime;
-//                        return ! ((LocalDateTime) t).isBefore(start);
-//                    } else throw new IllegalArgumentException("Unsupported Temporal class:" + temporalClass().getSimpleName());
-//                })
-//                .map(t ->
-//                {
-//                    if (temporalClass().equals(LocalDate.class))
-//                    {
-//                        return ((LocalDate) t).atStartOfDay();
-//                    } else if (temporalClass().equals(LocalDateTime.class))
-//                    {
-//                        return (LocalDateTime) t;                            
-//                    } else throw new IllegalArgumentException("Unsupported Temporal class:" + temporalClass().getSimpleName());
-//                });
-//    }
 
     public Stream<Temporal> stream(Temporal startTemporal)
     {
-//        return getLocalDateTimes()
-//                .stream()
-//                .filter(d -> ! d.isBefore(startDateTime));
         return getTemporalStream()
                 .filter(d -> ! VComponent.isBefore(d, startTemporal));
     }
@@ -121,7 +50,7 @@ public class RDate extends RecurrenceComponentAbstract<RDate>
             return StreamSupport.stream(spliterator, false);
     }
     
-    /**
+    /*
      * Recommend using with StreamSupport.stream(iteratorStream, false);
      */
     private class SpliteratorAdapter<T> extends Spliterators.AbstractSpliterator <T>
