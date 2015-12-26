@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -468,17 +467,16 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         assertEquals(3, appointments.size()); // check if there are 3 appointments
         VEventImpl veventOld = new VEventImpl(vevent);
 
-        // select appointment (get recurrence date)
+        // select appointment (get recurrence date) // TODO - WHAT DOES APPOINTMENT DO?  APPEARS USELESS.
         Iterator<Appointment> appointmentIterator = appointments.iterator();
         appointmentIterator.next(); // skip first
         appointmentIterator.next(); // skip second
         Appointment selectedAppointment = (Appointment) appointmentIterator.next();
-        LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
         
-        // apply changes
-        LocalDate newDate = dateTimeOriginal.toLocalDate().plus(1, ChronoUnit.DAYS); // shift appointment 1 day backward
-//        vevent.
-        LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
+        // apply changes       
+        long shiftInNanos = VComponent.NANOS_IN_DAY; // shift forward one day
+        vevent.setDateTimeStart(VComponent.plusNanos(vevent.getDateTimeStart(), shiftInNanos));
+        vevent.setDateTimeEnd(VComponent.plusNanos(vevent.getDateTimeEnd(), shiftInNanos));        
         vevent.setSummary("Edited Summary");
         vevent.setDescription("Edited Description");
         vevent.setAppointmentGroup(appointmentGroups.get(7));
@@ -496,6 +494,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         
         // Check edited VEvent
         VEventImpl expectedVEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        expectedVEvent.setDateTimeRangeStart(LocalDate.of(2015, 11, 15));
+        expectedVEvent.setDateTimeRangeEnd(LocalDate.of(2015, 11, 22));
         expectedVEvent.setAppointmentGroup(appointmentGroups.get(7));
         expectedVEvent.setDateTimeStart(LocalDate.of(2015, 11, 10));
         expectedVEvent.setDateTimeEnd(LocalDate.of(2015, 11, 12));
@@ -505,7 +505,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         expectedVEvent.setSummary("Edited Summary");
         expectedVEvent.setAppointmentClass(getClazz());
         RRule rule = new RRule()
-                .withUntil(LocalDate.of(2015, 11, 25));
+                .withUntil(LocalDate.of(2015, 11, 24));
         expectedVEvent.setRRule(rule);
         Frequency daily = new Daily()
                 .withInterval(3);
