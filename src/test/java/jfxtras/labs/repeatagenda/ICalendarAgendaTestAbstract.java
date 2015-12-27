@@ -27,7 +27,7 @@ public class ICalendarAgendaTestAbstract extends JFXtrasGuiTest
         vbox = new VBox();
 
         agenda = new ICalendarAgenda();
-        agenda.setDisplayedLocalDateTime(LocalDate.of(2014, 1, 1).atStartOfDay());
+        agenda.setDisplayedLocalDateTime(LocalDate.of(2015, 11, 8).atStartOfDay());
         agenda.setPrefSize(1000, 800);
         
         final ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS

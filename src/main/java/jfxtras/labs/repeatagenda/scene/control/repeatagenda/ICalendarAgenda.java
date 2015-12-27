@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -87,12 +88,6 @@ public class ICalendarAgenda extends Agenda {
     private Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback = null;
     public void setAppointmentGroupWriteCallback(Callback<Collection<AppointmentGroup>, Void> appointmentWriteCallback) { this.appointmentGroupWriteCallback = appointmentGroupWriteCallback; }
 
-//    InvalidationListener vComponentListener = (InvalidationListener) obs -> 
-//    {
-//        System.out.println("change vComponent " + this.displayedLocalDateTime().get() + " " + vComponents().size());   
-//        if (displayedLocalDateTime() != null) refresh();
-//    };
-
     // listen for additions to appointments from agenda. This listener must be removed and added back when a change
     // in the time range  occurs.
     private final ListChangeListener<Appointment> appointmentListener = (ListChangeListener.Change<? extends Appointment> change) ->
@@ -123,7 +118,16 @@ public class ICalendarAgenda extends Agenda {
                 }
             }
         };
-            
+        
+        InvalidationListener vComponentListener = (InvalidationListener) obs -> 
+        {
+            appointments().removeListener(appointmentListener);
+            System.out.println("change vComponent " + this.displayedLocalDateTime().get() + " " + vComponents().size());
+            appointments().addAll(vComponents.get(0).makeInstances());
+            if (displayedLocalDateTime() != null) refresh();
+            appointments().addListener(appointmentListener);
+        };
+        
     // CONSTRUCTOR
     public ICalendarAgenda()
     {
@@ -152,7 +156,7 @@ public class ICalendarAgenda extends Agenda {
         appointments().addListener(appointmentListener);
 
 //        // Listen for changes to vComponents (additions and deletions)
-//        vComponents().addListener(vComponentListener);
+        vComponents().addListener(vComponentListener);
         
         // CHANGE DEFAULT EDIT POPUP - new popup has repeat options
         setEditAppointmentCallback((Appointment appointment) ->
