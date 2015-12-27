@@ -1,3 +1,7 @@
+@font-face {
+	src: url("/roboto/Roboto-Medium.ttf");
+}
+
 @import "_segment.css"
 
 .BasicRoundDailGauge {
@@ -44,6 +48,7 @@
 
 .BasicRoundDailGauge .value {
     -fx-fill: -fxx-value-color;
+	-fx-font-family: "Roboto Medium"; 
     -fx-font-size: 36px;
     -fx-font-weight: bold;
 }

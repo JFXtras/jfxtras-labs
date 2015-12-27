@@ -1,3 +1,7 @@
+@font-face {
+	src: url("/roboto/Roboto-Medium.ttf");
+}
+
 .SimpleMetroArcGauge {
     /* These are the variables with their default values (colors), but they're just a mix of colors. Logic can be applied by assigning on of the colorschemes */    
     -fxx-segment0-color: #888888;
@@ -37,6 +41,7 @@
 
 .SimpleMetroArcGauge .value {
     -fx-fill: white;
+	-fx-font-family: "Roboto Medium"; 
     -fx-font-size: 64px;
     -fx-font-weight: bold;
 }
