@@ -153,8 +153,8 @@ public class ICalendarAgendaRenderTest extends ICalendarTestAbstract
                 .collect(Collectors.toList());
         
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
-                LocalDateTime.of(2014, 1, 1, 10, 0)
-              , LocalDateTime.of(2014, 1, 4, 10, 0)
+                LocalDateTime.of(2015, 11, 11, 10, 0)
+              , LocalDateTime.of(2015, 11, 14, 10, 0)
                 ));
         Assert.assertEquals(expectedDates, dates);
     }

@@ -182,20 +182,31 @@ public interface VComponent<T>
      */
     Stream<Temporal> stream(Temporal startTemporal);
 
-//    /**
-//     * Recurrence instances are made at and after the this date/time
-//     * Must be same Temporal type as dateTimeStart (DTSTART)
-//     * 
-//     * @param dateTimeRangeStart - Start date/time when appointments will be made
-//     */
-//    void setDateTimeRangeStart(Temporal dateTimeRangeStart);
-//    /**
-//     * Recurrence instances are only made before this date/time
-//     * Must be same Temporal type as dateTimeStart (DTSTART)
-//     * 
-//     * @param dateTimeRangeEnd - End date/time when appointments will be made
-//     */
-//    void setDateTimeRangeEnd(Temporal dateTimeRangeEnd);
+    /**
+     * Start of range for which recurrence instances are generated.
+     * Should match the start date displayed on the calendar.
+     * This is not a part of an iCalendar VComponent.
+     */
+    Temporal getStartRange();
+    /**
+     * Start of range for which recurrence instances are generated.
+     * Should match the start date displayed on the calendar.
+     * This is not a part of an iCalendar VComponent.
+     */
+    void setStartRange(Temporal start);
+    
+    /**
+     * End of range for which recurrence instances are generated.
+     * Should match the end date displayed on the calendar.
+     * This is not a part of an iCalendar VComponent.
+     */
+    Temporal getEndRange();
+    /**
+     * End of range for which recurrence instances are generated.
+     * Should match the end date displayed on the calendar.
+     * This is not a part of an iCalendar VComponent.
+     */
+void setEndRange(Temporal end);
 
     /**
      * Returns the collection of recurrence instances of calendar component of type T that exists

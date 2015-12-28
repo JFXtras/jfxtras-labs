@@ -283,16 +283,16 @@ public class VEventImpl extends VEvent<Appointment>
      * Start of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
      * This is not a part of an iCalendar VEvent
      */
-    private Temporal getStartRange() { return startRange; }
+    public Temporal getStartRange() { return startRange; }
     private Temporal startRange;
-    private void setStartRange(Temporal start) { this.startRange = start; }
+    public void setStartRange(Temporal start) { this.startRange = start; }
     
     /**
      * End of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
      */
     public Temporal getEndRange() { return endRange; }
     private Temporal endRange;
-    private void setEndRange(Temporal end) { this.endRange = end; }
+    public void setEndRange(Temporal end) { this.endRange = end; }
     /**
      * Returns appointments for Agenda that should exist between dateTimeRangeStart and dateTimeRangeEnd
      * based on VEvent properties.  Uses dateTimeRange previously set in VEvent.
