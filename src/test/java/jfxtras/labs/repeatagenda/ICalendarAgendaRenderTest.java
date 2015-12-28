@@ -33,13 +33,13 @@ public class ICalendarAgendaRenderTest extends ICalendarTestAbstract
     {
         TestUtil.runThenWaitForPaintPulse( () -> {
             agenda.appointments().add( new ICalendarAgenda.AppointmentImplLocal2()
-                .withStartLocalDateTime(TestUtil.quickParseLocalDateTimeYMDhm("2014-01-01T10:00"))
-                .withEndLocalDateTime(TestUtil.quickParseLocalDateTimeYMDhm("2014-01-01T12:00"))
+                .withStartLocalDateTime(TestUtil.quickParseLocalDateTimeYMDhm("2015-11-11T10:00"))
+                .withEndLocalDateTime(TestUtil.quickParseLocalDateTimeYMDhm("2015-11-11T12:00"))
                 .withAppointmentGroup(DEFAULT_APPOINTMENT_GROUPS.get(0))
             );
         });
                 
-        Node n = (Node)find("#AppointmentRegularBodyPane2014-01-01/0");
+        Node n = (Node)find("#AppointmentRegularBodyPane2015-11-11/0");
 
 //      AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
         String os = System.getProperty("os.name");
@@ -62,9 +62,9 @@ public class ICalendarAgendaRenderTest extends ICalendarTestAbstract
         dateTimeStamp = VComponent.DATE_TIME_FORMATTER.format(LocalDateTime.now());
         
         Assert.assertEquals(1, agenda.vComponents().size());
-        Assert.assertEquals("2014-01-01T10:00", agenda.appointments().get(0).getStartLocalDateTime().toString() );
-        Assert.assertEquals("2014-01-01T12:00", agenda.appointments().get(0).getEndLocalDateTime().toString() );
-        find("#AppointmentRegularBodyPane2014-01-01/0"); // validate that the pane has the expected id
+        Assert.assertEquals("2015-11-11T10:00", agenda.appointments().get(0).getStartLocalDateTime().toString() );
+        Assert.assertEquals("2015-11-11T12:00", agenda.appointments().get(0).getEndLocalDateTime().toString() );
+        find("#AppointmentRegularBodyPane2015-11-11/0"); // validate that the pane has the expected id
     }
 
         
@@ -88,12 +88,12 @@ public class ICalendarAgendaRenderTest extends ICalendarTestAbstract
         
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                 + "CATEGORIES:group00" + System.lineSeparator()
-                + "DTEND:20140101T120000" + System.lineSeparator()
+                + "DTEND:20151111T120000" + System.lineSeparator()
                 + "DTSTAMP:" + dateTimeStamp + System.lineSeparator()
-                + "DTSTART:20140101T100000" + System.lineSeparator()
+                + "DTSTART:20151111T100000" + System.lineSeparator()
                 + "RRULE:FREQ=WEEKLY;BYDAY=WE,FR,MO" + System.lineSeparator()
                 + "SUMMARY:New" + System.lineSeparator()
-                + "UID:20140101T000000-0jfxtras.org" + System.lineSeparator()
+                + "UID:20151108T000000-0jfxtras.org" + System.lineSeparator()
                 + "END:VEVENT";
         Assert.assertEquals(expectedString, v.toString());
         
@@ -103,8 +103,8 @@ public class ICalendarAgendaRenderTest extends ICalendarTestAbstract
                 .collect(Collectors.toList());
         
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
-                LocalDateTime.of(2014, 1, 1, 10, 0)
-              , LocalDateTime.of(2014, 1, 3, 10, 0)
+                LocalDateTime.of(2015, 11, 11, 10, 0)
+              , LocalDateTime.of(2015, 11, 13, 10, 0)
                 ));
         Assert.assertEquals(expectedDates, dates);
     }
@@ -138,12 +138,12 @@ public class ICalendarAgendaRenderTest extends ICalendarTestAbstract
         
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                 + "CATEGORIES:group00" + System.lineSeparator()
-                + "DTEND:20140101T120000" + System.lineSeparator()
+                + "DTEND:20151111T120000" + System.lineSeparator()
                 + "DTSTAMP:" + dateTimeStamp + System.lineSeparator()
-                + "DTSTART:20140101T100000" + System.lineSeparator()
+                + "DTSTART:20151111T100000" + System.lineSeparator()
                 + "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6" + System.lineSeparator()
                 + "SUMMARY:New" + System.lineSeparator()
-                + "UID:20140101T000000-0jfxtras.org" + System.lineSeparator()
+                + "UID:20151108T000000-0jfxtras.org" + System.lineSeparator()
                 + "END:VEVENT";
         Assert.assertEquals(expectedString, v.toString());
         

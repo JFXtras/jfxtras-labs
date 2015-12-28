@@ -378,21 +378,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     };
     public void setUidGeneratorCallback(Callback<Void, String> uidCallback) { this.uidGeneratorCallback = uidCallback; }
     
-    /**
-     * Start of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
-     * This is not a part of an iCalendar VEvent
-     */
-    public Temporal getDateTimeRangeStart() { return dateTimeRangeStart; }
-    private Temporal dateTimeRangeStart;
-    public void setDateTimeRangeStart(Temporal dateTimeRangeStart) { this.dateTimeRangeStart = dateTimeRangeStart; }
-    
-    /**
-     * End of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
-     */
-    public Temporal getDateTimeRangeEnd() { return dateTimeRangeEnd; }
-    private Temporal dateTimeRangeEnd;
-    public void setDateTimeRangeEnd(Temporal dateTimeRangeEnd) { this.dateTimeRangeEnd = dateTimeRangeEnd; }
-    
     /** Method to convert DTSTART or DTEND to LocalDateTime
      * Currently ignores time zones */
     public LocalDateTime iCalendarDateTimeToLocalDateTime(String dt)
@@ -649,22 +634,25 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * Starts on startDateTime, which must be a valid event date/time, not necessarily the
      * first date/time (DTSTART) in the sequence. */
     @Override
-    public Stream<Temporal> stream(Temporal startDateTime)
+    public Stream<Temporal> stream(Temporal start)
     {
         Stream<Temporal> stream1;
         if (getRRule() == null)
         { // if individual event
             stream1 = Arrays.asList(getDateTimeStart())
                     .stream()
-                    .filter(d -> ! VComponent.isBefore(d, startDateTime));
+                    .filter(d -> ! VComponent.isBefore(d, start));
 //                    .filter(d -> ! d.isBefore(startDateTime));
         } else
         { // if has recurrence rule
-            stream1 = getRRule().stream(startDateTime);
+            Temporal occurrenceStart = getRRule().getFrequency().makeFrequencyOccurrence(getDateTimeStart(), start);
+            occurrenceStart = getDateTimeStart();
+//            System.out.println("occurrenceStart:" + occurrenceStart);
+            stream1 = getRRule().stream(occurrenceStart);
         }
-        Stream<Temporal> stream2 = (getRDate() == null) ? stream1 : getRDate().stream(stream1, startDateTime); // add recurrence list
-        Stream<Temporal> stream3 = (getExDate() == null) ? stream2 : getExDate().stream(stream2, startDateTime); // remove exceptions
-        return stream3;
+        Stream<Temporal> stream2 = (getRDate() == null) ? stream1 : getRDate().stream(stream1, start); // add recurrence list
+        Stream<Temporal> stream3 = (getExDate() == null) ? stream2 : getExDate().stream(stream2, start); // remove exceptions
+        return stream3.filter(t -> ! VComponent.isBefore(t, start));
     }
 
 }

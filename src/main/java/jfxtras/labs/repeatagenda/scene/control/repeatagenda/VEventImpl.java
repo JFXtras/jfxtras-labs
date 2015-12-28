@@ -1,5 +1,6 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -171,8 +172,8 @@ public class VEventImpl extends VEvent<Appointment>
     {
         if (source.getAppointmentGroup() != null) destination.setAppointmentGroup(source.getAppointmentGroup());
         if (source.getAppointmentClass() != null) destination.setAppointmentClass(source.getAppointmentClass());
-        if (source.getDateTimeRangeStart() != null) destination.setDateTimeRangeStart(source.getDateTimeRangeStart());
-        if (source.getDateTimeRangeEnd() != null) destination.setDateTimeRangeEnd(source.getDateTimeRangeEnd());
+        if (source.getStartRange() != null) destination.setStartRange(source.getStartRange());
+        if (source.getEndRange() != null) destination.setEndRange(source.getEndRange());
         if (source.getUidGeneratorCallback() != null) destination.setUidGeneratorCallback(source.getUidGeneratorCallback());
         source.instances().stream().forEach(a -> destination.instances().add(a));
     }
@@ -198,28 +199,28 @@ public class VEventImpl extends VEvent<Appointment>
                 (testObj.getAppointmentClass() == null) : getAppointmentClass().equals(testObj.getAppointmentClass());
         boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
                 (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
-        boolean dateTimeRangeStartEquals = (getDateTimeRangeStart() == null) ?
-                (testObj.getDateTimeRangeStart() == null) : getDateTimeRangeStart().equals(testObj.getDateTimeRangeStart());
-        boolean dateTimeRangeEndEquals = (getDateTimeRangeEnd() == null) ?
-                (testObj.getDateTimeRangeEnd() == null) : getDateTimeRangeEnd().equals(testObj.getDateTimeRangeEnd());
+//        boolean dateTimeRangeStartEquals = (getStartRange() == null) ?
+//                (testObj.getStartRange() == null) : getStartRange().equals(testObj.getStartRange());
+//        boolean dateTimeRangeEndEquals = (getEndRange() == null) ?
+//                (testObj.getEndRange() == null) : getEndRange().equals(testObj.getEndRange());
 //        boolean appointmentsEquals = (appointments() == null) ?
 //                (testObj.appointments() == null) : appointments().equals(testObj.appointments());
-        System.out.println("VEventImpl: " + appointmentClassEquals + " " + dateTimeRangeStartEquals + " " + appointmentGroupEquals + " " + dateTimeRangeEndEquals
+        System.out.println("VEventImpl: " + appointmentClassEquals + " " +  appointmentGroupEquals + " "
                 + " ");// + appointmentsEquals);
-        return super.equals(obj) && appointmentClassEquals && dateTimeRangeStartEquals && appointmentGroupEquals
-                && dateTimeRangeEndEquals;
+        return super.equals(obj) && appointmentClassEquals && appointmentGroupEquals;
     }
     
-    @Override
-    public Stream<Temporal> stream(Temporal startTemporal)
-    {
-        Stream<Temporal> initialStream = super.stream(startTemporal);
-        // filter away too early (with Java 9 takeWhile these statements can be combined into one chained statement for greater elegance)
-        Stream<Temporal> filteredStream = initialStream
-                .filter(a -> (getDateTimeRangeStart() == null) ? true : ! VComponent.isBefore(a, getDateTimeRangeStart()));
-        // stop when too late
-        return takeWhile(filteredStream, a -> (getDateTimeRangeEnd() == null) ? true : ! VComponent.isAfter(a, getDateTimeRangeEnd()));
-    }
+//    @Override
+//    public Stream<Temporal> stream(Temporal startTemporal)
+//    {
+//        return super.stream(startTemporal);
+////        Stream<Temporal> initialStream = super.stream(startTemporal);
+//        // filter away too early (with Java 9 takeWhile these statements can be combined into one chained statement for greater elegance)
+////        Stream<Temporal> filteredStream = initialStream
+////                .filter(a -> (getDateTimeRangeStart() == null) ? true : ! VComponent.isBefore(a, getDateTimeRangeStart()));
+//        // stop when too late
+////        return takeWhile(filteredStream, a -> (getDateTimeRangeEnd() == null) ? true : ! VComponent.isAfter(a, getDateTimeRangeEnd()));
+//    }
     
     /** Make iCalendar compliant string of VEvent calendar component */
     @Override
@@ -265,19 +266,6 @@ public class VEventImpl extends VEvent<Appointment>
     {
         VEventImpl vEvent = new VEventImpl(appointmentGroups);
         VEvent.parseVEvent(vEvent, strings); // parse VEvent properties into vEvent
-        System.out.println("categories:" + vEvent.getCategories());
-//        Iterator<String> stringsIterator = strings.iterator();
-//        while (stringsIterator.hasNext())
-//        {
-//            String line = stringsIterator.next();
-//            String property = line.substring(0, line.indexOf(":"));
-//            String value = line.substring(line.indexOf(":") + 1).trim();
-//            if (property.equals(vEvent.appointmentGroupProperty().getName()))
-//            { // X-APPOINTMENT-GROUP
-//                vEvent.setAppointmentGroupStyleClass(property[1]);
-//                stringsIterator.remove();
-//            }
-//        }
         return vEvent;
     }
     
@@ -292,36 +280,65 @@ public class VEventImpl extends VEvent<Appointment>
     }
 
     /**
+     * Start of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
+     * This is not a part of an iCalendar VEvent
+     */
+    private Temporal getStartRange() { return startRange; }
+    private Temporal startRange;
+    private void setStartRange(Temporal start) { this.startRange = start; }
+    
+    /**
+     * End of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
+     */
+    public Temporal getEndRange() { return endRange; }
+    private Temporal endRange;
+    private void setEndRange(Temporal end) { this.endRange = end; }
+    /**
      * Returns appointments for Agenda that should exist between dateTimeRangeStart and dateTimeRangeEnd
      * based on VEvent properties.  Uses dateTimeRange previously set in VEvent.
      * @param <Appointment>
      * 
      * @return created appointments
      */
-    @Override
     public Collection<Appointment> makeInstances()
     {
-//        System.out.println("range: " + getDateTimeRangeStart() + " " + getDateTimeRangeEnd());
-        if ((getDateTimeRangeStart() == null) || (getDateTimeRangeStart() == null)) throw new IllegalArgumentException("can't make instances without setting date/time range first");
-        boolean wholeDay = getDateTimeStart() instanceof LocalDate;
+        if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
+        boolean wholeDay = getStartRange() instanceof LocalDate;
         List<Appointment> madeAppointments = new ArrayList<>();
-//        stream(getDateTimeStart()).forEach(System.out::println);
-//        System.exit(0);
-        stream(getDateTimeStart()) // TODO - TRY STARTING AT getDateTimeRangeStart() FOR IMPROVED EFFICIENCY
-                .forEach(d -> {
-                    LocalDateTime startLocalDateTime = VComponent.localDateTimeFromTemporal(d);
-                    Appointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
-                    appt.setStartLocalDateTime(startLocalDateTime);
-                    appt.setEndLocalDateTime(startLocalDateTime.plusNanos(getDurationInNanos()));
-                    appt.setDescription(getDescription());
-                    appt.setSummary(getSummary());
-                    appt.setAppointmentGroup(getAppointmentGroup());
-                    appt.setWholeDay(wholeDay);
-                    madeAppointments.add(appt);   // add appointments to return argument
-                    instances().add(appt); // add appointments to this repeat's collection
-                });
-
+        Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! VComponent.isBefore(d, getStartRange()));
+        Stream<Temporal> removedTooLate = takeWhile(removedTooEarly, a -> ! VComponent.isAfter(a, getEndRange()));
+        removedTooLate.forEach(d ->
+        {
+            LocalDateTime startLocalDateTime = VComponent.localDateTimeFromTemporal(d);
+            Appointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
+            appt.setStartLocalDateTime(startLocalDateTime);
+            appt.setEndLocalDateTime(startLocalDateTime.plusNanos(getDurationInNanos()));
+            appt.setDescription(getDescription());
+            appt.setSummary(getSummary());
+            appt.setAppointmentGroup(getAppointmentGroup());
+            appt.setWholeDay(wholeDay);
+            madeAppointments.add(appt);   // add appointments to return argument
+            instances().add(appt); // add appointments to this repeat's collection
+        });
         return madeAppointments;
+    }
+    
+    /**
+     * Returns appointments for Agenda that should exist between dateTimeRangeStart and dateTimeRangeEnd
+     * based on VEvent properties.  Uses dateTimeRange previously set in VEvent.
+     * @param <Appointment>
+     * 
+     * @param startRange
+     * @param endRange
+     * @return created appointments
+     */
+    @Override
+    public Collection<Appointment> makeInstances(Temporal startRange, Temporal endRange)
+    {
+        if (VComponent.isAfter(startRange, endRange)) throw new DateTimeException("startTemporal must be after endTemporal");
+        setEndRange(endRange);
+        setStartRange(startRange);
+        return makeInstances();
     }
  
     
@@ -342,9 +359,9 @@ public class VEventImpl extends VEvent<Appointment>
     @Override
     public WindowCloseType edit(
               LocalDateTime dateTimeStartInstanceOld // TODO - NEED TO PASS APPOINTMENT TO ACCOUNT FOR APPOINTMENTS WITH MATCHING DATE/TIMES
-            , Appointment appointment
+            , Appointment appointment // REPLACE WITH START AND END DATES TO BE ABLE TO REPLACE APPOINTMENT WITH TYPE T
             , VComponent<Appointment> VComponentOld
-            , Collection< Appointment> appointments
+            , Collection<Appointment> appointments
             , Collection<VComponent<Appointment>> vEvents
             , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
             , Callback<Collection<VComponent<Appointment>>, Void> writeVEventsCallback)
@@ -448,18 +465,18 @@ public class VEventImpl extends VEvent<Appointment>
                     }
 
                     // Split instance dates between this and newVEvent
-                    if (getRRule().getInstances() != null)
+                    if (getRRule().getRecurrences() != null)
                     {
-                        getRRule().getInstances().clear();
-                        final Iterator<LocalDateTime> instanceIterator = vEventOld.getRRule().getInstances().iterator();
-                        while (instanceIterator.hasNext())
+                        getRRule().getRecurrences().clear();
+                        final Iterator<Temporal> recurrenceIterator = vEventOld.getRRule().getRecurrences().iterator();
+                        while (recurrenceIterator.hasNext())
                         {
-                            LocalDateTime d = instanceIterator.next();
-                            if (d.isBefore(dateTimeStartInstanceNew))
+                            Temporal d = recurrenceIterator.next();
+                            if (VComponent.isBefore(d, dateTimeStartInstanceNew))
                             {
-                                instanceIterator.remove();
+                                recurrenceIterator.remove();
                             } else {
-                                vEventOld.getRRule().getInstances().add(d);
+                                vEventOld.getRRule().getRecurrences().add(d);
                             }
                         }
                     }
@@ -494,7 +511,7 @@ public class VEventImpl extends VEvent<Appointment>
     
                     // modify this VEvent for recurrence
                     vEventOld.copyTo(this);                
-                    getRRule().getInstances().add(dateTimeStartInstanceOld);
+                    getRRule().getRecurrences().add(dateTimeStartInstanceOld);
                     break;
                 }
             }

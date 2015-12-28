@@ -8,7 +8,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ ICalendarAgendaEditTest.class
               , ICalendarAgendaRenderTest.class
               , ICalendarCopyTest.class
-              , ICalendarDateRangeTest.class
+//              , ICalendarDateRangeTest.class
               , ICalendarDateTest.class
               , ICalendarDeleteTest.class
               , ICalendarEditTest.class

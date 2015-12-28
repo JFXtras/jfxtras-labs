@@ -128,10 +128,10 @@ public class RRule
      * the recurrence instance.  The UID matches the UID of the parent calendar component.
      * See 3.8.4.4 of RFC 5545 iCalendar
      */
-    public Set<LocalDateTime> getInstances() { return instances; }
-    private Set<LocalDateTime> instances = new HashSet<>();
-    public void setInstances(Set<LocalDateTime> dateTimes) { instances = dateTimes; }
-    public RRule withInstances(Set<LocalDateTime> dateTimes) { setInstances(dateTimes); return this; }
+    public Set<Temporal> getRecurrences() { return recurrences; }
+    private Set<Temporal> recurrences = new HashSet<>();
+    public void setRecurrences(Set<Temporal> temporal) { recurrences = temporal; }
+    public RRule withRecurrences(Set<Temporal> temporal) { setRecurrences(temporal); return this; }
 //    private boolean instancesEquals(Collection<LocalDateTime> instancesTest)
 //    {
 //        Iterator<LocalDateTime> dateIterator = getInstances().iterator();
@@ -157,10 +157,10 @@ public class RRule
                 e.printStackTrace();
             }
         }
-        Iterator<LocalDateTime> i = source.getInstances().iterator();
+        Iterator<Temporal> i = source.getRecurrences().iterator();
         while (i.hasNext())
         {
-            destination.getInstances().add(i.next());
+            destination.getRecurrences().add(i.next());
         }
     }
     
@@ -183,8 +183,8 @@ public class RRule
                 (testObj.getCount() == null) : getCount().equals(testObj.getCount());
         boolean frequencyEquals = (getFrequency() == null) ?
                 (testObj.getFrequency() == null) : getFrequency().equals(testObj.getFrequency());
-        boolean recurrencesEquals = (getInstances() == null) ?
-                (testObj.getInstances() == null) : getInstances().equals(testObj.getInstances());
+        boolean recurrencesEquals = (getRecurrences() == null) ?
+                (testObj.getRecurrences() == null) : getRecurrences().equals(testObj.getRecurrences());
 
         System.out.println("RRule " + countEquals + " " + frequencyEquals + " " + recurrencesEquals);
         return countEquals && frequencyEquals && recurrencesEquals;
@@ -355,13 +355,13 @@ public class RRule
     /** Stream of date/times made after applying all modification rules.
      * Stream is infinite if COUNT or UNTIL not present or ends when COUNT or UNTIL condition
      * is met.
-     * Starts on startDateTime, which must be a valid event date/time, not necessarily the
+     * Starts on startDateTime, which MUST be a valid event date/time, not necessarily the
      * first date/time (DTSTART) in the sequence. */
-    public Stream<Temporal> stream(Temporal startTemporal)
+    public Stream<Temporal> stream(Temporal start)
     {
-        Stream<Temporal> filteredStream = (getInstances().size() > 0) ?
-                getFrequency().stream(startTemporal).filter(d -> ! getInstances().contains(d))
-               : getFrequency().stream(startTemporal);
+        Stream<Temporal> filteredStream = (getRecurrences().size() > 0) ?
+                getFrequency().stream(start).filter(d -> ! getRecurrences().contains(d))
+               : getFrequency().stream(start);
         if (getCount() > 0)
         {
             return filteredStream.limit(getCount());

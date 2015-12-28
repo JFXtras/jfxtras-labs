@@ -122,17 +122,16 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         setChronoUnit(chronoUnit);
     }
 
-    @Override
-    public Stream<Temporal> stream(Temporal startDateTime)
+//    @Override
+    public Stream<Temporal> stream(Temporal start)
     {
         getChronoUnit().set(initialChronoUnit); // start with Frequency ChronoUnit when making a stream
-        Stream<Temporal> stream = Stream.iterate(startDateTime, (a) -> { return a.with(adjuster()); });
+        Stream<Temporal> stream = Stream.iterate(start, (a) -> { return a.with(adjuster()); });
         Iterator<Rule> rulesIterator = getByRules().stream().sorted().iterator();
         while (rulesIterator.hasNext())
         {
             Rule rule = rulesIterator.next();
-//            System.out.println("chronoUnit: " + getChronoUnit() + rule.getByRule());
-            stream = rule.stream(stream, getChronoUnit(), startDateTime);
+            stream = rule.stream(stream, getChronoUnit(), start);
         }
         return stream;
     }

@@ -4,8 +4,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -32,6 +34,11 @@ import jfxtras.scene.control.agenda.Agenda;
  * Agenda to render.
  * 
  * VComponents contains the iCalendar objects.
+ * 
+ * Appointment rendering:
+ * Appointment rendering is handled by Agenda.  Agenda refreshes its rendering of appointments when changes to the
+ * appointments ObservableList occur.
+ * ICalendarAgenda handles changes to the vComponents list and refreshes refreshed when Agenda's localDateTimeRangeCallback fires.
  * 
  * @author David Bal
  *
@@ -90,7 +97,7 @@ public class ICalendarAgenda extends Agenda {
 
     // listen for additions to appointments from agenda. This listener must be removed and added back when a change
     // in the time range  occurs.
-    private final ListChangeListener<Appointment> appointmentListener = (ListChangeListener.Change<? extends Appointment> change) ->
+    private final ListChangeListener<Appointment> appointmentsListener = (ListChangeListener.Change<? extends Appointment> change) ->
     {
         while (change.next())
         {
@@ -103,10 +110,10 @@ public class ICalendarAgenda extends Agenda {
                         { // make new VComponent
                             VComponent<Appointment> newVComponent = VComponentFactory
                                     .newVComponent(getVEventClass(), a, appointmentGroups());
-                            LocalDateTime dateTimeRangeStart = dateTimeRange.getStartLocalDateTime();
-                            LocalDateTime dateTimeRangeEnd = dateTimeRange.getEndLocalDateTime();
-                            newVComponent.setDateTimeRangeStart(dateTimeRangeStart);
-                            newVComponent.setDateTimeRangeEnd(dateTimeRangeEnd);
+                            LocalDateTime startRange = getDateTimeRange().getStartLocalDateTime();
+                            LocalDateTime endRange = getDateTimeRange().getEndLocalDateTime();
+                            newVComponent.setStartRange(startRange);
+                            newVComponent.setEndRange(endRange);
                             newVComponent.setUidGeneratorCallback(getUidGeneratorCallback());
                             newVComponent.setUniqueIdentifier(getUidGeneratorCallback().call(null));
                             System.out.println("add vEvemt " + a.getStartLocalDateTime());
@@ -118,14 +125,28 @@ public class ICalendarAgenda extends Agenda {
                 }
             }
         };
-        
-        InvalidationListener vComponentListener = (InvalidationListener) obs -> 
+
+        // listen for changes to vComponents.
+        private final ListChangeListener<VComponent<Appointment>> vComponentsListener = (ListChangeListener.Change<? extends VComponent<Appointment>> change) ->
         {
-            appointments().removeListener(appointmentListener);
-            System.out.println("change vComponent " + this.displayedLocalDateTime().get() + " " + vComponents().size());
-            appointments().addAll(vComponents.get(0).makeInstances());
-            if (displayedLocalDateTime() != null) refresh();
-            appointments().addListener(appointmentListener);
+            while (change.next())
+            {
+                if (change.wasAdded() && dateTimeRange != null) // don't make appointment if range is not set
+                {
+                    LocalDateTime start = getDateTimeRange().getStartLocalDateTime();
+                    LocalDateTime end = getDateTimeRange().getEndLocalDateTime();
+                    List<Appointment> newAppointments = new ArrayList<>();
+                    change.getAddedSubList()
+                            .stream()
+                            .forEach(v -> newAppointments.addAll(v.makeInstances(start, end)));
+                    appointments().addAll(newAppointments);
+                } else if (change.wasRemoved())
+                {
+                    change.getRemoved()
+                        .stream()
+                        .forEach(v -> appointments().removeIf(a -> v.instances().stream().anyMatch(a2 -> a2 == a)));
+                }
+            }
         };
         
     // CONSTRUCTOR
@@ -133,32 +154,19 @@ public class ICalendarAgenda extends Agenda {
     {
         super();
         Locale myLocale = Locale.getDefault();
+        appointments().addListener((InvalidationListener) obs -> System.out.println("changed appointments:"));
 
-//        DEFAULT_APPOINTMENT_GROUPS.stream().forEach(g -> ((ICalendarAgenda.AppointmentGroupImpl) g).makeIcon());
-//        DEFAULT_APPOINTMENT_GROUPS = javafx.collections.FXCollections.observableArrayList( // TODO - I WOULD LIKE TO MAKE THIS STATIC, BUT I GET AN ERROR - ICONS ARE NULL, MAYBE RESOURSE CAN'T BE RESOLVED YET?
-//                IntStream
-//                .range(0, 24)
-//                .mapToObj(i -> new ICalendarAgenda.AppointmentGroupImpl()
-//                       .withStyleClass("group" + i)
-////                       .withKey(i)
-//                       .withDescription("group" + (i < 10 ? "0" : "") + i))
-//                .collect(Collectors.toList()));
-
-//        System.out.println(DEFAULT_APPOINTMENT_GROUPS.size());
-//        DEFAULT_APPOINTMENT_GROUPS.stream().forEach(a -> System.out.println(((ICalendarAgenda.AppointmentGroupImpl) a).getIcon()));
-//        System.exit(0);
-        
         // setup default ResourceBundle // TODO - GET PATH BETTER WAY
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Bundle", myLocale);
         Settings.setup(resources);
 
         // Listen for changes to appointments (additions and deletions)
-        appointments().addListener(appointmentListener);
+        appointments().addListener(appointmentsListener);
 
-//        // Listen for changes to vComponents (additions and deletions)
-        vComponents().addListener(vComponentListener);
+        // Listen for changes to vComponents (additions and deletions)
+//        vComponents().addListener(vComponentsListener);
         
-        // CHANGE DEFAULT EDIT POPUP - new popup has repeat options
+        // CHANGE DEFAULT EDIT POPUP - replace default popup with one with repeat options
         setEditAppointmentCallback((Appointment appointment) ->
         {
             // Match appointment to VComponent
@@ -168,7 +176,7 @@ public class ICalendarAgenda extends Agenda {
                     .findFirst()
                     .get();
 
-            appointments().removeListener(appointmentListener); // remove listener to prevent making extra vEvents during edit
+            appointments().removeListener(appointmentsListener); // remove listener to prevent making extra vEvents during edit
             Stage editPopup = new EditPopupLoader(
                       appointment
                     , vevent
@@ -178,15 +186,16 @@ public class ICalendarAgenda extends Agenda {
                     , a -> { this.refresh(); return null; }); // refresh agenda
             
             // remove listener to prevent making extra vEvents during edit
-            editPopup.setOnShowing((windowEvent) -> appointments().removeListener(appointmentListener));
+            editPopup.setOnShowing((windowEvent) -> appointments().removeListener(appointmentsListener));
             editPopup.show();
-            editPopup.setOnHiding((windowEvent) -> appointments().addListener(appointmentListener)); // return listener
+            editPopup.setOnHiding((windowEvent) -> appointments().addListener(appointmentsListener)); // return listener
             return null;
         });
         
         // LISTEN FOR AGENDA RANGE CHANGES
         setLocalDateTimeRangeCallback(dateTimeRange ->
         {
+            System.out.println("range callback:");
             this.dateTimeRange = dateTimeRange;
             refresh();
             return null; // return argument for the Callback
@@ -206,16 +215,18 @@ public class ICalendarAgenda extends Agenda {
             // Remove instances and appointments
             vComponents().stream().forEach(v -> v.instances().clear());
     
-            appointments().removeListener(appointmentListener); // remove appointmentListener to prevent making extra vEvents during refresh
+            appointments().removeListener(appointmentsListener); // remove appointmentListener to prevent making extra vEvents during refresh
             appointments().clear();
             vComponents().stream().forEach(r ->
             {
-                r.setDateTimeRangeStart(dateTimeRange.getStartLocalDateTime());
-                r.setDateTimeRangeEnd(dateTimeRange.getEndLocalDateTime());
-                Collection<Appointment> newAppointments = r.makeInstances();
+//                r.setDateTimeRangeStart(dateTimeRange.getStartLocalDateTime());
+//                r.setDateTimeRangeEnd(dateTimeRange.getEndLocalDateTime());
+                LocalDateTime start = getDateTimeRange().getStartLocalDateTime();
+                LocalDateTime end = getDateTimeRange().getEndLocalDateTime();
+                Collection<Appointment> newAppointments = r.makeInstances(start, end);
                 appointments().addAll(newAppointments);
             });
-            appointments().addListener(appointmentListener); // add back appointmentListener
+            appointments().addListener(appointmentsListener); // add back appointmentListener
         }
     }
     

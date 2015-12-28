@@ -25,10 +25,12 @@ public class ICalendarMakeAppointmentsTest extends ICalendarTestAbstract
     public void makeAppointmentsDailyTest1()
     {
         VEventImpl vevent = getDaily1();
-        vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
-        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
+        LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<Appointment> appointments = new ArrayList<Appointment>();
-        Collection<Appointment> newAppointments = vevent.makeInstances();
+        Collection<Appointment> newAppointments = vevent.makeInstances(start, end);
+        System.out.println("newAppointments:" + newAppointments.size());
+        newAppointments.forEach(a -> System.out.println(a.getStartLocalDateTime()));
         appointments.addAll(newAppointments);       
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 15, 10, 0)
@@ -59,10 +61,10 @@ public class ICalendarMakeAppointmentsTest extends ICalendarTestAbstract
     {
         VEventImpl vevent = getWeekly2();
         vevent.setAppointmentClass(getClazz());
-        vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 12, 20, 0, 0));
-        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 12, 27, 0, 0));
+        LocalDateTime start = LocalDateTime.of(2015, 12, 20, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2015, 12, 27, 0, 0);
         List<Appointment> appointments = new ArrayList<Appointment>();
-        Collection<Appointment> newAppointments = vevent.makeInstances();
+        Collection<Appointment> newAppointments = vevent.makeInstances(start, end);
         appointments.addAll(newAppointments);
 
         Iterator<Appointment> appointmentIterator = appointments.iterator();

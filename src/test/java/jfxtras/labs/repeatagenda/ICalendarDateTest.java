@@ -597,10 +597,12 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     public void getWeekly2TestTwice()
     {
         VEventImpl vevent = getWeekly2();
-        vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 8, 0, 0));
-        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 15, 0, 0));
+        LocalDateTime start = LocalDateTime.of(2015, 11, 8, 0, 0);
+//        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 15, 0, 0));
         List<Temporal> madeDates = vevent
-                .stream(vevent.getDateTimeStart())
+                .stream(start)
+                .peek(System.out::println)
+                .limit(2)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 11, 10, 0)
@@ -608,10 +610,12 @@ public class ICalendarDateTest extends ICalendarTestAbstract
                 ));
         assertEquals(expectedDates, madeDates);
 
-        vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 12, 6, 0, 0));
-        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 12, 13, 0, 0));
+        LocalDateTime start2 = LocalDateTime.of(2015, 12, 6, 0, 0);
+//        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 12, 13, 0, 0));
         List<Temporal> madeDates2 = vevent
-                .stream(vevent.getDateTimeStart())
+                .stream(start2)
+                .peek(System.out::println)
+                .limit(3)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates2 = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 12, 7, 10, 0)
@@ -619,6 +623,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
               , LocalDateTime.of(2015, 12, 11, 10, 0)
                 ));
         assertEquals(expectedDates2, madeDates2);
+        System.out.println("done2:");
     }
     
     

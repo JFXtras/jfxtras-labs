@@ -3,6 +3,7 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.fre
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -10,6 +11,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.util.StringConverter;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule.ByRules;
@@ -55,11 +57,14 @@ public interface Frequency {
 
     /** Resulting stream of start date/times by applying Frequency temporal adjuster and all, if any,
      * Rules.
-     * Starts on startDateTime, which must be a valid event date/time, but not necessarily the
+     * Starts on startDateTime, which MUST be a valid occurrence date/time, but not necessarily the
      * first date/time (DTSTART) in the sequence. A later startDateTime can be used to more efficiently
-     * get to later dates in the stream. */
-    Stream<Temporal> stream(Temporal startDateTime);
-
+     * get to later dates in the stream.
+     * 
+     * @param start - starting point of stream (MUST be a valid occurrence date/time)
+     * @return
+     */
+    Stream<Temporal> stream(Temporal start);
 
     /** Which of the enum type FrenquencyType the implementing class represents */
     FrequencyType frequencyType();
@@ -68,6 +73,27 @@ public interface Frequency {
      * For example, Weekly class advances the dates by INTERVAL Number of weeks. */
     TemporalAdjuster adjuster();
 
+    /**
+     * Find previous occurrence date to start the stream
+     * 
+     * @param dateTimeStart - DTSTART
+     * @param start
+     * @return
+     */
+    // TODO - FIX THIS - NOT WORKING FOR RANDOM DATES
+    default Temporal makeFrequencyOccurrence(Temporal dateTimeStart, Temporal start)
+    {
+        if (VComponent.isBefore(start, dateTimeStart)) return dateTimeStart;
+        Iterator<Temporal> i = Stream.iterate(start, a -> a.with(adjuster())).iterator();
+        Temporal last = null;
+        while (i.hasNext())
+        {
+            Temporal current = i.next();
+            if (VComponent.isAfter(current, start)) return last;
+            last = current;
+        }
+        return null; // should never get here
+    }
     /**
      * Checks to see if object contains required properties.  Returns empty string if it is
      * valid.  Returns string of errors if not valid.

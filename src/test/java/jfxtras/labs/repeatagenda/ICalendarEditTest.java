@@ -35,11 +35,11 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     public void editAllDateTimeDaily2()
     {
         VEventImpl vevent = getDaily2();
-        vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
-        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
+        LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<VComponent<Appointment>> vevents = new ArrayList<>(Arrays.asList(vevent));
         List<Appointment> appointments = new ArrayList<Appointment>();
-        Collection<Appointment> newAppointments = vevent.makeInstances();
+        Collection<Appointment> newAppointments = vevent.makeInstances(start, end);
         appointments.addAll(newAppointments);
         assertEquals(3, appointments.size()); // check if there are only 3 appointments
         VEventImpl veventOld = new VEventImpl(vevent);
@@ -70,8 +70,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         expectedVEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 9, 45));
         expectedVEvent.setDescription("Daily2 Description");
         expectedVEvent.setDurationInNanos(4500L * NANOS_IN_SECOND);
-        expectedVEvent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
-        expectedVEvent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
+//        expectedVEvent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
+//        expectedVEvent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         expectedVEvent.setRRule(new RRule().withCount(6));
         expectedVEvent.getRRule().setFrequency(new Daily().withInterval(3));
         expectedVEvent.setSummary("Daily2 Summary");
@@ -99,10 +99,10 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // Individual Appointment
         VEventImpl vevent = getDaily2();
         List<VComponent<Appointment>> vevents = new ArrayList<>(Arrays.asList(vevent));
-        vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
-        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
+        LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<Appointment> appointments = new ArrayList<Appointment>();
-        Collection<Appointment> newAppointments = vevent.makeInstances();
+        Collection<Appointment> newAppointments = vevent.makeInstances(start, end);
         appointments.addAll(newAppointments);
         assertEquals(3, appointments.size()); // check if there are only 3 appointments
         VEventImpl veventOld = new VEventImpl(vevent);
@@ -153,10 +153,10 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // Individual Appointment
         VEventImpl vevent = getDaily2();
         List<VComponent<Appointment>> vevents = new ArrayList<>(Arrays.asList(vevent));
-        vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
-        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
+        LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<Appointment> appointments = new ArrayList<Appointment>();
-        Collection<Appointment> newAppointments = vevent.makeInstances();
+        Collection<Appointment> newAppointments = vevent.makeInstances(start, end);
         appointments.addAll(newAppointments);
         assertEquals(3, appointments.size()); // check if there are only 3 appointments
         VEventImpl veventOld = new VEventImpl(vevent);
@@ -239,10 +239,10 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // Individual Appointment
         VEventImpl vevent = getDaily6();
         List<VComponent<Appointment>> vevents = new ArrayList<>(Arrays.asList(vevent));
-        vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
-        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
+        LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         Set<Appointment> appointments = new TreeSet<Appointment>((a,b) -> a.getStartLocalDateTime().compareTo(b.getStartLocalDateTime()));
-        Collection<Appointment> newAppointments = vevent.makeInstances();
+        Collection<Appointment> newAppointments = vevent.makeInstances(start, end);
         appointments.addAll(newAppointments);
         assertEquals(4, appointments.size()); // check if there are only 3 appointments
         VEventImpl veventOld = new VEventImpl(vevent);
@@ -337,15 +337,13 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         assertEquals(expectedAppointment5, editedAppointment5); // Check to see if repeat-generated appointment changed correctly
 
         // All dates check
-        vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 1, 0, 0));
-        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 12, 31, 0, 0));
+        LocalDateTime start2 = LocalDateTime.of(2015, 11, 1, 0, 0);
+        LocalDateTime end2 = LocalDateTime.of(2015, 12, 31, 0, 0);
         appointments.clear();
-        appointments.addAll(vevent.makeInstances());
+        appointments.addAll(vevent.makeInstances(start2, end2));
         
         VEventImpl veventNew = (VEventImpl) vevents.get(1);
-        veventNew.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 1, 0, 0));
-        veventNew.setDateTimeRangeEnd(LocalDateTime.of(2015, 12, 31, 0, 0));
-        appointments.addAll(veventNew.makeInstances());
+        appointments.addAll(veventNew.makeInstances(start2, end2));
         List<LocalDateTime> madeDates2 = appointments.stream().map(a -> a.getStartLocalDateTime()).collect(Collectors.toList());
         
         List<LocalDateTime> expectedDates2 = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -375,10 +373,10 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // Individual Appointment
         VEventImpl vevent = getDaily2();
         List<VComponent<Appointment>> vevents = new ArrayList<>(Arrays.asList(vevent));
-        vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
-        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
+        LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<Appointment> appointments = new ArrayList<Appointment>();
-        Collection<Appointment> newAppointments = vevent.makeInstances();
+        Collection<Appointment> newAppointments = vevent.makeInstances(start, end);
         appointments.addAll(newAppointments);
         assertEquals(3, appointments.size()); // check if there are only 3 appointments
         VEventImpl veventOld = new VEventImpl(vevent);
@@ -408,8 +406,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         expectedVEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         expectedVEvent.setDescription("Daily2 Description");
         expectedVEvent.setDurationInNanos(5400L * NANOS_IN_SECOND);
-        expectedVEvent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
-        expectedVEvent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
+//        expectedVEvent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
+//        expectedVEvent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         expectedVEvent.setSummary("Daily2 Summary");
         expectedVEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
         expectedVEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
@@ -423,11 +421,11 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     public void editCancelDaily2()
     {
         VEventImpl vevent = getDaily2();
-        vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
-        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
+        LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<VComponent<Appointment>> vevents = new ArrayList<>(Arrays.asList(vevent));
         List<Appointment> appointments = new ArrayList<>();
-        Collection<Appointment> newAppointments = vevent.makeInstances();
+        Collection<Appointment> newAppointments = vevent.makeInstances(start, end);
         appointments.addAll(newAppointments);
         VEventImpl veventOld = new VEventImpl(vevent);
         
@@ -458,11 +456,11 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     public void editWholeDay1()
     {
         VEventImpl vevent = getWholeDayDaily3();
-        vevent.setDateTimeRangeStart(LocalDate.of(2015, 11, 15));
-        vevent.setDateTimeRangeEnd(LocalDate.of(2015, 11, 22));
+        LocalDate start = LocalDate.of(2015, 11, 15);
+        LocalDate end = LocalDate.of(2015, 11, 22);
         List<VComponent<Appointment>> vevents = new ArrayList<>(Arrays.asList(vevent));
         List<Appointment> appointments = new ArrayList<>();
-        Collection<Appointment> newAppointments = vevent.makeInstances();
+        Collection<Appointment> newAppointments = vevent.makeInstances(start, end);
         appointments.addAll(newAppointments);
         assertEquals(3, appointments.size()); // check if there are 3 appointments
         VEventImpl veventOld = new VEventImpl(vevent);
@@ -494,8 +492,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         
         // Check edited VEvent
         VEventImpl expectedVEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
-        expectedVEvent.setDateTimeRangeStart(LocalDate.of(2015, 11, 15));
-        expectedVEvent.setDateTimeRangeEnd(LocalDate.of(2015, 11, 22));
+//        expectedVEvent.setDateTimeRangeStart(LocalDate.of(2015, 11, 15));
+//        expectedVEvent.setDateTimeRangeEnd(LocalDate.of(2015, 11, 22));
         expectedVEvent.setAppointmentGroup(appointmentGroups.get(7));
         expectedVEvent.setDateTimeStart(LocalDate.of(2015, 11, 10));
         expectedVEvent.setDateTimeEnd(LocalDate.of(2015, 11, 12));
