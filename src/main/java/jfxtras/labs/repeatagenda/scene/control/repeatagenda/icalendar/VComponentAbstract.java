@@ -628,75 +628,201 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         return vComponent;
     }
 
-    private static final int CACHE_RANGE = 50; // TODO number of values before start to be store in cache
-    private List<Temporal> temporalCache = new ArrayList<>(); // cache of start dates or date/times
-    private boolean cacheSortNeeded = false;
+    private static final int CACHE_RANGE = 51; // number of values in cache
+    private static final int CACHE_SKIP = 20; // store every nth value in the cache
+    private int skipCounter = 0;
+    private Temporal[] temporalCache2;// = new Temporal[CACHE_RANGE];
+    private int cachedValues = 0;
+    private int cacheStart = 0; // start index where cache values are stored (starts in middle)
+    private int cacheEnd = 0; // end index where cache values are stored
     /** Stream of date/times that indicate the start of the event(s).
      * For a VEvent without RRULE the stream will contain only one date/time element.
      * A VEvent with a RRULE the stream contains more than one date/time element.  It will be infinite 
      * if COUNT or UNTIL is not present.  The stream has an end when COUNT or UNTIL condition is met.
      * Starts on startDateTime, which must be a valid event date/time, not necessarily the
-     * first date/time (DTSTART) in the sequence. */
-    public Stream<Temporal> stream2(Temporal start)
+     * first date/time (DTSTART) in the sequence. */   
+    public Stream<Temporal> stream(Temporal start)
     {
-        System.out.println("cache:" + temporalCache.size());
-        final Temporal cacheStart;
-        final Temporal cacheEnd;
-        Stream<Temporal> stream0 = null;
+        final Temporal earliestCacheValue;
+        final Temporal latestCacheValue;
+        final Temporal match;
+        int matchIndex = -1; // temp - for testing
         
-        // use cache if available
-        if (! temporalCache.isEmpty())
+        // use cache if available to find matching start date or date/time
+        if (temporalCache2 != null)
         {
-            if (cacheSortNeeded)
+            // Reorder cache to maintain centered and sorted
+            final int len = temporalCache2.length;
+            final Temporal[] p1;
+            final Temporal[] p2;
+            if (cacheEnd < cacheStart) // high values had wrapped
             {
-                Collections.sort(temporalCache, VComponent.TEMPORAL_COMPARATOR);
-                cacheSortNeeded = false;
-            }
-            if (! VComponent.isBefore(start, temporalCache.get(0)))
+                p1 = Arrays.copyOfRange(temporalCache2, cacheStart, len-1);
+                p2 = Arrays.copyOfRange(temporalCache2, 0, cacheEnd);            
+            } else if (cacheStart > cacheEnd) // low values had wrapped
             {
-                stream0 = temporalCache.stream();                
-                cacheStart = temporalCache.get(0);
-                cacheEnd = temporalCache.get(temporalCache.size()-1);
+                p2 = Arrays.copyOfRange(temporalCache2, cacheStart, len-1);
+                p1 = Arrays.copyOfRange(temporalCache2, 0, cacheEnd);                        
             } else
             {
-                temporalCache.clear();
-                cacheStart = getDateTimeStart();
-                cacheEnd = getDateTimeStart();
+                p1 = null;
+                p2 = null;
+            }
+            if (p1 != null)
+            { // reorder
+                System.out.println("reordering:");
+                int total = p1.length + p2.length;
+                cacheStart = (len-total)/2;
+                int p1Index = 0;
+                int p2Index = 0;
+                for (int i=cacheStart; i<temporalCache2.length; i++)
+                {
+                    if (p1Index < p1.length-1)
+                    {
+                        temporalCache2[i] = p1[p1Index];                
+                        p1Index++;
+                    } else if (p1Index < p2.length-1)
+                    {
+                        temporalCache2[i] = p2[p2Index];
+                        p2Index++;
+                    } else
+                    {
+                        cacheEnd = i;
+                        break;
+                    }
+                }
+            }
+
+            // Find match in cache
+            earliestCacheValue = temporalCache2[cacheStart];
+            latestCacheValue = temporalCache2[cacheEnd];
+            System.out.println("cache dates:" + earliestCacheValue + " " + latestCacheValue);
+            if ((! VComponent.isBefore(start, earliestCacheValue)))
+            {
+                Temporal m = latestCacheValue;
+                for (int i=cacheStart; i<cacheEnd; i++)
+                {
+//                    System.out.println("got:" + i + " " + temporalCache2[i] +" " + start);
+                    if (VComponent.isAfter(temporalCache2[i], start))
+                    {
+                        m = temporalCache2[i-1];
+                        matchIndex = i; // temp - for testing
+                        System.out.println("got match:" + i);
+                        break;
+                    }
+                }
+                match = m;
+            } else
+            {
+//                temporalCache2 = new Temporal[CACHE_RANGE];
+                temporalCache2[cacheStart] = getDateTimeStart();
+                match = getDateTimeStart();
             }
         } else
         {
-            cacheStart = getDateTimeStart();
-            cacheEnd = getDateTimeStart();
+            System.out.println("init temoralcache2:");
+            temporalCache2 = new Temporal[CACHE_RANGE];
+            temporalCache2[cacheStart] = getDateTimeStart();
+            match = getDateTimeStart();
+            earliestCacheValue = getDateTimeStart();
+            latestCacheValue = getDateTimeStart();
         }
-        System.out.println("start end:" + cacheStart + " " + cacheEnd);
+        System.out.println("match:" + match + " " + matchIndex);
+//        System.out.println("start end:" + cacheStart + " " + cacheEnd);
         final Stream<Temporal> stream1;
         if (getRRule() == null)
         { // if individual event
-            stream1 = Arrays.asList(cacheEnd)
+            stream1 = Arrays.asList(match)
                     .stream()
                     .filter(d -> ! VComponent.isBefore(d, start));
         } else
         { // if has recurrence rule
-            stream1 = (stream0 == null) ? getRRule().stream(cacheEnd)
-                    : Stream.concat(stream0, getRRule().stream(cacheEnd).skip(1));
+            stream1 = getRRule().stream(match);
         }
         Stream<Temporal> stream2 = (getRDate() == null) ? stream1 : getRDate().stream(stream1, start); // add recurrence list
         Stream<Temporal> stream3 = (getExDate() == null) ? stream2 : getExDate().stream(stream2, start); // remove exceptions
         Stream<Temporal> stream4 = stream3
                 .peek(t ->
                 { // save new items in cache
-                    if (VComponent.isBefore(t, cacheStart))
+//                    System.out.println("add:" + t + " " + cacheStart + " " + cacheEnd);
+                    if (VComponent.isBefore(t, earliestCacheValue))
                     {
-                        cacheSortNeeded = true;
-                        temporalCache.add(t);
+                        if (skipCounter == CACHE_SKIP)
+                        {
+//                            System.out.println("add:" + t);
+                            cacheStart--;
+                            if (cacheStart < 0) cacheStart = CACHE_RANGE - 1;
+                            if (cacheStart == cacheEnd) cacheEnd--; // just overwrote oldest value - push cacheEnd down
+                            temporalCache2[cacheStart] = t;
+//                            cachedValues++;
+                            skipCounter = 0;
+                        } else skipCounter++;
+//                        System.out.println("temp:" + temporalCache.size());
                     }
-                    if (VComponent.isAfter(t, cacheEnd)) temporalCache.add(t);
+                    if (VComponent.isAfter(t, latestCacheValue))
+                    {
+                        if (skipCounter == CACHE_SKIP)
+                        {
+                            cacheEnd++;
+                            if (cacheEnd == CACHE_RANGE) cacheEnd = 0;
+                            if (cacheStart == cacheEnd) cacheStart++; // just overwrote oldest value - push cacheStart up
+                            temporalCache2[cacheEnd] = t;
+//                            System.out.println("added:" + cacheEnd + " " + t);
+//                            cachedValues++;
+                            skipCounter = 0;
+                        } else skipCounter++;
+                    }
                 })
                 .filter(t -> ! VComponent.isBefore(t, start)); // remove too early events;
+//        System.out.println("cache2:" + cacheStart + " " + cacheEnd);
+//        Arrays.stream(temporalCache2).forEach(System.out::println);
         return stream4;
     }
+//    private static <E> E[] recenter(E[] array, int start, int end)
+//    {
+//        int len = array.length;
+//        int mid = len/2;
+//        final E[] p1;
+//        final E[] p2;
+////        E[] newArray = new E[array.length];
+//        if (end < start) // high values had wrapped
+//        {
+//            p1 = Arrays.copyOfRange(array, start, len-1);
+//            p2 = Arrays.copyOfRange(array, 0, end);            
+//        } else if (start > end) // low values had wrapped
+//        {
+//            p2 = Arrays.copyOfRange(array, start, len-1);
+//            p1 = Arrays.copyOfRange(array, 0, end);                        
+//        } else throw new RuntimeException("Recenter not required - cache didn't wrap");
+//        int total = p1.length + p2.length;
+//        int pad = (len-total)/2;
+//        int p1Index = 0;
+//        int p2Index = 0;
+//        for (int i=pad; i<array.length-pad; i++)
+//        {
+//            if (p1Index < p1.length)
+//            {
+//                array[i] = p1[p1Index];                
+//                p1Index++;
+//            } else
+//            {
+//                array[i] = p2[p2Index];
+//                p2Index++;
+//            }
+//        }
+//        return array;
+//    }
     
-    public Stream<Temporal> stream(Temporal start)
+    private boolean cacheSortNeeded = false;
+
+    private List<Temporal> temporalCache = new ArrayList<>(); // cache of start dates or date/times
+    /** Stream of date/times that indicate the start of the event(s).
+     * For a VEvent without RRULE the stream will contain only one date/time element.
+     * A VEvent with a RRULE the stream contains more than one date/time element.  It will be infinite 
+     * if COUNT or UNTIL is not present.  The stream has an end when COUNT or UNTIL condition is met.
+     * Starts on startDateTime, which must be a valid event date/time, not necessarily the
+     * first date/time (DTSTART) in the sequence. */   
+    public Stream<Temporal> stream4(Temporal start)
     {
         final Temporal cacheStart;
         final Temporal cacheEnd;
@@ -718,7 +844,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
             {
                 Iterator<Temporal> i = temporalCache.iterator();
                 int index = 0;
-                Temporal myTemporal = null;
+                Temporal myTemporal = temporalCache.get(temporalCache.size()-1);
                 while (i.hasNext())
                 {
                     myTemporal = i.next();
@@ -760,29 +886,31 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
 //                    System.out.println("add:" + t + " " + cacheEnd);
                     if (VComponent.isBefore(t, cacheStart))
                     {
-                        cacheSortNeeded = true;
-                        temporalCache.add(t);
+                        if (skipCounter == CACHE_SKIP)
+                        {
+                            cacheSortNeeded = true;
+//                            System.out.println("add:" + t);
+                            temporalCache.add(t);
+                            skipCounter = 0;
+                        } else skipCounter++;
+//                        System.out.println("temp:" + temporalCache.size());
                     }
-                    if (VComponent.isAfter(t, cacheEnd)) temporalCache.add(t);
+                    if (VComponent.isAfter(t, cacheEnd))
+                    {
+                        if (skipCounter == CACHE_SKIP)
+                        {
+                            temporalCache.add(t);
+                            skipCounter = 0;
+                        } else skipCounter++;
+                    }
+                    if (temporalCache.size() > CACHE_RANGE) 
+                    {
+                        temporalCache.remove(0);
+//                        System.out.println("too many:" + temporalCache.size());
+                    }
                 })
                 .filter(t -> ! VComponent.isBefore(t, start)); // remove too early events;
-        System.out.println("cache:" + temporalCache.size());
-        
-        // TODO - DOESN'T WORK - THIS RUNS TOO EARLY - STREAM NOT RUN YET
-        if (matchIndex >= 0 && (temporalCache.size() > 0))
-        {
-            int fromIndex = Math.max(matchIndex-CACHE_RANGE, 0);
-            int toIndex = Math.min(matchIndex+CACHE_RANGE, temporalCache.size());
-            System.out.println("sublist:" + fromIndex + " " + toIndex);
-            temporalCache = temporalCache.subList(fromIndex, toIndex);
-            System.out.println(temporalCache.size() + "new range:" + temporalCache.get(0) + " " + temporalCache.get(temporalCache.size()-1));
-        } else
-        {
-            int toIndex = temporalCache.size();
-            int fromIndex = Math.max(toIndex-CACHE_RANGE, 0);
-            System.out.println("sublist:" + fromIndex + " " + toIndex);
-            temporalCache = temporalCache.subList(fromIndex, toIndex);
-        }
+        System.out.println("cache2:" + temporalCache.size());
         return stream4;
     }
 
@@ -792,6 +920,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * if COUNT or UNTIL is not present.  The stream has an end when COUNT or UNTIL condition is met.
      * Starts on startDateTime, which must be a valid event date/time, not necessarily the
      * first date/time (DTSTART) in the sequence. */
+    // Stream without cache
 //    @Override
     public Stream<Temporal> stream3(Temporal start)
     {
