@@ -194,7 +194,6 @@ public interface VComponent<T>
      * This is not a part of an iCalendar VComponent.
      */
     void setStartRange(Temporal start);
-    
     /**
      * End of range for which recurrence instances are generated.
      * Should match the end date displayed on the calendar.
@@ -206,7 +205,7 @@ public interface VComponent<T>
      * Should match the end date displayed on the calendar.
      * This is not a part of an iCalendar VComponent.
      */
-void setEndRange(Temporal end);
+    void setEndRange(Temporal end);
 
     /**
      * Returns the collection of recurrence instances of calendar component of type T that exists
@@ -300,7 +299,7 @@ void setEndRange(Temporal end);
      * types are either LocalDate or LocalDateTime.  Using LocalDate indicates a whole day component.
      */
     
-    final static Comparator<Temporal> DATE_OR_DATETIME_TEMPORAL_COMPARATOR = (t1, t2) -> 
+    final static Comparator<Temporal> TEMPORAL_COMPARATOR = (t1, t2) -> 
     {
         if ((t1 instanceof LocalDateTime) && (t2 instanceof LocalDateTime))
         {

@@ -867,7 +867,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         if (vComponent.getExDate() == null) vComponent.setExDate(new EXDate());
         vComponent.getExDate().getTemporals().add(d);
         makeExceptionDates();
-        Collections.sort(exceptionsListView.getItems(),VComponent.DATE_OR_DATETIME_TEMPORAL_COMPARATOR); // Maintain sorted list
+        Collections.sort(exceptionsListView.getItems(),VComponent.TEMPORAL_COMPARATOR); // Maintain sorted list
         if (exceptionComboBox.getValue() == null) addExceptionButton.setDisable(true);
     }
 

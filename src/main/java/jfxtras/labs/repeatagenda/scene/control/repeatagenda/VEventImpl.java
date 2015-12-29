@@ -434,7 +434,7 @@ public class VEventImpl extends VEvent<Appointment>
                         while (exceptionIterator.hasNext())
                         {
                             Temporal d = exceptionIterator.next();
-                            int result = VComponent.DATE_OR_DATETIME_TEMPORAL_COMPARATOR.compare(d, dateTimeStartInstanceNew);
+                            int result = VComponent.TEMPORAL_COMPARATOR.compare(d, dateTimeStartInstanceNew);
 //                            if (d.getLocalDateTime().isBefore(dateTimeStartInstanceNew))
                             if (result < 0)
                             {
@@ -453,7 +453,7 @@ public class VEventImpl extends VEvent<Appointment>
                         while (recurrenceIterator.hasNext())
                         {
                             Temporal d = recurrenceIterator.next();
-                            int result = VComponent.DATE_OR_DATETIME_TEMPORAL_COMPARATOR.compare(d, dateTimeStartInstanceNew);
+                            int result = VComponent.TEMPORAL_COMPARATOR.compare(d, dateTimeStartInstanceNew);
 //                            if (d.getLocalDateTime().isBefore(dateTimeStartInstanceNew))
                             if (result < 0)
                             {

@@ -592,16 +592,13 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         assertEquals(expectedDates, madeDates);
     }
     
-    /** Tests daily stream with FREQ=DAILY, gets stream twice. */
     @Test
-    public void getWeekly2TestTwice()
+    public void getWeekly2Far()
     {
         VEventImpl vevent = getWeekly2();
         LocalDateTime start = LocalDateTime.of(2015, 11, 8, 0, 0);
-//        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 15, 0, 0));
         List<Temporal> madeDates = vevent
                 .stream(start)
-                .peek(System.out::println)
                 .limit(2)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -611,10 +608,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         assertEquals(expectedDates, madeDates);
 
         LocalDateTime start2 = LocalDateTime.of(2015, 12, 6, 0, 0);
-//        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 12, 13, 0, 0));
         List<Temporal> madeDates2 = vevent
                 .stream(start2)
-                .peek(System.out::println)
                 .limit(3)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates2 = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -623,9 +618,74 @@ public class ICalendarDateTest extends ICalendarTestAbstract
               , LocalDateTime.of(2015, 12, 11, 10, 0)
                 ));
         assertEquals(expectedDates2, madeDates2);
-        System.out.println("done2:");
     }
     
+    // ten years in future
+    @Test
+    public void getWeekly2FarFuture()
+    {
+        VEventImpl vevent = getWeekly2();
+        
+        LocalDateTime start = LocalDateTime.of(2025, 11, 10, 0, 0);
+        long t1 = System.nanoTime();
+        List<Temporal> madeDates = vevent
+                .stream(start)
+                .limit(3)
+                .collect(Collectors.toList());
+        long t2 = System.nanoTime();
+        System.out.println("time:" + (t2-t1));
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2025, 11, 10, 10, 0)
+              , LocalDateTime.of(2025, 11, 12, 10, 0)
+              , LocalDateTime.of(2025, 11, 14, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+        
+        LocalDateTime start2 = LocalDateTime.of(2015, 11, 11, 0, 0);
+        t1 = System.nanoTime();
+        List<Temporal> madeDates2 = vevent
+                .stream(start2)
+                .limit(2)
+                .collect(Collectors.toList());
+        t2 = System.nanoTime();
+        System.out.println("time:" + (t2-t1));
+        List<LocalDateTime> expectedDates2 = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 11, 10, 0)
+              , LocalDateTime.of(2015, 11, 13, 10, 0)
+                ));
+        assertEquals(expectedDates2, madeDates2);
+        
+        LocalDateTime start3 = LocalDateTime.of(2025, 11, 10, 0, 0);
+        t1 = System.nanoTime();
+        List<Temporal> madeDates3 = vevent
+                .stream(start3)
+                .limit(3)
+                .collect(Collectors.toList());
+        t2 = System.nanoTime();
+        System.out.println("time:" + (t2-t1));
+        List<LocalDateTime> expectedDates3 = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2025, 11, 10, 10, 0)
+              , LocalDateTime.of(2025, 11, 12, 10, 0)
+              , LocalDateTime.of(2025, 11, 14, 10, 0)
+                ));
+        assertEquals(expectedDates3, madeDates3);
+        
+        LocalDateTime start4 = LocalDateTime.of(2025, 11, 17, 0, 0);
+        t1 = System.nanoTime();
+        List<Temporal> madeDates4 = vevent
+                .stream(start4)
+                .limit(3)
+                .collect(Collectors.toList());
+        t2 = System.nanoTime();
+        System.out.println("time:" + (t2-t1));
+        List<LocalDateTime> expectedDates4 = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2025, 11, 24, 10, 0)
+              , LocalDateTime.of(2025, 11, 26, 10, 0)
+              , LocalDateTime.of(2025, 11, 28, 10, 0)
+                ));
+        assertEquals(expectedDates4, madeDates4);
+    }
+
     
     // Whole day tests
     

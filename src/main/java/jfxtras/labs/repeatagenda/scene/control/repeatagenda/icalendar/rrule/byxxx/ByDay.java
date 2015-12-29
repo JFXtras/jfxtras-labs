@@ -265,7 +265,7 @@ public class ByDay extends ByRuleAbstract
                         if (Month.from(newTemporal) == myMonth) dates.add(newTemporal);
                     }
                 }
-                if (sortNeeded) Collections.sort(dates, VComponent.DATE_OR_DATETIME_TEMPORAL_COMPARATOR);
+                if (sortNeeded) Collections.sort(dates, VComponent.TEMPORAL_COMPARATOR);
                 return dates.stream();
             });
         case YEARS:
@@ -291,7 +291,7 @@ public class ByDay extends ByRuleAbstract
                         if (! VComponent.isBefore(newDate, startTemporal)) dates.add(newDate);
                     }
                 }
-                if (sortNeeded) Collections.sort(dates, VComponent.DATE_OR_DATETIME_TEMPORAL_COMPARATOR);
+                if (sortNeeded) Collections.sort(dates, VComponent.TEMPORAL_COMPARATOR);
                 return dates.stream();
             }); 
         case HOURS:
