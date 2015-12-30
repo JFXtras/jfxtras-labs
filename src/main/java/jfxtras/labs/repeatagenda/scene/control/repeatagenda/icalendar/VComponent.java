@@ -423,5 +423,35 @@ public interface VComponent<T>
         } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported (" +
                 temporal + " of type " + temporal.getClass().getSimpleName() + ")");        
     }
+    
+    /**
+     * Converts start into Temporal type of class clazz
+     * 
+     * @param start
+     * @param clazz
+     * @return
+     */
+    static Temporal ofTemporal(Temporal start, Class<? extends Temporal> clazz)
+    {
+        if (start instanceof LocalDate)
+        {
+            if (clazz.equals(LocalDate.class))
+            {
+                return start;
+            } else if (clazz.equals(LocalDateTime.class))
+            {
+                return ((LocalDate) start).atStartOfDay();
+            } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
+        } else if (start instanceof LocalDateTime)
+        {
+            if (clazz.equals(LocalDate.class))
+            {
+                return ((LocalDateTime) start).toLocalDate();
+            } else if (clazz.equals(LocalDateTime.class))
+            {
+                return start;
+            } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
+        } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
+    }
 
 }

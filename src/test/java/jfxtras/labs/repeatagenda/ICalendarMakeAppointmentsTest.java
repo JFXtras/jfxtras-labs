@@ -103,4 +103,15 @@ public class ICalendarMakeAppointmentsTest extends ICalendarTestAbstract
         assertEquals(expectedAppointment3, madeAppointment3);     
     }
     
+    @Test
+    public void makeAppointmentsWholeDayTest1()
+    {
+        VEventImpl vevent = getWholeDayDaily3();
+        vevent.setAppointmentClass(getClazz());
+        LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2015, 11, 21, 0, 0);
+        List<Appointment> appointments = new ArrayList<Appointment>();
+        Collection<Appointment> newAppointments = vevent.makeInstances(start, end);
+        newAppointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+    }
 }

@@ -5,8 +5,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ ICalendarAgendaEditTest.class
-              , ICalendarAgendaRenderTest.class
+@SuiteClasses({ AgendaRenderVComponentsTest.class
+              , AgendaRenderAppointmentsTest.class
               , ICalendarCopyTest.class
 //              , ICalendarDateRangeTest.class
               , ICalendarDateTest.class

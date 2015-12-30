@@ -285,14 +285,20 @@ public class VEventImpl extends VEvent<Appointment>
      */
     public Temporal getStartRange() { return startRange; }
     private Temporal startRange;
-    public void setStartRange(Temporal start) { this.startRange = start; }
+    public void setStartRange(Temporal start)
+    {
+        this.startRange = VComponent.ofTemporal(start, getDateTimeStart().getClass()); // store start as same type as dateTimeStart
+    }
     
     /**
      * End of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
      */
     public Temporal getEndRange() { return endRange; }
     private Temporal endRange;
-    public void setEndRange(Temporal end) { this.endRange = end; }
+    public void setEndRange(Temporal end)
+    {
+        this.endRange = VComponent.ofTemporal(end, getDateTimeStart().getClass()); // store start as same type as dateTimeStart
+    }
     /**
      * Returns appointments for Agenda that should exist between dateTimeRangeStart and dateTimeRangeEnd
      * based on VEvent properties.  Uses dateTimeRange previously set in VEvent.

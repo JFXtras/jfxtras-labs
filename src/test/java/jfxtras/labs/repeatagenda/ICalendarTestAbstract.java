@@ -374,6 +374,8 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
         vEvent.setDescription("Weekly1 Description");
         vEvent.setSummary("Weekly1 Summary");
         vEvent.setAppointmentClass(clazz);
+        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         RRule rule = new RRule();
         vEvent.setRRule(rule);
         Frequency weekly = new Weekly()
@@ -527,8 +529,23 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     protected static VEventImpl getIndividual1()
     {
         VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
+        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 18, 0));
         vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
+        vEvent.setAppointmentClass(clazz);
+        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setAppointmentGroup(appointmentGroups.get(5));
+        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
+        return vEvent;
+    }
+    
+    protected static VEventImpl getIndividual2()
+    {
+        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        vEvent.setDateTimeStart(LocalDate.of(2015, 11, 11));
+        vEvent.setDateTimeEnd(LocalDate.of(2015, 11, 12));
+        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setAppointmentGroup(appointmentGroups.get(13));
+        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         vEvent.setAppointmentClass(clazz);
         return vEvent;
     }
@@ -602,4 +619,5 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
         rule.setFrequency(daily);
         return vEvent;
     }
+    
 }

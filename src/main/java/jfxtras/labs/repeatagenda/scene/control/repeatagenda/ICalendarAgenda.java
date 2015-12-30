@@ -97,37 +97,46 @@ public class ICalendarAgenda extends Agenda {
 
     // listen for additions to appointments from agenda. This listener must be removed and added back when a change
     // in the time range  occurs.
-    private final ListChangeListener<Appointment> appointmentsListener = (ListChangeListener.Change<? extends Appointment> change) ->
+    private ListChangeListener<Appointment> appointmentsListener;
+
+    // listen for changes to vComponents.
+    private ListChangeListener<VComponent<Appointment>> vComponentsListener;
+        
+    // CONSTRUCTOR
+    public ICalendarAgenda()
     {
-        while (change.next())
+        super();
+        
+        appointmentsListener = (ListChangeListener.Change<? extends Appointment> change) ->
         {
-            // Deletions handled by vComponents listener
-            if (change.wasAdded())
+            while (change.next())
             {
-                change.getAddedSubList()
-                        .stream()
-                        .forEach(a -> 
-                        { // make new VComponent
-                            VComponent<Appointment> newVComponent = VComponentFactory
-                                    .newVComponent(getVEventClass(), a, appointmentGroups());
-                            LocalDateTime startRange = getDateTimeRange().getStartLocalDateTime();
-                            LocalDateTime endRange = getDateTimeRange().getEndLocalDateTime();
-                            newVComponent.setStartRange(startRange);
-                            newVComponent.setEndRange(endRange);
-                            newVComponent.setUidGeneratorCallback(getUidGeneratorCallback());
-                            newVComponent.setUniqueIdentifier(getUidGeneratorCallback().call(null));
-                            System.out.println("add vEvemt " + a.getStartLocalDateTime());
-                            System.out.println(newVComponent);
-//                            vComponents().removeListener(vComponentListener);
-                            vComponents.add(newVComponent);
-//                            vComponents().addListener(vComponentListener);
-                        });
+                // Deletions handled by vComponents listener
+                if (change.wasAdded())
+                {
+                    change.getAddedSubList()
+                            .stream()
+                            .forEach(a -> 
+                            { // make new VComponent
+                                VComponent<Appointment> newVComponent = VComponentFactory
+                                        .newVComponent(getVEventClass(), a, appointmentGroups());
+                                LocalDateTime startRange = getDateTimeRange().getStartLocalDateTime();
+                                LocalDateTime endRange = getDateTimeRange().getEndLocalDateTime();
+                                newVComponent.setStartRange(startRange);
+                                newVComponent.setEndRange(endRange);
+                                newVComponent.setUidGeneratorCallback(getUidGeneratorCallback());
+                                newVComponent.setUniqueIdentifier(getUidGeneratorCallback().call(null));
+                                System.out.println("add vEvemt " + a.getStartLocalDateTime());
+//                                System.out.println(newVComponent);
+                                vComponents().removeListener(vComponentsListener);
+                                vComponents.add(newVComponent);
+                                vComponents().addListener(vComponentsListener);
+                            });
                 }
             }
         };
-
-        // listen for changes to vComponents.
-        private final ListChangeListener<VComponent<Appointment>> vComponentsListener = (ListChangeListener.Change<? extends VComponent<Appointment>> change) ->
+        
+        vComponentsListener = (ListChangeListener.Change<? extends VComponent<Appointment>> change) ->
         {
             while (change.next())
             {
@@ -139,7 +148,9 @@ public class ICalendarAgenda extends Agenda {
                     change.getAddedSubList()
                             .stream()
                             .forEach(v -> newAppointments.addAll(v.makeInstances(start, end)));
+                    appointments().removeListener(appointmentsListener);
                     appointments().addAll(newAppointments);
+                    appointments().addListener(appointmentsListener);
                 } else if (change.wasRemoved())
                 {
                     change.getRemoved()
@@ -149,10 +160,6 @@ public class ICalendarAgenda extends Agenda {
             }
         };
         
-    // CONSTRUCTOR
-    public ICalendarAgenda()
-    {
-        super();
         Locale myLocale = Locale.getDefault();
         appointments().addListener((InvalidationListener) obs -> System.out.println("changed appointments:"));
 
@@ -164,7 +171,7 @@ public class ICalendarAgenda extends Agenda {
         appointments().addListener(appointmentsListener);
 
         // Listen for changes to vComponents (additions and deletions)
-//        vComponents().addListener(vComponentsListener);
+        vComponents().addListener(vComponentsListener);
         
         // CHANGE DEFAULT EDIT POPUP - replace default popup with one with repeat options
         setEditAppointmentCallback((Appointment appointment) ->
