@@ -28,6 +28,18 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
 public class ICalendarEditTest extends ICalendarTestAbstract
 {
 
+    @Test
+    public void editStartAndEnd()
+    {
+        VEventImpl v = getDaily2();
+        v.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 8, 0));
+        v.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 10, 0));
+        assertEquals(LocalDateTime.of(2015, 11, 9, 8, 0), v.getDateTimeStart());
+        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), v.getDateTimeEnd());
+        Long expectedDuration = 7200L * NANOS_IN_SECOND;
+        assertEquals(expectedDuration, v.getDurationInNanos());
+    }
+
     /**
      * Tests editing start and end time of ALL events
      */
@@ -171,7 +183,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().minusDays(1); // shift appointment 1 day backward
         selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
         selectedAppointment.setEndLocalDateTime(newDate.atTime(11, 0)); // change end time
-        LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
+//        LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
         vevent.setSummary("Edited Summary");
         vevent.setDescription("Edited Description");
         vevent.setAppointmentGroup(appointmentGroups.get(7));
@@ -406,8 +418,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         expectedVEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         expectedVEvent.setDescription("Daily2 Description");
         expectedVEvent.setDurationInNanos(5400L * NANOS_IN_SECOND);
-//        expectedVEvent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
-//        expectedVEvent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         expectedVEvent.setSummary("Daily2 Summary");
         expectedVEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
         expectedVEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
@@ -492,8 +502,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         
         // Check edited VEvent
         VEventImpl expectedVEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
-//        expectedVEvent.setDateTimeRangeStart(LocalDate.of(2015, 11, 15));
-//        expectedVEvent.setDateTimeRangeEnd(LocalDate.of(2015, 11, 22));
         expectedVEvent.setAppointmentGroup(appointmentGroups.get(7));
         expectedVEvent.setDateTimeStart(LocalDate.of(2015, 11, 10));
         expectedVEvent.setDateTimeEnd(LocalDate.of(2015, 11, 12));

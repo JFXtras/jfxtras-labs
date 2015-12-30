@@ -422,6 +422,8 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
         vEvent.setDescription("Daily1 Description");
         vEvent.setSummary("Daily1 Summary");
         vEvent.setAppointmentClass(clazz);
+        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         RRule rule = new RRule();
         vEvent.setRRule(rule);
         Frequency daily = new Daily();

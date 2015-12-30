@@ -1,12 +1,21 @@
 package jfxtras.labs.repeatagenda;
 
-import java.time.LocalDateTime;
+import static org.junit.Assert.assertEquals;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.scene.Parent;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseButton;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
+import jfxtras.scene.control.LocalDateTimeTextField;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.test.TestUtil;
 
 /**
@@ -30,16 +39,36 @@ public class EditPopupTest extends ICalendarTestAbstract
     public void canEditVComponent1()
     {
         TestUtil.runThenWaitForPaintPulse( () -> {
-            agenda.vComponents().add(getIndividual1()); // doesn't work.  why?
+            agenda.vComponents().add(getDaily1());
         });
         
-        System.out.println(agenda.appointments().size());
-
+        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        
+        // Open edit popup
+        move("#hourLine11"); // open edit popup
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+        
+        LocalDateTimeTextField startTextField = find("#startTextField");
+        startTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 8, 0));
+        assertEquals(LocalTime.of(8, 0), LocalTime.from(v.getDateTimeStart()));
+        
+        LocalDateTimeTextField endTextField = find("#endTextField");
+        System.out.println(v.getDateTimeEnd());
+        endTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 9, 0));
+        System.out.println(v.getDateTimeEnd());
+        TestUtil.sleep(3000);
+        assertEquals(LocalTime.of(9, 0), LocalTime.from(v.getDateTimeEnd()));
+        
+        TextField locationTextField = find("#locationTextField");
+        locationTextField.setText("new location");
+        assertEquals("new location", v.getLocation());
         
         TestUtil.sleep(3000);
     }
     
     @Test
+    @Ignore
     public void canEditVComponent2()
     {
         String dateTimeStamp = VComponent.DATE_TIME_FORMATTER.format(LocalDateTime.now());

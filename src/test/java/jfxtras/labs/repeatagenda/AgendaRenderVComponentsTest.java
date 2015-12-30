@@ -12,23 +12,28 @@ import org.junit.Test;
 
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import jfxtras.test.TestUtil;
 
 public class AgendaRenderVComponentsTest extends ICalendarTestAbstract
 {
     public Parent getRootNode()
     {
         Parent p = super.getRootNode();
-        agenda.vComponents().add(getDaily2());
-        agenda.vComponents().add(getWeekly2());
-        agenda.vComponents().add(getWholeDayDaily3());
-        agenda.vComponents().add(getIndividual1());
-        agenda.vComponents().add(getIndividual2());
         return p;
     }
     
     @Test
     public void canRenderVComponents()
     {
+        
+        TestUtil.runThenWaitForPaintPulse( () -> {
+            agenda.vComponents().add(getDaily2());
+            agenda.vComponents().add(getWeekly2());
+            agenda.vComponents().add(getWholeDayDaily3());
+            agenda.vComponents().add(getIndividual1());
+            agenda.vComponents().add(getIndividual2());
+        });
+        
         List<LocalDateTime> startDates = agenda.appointments()
                 .stream()
                 .map(a -> a.getStartLocalDateTime())

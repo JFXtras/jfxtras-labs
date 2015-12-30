@@ -425,31 +425,33 @@ public interface VComponent<T>
     }
     
     /**
-     * Converts start into Temporal type of class clazz
+     * Converts value into Temporal of type clazz
+     * value must be LocalDate or LocalDateTime
+     * clazz must be LocalDate or LocalDateTime
      * 
-     * @param start
+     * @param value
      * @param clazz
      * @return
      */
-    static Temporal ofTemporal(Temporal start, Class<? extends Temporal> clazz)
+    static Temporal ofTemporal(Temporal value, Class<? extends Temporal> clazz)
     {
-        if (start instanceof LocalDate)
+        if (value instanceof LocalDate)
         {
             if (clazz.equals(LocalDate.class))
             {
-                return start;
+                return value;
             } else if (clazz.equals(LocalDateTime.class))
             {
-                return ((LocalDate) start).atStartOfDay();
+                return ((LocalDate) value).atStartOfDay();
             } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
-        } else if (start instanceof LocalDateTime)
+        } else if (value instanceof LocalDateTime)
         {
             if (clazz.equals(LocalDate.class))
             {
-                return ((LocalDateTime) start).toLocalDate();
+                return ((LocalDateTime) value).toLocalDate();
             } else if (clazz.equals(LocalDateTime.class))
             {
-                return start;
+                return value;
             } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
         } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
     }

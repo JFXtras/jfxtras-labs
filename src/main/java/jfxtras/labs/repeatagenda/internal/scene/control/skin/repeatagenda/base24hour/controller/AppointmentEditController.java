@@ -1,6 +1,7 @@
 package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller;
 
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -99,8 +100,10 @@ public class AppointmentEditController
             startTextField.setLocalDateTime(oldSelection);
         } else
         {
-            long shiftInNanos = ChronoUnit.NANOS.between(dateTimeInstanceStartOriginal, newSelection);
-            Temporal newDateTimeStart = VComponent.plusNanos(vEvent.getDateTimeStart(), shiftInNanos);
+            Temporal newDateTimeStart = adjustStartEndTemporal(
+                    vEvent.getDateTimeStart()
+                  , oldSelection
+                  , newSelection);
             vEvent.setDateTimeStart(newDateTimeStart);
         }
         System.out.println("start type2:" + vEvent.getDateTimeStart().getClass());
@@ -110,15 +113,33 @@ public class AppointmentEditController
         if (newSelection.isBefore(startTextField.getLocalDateTime()))
         {
             tooEarlyDateAlert(newSelection, startTextField.getLocalDateTime());
-            endTextField.setLocalDateTime(oldSelection);            
+            endTextField.setLocalDateTime(oldSelection);
         } else
         {
-            long shiftInNanos = ChronoUnit.NANOS.between(dateTimeInstanceEndOriginal, newSelection);
-            Temporal newDateTimeEnd = VComponent.plusNanos(vEvent.getDateTimeEnd(), shiftInNanos);
+            Temporal newDateTimeEnd = adjustStartEndTemporal(
+                    vEvent.getDateTimeEnd()
+                  , oldSelection
+                  , newSelection);
             vEvent.setDateTimeEnd(newDateTimeEnd);
+            System.out.println("end:" + vEvent.getDateTimeEnd());
         }
-        System.out.println("end type2:" + vEvent.getDateTimeEnd().getClass());
     };
+    // Change time and shift dates to start and end edits
+    private Temporal adjustStartEndTemporal(Temporal input, LocalDateTime oldSelection, LocalDateTime newSelection)
+    {
+        long dayShift = ChronoUnit.DAYS.between(oldSelection, newSelection);
+        System.out.println("dayShift:" + dayShift);
+        if (input instanceof LocalDate)
+        {
+            return input.plus(dayShift, ChronoUnit.DAYS);
+        } else if (input instanceof LocalDateTime)
+        {
+            LocalTime time = newSelection.toLocalTime();
+            return ((LocalDateTime) input).toLocalDate()
+                    .atTime(time)
+                    .plus(dayShift, ChronoUnit.DAYS);
+        } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
+    }
     
     @FXML public void initialize() { }
     
@@ -235,7 +256,7 @@ public class AppointmentEditController
     // AFTER CLICK SAVE VERIFY REPEAT IS VALID, IF NOT PROMPT.
     @FXML private void handleCloseButton()
     {
-        System.out.println("valid:" + vEvent.isValid());
+//        System.out.println("valid:" + vEvent.isValid());
         if (! vEvent.isValid()) throw new IllegalArgumentException(vEvent.makeErrorString());
         final ICalendarUtilities.WindowCloseType result = vEvent.edit(
                 dateTimeInstanceStartOriginal

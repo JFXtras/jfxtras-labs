@@ -85,6 +85,7 @@ public class AgendaRenderAppointmentsTest extends ICalendarTestAbstract
     public void renderRepeatableAppointmentByDragging()
     {
         renderAppointmentByDragging();
+        // Open edit popup
         move("#hourLine11"); // open edit popup
         press(MouseButton.SECONDARY);
         release(MouseButton.SECONDARY);
