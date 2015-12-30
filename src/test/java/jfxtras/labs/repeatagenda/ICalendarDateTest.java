@@ -593,7 +593,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     }
     
     @Test
-    public void getWeekly2Far()
+    public void getWeekly2ChangeRange()
     {
         VEventImpl vevent = getWeekly2();
         LocalDateTime start = LocalDateTime.of(2015, 11, 8, 0, 0);
@@ -655,7 +655,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
                 ));
         assertEquals(expectedDates2, madeDates2);
         
-        LocalDateTime start3 = LocalDateTime.of(2025, 11, 10, 0, 0);
+        LocalDateTime start3 = LocalDateTime.of(2025, 11, 12, 0, 0);
         t1 = System.nanoTime();
         List<Temporal> madeDates3 = vevent
                 .stream(start3)
@@ -664,12 +664,12 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         t2 = System.nanoTime();
         System.out.println("time:" + (t2-t1));
         List<LocalDateTime> expectedDates3 = new ArrayList<LocalDateTime>(Arrays.asList(
-                LocalDateTime.of(2025, 11, 10, 10, 0)
-              , LocalDateTime.of(2025, 11, 12, 10, 0)
+                LocalDateTime.of(2025, 11, 12, 10, 0)
               , LocalDateTime.of(2025, 11, 14, 10, 0)
+              , LocalDateTime.of(2025, 11, 24, 10, 0)
                 ));
         assertEquals(expectedDates3, madeDates3);
-        
+
         LocalDateTime start4 = LocalDateTime.of(2025, 11, 17, 0, 0);
         t1 = System.nanoTime();
         List<Temporal> madeDates4 = vevent
