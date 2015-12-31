@@ -138,7 +138,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     VEventImpl vEvent = getWholeDayDaily3();
     String madeString = vEvent.toString();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
-                          + "CATEGORIES:group03" + System.lineSeparator()
+                          + "CATEGORIES:group06" + System.lineSeparator()
                           + "DTEND:VALUE=DATE:20151111" + System.lineSeparator()
                           + "DTSTAMP:20150110T080000" + System.lineSeparator()
                           + "DTSTART:VALUE=DATE:20151109" + System.lineSeparator()

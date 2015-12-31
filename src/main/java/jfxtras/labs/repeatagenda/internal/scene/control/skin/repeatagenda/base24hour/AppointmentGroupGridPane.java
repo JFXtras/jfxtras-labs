@@ -21,7 +21,7 @@ private Pane[] lPane;
 /** Index of selected AppointmentGroup */
 public IntegerProperty appointmentGroupSelectedProperty() { return appointmentGroupSelected; }
 private IntegerProperty appointmentGroupSelected = new SimpleIntegerProperty(-1);
-private void setAppointmentGroupSelected(Integer i) { appointmentGroupSelected.set(i); }
+public void setAppointmentGroupSelected(Integer i) { appointmentGroupSelected.set(i); }
 public Integer getAppointmentGroupSelected() { return appointmentGroupSelected.getValue(); }   
  
  public AppointmentGroupGridPane() {

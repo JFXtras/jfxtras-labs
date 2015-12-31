@@ -369,7 +369,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     {
         VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
-        vEvent.setAppointmentGroup(appointmentGroups.get(3));
+        vEvent.setAppointmentGroup(appointmentGroups.get(2));
         vEvent.setDurationInNanos(2700L * NANOS_IN_SECOND);
         vEvent.setDescription("Weekly1 Description");
         vEvent.setSummary("Weekly1 Summary");
@@ -419,6 +419,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
         VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
+        vEvent.setAppointmentGroup(appointmentGroups.get(3));
         vEvent.setDescription("Daily1 Description");
         vEvent.setSummary("Daily1 Summary");
         vEvent.setAppointmentClass(clazz);
@@ -610,7 +611,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
         vEvent.setDateTimeStart(LocalDate.of(2015, 11, 9));
         vEvent.setDateTimeEnd(LocalDate.of(2015, 11, 11));
         vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
-        vEvent.setAppointmentGroup(appointmentGroups.get(3));
+        vEvent.setAppointmentGroup(appointmentGroups.get(6));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule()

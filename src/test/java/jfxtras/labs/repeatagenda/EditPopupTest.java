@@ -85,8 +85,9 @@ public class EditPopupTest extends ICalendarTestAbstract
         assertEquals("new group name", v.getCategories());
 
         AppointmentGroupGridPane appointmentGroupGridPane = find("#appointmentGroupGridPane");
-
-        TestUtil.sleep(3000);
+        appointmentGroupGridPane.setAppointmentGroupSelected(11);
+        assertEquals("group11", v.getCategories());
+//        TestUtil.sleep(3000);
     }
     
     @Test
