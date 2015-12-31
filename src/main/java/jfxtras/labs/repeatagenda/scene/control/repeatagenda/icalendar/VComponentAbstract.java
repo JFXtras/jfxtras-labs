@@ -631,7 +631,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     private static final int CACHE_RANGE = 51; // number of values in cache
     private static final int CACHE_SKIP = 20; // store every nth value in the cache
     private int skipCounter = 0; // counter that increments up to CACHE_SKIP, indicates time to record a value, then resets to 0
-    private Temporal[] temporalCache2; // the start date or date/time cache
+    private Temporal[] temporalCache; // the start date or date/time cache
     private Temporal dateTimeStartLast; // last dateTimeStart, when changes indicates clearing the cache is necessary
     private RRule rRuleLast; // last rRule, when changes indicates clearing the cache is necessary
     private int cacheStart = 0; // start index where cache values are stored (starts in middle)
@@ -649,139 +649,157 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * */   
     public Stream<Temporal> stream(Temporal start)
     {
+//        if (temporalCache2 != null)
+//        System.out.println("temporals:" + temporalCache2.getClass().getSimpleName() + " " + getDateTimeStart().getClass().getSimpleName() + " " + dateTimeStartLast.getClass().getSimpleName() +
+//                " " + getDateTimeStart().equals(dateTimeStartLast));
         // adjust start to ensure its not before dateTimeStart
         final Temporal start2 = (VComponent.isBefore(start, getDateTimeStart())) ? getDateTimeStart() : start;
-        
-        // check if cache needs to be cleared (changes to RRULE or DTSTART)
-        if ((dateTimeStartLast != null) && (rRuleLast != null))
-        {
-            if (! (getDateTimeStart().equals(dateTimeStartLast) || ! (getRRule().equals(rRuleLast))))
-            {
-                temporalCache2 = null;
-            }
-        } else
-        { // save current DTSTART and RRULE for next time
-            dateTimeStartLast = getDateTimeStart();
-            rRuleLast = getRRule();
-        }
-        
+     
+        final Stream<Temporal> stream1; // individual or rrule stream
         final Temporal earliestCacheValue;
         final Temporal latestCacheValue;
-        final Temporal match;
         
-        // use cache if available to find matching start date or date/time
-        if (temporalCache2 != null)
-        {
-            // Reorder cache to maintain centered and sorted
-            final int len = temporalCache2.length;
-            final Temporal[] p1;
-            final Temporal[] p2;
-            if (cacheEnd < cacheStart) // high values have wrapped from end to beginning
-            {
-                p1 = Arrays.copyOfRange(temporalCache2, cacheStart, len);
-                p2 = Arrays.copyOfRange(temporalCache2, 0, Math.min(cacheEnd+1,len));
-            } else if (cacheEnd > cacheStart) // low values have wrapped from beginning to end
-            {
-                p2 = Arrays.copyOfRange(temporalCache2, cacheStart, len);
-                p1 = Arrays.copyOfRange(temporalCache2, 0, Math.min(cacheEnd+1,len));
-            } else
-            {
-                p1 = null;
-                p2 = null;
-            }
-            if (p1 != null)
-            { // reorder
-                int p1Index = 0;
-                int p2Index = 0;
-                for (int i=0; i<len; i++)
-                {
-                    if (p1Index < p1.length)
-                    {
-                        temporalCache2[i] = p1[p1Index];
-                        p1Index++;
-                    } else if (p2Index < p2.length)
-                    {
-                        temporalCache2[i] = p2[p2Index];
-                        p2Index++;
-                    } else
-                    {
-                        cacheEnd = i;
-                        break;
-                    }
-                }
-            }
-
-            // Find match in cache
-            latestCacheValue = temporalCache2[cacheEnd];
-            if ((! VComponent.isBefore(start2, temporalCache2[cacheStart])))
-            {
-                Temporal m = latestCacheValue;
-                for (int i=cacheStart; i<cacheEnd; i++)
-                {
-                    if (VComponent.isAfter(temporalCache2[i], start2))
-                    {
-                        m = temporalCache2[i-1];
-                        break;
-                    }
-                }
-                match = m;
-            } else
-            { // all cached values too late - start over
-                cacheStart = 0;
-                cacheEnd = 0;
-                temporalCache2[cacheStart] = getDateTimeStart();
-                match = getDateTimeStart();
-            }
-            earliestCacheValue = temporalCache2[cacheStart];
-        } else
-        { // no previous cache.  initialize new array and dateTimeStart as first value.
-            temporalCache2 = new Temporal[CACHE_RANGE];
-            temporalCache2[cacheStart] = getDateTimeStart();
-            match = getDateTimeStart();
-            earliestCacheValue = getDateTimeStart();
-            latestCacheValue = getDateTimeStart();
-        }
-        
-        final Stream<Temporal> stream1;
         if (getRRule() == null)
         { // if individual event
-            stream1 = Arrays.asList(match)
+            stream1 = Arrays.asList(getDateTimeStart())
                     .stream()
                     .filter(d -> ! VComponent.isBefore(d, start2));
+            earliestCacheValue = null;
+            latestCacheValue = null;
         } else
-        { // if has recurrence rule
+        {
+            // check if cache needs to be cleared (changes to RRULE or DTSTART)
+            if ((dateTimeStartLast != null) && (rRuleLast != null))
+            {
+                if (! (getDateTimeStart().equals(dateTimeStartLast) || ! (getRRule().equals(rRuleLast))))
+                {
+                    System.out.println("clear cache:");
+                    temporalCache = null;
+                }
+            } else
+            { // save current DTSTART and RRULE for next time
+                dateTimeStartLast = getDateTimeStart();
+                rRuleLast = getRRule();
+            }
+            
+            final Temporal match;
+            
+            // use cache if available to find matching start date or date/time
+            if (temporalCache != null)
+            {
+                // Reorder cache to maintain centered and sorted
+                final int len = temporalCache.length;
+                final Temporal[] p1;
+                final Temporal[] p2;
+                if (cacheEnd < cacheStart) // high values have wrapped from end to beginning
+                {
+                    p1 = Arrays.copyOfRange(temporalCache, cacheStart, len);
+                    p2 = Arrays.copyOfRange(temporalCache, 0, Math.min(cacheEnd+1,len));
+                } else if (cacheEnd > cacheStart) // low values have wrapped from beginning to end
+                {
+                    p2 = Arrays.copyOfRange(temporalCache, cacheStart, len);
+                    p1 = Arrays.copyOfRange(temporalCache, 0, Math.min(cacheEnd+1,len));
+                } else
+                {
+                    p1 = null;
+                    p2 = null;
+                }
+                if (p1 != null)
+                { // copy elements to accommodate wrap and restore sort order
+                    int p1Index = 0;
+                    int p2Index = 0;
+                    for (int i=0; i<len; i++)
+                    {
+                        if (p1Index < p1.length)
+                        {
+                            temporalCache[i] = p1[p1Index];
+                            p1Index++;
+                        } else if (p2Index < p2.length)
+                        {
+                            temporalCache[i] = p2[p2Index];
+                            p2Index++;
+                        } else
+                        {
+                            cacheEnd = i;
+                            break;
+                        }
+                    }
+                }
+    
+                // Find match in cache
+                latestCacheValue = temporalCache[cacheEnd];
+                if ((! VComponent.isBefore(start2, temporalCache[cacheStart])))
+                {
+                    Temporal m = latestCacheValue;
+                    int ii=cacheStart;
+                    for (int i=cacheStart; i<cacheEnd+1; i++)
+                    {
+                        ii = i;
+                        if (VComponent.isAfter(temporalCache[i], start2))
+                        {
+                            m = temporalCache[i-1];
+                            break;
+                        }
+                    }
+//                    System.out.println("cache match:" + ii + " " + m + " " + latestCacheValue + " "+ start);
+                    match = m;
+                } else
+                { // all cached values too late - start over
+                    cacheStart = 0;
+                    cacheEnd = 0;
+                    temporalCache[cacheStart] = getDateTimeStart();
+                    match = getDateTimeStart();
+                }
+                earliestCacheValue = temporalCache[cacheStart];
+            } else
+            { // no previous cache.  initialize new array and dateTimeStart as first value.
+                temporalCache = new Temporal[CACHE_RANGE];
+                temporalCache[cacheStart] = getDateTimeStart();
+                match = getDateTimeStart();
+                earliestCacheValue = getDateTimeStart();
+                latestCacheValue = getDateTimeStart();
+            }
+//            System.out.println("match:" + match);
+//            for (int i=cacheStart;i<cacheEnd+1;i++ )
+//            {
+//                System.out.println("cache:" + i + " " + cacheEnd + " " + temporalCache[i]);
+//            }
             stream1 = getRRule().stream(match);
         }
+        
         Stream<Temporal> stream2 = (getRDate() == null) ? stream1 : getRDate().stream(stream1, start2); // add recurrence list
         Stream<Temporal> stream3 = (getExDate() == null) ? stream2 : getExDate().stream(stream2, start2); // remove exceptions
         Stream<Temporal> stream4 = stream3
                 .peek(t ->
                 { // save new values in cache
-                    if (VComponent.isBefore(t, earliestCacheValue))
+                    if (getRRule() != null)
                     {
-                        if (skipCounter == CACHE_SKIP)
+                        if (VComponent.isBefore(t, earliestCacheValue))
                         {
-                            cacheStart--;
-                            if (cacheStart < 0) cacheStart = CACHE_RANGE - 1;
-                            if (cacheStart == cacheEnd) cacheEnd--; // just overwrote oldest value - push cacheEnd down
-                            temporalCache2[cacheStart] = t;
-                            skipCounter = 0;
-                        } else skipCounter++;
-                    }
-                    if (VComponent.isAfter(t, latestCacheValue))
-                    {
-                        if (skipCounter == CACHE_SKIP)
+                            if (skipCounter == CACHE_SKIP)
+                            {
+                                cacheStart--;
+                                if (cacheStart < 0) cacheStart = CACHE_RANGE - 1;
+                                if (cacheStart == cacheEnd) cacheEnd--; // just overwrote oldest value - push cacheEnd down
+                                temporalCache[cacheStart] = t;
+                                skipCounter = 0;
+                            } else skipCounter++;
+                        }
+                        if (VComponent.isAfter(t, latestCacheValue))
                         {
-                            cacheEnd++;
-                            if (cacheEnd == CACHE_RANGE) cacheEnd = 0;
-                            if (cacheStart == cacheEnd) cacheStart++; // just overwrote oldest value - push cacheStart up
-                            temporalCache2[cacheEnd] = t;
-                            skipCounter = 0;
-                        } else skipCounter++;
+                            if (skipCounter == CACHE_SKIP)
+                            {
+                                cacheEnd++;
+                                if (cacheEnd == CACHE_RANGE) cacheEnd = 0;
+                                if (cacheStart == cacheEnd) cacheStart++; // just overwrote oldest value - push cacheStart up
+                                temporalCache[cacheEnd] = t;
+                                skipCounter = 0;
+                            } else skipCounter++;
+                        }
+                        // check if start or end needs to wrap
+                        if (cacheEnd < 0) cacheEnd = CACHE_RANGE - 1;
+                        if (cacheStart == CACHE_RANGE) cacheStart = 0;
                     }
-                    // check if start or end needs to wrap
-                    if (cacheEnd < 0) cacheEnd = CACHE_RANGE - 1;
-                    if (cacheStart == CACHE_RANGE) cacheStart = 0;
                 })
                 .filter(t -> ! VComponent.isBefore(t, start2)); // remove too early events;
 
@@ -799,8 +817,8 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * are generated by the returned stream
      * @return stream of starting dates or date/times for occurrences after rangeStart
      */
-    @Deprecated // here for testing purposes and in case of problem with the caching version
-    private Stream<Temporal> streamNoCache(Temporal start)
+//    @Deprecated // here for testing purposes and in case of problem with the caching version
+    public Stream<Temporal> stream4(Temporal start)
     {
         final Stream<Temporal> stream1;
         if (getRRule() == null)

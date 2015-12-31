@@ -45,12 +45,9 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
  */
 public class AppointmentEditController
 {
-    private Appointment appointment;
-//    private LocalDateTime dateTimeInstanceStart;
-//    private LocalDateTime dateTimeInstanceEnd;
+    private Appointment appointment; // selected appointment
     private LocalDateTime dateTimeInstanceStartOriginal;
     private LocalDateTime dateTimeInstanceEndOriginal;
-//    private VComponent<Appointment> vComponent;
     
     private VEvent<Appointment> vEvent;
     private VEvent<Appointment> vEventOld;
@@ -59,18 +56,18 @@ public class AppointmentEditController
     private Callback<Collection<VComponent<Appointment>>, Void> vEventWriteCallback;
 
     /** Indicates how the popup window closed */
-//    public ObjectProperty<WindowCloseType> windowCloseTypeProperty() { return windowCloseType; }
     private ObjectProperty<WindowCloseType> popupCloseType; // default to X, meaning click on X to close window
     
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
+    // TODO - TRY STACK PANE TO REPLACE LocalDateTimeTextField WITH LocalDateTextField WHEN WHOLE DAY
     @FXML private LocalDateTimeTextField startTextField; // DTSTART
     @FXML private LocalDateTimeTextField endTextField; // DTEND
-    @FXML private AppointmentGroupGridPane appointmentGroupGridPane;
-    @FXML private TextField locationTextField; // LOCATION
+    @FXML private CheckBox wholeDayCheckBox;
     @FXML private TextField summaryTextField; // SUMMARY
     @FXML private TextArea descriptionTextArea; // DESCRIPTION
-    @FXML private CheckBox wholeDayCheckBox;
+    @FXML private TextField locationTextField; // LOCATION
     @FXML private TextField groupTextField; // CATEGORIES
+    @FXML private AppointmentGroupGridPane appointmentGroupGridPane;
     @FXML private Button closeAppointmentButton;
     @FXML private Button cancelAppointmentButton;
     @FXML private Button closeRepeatButton;
@@ -106,7 +103,6 @@ public class AppointmentEditController
                   , newSelection);
             vEvent.setDateTimeStart(newDateTimeStart);
         }
-        System.out.println("start type2:" + vEvent.getDateTimeStart().getClass());
     };
     private final ChangeListener<? super LocalDateTime> endTextlistener = (observable, oldSelection, newSelection) ->
     {
@@ -121,10 +117,9 @@ public class AppointmentEditController
                   , oldSelection
                   , newSelection);
             vEvent.setDateTimeEnd(newDateTimeEnd);
-            System.out.println("end:" + vEvent.getDateTimeEnd());
         }
     };
-    // Change time and shift dates to start and end edits
+    // Change time and shift dates for start and end edits
     private Temporal adjustStartEndTemporal(Temporal input, LocalDateTime oldSelection, LocalDateTime newSelection)
     {
         long dayShift = ChronoUnit.DAYS.between(oldSelection, newSelection);
@@ -155,8 +150,6 @@ public class AppointmentEditController
     {
         dateTimeInstanceStartOriginal = appointment.getStartLocalDateTime();
         dateTimeInstanceEndOriginal = appointment.getEndLocalDateTime();
-//        dateTimeInstanceStart = appointment.getStartLocalDateTime();
-//        dateTimeInstanceEnd = appointment.getEndLocalDateTime();
         this.appointment = appointment;        
         this.appointments = appointments;
         this.vComponents = vComponents;
@@ -180,36 +173,67 @@ public class AppointmentEditController
         {
             startTextField.localDateTimeProperty().removeListener(startTextListener);
             endTextField.localDateTimeProperty().removeListener(endTextlistener);
-            // TODO - TRY STACK PANE TO REPLACE LocalDateTimeTextField WITH LocalDateTextField WHEN WHOLE DAY
             if (newSelection)
             {
                 lastDateTimeStart = startTextField.getLocalDateTime();
                 lastDateTimeEnd = endTextField.getLocalDateTime();
                 LocalDateTime startDate = startTextField.getLocalDateTime().toLocalDate().atStartOfDay();
                 startTextField.setLocalDateTime(startDate);
-                vEvent.setDateTimeStart(startTextField.getLocalDateTime().toLocalDate());
+                
                 LocalTime localTime = endTextField.getLocalDateTime().toLocalTime();
-                LocalDateTime endDate = (localTime.equals(LocalTime.of(0, 0))) ? // use start of next day, if not already on start of day
-                        endTextField.getLocalDateTime()
-                      : endTextField.getLocalDateTime().toLocalDate().plusDays(1).atStartOfDay();
+//                long days = 
+                final LocalDateTime endDate;
+                final long days;
+                if (localTime.equals(LocalTime.of(0, 0)))
+                {
+                    days = 0;
+                    endDate = endTextField.getLocalDateTime();
+                } else
+                {
+                    days = 1;
+                    endDate = endTextField.getLocalDateTime().toLocalDate().plusDays(days).atStartOfDay();
+                }
                 endTextField.setLocalDateTime(endDate);
-                vEvent.setDateTimeEnd(endTextField.getLocalDateTime().toLocalDate());
+                
+                LocalDate newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart());
+                vEvent.setDateTimeStart(newDateTimeStart);
+                LocalDate newDateTimeEnd = LocalDate.from(vEvent.getDateTimeEnd());
+                vEvent.setDateTimeEnd(newDateTimeEnd.plus(days, ChronoUnit.DAYS));
+
+                LocalDate newStartRange = LocalDate.from(vEvent.getStartRange());
+                LocalDate newEndRange = LocalDate.from(vEvent.getEndRange());
+                vEvent.setStartRange(newStartRange);
+                vEvent.setEndRange(newEndRange);
             } else
             {
                 if ((lastDateTimeStart != null) && (lastDateTimeEnd != null))
                 {
                     startTextField.setLocalDateTime(lastDateTimeStart);
                     endTextField.setLocalDateTime(lastDateTimeEnd);
-                    vEvent.setDateTimeStart(startTextField.getLocalDateTime());
-                    vEvent.setDateTimeEnd(endTextField.getLocalDateTime());
+                    
+                    LocalTime timeStart = lastDateTimeStart.toLocalTime();
+                    LocalDateTime newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart()).atTime(timeStart);
+                    vEvent.setDateTimeStart(newDateTimeStart);
+                    
+                    LocalTime timeEnd = lastDateTimeEnd.toLocalTime();
+                    long days = (timeEnd.equals(LocalTime.of(0, 0))) ? 0 : 1;
+                    LocalDateTime newDateTimeEnd = LocalDate
+                            .from(vEvent.getDateTimeEnd())
+                            .minus(days, ChronoUnit.DAYS)
+                            .atTime(timeEnd);
+                    vEvent.setDateTimeEnd(newDateTimeEnd);
                 } else
                 {
-                    vEvent.setDateTimeStart(startTextField.getLocalDateTime());
-                    vEvent.setDateTimeEnd(endTextField.getLocalDateTime());
+                    LocalDateTime newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart()).atStartOfDay();
+                    vEvent.setDateTimeStart(newDateTimeStart);
+                    LocalDateTime newDateTimeEnd = LocalDate.from(vEvent.getDateTimeEnd()).atStartOfDay();
+                    vEvent.setDateTimeEnd(newDateTimeEnd);
                 }
+                LocalDateTime newStartRange = LocalDate.from(vEvent.getStartRange()).atStartOfDay();
+                LocalDateTime newEndRange = LocalDate.from(vEvent.getEndRange()).atStartOfDay();
+                vEvent.setStartRange(newStartRange);
+                vEvent.setEndRange(newEndRange);
             }
-            System.out.println("start type1:" + vEvent.getDateTimeStart().getClass());
-            System.out.println("end type1:" + vEvent.getDateTimeEnd().getClass());
             startTextField.localDateTimeProperty().addListener(startTextListener);
             endTextField.localDateTimeProperty().addListener(endTextlistener);
         });

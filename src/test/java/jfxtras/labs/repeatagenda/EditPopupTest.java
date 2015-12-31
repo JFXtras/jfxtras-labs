@@ -2,15 +2,18 @@ package jfxtras.labs.repeatagenda;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.scene.Parent;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
@@ -51,19 +54,38 @@ public class EditPopupTest extends ICalendarTestAbstract
         
         LocalDateTimeTextField startTextField = find("#startTextField");
         startTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 8, 0));
-        assertEquals(LocalTime.of(8, 0), LocalTime.from(v.getDateTimeStart()));
+        assertEquals(LocalDateTime.of(2015, 11, 9, 8, 0), LocalDateTime.from(v.getDateTimeStart()));
         
         LocalDateTimeTextField endTextField = find("#endTextField");
-        System.out.println(v.getDateTimeEnd());
         endTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 9, 0));
-        System.out.println(v.getDateTimeEnd());
-        TestUtil.sleep(3000);
-        assertEquals(LocalTime.of(9, 0), LocalTime.from(v.getDateTimeEnd()));
+        assertEquals(LocalDateTime.of(2015, 11, 9, 9, 0), LocalDateTime.from(v.getDateTimeEnd()));
+        
+        CheckBox wholeDayCheckBox = find("#wholeDayCheckBox");
+        wholeDayCheckBox.setSelected(true);
+        assertEquals(LocalDate.of(2015, 11, 9), LocalDate.from(v.getDateTimeStart()));
+        assertEquals(LocalDate.of(2015, 11, 10), LocalDate.from(v.getDateTimeEnd()));
+        wholeDayCheckBox.setSelected(false);
+        assertEquals(LocalDateTime.of(2015, 11, 9, 8, 0), LocalDateTime.from(v.getDateTimeStart()));
+        assertEquals(LocalDateTime.of(2015, 11, 9, 9, 0), LocalDateTime.from(v.getDateTimeEnd()));
+        
+        TextField summaryTextField = find("#summaryTextField");
+        summaryTextField.setText("new summary");
+        assertEquals("new summary", v.getSummary());
+
+        TextArea descriptionTextArea = find("#descriptionTextArea");
+        descriptionTextArea.setText("new description");
+        assertEquals("new description", v.getDescription());
         
         TextField locationTextField = find("#locationTextField");
         locationTextField.setText("new location");
         assertEquals("new location", v.getLocation());
-        
+
+        TextField groupTextField = find("#groupTextField");
+        groupTextField.setText("new group name");
+        assertEquals("new group name", v.getCategories());
+
+        AppointmentGroupGridPane appointmentGroupGridPane = find("#appointmentGroupGridPane");
+
         TestUtil.sleep(3000);
     }
     

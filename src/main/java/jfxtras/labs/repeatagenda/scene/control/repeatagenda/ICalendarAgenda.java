@@ -13,7 +13,6 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -161,7 +160,7 @@ public class ICalendarAgenda extends Agenda {
         };
         
         Locale myLocale = Locale.getDefault();
-        appointments().addListener((InvalidationListener) obs -> System.out.println("changed appointments:"));
+//        appointments().addListener((InvalidationListener) obs -> System.out.println("changed appointments:"));
 
         // setup default ResourceBundle // TODO - GET PATH BETTER WAY
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Bundle", myLocale);
@@ -202,7 +201,7 @@ public class ICalendarAgenda extends Agenda {
         // LISTEN FOR AGENDA RANGE CHANGES
         setLocalDateTimeRangeCallback(dateTimeRange ->
         {
-            System.out.println("range callback:");
+//            System.out.println("range callback:");
             this.dateTimeRange = dateTimeRange;
             refresh();
             return null; // return argument for the Callback

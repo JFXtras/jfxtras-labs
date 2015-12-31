@@ -28,6 +28,7 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
 public class ICalendarEditTest extends ICalendarTestAbstract
 {
 
+    // Ensures duration is automatically updated correctly
     @Test
     public void editStartAndEnd()
     {
