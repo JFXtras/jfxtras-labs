@@ -49,7 +49,7 @@ public class ICalendarMakeAppointmentsTest extends ICalendarTestAbstract
                             .withEndLocalDateTime(d.plusSeconds(3600))
                             .withDescription("Daily1 Description")
                             .withSummary("Daily1 Summary")
-                            .withAppointmentGroup(appointmentGroups.get(3));
+                            .withAppointmentGroup(appointmentGroups().get(3));
                 })
                 .collect(Collectors.toList());
         assertEquals(expectedAppointments, appointments);
@@ -73,7 +73,7 @@ public class ICalendarMakeAppointmentsTest extends ICalendarTestAbstract
         Appointment expectedAppointment1 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDate.of(2015, 12, 21).atTime(10, 0))
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 21).atTime(10, 45))
-                .withAppointmentGroup(appointmentGroups.get(2))
+                .withAppointmentGroup(appointmentGroups().get(2))
                 .withSummary("Weekly1 Summary")
                 .withDescription("Weekly1 Description");
 //                .withRepeatMade(true)
@@ -84,7 +84,7 @@ public class ICalendarMakeAppointmentsTest extends ICalendarTestAbstract
         Appointment expectedAppointment2 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDate.of(2015, 12, 23).atTime(10, 0))
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 23).atTime(10, 45))
-                .withAppointmentGroup(appointmentGroups.get(2))
+                .withAppointmentGroup(appointmentGroups().get(2))
                 .withSummary("Weekly1 Summary")
                 .withDescription("Weekly1 Description");
 //                .withRepeatMade(true)
@@ -95,7 +95,7 @@ public class ICalendarMakeAppointmentsTest extends ICalendarTestAbstract
         Appointment expectedAppointment3 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDate.of(2015, 12, 25).atTime(10, 0))
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 25).atTime(10, 45))
-                .withAppointmentGroup(appointmentGroups.get(2))
+                .withAppointmentGroup(appointmentGroups().get(2))
                 .withSummary("Weekly1 Summary")
                 .withDescription("Weekly1 Description");
 //                .withRepeatMade(true)

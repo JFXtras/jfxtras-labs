@@ -126,7 +126,7 @@ public class EditPopupTest extends ICalendarTestAbstract
         assertEquals("new summary", a.getSummary());
         assertEquals("new description", a.getDescription());
 //        assertEquals("new location", a.getLocation());
-        System.out.println("appointmentGroups2:" + appointmentGroups);
+        System.out.println("appointmentGroups2:" + appointmentGroups());
 
         AppointmentGroup group = agenda.appointmentGroups().get(11);
         System.out.println(group.getDescription() + " " + a.getAppointmentGroup().getDescription());

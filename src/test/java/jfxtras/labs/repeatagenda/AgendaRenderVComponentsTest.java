@@ -42,9 +42,9 @@ public class AgendaRenderVComponentsTest extends ICalendarTestAbstract
         List<LocalDateTime> expectedStartDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 0, 0)
               , LocalDateTime.of(2015, 11, 9, 10, 0)
-              , LocalDateTime.of(2015, 11, 9, 18, 0)
               , LocalDateTime.of(2015, 11, 11, 0, 0)
               , LocalDateTime.of(2015, 11, 11, 10, 0)
+              , LocalDateTime.of(2015, 11, 11, 10, 30)
               , LocalDateTime.of(2015, 11, 12, 0, 0)
               , LocalDateTime.of(2015, 11, 12, 10, 0)
               , LocalDateTime.of(2015, 11, 13, 10, 0)
@@ -59,9 +59,9 @@ public class AgendaRenderVComponentsTest extends ICalendarTestAbstract
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedEndDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 11, 30)
-              , LocalDateTime.of(2015, 11, 9, 19, 0)
               , LocalDateTime.of(2015, 11, 11, 0, 0)
               , LocalDateTime.of(2015, 11, 11, 10, 45)
+              , LocalDateTime.of(2015, 11, 11, 11, 30)
               , LocalDateTime.of(2015, 11, 12, 0, 0)
               , LocalDateTime.of(2015, 11, 12, 11, 30)
               , LocalDateTime.of(2015, 11, 13, 10, 45)

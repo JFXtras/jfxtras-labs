@@ -20,6 +20,21 @@ import jfxtras.test.JFXtrasGuiTest;
 public class ICalendarAgendaTestAbstract extends JFXtrasGuiTest
 {
     
+    public ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
+    = javafx.collections.FXCollections.observableArrayList(
+            IntStream
+            .range(0, 23)
+            .mapToObj(i -> 
+            {
+                ICalendarAgenda.AppointmentGroupImpl a = new ICalendarAgenda.AppointmentGroupImpl()
+//                    .withKey(i)
+                    .withDescription("group" + (i < 10 ? "0" : "") + i);
+                a.setStyleClass("group" + i);
+                return a;
+            })
+            .collect(Collectors.toList()));
+    public ObservableList<AppointmentGroup> appointmentGroups() { return DEFAULT_APPOINTMENT_GROUPS; }
+    
     public Parent getRootNode()
     {
         Locale.setDefault(Locale.ENGLISH);
@@ -30,15 +45,16 @@ public class ICalendarAgendaTestAbstract extends JFXtrasGuiTest
         agenda.setDisplayedLocalDateTime(LocalDate.of(2015, 11, 8).atStartOfDay());
         agenda.setPrefSize(1000, 800);
         
-        final ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
-        = javafx.collections.FXCollections.observableArrayList(
-                IntStream
-                .range(0, 24)
-                .mapToObj(i -> new ICalendarAgenda.AppointmentGroupImpl()
-                       .withStyleClass("group" + i)
-//                       .withKey(i)
-                       .withDescription("group" + (i < 10 ? "0" : "") + i))
-                .collect(Collectors.toList()));
+//        final ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
+//        DEFAULT_APPOINTMENT_GROUPS
+//        = javafx.collections.FXCollections.observableArrayList(
+//                IntStream
+//                .range(0, 24)
+//                .mapToObj(i -> new ICalendarAgenda.AppointmentGroupImpl()
+//                       .withStyleClass("group" + i)
+////                       .withKey(i)
+//                       .withDescription("group" + (i < 10 ? "0" : "") + i))
+//                .collect(Collectors.toList()));
         
         agenda.appointmentGroups().clear();
         agenda.appointmentGroups().addAll(DEFAULT_APPOINTMENT_GROUPS);
@@ -71,12 +87,6 @@ public class ICalendarAgendaTestAbstract extends JFXtrasGuiTest
         return vbox;
     }
     
-    // Causes Not on FX application thread; currentThread = main exception - how to fix?
-    public void shiftOneWeek()
-    {
-        LocalDateTime date = agenda.getDisplayedLocalDateTime();
-        agenda.setDisplayedLocalDateTime(date.plusWeeks(1));
-    }
     protected VBox vbox = null; // cannot make this final and assign upon construction
 //    final protected Map<String, Agenda.AppointmentGroup> appointmentGroupMap = new TreeMap<String, Agenda.AppointmentGroup>();
     protected ICalendarAgenda agenda = null; // cannot make this final and assign upon construction

@@ -79,7 +79,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // Check edited VEvent
         VEventImpl expectedVEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         expectedVEvent.setAppointmentClass(getClazz());
-        expectedVEvent.setAppointmentGroup(appointmentGroups.get(3));
+        expectedVEvent.setAppointmentGroup(appointmentGroups().get(3));
         expectedVEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 9, 45));
         expectedVEvent.setDescription("Daily2 Description");
         expectedVEvent.setDurationInNanos(4500L * NANOS_IN_SECOND);
@@ -131,7 +131,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         selectedAppointment.setEndLocalDateTime(newDate.atTime(11, 0)); // change end time
         LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
         vevent.setSummary("Edited Summary");
-        vevent.setAppointmentGroup(appointmentGroups.get(7));
+        vevent.setAppointmentGroup(appointmentGroups().get(7));
         
         // Edit
         WindowCloseType windowCloseType = vevent.edit(
@@ -187,7 +187,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
 //        LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
         vevent.setSummary("Edited Summary");
         vevent.setDescription("Edited Description");
-        vevent.setAppointmentGroup(appointmentGroups.get(7));
+        vevent.setAppointmentGroup(appointmentGroups().get(7));
         
         // Edit
         WindowCloseType windowCloseType = vevent.edit(
@@ -216,7 +216,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         Appointment expectedAppointment1 = AppointmentFactory.newAppointment(getClazz())
             .withStartLocalDateTime(LocalDateTime.of(2015, 11, 15, 10, 0))
             .withEndLocalDateTime(LocalDateTime.of(2015, 11, 15, 11, 30))
-            .withAppointmentGroup(appointmentGroups.get(3))
+            .withAppointmentGroup(appointmentGroups().get(3))
             .withDescription("Daily2 Description")
             .withSummary("Daily2 Summary");
         System.out.println("appt group desc: " + editedAppointment1.getAppointmentGroup().getDescription());
@@ -226,7 +226,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         Appointment expectedAppointment2 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDateTime.of(2015, 11, 17, 9, 45))
                 .withEndLocalDateTime(LocalDateTime.of(2015, 11, 17, 11, 0))
-                .withAppointmentGroup(appointmentGroups.get(7))
+                .withAppointmentGroup(appointmentGroups().get(7))
                 .withDescription("Edited Description")
                 .withSummary("Edited Summary");
         assertEquals(expectedAppointment2, editedAppointment2); // Check to see if repeat-generated appointment changed correctly
@@ -235,7 +235,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         Appointment expectedAppointment3 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDateTime.of(2015, 11, 20, 9, 45))
                 .withEndLocalDateTime(LocalDateTime.of(2015, 11, 20, 11, 0))
-                .withAppointmentGroup(appointmentGroups.get(7))
+                .withAppointmentGroup(appointmentGroups().get(7))
                 .withDescription("Edited Description")
                 .withSummary("Edited Summary");
         assertEquals(expectedAppointment3, editedAppointment3); // Check to see if repeat-generated appointment changed correctly
@@ -274,7 +274,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
         vevent.setSummary("Edited Summary");
         vevent.setDescription("Edited Description");
-        vevent.setAppointmentGroup(appointmentGroups.get(7));
+        vevent.setAppointmentGroup(appointmentGroups().get(7));
         
         // Edit
         WindowCloseType windowCloseType = vevent.edit(
@@ -308,7 +308,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         Appointment expectedAppointment1 = AppointmentFactory.newAppointment(getClazz())
             .withStartLocalDateTime(LocalDateTime.of(2015, 11, 15, 10, 0))
             .withEndLocalDateTime(LocalDateTime.of(2015, 11, 15, 11, 30))
-            .withAppointmentGroup(appointmentGroups.get(3))
+            .withAppointmentGroup(appointmentGroups().get(3))
             .withDescription("Daily6 Description")
             .withSummary("Daily6 Summary");
         assertEquals(expectedAppointment1, editedAppointment1); // Check to see if repeat-generated appointment changed correctly
@@ -317,7 +317,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         Appointment expectedAppointment2 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDateTime.of(2015, 11, 17, 6, 0))
                 .withEndLocalDateTime(LocalDateTime.of(2015, 11, 17, 7, 0))
-                .withAppointmentGroup(appointmentGroups.get(7))
+                .withAppointmentGroup(appointmentGroups().get(7))
                 .withDescription("Edited Description")
                 .withSummary("Edited Summary");
         assertEquals(expectedAppointment2, editedAppointment2); // Check to see if repeat-generated appointment changed correctly
@@ -326,7 +326,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         Appointment expectedAppointment3 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDateTime.of(2015, 11, 17, 10, 0))
                 .withEndLocalDateTime(LocalDateTime.of(2015, 11, 17, 11, 30))
-                .withAppointmentGroup(appointmentGroups.get(3))
+                .withAppointmentGroup(appointmentGroups().get(3))
                 .withDescription("Daily6 Description")
                 .withSummary("Daily6 Summary");
             assertEquals(expectedAppointment3, editedAppointment3); // Check to see if repeat-generated appointment changed correctly
@@ -335,7 +335,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         Appointment expectedAppointment4 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDateTime.of(2015, 11, 19, 6, 0))
                 .withEndLocalDateTime(LocalDateTime.of(2015, 11, 19, 7, 0))
-                .withAppointmentGroup(appointmentGroups.get(7))
+                .withAppointmentGroup(appointmentGroups().get(7))
                 .withDescription("Edited Description")
                 .withSummary("Edited Summary");
         assertEquals(expectedAppointment4, editedAppointment4); // Check to see if repeat-generated appointment changed correctly
@@ -344,7 +344,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         Appointment expectedAppointment5 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDateTime.of(2015, 11, 21, 6, 0))
                 .withEndLocalDateTime(LocalDateTime.of(2015, 11, 21, 7, 0))
-                .withAppointmentGroup(appointmentGroups.get(7))
+                .withAppointmentGroup(appointmentGroups().get(7))
                 .withDescription("Edited Description")
                 .withSummary("Edited Summary");
         assertEquals(expectedAppointment5, editedAppointment5); // Check to see if repeat-generated appointment changed correctly
@@ -415,7 +415,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
 
         VEventImpl expectedVEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
         expectedVEvent.setAppointmentClass(getClazz());
-        expectedVEvent.setAppointmentGroup(appointmentGroups.get(3));
+        expectedVEvent.setAppointmentGroup(appointmentGroups().get(3));
         expectedVEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         expectedVEvent.setDescription("Daily2 Description");
         expectedVEvent.setDurationInNanos(5400L * NANOS_IN_SECOND);
@@ -488,7 +488,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         vevent.setDateTimeEnd(VComponent.plusNanos(vevent.getDateTimeEnd(), shiftInNanos));        
         vevent.setSummary("Edited Summary");
         vevent.setDescription("Edited Description");
-        vevent.setAppointmentGroup(appointmentGroups.get(7));
+        vevent.setAppointmentGroup(appointmentGroups().get(7));
         
         // Edit
         WindowCloseType windowCloseType = vevent.edit(
@@ -503,7 +503,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         
         // Check edited VEvent
         VEventImpl expectedVEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
-        expectedVEvent.setAppointmentGroup(appointmentGroups.get(7));
+        expectedVEvent.setAppointmentGroup(appointmentGroups().get(7));
         expectedVEvent.setDateTimeStart(LocalDate.of(2015, 11, 10));
         expectedVEvent.setDateTimeEnd(LocalDate.of(2015, 11, 12));
         expectedVEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
