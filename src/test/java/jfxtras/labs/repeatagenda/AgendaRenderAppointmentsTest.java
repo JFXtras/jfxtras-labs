@@ -28,7 +28,7 @@ public class AgendaRenderAppointmentsTest extends ICalendarTestAbstract
             agenda.appointments().add( new ICalendarAgenda.AppointmentImplLocal2()
                 .withStartLocalDateTime(TestUtil.quickParseLocalDateTimeYMDhm("2015-11-11T10:00"))
                 .withEndLocalDateTime(TestUtil.quickParseLocalDateTimeYMDhm("2015-11-11T12:00"))
-                .withAppointmentGroup(DEFAULT_APPOINTMENT_GROUPS.get(0))
+                .withAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(0))
             );
         });
 

@@ -3,10 +3,7 @@ package jfxtras.labs.repeatagenda;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-import javafx.collections.ObservableList;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
@@ -14,26 +11,25 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
-import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.test.JFXtrasGuiTest;
 
 public class ICalendarAgendaTestAbstract extends JFXtrasGuiTest
 {
     
-    public ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
-    = javafx.collections.FXCollections.observableArrayList(
-            IntStream
-            .range(0, 23)
-            .mapToObj(i -> 
-            {
-                ICalendarAgenda.AppointmentGroupImpl a = new ICalendarAgenda.AppointmentGroupImpl()
-//                    .withKey(i)
-                    .withDescription("group" + (i < 10 ? "0" : "") + i);
-                a.setStyleClass("group" + i);
-                return a;
-            })
-            .collect(Collectors.toList()));
-    public ObservableList<AppointmentGroup> appointmentGroups() { return DEFAULT_APPOINTMENT_GROUPS; }
+//    public ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
+//    = javafx.collections.FXCollections.observableArrayList(
+//            IntStream
+//            .range(0, 23)
+//            .mapToObj(i -> 
+//            {
+//                ICalendarAgenda.AppointmentGroupImpl a = new ICalendarAgenda.AppointmentGroupImpl()
+////                    .withKey(i)
+//                    .withDescription("group" + (i < 10 ? "0" : "") + i);
+//                a.setStyleClass("group" + i);
+//                return a;
+//            })
+//            .collect(Collectors.toList()));
+//    public ObservableList<AppointmentGroup> appointmentGroups() { return ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS; }
     
     public Parent getRootNode()
     {
@@ -57,7 +53,7 @@ public class ICalendarAgendaTestAbstract extends JFXtrasGuiTest
 //                .collect(Collectors.toList()));
         
         agenda.appointmentGroups().clear();
-        agenda.appointmentGroups().addAll(DEFAULT_APPOINTMENT_GROUPS);
+        agenda.appointmentGroups().addAll(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         
         // accept new appointments
         agenda.newAppointmentCallbackProperty().set(new Callback<Agenda.LocalDateTimeRange, Agenda.Appointment>()

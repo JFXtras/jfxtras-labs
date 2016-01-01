@@ -32,7 +32,6 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
-import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.test.TestUtil;
 
 /**
@@ -68,7 +67,7 @@ public class EditPopupTest extends ICalendarTestAbstract
         move("#hourLine11");
         press(MouseButton.SECONDARY);
         release(MouseButton.SECONDARY);
-             
+
         // Get properties
         LocalDateTimeTextField startTextField = find("#startTextField");
         LocalDateTimeTextField endTextField = find("#endTextField");
@@ -86,7 +85,7 @@ public class EditPopupTest extends ICalendarTestAbstract
         assertEquals("Individual Description", descriptionTextArea.getText());
         assertEquals("group05", groupTextField.getText());
         assertFalse(wholeDayCheckBox.isSelected());
-        
+
         // Check editing properties
         startTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 8, 0));
         assertEquals(LocalDateTime.of(2015, 11, 11, 8, 0), v.getDateTimeStart());
@@ -115,9 +114,10 @@ public class EditPopupTest extends ICalendarTestAbstract
         
         groupTextField.setText("new group name");
         assertEquals("new group name", v.getCategories());
+        assertEquals("new group name", agenda.appointmentGroups().get(11).getDescription());
         
         click("#closeAppointmentButton");
-//        TestUtil.sleep(3000);
+        
         // Check appointment edited
         assertEquals(1, agenda.appointments().size());
         Appointment a = agenda.appointments().get(0);
@@ -125,13 +125,7 @@ public class EditPopupTest extends ICalendarTestAbstract
         assertEquals(LocalDateTime.of(2015, 11, 11, 9, 0), a.getEndLocalDateTime());
         assertEquals("new summary", a.getSummary());
         assertEquals("new description", a.getDescription());
-//        assertEquals("new location", a.getLocation());
-        System.out.println("appointmentGroups2:" + appointmentGroups());
-
-        AppointmentGroup group = agenda.appointmentGroups().get(11);
-        System.out.println(group.getDescription() + " " + a.getAppointmentGroup().getDescription());
-        assertEquals(group, a.getAppointmentGroup());
-        assertEquals("new group name", group.getDescription());
+        assertEquals("new group name", a.getAppointmentGroup().getDescription());
     }
     
     // edit repeatable elements
@@ -289,7 +283,7 @@ public class EditPopupTest extends ICalendarTestAbstract
             agenda.appointments().add( new ICalendarAgenda.AppointmentImplLocal2()
                 .withStartLocalDateTime(TestUtil.quickParseLocalDateTimeYMDhm("2015-11-11T10:00"))
                 .withEndLocalDateTime(TestUtil.quickParseLocalDateTimeYMDhm("2015-11-11T12:00"))
-                .withAppointmentGroup(DEFAULT_APPOINTMENT_GROUPS.get(0))
+                .withAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(0))
             );
         });
         

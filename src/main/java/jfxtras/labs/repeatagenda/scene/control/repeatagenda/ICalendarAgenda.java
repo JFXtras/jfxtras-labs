@@ -91,7 +91,7 @@ public class ICalendarAgenda extends Agenda {
     private Callback<Collection<VComponent< Appointment>>, Void> repeatWriteCallback = null;
     public void setRepeatWriteCallback(Callback<Collection<VComponent<Appointment>>, Void> repeatWriteCallback) { this.repeatWriteCallback = repeatWriteCallback; }
 
-    private Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback = null;
+    private Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback = null; // TODO - NOT IMPLEMENTED YET
     public void setAppointmentGroupWriteCallback(Callback<Collection<AppointmentGroup>, Void> appointmentWriteCallback) { this.appointmentGroupWriteCallback = appointmentGroupWriteCallback; }
 
     // listen for additions to appointments from agenda. This listener must be removed and added back when a change

@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentImplLocal2;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
@@ -45,7 +46,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
 //                return a;
 //            })
 //            .collect(Collectors.toList()));
-//    ObservableList<AppointmentGroup> appointmentGroups = DEFAULT_APPOINTMENT_GROUPS;
+//  public ObservableList<AppointmentGroup> appointmentGroups() { return DEFAULT_APPOINTMENT_GROUPS; }
     
     // Comparator for tree sort
     private final Comparator<Appointment> APPOINTMENT_COMPARATOR = (a1, a2)
@@ -69,13 +70,13 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=YEARLY; */
     protected VEventImpl getYearly1()
     {
-        VEventImpl vEvent = new VEventImpl(appointmentGroups());
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeCreated(LocalDateTime.of(2015, 11, 9, 8, 29));
         vEvent.setDateTimeStamp(LocalDateTime.of(2015, 11, 9, 8, 30));
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setDateTimeLastModified(LocalDateTime.of(2015, 11, 10, 18, 30));
         vEvent.setUniqueIdentifier("20151109T082900-0@jfxtras.org");
-        vEvent.setAppointmentGroup(appointmentGroups().get(13));
+        vEvent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(13));
         vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
         vEvent.setDescription("Yearly1 Description");
         vEvent.setSummary("Yearly1 Summary");
@@ -90,7 +91,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=YEARLY;BYDAY=SU; */
     protected VEventImpl getYearly2()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 6, 10, 0));
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -108,7 +109,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
      * example in RFC 5545 iCalendar, page 129 */
     protected VEventImpl getYearly3()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(1997, 6, 5, 9, 0));
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -125,7 +126,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=YEARLY;BYMONTH=1,2 */
     protected VEventImpl getYearly4()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 1, 6, 10, 0));
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -140,7 +141,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=YEARLY;BYMONTH=11;BYMONTHDAY=10 */
     protected VEventImpl getYearly5()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 10, 0, 0));
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -163,7 +164,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
         BYMONTHDAY=2,3,4,5,6,7,8 */
     protected VEventImpl getYearly6()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(1996, 11, 5, 0, 0));
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -183,7 +184,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=YEARLY;BYDAY=20MO */
     protected VEventImpl getYearly7()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(1997, 5, 19, 10, 0));
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -198,7 +199,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=YEARLY;WKST=MO;BYWEEKNO=20;BYDAY=MO */
     protected VEventImpl getYearly8()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(1997, 5, 12, 10, 0));
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -217,7 +218,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=YEARLY;BYMONTH=11;BYMONTHDAY=10 - start before first valid date */
     protected VEventImpl getYearly9()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 1, 1, 0, 0));
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -234,7 +235,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=MONTHLY, Basic monthly stream, repeats 9th day of every month */
     protected VEventImpl getMonthly1()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -247,7 +248,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=MONTHLY;BYMONTHDAY=-2, Monthly stream, negative day of month */
     protected VEventImpl getMonthly2()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 29, 10, 0));
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -263,7 +264,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=MONTHLY;BYDAY=TU,WE,FR */
     protected VEventImpl getMonthly3()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -278,7 +279,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=MONTHLY;BYDAY=-1SA */
     protected VEventImpl getMonthly4()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -293,7 +294,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=MONTHLY;BYDAY=FR;BYMONTHDAY=13 Every Friday the 13th, forever: */
     protected VEventImpl getMonthly5()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(1997, 9, 2, 10, 0));
         vEvent.setDateTimeStamp(LocalDateTime.of(1997, 9, 1, 8, 30));
         vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
@@ -313,7 +314,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=MONTHLY;BYMONTH=11,12;BYDAY=TU,WE,FR - start before first valid date */
     protected VEventImpl getMonthly6()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 1, 10, 10, 0));
         vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
         vEvent.setDurationInNanos(5400L * NANOS_IN_SECOND);
@@ -333,7 +334,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=MONTHLY;BYDAY=3MO */
     protected VEventImpl getMonthly7()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -349,7 +350,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=WEEKLY, Basic weekly stream */
     protected VEventImpl getWeekly1()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -362,9 +363,9 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE,FR */
     protected VEventImpl getWeekly2()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
-        vEvent.setAppointmentGroup(appointmentGroups().get(2));
+        vEvent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(2));
         vEvent.setDurationInNanos(2700L * NANOS_IN_SECOND);
         vEvent.setDescription("Weekly1 Description");
         vEvent.setSummary("Weekly1 Summary");
@@ -384,9 +385,9 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=WEEKLY;BYDAY=MO,WE,FR  - start before first valid date */
     protected VEventImpl getWeekly3()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0));
-        vEvent.setAppointmentGroup(appointmentGroups().get(3));
+        vEvent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(3));
         vEvent.setDurationInNanos(2700L * NANOS_IN_SECOND);
         vEvent.setDescription("Weekly1 Description");
         vEvent.setSummary("Weekly1 Summary");
@@ -411,10 +412,10 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=DAILY, Basic daily stream */
     protected VEventImpl getDaily1()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
-        vEvent.setAppointmentGroup(appointmentGroups().get(3));
+        vEvent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(3));
         vEvent.setDescription("Daily1 Description");
         vEvent.setSummary("Daily1 Summary");
         vEvent.setAppointmentClass(clazz);
@@ -430,10 +431,10 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=DAILY;INVERVAL=3;COUNT=6 */
     protected VEventImpl getDaily2()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setDurationInNanos(5400L * NANOS_IN_SECOND);
-        vEvent.setAppointmentGroup(appointmentGroups().get(3));
+        vEvent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(3));
         vEvent.setDescription("Daily2 Description");
         vEvent.setSummary("Daily2 Summary");
         vEvent.setAppointmentClass(clazz);
@@ -451,7 +452,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=DAILY;INTERVAL=3;COUNT=10;BYMONTHDAY=9,10,11,12,13,14 */
     protected VEventImpl getDaily3()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0));
         vEvent.setAppointmentClass(clazz);
@@ -472,7 +473,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=DAILY;INVERVAL=2;BYMONTHDAY=9 */
     protected VEventImpl getDaily4()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -488,7 +489,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** FREQ=DAILY;INVERVAL=2;BYDAY=FR */
     protected VEventImpl getDaily5()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -504,11 +505,11 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /* FREQ=DAILY;INVERVAL=2;UNTIL=20151201T000000 */
     protected VEventImpl getDaily6()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0));
 //        vEvent.setDurationInNanos(5400L * NANOS_IN_SECOND);
-        vEvent.setAppointmentGroup(appointmentGroups().get(3));
+        vEvent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(3));
         vEvent.setDescription("Daily6 Description");
         vEvent.setSummary("Daily6 Summary");
         vEvent.setAppointmentClass(clazz);
@@ -526,25 +527,25 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** Individual - non repeatable VEvent */
     protected VEventImpl getIndividual1()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 30));
         vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
         vEvent.setDescription("Individual Description");
         vEvent.setSummary("Individual Summary");
         vEvent.setAppointmentClass(clazz);
         vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
-        vEvent.setAppointmentGroup(appointmentGroups().get(5));
+        vEvent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(5));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         return vEvent;
     }
     
     protected VEventImpl getIndividual2()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDate.of(2015, 11, 11));
         vEvent.setDateTimeEnd(LocalDate.of(2015, 11, 12));
         vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
-        vEvent.setAppointmentGroup(appointmentGroups().get(13));
+        vEvent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(13));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         vEvent.setAppointmentClass(clazz);
         return vEvent;
@@ -563,7 +564,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
 
     protected VEventImpl getRecurrence1()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
         RDate rDate = new RDate().withTemporals(LocalDateTime.of(2015, 11, 12, 10, 0), LocalDateTime.of(2015, 11, 14, 12, 0));
@@ -574,7 +575,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /** all-day appointments */
     protected VEventImpl getWholeDayDaily1()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDate.of(2015, 11, 9));
         vEvent.setDateTimeEnd(LocalDate.of(2015, 11, 12));
         vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
@@ -586,7 +587,7 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /* FREQ=DAILY;INVERVAL=3;COUNT=6 */
     protected VEventImpl getWholeDayDaily2()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDate.of(2015, 11, 9));
         vEvent.setDateTimeEnd(LocalDate.of(2015, 11, 12));
         vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
@@ -604,11 +605,11 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     /* FREQ=DAILY;INVERVAL=3;UNTIL=20151124 */
     protected VEventImpl getWholeDayDaily3()
     {
-        VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDate.of(2015, 11, 9));
         vEvent.setDateTimeEnd(LocalDate.of(2015, 11, 11));
         vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
-        vEvent.setAppointmentGroup(appointmentGroups().get(6));
+        vEvent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(6));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule()
