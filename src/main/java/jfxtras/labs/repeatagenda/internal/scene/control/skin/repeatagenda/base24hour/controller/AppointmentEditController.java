@@ -265,6 +265,7 @@ public class AppointmentEditController
         groupTextField.textProperty().addListener((observable, oldSelection, newSelection) ->
         {
             int i = appointmentGroupGridPane.getAppointmentGroupSelected();
+            System.out.println("appointmentGroups1:" + appointmentGroups);
             appointmentGroups.get(i).setDescription(newSelection);
             appointmentGroupGridPane.updateToolTip(i, appointmentGroups);
             vEvent.setCategories(newSelection);

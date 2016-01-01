@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import jfxtras.test.TestUtil;
 
@@ -137,7 +136,8 @@ public class AgendaRenderVComponentsTest extends ICalendarTestAbstract
                 ));
         assertEquals(expectedEndDates3, endDates3);
 
-        TestUtil.runThenWaitForPaintPulse( () -> {
+        TestUtil.runThenWaitForPaintPulse( () ->
+        { // advance ten years + one week
             LocalDateTime date = agenda.getDisplayedLocalDateTime().plus(10, ChronoUnit.YEARS).plus(1, ChronoUnit.WEEKS);
             agenda.setDisplayedLocalDateTime(date);
         });
@@ -165,19 +165,5 @@ public class AgendaRenderVComponentsTest extends ICalendarTestAbstract
         assertEquals(expectedEndDates4, endDates4);
 //        TestUtil.sleep(3000);
     }
-    
-public static ArrayList<Node> getAllNodes(Parent root) {
-    ArrayList<Node> nodes = new ArrayList<Node>();
-    addAllDescendents(root, nodes);
-    return nodes;
-}
-
-private static void addAllDescendents(Parent parent, ArrayList<Node> nodes) {
-    for (Node node : parent.getChildrenUnmodifiable()) {
-        nodes.add(node);
-        if (node instanceof Parent)
-            addAllDescendents((Parent)node, nodes);
-    }
-}
 
 }

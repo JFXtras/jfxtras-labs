@@ -362,6 +362,7 @@ public class VEventImpl extends VEvent<Appointment>
      * @param writeVEventsCallback - called to do VEvent I/O if necessary.
      * @return
      */
+    // TODO - REPLACE DIALOG CALLBACK WITH INLINE CODE - SELECT BUTTONS ON TESTING
     @Override
     public WindowCloseType edit(
               LocalDateTime dateTimeStartInstanceOld // TODO - NEED TO PASS APPOINTMENT TO ACCOUNT FOR APPOINTMENTS WITH MATCHING DATE/TIMES

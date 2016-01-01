@@ -532,8 +532,10 @@ public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
     protected static VEventImpl getIndividual1()
     {
         VEventImpl vEvent = new VEventImpl(DEFAULT_APPOINTMENT_GROUPS);
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 18, 0));
+        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 30));
         vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
+        vEvent.setDescription("Individual Description");
+        vEvent.setSummary("Individual Summary");
         vEvent.setAppointmentClass(clazz);
         vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
         vEvent.setAppointmentGroup(appointmentGroups.get(5));

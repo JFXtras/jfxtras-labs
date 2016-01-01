@@ -52,12 +52,13 @@ public class EditPopupLoader extends Stage {
         FXMLLoader appointmentMenuLoader = new FXMLLoader();
         appointmentMenuLoader.setLocation(EditPopupLoader.class.getResource("view/AppointmentEdit.fxml"));
         appointmentMenuLoader.setResources(Settings.resources);
-        Control appointmentMenu = null;
+        Control appointmentPopup = null;
         try {
-            appointmentMenu = appointmentMenuLoader.load();
+            appointmentPopup = appointmentMenuLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        appointmentPopup.setId("editAppointmentPopup");
         AppointmentEditController appointmentEditController = appointmentMenuLoader.getController();
 
         appointmentEditController.setupData(
@@ -69,9 +70,9 @@ public class EditPopupLoader extends Stage {
               , agenda.appointmentGroups()
               , veventWriteCallback
               , popupCloseType);
-        Scene scene = new Scene(appointmentMenu);
+        Scene scene = new Scene(appointmentPopup);
 
-//        groupNameEdited.bindBidirectional(appointmentEditController.groupNameEditedProperty());
+        //        groupNameEdited.bindBidirectional(appointmentEditController.groupNameEditedProperty());
 
         // listen for close trigger
         popupCloseType.addListener((observable, oldSelection, newSelection) -> close());
