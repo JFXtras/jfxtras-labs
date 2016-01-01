@@ -228,7 +228,7 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
         vComponent.getRRule().getFrequency().getByRules().remove(r2);
         if (dayOfWeekList.isEmpty())
         {
-            DayOfWeek dayOfWeek = LocalDate.from(vComponent.getDateTimeStart()).getDayOfWeek();
+            DayOfWeek dayOfWeek = LocalDate.from(dateTimeStartInstanceNew).getDayOfWeek();
             vComponent.getRRule().getFrequency().addByRule(new ByDay(dayOfWeek)); // add days already clicked
             dayOfWeekCheckBoxMap.get(dayOfWeek).set(true);
         } else
@@ -423,7 +423,6 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
 
     // Setup frequencyComboBox items
     frequencyComboBox.setItems(FXCollections.observableArrayList(FrequencyType.implementedValues()));
-//    frequencyComboBox.getSelectionModel().select(FrequencyType.WEEKLY); // default selection
     frequencyComboBox.setConverter(Frequency.FrequencyType.stringConverter);
 
     // INTERVAL SPINNER

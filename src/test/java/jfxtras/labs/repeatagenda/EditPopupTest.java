@@ -54,7 +54,7 @@ public class EditPopupTest extends ICalendarTestAbstract
     
     // edit non-repeatable elements
     @Test
-//    @Ignore
+    @Ignore
     public void canEditVComponent1()
     {
         TestUtil.runThenWaitForPaintPulse( () -> {
@@ -86,7 +86,7 @@ public class EditPopupTest extends ICalendarTestAbstract
         assertEquals("group05", groupTextField.getText());
         assertFalse(wholeDayCheckBox.isSelected());
 
-        // Check editing properties
+        // Edit and check properties
         startTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 8, 0));
         assertEquals(LocalDateTime.of(2015, 11, 11, 8, 0), v.getDateTimeStart());
         
@@ -118,7 +118,7 @@ public class EditPopupTest extends ICalendarTestAbstract
         
         click("#closeAppointmentButton");
         
-        // Check appointment edited
+        // Check appointment edited after close
         assertEquals(1, agenda.appointments().size());
         Appointment a = agenda.appointments().get(0);
         assertEquals(LocalDateTime.of(2015, 11, 11, 8, 0), a.getStartLocalDateTime());
@@ -130,7 +130,7 @@ public class EditPopupTest extends ICalendarTestAbstract
     
     // edit repeatable elements
     @Test
-    @Ignore
+//    @Ignore
     public void canEditVComponent2()
     {
         TestUtil.runThenWaitForPaintPulse( () -> {
@@ -155,13 +155,25 @@ public class EditPopupTest extends ICalendarTestAbstract
         assertEquals(Frequency.FrequencyType.DAILY, frequencyComboBox.getSelectionModel().getSelectedItem());
         assertTrue(endNeverRadioButton.isSelected());
         
+        // Edit and check properties
+        TestUtil.runThenWaitForPaintPulse( () -> {
+            frequencyComboBox.getSelectionModel().select(Frequency.FrequencyType.WEEKLY);
+        });
+//        assertPopupIsNotVisible(find("#monthlyVBox"));
+//        assertFalse(find("#monthlyVBox").isVisible());
+        assertTrue(find("#weeklyHBox").isVisible());
+        CheckBox we = (CheckBox) find("#wednesdayCheckBox");
+        assertTrue(we.isSelected());
+        
+        // handle edit dialog
         click("#closeRepeatButton");
-
         ComboBox<ChangeDialogOptions> c = find("#edit_dialog_combobox");
         TestUtil.runThenWaitForPaintPulse( () -> {
             c.getSelectionModel().select(ChangeDialogOptions.ALL);
         });
         click("#edit_dialog_button_ok");
+                
+        // Check appointment edited after close
         TestUtil.sleep(3000);
     }
     
