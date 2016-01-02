@@ -129,7 +129,7 @@ private DateTimeFormatter getFormatter(Temporal t)
 // DAY OF WEEK CHECKBOX LISTENER
 private final ChangeListener<? super Boolean> dayOfWeekCheckBoxListener = (obs, oldSel, newSel) -> 
 {
-    System.out.println("trigger day of week:");
+//    System.out.println("trigger day of week:");
     DayOfWeek dayOfWeek = checkBoxDayOfWeekMap.get(obs);
     ByDay rule = (ByDay) vComponent
             .getRRule()
@@ -137,12 +137,22 @@ private final ChangeListener<? super Boolean> dayOfWeekCheckBoxListener = (obs, 
             .getByRuleByType(Rule.ByRules.BYDAY);
     if (newSel)
     {
-        rule.addDayOfWeek(dayOfWeek);
-        dayOfWeekList.add(dayOfWeek);
+        if (! dayOfWeekList.contains(dayOfWeek))
+        {
+            rule.addDayOfWeek(dayOfWeek);
+            dayOfWeekList.add(dayOfWeek);
+        }
     } else
     {
-        rule.removeDayOfWeek(dayOfWeek);
-        dayOfWeekList.remove(dayOfWeek);
+        if (dayOfWeekList.size() > 1)
+        {
+            rule.removeDayOfWeek(dayOfWeek);
+            dayOfWeekList.remove(dayOfWeek);
+        } else
+        {// can't remove last day of week
+            dayOfWeekCheckBoxMap.get(dayOfWeek).set(oldSel);
+            cantRemoveLastDayOfWeek(dayOfWeek);
+        }
     }
 //    refreshSummary();
 //    System.out.println("make exception " + obs);
@@ -428,39 +438,56 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     // INTERVAL SPINNER
 //    intervalSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, INITIAL_INTERVAL));
 //    intervalSpinner.valueProperty().addListener(intervalSpinnerListener);
-    
+
     // Make frequencySpinner and only accept numbers (needs below two listeners)
     intervalSpinner.setEditable(true);
     intervalSpinner.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, (event)  ->
     {
-        if (event.getCode() == KeyCode.ENTER) {
+        if (event.getCode() == KeyCode.ENTER)
+        {
             String s = intervalSpinner.getEditor().textProperty().get();
             boolean isNumber = s.matches("[0-9]+");
-            if (! isNumber) {
+            if (! isNumber)
+            {
+                System.out.println("new interval number:");
                 String lastValue = intervalSpinner.getValue().toString();
                 intervalSpinner.getEditor().textProperty().set(lastValue);
-                notNumberAlert("123");
+                notNumberAlert();
             }
         }
     });
     intervalSpinner.focusedProperty().addListener((obs, wasFocused, isNowFocused) ->
     {
-        if (! isNowFocused) {
+        if (! isNowFocused)
+        {
             int value;
             String s = intervalSpinner.getEditor().textProperty().get();
             boolean isNumber = s.matches("[0-9]+");
             if (isNumber)
             {
                 value = Integer.parseInt(s);
+                System.out.println("new interval number2:");
                 vComponent.getRRule().getFrequency().setInterval(value);
                 refreshSummary();
                 makeExceptionDates();
             } else {
                 String lastValue = intervalSpinner.getValue().toString();
                 intervalSpinner.getEditor().textProperty().set(lastValue);
-                notNumberAlert("123");
+                notNumberAlert();
             }
         }
+    });
+    
+    startDatePicker.valueProperty().addListener((obs, oldValue, newValue) ->
+    {
+        if (vComponent.getDateTimeStart() instanceof LocalDate)
+        {
+            vComponent.setDateTimeStart(newValue);
+        } else if (vComponent.getDateTimeStart() instanceof LocalDateTime)
+        {
+            LocalTime time = LocalTime.from(vComponent.getDateTimeStart());
+            vComponent.setDateTimeStart(newValue.atTime(time));
+        } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
     });
     
     // END AFTER LISTENERS
@@ -507,7 +534,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             if (! isNumber) {
                 String lastValue = endAfterEventsSpinner.getValue().toString();
                 endAfterEventsSpinner.getEditor().textProperty().set(lastValue);
-                notNumberAlert("123");
+                notNumberAlert();
             }
         }
     });
@@ -523,7 +550,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             } else {
                 String lastValue = endAfterEventsSpinner.getValue().toString();
                 endAfterEventsSpinner.getEditor().textProperty().set(lastValue);
-                notNumberAlert("123");
+                notNumberAlert();
             }
         }
     });
@@ -668,29 +695,20 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         // LISTENERS TO BE ADDED AFTER INITIALIZATION
         addListeners(); // Listeners to update exception dates
         frequencyComboBox.valueProperty().addListener(frequencyListener);
-//        dayOfWeekList.addListener(makeExceptionDatesAndSummaryListener);
 
     }
     
     private void addListeners()
     {
-//        intervalSpinner.valueProperty().addListener(makeExceptionDatesAndSummaryListener);
         endNeverRadioButton.selectedProperty().addListener(neverListener);
         intervalSpinner.valueProperty().addListener(intervalSpinnerListener);
-//        endGroup.selectedToggleProperty().addListener(makeExceptionDatesAndSummaryListener);
-//        endAfterEventsSpinner.valueProperty().addListener(makeExceptionDatesAndSummaryListener);
-//        endOnDatePicker.valueProperty().addListener(makeExceptionDatesAndSummaryListener);
         dayOfWeekList.addListener(makeExceptionDatesAndSummaryListener);
     }
     
     private void removeListeners()
     {
-//        intervalSpinner.valueProperty().removeListener(makeExceptionDatesAndSummaryListener);
         endNeverRadioButton.selectedProperty().removeListener(neverListener);
         intervalSpinner.valueProperty().removeListener(intervalSpinnerListener);
-//        endGroup.selectedToggleProperty().removeListener(makeExceptionDatesAndSummaryListener);
-//        endAfterEventsSpinner.valueProperty().removeListener(makeExceptionDatesAndSummaryListener);
-//        endOnDatePicker.valueProperty().removeListener(makeExceptionDatesAndSummaryListener);
         dayOfWeekList.removeListener(makeExceptionDatesAndSummaryListener);
     }
     
@@ -791,43 +809,6 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         }
     }
     
-//    // Find closest occurrence date not after start.  Used for UNTIL - the 
-//    private LocalDate makeClosestNotAfterEndOnLocalDate(Temporal start)
-//    {
-//        // make correct Temporal type
-//        final Temporal timeAdjustedSelection;
-//        if (vComponent.getDateTimeStart() instanceof LocalDateTime)
-//        {
-//            LocalTime time = LocalTime.from(vComponent.getDateTimeStart());
-//            timeAdjustedSelection = start.atTime(time);
-//        } else
-//        {
-//            timeAdjustedSelection = start;
-//        }
-//        
-//        Iterator<LocalDateTime> dateTimeStartIterator = vComponent.getRRule().stream(dateTimeStartInstanceNew).iterator();
-//        Temporal closestNotAfterTemporal = null;
-//        while (dateTimeStartIterator.hasNext())
-//        {
-//            Temporal myTemporal = dateTimeStartIterator.next();
-//            System.out.println("date:" + myTemporal + " " + dateTimeStartIterator.hasNext());
-//            if (myTemporal.equals(timeAdjustedSelection))
-//            {
-//                System.out.println("equals:" + myTemporal);
-//                closestNotAfterTemporal = timeAdjustedSelection;
-//                break;
-//            }
-//            if (VComponent.isAfter(myTemporal, timeAdjustedSelection))
-//            {
-//                System.out.println("selected date not on occurrence - adjusted " + newSelection + " " + timeAdjustedSelection);
-//                break;
-//            }
-//            closestNotAfterTemporal = myTemporal;
-//        }
-//        System.out.println("end on date: " + closestNotAfterTemporal + " " + newSelection);
-//
-//    }
-    
     /** Make list of start date/times for exceptionComboBox */
     private void makeExceptionDates()
     {
@@ -881,12 +862,12 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     
     
     // Displays an alert notifying user number input is not valid
-    private static void notNumberAlert(String validFormat)
+    private static void notNumberAlert()
     {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Invalid Number");
         alert.setHeaderText("Please enter valid numbers.");
-        alert.setContentText("Accepted format: " + validFormat);
+        alert.setContentText("Must greater than or equal to 1");
         ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(buttonTypeOk);
         alert.showAndWait();
@@ -912,6 +893,18 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         alert.setTitle("Invalid Date Selection");
         alert.setHeaderText("Not an occurrence date");
         alert.setContentText("Date has been changed to  " + Settings.DATE_FORMAT_AGENDA_DATEONLY.format(temporal));
+        ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonTypeOk);
+        alert.showAndWait();
+    }
+    
+    // Displays an alert notifying UNTIL date is not an occurrence and changed to 
+    private void cantRemoveLastDayOfWeek(DayOfWeek d)
+    {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Invalid Modification");
+        alert.setHeaderText("Can't remove " + Settings.DAYS_OF_WEEK_MAP.get(d) + ".");
+        alert.setContentText("Weekly repeat must have at least one selected day");
         ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(buttonTypeOk);
         alert.showAndWait();

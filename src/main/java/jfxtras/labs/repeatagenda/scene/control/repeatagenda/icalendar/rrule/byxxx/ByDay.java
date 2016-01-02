@@ -69,6 +69,11 @@ public class ByDay extends ByRuleAbstract
     /** remove individual DayofWeek from BYDAY rule */
     public void removeDayOfWeek(DayOfWeek dayOfWeek)
     {
+//        System.out.println("remove:" +dayOfWeek);
+//        ByDayPair[] a = Arrays.stream(getByDayPairs())
+//        .filter(d -> d.dayOfWeek != dayOfWeek)
+//        .toArray(size -> new ByDayPair[size]);
+//        System.out.println(a.length);
         byDayPairs = Arrays.stream(getByDayPairs())
                 .filter(d -> d.dayOfWeek != dayOfWeek)
                 .toArray(size -> new ByDayPair[size]);
@@ -205,7 +210,7 @@ public class ByDay extends ByRuleAbstract
             int ordinal = b.ordinal;
             DayOfWeek dayOfWeek = b.dayOfWeek;
             String ordinalString = (ordinal > 0) ? Settings.ORDINALS.get(ordinal) + " " : "";
-            String dayOfWeekString = Settings.DAYS_OF_WEEK.get(dayOfWeek);
+            String dayOfWeekString = Settings.DAYS_OF_WEEK_MAP.get(dayOfWeek);
             if (builder.length() > 0) builder.append(", ");
             builder.append(ordinalString + dayOfWeekString);            
         }
@@ -215,6 +220,8 @@ public class ByDay extends ByRuleAbstract
     @Override
     public Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal)
     {
+        // TODO - according to iCalendar standard a ByDay rule doesn't need any specified days - should use day from DTSTART, this is not implemented yet.  When implemented this line should be removed.
+        if (getByDayPairs().length == 0) throw new RuntimeException("ByDay rule must have at least one day specified");
         ChronoUnit originalChronoUnit = chronoUnit.get();
         chronoUnit.set(DAYS);
         switch (originalChronoUnit)

@@ -40,7 +40,7 @@ public final class Settings
 
     public static final Map<Integer, String> ORDINALS = new HashMap<>();
 
-    public static final Map<DayOfWeek, String> DAYS_OF_WEEK = new HashMap<>();
+    public static final Map<DayOfWeek, String> DAYS_OF_WEEK_MAP = new HashMap<>();
 
     public static ResourceBundle resources;
    
@@ -85,13 +85,13 @@ public final class Settings
         ORDINALS.put(4, resourcesIn.getString("fourth"));
         ORDINALS.put(5, resourcesIn.getString("fifth"));
 
-        DAYS_OF_WEEK.put(DayOfWeek.MONDAY, resourcesIn.getString("monday"));
-        DAYS_OF_WEEK.put(DayOfWeek.TUESDAY, resourcesIn.getString("tuesday"));
-        DAYS_OF_WEEK.put(DayOfWeek.WEDNESDAY, resourcesIn.getString("wednesday"));
-        DAYS_OF_WEEK.put(DayOfWeek.THURSDAY, resourcesIn.getString("thursday"));
-        DAYS_OF_WEEK.put(DayOfWeek.FRIDAY, resourcesIn.getString("friday"));
-        DAYS_OF_WEEK.put(DayOfWeek.SATURDAY, resourcesIn.getString("saturday"));
-        DAYS_OF_WEEK.put(DayOfWeek.SUNDAY, resourcesIn.getString("sunday"));
+        DAYS_OF_WEEK_MAP.put(DayOfWeek.MONDAY, resourcesIn.getString("monday"));
+        DAYS_OF_WEEK_MAP.put(DayOfWeek.TUESDAY, resourcesIn.getString("tuesday"));
+        DAYS_OF_WEEK_MAP.put(DayOfWeek.WEDNESDAY, resourcesIn.getString("wednesday"));
+        DAYS_OF_WEEK_MAP.put(DayOfWeek.THURSDAY, resourcesIn.getString("thursday"));
+        DAYS_OF_WEEK_MAP.put(DayOfWeek.FRIDAY, resourcesIn.getString("friday"));
+        DAYS_OF_WEEK_MAP.put(DayOfWeek.SATURDAY, resourcesIn.getString("saturday"));
+        DAYS_OF_WEEK_MAP.put(DayOfWeek.SUNDAY, resourcesIn.getString("sunday"));
     }
 
 }

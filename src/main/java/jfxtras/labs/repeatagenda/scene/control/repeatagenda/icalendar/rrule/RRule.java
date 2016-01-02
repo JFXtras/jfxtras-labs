@@ -270,7 +270,7 @@ public class RRule
             if (byDay == null)
             {
                 DayOfWeek dayOfWeek = LocalDate.from(startTemporal).getDayOfWeek();
-                String dayOfWeekString = Settings.DAYS_OF_WEEK.get(dayOfWeek);
+                String dayOfWeekString = Settings.DAYS_OF_WEEK_MAP.get(dayOfWeek);
                 builder.append(" on " + dayOfWeekString);
             } else
             {
