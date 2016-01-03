@@ -48,7 +48,7 @@ import jfxtras.test.TestUtil;
  * The change vComponentsListener should only fire by changes made outside the implementation.
  *
  */
-public class EditPopupTest extends ICalendarTestAbstract
+public class AgendaEditPopupTest extends ICalendarTestAbstract
 {
     private String dateTimeStamp;
 
