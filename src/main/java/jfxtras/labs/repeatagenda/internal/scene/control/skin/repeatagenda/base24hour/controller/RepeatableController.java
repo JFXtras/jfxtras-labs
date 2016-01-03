@@ -26,6 +26,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -49,6 +50,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -151,7 +153,7 @@ private final ChangeListener<? super Boolean> dayOfWeekCheckBoxListener = (obs, 
         } else
         {// can't remove last day of week
             dayOfWeekCheckBoxMap.get(dayOfWeek).set(oldSel);
-            cantRemoveLastDayOfWeek(dayOfWeek);
+            canNotRemoveLastDayOfWeek(dayOfWeek);
         }
     }
 //    refreshSummary();
@@ -187,7 +189,7 @@ private ChangeListener<? super Boolean> dayOfWeekButtonListener = (obs2, oldSel2
 //MAKE EXCEPTION DATES LISTENER
 final private InvalidationListener makeExceptionDatesAndSummaryListener = (obs) -> 
 {
-   System.out.println("exceptions6:" + obs);
+//   System.out.println("exceptions6:" + obs);
    refreshSummary();
    makeExceptionDates();
 };
@@ -337,6 +339,8 @@ private final ChangeListener<? super LocalDate> untilListener = (observable, old
     }
 };
 
+// Finds last occurrence on or before d
+// Ensures the Until date is an actual occurrence date
 private Temporal findUntil(Temporal d)
 {
     final Temporal timeAdjustedSelection;
@@ -562,11 +566,11 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         {
             if (vComponent.getRRule().getUntil() == null)
             { // new selection - use date/time one month in the future as default
-                Temporal defaultEndOnDateTime = (dateTimeStartInstanceNew.equals(vComponent.getDateTimeStart())) ?
-                        dateTimeStartInstanceNew.plus(1, ChronoUnit.MONTHS)
-                      : dateTimeStartInstanceNew;
-                Temporal lastTemporal = findUntil(defaultEndOnDateTime); // adjust to actual occurrence
-                vComponent.getRRule().setUntil(lastTemporal);
+                boolean isAfter = VComponent.isAfter(dateTimeStartInstanceNew, vComponent.getDateTimeStart().plus(1, ChronoUnit.MONTHS));
+                Temporal defaultEndOnDateTime = isAfter ? dateTimeStartInstanceNew :
+                    vComponent.getDateTimeStart().plus(1, ChronoUnit.MONTHS);
+                Temporal matchingOccurrence = findUntil(defaultEndOnDateTime); // adjust to actual occurrence
+                vComponent.getRRule().setUntil(matchingOccurrence);
             }
             untilDatePicker.setValue(LocalDate.from(vComponent.getRRule().getUntil()));
             untilDatePicker.setDisable(false);
@@ -775,7 +779,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         if (rRule.getFrequency().frequencyType() == FrequencyType.WEEKLY)
         {
             Rule rule = rRule.getFrequency().getByRuleByType(Rule.ByRules.BYDAY);
-            ((ByDay) rule).getDayofWeekWithoutOrdinalList()
+            ((ByDay) rule).dayOfWeekWithoutOrdinalList()
                     .stream()
                     .forEach(d -> 
                     {
@@ -812,7 +816,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     /** Make list of start date/times for exceptionComboBox */
     private void makeExceptionDates()
     {
-        System.out.println("make exception date list" + vComponent.getDateTimeStart().getClass().getSimpleName());
+//        System.out.println("make exception date list" + vComponent.getDateTimeStart().getClass().getSimpleName());
         
         final Temporal dateTimeStart = vComponent.getDateTimeStart();
         Stream<Temporal> stream1 = vComponent
@@ -898,8 +902,8 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         alert.showAndWait();
     }
     
-    // Displays an alert notifying UNTIL date is not an occurrence and changed to 
-    private void cantRemoveLastDayOfWeek(DayOfWeek d)
+    // Displays an alert notifying last day of week can not be removed for weekly frequency
+    private void canNotRemoveLastDayOfWeek(DayOfWeek d)
     {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Invalid Modification");
@@ -907,6 +911,12 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         alert.setContentText("Weekly repeat must have at least one selected day");
         ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(buttonTypeOk);
+        
+        // set id for testing
+        alert.getDialogPane().setId("last_day_of_week_alert");
+        List<Node> buttons = ICalendarUtilities.getAllNodes(alert.getDialogPane(), Button.class);
+        ((Button) buttons.get(0)).setId("last_day_of_week_alert_button_ok");
+        
         alert.showAndWait();
     }
     

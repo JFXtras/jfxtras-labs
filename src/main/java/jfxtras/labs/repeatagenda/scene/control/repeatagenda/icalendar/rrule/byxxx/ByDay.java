@@ -69,11 +69,6 @@ public class ByDay extends ByRuleAbstract
     /** remove individual DayofWeek from BYDAY rule */
     public void removeDayOfWeek(DayOfWeek dayOfWeek)
     {
-//        System.out.println("remove:" +dayOfWeek);
-//        ByDayPair[] a = Arrays.stream(getByDayPairs())
-//        .filter(d -> d.dayOfWeek != dayOfWeek)
-//        .toArray(size -> new ByDayPair[size]);
-//        System.out.println(a.length);
         byDayPairs = Arrays.stream(getByDayPairs())
                 .filter(d -> d.dayOfWeek != dayOfWeek)
                 .toArray(size -> new ByDayPair[size]);
@@ -81,7 +76,7 @@ public class ByDay extends ByRuleAbstract
     }
     
     /** Return a list of days of the week that don't have an ordinal (as every FRIDAY) */
-    public List<DayOfWeek> getDayofWeekWithoutOrdinalList()
+    public List<DayOfWeek> dayOfWeekWithoutOrdinalList()
     {
         return Arrays.stream(getByDayPairs())
                      .filter(d -> d.ordinal == 0)
@@ -178,7 +173,7 @@ public class ByDay extends ByRuleAbstract
         }
         ByDay testObj = (ByDay) obj;
         boolean byDayPairsEquals = Arrays.equals(getByDayPairs(), testObj.getByDayPairs());
-        System.out.println("ByDay equals " + byDayPairsEquals);
+//        System.out.println("ByDay equals " + byDayPairsEquals);
         return byDayPairsEquals;
     }
     

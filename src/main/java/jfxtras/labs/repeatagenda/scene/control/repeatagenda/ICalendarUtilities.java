@@ -48,13 +48,10 @@ public class ICalendarUtilities
         // set id for testing
         dialog.getDialogPane().setId("edit_dialog");
         List<Node> buttons = getAllNodes(dialog.getDialogPane(), Button.class);
-        Button okButton = (Button) buttons.get(0);
-        okButton.setId("edit_dialog_button_ok");
-        Button cancelButton = (Button) buttons.get(1);
-        cancelButton.setId("edit_dialog_button_cancel");
+        ((Button) buttons.get(0)).setId("edit_dialog_button_ok");
+        ((Button) buttons.get(1)).setId("edit_dialog_button_cancel");
         Node n = getAllNodes(dialog.getDialogPane(), ComboBox.class).get(0);
-        ComboBox<ChangeDialogOptions> c = (ComboBox<ChangeDialogOptions>) n;
-        c.setId("edit_dialog_combobox");
+        ((ComboBox<ChangeDialogOptions>) n).setId("edit_dialog_combobox");
 
         dialog.setTitle(resources.getString("dialog.repeat.change.title"));
         dialog.setContentText(resources.getString("dialog.repeat.change.content"));
@@ -64,7 +61,7 @@ public class ICalendarUtilities
         
         return (result.isPresent()) ? result.get() : ChangeDialogOptions.CANCEL;
     }
-
+    
     /**
      * Alert to confirm delete appointments
      * 

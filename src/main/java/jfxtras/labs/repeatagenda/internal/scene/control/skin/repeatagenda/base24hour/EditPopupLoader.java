@@ -80,8 +80,8 @@ public class EditPopupLoader extends Stage {
         // when popup closes write changes if occurred
         setOnHidden((windowEvent) -> 
         {
-            System.out.println("VComponent:" + vComponent.toString());
-            System.out.println("group:" + appointment.getAppointmentGroup().getDescription());
+//            System.out.println("VComponent:" + vComponent.toString());
+//            System.out.println("group:" + appointment.getAppointmentGroup().getDescription());
 //            agenda.appointmentGroups().stream().map(a -> a.getDescription()).forEach(System.out::println);
             switch (popupCloseType.get())
             {

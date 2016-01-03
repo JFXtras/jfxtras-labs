@@ -2,6 +2,7 @@ package jfxtras.labs.repeatagenda;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.DayOfWeek;
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +31,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
@@ -131,17 +132,259 @@ public class EditPopupTest extends ICalendarTestAbstract
         assertEquals("new group name", a.getAppointmentGroup().getDescription());
     }
     
+    @Test
+//    @Ignore
+    public void canToggleRepeatableCheckBox()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
+        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+
+        // Open edit popup
+        move("#hourLine11");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+        click("#repeatableTab");
+
+        // Get properties        
+        CheckBox repeatableCheckBox = find("#repeatableCheckBox");
+
+        // Check initial state
+        assertTrue(repeatableCheckBox.isSelected());
+        assertTrue(v.getRRule() != null);
+        
+        // Change property and verify state change
+        TestUtil.runThenWaitForPaintPulse( () -> repeatableCheckBox.setSelected(false));
+        assertTrue(v.getRRule() == null);
+        
+        closeCurrentWindow();
+    }
+    
+    @Test
+    public void canChangeFrequency()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
+        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+
+        // Open edit popup
+        move("#hourLine11");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+        click("#repeatableTab");
+
+        // Get properties        
+        ComboBox<Frequency.FrequencyType> frequencyComboBox = find("#frequencyComboBox");
+
+        // Check initial state
+        assertEquals(Frequency.FrequencyType.DAILY, frequencyComboBox.getSelectionModel().getSelectedItem());
+        assertEquals(Frequency.FrequencyType.DAILY, v.getRRule().getFrequency().frequencyType());
+        
+        // Change property and verify state change
+        // WEEKLY
+        {
+        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(Frequency.FrequencyType.WEEKLY));
+
+        // Days of the week properties
+        CheckBox su = (CheckBox) find("#sundayCheckBox");
+        CheckBox mo = (CheckBox) find("#mondayCheckBox");
+        CheckBox tu = (CheckBox) find("#tuesdayCheckBox");
+        CheckBox we = (CheckBox) find("#wednesdayCheckBox");
+        CheckBox th = (CheckBox) find("#thursdayCheckBox");
+        CheckBox fr = (CheckBox) find("#fridayCheckBox");
+        CheckBox sa = (CheckBox) find("#saturdayCheckBox");
+        
+        // Get weekly properties
+        Frequency f = v.getRRule().getFrequency();
+        assertEquals(Frequency.FrequencyType.WEEKLY, f.frequencyType());
+        assertEquals(1, f.getByRules().size());
+        ByDay rule = (ByDay) f.getByRuleByType(ByRules.BYDAY);
+
+        // Check initial state
+        List<DayOfWeek> expectedDOW = Arrays.asList(DayOfWeek.WEDNESDAY);
+        assertEquals(expectedDOW, rule.dayOfWeekWithoutOrdinalList());
+        HBox weeklyHBox = find("#weeklyHBox");
+        assertTrue(weeklyHBox.isVisible());       
+        assertFalse(su.isSelected());
+        assertFalse(mo.isSelected());
+        assertFalse(tu.isSelected());
+        assertTrue(we.isSelected());
+        assertFalse(th.isSelected());
+        assertFalse(fr.isSelected());
+        assertFalse(sa.isSelected());
+        
+        // Toggle each day of week and check
+        TestUtil.runThenWaitForPaintPulse( () -> su.setSelected(true));
+        assertTrue(su.isSelected());
+        assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.SUNDAY));
+        TestUtil.runThenWaitForPaintPulse( () -> mo.setSelected(true));
+        assertTrue(mo.isSelected());
+        assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.MONDAY));
+        TestUtil.runThenWaitForPaintPulse( () -> tu.setSelected(true));
+        assertTrue(tu.isSelected());
+        assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.TUESDAY));
+        // Wednesday already selected
+        TestUtil.runThenWaitForPaintPulse( () -> th.setSelected(true));
+        assertTrue(th.isSelected());
+        assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.THURSDAY));
+        TestUtil.runThenWaitForPaintPulse( () -> fr.setSelected(true));
+        assertTrue(fr.isSelected());
+        assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.FRIDAY));
+        TestUtil.runThenWaitForPaintPulse( () -> sa.setSelected(true));
+        assertTrue(sa.isSelected());
+        assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.SATURDAY));
+        List<DayOfWeek> allDaysOfWeek = Arrays.asList(DayOfWeek.values());
+        List<DayOfWeek> daysOfWeek = rule.dayOfWeekWithoutOrdinalList();
+        Collections.sort(daysOfWeek);
+        assertEquals(allDaysOfWeek, daysOfWeek);
+        }
+
+        // MONTHLY
+        {
+        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(Frequency.FrequencyType.MONTHLY));
+        
+        // Monthly properties
+        RadioButton dayOfMonth = find("#dayOfMonthRadioButton");
+        RadioButton dayOfWeek = find("#dayOfWeekRadioButton");
+        Frequency f = v.getRRule().getFrequency(); // refresh reference
+        
+        // Check initial state
+        assertTrue(dayOfMonth.isSelected());
+        assertFalse(dayOfWeek.isSelected());
+        assertEquals(Frequency.FrequencyType.MONTHLY, f.frequencyType());
+        assertEquals(0, f.getByRules().size());
+        
+        // Toggle monthly options and check
+        TestUtil.runThenWaitForPaintPulse(() -> dayOfWeek.setSelected(true));
+        assertFalse(dayOfMonth.isSelected());
+        assertTrue(dayOfWeek.isSelected());
+        assertEquals(1, f.getByRules().size());
+        ByDay rule = (ByDay) f.getByRuleByType(ByRules.BYDAY);
+        assertEquals("BYDAY=2WE", rule.toString()); // 2nd Wednesday of the month
+        }
+        
+        // YEARLY
+        {
+        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(Frequency.FrequencyType.YEARLY));
+        Frequency f = v.getRRule().getFrequency(); // refresh reference
+
+        // Check initial state
+        assertEquals(Frequency.FrequencyType.YEARLY, f.frequencyType());
+        assertEquals(0, f.getByRules().size());
+        }
+
+        closeCurrentWindow();
+    }
+
+    @Test
+    public void canChangeInterval()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
+        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+
+        // Open edit popup
+        move("#hourLine11");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+        click("#repeatableTab");
+
+        // Get properties
+        Spinner<Integer> intervalSpinner = find("#intervalSpinner");
+
+        // Check initial state
+        assertEquals((Integer) 1, intervalSpinner.getValue());
+        assertEquals((Integer) 1, v.getRRule().getFrequency().getInterval());
+        
+        // Change property and verify state change
+        TestUtil.runThenWaitForPaintPulse( () -> intervalSpinner.getValueFactory().increment(3));       
+        assertEquals((Integer) 4, intervalSpinner.getValue());
+        assertEquals((Integer) 4, v.getRRule().getFrequency().getInterval());
+        
+        closeCurrentWindow();
+    }
+    
+    @Test
+    public void canChangeStartDate()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
+        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+
+        // Open edit popup
+        move("#hourLine11");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+        click("#repeatableTab");
+
+        // Get properties        
+        DatePicker startDatePicker = find("#startDatePicker");
+
+        // Check initial state
+        assertEquals(LocalDate.of(2015, 11, 9), startDatePicker.getValue());
+        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), v.getDateTimeStart());
+        
+        // Change property and verify state change
+        TestUtil.runThenWaitForPaintPulse( () -> startDatePicker.setValue(LocalDate.of(2015, 11, 10)));
+        assertEquals(LocalDateTime.of(2015, 11, 10, 10, 0), v.getDateTimeStart());
+        
+        closeCurrentWindow();
+    }
+    
+    @Test
+    public void canChangeEndsCriteria()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
+        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+
+        // Open edit popup
+        move("#hourLine11");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+        click("#repeatableTab");
+
+        // Get properties
+        RadioButton endNeverRadioButton = find("#endNeverRadioButton");
+        RadioButton endAfterRadioButton = find("#endAfterRadioButton");
+        Spinner<Integer> endAfterEventsSpinner = find("#endAfterEventsSpinner");
+        RadioButton untilRadioButton = find("#untilRadioButton");
+        DatePicker untilDatePicker = find("#untilDatePicker");
+
+        // Check initial state
+        assertTrue(endNeverRadioButton.isSelected());
+        assertFalse(endAfterRadioButton.isSelected());
+        assertFalse(untilRadioButton.isSelected());
+        assertEquals((Integer) 0, v.getRRule().getCount());
+        assertNull(v.getRRule().getUntil());
+        
+        // Change property and verify state change
+        // Ends After (COUNT)
+        TestUtil.runThenWaitForPaintPulse( () -> endAfterRadioButton.setSelected(true));
+        assertFalse(endNeverRadioButton.isSelected());
+        assertTrue(endAfterRadioButton.isSelected());
+        assertFalse(untilRadioButton.isSelected());
+        assertEquals((Integer) 10, v.getRRule().getCount());
+        TestUtil.runThenWaitForPaintPulse( () -> endAfterEventsSpinner.getValueFactory().increment(5));
+        assertEquals((Integer) 15, v.getRRule().getCount());
+
+        // Ends On (UNTIL)
+        TestUtil.runThenWaitForPaintPulse( () -> untilRadioButton.setSelected(true));
+        assertFalse(endNeverRadioButton.isSelected());
+        assertFalse(endAfterRadioButton.isSelected());
+        assertTrue(untilRadioButton.isSelected());
+        assertEquals(LocalDateTime.of(2015, 12, 9, 10, 0), v.getRRule().getUntil());
+        TestUtil.runThenWaitForPaintPulse( () -> untilDatePicker.setValue(LocalDate.of(2016, 1, 1)));
+        assertEquals(LocalDateTime.of(2016, 1, 1, 10, 0), v.getRRule().getUntil());
+        
+        closeCurrentWindow();
+    }
+    
     // edit repeatable elements
     @Test
 //    @Ignore
     public void canEditVComponent2()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
-        
         VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
         
         // Open edit popup
-        move("#hourLine11"); // open edit popup
+        move("#hourLine11");
         press(MouseButton.SECONDARY);
         release(MouseButton.SECONDARY);
         click("#repeatableTab");
@@ -150,7 +393,6 @@ public class EditPopupTest extends ICalendarTestAbstract
         CheckBox repeatableCheckBox = find("#repeatableCheckBox");
         ComboBox<Frequency.FrequencyType> frequencyComboBox = find("#frequencyComboBox");
         Spinner<Integer> intervalSpinner = find("#intervalSpinner");
-        DatePicker startDatePicker = find("#startDatePicker");
         RadioButton endNeverRadioButton = find("#endNeverRadioButton");
         
         // Check initial state
@@ -160,64 +402,10 @@ public class EditPopupTest extends ICalendarTestAbstract
         assertEquals((Integer) 1, v.getRRule().getFrequency().getInterval());
         assertEquals((Integer) 0, v.getRRule().getCount());
         
-        // Edit and check properties
-        
-        // Interval
-        TestUtil.runThenWaitForPaintPulse( () -> intervalSpinner.getValueFactory().increment(2));
-        assertEquals((Integer) 3, v.getRRule().getFrequency().getInterval());
-        
-        // Starts on
-        TestUtil.runThenWaitForPaintPulse( () -> startDatePicker.setValue(LocalDate.of(2015, 11, 10)));
-        assertEquals(LocalDateTime.of(2015, 11, 10, 10, 0), v.getDateTimeStart());        
-        
-        // Change frequency - Weekly
-        TestUtil.runThenWaitForPaintPulse( () -> frequencyComboBox.getSelectionModel().select(Frequency.FrequencyType.WEEKLY));
-        Frequency f = v.getRRule().getFrequency();
-        assertEquals(Frequency.FrequencyType.WEEKLY, f.frequencyType());
-        HBox weeklyHBox = find("#weeklyHBox");
-        assertTrue(weeklyHBox.isVisible());
-
-        // Days of the week (weekly)
-        CheckBox su = (CheckBox) find("#sundayCheckBox");
-        CheckBox mo = (CheckBox) find("#mondayCheckBox");
-        CheckBox tu = (CheckBox) find("#tuesdayCheckBox");
-        CheckBox we = (CheckBox) find("#wednesdayCheckBox");
-        CheckBox th = (CheckBox) find("#thursdayCheckBox");
-        CheckBox fr = (CheckBox) find("#fridayCheckBox");
-        CheckBox sa = (CheckBox) find("#saturdayCheckBox");
-        assertFalse(su.isSelected());
-        assertFalse(mo.isSelected());
-        assertFalse(tu.isSelected());
-        assertTrue(we.isSelected());
-        assertFalse(th.isSelected());
-        assertFalse(fr.isSelected());
-        assertFalse(sa.isSelected());
-        
-        assertEquals(1, f.getByRules().size());
-        ByDay rule = (ByDay) f.getByRuleByType(ByRules.BYDAY);
-        List<DayOfWeek> expectedDOW = new ArrayList<DayOfWeek>(Arrays.asList(DayOfWeek.WEDNESDAY));
-        assertEquals(expectedDOW, rule.getDayofWeekWithoutOrdinalList());
-        TestUtil.runThenWaitForPaintPulse( () ->
-        {
-            mo.setSelected(true);   
-            we.setSelected(false);   
-            fr.setSelected(true);   
-        });
-        List<DayOfWeek> expectedDOW2 = new ArrayList<DayOfWeek>(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.FRIDAY));
-        assertEquals(expectedDOW2, rule.getDayofWeekWithoutOrdinalList());
-
-//        TestUtil.sleep(1000);
-        // handle edit dialog
-        click("#closeRepeatButton");
-        ComboBox<ChangeDialogOptions> c = find("#edit_dialog_combobox");
-        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOptions.ALL));
-        click("#edit_dialog_button_ok");
-                
-        // Check appointment edited after close
-//        TestUtil.sleep(3000);
+        closeCurrentWindow();
     }
     
-    public void renderAppointmentByDragging()
+    private void renderAppointmentByDragging()
     {;
         Assert.assertEquals(0, agenda.appointments().size());
         move("#hourLine10");
