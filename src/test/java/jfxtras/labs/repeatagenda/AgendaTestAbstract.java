@@ -13,24 +13,8 @@ import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.test.JFXtrasGuiTest;
 
-public class ICalendarAgendaTestAbstract extends JFXtrasGuiTest
+public class AgendaTestAbstract extends JFXtrasGuiTest
 {
-    
-//    public ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
-//    = javafx.collections.FXCollections.observableArrayList(
-//            IntStream
-//            .range(0, 23)
-//            .mapToObj(i -> 
-//            {
-//                ICalendarAgenda.AppointmentGroupImpl a = new ICalendarAgenda.AppointmentGroupImpl()
-////                    .withKey(i)
-//                    .withDescription("group" + (i < 10 ? "0" : "") + i);
-//                a.setStyleClass("group" + i);
-//                return a;
-//            })
-//            .collect(Collectors.toList()));
-//    public ObservableList<AppointmentGroup> appointmentGroups() { return ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS; }
-    
     public Parent getRootNode()
     {
         Locale.setDefault(Locale.ENGLISH);
@@ -39,19 +23,7 @@ public class ICalendarAgendaTestAbstract extends JFXtrasGuiTest
 
         agenda = new ICalendarAgenda();
         agenda.setDisplayedLocalDateTime(LocalDate.of(2015, 11, 8).atStartOfDay());
-        agenda.setPrefSize(1000, 800);
-        
-//        final ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
-//        DEFAULT_APPOINTMENT_GROUPS
-//        = javafx.collections.FXCollections.observableArrayList(
-//                IntStream
-//                .range(0, 24)
-//                .mapToObj(i -> new ICalendarAgenda.AppointmentGroupImpl()
-//                       .withStyleClass("group" + i)
-////                       .withKey(i)
-//                       .withDescription("group" + (i < 10 ? "0" : "") + i))
-//                .collect(Collectors.toList()));
-        
+        agenda.setPrefSize(1000, 800);       
         agenda.appointmentGroups().clear();
         agenda.appointmentGroups().addAll(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         

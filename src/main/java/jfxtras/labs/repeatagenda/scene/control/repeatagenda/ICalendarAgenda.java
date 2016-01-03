@@ -135,6 +135,7 @@ public class ICalendarAgenda extends Agenda {
             }
         };
         
+        // TODO - MAKE A TEST FOR THIS LISTENER
         vComponentsListener = (ListChangeListener.Change<? extends VComponent<Appointment>> change) ->
         {
             while (change.next())

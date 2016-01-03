@@ -77,8 +77,6 @@ public class ICalendarMakeAppointmentsTest extends ICalendarTestAbstract
                 .withAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(2))
                 .withSummary("Weekly1 Summary")
                 .withDescription("Weekly1 Description");
-//                .withRepeatMade(true)
-//                .withVEvent(vevent);
         assertEquals(expectedAppointment1, madeAppointment1); 
         
         Appointment madeAppointment2 = (Appointment) appointmentIterator.next();
@@ -88,8 +86,6 @@ public class ICalendarMakeAppointmentsTest extends ICalendarTestAbstract
                 .withAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(2))
                 .withSummary("Weekly1 Summary")
                 .withDescription("Weekly1 Description");
-//                .withRepeatMade(true)
-//                .withVEvent(vevent);
         assertEquals(expectedAppointment2, madeAppointment2);
 
         Appointment madeAppointment3 = (Appointment) appointmentIterator.next();
@@ -99,8 +95,6 @@ public class ICalendarMakeAppointmentsTest extends ICalendarTestAbstract
                 .withAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(2))
                 .withSummary("Weekly1 Summary")
                 .withDescription("Weekly1 Description");
-//                .withRepeatMade(true)
-//                .withVEvent(vevent);
         assertEquals(expectedAppointment3, madeAppointment3);     
     }
     

@@ -14,7 +14,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
-public class ICalendarAgendaDeleteTest extends ICalendarTestAbstract
+public class AgendaDeleteTest extends ICalendarTestAbstract
 {
     public Parent getRootNode()
     {

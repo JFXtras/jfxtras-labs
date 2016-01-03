@@ -29,24 +29,9 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Yearly;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
-public abstract class ICalendarTestAbstract extends ICalendarAgendaTestAbstract
+public abstract class ICalendarTestAbstract extends AgendaTestAbstract
 {
     public final long NANOS_IN_SECOND = Duration.ofSeconds(1).toNanos();
-
-//    public final ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
-//    = javafx.collections.FXCollections.observableArrayList(
-//            IntStream
-//            .range(0, 23)
-//            .mapToObj(i -> 
-//            {
-//                ICalendarAgenda.AppointmentGroupImpl a = new ICalendarAgenda.AppointmentGroupImpl()
-////                    .withKey(i)
-//                    .withDescription("group" + (i < 10 ? "0" : "") + i);
-//                a.setStyleClass("group" + i);
-//                return a;
-//            })
-//            .collect(Collectors.toList()));
-//  public ObservableList<AppointmentGroup> appointmentGroups() { return DEFAULT_APPOINTMENT_GROUPS; }
     
     // Comparator for tree sort
     private final Comparator<Appointment> APPOINTMENT_COMPARATOR = (a1, a2)
