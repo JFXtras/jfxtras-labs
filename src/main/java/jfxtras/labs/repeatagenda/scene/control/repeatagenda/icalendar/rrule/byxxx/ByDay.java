@@ -220,7 +220,7 @@ public class ByDay extends ByRuleAbstract
         return builder.toString();
     }
     
-    @Override
+    @Override // TODO - REMOVE startTemporal
     public Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal)
     {
         // TODO - according to iCalendar standard a ByDay rule doesn't need any specified days - should use day from DTSTART, this is not implemented yet.  When implemented this line should be removed.
@@ -262,9 +262,9 @@ public class ByDay extends ByRuleAbstract
                     int value = byDayPair.dayOfWeek.getValue() + firstDayOfWeekAdjustment;
                     int valueAdj = (value > 7) ? value-7 : value;
                     Temporal newTemporal = t.with(field, valueAdj);
-                    System.out.println("newTemporal:" + newTemporal);
+//                    System.out.println("newTemporal:" + newTemporal);
 //                    dates.add(newTemporal);
-                    if (VComponent.isBefore(newTemporal, startTemporal)) System.out.println("TOO EARLY:");
+//                    if (VComponent.isBefore(newTemporal, startTemporal)) System.out.println("TOO EARLY:");
                     if (! VComponent.isBefore(newTemporal, startTemporal)) dates.add(newTemporal);
 //                    byDayPair.dayOfWeek;
                 }
