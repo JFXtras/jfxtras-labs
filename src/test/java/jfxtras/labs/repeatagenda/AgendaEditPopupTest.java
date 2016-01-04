@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -160,6 +161,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
     }
     
     @Test
+//    @Ignore
     public void canChangeFrequency()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
@@ -171,7 +173,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
         release(MouseButton.SECONDARY);
         click("#repeatableTab");
 
-        // Get properties        
+        // Get properties
         ComboBox<Frequency.FrequencyType> frequencyComboBox = find("#frequencyComboBox");
 
         // Check initial state
@@ -275,6 +277,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
     }
 
     @Test
+//    @Ignore
     public void canChangeInterval()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
@@ -302,6 +305,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
     }
     
     @Test
+    @Ignore
     public void canChangeStartDate()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
@@ -328,6 +332,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
     }
     
     @Test
+//    @Ignore
     public void canChangeEndsCriteria()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
@@ -371,11 +376,220 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
         assertEquals(LocalDateTime.of(2015, 12, 9, 10, 0), v.getRRule().getUntil());
         TestUtil.runThenWaitForPaintPulse( () -> untilDatePicker.setValue(LocalDate.of(2016, 1, 1)));
         assertEquals(LocalDateTime.of(2016, 1, 1, 10, 0), v.getRRule().getUntil());
-        
         closeCurrentWindow();
     }
     
-    // edit repeatable elements
+    @Test
+    public void canMakeCorrectExceptionListInitial()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
+        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+
+        // Open edit popup
+        move("#hourLine11");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+        click("#repeatableTab");
+        
+        // Get properties
+        ComboBox<Temporal> exceptionComboBox = find("#exceptionComboBox");
+
+        // Check initial state
+        List<Temporal> exceptions = exceptionComboBox.getItems().stream().limit(5).collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 11, 10, 10, 0)
+              , LocalDateTime.of(2015, 11, 11, 10, 0)
+              , LocalDateTime.of(2015, 11, 12, 10, 0)
+              , LocalDateTime.of(2015, 11, 13, 10, 0)
+                ));
+        assertEquals(expectedDates, exceptions);
+        closeCurrentWindow();
+    }
+    
+    @Test
+    public void canMakeCorrectExceptionListWeekly()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
+        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+
+        // Open edit popup
+        move("#hourLine11");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+        click("#repeatableTab");
+        
+        // Get properties
+        ComboBox<Temporal> exceptionComboBox = find("#exceptionComboBox");
+        ComboBox<Frequency.FrequencyType> frequencyComboBox = find("#frequencyComboBox");
+
+        // Change property and verify state change
+        // Frequency - Weekly
+        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(Frequency.FrequencyType.WEEKLY));
+        {
+            List<Temporal> exceptions = exceptionComboBox.getItems()
+                    .stream()
+                    .limit(5)
+                    .collect(Collectors.toList());
+            List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                    LocalDateTime.of(2015, 11, 11, 10, 0)
+                  , LocalDateTime.of(2015, 11, 18, 10, 0)
+                  , LocalDateTime.of(2015, 11, 25, 10, 0)
+                  , LocalDateTime.of(2015, 12, 2, 10, 0)
+                  , LocalDateTime.of(2015, 12, 9, 10, 0)
+                    ));
+            assertEquals(expectedDates, exceptions);
+        }
+        
+        // Days of the week properties
+        CheckBox su = (CheckBox) find("#sundayCheckBox");
+        CheckBox mo = (CheckBox) find("#mondayCheckBox");
+        CheckBox tu = (CheckBox) find("#tuesdayCheckBox");
+        CheckBox we = (CheckBox) find("#wednesdayCheckBox");
+        CheckBox th = (CheckBox) find("#thursdayCheckBox");
+        CheckBox fr = (CheckBox) find("#fridayCheckBox");
+        CheckBox sa = (CheckBox) find("#saturdayCheckBox");
+        
+        // Get weekly properties
+        Frequency f = v.getRRule().getFrequency();
+        assertEquals(Frequency.FrequencyType.WEEKLY, f.frequencyType());
+        assertEquals(1, f.getByRules().size());
+        ByDay rule = (ByDay) f.getByRuleByType(ByRules.BYDAY);
+
+        // Check initial state
+        List<DayOfWeek> expectedDOW = Arrays.asList(DayOfWeek.WEDNESDAY);
+        assertEquals(expectedDOW, rule.dayOfWeekWithoutOrdinalList());
+        HBox weeklyHBox = find("#weeklyHBox");
+        assertTrue(weeklyHBox.isVisible());       
+        assertFalse(su.isSelected());
+        assertFalse(mo.isSelected());
+        assertFalse(tu.isSelected());
+        assertTrue(we.isSelected());
+        assertFalse(th.isSelected());
+        assertFalse(fr.isSelected());
+        assertFalse(sa.isSelected());
+        
+        // Toggle each day of week and check
+        TestUtil.runThenWaitForPaintPulse( () -> su.setSelected(true));
+        {
+            List<Temporal> exceptions = exceptionComboBox.getItems()
+                    .stream()
+                    .limit(5)
+                    .collect(Collectors.toList());
+            List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                   LocalDateTime.of(2015, 11, 11, 10, 0)
+                 , LocalDateTime.of(2015, 11, 15, 10, 0)
+                 , LocalDateTime.of(2015, 11, 18, 10, 0)
+                 , LocalDateTime.of(2015, 11, 22, 10, 0)
+                 , LocalDateTime.of(2015, 11, 25, 10, 0)
+                    ));
+            assertEquals(expectedDates, exceptions);
+        }
+
+        TestUtil.runThenWaitForPaintPulse( () -> mo.setSelected(true));
+        {
+            List<Temporal> exceptions = exceptionComboBox.getItems()
+                    .stream()
+                    .limit(5)
+                    .collect(Collectors.toList());
+            List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                    LocalDateTime.of(2015, 11, 11, 10, 0)
+                  , LocalDateTime.of(2015, 11, 15, 10, 0)
+                  , LocalDateTime.of(2015, 11, 16, 10, 0)
+                  , LocalDateTime.of(2015, 11, 18, 10, 0)
+                  , LocalDateTime.of(2015, 11, 22, 10, 0)
+                    ));
+            assertEquals(expectedDates, exceptions);
+        }
+        
+        TestUtil.sleep(3000);
+        TestUtil.runThenWaitForPaintPulse( () -> tu.setSelected(true));
+        {
+            List<Temporal> exceptions = exceptionComboBox.getItems()
+                    .stream()
+                    .limit(5)
+                    .peek(System.out::println)
+                    .collect(Collectors.toList());
+            List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                    LocalDateTime.of(2015, 11, 11, 10, 0)
+                  , LocalDateTime.of(2015, 11, 18, 10, 0)
+                  , LocalDateTime.of(2015, 11, 25, 10, 0)
+                  , LocalDateTime.of(2015, 12, 2, 10, 0)
+                  , LocalDateTime.of(2015, 12, 9, 10, 0)
+                    ));
+            assertEquals(expectedDates, exceptions);
+        }
+        
+        TestUtil.runThenWaitForPaintPulse( () -> we.setSelected(false));
+        {
+            List<Temporal> exceptions = exceptionComboBox.getItems()
+                    .stream()
+                    .limit(5)
+                    .peek(System.out::println)
+                    .collect(Collectors.toList());
+            List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                    LocalDateTime.of(2015, 11, 11, 10, 0)
+                  , LocalDateTime.of(2015, 11, 18, 10, 0)
+                  , LocalDateTime.of(2015, 11, 25, 10, 0)
+                  , LocalDateTime.of(2015, 12, 2, 10, 0)
+                  , LocalDateTime.of(2015, 12, 9, 10, 0)
+                    ));
+            assertEquals(expectedDates, exceptions);
+        }
+        
+        // Wednesday already selected
+        TestUtil.runThenWaitForPaintPulse( () -> th.setSelected(true));
+        assertTrue(th.isSelected());
+        assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.THURSDAY));
+        TestUtil.runThenWaitForPaintPulse( () -> fr.setSelected(true));
+        assertTrue(fr.isSelected());
+        assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.FRIDAY));
+        TestUtil.runThenWaitForPaintPulse( () -> sa.setSelected(true));
+        assertTrue(sa.isSelected());
+        assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.SATURDAY));
+        List<DayOfWeek> allDaysOfWeek = Arrays.asList(DayOfWeek.values());
+        List<DayOfWeek> daysOfWeek = rule.dayOfWeekWithoutOrdinalList();
+        Collections.sort(daysOfWeek);
+        assertEquals(allDaysOfWeek, daysOfWeek);        
+        
+        closeCurrentWindow();
+        }
+
+    @Test
+    public void canMakeCorrectExceptionListMonthly()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
+        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+
+        // Open edit popup
+        move("#hourLine11");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+        click("#repeatableTab");
+        
+        // Get properties
+        ComboBox<Temporal> exceptionComboBox = find("#exceptionComboBox");
+        ComboBox<Frequency.FrequencyType> frequencyComboBox = find("#frequencyComboBox");
+
+        // Change property and verify state change
+        // Frequency - Monthly
+        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(Frequency.FrequencyType.MONTHLY));
+        List<Temporal> exceptions = exceptionComboBox.getItems().stream().limit(5)
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 11, 10, 0)
+              , LocalDateTime.of(2015, 12, 11, 10, 0)
+              , LocalDateTime.of(2016, 1, 11, 10, 0)
+              , LocalDateTime.of(2016, 2, 11, 10, 0)
+              , LocalDateTime.of(2016, 3, 11, 10, 0)
+                ));
+        assertEquals(expectedDates, exceptions);
+        closeCurrentWindow();
+    }
+    
+    // TODO - MAKE TESTS FOR WHOLE DAY APPOINTMENTS
+
+    
     @Test
 //    @Ignore
     public void canEditVComponent2()
@@ -421,7 +635,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
     }
         
     @Test
-//    @Ignore
+ //   @Ignore
     public void renderRepeatableAppointmentByDragging()
     {
         renderAppointmentByDragging();
@@ -530,7 +744,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
         System.out.println(agenda.appointments().size());
 
         
-        TestUtil.sleep(3000);
+//        TestUtil.sleep(3000);
     }
     
     public static ArrayList<Node> getAllNodes(Parent root) {

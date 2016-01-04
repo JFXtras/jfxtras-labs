@@ -440,9 +440,6 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     frequencyComboBox.setConverter(Frequency.FrequencyType.stringConverter);
 
     // INTERVAL SPINNER
-//    intervalSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, INITIAL_INTERVAL));
-//    intervalSpinner.valueProperty().addListener(intervalSpinnerListener);
-
     // Make frequencySpinner and only accept numbers (needs below two listeners)
     intervalSpinner.setEditable(true);
     intervalSpinner.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, (event)  ->
@@ -620,18 +617,10 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         // because the resource bundle isn't instantiated earlier.
         exceptionComboBox.setConverter(new StringConverter<Temporal>()
         { // setup string converter
-            @Override public String toString(Temporal t)
+            @Override public String toString(Temporal temporal)
             {
-                DateTimeFormatter myFormatter = getFormatter(t);
-//                if ((d instanceof LocalDateTime))
-//                {
-//                    myFormatter = formatterDateTime;
-//                } else if ((d instanceof LocalDate))
-//                {
-//                    myFormatter = formatterDate;
-//                } else throw new DateTimeException("DTSTART and DTEND must have same Temporal type("
-//                        + d.getClass().getSimpleName() + ", " + d.getClass().getSimpleName() +")");
-                return myFormatter.format(t);
+                DateTimeFormatter myFormatter = getFormatter(temporal);
+                return myFormatter.format(temporal);
             }
             @Override public Temporal fromString(String string) { throw new RuntimeException("not required for non editable ComboBox"); }
         });
@@ -661,15 +650,6 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
                         {
                             // Format date.
                             DateTimeFormatter myFormatter = getFormatter(temporal);
-                            System.out.println("temporal:" + temporal.getClass().getSimpleName());
-//                            if ((temporal instanceof LocalDateTime))
-//                            {
-//                                myFormatter = formatterDateTime;
-//                            } else if ((temporal instanceof LocalDate))
-//                            {
-//                                myFormatter = formatterDate;
-//                            } else throw new DateTimeException("Invalid Temporal type("
-//                                    + temporal.getClass().getSimpleName() + ", " + temporal.getClass().getSimpleName() +")");
                             setText(myFormatter.format(temporal));
                         }
                     }
@@ -680,11 +660,11 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
                 
         // SETUP CONTROLLER'S INITIAL DATA FROM RRULE
         boolean isRepeatable = (vComponent.getRRule() != null);
-        if (isRepeatable) 
+        if (isRepeatable)
         {
             System.out.println("setup previous rrule" + vComponent);
             setInitialValues(vComponent);
-            if (vComponent.getExDate() != null)
+            if (vComponent.getExDate() != null) // add existing ExDate values to exceptionsListView (WHY HERE AND NOT IN SETINITIAL VALUES?)
             {
                 List<Temporal> collect = vComponent
                         .getExDate()
@@ -699,7 +679,6 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         // LISTENERS TO BE ADDED AFTER INITIALIZATION
         addListeners(); // Listeners to update exception dates
         frequencyComboBox.valueProperty().addListener(frequencyListener);
-
     }
     
     private void addListeners()
@@ -769,6 +748,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         }
         
         startDatePicker.setValue(LocalDate.from(vComponent.getDateTimeStart()));
+        makeExceptionDates(); // Should this be here - TODO - CHECK # OF CALLS
     }
 
     /** Set day of week properties if FREQ=WEEKLY and has BYDAY rule 

@@ -374,8 +374,8 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0));
         vEvent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(3));
         vEvent.setDurationInNanos(2700L * NANOS_IN_SECOND);
-        vEvent.setDescription("Weekly1 Description");
-        vEvent.setSummary("Weekly1 Summary");
+        vEvent.setDescription("Weekly3 Description");
+        vEvent.setSummary("Weekly3 Summary");
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
         vEvent.setRRule(rule);
@@ -393,6 +393,25 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
         vEvent.getRRule().setCount(11);
         return vEvent;
     }
+    
+    protected VEventImpl getWeekly5()
+    {
+        VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
+        vEvent.setDateTimeStart(LocalDateTime.of(2016, 1, 3, 5, 0));
+        vEvent.setDateTimeEnd(LocalDateTime.of(2016, 1, 3, 7, 0));
+        vEvent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(3));
+        vEvent.setDescription("Weekly5 Description");
+        vEvent.setSummary("Weekly5 Summary");
+        vEvent.setAppointmentClass(clazz);
+        RRule rule = new RRule();
+        vEvent.setRRule(rule);
+        Frequency weekly = new Weekly();
+        rule.setFrequency(weekly);
+        Rule byRule = new ByDay(DayOfWeek.SUNDAY, DayOfWeek.WEDNESDAY);
+        weekly.addByRule(byRule);
+        return vEvent;        
+    }
+
     
     /** FREQ=DAILY, Basic daily stream */
     protected VEventImpl getDaily1()

@@ -281,8 +281,11 @@ public class AppointmentEditController
     // AFTER CLICK SAVE VERIFY REPEAT IS VALID, IF NOT PROMPT.
     @FXML private void handleCloseButton()
     {
-//        System.out.println("valid:" + vEvent.isValid());
-        if (! vEvent.isValid()) throw new IllegalArgumentException(vEvent.makeErrorString());
+        // adjust DTSTART if first occurrence is not equal to it
+        Temporal first = vEvent.stream(vEvent.getDateTimeStart()).findFirst().get();
+        if (! first.equals(vEvent.getDateTimeStart())) vEvent.setDateTimeStart(first);
+        
+        if (! vEvent.isValid()) throw new RuntimeException(vEvent.makeErrorString());
         final ICalendarUtilities.WindowCloseType result = vEvent.edit(
                 dateTimeInstanceStartOriginal
               , appointment

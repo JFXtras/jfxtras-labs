@@ -25,7 +25,7 @@ public class AgendaRenderVComponentsTest extends ICalendarTestAbstract
     @Test
     public void canRenderVComponents()
     {
-        
+        // Add VComponents, listener in ICalendarAgenda 
         TestUtil.runThenWaitForPaintPulse( () -> {
             agenda.vComponents().add(getDaily2());
             agenda.vComponents().add(getWeekly2());
@@ -164,6 +164,12 @@ public class AgendaRenderVComponentsTest extends ICalendarTestAbstract
                 ));
         assertEquals(expectedEndDates4, endDates4);
 //        TestUtil.sleep(3000);
+    }
+    
+    @Test
+    public void addVComponentListenerTest()
+    {
+        
     }
 
 }

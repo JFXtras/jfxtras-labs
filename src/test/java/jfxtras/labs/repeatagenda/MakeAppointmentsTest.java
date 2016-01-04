@@ -109,4 +109,5 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
         Collection<Appointment> newAppointments = vevent.makeInstances(start, end);
         newAppointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
     }
+
 }

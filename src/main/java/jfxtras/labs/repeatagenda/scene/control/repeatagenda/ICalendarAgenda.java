@@ -76,7 +76,8 @@ public class ICalendarAgenda extends Agenda {
     Class<? extends Appointment> getAppointmentClass() { return appointmentClass; }
     public void setAppointmentClass(Class<? extends Appointment> clazz) { appointmentClass = clazz; }
 
-    /** Callback for creating unique uid values  */
+    /** Callback for creating unique identifier values 
+     * @see VComponent#getUidGeneratorCallback() */
     public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
     private static Integer nextKey = 0;
     private Callback<Void, String> uidGeneratorCallback = (Void) ->
@@ -125,8 +126,6 @@ public class ICalendarAgenda extends Agenda {
                                 newVComponent.setEndRange(endRange);
                                 newVComponent.setUidGeneratorCallback(getUidGeneratorCallback());
                                 newVComponent.setUniqueIdentifier(getUidGeneratorCallback().call(null));
-                                System.out.println("add vEvemt " + a.getStartLocalDateTime());
-//                                System.out.println(newVComponent);
                                 vComponents().removeListener(vComponentsListener);
                                 vComponents.add(newVComponent);
                                 vComponents().addListener(vComponentsListener);
@@ -135,16 +134,16 @@ public class ICalendarAgenda extends Agenda {
             }
         };
         
-        // TODO - MAKE A TEST FOR THIS LISTENER
         vComponentsListener = (ListChangeListener.Change<? extends VComponent<Appointment>> change) ->
         {
             while (change.next())
             {
-                if (change.wasAdded() && dateTimeRange != null) // don't make appointment if range is not set
+                if (change.wasAdded() && (dateTimeRange != null)) // don't make appointment if range is not set
                 {
                     LocalDateTime start = getDateTimeRange().getStartLocalDateTime();
                     LocalDateTime end = getDateTimeRange().getEndLocalDateTime();
                     List<Appointment> newAppointments = new ArrayList<>();
+                    // add new appointments
                     change.getAddedSubList()
                             .stream()
                             .forEach(v -> newAppointments.addAll(v.makeInstances(start, end)));
@@ -153,6 +152,7 @@ public class ICalendarAgenda extends Agenda {
                     appointments().addListener(appointmentsListener);
                 } else if (change.wasRemoved())
                 {
+                    // remove associated appointments
                     change.getRemoved()
                         .stream()
                         .forEach(v -> appointments().removeIf(a -> v.instances().stream().anyMatch(a2 -> a2 == a)));

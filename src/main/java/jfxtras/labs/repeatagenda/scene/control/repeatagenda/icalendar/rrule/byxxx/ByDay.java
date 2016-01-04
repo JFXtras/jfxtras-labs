@@ -10,11 +10,13 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -28,7 +30,8 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent
 public class ByDay extends ByRuleAbstract
 {
     private final static ByRules MY_RULE = ByRules.BYDAY;
-    
+
+    private final int dayOfWeekAdjustment;
     /** Array of days of the week.  Ordinal number is optional.  Without will include all
      * days matching that day of the week, with the ordinal will be only include the
      * nth day of the week in the month, when n is the ordinal number.
@@ -123,6 +126,8 @@ public class ByDay extends ByRuleAbstract
     public ByDay()
     {
         super(MY_RULE);
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+        dayOfWeekAdjustment = (weekFields.getFirstDayOfWeek() == DayOfWeek.SUNDAY) ? 1 : 0;
     }
 
     
@@ -234,12 +239,16 @@ public class ByDay extends ByRuleAbstract
         case WEEKS:
             return inStream.flatMap(t -> 
             { // Expand to be byDayPairs days in current week
+                // TODO - REVISE - INEFFICIENT AND ACKWARD
                 List<Temporal> dates = new ArrayList<>();
                 int dayOfWeekValue = DayOfWeek.from(t).getValue();
                 for (ByDayPair byDayPair : getByDayPairs())
                 {
-                    int dayShift = byDayPair.dayOfWeek.getValue() - dayOfWeekValue;
+                    int value = byDayPair.dayOfWeek.getValue() + dayOfWeekAdjustment;
+                    int valueAdj = (value > 7) ? value-7 : value;
+                    int dayShift = valueAdj - dayOfWeekValue - dayOfWeekAdjustment;
                     Temporal newTemporal = t.plus(dayShift, ChronoUnit.DAYS);
+//                    System.out.println("newTemporal:" + newTemporal + " " + startTemporal + " " + value + " " + valueAdj + " " + dayShift );
                     if (! VComponent.isBefore(newTemporal, startTemporal)) dates.add(newTemporal);
                 }
                 return dates.stream();
