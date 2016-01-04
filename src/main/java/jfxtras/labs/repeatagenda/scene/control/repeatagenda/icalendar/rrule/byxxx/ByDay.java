@@ -10,6 +10,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +32,8 @@ public class ByDay extends ByRuleAbstract
 {
     private final static ByRules MY_RULE = ByRules.BYDAY;
 
-    private final int dayOfWeekAdjustment;
+    private final TemporalField field;
+    private final int firstDayOfWeekAdjustment;
     /** Array of days of the week.  Ordinal number is optional.  Without will include all
      * days matching that day of the week, with the ordinal will be only include the
      * nth day of the week in the month, when n is the ordinal number.
@@ -126,8 +128,9 @@ public class ByDay extends ByRuleAbstract
     public ByDay()
     {
         super(MY_RULE);
+        field = WeekFields.of(Locale.getDefault()).dayOfWeek();
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
-        dayOfWeekAdjustment = (weekFields.getFirstDayOfWeek() == DayOfWeek.SUNDAY) ? 1 : 0;
+        firstDayOfWeekAdjustment = (weekFields.getFirstDayOfWeek() == DayOfWeek.SUNDAY) ? 1 : 0;
     }
 
     
@@ -240,17 +243,44 @@ public class ByDay extends ByRuleAbstract
             return inStream.flatMap(t -> 
             { // Expand to be byDayPairs days in current week
                 // TODO - REVISE - INEFFICIENT AND ACKWARD
+                // need all days in week - sun-sat
+                // include those matching
+                // first find first day of week (sunday)
+                // can i use week fields to get week num? then get first day of week?
+//                TemporalField fieldUS = WeekFields.of(Locale.FRANCE).dayOfWeek();
+//                System.out.println(t.with(fieldUS, 1)); // 2015-02-08 (Sunday)
+//                Temporal firstDayOfWeek = startTemporal.with(field, 1);
+//                for (int d=1; d<7; d++)
+//                {
+//                    DayOfWeek myDayOfWeek = DayOfWeek.from(startTemporal.with(field, d));
+////                    if (myDayOfWeek == )
+//                }
+
                 List<Temporal> dates = new ArrayList<>();
-                int dayOfWeekValue = DayOfWeek.from(t).getValue();
                 for (ByDayPair byDayPair : getByDayPairs())
                 {
-                    int value = byDayPair.dayOfWeek.getValue() + dayOfWeekAdjustment;
+                    int value = byDayPair.dayOfWeek.getValue() + firstDayOfWeekAdjustment;
                     int valueAdj = (value > 7) ? value-7 : value;
-                    int dayShift = valueAdj - dayOfWeekValue - dayOfWeekAdjustment;
-                    Temporal newTemporal = t.plus(dayShift, ChronoUnit.DAYS);
-//                    System.out.println("newTemporal:" + newTemporal + " " + startTemporal + " " + value + " " + valueAdj + " " + dayShift );
+                    Temporal newTemporal = t.with(field, valueAdj);
+                    System.out.println("newTemporal:" + newTemporal);
+//                    dates.add(newTemporal);
+                    if (VComponent.isBefore(newTemporal, startTemporal)) System.out.println("TOO EARLY:");
                     if (! VComponent.isBefore(newTemporal, startTemporal)) dates.add(newTemporal);
+//                    byDayPair.dayOfWeek;
                 }
+                
+//                int dayOfWeekValue = DayOfWeek.from(t).getValue() + firstDayOfWeekAdjustment;
+//                for (ByDayPair byDayPair : getByDayPairs())
+//                {
+//                    int value = byDayPair.dayOfWeek.getValue() + firstDayOfWeekAdjustment;
+//                    int valueAdj = (value > 7) ? value-7 : value;
+//                    int dayShift = valueAdj - dayOfWeekValue;
+//                    Temporal newTemporal = t.plus(dayShift, ChronoUnit.DAYS);
+////                    dates.add(newTemporal);
+////                    System.out.println("newTemporal:" + newTemporal + " " + startTemporal + " " + value + " " + valueAdj + " " + dayShift );
+//                    if (! VComponent.isBefore(newTemporal, startTemporal)) dates.add(newTemporal);
+//                }
+                Collections.sort(dates, VComponent.TEMPORAL_COMPARATOR);
                 return dates.stream();
             });
         case MONTHS:

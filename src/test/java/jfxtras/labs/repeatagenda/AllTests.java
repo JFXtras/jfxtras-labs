@@ -5,7 +5,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ AgendaRenderVComponentsTest.class
+@SuiteClasses({ 
+                AgendaRenderVComponentsTest.class
               , AgendaRenderAppointmentsTest.class
               , AgendaEditPopupTest.class
               , ICalendarCopyTest.class

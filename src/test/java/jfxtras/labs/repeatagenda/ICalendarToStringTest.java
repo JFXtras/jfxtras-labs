@@ -18,6 +18,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     {
         VEventImpl e = getYearly1();
         String madeString = e.toString();
+        System.out.println(madeString);
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                               + "CATEGORIES:group13" + System.lineSeparator()
                               + "CREATED:20151109T082900" + System.lineSeparator()
@@ -42,7 +43,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     String madeString = e.toString();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                           + "DTSTAMP:19970901T083000" + System.lineSeparator()
-                          + "DTSTART:19970902T100000" + System.lineSeparator()
+                          + "DTSTART:19970613T100000" + System.lineSeparator()
                           + "DURATION:PT1H" + System.lineSeparator()
                           + "RRULE:FREQ=MONTHLY;BYMONTHDAY=13;BYDAY=FR" + System.lineSeparator()
                           + "UID:19970901T083000-0@jfxtras.org" + System.lineSeparator()
@@ -59,7 +60,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     String madeString = e.toString();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                           + "DTSTAMP:20150110T080000" + System.lineSeparator()
-                          + "DTSTART:20150110T100000" + System.lineSeparator()
+                          + "DTSTART:20151103T100000" + System.lineSeparator()
                           + "DURATION:PT1H30M" + System.lineSeparator()
                           + "RRULE:FREQ=MONTHLY;BYMONTH=11,12;BYDAY=TU,WE,FR" + System.lineSeparator()
                           + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()

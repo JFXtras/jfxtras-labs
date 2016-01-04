@@ -280,7 +280,7 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
     protected VEventImpl getMonthly5()
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
-        vEvent.setDateTimeStart(LocalDateTime.of(1997, 9, 2, 10, 0));
+        vEvent.setDateTimeStart(LocalDateTime.of(1997, 6, 13, 10, 0));
         vEvent.setDateTimeStamp(LocalDateTime.of(1997, 9, 1, 8, 30));
         vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
         vEvent.setUniqueIdentifier("19970901T083000-0@jfxtras.org");
@@ -300,7 +300,7 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
     protected VEventImpl getMonthly6()
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 1, 10, 10, 0));
+        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 3, 10, 0));
         vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
         vEvent.setDurationInNanos(5400L * NANOS_IN_SECOND);
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");

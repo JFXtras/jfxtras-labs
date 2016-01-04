@@ -156,7 +156,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                               + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
         VEventImpl vEvent = VEventImpl.parseVEvent(vEventString, ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
-        VEvent expectedVEvent = getDaily3();
+        VEventImpl expectedVEvent = getDaily3();
         assertEquals(expectedVEvent, vEvent);
     }
     
@@ -195,7 +195,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                 + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                 + "END:VEVENT";
         VEventImpl vEvent = VEventImpl.parseVEvent(vEventString, ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
-        VEvent expectedVEvent = getDailyWithException1();
+        VEventImpl expectedVEvent = getDailyWithException1();
         assertEquals(expectedVEvent, vEvent);
     }
 
@@ -217,7 +217,6 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                           + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                           + "END:VEVENT";
     VEventImpl vEvent = VEventImpl.parseVEvent(vEventString, ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
-    System.out.println("duration:"+vEvent.getDurationInNanos());
     VEventImpl expectedVEvent = getWholeDayDaily1();
     assertEquals(expectedVEvent, vEvent);
     }

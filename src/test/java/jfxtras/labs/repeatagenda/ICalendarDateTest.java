@@ -12,10 +12,100 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 
 public class ICalendarDateTest extends ICalendarTestAbstract
 {
+    @Test // LocalDateTime
+    public void canSetupDateTimeStartFirst()
+    {
+        // setup
+        VEventImpl v = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
+        v.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 8, 0));
+        v.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 10, 0));
+        
+        // verify initial conditions
+        assertEquals(LocalDateTime.of(2015, 11, 9, 8, 0), v.getDateTimeStart());
+        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), v.getDateTimeEnd());
+        Long expectedDuration = 7200L * NANOS_IN_SECOND;
+        assertEquals(expectedDuration, v.getDurationInNanos());        
+    }
+    
+    @Test // LocalDate
+    public void canSetupDateTimeStartFirst2()
+    {
+        // setup
+        VEventImpl v = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
+        v.setDateTimeStart(LocalDate.of(2015, 11, 9));
+        v.setDateTimeEnd(LocalDate.of(2015, 11, 10));
+        
+        // verify initial conditions
+        assertEquals(LocalDate.of(2015, 11, 9), v.getDateTimeStart());
+        assertEquals(LocalDate.of(2015, 11, 10), v.getDateTimeEnd());
+        Long expectedDuration = 24L * 3600L * NANOS_IN_SECOND;
+        assertEquals(expectedDuration, v.getDurationInNanos());        
+    }
+
+    @Test // LocalDateTime
+    public void canSetupDateTimeEndFirst()
+    {
+        // setup
+        VEventImpl v = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
+        v.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 10, 0));
+        v.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 8, 0));
+        
+        // verify initial conditions
+        assertEquals(LocalDateTime.of(2015, 11, 9, 8, 0), v.getDateTimeStart());
+        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), v.getDateTimeEnd());
+        Long expectedDuration = 7200L * NANOS_IN_SECOND;
+        assertEquals(expectedDuration, v.getDurationInNanos());        
+    }
+    
+    @Test // LocalDate
+    public void canSetupDateTimeEndFirst2()
+    {
+        // setup
+        VEventImpl v = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
+        v.setDateTimeEnd(LocalDate.of(2015, 11, 10));
+        v.setDateTimeStart(LocalDate.of(2015, 11, 9));
+        
+        // verify initial conditions
+        assertEquals(LocalDate.of(2015, 11, 9), v.getDateTimeStart());
+        assertEquals(LocalDate.of(2015, 11, 10), v.getDateTimeEnd());
+        Long expectedDuration = 24L * 3600L * NANOS_IN_SECOND;
+        assertEquals(expectedDuration, v.getDurationInNanos());        
+    }
+    
+    @Test // LocalDateTime
+    public void canSetupDurationFirst()
+    {
+        // setup
+        VEventImpl v = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
+        v.setDurationInNanos(7200L * NANOS_IN_SECOND);
+        v.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 8, 0));
+        
+        // verify initial conditions
+        assertEquals(LocalDateTime.of(2015, 11, 9, 8, 0), v.getDateTimeStart());
+        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), v.getDateTimeEnd());
+        Long expectedDuration = 7200L * NANOS_IN_SECOND;
+        assertEquals(expectedDuration, v.getDurationInNanos());        
+    }
+    
+    @Test // LocalDate
+    public void canSetupDurationFirst2()
+    {
+        // setup
+        VEventImpl v = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
+        v.setDurationInNanos(24L * 3600L * NANOS_IN_SECOND);
+        v.setDateTimeStart(LocalDate.of(2015, 11, 9));
+        
+        // verify initial conditions
+        assertEquals(LocalDate.of(2015, 11, 9), v.getDateTimeStart());
+        assertEquals(LocalDate.of(2015, 11, 10), v.getDateTimeEnd());
+        Long expectedDuration = 24L * 3600L * NANOS_IN_SECOND;
+        assertEquals(expectedDuration, v.getDurationInNanos());          
+    }
     
     /** Tests daily stream with FREQ=YEARLY */
     @Test
@@ -294,10 +384,11 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         VEventImpl e = getMonthly5();
         List<Temporal> madeDates = e.getRRule()
                 .stream(e.getDateTimeStart())
-                .limit(5)
+                .limit(6)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
-                LocalDateTime.of(1998, 2, 13, 10, 0)
+                LocalDateTime.of(1997, 6, 13, 10, 0)
+              , LocalDateTime.of(1998, 2, 13, 10, 0)
               , LocalDateTime.of(1998, 3, 13, 10, 0)
               , LocalDateTime.of(1998, 11, 13, 10, 0)
               , LocalDateTime.of(1999, 8, 13, 10, 0)

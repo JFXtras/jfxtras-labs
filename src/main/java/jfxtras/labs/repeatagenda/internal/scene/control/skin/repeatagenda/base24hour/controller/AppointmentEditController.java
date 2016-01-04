@@ -283,7 +283,20 @@ public class AppointmentEditController
     {
         // adjust DTSTART if first occurrence is not equal to it
         Temporal first = vEvent.stream(vEvent.getDateTimeStart()).findFirst().get();
-        if (! first.equals(vEvent.getDateTimeStart())) vEvent.setDateTimeStart(first);
+        long dayShift = ChronoUnit.DAYS.between(vEvent.getDateTimeStart(), first);
+        System.out.println("dayShift:" + dayShift);
+        if (dayShift > 0)
+        {
+            vEvent.setDateTimeStart(first);
+            Temporal newEnd = vEvent.getDateTimeEnd().plus(dayShift, ChronoUnit.DAYS);
+            vEvent.setDateTimeEnd(newEnd);
+            System.out.println("dayShift:" +  vEvent.getDateTimeStart() + " " +  vEvent.getDateTimeEnd() );
+            if (VComponent.isAfter(vEvent.getDateTimeStart(), vEvent.getDateTimeEnd()))
+            {
+                System.out.println("AFTER:");
+                System.exit(0);
+            }
+        }
         
         if (! vEvent.isValid()) throw new RuntimeException(vEvent.makeErrorString());
         final ICalendarUtilities.WindowCloseType result = vEvent.edit(

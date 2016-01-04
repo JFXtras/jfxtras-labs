@@ -800,7 +800,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         
         final Temporal dateTimeStart = vComponent.getDateTimeStart();
         Stream<Temporal> stream1 = vComponent
-                .getRRule()
+//                .getRRule()
                 .stream(dateTimeStart);
         Stream<Temporal> stream2 = (vComponent.getExDate() == null) ? stream1
                 : vComponent.getExDate().stream(stream1, dateTimeStart); // remove exceptions

@@ -227,7 +227,7 @@ public class VEventImpl extends VEvent<Appointment>
     public String toString()
     {
         String errors = makeErrorString();
-        if (! errors.equals("")) throw new IllegalArgumentException(errors);
+        if (! errors.equals("")) throw new RuntimeException(errors);
         Map<Property, String> properties = makePropertiesMap();
         String propertiesString = properties.entrySet()
                 .stream() 
@@ -419,7 +419,7 @@ public class VEventImpl extends VEvent<Appointment>
 //                    vEventOld.copyTo(this);
                     break;
                 case THIS_AND_FUTURE:
-                { // this is edited VEvent, vEventOld is former settings, with UNTIL set at start for this.
+                { // this is edited VEvent, vEventOld is former settings, with UNTIL to end it at start of this (VEvent with new settings)
                     
                     // Remove appointments
                     appointments.removeIf(a -> VComponentOld.instances().stream().anyMatch(a2 -> a2 == a));
@@ -489,8 +489,10 @@ public class VEventImpl extends VEvent<Appointment>
                     }
                     
                     // Modify this (edited) VEvent
+                    System.out.println("modify this vEvent:" + durationInNanos);
                     setDateTimeStart(dateTimeStartInstanceNew);
                     setDurationInNanos(durationInNanos);
+                    System.out.println("done modify this vEvent:");
                     
                     // Modify COUNT for this (the edited) VEvent
                     if (getRRule().getCount() > 0)

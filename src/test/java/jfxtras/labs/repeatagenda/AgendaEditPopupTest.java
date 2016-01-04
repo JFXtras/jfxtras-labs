@@ -61,7 +61,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
     
     // edit non-repeatable elements
     @Test
-//    @Ignore
+    @Ignore
     public void canEditVComponent1()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getIndividual1()));
@@ -134,7 +134,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
     }
     
     @Test
-//    @Ignore
+    @Ignore
     public void canToggleRepeatableCheckBox()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
@@ -161,7 +161,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
     }
     
     @Test
-//    @Ignore
+    @Ignore
     public void canChangeFrequency()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
@@ -277,7 +277,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
     }
 
     @Test
-//    @Ignore
+    @Ignore
     public void canChangeInterval()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
@@ -332,7 +332,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
     }
     
     @Test
-//    @Ignore
+    @Ignore
     public void canChangeEndsCriteria()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
@@ -380,6 +380,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
     }
     
     @Test
+    @Ignore
     public void canMakeCorrectExceptionListInitial()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
@@ -410,6 +411,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
     @Test
     public void canMakeCorrectExceptionListWeekly()
     {
+        System.out.println("ok1");
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
         VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
 
@@ -418,6 +420,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
         press(MouseButton.SECONDARY);
         release(MouseButton.SECONDARY);
         click("#repeatableTab");
+        System.out.println("ok1");
         
         // Get properties
         ComboBox<Temporal> exceptionComboBox = find("#exceptionComboBox");
@@ -440,6 +443,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
                     ));
             assertEquals(expectedDates, exceptions);
         }
+        System.out.println("ok2");
         
         // Days of the week properties
         CheckBox su = (CheckBox) find("#sundayCheckBox");
@@ -485,6 +489,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
                     ));
             assertEquals(expectedDates, exceptions);
         }
+        System.out.println("ok3");
 
         TestUtil.runThenWaitForPaintPulse( () -> mo.setSelected(true));
         {
@@ -501,7 +506,8 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
                     ));
             assertEquals(expectedDates, exceptions);
         }
-        
+        System.out.println("ok4");
+
         TestUtil.sleep(3000);
         TestUtil.runThenWaitForPaintPulse( () -> tu.setSelected(true));
         {
@@ -556,6 +562,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
         }
 
     @Test
+    @Ignore
     public void canMakeCorrectExceptionListMonthly()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
@@ -591,7 +598,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
 
     
     @Test
-//    @Ignore
+    @Ignore
     public void canEditVComponent2()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
@@ -635,7 +642,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
     }
         
     @Test
- //   @Ignore
+   @Ignore
     public void renderRepeatableAppointmentByDragging()
     {
         renderAppointmentByDragging();
@@ -678,7 +685,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
     }
     
     @Test
-//    @Ignore
+    @Ignore
     public void createRepeatableAppointment2()
     {
         renderAppointmentByDragging();
