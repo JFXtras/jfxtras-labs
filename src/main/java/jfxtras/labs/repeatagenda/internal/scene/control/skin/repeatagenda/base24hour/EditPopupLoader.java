@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.AppointmentEditController;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.VComponentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -45,6 +46,7 @@ public class EditPopupLoader extends Stage {
         String end = Settings.DATE_FORMAT_AGENDA_END.format(appointment.getEndLocalDateTime());
         String appointmentTime = start + end + " ";
         VEvent<Appointment> vEvent = (VEvent<Appointment>) vComponent;
+        VComponent<Appointment> vComponentOld = VComponentFactory.newVComponent(vComponent);
         setTitle(vEvent.getSummary() + ": " + appointmentTime);
         initModality(Modality.APPLICATION_MODAL);
         
@@ -80,7 +82,6 @@ public class EditPopupLoader extends Stage {
         // when popup closes write changes if occurred
         setOnHidden((windowEvent) -> 
         {
-            System.out.println("VComponent:" + vComponent.toString());
 //            System.out.println("group:" + appointment.getAppointmentGroup().getDescription());
 //            agenda.appointmentGroups().stream().map(a -> a.getDescription()).forEach(System.out::println);
             switch (popupCloseType.get())
@@ -95,9 +96,14 @@ public class EditPopupLoader extends Stage {
                 }
                 
                 break;
+            case CANCEL:
+            case X:
+                vComponentOld.copyTo(vComponent);
+                break;
             default:
                 break;
             }
+            System.out.println("VComponent:" + vComponent.toString());
         });
         
         setScene(scene);

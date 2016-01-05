@@ -52,8 +52,6 @@ import jfxtras.test.TestUtil;
  */
 public class AgendaEditPopupTest extends ICalendarTestAbstract
 {
-    private String dateTimeStamp;
-
     public Parent getRootNode()
     {
         Parent p = super.getRootNode();
@@ -637,7 +635,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
         }
 
     @Test
-    @Ignore // FIX THIS
+    //@Ignore
     public void canMakeExceptionListMonthly()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
@@ -766,7 +764,6 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
         press(MouseButton.PRIMARY);
         move("#hourLine12");
         release(MouseButton.PRIMARY);
-        dateTimeStamp = VComponent.DATE_TIME_FORMATTER.format(LocalDateTime.now());
         
         Assert.assertEquals(1, agenda.vComponents().size());
         Assert.assertEquals("2015-11-11T10:00", agenda.appointments().get(0).getStartLocalDateTime().toString() );
@@ -793,7 +790,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
         
         Assert.assertEquals(2, agenda.appointments().size());
         VComponent<Appointment> v = agenda.vComponents().get(0);
-        
+        String dateTimeStamp = VComponent.DATE_TIME_FORMATTER.format(v.getDateTimeStamp());
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                 + "CATEGORIES:group00" + System.lineSeparator()
                 + "DTEND:20151111T120000" + System.lineSeparator()
@@ -843,7 +840,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
         click("#closeRepeatButton");
         Assert.assertEquals(2, agenda.appointments().size());
         VComponent<Appointment> v = agenda.vComponents().get(0);
-        
+        String dateTimeStamp = VComponent.DATE_TIME_FORMATTER.format(v.getDateTimeStamp());
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                 + "CATEGORIES:group00" + System.lineSeparator()
                 + "DTEND:20151111T120000" + System.lineSeparator()

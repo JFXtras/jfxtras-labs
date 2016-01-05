@@ -265,7 +265,7 @@ public class AppointmentEditController
         groupTextField.textProperty().addListener((observable, oldSelection, newSelection) ->
         {
             int i = appointmentGroupGridPane.getAppointmentGroupSelected();
-            System.out.println("appointmentGroups1:" + appointmentGroups);
+//            System.out.println("appointmentGroups1:" + appointmentGroups);
             appointmentGroups.get(i).setDescription(newSelection);
             appointmentGroupGridPane.updateToolTip(i, appointmentGroups);
             vEvent.setCategories(newSelection);
@@ -316,8 +316,9 @@ public class AppointmentEditController
     
     @FXML private void handleCancelButton()
     {
+//        vEventOld.copyTo(vEvent);
         popupCloseType.set(WindowCloseType.CANCEL);
-        vEventOld.copyTo(vEvent);
+//        System.out.println("equal:" + vEventOld.getRRule() + " " + vEvent.getRRule());
     }
 
     @FXML private void handleDeleteButton()

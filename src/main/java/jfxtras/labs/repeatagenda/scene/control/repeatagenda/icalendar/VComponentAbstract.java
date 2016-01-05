@@ -541,6 +541,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         if (getDateTimeStamp() == null) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DTSTAMP must not be null.");
         if (getUniqueIdentifier() == null) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  UID must not be null.");
         if (getRRule() != null) errorsBuilder.append(getRRule().makeErrorString(this));
+        System.out.println("rrule:" + this.getRRule());
         Temporal first = stream(getDateTimeStart()).findFirst().get();
         if (! first.equals(getDateTimeStart())) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DTSTART (" + getDateTimeStart() + ") must be first occurrence (" + first + ")");
         return errorsBuilder.toString();
