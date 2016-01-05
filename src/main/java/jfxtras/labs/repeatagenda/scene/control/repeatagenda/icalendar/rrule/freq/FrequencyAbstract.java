@@ -126,7 +126,7 @@ public abstract class FrequencyAbstract<T> implements Frequency {
     public Stream<Temporal> stream(Temporal start)
     {
         getChronoUnit().set(initialChronoUnit); // start with Frequency ChronoUnit when making a stream
-        Stream<Temporal> stream = Stream.iterate(start, (a) -> { return a.with(adjuster()); });
+        Stream<Temporal> stream = Stream.iterate(start, a -> a.with(adjuster()));
         Iterator<Rule> rulesIterator = getByRules().stream().sorted().iterator();
         while (rulesIterator.hasNext())
         {

@@ -8,12 +8,15 @@ import static org.junit.Assert.assertTrue;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -31,6 +34,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.RepeatableController;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -399,7 +403,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
         assertFalse(endNeverRadioButton.isSelected());
         assertTrue(endAfterRadioButton.isSelected());
         assertFalse(untilRadioButton.isSelected());
-        assertEquals((Integer) 10, v.getRRule().getCount());
+        assertEquals((Integer) RepeatableController.INITIAL_COUNT, v.getRRule().getCount()); // default value is 10
         TestUtil.runThenWaitForPaintPulse( () -> endAfterEventsSpinner.getValueFactory().increment(5));
         assertEquals((Integer) 15, v.getRRule().getCount());
 
@@ -408,7 +412,8 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
         assertFalse(endNeverRadioButton.isSelected());
         assertFalse(endAfterRadioButton.isSelected());
         assertTrue(untilRadioButton.isSelected());
-        assertEquals(LocalDateTime.of(2015, 12, 9, 10, 0), v.getRRule().getUntil());
+        LocalDateTime expectedUntil = LocalDateTime.of(2015, 11, 9, 10, 0).plus(RepeatableController.DEFAULT_UNTIL_PERIOD);
+        assertEquals(expectedUntil, v.getRRule().getUntil());
         TestUtil.runThenWaitForPaintPulse( () -> untilDatePicker.setValue(LocalDate.of(2016, 1, 1)));
         assertEquals(LocalDateTime.of(2016, 1, 1, 10, 0), v.getRRule().getUntil());
         closeCurrentWindow();
@@ -431,14 +436,12 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
         ComboBox<Temporal> exceptionComboBox = find("#exceptionComboBox");
 
         // Check initial state
-        List<Temporal> exceptions = exceptionComboBox.getItems().stream().limit(5).collect(Collectors.toList());
-        List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
-                LocalDateTime.of(2015, 11, 9, 10, 0)
-              , LocalDateTime.of(2015, 11, 10, 10, 0)
-              , LocalDateTime.of(2015, 11, 11, 10, 0)
-              , LocalDateTime.of(2015, 11, 12, 10, 0)
-              , LocalDateTime.of(2015, 11, 13, 10, 0)
-                ));
+        List<Temporal> exceptions = exceptionComboBox.getItems().stream().collect(Collectors.toList());
+        LocalDateTime seed = LocalDateTime.of(2015, 11, 9, 10, 0);
+        List<LocalDateTime> expectedDates = Stream
+                .iterate(seed, a -> a.plus(1, ChronoUnit.DAYS))
+                .limit(RepeatableController.EXCEPTION_CHOICE_LIMIT)
+                .collect(Collectors.toList());
         assertEquals(expectedDates, exceptions);
         closeCurrentWindow();
     }
@@ -723,6 +726,127 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
               , LocalDateTime.of(2019, 11, 9, 10, 0)
                 ));
         assertEquals(expectedDates, exceptions);
+        closeCurrentWindow();
+    }
+    
+    @Test
+    //@Ignore
+    public void canMakeExceptionListStart()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
+        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+
+        // Open edit popup
+        move("#hourLine11");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+        click("#repeatableTab");
+        
+        // Get properties
+        DatePicker startDatePicker = find("#startDatePicker");
+        ComboBox<Temporal> exceptionComboBox = find("#exceptionComboBox");
+        
+        // Change property and verify state change
+        TestUtil.runThenWaitForPaintPulse( () -> startDatePicker.setValue(LocalDate.of(2015, 11, 10)));
+        
+        // Check initial state
+        List<Temporal> exceptions = exceptionComboBox.getItems().stream().limit(5)
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 10, 10, 0)
+              , LocalDateTime.of(2015, 11, 11, 10, 0)
+              , LocalDateTime.of(2015, 11, 12, 10, 0)
+              , LocalDateTime.of(2015, 11, 13, 10, 0)
+              , LocalDateTime.of(2015, 11, 14, 10, 0)
+                ));
+        assertEquals(expectedDates, exceptions);
+        closeCurrentWindow();
+    }
+    
+    @Test
+    //@Ignore
+    public void canMakeExceptionListEndsCriteria()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
+        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+
+        // Open edit popup
+        move("#hourLine11");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+        click("#repeatableTab");
+
+        // Get properties
+        ComboBox<Temporal> exceptionComboBox = find("#exceptionComboBox");
+        RadioButton endNeverRadioButton = find("#endNeverRadioButton");
+        RadioButton endAfterRadioButton = find("#endAfterRadioButton");
+        Spinner<Integer> endAfterEventsSpinner = find("#endAfterEventsSpinner");
+        RadioButton untilRadioButton = find("#untilRadioButton");
+        DatePicker untilDatePicker = find("#untilDatePicker");
+
+        // Change property and verify state change
+        // Ends After (COUNT)
+        TestUtil.runThenWaitForPaintPulse( () -> endAfterRadioButton.setSelected(true) );
+        {
+            List<Temporal> exceptions = exceptionComboBox.getItems().stream().collect(Collectors.toList());
+            LocalDateTime seed = LocalDateTime.of(2015, 11, 9, 10, 0);
+            List<LocalDateTime> expectedDates = Stream
+                    .iterate(seed, a -> a.plus(1, ChronoUnit.DAYS))
+                    .limit(RepeatableController.INITIAL_COUNT)
+                    .collect(Collectors.toList());
+            assertEquals(expectedDates, exceptions);
+        }
+        TestUtil.runThenWaitForPaintPulse( () -> endAfterEventsSpinner.getValueFactory().decrement(5) );
+        {
+            List<Temporal> exceptions = exceptionComboBox.getItems().stream().collect(Collectors.toList());
+            LocalDateTime seed = LocalDateTime.of(2015, 11, 9, 10, 0);
+            List<LocalDateTime> expectedDates = Stream
+                    .iterate(seed, a -> a.plus(1, ChronoUnit.DAYS))
+                    .limit(RepeatableController.INITIAL_COUNT-5)
+                    .collect(Collectors.toList());
+            assertEquals(expectedDates, exceptions);
+        }
+        
+        // Ends On (UNTIL)
+        TestUtil.runThenWaitForPaintPulse( () -> untilRadioButton.setSelected(true));
+        {
+            LocalDateTime expectedUntil = LocalDateTime.of(2015, 11, 9, 10, 0).plus(RepeatableController.DEFAULT_UNTIL_PERIOD);
+            List<Temporal> exceptions = exceptionComboBox.getItems().stream().collect(Collectors.toList());
+            LocalDateTime seed = LocalDateTime.of(2015, 11, 9, 10, 0);
+            Iterator<LocalDateTime> i = Stream.iterate(seed, a -> a.plus(1, ChronoUnit.DAYS)).iterator();
+            List<LocalDateTime> expectedDates = new ArrayList<>();
+            while (i.hasNext())
+            {
+                LocalDateTime d = i.next();
+                if (d.isAfter(expectedUntil)) break;
+                expectedDates.add(d);
+            }            
+            assertEquals(expectedDates, exceptions);
+        }
+        TestUtil.runThenWaitForPaintPulse( () -> untilDatePicker.setValue(LocalDate.of(2015, 11, 13)) );
+        {
+            List<Temporal> exceptions = exceptionComboBox.getItems().stream().collect(Collectors.toList());
+            List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                    LocalDateTime.of(2015, 11, 9, 10, 0)
+                  , LocalDateTime.of(2015, 11, 10, 10, 0)
+                  , LocalDateTime.of(2015, 11, 11, 10, 0)
+                  , LocalDateTime.of(2015, 11, 12, 10, 0)
+                  , LocalDateTime.of(2015, 11, 13, 10, 0)
+                    ));      
+            assertEquals(expectedDates, exceptions);
+        }
+        
+        // Ends Never
+        TestUtil.runThenWaitForPaintPulse( () -> endNeverRadioButton.setSelected(true));
+        {
+            List<Temporal> exceptions = exceptionComboBox.getItems().stream().collect(Collectors.toList());
+            LocalDateTime seed = LocalDateTime.of(2015, 11, 9, 10, 0);
+            List<LocalDateTime> expectedDates = Stream
+                    .iterate(seed, a -> a.plus(1, ChronoUnit.DAYS))
+                    .limit(RepeatableController.EXCEPTION_CHOICE_LIMIT)
+                    .collect(Collectors.toList());
+            assertEquals(expectedDates, exceptions);
+        }
         closeCurrentWindow();
     }
     

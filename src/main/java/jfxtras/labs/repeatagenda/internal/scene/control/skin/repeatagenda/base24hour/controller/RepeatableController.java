@@ -6,6 +6,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
@@ -72,8 +73,9 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
 public class RepeatableController<T>
 {
 
-final private static int EXCEPTION_CHOICE_LIMIT = 50;
-final private static int INITIAL_COUNT = 10;
+final public static int EXCEPTION_CHOICE_LIMIT = 50;
+final public static int INITIAL_COUNT = 10;
+final public static Period DEFAULT_UNTIL_PERIOD = Period.ofMonths(1); // amount of time beyond start default for UNTIL (ends on) 
 final private static int INITIAL_INTERVAL = 1;
     
 private VComponent<T> vComponent;
@@ -587,15 +589,16 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         {
             if (vComponent.getRRule().getUntil() == null)
             { // new selection - use date/time one month in the future as default
-                boolean isAfter = VComponent.isAfter(dateTimeStartInstanceNew, vComponent.getDateTimeStart().plus(1, ChronoUnit.MONTHS));
+                boolean isAfter = VComponent.isAfter(dateTimeStartInstanceNew, vComponent.getDateTimeStart().plus(DEFAULT_UNTIL_PERIOD));
                 Temporal defaultEndOnDateTime = isAfter ? dateTimeStartInstanceNew :
-                    vComponent.getDateTimeStart().plus(1, ChronoUnit.MONTHS);
+                    vComponent.getDateTimeStart().plus(DEFAULT_UNTIL_PERIOD);
                 Temporal matchingOccurrence = findUntil(defaultEndOnDateTime); // adjust to actual occurrence
                 vComponent.getRRule().setUntil(matchingOccurrence);
             }
             untilDatePicker.setValue(LocalDate.from(vComponent.getRRule().getUntil()));
             untilDatePicker.setDisable(false);
             untilDatePicker.show();
+            makeExceptionDates();
         } else {
             vComponent.getRRule().setUntil(null);
             untilDatePicker.setDisable(true);
