@@ -7,9 +7,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,6 +54,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay.ByDayPair;
@@ -182,7 +183,7 @@ private ChangeListener<? super Boolean> dayOfWeekButtonListener = (obs2, oldSel2
         vComponent.getRRule().getFrequency().getByRules().remove(r);
     }
     refreshSummary();
-    // makeExceptionDates();
+    makeExceptionDates();
 };
 
 
@@ -316,7 +317,6 @@ private final ChangeListener<? super Integer> intervalSpinnerListener = (observa
         frequencyLabel.setText(frequencyComboBox.valueProperty().get().toStringPlural());
     }
     vComponent.getRRule().getFrequency().setInterval(newValue);
-    System.out.println("interval:" + newValue);
     refreshSummary();
     makeExceptionDates();
 };
@@ -326,7 +326,7 @@ private final ChangeListener<? super LocalDate> untilListener = (observable, old
 {
     if (newSelection.isBefore(LocalDate.from(vComponent.getDateTimeStart())))
     {
-        tooEarlyDateAlert();
+        tooEarlyDateAlert(vComponent.getDateTimeStart());
         untilDatePicker.setValue(oldSelection);
     } else
     {
@@ -450,7 +450,6 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             boolean isNumber = s.matches("[0-9]+");
             if (! isNumber)
             {
-                System.out.println("new interval number:");
                 String lastValue = intervalSpinner.getValue().toString();
                 intervalSpinner.getEditor().textProperty().set(lastValue);
                 notNumberAlert();
@@ -467,7 +466,6 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             if (isNumber)
             {
                 value = Integer.parseInt(s);
-                System.out.println("new interval number2:");
                 vComponent.getRRule().getFrequency().setInterval(value);
                 refreshSummary();
                 makeExceptionDates();
@@ -481,14 +479,39 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     
     startDatePicker.valueProperty().addListener((obs, oldValue, newValue) ->
     {
-        if (vComponent.getDateTimeStart() instanceof LocalDate)
+        if (oldValue != null)
         {
-            vComponent.setDateTimeStart(newValue);
-        } else if (vComponent.getDateTimeStart() instanceof LocalDateTime)
+            if (vComponent.getDateTimeStart() instanceof LocalDate)
+            {
+                vComponent.setDateTimeStart(newValue);
+            } else if (vComponent.getDateTimeStart() instanceof LocalDateTime)
+            {
+                long d = ChronoUnit.DAYS.between(oldValue, newValue);
+                Temporal n = vComponent.getDateTimeStart().plus(d, ChronoUnit.DAYS);
+                vComponent.setDateTimeStart(n);
+                System.out.println("dates:" + d + " " + vComponent.getDateTimeStart() + " " + ((VEvent) vComponent).getDateTimeEnd());
+            } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
+            makeExceptionDates();
+        }
+    });
+    startDatePicker.focusedProperty().addListener((obs, wasFocused, isNowFocused) ->
+    {
+        if (! isNowFocused)
         {
-            LocalTime time = LocalTime.from(vComponent.getDateTimeStart());
-            vComponent.setDateTimeStart(newValue.atTime(time));
-        } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
+            try {
+                String s = startDatePicker.getEditor().getText();
+                LocalDate d = startDatePicker.getConverter().fromString(s);
+                startDatePicker.setValue(d);
+            } catch (DateTimeParseException e)
+            {
+                // display alert and return original date if can't parse
+                String exampleDate = startDatePicker.getConverter().toString(LocalDate.now());
+                notDateAlert(exampleDate);
+                LocalDate d = startDatePicker.getValue();
+                String s = startDatePicker.getConverter().toString(d);
+                startDatePicker.getEditor().setText(s);
+            }
+        }
     });
     
     // END AFTER LISTENERS
@@ -498,7 +521,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         {
               vComponent.getRRule().setCount(newSelection);
               refreshSummary();
-               makeExceptionDates();
+              makeExceptionDates();
         }
         if (newSelection == 1) {
             eventLabel.setText(resources.getString("event"));
@@ -541,9 +564,10 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     });
     endAfterEventsSpinner.focusedProperty().addListener((obs, wasFocused, isNowFocused) ->
     {
-        if (! isNowFocused) {
+        if (! isNowFocused)
+        {
             int value;
-            String s = endAfterEventsSpinner.getEditor().textProperty().get();
+            String s = endAfterEventsSpinner.getEditor().getText();
             boolean isNumber = s.matches("[0-9]+");
             if (isNumber) {
                 value = Integer.parseInt(s);
@@ -662,17 +686,16 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         boolean isRepeatable = (vComponent.getRRule() != null);
         if (isRepeatable)
         {
-            System.out.println("setup previous rrule" + vComponent);
             setInitialValues(vComponent);
-            if (vComponent.getExDate() != null) // add existing ExDate values to exceptionsListView (WHY HERE AND NOT IN SETINITIAL VALUES?)
-            {
-                List<Temporal> collect = vComponent
-                        .getExDate()
-                        .getTemporals()
-                        .stream()
-                        .collect(Collectors.toList());
-                exceptionsListView.getItems().addAll(collect);
-            }
+//            if (vComponent.getExDate() != null) // add existing ExDate values to exceptionsListView (WHY HERE AND NOT IN SETINITIAL VALUES?)
+//            {
+//                List<Temporal> collect = vComponent
+//                        .getExDate()
+//                        .getTemporals()
+//                        .stream()
+//                        .collect(Collectors.toList());
+//                exceptionsListView.getItems().addAll(collect);
+//            }
         }
         repeatableCheckBox.selectedProperty().set(isRepeatable);
 
@@ -723,16 +746,16 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         }
         setFrequencyVisibility(frequencyType);
         
-//        // ExDates
-//        if (vComponent.getExDate() != null)
-//        {
-//            List<Temporal> collect = vComponent
-//                    .getExDate()
-//                    .getTemporals()
-//                    .stream()
-//                    .collect(Collectors.toList());
-//            exceptionsListView.getItems().addAll(collect);
-//        }
+        // ExDates
+        if (vComponent.getExDate() != null)
+        {
+            List<Temporal> collect = vComponent
+                    .getExDate()
+                    .getTemporals()
+                    .stream()
+                    .collect(Collectors.toList());
+            exceptionsListView.getItems().addAll(collect);
+        }
         
         int initialCount = (vComponent.getRRule().getCount() > 0) ? vComponent.getRRule().getCount() : INITIAL_COUNT;
         endAfterEventsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, initialCount));
@@ -858,20 +881,19 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     }
     
     // Displays an alert notifying UNTIL date is too early
-    private void tooEarlyDateAlert()
+    private static void tooEarlyDateAlert(Temporal t)
     {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Invalid Date Selection");
         alert.setHeaderText("Event can't end before it begins.");
-        TemporalAccessor d = vComponent.getDateTimeStart();
-        alert.setContentText("Must be after " + Settings.DATE_FORMAT_AGENDA_DATEONLY.format(d));
+        alert.setContentText("Must be after " + Settings.DATE_FORMAT_AGENDA_DATEONLY.format(t));
         ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(buttonTypeOk);
         alert.showAndWait();
     }
     
     // Displays an alert notifying UNTIL date is not an occurrence and changed to 
-    private void notOccurrenceDateAlert(Temporal temporal)
+    private static void notOccurrenceDateAlert(Temporal temporal)
     {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Invalid Date Selection");
@@ -883,7 +905,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     }
     
     // Displays an alert notifying last day of week can not be removed for weekly frequency
-    private void canNotRemoveLastDayOfWeek(DayOfWeek d)
+    private static void canNotRemoveLastDayOfWeek(DayOfWeek d)
     {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Invalid Modification");
@@ -897,6 +919,17 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         List<Node> buttons = ICalendarUtilities.getAllNodes(alert.getDialogPane(), Button.class);
         ((Button) buttons.get(0)).setId("last_day_of_week_alert_button_ok");
         
+        alert.showAndWait();
+    }
+    
+    private static void notDateAlert(String exampleDate)
+    {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Invalid Date");
+        alert.setHeaderText("Please enter valid date.");
+        alert.setContentText("Example date format:" + exampleDate);
+        ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonTypeOk);
         alert.showAndWait();
     }
     

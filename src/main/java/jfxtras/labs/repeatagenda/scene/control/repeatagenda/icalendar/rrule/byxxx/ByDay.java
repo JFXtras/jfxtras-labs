@@ -220,7 +220,7 @@ public class ByDay extends ByRuleAbstract
         return builder.toString();
     }
     
-    @Override // TODO - REMOVE startTemporal
+    @Override // TODO - try to REMOVE startTemporal
     public Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal)
     {
         // TODO - according to iCalendar standard a ByDay rule doesn't need any specified days - should use day from DTSTART, this is not implemented yet.  When implemented this line should be removed.

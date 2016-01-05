@@ -288,9 +288,9 @@ public class AppointmentEditController
         if (dayShift > 0)
         {
             vEvent.setDateTimeStart(first);
-            Temporal newEnd = vEvent.getDateTimeEnd().plus(dayShift, ChronoUnit.DAYS);
-            vEvent.setDateTimeEnd(newEnd);
-            System.out.println("dayShift:" +  vEvent.getDateTimeStart() + " " +  vEvent.getDateTimeEnd() );
+//            Temporal newEnd = vEvent.getDateTimeEnd().plus(dayShift, ChronoUnit.DAYS);
+//            vEvent.setDateTimeEnd(newEnd);
+//            System.out.println("dayShift:" +  vEvent.getDateTimeStart() + " " +  vEvent.getDateTimeEnd() );
             if (VComponent.isAfter(vEvent.getDateTimeStart(), vEvent.getDateTimeEnd()))
             {
                 System.out.println("AFTER:");

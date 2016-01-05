@@ -647,7 +647,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * new streamed values by 98% (for repeating three times weekly, extended 10 years beyond dateTimeStart)
      * 
      * */   
-    public Stream<Temporal> stream2(Temporal start)
+    public Stream<Temporal> stream(Temporal start)
     {
 //        if (temporalCache2 != null)
 //        System.out.println("temporals:" + temporalCache2.getClass().getSimpleName() + " " + getDateTimeStart().getClass().getSimpleName() + " " + dateTimeStartLast.getClass().getSimpleName() +
@@ -811,7 +811,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * @return stream of starting dates or date/times for occurrences after rangeStart
      */
     @Deprecated // here for testing purposes and in case of problem with the caching version
-    public Stream<Temporal> stream(Temporal start)
+    public Stream<Temporal> streamNoCache(Temporal start)
     {
         final Stream<Temporal> stream1;
         if (getRRule() == null)
