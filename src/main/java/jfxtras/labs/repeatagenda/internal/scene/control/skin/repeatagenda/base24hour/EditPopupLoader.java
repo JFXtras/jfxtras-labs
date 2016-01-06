@@ -98,7 +98,10 @@ public class EditPopupLoader extends Stage {
                 break;
             case CANCEL:
             case X:
+                System.out.println("copy back to original:" + vComponentOld.getDateTimeStart() + " " 
+                        + vComponent.getDateTimeStart());                
                 vComponentOld.copyTo(vComponent);
+                System.out.println("copy back to original:" + vComponent.getDateTimeStart() + " " );
                 break;
             default:
                 break;

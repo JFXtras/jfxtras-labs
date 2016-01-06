@@ -95,69 +95,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         assertEquals(LocalDate.of(2015, 11, 13), v.getDateTimeStart());
         assertEquals(LocalDate.of(2015, 11, 14), v.getDateTimeEnd());
     }
-
-//    @Test
-//    public void editStartAndEnd3()
-//    {
-//        VEventImpl v = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
-//        v.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 8, 0));
-//        assertNull(v.getDateTimeEnd());
-//        v.setDurationInNanos(7200L * NANOS_IN_SECOND);
-//        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), v.getDateTimeEnd());
-//        v.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 9, 0));
-//        Long expectedDuration = 3600L * NANOS_IN_SECOND;
-//        assertEquals(expectedDuration, v.getDurationInNanos());
-//    }
-//
-//    // for LocalDateTime
-//    // When start moves duration stays constant
-//    // when end moves new duration is calculated
-//    // set dateTimeStart first
-//    @Test
-//    public void editStartAndEnd4()
-//    {
-//        VEventImpl v = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
-//        v.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 8, 0));
-//        assertNull(v.getDateTimeEnd());
-//        v.setDurationInNanos(7200L * NANOS_IN_SECOND);
-//        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), v.getDateTimeEnd());
-//        v.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 9, 0));
-//        Long expectedDuration = 3600L * NANOS_IN_SECOND;
-//        assertEquals(expectedDuration, v.getDurationInNanos());
-//    }
-//    
-//    // for LocalDateTime
-//    // When start moves duration stays constant
-//    // when end moves new duration is calculated
-//    // set dateTimeEnd first
-//    @Test
-//    public void editStartAndEnd5()
-//    {
-//        VEventImpl v = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
-//        v.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 9, 0));
-//        v.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 8, 0));
-//        Long expectedDuration = 3600L * NANOS_IN_SECOND;
-//        assertEquals(expectedDuration, v.getDurationInNanos());
-//        v.setDurationInNanos(7200L * NANOS_IN_SECOND);
-//        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), v.getDateTimeEnd());
-//
-//    }
-//    
-//    // For LocalDate
-//    // When start moves duration stays constant
-//    // when end moves new duration is calculated
-//    @Test
-//    public void editStartAndEnd6()
-//    {
-//        VEventImpl v = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
-//        v.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 8, 0));
-//        assertNull(v.getDateTimeEnd());
-//        v.setDurationInNanos(7200L * NANOS_IN_SECOND);
-//        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), v.getDateTimeEnd());
-//        v.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 9, 0));
-//        Long expectedDuration = 3600L * NANOS_IN_SECOND;
-//        assertEquals(expectedDuration, v.getDurationInNanos());
-//    }
     
     /**
      * Tests editing start and end time of ALL events

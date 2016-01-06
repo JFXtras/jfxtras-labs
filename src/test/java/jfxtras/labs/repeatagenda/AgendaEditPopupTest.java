@@ -448,6 +448,38 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
     
     @Test
     //@Ignore
+    public void canMakeExceptionListInitial2() // Whole day appointments
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
+        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+
+        // Open edit popup
+        move("#hourLine11");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+        
+        // Make whole day
+        click("#wholeDayCheckBox");
+        
+        // Go to repeatable tab
+        click("#repeatableTab");
+        
+        // Get properties
+        ComboBox<Temporal> exceptionComboBox = find("#exceptionComboBox");
+
+        // Check initial state
+        List<Temporal> exceptions = exceptionComboBox.getItems().stream().collect(Collectors.toList());
+        LocalDate seed = LocalDate.of(2015, 11, 9);
+        List<LocalDate> expectedDates = Stream
+                .iterate(seed, a -> a.plus(1, ChronoUnit.DAYS))
+                .limit(RepeatableController.EXCEPTION_CHOICE_LIMIT)
+                .collect(Collectors.toList());
+        assertEquals(expectedDates, exceptions);
+        closeCurrentWindow();
+    }
+    
+    @Test
+    //@Ignore
     public void canMakeExceptionListWeekly()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));

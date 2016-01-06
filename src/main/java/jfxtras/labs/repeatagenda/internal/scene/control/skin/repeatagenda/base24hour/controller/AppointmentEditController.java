@@ -45,6 +45,8 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
  */
 public class AppointmentEditController
 {
+//    private static final LocalTime DEFAULT_START_TIME = LocalTime.of(10, 0); // default start time used when a whole-day event gets a time
+    
     private Appointment appointment; // selected appointment
     private LocalDateTime dateTimeInstanceStartOriginal;
     private LocalDateTime dateTimeInstanceEndOriginal;
@@ -177,28 +179,34 @@ public class AppointmentEditController
             {
                 lastDateTimeStart = startTextField.getLocalDateTime();
                 lastDateTimeEnd = endTextField.getLocalDateTime();
-                LocalDateTime startDate = startTextField.getLocalDateTime().toLocalDate().atStartOfDay();
-                startTextField.setLocalDateTime(startDate);
+//                LocalDateTime startDate = startTextField.getLocalDateTime().toLocalDate().atStartOfDay();
+//                startTextField.setLocalDateTime(startDate);
                 
-                LocalTime localTime = endTextField.getLocalDateTime().toLocalTime();
-//                long days = 
-                final LocalDateTime endDate;
-                final long days;
-                if (localTime.equals(LocalTime.of(0, 0)))
-                {
-                    days = 0;
-                    endDate = endTextField.getLocalDateTime();
-                } else
-                {
-                    days = 1;
-                    endDate = endTextField.getLocalDateTime().toLocalDate().plusDays(days).atStartOfDay();
-                }
-                endTextField.setLocalDateTime(endDate);
+//                LocalTime localTime = endTextField.getLocalDateTime().toLocalTime();
+//                final LocalDateTime endDate;
+//                final long days;
+//                if (localTime.equals(LocalTime.of(0, 0)))
+//                {
+//                    days = 0;
+//                    endDate = endTextField.getLocalDateTime();
+//                } else
+//                {
+//                    days = 1;
+//                    endDate = endTextField.getLocalDateTime().toLocalDate().plusDays(days).atStartOfDay();
+//                }
+//                endTextField.setLocalDateTime(endDate);
                 
                 LocalDate newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart());
                 vEvent.setDateTimeStart(newDateTimeStart);
-                LocalDate newDateTimeEnd = LocalDate.from(vEvent.getDateTimeEnd());
-                vEvent.setDateTimeEnd(newDateTimeEnd.plus(days, ChronoUnit.DAYS));
+                
+                LocalDateTime s = LocalDate.from(vEvent.getDateTimeStart()).atStartOfDay();
+                startTextField.setLocalDateTime(s);
+
+                LocalDateTime e = LocalDate.from(vEvent.getDateTimeEnd()).atStartOfDay();
+                endTextField.setLocalDateTime(e);
+                
+//                LocalDate newDateTimeEnd = LocalDate.from(vEvent.getDateTimeEnd());
+//                vEvent.setDateTimeEnd(newDateTimeEnd.plus(days, ChronoUnit.DAYS));
 
                 LocalDate newStartRange = LocalDate.from(vEvent.getStartRange());
                 LocalDate newEndRange = LocalDate.from(vEvent.getEndRange());
@@ -211,23 +219,26 @@ public class AppointmentEditController
                     startTextField.setLocalDateTime(lastDateTimeStart);
                     endTextField.setLocalDateTime(lastDateTimeEnd);
                     
-                    LocalTime timeStart = lastDateTimeStart.toLocalTime();
-                    LocalDateTime newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart()).atTime(timeStart);
-                    vEvent.setDateTimeStart(newDateTimeStart);
+//                    LocalTime timeStart = lastDateTimeStart.toLocalTime();
+//                    LocalDateTime newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart()).atTime(timeStart);
+                    vEvent.setDateTimeStart(lastDateTimeStart);
                     
-                    LocalTime timeEnd = lastDateTimeEnd.toLocalTime();
-                    long days = (timeEnd.equals(LocalTime.of(0, 0))) ? 0 : 1;
-                    LocalDateTime newDateTimeEnd = LocalDate
-                            .from(vEvent.getDateTimeEnd())
-                            .minus(days, ChronoUnit.DAYS)
-                            .atTime(timeEnd);
-                    vEvent.setDateTimeEnd(newDateTimeEnd);
+//                    LocalTime timeEnd = lastDateTimeEnd.toLocalTime();
+//                    long days = (timeEnd.equals(LocalTime.of(0, 0))) ? 0 : 1;
+//                    LocalDateTime newDateTimeEnd = LocalDate
+//                            .from(vEvent.getDateTimeEnd())
+//                            .minus(days, ChronoUnit.DAYS)
+//                            .atTime(timeEnd);
+                    vEvent.setDateTimeEnd(lastDateTimeEnd);
                 } else
                 {
-                    LocalDateTime newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart()).atStartOfDay();
+                    LocalDateTime newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart()).atTime(vEvent.getLastStartTime());
                     vEvent.setDateTimeStart(newDateTimeStart);
-                    LocalDateTime newDateTimeEnd = LocalDate.from(vEvent.getDateTimeEnd()).atStartOfDay();
-                    vEvent.setDateTimeEnd(newDateTimeEnd);
+                    startTextField.setLocalDateTime(newDateTimeStart);
+                    LocalDateTime newDateTimeEnd = (LocalDateTime) vEvent.getDateTimeEnd();
+                    endTextField.setLocalDateTime(newDateTimeEnd);
+//                    LocalDateTime newDateTimeEnd = LocalDate.from(vEvent.getDateTimeEnd()).atStartOfDay();
+//                    vEvent.setDateTimeEnd(newDateTimeEnd);
                 }
                 LocalDateTime newStartRange = LocalDate.from(vEvent.getStartRange()).atStartOfDay();
                 LocalDateTime newEndRange = LocalDate.from(vEvent.getEndRange()).atStartOfDay();

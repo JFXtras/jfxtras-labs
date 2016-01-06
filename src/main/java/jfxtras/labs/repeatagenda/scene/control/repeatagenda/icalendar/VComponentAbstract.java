@@ -670,11 +670,14 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         } else
         {
             // check if cache needs to be cleared (changes to RRULE or DTSTART)
+            System.out.println("starts:" + dateTimeStartLast + " " + getDateTimeStart());
             if ((dateTimeStartLast != null) && (rRuleLast != null))
             {
                 if (! (getDateTimeStart().equals(dateTimeStartLast) || ! (getRRule().equals(rRuleLast))))
                 {
                     temporalCache = null;
+                    dateTimeStartLast = getDateTimeStart();
+                    rRuleLast = getRRule();
                 }
             } else
             { // save current DTSTART and RRULE for next time

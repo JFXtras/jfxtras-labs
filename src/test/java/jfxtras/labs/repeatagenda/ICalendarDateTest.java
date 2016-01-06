@@ -4,16 +4,20 @@ import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 
 public class ICalendarDateTest extends ICalendarTestAbstract
 {
@@ -839,4 +843,131 @@ public class ICalendarDateTest extends ICalendarTestAbstract
                 ));
         assertEquals(expectedDates, madeDates);
     }
+
+    @Test // LocalDate
+    public void canChangeToWholeDay()
+    {
+        VEventImpl v = getDaily1();
+        v.setDateTimeStart(LocalDate.of(2015, 11, 9)); // change to whole-day
+        Long expectedDuration = 24L * 3600L * NANOS_IN_SECOND;
+        assertEquals(expectedDuration, v.getDurationInNanos());
+        assertEquals(LocalDate.of(2015, 11, 9), v.getDateTimeStart());
+        assertEquals(LocalDate.of(2015, 11, 10), v.getDateTimeEnd());
+        {
+            List<Temporal> madeDates = v                
+                    .stream(v.getDateTimeStart())
+                    .limit(6)
+                    .collect(Collectors.toList());
+            List<LocalDate> expectedDates = new ArrayList<>(Arrays.asList(
+                    LocalDate.of(2015, 11, 9)
+                  , LocalDate.of(2015, 11, 10)
+                  , LocalDate.of(2015, 11, 11)
+                  , LocalDate.of(2015, 11, 12)
+                  , LocalDate.of(2015, 11, 13)
+                  , LocalDate.of(2015, 11, 14)
+                    ));
+            assertEquals(expectedDates, madeDates);
+        }
+        { // end dates
+            long days = v.getDurationInNanos() / VComponent.NANOS_IN_DAY;
+            List<Temporal> madeDates = v                
+                    .stream(v.getDateTimeStart())
+                    .map(t -> t.plus(days, ChronoUnit.DAYS)) // calculate end
+                    .limit(6)
+                    .collect(Collectors.toList());
+            List<LocalDate> expectedDates = new ArrayList<>(Arrays.asList(
+                    LocalDate.of(2015, 11, 10)
+                  , LocalDate.of(2015, 11, 11)
+                  , LocalDate.of(2015, 11, 12)
+                  , LocalDate.of(2015, 11, 13)
+                  , LocalDate.of(2015, 11, 14)
+                  , LocalDate.of(2015, 11, 15)
+                    ));
+            assertEquals(expectedDates, madeDates);
+        }
+        
+        // Change back to date/time
+        v.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0)); // change to date/time
+        { // start date/time
+            List<Temporal> madeDates = v                
+                    .stream(v.getDateTimeStart())
+                    .limit(6)
+                    .collect(Collectors.toList());
+            List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                    LocalDateTime.of(2015, 11, 9, 10, 0)
+                  , LocalDateTime.of(2015, 11, 10, 10, 0)
+                  , LocalDateTime.of(2015, 11, 11, 10, 0)
+                  , LocalDateTime.of(2015, 11, 12, 10, 0)
+                  , LocalDateTime.of(2015, 11, 13, 10, 0)
+                  , LocalDateTime.of(2015, 11, 14, 10, 0)
+                    ));
+            assertEquals(expectedDates, madeDates);
+        }
+        { // end date/time
+            long nanos = v.getDurationInNanos();
+            List<Temporal> madeDates = v                
+                    .stream(v.getDateTimeStart())
+                    .map(t -> t.plus(nanos, ChronoUnit.NANOS)) // calculate end
+                    .limit(6)
+                    .collect(Collectors.toList());
+            LocalDateTime seed = LocalDateTime.of(2015, 11, 9, 10, 0);
+            List<LocalDateTime> expectedDates = Stream
+                    .iterate(seed, a -> a.plus(3, ChronoUnit.DAYS).plus(VEvent.DEFAULT_DURATION, ChronoUnit.NANOS))
+                    .limit(6)
+                    .collect(Collectors.toList());
+            assertEquals(expectedDates, madeDates);
+        }
+    }
+    
+    @Test // LocalDateTime with Until and Exceptions
+    public void canChangeToWholeDay2()
+    {
+        
+    }
+    
+    @Test // LocalDate
+    public void canChangeFromWholeDay()
+    {
+        VEventImpl v = getWholeDayDaily2();
+        v.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0)); // change to date/time
+        { // start date/time
+            List<Temporal> madeDates = v                
+                    .stream(v.getDateTimeStart())
+                    .limit(6)
+                    .collect(Collectors.toList());
+            List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                    LocalDateTime.of(2015, 11, 9, 10, 0)
+                  , LocalDateTime.of(2015, 11, 12, 10, 0)
+                  , LocalDateTime.of(2015, 11, 15, 10, 0)
+                  , LocalDateTime.of(2015, 11, 18, 10, 0)
+                  , LocalDateTime.of(2015, 11, 21, 10, 0)
+                  , LocalDateTime.of(2015, 11, 24, 10, 0)
+                    ));
+            assertEquals(expectedDates, madeDates);
+        }
+        { // end date/time
+            long nanos = v.getDurationInNanos();
+            List<Temporal> madeDates = v                
+                    .stream(v.getDateTimeStart())
+                    .map(t -> t.plus(nanos, ChronoUnit.NANOS)) // calculate end
+                    .limit(6)
+                    .collect(Collectors.toList());
+            List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                    LocalDateTime.of(2015, 11, 9, 11, 0)
+                  , LocalDateTime.of(2015, 11, 12, 11, 0)
+                  , LocalDateTime.of(2015, 11, 15, 11, 0)
+                  , LocalDateTime.of(2015, 11, 18, 11, 0)
+                  , LocalDateTime.of(2015, 11, 21, 11, 0)
+                  , LocalDateTime.of(2015, 11, 24, 11, 0)
+                    ));
+            assertEquals(expectedDates, madeDates);
+        }
+    }
+    
+    @Test // LocalDate with Until and Exceptions
+    public void canChangeFromWholeDay2()
+    {
+        
+    }
+
 }

@@ -825,9 +825,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
 //        System.out.println("make exception date list" + vComponent.getDateTimeStart().getClass().getSimpleName());
         
         final Temporal dateTimeStart = vComponent.getDateTimeStart();
-        Stream<Temporal> stream1 = vComponent
-//                .getRRule()
-                .stream(dateTimeStart);
+        Stream<Temporal> stream1 = vComponent.stream(dateTimeStart);
         Stream<Temporal> stream2 = (vComponent.getExDate() == null) ? stream1
                 : vComponent.getExDate().stream(stream1, dateTimeStart); // remove exceptions
         Class<? extends Temporal> clazz = vComponent.getDateTimeStart().getClass();
