@@ -560,7 +560,6 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
     protected VEventImpl getDailyWithException1()
     {
         VEventImpl vEvent = getDaily2();
-//        EXDate exDate = new EXDate().withDates(LocalDateTime.of(2015, 11, 12, 10, 0)), LocalDateTime.of(2015, 11, 15, 10, 0));
         EXDate exDate = new EXDate().withTemporals(LocalDateTime.of(2015, 11, 12, 10, 0), LocalDateTime.of(2015, 11, 15, 10, 0));
         vEvent.setExDate(exDate);
         return vEvent;

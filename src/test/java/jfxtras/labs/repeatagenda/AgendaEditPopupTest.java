@@ -28,6 +28,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextArea;
@@ -898,35 +899,115 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
         
         // Get properties
         ComboBox<Temporal> exceptionComboBox = find("#exceptionComboBox");
+        ListView<Temporal> exceptionsListView = find("#exceptionsListView");
         
         // Add exceptions and check
-        Temporal e1 = exceptionComboBox.getItems().get(0);
+        Temporal e1 = exceptionComboBox.getItems().get(2);
         TestUtil.runThenWaitForPaintPulse( () -> exceptionComboBox.getSelectionModel().select(e1) );
-        click("#addExceptionButton");        
-        Set<Temporal> vExceptions = v.getExDate().getTemporals();
-        assertEquals(1, vExceptions.size());
-        Temporal exception = vExceptions.iterator().next();
-        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), exception);
+        click("#addExceptionButton");
         
+        {
+            Set<Temporal> vExceptions = v.getExDate().getTemporals();
+            assertEquals(1, vExceptions.size());
+            List<Temporal> exceptions = vExceptions
+                    .stream()
+                    .map(a -> (LocalDateTime) a).sorted()
+                    .collect(Collectors.toList());
+            List<Temporal> expectedExceptions = new ArrayList<>(Arrays.asList(
+                    LocalDateTime.of(2015, 11, 11, 10, 0)
+                    ));
+            assertEquals(expectedExceptions, exceptions);
+            assertEquals(expectedExceptions, exceptionsListView.getItems());            
+        }
         { // verify added exception is not in exceptionComboBox list
             List<Temporal> exceptions = exceptionComboBox.getItems().stream().limit(5)
                     .collect(Collectors.toList());
             List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
-                    LocalDateTime.of(2015, 11, 10, 10, 0)
-                  , LocalDateTime.of(2015, 11, 11, 10, 0)
+                    LocalDateTime.of(2015, 11, 9, 10, 0)
+                  , LocalDateTime.of(2015, 11, 10, 10, 0)
                   , LocalDateTime.of(2015, 11, 12, 10, 0)
                   , LocalDateTime.of(2015, 11, 13, 10, 0)
                   , LocalDateTime.of(2015, 11, 14, 10, 0)
                     ));
             assertEquals(expectedDates, exceptions);
         }
+        
+        // Add another exceptions and check
+        Temporal e2 = exceptionComboBox.getItems().get(0);
+        TestUtil.runThenWaitForPaintPulse( () -> exceptionComboBox.getSelectionModel().select(e2) );
+        click("#addExceptionButton");
+        {
+            Set<Temporal> vExceptions = v.getExDate().getTemporals();
+            assertEquals(2, vExceptions.size());
+            List<LocalDateTime> exceptions = vExceptions
+                    .stream()
+                    .map(a -> (LocalDateTime) a).sorted()
+                    .collect(Collectors.toList());
+            List<LocalDateTime> expectedExceptions = new ArrayList<>(Arrays.asList(
+                    LocalDateTime.of(2015, 11, 9, 10, 0)
+                  , LocalDateTime.of(2015, 11, 11, 10, 0)
+                    ));
+            assertEquals(expectedExceptions, exceptions);
+            assertEquals(expectedExceptions, exceptionsListView.getItems()); 
+        }
+        { // verify added exceptions are not in exceptionComboBox list
+            List<Temporal> exceptions = exceptionComboBox.getItems().stream().limit(5)
+                    .collect(Collectors.toList());
+            List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                    LocalDateTime.of(2015, 11, 10, 10, 0)
+                  , LocalDateTime.of(2015, 11, 12, 10, 0)
+                  , LocalDateTime.of(2015, 11, 13, 10, 0)
+                  , LocalDateTime.of(2015, 11, 14, 10, 0)
+                  , LocalDateTime.of(2015, 11, 15, 10, 0)
+                    ));
+            assertEquals(expectedDates, exceptions);
+        }
+        closeCurrentWindow();
     }
     
     @Test
     //@Ignore
     public void canRemoveException()
     {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDailyWithException1()));
+        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+
+        // Open edit popup
+        move("#hourLine11");
+        // TODO - FIND WAY TO MOVE TWO DAYS TO THE LEFT
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+        click("#repeatableTab");
         
+        // Get properties
+        ComboBox<Temporal> exceptionComboBox = find("#exceptionComboBox");
+        ListView<Temporal> exceptionsListView = find("#exceptionsListView");        
+        
+        { // verify initial state
+            Set<Temporal> vExceptions = v.getExDate().getTemporals();
+            List<Temporal> exceptions = vExceptions
+                    .stream()
+                    .map(a -> (LocalDateTime) a).sorted()
+                    .collect(Collectors.toList());
+            List<Temporal> expectedExceptions = new ArrayList<>(Arrays.asList(
+                    LocalDateTime.of(2015, 11, 12, 10, 0)
+                  , LocalDateTime.of(2015, 11, 15, 10, 0)
+                    ));
+            assertEquals(expectedExceptions, exceptions);
+            assertEquals(expectedExceptions, exceptionsListView.getItems());            
+        }
+        { // verify added exception is not in exceptionComboBox list
+            List<Temporal> exceptions = exceptionComboBox.getItems().stream().limit(5)
+                    .collect(Collectors.toList());
+            List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                      LocalDateTime.of(2015, 11, 9, 10, 0)
+                    , LocalDateTime.of(2015, 11, 18, 10, 0)
+                    , LocalDateTime.of(2015, 11, 21, 10, 0)
+                    , LocalDateTime.of(2015, 11, 24, 10, 0)
+                    , LocalDateTime.of(2015, 11, 27, 10, 0)
+                    ));
+            assertEquals(expectedDates, exceptions);
+        }
     }
     
     @Test
