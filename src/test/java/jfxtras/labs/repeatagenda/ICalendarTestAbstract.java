@@ -367,7 +367,7 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
         return vEvent;
     }
 
-    /** FREQ=WEEKLY;BYDAY=MO,WE,FR  - start before first valid date */
+    /** FREQ=WEEKLY;BYDAY=MO,WE,FR  */
     protected VEventImpl getWeekly3()
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);

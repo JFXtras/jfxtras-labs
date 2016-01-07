@@ -630,29 +630,17 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
 
     // Variables for start date or date/time cache used as starting Temporal for stream
     private static final int CACHE_RANGE = 51; // number of values in cache
-    private static final int CACHE_SKIP = 20; // store every nth value in the cache
+    private static final int CACHE_SKIP = 21; // store every nth value in the cache
     private int skipCounter = 0; // counter that increments up to CACHE_SKIP, indicates time to record a value, then resets to 0
     private Temporal[] temporalCache; // the start date or date/time cache
     private Temporal dateTimeStartLast; // last dateTimeStart, when changes indicates clearing the cache is necessary
     private RRule rRuleLast; // last rRule, when changes indicates clearing the cache is necessary
     private int cacheStart = 0; // start index where cache values are stored (starts in middle)
     private int cacheEnd = 0; // end index where cache values are stored
-    /** Stream of date/times that indicate the start of the event(s).
-     * For a VEvent without RRULE the stream will contain only one date/time element.
-     * A VEvent with a RRULE the stream contains more than one date/time element.  It will be infinite 
-     * if COUNT or UNTIL is not present.  The stream has an end when COUNT or UNTIL condition is met.
-     * Starts on startDateTime, which must be a valid event date/time, not necessarily the
-     * first date/time (DTSTART) in the sequence. 
-     * 
-     * Uses a cache of streamed values to be used as starting points for future calls.  The cache can reduce speed for fetching
-     * new streamed values by 98% (for repeating three times weekly, extended 10 years beyond dateTimeStart)
-     * 
-     * */   
+
+    @Override
     public Stream<Temporal> stream(Temporal start)
     {
-//        if (temporalCache2 != null)
-//        System.out.println("temporals:" + temporalCache2.getClass().getSimpleName() + " " + getDateTimeStart().getClass().getSimpleName() + " " + dateTimeStartLast.getClass().getSimpleName() +
-//                " " + getDateTimeStart().equals(dateTimeStartLast));
         // adjust start to ensure its not before dateTimeStart
         final Temporal start2 = (VComponent.isBefore(start, getDateTimeStart())) ? getDateTimeStart() : start;
      
@@ -670,12 +658,16 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         } else
         {
             // check if cache needs to be cleared (changes to RRULE or DTSTART)
-            System.out.println("starts:" + dateTimeStartLast + " " + getDateTimeStart());
             if ((dateTimeStartLast != null) && (rRuleLast != null))
             {
-                if (! (getDateTimeStart().equals(dateTimeStartLast) || ! (getRRule().equals(rRuleLast))))
+                boolean startChanged = ! getDateTimeStart().equals(dateTimeStartLast);
+                boolean rRuleChanged = ! getRRule().equals(rRuleLast);
+                if (startChanged || rRuleChanged)
                 {
                     temporalCache = null;
+                    cacheStart = 0;
+                    cacheEnd = 0;
+                    skipCounter = 0;
                     dateTimeStartLast = getDateTimeStart();
                     rRuleLast = getRRule();
                 }
@@ -734,10 +726,8 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 if ((! VComponent.isBefore(start2, temporalCache[cacheStart])))
                 {
                     Temporal m = latestCacheValue;
-                    int ii=cacheStart;
                     for (int i=cacheStart; i<cacheEnd+1; i++)
                     {
-                        ii = i;
                         if (VComponent.isAfter(temporalCache[i], start2))
                         {
                             m = temporalCache[i-1];

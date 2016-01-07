@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -217,11 +218,6 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     private ChangeListener<? super Temporal> dateTimeEndlistener;
     private ChangeListener<? super Temporal> dateTimeStartlistener;
     private ChangeListener<? super Number> durationlistener;
-    private EndPriority endPriority;
-    public static final long DEFAULT_DURATION = 3600L * NANOS_IN_SECOND;
-    private LocalTime lastStartTime = LocalTime.of(10, 0);
-    public LocalTime getLastStartTime() { return lastStartTime; }
-    private long lastTimeBasedDuration = DEFAULT_DURATION; // Default to one hour duration
     
     /**
      * DTEND, Date-Time End. from RFC 5545 iCalendar 3.8.2.2 page 95
@@ -254,6 +250,136 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         super();
         setupListeners();
     }
+    // private variables needed to changing Temporal class (LocalDate to LocalDateTime or opposite)
+    private EndPriority endPriority;
+    public static final long DEFAULT_DURATION = 3600L * NANOS_IN_SECOND;
+    private LocalTime lastStartTime = LocalTime.of(10, 0);
+    public LocalTime getLastStartTime() { return lastStartTime; }
+    private long lastTimeBasedDuration = DEFAULT_DURATION; // Default to one hour duration
+    
+    // Change start, keep same Temporal type
+    // this method is called by dateTimeStartlistener
+    private void changeStartSameClass(Temporal newValue)
+    {
+        System.out.println("same class");
+        if (getDurationInNanos() == 0)
+        {
+            if (getDateTimeEnd() != null)
+            { // set duration for the first time from dateTimeStart and dateTimeEnd
+                final long nanos;
+                if (newValue instanceof LocalDateTime)
+                {
+                    nanos = ChronoUnit.NANOS.between(newValue, getDateTimeEnd());
+                } else if (newValue instanceof LocalDate)
+                {
+                    int days = Period.between((LocalDate) getDateTimeStart(), (LocalDate) getDateTimeEnd()).getDays();
+                    nanos = (long) days * NANOS_IN_DAY;
+                } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported (" + newValue.getClass().getSimpleName() + ")");
+
+                durationInNanosProperty().removeListener(durationlistener);
+                setDurationInNanos(nanos);
+                durationInNanosProperty().addListener(durationlistener);
+            }
+        } else
+        {
+            final Temporal dtEnd;
+            if (newValue instanceof LocalDateTime)
+            {
+                dtEnd = newValue.plus(getDurationInNanos(), ChronoUnit.NANOS);
+            } else if (newValue instanceof LocalDate)
+            {
+                dtEnd = newValue.plus(getDurationInNanos()/NANOS_IN_DAY, ChronoUnit.DAYS);
+            } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported (" + newValue.getClass().getSimpleName() + ")");
+            dateTimeEndProperty().removeListener(dateTimeEndlistener);
+            setDateTimeEnd(dtEnd);
+            dateTimeEndProperty().addListener(dateTimeEndlistener);
+        }
+    }
+    
+    // Change start, change Temporal type from LocalDateTime to LocalDate (changes to whole-day)
+    // this method is called by dateTimeStartlistener
+    private void changeStartToLocalDate(LocalDate newValue)
+    {
+        // Change dateTimeEnd
+        if (getDurationInNanos() > 0)
+        {
+            long daysToAdd = getDurationInNanos()/NANOS_IN_DAY;
+            lastTimeBasedDuration = getDurationInNanos();
+            Temporal dtEnd = newValue.plus(daysToAdd+1, ChronoUnit.DAYS);
+            setDateTimeEnd(dtEnd);
+        }
+        
+        // Change ExDates to LocalDate
+        if (getExDate() != null)
+        {
+            Set<LocalDate> newExDates = getExDate().getTemporals()
+                    .stream()
+                    .map(t -> LocalDate.from(t))
+                    .collect(Collectors.toSet());
+            getExDate().getTemporals().clear();
+            getExDate().getTemporals().addAll(newExDates);
+        }
+
+        // Change RDates to LocalDate
+        if (getRDate() != null)
+        {
+            Set<LocalDate> newRDates = getRDate().getTemporals()
+                    .stream()
+                    .map(t -> LocalDate.from(t))
+                    .collect(Collectors.toSet());
+            getExDate().getTemporals().clear();
+            getRDate().getTemporals().addAll(newRDates);
+        }
+        
+        // Change Until to LocalDate
+        if (getRRule() != null)
+        {
+            Temporal until = getRRule().getUntil();
+            if (until != null) getRRule().setUntil(LocalDate.from(until));
+        }
+    }
+
+    // Change start, change Temporal type from LocalDate to LocalDateTime
+    // this method is called by dateTimeStartlistener
+    private void changeStartToLocalDateTime(LocalDateTime newValue)
+    {
+        // Change dateTimeEnd
+        if (getDurationInNanos() > 0)
+        {
+            Temporal dtEnd = LocalDateTime.from(newValue).plus(lastTimeBasedDuration, ChronoUnit.NANOS);
+            setDateTimeEnd(dtEnd);
+        }
+        
+        // Change ExDates to LocalDate
+        if (getExDate() != null)
+        {
+            Set<LocalDate> newExDates = getExDate().getTemporals()
+                    .stream()
+                    .map(t -> LocalDate.from(t))
+                    .collect(Collectors.toSet());
+            getExDate().getTemporals().clear();
+            getExDate().getTemporals().addAll(newExDates);
+        }
+
+        // Change RDates to LocalDate
+        if (getRDate() != null)
+        {
+            Set<LocalDate> newRDates = getRDate().getTemporals()
+                    .stream()
+                    .map(t -> LocalDate.from(t))
+                    .collect(Collectors.toSet());
+            getExDate().getTemporals().clear();
+            getRDate().getTemporals().addAll(newRDates);
+        }
+        
+        // Change Until to LocalDate
+        if (getRRule() != null)
+        {
+            Temporal until = getRRule().getUntil();
+            if (until != null) getRRule().setUntil(LocalDate.from(until));
+        }        
+    }
+    
     
     /* add listeners for dateTimeStart, dateTimeEnd and duration */
     private void setupListeners()
@@ -278,10 +404,31 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
             }
         };
         
+        // MAYBE I CAN HAVE THREE LISTENERS - ONE TO CHECK FOR TYPE CHANGING AND SWAP ONE FOR LOCALDATE AND OTHER LOCALDATETIME - 
+        dateTimeStartlistener = (obs, oldValue, newValue) ->
+        { // listener to synch dateTimeStart and durationInSeconds
+            Class<? extends Temporal> oldClass = (oldValue == null) ? null : oldValue.getClass();
+            Class<? extends Temporal> newClass = newValue.getClass();
+            System.out.println("classes:" + oldClass + " " + newClass);
+            if (oldClass == null || (oldClass == newClass))
+            {
+                changeStartSameClass(newValue);
+            } else
+            {
+                if (newClass.equals(LocalDate.class)) // change to LocalDate
+                {
+                    lastStartTime = LocalTime.from(oldValue);
+                    changeStartToLocalDate((LocalDate) newValue);
+                } else if (newClass.equals(LocalDateTime.class)) // change to LocalDateTime
+                {
+                    changeStartToLocalDateTime((LocalDateTime) newValue);
+                }
+            }
+        };
         // dateTimeStart controls the type of all other Temporal fields.  When it changes dateTimeEnd must change too.
         // TODO - VERIFY OTHER TEMPORALS - EXCEPTIONS, UNTIL, RECURRENCES CHANGE TOO
         // SHOULD I HAVE ANOTHER LISTENER THAT ONLY HANDLES TYPE CHANGES?
-        dateTimeStartlistener = (obs, oldValue, newValue) ->
+        ChangeListener<? super Temporal> dateTimeStartlistener2 = (obs, oldValue, newValue) ->
         { // listener to synch dateTimeStart and durationInSeconds
             if (getDurationInNanos() == 0)
             {

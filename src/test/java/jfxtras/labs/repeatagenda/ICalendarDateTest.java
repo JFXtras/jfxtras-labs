@@ -2,6 +2,7 @@ package jfxtras.labs.repeatagenda;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -18,6 +19,11 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Weekly;
 
 public class ICalendarDateTest extends ICalendarTestAbstract
 {
@@ -905,6 +911,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         }
         { // end date/time
             long nanos = v.getDurationInNanos();
+            System.out.println("nanos:" + nanos);
             List<Temporal> madeDates = v                
                     .stream(v.getDateTimeStart())
                     .map(t -> t.plus(nanos, ChronoUnit.NANOS)) // calculate end
@@ -912,16 +919,101 @@ public class ICalendarDateTest extends ICalendarTestAbstract
                     .collect(Collectors.toList());
             LocalDateTime seed = LocalDateTime.of(2015, 11, 9, 10, 0);
             List<LocalDateTime> expectedDates = Stream
-                    .iterate(seed, a -> a.plus(3, ChronoUnit.DAYS).plus(VEvent.DEFAULT_DURATION, ChronoUnit.NANOS))
+                    .iterate(seed, a -> a.plus(1, ChronoUnit.DAYS))
+                    .map(d -> d.plus(VEvent.DEFAULT_DURATION, ChronoUnit.NANOS))
                     .limit(6)
                     .collect(Collectors.toList());
             assertEquals(expectedDates, madeDates);
         }
     }
     
-    @Test // LocalDateTime with Until and Exceptions
-    public void canChangeToWholeDay2()
+    @Test // tests cached stream ability to reset when RRule and start changes
+    public void canChangeStartStreamTest()
     {
+        VEventImpl v = getDaily1();
+
+        { // initialize stream
+            List<Temporal> madeDates = v                
+                    .stream(v.getDateTimeStart())
+                    .limit(50)
+                    .collect(Collectors.toList());
+            Temporal seed = LocalDateTime.of(2015, 11, 9, 10, 00);
+            List<Temporal> expectedDates = Stream
+                    .iterate(seed, a -> a.plus(1, ChronoUnit.DAYS))
+                    .limit(50)
+                    .collect(Collectors.toList());
+            assertEquals(expectedDates, madeDates);
+        }
+        
+        v.setDateTimeStart(LocalDateTime.of(2015, 11, 10, 10, 0)); // change start
+        { // make new stream
+            List<Temporal> madeDates = v                
+                    .stream(LocalDateTime.of(2015, 12, 9, 10, 0))
+                    .limit(50)
+                    .collect(Collectors.toList());
+            Temporal seed = LocalDateTime.of(2015, 12, 9, 10, 0);
+            List<Temporal> expectedDates = Stream
+                    .iterate(seed, a -> a.plus(1, ChronoUnit.DAYS))
+                    .limit(50)
+                    .collect(Collectors.toList());
+            assertEquals(expectedDates, madeDates);
+        }
+
+        // request date beyond first cached date to test cache system
+        v.stream( LocalDateTime.of(2016, 12, 25, 10, 0)).findFirst();
+        
+    }
+    
+    @Test // tests cached stream ability to reset when RRule and start changes
+    public void canChangeRRuleStreamTest()
+    {
+        VEventImpl v = getDaily1();
+        
+        { // initialize stream
+            List<Temporal> madeDates = v                
+                    .stream(v.getDateTimeStart())
+                    .limit(50)
+                    .collect(Collectors.toList());
+            Temporal seed = LocalDateTime.of(2015, 11, 9, 10, 00);
+            List<Temporal> expectedDates = Stream
+                    .iterate(seed, a -> a.plus(1, ChronoUnit.DAYS))
+                    .limit(50)
+                    .collect(Collectors.toList());
+            assertEquals(expectedDates, madeDates);
+        }
+
+        // Change RRule
+        RRule rule = new RRule();
+        v.setRRule(rule);
+        Frequency weekly = new Weekly().withInterval(2);;
+        rule.setFrequency(weekly);
+        Rule byRule = new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY);
+        weekly.addByRule(byRule);
+
+        { // check new repeatable stream
+            List<Temporal> madeDates = v                
+                    .stream(v.getDateTimeStart())
+                    .limit(50)
+                    .collect(Collectors.toList());
+            Temporal seed = LocalDateTime.of(2015, 11, 9, 10, 00);
+            List<Temporal> expectedDates = Stream
+                    .iterate(seed, a -> a.plus(2, ChronoUnit.WEEKS))
+                    .flatMap(d -> 
+                    {
+                        List<Temporal> days = new ArrayList<>();
+                        days.add(d); // Mondays
+                        days.add(d.plus(2, ChronoUnit.DAYS)); // Wednesdays
+                        days.add(d.plus(4, ChronoUnit.DAYS)); // Fridays
+                        return days.stream();
+                    })
+                    .limit(50)
+                    .collect(Collectors.toList());
+            assertEquals(expectedDates, madeDates);
+        }
+
+        // request date beyond first cached date to test cache system
+        Temporal date = v.stream( LocalDateTime.of(2015, 12, 9, 10, 0)).findFirst().get();
+        assertEquals(LocalDateTime.of(2015, 12, 9, 10, 0), date);
         
     }
     
@@ -962,12 +1054,6 @@ public class ICalendarDateTest extends ICalendarTestAbstract
                     ));
             assertEquals(expectedDates, madeDates);
         }
-    }
-    
-    @Test // LocalDate with Until and Exceptions
-    public void canChangeFromWholeDay2()
-    {
-        
     }
 
 }

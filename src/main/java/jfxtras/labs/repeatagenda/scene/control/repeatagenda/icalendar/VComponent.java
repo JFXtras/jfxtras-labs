@@ -177,7 +177,8 @@ public interface VComponent<T>
      * 
      * Start date/times are only produced between the ranges set by setDateTimeRanges
      * 
-     * @param startTemporal - start dates or date/times produced after this date
+     * @param startTemporal - start dates or date/times produced after this date.  If not on an occurrence,
+     * it will be adjusted to be the next occurrence
      * @return - stream of start dates or date/times for the recurrence set
      */
     Stream<Temporal> stream(Temporal startTemporal);
