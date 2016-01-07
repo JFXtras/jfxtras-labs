@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -421,7 +422,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
     
     @Test
     //@Ignore
-    public void canMakeExceptionListInitial()
+    public void canMakeExceptionList()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
         VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
@@ -448,7 +449,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
     
     @Test
     //@Ignore
-    public void canMakeExceptionListInitial2() // Whole day appointments
+    public void canMakeExceptionListWholeDay() // Whole day appointments
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
         VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
@@ -882,8 +883,51 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
         closeCurrentWindow();
     }
     
-    // TODO - MAKE TESTS FOR WHOLE DAY APPOINTMENTS
+    @Test
+    //@Ignore
+    public void canAddException()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));
+        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
 
+        // Open edit popup
+        move("#hourLine11");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+        click("#repeatableTab");
+        
+        // Get properties
+        ComboBox<Temporal> exceptionComboBox = find("#exceptionComboBox");
+        
+        // Add exceptions and check
+        Temporal e1 = exceptionComboBox.getItems().get(0);
+        TestUtil.runThenWaitForPaintPulse( () -> exceptionComboBox.getSelectionModel().select(e1) );
+        click("#addExceptionButton");        
+        Set<Temporal> vExceptions = v.getExDate().getTemporals();
+        assertEquals(1, vExceptions.size());
+        Temporal exception = vExceptions.iterator().next();
+        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), exception);
+        
+        { // verify added exception is not in exceptionComboBox list
+            List<Temporal> exceptions = exceptionComboBox.getItems().stream().limit(5)
+                    .collect(Collectors.toList());
+            List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                    LocalDateTime.of(2015, 11, 10, 10, 0)
+                  , LocalDateTime.of(2015, 11, 11, 10, 0)
+                  , LocalDateTime.of(2015, 11, 12, 10, 0)
+                  , LocalDateTime.of(2015, 11, 13, 10, 0)
+                  , LocalDateTime.of(2015, 11, 14, 10, 0)
+                    ));
+            assertEquals(expectedDates, exceptions);
+        }
+    }
+    
+    @Test
+    //@Ignore
+    public void canRemoveException()
+    {
+        
+    }
     
     @Test
     //@Ignore
