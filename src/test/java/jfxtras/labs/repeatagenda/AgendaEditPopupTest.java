@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.scene.Node;
@@ -65,6 +64,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
     }
     
     @Test
+    //@Ignore
     public void canEditAll()
     {
        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(getDaily1()));       
@@ -973,15 +973,14 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
         VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
 
         // Open edit popup
-        move("#hourLine11");
-        // TODO - FIND WAY TO MOVE TWO DAYS TO THE LEFT
+        move("#AppointmentRegularBodyPane2015-11-09/0"); 
         press(MouseButton.SECONDARY);
         release(MouseButton.SECONDARY);
         click("#repeatableTab");
-        
+
         // Get properties
         ComboBox<Temporal> exceptionComboBox = find("#exceptionComboBox");
-        ListView<Temporal> exceptionsListView = find("#exceptionsListView");        
+        ListView<Temporal> exceptionsListView = find("#exceptionsListView");
         
         { // verify initial state
             Set<Temporal> vExceptions = v.getExDate().getTemporals();
@@ -996,18 +995,72 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
             assertEquals(expectedExceptions, exceptions);
             assertEquals(expectedExceptions, exceptionsListView.getItems());            
         }
+
         { // verify added exception is not in exceptionComboBox list
-            List<Temporal> exceptions = exceptionComboBox.getItems().stream().limit(5)
+            List<Temporal> exceptions = exceptionComboBox.getItems().stream()
                     .collect(Collectors.toList());
             List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
                       LocalDateTime.of(2015, 11, 9, 10, 0)
                     , LocalDateTime.of(2015, 11, 18, 10, 0)
                     , LocalDateTime.of(2015, 11, 21, 10, 0)
                     , LocalDateTime.of(2015, 11, 24, 10, 0)
-                    , LocalDateTime.of(2015, 11, 27, 10, 0)
                     ));
             assertEquals(expectedDates, exceptions);
         }
+
+        // remove Exceptions one at a time, confirm gone and returned to exceptionComboBox
+        TestUtil.runThenWaitForPaintPulse( () -> exceptionsListView.getSelectionModel().select(LocalDateTime.of(2015, 11, 12, 10, 0)));
+        click ("#removeExceptionButton");
+        { // verify new state
+            Set<Temporal> vExceptions = v.getExDate().getTemporals();
+            List<Temporal> exceptions = vExceptions
+                    .stream()
+                    .map(a -> (LocalDateTime) a).sorted()
+                    .collect(Collectors.toList());
+            List<Temporal> expectedExceptions = new ArrayList<>(Arrays.asList(
+                    LocalDateTime.of(2015, 11, 15, 10, 0)
+                    ));
+            assertEquals(expectedExceptions, exceptions);
+            assertEquals(expectedExceptions, exceptionsListView.getItems());            
+        }
+        { // verify added exception is not in exceptionComboBox list
+            List<Temporal> exceptions = exceptionComboBox.getItems().stream().limit(5)
+                    .collect(Collectors.toList());
+            List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                      LocalDateTime.of(2015, 11, 9, 10, 0)
+                    , LocalDateTime.of(2015, 11, 12, 10, 0)
+                    , LocalDateTime.of(2015, 11, 18, 10, 0)
+                    , LocalDateTime.of(2015, 11, 21, 10, 0)
+                    , LocalDateTime.of(2015, 11, 24, 10, 0)
+                    ));
+            assertEquals(expectedDates, exceptions);
+        }
+        
+        TestUtil.runThenWaitForPaintPulse( () -> exceptionsListView.getSelectionModel().select(LocalDateTime.of(2015, 11, 15, 10, 0)));
+        click ("#removeExceptionButton");
+        { // verify new state
+            Set<Temporal> vExceptions = v.getExDate().getTemporals();
+            List<Temporal> exceptions = vExceptions
+                    .stream()
+                    .map(a -> (LocalDateTime) a).sorted()
+                    .collect(Collectors.toList());
+            List<Temporal> expectedExceptions = new ArrayList<>(); // empty list
+            assertEquals(expectedExceptions, exceptions);
+            assertEquals(expectedExceptions, exceptionsListView.getItems());            
+        }
+        { // verify added exception is not in exceptionComboBox list
+            List<Temporal> exceptions = exceptionComboBox.getItems().stream().limit(5)
+                    .collect(Collectors.toList());
+            List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                      LocalDateTime.of(2015, 11, 9, 10, 0)
+                    , LocalDateTime.of(2015, 11, 12, 10, 0)
+                    , LocalDateTime.of(2015, 11, 15, 10, 0)
+                    , LocalDateTime.of(2015, 11, 18, 10, 0)
+                    , LocalDateTime.of(2015, 11, 21, 10, 0)
+                    ));
+            assertEquals(expectedDates, exceptions);
+        }
+        closeCurrentWindow();
     }
     
     @Test
@@ -1145,7 +1198,7 @@ public class AgendaEditPopupTest extends ICalendarTestAbstract
     }
     
     @Test
-    @Ignore
+    //@Ignore
     public void canEditVComponent3()
     {
         // TODO - FIX THIS
