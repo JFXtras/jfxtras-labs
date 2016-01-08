@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -236,15 +237,28 @@ public class RRule
      * @return Easy to read summary of repeat rule
      */
   //TODO - use resource bundle instead of literal strings
+    // default strings, can be overridden by resource bundle
+    private String once = "Once";
+    
+    /**
+     * Set resource bundle to override text strings used in toString and summary methods
+     * @param bundle
+     */
+    public void setResources(ResourceBundle resource)    
+    {
+        if (resource.containsKey("once")) once = resource.getString("once");
+    }
+    
     public String summary(Temporal startTemporal)
     {
         StringBuilder builder = new StringBuilder();
-        if (getCount() == 1) return "Once";
+        if (getCount() == 1) return once;
         
         if (getFrequency().getInterval() > 1)
         {
             builder.append("Every ");
             builder.append(getFrequency().getInterval() + " ");
+            System.out.println("REPEAT_FREQUENCIES:" + Settings.REPEAT_FREQUENCIES.size());
             builder.append(getFrequency().frequencyType().toStringPlural());
         } else if (getFrequency().getInterval().equals(1))
         {
