@@ -164,7 +164,7 @@ public class ICalendarAgenda extends Agenda {
 //        appointments().addListener((InvalidationListener) obs -> System.out.println("changed appointments:"));
 
         // setup default ResourceBundle // TODO - GET PATH BETTER WAY
-        ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Bundle", myLocale);
+        ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.repeatagenda.resources.Bundle", myLocale);
         Settings.setup(resources);
 
         // Listen for changes to appointments (additions and deletions)

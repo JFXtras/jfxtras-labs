@@ -31,14 +31,14 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 public abstract class ICalendarTestAbstract extends AgendaTestAbstract
 {
-    public final long NANOS_IN_SECOND = Duration.ofSeconds(1).toNanos();
+    public final static long NANOS_IN_SECOND = Duration.ofSeconds(1).toNanos();
     
     // Comparator for tree sort
     private final Comparator<Appointment> APPOINTMENT_COMPARATOR = (a1, a2)
             -> a1.getStartLocalDateTime().compareTo(a2.getStartLocalDateTime());
     public final Comparator<Appointment> getAppointmentComparator() { return APPOINTMENT_COMPARATOR; }
     
-    private final Class<AppointmentImplLocal2> clazz = AppointmentImplLocal2.class;
+    private final static Class<AppointmentImplLocal2> clazz = AppointmentImplLocal2.class;
     public Class<AppointmentImplLocal2> getClazz() { return clazz; }
     
     public void refresh(List<VComponent<Appointment>> vComponents, List<Appointment> appointments)
@@ -346,7 +346,7 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
     }
 
     /** FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE,FR */
-    protected VEventImpl getWeekly2()
+    protected static VEventImpl getWeekly2()
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
@@ -414,7 +414,7 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
 
     
     /** FREQ=DAILY, Basic daily stream */
-    protected VEventImpl getDaily1()
+    protected static VEventImpl getDaily1()
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
@@ -433,7 +433,7 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
     }
 
     /** FREQ=DAILY;INVERVAL=3;COUNT=6 */
-    protected VEventImpl getDaily2()
+    protected static VEventImpl getDaily2()
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
@@ -529,7 +529,7 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
     }
     
     /** Individual - non repeatable VEvent */
-    protected VEventImpl getIndividual1()
+    protected static VEventImpl getIndividual1()
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 30));
@@ -543,7 +543,7 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
         return vEvent;
     }
     
-    protected VEventImpl getIndividual2()
+    protected static VEventImpl getIndividual2()
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDate.of(2015, 11, 11));
@@ -557,7 +557,7 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
     
     /** FREQ=DAILY;INVERVAL=3;COUNT=6
      *  EXDATE=20151112T100000,20151115T100000 */
-    protected VEventImpl getDailyWithException1()
+    public static VEventImpl getDailyWithException1()
     {
         VEventImpl vEvent = getDaily2();
         EXDate exDate = new EXDate().withTemporals(LocalDateTime.of(2015, 11, 12, 10, 0), LocalDateTime.of(2015, 11, 15, 10, 0));
@@ -565,7 +565,7 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
         return vEvent;
     }
 
-    protected VEventImpl getRecurrence1()
+    protected VEventImpl getRDate()
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
@@ -606,7 +606,7 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
     }
 
     /* FREQ=DAILY;INVERVAL=3;UNTIL=20151124 */
-    protected VEventImpl getWholeDayDaily3()
+    protected static VEventImpl getWholeDayDaily3()
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDate.of(2015, 11, 9));

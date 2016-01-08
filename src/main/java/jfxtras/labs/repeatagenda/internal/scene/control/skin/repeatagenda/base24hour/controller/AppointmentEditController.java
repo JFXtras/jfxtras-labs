@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -293,7 +294,16 @@ public class AppointmentEditController
     @FXML private void handleCloseButton()
     {
         // adjust DTSTART if first occurrence is not equal to it
-        Temporal first = vEvent.stream(vEvent.getDateTimeStart()).findFirst().get();
+        Temporal t1 = vEvent.stream(vEvent.getDateTimeStart()).findFirst().get();
+        final Temporal first;
+        if (vEvent.getExDate() != null)
+        {            
+            Temporal t2 = Collections.min(vEvent.getExDate().getTemporals(), VComponent.TEMPORAL_COMPARATOR);
+            first = (VComponent.isBefore(t1, t2)) ? t1 : t2;
+        } else
+        {
+          first = t1;
+        }
         long dayShift = ChronoUnit.DAYS.between(vEvent.getDateTimeStart(), first);
 //        System.out.println("dayShift:" + dayShift);
         if (dayShift > 0) vEvent.setDateTimeStart(first);

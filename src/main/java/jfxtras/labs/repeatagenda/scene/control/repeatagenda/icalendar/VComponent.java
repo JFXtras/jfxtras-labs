@@ -114,11 +114,14 @@ public interface VComponent<T>
     void setLocation(String value);
 
     /**
-     * RDATE: Set of date/times for recurring events, to-dos, journal entries.
-     * 3.8.5.2, RFC 5545 iCalendar
+     * RELATED-TO: This property is used to represent a relationship or reference between
+     * one calendar component and another.  By default, the property value points to another
+     * calendar component's UID that has a PARENT relationship to the referencing object.
+     * This field is null unless the object contains as RECURRENCE-ID value.
+     * 3.8.4.5, RFC 5545 iCalendar
      */
-    public RDate getRDate();
-    public void setRDate(RDate rDate);
+    public String getRelatedTo();
+    public void setRelatedTo(String uid);
 
     /**
      * RECURRENCE-ID: date or date-time recurrence, from RFC 5545 iCalendar 3.8.4.4 page 112
@@ -128,6 +131,13 @@ public interface VComponent<T>
     // TODO - VERIFY THIS WORKS - I DON'T THINK IT DOES
     Temporal getDateTimeRecurrence();
     public void setDateTimeRecurrence(Temporal dtRecurrence);
+    
+    /**
+     * RDATE: Set of date/times for recurring events, to-dos, journal entries.
+     * 3.8.5.2, RFC 5545 iCalendar
+     */
+    public RDate getRDate();
+    public void setRDate(RDate rDate);
     
     /**
      * RRULE, Recurrence Rule as defined in RFC 5545 iCalendar 3.8.5.3, page 122.

@@ -163,6 +163,6 @@
       </VBox>
    </children>
       <stylesheets>
-      <URL value="@../main.css" />
+      <URL value="@../../../../../../../resources/main.css" />
    </stylesheets>
 </AnchorPane>

@@ -699,13 +699,14 @@ public class ICalendarDateTest extends ICalendarTestAbstract
               , LocalDateTime.of(2015, 11, 24, 10, 0)
                 ));
         assertEquals(expectedDates, madeDates);
+        e.getExDate().getTemporals().stream().forEach(System.out::println);
     }
 
     /** Tests VEvent with RRule and exception VEvent */
     @Test
     public void recurrenceTest1()
     {
-        VEventImpl e = getRecurrence1();
+        VEventImpl e = getRDate();
         List<Temporal> madeDates = e
                 .stream(e.getDateTimeStart())
                 .collect(Collectors.toList());

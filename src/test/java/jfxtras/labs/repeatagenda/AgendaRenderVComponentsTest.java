@@ -9,12 +9,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.scene.Parent;
 import jfxtras.test.TestUtil;
 
-public class AgendaRenderVComponentsTest extends ICalendarTestAbstract
+public class AgendaRenderVComponentsTest extends AgendaTestAbstract
 {
     public Parent getRootNode()
     {
@@ -23,15 +24,16 @@ public class AgendaRenderVComponentsTest extends ICalendarTestAbstract
     }
     
     @Test
+    @Ignore
     public void canRenderVComponents()
     {
         // Add VComponents, listener in ICalendarAgenda 
         TestUtil.runThenWaitForPaintPulse( () -> {
-            agenda.vComponents().add(getDaily2());
-            agenda.vComponents().add(getWeekly2());
-            agenda.vComponents().add(getWholeDayDaily3());
-            agenda.vComponents().add(getIndividual1());
-            agenda.vComponents().add(getIndividual2());
+            agenda.vComponents().add(ICalendarTestAbstract.getDaily2());
+            agenda.vComponents().add(ICalendarTestAbstract.getWeekly2());
+            agenda.vComponents().add(ICalendarTestAbstract.getWholeDayDaily3());
+            agenda.vComponents().add(ICalendarTestAbstract.getIndividual1());
+            agenda.vComponents().add(ICalendarTestAbstract.getIndividual2());
         });
 
         List<LocalDateTime> startDates = agenda.appointments()
@@ -165,11 +167,6 @@ public class AgendaRenderVComponentsTest extends ICalendarTestAbstract
         assertEquals(expectedEndDates4, endDates4);
 //        TestUtil.sleep(3000);
     }
-    
-    @Test
-    public void addVComponentListenerTest()
-    {
-        
-    }
+
 
 }

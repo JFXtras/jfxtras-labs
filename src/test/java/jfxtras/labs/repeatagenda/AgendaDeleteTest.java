@@ -14,7 +14,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
-public class AgendaDeleteTest extends ICalendarTestAbstract
+public class AgendaDeleteTest extends AgendaTestAbstract
 {
     public Parent getRootNode()
     {
@@ -28,7 +28,7 @@ public class AgendaDeleteTest extends ICalendarTestAbstract
         ICalendarAgenda agenda = new ICalendarAgenda();
         agenda.setSkin(new AgendaWeekSkin(agenda));
         // TODO - FIND WAY TO RUN LISTENER WITHOUT ALL OVERHEAD ABOVE? 
-        VEventImpl vEvent = getIndividual1();
+        VEventImpl vEvent = ICalendarTestAbstract.getIndividual1();
         agenda.displayedLocalDateTime().set(LocalDateTime.of(2015, 11, 8, 0, 0));
 //        vEvent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 8, 0, 0));
 //        vEvent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 15, 0, 0));

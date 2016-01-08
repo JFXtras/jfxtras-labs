@@ -11,7 +11,7 @@
 <?import jfxtras.scene.control.*?>
 <?import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.*?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" styleClass="background3" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.AppointmentEditController">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" styleClass="background3" stylesheets="@../../../../../../../resources/main.css" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.AppointmentEditController">
   <tabs>
     <Tab closable="false" text="%appointment">
       <content>
@@ -143,7 +143,4 @@
          </content>
     </Tab>
   </tabs>
-   <stylesheets>
-      <URL value="@../main.css" />
-   </stylesheets>
 </TabPane>

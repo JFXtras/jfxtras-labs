@@ -8,6 +8,7 @@ import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -68,8 +69,8 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
          3.8.4.1.  Attendee  . . . . . . . . . . . . . . . . . . . . 108 - NO
          3.8.4.2.  Contact . . . . . . . . . . . . . . . . . . . . . 111 - NO
          3.8.4.3.  Organizer . . . . . . . . . . . . . . . . . . . . 113 - NO
-         3.8.4.4.  Recurrence ID . . . . . . . . . . . . . . . . . . 114 - TODO
-         3.8.4.5.  Related To  . . . . . . . . . . . . . . . . . . . 117 - NO
+         3.8.4.4.  Recurrence ID . . . . . . . . . . . . . . . . . . 114 - Yes
+         3.8.4.5.  Related To  . . . . . . . . . . . . . . . . . . . 117 - Yes
          3.8.4.6.  Uniform Resource Locator  . . . . . . . . . . . . 118 - NO
          3.8.4.7.  Unique Identifier . . . . . . . . . . . . . . . . 119 - Yes
        3.8.5.  Recurrence Component Properties . . . . . . . . . . . 120
@@ -105,8 +106,8 @@ IANA-PROP - not implemented
 LAST-MOD - yes
 ORGANIZER - not implemented
 RDATE - yes
-RECURID - TODO
-RELATED - not implemented
+RECURRENCE-ID - yes
+RELATED-TO - yes
 RESOURCES - not implemented
 RRULE - yes
 RSTATUS - not implemented
@@ -141,6 +142,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     private static final String RECURRENCE_DATE_TIMES_NAME = "RDATE";
     private static final String RECURRENCE_ID_NAME = "RECURRENCE-ID";
     private static final String RECURRENCE_RULE_NAME = "RRULE";
+    private static final String RELATED_TO_NAME = "RELATED-TO";
     private static final String SUMMARY_NAME = "SUMMARY";
     private static final String UNIQUE_IDENTIFIER_NAME = "UID";
     
@@ -293,6 +295,11 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         }
     }
 
+    public StringProperty relatedToProperty() { return relatedTo; }
+    final private StringProperty relatedTo = new SimpleStringProperty(this, RELATED_TO_NAME);
+    public String getRelatedTo() { return relatedTo.getValue(); }
+    public void setRelatedTo(String s) { relatedTo.set(s); }
+    
     /**
      * RECURRENCE-ID: Date-Time recurrence, from RFC 5545 iCalendar 3.8.4.4 page 112
      * The property value is the original value of the "DTSTART" property of the 
@@ -541,8 +548,17 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         if (getDateTimeStamp() == null) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DTSTAMP must not be null.");
         if (getUniqueIdentifier() == null) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  UID must not be null.");
         if (getRRule() != null) errorsBuilder.append(getRRule().makeErrorString(this));
-        System.out.println("rrule:" + this.getRRule());
-        Temporal first = stream(getDateTimeStart()).findFirst().get();
+        Temporal t1 = stream(getDateTimeStart()).findFirst().get();
+        final Temporal first;
+        if (getExDate() != null)
+        {
+            Temporal t2 = Collections.min(getExDate().getTemporals(), VComponent.TEMPORAL_COMPARATOR);
+            first = (VComponent.isBefore(t1, t2)) ? t1 : t2;
+        } else
+        {
+            first = t1;
+        }
+           
         if (! first.equals(getDateTimeStart())) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DTSTART (" + getDateTimeStart() + ") must be first occurrence (" + first + ")");
         return errorsBuilder.toString();
     }

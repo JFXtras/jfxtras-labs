@@ -293,6 +293,7 @@ public class RRule
             builder.append(", " + getCount() + " times");
         } else if (getUntil() != null)
         {
+            System.out.println("Settings.DATE_FORMAT_AGENDA_DATEONLY:" + Settings.DATE_FORMAT_AGENDA_DATEONLY);
             builder.append(", until " + Settings.DATE_FORMAT_AGENDA_DATEONLY.format(getUntil()));
         }
         return builder.toString();
