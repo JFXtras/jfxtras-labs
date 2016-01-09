@@ -211,6 +211,45 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // TODO - CHECK RECURRENCE ID
     }
     
+    @Test  // TODO - FINISH TEST
+    public void editFutureTimeAndDateDaily1()
+    {
+        VEventImpl vevent = getDaily1();
+        List<VComponent<Appointment>> vevents = new ArrayList<>(Arrays.asList(vevent));
+        LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
+        List<Appointment> appointments = new ArrayList<Appointment>();
+        Collection<Appointment> newAppointments = vevent.makeInstances(start, end);
+        appointments.addAll(newAppointments);
+        assertEquals(3, appointments.size()); // check if there are only 3 appointments
+        VEventImpl veventOld = new VEventImpl(vevent);
+        
+        // select appointment (get recurrence date)
+        Iterator<Appointment> appointmentIterator = appointments.iterator();
+        appointmentIterator.next(); // skip first
+        appointmentIterator.next(); // skip second
+        Appointment selectedAppointment = (Appointment) appointmentIterator.next();
+        LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
+        
+        // apply changes
+        LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate(); // shift appointment 1 day backward
+        selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
+        selectedAppointment.setEndLocalDateTime(newDate.atTime(11, 0)); // change end time
+        
+        // Edit
+        WindowCloseType windowCloseType = vevent.edit(
+                dateTimeOriginal
+              , selectedAppointment
+              , veventOld               // original VEvent
+              , appointments            // collection of all appointments
+              , vevents                 // collection of all VEvents
+              , a -> ChangeDialogOptions.THIS_AND_FUTURE                   // answer to edit dialog
+              , null);                  // VEvents I/O callback
+        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime() + " " + a.getEndLocalDateTime()));
+        assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
+
+    }
+    
     /**
      * Tests editing THIS_AND_FUTURE events of a daily repeat event changing date and time
      * FREQ=DAILY;INVERVAL=3;COUNT=6
@@ -218,7 +257,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     @Test
     public void editFutureTimeAndDateDaily2()
     {
-        // Individual Appointment
         VEventImpl vevent = getDaily2();
         List<VComponent<Appointment>> vevents = new ArrayList<>(Arrays.asList(vevent));
         LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
@@ -274,7 +312,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
             .withAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(3))
             .withDescription("Daily2 Description")
             .withSummary("Daily2 Summary");
-        System.out.println("appt group desc: " + editedAppointment1.getAppointmentGroup().getDescription());
         assertEquals(expectedAppointment1, editedAppointment1); // Check to see if repeat-generated appointment changed correctly
 
         Appointment editedAppointment2 = (Appointment) appointmentIteratorNew.next();

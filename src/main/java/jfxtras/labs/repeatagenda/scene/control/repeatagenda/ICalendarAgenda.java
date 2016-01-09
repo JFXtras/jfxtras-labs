@@ -46,14 +46,6 @@ public class ICalendarAgenda extends Agenda {
     
     private static String AGENDA_STYLE_CLASS = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
 
-    // setup resource bundle (override displayed text, such as different languages)
-    static
-    {
-        String bundlePath = "Bundle";
-        Locale myLocale = Locale.getDefault();
-//        ResourceBundle resources = ResourceBundle.getBundle(bundlePath, myLocale);
-//        Settings.setup(resources);
-    }
     
     // default appointment group list
     // if any element has been edited the edit list must be added to appointmentGroups
@@ -116,8 +108,14 @@ public class ICalendarAgenda extends Agenda {
     {
         super();
         
+        // setup resource bundle (override displayed text, such as different languages)
+        Locale myLocale = Locale.getDefault();
+        ResourceBundle resources = ResourceBundle.getBundle("Bundle", myLocale);
+        Settings.setup(resources);
+        
         appointmentsListener = (ListChangeListener.Change<? extends Appointment> change) ->
         {
+            System.out.println("appointments changed:");
             while (change.next())
             {
                 // Deletions handled by vComponents listener
@@ -145,6 +143,7 @@ public class ICalendarAgenda extends Agenda {
         
         vComponentsListener = (ListChangeListener.Change<? extends VComponent<Appointment>> change) ->
         {
+            System.out.println("vcomponents changed:");
             while (change.next())
             {
                 if (change.wasAdded() && (dateTimeRange != null)) // don't make appointment if range is not set
@@ -155,7 +154,10 @@ public class ICalendarAgenda extends Agenda {
                     // add new appointments
                     change.getAddedSubList()
                             .stream()
-                            .forEach(v -> newAppointments.addAll(v.makeInstances(start, end)));
+                            .forEach(v -> 
+                            {
+                                if (v.instances().isEmpty()) newAppointments.addAll(v.makeInstances(start, end));
+                            });
                     appointments().removeListener(appointmentsListener);
                     appointments().addAll(newAppointments);
                     appointments().addListener(appointmentsListener);
@@ -169,7 +171,7 @@ public class ICalendarAgenda extends Agenda {
             }
         };
         
-        Locale myLocale = Locale.getDefault();
+//        Locale myLocale = Locale.getDefault();
 //        appointments().addListener((InvalidationListener) obs -> System.out.println("changed appointments:"));
 
         // Listen for changes to appointments (additions and deletions)

@@ -94,18 +94,18 @@ public class AppointmentEditController
     
     private final ChangeListener<? super LocalDateTime> startTextListener = (observable, oldSelection, newSelection) ->
     {
-        if (newSelection.isAfter(endTextField.getLocalDateTime()))
-        {
-            tooLateDateAlert(newSelection, endTextField.getLocalDateTime());
-            startTextField.setLocalDateTime(oldSelection);
-        } else
-        {
+//        if (newSelection.isAfter(endTextField.getLocalDateTime()))
+//        {
+//            tooLateDateAlert(newSelection, endTextField.getLocalDateTime());
+//            startTextField.setLocalDateTime(oldSelection);
+//        } else
+//        {
             Temporal newDateTimeStart = adjustStartEndTemporal(
                     vEvent.getDateTimeStart()
                   , oldSelection
                   , newSelection);
             vEvent.setDateTimeStart(newDateTimeStart);
-        }
+//        }
     };
     private final ChangeListener<? super LocalDateTime> endTextlistener = (observable, oldSelection, newSelection) ->
     {
@@ -251,18 +251,27 @@ public class AppointmentEditController
         });
         
         // START DATE/TIME
-        // TODO - ICALENDAR REQUIRES DTEND TO BE EXCLUSIVE OF DATE - EVEN WHOLE DAY
         Locale locale = Locale.getDefault();
         startTextField.setLocale(locale);
         startTextField.setLocalDateTime(dateTimeInstanceStartOriginal);
         startTextField.setParseErrorCallback(errorCallback);
         startTextField.localDateTimeProperty().addListener(startTextListener);
-
+        vEvent.dateTimeStartProperty().addListener((obs, oldValue, newValue) ->
+        {
+            startTextField.setLocalDateTime(VComponent.localDateTimeFromTemporal(newValue));
+        });
+        
         // END DATE/TIME
         endTextField.setLocale(locale);
         endTextField.setLocalDateTime(dateTimeInstanceEndOriginal);
         endTextField.setParseErrorCallback(errorCallback);
         endTextField.localDateTimeProperty().addListener(endTextlistener);
+        vEvent.dateTimeEndProperty().addListener((obs, oldValue, newValue) ->
+        {
+            endTextField.localDateTimeProperty().removeListener(endTextlistener);
+            endTextField.setLocalDateTime(VComponent.localDateTimeFromTemporal(newValue));
+            endTextField.localDateTimeProperty().addListener(endTextlistener);
+        });
         
         // APPOINTMENT GROUP
         appointmentGroupGridPane.appointmentGroupSelectedProperty().addListener(
@@ -366,16 +375,16 @@ public class AppointmentEditController
         alert.showAndWait();
     }
 
-    // Displays an alert notifying UNTIL date is not an occurrence and changed to 
-    private void tooLateDateAlert(Temporal t1, Temporal t2)
-    {
-        System.out.println("toolate:");
-        Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle("Invalid Date Selection");
-        alert.setHeaderText("Start must be before end");
-        alert.setContentText(Settings.DATE_FORMAT_AGENDA_EXCEPTION.format(t1) + " is not before" + System.lineSeparator() + Settings.DATE_FORMAT_AGENDA_EXCEPTION.format(t2));
-        ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
-        alert.getButtonTypes().setAll(buttonTypeOk);
-        alert.showAndWait();
-    }
+//    // Displays an alert notifying UNTIL date is not an occurrence and changed to 
+//    private void tooLateDateAlert(Temporal t1, Temporal t2)
+//    {
+//        System.out.println("toolate:");
+//        Alert alert = new Alert(AlertType.ERROR);
+//        alert.setTitle("Invalid Date Selection");
+//        alert.setHeaderText("Start must be before end");
+//        alert.setContentText(Settings.DATE_FORMAT_AGENDA_EXCEPTION.format(t1) + " is not before" + System.lineSeparator() + Settings.DATE_FORMAT_AGENDA_EXCEPTION.format(t2));
+//        ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
+//        alert.getButtonTypes().setAll(buttonTypeOk);
+//        alert.showAndWait();
+//    }
 }

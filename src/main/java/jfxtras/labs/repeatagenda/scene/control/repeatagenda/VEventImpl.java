@@ -3,7 +3,6 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -82,7 +81,7 @@ public class VEventImpl extends VEvent<Appointment>
      */
     private final InvalidationListener categoriesListener = obs ->
     {
-        System.out.println("finding appointment group:" + getAppointmentGroups().isEmpty() + " " + getCategories());
+//        System.out.println("finding appointment group:" + getAppointmentGroups().isEmpty() + " " + getCategories());
         if (! getAppointmentGroups().isEmpty() && getCategories() != null)
         {
             Optional<AppointmentGroup> myGroup = getAppointmentGroups()
@@ -376,12 +375,11 @@ public class VEventImpl extends VEvent<Appointment>
         LocalDateTime dateTimeStartInstanceNew = appointment.getStartLocalDateTime();
         LocalDateTime dateTimeEndInstanceNew = appointment.getEndLocalDateTime();
         // Check if start time and duration has changed because those values are not changed in the edit controller.
-        final long durationInNanos = ChronoUnit.NANOS.between(dateTimeStartInstanceNew, dateTimeEndInstanceNew);
+//        final long durationInNanos = ChronoUnit.NANOS.between(dateTimeStartInstanceNew, dateTimeEndInstanceNew);
         final VEventImpl vEventOld = (VEventImpl) VComponentOld;
         if (this.equals(VComponentOld)) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
 
         final RRuleType rruleType = getRRuleType(VComponentOld.getRRule());
-        System.out.println("rruleType " + rruleType);
         boolean editedFlag = true;
         switch (rruleType)
         {
@@ -420,18 +418,12 @@ public class VEventImpl extends VEvent<Appointment>
                     break;
                 case THIS_AND_FUTURE:
                 { // this is edited VEvent, vEventOld is former settings, with UNTIL to end it at start of this (VEvent with new settings)
-                    
-                    // Remove appointments
-                    appointments.removeIf(a -> VComponentOld.instances().stream().anyMatch(a2 -> a2 == a));
-                    
                     // modify old VEvent
                     vEvents.add(vEventOld);
                     if (vEventOld.getRRule().getCount() != null) vEventOld.getRRule().setCount(0);
                     LocalDateTime newDateTime = dateTimeStartInstanceOld.toLocalDate().atStartOfDay().minusNanos(1);
                     vEventOld.getRRule().setUntil(newDateTime);
                     vEventOld.setUniqueIdentifier(getUidGeneratorCallback().call(null));
-                    vEventOld.instances().clear();
-                    appointments.addAll(vEventOld.makeInstances()); // add vEventOld part of new appointments
                     
                     // Split EXDates dates between this and newVEvent
                     if (getExDate() != null)
@@ -447,9 +439,11 @@ public class VEventImpl extends VEvent<Appointment>
                             {
                                 exceptionIterator.remove();
                             } else {
-                                vEventOld.getExDate().getTemporals().add(d);
+                                getExDate().getTemporals().add(d);
                             }
                         }
+                        if (getExDate().getTemporals().isEmpty()) setExDate(null);
+                        if (vEventOld.getExDate().getTemporals().isEmpty()) vEventOld.setExDate(null);
                     }
 
                     // Split recurrence date/times between this and newVEvent
@@ -466,9 +460,11 @@ public class VEventImpl extends VEvent<Appointment>
                             {
                                 recurrenceIterator.remove();
                             } else {
-                                vEventOld.getRDate().getTemporals().add(d);
+                                getRDate().getTemporals().add(d);
                             }
                         }
+                        if (getRDate().getTemporals().isEmpty()) setRDate(null);
+                        if (vEventOld.getRDate().getTemporals().isEmpty()) vEventOld.setRDate(null);
                     }
 
                     // Split instance dates between this and newVEvent
@@ -483,16 +479,16 @@ public class VEventImpl extends VEvent<Appointment>
                             {
                                 recurrenceIterator.remove();
                             } else {
-                                vEventOld.getRRule().getRecurrences().add(d);
+                                getRRule().getRecurrences().add(d);
                             }
                         }
                     }
                     
-                    // Modify this (edited) VEvent
-                    System.out.println("modify this vEvent:" + durationInNanos);
-                    setDateTimeStart(dateTimeStartInstanceNew);
-                    setDurationInNanos(durationInNanos);
-                    System.out.println("done modify this vEvent:");
+//                    // Modify this (edited) VEvent - DON'T NEED - DONE IN CONTROLLER
+//                    System.out.println("modify this vEvent:" + durationInNanos);
+//                    setDateTimeStart(dateTimeStartInstanceNew);
+//                    setDurationInNanos(durationInNanos);
+//                    System.out.println("done modify this vEvent:");
                     
                     // Modify COUNT for this (the edited) VEvent
                     if (getRRule().getCount() > 0)
@@ -505,6 +501,16 @@ public class VEventImpl extends VEvent<Appointment>
                         getRRule().setCount(newCount);
                     }
 
+                    // Remove old appointments, add back ones
+                    appointments.removeIf(a -> vEventOld.instances().stream().anyMatch(a2 -> a2 == a));
+                    vEventOld.instances().clear();
+                    appointments.addAll(vEventOld.makeInstances()); // add vEventOld part of new appointments
+                    
+                    System.out.println("veventold:" + appointments.size());
+                    vEventOld.instances().stream().forEach(System.out::println);
+                    
+//                    System.exit(0);
+                    
                     break;
                 }
                 case ONE:
@@ -534,8 +540,8 @@ public class VEventImpl extends VEvent<Appointment>
         if (editedFlag) // make these changes as long as CANCEL is not selected
         { // remove appointments from main collection
             if (! isValid()) throw new IllegalArgumentException(makeErrorString());
-            
             appointments.removeIf(a -> instances().stream().anyMatch(a2 -> a2 == a));
+            System.out.println("make new appointments2:" + appointments.size());
 
             //            Iterator<Appointment> i = appointments.iterator();
 //            while (i.hasNext())
@@ -545,7 +551,11 @@ public class VEventImpl extends VEvent<Appointment>
 //            }
             instances().clear(); // clear VEvent's collection of appointments
 //            System.out.println("size1: " + appointments.size());
-            appointments.addAll(makeInstances()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
+            Collection<Appointment> makeInstances = makeInstances();
+            appointments.addAll(makeInstances); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
+            
+          instances().stream().forEach(System.out::println);
+          System.out.println("veventnew:" + appointments.size() + " " + getDateTimeStart());
             
 //            System.out.println("size2: " + appointments.size());
             return WindowCloseType.CLOSE_WITH_CHANGE;

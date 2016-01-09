@@ -886,7 +886,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     
     @Test
     @Ignore
-    public void canAddException()
+    public void canAddException2()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
         VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
@@ -963,14 +963,12 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
                     ));
             assertEquals(expectedDates, exceptions);
         }
-//        TestUtil.runThenWaitForPaintPulse( () -> exceptionsListView.getItems().clear());
         closeCurrentWindow();
-//        forceCloseAllPopups();
     }
     
     @Test
     @Ignore
-    public void canRemoveException()
+    public void canRemoveException2()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDailyWithException1()));
         VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
