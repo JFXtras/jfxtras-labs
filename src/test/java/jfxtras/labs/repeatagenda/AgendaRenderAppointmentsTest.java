@@ -25,6 +25,31 @@ public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
     @Ignore
     public void renderRegularAppointment()
     {
+        TestUtil.runThenWaitForPaintPulse( () -> {
+            agenda.appointments().add( new ICalendarAgenda.AppointmentImplLocal2()
+                    .withStartLocalDateTime(LocalDateTime.of(2015, 11, 11, 10, 0))
+                    .withEndLocalDateTime(LocalDateTime.of(2015, 11, 11, 12, 0))
+                .withAppointmentGroup(appointmentGroupMap.get("group01"))
+            );
+        });
+                
+        Node n = (Node)find("#AppointmentRegularBodyPane2015-11-11/0");
+        //AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
+        String os = System.getProperty("os.name");
+        if (os.equals("Linux"))
+        {
+            new AssertNode(n).assertXYWH(0.5, 402.5, 124.0, 81.0, 0.01);
+        } else
+        {
+            new AssertNode(n).assertXYWH(0.5, 419.5, 125.0, 84.0, 0.01);
+        }
+        //TestUtil.sleep(3000);
+    }
+    
+    @Test
+    @Ignore
+    public void renderRegularAppointment2()
+    {
         String dateTimeStamp = VComponent.DATE_TIME_FORMATTER.format(LocalDateTime.now());
         TestUtil.runThenWaitForPaintPulse( () -> {
             agenda.appointments().add( new ICalendarAgenda.AppointmentImplLocal2()

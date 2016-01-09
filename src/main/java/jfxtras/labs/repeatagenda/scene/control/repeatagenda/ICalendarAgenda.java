@@ -46,6 +46,15 @@ public class ICalendarAgenda extends Agenda {
     
     private static String AGENDA_STYLE_CLASS = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
 
+    // setup resource bundle (override displayed text, such as different languages)
+    static
+    {
+        String bundlePath = "Bundle";
+        Locale myLocale = Locale.getDefault();
+//        ResourceBundle resources = ResourceBundle.getBundle(bundlePath, myLocale);
+//        Settings.setup(resources);
+    }
+    
     // default appointment group list
     // if any element has been edited the edit list must be added to appointmentGroups
     final public static ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
@@ -162,10 +171,6 @@ public class ICalendarAgenda extends Agenda {
         
         Locale myLocale = Locale.getDefault();
 //        appointments().addListener((InvalidationListener) obs -> System.out.println("changed appointments:"));
-
-        // setup default ResourceBundle // TODO - GET PATH BETTER WAY
-        ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.repeatagenda.resources.Bundle", myLocale);
-        Settings.setup(resources);
 
         // Listen for changes to appointments (additions and deletions)
         appointments().addListener(appointmentsListener);

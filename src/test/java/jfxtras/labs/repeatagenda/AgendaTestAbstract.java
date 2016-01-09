@@ -3,6 +3,8 @@ package jfxtras.labs.repeatagenda;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
@@ -15,17 +17,25 @@ import jfxtras.test.JFXtrasGuiTest;
 
 public class AgendaTestAbstract extends JFXtrasGuiTest
 {
+    final protected Map<String, Agenda.AppointmentGroup> appointmentGroupMap = new TreeMap<String, Agenda.AppointmentGroup>();
+
+    
     public Parent getRootNode()
     {
         Locale.setDefault(Locale.ENGLISH);
         
         vbox = new VBox();
 
+        // setup appointment groups       
         agenda = new ICalendarAgenda();
         agenda.setDisplayedLocalDateTime(LocalDate.of(2015, 11, 8).atStartOfDay());
         agenda.setPrefSize(1000, 800);       
         agenda.appointmentGroups().clear();
         agenda.appointmentGroups().addAll(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
+        
+        for (Agenda.AppointmentGroup lAppointmentGroup : agenda.appointmentGroups()) {
+            appointmentGroupMap.put(lAppointmentGroup.getDescription(), lAppointmentGroup);
+        }
         
         // accept new appointments
         agenda.newAppointmentCallbackProperty().set(new Callback<Agenda.LocalDateTimeRange, Agenda.Appointment>()
@@ -38,7 +48,9 @@ public class AgendaTestAbstract extends JFXtrasGuiTest
                         .withEndLocalDateTime( dateTimeRange.getEndLocalDateTime())
                         .withSummary("New")
                         .withDescription("")
-                        .withAppointmentGroup(agenda.appointmentGroups().get(0));
+                        .withAppointmentGroup(appointmentGroupMap.get("group01"));
+
+//                        .withAppointmentGroup(agenda.appointmentGroups().get(0));
                 return appointment;
             }
         });
