@@ -165,16 +165,16 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
 
         return duration.toString();
     }
-    public void setDurationInNanos(Long value)
+    public void setDurationInNanos(Long duration)
     {
         if (endPriority == null) endPriority = EndPriority.DURATION; // set endPriority only first time when either dateTimeEnd or duration is set
-        durationInNanos.setValue(value);
+        durationInNanos.setValue(duration);
     }
-    public void setDurationInNanos(String value)
+    public void setDurationInNanos(String duration)
     { // parse ISO.8601.2004 period string into period of seconds (no support for Y (years) or M (months).
         long nanos = 0;
         Pattern p = Pattern.compile("([0-9]+)|([A-Z])");
-        Matcher m = p.matcher(value);
+        Matcher m = p.matcher(duration);
         List<String> tokens = new ArrayList<String>();
         while (m.find())
         {
@@ -183,7 +183,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         }
         Iterator<String> tokenIterator = tokens.iterator();
         String firstString = tokenIterator.next();
-        if (! tokenIterator.hasNext() || (! firstString.equals("P"))) throw new IllegalArgumentException("Invalid DURATION string (" + value + "). Must begin with a P");
+        if (! tokenIterator.hasNext() || (! firstString.equals("P"))) throw new IllegalArgumentException("Invalid DURATION string (" + duration + "). Must begin with a P");
         boolean timeFlag = false;
         while (tokenIterator.hasNext())
         {

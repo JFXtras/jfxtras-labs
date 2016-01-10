@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -111,19 +113,24 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         appointments.addAll(newAppointments);
         assertEquals(3, appointments.size()); // check if there are only 3 appointments
         VEventImpl veventOld = new VEventImpl(vevent);
-        
+               
         // select appointment and apply changes
-        Iterator<Appointment> appointmentIterator = appointments.iterator(); // skip first
+        Iterator<Appointment> appointmentIterator = appointments.iterator();
         Appointment selectedAppointment = (Appointment) appointmentIterator.next();
         LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
-        LocalDate date = LocalDate.from(vevent.getDateTimeStart());
-        vevent.setDateTimeStart(date.atTime(9, 45)); // change start time
-        vevent.setDateTimeEnd(date.atTime(11, 00)); // change start time
+        LocalDate date = selectedAppointment.getStartLocalDateTime().toLocalDate();
+        selectedAppointment.setStartLocalDateTime(date.atTime(9, 45)); // change start time
+        selectedAppointment.setEndLocalDateTime(date.atTime(11, 0)); // change end time
         LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
-// TODO - PROBLEM - DATE/TIME CHANGE HANDLED BY CONTROLLER, NOT EDIT METHOD
+        long startShift = ChronoUnit.NANOS.between(dateTimeOriginal, dateTimeNew);
+        Temporal dtStart = vevent.getDateTimeStart().plus(startShift, ChronoUnit.NANOS);
+        long duration = ChronoUnit.NANOS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
+        vevent.setDateTimeStart(dtStart);
+        vevent.setDurationInNanos(duration);
+
         WindowCloseType windowCloseType = vevent.edit(
                 dateTimeOriginal
-              , selectedAppointment
+              , dateTimeNew
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
@@ -175,23 +182,36 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         assertEquals(3, appointments.size()); // check if there are only 3 appointments
         VEventImpl veventOld = new VEventImpl(vevent);
         
-        // select appointment (get recurrence date)
+        // select appointment and apply changes
         Iterator<Appointment> appointmentIterator = appointments.iterator();
         Appointment selectedAppointment = (Appointment) appointmentIterator.next();
         LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
-        
-        // apply changes
-        LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().plusDays(1); // shift appointment 1 day forward
-        selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
-        selectedAppointment.setEndLocalDateTime(newDate.atTime(11, 0)); // change end time
+        LocalDate date = selectedAppointment.getStartLocalDateTime().toLocalDate();
+        selectedAppointment.setStartLocalDateTime(date.atTime(9, 45)); // change start time
+        selectedAppointment.setEndLocalDateTime(date.atTime(11, 0)); // change end time
         LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
-        vevent.setSummary("Edited Summary");
-        vevent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(7));
+        long startShift = ChronoUnit.NANOS.between(dateTimeOriginal, dateTimeNew);
+        Temporal dtStart = vevent.getDateTimeStart().plus(startShift, ChronoUnit.NANOS);
+        long duration = ChronoUnit.NANOS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
+        vevent.setDateTimeStart(dtStart);
+        vevent.setDurationInNanos(duration);
+        
+//        // select appointment (get recurrence date)
+//        Iterator<Appointment> appointmentIterator = appointments.iterator();
+//        Appointment selectedAppointment = (Appointment) appointmentIterator.next();
+//        LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
+//        
+//        // apply changes
+//        LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().plusDays(1); // shift appointment 1 day forward
+//        selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
+//        selectedAppointment.setEndLocalDateTime(newDate.atTime(11, 0)); // change end time
+//        vevent.setSummary("Edited Summary");
+//        vevent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(7));
         
         // Edit
         WindowCloseType windowCloseType = vevent.edit(
                 dateTimeOriginal
-              , selectedAppointment
+              , dateTimeNew
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
@@ -221,7 +241,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         List<Appointment> appointments = new ArrayList<Appointment>();
         Collection<Appointment> newAppointments = vevent.makeInstances(start, end);
         appointments.addAll(newAppointments);
-        assertEquals(3, appointments.size()); // check if there are only 3 appointments
+        assertEquals(7, appointments.size()); // check if there are only 3 appointments
         VEventImpl veventOld = new VEventImpl(vevent);
         
         // select appointment (get recurrence date)
@@ -232,14 +252,20 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
         
         // apply changes
-        LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate(); // shift appointment 1 day backward
+        LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate();
         selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
         selectedAppointment.setEndLocalDateTime(newDate.atTime(11, 0)); // change end time
+        LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
+        long startShift = ChronoUnit.NANOS.between(dateTimeOriginal, dateTimeNew);
+        Temporal dtStart = vevent.getDateTimeStart().plus(startShift, ChronoUnit.NANOS);
+        long duration = ChronoUnit.NANOS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
+        vevent.setDateTimeStart(dtStart);
+        vevent.setDurationInNanos(duration);
         
         // Edit
         WindowCloseType windowCloseType = vevent.edit(
                 dateTimeOriginal
-              , selectedAppointment
+              , dateTimeNew
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
@@ -267,25 +293,42 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         assertEquals(3, appointments.size()); // check if there are only 3 appointments
         VEventImpl veventOld = new VEventImpl(vevent);
         
-        // select appointment (get recurrence date)
+        // select appointment and apply changes
         Iterator<Appointment> appointmentIterator = appointments.iterator();
-        appointmentIterator.next(); // skip first
         Appointment selectedAppointment = (Appointment) appointmentIterator.next();
         LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
-        
-        // apply changes
-        LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().minusDays(1); // shift appointment 1 day backward
-        selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
-        selectedAppointment.setEndLocalDateTime(newDate.atTime(11, 0)); // change end time
-//        LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
+        LocalDate date = selectedAppointment.getStartLocalDateTime().toLocalDate();
+        selectedAppointment.setStartLocalDateTime(date.atTime(9, 45)); // change start time
+        selectedAppointment.setEndLocalDateTime(date.atTime(11, 0)); // change end time
+        LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
+        long startShift = ChronoUnit.NANOS.between(dateTimeOriginal, dateTimeNew);
+        Temporal dtStart = vevent.getDateTimeStart().plus(startShift, ChronoUnit.NANOS);
+        long duration = ChronoUnit.NANOS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
+        vevent.setDateTimeStart(dtStart);
+        vevent.setDurationInNanos(duration);
         vevent.setSummary("Edited Summary");
         vevent.setDescription("Edited Description");
         vevent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(7));
         
+//        // select appointment (get recurrence date)
+//        Iterator<Appointment> appointmentIterator = appointments.iterator();
+//        appointmentIterator.next(); // skip first
+//        Appointment selectedAppointment = (Appointment) appointmentIterator.next();
+//        LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
+//        
+//        // apply changes
+//        LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().minusDays(1); // shift appointment 1 day backward
+//        selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
+//        selectedAppointment.setEndLocalDateTime(newDate.atTime(11, 0)); // change end time
+////        LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
+//        vevent.setSummary("Edited Summary");
+//        vevent.setDescription("Edited Description");
+//        vevent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(7));
+        
         // Edit
         WindowCloseType windowCloseType = vevent.edit(
                 dateTimeOriginal
-              , selectedAppointment
+              , dateTimeNew
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
@@ -352,26 +395,43 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         assertEquals(4, appointments.size()); // check if there are only 3 appointments
         VEventImpl veventOld = new VEventImpl(vevent);
         
-        // select appointment (get recurrence date)
+        // select appointment and apply changes
         Iterator<Appointment> appointmentIterator = appointments.iterator();
-        appointmentIterator.next(); // skip first
-        appointmentIterator.next(); // skip second
         Appointment selectedAppointment = (Appointment) appointmentIterator.next();
         LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
-        
-        // apply changes
-        LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().minusDays(2); // shift appointment 2 day backward
-        selectedAppointment.setStartLocalDateTime(newDate.atTime(6, 0)); // change start time
-        selectedAppointment.setEndLocalDateTime(newDate.atTime(7, 0)); // change end time
-//        LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
+        LocalDate date = selectedAppointment.getStartLocalDateTime().toLocalDate().minusDays(2);
+        selectedAppointment.setStartLocalDateTime(date.atTime(6, 0)); // change start time
+        selectedAppointment.setEndLocalDateTime(date.atTime(7, 0)); // change end time
+        LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
+        long startShift = ChronoUnit.NANOS.between(dateTimeOriginal, dateTimeNew);
+        Temporal dtStart = vevent.getDateTimeStart().plus(startShift, ChronoUnit.NANOS);
+        long duration = ChronoUnit.NANOS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
+        vevent.setDateTimeStart(dtStart);
+        vevent.setDurationInNanos(duration);
         vevent.setSummary("Edited Summary");
         vevent.setDescription("Edited Description");
         vevent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(7));
         
+//        // select appointment (get recurrence date)
+//        Iterator<Appointment> appointmentIterator = appointments.iterator();
+//        appointmentIterator.next(); // skip first
+//        appointmentIterator.next(); // skip second
+//        Appointment selectedAppointment = (Appointment) appointmentIterator.next();
+//        LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
+//        
+//        // apply changes
+//        LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().minusDays(2); // shift appointment 2 day backward
+//        selectedAppointment.setStartLocalDateTime(newDate.atTime(6, 0)); // change start time
+//        selectedAppointment.setEndLocalDateTime(newDate.atTime(7, 0)); // change end time
+////        LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
+//        vevent.setSummary("Edited Summary");
+//        vevent.setDescription("Edited Description");
+//        vevent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(7));
+        
         // Edit
         WindowCloseType windowCloseType = vevent.edit(
                 dateTimeOriginal
-              , selectedAppointment
+              , dateTimeNew
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
@@ -497,7 +557,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // Edit
         WindowCloseType windowCloseType = vevent.edit(
                 selectedAppointment.getStartLocalDateTime()
-              , selectedAppointment
+              , selectedAppointment.getStartLocalDateTime()
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
@@ -539,10 +599,11 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         LocalDate dateOld = dateTimeOld.toLocalDate();
         selectedAppointment.setStartLocalDateTime(dateOld.atTime(9, 45)); // change start time
         selectedAppointment.setEndLocalDateTime(dateOld.atTime(11, 0)); // change end time
+        LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
 
         WindowCloseType windowCloseType = vevent.edit(
                 dateTimeOld
-              , selectedAppointment
+              , dateTimeNew
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
@@ -568,22 +629,37 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         assertEquals(3, appointments.size()); // check if there are 3 appointments
         VEventImpl veventOld = new VEventImpl(vevent);
 
-        // select appointment (get recurrence date) // TODO - WHAT DOES APPOINTMENT DO?  APPEARS USELESS.
+        // select appointment and apply changes
         Iterator<Appointment> appointmentIterator = appointments.iterator();
         appointmentIterator.next(); // skip first
         appointmentIterator.next(); // skip second
         Appointment selectedAppointment = (Appointment) appointmentIterator.next();
-        
-        // apply changes
-        vevent.setDateTimeStart(LocalDate.of(2015, 11, 10)); // shift forward one day
-        vevent.setSummary("Edited Summary");
-        vevent.setDescription("Edited Description");
-        vevent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(7));
+        LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
+        selectedAppointment.setStartLocalDateTime(selectedAppointment.getStartLocalDateTime().plusDays(1)); // change start time
+        selectedAppointment.setEndLocalDateTime(selectedAppointment.getEndLocalDateTime().plusDays(1)); // change end time
+        LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
+        long startShift = ChronoUnit.DAYS.between(dateTimeOriginal, dateTimeNew);
+        Temporal dtStart = vevent.getDateTimeStart().plus(startShift, ChronoUnit.NANOS);
+        long duration = ChronoUnit.DAYS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
+        vevent.setDateTimeStart(dtStart);
+        vevent.setDateTimeEnd(dtStart.plus(duration, ChronoUnit.DAYS));
+//        
+//        // select appointment (get recurrence date) // TODO - WHAT DOES APPOINTMENT DO?  APPEARS USELESS.
+//        Iterator<Appointment> appointmentIterator = appointments.iterator();
+//        appointmentIterator.next(); // skip first
+//        appointmentIterator.next(); // skip second
+//        Appointment selectedAppointment = (Appointment) appointmentIterator.next();
+//        
+//        // apply changes
+//        vevent.setDateTimeStart(LocalDate.of(2015, 11, 10)); // shift forward one day
+//        vevent.setSummary("Edited Summary");
+//        vevent.setDescription("Edited Description");
+//        vevent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(7));
         
         // Edit
         WindowCloseType windowCloseType = vevent.edit(
-                selectedAppointment.getStartLocalDateTime()
-              , selectedAppointment
+                dateTimeOriginal
+              , dateTimeNew
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents

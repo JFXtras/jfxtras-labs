@@ -365,15 +365,16 @@ public class VEventImpl extends VEvent<Appointment>
     @Override
     public WindowCloseType edit(
               LocalDateTime dateTimeStartInstanceOld // TODO - NEED TO PASS APPOINTMENT TO ACCOUNT FOR APPOINTMENTS WITH MATCHING DATE/TIMES
-            , Appointment appointment // REPLACE WITH START AND END DATES TO BE ABLE TO REPLACE APPOINTMENT WITH TYPE T
+            , LocalDateTime dateTimeStartInstanceNew 
+//            , Appointment appointment // REPLACE WITH START AND END DATES TO BE ABLE TO REPLACE APPOINTMENT WITH TYPE T
             , VComponent<Appointment> VComponentOld
             , Collection<Appointment> appointments
             , Collection<VComponent<Appointment>> vEvents
             , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
             , Callback<Collection<VComponent<Appointment>>, Void> writeVEventsCallback)
     {
-        LocalDateTime dateTimeStartInstanceNew = appointment.getStartLocalDateTime();
-        LocalDateTime dateTimeEndInstanceNew = appointment.getEndLocalDateTime();
+//        LocalDateTime dateTimeStartInstanceNew = appointment.getStartLocalDateTime();
+//        LocalDateTime dateTimeEndInstanceNew = appointment.getEndLocalDateTime();
         // Check if start time and duration has changed because those values are not changed in the edit controller.
 //        final long durationInNanos = ChronoUnit.NANOS.between(dateTimeStartInstanceNew, dateTimeEndInstanceNew);
         final VEventImpl vEventOld = (VEventImpl) VComponentOld;

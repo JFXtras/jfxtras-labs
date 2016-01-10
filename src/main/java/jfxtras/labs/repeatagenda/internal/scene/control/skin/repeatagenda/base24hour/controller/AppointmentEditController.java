@@ -322,7 +322,7 @@ public class AppointmentEditController
         if (! vEvent.isValid()) throw new RuntimeException(vEvent.makeErrorString());
         final ICalendarUtilities.WindowCloseType result = vEvent.edit(
                 dateTimeInstanceStartOriginal
-              , appointment
+              , appointment.getStartLocalDateTime()
               , vEventOld
               , appointments
               , vComponents

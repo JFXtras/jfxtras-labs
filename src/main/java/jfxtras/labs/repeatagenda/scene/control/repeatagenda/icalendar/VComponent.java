@@ -265,8 +265,8 @@ public interface VComponent<T>
     /**
      * Handle editing a VComponent.
      * 
-     * @param dateTimeStartInstanceOld
-     * @param instance
+     * @param dateTimeStartInstanceOld : start of instance before edit
+     * @param dateTimeStartInstanceNew : start of instance after edit
      * @param vComponentOld
      * @param instances
      * @param vEvents
@@ -276,7 +276,8 @@ public interface VComponent<T>
      */
     WindowCloseType edit(
             LocalDateTime dateTimeStartInstanceOld
-          , T instance
+          , LocalDateTime dateTimeStartInstanceNew
+//          , T instance
           , VComponent<T> vComponentOld
           , Collection<T> instances
           , Collection<VComponent<T>> vEvents
