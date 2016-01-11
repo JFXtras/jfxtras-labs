@@ -14,8 +14,6 @@ import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.util.Callback;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 
 /** Interface for VEVENT, VTODO, VJOURNAL calendar components. 
@@ -283,26 +281,26 @@ public interface VComponent<T>
 //          , Collection<VComponent<T>> vEvents
 //          , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
 //          , Callback<Collection<VComponent<T>>, Void> vEventWriteCallback);
-    
-    /**
-     * Handle deleting a VComponent from vComponents collection and its accompanying
-     * recurrence instances 
-     * 
-     * @param instance
-     * @param instances
-     * @param vComponents
-     * @param changeDialogCallback
-     * @param confirmDeleteCallback
-     * @param vEventWriteCallback
-     * @return
-     */
-    WindowCloseType delete(
-            Temporal dateOrDateTime
-//          , Collection<T> instances
-          , Collection<VComponent<T>> vComponents
-          , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
-          , Callback<String, Boolean> confirmDeleteCallback
-          , Callback<Collection<VComponent<T>>, Void> vEventWriteCallback);
+//    
+//    /**
+//     * Handle deleting a VComponent from vComponents collection and its accompanying
+//     * recurrence instances 
+//     * 
+//     * @param instance
+//     * @param instances
+//     * @param vComponents
+//     * @param changeDialogCallback
+//     * @param confirmDeleteCallback
+//     * @param vEventWriteCallback
+//     * @return
+//     */
+//    WindowCloseType delete(
+//            Temporal dateOrDateTime
+////          , Collection<T> instances
+//          , Collection<VComponent<T>> vComponents
+//          , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
+//          , Callback<String, Boolean> confirmDeleteCallback
+//          , Callback<Collection<VComponent<T>>, Void> vEventWriteCallback);
 
     /*
      * UTILITY METHODS

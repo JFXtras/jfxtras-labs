@@ -411,15 +411,18 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
             System.out.println("new Start:" + newValue);
             if (oldClass == null || (oldClass == newClass))
             {
+                System.out.println("same class:");
                 changeStartSameClass(newValue);
             } else
             {
                 if (newClass.equals(LocalDate.class)) // change to LocalDate
                 {
+                    System.out.println("change to localDate:");
                     lastStartTime = LocalTime.from(oldValue);
                     changeStartToLocalDate((LocalDate) newValue);
                 } else if (newClass.equals(LocalDateTime.class)) // change to LocalDateTime
                 {
+                    System.out.println("change to localDateTime:");
                     changeStartToLocalDateTime((LocalDateTime) newValue);
                 }
             }

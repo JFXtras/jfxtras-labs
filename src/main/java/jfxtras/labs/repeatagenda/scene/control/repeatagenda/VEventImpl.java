@@ -363,6 +363,7 @@ public class VEventImpl extends VEvent<Appointment>
      */
     // TODO - REPLACE DIALOG CALLBACK WITH INLINE CODE - SELECT BUTTONS ON TESTING
 //    @Override
+    @Deprecated
     public WindowCloseType edit(
               LocalDateTime dateTimeStartInstanceOld // TODO - NEED TO PASS APPOINTMENT TO ACCOUNT FOR APPOINTMENTS WITH MATCHING DATE/TIMES
             , LocalDateTime dateTimeStartInstanceNew 
@@ -577,7 +578,8 @@ public class VEventImpl extends VEvent<Appointment>
      * @param writeVEventsCallback
      * @return
      */
-    @Override
+//    @Override
+    @Deprecated
     public WindowCloseType delete(
             Temporal dateOrDateTime
 //          , Collection<Appointment> appointments
@@ -643,88 +645,7 @@ public class VEventImpl extends VEvent<Appointment>
             }
             return WindowCloseType.CLOSE_WITHOUT_CHANGE;
         }
-        
-//        final RRuleType rruleType = getRRuleType(this.getRRule());
-//        System.out.println("rrule:" + rruleType);
-//        switch (rruleType)
-//        {
-//        case INDIVIDUAL: // remove individual appointment that has no repeat rule
-//            if (confirmDeleteCallback.call("1"))
-//            {
-//                System.out.println("remove individual:");
-//                Iterator<Appointment> appointmentIterator = appointments.iterator();
-//                boolean found = false;
-//                while (appointmentIterator.hasNext())
-//                { // find VComponent that made the Appointment
-//                    Appointment appointment = appointmentIterator.next();
-//                    if (appointment.getStartLocalDateTime().equals(dateTimeStartInstance))
-//                    {
-//                        appointmentIterator.remove();
-//                        found = true;
-//                        break;
-//                    }
-//                }
-//                if (found)
-//                {
-//                    vEvents.remove(this);
-//                    return WindowCloseType.CLOSE_WITH_CHANGE;
-//                } else
-//                {
-//                    throw new IllegalArgumentException("Instance can't be deleted - not found (" + dateTimeStartInstance + ")");
-//                }
-//            }
-//            break;
-//        case WITH_EXISTING_REPEAT:
-//            final int matchingAppointments;
-//            ChangeDialogOptions changeResponse = changeDialogCallback.call(null);
-//            switch (changeResponse)
-//            {
-//            case ALL:
-//                boolean infinite = (getRRule().getUntil() == null) && (getRRule().getCount() == null);
-//                String found;
-//                if (infinite)
-//                {
-//                    found = "infinite";
-//                } else
-//                {
-//                    LocalDateTime startDateTime = VComponent.localDateTimeFromTemporal(getDateTimeStart());
-//                    long count = stream(startDateTime).count();
-//                    found = Long.toString(count);
-//                }
-//                boolean delete = confirmDeleteCallback.call(found);
-//                if (delete)
-//                {
-//                    vEvents.remove(this);
-//                    return WindowCloseType.CLOSE_WITH_CHANGE;
-//                }
-//
-//                found = Integer.toString(instances().size());
-//                matchingAppointmentsString = (repeat.getEndCriteria() == EndCriteria.NEVER)
-//                        ? resources.getString("infinite") : Integer.toString(matchingAppointments);
-//                break;
-//            case CANCEL:
-//                break;
-//            case ONE:
-//                break;
-//            case THIS_AND_FUTURE:
-//                break;
-//            default:
-//                break;
-//            
-//            }
-//            if (getExDate() == null)
-//            {
-//                setExDate(new EXDate(dateTimeStartInstance));
-//            } else
-//            {
-//                getExDate().getTemporals().add(dateTimeStartInstance);
-//            }
-//
-//            
-//            break;
-//        default:
-//            break;
-//        }
+
         return null;
     }
     

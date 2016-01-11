@@ -491,7 +491,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
                 long d = ChronoUnit.DAYS.between(oldValue, newValue);
                 Temporal n = vComponent.getDateTimeStart().plus(d, ChronoUnit.DAYS);
                 vComponent.setDateTimeStart(n);
-                System.out.println("dates:" + d + " " + vComponent.getDateTimeStart() + " " + ((VEvent) vComponent).getDateTimeEnd());
+                System.out.println("dates:" + d + " " + vComponent.getDateTimeStart() + " " + ((VEvent<T>) vComponent).getDateTimeEnd());
             } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
             makeExceptionDates();
         }

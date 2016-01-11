@@ -100,18 +100,12 @@ public class AppointmentEditController
     
     private final ChangeListener<? super LocalDateTime> startTextListener = (observable, oldSelection, newSelection) ->
     {
-//        if (newSelection.isAfter(endTextField.getLocalDateTime()))
-//        {
-//            tooLateDateAlert(newSelection, endTextField.getLocalDateTime());
-//            startTextField.setLocalDateTime(oldSelection);
-//        } else
-//        {
-            Temporal newDateTimeStart = adjustStartEndTemporal(
-                    vEvent.getDateTimeStart()
-                  , oldSelection
-                  , newSelection);
-            vEvent.setDateTimeStart(newDateTimeStart);
-//        }
+        Temporal newDateTimeStart = adjustStartEndTemporal(
+                vEvent.getDateTimeStart()
+              , oldSelection
+              , newSelection);
+        System.out.println("new start-controller:" + newDateTimeStart);
+        vEvent.setDateTimeStart(newDateTimeStart);
     };
     private final ChangeListener<? super LocalDateTime> endTextlistener = (observable, oldSelection, newSelection) ->
     {
@@ -132,7 +126,6 @@ public class AppointmentEditController
     private Temporal adjustStartEndTemporal(Temporal input, LocalDateTime oldSelection, LocalDateTime newSelection)
     {
         long dayShift = ChronoUnit.DAYS.between(oldSelection, newSelection);
-        System.out.println("dayShift:" + dayShift);
         if (input instanceof LocalDate)
         {
             return input.plus(dayShift, ChronoUnit.DAYS);
@@ -187,23 +180,6 @@ public class AppointmentEditController
             {
                 lastDateTimeStart = startTextField.getLocalDateTime();
                 lastDateTimeEnd = endTextField.getLocalDateTime();
-//                LocalDateTime startDate = startTextField.getLocalDateTime().toLocalDate().atStartOfDay();
-//                startTextField.setLocalDateTime(startDate);
-                
-//                LocalTime localTime = endTextField.getLocalDateTime().toLocalTime();
-//                final LocalDateTime endDate;
-//                final long days;
-//                if (localTime.equals(LocalTime.of(0, 0)))
-//                {
-//                    days = 0;
-//                    endDate = endTextField.getLocalDateTime();
-//                } else
-//                {
-//                    days = 1;
-//                    endDate = endTextField.getLocalDateTime().toLocalDate().plusDays(days).atStartOfDay();
-//                }
-//                endTextField.setLocalDateTime(endDate);
-                
                 LocalDate newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart());
                 vEvent.setDateTimeStart(newDateTimeStart);
                 
@@ -212,9 +188,6 @@ public class AppointmentEditController
 
                 LocalDateTime e = LocalDate.from(vEvent.getDateTimeEnd()).atStartOfDay();
                 endTextField.setLocalDateTime(e);
-                
-//                LocalDate newDateTimeEnd = LocalDate.from(vEvent.getDateTimeEnd());
-//                vEvent.setDateTimeEnd(newDateTimeEnd.plus(days, ChronoUnit.DAYS));
 
                 LocalDate newStartRange = LocalDate.from(vEvent.getStartRange());
                 LocalDate newEndRange = LocalDate.from(vEvent.getEndRange());
@@ -265,7 +238,9 @@ public class AppointmentEditController
         startTextField.localDateTimeProperty().addListener(startTextListener);
         vEvent.dateTimeStartProperty().addListener((obs, oldValue, newValue) ->
         {
+            startTextField.localDateTimeProperty().removeListener(startTextListener);
             startTextField.setLocalDateTime(VComponent.localDateTimeFromTemporal(newValue));
+            startTextField.localDateTimeProperty().addListener(startTextListener);
         });
         
         // END DATE/TIME
@@ -321,7 +296,6 @@ public class AppointmentEditController
           first = t1;
         }
         long dayShift = ChronoUnit.DAYS.between(vEvent.getDateTimeStart(), first);
-//        System.out.println("dayShift:" + dayShift);
         if (dayShift > 0) vEvent.setDateTimeStart(first);
         
         // TODO - REMOVE INVALID EXCEPTIONS
@@ -386,12 +360,14 @@ public class AppointmentEditController
 //        }
     }
     
-    // Update changing this and future instances in VComponent 
-    // This is done by ending the previous VComponent with a UNTIL date or date/time and
-    // starting a new VComponent from the selected instance.  EXDATE, RDATE and RECURRENCES are split
-    // between both VComponents.
-    // vEvent is edited VEvent with new settings, vEventOld has former settings.
-
+    /* This and Future option is complicate so it has been moved into its own method.
+     * 
+     * Changing this and future instances in VComponent is done by ending the previous
+     * VComponent with a UNTIL date or date/time and starting a new VComponent from 
+     * the selected instance.  EXDATE, RDATE and RECURRENCES are split between both
+     * VComponents.  vEvent is edited VEvent with new settings, vEventOld has former
+     * settings.
+     */
     private void thisAndFuture(
               VEvent<Appointment> vEvent
             , VEvent<Appointment> vEventOld
@@ -510,16 +486,18 @@ public class AppointmentEditController
         Temporal dateOrDateTime = (appointment.isWholeDay()) ? 
                 appointment.getStartLocalDateTime().toLocalDate()
               : appointment.getStartLocalDateTime();
-        final ICalendarUtilities.WindowCloseType result = vEvent.delete(
-                dateOrDateTime
-//              , appointments
-              , vComponents
-              , a -> ICalendarUtilities.repeatChangeDialog()
-              , a -> ICalendarUtilities.confirmDelete(a)
-              , vEventWriteCallback);
-        System.out.println("result: " + result);
+                
+//        final ICalendarUtilities.WindowCloseType result = vEvent.delete(
+//                dateOrDateTime
+////              , appointments
+//              , vComponents
+//              , a -> ICalendarUtilities.repeatChangeDialog()
+//              , a -> ICalendarUtilities.confirmDelete(a)
+//              , vEventWriteCallback);
+
         popup.close();
-//        System.out.println("delete:" + vComponents.size() + " " + appointments.size());
+
+        //        System.out.println("delete:" + vComponents.size() + " " + appointments.size());
 //        popupCloseType.set(result);
     }
     
