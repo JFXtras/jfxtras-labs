@@ -362,7 +362,7 @@ public class VEventImpl extends VEvent<Appointment>
      * @return
      */
     // TODO - REPLACE DIALOG CALLBACK WITH INLINE CODE - SELECT BUTTONS ON TESTING
-    @Override
+//    @Override
     public WindowCloseType edit(
               LocalDateTime dateTimeStartInstanceOld // TODO - NEED TO PASS APPOINTMENT TO ACCOUNT FOR APPOINTMENTS WITH MATCHING DATE/TIMES
             , LocalDateTime dateTimeStartInstanceNew 
@@ -373,6 +373,7 @@ public class VEventImpl extends VEvent<Appointment>
             , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
             , Callback<Collection<VComponent<Appointment>>, Void> writeVEventsCallback)
     {
+        System.out.println("old, new:" + dateTimeStartInstanceOld + " " + dateTimeStartInstanceNew);
 //        LocalDateTime dateTimeStartInstanceNew = appointment.getStartLocalDateTime();
 //        LocalDateTime dateTimeEndInstanceNew = appointment.getEndLocalDateTime();
         // Check if start time and duration has changed because those values are not changed in the edit controller.

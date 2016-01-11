@@ -9,6 +9,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -25,10 +26,13 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.VComponentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.RRuleType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -53,10 +57,12 @@ public class AppointmentEditController
     private LocalDateTime dateTimeInstanceEndOriginal;
     
     private VEvent<Appointment> vEvent;
+//    private VComponent<Appointment> vEventOld;
     private VEvent<Appointment> vEventOld;
     private Collection<Appointment> appointments;
     private Collection<VComponent<Appointment>> vComponents;
     private Callback<Collection<VComponent<Appointment>>, Void> vEventWriteCallback;
+    private Stage popup;
 
     /** Indicates how the popup window closed */
     private ObjectProperty<WindowCloseType> popupCloseType; // default to X, meaning click on X to close window
@@ -71,9 +77,9 @@ public class AppointmentEditController
     @FXML private TextField locationTextField; // LOCATION
     @FXML private TextField groupTextField; // CATEGORIES
     @FXML private AppointmentGroupGridPane appointmentGroupGridPane;
-    @FXML private Button closeAppointmentButton;
+    @FXML private Button saveAppointmentButton;
     @FXML private Button cancelAppointmentButton;
-    @FXML private Button closeRepeatButton;
+    @FXML private Button saveRepeatButton;
     @FXML private Button cancelRepeatButton;
     @FXML private Button deleteAppointmentButton;
     @FXML private RepeatableController<Appointment> repeatableController;
@@ -149,17 +155,18 @@ public class AppointmentEditController
             , Collection<VComponent<Appointment>> vComponents
             , List<AppointmentGroup> appointmentGroups
             , Callback<Collection<VComponent<Appointment>>, Void> vEventWriteCallback
-            , ObjectProperty<WindowCloseType> popupCloseType)
+            , Stage popup)
     {
         dateTimeInstanceStartOriginal = appointment.getStartLocalDateTime();
         dateTimeInstanceEndOriginal = appointment.getEndLocalDateTime();
         this.appointment = appointment;        
         this.appointments = appointments;
         this.vComponents = vComponents;
-//        this.vComponent = vComponent;
+        this.popup = popup;
+//        VComponent<Appointment> vComponentOld = VComponentFactory.newVComponent(vComponent);
         this.vEventWriteCallback = vEventWriteCallback;
         vEvent = (VEvent<Appointment>) vComponent;
-        this.popupCloseType = popupCloseType;
+//        this.popupCloseType = popupCloseType;
 
         // Copy original VEvent
         vEventOld = (VEvent<Appointment>) VComponentFactory.newVComponent(vEvent);
@@ -300,7 +307,7 @@ public class AppointmentEditController
     }
 
     // AFTER CLICK SAVE VERIFY REPEAT IS VALID, IF NOT PROMPT.
-    @FXML private void handleCloseButton()
+    @FXML private void handleSaveButton()
     {
         // adjust DTSTART if first occurrence is not equal to it
         Temporal t1 = vEvent.stream(vEvent.getDateTimeStart()).findFirst().get();
@@ -320,25 +327,178 @@ public class AppointmentEditController
         // TODO - REMOVE INVALID EXCEPTIONS
         
         if (! vEvent.isValid()) throw new RuntimeException(vEvent.makeErrorString());
-        final ICalendarUtilities.WindowCloseType result = vEvent.edit(
-                dateTimeInstanceStartOriginal
-              , appointment.getStartLocalDateTime()
-              , vEventOld
-              , appointments
-              , vComponents
-              , a -> ICalendarUtilities.repeatChangeDialog()
-              , vEventWriteCallback);
-        popupCloseType.set(result);
-        if (popupCloseType.get() == WindowCloseType.CLOSE_WITHOUT_CHANGE)
+        
+        final RRuleType rruleType = ICalendarUtilities.getRRuleType(vEvent.getRRule(), vEventOld.getRRule());
+        switch (rruleType)
         {
+        case HAD_REPEAT_BECOMING_INDIVIDUAL:
+            vEvent.setRRule(null);
+            vEvent.setRDate(null);
+            vEvent.setExDate(null);
+        case WITH_NEW_REPEAT:
+        case INDIVIDUAL:
+            break;
+        case WITH_EXISTING_REPEAT:
+            if (! vEvent.equals(vEventOld)) // if changes occurred
+            {
+                ChangeDialogOptions changeResponse = ICalendarUtilities.repeatChangeDialog();
+                switch (changeResponse)
+                {
+                case ALL:
+                    appointments.removeIf(a -> vEvent.instances().stream().anyMatch(a2 -> a2 == a));
+                    vEvent.instances().clear(); // clear VEvent's outdated collection of appointments
+                    appointments.addAll(vEvent.makeInstances()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
+                    break;
+                case CANCEL:
+                    vEventOld.copyTo(vEvent); // return to original vEvent
+                    break;
+                case THIS_AND_FUTURE:
+                    vComponents.add(vEventOld);
+                    LocalDateTime dateTimeInstanceStartNew = appointment.getStartLocalDateTime();
+                    thisAndFuture(vEvent, vEventOld, dateTimeInstanceStartOriginal, dateTimeInstanceStartNew);
+                    break;
+                case ONE:
+                    break;
+                default:
+                    break;
+                }
+            }
         }
+        // refresh instances (appointments)
+        appointments.removeIf(a -> vEvent.instances().stream().anyMatch(a2 -> a2 == a));
+        vEvent.instances().clear();
+        appointments.addAll(vEvent.makeInstances());
+
+        popup.close();
+
+        
+//        final ICalendarUtilities.WindowCloseType result = vEvent.edit(
+//                dateTimeInstanceStartOriginal
+//              , appointment.getStartLocalDateTime()
+//              , vEventOld
+//              , appointments
+//              , vComponents
+//              , a -> ICalendarUtilities.repeatChangeDialog()
+//              , vEventWriteCallback);
+//        popupCloseType.set(result);
+//        if (popupCloseType.get() == WindowCloseType.CLOSE_WITHOUT_CHANGE)
+//        {
+//        }
     }
     
+    // Update changing this and future instances in VComponent 
+    // This is done by ending the previous VComponent with a UNTIL date or date/time and
+    // starting a new VComponent from the selected instance.  EXDATE, RDATE and RECURRENCES are split
+    // between both VComponents.
+    // vEvent is edited VEvent with new settings, vEventOld has former settings.
+
+    private void thisAndFuture(
+              VEvent<Appointment> vEvent
+            , VEvent<Appointment> vEventOld
+            , LocalDateTime dateTimeInstanceStartOriginal
+            , LocalDateTime dateTimeInstanceStartNew)
+    {
+        // Adjust old VEvent
+        if (vEventOld.getRRule().getCount() != null) vEventOld.getRRule().setCount(0);
+        LocalDateTime newDateTime = dateTimeInstanceStartOriginal.toLocalDate().atStartOfDay().minusNanos(1);
+        vEventOld.getRRule().setUntil(newDateTime);
+        vEventOld.setUniqueIdentifier();
+        
+        // Adjust new VEvent
+        vEvent.setDateTimeStart(dateTimeInstanceStartNew);
+        
+        // Split EXDates dates between this and newVEvent
+        if (vEvent.getExDate() != null)
+        {
+            vEvent.getExDate().getTemporals().clear();
+            final Iterator<Temporal> exceptionIterator = vEventOld.getExDate().getTemporals().iterator();
+            while (exceptionIterator.hasNext())
+            {
+                Temporal d = exceptionIterator.next();
+                int result = VComponent.TEMPORAL_COMPARATOR.compare(d, dateTimeInstanceStartNew);
+//                if (d.getLocalDateTime().isBefore(dateTimeStartInstanceNew))
+                if (result < 0)
+                {
+                    exceptionIterator.remove();
+                } else {
+                    vEvent.getExDate().getTemporals().add(d);
+                }
+            }
+            if (vEvent.getExDate().getTemporals().isEmpty()) vEvent.setExDate(null);
+            if (vEventOld.getExDate().getTemporals().isEmpty()) vEventOld.setExDate(null);
+        }
+
+        // Split recurrence date/times between this and newVEvent
+        if (vEvent.getRDate() != null)
+        {
+            vEvent.getRDate().getTemporals().clear();
+            final Iterator<Temporal> recurrenceIterator = vEventOld.getRDate().getTemporals().iterator();
+            while (recurrenceIterator.hasNext())
+            {
+                Temporal d = recurrenceIterator.next();
+                int result = VComponent.TEMPORAL_COMPARATOR.compare(d, dateTimeInstanceStartNew);
+//                if (d.getLocalDateTime().isBefore(dateTimeStartInstanceNew))
+                if (result < 0)
+                {
+                    recurrenceIterator.remove();
+                } else {
+                    vEvent.getRDate().getTemporals().add(d);
+                }
+            }
+            if (vEvent.getRDate().getTemporals().isEmpty()) vEvent.setRDate(null);
+            if (vEventOld.getRDate().getTemporals().isEmpty()) vEventOld.setRDate(null);
+        }
+
+        // Split instance dates between this and newVEvent
+        if (vEvent.getRRule().getRecurrences() != null)
+        {
+            vEvent.getRRule().getRecurrences().clear();
+            final Iterator<Temporal> recurrenceIterator = vEventOld.getRRule().getRecurrences().iterator();
+            while (recurrenceIterator.hasNext())
+            {
+                Temporal d = recurrenceIterator.next();
+                if (VComponent.isBefore(d, dateTimeInstanceStartNew))
+                {
+                    recurrenceIterator.remove();
+                } else {
+                    vEvent.getRRule().getRecurrences().add(d);
+                }
+            }
+        }
+        
+//        // Modify this (edited) VEvent - DON'T NEED - DONE IN CONTROLLER
+//        System.out.println("modify this vEvent:" + durationInNanos);
+//        setDateTimeStart(dateTimeStartInstanceNew);
+//        setDurationInNanos(durationInNanos);
+//        System.out.println("done modify this vEvent:");
+        
+        // Modify COUNT for this (the edited) VEvent
+        if (vEvent.getRRule().getCount() > 0)
+        {
+            final int newCount = (int) vEvent.instances()
+                    .stream()
+                    .map(a -> a.getStartLocalDateTime())
+                    .filter(d -> ! d.isBefore(dateTimeInstanceStartNew))
+                    .count();
+            vEvent.getRRule().setCount(newCount);
+        }
+
+        // Remove old appointments, add back ones
+        appointments.removeIf(a -> vEventOld.instances().stream().anyMatch(a2 -> a2 == a));
+        vEventOld.instances().clear();
+        appointments.addAll(vEventOld.makeInstances()); // add vEventOld part of new appointments
+        
+        System.out.println("veventold:" + appointments.size());
+        vEventOld.instances().stream().forEach(System.out::println);
+        
+    }
     
     @FXML private void handleCancelButton()
     {
+        popup.close();
+
 //        vEventOld.copyTo(vEvent);
-        popupCloseType.set(WindowCloseType.CANCEL);
+//        popupCloseType.set(WindowCloseType.CANCEL);
 //        System.out.println("equal:" + vEventOld.getRRule() + " " + vEvent.getRRule());
     }
 
@@ -358,8 +518,9 @@ public class AppointmentEditController
               , a -> ICalendarUtilities.confirmDelete(a)
               , vEventWriteCallback);
         System.out.println("result: " + result);
+        popup.close();
 //        System.out.println("delete:" + vComponents.size() + " " + appointments.size());
-        popupCloseType.set(result);
+//        popupCloseType.set(result);
     }
     
     // Displays an alert notifying UNTIL date is not an occurrence and changed to 

@@ -15,11 +15,11 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 
-public class ICalendarUtilities
+public final class ICalendarUtilities
 {
-//    private static Button okButton;
-//    private Button cancelButton;
+    private ICalendarUtilities() {}
 
     /**
      * This alert inquires how to apply changes (one, all or this-and-future)
@@ -130,6 +130,28 @@ public class ICalendarUtilities
       , WITH_EXISTING_REPEAT
       , WITH_NEW_REPEAT
       , HAD_REPEAT_BECOMING_INDIVIDUAL
+    }
+    
+    public static RRuleType getRRuleType(RRule rruleNew, RRule rruleOld)
+    {
+        if (rruleNew == null)
+        {
+            if (rruleOld == null)
+            { // doesn't have repeat or have old repeat either
+                return RRuleType.INDIVIDUAL;
+            } else {
+                return RRuleType.HAD_REPEAT_BECOMING_INDIVIDUAL;
+            }
+        } else
+        { // RRule != null
+            if (rruleOld == null)
+            {
+                return RRuleType.WITH_NEW_REPEAT;                
+            } else
+            {
+                return RRuleType.WITH_EXISTING_REPEAT;
+            }
+        }
     }
     
     public static List<Node> getAllNodes(Parent root, Class<? extends Node> matchClass)

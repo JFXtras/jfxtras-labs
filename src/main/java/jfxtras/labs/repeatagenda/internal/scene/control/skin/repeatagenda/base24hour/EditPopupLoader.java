@@ -15,7 +15,6 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.AppointmentEditController;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.VComponentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -46,7 +45,7 @@ public class EditPopupLoader extends Stage {
         String end = Settings.DATE_FORMAT_AGENDA_END.format(appointment.getEndLocalDateTime());
         String appointmentTime = start + end + " ";
         VEvent<Appointment> vEvent = (VEvent<Appointment>) vComponent;
-        VComponent<Appointment> vComponentOld = VComponentFactory.newVComponent(vComponent);
+//        VComponent<Appointment> vComponentOld = VComponentFactory.newVComponent(vComponent);
         setTitle(vEvent.getSummary() + ": " + appointmentTime);
         initModality(Modality.APPLICATION_MODAL);
         
@@ -71,45 +70,46 @@ public class EditPopupLoader extends Stage {
               , agenda.vComponents()
               , agenda.appointmentGroups()
               , veventWriteCallback
-              , popupCloseType);
+              , this);
         Scene scene = new Scene(appointmentPopup);
+        setScene(scene);
 
         //        groupNameEdited.bindBidirectional(appointmentEditController.groupNameEditedProperty());
 
         // listen for close trigger
-        popupCloseType.addListener((observable, oldSelection, newSelection) -> close());
+//        popupCloseType.addListener((observable, oldSelection, newSelection) -> close());
         
-        // when popup closes write changes if occurred
-        setOnHidden((windowEvent) -> 
-        {
-//            System.out.println("group:" + appointment.getAppointmentGroup().getDescription());
-//            agenda.appointmentGroups().stream().map(a -> a.getDescription()).forEach(System.out::println);
-            switch (popupCloseType.get())
-            {
-            case CLOSE_WITH_CHANGE:
-                agenda.refresh();
-//                System.out.println("close popup");
-                if (groupNameEdited.getValue()) {    // TODO write group name changes
-//                    System.out.println("group change write needed");
-                    appointmentGroupWriteCallback.call(agenda.appointmentGroups());
-//                    AppointmentIO.writeAppointmentGroups(appointmentGroups, Settings.APPOINTMENT_GROUPS_FILE);
-                }
-                
-                break;
-            case CANCEL:
-            case X:
-                System.out.println("copy back to original:" + vComponentOld.getDateTimeStart() + " " 
-                        + vComponent.getDateTimeStart());                
-                vComponentOld.copyTo(vComponent);
-                System.out.println("copy back to original:" + vComponent.getDateTimeStart() + " " );
-                break;
-            default:
-                break;
-            }
-            System.out.println("VComponent:" + vComponent.toString());
-        });
+//        // when popup closes write changes if occurred
+//        setOnHidden((windowEvent) -> 
+//        {
+////            System.out.println("group:" + appointment.getAppointmentGroup().getDescription());
+////            agenda.appointmentGroups().stream().map(a -> a.getDescription()).forEach(System.out::println);
+//            switch (popupCloseType.get())
+//            {
+//            case CLOSE_WITH_CHANGE:
+//                agenda.refresh();
+////                System.out.println("close popup");
+//                if (groupNameEdited.getValue()) {    // TODO write group name changes
+////                    System.out.println("group change write needed");
+//                    appointmentGroupWriteCallback.call(agenda.appointmentGroups());
+////                    AppointmentIO.writeAppointmentGroups(appointmentGroups, Settings.APPOINTMENT_GROUPS_FILE);
+//                }
+//                
+//                break;
+//            case CANCEL:
+//            case X:
+//                System.out.println("copy back to original:" + vComponentOld.getDateTimeStart() + " " 
+//                        + vComponent.getDateTimeStart());                
+//                vComponentOld.copyTo(vComponent);
+//                System.out.println("copy back to original:" + vComponent.getDateTimeStart() + " " );
+//                break;
+//            default:
+//                break;
+//            }
+//            System.out.println("VComponent:" + vComponent.toString());
+//        });
         
-        setScene(scene);
+//        setScene(scene);
     }
 
     

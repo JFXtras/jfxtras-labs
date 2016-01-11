@@ -372,6 +372,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     final private StringProperty uniqueIdentifier = new SimpleStringProperty(this, UNIQUE_IDENTIFIER_NAME);
     public String getUniqueIdentifier() { return uniqueIdentifier.getValue(); }
     public void setUniqueIdentifier(String s) { uniqueIdentifier.set(s); }
+    public void setUniqueIdentifier() { setUniqueIdentifier(getUidGeneratorCallback().call(null)); } 
 //    public T withUniqueIdentifier(String uid) { setUniqueIdentifier(uid); return (T)this; }
     
     /** Callback for creating unique uid values  */

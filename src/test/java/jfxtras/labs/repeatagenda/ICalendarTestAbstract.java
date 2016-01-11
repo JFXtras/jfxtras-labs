@@ -414,7 +414,7 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
 
     
     /** FREQ=DAILY, Basic daily stream */
-    protected static VEventImpl getDaily1()
+    public static VEventImpl getDaily1()
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));

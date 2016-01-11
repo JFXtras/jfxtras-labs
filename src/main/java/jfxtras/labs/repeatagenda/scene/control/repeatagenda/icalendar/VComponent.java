@@ -262,27 +262,27 @@ public interface VComponent<T>
      */
     void copyTo(VComponent<T> destination);
     
-    /**
-     * Handle editing a VComponent.
-     * 
-     * @param dateTimeStartInstanceOld : start of instance before edit
-     * @param dateTimeStartInstanceNew : start of instance after edit
-     * @param vComponentOld
-     * @param instances
-     * @param vEvents
-     * @param changeDialogCallback
-     * @param vEventWriteCallback
-     * @return
-     */
-    WindowCloseType edit(
-            LocalDateTime dateTimeStartInstanceOld
-          , LocalDateTime dateTimeStartInstanceNew
-//          , T instance
-          , VComponent<T> vComponentOld
-          , Collection<T> instances
-          , Collection<VComponent<T>> vEvents
-          , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
-          , Callback<Collection<VComponent<T>>, Void> vEventWriteCallback);
+//    /**
+//     * Handle editing a VComponent.
+//     * 
+//     * @param dateTimeStartInstanceOld : start of instance before edit
+//     * @param dateTimeStartInstanceNew : start of instance after edit
+//     * @param vComponentOld
+//     * @param instances
+//     * @param vEvents
+//     * @param changeDialogCallback
+//     * @param vEventWriteCallback
+//     * @return
+//     */
+//    WindowCloseType edit(
+//            LocalDateTime dateTimeStartInstanceOld
+//          , LocalDateTime dateTimeStartInstanceNew
+////          , T instance
+//          , VComponent<T> vComponentOld
+//          , Collection<T> instances
+//          , Collection<VComponent<T>> vEvents
+//          , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
+//          , Callback<Collection<VComponent<T>>, Void> vEventWriteCallback);
     
     /**
      * Handle deleting a VComponent from vComponents collection and its accompanying
