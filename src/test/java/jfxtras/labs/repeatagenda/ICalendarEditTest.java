@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
@@ -102,6 +103,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
      * Tests editing start and end time of ALL events
      */
     @Test
+    @Ignore // I'm removing edit and delete methods so this test is obsolete
     public void editAllDateTimeDaily2()
     {
         VEventImpl vevent = getDaily2();
@@ -169,6 +171,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
      * Tests ONE event of a daily repeat event changing date and time
      */
     @Test
+    @Ignore // I'm removing edit and delete methods so this test is obsolete
     public void editOneTimeAndDateDaily2()
     {
         // Individual Appointment
@@ -232,6 +235,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     }
     
     @Test  // TODO - FINISH TEST
+    @Ignore // I'm removing edit and delete methods so this test is obsolete
     public void editFutureTimeAndDateDaily1()
     {
         VEventImpl vevent = getDaily1();
@@ -281,6 +285,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
      * FREQ=DAILY;INVERVAL=3;COUNT=6
      */
     @Test
+    @Ignore // I'm removing edit and delete methods so this test is obsolete
     public void editFutureTimeAndDateDaily2()
     {
         VEventImpl vevent = getDaily2();
@@ -382,6 +387,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
      * FREQ=DAILY;INVERVAL=2;UNTIL=20151201T000000
      */
     @Test
+    @Ignore // I'm removing edit and delete methods so this test is obsolete
     public void editFutureTimeAndDateDaily6()
     {
         // Individual Appointment
@@ -533,6 +539,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
      * Tests changing a daily repeat rule to an individual appointment
      */
     @Test
+    @Ignore // I'm removing edit and delete methods so this test is obsolete
     public void editToIndividualDaily2()
     {
         // Individual Appointment
@@ -617,6 +624,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     }
     
     @Test
+    @Ignore // I'm removing edit and delete methods so this test is obsolete
     public void editWholeDay1()
     {
         VEventImpl vevent = getWholeDayDaily3();

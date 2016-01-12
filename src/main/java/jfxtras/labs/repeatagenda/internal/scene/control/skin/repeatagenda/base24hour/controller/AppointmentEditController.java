@@ -199,17 +199,7 @@ public class AppointmentEditController
                 {
                     startTextField.setLocalDateTime(lastDateTimeStart);
                     endTextField.setLocalDateTime(lastDateTimeEnd);
-                    
-//                    LocalTime timeStart = lastDateTimeStart.toLocalTime();
-//                    LocalDateTime newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart()).atTime(timeStart);
                     vEvent.setDateTimeStart(lastDateTimeStart);
-                    
-//                    LocalTime timeEnd = lastDateTimeEnd.toLocalTime();
-//                    long days = (timeEnd.equals(LocalTime.of(0, 0))) ? 0 : 1;
-//                    LocalDateTime newDateTimeEnd = LocalDate
-//                            .from(vEvent.getDateTimeEnd())
-//                            .minus(days, ChronoUnit.DAYS)
-//                            .atTime(timeEnd);
                     vEvent.setDateTimeEnd(lastDateTimeEnd);
                 } else
                 {
@@ -218,8 +208,6 @@ public class AppointmentEditController
                     startTextField.setLocalDateTime(newDateTimeStart);
                     LocalDateTime newDateTimeEnd = (LocalDateTime) vEvent.getDateTimeEnd();
                     endTextField.setLocalDateTime(newDateTimeEnd);
-//                    LocalDateTime newDateTimeEnd = LocalDate.from(vEvent.getDateTimeEnd()).atStartOfDay();
-//                    vEvent.setDateTimeEnd(newDateTimeEnd);
                 }
                 LocalDateTime newStartRange = LocalDate.from(vEvent.getStartRange()).atStartOfDay();
                 LocalDateTime newEndRange = LocalDate.from(vEvent.getEndRange()).atStartOfDay();
@@ -381,6 +369,7 @@ public class AppointmentEditController
         vEventOld.setUniqueIdentifier();
         
         // Adjust new VEvent
+        System.out.println("future:" + dateTimeInstanceStartOriginal + " " + dateTimeInstanceStartNew);
         vEvent.setDateTimeStart(dateTimeInstanceStartNew);
         
         // Split EXDates dates between this and newVEvent

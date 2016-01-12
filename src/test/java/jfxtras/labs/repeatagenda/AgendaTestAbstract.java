@@ -18,7 +18,7 @@ import jfxtras.test.JFXtrasGuiTest;
 public class AgendaTestAbstract extends JFXtrasGuiTest
 {
     final protected Map<String, Agenda.AppointmentGroup> appointmentGroupMap = new TreeMap<String, Agenda.AppointmentGroup>();
-
+    public static LocalDateTime dateTimeStamp;
     
     public Parent getRootNode()
     {
@@ -48,9 +48,9 @@ public class AgendaTestAbstract extends JFXtrasGuiTest
                         .withEndLocalDateTime( dateTimeRange.getEndLocalDateTime())
                         .withSummary("New")
                         .withDescription("")
-                        .withAppointmentGroup(appointmentGroupMap.get("group01"));
-
+                        .withAppointmentGroup(appointmentGroupMap.get("group00"));
 //                        .withAppointmentGroup(agenda.appointmentGroups().get(0));
+                dateTimeStamp = appointment.getStartLocalDateTime();
                 return appointment;
             }
         });
