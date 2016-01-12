@@ -61,30 +61,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         Parent p = super.getRootNode();
         return p;
     }
-    
-    @Test
-    //@Ignore
-    public void canEditAll()
-    {
-       TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));       
-       VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
-       
-       // Open edit popup
-       move("#hourLine11"); // open edit popup
-       press(MouseButton.SECONDARY);
-       release(MouseButton.SECONDARY);
-
-       // edit property
-       TextField summaryTextField = find("#summaryTextField");
-       summaryTextField.setText("new summary");
-
-       // save changes to ALL
-       click("#saveAppointmentButton");
-       ComboBox<ChangeDialogOptions> c = find("#edit_dialog_combobox");
-       TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOptions.ALL));
-       click("#edit_dialog_button_ok");
-   }
-    
+        
     // edit non-repeatable elements
     @Test
     //@Ignore
@@ -1063,6 +1040,32 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         }
         closeCurrentWindow();
     }
+    
+    @Test
+    //@Ignore
+    public void canEditThisAndFuture()
+    {
+       TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));       
+       VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+       
+       // Open edit popup
+       move("#hourLine11"); // open edit popup
+       press(MouseButton.SECONDARY);
+       release(MouseButton.SECONDARY);
+
+       // edit property
+       TextField summaryTextField = find("#summaryTextField");
+       summaryTextField.setText("new summary");
+
+       // save changes to THIS AND FUTURE
+       click("#saveAppointmentButton");
+       ComboBox<ChangeDialogOptions> c = find("#edit_dialog_combobox");
+       TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOptions.THIS_AND_FUTURE));
+       click("#edit_dialog_button_ok");
+       
+       // verify changes
+       assertEquals(2, agenda.vComponents().size());
+   }
     
     @Test
     //@Ignore

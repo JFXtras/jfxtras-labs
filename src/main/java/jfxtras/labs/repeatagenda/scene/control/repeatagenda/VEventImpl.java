@@ -3,6 +3,7 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -312,11 +313,23 @@ public class VEventImpl extends VEvent<Appointment>
         List<Appointment> madeAppointments = new ArrayList<>();
         Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! VComponent.isBefore(d, getStartRange()));
         Stream<Temporal> removedTooLate = takeWhile(removedTooEarly, a -> ! VComponent.isAfter(a, getEndRange()));
-        removedTooLate.forEach(d ->
+        removedTooLate.forEach(t ->
         {
-            LocalDateTime startLocalDateTime = VComponent.localDateTimeFromTemporal(d);
+            LocalDateTime startLocalDateTime = VComponent.localDateTimeFromTemporal(t);
             Appointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
             appt.setStartLocalDateTime(startLocalDateTime);
+            final long nanos;
+            if (getDurationInNanos() == 0)
+            {
+                if (t instanceof LocalDate)
+                {
+                    nanos = ChronoUnit.DAYS.between(getDateTimeStart(), getDateTimeEnd()) * VComponent.NANOS_IN_DAY;                    
+                } else if (t instanceof LocalDateTime)
+                {
+                    nanos = ChronoUnit.NANOS.between(getDateTimeStart(), getDateTimeEnd());
+                } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
+            } else nanos = getDurationInNanos();
+//            nanos = getDurationInNanos();
             appt.setEndLocalDateTime(startLocalDateTime.plusNanos(getDurationInNanos()));
             appt.setDescription(getDescription());
             appt.setSummary(getSummary());

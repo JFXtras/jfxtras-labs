@@ -111,6 +111,7 @@ public class ICalendarAgenda extends Agenda {
         // setup i18n resource bundle
         Locale myLocale = Locale.getDefault();
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.repeatagenda.i18n.ICalendarAgenda", myLocale);
+//        ResourceBundle resources = ResourceBundle.getBundle("ICalendarAgenda", myLocale);
         Settings.setup(resources);
         
         appointmentsListener = (ListChangeListener.Change<? extends Appointment> change) ->
@@ -199,10 +200,18 @@ public class ICalendarAgenda extends Agenda {
                     , repeatWriteCallback // write repeat callback initialized to null
                     , a -> { this.refresh(); return null; }); // refresh agenda
             
-            // remove listener to prevent making extra vEvents during edit
-            editPopup.setOnShowing((windowEvent) -> appointments().removeListener(appointmentsListener));
+            // remove listeners to prevent making extra vEvents during edit
+            editPopup.setOnShowing((windowEvent) -> 
+            {
+                appointments().removeListener(appointmentsListener);
+                vComponents().removeListener(vComponentsListener);
+            });
             editPopup.show();
-            editPopup.setOnHiding((windowEvent) -> appointments().addListener(appointmentsListener)); // return listener
+            editPopup.setOnHiding((windowEvent) -> 
+            {
+                appointments().addListener(appointmentsListener);
+                vComponents().addListener(vComponentsListener);
+            });
             return null;
         });
         

@@ -119,6 +119,7 @@ public final class ICalendarUtilities
         }
     }
     
+    @Deprecated
     public enum WindowCloseType
     {
         X, CANCEL, CLOSE_WITH_CHANGE, CLOSE_WITHOUT_CHANGE

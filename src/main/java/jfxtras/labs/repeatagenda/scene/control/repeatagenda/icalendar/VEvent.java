@@ -289,9 +289,10 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
             {
                 dtEnd = newValue.plus(getDurationInNanos()/NANOS_IN_DAY, ChronoUnit.DAYS);
             } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported (" + newValue.getClass().getSimpleName() + ")");
-            dateTimeEndProperty().removeListener(dateTimeEndlistener);
+            System.out.println("new dtEnd:" + dtEnd);
+//            dateTimeEndProperty().removeListener(dateTimeEndlistener);
             setDateTimeEnd(dtEnd);
-            dateTimeEndProperty().addListener(dateTimeEndlistener);
+//            dateTimeEndProperty().addListener(dateTimeEndlistener);
         }
     }
     
@@ -396,7 +397,6 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                     int days = Period.between((LocalDate) getDateTimeStart(), (LocalDate) newSel).getDays();
                     nanos = (long) days * NANOS_IN_DAY;
                 } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported (" + newSel.getClass().getSimpleName() + ")");
-
                 durationInNanosProperty().removeListener(durationlistener);
                 setDurationInNanos(nanos);
                 durationInNanosProperty().addListener(durationlistener);
@@ -404,6 +404,8 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         };
         
         // MAYBE I CAN HAVE THREE LISTENERS - ONE TO CHECK FOR TYPE CHANGING AND SWAP ONE FOR LOCALDATE AND OTHER LOCALDATETIME - 
+        // TODO - SHOULD THESE LISTENERS DISAPPEAR?  SHOULD THE IMPLEMENTATION HANDLE THIS? - CONTROLLER 
+        // I NEED DURATION THOUGH
         dateTimeStartlistener = (obs, oldValue, newValue) ->
         { // listener to synch dateTimeStart and durationInSeconds
             Class<? extends Temporal> oldClass = (oldValue == null) ? null : oldValue.getClass();
