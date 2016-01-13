@@ -113,7 +113,8 @@ public class ICalendarAgenda extends Agenda {
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.repeatagenda.i18n.ICalendarAgenda", myLocale);
 //        ResourceBundle resources = ResourceBundle.getBundle("ICalendarAgenda", myLocale);
         Settings.setup(resources);
-        
+
+        // Makes a new VComponent when an appointment is drawn on Agenda.
         appointmentsListener = (ListChangeListener.Change<? extends Appointment> change) ->
         {
             System.out.println("appointments changed2:");
@@ -137,7 +138,6 @@ public class ICalendarAgenda extends Agenda {
                                 vComponents().removeListener(vComponentsListener);
                                 vComponents.add(newVComponent);
                                 vComponents().addListener(vComponentsListener);
-                                System.out.println(newVComponent);
                             });
                 }
             }
@@ -201,7 +201,7 @@ public class ICalendarAgenda extends Agenda {
                     , repeatWriteCallback // write repeat callback initialized to null
                     , a -> { this.refresh(); return null; }); // refresh agenda
             
-            // remove listeners to prevent making extra vEvents during edit
+            // remove listeners during edit (to prevent making extra vEvents and appointments)
             editPopup.setOnShowing((windowEvent) -> 
             {
                 appointments().removeListener(appointmentsListener);

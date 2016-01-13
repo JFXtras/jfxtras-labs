@@ -515,7 +515,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     {
         destination.setDescription(source.getDescription());
         destination.setDurationInNanos(source.getDurationInNanos());
-        destination.setDateTimeStart(source.getDateTimeStart());
+        destination.setDateTimeEnd(source.getDateTimeEnd());
     }
 
     /** Deep copy all fields from this to destination */

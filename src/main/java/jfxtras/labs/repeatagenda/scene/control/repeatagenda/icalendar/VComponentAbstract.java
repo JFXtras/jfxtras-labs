@@ -502,6 +502,8 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
         boolean uniqueIdentifierEquals = (getUniqueIdentifier() == null) ?
                 (testObj.getUniqueIdentifier() == null) : getUniqueIdentifier().equals(testObj.getUniqueIdentifier());
+        boolean relatedToEquals = (getRelatedTo() == null) ?
+                (testObj.getRelatedTo() == null) : getRelatedTo().equals(testObj.getRelatedTo());
         boolean rruleEquals = (getRRule() == null) ?
                 (testObj.getRRule() == null) : getRRule().equals(testObj.getRRule());
         boolean eXDatesEquals = (getExDate() == null) ?
@@ -511,7 +513,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         System.out.println("Vcomponent equals: " + categoriesEquals + " " + commentEquals + " " + dateTimeStampEquals + " " + dateTimeStartEquals + " " 
                 + locationEquals + " " + summaryEquals + " " + uniqueIdentifierEquals + " " + rruleEquals + " " + eXDatesEquals + " " + rDatesEquals);
         return categoriesEquals && commentEquals && dateTimeStampEquals && dateTimeStartEquals && locationEquals
-                && summaryEquals && uniqueIdentifierEquals && rruleEquals && eXDatesEquals && rDatesEquals;
+                && summaryEquals && uniqueIdentifierEquals && rruleEquals && eXDatesEquals && rDatesEquals && relatedToEquals;
     }
 
     /** Make map of properties and string values for toString method in subclasses (like VEvent)
@@ -531,6 +533,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         if (getDateTimeLastModified() != null) properties.put(dateTimeLastModifiedProperty(), VComponent.DATE_TIME_FORMATTER.format(getDateTimeLastModified()));
         if (getExDate() != null) properties.put(exDateProperty(), getExDate().toString());
         if (getLocation() != null) properties.put(locationProperty(), getLocation().toString());
+        if (getRelatedTo() != null) properties.put(relatedToProperty(), getRelatedTo().toString());
         if (getRDate() != null) properties.put(rDateProperty(), getRDate().toString());
         if (getRRule() != null) properties.put(rRuleProperty(), getRRule().toString());
         if (getSummary() != null) properties.put(summaryProperty(), getSummary().toString());
@@ -574,8 +577,10 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     
     /** Convert a list of strings containing properties of a iCalendar component and
      * populate its properties.  Used to make a new object from a List<String>.
-     * @param <U>
-     * @param s
+     * 
+     * @param vComponent
+     * @param strings - list of properties
+     * @return
      */
     protected static <U> VComponentAbstract<U> parseVComponent(VComponentAbstract<U> vComponent, List<String> strings)
     {
@@ -635,6 +640,10 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
             { // RECURRENCE-ID
                 LocalDateTime dateTime = LocalDateTime.parse(value,VComponent.DATE_TIME_FORMATTER);
                 vComponent.setDateTimeRecurrence(dateTime);
+                stringsIterator.remove();
+            } else if (property.equals(RELATED_TO_NAME))
+            { // RELATED-TO
+                vComponent.setRelatedTo(value);
                 stringsIterator.remove();
             } else if (property.equals(RECURRENCE_RULE_NAME))
             { // RRULE

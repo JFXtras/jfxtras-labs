@@ -174,7 +174,6 @@ public class AppointmentEditController
         vEvent = (VEvent<Appointment>) vComponent;
 
         // Convert duration to date/time end
-        // TODO - THIS MAY BE A PROBLEM - FIND BETTER WAY
         if (vEvent.getDurationInNanos() > 0)
         {
             final Temporal end;
@@ -186,13 +185,12 @@ public class AppointmentEditController
             {
                 end = vEvent.getDateTimeStart().plus(vEvent.getDurationInNanos(), ChronoUnit.NANOS);
             } else throw new DateTimeException("Illegal Temporal type (" + vEvent.getDateTimeStart().getClass().getSimpleName() + ").  Only LocalDate and LocalDateTime are supported)");
-            vEvent.setDateTimeEnd(end);
             vEvent.setDurationInNanos(0L);
+            vEvent.setDateTimeEnd(end);
         }
         
         // Copy original VEvent
         vEventOld = (VEvent<Appointment>) VComponentFactory.newVComponent(vEvent);
-        System.out.println("copy:" + vEvent.getDurationInNanos() + " " + vEventOld.getDurationInNanos());
         
         // String bindings
         summaryTextField.textProperty().bindBidirectional(vEvent.summaryProperty());
@@ -306,11 +304,6 @@ public class AppointmentEditController
     // AFTER CLICK SAVE VERIFY REPEAT IS VALID, IF NOT PROMPT.
     @FXML private void handleSave()
     {
-        System.out.println("VEvent:" + vEvent);
-       
-        // TODO - REMOVE INVALID EXCEPTIONS
-        if (! vEvent.isValid()) throw new RuntimeException(vEvent.makeErrorString());
-        
         final RRuleType rruleType = ICalendarUtilities.getRRuleType(vEvent.getRRule(), vEventOld.getRRule());
         System.out.println("rrule: " + rruleType);
         switch (rruleType)
@@ -340,10 +333,12 @@ public class AppointmentEditController
                     vEventOld.copyTo(vEvent); // return to original vEvent
                     break;
                 case THIS_AND_FUTURE:
-                    System.out.println("vComponents1:" + vComponents.size());
                     vComponents.add(vEventOld);
                     LocalDateTime dateTimeInstanceStartNew = appointment.getStartLocalDateTime();
                     thisAndFuture(vEvent, vEventOld, dateTimeInstanceStartOriginal, dateTimeInstanceStartNew);
+                    System.out.println("vEventOld:" + vEventOld);
+                    System.out.println("vEvent:" + vEvent);
+                    if (! vEventOld.isValid()) throw new RuntimeException(vEventOld.makeErrorString());
                     break;
                 case ONE:
                     break;
@@ -352,6 +347,7 @@ public class AppointmentEditController
                 }
             }
         }
+        if (! vEvent.isValid()) throw new RuntimeException(vEvent.makeErrorString());
         popup.close();
     }
 
@@ -384,11 +380,14 @@ public class AppointmentEditController
         if (vEventOld.getRRule().getCount() != null) vEventOld.getRRule().setCount(0);
         LocalDateTime newDateTime = dateTimeInstanceStartOriginal.toLocalDate().atStartOfDay().minusNanos(1);
         vEventOld.getRRule().setUntil(newDateTime);
-        vEventOld.setUniqueIdentifier();
         
         // Adjust new VEvent
-        System.out.println("future:" + dateTimeInstanceStartOriginal + " " + dateTimeInstanceStartNew + " " + vEvent.getDateTimeStart());
+        long shift = ChronoUnit.DAYS.between(vEvent.getDateTimeStart(), dateTimeInstanceStartNew);
+        Temporal dtEnd = vEvent.getDateTimeEnd().plus(shift, ChronoUnit.DAYS);
+        vEvent.setDateTimeEnd(dtEnd);
         vEvent.setDateTimeStart(dateTimeInstanceStartNew);
+        vEvent.setUniqueIdentifier();
+        vEvent.setRelatedTo(vEventOld.getUniqueIdentifier());
         
         // Split EXDates dates between this and newVEvent
         if (vEvent.getExDate() != null)
@@ -465,7 +464,6 @@ public class AppointmentEditController
         appointmentsTemp.addAll(appointments);
         appointmentsTemp.removeIf(a -> vEventOld.instances().stream().anyMatch(a2 -> a2 == a));
         vEventOld.instances().clear(); // clear vEventOld outdated collection of appointments
-        System.out.println("vEventOld:" + vEventOld.getDurationInNanos() + " " + vEventOld.getDateTimeEnd());
         appointmentsTemp.addAll(vEventOld.makeInstances()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
         vEvent.instances().clear(); // clear VEvent's outdated collection of appointments
         appointmentsTemp.addAll(vEvent.makeInstances()); // add vEventOld part of new appointments
