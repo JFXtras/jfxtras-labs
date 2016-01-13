@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities;
@@ -23,6 +24,7 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
 public class ICalendarDeleteTest extends ICalendarTestAbstract
 {
     @Test
+    @Ignore
     public void deleteVComponent1()
     {
 //        ICalendarAgenda agenda = new ICalendarAgenda();
@@ -55,6 +57,7 @@ public class ICalendarDeleteTest extends ICalendarTestAbstract
     }
 
     @Test
+    @Ignore
     public void deleteVComponent2()
     {
         VEventImpl vEvent = getIndividual1();

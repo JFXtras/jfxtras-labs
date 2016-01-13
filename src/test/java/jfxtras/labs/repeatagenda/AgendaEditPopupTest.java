@@ -1062,10 +1062,39 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
        ComboBox<ChangeDialogOptions> c = find("#edit_dialog_combobox");
        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOptions.THIS_AND_FUTURE));
        click("#edit_dialog_button_ok");
-       
-       // verify changes
+
+       // verify VComponent changes
        assertEquals(2, agenda.vComponents().size());
-   }
+       VEvent<Appointment> v1 = (VEvent<Appointment>) agenda.vComponents().get(0);
+       VEvent<Appointment> v2 = (VEvent<Appointment>) agenda.vComponents().get(1);
+       VEvent<Appointment> expectedV1 = ICalendarTestAbstract.getDaily1();
+       expectedV1.getRRule().setUntil(LocalDateTime.of(2015, 11, 11, 9, 59, 59));
+       VEvent<Appointment> expectedV2 = ICalendarTestAbstract.getDaily1();
+       expectedV2.setSummary("new summary");
+       expectedV2.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
+       expectedV2.setDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0));
+       expectedV2.setRelatedTo("20150110T080000-0@jfxtras.org");
+       expectedV2.setUniqueIdentifier(v2.getUniqueIdentifier()); // uid is now time-based so copy uid to guarantee equality.
+       assertEquals(expectedV1, v1);
+       assertEquals(expectedV2, v2);
+
+       // verify Appointment changes
+       { // verify added exceptions are not in exceptionComboBox list
+           List<String> summaries = agenda.appointments()
+                   .stream()
+                   .map(a -> a.getSummary())
+                   .collect(Collectors.toList());
+           List<String> expectedSummaries = new ArrayList<>(Arrays.asList(
+                   "Daily1 Summary"
+                 , "Daily1 Summary"
+                 , "new summary"
+                 , "new summary"
+                 , "new summary"
+                 , "new summary"
+                   ));
+           assertEquals(expectedSummaries, summaries);
+       }
+    }
     
     @Test
     //@Ignore

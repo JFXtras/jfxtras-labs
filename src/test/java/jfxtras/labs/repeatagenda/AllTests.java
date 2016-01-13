@@ -11,8 +11,8 @@ import org.junit.runners.Suite.SuiteClasses;
               , AgendaEditPopupTest.class
               , ICalendarCopyTest.class
               , ICalendarDateTest.class
-              , ICalendarDeleteTest.class
-//              , ICalendarEditTest.class
+//              , ICalendarDeleteTest.class
+              , ICalendarEditTest.class
               , ICalendarEqualsTest.class
               , MakeAppointmentsTest.class
               , ICalendarParseTest.class

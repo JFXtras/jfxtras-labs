@@ -34,6 +34,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     
     // Ensures duration is automatically updated correctly
     @Test // LocalDateTime
+    @Ignore
     public void canEditDuration()
     {
         VEventImpl v = getDaily1();
@@ -45,6 +46,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     }
     
     @Test // LocalDate
+    @Ignore
     public void canEditDuration2()
     {
         VEventImpl v = getIndividual2();
@@ -56,6 +58,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     }
 
     @Test // LocalDateTime
+    @Ignore
     public void canEditDateTimeEnd()
     {
         VEventImpl v = getDaily1();
@@ -67,6 +70,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     }
     
     @Test // LocalDate
+    @Ignore
     public void canEditDateTimeEnd2()
     {
         VEventImpl v = getIndividual2();
@@ -78,6 +82,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     }
     
     @Test // LocalDateTime
+    @Ignore
     public void canEditDateTimeStart()
     {
         VEventImpl v = getDaily1();
@@ -89,6 +94,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     }
     
     @Test // LocalDate
+    @Ignore
     public void canEditDateTimeStart2()
     {
         VEventImpl v = getIndividual2();
@@ -588,6 +594,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
      * Tests editing start and end time of ALL events
      */
     @Test
+    @Ignore
     public void editCancelDaily2()
     {
         VEventImpl vevent = getDaily2();

@@ -418,7 +418,8 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
+        vEvent.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0));
+//        vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
         vEvent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(3));
         vEvent.setDescription("Daily1 Description");
         vEvent.setSummary("Daily1 Summary");

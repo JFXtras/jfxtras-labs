@@ -328,7 +328,6 @@ public class VEventImpl extends VEvent<Appointment>
                     else throw new RuntimeException("Invalid VEvent: Neither DURATION or DTEND set");
                 } else if (t instanceof LocalDateTime)
                 {
-                    System.out.println("start,end:" + getDateTimeStart() + " " + getDateTimeEnd());
                     if (getDateTimeEnd() != null) nanos = ChronoUnit.NANOS.between(getDateTimeStart(), getDateTimeEnd());
                     else if (getDurationInNanos() != 0) nanos = getDurationInNanos();
                     else throw new RuntimeException("Invalid VEvent: Neither DURATION or DTEND set");

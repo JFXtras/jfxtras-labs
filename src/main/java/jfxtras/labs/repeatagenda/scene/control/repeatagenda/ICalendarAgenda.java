@@ -55,7 +55,6 @@ public class ICalendarAgenda extends Agenda {
                 .range(0, 24)
                 .mapToObj(i -> new ICalendarAgenda.AppointmentGroupImpl()
                        .withStyleClass("group" + i)
-//                       .withKey(i)
                        .withDescription("group" + (i < 10 ? "0" : "") + i))
                 .collect(Collectors.toList()));
 

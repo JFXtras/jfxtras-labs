@@ -58,7 +58,7 @@ public class AppointmentEditController
     
     private VEvent<Appointment> vEvent;
 //    private VComponent<Appointment> vEventOld;
-    private VEvent<Appointment> vEventOld;
+    private VEvent<Appointment> vEventOriginal;
     private Collection<Appointment> appointments;
     private Collection<VComponent<Appointment>> vComponents;
     private Callback<Collection<VComponent<Appointment>>, Void> vEventWriteCallback;
@@ -190,7 +190,7 @@ public class AppointmentEditController
         }
         
         // Copy original VEvent
-        vEventOld = (VEvent<Appointment>) VComponentFactory.newVComponent(vEvent);
+        vEventOriginal = (VEvent<Appointment>) VComponentFactory.newVComponent(vEvent);
         
         // String bindings
         summaryTextField.textProperty().bindBidirectional(vEvent.summaryProperty());
@@ -304,7 +304,7 @@ public class AppointmentEditController
     // AFTER CLICK SAVE VERIFY REPEAT IS VALID, IF NOT PROMPT.
     @FXML private void handleSave()
     {
-        final RRuleType rruleType = ICalendarUtilities.getRRuleType(vEvent.getRRule(), vEventOld.getRRule());
+        final RRuleType rruleType = ICalendarUtilities.getRRuleType(vEvent.getRRule(), vEventOriginal.getRRule());
         System.out.println("rrule: " + rruleType);
         switch (rruleType)
         {
@@ -319,7 +319,7 @@ public class AppointmentEditController
             break;
         }
         case WITH_EXISTING_REPEAT:
-            if (! vEvent.equals(vEventOld)) // if changes occurred
+            if (! vEvent.equals(vEventOriginal)) // if changes occurred
             {
                 ChangeDialogOptions changeResponse = ICalendarUtilities.repeatChangeDialog();
                 switch (changeResponse)
@@ -330,15 +330,15 @@ public class AppointmentEditController
                     break;
                 }
                 case CANCEL:
-                    vEventOld.copyTo(vEvent); // return to original vEvent
+                    vEventOriginal.copyTo(vEvent); // return to original vEvent
                     break;
                 case THIS_AND_FUTURE:
-                    vComponents.add(vEventOld);
                     LocalDateTime dateTimeInstanceStartNew = appointment.getStartLocalDateTime();
-                    thisAndFuture(vEvent, vEventOld, dateTimeInstanceStartOriginal, dateTimeInstanceStartNew);
-                    System.out.println("vEventOld:" + vEventOld);
-                    System.out.println("vEvent:" + vEvent);
-                    if (! vEventOld.isValid()) throw new RuntimeException(vEventOld.makeErrorString());
+                    VEvent<Appointment> vEventNew = thisAndFuture(vEvent, vEventOriginal, dateTimeInstanceStartOriginal, dateTimeInstanceStartNew);
+                    vComponents.add(vEventNew);
+                    System.out.println("vEventNew:" + vEventNew.getUniqueIdentifier());
+                    System.out.println("vEvent:" + vEvent.getUniqueIdentifier());
+                    if (! vEventNew.isValid()) throw new RuntimeException(vEventOriginal.makeErrorString());
                     break;
                 case ONE:
                     break;
@@ -367,33 +367,36 @@ public class AppointmentEditController
      * Changing this and future instances in VComponent is done by ending the previous
      * VComponent with a UNTIL date or date/time and starting a new VComponent from 
      * the selected instance.  EXDATE, RDATE and RECURRENCES are split between both
-     * VComponents.  vEvent is edited VEvent with new settings, vEventOld has former
-     * settings.
+     * VComponents.  vEventNew has new settings, vEvent has former settings.
      */
-    private void thisAndFuture(
+    private VEvent<Appointment> thisAndFuture(
               VEvent<Appointment> vEvent
             , VEvent<Appointment> vEventOld
             , LocalDateTime dateTimeInstanceStartOriginal
             , LocalDateTime dateTimeInstanceStartNew)
     {
-        // Adjust old VEvent
-        if (vEventOld.getRRule().getCount() != null) vEventOld.getRRule().setCount(0);
-        LocalDateTime newDateTime = dateTimeInstanceStartOriginal.toLocalDate().atStartOfDay().minusNanos(1);
-        vEventOld.getRRule().setUntil(newDateTime);
+        
+        VEvent<Appointment> vEventNew = (VEvent<Appointment>) VComponentFactory.newVComponent(vEvent);
+        vEventOld.copyTo(vEvent);
+        
+        // Adjust original VEvent
+        if (vEvent.getRRule().getCount() != null) vEvent.getRRule().setCount(0);
+        LocalDateTime newDateTime = dateTimeInstanceStartOriginal.minusNanos(1);
+        vEvent.getRRule().setUntil(newDateTime);
         
         // Adjust new VEvent
-        long shift = ChronoUnit.DAYS.between(vEvent.getDateTimeStart(), dateTimeInstanceStartNew);
-        Temporal dtEnd = vEvent.getDateTimeEnd().plus(shift, ChronoUnit.DAYS);
-        vEvent.setDateTimeEnd(dtEnd);
-        vEvent.setDateTimeStart(dateTimeInstanceStartNew);
-        vEvent.setUniqueIdentifier();
-        vEvent.setRelatedTo(vEventOld.getUniqueIdentifier());
+        long shift = ChronoUnit.DAYS.between(vEventNew.getDateTimeStart(), dateTimeInstanceStartNew);
+        Temporal dtEnd = vEventNew.getDateTimeEnd().plus(shift, ChronoUnit.DAYS);
+        vEventNew.setDateTimeEnd(dtEnd);
+        vEventNew.setDateTimeStart(dateTimeInstanceStartNew);
+        vEventNew.setUniqueIdentifier();
+        vEventNew.setRelatedTo(vEvent.getUniqueIdentifier());
         
         // Split EXDates dates between this and newVEvent
-        if (vEvent.getExDate() != null)
+        if (vEventNew.getExDate() != null)
         {
-            vEvent.getExDate().getTemporals().clear();
-            final Iterator<Temporal> exceptionIterator = vEventOld.getExDate().getTemporals().iterator();
+            vEventNew.getExDate().getTemporals().clear();
+            final Iterator<Temporal> exceptionIterator = vEvent.getExDate().getTemporals().iterator();
             while (exceptionIterator.hasNext())
             {
                 Temporal d = exceptionIterator.next();
@@ -403,18 +406,18 @@ public class AppointmentEditController
                 {
                     exceptionIterator.remove();
                 } else {
-                    vEvent.getExDate().getTemporals().add(d);
+                    vEventNew.getExDate().getTemporals().add(d);
                 }
             }
+            if (vEventNew.getExDate().getTemporals().isEmpty()) vEventNew.setExDate(null);
             if (vEvent.getExDate().getTemporals().isEmpty()) vEvent.setExDate(null);
-            if (vEventOld.getExDate().getTemporals().isEmpty()) vEventOld.setExDate(null);
         }
 
         // Split recurrence date/times between this and newVEvent
-        if (vEvent.getRDate() != null)
+        if (vEventNew.getRDate() != null)
         {
-            vEvent.getRDate().getTemporals().clear();
-            final Iterator<Temporal> recurrenceIterator = vEventOld.getRDate().getTemporals().iterator();
+            vEventNew.getRDate().getTemporals().clear();
+            final Iterator<Temporal> recurrenceIterator = vEvent.getRDate().getTemporals().iterator();
             while (recurrenceIterator.hasNext())
             {
                 Temporal d = recurrenceIterator.next();
@@ -424,18 +427,18 @@ public class AppointmentEditController
                 {
                     recurrenceIterator.remove();
                 } else {
-                    vEvent.getRDate().getTemporals().add(d);
+                    vEventNew.getRDate().getTemporals().add(d);
                 }
             }
+            if (vEventNew.getRDate().getTemporals().isEmpty()) vEventNew.setRDate(null);
             if (vEvent.getRDate().getTemporals().isEmpty()) vEvent.setRDate(null);
-            if (vEventOld.getRDate().getTemporals().isEmpty()) vEventOld.setRDate(null);
         }
 
         // Split instance dates between this and newVEvent
-        if (vEvent.getRRule().getRecurrences() != null)
+        if (vEventNew.getRRule().getRecurrences() != null)
         {
-            vEvent.getRRule().getRecurrences().clear();
-            final Iterator<Temporal> recurrenceIterator = vEventOld.getRRule().getRecurrences().iterator();
+            vEventNew.getRRule().getRecurrences().clear();
+            final Iterator<Temporal> recurrenceIterator = vEvent.getRRule().getRecurrences().iterator();
             while (recurrenceIterator.hasNext())
             {
                 Temporal d = recurrenceIterator.next();
@@ -443,32 +446,34 @@ public class AppointmentEditController
                 {
                     recurrenceIterator.remove();
                 } else {
-                    vEvent.getRRule().getRecurrences().add(d);
+                    vEventNew.getRRule().getRecurrences().add(d);
                 }
             }
         }
         
-        // Modify COUNT for this (the edited) VEvent
-        if (vEvent.getRRule().getCount() > 0)
+        // Modify COUNT for this (the edited) vEventNew
+        if (vEventNew.getRRule().getCount() > 0)
         {
-            final int newCount = (int) vEvent.instances()
+            final int newCount = (int) vEventNew.instances()
                     .stream()
                     .map(a -> a.getStartLocalDateTime())
                     .filter(d -> ! d.isBefore(dateTimeInstanceStartNew))
                     .count();
-            vEvent.getRRule().setCount(newCount);
+            vEventNew.getRRule().setCount(newCount);
         }
 
         // Remove old appointments, add back ones
         Collection<Appointment> appointmentsTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
         appointmentsTemp.addAll(appointments);
-        appointmentsTemp.removeIf(a -> vEventOld.instances().stream().anyMatch(a2 -> a2 == a));
-        vEventOld.instances().clear(); // clear vEventOld outdated collection of appointments
-        appointmentsTemp.addAll(vEventOld.makeInstances()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
-        vEvent.instances().clear(); // clear VEvent's outdated collection of appointments
-        appointmentsTemp.addAll(vEvent.makeInstances()); // add vEventOld part of new appointments
+        appointmentsTemp.removeIf(a -> vEvent.instances().stream().anyMatch(a2 -> a2 == a));
+        vEvent.instances().clear(); // clear vEvent outdated collection of appointments
+        appointmentsTemp.addAll(vEvent.makeInstances()); // make new appointments and add to main collection (added to vEventNew's collection in makeAppointments)
+        vEventNew.instances().clear(); // clear vEventNew's outdated collection of appointments
+        appointmentsTemp.addAll(vEventNew.makeInstances()); // add vEventOld part of new appointments
         appointments.clear();
         appointments.addAll(appointmentsTemp);
+        
+        return vEventNew;
     }
     
     @FXML private void handleRepeatSave()
@@ -489,7 +494,7 @@ public class AppointmentEditController
         if (dayShift > 0)
         {
             vEvent.setDateTimeStart(start);
-            long dayShift2 = ChronoUnit.DAYS.between(vEventOld.getDateTimeStart(), vEvent.getDateTimeStart());
+            long dayShift2 = ChronoUnit.DAYS.between(vEventOriginal.getDateTimeStart(), vEvent.getDateTimeStart());
             Temporal end = vEvent.getDateTimeEnd().plus(dayShift2, ChronoUnit.DAYS);
             vEvent.setDateTimeEnd(end);
         }
