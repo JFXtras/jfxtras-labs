@@ -107,7 +107,9 @@ public class ICalendarAgenda extends Agenda {
     public ICalendarAgenda()
     {
         super();
-        
+        appointmentGroups().clear();
+        appointmentGroups().addAll(DEFAULT_APPOINTMENT_GROUPS); // override appointmentGroups
+
         // setup i18n resource bundle
         Locale myLocale = Locale.getDefault();
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.repeatagenda.i18n.ICalendarAgenda", myLocale);
