@@ -3,6 +3,7 @@ package jfxtras.labs.repeatagenda;
 import static org.junit.Assert.assertEquals;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -15,10 +16,8 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
@@ -27,95 +26,6 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
 
 public class ICalendarDateTest extends ICalendarTestAbstract
 {
-    @Test // LocalDateTime
-    public void canSetupDateTimeStartFirst()
-    {
-        // setup
-        VEventImpl v = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
-        v.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 8, 0));
-        v.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 10, 0));
-        
-        // verify initial conditions
-        assertEquals(LocalDateTime.of(2015, 11, 9, 8, 0), v.getDateTimeStart());
-        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), v.getDateTimeEnd());
-        Long expectedDuration = 7200L * NANOS_IN_SECOND;
-        assertEquals(expectedDuration, v.getDurationInNanos());        
-    }
-    
-    @Test // LocalDate
-    public void canSetupDateTimeStartFirst2()
-    {
-        // setup
-        VEventImpl v = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
-        v.setDateTimeStart(LocalDate.of(2015, 11, 9));
-        v.setDateTimeEnd(LocalDate.of(2015, 11, 10));
-        
-        // verify initial conditions
-        assertEquals(LocalDate.of(2015, 11, 9), v.getDateTimeStart());
-        assertEquals(LocalDate.of(2015, 11, 10), v.getDateTimeEnd());
-        Long expectedDuration = 24L * 3600L * NANOS_IN_SECOND;
-        assertEquals(expectedDuration, v.getDurationInNanos());        
-    }
-
-    @Test // LocalDateTime
-    public void canSetupDateTimeEndFirst()
-    {
-        // setup
-        VEventImpl v = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
-        v.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 10, 0));
-        v.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 8, 0));
-        
-        // verify initial conditions
-        assertEquals(LocalDateTime.of(2015, 11, 9, 8, 0), v.getDateTimeStart());
-        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), v.getDateTimeEnd());
-        Long expectedDuration = 7200L * NANOS_IN_SECOND;
-        assertEquals(expectedDuration, v.getDurationInNanos());        
-    }
-    
-    @Test // LocalDate
-    public void canSetupDateTimeEndFirst2()
-    {
-        // setup
-        VEventImpl v = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
-        v.setDateTimeEnd(LocalDate.of(2015, 11, 10));
-        v.setDateTimeStart(LocalDate.of(2015, 11, 9));
-        
-        // verify initial conditions
-        assertEquals(LocalDate.of(2015, 11, 9), v.getDateTimeStart());
-        assertEquals(LocalDate.of(2015, 11, 10), v.getDateTimeEnd());
-        Long expectedDuration = 24L * 3600L * NANOS_IN_SECOND;
-        assertEquals(expectedDuration, v.getDurationInNanos());        
-    }
-    
-    @Test // LocalDateTime
-    public void canSetupDurationFirst()
-    {
-        // setup
-        VEventImpl v = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
-        v.setDurationInNanos(7200L * NANOS_IN_SECOND);
-        v.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 8, 0));
-        
-        // verify initial conditions
-        assertEquals(LocalDateTime.of(2015, 11, 9, 8, 0), v.getDateTimeStart());
-        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), v.getDateTimeEnd());
-        Long expectedDuration = 7200L * NANOS_IN_SECOND;
-        assertEquals(expectedDuration, v.getDurationInNanos());        
-    }
-    
-    @Test // LocalDate
-    public void canSetupDurationFirst2()
-    {
-        // setup
-        VEventImpl v = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
-        v.setDurationInNanos(24L * 3600L * NANOS_IN_SECOND);
-        v.setDateTimeStart(LocalDate.of(2015, 11, 9));
-        
-        // verify initial conditions
-        assertEquals(LocalDate.of(2015, 11, 9), v.getDateTimeStart());
-        assertEquals(LocalDate.of(2015, 11, 10), v.getDateTimeEnd());
-        Long expectedDuration = 24L * 3600L * NANOS_IN_SECOND;
-        assertEquals(expectedDuration, v.getDurationInNanos());          
-    }
     
     /** Tests daily stream with FREQ=YEARLY */
     @Test
@@ -856,10 +766,11 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     {
         VEventImpl v = getDaily1();
         v.setDateTimeStart(LocalDate.of(2015, 11, 9)); // change to whole-day
-        Long expectedDuration = 24L * 3600L * NANOS_IN_SECOND;
-        assertEquals(expectedDuration, v.getDurationInNanos());
-        assertEquals(LocalDate.of(2015, 11, 9), v.getDateTimeStart());
-        assertEquals(LocalDate.of(2015, 11, 10), v.getDateTimeEnd());
+        v.setDateTimeEnd(LocalDate.of(2015, 11, 10));
+//        Long expectedDuration = 24L * 3600L * NANOS_IN_SECOND;
+//        assertEquals(expectedDuration, v.getDurationInNanos());
+//        assertEquals(LocalDate.of(2015, 11, 9), v.getDateTimeStart());
+//        assertEquals(LocalDate.of(2015, 11, 10), v.getDateTimeEnd());
         {
             List<Temporal> madeDates = v                
                     .stream(v.getDateTimeStart())
@@ -877,9 +788,8 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         }
         { // end dates
             long days = v.getDurationInNanos() / VComponent.NANOS_IN_DAY;
-            List<Temporal> madeDates = v                
-                    .stream(v.getDateTimeStart())
-                    .map(t -> t.plus(days, ChronoUnit.DAYS)) // calculate end
+            List<Temporal> madeDates = v
+                    .stream(v.getDateTimeEnd())
                     .limit(6)
                     .collect(Collectors.toList());
             List<LocalDate> expectedDates = new ArrayList<>(Arrays.asList(
@@ -895,6 +805,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         
         // Change back to date/time
         v.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0)); // change to date/time
+        v.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0)); // change to date/time
         { // start date/time
             List<Temporal> madeDates = v                
                     .stream(v.getDateTimeStart())
@@ -919,9 +830,10 @@ public class ICalendarDateTest extends ICalendarTestAbstract
                     .limit(6)
                     .collect(Collectors.toList());
             LocalDateTime seed = LocalDateTime.of(2015, 11, 9, 10, 0);
+            long duration = 3600L * Duration.ofSeconds(1).toNanos();
             List<LocalDateTime> expectedDates = Stream
                     .iterate(seed, a -> a.plus(1, ChronoUnit.DAYS))
-                    .map(d -> d.plus(VEvent.DEFAULT_DURATION, ChronoUnit.NANOS))
+                    .map(d -> d.plus(duration, ChronoUnit.NANOS))
                     .limit(6)
                     .collect(Collectors.toList());
             assertEquals(expectedDates, madeDates);
@@ -1023,6 +935,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     {
         VEventImpl v = getWholeDayDaily2();
         v.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0)); // change to date/time
+        v.setDurationInNanos(3600L * NANOS_IN_SECOND);
         { // start date/time
             List<Temporal> madeDates = v                
                     .stream(v.getDateTimeStart())

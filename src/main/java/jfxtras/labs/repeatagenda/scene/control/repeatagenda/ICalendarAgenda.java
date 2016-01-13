@@ -137,6 +137,7 @@ public class ICalendarAgenda extends Agenda {
                                 vComponents().removeListener(vComponentsListener);
                                 vComponents.add(newVComponent);
                                 vComponents().addListener(vComponentsListener);
+                                System.out.println(newVComponent);
                             });
                 }
             }
