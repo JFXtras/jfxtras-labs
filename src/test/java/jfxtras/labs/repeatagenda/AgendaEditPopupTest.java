@@ -1083,8 +1083,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
 
        // verify VComponent changes
        assertEquals(2, agenda.vComponents().size());
-       VEvent<Appointment> v1 = (VEvent<Appointment>) agenda.vComponents().get(0);
-       VEvent<Appointment> v2 = (VEvent<Appointment>) agenda.vComponents().get(1);
+       VEvent<Appointment> v1 = (VEvent<Appointment>) agenda.vComponents().get(1);
+       VEvent<Appointment> v2 = (VEvent<Appointment>) agenda.vComponents().get(0);
        VEvent<Appointment> expectedV1 = ICalendarTestAbstract.getDaily1();
        expectedV1.getRRule().setUntil(LocalDateTime.of(2015, 11, 11, 9, 59, 59));
        VEvent<Appointment> expectedV2 = ICalendarTestAbstract.getDaily1();
@@ -1092,7 +1092,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
        expectedV2.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
        expectedV2.setDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0));
        expectedV2.setRelatedTo("20150110T080000-0@jfxtras.org");
-       expectedV2.setUniqueIdentifier(v2.getUniqueIdentifier()); // uid is now time-based so copy uid to guarantee equality.
+       expectedV2.setUniqueIdentifier(v2.getUniqueIdentifier()); // uid is time-based so copy it to guarantee equality.
+       expectedV2.setDateTimeStamp(v2.getDateTimeStamp()); // time stamp is time-based so copy it to guarantee equality.
        assertEquals(expectedV1, v1);
        assertEquals(expectedV2, v2);
 

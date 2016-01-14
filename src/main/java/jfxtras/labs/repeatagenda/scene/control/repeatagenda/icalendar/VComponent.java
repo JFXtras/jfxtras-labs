@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
@@ -146,6 +147,24 @@ public interface VComponent<T>
     RRule getRRule();
     void setRRule(RRule rRule);
 
+    /**
+     *  SEQUENCE: RFC 5545 iCalendar 3.8.7.4. page 138
+     * This property defines the revision sequence number of the calendar component within a sequence of revisions.
+     * Example:  The following is an example of this property for a calendar
+      component that was just created by the "Organizer":
+
+       SEQUENCE:0
+
+      The following is an example of this property for a calendar
+      component that has been revised two different times by the
+      "Organizer":
+
+       SEQUENCE:2
+     */
+    IntegerProperty sequenceProperty();
+    int getSequence();
+    void setSequence(int value);
+    
     /**
      *  SUMMARY: RFC 5545 iCalendar 3.8.1.12. page 83
      * This property defines a short summary or subject for the calendar component 

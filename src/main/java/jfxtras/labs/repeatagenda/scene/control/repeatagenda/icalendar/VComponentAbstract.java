@@ -17,8 +17,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -85,7 +87,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
          3.8.7.1.  Date-Time Created . . . . . . . . . . . . . . . . 138 - Yes
          3.8.7.2.  Date-Time Stamp . . . . . . . . . . . . . . . . . 139 - Yes
          3.8.7.3.  Last Modified . . . . . . . . . . . . . . . . . . 140 - Yes
-         3.8.7.4.  Sequence Number . . . . . . . . . . . . . . . . . 141 - TODO
+         3.8.7.4.  Sequence Number . . . . . . . . . . . . . . . . . 141 - Yes
        3.8.8.  Miscellaneous Component Properties  . . . . . . . . . 142
          3.8.8.1.  IANA Properties . . . . . . . . . . . . . . . . . 142 - NO
          3.8.8.2.  Non-Standard Properties . . . . . . . . . . . . . 142 - can't be implemented here.  must be in implementing class
@@ -111,7 +113,7 @@ RELATED-TO - yes
 RESOURCES - not implemented
 RRULE - yes
 RSTATUS - not implemented
-SEQ - TODO
+SEQ - Yes
 STATUS - not implemented
 SUMMARY - yes
 UID - yes
@@ -143,6 +145,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     private static final String RECURRENCE_ID_NAME = "RECURRENCE-ID";
     private static final String RECURRENCE_RULE_NAME = "RRULE";
     private static final String RELATED_TO_NAME = "RELATED-TO";
+    private static final String SEQUENCE_NAME = "SEQUENCE";
     private static final String SUMMARY_NAME = "SUMMARY";
     private static final String UNIQUE_IDENTIFIER_NAME = "UID";
     
@@ -351,6 +354,30 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     }
     
     /**
+     *  SEQUENCE: RFC 5545 iCalendar 3.8.7.4. page 138
+     * This property defines the revision sequence number of the calendar component within a sequence of revisions.
+     * Example:  The following is an example of this property for a calendar
+      component that was just created by the "Organizer":
+
+       SEQUENCE:0
+
+      The following is an example of this property for a calendar
+      component that has been revised two different times by the
+      "Organizer":
+
+       SEQUENCE:2
+     */
+    public IntegerProperty sequenceProperty() { return sequenceProperty; }
+    final private IntegerProperty sequenceProperty = new SimpleIntegerProperty(this, SEQUENCE_NAME, 0);
+    public int getSequence() { return sequenceProperty.get(); }
+    public void setSequence(int value)
+    {
+        if (value < 0) throw new IllegalArgumentException("Sequence value must be greater than zero");
+        if (value < getSequence()) throw new IllegalArgumentException("New sequence value must be greater than previous value");
+        sequenceProperty.set(value);
+    }
+    
+    /**
      *  SUMMARY: RFC 5545 iCalendar 3.8.1.12. page 83
      * This property defines a short summary or subject for the calendar component 
      * Example:
@@ -358,8 +385,8 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * */
     public StringProperty summaryProperty() { return summaryProperty; }
     final private StringProperty summaryProperty = new SimpleStringProperty(this, SUMMARY_NAME);
-    public String getSummary() { return summaryProperty.getValue(); }
-    public void setSummary(String value) { summaryProperty.setValue(value); }
+    public String getSummary() { return summaryProperty.get(); }
+    public void setSummary(String value) { summaryProperty.set(value); }
 //    public T withSummary(String value) { setSummary(value); return (T)this; } 
     
     /**
@@ -432,6 +459,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         destination.setDateTimeStamp(source.getDateTimeStamp());
         destination.setDateTimeStart(source.getDateTimeStart());
         destination.setLocation(source.getLocation());
+        destination.setSequence(source.getSequence());
         destination.setSummary(source.getSummary());
         destination.setUniqueIdentifier(source.getUniqueIdentifier());
         if (source.getRRule() != null)
@@ -498,6 +526,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 (testObj.getDateTimeStart() == null) : getDateTimeStart().equals(testObj.getDateTimeStart());
         boolean locationEquals = (getLocation() == null) ?
                 (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
+        boolean sequenceEquals = getSequence() == testObj.getSequence();
         boolean summaryEquals = (getSummary() == null) ?
                 (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
         boolean uniqueIdentifierEquals = (getUniqueIdentifier() == null) ?
@@ -513,7 +542,8 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         System.out.println("Vcomponent equals: " + categoriesEquals + " " + commentEquals + " " + dateTimeStampEquals + " " + dateTimeStartEquals + " " 
                 + locationEquals + " " + summaryEquals + " " + uniqueIdentifierEquals + " " + rruleEquals + " " + eXDatesEquals + " " + rDatesEquals);
         return categoriesEquals && commentEquals && dateTimeStampEquals && dateTimeStartEquals && locationEquals
-                && summaryEquals && uniqueIdentifierEquals && rruleEquals && eXDatesEquals && rDatesEquals && relatedToEquals;
+                && summaryEquals && uniqueIdentifierEquals && rruleEquals && eXDatesEquals && rDatesEquals && relatedToEquals
+                && sequenceEquals;
     }
 
     /** Make map of properties and string values for toString method in subclasses (like VEvent)
@@ -536,6 +566,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         if (getRelatedTo() != null) properties.put(relatedToProperty(), getRelatedTo().toString());
         if (getRDate() != null) properties.put(rDateProperty(), getRDate().toString());
         if (getRRule() != null) properties.put(rRuleProperty(), getRRule().toString());
+        if (getSequence() != 0) properties.put(sequenceProperty(), Integer.toString(getSequence()));
         if (getSummary() != null) properties.put(summaryProperty(), getSummary().toString());
         properties.put(uniqueIdentifierProperty(), getUniqueIdentifier()); // required property
         return properties;
@@ -648,6 +679,10 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
             } else if (property.equals(RECURRENCE_RULE_NAME))
             { // RRULE
                 vComponent.setRRule(RRule.parseRRule(value));
+                stringsIterator.remove();
+            } else if (property.equals(SEQUENCE_NAME))
+            { // SEQUENCE
+                vComponent.setSequence(Integer.parseInt(value));
                 stringsIterator.remove();
             } else if (property.equals(SUMMARY_NAME))
             { // SUMMARY
