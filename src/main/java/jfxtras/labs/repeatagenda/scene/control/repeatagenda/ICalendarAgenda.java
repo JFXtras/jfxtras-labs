@@ -111,8 +111,8 @@ public class ICalendarAgenda extends Agenda {
 
         // setup i18n resource bundle
         Locale myLocale = Locale.getDefault();
-        ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.repeatagenda.i18n.ICalendarAgenda", myLocale);
-//        ResourceBundle resources = ResourceBundle.getBundle("ICalendarAgenda", myLocale);
+//        ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.repeatagenda.i18n.ICalendarAgenda", myLocale);
+        ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.repeatagenda.ICalendarAgenda", myLocale);
         Settings.setup(resources);
 
         // Makes a new VComponent when an appointment is drawn on Agenda.
@@ -246,33 +246,6 @@ public class ICalendarAgenda extends Agenda {
         });
         
     }
-
-//    /**
-//     * Clear appointments and rebuild them from vComponents.  This is run when
-//     * either the dateTimeRange changes, or changes are made to the vComponents list.
-//     */
-//    @Override
-//    public void refresh()
-//    {
-//        if (dateTimeRange != null)
-//        {
-//            // Remove instances and appointments
-//            vComponents().stream().forEach(v -> v.instances().clear());
-//    
-//            appointments().removeListener(appointmentsListener); // remove appointmentListener to prevent making extra vEvents during refresh
-//            appointments().clear();
-//            vComponents().stream().forEach(r ->
-//            {
-////                r.setDateTimeRangeStart(dateTimeRange.getStartLocalDateTime());
-////                r.setDateTimeRangeEnd(dateTimeRange.getEndLocalDateTime());
-//                LocalDateTime start = getDateTimeRange().getStartLocalDateTime();
-//                LocalDateTime end = getDateTimeRange().getEndLocalDateTime();
-//                Collection<Appointment> newAppointments = r.makeInstances(start, end);
-//                appointments().addAll(newAppointments);
-//            });
-//            appointments().addListener(appointmentsListener); // add back appointmentListener
-//        }
-//    }
     
     /** Example Appointment class with overridden equals method used by unit testing */
     static public class AppointmentImplLocal2 extends AppointmentImplLocal

@@ -1206,6 +1206,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
                 + "DTSTAMP:" + dateTimeStamp + System.lineSeparator()
                 + "DTSTART:20151111T100000" + System.lineSeparator()
                 + "RRULE:FREQ=WEEKLY;BYDAY=WE,FR,MO" + System.lineSeparator()
+                + "SEQUENCE:1" + System.lineSeparator()
                 + "SUMMARY:New" + System.lineSeparator()
                 + "UID:20151108T000000-0jfxtras.org" + System.lineSeparator()
                 + "END:VEVENT";
@@ -1256,6 +1257,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
                 + "DTSTAMP:" + dateTimeStamp + System.lineSeparator()
                 + "DTSTART:20151111T100000" + System.lineSeparator()
                 + "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6" + System.lineSeparator()
+                + "SEQUENCE:1" + System.lineSeparator()
                 + "SUMMARY:New" + System.lineSeparator()
                 + "UID:20151108T000000-0jfxtras.org" + System.lineSeparator()
                 + "END:VEVENT";

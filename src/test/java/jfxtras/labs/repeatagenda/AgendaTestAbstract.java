@@ -33,9 +33,9 @@ public class AgendaTestAbstract extends JFXtrasGuiTest
         agenda.appointmentGroups().clear();
         agenda.appointmentGroups().addAll(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         
-        for (Agenda.AppointmentGroup lAppointmentGroup : agenda.appointmentGroups()) {
-            appointmentGroupMap.put(lAppointmentGroup.getDescription(), lAppointmentGroup);
-        }
+//        for (Agenda.AppointmentGroup lAppointmentGroup : agenda.appointmentGroups()) {
+//            appointmentGroupMap.put(lAppointmentGroup.getDescription(), lAppointmentGroup);
+//        }
         
         // accept new appointments
         agenda.newAppointmentCallbackProperty().set(new Callback<Agenda.LocalDateTimeRange, Agenda.Appointment>()
@@ -48,8 +48,8 @@ public class AgendaTestAbstract extends JFXtrasGuiTest
                         .withEndLocalDateTime( dateTimeRange.getEndLocalDateTime())
                         .withSummary("New")
                         .withDescription("")
-                        .withAppointmentGroup(appointmentGroupMap.get("group00"));
-//                        .withAppointmentGroup(agenda.appointmentGroups().get(0));
+//                        .withAppointmentGroup(appointmentGroupMap.get("group00"));
+                        .withAppointmentGroup(agenda.appointmentGroups().get(0));
                 dateTimeStamp = appointment.getStartLocalDateTime();
                 return appointment;
             }
