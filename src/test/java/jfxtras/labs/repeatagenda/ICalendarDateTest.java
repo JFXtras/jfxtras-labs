@@ -3,7 +3,6 @@ package jfxtras.labs.repeatagenda;
 import static org.junit.Assert.assertEquals;
 
 import java.time.DayOfWeek;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -17,7 +16,6 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
@@ -767,10 +765,6 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         VEventImpl v = getDaily1();
         v.setDateTimeStart(LocalDate.of(2015, 11, 9)); // change to whole-day
         v.setDateTimeEnd(LocalDate.of(2015, 11, 10));
-//        Long expectedDuration = 24L * 3600L * NANOS_IN_SECOND;
-//        assertEquals(expectedDuration, v.getDurationInNanos());
-//        assertEquals(LocalDate.of(2015, 11, 9), v.getDateTimeStart());
-//        assertEquals(LocalDate.of(2015, 11, 10), v.getDateTimeEnd());
         {
             List<Temporal> madeDates = v                
                     .stream(v.getDateTimeStart())
@@ -787,7 +781,6 @@ public class ICalendarDateTest extends ICalendarTestAbstract
             assertEquals(expectedDates, madeDates);
         }
         { // end dates
-            long days = v.getDurationInNanos() / VComponent.NANOS_IN_DAY;
             List<Temporal> madeDates = v
                     .stream(v.getDateTimeEnd())
                     .limit(6)
@@ -822,18 +815,15 @@ public class ICalendarDateTest extends ICalendarTestAbstract
             assertEquals(expectedDates, madeDates);
         }
         { // end date/time
-            long nanos = v.getDurationInNanos();
-            System.out.println("nanos:" + nanos);
-            List<Temporal> madeDates = v                
+            long duration = ChronoUnit.NANOS.between(v.getDateTimeStart(), v.getDateTimeEnd());
+            List<Temporal> madeDates = v
                     .stream(v.getDateTimeStart())
-                    .map(t -> t.plus(nanos, ChronoUnit.NANOS)) // calculate end
                     .limit(6)
+                    .map(t -> t.plus(duration, ChronoUnit.NANOS))
                     .collect(Collectors.toList());
-            LocalDateTime seed = LocalDateTime.of(2015, 11, 9, 10, 0);
-            long duration = 3600L * Duration.ofSeconds(1).toNanos();
+            LocalDateTime seed = LocalDateTime.of(2015, 11, 9, 11, 0);
             List<LocalDateTime> expectedDates = Stream
                     .iterate(seed, a -> a.plus(1, ChronoUnit.DAYS))
-                    .map(d -> d.plus(duration, ChronoUnit.NANOS))
                     .limit(6)
                     .collect(Collectors.toList());
             assertEquals(expectedDates, madeDates);

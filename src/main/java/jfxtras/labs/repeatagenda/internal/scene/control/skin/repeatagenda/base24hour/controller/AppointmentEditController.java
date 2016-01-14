@@ -86,7 +86,7 @@ public class AppointmentEditController
     @FXML private Tab repeatableTab;
     
     private LocalDateTime lastDateTimeStart = null;
-    private LocalDateTime lastDateTimeEnd = null;
+//    private LocalDateTime lastDateTimeEnd = null;
 
     public static final long DEFAULT_DURATION = 3600L * Duration.ofSeconds(1).toNanos();
     private LocalTime lastStartTime = LocalTime.of(10, 0); // default time
@@ -174,7 +174,7 @@ public class AppointmentEditController
         vEvent = (VEvent<Appointment>) vComponent;
 
         // Convert duration to date/time end
-        if (vEvent.getDurationInNanos() > 0)
+        if (vEvent.getDurationInNanos() != null)
         {
             final Temporal end;
             if (vEvent.getDateTimeStart() instanceof LocalDate)
@@ -185,7 +185,8 @@ public class AppointmentEditController
             {
                 end = vEvent.getDateTimeStart().plus(vEvent.getDurationInNanos(), ChronoUnit.NANOS);
             } else throw new DateTimeException("Illegal Temporal type (" + vEvent.getDateTimeStart().getClass().getSimpleName() + ").  Only LocalDate and LocalDateTime are supported)");
-            vEvent.setDurationInNanos(0L);
+            Long l = null;
+            vEvent.setDurationInNanos(l);
             vEvent.setDateTimeEnd(end);
         }
         
@@ -208,17 +209,16 @@ public class AppointmentEditController
             {
                 lastDateTimeStart = startTextField.getLocalDateTime();
                 lastStartTime = lastDateTimeStart.toLocalTime();
-                lastDateTimeEnd = endTextField.getLocalDateTime();
-                lastDuration = ChronoUnit.NANOS.between(lastDateTimeStart, lastDateTimeEnd);
+                lastDuration = ChronoUnit.NANOS.between(lastDateTimeStart, endTextField.getLocalDateTime());
                 LocalDate newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart());
                 vEvent.setDateTimeStart(newDateTimeStart);
                 LocalDate newDateTimeEnd = LocalDate.from(vEvent.getDateTimeEnd()).plus(1, ChronoUnit.DAYS);
                 vEvent.setDateTimeEnd(newDateTimeEnd);
                 
-                LocalDateTime s = LocalDate.from(vEvent.getDateTimeStart()).atStartOfDay();
-                startTextField.setLocalDateTime(s);
-                LocalDateTime e = LocalDate.from(vEvent.getDateTimeEnd()).atStartOfDay();
-                endTextField.setLocalDateTime(e);
+                LocalDateTime start = LocalDate.from(startTextField.getLocalDateTime()).atStartOfDay();
+                startTextField.setLocalDateTime(start);
+                LocalDateTime end = LocalDate.from(endTextField.getLocalDateTime()).plus(1, ChronoUnit.DAYS).atStartOfDay();
+                endTextField.setLocalDateTime(end);
 
                 LocalDate newStartRange = LocalDate.from(vEvent.getStartRange());
                 LocalDate newEndRange = LocalDate.from(vEvent.getEndRange());
@@ -226,20 +226,25 @@ public class AppointmentEditController
                 vEvent.setEndRange(newEndRange);
             } else
             {
-                if ((lastDateTimeStart != null) && (lastDateTimeEnd != null))
+                final LocalDateTime start;
+                if (lastDateTimeStart != null)
                 {
+                    start = lastDateTimeStart;
                     startTextField.setLocalDateTime(lastDateTimeStart);
-                    endTextField.setLocalDateTime(lastDateTimeEnd);
-                    vEvent.setDateTimeStart(lastDateTimeStart);
-                    vEvent.setDateTimeEnd(lastDateTimeEnd);
                 } else
                 {
-                    LocalDateTime newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart()).atTime(lastStartTime);
-                    vEvent.setDateTimeStart(newDateTimeStart);
-                    startTextField.setLocalDateTime(newDateTimeStart);
-                    LocalDateTime newDateTimeEnd = newDateTimeStart.plus(lastDuration, ChronoUnit.NANOS);
-                    endTextField.setLocalDateTime(newDateTimeEnd);
+                    start = LocalDate.from(startTextField.getLocalDateTime()).atTime(lastStartTime);
+                    vEvent.setDateTimeStart(start);
+                    startTextField.setLocalDateTime(start);
                 }
+                LocalDateTime end = start.plus(lastDuration, ChronoUnit.NANOS);
+                endTextField.setLocalDateTime(end);
+                
+                LocalDateTime newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart()).atTime(lastStartTime);
+                LocalDateTime newDateTimeEnd = newDateTimeStart.plus(lastDuration, ChronoUnit.NANOS);
+                vEvent.setDateTimeStart(newDateTimeStart);
+                vEvent.setDateTimeEnd(newDateTimeEnd);
+
                 LocalDateTime newStartRange = LocalDate.from(vEvent.getStartRange()).atStartOfDay();
                 LocalDateTime newEndRange = LocalDate.from(vEvent.getEndRange()).atStartOfDay();
                 vEvent.setStartRange(newStartRange);
@@ -333,21 +338,58 @@ public class AppointmentEditController
                     vEventOriginal.copyTo(vEvent); // return to original vEvent
                     break;
                 case THIS_AND_FUTURE:
+                {
                     LocalDateTime dateTimeInstanceStartNew = appointment.getStartLocalDateTime();
                     VEvent<Appointment> vEventNew = thisAndFuture(vEvent, vEventOriginal, dateTimeInstanceStartOriginal, dateTimeInstanceStartNew);
                     vComponents.add(vEventNew);
-                    System.out.println("vEventNew:" + vEventNew.getUniqueIdentifier());
-                    System.out.println("vEvent:" + vEvent.getUniqueIdentifier());
-                    if (! vEventNew.isValid()) throw new RuntimeException(vEventOriginal.makeErrorString());
+                    if (! vEventNew.isValid()) throw new RuntimeException(vEventNew.makeErrorString());
                     break;
+                }
                 case ONE:
+                {
+                    if (wholeDayCheckBox.isSelected())
+                    {
+                        LocalDate start = LocalDate.from(startTextField.getLocalDateTime());
+                        vEvent.setDateTimeStart(start);
+                        LocalDate end = LocalDate.from(endTextField.getLocalDateTime());
+                        vEvent.setDateTimeEnd(end);
+                        System.out.println("s,e:" + start + " " + end);
+                    } else
+                    {
+                        vEvent.setDateTimeStart(startTextField.getLocalDateTime());
+                        vEvent.setDateTimeEnd(endTextField.getLocalDateTime());
+                    }
+                    vEvent.setRRule(null);
+                    vEvent.setDateTimeRecurrence(dateTimeInstanceStartOriginal);
+    
+                  // Add recurrence to original vEvent
+                    vEventOriginal.getRRule().getRecurrences().add(dateTimeInstanceStartOriginal);
+
+                    // Check for validity
+                    if (! vEvent.isValid()) throw new RuntimeException(vEvent.makeErrorString());
+                    if (! vEventOriginal.isValid()) throw new RuntimeException(vEventOriginal.makeErrorString());
+                    
+                    // Remove old appointments, add back ones
+                    vComponents.add(vEventOriginal);
+                    Collection<Appointment> appointmentsTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
+                    appointmentsTemp.addAll(appointments);
+                    appointmentsTemp.removeIf(a -> vEventOriginal.instances().stream().anyMatch(a2 -> a2 == a));
+                    vEventOriginal.instances().clear(); // clear vEventOriginal outdated collection of appointments
+                    appointmentsTemp.addAll(vEventOriginal.makeInstances()); // make new appointments and add to main collection (added to vEventNew's collection in makeAppointments)
+                    vEvent.instances().clear(); // clear vEvent outdated collection of appointments
+                    appointmentsTemp.addAll(vEvent.makeInstances()); // add vEventOld part of new appointments
+                    appointments.clear();
+                    appointments.addAll(appointmentsTemp);
+                    System.out.println(vEventOriginal);
                     break;
+                }
                 default:
                     break;
                 }
             }
         }
         if (! vEvent.isValid()) throw new RuntimeException(vEvent.makeErrorString());
+        System.out.println(vEvent);
         popup.close();
     }
 

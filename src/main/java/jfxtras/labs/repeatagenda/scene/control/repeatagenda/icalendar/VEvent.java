@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
-import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -117,8 +116,8 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
      * converted to seconds.  This value is used exclusively internally.  Any specified DTEND is converted to 
      * durationInSeconds,
      * */
-    final private SimpleLongProperty durationInNanos = new SimpleLongProperty(this, DURATION_NAME);
-    public SimpleLongProperty durationInNanosProperty() { return durationInNanos; }
+    final private ObjectProperty<Long> durationInNanos = new SimpleObjectProperty<>(this, DURATION_NAME);
+    public ObjectProperty<Long> durationInNanosProperty() { return durationInNanos; }
     public Long getDurationInNanos() { return durationInNanos.getValue(); }
     public String getDurationAsString()
     {
@@ -164,10 +163,17 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     }
     public void setDurationInNanos(Long duration)
     {
-        if (duration > 0) endPriority = EndPriority.DURATION;
-        else if (duration == 0) endPriority = null;
-        else if (duration < 0) throw new IllegalArgumentException("Duration must be greater than zero.");
-        durationInNanos.setValue(duration);
+        if (duration != null)
+        {
+            if (duration > 0) endPriority = EndPriority.DURATION;
+            else if (duration == 0)
+            {
+                endPriority = null;
+                duration = null;
+            }
+            else if (duration < 0) throw new IllegalArgumentException("Duration must be greater than zero.");
+        }
+        durationInNanos.set(duration);
     }
     public void setDurationInNanos(String duration)
     { // parse ISO.8601.2004 period string into period of seconds (no support for Y (years) or M (months).
@@ -578,7 +584,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         
         // Note: Check for invalid condition where both DURATION and DTEND not being null is done in parseVEvent.
         // It is not checked here due to bindings between both DURATION and DTEND.
-        boolean durationNull = getDurationInNanos() == 0;
+        boolean durationNull = getDurationInNanos() == null;
         boolean endDateTimeNull = getDateTimeEnd() == null;
         if (durationNull && endDateTimeNull && getDateTimeStart() != null && ! isDateTimeStartWholeDay()) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DURATION and DTEND can not be null.");
 
@@ -638,7 +644,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                     }
             } else if (property.equals(DURATION_NAME))
             { // DURATION
-                if (vEvent.getDurationInNanos() == 0)
+                if (vEvent.getDurationInNanos() == null)
                 {
                     if (dTEndFound == false)
                     {

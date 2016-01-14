@@ -149,7 +149,7 @@ public class ICalendarAgenda extends Agenda {
             System.out.println("vcomponents changed:");
             while (change.next())
             {
-                if (change.wasAdded() && (dateTimeRange != null)) // don't make appointment if range is not set
+                if (change.wasAdded() && (dateTimeRange != null)) // can't make appointment if range is not set
                 {
                     LocalDateTime start = getDateTimeRange().getStartLocalDateTime();
                     LocalDateTime end = getDateTimeRange().getEndLocalDateTime();

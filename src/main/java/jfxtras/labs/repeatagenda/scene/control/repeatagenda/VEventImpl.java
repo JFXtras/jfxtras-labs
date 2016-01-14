@@ -319,20 +319,20 @@ public class VEventImpl extends VEvent<Appointment>
             Appointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
             appt.setStartLocalDateTime(startLocalDateTime);
             final long nanos;
-            if (getDurationInNanos() == 0)
-            {
+//            if (getDurationInNanos() == null)
+//            {
                 if (t instanceof LocalDate)
                 {
                     if (getDateTimeEnd() != null) nanos = ChronoUnit.DAYS.between(getDateTimeStart(), getDateTimeEnd()) * VComponent.NANOS_IN_DAY;
-                    else if (getDurationInNanos() != 0) nanos = getDurationInNanos();
+                    else if (getDurationInNanos() != null) nanos = getDurationInNanos();
                     else throw new RuntimeException("Invalid VEvent: Neither DURATION or DTEND set");
                 } else if (t instanceof LocalDateTime)
                 {
                     if (getDateTimeEnd() != null) nanos = ChronoUnit.NANOS.between(getDateTimeStart(), getDateTimeEnd());
-                    else if (getDurationInNanos() != 0) nanos = getDurationInNanos();
+                    else if (getDurationInNanos() != null) nanos = getDurationInNanos();
                     else throw new RuntimeException("Invalid VEvent: Neither DURATION or DTEND set");
                 } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
-            } else nanos = getDurationInNanos();
+//            } else nanos = getDurationInNanos();
             appt.setEndLocalDateTime(startLocalDateTime.plusNanos(nanos));
             appt.setDescription(getDescription());
             appt.setSummary(getSummary());

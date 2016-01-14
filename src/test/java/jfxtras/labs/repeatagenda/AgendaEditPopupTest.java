@@ -440,6 +440,24 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         // Make whole day
         click("#wholeDayCheckBox");
         
+        // check whole day fields
+        LocalDateTimeTextField startTextField = find("#startTextField");
+        LocalDateTimeTextField endTextField = find("#endTextField");
+        assertEquals(LocalDateTime.of(2015, 11, 11, 0, 0), startTextField.getLocalDateTime());
+        assertEquals(LocalDateTime.of(2015, 11, 12, 0, 0), endTextField.getLocalDateTime());
+        assertEquals(LocalDate.of(2015, 11, 9), v.getDateTimeStart());
+        assertEquals(LocalDate.of(2015, 11, 10), v.getDateTimeEnd());
+
+        // go back to time based
+        click("#wholeDayCheckBox");
+        assertEquals(LocalDateTime.of(2015, 11, 11, 10, 0), startTextField.getLocalDateTime());
+        assertEquals(LocalDateTime.of(2015, 11, 11, 11, 0), endTextField.getLocalDateTime());
+        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), v.getDateTimeStart());
+        assertEquals(LocalDateTime.of(2015, 11, 9, 11, 0), v.getDateTimeEnd());
+
+        // Make whole day again
+        click("#wholeDayCheckBox");
+        
         // Go to repeatable tab
         click("#repeatableTab");
         
@@ -1094,6 +1112,29 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
                    ));
            assertEquals(expectedSummaries, summaries);
        }
+    }
+    
+    @Test
+    //@Ignore
+    public void canEditOne()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));       
+        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        
+        // Open edit popup
+        move("#hourLine11"); // open edit popup
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+
+        // edit property
+        TextField summaryTextField = find("#summaryTextField");
+        summaryTextField.setText("new summary");
+
+        // save changes to THIS AND FUTURE
+        click("#saveAppointmentButton");
+        ComboBox<ChangeDialogOptions> c = find("#edit_dialog_combobox");
+        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOptions.ONE));
+        click("#edit_dialog_button_ok");
     }
     
     @Test

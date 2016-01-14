@@ -65,8 +65,8 @@ public class Main extends Application {
         CalendarController controller = mainLoader.getController();
         controller.setupData(firstDayOfWeekLocalDate, firstDayOfWeekLocalDate.plusDays(7));
         
-//        ICalendarToStringTest r = new ICalendarToStringTest();
-//        r.monthly5ToString();
+//        MakeAppointmentsTest r = new MakeAppointmentsTest();
+//        r.makeAppointmentsDailyTest1();
 //        System.exit(0);
         
         Scene scene = new Scene(root, 1366, 768);
