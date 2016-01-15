@@ -8,8 +8,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
@@ -484,6 +486,23 @@ public interface VComponent<T>
                 return value;
             } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
         } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
+    }
+
+    /**
+     * Return list of all related VComponents that make up entire recurrence set.
+     * 
+     * @param v
+     * @return
+     */
+    static <U> List<VComponent<U>> relatedVComponents(List<VComponent<U>> list, VComponent<U> v)
+    {
+        List<VComponent<U>> related = new ArrayList<>();
+        related.add(v);
+        String uid = v.getUniqueIdentifier();
+        boolean isChild = v.getDateTimeRecurrence() == null;
+        boolean isParent = v.getRRule() != null;
+        if (isChild && ! isParent) return related; // individual
+        return related;
     }
 
 }

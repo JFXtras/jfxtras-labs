@@ -13,6 +13,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -98,16 +99,20 @@ public class ICalendarAgenda extends Agenda {
     // listen for additions to appointments from agenda. This listener must be removed and added back when a change
     // in the time range  occurs.
     private ListChangeListener<Appointment> appointmentsListener;
+    private ListChangeListener<VComponent<Appointment>> vComponentsListener; // listen for changes to vComponents.
 
-    // listen for changes to vComponents.
-    private ListChangeListener<VComponent<Appointment>> vComponentsListener;
-        
+//    private Stage editPopup;
+    
     // CONSTRUCTOR
     public ICalendarAgenda()
     {
         super();
+        
+        appointments().addListener((InvalidationListener) (obs) -> System.out.println("appointments chagned:"));
+        
+        // override Agenda appointmentGroups
         appointmentGroups().clear();
-        appointmentGroups().addAll(DEFAULT_APPOINTMENT_GROUPS); // override appointmentGroups
+        appointmentGroups().addAll(DEFAULT_APPOINTMENT_GROUPS);
 
         // setup i18n resource bundle
         Locale myLocale = Locale.getDefault();
@@ -137,7 +142,7 @@ public class ICalendarAgenda extends Agenda {
 //                                newVComponent.setUidGeneratorCallback(getUidGeneratorCallback());
                                 newVComponent.setUniqueIdentifier(getUidGeneratorCallback().call(null));
                                 vComponents().removeListener(vComponentsListener);
-                                vComponents.add(newVComponent);
+                                vComponents().add(newVComponent);
                                 vComponents().addListener(vComponentsListener);
                             });
                 }
@@ -159,17 +164,57 @@ public class ICalendarAgenda extends Agenda {
                             .stream()
                             .forEach(v -> 
                             {
+                                System.out.println("vComponent add:" + v.getSummary() + " " + v.instances().size());
                                 if (v.instances().isEmpty()) newAppointments.addAll(v.makeInstances(start, end));
+
+                                // add recurrence-id Temporal to parents (required to skip recurrences when making appointments)
+                                if (v.getDateTimeRecurrence() != null)
+                                {
+                                    VComponent<Appointment> parent = vComponents().stream()
+                                            .filter(v2 -> 
+                                            {
+                                                boolean isParent1 = v2.getUniqueIdentifier().equals(v.getUniqueIdentifier());
+                                                boolean isParent2 = v2.getDateTimeRecurrence() == null;
+                                                return isParent1 && isParent2;
+                                            })
+                                            .findFirst()
+                                            .get();
+                                    parent.getRRule().getRecurrences().add(v.getDateTimeRecurrence());
+                                }
                             });
+//                    if (! editPopup.isShowing()) appointments().removeListener(appointmentsListener);
                     appointments().removeListener(appointmentsListener);
                     appointments().addAll(newAppointments);
                     appointments().addListener(appointmentsListener);
+//                    if (! editPopup.isShowing()) appointments().addListener(appointmentsListener);
                 } else if (change.wasRemoved())
                 {
                     // remove associated appointments
                     change.getRemoved()
                         .stream()
-                        .forEach(v -> appointments().removeIf(a -> v.instances().stream().anyMatch(a2 -> a2 == a)));
+                        .forEach(v -> 
+                        {
+                            List<Appointment> remove = appointments()
+                                    .stream()
+                                    .filter(a -> v.instances().stream().anyMatch(a2 -> a2 == a))
+                                    .collect(Collectors.toList());
+                            appointments().removeAll(remove);
+                            
+                            // move deleted recurrence-id into ExDates (ensure deleted instance stays deleted)
+                            if (v.getDateTimeRecurrence() != null)
+                            {
+                                VComponent<Appointment> parent = vComponents().stream()
+                                        .filter(v2 -> 
+                                        {
+                                            boolean isParent1 = v2.getUniqueIdentifier().equals(v.getUniqueIdentifier());
+                                            boolean isParent2 = v2.getDateTimeRecurrence() == null;
+                                            return isParent1 && isParent2;
+                                        })
+                                        .findFirst()
+                                        .get();
+                                parent.getExDate().getTemporals().add(v.getDateTimeRecurrence());
+                            }
+                        });
                 }
             }
         };
@@ -221,6 +266,7 @@ public class ICalendarAgenda extends Agenda {
         setLocalDateTimeRangeCallback(dateTimeRange ->
         {
 //            System.out.println("range callback:");
+            System.out.println("vComponents:" + vComponents.size());
             this.dateTimeRange = dateTimeRange;
             if (dateTimeRange != null)
             {
@@ -229,14 +275,11 @@ public class ICalendarAgenda extends Agenda {
         
                 appointments().removeListener(appointmentsListener); // remove appointmentListener to prevent making extra vEvents during refresh
                 appointments().clear();
-                System.out.println("vs:" + vComponents().size());
                 vComponents().stream().forEach(r ->
                 {
-//                    r.setDateTimeRangeStart(dateTimeRange.getStartLocalDateTime());
-//                    r.setDateTimeRangeEnd(dateTimeRange.getEndLocalDateTime());
                     LocalDateTime start = getDateTimeRange().getStartLocalDateTime();
                     LocalDateTime end = getDateTimeRange().getEndLocalDateTime();
-                    System.out.println(r.getSummary() + " " + start + " " + end);
+//                    System.out.println(r.getSummary() + " " + start + " " + end);
                     Collection<Appointment> newAppointments = r.makeInstances(start, end);
                     appointments().addAll(newAppointments);
                 });

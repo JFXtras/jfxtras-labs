@@ -27,6 +27,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
@@ -35,6 +36,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.RRuleType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.scene.control.LocalDateTimeTextField;
@@ -172,6 +174,13 @@ public class AppointmentEditController
         this.popup = popup;
         this.vEventWriteCallback = vEventWriteCallback;
         vEvent = (VEvent<Appointment>) vComponent;
+        
+        // Disable repeat rules for events with recurrence-id
+        if (vComponent.getDateTimeRecurrence() != null)
+        { // recurrence instances can't add repeat rules (only parent can have repeat rules)
+            repeatableTab.setDisable(true);
+            repeatableTab.setTooltip(new Tooltip(resources.getString("repeat.tab.unavailable")));
+        }
 
         // Convert duration to date/time end
         if (vEvent.getDurationInNanos() != null)
@@ -260,25 +269,12 @@ public class AppointmentEditController
         startTextField.setLocalDateTime(dateTimeInstanceStartOriginal);
         startTextField.setParseErrorCallback(errorCallback);
         startTextField.localDateTimeProperty().addListener(startTextListener);
-//        vEvent.durationInNanosProperty().addListener((obs, oldValue, newValue) ->
-//        {
-//            endTextField.localDateTimeProperty().removeListener(endTextlistener);
-//            LocalDateTime newEnd = startTextField.getLocalDateTime().plus((long) newValue, ChronoUnit.NANOS);
-//            endTextField.setLocalDateTime(newEnd);
-//            endTextField.localDateTimeProperty().addListener(endTextlistener);
-//        });
         
         // END DATE/TIME
         endTextField.setLocale(locale);
         endTextField.setLocalDateTime(dateTimeInstanceEndOriginal);
         endTextField.setParseErrorCallback(errorCallback);
         endTextField.localDateTimeProperty().addListener(endTextlistener);
-//        vEvent.dateTimeEndProperty().addListener((obs, oldValue, newValue) ->
-//        {
-//            endTextField.localDateTimeProperty().removeListener(endTextlistener);
-//            endTextField.setLocalDateTime(VComponent.localDateTimeFromTemporal(newValue));
-//            endTextField.localDateTimeProperty().addListener(endTextlistener);
-//        });
         
         // APPOINTMENT GROUP
         appointmentGroupGridPane.appointmentGroupSelectedProperty().addListener(
@@ -293,7 +289,6 @@ public class AppointmentEditController
         groupTextField.textProperty().addListener((observable, oldSelection, newSelection) ->
         {
             int i = appointmentGroupGridPane.getAppointmentGroupSelected();
-//            System.out.println("appointmentGroups1:" + appointmentGroups);
             appointmentGroups.get(i).setDescription(newSelection);
             appointmentGroupGridPane.updateToolTip(i, appointmentGroups);
             vEvent.setCategories(newSelection);
@@ -306,7 +301,6 @@ public class AppointmentEditController
         repeatableController.setupData(vComponent, startTextField.getLocalDateTime());
     }
 
-    // AFTER CLICK SAVE VERIFY REPEAT IS VALID, IF NOT PROMPT.
     @FXML private void handleSave()
     {
         final RRuleType rruleType = ICalendarUtilities.getRRuleType(vEvent.getRRule(), vEventOriginal.getRRule());
@@ -362,7 +356,11 @@ public class AppointmentEditController
         appointments.clear();
         appointments.addAll(appointmentsTemp);
     }
-    
+        
+    /*
+     * Edit one instance of a VComponent with a RRule.  The instance becomes a new VComponent without a RRule
+     * as with the same UID as the parent and a recurrence-id for the replaced date or date/time.
+     */
     private void editOne()
     {
         if (wholeDayCheckBox.isSelected())
@@ -389,7 +387,6 @@ public class AppointmentEditController
         if (! vEventOriginal.isValid()) throw new RuntimeException(vEventOriginal.makeErrorString());
         
         // Remove old appointments, add back ones
-        vComponents.add(vEventOriginal);
         Collection<Appointment> appointmentsTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
         appointmentsTemp.addAll(appointments);
         appointmentsTemp.removeIf(a -> vEventOriginal.instances().stream().anyMatch(a2 -> a2 == a));
@@ -399,11 +396,12 @@ public class AppointmentEditController
         appointmentsTemp.addAll(vEvent.makeInstances()); // add vEventOld part of new appointments
         appointments.clear();
         appointments.addAll(appointmentsTemp);
+        vComponents.add(vEventOriginal); // TODO - LET LISTENER ADD NEW APPOINTMENTS OR ADD THEM HERE?
+
         System.out.println(vEventOriginal);
     }
     
-    /* This and Future option is complicate so it has been moved into its own method.
-     * 
+    /*
      * Changing this and future instances in VComponent is done by ending the previous
      * VComponent with a UNTIL date or date/time and starting a new VComponent from 
      * the selected instance.  EXDATE, RDATE and RECURRENCES are split between both
@@ -548,6 +546,7 @@ public class AppointmentEditController
     
     @FXML private void handleCancelButton()
     {
+        vEventOriginal.copyTo(vEvent);
         popup.close();
     }
 
@@ -557,14 +556,49 @@ public class AppointmentEditController
                 appointment.getStartLocalDateTime().toLocalDate()
               : appointment.getStartLocalDateTime();
                 
-//        final ICalendarUtilities.WindowCloseType result = vEvent.delete( // TODO - FIX THIS - MOVE METHOD HERE
-//                dateOrDateTime
-////              , appointments
-//              , vComponents
-//              , a -> ICalendarUtilities.repeatChangeDialog()
-//              , a -> ICalendarUtilities.confirmDelete(a)
-//              , vEventWriteCallback);
+        final long count;
+        if (vEvent.getRRule() == null) count = 1;
+        else if ((vEvent.getRRule().getUntil() == null) && (vEvent.getRRule().getCount() == 0)) count = 0; // infinite
+        else count = vEvent.getRRule().stream(vEvent.getDateTimeStart()).count();
 
+        if (count == 1) // DELETE NON-REPEATING INSTANCE
+        {
+            vComponents.remove(vEvent);
+        } else // more than one instance
+        {
+            ChangeDialogOptions changeResponse = ICalendarUtilities.repeatChangeDialog();
+            switch (changeResponse)
+            {
+            case ALL:
+                vComponents.stream()
+                        .filter(v -> 
+                        {
+                            boolean recurrence = v.getUniqueIdentifier().equals(vEvent.getUniqueIdentifier());
+                            boolean relative = v.getRelatedTo().equals(vEvent.getUniqueIdentifier());
+                            return recurrence || relative;
+                        });
+                String found = (count > 1) ? Long.toString(count) : "infinite";
+                if (ICalendarUtilities.confirmDelete(found))
+                {
+                    vComponents.remove(vEvent);
+                }
+                break;
+            case CANCEL:
+                break;
+            case ONE:
+                if (vEvent.getExDate() == null) vEvent.setExDate(new EXDate(dateOrDateTime));
+                else vEvent.getExDate().getTemporals().add(dateOrDateTime);
+                appointments.removeIf(a -> a.getStartLocalDateTime().equals(appointment.getStartLocalDateTime()));
+                break;
+            case THIS_AND_FUTURE:
+                if (vEvent.getRRule().getCount() == 0) vEvent.getRRule().setCount(0);
+                vEvent.getRRule().setUntil(dateOrDateTime);
+                System.out.println("until:" + dateOrDateTime);
+                break;
+            default:
+                break;
+            }
+        }
         popup.close();
     }
     

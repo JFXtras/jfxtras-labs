@@ -159,9 +159,6 @@ private final ChangeListener<? super Boolean> dayOfWeekCheckBoxListener = (obs, 
             canNotRemoveLastDayOfWeek(dayOfWeek);
         }
     }
-//    refreshSummary();
-//    System.out.println("make exception " + obs);
-//    makeExceptionDates();
 };
 
 // Listener for dayOfWeekRadioButton when frequency if monthly
@@ -642,7 +639,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         this.dateTimeStartInstanceNew = dateTimeStartInstanceNew;
 
         // EXCEPTIONS
-        // Note: exceptionComboBox string converter must be setup done after the controller's initialization 
+        // Note: exceptionComboBox string converter must be setup after the controller's initialization 
         // because the resource bundle isn't instantiated earlier.
         exceptionComboBox.setConverter(new StringConverter<Temporal>()
         { // setup string converter

@@ -37,6 +37,7 @@ import javafx.scene.layout.HBox;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.RepeatableController;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
@@ -1136,6 +1137,37 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         ComboBox<ChangeDialogOptions> c = find("#edit_dialog_combobox");
         TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOptions.ONE));
         click("#edit_dialog_button_ok");
+    }
+    
+    @Test
+    //@Ignore
+    public void canCancelEdit()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));       
+        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        
+        // Open edit popup
+        move("#hourLine11"); // open edit popup
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+
+        // edit properties
+        TextField summaryTextField = find("#summaryTextField");
+        summaryTextField.setText("new summary");
+        LocalDateTimeTextField startTextField = find("#startTextField");
+        startTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 10, 30));
+
+        // cancel changes
+        click("#saveAppointmentButton");
+        ComboBox<ChangeDialogOptions> c = find("#edit_dialog_combobox");
+        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOptions.CANCEL));
+        click("#edit_dialog_button_ok");
+        
+        // check return to original state
+        VEventImpl vExpected = ICalendarTestAbstract.getDaily1();
+        assertEquals(vExpected, v);
+        assertEquals("Daily1 Summary", v.getSummary());
+        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), v.getDateTimeStart());
     }
     
     @Test
