@@ -399,6 +399,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     final private StringProperty uniqueIdentifier = new SimpleStringProperty(this, UNIQUE_IDENTIFIER_NAME);
     public String getUniqueIdentifier() { return uniqueIdentifier.getValue(); }
     public void setUniqueIdentifier(String s) { uniqueIdentifier.set(s); }
+    /** Set uniqueIdentifier by calling uidGeneratorCallback */
     public void setUniqueIdentifier() { setUniqueIdentifier(getUidGeneratorCallback().call(null)); } 
 //    public T withUniqueIdentifier(String uid) { setUniqueIdentifier(uid); return (T)this; }
     
@@ -556,7 +557,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         if (getCategories() != null) properties.put(categoriesProperty(), getCategories().toString());
         if (getComment() != null) properties.put(commentProperty(), getComment().toString());
         if (getDateTimeCreated() != null) properties.put(dateTimeCreatedProperty(), VComponent.DATE_TIME_FORMATTER.format(getDateTimeCreated()));
-        properties.put(dateTimeStampProperty(), VComponent.DATE_TIME_FORMATTER.format(getDateTimeStamp())); // required property
+        if (getDateTimeStamp() != null) properties.put(dateTimeStampProperty(), VComponent.DATE_TIME_FORMATTER.format(getDateTimeStamp())); // required property
         if (getDateTimeRecurrence() != null) properties.put(dateTimeRecurrenceProperty(), VComponent.DATE_TIME_FORMATTER.format(getDateTimeRecurrence()));
         String startPrefix = (getDateTimeStart() instanceof LocalDate) ? "VALUE=DATE:" : "";
         if (getDateTimeStart() != null) properties.put(dateTimeStartProperty(), startPrefix + VComponent.temporalToString(getDateTimeStart()));
@@ -568,7 +569,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         if (getRRule() != null) properties.put(rRuleProperty(), getRRule().toString());
         if (getSequence() != 0) properties.put(sequenceProperty(), Integer.toString(getSequence()));
         if (getSummary() != null) properties.put(summaryProperty(), getSummary().toString());
-        properties.put(uniqueIdentifierProperty(), getUniqueIdentifier()); // required property
+        if (getUniqueIdentifier() != null) properties.put(uniqueIdentifierProperty(), getUniqueIdentifier()); // required property
         return properties;
     }
     

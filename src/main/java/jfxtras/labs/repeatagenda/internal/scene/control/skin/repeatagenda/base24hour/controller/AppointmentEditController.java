@@ -556,12 +556,9 @@ public class AppointmentEditController
                 appointment.getStartLocalDateTime().toLocalDate()
               : appointment.getStartLocalDateTime();
                 
-        final long count;
-        if (vEvent.getRRule() == null) count = 1;
-        else if ((vEvent.getRRule().getUntil() == null) && (vEvent.getRRule().getCount() == 0)) count = 0; // infinite
-        else count = vEvent.getRRule().stream(vEvent.getDateTimeStart()).count();
-
-        if (count == 1) // DELETE NON-REPEATING INSTANCE
+        Collection<VComponent<Appointment>> recurrenceSet = VComponent.findRelatedVComponents(vComponents, vEvent);
+        int count = VComponent.countVComponents(recurrenceSet);
+        if (count == 1)
         {
             vComponents.remove(vEvent);
         } else // more than one instance
@@ -570,14 +567,7 @@ public class AppointmentEditController
             switch (changeResponse)
             {
             case ALL:
-                vComponents.stream()
-                        .filter(v -> 
-                        {
-                            boolean recurrence = v.getUniqueIdentifier().equals(vEvent.getUniqueIdentifier());
-                            boolean relative = v.getRelatedTo().equals(vEvent.getUniqueIdentifier());
-                            return recurrence || relative;
-                        });
-                String found = (count > 1) ? Long.toString(count) : "infinite";
+                String found = (count > 1) ? Integer.toString(count) : "infinite";
                 if (ICalendarUtilities.confirmDelete(found))
                 {
                     vComponents.remove(vEvent);

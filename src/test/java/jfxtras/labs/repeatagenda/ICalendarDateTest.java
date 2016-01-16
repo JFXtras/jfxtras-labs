@@ -9,6 +9,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,12 +17,17 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Weekly;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
 
+/*
+ * Tests subset of recurrence set
+ */
 public class ICalendarDateTest extends ICalendarTestAbstract
 {
     
@@ -959,5 +965,81 @@ public class ICalendarDateTest extends ICalendarTestAbstract
             assertEquals(expectedDates, madeDates);
         }
     }
+    
+    /*
+     *  Tests for multi-part recurrence sets
+     *  Children have RECURRENCE-ID
+     *  Branches have RELATED-TO
+     */
 
+    @Test
+    public void canStreamBranch1()
+    {
+        VEventImpl e = getBranch1();
+        List<Temporal> madeDates = e
+                .stream(e.getDateTimeStart())
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 12, 1, 12, 0)
+              , LocalDateTime.of(2015, 12, 3, 12, 0)
+              , LocalDateTime.of(2015, 12, 5, 12, 0)
+              , LocalDateTime.of(2015, 12, 7, 12, 0)
+              , LocalDateTime.of(2015, 12, 9, 12, 0)
+              , LocalDateTime.of(2015, 12, 11, 12, 0)
+              ));
+        assertEquals(expectedDates, madeDates);
+    }
+
+    @Test
+    public void canStreamBranch2()
+    {
+        VEventImpl e = getBranch2();
+        List<Temporal> madeDates = e
+                .stream(e.getDateTimeStart())
+                .limit(6)
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 12, 14, 6, 0)
+              , LocalDateTime.of(2015, 12, 16, 6, 0)
+              , LocalDateTime.of(2015, 12, 18, 6, 0)
+              , LocalDateTime.of(2015, 12, 20, 6, 0)
+              , LocalDateTime.of(2015, 12, 22, 6, 0)
+              , LocalDateTime.of(2015, 12, 24, 6, 0)
+              ));
+        assertEquals(expectedDates, madeDates);
+    }
+    
+    @Test
+    public void canStreamChild1()
+    {
+        VEventImpl e = getChild1();
+        List<Temporal> madeDates = e
+                .stream(e.getDateTimeStart())
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 22, 16, 0)
+              ));
+        assertEquals(expectedDates, madeDates);
+    }
+    
+    @Test
+    public void canFindRecurrenceSet1()
+    {
+        List<VComponent<Appointment>> vComponents = new ArrayList<>();
+        vComponents.add(getMonthly2());
+        vComponents.add(getBranch1());
+        vComponents.add(getDaily6());
+        VEventImpl branch2 = getBranch2();
+        vComponents.add(branch2);
+        vComponents.add(getYearly1());
+        vComponents.add(getChild1());
+        vComponents.add(getWeekly3());
+        
+//        vComponents.stream().forEach(System.out::println);
+//System.exit(0);        
+        Collection<VComponent<Appointment>> rs = VComponent.findRelatedVComponents(vComponents, branch2);
+        assertEquals(4, rs.size());
+        
+        rs.iterator();
+    }
 }

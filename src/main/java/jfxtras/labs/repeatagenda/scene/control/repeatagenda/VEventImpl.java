@@ -180,7 +180,7 @@ public class VEventImpl extends VEvent<Appointment>
     
     /** Deep copy all fields from source to destination */
     @Override
-    public void copyTo(VComponent destination)
+    public void copyTo(VComponent<Appointment> destination)
     {
         super.copyTo(destination);
         copy(this, (VEventImpl) destination);
@@ -227,7 +227,8 @@ public class VEventImpl extends VEvent<Appointment>
     public String toString()
     {
         String errors = makeErrorString();
-        if (! errors.equals("")) throw new RuntimeException(errors);
+//        if (! errors.equals("")) throw new RuntimeException(errors);
+        @SuppressWarnings("rawtypes")
         Map<Property, String> properties = makePropertiesMap();
         String propertiesString = properties.entrySet()
                 .stream() 
@@ -237,6 +238,7 @@ public class VEventImpl extends VEvent<Appointment>
         return "BEGIN:VEVENT" + System.lineSeparator() + propertiesString + "END:VEVENT";
     }
     
+    @SuppressWarnings("rawtypes")
     @Override
     protected Map<Property, String> makePropertiesMap()
     {

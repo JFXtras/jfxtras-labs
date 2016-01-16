@@ -8,10 +8,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
+import java.util.Iterator;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
@@ -280,48 +280,6 @@ public interface VComponent<T>
      * @param destination
      */
     void copyTo(VComponent<T> destination);
-    
-//    /**
-//     * Handle editing a VComponent.
-//     * 
-//     * @param dateTimeStartInstanceOld : start of instance before edit
-//     * @param dateTimeStartInstanceNew : start of instance after edit
-//     * @param vComponentOld
-//     * @param instances
-//     * @param vEvents
-//     * @param changeDialogCallback
-//     * @param vEventWriteCallback
-//     * @return
-//     */
-//    WindowCloseType edit(
-//            LocalDateTime dateTimeStartInstanceOld
-//          , LocalDateTime dateTimeStartInstanceNew
-////          , T instance
-//          , VComponent<T> vComponentOld
-//          , Collection<T> instances
-//          , Collection<VComponent<T>> vEvents
-//          , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
-//          , Callback<Collection<VComponent<T>>, Void> vEventWriteCallback);
-//    
-//    /**
-//     * Handle deleting a VComponent from vComponents collection and its accompanying
-//     * recurrence instances 
-//     * 
-//     * @param instance
-//     * @param instances
-//     * @param vComponents
-//     * @param changeDialogCallback
-//     * @param confirmDeleteCallback
-//     * @param vEventWriteCallback
-//     * @return
-//     */
-//    WindowCloseType delete(
-//            Temporal dateOrDateTime
-////          , Collection<T> instances
-//          , Collection<VComponent<T>> vComponents
-//          , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
-//          , Callback<String, Boolean> confirmDeleteCallback
-//          , Callback<Collection<VComponent<T>>, Void> vEventWriteCallback);
 
     /*
      * UTILITY METHODS
@@ -490,19 +448,50 @@ public interface VComponent<T>
 
     /**
      * Return list of all related VComponents that make up entire recurrence set.
+     * List also contains input parameter vComponent, parent, children,
+     * or branches.
      * 
-     * @param v
+     * Used to edit or delete entire recurrence set.
+     * 
+     * @param vComponents : collection of all VComponents
+     * @param vComponent : VComponent to match to parent, children and branches
      * @return
      */
-    static <U> List<VComponent<U>> relatedVComponents(List<VComponent<U>> list, VComponent<U> v)
+    static <U> Collection<VComponent<U>> findRelatedVComponents(Collection<VComponent<U>> vComponents, VComponent<U> vComponent)
     {
-        List<VComponent<U>> related = new ArrayList<>();
-        related.add(v);
-        String uid = v.getUniqueIdentifier();
-        boolean isChild = v.getDateTimeRecurrence() == null;
-        boolean isParent = v.getRRule() != null;
-        if (isChild && ! isParent) return related; // individual
-        return related;
+        final String uid = (vComponent.getRelatedTo() != null) ? vComponent.getRelatedTo() : vComponent.getUniqueIdentifier();
+        System.out.println("uid:" + uid + " " + vComponents.size());
+        return vComponents.stream()
+//                .forEach(System.out::println);
+                .filter( v ->
+                {
+                    boolean isChild = (v.getUniqueIdentifier() != null) ? v.getUniqueIdentifier().equals(uid) : false;
+                    boolean isBranch2 = (v.getRelatedTo() != null) ? v.getRelatedTo().equals(uid) : false;
+                    return isChild || isBranch2;
+                })
+                .collect(Collectors.toList());
+    }
+    
+    /**
+     * Counts number of instances in recurrence set.  returns -1 for infinite.
+     * 
+     * @param recurrenceSet
+     * @return
+     */
+    static <U> int countVComponents(Collection<VComponent<U>> recurrenceSet)
+    {        
+        int count=0;
+        Iterator<VComponent<U>> i = recurrenceSet.iterator();
+        while (i.hasNext())
+        {
+            VComponent<U> v = i.next();
+            if (v.getRRule() == null) count++; // individual
+            else if ((v.getRRule().getUntil() == null) && (v.getRRule().getCount() == 0)) count = -1; // infinite
+            else count += v.getRRule().stream(v.getDateTimeStart()).count();
+            if (count == -1) break;
+        }
+        if (count == 0) throw new RuntimeException("Invalid VComponent: no instances in recurrence set");
+        return count;
     }
 
 }

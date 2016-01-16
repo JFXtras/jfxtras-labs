@@ -349,14 +349,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     // Change start, change Temporal type from LocalDate to LocalDateTime
     // this method is called by dateTimeStartlistener
     private void changeStartToLocalDateTime(LocalDateTime newValue)
-    {
-//        // Change dateTimeEnd
-//        if (getDurationInNanos() > 0)
-//        {
-//            Temporal dtEnd = LocalDateTime.from(newValue).plus(lastTimeBasedDuration, ChronoUnit.NANOS);
-//            setDateTimeEnd(dtEnd);
-//        }
-        
+    {        
         LocalTime time = LocalTime.from(newValue);
         // Change ExDates to LocalDate
         if (getExDate() != null)
@@ -419,7 +412,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
             Class<? extends Temporal> oldClass = (oldValue == null) ? null : oldValue.getClass();
             Class<? extends Temporal> newClass = newValue.getClass();
             System.out.println("new Start:" + newValue);
-            if (newClass != oldClass)
+            if ((oldClass != null) && (newClass != oldClass))
             {
                 if (newClass.equals(LocalDate.class)) // change to LocalDate
                 {
@@ -516,8 +509,10 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
 //        durationInNanosProperty().addListener(durationlistener); // synch duration with dateTimeEnd
     }
     
-    /** Deep copy all fields from source to destination.  Used both by copyTo method and copy constructor. */
-    private static void copy(VEvent source, VEvent destination)
+    /** Deep copy all fields from source to destination.  Used both by copyTo method and copy constructor. 
+     * @param <U> instance type
+     * */
+    private static <U> void copy(VEvent<U> source, VEvent<U> destination)
     {
         destination.setDescription(source.getDescription());
         destination.setDurationInNanos(source.getDurationInNanos());
@@ -535,6 +530,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     @Override
     public boolean equals(Object obj)
     {
+        @SuppressWarnings("unchecked")
         VEvent<T> testObj = (VEvent<T>) obj;
 
         boolean descriptionEquals = (getDescription() == null) ?
@@ -552,6 +548,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     @Override
     public String toString()
     {
+        @SuppressWarnings("rawtypes")
         Map<Property, String> properties = makePropertiesMap();
         String propertiesString = properties.entrySet()
                 .stream() 
@@ -561,15 +558,26 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         return "BEGIN:VEVENT" + System.lineSeparator() + propertiesString + "END:VEVENT";
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     protected Map<Property, String> makePropertiesMap()
     {
         Map<Property, String> properties = new HashMap<Property, String>();
         properties.putAll(super.makePropertiesMap());
         if ((getDescription() != null) && (! getDescription().equals(""))) properties.put(descriptionProperty(), getDescription());
-        String endPrefix = (getDateTimeEnd() instanceof LocalDate) ? "VALUE=DATE:" : "";
-        if (endPriority == EndPriority.DTEND) properties.put(dateTimeEndProperty(), endPrefix + VComponent.temporalToString(getDateTimeEnd()));
-        if (endPriority == EndPriority.DURATION) properties.put(durationInNanosProperty(), getDurationAsString());
+        if (endPriority != null)
+        {
+            switch (endPriority)
+            {
+            case DTEND:
+                String endPrefix = (getDateTimeEnd() instanceof LocalDate) ? "VALUE=DATE:" : "";
+                properties.put(dateTimeEndProperty(), endPrefix + VComponent.temporalToString(getDateTimeEnd()));
+                break;
+            case DURATION:
+                properties.put(durationInNanosProperty(), getDurationAsString());
+                break;
+            }
+        }
         return properties;
     }
     

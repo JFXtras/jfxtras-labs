@@ -7,7 +7,9 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentImplLocal2;
@@ -508,12 +510,11 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
     }
 
     /* FREQ=DAILY;INVERVAL=2;UNTIL=20151201T000000 */
-    protected VEventImpl getDaily6()
+    protected static VEventImpl getDaily6()
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0));
-//        vEvent.setDurationInNanos(5400L * NANOS_IN_SECOND);
         vEvent.setAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(3));
         vEvent.setDescription("Daily6 Description");
         vEvent.setSummary("Daily6 Summary");
@@ -521,7 +522,7 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
         vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         RRule rule = new RRule()
-                .withUntil(LocalDateTime.of(2015, 12, 1, 0, 0));
+                .withUntil(LocalDateTime.of(2015, 12, 1, 9, 59, 59));
         vEvent.setRRule(rule);
         Frequency daily = new Daily()
                 .withInterval(2);
@@ -624,5 +625,63 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
         rule.setFrequency(daily);
         return vEvent;
     }
+
+    /*
+     *  Tests for multi-part recurrence sets
+     *  Children have RECURRENCE-ID
+     *  Branches have RELATED-TO
+     */
     
+    // branch of getDaily6
+    protected static VEventImpl getBranch1()
+    {
+        VEventImpl v = new VEventImpl(getDaily6());
+        v.setDateTimeStart(LocalDateTime.of(2015, 12, 1, 12, 0));
+        v.setDateTimeEnd(LocalDateTime.of(2015, 12, 1, 13, 0));
+        v.setRelatedTo(v.getUniqueIdentifier());
+        v.setUniqueIdentifier("20151201T080000-0@jfxtras.org");
+        v.getRRule().setUntil(LocalDateTime.of(2015, 12, 13, 11, 59, 59));
+        return v;
+    }
+    
+    // branch of getDaily6
+    protected static VEventImpl getBranch2()
+    {
+        VEventImpl v = new VEventImpl(getDaily6());
+        v.setDateTimeStart(LocalDateTime.of(2015, 12, 14, 6, 0));
+        v.setDateTimeEnd(LocalDateTime.of(2015, 12, 14, 8, 0));
+        v.setRelatedTo(v.getUniqueIdentifier());
+        v.setUniqueIdentifier("20151214T080000-0@jfxtras.org");
+        v.getRRule().setUntil(null);
+        return v;
+    }
+
+    // child of getDaily6
+    protected static VEventImpl getChild1()
+    {
+        VEventImpl v = new VEventImpl(getDaily6());
+        v.setDateTimeStart(LocalDateTime.of(2015, 11, 22, 16, 0));
+        v.setDateTimeEnd(LocalDateTime.of(2015, 11, 22, 18, 0));
+        v.setDateTimeRecurrence(LocalDateTime.of(2015, 11, 21, 10, 0));
+        v.setRRule(null);
+        return v;
+    }
+    
+    protected static Collection<VComponent<Appointment>> getRecurrenceSet()
+    {
+        Set<VComponent<Appointment>> recurrenceSet = new LinkedHashSet<>();
+        VEventImpl parent = getDaily6();
+        VEventImpl branch1 = getBranch1();
+        VEventImpl branch2 = getBranch2();
+        VEventImpl child = getChild1();
+        
+        recurrenceSet.add(parent);
+        recurrenceSet.add(branch1);
+        recurrenceSet.add(branch2);
+        recurrenceSet.add(child);
+        parent.getRRule().getRecurrences().add(child.getDateTimeRecurrence());
+
+        return recurrenceSet;
+
+    }
 }

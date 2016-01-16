@@ -81,7 +81,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
                         + "DTEND:20151109T110000" + System.lineSeparator()
                         + "DTSTAMP:20150110T080000" + System.lineSeparator()
                         + "DTSTART:20151109T100000" + System.lineSeparator()
-                        + "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=20151201T000000" + System.lineSeparator()
+                        + "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=20151201T095959" + System.lineSeparator()
                         + "SUMMARY:Daily6 Summary" + System.lineSeparator()
                         + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                         + "END:VEVENT";
@@ -148,6 +148,67 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
                           + "END:VEVENT";
     assertEquals(expectedString, madeString);
     }
+    
+    // multi-part recurrence sets
+    
+    @Test
+    public void canConvertBranch1ToString()
+    {
+    VEventImpl vEvent = getBranch1();
+    String madeString = vEvent.toString();
+    String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
+                        + "CATEGORIES:group03" + System.lineSeparator()
+                        + "DESCRIPTION:Daily6 Description" + System.lineSeparator()
+                        + "DTEND:20151201T130000" + System.lineSeparator()
+                        + "DTSTAMP:20150110T080000" + System.lineSeparator()
+                        + "DTSTART:20151201T120000" + System.lineSeparator()
+                        + "RELATED-TO:20150110T080000-0@jfxtras.org" + System.lineSeparator()
+                        + "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=20151213T115959" + System.lineSeparator()
+                        + "SUMMARY:Daily6 Summary" + System.lineSeparator()
+                        + "UID:20151201T080000-0@jfxtras.org" + System.lineSeparator()
+                        + "END:VEVENT";
+    assertEquals(expectedString, madeString);
+    }
+    
+    @Test
+    public void canConvertBranch2ToString()
+    {
+    VEventImpl vEvent = getBranch2();
+    String madeString = vEvent.toString();
+    String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
+                        + "CATEGORIES:group03" + System.lineSeparator()
+                        + "DESCRIPTION:Daily6 Description" + System.lineSeparator()
+                        + "DTEND:20151214T080000" + System.lineSeparator()
+                        + "DTSTAMP:20150110T080000" + System.lineSeparator()
+                        + "DTSTART:20151214T060000" + System.lineSeparator()
+                        + "RELATED-TO:20150110T080000-0@jfxtras.org" + System.lineSeparator()
+                        + "RRULE:FREQ=DAILY;INTERVAL=2" + System.lineSeparator()
+                        + "SUMMARY:Daily6 Summary" + System.lineSeparator()
+                        + "UID:20151214T080000-0@jfxtras.org" + System.lineSeparator()
+                        + "END:VEVENT";
+    assertEquals(expectedString, madeString);
+    }
+    
+    @Test
+    public void canConvertChild1ToString()
+    {
+    VEventImpl vEvent = getChild1();
+    String madeString = vEvent.toString();
+    System.out.println(madeString);
+    String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
+                        + "CATEGORIES:group03" + System.lineSeparator()
+                        + "DESCRIPTION:Daily6 Description" + System.lineSeparator()
+                        + "DTEND:20151122T180000" + System.lineSeparator()
+                        + "DTSTAMP:20150110T080000" + System.lineSeparator()
+                        + "DTSTART:20151122T160000" + System.lineSeparator()
+                        + "RECURRENCE-ID:20151121T100000" + System.lineSeparator()
+                        + "SUMMARY:Daily6 Summary" + System.lineSeparator()
+                        + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
+                        + "END:VEVENT";
+    assertEquals(expectedString, madeString);
+    }
+    
+    // Easy-to-read-summary tests
     
     @Test
     public void canMakeRRuleSummaryString1()
