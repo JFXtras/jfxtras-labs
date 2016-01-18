@@ -102,16 +102,17 @@ public final class ICalendarUtilities
 //    }
     
     /**
-     * Options available when changing a repeatable appointment
-     * ONE: Change only selected appointment
-     * ALL: Change all appointments
-     * FUTURE: Change this and future appointments
-     * @author David Bal
-     *
+     * Options available when editing or deleting a repeatable appointment.
+     * Sometimes all options are not available.  For example, a one-part repeating
+     * event doesn't have the SEGMENT option.
      */
     public enum ChangeDialogOptions
     {
-        ONE, ALL, THIS_AND_FUTURE, CANCEL;
+        ONE                 // individual instance
+      , SEGMENT             // one part of a multi-part series
+      , ALL                 // entire series
+      , THIS_AND_FUTURE     // all instances from this time forward
+      , CANCEL;             // do nothing
 
         @Override
         public String toString() {

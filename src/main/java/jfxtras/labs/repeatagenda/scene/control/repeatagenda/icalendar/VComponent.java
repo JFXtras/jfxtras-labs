@@ -11,12 +11,14 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.util.Callback;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 
 /** Interface for VEVENT, VTODO, VJOURNAL calendar components. 
@@ -121,24 +123,29 @@ public interface VComponent<T>
      * This field is null unless the object contains as RECURRENCE-ID value.
      * 3.8.4.5, RFC 5545 iCalendar
      */
-    public String getRelatedTo();
-    public void setRelatedTo(String uid);
+    String getRelatedTo();
+    void setRelatedTo(String uid);
+    
+    /**
+     * Use Google UID extension instead of RELATED-TO to express 
+     */
+    boolean isGoogleRecurrenceUID();
+    void setGoogleRecurrenceUID(boolean b);
 
     /**
      * RECURRENCE-ID: date or date-time recurrence, from RFC 5545 iCalendar 3.8.4.4 page 112
      * The property value is the original value of the "DTSTART" property of the 
      * recurrence instance.
      */
-    // TODO - VERIFY THIS WORKS - I DON'T THINK IT DOES
     Temporal getDateTimeRecurrence();
-    public void setDateTimeRecurrence(Temporal dtRecurrence);
+    void setDateTimeRecurrence(Temporal dtRecurrence);
     
     /**
      * RDATE: Set of date/times for recurring events, to-dos, journal entries.
      * 3.8.5.2, RFC 5545 iCalendar
      */
-    public RDate getRDate();
-    public void setRDate(RDate rDate);
+    RDate getRDate();
+    void setRDate(RDate rDate);
     
     /**
      * RRULE, Recurrence Rule as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
@@ -281,6 +288,50 @@ public interface VComponent<T>
      */
     void copyTo(VComponent<T> destination);
 
+    /**
+     * @return String representing start and end of recurrence set.
+     * If VComponent is part of a multi-part series only this segment is considered.
+     * Example: Dec 5, 2015 - Feb 6, 2016
+     *          Nov 12, 2015 - forever
+     */
+    default String rangeToString()
+    {
+        // Callback to format by either LocalDate or LocalDateTime Temporal
+        Callback<Temporal, String> makeString = (t) ->
+        {
+            if (t instanceof LocalDate)
+            {
+                return Settings.DATE_FORMAT_AGENDA_EXCEPTION_DATEONLY.format(t);                
+            } else if (t instanceof LocalDateTime)
+            {
+                return Settings.DATE_FORMAT_AGENDA_START.format(t);
+            } else return null;
+        };
+        
+        Temporal start = getDateTimeStart();
+        if (getRRule() != null)
+        {
+            if ((getRRule().getCount() == 0) && (getRRule().getUntil() == null))
+            {
+                return makeString.call(start) + " - forever";
+            }
+            else
+            {
+                List<Temporal> instances = stream(start).collect(Collectors.toList());
+                Temporal end = instances.get(instances.size()-1);
+                return makeString.call(start) + " - " + makeString.call(end);
+            }
+        } else if (getRDate() == null)
+        {
+            return makeString.call(getDateTimeStart()); // individual
+        } else
+        {
+            List<Temporal> instances = stream(start).collect(Collectors.toList());
+            Temporal end = instances.get(instances.size()-1);
+            return makeString.call(start) + " - " + makeString.call(end);
+        }
+    }
+    
     /*
      * UTILITY METHODS
      * 
@@ -474,6 +525,7 @@ public interface VComponent<T>
     
     /**
      * Counts number of instances in recurrence set.  returns -1 for infinite.
+     * Recurrence set of collection of VComponents making up a series.
      * 
      * @param recurrenceSet
      * @return
@@ -485,7 +537,7 @@ public interface VComponent<T>
         while (i.hasNext())
         {
             VComponent<U> v = i.next();
-            if (v.getRRule() == null) count++; // individual
+            if (v.getRRule() == null && v.getRDate() == null) count++; // individual
             else if ((v.getRRule().getUntil() == null) && (v.getRRule().getCount() == 0)) count = -1; // infinite
             else count += v.getRRule().stream(v.getDateTimeStart()).count();
             if (count == -1) break;

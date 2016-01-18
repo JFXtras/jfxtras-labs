@@ -2,12 +2,9 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Spliterator;
@@ -44,16 +41,7 @@ public class RRule
     private final static String COUNT_NAME = "COUNT";
     private final static String UNTIL_NAME = "UNTIL";
     private final static String INTERVAL_NAME = "INTERVAL";
-    
-    /** Parent VEvent 
-     * Contains following data necessary for RRule: DTSTART, DURATION */
-//    final private VEvent vevent;
-
-    // TODO - MAKE A CACHE LIST OF START DATES (from the stream)
-    // try to avoid making new dates by starting from the first startLocalDateTime if possible
-    // having a variety of valid start date/times, spaced by 100 or so could be a good solution.
-    private List<LocalDateTime> startCache = new ArrayList<>();
-        
+            
     /** 
      * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.) 
      */
@@ -133,16 +121,6 @@ public class RRule
     private Set<Temporal> recurrences = new HashSet<>();
     public void setRecurrences(Set<Temporal> temporal) { recurrences = temporal; }
     public RRule withRecurrences(Set<Temporal> temporal) { setRecurrences(temporal); return this; }
-//    private boolean instancesEquals(Collection<LocalDateTime> instancesTest)
-//    {
-//        Iterator<LocalDateTime> dateIterator = getInstances().iterator();
-//        while (dateIterator.hasNext())
-//        {
-//            LocalDateTime myDate = dateIterator.next();
-//            if (! instancesTest.contains(myDate)) return false;
-//        }
-//        return true;
-//    }
 
     /** Deep copy all fields from source to destination */
     private static void copy(RRule source, RRule destination)

@@ -256,8 +256,8 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * This property specifies the date and time that the information associated with
      * the calendar component was last revised.
      */
-    final private ObjectProperty<LocalDateTime> dateTimeLastModified = new SimpleObjectProperty<LocalDateTime>(this, LAST_MODIFIED_NAME);
     public ObjectProperty<LocalDateTime> dateTimeLastModifiedProperty() { return dateTimeLastModified; }
+    final private ObjectProperty<LocalDateTime> dateTimeLastModified = new SimpleObjectProperty<LocalDateTime>(this, LAST_MODIFIED_NAME);
     public LocalDateTime getDateTimeLastModified() { return dateTimeLastModified.getValue(); }
     public void setDateTimeLastModified(LocalDateTime dtLastModified) { this.dateTimeLastModified.set(dtLastModified); }
     
@@ -302,6 +302,13 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     final private StringProperty relatedTo = new SimpleStringProperty(this, RELATED_TO_NAME);
     public String getRelatedTo() { return relatedTo.getValue(); }
     public void setRelatedTo(String s) { relatedTo.set(s); }
+    
+    /**
+     * Use Google UID extension instead of RELATED-TO to express 
+     */
+    public boolean isGoogleRecurrenceUID() { return googleRecurrenceUID; };
+    private boolean googleRecurrenceUID = false; // default to not using Google system
+    public void setGoogleRecurrenceUID(boolean b) { googleRecurrenceUID = b; };
     
     /**
      * RECURRENCE-ID: Date-Time recurrence, from RFC 5545 iCalendar 3.8.4.4 page 112

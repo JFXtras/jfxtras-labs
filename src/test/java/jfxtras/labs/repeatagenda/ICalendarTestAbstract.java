@@ -682,6 +682,5 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
         parent.getRRule().getRecurrences().add(child.getDateTimeRecurrence());
 
         return recurrenceSet;
-
     }
 }
