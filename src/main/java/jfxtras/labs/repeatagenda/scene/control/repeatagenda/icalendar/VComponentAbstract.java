@@ -467,6 +467,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         destination.setDateTimeStamp(source.getDateTimeStamp());
         destination.setDateTimeStart(source.getDateTimeStart());
         destination.setLocation(source.getLocation());
+        destination.setRelatedTo(source.getRelatedTo());
         destination.setSequence(source.getSequence());
         destination.setSummary(source.getSummary());
         destination.setUniqueIdentifier(source.getUniqueIdentifier());

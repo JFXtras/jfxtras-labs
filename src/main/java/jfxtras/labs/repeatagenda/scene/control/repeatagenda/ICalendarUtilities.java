@@ -32,13 +32,10 @@ public final class ICalendarUtilities
     public static ChangeDialogOptions repeatChangeDialog(ChangeDialogOptions...choiceList)
     {
         ResourceBundle resources = Settings.resources;
-        List<ChangeDialogOptions> choices;
+        final List<ChangeDialogOptions> choices;
         if (choiceList == null || choiceList.length == 0)
         { // use default choices
-            choices = new ArrayList<>();
-            choices.add(ChangeDialogOptions.ONE);
-            choices.add(ChangeDialogOptions.ALL);
-            choices.add(ChangeDialogOptions.THIS_AND_FUTURE);
+            choices = new ArrayList<ChangeDialogOptions>(Arrays.asList(ChangeDialogOptions.threeOptions()));
         } else { // use inputed choices
             choices = new ArrayList<ChangeDialogOptions>(Arrays.asList(choiceList));
         }
@@ -117,6 +114,34 @@ public final class ICalendarUtilities
         @Override
         public String toString() {
             return Settings.REPEAT_CHANGE_CHOICES.get(this);
+        }
+        
+        /** for one-part repeatable events */
+        private static ChangeDialogOptions[] threeOptions()
+        {
+            return new ChangeDialogOptions[] {
+                    ONE
+                  , ALL
+                  , THIS_AND_FUTURE
+            };
+        }
+        
+        /** For multi-part repeatable events */
+        private static ChangeDialogOptions[] fourOptions()
+        {
+            return new ChangeDialogOptions[] {
+                    ONE
+                  , SEGMENT
+                  , ALL
+                  , THIS_AND_FUTURE
+            };
+        }
+        
+        public static ChangeDialogOptions[] selectChoices(int choices)
+        {
+            if (choices == 3) return threeOptions();
+            if (choices == 4) return fourOptions();
+            return null;
         }
     }
     

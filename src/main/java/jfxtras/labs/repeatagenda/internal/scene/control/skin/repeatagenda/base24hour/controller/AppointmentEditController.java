@@ -409,24 +409,24 @@ public class AppointmentEditController
      */
     private void editThisAndFuture()
     {
-        LocalDateTime dateTimeInstanceStartNew = appointment.getStartLocalDateTime();
-//        VEvent<Appointment> vEventNew = (VEvent<Appointment>) VComponentFactory.newVComponent(vEvent);
-//        vEventOriginal.copyTo(vEvent);
-        System.out.println("start*:");
-        System.out.println(vEventOriginal);
-        System.out.println("end*:");
+        Temporal startNew = (wholeDayCheckBox.isSelected()) ? startTextField.getLocalDateTime().toLocalDate() : startTextField.getLocalDateTime();
+
         // Adjust original VEvent
         if (vEventOriginal.getRRule().getCount() != null) vEventOriginal.getRRule().setCount(0);
-        LocalDateTime newDateTime = dateTimeInstanceStartOriginal.minusNanos(1);
-        vEventOriginal.getRRule().setUntil(newDateTime);
+        Temporal untilNew = (wholeDayCheckBox.isSelected()) ? startNew.minus(1, ChronoUnit.DAYS) : startNew.minus(1, ChronoUnit.NANOS);
+        vEventOriginal.getRRule().setUntil(untilNew);
         
         // Adjust new VEvent
-        long shift = ChronoUnit.DAYS.between(vEvent.getDateTimeStart(), dateTimeInstanceStartNew);
-        Temporal dtEnd = vEvent.getDateTimeEnd().plus(shift, ChronoUnit.DAYS);
-        vEvent.setDateTimeEnd(dtEnd);
-        vEvent.setDateTimeStart(dateTimeInstanceStartNew);
+        long shift = ChronoUnit.DAYS.between(vEvent.getDateTimeStart(), startNew);
+        Temporal endNew = vEvent.getDateTimeEnd().plus(shift, ChronoUnit.DAYS);
+        vEvent.setDateTimeEnd(endNew);
+        vEvent.setDateTimeStart(startNew);
+        System.out.println("start*:" + vEvent.getDateTimeStart());
+        System.out.println("end*:" + vEvent.getDateTimeEnd());
+        System.out.println("stardoriginal:" + vEventOriginal.getDateTimeStart() + " " + vEventOriginal.getRelatedTo());
         vEvent.setUniqueIdentifier();
-        vEvent.setRelatedTo(vEventOriginal.getUniqueIdentifier());
+        String relatedUID = (vEventOriginal.getRelatedTo() == null) ? vEventOriginal.getUniqueIdentifier() : vEventOriginal.getRelatedTo();
+        vEvent.setRelatedTo(relatedUID);
         vEvent.setDateTimeStamp(LocalDateTime.now());
         
         // Split EXDates dates between this and newVEvent
@@ -437,7 +437,7 @@ public class AppointmentEditController
             while (exceptionIterator.hasNext())
             {
                 Temporal d = exceptionIterator.next();
-                int result = VComponent.TEMPORAL_COMPARATOR.compare(d, dateTimeInstanceStartNew);
+                int result = VComponent.TEMPORAL_COMPARATOR.compare(d, startNew);
 //                if (d.getLocalDateTime().isBefore(dateTimeStartInstanceNew))
                 if (result < 0)
                 {
@@ -458,7 +458,7 @@ public class AppointmentEditController
             while (recurrenceIterator.hasNext())
             {
                 Temporal d = recurrenceIterator.next();
-                int result = VComponent.TEMPORAL_COMPARATOR.compare(d, dateTimeInstanceStartNew);
+                int result = VComponent.TEMPORAL_COMPARATOR.compare(d, startNew);
 //                if (d.getLocalDateTime().isBefore(dateTimeStartInstanceNew))
                 if (result < 0)
                 {
@@ -479,7 +479,7 @@ public class AppointmentEditController
             while (recurrenceIterator.hasNext())
             {
                 Temporal d = recurrenceIterator.next();
-                if (VComponent.isBefore(d, dateTimeInstanceStartNew))
+                if (VComponent.isBefore(d, startNew))
                 {
                     recurrenceIterator.remove();
                 } else {
@@ -494,7 +494,7 @@ public class AppointmentEditController
             final int newCount = (int) vEvent.instances()
                     .stream()
                     .map(a -> a.getStartLocalDateTime())
-                    .filter(d -> ! d.isBefore(dateTimeInstanceStartNew))
+                    .filter(d -> ! VComponent.isBefore(d, startNew))
                     .count();
             vEvent.getRRule().setCount(newCount);
         }
@@ -513,8 +513,7 @@ public class AppointmentEditController
         appointments.clear();
         appointments.addAll(appointmentsTemp);
         
-        System.out.println(vEventOriginal);
-        System.out.println(vEvent);
+        vComponents.stream().forEach(System.out::println);
         System.out.println("vComponents:" + vComponents.size());
     }
     
@@ -563,7 +562,7 @@ public class AppointmentEditController
             vComponents.remove(vEvent);
         } else // more than one instance
         {
-            ChangeDialogOptions changeResponse = ICalendarUtilities.repeatChangeDialog();
+            ChangeDialogOptions changeResponse = ICalendarUtilities.repeatChangeDialog(ChangeDialogOptions.selectChoices(count));
             switch (changeResponse)
             {
             case ALL:
@@ -579,6 +578,9 @@ public class AppointmentEditController
                 if (vEvent.getExDate() == null) vEvent.setExDate(new EXDate(dateOrDateTime));
                 else vEvent.getExDate().getTemporals().add(dateOrDateTime);
                 appointments.removeIf(a -> a.getStartLocalDateTime().equals(appointment.getStartLocalDateTime()));
+                break;
+            case SEGMENT:
+                System.out.println("delete segment");
                 break;
             case THIS_AND_FUTURE:
                 if (vEvent.getRRule().getCount() == 0) vEvent.getRRule().setCount(0);
