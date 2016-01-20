@@ -31,7 +31,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentFactory;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.RRuleType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
@@ -389,7 +389,7 @@ public class VEventImpl extends VEvent<Appointment>
             , VComponent<Appointment> VComponentOld
             , Collection<Appointment> appointments
             , Collection<VComponent<Appointment>> vEvents
-            , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
+            , Callback<ChangeDialogOption[], ChangeDialogOption> changeDialogCallback
             , Callback<Collection<VComponent<Appointment>>, Void> writeVEventsCallback)
     {
         System.out.println("old, new:" + dateTimeStartInstanceOld + " " + dateTimeStartInstanceNew);
@@ -419,10 +419,10 @@ public class VEventImpl extends VEvent<Appointment>
             tempVEvent.setRRule(getRRule());
             boolean onlyRRuleChanged = this.equals(tempVEvent); // true indicates none of the properties besides RRule are changed
 
-            ChangeDialogOptions[] choices = (onlyRRuleChanged) ?
-                    new ChangeDialogOptions[] {ChangeDialogOptions.ALL, ChangeDialogOptions.THIS_AND_FUTURE}
+            ChangeDialogOption[] choices = (onlyRRuleChanged) ?
+                    new ChangeDialogOption[] {ChangeDialogOption.ALL, ChangeDialogOption.THIS_AND_FUTURE}
                   : null;
-            ChangeDialogOptions changeResponse = changeDialogCallback.call(choices);
+            ChangeDialogOption changeResponse = changeDialogCallback.call(choices);
             switch (changeResponse)
             {
                 case ALL:
@@ -602,7 +602,7 @@ public class VEventImpl extends VEvent<Appointment>
             Temporal dateOrDateTime
 //          , Collection<Appointment> appointments
           , Collection<VComponent<Appointment>> vEvents
-          , Callback<ChangeDialogOptions[], ChangeDialogOptions> changeDialogCallback
+          , Callback<ChangeDialogOption[], ChangeDialogOption> changeDialogCallback
           , Callback<String, Boolean> confirmDeleteCallback
           , Callback<Collection<VComponent<Appointment>>, Void> writeVEventsCallback)
     {
@@ -631,7 +631,7 @@ public class VEventImpl extends VEvent<Appointment>
         {
 //            final Temporal dateOrDateTime = (appointment.isWholeDay()) ? appointment.getStartLocalDateTime().toLocalDate()
 //                    : appointment.getStartLocalDateTime();
-            ChangeDialogOptions changeResponse = changeDialogCallback.call(null);
+            ChangeDialogOption changeResponse = changeDialogCallback.call(null);
             switch (changeResponse)
             {
             case ALL:

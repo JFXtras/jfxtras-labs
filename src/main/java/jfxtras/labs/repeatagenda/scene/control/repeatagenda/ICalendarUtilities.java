@@ -3,6 +3,7 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -29,34 +30,51 @@ public final class ICalendarUtilities
      * @param choiceList
      * @return
      */
-    public static ChangeDialogOptions repeatChangeDialog(ChangeDialogOptions...choiceList)
+//    public static ChangeDialogOption repeatChangeDialog(ChangeDialogOption...choiceList)
+    public static ChangeDialogOption repeatChangeDialog(Map<ChangeDialogOption, String> choices)
     {
         ResourceBundle resources = Settings.resources;
-        final List<ChangeDialogOptions> choices;
-        if (choiceList == null || choiceList.length == 0)
-        { // use default choices
-            choices = new ArrayList<ChangeDialogOptions>(Arrays.asList(ChangeDialogOptions.threeOptions()));
-        } else { // use inputed choices
-            choices = new ArrayList<ChangeDialogOptions>(Arrays.asList(choiceList));
-        }
+        List<ChangeDialogOption> choiceList = (choices == null) ? 
+                new ArrayList<>(Arrays.asList(ChangeDialogOption.threeOptions())) // default choices
+              : new ArrayList<>(choices.keySet());
                
-        ChoiceDialog<ChangeDialogOptions> dialog = new ChoiceDialog<>(choices.get(0), choices);
+        ChoiceDialog<ChangeDialogOption> dialog = new ChoiceDialog<>(null, choiceList);
         
         // set id for testing
         dialog.getDialogPane().setId("edit_dialog");
         List<Node> buttons = getAllNodes(dialog.getDialogPane(), Button.class);
         ((Button) buttons.get(0)).setId("edit_dialog_button_ok");
         ((Button) buttons.get(1)).setId("edit_dialog_button_cancel");
-        Node n = getAllNodes(dialog.getDialogPane(), ComboBox.class).get(0);
-        ((ComboBox<ChangeDialogOptions>) n).setId("edit_dialog_combobox");
+        ComboBox<ChangeDialogOption> comboBox = (ComboBox<ChangeDialogOption>) getAllNodes(dialog.getDialogPane(), ComboBox.class).get(0);
+        comboBox.setId("edit_dialog_combobox");
 
         dialog.setTitle(resources.getString("dialog.repeat.change.title"));
         dialog.setContentText(resources.getString("dialog.repeat.change.content"));
         dialog.setHeaderText(resources.getString("dialog.repeat.change.header"));
+//        comboBox.setConverter(new StringConverter<ChangeDialogOption>()
+//        {
+//            @Override public String toString(ChangeDialogOption change)
+//            {
+//                return change.getText() + System.lineSeparator() + choices.get(change);
+////                return choices.get(change);
+//            }
+//            @Override public ChangeDialogOption fromString(String string) {
+//                throw new RuntimeException("not required for non editable ComboBox");
+//            }
+//        });
+        comboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> 
+        {
+            dialog.setHeaderText(newSelection.getText() + System.lineSeparator() + choices.get(newSelection));
+//            dialog.setHeaderText(newSelection.getText());
+//            dialog.setHeaderText(choices.get(newSelection));
+        });
+        dialog.setHeaderText(dialog.getSelectedItem().getText() + System.lineSeparator() + choices.get(dialog.getSelectedItem())); // initial text
+//        dialog.setHeaderText(dialog.getSelectedItem().getText()); // initial text
+//        dialog.setHeaderText(choices.get(dialog.getSelectedItem())); // initial text
 
-        Optional<ChangeDialogOptions> result = dialog.showAndWait();
+        Optional<ChangeDialogOption> result = dialog.showAndWait();
         
-        return (result.isPresent()) ? result.get() : ChangeDialogOptions.CANCEL;
+        return (result.isPresent()) ? result.get() : ChangeDialogOption.CANCEL;
     }
     
     /**
@@ -103,23 +121,28 @@ public final class ICalendarUtilities
      * Sometimes all options are not available.  For example, a one-part repeating
      * event doesn't have the SEGMENT option.
      */
-    public enum ChangeDialogOptions
+    public enum ChangeDialogOption
     {
-        ONE                 // individual instance
-      , SEGMENT             // one part of a multi-part series
-      , ALL                 // entire series
-      , THIS_AND_FUTURE     // all instances from this time forward
-      , CANCEL;             // do nothing
-
+        ONE("Individual event:")                 // individual instance
+      , SEGMENT("Segment of events:")             // one part of a multi-part series
+      , ALL("Whole series:")                 // entire series
+      , THIS_AND_FUTURE("This event and future:")     // all instances from this time forward
+      , CANCEL("Cancel and do nothing");             // do nothing
+// TODO - REPLACE WITH BUNDLE TEXTS
+        private String text;
+        
+        ChangeDialogOption(String s) { text =  s; } // appends s to default text
+        public String getText() { return text; }
+        
         @Override
         public String toString() {
             return Settings.REPEAT_CHANGE_CHOICES.get(this);
         }
         
         /** for one-part repeatable events */
-        private static ChangeDialogOptions[] threeOptions()
+        private static ChangeDialogOption[] threeOptions()
         {
-            return new ChangeDialogOptions[] {
+            return new ChangeDialogOption[] {
                     ONE
                   , ALL
                   , THIS_AND_FUTURE
@@ -127,9 +150,9 @@ public final class ICalendarUtilities
         }
         
         /** For multi-part repeatable events */
-        private static ChangeDialogOptions[] fourOptions()
+        private static ChangeDialogOption[] fourOptions()
         {
-            return new ChangeDialogOptions[] {
+            return new ChangeDialogOption[] {
                     ONE
                   , SEGMENT
                   , ALL
@@ -137,11 +160,16 @@ public final class ICalendarUtilities
             };
         }
         
-        public static ChangeDialogOptions[] selectChoices(int choices)
+        public static ChangeDialogOption[] selectChoices(int choices)
         {
             if (choices == 3) return threeOptions();
             if (choices == 4) return fourOptions();
             return null;
+        }
+
+        public static void ONE(String one2) {
+            // TODO Auto-generated method stub
+            
         }
     }
     

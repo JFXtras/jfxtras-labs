@@ -36,7 +36,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.RepeatableController;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
@@ -337,8 +337,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         ComboBox<Frequency.FrequencyType> frequencyComboBox = find("#frequencyComboBox");
         TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(Frequency.FrequencyType.WEEKLY));
         click("#saveRepeatButton");
-        ComboBox<ChangeDialogOptions> c = find("#edit_dialog_combobox");
-        TestUtil.runThenWaitForPaintPulse(() -> c.getSelectionModel().select(ChangeDialogOptions.ALL));
+        ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
+        TestUtil.runThenWaitForPaintPulse(() -> c.getSelectionModel().select(ChangeDialogOption.ALL));
         click("#edit_dialog_button_ok");
         List<LocalDateTime> dates = agenda.appointments()
                 .stream()
@@ -1078,8 +1078,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
 
        // save changes to THIS AND FUTURE
        click("#saveAppointmentButton");
-       ComboBox<ChangeDialogOptions> c = find("#edit_dialog_combobox");
-       TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOptions.THIS_AND_FUTURE));
+       ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
+       TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.THIS_AND_FUTURE));
        click("#edit_dialog_button_ok");
 
        // verify VComponent changes
@@ -1134,8 +1134,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
 
         // save changes to THIS AND FUTURE
         click("#saveAppointmentButton");
-        ComboBox<ChangeDialogOptions> c = find("#edit_dialog_combobox");
-        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOptions.ONE));
+        ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
+        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ONE));
         click("#edit_dialog_button_ok");
     }
     
@@ -1159,8 +1159,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
 
         // cancel changes
         click("#saveAppointmentButton");
-        ComboBox<ChangeDialogOptions> c = find("#edit_dialog_combobox");
-        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOptions.CANCEL));
+        ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
+        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.CANCEL));
         click("#edit_dialog_button_ok");
         
         // check return to original state

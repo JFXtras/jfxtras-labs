@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency.FrequencyType;
 
 
@@ -64,13 +64,13 @@ public final class Settings
         map.put(FrequencyType.YEARLY, "year");
         return map;
     }
-    public static final Map<ChangeDialogOptions, String> REPEAT_CHANGE_CHOICES = defaultRepeatChangeChoicesMap();
-    private static Map<ChangeDialogOptions, String> defaultRepeatChangeChoicesMap()
+    public static final Map<ChangeDialogOption, String> REPEAT_CHANGE_CHOICES = defaultRepeatChangeChoicesMap();
+    private static Map<ChangeDialogOption, String> defaultRepeatChangeChoicesMap()
     {
-        Map<ChangeDialogOptions, String> map = new HashMap<>();
-        map.put(ChangeDialogOptions.ONE, "This event only");
-        map.put(ChangeDialogOptions.ALL, "All events");
-        map.put(ChangeDialogOptions.THIS_AND_FUTURE, "This and future events");
+        Map<ChangeDialogOption, String> map = new HashMap<>();
+        map.put(ChangeDialogOption.ONE, "This event only");
+        map.put(ChangeDialogOption.ALL, "All events");
+        map.put(ChangeDialogOption.THIS_AND_FUTURE, "This and future events");
         return map;
     }
 
@@ -132,9 +132,9 @@ public final class Settings
         REPEAT_FREQUENCIES_SINGULAR.put(FrequencyType.MONTHLY, resourcesIn.getString("month"));
         REPEAT_FREQUENCIES_SINGULAR.put(FrequencyType.YEARLY, resourcesIn.getString("year"));
 
-        REPEAT_CHANGE_CHOICES.put(ChangeDialogOptions.ONE, resources.getString("dialog.repeat.change.one"));
-        REPEAT_CHANGE_CHOICES.put(ChangeDialogOptions.ALL, resources.getString("dialog.repeat.change.all"));
-        REPEAT_CHANGE_CHOICES.put(ChangeDialogOptions.THIS_AND_FUTURE, resources.getString("dialog.repeat.change.future"));
+        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.ONE, resources.getString("dialog.repeat.change.one"));
+        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.ALL, resources.getString("dialog.repeat.change.all"));
+        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.THIS_AND_FUTURE, resources.getString("dialog.repeat.change.future"));
         
         ORDINALS.put(1, resourcesIn.getString("first"));
         ORDINALS.put(2, resourcesIn.getString("second"));

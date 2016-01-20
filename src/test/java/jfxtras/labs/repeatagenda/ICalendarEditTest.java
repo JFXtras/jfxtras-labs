@@ -20,7 +20,7 @@ import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentFactory;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.WindowCloseType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -142,7 +142,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
-              , a -> ChangeDialogOptions.ALL   // answer to edit dialog
+              , a -> ChangeDialogOption.ALL   // answer to edit dialog
               , null);                  // VEvents I/O callback
         assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
 
@@ -224,7 +224,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
-              , a -> ChangeDialogOptions.ONE                   // answer to edit dialog
+              , a -> ChangeDialogOption.ONE                   // answer to edit dialog
               , null);                  // VEvents I/O callback
         appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
         assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
@@ -279,7 +279,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
-              , a -> ChangeDialogOptions.THIS_AND_FUTURE                   // answer to edit dialog
+              , a -> ChangeDialogOption.THIS_AND_FUTURE                   // answer to edit dialog
               , null);                  // VEvents I/O callback
         appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime() + " " + a.getEndLocalDateTime()));
         assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
@@ -343,7 +343,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
-              , a -> ChangeDialogOptions.THIS_AND_FUTURE                   // answer to edit dialog
+              , a -> ChangeDialogOption.THIS_AND_FUTURE                   // answer to edit dialog
               , null);                  // VEvents I/O callback
         appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime() + " " + a.getEndLocalDateTime()));
         assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
@@ -447,7 +447,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
-              , a -> ChangeDialogOptions.THIS_AND_FUTURE                   // answer to edit dialog
+              , a -> ChangeDialogOption.THIS_AND_FUTURE                   // answer to edit dialog
               , null);                  // VEvents I/O callback
         appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime() + " " + a.getEndLocalDateTime()));
         assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
@@ -621,7 +621,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
-              , a -> ChangeDialogOptions.CANCEL   // answer to edit dialog
+              , a -> ChangeDialogOption.CANCEL   // answer to edit dialog
               , null);                  // VEvents I/O callback
         assertEquals(WindowCloseType.CLOSE_WITHOUT_CHANGE, windowCloseType); // check to see if close type is correct
 
@@ -678,7 +678,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
               , veventOld               // original VEvent
               , appointments            // collection of all appointments
               , vevents                 // collection of all VEvents
-              , a -> ChangeDialogOptions.ALL   // answer to edit dialog
+              , a -> ChangeDialogOption.ALL   // answer to edit dialog
               , null);                  // VEvents I/O callback
         assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
         

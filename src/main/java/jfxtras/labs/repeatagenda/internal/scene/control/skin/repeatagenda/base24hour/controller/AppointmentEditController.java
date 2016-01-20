@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javafx.beans.value.ChangeListener;
@@ -33,7 +35,7 @@ import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.VComponentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOptions;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.RRuleType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
@@ -312,18 +314,38 @@ public class AppointmentEditController
             vEvent.setRDate(null);
             vEvent.setExDate(null);
             // fall through
-        case WITH_NEW_REPEAT:
+        case WITH_NEW_REPEAT: // no dialog
         case INDIVIDUAL:
             if (! vEvent.equals(vEventOriginal)) updateAppointments();
             break;
         case WITH_EXISTING_REPEAT:
             if (! vEvent.equals(vEventOriginal)) // if changes occurred
             {
-                ChangeDialogOptions changeResponse = ICalendarUtilities.repeatChangeDialog();
+                // TODO - CAN THIS MAP GENERATOR GO ELSEWHERE? VCOMPONENT? (USE IN EDIT AND DELETE?)
+                Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
+                String one = VComponent.temporalToStringPretty(vEvent.getDateTimeStart());
+                choices.put(ChangeDialogOption.ONE, one);
+                if (! vEvent.isIndividual())
+                {
+                    if (vEvent.getRelatedTo() != null) choices.put(ChangeDialogOption.SEGMENT, vEvent.rangeToString());
+                    Collection<VComponent<Appointment>> relatives = VComponent.findRelatedVComponents(vComponents, vEvent);
+                    Temporal startInstance = (wholeDayCheckBox.isSelected()) ? startTextField.getLocalDateTime().toLocalDate() : startTextField.getLocalDateTime();
+                    String future = vEvent.rangeToString(startInstance);
+                    choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
+                    String all = VComponent.relativesRangeToString(relatives);
+                    choices.put(ChangeDialogOption.ALL, all);
+                }
+                choices.put(ChangeDialogOption.CANCEL, "");
+
+//                System.out.println("one:" + one);
+//                System.out.println("segment:" + segment);
+//                System.out.println("all:" + all);
+                
+                ChangeDialogOption changeResponse = ICalendarUtilities.repeatChangeDialog(choices);
                 switch (changeResponse)
                 {
                 case ALL:
-                    updateAppointments();
+                    updateAppointments(); // TODO - APPLY TO WHOLE SERIES
                     break;
                 case CANCEL:
                     vEventOriginal.copyTo(vEvent); // return to original vEvent
@@ -334,6 +356,8 @@ public class AppointmentEditController
                 case ONE:
                     editOne();
                     break;
+                case SEGMENT:
+                    updateAppointments();
                 default:
                     break;
                 }
@@ -562,7 +586,7 @@ public class AppointmentEditController
             vComponents.remove(vEvent);
         } else // more than one instance
         {
-            ChangeDialogOptions changeResponse = ICalendarUtilities.repeatChangeDialog(ChangeDialogOptions.selectChoices(count));
+            ChangeDialogOption changeResponse = ICalendarUtilities.repeatChangeDialog(null);
             switch (changeResponse)
             {
             case ALL:
