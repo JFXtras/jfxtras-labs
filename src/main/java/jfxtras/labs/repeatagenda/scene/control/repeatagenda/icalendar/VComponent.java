@@ -575,27 +575,47 @@ public interface VComponent<T>
                 .sorted(comparator)
                 .collect(Collectors.toList());
     }
-    
+
+    // TODO - PROBABLY THESE METHODS SHOULD GO TO ICALENDARUTILITIES
+    /**
+     * For ALL edit option
+     * 
+     * @param relatives - list of all related VComponents
+     * @param start - Temporal start date or date/time
+     * @return - easy-to-read string of date range for the VComponents
+     */
     static <U> String relativesRangeToString(Collection<VComponent<U>> relatives)
+    {
+        return relativesRangeToString(relatives, null);
+    }
+    /**
+     * For THIS_AND_FUTURE_ALL edit option
+     * 
+     * @param relatives - list of all related VComponents
+     * @param start - Temporal start date or date/time
+     * @return - easy-to-read string of date range for the VComponents
+     */
+    static <U> String relativesRangeToString(Collection<VComponent<U>> relatives, Temporal start)
     {
         if (relatives.size() == 0) return null;
         Iterator<VComponent<U>> i = relatives.iterator();
         VComponent<U> v1 = i.next();
-        Temporal start = v1.getDateTimeStart(); // set initial start
-        Temporal lastStart = v1.lastStartTemporal();
+        Temporal start2 = (start == null) ? v1.getDateTimeStart() : start; // set initial start
+        Temporal end = v1.lastStartTemporal();
         if (i.hasNext())
         {
             VComponent<U> v = i.next();
-            start = (isBefore(v.getDateTimeStart(), start)) ? v.getDateTimeStart() : start;
-            if (lastStart != null) // null means infinite
+            if (start != null) start2 = (isBefore(v.getDateTimeStart(), start2)) ? v.getDateTimeStart() : start2;
+            if (end != null) // null means infinite
             {
-                Temporal myLastStart = v.lastStartTemporal();
-                lastStart = (isAfter(myLastStart, lastStart)) ? v.lastStartTemporal() : lastStart;
+                Temporal myEnd = v.lastStartTemporal();
+                if (myEnd == null) end = null;
+                else end = (isAfter(myEnd, end)) ? v.lastStartTemporal() : end;
             }
         }
-        if (start.equals(lastStart)) return temporalToStringPretty(start); // individual            
-        else if (lastStart == null) return temporalToStringPretty(start) + " - forever"; // infinite
-        else return temporalToStringPretty(start) + " - " + Settings.DATE_FORMAT_AGENDA_EXCEPTION_DATEONLY.format(lastStart); // has finite range (only returns date for end of range)
+        if (start2.equals(end)) return temporalToStringPretty(start2); // individual            
+        else if (end == null) return temporalToStringPretty(start2) + " - forever"; // infinite
+        else return temporalToStringPretty(start2) + " - " + Settings.DATE_FORMAT_AGENDA_EXCEPTION_DATEONLY.format(end); // has finite range (only returns date for end of range)
     }
     
     /**

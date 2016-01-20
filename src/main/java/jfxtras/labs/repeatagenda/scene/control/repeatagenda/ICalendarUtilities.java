@@ -64,11 +64,11 @@ public final class ICalendarUtilities
 //        });
         comboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> 
         {
-            dialog.setHeaderText(newSelection.getText() + System.lineSeparator() + choices.get(newSelection));
+            dialog.setHeaderText(newSelection + ":" + System.lineSeparator() + choices.get(newSelection));
 //            dialog.setHeaderText(newSelection.getText());
 //            dialog.setHeaderText(choices.get(newSelection));
         });
-        dialog.setHeaderText(dialog.getSelectedItem().getText() + System.lineSeparator() + choices.get(dialog.getSelectedItem())); // initial text
+        dialog.setHeaderText(dialog.getSelectedItem() + ":" + System.lineSeparator() + choices.get(dialog.getSelectedItem())); // initial text
 //        dialog.setHeaderText(dialog.getSelectedItem().getText()); // initial text
 //        dialog.setHeaderText(choices.get(dialog.getSelectedItem())); // initial text
 
@@ -126,6 +126,7 @@ public final class ICalendarUtilities
         ONE("Individual event:")                 // individual instance
       , SEGMENT("Segment of events:")             // one part of a multi-part series
       , ALL("Whole series:")                 // entire series
+      , THIS_AND_FUTURE("This and future events") // same as THIS_AND_FUTURE_ALL, but has a shorter text.  It is used when THIS_AND_FUTURE_SEGMENT does not appear
       , THIS_AND_FUTURE_SEGMENT("This event and future events in this segment:")     // all instances from this time forward
       , THIS_AND_FUTURE_ALL("This event and future events in whole series:")     // all instances from this time forward
       , CANCEL("Cancel and do nothing");             // do nothing
@@ -149,6 +150,25 @@ public final class ICalendarUtilities
                   , THIS_AND_FUTURE_ALL
             };
         }
+        
+//        public String toStringSingular()
+//        {
+//            switch (this)
+//            {
+//            case ONE:
+//                return Settings.REPEAT_CHANGE_CHOICES.get(ONE);
+//            case SEGMENT:
+//                return Settings.REPEAT_CHANGE_CHOICES.get(SEGMENT);
+//            case ALL:
+//                return Settings.REPEAT_CHANGE_CHOICES.get(ALL);
+//            case THIS_AND_FUTURE_SEGMENT:
+//                return Settings.REPEAT_CHANGE_CHOICES.get(THIS_AND_FUTURE_SEGMENT);
+//            case THIS_AND_FUTURE_ALL:
+//                return Settings.REPEAT_CHANGE_CHOICES.get(THIS_AND_FUTURE_ALL);
+//            default:
+//                return null;                
+//            }
+//        }
 //        
 //        /** For multi-part repeatable events */
 //        private static ChangeDialogOption[] fourOptions()

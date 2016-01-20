@@ -323,23 +323,36 @@ public class AppointmentEditController
             {
                 // TODO - CAN THIS MAP GENERATOR GO ELSEWHERE? VCOMPONENT? (USE IN EDIT AND DELETE?)
                 Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
-                String one = VComponent.temporalToStringPretty(vEvent.getDateTimeStart());
+                Temporal startInstance = (wholeDayCheckBox.isSelected()) ? startTextField.getLocalDateTime().toLocalDate() : startTextField.getLocalDateTime();
+                String one = VComponent.temporalToStringPretty(startInstance);
                 choices.put(ChangeDialogOption.ONE, one);
+                System.out.println("choices1:" + choices.size());
                 if (! vEvent.isIndividual())
                 {
-                    if (vEvent.getRelatedTo() != null) choices.put(ChangeDialogOption.SEGMENT, vEvent.rangeToString());
                     List<VComponent<Appointment>> relatives = VComponent.findRelatedVComponents(vComponents, vEvent);
-                    Temporal startInstance = (wholeDayCheckBox.isSelected()) ? startTextField.getLocalDateTime().toLocalDate() : startTextField.getLocalDateTime();
-                    String futureSegment = vEvent.rangeToString(startInstance);
-                    choices.put(ChangeDialogOption.THIS_AND_FUTURE_SEGMENT, futureSegment);
-                    if ((relatives.size() > 1) && (relatives.indexOf(vEvent) < relatives.size()-1)) // must be more than 1 relatives and vEvent can't be last one
+                    if ((relatives.size() > 1)) // must be more than 1 relatives and vEvent can't be last one
                     {
-                        String futureAll = VComponent.relativesRangeToString(relatives);
-                        choices.put(ChangeDialogOption.THIS_AND_FUTURE_ALL, futureAll);
+                        choices.put(ChangeDialogOption.SEGMENT, vEvent.rangeToString());
+                        if ((relatives.indexOf(vEvent) < relatives.size()-1))
+                        {
+                            String futureSegment = vEvent.rangeToString(startInstance);
+                            choices.put(ChangeDialogOption.THIS_AND_FUTURE_SEGMENT, futureSegment);
+                            System.out.println("choices2:" + choices.size());
+                            String futureAll = VComponent.relativesRangeToString(relatives, startInstance);
+                            choices.put(ChangeDialogOption.THIS_AND_FUTURE_ALL, futureAll);
+                            System.out.println("choices3:" + choices.size());
+                        }
+                    } else
+                    {
+                        String future = vEvent.rangeToString(startInstance);
+                        choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
+                        System.out.println("choices4:" + choices.size());
                     }
                     String all = VComponent.relativesRangeToString(relatives);
                     choices.put(ChangeDialogOption.ALL, all);
+                    System.out.println("choices5:" + choices.size());
                 }
+                choices.entrySet().stream().map(a -> a.getKey()).forEach(System.out::println);
 
 //                System.out.println("one:" + one);
 //                System.out.println("segment:" + segment);
@@ -357,6 +370,7 @@ public class AppointmentEditController
                 case CANCEL:
                     vEventOriginal.copyTo(vEvent); // return to original vEvent
                     break;
+                case THIS_AND_FUTURE:
                 case THIS_AND_FUTURE_ALL:
                 case THIS_AND_FUTURE_SEGMENT:
                     editThisAndFuture();
