@@ -126,12 +126,13 @@ public final class ICalendarUtilities
         ONE("Individual event:")                 // individual instance
       , SEGMENT("Segment of events:")             // one part of a multi-part series
       , ALL("Whole series:")                 // entire series
-      , THIS_AND_FUTURE("This event and future:")     // all instances from this time forward
+      , THIS_AND_FUTURE_SEGMENT("This event and future events in this segment:")     // all instances from this time forward
+      , THIS_AND_FUTURE_ALL("This event and future events in whole series:")     // all instances from this time forward
       , CANCEL("Cancel and do nothing");             // do nothing
 // TODO - REPLACE WITH BUNDLE TEXTS
         private String text;
         
-        ChangeDialogOption(String s) { text =  s; } // appends s to default text
+        ChangeDialogOption(String s) { text =  s; }
         public String getText() { return text; }
         
         @Override
@@ -145,27 +146,27 @@ public final class ICalendarUtilities
             return new ChangeDialogOption[] {
                     ONE
                   , ALL
-                  , THIS_AND_FUTURE
+                  , THIS_AND_FUTURE_ALL
             };
         }
-        
-        /** For multi-part repeatable events */
-        private static ChangeDialogOption[] fourOptions()
-        {
-            return new ChangeDialogOption[] {
-                    ONE
-                  , SEGMENT
-                  , ALL
-                  , THIS_AND_FUTURE
-            };
-        }
-        
-        public static ChangeDialogOption[] selectChoices(int choices)
-        {
-            if (choices == 3) return threeOptions();
-            if (choices == 4) return fourOptions();
-            return null;
-        }
+//        
+//        /** For multi-part repeatable events */
+//        private static ChangeDialogOption[] fourOptions()
+//        {
+//            return new ChangeDialogOption[] {
+//                    ONE
+//                  , SEGMENT
+//                  , ALL
+//                  , THIS_AND_FUTURE
+//            };
+//        }
+//        
+//        public static ChangeDialogOption[] selectChoices(int choices)
+//        {
+//            if (choices == 3) return threeOptions();
+//            if (choices == 4) return fourOptions();
+//            return null;
+//        }
 
         public static void ONE(String one2) {
             // TODO Auto-generated method stub

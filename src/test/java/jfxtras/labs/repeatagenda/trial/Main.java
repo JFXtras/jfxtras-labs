@@ -57,25 +57,10 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException
 	{
-	    
-//	    ObservableList<Integer> i = FXCollections.observableArrayList();
-//	    i.add(1);
-//        i.add(2);
-//        i.add(3);
-//        i.add(4);
-//        i.add(5);
-//        i.add(6);
-////        i.addListener((InvalidationListener) (obs) -> System.out.println("appointments chagned:"));
-//        ListChangeListener<Integer> lc = (ListChangeListener.Change<? extends Integer> change) ->
-//        {
-//            System.out.println("appointments chagned:");
-//        };
-//        i.addListener(lc);
-//        List<Integer> i2 = new ArrayList<>(i);
-//        List<Integer> l = i2.stream().filter(a -> a < 4).collect(Collectors.toList());
-////        i2.removeIf(a -> a < 4);
-//        i.clear();
-//        i.addAll(l);
+//	    Instant i = Instant.from(LocalDate.now());
+//        Instant i2 = Instant.from(LocalDateTime.now());
+//        System.out.println(i + " " + i2);
+//        
 //        System.exit(0);
     
         // ROOT PANE

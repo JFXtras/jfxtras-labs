@@ -328,14 +328,18 @@ public class AppointmentEditController
                 if (! vEvent.isIndividual())
                 {
                     if (vEvent.getRelatedTo() != null) choices.put(ChangeDialogOption.SEGMENT, vEvent.rangeToString());
-                    Collection<VComponent<Appointment>> relatives = VComponent.findRelatedVComponents(vComponents, vEvent);
+                    List<VComponent<Appointment>> relatives = VComponent.findRelatedVComponents(vComponents, vEvent);
                     Temporal startInstance = (wholeDayCheckBox.isSelected()) ? startTextField.getLocalDateTime().toLocalDate() : startTextField.getLocalDateTime();
-                    String future = vEvent.rangeToString(startInstance);
-                    choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
+                    String futureSegment = vEvent.rangeToString(startInstance);
+                    choices.put(ChangeDialogOption.THIS_AND_FUTURE_SEGMENT, futureSegment);
+                    if ((relatives.size() > 1) && (relatives.indexOf(vEvent) < relatives.size()-1)) // must be more than 1 relatives and vEvent can't be last one
+                    {
+                        String futureAll = VComponent.relativesRangeToString(relatives);
+                        choices.put(ChangeDialogOption.THIS_AND_FUTURE_ALL, futureAll);
+                    }
                     String all = VComponent.relativesRangeToString(relatives);
                     choices.put(ChangeDialogOption.ALL, all);
                 }
-                choices.put(ChangeDialogOption.CANCEL, "");
 
 //                System.out.println("one:" + one);
 //                System.out.println("segment:" + segment);
@@ -345,12 +349,16 @@ public class AppointmentEditController
                 switch (changeResponse)
                 {
                 case ALL:
+                    Collection<VComponent<Appointment>> editList = VComponent.findRelatedVComponents(vComponents, vEvent);
                     updateAppointments(); // TODO - APPLY TO WHOLE SERIES
+                    // do i delete segments?  Do i apply only differences?  I think differences.
+                    // need copy difference method.
                     break;
                 case CANCEL:
                     vEventOriginal.copyTo(vEvent); // return to original vEvent
                     break;
-                case THIS_AND_FUTURE:
+                case THIS_AND_FUTURE_ALL:
+                case THIS_AND_FUTURE_SEGMENT:
                     editThisAndFuture();
                     break;
                 case ONE:
@@ -606,7 +614,7 @@ public class AppointmentEditController
             case SEGMENT:
                 System.out.println("delete segment");
                 break;
-            case THIS_AND_FUTURE:
+            case THIS_AND_FUTURE_ALL:
                 if (vEvent.getRRule().getCount() == 0) vEvent.getRRule().setCount(0);
                 vEvent.getRRule().setUntil(dateOrDateTime);
                 System.out.println("until:" + dateOrDateTime);
