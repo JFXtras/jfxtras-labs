@@ -276,7 +276,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     @Test
     public void canMakeRangeToString1()
     {
-        assertEquals("Wed, November, 11, 10:00 AM - Fri, December, 25, 10:00 AM", getWeekly4().rangeToString());
+        assertEquals("Wed, November, 11, 10:00 AM - Fri, December 25, 2015", getWeekly4().rangeToString());
         assertEquals("Mon, November 9, 2015 - Tue, November 24, 2015", getWholeDayDaily3().rangeToString());
         assertEquals("Mon, November, 9, 10:00 AM - forever", getDaily5().rangeToString());
     }

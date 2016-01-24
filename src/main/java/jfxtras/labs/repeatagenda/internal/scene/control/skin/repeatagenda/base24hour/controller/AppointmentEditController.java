@@ -48,6 +48,7 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 /**
  * Make popup to edit VEvents
+ * To add custom features extend into new class
  * 
  * @author David Bal
  * @see RepeatableController
@@ -322,48 +323,85 @@ public class AppointmentEditController
             if (! vEvent.equals(vEventOriginal)) // if changes occurred
             {
                 // TODO - CAN THIS MAP GENERATOR GO ELSEWHERE? VCOMPONENT? (USE IN EDIT AND DELETE?)
+                List<VComponent<Appointment>> relatedVComponents = VComponent.findRelatedVComponents(vComponents, vEvent);
                 Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
                 Temporal startInstance = (wholeDayCheckBox.isSelected()) ? startTextField.getLocalDateTime().toLocalDate() : startTextField.getLocalDateTime();
                 String one = VComponent.temporalToStringPretty(startInstance);
                 choices.put(ChangeDialogOption.ONE, one);
-                System.out.println("choices1:" + choices.size());
                 if (! vEvent.isIndividual())
                 {
-                    List<VComponent<Appointment>> relatives = VComponent.findRelatedVComponents(vComponents, vEvent);
-                    if ((relatives.size() > 1)) // must be more than 1 relatives and vEvent can't be last one
+//                    if ((relatedVComponents.size() > 1)) // is in a multi-segment series
+//                    {
+//                        choices.put(ChangeDialogOption.SEGMENT, vEvent.rangeToString());
+//                        if ((relatedVComponents.indexOf(vEvent) < relatedVComponents.size()-1)) // isn't last segment in series
+//                        {
+//                            String futureSegment = vEvent.rangeToString(startInstance);
+//                            choices.put(ChangeDialogOption.THIS_AND_FUTURE_SEGMENT, futureSegment);
+//                            String futureAll = VComponent.relativesRangeToString(relatedVComponents, startInstance);
+//                            choices.put(ChangeDialogOption.THIS_AND_FUTURE_ALL, futureAll);
+//                        } else
+//                        {
+//                            String future = vEvent.rangeToString(startInstance);
+//                            choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);                            
+//                        }
+//                    } else
                     {
-                        choices.put(ChangeDialogOption.SEGMENT, vEvent.rangeToString());
-                        if ((relatives.indexOf(vEvent) < relatives.size()-1))
-                        {
-                            String futureSegment = vEvent.rangeToString(startInstance);
-                            choices.put(ChangeDialogOption.THIS_AND_FUTURE_SEGMENT, futureSegment);
-                            System.out.println("choices2:" + choices.size());
-                            String futureAll = VComponent.relativesRangeToString(relatives, startInstance);
-                            choices.put(ChangeDialogOption.THIS_AND_FUTURE_ALL, futureAll);
-                            System.out.println("choices3:" + choices.size());
-                        }
-                    } else
-                    {
-                        String future = vEvent.rangeToString(startInstance);
+                        String future = VComponent.relativesRangeToString(relatedVComponents, startInstance);
+//                        String future = vEvent.rangeToString(startInstance);
                         choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
-                        System.out.println("choices4:" + choices.size());
                     }
-                    String all = VComponent.relativesRangeToString(relatives);
+                    String all = VComponent.relativesRangeToString(relatedVComponents);
                     choices.put(ChangeDialogOption.ALL, all);
-                    System.out.println("choices5:" + choices.size());
                 }
-                choices.entrySet().stream().map(a -> a.getKey()).forEach(System.out::println);
 
-//                System.out.println("one:" + one);
-//                System.out.println("segment:" + segment);
-//                System.out.println("all:" + all);
                 
                 ChangeDialogOption changeResponse = ICalendarUtilities.repeatChangeDialog(choices);
                 switch (changeResponse)
                 {
                 case ALL:
                     Collection<VComponent<Appointment>> editList = VComponent.findRelatedVComponents(vComponents, vEvent);
-                    updateAppointments(); // TODO - APPLY TO WHOLE SERIES
+                    if (relatedVComponents.size() == 1) updateAppointments();
+                    else
+                    {
+                        relatedVComponents.stream().forEach(v -> 
+                        {
+                            // Copy ExDates
+                            if (v.getExDate() != null)
+                            {
+                                if (vEvent.getExDate() == null)
+                                { // make new EXDate object for destination if necessary
+                                    try {
+                                        EXDate newEXDate = v.getExDate().getClass().newInstance();
+                                        vEvent.setExDate(newEXDate);
+                                    } catch (InstantiationException | IllegalAccessException e) {
+                                        e.printStackTrace();
+                                    }
+                              }
+                              v.getExDate().getTemporals().addAll(v.getExDate().getTemporals());
+                            }
+                            // update start and end dates
+                            if (VComponent.isBefore(v.getDateTimeStart(), vEvent.getDateTimeStart()))
+                            {
+                                final Temporal startNew;
+                                final Temporal endNew;
+                                if (vEvent.getDateTimeStart() instanceof LocalDateTime)
+                                {
+                                    LocalTime startTime = LocalTime.from(vEvent.getDateTimeStart());
+                                    startNew = LocalDate.from(v.getDateTimeStart()).atTime(startTime);
+                                    long shift = ChronoUnit.DAYS.between(vEvent.getDateTimeStart(), startNew);
+                                    endNew = vEvent.getDateTimeEnd().plus(shift, ChronoUnit.DAYS);
+                                } else if (vEvent.getDateTimeStart() instanceof LocalDate)
+                                {
+                                    startNew = v.getDateTimeStart();
+                                } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
+                                vEvent.setDateTimeStart(startNew);
+                            }
+                            // delete all other vComponents 
+                            // extend current one to cover entire range
+                            // add unique features from others to this one (exdate)
+                        });
+                        // TODO apply to whole series
+                    }
                     // do i delete segments?  Do i apply only differences?  I think differences.
                     // need copy difference method.
                     break;
@@ -371,15 +409,16 @@ public class AppointmentEditController
                     vEventOriginal.copyTo(vEvent); // return to original vEvent
                     break;
                 case THIS_AND_FUTURE:
-                case THIS_AND_FUTURE_ALL:
-                case THIS_AND_FUTURE_SEGMENT:
+                    // currently doing segment - need to change to ALL
+//                case THIS_AND_FUTURE_ALL:
+//                case THIS_AND_FUTURE_SEGMENT:
                     editThisAndFuture();
                     break;
                 case ONE:
                     editOne();
                     break;
-                case SEGMENT:
-                    updateAppointments();
+//                case SEGMENT:
+//                    updateAppointments();
                 default:
                     break;
                 }
@@ -388,6 +427,65 @@ public class AppointmentEditController
         if (! vEvent.isValid()) throw new RuntimeException(vEvent.makeErrorString());
         System.out.println(vEvent);
         popup.close();
+    }
+
+    /*
+     * Apply differences between original and modified VEvents to VEvent v
+     */
+    @Deprecated // I don't think this will work
+    private void applyDifferences(VEvent<Appointment> original, VEvent<Appointment> source, VEvent<Appointment> destination)
+    {
+        if (! original.getDescription().equals(source.getDescription())) destination.setDescription(source.getDescription());
+        if (! original.getDurationInNanos().equals(source.getDurationInNanos())) destination.setDurationInNanos(source.getDurationInNanos());
+        if (! original.getDateTimeEnd().equals(source.getDateTimeEnd())) destination.setDateTimeEnd(source.getDateTimeEnd());
+        if (! original.getCategories().equals(source.getCategories())) destination.setCategories(source.getCategories());
+        if (! original.getComment().equals(source.getComment())) destination.setComment(source.getComment());
+        if (! original.getDateTimeStamp().equals(source.getDateTimeStamp())) destination.setDateTimeStamp(source.getDateTimeStamp());
+        if (! original.getDateTimeStart().equals(source.getDateTimeStart())) destination.setDateTimeStart(source.getDateTimeStart());
+        if (! original.getLocation().equals(source.getLocation())) destination.setLocation(source.getLocation());
+        if (! original.getRelatedTo().equals(source.getRelatedTo())) destination.setRelatedTo(source.getRelatedTo());
+        if (! (original.getSequence() == (source.getSequence()))) destination.setSequence(source.getSequence());
+        if (! original.getSummary().equals(source.getSummary())) destination.setSummary(source.getSummary());
+//        if (source.getRRule() != null)
+//        {
+//            if (destination.getRRule() == null)
+//            { // make new RRule object for destination if necessary
+//                try {
+//                    RRule newRRule = source.getRRule().getClass().newInstance();
+//                    destination.setRRule(newRRule);
+//                } catch (InstantiationException | IllegalAccessException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            source.getRRule().copyTo(destination.getRRule());
+//        }
+//        if (source.getExDate() != null)
+//        {
+//            if (destination.getExDate() == null)
+//            { // make new EXDate object for destination if necessary
+//                try {
+//                    EXDate newEXDate = source.getExDate().getClass().newInstance();
+//                    destination.setExDate(newEXDate);
+//                } catch (InstantiationException | IllegalAccessException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            source.getExDate().copyTo(destination.getExDate());
+//        }
+//        if (source.getRDate() != null)
+//        {
+//            if (destination.getRDate() == null)
+//            { // make new RDate object for destination if necessary
+//                try {
+//                    RDate newRDate = source.getRDate().getClass().newInstance();
+//                    destination.setRDate(newRDate);
+//                } catch (InstantiationException | IllegalAccessException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            source.getRDate().copyTo(destination.getRDate());
+//        }
+        // TODO Auto-generated method stub
     }
 
     private void updateAppointments()
@@ -455,11 +553,17 @@ public class AppointmentEditController
      */
     private void editThisAndFuture()
     {
+        System.out.println("until1:" + vEvent.getRRule().getUntil());
         Temporal startNew = (wholeDayCheckBox.isSelected()) ? startTextField.getLocalDateTime().toLocalDate() : startTextField.getLocalDateTime();
-
+//        System.out.println("startNew:" + startNew);
         // Adjust original VEvent
         if (vEventOriginal.getRRule().getCount() != null) vEventOriginal.getRRule().setCount(0);
-        Temporal untilNew = (wholeDayCheckBox.isSelected()) ? startNew.minus(1, ChronoUnit.DAYS) : startNew.minus(1, ChronoUnit.NANOS);
+        // get start of previous instance - use that as until temporal
+        Temporal previouStream = vEventOriginal.previousStreamValue(dateTimeInstanceStartOriginal);
+        Temporal untilNew = (previouStream instanceof LocalDateTime) ? LocalDate.from(previouStream).atTime(23, 59, 59) : previouStream; // use last second of day, like Yahoo
+
+//        Temporal untilNew = (wholeDayCheckBox.isSelected()) ? startNew.minus(1, ChronoUnit.DAYS) : startNew.minus(1, ChronoUnit.NANOS);
+        System.out.println("untilNew:" + untilNew);
         vEventOriginal.getRRule().setUntil(untilNew);
         
         // Adjust new VEvent
@@ -467,13 +571,14 @@ public class AppointmentEditController
         Temporal endNew = vEvent.getDateTimeEnd().plus(shift, ChronoUnit.DAYS);
         vEvent.setDateTimeEnd(endNew);
         vEvent.setDateTimeStart(startNew);
-        System.out.println("start*:" + vEvent.getDateTimeStart());
-        System.out.println("end*:" + vEvent.getDateTimeEnd());
-        System.out.println("stardoriginal:" + vEventOriginal.getDateTimeStart() + " " + vEventOriginal.getRelatedTo());
+//        System.out.println("start*:" + vEvent.getDateTimeStart());
+//        System.out.println("end*:" + vEvent.getDateTimeEnd());
+//        System.out.println("stardoriginal:" + vEventOriginal.getDateTimeStart() + " " + vEventOriginal.getRelatedTo());
         vEvent.setUniqueIdentifier();
         String relatedUID = (vEventOriginal.getRelatedTo() == null) ? vEventOriginal.getUniqueIdentifier() : vEventOriginal.getRelatedTo();
         vEvent.setRelatedTo(relatedUID);
         vEvent.setDateTimeStamp(LocalDateTime.now());
+        System.out.println("unti2l:" + vEvent.getRRule().getUntil());
         
         // Split EXDates dates between this and newVEvent
         if (vEvent.getExDate() != null)
@@ -560,6 +665,7 @@ public class AppointmentEditController
         appointments.addAll(appointmentsTemp);
         
         vComponents.stream().forEach(System.out::println);
+//        System.out.println("vEvent:" + vEvent);
         System.out.println("vComponents:" + vComponents.size());
     }
     
@@ -625,10 +731,10 @@ public class AppointmentEditController
                 else vEvent.getExDate().getTemporals().add(dateOrDateTime);
                 appointments.removeIf(a -> a.getStartLocalDateTime().equals(appointment.getStartLocalDateTime()));
                 break;
-            case SEGMENT:
-                System.out.println("delete segment");
-                break;
-            case THIS_AND_FUTURE_ALL:
+//            case SEGMENT:
+//                System.out.println("delete segment");
+//                break;
+            case THIS_AND_FUTURE:
                 if (vEvent.getRRule().getCount() == 0) vEvent.getRRule().setCount(0);
                 vEvent.getRRule().setUntil(dateOrDateTime);
                 System.out.println("until:" + dateOrDateTime);

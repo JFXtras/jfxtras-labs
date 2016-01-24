@@ -170,11 +170,11 @@ public class VEventImpl extends VEvent<Appointment>
      * @param <E>*/
     private static void copy(VEventImpl source, VEventImpl destination)
     {
-        if (source.getAppointmentGroup() != null) destination.setAppointmentGroup(source.getAppointmentGroup());
-        if (source.getAppointmentClass() != null) destination.setAppointmentClass(source.getAppointmentClass());
+        destination.setAppointmentGroup(source.getAppointmentGroup());
+        destination.setAppointmentClass(source.getAppointmentClass());
         if (source.getStartRange() != null) destination.setStartRange(source.getStartRange());
         if (source.getEndRange() != null) destination.setEndRange(source.getEndRange());
-        if (source.getUidGeneratorCallback() != null) destination.setUidGeneratorCallback(source.getUidGeneratorCallback());
+        destination.setUidGeneratorCallback(source.getUidGeneratorCallback());
         source.instances().stream().forEach(a -> destination.instances().add(a));
     }
     
@@ -420,7 +420,7 @@ public class VEventImpl extends VEvent<Appointment>
             boolean onlyRRuleChanged = this.equals(tempVEvent); // true indicates none of the properties besides RRule are changed
 
             ChangeDialogOption[] choices = (onlyRRuleChanged) ?
-                    new ChangeDialogOption[] {ChangeDialogOption.ALL, ChangeDialogOption.THIS_AND_FUTURE_ALL}
+                    new ChangeDialogOption[] {ChangeDialogOption.ALL, ChangeDialogOption.THIS_AND_FUTURE}
                   : null;
             ChangeDialogOption changeResponse = changeDialogCallback.call(choices);
             switch (changeResponse)
@@ -437,7 +437,7 @@ public class VEventImpl extends VEvent<Appointment>
                     editedFlag = false;
 //                    vEventOld.copyTo(this);
                     break;
-                case THIS_AND_FUTURE_ALL:
+                case THIS_AND_FUTURE:
                 { // this is edited VEvent, vEventOld is former settings, with UNTIL to end it at start of this (VEvent with new settings)
                     // modify old VEvent
                     vEvents.add(vEventOld);
@@ -653,7 +653,7 @@ public class VEventImpl extends VEvent<Appointment>
                     getExDate().getTemporals().add(dateOrDateTime);
                 }
                 return WindowCloseType.CLOSE_WITH_CHANGE;
-            case THIS_AND_FUTURE_ALL:
+            case THIS_AND_FUTURE:
                 if (getRRule().getCount() == 0) getRRule().setCount(0);
                 getRRule().setUntil(dateOrDateTime);
                 System.out.println("until:" + dateOrDateTime);

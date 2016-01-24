@@ -124,11 +124,11 @@ public final class ICalendarUtilities
     public enum ChangeDialogOption
     {
         ONE("Individual event:")                 // individual instance
-      , SEGMENT("Segment of events:")             // one part of a multi-part series
+//      , SEGMENT("Segment of events:")             // one part of a multi-part series
       , ALL("Whole series:")                 // entire series
       , THIS_AND_FUTURE("This and future events") // same as THIS_AND_FUTURE_ALL, but has a shorter text.  It is used when THIS_AND_FUTURE_SEGMENT does not appear
-      , THIS_AND_FUTURE_SEGMENT("This event and future events in this segment:")     // all instances from this time forward
-      , THIS_AND_FUTURE_ALL("This event and future events in whole series:")     // all instances from this time forward
+//      , THIS_AND_FUTURE_SEGMENT("This event and future events in this segment:")     // all instances from this time forward
+//      , THIS_AND_FUTURE_ALL("This event and future events in whole series:")     // all instances from this time forward
       , CANCEL("Cancel and do nothing");             // do nothing
 // TODO - REPLACE WITH BUNDLE TEXTS
         private String text;
@@ -147,7 +147,7 @@ public final class ICalendarUtilities
             return new ChangeDialogOption[] {
                     ONE
                   , ALL
-                  , THIS_AND_FUTURE_ALL
+                  , THIS_AND_FUTURE
             };
         }
         

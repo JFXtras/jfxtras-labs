@@ -560,11 +560,33 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         assertEquals(expectedDates, madeDates);
     }
     
-    /** Tests daily stream with FREQ=DAILY;INVERVAL=2;UNTIL=20151201T000000 */
     @Test
     public void dailyStreamTest6()
     {
         VEventImpl e = getDaily6();
+        List<Temporal> madeDates = e
+                .stream(e.getDateTimeStart())
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 11, 11, 10, 0)
+              , LocalDateTime.of(2015, 11, 13, 10, 0)
+              , LocalDateTime.of(2015, 11, 15, 10, 0)
+              , LocalDateTime.of(2015, 11, 17, 10, 0)
+              , LocalDateTime.of(2015, 11, 19, 10, 0)
+              , LocalDateTime.of(2015, 11, 21, 10, 0)
+              , LocalDateTime.of(2015, 11, 23, 10, 0)
+              , LocalDateTime.of(2015, 11, 25, 10, 0)
+              , LocalDateTime.of(2015, 11, 27, 10, 0)
+              , LocalDateTime.of(2015, 11, 29, 10, 0)
+              ));
+        assertEquals(expectedDates, madeDates);
+    }
+    
+    @Test
+    public void dailyStreamTest7()
+    {
+        VEventImpl e = getDaily7();
         List<Temporal> madeDates = e
                 .stream(e.getDateTimeStart())
                 .collect(Collectors.toList());
@@ -966,11 +988,23 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         }
     }
     
+    @Test
+    public void canFindLastStreamTemporal()
+    {
+        VEventImpl v = getWeekly3();
+        v.stream(v.getDateTimeStart()).limit(100).collect(Collectors.toList()); // set cache
+        assertEquals(LocalDateTime.of(2016, 1, 20, 10, 0), v.previousStreamValue(LocalDateTime.of(2016, 1, 21, 10, 0)));
+
+        VEventImpl v2 = getWholeDayDaily2();
+        assertEquals(LocalDate.of(2015, 11, 24), v2.previousStreamValue(LocalDate.of(2015, 12, 31)));
+    }
+    
     /*
      *  Tests for multi-part recurrence sets
      *  Children have RECURRENCE-ID
      *  Branches have RELATED-TO
      */
+    // TODO - ARE THESE NECESSARY NOW?
 
     @Test
     public void canStreamBranch1()
@@ -1035,8 +1069,6 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         vComponents.add(getChild1());
         vComponents.add(getWeekly3());
         
-//        vComponents.stream().forEach(System.out::println);
-//System.exit(0);        
         Collection<VComponent<Appointment>> rs = VComponent.findRelatedVComponents(vComponents, branch2);
         assertEquals(4, rs.size());
         

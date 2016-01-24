@@ -1079,7 +1079,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
        // save changes to THIS AND FUTURE
        click("#saveAppointmentButton");
        ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
-       TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.THIS_AND_FUTURE_SEGMENT));
+       TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.THIS_AND_FUTURE));
        click("#edit_dialog_button_ok");
 
        // verify VComponent changes

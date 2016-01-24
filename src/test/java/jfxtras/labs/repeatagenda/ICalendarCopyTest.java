@@ -9,7 +9,6 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 
 public class ICalendarCopyTest extends ICalendarTestAbstract
 {
-
     @Test
     public void canCopyVEvent1()
     {

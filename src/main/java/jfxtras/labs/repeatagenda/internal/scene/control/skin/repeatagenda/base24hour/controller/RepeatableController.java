@@ -773,7 +773,8 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         }
         
         startDatePicker.setValue(LocalDate.from(vComponent.getDateTimeStart()));
-        makeExceptionDates(); // Should this be here - TODO - CHECK # OF CALLS
+        refreshSummary();
+        makeExceptionDates(); // Should this be here? - TODO - CHECK # OF CALLS
     }
 
     /** Set day of week properties if FREQ=WEEKLY and has BYDAY rule 

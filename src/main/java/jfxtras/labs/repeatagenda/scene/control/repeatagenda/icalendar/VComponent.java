@@ -288,7 +288,8 @@ public interface VComponent<T>
      */
     void copyTo(VComponent<T> destination);
     
-    // Default Methods
+    // DEFAULT METHODS
+    
     /** Returns true if VComponent is an individual (only one instance in recurrence set),
      *  false if has more than 1 instance */
     default boolean isIndividual()

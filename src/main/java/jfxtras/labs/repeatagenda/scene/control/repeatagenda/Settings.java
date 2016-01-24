@@ -70,10 +70,10 @@ public final class Settings
         Map<ChangeDialogOption, String> map = new HashMap<>();
         map.put(ChangeDialogOption.ONE, "This event only");
         map.put(ChangeDialogOption.ALL, "All events");
-        map.put(ChangeDialogOption.SEGMENT, "This segment of events");
+//        map.put(ChangeDialogOption.SEGMENT, "This segment of events");
         map.put(ChangeDialogOption.THIS_AND_FUTURE, "This and future events");
-        map.put(ChangeDialogOption.THIS_AND_FUTURE_SEGMENT, "This and future events in its segment");
-        map.put(ChangeDialogOption.THIS_AND_FUTURE_ALL, "This and future events in whole series");
+//        map.put(ChangeDialogOption.THIS_AND_FUTURE_SEGMENT, "This and future events in its segment");
+//        map.put(ChangeDialogOption.THIS_AND_FUTURE_ALL, "This and future events in whole series");
         return map;
     }
 
@@ -137,9 +137,10 @@ public final class Settings
 
         REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.ONE, resources.getString("dialog.repeat.change.one"));
         REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.ALL, resources.getString("dialog.repeat.change.all"));
-        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.SEGMENT, resources.getString("dialog.repeat.change.segment"));
-        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.THIS_AND_FUTURE_SEGMENT, resources.getString("dialog.repeat.change.future.segment"));
-        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.THIS_AND_FUTURE_ALL, resources.getString("dialog.repeat.change.future.all"));
+        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.THIS_AND_FUTURE, resources.getString("dialog.repeat.change.future"));
+//        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.SEGMENT, resources.getString("dialog.repeat.change.segment"));
+//        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.THIS_AND_FUTURE_SEGMENT, resources.getString("dialog.repeat.change.future.segment"));
+//        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.THIS_AND_FUTURE_ALL, resources.getString("dialog.repeat.change.future.all"));
         
         ORDINALS.put(1, resourcesIn.getString("first"));
         ORDINALS.put(2, resourcesIn.getString("second"));
