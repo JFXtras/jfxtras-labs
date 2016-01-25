@@ -1141,11 +1141,11 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         assertEquals(2, agenda.vComponents().size());
         agenda.vComponents().sort(VComponent.VCOMPONENT_COMPARATOR);
         VEvent<Appointment> v1 = (VEvent<Appointment>) agenda.vComponents().get(0);
+        VEvent<Appointment> v2 = (VEvent<Appointment>) agenda.vComponents().get(1);
         VEvent<Appointment> expectedV1 = ICalendarTestAbstract.getDaily1();
-        expectedV1.getRRule().getRecurrences().add(LocalDateTime.of(2015, 11, 11, 10, 0));
+        expectedV1.getRRule().getRecurrences().add(v2);
         assertEquals(expectedV1, v1);
 
-        VEvent<Appointment> v2 = (VEvent<Appointment>) agenda.vComponents().get(1);
         VEvent<Appointment> expectedV2 = ICalendarTestAbstract.getDaily1();
         expectedV2.setSummary("new summary");
         expectedV2.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));

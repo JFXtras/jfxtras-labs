@@ -700,7 +700,7 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
         recurrenceSet.add(branch1);
         recurrenceSet.add(branch2);
         recurrenceSet.add(child);
-        parent.getRRule().getRecurrences().add(child.getDateTimeRecurrence());
+        parent.getRRule().getRecurrences().add(child);
 
         return recurrenceSet;
     }

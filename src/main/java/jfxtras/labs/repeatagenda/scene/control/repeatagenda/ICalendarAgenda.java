@@ -149,6 +149,7 @@ public class ICalendarAgenda extends Agenda {
             }
         };
         
+        // fires when VComponents are added outside the edit popup
         vComponentsListener = (ListChangeListener.Change<? extends VComponent<Appointment>> change) ->
         {
             System.out.println("vcomponents changed:");
@@ -179,7 +180,7 @@ public class ICalendarAgenda extends Agenda {
                                             })
                                             .findFirst()
                                             .get();
-                                    parent.getRRule().getRecurrences().add(v.getDateTimeRecurrence());
+                                    parent.getRRule().getRecurrences().add(v);
                                 }
                             });
 //                    if (! editPopup.isShowing()) appointments().removeListener(appointmentsListener);

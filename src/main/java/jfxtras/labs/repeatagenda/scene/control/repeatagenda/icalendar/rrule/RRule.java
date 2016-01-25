@@ -117,10 +117,10 @@ public class RRule
      * the recurrence instance.  The UID matches the UID of the parent calendar component.
      * See 3.8.4.4 of RFC 5545 iCalendar
      */
-    public Set<Temporal> getRecurrences() { return recurrences; }
-    private Set<Temporal> recurrences = new HashSet<>();
-    public void setRecurrences(Set<Temporal> temporal) { recurrences = temporal; }
-    public RRule withRecurrences(Set<Temporal> temporal) { setRecurrences(temporal); return this; }
+    public Set<VComponent<?>> getRecurrences() { return recurrences; }
+    private Set<VComponent<?>> recurrences = new HashSet<>();
+    public void setRecurrences(Set<VComponent<?>> temporal) { recurrences = temporal; }
+    public RRule withRecurrences(Set<VComponent<?>> temporal) { setRecurrences(temporal); return this; }
 
     /** Deep copy all fields from source to destination */
     private static void copy(RRule source, RRule destination)
@@ -136,7 +136,7 @@ public class RRule
                 e.printStackTrace();
             }
         }
-        Iterator<Temporal> i = source.getRecurrences().iterator();
+        Iterator<VComponent<?>> i = source.getRecurrences().iterator();
         while (i.hasNext())
         {
             destination.getRecurrences().add(i.next());
@@ -352,9 +352,23 @@ public class RRule
      * first date/time (DTSTART) in the sequence. */
     public Stream<Temporal> stream(Temporal start)
     {
-        Stream<Temporal> filteredStream = (getRecurrences().size() > 0) ?
-                getFrequency().stream(start).filter(d -> ! getRecurrences().contains(d))
-               : getFrequency().stream(start);
+        // filter out recurrences
+//        Temporal d = null;
+//        getRecurrences().stream().map(v -> v.getDateTimeRecurrence()).filter(t -> t.equals(d)).findFirst().isPresent();
+//        getRecurrences().stream()
+//                .map(v -> v.getDateTimeRecurrence())
+//                .findAny(t -> t.equals(d))
+//                .isPresent();
+        Stream<Temporal> filteredStream = (getRecurrences().size() == 0) ?
+                getFrequency().stream(start) :
+                getFrequency().stream(start).filter(t -> 
+                {
+                    return ! getRecurrences().stream()
+                            .map(v -> v.getDateTimeRecurrence())
+                            .filter(t2 -> t2.equals(t))
+                            .findAny()
+                            .isPresent();
+                }); // ! getRecurrences().contains(t))
         if (getCount() > 0)
         {
             return filteredStream.limit(getCount());
@@ -363,7 +377,6 @@ public class RRule
 //            return frequency
 //                    .stream(startDateTime)
 //                    .takeWhile(a -> a.isBefore(getUntil())); // available in Java 9
-//            return takeWhile(filteredStream, a -> VComponent.isBefore(a, getUntil())));
             return takeWhile(filteredStream, a -> ! VComponent.isAfter(a, getUntil()));
         }
         return filteredStream;

@@ -492,11 +492,11 @@ public class VEventImpl extends VEvent<Appointment>
                     if (getRRule().getRecurrences() != null)
                     {
                         getRRule().getRecurrences().clear();
-                        final Iterator<Temporal> recurrenceIterator = vEventOld.getRRule().getRecurrences().iterator();
+                        final Iterator<VComponent<?>> recurrenceIterator = vEventOld.getRRule().getRecurrences().iterator();
                         while (recurrenceIterator.hasNext())
                         {
-                            Temporal d = recurrenceIterator.next();
-                            if (VComponent.isBefore(d, dateTimeStartInstanceNew))
+                            VComponent<?> d = recurrenceIterator.next();
+                            if (VComponent.isBefore(d.getDateTimeRecurrence(), dateTimeStartInstanceNew))
                             {
                                 recurrenceIterator.remove();
                             } else {
@@ -547,7 +547,7 @@ public class VEventImpl extends VEvent<Appointment>
     
                     // modify this VEvent for recurrence
                     vEventOld.copyTo(this);                
-                    getRRule().getRecurrences().add(dateTimeStartInstanceOld);
+                    getRRule().getRecurrences().add(newVEvent);
                     break;
                 }
             }

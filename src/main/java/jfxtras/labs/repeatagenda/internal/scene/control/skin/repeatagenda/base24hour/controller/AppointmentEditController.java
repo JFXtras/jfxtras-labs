@@ -524,7 +524,7 @@ public class AppointmentEditController
         vEvent.setDateTimeStamp(LocalDateTime.now());
    
               // Add recurrence to original vEvent
-        vEventOriginal.getRRule().getRecurrences().add(dateTimeInstanceStartOriginal);
+        vEventOriginal.getRRule().getRecurrences().add(vEvent);
 
         // Check for validity
         if (! vEvent.isValid()) throw new RuntimeException(vEvent.makeErrorString());
@@ -615,11 +615,11 @@ public class AppointmentEditController
         if (vEvent.getRRule().getRecurrences() != null)
         {
             vEvent.getRRule().getRecurrences().clear();
-            final Iterator<Temporal> recurrenceIterator = vEvent.getRRule().getRecurrences().iterator();
+            final Iterator<VComponent<?>> recurrenceIterator = vEvent.getRRule().getRecurrences().iterator();
             while (recurrenceIterator.hasNext())
             {
-                Temporal d = recurrenceIterator.next();
-                if (VComponent.isBefore(d, startNew))
+                VComponent<?> d = recurrenceIterator.next();
+                if (VComponent.isBefore(d.getDateTimeRecurrence(), startNew))
                 {
                     recurrenceIterator.remove();
                 } else {
