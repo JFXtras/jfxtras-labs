@@ -1065,7 +1065,6 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     public void canEditThisAndFuture()
     {
        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));       
-       VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
        
        // Open edit popup
        move("#hourLine11"); // open edit popup
@@ -1084,8 +1083,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
 
        // verify VComponent changes
        assertEquals(2, agenda.vComponents().size());
-       VEvent<Appointment> v1 = (VEvent<Appointment>) agenda.vComponents().get(1);
-       VEvent<Appointment> v2 = (VEvent<Appointment>) agenda.vComponents().get(0);
+       agenda.vComponents().sort(VComponent.VCOMPONENT_COMPARATOR);
+       VEvent<Appointment> v1 = (VEvent<Appointment>) agenda.vComponents().get(0);
+       VEvent<Appointment> v2 = (VEvent<Appointment>) agenda.vComponents().get(1);
        VEvent<Appointment> expectedV1 = ICalendarTestAbstract.getDaily1();
        expectedV1.getRRule().setUntil(LocalDateTime.of(2015, 11, 11, 9, 59, 59));
        VEvent<Appointment> expectedV2 = ICalendarTestAbstract.getDaily1();
@@ -1120,8 +1120,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canEditOne()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));       
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
         
         // Open edit popup
         move("#hourLine11"); // open edit popup
@@ -1132,11 +1131,29 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         TextField summaryTextField = find("#summaryTextField");
         summaryTextField.setText("new summary");
 
-        // save changes to THIS AND FUTURE
+        // save changes
         click("#saveAppointmentButton");
         ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
         TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ONE));
         click("#edit_dialog_button_ok");
+        
+        // verify VComponent changes
+        assertEquals(2, agenda.vComponents().size());
+        agenda.vComponents().sort(VComponent.VCOMPONENT_COMPARATOR);
+        VEvent<Appointment> v1 = (VEvent<Appointment>) agenda.vComponents().get(0);
+        VEvent<Appointment> expectedV1 = ICalendarTestAbstract.getDaily1();
+        expectedV1.getRRule().getRecurrences().add(LocalDateTime.of(2015, 11, 11, 10, 0));
+        assertEquals(expectedV1, v1);
+
+        VEvent<Appointment> v2 = (VEvent<Appointment>) agenda.vComponents().get(1);
+        VEvent<Appointment> expectedV2 = ICalendarTestAbstract.getDaily1();
+        expectedV2.setSummary("new summary");
+        expectedV2.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
+        expectedV2.setDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0));
+        expectedV2.setDateTimeStamp(v2.getDateTimeStamp()); // time stamp is time-based so copy it to guarantee equality.
+        expectedV2.setDateTimeRecurrence(LocalDateTime.of(2015, 11, 11, 10, 0));
+        expectedV2.setRRule(null);
+        assertEquals(expectedV2, v2);
     }
     
     @Test

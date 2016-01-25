@@ -375,6 +375,21 @@ public interface VComponent<T>
                 + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() +")");
     };
     
+    /**
+     * Sorts VComponents by DTSTART
+     */
+    final static Comparator<? super VComponent<?>> VCOMPONENT_COMPARATOR = (v1, v2) -> 
+    {
+        if ((v1.getDateTimeStart() instanceof LocalDateTime) && (v2.getDateTimeStart() instanceof LocalDateTime))
+        {
+            return ((LocalDateTime) v1.getDateTimeStart()).compareTo((LocalDateTime) v2.getDateTimeStart());
+        } else if ((v1.getDateTimeStart() instanceof LocalDate) && (v2.getDateTimeStart() instanceof LocalDate))
+        {
+            return ((LocalDate) v1.getDateTimeStart()).compareTo((LocalDate) v2.getDateTimeStart());
+        } else throw new DateTimeException("DTSTART and DTEND must have same Temporal type("
+                + v1.getDateTimeStart().getClass().getSimpleName() + ", " + v2.getDateTimeStart().getClass().getSimpleName() +")");
+    };
+    
     /** Parse iCalendar date or date/time string into LocalDate or LocalDateTime Temporal object */
     static Temporal parseTemporal(String dateTimeString)
     {
@@ -554,17 +569,7 @@ public interface VComponent<T>
     {
         final String uid = (vComponent.getRelatedTo() != null) ? vComponent.getRelatedTo() : vComponent.getUniqueIdentifier();
         System.out.println("uid:" + uid + " " + vComponents.size());
-        final Comparator<? super VComponent<U>> comparator = (v1, v2) -> 
-        {
-            if ((v1.getDateTimeStart() instanceof LocalDateTime) && (v2.getDateTimeStart() instanceof LocalDateTime))
-            {
-                return ((LocalDateTime) v1.getDateTimeStart()).compareTo((LocalDateTime) v2.getDateTimeStart());
-            } else if ((v1.getDateTimeStart() instanceof LocalDate) && (v2.getDateTimeStart() instanceof LocalDate))
-            {
-                return ((LocalDate) v1.getDateTimeStart()).compareTo((LocalDate) v2.getDateTimeStart());
-            } else throw new DateTimeException("DTSTART and DTEND must have same Temporal type("
-                    + v1.getDateTimeStart().getClass().getSimpleName() + ", " + v2.getDateTimeStart().getClass().getSimpleName() +")");
-        };
+
         return vComponents.stream()
 //                .forEach(System.out::println);
                 .filter( v ->
@@ -573,7 +578,7 @@ public interface VComponent<T>
                     boolean isBranch2 = (v.getRelatedTo() != null) ? v.getRelatedTo().equals(uid) : false;
                     return isChild || isBranch2;
                 })
-                .sorted(comparator)
+                .sorted(VCOMPONENT_COMPARATOR)
                 .collect(Collectors.toList());
     }
 

@@ -553,17 +553,11 @@ public class AppointmentEditController
      */
     private void editThisAndFuture()
     {
-        System.out.println("until1:" + vEvent.getRRule().getUntil());
         Temporal startNew = (wholeDayCheckBox.isSelected()) ? startTextField.getLocalDateTime().toLocalDate() : startTextField.getLocalDateTime();
-//        System.out.println("startNew:" + startNew);
-        // Adjust original VEvent
         if (vEventOriginal.getRRule().getCount() != null) vEventOriginal.getRRule().setCount(0);
-        // get start of previous instance - use that as until temporal
-        Temporal previouStream = vEventOriginal.previousStreamValue(dateTimeInstanceStartOriginal);
-        Temporal untilNew = (previouStream instanceof LocalDateTime) ? LocalDate.from(previouStream).atTime(23, 59, 59) : previouStream; // use last second of day, like Yahoo
+        Temporal previousDay = dateTimeInstanceStartOriginal.minus(1, ChronoUnit.DAYS);
+        Temporal untilNew = (wholeDayCheckBox.isSelected()) ? LocalDate.from(previousDay).atTime(23, 59, 59) : previousDay; // use last second of previous day, like Yahoo
 
-//        Temporal untilNew = (wholeDayCheckBox.isSelected()) ? startNew.minus(1, ChronoUnit.DAYS) : startNew.minus(1, ChronoUnit.NANOS);
-        System.out.println("untilNew:" + untilNew);
         vEventOriginal.getRRule().setUntil(untilNew);
         
         // Adjust new VEvent
@@ -571,9 +565,6 @@ public class AppointmentEditController
         Temporal endNew = vEvent.getDateTimeEnd().plus(shift, ChronoUnit.DAYS);
         vEvent.setDateTimeEnd(endNew);
         vEvent.setDateTimeStart(startNew);
-//        System.out.println("start*:" + vEvent.getDateTimeStart());
-//        System.out.println("end*:" + vEvent.getDateTimeEnd());
-//        System.out.println("stardoriginal:" + vEventOriginal.getDateTimeStart() + " " + vEventOriginal.getRelatedTo());
         vEvent.setUniqueIdentifier();
         String relatedUID = (vEventOriginal.getRelatedTo() == null) ? vEventOriginal.getUniqueIdentifier() : vEventOriginal.getRelatedTo();
         vEvent.setRelatedTo(relatedUID);
@@ -589,7 +580,6 @@ public class AppointmentEditController
             {
                 Temporal d = exceptionIterator.next();
                 int result = VComponent.TEMPORAL_COMPARATOR.compare(d, startNew);
-//                if (d.getLocalDateTime().isBefore(dateTimeStartInstanceNew))
                 if (result < 0)
                 {
                     exceptionIterator.remove();
@@ -610,7 +600,6 @@ public class AppointmentEditController
             {
                 Temporal d = recurrenceIterator.next();
                 int result = VComponent.TEMPORAL_COMPARATOR.compare(d, startNew);
-//                if (d.getLocalDateTime().isBefore(dateTimeStartInstanceNew))
                 if (result < 0)
                 {
                     recurrenceIterator.remove();
@@ -664,9 +653,9 @@ public class AppointmentEditController
         appointments.clear();
         appointments.addAll(appointmentsTemp);
         
-        vComponents.stream().forEach(System.out::println);
+//        vComponents.stream().forEach(System.out::println);
 //        System.out.println("vEvent:" + vEvent);
-        System.out.println("vComponents:" + vComponents.size());
+//        System.out.println("vComponents:" + vComponents.size());
     }
     
     // Does check to see if start date has been changed, and a date shift is required, and then runs ordinary handleSave method.

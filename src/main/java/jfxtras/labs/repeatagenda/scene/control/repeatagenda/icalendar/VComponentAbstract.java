@@ -722,6 +722,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * @param value
      * @return
      */
+    @Deprecated // not using anymore
     public Temporal previousStreamValue(Temporal value)
     {
         final Temporal start; 
