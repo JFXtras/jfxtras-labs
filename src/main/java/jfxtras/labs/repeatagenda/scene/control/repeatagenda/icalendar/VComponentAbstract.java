@@ -383,6 +383,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         if (value < getSequence()) throw new IllegalArgumentException("New sequence value must be greater than previous value");
         sequenceProperty.set(value);
     }
+    public void incrementSequence() { setSequence(getSequence()+1); }
     
     /**
      *  SUMMARY: RFC 5545 iCalendar 3.8.1.12. page 83

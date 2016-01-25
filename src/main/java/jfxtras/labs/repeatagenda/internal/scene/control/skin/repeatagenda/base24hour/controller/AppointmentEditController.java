@@ -307,6 +307,7 @@ public class AppointmentEditController
     @FXML private void handleSave()
     {
         final RRuleType rruleType = ICalendarUtilities.getRRuleType(vEvent.getRRule(), vEventOriginal.getRRule());
+        boolean incrementSequence = true;
         System.out.println("rrule: " + rruleType);
         switch (rruleType)
         {
@@ -396,35 +397,26 @@ public class AppointmentEditController
                                 } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
                                 vEvent.setDateTimeStart(startNew);
                             }
-                            // delete all other vComponents 
-                            // extend current one to cover entire range
-                            // add unique features from others to this one (exdate)
                         });
-                        // TODO apply to whole series
                     }
-                    // do i delete segments?  Do i apply only differences?  I think differences.
-                    // need copy difference method.
                     break;
                 case CANCEL:
                     vEventOriginal.copyTo(vEvent); // return to original vEvent
+                    incrementSequence = false;
                     break;
                 case THIS_AND_FUTURE:
-                    // currently doing segment - need to change to ALL
-//                case THIS_AND_FUTURE_ALL:
-//                case THIS_AND_FUTURE_SEGMENT:
                     editThisAndFuture();
                     break;
                 case ONE:
                     editOne();
                     break;
-//                case SEGMENT:
-//                    updateAppointments();
                 default:
                     break;
                 }
             }
         }
         if (! vEvent.isValid()) throw new RuntimeException(vEvent.makeErrorString());
+        if (incrementSequence) vEvent.incrementSequence();
         System.out.println(vEvent);
         popup.close();
     }
@@ -513,7 +505,6 @@ public class AppointmentEditController
             vEvent.setDateTimeStart(start);
             LocalDate end = LocalDate.from(endTextField.getLocalDateTime());
             vEvent.setDateTimeEnd(end);
-            System.out.println("s,e:" + start + " " + end);
         } else
         {
             vEvent.setDateTimeStart(startTextField.getLocalDateTime());
