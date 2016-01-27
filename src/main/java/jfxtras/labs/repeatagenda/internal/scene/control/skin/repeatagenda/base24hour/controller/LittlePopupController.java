@@ -10,9 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
 import javafx.stage.Popup;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -21,13 +19,13 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
  * @author David Bal
  *
  */
-public class AppointmentPopupController {
+public class LittlePopupController {
     
-    private Pane pane;
+//    private Pane pane;
     private Collection<Appointment> appointments;
     private Collection<VComponent<Appointment>> repeats;
 //    private Map<Appointment, Repeat> repeatMap;
-    private RepeatableAppointment appointment;
+    private Appointment appointment;
     private Popup popup;
     
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
@@ -42,16 +40,11 @@ public class AppointmentPopupController {
    }
 
     public void setupData(
-              Collection<Appointment> appointments
-            , RepeatableAppointment appointment
-            , Collection<VComponent<Appointment>> repeats
-//            , Map<Appointment, Repeat> repeatMap
-            , Pane pane
+            Appointment appointment
+          , Collection<Appointment> appointments
+          , Popup popup) {
 
-            //            , LayoutHelp layoutHelp
-            , Popup popup) {
-
-        this.pane = pane;
+//        this.pane = pane;
         this.appointment = appointment;
         this.appointments = appointments;
         this.repeats = repeats;

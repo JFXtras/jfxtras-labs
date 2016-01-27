@@ -308,7 +308,8 @@ public class VEventImpl extends VEvent<Appointment>
      * 
      * @return created appointments
      */
-    public Collection<Appointment> makeInstances()
+    @Override
+    public List<Appointment> makeInstances()
     {
         if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
         boolean wholeDay = getStartRange() instanceof LocalDate;
@@ -356,7 +357,7 @@ public class VEventImpl extends VEvent<Appointment>
      * @return created appointments
      */
     @Override
-    public Collection<Appointment> makeInstances(Temporal startRange, Temporal endRange)
+    public List<Appointment> makeInstances(Temporal startRange, Temporal endRange)
     {
         if (VComponent.isAfter(startRange, endRange)) throw new DateTimeException("startTemporal must be after endTemporal");
         setEndRange(endRange);

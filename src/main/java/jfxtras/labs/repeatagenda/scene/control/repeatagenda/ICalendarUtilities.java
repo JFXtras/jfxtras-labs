@@ -230,6 +230,7 @@ public final class ICalendarUtilities
         }
     }
     
+    
     public static List<Node> getAllNodes(Parent root, Class<? extends Node> matchClass)
     {
         List<Node> nodes = new ArrayList<>();

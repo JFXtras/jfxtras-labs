@@ -141,6 +141,7 @@ public class AppointmentEditController
 //        endTextField.localDateTimeProperty().addListener(endTextlistener);
     };
     // Change time and shift dates for start and end edits
+    // TODO - REMOVE - USE ADDNANOS IN VCOMPONENT instead
     private Temporal adjustStartEndTemporal(Temporal input, LocalDateTime oldSelection, LocalDateTime newSelection)
     {
         long dayShift = ChronoUnit.DAYS.between(oldSelection, newSelection);
@@ -304,6 +305,7 @@ public class AppointmentEditController
         repeatableController.setupData(vComponent, startTextField.getLocalDateTime());
     }
 
+    @Deprecated
     @FXML private void handleSave()
     {
         final RRuleType rruleType = ICalendarUtilities.getRRuleType(vEvent.getRRule(), vEventOriginal.getRRule());
@@ -323,7 +325,6 @@ public class AppointmentEditController
         case WITH_EXISTING_REPEAT:
             if (! vEvent.equals(vEventOriginal)) // if changes occurred
             {
-                // TODO - CAN THIS MAP GENERATOR GO ELSEWHERE? VCOMPONENT? (USE IN EDIT AND DELETE?)
                 List<VComponent<Appointment>> relatedVComponents = VComponent.findRelatedVComponents(vComponents, vEvent);
                 Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
                 Temporal startInstance = (wholeDayCheckBox.isSelected()) ? startTextField.getLocalDateTime().toLocalDate() : startTextField.getLocalDateTime();
@@ -421,65 +422,7 @@ public class AppointmentEditController
         popup.close();
     }
 
-    /*
-     * Apply differences between original and modified VEvents to VEvent v
-     */
-    @Deprecated // I don't think this will work
-    private void applyDifferences(VEvent<Appointment> original, VEvent<Appointment> source, VEvent<Appointment> destination)
-    {
-        if (! original.getDescription().equals(source.getDescription())) destination.setDescription(source.getDescription());
-        if (! original.getDurationInNanos().equals(source.getDurationInNanos())) destination.setDurationInNanos(source.getDurationInNanos());
-        if (! original.getDateTimeEnd().equals(source.getDateTimeEnd())) destination.setDateTimeEnd(source.getDateTimeEnd());
-        if (! original.getCategories().equals(source.getCategories())) destination.setCategories(source.getCategories());
-        if (! original.getComment().equals(source.getComment())) destination.setComment(source.getComment());
-        if (! original.getDateTimeStamp().equals(source.getDateTimeStamp())) destination.setDateTimeStamp(source.getDateTimeStamp());
-        if (! original.getDateTimeStart().equals(source.getDateTimeStart())) destination.setDateTimeStart(source.getDateTimeStart());
-        if (! original.getLocation().equals(source.getLocation())) destination.setLocation(source.getLocation());
-        if (! original.getRelatedTo().equals(source.getRelatedTo())) destination.setRelatedTo(source.getRelatedTo());
-        if (! (original.getSequence() == (source.getSequence()))) destination.setSequence(source.getSequence());
-        if (! original.getSummary().equals(source.getSummary())) destination.setSummary(source.getSummary());
-//        if (source.getRRule() != null)
-//        {
-//            if (destination.getRRule() == null)
-//            { // make new RRule object for destination if necessary
-//                try {
-//                    RRule newRRule = source.getRRule().getClass().newInstance();
-//                    destination.setRRule(newRRule);
-//                } catch (InstantiationException | IllegalAccessException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            source.getRRule().copyTo(destination.getRRule());
-//        }
-//        if (source.getExDate() != null)
-//        {
-//            if (destination.getExDate() == null)
-//            { // make new EXDate object for destination if necessary
-//                try {
-//                    EXDate newEXDate = source.getExDate().getClass().newInstance();
-//                    destination.setExDate(newEXDate);
-//                } catch (InstantiationException | IllegalAccessException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            source.getExDate().copyTo(destination.getExDate());
-//        }
-//        if (source.getRDate() != null)
-//        {
-//            if (destination.getRDate() == null)
-//            { // make new RDate object for destination if necessary
-//                try {
-//                    RDate newRDate = source.getRDate().getClass().newInstance();
-//                    destination.setRDate(newRDate);
-//                } catch (InstantiationException | IllegalAccessException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            source.getRDate().copyTo(destination.getRDate());
-//        }
-        // TODO Auto-generated method stub
-    }
-
+    @Deprecated
     private void updateAppointments()
     {
         int sequence = vEvent.getSequence();
@@ -497,6 +440,7 @@ public class AppointmentEditController
      * Edit one instance of a VComponent with a RRule.  The instance becomes a new VComponent without a RRule
      * as with the same UID as the parent and a recurrence-id for the replaced date or date/time.
      */
+    @Deprecated
     private void editOne()
     {
         if (wholeDayCheckBox.isSelected())
@@ -542,6 +486,7 @@ public class AppointmentEditController
      * the selected instance.  EXDATE, RDATE and RECURRENCES are split between both
      * VComponents.  vEventNew has new settings, vEvent has former settings.
      */
+    @Deprecated
     private void editThisAndFuture()
     {
         Temporal startNew = (wholeDayCheckBox.isSelected()) ? startTextField.getLocalDateTime().toLocalDate() : startTextField.getLocalDateTime();

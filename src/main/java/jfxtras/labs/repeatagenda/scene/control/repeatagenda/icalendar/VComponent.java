@@ -9,6 +9,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -89,6 +90,8 @@ public interface VComponent<T>
         boolean correctType = (dtStart instanceof LocalDate) || (dtStart instanceof LocalDateTime) || (dtStart == null);
         if (! correctType) throw new IllegalArgumentException("DTStart type must be LocalDate or LocalDateTime, not: " + dtStart.getClass().getSimpleName());
     };
+    /** Component is whole day if dateTimeStart (DTSTART) is of type LocalDate */
+    default boolean isWholeDay() { return (getDateTimeStart() instanceof LocalDate); }
         
     /**
      * EXDATE: Set of date/times exceptions for recurring events, to-dos, journal entries.
@@ -173,6 +176,7 @@ public interface VComponent<T>
     IntegerProperty sequenceProperty();
     int getSequence();
     void setSequence(int value);
+    default void incrementSequence() { setSequence(getSequence()+1); }
     
     /**
      *  SUMMARY: RFC 5545 iCalendar 3.8.1.12. page 83
@@ -289,6 +293,40 @@ public interface VComponent<T>
     void copyTo(VComponent<T> destination);
     
     // DEFAULT METHODS
+    
+    /**
+     * Checks to see if object contains required properties.  Returns empty string if it is
+     * valid.  Returns string of errors if not valid.
+     */
+    default String makeErrorString()
+    {
+        StringBuilder errorsBuilder = new StringBuilder();
+        if (getDateTimeStart() == null) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DTSTART must not be null.");
+        if (getDateTimeStamp() == null) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DTSTAMP must not be null.");
+        if (getUniqueIdentifier() == null) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  UID must not be null.");
+        if (getRRule() != null) errorsBuilder.append(getRRule().makeErrorString(this));
+        Temporal t1 = stream(getDateTimeStart()).findFirst().get();
+        final Temporal first;
+        if (getExDate() != null)
+        {
+            Temporal t2 = Collections.min(getExDate().getTemporals(), VComponent.TEMPORAL_COMPARATOR);
+            first = (VComponent.isBefore(t1, t2)) ? t1 : t2;
+        } else
+        {
+            first = t1;
+        }           
+        if (! first.equals(getDateTimeStart())) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DTSTART (" + getDateTimeStart() + ") must be first occurrence (" + first + ")");
+        Class<? extends Temporal> startClass = first.getClass();
+        Class<? extends Temporal> untilClass = ((getRRule() != null) && (getRRule().getUntil() != null))
+                ? getRRule().getUntil().getClass() : startClass;
+        Class<? extends Temporal> eXDateClass = (getExDate() != null) ? getExDate().temporalClass() : startClass;
+        Class<? extends Temporal> rDateClass = (getRDate() != null) ? getRDate().temporalClass() : startClass;
+        if (startClass != untilClass) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  Temporal class type of DTSTART (" + startClass + ") and UNTIL (" + untilClass + ") must be the same.");
+        if (startClass != eXDateClass) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  Temporal class type of DTSTART (" + startClass + ") and EXDATE (" + eXDateClass + ") must be the same.");
+        if (startClass != rDateClass) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  Temporal class type of DTSTART (" + startClass + ") and RDATE (" + rDateClass + ") must be the same.");
+        
+        return errorsBuilder.toString();
+    }
     
     /** Returns true if VComponent is an individual (only one instance in recurrence set),
      *  false if has more than 1 instance */
@@ -508,7 +546,7 @@ public interface VComponent<T>
      * @param startShiftInNanos
      * @param days
      */
-    static Temporal plusNanos(Temporal temporal, long nanos)
+    static Temporal addNanos(Temporal temporal, long nanos)
     {
         if (temporal instanceof LocalDate)
         {
