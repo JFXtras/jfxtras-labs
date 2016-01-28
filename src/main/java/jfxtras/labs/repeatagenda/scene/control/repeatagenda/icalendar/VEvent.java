@@ -827,7 +827,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         }
         if (! vEvent.isValid()) throw new RuntimeException(vEvent.makeErrorString());
         if (incrementSequence) vEvent.incrementSequence();
-        System.out.println(vEvent);
+//        System.out.println(vEvent);
     }
     
     private static <U> void updateAppointments(VComponent<U> vEvent, Collection<U> instances)

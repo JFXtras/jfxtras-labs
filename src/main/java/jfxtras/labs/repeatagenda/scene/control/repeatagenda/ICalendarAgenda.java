@@ -2,12 +2,9 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -17,9 +14,7 @@ import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -27,7 +22,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import jfxtras.internal.scene.control.skin.DateTimeToCalendarHelper;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.EditPopupLoader;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.LittlePopupLoader;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -174,9 +168,6 @@ public class ICalendarAgenda extends Agenda
      */
     private Callback<Appointment, Void> appointmentChangedCallback = (Appointment appointment) ->
     {
-        // HOW WILL I GET THE ORIGINAL APPOINTMENT?
-        // DO I NEED TO SEARCH ALL VCOMPONENTS FOR THE ONE WITH IT AS AN INSTANCE?
-        // SHOULD I TRY TO CALCULATE ORIGINAL DATE/TIME?  I COULD RUN MAKE APPOINTMENTS AND FIND DIFFERENCE
         Temporal startInstance = (appointment.isWholeDay()) ? appointment.getStartLocalDateTime().toLocalDate() : appointment.getStartLocalDateTime();
         Temporal endInstance = (appointment.isWholeDay()) ? appointment.getEndLocalDateTime().toLocalDate() : appointment.getEndLocalDateTime();
         Temporal startOriginalInstance = appointmentRecurrenceIDMap.get(appointment);
@@ -184,13 +175,12 @@ public class ICalendarAgenda extends Agenda
         VEvent<Appointment> vEventOriginal = (VEvent<Appointment>) VComponentFactory.newVComponent(vEvent); // copy original vEvent.  If change is canceled its copied back.
 
         // apply changes to vEvent Note: only changes date and time.  If other types of changes become possible then add to the below list.
-        // start
+        // start and end
         long nanos = ChronoUnit.NANOS.between(startOriginalInstance, startInstance);
         Temporal startNew = VComponent.addNanos(vEvent.getDateTimeStart(), nanos);
-        vEvent.setDateTimeStart(startNew);
-        
-        // end
+        vEvent.setDateTimeStart(startNew);        
         long duration = ChronoUnit.NANOS.between(startInstance, endInstance);
+
         switch (vEvent.getEndPriority())
         {
         case DTEND:
@@ -212,6 +202,8 @@ public class ICalendarAgenda extends Agenda
                 , appointments());
         
         System.out.println("appt changed callback:" + appointment.getStartLocalDateTime() + " " + startOriginalInstance);
+        vComponents.size();
+        vComponents.stream().forEach(System.out::println);
         return null;
     };
     
@@ -372,31 +364,31 @@ public class ICalendarAgenda extends Agenda
         
     }
     
-    /** Example Appointment class with overridden equals method used by unit testing */
-    static public class AppointmentImplLocal2 extends AppointmentImplLocal
-    {
-        @Override
-        public boolean equals(Object obj)
-        {
-            if (obj == this) return true;
-            if((obj == null) || (obj.getClass() != getClass())) {
-                return false;
-            }
-            AppointmentImplLocal2 testObj = (AppointmentImplLocal2) obj;
-
-            boolean descriptionEquals = (getDescription() == null) ?
-                    (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
-            boolean locationEquals = (getLocation() == null) ?
-                    (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
-            boolean summaryEquals = (getSummary() == null) ?
-                    (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
-            boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
-                    (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
-//            System.out.println("AppointmentImplLocal2 equals: " + descriptionEquals + " " + locationEquals 
-//                    + " " + summaryEquals + " " +  " " + appointmentGroupEquals);
-            return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals ;
-        }
-    }
+//    /** Example Appointment class with overridden equals method used by unit testing */
+//    static public class AppointmentImplLocal2 extends AppointmentImplLocal
+//    {
+//        @Override
+//        public boolean equals(Object obj)
+//        {
+//            if (obj == this) return true;
+//            if((obj == null) || (obj.getClass() != getClass())) {
+//                return false;
+//            }
+//            AppointmentImplLocal2 testObj = (AppointmentImplLocal2) obj;
+//
+//            boolean descriptionEquals = (getDescription() == null) ?
+//                    (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
+//            boolean locationEquals = (getLocation() == null) ?
+//                    (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
+//            boolean summaryEquals = (getSummary() == null) ?
+//                    (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
+//            boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
+//                    (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
+////            System.out.println("AppointmentImplLocal2 equals: " + descriptionEquals + " " + locationEquals 
+////                    + " " + summaryEquals + " " +  " " + appointmentGroupEquals);
+//            return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals ;
+//        }
+//    }
     
     /**
      * VComponent factory methods
@@ -482,302 +474,19 @@ public class ICalendarAgenda extends Agenda
         }
     }
     
-    // TODO - revise Appointment interface changes
-    // I MAY JUST REMOVE ALL CODE BELOW HERE
-    /** Contains all the appointment data - no repeatable information
-    *   Like Appointment, but contains extra fields - no repeat object */
-    static public interface Appointment2 extends Agenda.Appointment
+    /** used for unit testing - equals method required */
+    static public class AppointmentImplLocal2 extends Agenda.AppointmentImplLocal
     {
-        // TODO - add all iCalendar properties for VEvent
-        // TODO - SHOULD GO TO REGULAR AGENDA
-        /** Unique identifier as defined by iCalendar RFC 5545, 3.8.4.7 */
-        String getUID();
-        void setUID(String uid);
-
-        // TODO - SHOULD GO TO REGULAR AGENDA
-        /** Number of times appointment was edited.  Sequence as defined by iCalendar RFC 5545, 3.8.7.4 */
-        int getSequence();
-        void setSequence(int sequence);
-
-        // TODO - SHOULD GO TO REGULAR AGENDA
-        /** Last date/time object was revised.  Date-Time Stamp as defined by iCalendar RFC 5545, 3.8.7.2 */
-        LocalDateTime getDTStamp();
-        void setDTStamp(LocalDateTime dtStamp);
-
-        // TODO - SHOULD GO TO REGULAR AGENDA
-        /** Created date/time as defined by iCalendar RFC 5545, 3.8.7.1 */
-        LocalDateTime getCreated();
-        void setCreated(LocalDateTime created);
-
-        
-        // DEFAULTS - SHOULD BE INHERETED, BUT AREN'T - PROBLEM MAY BE RETROLAMBDA
-        // ----
-        // Calendar
-        
-        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
         @Override
-        default Calendar getStartTime() {
-            throw new RuntimeException("Not implemented");
-        }
-        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
-        @Override
-        default void setStartTime(Calendar c) {
-            throw new RuntimeException("Not implemented");
-        }
-        
-        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
-        @Override
-        default Calendar getEndTime() {
-            throw new RuntimeException("Not implemented");
-        }
-        /** This method is not used by the control, it can only be called when implemented by the user through the default Datetime methods on this interface **/  
-        @Override
-        default void setEndTime(Calendar c) {
-            throw new RuntimeException("Not implemented");
-        }
-        
-        // ----
-        // ZonedDateTime
-        
-        /** This is the replacement of Calendar, if you use ZonedDateTime be aware that the default implementations of the LocalDateTime methods in this interface convert LocalDateTime to ZonedDateTime using a rather crude approach */
-        @Override
-        default ZonedDateTime getStartZonedDateTime() {
-            return DateTimeToCalendarHelper.createZonedDateTimeFromCalendar(getStartTime());
-        }
-        /** This is the replacement of Calendar, if you use ZonedDateTime be aware that the default implementations of the LocalDateTime methods in this interface convert LocalDateTime to ZonedDateTime using a rather crude approach */
-        @Override
-        default void setStartZonedDateTime(ZonedDateTime v) {
-            setStartTime(DateTimeToCalendarHelper.createCalendarFromZonedDateTime(v));
-        }
-        
-        /** This is the replacement of Calendar, if you use ZonedDateTime be aware that the default implementations of the LocalDateTime methods in this interface convert LocalDateTime to ZonedDateTime using a rather crude approach */
-        @Override
-        default ZonedDateTime getEndZonedDateTime() {
-            return DateTimeToCalendarHelper.createZonedDateTimeFromCalendar(getEndTime());
-        }
-        /** End is exclusive */
-        @Override
-        default void setEndZonedDateTime(ZonedDateTime v) {
-            setEndTime(DateTimeToCalendarHelper.createCalendarFromZonedDateTime(v));
-        }
-        
-        // ----
-        // LocalDateTime 
-        
-        /** This is what Agenda uses to render the appointments */
-        @Override
-        default LocalDateTime getStartLocalDateTime() {
-            return getStartZonedDateTime().toLocalDateTime();
-        }
-        /** This is what Agenda uses to render the appointments */
-        @Override
-        default void setStartLocalDateTime(LocalDateTime v) {
-            setStartZonedDateTime(ZonedDateTime.of(v, ZoneId.systemDefault()));
-        }
-        
-        /** This is what Agenda uses to render the appointments */
-        @Override
-        default LocalDateTime getEndLocalDateTime() {
-            return getEndZonedDateTime() == null ? null : getEndZonedDateTime().toLocalDateTime();
-        }
-        /** End is exclusive */
-        @Override
-        default void setEndLocalDateTime(LocalDateTime v) {
-            setEndZonedDateTime(v == null ? null : ZonedDateTime.of(v, ZoneId.systemDefault()));
-        }
-
-      Appointment copyNonUniqueFieldsTo(Appointment appointment, Appointment appointmentFromRepeatRule);
-        
-      Appointment copyFieldsTo(Appointment destination);
-
-    }
-
-    
-    /** Contains all the appointment data - no repeatable information */
-    static public abstract class AppointmentImplBase2<T> extends Agenda.AppointmentImplBase<T> implements Appointment2
-    {
-        // TODO - ADD PROPERTIES FOR NEW FIELDS AND WITH METHODS TOO
-        @Override
-        public String getUID() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public void setUID(String uid) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public int getSequence() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public void setSequence(int sequence) {
-            // TODO Auto-generated method stub
-            
-        }
-        
-        AppointmentImplBase2() { }
-        
-        /** Copy constructor 
-         * @param <U>*/
-        <T extends Appointment> AppointmentImplBase2(T appointment)
-        {
-            System.out.println("AppointmentImplBase2 constructor");
-            if (appointment instanceof AppointmentImplBase2) copy((AppointmentImplBase2<T>) appointment, this);
-//            setWholeDay(appointment.isWholeDay());
-//            setLocation(appointment.getLocation());
-//            setAppointmentGroup(appointment.getAppointmentGroup());
-//            setDescription(appointment.getDescription());
-//            setSummary(appointment.getSummary());
-        }
-        
-        /** Copy fields from this to input parameter appointment */
-        @Override
-        public Appointment copyFieldsTo(Appointment appointment) {
-            System.out.println("AppointmentImplBase2 copyFieldsTo ");
-            if (appointment instanceof AppointmentImplBase2) copy(this, (AppointmentImplBase2<T>) appointment);
-            return appointment;
-        }
-        
-        /** Copy fields from source to destination */
-        private static void copy(AppointmentImplBase2<?> source, AppointmentImplBase2<?> destination)
-        {
-            destination.setWholeDay(source.isWholeDay());
-            destination.setLocation(source.getLocation());
-            destination.setAppointmentGroup(source.getAppointmentGroup());
-            destination.setDescription(source.getDescription());
-            destination.setSummary(source.getSummary());
-            destination.setUID(source.getUID());
-            destination.setSequence(source.getSequence());
-            destination.setDTStamp(source.getDTStamp());
-            destination.setCreated(source.getCreated());
-        }
-        
-        // TODO - Add missing fields, make similar methods in inhereted classes
-        /**
-         * Copies this Appointment non-time fields into passed appointment
-         * Used on recurrences when some of fields are unique and should not be copied.
-         * This method must be overridden by an implementing class
-         * 
-         * @param appointment
-         * @param appointmentFromRepeatRule
-         * @param repeatMap
-         * @return
-         */
-        @Override
-        public Appointment copyNonUniqueFieldsTo(Appointment appointment, Appointment appointmentFromRepeatRule) {
-            if (appointment.getAppointmentGroup().equals(appointmentFromRepeatRule.getAppointmentGroup())) {
-                appointment.setAppointmentGroup(getAppointmentGroup());
+        public boolean equals(Object obj) {
+            if (obj == this) return true;
+            if((obj == null) || (obj.getClass() != getClass())) {
+                return false;
             }
-            if (appointment.getDescription().equals(appointmentFromRepeatRule.getDescription())) {
-                appointment.setDescription(getDescription());
-            }
-            if (appointment.getSummary().equals(appointmentFromRepeatRule.getSummary())) {
-                appointment.setSummary(getSummary());
-            }
-            return appointment;
-        }
-        
-    }
-    
+          AppointmentImplLocal2 testObj = (AppointmentImplLocal2) obj;
 
-    /** Contains repeatable information */
-    static public interface RepeatableAppointment extends Appointment2
-    {
-//        void setCreated(LocalDateTime created);
-        
-//        /** Date/time of repeatable appointment this appointment is replacing, if any (as defined by iCalendar RFC 5545, 3.8.4.4) */
-//        LocalDateTime getRecurrance();
-//        void setRecurrance(LocalDateTime t); // If not null, contains the start date and time of recurring appointment this appointment takes the place of
-//
-//        /** True if appointment is part of a repeat rule AND has no unique data fields */
-//        boolean isRepeatMade();
-//        void setRepeatMade(boolean repeatMade);
-//
-//        /** Repeat rule attached to appointment, if null appointment is individual */
-//        Repeat getRepeat();
-//        void setRepeat(Repeat repeat);
-//
-//        /** Repeat rule attached to appointment, if null appointment is individual */
-//        VEvent getVEvent();
-//        void setVEvent(VEvent vevent);
-    }
-    
-    /** Contains appointment data and repeatable information */
-    static public abstract class RepeatableAppointmentImplBase<T> extends AppointmentImplBase2<T> implements RepeatableAppointment
-    {
-
-        protected RepeatableAppointmentImplBase() { }
-               
-        /** VEvent - defined in RFC 5545 iCalendar 3.6.1, page 52. */
-        private VEvent vevent;
-        public void setVEvent(VEvent vevent) { this.vevent = vevent; }
-        public VEvent getVEvent() { return vevent; }
-        public T withVEvent(VEvent vevent) { setVEvent(vevent); return (T)this; }
-        
-        /**
-         * true = a temporary appointment created by a repeat rule
-         * false = a individual permanent appointment
-         */
-        final private BooleanProperty repeatMade = new SimpleBooleanProperty(this, "repeatMade", false); // defaults to a individual permanent appointment
-        public BooleanProperty repeatMadeProperty() { return repeatMade; }
-        public boolean isRepeatMade() { return repeatMade.getValue(); }
-        public void setRepeatMade(boolean b) {repeatMade.set(b); }
-        public T withRepeatMade(boolean b) {repeatMade.set(b); return (T)this; }
-
-        // TODO - FOR EDITED REPEATABLE APPOINTMENTS, THIS MARKS WHICH RECURRANCE THIS APPOINTMENT TAKES THE PLACE OF
-        private LocalDateTime inPlaceOfRecurrance; // If not null, contains the start date and time of recurring appointment this appointment takes the place of
-        public void setRecurranceLocalDateTime(LocalDateTime t) { inPlaceOfRecurrance = t; } // If not null, contains the start date and time of recurring appointment this appointment takes the place of
-
-        /** Copy constructor 
-         * @param <U>*/
-        protected <U extends Appointment> RepeatableAppointmentImplBase(U source)
-        {
-            super(source);
-            System.out.println("RepeatableAppointmentImplBase constructor ");
-            if (source instanceof RepeatableAppointmentImplBase) copy((RepeatableAppointmentImplBase<T>) source, this);
-        }
-        
-//        /** Copy fields from this to input parameter appointment */
-//        @Override
-//        public Appointment copyFieldsTo(Appointment destination) {
-//            boolean copyRepeat = ! ((((RepeatableAppointment) destination).getRepeat() == null) ||  (getRepeat() == null));
-//            System.out.println("RepeatableAppointmentImplBase copyFieldsTo " + copyRepeat + " " + (((RepeatableAppointment) destination).getRepeat() == null) + " " + (getRepeat() == null) + "");
-//            if ((destination instanceof RepeatableAppointmentImplBase) && copyRepeat)
-//            {
-//                copy(this, (RepeatableAppointmentImplBase<T>) destination);
-//            }
-//            return super.copyFieldsTo(destination);
-//        }
-        
-        /** Copy fields from source to destination */
-        private static void copy(RepeatableAppointmentImplBase<?> source, RepeatableAppointmentImplBase<?> destination)
-        {
-//            if ((source.getRepeat() != null))
-//            { // only copy Repeat if BOTH source and destination have something in repeat
-//                Repeat r = RepeatFactory.newRepeat(source.getRepeat());
-//                destination.setRepeat(r);
-//            }
-//            destination.setRepeatMade(source.isRepeatMade());
-        }       
-        
-      // used for unit testing, not needed by implementation
-        // Is this in the right place?
-      @Override
-      public boolean equals(Object obj) {
-          if (obj == this) return true;
-          if((obj == null) || (obj.getClass() != getClass())) {
-              return false;
-          }
-          RepeatableAppointment testObj = (RepeatableAppointment) obj;
-
-//          System.out.println("getAppointmentGroup()2 " + getAppointmentGroup().getDescription() + " " + testObj.getAppointmentGroup().getDescription());
-          
+          boolean startEquals = getStartLocalDateTime().equals(testObj.getStartLocalDateTime());
+          boolean endEquals = getEndLocalDateTime().equals(testObj.getEndLocalDateTime());
           boolean descriptionEquals = (getDescription() == null) ?
                   (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
           boolean locationEquals = (getLocation() == null) ?
@@ -786,12 +495,11 @@ public class ICalendarAgenda extends Agenda
                   (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
           boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
                   (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
-//          System.out.println("repeats " + getRepeat() + " " + testObj.getRepeat());
-//          boolean repeatEquals = (getRepeat() == null) ?
-//                  (testObj.getRepeat() == null) : getRepeat().equals(testObj.getRepeat());
-//          System.out.println("RepeatableAppointmentImplBase equals1 " + descriptionEquals + " " + locationEquals 
+
+                  //          System.out.println("RepeatableAppointmentImplBase equals1 " + descriptionEquals + " " + locationEquals 
 //                  + " " + summaryEquals + " " +  " " + appointmentGroupEquals + " " + repeatEquals + " " + getRepeat() + " " + testObj.getRepeat());
-          return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals ;
+          return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals 
+                  && startEquals && endEquals;
       }
 
     }

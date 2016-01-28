@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Set;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentImplLocal2;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.RDate;
@@ -40,8 +39,8 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
             -> a1.getStartLocalDateTime().compareTo(a2.getStartLocalDateTime());
     public final Comparator<Appointment> getAppointmentComparator() { return APPOINTMENT_COMPARATOR; }
     
-    private final static Class<AppointmentImplLocal2> clazz = AppointmentImplLocal2.class;
-    public Class<AppointmentImplLocal2> getClazz() { return clazz; }
+    private final static Class<ICalendarAgenda.AppointmentImplLocal2> clazz = ICalendarAgenda.AppointmentImplLocal2.class;
+    public Class<ICalendarAgenda.AppointmentImplLocal2> getClazz() { return clazz; }
     
     public void refresh(List<VComponent<Appointment>> vComponents, List<Appointment> appointments)
     {

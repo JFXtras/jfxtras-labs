@@ -70,7 +70,7 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
 
         Iterator<Appointment> appointmentIterator = appointments.iterator();
 
-        Appointment madeAppointment1 = (Appointment) appointmentIterator.next();
+        Appointment madeAppointment1 = appointmentIterator.next();
         Appointment expectedAppointment1 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDate.of(2015, 12, 21).atTime(10, 0))
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 21).atTime(10, 45))
@@ -79,7 +79,7 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
                 .withDescription("Weekly1 Description");
         assertEquals(expectedAppointment1, madeAppointment1); 
         
-        Appointment madeAppointment2 = (Appointment) appointmentIterator.next();
+        Appointment madeAppointment2 = appointmentIterator.next();
         Appointment expectedAppointment2 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDate.of(2015, 12, 23).atTime(10, 0))
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 23).atTime(10, 45))
@@ -88,7 +88,7 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
                 .withDescription("Weekly1 Description");
         assertEquals(expectedAppointment2, madeAppointment2);
 
-        Appointment madeAppointment3 = (Appointment) appointmentIterator.next();
+        Appointment madeAppointment3 = appointmentIterator.next();
         Appointment expectedAppointment3 = AppointmentFactory.newAppointment(getClazz())
                 .withStartLocalDateTime(LocalDate.of(2015, 12, 25).atTime(10, 0))
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 25).atTime(10, 45))
@@ -107,7 +107,6 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
         LocalDateTime end = LocalDateTime.of(2015, 11, 21, 0, 0);
         List<Appointment> appointments = new ArrayList<Appointment>();
         Collection<Appointment> newAppointments = vevent.makeInstances(start, end);
-        newAppointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
     }
 
 }

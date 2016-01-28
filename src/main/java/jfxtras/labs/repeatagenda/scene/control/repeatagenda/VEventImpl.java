@@ -38,6 +38,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
+import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
@@ -103,7 +104,7 @@ public class VEventImpl extends VEvent<Appointment>
      * the appointmentClass.
      */
     public Class<? extends Appointment> getAppointmentClass() { return appointmentClass; }
-    private Class<? extends Appointment> appointmentClass = ICalendarAgenda.AppointmentImplLocal2.class; // default
+    private Class<? extends Appointment> appointmentClass = Agenda.AppointmentImplLocal.class; // default Appointment class
     public void setAppointmentClass(Class<? extends Appointment> appointmentClass) { this.appointmentClass = appointmentClass; }
 //    public VEventImpl withAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
 
@@ -285,8 +286,10 @@ public class VEventImpl extends VEvent<Appointment>
      * Start of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
      * This is not a part of an iCalendar VEvent
      */
+    @Override
     public Temporal getStartRange() { return startRange; }
     private Temporal startRange;
+    @Override
     public void setStartRange(Temporal start)
     {
         this.startRange = VComponent.ofTemporal(start, getDateTimeStart().getClass()); // store start as same type as dateTimeStart
@@ -295,8 +298,10 @@ public class VEventImpl extends VEvent<Appointment>
     /**
      * End of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
      */
+    @Override
     public Temporal getEndRange() { return endRange; }
     private Temporal endRange;
+    @Override
     public void setEndRange(Temporal end)
     {
         this.endRange = VComponent.ofTemporal(end, getDateTimeStart().getClass()); // store start as same type as dateTimeStart

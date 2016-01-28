@@ -10,12 +10,14 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.test.AssertNode;
 import jfxtras.test.TestUtil;
 
 public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
 {   
+    @Override
     public Parent getRootNode()
     {
         return super.getRootNode();
@@ -26,14 +28,14 @@ public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
     public void renderRegularAppointment()
     {
         TestUtil.runThenWaitForPaintPulse( () -> {
-            agenda.appointments().add( new ICalendarAgenda.AppointmentImplLocal2()
+            agenda.appointments().add( new Agenda.AppointmentImplLocal()
                     .withStartLocalDateTime(LocalDateTime.of(2015, 11, 11, 10, 0))
                     .withEndLocalDateTime(LocalDateTime.of(2015, 11, 11, 12, 0))
                 .withAppointmentGroup(appointmentGroupMap.get("group01"))
             );
         });
                 
-        Node n = (Node)find("#AppointmentRegularBodyPane2015-11-11/0");
+        Node n = find("#AppointmentRegularBodyPane2015-11-11/0");
         //AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
         String os = System.getProperty("os.name");
         if (os.equals("Linux"))
@@ -52,14 +54,14 @@ public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
     {
         String dateTimeStamp = VComponent.DATE_TIME_FORMATTER.format(LocalDateTime.now());
         TestUtil.runThenWaitForPaintPulse( () -> {
-            agenda.appointments().add( new ICalendarAgenda.AppointmentImplLocal2()
+            agenda.appointments().add( new Agenda.AppointmentImplLocal()
                 .withStartLocalDateTime(TestUtil.quickParseLocalDateTimeYMDhm("2015-11-11T10:00"))
                 .withEndLocalDateTime(TestUtil.quickParseLocalDateTimeYMDhm("2015-11-11T12:00"))
                 .withAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(0))
             );
         });
 
-        Node n = (Node)find("#AppointmentRegularBodyPane2015-11-11/0");
+        Node n = find("#AppointmentRegularBodyPane2015-11-11/0");
         System.out.println("getParent:" + n.getParent());
 
 //      AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
