@@ -58,7 +58,7 @@ public class AppointmentEditController
 //    private static final LocalTime DEFAULT_START_TIME = LocalTime.of(10, 0); // default start time used when a whole-day event gets a time
     
     private Appointment appointment; // selected appointment
-    private LocalDateTime dateTimeInstanceStartOriginal;
+    private LocalDateTime startOriginalInstance;
     private LocalDateTime dateTimeInstanceEndOriginal;
     
     private VEvent<Appointment> vEvent;
@@ -170,7 +170,7 @@ public class AppointmentEditController
             , Callback<Collection<VComponent<Appointment>>, Void> vEventWriteCallback
             , Stage popup)
     {
-        dateTimeInstanceStartOriginal = appointment.getStartLocalDateTime();
+        startOriginalInstance = appointment.getStartLocalDateTime();
         dateTimeInstanceEndOriginal = appointment.getEndLocalDateTime();
         this.appointment = appointment;        
         this.appointments = appointments;
@@ -270,7 +270,7 @@ public class AppointmentEditController
         // START DATE/TIME
         Locale locale = Locale.getDefault();
         startTextField.setLocale(locale);
-        startTextField.setLocalDateTime(dateTimeInstanceStartOriginal);
+        startTextField.setLocalDateTime(startOriginalInstance);
         startTextField.setParseErrorCallback(errorCallback);
         startTextField.localDateTimeProperty().addListener(startTextListener);
         
@@ -304,9 +304,22 @@ public class AppointmentEditController
         // SETUP REPEATABLE CONTROLLER
         repeatableController.setupData(vComponent, startTextField.getLocalDateTime());
     }
+    
+    @FXML private void handleSave()
+    {
+        VEvent.saveChange(
+                vEvent
+              , vEventOriginal
+              , vComponents
+              , startOriginalInstance
+              , startTextField.getLocalDateTime()
+              , endTextField.getLocalDateTime()
+              , appointments);
+        popup.close();
+    }
 
     @Deprecated
-    @FXML private void handleSave()
+    @FXML private void handleSaveOld()
     {
         final RRuleType rruleType = ICalendarUtilities.getRRuleType(vEvent.getRRule(), vEventOriginal.getRRule());
         boolean incrementSequence = true;
@@ -455,7 +468,7 @@ public class AppointmentEditController
             vEvent.setDateTimeEnd(endTextField.getLocalDateTime());
         }
         vEvent.setRRule(null);
-        vEvent.setDateTimeRecurrence(dateTimeInstanceStartOriginal);
+        vEvent.setDateTimeRecurrence(startOriginalInstance);
         vEvent.setDateTimeStamp(LocalDateTime.now());
    
               // Add recurrence to original vEvent
@@ -491,7 +504,7 @@ public class AppointmentEditController
     {
         Temporal startNew = (wholeDayCheckBox.isSelected()) ? startTextField.getLocalDateTime().toLocalDate() : startTextField.getLocalDateTime();
         if (vEventOriginal.getRRule().getCount() != null) vEventOriginal.getRRule().setCount(0);
-        Temporal previousDay = dateTimeInstanceStartOriginal.minus(1, ChronoUnit.DAYS);
+        Temporal previousDay = startOriginalInstance.minus(1, ChronoUnit.DAYS);
         Temporal untilNew = (wholeDayCheckBox.isSelected()) ? LocalDate.from(previousDay).atTime(23, 59, 59) : previousDay; // use last second of previous day, like Yahoo
 
         vEventOriginal.getRRule().setUntil(untilNew);

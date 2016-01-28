@@ -753,29 +753,12 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
             {
                 List<VComponent<U>> relatedVComponents = VComponent.findRelatedVComponents(vComponents, vEvent);
                 Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
-//                Temporal startInstance = (vEvent.isWholeDay()) ? startTextField.getLocalDateTime().toLocalDate() : startTextField.getLocalDateTime();
                 String one = VComponent.temporalToStringPretty(startInstance);
                 choices.put(ChangeDialogOption.ONE, one);
                 if (! vEvent.isIndividual())
                 {
-//                    if ((relatedVComponents.size() > 1)) // is in a multi-segment series
-//                    {
-//                        choices.put(ChangeDialogOption.SEGMENT, vEvent.rangeToString());
-//                        if ((relatedVComponents.indexOf(vEvent) < relatedVComponents.size()-1)) // isn't last segment in series
-//                        {
-//                            String futureSegment = vEvent.rangeToString(startInstance);
-//                            choices.put(ChangeDialogOption.THIS_AND_FUTURE_SEGMENT, futureSegment);
-//                            String futureAll = VComponent.relativesRangeToString(relatedVComponents, startInstance);
-//                            choices.put(ChangeDialogOption.THIS_AND_FUTURE_ALL, futureAll);
-//                        } else
-//                        {
-//                            String future = vEvent.rangeToString(startInstance);
-//                            choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);                            
-//                        }
-//                    } else
                     {
                         String future = VComponent.relativesRangeToString(relatedVComponents, startInstance);
-//                        String future = vEvent.rangeToString(startInstance);
                         choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
                     }
                     String all = VComponent.relativesRangeToString(relatedVComponents);
@@ -849,8 +832,6 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     
     private static <U> void updateAppointments(VComponent<U> vEvent, Collection<U> instances)
     {
-        int sequence = vEvent.getSequence();
-        vEvent.setSequence(++sequence);
         Collection<U> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
         instancesTemp.addAll(instances);
         instancesTemp.removeIf(a -> vEvent.instances().stream().anyMatch(a2 -> a2 == a));

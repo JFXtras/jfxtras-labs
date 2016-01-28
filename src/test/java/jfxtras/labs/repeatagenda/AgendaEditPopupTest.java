@@ -57,6 +57,7 @@ import jfxtras.test.TestUtil;
  */
 public class AgendaEditPopupTest extends AgendaTestAbstract
 {
+    @Override
     public Parent getRootNode()
     {
         Parent p = super.getRootNode();
@@ -1095,6 +1096,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
        expectedV2.setRelatedTo("20150110T080000-0@jfxtras.org");
        expectedV2.setUniqueIdentifier(v2.getUniqueIdentifier()); // uid is time-based so copy it to guarantee equality.
        expectedV2.setDateTimeStamp(v2.getDateTimeStamp()); // time stamp is time-based so copy it to guarantee equality.
+       expectedV2.setSequence(1);
        assertEquals(expectedV1, v1);
        assertEquals(expectedV2, v2);
 
@@ -1153,6 +1155,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         expectedV2.setDateTimeStamp(v2.getDateTimeStamp()); // time stamp is time-based so copy it to guarantee equality.
         expectedV2.setDateTimeRecurrence(LocalDateTime.of(2015, 11, 11, 10, 0));
         expectedV2.setRRule(null);
+        expectedV2.setSequence(1);
         assertEquals(expectedV2, v2);
     }
     

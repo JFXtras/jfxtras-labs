@@ -210,23 +210,6 @@ public class ICalendarAgenda extends Agenda
                 , startInstance
                 , endInstance
                 , appointments());
-//        VComponent<Appointment> vComponent = vComponents.stream().filter(v ->
-//        {
-//            return v.instances().stream().filter(t -> t.equals(appointment)).findAny().isPresent();
-//        }).findAny().get();
-//        List<Temporal> originalStarts = vComponent.makeInstances().stream().map(a -> a.getStartLocalDateTime()).collect(Collectors.toList());
-//        List<Temporal> newStarts = vComponent.instances().stream().map(a -> a.getStartLocalDateTime()).collect(Collectors.toList());
-//        Temporal originalStart = null;
-//        for (int i=0; i<originalStarts.size(); i++)
-//        {
-//            Temporal s = originalStarts.get(i);
-//            Temporal s2 = vComponent.instances().get(i).getStartLocalDateTime();
-//            if (! s.equals(s2))
-//            {
-//                originalStart = originalStarts.get(i).getStartLocalDateTime();
-//                break;
-//            }
-//        }
         
         System.out.println("appt changed callback:" + appointment.getStartLocalDateTime() + " " + startOriginalInstance);
         return null;
@@ -271,6 +254,7 @@ public class ICalendarAgenda extends Agenda
                                 vComponents().removeListener(vComponentsListener);
                                 vComponents().add(newVComponent);
                                 vComponents().addListener(vComponentsListener);
+                                System.out.println("newVComponent:" + newVComponent);
                             });
                     if (change.getAddedSubList().size() == 1)
                     { // Open little popup - edit, delete
